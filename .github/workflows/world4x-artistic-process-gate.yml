@@ -1,0 +1,86 @@
+name: World4X artistic process evidence
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/world4x-artistic-process/**'
+      - '.github/workflows/world4x-artistic-process-gate.yml'
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      candidate_ref:
+        description: World4X branch/commit to verify
+        required: false
+        type: string
+        default: feature/world4x-region1-canon-20261022
+
+permissions:
+  contents: read
+
+concurrency:
+  group: world4x-artistic-process-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke-test:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/world4x-artistic-process
+      - name: Syntax and end-to-end positive/negative verifier tests
+        run: |
+          node --check tools/world4x-artistic-process/verify.mjs
+          node --check tools/world4x-artistic-process/test.mjs
+          node --check tools/world4x-artistic-process/strategy.mjs
+          node --check tools/world4x-artistic-process/strategy.test.mjs
+          node tools/world4x-artistic-process/test.mjs
+          node tools/world4x-artistic-process/strategy.test.mjs
+
+  verify-artistic-process:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 100
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Read canonical verifier from main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: policy
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/world4x-artistic-process/verify.mjs
+            tools/world4x-artistic-process/README.md
+            tools/world4x-artistic-process/test.mjs
+            tools/world4x-artistic-process/strategy.mjs
+            tools/world4x-artistic-process/strategy.test.mjs
+      - name: Read exact PR candidate and Git history (no Unity or Blender lease)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || inputs.candidate_ref }}
+          path: candidate
+          fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            docs/evidence/world4x-canon-20261022
+      - name: Verify evidence validator source
+        run: node --check policy/tools/world4x-artistic-process/verify.mjs
+      - name: Verify complete, missing, wrong-camera and post-certification drift scenarios
+        run: (cd policy && node tools/world4x-artistic-process/test.mjs)
+      - name: Catch repetitive micro-corrections before more full Unity passes
+        run: |
+          (cd policy && node tools/world4x-artistic-process/strategy.test.mjs)
+          node policy/tools/world4x-artistic-process/strategy.mjs candidate
+      - name: Fail closed on missing artistic process and matched Unity A/B evidence
+        run: node policy/tools/world4x-artistic-process/verify.mjs candidate

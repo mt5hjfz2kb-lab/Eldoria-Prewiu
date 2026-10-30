@@ -1,0 +1,67 @@
+{
+  "run": 40313214146,
+  "source": "2137473507aa924d93a5bd0545c67b8dda4a9a35",
+  "materialized": "0eaafe49cf1502be105c0beca1b2e33a94b07d1e",
+  "tests": {
+    "eldoria-region1-canon-tests.xml": {
+      "result": "Passed",
+      "total": "62",
+      "passed": "62",
+      "failed": "0",
+      "skipped": "0"
+    },
+    "region1-general-proof-40313214146/editmode.xml": {
+      "result": "Passed",
+      "total": "26",
+      "passed": "26",
+      "failed": "0",
+      "skipped": "0"
+    },
+    "region1-general-proof-40313214146/playmode.xml": {
+      "result": "Passed",
+      "total": "62",
+      "passed": "62",
+      "failed": "0",
+      "skipped": "0"
+    }
+  },
+  "camera_manifests_verified": 160,
+  "hash_errors": [],
+  "general_images_verified": 34,
+  "matched_views": [
+    {
+      "label": "cercana-horizontal",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 31.9355
+    },
+    {
+      "label": "cercana-vertical",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 40.5915
+    },
+    {
+      "label": "regional-horizontal",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 88.6893
+    },
+    {
+      "label": "regional-vertical",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 91.1387
+    },
+    {
+      "label": "panoramica-horizontal",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 72.1207
+    },
+    {
+      "label": "panoramica-vertical",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 74.2766
+    }
+  ],
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "status": "SAFE_CHECKPOINT_RETAINED_ART_GOAL_STILL_OPEN",
+  "probe_checks": 44
+}

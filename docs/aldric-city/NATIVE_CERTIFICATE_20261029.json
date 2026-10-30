@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "status": "SUCCESS",
+  "certified_at": "2026-10-29T00:10:50.333432+00:00",
+  "requested_source": "e47c3bb525439949c19227673e66c88730d0349b",
+  "compiled_source": "0255c811d5c56ef4f027cae91c3c627083bc27c6",
+  "compiled_tree": "0580ba516b21a9a0af45dead209ae298b55fcfc4",
+  "run_id": 40789374485,
+  "editmode_total": 47,
+  "editmode_passed": 47,
+  "editmode_failed": 0,
+  "playmode_total": 73,
+  "playmode_passed": 73,
+  "playmode_failed": 0,
+  "playmode_skipped": 0,
+  "full_shared_suite_executed": true,
+  "actual_views": 12,
+  "native_artifact_id": 12862316329,
+  "native_artifact_digest": "sha256:99fcbde91f4f30fe265adebd0374373bb8cac81778e4a742ec1d2403ec7e01db",
+  "native_artifact_bytes": 14596997,
+  "preflight_artifact_id": 12862065154,
+  "preflight_artifact_digest": "sha256:d7d5b1504ee071195557014fb748869551346476d8a06d4ca83457a468b65410",
+  "model_sha256": "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b",
+  "transient_import_sha256": "d64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b",
+  "reference_file": "reference-approved-model-4views.png",
+  "reference_sha256": "2fbb8d075b95de2bdddc4c634d11ca32811d98edad1dd744714c4aadbea7b24c",
+  "physical_mobile_tested": false,
+  "art_approved": false,
+  "visual_review": {
+    "status": "PASS_APPROVED_MODEL_REUSE_IN_ACTUAL_CITY",
+    "reviewer": "codex-pr120-exact-visual-pr122-20261028",
+    "individually_inspected_final_views": 12,
+    "findings": "Actual approved face, steel armour, blue cape/tabard and trim preserved; human scale and visible genuine player cameras in portrait/landscape; walking/ground contact inspected; no city actor in World/march/investigation and visible after return. Original four-view reference compared. Source rig and five animation clips unchanged; technical city rest alignment is separate.",
+    "limitations": "Static source reference and animated city captures have different pose/camera/lighting; no pixel-identity or new authored artist-cycle approval claimed. No physical-phone performance proof."
+  },
+  "paving_geometry": {
+    "collider_vertices": 37440,
+    "visible_vertices": 38108,
+    "triangles_each": 17160,
+    "exact_oriented_world_triangle_sha256": "528a2feac1dd34e609e41d16c97ff612820d73f35e505d0f610412744be36ac1",
+    "collider_visible_surfaces_exactly_equal": true,
+    "independent_exported_collider_samples": 801,
+    "independent_exported_collider_rejections": 0
+  },
+  "views": [
+    {
+      "file": "native-40789374485/aldric-away-investigation.png",
+      "bytes": 1549081,
+      "sha256": "c7b83416f412ac129dea0cfb883cbd0e10631ec03cbd30d35822d72027cdffb9",
+      "width": 1280,
+      "height": 720,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    },
+    {
+      "file": "native-40789374485/aldric-away-march.png",
+      "bytes": 1548100,
+      "sha256": "38cc7cc9a5423806f8b052225804bc31a9de0ca891ce633561dda0b5e00229dc",
+      "width": 1280,
+      "height": 720,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    },
+    {
+      "file": "native-40789374485/aldric-away-world.png",
+      "bytes": 1689377,
+      "sha256": "d4674dd20c91ee83affba3263763cf5ae3815db205d33dc5cd6f8ae5aa2dd859",
+      "width": 1280,
+      "height": 720,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    },
+    {
+      "file": "native-40789374485/aldric-city-idle-landscape.png",
+      "bytes": 1548244,
+      "sha256": "8690264889b3275f196e6095ef388adac1cf0bb75ac6fbc4992416ee01fbaf09",
+      "width": 1280,
+      "height": 720,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    },
+    {
+      "file": "native-40789374485/aldric-city-idle-portrait.png",
+      "bytes": 571150,
+      "sha256": "2138c8df330b96cb82774b43368875bbb8db0fd0d58c579a961e702de7199fc2",
+      "width": 390,
+      "height": 844,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    },
+    {
+      "file": "native-40789374485/aldric-city-returned.png",
+      "bytes": 1549512,
+      "sha256": "29cc8375f5bedb1deed2a0648387e6bc67a3a6ccb3245d8c9dff4be23bef4ef6",
+      "width": 1280,
+      "height": 720,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    },
+    {
+      "file": "native-40789374485/aldric-city-walking-landscape.png",
+      "bytes": 1548670,
+      "sha256": "a1024d724dad22ed73c33c14cc86a6f5fc94821dde743bfcf6154602678c5867",
+      "width": 1280,
+      "height": 720,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    },
+    {
+      "file": "native-40789374485/aldric-city-walking-portrait.png",
+      "bytes": 570971,
+      "sha256": "58cb2b9917da98b6ad8192a35d837d58bdcccbba1d4569448cfd428af91eae1e",
+      "width": 390,
+      "height": 844,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    },
+    {
+      "file": "native-40789374485/aldric-detail-backward.png",
+      "bytes": 940281,
+      "sha256": "6e5806eefb6d11d43b93e4a7522fa201bbf352f071f635d5963ff9d06ee7b167",
+      "width": 720,
+      "height": 900,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    },
+    {
+      "file": "native-40789374485/aldric-detail-forward.png",
+      "bytes": 1016620,
+      "sha256": "7abd51f99aeaba740b5893cfaf2a6aa94435d2351de5ff2763ff06fe0fe79ef9",
+      "width": 720,
+      "height": 900,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    },
+    {
+      "file": "native-40789374485/aldric-detail-left.png",
+      "bytes": 829621,
+      "sha256": "e4ed35f5b3c33916dec99223e72b5a81ab0bc52c6c3d170a87c1dcd1b8621e4d",
+      "width": 720,
+      "height": 900,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    },
+    {
+      "file": "native-40789374485/aldric-detail-right.png",
+      "bytes": 805328,
+      "sha256": "b195e3d24dc5914077f6a1bc628e93ec96646f3d5804ef06f3f776b6a7792517",
+      "width": 720,
+      "height": 900,
+      "actual_unity_camera": true,
+      "individually_inspected": true
+    }
+  ]
+}

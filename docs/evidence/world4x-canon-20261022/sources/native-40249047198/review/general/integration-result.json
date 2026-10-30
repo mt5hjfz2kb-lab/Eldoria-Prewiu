@@ -1,0 +1,285 @@
+{
+    "source": "dbc0b02a2c7f086bb61241ca0a1b95f77bf71b0c",
+    "status": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
+    "error": "",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "checks": [
+        "original web opening narrator and Aldric appear through actual buttons",
+        "Aldric portrait and text rendered at settled opacity",
+        "new player introduction saved and shared modal restored for settings",
+        "restored Settings closes through real rendered-button raycast",
+        "city HUD, one camera",
+        "Royal Gold real chapter checklist and collapse",
+        "mechanic-gated menus, narrative, no slabs, objective navigation",
+        "all world entry points share progression gate",
+        "construction panel visible in both orientations",
+        "Royal build command",
+        "shared timer and authored model",
+        "real World unlock narration after the built Aserradero",
+        "World navigation is touchable even while a building sheet is open",
+        "world return preserves session",
+        "Current objective is still genuinely clickable while a World resource is selected",
+        "world gathering, city return, saved reward",
+        "narrator presents original forest mark without mixing voices",
+        "forest mark narrator legible and next Aldric speaker acknowledged",
+        "forest mark Aldric legible after animation and story ledger persisted",
+        "Royal map action forest-valoria",
+        "World return forest-valoria",
+        "Royal map action quarry-valoria",
+        "World return quarry-valoria",
+        "Royal map action corrupt-scout",
+        "World return corrupt-scout",
+        "Royal Bastion upgrade",
+        "Bastion II visual",
+        "Royal barracks",
+        "Royal barracks construction completed with native state",
+        "Royal recruitment via visible V3 primary button",
+        "Royal march action becomes available",
+        "Royal march management real independent landscape and portrait",
+        "Royal march confirmation and real return-to-city button",
+        "real old-size model, fixed strategic camera before enlargement",
+        "real B2 strategic enlarged silhouette AND exact grounded anchor",
+        "real original 3m close-size comparison at identical camera",
+        "real B2 local enlarged silhouette AND exact grounded anchor",
+        "Royal I-II chapter complete and reload",
+        "canonical save byte hashes preserved",
+        "narrative closed through actual UI before art captures",
+        "native authored destination capture forest-valoria",
+        "native authored destination capture quarry-valoria",
+        "native authored destination capture corrupt-scout",
+        "native authored destination capture engendro-valoria"
+    ],
+    "framing": [
+        {
+            "capture": "integration-construction-landscape.png",
+            "target": "sawmill",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.433134526014328,
+                0.2721548080444336,
+                0.6243654489517212,
+                0.43284502625465395
+            ],
+            "visible": [
+                0.06499999761581421,
+                0.013333214446902275,
+                0.9924999475479126,
+                0.6916666626930237
+            ]
+        },
+        {
+            "capture": "integration-construction-portrait.png",
+            "target": "sawmill",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.28867214918136599,
+                0.2721548080444336,
+                0.8930562734603882,
+                0.43284502625465395
+            ],
+            "visible": [
+                0.12999999523162843,
+                0.008437381125986576,
+                0.9850000143051148,
+                0.686718761920929
+            ]
+        },
+        {
+            "capture": "integration-city-built.png",
+            "target": "sawmill",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.45701903104782107,
+                0.28711655735969546,
+                0.5994503498077393,
+                0.49242839217185976
+            ],
+            "visible": [
+                0.06499999761581421,
+                0.013333214446902275,
+                0.9924999475479126,
+                0.6916666626930237
+            ]
+        },
+        {
+            "capture": "integration-bastion-upgrade.png",
+            "target": "bastion",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.40478479862213137,
+                0.12540113925933839,
+                0.6527152061462402,
+                0.5795990228652954
+            ],
+            "visible": [
+                0.06499999761581421,
+                0.01333327405154705,
+                0.992499828338623,
+                0.6916666626930237
+            ]
+        },
+        {
+            "capture": "integration-art-forest-valoria-landscape.png",
+            "target": "forest-valoria",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.4869728088378906,
+                0.47610554099082949,
+                0.5705280303955078,
+                0.6398658156394959
+            ],
+            "visible": [
+                0.06499999761581421,
+                0.013333333656191826,
+                0.9925000071525574,
+                0.6916666626930237
+            ]
+        },
+        {
+            "capture": "integration-art-forest-valoria-portrait.png",
+            "target": "forest-valoria",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.45882800221443179,
+                0.47610554099082949,
+                0.7229042053222656,
+                0.6398658156394959
+            ],
+            "visible": [
+                0.1300000101327896,
+                0.008437381125986576,
+                0.9850000143051148,
+                0.686718761920929
+            ]
+        },
+        {
+            "capture": "integration-art-quarry-valoria-landscape.png",
+            "target": "quarry-valoria",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.37705516815185549,
+                0.030579745769500734,
+                0.4529447555541992,
+                0.18267574906349183
+            ],
+            "visible": [
+                0.06499999761581421,
+                0.01333327405154705,
+                0.9925000071525574,
+                0.6916666626930237
+            ]
+        },
+        {
+            "capture": "integration-art-quarry-valoria-portrait.png",
+            "target": "quarry-valoria",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.4375762939453125,
+                0.13852804899215699,
+                0.6774234771728516,
+                0.29062405228614809
+            ],
+            "visible": [
+                0.1300000101327896,
+                0.008437381125986576,
+                0.9850000143051148,
+                0.686718761920929
+            ]
+        },
+        {
+            "capture": "integration-art-corrupt-scout-landscape.png",
+            "target": "corrupt-scout",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.36584949493408205,
+                0.17294466495513917,
+                0.46414947509765627,
+                0.5100705027580261
+            ],
+            "visible": [
+                0.06499999761581421,
+                0.01333327405154705,
+                0.9925000071525574,
+                0.6916666626930237
+            ]
+        },
+        {
+            "capture": "integration-art-corrupt-scout-portrait.png",
+            "target": "corrupt-scout",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.4021625518798828,
+                0.17566433548927308,
+                0.7128391265869141,
+                0.5127902030944824
+            ],
+            "visible": [
+                0.1300000101327896,
+                0.008437440730631352,
+                0.9850000143051148,
+                0.686718761920929
+            ]
+        },
+        {
+            "capture": "integration-art-engendro-valoria-landscape.png",
+            "target": "engendro-valoria",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.32906246185302737,
+                0.129896879196167,
+                0.39156246185302737,
+                0.29344668984413149
+            ],
+            "visible": [
+                0.06499999761581421,
+                0.01333327405154705,
+                0.9925000071525574,
+                0.6916666626930237
+            ]
+        },
+        {
+            "capture": "integration-art-engendro-valoria-portrait.png",
+            "target": "engendro-valoria",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.45873451232910159,
+                0.1907843053340912,
+                0.6562652587890625,
+                0.35433411598205569
+            ],
+            "visible": [
+                0.1300000101327896,
+                0.008437381125986576,
+                0.9850000143051148,
+                0.686718761920929
+            ]
+        }
+    ],
+    "artApproved": false,
+    "physicalDeviceTested": false,
+    "timeAccelerated": true
+}

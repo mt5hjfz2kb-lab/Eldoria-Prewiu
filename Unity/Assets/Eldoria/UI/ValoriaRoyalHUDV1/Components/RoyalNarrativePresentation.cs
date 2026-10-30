@@ -102,10 +102,14 @@ namespace Eldoria.UI.RoyalGold {
    pages.Clear();pageIndex=0;shown=0;characterBudget=0;hold=0;entryTime=0;
    var line=turns[lineIndex];
    bool narrator=line.Speaker=="NARRADOR";
-   if(face){face.texture=AldricPortrait;face.gameObject.SetActive(!narrator&&AldricPortrait);}
-   if(narratorGlyph){narratorGlyph.gameObject.SetActive(narrator||!AldricPortrait);narratorGlyph.Put(narrator?"✦":"♜");}
+   bool aldric=line.Speaker=="Sir Aldric"||line.Speaker=="Aldric";
+   // An authored portrait identifies its actual speaker. Other speakers retain the
+   // established royal narrative emblem until their own portrait is approved.
+   bool showAldric=aldric&&AldricPortrait;
+   if(face){face.texture=showAldric?AldricPortrait:null;face.gameObject.SetActive(showAldric);}
+   if(narratorGlyph){narratorGlyph.gameObject.SetActive(!showAldric);narratorGlyph.Put(aldric?"♜":"✦");}
    modal.Title.Put(narrator?(english?"ASHES OF VALORIA":"LAS CENIZAS DE VALORIA"):line.Speaker.ToUpperInvariant());
-   role.Put(narrator?(english?"Eldoria chronicle":"Crónica de Eldoria"):(english?"Guardian of Valoria":"Guardián de Valoria"));
+   role.Put(narrator?(english?"Eldoria chronicle":"Crónica de Eldoria"):aldric?(english?"Guardian of Valoria":"Guardián de Valoria"):line.Speaker=="Lyra"?(english?"Valoria frontier":"Frontera de Valoria"):"VALORIA");
    string text=english?line.English:line.Spanish;
    foreach(var page in Paginate(text,218))pages.Add(page);
    LayoutNarrativePage();

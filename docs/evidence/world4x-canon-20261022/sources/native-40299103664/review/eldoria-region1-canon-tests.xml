@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="62" result="Passed" total="62" passed="62" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:38:06Z" duration="278,339534">
+  <test-suite type="TestSuite" id="1080" name="Unity" fullname="Unity" runstate="Runnable" testcasecount="62" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:38:06Z" duration="278.339534" total="62" passed="62" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1004" name="Assembly-CSharp.dll" fullname="C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/world4x-source/Unity/Library/ScriptAssemblies/Assembly-CSharp.dll" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:33:27Z" duration="0.029562" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="20948" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="ZoneOneWorldTests" fullname="ZoneOneWorldTests" classname="ZoneOneWorldTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:33:27Z" duration="0.027159" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1003" name="ChunksHave256Cells" fullname="ZoneOneWorldTests.ChunksHave256Cells" methodname="ChunksHave256Cells" classname="ZoneOneWorldTests" runstate="Runnable" seed="1522459371" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:33:27Z" duration="0.012599" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1002" name="StableIds" fullname="ZoneOneWorldTests.StableIds" methodname="StableIds" classname="ZoneOneWorldTests" runstate="Runnable" seed="1193395137" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:33:27Z" duration="0.001910" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="1074" name="Eldoria.Tests.PlayMode.dll" fullname="C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/world4x-source/Unity/Library/ScriptAssemblies/Eldoria.Tests.PlayMode.dll" runstate="Runnable" testcasecount="60" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:38:06Z" duration="278.301146" total="60" passed="60" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="20948" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1075" name="Eldoria" fullname="Eldoria" runstate="Runnable" testcasecount="60" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:38:06Z" duration="278.298512" total="60" passed="60" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1076" name="Tests" fullname="Eldoria.Tests" runstate="Runnable" testcasecount="60" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:38:06Z" duration="278.297502" total="60" passed="60" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1005" name="ParcelProgressionRuntimeTests" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:33:28Z" duration="0.438340" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1006" name="CoveredFramePanRevealsLandscapeBastionWithoutExposingEdges" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests.CoveredFramePanRevealsLandscapeBastionWithoutExposingEdges" methodname="CoveredFramePanRevealsLandscapeBastionWithoutExposingEdges" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" seed="943330541" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:33:27Z" duration="0.005637" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1010" name="PresentedFrameProjectionAndPickingStayInverseAfterCropPanZoom" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests.PresentedFrameProjectionAndPickingStayInverseAfterCropPanZoom" methodname="PresentedFrameProjectionAndPickingStayInverseAfterCropPanZoom" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" seed="682930021" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:33:27Z" duration="0.015901" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1008" name="ProductionBuildingPickingReachesCertifiedDepthAndPrioritizesItsTarget" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests.ProductionBuildingPickingReachesCertifiedDepthAndPrioritizesItsTarget" methodname="ProductionBuildingPickingReachesCertifiedDepthAndPrioritizesItsTarget" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" seed="2139629220" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:33:27Z" duration="0.011416" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1007" name="RealBuildingPanelDrivesExistingGatewayAndParcelLayers" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests.RealBuildingPanelDrivesExistingGatewayAndParcelLayers" methodname="RealBuildingPanelDrivesExistingGatewayAndParcelLayers" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" seed="1152518765" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:33:27Z" duration="0.031313" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="WorldHotspotBindingsSurviveStablePrefabSerialization" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests.WorldHotspotBindingsSurviveStablePrefabSerialization" methodname="WorldHotspotBindingsSurviveStablePrefabSerialization" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" seed="697278474" result="Passed" start-time="2026-10-26 09:33:27Z" end-time="2026-10-26 09:33:28Z" duration="0.371776" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1011" name="ReferenceUiArtPassTests" fullname="Eldoria.Tests.ReferenceUiArtPassTests" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-26 09:33:28Z" end-time="2026-10-26 09:33:35Z" duration="7.680807" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1012" name="ApprovedReferenceSkinDecoratesPlayerHudWithoutReplacingControls" fullname="Eldoria.Tests.ReferenceUiArtPassTests.ApprovedReferenceSkinDecoratesPlayerHudWithoutReplacingControls" methodname="ApprovedReferenceSkinDecoratesPlayerHudWithoutReplacingControls" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" seed="1246208396" result="Passed" start-time="2026-10-26 09:33:28Z" end-time="2026-10-26 09:33:29Z" duration="1.099055" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1013" name="OwnerFreshSaveCompletesIAndIIThroughGuidedHud" fullname="Eldoria.Tests.ReferenceUiArtPassTests.OwnerFreshSaveCompletesIAndIIThroughGuidedHud" methodname="OwnerFreshSaveCompletesIAndIIThroughGuidedHud" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" seed="46147961" result="Passed" start-time="2026-10-26 09:33:29Z" end-time="2026-10-26 09:33:34Z" duration="4.894351" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1014" name="ResourceStarvedSawmillGuidanceDepartsAndActuallyGathers" fullname="Eldoria.Tests.ReferenceUiArtPassTests.ResourceStarvedSawmillGuidanceDepartsAndActuallyGathers" methodname="ResourceStarvedSawmillGuidanceDepartsAndActuallyGathers" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" seed="181151412" result="Passed" start-time="2026-10-26 09:33:34Z" end-time="2026-10-26 09:33:35Z" duration="1.685930" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1015" name="RegionOneCanonIntegratedAcceptanceTests" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" testcasecount="21" result="Passed" start-time="2026-10-26 09:33:35Z" end-time="2026-10-26 09:36:49Z" duration="193.309812" total="21" passed="21" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1036" name="ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe" methodname="ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1391587122" result="Passed" start-time="2026-10-26 09:33:36Z" end-time="2026-10-26 09:34:32Z" duration="55.532606" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_ACTUAL_PANORAMA_VIEWPORT_AREA horizontal 0.7468
+REGION1_ACTUAL_PANORAMA_VIEWPORT_AREA vertical 0.7606
+REGION1_INTERIOR_GEOLOGY_LIT_PIXELS 33502
+REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=16 (10 actual views + 2 historical-camera panorama controls + 4 blockout views) real_scene=1 disposable_gateway=1 physical_iphone=0
+]]></output>
+            </test-case>
+            <test-case id="1022" name="AdditionalResourcesUseRealGatherCommandAndPersistIndependentQuantities" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.AdditionalResourcesUseRealGatherCommandAndPersistIndependentQuantities" methodname="AdditionalResourcesUseRealGatherCommandAndPersistIndependentQuantities" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="85625243" result="Passed" start-time="2026-10-26 09:34:32Z" end-time="2026-10-26 09:34:32Z" duration="0.002796" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1019" name="BothTripoFamiliesRemainReadableInBothRegionalOrientations" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.BothTripoFamiliesRemainReadableInBothRegionalOrientations" methodname="BothTripoFamiliesRemainReadableInBothRegionalOrientations" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="545294618" result="Passed" start-time="2026-10-26 09:34:32Z" end-time="2026-10-26 09:34:42Z" duration="10.602477" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+ACTUAL_REGIONAL_CREATURE_VIEWPORT family=boar aspect=1,777778 heightFraction=0,0523119 zoom=280
+ACTUAL_REGIONAL_CREATURE_VIEWPORT family=spawnling aspect=1,777778 heightFraction=0,05958083 zoom=280
+ACTUAL_REGIONAL_RESOURCE_VIEWPORT kind=wood aspect=1,777778 heightFraction=0,065 zoom=280
+ACTUAL_REGIONAL_RESOURCE_VIEWPORT kind=stone aspect=1,777778 heightFraction=0,06499994 zoom=280
+ACTUAL_REGIONAL_CREATURE_VIEWPORT family=boar aspect=0,4620853 heightFraction=0,05231225 zoom=865,6411
+ACTUAL_REGIONAL_CREATURE_VIEWPORT family=spawnling aspect=0,4620853 heightFraction=0,05958083 zoom=865,6411
+ACTUAL_REGIONAL_RESOURCE_VIEWPORT kind=wood aspect=0,4620853 heightFraction=0,065 zoom=865,6411
+ACTUAL_REGIONAL_RESOURCE_VIEWPORT kind=stone aspect=0,4620853 heightFraction=0,06500003 zoom=865,6411
+]]></output>
+            </test-case>
+            <test-case id="1034" name="BreachIsGeologicalGroundGeometryNotTargetOrVerticalPortal" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.BreachIsGeologicalGroundGeometryNotTargetOrVerticalPortal" methodname="BreachIsGeologicalGroundGeometryNotTargetOrVerticalPortal" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="203681100" result="Passed" start-time="2026-10-26 09:34:42Z" end-time="2026-10-26 09:34:53Z" duration="10.261774" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_ACTUAL_CONTINENTAL_SHARED_EDGE_VERTICES 2416
+]]></output>
+            </test-case>
+            <test-case id="1028" name="ContactQueriesMatchActualImportedTriangles" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ContactQueriesMatchActualImportedTriangles" methodname="ContactQueriesMatchActualImportedTriangles" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1542613448" result="Passed" start-time="2026-10-26 09:34:53Z" end-time="2026-10-26 09:35:01Z" duration="8.562905" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_EXACT_CONTACT samples=540 max_error_m=0,0004477501
+]]></output>
+            </test-case>
+            <test-case id="1032" name="EnemyCampPlaceholdersAreVisuallyAbsentButRealTargetsRemain" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.EnemyCampPlaceholdersAreVisuallyAbsentButRealTargetsRemain" methodname="EnemyCampPlaceholdersAreVisuallyAbsentButRealTargetsRemain" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1833561948" result="Passed" start-time="2026-10-26 09:35:01Z" end-time="2026-10-26 09:35:10Z" duration="8.622513" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1020" name="LegacySchemaOneJsonWithoutPopulationFieldPreservesTheWholeSnapshot" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.LegacySchemaOneJsonWithoutPopulationFieldPreservesTheWholeSnapshot" methodname="LegacySchemaOneJsonWithoutPopulationFieldPreservesTheWholeSnapshot" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="2132379556" result="Passed" start-time="2026-10-26 09:35:10Z" end-time="2026-10-26 09:35:10Z" duration="0.001916" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1023" name="OfflineDepletionUsesSavedDeadlineInsteadOfRestartTime" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.OfflineDepletionUsesSavedDeadlineInsteadOfRestartTime" methodname="OfflineDepletionUsesSavedDeadlineInsteadOfRestartTime" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1469145258" result="Passed" start-time="2026-10-26 09:35:10Z" end-time="2026-10-26 09:35:10Z" duration="0.000670" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1030" name="OneGeographyAndNoInventedGameplayHotspots" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.OneGeographyAndNoInventedGameplayHotspots" methodname="OneGeographyAndNoInventedGameplayHotspots" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="24561258" result="Passed" start-time="2026-10-26 09:35:10Z" end-time="2026-10-26 09:35:19Z" duration="8.968523" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1035" name="PanoramaHidesOldSquareWithoutRemovingWorldGameObjects" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.PanoramaHidesOldSquareWithoutRemovingWorldGameObjects" methodname="PanoramaHidesOldSquareWithoutRemovingWorldGameObjects" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1443024171" result="Passed" start-time="2026-10-26 09:35:19Z" end-time="2026-10-26 09:35:28Z" duration="9.580374" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+ACTUAL_REGIONAL_GROUND_DETAIL name=BLD_NearMeadowHabitat parent=Blender authored geography enabled=False bounds=Center: (1018.20, 16.98, 127.35), Extents: (94.04, 15.94, 167.90)
+ACTUAL_REGIONAL_GROUND_DETAIL name=BLD_NearUndergrowth parent=Blender authored geography enabled=False bounds=Center: (1017.96, 18.36, 112.85), Extents: (86.67, 16.07, 145.92)
+ACTUAL_REGIONAL_GROUND_DETAIL name=Directed understory mesh parent=Blender authored geography enabled=False bounds=Center: (1022.83, 5.33, 11.40), Extents: (50.43, 2.80, 33.68)
+ACTUAL_REGIONAL_GROUND_DETAIL name=Z retained-sector woodland understory parent=Blender authored geography enabled=False bounds=Center: (1020.20, 17.11, 156.47), Extents: (90.26, 17.54, 37.36)
+]]></output>
+            </test-case>
+            <test-case id="1024" name="PanoramaHidesRealResourcesAndEncountersWithoutChangingSavedState" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.PanoramaHidesRealResourcesAndEncountersWithoutChangingSavedState" methodname="PanoramaHidesRealResourcesAndEncountersWithoutChangingSavedState" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="62927299" result="Passed" start-time="2026-10-26 09:35:28Z" end-time="2026-10-26 09:35:37Z" duration="8.920808" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1025" name="ProductionResourcesHavePersistentDistinctTerrainSites" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ProductionResourcesHavePersistentDistinctTerrainSites" methodname="ProductionResourcesHavePersistentDistinctTerrainSites" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="627329272" result="Passed" start-time="2026-10-26 09:35:37Z" end-time="2026-10-26 09:35:46Z" duration="8.608684" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1021" name="RealGatewayResourceRespawnPersistsWithoutDuplicatingOrRevivingCampaign" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealGatewayResourceRespawnPersistsWithoutDuplicatingOrRevivingCampaign" methodname="RealGatewayResourceRespawnPersistsWithoutDuplicatingOrRevivingCampaign" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="618303199" result="Passed" start-time="2026-10-26 09:35:46Z" end-time="2026-10-26 09:35:46Z" duration="0.002142" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1018" name="RealTerrainHasBothTripoFamiliesAcrossFiveDangerLevels" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealTerrainHasBothTripoFamiliesAcrossFiveDangerLevels" methodname="RealTerrainHasBothTripoFamiliesAcrossFiveDangerLevels" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="744408253" result="Passed" start-time="2026-10-26 09:35:46Z" end-time="2026-10-26 09:35:55Z" duration="8.746979" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1027" name="RealTerrainRespawnSurvivesGatewayRestartWithoutDuplicatingSites" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealTerrainRespawnSurvivesGatewayRestartWithoutDuplicatingSites" methodname="RealTerrainRespawnSurvivesGatewayRestartWithoutDuplicatingSites" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="136041863" result="Passed" start-time="2026-10-26 09:35:55Z" end-time="2026-10-26 09:36:03Z" duration="8.782349" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_REAL_TERRAIN_RESPAWN_RESTART old=region1:-686:-156 new=region1:50:-156 generation=2
+]]></output>
+            </test-case>
+            <test-case id="1026" name="RealTerrainRoutesReachPopulationAndReserveCities" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealTerrainRoutesReachPopulationAndReserveCities" methodname="RealTerrainRoutesReachPopulationAndReserveCities" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1998002861" result="Passed" start-time="2026-10-26 09:36:03Z" end-time="2026-10-26 09:36:13Z" duration="9.730087" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_ACTUAL_CITY_RESERVES valid=17 accessible=17
+]]></output>
+            </test-case>
+            <test-case id="1031" name="RealWoodNodeRemainsReachableWithBothMobileCameraAspects" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealWoodNodeRemainsReachableWithBothMobileCameraAspects" methodname="RealWoodNodeRemainsReachableWithBothMobileCameraAspects" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1972569655" result="Passed" start-time="2026-10-26 09:36:13Z" end-time="2026-10-26 09:36:22Z" duration="9.304049" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1029" name="ResourceModelsHaveMeasuredTerrainSupportWithoutMovingColliders" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ResourceModelsHaveMeasuredTerrainSupportWithoutMovingColliders" methodname="ResourceModelsHaveMeasuredTerrainSupportWithoutMovingColliders" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1493211757" result="Passed" start-time="2026-10-26 09:36:22Z" end-time="2026-10-26 09:36:31Z" duration="9.092616" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_RESOURCE_CONTACT parts=75 min_gap_m=-0,5448456 max_gap_m=0,003000259 collider_movement=0
+]]></output>
+            </test-case>
+            <test-case id="1017" name="TargetedEcotoneHasRealTwoDonorCanopiesAndDoesNotCreateGameplayNodes" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.TargetedEcotoneHasRealTwoDonorCanopiesAndDoesNotCreateGameplayNodes" methodname="TargetedEcotoneHasRealTwoDonorCanopiesAndDoesNotCreateGameplayNodes" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="483475226" result="Passed" start-time="2026-10-26 09:36:31Z" end-time="2026-10-26 09:36:40Z" duration="8.599635" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1033" name="ThreeScalesUseSameWorldHomeWithoutCameraResetOrFakeBounds" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ThreeScalesUseSameWorldHomeWithoutCameraResetOrFakeBounds" methodname="ThreeScalesUseSameWorldHomeWithoutCameraResetOrFakeBounds" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="417690377" result="Passed" start-time="2026-10-26 09:36:40Z" end-time="2026-10-26 09:36:49Z" duration="8.659070" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1016" name="TripoBoarAndEngendroLevelsKeepTheOriginalGatewayCombatAndOfflineSave" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.TripoBoarAndEngendroLevelsKeepTheOriginalGatewayCombatAndOfflineSave" methodname="TripoBoarAndEngendroLevelsKeepTheOriginalGatewayCombatAndOfflineSave" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="965570129" result="Passed" start-time="2026-10-26 09:36:49Z" end-time="2026-10-26 09:36:49Z" duration="0.003094" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1037" name="RoyalGoldV3CinematicAcceptanceTests" fullname="Eldoria.Tests.RoyalGoldV3CinematicAcceptanceTests" classname="Eldoria.Tests.RoyalGoldV3CinematicAcceptanceTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-10-26 09:36:49Z" end-time="2026-10-26 09:36:57Z" duration="8.706800" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1038" name="CinematicManuscriptRetainsCanonicalButtonsAndRestoresRegularModal" fullname="Eldoria.Tests.RoyalGoldV3CinematicAcceptanceTests.CinematicManuscriptRetainsCanonicalButtonsAndRestoresRegularModal" methodname="CinematicManuscriptRetainsCanonicalButtonsAndRestoresRegularModal" classname="Eldoria.Tests.RoyalGoldV3CinematicAcceptanceTests" runstate="Runnable" seed="1262344397" result="Passed" start-time="2026-10-26 09:36:49Z" end-time="2026-10-26 09:36:57Z" duration="8.682322" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1039" name="RoyalGoldV3IntegratedAcceptanceTests" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-26 09:36:57Z" end-time="2026-10-26 09:37:41Z" duration="43.417995" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1040" name="AuthoredWorldOpensWithMateriallyWiderStrategicFraming" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.AuthoredWorldOpensWithMateriallyWiderStrategicFraming" methodname="AuthoredWorldOpensWithMateriallyWiderStrategicFraming" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" seed="1445875075" result="Passed" start-time="2026-10-26 09:36:57Z" end-time="2026-10-26 09:37:06Z" duration="8.647348" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1043" name="BuildingSelectionRetainsAuthoritativeGatewayOffer" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.BuildingSelectionRetainsAuthoritativeGatewayOffer" methodname="BuildingSelectionRetainsAuthoritativeGatewayOffer" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" seed="1436823374" result="Passed" start-time="2026-10-26 09:37:06Z" end-time="2026-10-26 09:37:15Z" duration="8.861811" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1042" name="ClosingActualPrologueKeepsIntegratedNavigationOwnership" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.ClosingActualPrologueKeepsIntegratedNavigationOwnership" methodname="ClosingActualPrologueKeepsIntegratedNavigationOwnership" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" seed="1666449057" result="Passed" start-time="2026-10-26 09:37:15Z" end-time="2026-10-26 09:37:24Z" duration="8.579308" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1044" name="RealSawmillPurchaseProjectsTimerInTheSameRenderedFrame" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.RealSawmillPurchaseProjectsTimerInTheSameRenderedFrame" methodname="RealSawmillPurchaseProjectsTimerInTheSameRenderedFrame" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" seed="1154732219" result="Passed" start-time="2026-10-26 09:37:24Z" end-time="2026-10-26 09:37:32Z" duration="8.689731" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1041" name="SingleHudCompactObjectiveAndNoOverlayAtRest" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.SingleHudCompactObjectiveAndNoOverlayAtRest" methodname="SingleHudCompactObjectiveAndNoOverlayAtRest" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" seed="1840763524" result="Passed" start-time="2026-10-26 09:37:32Z" end-time="2026-10-26 09:37:41Z" duration="8.638314" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1045" name="RoyalV3ManagementIntegrationTests" fullname="Eldoria.Tests.RoyalV3ManagementIntegrationTests" classname="Eldoria.Tests.RoyalV3ManagementIntegrationTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-10-26 09:37:41Z" end-time="2026-10-26 09:37:50Z" duration="8.687045" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1046" name="FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave" fullname="Eldoria.Tests.RoyalV3ManagementIntegrationTests.FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave" methodname="FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave" classname="Eldoria.Tests.RoyalV3ManagementIntegrationTests" runstate="Runnable" seed="305890313" result="Passed" start-time="2026-10-26 09:37:41Z" end-time="2026-10-26 09:37:50Z" duration="8.684270" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+Source mesh has over 2,097,152 triangles in it, and is using the Fast Midphase option. This might cause certain collisions to not be detected correctly due to an issue in the physics engine. If you observe that in your project, a workaround could be to turn off the Fast Midphase option for this particular mesh. Source mesh name: Authored low uplands with continuous rounded geological incision
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-94, -3) reachable=70041 walkable=71839
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1047" name="SliceSceneSmokeTests" fullname="Eldoria.Tests.SliceSceneSmokeTests" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" testcasecount="15" result="Passed" start-time="2026-10-26 09:37:50Z" end-time="2026-10-26 09:38:02Z" duration="12.457208" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1056" name="CityObjectiveFocusPreservesCameraAndBringsTargetIntoView" fullname="Eldoria.Tests.SliceSceneSmokeTests.CityObjectiveFocusPreservesCameraAndBringsTargetIntoView" methodname="CityObjectiveFocusPreservesCameraAndBringsTargetIntoView" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1423777580" result="Passed" start-time="2026-10-26 09:37:50Z" end-time="2026-10-26 09:37:52Z" duration="2.550460" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1061" name="FrontierForestUsesEvergreenTallMass" fullname="Eldoria.Tests.SliceSceneSmokeTests.FrontierForestUsesEvergreenTallMass" methodname="FrontierForestUsesEvergreenTallMass" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="870451502" result="Passed" start-time="2026-10-26 09:37:52Z" end-time="2026-10-26 09:37:52Z" duration="0.390363" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1059" name="FrontierTrailUsesDarkerEarthThanValley" fullname="Eldoria.Tests.SliceSceneSmokeTests.FrontierTrailUsesDarkerEarthThanValley" methodname="FrontierTrailUsesDarkerEarthThanValley" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="71683856" result="Passed" start-time="2026-10-26 09:37:52Z" end-time="2026-10-26 09:37:53Z" duration="0.380070" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1058" name="FrontierUsesSemanticGroundAndContinuousMarchTrail" fullname="Eldoria.Tests.SliceSceneSmokeTests.FrontierUsesSemanticGroundAndContinuousMarchTrail" methodname="FrontierUsesSemanticGroundAndContinuousMarchTrail" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1581020510" result="Passed" start-time="2026-10-26 09:37:53Z" end-time="2026-10-26 09:37:53Z" duration="0.350901" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1062" name="FrontierWorldRouteKitIsVisualOnlyAndReusable" fullname="Eldoria.Tests.SliceSceneSmokeTests.FrontierWorldRouteKitIsVisualOnlyAndReusable" methodname="FrontierWorldRouteKitIsVisualOnlyAndReusable" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1347971890" result="Passed" start-time="2026-10-26 09:37:53Z" end-time="2026-10-26 09:37:54Z" duration="0.361380" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1057" name="IrregularTerrainCarriesReadableUvsAndTiling" fullname="Eldoria.Tests.SliceSceneSmokeTests.IrregularTerrainCarriesReadableUvsAndTiling" methodname="IrregularTerrainCarriesReadableUvsAndTiling" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1413946460" result="Passed" start-time="2026-10-26 09:37:54Z" end-time="2026-10-26 09:37:55Z" duration="1.525951" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1054" name="OwnerHudExposesGuidedReferenceFrameAndReadableLighting" fullname="Eldoria.Tests.SliceSceneSmokeTests.OwnerHudExposesGuidedReferenceFrameAndReadableLighting" methodname="OwnerHudExposesGuidedReferenceFrameAndReadableLighting" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="973287645" result="Passed" start-time="2026-10-26 09:37:55Z" end-time="2026-10-26 09:37:56Z" duration="0.701417" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1049" name="OwnerHudExposesOneGuidedPrimaryActionInsteadOfQaActionWall" fullname="Eldoria.Tests.SliceSceneSmokeTests.OwnerHudExposesOneGuidedPrimaryActionInsteadOfQaActionWall" methodname="OwnerHudExposesOneGuidedPrimaryActionInsteadOfQaActionWall" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="2050299755" result="Passed" start-time="2026-10-26 09:37:56Z" end-time="2026-10-26 09:37:56Z" duration="0.561674" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1060" name="OwnerHudMatchesReferenceMobileBudgets" fullname="Eldoria.Tests.SliceSceneSmokeTests.OwnerHudMatchesReferenceMobileBudgets" methodname="OwnerHudMatchesReferenceMobileBudgets" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="882548044" result="Passed" start-time="2026-10-26 09:37:56Z" end-time="2026-10-26 09:37:58Z" duration="1.219083" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1048" name="ValoriaAndFrontierExposeVisibleSceneAndActions" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaAndFrontierExposeVisibleSceneAndActions" methodname="ValoriaAndFrontierExposeVisibleSceneAndActions" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1141388636" result="Passed" start-time="2026-10-26 09:37:58Z" end-time="2026-10-26 09:37:58Z" duration="0.885655" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1052" name="ValoriaArtPassPreservesGateTravelAndOfficialZoomEnvelope" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaArtPassPreservesGateTravelAndOfficialZoomEnvelope" methodname="ValoriaArtPassPreservesGateTravelAndOfficialZoomEnvelope" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="80542566" result="Passed" start-time="2026-10-26 09:37:58Z" end-time="2026-10-26 09:38:00Z" duration="1.052786" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1055" name="ValoriaGroundKitUsesReadableTiledSurfaceMaterials" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaGroundKitUsesReadableTiledSurfaceMaterials" methodname="ValoriaGroundKitUsesReadableTiledSurfaceMaterials" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="883609039" result="Passed" start-time="2026-10-26 09:38:00Z" end-time="2026-10-26 09:38:00Z" duration="0.770443" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1053" name="ValoriaMasterEnvelopeAndCameraPanAreProductionReady" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaMasterEnvelopeAndCameraPanAreProductionReady" methodname="ValoriaMasterEnvelopeAndCameraPanAreProductionReady" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="909285714" result="Passed" start-time="2026-10-26 09:38:00Z" end-time="2026-10-26 09:38:01Z" duration="0.560249" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1050" name="ValoriaPlayableDistrictSkeletonHasReadableLayersAndRealBuildingPanels" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaPlayableDistrictSkeletonHasReadableLayersAndRealBuildingPanels" methodname="ValoriaPlayableDistrictSkeletonHasReadableLayersAndRealBuildingPanels" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="606431542" result="Passed" start-time="2026-10-26 09:38:01Z" end-time="2026-10-26 09:38:01Z" duration="0.590379" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1051" name="ValoriaProgressionContractGatesCuartelVisualAndInteraction" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaProgressionContractGatesCuartelVisualAndInteraction" methodname="ValoriaProgressionContractGatesCuartelVisualAndInteraction" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="539872424" result="Passed" start-time="2026-10-26 09:38:01Z" end-time="2026-10-26 09:38:02Z" duration="0.553184" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1063" name="SpawnlingAnimatedV4Tests" fullname="Eldoria.Tests.SpawnlingAnimatedV4Tests" classname="Eldoria.Tests.SpawnlingAnimatedV4Tests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-26 09:38:02Z" end-time="2026-10-26 09:38:02Z" duration="0.195606" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1064" name="ExistingEnemyRemainsSubstantiallyLegibleAcrossAuthenticCameraZoom" fullname="Eldoria.Tests.SpawnlingAnimatedV4Tests.ExistingEnemyRemainsSubstantiallyLegibleAcrossAuthenticCameraZoom" methodname="ExistingEnemyRemainsSubstantiallyLegibleAcrossAuthenticCameraZoom" classname="Eldoria.Tests.SpawnlingAnimatedV4Tests" runstate="Runnable" seed="1691908" result="Passed" start-time="2026-10-26 09:38:02Z" end-time="2026-10-26 09:38:02Z" duration="0.012977" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1065" name="OriginalGatewayArrivalDrivesVisualWithoutChangingCombatOrSave" fullname="Eldoria.Tests.SpawnlingAnimatedV4Tests.OriginalGatewayArrivalDrivesVisualWithoutChangingCombatOrSave" methodname="OriginalGatewayArrivalDrivesVisualWithoutChangingCombatOrSave" classname="Eldoria.Tests.SpawnlingAnimatedV4Tests" runstate="Runnable" seed="802836736" result="Passed" start-time="2026-10-26 09:38:02Z" end-time="2026-10-26 09:38:02Z" duration="0.162703" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1066" name="WorldRegion1RuntimeTests" fullname="Eldoria.Tests.WorldRegion1RuntimeTests" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-10-26 09:38:02Z" end-time="2026-10-26 09:38:06Z" duration="3.402156" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1067" name="DedicatedWorldScreenBuildsCanonicalRegion1Layers" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.DedicatedWorldScreenBuildsCanonicalRegion1Layers" methodname="DedicatedWorldScreenBuildsCanonicalRegion1Layers" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="748361377" result="Passed" start-time="2026-10-26 09:38:02Z" end-time="2026-10-26 09:38:03Z" duration="0.368667" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1072" name="MarchVisualReflectsAuthoritativeMarchPhaseWithoutOwningReward" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.MarchVisualReflectsAuthoritativeMarchPhaseWithoutOwningReward" methodname="MarchVisualReflectsAuthoritativeMarchPhaseWithoutOwningReward" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="743978967" result="Passed" start-time="2026-10-26 09:38:03Z" end-time="2026-10-26 09:38:03Z" duration="0.135748" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1073" name="RebuildingRegionDoesNotLeakLooseWorldVisuals" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.RebuildingRegionDoesNotLeakLooseWorldVisuals" methodname="RebuildingRegionDoesNotLeakLooseWorldVisuals" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="1658398531" result="Passed" start-time="2026-10-26 09:38:03Z" end-time="2026-10-26 09:38:03Z" duration="0.593481" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1070" name="SelectingWorldResourceOpensContextBeforeDispatchingMarch" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.SelectingWorldResourceOpensContextBeforeDispatchingMarch" methodname="SelectingWorldResourceOpensContextBeforeDispatchingMarch" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="1451902301" result="Passed" start-time="2026-10-26 09:38:03Z" end-time="2026-10-26 09:38:04Z" duration="0.361674" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1068" name="TerrainReliefPreservesGameplayPlaneAndHasNoPhysicsAuthority" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.TerrainReliefPreservesGameplayPlaneAndHasNoPhysicsAuthority" methodname="TerrainReliefPreservesGameplayPlaneAndHasNoPhysicsAuthority" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="593168861" result="Passed" start-time="2026-10-26 09:38:04Z" end-time="2026-10-26 09:38:04Z" duration="0.347472" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1071" name="ValoriaMapCityReturnsToCityScreen" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.ValoriaMapCityReturnsToCityScreen" methodname="ValoriaMapCityReturnsToCityScreen" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="2088132976" result="Passed" start-time="2026-10-26 09:38:04Z" end-time="2026-10-26 09:38:05Z" duration="1.198196" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1069" name="WorldPanIsBoundedAndKeepsFixedCameraDirection" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.WorldPanIsBoundedAndKeepsFixedCameraDirection" methodname="WorldPanIsBoundedAndKeepsFixedCameraDirection" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="1097746316" result="Passed" start-time="2026-10-26 09:38:05Z" end-time="2026-10-26 09:38:06Z" duration="0.394719" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/crist/AppData/LocalLow/DefaultCompany/Unity\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

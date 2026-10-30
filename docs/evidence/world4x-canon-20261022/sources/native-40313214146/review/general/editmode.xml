@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="26" result="Passed" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0,1000223">
+  <test-suite type="TestSuite" id="1000" name="Unity" fullname="Unity" runstate="Runnable" testcasecount="26" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.100022" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1032" name="Eldoria.Tests.EditMode.dll" fullname="C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/world4x-source/Unity/Library/ScriptAssemblies/Eldoria.Tests.EditMode.dll" runstate="Runnable" testcasecount="26" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.094147" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="1804" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1033" name="Eldoria" fullname="Eldoria" runstate="Runnable" testcasecount="26" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.093923" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1034" name="Tests" fullname="Eldoria.Tests" runstate="Runnable" testcasecount="26" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.093802" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1035" name="EditMode" fullname="Eldoria.Tests.EditMode" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.024954" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1027" name="CameraGestureTests" fullname="Eldoria.Tests.EditMode.CameraGestureTests" classname="Eldoria.Tests.EditMode.CameraGestureTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.024203" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1031" name="InvalidPinchDataKeepsAClampedCamera" fullname="Eldoria.Tests.EditMode.CameraGestureTests.InvalidPinchDataKeepsAClampedCamera" methodname="InvalidPinchDataKeepsAClampedCamera" classname="Eldoria.Tests.EditMode.CameraGestureTests" runstate="Runnable" seed="1828706738" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.011828" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1028" name="PinchApartZoomsIn" fullname="Eldoria.Tests.EditMode.CameraGestureTests.PinchApartZoomsIn" methodname="PinchApartZoomsIn" classname="Eldoria.Tests.EditMode.CameraGestureTests" runstate="Runnable" seed="303465147" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.002191" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1029" name="PinchTogetherZoomsOut" fullname="Eldoria.Tests.EditMode.CameraGestureTests.PinchTogetherZoomsOut" methodname="PinchTogetherZoomsOut" classname="Eldoria.Tests.EditMode.CameraGestureTests" runstate="Runnable" seed="2136432734" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000199" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1030" name="PinchZoomClampsToApprovedRange" fullname="Eldoria.Tests.EditMode.CameraGestureTests.PinchZoomClampsToApprovedRange" methodname="PinchZoomClampsToApprovedRange" classname="Eldoria.Tests.EditMode.CameraGestureTests" runstate="Runnable" seed="744215616" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000092" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+          <test-suite type="TestFixture" id="1002" name="RoyalV3ManagementRulesTests" fullname="Eldoria.Tests.RoyalV3ManagementRulesTests" classname="Eldoria.Tests.RoyalV3ManagementRulesTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.014311" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1008" name="ExistingSaveAndLegacyRecruitmentStayCompatible" fullname="Eldoria.Tests.RoyalV3ManagementRulesTests.ExistingSaveAndLegacyRecruitmentStayCompatible" methodname="ExistingSaveAndLegacyRecruitmentStayCompatible" classname="Eldoria.Tests.RoyalV3ManagementRulesTests" runstate="Runnable" seed="625681685" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.008248" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1007" name="MarchSelectionUsesRealArchersAndAldricPower" fullname="Eldoria.Tests.RoyalV3ManagementRulesTests.MarchSelectionUsesRealArchersAndAldricPower" methodname="MarchSelectionUsesRealArchersAndAldricPower" classname="Eldoria.Tests.RoyalV3ManagementRulesTests" runstate="Runnable" seed="1910749370" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.002436" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1006" name="OverbudgetBusyMalformedAndStaleOrdersCannotSpend" fullname="Eldoria.Tests.RoyalV3ManagementRulesTests.OverbudgetBusyMalformedAndStaleOrdersCannotSpend" methodname="OverbudgetBusyMalformedAndStaleOrdersCannotSpend" classname="Eldoria.Tests.RoyalV3ManagementRulesTests" runstate="Runnable" seed="736512637" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000730" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1003" name="RecruitmentIsProportionalAndCostsAreAuthoritative" fullname="Eldoria.Tests.RoyalV3ManagementRulesTests.RecruitmentIsProportionalAndCostsAreAuthoritative" methodname="RecruitmentIsProportionalAndCostsAreAuthoritative" classname="Eldoria.Tests.RoyalV3ManagementRulesTests" runstate="Runnable" seed="919803924" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000331" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1004" name="TenArchersSurviveSaveReloadAndAreGrantedOnlyOnce" fullname="Eldoria.Tests.RoyalV3ManagementRulesTests.TenArchersSurviveSaveReloadAndAreGrantedOnlyOnce" methodname="TenArchersSurviveSaveReloadAndAreGrantedOnlyOnce" classname="Eldoria.Tests.RoyalV3ManagementRulesTests" runstate="Runnable" seed="1677834575" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000924" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1005" name="TrainingWorksAfterTutorialProgressCompleted" fullname="Eldoria.Tests.RoyalV3ManagementRulesTests.TrainingWorksAfterTutorialProgressCompleted" methodname="TrainingWorksAfterTutorialProgressCompleted" classname="Eldoria.Tests.RoyalV3ManagementRulesTests" runstate="Runnable" seed="949344905" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000300" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1009" name="SliceCoreTests" fullname="Eldoria.Tests.SliceCoreTests" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.054187" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1017" name="BastionOneTwoObjectiveKeysFollowCanonicalTeachingOrder" fullname="Eldoria.Tests.SliceCoreTests.BastionOneTwoObjectiveKeysFollowCanonicalTeachingOrder" methodname="BastionOneTwoObjectiveKeysFollowCanonicalTeachingOrder" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="1729869700" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000835" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1023" name="BastionProgressionCatalogOwnsRequirementsCostsAndUnlocks" fullname="Eldoria.Tests.SliceCoreTests.BastionProgressionCatalogOwnsRequirementsCostsAndUnlocks" methodname="BastionProgressionCatalogOwnsRequirementsCostsAndUnlocks" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="772931807" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.001233" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1013" name="BastionTwoBuildRecruitAndEngendroArePersistentAndIdempotent" fullname="Eldoria.Tests.SliceCoreTests.BastionTwoBuildRecruitAndEngendroArePersistentAndIdempotent" methodname="BastionTwoBuildRecruitAndEngendroArePersistentAndIdempotent" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="267265247" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.004372" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1012" name="CombatUsesReservedMarchAndRejectsStaleRevision" fullname="Eldoria.Tests.SliceCoreTests.CombatUsesReservedMarchAndRejectsStaleRevision" methodname="CombatUsesReservedMarchAndRejectsStaleRevision" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="1085862547" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.001929" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1026" name="DiskSaveReloadDoesNotDuplicateDelayedReward" fullname="Eldoria.Tests.SliceCoreTests.DiskSaveReloadDoesNotDuplicateDelayedReward" methodname="DiskSaveReloadDoesNotDuplicateDelayedReward" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="1485248739" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.026962" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1016" name="ExistingFlagsNormalizeIntoMissionProgress" fullname="Eldoria.Tests.SliceCoreTests.ExistingFlagsNormalizeIntoMissionProgress" methodname="ExistingFlagsNormalizeIntoMissionProgress" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="737372219" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000353" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-suite type="ParameterizedMethod" id="1020" name="FreshSaveCompletesBastionOneAndTwoEndToEnd" fullname="Eldoria.Tests.SliceCoreTests.FreshSaveCompletesBastionOneAndTwoEndToEnd" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.002634" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1018" name="FreshSaveCompletesBastionOneAndTwoEndToEnd(&quot;QA_FAST&quot;)" fullname="Eldoria.Tests.SliceCoreTests.FreshSaveCompletesBastionOneAndTwoEndToEnd(&quot;QA_FAST&quot;)" methodname="FreshSaveCompletesBastionOneAndTwoEndToEnd" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="19251322" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.001945" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1019" name="FreshSaveCompletesBastionOneAndTwoEndToEnd(&quot;OWNER_I_II&quot;)" fullname="Eldoria.Tests.SliceCoreTests.FreshSaveCompletesBastionOneAndTwoEndToEnd(&quot;OWNER_I_II&quot;)" methodname="FreshSaveCompletesBastionOneAndTwoEndToEnd" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="1082645177" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000224" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1011" name="FullJourneySpendsOnceSurvivesOfflineAndChangesCity" fullname="Eldoria.Tests.SliceCoreTests.FullJourneySpendsOnceSurvivesOfflineAndChangesCity" methodname="FullJourneySpendsOnceSurvivesOfflineAndChangesCity" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="83310125" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000782" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1022" name="OwnerCandidateIsIsolatedAndMatchesWebContract" fullname="Eldoria.Tests.SliceCoreTests.OwnerCandidateIsIsolatedAndMatchesWebContract" methodname="OwnerCandidateIsIsolatedAndMatchesWebContract" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="455994422" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000496" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1021" name="OwnerMissionRewardsMatchWebAndRemainIdempotentAfterReload" fullname="Eldoria.Tests.SliceCoreTests.OwnerMissionRewardsMatchWebAndRemainIdempotentAfterReload" methodname="OwnerMissionRewardsMatchWebAndRemainIdempotentAfterReload" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="339533296" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000519" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1014" name="PreparedMarchIsSnapshotSafeAndPersists" fullname="Eldoria.Tests.SliceCoreTests.PreparedMarchIsSnapshotSafeAndPersists" methodname="PreparedMarchIsSnapshotSafeAndPersists" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="986790077" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000360" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1025" name="QaFreshSaveDeletesOnlySliceStateFiles" fullname="Eldoria.Tests.SliceCoreTests.QaFreshSaveDeletesOnlySliceStateFiles" methodname="QaFreshSaveDeletesOnlySliceStateFiles" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="1360909999" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.009923" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1015" name="QuarryGatherPersistsAndCountsStoneOnce" fullname="Eldoria.Tests.SliceCoreTests.QuarryGatherPersistsAndCountsStoneOnce" methodname="QuarryGatherPersistsAndCountsStoneOnce" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="799797191" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000726" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1010" name="ReferenceNumbersDeriveFromOwnershipAndSingleMarch" fullname="Eldoria.Tests.SliceCoreTests.ReferenceNumbersDeriveFromOwnershipAndSingleMarch" methodname="ReferenceNumbersDeriveFromOwnershipAndSingleMarch" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="714611913" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000740" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1024" name="SnapshotCannotEditAuthoritativeState" fullname="Eldoria.Tests.SliceCoreTests.SnapshotCannotEditAuthoritativeState" methodname="SnapshotCannotEditAuthoritativeState" classname="Eldoria.Tests.SliceCoreTests" runstate="Runnable" seed="1941986271" result="Passed" start-time="2026-10-26 11:28:55Z" end-time="2026-10-26 11:28:55Z" duration="0.000532" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/crist/AppData/LocalLow/DefaultCompany/Unity\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

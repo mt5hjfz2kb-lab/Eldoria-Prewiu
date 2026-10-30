@@ -25,20 +25,24 @@ namespace Eldoria.UI.RoyalGold.V2
         public Button VisibleBack => IsOpen ? back : null;
         public int SelectedQuantity => selectedCount;
         public int SelectedTrainingSeconds => SliceRules.RecruitSecondsFor(selectedCount);
+        public int SelectedTier => selectedTier;
         ICommandGateway gateway;
         Func<long> utcTicks;
         Action onCommand;
         // Optional host navigation; same scene, preserving the city camera state.
         public Action ReturnToCity { get; set; }
         RectTransform root, header, left, right, footer, quantityRow;
-        RoyalGoldV3ManagementBackdropGraphic destinationArtwork, featuredUnitArtwork;
+        RoyalGoldV3ManagementBackdropGraphic destinationArtwork, featuredUnitArtwork, statusArtwork;
         RectTransform trainingProgress;
         RectTransform trainingProgressFill;
         RoyalText heading, subheading, unitTitle, unitDetail, selectedText, summary, status, feedback;
-        RoyalButton minus, plus, action, back, switchDestination;
-        RoyalText actionLabel, switchLabel;
+        RoyalButton minus, plus, action, back, switchDestination, chapterAction, tierButton;
+        RoyalText chapterActionLabel;
+        string selectedHero="aldric";
+        RoyalText actionLabel, switchLabel, tierLabel;
         Slider slider;
         int selectedCount = 10;
+        int selectedTier = 1, speedMinutes = 1;
         int maxCount;
         float nextRefresh, lastWidth = -1, lastHeight = -1, submitAfter;
         string notice = "";
@@ -168,11 +172,17 @@ namespace Eldoria.UI.RoyalGold.V2
             destinationArtwork.SetVerticesDirty();
             featuredUnitArtwork.MarchTheme = destination == Destination.March;
             featuredUnitArtwork.SetVerticesDirty();
+            statusArtwork.MarchTheme = destination == Destination.March;
+            statusArtwork.SetVerticesDirty();
             submitAfter = 0f;
-            selectedCount = destination == Destination.Training
-                ? Mathf.Min(SliceRules.RecruitArchers, Math.Max(1, SliceRules.MaxAffordableArchers(s)))
-                : Mathf.Min(Math.Max(1, s.Available.ArcherT1),
-                    s.MarchConfigured ? Mathf.Max(1, s.PreparedTroops.ArcherT1) : Math.Max(1, s.Available.ArcherT1));
+            selectedHero=s.MarchConfigured?s.PreparedHeroId:"aldric";
+            selectedTier=destination==Destination.Training&&s.RecruitmentCompletesUtcTicks>0&&s.PendingRecruitTier==2?2:
+                destination==Destination.March&&s.MarchConfigured&&s.PreparedTroops.ArcherT2>0&&s.PreparedTroops.ArcherT1==0?2:1;
+            int available=selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1;
+            int prepared=selectedTier==2?s.PreparedTroops.ArcherT2:s.PreparedTroops.ArcherT1;
+            selectedCount=destination==Destination.Training
+                ?Mathf.Min(SliceRules.RecruitArchers,Math.Max(1,SliceRules.MaxAffordableArchers(s)))
+                :Mathf.Min(Math.Max(1,available),s.MarchConfigured?Mathf.Max(1,prepared):Math.Max(1,available));
             notice = "";
             root.gameObject.SetActive(true);
             root.SetAsLastSibling();
@@ -262,6 +272,20 @@ namespace Eldoria.UI.RoyalGold.V2
             left = Frame("V3 / Featured military unit",root,false);
             right = Frame("V3 / Authoritative status and cost",root,false);
             footer = Frame("V3 / Destination actions",root,false);
+            // The existing status panel was a large empty blue rectangle
+            // even while the real expedition/cost labels were visible.
+            // Reuse the APPROVED military ornament at subdued opacity,
+            // underneath the live counts and timers. Decorative only:
+            // never create a second button, canvas, or pointer target.
+            var statusDecoration=Rect("V3 / Subdued royal military status engraving",right);
+            statusDecoration.anchorMin=Vector2.zero;
+            statusDecoration.anchorMax=Vector2.one;
+            statusDecoration.offsetMin=statusDecoration.offsetMax=Vector2.zero;
+            statusDecoration.gameObject.AddComponent<CanvasRenderer>();
+            statusArtwork=statusDecoration.gameObject.AddComponent<RoyalGoldV3ManagementBackdropGraphic>();
+            statusArtwork.color=new Color(1f,1f,1f,.22f);
+            statusArtwork.raycastTarget=false;
+            statusDecoration.SetAsFirstSibling();
             // The world-sized tapestry is obscured by opaque readable cards.
             // Repeat its actual authored gold military heraldry INSIDE the
             // unit card, behind real controls: no placeholder empty expanse,
@@ -277,6 +301,7 @@ namespace Eldoria.UI.RoyalGold.V2
             heading = Text("Destination title",header,27,Gold,true);
             subheading = Text("Royal gold description",header,15,Muted);
             unitTitle = Text("Unit or hero title",left,26,Ivory,true);
+            tierButton=Button("Select archer tier",left,"ARQUEROS T1",()=>{if(CurrentDestination==Destination.Training&&gateway.Snapshot().RecruitmentCompletesUtcTicks>0)speedMinutes=speedMinutes==1?5:1;else selectedTier=selectedTier==1?2:1;Refresh();},false,out tierLabel);
             unitDetail = Text("Unit profile and composition",left,18,Muted);
             quantityRow = Rect("Quantity controls",left);
             minus = Button("Reduce quantity",quantityRow,"−",()=>SetQuantity(selectedCount-1),false,out _);
@@ -327,6 +352,7 @@ namespace Eldoria.UI.RoyalGold.V2
             feedback=Text("Command feedback",footer,15,Gold);
             back=Button("Return to Valoria",footer,"VOLVER A LA CIUDAD",Close,false,out _);
             action=Button("Confirm military command",footer,"CONFIRMAR",Confirm,true,out actionLabel);
+            chapterAction=Button("Chapter III management",header,"MEJORAR CUARTEL",ChapterAction,false,out chapterActionLabel);
             switchDestination=Button("Switch destination",header,"MARCHAS",Switch,true,out switchLabel);
             root.gameObject.SetActive(false);
         }
@@ -350,8 +376,15 @@ namespace Eldoria.UI.RoyalGold.V2
             if(s.BastionLevel<2 || s.BarracksLevel<1){Close();return;}
             bool training=CurrentDestination==Destination.Training;
             bool trainingActive=training && s.RecruitmentCompletesUtcTicks>0;
+            bool tier2Unlocked=s.BarracksLevel>=4 && (training || s.Available.ArcherT2>0);
+            if(!tier2Unlocked && selectedTier==2)selectedTier=1;
+            if(trainingActive)selectedTier=s.PendingRecruitTier==2?2:1;
+            int minutes=SpeedMinutes(s);
+            tierButton.gameObject.SetActive(trainingActive?s.SpeedupOneMinute>0&&s.SpeedupFiveMinutes>0:tier2Unlocked);
+            tierLabel.Put(trainingActive?minutes+" MIN · CAMBIAR":"ARQUEROS T"+selectedTier+" · CAMBIAR");
+            int selectedAvailable=selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1;
             maxCount=training?Mathf.Min(500,SliceRules.MaxAffordableArchers(s)):
-                s.Available.ArcherT1;
+                Mathf.Min(selectedAvailable,MarchCapacityRules.Capacity(s,selectedHero));
             // A pending operation has already spent its resources. Show the
             // real saved quantity rather than a newly affordable quantity.
             if(trainingActive)
@@ -370,9 +403,11 @@ namespace Eldoria.UI.RoyalGold.V2
             selectedText.Put(maxCount>0?selectedCount.ToString():"—");
             heading.Put(training?"CUARTEL · ENTRENAMIENTO":"SALA DE MARCHAS");
             subheading.Put(training?"VALORIA · RECLUTAMIENTO DE TROPAS":"VALORIA · PREPARACIÓN DE EXPEDICIONES");
-            unitTitle.Put(training?"ARQUEROS · T1":"SIR ALDRIC");
-            unitDetail.Put(training?"Infantería de proyectiles · Nivel I\nUnidad disponible: Arquero T1":
-                "Héroe disponible · Mando de expedición\nUnidad seleccionable: Arqueros T1");
+            unitTitle.Put(training?"ARQUEROS · T"+selectedTier:HeroName(selectedHero));
+            chapterAction.gameObject.SetActive(s.BastionLevel>=3 && (training||s.ChapterThree.LyraRecruited));
+            chapterActionLabel.Put(training?"MEJORAR CUARTEL":"CAMBIAR HÉROES");
+            unitDetail.Put(training?"Arqueros · nivel de tropa T"+selectedTier+"\n"+(selectedTier==2?"Desbloqueados por Cuartel IV":"Unidad inicial del reino"):
+                "Héroe disponible · Mando de expedición\nUnidad seleccionable: Arqueros T"+selectedTier);
             switchLabel.Put(training?"PREPARAR MARCHA":"ENTRENAR TROPAS");
             switchDestination.interactable=true;
             bool busy=s.RecruitmentCompletesUtcTicks>0;
@@ -403,39 +438,61 @@ namespace Eldoria.UI.RoyalGold.V2
                     trainingProgressFill.sizeDelta=new Vector2(
                         trainingProgress.rect.width*elapsed,0f);
                 }
-                status.Put("DISPONIBLES  "+s.Available.ArcherT1+
-                    "\nENTRENANDO  "+s.PendingRecruitArchers+
+                status.Put("DISPONIBLES T"+selectedTier+"  "+selectedAvailable+
+                    "\nENTRENANDO T"+(busy?s.PendingRecruitTier:selectedTier)+"  "+s.PendingRecruitArchers+
                     (busy?"\n\nCUENTA ATRÁS  "+Clock(leftSeconds):"\n\nSin entrenamiento activo"));
-                actionLabel.Put(busy?"ENTRENANDO · "+Clock(leftSeconds):"ENTRENAR "+selectedCount+" ARQUEROS");
-                action.interactable=!busy && maxCount>0 && Time.unscaledTime>=submitAfter;
+                actionLabel.Put(busy?((s.SpeedupFiveMinutes>0||s.SpeedupOneMinute>0)?"ACELERAR · "+minutes+" MIN ("+(minutes==5?s.SpeedupFiveMinutes:s.SpeedupOneMinute)+")":
+                    "ENTRENANDO T"+s.PendingRecruitTier+" · "+Clock(leftSeconds)):
+                    "ENTRENAR "+selectedCount+" ARQUEROS T"+selectedTier);
+                action.interactable=(busy?(s.SpeedupFiveMinutes>0||s.SpeedupOneMinute>0):maxCount>0)&&Time.unscaledTime>=submitAfter;
             }
             else
             {
                 trainingProgress.gameObject.SetActive(false);
-                var troops=s.Available.Copy();
-                troops.ArcherT1=maxCount>0?selectedCount:0;
-                var power=SliceRules.Expedition(troops,"aldric");
-                summary.Put("COMPOSICIÓN DE LA MARCHA\n\nSir Aldric · Líder\n"+
-                    "Arqueros T1   "+troops.ArcherT1+"\n\nPODER  "+power.Power+
+                var troops=new ArmyRoster{ArcherT1=selectedTier==1&&maxCount>0?selectedCount:0,ArcherT2=selectedTier==2&&maxCount>0?selectedCount:0};
+                var power=SliceRules.Expedition(troops,selectedHero);
+                summary.Put("COMPOSICIÓN DE LA MARCHA\n\n"+HeroName(selectedHero)+"\n"+
+                    "Arqueros T1   "+troops.ArcherT1+"\nArqueros T2   "+troops.ArcherT2+"\n\nPODER  "+power.Power+
                     "\nATAQUE  "+power.Attack+"   DEFENSA  "+power.Defense+
                     "\nVIDA  "+power.Health+"   RUPTURA  "+power.Break);
-                status.Put("DISPONIBLES  "+s.Available.ArcherT1+
-                    "\nYA PREPARADOS  "+(s.MarchConfigured?s.PreparedTroops.Total:0)+
-                    "\nEN EXPEDICIÓN  "+(s.March.Phase=="idle"?0:s.March.Troops.Total));
-                bool allowed=s.March.Phase=="idle" && maxCount>0;
+                int occupied=MarchCapacityRules.ActiveCount(s,utcTicks());
+                status.Put("DISPONIBLES T1  "+s.Available.ArcherT1+" · T2  "+s.Available.ArcherT2+
+                    "\nCAPACIDAD DE "+HeroName(selectedHero)+"  "+MarchCapacityRules.Capacity(s,selectedHero)+
+                    "\nNIVEL HÉROE  "+MarchCapacityRules.HeroLevel(s,selectedHero)+
+                    "\nMARCHAS ACTIVAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
+                    "\nYA PREPARADOS  "+(s.MarchConfigured?s.PreparedTroops.Total:0));
+                bool allowed=MarchCapacityRules.CanStart(s,utcTicks()) && maxCount>0;
                 actionLabel.Put(allowed?"CONFIRMAR COMPOSICIÓN":"MARCHA NO DISPONIBLE");
                 action.interactable=allowed && Time.unscaledTime>=submitAfter;
             }
             feedback.Put(notice);
         }
+        static string HeroName(string id)=>id=="lyra"?"LYRA":id=="aldric+lyra"?"SIR ALDRIC · LYRA":"SIR ALDRIC";
+        void ChapterAction()
+        {
+            if(CurrentDestination==Destination.Training){root.gameObject.SetActive(false);Hud.SelectBuilding("upgrade-barracks");}
+            else {selectedHero=selectedHero=="aldric"?"lyra":selectedHero=="lyra"?"aldric+lyra":"aldric";Refresh();}
+        }
+        int SpeedMinutes(PlayerState s){if(speedMinutes==5&&s.SpeedupFiveMinutes==0)speedMinutes=1;if(speedMinutes==1&&s.SpeedupOneMinute==0)speedMinutes=5;return speedMinutes;}
         void Confirm()
         {
             if(!IsOpen||Time.unscaledTime<submitAfter)return;
             var s=gateway.Snapshot();
             bool training=CurrentDestination==Destination.Training;
-            if(training&&(s.RecruitmentCompletesUtcTicks>0 || selectedCount>SliceRules.MaxAffordableArchers(s)))return;
-            if(!training&&(s.March.Phase!="idle" || selectedCount>s.Available.ArcherT1))return;
-            string target=training?"archer:t1:"+selectedCount:"march-main:"+selectedCount;
+            if(training&&s.RecruitmentCompletesUtcTicks>0){
+                if(s.SpeedupFiveMinutes<=0&&s.SpeedupOneMinute<=0)return;
+                submitAfter=Time.unscaledTime+.45f;
+                var accelerated=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
+                    s.PlayerId,"UseSpeedup",SpeedMinutes(s)==5?"training:5m":"training:1m",s.Revision));
+                notice=accelerated.Message;onCommand?.Invoke();Hud.Refresh();Refresh();return;
+            }
+            if(training&&selectedCount>SliceRules.MaxAffordableArchers(s))return;
+            if(!training&&(!MarchCapacityRules.CanStart(s,utcTicks()) ||
+                selectedCount>(selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1) ||
+                selectedCount>MarchCapacityRules.Capacity(s,selectedHero)))return;
+            string target=training?"archer:t"+selectedTier+":"+selectedCount:
+                selectedTier==2?"march-main:0:"+selectedCount+":0:"+selectedHero:
+                "march-main:"+selectedCount+":"+selectedHero;
             string kind=training?"Recruit":"ConfigureMarch";
             submitAfter=Time.unscaledTime+.45f;
             var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
@@ -493,9 +550,11 @@ namespace Eldoria.UI.RoyalGold.V2
             float hw=header.rect.width;
             Place(heading.rectTransform,landscape?14:15,7,hw*.67f,landscape?32:37);
             Place(subheading.rectTransform,landscape?14:15,landscape?39:47,hw*.70f,22);
-            Place(switchDestination.transform as RectTransform,hw*.71f,landscape?9:16,hw*.27f,landscape?42:48);
+            Place(switchDestination.transform as RectTransform,hw*.71f,landscape?4:7,hw*.27f,landscape?30:34);
+            Place(chapterAction.transform as RectTransform,hw*.71f,landscape?36:43,hw*.27f,landscape?27:31);
             float uw=left.rect.width,uh=left.rect.height;
-            Place(unitTitle.rectTransform,landscape?15:18,landscape?7:18,uw-35,landscape?32:40);
+            Place(unitTitle.rectTransform,landscape?15:18,landscape?7:18,uw*.61f,landscape?32:40);
+            Place(tierButton.transform as RectTransform,uw*.64f,landscape?7:18,uw*.33f,landscape?32:40);
             Place(unitDetail.rectTransform,landscape?15:18,landscape?46:69,uw-35,landscape?42:60);
             float qy=landscape?Mathf.Max(90,uh-95):uh-129;
             Place(quantityRow,landscape?14:20,qy,uw-(landscape?28:40),landscape?39:48);
@@ -506,7 +565,10 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(selectedText.rectTransform,ctrl+8,0,qw-2*(ctrl+8),landscape?39:48);
             Place(slider.transform as RectTransform,landscape?19:25,uh-(landscape?21:45),uw-(landscape?38:50),landscape?14:19);
             float rw=right.rect.width,rh=right.rect.height;
-            float statusH=landscape?Mathf.Min(62,rh*.28f):Mathf.Min(108,rh*.37f);
+            // March capacity/hero/global slots add five live lines. Allocate their
+            // actual text height rather than clipping them into the old three-line box.
+            float statusH=landscape?Mathf.Min(CurrentDestination==Destination.March?118f:90f,rh*.44f):
+                Mathf.Min(CurrentDestination==Destination.March?132f:108f,rh*.40f);
             Place(summary.rectTransform,landscape?14:19,landscape?10:18,rw-(landscape?28:38),
                 rh-statusH-(landscape?18:22));
             Place(status.rectTransform,landscape?14:19,rh-statusH-4,rw-(landscape?28:38),statusH);
@@ -518,16 +580,19 @@ namespace Eldoria.UI.RoyalGold.V2
             float by=landscape?25:footH-60;
             Place(back.transform as RectTransform,12,by,bw,landscape?42:49);
             Place(action.transform as RectTransform,fw-12-bw,by,bw,landscape?42:49);
-            heading.fontSize=landscape?Mathf.RoundToInt(Mathf.Clamp(h*.062f,20,27)):23;
-            subheading.fontSize=landscape?12:15;
-            unitTitle.fontSize=landscape?20:25;
-            unitDetail.fontSize=landscape?13:17;
-            selectedText.fontSize=landscape?21:25;
-            summary.fontSize=landscape?Mathf.RoundToInt(Mathf.Clamp(h*.04f,13,20)):17;
-            status.fontSize=landscape?12:14;
-            actionLabel.fontSize=landscape?14:16;
-            switchLabel.fontSize=landscape?13:15;
-            feedback.fontSize=landscape?12:14;
+            // Crónica Real: a military manuscript must be read without zoom,
+            // including genuine counts, costs and countdowns on landscape.
+            // The earlier 12-13pt landscape type was effectively illegible.
+            heading.fontSize=landscape?Mathf.RoundToInt(Mathf.Clamp(h*.064f,23,29)):24;
+            subheading.fontSize=landscape?15:16;
+            unitTitle.fontSize=landscape?23:25;
+            unitDetail.fontSize=landscape?16:18;
+            selectedText.fontSize=landscape?24:25;
+            summary.fontSize=landscape?Mathf.RoundToInt(Mathf.Clamp(h*.046f,17,23)):19;
+            status.fontSize=landscape?15:16;
+            actionLabel.fontSize=landscape?16:17;
+            switchLabel.fontSize=landscape?15:16;
+            feedback.fontSize=landscape?14:15;
         }
         static RectTransform Rect(string name,Transform parent)
         {

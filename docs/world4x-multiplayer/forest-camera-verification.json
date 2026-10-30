@@ -1,0 +1,187 @@
+{
+  "same_cameras": true,
+  "native_metadata_hashes_verified": true,
+  "art_approved": false,
+  "pairs": [
+    {
+      "label": "cercana-horizontal",
+      "camera": {
+        "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+        "version": "6000.3.23f1",
+        "width": 1280,
+        "height": 720,
+        "zoom": 36.0,
+        "aspect": 1.7777777910232544,
+        "cameraPosition": {
+          "x": 1018.0,
+          "y": 93.67829895019531,
+          "z": -74.04026794433594
+        },
+        "cameraRotation": {
+          "x": 0.3583679795265198,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.9335804581642151
+        },
+        "worldTarget": {
+          "x": 1018.0,
+          "y": 0.0,
+          "z": 30.000001907348633
+        }
+      },
+      "before_sha256": "73d1615f0dab4de3b30c888886d8f23069e11f02fbe93f573c9427f4c93ef7f8",
+      "after_sha256": "7461325aafde5b39ca1bfc6ec0389899b51e07e3b1a1f4d157691cb531405ae7",
+      "image_changed": true
+    },
+    {
+      "label": "cercana-vertical",
+      "camera": {
+        "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+        "version": "6000.3.23f1",
+        "width": 390,
+        "height": 844,
+        "zoom": 64.0,
+        "aspect": 0.4620853066444397,
+        "cameraPosition": {
+          "x": 1018.0,
+          "y": 109.30070495605469,
+          "z": -86.84757232666016
+        },
+        "cameraRotation": {
+          "x": 0.36722108721733093,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.9301337003707886
+        },
+        "worldTarget": {
+          "x": 1018.0,
+          "y": 0.0,
+          "z": 30.000001907348633
+        }
+      },
+      "before_sha256": "00f4f20965751484d2fb68727216a54899573c6121816a7dac80bdd0077c6636",
+      "after_sha256": "8a7ba24952e8b436f2fb5f2ceed9aaa6e1efa95a4932ffc485438cdaf8b7213c",
+      "image_changed": true
+    },
+    {
+      "label": "regional-horizontal",
+      "camera": {
+        "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+        "version": "6000.3.23f1",
+        "width": 1280,
+        "height": 720,
+        "zoom": 280.0,
+        "aspect": 1.7777777910232544,
+        "cameraPosition": {
+          "x": 1018.0,
+          "y": 629.1558227539062,
+          "z": -276.8597717285156
+        },
+        "cameraRotation": {
+          "x": 0.5299192667007446,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.8480480909347534
+        },
+        "worldTarget": {
+          "x": 1018.0,
+          "y": 0.0,
+          "z": 30.000001907348633
+        }
+      },
+      "before_sha256": "ffe458fc8f975f82b5a69a94039801a598519538c981bb00b1b173ca8e7feaa0",
+      "after_sha256": "d72856e04ebba291f3ee1028dbea0fe1c4a5bc503ed8b015712599d6a9ce4aaf",
+      "image_changed": true
+    },
+    {
+      "label": "regional-vertical",
+      "camera": {
+        "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+        "version": "6000.3.23f1",
+        "width": 390,
+        "height": 844,
+        "zoom": 865.6410522460938,
+        "aspect": 0.4620853066444397,
+        "cameraPosition": {
+          "x": 1018.0,
+          "y": 1945.08251953125,
+          "z": -918.6800537109375
+        },
+        "cameraRotation": {
+          "x": 0.5299192667007446,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.8480480909347534
+        },
+        "worldTarget": {
+          "x": 1018.0,
+          "y": 0.0,
+          "z": 30.000001907348633
+        }
+      },
+      "before_sha256": "38045fcd160f60cef6bb838df1812d0468cf8a0c965f8510af904dbfbee978f0",
+      "after_sha256": "4b16eb2787b1938f06a786c1e3c4c504a828c443b7f0cd51c49e2ce181e026e6",
+      "image_changed": true
+    },
+    {
+      "label": "panoramica-horizontal",
+      "camera": {
+        "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+        "version": "6000.3.23f1",
+        "width": 1280,
+        "height": 720,
+        "zoom": 1053.0,
+        "aspect": 1.7777777910232544,
+        "cameraPosition": {
+          "x": -136.01220703125,
+          "y": 2366.075439453125,
+          "z": 30.0
+        },
+        "cameraRotation": {
+          "x": 0.37470948696136475,
+          "y": 0.5996605753898621,
+          "z": -0.37470948696136475,
+          "w": 0.5996605753898621
+        },
+        "worldTarget": {
+          "x": 1017.9999389648438,
+          "y": 0.0,
+          "z": 30.0
+        }
+      },
+      "before_sha256": "d62b936461aa5956fda8a5b0f4d147e68f50203695a2b67521cea41ad157af88",
+      "after_sha256": "65c79c000c55f4424331d51fe83cf0a8989aaafa98e45238479e3ef6e3132f77",
+      "image_changed": true
+    },
+    {
+      "label": "panoramica-vertical",
+      "camera": {
+        "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+        "version": "6000.3.23f1",
+        "width": 390,
+        "height": 844,
+        "zoom": 2048.107177734375,
+        "aspect": 0.4620853066444397,
+        "cameraPosition": {
+          "x": 1017.9999389648438,
+          "y": 4602.06640625,
+          "z": -2214.57763671875
+        },
+        "cameraRotation": {
+          "x": 0.5299192667007446,
+          "y": 0.0,
+          "z": 0.0,
+          "w": 0.8480480909347534
+        },
+        "worldTarget": {
+          "x": 1017.9999389648438,
+          "y": 0.0,
+          "z": 30.0
+        }
+      },
+      "before_sha256": "07e4d6289e8752d7837d5ec140be1c0693978b031437fed8465453a1b309c70d",
+      "after_sha256": "836f40a15617ab9bde93cf04f4988381e2be53b43a6551f11493c364f711dc4d",
+      "image_changed": true
+    }
+  ]
+}

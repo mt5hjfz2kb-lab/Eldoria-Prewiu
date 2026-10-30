@@ -1,0 +1,23 @@
+{
+  "workstream_id": "eldoria-early-retention-systems-20261028",
+  "owner": "codex-pr120-exact-visual-pr122-20261028",
+  "unity_version": "6000.3.23f1",
+  "mode": "native-scene-two-independent-screens",
+  "steps": [
+    "Unity EditMode on the real domain",
+    "Native landscape and portrait Vigilants and Scouts capture",
+    "Real first victory and UI presentation in both orientations",
+    "Three visible contracts, readable names, reward and status, reliable raycasts",
+    "No overlap between footer and actions",
+    "Single RoyalHUD, guarded progress-only shortcuts, no real save changes",
+    "Nineteen genuine captures including390x844 and844x390; complete visible text >=12px on phone",
+    "Dispatch and claim all three cards with real raycasts, return, reload persisted progress",
+    "Capture stage15 authentic Engendro in all three resolutions; keep all25 milestones visible",
+    "Validate actual phone labels while all3scouts are underway and ready to claim"
+  ],
+  "disposable_probes_only": true,
+  "zero_cost": true,
+  "art_approved": false,
+  "revision": 36,
+  "note": "Native35 ca1009fb passed13domain/all19views/realactions/phonefonts; reviewed actual guardian and scout states show authored medallions/buttonskins/routebanner and corrected fullheight landscape. The same review rejected ordinary stage1/2 empty adversary card. All ordinary encounters now use the existing authored corrupt-patrol atlas quadrant, while stage15 keeps its exact canonical-derived Engendro PNG. Apply same creature/live-data composition throughout; no extra asset or new enemy type. Add actual source assertion. Let actual dispatch announcement expire2.1real seconds before ready-state UTC jump capture. Preserve all19states and every prior gameplay/save/text assertion; new output requires independent inspection."
+}

@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace Eldoria.ReferenceClean {
  // Opt-in observations for the local browser playtest. No command, clock or save setters.
  public sealed class ValoriaPlaytestTelemetry:MonoBehaviour {
-  ValoriaIntegratedWorld host;bool enabledForPlaytest;float next;
+  ValoriaIntegratedWorld host;bool enabledForPlaytest;float next;long frameSequence;
   public void Initialize(ValoriaIntegratedWorld value){host=value;enabledForPlaytest=(UnityEngine.Application.absoluteURL??"").Contains("eldoriaPlaytest=1");}
   void LateUpdate(){if(!enabledForPlaytest||!host||!host.Ready||Time.unscaledTime<next)return;next=Time.unscaledTime+.35f;Emit();}
   void Emit(){
@@ -26,6 +26,16 @@ namespace Eldoria.ReferenceClean {
     close=v2?Point(v2.VisibleBuildingCloseButton,v2.BuildingVisible):Point(hud.Building.Close)
    };
    var nav=hud.Navigation.Items.FirstOrDefault(x=>x.Section==RoyalSection.World);if(nav!=null)f.controls.world=Point(nav.Button);
+   // Observe the independent building destination a player actually sees.
+   // This opt-in diagnostic reads controls only; it exposes no command/save setter.
+   var building=hud.GetComponent<RoyalGoldV3BuildingScreens>();
+   if(building&&building.IsOpen){
+    f.management=new Management{destination="Building:"+building.BuildingId,bounds=ScreenBounds(building.VisibleRoot)};
+    f.controls.primary=Point(building.VisibleAction);
+    f.controls.close=Point(building.VisibleClose);
+    f.controls.objective.enabled=false;
+    if(f.controls.world!=null)f.controls.world.enabled=false;
+   }
    var management=hud.GetComponent<RoyalGoldV3ManagementScreens>();
    if(management&&management.IsOpen){
     f.management=new Management{destination=management.CurrentDestination.ToString(),quantity=management.SelectedQuantity,
@@ -46,7 +56,11 @@ namespace Eldoria.ReferenceClean {
     var target=host.FindTarget(id);var point=target?host.PlayerCamera.WorldToScreenPoint(target.GetComponent<Collider>()?target.GetComponent<Collider>().bounds.center:target.transform.position):new Vector3(-1,-1,-1);
     return new Hotspot{id=id,x=point.x,y=point.y,visible=target&&target.gameObject.activeInHierarchy&&point.z>0&&host.PlayerCamera.pixelRect.Contains(point)};
    }).ToArray();
-   Debug.Log("VALORIA_PLAYTEST "+JsonUtility.ToJson(f));
+   // WebGL's native log buffer truncates long lines. Preserve the complete
+   // observation/save as ordered, bounded ASCII chunks; no state is modified.
+   var encoded=Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(JsonUtility.ToJson(f)));
+   const int chunkSize=4000;int count=(encoded.Length+chunkSize-1)/chunkSize;long sequence=++frameSequence;
+   for(int part=0;part<count;part++)Debug.Log("VALORIA_PLAYTEST_CHUNK "+sequence+" "+part+" "+count+" "+encoded.Substring(part*chunkSize,Math.Min(chunkSize,encoded.Length-part*chunkSize)));
   }
   static float[] ScreenBounds(RectTransform rect){
    var corners=new Vector3[4];rect.GetWorldCorners(corners);var canvas=rect.GetComponentInParent<Canvas>();

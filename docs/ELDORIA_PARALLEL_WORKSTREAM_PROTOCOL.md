@@ -3,11 +3,27 @@
 Status: **CANONICAL PROCESS**  
 Effective: 2026-10-02
 
+## Protección automática de PR duplicadas — 27/10/2026
+
+**Problema real verificado:** dos sesiones crearon las PR #115 y #116 para recuperar la misma interfaz «Crónica Real». Se conservó la #115 y se cerró la #116 sin integrar. El registro exigía comprobar conflictos, pero no existía una barrera automática al abrir la segunda PR.
+
+**Antes de crear rama, PR o lanzar Unity**, el ejecutor debe consultar en `main` la entrada `active` del workstream canónico y **todas las PR abiertas del repositorio**. Si el mismo encargo ya tiene una PR abierta, debe continuar en ella o efectuar un relevo explícito del propietario registrado; está prohibida otra PR paralela. Compartir un archivo no significa automáticamente compartir encargo: identificar intención y workstream, no bloquear cambios por simple nombre de archivo.
+
+A partir de **PR #117**, toda PR nueva debe incluir en su cuerpo, en una línea propia, `Workstream-ID: <id canónico>`. El ID debe existir en el registro vivo de `main`, con `ownership_state: claimed` y titular válido. No se permite inventar otro ID para la misma misión. Si se requiere transferirla, actualizar el **mismo** ID y conservar su PR canónica. Cuando dos PR abiertas declaran el mismo ID, la más antigua es la válida y la segunda debe cerrar sin competir por Unity ni publicar. La PR #115 queda reconocida explícitamente como el workstream `eldoria-ui-v3-management-completion-20261021`. La #116 permanece cerrada e histórica. La PR #98 es un encargo distinto: no se debe bloquear la #115 solo por compartir archivos de HUD en su historia.
+
+**Control de CI:** `.github/workflows/canonical-pr-ownership.yml` se dispara con nuevas PR o actualizaciones y ejecuta desde `main` (sin código del PR) `tools/workstream-lease/pr-ownership-gate.mjs`: compara ID, titular vivo, PR abiertas y alcances de otros propietarios. En nuevas PR rechaza ID ausente, no reclamado, duplicado, y edición sobre alcance reclamado ajeno; la falta de datos de GitHub provoca fallo, no aprobación optimista. Incluye ensayos de regresión `pr-ownership-gate.test.mjs` que reproducen #115/#116. No usa Windows ni recursos del juego.
+
+**Límite operativo:** GitHub ejecuta este control **después** de abrir la PR, no puede impedir que un chat intente crearla ni cancelar su proceso externo. Debe configurarse como *required status check* en la protección de `main` para impedir merges con comprobación roja; mientras no esté verificada esa configuración, el fallo de CI es una señal de bloqueo pero no una garantía absoluta. Los agentes tienen que hacer la consulta de PR abiertas **antes** de crear una rama y detener cualquier ejecución duplicada al recibir una alerta. No cancelar trabajo ajeno, no cerrar la PR original y no usar este gate como autorización de merge/artística.
+
 ## Purpose
 
 Prevent two ChatGPT/agent sessions from silently converging onto the same Eldoria work, duplicating experiments, overwriting canonical state, competing for the Windows runner, or spending Tripo credits twice.
 
 The repository remains the source of truth. This protocol adds a small coordination layer; it does not replace project-state documents or certified evidence. Example file paths below are illustrative, not a source of runtime authority; actual Unity presentation and visual authority are decided by current code and canonical routing.
+
+## Continuidad del pacto propietario–IA (ELDORIA_OWNER_AI_COLLABORATION_V1)
+
+En todo relevo, el nuevo responsable recupera del HEAD de `main` el pacto obligatorio de [AGENTS.md](../AGENTS.md). **El propietario no es programador**: el agente conserva la responsabilidad de investigar, anticipar defectos, cuestionar métodos fallidos y proponer soluciones de oficio, aunque nadie le haya señalado aún el error. El relevo debe incluir objetivo del propietario, resultado visual/jugable realmente comprobado, hipótesis descartadas, estrategia elegida con su motivo, pruebas y siguiente acción segura. Progreso técnico no equivale a cumplimiento del objetivo; una sucesión de reintentos sin mejora exige pivotar tras dos ciclos. No alterar titularidad ni autorizaciones por este pacto.
 
 ## Estado actual frente a histórico
 

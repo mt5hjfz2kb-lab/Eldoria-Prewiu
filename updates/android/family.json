@@ -3,12 +3,12 @@
   "enabled": true,
   "channel": "family",
   "packageName": "com.eldoria.valoria.v5test",
-  "versionCode": 11,
-  "versionName": "1.11",
-  "bytes": 247493200,
-  "sha256": "44950819df4b762ee3af7d65587667977948dc3f4350492ff30a1b11fab2b5c8",
-  "sourceSha": "2f062bf76feabedd2231d363beabb5159ae60ca2",
+  "versionCode": 20,
+  "versionName": "1.20",
+  "bytes": 468303820,
+  "sha256": "ec8a6a26332e8327015ad2dfad86de762ce66419f2bd8b0fadffd1d60bea0279",
+  "sourceSha": "d2ed96d5570f54ce0ad34864efe799f2974d5889",
   "certificateSha256": "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
-  "apkUrl": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code11/Eldoria-Valoria-code11.apk",
+  "apkUrl": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code20/Eldoria-Valoria-code20.apk",
   "message": "Nueva versión de Eldoria disponible. Conserva tu partida y confirma la instalación en Android."
 }

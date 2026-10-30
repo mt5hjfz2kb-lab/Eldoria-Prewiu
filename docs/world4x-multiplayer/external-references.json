@@ -1,0 +1,3562 @@
+{
+  "schema": 1,
+  "source_unity_commit": "d9d4e1f9ffb9f7ab29e1c963a80eb08321c35bb4",
+  "text_scan_commit": "725bccd0c2f3882dfa51aecc1576feae98ee96ca",
+  "text_source": "immutable Git blobs, independent of sparse checkout",
+  "candidate_count": 354,
+  "scanned_text_files": 6105,
+  "scanned_text_bytes": 185676323,
+  "oversized_or_unreadable_skipped": 8,
+  "assets_mentioned_in_code_or_config": 108,
+  "assets_mentioned_in_docs": 269,
+  "assets_with_exact_guid_text_matches": 61,
+  "assets_with_directory_mentions": 276,
+  "dynamic_generator_count": 29,
+  "saved_hit_count": 569,
+  "hit_list_truncated": false,
+  "classification_note": "JSON/TXT reports under docs are documentation, not operational dependencies; directory mentions do not prove direct asset use.",
+  "assets_without_literal_text_matches": 64,
+  "dynamic_generator_files": [
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionVisibilityGate.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryFinishV8.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV10Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV11Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV12Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV13Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV14Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV15Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV16Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV17Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV18Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV1Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV2Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV3Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV4Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV5Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV6Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV7Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV8Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV9Integration.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnvironment.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionGroundFinish.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionIntegrate.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionTwo.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanPineVolume.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanSawmillTrial.cs",
+      "generic_generation_pattern": true
+    },
+    {
+      "file": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
+      "generic_generation_pattern": true
+    }
+  ],
+  "warning": "Heuristic supplement, NOT a complete inverse dependency proof. Unity GUID importer result, source-version matching, larger files and historical provenance must still be respected.",
+  "top_hits": [
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV8/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryFinishV8.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV10/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV10Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV11/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV11Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV12/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV12Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV14/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV14Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV15/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV15Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV16/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV16Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV17/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV17Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV18/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV18Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV1/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV1Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV2/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV2Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV3/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV3Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV4/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV4Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV5Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV6/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV6Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV7/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV7Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV8/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV8Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV9/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV9Integration.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0001.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0002.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0000.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0002.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0001.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0003.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0000.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0003.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0001.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0005.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0000.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0005.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0001.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0006.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0000.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0006.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0007.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0008.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnsemble.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnvironment.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnvironment.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnvironment.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnvironment.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnvironment.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnvironment.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnvironment.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionEnvironment.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionGroundFinish.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionGroundFinish.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionGroundFinish.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionGroundFinish.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionGroundFinish.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionGroundFinish.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionGroundFinish.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionGroundFinish.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionIntegrate.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionIntegrate.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionIntegrate.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanBastionIntegrate.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0016.asset",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0010.mat",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0009.mat",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0015.asset",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0008.mat",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0011.asset",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0006.mat",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0004.mat",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0003.mat",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0012.asset",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0014.asset",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0007.asset",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0005.mat",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0001.asset",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0002.mat",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0000.asset",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0013.asset",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Pine77/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanPineVolume.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Pine77/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanPineVolume.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Pine77/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanPineVolume.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Pine77/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanPineVolume.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-14.mat",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs",
+      "origin": "operational_code"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/texture-13.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/material-14.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/texture-15.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/texture-16.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/texture-17.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/material-20.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/texture-21.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/material-22.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/texture-23.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/material-24.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/material-25.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/texture-13.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/material-14.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/texture-16.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/texture-15.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/texture-17.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/material-20.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/texture-21.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/material-22.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/texture-23.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/material-24.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/material-25.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-13.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-14.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-17.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-15.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-16.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-20.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-21.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-22.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-23.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-24.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-25.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-13.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-14.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-17.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-15.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-16.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-20.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-21.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-22.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-23.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-24.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-25.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-13.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-14.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-16.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-17.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-15.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-20.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-21.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-22.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-23.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-24.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-25.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-13.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-14.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-15.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-16.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-17.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-20.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-21.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-22.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-23.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-24.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-25.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-13.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-14.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-15.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-16.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-17.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-20.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-21.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-22.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-23.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-24.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-25.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-13.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-14.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-16.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-17.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-15.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-18.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-20.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-21.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-22.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-23.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-24.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-19.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-25.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-13.asset",
+      "reference_kind": "guid",
+      "source": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-14.mat",
+      "origin": "configuration_or_serialized"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV7/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-layered-construction-20261016/NORMAL_CHAT_HANDOFF_20261017.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/bastion-ensemble-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/bastion-ensemble-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/bastion-ensemble-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/bastion-ensemble-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/bastion-integrated.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/bastion-integrated.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/bastion-integrated.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/bastion-integrated.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-14.mat",
+      "reference_kind": "guid",
+      "source": "docs/evidence/valoria-reference-clean/environment-visual-polish-unity.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/environment72-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/environment72-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/environment72-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/environment72-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/geography-v1/integrated.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/geography-v1/integrated.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/geography-v1/integrated.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/geography-v1/integrated.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/geography-v1/trial.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/geography-v1/trial.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/geography-v1/trial.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/geography-v1/trial.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/ground73-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/ground73-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/ground73-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/ground73-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0016.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0010.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0004.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0014.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0013.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0008.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0003.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0005.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0002.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0009.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0011.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0006.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0012.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0007.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0001.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0015.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0000.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/integration-input-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Pine77/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/pine77-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Pine77/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/pine77-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Pine77/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/pine77-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Pine77/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/pine77-comparison.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/terrain71-diagnostic.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/terrain71-diagnostic.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/terrain71-diagnostic.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/terrain71-diagnostic.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0016.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0010.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0004.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0014.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0013.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0008.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0003.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0005.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0002.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0009.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0011.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0006.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0012.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0007.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0001.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0015.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0000.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-input-current-manifest.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0016.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0010.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0004.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0014.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0013.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0008.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0003.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0005.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0002.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0009.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0011.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0006.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0012.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0007.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0001.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0015.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0000.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/web-scene-dependencies.txt",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0016.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0010.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0004.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0014.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0013.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0008.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bridge_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Gate_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0003.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0005.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Bastion_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0002.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/River_baked_reflection.exr",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0009.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0011.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0006.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0012.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0007.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0001.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0015.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0000.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/evidence/valoria-reference-clean/world204/survey.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-34.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-7.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-25.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-23.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-16.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-10.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-6.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-3.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-32.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-19.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-18.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-30.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-21.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-0.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-12.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-11.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-28.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-27.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-29.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-33.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-15.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-24.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-26.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-35.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-31.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-1.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-4.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-5.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-22.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-8.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-36.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-17.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-9.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-19.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-12.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-25.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-28.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV17/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV8/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-18.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-25.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-22.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-17.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-23.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV12/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-24.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-15.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-36.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-35.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-22.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-31.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-3.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-1.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-32.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-31.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-25.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-0.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-25.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-36.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-26.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-18.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-6.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-4.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV7/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-8.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-7.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-28.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-35.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-10.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-29.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-33.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-6.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-26.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-31.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-35.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-30.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-4.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-0.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-4.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-36.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-29.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-23.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-34.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-28.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV11/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-19.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-34.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-34.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-24.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-11.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-7.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-33.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-12.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-5.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-21.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-24.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-5.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-3.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-26.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-0.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-16.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-21.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-35.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-19.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-10.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-30.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-23.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-23.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-27.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-23.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-0.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-1.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-12.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-34.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-8.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-24.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-10.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-24.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-4.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-1.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-9.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-18.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-31.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-12.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-0.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-32.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-26.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-30.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-5.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-17.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-36.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-10.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-8.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-5.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-33.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-16.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-28.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV15/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-8.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-28.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-32.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV14/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV9/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-18.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-21.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-26.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-1.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-17.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-11.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-34.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-1.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-6.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-3.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-7.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-36.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-13.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-27.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-31.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-11.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-32.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-32.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-30.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-34.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-27.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-15.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-27.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-15.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-12.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-22.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-31.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-11.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-11.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-32.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-5.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-4.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-6.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-10.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-3.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-4.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-26.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-17.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-22.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-16.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-9.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-15.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-15.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-15.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-10.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-1.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-6.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV18/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/mesh-7.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-33.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-25.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-9.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-7.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-9.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-11.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-8.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-25.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-33.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-8.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-22.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/mesh-9.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-21.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-23.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-5.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-33.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-19.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-29.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-6.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-0.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-18.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-36.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-20.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-16.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-27.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-29.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-29.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-16.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-17.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-30.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/mesh-9.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-21.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-24.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-14.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-16.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-29.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-19.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-21.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-2.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/material-27.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-28.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/material-35.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-3.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/material-18.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-19.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-17.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/mesh-12.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/mesh-7.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/material-22.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/material-35.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/material-30.mat",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/mesh-3.asset",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    },
+    {
+      "asset": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV10/EntryZoneV1.prefab",
+      "reference_kind": "directory_mention",
+      "source": "docs/world4x-multiplayer/repository-size-inventory.json",
+      "origin": "documentation"
+    }
+  ],
+  "verification_execution": {
+    "host": "local Python over immutable Git blobs",
+    "scanner_sha256": "0438bf869837f9b92ea6cf76a5bab84e52b50fb8f8e88735b2a2d6910c8503e7",
+    "native_inventory_sha256": "1bc5bc7c4b4ac23573c3540967a361f9fc15285d92a4d89e47624f2aeb3f297d",
+    "validation": "Complete selected text scan plus regression fixture: missing checkout and documentary JSON distinguished from operational code.",
+    "oversized_files_count": 8,
+    "missing_checkout_files_skipped": 0
+  }
+}

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Eldoria.Domain;
+using Eldoria.Application;
 using Eldoria.Presentation;
+using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
 
@@ -11,12 +13,13 @@ namespace Eldoria.ReferenceClean {
   ValoriaIntegratedWorld host;ValoriaReferenceCleanGameplay city;
   readonly Dictionary<string,BuildingLabel> labels=new Dictionary<string,BuildingLabel>();
   float next;
-  public string Help=>city.Gateway.Snapshot().EngendroDefeated
-   ?(host.English?"Bastion II secured. Next milestone: Bastion III, not available in this build.":"Bastión II asegurado. Próximo hito: Bastión III, aún no disponible.")
-   :ContextHint();
+  public string Help=>ContextHint();
   string Beat {
    get {
     var s=city.Gateway.Snapshot();
+    if(s.BastionLevel>=5)return s.ChapterThree.ExtractionOddity&&!s.ChapterProgress.SeenNarrative.Contains("extraction-oddity")?"extraction-oddity":"productive-valoria";
+    if(s.BastionLevel==4)return "consolidate-valoria";
+    if(s.BastionLevel>=3)return s.ChapterThree.FissureClosed?"fissure-closed":"frontier-open";
     if(s.EngendroDefeated)return "secured";
     if(s.BastionLevel>=2)return "barracks";
     if(s.ChapterProgress.GatheredWood>0)return "mark";
@@ -28,6 +31,15 @@ namespace Eldoria.ReferenceClean {
    =>new RoyalNarrativePresentation.Line(who,es,en);
   RoyalNarrativePresentation.Line[] Lines(string beat){
    switch(beat){
+    case "extraction-oddity":return new[]{L("Sir Aldric","Detened los picos. Esa veta no refleja la luz como la piedra de Valoria. Guardad cualquier fragmento extraño. Si la tierra está cambiando cerca de la Brecha, necesitaremos saber por qué.","Stop the picks. That vein does not reflect light like Valoria's stone. Keep any unusual fragments. If the ground is changing near the Breach, we must learn why.")};
+    case "consolidate-valoria":return new[]{L("NARRADOR","El nivel IV consolida Valoria. Elige la prioridad del reino y reúne recursos para alcanzar el V y desbloquear la Cantera.","Level IV consolidates Valoria. Choose the realm's priority and gather resources to reach V and unlock the Stoneworks.")};
+    case "productive-valoria":return new[]{L("NARRADOR","Bastión V permite construir la Cantera de Valoria para generar piedra de forma continua. Cada edificio crece mediante sus propias mejoras.","Bastion V unlocks Valoria's Stoneworks for continuous stone production. Each building grows through its own upgrades.")};
+    case "frontier-open":return new[]{
+     L("Sir Aldric","La frontera se abre. Necesitamos un Granero y alimento para sostener las expediciones. Hay nuevas huellas cerca de la fisura: las investigaré.","The frontier opens. We need a Granary and food to sustain expeditions. There are new tracks near the fissure: I will investigate them.")};
+    case "fissure-closed":return new[]{
+     L("Lyra","Ese símbolo… pertenecía a mi hermano. No abandonaré su búsqueda. Lucharé junto a Valoria para seguir sus rutas.","That symbol… it belonged to my brother. I will not abandon the search. I will fight alongside Valoria to follow his trail."),
+     L("Sir Aldric","Entonces eres una de los nuestros. Guardaremos el manuscrito; aún no sabemos qué significa.","Then you are one of us. We will keep the manuscript; we do not yet know what it means."),
+     L("NARRADOR","Lyra se incorpora a los héroes. El Manuscrito de la Fisura queda en el Arcón. La fisura local se ha cerrado; la Brecha principal permanece abierta.","Lyra joins the heroes. The Fissure Manuscript is kept in the Chest. The local fissure is closed; the main Breach remains open.")};
     case "start":return new[]{
      L("NARRADOR","La Brecha apareció sobre Valoria antes del amanecer. Cuando cesaron los temblores, las murallas seguían en pie. El reino, no.",
         "The Breach appeared above Valoria before dawn. When the tremors stopped, the walls were still standing. The kingdom was not."),
@@ -55,8 +67,8 @@ namespace Eldoria.ReferenceClean {
     case "secured":return new[]{
      L("NARRADOR","El Engendro ha caído y las tropas regresan a Valoria. El Bastión II está asegurado. La Brecha permanece abierta y aún quedan murallas por restaurar.",
        "The Spawn has fallen and the troops return to Valoria. Bastion II is secured. The Breach remains open, and walls still need repair."),
-     L("Sir Aldric","Hemos protegido lo que teníamos. El siguiente hito será el Bastión III, pero aún no ha llegado el momento de construirlo.",
-       "We have protected what we had. Bastion III is the next milestone, but its construction must wait.")
+     L("Sir Aldric","Hemos protegido lo que teníamos. Ya podemos preparar el ascenso a Bastión III y abastecer la nueva frontera.",
+       "We have protected what we had. We can now prepare the ascent to Bastion III and provision the new frontier.")
     };
     default:throw new ArgumentException("Unknown authored narrative beat "+beat);
    }
@@ -86,11 +98,11 @@ namespace Eldoria.ReferenceClean {
    var layer=new GameObject("World and construction labels",typeof(RectTransform)).GetComponent<RectTransform>();
    layer.SetParent(host.Hud.transform,false);layer.anchorMin=Vector2.zero;layer.anchorMax=Vector2.one;layer.offsetMin=layer.offsetMax=Vector2.zero;layer.SetAsFirstSibling();
    if(host.LabelPrefab){
-    foreach(var id in new[]{"sawmill","barracks","valoria-map-city","forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria","old-watch-ruin"}){
+    foreach(var id in new[]{"sawmill","barracks","granary","hunt-wolf","hunt-boar","meat-valoria","fissure-valoria","valoria-map-city","forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria","old-watch-ruin"}){
      var target=host.FindTarget(id);if(!target)continue;
      var label=Instantiate(host.LabelPrefab,layer).GetComponent<BuildingLabel>();label.name="Guidance "+id;
      foreach(var t in label.GetComponentsInChildren<RoyalText>(true))if(t!=label.Label)t.gameObject.SetActive(false);
-     label.Bind(Name(id),target.transform,id=="sawmill"||id=="barracks"?city.PlayerCamera:host.WorldCamera,layer);
+     label.Bind(Name(id),target.transform,id=="sawmill"||id=="barracks"||id=="granary"?city.PlayerCamera:host.WorldCamera,layer);
      var collider=target.GetComponent<Collider>();label.WorldOffset=Vector3.up*(collider?Mathf.Max(3,collider.bounds.extents.y+1.8f):3);
      label.Label.fontSize=17;label.Label.alignment=TextAnchor.MiddleCenter;
      label.Select.onClick.AddListener(()=>host.Select(id));labels.Add(id,label);
@@ -99,26 +111,62 @@ namespace Eldoria.ReferenceClean {
    Refresh();
   }
   public static string Name(string id,bool english=false){
-   switch(id){case "sawmill":return english?"Sawmill":"Aserradero";case "barracks":return english?"Barracks":"Cuartel";case "bastion":return english?"Bastion":"Bastión";case "march-main":return english?"Expedition":"Expedición";case "valoria-map-city":return "Valoria";case "forest-valoria":return english?"Forest":"Bosque";case "quarry-valoria":return english?"Quarry":"Cantera";case "corrupt-scout":return english?"Corrupted route":"Ruta corrupta";case "engendro-valoria":return english?"Spawn":"Engendro";case "gate":return english?"World gate":"Puerta al mundo";default:return english?"Ruined watchtower":"Atalaya en ruinas";}
+   if(id!=null&&id.StartsWith("region1:wood:",StringComparison.Ordinal))return english?"Wood grove":"Arboleda de madera";
+   if(id!=null&&id.StartsWith("region1:stone:",StringComparison.Ordinal))return english?"Stone deposit":"Yacimiento de piedra";
+   switch(id){case "stoneworks":return english?"Stoneworks":"Cantera productiva";case "ash-stalker-valoria":return english?"Ash Stalker":"Acechador de Ceniza";case "granary":return english?"Granary":"Granero";case "fissure-valoria":return english?"Fissure":"Fisura";case "meat-valoria":return english?"Meat reserve":"Reserva de carne";case "hunt-wolf":return english?"Ash wolf":"Lobo ceniciento";case "hunt-boar":return english?"Rock boar":"Jabalí de roca";case "sawmill":return english?"Sawmill":"Aserradero";case "barracks":return english?"Barracks":"Cuartel";case "bastion":return english?"Bastion":"Bastión";case "march-main":return english?"Expedition":"Expedición";case "valoria-map-city":return "Valoria";case "forest-valoria":return english?"Forest":"Bosque";case "quarry-valoria":return english?"Quarry":"Cantera";case "corrupt-scout":return english?"Corrupted route":"Ruta corrupta";case "engendro-valoria":return english?"Spawn":"Engendro";case "gate":return english?"World gate":"Puerta al mundo";default:return english?"Ruined watchtower":"Atalaya en ruinas";}
   }
   void LateUpdate(){if(!host||!host.Ready)return;if(Time.unscaledTime>=next){next=Time.unscaledTime+.2f;Refresh();PresentMilestone();}}
   public void Refresh(){
    if(!host||!host.Ready)return;
    var s=city.Gateway.Snapshot();string objective=ObjectiveTarget();host.Hud.Mission.SetContext(ContextHint());
    foreach(var pair in labels){
-    bool town=pair.Key=="sawmill"||pair.Key=="barracks";
+    bool town=pair.Key=="sawmill"||pair.Key=="barracks"||pair.Key=="granary";
     bool visible=town?!host.InWorld:host.InWorld;
-    bool built=pair.Key=="sawmill"?s.SawmillLevel>0:s.BarracksLevel>0;
+    bool built=pair.Key=="sawmill"?s.SawmillLevel>0:pair.Key=="granary"?s.ChapterThree.GranaryLevel>0:s.BarracksLevel>0;
+    if(pair.Key=="granary"||LocalGateway.IsChapterThreeTarget(pair.Key)){var spot=host.FindTarget(pair.Key);visible&=s.BastionLevel>=3&&spot&&spot.gameObject.activeInHierarchy;}
     if(town&&built)visible&=pair.Key==objective;
     if(pair.Key=="barracks")visible&=s.BastionLevel>=2;
-    if(pair.Key=="engendro-valoria")visible&=s.BastionLevel>=2;
+    if(pair.Key=="engendro-valoria"){
+     visible&=s.BastionLevel>=2;
+     // The enemy now remains legible at several strategic zooms. A label
+     // pinned to the old 3m hotspot covered its actual violet head/torso.
+     // Move the SAME clickable label above the silhouette: the rise is
+     // proportional to orthographic zoom, so clearance remains roughly
+     // constant in screen pixels in close, regional and panoramic views.
+     // This changes no target, combat collider, unlock or narrative command.
+     if(host.WorldCamera)pair.Value.WorldOffset=Vector3.up*
+      (3f+Mathf.Clamp(host.WorldCamera.orthographicSize*.30f,4f,40f));
+    }
     if(pair.Key=="corrupt-scout")visible&=!s.ScoutDefeated;
     // Selection already has a named contextual panel. Labels identify only useful targets.
     visible&=host.Selected!=pair.Key;
-    if(!town)visible&=pair.Key==objective||pair.Key=="valoria-map-city"||host.WorldCamera.orthographicSize<=22;
+    if(!town){
+     // The panorama shows true continental geography only. Hide ordinary
+     // objective/city/encounter captions at the SAME threshold that suppresses
+     // their resource models; keep all real hotspots, commands and objectives.
+     // Unlike the old fixed 22m cutoff, this respects the current responsive
+     // near/regional/global camera contract on both mobile orientations.
+     float zoom=host.WorldCamera?host.WorldCamera.orthographicSize:0;
+     float overview=host.WorldNavigation?host.WorldNavigation.globalZoom:0;
+     bool panorama=overview>0&&zoom>=overview*.85f;
+     visible&=!panorama&&(pair.Key==objective||pair.Key=="valoria-map-city"||zoom<=22f);
+    }
     pair.Value.gameObject.SetActive(visible);
+    if(visible&&pair.Key=="engendro-valoria"){
+     // The canonical label previously crossed the larger animated creature
+     // and concealed its head at 4X distance. Lift ONLY this real existing
+     // label above the model instead of scaling a second HUD marker.
+     // Near model original height=3.0m from the pinned finished V4
+     // integration; use the same zoom-dependent visual-only presence.
+     var actor=host.WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
+     if(actor&&actor.ModelRoot&&actor.ModelRoot.activeInHierarchy){
+      float height=3f*actor.PresenceAtZoom(host.WorldCamera.orthographicSize);
+      pair.Value.WorldOffset=Vector3.up*(height+3f);
+     }
+    }
     string title=Name(pair.Key,host.English);
-    bool ownBuild=(s.BuildingTaskId??"").StartsWith(pair.Key+":",StringComparison.Ordinal)&&s.BuildingCompletesUtcTicks>0;
+    bool ownBuild=((s.BuildingTaskId??"").StartsWith(pair.Key+":",StringComparison.Ordinal)||(s.BuildingTaskId??"").StartsWith("c3:"+pair.Key+":",StringComparison.Ordinal))&&s.BuildingCompletesUtcTicks>0;
+    if(pair.Key=="fissure-valoria"&&s.ChapterThree.InvestigationEndsUtcTicks>city.Clock.UtcTicks)title+=" · "+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,city.Clock.UtcTicks,host.English);
     if(town&&!built)title=ownBuild?(host.English?"Building: ":"En obras: ")+title:(host.English?"Build here: ":"Construir aquí: ")+title;
     else if(pair.Key=="valoria-map-city")title=host.English?"Enter Valoria":"Entrar en Valoria";
     pair.Value.Label.Put(title);
@@ -127,11 +175,12 @@ namespace Eldoria.ReferenceClean {
   string ContextHint(){
    var s=city.Gateway.Snapshot();bool en=host.English;
    if(s.March.Phase!="idle")return host.MarchStatus(s)+" · "+RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,city.Clock.UtcTicks,en)+"\n"+(s.March.Phase=="returning"?host.Reward(s.March.PendingWood,s.March.PendingStone)+(en?" on arrival":" al llegar"):(en?"The route marker follows your expedition.":"El estandarte señala a tu expedición."));
+   if(s.ChapterThree.InvestigationEndsUtcTicks>city.Clock.UtcTicks)return (en?"Aldric investigates the fissure · ":"Aldric investiga la fisura · ")+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,city.Clock.UtcTicks,en);
    if(s.BuildingCompletesUtcTicks>0)return (en?"Construction paid · ":"Obra pagada · ")+RoyalFormatting.Remaining(s.BuildingCompletesUtcTicks,city.Clock.UtcTicks,en);
    if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+SliceRules.RecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en);
    if(s.BastionUpgradeCompletesUtcTicks>0)return (en?"Bastion upgrade paid · ":"Mejora del Bastión pagada · ")+RoyalFormatting.Remaining(s.BastionUpgradeCompletesUtcTicks,city.Clock.UtcTicks,en);
    string key=SliceRules.CurrentObjectiveKey(s),target=ObjectiveTarget();
-   if(key=="b2.complete")return en?"Bastion II secured. Next milestone: Bastion III (not yet available). Your progress is saved.":"Bastión II asegurado. Próximo hito: Bastión III (aún no disponible). Tu progreso está guardado.";
+   if(key=="b2.complete")return en?"Bastion II secured. Prepare 650 wood and 500 stone to open the frontier.":"Bastión II asegurado. Prepara 650 madera y 500 piedra para abrir la frontera.";
    if(target=="forest-valoria")return en?"Select the forest, then Gather wood. Resources arrive with the returning troops.":"Selecciona el bosque y pulsa Recoger madera. Los recursos llegan con las tropas.";
    if(target=="quarry-valoria")return en?"Select the quarry, then Gather stone. Resources arrive with the returning troops.":"Selecciona la cantera y pulsa Recoger piedra. Los recursos llegan con las tropas.";
    if(target=="sawmill"||key=="b2.build-barracks")return en?"Go to objective highlights the building plot. Review its cost and choose Build.":"Ir al objetivo señala dónde construir. Revisa el coste y pulsa Construir.";
@@ -143,6 +192,7 @@ namespace Eldoria.ReferenceClean {
   public string ObjectiveTarget(){
    var s=city.Gateway.Snapshot();
    // Paid actions keep their actual target; their debited cost must not redirect to gathering.
+   if(s.BuildingCompletesUtcTicks>0&&s.BuildingTaskId.StartsWith("c3:",StringComparison.Ordinal))return s.BuildingTaskId.Split(':')[1]=="barracks"?"upgrade-barracks":s.BuildingTaskId.Split(':')[1];
    if(s.BuildingCompletesUtcTicks>0)return (s.BuildingTaskId??"").StartsWith("barracks:",StringComparison.Ordinal)?"barracks":"sawmill";
    if(s.RecruitmentCompletesUtcTicks>0)return "barracks";
    if(s.BastionUpgradeCompletesUtcTicks>0)return "bastion";
@@ -159,6 +209,18 @@ namespace Eldoria.ReferenceClean {
     case "b2.train-archers":target="barracks";wood=SliceRules.RecruitWoodCost;stone=SliceRules.RecruitStoneCost;break;
     case "b2.prepare-march":case "b2.raise-expedition-power":return "march-main";
     case "b2.defeat-engendro":return "engendro-valoria";
+    case "b2.complete":target="bastion";wood=650;stone=500;break;
+    case "b3.granary":target="granary";wood=240;stone=180;break;
+    case "b3.food":return "meat-valoria";
+    case "b3.hunt":return s.ChapterThree.WolfRespawnUtcTicks>city.Clock.UtcTicks?"hunt-boar":"hunt-wolf";
+    case "b3.investigate":case "b3.lyra":case "b3.fissure":return "fissure-valoria";
+    case "b3.complete":case "b4.priority":case "b4.ascend":return "bastion";
+    case "b5.stoneworks":return "stoneworks";
+    case "b5.stone":return "quarry-valoria";
+    case "b5.army":return "barracks";
+    case "b5.rare":return "ash-stalker-valoria";
+    case "b5.infrastructure":return s.SawmillLevel<5?"sawmill":s.BarracksLevel<5?"upgrade-barracks":s.ChapterThree.GranaryLevel<5?"granary":"stoneworks";
+    case "b3.infrastructure":return s.SawmillLevel<2?"sawmill":s.BarracksLevel<2?"upgrade-barracks":"granary";
     default:return "";
    }
    return s.Resources.Wood<wood?"forest-valoria":s.Resources.Stone<stone?"quarry-valoria":target;

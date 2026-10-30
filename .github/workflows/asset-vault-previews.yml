@@ -1,0 +1,79 @@
+name: Eldoria Asset Vault - 26 Canonical Geometry Previews
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: asset-vault-preview-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  previews:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'docs/eldoria-asset-vault-audit-20261025')
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Eldoria/Resources/Valoria/
+            /Unity/Assets/Eldoria/Resources/WorldPlayerCity/
+            /pipeline/asset-vault/
+            /tools/asset-vault/
+            /docs/asset-vault/
+      - name: Load open-source geometry render dependencies
+        run: python3 -m pip install --disable-pip-version-check numpy pillow trimesh
+      - name: Generate honest asset geometry previews
+        run: |
+          python3 tools/asset-vault/render-glb-previews.py \
+            --out docs/asset-vault/previews \
+            --manifest docs/asset-vault/preview-manifest-v1.json
+      - name: Generate browsable image gallery from real geometry
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          data=json.loads(pathlib.Path('docs/asset-vault/preview-manifest-v1.json').read_text())
+          source=json.loads(pathlib.Path('pipeline/asset-vault/master-catalog-v1.json').read_text())
+          lookup={x['path']:x for x in source['records']}
+          lines=['# Eldoria — Galería de 26 GLB canónicos (geometría real)', '',
+            '**Estas miniaturas se generan de la malla GLB; materiales/luces no son Unity y no constituyen ART_APPROVED.**',
+            'Para juzgar belleza y escala hay que usar cámara real en Unity; este visor sirve para reconocer rápidamente formas antes de regenerarlas.','']
+          for x in data['previews']:
+            a=lookup[x['path']]
+            img=pathlib.Path(x['preview']).name
+            lines.extend(['## '+a['name'],'',
+              '![Malla: '+a['name']+'](previews/'+img+')','',
+              '**Uso registrado:** '+a['role']+'. **Clasificación:** `'+a['verdict']+'`.','',
+              '**Archivo:** `'+x['path']+'`.','',
+              '**Limitación:** '+a.get('limitations','requiere validación')+'.',''])
+          pathlib.Path('docs/asset-vault/GALLERY.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          print('GALLERY_READY',len(data['previews']))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-asset-vault-geometry-previews-${{ github.run_id }}
+          path: |
+            docs/asset-vault/previews/
+            docs/asset-vault/preview-manifest-v1.json
+            docs/asset-vault/GALLERY.md
+          retention-days: 90
+          if-no-files-found: error
+      - name: Persist thumbnails in the isolated audit branch only
+        if: github.event_name == 'pull_request' && github.head_ref == 'docs/eldoria-asset-vault-audit-20261025'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "eldoria-asset-vault[bot]"
+          git config user.email "eldoria-asset-vault@users.noreply.github.com"
+          git fetch --no-tags origin refs/heads/docs/eldoria-asset-vault-audit-20261025
+          git checkout -B vault-publish FETCH_HEAD
+          git add docs/asset-vault/previews docs/asset-vault/preview-manifest-v1.json docs/asset-vault/GALLERY.md
+          git diff --cached --quiet || git commit -m "docs(asset-vault): preserve 26 reproducible model geometry thumbnails"
+          git push origin HEAD:refs/heads/docs/eldoria-asset-vault-audit-20261025

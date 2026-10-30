@@ -1,0 +1,5 @@
+# Workshop revision before Unity
+
+Actual BlenderMCP run40225968050 produced preserved source and before/after workshop PNGs. Direct review retained the longitudinal drainage hierarchy, but rejects it as a finished candidate: road fords visibly interrupt the water, the coarse ground cannot resolve narrow bank cuts, and the Breach remains a repeating line of slab-like lips. No Unity run is spent on that intermediate result.
+
+Same-source correction: subdivide only new valley/fault cells, preserve original AF/AG corner normals, sculpt steeper readable cutbanks, retain continuous shallow water over navigable gravel fords, rebuild geological overlays from the same sculpted triangles so they cannot span the cleft, form continuous irregular fractured rock walls and expose a wider deep mineral seam. Unequal shared-donor riparian copses connect water to woodland; city/road clearances remain explicit. New temporary workshop cameras solve the absent historical camera names; same source, light and views are used before/after. ART_APPROVED remains false until actual final Unity review.

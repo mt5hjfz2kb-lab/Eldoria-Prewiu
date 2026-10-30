@@ -1,0 +1,86 @@
+{
+  "source_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
+  "terrain_vertices_after": 369163,
+  "bridge_length_before": 34,
+  "bridge_length_after": 21,
+  "actual_stepped_wall_vertices": 59005,
+  "protected_vertices_unchanged": 51828,
+  "original_packed_images_unchanged": 62,
+  "overlay_vertices_projected": {
+    "BLD_BreachFloor": 17305,
+    "BLD_BreachOutlyingFractures": 929,
+    "BLD_BreachBrokenBasaltPlates": 9851,
+    "BLD_BreachTerracedStrata": 3635,
+    "BLD_BreachWeatheredRockfall": 1828,
+    "BLD_BreachMineralHeart": 30
+  },
+  "gameplay_masks_sha256": "cc2afa1bc465987e1197912180b6ac29dafa7bd110398e06bfa2e93743137923",
+  "new_gameplay_targets": 0,
+  "new_colliders": 0,
+  "existing_rooted_scenery_fitted": 108,
+  "continuation_vertices_refitted": 176,
+  "forest_art": {
+    "original_donors_preserved": true,
+    "existing_instances_derived": 2482,
+    "near_shared_vertices": 274,
+    "near_shared_faces": 440,
+    "far_shared_vertices": 60,
+    "far_shared_faces": 88,
+    "new_tree_anchors": 0,
+    "new_gameplay_targets": 0
+  },
+  "observed_forest_donors": [
+    {
+      "mesh": "K Layered fir editable branch masses.001",
+      "instances": 2482,
+      "vertices": 605,
+      "bounds_min": [
+        -1.8164159059524536,
+        -1.8365366458892822,
+        0.0
+      ],
+      "bounds_max": [
+        1.8194506168365479,
+        1.8385610580444336,
+        6.177101135253906
+      ],
+      "materials": [
+        "Needles 0",
+        "Needles 1",
+        "Needles 2",
+        "Needles 3",
+        "Pine bark"
+      ]
+    },
+    {
+      "mesh": "K Slender fir editable branch masses.001",
+      "instances": 2565,
+      "vertices": 605,
+      "bounds_min": [
+        -1.5061039924621582,
+        -1.5226812362670898,
+        0.0
+      ],
+      "bounds_max": [
+        1.5084630250930786,
+        1.5244112014770508,
+        6.547673225402832
+      ],
+      "materials": [
+        "Needles 0",
+        "Needles 1",
+        "Needles 2",
+        "Needles 3",
+        "Pine bark"
+      ]
+    }
+  ],
+  "river_bed_vertices_corrected": 17405,
+  "art_approved": false,
+  "files": {
+    "Eldoria_Region1_Production.blend": "0e5a0a9df65799aaa8ccfccce12680eaf9a8bec9e94090e08991418ae87bcdb9",
+    "RegionOneBlenderWorld.glb": "d23114d40777e014dac5de7b18078143b9d32e66df79798871751b9b1d9c6738",
+    "RegionOneBlenderQueries.bytes": "0f9ad69457db9e3910e465a531811f13fac7c3d92b2221b7788e8c94b8d2942c",
+    "production-region.json": "7f9cf05c9ddded57fb0ec2d716726617d4f9ea32ed53238da616f0936735afa1"
+  }
+}

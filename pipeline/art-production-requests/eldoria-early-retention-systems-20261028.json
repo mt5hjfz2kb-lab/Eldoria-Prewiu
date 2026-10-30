@@ -1,0 +1,84 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "eldoria-early-retention-systems-20261028",
+  "request_id": "eldoria-early-retention-systems-20261028",
+  "asset_or_sector": "Retención temprana: iconos canónicos exactos y dos destinos uGUI ilustrados según referencia elegida",
+  "profile": "environment_composition",
+  "visual_gate_state": "PREFLIGHT_REUSE",
+  "ai_authorship_policy": "required",
+  "diagnosis": "El HUD Crónica Real contiene gráficos aprobados dentro de su biblioteca. Los mismos píxeles se copian, sin regeneración, a Resources/EldoriaRetention para que el componente de UI creado en runtime los pueda referenciar con Resources.Load<Sprite>. No atribuir a Qwen ni a nuevas generaciones los píxeles reutilizados. Las imágenes están bajo el repositorio canónico, con source files y Unity metas conservados. Además, las dos pantallas usan arte 2D derivado con la herramienta integrada de la referencia elegida: fondos, pergamino, criatura y marco separados de todos los controles y valores reales. Las copias de iconos originales siguen siendo byte-idénticas; no se crea ni modifica geometría3D.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "existing_canonical_art_brain": false,
+    "unity_native_uGUI": true
+  },
+  "reuse_sources": [
+    "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png",
+    "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png"
+  ],
+  "validation": {
+    "source_gate": "Compare byte SHA source and Resources copy; prohibit alternate drawings, paid assets, Tripo or Qwen invocation.",
+    "final_gate": "Nineteen actual Unity states in1600x900,900x1600,390x844,844x390; actual texture identities, >=12px handheld text, real buttons/raycasts/combat/3dispatch+claim/XP/save reload. Independent reference comparison required."
+  },
+  "art_approved": false,
+  "unity_visual_acceptance": "NATIVE_2D_UI_REFERENCE_COMPOSITION_ACCEPTED",
+  "physical_mobile_tested": false,
+  "notes": "Original icon reuse remains exact. New2D presentation assets derive from the selected original reference, with prompts/hashes retained; no3D model edit, Tripo spend or Qwen invocation. Runtime gameplay and controls remain authoritative. No ART_APPROVED by compilation or technical checks.",
+  "additional_2d_ui": {
+    "reference": "docs/early-retention/ART_DIRECTION_REFERENCE_20261028.md",
+    "provenance": "docs/early-retention/REFERENCE_COMPOSITION_CORRECTION_20261028.md",
+    "tool": "built-in image_gen, no external paid API",
+    "sources": [
+      {
+        "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-parchment-v3.png",
+        "sha256": "4d5bb71df703d7dae98d28f13996d81be7cb6998b53aab166d475828757d06d6"
+      },
+      {
+        "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/engendro-reference-v3.png",
+        "sha256": "889e026b580b30c64b5b8966a68d67e81910fd15118c44c807433dd17d7139d4"
+      },
+      {
+        "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/encounter-panel-v3.png",
+        "sha256": "8b1122679358b8120efa67a00cb251d0a6df719d09b52da92464b85dee21d4d9"
+      },
+      {
+        "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/battle-action-skin-v4.png",
+        "sha256": "4e7df7e1fbcafda1e14382f39255eae2a63036bad975a63a0f205a31e10838f3"
+      },
+      {
+        "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-action-skin-v4.png",
+        "sha256": "2796b59784bf05ca9bca7c3cbf3d88d7e34ed9098e0b798b760dc47ab38410f6"
+      },
+      {
+        "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-mission-vignettes-v4.png",
+        "sha256": "9f28dabb20fc8b8740f2839b4632811cba24917a6ed4e1d43a023e0bc937121f"
+      },
+      {
+        "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/guardian-banner-v4.png",
+        "sha256": "5d00ec6311edbb1a547226f4e95eaea3bb32e9197850bea9cc95e921c253057f"
+      },
+      {
+        "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-medallions-v5.png",
+        "sha256": "26d22212ec84be3a577c9caf928c213a83143102826cb522b0b67290bace19c5"
+      }
+    ],
+    "art_approved": false,
+    "fictional_baked_values": false
+  },
+  "ui_reference_review": {
+    "scope": "2D interface composition and authentic native integration; no new3D asset approval requested",
+    "source": "fa028667e1e7d8492276c921efc7d49379c450c1",
+    "run_id": 40755121692,
+    "review": "docs/early-retention/NATIVE_ACCEPTANCE_20261028.md",
+    "reward_balance": "PROVISIONAL_OWNER_DEFERRED",
+    "physical_mobile_tested": false
+  }
+}

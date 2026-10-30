@@ -1,0 +1,13 @@
+{
+  "source_commit": "8c97df1e6d1823d9e3991eed5473df12ed144ae2",
+  "source_run": 39922350970,
+  "source_artifact": 12488480501,
+  "source_tests": "16/16 passed; native process failed at Cleanup mono, not full QA",
+  "bake": "Unmodified semantic PNG + losslessly compressed exported Unity height samples; no visual retouch",
+  "files": {
+    "terrain-source.json": "4516bd3ff784dfdf7382bb6c3ab889e8926f299aa3b246ac323f00fd9e8a13da",
+    "RegionOneCleanGeographyMask.png": "418063bf592a9bc469c299ade5565999ff7d13c4e91bce42e3e0b1dce0bb07a2",
+    "RegionOneCleanTerrainHeights.bytes": "6cb5abd8ba706bfa03fdb7ae4f1d41cbec937566051db8bb38eda91f9c5788e3"
+  },
+  "validation": "Requires new source consistency gate, native PlayMode and image comparison before acceptance"
+}

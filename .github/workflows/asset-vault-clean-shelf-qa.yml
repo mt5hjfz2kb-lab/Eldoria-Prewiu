@@ -1,0 +1,55 @@
+name: Eldoria Asset Vault - Clean Shelf QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'pipeline/asset-vault/clean-production-shelf-v1.json'
+      - 'tools/asset-vault/audit-clean-shelf.py'
+      - 'tools/asset-vault/find-reuse.py'
+      - 'tools/asset-vault/test_asset_vault.py'
+      - '.github/workflows/asset-vault-clean-shelf-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eldoria-asset-vault-clean-shelf-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pipeline/asset-vault/
+            /tools/asset-vault/
+            /Unity/Assets/Eldoria/Resources/Valoria/
+            /Unity/Assets/Eldoria/Resources/WorldPlayerCity/
+      - name: Check Python utility regression tests
+        run: python3 -m unittest discover -s tools/asset-vault -p 'test_*.py'
+      - name: Validate real GLB source identity and geometric structures
+        run: |
+          python3 tools/asset-vault/audit-clean-shelf.py --strict --out /tmp/eldoria-clean-asset-qa.json
+          python3 - <<'PY'
+          import json,os
+          q=json.load(open('/tmp/eldoria-clean-asset-qa.json'))
+          rows=['# Eldoria reusable production shelf','',
+                f"Canonical GLBs checked: **{q['checked']}**",
+                f"Byte-identical and structurally valid: **{q['valid']}**",
+                f"Failed: **{q['failed']}**",'',
+                '**This is NOT artistic approval, mobile performance or a license audit.**']
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:f.write('\n'.join(rows)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-clean-shelf-binary-audit-${{ github.run_id }}
+          path: /tmp/eldoria-clean-asset-qa.json
+          retention-days: 90
+          if-no-files-found: error

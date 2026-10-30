@@ -47,3 +47,16 @@ test('live watchdog own run is ignored but any other GitHub workflow blocks, inc
   assert.equal(otherActiveRuns([pages[0],{total_count:1,workflow_runs:[{id:99}]},blank,blank,blank],own),true);
   assert.equal(otherActiveRuns([{total_count:4,workflow_runs:[{id:own}]},blank,blank,blank,blank],own),true);
 });
+
+test('Region1 retry consults active owner on main, never treats candidate branch as owner branch',()=>{
+ const art={...track,id:'eldoria-world-region-1-canon-20261022',
+   branch:'feature/world4x-region1-canon-20261022',owner_branch:'main',
+   require_claimed_owner:true,workflow_names:['World4X Region 1 canonical candidate source and PlayMode QA']};
+ const person={...owner,id:art.id,branch:'main',owner:'codex-world4x',ownership_state:'claimed',ownership_revision:14};
+ const run={...latest,name:art.workflow_names[0]};
+ assert.equal(checkRetry({...base,track:art,owner:person,latest:run}),'ELIGIBLE');
+ assert.equal(checkRetry({...base,track:art,owner:{...person,owner:null},latest:run}),'OWNER_NOT_CLAIMED');
+ assert.equal(checkRetry({...base,track:art,owner:{...person,ownership_state:'available'},latest:run}),'OWNER_NOT_CLAIMED');
+ assert.equal(checkRetry({...base,track:art,owner:{...person,branch:art.branch},latest:run}),'OWNER_NOT_ACTIVE');
+ assert.equal(checkRetry({...base,track:art,owner:{...person,phase:'OWNER_PAUSED_WAIT_FOR_WORLD4X_PR100'},latest:run}),'OWNER_PAUSED');
+});

@@ -1,0 +1,438 @@
+{
+    "art_approved":  false,
+    "candidate_commit":  "14931e15045d972ddbeb2919a5b5538fc5695cf4",
+    "native_run":  "40109047101",
+    "files":  [
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+                      "sha256":  "22414ccb6f1ba9d7f95a6e1fa53e4e94250700151257d2497b79f4b194346c70",
+                      "bytes":  43215340
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb.meta",
+                      "sha256":  "2c82e8985fd874012b4022524a763f08ebce1220722c74e60308a06cc439f524",
+                      "bytes":  748
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderQueries.bytes",
+                      "sha256":  "49c7f4d70f3054e6b30c28d782b245ee1f7ba93d0fcd5795326c5cd201a0c33d",
+                      "bytes":  2765606
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderQueries.bytes.meta",
+                      "sha256":  "16d53ca23bfe5337c7843b06b8c3147d43c7a7ab036d8503a0a3a170a6924503",
+                      "bytes":  106
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/production-region.json",
+                      "sha256":  "fd29ea1afa7a6a7bbba4dffcac3dfedd09226824f8d1e5f0d0cab88a1b8a6531",
+                      "bytes":  24034
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/production-region.json.meta",
+                      "sha256":  "f89b12d1c82c9dfb74852854874dc4f5cdb445a1ce1f7992d07a5b3152abe250",
+                      "bytes":  165
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResources.glb",
+                      "sha256":  "b9fc199bcbb4cb3e45e0b953887ab4a0f552d78b31ad5064525e9a9fba991c7c",
+                      "bytes":  1798004
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResources.glb.meta",
+                      "sha256":  "1fc6e2104a7297835518153a211ec319fdf64f65d8796660f9e008f88164ec7e",
+                      "bytes":  748
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResourceImpostors.png",
+                      "sha256":  "201b6d5a26ffa624225531cd0521e7a945af4f08e72542b84fa9947ff01a0ee1",
+                      "bytes":  101286
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResourceImpostors.png.meta",
+                      "sha256":  "54b2222d41de4368ac65e6eb0b7315339f08bcc58ca7abebf2609ae2131b7c6a",
+                      "bytes":  3873
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneGrassDetail.png",
+                      "sha256":  "4428879cb0f76f7ccb400b77f3c194b3c1398ba8bacd57226f71819306dc15c8",
+                      "bytes":  81040
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneGrassDetail.png.meta",
+                      "sha256":  "52106332885878a0fe3ef7511c652611b847871d86831caeebd372e3b4d42d97",
+                      "bytes":  578
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/Eldoria_Region1_Production.blend",
+                      "sha256":  "f54aa63376f5283bbf48984784f018e5d7e9b9e72ba53e8759230b390d3b8aa9",
+                      "bytes":  80866931
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/Eldoria_Resource_Library.blend",
+                      "sha256":  "462cb09c38202181b06e932e0b981ca3ef995e8d8482638e04e1c6274a7e77e6",
+                      "bytes":  50463552
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/cercana-horizontal-unity.png",
+                      "sha256":  "03dbe3a6159987f49266b0c87e815717e2a00b8a115aa00d9ec4c0ee6ce6cb52",
+                      "bytes":  1428968
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/cercana-horizontal-source.json",
+                      "sha256":  "2dd16a8f563864ae34b5c87b18d2c2052223eae63d4e068b0e79e0198de83ef8",
+                      "bytes":  896
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/cercana-vertical-unity.png",
+                      "sha256":  "d09699976b902b7258a1f642702378b8232703439ec3455ad90904b2904cabfe",
+                      "bytes":  488694
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/cercana-vertical-source.json",
+                      "sha256":  "63c1ed4e2140a28ce043019e86eacc792c8974fd327783fe960d104b74feefcd",
+                      "bytes":  895
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/regional-horizontal-unity.png",
+                      "sha256":  "df130f29d7dd8aacc03335429c0d5193c59daa2cb31908de7b01d4f83deee32f",
+                      "bytes":  1123192
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/regional-horizontal-source.json",
+                      "sha256":  "0b4b4f0817383925fa17eaf5c0a7022d69ee473dde7fe5febc281c4876ef4465",
+                      "bytes":  898
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/regional-vertical-unity.png",
+                      "sha256":  "c8b55568efe3fbd0b0c7325cc72998ca137a25c864aaba8d576add71cbe4c280",
+                      "bytes":  467114
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/regional-vertical-source.json",
+                      "sha256":  "464763f12ad635d1cfeaf7e5ad4766171a649cce07cb4926ba95ceafd8a20f94",
+                      "bytes":  906
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/panoramica-horizontal-unity.png",
+                      "sha256":  "9bf761c05ccd7f5638340735b50c5a4020d741402b6a8da1ef1cc14a1dac3d02",
+                      "bytes":  965882
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/panoramica-horizontal-source.json",
+                      "sha256":  "9d0b3bb4ad3ff0cb3b76506218ad7a2bbfeb099a0defd10a19c8e70c7a4b3a41",
+                      "bytes":  928
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/panoramica-vertical-unity.png",
+                      "sha256":  "4bc244b9772e2f05542fc306432fa88a9575bec50d31011cb197d10831ccf0ae",
+                      "bytes":  411752
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/panoramica-vertical-source.json",
+                      "sha256":  "950eec3c89f3cf85974cea4c07ee69f90af5a916ccd4f122c4a4cdf64899f034",
+                      "bytes":  914
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/eldoria-region1-canon-tests.xml",
+                      "sha256":  "9172a1f277781232502d38c7c201cec3c5fd300700038426b9b23db3e6480afe",
+                      "bytes":  57092
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/retained-core-integrity.json",
+                      "sha256":  "3b026482b4269b66eb2ba09c066a9da6f65fc59f53afb2b6fdede0be14abcd8f",
+                      "bytes":  3932
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-landscape-close.json",
+                      "sha256":  "3fe2bda16bc390a6dfe78074f92535d3f37ec19d0dc78efd16d34ca6dfd101db",
+                      "bytes":  845
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-landscape-close.png",
+                      "sha256":  "339e5cf1bf50bf8285f4f8997440fc933647e4a7b395e49a52e2d72940ee5985",
+                      "bytes":  1138983
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-landscape-panorama.json",
+                      "sha256":  "863e9558e58ebbdb4d07647d5890a49e3b2e0a332ce4a7a7b1ec55d2ef13b402",
+                      "bytes":  848
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-landscape-panorama.png",
+                      "sha256":  "d5afaddb4d524fa361b790390276783a35239f0ba0cc70957c306e4ad7d6a41d",
+                      "bytes":  1321269
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-landscape-regional.json",
+                      "sha256":  "e8b19e7cf4b80465594009dab5dcf8f95f79d224cb93a9ec3791dc075d32ce3f",
+                      "bytes":  848
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-landscape-regional.png",
+                      "sha256":  "405bef289a5eb372db5277bed2df0501d0f79377b5e5f04af455a0907e4a63f9",
+                      "bytes":  1352443
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-portrait-close.json",
+                      "sha256":  "4a68241d3964fe2f67cbf51bf7c042143f1b27e0aee1ee87ebdc96438e6543c2",
+                      "bytes":  832
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-portrait-close.png",
+                      "sha256":  "be7c1f434205c138f711ed2a001e0c19986b1200facac5d47d700a58a9771fe7",
+                      "bytes":  1022249
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-portrait-panorama.json",
+                      "sha256":  "eb31220f6f9bd83c90240216bd950e0428891bda810d5841e54ea1849c38114e",
+                      "bytes":  835
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-portrait-panorama.png",
+                      "sha256":  "3be0ff95e9880a7f453946f7815e0a8e507b1742f737e2fb96b89dea517a3e07",
+                      "bytes":  1332124
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-portrait-regional.json",
+                      "sha256":  "8d4d81c876b2f50b84a6191568d740bcc4fdb41aa3ce7d50930150f73c8b1199",
+                      "bytes":  835
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/sector-portrait-regional.png",
+                      "sha256":  "650f2d7e7de6758cc301e36b38be3899af002653b356796c317d36db799b17c8",
+                      "bytes":  1238679
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/continent-stone-landscape.json",
+                      "sha256":  "c57153ee04df760d2a3077d42f62396e133b484173c54e95412ab188f9454bb4",
+                      "bytes":  872
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/continent-stone-landscape.png",
+                      "sha256":  "7acc0e60a74e485d0d5fd608769e3711c39cd6f4bab98a9b350ba143567d4549",
+                      "bytes":  1456624
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/continent-stone-portrait.json",
+                      "sha256":  "8ee6143897b57883d53eee5bb908f0a01cb301d3b3c744adaa0aa149a56e20df",
+                      "bytes":  862
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/continent-stone-portrait.png",
+                      "sha256":  "24789b5e97b972b0b5a1f6b5c3bfe996bd33eb1b356896ea5c64d99cf910cf82",
+                      "bytes":  1457121
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/continent-wood-landscape.json",
+                      "sha256":  "f0f755d4b83850371168a694219eae94b23c512dabfcc9eb6b31d5ac3f6c6342",
+                      "bytes":  871
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/continent-wood-landscape.png",
+                      "sha256":  "159ced2d699344f98b139d0d282857fa92a5dd8e31171597c0f7923fd17ed31a",
+                      "bytes":  1406465
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/continent-wood-portrait.json",
+                      "sha256":  "01421288a83124af4807cf73db5b564cb3ab36af009f71d75f36d94dbe904171",
+                      "bytes":  860
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/continent-wood-portrait.png",
+                      "sha256":  "cab54d92c1c228f258898fc51d9061ed552f523b956d7c861c124d07124af5aa",
+                      "bytes":  1340493
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/editmode.xml",
+                      "sha256":  "d3ecce6c8109365210543ce04ee388573d44fc8209f65612ac99be13bc1402ab",
+                      "bytes":  21209
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/general-proof.json",
+                      "sha256":  "6d90a9cd5dc7ddecf72ba089c016e462d14440622997fee68bdf5d5be2a542a8",
+                      "bytes":  9275
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-corrupt-scout-landscape.png",
+                      "sha256":  "514b4d14c4b49fcbee2cdd85314e295e83b7d5aecccf097912881af9419bb84c",
+                      "bytes":  2138752
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-corrupt-scout-portrait.png",
+                      "sha256":  "870a131542ffd7ebe0211117326710960cc59537cfa84782b34c313666f9f78a",
+                      "bytes":  1945754
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-engendro-before-close.png",
+                      "sha256":  "c55b0a99c75ea240ed935bd63fa4a4dde86536e07798d8594415ad76e01d780d",
+                      "bytes":  2164784
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-engendro-before-strategic.png",
+                      "sha256":  "a1f0edc03ab6e55b0f5ef72d31adccdafb6669ded67cb3fea6caba1eee72a825",
+                      "bytes":  1646928
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-engendro-prebattle-close.png",
+                      "sha256":  "90824f0dbc869aa655c0a6773af392eaace150716f0f2873cd4a3cf256c13554",
+                      "bytes":  2170020
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-engendro-prebattle-strategic.png",
+                      "sha256":  "a1f0edc03ab6e55b0f5ef72d31adccdafb6669ded67cb3fea6caba1eee72a825",
+                      "bytes":  1646928
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-engendro-valoria-landscape.png",
+                      "sha256":  "514b4d14c4b49fcbee2cdd85314e295e83b7d5aecccf097912881af9419bb84c",
+                      "bytes":  2138752
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-engendro-valoria-portrait.png",
+                      "sha256":  "8003be410b196526b0520ae7be2b7a497c41eb05e17cb9d61ab8e00b285aeb45",
+                      "bytes":  1943397
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-forest-valoria-landscape.png",
+                      "sha256":  "95991224ec9d142ec771c32bfdb561b309ec703734277b75cf37ec20cca714e9",
+                      "bytes":  2179599
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-forest-valoria-portrait.png",
+                      "sha256":  "6874b4707ed9a3779e306f50417954f8a855e68a52ac9c7bf05beb6e8cd3bb4e",
+                      "bytes":  1953943
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-quarry-valoria-landscape.png",
+                      "sha256":  "c16c0a691aa67d3d67ce1791a058d9eba39efa43a9fe87b5ba5ec50285b0b326",
+                      "bytes":  2170909
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-art-quarry-valoria-portrait.png",
+                      "sha256":  "05d68208c091ecc80a248119b7836de721f26f9ff58dacb32bc06f488c7563aa",
+                      "bytes":  1935990
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-bastion-upgrade.png",
+                      "sha256":  "66eeb969d888938fba342709bcfdba2d4ab42af5636f0f7eec4c4cbe4f4c1e6f",
+                      "bytes":  2198266
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-chapter-list.png",
+                      "sha256":  "4d9e1e28609bba394fa7cf260d9a989584b34879c5fc4191aa57587db33596aa",
+                      "bytes":  2203130
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-chapter2-complete.png",
+                      "sha256":  "1da0edb821e14220fda6a10c4a136d638a82471d092b98cef0177c9a238f4c67",
+                      "bytes":  2268698
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-city-16x9.png",
+                      "sha256":  "b6f148fffa9cd30ecadca3f298541753cc23dfd4268f935936407702c5df5e5d",
+                      "bytes":  2323218
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-city-built.png",
+                      "sha256":  "4d68eacd5fff0b31abc797d9fe57e0c68fa0200afa9cbf16a853fb5f14e81bcd",
+                      "bytes":  2227193
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-construction-landscape.png",
+                      "sha256":  "fac76c831bc360e9290969a03ec0775e749983cc1466b6ab8376e61e1216c860",
+                      "bytes":  2199659
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-construction-portrait.png",
+                      "sha256":  "5f6fd77a2e4ab4d46b11ac15bf26e2e43813e0f2b6afe33501f0b98e278c3a4b",
+                      "bytes":  2195871
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-issue95-world-after-portrait.png",
+                      "sha256":  "9502557a62f9a4fda92006a5c73f008ece41c9be608bffb84d59d674d0367031",
+                      "bytes":  1725831
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-issue95-world-after-strategic.png",
+                      "sha256":  "5c1ce3829950a6d2d8c1427e947dc0819e1b7ce3f3326c06cd7ed284691babfc",
+                      "bytes":  1659240
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-issue95-world-before-portrait.png",
+                      "sha256":  "dec9cca7a4b78b654f040abd391e30148abaf06630068ea9c09ef54336574e6e",
+                      "bytes":  1949194
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-issue95-world-before-regional.png",
+                      "sha256":  "f4aca71e27416bf0ce1a86ffd9766d920548dda12acb8ef071af88055489a715",
+                      "bytes":  1700502
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-march-landscape.png",
+                      "sha256":  "7560ed3fe334585fc17dcb2ea79bf8ddbd2b827f62d0f35e96139af14c71ef8e",
+                      "bytes":  149188
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-march-portrait.png",
+                      "sha256":  "f2f03c2a729c38b83890aee6ab02a0aa290fa9a17e911ffe84153d3648f3d5c5",
+                      "bytes":  165384
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-result.json",
+                      "sha256":  "38fea19fd52dd904eccedb9fe771dbd7807942980289a4012b26196a7404b9d3",
+                      "bytes":  9856
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-story-aldric.png",
+                      "sha256":  "f6c506ad1d7fc24d6045e415b3810f59bb0ee877fe13efa70f89e932d98366cf",
+                      "bytes":  1491847
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-story-mark-aldric.png",
+                      "sha256":  "d1b9544cb15dbb22bc7cdc9904a3fb1ef4bb76c3a50fd87a3eb7df9a9a1f03ad",
+                      "bytes":  1425659
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-story-mark.png",
+                      "sha256":  "2ab0fc31ab2d6b2878754a2992b42cc0b2dc71d76532aecd8000c4b91a8fd54a",
+                      "bytes":  1364658
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-story-sawmill-tutorial.png",
+                      "sha256":  "18dfc64f7f7e54f22537cbc136620f0febaaeb34e065fa23dd113ba5b813669a",
+                      "bytes":  1431615
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-story.png",
+                      "sha256":  "b4bfb0fb363365bd697b177dc84024bd4290646f4570d8ddd4e6bbab53f32a1d",
+                      "bytes":  1676005
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-training-portrait.png",
+                      "sha256":  "bd661f06c80c926ac3df4835596ecf5122bb689bcf28c09b43691246cc016adc",
+                      "bytes":  155207
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-training.png",
+                      "sha256":  "816041e84b91da9127e03d4c7ac2e3e7f67a6e2d659150572fa38fe24ff420c6",
+                      "bytes":  137662
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-world-16x9.png",
+                      "sha256":  "5c1ce3829950a6d2d8c1427e947dc0819e1b7ce3f3326c06cd7ed284691babfc",
+                      "bytes":  1659240
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/integration-world-portrait.png",
+                      "sha256":  "9502557a62f9a4fda92006a5c73f008ece41c9be608bffb84d59d674d0367031",
+                      "bytes":  1725831
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40109047101/review/general/playmode.xml",
+                      "sha256":  "9172a1f277781232502d38c7c201cec3c5fd300700038426b9b23db3e6480afe",
+                      "bytes":  57092
+                  }
+              ],
+    "mobile_profiled":  false
+}

@@ -1,0 +1,69 @@
+{
+  "status": "COMPLETED_VERIFIED",
+  "completed_at": "2026-10-29T11:04:56.870Z",
+  "delivery_pr": 124,
+  "incorporated_and_closed_prs": [
+    125,
+    126
+  ],
+  "runtime_merge": "6befd7aaf18be6c7cd615091909731b38c0c1b81",
+  "validated_main_source": "401a6e9d4fef2b62e53c6769aaff9e9ba6c7b138",
+  "validated_main_root": "180f290c0246f16c502c42e93a7b86a8f911c8e5",
+  "tracked_unity_tree": "6e02527491d789b2d8151d3548001c2ed16ea2aa",
+  "native_reference_certificate": "docs/marches/NATIVE_CERTIFICATE_20261029.json",
+  "native_reference_run": 40850803144,
+  "reviewed_march_views": 8,
+  "reviewed_reference_views": 19,
+  "reviewed_evolution_views": 20,
+  "reviewed_aldric_views": 12,
+  "main_workflow_run": 40859922725,
+  "main_workflow_conclusion": "success",
+  "windows_player_build": "SUCCESS_EXE_DLL_DATA_AND_OWNER_LAUNCHER_PRODUCED",
+  "editmode": {
+    "passed": 54,
+    "failed": 0,
+    "skipped": 0
+  },
+  "playmode": {
+    "passed": 73,
+    "failed": 0,
+    "skipped": 0
+  },
+  "test_evidence": "docs/marches/main-native-40859922725/test-results.json",
+  "main_artifacts": [
+    {
+      "id": 12892705211,
+      "name": "eldoria-unity-checks-401a6e9d4fef2b62e53c6769aaff9e9ba6c7b138",
+      "bytes": 1442009192,
+      "digest": "sha256:e40e7dad543adf8a0f95f25195c72d2ef50880d5f861415d0b5e70041b64529b"
+    },
+    {
+      "id": 12891717873,
+      "name": "eldoria-valoria-captures-401a6e9d4fef2b62e53c6769aaff9e9ba6c7b138",
+      "bytes": 14912772,
+      "digest": "sha256:ef864f4342509b9adadf2c671d49871266398c7bb06db44e3d6c3b0e743058d8"
+    },
+    {
+      "id": 12891153903,
+      "name": "eldoria-native-test-evidence-40859922725",
+      "bytes": 63328,
+      "digest": "sha256:62be05529084c193433eaf7f0ffeb6d9d7cd7e05977177728bf7719dd40f041d"
+    }
+  ],
+  "pipeline_recovery": {
+    "superseded_runs": [
+      40855884701,
+      40858768175
+    ],
+    "graphical_packaging_fix": "442ff7c34495b272a3fded4816c4e72f141eca28",
+    "canonical_scene_isolation_fix": "401a6e9d4fef2b62e53c6769aaff9e9ba6c7b138",
+    "runtime_files_changed_by_recovery": false,
+    "reason": "Null-graphics packaging failed compute initialization; Direct3D packaging passed. Legacy packaging regenerates its scene list, so full canonical scene tests must precede it. Final run passed all tests and packaging together."
+  },
+  "rewards_provisional": true,
+  "capacity_balance_provisional": true,
+  "physical_mobile_tested": false,
+  "device_performance_profiled": false,
+  "new_apk_published": false,
+  "budget_eur": 0
+}

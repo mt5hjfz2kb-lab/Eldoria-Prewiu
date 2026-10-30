@@ -1,0 +1,35 @@
+{
+  "method": "Actual BlenderMCP execute_code of directed ground repair",
+  "source_sha256": "9c4bdf54ab92eb62eec574dde4038550d726100b143c4737e7ede4d5d44073c0",
+  "terrain_before": "d845d4c883de39ed5cda5e2dd792fcf18597ee0a47685cabc1dd17c241c35202",
+  "terrain_after": "d845d4c883de39ed5cda5e2dd792fcf18597ee0a47685cabc1dd17c241c35202",
+  "original_packed_images_unchanged": 59,
+  "floor_original_materials_uv_corner_normals_copied": true,
+  "copied_actual_terrain_faces": 491,
+  "copied_outer_fault_ground_faces": 320,
+  "fractured_plates": 48,
+  "raised_only_inside_existing_fault_exclusion": 42,
+  "floor_maximum_ground_gap_error_m": 9.155273437531919e-05,
+  "floor_z_bounds": [
+    -12.083051071166992,
+    1.3987690353393554
+  ],
+  "floor_xy_bounds": [
+    [
+      -390.0,
+      -130.0
+    ],
+    [
+      40.0,
+      258.0
+    ]
+  ],
+  "new_gameplay_targets": 0,
+  "colliders_added": 0,
+  "preview_is_Unity": false,
+  "art_approved": false,
+  "output_files": {
+    "RegionOneBlenderWorld.glb": "a519e11591d1807009c0f5a2e8db7170faeed9b2378d1b3ba686d510fd92dc00",
+    "Eldoria_Region1_Production.blend": "334eb745c6513917ab8770c146dbe9e5050a3ee8dac675bd87c49a1c1483d920"
+  }
+}

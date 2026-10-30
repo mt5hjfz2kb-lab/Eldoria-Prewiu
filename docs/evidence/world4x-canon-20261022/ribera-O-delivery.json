@@ -1,0 +1,21 @@
+{
+  "stage": "O",
+  "baseline": "K",
+  "source_commit": "feabc4d514b9ce4eed66f777d70d46b33cf167c8",
+  "run": 39965511083,
+  "artifact": 12506079287,
+  "package": "Eldoria_Ribera_O_fuentes_evidencias.zip",
+  "package_sha256": "326fee552e71bfc71091516af59b81daead6a33bb5e8097882e97c71b48da28c",
+  "package_bytes": 342108069,
+  "entries_hash_verified": 301,
+  "native_tests_passed": 18,
+  "art_score_reasoned_approximate": 7,
+  "art_approved": false,
+  "rejected": "N transparent river",
+  "owner_retained_baselines": [
+    "I",
+    "K"
+  ],
+  "merged": false,
+  "published": false
+}

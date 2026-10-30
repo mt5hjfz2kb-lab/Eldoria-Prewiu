@@ -12,12 +12,15 @@ on:
   # Reuse the existing Unity EditMode/PlayMode gate for proposed HUD updates.
   # PRs must be checked before they can replace the current playable main.
   pull_request:
-    branches: [main]
+    branches: [main, feature/global-march-capacity-three-slots-20261028]
     paths:
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/**'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs'
+      - 'Unity/Assets/Eldoria/AldricCity/**'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs'
+      - 'Unity/Assets/StreamingAssets/Eldoria/Aldric/**'
   workflow_dispatch:
 
 permissions:
@@ -30,14 +33,155 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  shared_scope:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+    outputs:
+      heavy_required: ${{ steps.compare.outputs.heavy_required || 'true' }}
+    steps:
+      - name: Verify completed exact shared UI and Aldric native certificate
+        id: baseline
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.setOutput('eligible','false');
+            const pr=context.payload.pull_request;
+            const routes={
+              132:['feature/eldoria-web-parity-camera-20261029','docs/bastion-iv-v/PARITY132_UI_NATIVE_CERTIFICATE.json'],
+              122:['feature/aldric-city-roaming-20261028','docs/aldric-city/NATIVE_CERTIFICATE_20261029.json'],
+              124:['feature/global-march-capacity-three-slots-20261028','docs/marches/NATIVE_CERTIFICATE_20261029.json'],
+              125:['feature/retention-engagement-evolution-20261028','docs/early-retention/NATIVE_EVOLUTION_CERTIFICATE_20261029.json']};
+            let number=pr?.number;
+            if(context.eventName==='push' && context.ref==='refs/heads/main') {
+              number=undefined;
+              for(const candidate of [132,125,124,122]){
+                const merged=(await github.rest.pulls.get({...context.repo,pull_number:candidate})).data;
+                if(merged.merged){number=candidate;break;}
+              }
+            } else if(context.eventName!=='pull_request')return;
+            if(!routes[number])return;
+            const [canonical,proofPath]=routes[number];
+            if(pr&&(pr.head.ref!==canonical ||
+                pr.head.repo.full_name!==context.repo.owner+'/'+context.repo.repo))return;
+            const ref=pr?.head.sha || context.sha;
+            const file=(await github.rest.repos.getContent({...context.repo,path:proofPath,ref})).data;
+            if(!file.content)throw Error('Completed native certificate missing');
+            const proof=JSON.parse(Buffer.from(file.content,'base64').toString('utf8'));
+            if(proof.status!=='SUCCESS' || proof.actual_views!==12 || proof.playmode_passed<73 ||
+              !/^[a-f0-9]{40}$/.test(proof.requested_source) ||
+              !/^[a-f0-9]{40}$/.test(proof.compiled_source) ||
+              !/^[a-f0-9]{40}$/.test(proof.compiled_tree))throw Error('Invalid completed proof identity');
+            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:proof.run_id})).data;
+            if(run.status!=='completed' || run.conclusion!=='success' ||
+              run.head_sha!==proof.requested_source || run.head_branch!==canonical ||
+              run.path!=='.github/workflows/ui-progression-cert.yml')throw Error('Full shared/native run is not valid');
+            const compiled=(await github.rest.repos.getCommit({...context.repo,ref:proof.compiled_source})).data;
+            const branch=(await github.rest.repos.getCommit({...context.repo,ref:proof.requested_source})).data;
+            if(compiled.commit.tree.sha!==proof.compiled_tree || branch.commit.tree.sha!==proof.compiled_tree)
+              throw Error('Compiled root does not match the immutable certified branch');
+            const artifact=(await github.rest.actions.getArtifact({...context.repo,
+              artifact_id:proof.native_artifact_id})).data;
+            if(artifact.expired || artifact.workflow_run?.id!==proof.run_id ||
+              artifact.name!=='eldoria-aldric-shared-native-'+proof.compiled_source ||
+              artifact.digest!==proof.native_artifact_digest)throw Error('Exact genuine native evidence unavailable');
+            if(number===124 || number===125){
+              const retention=number===125 || proof.retention_evolution_included===true;
+              if(proof.march_views!==8 || !Array.isArray(proof.additional_artifacts) ||
+                 proof.additional_artifacts.length!==(retention?2:1))
+                throw Error('Missing actual three-march/evolution evidence');
+              if(retention && (proof.reference_views!==19 || proof.evolution_views<20))
+                throw Error('Complete original reference and new discovery/defeat views required');
+              for(const item of proof.additional_artifacts){
+                const extra=(await github.rest.actions.getArtifact({...context.repo,artifact_id:item.id})).data;
+                if(extra.expired || extra.workflow_run?.id!==proof.run_id ||
+                   extra.name!==item.name || extra.digest!==item.digest)
+                  throw Error('Additional exact native camera evidence unavailable');
+              }
+            }
+            core.setOutput('source',proof.requested_source);
+            core.setOutput('run_id',String(proof.run_id));
+            core.setOutput('eligible','true');
+      - uses: actions/checkout@v4
+        id: source
+        if: steps.baseline.outputs.eligible == 'true'
+        continue-on-error: true
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/ui-progression-cert.yml
+      - name: Reuse only the identical Unity tree and entire executed native job
+        id: compare
+        if: steps.baseline.outputs.eligible == 'true' && steps.source.outcome == 'success'
+        shell: bash
+        env:
+          CERTIFIED_SOURCE: ${{ steps.baseline.outputs.source }}
+          CERTIFIED_RUN: ${{ steps.baseline.outputs.run_id }}
+        run: |
+          node <<'JS'
+          const fs=require('node:fs'),{execFileSync:git}=require('node:child_process');
+          let heavy=true;
+          try {
+            const certified=process.env.CERTIFIED_SOURCE;
+            if(!/^[a-f0-9]{40}$/.test(certified))throw Error('Missing certified SHA');
+            git('git',['fetch','--no-tags','--filter=blob:none','--depth=1','origin',certified],{stdio:'pipe'});
+            const before=git('git',['rev-parse',certified+':Unity'],{encoding:'utf8'}).trim();
+            const after=git('git',['rev-parse','HEAD:Unity'],{encoding:'utf8'}).trim();
+            const files=git('git',['diff','--name-only',certified,'HEAD'],{encoding:'utf8'}).trim().split(/\r?\n/).filter(Boolean);
+            const file='.github/workflows/ui-progression-cert.yml';
+            const job=s=>{
+              const at=s.indexOf('  certify:\n');
+              if(at<0)throw Error('Complete native certification job missing');
+              return s.slice(at);
+            };
+            const oldJob=job(git('git',['show',certified+':'+file],{encoding:'utf8'}));
+            const newJob=job(fs.readFileSync(file,'utf8'));
+            const metadata=new Set([file,'.github/workflows/aldric-city-domain.yml','pipeline/active-workstreams.json',
+              'pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json',
+              'docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md','PROJECT_STATE.md','SESSION_HANDOFF.md',
+              'docs/HEROES_UI_APPROVED_ART_LOCK_20261030.md','docs/documentation-catalog.json',
+              'pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json',
+              'pipeline/art-production-requests/eldoria-global-march-capacity-three-slots-20261028.json',
+              'pipeline/art-production-requests/eldoria-retention-first-evolution-20261028.json']);
+            heavy=before!==after || oldJob!==newJob ||
+              files.some(p=>!metadata.has(p) && !p.startsWith('docs/aldric-city/') &&
+                !p.startsWith('docs/marches/') && !p.startsWith('docs/early-retention/') && !p.startsWith('docs/bastion-iv-v/'));
+            if(!heavy)console.log('ELDORIA_FULL_SHARED_NATIVE_CERTIFICATE_REUSED run'+process.env.CERTIFIED_RUN+
+              '; exact Unity tree, every camera/test guard and complete executed native job unchanged');
+          }catch(error){console.warn('Cannot prove identical full native inputs; run complete gate: '+error.message);}
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'heavy_required='+heavy+'\n');
+          JS
   certify:
-    if: vars.UNITY_RUNNER_READY == 'true'
+    needs: shared_scope
+    if: always() && vars.UNITY_RUNNER_READY == 'true' && needs.shared_scope.outputs.heavy_required != 'false'
     # Use disposable probe-only saves for EVERY native UI test on the owner's PC.
     env:
       VALORIA_GAMEPLAY_PROBE: '1'
+      ELDORIA_CANDIDATE_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      ALDRIC_CITY_SCREENSHOT_DIR: ${{ github.workspace }}/aldric-ui-native-${{ github.run_id }}
+      ALDRIC_REQUEST_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 65
     steps:
+      - name: Check live native-editor lease before downloading the Unity project
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='Eldoria-native-lease-preflight'}
+          $raw=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw.content))|ConvertFrom-Json
+          $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          $ui=@($claims|Where-Object {(($_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-parity132-continuation-ab04f62d0b26' -and $_.ownership_revision -eq 66 -and $_.branch -eq 'feature/eldoria-web-parity-camera-20261029' -and $env:ELDORIA_CANDIDATE_BRANCH -eq 'feature/eldoria-web-parity-camera-20261029') -or ($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6) -or ($_.id -eq 'eldoria-aldric-city-roaming-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 2) -or ($_.id -eq 'eldoria-global-march-capacity-three-slots-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1) -or ($_.id -eq 'eldoria-retention-engagement-evolution-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
+          if($claims.Count -gt 0 -and ($claims.Count -ne 1 -or $ui.Count -ne 1)){throw "Windows native lease belongs to another workstream: $($claims.id -join ', ')"}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Existing Unity or Blender process; retain the later ownership/process check as well'}
       - name: Expose Git installed with GitHub Desktop
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
@@ -58,9 +202,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           clean: false
+          # Materialize the COMPLETE Unity project directly. Disabling a
+          # previous sparse checkout first repeatedly expanded unrelated
+          # repository history, then required restoring all 10k Unity files.
+          # The exact tracked-project verification below remains mandatory.
+          sparse-checkout: |
+            Unity
+            tools
+            docs/evidence
+            pipeline
+          sparse-checkout-cone-mode: true
 
       - name: Restore exact tracked Unity project when self-hosted checkout was partial
         shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           # Existing unity-slice.yml has proven missing Assets after checkout.
           # Recover only files tracked by THIS exact PR merge SHA, never
@@ -76,9 +232,48 @@ jobs:
           if($missing.Count -gt 0){
             Write-Host "Recovering exact Git commit tracked Unity source, preserving all untracked caches."
             & git checkout --ignore-skip-worktree-bits $env:GITHUB_SHA -- Unity/Assets Unity/Packages Unity/ProjectSettings
-            if($LASTEXITCODE){throw 'Cannot restore exact tracked project files'}
+            $checkoutExit=$LASTEXITCODE
             $remaining=@($tracked | Where-Object { -not (Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $_)) })
-            if($remaining.Count){throw "Still missing $($remaining.Count) tracked Unity source files"}
+            if($checkoutExit -ne 0 -or $remaining.Count){
+              # Native run 40471465950 found 5 missing PR blobs on a reused
+              # self-hosted checkout. Recover only absent exact bytes.
+              # Never clean worktrees or alter saved state / Unity Library.
+              if($remaining.Count -eq 0){throw "Checkout failed but no files are missing"}
+              if($remaining.Count -gt 32){throw "Refuse bulk recovery of $($remaining.Count) files"}
+              $headers=@{
+                Authorization="Bearer $env:GH_TOKEN"
+                Accept='application/vnd.github+json'
+                'User-Agent'='Eldoria-UI-exact-blob-recovery'
+                'X-GitHub-Api-Version'='2022-11-28'
+              }
+              foreach($file in $remaining){
+                $expected=(& git rev-parse "$($env:GITHUB_SHA):$file").Trim()
+                if($LASTEXITCODE -ne 0 -or $expected -notmatch '^[0-9a-f]{40}$'){
+                  throw "Invalid exact PR blob SHA for $file"
+                }
+                $dest=Join-Path $env:GITHUB_WORKSPACE $file
+                if(Test-Path -LiteralPath $dest){throw "Refuse overwrite: $file"}
+                $escaped=($file -split '/' | ForEach-Object { [Uri]::EscapeDataString($_) }) -join '/'
+                $url="https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/$($escaped)?ref=$env:GITHUB_SHA"
+                $blob=Invoke-RestMethod -Uri $url -Headers $headers -Method Get -ErrorAction Stop
+                if($blob.sha -ne $expected -or $blob.encoding -ne 'base64' -or -not $blob.content){
+                  throw "Exact GitHub blob mismatch: $file"
+                }
+                $parent=Split-Path -Parent $dest
+                if(-not(Test-Path -LiteralPath $parent)){
+                  New-Item -ItemType Directory -Path $parent -Force | Out-Null
+                }
+                [System.IO.File]::WriteAllBytes($dest,[Convert]::FromBase64String($blob.content))
+                $got=(& git hash-object -- $dest).Trim()
+                if($LASTEXITCODE -ne 0 -or $got -ne $expected){
+                  Remove-Item -LiteralPath $dest -Force
+                  throw "Wrong Git SHA for recovered file: $file"
+                }
+                Write-Host "ELDORIA_V3_EXACT_BLOB_RECOVERED $file $got"
+              }
+            }
+            $remaining=@($tracked | Where-Object { -not (Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $_)) })
+            if($remaining.Count){throw "Still missing $($remaining.Count) tracked files"}
           }
           foreach($required in @(
             'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity',
@@ -89,6 +284,20 @@ jobs:
             if(-not(Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $required))){
               throw "Integrated UI V3 candidate input missing: $required"
             }
+          }
+          # Camera fixtures are test inputs outside Unity/. A reused sparse
+          # workspace may omit them even when the project itself is complete.
+          # Restore only absent exact-commit files; refuse changed local inputs.
+          foreach($fixture in @('docs/evidence/world4x-canon-20261022/authoring/matched-canon-camera-controls.json')){
+            $expected=(& git rev-parse "$($env:GITHUB_SHA):$fixture").Trim()
+            if($LASTEXITCODE -ne 0 -or $expected -notmatch '^[0-9a-f]{40}$'){throw "Missing tracked camera fixture: $fixture"}
+            if(-not(Test-Path -LiteralPath $fixture)){
+              & git checkout --ignore-skip-worktree-bits $env:GITHUB_SHA -- $fixture
+              if($LASTEXITCODE){throw "Cannot restore exact camera fixture: $fixture"}
+            }
+            $actualFixture=(& git hash-object -- $fixture).Trim()
+            if($LASTEXITCODE -ne 0 -or $actualFixture -ne $expected){throw "Camera fixture differs from certified candidate: $fixture"}
+            Write-Host "ELDORIA_EXACT_CAMERA_FIXTURE_READY $fixture $expected"
           }
           Write-Host "ELDORIA_V3_EXACT_TRACKED_PROJECT_READY"
 
@@ -106,7 +315,7 @@ jobs:
           # Read current main, never a stale PR merge snapshot's old reservation.
           $registry=Get-Content 'ui-live-ownership/pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          $ui=@($claims|Where-Object {$_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
+          $ui=@($claims|Where-Object {(($_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-parity132-continuation-ab04f62d0b26' -and $_.ownership_revision -eq 66 -and $_.branch -eq 'feature/eldoria-web-parity-camera-20261029' -and $env:ELDORIA_CANDIDATE_BRANCH -eq 'feature/eldoria-web-parity-camera-20261029') -or ($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6) -or ($_.id -eq 'eldoria-aldric-city-roaming-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 2) -or ($_.id -eq 'eldoria-global-march-capacity-three-slots-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1) -or ($_.id -eq 'eldoria-retention-engagement-evolution-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
           # An active UI owner may validate its own reservation. With no
           # reservations, preserve the existing ordinary progression CI path.
           # Never couple future tests to one temporary executor's identity.
@@ -167,6 +376,180 @@ jobs:
             Write-Host "ELDORIA_V3_SEARCH_CACHE_ISOLATED $cacheBackup"
           }
           Write-Host "ELDORIA_V3_PROVEN_SEARCH_INDEX_RECOVERY_APPLIED"
+
+      - name: Compile the exact Unity candidate before preparing unchanged art resources
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-UI-SourceCompile.log'
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-nographics','-quit','-projectPath','Unity','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          if(-not $p.WaitForExit(240000)){
+            & taskkill.exe /PID $p.Id /T /F|Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw 'Exact Unity source compilation timed out before art preparation'
+          }
+          if(-not(Test-Path $log)){throw 'Actual Unity compilation log missing'}
+          $text=Get-Content $log -Raw
+          if($p.ExitCode -ne 0 -or $text -match 'error CS[0-9]+|Scripts have compiler errors'){
+            Get-Content $log -Tail 120
+            throw 'Exact Unity source must compile before preparing art or running visual probes'
+          }
+          Write-Host 'ELDORIA_EXACT_UNITY_SOURCE_COMPILED_NO_VISUAL_ACCEPTANCE_YET'
+
+      - name: Prepare canonical build-safe Bastion III resources required by scene tests
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied; do not interrupt'}
+          # The merged III scene loads these build outputs even during I-II.
+          # Reuse its approved deterministic preparation; do not invent art,
+          # hide missing-resource errors, or weaken the PlayMode log contract.
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Installed Blender unavailable for canonical III resource preparation'}
+          $evidence='docs/bastion-iii/native'
+          if(Test-Path $evidence){
+            $archive=Join-Path $env:RUNNER_TEMP "bastion-iii-before-ui-$env:GITHUB_RUN_ID"
+            if(Test-Path $archive){throw 'Prior III evidence archive already exists'}
+            Move-Item $evidence $archive
+          }
+          & $blender --background --python-exit-code 1 --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE){throw 'Canonical private fissure preparation failed'}
+          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-UI-III-ResourcePreparation.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
+            '-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
+
+      - name: Verify three simultaneous marches in the actual integrated scene
+        id: march_preflight
+        shell: powershell
+        env:
+          MARCH_CAPACITY_EVIDENCE: ${{ github.workspace }}/march-native-${{ github.run_id }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $e=$env:MARCH_CAPACITY_EVIDENCE
+          if(Test-Path $e){throw 'Refuse stale current-run marching evidence'}
+          New-Item -ItemType Directory -Force $e|Out-Null
+          $log=Join-Path $e 'native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-executeMethod',
+            'Eldoria.ReferenceClean.Editor.MarchCapacityNativeCapture.Capture','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          if(-not $p.WaitForExit(300000)){
+            & taskkill.exe /PID $p.Id /T /F|Out-Null
+            Get-Content $log -Tail 100
+            throw 'Three-march native scene preflight timed out'
+          }
+          if($p.ExitCode -ne 0 -or -not(Test-Path (Join-Path $e 'result.txt'))){
+            Get-Content $log -Tail 100
+            throw 'Three-march native runtime proof failed'
+          }
+          $result=Get-Content (Join-Path $e 'result.txt') -Raw
+          if(-not $result.Contains('GLOBAL_THREE_MARCH_NATIVE_PASS')){throw 'Native result is not a pass'}
+          $identity=[ordered]@{requested_source=$env:ALDRIC_REQUEST_SOURCE_SHA;
+            compiled_source=(& git rev-parse HEAD).Trim();compiled_tree=(& git rev-parse 'HEAD^{tree}').Trim();
+            run_id=$env:GITHUB_RUN_ID;physical_mobile_tested=$false}
+          $identity|ConvertTo-Json|Set-Content (Join-Path $e 'source-identity.json') -Encoding UTF8
+
+      - uses: actions/upload-artifact@v4
+        if: always() && (steps.march_preflight.outcome == 'success' || steps.march_preflight.outcome == 'failure')
+        with:
+          name: eldoria-three-marches-native-${{ github.run_id }}
+          if-no-files-found: error
+          path: ${{ github.workspace }}/march-native-${{ github.run_id }}/**
+
+      - name: Verify retention reference composition and real guardian/discovery interaction
+        id: retention_preflight
+        if: github.event.pull_request.number == 124 || github.event.pull_request.number == 125
+        shell: powershell
+        env:
+          EARLY_RETENTION_EVIDENCE: ${{ github.workspace }}/retention-reference-${{ github.run_id }}
+          ENGAGEMENT_EVIDENCE: ${{ github.workspace }}/retention-engagement-${{ github.run_id }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $cases=@(
+            @('Eldoria.ReferenceClean.Editor.EarlyRetentionNativeCapture.Capture',$env:EARLY_RETENTION_EVIDENCE,'EARLY_RETENTION_NATIVE_PASS'),
+            @('Eldoria.ReferenceClean.Editor.EarlyRetentionEngagementNativeCapture.Capture',$env:ENGAGEMENT_EVIDENCE,'RETENTION_ENGAGEMENT_NATIVE_PASS'))
+          foreach($case in $cases){
+            $folder=$case[1]
+            if(Test-Path $folder){throw 'Refuse stale retention evidence'}
+            New-Item -ItemType Directory -Force $folder|Out-Null
+            $log=Join-Path $folder 'native.log'
+            $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-executeMethod',$case[0],'-logFile',$log)
+            $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+            if(-not $p.WaitForExit(360000)){
+              & taskkill.exe /PID $p.Id /T /F|Out-Null
+              Get-Content $log -Tail 100
+              throw 'Real retention scene probe exceeded six minutes'
+            }
+            $result=Join-Path $folder 'result.txt'
+            if($p.ExitCode -ne 0 -or -not(Test-Path $result)){
+              Get-Content $log -Tail 100
+              throw 'Real retention camera/interaction proof failed'
+            }
+            if(-not (Get-Content $result -Raw).Contains($case[2])){throw 'Actual native retention result is not a pass'}
+            $identity=[ordered]@{requested_source=$env:ALDRIC_REQUEST_SOURCE_SHA;
+              compiled_source=(& git rev-parse HEAD).Trim();compiled_tree=(& git rev-parse 'HEAD^{tree}').Trim();
+              run_id=$env:GITHUB_RUN_ID;physical_mobile_tested=$false}
+            $identity|ConvertTo-Json|Set-Content (Join-Path $folder 'source-identity.json') -Encoding UTF8
+          }
+
+      - uses: actions/upload-artifact@v4
+        if: always() && (github.event.pull_request.number == 124 || github.event.pull_request.number == 125)
+        with:
+          name: eldoria-retention-evolution-native-${{ github.run_id }}
+          if-no-files-found: error
+          path: |
+            ${{ github.workspace }}/retention-reference-${{ github.run_id }}/**
+            ${{ github.workspace }}/retention-engagement-${{ github.run_id }}/**
+
+      - name: Verify Aldric native integration before the complete shared regression
+        id: aldric_preflight
+        shell: powershell
+        env:
+          ALDRIC_CITY_SCREENSHOT_DIR: ${{ github.workspace }}/aldric-preflight-${{ github.run_id }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $xml=Join-Path $env:RUNNER_TEMP 'Eldoria-Aldric-Preflight-PlayMode.xml'
+          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-Aldric-Preflight-PlayMode.log'
+          Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $env:ALDRIC_CITY_SCREENSHOT_DIR | Out-Null
+          $identity=[ordered]@{requested_source=$env:ALDRIC_REQUEST_SOURCE_SHA;
+            compiled_source=(& git rev-parse HEAD).Trim();compiled_tree=(& git rev-parse 'HEAD^{tree}').Trim();
+            run_id=$env:GITHUB_RUN_ID;status='PREFLIGHT_STARTED_NOT_ACCEPTANCE';physical_mobile_tested=$false}
+          $identity|ConvertTo-Json|Set-Content (Join-Path $env:ALDRIC_CITY_SCREENSHOT_DIR 'preflight-source.json') -Encoding UTF8
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-runTests',
+            '-testPlatform','PlayMode','-testFilter','Eldoria.Tests.AldricCityRoamingNativeTests',
+            '-testResults',$xml,'-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          if(-not $process.WaitForExit(300000)){
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw 'Actual Aldric integration preflight timed out; do not spend the complete shared suite on a known failure'
+          }
+          if(-not(Test-Path $xml)){
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw 'Actual Aldric NUnit report missing'
+          }
+          $report=[xml](Get-Content $xml -Raw)
+          $cases=@($report.SelectNodes('//test-case'))
+          if($process.ExitCode -ne 0 -or $cases.Count -ne 1 -or $cases[0].result -ne 'Passed'){
+            $report.SelectNodes("//test-case[@result!='Passed']")|ForEach-Object {Write-Host $_.OuterXml}
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw 'Aldric must pass its complete actual integration case before full shared regression'
+          }
+          Write-Host 'ALDRIC_NATIVE_PREFLIGHT_PASS_COMPLETE_CASE; full shared EditMode and PlayMode still required below'
+
+      - uses: actions/upload-artifact@v4
+        if: always() && (steps.aldric_preflight.outcome == 'failure' || steps.aldric_preflight.outcome == 'success')
+        with:
+          name: eldoria-aldric-preflight-evidence-${{ github.run_id }}
+          if-no-files-found: ignore
+          path: |
+            ${{ github.workspace }}/aldric-preflight-${{ github.run_id }}/**
+            ${{ runner.temp }}/Eldoria-Aldric-Preflight-PlayMode.xml
+            ${{ runner.temp }}/Eldoria-Aldric-Preflight-PlayMode.log
 
       - name: Capture and validate existing real integrated I-II scene in Unity
         shell: powershell
@@ -252,9 +635,6 @@ jobs:
           # compare like-for-like against V2 for each same gameplay state.
           $before=Get-Content $baselineFile -Raw|ConvertFrom-Json
           $v3Targets=@(
-            'integration-construction-landscape.png',
-            'integration-construction-portrait.png',
-            'integration-bastion-upgrade.png',
             # Training deliberately leaves the city for an opaque management
             # destination. Do NOT test the city viewport behind that screen:
             # the correct acceptance gate is native PlayMode full-screen,
@@ -297,21 +677,40 @@ jobs:
             [double]$newArea=$newW*$newH
             [double]$gain=$newArea-$oldArea
             Write-Host ("ELDORIA_V3_FREE_VIEWPORT capture={0} V2={1:N1}% V3={2:N1}% gain={3:N1}pp" -f $capture,($oldArea*100),($newArea*100),($gain*100))
-            # An eight-percentage-point increase is meaningful; leave V2
-            # untouched if the contextual cards merely moved the occlusion.
-            if($gain -lt .08){
-              throw "V3 did not reclaim at least 8 percentage points of real free scene: $capture"
+            # Owner's 27/10 Crónica Real restores the illustrated BOTTOM
+            # cartouche in both orientations. The earlier right-sheet V3
+            # proposal's +8pp landscape target no longer describes that design.
+            # Retain strict no-regression against the exact V2 baseline and
+            # the +8pp portrait gain, plus successful full-model framing above.
+            if($gain -lt 0.0){
+              throw "Approved bottom cartouche reduced real free scene versus V2: $capture"
+            }
+            if($capture -like '*portrait*' -and $gain -lt .08){
+              throw "Portrait did not reclaim at least 8 percentage points of real free scene: $capture"
             }
           }
           # Independent destinations have no visible city viewport by design;
           # verify actual native screenshots instead of pretending camera space
           # is visible behind their opaque artwork.
-          foreach($capture in @('integration-training.png','integration-training-portrait.png','integration-march-landscape.png','integration-march-portrait.png')){
+          foreach($capture in @('integration-construction-landscape.png','integration-construction-portrait.png','integration-bastion-upgrade.png','integration-training.png','integration-training-portrait.png','integration-march-landscape.png','integration-march-portrait.png')){
             $path=Join-Path $e $capture
             if(-not(Test-Path $path)){throw "Missing genuine full-screen management capture: $capture"}
             if((Get-Item $path).Length -lt 4096){throw "Management capture too small: $capture"}
             if(@($result.framing | Where-Object {$_.capture -eq $capture}).Count -ne 0){
               throw "Management screen was wrongly certified as exposed-city camera: $capture"
+            }
+            $destination=@($result.management | Where-Object {$_.capture -eq $capture})
+            if($destination.Count -ne 1 -or -not $destination[0].pass -or -not $destination[0].opaque -or
+               -not $destination[0].touchBlocking -or -not $destination[0].fullCanvas -or $destination[0].activeControls -lt 1){
+              throw "Management must have actual opaque full-canvas geometry and active controls: $capture"
+            }
+            if($capture -like 'integration-construction-*' -and
+               ($destination[0].screen -ne 'building' -or $destination[0].target -ne 'sawmill')){
+              throw "Construction capture must show the genuine sawmill destination: $capture"
+            }
+            if($capture -eq 'integration-bastion-upgrade.png' -and
+               ($destination[0].screen -ne 'building' -or $destination[0].target -ne 'bastion')){
+              throw 'Bastion upgrade capture must show the genuine Bastion destination'
             }
             Write-Host "ELDORIA_V3_NATIVE_MANAGEMENT_SCREEN=$capture"
           }
@@ -352,12 +751,16 @@ jobs:
           # Unity 6 on this Windows runner misreads mixed C:\\.../Unity as a
           # relative path and prepends the workspace again (run 39174538409).
           # Use a pure relative project name with explicit working directory.
-          $args = @("-batchmode","-nographics","-projectPath","Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
+          # The genuine World4X camera tests require a real graphics device.
+          # Preserve every test and require all cases to pass; never ignore captures.
+          $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP "eldoria-ui-region1-captures-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          New-Item -ItemType Directory -Force $env:ELDORIA_REGION1_CAPTURE_OUT | Out-Null
+          $args = @("-batchmode","-force-d3d11","-projectPath","Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
-          if (-not $process.WaitForExit(600000)) {
+          if (-not $process.WaitForExit(900000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if (Test-Path $log) { Get-Content $log -Tail 240 }
-            throw "Unity PlayMode timed out after 10 minutes."
+            throw "Unity PlayMode timed out after 15 minutes."
           }
           if ($process.ExitCode -ne 0) {
             if (Test-Path $xml) {
@@ -372,6 +775,43 @@ jobs:
           }
           [xml]$results = Get-Content $xml
           if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
+          $cases=@($results.SelectNodes('//test-case'))
+          if($cases.Count -lt 61 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Expected the complete 61+ PlayMode suite with no ignored or failed cases'}
+
+      - name: Require genuine Aldric motion visibility save proof and twelve camera views
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $xml=Join-Path $env:RUNNER_TEMP 'Eldoria-UIProgression-PlayMode.xml'
+          $report=[xml](Get-Content $xml -Raw)
+          $cases=@($report.SelectNodes("//test-case[contains(@fullname,'Eldoria.Tests.AldricCityRoamingNativeTests')]"))
+          if([int]$report.'test-run'.failed -ne 0 -or [int]$report.'test-run'.total -lt 73 -or
+             $cases.Count -ne 1 -or $cases[0].result -ne 'Passed'){
+            throw 'Complete shared suite and actual Aldric integration case must pass; no ignored substitute'
+          }
+          foreach($image in @('aldric-city-idle-landscape.png','aldric-city-idle-portrait.png',
+            'aldric-city-walking-landscape.png','aldric-city-walking-portrait.png',
+            'aldric-away-world.png','aldric-away-march.png','aldric-away-investigation.png',
+            'aldric-city-returned.png','aldric-detail-forward.png','aldric-detail-right.png',
+            'aldric-detail-backward.png','aldric-detail-left.png')){
+            $path=Join-Path $env:ALDRIC_CITY_SCREENSHOT_DIR $image
+            if(-not(Test-Path $path) -or (Get-Item $path).Length -lt 10000){throw "Missing genuine Aldric native view: $image"}
+          }
+          $compatible='d64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b'
+          $nativeLog=Get-Content (Join-Path $env:RUNNER_TEMP 'Eldoria-UIProgression-PlayMode.log') -Raw
+          if(-not $nativeLog.Contains('ALDRIC_CITY_ORIGINAL_SOURCE_PLUS_NORMAL_STREAMS '+$compatible)){
+            throw 'Actual verified normal-only runtime import identity missing from native execution'
+          }
+          $compiled=(& git rev-parse HEAD).Trim()
+          $tree=(& git rev-parse 'HEAD^{tree}').Trim()
+          $source='Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb'
+          $identity=[ordered]@{requested_source=$env:ALDRIC_REQUEST_SOURCE_SHA;compiled_source=$compiled;
+            compiled_tree=$tree;run_id=$env:GITHUB_RUN_ID;aldric_case='Passed';views=12;
+            transient_import_sha256=$compatible;
+            model_sha256=(Get-FileHash -Algorithm SHA256 $source).Hash.ToLowerInvariant();
+            physical_mobile_tested=$false}
+          $identity|ConvertTo-Json -Depth 5|Set-Content (Join-Path $env:ALDRIC_CITY_SCREENSHOT_DIR 'native-source-identity.json') -Encoding UTF8
+          Write-Host 'ALDRIC_SHARED_NATIVE_COMPLETE_CASE_AND_TWELVE_VIEWS_PASS'
 
       - name: Summarize certified checks
         shell: powershell
@@ -421,6 +861,9 @@ jobs:
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.xml
             ${{ runner.temp }}/Eldoria-UIProgression-EditMode.log
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.log
+            ${{ runner.temp }}/eldoria-ui-region1-captures-${{ github.run_id }}-${{ github.run_attempt }}/**
+            ${{ runner.temp }}/Eldoria-UI-SourceCompile.log
+            ${{ runner.temp }}/Eldoria-UI-III-ResourcePreparation.log
             ${{ runner.temp }}/Eldoria-V3-Native-I-II-Visual.log
             ${{ runner.temp }}/Eldoria-V2-Native-Framing-Baseline-*.json
             docs/evidence/valoria-reference-clean/integration-*.png
@@ -428,3 +871,13 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-aldric-shared-native-${{ github.sha }}
+          path: |
+            ${{ env.ALDRIC_CITY_SCREENSHOT_DIR }}/*
+            ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.xml
+            ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.log
+          if-no-files-found: warn
+          retention-days: 30

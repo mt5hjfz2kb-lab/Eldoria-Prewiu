@@ -1,6 +1,6 @@
 # Eldoria — contrato de corrección de la experiencia native281 (22-10-2026)
 
-> **Estado: diagnóstico y criterios establecidos, cambios de juego NO implementados, QA físico NO realizado.** Orden del propietario: corregir los reinicios repetidos, la interfaz V3 discordante y un mapa que no parece un mundo 4X, antes de continuar a Bastión V. Trabajo acotado a Bastión I–II, 0 €, sin eliminar ni reiniciar la partida familiar.
+> **Registro histórico del 22-10-2026; diagnóstico opcional reconciliado el 30-10-2026. QA físico iPhone NO realizado.** Orden del propietario: corregir los reinicios repetidos, la interfaz V3 discordante y un mapa que no parece un mundo 4X, antes de continuar a Bastión V. Trabajo acotado a Bastión I–II, 0 €, sin eliminar ni reiniciar la partida familiar.
 
 ## Fuente de verdad y discrepancia de publicación
 
@@ -62,3 +62,9 @@ Referencia vinculante: `docs/ui-v3/OWNER_APPROVED_DIRECTION.md`. En **ciudad y m
 5. Confirmar iPhone físico (y navegador embebido por separado), luego publicar **una sola candidata** en canal Restricted usando el circuito y hashes verificados, con confirmación real de activación. No confundir aprobación visual, tests técnicos, build activo y juego alojado certificado.
 
 **No marcar estas tareas como terminadas** hasta documentar pruebas móviles y aceptación estética. No iniciar Bastión V sobre una base inestable.
+
+## Continuación del 30-10-2026
+
+La consolidación final del propietario sustituye la antigua restricción de detenerse en Bastión II. Región 1 y la paridad I–V ya están integradas en main. Esta PR conserva el diagnóstico local, inactivo por defecto, y lo incorpora al preparador WebGL actual sin cambiar los bytes del motor Unity ni las partidas.
+
+Pruebas locales: activación explícita, persistencia tras recarga, límite de 48 eventos, exclusión de mensajes/URL de errores y desactivación aprobadas; preparador Python compila. La prueba de transporte exige un paquete WebGL preparado y se ejecutará al preparar la candidata; no se afirma PASS sin ese paquete. No se ha medido aún una sesión física de Safari de 30 minutos ni se ha identificado con certeza la causa de los reinicios. La incidencia #96 permanece pendiente.

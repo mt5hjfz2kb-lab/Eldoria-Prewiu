@@ -1,0 +1,23 @@
+{
+  "status": "COMPLETED_VERIFIED_SCOPED_CONSOLIDATION",
+  "archive": {
+    "url": "https://chatgpt.com/library?file_id=libfile_30faaa5b476c8191b5f41b8d1bcdf551&account_id=personal",
+    "library_file_id": "libfile_30faaa5b476c8191b5f41b8d1bcdf551",
+    "filename": "Eldoria_Consolidacion_20261027.zip",
+    "bytes": 216665528,
+    "sha256": "db484ab1813eda1f604d8d2d6edade2a17aec8ae3465261a70b28e98407b476c",
+    "materialization": "Extract the ZIP at repository root. It supplies original Unity PNG/JSON pairs and editable sources under docs/evidence/valoria-reference-clean/consolidation-20261027. Then run node tools/world4x-artistic-process/verify.mjs .",
+    "reason": "Preserve authentic visual evidence and editable originals without adding another large binary history to Git."
+  },
+  "runtime_source": "3b14ade1b75cfdf7881771da16d36a18f0e088f1",
+  "native_run": 40430426343,
+  "native_artifact": 12702388496,
+  "general_gate_run": 40432752930,
+  "general_gate_source": "0004a5a85aafd4cf9641050f0cb146ecab37977d",
+  "general_gate_conclusion": "success",
+  "visual_verdict": "RETAINED_THREE_INTERVENTIONS_BREACH_PRESERVED",
+  "budget_eur": 0,
+  "apk_published": false,
+  "bastion_III_started": false,
+  "physical_mobile_tested": false
+}

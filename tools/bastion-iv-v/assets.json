@@ -1,0 +1,37 @@
+[
+  {
+    "asset": "bastion-v",
+    "finished_artifact": 12890968619,
+    "source_artifact": 12891281161,
+    "optimized_sha256": "868081357066d5d8e0fef5dc62ae4c05df16cbea69b4a09944bfee580bf21986",
+    "reference_sha256": "3bcd4a00391b95047a547997995460090e7d99dc62299aeb717d1bd280441086"
+  },
+  {
+    "asset": "aserradero-v",
+    "finished_artifact": 12891879153,
+    "source_artifact": 12891972298,
+    "optimized_sha256": "ad64b264a0fc5d0c6044b463abff9d54c7f3707101017a06eb4ba7f76ac217cf",
+    "reference_sha256": "60e89993a6d056088d2267a799d08530ff923c0dfa6a024fb6422cf44b1c4dcc"
+  },
+  {
+    "asset": "cuartel-v",
+    "finished_artifact": 12893790034,
+    "source_artifact": 12892392866,
+    "optimized_sha256": "513100783e73d21e4060cd22017bd4aa125ea4a8cc1dccaa35dbd68ad4203a7d",
+    "reference_sha256": "3c0e9b2915a03bd87f32d1c3ab4dcf86461a5b43f7a3e25e73f2bf71343309e0"
+  },
+  {
+    "asset": "granero-v",
+    "finished_artifact": 12893148793,
+    "source_artifact": 12893665925,
+    "optimized_sha256": "7534cf7e743a78e82998c23c209f22b2fe1b32bb903a1634e461447c310af096",
+    "reference_sha256": "220b02d3e0e4dc265c433f4dc42a98002e811590b1611777be3bdfb43a991278"
+  },
+  {
+    "asset": "cantera-v",
+    "finished_artifact": 12894465823,
+    "source_artifact": 12893662059,
+    "optimized_sha256": "7604ebd4a43ec994088feea036fd61ccd3db41d4a3a4f4e92cc04e71c05818f2",
+    "reference_sha256": "c049d7be471cf54ee2b15daa40288f6e71c024e35a8f06d69bf1373785f54d90"
+  }
+]

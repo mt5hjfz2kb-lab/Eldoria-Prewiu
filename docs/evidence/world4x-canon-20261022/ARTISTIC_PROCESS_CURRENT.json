@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "workstream_id": "eldoria-world-region-1-canon-20261022",
+  "certified_source_commit": "3b14ade1b75cfdf7881771da16d36a18f0e088f1",
+  "blender": {
+    "method": "blender-bpy-reviewed",
+    "mcp_status": "unavailable",
+    "mcp_preflight": "Actual session tool inventory exposes no BlenderMCP or native desktop control; local workspace has no Blender. The exclusively reserved Windows runner reported Blender5.2.2 LTS. Native289 executed reviewed bpy on exact Unity-exported source meshes, retained original UV/GI and frozen source geometry; independent real Unity reviews rejected damaged architecture and corrected bank contact. No Qwen or paid generator was invoked.",
+    "mcp_reason": "Interactive BlenderMCP was unavailable in the actual session. Used the installed Blender via reviewed bpy directed by concrete silhouette/contact decisions; native Unity comparisons and a separate reviewer determined retention, not script completion.",
+    "artistic_decision_log": "docs/evidence/valoria-reference-clean/consolidation-20261027/ART_DIRECTION.md",
+    "input_blend": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/BastionRoofJunctions.blend",
+    "input_sha256": "c33187ec65202319554941063119ef2a3366f01c078cbe2b825e30138ae21ce4",
+    "output_blend": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/Valoria_Strategic_Architecture.blend",
+    "output_sha256": "8121a7aacf1f23e6b3a3a0922c20405b031140b7ece5b579aa67d240fc27ba24",
+    "input_blend_role": "Upstream editable canonical city source; not claimed as direct bpy input. Actual authoring input is exact integrated mesh JSON exported by Unity, identified below.",
+    "actual_authoring_input": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/mesh-input.json",
+    "actual_authoring_input_sha256": "b639c36a42695db3adbb4ecc78cd69a1758f73622809069b6857ee882baef663",
+    "new_blender_execution": true
+  },
+  "baseline": {
+    "run_id": 40425753661,
+    "directory": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline"
+  },
+  "candidate": {
+    "run_id": 40430426343,
+    "directory": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate"
+  },
+  "visual_review_path": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
+  "visual_judgment": {
+    "outcome": "RETAINED",
+    "reviewer": "Independent /root/visual_review; author and artistic director /root",
+    "observed_improvement": "Six genuine final Unity world views and two city views independently reviewed. Authentic square-tower city I-II architecture and reused stone bridge replace incompatible atlas/timber identity; reviewed sharpness restored, strategic readability recovered, perimeter less oval and dark, bank crowns less repetitive with water contact and tree-bearing support retained. No new blocking visual regression.",
+    "remaining_gaps": "Breach experiment rejected and original circular boundary retained; pre-existing quarry/access overlap in regional portrait and geometric eastern coast remain. This scoped retention is not a global8/10 verdict or physical mobile performance certification."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "current_intervention": {
+    "workstream_id": "valoria-master-plan-layered-construction-20261016",
+    "method": "Existing-mesh Blender authoring, original Unity strategic bakes and scoped URP material integration",
+    "technical_status": "PASS_26_EDITMODE_65_PLAYMODE_44_INTEGRATION_CHECKS",
+    "native_visual_source_commit": "3b14ade1b75cfdf7881771da16d36a18f0e088f1",
+    "technical_run": 40430426343,
+    "technical_artifact": 12702388496,
+    "native_zip_sha256": "20b07ffba007182c8107fd20f0e2d5f219d9b7b15e3f4e8f70155c1b62b76ce7",
+    "native_zip_bytes": 202757576,
+    "terrain_mesh_copies": 0,
+    "clipped_scoped_material_instances": 4,
+    "bank_original_triangles": 21608,
+    "bank_retained_triangles": 9722,
+    "world_bridge_triangles": 11132,
+    "new_city_billboard_triangles_per_visible_tier": 2,
+    "rejected_integration_run": 40427512254,
+    "rejected_breach_run": 40425753661,
+    "retained_tier_I_II_candidate_run": 40425753661,
+    "ci_checkout_recovery_source": "0004a5a85aafd4cf9641050f0cb146ecab37977d",
+    "ci_checkout_recovery_run": 40432752930,
+    "apk_published": false,
+    "bastion_III_started": false,
+    "economy_or_resource_coordinates_changed": false,
+    "budget_eur": 0,
+    "ci_checkout_recovery_status": "SUCCESS_EDITMODE_PLAYMODE_WINDOWS_BUILD",
+    "process_evidence_status": "PASS_NOT_AUTOMATIC_ART_APPROVAL"
+  },
+  "previous_record_commit": "0004a5a85aafd4cf9641050f0cb146ecab37977d",
+  "evidence_archive": {
+    "url": "https://chatgpt.com/library?file_id=libfile_30faaa5b476c8191b5f41b8d1bcdf551&account_id=personal",
+    "library_file_id": "libfile_30faaa5b476c8191b5f41b8d1bcdf551",
+    "filename": "Eldoria_Consolidacion_20261027.zip",
+    "bytes": 216665528,
+    "sha256": "db484ab1813eda1f604d8d2d6edade2a17aec8ae3465261a70b28e98407b476c",
+    "materialization": "Extract the ZIP at repository root. It supplies original Unity PNG/JSON pairs and editable sources under docs/evidence/valoria-reference-clean/consolidation-20261027. Then run node tools/world4x-artistic-process/verify.mjs .",
+    "reason": "Preserve authentic visual evidence and editable originals without adding another large binary history to Git."
+  }
+}

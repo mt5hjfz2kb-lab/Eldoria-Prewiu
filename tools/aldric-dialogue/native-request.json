@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "request_id": "eldoria-aldric-dialogue-bust-20261028-native-arcane-color-capture",
+  "workstream_id": "eldoria-aldric-dialogue-bust-20261027",
+  "run_type": "UNITY_MERGE_HEAD_NATIVE_PROBE_WITH_REAL_BASTION_III_BAKE",
+  "no_paid_tripo": true,
+  "owner": "chatgpt-aldric-dialogue-bust-20261027",
+  "windows_lease_revision": 3,
+  "required_scene": "Valoria_City_World_UI",
+  "required_test": "Eldoria.Tests.AldricDialogueBustPresentationTests",
+  "required_visuals": [
+    "Sir Aldric horizontal",
+    "Sir Aldric vertical",
+    "Lyra horizontal",
+    "Lyra vertical",
+    "Orín horizontal",
+    "Orín vertical",
+    "Narrator horizontal",
+    "Narrator vertical"
+  ],
+  "notes": "Single controlled repeat of native capture after correcting strictly visual Orín color checker. Existing source-locked head-and-shoulders PNG, canonical UI and original gameplay untouched. no spend.",
+  "requested_at": "2026-10-28T00:15:00+01:00",
+  "revision": 4,
+  "trigger_revision": 4,
+  "failure_recovery": "Real native run 40600320414: Unity PlayMode 2/2 PASS and 5 genuine screenshots produced, however capture gate rejected Orín horizontal because its correct purple ARCANE parchment was tested with warm-gold-only pixel condition. Inspected real Orín PNG: ~28,177 sampled purple pixels and 28 warm vs 1200 threshold; corrected conditional color gate for Orín only, do not weaken other tests. Same 5 speakers ES+ EN and 12 screenshots mandatory. No Tripo and no gameplay changes."
+}

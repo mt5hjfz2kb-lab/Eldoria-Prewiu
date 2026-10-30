@@ -1,0 +1,1066 @@
+EARLY_RETENTION_NATIVE_PASS
+Actual Unity Valoria scene is playable
+One real RoyalHUD instantiated
+Both destinations attached to canonical existing HUD
+Virgin player has no premature Vigilants access
+Virgin player has no premature Scouts access
+Both shortcuts are genuinely hidden before progression
+Real player save cannot be overwritten by any native proof
+One early Vigilant trial unlocked but Scouts is still hidden
+Previously-authored original Valoria crest and compass art load from the real game resources
+The actual unlocked Vigilants button shows the real Valoria compass, with no extra touch blocker
+Vigilants' independent full-screen scene opens
+New painterly Vigilants scene loads through actual Unity Resources
+Native proof uses the configured production height-matched RoyalScaler
+1600px: Real stage marker 1 stays clear of the information card
+1600px: Real stage marker 2 stays clear of the information card
+1600px: Real stage marker 3 stays clear of the information card
+1600px: Real stage marker 4 stays clear of the information card
+1600px: Real stage marker 5 stays clear of the information card
+1600px: Real stage marker 6 stays clear of the information card
+1600px: Real stage marker 7 stays clear of the information card
+1600px: Real stage marker 8 stays clear of the information card
+1600px: Real stage marker 9 stays clear of the information card
+1600px: Real stage marker 10 stays clear of the information card
+1600px: Real stage marker 11 stays clear of the information card
+1600px: Real stage marker 12 stays clear of the information card
+1600px: Real stage marker 13 stays clear of the information card
+1600px: Real stage marker 14 stays clear of the information card
+1600px: Real stage marker 15 stays clear of the information card
+1600px: Real stage marker 16 stays clear of the information card
+1600px: Real stage marker 17 stays clear of the information card
+1600px: Real stage marker 18 stays clear of the information card
+1600px: Real stage marker 19 stays clear of the information card
+1600px: Real stage marker 20 stays clear of the information card
+1600px: Real stage marker 21 stays clear of the information card
+1600px: Real stage marker 22 stays clear of the information card
+1600px: Real stage marker 23 stays clear of the information card
+1600px: Real stage marker 24 stays clear of the information card
+1600px: Real stage marker 25 stays clear of the information card
+1600px: Complete visible text fits actual capture layout: Page heading [required=40, available=44, text=Camino de los Vigilantes]
+1600px: Complete visible text fits actual capture layout: Chapter overline [required=20, available=27, text=Protege las fronteras de Valoria y supera a sus guardianes.]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=19, available=38, text=5]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=19, available=38, text=10]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 15 [required=19, available=38, text=15]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=19, available=38, text=20]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=19, available=38, text=25]
+1600px: Complete visible text fits actual capture layout: Current live stage [required=20, available=38, text=1]
+1600px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=21, available=28, text=CAMINO ASEGURADO · 0 ETAPAS]
+1600px: Complete visible text fits actual capture layout: Stage progression [required=38, available=44, text=CAPÍTULO 1 · ETAPA 1/25]
+1600px: Complete visible text fits actual capture layout: Real enemy and trait [required=67, available=110, text=Avanzadilla corrupta
+Resistencia corrupta]
+1600px: Complete visible text fits actual capture layout: Actual available army [required=60, available=66, text=Aldric · 40/40 tropas · Poder 2284]
+1600px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=60, available=64, text=Al vencer: 32 madera · 11 piedra · 20 XP]
+1600px: Complete visible text fits actual capture layout: Offline hero experience [required=90, available=104, text=EXP. ACUMULADA: 0 XP / máximo 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+1600px: Complete visible text fits actual capture layout: Last action result [required=30, available=130, text=ESTRATEGIA · Observa sus estadísticas y prepara tu marcha.]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=33, available=82, text=Combatir]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=60, available=82, text=EXPERIENCIA EN PROGRESO]
+1600px: Complete visible text fits actual capture layout: No artificial notifications [required=20, available=25, text=Cada victoria ilumina el siguiente tramo del camino.]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=33, available=36, text=←]
+Native Unity 1600x900 screenshot exists: vigilants-first-trial
+Real camera pixels decode at expected resolution: vigilants-first-trial
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-first-trial
+Native proof uses the configured production height-matched RoyalScaler
+900px: Real stage marker 1 stays clear of the information card
+900px: Real stage marker 2 stays clear of the information card
+900px: Real stage marker 3 stays clear of the information card
+900px: Real stage marker 4 stays clear of the information card
+900px: Real stage marker 5 stays clear of the information card
+900px: Real stage marker 6 stays clear of the information card
+900px: Real stage marker 7 stays clear of the information card
+900px: Real stage marker 8 stays clear of the information card
+900px: Real stage marker 9 stays clear of the information card
+900px: Real stage marker 10 stays clear of the information card
+900px: Real stage marker 11 stays clear of the information card
+900px: Real stage marker 12 stays clear of the information card
+900px: Real stage marker 13 stays clear of the information card
+900px: Real stage marker 14 stays clear of the information card
+900px: Real stage marker 15 stays clear of the information card
+900px: Real stage marker 16 stays clear of the information card
+900px: Real stage marker 17 stays clear of the information card
+900px: Real stage marker 18 stays clear of the information card
+900px: Real stage marker 19 stays clear of the information card
+900px: Real stage marker 20 stays clear of the information card
+900px: Real stage marker 21 stays clear of the information card
+900px: Real stage marker 22 stays clear of the information card
+900px: Real stage marker 23 stays clear of the information card
+900px: Real stage marker 24 stays clear of the information card
+900px: Real stage marker 25 stays clear of the information card
+900px: Complete visible text fits actual capture layout: Page heading [required=36,5625, available=86, text=Camino de los Vigilantes]
+900px: Complete visible text fits actual capture layout: Chapter overline [required=29,25, available=36, text=Protege las fronteras de Valoria y supera a sus guardianes.]
+900px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=30,375, available=38, text=5]
+900px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=30,375, available=38, text=10]
+900px: Complete visible text fits actual capture layout: Guardian milestone 15 [required=30,375, available=38, text=15]
+900px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=30,375, available=38, text=20]
+900px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=30,375, available=38, text=25]
+900px: Complete visible text fits actual capture layout: Current live stage [required=32,0625, available=38, text=1]
+900px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,5625, available=44, text=CAMINO ASEGURADO · 0 ETAPAS]
+900px: Complete visible text fits actual capture layout: Stage progression [required=36,5625, available=44, text=CAPÍTULO 1 · ETAPA 1/25]
+900px: Complete visible text fits actual capture layout: Real enemy and trait [required=67,5, available=110, text=Avanzadilla corrupta
+Resistencia corrupta]
+900px: Complete visible text fits actual capture layout: Actual available army [required=59,0625, available=66, text=Aldric · 40/40 tropas · Poder 2284]
+900px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=59,0625, available=64, text=Al vencer: 32 madera · 11 piedra · 20 XP]
+900px: Complete visible text fits actual capture layout: Offline hero experience [required=88,875, available=104, text=EXP. 0 XP · Máx. 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=32,0625, available=82, text=Combatir]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=59,0625, available=82, text=EXPERIENCIA EN PROGRESO]
+900px: Complete visible text fits actual capture layout: No artificial notifications [required=29,25, available=40, text=Cada victoria ilumina el siguiente tramo del camino.]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=70,875, available=78, text=←]
+Native Unity 900x1600 screenshot exists: vigilants-first-trial
+Real camera pixels decode at expected resolution: vigilants-first-trial
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-first-trial
+Native proof uses the configured production height-matched RoyalScaler
+390px: Real stage marker 1 stays clear of the information card
+390px: Real stage marker 2 stays clear of the information card
+390px: Real stage marker 3 stays clear of the information card
+390px: Real stage marker 4 stays clear of the information card
+390px: Real stage marker 5 stays clear of the information card
+390px: Real stage marker 6 stays clear of the information card
+390px: Real stage marker 7 stays clear of the information card
+390px: Real stage marker 8 stays clear of the information card
+390px: Real stage marker 9 stays clear of the information card
+390px: Real stage marker 10 stays clear of the information card
+390px: Real stage marker 11 stays clear of the information card
+390px: Real stage marker 12 stays clear of the information card
+390px: Real stage marker 13 stays clear of the information card
+390px: Real stage marker 14 stays clear of the information card
+390px: Real stage marker 15 stays clear of the information card
+390px: Real stage marker 16 stays clear of the information card
+390px: Real stage marker 17 stays clear of the information card
+390px: Real stage marker 18 stays clear of the information card
+390px: Real stage marker 19 stays clear of the information card
+390px: Real stage marker 20 stays clear of the information card
+390px: Real stage marker 21 stays clear of the information card
+390px: Real stage marker 22 stays clear of the information card
+390px: Real stage marker 23 stays clear of the information card
+390px: Real stage marker 24 stays clear of the information card
+390px: Real stage marker 25 stays clear of the information card
+390px: Phone text renders at least 12 actual pixels: Page heading
+390px: Complete visible text fits actual capture layout: Page heading [required=37,32228, available=86, text=Camino de los Vigilantes]
+390px: Phone text renders at least 12 actual pixels: Chapter overline
+390px: Complete visible text fits actual capture layout: Chapter overline [required=28,79147, available=36, text=Protege las fronteras de Valoria y supera a sus guardianes.]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 5
+390px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=29,85782, available=38, text=5]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 10
+390px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=29,85782, available=38, text=10]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 15
+390px: Complete visible text fits actual capture layout: Guardian milestone 15 [required=29,85782, available=38, text=15]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 20
+390px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=29,85782, available=38, text=20]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 25
+390px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=29,85782, available=38, text=25]
+390px: Phone text renders at least 12 actual pixels: Current live stage
+390px: Complete visible text fits actual capture layout: Current live stage [required=31,99052, available=38, text=1]
+390px: Phone text renders at least 12 actual pixels: Live progress / no decorative counters
+390px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,72512, available=44, text=CAMINO ASEGURADO · 0 ETAPAS]
+390px: Phone text renders at least 12 actual pixels: Stage progression
+390px: Complete visible text fits actual capture layout: Stage progression [required=37,32228, available=44, text=CAPÍTULO 1 · ETAPA 1/25]
+390px: Phone text renders at least 12 actual pixels: Real enemy and trait
+390px: Complete visible text fits actual capture layout: Real enemy and trait [required=67,1801, available=110, text=Avanzadilla corrupta
+Resistencia corrupta]
+390px: Phone text renders at least 12 actual pixels: Actual available army
+390px: Complete visible text fits actual capture layout: Actual available army [required=58,64929, available=66, text=Aldric · 40/40 tropas · Poder 2284]
+390px: Phone text renders at least 12 actual pixels: Authoritative first victory reward
+390px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=58,64929, available=64, text=Al vencer: 32 madera · 11 piedra · 20 XP]
+390px: Phone text renders at least 12 actual pixels: Offline hero experience
+390px: Complete visible text fits actual capture layout: Offline hero experience [required=58,64929, available=104, text=EXP. 0 XP · Máx. 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=31,99052, available=82, text=Combatir]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=58,64929, available=82, text=EXPERIENCIA EN PROGRESO]
+390px: Phone text renders at least 12 actual pixels: No artificial notifications
+390px: Complete visible text fits actual capture layout: No artificial notifications [required=28,79147, available=40, text=Cada victoria ilumina el siguiente tramo del camino.]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=71,4455, available=78, text=←]
+Native Unity 390x844 screenshot exists: vigilants-first-trial
+Real camera pixels decode at expected resolution: vigilants-first-trial
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-first-trial
+Real player save cannot be overwritten by any native proof
+After first March both activity entries legitimately unlock
+The actual unlocked Scouts button shows the genuine Valoria crest art
+Vigilants opens after first barracks
+Normal corrupt encounters show their own authored patrol illustration, never an empty card
+Native proof uses the configured production height-matched RoyalScaler
+1600px: Real stage marker 1 stays clear of the information card
+1600px: Real stage marker 2 stays clear of the information card
+1600px: Real stage marker 3 stays clear of the information card
+1600px: Real stage marker 4 stays clear of the information card
+1600px: Real stage marker 5 stays clear of the information card
+1600px: Real stage marker 6 stays clear of the information card
+1600px: Real stage marker 7 stays clear of the information card
+1600px: Real stage marker 8 stays clear of the information card
+1600px: Real stage marker 9 stays clear of the information card
+1600px: Real stage marker 10 stays clear of the information card
+1600px: Real stage marker 11 stays clear of the information card
+1600px: Real stage marker 12 stays clear of the information card
+1600px: Real stage marker 13 stays clear of the information card
+1600px: Real stage marker 14 stays clear of the information card
+1600px: Real stage marker 15 stays clear of the information card
+1600px: Real stage marker 16 stays clear of the information card
+1600px: Real stage marker 17 stays clear of the information card
+1600px: Real stage marker 18 stays clear of the information card
+1600px: Real stage marker 19 stays clear of the information card
+1600px: Real stage marker 20 stays clear of the information card
+1600px: Real stage marker 21 stays clear of the information card
+1600px: Real stage marker 22 stays clear of the information card
+1600px: Real stage marker 23 stays clear of the information card
+1600px: Real stage marker 24 stays clear of the information card
+1600px: Real stage marker 25 stays clear of the information card
+1600px: Complete visible text fits actual capture layout: Page heading [required=40, available=44, text=Camino de los Vigilantes]
+1600px: Complete visible text fits actual capture layout: Chapter overline [required=20, available=27, text=Protege las fronteras de Valoria y supera a sus guardianes.]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=19, available=38, text=5]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=19, available=38, text=10]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 15 [required=19, available=38, text=15]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=19, available=38, text=20]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=19, available=38, text=25]
+1600px: Complete visible text fits actual capture layout: Current live stage [required=20, available=38, text=1]
+1600px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=21, available=28, text=CAMINO ASEGURADO · 0 ETAPAS]
+1600px: Complete visible text fits actual capture layout: Stage progression [required=38, available=44, text=CAPÍTULO 1 · ETAPA 1/25]
+1600px: Complete visible text fits actual capture layout: Real enemy and trait [required=67, available=110, text=Avanzadilla corrupta
+Resistencia corrupta]
+1600px: Complete visible text fits actual capture layout: Actual available army [required=60, available=66, text=Aldric · 60/60 tropas · Poder 2824]
+1600px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=60, available=64, text=Al vencer: 32 madera · 11 piedra · 20 XP]
+1600px: Complete visible text fits actual capture layout: Offline hero experience [required=90, available=104, text=EXP. ACUMULADA: 0 XP / máximo 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+1600px: Complete visible text fits actual capture layout: Last action result [required=30, available=130, text=ESTRATEGIA · Observa sus estadísticas y prepara tu marcha.]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=33, available=82, text=Combatir]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=60, available=82, text=EXPERIENCIA EN PROGRESO]
+1600px: Complete visible text fits actual capture layout: No artificial notifications [required=20, available=25, text=Cada victoria ilumina el siguiente tramo del camino.]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=33, available=36, text=←]
+Native Unity 1600x900 screenshot exists: vigilants-chapter-one
+Real camera pixels decode at expected resolution: vigilants-chapter-one
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-chapter-one
+Native proof uses the configured production height-matched RoyalScaler
+900px: Real stage marker 1 stays clear of the information card
+900px: Real stage marker 2 stays clear of the information card
+900px: Real stage marker 3 stays clear of the information card
+900px: Real stage marker 4 stays clear of the information card
+900px: Real stage marker 5 stays clear of the information card
+900px: Real stage marker 6 stays clear of the information card
+900px: Real stage marker 7 stays clear of the information card
+900px: Real stage marker 8 stays clear of the information card
+900px: Real stage marker 9 stays clear of the information card
+900px: Real stage marker 10 stays clear of the information card
+900px: Real stage marker 11 stays clear of the information card
+900px: Real stage marker 12 stays clear of the information card
+900px: Real stage marker 13 stays clear of the information card
+900px: Real stage marker 14 stays clear of the information card
+900px: Real stage marker 15 stays clear of the information card
+900px: Real stage marker 16 stays clear of the information card
+900px: Real stage marker 17 stays clear of the information card
+900px: Real stage marker 18 stays clear of the information card
+900px: Real stage marker 19 stays clear of the information card
+900px: Real stage marker 20 stays clear of the information card
+900px: Real stage marker 21 stays clear of the information card
+900px: Real stage marker 22 stays clear of the information card
+900px: Real stage marker 23 stays clear of the information card
+900px: Real stage marker 24 stays clear of the information card
+900px: Real stage marker 25 stays clear of the information card
+900px: Complete visible text fits actual capture layout: Page heading [required=36,5625, available=86, text=Camino de los Vigilantes]
+900px: Complete visible text fits actual capture layout: Chapter overline [required=29,25, available=36, text=Protege las fronteras de Valoria y supera a sus guardianes.]
+900px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=30,375, available=38, text=5]
+900px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=30,375, available=38, text=10]
+900px: Complete visible text fits actual capture layout: Guardian milestone 15 [required=30,375, available=38, text=15]
+900px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=30,375, available=38, text=20]
+900px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=30,375, available=38, text=25]
+900px: Complete visible text fits actual capture layout: Current live stage [required=32,0625, available=38, text=1]
+900px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,5625, available=44, text=CAMINO ASEGURADO · 0 ETAPAS]
+900px: Complete visible text fits actual capture layout: Stage progression [required=36,5625, available=44, text=CAPÍTULO 1 · ETAPA 1/25]
+900px: Complete visible text fits actual capture layout: Real enemy and trait [required=67,5, available=110, text=Avanzadilla corrupta
+Resistencia corrupta]
+900px: Complete visible text fits actual capture layout: Actual available army [required=59,0625, available=66, text=Aldric · 60/60 tropas · Poder 2824]
+900px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=59,0625, available=64, text=Al vencer: 32 madera · 11 piedra · 20 XP]
+900px: Complete visible text fits actual capture layout: Offline hero experience [required=88,875, available=104, text=EXP. 0 XP · Máx. 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=32,0625, available=82, text=Combatir]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=59,0625, available=82, text=EXPERIENCIA EN PROGRESO]
+900px: Complete visible text fits actual capture layout: No artificial notifications [required=29,25, available=40, text=Cada victoria ilumina el siguiente tramo del camino.]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=70,875, available=78, text=←]
+Native Unity 900x1600 screenshot exists: vigilants-chapter-one
+Real camera pixels decode at expected resolution: vigilants-chapter-one
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-chapter-one
+Native proof uses the configured production height-matched RoyalScaler
+390px: Real stage marker 1 stays clear of the information card
+390px: Real stage marker 2 stays clear of the information card
+390px: Real stage marker 3 stays clear of the information card
+390px: Real stage marker 4 stays clear of the information card
+390px: Real stage marker 5 stays clear of the information card
+390px: Real stage marker 6 stays clear of the information card
+390px: Real stage marker 7 stays clear of the information card
+390px: Real stage marker 8 stays clear of the information card
+390px: Real stage marker 9 stays clear of the information card
+390px: Real stage marker 10 stays clear of the information card
+390px: Real stage marker 11 stays clear of the information card
+390px: Real stage marker 12 stays clear of the information card
+390px: Real stage marker 13 stays clear of the information card
+390px: Real stage marker 14 stays clear of the information card
+390px: Real stage marker 15 stays clear of the information card
+390px: Real stage marker 16 stays clear of the information card
+390px: Real stage marker 17 stays clear of the information card
+390px: Real stage marker 18 stays clear of the information card
+390px: Real stage marker 19 stays clear of the information card
+390px: Real stage marker 20 stays clear of the information card
+390px: Real stage marker 21 stays clear of the information card
+390px: Real stage marker 22 stays clear of the information card
+390px: Real stage marker 23 stays clear of the information card
+390px: Real stage marker 24 stays clear of the information card
+390px: Real stage marker 25 stays clear of the information card
+390px: Phone text renders at least 12 actual pixels: Page heading
+390px: Complete visible text fits actual capture layout: Page heading [required=37,32228, available=86, text=Camino de los Vigilantes]
+390px: Phone text renders at least 12 actual pixels: Chapter overline
+390px: Complete visible text fits actual capture layout: Chapter overline [required=28,79147, available=36, text=Protege las fronteras de Valoria y supera a sus guardianes.]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 5
+390px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=29,85782, available=38, text=5]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 10
+390px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=29,85782, available=38, text=10]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 15
+390px: Complete visible text fits actual capture layout: Guardian milestone 15 [required=29,85782, available=38, text=15]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 20
+390px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=29,85782, available=38, text=20]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 25
+390px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=29,85782, available=38, text=25]
+390px: Phone text renders at least 12 actual pixels: Current live stage
+390px: Complete visible text fits actual capture layout: Current live stage [required=31,99052, available=38, text=1]
+390px: Phone text renders at least 12 actual pixels: Live progress / no decorative counters
+390px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,72512, available=44, text=CAMINO ASEGURADO · 0 ETAPAS]
+390px: Phone text renders at least 12 actual pixels: Stage progression
+390px: Complete visible text fits actual capture layout: Stage progression [required=37,32228, available=44, text=CAPÍTULO 1 · ETAPA 1/25]
+390px: Phone text renders at least 12 actual pixels: Real enemy and trait
+390px: Complete visible text fits actual capture layout: Real enemy and trait [required=67,1801, available=110, text=Avanzadilla corrupta
+Resistencia corrupta]
+390px: Phone text renders at least 12 actual pixels: Actual available army
+390px: Complete visible text fits actual capture layout: Actual available army [required=58,64929, available=66, text=Aldric · 60/60 tropas · Poder 2824]
+390px: Phone text renders at least 12 actual pixels: Authoritative first victory reward
+390px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=58,64929, available=64, text=Al vencer: 32 madera · 11 piedra · 20 XP]
+390px: Phone text renders at least 12 actual pixels: Offline hero experience
+390px: Complete visible text fits actual capture layout: Offline hero experience [required=58,64929, available=104, text=EXP. 0 XP · Máx. 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=31,99052, available=82, text=Combatir]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=58,64929, available=82, text=EXPERIENCIA EN PROGRESO]
+390px: Phone text renders at least 12 actual pixels: No artificial notifications
+390px: Complete visible text fits actual capture layout: No artificial notifications [required=28,79147, available=40, text=Cada victoria ilumina el siguiente tramo del camino.]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=71,4455, available=78, text=←]
+Native Unity 390x844 screenshot exists: vigilants-chapter-one
+Real camera pixels decode at expected resolution: vigilants-chapter-one
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-chapter-one
+The real battle button uses the approved red and gold action graphic
+Real PvE combat action uses the approved red interactive button
+Automatic level PvE genuine live button clickable
+One real EventSystem is active
+Automatic level PvE actual topmost device raycast reaches the button
+First stage resolves via REAL domain combat, once
+The authentic victory announcement is visible in the live scene
+Native proof uses the configured production height-matched RoyalScaler
+1600px: Real stage marker 1 stays clear of the information card
+1600px: Real stage marker 2 stays clear of the information card
+1600px: Real stage marker 3 stays clear of the information card
+1600px: Real stage marker 4 stays clear of the information card
+1600px: Real stage marker 5 stays clear of the information card
+1600px: Real stage marker 6 stays clear of the information card
+1600px: Real stage marker 7 stays clear of the information card
+1600px: Real stage marker 8 stays clear of the information card
+1600px: Real stage marker 9 stays clear of the information card
+1600px: Real stage marker 10 stays clear of the information card
+1600px: Real stage marker 11 stays clear of the information card
+1600px: Real stage marker 12 stays clear of the information card
+1600px: Real stage marker 13 stays clear of the information card
+1600px: Real stage marker 14 stays clear of the information card
+1600px: Real stage marker 15 stays clear of the information card
+1600px: Real stage marker 16 stays clear of the information card
+1600px: Real stage marker 17 stays clear of the information card
+1600px: Real stage marker 18 stays clear of the information card
+1600px: Real stage marker 19 stays clear of the information card
+1600px: Real stage marker 20 stays clear of the information card
+1600px: Real stage marker 21 stays clear of the information card
+1600px: Real stage marker 22 stays clear of the information card
+1600px: Real stage marker 23 stays clear of the information card
+1600px: Real stage marker 24 stays clear of the information card
+1600px: Real stage marker 25 stays clear of the information card
+1600px: Complete visible text fits actual capture layout: Page heading [required=40, available=44, text=Camino de los Vigilantes]
+1600px: Complete visible text fits actual capture layout: Chapter overline [required=20, available=27, text=Protege las fronteras de Valoria y supera a sus guardianes.]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=19, available=38, text=5]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=19, available=38, text=10]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 15 [required=19, available=38, text=15]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=19, available=38, text=20]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=19, available=38, text=25]
+1600px: Complete visible text fits actual capture layout: Current live stage [required=20, available=38, text=2]
+1600px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=21, available=28, text=CAMINO ASEGURADO · 1 ETAPAS]
+1600px: Complete visible text fits actual capture layout: Original victory heading [required=41, available=90, text=VICTORIA]
+1600px: Complete visible text fits actual capture layout: Authoritative victory reward [required=86, available=150, text=1 rondas · 60 tropas · Aldric
+Poder 2824 · Índice 302 · Vida 707
+Observa sus estadísticas y prepara tu marcha.]
+1600px: Complete visible text fits actual capture layout: Stage progression [required=38, available=44, text=CAPÍTULO 1 · ETAPA 2/25]
+1600px: Complete visible text fits actual capture layout: Real enemy and trait [required=67, available=110, text=Acechador ceniciento
+Emboscada]
+1600px: Complete visible text fits actual capture layout: Actual available army [required=60, available=66, text=Aldric · 60/60 tropas · Poder 2824]
+1600px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=60, available=64, text=Al vencer: 34 madera · 12 piedra · 20 XP]
+1600px: Complete visible text fits actual capture layout: Offline hero experience [required=90, available=104, text=EXP. ACUMULADA: 0 XP / máximo 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+1600px: Complete visible text fits actual capture layout: Last action result [required=90, available=130, text=1 rondas · 60 tropas · Aldric
+Poder 2824 · Índice 302 · Vida 707
+Observa sus estadísticas y prepara tu marcha.]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=33, available=82, text=Combatir]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=60, available=82, text=EXPERIENCIA EN PROGRESO]
+1600px: Complete visible text fits actual capture layout: No artificial notifications [required=20, available=25, text=ÚLTIMA MARCHA · VICTORIA · 1 rondas · Poder 2824]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=33, available=36, text=←]
+Native Unity 1600x900 screenshot exists: vigilants-real-victory
+Real camera pixels decode at expected resolution: vigilants-real-victory
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-real-victory
+Native proof uses the configured production height-matched RoyalScaler
+900px: Real stage marker 1 stays clear of the information card
+900px: Real stage marker 2 stays clear of the information card
+900px: Real stage marker 3 stays clear of the information card
+900px: Real stage marker 4 stays clear of the information card
+900px: Real stage marker 5 stays clear of the information card
+900px: Real stage marker 6 stays clear of the information card
+900px: Real stage marker 7 stays clear of the information card
+900px: Real stage marker 8 stays clear of the information card
+900px: Real stage marker 9 stays clear of the information card
+900px: Real stage marker 10 stays clear of the information card
+900px: Real stage marker 11 stays clear of the information card
+900px: Real stage marker 12 stays clear of the information card
+900px: Real stage marker 13 stays clear of the information card
+900px: Real stage marker 14 stays clear of the information card
+900px: Real stage marker 15 stays clear of the information card
+900px: Real stage marker 16 stays clear of the information card
+900px: Real stage marker 17 stays clear of the information card
+900px: Real stage marker 18 stays clear of the information card
+900px: Real stage marker 19 stays clear of the information card
+900px: Real stage marker 20 stays clear of the information card
+900px: Real stage marker 21 stays clear of the information card
+900px: Real stage marker 22 stays clear of the information card
+900px: Real stage marker 23 stays clear of the information card
+900px: Real stage marker 24 stays clear of the information card
+900px: Real stage marker 25 stays clear of the information card
+900px: Complete visible text fits actual capture layout: Page heading [required=36,5625, available=86, text=Camino de los Vigilantes]
+900px: Complete visible text fits actual capture layout: Chapter overline [required=29,25, available=36, text=Protege las fronteras de Valoria y supera a sus guardianes.]
+900px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=30,375, available=38, text=5]
+900px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=30,375, available=38, text=10]
+900px: Complete visible text fits actual capture layout: Guardian milestone 15 [required=30,375, available=38, text=15]
+900px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=30,375, available=38, text=20]
+900px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=30,375, available=38, text=25]
+900px: Complete visible text fits actual capture layout: Current live stage [required=32,0625, available=38, text=2]
+900px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,5625, available=44, text=CAMINO ASEGURADO · 1 ETAPAS]
+900px: Complete visible text fits actual capture layout: Original victory heading [required=35,4375, available=84, text=VICTORIA]
+900px: Complete visible text fits actual capture layout: Authoritative victory reward [required=88,875, available=158, text=1 rondas · 60 tropas · Aldric
+Poder 2824 · Índice 302 · Vida 707
+Observa sus estadísticas y prepara tu marcha.]
+900px: Complete visible text fits actual capture layout: Stage progression [required=36,5625, available=44, text=CAPÍTULO 1 · ETAPA 2/25]
+900px: Complete visible text fits actual capture layout: Real enemy and trait [required=67,5, available=110, text=Acechador ceniciento
+Emboscada]
+900px: Complete visible text fits actual capture layout: Actual available army [required=59,0625, available=66, text=Aldric · 60/60 tropas · Poder 2824]
+900px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=59,0625, available=64, text=Al vencer: 34 madera · 12 piedra · 20 XP]
+900px: Complete visible text fits actual capture layout: Offline hero experience [required=88,875, available=104, text=EXP. 0 XP · Máx. 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=32,0625, available=82, text=Combatir]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=59,0625, available=82, text=EXPERIENCIA EN PROGRESO]
+900px: Complete visible text fits actual capture layout: No artificial notifications [required=29,25, available=40, text=ÚLTIMA MARCHA · VICTORIA · 1 rondas · Poder 2824]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=70,875, available=78, text=←]
+Native Unity 900x1600 screenshot exists: vigilants-real-victory
+Real camera pixels decode at expected resolution: vigilants-real-victory
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-real-victory
+Native proof uses the configured production height-matched RoyalScaler
+390px: Real stage marker 1 stays clear of the information card
+390px: Real stage marker 2 stays clear of the information card
+390px: Real stage marker 3 stays clear of the information card
+390px: Real stage marker 4 stays clear of the information card
+390px: Real stage marker 5 stays clear of the information card
+390px: Real stage marker 6 stays clear of the information card
+390px: Real stage marker 7 stays clear of the information card
+390px: Real stage marker 8 stays clear of the information card
+390px: Real stage marker 9 stays clear of the information card
+390px: Real stage marker 10 stays clear of the information card
+390px: Real stage marker 11 stays clear of the information card
+390px: Real stage marker 12 stays clear of the information card
+390px: Real stage marker 13 stays clear of the information card
+390px: Real stage marker 14 stays clear of the information card
+390px: Real stage marker 15 stays clear of the information card
+390px: Real stage marker 16 stays clear of the information card
+390px: Real stage marker 17 stays clear of the information card
+390px: Real stage marker 18 stays clear of the information card
+390px: Real stage marker 19 stays clear of the information card
+390px: Real stage marker 20 stays clear of the information card
+390px: Real stage marker 21 stays clear of the information card
+390px: Real stage marker 22 stays clear of the information card
+390px: Real stage marker 23 stays clear of the information card
+390px: Real stage marker 24 stays clear of the information card
+390px: Real stage marker 25 stays clear of the information card
+390px: Phone text renders at least 12 actual pixels: Page heading
+390px: Complete visible text fits actual capture layout: Page heading [required=37,32228, available=86, text=Camino de los Vigilantes]
+390px: Phone text renders at least 12 actual pixels: Chapter overline
+390px: Complete visible text fits actual capture layout: Chapter overline [required=28,79147, available=36, text=Protege las fronteras de Valoria y supera a sus guardianes.]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 5
+390px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=29,85782, available=38, text=5]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 10
+390px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=29,85782, available=38, text=10]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 15
+390px: Complete visible text fits actual capture layout: Guardian milestone 15 [required=29,85782, available=38, text=15]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 20
+390px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=29,85782, available=38, text=20]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 25
+390px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=29,85782, available=38, text=25]
+390px: Phone text renders at least 12 actual pixels: Current live stage
+390px: Complete visible text fits actual capture layout: Current live stage [required=31,99052, available=38, text=2]
+390px: Phone text renders at least 12 actual pixels: Live progress / no decorative counters
+390px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,72512, available=44, text=CAMINO ASEGURADO · 1 ETAPAS]
+390px: Phone text renders at least 12 actual pixels: Original victory heading
+390px: Complete visible text fits actual capture layout: Original victory heading [required=35,18958, available=84, text=VICTORIA]
+390px: Phone text renders at least 12 actual pixels: Authoritative victory reward
+390px: Complete visible text fits actual capture layout: Authoritative victory reward [required=88,50711, available=158, text=1 rondas · 60 tropas · Aldric
+Poder 2824 · Índice 302 · Vida 707
+Observa sus estadísticas y prepara tu marcha.]
+390px: Phone text renders at least 12 actual pixels: Stage progression
+390px: Complete visible text fits actual capture layout: Stage progression [required=37,32228, available=44, text=CAPÍTULO 1 · ETAPA 2/25]
+390px: Phone text renders at least 12 actual pixels: Real enemy and trait
+390px: Complete visible text fits actual capture layout: Real enemy and trait [required=67,1801, available=110, text=Acechador ceniciento
+Emboscada]
+390px: Phone text renders at least 12 actual pixels: Actual available army
+390px: Complete visible text fits actual capture layout: Actual available army [required=58,64929, available=66, text=Aldric · 60/60 tropas · Poder 2824]
+390px: Phone text renders at least 12 actual pixels: Authoritative first victory reward
+390px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=58,64929, available=64, text=Al vencer: 34 madera · 12 piedra · 20 XP]
+390px: Phone text renders at least 12 actual pixels: Offline hero experience
+390px: Complete visible text fits actual capture layout: Offline hero experience [required=58,64929, available=104, text=EXP. 0 XP · Máx. 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=31,99052, available=82, text=Combatir]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=58,64929, available=82, text=EXPERIENCIA EN PROGRESO]
+390px: Phone text renders at least 12 actual pixels: No artificial notifications
+390px: Complete visible text fits actual capture layout: No artificial notifications [required=28,79147, available=40, text=ÚLTIMA MARCHA · VICTORIA · 1 rondas · Poder 2824]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=71,4455, available=78, text=←]
+Native Unity 390x844 screenshot exists: vigilants-real-victory
+Real camera pixels decode at expected resolution: vigilants-real-victory
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-real-victory
+Stage 15 opens in the real campaign
+Stage15 actually displays the selected reference-derived creature illustration
+Authored transparent portrait needs no destructive studio-key or extra readable mobile texture
+Visible illustrated creature comes from the exact retained reference-derived PNG
+Actual illustrated encounter skin renders beneath live creature/data/buttons without stealing clicks
+The real stage15 guardian has its selected reference banner
+The approved route highlights genuine stage 15, not decorative fake markers
+Real route and authentic creature are present
+Real route milestone 1 is never covered by the encounter portrait
+Real route milestone 2 is never covered by the encounter portrait
+Real route milestone 3 is never covered by the encounter portrait
+Real route milestone 4 is never covered by the encounter portrait
+Real route milestone 5 is never covered by the encounter portrait
+Real route milestone 6 is never covered by the encounter portrait
+Real route milestone 7 is never covered by the encounter portrait
+Real route milestone 8 is never covered by the encounter portrait
+Real route milestone 9 is never covered by the encounter portrait
+Real route milestone 10 is never covered by the encounter portrait
+Real route milestone 11 is never covered by the encounter portrait
+Real route milestone 12 is never covered by the encounter portrait
+Real route milestone 13 is never covered by the encounter portrait
+Real route milestone 14 is never covered by the encounter portrait
+Real route milestone 15 is never covered by the encounter portrait
+Real route milestone 16 is never covered by the encounter portrait
+Real route milestone 17 is never covered by the encounter portrait
+Real route milestone 18 is never covered by the encounter portrait
+Real route milestone 19 is never covered by the encounter portrait
+Real route milestone 20 is never covered by the encounter portrait
+Real route milestone 21 is never covered by the encounter portrait
+Real route milestone 22 is never covered by the encounter portrait
+Real route milestone 23 is never covered by the encounter portrait
+Real route milestone 24 is never covered by the encounter portrait
+Real route milestone 25 is never covered by the encounter portrait
+Native proof uses the configured production height-matched RoyalScaler
+1600px: Real stage marker 1 stays clear of the information card
+1600px: Real stage marker 2 stays clear of the information card
+1600px: Real stage marker 3 stays clear of the information card
+1600px: Real stage marker 4 stays clear of the information card
+1600px: Real stage marker 5 stays clear of the information card
+1600px: Real stage marker 6 stays clear of the information card
+1600px: Real stage marker 7 stays clear of the information card
+1600px: Real stage marker 8 stays clear of the information card
+1600px: Real stage marker 9 stays clear of the information card
+1600px: Real stage marker 10 stays clear of the information card
+1600px: Real stage marker 11 stays clear of the information card
+1600px: Real stage marker 12 stays clear of the information card
+1600px: Real stage marker 13 stays clear of the information card
+1600px: Real stage marker 14 stays clear of the information card
+1600px: Real stage marker 15 stays clear of the information card
+1600px: Real stage marker 16 stays clear of the information card
+1600px: Real stage marker 17 stays clear of the information card
+1600px: Real stage marker 18 stays clear of the information card
+1600px: Real stage marker 19 stays clear of the information card
+1600px: Real stage marker 20 stays clear of the information card
+1600px: Real stage marker 21 stays clear of the information card
+1600px: Real stage marker 22 stays clear of the information card
+1600px: Real stage marker 23 stays clear of the information card
+1600px: Real stage marker 24 stays clear of the information card
+1600px: Real stage marker 25 stays clear of the information card
+1600px: Actual current guardian displays the reference skull banner
+1600px: Entire live guardian banner remains inside the real illustrated scene
+1600px: Complete visible text fits actual capture layout: Page heading [required=40, available=44, text=Camino de los Vigilantes]
+1600px: Complete visible text fits actual capture layout: Chapter overline [required=20, available=27, text=GUARDIÁN · RUPTURA ALTA · USA VIDA]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=19, available=38, text=5]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=19, available=38, text=10]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=19, available=38, text=20]
+1600px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=19, available=38, text=25]
+1600px: Complete visible text fits actual capture layout: Current live stage [required=20, available=38, text=15]
+1600px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=21, available=28, text=CAMINO ASEGURADO · 14 ETAPAS]
+1600px: Complete visible text fits actual capture layout: Stage progression [required=38, available=44, text=CAPÍTULO 1 · ETAPA 15/25]
+1600px: Complete visible text fits actual capture layout: Real enemy and trait [required=101, available=110, text=Engendro de la Brecha
+Garras de la Brecha · RUPTURA]
+1600px: Complete visible text fits actual capture layout: Actual available army [required=60, available=66, text=Aldric · 60/60 tropas · Poder 2824]
+1600px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=60, available=64, text=Al vencer: 60 madera · 25 piedra · 29 XP]
+1600px: Complete visible text fits actual capture layout: Offline hero experience [required=90, available=104, text=EXP. ACUMULADA: 0 XP / máximo 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+1600px: Complete visible text fits actual capture layout: Last action result [required=30, available=130, text=ESTRATEGIA · Su ruptura castiga la defensa: lleva resistencia.]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=33, available=82, text=Combatir]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=60, available=82, text=EXPERIENCIA EN PROGRESO]
+1600px: Complete visible text fits actual capture layout: No artificial notifications [required=20, available=25, text=Cada victoria ilumina el siguiente tramo del camino.]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=33, available=36, text=←]
+Native Unity 1600x900 screenshot exists: vigilants-stage15-engendro
+Real camera pixels decode at expected resolution: vigilants-stage15-engendro
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-stage15-engendro
+Native proof uses the configured production height-matched RoyalScaler
+900px: Real stage marker 1 stays clear of the information card
+900px: Real stage marker 2 stays clear of the information card
+900px: Real stage marker 3 stays clear of the information card
+900px: Real stage marker 4 stays clear of the information card
+900px: Real stage marker 5 stays clear of the information card
+900px: Real stage marker 6 stays clear of the information card
+900px: Real stage marker 7 stays clear of the information card
+900px: Real stage marker 8 stays clear of the information card
+900px: Real stage marker 9 stays clear of the information card
+900px: Real stage marker 10 stays clear of the information card
+900px: Real stage marker 11 stays clear of the information card
+900px: Real stage marker 12 stays clear of the information card
+900px: Real stage marker 13 stays clear of the information card
+900px: Real stage marker 14 stays clear of the information card
+900px: Real stage marker 15 stays clear of the information card
+900px: Real stage marker 16 stays clear of the information card
+900px: Real stage marker 17 stays clear of the information card
+900px: Real stage marker 18 stays clear of the information card
+900px: Real stage marker 19 stays clear of the information card
+900px: Real stage marker 20 stays clear of the information card
+900px: Real stage marker 21 stays clear of the information card
+900px: Real stage marker 22 stays clear of the information card
+900px: Real stage marker 23 stays clear of the information card
+900px: Real stage marker 24 stays clear of the information card
+900px: Real stage marker 25 stays clear of the information card
+900px: Actual current guardian displays the reference skull banner
+900px: Entire live guardian banner remains inside the real illustrated scene
+900px: Complete visible text fits actual capture layout: Page heading [required=36,5625, available=86, text=Camino de los Vigilantes]
+900px: Complete visible text fits actual capture layout: Chapter overline [required=29,25, available=36, text=GUARDIÁN · RUPTURA ALTA · USA VIDA]
+900px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=30,375, available=38, text=5]
+900px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=30,375, available=38, text=10]
+900px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=30,375, available=38, text=20]
+900px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=30,375, available=38, text=25]
+900px: Complete visible text fits actual capture layout: Current live stage [required=32,0625, available=38, text=15]
+900px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,5625, available=44, text=CAMINO ASEGURADO · 14 ETAPAS]
+900px: Complete visible text fits actual capture layout: Stage progression [required=36,5625, available=44, text=CAPÍTULO 1 · ETAPA 15/25]
+900px: Complete visible text fits actual capture layout: Real enemy and trait [required=101,8125, available=110, text=Engendro de la Brecha
+Garras de la Brecha · RUPTURA]
+900px: Complete visible text fits actual capture layout: Actual available army [required=59,0625, available=66, text=Aldric · 60/60 tropas · Poder 2824]
+900px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=59,0625, available=64, text=Al vencer: 60 madera · 25 piedra · 29 XP]
+900px: Complete visible text fits actual capture layout: Offline hero experience [required=88,875, available=104, text=EXP. 0 XP · Máx. 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=32,0625, available=82, text=Combatir]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=59,0625, available=82, text=EXPERIENCIA EN PROGRESO]
+900px: Complete visible text fits actual capture layout: No artificial notifications [required=29,25, available=40, text=Cada victoria ilumina el siguiente tramo del camino.]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=70,875, available=78, text=←]
+Native Unity 900x1600 screenshot exists: vigilants-stage15-engendro
+Real camera pixels decode at expected resolution: vigilants-stage15-engendro
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-stage15-engendro
+Native proof uses the configured production height-matched RoyalScaler
+390px: Real stage marker 1 stays clear of the information card
+390px: Real stage marker 2 stays clear of the information card
+390px: Real stage marker 3 stays clear of the information card
+390px: Real stage marker 4 stays clear of the information card
+390px: Real stage marker 5 stays clear of the information card
+390px: Real stage marker 6 stays clear of the information card
+390px: Real stage marker 7 stays clear of the information card
+390px: Real stage marker 8 stays clear of the information card
+390px: Real stage marker 9 stays clear of the information card
+390px: Real stage marker 10 stays clear of the information card
+390px: Real stage marker 11 stays clear of the information card
+390px: Real stage marker 12 stays clear of the information card
+390px: Real stage marker 13 stays clear of the information card
+390px: Real stage marker 14 stays clear of the information card
+390px: Real stage marker 15 stays clear of the information card
+390px: Real stage marker 16 stays clear of the information card
+390px: Real stage marker 17 stays clear of the information card
+390px: Real stage marker 18 stays clear of the information card
+390px: Real stage marker 19 stays clear of the information card
+390px: Real stage marker 20 stays clear of the information card
+390px: Real stage marker 21 stays clear of the information card
+390px: Real stage marker 22 stays clear of the information card
+390px: Real stage marker 23 stays clear of the information card
+390px: Real stage marker 24 stays clear of the information card
+390px: Real stage marker 25 stays clear of the information card
+390px: Actual current guardian displays the reference skull banner
+390px: Entire live guardian banner remains inside the real illustrated scene
+390px: Phone text renders at least 12 actual pixels: Page heading
+390px: Complete visible text fits actual capture layout: Page heading [required=37,32228, available=86, text=Camino de los Vigilantes]
+390px: Phone text renders at least 12 actual pixels: Chapter overline
+390px: Complete visible text fits actual capture layout: Chapter overline [required=28,79147, available=36, text=GUARDIÁN · RUPTURA ALTA · USA VIDA]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 5
+390px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=29,85782, available=38, text=5]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 10
+390px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=29,85782, available=38, text=10]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 20
+390px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=29,85782, available=38, text=20]
+390px: Phone text renders at least 12 actual pixels: Guardian milestone 25
+390px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=29,85782, available=38, text=25]
+390px: Phone text renders at least 12 actual pixels: Current live stage
+390px: Complete visible text fits actual capture layout: Current live stage [required=31,99052, available=38, text=15]
+390px: Phone text renders at least 12 actual pixels: Live progress / no decorative counters
+390px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,72512, available=44, text=CAMINO ASEGURADO · 14 ETAPAS]
+390px: Phone text renders at least 12 actual pixels: Stage progression
+390px: Complete visible text fits actual capture layout: Stage progression [required=37,32228, available=44, text=CAPÍTULO 1 · ETAPA 15/25]
+390px: Phone text renders at least 12 actual pixels: Real enemy and trait
+390px: Complete visible text fits actual capture layout: Real enemy and trait [required=101,3033, available=110, text=Engendro de la Brecha
+Garras de la Brecha · RUPTURA]
+390px: Phone text renders at least 12 actual pixels: Actual available army
+390px: Complete visible text fits actual capture layout: Actual available army [required=58,64929, available=66, text=Aldric · 60/60 tropas · Poder 2824]
+390px: Phone text renders at least 12 actual pixels: Authoritative first victory reward
+390px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=58,64929, available=64, text=Al vencer: 60 madera · 25 piedra · 29 XP]
+390px: Phone text renders at least 12 actual pixels: Offline hero experience
+390px: Complete visible text fits actual capture layout: Offline hero experience [required=58,64929, available=104, text=EXP. 0 XP · Máx. 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=31,99052, available=82, text=Combatir]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=58,64929, available=82, text=EXPERIENCIA EN PROGRESO]
+390px: Phone text renders at least 12 actual pixels: No artificial notifications
+390px: Complete visible text fits actual capture layout: No artificial notifications [required=28,79147, available=40, text=Cada victoria ilumina el siguiente tramo del camino.]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=71,4455, available=78, text=←]
+Native Unity 390x844 screenshot exists: vigilants-stage15-engendro
+Real camera pixels decode at expected resolution: vigilants-stage15-engendro
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-stage15-engendro
+Native proof uses the configured production height-matched RoyalScaler
+844px: Real stage marker 1 stays clear of the information card
+844px: Real stage marker 2 stays clear of the information card
+844px: Real stage marker 3 stays clear of the information card
+844px: Real stage marker 4 stays clear of the information card
+844px: Real stage marker 5 stays clear of the information card
+844px: Real stage marker 6 stays clear of the information card
+844px: Real stage marker 7 stays clear of the information card
+844px: Real stage marker 8 stays clear of the information card
+844px: Real stage marker 9 stays clear of the information card
+844px: Real stage marker 10 stays clear of the information card
+844px: Real stage marker 11 stays clear of the information card
+844px: Real stage marker 12 stays clear of the information card
+844px: Real stage marker 13 stays clear of the information card
+844px: Real stage marker 14 stays clear of the information card
+844px: Real stage marker 15 stays clear of the information card
+844px: Real stage marker 16 stays clear of the information card
+844px: Real stage marker 17 stays clear of the information card
+844px: Real stage marker 18 stays clear of the information card
+844px: Real stage marker 19 stays clear of the information card
+844px: Real stage marker 20 stays clear of the information card
+844px: Real stage marker 21 stays clear of the information card
+844px: Real stage marker 22 stays clear of the information card
+844px: Real stage marker 23 stays clear of the information card
+844px: Real stage marker 24 stays clear of the information card
+844px: Real stage marker 25 stays clear of the information card
+844px: Actual current guardian displays the reference skull banner
+844px: Entire live guardian banner remains inside the real illustrated scene
+844px: Phone text renders at least 12 actual pixels: Page heading
+844px: Complete visible text fits actual capture layout: Page heading [required=43,84615, available=66, text=Camino de los Vigilantes]
+844px: Phone text renders at least 12 actual pixels: Chapter overline
+844px: Complete visible text fits actual capture layout: Chapter overline [required=34,61538, available=40,5, text=GUARDIÁN · RUPTURA ALTA · USA VIDA]
+844px: Phone text renders at least 12 actual pixels: Guardian milestone 5
+844px: Complete visible text fits actual capture layout: Guardian milestone 5 [required=34,61538, available=57, text=5]
+844px: Phone text renders at least 12 actual pixels: Guardian milestone 10
+844px: Complete visible text fits actual capture layout: Guardian milestone 10 [required=34,61538, available=57, text=10]
+844px: Phone text renders at least 12 actual pixels: Guardian milestone 20
+844px: Complete visible text fits actual capture layout: Guardian milestone 20 [required=34,61538, available=57, text=20]
+844px: Phone text renders at least 12 actual pixels: Guardian milestone 25
+844px: Complete visible text fits actual capture layout: Guardian milestone 25 [required=34,61538, available=57, text=25]
+844px: Phone text renders at least 12 actual pixels: Current live stage
+844px: Complete visible text fits actual capture layout: Current live stage [required=36,92308, available=57, text=15]
+844px: Phone text renders at least 12 actual pixels: Live progress / no decorative counters
+844px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=32,30769, available=42, text=CAMINO ASEGURADO · 14 ETAPAS]
+844px: Phone text renders at least 12 actual pixels: Stage progression
+844px: Complete visible text fits actual capture layout: Stage progression [required=41,53846, available=48, text=CAPÍTULO 1 · ETAPA 15/25]
+844px: Phone text renders at least 12 actual pixels: Real enemy and trait
+844px: Complete visible text fits actual capture layout: Real enemy and trait [required=78,46154, available=96, text=Engendro de la Brecha
+Garras de la Brecha · RUPTURA]
+844px: Phone text renders at least 12 actual pixels: Actual available army
+844px: Complete visible text fits actual capture layout: Actual available army [required=34,61538, available=42, text=Aldric · 60/60 tropas · Poder 2824]
+844px: Phone text renders at least 12 actual pixels: Authoritative first victory reward
+844px: Complete visible text fits actual capture layout: Authoritative first victory reward [required=34,61538, available=78, text=Al vencer: 60 madera · 25 piedra · 29 XP]
+844px: Phone text renders at least 12 actual pixels: Offline hero experience
+844px: Complete visible text fits actual capture layout: Offline hero experience [required=69,23077, available=117, text=EXP. 0 XP · Máx. 8 h
+Maestría PvE: Aldric 0 · Lyra 0]
+844px: Phone text renders at least 12 actual pixels: Original gilded label
+844px: Complete visible text fits actual capture layout: Original gilded label [required=36,92308, available=87, text=Combatir]
+844px: Phone text renders at least 12 actual pixels: Original gilded label
+844px: Complete visible text fits actual capture layout: Original gilded label [required=69,23077, available=87, text=EXPERIENCIA EN PROGRESO]
+844px: Phone text renders at least 12 actual pixels: No artificial notifications
+844px: Complete visible text fits actual capture layout: No artificial notifications [required=34,61538, available=37,5, text=Cada victoria ilumina el siguiente tramo del camino.]
+844px: Phone text renders at least 12 actual pixels: Original gilded label
+844px: Complete visible text fits actual capture layout: Original gilded label [required=80,76923, available=87, text=←]
+Native Unity 844x390 screenshot exists: vigilants-stage15-engendro
+Real camera pixels decode at expected resolution: vigilants-stage15-engendro
+Actual royal-navy and gilded visuals occupy the captured screen: vigilants-stage15-engendro
+Scouts has separate scene, not Codex or Missions overlay
+Scouts uses its own cinematic painterly expedition map
+The independent Scouts screen contains three real illustrated parchment contracts
+All three hand-engraved mission cards are actually visible in the native Canvas
+Gold frames, heraldic motifs and wax seals never steal mission-button touches
+Three actual reference parchment textures render with preserved sliced edges and no touch interception
+Three live board entries show their distinct authored contract illustrations
+Native proof uses the configured production height-matched RoyalScaler
+1600px: All three real contracts retain their illustrated mission previews
+1600px: Contract kind 2 uses its own undistorted painted scene
+1600px: Contract kind 3 uses its own undistorted painted scene
+1600px: Contract kind 0 uses its own undistorted painted scene
+1600px: Complete visible text fits actual capture layout: Page heading [required=40, available=44, text=Mesa de Exploradores]
+1600px: Complete visible text fits actual capture layout: Chapter overline [required=20, available=27, text=Envía a tus exploradores y descubre nuevas tierras]
+1600px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=21, available=28, text=SELLOS DEL GREMIO · 0 INFORMES]
+1600px: Complete visible text fits actual capture layout: Readable contract heading [required=56, available=62, text=Suministros extraviados]
+1600px: Complete visible text fits actual capture layout: Real scout order reward and status [required=43, available=86, text=60 madera · 25 piedra · 20 XP
+Disponible · 06:00]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=24, available=36, text=Enviar]
+1600px: Complete visible text fits actual capture layout: Readable contract heading [required=28, available=62, text=Rastros de la Brecha]
+1600px: Complete visible text fits actual capture layout: Real scout order reward and status [required=43, available=86, text=25 piedra · 45 comida · 20 XP
+Disponible · 07:30]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=24, available=36, text=Enviar]
+1600px: Complete visible text fits actual capture layout: Readable contract heading [required=28, available=62, text=Patrulla corrupta]
+1600px: Complete visible text fits actual capture layout: Real scout order reward and status [required=43, available=86, text=45 madera · 20 piedra · 20 XP
+Disponible · 03:00]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=24, available=36, text=Enviar]
+1600px: Complete visible text fits actual capture layout: No artificial notifications [required=20, available=25, text=Nuevos encargos: 02:22:17 · Máximo 6 pendientes]
+1600px: Complete visible text fits actual capture layout: Original gilded label [required=33, available=36, text=←]
+Native Unity 1600x900 screenshot exists: scout-mission-board
+Real camera pixels decode at expected resolution: scout-mission-board
+Actual royal-navy and gilded visuals occupy the captured screen: scout-mission-board
+Three authentic expedition previews render without stealing clicks
+Real map miniatures preserve the authored image aspect without stretching
+Native proof uses the configured production height-matched RoyalScaler
+900px: All three real contracts retain their illustrated mission previews
+900px: Contract kind 2 uses its own undistorted painted scene
+900px: Contract kind 3 uses its own undistorted painted scene
+900px: Contract kind 0 uses its own undistorted painted scene
+900px: Complete visible text fits actual capture layout: Page heading [required=36,5625, available=86, text=Mesa de Exploradores]
+900px: Complete visible text fits actual capture layout: Chapter overline [required=29,25, available=36, text=Envía a tus exploradores y descubre nuevas tierras]
+900px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,5625, available=44, text=SELLOS DEL GREMIO · 0 INFORMES]
+900px: Complete visible text fits actual capture layout: Readable contract heading [required=34,3125, available=62, text=Suministros extraviados]
+900px: Complete visible text fits actual capture layout: Real scout order reward and status [required=59,0625, available=119,3333, text=60 madera · 25 piedra · 20 XP
+Disponible · 06:00]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=30,375, available=78, text=Enviar]
+900px: Complete visible text fits actual capture layout: Readable contract heading [required=34,3125, available=62, text=Rastros de la Brecha]
+900px: Complete visible text fits actual capture layout: Real scout order reward and status [required=59,0625, available=119,3333, text=25 piedra · 45 comida · 20 XP
+Disponible · 07:30]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=30,375, available=78, text=Enviar]
+900px: Complete visible text fits actual capture layout: Readable contract heading [required=34,3125, available=62, text=Patrulla corrupta]
+900px: Complete visible text fits actual capture layout: Real scout order reward and status [required=59,0625, available=119,3333, text=45 madera · 20 piedra · 20 XP
+Disponible · 03:00]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=30,375, available=78, text=Enviar]
+900px: Complete visible text fits actual capture layout: No artificial notifications [required=29,25, available=40, text=Nuevos encargos: 02:22:17 · Máximo 6 pendientes]
+900px: Complete visible text fits actual capture layout: Original gilded label [required=70,875, available=78, text=←]
+Native Unity 900x1600 screenshot exists: scout-mission-board
+Real camera pixels decode at expected resolution: scout-mission-board
+Actual royal-navy and gilded visuals occupy the captured screen: scout-mission-board
+Native proof uses the configured production height-matched RoyalScaler
+390px: All three real contracts retain their illustrated mission previews
+390px: Contract kind 2 uses its own undistorted painted scene
+390px: Contract kind 3 uses its own undistorted painted scene
+390px: Contract kind 0 uses its own undistorted painted scene
+390px: Phone text renders at least 12 actual pixels: Page heading
+390px: Complete visible text fits actual capture layout: Page heading [required=37,32228, available=86, text=Mesa de Exploradores]
+390px: Phone text renders at least 12 actual pixels: Chapter overline
+390px: Complete visible text fits actual capture layout: Chapter overline [required=28,79147, available=36, text=Envía a tus exploradores y descubre nuevas tierras]
+390px: Phone text renders at least 12 actual pixels: Live progress / no decorative counters
+390px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,72512, available=44, text=SELLOS DEL GREMIO · 0 INFORMES]
+390px: Phone text renders at least 12 actual pixels: Readable contract heading
+390px: Complete visible text fits actual capture layout: Readable contract heading [required=35,18958, available=62, text=Suministros extraviados]
+390px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+390px: Complete visible text fits actual capture layout: Real scout order reward and status [required=58,64929, available=119,3333, text=60 madera · 25 piedra · 20 XP
+Disponible · 06:00]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=29,85782, available=78, text=Enviar]
+390px: Phone text renders at least 12 actual pixels: Readable contract heading
+390px: Complete visible text fits actual capture layout: Readable contract heading [required=35,18958, available=62, text=Rastros de la Brecha]
+390px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+390px: Complete visible text fits actual capture layout: Real scout order reward and status [required=58,64929, available=119,3333, text=25 piedra · 45 comida · 20 XP
+Disponible · 07:30]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=29,85782, available=78, text=Enviar]
+390px: Phone text renders at least 12 actual pixels: Readable contract heading
+390px: Complete visible text fits actual capture layout: Readable contract heading [required=35,18958, available=62, text=Patrulla corrupta]
+390px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+390px: Complete visible text fits actual capture layout: Real scout order reward and status [required=58,64929, available=119,3333, text=45 madera · 20 piedra · 20 XP
+Disponible · 03:00]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=29,85782, available=78, text=Enviar]
+390px: Phone text renders at least 12 actual pixels: No artificial notifications
+390px: Complete visible text fits actual capture layout: No artificial notifications [required=28,79147, available=40, text=Nuevos encargos: 02:22:17 · Máximo 6 pendientes]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=71,4455, available=78, text=←]
+Native Unity 390x844 screenshot exists: scout-mission-board
+Real camera pixels decode at expected resolution: scout-mission-board
+Actual royal-navy and gilded visuals occupy the captured screen: scout-mission-board
+Native proof uses the configured production height-matched RoyalScaler
+844px: All three real contracts retain their illustrated mission previews
+844px: Contract kind 2 uses its own undistorted painted scene
+844px: Contract kind 3 uses its own undistorted painted scene
+844px: Contract kind 0 uses its own undistorted painted scene
+844px: Phone text renders at least 12 actual pixels: Page heading
+844px: Complete visible text fits actual capture layout: Page heading [required=43,84615, available=66, text=Mesa de Exploradores]
+844px: Phone text renders at least 12 actual pixels: Chapter overline
+844px: Complete visible text fits actual capture layout: Chapter overline [required=34,61538, available=40,5, text=Envía a tus exploradores y descubre nuevas tierras]
+844px: Phone text renders at least 12 actual pixels: Live progress / no decorative counters
+844px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=32,30769, available=42, text=SELLOS DEL GREMIO · 0 INFORMES]
+844px: Phone text renders at least 12 actual pixels: Readable contract heading
+844px: Complete visible text fits actual capture layout: Readable contract heading [required=41,53846, available=93, text=Suministros extraviados]
+844px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+844px: Complete visible text fits actual capture layout: Real scout order reward and status [required=64,61539, available=105,66, text=60 madera · 25 piedra · 20 XP
+Disponible · 06:00]
+844px: Phone text renders at least 12 actual pixels: Original gilded label
+844px: Complete visible text fits actual capture layout: Original gilded label [required=34,61538, available=87, text=Enviar]
+844px: Phone text renders at least 12 actual pixels: Readable contract heading
+844px: Complete visible text fits actual capture layout: Readable contract heading [required=41,53846, available=93, text=Rastros de la Brecha]
+844px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+844px: Complete visible text fits actual capture layout: Real scout order reward and status [required=64,61539, available=105,66, text=25 piedra · 45 comida · 20 XP
+Disponible · 07:30]
+844px: Phone text renders at least 12 actual pixels: Original gilded label
+844px: Complete visible text fits actual capture layout: Original gilded label [required=34,61538, available=87, text=Enviar]
+844px: Phone text renders at least 12 actual pixels: Readable contract heading
+844px: Complete visible text fits actual capture layout: Readable contract heading [required=41,53846, available=93, text=Patrulla corrupta]
+844px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+844px: Complete visible text fits actual capture layout: Real scout order reward and status [required=64,61539, available=105,66, text=45 madera · 20 piedra · 20 XP
+Disponible · 03:00]
+844px: Phone text renders at least 12 actual pixels: Original gilded label
+844px: Complete visible text fits actual capture layout: Original gilded label [required=34,61538, available=87, text=Enviar]
+844px: Phone text renders at least 12 actual pixels: No artificial notifications
+844px: Complete visible text fits actual capture layout: No artificial notifications [required=34,61538, available=37,5, text=Nuevos encargos: 02:22:17 · Máximo 6 pendientes]
+844px: Phone text renders at least 12 actual pixels: Original gilded label
+844px: Complete visible text fits actual capture layout: Original gilded label [required=80,76923, available=87, text=←]
+Native Unity 844x390 screenshot exists: scout-mission-board
+Real camera pixels decode at expected resolution: scout-mission-board
+Actual royal-navy and gilded visuals occupy the captured screen: scout-mission-board
+Actual scout card 1 uses the approved blue interactive action graphic
+Actual scout dispatch 1 genuine live button clickable
+One real EventSystem is active
+Actual scout dispatch 1 actual topmost device raycast reaches the button
+Expedition 1 dispatches exactly one persistent UTC order
+Actual scout card 2 uses the approved blue interactive action graphic
+Actual scout dispatch 2 genuine live button clickable
+One real EventSystem is active
+Actual scout dispatch 2 actual topmost device raycast reaches the button
+Expedition 2 dispatches exactly one persistent UTC order
+Actual scout card 3 uses the approved blue interactive action graphic
+Actual scout dispatch 3 genuine live button clickable
+One real EventSystem is active
+Actual scout dispatch 3 actual topmost device raycast reaches the button
+Expedition 3 dispatches exactly one persistent UTC order
+All three cards dispatch and persist their genuine UTC return time
+Native proof uses the configured production height-matched RoyalScaler
+390px: All three real contracts retain their illustrated mission previews
+390px: Contract kind 2 uses its own undistorted painted scene
+390px: Contract kind 3 uses its own undistorted painted scene
+390px: Contract kind 0 uses its own undistorted painted scene
+390px: Phone text renders at least 12 actual pixels: Page heading
+390px: Complete visible text fits actual capture layout: Page heading [required=37,32228, available=86, text=Mesa de Exploradores]
+390px: Phone text renders at least 12 actual pixels: Chapter overline
+390px: Complete visible text fits actual capture layout: Chapter overline [required=28,79147, available=36, text=Envía a tus exploradores y descubre nuevas tierras]
+390px: Phone text renders at least 12 actual pixels: Live progress / no decorative counters
+390px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,72512, available=44, text=SELLOS DEL GREMIO · 0 INFORMES]
+390px: Phone text renders at least 12 actual pixels: Original victory heading
+390px: Complete visible text fits actual capture layout: Original victory heading [required=35,18958, available=84, text=EXPLORADORES EN CAMINO]
+390px: Phone text renders at least 12 actual pixels: Authoritative victory reward
+390px: Complete visible text fits actual capture layout: Authoritative victory reward [required=28,79147, available=158, text=Exploradores enviados; volverán con su informe]
+390px: Phone text renders at least 12 actual pixels: Readable contract heading
+390px: Complete visible text fits actual capture layout: Readable contract heading [required=35,18958, available=62, text=Suministros extraviados]
+390px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+390px: Complete visible text fits actual capture layout: Real scout order reward and status [required=58,64929, available=119,3333, text=60 madera · 25 piedra · 20 XP
+Regreso en 00:06:00]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=59,71564, available=78, text=En camino]
+390px: Phone text renders at least 12 actual pixels: Readable contract heading
+390px: Complete visible text fits actual capture layout: Readable contract heading [required=35,18958, available=62, text=Rastros de la Brecha]
+390px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+390px: Complete visible text fits actual capture layout: Real scout order reward and status [required=58,64929, available=119,3333, text=25 piedra · 45 comida · 20 XP
+Regreso en 00:07:30]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=59,71564, available=78, text=En camino]
+390px: Phone text renders at least 12 actual pixels: Readable contract heading
+390px: Complete visible text fits actual capture layout: Readable contract heading [required=35,18958, available=62, text=Patrulla corrupta]
+390px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+390px: Complete visible text fits actual capture layout: Real scout order reward and status [required=58,64929, available=119,3333, text=45 madera · 20 piedra · 20 XP
+Regreso en 00:03:00]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=59,71564, available=78, text=En camino]
+390px: Phone text renders at least 12 actual pixels: No artificial notifications
+390px: Complete visible text fits actual capture layout: No artificial notifications [required=28,79147, available=40, text=Nuevos encargos: 02:22:17 · Máximo 6 pendientes]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=71,4455, available=78, text=←]
+Native Unity 390x844 screenshot exists: scout-missions-underway
+Real camera pixels decode at expected resolution: scout-missions-underway
+Actual royal-navy and gilded visuals occupy the captured screen: scout-missions-underway
+Only disposable probe clock advances for offline return proof
+Native proof uses the configured production height-matched RoyalScaler
+390px: All three real contracts retain their illustrated mission previews
+390px: Contract kind 2 uses its own undistorted painted scene
+390px: Contract kind 3 uses its own undistorted painted scene
+390px: Contract kind 0 uses its own undistorted painted scene
+390px: Phone text renders at least 12 actual pixels: Page heading
+390px: Complete visible text fits actual capture layout: Page heading [required=37,32228, available=86, text=Mesa de Exploradores]
+390px: Phone text renders at least 12 actual pixels: Chapter overline
+390px: Complete visible text fits actual capture layout: Chapter overline [required=28,79147, available=36, text=Envía a tus exploradores y descubre nuevas tierras]
+390px: Phone text renders at least 12 actual pixels: Live progress / no decorative counters
+390px: Complete visible text fits actual capture layout: Live progress / no decorative counters [required=27,72512, available=44, text=SELLOS DEL GREMIO · 0 INFORMES]
+390px: Phone text renders at least 12 actual pixels: Readable contract heading
+390px: Complete visible text fits actual capture layout: Readable contract heading [required=35,18958, available=62, text=Suministros extraviados]
+390px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+390px: Complete visible text fits actual capture layout: Real scout order reward and status [required=58,64929, available=119,3333, text=60 madera · 25 piedra · 20 XP
+Listo para reclamar]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=29,85782, available=78, text=Recoger]
+390px: Phone text renders at least 12 actual pixels: Readable contract heading
+390px: Complete visible text fits actual capture layout: Readable contract heading [required=35,18958, available=62, text=Rastros de la Brecha]
+390px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+390px: Complete visible text fits actual capture layout: Real scout order reward and status [required=58,64929, available=119,3333, text=25 piedra · 45 comida · 20 XP
+Listo para reclamar]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=29,85782, available=78, text=Recoger]
+390px: Phone text renders at least 12 actual pixels: Readable contract heading
+390px: Complete visible text fits actual capture layout: Readable contract heading [required=35,18958, available=62, text=Patrulla corrupta]
+390px: Phone text renders at least 12 actual pixels: Real scout order reward and status
+390px: Complete visible text fits actual capture layout: Real scout order reward and status [required=58,64929, available=119,3333, text=45 madera · 20 piedra · 20 XP
+Listo para reclamar]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=29,85782, available=78, text=Recoger]
+390px: Phone text renders at least 12 actual pixels: No artificial notifications
+390px: Complete visible text fits actual capture layout: No artificial notifications [required=28,79147, available=40, text=Nuevos encargos: 02:14:46 · Máximo 6 pendientes]
+390px: Phone text renders at least 12 actual pixels: Original gilded label
+390px: Complete visible text fits actual capture layout: Original gilded label [required=71,4455, available=78, text=←]
+Native Unity 390x844 screenshot exists: scout-missions-ready
+Real camera pixels decode at expected resolution: scout-missions-ready
+Actual royal-navy and gilded visuals occupy the captured screen: scout-missions-ready
+Actual scout reward claim 3 genuine live button clickable
+One real EventSystem is active
+Actual scout reward claim 3 actual topmost device raycast reaches the button
+Actual scout reward claim 2 genuine live button clickable
+One real EventSystem is active
+Actual scout reward claim 2 actual topmost device raycast reaches the button
+Actual scout reward claim 1 genuine live button clickable
+One real EventSystem is active
+Actual scout reward claim 1 actual topmost device raycast reaches the button
+Real offline interval accrued hero experience
+Claim actual offline hero experience genuine live button clickable
+One real EventSystem is active
+Claim actual offline hero experience actual topmost device raycast reaches the button
+Actual XP button grants earned experience once
+Each dispatched card is claimed exactly once through its real button
+Return to Valoria genuine live button clickable
+One real EventSystem is active
+Return to Valoria actual topmost device raycast reaches the button
+Actual back button closes the activity destination
+Real save reload preserves stage progress and all three reward claims
+No duplicate RoyalHUD/Canvas created
+All 19 genuine capture layouts passed every typography/visibility check; failures=
+ART_APPROVED=false

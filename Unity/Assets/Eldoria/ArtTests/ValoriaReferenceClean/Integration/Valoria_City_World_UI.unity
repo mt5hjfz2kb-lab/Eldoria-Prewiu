@@ -699,7 +699,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 10435745}
-  m_Mesh: {fileID: 4300000, guid: 572a0eb87d9d5e848a81ec06a4f21db5, type: 2}
+  m_Mesh: {fileID: 4300000, guid: ea87e2ba26c45474f8a917ae19bc8ef4, type: 2}
 --- !u!1 &11146892
 GameObject:
   m_ObjectHideFlags: 0
@@ -27144,7 +27144,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 667129573}
-  m_Mesh: {fileID: 4300000, guid: 6bb2aded47ca7024ca452746cf1be60e, type: 2}
+  m_Mesh: {fileID: 4300000, guid: c9a98e58294e44b4fbdb73608cb4efc3, type: 2}
 --- !u!1 &667913598
 GameObject:
   m_ObjectHideFlags: 0
@@ -48115,6 +48115,8 @@ MonoBehaviour:
   regionalZoom: 60
   globalZoom: 110
   tilt: 55
+  heading: 0
+  AllowWholeRegionOverview: 0
   edgeMargin: 2
   dragThresholdPixels: 8
   cameraDistance: 140
@@ -50545,6 +50547,10 @@ MonoBehaviour:
   SwipeClip: ExpressiveClawSwipeV4
   BreatheAmplitude: 0.028
   SwayDegrees: 3.5
+  NearPresence: 1.9
+  StrategicPresence: 4.5
+  NearOrthographicZoom: 14
+  FarOrthographicZoom: 70
 --- !u!1 &1331995042
 GameObject:
   m_ObjectHideFlags: 0

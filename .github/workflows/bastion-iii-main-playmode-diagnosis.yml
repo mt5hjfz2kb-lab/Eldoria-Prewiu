@@ -1,0 +1,48 @@
+name: '[ELDORIA] Diagnose merged Bastion III PlayMode failure'
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/bastion-iii-main-playmode-diagnosis.yml'
+permissions:
+  actions: read
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Download exact merged-main PlayMode XML from native artifact
+        uses: actions/download-artifact@v4
+        with:
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: 40583315559
+          name: eldoria-unity-checks-c4a1ad9af70ba6f95ac8a53e2350f9e5bee03b08
+          github-token: ${{ github.token }}
+          path: evidence
+      - name: Print exact NUnit failure names, messages and stack traces
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          root = Path('evidence')
+          files = list(root.rglob('Eldoria-PlayMode.xml'))
+          if len(files) != 1:
+              raise RuntimeError('Expected one exact PlayMode XML, found '+repr(files))
+          suite = ET.parse(files[0]).getroot()
+          print('PLAYMODE_EXACT_SOURCE=c4a1ad9af70ba6f95ac8a53e2350f9e5bee03b08')
+          print('PLAYMODE_SUMMARY=',suite.attrib)
+          tests = suite.findall('.//test-case')
+          bad=[case for case in tests if case.attrib.get('result') not in ('Passed','Skipped')]
+          print('PLAYMODE_TESTS=',len(tests),'FAILED_OR_INCONCLUSIVE=',len(bad))
+          for case in bad:
+              print('FAILED_TEST=',case.attrib.get('fullname',case.attrib.get('name')))
+              fail = case.find('failure')
+              if fail is not None:
+                  print('FAILURE_MESSAGE=',(fail.findtext('message') or '')[:3500])
+                  print('FAILURE_STACK=',(fail.findtext('stack-trace') or '')[:5000])
+          if not bad and suite.attrib.get('result')!='Passed':
+              print('INCONCLUSIVE_RUN=',ET.tostring(suite,encoding='unicode')[:3000])
+          PY

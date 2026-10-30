@@ -1,6 +1,14 @@
 # Eldoria — arranque técnico vigente
 
+> **Pacto fundacional permanente (ELDORIA_OWNER_AI_COLLABORATION_V1):** leer la sección «Pacto fundacional propietario–IA» de [AGENTS.md](../AGENTS.md) **antes de empezar o continuar cualquier trabajo**. El propietario no programa; la IA debe tomar iniciativa, ejercer juicio crítico independiente, contrastar el resultado real con el objetivo y reconocer errores, sin esperar a que el propietario diagnostique los problemas. No confundir éxito técnico con calidad del juego. Esta responsabilidad subsiste en todos los relevos.
+
 Actualizado el 21-10-2026 por encargo de reducir esperas sin alterar el juego.
+
+## Preflight obligatorio antes de crear una PR — corrección del incidente #115/#116
+
+Antes de abrir una rama o PR o reservar Unity, consultar `main/pipeline/active-workstreams.json` **y las PR abiertas del repositorio**. Si hay una PR canónica para el mismo objetivo (por ejemplo, «Crónica Real» es PR #115, workstream `eldoria-ui-v3-management-completion-20261021`), continuar allí o transferir su titularidad mediante el protocolo; nunca crear otro PR para evitar un conflicto de chat.
+
+En PR **#117 en adelante** escribir `Workstream-ID: <id canónico reclamado>` en el cuerpo. `canonical-pr-ownership.yml` comprueba esto automáticamente sin tocar Unity; un gate rojo impide tratar esa candidata como válida. El chequeo es posterior a la apertura, no sustituye la consulta previa, y no desplaza automáticamente procesos/chat existentes. Las PR históricas no deben revivirse por esta regla.
 
 ## Arranque mínimo
 

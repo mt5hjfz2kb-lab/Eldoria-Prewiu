@@ -19,6 +19,18 @@
       "note": "Decisiones con fechas: verificar supersesiones"
     },
     {
+      "path": "docs/ALDRIC_DIALOGUE_BUST_INTEGRATION_20261027.md",
+      "domain": "art",
+      "status": "review_pending",
+      "note": "Sir Aldric: cuatro retratos auténticos desde modelo 3D aprobado con capa azul, integración UI Royal Gold V3 en PR118; Unity nativo/QA visual pendiente."
+    },
+    {
+      "path": "docs/ALDRIC_HERO_PREPRODUCCION_20261027.md",
+      "domain": "art",
+      "status": "review_pending",
+      "note": "Preproducción del piloto 3D de Sir Aldric. No acredita integración ni autorización de gasto."
+    },
+    {
       "path": "docs/ANDROID_NATIVE_PLAYTEST.md",
       "domain": "quality",
       "status": "review_pending"
@@ -80,6 +92,12 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/BASTION_III_FISSURE_CANON_20261027.md",
+      "domain": "gameplay",
+      "status": "current",
+      "note": "Canon aprobado de fisura y Lyra para Bastión III en el vertical slice; no autoriza migración Unity ni publicación."
+    },
+    {
       "path": "docs/DOCUMENTATION_INDEX.md",
       "domain": "navigation",
       "status": "current",
@@ -108,6 +126,12 @@
       "domain": "art",
       "status": "reference",
       "note": "Dirección global de arte y fuentes; no aprobación visual de escena"
+    },
+    {
+      "path": "docs/ELDORIA_ART_KNOWLEDGE_PHASE1_20261021.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Inventario de técnicas y resultados curados, solo consulta; no autorización ni ejecución automática."
     },
     {
       "path": "docs/ELDORIA_ART_LEARNING_EVIDENCE_V1.md",
@@ -229,6 +253,11 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/ELDORIA_SHARED_RUNNER_CHECKOUT_COLLISION_20261020.md",
+      "status": "review_pending",
+      "domain": "infrastructure"
+    },
+    {
       "path": "docs/ELDORIA_STABILIZATION_HANDOFF_20261014.md",
       "domain": "operations",
       "status": "current",
@@ -248,6 +277,16 @@
       "path": "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
       "domain": "project",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
     },
     {
       "path": "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
@@ -278,6 +317,12 @@
       "note": "Método de trabajo visual sujeto a AGENTS"
     },
     {
+      "path": "docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md",
+      "domain": "gameplay",
+      "status": "review_pending",
+      "note": "Correcciones en PR #132; todavía sin aceptación nativa ni conciliación de propiedad con PR #130."
+    },
+    {
       "path": "docs/ELDORIA_WORK_VISUAL_INTEGRATION_BRIEF_V1.md",
       "domain": "art",
       "status": "review_pending"
@@ -304,9 +349,27 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/ELDORIA_WORLD4X_GRAPHICS_BREAKTHROUGH_PLAYBOOK_20261024.md",
+      "status": "reference",
+      "domain": "art",
+      "note": "Guía contrastada del desbloqueo gráfico World4X: Blender fuente editable, GLB/Unity, cámaras e híbrido 2,5D/3D, mejoras I/K/O/AG/AI, fracasos y requisitos 4X vivo. Método reutilizable, no ART_APPROVED ni estado en vivo."
+    },
+    {
+      "path": "docs/ELDORIA_WORLD4X_REUSE_EXISTING_CREATURES_20261023.md",
+      "status": "reference",
+      "domain": "art",
+      "note": "Nota del propietario para futuros World4X: Engendro 3D integrado en Bastión II, Jabalí de roca archivado para capítulo III y separación terreno/población dinámica; no nueva misión ni permiso de gasto."
+    },
+    {
       "path": "docs/GOLDEN_PRIMARY_FORMS_PROFESSIONAL_RECONSTRUCTION_V1.md",
       "domain": "art",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/HEROES_UI_APPROVED_ART_LOCK_20261030.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Referencia visual de héroes aprobada por el propietario; preparación sin UI implementada ni autoridad para iniciar producción o publicación."
     },
     {
       "path": "docs/HISTORICAL_VISUAL_RESIDUE_CLEANUP_V1.md",
@@ -340,6 +403,12 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/ROYAL_GOLD_V2_LIVE_DELIVERY_20261020.md",
+      "domain": "quality",
+      "status": "reference",
+      "note": "Exact native191 delivery evidence; not art approval or physical device certification."
+    },
+    {
       "path": "docs/STONE_ARCHITECTURE_KIT_V1_FINAL_GATE.md",
       "domain": "art",
       "status": "review_pending"
@@ -348,6 +417,47 @@
       "path": "docs/TERRAIN_TERRACE_KIT_V1_FINAL_GATE.md",
       "domain": "art",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/TRIPO_API_AUDITORIA_CAPACIDADES_Y_BRECHAS_20261027.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Auditoría técnica de Tripo API; no concede licencia para nuevos créditos ni aprobación visual."
+    },
+    {
+      "path": "docs/TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_ENGENDRO_RESULTADO_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_FOCO_RESULTADO_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_JABALI_LECCIONES_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_NORMA_PRODUCCION_V1.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_MOBILE_LOD_PROOF_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
     },
     {
       "path": "docs/TRIPO_MODULE_PIPELINE.md",
@@ -1074,68 +1184,6 @@
       "domain": "engineering",
       "status": "current",
       "note": "Contrato de componentes Unity"
-    },
-    {
-      "path": "docs/ROYAL_GOLD_V2_LIVE_DELIVERY_20261020.md",
-      "domain": "quality",
-      "status": "reference",
-      "note": "Exact native191 delivery evidence; not art approval or physical device certification."
-    },
-    {
-      "path": "docs/ELDORIA_SHARED_RUNNER_CHECKOUT_COLLISION_20261020.md",
-      "status": "review_pending",
-      "domain": "infrastructure"
-    },
-    {
-      "path": "docs/TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_API_ENGENDRO_RESULTADO_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_API_FOCO_RESULTADO_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_API_JABALI_LECCIONES_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_API_NORMA_PRODUCCION_V1.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_MOBILE_LOD_PROOF_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/ELDORIA_ART_KNOWLEDGE_PHASE1_20261021.md",
-      "domain": "art",
-      "status": "reference",
-      "note": "Inventario de técnicas y resultados curados, solo consulta; no autorización ni ejecución automática."
     }
   ]
 }

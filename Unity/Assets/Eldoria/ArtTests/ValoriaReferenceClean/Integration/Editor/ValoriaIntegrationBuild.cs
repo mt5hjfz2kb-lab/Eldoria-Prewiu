@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Eldoria.Domain;
 using Eldoria.Presentation;
+using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
 using Eldoria.UI.RoyalGold.V2;
 using Eldoria.World4XPrototype;
@@ -153,9 +154,24 @@ namespace Eldoria.ReferenceClean.Editor {
    try{Graphics.Blit(source,rt);RenderTexture.active=rt;var copy=new Texture2D(source.width,source.height,TextureFormat.RGBA32,true,linear){name=source.name,wrapMode=source.wrapMode,filterMode=source.filterMode,anisoLevel=source.anisoLevel};copy.ReadPixels(new Rect(0,0,source.width,source.height),0,0);copy.Apply(true,false);return copy;}
    finally{RenderTexture.active=active;RenderTexture.ReleaseTemporary(rt);}
   }
-  static void Entered(PlayModeStateChange state){if(state!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(Flag,false))return;SessionState.SetBool(Flag,false);EditorApplication.delayCall+=()=>{var h=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();if(h==null){EditorApplication.Exit(1);return;}h.StartCoroutine(Probe(h));};}
+  static void Entered(PlayModeStateChange state){if(state!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(Flag,false))return;SessionState.SetBool(Flag,false);EditorApplication.delayCall+=()=>{var h=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();if(h==null){EditorApplication.Exit(1);return;}h.StartCoroutine(GuardedProbe(h));};}
+  static IEnumerator GuardedProbe(ValoriaIntegratedWorld h){
+   var probe=Probe(h);
+   while(true){
+    object current=null;bool moved=false;Exception failure=null;
+    try{moved=probe.MoveNext();if(moved)current=probe.Current;}
+    catch(Exception e){failure=e;}
+    if(failure!=null){
+     Debug.LogException(failure);
+     File.WriteAllText(Path.Combine(Ev,"integration-failure.txt"),failure.ToString());
+     EditorApplication.Exit(1);yield break;
+    }
+    if(!moved)yield break;
+    yield return current;
+   }
+  }
   static IEnumerator Probe(ValoriaIntegratedWorld h){
-   framingChecks.Clear();
+   framingChecks.Clear();managementChecks.Clear();
    yield return null;yield return new WaitForSecondsRealtime(1);
    string failure=null;var checks=new List<string>();var city=h.GetComponent<ValoriaReferenceCleanGameplay>();
    bool Check(Action action,string name){if(failure!=null)return false;try{action();checks.Add(name);return true;}catch(Exception e){failure=e.ToString();Debug.LogException(e);return false;}}
@@ -163,7 +179,15 @@ namespace Eldoria.ReferenceClean.Editor {
     h.Guidance.PresentMilestone();
     Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR"&&h.Hud.NarrativeSourceText.Contains("La Brecha apareció"),"Original introductory narrator missing");
     Need(h.Hud.NarrativeTurnCount==3,"Web narrator, Aldric and tutorial turns not preserved");
-    Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen&&!h.Hud.NarrativeIsRevealing,"First touch must reveal, not skip a speaker");
+    // Native Editor startup may consume the typewriter's real-time budget before
+    // this probe runs. Restart the SAME turn through the normal language API,
+    // preserving source text, turn index and completion callback. Never change
+    // runtime typewriter speed or weaken the real pointer/reveal assertion.
+    string openingText=h.Hud.NarrativeSourceText;int openingTurn=h.Hud.NarrativeTurnIndex;
+    Need(openingTurn==0,"Opening narrator already advanced before input probe");
+    h.Hud.SetEnglish(true);h.Hud.SetEnglish(false);
+    Need(h.Hud.NarrativeTurnIndex==openingTurn&&h.Hud.NarrativeSourceText==openingText&&h.Hud.NarrativeIsRevealing,"Opening reveal fixture did not preserve the canonical turn");
+    Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen&&!h.Hud.NarrativeIsRevealing&&h.Hud.NarrativeTurnIndex==openingTurn,"First touch must reveal, not skip a speaker");
     Capture(h,"integration-story.png",900,1600);
     Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeSpeaker=="Sir Aldric","Aldric did not follow narrator");
     Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen,"Reveal skipped Aldric");
@@ -256,7 +280,7 @@ namespace Eldoria.ReferenceClean.Editor {
      "; point="+center+"; hits="+string.Join(",",hits.Select(x=>x.gameObject.name)));
    },"World navigation is touchable even while a building sheet is open");
    var before=JsonUtility.ToJson(city.Gateway.Snapshot());
-   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);var remembered=h.WorldNavigation.target;float zoom=h.WorldCamera.orthographicSize;h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(remembered,h.WorldNavigation.target)<.02f&&Mathf.Abs(zoom-h.WorldCamera.orthographicSize)<.02f,"Returning world lost position or zoom");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return preserves session");
+   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var entryTarget=h.WorldNavigation.target;float entryZoom=h.WorldCamera.orthographicSize;var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);Debug.Log("ELDORIA_NATIVE_STRATEGIC_ENTRY size="+h.WorldCamera.orthographicSize+" aspect="+h.WorldCamera.aspect+" heading="+h.WorldNavigation.heading+" tilt="+h.WorldNavigation.tilt+" distance="+h.WorldNavigation.cameraDistance+" target="+h.WorldNavigation.target+" min="+h.WorldNavigation.minimum+" max="+h.WorldNavigation.maximum);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Debug.Log("ELDORIA_NATIVE_VERTICAL_PAN before="+start+" after="+h.WorldNavigation.target);Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(entryTarget,h.WorldNavigation.target)<.02f&&Mathf.Abs(entryZoom-h.WorldCamera.orthographicSize)<.02f,"Returning world must restore the canonical Valoria near entry");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");h.WorldNavigation.SetZoomLevel(1,true);float oldRegional=h.WorldCamera.orthographicSize;Capture(h,"integration-issue95-world-before-regional.png",1600,900);Capture(h,"integration-issue95-world-before-portrait.png",900,1600);h.WorldNavigation.EnterStrategicView(h.WorldHome);Need(h.WorldCamera.orthographicSize>oldRegional*1.45f,"World still lacks a genuinely larger strategic entry footprint");Capture(h,"integration-issue95-world-after-strategic.png",1600,900);Capture(h,"integration-issue95-world-after-portrait.png",900,1600);Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return restores near framing without mutating save");
    h.SetWorld(true);h.Select("forest-valoria");yield return null;
    Check(()=>{
     var v2=h.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
@@ -400,7 +424,100 @@ namespace Eldoria.ReferenceClean.Editor {
     }
    },"Royal march confirmation and real return-to-city button");
    yield return new WaitForSecondsRealtime(.4f);
-   h.SetWorld(true);h.Select("engendro-valoria");yield return null;
+   // Issue #95: preserve two controlled, authentic Unity frames of the
+   // ALIVE Bastion II enemy, before the real existing combat/loot/clock probe.
+   // Selection is restored before the existing authorization and march action.
+   // No invented rival, shortcut, rewards or changed gameplay transitions.
+   h.SetWorld(true);
+   var spawnTarget=h.FindTarget("engendro-valoria");
+   Need(spawnTarget!=null,"Authored Spawnling destination missing before battle");
+   var animated=h.WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
+   Need(animated&&animated.ModelRoot&&animated.ModelRoot.activeInHierarchy,
+    "Real animated Spawnling not visible before its existing Bastion II fight");
+   float nearPresence=animated.NearPresence,farPresence=animated.StrategicPresence;
+   // Compare against the genuine world ground, not only the old mesh height.
+   var prairie=h.WorldRoot.GetComponentsInChildren<MeshFilter>(true)
+    .FirstOrDefault(f=>f.name=="ZoneOne continuous prairie source");
+   Need(prairie&&prairie.sharedMesh,"Original world ground absent for Engendro foot test");
+   var groundCollider=prairie.GetComponent<MeshCollider>();
+   bool disposableGround=groundCollider==null;
+   if(disposableGround)groundCollider=prairie.gameObject.AddComponent<MeshCollider>();
+   var savedGroundMesh=groundCollider.sharedMesh;
+   float groundY;
+   try{
+    groundCollider.sharedMesh=prairie.sharedMesh;Physics.SyncTransforms();
+    Need(groundCollider.Raycast(new Ray(new Vector3(spawnTarget.transform.position.x,200,
+      spawnTarget.transform.position.z),Vector3.down),out var hit,400),
+      "No original terrain directly beneath Engendro");
+    groundY=hit.point.y;
+   }finally{
+    if(disposableGround)Object.DestroyImmediate(groundCollider);
+    else groundCollider.sharedMesh=savedGroundMesh;
+   }
+   Bounds CreatureBounds(){
+    // The V4 rig has precomputed renderer animation culling bounds much
+    // larger than the mesh itself. Measure actual transformed skin vertices,
+    // exactly as original animated-model integration did. Otherwise a
+    // false 160m bounding volume is mistaken for the creature's visible foot.
+    Need(animated.TryGeometryBounds(out var geometry),"Animated V4 skin geometry not CPU-readable");
+    Need(geometry.size.y>.05f,"Animated enemy mesh geometry is degenerate");
+    return geometry;
+   }
+   void VerifyFoot(Bounds before,Bounds after,string level){
+    Debug.Log("ISSUE95_B2_FOOT_SURVEY level="+level+" ground="+groundY.ToString("F4")+
+     " beforeMin="+before.min.y.ToString("F4")+
+     " afterMin="+after.min.y.ToString("F4")+
+     " beforeXZ="+before.center.x.ToString("F3")+","+before.center.z.ToString("F3")+
+     " afterXZ="+after.center.x.ToString("F3")+","+after.center.z.ToString("F3")+
+     " hotspot="+spawnTarget.transform.position.ToString("F3")+
+     " afterSize="+after.size.ToString("F3"));
+    Need(Mathf.Abs(before.min.y-after.min.y)<.4f &&
+     Vector2.Distance(new Vector2(before.center.x,before.center.z),
+      new Vector2(after.center.x,after.center.z))<.6f,
+      "Enlarged Engendro lost original foot/XY contact at "+level);
+    Need(after.size.y>before.size.y*1.7f,"B2 visual growth insignificant at "+level);
+    Need(Mathf.Abs(after.min.y-groundY)<.55f,
+      "Engendro has lost CONTACT with actual existing terrain at "+level);
+    Need(Vector2.Distance(new Vector2(after.center.x,after.center.z),
+      new Vector2(spawnTarget.transform.position.x,spawnTarget.transform.position.z))<1.5f,
+      "Engendro visual no longer aligned to real encounter hotspot at "+level);
+   }
+   h.Select("");
+   h.WorldNavigation.EnterStrategicView(spawnTarget.transform.position);
+   h.Focus(spawnTarget.gameObject);
+   yield return null;
+   animated.NearPresence=animated.StrategicPresence=1f;
+   yield return null;
+   var regionalBefore=CreatureBounds();
+   Check(()=>Capture(h,"integration-art-engendro-before-strategic.png",1600,900),
+    "real old-size model, fixed strategic camera before enlargement");
+   animated.NearPresence=nearPresence;animated.StrategicPresence=farPresence;
+   yield return null;
+   Check(()=>{
+    VerifyFoot(regionalBefore,CreatureBounds(),"strategic");
+    Capture(h,"integration-art-engendro-prebattle-strategic.png",1600,900);
+   },"real B2 strategic enlarged silhouette AND exact grounded anchor");
+   h.WorldNavigation.SetZoomLevel(2,true);
+   // This is an explicit local zoom (not a Focus() auto-fit back to macro).
+   // Offset toward the screen's open centre while retaining the hotspot.
+   h.WorldNavigation.PanTo(spawnTarget.transform.position+new Vector3(0,0,3f));
+   Need(Mathf.Abs(h.WorldCamera.orthographicSize-h.WorldNavigation.localZoom)<.02f&&
+    h.WorldCamera.orthographicSize<h.WorldNavigation.regionalZoom*.25f,
+    "Local view zoom was silently lost: actual="+h.WorldCamera.orthographicSize+
+    " configuredLocal="+h.WorldNavigation.localZoom);
+   yield return null;
+   animated.NearPresence=animated.StrategicPresence=1f;
+   yield return null;
+   var localBefore=CreatureBounds();
+   Check(()=>Capture(h,"integration-art-engendro-before-close.png",1600,900),
+    "real original 3m close-size comparison at identical camera");
+   animated.NearPresence=nearPresence;animated.StrategicPresence=farPresence;
+   yield return null;
+   Check(()=>{
+    VerifyFoot(localBefore,CreatureBounds(),"local");
+    Capture(h,"integration-art-engendro-prebattle-close.png",1600,900);
+   },"real B2 local enlarged silhouette AND exact grounded anchor");
+   h.Select("engendro-valoria");yield return null;
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Bastion II content boundary not reached");Need(h.Read("",false).MissionSteps.Length==5&&h.Read("",false).MissionSteps.All(step=>step.Done),"Completed Bastion II checklist does not reflect actual saved progression");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
    Check(()=>{foreach(string name in new[]{"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"})Need(SessionState.GetString(Flag+name,"")==FileHash(Path.Combine(UnityEngine.Application.persistentDataPath,name)),"Canonical save changed: "+name);},"canonical save byte hashes preserved");
    // Render the actual authored destinations through the same Royal UI and
@@ -414,7 +531,7 @@ namespace Eldoria.ReferenceClean.Editor {
     Check(()=>{Need(!h.Hud.NarrativeOpen,"Narrative obscures destination at capture: "+destination);Capture(h,"integration-art-"+destination+"-landscape.png",1600,900);Capture(h,"integration-art-"+destination+"-portrait.png",900,1600);},"native authored destination capture "+destination);
    }
    h.SetWorld(false);h.Hud.Refresh();
-   var report=new Report{source=Environment.GetEnvironmentVariable("GITHUB_SHA"),status=failure==null?"INTEGRATION_PASS_ART_REVIEW_REQUIRED":"FAIL",error=failure,checks=checks.ToArray(),scene=Scene,framing=framingChecks.ToArray()};
+   var report=new Report{source=Environment.GetEnvironmentVariable("GITHUB_SHA"),status=failure==null?"INTEGRATION_PASS_ART_REVIEW_REQUIRED":"FAIL",error=failure,checks=checks.ToArray(),scene=Scene,framing=framingChecks.ToArray(),management=managementChecks.ToArray()};
    if(failure==null) {
     File.WriteAllText(Path.Combine(Ev,"integration-input-manifest.txt"),ComputeInputManifest());
     File.WriteAllText(Path.Combine(Ev,"integration-input-signature.txt"),ComputeInputSignature());
@@ -457,13 +574,23 @@ namespace Eldoria.ReferenceClean.Editor {
     else if(button==hud.Mission.ListToggle&&!hud.Mission.ListExpanded)button=v2.VisibleChapterButton;
     else if(button==hud.Building.Primary.Button)button=v2.VisibleBuildingButton;
    }
-   Need(button!=null&&button.interactable&&button.gameObject.activeInHierarchy,"Royal action not interactable");Canvas.ForceUpdateCanvases();
+   if(button==null||!button.interactable||!button.gameObject.activeInHierarchy){
+    var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
+    var site=host?host.FindTarget(hud.SelectedBuildingId):null;
+    Debug.LogError("ELDORIA_ACTION_DIAGNOSTIC selected="+hud.SelectedBuildingId+
+     " site="+(site?site.transform.position.ToString():"missing")+
+     " active="+(site&&site.gameObject.activeInHierarchy)+
+     " camera="+(host?host.PlayerCamera.transform.position.ToString():"missing")+
+     " zoom="+(host?host.PlayerCamera.orthographicSize:0)+
+     " viewport="+(site&&host?host.PlayerCamera.WorldToViewportPoint(site.transform.position).ToString():"missing"));
+   }
+   Need(button!=null&&button.interactable&&button.gameObject.activeInHierarchy,"Royal action not interactable: "+hud.SelectedBuildingId);Canvas.ForceUpdateCanvases();
    var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);var p=RectTransformUtility.WorldToScreenPoint(null,(corners[0]+corners[2])*.5f);
    var data=new PointerEventData(EventSystem.current){pointerId=-1,button=PointerEventData.InputButton.Left,position=p};
    var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(data,hits);Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==button.gameObject,"Royal action raycast blocked: "+button.name+" point="+p+" screen="+Screen.width+"x"+Screen.height+" buttonGraphicDepth="+button.targetGraphic.depth+" buttonGraphicCull="+button.targetGraphic.canvasRenderer.cull+" graphicEnabled="+button.targetGraphic.isActiveAndEnabled+" graphicRaycast="+button.targetGraphic.raycastTarget+" buttonRect="+((RectTransform)button.transform).rect+" graphicCanvas="+(button.targetGraphic.canvas?button.targetGraphic.canvas.name:"NONE")+" buttonPosition="+button.transform.position+" corners="+corners[0]+" to "+corners[2]+" parent="+button.transform.parent.name+" parentActive="+button.transform.parent.gameObject.activeInHierarchy+" hits="+string.Join(",",hits.Select(x=>x.gameObject.name+":"+x.depth)));
    ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerDownHandler);ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerUpHandler);ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerClickHandler);
   }
-  static void Capture(ValoriaIntegratedWorld h,string name,int width,int height){
+  public static void Capture(ValoriaIntegratedWorld h,string name,int width,int height,Action validateLayout=null){
    h.RefreshNavigation();
    bool managementOpen=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen==true;
    if(managementOpen){
@@ -477,11 +604,36 @@ namespace Eldoria.ReferenceClean.Editor {
       "V3 management does not cover canvas: "+name);
     Need(!h.InWorld,"Management opened over regional world: "+name);
    }
-   var c=h.PlayerCamera;var canvas=h.Hud.GetComponent<Canvas>();var oldMode=canvas.renderMode;var oldCam=canvas.worldCamera;var oldDistance=canvas.planeDistance;var oldAspect=c.aspect;var oldRt=c.targetTexture;var oldActive=RenderTexture.active;var position=c.transform.position;float size=c.orthographicSize;var worldTarget=h.WorldNavigation.target;
+   var rankings=h.Hud.GetComponent<RoyalGoldV3RankingScreen>();
+   var buildings=h.Hud.GetComponent<RoyalGoldV3BuildingScreens>();
+   var retention=h.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();
+   bool buildingOpen=buildings&&buildings.IsOpen,rankingOpen=rankings&&rankings.IsOpen;
+   bool destinationOpen=managementOpen||buildingOpen||rankingOpen;
+   RectTransform destinationRoot=rankingOpen?rankings.VisibleRoot:buildingOpen?buildings.VisibleRoot:managementOpen?GameObject.Find("V3 / Management destination").GetComponent<RectTransform>():null;
+   var c=h.PlayerCamera;var canvas=h.Hud.GetComponent<Canvas>();var oldMode=canvas.renderMode;var oldCam=canvas.worldCamera;var oldDistance=canvas.planeDistance;var oldAspect=c.aspect;var oldMask=c.cullingMask;var oldRt=c.targetTexture;var oldActive=RenderTexture.active;var position=c.transform.position;float size=c.orthographicSize;var worldTarget=h.WorldNavigation.target;
    var scaler=h.Hud.GetComponent<RoyalScaler>();bool scalerEnabled=scaler.enabled;float scale=canvas.scaleFactor,canvasPixels=canvas.referencePixelsPerUnit;var scalerMode=scaler.uiScaleMode;var scalerResolution=scaler.referenceResolution;var scalerMatchMode=scaler.screenMatchMode;float scalerMatch=scaler.matchWidthOrHeight,scalerPixels=scaler.referencePixelsPerUnit;var areas=h.Hud.GetComponentsInChildren<RoyalSafeArea>(true);var areaEnabled=areas.Select(a=>a.enabled).ToArray();
    var rt=new RenderTexture(width,height,24);var tex=new Texture2D(width,height,TextureFormat.RGB24,false);
-   try{scaler.enabled=false;foreach(var a in areas)a.enabled=false;canvas.scaleFactor=width<height?width/800f:height/900f;foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(width/canvas.scaleFactor,true);c.targetTexture=rt;c.aspect=width/(float)height;if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(!managementOpen&&!string.IsNullOrEmpty(h.Selected)){var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);if(selectedTarget)h.Focus(selectedTarget.gameObject);}foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();Canvas.ForceUpdateCanvases();c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name),tex.EncodeToPNG());
-    if(!managementOpen&&!string.IsNullOrEmpty(h.Selected)){
+   try{scaler.enabled=false;foreach(var a in areas)a.enabled=false;canvas.scaleFactor=width<height?width/800f:height/900f;foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(width/canvas.scaleFactor,true);c.targetTexture=rt;c.aspect=width/(float)height;
+    // The world camera uses a different culling profile from the city camera.
+    // An off-screen proof capture moves ScreenSpaceOverlay to ScreenSpaceCamera:
+    // include Unity's existing UI layer (5) only during this capture or a real
+    // Lyra dialog can appear in the game but disappear from the evidence PNG.
+    c.cullingMask|=1<<5;
+    if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();Canvas.ForceUpdateCanvases();if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);if(selectedTarget)h.Focus(selectedTarget.gameObject);}foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
+    // to participate after its first SRP layout/batch registration.
+    c.Render();c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name),tex.EncodeToPNG());validateLayout?.Invoke();
+    if(destinationOpen){
+     Need(destinationRoot&&destinationRoot.gameObject.activeInHierarchy,"Actual management root not visible: "+name);
+     var background=destinationRoot.GetComponent<Image>();var canvasRect=(RectTransform)canvas.transform;
+     bool opaque=background&&background.color.a>=.999f;
+     bool blocking=background&&background.raycastTarget;
+     bool full=destinationRoot.anchorMin==Vector2.zero&&destinationRoot.anchorMax==Vector2.one&&Mathf.Abs(destinationRoot.rect.width-canvasRect.rect.width)<1f&&Mathf.Abs(destinationRoot.rect.height-canvasRect.rect.height)<1f;
+     int controls=destinationRoot.GetComponentsInChildren<Button>().Count(b=>b.isActiveAndEnabled&&b.interactable&&((RectTransform)b.transform).rect.width>=20&&((RectTransform)b.transform).rect.height>=20);
+     Need(opaque&&blocking&&full&&controls>0&&!h.InWorld,"Native management must be opaque, full-canvas and interactive: "+name);
+     if(buildingOpen&&!rankingOpen)Need(buildings.ReferenceTexture&&buildings.ReferenceTexture.width>100,"Native management reference not bound: "+name);
+     managementChecks.Add(new ManagementCapture{capture=name,screen=rankingOpen?"rankings":buildingOpen?"building":"management",target=buildingOpen&&!rankingOpen?buildings.BuildingId:h.Selected,width=width,height=height,pass=true,opaque=opaque,touchBlocking=blocking,fullCanvas=full,activeControls=controls});
+    }
+    if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){
      var focusTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);
      if(focusTarget){bool framed=h.IsTargetFramed(focusTarget.gameObject,out var projected,out var visible);
       framingChecks.Add(new Framing{capture=name,target=h.Selected,width=width,height=height,pass=framed,projected=Box(projected),visible=Box(visible)});
@@ -489,12 +641,14 @@ namespace Eldoria.ReferenceClean.Editor {
      }
     }
    }
-   finally{scaler.enabled=scalerEnabled;scaler.uiScaleMode=scalerMode;scaler.referenceResolution=scalerResolution;scaler.screenMatchMode=scalerMatchMode;scaler.matchWidthOrHeight=scalerMatch;scaler.referencePixelsPerUnit=scalerPixels;canvas.scaleFactor=scale;canvas.referencePixelsPerUnit=canvasPixels;for(int i=0;i<areas.Length;i++)areas[i].enabled=areaEnabled[i];canvas.renderMode=oldMode;canvas.worldCamera=oldCam;canvas.planeDistance=oldDistance;c.targetTexture=oldRt;c.aspect=oldAspect;c.transform.position=position;c.orthographicSize=size;if(h.InWorld)h.WorldNavigation.RestoreView(worldTarget,size);RenderTexture.active=oldActive;rt.Release();Object.Destroy(rt);Object.Destroy(tex);Canvas.ForceUpdateCanvases();foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(((RectTransform)layout.transform).rect.width);if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();}
+   finally{scaler.enabled=scalerEnabled;scaler.uiScaleMode=scalerMode;scaler.referenceResolution=scalerResolution;scaler.screenMatchMode=scalerMatchMode;scaler.matchWidthOrHeight=scalerMatch;scaler.referencePixelsPerUnit=scalerPixels;canvas.scaleFactor=scale;canvas.referencePixelsPerUnit=canvasPixels;for(int i=0;i<areas.Length;i++)areas[i].enabled=areaEnabled[i];canvas.renderMode=oldMode;canvas.worldCamera=oldCam;canvas.planeDistance=oldDistance;c.targetTexture=oldRt;c.aspect=oldAspect;c.cullingMask=oldMask;c.transform.position=position;c.orthographicSize=size;if(h.InWorld)h.WorldNavigation.RestoreView(worldTarget,size);RenderTexture.active=oldActive;rt.Release();Object.Destroy(rt);Object.Destroy(tex);Canvas.ForceUpdateCanvases();foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(((RectTransform)layout.transform).rect.width);if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();}
   }
   static readonly List<Framing> framingChecks=new List<Framing>();
+  static readonly List<ManagementCapture> managementChecks=new List<ManagementCapture>();
+  [Serializable] class ManagementCapture{public string capture,screen,target;public int width,height,activeControls;public bool pass,opaque,touchBlocking,fullCanvas;}
   static float[] Box(Rect value)=>new[]{value.xMin,value.yMin,value.xMax,value.yMax};
   [Serializable] class Framing{public string capture,target;public int width,height;public bool pass;public float[] projected,visible;}
-  [Serializable] class Report{public string source,status,error,scene;public string[] checks;public Framing[] framing;public bool artApproved=false,physicalDeviceTested=false,timeAccelerated=true;}
+  [Serializable] class Report{public string source,status,error,scene;public string[] checks;public Framing[] framing;public ManagementCapture[] management;public bool artApproved=false,physicalDeviceTested=false,timeAccelerated=true;}
  }
 }
 #endif

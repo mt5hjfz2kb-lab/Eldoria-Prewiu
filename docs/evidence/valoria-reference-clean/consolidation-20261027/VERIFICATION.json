@@ -1,0 +1,40 @@
+{
+  "source_commit": "3b14ade1b75cfdf7881771da16d36a18f0e088f1",
+  "native_run": 40430426343,
+  "baseline_run": 40425753661,
+  "bank_baseline_run": 40425009034,
+  "unity": "6000.3.23f1 URP / Windows D3D11",
+  "editmode_passed": 26,
+  "playmode_passed": 65,
+  "integration_checks_passed": 44,
+  "physical_mobile_tested": false,
+  "apk_published": false,
+  "bastion_III_started": false,
+  "budget_eur": 0,
+  "retained": [
+    "Canonical city I-II strategic bakes and reused stone bridge",
+    "Peripheral atmospheric transition",
+    "Localized sculpted city bank and matched foam"
+  ],
+  "rejected": [
+    "Reduced Bastion geometry",
+    "Breach shader variant",
+    "Mipmapped integration that blurred the reviewed city texture"
+  ],
+  "remaining_gaps": [
+    "Existing regional portrait quarry overlap at city access",
+    "Existing distant river angularity and coastline cut in portrait",
+    "Physical mobile performance not certified"
+  ],
+  "matching_cameras_verified": [
+    "cercana-horizontal",
+    "cercana-vertical",
+    "regional-horizontal",
+    "regional-vertical",
+    "panoramica-horizontal",
+    "panoramica-vertical",
+    "city-horizontal",
+    "city-vertical"
+  ],
+  "tier_II_evidence": "Twelve I/II reviewed candidate views in native289; final progression confirmed by real native gameplay probe. tier-II-reviewed images precede the strategic +12% correction, and are labelled accordingly."
+}

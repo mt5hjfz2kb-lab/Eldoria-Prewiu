@@ -1,6 +1,19 @@
 # Eldoria — Índice documental único
 
-> **Vigencia operativa revisada:** 2026-10-21 · **Rol:** navegación, no autorización de desarrollo. Este índice reemplaza los mapas de navegación dispersos, pero no reemplaza las reglas técnicas ni los criterios de calidad.
+> **DECISIÓN ACTUAL DEL PROPIETARIO, 25/10/2026 (PREVALECE SOBRE ESTA DOCUMENTACIÓN HISTÓRICA):** el modelo antiguo `Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb` **NO está aprobado para uso**. Se conserva solo como archivo histórico y no puede sugerirse, incorporarse en escenas ni publicarse salvo autorización específica, nueva y expresa del propietario. Ningún anterior `PASS` o mención a "Hero Bastion producción" revoca esta prohibición. Antes de sustituir una posible instancia preexistente, su responsable debe comprobar las referencias y la compatibilidad de Unity sin romper el juego.
+
+
+> **Navegación documental actualizada:** 2026-10-24 · **Rol:** navegación, no autorización de desarrollo. Este índice reemplaza los mapas de navegación dispersos, pero no reemplaza las reglas técnicas ni los criterios de calidad.
+
+> **Pacto fundacional propietario–IA (ELDORIA_OWNER_AI_COLLABORATION_V1):** el dueño no programa; cualquier chat o agente ha de aportar iniciativa, criterio técnico propio, crítica, alternativa cuando un método falle y evidencia real, como obliga [AGENTS.md](../AGENTS.md). Se mantiene vigente en todos los relevos; no reemplaza las autorizaciones.
+
+## Biblioteca operativa depurada — prioridad sobre inventarios brutos
+
+**Primera consulta de producción:** [biblioteca limpia de 25 piezas, imágenes y rutas directas de Unity](asset-vault/CLEAN_LIBRARY.md) y [catálogo de estante en JSON](../pipeline/asset-vault/clean-production-shelf-v1.json). El buscador habitual `python3 tools/asset-vault/find-reuse.py "muralla"` **solo ofrece piezas operativas y fuentes restringidas identificadas**; no propone los 536 recursos externos con licencia pendiente ni los experimentos históricos. `--research` abre expresamente la investigación de 775 archivos actuales y 920 rutas archivadas. **Ni modo investigación ni el simple hallazgo acreditan licencia, calidad artística o uso jugable.**
+
+## Biblioteca 3D — buscar antes de crear
+
+**Obligatorio para producción artística:** [Biblioteca Maestra de Assets](asset-vault/README.md), [galería de los 26 GLB canónicos](asset-vault/GALLERY.md), [inventario actual completo](../pipeline/asset-vault/current-full-index-v1.json) y [archivo de las 201 ramas (920 rutas / 923 versiones)](../pipeline/asset-vault/historical-full-index-v1.json). Para evitar volver a modelar una pieza existente, usar `python3 tools/asset-vault/find-reuse.py cantera` o la descripción artística correspondiente; el criterio de aprobación sigue siendo la referencia del propietario y la cámara real Unity, no el nombre de archivo. Los modelos nuevos que entren a Git aparecerán en el buzón de candidatos cuando el workflow documental esté integrado en main. **No usar automáticamente materiales de terceros sin revisar licencia.**
 
 ## Arranque de un chat o agente (menos de dos minutos)
 
@@ -23,6 +36,7 @@
 | Planes de contingencia visual (NO activados) | [Alternativas Valoria — 14 rutas y gates de decisión](VALORIA_VISUAL_FALLBACK_DECISION_PLAYBOOK_20261017.md) | **Reserva documental:** no cambia los alcances y las reservas vigentes, no pausa al constructor y exige autorización del propietario para ejecutar un pivote. |
 | Assets Tripo ya autorizados | [Norma de producción y trazabilidad](TRIPO_API_NORMA_PRODUCCION_V1.md) | Reutilizar la task pagada; ninguna lectura o integración autoriza nuevos créditos. |
 | Autoría IA Qwen/Blender/Unity | [AGENTS §7](../AGENTS.md) y el **código vivo** en `tools/art-direction/ai-authoring/` | [Guía técnica](ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md) con **cabecera desactualizada**; [Issue #34](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/34) y último ensayo real; no asumir ART APPROVED |
+| **Desbloqueo gráfico World4X: procedimiento reutilizable** | [Guía de Blender → GLB → Unity, sector híbrido, LOD, expansión y fallos reales](ELDORIA_WORLD4X_GRAPHICS_BREAKTHROUGH_PLAYBOOK_20261024.md) | Método y referencias fijas I/K/O/AG/AI, requisitos de 4X vivo y checklist de QA. **Es memoria técnica**, no declara ART_APPROVED ni permiso para alterar workstreams. |
 | Memoria de técnicas y fallos recuperados (fase 1, **solo lectura**) | [Catálogo artístico contrastado](ELDORIA_ART_KNOWLEDGE_PHASE1_20261021.md) y [fichas JSON](../pipeline/art-knowledge-catalog-v1.json) | Índice de experiencia, no ejecución automática ni ART_APPROVED. Comprobar main y evidencias originales antes de reutilizar. |
 | Publicación, QA y apps | [Entrega WebGL/itch](ELDORIA_PLAYTEST_DELIVERY.md), [manifiesto WebGL](../pipeline/playtest-delivery.json) y [actualizaciones Android](ELDORIA_ANDROID_FAMILY_UPDATES.md) | [QA](../QA_AND_DEPLOY.md), [catálogo de workflows](WORKFLOW_INDEX.md), run y artefacto exactos. Pages histórico no es el canal actual. |
 | Evidencias e historial | [docs/evidence](evidence/) y [docs/archive](archive/) | No conceden permisos, reservas, ni hacen revivir tareas cerradas |

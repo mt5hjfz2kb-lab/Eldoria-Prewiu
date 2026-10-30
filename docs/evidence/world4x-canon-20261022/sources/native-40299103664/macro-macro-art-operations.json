@@ -1,0 +1,29 @@
+{
+  "source_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
+  "terrain_vertices_after": 369163,
+  "bridge_length_before": 34,
+  "bridge_length_after": 21,
+  "actual_stepped_wall_vertices": 55425,
+  "protected_vertices_unchanged": 51828,
+  "original_packed_images_unchanged": 62,
+  "overlay_vertices_projected": {
+    "BLD_BreachFloor": 17305,
+    "BLD_BreachOutlyingFractures": 929,
+    "BLD_BreachBrokenBasaltPlates": 9851,
+    "BLD_BreachTerracedStrata": 3635,
+    "BLD_BreachWeatheredRockfall": 1828,
+    "BLD_BreachMineralHeart": 30
+  },
+  "gameplay_masks_sha256": "cc2afa1bc465987e1197912180b6ac29dafa7bd110398e06bfa2e93743137923",
+  "new_gameplay_targets": 0,
+  "new_colliders": 0,
+  "existing_rooted_scenery_fitted": 74,
+  "river_bed_vertices_corrected": 11428,
+  "art_approved": false,
+  "files": {
+    "Eldoria_Region1_Production.blend": "78302b587c90c59ebe23170d96ccfc3d4549893b295a72091b4f4e52c66b7010",
+    "RegionOneBlenderWorld.glb": "fe5feadc1c7a4383b480e013e92faa0d89b303f0da0e520e7fa52f65f70592fe",
+    "RegionOneBlenderQueries.bytes": "b6807c6993678532987506475da63b1d4562ee61c1489547e78a85643f35d0ca",
+    "production-region.json": "2a51f9e0ef50bc04d590d60e64a1cf183b23f059f864ab1bbed59eb27bc2d8dd"
+  }
+}

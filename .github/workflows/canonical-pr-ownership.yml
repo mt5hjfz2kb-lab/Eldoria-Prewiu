@@ -1,0 +1,44 @@
+name: Canonical PR ownership — no duplicate workstreams
+
+# This guard runs from TRUSTED main, never from a PR checkout.
+# A duplicate PR is flagged immediately, before it can be treated as accepted.
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, edited, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Existing pull request number to verify'
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: eldoria-canonical-pr-owner-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  ownership:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read trusted checker from canonical main only
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/workstream-lease/pr-ownership-gate.mjs
+            /tools/workstream-lease/pr-ownership-gate.test.mjs
+      - name: Verify duplicate, handoff, foreign scope and fail-closed cases
+        run: node --test tools/workstream-lease/pr-ownership-gate.test.mjs
+      - name: Check live claimed ownership and other open PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GUARD_PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+        run: node tools/workstream-lease/pr-ownership-gate.mjs
