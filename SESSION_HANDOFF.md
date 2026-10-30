@@ -1,5 +1,16 @@
 # RELEVO DEL CHAT NORMAL — 31-10-2026 — PR136 DRAFT
 
+## RELEVO TRAS REVISIÓN DE CAPTURAS NATIVAS — 31-10-2026
+
+Último commit de código de este relevo: 66ad114e4059e16ab70c7226bc0b0800533dbcde. PR #136 sigue DRAFT; rama fix/player-feedback-context-ui-20261030. Si este archivo se actualiza, consultar HEAD actual: no asumir que el último commit de código sigue siendo HEAD.
+
+Evidencia Unity real: run 41144687529 sobre e280120, artifact 13020695089 (eldoria-v41-native-41144687529), capturas heroes-salon-phone.png, heroes-salon-landscape.png, heroes-lyra-resumen-phone.png, heroes-lyra-rotated-landscape.png, Talentos, Marchas y Entrenamiento. Copia duradera: Library /Eldoria/Produccion-pendiente/QA_Heroes_Native_Run41144687529_20261031.zip (capturas, logs y README). Esta es evidencia de ANTES de corregir, NO valida el HEAD nuevo. Las capturas mostraban línea superpuesta a introducción, mucho vacío, panel negro en Lyra, y vista lateral; la foto rotada +30° demuestra pose frontal mejor.
+
+Cambios sustentados en esas pruebas: 0f57d6c restaura la rejilla v14 con hasta seis plazas visuales según resolución (solo dos héroes del host; los huecos extra NO tienen acción, nombre ni stats falsos); elimina la línea que atraviesa texto, llena el portrait sin pantalla intermedia. 7c4f9ab separa la fila de botones de retrato/estado compactos. 66ad114 presenta al mismo GLB Tripo de Lyra a 30° de yaw, cambia exclusivamente el fondo de snapshot ARGB32 a alfa0 para eliminar rectángulo pegado y amplía stage portrait del 44% al 62%; añade geometría Royal Gold v14 detrás de modelo y estadísticas sin romper botones, gameplay, save o render real. También distribuye las cinco métricas autoritativas.
+
+Validación pendiente: los runs 41138763107 (7af82cf) y 41144687529 (e280120) no certifican este commit. Revisar Unity exact-head del nuevo código, 68 EditMode y 73 PlayMode, cuatro orientaciones / tamaños, interacción, V4.1 aislado, save y capturas comparadas con approved master. El fondo completo limpio independiente y fidelidad 100% NO están terminados ni certificados. No publicar, no mergear. Marchas, Entrenamiento y Ciudad después; blue-panel de Marchas alpha .94 sigue ocultando escena; no fingir Paladines/Brujos hasta integrar issue #138.
+
+
 ## Nueva pieza v14 integrada — 31/10/2026, commit ce5ade4 (última continuidad)
 
 Se ha recuperado SIN regenerar del paquete de Biblioteca `Eldoria_Heroes_Integracion_Preparada_v14.zip` la clase `Assets/Eldoria/HeroesUI/HeroesGoldFrameGraphic.cs` (SHA256 fuente `d90f5efd4fb146ab49ebf4ecaaa47d1e1c600c7afe663f4988ecc6739b63a748`). Se ha incorporado como `Unity/Assets/Eldoria/HeroesUI/HeroesGoldFrameGraphic.cs` con GUID nuevo y referenciado desde `HeroesApprovedDestination.cs` en tarjetas reales. Usa geometría graduada, bordes dobles y ornamentos de v14; NO añade actores, recursos, fuentes externas ni Canvas. HEAD de código verificado: `ce5ade4cdb561c93767d95e69cea4df714326589` (los commits documentales posteriores pueden cambiar HEAD sin tocar Unity).

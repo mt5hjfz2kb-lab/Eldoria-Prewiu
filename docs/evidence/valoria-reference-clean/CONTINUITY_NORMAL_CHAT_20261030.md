@@ -1,5 +1,16 @@
 # RECUPERACIÓN NORMAL CHAT — 31-10-2026 (checkpoint añadido)
 
+## ÚLTIMO CHECKPOINT CON CAPTURAS REALES — 31/10/2026
+
+Código actual de esta recuperación: 66ad114e4059e16ab70c7226bc0b0800533dbcde. Rama y PR únicas: fix/player-feedback-context-ui-20261030, PR136 DRAFT. El commit documental posterior podrá cambiar HEAD, verificar siempre en GitHub.
+
+Prueba real de Unity descargada del run 41144687529 / artifact 13020695089 (HEAD antiguo e280120). Copia durable y verificable de fotos y logs: Library /Eldoria/Produccion-pendiente/QA_Heroes_Native_Run41144687529_20261031.zip. Allí están Salón phone/landscape, Lyra resumen y rotación, Talentos, Marchas, Entrenamiento. En esas capturas PREVIAS a las últimas mejoras se observa texto cruzado por línea, 50% de hueco negro en portrait y modelo Lyra en rectángulo opaco. La captura rotada real prueba yaw+30 más frontal.
+
+Corrección 0f57d6c: galería responsive de referencia v14 con hasta seis huecos, solo dos héroes reales con datos y acciones host; las otras plazas son decorativas y no clicables. Corrección 7c4f9ab: sin solapamiento compacto de retrato/estado con fila de selección. Corrección 66ad114: orientación inicial Lyra 30°, fondo alfa0 en cámara RenderTexture offscreen ARGB32 (no se toca GLB), stage portrait aumentado, geometría Royal Gold aprobada para stage/panel y valores reales distribuidos. Nunca activar V4.1 como campaña antes de resolver issue #138.
+
+Estado: el motor V4.1 aislado y ownership check han pasado en commits anteriores; el render exacto 66ad114 NO está aún validado. Repetir run completo Unity + screenshots de Salón y Lyra, tamaños 390x844, 844x390, 900x1600 y 1600x900, 68 EditMode/73 PlayMode, Android, guardar/cargar, evitar raycasts nuevos y respetar safe area. Mantener PR DRAFT sin release. Arte 100% todavía NO logrado: falta fondo independiente completo, QA nativa y reconstrucción de Marchas/Entrenamiento/Ciudad. Marchas tiene las cuatro superficies blue-panel con alfa 0.94 y su referencia contiene tropas no implementadas hoy; no inventar estados falsos.
+
+
 ### Addendum 31/10/2026 — v14 panel real + contraste de Marchas
 
 - **HEAD de código previo a este addendum:** `ce5ade4cdb561c93767d95e69cea4df714326589`. La fuente v14 `HeroesGoldFrameGraphic.cs` (SHA256 `d90f5efd4fb146ab49ebf4ecaaa47d1e1c600c7afe663f4988ecc6739b63a748`) se añadió **sin reinterpretación** a `Unity/Assets/Eldoria/HeroesUI/HeroesGoldFrameGraphic.cs` y `.meta`. `HeroesApprovedDestination.cs` usa el panel como hijo sin raycast debajo de retratos y botones vivos, reemplazando los marcos planos. Proveniencia: paquete Library `Eldoria_Heroes_Integracion_Preparada_v14.zip`, carpeta interna `Assets/Eldoria/HeroesUI/`. No incorporar las 23 piezas con números/textos dibujados como UI funcional.
