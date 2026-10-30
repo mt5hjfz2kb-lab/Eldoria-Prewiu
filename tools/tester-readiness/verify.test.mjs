@@ -25,7 +25,7 @@ function fixture() {
     delivery:{web:{status:'PASS',hosted_gameplay_verified:true,source_sha:source,artifact_sha256:artifact,...evidence}},
     final_review:{verdict:'APPROVED',reviewer:'Owner',source_sha:source,...evidence}};
   const save = () => put('pipeline/tester-readiness/candidate.json',JSON.stringify(m));
-  const release = (enabled) => put('pipeline/playtest-delivery.json',JSON.stringify({publish_enabled:enabled}));
+  const release = (enabled) => put('pipeline/tester-readiness/release-request.json',JSON.stringify({enabled}));
   put('pipeline/android-updater-release-request.json','{"enabled":false}');
   put('pipeline/unity-publish-request.json','{"enabled":false,"release_approved":false}');
   save(); release(false);
@@ -49,7 +49,7 @@ test('no fake mobile, no short Bastion test, no wrong source or auto aesthetic a
     const e=checkCandidate(f.m,f.root).join(' ');
     assert.match(e,/physical device/);assert.match(e,/Bastion I-V/);assert.match(e,/independent visual/);}finally{f.cleanup();}
 });
-test('enabled publishing while blocked is rejected',()=>{
+test('enabled external tester promotion while blocked is rejected',()=>{
   const f=fixture();try{f.m.state='BLOCKED';f.save();f.release(true);
     assert.equal(verify(f.root).status,'FAIL');assert.equal(verify(f.root).releaseEnabled,true);}finally{f.cleanup();}
 });
