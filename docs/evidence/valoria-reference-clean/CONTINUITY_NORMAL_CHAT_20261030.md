@@ -186,3 +186,15 @@ No depende de una sesión shell abierta ni de archivos scratch. GitHub contiene 
 ## 9. Regla de lectura histórica
 
 SESSION_HANDOFF.md conserva casi200KB dehistorial útil con responsables/SHAsantiguos: sus encabezados inferiores no cambian laprioridaddeestecheckpointrapido. WORK_RECOVERY_20261030.md conservainvestigacióninicial. Los originalesnunca se borran. Si un resultado figura pendiente aquí y un comentario posteriorloresuelve, citarSHA/runexactosdelcomentario yverificarlosantesdeusarlos.
+
+
+## Continuación chat normal — 31/10/2026 (auditoría de fondos)
+
+- HEAD observado antes de cambios: 7af82cf6a6329a957064ef52588e591f47c43aab. PR136 sigue DRAFT, sin publicación ni merge.
+- CI exacta run 41138763107: SUCCESS (Unity UI Progression). Artefactos 13020030049 (certificación completa), 13018867101 (marchas), 13018792087 (V4.1), 13018102628 (retención). No equivale a aceptación artística.
+- Árbol Git completo (21.804 entradas) comprobado: referencia aprobada docs/heroes-ui/REFERENCIA_MAESTRA_APROBADA.png y Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png; HeroesApprovedDestination.cs y modelo Lyra .bytes 4.770.000 bytes. NO se encontró fondo nuevo independiente de Salón/Héroes integrado en Resources ni ArtSource. No regenerar Lyra.
+- Biblioteca: Eldoria_Heroes_Integracion_Preparada_v14.zip (10.789.610 bytes), incluye seis previews, HeroesRebuiltSalon.cs, HeroesRebuiltProfile.cs, HeroesGoldFrameGraphic.cs, HeroesProductionOverlay.cs, ApprovedParts, contratos y verificaciones offline. Es material reutilizable no fusionado: requiere revisión de compatibilidad Unity y separación de elementos aplanados, no integración ciega.
+- Últimas capturas Biblioteca: eldoria_latest_heroes_31oct.png, eldoria_latest_military_31oct.png, eldoria_latest_city_31oct.png; comparador Eldoria_comparacion_nativa.html. No afirmar que estas capturas prueban fondos definitivos.
+- Prioridad: reconstruir Salón con arquitectura pictórica sin valores/botones incrustados; integrar piezas del paquete v14 únicamente tras verificar transparencia, dimensiones, raycasts y bindings; capturar Unity 390x844 y 844x390; después Marchas, Entrenamiento, Ciudad. Mantener seis pantallas, gameplay, guardados, #138 V4.1 laboratorio y gates tester BLOCKED.
+- Nota de coordinación: main pipeline/active-workstreams.json revisión75 ya registra owner codex-recovery-8545f387ddc2; no cambiar titularidad ni ejecutar Unity en runner compartido sin comprobar su reserva viva. No abrir PR nueva.
+- Una imagen conceptual generada en esta sesión no es la referencia aprobada y no debe sustituirla ni integrarse automáticamente.
