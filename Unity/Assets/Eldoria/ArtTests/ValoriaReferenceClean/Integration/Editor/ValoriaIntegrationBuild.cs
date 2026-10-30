@@ -641,8 +641,11 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(heroes&&heroes.IsOpen,"Integrated hero hall absent");
     Capture(h,"integration-heroes-hall-landscape.png",1600,900);
     Capture(h,"integration-heroes-hall-portrait.png",900,1600);
-    Click(GameObject.Find("Select hero aldric").GetComponent<Button>());
    },"hero hall actual controls and both orientations");
+   // Captures rebuild the responsive hierarchy when restoring the real screen.
+   // Let uGUI register its new graphics before sending genuine pointer input.
+   yield return null;
+   Check(()=>Click(GameObject.Find("Select hero aldric").GetComponent<Button>()),"select Aldric through actual hero card");
    yield return new WaitForSecondsRealtime(.3f);
    foreach(var page in new[]{"Resumen","Habilidades","Talentos","Equipamiento"}){
     Check(()=>Click(GameObject.Find("Hero tab "+page).GetComponent<Button>()),"genuine hero tab "+page);
@@ -654,6 +657,7 @@ namespace Eldoria.ReferenceClean.Editor {
      Capture(h,"integration-heroes-aldric-"+page.ToLowerInvariant()+"-portrait.png",900,1600);
     },"actual Aldric hero screen "+page);
     if(Failed())yield break;
+    yield return null;
    }
    Check(()=>Click(GameObject.Find("Next available hero").GetComponent<Button>()),"real hero navigation selects narratively recruited Lyra");
    yield return new WaitForSecondsRealtime(.2f);
@@ -661,6 +665,9 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(heroes.CurrentHeroId=="lyra"&&h.City.Gateway.Snapshot().ChapterThree.LyraRecruited,"Lyra navigation violated narrative unlock");
     Capture(h,"integration-heroes-lyra-resumen-landscape.png",1600,900);
     Capture(h,"integration-heroes-lyra-resumen-portrait.png",900,1600);
+   },"actual Lyra screen in both orientations");
+   yield return null;
+   Check(()=>{
     Click(GameObject.Find("Close heroes").GetComponent<Button>());
     Need(!heroes.IsOpen&&h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().IsOpen,"Hero close did not return to units");
     h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().Close();
