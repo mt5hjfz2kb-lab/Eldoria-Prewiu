@@ -136,7 +136,19 @@ namespace Eldoria.Tests
                 "Dialogue must use a bounded cinematic strip rather than cover the world");
             Assert.That(body.preferredHeight, Is.LessThanOrEqualTo(
                 body.rectTransform.rect.height + 12f),
-                "The complete canonical text must fit; do not crop long narrative turns");
+                "The current typewriter prefix must fit");
+            // Before Reveal has completed, measure the real entire page.
+            // A typewriter-only assertion used to pass while later sentences
+            // were clipped or forced a sudden oversized modal jump.
+            var unrevealed = body.text;
+            var fullPage = Read(hud, "NarrativePageText") as string;
+            Assert.That(fullPage, Is.Not.Null.And.Not.Empty);
+            body.text = fullPage;
+            float fullPageHeight = body.preferredHeight;
+            body.text = unrevealed;
+            Assert.That(fullPageHeight, Is.LessThanOrEqualTo(
+                body.rectTransform.rect.height + 8f),
+                "All dialogue lines must fit before typewriter reveal on the real canvas");
 
             var portrait = frame.Find("Canonical Aldric portrait") as RectTransform;
             Assert.That(portrait, Is.Not.Null);
