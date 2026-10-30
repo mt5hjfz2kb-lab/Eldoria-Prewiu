@@ -423,7 +423,7 @@ jobs:
           if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
 
       - name: V4.1 real controls, persistent mailbox and approved-source captures
-        if: github.head_ref == 'feature/eldoria-v41-contracts-20261030'
+        if: (github.head_ref == 'feature/eldoria-v41-contracts-20261030' || github.head_ref == 'fix/player-feedback-context-ui-20261030')
         shell: powershell
         env:
           ELDORIA_V41_EVIDENCE: ${{ github.workspace }}/v41-native-${{ github.run_id }}
@@ -438,7 +438,7 @@ jobs:
           if($p.ExitCode -ne 0 -or -not(Select-String -Path $log -Pattern 'ELDORIA_V41_NATIVE_PASS' -Quiet)){Get-Content $log -Tail 120;throw 'V41 native acceptance failed'}
 
       - uses: actions/upload-artifact@v4
-        if: always() && github.head_ref == 'feature/eldoria-v41-contracts-20261030'
+        if: always() && (github.head_ref == 'feature/eldoria-v41-contracts-20261030' || github.head_ref == 'fix/player-feedback-context-ui-20261030')
         with:
           name: eldoria-v41-native-${{ github.run_id }}
           path: v41-native-${{ github.run_id }}
