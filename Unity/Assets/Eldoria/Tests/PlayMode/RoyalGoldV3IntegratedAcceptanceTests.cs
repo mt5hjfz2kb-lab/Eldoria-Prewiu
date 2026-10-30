@@ -133,6 +133,27 @@ namespace Eldoria.Tests
                 "Crónica Real requires a genuine native illustrated selected-building sheet");
             Assert.That(art.raycastTarget, Is.False,
                 "Decorative preview must not eat building or world input");
+            var preview = hud.GetComponentsInChildren<MonoBehaviour>(true)
+                .FirstOrDefault(x => x && x.GetType().Name == "RoyalGoldV3BuildingPreview");
+            Assert.That(preview, Is.Not.Null);
+            Assert.That(Member(preview, "HasModelPreview"), Is.EqualTo(true),
+                "The building card must render the canonical model, not the generic house fallback");
+            var thumbnail = preview.GetComponent<RawImage>();
+            Assert.That(thumbnail.raycastTarget, Is.False);
+            Assert.That(thumbnail.texture.width, Is.EqualTo(256),
+                "One bounded cached thumbnail; no full-screen render texture per building");
+            var previousTarget = RenderTexture.active;
+            var pixels = new Texture2D(256, 256, TextureFormat.RGB24, false);
+            try
+            {
+                RenderTexture.active = (RenderTexture)thumbnail.texture;
+                pixels.ReadPixels(new Rect(0, 0, 256, 256), 0, 0);
+                pixels.Apply();
+                Assert.That(pixels.GetPixels32().Select(c => ((int)c.r << 16) | ((int)c.g << 8) | c.b)
+                    .Distinct().Count(), Is.GreaterThan(32),
+                    "The render texture must contain real rendered geometry, not just a cleared background");
+            }
+            finally { RenderTexture.active = previousTarget; Object.Destroy(pixels); }
             var context = hud.GetComponentsInChildren<MonoBehaviour>(true)
                 .FirstOrDefault(x => x && x.GetType().Name == "RoyalGoldV3ContextHud");
             Assert.That(context, Is.Not.Null,

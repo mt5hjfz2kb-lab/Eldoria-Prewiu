@@ -24,6 +24,8 @@ namespace Eldoria.UI.RoyalGold.V2
         private Vector2 savedPosition, savedSize;
         private Color savedTitleColor, savedBodyColor, savedExtraLabelColor;
         private int savedTitleSize, savedBodySize, savedExtraLabelSize;
+        private Font savedTitleFont, savedBodyFont, savedExtraLabelFont;
+        private static Font chronicleFont;
         private Vector2 labelAnchorMin, labelAnchorMax, labelPivot, labelPosition, labelSize;
         private TextAnchor labelAlignment;
         private bool captured;
@@ -105,16 +107,19 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (modal.Title)
                 {
                     modal.Title.color = savedTitleColor;
+                    modal.Title.font = savedTitleFont;
                     modal.Title.fontSize = savedTitleSize;
                 }
                 if (modal.Body)
                 {
                     modal.Body.color = savedBodyColor;
+                    modal.Body.font = savedBodyFont;
                     if (Source.NarrativeOpen) modal.Body.fontSize = savedBodySize;
                 }
                 if (modal.ExtraLabel)
                 {
                     modal.ExtraLabel.color = savedExtraLabelColor;
+                    modal.ExtraLabel.font = savedExtraLabelFont;
                     modal.ExtraLabel.fontSize = savedExtraLabelSize;
                     var label = modal.ExtraLabel.rectTransform;
                     label.anchorMin = labelAnchorMin;
@@ -185,12 +190,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 savedPosition = frame.anchoredPosition;
                 savedSize = frame.sizeDelta;
                 savedTitleColor = modal.Title.color;
+                savedTitleFont = modal.Title.font;
+                savedBodyFont = modal.Body.font;
                 savedBodyColor = modal.Body.color;
                 savedTitleSize = modal.Title.fontSize;
                 savedBodySize = modal.Body.fontSize;
                 if (modal.ExtraLabel)
                 {
                     savedExtraLabelColor = modal.ExtraLabel.color;
+                    savedExtraLabelFont = modal.ExtraLabel.font;
                     savedExtraLabelSize = modal.ExtraLabel.fontSize;
                     var label = modal.ExtraLabel.rectTransform;
                     labelAnchorMin = label.anchorMin;
@@ -204,6 +212,15 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             if (originalFrame) originalFrame.enabled = false;
             manuscript.gameObject.SetActive(true);
+
+            if (!chronicleFont) chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif");
+            if (chronicleFont)
+            {
+                modal.Title.font = chronicleFont;
+                modal.Body.font = chronicleFont;
+                if (role) role.font = chronicleFont;
+                if (modal.ExtraLabel) modal.ExtraLabel.font = chronicleFont;
+            }
 
             bool arcane = Source.NarrativeSpeaker == "Orín" ||
                 Source.NarrativeSpeaker == "Orin";

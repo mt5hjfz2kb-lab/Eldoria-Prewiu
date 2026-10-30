@@ -245,7 +245,10 @@ namespace Eldoria.ReferenceClean.Editor {
     h.Hud.SelectBuilding("");
    },"all world entry points share progression gate");
    h.Select("sawmill");yield return new WaitForSecondsRealtime(.2f);
-   Check(()=>{Capture(h,"integration-construction-landscape.png",1600,900);Capture(h,"integration-construction-portrait.png",900,1600);},"construction panel visible in both orientations");
+   Check(()=>{Capture(h,"integration-construction-landscape.png",1600,900);Capture(h,"integration-construction-portrait.png",900,1600);
+    var preview=h.Hud.GetComponentInChildren<Eldoria.UI.RoyalGold.V2.RoyalGoldV3BuildingPreview>(true);
+    Need(preview&&preview.HasModelPreview,"Sawmill card did not render the canonical building model");
+   },"construction panel visible in both orientations");
    if(Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"Sawmill button unavailable");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"Real Royal button did not build");},"Royal build command")){
     yield return new WaitForSecondsRealtime(.4f);
     Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.SawmillBuildSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Parcels.LeftBuilt.activeSelf,"Built scene model missing");h.Hud.Refresh();Capture(h,"integration-city-built.png",1600,900);},"shared timer and authored model");

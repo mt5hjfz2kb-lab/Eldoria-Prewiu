@@ -25,6 +25,8 @@ namespace Eldoria.UI.RoyalGold.V2
         private RoyalButton objectiveAction, objectivesButton, chapterClose, buildingClose, buildingAction;
         private ScrollRect buildingScroll;
         private RoyalGoldV3BuildingEngravingGraphic miniatureArt;
+        private RoyalGoldV3BuildingPreview modelPreview;
+        public System.Func<string, GameObject> BuildingModelFor;
         private CanvasGroup objectiveGroup, chapterCloseGroup, buildingGroup, buildingActionGroup;
         private bool buildingVisible;
         private bool ready, expanded, portrait, hasGeometry, compactObjective;
@@ -294,6 +296,12 @@ namespace Eldoria.UI.RoyalGold.V2
             miniatureArt = miniSurface.gameObject.AddComponent<RoyalGoldV3BuildingEngravingGraphic>();
             miniatureArt.raycastTarget = false;
             Stretch(miniSurface, 5f);
+            var previewRect = NewRect("Canonical building model snapshot", buildingMiniature);
+            var previewImage = previewRect.gameObject.AddComponent<RawImage>();
+            previewImage.enabled = false;
+            Stretch(previewRect, 5f);
+            modelPreview = previewRect.gameObject.AddComponent<RoyalGoldV3BuildingPreview>();
+            modelPreview.Initialize(previewImage);
             buildingTitle = Text("Selected building", buildingCard, 30, Ivory, true);
             buildingLevel = Text("Real level", buildingCard, 18, Gold);
             buildingClose = Button("Close selected building", buildingCard, out var closeBuildingText, false);
@@ -615,6 +623,12 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!show) return;
             buildingTitle.Put(Safe(source.Title));
             buildingLevel.Put(Safe(source.Level));
+            if (modelPreview)
+            {
+                modelPreview.ModelFor = BuildingModelFor;
+                bool genuineModel = modelPreview.Show(Source.SelectedBuildingId, Safe(source.Level));
+                if (miniatureArt) miniatureArt.enabled = !genuineModel;
+            }
             if (miniatureArt)
             {
                 string selectedId = Source.SelectedBuildingId ?? "";
@@ -743,12 +757,14 @@ namespace Eldoria.UI.RoyalGold.V2
                     Top(Source.Realm.Realm.rectTransform, titleX,
                         5f, realmWidth - titleX - 2f, portrait ? 28f : 36f);
                     Source.Realm.Realm.fontSize = portrait ? 20 : 27;
+                    if (ChronicleFont) Source.Realm.Realm.font = ChronicleFont;
                 }
                 if (Source.Realm.Power)
                 {
                     Top(Source.Realm.Power.rectTransform, titleX,
                         portrait ? 32f : 46f, realmWidth - titleX - 2f, 23f);
                     Source.Realm.Power.fontSize = portrait ? 15 : 19;
+                    if (ChronicleFont) Source.Realm.Power.font = ChronicleFont;
                 }
             }
 
@@ -964,6 +980,11 @@ namespace Eldoria.UI.RoyalGold.V2
                         new Vector2(.5f, .5f);
                     SetWidthAndHeight(medal, medalSize, medalSize);
                     medal.anchoredPosition = new Vector2(0f, 10f);
+                    // Only the two objective shortcuts are round in Option 1.
+                    // Bottom destinations are free-standing gold emblems. Keep
+                    // the original full-cell raycast surface and button listener.
+                    var ring = medal.GetComponent<RoyalFrameGraphic>();
+                    if (ring) ring.enabled = false;
                     if (medal.childCount > 0 &&
                         medal.GetChild(0) is RectTransform glyph)
                     {
@@ -973,6 +994,8 @@ namespace Eldoria.UI.RoyalGold.V2
                             medalSize * .67f);
                         glyph.anchoredPosition = Vector2.zero;
                         var icon = glyph.GetComponent<RoyalIconGraphic>();
+                        if (icon && item.Button.targetGraphic != icon)
+                            item.Button.targetGraphic = icon;
                         int desired = item.Section == RoyalSection.Bastion ? 9 :
                             item.Section == RoyalSection.Inventory ? 15 :
                             item.Section == RoyalSection.Army ? 4 :
@@ -997,7 +1020,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     if (ChronicleFont) item.Label.font = ChronicleFont;
                     item.Label.fontStyle = FontStyle.Normal;
                     item.Label.alignment = TextAnchor.MiddleCenter;
-                    item.Label.color = Ivory;
+                    item.Label.color = item.Button.interactable ? Ivory : new Color(.54f, .55f, .56f);
+                    item.Label.Put(item.Label.text.ToUpperInvariant());
                 }
             }
         }

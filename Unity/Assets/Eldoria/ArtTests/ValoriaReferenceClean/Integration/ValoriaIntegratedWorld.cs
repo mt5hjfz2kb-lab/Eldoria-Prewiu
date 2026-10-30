@@ -68,6 +68,18 @@ namespace Eldoria.ReferenceClean {
    Hud.ResetPlaytestProgress=()=>city.ResetPlaytestProgress();
    // One authoritative Royal Gold session; V2 alters presentation only.
    if(!Hud.GetComponent<RoyalGoldV2Hud>())Hud.gameObject.AddComponent<RoyalGoldV2Hud>();
+   Hud.GetComponent<RoyalGoldV2Hud>().BuildingModelFor=id=>{
+    if(id=="upgrade-barracks"||id=="march-main")id="barracks";
+    var advanced=GetComponent<BastionIVVWorldPresentation>();
+    var current=advanced?advanced.ModelFor(id):null;
+    if(current&&current.activeInHierarchy)return current;
+    if(id=="bastion")return boundGateway!=null&&boundGateway.Snapshot().BastionLevel>=2?city.BastionTwo:city.BastionOne;
+    if(city.Parcels&&id=="sawmill")return city.Parcels.LeftBuilt;
+    if(city.Parcels&&id=="barracks")return city.Parcels.RightBuilt;
+    if(id=="granary")return Resources.Load<GameObject>("BastionIII/Granary/Granary");
+    if(id=="stoneworks")return Resources.Load<GameObject>("BastionIII/Granary/StoneWorkshop");
+    return null;
+   };
    if(!Hud.GetComponent<RoyalGoldV2Narrative>())Hud.gameObject.AddComponent<RoyalGoldV2Narrative>();
    // V3 shares the one RoyalHUD and receives only read-only target/camera
    // projections and the exact existing IRoyalSession building snapshot.
