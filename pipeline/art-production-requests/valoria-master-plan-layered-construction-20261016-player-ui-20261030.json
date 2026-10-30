@@ -4,11 +4,11 @@
   "status": "ACTIVE",
   "workstream_id": "valoria-master-plan-layered-construction-20261016",
   "request_id": "valoria-master-plan-layered-construction-20261016",
-  "asset_or_sector": "Owner physical-playtest UI correction: city context build/upgrade, non-dashed live marches, cinematic dialogue fitting",
+  "asset_or_sector": "Reference-led layered military UI reconstruction and canonical UI corrections",
   "profile": "environment_composition",
   "visual_gate_state": "NATIVE_UI_WIP",
   "ai_authorship_policy": "required",
-  "diagnosis": "Owner physical device reports prohibited full-screen building pages, dashed yellow march lines and badly framed dialogue. Reuse existing owner-approved Interface 1 and Dialogue 1 native art and buttons. No new geometry or textures; visual-only Unity UI layout corrections anchored in one HUD; retain canonical domain and saves.",
+  "diagnosis": "Inspected authentic training capture: narrow photographic strip and oversized blue panes erase approved courtyard composition. Rebuild with independently derived courtyard and isolated archer, compact order controls, preserve original source images and domain commands.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -21,10 +21,10 @@
     "existing_3d_assets_modified": false
   },
   "validation": {
-    "source_gate": "No new art generation; use the existing owner-approved Dialogue 1 and Chronicle reference assets; preserve all canonical raw sources.",
+    "source_gate": "Owner authorizes structural technique change. Built-in image editing derives two candidate layers from approved training source. Record source and output hashes; derivatives are not original references or ART_APPROVED.",
     "final_gate": "Real Unity both orientation native captures and PlayMode EditMode including III–V progression, real march state, no duplicate construction page, dialogues in safe area, raycasts, zero save loss. Owner artistic approval remains separate."
   },
   "art_approved": false,
   "physical_mobile_tested": false,
-  "notes": "Reopens only the existing Valoria canonical workstream for a new 2026-10-30 UI regression; the earlier completed production request and historical release evidence remain unmodified. Routing required to cover existing Unity ArtTests presentation/test .cs changes, without claiming AI inference, Blender, Tripo or art-approved status. PR136 is isolated candidate. No Windows Unity runner reservation while UI certification is queued; do not merge or release without native/visual checks."
+  "notes": "PR136 only. No Tripo or paid API call. Genuine new native screenshots required; generated resources are never proof of runtime."
 }

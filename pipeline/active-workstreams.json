@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T15:49:00Z",
+  "updated_at": "2026-10-30T18:53:17.056Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-final-consolidation-b42e2e4f25bf",
+      "owner": "codex-recovery-5ec48d90b77f",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-10-30T09:30:00Z",
@@ -121,8 +121,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR136_NATIVE_CONTEXTUAL_CONSTRUCTION_CERTIFICATION_REPAIR",
-      "next": "Validate sole cartouche command, native tests/captures; then reconcile PR134/135.",
+      "phase": "PR136_REFERENCE_DRIVEN_STRUCTURAL_UI_RECONSTRUCTION",
+      "next": "Recover pending edits; rebuild training composition from approved sources; exact-head native visual QA.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1461,9 +1461,21 @@
           "ownership_revision": 70,
           "transferred_at": "2026-10-30T15:49:00Z",
           "reason": "Owner explicitly requests continuation of blocked final-consolidation chat; preserve in-flight native run 41082890524."
+        },
+        {
+          "owner": "codex-final-consolidation-b42e2e4f25bf",
+          "ownership_revision": 71,
+          "transferred_at": "2026-10-30T18:11:01.954Z",
+          "reason": "Owner directs definitive artistic reconstruction and continuation in session 1515a30b9c7e; preserve PR136 and all prior changes."
+        },
+        {
+          "owner": "codex-artistic-completion-1515a30b9c7e",
+          "ownership_revision": 72,
+          "transferred_at": "2026-10-30T18:53:17.056Z",
+          "reason": "Owner requests recovery and continuation after Work chat stopped."
         }
       ],
-      "ownership_revision": 71,
+      "ownership_revision": 73,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -2478,9 +2490,9 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": "codex-final-consolidation-b42e2e4f25bf",
+      "owner": "codex-recovery-5ec48d90b77f",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 8,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
@@ -2541,6 +2553,18 @@
           "ownership_revision": 5,
           "transferred_at": "2026-10-30T15:49:00Z",
           "reason": "Owner explicitly requests continuation of blocked final-consolidation chat; preserve in-flight native run 41082890524."
+        },
+        {
+          "owner": "codex-final-consolidation-b42e2e4f25bf",
+          "ownership_revision": 6,
+          "transferred_at": "2026-10-30T18:12:38.637Z",
+          "reason": "Owner directs continuation and reconciliation in canonical PR136; retain original branches and sources."
+        },
+        {
+          "owner": "codex-artistic-completion-1515a30b9c7e",
+          "ownership_revision": 7,
+          "transferred_at": "2026-10-30T18:53:17.056Z",
+          "reason": "Owner requests recovery and continuation after Work chat stopped."
         }
       ],
       "delivery_definition": {
@@ -2625,9 +2649,9 @@
     {
       "id": "eldoria-iphone-lifecycle-diagnostics-20261030",
       "title": "Resume PR97 optional local iPhone lifecycle diagnostics",
-      "owner": "codex-final-consolidation-b42e2e4f25bf",
+      "owner": "codex-recovery-5ec48d90b77f",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 4,
       "status": "active",
       "branch": "review/native281-iphone-ui-world-triage-20261022",
       "pr": 97,
@@ -2651,6 +2675,18 @@
           "ownership_revision": 1,
           "transferred_at": "2026-10-30T15:49:00Z",
           "reason": "Owner explicitly requests continuation of blocked final-consolidation chat; preserve in-flight native run 41082890524."
+        },
+        {
+          "owner": "codex-final-consolidation-b42e2e4f25bf",
+          "ownership_revision": 2,
+          "transferred_at": "2026-10-30T18:12:38.637Z",
+          "reason": "Owner directs continuation and reconciliation in canonical PR136; retain original branches and sources."
+        },
+        {
+          "owner": "codex-artistic-completion-1515a30b9c7e",
+          "ownership_revision": 3,
+          "transferred_at": "2026-10-30T18:53:17.056Z",
+          "reason": "Owner requests recovery and continuation after Work chat stopped."
         }
       ],
       "write_scope_released": false
@@ -2658,9 +2694,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": "codex-final-consolidation-b42e2e4f25bf",
+      "owner": "codex-recovery-5ec48d90b77f",
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 5,
       "status": "active",
       "branch": "feature/heroes-approved-ui-integration-20261030",
       "pr": 135,
@@ -2684,6 +2720,18 @@
           "ownership_revision": 2,
           "transferred_at": "2026-10-30T15:49:00Z",
           "reason": "Owner explicitly requests continuation of blocked final-consolidation chat; preserve in-flight native run 41082890524."
+        },
+        {
+          "owner": "codex-final-consolidation-b42e2e4f25bf",
+          "ownership_revision": 3,
+          "transferred_at": "2026-10-30T18:12:38.637Z",
+          "reason": "Owner directs continuation and reconciliation in canonical PR136; retain original branches and sources."
+        },
+        {
+          "owner": "codex-artistic-completion-1515a30b9c7e",
+          "ownership_revision": 4,
+          "transferred_at": "2026-10-30T18:53:17.056Z",
+          "reason": "Owner requests recovery and continuation after Work chat stopped."
         }
       ],
       "write_scope_released": false
@@ -2691,11 +2739,11 @@
     {
       "id": "eldoria-unified-art-vault-20261029",
       "title": "Biblioteca artística unificada 2D/3D — PR128",
-      "owner": "codex-final-consolidation-b42e2e4f25bf",
+      "owner": "codex-recovery-5ec48d90b77f",
       "branch": "docs/unified-art-vault-20261029",
       "status": "active",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 4,
       "write_scope_released": false,
       "claimed_at": "2026-10-30T15:31:15.561Z",
       "base_main_sha": "515555135127195542496ffea3a0852206772bea",
@@ -2720,6 +2768,18 @@
           "ownership_revision": 1,
           "transferred_at": "2026-10-30T15:49:00Z",
           "reason": "Owner explicitly requests continuation of blocked final-consolidation chat; preserve in-flight native run 41082890524."
+        },
+        {
+          "owner": "codex-final-consolidation-b42e2e4f25bf",
+          "ownership_revision": 2,
+          "transferred_at": "2026-10-30T18:12:38.637Z",
+          "reason": "Owner directs continuation and reconciliation in canonical PR136; retain original branches and sources."
+        },
+        {
+          "owner": "codex-artistic-completion-1515a30b9c7e",
+          "ownership_revision": 3,
+          "transferred_at": "2026-10-30T18:53:17.056Z",
+          "reason": "Owner requests recovery and continuation after Work chat stopped."
         }
       ]
     }

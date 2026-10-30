@@ -54,10 +54,21 @@ namespace Eldoria.UI.RoyalGold.V2
             if(Mathf.Abs(window.rect.width-lastWidth)>.5f||Mathf.Abs(window.rect.height-lastHeight)>.5f)Layout();
             RefreshEntryVisibility();
         }
+        bool MailboxIntroduced
+        {
+            get
+            {
+                var mailbox=gateway?.Snapshot()?.Mailbox;
+                // The first real delivery introduces mail. Its event ledger
+                // survives deletion, so an introduced destination stays visible.
+                return mailbox!=null&&((mailbox.ReceivedEventIds?.Count??0)>0 ||
+                    (mailbox.Messages?.Count??0)>0);
+            }
+        }
         void RefreshEntryVisibility()
         {
             if(!entry||!hud)return;
-            entry.gameObject.SetActive(!IsOpen&&!hud.NarrativeOpen&&
+            entry.gameObject.SetActive(MailboxIntroduced&&!IsOpen&&!hud.NarrativeOpen&&
                 !(hud.Modal!=null&&hud.Modal.gameObject.activeSelf)&&
                 !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false)&&
                 !(hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false)&&
@@ -65,7 +76,7 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         public void Open()
         {
-            if(hud==null||gateway==null || hud.NarrativeOpen ||
+            if(hud==null||gateway==null || !MailboxIntroduced || hud.NarrativeOpen ||
                (hud.Modal!=null&&hud.Modal.gameObject.activeSelf))return;
             Ensure();window.gameObject.SetActive(true);
             window.SetAsLastSibling();offset=0;selectedId=null;

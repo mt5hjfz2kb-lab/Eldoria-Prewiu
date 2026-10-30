@@ -29,7 +29,8 @@ namespace Eldoria.UI.RoyalGold.V2
         public int SelectedTier => selectedTier;
         ICommandGateway gateway;
         RoyalGoldV41MailboxScreen mailbox;
-        Image approvedArcher,approvedTroopRow;
+        Image approvedArcher,approvedTroopRow,trainingEnvironment;
+        readonly Dictionary<RectTransform,Image> paneSurfaces=new Dictionary<RectTransform,Image>();
         readonly Image[] approvedHeroes=new Image[3];
         Func<long> utcTicks;
         Action onCommand;
@@ -310,6 +311,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // genuine control rather than a second flat background image.
             militaryDepth=RoyalGoldV3LayeredFinish.Install(root,
                 RoyalGoldV3LayeredFinish.Scene.Training,2);
+            trainingEnvironment=RoyalGoldV41SourceArt.Surface(root,"training-courtyard-layer-v1");
+            trainingEnvironment.rectTransform.SetAsLastSibling();
+            var courtyardFit=trainingEnvironment.gameObject.AddComponent<AspectRatioFitter>();
+            courtyardFit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;
+            courtyardFit.aspectRatio=1.5f;
             layoutRoot=Rect("V3 / Responsive military layout",root);
             header = Frame("V3 / Destination header",layoutRoot,false);
             left = Frame("V3 / Featured military unit",layoutRoot,false);
@@ -424,11 +430,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 // amount of scene depth; real numbers retain high contrast.
                 var paper=RoyalGoldV41SourceArt.Surface(pane,"blue-panel",14);
                 paper.color=new Color(1f,1f,1f,.94f);
+                paneSurfaces[pane]=paper;
                 // Antique rim and candlelight are independent of the texture.
                 RoyalGoldV3LayeredFinish.Install(pane,
                     RoyalGoldV3LayeredFinish.Scene.Panel,1);
             }
-            approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer");
+            approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer-isolated-v1");
             approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
             approvedTroopRow=RoyalGoldV41SourceArt.Surface(left,"archer-row");
             approvedTroopRow.preserveAspect=true;approvedTroopRow.rectTransform.SetAsLastSibling();
@@ -603,10 +610,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 int seconds=SliceRules.RecruitSecondsFor(selectedCount);
                 long leftSeconds=busy?Math.Max(0,(long)Math.Ceiling(
                     (s.RecruitmentCompletesUtcTicks-utcTicks())/(double)TimeSpan.TicksPerSecond)):0;
-                summary.Put(compactLandscape?
-                    "COSTE DEL ENTRENAMIENTO\nMadera "+wood+" · Piedra "+stone+"\nTIEMPO TOTAL  "+Clock(seconds):
-                    "COSTE DEL ENTRENAMIENTO\n\nMadera   "+wood+
-                    "\nPiedra   "+stone+"\n\nTIEMPO TOTAL\n"+Clock(seconds));
+                summary.Put(
+                    "COSTE DEL ENTRENAMIENTO\nMadera "+wood+" · Piedra "+stone+"\nTIEMPO TOTAL  "+Clock(seconds));
                 trainingProgress.gameObject.SetActive(busy);
                 if(busy)
                 {
@@ -615,12 +620,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     trainingProgressFill.sizeDelta=new Vector2(
                         trainingProgress.rect.width*elapsed,0f);
                 }
-                status.Put(compactLandscape?
-                    "DISPONIBLES T"+selectedTier+"  "+selectedAvailable+" · ENTRENANDO "+s.PendingRecruitArchers+
-                    (busy?"\nCUENTA ATRÁS  "+Clock(leftSeconds):"\nSin entrenamiento activo"):
-                    "DISPONIBLES T"+selectedTier+"  "+selectedAvailable+
-                    "\nENTRENANDO T"+(busy?s.PendingRecruitTier:selectedTier)+"  "+s.PendingRecruitArchers+
-                    (busy?"\n\nCUENTA ATRÁS  "+Clock(leftSeconds):"\n\nSin entrenamiento activo"));
+                status.Put("DISPONIBLES T"+selectedTier+"  "+selectedAvailable+" · ENTRENANDO "+s.PendingRecruitArchers+
+                    (busy?"\nCUENTA ATRÁS  "+Clock(leftSeconds):"\nSin entrenamiento activo"));
                 actionLabel.Put(busy?((s.SpeedupFiveMinutes>0||s.SpeedupOneMinute>0)?"ACELERAR · "+minutes+" MIN ("+(minutes==5?s.SpeedupFiveMinutes:s.SpeedupOneMinute)+")":
                     "ENTRENANDO T"+s.PendingRecruitTier+" · "+Clock(leftSeconds)):
                     "ENTRENAR "+selectedCount+" ARQUEROS T"+selectedTier);
@@ -758,7 +759,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             Place(footer,leftSide,h-bottom-footH,usable,footH);
             float hw=header.rect.width;
-            heroesButton.gameObject.SetActive(HeroesRequested!=null);
+            heroesButton.gameObject.SetActive(HeroesRequested!=null&&(CanOpenHeroes==null||CanOpenHeroes()));
             heroesButton.interactable=HeroesRequested!=null&&(CanOpenHeroes==null||CanOpenHeroes());
             Place(heroesButton.transform as RectTransform,hw*.50f,landscape?7:9,hw*.19f,landscape?52:60);
             Place(heading.rectTransform,landscape?14:15,7,hw*.47f,landscape?40:37);
@@ -836,13 +837,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(chapterAction.transform as RectTransform,hw*.71f,42,hw*.27f,34);
             }
             ReflowApprovedSurfaces(leftSide,top,usable,bodyY,bodyH,gap,landscape);
+            ApplyMilitaryComposition(w,h,leftSide,rightSide,top,bottom,landscape);
             if(!landscape)
             {
                 // Portrait captures use 800 canvas units: 26 units remain
                 // readable at 390 px. Keep the same live controls and art.
                 foreach(var label in root.GetComponentsInChildren<RoyalText>(true))
                     label.fontSize=Mathf.Max(26,label.fontSize);
-                Place(feedback.rectTransform,14,4,fw-28,44);
+                if(CurrentDestination!=Destination.Training)
+                    Place(feedback.rectTransform,14,4,fw-28,44);
             }
             if(compactLandscape)
             {
@@ -860,6 +863,83 @@ namespace Eldoria.UI.RoyalGold.V2
             }
 
         }
+        // Reference-led composition: the character occupies the courtyard, while
+        // only the actual order controls receive a compact material surface.
+        // No domain command, price, clock, save or troop availability is replaced.
+        void ApplyMilitaryComposition(float w,float h,float x,float insetRight,float top,float bottom,bool wide)
+        {
+            bool training=CurrentDestination==Destination.Training;
+            trainingEnvironment.gameObject.SetActive(training);
+            destinationArtwork.enabled=!training;
+            featuredUnitArtwork.enabled=!training;
+            statusArtwork.enabled=!training;
+            militaryDepth.gameObject.SetActive(!training);
+            foreach(var pane in new[]{header,left,right,footer})
+            {
+                paneSurfaces[pane].enabled=!training||pane==header||pane==right;
+                pane.GetComponent<RoyalGoldV2FrameGraphic>().enabled=
+                    !training||pane==header||pane==right;
+                foreach(var finish in pane.GetComponentsInChildren<RoyalGoldV3LayeredFinish>(true))
+                    finish.gameObject.SetActive(!training);
+            }
+            unitTitle.color=training?new Color(.10f,.08f,.055f):Ivory;
+            unitDetail.color=training?new Color(.16f,.13f,.10f):Muted;
+            action.transform.SetParent(training?right:footer,false);
+            if(!training)return;
+            tierButton.transform.SetParent(right,false);
+            float width=w-x-insetRight;
+            float hh=wide?86:172;
+            float foot=wide?54:90;
+            float bodyY=top+hh+12, bodyH=h-bodyY-bottom-foot;
+            Place(header,x,top,width,hh);
+            Place(heading.rectTransform,16,8,width*.48f,40);
+            Place(subheading.rectTransform,16,48,width*.48f,26);
+            if(!wide)
+            {
+                Place(heading.rectTransform,16,8,width-32,44);
+                Place(subheading.rectTransform,16,55,width-32,32);
+                float n=(width-48)/3;
+                Place(heroesButton.transform as RectTransform,12,99,n,60);
+                Place(switchDestination.transform as RectTransform,24+n,99,n,60);
+                Place(chapterAction.transform as RectTransform,36+2*n,99,n,60);
+            }
+            float artH=wide?bodyH:bodyH*.51f;
+            Place(left,x,bodyY,wide?width*.52f:width,artH);
+            float archerW=Mathf.Min(left.rect.width*.70f,artH*.66f);
+            Place(approvedArcher.rectTransform,wide?12:0,0,archerW,artH);
+            unitTitle.rectTransform.SetParent(left,false);
+            unitDetail.rectTransform.SetParent(left,false);
+            float titleX=wide?archerW*.86f:left.rect.width*.54f;
+            float titleW=left.rect.width-titleX-12;
+            Place(unitTitle.rectTransform,titleX,artH*.09f,titleW,wide?72:90);
+            Place(unitDetail.rectTransform,titleX,artH*.09f+(wide?82:100),titleW,wide?120:150);
+            unitTitle.fontSize=wide?28:34;
+            unitDetail.fontSize=wide?20:28;
+            float orderW=wide?width*.43f:width;
+            float orderH=wide?Mathf.Min(bodyH,510):bodyH-artH-12;
+            Place(right,wide?x+width-orderW:x,wide?bodyY+(bodyH-orderH)*.65f:bodyY+artH+12,orderW,orderH);
+            float pad=wide?22:26;
+            float qh=wide?48:78;
+            Place(quantityRow,pad,orderH*.06f,orderW-pad*2,qh);
+            Place(slider.transform as RectTransform,pad+6,orderH*.06f+qh+12,orderW-pad*2-12,wide?16:24);
+            Place(summary.rectTransform,pad,orderH*.30f,orderW-pad*2,orderH*.20f);
+            Place(tierButton.transform as RectTransform,pad,orderH*.52f,orderW-pad*2,wide?34:52);
+            Place(status.rectTransform,pad,orderH*.64f,orderW-pad*2,wide?48:70);
+            Place(trainingProgress,pad,orderH*.62f-8,orderW-pad*2,8);
+            Place(action.transform as RectTransform,pad,orderH-(wide?65:94),orderW-pad*2,wide?52:80);
+            summary.fontSize=wide?22:28;status.fontSize=wide?17:26;
+            actionLabel.fontSize=wide?19:26;
+            float qw=quantityRow.rect.width;
+            Place(minus.transform as RectTransform,0,0,qh,qh);
+            Place(plus.transform as RectTransform,qw-qh,0,qh,qh);
+            Place(selectedText.rectTransform,qh+4,0,qw-2*qh-8,qh);
+            Place(footer,x,h-bottom-foot,width,foot);
+            Place(back.transform as RectTransform,0,8,wide?width*.30f:width*.40f,foot-12);
+            Place(feedback.rectTransform,wide?width*.32f:width*.43f,8,wide?width*.68f:width*.57f,foot-12);
+            // Explicit stacking retains live controls above source surfaces.
+            approvedArcher.rectTransform.SetAsFirstSibling();
+        }
+
         void ReflowApprovedSurfaces(float x,float top,float width,float y,float height,float gap,bool wide)
         {
             bool training=CurrentDestination==Destination.Training;

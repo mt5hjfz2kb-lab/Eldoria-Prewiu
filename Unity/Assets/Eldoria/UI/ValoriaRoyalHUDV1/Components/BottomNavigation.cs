@@ -15,11 +15,12 @@ namespace Eldoria.UI.RoyalGold {
     bool unlocked=host!=null?host.CanOpen(item.Section):
       item.Section!=RoyalSection.Inventory&&item.Section!=RoyalSection.World;
     bool realDestination=ChronicleOrder(item.Section)<5;
-    // Keep the five approved destinations stable; narrative locks disable
-    // their real controls without exposing an unavailable operation.
+    // Keep the approved destination order, revealing each system only
+    // when the authoritative host introduces it. Temporary in-system
+    // conditions must not be mistaken for a narrative unlock.
     bool utility=ChronicleLayout&&(item.Section==RoyalSection.Bastion||
       item.Section==RoyalSection.Inventory||item.Section==RoyalSection.Missions);
-    bool show=ChronicleLayout?realDestination:unlocked;
+    bool show=ChronicleLayout?realDestination&&(unlocked||utility):unlocked;
     item.Button.gameObject.SetActive(show);
     item.Button.interactable=show&&(unlocked||utility);
     item.Label.Put(ChronicleLayout?ChronicleName(item.Section,english):

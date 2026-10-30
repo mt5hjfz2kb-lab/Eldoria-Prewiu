@@ -122,6 +122,20 @@ namespace Eldoria.Editor
                 Need(!Bounds(profile.rectTransform).Overlaps(Bounds((RectTransform)tier.transform)),
                     "Compact training profile is not covered by the tier selector");
             }
+            if(shot.StartsWith("training-"))
+            {
+                var tier=screen.VisibleRoot.GetComponentsInChildren<Button>().First(b=>b.name=="Select archer tier");
+                var order=screen.VisibleRoot.GetComponentsInChildren<RectTransform>().First(r=>r.name=="V3 / Authoritative status and cost");
+                Need(tier.transform.parent==order,"Tier control belongs to the live order in both orientations "+shot);
+                var panes=screen.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                    .Where(r=>r.name=="V3 / Featured military unit"||r.name=="V3 / Destination actions");
+                foreach(var pane in panes)
+                    Need(!pane.GetComponent<RoyalGoldV2FrameGraphic>().enabled,
+                        "Courtyard and character remain unobscured by legacy opaque frames "+shot);
+                foreach(var text in labels.Where(t=>t.transform.parent==order))
+                    Need(!Bounds(text.rectTransform).Overlaps(Bounds((RectTransform)tier.transform)),
+                        "Order text does not overlap tier control "+text.name+" "+shot);
+            }
             var quantity=labels.First(t=>t.name=="Authoritative quantity");
             Need(quantity.rectTransform.rect.width>=36,
                 "Quantity remains legible between real minus and plus controls "+shot);
