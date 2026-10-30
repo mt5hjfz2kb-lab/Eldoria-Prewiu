@@ -12,8 +12,9 @@ namespace Eldoria.ReferenceClean {
   ValoriaIntegratedWorld host;
   GameObject town,granary,granarySite,siteStock; readonly Dictionary<string,GameObject> nodes=new Dictionary<string,GameObject>();
   readonly List<(GameObject cue,string building,int level)> cues=new List<(GameObject,string,int)>();
+  readonly Dictionary<string,GameObject> priorities=new Dictionary<string,GameObject>();
   readonly List<Mesh> terrainMeshes=new List<Mesh>();
-  static readonly string[] VisibleAuthoredEncounterIds={"hunt-wolf","fissure-valoria"};
+  static readonly string[] VisibleAuthoredEncounterIds={"hunt-wolf","fissure-valoria","ash-stalker-valoria"};
   bool placed;float refresh;
   public void Initialize(ValoriaIntegratedWorld h){
    host=h;town=new GameObject("Bastion III city additions");town.transform.SetParent(transform,false);
@@ -31,10 +32,22 @@ namespace Eldoria.ReferenceClean {
    }
    // III repairs and provisions the existing keep; its approved silhouette stays intact.
    MakeStock("bastion",town.transform,new Vector3(9,.56f,17),"Crate",3);
-   foreach(string id in new[]{"hunt-wolf","hunt-boar","meat-valoria","fissure-valoria"}){
+   // One restrained, authored supply arrangement reflects the permanent IV choice.
+   // Existing textured props preserve the city style and avoid a new floating label.
+   foreach(var option in new[]{("production","Crate"),("defense","Barrel"),("civil","Sack")}){
+    var group=new GameObject("Valoria priority "+option.Item1);group.transform.SetParent(town.transform,false);priorities.Add(option.Item1,group);
+    var origin=new Vector3(-7,.56f,16);
+    for(int i=0;i<3;i++)Model("BastionIII/Granary/Stock"+option.Item2,group.transform,origin+new Vector3((i%2)*1.25f,0,(i/2)*1.2f),1.7f);
+    group.SetActive(false);
+   }
+   foreach(string id in new[]{"hunt-wolf","hunt-boar","meat-valoria","fissure-valoria","ash-stalker-valoria"}){
     var root=new GameObject(id);root.transform.SetParent(host.WorldRoot.transform,false);nodes.Add(id,root);
     Hotspot(root,id,id=="fissure-valoria"?new Vector3(9,2,4):new Vector3(7,4,5));
     if(id=="fissure-valoria")Model("BastionIII/PrivateFissure",root.transform,Vector3.zero,8);
+    else if(id=="ash-stalker-valoria"){
+     // Existing licensed wolf geometry is a provisional encounter stand-in, NOT an approved new asset.
+     Model("BastionIII/AshWolf",root.transform,Vector3.zero,8.2f);
+    }
     else if(id=="hunt-wolf"){
      // Match the boar encounter\u0027s actual rendered world width (5m), not its imported prefab scale.
      // Keep the two wolves separated so equal-sized animated silhouettes do not collide.
@@ -49,7 +62,7 @@ namespace Eldoria.ReferenceClean {
    Apply();
   }
   void MakeStock(string building,Transform parent,Vector3 point,string prop,int minimum=2){
-   for(int level=minimum;level<=3;level++){
+   for(int level=minimum;level<=4;level++){
     var group=new GameObject(building+" level "+level+" stock");group.transform.SetParent(parent,false);group.transform.localPosition=point;
     float offset=(level-minimum)*1.8f;
     for(int i=0;i<2;i++)Model("BastionIII/Granary/Stock"+prop,group.transform,new Vector3(offset+i*.7f,0,i*.65f),1.1f);
@@ -189,16 +202,18 @@ namespace Eldoria.ReferenceClean {
   public void Apply(){
    if(!host||host.City.Gateway==null)return;var s=host.City.Gateway.Snapshot();var c=s.ChapterThree;
    bool unlocked=s.BastionLevel>=3;town.SetActive(unlocked&&!host.InWorld);
-   if(granary)granary.SetActive(c.GranaryLevel>0);
+   if(granary)granary.SetActive(c.GranaryLevel>0&&c.GranaryLevel<5);
    // A buildable site has actual stored supplies instead of an invisible target.
    siteStock.SetActive(c.GranaryLevel==0);
-   foreach(var cue in cues){int level=cue.building=="granary"?c.GranaryLevel:cue.building=="sawmill"?s.SawmillLevel:cue.building=="barracks"?s.BarracksLevel:s.BastionLevel;cue.cue.SetActive(level>=cue.level);}
+   foreach(var cue in cues){int level=cue.building=="granary"?c.GranaryLevel:cue.building=="sawmill"?s.SawmillLevel:cue.building=="barracks"?s.BarracksLevel:s.BastionLevel;cue.cue.SetActive(level>=cue.level&&level<5);}
+   foreach(var priority in priorities)priority.Value.SetActive(s.BastionLevel>=4&&c.DevelopmentPriority==priority.Key);
    if(!placed&&unlocked)PlaceNodes(s);
    bool near=!RegionOneResourcePlacement.IsPanoramic(host.WorldCamera.orthographicSize,host.WorldNavigation.globalZoom);
    foreach(var pair in nodes){bool visible=unlocked&&placed&&near;
     if(pair.Key=="fissure-valoria")visible&=!c.FissureClosed||host.City.Clock.UtcTicks<c.ClosingEndsUtcTicks;
     if(pair.Key=="hunt-wolf")visible&=host.City.Clock.UtcTicks>=c.WolfRespawnUtcTicks;
     if(pair.Key=="hunt-boar")visible&=host.City.Clock.UtcTicks>=c.BoarRespawnUtcTicks;
+    if(pair.Key=="ash-stalker-valoria")visible&=s.BastionLevel>=5&&host.City.Clock.UtcTicks>=c.AshStalkerRespawnUtcTicks;
     if(pair.Key=="meat-valoria")visible&=c.MeatRemaining>0;
     pair.Value.SetActive(visible);
     if(visible)EnsureVisibleImportedArt(pair.Value,pair.Key=="fissure-valoria"&&c.FissureClosed);

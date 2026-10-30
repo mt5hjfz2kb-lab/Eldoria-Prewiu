@@ -14,7 +14,7 @@ const crypto = require('node:crypto');
 const { performance } = require('node:perf_hooks');
 const { spawnSync } = require('node:child_process');
 
-const PREFIX = 'VALORIA_PLAYTEST ';
+const { createTelemetryReader } = require('./telemetry-frames.cjs');
 const VIEWS = { landscape: { width: 960, height: 540 }, portrait: { width: 540, height: 960 } };
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex');
@@ -73,7 +73,11 @@ function stableSelectionView(before, after) {
       before.width !== after.width || before.height !== after.height || before.narrative || after.narrative) return false;
   const camera = cameraDifference(before, after), a = framingObservation(before), b = framingObservation(after);
   if (!camera || camera.distance > 0.01 || Math.abs(camera.zoom) > 0.001 || !a.valid || !b.valid) return false;
-  if (['projected', 'visible'].some(rect => a[rect].some((value, index) => Math.abs(value - b[rect][index]) > 0.0001))) return false;
+  // Animated model bounds and transient HUD text can move while the camera and
+  // action stay perfectly still. Require full containment in BOTH observations,
+  // not identical animation poses. The observation loop resets on every clipped
+  // frame, so its >=3-frame / 0.7s window must remain continuously unobstructed.
+  if (!a.pass || !b.pass) return false;
   const first = before.controls?.primary, second = after.controls?.primary;
   return !first || !second || (first.enabled === second.enabled && Math.abs(first.x - second.x) <= 0.5 && Math.abs(first.y - second.y) <= 0.5);
 }
@@ -217,7 +221,7 @@ async function main() {
       visual_review: 'REQUIRED: inspect screenshots and continuous browser video independently' },
     measurements_scope: 'Local loopback server and CI Chromium; these are not Internet, Sites, Safari, physical-phone or FPS measurements',
     march_visual_measurement: 'Consecutive visible marker samples with unchanged viewport and stable camera (distance <= 0.01 world units, zoom delta <= 0.001). Resolved displacement >= 1 per mille of screen dimensions. Missing/out-of-frame/unstable samples do not prove missing animation. Inspect video for perceived motion and occlusion.',
-    selection_framing_measurement: 'Before each real primary action and after a completed operation that retains its selection/view: at least three telemetry frames across >=0.7 s with the same selection, viewport, camera and panel/projection bounds. Completion observations allow objective advancement and need no enabled next action; view/selection/narrative changes are recorded as interruptions. Full projected model envelope must be inside the HUD free viewport; transient camera/layout frames are observed without failing immediately. Rectangles use Unity normalized bottom-left viewport coordinates.',
+    selection_framing_measurement: 'Before each real primary action and after a completed operation that retains its selection/view: at least three telemetry frames across >=0.7 s with the same selection, viewport, camera and primary control; full animated model bounds continuously contained in the current free viewport. Completion observations allow objective advancement and need no enabled next action; view/selection/narrative changes are recorded as interruptions. Full projected model envelope must be inside the HUD free viewport; transient camera/layout frames are observed without failing immediately. Rectangles use Unity normalized bottom-left viewport coordinates.',
     cold_load_definition: 'Empty browser context with no prior HTTP/IndexedDB cache; operating-system disk cache is not claimed empty',
     checks: {}, loads: [], orientations: [], actions: [], operations: [], marches: [], navigation: [], selection_framing: [],
     transitions: [], screenshots: [], failures: [], warnings: [], runtime_errors: [], network_failures: [], diagnostics: [], legacy_ui_fallbacks: []
@@ -417,7 +421,7 @@ async function main() {
           state.width !== initial.width || state.height !== initial.height) {
         check.status = 'INTERRUPTED_BY_GAME_TRANSITION'; check.finished_elapsed_s = elapsed(); return null;
       }
-      if (!observation.valid || (!afterOperation && !state.controls?.primary?.enabled)) {
+      if (!observation.valid || !observation.pass || (!afterOperation && !state.controls?.primary?.enabled)) {
         anchor = null; stableFrames = 0; await sleep(80); continue;
       }
       if (!anchor || !stableSelectionView(anchor, state)) { anchor = state; stableSince = now; stableFrames = 1; }
@@ -590,12 +594,22 @@ async function main() {
       }
       if (view === 'landscape') {
       await closeDetails();
-      const beforeZoom = latest, box = await canvasBox(), seq = sequence;
+      const box = await canvasBox();
       // Use the same exposed ground lane that allowed real portrait panning.
       // The world city label is a genuine UI control and must keep intercepting
-      // wheel/pointer input when hovered. Observe an actual zoom-in wheel tick,
-      // never set camera values through browser automation.
+      // wheel/pointer input when hovered. Current authored geography enters at
+      // its near limit (36), so first establish room with a real zoom-out tick.
+      // Both directions must visibly move; never set camera values through JS.
       await page.mouse.move(box.x + box.width * 0.83, box.y + box.height * 0.56);
+      const beforeOut = latest, outSequence = sequence;
+      report.actions.push({ elapsed_s: elapsed(), kind: 'mouse-wheel', label: 'world-zoom-out',
+        deltaY: 240, origin: 'exposed-world-ground', before: summary(beforeOut) });
+      await page.mouse.wheel(0, 240);
+      await waitState(() => true, 'Zoom-out observation', 8000, outSequence);
+      await sleep(850);
+      const zoomOut = cameraDifference(beforeOut, latest);
+      need(zoomOut && zoomOut.zoom > 0.65, 'A real world mouse-wheel tick did not visibly zoom out from the near limit');
+      const beforeZoom = latest, seq = sequence;
       report.actions.push({ elapsed_s: elapsed(), kind: 'mouse-wheel', label: 'world-zoom-in',
         deltaY: -240, origin: 'exposed-world-ground', before: summary(beforeZoom) });
       await page.mouse.wheel(0, -240);
@@ -604,8 +618,8 @@ async function main() {
       const zoomDifference = cameraDifference(beforeZoom, latest);
       need(zoomDifference && zoomDifference.zoom < -0.65,
         'A real world mouse-wheel tick did not visibly zoom toward the selected world ground');
-      report.checks.world_zoom = { pass: true, input_delta_y: +240,
-        initial_at_regional_fitting_limit: beforeZoom.camera.zoom >= 31.9,
+      report.checks.world_zoom = { pass: true, input_delta_y: -240,
+        zoom_out: { pass: true, input_delta_y: 240, before: beforeOut.camera, after: beforeZoom.camera },
         zoom_direction: zoomDifference.zoom < 0 ? 'in' : 'out',
         before: beforeZoom.camera, after: latest.camera };
       }
@@ -670,6 +684,15 @@ async function main() {
       if (!checkedNavigation && latest.sawmill > 0) { await navigationCheck(); checkedNavigation = true; continue; }
       const desired = ['b1.build-sawmill', 'b1.gather-stone', 'b1.ascend', 'b2.train-archers', 'b2.defeat-engendro'].includes(latest.objective) ? 'portrait' : 'landscape';
       await setOrientation(desired); await dismissNarrative();
+      // Completing a chapter dialogue can restore the selected building screen
+      // after the earlier management check. Use its real visible Return button
+      // before attempting the city objective hidden behind that full-screen view.
+      if (latest.management?.destination) {
+        await capture(`management-after-narrative-${latest.management.destination}`);
+        await closeDetails();
+        need(!latest.management?.destination, 'Visible return button did not close management after narrative');
+        continue;
+      }
       const previousObjective = latest.objective;
       await clickControl('objective');
       await waitState(state => state.narrative || state.busy || state.selected || state.objective !== previousObjective, 'Objective locates an actionable destination', 10000);
@@ -707,6 +730,10 @@ async function main() {
       report.selection_framing.some(check => check.pass &&
         check.samples.some(sample => sample.kind === 'FULL_SCREEN_MANAGEMENT' && sample.destination === destination)));
     need(report.checks.management_destinations, 'Training and march must each pass real full-screen control framing');
+    report.checks.city_building_destinations = ['Building:sawmill', 'Building:bastion'].every(destination =>
+      report.selection_framing.some(check => check.pass &&
+        check.samples.some(sample => sample.kind === 'FULL_SCREEN_MANAGEMENT' && sample.destination === destination)));
+    need(report.checks.city_building_destinations, 'Sawmill and Bastion must each use their actual full-screen building controls');
     report.checks.complete_i_ii = latest.bastion === 2 && latest.sawmill > 0 && latest.barracks > 0 &&
       latest.trained >= 20 && latest.configured && latest.scout && latest.engendro && phase(latest) === 'idle' && !latest.busy;
     need(report.checks.complete_i_ii, 'Bastion II completion did not retain all required systems and the returned march');
@@ -797,20 +824,21 @@ async function main() {
     need(process.env.VALORIA_PLAYTEST_VIDEO !== '0', 'Video capture is required to validate authentic frame evidence');
     options.recordVideo = { dir: path.join(out, 'video'), size: { width: 960, height: 720 } };
     context = await browser.newContext(options); page = await context.newPage(); videoStartedAt = performance.now();
+    const telemetryReader = createTelemetryReader();
     page.on('framenavigated', frame => {
       // An old Unity frame can log while reload is starting. It must never
       // satisfy the next document's readiness or exact-save verification.
       if (frame === page.mainFrame()) {
-        latest = null; previousFrame = null; lastTelemetryAt = 0; documentCommittedAt = Date.now();
+        latest = null; previousFrame = null; lastTelemetryAt = 0; documentCommittedAt = Date.now(); telemetryReader.reset();
       }
     });
     page.on('console', message => {
-      const text = message.text(), where = text.indexOf(PREFIX);
+      const text = message.text();
       if (text.includes('ELDORIA_PLAYABLE_NAV') && text.includes('source=webgl-touch-fallback')) {
         report.legacy_ui_fallbacks.push({ elapsed_s: elapsed(), text });
       }
-      if (where >= 0) {
-        try { recordFrame(JSON.parse(text.slice(where + PREFIX.length).split('\n')[0])); }
+      if (telemetryReader.accepts(text)) {
+        try { const frame = telemetryReader.read(text); if (frame) recordFrame(frame); }
         catch (error) { telemetryBroken = true; report.failures.push('Invalid read-only telemetry: ' + error.message); }
         return;
       }

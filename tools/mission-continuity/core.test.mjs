@@ -149,3 +149,30 @@ test("an older-source active art job remains observable but cannot certify curre
   assert.equal(r.source_matches_branch_head,false);
   assert.match(r.next_action,/older source SHA/);
 });
+
+test("explicit owner pause never creates an idle-unfinished alert or asks for execution",()=>{
+ const paused={...activeWorkstreams[0],owner:null,phase:'OWNER_PAUSED_WAIT_FOR_WORLD4X_PR100',
+   next:'PAUSED BY OWNER'};
+ const x=check([makeRun(15,'completed','failure')],{activeWorkstreams:[paused]});
+ assert.equal(x.state,'OWNER_PAUSED');
+ assert.equal(x.alert,false);
+ assert.equal(x.latest_run,null);
+ assert.match(x.next_action,/do not retry/i);
+});
+test("unassigned canonical slot does not masquerade as an active executor",()=>{
+ const vacant={...activeWorkstreams[0],owner:null,phase:'READY_FOR_CLAIM'};
+ const x=check([],{activeWorkstreams:[vacant]});
+ assert.equal(x.state,'OWNER_UNASSIGNED');
+ assert.equal(x.alert,false);
+});
+test("only exact full commit SHA can invalidate a previous successful run",()=>{
+ const old='a'.repeat(40),current='b'.repeat(40);
+ const r={...makeRun(42,'completed','success'),head_sha:old};
+ const x=check([r],{branchSha:current});
+ assert.equal(x.state,'SOURCE_DRIFT_REVALIDATION');
+ assert.equal(x.alert,true);
+ assert.match(x.next_action,/previous SHA passed/i);
+ const same=check([r],{branchSha:old});
+ assert.equal(same.state,'WAITING_EVIDENCE');
+ assert.equal(same.alert,true);
+});

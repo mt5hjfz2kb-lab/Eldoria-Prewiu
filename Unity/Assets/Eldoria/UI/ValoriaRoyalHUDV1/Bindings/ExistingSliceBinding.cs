@@ -17,7 +17,7 @@ namespace Eldoria.UI.RoyalGold {
     Hero=s.PreparedHeroId=="aldric"?"Sir Aldric":s.PreparedHeroId,IsTest=test,Profile=SliceContentProfiles.ActiveRuntimeProfile,
     Chapter=L(en,s.BastionLevel<2?"CAPÍTULO I":"CAPÍTULO II",s.BastionLevel<2?"CHAPTER I":"CHAPTER II"),March=MarchText(s,en)};
    if(s.ChapterThree.LyraRecruited)d.Hero="Sir Aldric · Lyra ("+s.ChapterThree.LyraXp+" XP)";
-   d.ShowFood=s.BastionLevel>=3;if(s.BastionLevel>=3)d.Chapter=L(en,"CAPÍTULO III","CHAPTER III");
+   d.ShowFood=s.BastionLevel>=3;if(s.BastionLevel>=3)d.Chapter=L(en,"CAPÍTULO ","CHAPTER ")+(s.BastionLevel==3?"III":s.BastionLevel==4?"IV":"V");
    ObserveRecruitment(s);Mission(s,d,en); d.Building=Building(s,selection,en); return d;
   }
   public RoyalResult Submit(RoyalAction offer){
@@ -42,7 +42,7 @@ namespace Eldoria.UI.RoyalGold {
    switch(phase){case "outbound":label=L(en,"En marcha","Outbound");break;case "gathering":label=L(en,"Recolectando","Gathering");break;case "returning":label=L(en,"Regresando","Returning");break;default:label=L(en,"Marcha disponible","March ready");break;}
    return label+(phase=="idle"?"":" · "+TargetName(s.March.TargetId,en)+" · "+RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,clock.UtcTicks,en));
   }
-  static string TargetName(string id,bool en){switch(id){case "meat-valoria":return L(en,"Reserva de carne","Meat reserve");case "hunt-wolf":return L(en,"Lobos cenicientos","Ash wolves");case "hunt-boar":return L(en,"Jabalí de roca","Rock boar");case "fissure-valoria":return L(en,"Fisura","Fissure");case "forest-valoria":return L(en,"Bosque","Forest");case "quarry-valoria":return L(en,"Cantera","Quarry");case "corrupt-scout":return L(en,"Ruta corrupta","Corrupted route");case "engendro-valoria":return L(en,"Engendro","Spawn");default:return L(en,"Valoria","Valoria");}}
+  static string TargetName(string id,bool en){switch(id){case "ash-stalker-valoria":return L(en,"Acechador de Ceniza","Ash Stalker");case "meat-valoria":return L(en,"Reserva de carne","Meat reserve");case "hunt-wolf":return L(en,"Lobos cenicientos","Ash wolves");case "hunt-boar":return L(en,"Jabalí de roca","Rock boar");case "fissure-valoria":return L(en,"Fisura","Fissure");case "forest-valoria":return L(en,"Bosque","Forest");case "quarry-valoria":return L(en,"Cantera","Quarry");case "corrupt-scout":return L(en,"Ruta corrupta","Corrupted route");case "engendro-valoria":return L(en,"Engendro","Spawn");default:return L(en,"Valoria","Valoria");}}
   static void Mission(PlayerState s,RoyalSnapshot d,bool en){
    var p=s.ChapterProgress; string key=SliceRules.CurrentObjectiveKey(s); int done=0,total=1; string title;
    switch(key){
@@ -65,7 +65,15 @@ namespace Eldoria.UI.RoyalGold {
     case "b3.lyra":title=L(en,"Conoce a Lyra","Meet Lyra");break;
     case "b3.fissure":title=L(en,"Asalta la fisura junto a Lyra","Assault the fissure with Lyra");break;
     case "b3.infrastructure":title=L(en,"Aserradero, Cuartel y Granero a nivel 2","Sawmill, Barracks and Granary to level 2");break;
-    case "b3.complete":title=L(en,"Bastión III preparado · siguiente etapa pendiente","Bastion III ready · next stage pending");done=1;break;
+    case "b3.complete":title=L(en,"Eleva el Bastión a nivel IV","Upgrade the Bastion to level IV");break;
+    case "b4.priority":title=L(en,"Elige el desarrollo de Valoria","Choose Valoria's development priority");break;
+    case "b4.ascend":title=L(en,"Eleva el Bastión a nivel V","Upgrade the Bastion to level V");break;
+    case "b5.stoneworks":title=L(en,"Construye la Cantera productiva","Build the Stoneworks");break;
+    case "b5.stone":title=L(en,"Mantén 1.200 piedra disponible","Keep 1,200 stone available");done=s.Resources.Stone;total=1200;break;
+    case "b5.army":title=L(en,"Alcanza 60 arqueros","Reach 60 archers");done=s.Available.Total+s.Wounded.Total;foreach(var march in MarchCapacityRules.WorldMarches(s))if(march!=null&&march.Phase!="idle")done+=march.Troops.Total;total=60;break;
+    case "b5.rare":title=L(en,"Derrota al Acechador de Ceniza","Defeat the Ash Stalker");done=s.ChapterThree.AshStalkerDefeated?1:0;break;
+    case "b5.infrastructure":title=L(en,"Desarrolla los edificios a nivel V","Develop each building to level V");break;
+    case "b5.complete":title=L(en,"Bastión V completado · próximo capítulo VI","Bastion V complete · chapter VI next");done=1;break;
     default:title=L(en,"Sin objetivo disponible","No objective available");total=0;break;
    }
    d.Objective=title;d.MissionFraction=total>0?Math.Min(1f,Math.Max(0f,done/(float)total)):0;d.ObjectiveProgress=total>0?Math.Min(done,total)+" / "+total:"";
@@ -82,6 +90,21 @@ namespace Eldoria.UI.RoyalGold {
      new RoyalMissionStep(L(en,"Regreso a Valoria","Return to Valoria"),s.JourneyComplete),
      new RoyalMissionStep(L(en,"Bastión II alcanzado","Bastion II reached"),s.BastionLevel>=2)
     };
+   }else if(s.BastionLevel>=5){
+    int available=s.Available.Total+s.Wounded.Total;
+    foreach(var march in MarchCapacityRules.WorldMarches(s))if(march!=null&&march.Phase!="idle")available+=march.Troops.Total;
+    d.MissionSteps=new[]{
+     new RoyalMissionStep(L(en,"Construye la Cantera","Build the Stoneworks"),s.ChapterThree.StoneworksLevel>0),
+     new RoyalMissionStep(L(en,"Mantén 1.200 piedra","Hold 1,200 stone"),p?.GrantedRewards?.Contains("c5-stone")??false),
+     new RoyalMissionStep(L(en,"Alcanza 60 arqueros","Reach 60 archers"),(p?.GrantedRewards?.Contains("c5-army")??false)||available>=60),
+     new RoyalMissionStep(L(en,"Derrota al Acechador de Ceniza","Defeat the Ash Stalker"),s.ChapterThree.AshStalkerDefeated)};
+   }else if(s.BastionLevel==4){
+    d.MissionSteps=new[]{
+     new RoyalMissionStep(L(en,"Aserradero nivel 2","Sawmill level 2"),s.SawmillLevel>=2),
+     new RoyalMissionStep(L(en,"Granero nivel 2","Granary level 2"),s.ChapterThree.GranaryLevel>=2),
+     new RoyalMissionStep(L(en,"Cuartel nivel 2","Barracks level 2"),s.BarracksLevel>=2),
+     new RoyalMissionStep(L(en,"Prioridad de desarrollo elegida","Development priority chosen"),!string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority)),
+     new RoyalMissionStep(L(en,"Bastión V alcanzado","Bastion V reached"),s.BastionLevel>=5)};
    }else if(s.BastionLevel>=3){
     d.MissionSteps=new[]{new RoyalMissionStep(L(en,"Granero construido","Granary built"),s.ChapterThree.GranaryLevel>0),
      new RoyalMissionStep(L(en,"500 comida reunida","500 food gathered"),p.GrantedRewards.Contains("c3-food")),
@@ -100,29 +123,33 @@ namespace Eldoria.UI.RoyalGold {
   }
   RoyalBuilding ChapterThreeBuilding(PlayerState s,string id,bool en){
    var c=s.ChapterThree;
-   bool ascend=id=="bastion"&&s.BastionLevel==2;
-   bool building=s.BastionLevel>=3&&(id=="granary"||id=="sawmill"||id=="upgrade-barracks");
+   bool ascend=id=="bastion"&&s.BastionLevel>=2&&s.BastionLevel<5;
+   bool building=s.BastionLevel>=3&&(id=="granary"||id=="sawmill"||id=="upgrade-barracks"||id=="stoneworks");
    bool world=s.BastionLevel>=3&&LocalGateway.IsChapterThreeTarget(id);
    if(!ascend&&!building&&!world)return null;
-   var b=new RoyalBuilding{Id=id};string kind="",target=id,label="",reason="";int wood=0,stone=0,seconds=0;long deadline=0;
+   var b=new RoyalBuilding{Id=id};string kind="",target=id,label="",reason="";int wood=0,stone=0,food=0,seconds=0;long deadline=0;
    if(ascend){
-    b.Name=L(en,"Bastión","Bastion");b.Level=2;wood=650;stone=500;seconds=14;kind="AdvanceBastion";label=L(en,"Elevar a Bastión III","Upgrade to Bastion III");
-    b.Function=L(en,"Granero, comida, caza y una frontera más amplia.","Granary, food, hunting and an expanded frontier.");
-    reason=BastionProgressionCatalog.MissingSummary(s,BastionProgressionCatalog.ForLevel(3));deadline=s.BastionUpgradeCompletesUtcTicks;
+    var next=BastionProgressionCatalog.ForLevel(s.BastionLevel+1);
+    b.Name=L(en,"Bastión","Bastion");b.Level=s.BastionLevel;wood=next.WoodCost;stone=next.StoneCost;food=next.FoodCost;seconds=next.DurationSeconds;kind="AdvanceBastion";
+    label=L(en,"Elevar a Bastión ","Upgrade to Bastion ")+(next.Level==3?"III":next.Level==4?"IV":"V");
+    b.Function=next.Level==3?L(en,"Granero, comida, caza y una frontera más amplia.","Granary, food, hunting and an expanded frontier."):next.Level==4?L(en,"Elige cómo desarrollar Valoria: producción, defensa o vida civil.","Choose production, defense or civil development."):L(en,"Cantera productiva y nueva arquitectura al mejorar cada edificio a nivel V.","Stoneworks and new architecture when each building reaches level V.");
+    reason=BastionProgressionCatalog.MissingSummary(s,next);deadline=s.BastionUpgradeCompletesUtcTicks;
    }else if(building){
     target=id=="upgrade-barracks"?"barracks":id;
-    b.Name=target=="granary"?L(en,"Granero","Granary"):target=="sawmill"?L(en,"Aserradero","Sawmill"):L(en,"Cuartel","Barracks");
-    b.Level=target=="granary"?c.GranaryLevel:target=="sawmill"?s.SawmillLevel:s.BarracksLevel;
+    b.Name=target=="stoneworks"?L(en,"Cantera","Stoneworks"):target=="granary"?L(en,"Granero","Granary"):target=="sawmill"?L(en,"Aserradero","Sawmill"):L(en,"Cuartel","Barracks");
+    b.Level=target=="stoneworks"?c.StoneworksLevel:target=="granary"?c.GranaryLevel:target=="sawmill"?s.SawmillLevel:s.BarracksLevel;
     b.Function=target=="barracks"?L(en,"Infraestructura militar. Recluta desde el Cuartel.","Military infrastructure. Recruit from the Barracks."):
-     b.Level+L(en,target=="granary"?" comida/s":" madera/s",target=="granary"?" food/s":" wood/s");
-    wood=b.Level==0?240:(target=="barracks"?140:120)*b.Level;stone=b.Level==0?180:(target=="barracks"?90:78)*b.Level;
-    seconds=b.Level==0?9:8+b.Level*2;kind=b.Level==0?"Build":"UpgradeBuilding";label=L(en,b.Level==0?"Construir":"Mejorar",b.Level==0?"Build":"Upgrade");
-    if(b.Level>=s.BastionLevel)reason=L(en,"Nivel máximo para el Bastión actual.","Maximum level for the current Bastion.");
-    if(b.Level>=2&&target!="barracks"&&!c.Inventory.Contains(target=="sawmill"?"iron-brace":"treated-hide"))reason=L(en,"Falta material especial del mundo.","Requires a special world material.");
+     (target=="stoneworks"?b.Level*2:b.Level)+L(en,target=="stoneworks"?" piedra/s":target=="granary"?" comida/s":" madera/s",target=="stoneworks"?" stone/s":target=="granary"?" food/s":" wood/s");
+    wood=b.Level==0?(target=="stoneworks"?500:240):(target=="barracks"?140:120)*b.Level;stone=b.Level==0?(target=="stoneworks"?0:180):(target=="barracks"?90:78)*b.Level;
+    food=b.Level==0&&target=="stoneworks"?200:0;
+    seconds=b.Level==0?(target=="stoneworks"?12:9):8+b.Level*2;kind=b.Level==0?"Build":"UpgradeBuilding";label=L(en,b.Level==0?"Construir":"Mejorar",b.Level==0?"Build":"Upgrade");
+    if(target=="stoneworks"&&s.BastionLevel<5)reason=L(en,"Requiere Bastión V.","Requires Bastion V.");
+    if(b.Level>=s.BastionLevel||b.Level>=5)reason=L(en,"Nivel máximo para el Bastión actual.","Maximum level for the current Bastion.");
+    if(b.Level>=2&&target!="barracks"&&!c.Inventory.Contains(target=="sawmill"?"iron-brace":target=="stoneworks"?"stone-tusk":"treated-hide"))reason=L(en,"Falta material especial del mundo.","Requires a special world material.");
     if(s.BuildingTaskId.StartsWith("c3:"+target+":",StringComparison.Ordinal))deadline=s.BuildingCompletesUtcTicks;
     else if(s.BuildingCompletesUtcTicks>0||s.BastionUpgradeCompletesUtcTicks>0)reason=L(en,"Otra obra está en curso.","Another construction is in progress.");
    }else{
-    b.Name=id=="fissure-valoria"?L(en,"Fisura","Fissure"):id=="hunt-wolf"?L(en,"Lobo ceniciento","Ash wolf"):id=="hunt-boar"?L(en,"Jabalí de roca","Rock boar"):L(en,"Reserva de carne","Meat reserve");
+    b.Name=id=="fissure-valoria"?L(en,"Fisura","Fissure"):id=="hunt-wolf"?L(en,"Lobo ceniciento","Ash wolf"):id=="hunt-boar"?L(en,"Jabalí de roca","Rock boar"):id=="ash-stalker-valoria"?L(en,"Acechador de Ceniza","Ash Stalker"):L(en,"Reserva de carne","Meat reserve");
     kind=id=="meat-valoria"?"Gather":"Fight";label=L(en,"Enviar expedición","Send expedition");
     if(id=="fissure-valoria"){
      if(c.FissureClosed){b.State=L(en,"Fisura cerrada","Fissure closed");return b;}
@@ -131,6 +158,11 @@ namespace Eldoria.UI.RoyalGold {
      b.Function=L(en,"Una fisura local. Lyra busca a su hermano; aún nadie conoce el origen de la Brecha.","A local fissure. Lyra seeks her brother; the Breach's origin remains unknown.");
      deadline=c.InvestigationEndsUtcTicks;seconds=1200;
     }else if(id=="meat-valoria")b.Function=c.MeatRemaining+L(en," comida disponible"," food available");
+    else if(id=="ash-stalker-valoria"){
+     b.Function=L(en,"Enemigo raro del Bastión V. Su emboscada exige una marcha preparada.","Rare Bastion-V enemy. Its ambush requires a prepared expedition.");
+     if(s.BastionLevel<5)reason=L(en,"Requiere Bastión V.","Requires Bastion V.");
+     if(c.AshStalkerRespawnUtcTicks>clock.UtcTicks)reason=L(en,"El Acechador aún no ha regresado.","The Stalker has not returned yet.");
+    }
     else b.Function=id=="hunt-wolf"?L(en,"Poder requerido: 1450 · 140 comida y piel curtida.","Required power: 1450 · 140 food and treated hide."):L(en,"Poder requerido: 2050 · 190 comida y colmillo pétreo.","Required power: 2050 · 190 food and stone tusk.");
     if(c.InvestigationEndsUtcTicks>0&&id!="fissure-valoria")reason=L(en,"Aldric está investigando la fisura.","Aldric is investigating the fissure.");
     if(s.March.Phase!="idle"){reason=L(en,"Espera al regreso de la marcha.","Wait for the march to return.");if(s.March.TargetId==id){deadline=s.March.PhaseEndsUtcTicks;seconds=s.March.Phase=="gathering"?Math.Max(7,Math.Min(35,(c.MeatRemaining+119)/120)):SliceRules.TravelSeconds;}}
@@ -138,8 +170,8 @@ namespace Eldoria.UI.RoyalGold {
     if(id=="hunt-wolf"&&c.WolfRespawnUtcTicks>clock.UtcTicks||id=="hunt-boar"&&c.BoarRespawnUtcTicks>clock.UtcTicks)reason=L(en,"La caza aún no ha regresado.","The hunt has not returned yet.");
    }
    if(deadline>0){b.OperationActive=true;b.State=L(en,"En curso","In progress");b.Time=RoyalFormatting.Remaining(deadline,clock.UtcTicks,en);b.Progress=seconds>0?Math.Max(0,Math.Min(1,1-(float)((deadline-clock.UtcTicks)/(double)TimeSpan.TicksPerSecond)/seconds)):0;return b;}
-   b.Costs=wood>0?ResourcesText(wood,stone,en):"";b.Time=seconds>0?seconds+" s":"";
-   if(s.Resources.Wood<wood||s.Resources.Stone<stone)reason=L(en,"Faltan recursos.","Insufficient resources.");
+   b.Costs=wood>0?ResourcesText(wood,stone,en)+(food>0?" · "+food+L(en," comida"," food"):""):"";b.Time=seconds>0?seconds+" s":"";
+   if(s.Resources.Wood<wood||s.Resources.Stone<stone||s.Resources.Food<food)reason=L(en,"Faltan recursos.","Insufficient resources.");
    b.Requirements=reason;b.Action=new RoyalAction(kind,target,label,reason,s.Revision,string.IsNullOrEmpty(reason));return b;
   }
   RoyalBuilding Building(PlayerState s,string id,bool en){

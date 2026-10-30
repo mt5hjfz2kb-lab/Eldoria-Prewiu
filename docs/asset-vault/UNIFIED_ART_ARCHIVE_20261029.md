@@ -33,3 +33,30 @@ Catalogar imágenes 2D, referencias aprobadas, retratos, interfaces, texturas, m
 - Pruebas de recuperación y de no modificación del juego antes de fusionar.
 
 Esta fase NO certifica que todos los assets estén respaldados ni activa una automatización de guardado.
+
+## Consolidación ejecutable — 30/10/2026
+
+La PR128 conserva su alcance de archivo: no sustituye modelos ni aprueba arte.
+`scan_visual_assets.py` enumera todos los archivos visuales seguidos por Git,
+registra SHA256/tamaño cuando los bytes están presentes y conserva filas explícitas
+para checkout parcial, enlaces no seguidos y punteros LFS sin objeto. Un índice
+parcial nunca acredita respaldo completo. Añade GUID y referencias serializadas
+Unity; las cargas dinámicas Resources/GLB requieren revisar el host por separado.
+El Bastión antiguo vetado conserva `OWNER_REJECTED`; el resto no gana aprobación
+por existir en Git o por estar referenciado en una escena.
+
+`ingest_visual_asset.py` copia sin mover fuentes, verifica hashes, conserva objetos
+existentes y rechaza conflictos de bytes, metadatos y escapes por enlaces. Cada
+objeto se nombra por hash y cada registro conserva la identidad original. No se
+confunde este depósito local con una copia remota permanente. `verify_visual_backup.py`
+comprueba un manifiesto contra los bytes de un depósito ya disponible.
+
+Validación local: 8 pruebas pasan (clasificación, lectura sin mutación, ausentes,
+LFS, GUID, enlaces, deduplicación y conflictos). El checkout parcial examinado
+registró 5.687 rutas, de las que solo 18 estaban materializadas: esa ejecución
+NO certifica las 5.669 fuentes ausentes. CI ejecuta el inventario en checkout
+completo y conserva su resultado como evidencia temporal, no como respaldo.
+
+Pendiente verificable: relacionar fuentes Tripo originales/optimizadas/BLEND de
+PR127 con un depósito persistente comprobado y producir la galería curada. No
+cerrar el encargo de archivo completo por estas pruebas de herramientas.

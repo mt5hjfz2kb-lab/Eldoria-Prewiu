@@ -10,7 +10,8 @@ def verify(root,manifest):
         file=(root/rel).resolve()
         if not file.is_relative_to(root.resolve()) or not file.is_file():
             errors.append("missing: "+rel);continue
-        digest=hashlib.file_digest(file.open("rb"),"sha256").hexdigest()
+        with file.open("rb") as stream:
+            digest=hashlib.file_digest(stream,"sha256").hexdigest()
         if digest!=asset.get("sha256"):errors.append("hash mismatch: "+rel)
     return errors
 def main():

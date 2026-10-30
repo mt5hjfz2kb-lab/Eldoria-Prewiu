@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T11:04:56.870Z",
+  "updated_at": "2026-10-30T15:31:15.561Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
-      "branch": "main",
+      "owner": "codex-final-consolidation-41862564eebb",
+      "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
-      "claimed_at": "2026-10-27T10:59:08Z",
+      "claimed_at": "2026-10-30T09:30:00Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -88,15 +88,41 @@
         ".github/workflows/bastion-iii-native.yml",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
         "scripts/check_unity_slice.py",
-        "docs/ui-v3/ANDROID_1_18_RELEASE.md"
+        "docs/ui-v3/ANDROID_1_18_RELEASE.md",
+        "Unity/Assets/Eldoria/BastionIVV/**",
+        "Unity/Assets/Eldoria/BastionIVV.meta",
+        "Unity/Assets/StreamingAssets/Eldoria/TierFive/**",
+        "Unity/Assets/StreamingAssets/Eldoria/TierFive.meta",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/**",
+        "Unity/Assets/Eldoria/Tests/EditMode/BastionIVV*",
+        "Unity/Assets/Eldoria/Tests/PlayMode/BastionIVV*",
+        "Unity/Assets/Eldoria/World4XCanon/**",
+        "docs/bastion-iv-v/**",
+        "tools/bastion-iv-v/**",
+        ".github/workflows/bastion-iv-v-native.yml",
+        ".github/workflows/bastion-iv-v-domain.yml",
+        "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
+        ".github/workflows/ui-progression-cert.yml",
+        "pipeline/art-production-requests/eldoria-tier5-six-reference-models-20261029.json",
+        "pipeline/playtest-delivery.json",
+        "tools/valoria-reference-clean/browser-qa-request.json",
+        ".github/workflows/valoria-windows-chromium-qa.yml",
+        ".github/workflows/eldoria-itch-delivery.yml",
+        "docs/bastion-iv-v/RELEASE_20261029.md",
+        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
+        "Unity/Assets/Eldoria/Tests/EditMode/CameraGestureTests.cs",
+        "docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md",
+        "docs/documentation-catalog.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
-      "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
-      "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
+      "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
+      "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR124_125_126_COMPLETED_MAIN_NATIVE_AND_PLAYER_VERIFIED_AVAILABLE",
-      "next": "Available for the next explicitly owner-directed task; no pending work in completed PR124/125/126.",
+      "phase": "PR136_NATIVE_CONTEXTUAL_CONSTRUCTION_CERTIFICATION_REPAIR",
+      "next": "Validate sole cartouche command, native tests/captures; then reconcile PR134/135.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -706,9 +732,174 @@
           "physical_device_tested": false,
           "art_owner_approval_claimed": false,
           "desktop_build_note": "Main Windows desktop build 40586040000 failed resources.assets; PlayMode/EditMode PASS, Android signing and publication PASS."
+        },
+        "bastion_iv_v": {
+          "status": "COMPLETED_MAIN_VERIFIED",
+          "source": "1469708a79dfb8c0ef0b0faa4bcb971ce88a4b32",
+          "native_run": 40906347082,
+          "domain_run": 40906346835,
+          "editmode_passed": 54,
+          "playmode_passed": 73,
+          "functional_checks": 386,
+          "actual_captures": 70,
+          "actual_touch_case_passed": true,
+          "world_touch_near_and_panorama": true,
+          "i_ii_regression_passed": true,
+          "review_artifact": 12913106042,
+          "diagnostics_artifact": 12913038382,
+          "full_artifact": 12913871649,
+          "scoped_visual_review": "ACCEPTED_IV_V_BUILDINGS_UI_WORLD_ENTRY",
+          "physical_mobile_profiled": false,
+          "new_apk_published": false,
+          "budget_eur": 0,
+          "merge_sha": "b7aefa07f9897fd8fe7c43f9bc3b79e4df351d5e",
+          "tested_merge_sha": "9639d946aafbb724f75cc50f6978007106b1c719",
+          "merged_tree": "33c632bb2399ff1a98a25d4dd67f8ad4ae7dd7f0",
+          "exact_merged_tree_matches_certified": true,
+          "general_native_run": 40914641659,
+          "general_native_result": "success",
+          "general_artifact": 12916382095,
+          "general_artifact_sha256": "769370db9ef64f55b7cbb49d19ed893a40c53200826cb69a86f8b1226bd2274d",
+          "aldric_shared_artifact": 12917245613,
+          "three_marches_artifact": 12914019994,
+          "management_destinations_verified": 7,
+          "exposed_city_gain_horizontal_pp": 6.6,
+          "exposed_city_gain_vertical_pp": 19.1,
+          "web_run": 40914641605,
+          "web_result": "success",
+          "web_fresh_save_arc_i": true,
+          "final_review": "docs/bastion-iv-v/FINAL_REVIEW.md",
+          "capture_library_file_id": "libfile_17301d9919a88191a576d79cc9b44034",
+          "no_new_tripo_generation": true,
+          "no_new_publication": true,
+          "completed_at": "2026-10-29T17:10:57.358Z",
+          "orientation_correction": {
+            "pr": 130,
+            "merge_sha": "5878fca65c80136550ee16d7a2d4b4fe289117f2",
+            "source_sha": "5a16c31bf8f8d415987e36c7808d0e2ab58c737e",
+            "exact_tree": "e4e2a7f179e42a4b3f2fc75446a6b0d41f6d003b",
+            "native_run": 40929047929,
+            "native_result": "success",
+            "editmode": 54,
+            "playmode": 73,
+            "iv_v_checks": 386,
+            "i_ii": "PASS",
+            "pngs": 76,
+            "world_touch_32_280": true,
+            "web_run": 40929055448,
+            "web_attempt": 2,
+            "web_result": "success",
+            "visual_review": "PASS_SCOPED_INDIVIDUAL_FACADES_AND_CONNECTED_DOOR_APPROACH",
+            "capture_sha256": "c4613c33e11061bf9c34e36b31157c1023913cc171afefd71b27ce0813058e8b",
+            "capture_library_file_id": "libfile_65cb5b6a36f08191bb21fa00f62efecd",
+            "review_artifact": 12922916318,
+            "diagnostics_artifact": 12922423773,
+            "full_artifact": 12923996427,
+            "physical_mobile_tested": false,
+            "no_new_tripo_calls": true
+          }
+        },
+        "release_20261029": {
+          "completed_at": "2026-10-29T21:34:16.588Z",
+          "workstream_id": "valoria-master-plan-layered-construction-20261016",
+          "owner": "codex-release-continuation-ab04f62d0b26",
+          "android": {
+            "version": "1.19",
+            "version_code": 19,
+            "source_sha": "b310d3b0496b10bab8f1a413f8a588ff5f9b8df3",
+            "build_run": 40946564387,
+            "publish_run": 40951703468,
+            "release_asset": 689858207,
+            "bytes": 468290348,
+            "sha256": "de08719293850ba5135fd022b578baaac8d8619eb2c8b1b9c00b328eaf90e16b",
+            "signature_verified": true,
+            "public_download_hash_verified": true,
+            "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code19/Eldoria-Valoria-code19.apk",
+            "physical_mobile_tested": false
+          },
+          "webgl": {
+            "provider": "itch.io",
+            "target": "chrismad/eldoria-pruebas",
+            "channel": "web",
+            "revision": "native298",
+            "url": "https://chrismad.itch.io/eldoria-pruebas",
+            "remote_build": 2247360,
+            "version": "native298-15b79882a59b",
+            "restricted": true,
+            "remote_active_confirmed": true,
+            "remote_status_evidence": {
+              "run_id": 40958364194,
+              "job_id": 123744902862,
+              "checked_at": "2026-10-29T21:32:52Z",
+              "result": "NATIVE298_ACTIVE",
+              "remote_build": 2247360,
+              "version": "native298-15b79882a59b"
+            },
+            "source_sha": "c8580934201ae1e17543b8683749d40751fb1e12",
+            "qa_run": 40955956262,
+            "delivery_run": 40958364194,
+            "hosted_gameplay_verified": false,
+            "physical_mobile_pass": false,
+            "qa_source_sha": "3984eb4baabdbbac5399028377a49c4d02ae7a72",
+            "native_run": 40945723046,
+            "qa_artifact": 12933733708,
+            "save_sha256": "ff941e8c4c4e29c5e96b85820e8f8cfc8f5debdef98924cca397196a2265b58d",
+            "decoded_transport_verified": true
+          },
+          "pr132_merged": false,
+          "new_credits_used": 0,
+          "art_approved": false,
+          "physical_mobile_tested": false,
+          "report": "docs/bastion-iv-v/RELEASE_20261029.md"
+        },
+        "migration_parity132": {
+          "completed_at": "2026-10-30T07:52:24.023Z",
+          "pr": 132,
+          "issue": 133,
+          "issue_state": "closed",
+          "runtime_source": "c78524723ab0b5bdabb546f36948847102dfb966",
+          "pr_head": "ed926b9857133d3cb6687608bbd44aff48e932fc",
+          "main_merge": "f016932317e049d340460c408d88b90b1290b692",
+          "native_run": 40965665726,
+          "shared_ui_run": 40965672865,
+          "final_pr_tester_run": 41017152807,
+          "main_run": 41018872267,
+          "main_run_attempt": 2,
+          "main_result": "SUCCESS",
+          "windows_player_build": "SUCCESS",
+          "editmode_passed": 57,
+          "playmode_passed": 73,
+          "iii_v_checks": 460,
+          "native_screenshots": 88,
+          "main_test_artifact": {
+            "id": 12961578958,
+            "bytes": 62741,
+            "sha256": "00209bf4779827c5329bf5dbaaa687aa9b57ef90c807334249eb4f8de9d5a063",
+            "download_verified": true
+          },
+          "desktop_artifact": {
+            "id": 12961694947,
+            "bytes": 1515706701,
+            "sha256": "566afb8c3bfc8d3b7ad0abc189d0772ca8a97c52e6751f8be0b174fb4a592e4d"
+          },
+          "initial_desktop_attempt": "resources.assets write failure; exact-code rerun succeeded",
+          "continuous_fresh_i_to_v_pass": false,
+          "latest_published_web_continuous_attempt": {
+            "run": 40978433069,
+            "result": "FAIL",
+            "objective": "b4.ascend",
+            "runtime_errors": 0,
+            "network_failures": 0
+          },
+          "published_apk_includes_patch": false,
+          "published_webgl_includes_patch": false,
+          "physical_mobile_tested": false,
+          "art_approved": false,
+          "new_credits_used": 0,
+          "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
         }
       },
-      "previous_owner": "chatgpt-bastion-iii-pr117-continuation-20261027",
+      "previous_owner": "codex-parity132-continuation-ab04f62d0b26",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -721,15 +912,15 @@
         "other_workstreams": "remain_paused"
       },
       "continuation_authorization": "Current owner requests final visual consolidation on integrated main, authentic Unity A/B and functional validation; recover technical blockers autonomously. No APK, Bastion III, spending or external publication.",
-      "handoff_authorization": "Owner 26/10/2026 continuing Region1 visuals and mobile optimization, no spending; do not redo PR100.",
+      "handoff_authorization": "Sigue tu con ese trabajo hasta su finalización",
       "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge.",
       "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
       "previous_production_branch": "construction/valoria-master-plan-layers-20261016",
       "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied",
       "current_session": null,
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
-      "resources_verified_at": "2026-10-27T01:55:03.045Z",
-      "resources_evidence": "Native40430426343 and recovered Windows gate40432752930 completed successfully; no remaining native execution for this scope.",
+      "resources_verified_at": "2026-10-30T07:52:24.023Z",
+      "resources_evidence": "Native40965665726, UI40965672865, tester41017152807 and main41018872267 attempt2 SUCCESS. All owned heavy jobs completed.",
       "validation_recovery_session": {
         "owner": "chatgpt-validation-recovery-20261019",
         "authorization": "Owner requested review and completion of today's validation failures and pending delivery in current session.",
@@ -784,7 +975,7 @@
           "workflow_yaml": "PASS"
         }
       },
-      "owner_handoff": "Explicit 2026-10-20 owner takeover of single canonical integrated art workstream. No concurrent authority. Targets City>=7/10 World>=5.5/10 only on independent Unity A/B, with no unsupported buildings or enemy tents.",
+      "owner_handoff": "Owner explicitly asks this chat to assume necessary PR132/issue133 migration corrections and complete them. Reuse existing PR132 under the canonical workstream; no new parallel PR.",
       "session_continuation": {
         "executor": "codex-work-artistic-convergence-20261020",
         "base_main_sha": "22fcaf8c0b3c1b1c97bc914e7b6e80b57ecdc748",
@@ -1174,17 +1365,107 @@
           "revision": 52,
           "released_at": "2026-10-29T11:04:56.870Z",
           "reason": "Owner-requested PR124/125/126 completed, incorporated in main,127 native tests and graphical Windows build passed together in run40859922725; runner released after completion."
+        },
+        {
+          "owner": null,
+          "ownership_revision": 53,
+          "phase": "PR124_125_126_COMPLETED_MAIN_NATIVE_AND_PLAYER_VERIFIED_AVAILABLE",
+          "reclaimed_at": "2026-10-29T12:23:02.995Z",
+          "reason": "Owner explicitly authorizes Bastion IV–V migration, per-building visual progression and management-screen refinement."
+        },
+        {
+          "owner": "codex-bastion-iv-v-7064f9327736",
+          "ownership_revision": 54,
+          "phase": "BASTION_IV_V_PARITY_AUDIT",
+          "resource_handoff_at": "2026-10-29T16:23:32.199Z",
+          "resources_released": [
+            "windows-runner-heavy"
+          ],
+          "reason": "IV–V native40906347082 completed successfully (54 EditMode,73 PlayMode,386 IV–V checks,real touch and I–II). Release the finished dedicated execution's resource so the existing general PR UI certification can run under its no-active-heavy-claim path; retain canonical writing owner until integration."
+        },
+        {
+          "owner": "codex-bastion-iv-v-7064f9327736",
+          "ownership_revision": 55,
+          "phase": "BASTION_IV_V_NATIVE_VERIFIED_SHARED_CERT_PENDING",
+          "extended_at": "2026-10-29T16:39:33.688Z",
+          "reason": "The final general gate requires exposed-city framing for construction/Bastion states now intentionally opaque management destinations. Actual integration report is PASS44; screenshots confirm requested design. Extend the existing owner scope to certify real opaque management geometry, while preserving strict exposed-city framing checks."
+        },
+        {
+          "owner": "codex-bastion-iv-v-7064f9327736",
+          "ownership_revision": 56,
+          "branch": "feature/bastion-iv-v-migration-20261029",
+          "phase": "BASTION_IV_V_MANAGEMENT_CERTIFICATION_ALIGNMENT",
+          "released_at": "2026-10-29T17:10:57.358Z",
+          "reason": "Bastion IV–V completed and PR129 merged. Native40906347082 and shared40914641659 passed54 EditMode/73 PlayMode;386 IV–V checks,44 I–II checks,real touch/three marches/Aldric/70 captures and full fresh-save web40914641605 pass. Main merged tree33c632bb2399ff1a98a25d4dd67f8ad4ae7dd7f0 is identical to certified tree. No new publication or spend."
+        },
+        {
+          "owner": "codex-bastion-iv-v-7064f9327736",
+          "ownership_revision": 58,
+          "released_at": "2026-10-29T18:35:00+01:00",
+          "reason": "Owner asks this session to verify each own building level V approved Tripo model and publish Android and WebGL; continue same canonical workstream after PR129. Existing postmerge read-only Unity check continues without interruption."
+        },
+        {
+          "owner": "codex-bastion-v-release-40a40d5b546c",
+          "ownership_revision": 60,
+          "phase": "CORRECTED_WRONG_EXPERIMENTAL_SCREENSHOT_REVIEW",
+          "transferred_at": "2026-10-29T17:47:33.216Z",
+          "reason": "Owner explicitly rejects normal city screenshot as still oblique; current session assumes same canonical correction with individual facade measurements before release. Prior screenshot-variant explanation insufficient."
+        },
+        {
+          "owner": "codex-bastion-iv-v-7064f9327736",
+          "ownership_revision": 61,
+          "branch": "feature/bastion-iv-v-migration-20261029",
+          "phase": "INDIVIDUAL_TIER_V_FACADE_ALIGNMENT_REWORK",
+          "completed_at": "2026-10-29T18:52:45.039Z",
+          "reason": "PR130 merged with exact native11 tree e4e2a7f;76 captures,386IVV,54Edit/73Play,I-II,real32/280 touch and frozen web attempt2 pass. Continue existing owner-authorized APK/WebGL delivery on main."
+        },
+        {
+          "owner": "codex-bastion-iv-v-7064f9327736",
+          "ownership_revision": 62,
+          "reason": "Owner explicitly requests this chat to continue APK/WebGL publication after frozen prior Work chat; existing Android run preserved."
+        },
+        {
+          "owner": "codex-release-continuation-ab04f62d0b26",
+          "claimed_at": "2026-10-29T17:22:23.229Z",
+          "ownership_revision": 63,
+          "released_at": "2026-10-29T21:34:16.588Z",
+          "phase": "POST_PR130_ANDROID19_WEBGL298_DELIVERED",
+          "reason": "Owner-authorized continuation completed: APK19 published and public bytes verified; native298 full browser QA and exact Restricted itch remote activation confirmed. No remaining heavy job or write reservation."
+        },
+        {
+          "owner": "codex-parity132-continuation-ab04f62d0b26",
+          "ownership_revision": 66,
+          "claimed_at": "2026-10-29T21:40:59.510Z",
+          "released_at": "2026-10-30T07:52:24.023Z",
+          "phase": "PR132_PARITY_MERGED_MAIN_VERIFIED",
+          "reason": "PR132 merged, issue133 closed, exact native/domain/UI/client gates and main Windows player succeeded. No resource or write reservation retained."
+        },
+        {
+          "owner": "chatgpt-player-ui-physical-playtest-20261030",
+          "revision": 68,
+          "reason": "Owner-authorized new physical-playtest UI correction in the canonical integrated Valoria workstream; former completed IV–V stage preserved, no Windows runner reservation."
+        },
+        {
+          "owner": "chatgpt-player-ui-physical-playtest-20261030",
+          "ownership_revision": 68,
+          "reason": "Owner-directed final consolidation handoff 2026-10-30; preserve PR136 and coordinate PR134/135."
+        },
+        {
+          "owner": "codex-final-consolidation-8520c3ef76f9",
+          "ownership_revision": 69,
+          "reason": "Owner-directed continuation in session 41862564eebb",
+          "released_at": "2026-10-30T13:33:27.025Z"
         }
       ],
-      "ownership_revision": 53,
-      "ownership_state": "available",
-      "write_scope_released": true,
-      "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
+      "ownership_revision": 70,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
+      "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-10-29T09:54:24.457Z",
       "delivery_definition": {
-        "deliverable": "Bastion III playable migration with canonical economy, granary, hunts, fissure investigation/Lyra/manuscript and small visual upgrades",
-        "evidence": "Exact source tests, existing I-II regression, III UI journey/save/offline/idempotency, same-camera Unity AB vs reference",
-        "handoff": "Verified integrated result and exact artifacts; no formal art/mobile claims without evidence"
+        "deliverable": "Complete necessary web-to-Unity I–V parity and city/world camera corrections through existing PR132; resolve issue133 with verified evidence.",
+        "evidence": "Web-to-Unity matrix, old/new save and idempotency regression tests, native Edit/PlayMode I–V, actual UI/camera captures and exact source/build identity.",
+        "handoff": "Merged verified PR132, issue133 disposition, durable source/run evidence and explicit separation from unstarted V4.1 and existing APK19/WebGL298."
       },
       "handoff_authority": "Current owner requested autonomous final visual consolidation and recovery of technical blockers; scope completed with authentic A/B and independent review. No APK/Bastion III/publication authority implied.",
       "world_integration_handoff": {
@@ -1199,15 +1480,9 @@
         "authorization": "Owner full world replacement order followed by explicit 'Tienes mi autorización' on 2026-10-23. No merge, publication or expenditure.",
         "limits": "Only world visual replacement/population integration; preserve city, UI, saves, identifiers and I-II progression. No merge/publication."
       },
-      "scope_exclusions": [
-        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
-        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**",
-        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**"
-      ],
+      "scope_exclusions": [],
       "paused_on": "2026-10-24",
       "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
-      "released_at": "2026-10-29T11:04:56.870Z",
       "latest_owner_feedback": "Current owner: resources have levels, a single occupant per node, disputable and stronger player remains gathering. Incorporated into offline design/simulation; no live multiplayer implementation or APK publication authorized by this scope.",
       "ordered_completion": {
         "completed_at": "2026-10-26T22:20:44.872Z",
@@ -1271,13 +1546,13 @@
         "bastion_III_started": false,
         "budget_eur": 0
       },
-      "authorization": "Owner explicitly requests Bastion III migration after code16 release; released and manifest16 verified. Small visual increments every level, level5 overhaul excluded; real Unity AB and functional/save parity required. Owner reiterates autonomous execution 2026-10-27.",
-      "candidate_branch": "feature/bastion-iii-canonical-20261027",
-      "canonical_pr": 117,
-      "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
-      "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
+      "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
+      "candidate_branch": "fix/player-feedback-context-ui-20261030",
+      "canonical_pr": 132,
+      "handoff_reason": "PR132_MERGED_MAIN_VERIFIED_ISSUE133_CLOSED",
+      "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
-      "scope_extension_reason": "Existing main native-gate maintenance now owns its source verifier too: verify that the generic full-suite process budget is no shorter than the completed shared UI certification, preventing this real600second timeout regression. Same owner, no resource transfer, no new workstream.",
+      "scope_extension_reason": "Owner continuation after PR129: administrative closure of the already-completed six-reference source request which incorrectly retains an executable paid composition route. No modification to PR127, assets or spend.",
       "android18_signed_candidate": {
         "build_run_id": 40798180869,
         "source": "0f150e6a719f93d312ebb18d1ceac5edd7435ba9",
@@ -1316,7 +1591,119 @@
         "rewards_provisional": true,
         "new_apk_published": false,
         "budget_eur": 0
-      }
+      },
+      "completed_branch": "feature/eldoria-web-parity-camera-20261029",
+      "owner_visual_feedback": {
+        "criterion": "Each approved tier V building must face forward coherently; Bastion door must line up with existing approach, not expose a side toward the road.",
+        "previous_capture": "city-V-complete-horizontal.png",
+        "status": "CORRECTED_NATIVE_VERIFIED",
+        "publication_authorization": "Conditional on corrected visuals; old candidate must not publish.",
+        "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
+        "corrected_capture": "city-V-complete-horizontal.png from40929047929"
+      },
+      "released_at": "2026-10-30T07:52:24.023Z",
+      "delivery_closeout": {
+        "completed_at": "2026-10-29T21:34:16.588Z",
+        "workstream_id": "valoria-master-plan-layered-construction-20261016",
+        "owner": "codex-release-continuation-ab04f62d0b26",
+        "android": {
+          "version": "1.19",
+          "version_code": 19,
+          "source_sha": "b310d3b0496b10bab8f1a413f8a588ff5f9b8df3",
+          "build_run": 40946564387,
+          "publish_run": 40951703468,
+          "release_asset": 689858207,
+          "bytes": 468290348,
+          "sha256": "de08719293850ba5135fd022b578baaac8d8619eb2c8b1b9c00b328eaf90e16b",
+          "signature_verified": true,
+          "public_download_hash_verified": true,
+          "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code19/Eldoria-Valoria-code19.apk",
+          "physical_mobile_tested": false
+        },
+        "webgl": {
+          "provider": "itch.io",
+          "target": "chrismad/eldoria-pruebas",
+          "channel": "web",
+          "revision": "native298",
+          "url": "https://chrismad.itch.io/eldoria-pruebas",
+          "remote_build": 2247360,
+          "version": "native298-15b79882a59b",
+          "restricted": true,
+          "remote_active_confirmed": true,
+          "remote_status_evidence": {
+            "run_id": 40958364194,
+            "job_id": 123744902862,
+            "checked_at": "2026-10-29T21:32:52Z",
+            "result": "NATIVE298_ACTIVE",
+            "remote_build": 2247360,
+            "version": "native298-15b79882a59b"
+          },
+          "source_sha": "c8580934201ae1e17543b8683749d40751fb1e12",
+          "qa_run": 40955956262,
+          "delivery_run": 40958364194,
+          "hosted_gameplay_verified": false,
+          "physical_mobile_pass": false,
+          "qa_source_sha": "3984eb4baabdbbac5399028377a49c4d02ae7a72",
+          "native_run": 40945723046,
+          "qa_artifact": 12933733708,
+          "save_sha256": "ff941e8c4c4e29c5e96b85820e8f8cfc8f5debdef98924cca397196a2265b58d",
+          "decoded_transport_verified": true
+        },
+        "pr132_merged": true,
+        "new_credits_used": 0,
+        "art_approved": false,
+        "physical_mobile_tested": false,
+        "report": "docs/bastion-iv-v/RELEASE_20261029.md",
+        "pr132_merge_after_release": true,
+        "pr132_in_published_packages": false
+      },
+      "parity132_closeout": {
+        "completed_at": "2026-10-30T07:52:24.023Z",
+        "pr": 132,
+        "issue": 133,
+        "issue_state": "closed",
+        "runtime_source": "c78524723ab0b5bdabb546f36948847102dfb966",
+        "pr_head": "ed926b9857133d3cb6687608bbd44aff48e932fc",
+        "main_merge": "f016932317e049d340460c408d88b90b1290b692",
+        "native_run": 40965665726,
+        "shared_ui_run": 40965672865,
+        "final_pr_tester_run": 41017152807,
+        "main_run": 41018872267,
+        "main_run_attempt": 2,
+        "main_result": "SUCCESS",
+        "windows_player_build": "SUCCESS",
+        "editmode_passed": 57,
+        "playmode_passed": 73,
+        "iii_v_checks": 460,
+        "native_screenshots": 88,
+        "main_test_artifact": {
+          "id": 12961578958,
+          "bytes": 62741,
+          "sha256": "00209bf4779827c5329bf5dbaaa687aa9b57ef90c807334249eb4f8de9d5a063",
+          "download_verified": true
+        },
+        "desktop_artifact": {
+          "id": 12961694947,
+          "bytes": 1515706701,
+          "sha256": "566afb8c3bfc8d3b7ad0abc189d0772ca8a97c52e6751f8be0b174fb4a592e4d"
+        },
+        "initial_desktop_attempt": "resources.assets write failure; exact-code rerun succeeded",
+        "continuous_fresh_i_to_v_pass": false,
+        "latest_published_web_continuous_attempt": {
+          "run": 40978433069,
+          "result": "FAIL",
+          "objective": "b4.ascend",
+          "runtime_errors": 0,
+          "network_failures": 0
+        },
+        "published_apk_includes_patch": false,
+        "published_webgl_includes_patch": false,
+        "physical_mobile_tested": false,
+        "art_approved": false,
+        "new_credits_used": 0,
+        "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
+      },
+      "owner_instruction": "Owner physical playtest 2026-10-30 requests remove independent build screens, align approved HUD/dialogue, and remove dashed yellow marching stripes without changing gameplay. Preserve all other active PRs."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -1486,10 +1873,10 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "codex-pr120-exact-visual-pr122-20261028",
-      "ownership_state": "claimed",
-      "ownership_revision": 28,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 29,
+      "write_scope_released": true,
       "status": "active",
       "claimed_at": "2026-10-27T09:36:00Z",
       "base_main_sha": "de0cc6127746b562f82da03327426597d5d32257",
@@ -1573,7 +1960,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "PR119 merged and certified on main. Preserve queued general main gate40681527358; no cancellation. Resource now reserved to same-owner PR120 for reconciled15capture/real-button/save certification; public release only after combined gates.",
+      "next": "Completed PR119 preserved; current IV–V screen enhancements belong to canonical Valoria owner.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1670,6 +2057,12 @@
           "revision": 27,
           "transferred_at": "2026-10-28T17:03:00Z",
           "reason": "Current owner-directed PR120 then PR122 continuation reconciles inherited city/UI integration scopes previously held by the same PR119/120 completion session. PR119 is merged and native-certified; no new city/world art production or extra Windows lease."
+        },
+        {
+          "owner": "codex-pr120-exact-visual-pr122-20261028",
+          "revision": 28,
+          "reason": "PR119 already merged/certified; current owner directs integrated IV–V continuation and existing screen refinement under canonical Valoria workstream.",
+          "released_at": "2026-10-29T12:23:02.996Z"
         }
       ],
       "runner_lease_note": "Main UI40681527347 success. General main40681527358 is serial on existing runner; keep intact while subsequent PR120 jobs queue.",
@@ -2077,27 +2470,220 @@
       "released_at": "2026-10-29T01:01:52.480111+00:00"
     },
     {
-      "id": "eldoria-tier5-six-reference-models-20261029",
-      "title": "Seis modelos individuales Tripo con referencias aprobadas",
-      "owner": "codex-tier5-reference-7064f9327736",
-      "ownership_revision": 1,
+      "id": "eldoria-v41-combate-buzon-ui-20261030",
+      "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
+      "owner": "codex-final-consolidation-41862564eebb",
       "ownership_state": "claimed",
+      "ownership_revision": 5,
       "write_scope_released": false,
-      "branch": "feature/tier5-six-reference-models-20261029",
       "status": "active",
+      "branch": "feature/eldoria-v41-contracts-20261030",
+      "claimed_at": "2026-10-30T08:25:40.166Z",
+      "base_main_sha": "f016932317e049d340460c408d88b90b1290b692",
       "scope": [
-        "tools/tier5-reference-production/**",
-        "ArtSource/Tier5ReferenceProduction/**",
-        ".github/workflows/tier5-reference-production.yml",
-        "docs/tier5-reference-production/**"
+        "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41*.cs",
+        "tools/eldoria-v41/**",
+        "docs/eldoria-v41/**",
+        ".github/workflows/eldoria-v41-domain.yml",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
+        "tools/bastion-iii/DomainProbe.csproj",
+        "tools/bastion-iv-v/DomainProbe.csproj",
+        "tools/early-retention/Smoke.csproj",
+        "tools/march-capacity/Smoke.csproj",
+        "tools/ui-v3-domain-smoke/Smoke.csproj",
+        ".github/workflows/ui-v3-domain-smoke.yml",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41*.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/EldoriaV41*",
+        "Unity/Assets/Eldoria/Resources/EldoriaV41/**",
+        "Unity/Assets/Eldoria/Resources/EldoriaV41.meta",
+        "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41*",
+        ".github/workflows/ui-progression-cert.yml",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs",
+        "pipeline/art-production-requests/eldoria-v41-combate-buzon-ui-20261030.json",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs"
       ],
       "resources": [],
-      "claimed_at": "2026-10-29T10:08:20.614Z",
-      "authorization": "Owner explicitly requests individual image-based Tripo production of Lyra and five tier V buildings, iterations and Blender deliverables. No runtime integration/publication.",
-      "phase": "READ_ONLY_RUNNER_PREFLIGHT",
-      "next": "Verify existing runner-local Tripo CLI authentication and pricing without submitting any generation.",
+      "art_production_routing": "required",
+      "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
+      "phase": "FUNCTIONAL_REGRESSION_AND_APPROVED_UI_RECONSTRUCTION",
+      "next": "Resolve active PR136 inherited UI scope collision, then reconstruct reference composition and validate native captures before merging PR134. Technical candidate 32c3109 passed complete Unity certificate.",
+      "art_production_routing_reason": "Mandatory tracking for exact source reuse and ArtTests code; no new artwork generation authorized.",
+      "ownership_history": [
+        {
+          "owner": "chatgpt-gpt6-v41-integration-20261030",
+          "ownership_revision": 2,
+          "transferred_at": "2026-10-30T08:25:40.165Z",
+          "reason": "Owner explicitly requests this chat assume and finish PR134 after prior chat became too long."
+        },
+        {
+          "owner": "codex-pr134-continuation-ab04f62d0b26",
+          "ownership_revision": 3,
+          "reason": "Owner requests coordinated final consolidation PR134/136; preserve current candidate and evidence."
+        },
+        {
+          "owner": "codex-final-consolidation-8520c3ef76f9",
+          "ownership_revision": 4,
+          "reason": "Owner explicitly transfers complete final consolidation including PR134 and shared HUD to current session.",
+          "released_at": "2026-10-30T13:35:14.948Z"
+        }
+      ],
+      "delivery_definition": {
+        "deliverable": "Issue131: actual three-hero/percentage march preparation, narrative-gated training, persistent battle mailbox and approved reference UI in canonical Unity game; preserve Bastion I–V resolver/versioned experimental V4.1.",
+        "evidence": "Domain and Unity regression tests, actual save/reload and UI interaction, matched native captures against original approved PNGs.",
+        "handoff": "Same PR134, verified integration and documented limits; no paid credits or unrequested publication."
+      },
+      "art_production_request": "pipeline/art-production-requests/eldoria-v41-combate-buzon-ui-20261030.json",
+      "coordination": {
+        "detected_at": "2026-10-30T09:36:14.465Z",
+        "other_pr": 136,
+        "other_workstream": "valoria-master-plan-layered-construction-20261016",
+        "guard_run": 41034337772,
+        "actual_changed_file_overlap": [],
+        "conflicting_inherited_scopes": [
+          ".github/workflows/ui-progression-cert.yml",
+          "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/**",
+          "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+          "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+          "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/**"
+        ],
+        "current_native_already_running": null,
+        "canonical_pr": 134,
+        "source_head": "32c3109d5791db00fcfc9900f4d5dd3bd5e9dbac",
+        "resolution_needed": "Preserve PR136's eight current files and narrow its inherited historical scopes; PR134 keeps its existing V4.1 scope. No other owner transfer or cancellation authorized.",
+        "completed_native_run": 41034159279,
+        "native_result": "SUCCESS: 61/61 EditMode, 73/73 PlayMode; visual fidelity NOT accepted",
+        "runner_released": true
+      }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-hardening-20261024",
+      "title": "Corregir PR104 para respetar retirada de Qwen",
+      "owner": null,
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-30",
+      "base_main_sha": "06178d05199b2c970a17f18ef857407360bca793",
+      "scope": [
+        "AGENTS.md",
+        "tools/art-knowledge/**",
+        "tools/mission-continuity/**",
+        "tools/art-direction/ai-authoring/verify-artist-cycle.mjs",
+        "tools/art-direction/ai-authoring/verify-artist-cycle.test.mjs",
+        "tools/check-art-production-governance.mjs",
+        "tools/plan-art-production.mjs",
+        ".github/workflows/repository-architecture-guard.yml",
+        "docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md",
+        "docs/documentation-catalog.json",
+        ".github/workflows/tester-qa.yml",
+        "tools/check-valoria-visual-authority-routing.mjs"
+      ],
+      "resources": [],
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Current phase is READ_ONLY_RUNNER_PREFLIGHT: inspect existing CLI authentication and pricing without submitting generation or editing assets. This classification applies only to that read-only phase; before asset authoring the existing owner must register routing=required and its matching production request. The mandatory changed-art scope guard remains enforced; no owner, scope, resources or credit authorization changed."
+      "art_production_routing_reason": "Zero-cost governance and memory tooling consolidation; no art generation, no paid services, no Unity runner.",
+      "phase": "PR101_PR104_MERGED_VERIFIED",
+      "next": "Consolidation merged; retain model-neutral rules, rejection lessons, exact-head checks and historical evidence.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
+        "evidence": "Node unit tests and architecture CI exact head",
+        "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
+      },
+      "ownership_revision": 6,
+      "resume_context": {
+        "prior_delivered_pr": 104,
+        "prior_state": "completed_in_branch",
+        "source_pr": 103
+      },
+      "ownership_state": "available",
+      "write_scope_released": true,
+      "last_verified": {
+        "merge": "e41600058014f910852dfa3ffa8fd17669e03908",
+        "source": "408042637604e06ecae4551f1586d36cd95e8fc1",
+        "local_tests": "77/77",
+        "architecture_run": 41075075508,
+        "tester_run": 41075075660,
+        "visual_authority_run": 41075075523,
+        "art_approved": false
+      }
+    },
+    {
+      "id": "eldoria-iphone-lifecycle-diagnostics-20261030",
+      "title": "Resume PR97 optional local iPhone lifecycle diagnostics",
+      "owner": "codex-final-consolidation-41862564eebb",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "status": "active",
+      "branch": "review/native281-iphone-ui-world-triage-20261022",
+      "pr": 97,
+      "claimed_at": "2026-10-30",
+      "base_main_sha": "68c18c15ab826cec69f2ff260e5d4b0a6b9aab7e",
+      "scope": [
+        "tools/delivery/optional-iphone-lifecycle-diagnostics.js",
+        "tools/delivery/test-optional-iphone-lifecycle-diagnostics.mjs",
+        "tools/delivery/prepare.py",
+        "docs/incident-native281/OWNER_PLAYTEST_CORRECTION_CONTRACT_20261022.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Dormant local-only browser lifecycle diagnostics. No art or paid service and no physical-device stability certification.",
+      "phase": "RECONCILE_PR97_WITH_CURRENT_DELIVERY",
+      "next": "Verify optional diagnostics against current delivery preparation; retain iPhone physical QA as unresolved.",
+      "budget_eur": 0
+    },
+    {
+      "id": "eldoria-heroes-approved-ui-20261030",
+      "title": "PR135: reconstruct approved interactive hero screens",
+      "owner": "codex-final-consolidation-41862564eebb",
+      "ownership_state": "claimed",
+      "ownership_revision": 2,
+      "status": "active",
+      "branch": "feature/heroes-approved-ui-integration-20261030",
+      "pr": 135,
+      "claimed_at": "2026-10-30",
+      "base_main_sha": "b56f4f0f607ab4325625bd926e0588da1d9b4d73",
+      "scope": [
+        "Unity/Assets/Eldoria/HeroesUI/**",
+        "Unity/Assets/Eldoria/HeroesUI.meta",
+        "docs/heroes-ui/**",
+        "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
+      "phase": "REBUILD_REAL_COMPONENTS_FROM_APPROVED_SIX_SCREENS",
+      "next": "Combined PR136 binds canonical state and loaded Aldric geometry; native six-screen proof required.",
+      "budget_eur": 0
+    },
+    {
+      "id": "eldoria-unified-art-vault-20261029",
+      "title": "Biblioteca artística unificada 2D/3D — PR128",
+      "owner": "codex-final-consolidation-41862564eebb",
+      "branch": "docs/unified-art-vault-20261029",
+      "status": "active",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "claimed_at": "2026-10-30T15:31:15.561Z",
+      "base_main_sha": "515555135127195542496ffea3a0852206772bea",
+      "scope": [
+        "tools/asset-vault/scan_visual_assets.py",
+        "tools/asset-vault/test_scan_visual_assets.py",
+        "tools/asset-vault/verify_visual_backup.py",
+        "tools/asset-vault/test_verify_visual_backup.py",
+        "tools/asset-vault/ingest_visual_asset.py",
+        "tools/asset-vault/test_ingest_visual_asset.py",
+        ".github/workflows/visual-asset-inventory.yml",
+        "docs/asset-vault/UNIFIED_ART_ARCHIVE_20261029.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only source inventory and verified archival tools; no Unity art, models, paid generation or approval changes.",
+      "phase": "PR128_VERIFY_EXISTING_INVENTORY_AND_SOURCE_PRESERVATION",
+      "reason": "Owner explicitly directs continuation and consolidation of PR128; no active vault owner or competing PR found."
     }
   ],
   "history": [
@@ -9235,6 +9821,118 @@
       "main_build_run": 40859922725,
       "evidence": "docs/marches/MAIN_INTEGRATION_20261029.json",
       "delivery_pr": 124
+    },
+    {
+      "id": "eldoria-tier5-six-reference-models-20261029",
+      "title": "Seis modelos individuales Tripo con referencias aprobadas",
+      "owner": "codex-tier5-reference-7064f9327736",
+      "ownership_revision": 1,
+      "ownership_state": "released",
+      "write_scope_released": true,
+      "branch": "feature/tier5-six-reference-models-20261029",
+      "status": "completed",
+      "scope": [
+        "tools/tier5-reference-production/**",
+        "ArtSource/Tier5ReferenceProduction/**",
+        ".github/workflows/tier5-reference-production.yml",
+        "docs/tier5-reference-production/**"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-29T10:08:20.614Z",
+      "authorization": "Owner explicitly requests individual image-based Tripo production of Lyra and five tier V buildings, iterations and Blender deliverables. No runtime integration/publication.",
+      "phase": "COMPLETED_SOURCE_DELIVERY",
+      "next": "Owner review of delivered source assets. No game integration authorized.",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Owner-authorized exact-reference Tripo generation with canonical Blender finishing; source-only review, no formal ART_APPROVED or native mobile certification.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-tier5-six-reference-models-20261029.json",
+      "released_at": "2026-10-29T11:41:57.216Z",
+      "completed_at": "2026-10-29T11:41:57.216Z",
+      "delivery_pr": 127,
+      "source_manifest": "ArtSource/Tier5ReferenceProduction/manifest.json",
+      "actual_credits": 180,
+      "remaining_balance": 200,
+      "final_source_sha": "3a27851755b9a000ef4b177e3360d6cbfddf3713",
+      "art_approved": false,
+      "unity_validated": false
+    },
+    {
+      "id": "eldoria-art-memory-continuity-hardening-20261024",
+      "title": "Corregir PR104 para respetar retirada de Qwen",
+      "owner": "chatgpt-qwen-decoupling-pr104-safety-20261024",
+      "branch": "chore/knowledge-continuity-safe-20261024",
+      "status": "completed",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only memory reference wording and regression tests only; does not create art or call Qwen.",
+      "phase": "MODEL_NEUTRAL_MEMORY_CORRECTION_CERTIFIED_PR104",
+      "next": "PR104 safe memory and continuity improvements ready for exact-head review. Full Qwen art-governance decoupling remains pending separately in draft PR101; never treat Qwen as required artist.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
+        "evidence": "Node unit tests and architecture CI exact head",
+        "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
+      },
+      "completed_at": "2026-10-24",
+      "evidence": {
+        "pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/104",
+        "run_architecture": 40099103785,
+        "source_head": "73b82b40bccc54411099a7fc0c9c59624e736150",
+        "decision": "Owner removed Qwen from artistic work; no Qwen/Tripo/Unity invoked by this scope."
+      },
+      "ownership_revision": 3,
+      "resume_context": {
+        "prior_delivered_pr": 104,
+        "prior_state": "completed_in_branch",
+        "source_pr": 103
+      }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-safety-20261024",
+      "title": "Memoria artística priorizada y continuidad sin falsas recuperaciones",
+      "owner": "chatgpt-art-memory-continuity-20261024",
+      "branch": "chore/art-memory-continuity-safety-20261024",
+      "status": "completed",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs",
+        "tools/mission-continuity/core.mjs",
+        "tools/mission-continuity/core.test.mjs",
+        "docs/evidence/art-memory-continuity-safety-20261024/**",
+        ".github/workflows/repository-architecture-guard.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only read-only selection and continuity decisions; no artistic edits, generation, Unity scene, credits or hardware reservation.",
+      "phase": "SUPERSEDED_WITHOUT_MERGE_BY_PR104",
+      "next": "PR #103 closed as duplicate; behavior and adversarial tests retained in PR #104. Historical branch and evidence remain accessible.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Validated improvements in existing memory selection and mission recovery policy",
+        "evidence": "Exact tests of selected/rejected art knowledge and paused workstream classification",
+        "handoff": "Draft PR; retain review pending without touching game"
+      },
+      "completed_at": "2026-10-24",
+      "evidence": {
+        "pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/103",
+        "verified_sha": "af5d21263d8616f3f281ff608cad2488e102dc2f",
+        "architecture_gate": 40092850243,
+        "art_planner_gate": 40092850216,
+        "governance_gate": 40092850208,
+        "art_quality": "NOT_APPLICABLE_NO_ART_PRODUCED",
+        "physical_mobile": "NOT_TESTED",
+        "gameplay_modified": false,
+        "note": "Older head failed a text compatibility assertion; fixed before the cited gate. Exact scope limited to 6 files including current registry.",
+        "superseded_by": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/104",
+        "original_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/103"
+      }
     }
   ],
   "owner_specific_pauses": [
@@ -9296,14 +9994,16 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-    "status": "canonical_workstream_available",
+    "status": "available",
     "owner": null,
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
     "branch": "main",
     "restrictions": "Preserve native111 baseline; staged improvements with focused tests. No old independent branch production. No paid credits.",
-    "previous_owner": "codex-work-valoria-integration-continuation-20261018",
-    "ownership_source": "active[id=valoria-master-plan-layered-construction-20261016]; transferable owner-directed claim"
+    "previous_owner": "codex-release-continuation-ab04f62d0b26",
+    "ownership_source": "active[id=valoria-master-plan-layered-construction-20261016]; transferable owner-directed claim",
+    "released_at": "2026-10-30T07:52:24.023Z",
+    "release_evidence": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
   }
 }

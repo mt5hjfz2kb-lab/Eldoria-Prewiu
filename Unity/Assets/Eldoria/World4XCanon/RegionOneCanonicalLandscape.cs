@@ -13,6 +13,8 @@ namespace Eldoria.World4XCanon
  public sealed class RegionOneCanonicalLandscape : MonoBehaviour
  {
   public const int LandscapeVersion=3;
+  public static float NearZoom(float aspect)=>aspect<.8f?64f:36f;
+  public static float RegionalZoom(float aspect)=>Mathf.Max(280f,400f/Mathf.Max(.1f,aspect));
   public const float LandscapeHalfWidth=910,LandscapeHalfDepth=1800;
   public const float BreachOffsetX=-260,BreachOffsetZ=150;
   public const float LandscapePanoramaZoom=500,PortraitPanoramaZoom=620;
@@ -80,13 +82,12 @@ namespace Eldoria.World4XCanon
         void InstallCameraLimits()
         {
             // Bounds enclose a larger real terrain mesh, not a zoom onto empty sky.
-            // The current integration sets regionalZoom=32 and localZoom=14 in Start.
             // The previous 17-unit close zoom filled the view with Valoria's
             // castle and prevented players from reading the surrounding 4X
             // territory. Widen both scales, retaining one real camera and
             // strong near -> regional -> panorama separation.
-            navigation.localZoom = 36f;
-            navigation.regionalZoom = Mathf.Max(280f,400f/navigation.View.aspect);
+            navigation.localZoom = NearZoom(navigation.View.aspect);
+            navigation.regionalZoom = RegionalZoom(navigation.View.aspect);
             navigation.globalZoom = navigation.View.aspect < .80f
                 ? PortraitPanoramaZoom : LandscapePanoramaZoom;
             navigation.tilt = 66f;
@@ -159,11 +160,11 @@ namespace Eldoria.World4XCanon
   {
    if(!navigation||!navigation.View)return;
    bool wasGlobal=navigation.View.orthographicSize>=navigation.globalZoom*.98f;
-   float regional=Mathf.Max(280f,400f/navigation.View.aspect);
+   float regional=RegionalZoom(navigation.View.aspect);
    if(Mathf.Abs(navigation.regionalZoom-regional)>.5f){bool was=Mathf.Abs(navigation.View.orthographicSize-navigation.regionalZoom)<1;navigation.regionalZoom=regional;if(was)navigation.SetZoomLevel(1,true);}
    float far=OverviewSize(navigation.View.aspect);
    if(Mathf.Abs(navigation.globalZoom-far)>.5f){navigation.globalZoom=far;if(wasGlobal){navigation.heading=PanoramaHeading(navigation.View.aspect);navigation.SetZoomLevel(0,true);}}
-   float near=navigation.View.aspect<.8f?64:36;
+   float near=NearZoom(navigation.View.aspect);
    if(Mathf.Abs(navigation.localZoom-near)>.5f){bool was=navigation.View.orthographicSize<=navigation.localZoom+.5f;navigation.localZoom=near;if(was)navigation.SetZoomLevel(2,true);}
    float size=navigation.View.orthographicSize;
    navigation.cameraDistance=Mathf.Max(140,size*2.5f);navigation.View.farClipPlane=Mathf.Max(900,navigation.cameraDistance*2.5f);

@@ -43,14 +43,14 @@ const stages = [];
 let stopBeforeSpend = false;
 
 if (req.profile === 'environment_composition') {
-  stages.push('qwen_artist_reference_vs_unity_diagnosis');
+  stages.push('artist_reference_vs_unity_diagnosis');
   if (gap) stages.push('blender_mcp_ai_directed_terrain_geometry');
   stages.push('unity_modular_assembly');
   stages.push('unity_environment_art');
   stages.push('official_camera_validation');
 }
 if (req.profile === 'environment_surface') {
-  stages.push('qwen_artist_material_and_scene_direction');
+  stages.push('artist_material_and_scene_direction');
   stages.push('unity_surface_diagnosis');
   if (cap.blender_bake || cap.blender_material_consolidation) {
     stages.push('blender_surface_processing');
@@ -59,7 +59,7 @@ if (req.profile === 'environment_surface') {
   stages.push('official_camera_validation');
 }
 if (req.profile === 'environment_new_geometry') {
-  stages.push('qwen_authored_mesh_design_and_reuse_decision');
+  stages.push('artist_authored_mesh_design_and_reuse_decision');
   stages.push('blender_mcp_safe_action_plan');
   stages.push('geometry_gap_evidence');
   stages.push('screen_space_art_brief');
@@ -111,7 +111,7 @@ if (req.failure_class) {
   if (fallback.open_new_research) fail('Fallback policy violation: new R&D cannot be opened automatically.');
 }
 
-// Consult versioned lessons BEFORE any Qwen/Blender/Unity stage. This does not execute artists.
+// Consult versioned lessons BEFORE any artistic Blender/Unity stage. This does not execute artists.
 const memory = selectKnowledge(req, readCatalog());
 stages.unshift('art_knowledge_preflight');
 
@@ -145,8 +145,9 @@ const plan = {
     selected_ids:memory.selected_ids,
     rejected_ids:memory.rejected_ids,
     prepared_inventory_path:out?out+'.knowledge.txt':null,
-    existing_qwen_contract:'--inventory',
-    qwen_consumption_verified:false,
+    legacy_qwen_contract:'--inventory',
+    artist_memory_consumption_verified:false,
+    qwen_consumption_verified:false, // legacy read-only compatibility; Qwen is NOT required
     historical_methods_not_auto_approved:true,
     evidence_capture:'Existing tools/art-direction/learning-evidence/cycle-hooks.mjs stage (pending verification)',
     policy:memory.qa_boundary
@@ -160,8 +161,8 @@ const json = JSON.stringify(plan, null, 2);
 console.log('ART_PRODUCTION_PLAN=PASS');
 console.log(json);
 if (out) {
-  // Keep a separate provenance-bound inventory for the pre-existing Qwen --inventory hook.
-  // Never silently overwrite a previous generation or claim Qwen consumed it.
+  // Keep a separate provenance-bound inventory for optional legacy consumers.
+  // Never silently overwrite a previous generation or claim any artist consumed it.
   writePrepared(memory,out);
   fs.writeFileSync(out,json+'\n',{flag:'wx'});
 }
