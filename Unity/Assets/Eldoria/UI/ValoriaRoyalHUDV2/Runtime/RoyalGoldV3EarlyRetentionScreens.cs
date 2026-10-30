@@ -34,6 +34,9 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalText victoryTitle, victoryDetail;
         float victoryUntil, victoryStarted, discoverySealPulseUntil;
         RoyalButton vigilantShortcut, scoutsShortcut, back, mainAction, claimXp;
+        RoyalButton scoutStrategyButton;
+        RoyalText scoutStrategyLabel;
+        int scoutStrategyMode;
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
         readonly RoyalText[] scoutTitles=new RoyalText[3];
@@ -574,6 +577,10 @@ namespace Eldoria.UI.RoyalGold.V2
             footer=Text(panel,"No artificial notifications",15,Muted);
             back=Button(panel,"Return to actual kingdom","VOLVER A VALORIA",
                 Close,out backLabel);
+            // A genuine pre-dispatch decision, not decoration: fewer troops
+            // for more time, or more committed troops for an earlier return.
+            scoutStrategyButton=Button(panel,"Choose scout troop-versus-time strategy",
+                "RUTA NORMAL",CycleScoutStrategy,out scoutStrategyLabel);
             // Match the reference's book typography only within this room.
             // Keep compact state/resource text in the proven HUD font.
             var referenceFont=Resources.Load<Font>("EldoriaRetention/reference-serif");
@@ -671,13 +678,20 @@ namespace Eldoria.UI.RoyalGold.V2
             if(EarlyRetentionRules.StageUnlocked(s,next))Submit("VigilantBattle",next.ToString());
         }
         void CollectXp() => Submit("ClaimVigilantXp","aldric");
+        void CycleScoutStrategy()
+        {
+            if(!IsOpen || OpenDestination!=Destination.Scouts)return;
+            scoutStrategyMode=(scoutStrategyMode+1)%3;
+            Render(true);
+        }
         void RunScout(int index)
         {
             if(index<0||index>=3||string.IsNullOrEmpty(scoutIds[index]))return;
             var s=gateway.Snapshot();
             var item=s.Retention?.Orders?.FirstOrDefault(x=>x.Id==scoutIds[index]);
             if(item==null||item.Claimed)return;
-            if(item.StartedUtcTicks==0)Submit("ScoutDispatch",item.Id);
+            if(item.StartedUtcTicks==0)
+                Submit("ScoutDispatch",item.Id+"|"+scoutStrategyMode);
             else if(item.EndsUtcTicks<=now())Submit("ScoutClaim",item.Id);
         }
         // Run after a genuine native offscreen canvas resize, just as the
@@ -807,6 +821,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 backLabel.Put("←");
                 backLabel.fontSize=compactLandscape?48:30;
             }
+            TL((RectTransform)scoutStrategyButton.transform,
+                pw-118f,portrait?14f:compactLandscape?14f:23f,
+                100f,portrait?88f:compactLandscape?68f:46f);
+            scoutStrategyLabel.fontSize=portrait?23:compactLandscape?20:17;
             float imageTop=portrait?150f:108f;
             bool scoutsLandscape=!portrait && OpenDestination==Destination.Scouts;
             bool vigilantsLandscape=!portrait && OpenDestination==Destination.Vigilants;
@@ -1113,6 +1131,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 (narrow?"MESA DE EXPLORADORES · ENCARGOS":
                 "Envía a tus exploradores y descubre nuevas tierras"));
             introduction.gameObject.SetActive(false);
+            scoutStrategyButton.gameObject.SetActive(!vig);
+            if(!vig)
+            {
+                scoutStrategyLabel.Put("RUTA\n"+EarlyRetentionRules.ScoutStrategyName(scoutStrategyMode));
+                scoutStrategyButton.interactable=true;
+            }
             // The board reserves a 57 px header; show its actual section title
             // instead of leaving a dead band above the three illustrated cards.
             chapter.gameObject.SetActive(vig);
@@ -1351,14 +1375,22 @@ namespace Eldoria.UI.RoyalGold.V2
                             scoutArt[i].SetVerticesDirty();
                         }
                     }
-                    string state=order.StartedUtcTicks==0?"Disponible · "+
-                        TimeSpan.FromSeconds(EarlyRetentionRules.ScoutDurationSeconds(order.Kind)).ToString(@"mm\:ss"):
+                    int route=order.StartedUtcTicks==0?scoutStrategyMode:order.StrategyMode;
+                    string state=order.StartedUtcTicks==0?
+                        EarlyRetentionRules.ScoutStrategyName(route)+" · "+
+                        EarlyRetentionRules.ScoutTroopsForStrategy(route)+" tropas · "+
+                        TimeSpan.FromSeconds(EarlyRetentionRules.ScoutDurationSeconds(order.Kind,route)).ToString(@"mm\:ss"):
                         order.EndsUtcTicks<=now()?"Listo para reclamar":
                         "Regreso en "+TimeSpan.FromTicks(order.EndsUtcTicks-now()).ToString(@"hh\:mm\:ss");
                     scoutTitles[i].Put(EarlyRetentionRules.ScoutTitle(order.Kind));
                     t.Put(EarlyRetentionRules.ScoutRewardText(order.Kind)+"\n"+state);
-                    a.interactable=order.StartedUtcTicks==0||order.EndsUtcTicks<=now();
-                    label.Put(order.StartedUtcTicks==0?"Enviar":
+                    int required=EarlyRetentionRules.ScoutTroopsForStrategy(scoutStrategyMode);
+                    bool hasParty=scoutStrategyMode==0 ||
+                        (s.Available.Total>=required &&
+                         MarchCapacityRules.Capacity(s,"aldric")>=required);
+                    a.interactable=order.StartedUtcTicks==0?hasParty:
+                        order.EndsUtcTicks<=now();
+                    label.Put(order.StartedUtcTicks==0?(hasParty?"Enviar":"Sin tropas"):
                         order.EndsUtcTicks<=now()?"Recoger":"En camino");
                 }
                 long due=EarlyRetentionRules.NextPeriodUtcTicks(now());
