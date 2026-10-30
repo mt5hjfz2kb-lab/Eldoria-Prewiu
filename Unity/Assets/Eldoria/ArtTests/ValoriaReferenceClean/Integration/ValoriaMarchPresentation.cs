@@ -186,7 +186,11 @@ namespace Eldoria.ReferenceClean {
     for(int i=0;i<3;i++){
      var m=operations[i];var target=m==null?null:host.FindTarget(m.TargetId);
      active[i]=host.InWorld&&m!=null&&m.Phase!="idle"&&origin&&target&&free.width>0&&free.height>0;
-     standards[i].gameObject.SetActive(active[i]);routes[i].gameObject.SetActive(active[i]);
+     standards[i].gameObject.SetActive(active[i]);
+     // The player explicitly rejected the bright dashed trajectory. Preserve
+     // the real march standards, position, countdown and saved waypoint data;
+     // never draw diagnostic line segments across the authored landscape.
+     routes[i].gameObject.SetActive(false);
      if(!active[i])continue;
      var a=origin.transform.position;var b=target.transform.position;
      float fraction=m.Phase=="gathering"?1:m.Phase=="investigating"?
@@ -206,9 +210,7 @@ namespace Eldoria.ReferenceClean {
      }
      bool outside=!free.Contains(actual)||(actual-placed[i]).sqrMagnitude>16f*scale*scale;arrows[i].gameObject.SetActive(outside);
      if(outside){var d=actual-placed[i];arrows[i].rectTransform.localRotation=Quaternion.Euler(0,0,Mathf.Atan2(d.y,d.x)*Mathf.Rad2Deg);}
-     for(int j=0;j<25;j++)points[i][j]=Project(RoutePosition(m,a,b,j/24f)+Vector3.up*1.5f);
-     routes[i].Clip=Rect.MinMaxRect(free.xMin-70*scale,free.yMin-85*scale,free.xMax+70*scale,free.yMax+25*scale);
-     routes[i].SetPoints(points[i]);
+     // Do not populate or submit the retired route mesh each canvas frame.
     }
    }finally{projecting=false;}
   }
