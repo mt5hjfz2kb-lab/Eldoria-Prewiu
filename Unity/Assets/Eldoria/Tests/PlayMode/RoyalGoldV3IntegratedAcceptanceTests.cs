@@ -614,6 +614,14 @@ namespace Eldoria.Tests
                 "Existing browser telemetry must see the genuine contextual action");
             Assert.That(Member(v2, "VisibleBuildingButton"),
                 Is.SameAs(Member(v3, "VisibleActionButton")));
+            Assert.That(Member(v2, "VisibleBuildingButton"),
+                Is.SameAs(Member(v2, "ChronicleBuildingAction")),
+                "The illustrated city cartouche must own the only build command");
+            var floating = hud.GetComponentsInChildren<CanvasGroup>(true)
+                .First(x => x.name == "V3 / selected building contextual action");
+            Assert.That(floating.blocksRaycasts, Is.False,
+                "No duplicate floating action may intercept the city");
+            Assert.That(floating.alpha, Is.EqualTo(0f));
             var actualClose = Member(v2, "VisibleBuildingCloseButton") as Button;
             Assert.That(actualClose, Is.Not.Null);
             Assert.That(actualClose, Is.SameAs(Member(v3, "VisibleCloseButton")),

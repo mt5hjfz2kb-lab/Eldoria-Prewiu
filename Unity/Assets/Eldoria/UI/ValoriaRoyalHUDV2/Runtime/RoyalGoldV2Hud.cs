@@ -36,6 +36,20 @@ namespace Eldoria.UI.RoyalGold.V2
 
         public bool ChapterExpanded => expanded;
         public bool ChronicleIllustratedBuildingVisible => buildingGroup && buildingGroup.alpha > .5f;
+        public RoyalButton ChronicleBuildingAction => buildingAction;
+        public RoyalButton ChronicleBuildingClose => buildingClose;
+        public RectTransform ChronicleBuildingRect => buildingCard;
+        public bool ChronicleBuildingActionVisible => ChronicleIllustratedBuildingVisible &&
+            buildingActionGroup && buildingActionGroup.blocksRaycasts &&
+            Source && Source.Building && !Source.Building.OperationActive;
+
+        // A purchase can refresh the gateway between LateUpdate calls. Remove
+        // the consumed action immediately without changing the operation or save.
+        public void HideConsumedBuildingAction()
+        {
+            SetVisible(buildingActionGroup, false);
+            if (buildingAction) buildingAction.interactable = false;
+        }
         public bool BuildingVisible
         {
             get
@@ -472,8 +486,8 @@ namespace Eldoria.UI.RoyalGold.V2
 
             // Crónica Real: broad bottom cartouche, illustrated on the left,
             // details in the middle and the ORIGINAL action at the right.
-            // Keep the contextual action/timer projected beside the actual
-            // building by V3; both buttons dispatch the same V1 gateway offer.
+            // Keep only the timer projected beside the actual building.
+            // This cartouche owns the sole canonical purchase control.
             float cardWidth = Mathf.Min(width - (portrait ? 18f : 32f),
                 portrait ? 720f : 1300f);
             float cardHeight = portrait ? 178f : 164f;
@@ -634,7 +648,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     buildingScroll.verticalNormalizedPosition = 1f;
                 }
             }
-            bool offered = source.Primary && source.Primary.Visible;
+            bool offered = !source.OperationActive && source.Primary && source.Primary.Visible;
             SetVisible(buildingActionGroup, offered);
             if (offered)
             {
