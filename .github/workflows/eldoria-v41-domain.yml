@@ -1,0 +1,19 @@
+name: Eldoria V4.1 isolated domain contract
+on:
+  pull_request:
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs'
+      - 'tools/eldoria-v41/**'
+      - '.github/workflows/eldoria-v41-domain.yml'
+  workflow_dispatch:
+jobs:
+  v41-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile source used by Unity and test without Unity or Windows lease
+        run: dotnet run --configuration Release --project tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj
