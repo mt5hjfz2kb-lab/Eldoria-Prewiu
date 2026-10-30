@@ -18,6 +18,10 @@ jobs:
         with:
           sparse-checkout: |
             tools/eldoria-v41
+            tools/bastion-iii
+            tools/bastion-iv-v
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings
             Unity/Assets/Eldoria/Scripts/Domain
             Unity/Assets/Eldoria/Scripts/Application
           sparse-checkout-cone-mode: true
@@ -30,3 +34,7 @@ jobs:
         run: dotnet run --configuration Release --project tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj
       - name: Test real gateway commands, persistent mailbox and legacy campaign
         run: dotnet run --configuration Release --project tools/eldoria-v41/GatewaySmoke.csproj
+      - name: Preserve Bastion III narrative and economy after V4.1 integration
+        run: dotnet run --configuration Release --project tools/bastion-iii/DomainProbe.csproj
+      - name: Preserve Bastion IV V costs, rewards, upgrades and save parity
+        run: dotnet run --configuration Release --project tools/bastion-iv-v/DomainProbe.csproj
