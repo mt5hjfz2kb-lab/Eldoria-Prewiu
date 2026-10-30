@@ -2674,9 +2674,9 @@
     {
       "id": "eldoria-iphone-lifecycle-diagnostics-20261030",
       "title": "Resume PR97 optional local iPhone lifecycle diagnostics",
-      "owner": "codex-recovery-8545f387ddc2",
+      "owner": "chatgpt-eldoria-normal-handoff-20261031",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "status": "active",
       "branch": "review/native281-iphone-ui-world-triage-20261022",
       "pr": 97,
@@ -2726,7 +2726,8 @@
           "reason": "Owner explicitly requests continuation after frozen chat; PR136 preserved."
         }
       ],
-      "write_scope_released": false
+      "write_scope_released": false,
+      "handoff_reason": "Same owner continuation for historical iPhone-scope files already present in PR136; diagnostics unchanged, no phone claim."
     },
     {
       "id": "eldoria-heroes-approved-ui-20261030",
