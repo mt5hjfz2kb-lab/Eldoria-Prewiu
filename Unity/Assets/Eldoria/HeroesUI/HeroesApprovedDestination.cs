@@ -248,12 +248,11 @@ namespace Eldoria.HeroesUI
                 float left=(w-(cardW*columns+gap*(columns-1)))*.5f+col*(cardW+gap);
                 float top=cardTop+row*(cardH+rowGap);
                 var card=Frame("Hero card "+hero.Id,content,left,top,cardW,cardH);
-                // Copper edging and an independent portrait aperture are live
-                // elements; neither gameplay data nor mockup text is baked in.
-                Surface("Hero card interior "+hero.Id,card,3,3,cardW-6,cardH-6,
-                    new Color(.029f,.043f,.061f,.96f)).GetComponent<Image>().raycastTarget=false;
-                Surface("Hero card warm edge "+hero.Id,card,4,4,cardW-8,2,
-                    new Color(.85f,.56f,.24f)).GetComponent<Image>().raycastTarget=false;
+                // Reuse the editable, gradient Royal Gold panel from the
+                // owner-approved v14 integration package; keep live hit targets.
+                var ornament=Rect("Royal Gold card / v14 geometry",card);
+                Place(ornament,0,0,cardW,cardH);
+                ornament.gameObject.AddComponent<HeroesGoldFrameGraphic>().raycastTarget=false;
                 Label("Hero card name",card,hero.DisplayName,10,12,cardW-20,
                     compact?31:42,compact?21:25,TextAnchor.MiddleCenter).color=gold;
                 if(compact)
