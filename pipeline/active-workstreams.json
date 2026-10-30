@@ -2484,9 +2484,9 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": "codex-final-consolidation-b42e2e4f25bf",
+      "owner": "codex-artistic-completion-1515a30b9c7e",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
@@ -2547,6 +2547,12 @@
           "ownership_revision": 5,
           "transferred_at": "2026-10-30T15:49:00Z",
           "reason": "Owner explicitly requests continuation of blocked final-consolidation chat; preserve in-flight native run 41082890524."
+        },
+        {
+          "owner": "codex-final-consolidation-b42e2e4f25bf",
+          "ownership_revision": 6,
+          "transferred_at": "2026-10-30T18:12:38.637Z",
+          "reason": "Owner directs continuation and reconciliation in canonical PR136; retain original branches and sources."
         }
       ],
       "delivery_definition": {
@@ -2631,9 +2637,9 @@
     {
       "id": "eldoria-iphone-lifecycle-diagnostics-20261030",
       "title": "Resume PR97 optional local iPhone lifecycle diagnostics",
-      "owner": "codex-final-consolidation-b42e2e4f25bf",
+      "owner": "codex-artistic-completion-1515a30b9c7e",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "status": "active",
       "branch": "review/native281-iphone-ui-world-triage-20261022",
       "pr": 97,
@@ -2657,6 +2663,12 @@
           "ownership_revision": 1,
           "transferred_at": "2026-10-30T15:49:00Z",
           "reason": "Owner explicitly requests continuation of blocked final-consolidation chat; preserve in-flight native run 41082890524."
+        },
+        {
+          "owner": "codex-final-consolidation-b42e2e4f25bf",
+          "ownership_revision": 2,
+          "transferred_at": "2026-10-30T18:12:38.637Z",
+          "reason": "Owner directs continuation and reconciliation in canonical PR136; retain original branches and sources."
         }
       ],
       "write_scope_released": false
@@ -2664,9 +2676,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": "codex-final-consolidation-b42e2e4f25bf",
+      "owner": "codex-artistic-completion-1515a30b9c7e",
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "status": "active",
       "branch": "feature/heroes-approved-ui-integration-20261030",
       "pr": 135,
@@ -2690,6 +2702,12 @@
           "ownership_revision": 2,
           "transferred_at": "2026-10-30T15:49:00Z",
           "reason": "Owner explicitly requests continuation of blocked final-consolidation chat; preserve in-flight native run 41082890524."
+        },
+        {
+          "owner": "codex-final-consolidation-b42e2e4f25bf",
+          "ownership_revision": 3,
+          "transferred_at": "2026-10-30T18:12:38.637Z",
+          "reason": "Owner directs continuation and reconciliation in canonical PR136; retain original branches and sources."
         }
       ],
       "write_scope_released": false
@@ -2697,11 +2715,11 @@
     {
       "id": "eldoria-unified-art-vault-20261029",
       "title": "Biblioteca artística unificada 2D/3D — PR128",
-      "owner": "codex-final-consolidation-b42e2e4f25bf",
+      "owner": "codex-artistic-completion-1515a30b9c7e",
       "branch": "docs/unified-art-vault-20261029",
       "status": "active",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "write_scope_released": false,
       "claimed_at": "2026-10-30T15:31:15.561Z",
       "base_main_sha": "515555135127195542496ffea3a0852206772bea",
@@ -2726,6 +2744,12 @@
           "ownership_revision": 1,
           "transferred_at": "2026-10-30T15:49:00Z",
           "reason": "Owner explicitly requests continuation of blocked final-consolidation chat; preserve in-flight native run 41082890524."
+        },
+        {
+          "owner": "codex-final-consolidation-b42e2e4f25bf",
+          "ownership_revision": 2,
+          "transferred_at": "2026-10-30T18:12:38.637Z",
+          "reason": "Owner directs continuation and reconciliation in canonical PR136; retain original branches and sources."
         }
       ]
     }
