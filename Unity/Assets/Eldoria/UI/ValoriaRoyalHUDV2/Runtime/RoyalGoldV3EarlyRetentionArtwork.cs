@@ -359,7 +359,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Disc(vh,nodes[i],r,dark);
                 Disc(vh,nodes[i]+new Vector2(-r*.26f,r*.27f),
                     Mathf.Max(.8f,r*.16f),
-                    new Color(1f,.88f,.64f,cleared?.76f:.54f));
+                    new Color(1f,.88f,.64f,cleared ? .76f : .54f));
                 if(cleared){
                     Line(vh,nodes[i]+new Vector2(-r*.5f,0),nodes[i]+new Vector2(-r*.1f,-r*.4f),3,new Color(.45f,.93f,.27f,1));
                     Line(vh,nodes[i]+new Vector2(-r*.1f,-r*.4f),nodes[i]+new Vector2(r*.6f,r*.45f),3,new Color(.45f,.93f,.27f,1));
