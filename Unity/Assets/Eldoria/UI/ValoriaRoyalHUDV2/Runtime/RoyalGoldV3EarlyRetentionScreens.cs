@@ -824,7 +824,8 @@ namespace Eldoria.UI.RoyalGold.V2
             TL((RectTransform)scoutStrategyButton.transform,
                 pw-118f,portrait?14f:compactLandscape?14f:23f,
                 100f,portrait?88f:compactLandscape?68f:46f);
-            scoutStrategyLabel.fontSize=portrait?23:compactLandscape?20:17;
+            // Minimum ~13 real pixels on a 390px phone at roomScale .4875.
+            scoutStrategyLabel.fontSize=portrait?28:compactLandscape?21:19;
             float imageTop=portrait?150f:108f;
             bool scoutsLandscape=!portrait && OpenDestination==Destination.Scouts;
             bool vigilantsLandscape=!portrait && OpenDestination==Destination.Vigilants;
@@ -1134,7 +1135,8 @@ namespace Eldoria.UI.RoyalGold.V2
             scoutStrategyButton.gameObject.SetActive(!vig);
             if(!vig)
             {
-                scoutStrategyLabel.Put("RUTA\n"+EarlyRetentionRules.ScoutStrategyName(scoutStrategyMode));
+                scoutStrategyLabel.Put(scoutStrategyMode==1?"RUTA\nSIGILO":
+                    scoutStrategyMode==2?"RUTA\nRÁPIDA":"RUTA\nNORMAL");
                 scoutStrategyButton.interactable=true;
             }
             // The board reserves a 57 px header; show its actual section title
@@ -1377,7 +1379,6 @@ namespace Eldoria.UI.RoyalGold.V2
                     }
                     int route=order.StartedUtcTicks==0?scoutStrategyMode:order.StrategyMode;
                     string state=order.StartedUtcTicks==0?
-                        EarlyRetentionRules.ScoutStrategyName(route)+" · "+
                         EarlyRetentionRules.ScoutTroopsForStrategy(route)+" tropas · "+
                         TimeSpan.FromSeconds(EarlyRetentionRules.ScoutDurationSeconds(order.Kind,route)).ToString(@"mm\:ss"):
                         order.EndsUtcTicks<=now()?"Listo para reclamar":
