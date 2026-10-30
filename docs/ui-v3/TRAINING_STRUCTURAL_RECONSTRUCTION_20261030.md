@@ -15,3 +15,15 @@ Derivatives:
 No Tripo, external paid API, economy or save change. Built-in image editor used. No claim of exact original identity, artistic approval, native screenshot, mobile performance or completed reconstruction of other destinations.
 
 Required acceptance: compile this exact candidate, run real controls/quantity/cost/timer/speedup/persistence assertions, inspect authentic Unity captures at 1600×900, 900×1600, 390×844, 844×390 beside the original. Verify the recovered narrative button changes independently. If composition still fails after a second structural attempt, change technique rather than accumulating cosmetic patches.
+
+## Recovery continuation — 30 October, PR136
+
+Recovered exact source a5ea2aa1d6d47252e8b71fa79089d0e26a64196c, failed native run 41111056120 and artifact 13003567485. The original training, march and mailbox PNG hashes were independently verified against tools/eldoria-v41/approved-art-manifest.json from the archived approved kit. Real training-reference-ratio.png and training-phone.png were inspected.
+
+The inherited portrait navigation provided 54 units for a two-line 60.44444-unit label. Candidate b087e2be increases the actual navigation control height to 76 and reserves 188 units for its header; no text suppression, font reduction or tolerance change. The first retry 41121880862 failed BEFORE Unity because both native ownership preflights still named the old session/revision. Commit 02c0637e reconciles both checks with the authorized live owner codex-recovery-ada07b02a31d, revision 74; process exclusion and exclusive resource checks remain enabled. Job-list status lagged behind the completed log; use actual job logs when contradictory.
+
+Structural visual diagnosis: the inherited full-figure rectangle was limited to 70% of a half-width pane, shrinking the archer and centering his feet above the ground. The order took the full body height while the profile competed with the character. Next candidate reserves a full-height, bottom-aligned archer, moves unit identity above the lower-right compact order in square/desktop views and keeps a stacked portrait adaptation. Compact landscape keeps the full-height order for usable controls. Original assets and authoritative values/actions remain intact.
+
+The capture probe now writes the exact image and per-control geometry BEFORE enforcing layout assertions, so a rejected capture is preserved instead of losing the useful evidence. All existing assertions remain mandatory. This is candidate code, NOT a native PASS or artistic acceptance. No merge/publication, gameplay/economy/save changes, new models or paid generation.
+
+Retry 41122598412 compiled and passed portrait label checks, including training-small-phone (390×844). It then rejected the title/subtitle boundary in training-small-phone-landscape (844×390). The wide header had contiguous rectangles ending/starting at y=48; candidate adds an actual eight-unit gap (subtitle y=56), keeping full text and bounds tests. Native artifact 13009885151; no full certificate claimed.

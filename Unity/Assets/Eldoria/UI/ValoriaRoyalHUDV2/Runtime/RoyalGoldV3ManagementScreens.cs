@@ -611,7 +611,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 long leftSeconds=busy?Math.Max(0,(long)Math.Ceiling(
                     (s.RecruitmentCompletesUtcTicks-utcTicks())/(double)TimeSpan.TicksPerSecond)):0;
                 summary.Put(
-                    "COSTE DEL ENTRENAMIENTO\nMadera "+wood+" · Piedra "+stone+"\nTIEMPO TOTAL  "+Clock(seconds));
+                    "Madera "+wood+" · Piedra "+stone+"\nTiempo total  "+Clock(seconds));
                 trainingProgress.gameObject.SetActive(busy);
                 if(busy)
                 {
@@ -620,7 +620,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     trainingProgressFill.sizeDelta=new Vector2(
                         trainingProgress.rect.width*elapsed,0f);
                 }
-                status.Put("DISPONIBLES T"+selectedTier+"  "+selectedAvailable+" · ENTRENANDO "+s.PendingRecruitArchers+
+                status.Put("Disponibles T"+selectedTier+"  "+selectedAvailable+" · Entrenando "+s.PendingRecruitArchers+
                     (busy?"\nCUENTA ATRÁS  "+Clock(leftSeconds):"\nSin entrenamiento activo"));
                 actionLabel.Put(busy?((s.SpeedupFiveMinutes>0||s.SpeedupOneMinute>0)?"ACELERAR · "+minutes+" MIN ("+(minutes==5?s.SpeedupFiveMinutes:s.SpeedupOneMinute)+")":
                     "ENTRENANDO T"+s.PendingRecruitTier+" · "+Clock(leftSeconds)):
@@ -893,7 +893,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float bodyY=top+hh+12, bodyH=h-bodyY-bottom-foot;
             Place(header,x,top,width,hh);
             Place(heading.rectTransform,16,8,width*.48f,40);
-            Place(subheading.rectTransform,16,48,width*.48f,26);
+            Place(subheading.rectTransform,16,56,width*.48f,26);
             if(!wide)
             {
                 Place(heading.rectTransform,16,8,width-32,44);
@@ -903,29 +903,34 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(switchDestination.transform as RectTransform,24+n,99,n,76);
                 Place(chapterAction.transform as RectTransform,36+2*n,99,n,76);
             }
+            // The approved composition places a full-height archer on the
+            // courtyard floor and the order below the unit identity at right.
+            // Narrow portrait keeps those same layers, stacking only the order.
             float artH=wide?bodyH:bodyH*.51f;
-            Place(left,x,bodyY,wide?width*.52f:width,artH);
-            float archerW=Mathf.Min(left.rect.width*.70f,artH*.66f);
-            Place(approvedArcher.rectTransform,wide?12:0,0,archerW,artH);
+            Place(left,x,bodyY,wide?width*.54f:width,artH);
+            float archerH=Mathf.Min(artH, (wide?width*.51f:width*.55f)*1.5f);
+            float archerW=archerH/1.5f;
+            Place(approvedArcher.rectTransform,0,artH-archerH,archerW,archerH);
             unitTitle.rectTransform.SetParent(left,false);
             unitDetail.rectTransform.SetParent(left,false);
-            float titleX=wide?archerW*.86f:left.rect.width*.54f;
-            float titleW=left.rect.width-titleX-12;
-            Place(unitTitle.rectTransform,titleX,artH*.09f,titleW,wide?72:90);
-            Place(unitDetail.rectTransform,titleX,artH*.09f+(wide?82:100),titleW,wide?120:150);
+            bool stackedIdentity=wide&&!compactLandscape;
+            float titleX=stackedIdentity?width*.56f:wide?archerW*.82f:width*.56f;
+            float titleW=stackedIdentity?width*.44f:wide?left.rect.width-titleX:width-titleX-12;
+            Place(unitTitle.rectTransform,titleX,artH*.04f,titleW,wide?72:90);
+            Place(unitDetail.rectTransform,titleX,artH*.04f+(wide?82:100),titleW,wide?120:150);
             unitTitle.fontSize=wide?28:34;
             unitDetail.fontSize=wide?20:28;
-            float orderW=wide?width*.43f:width;
-            float orderH=wide?Mathf.Min(bodyH,510):bodyH-artH-12;
-            Place(right,wide?x+width-orderW:x,wide?bodyY+(bodyH-orderH)*.65f:bodyY+artH+12,orderW,orderH);
+            float orderW=wide?width*.44f:width;
+            float orderH=wide?(compactLandscape?bodyH:Mathf.Min(bodyH,Mathf.Max(390,bodyH*.60f))):bodyH-artH-12;
+            Place(right,wide?x+width-orderW:x,wide?bodyY+bodyH-orderH:bodyY+artH+12,orderW,orderH);
             float pad=wide?22:26;
             float qh=wide?48:78;
-            Place(quantityRow,pad,orderH*.06f,orderW-pad*2,qh);
-            Place(slider.transform as RectTransform,pad+6,orderH*.06f+qh+12,orderW-pad*2-12,wide?16:24);
-            Place(summary.rectTransform,pad,orderH*.30f,orderW-pad*2,orderH*.20f);
-            Place(tierButton.transform as RectTransform,pad,orderH*.52f,orderW-pad*2,wide?34:52);
-            Place(status.rectTransform,pad,orderH*.64f,orderW-pad*2,wide?48:70);
-            Place(trainingProgress,pad,orderH*.62f-8,orderW-pad*2,8);
+            Place(quantityRow,pad,orderH*.04f,orderW-pad*2,qh);
+            Place(slider.transform as RectTransform,pad+6,orderH*.04f+qh+10,orderW-pad*2-12,wide?16:24);
+            Place(summary.rectTransform,pad,orderH*.28f,orderW-pad*2,orderH*.20f);
+            Place(tierButton.transform as RectTransform,pad,orderH*.51f,orderW-pad*2,wide?34:52);
+            Place(status.rectTransform,pad,orderH*.63f,orderW-pad*2,wide?48:70);
+            Place(trainingProgress,pad,orderH*.61f-8,orderW-pad*2,8);
             Place(action.transform as RectTransform,pad,orderH-(wide?65:94),orderW-pad*2,wide?52:80);
             summary.fontSize=wide?22:28;status.fontSize=wide?17:26;
             actionLabel.fontSize=wide?19:26;

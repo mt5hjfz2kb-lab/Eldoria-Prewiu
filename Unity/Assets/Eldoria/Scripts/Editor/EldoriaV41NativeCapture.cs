@@ -71,13 +71,22 @@ namespace Eldoria.Editor
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
                 var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
                 if(heroes&&heroes.IsOpen){heroes.Refresh();Canvas.ForceUpdateCanvases();}
-                if(management.IsOpen)ValidateMilitaryLayout(management,name);
                 // Render again after mailbox reflow inside the canonical off-screen target.
                 host.PlayerCamera.Render();host.PlayerCamera.Render();
                 RenderTexture.active=host.PlayerCamera.targetTexture;
                 var pixels=new Texture2D(width,height,TextureFormat.RGB24,false);
                 try{pixels.ReadPixels(new Rect(0,0,width,height),0,0);pixels.Apply();File.WriteAllBytes(Path.Combine(Output,name+".png"),pixels.EncodeToPNG());}
                 finally{Object.Destroy(pixels);}
+                // Preserve the exact rendered failure before enforcing every gate.
+                // A rejected layout must still be visually diagnosable.
+                if(management.IsOpen)
+                {
+                    var report=management.VisibleRoot.GetComponentsInChildren<Text>()
+                        .Select(t=>t.transform.parent.name+"/"+t.name+" | "+t.text.Replace("\n"," / ")+
+                            " | preferred="+t.preferredHeight+" actual="+t.rectTransform.rect);
+                    File.WriteAllLines(Path.Combine(Output,name+"-layout.txt"),report);
+                    ValidateMilitaryLayout(management,name);
+                }
                 Need(host.Hud.GetComponentsInChildren<Canvas>(true).Length==1,"One canonical Canvas "+name);
                 foreach(var image in host.Hud.GetComponentsInChildren<Image>(false).Where(x=>x.name.StartsWith("Approved source /")))
                     Need(image.sprite!=null,"Source texture loaded "+image.name);
