@@ -32,22 +32,46 @@ namespace Eldoria.UI.RoyalGold.V2 {
    rankings=h.GetComponent<RoyalGoldV3RankingScreen>();if(!rankings)rankings=h.gameObject.AddComponent<RoyalGoldV3RankingScreen>();rankings.Initialize(h,g);
   }
   void OnDestroy(){if(hud){hud.SelectionChanged-=Select;hud.NarrativeOpening-=Suspend;}}
-  void Suspend(){if(IsOpen){root.gameObject.SetActive(false);suspended=true;}}
-  void Select(string id){
-   if(Array.IndexOf(Ids,id)<0){if(root)root.gameObject.SetActive(false);suspended=false;selected="";return;}
-   selected=id;message="";Ensure();
-   if(hud.NarrativeOpen||(hud.Modal&&hud.Modal.gameObject.activeSelf)){root.gameObject.SetActive(false);suspended=true;return;}
-   suspended=false;root.gameObject.SetActive(true);root.SetAsLastSibling();lastW=-1;SynchronizeLayout();
+  // No building opens a standalone destination. The original management art
+  // remains in the repository, but construction/upgrades use the existing
+  // anchored V3 action and timer. Only actual III–V priority/speedup commands
+  // need a small, safe-area contextual dock.
+  bool NeedsDecisionDock(){
+   if(!hud||gateway==null||read==null||string.IsNullOrEmpty(selected)||
+      hud.NarrativeOpen||(hud.Modal&&hud.Modal.gameObject.activeInHierarchy))return false;
+   var state=gateway.Snapshot();var building=read(selected);
+   return building!=null&&
+    (selected=="bastion"&&state.BastionLevel>=4&&
+       string.IsNullOrEmpty(state.ChapterThree.DevelopmentPriority)||
+     building.OperationActive&&(state.SpeedupOneMinute>0||state.SpeedupFiveMinutes>0));
   }
-  public void Close(){suspended=false;if(root)root.gameObject.SetActive(false);hud.SelectBuilding("");}
+  void RefreshVisibility(){
+   bool show=NeedsDecisionDock();
+   if(show&&root==null)Ensure();
+   if(root&&root.gameObject.activeSelf!=show){
+    root.gameObject.SetActive(show);
+    lastW=-1f;
+   }
+   if(show){SynchronizeLayout();Refresh();}
+  }
+  void Suspend(){if(root)root.gameObject.SetActive(false);suspended=true;}
+  void Select(string id){
+   selected=Array.IndexOf(Ids,id)>=0?id:"";
+   message="";suspended=false;RefreshVisibility();
+  }
+  public void Close(){suspended=false;if(root)root.gameObject.SetActive(false);if(hud)hud.SelectBuilding("");}
   void Update(){
    if(!hud||gateway==null)return;
-   if(hud.NarrativeOpen||(hud.Modal&&hud.Modal.gameObject.activeSelf)){Suspend();return;}
-   if(suspended&&!string.IsNullOrEmpty(selected)){suspended=false;Select(selected);}
-   if(!IsOpen||rankings&&rankings.IsOpen)return;
+   if(hud.NarrativeOpen||(hud.Modal&&hud.Modal.gameObject.activeInHierarchy)){Suspend();return;}
+   if(Time.unscaledTime>=refresh){
+    refresh=Time.unscaledTime+.2f;
+    RefreshVisibility();
+   }
+   if(!IsOpen)return;
    if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){Close();return;}
-   if(Time.unscaledTime>=refresh){refresh=Time.unscaledTime+.2f;Refresh();}
-   if(Mathf.Abs(root.rect.width-lastW)>.5f||Mathf.Abs(root.rect.height-lastH)>.5f||lastSafe!=Screen.safeArea)SynchronizeLayout();
+   if(Mathf.Abs(root.rect.width-lastW)>.5f||
+      Mathf.Abs(root.rect.height-lastH)>.5f||lastSafe!=Screen.safeArea)
+    SynchronizeLayout();
   }
   // Same native resize repair used by the established V3 context HUD. Dynamic
   // graphics can retain depth -1, making the old navigation win raycasts even
@@ -66,7 +90,9 @@ namespace Eldoria.UI.RoyalGold.V2 {
   internal static RectTransform Panel(string name,Transform parent){var r=Rect(name,parent);r.gameObject.AddComponent<CanvasRenderer>();r.gameObject.AddComponent<Image>().color=new Color(.065f,.105f,.14f,.96f);var edge=r.gameObject.AddComponent<Outline>();edge.effectColor=new Color(.55f,.43f,.25f,.65f);edge.effectDistance=new Vector2(1,-1);return r;}
   internal static RoyalButton Button(string name,Transform parent,string label,Action click,out RoyalText text){var r=Panel(name,parent);var b=r.gameObject.AddComponent<RoyalButton>();b.targetGraphic=r.GetComponent<Image>();b.onClick.AddListener(()=>click());text=Text(name+" label",r,16,Ivory);text.Put(label);text.alignment=TextAnchor.MiddleCenter;Stretch((RectTransform)text.transform);((RectTransform)text.transform).offsetMin=new Vector2(8,5);((RectTransform)text.transform).offsetMax=new Vector2(-8,-5);return b;}
   void Ensure(){if(root)return;
-   root=Panel("V3 / City management destination",hud.transform);Stretch(root);root.GetComponent<Image>().color=new Color(.025f,.045f,.07f,1);
+   var safe=hud.GetComponentInChildren<RoyalHudLayout>(true);
+   root=Panel("V3 / Contextual building decisions",safe?safe.transform:hud.transform);
+   root.GetComponent<Image>().color=new Color(.045f,.075f,.105f,.97f);
    var backdrop=Rect("Royal hall",root);Stretch(backdrop);backdrop.gameObject.AddComponent<CanvasRenderer>();var bg=backdrop.gameObject.AddComponent<RoyalGoldV3ManagementBackdrop>();bg.color=Color.white;bg.raycastTarget=false;
    header=Rect("Header",root);art=Panel("Approved architecture",root);detail=Panel("Building management",root);footer=Rect("Footer",root);choices=Rect("Development council",detail);
    training=Button("Open training",header,"ENTRENAMIENTO",()=>hud.SelectBuilding("barracks"),out _);
@@ -82,9 +108,12 @@ namespace Eldoria.UI.RoyalGold.V2 {
    notice=Text("Command feedback",footer,13,Gold);
    action=Button("Building action",footer,"MEJORAR",Submit,out actionLabel);
    speedChoice=Button("Choose speedup duration",footer,"1 MIN",()=>{speedMinutes=speedMinutes==1?5:1;Refresh();},out speedLabel);
-   back=Button("Back to city",footer,"VOLVER A VALORIA",Close,out _);back.name="Back";root.gameObject.SetActive(false);
+   back=Button("Close contextual decisions",footer,"CERRAR",Close,out _);back.name="Back";
+   // Never draw a full-screen royal hall over the actual playable city.
+   backdrop.gameObject.SetActive(false);header.gameObject.SetActive(false);art.gameObject.SetActive(false);
+   root.gameObject.SetActive(false);
   }
-  void Choose(string value){var s=gateway.Snapshot();var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,"ChooseDevelopment",value,s.Revision));message=result.Ok?"Prioridad guardada. Valoria recibe los recursos elegidos.":result.Message;refreshed?.Invoke();SynchronizeLayout();}
+  void Choose(string value){var s=gateway.Snapshot();var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,"ChooseDevelopment",value,s.Revision));message=result.Ok?"Prioridad guardada. Valoria recibe los recursos elegidos.":result.Message;refreshed?.Invoke();RefreshVisibility();}
   int SpeedMinutes(PlayerState s){if(speedMinutes==5&&s.SpeedupFiveMinutes==0)speedMinutes=1;if(speedMinutes==1&&s.SpeedupOneMinute==0)speedMinutes=5;return speedMinutes;}
   void Submit(){
    var b=read(selected);if(b==null)return;
@@ -95,7 +124,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
     if(b.Action==null||!b.Action.Enabled)return;kind=b.Action.Kind;target=b.Action.Target;
    }
    var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,kind,target,s.Revision));
-   message=result.Message;refreshed?.Invoke();Refresh();
+   message=result.Message;refreshed?.Invoke();RefreshVisibility();
   }
   void Refresh(){if(!IsOpen)return;var s=gateway.Snapshot();var b=read(selected);if(b==null)return;
    ranking.gameObject.SetActive(s.ChapterThree.RankUnlocked);training.gameObject.SetActive(selected=="upgrade-barracks"&&s.BarracksLevel>0);
@@ -118,19 +147,41 @@ namespace Eldoria.UI.RoyalGold.V2 {
     b.Level>=5&&!b.OperationActive?"NIVEL V COMPLETADO":b.Action?.Label??(b.OperationActive?"EN CURSO":"EDIFICIO OPERATIVO"));notice.Put(message);
    for(int i=0;i<tabs.Length;i++)tabs[i].interactable=Ids[i]!=selected&&(i<3||s.BastionLevel>=(i==3?3:5));
   }
-  public void SynchronizeLayout(){if(!root)return;root.SetAsLastSibling();Canvas.ForceUpdateCanvases();float w=root.rect.width,h=root.rect.height;lastW=w;lastH=h;lastSafe=Screen.safeArea;bool wide=w>h;float scale=Mathf.Max(.01f,hud.GetComponent<Canvas>().scaleFactor);float m=Mathf.Max(Mathf.Clamp(w*.025f,12,30),Mathf.Max(lastSafe.xMin,Screen.width-lastSafe.xMax)/scale+12),gap=16,head=wide?130:180,foot=100;
-   float topInset=Mathf.Max(m,(Screen.height-lastSafe.yMax)/scale+12),bottomInset=Mathf.Max(m,lastSafe.yMin/scale+12);
-   Place(header,m,topInset,w-2*m,head);Place((RectTransform)ranking.transform,wide?w-2*m-200:(w-2*m)*.51f,wide?2:76,wide?200:(w-2*m)*.49f,36);Place((RectTransform)training.transform,wide?w-2*m-390:0,wide?2:76,wide?180:(w-2*m)*.49f,36);Place((RectTransform)title.transform,0,0,w-2*m,40);Place((RectTransform)kicker.transform,0,44,w-2*m,28);
-   for(int i=0;i<tabs.Length;i++)Place((RectTransform)tabs[i].transform,i*(w-2*m)/5,wide?80:124,(w-2*m)/5-5,wide?35:48);
-   float top=topInset+head,body=h-top-foot-bottomInset;float aw=wide?(w-2*m-gap)*.43f:w-2*m;float ah=wide?body:body*(h/w>1.5f?.42f:.30f);
-   Place(art,m,top,aw,ah);Place(detail,wide?m+aw+gap:m,wide?top:top+ah+gap,wide?w-2*m-aw-gap:w-2*m,wide?body:body-ah-gap);
-   float side=Mathf.Min(aw-24,ah-65);Place((RectTransform)portrait.transform,(aw-side)*.5f,8,side,side);Place((RectTransform)artCaption.transform,14,ah-52,aw-28,48);
-   float dw=detail.rect.width,dh=detail.rect.height,pad=18;
-   bool compactCouncil=!wide&&selected=="bastion"&&gateway.Snapshot().BastionLevel>=4&&string.IsNullOrEmpty(gateway.Snapshot().ChapterThree.DevelopmentPriority);
-   Place((RectTransform)description.transform,pad,pad,dw-2*pad,compactCouncil?65:80);Place((RectTransform)costs.transform,pad,compactCouncil?90:112,dw-2*pad,compactCouncil?48:52);Place((RectTransform)status.transform,pad,compactCouncil?150:180,dw-2*pad,compactCouncil?65:95);
-   Place(operationProgress,pad,dh-32,dw-2*pad,7);
-   Place(choices,pad,dh-224,dw-2*pad,210);for(int i=0;i<3;i++)Place((RectTransform)priority[i].transform,0,i*70,dw-2*pad,64);
-   Place(footer,m,h-foot-bottomInset,w-2*m,foot);Place((RectTransform)notice.transform,0,0,(w-2*m)*.45f,30);Place((RectTransform)speedChoice.transform,(w-2*m)*.48f,0,(w-2*m)*.52f,28);Place((RectTransform)action.transform,(w-2*m)*.48f,35,(w-2*m)*.52f,45);Place((RectTransform)footer.Find("Back"),0,35,(w-2*m)*.45f,45);Refresh();RebindGraphics(root);
+  public void SynchronizeLayout(){
+   if(!root||!IsOpen)return;
+   var state=gateway.Snapshot();
+   bool council=selected=="bastion"&&state.BastionLevel>=4&&
+    string.IsNullOrEmpty(state.ChapterThree.DevelopmentPriority);
+   var safe=root.parent as RectTransform;
+   float availableWidth=safe?safe.rect.width:Screen.width;
+   float availableHeight=safe?safe.rect.height:Screen.height;
+   float navHeight=hud.Navigation?((RectTransform)hud.Navigation.transform).rect.height:82f;
+   float width=Mathf.Min(Mathf.Max(260f,availableWidth-24f),620f);
+   float height=Mathf.Min(council?374f:174f,
+      Mathf.Max(158f,availableHeight-navHeight-18f));
+   root.anchorMin=root.anchorMax=new Vector2(.5f,0f);
+   root.pivot=new Vector2(.5f,0f);
+   root.sizeDelta=new Vector2(width,height);
+   root.anchoredPosition=new Vector2(0f,navHeight+12f);
+   root.SetAsLastSibling();
+   Canvas.ForceUpdateCanvases();
+   float pad=12f;
+   float dw=width-2*pad;
+   float detailHeight=height-70f;
+   Place(detail,pad,pad,dw,detailHeight);
+   Place((RectTransform)description.transform,12f,10f,dw-24f,council?51f:36f);
+   Place((RectTransform)costs.transform,12f,council?64f:48f,dw-24f,council?35f:25f);
+   Place((RectTransform)status.transform,12f,council?101f:77f,dw-24f,council?34f:30f);
+   Place(operationProgress,12f,detailHeight-16f,dw-24f,6f);
+   Place(choices,12f,140f,dw-24f,152f);
+   for(int i=0;i<3;i++)Place((RectTransform)priority[i].transform,0f,i*51f,dw-24f,47f);
+   Place(footer,pad,height-57f,dw,48f);
+   Place((RectTransform)back.transform,0f,3f,dw*.22f,43f);
+   Place((RectTransform)speedChoice.transform,dw*.23f,3f,dw*.26f,43f);
+   Place((RectTransform)action.transform,dw*.50f,3f,dw*.50f,43f);
+   Place((RectTransform)notice.transform,dw*.24f,0f,dw*.75f,40f);
+   lastW=root.rect.width;lastH=root.rect.height;lastSafe=Screen.safeArea;
+   Refresh();RebindGraphics(root);
   }
  }
 }
