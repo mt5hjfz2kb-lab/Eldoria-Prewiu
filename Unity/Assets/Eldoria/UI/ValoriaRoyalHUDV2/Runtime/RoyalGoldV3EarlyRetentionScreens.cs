@@ -65,6 +65,7 @@ namespace Eldoria.UI.RoyalGold.V2
         // Two original zero-cost painterly environments, with the hand-built
         // vector renderer as the graceful fallback in older installations.
         RawImage paintedScene;
+        RoyalGoldV3LayeredFinish scenicDepth;
         Texture2D paintedVigilants, paintedScouts, scoutParchment;
         Sprite scoutParchmentSprite, encounterSkinSprite;
         Image encounterSkin;
@@ -364,6 +365,11 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!paintedScouts)paintedScouts=
                 Resources.Load<Texture2D>("EldoriaRetention/scouts-illustration");
             paintedScene.enabled=paintedVigilants!=null;
+            // A distinct, transparent foreground of fog, raking light and
+            // parchment depth: the photographed environment stays behind it,
+            // while all real route nodes and touch targets remain above it.
+            scenicDepth=RoyalGoldV3LayeredFinish.Install(art,
+                RoyalGoldV3LayeredFinish.Scene.Vigilants,2);
             var seals=Rect("Actual discovered expedition families",art);
             seals.gameObject.AddComponent<CanvasRenderer>();
             discoverySeals=seals.gameObject.AddComponent<RoyalGoldV3ScoutDiscoverySeals>();
@@ -595,6 +601,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(destination==Destination.Vigilants&&!EarlyRetentionRules.VigilantsUnlocked(s))return;
             if(destination==Destination.Scouts&&!EarlyRetentionRules.ScoutsUnlocked(s))return;
             OpenDestination=destination;
+            scenicDepth?.SetScene(destination==Destination.Scouts?
+                RoyalGoldV3LayeredFinish.Scene.Scouts:
+                RoyalGoldV3LayeredFinish.Scene.Vigilants);
             notice="";
             victoryUntil=0f;
             if(victoryGroup)victoryGroup.alpha=0f;
