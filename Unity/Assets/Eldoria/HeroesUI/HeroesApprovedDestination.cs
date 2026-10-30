@@ -138,8 +138,10 @@ namespace Eldoria.HeroesUI
             if(source&&preview.Show(source,raw)){
                 float imageH=modelH-46,imageW=Mathf.Min(modelW-10,imageH*2f/3f);
                 Place(raw.rectTransform,(modelW-imageW)*.5f,5,imageW,imageH);
-                Button("Rotate hero left","‹",bodyX+7,top+modelH-78,32,32,()=>{preview.Rotate(-30);Rebuild();});
-                Button("Rotate hero right","›",bodyX+modelW-39,top+modelH-78,32,32,()=>{preview.Rotate(30);Rebuild();});
+                if(CurrentPage!=Page.Talentos){
+                    Button("Rotate hero left","‹",bodyX+7,top+modelH-78,32,32,()=>{preview.Rotate(-30);Rebuild();});
+                    Button("Rotate hero right","›",bodyX+modelW-39,top+modelH-78,32,32,()=>{preview.Rotate(30);Rebuild();});
+                }
             }
             else{
                 raw.enabled=false;
@@ -161,6 +163,10 @@ namespace Eldoria.HeroesUI
             float infoW=portrait?bodyW:bodyW-modelW-12,infoH=portrait?bodyH-modelH-12:bodyH;
             var info=Frame("Hero authoritative information",content,infoX,infoY,infoW,infoH);
             BuildInformation(info,hero,infoW,infoH);
+            if(CurrentPage==Page.Talentos){
+                stage.gameObject.SetActive(false);info.gameObject.SetActive(false);
+                BuildReservedTalents(bodyX,top,bodyW,bodyH,portrait);
+            }
             Button("Previous available hero","‹",20,h-66,64,46,()=>CycleHero(-1));
             Label("Current hero identity",content,hero.DisplayName,94,h-66,w-188,46,22,TextAnchor.MiddleCenter).color=gold;
             Button("Next available hero","›",w-84,h-66,64,46,()=>CycleHero(1));
@@ -178,6 +184,44 @@ namespace Eldoria.HeroesUI
                 Label("Hero card state",card,hero.Unlocked?hero.Role+"\nNIVEL "+hero.Level+" · PODER "+hero.HeroPower:"Se incorpora durante la historia",12,cardH-122,cardW-24,62,20,TextAnchor.MiddleCenter);
                 Button("Select hero "+hero.Id,hero.Unlocked?"VER HÉROE":"BLOQUEADO",left+12,110+cardH-54,cardW-24,42,()=>OpenHero(hero.Id),hero.Unlocked);
             }
+        }
+        void BuildReservedTalents(float x,float y,float w,float h,bool portrait)
+        {
+            // These are the three reserved visual paths in the exact approved
+            // master. No talent data, level, price or bonus exists in the host.
+            // All nodes remain disabled and create no command or save state.
+            var board=Frame("Heroes / reserved talent paths",content,x,y,w,h);
+            float gap=portrait?12f:18f,trackW=(w-32-2*gap)/3f;
+            float noteH=portrait?120f:90f,trackH=h-noteH-28;
+            string[] titles={"OFENSIVA","DEFENSA","SOPORTE"};
+            Color[] accents={new Color(.76f,.24f,.12f),new Color(.17f,.51f,.90f),gold};
+            for(int path=0;path<3;path++){
+                float left=16+path*(trackW+gap);
+                var track=Frame("Reserved talent path "+titles[path],board,left,14,trackW,trackH);
+                track.GetComponent<Image>().color=accents[path];
+                Label("Reserved path name",track,titles[path],6,14,trackW-12,56,26,TextAnchor.MiddleCenter).color=ivory;
+                float nodeSize=Mathf.Min(76f,trackW*.55f,Mathf.Max(28f,(trackH-110f)/3.4f));
+                float start=80f;
+                float step=Mathf.Max(0f,(trackH-start-nodeSize-18f)/2f);
+                float center=trackW*.5f;
+                Surface("Path connection",track,center-1.5f,start+nodeSize*.5f,3,2*step,accents[path]).GetComponent<Image>().raycastTarget=false;
+                for(int rank=0;rank<3;rank++){
+                    float nodeY=start+rank*step;
+                    var node=Frame("Reserved talent node "+path+"-"+rank,track,center-nodeSize*.5f,nodeY,nodeSize,nodeSize);
+                    node.GetComponent<Image>().color=accents[path];
+                    var locked=node.gameObject.AddComponent<Button>();locked.interactable=false;
+                    // Native uGUI lock geometry, not a baked mock level or icon
+                    // claiming an implemented talent.
+                    float lockW=nodeSize*.42f,lockH=nodeSize*.36f,lockX=(nodeSize-lockW)*.5f;
+                    var lockColor=new Color(.58f,.57f,.54f);
+                    Surface("Lock body",node,lockX,nodeSize*.46f,lockW,lockH,lockColor).GetComponent<Image>().raycastTarget=false;
+                    Surface("Lock shackle top",node,lockX+lockW*.18f,nodeSize*.25f,lockW*.64f,nodeSize*.08f,lockColor).GetComponent<Image>().raycastTarget=false;
+                    Surface("Lock shackle left",node,lockX+lockW*.18f,nodeSize*.27f,lockW*.15f,nodeSize*.22f,lockColor).GetComponent<Image>().raycastTarget=false;
+                    Surface("Lock shackle right",node,lockX+lockW*.67f,nodeSize*.27f,lockW*.15f,nodeSize*.22f,lockColor).GetComponent<Image>().raycastTarget=false;
+                }
+            }
+            Label("Reserved talent availability",board,"TALENTOS BLOQUEADOS\nAún no disponibles en esta etapa del reino.",
+                18,h-noteH,w-36,noteH-12,26,TextAnchor.MiddleCenter);
         }
         void BuildInformation(RectTransform pane,HeroState hero,float w,float h)
         {

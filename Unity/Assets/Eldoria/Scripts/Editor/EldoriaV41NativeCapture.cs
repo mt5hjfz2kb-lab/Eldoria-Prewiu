@@ -245,6 +245,17 @@ namespace Eldoria.Editor
                 Eldoria.HeroesUI.HeroesApprovedDestination.Page.Equipamiento})
             {
                 heroes.Select(page);yield return null;
+                if(page==Eldoria.HeroesUI.HeroesApprovedDestination.Page.Talentos)
+                {
+                    var paths=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                        .First(t=>t.name=="Heroes / reserved talent paths");
+                    var nodes=paths.GetComponentsInChildren<Button>(true);
+                    Need(nodes.Length==9&&nodes.All(b=>!b.interactable),
+                        "All nine reserved talent nodes remain disabled without invented gameplay");
+                    Need(paths.GetComponentsInChildren<RectTransform>()
+                        .Count(t=>t.name.StartsWith("Reserved talent path "))==3,
+                        "Talents retain the three approved reserved visual paths");
+                }
                 Shot(host,"heroes-aldric-"+page+"-landscape",1600,900);
                 Shot(host,"heroes-aldric-"+page+"-phone",900,1600);
             }
