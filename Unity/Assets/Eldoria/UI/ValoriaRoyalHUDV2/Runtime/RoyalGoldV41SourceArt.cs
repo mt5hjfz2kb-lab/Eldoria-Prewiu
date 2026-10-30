@@ -15,7 +15,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(id!="lyra")return null;
             const string key="approved-lyra-portrait";
             if(sprites.TryGetValue(key,out var cached))return cached;
-            var source=Resources.Load<Texture2D>("HeroesApprovedMaster");
+            var source=Resources.Load<Texture2D>("EldoriaV41/HeroesApprovedMaster");
             if(source==null || source.width!=1536 || source.height!=1024)return null;
             // Exact, text-free face from the owner's six-screen master.
             // No mockup number, skill label or silhouette is rendered as live UI.

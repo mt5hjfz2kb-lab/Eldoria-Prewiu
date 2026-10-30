@@ -11,7 +11,7 @@ namespace Eldoria.HeroesUI
     {
         RenderTexture texture;
         GameObject previous;
-        float yaw=180, renderedYaw;
+        float yaw=90, renderedYaw;
         public bool HasModel => texture && previous;
         public void Rotate(float degrees){yaw=Mathf.Repeat(yaw+degrees,360);}
         public bool Show(GameObject model,RawImage target)

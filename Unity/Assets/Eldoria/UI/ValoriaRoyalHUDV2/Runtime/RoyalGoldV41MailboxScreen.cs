@@ -20,6 +20,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public bool IsOpen=>window!=null&&window.gameObject.activeSelf;
         public Button EntryButton=>entry?entry.GetComponent<Button>():null;
         public int UnreadCount=>gateway?.Snapshot()?.Mailbox?.Unread()??0;
+        public Func<bool> CanShowEntry { get; set; }
         RoyalHUD hud;ICommandGateway gateway;
         RectTransform window,entry;
         RoyalText entryLabel,title,detail,navLabel,resources;
@@ -44,6 +45,22 @@ namespace Eldoria.UI.RoyalGold.V2
             hud=owner;gateway=authority;
             if(hud!=null && gateway!=null)Ensure();
             Refresh();
+        }
+        void OnEnable(){Canvas.willRenderCanvases+=BeforeCanvasRender;}
+        void OnDisable(){Canvas.willRenderCanvases-=BeforeCanvasRender;}
+        void BeforeCanvasRender()
+        {
+            if(!window||!hud)return;
+            if(Mathf.Abs(window.rect.width-lastWidth)>.5f||Mathf.Abs(window.rect.height-lastHeight)>.5f)Layout();
+            RefreshEntryVisibility();
+        }
+        void RefreshEntryVisibility()
+        {
+            if(!entry||!hud)return;
+            entry.gameObject.SetActive(!IsOpen&&!hud.NarrativeOpen&&
+                !(hud.Modal!=null&&hud.Modal.gameObject.activeSelf)&&
+                !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false)&&
+                (CanShowEntry==null||CanShowEntry())&&string.IsNullOrEmpty(hud.SelectedBuildingId));
         }
         public void Open()
         {
@@ -252,10 +269,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(hud==null||gateway==null)return;
             if(window==null)Ensure();
             var s=gateway.Snapshot();var mail=s.Mailbox;
-            entry.gameObject.SetActive(!IsOpen&&!hud.NarrativeOpen&&
-                !(hud.Modal!=null&&hud.Modal.gameObject.activeSelf)&&
-                !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false)&&
-                string.IsNullOrEmpty(hud.SelectedBuildingId));
+            RefreshEntryVisibility();
             resources.Put("Madera "+s.Resources.Wood+"  ·  Piedra "+s.Resources.Stone+"  ·  Comida "+s.Resources.Food);
             if(entryLabel!=null)entryLabel.Put("CORREO"+(mail?.Unread()>0?" ("+mail.Unread()+")":""));
             if(!IsOpen)return;

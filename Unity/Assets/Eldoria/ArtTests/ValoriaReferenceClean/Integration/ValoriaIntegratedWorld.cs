@@ -162,7 +162,9 @@ namespace Eldoria.ReferenceClean {
     var roaming=Object.FindFirstObjectByType<Eldoria.AldricCity.AldricCityRoaming>();
     return roaming?roaming.ApprovedModelRoot:null;
    };
-   management.HeroesRequested=()=>heroes.Open();
+   var mailbox=Hud.GetComponent<RoyalGoldV41MailboxScreen>();
+   if(mailbox)mailbox.CanShowEntry=()=>!heroes.IsOpen;
+   management.HeroesRequested=()=>{heroes.Open();if(mailbox)mailbox.Refresh();};
    heroes.Closed=()=>management.Open(management.CurrentDestination);
    Hud.NarrativeOpening-=SuspendHeroDestination;Hud.NarrativeOpening+=SuspendHeroDestination;
   }
