@@ -37,8 +37,11 @@ namespace Eldoria.UI.RoyalGold.V2
         private string lastProbeMismatch = "";
         private static readonly string[] TimedTargets =
         {
-            "sawmill", "barracks", "bastion", "forest-valoria",
-            "quarry-valoria", "corrupt-scout", "engendro-valoria"
+            // Every buildable city upgrade, including the III–V expansions,
+            // retains an anchored timer in the city, not a new screen.
+            "sawmill", "barracks", "upgrade-barracks", "granary",
+            "stoneworks", "bastion", "forest-valoria", "quarry-valoria",
+            "corrupt-scout", "engendro-valoria"
         };
         private static readonly Color Ivory = new Color(.95f, .925f, .865f);
         private static readonly Color Gold = new Color(.89f, .73f, .46f);
