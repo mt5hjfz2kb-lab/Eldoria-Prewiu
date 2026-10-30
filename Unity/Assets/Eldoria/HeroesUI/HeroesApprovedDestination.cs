@@ -221,6 +221,7 @@ namespace Eldoria.HeroesUI
         }
         void BuildSalon(float w,float h)
         {
+            DrawApprovedSalonEnvironment(w,h);
             Label("Heroes hall title",content,"SALÓN DE HÉROES",74,12,w-148,52,30,TextAnchor.MiddleCenter).color=gold;
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();int count=Math.Max(1,heroes.Length);
             float gap=16,cardW=Mathf.Min(330,(w-40-gap*(count-1))/count),cardH=Mathf.Min(520,h-190);
