@@ -113,7 +113,8 @@ namespace Eldoria.HeroesUI
             if(w<200||h<200)return;
             if(CurrentPage==Page.Salon)DrawApprovedSalonEnvironment(w,h);
             bool portrait=h>w;float margin=20;
-            Surface("Top antique gold rule",content,margin,82,w-2*margin,1,gold).GetComponent<Image>().raycastTarget=false;
+            if(CurrentPage!=Page.Salon)
+                Surface("Top antique gold rule",content,margin,82,w-2*margin,1,gold).GetComponent<Image>().raycastTarget=false;
             Button("Close heroes","×",w-68,14,48,48,Close);
             if(CurrentPage==Page.Salon){BuildSalon(w,h);return;}
             var selected=CurrentAuthoritativeHero();
@@ -220,82 +221,104 @@ namespace Eldoria.HeroesUI
             Surface("Hall footer gold line",content,16,h-79,w-32,2,gold)
                 .GetComponent<Image>().raycastTarget=false;
         }
+        Sprite futureSlotArt;
         void BuildSalon(float w,float h)
         {
-            // Match the owner's v14 hierarchy: illuminated hall first,
-            // live heading and instructions second, then real hero cards.
+            // The owner's six-slot v14 salon composition is visual only:
+            // slots beyond the real host roster have NO data, actions or unlock.
+            // Do not present any fictional hero or mutate progression state.
             float sceneryH=Mathf.Min(210f,h*.28f);
             Label("Heroes hall title",content,"SALÓN DE HÉROES",26,18,w*.61f,48,30,
                 TextAnchor.MiddleLeft).color=gold;
             Label("Heroes hall introduction",content,
                 "Aquí residen los héroes de Valoria.\nReclútalos, fortalécelos y lidera con ellos.",
-                27,71,w*.60f,Mathf.Max(42f,sceneryH-84f),18,
+                27,71,w*.60f,Mathf.Max(40f,sceneryH-82f),18,
                 TextAnchor.UpperLeft);
-
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
-            int count=heroes.Length;
-            bool compact=h<470f;
-            float gap=Mathf.Clamp(w*.018f,8f,18f);
+            bool showFutureSlots=h>=760f;
+            int displayCount=showFutureSlots?Math.Max(6,heroes.Length):heroes.Length;
+            int columns=showFutureSlots?(w>=760f?3:2):Mathf.Clamp(displayCount,1,3);
+            int rows=Mathf.Max(1,Mathf.CeilToInt(displayCount/(float)columns));
+            float gap=Mathf.Clamp(w*.016f,8f,16f);
             float cardTop=sceneryH+12f;
-            float cardH=Mathf.Max(152f,Mathf.Min(540f,h-cardTop-86f));
-            int columns=Mathf.Clamp(count,1,compact?3:2);
-            float cardW=Mathf.Min(330f,(w-40f-gap*(columns-1))/columns);
-            float rowGap=12f;
-            for(int i=0;i<count;i++)
+            float spaceH=h-cardTop-85f;
+            float cardH=Mathf.Min(650f,Mathf.Max(105f,(spaceH-gap*(rows-1))/rows));
+            float cardW=Mathf.Min(340f,(w-40f-gap*(columns-1))/columns);
+            bool compact=cardH<300f;
+            if(!futureSlotArt && showFutureSlots)
             {
-                var hero=heroes[i];
+                var source=Resources.Load<Texture2D>("EldoriaV41/hero-locked");
+                if(source)futureSlotArt=Sprite.Create(source,new Rect(0,0,source.width,source.height),
+                    new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
+            }
+            for(int i=0;i<displayCount;i++)
+            {
                 int col=i%columns,row=i/columns;
                 float left=(w-(cardW*columns+gap*(columns-1)))*.5f+col*(cardW+gap);
-                float top=cardTop+row*(cardH+rowGap);
-                var card=Frame("Hero card "+hero.Id,content,left,top,cardW,cardH);
-                // Reuse the editable, gradient Royal Gold panel from the
-                // owner-approved v14 integration package; keep live hit targets.
+                float top=cardTop+row*(cardH+gap);
+                bool real=i<heroes.Length;
+                var card=Frame(real?"Hero card "+heroes[i].Id:"Reserved future hero slot "+(i-heroes.Length),
+                    content,left,top,cardW,cardH);
                 var ornament=Rect("Royal Gold card / v14 geometry",card);
                 Place(ornament,0,0,cardW,cardH);
                 ornament.gameObject.AddComponent<HeroesGoldFrameGraphic>().raycastTarget=false;
-                Label("Hero card name",card,hero.DisplayName,10,12,cardW-20,
-                    compact?31:42,compact?21:25,TextAnchor.MiddleCenter).color=gold;
+                string title=real?heroes[i].DisplayName:"POR DESCUBRIR";
+                Label("Hero card name",card,title,10,12,cardW-20,
+                    compact?31:42,compact?19:25,TextAnchor.MiddleCenter)
+                    .color=real?gold:new Color(.57f,.53f,.44f);
+                Sprite portrait=real?heroes[i].Portrait:futureSlotArt;
+                bool unlocked=real&&heroes[i].Unlocked;
                 if(compact)
                 {
                     float portraitW=cardW*.43f;
-                    float portraitH=Mathf.Max(36,cardH-99f);
-                    if(hero.Portrait)
+                    float portraitH=Mathf.Max(30,cardH-96f);
+                    if(portrait)
                     {
-                        var img=Rect("Verified portrait",card).gameObject.AddComponent<Image>();
-                        Place(img.rectTransform,9,46,portraitW,portraitH);
-                        img.sprite=hero.Portrait;img.preserveAspect=true;
-                        img.color=hero.Unlocked?Color.white:new Color(.38f,.38f,.40f);
-                        img.raycastTarget=false;
+                        var image=Rect(real?"Verified portrait":"Reserved silhouette",card)
+                            .gameObject.AddComponent<Image>();
+                        Place(image.rectTransform,8,43,portraitW,portraitH);
+                        image.sprite=portrait;image.preserveAspect=true;image.raycastTarget=false;
+                        image.color=unlocked?Color.white:new Color(.42f,.42f,.44f,.76f);
                     }
                     Label("Hero card state",card,
-                        hero.Unlocked?hero.Role+"\nNIVEL "+hero.Level+"\nPODER "+hero.HeroPower:
-                        "Se incorpora\n durante la historia",
-                        portraitW+12,52,cardW-portraitW-22,Mathf.Max(45,cardH-102),
+                        real?(unlocked?heroes[i].Role+"\nNIVEL "+heroes[i].Level+
+                            "\nPODER "+heroes[i].HeroPower:"Bloqueado por la historia"):
+                            "Aún no\n disponible",
+                        portraitW+10,47,cardW-portraitW-17,Mathf.Max(35,cardH-92),
                         15,TextAnchor.MiddleCenter);
                 }
                 else
                 {
-                    float portraitH=Mathf.Max(75,cardH-195);
-                    if(hero.Portrait)
+                    float portraitH=Mathf.Max(80,cardH-193f);
+                    if(portrait)
                     {
-                        var img=Rect("Verified portrait",card).gameObject.AddComponent<Image>();
-                        Place(img.rectTransform,12,60,cardW-24,portraitH);
-                        img.sprite=hero.Portrait;img.preserveAspect=true;
-                        img.color=hero.Unlocked?Color.white:new Color(.38f,.38f,.40f);
-                        img.raycastTarget=false;
+                        var image=Rect(real?"Verified portrait":"Reserved silhouette",card)
+                            .gameObject.AddComponent<Image>();
+                        Place(image.rectTransform,12,60,cardW-24,portraitH);
+                        image.sprite=portrait;image.preserveAspect=true;image.raycastTarget=false;
+                        image.color=unlocked?Color.white:new Color(.42f,.42f,.44f,.76f);
                     }
                     Label("Hero card state",card,
-                        hero.Unlocked?hero.Role+"\nNIVEL "+hero.Level+" · PODER "+hero.HeroPower:
-                        "Se incorpora durante la historia",
+                        real?(unlocked?heroes[i].Role+"\nNIVEL "+heroes[i].Level+
+                            " · PODER "+heroes[i].HeroPower:"Se incorpora durante la historia"):
+                            "HUECO RESERVADO\nSin héroe reclutado",
                         12,cardH-131,cardW-24,63,18,TextAnchor.MiddleCenter);
                 }
-                Button("Select hero "+hero.Id,hero.Unlocked?"VER HÉROE":"BLOQUEADO",
-                    left+9,top+cardH-53,cardW-18,42,
-                    ()=>OpenHero(hero.Id),hero.Unlocked);
+                if(real)
+                {
+                    int index=i;var hero=heroes[index];
+                    Button("Select hero "+hero.Id,hero.Unlocked?"VER HÉROE":"BLOQUEADO",
+                        left+9,top+cardH-53,cardW-18,42,
+                        ()=>OpenHero(hero.Id),hero.Unlocked);
+                }
+                else
+                    Label("Non-interactive future slot",card,"NO DISPONIBLE",
+                        8,cardH-53,cardW-16,42,compact?14:18,
+                        TextAnchor.MiddleCenter).color=new Color(.57f,.53f,.44f);
             }
-            int unlocked=0;foreach(var hero in heroes)if(hero.Unlocked)unlocked++;
+            int unlockedCount=0;foreach(var hero in heroes)if(hero.Unlocked)unlockedCount++;
             Label("Authoritative hall population",content,
-                unlocked+" / "+heroes.Length+" HÉROES DISPONIBLES",20,h-72,w-40,38,
+                unlockedCount+" / "+heroes.Length+" HÉROES DISPONIBLES",20,h-72,w-40,38,
                 16,TextAnchor.MiddleCenter).color=gold;
         }
         void BuildReservedTalents(float x,float y,float w,float h,bool portrait)
