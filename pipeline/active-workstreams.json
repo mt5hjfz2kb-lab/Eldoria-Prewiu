@@ -1836,7 +1836,7 @@
         "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
         "rig_joint_count": 12,
         "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
-        "skin_weights_sum_max_error": 1.1920929e-07,
+        "skin_weights_sum_max_error": 1.1920929e-7,
         "static_retained": true,
         "art_approved": false,
         "isolated_unity_import_tested": false,
@@ -2562,8 +2562,8 @@
     {
       "id": "eldoria-art-memory-continuity-hardening-20261024",
       "title": "Corregir PR104 para respetar retirada de Qwen",
-      "owner": "codex-final-consolidation-41862564eebb",
-      "branch": "chore/knowledge-continuity-safe-20261024",
+      "owner": null,
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-30",
       "base_main_sha": "06178d05199b2c970a17f18ef857407360bca793",
@@ -2584,19 +2584,30 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Zero-cost governance and memory tooling consolidation; no art generation, no paid services, no Unity runner.",
-      "phase": "CONSOLIDATE_PR101_PR104",
-      "next": "Reconcile existing PR101 and PR104 with current main; verify model-neutral authoring without weakening provenance, visual review or historical evidence.",
+      "phase": "PR101_PR104_MERGED_VERIFIED",
+      "next": "Consolidation merged; retain model-neutral rules, rejection lessons, exact-head checks and historical evidence.",
       "budget_eur": 0,
       "delivery_definition": {
         "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
         "evidence": "Node unit tests and architecture CI exact head",
         "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
       },
-      "ownership_revision": 5,
+      "ownership_revision": 6,
       "resume_context": {
         "prior_delivered_pr": 104,
         "prior_state": "completed_in_branch",
         "source_pr": 103
+      },
+      "ownership_state": "available",
+      "write_scope_released": true,
+      "last_verified": {
+        "merge": "e41600058014f910852dfa3ffa8fd17669e03908",
+        "source": "408042637604e06ecae4551f1586d36cd95e8fc1",
+        "local_tests": "77/77",
+        "architecture_run": 41075075508,
+        "tester_run": 41075075660,
+        "visual_authority_run": 41075075523,
+        "art_approved": false
       }
     },
     {
@@ -2628,7 +2639,7 @@
       "title": "PR135: reconstruct approved interactive hero screens",
       "owner": "codex-final-consolidation-41862564eebb",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "status": "active",
       "branch": "feature/heroes-approved-ui-integration-20261030",
       "pr": 135,
@@ -2637,13 +2648,14 @@
       "scope": [
         "Unity/Assets/Eldoria/HeroesUI/**",
         "Unity/Assets/Eldoria/HeroesUI.meta",
-        "docs/heroes-ui/**"
+        "docs/heroes-ui/**",
+        "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
       "phase": "REBUILD_REAL_COMPONENTS_FROM_APPROVED_SIX_SCREENS",
-      "next": "Replace flat reference placeholder with functional controls; integrate canonical data and existing model under primary workstream after its native certificate.",
+      "next": "Combined PR136 binds canonical state and loaded Aldric geometry; native six-screen proof required.",
       "budget_eur": 0
     }
   ],
@@ -4395,7 +4407,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -4406,7 +4418,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
