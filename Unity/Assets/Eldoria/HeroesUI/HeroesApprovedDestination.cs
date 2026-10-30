@@ -111,6 +111,7 @@ namespace Eldoria.HeroesUI
             content.offsetMin=content.offsetMax=Vector2.zero;
             float w=root.rect.width,h=root.rect.height;observedWidth=w;observedHeight=h;
             if(w<200||h<200)return;
+            if(CurrentPage==Page.Salon)DrawApprovedSalonEnvironment(w,h);
             bool portrait=h>w;float margin=20;
             Surface("Top antique gold rule",content,margin,82,w-2*margin,1,gold).GetComponent<Image>().raycastTarget=false;
             Button("Close heroes","×",w-68,14,48,48,Close);
@@ -221,7 +222,6 @@ namespace Eldoria.HeroesUI
         }
         void BuildSalon(float w,float h)
         {
-            DrawApprovedSalonEnvironment(w,h);
             Label("Heroes hall title",content,"SALÓN DE HÉROES",74,12,w-148,52,30,TextAnchor.MiddleCenter).color=gold;
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();int count=Math.Max(1,heroes.Length);
             float gap=16,cardW=Mathf.Min(330,(w-40-gap*(count-1))/count),cardH=Mathf.Min(520,h-190);
