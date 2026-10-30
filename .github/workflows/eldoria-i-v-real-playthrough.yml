@@ -83,7 +83,7 @@ jobs:
           VALORIA_WEB_LOAD_TIMEOUT_SECONDS: "180"
           VALORIA_SOURCE_SHA: c8580934201ae1e17543b8683749d40751fb1e12
           VALORIA_WEB_ROOT: prepared-site/dist
-          VALORIA_PLAYTEST_OUT: eldoria-i-v-genuine-player-evidence
+          VALORIA_PLAYTEST_OUT: eldoria-i-v-genuine-player-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           VALORIA_CHROMIUM_EXECUTABLE: 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe'
         run: |
           node --check tools/valoria-reference-clean/playtest_web.cjs
@@ -94,6 +94,6 @@ jobs:
         if: always()
         with:
           name: eldoria-i-v-real-player-evidence-${{ github.run_id }}
-          path: eldoria-i-v-genuine-player-evidence/**
+          path: eldoria-i-v-genuine-player-evidence-${{ github.run_id }}-${{ github.run_attempt }}/**
           if-no-files-found: warn
           retention-days: 30
