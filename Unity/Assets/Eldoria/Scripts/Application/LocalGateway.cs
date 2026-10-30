@@ -206,6 +206,21 @@ namespace Eldoria.Application
                 throw new InvalidOperationException("Invalid persistent march slots");
             if(state.Retention==null)state.Retention=new EarlyRetentionState();
             if(state.Retention.Orders==null)state.Retention.Orders=new System.Collections.Generic.List<ScoutOrder>();
+            if(state.Mailbox==null)state.Mailbox=new EldoriaV41Mailbox();
+            if(state.Mailbox.Messages==null)state.Mailbox.Messages=new System.Collections.Generic.List<EldoriaV41Message>();
+            if(state.Mailbox.ReceivedEventIds==null)state.Mailbox.ReceivedEventIds=new System.Collections.Generic.List<string>();
+            if(state.PreparedHeroIds==null || state.PreparedHeroIds.Count!=3)
+            {
+                state.PreparedHeroIds=new System.Collections.Generic.List<string>{
+                    state.PreparedHeroId=="lyra"?"lyra":"aldric",
+                    state.PreparedHeroId=="aldric+lyra"?"lyra":null,null
+                };
+            }
+            if(state.March!=null && state.March.HeroIds==null)
+                state.March.HeroIds=new System.Collections.Generic.List<string>();
+            if(state.ExtraMarches!=null)
+                foreach(var m in state.ExtraMarches)if(m!=null && m.HeroIds==null)
+                    m.HeroIds=new System.Collections.Generic.List<string>();
             if(state.ChapterThree==null)state.ChapterThree=new BastionThreeState();
             if(state.ChapterThree.Inventory==null)state.ChapterThree.Inventory=new System.Collections.Generic.List<string>();
             if(state.ChapterThree.FissureClosed){state.ChapterThree.LyraRecruited=true;state.ChapterThree.InvestigationEndsUtcTicks=0;}
@@ -256,10 +271,13 @@ namespace Eldoria.Application
                 JourneyComplete=s.JourneyComplete, EngendroDefeated=s.EngendroDefeated,
                 Available=s.Available.Copy(), Wounded=s.Wounded.Copy(),
                 MarchConfigured=s.MarchConfigured, PreparedHeroId=s.PreparedHeroId,
+                PreparedHeroIds=new System.Collections.Generic.List<string>(s.PreparedHeroIds??new System.Collections.Generic.List<string>()),
                 PreparedTroops=s.PreparedTroops.Copy(),
+                Mailbox=s.Mailbox?.Copy()??new EldoriaV41Mailbox(),
                 ExtraMarches=s.ExtraMarches.ConvertAll(x=>x.Copy()),
                 March=new MarchState { MarchId=s.March.MarchId, OwnerId=s.March.OwnerId,
                     TargetId=s.March.TargetId, HeroId=s.March.HeroId, Troops=s.March.Troops.Copy(),
+                    HeroIds=new System.Collections.Generic.List<string>(s.March.HeroIds??new System.Collections.Generic.List<string>()),
                     Route=s.March.Route?.ConvertAll(x=>x.Copy())??new System.Collections.Generic.List<WorldRoutePoint>(),
                     Phase=s.March.Phase, PhaseEndsUtcTicks=s.March.PhaseEndsUtcTicks,
                     PendingFood=s.March.PendingFood, PendingWood=s.March.PendingWood, PendingStone=s.March.PendingStone },
@@ -349,14 +367,39 @@ namespace Eldoria.Application
                     if (state.BastionLevel < 2 || state.BarracksLevel < 1)
                         return Fail("Marcha no disponible");
                     if(!MarchCapacityRules.CanStart(state,clock.UtcTicks))return Fail("Ya hay tres marchas activas");
-                    // Legacy command plus explicit three-tier composition, all checked
-                    // atomically against troops still at home and the selected hero cap.
+                    // Legacy command plus explicit three-tier composition and optional
+                    // three hero slots, validated atomically against the current unlocks.
                     var parts=(command.TargetId??"").Split(':');
-                    if(parts[0]!="march-main" || (parts.Length!=1&&parts.Length!=2&&parts.Length!=3&&parts.Length!=5))
+                    if(parts[0]!="march-main" || (parts.Length!=1&&parts.Length!=2&&parts.Length!=3&&parts.Length!=5&&parts.Length!=7))
                         return Fail("Composición desconocida");
-                    string marchHero=parts.Length==3?parts[2]:parts.Length==5?parts[4]:"aldric";
-                    if(marchHero!="aldric" && (state.BastionLevel<3 || !state.ChapterThree.LyraRecruited || (marchHero!="lyra" && marchHero!="aldric+lyra")))
-                        return Fail("Héroe no disponible");
+                    string marchHero=parts.Length==3?parts[2]:parts.Length>=5?parts[4]:"aldric";
+                    var heroSlots=new System.Collections.Generic.List<string>();
+                    if(parts.Length==7)
+                    {
+                        heroSlots.Add(parts[4]);
+                        heroSlots.Add(string.IsNullOrEmpty(parts[5])?null:parts[5]);
+                        heroSlots.Add(string.IsNullOrEmpty(parts[6])?null:parts[6]);
+                        var unlocked=new System.Collections.Generic.List<string>{"aldric"};
+                        if(state.BastionLevel>=3 && state.ChapterThree.LyraRecruited)unlocked.Add("lyra");
+                        var checkedSlots=new string[3];
+                        try
+                        {
+                            for(int i=0;i<3;i++)
+                                checkedSlots=EldoriaV41Planning.SelectHero(checkedSlots,i,heroSlots[i],unlocked);
+                        }
+                        catch(ArgumentException){return Fail("Héroe no disponible o duplicado");}
+                        marchHero=checkedSlots[1]!=null?"aldric+lyra":checkedSlots[0];
+                        // Two heroes (Aldric+Lyra) are supported today; third is visually reserved,
+                        // never used for future story characters without an approved combat contract.
+                    }
+                    else
+                    {
+                        if(marchHero!="aldric" && (state.BastionLevel<3 || !state.ChapterThree.LyraRecruited || (marchHero!="lyra" && marchHero!="aldric+lyra")))
+                            return Fail("Héroe no disponible");
+                        heroSlots=new System.Collections.Generic.List<string>{
+                            marchHero=="lyra"?"lyra":"aldric",
+                            marchHero=="aldric+lyra"?"lyra":null,null};
+                    }
                     var nextTroops=MarchCapacityRules.AutoSelect(state.Available,
                         MarchCapacityRules.Capacity(state,marchHero));
                     if(parts.Length>1)
@@ -364,13 +407,14 @@ namespace Eldoria.Application
                         if(!int.TryParse(parts[1],out nextTroops.ArcherT1))return Fail("Composición desconocida");
                         nextTroops.ArcherT2=0;nextTroops.ArcherT3=0;
                     }
-                    if(parts.Length==5 &&
+                    if(parts.Length>=5 &&
                         (!int.TryParse(parts[2],out nextTroops.ArcherT2)||
                          !int.TryParse(parts[3],out nextTroops.ArcherT3)))
                         return Fail("Composición desconocida");
                     if(!MarchCapacityRules.Fits(nextTroops,state.Available,MarchCapacityRules.Capacity(state,marchHero)))
                         return Fail("La marcha supera la capacidad del héroe o no tiene tropas disponibles");
                     state.PreparedHeroId=marchHero;
+                    state.PreparedHeroIds=heroSlots;
                     state.PreparedTroops=nextTroops;
                     state.MarchConfigured = true;
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
@@ -546,6 +590,9 @@ namespace Eldoria.Application
             m.Route=planned;
             m.Troops=troops;
             m.HeroId=hero;
+            m.HeroIds=usePrepared?new System.Collections.Generic.List<string>(
+                state.PreparedHeroIds??new System.Collections.Generic.List<string>()):
+                new System.Collections.Generic.List<string>{"aldric",null,null};
             MarchCapacityRules.Reserve(state,troops);
             m.TargetId = targetId; m.Phase = "outbound";
             m.PendingFood = m.PendingWood = m.PendingStone = 0;
@@ -669,6 +716,14 @@ namespace Eldoria.Application
                             RewardStone = rewardStone,
                             Reason = report.Reason
                         };
+                        state.Mailbox.Receive(new EldoriaV41Message {
+                            EventId="battle:"+m.MarchId+":"+m.TargetId+":"+due,
+                            Category="informes",Type="battle",
+                            Title=report.Won?"Victoria en batalla":"Derrota en batalla",
+                            Subtitle="Informe de "+m.TargetId,
+                            ReportId="battle:"+m.MarchId+":"+m.TargetId+":"+due,
+                            OccurredAtUtcTicks=due
+                        });
                         m.Phase = "returning"; m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
                     }
                 }
