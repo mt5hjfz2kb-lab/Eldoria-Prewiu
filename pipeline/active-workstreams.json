@@ -2564,7 +2564,7 @@
       "title": "Corregir PR104 para respetar retirada de Qwen",
       "owner": "codex-final-consolidation-41862564eebb",
       "branch": "chore/knowledge-continuity-safe-20261024",
-      "status": "claimed",
+      "status": "active",
       "claimed_at": "2026-10-30",
       "base_main_sha": "06178d05199b2c970a17f18ef857407360bca793",
       "scope": [
@@ -2577,7 +2577,8 @@
         "tools/plan-art-production.mjs",
         ".github/workflows/repository-architecture-guard.yml",
         "docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md",
-        "docs/documentation-catalog.json"
+        "docs/documentation-catalog.json",
+        ".github/workflows/tester-qa.yml"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
