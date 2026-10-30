@@ -38,3 +38,5 @@ jobs:
         run: dotnet run --configuration Release --project tools/bastion-iii/DomainProbe.csproj
       - name: Preserve Bastion IV V costs, rewards, upgrades and save parity
         run: dotnet run --configuration Release --project tools/bastion-iv-v/DomainProbe.csproj
+      - name: Traverse Bastions I V continuously from a fresh save without seeded progression
+        run: dotnet run --configuration Release --project tools/eldoria-v41/ContinuousJourney.csproj
