@@ -760,6 +760,13 @@ namespace Eldoria.Application
                         state.Resources.Food += m.PendingFood;
                         state.Resources.Wood += m.PendingWood;
                         state.Resources.Stone += m.PendingStone;
+                        if(m.PendingFood>0 || m.PendingWood>0 || m.PendingStone>0)
+                            state.Mailbox.Receive(new EldoriaV41Message {
+                                EventId=id,Category="recompensas",Type="march",
+                                Title="Marcha completada",
+                                Subtitle="Recursos regresados al reino",
+                                RewardReceiptId=id,OccurredAtUtcTicks=due
+                            });
                         if (IsWoodTarget(m.TargetId) && m.PendingWood > 0)
                         {
                             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
