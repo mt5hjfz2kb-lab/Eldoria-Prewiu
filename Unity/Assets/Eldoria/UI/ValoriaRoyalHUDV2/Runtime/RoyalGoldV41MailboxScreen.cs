@@ -21,7 +21,9 @@ namespace Eldoria.UI.RoyalGold.V2
         public int UnreadCount=>gateway?.Snapshot()?.Mailbox?.Unread()??0;
         RoyalHUD hud;ICommandGateway gateway;
         RectTransform window,entry;
-        RoyalText entryLabel,title,detail,navLabel;
+        RoyalText entryLabel,title,detail,navLabel,resources;
+        readonly List<Image> messageIcons=new List<Image>();
+        readonly List<RoyalText> messageSubtitles=new List<RoyalText>();
         readonly List<RoyalText> tabLabels=new List<RoyalText>();
         readonly List<RoyalText> messageLabels=new List<RoyalText>();
         readonly List<Button> messageButtons=new List<Button>();
@@ -75,7 +77,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var r=Node(name,parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var t=r.gameObject.AddComponent<RoyalText>();
-            t.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            t.font=RoyalGoldV41SourceArt.Serif;
             t.fontSize=fontSize;t.fontStyle=strong?FontStyle.Bold:FontStyle.Normal;
             t.color=Ivory;t.alignment=TextAnchor.MiddleLeft;
             t.horizontalOverflow=HorizontalWrapMode.Wrap;
@@ -118,18 +120,29 @@ namespace Eldoria.UI.RoyalGold.V2
             w.gameObject.AddComponent<CanvasRenderer>();
             var bg=w.gameObject.AddComponent<Image>();bg.color=Night;bg.raycastTarget=true;
             title=Label("Buzón heading",w,29,true);title.Put("BUZÓN");
-            MakeButton("Volver",w,"VOLVER",Close,out _);
+            resources=Label("Recursos actuales",w,16);
+            MakeButton("Volver",w,"VOLVER",()=>{if(selectedId!=null){selectedId=null;Refresh();}else Close();},out _);
             for(int i=0;i<4;i++)
             {
                 string key=categories[i];
                 var button=MakeButton("Buzón "+key,w,key.ToUpperInvariant(),()=>SetCategory(key),out var text);
                 tabLabels.Add(text);
+                button.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
+                var surface=RoyalGoldV41SourceArt.Surface((RectTransform)button.transform,"tab-idle",16);
+                surface.raycastTarget=true;button.targetGraphic=surface;
             }
-            for(int i=0;i<6;i++)
+            for(int i=0;i<5;i++)
             {
                 int slot=i;
                 var button=MakeButton("Buzón / mensaje "+i,w,"",()=>SelectRow(slot),out var label);
                 messageButtons.Add(button);messageLabels.Add(label);
+                button.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
+                var surface=RoyalGoldV41SourceArt.Surface((RectTransform)button.transform,"mail-card",20);
+                surface.raycastTarget=true;button.targetGraphic=surface;
+                label.color=new Color(.08f,.07f,.05f);label.alignment=TextAnchor.MiddleLeft;
+                messageSubtitles.Add(Label("Mensaje resumen "+i,button.transform,17));
+                var icon=Node("Icono de mensaje "+i,button.transform).gameObject.AddComponent<Image>();
+                icon.raycastTarget=false;icon.preserveAspect=true;messageIcons.Add(icon);
             }
             MakeButton("Página anterior",w,"<",()=>Page(-1),out _);
             MakeButton("Página siguiente",w,">",()=>Page(1),out _);
@@ -140,59 +153,69 @@ namespace Eldoria.UI.RoyalGold.V2
             w.gameObject.SetActive(false);
             Layout();
         }
+        public void SynchronizeLayout(){if(window!=null){Canvas.ForceUpdateCanvases();Layout();Refresh();}}
         void Layout()
         {
             if(window==null)return;
-            float w=window.rect.width,h=window.rect.height;
-            if(w<=0||h<=0)return;
+            float w=window.rect.width,h=window.rect.height;if(w<=0||h<=0)return;
             lastWidth=w;lastHeight=h;
-            bool wide=w>=h;float pad=Mathf.Max(14,w*.035f);
-            // Safe area must be applied on the existing HUD; no additional Canvas.
-            float canvasScale=hud.GetComponentInParent<Canvas>()?.scaleFactor??1f;
-            Rect area=Screen.safeArea;
-            float topInset=Screen.height>0?(Screen.height-area.yMax)/Mathf.Max(.01f,canvasScale):0;
-            float bottomInset=Screen.height>0?area.yMin/Mathf.Max(.01f,canvasScale):0;
-            float y=pad+topInset;
-            Position(entry,pad,Mathf.Max(100,h*.16f),Mathf.Min(140,w*.22f),42);
-            Position(title.rectTransform,pad,y,w*.55f,45);
+            float scale=hud.GetComponentInParent<Canvas>()?.scaleFactor??1f;
+            Rect safe=Screen.safeArea;
+            float pad=Mathf.Max(14,w*.04f),top=pad+(Screen.height-safe.yMax)/Mathf.Max(.01f,scale);
+            float bottom=pad+safe.yMin/Mathf.Max(.01f,scale);
+            float left=Mathf.Max(pad,safe.xMin/Mathf.Max(.01f,scale)+8);
+            float right=Mathf.Max(pad,(Screen.width-safe.xMax)/Mathf.Max(.01f,scale)+8);
+            float usable=w-left-right;bool wide=w>h;
             var children=window.GetComponentsInChildren<Button>(true);
-            Button Find(string name)=>children.FirstOrDefault(b=>b.name==name);
-            Position((RectTransform)Find("Volver").transform,w-pad-128,y,128,42);
-            float tabsY=y+54,tabW=(w-pad*2-3*8)/4;
+            Button Find(string name)=>children.First(b=>b.name==name);
+            Position(entry,left,Mathf.Max(100,h*.16f),Mathf.Min(140,w*.22f),42);
+            Position(title.rectTransform,left+58,top,usable*.4f,45);
+            Position(resources.rectTransform,left+usable*.48f,top,usable*.52f,45);
+            var back=Find("Volver");Position((RectTransform)back.transform,left,top,48,44);
+            back.GetComponentInChildren<RoyalText>().Put("‹");
+            float tabsY=top+60,tabH=wide?44:Mathf.Clamp(h*.09f,46,75),gap=7;
+            float tabW=(usable-3*gap)/4;
             for(int i=0;i<4;i++)
-                Position((RectTransform)Find("Buzón "+categories[i]).transform,pad+i*(tabW+8),tabsY,tabW,42);
-            float bodyY=tabsY+54,bodyH=Mathf.Max(160,h-bodyY-bottomInset-pad-65);
-            float leftW=wide?(w-pad*3)*.49f:w-pad*2;
-            float listH=wide?bodyH:Mathf.Max(170,bodyH*.54f);
-            float rowH=Mathf.Max(31,(listH-10)/6f);
-            for(int i=0;i<6;i++)
-                Position((RectTransform)messageButtons[i].transform,pad,bodyY+i*rowH,leftW,rowH-5);
-            float detailX=wide?pad*2+leftW:pad;
-            float detailY=wide?bodyY:bodyY+listH+8;
-            float detailW=wide?w-pad*3-leftW:w-pad*2;
-            float detailH=wide?bodyH:Mathf.Max(60,bodyH-listH-8);
-            Position(detail.rectTransform,detailX+8,detailY+6,detailW-16,Mathf.Max(40,detailH-65));
-            Position((RectTransform)Find("Leer").transform,detailX+8,detailY+detailH-53,detailW*.50f-12,44);
-            Position((RectTransform)Find("Eliminar").transform,detailX+detailW*.50f+4,detailY+detailH-53,detailW*.50f-12,44);
-            float pageY=h-bottomInset-pad-41;
-            Position((RectTransform)Find("Página anterior").transform,pad,pageY,44,37);
-            Position(navLabel.rectTransform,pad+48,pageY,leftW-100,37);
-            Position((RectTransform)Find("Página siguiente").transform,pad+leftW-44,pageY,44,37);
-            title.fontSize=wide?28:24;detail.fontSize=wide?17:15;
+            {
+                var button=Find("Buzón "+categories[i]);
+                Position((RectTransform)button.transform,left+i*(tabW+gap),tabsY,tabW,tabH);
+                tabLabels[i].fontSize=wide?16:Mathf.Clamp(Mathf.RoundToInt(tabW*.16f),13,24);
+            }
+            float bodyY=tabsY+tabH+12,bodyH=h-bodyY-bottom-46;
+            float rowH=bodyH/5f;
+            for(int i=0;i<5;i++)
+            {
+                var button=messageButtons[i];Position((RectTransform)button.transform,left,bodyY+i*rowH,usable,rowH-7);
+                float iconSize=Mathf.Min(rowH-23,usable*.16f);
+                Position(messageIcons[i].rectTransform,14,(rowH-7-iconSize)*.5f,iconSize,iconSize);
+                Position(messageLabels[i].rectTransform,iconSize+30,7,usable-iconSize-46,(rowH-12)*.48f);
+                Position(messageSubtitles[i].rectTransform,iconSize+30,rowH*.48f,usable-iconSize-46,rowH*.39f);
+                messageLabels[i].fontSize=Mathf.Clamp(Mathf.RoundToInt(rowH*.23f),17,29);
+                messageSubtitles[i].fontSize=Mathf.Clamp(Mathf.RoundToInt(rowH*.18f),14,23);
+                messageSubtitles[i].color=new Color(.20f,.18f,.15f);
+            }
+            Position(detail.rectTransform,left+16,bodyY+12,usable-32,Mathf.Max(40,bodyH-70));
+            Position((RectTransform)Find("Leer").transform,left,bodyY+bodyH-48,usable*.49f,44);
+            Position((RectTransform)Find("Eliminar").transform,left+usable*.51f,bodyY+bodyH-48,usable*.49f,44);
+            float pageY=h-bottom-37;
+            Position((RectTransform)Find("Página anterior").transform,left,pageY,44,37);
+            Position(navLabel.rectTransform,left+52,pageY,usable-104,37);
+            Position((RectTransform)Find("Página siguiente").transform,left+usable-44,pageY,44,37);
+            detail.fontSize=wide?18:19;
         }
         void SetCategory(string value){category=value;offset=0;selectedId=null;Refresh();}
         void Page(int delta)
         {
             var s=gateway?.Snapshot();
-            int total=s?.Mailbox?.List(category,0,100).Count??0;
-            offset=Mathf.Clamp(offset+delta*6,0,Mathf.Max(0,(Mathf.Max(0,total-1)/6)*6));
+            int total=s?.Mailbox?.Messages.Count(m=>m.Category==category)??0;
+            offset=Mathf.Clamp(offset+delta*5,0,Mathf.Max(0,(Mathf.Max(0,total-1)/5)*5));
             selectedId=null;Refresh();
         }
         void SelectRow(int index)
         {
-            var list=gateway?.Snapshot()?.Mailbox?.List(category,offset,6);
+            var list=gateway?.Snapshot()?.Mailbox?.List(category,offset,5);
             if(list==null||index>=list.Count)return;
-            selectedId=list[index].EventId;Refresh();
+            selectedId=list[index].EventId;ExecuteMail("MailRead");
         }
         void ExecuteMail(string kind)
         {
@@ -208,28 +231,38 @@ namespace Eldoria.UI.RoyalGold.V2
             if(hud==null||gateway==null)return;
             if(window==null)Ensure();
             var s=gateway.Snapshot();var mail=s.Mailbox;
+            resources.Put("Madera "+s.Resources.Wood+"  ·  Piedra "+s.Resources.Stone+"  ·  Comida "+s.Resources.Food);
             if(entryLabel!=null)entryLabel.Put("CORREO"+(mail?.Unread()>0?" ("+mail.Unread()+")":""));
             if(!IsOpen)return;
             foreach(var t in tabLabels)
             {
                 string key=t.transform.parent.name.Replace("Buzón ","");
                 t.color=key==category?Gold:Ivory;
+                var surface=t.transform.parent.GetComponentInChildren<Image>();
+                if(surface!=null)surface.color=key==category?new Color(1.25f,1.15f,.90f):Color.white;
                 t.Put(key.ToUpperInvariant()+((mail?.Unread(key)??0)>0?" • "+mail.Unread(key):""));
             }
-            var list=mail?.List(category,offset,6)??new List<EldoriaV41Message>();
-            for(int i=0;i<6;i++)
+            var list=mail?.List(category,offset,5)??new List<EldoriaV41Message>();
+            for(int i=0;i<5;i++)
             {
-                bool shown=i<list.Count;
+                bool shown=i<list.Count && selectedId==null;
                 messageButtons[i].gameObject.SetActive(shown);
                 if(shown)
                 {
                     var msg=list[i];
-                    messageLabels[i].color=msg.Read?Muted:Gold;
-                    messageLabels[i].Put((msg.Read?"":"• ")+msg.Title);
+                    messageLabels[i].color=new Color(.08f,.07f,.05f);
+                    messageLabels[i].Put((msg.Read?"":"● ")+msg.Title);
+                    messageSubtitles[i].Put(msg.Subtitle);
+                    string icon=msg.Category=="recompensas"?"mail-reward":msg.Category=="narrativa"?"mail-narrative":
+                        msg.Category=="sistema"?"mail-system":msg.Type=="battle"?"mail-battle":"mail-march";
+                    messageIcons[i].sprite=RoyalGoldV41SourceArt.Get(icon);
                 }
             }
             navLabel.Put((list.Count==0?"Sin mensajes":"Mensajes "+(offset+1)+"–"+(offset+list.Count)));
             var selected=mail?.Messages?.Find(m=>m.EventId==selectedId);
+            detail.gameObject.SetActive(selected!=null);
+            foreach(var button in window.GetComponentsInChildren<Button>(true))
+                if(button.name=="Leer"||button.name=="Eliminar")button.gameObject.SetActive(selected!=null);
             if(selected==null)
             {
                 detail.Put("Selecciona un mensaje para consultar su contenido.");

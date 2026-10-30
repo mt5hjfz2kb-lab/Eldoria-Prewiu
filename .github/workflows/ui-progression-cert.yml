@@ -179,7 +179,7 @@ jobs:
           $raw=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
           $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw.content))|ConvertFrom-Json
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          $ui=@($claims|Where-Object {(($_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-parity132-continuation-ab04f62d0b26' -and $_.ownership_revision -eq 66 -and $_.branch -eq 'feature/eldoria-web-parity-camera-20261029' -and $env:ELDORIA_CANDIDATE_BRANCH -eq 'feature/eldoria-web-parity-camera-20261029') -or ($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6) -or ($_.id -eq 'eldoria-aldric-city-roaming-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 2) -or ($_.id -eq 'eldoria-global-march-capacity-three-slots-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1) -or ($_.id -eq 'eldoria-retention-engagement-evolution-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
+          $ui=@($claims|Where-Object {(($_.id -eq 'eldoria-v41-combate-buzon-ui-20261030' -and $_.owner -eq 'codex-pr134-continuation-ab04f62d0b26' -and $_.ownership_revision -eq 3 -and $_.branch -eq 'feature/eldoria-v41-contracts-20261030' -and $env:ELDORIA_CANDIDATE_BRANCH -eq 'feature/eldoria-v41-contracts-20261030') -or ($_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-parity132-continuation-ab04f62d0b26' -and $_.ownership_revision -eq 66 -and $_.branch -eq 'feature/eldoria-web-parity-camera-20261029' -and $env:ELDORIA_CANDIDATE_BRANCH -eq 'feature/eldoria-web-parity-camera-20261029') -or ($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6) -or ($_.id -eq 'eldoria-aldric-city-roaming-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 2) -or ($_.id -eq 'eldoria-global-march-capacity-three-slots-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1) -or ($_.id -eq 'eldoria-retention-engagement-evolution-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
           if($claims.Count -gt 0 -and ($claims.Count -ne 1 -or $ui.Count -ne 1)){throw "Windows native lease belongs to another workstream: $($claims.id -join ', ')"}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Existing Unity or Blender process; retain the later ownership/process check as well'}
       - name: Expose Git installed with GitHub Desktop
@@ -315,7 +315,7 @@ jobs:
           # Read current main, never a stale PR merge snapshot's old reservation.
           $registry=Get-Content 'ui-live-ownership/pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          $ui=@($claims|Where-Object {(($_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-parity132-continuation-ab04f62d0b26' -and $_.ownership_revision -eq 66 -and $_.branch -eq 'feature/eldoria-web-parity-camera-20261029' -and $env:ELDORIA_CANDIDATE_BRANCH -eq 'feature/eldoria-web-parity-camera-20261029') -or ($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6) -or ($_.id -eq 'eldoria-aldric-city-roaming-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 2) -or ($_.id -eq 'eldoria-global-march-capacity-three-slots-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1) -or ($_.id -eq 'eldoria-retention-engagement-evolution-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
+          $ui=@($claims|Where-Object {(($_.id -eq 'eldoria-v41-combate-buzon-ui-20261030' -and $_.owner -eq 'codex-pr134-continuation-ab04f62d0b26' -and $_.ownership_revision -eq 3 -and $_.branch -eq 'feature/eldoria-v41-contracts-20261030' -and $env:ELDORIA_CANDIDATE_BRANCH -eq 'feature/eldoria-v41-contracts-20261030') -or ($_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-parity132-continuation-ab04f62d0b26' -and $_.ownership_revision -eq 66 -and $_.branch -eq 'feature/eldoria-web-parity-camera-20261029' -and $env:ELDORIA_CANDIDATE_BRANCH -eq 'feature/eldoria-web-parity-camera-20261029') -or ($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6) -or ($_.id -eq 'eldoria-aldric-city-roaming-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 2) -or ($_.id -eq 'eldoria-global-march-capacity-three-slots-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1) -or ($_.id -eq 'eldoria-retention-engagement-evolution-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
           # An active UI owner may validate its own reservation. With no
           # reservations, preserve the existing ordinary progression CI path.
           # Never couple future tests to one temporary executor's identity.
@@ -421,6 +421,29 @@ jobs:
             '-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',$log)
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
           if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
+
+      - name: V4.1 real controls, persistent mailbox and approved-source captures
+        if: github.head_ref == 'feature/eldoria-v41-contracts-20261030'
+        shell: powershell
+        env:
+          ELDORIA_V41_EVIDENCE: ${{ github.workspace }}/v41-native-${{ github.run_id }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied'}
+          New-Item -ItemType Directory -Force $env:ELDORIA_V41_EVIDENCE|Out-Null
+          $log=Join-Path $env:ELDORIA_V41_EVIDENCE 'native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-executeMethod','Eldoria.Editor.EldoriaV41NativeCapture.Capture','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'V41 capture timed out'}
+          if($p.ExitCode -ne 0 -or -not(Select-String -Path $log -Pattern 'ELDORIA_V41_NATIVE_PASS' -Quiet)){Get-Content $log -Tail 120;throw 'V41 native acceptance failed'}
+
+      - uses: actions/upload-artifact@v4
+        if: always() && github.head_ref == 'feature/eldoria-v41-contracts-20261030'
+        with:
+          name: eldoria-v41-native-${{ github.run_id }}
+          path: v41-native-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Verify three simultaneous marches in the actual integrated scene
         id: march_preflight

@@ -4,6 +4,8 @@ on:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Combat.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
       - 'tools/eldoria-v41/**'
       - '.github/workflows/eldoria-v41-domain.yml'
   workflow_dispatch:

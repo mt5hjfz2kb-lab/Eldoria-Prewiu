@@ -196,14 +196,14 @@ namespace Eldoria.ReferenceClean.Editor
             Need(host.TrySetWorld(true),"Actual world navigation is available");
             yield return new WaitForSecondsRealtime(.3f);
             Image(host,"three-marches-before-horizontal",1600,900);
-            Need(gateway.Execute(Command(gateway,"native-config-lyra","ConfigureMarch","march-main:60:lyra")).Ok,
-                "Prepare Lyra for primary march, independently of Aldric");
             Need(gateway.Execute(Command(gateway,"native-march-1","Gather","forest-valoria")).Ok,
-                "First real forest gathering starts");
-            Need(gateway.Execute(Command(gateway,"native-config-aldric","ConfigureMarch","march-main:60:aldric")).Ok,
-                "Prepare Aldric for an additional march");
+                "Automatic supply march starts without reserving a named hero");
+            Need(gateway.Execute(Command(gateway,"native-config-lyra","ConfigureMarch","march-main:60:lyra")).Ok,
+                "Prepare Lyra for the second march");
             Need(gateway.Execute(Command(gateway,"native-march-2","Gather","quarry-valoria")).Ok,
                 "Second independent real quarry gathering starts");
+            Need(gateway.Execute(Command(gateway,"native-config-aldric","ConfigureMarch","march-main:60:aldric")).Ok,
+                "Prepare available Aldric without duplicating deployed Lyra");
             Need(gateway.Execute(Command(gateway,"native-march-3","Fight","corrupt-scout")).Ok,
                 "Third independent real enemy march starts");
             ((ValoriaReferenceCleanGameplay.TestClock)host.City.Clock).Step(1);
@@ -232,7 +232,7 @@ namespace Eldoria.ReferenceClean.Editor
             for(int i=0;i<300&&(aldric==null||!aldric.ApprovedVisualReady);i++)yield return null;
             yield return new WaitForSecondsRealtime(.4f);
             Need(aldric!=null&&aldric.ApprovedVisualReady&&!aldric.IsCityActorVisible&&
-                snap.March.HeroId=="lyra"&&snap.ExtraMarches[0].HeroId=="aldric",
+                string.IsNullOrEmpty(snap.March.HeroId)&&snap.ExtraMarches[0].HeroId=="lyra"&&snap.ExtraMarches[1].HeroId=="aldric",
                 "Actual Aldric is absent when only additional marches contain him");
             host.City.ReloadForProbe();
             yield return new WaitForSecondsRealtime(.4f);

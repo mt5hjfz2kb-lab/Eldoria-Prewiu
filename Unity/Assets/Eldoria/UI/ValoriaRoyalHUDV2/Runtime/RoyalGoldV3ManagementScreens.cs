@@ -28,6 +28,8 @@ namespace Eldoria.UI.RoyalGold.V2
         public int SelectedTier => selectedTier;
         ICommandGateway gateway;
         RoyalGoldV41MailboxScreen mailbox;
+        Image approvedArcher;
+        readonly Image[] approvedHeroes=new Image[3];
         Func<long> utcTicks;
         Action onCommand;
         // Optional host navigation; same scene, preserving the city camera state.
@@ -180,6 +182,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 return;
             }
             deferredForModal=false;
+            if(mailbox!=null)mailbox.Close();
             EnsureView();
             CurrentDestination = destination;
             destinationArtwork.MarchTheme = destination == Destination.March;
@@ -386,6 +389,24 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             percentModeButton=Button("Edit march by percent",left,"CANTIDAD / %",TogglePercentMode,
                 false,out percentModeLabel);
+            foreach(var graphic in new[]{destinationArtwork,featuredUnitArtwork,statusArtwork})graphic.enabled=false;
+            backdrop.enabled=false;
+            foreach(var pane in new[]{header,left,right,footer})
+            {
+                pane.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
+                RoyalGoldV41SourceArt.Surface(pane,"blue-panel",14);
+            }
+            approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer");
+            approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
+            for(int i=0;i<3;i++)
+            {
+                approvedHeroes[i]=RoyalGoldV41SourceArt.Surface((RectTransform)heroSlotButtons[i].transform,"aldric-face");
+                approvedHeroes[i].preserveAspect=true;
+            }
+            var goldAction=RoyalGoldV41SourceArt.Surface((RectTransform)action.transform,"gold-button",14);
+            action.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
+            goldAction.raycastTarget=true;action.targetGraphic=goldAction;
+            actionLabel.color=new Color(.08f,.06f,.025f);
             root.gameObject.SetActive(false);
         }
 
@@ -453,6 +474,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var s=gateway.Snapshot();
             if(s.BastionLevel<2 || s.BarracksLevel<1){Close();return;}
             bool training=CurrentDestination==Destination.Training;
+            approvedArcher.gameObject.SetActive(training);
             bool trainingActive=training && s.RecruitmentCompletesUtcTicks>0;
             bool tier2Unlocked=s.BarracksLevel>=4 && (training || s.Available.ArcherT2>0);
             if(!tier2Unlocked && selectedTier==2)selectedTier=1;
@@ -501,7 +523,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 maxCount>0?selectedCount.ToString():"—");
             heading.Put(training?"CUARTEL · ENTRENAMIENTO":"SALA DE MARCHAS");
             subheading.Put(training?"VALORIA · RECLUTAMIENTO DE TROPAS":"VALORIA · PREPARACIÓN DE EXPEDICIONES");
-            unitTitle.Put(training?"ARQUEROS · T"+selectedTier:HeroName(selectedHero));
+            unitTitle.Put(training?"ARQUERO · T"+selectedTier:"HÉROES DE LA MARCHA");
             chapterAction.gameObject.SetActive(training&&s.BastionLevel>=3);
             chapterActionLabel.Put("MEJORAR CUARTEL");
             for(int i=0;i<3;i++)
@@ -512,6 +534,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     (i==0?"LÍDER · ":"APOYO · ")+HeroName(heroSlots[i]));
                 heroSlotButtons[i].interactable=i<2 &&
                     (i==0||s.ChapterThree.LyraRecruited);
+                approvedHeroes[i].gameObject.SetActive(!training && heroSlots[i]=="aldric");
             }
             percentModeButton.gameObject.SetActive(!training);
             percentModeLabel.Put(percentMode?"EDITAR POR %":"EDITAR CANTIDAD");
@@ -609,7 +632,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // This interface reveals only narratively unlocked heroes and troop tiers.
             string target=training?"archer:t"+selectedTier+":"+selectedCount:
                 "march-main:"+selectedT1+":"+selectedT2+":0:"+
-                heroSlots[0]+":"+(heroSlots[1]??"")+":"+(heroSlots[2]??"");
+                (heroSlots[0]??"")+":"+(heroSlots[1]??"")+":"+(heroSlots[2]??"");
             string kind=training?"Recruit":"ConfigureMarch";
             submitAfter=Time.unscaledTime+.45f;
             var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
@@ -720,7 +743,71 @@ namespace Eldoria.UI.RoyalGold.V2
             actionLabel.fontSize=landscape?16:17;
             switchLabel.fontSize=landscape?15:16;
             feedback.fontSize=landscape?14:15;
+            ReflowApprovedSurfaces(leftSide,top,usable,bodyY,bodyH,gap,landscape);
+
         }
+        void ReflowApprovedSurfaces(float x,float top,float width,float y,float height,float gap,bool wide)
+        {
+            bool training=CurrentDestination==Destination.Training;
+            unitTitle.rectTransform.SetParent(training?right:left,false);
+            unitDetail.rectTransform.SetParent(training?right:left,false);
+            quantityRow.SetParent(training?right:left,false);
+            slider.transform.SetParent(training?right:left,false);
+            tierButton.transform.SetParent(training?right:left,false);
+            if(training)
+            {
+                float artWidth=width*.43f;
+                Place(left,x,y,artWidth,height);
+                Place(right,x+artWidth+gap,y,width-artWidth-gap,height);
+                Place(approvedArcher.rectTransform,0,0,artWidth,height);
+                float rw=right.rect.width;
+                Place(unitTitle.rectTransform,14,12,rw-28,34);
+                Place(unitDetail.rectTransform,14,50,rw-28,height*.18f);
+                Place(tierButton.transform as RectTransform,14,height*.23f,rw-28,34);
+                Place(summary.rectTransform,14,height*.33f,rw-28,height*.29f);
+                Place(quantityRow,14,height*.64f,rw-28,42);
+                Place(slider.transform as RectTransform,20,height*.64f+50,rw-40,18);
+                Place(status.rectTransform,14,height*.82f,rw-28,height*.18f-5);
+                Place(trainingProgress,14,height*.79f,rw-28,8);
+                summary.fontSize=wide?18:16;status.fontSize=wide?14:13;
+                unitDetail.fontSize=wide?17:15;
+            }
+            else
+            {
+                float lw=wide?(width-gap)*.60f:width;
+                float lh=wide?height:height*.62f;
+                Place(left,x,y,lw,lh);
+                Place(right,wide?x+lw+gap:x,wide?y:y+lh+gap,
+                    wide?width-lw-gap:width,wide?height:height-lh-gap);
+                Place(unitTitle.rectTransform,14,8,lw-28,30);
+                float cardsY=43,cardsH=Mathf.Max(60,lh*.48f),cardW=(lw-40)/3f;
+                for(int i=0;i<3;i++)
+                {
+                    Place((RectTransform)heroSlotButtons[i].transform,14+i*(cardW+6),cardsY,cardW,cardsH);
+                    Place(approvedHeroes[i].rectTransform,4,4,cardW-8,cardsH*.72f);
+                    Place(heroSlotLabels[i].rectTransform,4,cardsH*.74f,cardW-8,cardsH*.24f);
+                    heroSlotLabels[i].fontSize=wide?14:13;
+                }
+                float rowY=cardsY+cardsH+8;
+                Place(unitDetail.rectTransform,14,rowY,lw*.48f,40);
+                Place(tierButton.transform as RectTransform,lw*.53f,rowY,lw*.44f,32);
+                Place(percentModeButton.transform as RectTransform,14,rowY+44,lw*.43f,32);
+                Place(quantityRow,lw*.50f,rowY+44,lw*.47f,38);
+                Place(slider.transform as RectTransform,20,rowY+90,lw-40,16);
+                float rw=right.rect.width,rh=right.rect.height;
+                Place(summary.rectTransform,14,8,rw-28,rh*.58f);
+                Place(status.rectTransform,14,rh*.60f,rw-28,rh*.38f);
+                summary.fontSize=wide?18:16;status.fontSize=wide?14:13;
+                unitDetail.fontSize=14;
+            }
+            // Quantity buttons remain genuine controls within their moved container.
+            float qw=quantityRow.rect.width;
+            Place(minus.transform as RectTransform,0,0,36,38);
+            Place(plus.transform as RectTransform,qw-36,0,36,38);
+            Place(selectedText.rectTransform,38,0,qw-76,38);
+            selectedText.fontSize=20;
+        }
+
         static RectTransform Rect(string name,Transform parent)
         {
             var g=new GameObject(name,typeof(RectTransform));
@@ -743,7 +830,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var r=Rect(name,parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var t=r.gameObject.AddComponent<RoyalText>();
-            t.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            t.font=RoyalGoldV41SourceArt.Serif;
             t.fontSize=size;t.fontStyle=bold?FontStyle.Bold:FontStyle.Normal;
             t.color=color;t.raycastTarget=false;
             t.alignment=TextAnchor.UpperLeft;
