@@ -1,0 +1,62 @@
+[
+  {
+    "asset": "lyra",
+    "verified_files": 34,
+    "archive_sha256": "9596674c690692265ffe5355212df28d631bd6d85c7b78074e4de220c7b0d213",
+    "raw_sha256": "ec3a2cee0882fab28a7365ffb30bb2711bbe55553c55170d2419e5420a770b52",
+    "optimized_sha256": "a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725",
+    "editable_blend": true,
+    "raw_matches_pr127": true,
+    "reference_matches_pr127": true
+  },
+  {
+    "asset": "bastion-v",
+    "verified_files": 33,
+    "archive_sha256": "5225d1d7096cc6c178c82abe8f40b952c8bb1d48d383dd43e4fee7b7425c94b9",
+    "raw_sha256": "ac6636247d11f7320c5047206c56645b7d5d65dcefbe147ca049f67779e1a82c",
+    "optimized_sha256": "868081357066d5d8e0fef5dc62ae4c05df16cbea69b4a09944bfee580bf21986",
+    "editable_blend": true,
+    "raw_matches_pr127": true,
+    "reference_matches_pr127": true
+  },
+  {
+    "asset": "aserradero-v",
+    "verified_files": 34,
+    "archive_sha256": "a32dab8b15c98fb0a917cb9b1390520c494bcb06179b96f1d585d004de6da363",
+    "raw_sha256": "1618082a73774ae9f519e4debac784081ca64e35cc646ffa4c747a7a7b4ceb51",
+    "optimized_sha256": "ad64b264a0fc5d0c6044b463abff9d54c7f3707101017a06eb4ba7f76ac217cf",
+    "editable_blend": true,
+    "raw_matches_pr127": true,
+    "reference_matches_pr127": true
+  },
+  {
+    "asset": "cuartel-v",
+    "verified_files": 34,
+    "archive_sha256": "810b4dc3147b68e62cd6897d3d52e48c0ddf4c297b480aaa899eecb432d3bd38",
+    "raw_sha256": "4e821799850f1ff006d8fe0e2c12d723b51f604d2661cf8ead99b505cd550857",
+    "optimized_sha256": "513100783e73d21e4060cd22017bd4aa125ea4a8cc1dccaa35dbd68ad4203a7d",
+    "editable_blend": true,
+    "raw_matches_pr127": true,
+    "reference_matches_pr127": true
+  },
+  {
+    "asset": "granero-v",
+    "verified_files": 34,
+    "archive_sha256": "d5268c23e4eba652da34fec1650bcca7c7dbbbdf5016eea832280d7fa99ebdae",
+    "raw_sha256": "7bf93dc46cb4a47e65cec461a913fbd720fbde726c98b6f9734fe69b1fda621e",
+    "optimized_sha256": "7534cf7e743a78e82998c23c209f22b2fe1b32bb903a1634e461447c310af096",
+    "editable_blend": true,
+    "raw_matches_pr127": true,
+    "reference_matches_pr127": true
+  },
+  {
+    "asset": "cantera-v",
+    "verified_files": 34,
+    "archive_sha256": "150db849bf878b1575c6ff5b7dc6fb6adf92eb28105713f0939e67b45d9d69e7",
+    "raw_sha256": "1605fca4fd88baed27eecf14edb8905342d77bd305b670e2a093c0f40e91efd2",
+    "optimized_sha256": "7604ebd4a43ec994088feea036fd61ccd3db41d4a3a4f4e92cc04e71c05818f2",
+    "editable_blend": true,
+    "raw_matches_pr127": true,
+    "reference_matches_pr127": true
+  }
+]

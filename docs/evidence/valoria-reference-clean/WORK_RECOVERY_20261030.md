@@ -1,3 +1,9 @@
+# Actualización de relevo a chat normal
+
+El checkpoint exhaustivo vigente está en [CONTINUITY_NORMAL_CHAT_20261030.md](CONTINUITY_NORMAL_CHAT_20261030.md). Último runtime24de23ca; Lyra frontal pendiente de certificación exacta. Issue138 conserva motor/simulaciones de laboratorio, no activados en campaña. Leer comentarios posteriores dePR136 y HEAD vivo. Se preserva debajo el registro completo de recuperación.
+
+---
+
 # Recuperación vigente — PR136, 30/10/2026
 
 Responsable codex-recovery-ada07b02a31d; workstream Valoria revision74. Releer siempre main/pipeline/active-workstreams.json. Continúa la misma PR136; PR134/135/137 ya incorporadas. No reintegrar, no abrir otra PR, no tocar main jugable ni publicaciones.

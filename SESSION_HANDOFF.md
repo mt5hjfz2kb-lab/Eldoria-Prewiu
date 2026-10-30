@@ -1,3 +1,17 @@
+# RELEVO ACTUAL — WORK → CHAT NORMAL — 30-10-2026
+
+Leer primero [CONTINUITY_NORMAL_CHAT_20261030.md](docs/evidence/valoria-reference-clean/CONTINUITY_NORMAL_CHAT_20261030.md). Inventario verificable: [ASSET_RECOVERY_VERIFIED_20261030.json](docs/evidence/valoria-reference-clean/ASSET_RECOVERY_VERIFIED_20261030.json).
+
+- Única vía: PR136, fix/player-feedback-context-ui-20261030; consultar HEAD vivo. Último runtime al redactar:24de23ca2792325b52a8e16d49fe81322d8ae2de. Este relevo documental es descendiente y conserva el código.
+- Lyra existente PR127 integrada por decisión expresa del propietario. GLB exacto verificado, retrato desde geometría, giro real; sin rig/generación/gasto. V4.1 de0859aaeb pasó; captura mostraba espalda.24de23ca corrige orientación, pendiente de evidencia frontal y regresión propia.
+- Última certificación completa al redactar:0f4a4b578d1cd55acde315b0eb2ee0ccaa61701d, run41131927783,68/68EditMode y73/73PlayMode. No extrapolar a sucesores. Run41137305168 en curso;41137726445 pendiente. Un nuevo commit documental puede reemplazar la candidata en cola: consultar runs delHEAD real.
+- Arte NO aprobado/NO100%, publicación NO realizada. Héroes/Marchas/ciudad siguen requiriendo reconstrucción; no confundir controles conectados con fidelidad.
+- MotorV4.1 y simulaciones preservados: issue138ABIERTO, ProductionApproved=false, RulesVersion=v4.1-laboratory; campaña aúnSliceRules. No activarlo ni cerrar138 silenciosamente.
+- Responsable codex-recovery-ada07b02a31d; Valoriarev74 posee windows-runner-heavy. Verificar main/pipeline/active-workstreams.json y jobs antes del relevo, no interrumpir ajenos.
+- El documento enlazado contiene estado de todas lasPR abiertas, assets/Library/BLEND/GLB/hashes/referencias, evidencias, errores, decisiones, procedimiento GitDataCAS y Actions para continuar sinWork, prioridades y límites. Comentarios posteriores dePR136 actualizan resultados sin borrarhistoria.
+
+---
+
 > **RECUPERACIÓN PR136 ACTIVA — 30/10/2026.** Mismo workstream y rama; responsable codex-recovery-ada07b02a31d, revisión74 (verificar registro vivo). Fallo original resuelto;5a339855 certificada68/68 EditMode y73/73 PlayMode.0f4a4b57 separa identidad del arquero y está en certificación41131927783. El propietario ha elegido el modelo 3D existente de Lyra; esta candidata lo reutiliza sin gasto y requiere su propia importación/capturas/regresión. [Checkpoint actualizado](docs/evidence/valoria-reference-clean/WORK_RECOVERY_20261030.md). DRAFT, fidelidad artística y dispositivo físico pendientes; ningún merge/publicación de esta UI.
 
 > **CONTINUACIÓN ACTIVA — 30-10-2026.** El último encargo de pulido de Vigilantes, Exploradores, Entrenamiento y Marcha continúa en PR136; candidata0cf8c964, todavía sin integrar/publicar y con certificación conjunta pendiente. Responsabilidad transferida al mismo workstream, revisión71. [Estado exacto, evidencia y siguiente acción](docs/evidence/valoria-reference-clean/WORK_RECOVERY_20261030.md). Las entradas históricas inferiores no sustituyen este trabajo activo.
