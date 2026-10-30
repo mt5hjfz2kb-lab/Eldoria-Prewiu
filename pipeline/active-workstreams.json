@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T08:43:00+01:00",
+  "updated_at": "2026-10-30T07:53:07.710Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,8 +20,8 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-parity132-continuation-ab04f62d0b26",
-      "branch": "feature/eldoria-web-parity-camera-20261029",
+      "owner": null,
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-29T21:40:59.510Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
@@ -114,15 +114,13 @@
         "docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md",
         "docs/documentation-catalog.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
-      "art_production_routing": "required",
-      "art_production_routing_reason": "Bounded runtime integration/camera/encounter reuse corrections in existing ArtTests surfaces require technical scope gate. No new asset authorship or artistic approval; original approved sources preserved.",
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Technical parity correction completed and verified. No active art production, new assets or reserved edits; request closed without granting ART_APPROVED.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR132_ISSUE133_MIGRATION_PARITY_RECONCILIATION",
-      "next": "Audit existing PR132 against current main and canonical web; repair necessary parity, persistence and camera defects; exact native QA before integration and close issue133.",
+      "phase": "PR132_PARITY_MERGED_MAIN_VERIFIED",
+      "next": "Migration parity task complete; canonical scope available. Preserve independent V4.1 claim. APK19/WebGL298 precede this patch; continuous fresh I–V remains uncertified.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -851,9 +849,55 @@
           "art_approved": false,
           "physical_mobile_tested": false,
           "report": "docs/bastion-iv-v/RELEASE_20261029.md"
+        },
+        "migration_parity132": {
+          "completed_at": "2026-10-30T07:52:24.023Z",
+          "pr": 132,
+          "issue": 133,
+          "issue_state": "closed",
+          "runtime_source": "c78524723ab0b5bdabb546f36948847102dfb966",
+          "pr_head": "ed926b9857133d3cb6687608bbd44aff48e932fc",
+          "main_merge": "f016932317e049d340460c408d88b90b1290b692",
+          "native_run": 40965665726,
+          "shared_ui_run": 40965672865,
+          "final_pr_tester_run": 41017152807,
+          "main_run": 41018872267,
+          "main_run_attempt": 2,
+          "main_result": "SUCCESS",
+          "windows_player_build": "SUCCESS",
+          "editmode_passed": 57,
+          "playmode_passed": 73,
+          "iii_v_checks": 460,
+          "native_screenshots": 88,
+          "main_test_artifact": {
+            "id": 12961578958,
+            "bytes": 62741,
+            "sha256": "00209bf4779827c5329bf5dbaaa687aa9b57ef90c807334249eb4f8de9d5a063",
+            "download_verified": true
+          },
+          "desktop_artifact": {
+            "id": 12961694947,
+            "bytes": 1515706701,
+            "sha256": "566afb8c3bfc8d3b7ad0abc189d0772ca8a97c52e6751f8be0b174fb4a592e4d"
+          },
+          "initial_desktop_attempt": "resources.assets write failure; exact-code rerun succeeded",
+          "continuous_fresh_i_to_v_pass": false,
+          "latest_published_web_continuous_attempt": {
+            "run": 40978433069,
+            "result": "FAIL",
+            "objective": "b4.ascend",
+            "runtime_errors": 0,
+            "network_failures": 0
+          },
+          "published_apk_includes_patch": false,
+          "published_webgl_includes_patch": false,
+          "physical_mobile_tested": false,
+          "art_approved": false,
+          "new_credits_used": 0,
+          "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
         }
       },
-      "previous_owner": "codex-release-continuation-ab04f62d0b26",
+      "previous_owner": "codex-parity132-continuation-ab04f62d0b26",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -873,8 +917,8 @@
       "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied",
       "current_session": null,
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
-      "resources_verified_at": "2026-10-29T21:34:16.588Z",
-      "resources_evidence": "Android40946564387/40951703468, WebGL40945723046, browser40955956262 and publication40958364194 completed successfully. No heavy job retained by this handoff.",
+      "resources_verified_at": "2026-10-30T07:52:24.023Z",
+      "resources_evidence": "Native40965665726, UI40965672865, tester41017152807 and main41018872267 attempt2 SUCCESS. All owned heavy jobs completed.",
       "validation_recovery_session": {
         "owner": "chatgpt-validation-recovery-20261019",
         "authorization": "Owner requested review and completion of today's validation failures and pending delivery in current session.",
@@ -1385,11 +1429,19 @@
           "released_at": "2026-10-29T21:34:16.588Z",
           "phase": "POST_PR130_ANDROID19_WEBGL298_DELIVERED",
           "reason": "Owner-authorized continuation completed: APK19 published and public bytes verified; native298 full browser QA and exact Restricted itch remote activation confirmed. No remaining heavy job or write reservation."
+        },
+        {
+          "owner": "codex-parity132-continuation-ab04f62d0b26",
+          "ownership_revision": 66,
+          "claimed_at": "2026-10-29T21:40:59.510Z",
+          "released_at": "2026-10-30T07:52:24.023Z",
+          "phase": "PR132_PARITY_MERGED_MAIN_VERIFIED",
+          "reason": "PR132 merged, issue133 closed, exact native/domain/UI/client gates and main Windows player succeeded. No resource or write reservation retained."
         }
       ],
-      "ownership_revision": 66,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 67,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-10-29T09:54:24.457Z",
       "delivery_definition": {
@@ -1477,10 +1529,10 @@
         "budget_eur": 0
       },
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
-      "candidate_branch": "feature/bastion-iv-v-migration-20261029",
+      "candidate_branch": "feature/eldoria-web-parity-camera-20261029",
       "canonical_pr": 132,
-      "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
-      "last_handoff": "docs/bastion-iv-v/FINAL_REVIEW.md",
+      "handoff_reason": "PR132_MERGED_MAIN_VERIFIED_ISSUE133_CLOSED",
+      "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
       "scope_extension_reason": "Owner continuation after PR129: administrative closure of the already-completed six-reference source request which incorrectly retains an executable paid composition route. No modification to PR127, assets or spend.",
       "android18_signed_candidate": {
@@ -1522,7 +1574,7 @@
         "new_apk_published": false,
         "budget_eur": 0
       },
-      "completed_branch": "feature/bastion-iv-v-migration-20261029",
+      "completed_branch": "feature/eldoria-web-parity-camera-20261029",
       "owner_visual_feedback": {
         "criterion": "Each approved tier V building must face forward coherently; Bastion door must line up with existing approach, not expose a side toward the road.",
         "previous_capture": "city-V-complete-horizontal.png",
@@ -1531,7 +1583,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-10-29T21:34:16.588Z",
+      "released_at": "2026-10-30T07:52:24.023Z",
       "delivery_closeout": {
         "completed_at": "2026-10-29T21:34:16.588Z",
         "workstream_id": "valoria-master-plan-layered-construction-20261016",
@@ -1579,11 +1631,59 @@
           "save_sha256": "ff941e8c4c4e29c5e96b85820e8f8cfc8f5debdef98924cca397196a2265b58d",
           "decoded_transport_verified": true
         },
-        "pr132_merged": false,
+        "pr132_merged": true,
         "new_credits_used": 0,
         "art_approved": false,
         "physical_mobile_tested": false,
-        "report": "docs/bastion-iv-v/RELEASE_20261029.md"
+        "report": "docs/bastion-iv-v/RELEASE_20261029.md",
+        "pr132_merge_after_release": true,
+        "pr132_in_published_packages": false
+      },
+      "parity132_closeout": {
+        "completed_at": "2026-10-30T07:52:24.023Z",
+        "pr": 132,
+        "issue": 133,
+        "issue_state": "closed",
+        "runtime_source": "c78524723ab0b5bdabb546f36948847102dfb966",
+        "pr_head": "ed926b9857133d3cb6687608bbd44aff48e932fc",
+        "main_merge": "f016932317e049d340460c408d88b90b1290b692",
+        "native_run": 40965665726,
+        "shared_ui_run": 40965672865,
+        "final_pr_tester_run": 41017152807,
+        "main_run": 41018872267,
+        "main_run_attempt": 2,
+        "main_result": "SUCCESS",
+        "windows_player_build": "SUCCESS",
+        "editmode_passed": 57,
+        "playmode_passed": 73,
+        "iii_v_checks": 460,
+        "native_screenshots": 88,
+        "main_test_artifact": {
+          "id": 12961578958,
+          "bytes": 62741,
+          "sha256": "00209bf4779827c5329bf5dbaaa687aa9b57ef90c807334249eb4f8de9d5a063",
+          "download_verified": true
+        },
+        "desktop_artifact": {
+          "id": 12961694947,
+          "bytes": 1515706701,
+          "sha256": "566afb8c3bfc8d3b7ad0abc189d0772ca8a97c52e6751f8be0b174fb4a592e4d"
+        },
+        "initial_desktop_attempt": "resources.assets write failure; exact-code rerun succeeded",
+        "continuous_fresh_i_to_v_pass": false,
+        "latest_published_web_continuous_attempt": {
+          "run": 40978433069,
+          "result": "FAIL",
+          "objective": "b4.ascend",
+          "runtime_errors": 0,
+          "network_failures": 0
+        },
+        "published_apk_includes_patch": false,
+        "published_webgl_includes_patch": false,
+        "physical_mobile_tested": false,
+        "art_approved": false,
+        "new_credits_used": 0,
+        "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       }
     },
     {
@@ -9603,8 +9703,8 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-    "status": "claimed",
-    "owner": "codex-parity132-continuation-ab04f62d0b26",
+    "status": "available",
+    "owner": null,
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
@@ -9612,7 +9712,7 @@
     "restrictions": "Preserve native111 baseline; staged improvements with focused tests. No old independent branch production. No paid credits.",
     "previous_owner": "codex-release-continuation-ab04f62d0b26",
     "ownership_source": "active[id=valoria-master-plan-layered-construction-20261016]; transferable owner-directed claim",
-    "released_at": "2026-10-29T21:34:16.588Z",
-    "release_evidence": "docs/bastion-iv-v/RELEASE_20261029.md"
+    "released_at": "2026-10-30T07:52:24.023Z",
+    "release_evidence": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
   }
 }
