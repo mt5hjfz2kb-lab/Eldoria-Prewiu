@@ -28,7 +28,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public int SelectedTier => selectedTier;
         ICommandGateway gateway;
         RoyalGoldV41MailboxScreen mailbox;
-        Image approvedArcher;
+        Image approvedArcher,approvedTroopRow;
         readonly Image[] approvedHeroes=new Image[3];
         Func<long> utcTicks;
         Action onCommand;
@@ -398,6 +398,8 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer");
             approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
+            approvedTroopRow=RoyalGoldV41SourceArt.Surface(left,"archer-row");
+            approvedTroopRow.preserveAspect=true;
             for(int i=0;i<3;i++)
             {
                 approvedHeroes[i]=RoyalGoldV41SourceArt.Surface((RectTransform)heroSlotButtons[i].transform,"aldric-face");
@@ -534,8 +536,10 @@ namespace Eldoria.UI.RoyalGold.V2
                     (i==0?"LÍDER · ":"APOYO · ")+HeroName(heroSlots[i]));
                 heroSlotButtons[i].interactable=i<2 &&
                     (i==0||s.ChapterThree.LyraRecruited);
-                approvedHeroes[i].gameObject.SetActive(!training && heroSlots[i]=="aldric");
+                approvedHeroes[i].sprite=RoyalGoldV41SourceArt.Get(heroSlots[i]=="aldric"?"aldric-face":i==2?"hero-locked":"hero-support");
+                approvedHeroes[i].gameObject.SetActive(!training);
             }
+            approvedTroopRow.gameObject.SetActive(!training);
             percentModeButton.gameObject.SetActive(!training);
             percentModeLabel.Put(percentMode?"EDITAR POR %":"EDITAR CANTIDAD");
             unitDetail.Put(training?"Arqueros · nivel de tropa T"+selectedTier+"\n"+(selectedTier==2?"Desbloqueados por Cuartel IV":"Unidad inicial del reino"):
@@ -759,7 +763,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 float artWidth=width*.43f;
                 Place(left,x,y,artWidth,height);
                 Place(right,x+artWidth+gap,y,width-artWidth-gap,height);
-                Place(approvedArcher.rectTransform,0,0,artWidth,height);
+                float portraitWidth=Mathf.Min(artWidth,height*184f/476f);
+                Place(approvedArcher.rectTransform,(artWidth-portraitWidth)*.5f,0,portraitWidth,height);
                 float rw=right.rect.width;
                 Place(unitTitle.rectTransform,14,12,rw-28,34);
                 Place(unitDetail.rectTransform,14,50,rw-28,height*.18f);
@@ -789,11 +794,12 @@ namespace Eldoria.UI.RoyalGold.V2
                     heroSlotLabels[i].fontSize=wide?14:13;
                 }
                 float rowY=cardsY+cardsH+8;
-                Place(unitDetail.rectTransform,14,rowY,lw*.48f,40);
-                Place(tierButton.transform as RectTransform,lw*.53f,rowY,lw*.44f,32);
-                Place(percentModeButton.transform as RectTransform,14,rowY+44,lw*.43f,32);
-                Place(quantityRow,lw*.50f,rowY+44,lw*.47f,38);
-                Place(slider.transform as RectTransform,20,rowY+90,lw-40,16);
+                Place(approvedTroopRow.rectTransform,14,rowY,lw*.29f,lh-rowY-18);
+                Place(unitDetail.rectTransform,lw*.34f,rowY,lw*.63f,40);
+                Place(tierButton.transform as RectTransform,lw*.34f,rowY+42,lw*.63f,32);
+                Place(percentModeButton.transform as RectTransform,lw*.34f,rowY+82,lw*.28f,32);
+                Place(quantityRow,lw*.65f,rowY+82,lw*.32f,38);
+                Place(slider.transform as RectTransform,lw*.34f,rowY+129,lw*.63f,16);
                 float rw=right.rect.width,rh=right.rect.height;
                 Place(summary.rectTransform,14,8,rw-28,rh*.58f);
                 Place(status.rectTransform,14,rh*.60f,rw-28,rh*.38f);

@@ -77,6 +77,8 @@ namespace Eldoria.Editor
         {
             for(int i=0;i<300&&!host.Ready;i++)yield return null;
             Need(host.Ready&&host.City.Probe,"Canonical disposable gameplay only");
+            var archer=Resources.Load<Texture2D>("EldoriaV41/training-archer");
+            Need(archer!=null&&archer.width==184&&archer.height==476,"Original source aspect survives Unity texture import");
             if(host.Guidance)host.Guidance.enabled=false;
             for(int i=0;i<50&&host.Hud.NarrativeOpen;i++){host.Hud.Modal.Extra.onClick.Invoke();yield return null;}
             if(host.Hud.Modal.gameObject.activeSelf)host.Hud.Modal.Hide();
@@ -97,6 +99,7 @@ namespace Eldoria.Editor
             screen.VisibleAction.onClick.Invoke();
             Need(host.City.Gateway.Snapshot().PendingRecruitArchers>0,"Actual training reserves recruits");
             screen.Open(RoyalGoldV3ManagementScreens.Destination.March);yield return null;
+            Need(!screen.VisibleRoot.GetComponentsInChildren<Text>().Any(t=>t.text=="APOYO · SIR ALDRIC"),"Empty saved slots never display invented Aldric companions");
             Shot(host,"march-reference-ratio",941,1672);Shot(host,"march-landscape",1600,900);
             Need(screen.VisibleAction.interactable,"Actual march composer actionable");
             screen.VisibleAction.onClick.Invoke();

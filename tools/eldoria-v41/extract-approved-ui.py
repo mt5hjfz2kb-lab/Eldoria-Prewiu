@@ -20,7 +20,7 @@ def main():
         records.append({'name':name,'source_sha256':refs[screen]['sha256'],'regions_xyxy':regions,
                         'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'method':'source_pixels_only'})
         guid=uuid.uuid5(uuid.NAMESPACE_URL,'eldoria/v41/'+name).hex
-        Path(str(path)+'.meta').write_text('fileFormatVersion: 2\nguid: '+guid+'\nTextureImporter:\n  serializedVersion: 13\n  mipmaps:\n    enableMipMap: 0\n  isReadable: 0\n  textureType: 0\n  textureShape: 1\n  maxTextureSize: 2048\n  textureSettings:\n    serializedVersion: 2\n    filterMode: 1\n    aniso: 1\n    wrapU: 1\n    wrapV: 1\n  alphaIsTransparency: 1\n  textureCompression: 0\n')
+        Path(str(path)+'.meta').write_text('fileFormatVersion: 2\nguid: '+guid+'\nTextureImporter:\n  serializedVersion: 13\n  mipmaps:\n    enableMipMap: 0\n  isReadable: 0\n  npotScale: 0\n  textureType: 0\n  textureShape: 1\n  maxTextureSize: 2048\n  textureSettings:\n    serializedVersion: 2\n    filterMode: 1\n    aniso: 1\n    wrapU: 1\n    wrapV: 1\n  alphaIsTransparency: 1\n  textureCompression: 0\n')
     crops={
       'mail-battle':('mailbox',(109,407,237,513)),
       'mail-march':('mailbox',(109,564,237,693)),
@@ -29,6 +29,8 @@ def main():
       'mail-narrative':('mailbox',(109,1112,237,1244)),
       'archer-row':('march',(40,689,309,850)),
       'aldric-face':('march',(118,213,256,447)),
+      'hero-support':('march',(365,210,609,460)),
+      'hero-locked':('march',(634,210,880,460)),
       'training-archer':('training',(111,59,295,535)),
       'training-landscape':('training',(345,64,537,100)),
       'march-scenery':('march',(4,95,937,125)),

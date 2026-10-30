@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T09:05:00.896Z",
+  "updated_at": "2026-10-30T09:11:23.421Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2484,7 +2484,8 @@
         "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41*",
         ".github/workflows/ui-progression-cert.yml",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs",
-        "pipeline/art-production-requests/eldoria-v41-combate-buzon-ui-20261030.json"
+        "pipeline/art-production-requests/eldoria-v41-combate-buzon-ui-20261030.json",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs"
       ],
       "resources": [
         "windows-runner-heavy"
