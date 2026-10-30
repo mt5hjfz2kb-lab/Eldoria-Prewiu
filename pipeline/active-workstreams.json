@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T09:11:23.421Z",
+  "updated_at": "2026-10-30T09:36:14.465Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2499,7 +2499,7 @@
       "art_production_routing": "required",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
       "phase": "FUNCTIONAL_REGRESSION_AND_APPROVED_UI_RECONSTRUCTION",
-      "next": "Reconstruct original approved UI layers without new generated designs; validate actual controls and native A/B. Domain fixes for unique deployed heroes and leader validated.",
+      "next": "Finish already-running native41034159279; inspect exact screenshots. Resolve admission overlap: PR136 reclaimed historical broad master scope at09:30 while explicitly preserving PR134 ownership; its eight actual files do not overlap PR134 changes. Narrow claimed current scope through coordination before further shared UI edits or integration; do not alter another owner's claim.",
       "art_production_routing_reason": "Mandatory tracking for exact source reuse and ArtTests code; no new artwork generation authorized.",
       "ownership_history": [
         {
@@ -2514,7 +2514,25 @@
         "evidence": "Domain and Unity regression tests, actual save/reload and UI interaction, matched native captures against original approved PNGs.",
         "handoff": "Same PR134, verified integration and documented limits; no paid credits or unrequested publication."
       },
-      "art_production_request": "pipeline/art-production-requests/eldoria-v41-combate-buzon-ui-20261030.json"
+      "art_production_request": "pipeline/art-production-requests/eldoria-v41-combate-buzon-ui-20261030.json",
+      "coordination": {
+        "detected_at": "2026-10-30T09:36:14.465Z",
+        "other_pr": 136,
+        "other_workstream": "valoria-master-plan-layered-construction-20261016",
+        "guard_run": 41034337772,
+        "actual_changed_file_overlap": [],
+        "conflicting_inherited_scopes": [
+          ".github/workflows/ui-progression-cert.yml",
+          "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/**",
+          "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+          "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+          "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/**"
+        ],
+        "current_native_already_running": 41034159279,
+        "canonical_pr": 134,
+        "source_head": "32c3109d5791db00fcfc9900f4d5dd3bd5e9dbac",
+        "resolution_needed": "Preserve PR136's eight current files and narrow its inherited historical scopes; PR134 keeps its existing V4.1 scope. No other owner transfer or cancellation authorized."
+      }
     }
   ],
   "history": [
