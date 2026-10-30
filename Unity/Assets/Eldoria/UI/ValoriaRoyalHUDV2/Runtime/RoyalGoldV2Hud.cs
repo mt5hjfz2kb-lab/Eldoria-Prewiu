@@ -30,6 +30,9 @@ namespace Eldoria.UI.RoyalGold.V2
         private bool ready, expanded, portrait, hasGeometry, compactObjective;
         private float lastWidth = -1f, lastHeight = -1f;
         private string lastDetails = "";
+        private static Font chronicleFont;
+        private static Font ChronicleFont => chronicleFont ? chronicleFont :
+            (chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif"));
         private static readonly Color Ivory = new Color(.945f, .913f, .852f);
         private static readonly Color Muted = new Color(.775f, .76f, .715f);
         private static readonly Color Gold = new Color(.886f, .73f, .45f);
@@ -375,7 +378,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var r = NewRect(name, parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var label = r.gameObject.AddComponent<RoyalText>();
-            label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            label.font = ChronicleFont ? ChronicleFont : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             label.fontSize = fontSize;
             label.fontStyle = bold ? FontStyle.Bold : FontStyle.Normal;
             label.alignment = TextAnchor.MiddleLeft;
@@ -392,6 +395,7 @@ namespace Eldoria.UI.RoyalGold.V2
             r.gameObject.AddComponent<CanvasRenderer>();
             var frame = r.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
             frame.Primary = primary;
+            frame.AntiqueGoldAction = primary;
             frame.DecorativeCorners = false;
             frame.color = Color.white;
             frame.raycastTarget = true;
@@ -968,6 +972,16 @@ namespace Eldoria.UI.RoyalGold.V2
                         SetWidthAndHeight(glyph, medalSize * .67f,
                             medalSize * .67f);
                         glyph.anchoredPosition = Vector2.zero;
+                        var icon = glyph.GetComponent<RoyalIconGraphic>();
+                        int desired = item.Section == RoyalSection.Bastion ? 9 :
+                            item.Section == RoyalSection.Inventory ? 15 :
+                            item.Section == RoyalSection.Army ? 4 :
+                            item.Section == RoyalSection.World ? 16 : 6;
+                        if (icon && icon.Icon != desired)
+                        {
+                            icon.Icon = desired;
+                            icon.SetVerticesDirty();
+                        }
                     }
                 }
                 if (item.Label)
@@ -980,6 +994,8 @@ namespace Eldoria.UI.RoyalGold.V2
                         new Vector2(0f, -buttonHeight * .33f);
                     item.Label.fontSize = Mathf.RoundToInt(Mathf.Clamp(
                         cellWidth * .19f, 13f, 17f));
+                    if (ChronicleFont) item.Label.font = ChronicleFont;
+                    item.Label.fontStyle = FontStyle.Normal;
                     item.Label.alignment = TextAnchor.MiddleCenter;
                     item.Label.color = Ivory;
                 }
