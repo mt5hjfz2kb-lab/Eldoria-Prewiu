@@ -231,11 +231,11 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 var corners = new Vector3[4];
                 safe.GetWorldCorners(corners);
-                var left = modalParent.InverseTransformPoint(corners[0]);
-                var right = modalParent.InverseTransformPoint(corners[3]);
+                var safeBottomLeft = modalParent.InverseTransformPoint(corners[0]);
+                var safeBottomRight = modalParent.InverseTransformPoint(corners[3]);
                 frame.anchoredPosition = new Vector2(
-                    (left.x + right.x) * .5f - modalParent.rect.center.x,
-                    left.y - modalParent.rect.yMin + (portraitOrientation ? 23f : 18f));
+                    (safeBottomLeft.x + safeBottomRight.x) * .5f - modalParent.rect.center.x,
+                    safeBottomLeft.y - modalParent.rect.yMin + (portraitOrientation ? 23f : 18f));
             }
             else frame.anchoredPosition = new Vector2(0f, portraitOrientation ? 23f : 18f);
 
