@@ -146,7 +146,7 @@ jobs:
             const metadata=new Set([file,'.github/workflows/aldric-city-domain.yml','pipeline/active-workstreams.json',
               'pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json',
               'docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md','PROJECT_STATE.md','SESSION_HANDOFF.md',
-              'docs/HEROES_UI_APPROVED_ART_LOCK_20261030.md',
+              'docs/HEROES_UI_APPROVED_ART_LOCK_20261030.md','docs/documentation-catalog.json',
               'pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json',
               'pipeline/art-production-requests/eldoria-global-march-capacity-three-slots-20261028.json',
               'pipeline/art-production-requests/eldoria-retention-first-evolution-20261028.json']);
