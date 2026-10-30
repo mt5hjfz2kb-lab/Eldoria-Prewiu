@@ -2578,7 +2578,8 @@
         ".github/workflows/repository-architecture-guard.yml",
         "docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md",
         "docs/documentation-catalog.json",
-        ".github/workflows/tester-qa.yml"
+        ".github/workflows/tester-qa.yml",
+        "tools/check-valoria-visual-authority-routing.mjs"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
@@ -2591,7 +2592,7 @@
         "evidence": "Node unit tests and architecture CI exact head",
         "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
       },
-      "ownership_revision": 4,
+      "ownership_revision": 5,
       "resume_context": {
         "prior_delivered_pr": 104,
         "prior_state": "completed_in_branch",
