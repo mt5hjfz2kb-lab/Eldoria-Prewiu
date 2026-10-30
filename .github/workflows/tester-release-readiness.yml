@@ -22,6 +22,16 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/tester-readiness
+            pipeline/tester-readiness
+      - name: Materialize all original evidence only for a READY claim
+        shell: bash
+        run: |
+          if grep -Eq '"state"[[:space:]]*:[[:space:]]*"READY"' pipeline/tester-readiness/candidate.json; then
+            git sparse-checkout disable
+          fi
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
