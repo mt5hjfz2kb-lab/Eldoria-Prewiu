@@ -2478,14 +2478,18 @@
         "tools/ui-v3-domain-smoke/Smoke.csproj",
         ".github/workflows/ui-v3-domain-smoke.yml",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41*.cs",
-        "Unity/Assets/Eldoria/Tests/EditMode/EldoriaV41*"
+        "Unity/Assets/Eldoria/Tests/EditMode/EldoriaV41*",
+        "Unity/Assets/Eldoria/Resources/EldoriaV41/**",
+        "Unity/Assets/Eldoria/Resources/EldoriaV41.meta",
+        "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41*",
+        ".github/workflows/ui-progression-cert.yml"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
-      "phase": "GATEWAY_AND_LEGACY_DOMAIN_TEST_INTEGRATION",
-      "next": "Wire tested V4.1 hero/roster/mail contracts into save, authoritative gateway and existing RoyalGold V3 controls. Keep current campaign fight resolver unchanged until balance/art QA.",
-      "art_production_routing_reason": "Se programan controles UI y datos C# sin generar nuevo arte. Su apariencia NO está aprobada para lanzamiento; debe sustituirse por capas exactas de las referencias aprobadas con A/B Unity antes de fusionar.",
+      "phase": "FUNCTIONAL_REGRESSION_AND_APPROVED_UI_RECONSTRUCTION",
+      "next": "Reconstruct original approved UI layers without new generated designs; validate actual controls and native A/B. Domain fixes for unique deployed heroes and leader validated.",
+      "art_production_routing_reason": "Exact source crops and uGUI reconstruction from owner-approved PNGs; no new generated artwork, no 3D, no paid API. Real Unity A/B required, no ART_APPROVED claim.",
       "ownership_history": [
         {
           "owner": "chatgpt-gpt6-v41-integration-20261030",
