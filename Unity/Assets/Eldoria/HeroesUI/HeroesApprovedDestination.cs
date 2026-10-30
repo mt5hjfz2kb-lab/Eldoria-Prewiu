@@ -271,7 +271,7 @@ namespace Eldoria.HeroesUI
                 if(compact)
                 {
                     float portraitW=cardW*.43f;
-                    float portraitH=Mathf.Max(30,cardH-96f);
+                    float portraitH=Mathf.Max(30,cardH-104f);
                     if(portrait)
                     {
                         var image=Rect(real?"Verified portrait":"Reserved silhouette",card)
@@ -284,7 +284,7 @@ namespace Eldoria.HeroesUI
                         real?(unlocked?heroes[i].Role+"\nNIVEL "+heroes[i].Level+
                             "\nPODER "+heroes[i].HeroPower:"Bloqueado por la historia"):
                             "Aún no\n disponible",
-                        portraitW+10,47,cardW-portraitW-17,Mathf.Max(35,cardH-92),
+                        portraitW+10,47,cardW-portraitW-17,Mathf.Max(32,cardH-106),
                         15,TextAnchor.MiddleCenter);
                 }
                 else
