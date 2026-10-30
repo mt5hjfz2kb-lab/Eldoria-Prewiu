@@ -400,14 +400,25 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             percentModeButton=Button("Edit march by percent",left,"CANTIDAD / %",TogglePercentMode,
                 false,out percentModeLabel);
-            foreach(var graphic in new[]{destinationArtwork,featuredUnitArtwork,statusArtwork})graphic.enabled=false;
-            backdrop.enabled=false;
+            // Restore the reusable, authored military-hall architecture,
+            // bow and compass BEHIND the approved manuscript textures.
+            // The old implementation disabled these entirely and flattened
+            // the whole room into four oversized rectangles.
+            backdrop.enabled=true;
+            destinationArtwork.enabled=true;
+            destinationArtwork.color=new Color(1f,1f,1f,.52f);
+            featuredUnitArtwork.enabled=true;
+            featuredUnitArtwork.color=new Color(1f,1f,1f,.12f);
+            statusArtwork.enabled=true;
+            statusArtwork.color=new Color(1f,1f,1f,.12f);
             foreach(var pane in new[]{header,left,right,footer})
             {
                 pane.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
-                RoyalGoldV41SourceArt.Surface(pane,"blue-panel",14);
-                // Antique rim, paper shadow and candlelight are independent
-                // of the texture and cannot bake or obscure live state.
+                // Semi-opaque approved parchment admits only a restrained
+                // amount of scene depth; real numbers retain high contrast.
+                var paper=RoyalGoldV41SourceArt.Surface(pane,"blue-panel",14);
+                paper.color=new Color(1f,1f,1f,.94f);
+                // Antique rim and candlelight are independent of the texture.
                 RoyalGoldV3LayeredFinish.Install(pane,
                     RoyalGoldV3LayeredFinish.Scene.Panel,1);
             }
