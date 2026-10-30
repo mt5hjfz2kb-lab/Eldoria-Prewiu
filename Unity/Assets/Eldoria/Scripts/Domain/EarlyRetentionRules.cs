@@ -249,7 +249,7 @@ namespace Eldoria.Domain
         public static int ScoutTroopsForStrategy(int mode)
             => mode==1?8:mode==2?20:12;
         public static string ScoutStrategyName(int mode)
-            => mode==1?"DISCRETA":mode==2?"RÁPIDA":"NORMAL";
+            => mode==1?"SIGILO":mode==2?"RÁPIDA":"NORMAL";
         public static int ScoutDurationSeconds(int kind,int mode)
         {
             int original=ScoutDurationSeconds(kind);
