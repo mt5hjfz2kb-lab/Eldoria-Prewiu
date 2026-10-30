@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "eldoria-v41-combate-buzon-ui-20261030",
+  "request_id": "eldoria-v41-combate-buzon-ui-20261030",
+  "asset_or_sector": "Owner-approved V4.1 two-dimensional UI source reuse and genuine Unity controls",
+  "profile": "environment_composition",
+  "visual_gate_state": "NATIVE_UI_WIP",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Issue131 expressly requires exact approved original PNGs, without new generated designs. Import traceable source crops and reconstruct dynamic uGUI controls. The mandatory routing record does not claim Qwen execution or authorize replacement art.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "unity_native_uGUI": true,
+    "existing_3d_assets_modified": false
+  },
+  "validation": {
+    "source_gate": "Four original SHA256 hashes verified by tools/eldoria-v41/verify_art_references.py; derivative regions and hashes in Resources/EldoriaV41/provenance.json.",
+    "final_gate": "Matched actual Unity screenshots and owner-approved composition, live controls, real save/reload, three marches and regression; no ART_APPROVED from functional checks."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "notes": "No Qwen/Tripo invocation, new geometry, or paid work. Existing-source UI integration routed like the prior global-march native-UI workstream. Original source reuse is mandatory; not permission to generate art. Native run41030096500 passed V41 interaction but visual review found differences; remain DRAFT."
+}

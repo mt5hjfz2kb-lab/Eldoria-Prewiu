@@ -276,6 +276,7 @@ namespace Eldoria.ReferenceClean.Editor
             Need(gateway.Execute(Command(gateway,"native-investigate","InvestigateFissure","fissure-valoria")).Ok,
                 "Actual investigation starts in one global slot");
             Need(gateway.Execute(Command(gateway,"native-mixed-world1","Gather","forest-valoria")).Ok&&
+                gateway.Execute(Command(gateway,"native-mixed-lyra","ConfigureMarch","march-main:60:lyra")).Ok&&
                 gateway.Execute(Command(gateway,"native-mixed-world2","Gather","quarry-valoria")).Ok,
                 "Investigation allows both other global march slots");
             Need(!gateway.Execute(Command(gateway,"native-mixed-fourth","Fight","corrupt-scout")).Ok,

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T08:55:59.613Z",
+  "updated_at": "2026-10-30T09:05:00.896Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2483,16 +2483,17 @@
         "Unity/Assets/Eldoria/Resources/EldoriaV41.meta",
         "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41*",
         ".github/workflows/ui-progression-cert.yml",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs"
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs",
+        "pipeline/art-production-requests/eldoria-v41-combate-buzon-ui-20261030.json"
       ],
       "resources": [
         "windows-runner-heavy"
       ],
-      "art_production_routing": "not_applicable",
+      "art_production_routing": "required",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
       "phase": "FUNCTIONAL_REGRESSION_AND_APPROVED_UI_RECONSTRUCTION",
       "next": "Reconstruct original approved UI layers without new generated designs; validate actual controls and native A/B. Domain fixes for unique deployed heroes and leader validated.",
-      "art_production_routing_reason": "Exact source crops and uGUI reconstruction from owner-approved PNGs; no new generated artwork, no 3D, no paid API. Real Unity A/B required, no ART_APPROVED claim.",
+      "art_production_routing_reason": "Mandatory tracking for exact source reuse and ArtTests code; no new artwork generation authorized.",
       "ownership_history": [
         {
           "owner": "chatgpt-gpt6-v41-integration-20261030",
@@ -2505,7 +2506,8 @@
         "deliverable": "Issue131: actual three-hero/percentage march preparation, narrative-gated training, persistent battle mailbox and approved reference UI in canonical Unity game; preserve Bastion I–V resolver/versioned experimental V4.1.",
         "evidence": "Domain and Unity regression tests, actual save/reload and UI interaction, matched native captures against original approved PNGs.",
         "handoff": "Same PR134, verified integration and documented limits; no paid credits or unrequested publication."
-      }
+      },
+      "art_production_request": "pipeline/art-production-requests/eldoria-v41-combate-buzon-ui-20261030.json"
     }
   ],
   "history": [

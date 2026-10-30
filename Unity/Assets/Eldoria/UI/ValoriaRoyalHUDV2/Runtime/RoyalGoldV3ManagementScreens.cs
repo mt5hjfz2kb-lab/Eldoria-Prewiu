@@ -426,9 +426,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(heroSlots[1]==heroSlots[0])heroSlots[1]=null;
             }
             else if(hasLyra)
-                heroSlots[1]=heroSlots[1]==null?
+                heroSlots[1]=string.IsNullOrEmpty(heroSlots[1])?
                     (heroSlots[0]=="aldric"?"lyra":"aldric"):null;
-            selectedHero=heroSlots[1]!=null?"aldric+lyra":heroSlots[0];
+            selectedHero=!string.IsNullOrEmpty(heroSlots[1])?"aldric+lyra":heroSlots[0];
             Refresh();
         }
         void TogglePercentMode()
@@ -529,7 +529,7 @@ namespace Eldoria.UI.RoyalGold.V2
             for(int i=0;i<3;i++)
             {
                 heroSlotButtons[i].gameObject.SetActive(!training);
-                heroSlotLabels[i].Put(heroSlots[i]==null?
+                heroSlotLabels[i].Put(string.IsNullOrEmpty(heroSlots[i])?
                     (i==2?"HÉROE 3 · BLOQUEADO":"HÉROE "+(i+1)+" · +"):
                     (i==0?"LÍDER · ":"APOYO · ")+HeroName(heroSlots[i]));
                 heroSlotButtons[i].interactable=i<2 &&

@@ -179,7 +179,8 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 var button=Find("Buzón "+categories[i]);
                 Position((RectTransform)button.transform,left+i*(tabW+gap),tabsY,tabW,tabH);
-                tabLabels[i].fontSize=wide?16:Mathf.Clamp(Mathf.RoundToInt(tabW*.16f),13,24);
+                tabLabels[i].fontSize=Mathf.Clamp(Mathf.RoundToInt(tabW*.085f),12,18);
+                tabLabels[i].horizontalOverflow=HorizontalWrapMode.Overflow;
             }
             float bodyY=tabsY+tabH+12,bodyH=h-bodyY-bottom-46;
             float rowH=bodyH/5f;
