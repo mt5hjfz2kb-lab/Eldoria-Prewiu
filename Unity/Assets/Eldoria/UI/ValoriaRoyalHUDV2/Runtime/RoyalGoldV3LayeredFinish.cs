@@ -14,6 +14,7 @@ namespace Eldoria.UI.RoyalGold.V2
     {
         public enum Scene { Vigilants, Scouts, Training, March, Panel, Portrait }
         [SerializeField] Scene scene;
+        public Scene CurrentScene => scene;
         float nextRepaint;
 
         public static RoyalGoldV3LayeredFinish Install(
