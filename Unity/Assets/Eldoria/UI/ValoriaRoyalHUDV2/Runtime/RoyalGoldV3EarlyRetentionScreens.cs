@@ -579,8 +579,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 Close,out backLabel);
             // A genuine pre-dispatch decision, not decoration: fewer troops
             // for more time, or more committed troops for an earlier return.
-            scoutStrategyButton=Button(panel,"Choose scout troop-versus-time strategy",
-                "RUTA NORMAL",CycleScoutStrategy,out scoutStrategyLabel);
+            scoutStrategyButton=Button(panel,"Prepare actual march or choose scout strategy",
+                "RUTA NORMAL",TacticalAction,out scoutStrategyLabel);
             // Match the reference's book typography only within this room.
             // Keep compact state/resource text in the proven HUD font.
             var referenceFont=Resources.Load<Font>("EldoriaRetention/reference-serif");
@@ -678,6 +678,19 @@ namespace Eldoria.UI.RoyalGold.V2
             if(EarlyRetentionRules.StageUnlocked(s,next))Submit("VigilantBattle",next.ToString());
         }
         void CollectXp() => Submit("ClaimVigilantXp","aldric");
+        void TacticalAction()
+        {
+            if(!IsOpen || Hud==null)return;
+            if(OpenDestination==Destination.Scouts){CycleScoutStrategy();return;}
+            // The player's composition is configured in the existing royal
+            // military room, never a second temporary army or fake shortcut.
+            var manager=Hud.GetComponentInChildren<RoyalGoldV3ManagementScreens>(true);
+            var state=gateway?.Snapshot();
+            if(manager==null || state==null || state.BastionLevel<2 ||
+                state.BarracksLevel<1)return;
+            Close();
+            manager.Open(RoyalGoldV3ManagementScreens.Destination.March);
+        }
         void CycleScoutStrategy()
         {
             if(!IsOpen || OpenDestination!=Destination.Scouts)return;
@@ -1132,8 +1145,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 (narrow?"MESA DE EXPLORADORES · ENCARGOS":
                 "Envía a tus exploradores y descubre nuevas tierras"));
             introduction.gameObject.SetActive(false);
-            scoutStrategyButton.gameObject.SetActive(!vig);
-            if(!vig)
+            scoutStrategyButton.gameObject.SetActive(true);
+            if(vig)
+            {
+                bool marchReady=s.BastionLevel>=2 && s.BarracksLevel>=1;
+                scoutStrategyLabel.Put(marchReady?"FORMAR\nMARCHA":"MARCHA\nBLOQUEADA");
+                scoutStrategyButton.interactable=marchReady;
+            }
+            else
             {
                 scoutStrategyLabel.Put(scoutStrategyMode==1?"RUTA\nSIGILO":
                     scoutStrategyMode==2?"RUTA\nRÁPIDA":"RUTA\nNORMAL");
