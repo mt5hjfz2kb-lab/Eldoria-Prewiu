@@ -29,7 +29,9 @@ namespace Eldoria.UI.RoyalGold.V2
         public int SelectedTier => selectedTier;
         ICommandGateway gateway;
         RoyalGoldV41MailboxScreen mailbox;
-        Image approvedArcher,approvedTroopRow,trainingEnvironment;
+        Image approvedArcher,approvedTroopRow,trainingEnvironment,marchEnvironment;
+        RectTransform marchHeadingSurface,marchTroopSurface;
+        readonly RectTransform[] heroPortraitViewports=new RectTransform[3];
         readonly Dictionary<RectTransform,Image> paneSurfaces=new Dictionary<RectTransform,Image>();
         readonly Image[] approvedHeroes=new Image[3];
         Func<long> utcTicks;
@@ -316,6 +318,12 @@ namespace Eldoria.UI.RoyalGold.V2
             var courtyardFit=trainingEnvironment.gameObject.AddComponent<AspectRatioFitter>();
             courtyardFit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;
             courtyardFit.aspectRatio=1.5f;
+            marchEnvironment=RoyalGoldV41SourceArt.Surface(root,"training-courtyard-layer-v1");
+            marchEnvironment.rectTransform.SetAsLastSibling();
+            var marchFit=marchEnvironment.gameObject.AddComponent<AspectRatioFitter>();
+            marchFit.aspectMode=AspectRatioFitter.AspectMode.EnvelopeParent;
+            marchFit.aspectRatio=1.5f;
+            marchEnvironment.gameObject.SetActive(false);
             layoutRoot=Rect("V3 / Responsive military layout",root);
             header = Frame("V3 / Destination header",layoutRoot,false);
             left = Frame("V3 / Featured military unit",layoutRoot,false);
@@ -435,13 +443,21 @@ namespace Eldoria.UI.RoyalGold.V2
                 RoyalGoldV3LayeredFinish.Install(pane,
                     RoyalGoldV3LayeredFinish.Scene.Panel,1);
             }
+            marchHeadingSurface=Rect("March / hero section cartouche",left);
+            RoyalGoldV41SourceArt.Surface(marchHeadingSurface,"blue-panel",14);
+            marchHeadingSurface.SetAsFirstSibling();
+            marchTroopSurface=Rect("March / live troop order cartouche",left);
+            RoyalGoldV41SourceArt.Surface(marchTroopSurface,"blue-panel",14);
+            marchTroopSurface.SetAsFirstSibling();
             approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer-isolated-v1");
             approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
             approvedTroopRow=RoyalGoldV41SourceArt.Surface(left,"archer-row");
             approvedTroopRow.preserveAspect=true;approvedTroopRow.rectTransform.SetAsLastSibling();
             for(int i=0;i<3;i++)
             {
-                approvedHeroes[i]=RoyalGoldV41SourceArt.Surface((RectTransform)heroSlotButtons[i].transform,"aldric-face");
+                heroPortraitViewports[i]=Rect("Hero portrait viewport",heroSlotButtons[i].transform);
+                heroPortraitViewports[i].gameObject.AddComponent<RectMask2D>();
+                approvedHeroes[i]=RoyalGoldV41SourceArt.Surface(heroPortraitViewports[i],"aldric-face");
                 approvedHeroes[i].preserveAspect=true;
             }
             var goldAction=RoyalGoldV41SourceArt.Surface((RectTransform)action.transform,"gold-button",14);
@@ -475,7 +491,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 heroSlots[1]=candidate;
             }
             selectedHero=!string.IsNullOrEmpty(heroSlots[1])?"aldric+lyra":heroSlots[0];
-            Refresh();
+            Reflow();Refresh();
         }
         void TogglePercentMode()
         {
@@ -759,7 +775,9 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             Place(footer,leftSide,h-bottom-footH,usable,footH);
             float hw=header.rect.width;
-            heroesButton.gameObject.SetActive(HeroesRequested!=null&&(CanOpenHeroes==null||CanOpenHeroes()));
+            // Keep the destination discoverable while its narrative prerequisite is locked.
+            // Interactability and both destination guards still enforce Lyra recruitment.
+            heroesButton.gameObject.SetActive(HeroesRequested!=null);
             heroesButton.interactable=HeroesRequested!=null&&(CanOpenHeroes==null||CanOpenHeroes());
             Place(heroesButton.transform as RectTransform,hw*.50f,landscape?7:9,hw*.19f,landscape?52:60);
             Place(heading.rectTransform,landscape?14:15,7,hw*.47f,landscape?40:37);
@@ -870,17 +888,20 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             bool training=CurrentDestination==Destination.Training;
             trainingEnvironment.gameObject.SetActive(training);
-            destinationArtwork.enabled=!training;
-            featuredUnitArtwork.enabled=!training;
-            statusArtwork.enabled=!training;
-            militaryDepth.gameObject.SetActive(!training);
+            marchEnvironment.gameObject.SetActive(!training);
+            marchHeadingSurface.gameObject.SetActive(!training);
+            marchTroopSurface.gameObject.SetActive(!training);
+            destinationArtwork.enabled=false;
+            featuredUnitArtwork.enabled=false;
+            statusArtwork.enabled=false;
+            militaryDepth.gameObject.SetActive(false);
             foreach(var pane in new[]{header,left,right,footer})
             {
-                paneSurfaces[pane].enabled=!training||pane==header||pane==right;
+                paneSurfaces[pane].enabled=pane==header||pane==right;
                 pane.GetComponent<RoyalGoldV2FrameGraphic>().enabled=
-                    !training||pane==header||pane==right;
+                    pane==header||pane==right;
                 foreach(var finish in pane.GetComponentsInChildren<RoyalGoldV3LayeredFinish>(true))
-                    finish.gameObject.SetActive(!training);
+                    finish.gameObject.SetActive(false);
             }
             unitTitle.color=training?new Color(.10f,.08f,.055f):Ivory;
             unitDetail.color=training?new Color(.16f,.13f,.10f):Muted;
@@ -1035,19 +1056,25 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(left,x,y,lw,lh);
                 Place(right,wide?x+lw+gap:x,wide?y:y+lh+gap,
                     wide?width-lw-gap:width,wide?height:height-lh-gap);
+                Place(marchHeadingSurface,8,0,lw-16,wide?38:58);
                 Place(unitTitle.rectTransform,14,8,lw-28,wide?30:50);
                 float cardsY=wide?43:65,cardsH=Mathf.Max(60,lh*(compactLandscape?.36f:wide?.48f:.42f)),cardW=(lw-40)/3f;
                 for(int i=0;i<3;i++)
                 {
                     Place((RectTransform)heroSlotButtons[i].transform,14+i*(cardW+6),cardsY,cardW,cardsH);
-                    float portraitH=compactLandscape?Mathf.Max(40,cardsH-66):cardsH*(wide?.72f:.70f);
+                    float portraitH=compactLandscape?Mathf.Max(40,cardsH-70):cardsH*.70f;
                     float ratio=heroSlots[i]=="aldric"?138f/234f:244f/250f;
-                    float portraitW=Mathf.Min(cardW-8,portraitH*ratio);
-                    Place(approvedHeroes[i].rectTransform,(cardW-portraitW)*.5f,4,portraitW,portraitH);
+                    // Fill the portrait aperture with authentic pixels, crop only
+                    // inside its mask, and keep live names outside that aperture.
+                    float apertureW=cardW-16;
+                    Place(heroPortraitViewports[i],8,6,apertureW,portraitH);
+                    float portraitW=Mathf.Max(apertureW,portraitH*ratio);
+                    Place(approvedHeroes[i].rectTransform,(apertureW-portraitW)*.5f,0,portraitW,portraitW/ratio);
                     Place(heroSlotLabels[i].rectTransform,4,compactLandscape?cardsH-60:cardsH*(wide?.74f:.72f),cardW-8,compactLandscape?54:cardsH*(wide?.24f:.26f));
                     heroSlotLabels[i].fontSize=wide?14:13;
                 }
                 float rowY=cardsY+cardsH+8;
+                Place(marchTroopSurface,8,rowY-4,lw-16,lh-rowY-4);
                 Place(approvedTroopRow.rectTransform,14,rowY,lw*.29f,lh-rowY-18);
                 Place(unitDetail.rectTransform,lw*.34f,rowY,lw*.63f,wide?40:76);
                 Place(tierButton.transform as RectTransform,lw*.34f,rowY+(wide?42:84),lw*.63f,wide?32:80);
