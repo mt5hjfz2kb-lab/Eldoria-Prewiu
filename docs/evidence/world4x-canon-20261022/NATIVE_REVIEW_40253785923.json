@@ -1,0 +1,39 @@
+{
+  "run": 40253785923,
+  "source": "9394a4d305283203e800df6c6d4d7b05c5039873",
+  "playmode": {
+    "cases": 62,
+    "sha256": "43bbb910effa0e3ec0fa4534b73f8f736b1ceaab0dfc86a14ad8983552eddd61",
+    "passed": 62,
+    "failed": 0,
+    "skipped": 0
+  },
+  "general_playmode": {
+    "cases": 62,
+    "sha256": "43bbb910effa0e3ec0fa4534b73f8f736b1ceaab0dfc86a14ad8983552eddd61",
+    "passed": 62,
+    "failed": 0,
+    "skipped": 0
+  },
+  "editmode": {
+    "cases": 26,
+    "sha256": "e0503ef1cd68f6c7e900e7e31ded5e128f2033dfffa86048b1be8f44e508e5fa",
+    "passed": 26,
+    "failed": 0,
+    "skipped": 0
+  },
+  "camera_pairs_identical": 6,
+  "world_pngs": 161,
+  "camera_manifests_verified": 160,
+  "general_pngs": 34,
+  "integration_checks": 44,
+  "physical_mobile_tested": false,
+  "art_approved": false,
+  "assets_commit": "0d3de6522f79ad85fb153a843e62fd177500491d",
+  "artifact_id": 12621653870,
+  "artifact_bytes": 216769979,
+  "artifact_sha256": "f89cd3850c89b3ab1a884b3af4cd4fb922946e2508f9e5a331a334a9377ed004",
+  "interior_lit_pixels": 76163,
+  "visual_outcome": "RETAINED",
+  "visual_review": "REGION1_MACRO_REVIEW_40253785923.md"
+}

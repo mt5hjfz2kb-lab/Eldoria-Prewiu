@@ -1,0 +1,72 @@
+{
+  "source_glb_sha256": "d23114d40777e014dac5de7b18078143b9d32e66df79798871751b9b1d9c6738",
+  "project_color_space": "Gamma",
+  "sources": [
+    {
+      "material": "Region1 open meadows",
+      "source_png_sha256": "c43db9b1d890932306d99d620c88adab16139817b23abdb1daea222bc1705c52",
+      "decoded_srgb_mean": [
+        0.4346478734323391,
+        0.42127587145540235,
+        0.1797616746442024
+      ],
+      "original_unchanged": true
+    },
+    {
+      "material": "Ochre meadow",
+      "source_png_sha256": "dff63ccbae65e844cebfa0e018db0dcbd3792ec3e4bb27f0a59b223bf5af07db",
+      "decoded_srgb_mean": [
+        0.5265297282122856,
+        0.5298253489657143,
+        0.22474894054895797
+      ],
+      "original_unchanged": true
+    },
+    {
+      "material": "P connected meadow forest floor paths",
+      "source_png_sha256": "6e8d2c503a45964a97e6dbbaf4fc1e7c6cee046e9e576da10cdee7d358e06926",
+      "decoded_srgb_mean": [
+        0.5152070793447674,
+        0.5076662400192476,
+        0.27548813539050393
+      ],
+      "original_unchanged": true
+    },
+    {
+      "material": "AI open meadow paths",
+      "source_png_sha256": "8d48f39a6ab4475e155779567ec42ef3764527d1bcf0f851fcbffe52c4cb4eba",
+      "decoded_srgb_mean": [
+        0.5442912008235634,
+        0.5339069403847051,
+        0.26453815534936864
+      ],
+      "original_unchanged": true
+    }
+  ],
+  "shared_palette_srgb": [
+    0.6,
+    0.64,
+    0.28
+  ],
+  "relative_value_bounds": [
+    0.92,
+    1.08
+  ],
+  "brush_primary_weight": 1.0,
+  "original_source_grain_relative_weight": 0.0,
+  "actual_cast_shadows_preserved": true,
+  "original_paths_preserved": true,
+  "terrain_geometry_changed": false,
+  "purpose": "Unify centre/continent using measured source means; retain near detail and lift exterior light response rather than darken the core.",
+  "actual_unity_review": {
+    "run": 40337702256,
+    "review": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+    "outcome": "RETAINED_AUTHOR_REVIEW",
+    "art_approved": false
+  },
+  "art_approved": false,
+  "previous_primary_weight": 0.85,
+  "shared_original_AF_grain": true,
+  "source_means_purpose": "Original source chroma classifies retained earth/paths; grass display uses exactly one common painted albedo and one shared AF detail field.",
+  "basin_transition": "Same source-authored basin texture and55\u2013125m pigment transition on BOTH meadow and basalt material slots; native UV V verified from actual terrain snapshot."
+}

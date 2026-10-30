@@ -1,9 +1,9 @@
 {
   "enabled": false,
-  "versionCode": 10,
-  "versionName": "1.10",
+  "versionCode": 19,
+  "versionName": "1.19",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Signed code10/1.10 updater-UI build 39502034675 SUCCESS from pinned integrated main 3a1cc3f17dc7adc543126c46ec53f402bb39aa94. Disable duplicate native builds; next upgrade requires monotonic code11 and separate QA."
+  "note": "Exact code19 build40946564387/sourceb310d3b0496b10bab8f1a413f8a588ff5f9b8df3 SUCCESS.468290348bytes < installed450MiB, native original signature/package/permissions verified. Disable repeat build before channel promotion. Release workflow must compare public bytes before updating channel; no physical-phone claim."
 }

@@ -43,9 +43,23 @@ namespace Eldoria.Presentation
                 Debug.LogError("Eldoria save load failed; existing save untouched: " + error);
                 ui.Initialize(new LocalGateway(new SystemClock(), new VolatileStore()));
             }
-            SceneManager.sceneLoaded += ui.OnSceneLoaded;
+            // The integrated city creates its own authoritative presenter in
+            // Awake. A persistent legacy presenter must yield before Start,
+            // otherwise both create a HUD and the legacy Canvas (order 100)
+            // intercepts the Royal HUD (order 40), even when visually hidden.
+            void Loaded(Scene scene, LoadSceneMode mode)
+            {
+                if (!ui) return;
+                bool owned = false;
+                foreach (var root in scene.GetRootGameObjects())
+                    foreach (var presenter in root.GetComponentsInChildren<SlicePresenter>(true))
+                        if (presenter != ui && presenter.SceneHost != null) owned = true;
+                ui.enabled = !owned;
+                if (!owned) ui.OnSceneLoaded(scene, mode);
+            }
+            SceneManager.sceneLoaded += Loaded;
             if (SceneManager.GetActiveScene().name == "Bootstrap") SceneManager.LoadScene("Valoria");
-            else ui.OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+            else Loaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
         }
 
         private static string CitySceneName

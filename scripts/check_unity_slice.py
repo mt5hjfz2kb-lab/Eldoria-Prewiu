@@ -8,6 +8,7 @@ This does not compile or launch the Unity player, or delete shared worktrees.
 The separate native PlayMode gate uses the existing disposable game fixture.
 """
 import json
+import re
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[1] / "Unity"
@@ -26,5 +27,38 @@ for module in ("Domain", "Application", "Infrastructure", "Presentation"):
     assert list((root / f"Assets/Eldoria/Scripts/{module}").glob("*.asmdef")), module
 for layer in ("EditMode", "PlayMode"):
     assert list((root / f"Assets/Eldoria/Tests/{layer}").glob("*Tests.cs")), layer
-print("PASS source preflight: editor patch, packages, versioned scenes, modules and tests")
+def playmode_process_budget(workflow: Path) -> int:
+    marker = "      - name: PlayMode"
+    text = workflow.read_text()
+    assert text.count(marker) == 1, f"Expected one complete PlayMode step: {workflow}"
+    step = text.split(marker, 1)[1].split("\n      - ", 1)[0]
+    waits = re.findall(r"WaitForExit\((\d+)\)", step)
+    assert len(waits) == 1, f"Expected a bounded PlayMode process wait: {workflow}"
+    return int(waits[0])
+
+# Both gates execute the complete integrated suite. The generic process must
+# not kill that suite earlier than the measured shared UI certification does.
+workflows = root.parent / ".github/workflows"
+generic_budget = playmode_process_budget(workflows / "unity-slice.yml")
+certified_budget = playmode_process_budget(workflows / "ui-progression-cert.yml")
+assert generic_budget >= certified_budget, (
+    f"Generic PlayMode budget {generic_budget}ms is shorter than the complete "
+    f"certification budget {certified_budget}ms; retain every test and allow startup/teardown"
+)
+# BuildPlayer imports Resources and invokes graphics-package validation callbacks.
+# A Null graphics device cannot resolve their compute kernels on this GPU runner.
+text = (workflows / "unity-slice.yml").read_text()
+marker = "      - name: Windows desktop build\n"
+assert text.count(marker) == 1, "Expected one real Windows player build"
+step = text.split(marker, 1)[1].split("\n      - ", 1)[0]
+assert '"-force-d3d11"' in step and '"-nographics"' not in step, (
+    "Windows BuildPlayer must initialize the native-tested Direct3D backend, not Null graphics"
+)
+# The legacy packaging helper regenerates its three-scene list. Keep its
+# side effects after canonical-scene tests; otherwise33 real cases cannot boot.
+assert text.index("      - name: EditMode\n") < text.index(marker)
+assert text.index("      - name: PlayMode\n") < text.index(marker), (
+    "Legacy SceneSetup packaging must not replace the scene list before integrated PlayMode"
+)
+print("PASS source preflight: editor patch, packages, versioned scenes, modules, tests, full-suite budget and graphical Windows packaging")
 

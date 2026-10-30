@@ -1,0 +1,31 @@
+{
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "stone-portrait",
+    "sha256": "71f9cb76862ab260ad27a300b83492fb1249100ed314ef672d38952c00579f58",
+    "context": "Actual production geography and resource camera across Region 1",
+    "targetId": "region1:stone:001",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 720,
+    "height": 1280,
+    "zoom": 64.0,
+    "aspect": 0.5625,
+    "cameraPosition": {
+        "x": 876.0,
+        "y": 113.6776351928711,
+        "z": -1362.8475341796875
+    },
+    "worldTarget": {
+        "x": 876.0,
+        "y": 4.376931190490723,
+        "z": -1246.0
+    },
+    "cameraRotation": {
+        "x": 0.36722108721733096,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.9301337003707886
+    }
+}

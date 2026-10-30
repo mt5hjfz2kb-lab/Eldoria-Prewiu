@@ -645,6 +645,20 @@ jobs:
             throw 'Remote Tripo generation requires an explicit source.tripo_model; no implicit P2/H3 selection is allowed.'
           }
           Write-Host "CREDIT_AUTHORIZATION: approved=true | authorized_credit_cost=$authorizedCredits | model=$model"
+          # Scoped Aldric one-shot credit guard BEFORE submitting the paid task.
+          if ([string]$request.module_label -eq 'Eldoria_SirAldric_HeroPilot_v1') {
+            if ($mode -ne 'tripo_text' -or $model -ne 'v3.1-20260211' -or $authorizedCredits -ne 20) { throw 'Aldric paid task not exactly scoped.' }
+            $doctor = (& $tripo.Source doctor 2>&1 | Out-String).Trim()
+            if ($LASTEXITCODE -ne 0 -or $doctor -notmatch '"ok"\s*:\s*true') { throw 'Aldric Tripo doctor failure; no call.' }
+            $bal = (& $tripo.Source balance --json 2>&1 | Out-String).Trim()
+            if ($LASTEXITCODE -ne 0) { throw 'Aldric API balance unavailable; no call.' }
+            $available = $null
+            try { $b=$bal | ConvertFrom-Json; foreach ($v in @($b.balance,$b.available,$b.available_credits,$b.credits_available,$b.data.balance,$b.data.available)) {
+              if ($null -ne $v -and "$v" -match '^\d+(\.\d+)?$') { $available=[double]$v; break }
+            } } catch {}
+            if ($null -eq $available -or $available -lt 20) { throw 'Aldric requires 20 prepaid API credits.' }
+            Write-Host "ALDRIC_SAFE_PREPAID_BALANCE=PASS available=$available"
+          }
           $faceLimit = [int]$request.source.face_limit
           if ($faceLimit -le 0) { $faceLimit = 50000 }
 
@@ -678,8 +692,39 @@ jobs:
             }
             Write-Host "TRIPO_SCOPED_H31_PREFLIGHT=PASS available_credits=$available approved=20"
           }
+          # Owner-approved isolated tier-five H3.1 assets: restrict cost and immutable text before charge.
+          $tier5 = @{
+            'Eldoria_BastionV_ApprovedA_v1' = @('eldoria-tier5-bastion-v-h31-20261028','51432f84271c91d2371c86618628e8a921cf74f50ae762160211a9cb921bea70','[tripo-tier5-bastion-v-once]')
+            'Eldoria_Lyra_Ranger_v1' = @('eldoria-tier5-lyra-h31-20261028','dcdc87ba21ff1969ae206a68f18381217ed662d342670467f6a49f0fc16721c5','[tripo-tier5-lyra-once]')
+            'Eldoria_AserraderoV_ApprovedB_v1' = @('eldoria-tier5-aserradero-v-h31-20261028','4bc7f50b0688dd54fc23a81f6bbe9fe82f12b8491f976aee9400279743ba78f3','[tripo-tier5-aserradero-v-once]')
+            'Eldoria_CuartelV_ApprovedA_v1' = @('eldoria-tier5-cuartel-v-h31-20261028','71d7b53c1cdcb62a04cf5cfcb86ae7fd0aa8d237698aa71bd40101780f4ea1bb','[tripo-tier5-cuartel-v-once]')
+            'Eldoria_GraneroV_Simplificado_v1' = @('eldoria-tier5-granero-v-h31-20261028','c63ca280d3266c01559f09c565a80f39fc189355c428c7a1a7fe79825c17d9cc','[tripo-tier5-granero-v-once]')
+            'Eldoria_CanteraV_IndustrialSimple_v1' = @('eldoria-tier5-cantera-v-h31-20261028','9933e4d621f9fcc8864000199d5f40273c765806b224244bea8453c36643aac4','[tripo-tier5-cantera-v-once]')
+          }
+          $isTier5 = $tier5.ContainsKey([string]$request.module_label)
+          if ($isTier5) {
+            $rule = $tier5[[string]$request.module_label]
+            $eventName = '${{ github.event_name }}'
+            $commitMessage = '${{ github.event.head_commit.message }}'
+            if ($eventName -ne 'push' -or -not $commitMessage.Contains([string]$rule[2])) { throw 'Tier5 paid generation requires its unique push marker.' }
+            if ([string]$request.request_id -ne [string]$rule[0]) { throw 'Tier5 request identity mismatch.' }
+            if ($mode -ne 'tripo_text' -or $model -ne 'v3.1-20260211' -or $authorizedCredits -ne 20) { throw 'Tier5 requires H3.1 text and 20 existing credits exactly.' }
+            if ($faceLimit -lt 50000 -or $faceLimit -gt 100000 -or ([string]$request.source.prompt).Length -gt 1024) { throw 'Tier5 invalid face/prompt limits.' }
+            $bytes = [Text.Encoding]::UTF8.GetBytes([string]$request.source.prompt)
+            $shaObj = [Security.Cryptography.SHA256]::Create()
+            try { $hash = [BitConverter]::ToString($shaObj.ComputeHash($bytes)).Replace('-','').ToLowerInvariant() } finally { $shaObj.Dispose() }
+            if ($hash -ne [string]$rule[1]) { throw 'Tier5 approved prompt hash mismatch.' }
+            $diagnostic = (& $tripo.Source doctor 2>&1 | Out-String).Trim()
+            if ($LASTEXITCODE -ne 0 -or $diagnostic -notmatch '"ok"\s*:\s*true') { throw 'Tier5 authenticated Tripo doctor failed.' }
+            $balRaw = (& $tripo.Source balance --json 2>&1 | Out-String).Trim()
+            if ($LASTEXITCODE -ne 0) { throw 'Tier5 balance failed.' }
+            $balance = $balRaw | ConvertFrom-Json
+            $available = @($balance.balance,$balance.available,$balance.available_credits,$balance.credits_available,$balance.data.balance,$balance.data.available) | Where-Object { $null -ne $_ -and "$_" -match '^\d+(\.\d+)?$' } | Select-Object -First 1
+          if ($null -eq $available -or [double]$available -lt 20) { throw 'Tier5 requires at least 20 prepaid credits; no purchase.' }
+          Write-Host "TRIPO_TIER5_PREFLIGHT=PASS label=$($request.module_label) approved=20 balance=$available"
+          }
           $args = @('make') + $inputArgs + @('--model',$model,'-p',"face_limit=$faceLimit",'--json','--yes','--no-open','-o',$outDir)
-          if ($isScopedH31) {
+          if ($isScopedH31 -or $isTier5 -or [string]$request.module_label -eq 'Eldoria_SirAldric_HeroPilot_v1') {
             $args += @('-p','texture=true','-p','pbr=true','-p','texture_quality=standard','-p','geometry_quality=standard')
           }
           Write-Host ("TRIPO_COMMAND: tripo " + (($args | ForEach-Object {
@@ -812,7 +857,7 @@ jobs:
             throw 'Canonical Blender processor unavailable or incomplete. The Tripo-paid GLB remains preserved.'
           }
           $args = @("--background","--python",$processor,"--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig,"--target-tris",$targetTris,"--min-tris",$minTris,"--max-tris",$maxTris)
-          if (@('Eldoria_RockBoar_FirstHunt_v1','Eldoria_Spawnling_Bastion2_v1','Eldoria_RiftFocus_v1') -contains [string]$request.module_label) {
+          if (@('Eldoria_RockBoar_FirstHunt_v1','Eldoria_Spawnling_Bastion2_v1','Eldoria_RiftFocus_v1','Eldoria_SirAldric_HeroPilot_v1') -contains [string]$request.module_label) {
             $args += '--save-blend'
           }
           if ($null -ne $request.multipiece -and [bool]$request.multipiece.enabled) {

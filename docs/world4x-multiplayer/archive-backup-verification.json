@@ -1,0 +1,30 @@
+{
+  "sha256": "9bfb12c60b1f84218705e9f9a7ee32278df3f1f71811c6c05248b24b422507bb",
+  "pc_path": "C:\\Users\\crist\\Documents\\EldoriaArchives\\eldoria-354-assets-20261026.zip",
+  "source_assets": 354,
+  "bytes": 264433994,
+  "snapshot": "d9d4e1f9ffb9f7ab29e1c963a80eb08321c35bb4",
+  "status": "CREATED_AND_HASH_VERIFIED",
+  "run_id": 40403787985,
+  "artifact_id": 12690382554,
+  "included_files": 742,
+  "original_asset_bytes": 1909173156,
+  "assets_removed": 0,
+  "unity_reimport_tested": false,
+  "verification": [
+    "Git blob SHA1 per file",
+    "SHA256 per file",
+    "Unity GUID metadata",
+    "ZIP CRC",
+    "whole ZIP SHA256"
+  ],
+  "reverification": {
+    "run_id": 40404173727,
+    "artifact_id": 12693362102,
+    "source_commit": "217f5eed401e1e7e634368dfe5cb18a55c90f2f8",
+    "status": "EXISTING_REVERIFIED",
+    "same_zip_sha256": "9bfb12c60b1f84218705e9f9a7ee32278df3f1f71811c6c05248b24b422507bb",
+    "existing_zip_overwritten": false,
+    "checks": "Every ZIP member reread against Git blob identity and manifest SHA256; whole ZIP and original sidecar identical."
+  }
+}

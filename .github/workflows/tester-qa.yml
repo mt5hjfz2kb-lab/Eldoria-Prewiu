@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   pull-requests: read
 
 concurrency:
@@ -64,6 +65,62 @@ jobs:
                 core.warning('Changed-file lookup failed; running all web checks.');
               }
             }
+            // PR120 also carries two already-certified legacy QA repairs.
+            // Compare with their completed proof, not with main before those repairs.
+            if(required && context.eventName==='pull_request' &&
+              ((context.issue.number===120 && context.payload.pull_request.head.ref==='feature/eldoria-early-retention-20261028') ||
+               (context.issue.number===122 && context.payload.pull_request.head.ref==='feature/aldric-city-roaming-20261028'))) {
+              try {
+                const certified='bd0b48a6be86bbb8849b1b9fa8d4b7283da9d3c2';
+                const head=context.payload.pull_request.head.sha;
+                const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:40731703240})).data;
+                if(run.status!=='completed' || run.conclusion!=='success' ||
+                  run.head_sha!==certified || run.path!=='.github/workflows/tester-qa.yml' ||
+                  run.head_branch!=='feature/eldoria-early-retention-20261028')
+                  throw Error('Full frozen-web certificate unavailable');
+                const compiled=(await github.rest.repos.getCommit({...context.repo,
+                  ref:'fd0967e7fb0b761aa333e8a9c928e4bce95f24d4'})).data;
+                const base=(await github.rest.repos.getCommit({...context.repo,ref:certified})).data;
+                if(compiled.commit.tree.sha!=='20d1cfaf48df8077778b1870b69daa17e5770038' ||
+                  base.commit.tree.sha!==compiled.commit.tree.sha)throw Error('Compiled source tree differs');
+                const comparison=(await github.rest.repos.compareCommitsWithBasehead({...context.repo,
+                  basehead:certified+'...'+head})).data;
+                if(!['ahead','identical'].includes(comparison.status) ||
+                  comparison.base_commit.sha!==certified || comparison.merge_base_commit.sha!==certified ||
+                  !Array.isArray(comparison.files) || comparison.files.length>=300)
+                  throw Error('Incomplete or divergent source comparison');
+                const file='.github/workflows/tester-qa.yml';
+                const textAt=async ref=>{
+                  const value=(await github.rest.repos.getContent({...context.repo,path:file,ref})).data;
+                  if(!value.content)throw Error('Workflow content missing');
+                  return Buffer.from(value.content,'base64').toString('utf8');
+                };
+                const originalJob=s=>{
+                  const at=s.indexOf('  tester-qa:\n');
+                  if(at<0)throw Error('Full tester job missing');
+                  return s.slice(at);
+                };
+                if(originalJob(await textAt(certified))!==originalJob(await textAt(head)))
+                  throw Error('Full web test job changed');
+                const unchangedWeb=f=>{
+                  if(f.filename===file && !f.previous_filename)return true;
+                  if(f.filename==='tools/early-retention/native-request.json' && !f.previous_filename)return true;
+                  const nativeAldric=new Set(['tools/aldric-city/native-request.json',
+                    'tools/aldric-city/verify_approved_glb.py','tools/aldric-city/prepare-import-normals.py',
+                    'tools/aldric-city/rig.parts/01.txt',
+                    'tools/aldric-city/rig.parts/02.txt','tools/aldric-city/rig.parts/03.txt','tools/aldric-city/rig.parts/04.txt']);
+                  if(context.issue.number===122 && nativeAldric.has(f.filename) && !f.previous_filename)return true;
+                  return !needsWebQA(f);
+                };
+                const live=(await github.rest.pulls.get({...context.repo,pull_number:context.issue.number})).data;
+                if(live.head.sha!==head || live.head.repo.full_name!==context.repo.owner+'/'+context.repo.repo)
+                  throw Error('Candidate moved or repository differs');
+                if(comparison.files.every(unchangedWeb)) {
+                  required=false;
+                  core.info('ELDORIA_FROZEN_WEB_CERTIFICATE_REUSED run40731703240; exact compiled source, all web inputs and entire tester job unchanged.');
+                }
+              } catch(error) {core.warning('Cannot prove unchanged web inputs; running full QA: '+error.message);}
+            }
             core.setOutput('required', String(required));
             core.info(required ? 'Full frozen-web QA required.' :
               'Unity/art/documentation/read-only operations changes: frozen-web QA is not applicable.');
@@ -74,6 +131,15 @@ jobs:
     timeout-minutes: 32
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Keep all web sources, tests, tools and fixtures. Native Unity and
+          # archived native/art evidence are not inputs to this frozen-web job.
+          # A full checkout consumed 16 minutes of its 32-minute budget.
+          sparse-checkout: |
+            /*
+            !/Unity/
+            !/docs/evidence/
+          sparse-checkout-cone-mode: false
       - name: Install Playwright
         run: |
           npm install --no-save playwright@1.55.0

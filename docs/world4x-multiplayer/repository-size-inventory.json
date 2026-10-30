@@ -1,0 +1,695 @@
+{
+  "complete": true,
+  "files": 20349,
+  "tracked_file_bytes": 27331041227,
+  "unique_blob_bytes": 19035376339,
+  "repeated_path_bytes": 8295664888,
+  "groups": [
+    {
+      "path": "docs",
+      "files": 7856,
+      "bytes": 15246095959
+    },
+    {
+      "path": "Unity",
+      "files": 10910,
+      "bytes": 11171646555
+    },
+    {
+      "path": "art-source",
+      "files": 288,
+      "bytes": 792316616
+    },
+    {
+      "path": "ArtSource",
+      "files": 35,
+      "bytes": 86155601
+    },
+    {
+      "path": "pipeline",
+      "files": 536,
+      "bytes": 25984422
+    },
+    {
+      "path": "tools",
+      "files": 336,
+      "bytes": 2385911
+    },
+    {
+      "path": ".github",
+      "files": 248,
+      "bytes": 1443809
+    },
+    {
+      "path": "references",
+      "files": 2,
+      "bytes": 1254507
+    },
+    {
+      "path": "v0220",
+      "files": 14,
+      "bytes": 665359
+    },
+    {
+      "path": "artifacts",
+      "files": 1,
+      "bytes": 481559
+    },
+    {
+      "path": "tester-v0265",
+      "files": 11,
+      "bytes": 428645
+    },
+    {
+      "path": "v0201",
+      "files": 1,
+      "bytes": 329979
+    },
+    {
+      "path": "v0202",
+      "files": 1,
+      "bytes": 329979
+    },
+    {
+      "path": "v0210",
+      "files": 1,
+      "bytes": 328460
+    },
+    {
+      "path": "qa",
+      "files": 32,
+      "bytes": 219337
+    },
+    {
+      "path": "SESSION_HANDOFF.md",
+      "files": 1,
+      "bytes": 189518
+    },
+    {
+      "path": "PROJECT_STATE.md",
+      "files": 1,
+      "bytes": 135448
+    },
+    {
+      "path": "v0195",
+      "files": 11,
+      "bytes": 134001
+    },
+    {
+      "path": "v0192",
+      "files": 10,
+      "bytes": 113895
+    },
+    {
+      "path": "v0195-stable",
+      "files": 5,
+      "bytes": 69839
+    },
+    {
+      "path": "AGENTS.md",
+      "files": 1,
+      "bytes": 49256
+    },
+    {
+      "path": "scripts",
+      "files": 8,
+      "bytes": 44085
+    },
+    {
+      "path": "v0195-clean",
+      "files": 6,
+      "bytes": 32497
+    },
+    {
+      "path": "v0194",
+      "files": 1,
+      "bytes": 19791
+    },
+    {
+      "path": "CHANGELOG.md",
+      "files": 1,
+      "bytes": 17136
+    },
+    {
+      "path": "DESIGN_DECISIONS.md",
+      "files": 1,
+      "bytes": 16524
+    },
+    {
+      "path": "world4x.html",
+      "files": 1,
+      "bytes": 14553
+    },
+    {
+      "path": "v0195-r6",
+      "files": 1,
+      "bytes": 14442
+    },
+    {
+      "path": "UNITY_MIGRATION_PLAN.md",
+      "files": 1,
+      "bytes": 11986
+    },
+    {
+      "path": "v0193",
+      "files": 1,
+      "bytes": 9927
+    },
+    {
+      "path": "v0195-r5",
+      "files": 1,
+      "bytes": 9389
+    },
+    {
+      "path": "UNITY_READINESS_REPORT.md",
+      "files": 1,
+      "bytes": 8990
+    },
+    {
+      "path": "QA_AND_DEPLOY.md",
+      "files": 1,
+      "bytes": 8901
+    },
+    {
+      "path": "ELDORIA_CONTINUIDAD.md",
+      "files": 1,
+      "bytes": 8843
+    },
+    {
+      "path": "UNITY_ARCHITECTURE.md",
+      "files": 1,
+      "bytes": 8644
+    },
+    {
+      "path": "UNITY_VERTICAL_SLICE.md",
+      "files": 1,
+      "bytes": 6757
+    },
+    {
+      "path": "v0195-r7",
+      "files": 4,
+      "bytes": 6305
+    },
+    {
+      "path": "v0195-r4",
+      "files": 1,
+      "bytes": 5031
+    },
+    {
+      "path": "UNITY_ASSET_AUDIT.md",
+      "files": 1,
+      "bytes": 4558
+    },
+    {
+      "path": "assets",
+      "files": 1,
+      "bytes": 4275
+    },
+    {
+      "path": "UI_PARITY_0264.md",
+      "files": 1,
+      "bytes": 3944
+    },
+    {
+      "path": "README.md",
+      "files": 1,
+      "bytes": 3858
+    },
+    {
+      "path": "UNITY_CORE_CONTRACT.md",
+      "files": 1,
+      "bytes": 3537
+    },
+    {
+      "path": "TESTER_FEEDBACK_PROTOCOL.md",
+      "files": 1,
+      "bytes": 3418
+    },
+    {
+      "path": "v0200",
+      "files": 1,
+      "bytes": 2819
+    },
+    {
+      "path": "tests",
+      "files": 1,
+      "bytes": 2582
+    },
+    {
+      "path": "PLAYTEST_RESULTS.md",
+      "files": 1,
+      "bytes": 2459
+    },
+    {
+      "path": "package.json",
+      "files": 1,
+      "bytes": 2066
+    },
+    {
+      "path": "package-lock.json",
+      "files": 1,
+      "bytes": 1741
+    },
+    {
+      "path": "ELDORIA_BASELINE_RULES.md",
+      "files": 1,
+      "bytes": 1647
+    },
+    {
+      "path": "updates",
+      "files": 1,
+      "bytes": 650
+    },
+    {
+      "path": ".gitignore",
+      "files": 1,
+      "bytes": 526
+    },
+    {
+      "path": "index.html",
+      "files": 1,
+      "bytes": 471
+    },
+    {
+      "path": ".gitattributes",
+      "files": 1,
+      "bytes": 220
+    }
+  ],
+  "largest_files": [
+    {
+      "path": "art-source/valoria/production/first-production-district-v1/Valoria_FirstProductionDistrict_v1.blend",
+      "bytes": 98941279,
+      "sha": "e3bd4da1c1df9747b4310e3475210b943f29ea29"
+    },
+    {
+      "path": "art-source/valoria/production/first-production-district-v1/Valoria_FirstProductionDistrict_v1.blend1",
+      "bytes": 98941279,
+      "sha": "4706197e8ad9345e80083aae9370493f57034f57"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40320274388/Eldoria_Region1_Production.blend",
+      "bytes": 95503119,
+      "sha": "1958771d0f3bbc3cc30df4234028af89cba315cf"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40324796014/Eldoria_Region1_Production.blend",
+      "bytes": 95503119,
+      "sha": "1958771d0f3bbc3cc30df4234028af89cba315cf"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40331311765/Eldoria_Region1_Production.blend",
+      "bytes": 95503119,
+      "sha": "1958771d0f3bbc3cc30df4234028af89cba315cf"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40337702256/Eldoria_Region1_Production.blend",
+      "bytes": 95503119,
+      "sha": "1958771d0f3bbc3cc30df4234028af89cba315cf"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40313214146/Eldoria_Region1_Production.blend",
+      "bytes": 95479541,
+      "sha": "a1b681752ebdca67535a6a38a1577f65f300c7bb"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40316305875/Eldoria_Region1_Production.blend",
+      "bytes": 95479541,
+      "sha": "a1b681752ebdca67535a6a38a1577f65f300c7bb"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40299103664/Eldoria_Region1_Production.blend",
+      "bytes": 95219166,
+      "sha": "e40c3a4364768d3d22d59aea2533dfacaa8e7c05"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40247065714/Eldoria_Region1_Production.blend",
+      "bytes": 94479148,
+      "sha": "30f3789b3924cfa487984cbee18a7803fd02a2d0"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40249047198/Eldoria_Region1_Production.blend",
+      "bytes": 94479148,
+      "sha": "30f3789b3924cfa487984cbee18a7803fd02a2d0"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40250944622/Eldoria_Region1_Production.blend",
+      "bytes": 94477875,
+      "sha": "1ca91341a7ae6378e106f83fbf7806b81901638b"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40253785923/Eldoria_Region1_Production.blend",
+      "bytes": 94100760,
+      "sha": "649fc05344b872125167cbe546d764fe5624c6fd"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40236208324/Eldoria_Region1_Production.blend",
+      "bytes": 89051838,
+      "sha": "42aadb44bfa99c0f64c789a9f45d8ff117548512"
+    },
+    {
+      "path": "docs/evidence/world4x-canon-20261022/sources/native-40238160550/Eldoria_Region1_Production.blend",
+      "bytes": 89034181,
+      "sha": "4ba0d02f9c3e7dba4b123136c0e7d915bee66084"
+    }
+  ],
+  "big_duplicates": [
+    {
+      "blob": "16f3d4430d0b1a888316e1761b9c8c31de29e8e7",
+      "bytes": 54869267,
+      "count": 18,
+      "repeated_path_bytes": 932777539,
+      "paths": [
+        "docs/evidence/world4x-canon-20261022/sources/native-40211155178/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40214862831/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40219339813/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40220750474/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40223178638/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40236208324/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40238160550/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40247065714/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40249047198/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40250944622/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40253785923/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40299103664/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40313214146/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40316305875/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40320274388/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40324796014/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40331311765/Eldoria_Resource_Library.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40337702256/Eldoria_Resource_Library.blend"
+      ]
+    },
+    {
+      "blob": "a0abc40be303c1c1bf07b0937652279179cea890",
+      "bytes": 44740279,
+      "count": 11,
+      "repeated_path_bytes": 447402790,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV10/Entry_00012.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV11/Entry_00012.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV12/Entry_00012.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV13/Entry_00012.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV14/Entry_00012.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV15/Entry_00012.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV17/Entry_00012.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV18/Entry_00012.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV7/Entry_00012.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV8/Entry_00012.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV9/Entry_00012.asset"
+      ]
+    },
+    {
+      "blob": "2b55ec713414eae659415f06f20be8396743de7f",
+      "bytes": 44740279,
+      "count": 11,
+      "repeated_path_bytes": 447402790,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV10/Entry_00013.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV11/Entry_00013.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV12/Entry_00013.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV13/Entry_00013.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV14/Entry_00013.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV15/Entry_00013.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV17/Entry_00013.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV18/Entry_00013.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV7/Entry_00013.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV8/Entry_00013.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV9/Entry_00013.asset"
+      ]
+    },
+    {
+      "blob": "7968350ff8f8c7c18fe1a02f71cfbf5bd713e1f7",
+      "bytes": 44740279,
+      "count": 11,
+      "repeated_path_bytes": 447402790,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV10/Entry_00015.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV11/Entry_00015.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV12/Entry_00015.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV13/Entry_00015.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV14/Entry_00015.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV15/Entry_00015.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV17/Entry_00015.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV18/Entry_00015.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV7/Entry_00015.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV8/Entry_00015.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV9/Entry_00015.asset"
+      ]
+    },
+    {
+      "blob": "1958771d0f3bbc3cc30df4234028af89cba315cf",
+      "bytes": 95503119,
+      "count": 4,
+      "repeated_path_bytes": 286509357,
+      "paths": [
+        "docs/evidence/world4x-canon-20261022/sources/native-40320274388/Eldoria_Region1_Production.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40324796014/Eldoria_Region1_Production.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40331311765/Eldoria_Region1_Production.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40337702256/Eldoria_Region1_Production.blend"
+      ]
+    },
+    {
+      "blob": "732d65b0a5b45285f7291c61e8aee7d3ee133966",
+      "bytes": 44740278,
+      "count": 7,
+      "repeated_path_bytes": 268441668,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-15.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-15.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-15.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-15.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-15.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-15.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-15.asset"
+      ]
+    },
+    {
+      "blob": "088e8ef9e907afc617aa03a2e49f418b6865c6b1",
+      "bytes": 44740278,
+      "count": 7,
+      "repeated_path_bytes": 268441668,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-19.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-19.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-19.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-19.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-19.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-19.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-19.asset"
+      ]
+    },
+    {
+      "blob": "f7555a9c124d09444cb97d5b52a1f2de4022c902",
+      "bytes": 44740278,
+      "count": 7,
+      "repeated_path_bytes": 268441668,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-21.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-21.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-21.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-21.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-21.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-21.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-21.asset"
+      ]
+    },
+    {
+      "blob": "12c44eef18ad79b24f38b18999ca5c91d4760f1a",
+      "bytes": 44740278,
+      "count": 7,
+      "repeated_path_bytes": 268441668,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/texture-23.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/texture-23.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/texture-23.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/texture-23.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/texture-23.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/texture-23.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-23.asset"
+      ]
+    },
+    {
+      "blob": "2e96fdf8eda248ab62b4b33a3844ec1d6824dd45",
+      "bytes": 83954296,
+      "count": 4,
+      "repeated_path_bytes": 251862888,
+      "paths": [
+        "docs/evidence/world4x-canon-20261022/sources/native-40214862831/Eldoria_Region1_Production.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40219339813/Eldoria_Region1_Production.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40220750474/Eldoria_Region1_Production.blend",
+        "docs/evidence/world4x-canon-20261022/sources/native-40223178638/Eldoria_Region1_Production.blend"
+      ]
+    },
+    {
+      "blob": "f5588040463bde8a2aea732c96dfea1e8648bece",
+      "bytes": 44740287,
+      "count": 6,
+      "repeated_path_bytes": 223701435,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39150032707/authored-texture-14.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39154345314/authored-texture-14.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39155165102/authored-texture-14.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39155433701/authored-texture-14.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39155770478/authored-texture-14.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-texture-14.asset"
+      ]
+    },
+    {
+      "blob": "eba88bbe49a716d7ec539b8270642a0216d31dd9",
+      "bytes": 44740279,
+      "count": 4,
+      "repeated_path_bytes": 134220837,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV10/Entry_00022.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV11/Entry_00022.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV7/Entry_00022.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV9/Entry_00022.asset"
+      ]
+    },
+    {
+      "blob": "c243f8c972df8dac855f96d80af9af80c7812844",
+      "bytes": 44740279,
+      "count": 4,
+      "repeated_path_bytes": 134220837,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV10/Entry_00023.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV11/Entry_00023.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV7/Entry_00023.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV9/Entry_00023.asset"
+      ]
+    },
+    {
+      "blob": "8aa768725a4d79166846be9776bfdeee3758ca7c",
+      "bytes": 44740279,
+      "count": 4,
+      "repeated_path_bytes": 134220837,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV12/Entry_00022.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV13/Entry_00022.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV14/Entry_00022.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV15/Entry_00022.asset"
+      ]
+    },
+    {
+      "blob": "23f1664bc2696a6d56e683d748f39499efd07ef7",
+      "bytes": 44740279,
+      "count": 4,
+      "repeated_path_bytes": 134220837,
+      "paths": [
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV12/Entry_00023.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV13/Entry_00023.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV14/Entry_00023.asset",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV15/Entry_00023.asset"
+      ]
+    }
+  ],
+  "snapshot_commit": "e34f058c9eb2d73c863269f9debc1cdff532f93e",
+  "largest_subtrees": [
+    {
+      "path": "docs/evidence/world4x-canon-20261022",
+      "files": 4721,
+      "bytes": 10494922458
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests",
+      "files": 6488,
+      "bytes": 9926493035
+    },
+    {
+      "path": "docs/evidence/valoria-reference-clean",
+      "files": 1805,
+      "bytes": 2898027620
+    },
+    {
+      "path": "docs/evidence/valoria-layered-construction-20261016",
+      "files": 565,
+      "bytes": 1616503858
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources",
+      "files": 149,
+      "bytes": 585134460
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Textures",
+      "files": 298,
+      "bytes": 166777897
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Textures",
+      "files": 26,
+      "bytes": 137805641
+    },
+    {
+      "path": "docs/evidence/valoria-golden-lookdev-slice-v1",
+      "files": 153,
+      "bytes": 103168428
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon",
+      "files": 111,
+      "bytes": 97626886
+    },
+    {
+      "path": "Unity/Assets/EmaceArt/Slavic World Free",
+      "files": 1095,
+      "bytes": 89832971
+    },
+    {
+      "path": "Unity/Assets/Eldoria/SpawnlingBastion2",
+      "files": 92,
+      "bytes": 46357052
+    },
+    {
+      "path": "Unity/Assets/Tree_Packs/URP_Tree_Pack",
+      "files": 88,
+      "bytes": 37625918
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Scene",
+      "files": 6,
+      "bytes": 27098891
+    },
+    {
+      "path": "docs/evidence/valoria-cabin-sawmill-camp-production-v1",
+      "files": 35,
+      "bytes": 22440068
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain",
+      "files": 52,
+      "bytes": 20228071
+    },
+    {
+      "path": "docs/evidence/valoria-vegetation-water-shore-production-v1",
+      "files": 26,
+      "bytes": 15401145
+    },
+    {
+      "path": "docs/evidence/valoria-premium-target-gap-review-visual-uplift-v1",
+      "files": 18,
+      "bytes": 9571421
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature",
+      "files": 110,
+      "bytes": 7975912
+    },
+    {
+      "path": "docs/evidence/valoria-bridge-family-v1",
+      "files": 15,
+      "bytes": 7478964
+    },
+    {
+      "path": "docs/evidence/valoria-bastion-family-v1",
+      "files": 17,
+      "bytes": 7094990
+    }
+  ],
+  "limitations": [
+    "Uncompressed files at one committed tree, not Git packed history, LFS storage, local Library/Temp caches or APK bytes.",
+    "Identical blob IDs establish duplicate content at paths, not interchangeability of Unity GUIDs or permission to delete.",
+    "Metadata inventory complete; dependency and dynamic consumer proofs remain separate."
+  ]
+}

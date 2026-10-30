@@ -1,0 +1,23 @@
+{
+  "run_id": 40859922725,
+  "source": "401a6e9d4fef2b62e53c6769aaff9e9ba6c7b138",
+  "artifact_id": 12891153903,
+  "artifact_digest": "sha256:62be05529084c193433eaf7f0ffeb6d9d7cd7e05977177728bf7719dd40f041d",
+  "suites": [
+    {
+      "file": "Eldoria-EditMode.xml",
+      "passed": 54,
+      "failed": 0,
+      "skipped": 0,
+      "raw_artifact_file_sha256": "f2df26d91f5859456918f4ae3728bf2b4b3a1e1ea9a69aa9a663dadab8689f18"
+    },
+    {
+      "file": "Eldoria-PlayMode.xml",
+      "passed": 73,
+      "failed": 0,
+      "skipped": 0,
+      "raw_artifact_file_sha256": "d3f537fd4ff598df2ec9487cecdb6b50b6cb0e01e1cb0ca2e1cdc08dca8c26e8"
+    }
+  ],
+  "note": "Source identity is startup binding only. Acceptance here is derived from completed NUnit XML; whole player build acceptance is recorded separately after the workflow finishes."
+}

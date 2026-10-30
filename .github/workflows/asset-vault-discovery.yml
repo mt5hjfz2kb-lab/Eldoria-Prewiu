@@ -1,0 +1,130 @@
+name: Eldoria Asset Vault - Automatic 3D Discovery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ArtSource/**'
+      - 'art-source/**'
+      - 'Unity/Assets/**'
+      - 'pipeline/asset-vault/**'
+      - 'tools/asset-vault/**'
+      - '.github/workflows/asset-vault-discovery.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ArtSource/**'
+      - 'art-source/**'
+      - 'Unity/Assets/**'
+      - 'pipeline/asset-vault/**'
+      - 'tools/asset-vault/**'
+      - '.github/workflows/asset-vault-discovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: asset-vault-discovery-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pipeline/asset-vault/
+            /tools/asset-vault/
+            /.github/workflows/asset-vault-discovery.yml
+      - name: Test read-only inventory and reuse rules
+        run: python3 -m unittest discover -s tools/asset-vault -p 'test_*.py'
+      - name: Detect new tracked models (Git tree only; no Blender/Unity)
+        run: |
+          python3 tools/asset-vault/scan-candidates.py \
+            --output /tmp/eldoria-asset-candidates.json \
+            --summary /tmp/eldoria-asset-summary.md
+          cat /tmp/eldoria-asset-summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Build complete source-family and Git-blob inventory
+        run: |
+          python3 tools/asset-vault/classify-current.py \
+            --output /tmp/eldoria-current-full-index.json
+      - name: Preserve full source inventory only on isolated asset-vault branch
+        if: github.event_name == 'pull_request' && github.head_ref == 'docs/eldoria-asset-vault-audit-20261025' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_HEAD: ${{ github.head_ref }}
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,pathlib,subprocess
+          f=pathlib.Path('/tmp/eldoria-current-full-index.json')
+          data=json.loads(f.read_text())
+          if data['total'] < 775:
+              raise SystemExit('Unexpected truncated 3D tree; refusing to publish')
+          request={'message':'docs(asset-vault): persist complete current Git 3D source-family index',
+                   'branch':os.environ['PR_HEAD'],
+                   'content':base64.b64encode(f.read_bytes()).decode('ascii')}
+          dest='pipeline/asset-vault/current-full-index-v1.json'
+          existing=subprocess.run(['gh','api',f"repos/{os.environ['GH_REPO']}/contents/{dest}",
+                                   '--method','GET','-f','ref='+os.environ['PR_HEAD']],
+                                  capture_output=True,text=True)
+          if existing.returncode==0:
+              old=json.loads(existing.stdout)
+              if base64.b64decode(old['content'])==f.read_bytes():
+                  print('CURRENT_ASSET_INDEX_ALREADY_IDENTICAL')
+                  raise SystemExit(0)
+              request['sha']=old['sha']
+          pathlib.Path('/tmp/current-asset-api.json').write_text(json.dumps(request))
+          p=subprocess.run(['gh','api',f"repos/{os.environ['GH_REPO']}/contents/{dest}",
+                            '--method','PUT','--input','/tmp/current-asset-api.json'],capture_output=True,text=True)
+          if p.returncode:
+              raise SystemExit('Current inventory not persisted: '+p.stderr[:1500])
+          print('PERSISTED_CURRENT_3D_INDEX',data['total'],'paths',data['unique_git_blobs'],'unique blobs')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-asset-vault-candidates-${{ github.run_id }}
+          path: |
+            /tmp/eldoria-asset-candidates.json
+            /tmp/eldoria-current-full-index.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Maintain permanent issue inbox (main only, never write source branch)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          j=json.loads(Path('/tmp/eldoria-asset-candidates.json').read_text())
+          if j['new_unreviewed'] == 0:
+              Path('/tmp/asset-vault-issue-body.md').write_text(
+                  'No uncatalogued 3D paths detected at commit `'+j['source_commit']+'`.\n'
+                  'Existing approved records remain in the curated catalog.\n')
+          else:
+              lines=['Automatic, **unreviewed** 3D candidates in current main.',
+                     'Commit: `'+j['source_commit']+'`',
+                     'Count: '+str(j['new_unreviewed']),
+                     'No asset is automatically approved, copied or integrated.',
+                     'Full machine-readable inventory is attached to the corresponding workflow run.','']
+              for x in j['candidates'][:150]:
+                  lines.append('- `'+x['path']+'` ('+x['category']+')')
+              if len(j['candidates'])>150:lines.append('... remaining paths in workflow artifact.')
+              Path('/tmp/asset-vault-issue-body.md').write_text('\n'.join(lines)+'\n')
+          PY
+          TITLE='[ASSET VAULT] Candidatos 3D detectados automáticamente'
+          NUMBER=$(gh issue list --repo "$GH_REPO" --state open --limit 100 --json number,title \
+            --jq '.[] | select(.title=="[ASSET VAULT] Candidatos 3D detectados automáticamente") | .number' | head -n1)
+          if [ -n "$NUMBER" ]; then
+            gh issue edit "$NUMBER" --repo "$GH_REPO" --body-file /tmp/asset-vault-issue-body.md
+          else
+            gh issue create --repo "$GH_REPO" --title "$TITLE" --body-file /tmp/asset-vault-issue-body.md
+          fi

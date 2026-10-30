@@ -15,6 +15,68 @@ namespace Eldoria.Tests
             public PlayerState Load()=>Value; public void Save(PlayerState state){Value=state;} }
         static GameCommand Cmd(LocalGateway g,string id,string kind,string target)
         {var s=g.Snapshot();return new GameCommand(id,s.PlayerId,kind,target,s.Revision);}
+        [Test] public void ThreeSimultaneousWorldMarchesHaveIndependentTroopsAndOfflineReturns()
+        {
+            var clock=new Clock();var store=new Memory {
+                Value=new PlayerState{Available=new ArmyRoster{ArcherT1=150}}
+            };
+            var g=new LocalGateway(clock,store);
+            Assert.That(g.Execute(Cmd(g,"three-forest","Gather","forest-valoria")).Ok,Is.True);
+            Assert.That(g.Execute(Cmd(g,"three-quarry","Gather","quarry-valoria")).Ok,Is.True);
+            Assert.That(g.Execute(Cmd(g,"three-scout","Fight","corrupt-scout")).Ok,Is.True);
+            var s=g.Snapshot();
+            Assert.That(MarchCapacityRules.ActiveCount(s,clock.UtcTicks),Is.EqualTo(3));
+            Assert.That(s.ExtraMarches.Count,Is.EqualTo(2));
+            Assert.That(s.March.Troops.Total,Is.EqualTo(40));
+            Assert.That(s.ExtraMarches[0].Troops.Total,Is.EqualTo(40));
+            Assert.That(s.ExtraMarches[1].Troops.Total,Is.EqualTo(40));
+            Assert.That(s.Available.Total,Is.EqualTo(30));
+            Assert.That(g.Execute(Cmd(g,"fourth-blocked","Gather","forest-valoria")).Ok,Is.False);
+            clock.Add(20);g=new LocalGateway(clock,store);
+            s=g.Snapshot();
+            Assert.That(MarchCapacityRules.ActiveCount(s,clock.UtcTicks),Is.Zero);
+            Assert.That(s.Available.Total,Is.EqualTo(150));
+            int power=SliceRules.TotalPower(s).Total;
+            g.Advance();g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Available.Total,Is.EqualTo(150));
+            Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(power));
+        }
+
+        [Test] public void HeroAndBarracksGrowthChangesOneAuthoritativeMarchCapacity()
+        {
+            var s=new PlayerState{BarracksLevel=1,Available=new ArmyRoster{ArcherT1=100}};
+            Assert.That(MarchCapacityRules.Capacity(s,"aldric"),Is.EqualTo(60));
+            s.Retention.AldricExperience=800;
+            Assert.That(MarchCapacityRules.HeroLevel(s,"aldric"),Is.EqualTo(11));
+            Assert.That(MarchCapacityRules.Capacity(s,"aldric"),Is.EqualTo(110));
+            Assert.That(MarchCapacityRules.Capacity(s,"lyra"),Is.EqualTo(60));
+            s.BarracksLevel=2;
+            Assert.That(MarchCapacityRules.Capacity(s,"aldric"),Is.EqualTo(130));
+        }
+
+        [Test] public void ScoutsShareThreeMarchSlotsAndReturnRealTroopsBeforeClaims()
+        {
+            var clock=new Clock();var store=new Memory {
+                Value=new PlayerState{BastionLevel=2,BarracksLevel=1,
+                    ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
+                    Available=new ArmyRoster{ArcherT1=90}}
+            };
+            var g=new LocalGateway(clock,store);
+            var ids=g.Snapshot().Retention.Orders.ConvertAll(x=>x.Id);
+            Assert.That(ids.Count,Is.EqualTo(3));
+            for(int i=0;i<3;i++)
+                Assert.That(g.Execute(Cmd(g,"test-send"+i,"ScoutDispatch",ids[i])).Ok,Is.True);
+            Assert.That(MarchCapacityRules.ActiveCount(g.Snapshot(),clock.UtcTicks),Is.EqualTo(3));
+            Assert.That(g.Snapshot().Available.Total,Is.EqualTo(54));
+            Assert.That(g.Execute(Cmd(g,"world-blocked","Gather","forest-valoria")).Ok,Is.False);
+            clock.Add(1000);g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Available.Total,Is.EqualTo(90));
+            Assert.That(MarchCapacityRules.ActiveCount(g.Snapshot(),clock.UtcTicks),Is.Zero);
+            for(int i=0;i<3;i++)
+                Assert.That(g.Execute(Cmd(g,"test-claim"+i,"ScoutClaim",ids[i])).Ok,Is.True);
+            Assert.That(g.Snapshot().Available.Total,Is.EqualTo(90));
+        }
+
         [Test] public void ReferenceNumbersDeriveFromOwnershipAndSingleMarch()
         {
             var s=new PlayerState();var p=SliceRules.TotalPower(s);

@@ -4,6 +4,12 @@
 
 Actualizado el 21-10-2026 por encargo de reducir esperas sin alterar el juego.
 
+## Preflight obligatorio antes de crear una PR — corrección del incidente #115/#116
+
+Antes de abrir una rama o PR o reservar Unity, consultar `main/pipeline/active-workstreams.json` **y las PR abiertas del repositorio**. Si hay una PR canónica para el mismo objetivo (por ejemplo, «Crónica Real» es PR #115, workstream `eldoria-ui-v3-management-completion-20261021`), continuar allí o transferir su titularidad mediante el protocolo; nunca crear otro PR para evitar un conflicto de chat.
+
+En PR **#117 en adelante** escribir `Workstream-ID: <id canónico reclamado>` en el cuerpo. `canonical-pr-ownership.yml` comprueba esto automáticamente sin tocar Unity; un gate rojo impide tratar esa candidata como válida. El chequeo es posterior a la apertura, no sustituye la consulta previa, y no desplaza automáticamente procesos/chat existentes. Las PR históricas no deben revivirse por esta regla.
+
 ## Arranque mínimo
 
 1. Leer `main/AGENTS.md`, HEAD de la rama encargada, solo cabeceras pertinentes de `SESSION_HANDOFF.md` y `PROJECT_STATE.md`, y solo `active` de `pipeline/active-workstreams.json`.

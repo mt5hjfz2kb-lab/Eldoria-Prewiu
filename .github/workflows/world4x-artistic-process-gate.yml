@@ -80,7 +80,7 @@ jobs:
         run: (cd policy && node tools/world4x-artistic-process/test.mjs)
       - name: Catch repetitive micro-corrections before more full Unity passes
         run: |
-          node policy/tools/world4x-artistic-process/strategy.test.mjs
+          (cd policy && node tools/world4x-artistic-process/strategy.test.mjs)
           node policy/tools/world4x-artistic-process/strategy.mjs candidate
       - name: Fail closed on missing artistic process and matched Unity A/B evidence
         run: node policy/tools/world4x-artistic-process/verify.mjs candidate

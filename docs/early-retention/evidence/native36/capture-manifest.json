@@ -1,0 +1,123 @@
+{
+  "source": "fa028667e1e7d8492276c921efc7d49379c450c1",
+  "run": 40755121692,
+  "artifact": 12845374533,
+  "archive_sha256": "6fde5439aa62e4b5ae94e595717c15edf3ebd5d76be613ef4c3540c342b7dbbd",
+  "reference_sha256": "890c73cc0e0fe1420dd7840d65e96d4c81bf71d6704273ce894e1d58250a81a9",
+  "captures": [
+    {
+      "name": "scout-mission-board-horizontal.png",
+      "sha256": "3ef7eb387ce1a6c77ab04efda97693bf5bbcd9e476421c4001ae8983bf810e00",
+      "width": 1600,
+      "height": 900
+    },
+    {
+      "name": "scout-mission-board-phone-landscape.png",
+      "sha256": "db66fbb9adaa0de41055af84d558e4c6998cbe10d8c251ebafebab16ae8b548c",
+      "width": 844,
+      "height": 390
+    },
+    {
+      "name": "scout-mission-board-phone.png",
+      "sha256": "a93222929fd2c0ea8fe8ffbdf004cd2ea668a3fae85fdb3669c35f6aef185904",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "scout-mission-board-vertical.png",
+      "sha256": "be01596d7a5f926279c212d484c3ea743ffa8b42f5d693596adbe0d9f94862ed",
+      "width": 900,
+      "height": 1600
+    },
+    {
+      "name": "scout-missions-ready-phone.png",
+      "sha256": "10a02f5d69f146e4307b6dcf51a5f76478ef360e23044143059c1368f524407a",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "scout-missions-underway-phone.png",
+      "sha256": "de1af86584830fa6bc98bf183d00bb657d564cd589ca7396c25d45725ef9652b",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "vigilants-chapter-one-horizontal.png",
+      "sha256": "9f3c115e2cca51391c77f3b84bbae83f6eb28e00f6959d6fc4abb5aa4cf56846",
+      "width": 1600,
+      "height": 900
+    },
+    {
+      "name": "vigilants-chapter-one-phone.png",
+      "sha256": "98d5091f72b9e22ab3dc56f9463952c30c1e4920dd7d5f6b21ec86cccdb47a82",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "vigilants-chapter-one-vertical.png",
+      "sha256": "f1a0bb0c5c62b168c1136d342c3d8d6a498dfac5818a727a449bd022335d23ef",
+      "width": 900,
+      "height": 1600
+    },
+    {
+      "name": "vigilants-first-trial-horizontal.png",
+      "sha256": "0ee036d9396e67afdb896520b8f850e5505d34746201216929498a10836dad4d",
+      "width": 1600,
+      "height": 900
+    },
+    {
+      "name": "vigilants-first-trial-phone.png",
+      "sha256": "1b8309cf55edbeb9b33b76cc87f14a36d406187e6cc4c8457b651c1a2aabf197",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "vigilants-first-trial-vertical.png",
+      "sha256": "908f2d8d500689b6d7451c41fe55441625b6706bae26271f54cec9d3eb6c1b51",
+      "width": 900,
+      "height": 1600
+    },
+    {
+      "name": "vigilants-real-victory-horizontal.png",
+      "sha256": "8a6ecbba609defbd3265a79eb2f64127b6df8d3d2d3571c1f9d152ec6c3141bb",
+      "width": 1600,
+      "height": 900
+    },
+    {
+      "name": "vigilants-real-victory-phone.png",
+      "sha256": "6f16350ac101391c0103a9c68250d9355a81c80e71ff824d44f777f9019efa83",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "vigilants-real-victory-vertical.png",
+      "sha256": "ff4fe6a3de9541a3bc40cc9981ed61dd591402155be19bbff432e8bb1080e0c5",
+      "width": 900,
+      "height": 1600
+    },
+    {
+      "name": "vigilants-stage15-engendro-horizontal.png",
+      "sha256": "aba477b108d4990a9488095d0cd7b8ec4f26024fd4e6c114b6fe6882b00bfd37",
+      "width": 1600,
+      "height": 900
+    },
+    {
+      "name": "vigilants-stage15-engendro-phone-landscape.png",
+      "sha256": "0ff53b7168ea6024d0e93c44640ec0062ce4916dba5c814ef1c02daacd0ed03e",
+      "width": 844,
+      "height": 390
+    },
+    {
+      "name": "vigilants-stage15-engendro-phone.png",
+      "sha256": "a3dc59ed7d603e07ad13c9a004a163b5de0f1a45148f3c75ccdbf8ed88bb26b9",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "vigilants-stage15-engendro-vertical.png",
+      "sha256": "429a56f64ce29efc1be95d3309f6e25cbe3de2bf6f1c2b1f135693d7750d9cf7",
+      "width": 900,
+      "height": 1600
+    }
+  ]
+}

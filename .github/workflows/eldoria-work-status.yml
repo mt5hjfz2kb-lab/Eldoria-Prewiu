@@ -1,5 +1,9 @@
 name: Eldoria concise work status
 on:
+  # Read-only hosted Ubuntu observation every six hours; GitHub cron can lag.
+  # This never resumes chats, takes leases, dispatches Unity or publishes builds.
+  schedule:
+    - cron: '27 */6 * * *'
   workflow_dispatch:
   push:
     branches: [main]

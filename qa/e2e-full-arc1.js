@@ -68,8 +68,59 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   {const beforeMeat=await state();await node('meat');await waitState(()=>window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-meat'),3000);await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-meat'),15000);const afterMeat=await state();if(afterMeat.food<=beforeMeat.food||afterMeat.meatRemain!==0)throw Error('Bastion III full-node food gather failed: '+JSON.stringify({before:{food:beforeMeat.food,meatRemain:beforeMeat.meatRemain},after:{food:afterMeat.food,meatRemain:afterMeat.meatRemain,nodeRespawns:afterMeat.nodeRespawns}}))}
   for(const id of ['wolf','boar']){await node(id);await p.waitForTimeout(2800);await closeAll()}
 
-  await view('world');{const boss=p.locator('#eldoria-core-loop [data-testid="world-node-boss"]');await boss.waitFor({state:'visible'});await boss.tap();let inspect=p.locator('#eldoria-core-loop [data-testid="world-action-boss"]');await inspect.waitFor({state:'visible',timeout:4000});if(!/INSPECCIONAR/.test(await inspect.innerText()))throw Error('Fissure inspect action missing');await inspect.tap();for(const speaker of ['NARRADOR','Sir Aldric','Lyra','Sir Aldric','Lyra','Sir Aldric','Lyra']){const d=p.locator('.aldric-cinematic[data-scene="story-dialogue"][data-speaker="'+speaker+'"]');await d.waitFor({state:'visible',timeout:7000});const btn=d.locator('.aldric-continue');await btn.evaluate(b=>b.click());await p.waitForTimeout(25);await btn.evaluate(b=>b.click())}let recruit=p.locator('.e22-cinema .btn');await recruit.waitFor({state:'visible',timeout:7000});await recruit.tap();await closeAll();if(!(await state()).lyra)throw Error('Lyra not recruited');}
-  await p.waitForFunction(()=>window.ELDORIA_V023.state().view==='world'&&window.ELDORIA_V023.state().lyra===true);await p.waitForTimeout(250);await closeAll();const lyraJoin=await state();if(!lyraJoin.lyra)throw Error('Lyra recruitment ceremony did not persist hero');const boss2=p.locator('#eldoria-core-loop [data-testid="world-node-boss"]');await boss2.waitFor({state:'visible'});await boss2.tap();const bossAction=p.locator('#eldoria-core-loop [data-testid="world-action-boss"]');await bossAction.waitFor({state:'visible',timeout:4000});await bossAction.tap();await p.waitForTimeout(2800);await closeAll();if(!(await state()).boss)throw Error('Fissure not defeated');
+  // Follow the approved Bastion III journey. The old INSPECCIONAR shortcut
+  // recruited Lyra before combat and is no longer a production action.
+  await view('world');
+  const fissure=p.locator('#eldoria-core-loop [data-testid="world-node-boss"]');
+  const fissureAction=p.locator('#eldoria-core-loop [data-testid="world-action-boss"]');
+  const selectFissure=async()=>{await fissure.waitFor({state:'visible'});await fissure.evaluate(el=>el.click());await fissureAction.waitFor({state:'visible',timeout:5000})};
+  await selectFissure();
+  if(!(await fissureAction.innerText()).includes('EXPLORAR'))throw Error('Fissure must offer research first');
+  await fissureAction.evaluate(el=>el.click());
+  await waitState(()=>window.ELDORIA_V023.state().tasks.some(t=>t.key==='explore-fissure'),12000);
+  const investigation=await state(),research=investigation.tasks.filter(t=>t.key==='explore-fissure');
+  if(research.length!==1||Math.abs(research[0].end-research[0].start-1200000)>1000)
+    throw Error('Fissure investigation must create exactly one persistent 20-minute task');
+  if(investigation.lyra||investigation.lyraContacted||investigation.boss||investigation.breachManuscript)
+    throw Error('Research cannot recruit Lyra or pre-award victory');
+  // Accelerate only the already-created task, using the same task-clock
+  // technique as the offline gathering probe above. Its duration stays 20m;
+  // the real completion handler must unlock contact and persist it on reload.
+  await p.evaluate(()=>{const q=window.ELDORIA_V023.state(),end=Date.now()+100;window.ELDORIA_V023.setQA({tasks:q.tasks.map(t=>t.key==='explore-fissure'?{...t,start:end-(t.end-t.start),end}:t)})});
+  await waitState(()=>window.ELDORIA_V023.state().fissureExplored===true,5000);
+  await p.reload({waitUntil:'domcontentloaded'});await closeAll();await view('world');await selectFissure();
+  if(!(await fissureAction.innerText()).includes('HABLAR CON LYRA'))throw Error('Completed research must unlock contact');
+  await fissureAction.evaluate(el=>el.click());
+  for(const speaker of ['NARRADOR','Sir Aldric','Lyra','Sir Aldric','Lyra','Sir Aldric']){
+    const d=p.locator('.aldric-cinematic[data-scene="story-dialogue"][data-speaker="'+speaker+'"]');
+    await d.waitFor({state:'visible',timeout:7000});const next=d.locator('.aldric-continue');
+    await next.evaluate(el=>el.click());await p.waitForTimeout(50);if(await next.count())await next.evaluate(el=>el.click());
+  }
+  await waitState(()=>window.ELDORIA_V023.state().lyraContacted===true,4000);
+  const contact=await state();
+  if(contact.lyra||contact.boss||contact.breachManuscript)throw Error('Contact cannot pre-award hero or manuscript');
+  await selectFissure();
+  if(!(await fissureAction.innerText()).includes('ASALTAR CON LYRA'))throw Error('Post-contact real assault missing');
+  await fissureAction.evaluate(el=>el.click());
+  const rewardCeremony=p.locator('.e22-cinema .e22-dialog');
+  for(let guard=0;guard<45;guard++){
+    if(await rewardCeremony.count())break;await p.waitForTimeout(180);
+    const next=p.locator('.aldric-cinematic:visible .aldric-continue');
+    if(await next.count()){await next.last().evaluate(el=>el.click());await p.waitForTimeout(30);if(await next.count())await next.last().evaluate(el=>el.click())}
+  }
+  await rewardCeremony.waitFor({state:'visible',timeout:7000});
+  let rewardText=(await rewardCeremony.innerText()).toUpperCase();
+  if(!rewardText.includes('NUEVO HÉROE')||!rewardText.includes('LYRA'))throw Error('Post-victory Lyra ceremony missing');
+  await rewardCeremony.locator('button').click();await rewardCeremony.waitFor({state:'visible',timeout:7000});
+  rewardText=(await rewardCeremony.innerText()).toUpperCase();
+  if(!rewardText.includes('MANUSCRITO DE LA FISURA')||!rewardText.includes('MISTERIO'))throw Error('Unique manuscript ceremony missing');
+  const lyraJoin=await state();
+  if(!lyraJoin.lyra||!lyraJoin.boss||!lyraJoin.breachManuscript||(lyraJoin.inventory||[]).filter(x=>x?.id==='breach-manuscript').length!==1)
+    throw Error('Real victory must recruit Lyra, close Fissure and award one manuscript');
+  await closeAll();await p.reload({waitUntil:'domcontentloaded'});await closeAll();
+  const persistedFissure=await state();
+  if(!persistedFissure.lyra||!persistedFissure.boss||(persistedFissure.inventory||[]).filter(x=>x?.id==='breach-manuscript').length!==1)
+    throw Error('Fissure victory must persist without duplicate manuscript');
 
   await view('kingdom');await upgradeProd('sawmill',3);await upgradeProd('granary',3);await upgradeBarracks(2);virtualWait+=await economy(300);await checkpoint('bastion-iv',async()=>{await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===4,20000).catch(async()=>{throw new Error('Bastion IV timeout: '+JSON.stringify(await state()))});await closeAll()},async()=>{await p.evaluate(()=>window.ELDORIA_V023.setQA({wood:5000,stone:5000,food:5000,bastionLevel:4}));await closeAll()});
   await upgradeProd('sawmill',4);await upgradeProd('granary',4);virtualWait+=await economy(300);await checkpoint('bastion-v',async()=>{await building('keep');await waitState(()=>window.ELDORIA_V023.state().bastionLevel===5,22000).catch(async()=>{throw new Error('Bastion V timeout: '+JSON.stringify(await state()))});await closeAll()},async()=>{await p.evaluate(()=>window.ELDORIA_V023.setQA({wood:5000,stone:5000,food:5000,bastionLevel:5}));await closeAll()});
@@ -93,7 +144,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   await checkpoint('bastion-viii',async()=>{await view('world');await node('quarry2');await waitState(()=>window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-quarry2'),3000);await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-quarry2'),25000);await closeAll();await view('kingdom');virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===8,15000).catch(async()=>{throw new Error('Bastion VIII timeout: '+JSON.stringify(await state()))});await closeAll()},async()=>{await p.evaluate(()=>window.ELDORIA_V023.setQA({wood:5000,stone:5000,food:5000,bastionLevel:8}));await closeAll()});
   await checkpoint('nareth-maelis',async()=>{await view('world');await node('nareth');await p.waitForTimeout(1900);for(let guard=0;guard<40&&!((await state()).maelis);guard++){const story=p.locator('.aldric-cinematic:visible .aldric-continue');if(await story.count()){const btn=story.last();const box=p.locator('.aldric-cinematic:visible .aldric-dialogue').last();if(await box.count()&&!await box.evaluate(el=>el.classList.contains('done')))await p.waitForFunction(()=>document.querySelector('.aldric-cinematic:visible .aldric-dialogue')?.classList.contains('done'),null,{timeout:5000}).catch(()=>{});await btn.evaluate(b=>b.click());await p.waitForTimeout(60);continue}const ceremony=p.locator('.e22-cinema:visible .btn');if(await ceremony.count()){await ceremony.last().tap({force:true});continue}await p.waitForTimeout(100)}await closeAll();if(!(await state()).maelis)throw Error('Maelis recruitment ceremony did not complete')},async()=>{await p.evaluate(()=>window.ELDORIA_V023.setQA({narethRescued:true,maelis:true}));await closeAll()});
 
-  await checkpoint('bastion-ix',async()=>{await view('world');await node('quarry3');await waitState(()=>window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-quarry3'),3000);await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-quarry3'),20000);await closeAll();await view('kingdom');virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===9,15000).catch(async()=>{throw new Error('Bastion IX timeout: '+JSON.stringify(await state()))});await closeAll()},async()=>{await p.evaluate(()=>window.ELDORIA_V023.setQA({wood:5000,stone:5000,food:5000,bastionLevel:9}));await closeAll()});
+  await checkpoint('bastion-ix',async()=>{await view('world');await node('quarry3');await waitState(()=>window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-quarry3'),3000);await waitState(()=>!window.ELDORIA_V023.state().tasks.some(t=>t.key==='gather-quarry3'),30000);await closeAll();await view('kingdom');virtualWait+=await economy(600);await building('keep');confirm=p.locator('.e22-overlay .btn:visible');await confirm.last().tap();await waitState(()=>window.ELDORIA_V023.state().bastionLevel===9,15000).catch(async()=>{throw new Error('Bastion IX timeout: '+JSON.stringify(await state()))});await closeAll()},async()=>{await p.evaluate(()=>window.ELDORIA_V023.setQA({wood:5000,stone:5000,food:5000,bastionLevel:9}));await closeAll()},75000);
   await checkpoint('gear-and-march',async()=>{await view('heroes');await p.evaluate(()=>{let s=window.ELDORIA_V023.state();s.inventory.push({id:'qa-old-blade',name:'Hoja Antigua',slot:'weapon',power:10},{id:'qa-new-blade',name:'Hoja Nueva',slot:'weapon',power:20});window.ELDORIA_V023.setQA(s)});await p.locator('#eldoria-core-loop [data-testid="hero-aldric"]').evaluate(el=>el.click());await p.locator('#eldoria-core-loop [data-testid="hero-profile-aldric"]').waitFor({state:'visible'});let oldEq=p.locator('#eldoria-core-loop [data-equip-hero="aldric"]').filter({hasText:'Hoja Antigua'});await oldEq.evaluate(el=>el.click());let newEq=p.locator('#eldoria-core-loop [data-equip-hero="aldric"]').filter({hasText:'Hoja Nueva'});await newEq.evaluate(el=>el.click());let gearState=await state();if(gearState.equipped.aldric.weapon?.id!=='qa-new-blade'||!gearState.inventory.some(x=>x?.id==='qa-old-blade'))throw Error('Replaced gear was not returned to inventory');await p.locator('#eldoria-core-loop [data-hero-back]').evaluate(el=>el.click());await p.locator('#eldoria-core-loop [data-testid="hero-hall"]').waitFor({state:'visible'});await p.evaluate(()=>window.ELDORIA_V023.setQA({...window.ELDORIA_V023.state(),view:'march',uxCoachSeen:{...(window.ELDORIA_V023.state().uxCoachSeen||{}),march:true}}));await p.locator('#eldoria-core-loop [data-testid="march-screen"]').waitFor({state:'visible'});const maelis=p.locator('#eldoria-core-loop [data-march-hero="maelis"]');await maelis.waitFor({state:'visible'});await maelis.evaluate(el=>el.click());const confirmMarch=p.locator('#eldoria-core-loop [data-march-confirm]');await confirmMarch.waitFor({state:'visible'});await confirmMarch.evaluate(el=>el.click());let marchState=await state();if(!marchState.marchSetup?.heroIds?.includes('maelis')||!marchState.marchConfigured)throw Error('March configuration failed')},async()=>{await p.evaluate(()=>{const q=window.ELDORIA_V023.state(),H=window.ELDORIA.heroArmy;window.ELDORIA_V023.setQA({marchConfigured:true,marchSlots:['aldric','maelis'],marchSetup:{heroIds:['aldric','maelis'],troops:H.normalizeRoster(q.troopRoster,q.troops)}})});await closeAll()});
 
   await checkpoint('march-trial',async()=>{await view('world');await node('trial');await waitState(()=>window.ELDORIA_V023.state().trialWon===true,5000);await closeAll();if(!(await state()).trialWon)throw Error('March Trial failed')},async()=>{await p.evaluate(()=>window.ELDORIA_V023.setQA({trialWon:true,marchConfigured:true}));await closeAll()});

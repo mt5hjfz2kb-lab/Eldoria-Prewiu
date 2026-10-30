@@ -1,0 +1,675 @@
+name: World4X Region 1 canonical candidate source and PlayMode QA
+
+on:
+  push:
+    branches: [feature/world4x-region1-canon-20261022]
+    paths:
+      - 'Unity/Assets/Eldoria/World4XCanon/**'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta'
+      - 'docs/evidence/world4x-canon-20261022/authoring/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'Unity/Assets/Eldoria/World4XCanon/**'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: world4x-canon-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  canon-source:
+    if: github.event_name == 'push' || github.event.pull_request.number == 100
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            docs/visual-reference/world-map
+            docs/visual-reference/ELDORIA_WORLD_MAP_CANON_20261022.md
+            Unity/Assets/Eldoria/World4XCanon
+            Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs
+            docs/evidence/world4x-canon-20261022/authoring/build_region_from_ai.py
+            docs/evidence/world4x-canon-20261022/authoring/approved_breach_ground.py
+            docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py
+            docs/evidence/world4x-canon-20261022/authoring/refine_geological_lookdev.py
+      - name: Check Blender authoring syntax before reserving Windows editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile docs/evidence/world4x-canon-20261022/authoring/approved_breach_ground.py docs/evidence/world4x-canon-20261022/authoring/build_region_from_ai.py docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py docs/evidence/world4x-canon-20261022/authoring/refine_geological_lookdev.py
+          echo 'WORLD4X_BLENDER_AUTHORING_SYNTAX_PASS'
+      - name: Assert frozen owner PNG reference binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'bb053cf3099a202eff472a53207169dfba522b93c0c5b7bff0fed05b96438fd9  docs/visual-reference/world-map/01_vista_cercana.png' | sha256sum -c -
+          echo '82a38cf89e9a8ad249739496de4c972a8008df29ec4efc946c3a22273f88f316  docs/visual-reference/world-map/02_vista_regional.png' | sha256sum -c -
+          echo '68cd5b898cf3675db537b7ddceb8082befe955895864079a0ac26bdf4fb37144  docs/visual-reference/world-map/03_vista_panoramica.png' | sha256sum -c -
+          test -f Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+          test -f Unity/Assets/Eldoria/World4XCanon/Editor/RegionOneCanonicalCapture.cs
+          test -f Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs
+          grep -q 'RegionOneCanonicalLandscape' Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+          echo 'SOURCE_CANON_BLOBS_AND_FILES_PASS (not a Unity compile)'
+
+  unity-source-playmode:
+    permissions:
+      contents: write
+      actions: read
+    needs: canon-source
+    if: github.event_name == 'push' && vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, 'blender-interactive(world4x):') && !contains(github.event.head_commit.message, 'evidence-recovery(world4x):')
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 50
+    steps:
+      - name: Find installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: world4x-source
+          clean: false
+          persist-credentials: false
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/**
+            /tools/workstream-lease/**
+            /pipeline/active-workstreams.json
+            /docs/evidence/world4x-canon-20261022/authoring/**
+            /ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.glb
+            /ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb
+            /ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Far.glb
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: world4x-live
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            pipeline/active-workstreams.json
+            /tools/art-knowledge/**
+            /tools/art-direction/**
+            /pipeline/art-knowledge/**
+            /pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json
+            /docs/visual-reference/world-map/**
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Lease-check and real Unity preflight
+        shell: powershell
+        run: |
+          node world4x-source/tools/workstream-lease/check.mjs world4x-source/pipeline/active-workstreams.json world4x-live/pipeline/active-workstreams.json eldoria-world-region-1-canon-20261022
+          if($LASTEXITCODE){throw 'World4X owner scope or Windows lease no longer current'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Existing Unity or Blender job active: no concurrent overwrite'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity missing'}
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity version: $version"}
+      - name: Author editable Blender composition from original references
+        env:
+          ELDORIA_DIRECT_SCULPT: ${{ contains(github.event.head_commit.message, 'blender-sculpt(world4x):') }}
+        if: contains(github.event.head_commit.message, 'blender-author(world4x):') || contains(github.event.head_commit.message, 'blender-sculpt(world4x):')
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another heavy process is active'}
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){$blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Installed Blender not found'}
+          & $blender --version
+          $out=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring'
+          $refs=Join-Path $env:GITHUB_WORKSPACE 'world4x-live/docs/visual-reference/world-map'
+          if($env:ELDORIA_DIRECT_SCULPT -eq 'true'){
+            & $blender --background --python-exit-code 1 --python "$helpers/sculpt_region.py" -- $out "$helpers/sources/region1-blockout-b.blend" "$helpers/blender-cameras-input.json"
+          }else{
+            & $blender --background --python-exit-code 1 --python "$helpers/author_region.py" -- $out $refs "$helpers/blender-cameras-input.json"
+          }
+          if($LASTEXITCODE){throw 'Blender authoring failed'}
+          if(-not(Test-Path "$out/eldoria-region1-author.blend")){throw 'Editable Blender source missing'}
+          if(-not(Test-Path "$out/RegionOneBlenderWorld.glb")){throw 'Blender export missing'}
+          if($env:ELDORIA_DIRECT_SCULPT -eq 'true'){
+            $destination=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+            foreach($file in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','blender-authoring-manifest.json')){
+              Copy-Item (Join-Path $out $file) (Join-Path $destination $file) -Force
+            }
+            Write-Host 'Actual native tests consume the freshly sculpted Blender export; artifact hashes identify these generated inputs.'
+          }
+      - name: Recover the last valid editable ribera source
+        if: contains(github.event.head_commit.message, 'ribera-finish(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40014366595
+          name: region1-canon-native-40014366595
+          path: ${{ runner.temp }}/ribera-pinned-source
+      - name: Finish existing ribera surfaces and banks in Blender
+        if: contains(github.event.head_commit.message, 'ribera-finish(world4x):')
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another heavy process is active'}
+          $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Installed Blender missing'}
+          $out=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $source=Join-Path $env:RUNNER_TEMP 'ribera-pinned-source/region1-authoring-40014366595/Eldoria_Ribera_Finished.blend'
+          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/extend_living_sector.py -- $out $source
+          if($LASTEXITCODE){throw 'Ribera finishing failed'}
+          $dest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Pilot'
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item "$out/RiberaPilot.glb" "$dest/RiberaPilot.glb" -Force
+          Copy-Item "$out/LivingSectorLayout.json" "$dest/LivingSectorLayout.json" -Force
+          'ELDORIA_RIBERA_PILOT=1' >> $env:GITHUB_ENV
+      - name: Author bounded ribera pilot in Blender
+        if: contains(github.event.head_commit.message, 'hybrid-pilot(world4x):')
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another heavy process is active'}
+          $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Installed Blender missing'}
+          $out=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/author_patch.py -- $out
+          if($LASTEXITCODE){throw 'Ribera authoring failed'}
+          $dest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Pilot'
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item "$out/RiberaPilot.glb" "$dest/RiberaPilot.glb"
+          'ELDORIA_RIBERA_PILOT=1' >> $env:GITHUB_ENV
+      - name: Recover certified AI for the full-region production candidate
+        if: contains(github.event.head_commit.message, 'region-production(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40024930128
+          name: region1-canon-native-40024930128
+          path: ${{ runner.temp }}/region-ai-source
+      - name: Extend certified AI into one authored continental mesh
+        if: contains(github.event.head_commit.message, 'region-production(world4x):')
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Heavy process conflict'}
+          $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Installed Blender unavailable'}
+          $out=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $source=Join-Path $env:RUNNER_TEMP 'region-ai-source/region1-authoring-40024930128/Eldoria_Ribera_Finished.blend'
+          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/build_region_from_ai.py -- $out $source
+          if($LASTEXITCODE){throw 'Continental Blender authoring failed'}
+          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py -- $out $source
+          if($LASTEXITCODE){throw 'Reusable resource Blender authoring failed'}
+          $dest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+          foreach($file in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json','RegionOneResources.glb','RegionOneResourceImpostors.png','RegionOneGrassDetail.png')){Copy-Item (Join-Path $out $file) (Join-Path $dest $file) -Force}
+      - name: Stage existing Tripo boar and engendro with an actual Blender far LOD
+        if: contains(github.event.head_commit.message, 'region-production(world4x):')
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Heavy process conflict'}
+          $root='world4x-source/ArtSource/World4X'
+          $out='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures'
+          New-Item -ItemType Directory -Force $out | Out-Null
+          $boar="$root/RockBoar_v1/RockBoar_Optimizado_49800.glb"
+          $spawnNear="$root/Spawnling_v1/Finished/Spawnling_B2_Near.glb"
+          $spawnFar="$root/Spawnling_v1/Finished/Spawnling_B2_Far.glb"
+          foreach($source in @($boar,$spawnNear,$spawnFar)){if(-not(Test-Path $source)){throw "Protected Tripo original missing: $source"}}
+          Copy-Item -LiteralPath $boar -Destination "$out/RockBoarNear.glb" -Force
+          Copy-Item -LiteralPath $spawnNear -Destination "$out/SpawnlingNear.glb" -Force
+          Copy-Item -LiteralPath $spawnFar -Destination "$out/SpawnlingFar.glb" -Force
+          $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Blender needed to create a far boar LOD from original Tripo'}
+          $outEditable=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/make_boar_far_lod.py -- $boar "$out/RockBoarFar.glb" "$outEditable/RockBoar_Far_LOD.blend"
+          if($LASTEXITCODE){throw 'Tripo boar far LOD production failed'}
+          foreach($file in @('RockBoarNear.glb','RockBoarFar.glb','SpawnlingNear.glb','SpawnlingFar.glb')){
+            if(-not(Test-Path "$out/$file") -or (Get-Item "$out/$file").Length -lt 100000){throw "Missing actual Tripo LOD: $file"}
+          }
+          Write-Host 'REGION1_TRIPO_ORIGINALS_REUSED 4 real GLBs / 2 immutable original families / zero API credits'
+      - name: Recover exact preview-authored Blender assets for same-scene Unity recheck
+        if: contains(github.event.head_commit.message, 'region-recheck(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40193549354
+          name: region1-canon-native-40193549354
+          path: ${{ runner.temp }}/region1-recheck-source
+      - name: Verify pinned original art and recheck exact pre-PlayMode source
+        if: contains(github.event.head_commit.message, 'region-recheck(world4x):')
+        shell: powershell
+        run: |
+          $origin=Join-Path $env:RUNNER_TEMP 'region1-recheck-source/region1-authoring-40193549354'
+          $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $unityDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+          New-Item -ItemType Directory -Path $destination -Force | Out-Null
+          $verified=[ordered]@{
+            'RegionOneBlenderWorld.glb'='1d9c2466767c3fbabdf3a238e5cace2b372c945e01458521d9ca0c6a2f8e98e7'
+            'RegionOneBlenderQueries.bytes'='4a57aa0fd5b4401fa1aeac6062c26bc142731348e63ff752dbb2c6c63ca33068'
+            'production-region.json'='a4ce659d62d2f8aa7ac70cbc573f77ae75774091ab145938cc8b49bb872cba99'
+            'RegionOneResources.glb'='fc1943706c6f5e6d3780b6c997ec9d6a9b03761938673bb1f10da6ddd9b9193d'
+            'RegionOneResourceImpostors.png'='7364fa79733f763fbd8b1fbf63c648b432f40d20f3ddf4e0b0eec9ddc5576ea0'
+            'RegionOneGrassDetail.png'='4428879cb0f76f7ccb400b77f3c194b3c1398ba8bacd57226f71819306dc15c8'
+          }
+          foreach($pair in $verified.GetEnumerator()){
+            $source=Join-Path $origin $pair.Key
+            if(-not(Test-Path $source)){throw "Pinned run 40193549354 missing source $($pair.Key)"}
+            if((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pair.Value){
+              throw "Original real Blender output changed: $($pair.Key)"
+            }
+            Copy-Item -LiteralPath $source -Destination (Join-Path $destination $pair.Key)
+            Copy-Item -LiteralPath $source -Destination (Join-Path $unityDest $pair.Key) -Force
+          }
+          foreach($name in @('Eldoria_Region1_Production.blend','Eldoria_Resource_Library.blend',
+            'RockBoar_Far_LOD.blend','retained-core-integrity.json')){
+            $source=Join-Path $origin $name
+            if(-not(Test-Path $source)){throw "Pinned editable source or integrity proof absent: $name"}
+            Copy-Item -LiteralPath $source -Destination (Join-Path $destination $name)
+          }
+          $creatureDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures'
+          New-Item -ItemType Directory -Path $creatureDest -Force | Out-Null
+          $rock='world4x-source/ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.glb'
+          $spawnNear='world4x-source/ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb'
+          $spawnFar='world4x-source/ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Far.glb'
+          foreach($f in @($rock,$spawnNear,$spawnFar)){if(-not(Test-Path $f)){throw "Protected Tripo original missing: $f"}}
+          Copy-Item $rock "$creatureDest/RockBoarNear.glb" -Force
+          Copy-Item $spawnNear "$creatureDest/SpawnlingNear.glb" -Force
+          Copy-Item $spawnFar "$creatureDest/SpawnlingFar.glb" -Force
+          $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Installed Blender required for original boar far LOD'}
+          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/make_boar_far_lod.py -- $rock "$creatureDest/RockBoarFar.glb" "$destination/RockBoar_Far_LOD.blend"
+          if($LASTEXITCODE){throw 'Original boar far LOD rebuild did not succeed'}
+          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/refine_geological_lookdev.py -- "$destination/Eldoria_Region1_Production.blend" $destination
+          if($LASTEXITCODE){throw 'Reviewed source-preserving look development failed'}
+          foreach($name in @('RegionOneBlenderWorld.glb','RegionOneGrassDetail.png','RegionOneResources.glb','RegionOneResourceImpostors.png')){
+            Copy-Item (Join-Path $destination $name) (Join-Path $unityDest $name) -Force
+          }
+          Write-Host 'REGION1_PINNED_SOURCE_6_INPUT_HASHES_PASS reviewed_lookdev_export=1 art_approved=false repeat_native_playmode_required=1'
+      - name: Recover preserved editable art without reauthoring it
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40202342770
+          name: region1-canon-native-40202342770
+          path: ${{ runner.temp }}/region1-preserved-source
+      - name: Require exact pinned Blender output before fresh Unity verification
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        shell: powershell
+        run: |
+          $origin=Join-Path $env:RUNNER_TEMP 'region1-preserved-source/region1-authoring-40202342770'
+          $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $unityDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+          New-Item -ItemType Directory -Path $destination -Force | Out-Null
+          $measured=[ordered]@{}
+          $verified=[ordered]@{
+            'RegionOneBlenderWorld.glb'='8e1ba54bdf1708b3b725ab06d9084329ff3d41864277fbe91fbd8132dd4e38b6'
+            'RegionOneBlenderQueries.bytes'='4a57aa0fd5b4401fa1aeac6062c26bc142731348e63ff752dbb2c6c63ca33068'
+            'production-region.json'='a4ce659d62d2f8aa7ac70cbc573f77ae75774091ab145938cc8b49bb872cba99'
+            'RegionOneResources.glb'='d3a993a2389875e621e8e883d99dacf8017649c13e9ccfac01902066ea8ac37a'
+            'RegionOneResourceImpostors.png'='1c5af8246f599c120126b56602a7452318f51f31b702b1fb17cafb79c826b0a3'
+            'RegionOneGrassDetail.png'='e66b6872b03c9631cf06d18457290d724bf283d53e1a7ab9e3c502e6029af5dc'
+          }
+          foreach($name in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json','RegionOneResources.glb','RegionOneResourceImpostors.png','RegionOneGrassDetail.png')){
+            $saved=Join-Path $origin $name
+            $current=Join-Path $unityDest $name
+            if(-not(Test-Path $saved)){throw "Pinned preserved art missing: $name"}
+            $expected=$verified[$name]
+            if((Get-FileHash $saved -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw "Pinned Blender binary changed: $name"}
+            Copy-Item -LiteralPath $saved -Destination $current -Force
+            $actual=(Get-FileHash $current -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($expected -ne $actual){throw "Imported binary copy mismatch: $name"}
+            $measured[$name]=$actual
+          }
+          foreach($name in @('Eldoria_Region1_Production.blend','Eldoria_Resource_Library.blend','RockBoar_Far_LOD.blend','retained-core-integrity.json')){
+            if(-not(Test-Path (Join-Path $origin $name))){throw "Missing preserved editable source: $name"}
+          }
+          Copy-Item -Path "$origin/*" -Destination $destination -Recurse -Force
+          @{source_run=40202342770;source_gate_passed=$true;previous_runtime_certified=$false;exact_imported_binary_sha256=$measured;blender_reauthored=$false;fresh_unity_tests_required=$true} |
+            ConvertTo-Json -Depth 6 | Set-Content (Join-Path $destination 'imported-art-identity.json') -Encoding UTF8
+          Write-Host 'REGION1_PRESERVED_EDITABLE_ART_AND_SIX_PINNED_IMPORTED_BINARIES_IDENTICAL fresh_Unity_required=true'
+      - name: Recover reviewed approved resource assets from actual BlenderMCP edit
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40209242543
+          name: region1-interactive-40209242543
+          path: ${{ runner.temp }}/region1-approved-node-assets
+      - name: Stage exact reviewed node geometry and preserve editable BlenderMCP source
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        shell: powershell
+        run: |
+          $origin=Join-Path $env:RUNNER_TEMP 'region1-approved-node-assets'
+          $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $unityDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+          $verified=[ordered]@{
+            'RegionOneResources.glb'='a968f7d81575d792904ec04cd4cb46fb569866f762746354eb3f5465c0a025f3'
+            'RegionOneResourceImpostors.png'='ec1e70d93c85dd7ac677d4bd23ff8884c235bfcce1e12e0b9c5be4da7b80dc0e'
+            'Eldoria_Resource_Library.blend'='2519a8b42da226e1241cd26e674ca91031b0c32252b9aec66c5397519f162b76'
+          }
+          foreach($name in $verified.Keys){
+            $saved=Join-Path $origin $name
+            if((Get-FileHash $saved -Algorithm SHA256).Hash.ToLowerInvariant() -ne $verified[$name]){throw "Reviewed resource asset identity changed: $name"}
+            Copy-Item $saved (Join-Path $destination $name) -Force
+            if($name -ne 'Eldoria_Resource_Library.blend'){Copy-Item $saved (Join-Path $unityDest $name) -Force}
+          }
+          foreach($name in @('approved-node-authoring.json','ready.json','session-closed.json')){Copy-Item (Join-Path $origin $name) (Join-Path $destination $name) -Force}
+          Copy-Item (Join-Path $origin 'request-40209242543.json') (Join-Path $destination 'request.json') -Force
+          Copy-Item (Join-Path $origin 'response-40209242543.json') (Join-Path $destination 'response.json') -Force
+          $report=Get-Content (Join-Path $destination 'approved-node-authoring.json') -Raw|ConvertFrom-Json
+          if($report.root_count -ne 6 -or $report.new_gameplay_targets -ne 0){throw 'Approved assets must retain the existing six resource root identities'}
+          Write-Host 'REGION1_APPROVED_NODE_ASSETS_EXACT_MCP_OUTPUT_STAGED fresh_Unity_required=true'
+      - name: Recover reviewed terrain-bound Breach from the actual BlenderMCP session
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40214248071
+          name: region1-interactive-40214248071
+          path: ${{ runner.temp }}/region1-approved-breach-ground
+      - name: Stage exact geological output and preserve both independent MCP traces
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        shell: powershell
+        run: |
+          $origin=Join-Path $env:RUNNER_TEMP 'region1-approved-breach-ground'
+          $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $unityDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+          $verified=[ordered]@{
+            'RegionOneBlenderWorld.glb'='a519e11591d1807009c0f5a2e8db7170faeed9b2378d1b3ba686d510fd92dc00'
+            'Eldoria_Region1_Production.blend'='334eb745c6513917ab8770c146dbe9e5050a3ee8dac675bd87c49a1c1483d920'
+          }
+          $report=Get-Content (Join-Path $origin 'geological-ground-authoring.json') -Raw|ConvertFrom-Json
+          if($report.terrain_before -ne 'd845d4c883de39ed5cda5e2dd792fcf18597ee0a47685cabc1dd17c241c35202' -or $report.terrain_before -ne $report.terrain_after -or $report.original_packed_images_unchanged -lt 59 -or -not $report.floor_original_materials_uv_corner_normals_copied -or $report.new_gameplay_targets -ne 0 -or $report.colliders_added -ne 0){throw 'Geological output did not preserve the actual ground/source contracts'}
+          foreach($name in $verified.Keys){
+            $saved=Join-Path $origin $name
+            if((Get-FileHash $saved -Algorithm SHA256).Hash.ToLowerInvariant() -ne $verified[$name]){throw "Reviewed geological output changed: $name"}
+            Copy-Item $saved (Join-Path $destination $name) -Force
+            if($name -eq 'RegionOneBlenderWorld.glb'){Copy-Item $saved (Join-Path $unityDest $name) -Force}
+          }
+          Copy-Item (Join-Path $origin 'geological-ground-authoring.json') (Join-Path $destination 'geological-ground-authoring.json') -Force
+          foreach($name in @('ready','session-closed')){Copy-Item (Join-Path $origin "$name.json") (Join-Path $destination "geology-$name.json") -Force}
+          foreach($name in @('request','response')){Copy-Item (Join-Path $origin "$name-40214248071.json") (Join-Path $destination "geology-$name.json") -Force}
+          Write-Host 'REGION1_GROUND_BOUND_BREACH_STAGED terrain_position_topology_UV_materials_preserved=1 new_targets=0 fresh_Unity_required=1'
+      - name: Recover actual artist-reviewed macro composition
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40319616586
+          name: region1-interactive-40319616586
+          path: ${{ runner.temp }}/region1-reviewed-macro
+      - name: Stage exact observed BlenderMCP valleys and geological walls
+        shell: powershell
+        run: |
+          $proof=Get-ChildItem "$env:RUNNER_TEMP/region1-reviewed-macro" -Recurse -Filter macro-art-operations.json | Select-Object -First 1
+          if(-not $proof){throw 'Reviewed macro source unavailable'}
+          $origin=Split-Path $proof.FullName
+          $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $unityDest=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+          $expected=@{
+            'Eldoria_Region1_Production.blend'='0e5a0a9df65799aaa8ccfccce12680eaf9a8bec9e94090e08991418ae87bcdb9'
+            'RegionOneBlenderWorld.glb'='d23114d40777e014dac5de7b18078143b9d32e66df79798871751b9b1d9c6738'
+            'RegionOneBlenderQueries.bytes'='0f9ad69457db9e3910e465a531811f13fac7c3d92b2221b7788e8c94b8d2942c'
+            'production-region.json'='7f9cf05c9ddded57fb0ec2d716726617d4f9ea32ed53238da616f0936735afa1'
+          }
+          foreach($name in $expected.Keys){
+            $saved=Join-Path $origin $name
+            if((Get-FileHash $saved -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected[$name]){throw "Observed macro output changed: $name"}
+            Copy-Item $saved (Join-Path $destination $name) -Force
+            if($name -ne 'Eldoria_Region1_Production.blend'){Copy-Item $saved (Join-Path $unityDest $name) -Force}
+          }
+          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40319616586.json','response-40319616586.json')){
+            Copy-Item (Join-Path $origin $name) (Join-Path $destination "macro-$name") -Force
+          }
+          Write-Host 'ACTUAL_BLENDER_MCP_MACRO_ART_STAGED protected_AF_AG=51828_vertices bridge_length=21 modified_terrain_vertices=59005 river_bed_vertices=17405 new_targets=0 fresh_Unity_required=1'
+      - name: Verify and repair reviewed export metadata without changing geometry
+        shell: powershell
+        run: '& ./world4x-source/docs/evidence/world4x-canon-20261022/authoring/repair_macro_metadata.ps1'
+      - name: Actual Editor import + integrated source gate
+        if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
+        shell: powershell
+        run: '& ./world4x-source/docs/evidence/world4x-canon-20261022/authoring/validate_import.ps1'
+      - name: Actual integrated scene PlayMode test
+        if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
+        shell: powershell
+        run: |
+          $project=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity'
+          $env:VALORIA_GAMEPLAY_PROBE='1'
+          $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP "region1-canon-captures-$env:GITHUB_RUN_ID"
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-playmode.log'
+          $xml=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-tests.xml'
+          $args=@('-batchmode','-projectPath',('"' + $project + '"'),'-runTests','-testPlatform','PlayMode','-force-d3d11','-testResults',('"' + $xml + '"'),'-logFile',('"' + $log + '"'))
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1800000)){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity PlayMode test timeout' }
+          if(Test-Path $log){Get-Content $log -Tail 90}
+          if(Test-Path $xml){
+            [xml]$diagnostic=Get-Content $xml -Raw
+            foreach($failure in @($diagnostic.SelectNodes('//test-case[@result!="Passed"]'))){
+              Write-Host ("NUNIT_RESULT "+$failure.name+" => "+$failure.result)
+              if($failure.failure){Write-Host ("NUNIT_FAILURE "+$failure.failure.message.InnerText)}
+            }
+          }
+          if($p.ExitCode -ne 0){throw "Integrated PlayMode test failed: $($p.ExitCode)"}
+          if(-not(Test-Path $xml)){throw 'Missing actual Unity PlayMode result'}
+          [xml]$result=Get-Content $xml -Raw
+          $nodes=@($result.SelectNodes('//test-case'))
+          if($nodes.Count -lt 57){throw "Expected at least 57 full-project PlayMode cases including genuine GPU captures, got $($nodes.Count)"}
+          if(@($nodes|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Unity PlayMode contains failed or ignored tests'}
+          $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
+          if($captures.Count -ne 16){throw "Missing actual clean-world and blockout PNGs: expected sixteen genuine Unity captures, got $($captures.Count)"}
+          if($env:ELDORIA_RIBERA_PILOT -eq '1' -and (Test-Path "$project/Assets/Eldoria/World4XCanon/Resources/World4X/Pilot/LivingSectorLayout.json")){
+            $living=Join-Path $env:ELDORIA_REGION1_CAPTURE_OUT 'ribera-pilot/living-sector'
+            $proof=Get-Content "$living/capacity.json" -Raw | ConvertFrom-Json
+            if(-not $proof.fullSizeNavigation -or -not $proof.originalSaveUntouched -or $proof.testMarkerScale -ne 1 -or $proof.duplicateCount -ne 0){throw 'Living sector proof incomplete'}
+            if(@(Get-ChildItem $living -Filter '*.png').Count -ne 12){throw 'Missing living sector camera captures'}
+          }
+          Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) NATIVE_TECHNICAL_PASS (NOT artistic approval or physical mobile QA)"
+      - name: Recover exact already verified Unity authoring snapshot
+        if: contains(github.event.head_commit.message, 'author-retry(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 39831626822
+          name: region1-canon-native-39831626822
+          path: ${{ runner.temp }}/region1-author-source-${{ github.run_id }}
+      - name: Verify recovered source identity without rerunning unchanged Unity
+        if: contains(github.event.head_commit.message, 'author-retry(world4x):')
+        shell: powershell
+        run: |
+          git -C world4x-source fetch --depth=1 origin b277320e35d0268d556fe2d540ae07d5535629a3
+          if($LASTEXITCODE){throw 'Cannot verify pinned original terrain source'}
+          git -C world4x-source diff --exit-code b277320e35d0268d556fe2d540ae07d5535629a3 HEAD -- Unity/
+          if($LASTEXITCODE){throw 'Unity changed: cached captures cannot certify this source'}
+          $capture=Join-Path $env:RUNNER_TEMP "region1-author-source-$env:GITHUB_RUN_ID/region1-canon-captures-39831626822"
+          if(-not(Test-Path "$capture/terrain-source.json")){throw 'Measured source mesh missing'}
+          "ELDORIA_REGION1_ARTIST_CAPTURE=$capture" >> $env:GITHUB_ENV
+      - name: Certify full EditMode and existing real I-II UI probe
+        if: success() && contains(github.event.head_commit.message, '[materialize-candidate]')
+        shell: powershell
+        run: '& ./world4x-source/docs/evidence/world4x-canon-20261022/authoring/certify_integrated_project.ps1'
+      - name: Preserve verified candidate binaries and editable sources on the same PR branch
+        if: success() && contains(github.event.head_commit.message, '[materialize-candidate]')
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          & ./world4x-source/docs/evidence/world4x-canon-20261022/authoring/materialize_verified_candidate.ps1
+      - name: Inventory physical Android availability without installing or changing applications
+        if: always()
+        shell: powershell
+        run: |
+          $adb=Get-Command adb.exe -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source
+          if(-not $adb -and $env:UNITY_EDITOR_PATH){
+            $candidate=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/SDK/platform-tools/adb.exe'
+            if(Test-Path $candidate){$adb=$candidate}
+          }
+          $devices=@()
+          $inventoryError=$null
+          if($adb){
+            # Windows PowerShell treats ADB daemon startup stderr as a terminating error.
+            # Redirect native stderr to a file and still check the actual exit status.
+            $stderr=Join-Path $env:RUNNER_TEMP 'region1-adb-stderr.txt'
+            $lines=cmd /d /c "`"$adb`" devices -l 2>`"$stderr`""
+            if($LASTEXITCODE -ne 0){$inventoryError="adb devices failed: $LASTEXITCODE";$lines=@()}
+            foreach($line in $lines){
+              if($line -match '^(\S+)\s+device(?:\s|$)'){
+                $serial=$Matches[1]
+                $virtual=(& $adb -s $serial shell getprop ro.kernel.qemu 2>$null | Out-String).Trim()
+                if($virtual -ne '1'){
+                  $model=(& $adb -s $serial shell getprop ro.product.model 2>$null | Out-String).Trim()
+                  $devices+=@{model=$model;profiled=$false;candidate_installed=$false}
+                }
+              }
+            }
+          }
+          @{adb_available=[bool]$adb;physical_android_count=$devices.Count;inventory_error=$inventoryError;devices=$devices;physical_profiled=$false;ios_profiled=$false} | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $env:RUNNER_TEMP 'region1-physical-device-inventory.json')
+      - name: Recover original AG camera evidence for comparison
+        if: success() && contains(github.event.head_commit.message, '[recover-ag-review]')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40012204581
+          name: region1-canon-native-40012204581
+          path: ${{ runner.temp }}/original-ag-review
+      - name: Upload compact genuine Unity review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: region1-visual-review-${{ github.run_id }}
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/eldoria-region1-canon-tests.xml
+            ${{ runner.temp }}/region1-physical-device-inventory.json
+            ${{ runner.temp }}/region1-general-proof-${{ github.run_id }}/**
+            ${{ runner.temp }}/region1-authoring-${{ github.run_id }}/retained-core-integrity.json
+            ${{ runner.temp }}/region1-canon-captures-${{ github.run_id }}/*.png
+            ${{ runner.temp }}/region1-canon-captures-${{ github.run_id }}/*-source.json
+            ${{ runner.temp }}/region1-canon-captures-${{ github.run_id }}/retained-sector/**
+            ${{ runner.temp }}/original-ag-review/region1-canon-captures-40012204581/ribera-pilot/sector/*.png
+            ${{ runner.temp }}/original-ag-review/region1-canon-captures-40012204581/ribera-pilot/sector/*.json
+      - name: Upload logs and measured tests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: region1-canon-native-${{ github.run_id }}
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/eldoria-region1-canon-unity-source.log
+            ${{ runner.temp }}/eldoria-region1-canon-playmode.log
+            ${{ runner.temp }}/eldoria-region1-general-integration.log
+            ${{ runner.temp }}/eldoria-region1-editmode.log
+            ${{ runner.temp }}/eldoria-region1-canon-tests.xml
+            ${{ runner.temp }}/region1-physical-device-inventory.json
+            ${{ runner.temp }}/region1-general-proof-${{ github.run_id }}/**
+            ${{ runner.temp }}/region1-materialized-candidate.json
+            ${{ runner.temp }}/eldoria-region1-source-gate.json
+            ${{ runner.temp }}/region1-canon-captures-*/**
+            ${{ runner.temp }}/region1-authoring-${{ github.run_id }}/**
+            ${{ runner.temp }}/region1-authoring-${{ github.run_id }}/*.cycle-feedback.json
+            ${{ runner.temp }}/region1-ollama-${{ github.run_id }}.*
+
+
+  blender-interactive:
+    needs: canon-source
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, 'blender-interactive(world4x):')
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    steps:
+      - name: Find installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: world4x-source
+          clean: false
+          persist-credentials: false
+          sparse-checkout: |
+            docs/evidence/world4x-canon-20261022/authoring
+            tools/workstream-lease
+            pipeline
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: world4x-live
+          persist-credentials: false
+          sparse-checkout: pipeline
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check live ownership before touching the retained Blender session
+        shell: powershell
+        run: |
+          node world4x-source/tools/workstream-lease/check.mjs world4x-source/pipeline/active-workstreams.json world4x-live/pipeline/active-workstreams.json eldoria-world-region-1-canon-20261022
+          if($LASTEXITCODE){throw 'Live workstream lease mismatch'}
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40253312800
+          name: region1-interactive-40253312800
+          path: ${{ runner.temp }}/interactive-approved-nodes-source
+      - name: Send this observed decision to the persistent local BlenderMCP session
+        shell: powershell
+        run: '& world4x-source/docs/evidence/world4x-canon-20261022/authoring/interactive/relay.ps1'
+      - uses: actions/upload-artifact@v4
+        if: always() && env.ELDORIA_INTERACTIVE_OUT != ''
+        with:
+          name: region1-interactive-review-${{ github.run_id }}
+          path: |
+            ${{ env.ELDORIA_INTERACTIVE_OUT }}/*.png
+            ${{ env.ELDORIA_INTERACTIVE_OUT }}/*.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always() && env.ELDORIA_INTERACTIVE_OUT != ''
+        with:
+          name: region1-interactive-${{ github.run_id }}
+          path: ${{ env.ELDORIA_INTERACTIVE_OUT }}/**
+          if-no-files-found: error
+
+
+  evidence-recovery:
+    needs: canon-source
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, 'evidence-recovery(world4x):')
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 5
+    steps:
+      - name: Preserve existing failed general framing evidence without running an editor
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another editor is active'}
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $raw=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw.content))|ConvertFrom-Json
+          $lease=@($registry.active|Where-Object {$_.id -eq 'eldoria-world-region-1-canon-20261022'})
+          if($lease.Count -ne 1 -or $lease[0].owner -ne 'codex-world4x-takeover-a6480e11' -or $lease[0].ownership_revision -ne 37 -or $lease[0].write_scope_released){throw 'World lease changed'}
+          $source=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/valoria-reference-clean'
+          $result=Get-Content (Join-Path $source 'integration-result.json') -Raw|ConvertFrom-Json
+          if($result.source -ne 'b71da71919f86844c303305c3d9a8a1d47115dd6' -or @($result.checks).Count -ne 44){throw 'Existing evidence is not the exact completed probe'}
+          $out=Join-Path $env:RUNNER_TEMP "region1-framing-recovery-$env:GITHUB_RUN_ID"
+          New-Item -ItemType Directory -Force $out|Out-Null
+          Get-ChildItem $source -File | Where-Object {$_.Name -like 'integration*.png' -or $_.Name -eq 'integration-result.json'} | Copy-Item -Destination $out
+          Get-ChildItem $env:RUNNER_TEMP -File | Where-Object {$_.Name -like '*general*.xml' -or $_.Name -like '*general*.log' -or $_.Name -like 'Region1-General-Framing-Baseline*'} | Copy-Item -Destination $out
+          "RECOVERY_OUT=$out" >> $env:GITHUB_ENV
+          Write-Host "EXACT_FAILED_GENERAL_EVIDENCE_PRESERVED source=$($result.source) checks=$(@($result.checks).Count) no_editor_started=true"
+      - uses: actions/upload-artifact@v4
+        if: always() && env.RECOVERY_OUT != ''
+        with:
+          name: region1-framing-recovery-${{ github.run_id }}
+          path: ${{ env.RECOVERY_OUT }}/**
+          if-no-files-found: error

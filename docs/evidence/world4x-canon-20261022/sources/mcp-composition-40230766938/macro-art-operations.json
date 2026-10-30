@@ -1,0 +1,23 @@
+{
+  "method": "artist-directed actual BlenderMCP edit",
+  "source_sha256": "334eb745c6513917ab8770c146dbe9e5050a3ee8dac675bd87c49a1c1483d920",
+  "protected_vertices_unchanged": 51898,
+  "terrain_vertices_after": 339274,
+  "original_packed_images_unchanged": 63,
+  "new_connected_streams": 2,
+  "new_gameplay_targets": 0,
+  "new_colliders": 0,
+  "cleared_continental_tree_lods": 486,
+  "regrounded_trees": 239,
+  "new_riparian_shared_mesh_pairs": 55,
+  "continental_material_links": 1,
+  "query_samples_rebuilt": 23181,
+  "locally_subdivided_edges": 21281,
+  "art_approved": false,
+  "files": {
+    "Eldoria_Region1_Production.blend": "ebc0d001f99dec1166f08bebb9436c140612e2a89fe8b45cc0270feafb6f5823",
+    "RegionOneBlenderWorld.glb": "bf3c02383dcb6fa524463c5c6b06ec8c7a5fe5142fe15f676b720d85d8757b6b",
+    "RegionOneBlenderQueries.bytes": "bde8d1e3e13df5fc658d9fa258da9ac3d720d499f230644e250e9f3b4570589b",
+    "production-region.json": "e1454e3ce1c8985e174833e6618e427aa941a97376f5958fa4138dc5cca853df"
+  }
+}

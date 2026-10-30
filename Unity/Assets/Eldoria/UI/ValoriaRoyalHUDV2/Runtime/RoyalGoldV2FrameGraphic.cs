@@ -91,6 +91,32 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!DecorativeCorners || r.width < 110f || r.height < 45f) return;
             var gold = Primary ? new Color(.87f, .74f, .47f, 1f) :
                 new Color(.68f, .55f, .32f, .84f);
+            // Inlaid twin gilt rules and four engraved corner knots:
+            // live controls remain on top, with no extra Canvas or raycasts.
+            float rail = r.width - 61f;
+            if (rail > 4f && r.height > 65f)
+            {
+                FillPolygon(vh, new[] {
+                    new Vector2(r.xMin+30f,r.yMax-10f),
+                    new Vector2(r.xMax-30f,r.yMax-10f),
+                    new Vector2(r.xMax-30f,r.yMax-8.6f),
+                    new Vector2(r.xMin+30f,r.yMax-8.6f)
+                },gold,gold);
+                FillPolygon(vh, new[] {
+                    new Vector2(r.xMin+30f,r.yMin+8.6f),
+                    new Vector2(r.xMax-30f,r.yMin+8.6f),
+                    new Vector2(r.xMax-30f,r.yMin+10f),
+                    new Vector2(r.xMin+30f,r.yMin+10f)
+                },gold,gold);
+                Diamond(vh,r.xMin+18f,r.yMin+18f,4.5f,gold);
+                Diamond(vh,r.xMax-18f,r.yMin+18f,4.5f,gold);
+                Diamond(vh,r.xMin+18f,r.yMax-18f,4.5f,gold);
+                Diamond(vh,r.xMax-18f,r.yMax-18f,4.5f,gold);
+                Diamond(vh,r.xMin+25f,r.yMin+25f,2f,RimHigh);
+                Diamond(vh,r.xMax-25f,r.yMin+25f,2f,RimHigh);
+                Diamond(vh,r.xMin+25f,r.yMax-25f,2f,RimHigh);
+                Diamond(vh,r.xMax-25f,r.yMax-25f,2f,RimHigh);
+            }
             Diamond(vh, r.xMin + 20f, r.yMax - 15f, 3f, gold);
             Diamond(vh, r.xMax - 20f, r.yMax - 15f, 3f, gold);
         }

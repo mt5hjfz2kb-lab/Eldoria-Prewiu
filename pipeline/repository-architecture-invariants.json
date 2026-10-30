@@ -15,7 +15,10 @@
     ".github/workflows/workflow-governance.yml",
     ".github/workflows/unity-slice.yml",
     ".github/workflows/ui-progression-cert.yml",
-    "Unity/ProjectSettings/ProjectVersion.txt"
+    "Unity/ProjectSettings/ProjectVersion.txt",
+    ".github/workflows/canonical-pr-ownership.yml",
+    "tools/workstream-lease/pr-ownership-gate.mjs",
+    "tools/workstream-lease/pr-ownership-gate.test.mjs"
   ],
   "requiredDirectories": [
     ".github/workflows",

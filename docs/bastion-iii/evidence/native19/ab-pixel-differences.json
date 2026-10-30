@@ -1,0 +1,37 @@
+{
+  "A-bastion-II-horizontal -> B-bastion-III-site-horizontal": {
+    "changed_pixels_rgb_delta_ge12": 2552,
+    "size": [
+      1448,
+      1086
+    ]
+  },
+  "C-granary-level1-horizontal -> D-granary-level2-horizontal": {
+    "changed_pixels_rgb_delta_ge12": 614,
+    "size": [
+      1448,
+      1086
+    ]
+  },
+  "D-granary-level2-horizontal -> E-granary-level3-horizontal": {
+    "changed_pixels_rgb_delta_ge12": 671,
+    "size": [
+      1448,
+      1086
+    ]
+  },
+  "sawmill-level2-horizontal -> sawmill-level3-horizontal": {
+    "changed_pixels_rgb_delta_ge12": 1104,
+    "size": [
+      1448,
+      1086
+    ]
+  },
+  "barracks-level2-horizontal -> barracks-level3-horizontal": {
+    "changed_pixels_rgb_delta_ge12": 1145,
+    "size": [
+      1448,
+      1086
+    ]
+  }
+}

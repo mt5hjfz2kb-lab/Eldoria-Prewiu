@@ -1,0 +1,68 @@
+{
+    "art_approved":  false,
+    "candidate_commit":  "49b72a87eef7ff085f32c8efc2657258ad1c037d",
+    "native_run":  "40038480141",
+    "files":  [
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+                      "sha256":  "fcb91df90a1a03a0514754309bea129c2cded861d36f24382275007be60e86f9",
+                      "bytes":  72200396
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb.meta",
+                      "sha256":  "2c82e8985fd874012b4022524a763f08ebce1220722c74e60308a06cc439f524",
+                      "bytes":  748
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderQueries.bytes",
+                      "sha256":  "e3392c2ad44c43dad136988332bc60e42e548ad34a9bc12c0eaa0e5266ff82d4",
+                      "bytes":  1847181
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderQueries.bytes.meta",
+                      "sha256":  "16d53ca23bfe5337c7843b06b8c3147d43c7a7ab036d8503a0a3a170a6924503",
+                      "bytes":  106
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/production-region.json",
+                      "sha256":  "57bca5610e13c352d3fa0be6d1a7596fde32b201c6809d9f83ea7034ecfdb4d0",
+                      "bytes":  4648
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/production-region.json.meta",
+                      "sha256":  "1e216233154e0c85f4335fd422ddab411ea47615448f4af80d1782aa35227012",
+                      "bytes":  158
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResources.glb",
+                      "sha256":  "9967014160aebee244a7187e1306789232bde6fa7fb66d666da4b17c3e284527",
+                      "bytes":  1798012
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResources.glb.meta",
+                      "sha256":  "33cde81b5b808043dcb5ef1d85e55a9ec27b76085fb829c55bf8ffdfe862f626",
+                      "bytes":  720
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResourceImpostors.png",
+                      "sha256":  "1be387939a69a7e8031185a3b11cf90a04453bfdb2039da0c39f3b7cbdc36745",
+                      "bytes":  84909
+                  },
+                  {
+                      "path":  "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResourceImpostors.png.meta",
+                      "sha256":  "f3f98946d457d154178e2b37d8adfb0c81f1a45f37d25d83c2286335a81cd67b",
+                      "bytes":  3717
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40038480141/Eldoria_Region1_Production.blend",
+                      "sha256":  "b595e877f46f17cde4bcee77fb449a85027e0f328fedcc50d21955e5341fb837",
+                      "bytes":  71024532
+                  },
+                  {
+                      "path":  "docs/evidence/world4x-canon-20261022/sources/native-40038480141/Eldoria_Resource_Library.blend",
+                      "sha256":  "dcaa17897aa97ce69dd5df36013d434ca1ac391891785c3280c36c2f3bbb17d5",
+                      "bytes":  50463523
+                  }
+              ],
+    "mobile_profiled":  false
+}

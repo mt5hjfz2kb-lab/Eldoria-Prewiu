@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "enabled": false,
+  "status": "COMPLETED",
+  "workstream_id": "eldoria-global-march-capacity-three-slots-20261028",
+  "request_id": "eldoria-global-march-capacity-three-slots-20261028",
+  "asset_or_sector": "Gameplay-only authoring: shared military march-capacity, three persisted marches, Zone1 map markers and existing march-composition uGUI",
+  "profile": "environment_composition",
+  "visual_gate_state": "NATIVE_UI_COMPOSITION_VERIFIED",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Owner requests a single authoritative per-march unit capacity increasing with existing hero experience/levels and Barracks; allow exactly three concurrent missions globally. The formerly single world march representation needs two additional saved slots and visible route markers without changing any terrain meshes, models, images or shaders. Only native Unity validation of the existing gameplay UI is needed, not new 3D authorship.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "unity_native_uGUI": true,
+    "existing_3d_assets_modified": false
+  },
+  "validation": {
+    "source_gate": "Dotnet smoke compiles actual Domain/Gateway. Verify reserved troop counts, 3 simultaneous slots, 4th rejection, UTC returns, no double resources, hero level and barracks caps, existing save migration. Do not modify source assets.",
+    "final_gate": "Independent Unity native PlayMode for real world routes, simultaneous 3 markers, selector bounds, first chapter and retention; no APK or merge before relevant gates."
+  },
+  "art_approved": false,
+  "unity_visual_acceptance": "ACCEPTED_EXISTING_UI_SCOPE",
+  "physical_mobile_tested": false,
+  "notes": "No new visual art assets; existing marker/route UI duplicated only as runtime visuals. This mandatory production route documents authoring scope for ArtTests integration files; Qwen/Tripo not invoked. Owner directed new feature 2026-10-28. Budget 0 EUR. Native UI-only composition reviewed on47 real captures; no new geometry authoring or general-world ART_APPROVED claim.",
+  "native_run_id": 40850803144,
+  "native_evidence": "docs/marches/NATIVE_CERTIFICATE_20261029.json",
+  "completed_at": "2026-10-29T11:04:56.870Z",
+  "completed_by_pr": 124,
+  "main_success_run": 40859922725,
+  "completion_evidence": "docs/marches/MAIN_INTEGRATION_20261029.json"
+}

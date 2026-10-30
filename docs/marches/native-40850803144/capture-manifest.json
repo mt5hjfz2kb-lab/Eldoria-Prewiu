@@ -1,0 +1,338 @@
+{
+  "run_id": 40850803144,
+  "requested_source": "fd21934bc1889087d9713d5367389b094991207f",
+  "compiled_source": "c27b52c93c8d51e249fec86afd7228aa84596edf",
+  "compiled_tree": "e05acd3803c98ed43075115f98cab4677ce1670b",
+  "original_captures": [
+    {
+      "capture": "investigation-and-two-marches-horizontal.png",
+      "sha256": "7524528f89d74a6635c20204b94b8d304727e7eeca73127bbc969d1be9f73302",
+      "bytes": 1979732,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "investigation-and-two-marches-phone.png",
+      "sha256": "576f5b0929ce55b7af7761a88879ee93f88a284ca4da247feb18b50c23a58f04",
+      "bytes": 546502,
+      "reviewed": true,
+      "retained_original": true
+    },
+    {
+      "capture": "march-composer-horizontal.png",
+      "sha256": "27959d9a04e1ecc32ae7ba718bf1af62ea23ec28e35ee423627dcac08dcc3a4a",
+      "bytes": 195732,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "march-composer-vertical.png",
+      "sha256": "fd8d11767834ab11d9ddfd8c30bba3970fa203c9118ee6a343626278b0eadc88",
+      "bytes": 216104,
+      "reviewed": true,
+      "retained_original": true
+    },
+    {
+      "capture": "three-marches-active-horizontal.png",
+      "sha256": "2909c1d502b99551f0dd951cf13dcc0f9a31475d1303b48af6cd3968454c633c",
+      "bytes": 1975225,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "three-marches-active-phone.png",
+      "sha256": "3c44c62d1163c819f8fe3b3a446f4a639d3b96d316c11733cb65540bf73fbeff",
+      "bytes": 546601,
+      "reviewed": true,
+      "retained_original": true
+    },
+    {
+      "capture": "three-marches-active-vertical.png",
+      "sha256": "602bb0e1194bc4b4dda8d0be4af405712c90c34f75479f25cde4fb5e7e917bba",
+      "bytes": 2116240,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "three-marches-before-horizontal.png",
+      "sha256": "8f622ac4f4e46e74fb57e2f990d8ce6b038467a8448a0f8834061ce64ad9532a",
+      "bytes": 2035633,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/scouts-before-discovery-landscape.png",
+      "sha256": "3514bcd6c33a063301328250e95cf3b42b676d6eeeb637521da1a552bb15a1fc",
+      "bytes": 2190471,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/scouts-discovery-landscape.png",
+      "sha256": "7a406bd40597bdb0d388ae4e448e07b2fadd5f1f0a3f85c0c10968d71ae7110d",
+      "bytes": 2086850,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/scouts-discovery-phone.png",
+      "sha256": "ab4bf6d9efea673141729ab2e100a250b94abd8accc83cad588ef5e2a96e5db3",
+      "bytes": 496740,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/scouts-discovery-portrait.png",
+      "sha256": "4f6f7aa5d91ca83b592b84454ebf2fa7aad53d70ced30cd697ef727afbdea19b",
+      "bytes": 1565948,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/scouts-six-reports-four-families-landscape.png",
+      "sha256": "127731300c4fb657176e44f5e1a4d51ed8ca431dc4d675c8d4d7dc88a008cf0f",
+      "bytes": 2009755,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/scouts-six-reports-four-families-phone.png",
+      "sha256": "f7682e3e43f1c616236e318d962f733ba8df31345646dcc510e2e97fdf15d841",
+      "bytes": 485083,
+      "reviewed": true,
+      "retained_original": true
+    },
+    {
+      "capture": "retention-engagement-40850803144/scouts-six-reports-four-families-portrait.png",
+      "sha256": "055591b6686d32fcba411c21a675be615183fb57a975ae21f885b2dbea687b65",
+      "bytes": 1497323,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-battle-result-landscape.png",
+      "sha256": "7c464303180d03c45941d43566d354a0e3164d01840e297d661d39c37cbfec44",
+      "bytes": 1647765,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-defeat-phone.png",
+      "sha256": "a3ef33aec8fea0c9d512f24db26181fc6a5a0f84b989395f7af49018b13a1e0f",
+      "bytes": 497528,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-defeat-reopened-phone.png",
+      "sha256": "862afaf1fee1551563889f38065968e12e3071378c629a9908a255b6f6731e44",
+      "bytes": 580926,
+      "reviewed": true,
+      "retained_original": true
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-engendro15-portrait.png",
+      "sha256": "712f60762e24814dd4fbf58209fbe0cc6eb2e774f552d69bf7a8b9720612cd1c",
+      "bytes": 2040813,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-guardian10-landscape.png",
+      "sha256": "b30ecf591248861b0cbe43d46637b7704c04b33ec328fced140490e25e9b1271",
+      "bytes": 1978980,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-guardian10-phone.png",
+      "sha256": "a9dc2bbf8186e44d4fccad96838f354870c506bf5b3188d5d342666fb44b80d7",
+      "bytes": 594196,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-guardian20-landscape.png",
+      "sha256": "a464f83ff7a6fe37bf77befb40bdbc6e82ade56331cb3046b783f4bd63f5a233",
+      "bytes": 1982488,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-guardian20-phone.png",
+      "sha256": "785bba2bda88cd4738c3ff767d2314a05df5a189ecae6ffc161d626869bf2f34",
+      "bytes": 595155,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-guardian25-landscape.png",
+      "sha256": "f64f20f194c43aa79892c9c5fae7165ca90351776f6482b2183d38b03db8c7b3",
+      "bytes": 1983384,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-guardian25-phone.png",
+      "sha256": "02ee52d4aff1a15a4373be1ced6944083da5f038d126aae09120e17a3f8c242d",
+      "bytes": 596324,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-guardian5-landscape.png",
+      "sha256": "a2ce42045659535aec7f2bef4417e677b2ff2881df870703d29ac0a6ab853211",
+      "bytes": 1978546,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-guardian5-phone.png",
+      "sha256": "4ebd6aefd34cd284f4eedfb0ccc3950ee88ae0f69f424c25079207f80c8177af",
+      "bytes": 594181,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-engagement-40850803144/vigilants-guardian5-portrait.png",
+      "sha256": "ba20f6a44968af4955808f08501e922e9f6497bf533c47a9f3462809525a9417",
+      "bytes": 2102393,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/scout-mission-board-horizontal.png",
+      "sha256": "120b0c822f99ce8e967be2884db829003ee54f6b92d463be8f1cfcb1e4c6920e",
+      "bytes": 2190114,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/scout-mission-board-phone-landscape.png",
+      "sha256": "e3376e5c37fe18c4c58b2b1f6cc26c283a6728b0e19f9010b617d91fa499a5f7",
+      "bytes": 490886,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/scout-mission-board-phone.png",
+      "sha256": "8cb94910f9ddb625930d4640094967486257609f1a094cd9cbf781c507151c50",
+      "bytes": 539737,
+      "reviewed": true,
+      "retained_original": true
+    },
+    {
+      "capture": "retention-reference-40850803144/scout-mission-board-vertical.png",
+      "sha256": "b992c7887c53756437608ad72a105972cdf75b2de7d1467df9ba1390741c840a",
+      "bytes": 1819436,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/scout-missions-ready-phone.png",
+      "sha256": "2a7d4d199ff90b392dc5869af87cc8d7de2a8f774911aaca90f81c945f29ef8d",
+      "bytes": 538343,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/scout-missions-underway-phone.png",
+      "sha256": "079a08da628ac4c0dba5b11831c28af9dba045a8ff4d9a1b72b18cb31ab2d69b",
+      "bytes": 440803,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-chapter-one-horizontal.png",
+      "sha256": "5db37654af903a0f72fe11ebf91b926495d0f102286b15994c186340aae26173",
+      "bytes": 1976896,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-chapter-one-phone.png",
+      "sha256": "f3461f677b4ff9250f4d234cceac56dfd635fb2c9382163cb3b5a59551417148",
+      "bytes": 595967,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-chapter-one-vertical.png",
+      "sha256": "0bc10e4621ca16d6a057290e33f18425e08797568cbd7b7fda01f2d0cd12082a",
+      "bytes": 2105554,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-first-trial-horizontal.png",
+      "sha256": "96346486722a16f3463a5ebb3d9028493fff9dba7c716fd43087fc51b72f7379",
+      "bytes": 1976579,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-first-trial-phone.png",
+      "sha256": "b24a6c39a810416e8045caf381791fc752fcd3c2992e77d444373c97b52bd493",
+      "bytes": 595693,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-first-trial-vertical.png",
+      "sha256": "2a3a4289b2d988bd1e79b9f359b147b9c521dae81abfd050a0af4d7ea169ac10",
+      "bytes": 2111920,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-real-victory-horizontal.png",
+      "sha256": "04b4456a9fe7b028ad577cab93ea1fc78a981668c366e65a402fb85552925dae",
+      "bytes": 1647354,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-real-victory-phone.png",
+      "sha256": "b86d2c30a1dba3718aafc4ef999e8824bcb450ecd889b87bd888c969cbf10f24",
+      "bytes": 513316,
+      "reviewed": true,
+      "retained_original": true
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-real-victory-vertical.png",
+      "sha256": "073fa0601ebb7b257dc301ab076a3fbbb21c9c9750b9a0d7be792b81ddfd7b3d",
+      "bytes": 1675990,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-stage15-engendro-horizontal.png",
+      "sha256": "11f3a7f2e36c5e520a01ca0dc1325560e9297440a4f50eb59ea786e6739bad4c",
+      "bytes": 1933309,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-stage15-engendro-phone-landscape.png",
+      "sha256": "bdfb7deb66dbd7dc551cc5fbac0505ff88b48c7a14d8625b26e8437bbd591120",
+      "bytes": 463617,
+      "reviewed": true,
+      "retained_original": false
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-stage15-engendro-phone.png",
+      "sha256": "a9a7298a8ef0edeb8bbf6caa76c89d079da555b163ca7457d04d73943bf11464",
+      "bytes": 578771,
+      "reviewed": true,
+      "retained_original": true
+    },
+    {
+      "capture": "retention-reference-40850803144/vigilants-stage15-engendro-vertical.png",
+      "sha256": "cdc70cc8c5eeae212617595e1b410a86c7c5a159b84d270298204c833e22b2e4",
+      "bytes": 2036496,
+      "reviewed": true,
+      "retained_original": false
+    }
+  ],
+  "contact_sheets": "Derived thumbnails for review only; unmodified selected originals retained alongside this manifest; full originals in digest-identified GitHub Actions artifacts."
+}

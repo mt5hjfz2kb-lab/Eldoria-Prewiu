@@ -38,7 +38,7 @@ jobs:
         with:
           node-version: '22'
       - name: Validate mission continuity decisions
-        run: node --test tools/mission-continuity/core.test.mjs tools/mission-continuity/nightly-core.test.mjs
+        run: node --test tools/mission-continuity/core.test.mjs tools/mission-continuity/nightly-core.test.mjs tools/mission-continuity/triage.test.mjs
       - name: Validate existing workflow governance
         run: node tools/check-workflow-governance.mjs
       - name: Dry-run live GitHub observation without writing issues
@@ -54,7 +54,7 @@ jobs:
           NIGHTLY_RECOVERY_OUTPUT: night-recovery-report.json
         run: node tools/mission-continuity/nightly-recovery.mjs
       - name: Verify read-only monitor report
-        run: node -e "const x=require('./mission-continuity-report.json'); if(x.errors.length || x.reports.length!==3 || x.reports.some(r=>r.state==='MONITOR_ERROR'))process.exit(1)"
+        run: node -e "const x=require('./mission-continuity-report.json'); const p=require('./pipeline/mission-continuity-policy-v1.json'); if(x.errors.length || x.reports.length!==p.missions.length || x.reports.some(r=>r.state==='MONITOR_ERROR'))process.exit(1)"
 
   observe:
     if: github.event_name != 'pull_request'
@@ -77,7 +77,7 @@ jobs:
         with:
           node-version: '22'
       - name: Test decisions before live issue updates
-        run: node --test tools/mission-continuity/core.test.mjs tools/mission-continuity/nightly-core.test.mjs
+        run: node --test tools/mission-continuity/core.test.mjs tools/mission-continuity/nightly-core.test.mjs tools/mission-continuity/triage.test.mjs
       - name: Inspect existing owners and recoverable runs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
