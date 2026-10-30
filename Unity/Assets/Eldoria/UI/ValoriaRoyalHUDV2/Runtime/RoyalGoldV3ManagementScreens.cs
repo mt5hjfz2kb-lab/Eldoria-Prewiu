@@ -38,6 +38,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalButton heroesButton;
         RectTransform root, header, left, right, footer, quantityRow;
         RoyalGoldV3ManagementBackdropGraphic destinationArtwork, featuredUnitArtwork, statusArtwork;
+        RoyalGoldV3LayeredFinish militaryDepth;
         RectTransform trainingProgress;
         RectTransform trainingProgressFill;
         RoyalText heading, subheading, unitTitle, unitDetail, selectedText, summary, status, feedback;
@@ -187,6 +188,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(mailbox!=null)mailbox.Close();
             EnsureView();
             CurrentDestination = destination;
+            militaryDepth?.SetScene(destination==Destination.March?
+                RoyalGoldV3LayeredFinish.Scene.March:
+                RoyalGoldV3LayeredFinish.Scene.Training);
             destinationArtwork.MarchTheme = destination == Destination.March;
             destinationArtwork.SetVerticesDirty();
             featuredUnitArtwork.MarchTheme = destination == Destination.March;
@@ -297,6 +301,10 @@ namespace Eldoria.UI.RoyalGold.V2
             destinationArtwork=themeArt.gameObject.AddComponent<RoyalGoldV3ManagementBackdropGraphic>();
             destinationArtwork.color=Color.white;
             destinationArtwork.raycastTarget=false;
+            // Military atmosphere is a separate low-cost mesh behind every
+            // genuine control rather than a second flat background image.
+            militaryDepth=RoyalGoldV3LayeredFinish.Install(root,
+                RoyalGoldV3LayeredFinish.Scene.Training,2);
             header = Frame("V3 / Destination header",root,false);
             left = Frame("V3 / Featured military unit",root,false);
             right = Frame("V3 / Authoritative status and cost",root,false);
@@ -398,6 +406,10 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 pane.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
                 RoyalGoldV41SourceArt.Surface(pane,"blue-panel",14);
+                // Antique rim, paper shadow and candlelight are independent
+                // of the texture and cannot bake or obscure live state.
+                RoyalGoldV3LayeredFinish.Install(pane,
+                    RoyalGoldV3LayeredFinish.Scene.Panel,1);
             }
             approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer");
             approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
