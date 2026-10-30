@@ -478,16 +478,17 @@ namespace Eldoria.Tests
                 var liveButton = Member(entry, "Button") as Button;
                 return liveButton && liveButton.gameObject.activeSelf;
             }).ToArray();
-            int expectedVisible = 3; // Reino, Construir, Crónicas always make sense
+            const int expectedVisible = 5; // Stable approved navigation; locks remain real
             foreach (var entry in entries)
             {
                 string category = Member(entry, "Section").ToString();
                 if(category != "Army" && category != "World") continue;
                 bool trulyUnlocked = (bool)Call(host, "CanOpen", Member(entry, "Section"));
                 var entryButton=Member(entry, "Button") as Button;
-                Assert.That(entryButton.gameObject.activeSelf, Is.EqualTo(trulyUnlocked),
-                    "Never display an Army or World button before real gameplay unlock");
-                if(trulyUnlocked)expectedVisible++;
+                Assert.That(entryButton.gameObject.activeSelf, Is.True,
+                    "All five approved destinations remain visible");
+                Assert.That(entryButton.interactable, Is.EqualTo(trulyUnlocked),
+                    "Visible locked Army/World controls must not bypass narrative unlocks");
             }
             Assert.That(visible.Length, Is.EqualTo(expectedVisible),
                 "Only coherent Crónica Real destinations may appear at this Bastion level");

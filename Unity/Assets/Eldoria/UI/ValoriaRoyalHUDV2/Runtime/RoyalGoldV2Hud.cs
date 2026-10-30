@@ -626,11 +626,13 @@ namespace Eldoria.UI.RoyalGold.V2
             }
 
             var body = new StringBuilder(280);
-            Append(body, Safe(source.Function));
-            Append(body, Safe(source.Status));
-            Append(body, Safe(source.Time));
+            // Put purchase information before descriptive prose so the
+            // compact viewport exposes the cost before the player commits.
             Append(body, Safe(source.Costs));
             Append(body, Safe(source.Requirements));
+            Append(body, Safe(source.Time));
+            Append(body, Safe(source.Status));
+            Append(body, Safe(source.Function));
             // All costs, requirements and state above are sourced directly from
             // the current authoritative offer. Do not synthesize extras.
             string details = body.ToString();
