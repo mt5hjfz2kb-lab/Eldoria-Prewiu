@@ -1,3 +1,15 @@
+# RELEVO DEL CHAT NORMAL — 31-10-2026 — PR136 DRAFT
+
+- **Ruta canónica:** PR [#136](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/136), rama `fix/player-feedback-context-ui-20261030`. Código añadido: `e42dbf9784cd2ce574b95fd1734c2568943fcedc` (Salón de Héroes con arquitectura original v14 y composición responsive); control nativo reparado: `e280120f0786a9c1d33cf6979a03f6302ea7ccdd`. El commit actual puede ser descendiente documental: consultar HEAD real, no asumir este SHA como HEAD final.
+- **Informe exhaustivo de esta continuación:** [CONTINUITY_NORMAL_CHAT_20261030.md](docs/evidence/valoria-reference-clean/CONTINUITY_NORMAL_CHAT_20261030.md), capítulo inicial 31-10. No sustituye el histórico previo ni autoriza aprobación visual.
+- **Certificado anterior:** HEAD original `7af82cf6` / run `41138763107` ya **SUCCESS**; material real y capturas en artefactos GitHub y Biblioteca. **La modificación nueva del Salón no comparte ese PASS:** primeras nuevas ejecuciones fallaron antes de compilar por identificadores de lease desactualizados, corregidos en `e280120`; revisar nuevas ejecuciones antes de proclamar PASS.
+- **Fondos de Sala:** No hay fondos completos independientes aprobados en repo/Library posteriores a v14. Paquete `Eldoria_Heroes_Integracion_Preparada_v14.zip` contiene 23 recortes aplanados y seis diseños; conservarlo sin importar como UI de juego. Fuente runtime exacta `Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png`, SHA256 `48cbc4e73d4144c45af12731773f0fd60b45e81d2a871256b33fe2a00f7d6800`. En el código se reutiliza solo región ambiental como avance provisional, no se usa lámina completa como fondo ni se inventan estadísticas.
+- **Lyra:** mismo GLB original PR127 incorporado previamente (4.770.000 bytes, SHA256 `a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725`), identidad Tripo aprobada y retrato nativo; sin generación nueva, sin rig ni cambios de gameplay/guardado. Las imágenes alternativas no autorizadas se rechazaron y NO se integraron.
+- **Titular:** registro vivo `pipeline/active-workstreams.json` de main transferido con CAS a `chatgpt-eldoria-normal-handoff-20261031`, Valoria rev76 y ámbitos solapados unificados. Hay que leer registro vivo y procesos antes de continuar; no confiar en las revisiones históricas.
+- **Pendiente inmediato:** validar HEAD en Unity, inspeccionar verdaderas capturas Sala en vertical/horizontal; corregir fallos de integración y volver a probar. A continuación Marchas, Entrenamiento y Ciudad por este orden. Art 100 % NO demostrado. PR DRAFT, sin merge ni publicación. Motor V4.1 laboratorio protegido por issue #138.
+
+---
+
 # RELEVO ACTUAL — WORK → CHAT NORMAL — 30-10-2026
 
 Leer primero [CONTINUITY_NORMAL_CHAT_20261030.md](docs/evidence/valoria-reference-clean/CONTINUITY_NORMAL_CHAT_20261030.md). Inventario verificable: [ASSET_RECOVERY_VERIFIED_20261030.json](docs/evidence/valoria-reference-clean/ASSET_RECOVERY_VERIFIED_20261030.json).
