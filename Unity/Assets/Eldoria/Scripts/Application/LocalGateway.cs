@@ -346,7 +346,19 @@ namespace Eldoria.Application
                         EventId="vigilant:"+command.Id,Category="informes",Type="battle",
                         Title=state.LastBattleReport.Won?"Victoria en los Vigilantes":"Derrota en los Vigilantes",
                         Subtitle=state.LastBattleReport.Reason,
-                        ReportId="vigilant:"+command.Id,OccurredAtUtcTicks=clock.UtcTicks
+                        ReportId="vigilant:"+command.Id,OccurredAtUtcTicks=clock.UtcTicks,
+                        Battle=new EldoriaV41CombatRecord {
+                            TargetId=state.LastBattleReport.TargetId,HeroId=state.LastBattleReport.HeroId,
+                            Troops=state.LastBattleReport.Troops,Won=state.LastBattleReport.Won,
+                            PlayerPower=state.LastBattleReport.PlayerPower,
+                            EnemyPower=state.LastBattleReport.EnemyPower,
+                            Rounds=state.LastBattleReport.Rounds,
+                            RemainingHealth=state.LastBattleReport.RemainingHealth,
+                            RewardWood=state.LastBattleReport.RewardWood,
+                            RewardStone=state.LastBattleReport.RewardStone,
+                            RewardFood=state.LastBattleReport.RewardFood,
+                            Reason=state.LastBattleReport.Reason
+                        }
                     });
                 if(command.Kind=="ScoutClaim")
                     state.Mailbox.Receive(new EldoriaV41Message {
@@ -737,7 +749,19 @@ namespace Eldoria.Application
                             Title=report.Won?"Victoria en batalla":"Derrota en batalla",
                             Subtitle="Informe de "+m.TargetId,
                             ReportId="battle:"+m.MarchId+":"+m.TargetId+":"+due,
-                            OccurredAtUtcTicks=due
+                            OccurredAtUtcTicks=due,
+                            Battle=new EldoriaV41CombatRecord {
+                                TargetId=state.LastBattleReport.TargetId,HeroId=state.LastBattleReport.HeroId,
+                                Troops=state.LastBattleReport.Troops,Won=state.LastBattleReport.Won,
+                                PlayerPower=state.LastBattleReport.PlayerPower,
+                                EnemyPower=state.LastBattleReport.EnemyPower,
+                                Rounds=state.LastBattleReport.Rounds,
+                                RemainingHealth=state.LastBattleReport.RemainingHealth,
+                                RewardWood=state.LastBattleReport.RewardWood,
+                                RewardStone=state.LastBattleReport.RewardStone,
+                                RewardFood=state.LastBattleReport.RewardFood,
+                                Reason=state.LastBattleReport.Reason
+                            }
                         });
                         m.Phase = "returning"; m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
                     }
