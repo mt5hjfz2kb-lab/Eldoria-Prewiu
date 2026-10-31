@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-31T18:56:14.248Z",
+  "updated_at": "2026-10-31T19:00:22.356Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -119,7 +119,9 @@
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
