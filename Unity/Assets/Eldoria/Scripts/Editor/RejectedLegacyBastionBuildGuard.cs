@@ -24,7 +24,7 @@ namespace Eldoria.Editor
 
         public static string Validate()
         {
-            var files=Directory.GetFiles(Application.dataPath,"*",SearchOption.AllDirectories);
+            var files=Directory.GetFiles(UnityEngine.Application.dataPath,"*",SearchOption.AllDirectories);
             foreach(var file in files)
             {
                 var path=file.Replace('\\','/');
