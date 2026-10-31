@@ -194,25 +194,11 @@ namespace Eldoria.HeroesUI
             var scenery=Rect("Hall / independent vaulted chamber",content);
             Place(scenery,0,0,w,h);
             scenery.gameObject.AddComponent<HeroesHallScenicGraphic>().raycastTarget=false;
-            var source=Resources.Load<Texture2D>("EldoriaV41/HeroesApprovedMaster");
-            if(source && source.width==1536 && source.height==1024)
-            {
-                if(!approvedHallStrip)approvedHallStrip=Sprite.Create(source,
-                    new Rect(0,856,512,168),new Vector2(.5f,.5f),100,
-                    0,SpriteMeshType.FullRect);
-                var mural=Surface("Approved v14 hall architecture / art only",
-                    content,0,0,w,Mathf.Min(210,h*.28f),Color.white);
-                var image=mural.GetComponent<Image>();
-                image.sprite=approvedHallStrip;image.raycastTarget=false;
-                // The original strip contains concept lettering on the left.
-                // Cover those pixels completely; the real title below is live.
-                Surface("Hide concept lettering",content,0,0,w*.68f,
-                    Mathf.Min(210,h*.28f),new Color(.023f,.031f,.047f,1f))
-                    .GetComponent<Image>().raycastTarget=false;
-            }
+            // The previous cropped concept screenshot carried baked typography
+            // and a hard rectangular matte across the vaulted chamber.
+            // Keep the complete architectural mesh as a single continuous scene;
+            // all headings, portraits and interactions remain live UI elements.
             float topHeight=Mathf.Min(210,h*.28f);
-            Surface("Bronze hall lintel",content,0,topHeight-3,w,3,
-                new Color(.66f,.43f,.19f)).GetComponent<Image>().raycastTarget=false;
             // The old flat vertical rules/rectangular fake torches are replaced
             // with real mesh arch, floor perspective, banners and light geometry.
             // The authentic v14 header remains over this independent backdrop.
