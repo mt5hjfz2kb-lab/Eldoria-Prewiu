@@ -214,7 +214,8 @@ namespace Eldoria.HeroesUI
             Place(scene,0,0,w,h);
             var plate=scene.gameObject.AddComponent<RawImage>();
             plate.texture=hallArchitecture;plate.raycastTarget=false;
-            // Uniform cover crop: no stretching columns on a narrow phone.
+            // The recovered original is scenery only. The actual playing cards,
+            // typography, banners and controls are separate live uGUI layers.
             if(hallArchitecture){
                 float sourceAspect=hallArchitecture.width/(float)hallArchitecture.height;
                 float viewAspect=w/h;
@@ -222,66 +223,148 @@ namespace Eldoria.HeroesUI
                 float cropH=Mathf.Min(1f,sourceAspect/viewAspect);
                 plate.uvRect=new UnityEngine.Rect((1f-cropW)*.5f,(1f-cropH)*.5f,cropW,cropH);
             }
-            var header=Surface("Hall / readable header",content,0,0,w,
-                CurrentPage==Page.Salon?Mathf.Min(180f,h*.20f):88f,
-                new Color(.015f,.022f,.034f,.73f));
-            header.GetComponent<Image>().raycastTarget=false;
-            var footer=Surface("Hall / navigation ground",content,0,h-80,w,80,
-                new Color(.015f,.022f,.034f,.91f));
-            footer.GetComponent<Image>().raycastTarget=false;
-            Surface("Hall footer gold line",content,16,h-79,w-32,2,gold)
+            if(CurrentPage!=Page.Salon){
+                Surface("Hall / profile top ink",content,0,0,w,88f,
+                    new Color(.015f,.022f,.034f,.73f)).GetComponent<Image>().raycastTarget=false;
+                Surface("Hall / profile footer",content,0,h-80f,w,80f,
+                    new Color(.015f,.022f,.034f,.91f)).GetComponent<Image>().raycastTarget=false;
+                Surface("Hall footer gold line",content,16,h-79,w-32,2,gold)
+                    .GetComponent<Image>().raycastTarget=false;
+                return;
+            }
+            bool widePhone=w>h&&h<500f;
+            float headerH=widePhone?76f:h>w?Mathf.Clamp(h*.19f,130f,174f):142f;
+            float footerH=widePhone?55f:72f;
+            // Separate architectural overlays: stone pilasters, royal banners,
+            // cornice and grounded plinth. No large opaque overlay hides the hall.
+            var depth=new Color(.017f,.028f,.049f,.53f);
+            float pillar=widePhone?12f:Mathf.Min(30f,w*.035f);
+            Surface("Hall / left foreground pilaster",content,0,headerH,pillar,
+                Mathf.Max(8f,h-headerH-footerH),depth).GetComponent<Image>().raycastTarget=false;
+            Surface("Hall / right foreground pilaster",content,w-pillar,headerH,pillar,
+                Mathf.Max(8f,h-headerH-footerH),depth).GetComponent<Image>().raycastTarget=false;
+            Surface("Hall / left gilded column seam",content,pillar-2f,headerH,2,
+                Mathf.Max(8f,h-headerH-footerH),new Color(.78f,.56f,.25f,.67f))
                 .GetComponent<Image>().raycastTarget=false;
+            Surface("Hall / right gilded column seam",content,w-pillar,headerH,2,
+                Mathf.Max(8f,h-headerH-footerH),new Color(.78f,.56f,.25f,.67f))
+                .GetComponent<Image>().raycastTarget=false;
+            // Varying translucent strips give depth without pretending the
+            // one-piece background is authored 3-D geometry.
+            Surface("Hall / raised cornice shadow",content,0,headerH-8f,w,16f,
+                new Color(.005f,.008f,.015f,.48f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Hall / gilded cornice",content,pillar,headerH-2f,w-2*pillar,2f,
+                new Color(.85f,.66f,.33f,.83f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Hall / dark floor plinth",content,0,h-footerH-12f,w,footerH+12f,
+                new Color(.012f,.022f,.036f,.77f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Hall / illuminated floor edge",content,pillar,h-footerH-12f,
+                w-2*pillar,2f,new Color(.84f,.63f,.32f,.79f))
+                .GetComponent<Image>().raycastTarget=false;
+            // Royal blue fabric is a distinct transparent foreground accent.
+            if(!widePhone){
+                float bannerWidth=Mathf.Min(32f,w*.075f);
+                foreach(float x in new[]{pillar+4f,w-pillar-4f-bannerWidth}){
+                    var banner=Surface("Hall / layered royal banner",content,x,headerH+6,
+                        bannerWidth,Mathf.Min(110f,(h-headerH-footerH)*.34f),
+                        new Color(.025f,.085f,.20f,.82f));
+                    banner.GetComponent<Image>().raycastTarget=false;
+                    Surface("Hall / banner gold hem",banner,2f,3f,bannerWidth-4f,2f,gold)
+                        .GetComponent<Image>().raycastTarget=false;
+                    Surface("Hall / banner gold spine",banner,bannerWidth*.5f-1f,8f,2f,
+                        Mathf.Max(10f,banner.rect.height-16f),new Color(.82f,.61f,.30f,.62f))
+                        .GetComponent<Image>().raycastTarget=false;
+                }
+            }
+            Surface("Hall / elevated header veil",content,0,0,w,headerH-8f,
+                new Color(.010f,.019f,.034f,widePhone?.75f:.66f))
+                .GetComponent<Image>().raycastTarget=false;
+            Surface("Hall / header gilding",content,12f,5f,w-24f,2f,
+                new Color(.81f,.60f,.29f,.75f)).GetComponent<Image>().raycastTarget=false;
         }
         Sprite futureSlotArt;
-        void CardPortrait(RectTransform card,Sprite sprite,bool unlocked,bool fullBody,float y,float w,float h)
+        // Portrait geometry lives inside its own aperture, never below an
+        // opaque full-width card label in short landscape.
+        void CardPortrait(RectTransform card,Sprite sprite,bool unlocked,bool fullBody,
+            float x,float y,float w,float h)
         {
-            if(!sprite)return;
-            // Use the same masked cover framing proven by the March gallery.
-            // A fit-inside Image reduced a full-body Lyra to a tiny thumbnail.
             var viewport=Rect("Hero card portrait aperture",card);
-            Place(viewport,12,y,w,h);viewport.gameObject.AddComponent<RectMask2D>();
-            var image=Rect("Verified portrait",viewport).gameObject.AddComponent<Image>();
-            float ratio=sprite.rect.width/Mathf.Max(1f,sprite.rect.height);
-            float imageW=fullBody?Mathf.Max(w,h*ratio/.60f):Mathf.Min(w,h*ratio);
-            float imageH=imageW/ratio;
-            Place(image.rectTransform,(w-imageW)*.5f,
-                fullBody?-(imageH-h)*.06f:(h-imageH)*.5f,imageW,imageH);
-            image.sprite=sprite;image.raycastTarget=false;
-            image.color=unlocked?Color.white:new Color(.42f,.42f,.44f,.76f);
+            Place(viewport,x,y,w,h);
+            viewport.gameObject.AddComponent<RectMask2D>();
+            Surface("Hall / portrait depth backing",viewport,0,0,w,h,
+                new Color(.055f,.083f,.115f,1f)).GetComponent<Image>().raycastTarget=false;
+            if(sprite){
+                var image=Rect("Verified portrait",viewport).gameObject.AddComponent<Image>();
+                float ratio=sprite.rect.width/Mathf.Max(1f,sprite.rect.height);
+                // Cover the actual aperture, not the whole horizontal card.
+                // Legacy fit-inside produced a tiny figure even when a
+                // mask and legitimate approved portrait were present.
+                float imageW=Mathf.Max(w,h*ratio),imageH=imageW/ratio;
+                float offsetY=fullBody?.27f:.38f;
+                Place(image.rectTransform,(w-imageW)*.5f,-(imageH-h)*offsetY,imageW,imageH);
+                image.sprite=sprite;image.raycastTarget=false;
+                image.color=unlocked?Color.white:new Color(.42f,.46f,.51f,.90f);
+            }
+            // Luminous sill is anchored to the portrait viewport and is
+            // decorative only; it does not intercept a hero selection.
+            Surface("Hall / portrait contact sill",viewport,0,h-4f,w,4f,
+                new Color(.66f,.48f,.24f,unlocked?.82f:.40f))
+                .GetComponent<Image>().raycastTarget=false;
         }
         void BuildSalon(float w,float h)
         {
-            // The owner's six-slot v14 salon composition is visual only:
-            // slots beyond the real host roster have NO data, actions or unlock.
-            // Do not present any fictional hero or mutate progression state.
+            // The exact approved 3x2 grammar: two REAL heroes and four inert
+            // future slots. No new hero data, skills, resources or save writes.
             bool portraitLayout=h>w;
-            bool shortLandscape=!portraitLayout&&h<500f;
-            float sceneryH=shortLandscape?76f:portraitLayout?Mathf.Min(180f,h*.20f):Mathf.Min(165f,h*.20f);
-            Label("Heroes hall title",content,"SALÓN DE HÉROES",26,18,w*.61f,48,30,
-                TextAnchor.MiddleLeft).color=gold;
-            Label("Heroes hall introduction",content,
-                shortLandscape?"Reclútalos, fortalécelos y lidera con ellos.":"Aquí residen los héroes de Valoria.\nReclútalos, fortalécelos y lidera con ellos.",
-                27,shortLandscape?52f:71f,w-104f,shortLandscape?24f:Mathf.Max(40f,sceneryH-76f),shortLandscape?14:18,
-                TextAnchor.UpperLeft);
+            bool phoneLandscape=!portraitLayout&&h<500f;
+            float headerH=phoneLandscape?76f:portraitLayout?Mathf.Clamp(h*.19f,130f,174f):142f;
+            float footerH=phoneLandscape?55f:72f;
+            // Title and actual player count are separate from the arch backdrop.
+            float titleX=phoneLandscape?18f:42f;
+            Label("Hall / Eldoria heraldry",content,"✦  ELDORIA",titleX,
+                phoneLandscape?7f:13f,phoneLandscape?170f:245f,phoneLandscape?25f:33f,
+                phoneLandscape?17:24).color=gold;
+            Label("Heroes hall title",content,"SALÓN DE HÉROES",titleX,
+                phoneLandscape?30f:46f,phoneLandscape?w*.48f:w*.66f,
+                phoneLandscape?31f:47f,phoneLandscape?24:34).color=ivory;
+            if(!phoneLandscape)
+                Label("Heroes hall introduction",content,
+                    "Aquí residen los héroes de Valoria. Reclútalos, fortalécelos y lidera con ellos.",
+                    titleX,92f,Mathf.Min(w*.65f,800f),40f,
+                    portraitLayout?17:21,TextAnchor.MiddleLeft);
+            // The reference contains four category tabs; only TODOS has a
+            // backing game-state contract. Future categories are visibly
+            // reserved, not fake functional filters or touch targets.
+            string[] filters={"TODOS","COMBATE","APOYO","ESTRATEGIA"};
+            float barX=phoneLandscape?w*.52f:portraitLayout?18f:w*.55f;
+            float barY=phoneLandscape?32f:headerH-40f;
+            float barW=phoneLandscape?w*.46f:portraitLayout?w-36f:w*.40f;
+            float filterGap=4f,filterW=(barW-3*filterGap)/4f;
+            for(int i=0;i<filters.Length;i++){
+                var strip=Surface("Hall / category "+filters[i],content,
+                    barX+i*(filterW+filterGap),barY,filterW,phoneLandscape?32f:31f,
+                    i==0?new Color(.39f,.27f,.10f,.92f):new Color(.026f,.038f,.054f,.83f));
+                strip.GetComponent<Image>().raycastTarget=false;
+                Surface("Hall / category top edge",strip,0,0,filterW,1.5f,
+                    i==0?gold:new Color(.45f,.39f,.27f,.65f))
+                    .GetComponent<Image>().raycastTarget=false;
+                var label=Label("Hall / category label",strip,filters[i],3,3,filterW-6,
+                    phoneLandscape?25f:24f,phoneLandscape?12:14,TextAnchor.MiddleCenter);
+                label.color=i==0?ivory:new Color(.67f,.63f,.54f);
+            }
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
-            bool showFutureSlots=true;
-            int displayCount=showFutureSlots?Math.Max(6,heroes.Length):heroes.Length;
-            int columns=3;
-            int rows=Mathf.Max(1,Mathf.CeilToInt(displayCount/(float)columns));
-            float gap=Mathf.Clamp(w*.016f,8f,16f);
-            float cardTop=sceneryH+12f;
-            float spaceH=h-cardTop-85f;
-            float cardH=Mathf.Min(650f,Mathf.Max(105f,(spaceH-gap*(rows-1))/rows));
-            float cardW=Mathf.Min(340f,(w-40f-gap*(columns-1))/columns);
-            bool compact=cardW<190f||cardH<260f;
-            if(!futureSlotArt && showFutureSlots)
-            {
+            int displayCount=Mathf.Max(6,heroes.Length),columns=3;
+            int rows=Mathf.CeilToInt(displayCount/(float)columns);
+            float gap=Mathf.Clamp(w*.017f,8f,18f);
+            float cardTop=headerH+(phoneLandscape?8f:13f);
+            float availableH=h-cardTop-footerH-14f;
+            float cardH=Mathf.Max(78f,(availableH-gap*(rows-1))/rows);
+            float cardW=Mathf.Min(390f,(w-42f-gap*(columns-1))/columns);
+            if(!futureSlotArt){
                 var source=Resources.Load<Texture2D>("EldoriaV41/hero-locked");
                 if(source)futureSlotArt=Sprite.Create(source,new Rect(0,0,source.width,source.height),
                     new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
             }
-            for(int i=0;i<displayCount;i++)
-            {
+            for(int i=0;i<displayCount;i++){
                 int col=i%columns,row=i/columns;
                 float left=(w-(cardW*columns+gap*(columns-1)))*.5f+col*(cardW+gap);
                 float top=cardTop+row*(cardH+gap);
@@ -290,34 +373,68 @@ namespace Eldoria.HeroesUI
                     content,left,top,cardW,cardH);
                 bool unlocked=real&&heroes[i].Unlocked;
                 Sprite portrait=real?heroes[i].Portrait:futureSlotArt;
-                float identityH=shortLandscape?56f:79f;
+                bool lateral=phoneLandscape;
+                float portraitX=6f,portraitY=6f;
+                float portraitW=lateral?Mathf.Min(cardH-12f,cardW*.44f):cardW-12f;
+                float identityH=lateral?0f:cardH<160f?43f:cardW<145f?64f:74f;
+                float portraitH=lateral?cardH-12f:Mathf.Max(24f,cardH-identityH-12f);
                 CardPortrait(card,portrait,unlocked,real&&heroes[i].Id=="lyra",
-                    8,cardW-24,Mathf.Max(24,cardH-identityH-12));
-                // Restore the approved card grammar: art is the main surface,
-                // identity and real power sit at its foot, and the whole card
-                // is the genuine action. No miniature strip plus extra button.
-                Surface("Hero card identity shade",card,3,cardH-identityH,cardW-6,identityH-3,
-                    new Color(.008f,.014f,.024f,.92f)).GetComponent<Image>().raycastTarget=false;
-                Label("Hero card name",card,real?heroes[i].DisplayName:"???",
-                    6,cardH-identityH+2,cardW-12,shortLandscape?22:27,compact?18:24,TextAnchor.MiddleCenter)
-                    .color=real?gold:new Color(.57f,.53f,.44f);
-                Label("Hero card state",card,
-                    real?(unlocked?"NIVEL "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
-                        "Bloqueado por la historia"):"HÉROE POR\nDESCUBRIR",
-                    6,cardH-(shortLandscape?31:48),cardW-12,shortLandscape?28:42,shortLandscape?12:compact?14:18,TextAnchor.MiddleCenter);
-                if(real)
-                {
+                    portraitX,portraitY,portraitW,portraitH);
+                float ix=lateral?portraitW+10f:5f;
+                float iy=lateral?4f:cardH-identityH;
+                float iw=lateral?cardW-portraitW-15f:cardW-10f;
+                float ih=lateral?cardH-8f:identityH-5f;
+                Surface("Hero card identity shade",card,ix,iy,iw,ih,
+                    new Color(.008f,.016f,.027f,lateral?.84f:.91f))
+                    .GetComponent<Image>().raycastTarget=false;
+                if(real){
+                    Label("Hero card name",card,heroes[i].DisplayName,ix+3f,
+                        iy+(lateral?10f:2f),iw-6f,lateral?Mathf.Min(36f,ih*.37f):28f,
+                        lateral?Mathf.Clamp((int)(cardH*.17f),15,21):cardW<150?17:23,
+                        TextAnchor.MiddleCenter).color=gold;
+                    Label("Hero card state",card,
+                        unlocked?"NIVEL "+heroes[i].Level+"  ·  PODER "+heroes[i].HeroPower:
+                            "BLOQUEADO POR LA HISTORIA",
+                        ix+3f,iy+(lateral?ih*.49f:30f),iw-6f,
+                        lateral?Mathf.Max(21f,ih*.33f):Mathf.Max(20f,identityH-39f),
+                        lateral?14:cardW<150?13:17,TextAnchor.MiddleCenter);
+                } else {
+                    Label("Hero card name",card,"POR DESCUBRIR",ix+3f,
+                        iy+(lateral?8f:3f),iw-6f,lateral?Mathf.Max(28f,ih*.43f):27f,
+                        lateral?14:cardW<150?14:19,TextAnchor.MiddleCenter)
+                        .color=new Color(.65f,.58f,.45f);
+                    Label("Hero card state",card,"BLOQUEADO",ix+3f,
+                        iy+(lateral?ih*.47f:30f),iw-6f,
+                        lateral?Mathf.Max(22f,ih*.34f):Mathf.Max(18f,identityH-38f),
+                        lateral?13:15,TextAnchor.MiddleCenter)
+                        .color=new Color(.68f,.67f,.61f);
+                }
+                // An inset gold edge reads as a separate physical card
+                // rather than a pasted rectangle over a photograph.
+                Surface("Hall / card heraldic top",card,8f,6f,
+                    Mathf.Max(12f,cardW-16f),1.5f,
+                    new Color(.89f,.72f,.38f,unlocked?.82f:.37f))
+                    .GetComponent<Image>().raycastTarget=false;
+                if(real){
                     var hero=heroes[i];
                     var hit=Surface("Select hero "+hero.Id,card,0,0,cardW,cardH,Color.clear);
                     var button=hit.gameObject.AddComponent<Button>();
-                    button.targetGraphic=hit.GetComponent<Image>();button.interactable=unlocked;
+                    button.targetGraphic=hit.GetComponent<Image>();
+                    button.interactable=unlocked;
                     button.onClick.AddListener(()=>OpenHero(hero.Id));
                 }
             }
             int unlockedCount=0;foreach(var hero in heroes)if(hero.Unlocked)unlockedCount++;
+            // VOLVER is a real action on the current HUD. Do not render fake
+            // Marchas/Relicario navigation before their host contracts exist.
+            if(w>580f)
+                Button("Hall / return to city","VOLVER",18f,h-footerH+11f,
+                    Mathf.Min(128f,w*.16f),39f,Close);
             Label("Authoritative hall population",content,
-                unlockedCount+" / "+heroes.Length+" HÉROES DISPONIBLES",20,h-72,w-40,38,
-                16,TextAnchor.MiddleCenter).color=gold;
+                unlockedCount+" / "+heroes.Length+" HÉROES DISPONIBLES",
+                w>580f?Mathf.Min(150f,w*.18f):14f,h-footerH+13f,
+                w>580f?w-2*Mathf.Min(150f,w*.18f):w-28f,35f,
+                phoneLandscape?16:18,TextAnchor.MiddleCenter).color=gold;
         }
         void BuildReservedTalents(float x,float y,float w,float h,bool portrait)
         {
