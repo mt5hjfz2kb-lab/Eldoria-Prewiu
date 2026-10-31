@@ -1679,7 +1679,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-10-30T07:52:24.023Z",
+      "released_at": "2026-10-31T21:38:59.618Z",
       "delivery_closeout": {
         "completed_at": "2026-10-29T21:34:16.588Z",
         "workstream_id": "valoria-master-plan-layered-construction-20261016",
@@ -1781,7 +1781,8 @@
         "new_credits_used": 0,
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
-      "owner_instruction": "2026-10-31: Start BLOQUE 01 QA in existing canonical PR136; claim ownership before code, Windows only when actually running Unity."
+      "owner_instruction": "2026-10-31: Start BLOQUE 01 QA in existing canonical PR136; claim ownership before code, Windows only when actually running Unity.",
+      "release_reason": "BLOQUE 00 OWNER_AUTHORIZED_NORMAL_CHAT_HANDOFF; claim with CAS before BLOQUE 01 mutations; not completed; no release or publication approval."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -2550,10 +2551,10 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": "codex-eldoria-autonomous-delivery-20261031",
-      "ownership_state": "claimed",
-      "ownership_revision": 15,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 16,
+      "write_scope_released": true,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
       "claimed_at": "2026-10-31T09:29:51.898Z",
@@ -2660,6 +2661,12 @@
           "ownership_revision": 14,
           "transferred_at": "2026-10-31T13:43:31.888Z",
           "reason": "Owner explicitly requests autonomous continuation of pending Eldoria work in current chat; preserve PR136 and recovered candidate."
+        },
+        {
+          "owner": "codex-eldoria-autonomous-delivery-20261031",
+          "ownership_revision": 15,
+          "released_at": "2026-10-31T21:38:59.618Z",
+          "reason": "Owner explicitly authorized BLOQUE 00 safe handoff from unstable Work to independent normal chats. Current phase ends read-only; preserve PR136 and existing source/evidence. Next BLOQUE 01 session must acquire this exact ID with a fresh CAS before any writes or Windows job."
         }
       ],
       "delivery_definition": {
@@ -2689,7 +2696,9 @@
         "native_result": "SUCCESS: 61/61 EditMode, 73/73 PlayMode; visual fidelity NOT accepted",
         "runner_released": true
       },
-      "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending."
+      "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
+      "released_at": "2026-10-31T21:38:59.618Z",
+      "release_reason": "BLOQUE 00 OWNER_AUTHORIZED_NORMAL_CHAT_HANDOFF; claim with CAS before BLOQUE 01 mutations; not completed; no release or publication approval."
     },
     {
       "id": "eldoria-art-memory-continuity-hardening-20261024",
@@ -2745,9 +2754,9 @@
     {
       "id": "eldoria-iphone-lifecycle-diagnostics-20261030",
       "title": "Resume PR97 optional local iPhone lifecycle diagnostics",
-      "owner": "codex-eldoria-autonomous-delivery-20261031",
-      "ownership_state": "claimed",
-      "ownership_revision": 11,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 12,
       "status": "active",
       "branch": "review/native281-iphone-ui-world-triage-20261022",
       "pr": 97,
@@ -2818,17 +2827,25 @@
           "ownership_revision": 10,
           "transferred_at": "2026-10-31T13:43:31.888Z",
           "reason": "Owner explicitly requests autonomous continuation of pending Eldoria work in current chat; preserve PR136 and recovered candidate."
+        },
+        {
+          "owner": "codex-eldoria-autonomous-delivery-20261031",
+          "ownership_revision": 11,
+          "released_at": "2026-10-31T21:38:59.618Z",
+          "reason": "Owner explicitly authorized BLOQUE 00 safe handoff from unstable Work to independent normal chats. Current phase ends read-only; preserve PR136 and existing source/evidence. Next BLOQUE 01 session must acquire this exact ID with a fresh CAS before any writes or Windows job."
         }
       ],
-      "write_scope_released": false,
-      "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending."
+      "write_scope_released": true,
+      "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
+      "released_at": "2026-10-31T21:38:59.618Z",
+      "release_reason": "BLOQUE 00 OWNER_AUTHORIZED_NORMAL_CHAT_HANDOFF; claim with CAS before BLOQUE 01 mutations; not completed; no release or publication approval."
     },
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": "codex-eldoria-autonomous-delivery-20261031",
-      "ownership_state": "claimed",
-      "ownership_revision": 12,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 13,
       "status": "active",
       "branch": "feature/heroes-approved-ui-integration-20261030",
       "pr": 135,
@@ -2899,10 +2916,18 @@
           "ownership_revision": 11,
           "transferred_at": "2026-10-31T13:43:31.888Z",
           "reason": "Owner explicitly requests autonomous continuation of pending Eldoria work in current chat; preserve PR136 and recovered candidate."
+        },
+        {
+          "owner": "codex-eldoria-autonomous-delivery-20261031",
+          "ownership_revision": 12,
+          "released_at": "2026-10-31T21:38:59.618Z",
+          "reason": "Owner explicitly authorized BLOQUE 00 safe handoff from unstable Work to independent normal chats. Current phase ends read-only; preserve PR136 and existing source/evidence. Next BLOQUE 01 session must acquire this exact ID with a fresh CAS before any writes or Windows job."
         }
       ],
-      "write_scope_released": false,
-      "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending."
+      "write_scope_released": true,
+      "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
+      "released_at": "2026-10-31T21:38:59.618Z",
+      "release_reason": "BLOQUE 00 OWNER_AUTHORIZED_NORMAL_CHAT_HANDOFF; claim with CAS before BLOQUE 01 mutations; not completed; no release or publication approval."
     },
     {
       "id": "eldoria-unified-art-vault-20261029",
