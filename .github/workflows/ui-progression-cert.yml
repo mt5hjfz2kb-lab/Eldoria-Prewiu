@@ -15,6 +15,9 @@ on:
     branches: [main, feature/global-march-capacity-three-slots-20261028]
     paths:
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/**'
+      - 'Unity/Assets/Eldoria/HeroesUI/**'
+      - 'Unity/Assets/Eldoria/Resources/EldoriaV41/**'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs'

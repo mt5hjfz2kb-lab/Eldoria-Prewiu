@@ -1,3 +1,21 @@
+# CANDIDATA LOCAL — 31/10/2026 — NO SUBIDA NI VALIDADA EN UNITY
+
+Base comprobada PR136: `b5a2230aa01fa3b09393080c2bd12e57c1219cc1`. Run 41184256386 SUCCESS y artifact 13037021475 descargado; vistas Salón, Lyra y pestañas inspeccionadas. Su PASS funcional no aprueba el arte.
+
+Preparado localmente: arquitectura limpia independiente basada en v14 (sin texto/héroes/controles), sustitución del recorte aplanado y decorado esquemático; encuadre uniforme sin estirar pilares; modelo real transparente sobre escena; marcos con bordes en lugar de rectángulo opaco subyacente; seis plazas en ambas orientaciones; resumen compacto con experiencia real/umbral; descripción de habilidad desplazable. Prueba nativa ampliada: Salón y todas las pestañas de ambos héroes en las cuatro resoluciones, seis plazas/dos acciones reales y guardado idéntico. Las nuevas pruebas están ESCRITAS, NO EJECUTADAS.
+
+No se ha tocado main, escrito en remoto, cambiado reservas ni ocupado Windows. Registro main observado: owner `chatgpt-eldoria-visual-implementation-20261031`, Valoria revision78/Héroes10/V4.1 13. La orden actual prohíbe modificar main; el protocolo exige transferir allí la titularidad antes de escritura compartida/runner. Pendiente excepción expresa limitada al registro. No reutilizar identidad ajena ni relajar checks para evitarlo.
+
+Siguiente paso: autorización limitada para transferir registro, releer HEAD/PRs/reservas/jobs, CAS de misma identidad canónica, reconciliar y publicar esta candidata en PR136, comprobar Unity y capturas A/B. No abrir otra PR. Si falla, reparar antes de seguir. Mantener DRAFT, sin publicación. Después completar Equipamiento/presentación conforme a datos reales y continuar Marchas → Entrenamiento → Ciudad → Retención → Mundo; nada de eso se considera terminado por este checkpoint.
+
+Hipótesis descartada: CanvasRenderer ausente NO explica el problema; uGUI lo crea en su getter. No se introdujo ese falso arreglo. Causa probada en código: el marco antiguo rellena todo el rectángulo con Border opaco y el Frame añade otro relleno opaco; alpha del material superior no podía revelar la escena. Confirmación visual del cambio pendiente.
+
+Talentos conserva tres ramas/nueve nodos bloqueados. Para completarlo faltan contratos de desbloqueo, costes, bonificaciones, comandos/validaciones y persistencia; no implementarlos por intuición artística. Equipamiento conserva indisponibilidad real, sin inventario/bonificaciones inventadas. Lyra exacta conservada. Motor #138 no activado. No se afirma 100% ni independencia del juicio artístico local.
+
+Manifest y procedencia: `docs/evidence/valoria-reference-clean/heroes-clean-room-20261031/candidate.json`.
+
+---
+
 # RECUPERACIÓN NORMAL CHAT — 31-10-2026 (checkpoint añadido)
 
 ## ÚLTIMO CHECKPOINT CON CAPTURAS REALES — 31/10/2026
@@ -262,3 +280,6 @@ Próxima acción: comprobar HEAD real y CI exacto posterior a 45580cd; corregir 
 ## Continuidad 31/10 tras Work congelado y relevo CAS
 
 PR136 head de inicio b5a2230aa01fa3b09393080c2bd12e57c1219cc1, Unity exact-head 41184256386 SUCCESS. El Work anterior reportó commit **solo local** 4874286 con escenario ilustrado de salón y pruebas ampliadas, pero GitHub no contiene dicho commit ni su recurso; **no afirmar recuperado**. Registro `pipeline/active-workstreams.json` main: transferencia autorizada del owner `codex-eldoria-art-reconstruction-4874286-20261031` al nuevo owner `chatgpt-eldoria-recovery-20261031`, rev80, commit f2978851dd71c0a0cbc04a493f214eef1741f2cb. Ningún otro cambio main. En PR136 se eliminó el recorte de la imagen conceptual y el tapado rectangular sobre el salón (`1f13e2f`) y se retiró código sobrante (`ceca1a9`). La malla independiente `HeroesHallScenicGraphic` continúa activa, sin raycasts, sin falsos controles; todos los datos, Lyra y saves se conservan. Falta certificar el nuevo SHA, inspeccionar capturas nativas y decidir si la malla se sustituye por arquitectura pictórica limpia independiente. No 100% visual ni aprobación. No merge/publicación/gasto. Prioridades restantes: todas las pestañas de Héroes, Marchas, Entrenamiento, Ciudad, Vigilantes, Exploradores, Buzón.
+
+## Recuperación real 31/10 — continuación autónoma
+Commit original 4874286daa9305565b6097e2919394d3d4a8ff8d recuperado desde el checkout previo /workspace/scratch/d27165fee453/Eldoria, con objeto Git e ilustración 355e830129fae0a755106d6f5f42a5617ebc82c48ac6933235a693fcb0eb054d. Reconciliado con remoto 3cc183e1 sin restaurar recorte conceptual ni máscara. La arquitectura limpia sustituye la malla esquemática; héroes y controles permanecen independientes. Se conserva historial original como segundo padre. Titular vivo codex-eldoria-continuation-20261031, revisión 81. Nuevas capturas y comprobaciones pequeñas/horizontales requieren certificación exacta; no ART_APPROVED ni publicación. Las limitaciones históricas de recuperación y de permiso de relevo quedan superadas por esta evidencia y orden vigente.

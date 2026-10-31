@@ -19,8 +19,8 @@ namespace Eldoria.HeroesUI
             vh.Clear(); var r=rectTransform.rect;
             if(r.width<=0||r.height<=0)return;
             float b=Mathf.Min(BorderWidth,Mathf.Min(r.width,r.height)*.08f);
-            Quad(vh,r.xMin,r.yMin,r.width,r.height,Border,Border);
-            Quad(vh,r.xMin+b,r.yMin+b,r.width-2*b,r.height-2*b,InnerBorder,InnerBorder);
+            Rim(vh,r.xMin,r.yMin,r.width,r.height,b,Border);
+            Rim(vh,r.xMin+b,r.yMin+b,r.width-2*b,r.height-2*b,1f,InnerBorder);
             float p=b+Mathf.Max(1,Inset);
             Quad(vh,r.xMin+p,r.yMin+p,r.width-2*p,r.height-2*p,SurfaceBottom,SurfaceTop);
             if(CornerOrnaments){float d=Mathf.Min(14,Mathf.Min(r.width,r.height)*.13f);
@@ -29,6 +29,11 @@ namespace Eldoria.HeroesUI
                     Quad(vh,x,y,d,2,Border,Border);Quad(vh,x,y,2,d,Border,Border);
                 }}
             if(Divider)Quad(vh,r.xMin+p+4,r.center.y-1,r.width-2*p-8,2,Border,InnerBorder);
+        }
+        void Rim(VertexHelper vh,float x,float y,float w,float h,float b,Color c)
+        {
+            Quad(vh,x,y,w,b,c,c);Quad(vh,x,y+h-b,w,b,c,c);
+            Quad(vh,x,y+b,b,h-2*b,c,c);Quad(vh,x+w-b,y+b,b,h-2*b,c,c);
         }
         void Quad(VertexHelper vh,float x,float y,float w,float h,Color bottom,Color top)
         {

@@ -70,7 +70,21 @@ namespace Eldoria.Editor
                 }
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
                 var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
-                if(heroes&&heroes.IsOpen){heroes.Refresh();Canvas.ForceUpdateCanvases();}
+                if(heroes&&heroes.IsOpen){
+                    heroes.Refresh();Canvas.ForceUpdateCanvases();
+                    if(heroes.CurrentPage==Eldoria.HeroesUI.HeroesApprovedDestination.Page.Salon){
+                        var slots=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                            .Where(t=>t.parent&&t.parent.name=="Heroes / live controls"&&
+                                (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
+                            .ToArray();
+                        Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        Need(slots.All(t=>t.rect.width>0&&t.rect.height>0),
+                            "Six visible hall slots have usable geometry "+name);
+                        Need(heroes.VisibleRoot.GetComponentsInChildren<Button>()
+                            .Count(b=>b.name.StartsWith("Select hero "))==2,
+                            "Only two real heroes are actionable "+name);
+                    }
+                }
                 // Render again after mailbox reflow inside the canonical off-screen target.
                 host.PlayerCamera.Render();host.PlayerCamera.Render();
                 RenderTexture.active=host.PlayerCamera.targetTexture;
@@ -242,15 +256,20 @@ namespace Eldoria.Editor
             Need(heroEntry.interactable,"Narratively unlocked heroes entry is actionable");
             heroEntry.onClick.Invoke();yield return null;
             Need(heroes.IsOpen,"Real military navigation opens heroes hall");
-            // New hall is an actual independent scenic mesh, not a flattened
-            // screenshot or an extra Canvas stealing input from live hero cards.
-            var hall=heroes.VisibleRoot.GetComponentInChildren<Eldoria.HeroesUI.HeroesHallScenicGraphic>();
-            Need(hall!=null,"Approved Heroes hall uses a full-height architectural environment");
-            Need(!hall.raycastTarget,"Heroes hall scenery cannot intercept hero-card taps");
+            // Presence of a component alone previously passed despite the
+            // completely obscured scenery. Require actual independent art.
+            var hall=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                .FirstOrDefault(i=>i.name=="Hall / clean architectural plate");
+            Need(hall&&hall.texture,"Heroes hall loads its clean production environment");
+            Need(!hall.raycastTarget,"Heroes hall environment cannot intercept hero-card taps");
+            Need(hall.texture.width==1536&&hall.texture.height==1024,
+                "Independent architecture is loaded rather than the flattened master sheet");
             Need(heroes.VisibleRoot.GetComponentsInChildren<Canvas>(true).Length==0,
                 "Heroes hall reuses the canonical Canvas without another Canvas");
             string saveBeforeHeroes=File.ReadAllText(host.City.SaveFile);
             Shot(host,"heroes-salon-landscape",1600,900);Shot(host,"heroes-salon-phone",900,1600);
+            Shot(host,"heroes-salon-small-phone",390,844);
+            Shot(host,"heroes-salon-small-phone-landscape",844,390);
             Need(heroes.OpenHero("aldric"),"Actual unlocked Aldric can be selected");
             float heroDeadline=Time.realtimeSinceStartup+90;
             while(!heroes.ReadModelRoot("aldric")&&Time.realtimeSinceStartup<heroDeadline)yield return null;
@@ -274,6 +293,8 @@ namespace Eldoria.Editor
                 }
                 Shot(host,"heroes-aldric-"+page+"-landscape",1600,900);
                 Shot(host,"heroes-aldric-"+page+"-phone",900,1600);
+                Shot(host,"heroes-aldric-"+page+"-small-phone",390,844);
+                Shot(host,"heroes-aldric-"+page+"-small-phone-landscape",844,390);
             }
             Need(heroes.OpenHero("lyra"),"Narratively recruited Lyra opens her own profile");
             var lyraModel=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesLyraModel>();
@@ -287,9 +308,21 @@ namespace Eldoria.Editor
             Need(heroes.VisibleRoot.GetComponentsInChildren<RawImage>().Any(r=>r.enabled&&r.texture),
                 "Lyra profile displays actual model geometry rather than a flat fallback");
             Shot(host,"heroes-lyra-resumen-landscape",1600,900);Shot(host,"heroes-lyra-resumen-phone",900,1600);
+            Shot(host,"heroes-lyra-resumen-small-phone",390,844);
+            Shot(host,"heroes-lyra-resumen-small-phone-landscape",844,390);
             var rotateLyra=heroes.VisibleRoot.GetComponentsInChildren<Button>().First(b=>b.name=="Rotate hero right");
             rotateLyra.onClick.Invoke();yield return null;
             Shot(host,"heroes-lyra-rotated-landscape",1600,900);
+            foreach(var page in new[]{Eldoria.HeroesUI.HeroesApprovedDestination.Page.Habilidades,
+                Eldoria.HeroesUI.HeroesApprovedDestination.Page.Talentos,
+                Eldoria.HeroesUI.HeroesApprovedDestination.Page.Equipamiento})
+            {
+                heroes.Select(page);yield return null;
+                Shot(host,"heroes-lyra-"+page+"-landscape",1600,900);
+                Shot(host,"heroes-lyra-"+page+"-phone",900,1600);
+                Shot(host,"heroes-lyra-"+page+"-small-phone",390,844);
+                Shot(host,"heroes-lyra-"+page+"-small-phone-landscape",844,390);
+            }
             Need(File.ReadAllText(host.City.SaveFile)==saveBeforeHeroes,
                 "All six hero screens preserve the authoritative save byte for byte");
             heroes.Close();yield return null;

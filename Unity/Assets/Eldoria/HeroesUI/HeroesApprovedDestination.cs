@@ -87,8 +87,14 @@ namespace Eldoria.HeroesUI
         {var r=Rect(name,parent);Place(r,x,y,w,h);r.gameObject.AddComponent<Image>().color=color;return r;}
         RectTransform Frame(string name,Transform parent,float x,float y,float w,float h)
         {
-            var r=Surface(name,parent,x,y,w,h,gold);
-            Surface("Inset",r,1,1,w-2,h-2,panel).GetComponent<Image>().raycastTarget=false;return r;
+            var r=Surface(name,parent,x,y,w,h,Color.clear);
+            var material=Rect("Royal Gold / independent material",r);
+            Place(material,0,0,w,h);
+            var graphic=material.gameObject.AddComponent<HeroesGoldFrameGraphic>();
+            graphic.SurfaceTop=new Color(.045f,.059f,.079f,.82f);
+            graphic.SurfaceBottom=new Color(.014f,.021f,.033f,.91f);
+            graphic.raycastTarget=false;
+            return r;
         }
         Text Label(string name,Transform parent,string value,float x,float y,float w,float h,int size,TextAnchor align=TextAnchor.MiddleLeft)
         {
@@ -111,7 +117,7 @@ namespace Eldoria.HeroesUI
             content.offsetMin=content.offsetMax=Vector2.zero;
             float w=root.rect.width,h=root.rect.height;observedWidth=w;observedHeight=h;
             if(w<200||h<200)return;
-            if(CurrentPage==Page.Salon)DrawApprovedSalonEnvironment(w,h);
+            DrawApprovedSalonEnvironment(w,h);
             bool portrait=h>w;float margin=20;
             if(CurrentPage!=Page.Salon)
                 Surface("Top antique gold rule",content,margin,82,w-2*margin,1,gold).GetComponent<Image>().raycastTarget=false;
@@ -133,10 +139,8 @@ namespace Eldoria.HeroesUI
             }
             float bodyX=portrait?20:tabWidth+36,bodyW=w-bodyX-20;
             float bodyH=h-top-92,modelW=portrait?bodyW:bodyW*.43f,modelH=portrait?bodyH*.62f:bodyH;
-            var stage=Frame("Hero model stage",content,bodyX,top,modelW,modelH);
-            var stageGilt=Rect("Approved v14 hero presentation border",stage);
-            Place(stageGilt,0,0,modelW,modelH);
-            stageGilt.gameObject.AddComponent<HeroesGoldFrameGraphic>().raycastTarget=false;
+            var stage=Rect("Hero model stage",content);
+            Place(stage,bodyX,top,modelW,modelH);
             var source=ReadModelRoot?.Invoke(hero.Id) ?? (hero.Id=="aldric"?ApprovedAldricModel:ApprovedLyraModel);
             var raw=Rect("Genuine hero model render",stage).gameObject.AddComponent<RawImage>();
             Place(raw.rectTransform,5,5,modelW-10,modelH-46);raw.raycastTarget=false;
@@ -167,9 +171,6 @@ namespace Eldoria.HeroesUI
             float infoX=portrait?bodyX:bodyX+modelW+12,infoY=portrait?top+modelH+12:top;
             float infoW=portrait?bodyW:bodyW-modelW-12,infoH=portrait?bodyH-modelH-12:bodyH;
             var info=Frame("Hero authoritative information",content,infoX,infoY,infoW,infoH);
-            var infoGilt=Rect("Approved v14 information border",info);
-            Place(infoGilt,0,0,infoW,infoH);
-            infoGilt.gameObject.AddComponent<HeroesGoldFrameGraphic>().raycastTarget=false;
             BuildInformation(info,hero,infoW,infoH);
             if(CurrentPage==Page.Talentos){
                 stage.gameObject.SetActive(false);info.gameObject.SetActive(false);
@@ -179,28 +180,32 @@ namespace Eldoria.HeroesUI
             Label("Current hero identity",content,hero.DisplayName,94,h-66,w-188,46,22,TextAnchor.MiddleCenter).color=gold;
             Button("Next available hero","›",w-84,h-66,64,46,()=>CycleHero(1));
         }
-        // The scenery is cropped only from the owner's archived v14 master.
-        // The image is a non-interactive environmental strip; live cards, labels
-        // and buttons remain separate controls bound to the authoritative host.
-        Sprite approvedHallStrip;
+        // Production art is independent from the approved sheet. Never crop
+        // controls, lettering or characters out of that sheet into runtime UI.
+        Texture2D hallArchitecture;
         void DrawApprovedSalonEnvironment(float w,float h)
         {
-            var backdrop=Surface("Hall / navy environmental ground",content,0,0,w,h,
-                new Color(.023f,.031f,.047f,1f));
-            backdrop.GetComponent<Image>().raycastTarget=false;
-            // Actual independent vaulted chamber behind hero cards. Unlike the
-            // flattened v14 screenshot it contains no heroes, text or controls.
-            // This scene is a passive mesh on the existing HUD (zero raycasts).
-            var scenery=Rect("Hall / independent vaulted chamber",content);
-            Place(scenery,0,0,w,h);
-            scenery.gameObject.AddComponent<HeroesHallScenicGraphic>().raycastTarget=false;
-            // The previous cropped concept screenshot carried baked typography
-            // and a hard rectangular matte across the vaulted chamber.
-            // Keep the complete architectural mesh as a single continuous scene;
-            // all headings, portraits and interactions remain live UI elements.
-            // The old flat vertical rules/rectangular fake torches are replaced
-            // with real mesh arch, floor perspective, banners and light geometry.
-            // The authentic v14 header remains over this independent backdrop.
+            if(!hallArchitecture)
+                hallArchitecture=Resources.Load<Texture2D>("EldoriaV41/heroes-hall-clean-v1");
+            var scene=Rect("Hall / clean architectural plate",content);
+            Place(scene,0,0,w,h);
+            var plate=scene.gameObject.AddComponent<RawImage>();
+            plate.texture=hallArchitecture;plate.raycastTarget=false;
+            // Uniform cover crop: no stretching columns on a narrow phone.
+            if(hallArchitecture){
+                float sourceAspect=hallArchitecture.width/(float)hallArchitecture.height;
+                float viewAspect=w/h;
+                float cropW=Mathf.Min(1f,viewAspect/sourceAspect);
+                float cropH=Mathf.Min(1f,sourceAspect/viewAspect);
+                plate.uvRect=new UnityEngine.Rect((1f-cropW)*.5f,(1f-cropH)*.5f,cropW,cropH);
+            }
+            var header=Surface("Hall / readable header",content,0,0,w,
+                CurrentPage==Page.Salon?Mathf.Min(180f,h*.20f):88f,
+                new Color(.015f,.022f,.034f,.73f));
+            header.GetComponent<Image>().raycastTarget=false;
+            var footer=Surface("Hall / navigation ground",content,0,h-80,w,80,
+                new Color(.015f,.022f,.034f,.91f));
+            footer.GetComponent<Image>().raycastTarget=false;
             Surface("Hall footer gold line",content,16,h-79,w-32,2,gold)
                 .GetComponent<Image>().raycastTarget=false;
         }
@@ -210,7 +215,7 @@ namespace Eldoria.HeroesUI
             // The owner's six-slot v14 salon composition is visual only:
             // slots beyond the real host roster have NO data, actions or unlock.
             // Do not present any fictional hero or mutate progression state.
-            float sceneryH=Mathf.Min(210f,h*.28f);
+            float sceneryH=Mathf.Min(240f,h*.29f);
             Label("Heroes hall title",content,"SALÓN DE HÉROES",26,18,w*.61f,48,30,
                 TextAnchor.MiddleLeft).color=gold;
             Label("Heroes hall introduction",content,
@@ -218,16 +223,16 @@ namespace Eldoria.HeroesUI
                 27,71,w*.60f,Mathf.Max(40f,sceneryH-82f),18,
                 TextAnchor.UpperLeft);
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
-            bool showFutureSlots=h>=760f;
+            bool showFutureSlots=true;
             int displayCount=showFutureSlots?Math.Max(6,heroes.Length):heroes.Length;
-            int columns=showFutureSlots?(w>=760f?3:2):Mathf.Clamp(displayCount,1,3);
+            int columns=w>=380f?3:2;
             int rows=Mathf.Max(1,Mathf.CeilToInt(displayCount/(float)columns));
             float gap=Mathf.Clamp(w*.016f,8f,16f);
             float cardTop=sceneryH+12f;
             float spaceH=h-cardTop-85f;
             float cardH=Mathf.Min(650f,Mathf.Max(105f,(spaceH-gap*(rows-1))/rows));
             float cardW=Mathf.Min(340f,(w-40f-gap*(columns-1))/columns);
-            bool compact=cardH<300f;
+            bool compact=cardH<260f;
             if(!futureSlotArt && showFutureSlots)
             {
                 var source=Resources.Load<Texture2D>("EldoriaV41/hero-locked");
@@ -242,10 +247,7 @@ namespace Eldoria.HeroesUI
                 bool real=i<heroes.Length;
                 var card=Frame(real?"Hero card "+heroes[i].Id:"Reserved future hero slot "+(i-heroes.Length),
                     content,left,top,cardW,cardH);
-                var ornament=Rect("Royal Gold card / v14 geometry",card);
-                Place(ornament,0,0,cardW,cardH);
-                ornament.gameObject.AddComponent<HeroesGoldFrameGraphic>().raycastTarget=false;
-                string title=real?heroes[i].DisplayName:"POR DESCUBRIR";
+                string title=real?heroes[i].DisplayName:"RESERVADO";
                 Label("Hero card name",card,title,10,12,cardW-20,
                     compact?31:42,compact?19:25,TextAnchor.MiddleCenter)
                     .color=real?gold:new Color(.57f,.53f,.44f);
@@ -317,7 +319,7 @@ namespace Eldoria.HeroesUI
             for(int path=0;path<3;path++){
                 float left=16+path*(trackW+gap);
                 var track=Frame("Reserved talent path "+titles[path],board,left,14,trackW,trackH);
-                track.GetComponent<Image>().color=accents[path];
+                track.GetComponentInChildren<HeroesGoldFrameGraphic>().Border=accents[path];
                 Label("Reserved path name",track,titles[path],6,14,trackW-12,56,26,TextAnchor.MiddleCenter).color=ivory;
                 float nodeSize=Mathf.Min(76f,trackW*.55f,Mathf.Max(28f,(trackH-110f)/3.4f));
                 float start=80f;
@@ -327,7 +329,7 @@ namespace Eldoria.HeroesUI
                 for(int rank=0;rank<3;rank++){
                     float nodeY=start+rank*step;
                     var node=Frame("Reserved talent node "+path+"-"+rank,track,center-nodeSize*.5f,nodeY,nodeSize,nodeSize);
-                    node.GetComponent<Image>().color=accents[path];
+                    node.GetComponentInChildren<HeroesGoldFrameGraphic>().Border=accents[path];
                     var locked=node.gameObject.AddComponent<Button>();locked.interactable=false;
                     // Native uGUI lock geometry, not a baked mock level or icon
                     // claiming an implemented talent.
@@ -345,21 +347,48 @@ namespace Eldoria.HeroesUI
         void BuildInformation(RectTransform pane,HeroState hero,float w,float h)
         {
             if(CurrentPage==Page.Resumen){
-                string[] names={"VIDA","ATAQUE","DEFENSA","RUPTURA","PODER"};int[] values={hero.Health,hero.Attack,hero.Defense,hero.Break,hero.HeroPower};
-                float row=Mathf.Clamp((h-105f)/6f,34f,106f);
+                string[] names={"VIDA","ATAQUE","DEFENSA","RUPTURA","PODER"};
+                int[] values={hero.Health,hero.Attack,hero.Defense,hero.Break,hero.HeroPower};
+                bool dense=h<340f;
+                int columns=dense?2:1;
+                int rows=Mathf.CeilToInt(names.Length/(float)columns);
+                float row=(h-88f)/rows,cell=(w-24f)/columns;
                 for(int i=0;i<names.Length;i++){
-                    Label(names[i],pane,names[i],16,12+i*row,w*.60f,row,20);
-                    Label(names[i]+" real value",pane,values[i].ToString(),w*.62f,12+i*row,w*.32f,row,22,TextAnchor.MiddleRight).color=gold;
+                    float x=12+(i%columns)*cell,y=8+(i/columns)*row;
+                    Label(names[i],pane,names[i],x,y,cell*.61f,row,17);
+                    Label(names[i]+" real value",pane,values[i].ToString(),
+                        x+cell*.61f,y,cell*.35f,row,20,TextAnchor.MiddleRight).color=gold;
                 }
-                Label("Persistent experience",pane,"EXPERIENCIA  "+hero.Experience+"\nCAPACIDAD DE MARCHA  "+hero.Capacity,16,18+5*row,w-32,74,18);
+                Label("Persistent experience",pane,
+                    "EXP  "+hero.Experience+" / "+hero.ExperienceToNext+
+                    "\nCAPACIDAD DE MARCHA  "+hero.Capacity,
+                    12,h-76f,w-24f,64f,17);
             }else if(CurrentPage==Page.Habilidades){
                 Label("Canonical hero ability",pane,hero.AbilityName??"CARACTERÍSTICAS",16,18,w-32,48,24).color=gold;
-                Label("Canonical hero ability description",pane,hero.AbilityDescription??"",16,76,w-32,Mathf.Max(50,h-96),20);
+                ScrollDescription(pane,hero.AbilityDescription??"",16,76,w-32,Mathf.Max(50,h-96));
             }else{
                 string title=CurrentPage==Page.Talentos?"TALENTOS":"EQUIPAMIENTO";
                 Label("Unavailable system title",pane,title,16,18,w-32,52,24).color=gold;
                 Label("Unavailable system state",pane,"Aún no disponible en esta etapa del reino.",16,90,w-32,Mathf.Max(60,h-112),22);
             }
+        }
+        void ScrollDescription(RectTransform pane,string text,float x,float y,float w,float h)
+        {
+            // The host supplies the complete real description. Long localized
+            // text scrolls rather than being clipped to a concept-art card.
+            var viewport=Surface("Ability description viewport",pane,x,y,w,h,Color.clear);
+            viewport.gameObject.AddComponent<RectMask2D>();
+            var scroller=viewport.gameObject.AddComponent<ScrollRect>();
+            var body=Rect("Ability description content",viewport);
+            Place(body,0,0,w,h);
+            var description=Label("Canonical hero ability description",body,text,0,0,w,h,20,TextAnchor.UpperLeft);
+            description.resizeTextForBestFit=false;
+            float textHeight=Mathf.Max(h,description.preferredHeight+12f);
+            Place(body,0,0,w,textHeight);Place(description.rectTransform,0,0,w,textHeight);
+            scroller.viewport=viewport;scroller.content=body;
+            scroller.horizontal=false;scroller.vertical=true;
+            scroller.movementType=ScrollRect.MovementType.Clamped;
+            scroller.scrollSensitivity=24f;
         }
         void CycleHero(int direction)
         {

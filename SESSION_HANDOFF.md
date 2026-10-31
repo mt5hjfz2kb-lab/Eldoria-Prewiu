@@ -1,3 +1,21 @@
+# CANDIDATA LOCAL — 31/10/2026 — NO SUBIDA NI VALIDADA EN UNITY
+
+Base comprobada PR136: `b5a2230aa01fa3b09393080c2bd12e57c1219cc1`. Run 41184256386 SUCCESS y artifact 13037021475 descargado; vistas Salón, Lyra y pestañas inspeccionadas. Su PASS funcional no aprueba el arte.
+
+Preparado localmente: arquitectura limpia independiente basada en v14 (sin texto/héroes/controles), sustitución del recorte aplanado y decorado esquemático; encuadre uniforme sin estirar pilares; modelo real transparente sobre escena; marcos con bordes en lugar de rectángulo opaco subyacente; seis plazas en ambas orientaciones; resumen compacto con experiencia real/umbral; descripción de habilidad desplazable. Prueba nativa ampliada: Salón y todas las pestañas de ambos héroes en las cuatro resoluciones, seis plazas/dos acciones reales y guardado idéntico. Las nuevas pruebas están ESCRITAS, NO EJECUTADAS.
+
+No se ha tocado main, escrito en remoto, cambiado reservas ni ocupado Windows. Registro main observado: owner `chatgpt-eldoria-visual-implementation-20261031`, Valoria revision78/Héroes10/V4.1 13. La orden actual prohíbe modificar main; el protocolo exige transferir allí la titularidad antes de escritura compartida/runner. Pendiente excepción expresa limitada al registro. No reutilizar identidad ajena ni relajar checks para evitarlo.
+
+Siguiente paso: autorización limitada para transferir registro, releer HEAD/PRs/reservas/jobs, CAS de misma identidad canónica, reconciliar y publicar esta candidata en PR136, comprobar Unity y capturas A/B. No abrir otra PR. Si falla, reparar antes de seguir. Mantener DRAFT, sin publicación. Después completar Equipamiento/presentación conforme a datos reales y continuar Marchas → Entrenamiento → Ciudad → Retención → Mundo; nada de eso se considera terminado por este checkpoint.
+
+Hipótesis descartada: CanvasRenderer ausente NO explica el problema; uGUI lo crea en su getter. No se introdujo ese falso arreglo. Causa probada en código: el marco antiguo rellena todo el rectángulo con Border opaco y el Frame añade otro relleno opaco; alpha del material superior no podía revelar la escena. Confirmación visual del cambio pendiente.
+
+Talentos conserva tres ramas/nueve nodos bloqueados. Para completarlo faltan contratos de desbloqueo, costes, bonificaciones, comandos/validaciones y persistencia; no implementarlos por intuición artística. Equipamiento conserva indisponibilidad real, sin inventario/bonificaciones inventadas. Lyra exacta conservada. Motor #138 no activado. No se afirma 100% ni independencia del juicio artístico local.
+
+Manifest y procedencia: `docs/evidence/valoria-reference-clean/heroes-clean-room-20261031/candidate.json`.
+
+---
+
 # RELEVO DEL CHAT NORMAL — 31-10-2026 — PR136 DRAFT
 
 ## RELEVO TRAS REVISIÓN DE CAPTURAS NATIVAS — 31-10-2026

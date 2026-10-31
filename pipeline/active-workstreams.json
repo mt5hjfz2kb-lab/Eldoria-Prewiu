@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T20:15:50.364Z",
+  "updated_at": "2026-10-31T11:40:49.650Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-recovery-ada07b02a31d",
+      "owner": "codex-eldoria-continuation-20261031",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
-      "claimed_at": "2026-10-30T09:30:00Z",
+      "claimed_at": "2026-10-31T10:19:00Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -122,7 +122,7 @@
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "PR136_REFERENCE_DRIVEN_STRUCTURAL_UI_RECONSTRUCTION",
-      "next": "Recover pending edits; rebuild training composition from approved sources; exact-head native visual QA.",
+      "next": "Resolve PR136 UI visual reconstruction with reference v14, real native screenshots, no merge/release before quality; continue March/Training/City after Heroes.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -899,7 +899,7 @@
           "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
         }
       },
-      "previous_owner": "codex-parity132-continuation-ab04f62d0b26",
+      "previous_owner": "chatgpt-eldoria-recovery-20261031",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1479,9 +1479,37 @@
           "ownership_revision": 73,
           "transferred_at": "2026-10-30T20:15:50.364Z",
           "reason": "Owner explicitly requests recovery of blocked session and continued production in canonical PR136."
+        },
+        {
+          "owner": "codex-recovery-ada07b02a31d",
+          "ownership_revision": 74,
+          "transferred_at": "2026-10-31",
+          "reason": "Owner explicitly requests continuation after frozen chat; PR136 preserved."
+        },
+        {
+          "owner": "chatgpt-eldoria-normal-handoff-20261031",
+          "revision": 76,
+          "reason": "Owner-directed recovery after frozen chat, 2026-10-31"
+        },
+        {
+          "owner": "codex-recovery-e673e4a37490",
+          "ownership_revision": 77,
+          "transferred_at": "2026-10-31",
+          "reason": "Owner reports prior normal-chat session stopped prematurely and explicitly requests continuing same PR136 without restart."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-implementation-20261031",
+          "ownership_revision": 78,
+          "released_at": "2026-10-31T09:29:51.898Z",
+          "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
+        },
+        {
+          "owner": "chatgpt-eldoria-recovery-20261031",
+          "ownership_revision": 80,
+          "reason": "Owner requests autonomous continuation in current Work session; recovered original local 4874286."
         }
       ],
-      "ownership_revision": 74,
+      "ownership_revision": 81,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1573,7 +1601,7 @@
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
       "candidate_branch": "fix/player-feedback-context-ui-20261030",
       "canonical_pr": 132,
-      "handoff_reason": "PR132_MERGED_MAIN_VERIFIED_ISSUE133_CLOSED",
+      "handoff_reason": "Owner explicitly requests current chat continue after frozen Work; preserve PR136 and local 4874286 recovery if available",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
       "scope_extension_reason": "Owner continuation after PR129: administrative closure of the already-completed six-reference source request which incorrectly retains an executable paid composition route. No modification to PR127, assets or spend.",
@@ -1727,7 +1755,7 @@
         "new_credits_used": 0,
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
-      "owner_instruction": "Owner physical playtest 2026-10-30 requests remove independent build screens, align approved HUD/dialogue, and remove dashed yellow marching stripes without changing gameplay. Preserve all other active PRs."
+      "owner_instruction": "Continue pending work and latest UI reconstruction autonomously, per owner 31/10."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -2496,13 +2524,13 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": "codex-recovery-ada07b02a31d",
+      "owner": "codex-eldoria-art-reconstruction-4874286-20261031",
       "ownership_state": "claimed",
-      "ownership_revision": 9,
+      "ownership_revision": 14,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
-      "claimed_at": "2026-10-30T08:25:40.166Z",
+      "claimed_at": "2026-10-31T09:29:51.898Z",
       "base_main_sha": "f016932317e049d340460c408d88b90b1290b692",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41*.cs",
@@ -2577,6 +2605,29 @@
           "ownership_revision": 8,
           "transferred_at": "2026-10-30T20:15:50.364Z",
           "reason": "Owner explicitly requests recovery of blocked session and continued production in canonical PR136."
+        },
+        {
+          "owner": "codex-recovery-ada07b02a31d",
+          "ownership_revision": 9,
+          "transferred_at": "2026-10-31",
+          "reason": "Owner explicitly requests continuation after frozen chat; PR136 preserved."
+        },
+        {
+          "owner": "chatgpt-eldoria-normal-handoff-20261031",
+          "revision": 11,
+          "reason": "Owner-directed recovery after frozen chat, 2026-10-31"
+        },
+        {
+          "owner": "codex-recovery-e673e4a37490",
+          "ownership_revision": 12,
+          "transferred_at": "2026-10-31",
+          "reason": "Owner reports prior normal-chat session stopped prematurely and explicitly requests continuing same PR136 without restart."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-implementation-20261031",
+          "ownership_revision": 13,
+          "released_at": "2026-10-31T09:29:51.898Z",
+          "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
         }
       ],
       "delivery_definition": {
@@ -2605,7 +2656,8 @@
         "completed_native_run": 41034159279,
         "native_result": "SUCCESS: 61/61 EditMode, 73/73 PlayMode; visual fidelity NOT accepted",
         "runner_released": true
-      }
+      },
+      "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending."
     },
     {
       "id": "eldoria-art-memory-continuity-hardening-20261024",
@@ -2661,13 +2713,13 @@
     {
       "id": "eldoria-iphone-lifecycle-diagnostics-20261030",
       "title": "Resume PR97 optional local iPhone lifecycle diagnostics",
-      "owner": "codex-recovery-ada07b02a31d",
+      "owner": "codex-eldoria-art-reconstruction-4874286-20261031",
       "ownership_state": "claimed",
-      "ownership_revision": 5,
+      "ownership_revision": 10,
       "status": "active",
       "branch": "review/native281-iphone-ui-world-triage-20261022",
       "pr": 97,
-      "claimed_at": "2026-10-30",
+      "claimed_at": "2026-10-31T09:29:51.898Z",
       "base_main_sha": "68c18c15ab826cec69f2ff260e5d4b0a6b9aab7e",
       "scope": [
         "tools/delivery/optional-iphone-lifecycle-diagnostics.js",
@@ -2705,20 +2757,44 @@
           "ownership_revision": 4,
           "transferred_at": "2026-10-30T20:15:50.364Z",
           "reason": "Owner explicitly requests recovery of blocked session and continued production in canonical PR136."
+        },
+        {
+          "owner": "codex-recovery-ada07b02a31d",
+          "ownership_revision": 5,
+          "transferred_at": "2026-10-31",
+          "reason": "Owner explicitly requests continuation after frozen chat; PR136 preserved."
+        },
+        {
+          "owner": "chatgpt-eldoria-normal-handoff-20261031",
+          "revision": 7,
+          "reason": "Owner-directed recovery after frozen chat, 2026-10-31"
+        },
+        {
+          "owner": "codex-recovery-e673e4a37490",
+          "ownership_revision": 8,
+          "transferred_at": "2026-10-31",
+          "reason": "Owner reports prior normal-chat session stopped prematurely and explicitly requests continuing same PR136 without restart."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-implementation-20261031",
+          "ownership_revision": 9,
+          "released_at": "2026-10-31T09:29:51.898Z",
+          "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
         }
       ],
-      "write_scope_released": false
+      "write_scope_released": false,
+      "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending."
     },
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": "codex-recovery-ada07b02a31d",
+      "owner": "codex-eldoria-art-reconstruction-4874286-20261031",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 11,
       "status": "active",
       "branch": "feature/heroes-approved-ui-integration-20261030",
       "pr": 135,
-      "claimed_at": "2026-10-30",
+      "claimed_at": "2026-10-31T09:29:51.898Z",
       "base_main_sha": "b56f4f0f607ab4325625bd926e0588da1d9b4d73",
       "scope": [
         "Unity/Assets/Eldoria/HeroesUI/**",
@@ -2756,20 +2832,44 @@
           "ownership_revision": 5,
           "transferred_at": "2026-10-30T20:15:50.364Z",
           "reason": "Owner explicitly requests recovery of blocked session and continued production in canonical PR136."
+        },
+        {
+          "owner": "codex-recovery-ada07b02a31d",
+          "ownership_revision": 6,
+          "transferred_at": "2026-10-31",
+          "reason": "Owner explicitly requests continuation after frozen chat; PR136 preserved."
+        },
+        {
+          "owner": "chatgpt-eldoria-normal-handoff-20261031",
+          "revision": 8,
+          "reason": "Owner-directed recovery after frozen chat, 2026-10-31"
+        },
+        {
+          "owner": "codex-recovery-e673e4a37490",
+          "ownership_revision": 9,
+          "transferred_at": "2026-10-31",
+          "reason": "Owner reports prior normal-chat session stopped prematurely and explicitly requests continuing same PR136 without restart."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-implementation-20261031",
+          "ownership_revision": 10,
+          "released_at": "2026-10-31T09:29:51.898Z",
+          "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
         }
       ],
-      "write_scope_released": false
+      "write_scope_released": false,
+      "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending."
     },
     {
       "id": "eldoria-unified-art-vault-20261029",
       "title": "Biblioteca artística unificada 2D/3D — PR128",
-      "owner": "codex-recovery-ada07b02a31d",
+      "owner": "codex-eldoria-art-reconstruction-4874286-20261031",
       "branch": "docs/unified-art-vault-20261029",
       "status": "active",
       "ownership_state": "claimed",
-      "ownership_revision": 5,
+      "ownership_revision": 10,
       "write_scope_released": false,
-      "claimed_at": "2026-10-30T15:31:15.561Z",
+      "claimed_at": "2026-10-31T09:29:51.898Z",
       "base_main_sha": "515555135127195542496ffea3a0852206772bea",
       "scope": [
         "tools/asset-vault/scan_visual_assets.py",
@@ -2810,8 +2910,32 @@
           "ownership_revision": 4,
           "transferred_at": "2026-10-30T20:15:50.364Z",
           "reason": "Owner explicitly requests recovery of blocked session and continued production in canonical PR136."
+        },
+        {
+          "owner": "codex-recovery-ada07b02a31d",
+          "ownership_revision": 5,
+          "transferred_at": "2026-10-31",
+          "reason": "Owner explicitly requests continuation after frozen chat; PR136 preserved."
+        },
+        {
+          "owner": "chatgpt-eldoria-normal-handoff-20261031",
+          "revision": 7,
+          "reason": "Owner-directed recovery after frozen chat, 2026-10-31"
+        },
+        {
+          "owner": "codex-recovery-e673e4a37490",
+          "ownership_revision": 8,
+          "transferred_at": "2026-10-31",
+          "reason": "Owner reports prior normal-chat session stopped prematurely and explicitly requests continuing same PR136 without restart."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-implementation-20261031",
+          "ownership_revision": 9,
+          "released_at": "2026-10-31T09:29:51.898Z",
+          "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
         }
-      ]
+      ],
+      "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending."
     }
   ],
   "history": [

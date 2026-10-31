@@ -1,0 +1,64 @@
+{
+  "status": "LOCAL_CANDIDATE_NOT_PUSHED_NOT_UNITY_VALIDATED",
+  "base_head": "b5a2230aa01fa3b09393080c2bd12e57c1219cc1",
+  "canonical_pr": 136,
+  "branch": "fix/player-feedback-context-ui-20261030",
+  "observed_main_registry_owner": "chatgpt-eldoria-visual-implementation-20261031",
+  "observed_ownership_revision": 78,
+  "remote_mutations": false,
+  "main_modified": false,
+  "unity_dispatched": false,
+  "approved_reference": "docs/heroes-ui/REFERENCIA_MAESTRA_APROBADA.png",
+  "approved_reference_sha256": "48cbc4e73d4144c45af12731773f0fd60b45e81d2a871256b33fe2a00f7d6800",
+  "new_candidate_art": {
+    "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-clean-v1.png",
+    "sha256": "355e830129fae0a755106d6f5f42a5617ebc82c48ac6933235a693fcb0eb054d",
+    "generator": "built-in image_gen",
+    "art_approved": false,
+    "role": "architecture only; no text, buttons, heroes or data"
+  },
+  "baseline_evidence": {
+    "run": 41184256386,
+    "artifact": 13037021475,
+    "source_head": "b5a2230aa01fa3b09393080c2bd12e57c1219cc1",
+    "workflow_result": "success",
+    "visual_result": "FAIL: covered architecture, flattened header, oversized opaque gallery"
+  },
+  "current_validation": {
+    "git_diff_check": "PASS",
+    "unity_compile": "NOT_RUN",
+    "native_captures": "NOT_RUN",
+    "independent_review": "PENDING",
+    "save_byte_identity": "PENDING_NATIVE",
+    "physical_device": "NOT_RUN"
+  },
+  "required_resolutions": [
+    [
+      390,
+      844
+    ],
+    [
+      844,
+      390
+    ],
+    [
+      900,
+      1600
+    ],
+    [
+      1600,
+      900
+    ]
+  ],
+  "unchanged": [
+    "Lyra GLB and importer",
+    "Aldric models",
+    "save schema and gateway",
+    "V4.1 laboratory",
+    "campaign SliceRules",
+    "APK updater",
+    "main"
+  ],
+  "decision": "Independent architectural art + transparent real model render + modular material frames, replacing screenshot strip and schematic arches. No artistic acceptance claimed.",
+  "blocking_dependency": "Owner forbids changes to main. Repo protocol requires atomic ownership handoff in main registry before shared writes/Windows runner. Request explicit exception only for registry metadata; no main gameplay merge."
+}
