@@ -464,7 +464,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Semi-opaque approved parchment admits only a restrained
                 // amount of scene depth; real numbers retain high contrast.
                 var paper=RoyalGoldV41SourceArt.Surface(pane,"blue-panel",14);
-                paper.color=new Color(1f,1f,1f,.94f);
+                paper.color=new Color(1f,1f,1f,CurrentDestination==Destination.March?.78f:.94f);
                 paneSurfaces[pane]=paper;
                 // Antique rim and candlelight are independent of the texture.
                 RoyalGoldV3LayeredFinish.Install(pane,
