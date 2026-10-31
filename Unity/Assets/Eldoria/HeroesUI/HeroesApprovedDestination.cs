@@ -302,7 +302,8 @@ namespace Eldoria.HeroesUI
                 // approved illustrated bust must be FIT inside the aperture.
                 // Applying cover to both enlarged Aldric's face to a cropped
                 // forehead at 1600x900; the two sources are not interchangeable.
-                float imageW=fullBody?Mathf.Max(w,h*ratio):Mathf.Min(w,h*ratio);
+                float imageW=fullBody?Mathf.Max(w,h*ratio):
+                    Mathf.Max(Mathf.Min(w,h*ratio),w*.64f);
                 float imageH=imageW/ratio;
                 float top=fullBody?-(imageH-h)*.27f:(h-imageH)*.5f;
                 Place(image.rectTransform,(w-imageW)*.5f,top,imageW,imageH);
@@ -384,7 +385,7 @@ namespace Eldoria.HeroesUI
                 float portraitW=lateral?Mathf.Min(cardH-12f,cardW*.44f):cardW-12f;
                 float identityH=lateral?0f:cardH<160f?43f:cardW<145f?64f:74f;
                 float portraitH=lateral?cardH-12f:Mathf.Max(24f,cardH-identityH-12f);
-                CardPortrait(card,portrait,unlocked,real&&heroes[i].Id=="lyra",
+                CardPortrait(card,portrait,unlocked,!real||heroes[i].Id=="lyra",
                     portraitX,portraitY,portraitW,portraitH);
                 float ix=lateral?portraitW+10f:5f;
                 float iy=lateral?4f:cardH-identityH;
