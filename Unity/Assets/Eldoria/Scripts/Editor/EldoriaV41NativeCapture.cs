@@ -113,6 +113,28 @@ namespace Eldoria.Editor
                             var firstRow=slots.Count(t=>Mathf.Abs(t.anchoredPosition.y-slots[0].anchoredPosition.y)<1f);
                             Need(firstRow==3,"Portrait gallery preserves three approved card columns "+name);
                         }
+                        // Pixel-independent visual occupancy: the legacy 844x390
+                        // hall passed six-slot and 44px controls while an opaque
+                        // name band covered most of both real hero portraits.
+                        if(width>height&&height<=450){
+                            foreach(var slot in slots.Where(t=>t.name.StartsWith("Hero card "))){
+                                var aperture=slot.GetComponentsInChildren<RectTransform>()
+                                    .FirstOrDefault(t=>t.name=="Hero card portrait aperture");
+                                var shade=slot.GetComponentsInChildren<RectTransform>()
+                                    .FirstOrDefault(t=>t.name=="Hero card identity shade");
+                                var portrait=slot.GetComponentsInChildren<Image>()
+                                    .FirstOrDefault(t=>t.name=="Verified portrait");
+                                Need(aperture&&shade&&portrait&&portrait.sprite,
+                                    "Actual short-landscape hero portrait stays loaded "+name);
+                                Need(aperture.rect.height>=slot.rect.height*.70f&&
+                                    aperture.rect.width*aperture.rect.height>=
+                                        slot.rect.width*slot.rect.height*.25f,
+                                    "Short-landscape hero artwork keeps prominent visible surface "+name);
+                                Need(shade.anchoredPosition.x>=
+                                        aperture.anchoredPosition.x+aperture.rect.width-1f,
+                                    "Hero identity panel cannot overlap portrait aperture "+name);
+                            }
+                        }
                         Need(heroes.VisibleRoot.GetComponentsInChildren<Button>()
                             .Count(b=>b.name.StartsWith("Select hero "))==2,
                             "Only two real heroes are actionable "+name);
