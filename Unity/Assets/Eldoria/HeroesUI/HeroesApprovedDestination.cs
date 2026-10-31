@@ -78,6 +78,15 @@ namespace Eldoria.HeroesUI
         void LateUpdate()
         {
             if(IsOpen&&(Mathf.Abs(root.rect.width-observedWidth)>1f||Mathf.Abs(root.rect.height-observedHeight)>1f))Rebuild();
+            if(IsOpen&&CurrentPage==Page.Salon&&leftHallLight&&rightHallLight){
+                float t=Time.unscaledTime;
+                var left=leftHallLight.color;
+                left.a=.24f+.025f*Mathf.Sin(t*1.7f);
+                leftHallLight.color=left;
+                var right=rightHallLight.color;
+                right.a=.20f+.023f*Mathf.Sin(t*1.5f+1.3f);
+                rightHallLight.color=right;
+            }
         }
         RectTransform Rect(string name,Transform parent)
         {var r=new GameObject(name,typeof(RectTransform)).GetComponent<RectTransform>();r.SetParent(parent,false);return r;}
@@ -205,7 +214,37 @@ namespace Eldoria.HeroesUI
         }
         // Production art is independent from the approved sheet. Never crop
         // controls, lettering or characters out of that sheet into runtime UI.
-        Texture2D hallArchitecture;
+        Texture2D hallArchitecture, hallLightTexture;
+        RawImage leftHallLight, rightHallLight;
+        Texture2D HallGlow()
+        {
+            if (hallLightTexture) return hallLightTexture;
+            const int n=64;
+            hallLightTexture=new Texture2D(n,n,TextureFormat.RGBA32,false,true);
+            hallLightTexture.name="Hall / living torchlight falloff";
+            hallLightTexture.wrapMode=TextureWrapMode.Clamp;
+            hallLightTexture.filterMode=FilterMode.Bilinear;
+            hallLightTexture.hideFlags=HideFlags.HideAndDontSave;
+            var px=new Color[n*n];
+            for(int y=0;y<n;y++) for(int x=0;x<n;x++){
+                float dx=(x+.5f-n*.5f)/(n*.5f);
+                float dy=(y+.5f-n*.5f)/(n*.5f);
+                float alpha=Mathf.Pow(Mathf.Clamp01(1f-Mathf.Sqrt(dx*dx+dy*dy)),1.7f);
+                px[y*n+x]=new Color(1f,1f,1f,alpha);
+            }
+            hallLightTexture.SetPixels(px);
+            hallLightTexture.Apply(false,true);
+            return hallLightTexture;
+        }
+        RawImage HallLight(Transform parent,string name,float x,float y,float w,float h)
+        {
+            var light=Rect(name,parent).gameObject.AddComponent<RawImage>();
+            Place(light.rectTransform,x,y,w,h);
+            light.texture=HallGlow();
+            light.raycastTarget=false;
+            return light;
+        }
+        void OnDestroy(){if(hallLightTexture)Destroy(hallLightTexture);}
         void DrawApprovedSalonEnvironment(float w,float h)
         {
             if(!hallArchitecture)
@@ -223,6 +262,7 @@ namespace Eldoria.HeroesUI
                 float cropH=Mathf.Min(1f,sourceAspect/viewAspect);
                 plate.uvRect=new UnityEngine.Rect((1f-cropW)*.5f,(1f-cropH)*.5f,cropW,cropH);
             }
+            leftHallLight=rightHallLight=null;
             if(CurrentPage!=Page.Salon){
                 Surface("Hall / profile top ink",content,0,0,w,88f,
                     new Color(.015f,.022f,.034f,.73f)).GetComponent<Image>().raycastTarget=false;
@@ -233,6 +273,15 @@ namespace Eldoria.HeroesUI
                 return;
             }
             bool widePhone=w>h&&h<500f;
+            // Genuine independent light volumes above the scenic plate and
+            // behind gameplay controls. Their alpha subtly changes in play;
+            // this is not a cropped photograph, a new scene or an extra camera.
+            leftHallLight=HallLight(scene,"Hall / left living torch",0,h*.29f,
+                Mathf.Min(w*.37f,460f),h*.62f);
+            rightHallLight=HallLight(scene,"Hall / right living torch",
+                w-Mathf.Min(w*.37f,460f),h*.29f,Mathf.Min(w*.37f,460f),h*.62f);
+            leftHallLight.color=new Color(1f,.53f,.17f,.26f);
+            rightHallLight.color=new Color(1f,.65f,.27f,.21f);
             float headerH=widePhone?76f:h>w?Mathf.Clamp(h*.19f,130f,174f):142f;
             float footerH=widePhone?55f:72f;
             // Separate architectural overlays: stone pilasters, royal banners,
@@ -376,8 +425,19 @@ namespace Eldoria.HeroesUI
                 float left=(w-(cardW*columns+gap*(columns-1)))*.5f+col*(cardW+gap);
                 float top=cardTop+row*(cardH+gap);
                 bool real=i<heroes.Length;
+                Surface("Hall / card cast shadow",content,left+5f,top+7f,
+                    cardW,cardH,new Color(0f,0f,0f,.60f))
+                    .GetComponent<Image>().raycastTarget=false;
                 var card=Frame(real?"Hero card "+heroes[i].Id:"Reserved future hero slot "+(i-heroes.Length),
                     content,left,top,cardW,cardH);
+                // A freestanding engraved frame, not an opaque UI rectangle
+                // flattened into the architectural background.
+                Surface("Hall / card inner bronze bevel",card,4f,4f,cardW-8f,2f,
+                    new Color(.84f,.60f,.24f,.75f)).GetComponent<Image>().raycastTarget=false;
+                Surface("Hall / card left bevel",card,4f,6f,2f,cardH-12f,
+                    new Color(.82f,.55f,.21f,.43f)).GetComponent<Image>().raycastTarget=false;
+                Surface("Hall / card right bevel",card,cardW-6f,6f,2f,cardH-12f,
+                    new Color(.82f,.55f,.21f,.43f)).GetComponent<Image>().raycastTarget=false;
                 bool unlocked=real&&heroes[i].Unlocked;
                 Sprite portrait=real?heroes[i].Portrait:futureSlotArt;
                 bool lateral=phoneLandscape;
@@ -399,11 +459,16 @@ namespace Eldoria.HeroesUI
                         iy+(lateral?10f:2f),iw-6f,lateral?Mathf.Min(36f,ih*.37f):28f,
                         lateral?Mathf.Clamp((int)(cardH*.17f),15,21):cardW<150?17:23,
                         TextAnchor.MiddleCenter).color=gold;
+                    bool largeCard=!lateral&&cardW>=250f&&identityH>=72f;
+                    if(largeCard)
+                        Label("Hero / authoritative role",card,heroes[i].Role,
+                            ix+3f,iy+29f,iw-6f,17f,15,TextAnchor.MiddleCenter)
+                            .color=new Color(.81f,.75f,.63f);
                     Label("Hero card state",card,
                         unlocked?"NIVEL "+heroes[i].Level+"  ·  PODER "+heroes[i].HeroPower:
                             "BLOQUEADO POR LA HISTORIA",
-                        ix+3f,iy+(lateral?ih*.49f:30f),iw-6f,
-                        lateral?Mathf.Max(21f,ih*.33f):Mathf.Max(20f,identityH-39f),
+                        ix+3f,iy+(lateral?ih*.49f:largeCard?49f:30f),iw-6f,
+                        lateral?Mathf.Max(21f,ih*.33f):largeCard?20f:Mathf.Max(20f,identityH-39f),
                         lateral?14:cardW<150?13:17,TextAnchor.MiddleCenter);
                 } else {
                     Label("Hero card name",card,"POR DESCUBRIR",ix+3f,
