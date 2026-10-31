@@ -29,8 +29,14 @@ namespace Eldoria.Editor
             {
                 var path=file.Replace('\\','/');
                 bool shipping=path.Contains("/Resources/")||path.Contains("/StreamingAssets/");
-                if(shipping&&(Rejected(Path.GetFileName(path))||
-                    (path.EndsWith(".meta",StringComparison.OrdinalIgnoreCase)&&Rejected(File.ReadAllText(file)))))
+                bool metadata=path.EndsWith(".meta",StringComparison.OrdinalIgnoreCase);
+                string meta=metadata?File.ReadAllText(file):"";
+                // Unity recreates metadata for an empty historical directory.
+                // A folder GUID is not model content. The actual rejected model
+                // GUID and every payload filename remain forbidden.
+                bool folderMetadata=metadata&&meta.Contains("folderAsset: yes");
+                if(shipping&&((!folderMetadata&&Rejected(Path.GetFileName(path)))||
+                    (metadata&&meta.IndexOf(Guid,StringComparison.OrdinalIgnoreCase)>=0)))
                     throw new BuildFailedException("Owner-vetoed Bastion remains in automatic build content: "+path);
                 // Runtime loaders remain prohibited even if the archive is absent.
                 if(path.EndsWith(".cs",StringComparison.OrdinalIgnoreCase)&&!path.Contains("/Editor/")&&
