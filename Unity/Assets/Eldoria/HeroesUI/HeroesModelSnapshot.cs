@@ -9,7 +9,7 @@ namespace Eldoria.HeroesUI
     public sealed class HeroesModelSnapshot : MonoBehaviour
     {
         RenderTexture texture;GameObject previous,stage,visual;RawImage output;
-        Camera camera;Light key,rim;Animation idle;AnimationState idleState;
+        Camera camera;Light key,rim,fill;Animation idle;AnimationState idleState;
         Mesh groundMesh;Material groundMaterial;Bounds bounds;float yaw=90,nextRender;
         public bool HasModel=>texture&&previous&&stage;
         public bool HasPerspectiveGround=>camera&&!camera.orthographic&&groundMaterial&&groundMaterial.shader.isSupported;
@@ -76,9 +76,10 @@ namespace Eldoria.HeroesUI
             camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.clear;
             camera.allowHDR=false;camera.allowMSAA=false;camera.nearClipPlane=.01f;camera.farClipPlane=height*12;
             var data=cameraObject.AddComponent<UniversalAdditionalCameraData>();data.renderPostProcessing=false;data.renderShadows=true;
-            key=Lamp("Hero / window key",new Color(.88f,.91f,1f),.95f);
+            key=Lamp("Hero / window key",new Color(.88f,.91f,1f),1.15f);
             key.shadows=LightShadows.Soft;key.shadowStrength=.8f;key.shadowBias=.015f;key.shadowNormalBias=.025f;
             rim=Lamp("Hero / torch rim",new Color(1f,.58f,.27f),.55f);
+            fill=Lamp("Hero / soft front fill",new Color(.82f,.86f,1f),.65f);
             texture=new RenderTexture(512,768,24,RenderTextureFormat.ARGB32){name="Hero live perspective portrait"};texture.Create();camera.targetTexture=texture;
         }
         Light Lamp(string name,Color color,float intensity){
@@ -108,15 +109,15 @@ namespace Eldoria.HeroesUI
             float tangent=Mathf.Tan(camera.fieldOfView*.5f*Mathf.Deg2Rad);
             float distance=Mathf.Max(extent(up)/tangent,extent(right)/(tangent*camera.aspect))*1.17f+extent(rotation*Vector3.forward)*.35f;
             camera.transform.rotation=rotation;camera.transform.position=bounds.center-camera.transform.forward*distance;
-            key.transform.rotation=Quaternion.Euler(38,yaw-35,0);rim.transform.rotation=Quaternion.Euler(22,yaw+145,0);
+            key.transform.rotation=Quaternion.Euler(38,yaw-35,0);rim.transform.rotation=Quaternion.Euler(22,yaw+145,0);fill.transform.rotation=Quaternion.Euler(10,yaw,0);
             var sun=RenderSettings.sun;var mode=RenderSettings.ambientMode;var ambient=RenderSettings.ambientLight;
             var sky=RenderSettings.ambientSkyColor;var equator=RenderSettings.ambientEquatorColor;var ground=RenderSettings.ambientGroundColor;
             float reflection=RenderSettings.reflectionIntensity;bool fog=RenderSettings.fog;var target=RenderTexture.active;
             var lights=UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
             var masks=new int[lights.Length];for(int i=0;i<lights.Length;i++)masks[i]=lights[i].cullingMask;
             try{
-                for(int i=0;i<lights.Length;i++)if(lights[i]!=key&&lights[i]!=rim)lights[i].cullingMask&=~(1<<31);
-                RenderSettings.sun=key;RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.22f,.24f,.29f);
+                for(int i=0;i<lights.Length;i++)if(lights[i]!=key&&lights[i]!=rim&&lights[i]!=fill)lights[i].cullingMask&=~(1<<31);
+                RenderSettings.sun=key;RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.30f,.32f,.37f);
                 RenderSettings.reflectionIntensity=.35f;RenderSettings.fog=false;camera.Render();nextRender=Time.unscaledTime+.20f;
             }finally{
                 for(int i=0;i<lights.Length;i++)if(lights[i])lights[i].cullingMask=masks[i];
@@ -144,7 +145,7 @@ namespace Eldoria.HeroesUI
             }catch{Destroy(copy);throw;}finally{RenderTexture.active=prior;}
         }
         public void Release(){
-            previous=null;output=null;idle=null;idleState=null;camera=null;key=null;rim=null;
+            previous=null;output=null;idle=null;idleState=null;camera=null;key=null;rim=null;fill=null;
             if(stage){stage.SetActive(false);Destroy(stage);}stage=null;visual=null;
             if(groundMesh)Destroy(groundMesh);groundMesh=null;if(groundMaterial)Destroy(groundMaterial);groundMaterial=null;
             if(texture){texture.Release();Destroy(texture);}texture=null;

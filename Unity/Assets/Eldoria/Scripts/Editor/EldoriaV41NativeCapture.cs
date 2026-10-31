@@ -314,6 +314,9 @@ namespace Eldoria.Editor
             var livePortrait=heroes.VisibleRoot.GetComponent<Eldoria.HeroesUI.HeroesModelSnapshot>();
             Need(livePortrait&&livePortrait.HasModel&&livePortrait.HasPerspectiveGround&&livePortrait.SamplesOriginalIdle,
                 "Aldric profile renders live original Idle in perspective with a supported physical shadow receiver");
+            Need(Resources.FindObjectsOfTypeAll<Camera>()
+                .Count(c=>c&&c.name=="Hero / perspective camera"&&c.gameObject.activeInHierarchy)==1,
+                "Exactly one live hero stage remains; inactive Lyra portrait capture has explicitly released its stage");
             float aldricCoverage=livePortrait.ReadOpaqueHeightCoverage();
             Need(aldricCoverage>=.58f,"Actual Aldric silhouette fills the portrait instead of inheriting a doubly scaled skin bound: "+aldricCoverage);
             foreach(var page in new[]{Eldoria.HeroesUI.HeroesApprovedDestination.Page.Resumen,
