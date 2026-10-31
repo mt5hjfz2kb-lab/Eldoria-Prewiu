@@ -349,8 +349,17 @@ namespace Eldoria.UI.RoyalGold.V2
                     Disc(vh,nodes[i],r+9,new Color(1f,.50f,.05f,.20f));
                     Disc(vh,nodes[i],r+5,new Color(1f,.70f,.12f,.75f));
                 }
+                // Physical inset medallion: the lower-right contact shadow
+                // and upper-left metal catchlight make the marker sit ON the
+                // painted paving instead of floating above the photograph.
+                // Coordinates and 25 genuine gameplay stages remain unchanged.
+                Disc(vh,nodes[i]+new Vector2(1.7f,-2.4f),r+2.6f,
+                    new Color(.025f,.032f,.031f,.44f));
                 Disc(vh,nodes[i],r+2,boss?gold:new Color(.48f,.40f,.30f,1));
                 Disc(vh,nodes[i],r,dark);
+                Disc(vh,nodes[i]+new Vector2(-r*.26f,r*.27f),
+                    Mathf.Max(.8f,r*.16f),
+                    new Color(1f,.88f,.64f,cleared ? .76f : .54f));
                 if(cleared){
                     Line(vh,nodes[i]+new Vector2(-r*.5f,0),nodes[i]+new Vector2(-r*.1f,-r*.4f),3,new Color(.45f,.93f,.27f,1));
                     Line(vh,nodes[i]+new Vector2(-r*.1f,-r*.4f),nodes[i]+new Vector2(r*.6f,r*.45f),3,new Color(.45f,.93f,.27f,1));

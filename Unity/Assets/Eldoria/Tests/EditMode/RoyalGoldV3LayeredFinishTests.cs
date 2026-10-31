@@ -13,6 +13,7 @@ namespace Eldoria.Tests
         [TestCase(RoyalGoldV3LayeredFinish.Scene.Training)]
         [TestCase(RoyalGoldV3LayeredFinish.Scene.March)]
         [TestCase(RoyalGoldV3LayeredFinish.Scene.Panel)]
+        [TestCase(RoyalGoldV3LayeredFinish.Scene.Portrait)]
         public void ForegroundCannotStealTouchOrCreateAdditionalCanvas(
             RoyalGoldV3LayeredFinish.Scene scene)
         {
@@ -27,7 +28,15 @@ namespace Eldoria.Tests
                 Assert.That(parent.GetComponentsInChildren<EventSystem>(true).Length,Is.Zero);
                 Assert.That(foreground.rectTransform.anchorMin,Is.EqualTo(Vector2.zero));
                 Assert.That(foreground.rectTransform.anchorMax,Is.EqualTo(Vector2.one));
+                Assert.That(foreground.CurrentScene,Is.EqualTo(scene));
+                var temporary=scene==RoyalGoldV3LayeredFinish.Scene.March?
+                    RoyalGoldV3LayeredFinish.Scene.Training:
+                    RoyalGoldV3LayeredFinish.Scene.March;
+                foreground.SetScene(temporary);
+                Assert.That(foreground.CurrentScene,Is.EqualTo(temporary));
                 foreground.SetScene(scene);
+                Assert.That(foreground.CurrentScene,Is.EqualTo(scene));
+                Assert.That(foreground.raycastTarget,Is.False);
                 foreground.SetVerticesDirty();
                 Assert.That(foreground.gameObject.layer,Is.EqualTo(parent.layer));
             }
