@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-31T13:55:12.700Z",
+  "updated_at": "2026-10-31T14:04:14.690Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -113,7 +113,11 @@
         "Unity/Assets/Eldoria/Tests/EditMode/CameraGestureTests.cs",
         "docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md",
         "docs/documentation-catalog.json",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
+        "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
+        "ArtSource/RejectedLegacyBastion/**"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -1516,7 +1520,7 @@
           "reason": "Owner explicitly requests autonomous continuation of pending Eldoria work in current chat; preserve PR136 and recovered candidate."
         }
       ],
-      "ownership_revision": 83,
+      "ownership_revision": 84,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",

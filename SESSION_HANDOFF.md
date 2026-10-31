@@ -1,3 +1,9 @@
+# CORRECCIÓN P0 VETO BASTIÓN — 31/10/2026
+
+Además de Héroes y navegación, se corrige #109 en la misma PR136: auditoría de fuentes/escenas/prefabs encontró un cargador real en AssetLibraryReprocessingPassV1.cs; su reemplazo queda inerte. GLB rechazado y meta originales se trasladan por el mismo blob Git a ArtSource/RejectedLegacyBastion, fuera de Unity/Resources/StreamingAssets. No se eliminan originales ni se sustituye el Bastión autorizado. Guard de build fail-closed y prueba nativa con informe de dependencias/ausencia de loader. No cerrar #109 sin PASS del nuevo código y capturas ciudad reales. Valoria revisión84; mismo titular. El paquete de interfaz actual requiere su propia certificación, no el PASS de 6bbca109. Continuar acciones de abajo tras inspeccionar el HEAD real.
+
+---
+
 # CONTINUIDAD VIGENTE — 31/10/2026 — PR136
 
 El trabajo 4874286 YA está recuperado y reconciliado en remoto desde 6bbca109343ec4e63c62d9c43e57bf8125ac1345. La cabecera inferior «candidata local» es histórica y NO expresa el estado actual. Su fondo limpio original y el GLB de Lyra se conservan.

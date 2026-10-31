@@ -30,6 +30,8 @@ namespace Eldoria.Editor
             {
                 Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
                 Directory.CreateDirectory(Output);
+                File.WriteAllText(Path.Combine(Output,"legacy-bastion-veto.json"),
+                    RejectedLegacyBastionBuildGuard.Validate());
                 EditorSceneManager.OpenScene("Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity");
                 SessionState.SetBool(Flag,true);EditorApplication.EnterPlaymode();
             }
