@@ -631,9 +631,23 @@ namespace Eldoria.ReferenceClean.Editor {
     Capture(h,"integration-continuous-bastion-"+level+"-portrait.png",900,1600);
    },"continuous Bastion "+level+" actual city in both orientations");
   }
+  IEnumerator OpenJourneyTraining(ValoriaIntegratedWorld h){
+   // A physical chapter III+ barracks now correctly selects its city upgrade.
+   // Exercise the user's explicit UNIDADES > Abrir cuartel route instead.
+   h.SetWorld(false);h.Hud.SelectBuilding("");yield return null;
+   Check(()=>Click(h.Hud.Navigation.Items.First(i=>i.Section==RoyalSection.Army).Button),
+    "continuous journey opens actual UNIDADES navigation");
+   if(Failed())yield break;
+   yield return null;
+   Check(()=>{
+    Need(h.Hud.Modal.gameObject.activeInHierarchy,"Actual army destination missing");
+    Click(h.Hud.Modal.Extra);
+   },"continuous journey explicitly opens training from the army destination");
+   yield return new WaitForSecondsRealtime(.3f);
+  }
   IEnumerator VerifyHeroDestinations(ValoriaIntegratedWorld h){
    var before=JsonUtility.ToJson(h.City.Gateway.Snapshot());
-   h.SetWorld(false);h.Select("barracks");yield return new WaitForSecondsRealtime(.3f);
+   yield return OpenJourneyTraining(h);if(Failed())yield break;
    Check(()=>Click(GameObject.Find("Open canonical heroes").GetComponent<Button>()),"hero hall opens through actual units navigation");
    yield return new WaitForSecondsRealtime(.3f);
    var heroes=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
@@ -677,7 +691,7 @@ namespace Eldoria.ReferenceClean.Editor {
   public IEnumerator ContinueNativeJourneyToV(ValoriaIntegratedWorld h){
    Check(()=>Need(h.City.Gateway.Snapshot().BastionLevel==2&&h.City.Gateway.Snapshot().EngendroDefeated,
     "Continuous III-V must start with the actual completed I-II state"),"continuous journey preserves original I-II lineage");
-   h.SetWorld(false);h.Select("barracks");yield return new WaitForSecondsRealtime(.3f);
+   yield return OpenJourneyTraining(h);if(Failed())yield break;
    Check(()=>{
     var heroes=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
     Need(!GameObject.Find("Open canonical heroes").GetComponent<Button>().interactable,"Hero hall prematurely enabled before Lyra recruitment");
@@ -721,7 +735,7 @@ namespace Eldoria.ReferenceClean.Editor {
    }
    foreach(int tier in new[]{1,2}){
     yield return JourneyFunds(h,1000,600);if(Failed())yield break;
-    h.SetWorld(false);h.Select("barracks");yield return new WaitForSecondsRealtime(.3f);
+    yield return OpenJourneyTraining(h);if(Failed())yield break;
     yield return ReadJourneyNarrative(h);
     Check(()=>{
      var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
