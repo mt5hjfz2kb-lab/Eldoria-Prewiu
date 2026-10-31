@@ -1,3 +1,7 @@
+## 2026-10-31 — exact native 4088 portrait review and framing repair
+
+Native run41213793398 artifact13047638113 passes controls and confirms original pose/live stage. Real screenshots show the giant hand-pincher deformation reduced and Lyra casts a real ground shadow. Aldric appears too small: city metre normalization is counted twice by the legacy baked-skin bounds. Presentation now uses original unit scale and binds/samples animation on an active clone before measuring. Native gate measures actual opaque GPU silhouette coverage (at least58% of portrait height), excluding transparent ground; it would reject the observed4088 framing. Scene directional-light masks are restored after isolating offscreen lighting. Exact follow-up native proof required, no art approval.
+
 ## 2026-10-31 — audit response: original Aldric pose and live portrait depth
 
 Owner identifies flat screens and suspect Aldric hands. Native d380 close-ups confirm the concern. Exact approved GLB SHA256 c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b remains untouched. Original Idle already rotates upper arms about 29 degrees; city added a second 35-degree additive layer. Exact-source skinning reproduction shows this extra layer increases hand distortion. Removed its application, preserving geometry, weights, clips and saves. Analytical renders are diagnostic, NOT Unity evidence.

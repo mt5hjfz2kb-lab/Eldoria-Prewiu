@@ -30,7 +30,9 @@ namespace Eldoria.HeroesUI
             stage.transform.position=new Vector3(0,-12000,0);
             visual=Instantiate(model,stage.transform,false);visual.name="Approved hero / presentation clone";
             visual.transform.localPosition=Vector3.zero;visual.transform.localRotation=Quaternion.identity;
-            visual.transform.localScale=model.transform.lossyScale;
+            // Frame original mesh units; the city normalizes Aldric to metres.
+            // Inheriting that parent scale makes legacy skin baking count it twice.
+            visual.transform.localScale=Vector3.one;
             foreach(var node in visual.GetComponentsInChildren<Transform>(true))node.gameObject.layer=31;
             foreach(var script in visual.GetComponentsInChildren<MonoBehaviour>(true))script.enabled=false;
             foreach(var animator in visual.GetComponentsInChildren<Animator>(true))animator.enabled=false;
@@ -49,7 +51,11 @@ namespace Eldoria.HeroesUI
                 animation.Play(clip.name,UnityEngine.PlayMode.StopAll);idle=animation;
                 idleState=animation[clip.name];idleState.speed=0;idleState.time=0;animation.Sample();
             }
-            visual.SetActive(true);stage.SetActive(true);bounds=ActualBounds(visual);
+            visual.SetActive(true);stage.SetActive(true);
+            // Bind legacy animation on an active hierarchy before measuring its skin.
+            if(idle&&idleState!=null){idle.Play(idleState.name);idleState.speed=0;idleState.time=0;idle.Sample();}
+            bounds=ActualBounds(visual);
+            Debug.Log("HERO_PREVIEW_GEOMETRY "+model.name+" source_scale="+model.transform.lossyScale+" local_stage_bounds="+bounds.size);
             float height=Mathf.Max(.1f,bounds.size.y);
             var shader=Resources.Load<Shader>("EldoriaV41/HeroesContactShadow");
             if(!shader||!shader.isSupported)throw new InvalidOperationException("Hero contact-shadow shader unavailable");
@@ -106,14 +112,30 @@ namespace Eldoria.HeroesUI
             var sun=RenderSettings.sun;var mode=RenderSettings.ambientMode;var ambient=RenderSettings.ambientLight;
             var sky=RenderSettings.ambientSkyColor;var equator=RenderSettings.ambientEquatorColor;var ground=RenderSettings.ambientGroundColor;
             float reflection=RenderSettings.reflectionIntensity;bool fog=RenderSettings.fog;var target=RenderTexture.active;
+            var lights=UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+            var masks=new int[lights.Length];for(int i=0;i<lights.Length;i++)masks[i]=lights[i].cullingMask;
             try{
+                for(int i=0;i<lights.Length;i++)if(lights[i]!=key&&lights[i]!=rim)lights[i].cullingMask&=~(1<<31);
                 RenderSettings.sun=key;RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.22f,.24f,.29f);
                 RenderSettings.reflectionIntensity=.35f;RenderSettings.fog=false;camera.Render();nextRender=Time.unscaledTime+.20f;
             }finally{
+                for(int i=0;i<lights.Length;i++)if(lights[i])lights[i].cullingMask=masks[i];
                 RenderSettings.sun=sun;RenderSettings.ambientMode=mode;RenderSettings.ambientLight=ambient;
                 RenderSettings.ambientSkyColor=sky;RenderSettings.ambientEquatorColor=equator;RenderSettings.ambientGroundColor=ground;
                 RenderSettings.reflectionIntensity=reflection;RenderSettings.fog=fog;RenderTexture.active=target;
             }
+        }
+        // Native visual gate: measure the actual GPU-rendered opaque silhouette,
+        // excluding the transparent floor shadow, rather than trusting bounds.
+        public float ReadOpaqueHeightCoverage(){
+            if(!HasModel)return 0;var prior=RenderTexture.active;
+            var pixels=new Texture2D(texture.width,texture.height,TextureFormat.RGBA32,false);
+            try{RenderTexture.active=texture;pixels.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);pixels.Apply();
+                var colors=pixels.GetPixels32();int first=texture.height,last=-1;
+                for(int y=0;y<texture.height;y++)for(int x=0;x<texture.width;x++)
+                    if(colors[y*texture.width+x].a>242){first=Mathf.Min(first,y);last=Mathf.Max(last,y);break;}
+                return last<first?0:(last-first+1f)/texture.height;
+            }finally{RenderTexture.active=prior;Destroy(pixels);}
         }
         public Sprite CopyPortrait(){
             if(!HasModel)return null;var prior=RenderTexture.active;var copy=new Texture2D(texture.width,texture.height,TextureFormat.RGBA32,false);
