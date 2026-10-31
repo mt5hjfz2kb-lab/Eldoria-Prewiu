@@ -119,13 +119,15 @@
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "BLOCK02_HEROES_HALL_ART_RECONSTRUCTION",
-      "next": "Integrate structural Heroes Hall reference composition, preserve real models and controls, verify four true Unity screenshot sizes and regression.",
+      "next": "Run current branch Unity exact-HEAD after prior native job has exited; inspect real 390x844/844x390/900x1600/1600x900 Hall PNG and all regressions; release runner after completion.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -922,8 +924,8 @@
       "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied",
       "current_session": null,
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
-      "resources_verified_at": "2026-10-30T07:52:24.023Z",
-      "resources_evidence": "Native40965665726, UI40965672865, tester41017152807 and main41018872267 attempt2 SUCCESS. All owned heavy jobs completed.",
+      "resources_verified_at": "2026-10-31",
+      "resources_evidence": "Block 02 Unity certification for exact Heroes Hall source; previous native run 41246322869 remains in progress; DO NOT cancel it, start another Unity instance or bypass serial runner. Reservation is for later queued run.",
       "validation_recovery_session": {
         "owner": "chatgpt-validation-recovery-20261019",
         "authorization": "Owner requested review and completion of today's validation failures and pending delivery in current session.",
@@ -1550,7 +1552,7 @@
           "reason": "BLOQUE 01 closed and owner instructed proceed with BLOQUE 02, preserving existing PR136 and deferred unrelated screens."
         }
       ],
-      "ownership_revision": 89,
+      "ownership_revision": 90,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
