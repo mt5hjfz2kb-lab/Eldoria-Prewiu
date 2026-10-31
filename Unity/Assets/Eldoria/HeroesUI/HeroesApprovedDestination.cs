@@ -127,6 +127,17 @@ namespace Eldoria.HeroesUI
             content=Rect("Heroes / live controls",root);content.anchorMin=Vector2.zero;content.anchorMax=Vector2.one;
             content.offsetMin=content.offsetMax=Vector2.zero;
             float w=root.rect.width,h=root.rect.height;observedWidth=w;observedHeight=h;
+            // The canonical Canvas scales a desktop reference down on phones.
+            // Lay this destination out in visible pixels when that happens,
+            // so a 48-unit touch target and 20-unit type remain readable.
+            // Preserve the existing safe area and never change the shared HUD.
+            var canvas=root.GetComponentInParent<Canvas>();
+            float pixelScale=canvas?canvas.scaleFactor:1f;
+            float layoutScale=1f/Mathf.Clamp(pixelScale,.1f,1f);
+            content.anchorMin=content.anchorMax=content.pivot=new Vector2(0,1);
+            content.anchoredPosition=Vector2.zero;
+            content.localScale=Vector3.one*layoutScale;
+            w/=layoutScale;h/=layoutScale;content.sizeDelta=new Vector2(w,h);
             if(w<200||h<200)return;
             DrawApprovedSalonEnvironment(w,h);
             bool portrait=h>w;float margin=20;
@@ -142,10 +153,11 @@ namespace Eldoria.HeroesUI
             Label("Hero role and real level",content,hero.Role+" · NIVEL "+hero.Level,82,48,w-164,26,20,TextAnchor.MiddleCenter);
             var pages=new[]{Page.Resumen,Page.Habilidades,Page.Talentos,Page.Equipamiento};
             string[] captions={"RESUMEN","HABILIDADES","TALENTOS","EQUIPAMIENTO"};
-            float tabWidth=portrait?(w-46)/2f:Mathf.Clamp(w*.16f,140,190),top=portrait?210:100;
+            bool shortProfile=!portrait&&h<500f;
+            float tabWidth=portrait?(w-46)/2f:Mathf.Clamp(w*.16f,140,190),top=portrait?210:shortProfile?96:100;
             for(int i=0;i<pages.Length;i++){
-                var page=pages[i];float x=portrait?20+(i%2)*(tabWidth+6):20,y=portrait?96+(i/2)*49:110+i*62;
-                var b=Button("Hero tab "+page,captions[i],x,y,tabWidth,portrait?43:52,()=>Select(page));
+                var page=pages[i];float x=portrait?20+(i%2)*(tabWidth+6):20,y=portrait?96+(i/2)*49:shortProfile?96+i*46:110+i*62;
+                var b=Button("Hero tab "+page,captions[i],x,y,tabWidth,portrait?43:shortProfile?40:52,()=>Select(page));
                 if(CurrentPage==page)b.targetGraphic.color=new Color(.95f,.78f,.43f);
             }
             float bodyX=portrait?20:tabWidth+36,bodyW=w-bodyX-20;
@@ -243,12 +255,13 @@ namespace Eldoria.HeroesUI
             // slots beyond the real host roster have NO data, actions or unlock.
             // Do not present any fictional hero or mutate progression state.
             bool portraitLayout=h>w;
-            float sceneryH=portraitLayout?Mathf.Min(180f,h*.20f):Mathf.Min(165f,h*.20f);
+            bool shortLandscape=!portraitLayout&&h<500f;
+            float sceneryH=shortLandscape?76f:portraitLayout?Mathf.Min(180f,h*.20f):Mathf.Min(165f,h*.20f);
             Label("Heroes hall title",content,"SALÓN DE HÉROES",26,18,w*.61f,48,30,
                 TextAnchor.MiddleLeft).color=gold;
             Label("Heroes hall introduction",content,
-                "Aquí residen los héroes de Valoria.\nReclútalos, fortalécelos y lidera con ellos.",
-                27,71,w-76f,Mathf.Max(40f,sceneryH-76f),18,
+                shortLandscape?"Reclútalos, fortalécelos y lidera con ellos.":"Aquí residen los héroes de Valoria.\nReclútalos, fortalécelos y lidera con ellos.",
+                27,shortLandscape?52f:71f,w-104f,shortLandscape?24f:Mathf.Max(40f,sceneryH-76f),shortLandscape?14:18,
                 TextAnchor.UpperLeft);
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
             bool showFutureSlots=true;
@@ -277,20 +290,21 @@ namespace Eldoria.HeroesUI
                     content,left,top,cardW,cardH);
                 bool unlocked=real&&heroes[i].Unlocked;
                 Sprite portrait=real?heroes[i].Portrait:futureSlotArt;
+                float identityH=shortLandscape?56f:79f;
                 CardPortrait(card,portrait,unlocked,real&&heroes[i].Id=="lyra",
-                    8,cardW-24,Mathf.Max(50,cardH-90));
+                    8,cardW-24,Mathf.Max(24,cardH-identityH-12));
                 // Restore the approved card grammar: art is the main surface,
                 // identity and real power sit at its foot, and the whole card
                 // is the genuine action. No miniature strip plus extra button.
-                Surface("Hero card identity shade",card,3,cardH-79,cardW-6,76,
+                Surface("Hero card identity shade",card,3,cardH-identityH,cardW-6,identityH-3,
                     new Color(.008f,.014f,.024f,.92f)).GetComponent<Image>().raycastTarget=false;
                 Label("Hero card name",card,real?heroes[i].DisplayName:"???",
-                    6,cardH-77,cardW-12,27,compact?18:24,TextAnchor.MiddleCenter)
+                    6,cardH-identityH+2,cardW-12,shortLandscape?22:27,compact?18:24,TextAnchor.MiddleCenter)
                     .color=real?gold:new Color(.57f,.53f,.44f);
                 Label("Hero card state",card,
                     real?(unlocked?"NIVEL "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
                         "Bloqueado por la historia"):"HÉROE POR\nDESCUBRIR",
-                    6,cardH-48,cardW-12,42,compact?14:18,TextAnchor.MiddleCenter);
+                    6,cardH-(shortLandscape?31:48),cardW-12,shortLandscape?28:42,shortLandscape?12:compact?14:18,TextAnchor.MiddleCenter);
                 if(real)
                 {
                     var hero=heroes[i];
@@ -312,22 +326,24 @@ namespace Eldoria.HeroesUI
             // All nodes remain disabled and create no command or save state.
             var board=Frame("Heroes / reserved talent paths",content,x,y,w,h);
             float gap=portrait?12f:18f,trackW=(w-32-2*gap)/3f;
-            float noteH=portrait?120f:90f,trackH=h-noteH-28;
+            bool compact=h<260f;
+            float noteH=compact?52f:portrait?120f:90f,trackH=h-noteH-28;
             string[] titles={"OFENSIVA","DEFENSA","SOPORTE"};
             Color[] accents={new Color(.76f,.24f,.12f),new Color(.17f,.51f,.90f),gold};
             for(int path=0;path<3;path++){
                 float left=16+path*(trackW+gap);
                 var track=Frame("Reserved talent path "+titles[path],board,left,14,trackW,trackH);
                 TintFrame(track,accents[path]);
-                Label("Reserved path name",track,titles[path],6,14,trackW-12,56,26,TextAnchor.MiddleCenter).color=ivory;
-                float nodeSize=Mathf.Min(76f,trackW*.55f,Mathf.Max(28f,(trackH-110f)/3.4f));
-                float start=80f;
+                Label("Reserved path name",track,titles[path],6,compact?4:14,trackW-12,compact?28:56,compact?18:26,TextAnchor.MiddleCenter).color=ivory;
+                float nodeSize=compact?Mathf.Min(32f,trackW*.22f):Mathf.Min(76f,trackW*.55f,Mathf.Max(28f,(trackH-110f)/3.4f));
+                float start=compact?44f:80f;
                 float step=Mathf.Max(0f,(trackH-start-nodeSize-18f)/2f);
                 float center=trackW*.5f;
-                Surface("Path connection",track,center-1.5f,start+nodeSize*.5f,3,2*step,accents[path]).GetComponent<Image>().raycastTarget=false;
+                Surface("Path connection",track,compact?trackW*.18f:center-1.5f,start+nodeSize*.5f,compact?trackW*.64f:3,compact?3:2*step,accents[path]).GetComponent<Image>().raycastTarget=false;
                 for(int rank=0;rank<3;rank++){
-                    float nodeY=start+rank*step;
-                    var node=Frame("Reserved talent node "+path+"-"+rank,track,center-nodeSize*.5f,nodeY,nodeSize,nodeSize);
+                    float nodeY=compact?start:start+rank*step;
+                    float nodeX=compact?trackW*(.18f+rank*.32f)-nodeSize*.5f:center-nodeSize*.5f;
+                    var node=Frame("Reserved talent node "+path+"-"+rank,track,nodeX,nodeY,nodeSize,nodeSize);
                     TintFrame(node,accents[path]);
                     var locked=node.gameObject.AddComponent<Button>();locked.interactable=false;
                     // Native uGUI lock geometry, not a baked mock level or icon
@@ -341,7 +357,7 @@ namespace Eldoria.HeroesUI
                 }
             }
             Label("Reserved talent availability",board,"TALENTOS BLOQUEADOS\nAún no disponibles en esta etapa del reino.",
-                18,h-noteH,w-36,noteH-12,26,TextAnchor.MiddleCenter);
+                18,h-noteH,w-36,noteH-12,compact?18:26,TextAnchor.MiddleCenter);
         }
         void BuildInformation(RectTransform pane,HeroState hero,float w,float h)
         {

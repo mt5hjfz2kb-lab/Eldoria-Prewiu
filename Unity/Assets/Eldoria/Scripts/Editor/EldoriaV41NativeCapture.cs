@@ -74,6 +74,26 @@ namespace Eldoria.Editor
                 var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
                 if(heroes&&heroes.IsOpen){
                     heroes.Refresh();Canvas.ForceUpdateCanvases();
+                    if(name.Contains("small-phone")){
+                        var layout=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                            .First(t=>t.name=="Heroes / live controls");
+                        float visibleScale=host.Hud.GetComponent<Canvas>().scaleFactor*layout.localScale.x;
+                        var close=layout.GetComponentsInChildren<Button>().First(b=>b.name=="Close heroes")
+                            .GetComponent<RectTransform>();
+                        Need(close.rect.width*visibleScale>=44f&&close.rect.height*visibleScale>=44f,
+                            "Phone hero close target remains at least44 visible pixels "+name);
+                        var description=layout.GetComponentsInChildren<Text>()
+                            .FirstOrDefault(t=>t.name=="Canonical hero ability description");
+                        if(description)Need(!description.resizeTextForBestFit&&description.fontSize*visibleScale>=18f,
+                            "Phone ability description stays readable without shrinking "+name);
+                        if(width>height){
+                            foreach(var tab in layout.GetComponentsInChildren<Button>().Where(b=>b.name.StartsWith("Hero tab "))){
+                                var r=tab.GetComponent<RectTransform>();
+                                Need(-r.anchoredPosition.y+r.rect.height<=layout.rect.height-80f,
+                                    "Landscape hero tabs clear the bottom navigation "+name);
+                            }
+                        }
+                    }
                     if(heroes.CurrentPage==Eldoria.HeroesUI.HeroesApprovedDestination.Page.Salon){
                         var slots=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
                             .Where(t=>t.parent&&t.parent.name=="Heroes / live controls"&&
