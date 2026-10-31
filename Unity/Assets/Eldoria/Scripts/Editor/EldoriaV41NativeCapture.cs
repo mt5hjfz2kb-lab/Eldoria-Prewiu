@@ -242,6 +242,13 @@ namespace Eldoria.Editor
             Need(heroEntry.interactable,"Narratively unlocked heroes entry is actionable");
             heroEntry.onClick.Invoke();yield return null;
             Need(heroes.IsOpen,"Real military navigation opens heroes hall");
+            // New hall is an actual independent scenic mesh, not a flattened
+            // screenshot or an extra Canvas stealing input from live hero cards.
+            var hall=heroes.VisibleRoot.GetComponentInChildren<Eldoria.HeroesUI.HeroesHallScenicGraphic>();
+            Need(hall!=null,"Approved Heroes hall uses a full-height architectural environment");
+            Need(!hall.raycastTarget,"Heroes hall scenery cannot intercept hero-card taps");
+            Need(heroes.VisibleRoot.GetComponentsInChildren<Canvas>(true).Length==0,
+                "Heroes hall reuses the canonical Canvas without another Canvas");
             string saveBeforeHeroes=File.ReadAllText(host.City.SaveFile);
             Shot(host,"heroes-salon-landscape",1600,900);Shot(host,"heroes-salon-phone",900,1600);
             Need(heroes.OpenHero("aldric"),"Actual unlocked Aldric can be selected");
