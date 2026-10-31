@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Eldoria.UI.RoyalGold.V2;
 
 namespace Eldoria.HeroesUI
 {
@@ -497,16 +498,32 @@ namespace Eldoria.HeroesUI
                 }
             }
             int unlockedCount=0;foreach(var hero in heroes)if(hero.Unlocked)unlockedCount++;
-            // VOLVER is a real action on the current HUD. Do not render fake
-            // Marchas/Relicario navigation before their host contracts exist.
-            if(w>580f)
-                Button("Hall / return to city","VOLVER",18f,h-footerH+11f,
-                    Mathf.Min(128f,w*.16f),39f,Close);
-            Label("Authoritative hall population",content,
-                unlockedCount+" / "+heroes.Length+" HÉROES DISPONIBLES",
-                w>580f?Mathf.Min(150f,w*.18f):14f,h-footerH+13f,
-                w>580f?w-2*Mathf.Min(150f,w*.18f):w-28f,35f,
-                phoneLandscape?16:18,TextAnchor.MiddleCenter).color=gold;
+            // Canonical bottom action bar follows the approved four-destination
+            // grammar. VOLVER and MARCHAS are REAL, HEROES stays on this live
+            // view, and RELICARIO is genuinely disabled by progression.
+            // No fake clickable pixels, no additional scene or canvas.
+            float navGap=phoneLandscape?6f:10f;
+            float navWidth=Mathf.Min(w-22f,portraitLayout?540f:820f);
+            float navCell=(navWidth-navGap*3f)/4f;
+            float navLeft=(w-navWidth)*.5f;
+            float navHeight=phoneLandscape?36f:47f;
+            float navY=h-footerH+(phoneLandscape?9f:12f);
+            Button("Hall / nav return","VOLVER",navLeft,navY,navCell,navHeight,Close);
+            Surface("Hall / selected heroes tab glow",content,
+                navLeft+navCell+navGap,navY,navCell,navHeight,
+                new Color(.47f,.25f,.065f,.91f)).GetComponent<Image>().raycastTarget=false;
+            var selected=Button("Hall / nav heroes",
+                "HÉROES  "+unlockedCount+"/"+heroes.Length,
+                navLeft+navCell+navGap,navY,navCell,navHeight,()=>Select(Page.Salon));
+            foreach(var t in selected.GetComponentsInChildren<Text>())
+                t.color=new Color(.99f,.91f,.65f);
+            Button("Hall / nav marches","MARCHAS",
+                navLeft+(navCell+navGap)*2f,navY,navCell,navHeight,()=>{
+                    var management=GetComponent<RoyalGoldV3ManagementScreens>();
+                    if(management){Suspend();management.Open(RoyalGoldV3ManagementScreens.Destination.March);}
+                });
+            Button("Hall / nav reliquary","RELICARIO",
+                navLeft+(navCell+navGap)*3f,navY,navCell,navHeight,()=>{},false);
         }
         void BuildReservedTalents(float x,float y,float w,float h,bool portrait)
         {
