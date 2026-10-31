@@ -100,6 +100,21 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        // These are separate operational HUD controls, not
+                        // painted navigation pixels in the approved reference.
+                        var hallNav=heroes.VisibleRoot.GetComponentsInChildren<Button>()
+                            .Where(b=>b.name.StartsWith("Hall / nav ")).ToArray();
+                        Need(hallNav.Length==4 &&
+                            hallNav.Any(b=>b.name=="Hall / nav return"&&b.interactable) &&
+                            hallNav.Any(b=>b.name=="Hall / nav heroes"&&b.interactable) &&
+                            hallNav.Any(b=>b.name=="Hall / nav marches"&&b.interactable) &&
+                            hallNav.Any(b=>b.name=="Hall / nav reliquary"&&!b.interactable),
+                            "Hall footer real navigation and future Relicario lock "+name);
+                        var hallTorches=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                            .Where(t=>t.name.StartsWith("Hall / ")&&t.name.EndsWith(" living torch")).ToArray();
+                        Need(hallTorches.Length==2 &&
+                            hallTorches.All(t=>t.texture&&t.color.a>.1f&&!t.raycastTarget),
+                            "Two independent noninteractive living-light depth layers "+name);
                         Need(slots.All(t=>t.rect.width>0&&t.rect.height>0),
                             "Six visible hall slots have usable geometry "+name);
                         foreach(var slot in slots){
