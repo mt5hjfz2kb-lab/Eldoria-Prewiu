@@ -37,8 +37,11 @@ namespace Eldoria.UI.RoyalGold.V2
         private string lastProbeMismatch = "";
         private static readonly string[] TimedTargets =
         {
-            "sawmill", "barracks", "bastion", "forest-valoria",
-            "quarry-valoria", "corrupt-scout", "engendro-valoria"
+            // Include individual III–V city building operations alongside
+            // original Bastion, world expeditions and training.
+            "sawmill", "barracks", "upgrade-barracks", "granary",
+            "stoneworks", "bastion", "forest-valoria", "quarry-valoria",
+            "corrupt-scout", "engendro-valoria"
         };
         private static readonly Color Ivory = new Color(.95f, .925f, .865f);
         private static readonly Color Gold = new Color(.89f, .73f, .46f);
@@ -52,11 +55,17 @@ namespace Eldoria.UI.RoyalGold.V2
             public Image Fill;
         }
 
-        public bool ContextVisible => cardGroup && cardGroup.blocksRaycasts;
-        public RoyalButton VisibleActionButton => actionButton;
-        public RoyalButton VisibleCloseButton => closeButton;
-        public bool CloseVisible => closeGroup && closeGroup.blocksRaycasts;
-        public RectTransform ContextRect => card;
+        private RoyalGoldV2Hud Chronicle => Source ? Source.GetComponent<RoyalGoldV2Hud>() : null;
+        public bool ContextVisible => (Chronicle && Chronicle.ChronicleBuildingActionVisible) ||
+            (cardGroup && cardGroup.blocksRaycasts);
+        public RoyalButton VisibleActionButton => Chronicle && Chronicle.ChronicleIllustratedBuildingVisible
+            ? Chronicle.ChronicleBuildingAction : actionButton;
+        public RoyalButton VisibleCloseButton => Chronicle && Chronicle.ChronicleIllustratedBuildingVisible
+            ? Chronicle.ChronicleBuildingClose : closeButton;
+        public bool CloseVisible => (Chronicle && Chronicle.ChronicleIllustratedBuildingVisible) ||
+            (closeGroup && closeGroup.blocksRaycasts);
+        public RectTransform ContextRect => Chronicle && Chronicle.ChronicleIllustratedBuildingVisible
+            ? Chronicle.ChronicleBuildingRect : card;
         public bool IsConfigured => FindAnchor != null && ActiveCamera != null && ReadBuilding != null;
         public int ActiveTimers
         {
@@ -240,13 +249,14 @@ namespace Eldoria.UI.RoyalGold.V2
             var camera = ActiveCamera();
             bool blocked = (Source.Modal && Source.Modal.gameObject.activeInHierarchy) ||
                 (Source.Mission && Source.Mission.gameObject.activeInHierarchy) ||
-                (Source.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen??false) ||
                 (Source.GetComponent<RoyalGoldV3RankingScreen>()?.IsOpen??false) ||
                 (Source.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false) ||
                 (Source.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false);
-            RenderSelection(camera, blocked);
+            // Inline utility does not suppress the ongoing timers of other buildings.
+            bool inlineUtility = Source.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen ?? false;
+            RenderSelection(camera, blocked || inlineUtility);
             foreach (var id in TimedTargets) RenderTimer(id, camera, blocked);
-            RenderClose(blocked);
+            RenderClose(blocked || inlineUtility);
 
             // A live V3 selection button can retain Graphic.depth == -1 after
             // a native 640x480 / portrait Canvas resize, despite remaining
@@ -423,6 +433,16 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         private void RenderSelectedBuilding(string id, RoyalBuilding value, Camera camera)
         {
+            // Crónica Real already owns a real, illustrated cartouche and its
+            // canonical command. Never add a second floating purchase button.
+            var chronicle = Chronicle;
+            if (chronicle && chronicle.ChronicleIllustratedBuildingVisible)
+            {
+                if (value.OperationActive) chronicle.HideConsumedBuildingAction();
+                actionButton.interactable = false;
+                Visible(cardGroup, false, true);
+                return;
+            }
             var target = FindAnchor(id == "march-main" ? "barracks" : id);
             if (!CanProject(target, camera, safe, false, out var screen))
             {
@@ -438,6 +458,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // object must not create a second, competing action panel.
             if (value.OperationActive)
             {
+                // Disable the paid offer immediately, even when its parent
+                // CanvasGroup is hidden while the real timer remains visible.
+                actionButton.interactable = false;
                 Visible(cardGroup, false, true);
                 return;
             }
@@ -451,34 +474,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 Source.Building.Primary.Button.interactable && Source.Building.Offer != null;
             if (!actionButton.interactable) ProbeMismatch(id, value, "OFFER_DISABLED");
             cardButton.gameObject.SetActive(offered);
-            // Keep the approved big illustrated cartouche for building DETAILS
-            // and the vertically-sliced projected button for the actual ACTION.
-            // Never display two competing text/cards over the 3D city.
-            var chronicle = Source.GetComponent<RoyalGoldV2Hud>();
-            bool illustrated = chronicle && chronicle.ChronicleIllustratedBuildingVisible;
-            float width, height;
-            if (illustrated && offered)
-            {
-                title.gameObject.SetActive(false);
-                status.gameObject.SetActive(false);
-                costs.gameObject.SetActive(false);
-                requirements.gameObject.SetActive(false);
-                width = Mathf.Min(230f, safe.rect.width - 24f);
-                height = 63f;
-                Place(cardButton, 10f, 8f, width - 20f, 47f);
-            }
-            else
-            {
-                width = Mathf.Min(290f, safe.rect.width - 24f);
-                float contentWidth = width - 24f;
-                float y = 10f;
-                y = PositionRow(title, y, Mathf.Max(90f, contentWidth - 42f), 27f, 3f);
-                y = PositionRow(status, y, contentWidth, 20f, 5f);
-                y = PositionRow(costs, y, contentWidth, 0f, 5f);
-                y = PositionRow(requirements, y, contentWidth, 0f, 6f);
-                if (offered) { Place(cardButton, 12f, y, width - 24f, 48f); y += 56f; }
-                height = Mathf.Max(62f, y + 6f);
-            }
+            float width = Mathf.Min(290f, safe.rect.width - 24f);
+            float contentWidth = width - 24f;
+            float y = 10f;
+            y = PositionRow(title, y, Mathf.Max(90f, contentWidth - 42f), 27f, 3f);
+            y = PositionRow(status, y, contentWidth, 20f, 5f);
+            y = PositionRow(costs, y, contentWidth, 0f, 5f);
+            y = PositionRow(requirements, y, contentWidth, 0f, 6f);
+            if (offered) { Place(cardButton, 12f, y, width - 24f, 48f); y += 56f; }
+            float height = Mathf.Max(62f, y + 6f);
             card.sizeDelta = new Vector2(width, height);
             // Keep the selection card below the real resources/feedback/compact
             // chapter instead of solving overlap with unreadable tiny text.
@@ -529,7 +533,8 @@ namespace Eldoria.UI.RoyalGold.V2
 
         private void RenderClose(bool blocked)
         {
-            if (blocked || string.IsNullOrEmpty(Source.SelectedBuildingId))
+            if (blocked || string.IsNullOrEmpty(Source.SelectedBuildingId) ||
+                (Chronicle && Chronicle.ChronicleIllustratedBuildingVisible))
             {
                 Visible(closeGroup, false, true);
                 return;

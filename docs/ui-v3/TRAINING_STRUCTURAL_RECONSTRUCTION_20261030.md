@@ -1,0 +1,77 @@
+# Training structural reconstruction — candidate, not approval
+
+Owner instruction: definitive artistic fidelity, 30 October 2026. Continue PR136.
+
+Inspected baseline: authentic `military-final/training-landscape.png` recovered from the preceding session; exact run attribution must be independently verified before final A/B certification. The approved sheet and manifest identify training SHA256 `a110ba0ffd2a08fa4976c488f87e624fa5601fe3f36b223ee82d19f306adbadc`.
+
+Three primary defects: narrow rectangular character crop; oversized blue surfaces hiding the courtyard; unrelated hierarchy of unit identity and ordering controls. Reject another atmosphere-only pass.
+
+Candidate method: an environmental layer and an independently transparent archer, derived using built-in image editing from the original approved sheet. This is new candidate production art, not unchanged original pixels or a runtime screenshot. Preserve all original textures. Courtyard and character stay independent of actual uGUI controls and the canonical gateway.
+
+Derivatives:
+- `training-courtyard-layer-v1.png`: SHA256 `52f442e36873aa0629b5669f0b182732b93861645115f8d53de9694ab6ced21a`; request: remove character and all interface from the top-left training panel; reconstruct the same courtyard, daylight, stone and blue-gold banner, extend to landscape.
+- `training-archer-isolated-v1.png`: SHA256 `6f840bae16ef2d4aa1f469d26dbf73a5efc7d87b4c23cc773ca96a9fe494e530`; request: extract the top-left full-body archer, retaining clothing, pose, bow and quiver, on transparent alpha. Actual alpha verified; visual identity still requires review against source.
+
+No Tripo, external paid API, economy or save change. Built-in image editor used. No claim of exact original identity, artistic approval, native screenshot, mobile performance or completed reconstruction of other destinations.
+
+Required acceptance: compile this exact candidate, run real controls/quantity/cost/timer/speedup/persistence assertions, inspect authentic Unity captures at 1600×900, 900×1600, 390×844, 844×390 beside the original. Verify the recovered narrative button changes independently. If composition still fails after a second structural attempt, change technique rather than accumulating cosmetic patches.
+
+## Recovery continuation — 30 October, PR136
+
+Recovered exact source a5ea2aa1d6d47252e8b71fa79089d0e26a64196c, failed native run 41111056120 and artifact 13003567485. The original training, march and mailbox PNG hashes were independently verified against tools/eldoria-v41/approved-art-manifest.json from the archived approved kit. Real training-reference-ratio.png and training-phone.png were inspected.
+
+The inherited portrait navigation provided 54 units for a two-line 60.44444-unit label. Candidate b087e2be increases the actual navigation control height to 76 and reserves 188 units for its header; no text suppression, font reduction or tolerance change. The first retry 41121880862 failed BEFORE Unity because both native ownership preflights still named the old session/revision. Commit 02c0637e reconciles both checks with the authorized live owner codex-recovery-ada07b02a31d, revision 74; process exclusion and exclusive resource checks remain enabled. Job-list status lagged behind the completed log; use actual job logs when contradictory.
+
+Structural visual diagnosis: the inherited full-figure rectangle was limited to 70% of a half-width pane, shrinking the archer and centering his feet above the ground. The order took the full body height while the profile competed with the character. Next candidate reserves a full-height, bottom-aligned archer, moves unit identity above the lower-right compact order in square/desktop views and keeps a stacked portrait adaptation. Compact landscape keeps the full-height order for usable controls. Original assets and authoritative values/actions remain intact.
+
+The capture probe now writes the exact image and per-control geometry BEFORE enforcing layout assertions, so a rejected capture is preserved instead of losing the useful evidence. All existing assertions remain mandatory. This is candidate code, NOT a native PASS or artistic acceptance. No merge/publication, gameplay/economy/save changes, new models or paid generation.
+
+Retry 41122598412 compiled and passed portrait label checks, including training-small-phone (390×844). It then rejected the title/subtitle boundary in training-small-phone-landscape (844×390). The wide header had contiguous rectangles ending/starting at y=48; candidate adds an actual eight-unit gap (subtitle y=56), keeping full text and bounds tests. Native artifact 13009885151; no full certificate claimed.
+
+Structural source d9b60fd1a22a2a2e46092a14b15988b13bb0b499: V4.1 native result functional PASS in run 41123074651, artifact 13009935646 (ZIP SHA256 dd9a0cd74dda1ea2a49fa7c8454384b641410ed72bca65d212e2dc67c25e0a86). Inspected training-reference-ratio and training-small-phone PNG bytes. Square composition materially improves character scale and lower-right order. Portrait is still visually rejected for character/ground mismatch: the courtyard was fitted to the full tall phone, so its floor fell underneath the order panel. Correct that spatial relationship by fitting the existing environmental layer inside the character viewport on portrait; retain whole-room background for wide views. Compact portrait order uses explicit content rows and a bounded height, retaining all costs, quantity, tier, timer and action. No new bitmap or altered source art. Full native certification of this subsequent change is required; do not inherit d9b60fd1 results.
+
+
+## Recovery checkpoint — 2026-10-30, codex-recovery-ada07b02a31d
+
+Canonical PR remains #136. Source 22d02040c9e4374b95dc36687e58dc9890db964b passed native V4.1 in run 41123832121 (artifact 13009338066, SHA256 78b7ebeb626c68a4b0a0633b1cfac0907882de2e0db4c5c084ffa8c4508a4a60). Inspection of training-small-phone.png confirms grounded isolated archer and bounded order panel. This is NOT artistic approval: unit copy/cartouche, original tier navigation and ornamentation still differ. No 100% claim.
+
+Previous d9b60fd native V4.1, three marches, retention and Aldric passed; continuous III–V stopped at ValoriaIntegrationBuild.cs:683. Root cause in management Refresh: the canonical Heroes entry was SetActive(false) before Lyra recruitment, so GameObject.Find returned null instead of allowing the required disabled-button check. This candidate keeps the entry visible and disabled; CanOpenHeroes, destination and individual Lyra guards remain unchanged. No test assertion is weakened. EditMode/PlayMode and complete III–V remain unverified until a fresh run completes.
+
+March candidate uses the existing independent courtyard as a backdrop, removes the full-column/full-footer blue surfaces, retains localized header/troop cartouches, and masks original hero portrait assets into card apertures. Hero slots, percentages, real troops, capacity, saving and actions remain live. No new image generation or paid service. Native captures of this candidate are required before accepting it; do not reuse 22d02040 screenshots as proof of this tree.
+
+Lease: live main registry transferred from codex-recovery-5ec48d90b77f to codex-recovery-ada07b02a31d; Valoria revision 74, sole windows-runner-heavy reservation. Workflow preflight expects the same owner/revision. Re-read registry before taking over. No gameplay changes on main, no merge, no publication. Original PRs 134/135/137 already incorporated; do not reintegrate them blindly.
+
+
+### Native review of 0fdaa4c3 and framing follow-up
+
+Run 41124898675 passed Unity compilation, V4.1, three simultaneous marches, retention, Aldric and the integrated I–V journey (step20); EditMode started next. Full final test result must still be checked. V4.1 artifact13010427368 has ZIP SHA2561742407453da73cb08b9af43478e8aa3c37b1e25cb0f90c976c1b40a1cd7566e.
+
+Inspected original Training and March references against actual same-SHA captures. Training preserves the grounded isolated character in both orientations. March portrait cards are larger, but 844x390 cover cropping cuts the faces to foreheads. This follow-up calculates actual sprite aspect (Lyra is148x180, not244x250) and offsets the crop to keep the original upper face region visible. It also centers the authentic Lyra profile explicitly; Image.preserveAspect alone obeyed the upper-left pivot and left half the stage empty. No gameplay or lock assertions changed. Fresh exact-SHA native captures remain mandatory.
+
+Recovered original heroes v14 from Library libfile_8e8bacfa68108191b23f205a5b62b529. Master SHA25648cbc4e73d4144c45af12731773f0fd60b45e81d2a871256b33fe2a00f7d6800 matches archived provenance. These are concept references, not new Unity implementation proof. Hero shell remains far from the approved environment/sidebar/attribute hierarchy. Training still lacks the original side selector composition; March still has excessive panel weight. Vigilants horizontal encounter occupies about half the screen. No artistic acceptance or release authorization is inferred.
+
+
+### Training roster composition
+
+The following candidate restores the reference's separate left-hand unit cards using existing source artwork. It exposes ONLY the canonical archer T1/T2 families, keeps T2 disabled until Barracks IV, and locks both during an active recruitment. The original tier/speedup selector remains wired for existing flows and tests. The isolated full-height archer moves into the center-left corridor beside the cards rather than shrinking into a thumbnail. Native regression now activates both actual cards, checks selected tier, checks byte-equivalent serialized authoritative state while browsing, and verifies both cards lock after the real recruitment purchase. This candidate still needs its own Unity images and complete certification.
+
+
+### Full-suite failure recovered: stable five-entry navigation
+
+Run41124898675 on0fdaa4c3 completed the integrated I–V journey and EditMode, then failed PlayMode in RoyalGoldV3IntegratedAcceptanceTests.ApprovedCronicaRealUsesAuthenticParchmentAndSafeEdgeNavigation: "All five approved destinations remain visible" (line509). This was an assertion failure, not a15-minute timeout. Logs and results: artifact13011208156 (compiled PR merge2c368f24260e3939a43ba560ea6c731706f0e4d2), with Aldric shared artifact13011891559.
+
+BottomNavigation.Layout hid Army/World whenever host.CanOpen was false, contradicting the approved stable five-entry Crónica Real footer and the existing test. The fix shows exactly the five ChronicleOrder destinations and preserves interactability from authoritative unlock/utility rules. Historic non-Chronicle navigation is unchanged. No assertion, suite size or timeout is weakened. Candidateacdf2e71 is already running native certification41127347725; its training-card captures remain useful, but it does not contain this navigation fix and cannot be promoted as fully certified.
+
+
+### Explicit second-technique correction for compact March cards
+
+Native41127347725 / acdf2e71 V4.1 PASS (artifact13010844467) verifies new T1/T2 card interaction, unchanged state during browsing and recruitment locking. Actual square Training image now restores the center-left full-height archer beside a separate live roster. March844x390 still shows a face fragment after the cover-crop adjustment; reject this technique for compact landscape. This candidate instead places each original portrait vertically at its complete aspect on the left of the same hero card, with its live name on the right. Portrait-mode cards keep their tall composition. The training thumbnail uses a centered runtime Sprite rect of existing archer-row source pixels, never a new generated picture or fake unit. Its owned Sprite is disposed with the screen.
+
+Downloaded full regression evidence for0fdaa4c3:68/68EditMode;72/73PlayMode, zero skipped, sole failure stable-five-entry navigation fixed inff020aef. Integrated result contains193checks and INTEGRATION_PASS_ART_REVIEW_REQUIRED, including actual III–V completion, reload and six hero screens. This evidence belongs to0fdaa4c3 only. No exact-SHA global PASS or art acceptance for the following candidate is claimed.
+
+
+### Native visual review of 5a339855 / run 41130365064
+
+Exact native artifact13013775424 (SHA256 d3c0845ce334dc6797c661a261e6f9021d319aad66d593e1bf2bda4334c48b24) has functional PASS and art_approved=false. Training square has restored full-height figure, grounded courtyard and live roster. Compact March now shows complete portraits beside the live names; the rejected strip crop is gone. Talents has three real visual paths/nine disabled nodes but still lacks the approved material/environment finish. Training phone and compact landscape reveal identity text crossing the archer's face/silhouette. This candidate explicitly separates the identity column from the figure: portrait figure moves into the left corridor, text begins at 67% width; compact landscape text begins at 36% of full usable width instead of deriving from a narrow sprite. Full labels and descriptions remain, with sufficient vertical allocation; no font shrink, text removal or validation weakening.
+
+The full regression for5a339855 is still running at authoring time. Its result must not certify this successor. Personal Context reports unavailable; no historical decision resolving v14 pale-haired Lyra versus PR127 brown-haired model was recovered. Preserve both and do not substitute the unvalidated model or spend credits.

@@ -15,6 +15,9 @@ on:
     branches: [main, feature/global-march-capacity-three-slots-20261028]
     paths:
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/**'
+      - 'Unity/Assets/Eldoria/HeroesUI/**'
+      - 'Unity/Assets/Eldoria/Resources/EldoriaV41/**'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs'
@@ -179,7 +182,7 @@ jobs:
           $raw=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
           $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw.content))|ConvertFrom-Json
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          $ui=@($claims|Where-Object {(($_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-parity132-continuation-ab04f62d0b26' -and $_.ownership_revision -eq 66 -and $_.branch -eq 'feature/eldoria-web-parity-camera-20261029' -and $env:ELDORIA_CANDIDATE_BRANCH -eq 'feature/eldoria-web-parity-camera-20261029') -or ($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6) -or ($_.id -eq 'eldoria-aldric-city-roaming-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 2) -or ($_.id -eq 'eldoria-global-march-capacity-three-slots-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1) -or ($_.id -eq 'eldoria-retention-engagement-evolution-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
+          $ui=@($claims|Where-Object {($_.id -eq 'valoria-master-plan-layered-construction-20261016' -and [bool]$_.owner -and $_.ownership_revision -ge 75 -and $_.branch -eq 'fix/player-feedback-context-ui-20261030' -and $env:ELDORIA_CANDIDATE_BRANCH -eq $_.branch -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed')})
           if($claims.Count -gt 0 -and ($claims.Count -ne 1 -or $ui.Count -ne 1)){throw "Windows native lease belongs to another workstream: $($claims.id -join ', ')"}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Existing Unity or Blender process; retain the later ownership/process check as well'}
       - name: Expose Git installed with GitHub Desktop
@@ -315,7 +318,7 @@ jobs:
           # Read current main, never a stale PR merge snapshot's old reservation.
           $registry=Get-Content 'ui-live-ownership/pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          $ui=@($claims|Where-Object {(($_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.owner -eq 'codex-parity132-continuation-ab04f62d0b26' -and $_.ownership_revision -eq 66 -and $_.branch -eq 'feature/eldoria-web-parity-camera-20261029' -and $env:ELDORIA_CANDIDATE_BRANCH -eq 'feature/eldoria-web-parity-camera-20261029') -or ($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6) -or ($_.id -eq 'eldoria-aldric-city-roaming-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 2) -or ($_.id -eq 'eldoria-global-march-capacity-three-slots-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1) -or ($_.id -eq 'eldoria-retention-engagement-evolution-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 1)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
+          $ui=@($claims|Where-Object {($_.id -eq 'valoria-master-plan-layered-construction-20261016' -and [bool]$_.owner -and $_.ownership_revision -ge 75 -and $_.branch -eq 'fix/player-feedback-context-ui-20261030' -and $env:ELDORIA_CANDIDATE_BRANCH -eq $_.branch -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed')})
           # An active UI owner may validate its own reservation. With no
           # reservations, preserve the existing ordinary progression CI path.
           # Never couple future tests to one temporary executor's identity.
@@ -422,6 +425,29 @@ jobs:
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
           if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
 
+      - name: V4.1 real controls, persistent mailbox and approved-source captures
+        if: (github.head_ref == 'feature/eldoria-v41-contracts-20261030' || github.head_ref == 'fix/player-feedback-context-ui-20261030')
+        shell: powershell
+        env:
+          ELDORIA_V41_EVIDENCE: ${{ github.workspace }}/v41-native-${{ github.run_id }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied'}
+          New-Item -ItemType Directory -Force $env:ELDORIA_V41_EVIDENCE|Out-Null
+          $log=Join-Path $env:ELDORIA_V41_EVIDENCE 'native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-executeMethod','Eldoria.Editor.EldoriaV41NativeCapture.Capture','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'V41 capture timed out'}
+          if($p.ExitCode -ne 0 -or -not(Select-String -Path $log -Pattern 'ELDORIA_V41_NATIVE_PASS' -Quiet)){Get-Content $log -Tail 120;throw 'V41 native acceptance failed'}
+
+      - uses: actions/upload-artifact@v4
+        if: always() && (github.head_ref == 'feature/eldoria-v41-contracts-20261030' || github.head_ref == 'fix/player-feedback-context-ui-20261030')
+        with:
+          name: eldoria-v41-native-${{ github.run_id }}
+          path: v41-native-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Verify three simultaneous marches in the actual integrated scene
         id: march_preflight
         shell: powershell
@@ -461,7 +487,7 @@ jobs:
 
       - name: Verify retention reference composition and real guardian/discovery interaction
         id: retention_preflight
-        if: github.event.pull_request.number == 124 || github.event.pull_request.number == 125
+        if: github.event.pull_request.number == 124 || github.event.pull_request.number == 125 || github.event.pull_request.number == 136
         shell: powershell
         env:
           EARLY_RETENTION_EVIDENCE: ${{ github.workspace }}/retention-reference-${{ github.run_id }}
@@ -496,7 +522,7 @@ jobs:
           }
 
       - uses: actions/upload-artifact@v4
-        if: always() && (github.event.pull_request.number == 124 || github.event.pull_request.number == 125)
+        if: always() && (github.event.pull_request.number == 124 || github.event.pull_request.number == 125 || github.event.pull_request.number == 136)
         with:
           name: eldoria-retention-evolution-native-${{ github.run_id }}
           if-no-files-found: error
@@ -622,6 +648,26 @@ jobs:
             'integration-march-landscape.png',
             'integration-march-portrait.png',
             'integration-chapter2-complete.png',
+            'integration-continuous-bastion-3-landscape.png',
+            'integration-continuous-bastion-3-portrait.png',
+            'integration-continuous-bastion-4-landscape.png',
+            'integration-continuous-bastion-4-portrait.png',
+            'integration-continuous-bastion-5-landscape.png',
+            'integration-continuous-bastion-5-portrait.png',
+            'integration-continuous-bastion-5-complete-landscape.png',
+            'integration-continuous-bastion-5-complete-portrait.png',
+            'integration-heroes-hall-landscape.png',
+            'integration-heroes-hall-portrait.png',
+            'integration-heroes-aldric-resumen-landscape.png',
+            'integration-heroes-aldric-resumen-portrait.png',
+            'integration-heroes-aldric-habilidades-landscape.png',
+            'integration-heroes-aldric-habilidades-portrait.png',
+            'integration-heroes-aldric-talentos-landscape.png',
+            'integration-heroes-aldric-talentos-portrait.png',
+            'integration-heroes-aldric-equipamiento-landscape.png',
+            'integration-heroes-aldric-equipamiento-portrait.png',
+            'integration-heroes-lyra-resumen-landscape.png',
+            'integration-heroes-lyra-resumen-portrait.png',
             'integration-result.json'
           )){
             if(-not(Test-Path (Join-Path $e $file))){throw "Missing real Unity evidence: $file"}
@@ -629,6 +675,20 @@ jobs:
           $result=Get-Content (Join-Path $e 'integration-result.json') -Raw|ConvertFrom-Json
           if($result.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){
             throw "Existing I-II probe not accepted: $($result.status) $($result.error)"
+          }
+          foreach($level in @(3,4,5)){
+            if($result.checks -notcontains "continuous I-$level native progression and reopened save"){
+              throw "Missing continuous native checkpoint I-$level; seeded tests cannot substitute it"
+            }
+          }
+          if($result.checks -notcontains 'six actual hero screens preserve gameplay save and return navigation'){
+            throw 'Hero screens lack native controls, save-integrity and navigation evidence'
+          }
+          if($result.checks -notcontains 'continuous native I-V authored objectives complete'){
+            throw 'Continuous V authored objectives were not completed through actual controls'
+          }
+          if($result.checks -notcontains 'continuous I-V final saved state exact'){
+            throw 'Continuous I-V final state/reload not verified'
           }
           # Measure actually-free camera area in BOTH mobile orientations,
           # using the existing certified native framing rectangles, and
@@ -689,10 +749,34 @@ jobs:
               throw "Portrait did not reclaim at least 8 percentage points of real free scene: $capture"
             }
           }
-          # Independent destinations have no visible city viewport by design;
-          # verify actual native screenshots instead of pretending camera space
-          # is visible behind their opaque artwork.
-          foreach($capture in @('integration-construction-landscape.png','integration-construction-portrait.png','integration-bastion-upgrade.png','integration-training.png','integration-training-portrait.png','integration-march-landscape.png','integration-march-portrait.png')){
+          # Building selection must preserve the city, unlike training/march management.
+          foreach($capture in @('integration-construction-landscape.png','integration-construction-portrait.png','integration-bastion-upgrade.png')){
+            $path=Join-Path $e $capture
+            if(-not(Test-Path $path) -or (Get-Item $path).Length -lt 4096){throw "Missing genuine contextual building capture: $capture"}
+            $frame=@($result.framing | Where-Object {$_.capture -eq $capture})
+            $expectedTarget=if($capture -eq 'integration-bastion-upgrade.png'){'bastion'}else{'sawmill'}
+            if($frame.Count -ne 1 -or -not $frame[0].pass -or $frame[0].target -ne $expectedTarget){
+              throw "Contextual building must retain successful real city framing: $capture"
+            }
+            if(@($result.management | Where-Object {$_.capture -eq $capture}).Count -ne 0){
+              throw "Building selection opened an independent management screen: $capture"
+            }
+            $visible=@($frame[0].visible)
+            $projected=@($frame[0].projected)
+            if($visible.Count -ne 4 -or $projected.Count -ne 4){throw "Missing building viewport geometry: $capture"}
+            foreach($v in (@($visible)+@($projected))){
+              $number=[double]$v
+              if([double]::IsNaN($number) -or [double]::IsInfinity($number) -or $number -lt 0.0 -or $number -gt 1.0){throw "Invalid building framing coordinate: $capture"}
+            }
+            if([double]$visible[2] -le [double]$visible[0] -or [double]$visible[3] -le [double]$visible[1] -or
+               [double]$projected[2] -le [double]$projected[0] -or [double]$projected[3] -le [double]$projected[1] -or
+               [double]$projected[0] -lt [double]$visible[0] -or [double]$projected[1] -lt [double]$visible[1] -or
+               [double]$projected[2] -gt [double]$visible[2] -or [double]$projected[3] -gt [double]$visible[3]){
+              throw "Building is clipped by contextual UI: $capture"
+            }
+          }
+          # Complex operations keep their genuine independent destinations.
+          foreach($capture in @('integration-training.png','integration-training-portrait.png','integration-march-landscape.png','integration-march-portrait.png')){
             $path=Join-Path $e $capture
             if(-not(Test-Path $path)){throw "Missing genuine full-screen management capture: $capture"}
             if((Get-Item $path).Length -lt 4096){throw "Management capture too small: $capture"}
@@ -703,14 +787,6 @@ jobs:
             if($destination.Count -ne 1 -or -not $destination[0].pass -or -not $destination[0].opaque -or
                -not $destination[0].touchBlocking -or -not $destination[0].fullCanvas -or $destination[0].activeControls -lt 1){
               throw "Management must have actual opaque full-canvas geometry and active controls: $capture"
-            }
-            if($capture -like 'integration-construction-*' -and
-               ($destination[0].screen -ne 'building' -or $destination[0].target -ne 'sawmill')){
-              throw "Construction capture must show the genuine sawmill destination: $capture"
-            }
-            if($capture -eq 'integration-bastion-upgrade.png' -and
-               ($destination[0].screen -ne 'building' -or $destination[0].target -ne 'bastion')){
-              throw 'Bastion upgrade capture must show the genuine Bastion destination'
             }
             Write-Host "ELDORIA_V3_NATIVE_MANAGEMENT_SCREEN=$capture"
           }

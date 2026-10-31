@@ -241,12 +241,25 @@ namespace Eldoria.ReferenceClean.Editor
             var dispatch=hud.GetComponentsInChildren<RoyalButton>(true)
                 .FirstOrDefault(x=>x.name=="Dispatch or claim scout "+(slot+1));
             Need(dispatch&&dispatch.interactable,"Real blue SEND button is interactable");
+            var strategy=hud.GetComponentsInChildren<RoyalButton>(true)
+                .First(x=>x.name=="Prepare actual march or choose scout strategy");
+            strategy.onClick.Invoke();
+            Need(strategy.GetComponentInChildren<RoyalText>().text.Contains("SIGILO"),
+                "Real route selector changes to the discreet strategy");
+            Shot(host,"scouts-discreet-before-send-phone",390,844);
             dispatch.onClick.Invoke();
-            Need(g.Snapshot().Retention.Orders.Any(x=>x.Id==order.Id&&x.StartedUtcTicks>0),
-                "Real blue UI action dispatches the selected contract");
+            var sent=g.Snapshot().Retention.Orders.First(x=>x.Id==order.Id);
+            Need(sent.StartedUtcTicks>0&&sent.StrategyMode==1&&sent.Troops.Total==8&&
+                g.Snapshot().Available.Total==92,
+                "Real UI dispatch reserves exactly eight actual troops for the selected discreet route");
+            host.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.3f);
+            g=host.City.Gateway;
+            sent=g.Snapshot().Retention.Orders.First(x=>x.Id==order.Id);
+            Need(sent.StrategyMode==1&&sent.Troops.Total==8&&g.Snapshot().Available.Total==92,
+                "Discreet strategy and reserved troops survive actual saved-game reload");
             var clock=host.City.Clock as ValoriaReferenceCleanGameplay.TestClock;
             Need(clock!=null,"Only the disposable test clock can advance a report");
-            clock.Step(EarlyRetentionRules.ScoutDurationSeconds(order.Kind)+1);
+            clock.Step(EarlyRetentionRules.ScoutDurationSeconds(order.Kind,1)+1);
             g.Advance();
             ui.SynchronizeLayout();
             // Started contracts sort first. Re-find THIS saved order's actual

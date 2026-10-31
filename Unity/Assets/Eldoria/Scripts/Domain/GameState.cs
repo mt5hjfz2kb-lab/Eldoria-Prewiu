@@ -76,6 +76,8 @@ namespace Eldoria.Domain
         public string OwnerId = "player-local";
         public string TargetId = "";
         public string HeroId = "aldric";
+        // V4.1 additive roster: individual selected heroes; HeroId remains legacy resolver key.
+        public List<string> HeroIds = new List<string>();
         public ArmyRoster Troops = new ArmyRoster();
         public string Phase = "idle"; // idle, outbound, gathering, returning
         public long PhaseEndsUtcTicks;
@@ -86,6 +88,7 @@ namespace Eldoria.Domain
         {
             var copy=(MarchState)MemberwiseClone();
             copy.Troops=Troops?.Copy()??new ArmyRoster();
+            copy.HeroIds=HeroIds==null?new List<string>():new List<string>(HeroIds);
             copy.Route=Route?.ConvertAll(x=>x.Copy())??new List<WorldRoutePoint>();
             return copy;
         }
@@ -174,7 +177,11 @@ namespace Eldoria.Domain
         public List<MarchState> ExtraMarches = new List<MarchState>();
         public bool MarchConfigured;
         public string PreparedHeroId = "aldric";
+        // Same three-slot order as the approved march screen; empty slots are not heroes.
+        public List<string> PreparedHeroIds = new List<string>();
         public ArmyRoster PreparedTroops = new ArmyRoster();
+        // Mailbox does not grant rewards; it references reports and reward ledger IDs.
+        public EldoriaV41Mailbox Mailbox = new EldoriaV41Mailbox();
         public List<WorldResourceLocation> WorldResourceLocations = new List<WorldResourceLocation>();
         public List<WorldCreatureLocation> WorldCreatureLocations = new List<WorldCreatureLocation>();
         public int ForestRemaining = 1250;
@@ -207,6 +214,21 @@ namespace Eldoria.Domain
         public const int PerHeroLevel = 5;
         public const int HeroXpPerLevel = 80;
         public const int MaxHeroLevel = 20;
+
+        public static bool HeroAvailable(PlayerState state, string hero)
+        {
+            if(string.IsNullOrEmpty(hero))return true;
+            foreach(var march in MarchCapacityRules.WorldMarches(state))
+            {
+                if(march.Phase=="idle")continue;
+                if(march.HeroIds!=null && march.HeroIds.Count>0)
+                {
+                    if(march.HeroIds.Contains(hero))return false;
+                }
+                else if(march.HeroId==hero || march.HeroId=="aldric+lyra")return false;
+            }
+            return true;
+        }
 
         public static int HeroLevel(PlayerState s, string heroId)
         {
@@ -482,12 +504,22 @@ namespace Eldoria.Domain
                 190*s.BarracksLevel+s.MissionPower,
                 18*checked(s.Available.Total+s.Wounded.Total+deployed),1204,0,0);
         }
+        // The hero screen and actual combat share these existing intrinsic values.
+        // This is an extraction of the resolver's constants, not a balance change.
+        public static CombatStats HeroIntrinsicStats(string heroId)
+        {
+            bool aldric=heroId=="aldric"||heroId=="aldric+lyra";
+            bool lyra=heroId=="lyra"||heroId=="aldric+lyra";
+            return new CombatStats((aldric?78:0)+(lyra?116:0),(aldric?112:0)+(lyra?62:0),
+                (aldric?420:0)+(lyra?300:0),(aldric?34:0)+(lyra?82:0),(aldric?1204:0)+(lyra?1278:0));
+        }
         // All deployment, preview, combat and casualties use this same tiered snapshot.
         public static CombatStats Expedition(ArmyRoster troops, string heroId)
         {
             if ((heroId != "aldric" && heroId != "lyra" && heroId != "aldric+lyra") || troops == null || troops.Total < 1) return new CombatStats(0, 0, 0, 0, 0);
-            bool lyra=heroId=="lyra"||heroId=="aldric+lyra", aldric=heroId!="lyra";
-            double a = (aldric?78:0)+(lyra?116:0), d = (aldric?112:0)+(lyra?62:0), hp = (aldric?420:0)+(lyra?300:0), brk = (aldric?34:0)+(lyra?82:0); int pow = (aldric?1204:0)+(lyra?1278:0);
+            bool lyra=heroId=="lyra"||heroId=="aldric+lyra";
+            var hero=HeroIntrinsicStats(heroId);
+            double a=hero.Attack,d=hero.Defense,hp=hero.Health,brk=hero.Break;int pow=hero.Power;
             int[] counts = { troops.ArcherT1, troops.ArcherT2, troops.ArcherT3 };
             int[] tiers = { 1, 4, 10 }; // T1/T2/T3 profiles inherited from hero-army.js
             for (int i = 0; i < counts.Length; i++)

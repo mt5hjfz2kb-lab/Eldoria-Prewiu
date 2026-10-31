@@ -9,8 +9,10 @@ namespace Eldoria.UI.RoyalGold.V2
     /// Reuses the single real RoyalHUD, ModalWindow and original Aldric texture.
     /// No fabricated character, new button, event, save, clock or game command.
     /// </summary>
+    // Must run AFTER RoyalGoldV2Narrative (450), otherwise that
+    // component overwrites the cinematic frame geometry each frame.
     [DisallowMultipleComponent]
-    [DefaultExecutionOrder(520)]
+    [DefaultExecutionOrder(650)]
     public sealed class RoyalGoldV3CinematicFinish : MonoBehaviour
     {
         public RoyalHUD Source;
@@ -22,6 +24,8 @@ namespace Eldoria.UI.RoyalGold.V2
         private Vector2 savedPosition, savedSize;
         private Color savedTitleColor, savedBodyColor, savedExtraLabelColor;
         private int savedTitleSize, savedBodySize, savedExtraLabelSize;
+        private Font savedTitleFont, savedBodyFont, savedExtraLabelFont;
+        private static Font chronicleFont;
         private Vector2 labelAnchorMin, labelAnchorMax, labelPivot, labelPosition, labelSize;
         private TextAnchor labelAlignment;
         private bool captured;
@@ -103,16 +107,19 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (modal.Title)
                 {
                     modal.Title.color = savedTitleColor;
+                    modal.Title.font = savedTitleFont;
                     modal.Title.fontSize = savedTitleSize;
                 }
                 if (modal.Body)
                 {
                     modal.Body.color = savedBodyColor;
+                    modal.Body.font = savedBodyFont;
                     if (Source.NarrativeOpen) modal.Body.fontSize = savedBodySize;
                 }
                 if (modal.ExtraLabel)
                 {
                     modal.ExtraLabel.color = savedExtraLabelColor;
+                    modal.ExtraLabel.font = savedExtraLabelFont;
                     modal.ExtraLabel.fontSize = savedExtraLabelSize;
                     var label = modal.ExtraLabel.rectTransform;
                     label.anchorMin = labelAnchorMin;
@@ -183,12 +190,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 savedPosition = frame.anchoredPosition;
                 savedSize = frame.sizeDelta;
                 savedTitleColor = modal.Title.color;
+                savedTitleFont = modal.Title.font;
+                savedBodyFont = modal.Body.font;
                 savedBodyColor = modal.Body.color;
                 savedTitleSize = modal.Title.fontSize;
                 savedBodySize = modal.Body.fontSize;
                 if (modal.ExtraLabel)
                 {
                     savedExtraLabelColor = modal.ExtraLabel.color;
+                    savedExtraLabelFont = modal.ExtraLabel.font;
                     savedExtraLabelSize = modal.ExtraLabel.fontSize;
                     var label = modal.ExtraLabel.rectTransform;
                     labelAnchorMin = label.anchorMin;
@@ -203,6 +213,15 @@ namespace Eldoria.UI.RoyalGold.V2
             if (originalFrame) originalFrame.enabled = false;
             manuscript.gameObject.SetActive(true);
 
+            if (!chronicleFont) chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif");
+            if (chronicleFont)
+            {
+                modal.Title.font = chronicleFont;
+                modal.Body.font = chronicleFont;
+                if (role) role.font = chronicleFont;
+                if (modal.ExtraLabel) modal.ExtraLabel.font = chronicleFont;
+            }
+
             bool arcane = Source.NarrativeSpeaker == "Orín" ||
                 Source.NarrativeSpeaker == "Orin";
             if (parchment.Arcane != arcane)
@@ -216,29 +235,55 @@ namespace Eldoria.UI.RoyalGold.V2
                 portraitOrientation ? 725f : 1120f);
             float panelHeight = Mathf.Min(availableHeight - 24f,
                 portraitOrientation ? 440f : 356f);
+            bool compactPortrait = portraitOrientation && panelWidth < 580f;
             float column = Mathf.Clamp(panelWidth * .29f, 132f, 360f);
+            float paperColumn = compactPortrait ? 0f : .29f;
+            if (Mathf.Abs(parchment.PortraitColumn-paperColumn)>.001f) {
+                parchment.PortraitColumn=paperColumn;parchment.SetVerticesDirty();
+            }
             // Dialogues rest in the bottom cinematic strip. Unlike V2, they
             // never create a central opaque rectangle covering the whole city.
             frame.anchorMin = frame.anchorMax = new Vector2(.5f, 0f);
             frame.pivot = new Vector2(.5f, 0f);
             frame.sizeDelta = new Vector2(panelWidth, panelHeight);
-            frame.anchoredPosition = new Vector2(0f, portraitOrientation ? 23f : 18f);
+            // Centre on the *safe-area* bottom, not the device's raw bottom.
+            var modalParent = frame.parent as RectTransform;
+            if (modalParent)
+            {
+                var corners = new Vector3[4];
+                safe.GetWorldCorners(corners);
+                var safeBottomLeft = modalParent.InverseTransformPoint(corners[0]);
+                var safeBottomRight = modalParent.InverseTransformPoint(corners[3]);
+                frame.anchoredPosition = new Vector2(
+                    (safeBottomLeft.x + safeBottomRight.x) * .5f - modalParent.rect.center.x,
+                    safeBottomLeft.y - modalParent.rect.yMin + (portraitOrientation ? 23f : 18f));
+            }
+            else frame.anchoredPosition = new Vector2(0f, portraitOrientation ? 23f : 18f);
 
             float left = column + 22f;
             float textWidth = panelWidth - left - 22f;
             float titleTop = 22f;
-            float bodyTop = portraitOrientation ? 116f : 102f;
+            // Narrow phones need the full paper width for long canonical story
+            // turns. Keep portrait and speaker together in the top band,
+            // then place narrative text BELOW them rather than squeezing it
+            // into a 220px-wide column with silent truncation.
+            float bodyTop = compactPortrait ? 140f :
+                portraitOrientation ? 116f : 102f;
+            float bodyLeft = compactPortrait ? 24f : left;
+            float bodyWidth = compactPortrait ? panelWidth - 48f : textWidth;
             float bodyHeight = panelHeight - bodyTop - 78f;
             // Interface 1 concept places Aldric as a substantial cinematic
             // presence beside his real text, not a small account avatar.
             // Reuse the actual approved asset; never invent a different face.
-            float portraitSize = Mathf.Min(column - 18f, panelHeight - 35f);
-            portraitSize = Mathf.Max(90f, portraitSize);
+            float portraitSize = compactPortrait
+                ? Mathf.Clamp(column - 24f, 76f, 100f)
+                : Mathf.Max(90f, Mathf.Min(column - 18f, panelHeight - 35f));
             float portraitLeft = 11f + (column - portraitSize) * .5f;
-            float portraitTop = Mathf.Max(24f, (panelHeight - portraitSize) * .5f - 3f);
+            float portraitTop = compactPortrait ? 12f :
+                Mathf.Max(24f, (panelHeight - portraitSize) * .5f - 3f);
 
             modal.Title.fontSize = panelWidth < 465f ? 23 : 29;
-            modal.Title.color = arcane ? PurplePale : Brown;
+            modal.Title.color = arcane ? PurplePale : new Color(.95f,.89f,.75f);
             modal.Title.fontStyle = FontStyle.Bold;
             modal.Title.alignment = TextAnchor.MiddleLeft;
             Top(modal.Title.rectTransform, left, titleTop, textWidth, 48f);
@@ -310,10 +355,40 @@ namespace Eldoria.UI.RoyalGold.V2
             modal.Body.alignment = TextAnchor.UpperLeft;
             modal.Body.horizontalOverflow = HorizontalWrapMode.Wrap;
             modal.Body.verticalOverflow = VerticalWrapMode.Truncate;
-            Top(modal.Body.rectTransform, left, bodyTop, textWidth, bodyHeight);
-            for (int size = modal.Body.fontSize;
-                 modal.Body.preferredHeight > bodyHeight - 8f && size > 20; size--)
-                modal.Body.fontSize = size - 1;
+            Top(modal.Body.rectTransform, bodyLeft, bodyTop, bodyWidth, bodyHeight);
+            // Real measured story text, including Aldric's line breaks, must
+            // fit. Prefer increasing only a dialogue that actually needs it
+            // (within the device safe area) over shrinking every page.
+            float needed = Mathf.Ceil(modal.Body.preferredHeight) + 12f;
+            if (needed > bodyHeight)
+            {
+                float maximumHeight = Mathf.Min(availableHeight - 24f,
+                    portraitOrientation ? 600f : 430f);
+                float growth = Mathf.Min(Mathf.Max(0f, maximumHeight - panelHeight),
+                    needed - bodyHeight);
+                panelHeight += growth;
+                bodyHeight += growth;
+                frame.sizeDelta = new Vector2(panelWidth, panelHeight);
+                Top(modal.Body.rectTransform, bodyLeft, bodyTop, bodyWidth, bodyHeight);
+            }
+            while (modal.Body.preferredHeight + 8f > bodyHeight &&
+                   modal.Body.fontSize > 18)
+                modal.Body.fontSize--;
+            // Short devices may not fit the longest page at 18px; expose the
+            // full available safe height rather than silently crop text.
+            if (modal.Body.preferredHeight + 8f > bodyHeight &&
+                panelHeight < availableHeight - 24f)
+            {
+                float growth = Mathf.Min(availableHeight - 24f - panelHeight,
+                    modal.Body.preferredHeight + 12f - bodyHeight);
+                if (growth > 0f)
+                {
+                    panelHeight += growth;
+                    bodyHeight += growth;
+                    frame.sizeDelta = new Vector2(panelWidth, panelHeight);
+                    Top(modal.Body.rectTransform, bodyLeft, bodyTop, bodyWidth, bodyHeight);
+                }
+            }
 
             // Retain the actual original Continue/Reveal button and listener,
             // but present it as a compact action on the bottom-right of paper.

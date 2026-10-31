@@ -25,17 +25,36 @@ namespace Eldoria.UI.RoyalGold.V2
         private RoyalButton objectiveAction, objectivesButton, chapterClose, buildingClose, buildingAction;
         private ScrollRect buildingScroll;
         private RoyalGoldV3BuildingEngravingGraphic miniatureArt;
+        private RoyalGoldV3BuildingPreview modelPreview;
+        public System.Func<string, GameObject> BuildingModelFor;
         private CanvasGroup objectiveGroup, chapterCloseGroup, buildingGroup, buildingActionGroup;
         private bool buildingVisible;
         private bool ready, expanded, portrait, hasGeometry, compactObjective;
         private float lastWidth = -1f, lastHeight = -1f;
         private string lastDetails = "";
+        private static Font chronicleFont;
+        private static Font ChronicleFont => chronicleFont ? chronicleFont :
+            (chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif"));
         private static readonly Color Ivory = new Color(.945f, .913f, .852f);
         private static readonly Color Muted = new Color(.775f, .76f, .715f);
         private static readonly Color Gold = new Color(.886f, .73f, .45f);
 
         public bool ChapterExpanded => expanded;
         public bool ChronicleIllustratedBuildingVisible => buildingGroup && buildingGroup.alpha > .5f;
+        public RoyalButton ChronicleBuildingAction => buildingAction;
+        public RoyalButton ChronicleBuildingClose => buildingClose;
+        public RectTransform ChronicleBuildingRect => buildingCard;
+        public bool ChronicleBuildingActionVisible => ChronicleIllustratedBuildingVisible &&
+            buildingActionGroup && buildingActionGroup.blocksRaycasts &&
+            Source && Source.Building && !Source.Building.OperationActive;
+
+        // A purchase can refresh the gateway between LateUpdate calls. Remove
+        // the consumed action immediately without changing the operation or save.
+        public void HideConsumedBuildingAction()
+        {
+            SetVisible(buildingActionGroup, false);
+            if (buildingAction) buildingAction.interactable = false;
+        }
         public bool BuildingVisible
         {
             get
@@ -277,6 +296,12 @@ namespace Eldoria.UI.RoyalGold.V2
             miniatureArt = miniSurface.gameObject.AddComponent<RoyalGoldV3BuildingEngravingGraphic>();
             miniatureArt.raycastTarget = false;
             Stretch(miniSurface, 5f);
+            var previewRect = NewRect("Canonical building model snapshot", buildingMiniature);
+            var previewImage = previewRect.gameObject.AddComponent<RawImage>();
+            previewImage.enabled = false;
+            Stretch(previewRect, 5f);
+            modelPreview = previewRect.gameObject.AddComponent<RoyalGoldV3BuildingPreview>();
+            modelPreview.Initialize(previewImage);
             buildingTitle = Text("Selected building", buildingCard, 30, Ivory, true);
             buildingLevel = Text("Real level", buildingCard, 18, Gold);
             buildingClose = Button("Close selected building", buildingCard, out var closeBuildingText, false);
@@ -361,7 +386,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var r = NewRect(name, parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var label = r.gameObject.AddComponent<RoyalText>();
-            label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            label.font = ChronicleFont ? ChronicleFont : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             label.fontSize = fontSize;
             label.fontStyle = bold ? FontStyle.Bold : FontStyle.Normal;
             label.alignment = TextAnchor.MiddleLeft;
@@ -378,6 +403,7 @@ namespace Eldoria.UI.RoyalGold.V2
             r.gameObject.AddComponent<CanvasRenderer>();
             var frame = r.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
             frame.Primary = primary;
+            frame.AntiqueGoldAction = primary;
             frame.DecorativeCorners = false;
             frame.color = Color.white;
             frame.raycastTarget = true;
@@ -472,11 +498,11 @@ namespace Eldoria.UI.RoyalGold.V2
 
             // Crónica Real: broad bottom cartouche, illustrated on the left,
             // details in the middle and the ORIGINAL action at the right.
-            // Keep the contextual action/timer projected beside the actual
-            // building by V3; both buttons dispatch the same V1 gateway offer.
+            // Keep only the timer projected beside the actual building.
+            // This cartouche owns the sole canonical purchase control.
             float cardWidth = Mathf.Min(width - (portrait ? 18f : 32f),
                 portrait ? 720f : 1300f);
-            float cardHeight = portrait ? 178f : 164f;
+            float cardHeight = portrait ? 210f : 178f;
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -496,8 +522,8 @@ namespace Eldoria.UI.RoyalGold.V2
             buildingTitle.fontSize = portrait ? 22 : 30;
             Top(buildingLevel.rectTransform, textLeft, 44f, middleWidth, 22f);
             Top((RectTransform)buildingClose.transform, cardWidth - 49f, 5f, 44f, 44f);
-            Top((RectTransform)buildingScroll.transform, textLeft, 71f,
-                middleWidth, portrait ? 50f : cardHeight - 79f);
+            Top((RectTransform)buildingScroll.transform, textLeft, 66f,
+                middleWidth, portrait ? cardHeight - 123f : cardHeight - 74f);
             Stretch(scrollViewport, 0);
             scrollContent.anchorMin = new Vector2(0, 1);
             scrollContent.anchorMax = new Vector2(1, 1);
@@ -514,6 +540,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Top((RectTransform)buildingAction.transform,
                     cardWidth - actionWidth - 12f, cardHeight - 66f,
                     actionWidth, 51f);
+            lastDetails = null; // Recompute scroll extent after rotation even when the offer text is unchanged.
             hasGeometry = true;
             lastWidth = width;
             lastHeight = height;
@@ -597,6 +624,12 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!show) return;
             buildingTitle.Put(Safe(source.Title));
             buildingLevel.Put(Safe(source.Level));
+            if (modelPreview)
+            {
+                modelPreview.ModelFor = BuildingModelFor;
+                bool genuineModel = modelPreview.Show(Source.SelectedBuildingId, Safe(source.Level));
+                if (miniatureArt) miniatureArt.enabled = !genuineModel;
+            }
             if (miniatureArt)
             {
                 string selectedId = Source.SelectedBuildingId ?? "";
@@ -612,11 +645,13 @@ namespace Eldoria.UI.RoyalGold.V2
             }
 
             var body = new StringBuilder(280);
-            Append(body, Safe(source.Function));
-            Append(body, Safe(source.Status));
-            Append(body, Safe(source.Time));
-            Append(body, Safe(source.Costs));
+            // Put purchase information before descriptive prose so the
+            // compact viewport exposes the cost before the player commits.
+            Append(body, Safe(source.Costs).Replace("Coste de la acción\n", "Coste · "));
             Append(body, Safe(source.Requirements));
+            Append(body, Safe(source.Time));
+            Append(body, Safe(source.Status));
+            Append(body, Safe(source.Function));
             // All costs, requirements and state above are sourced directly from
             // the current authoritative offer. Do not synthesize extras.
             string details = body.ToString();
@@ -634,7 +669,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     buildingScroll.verticalNormalizedPosition = 1f;
                 }
             }
-            bool offered = source.Primary && source.Primary.Visible;
+            bool offered = !source.OperationActive && source.Primary && source.Primary.Visible;
             SetVisible(buildingActionGroup, offered);
             if (offered)
             {
@@ -656,7 +691,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private static void Append(StringBuilder buffer, string value)
         {
             if (string.IsNullOrWhiteSpace(value)) return;
-            if (buffer.Length > 0) buffer.Append("\n\n");
+            if (buffer.Length > 0) buffer.Append("\n");
             buffer.Append(value.Trim());
         }
 
@@ -723,12 +758,17 @@ namespace Eldoria.UI.RoyalGold.V2
                     Top(Source.Realm.Realm.rectTransform, titleX,
                         5f, realmWidth - titleX - 2f, portrait ? 28f : 36f);
                     Source.Realm.Realm.fontSize = portrait ? 20 : 27;
+                    if (ChronicleFont) Source.Realm.Realm.font = ChronicleFont;
                 }
                 if (Source.Realm.Power)
                 {
                     Top(Source.Realm.Power.rectTransform, titleX,
                         portrait ? 32f : 46f, realmWidth - titleX - 2f, 23f);
                     Source.Realm.Power.fontSize = portrait ? 15 : 19;
+                    if (ChronicleFont) Source.Realm.Power.font = ChronicleFont;
+                    Source.Realm.Power.horizontalOverflow = HorizontalWrapMode.Overflow;
+                    while (Source.Realm.Power.fontSize > 10 && Source.Realm.Power.preferredWidth > Source.Realm.Power.rectTransform.rect.width - 2f)
+                        Source.Realm.Power.fontSize--;
                 }
             }
 
@@ -848,8 +888,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (item.Button && item.Button.gameObject.activeSelf) count++;
             if (count == 0) return;
 
-            // CRÓNICA REAL APPROVED ART: ONE horizontal row of circular
-            // medallions along the bottom edge in BOTH orientations. Only
+            // CRÓNICA REAL APPROVED ART: ONE horizontal row of gold
+            // emblems along the bottom edge in BOTH orientations. Only
             // extremely narrow devices may require a stacked accessible row;
             // never substitute a sidebar or invent locked destinations.
             bool vertical = safe.rect.height > safe.rect.width;
@@ -865,11 +905,11 @@ namespace Eldoria.UI.RoyalGold.V2
             int rows = Mathf.CeilToInt((float)count / columns);
             float rowGap = rows > 1 ? 3f : 0f;
             // Original reference uses a wide bottom cartouche spanning most
-            // of landscape. Spread the same genuine medallions across its
+            // of landscape. Spread the same genuine emblems across its
             // safe width, without enlarging or moving the game viewport.
             float cellWidth = vertical
-                ? Mathf.Min(88f, (availableWidth - 12f -
-                    columnGap * (columns - 1)) / columns)
+                ? (availableWidth * .90f - 12f -
+                    columnGap * (columns - 1)) / columns
                 : Mathf.Clamp((availableWidth * .9f - 12f -
                     columnGap * (columns - 1)) / columns, 90f, 240f);
             // Never create a visual button that cannot fit its own safe width.
@@ -944,6 +984,11 @@ namespace Eldoria.UI.RoyalGold.V2
                         new Vector2(.5f, .5f);
                     SetWidthAndHeight(medal, medalSize, medalSize);
                     medal.anchoredPosition = new Vector2(0f, 10f);
+                    // Only the two objective shortcuts are round in Option 1.
+                    // Bottom destinations are free-standing gold emblems. Keep
+                    // the original full-cell raycast surface and button listener.
+                    var ring = medal.GetComponent<RoyalFrameGraphic>();
+                    if (ring) ring.enabled = false;
                     if (medal.childCount > 0 &&
                         medal.GetChild(0) is RectTransform glyph)
                     {
@@ -952,6 +997,18 @@ namespace Eldoria.UI.RoyalGold.V2
                         SetWidthAndHeight(glyph, medalSize * .67f,
                             medalSize * .67f);
                         glyph.anchoredPosition = Vector2.zero;
+                        var icon = glyph.GetComponent<RoyalIconGraphic>();
+                        if (icon && item.Button.targetGraphic != icon)
+                            item.Button.targetGraphic = icon;
+                        int desired = item.Section == RoyalSection.Bastion ? 9 :
+                            item.Section == RoyalSection.Inventory ? 15 :
+                            item.Section == RoyalSection.Army ? 4 :
+                            item.Section == RoyalSection.World ? 16 : 6;
+                        if (icon && icon.Icon != desired)
+                        {
+                            icon.Icon = desired;
+                            icon.SetVerticesDirty();
+                        }
                     }
                 }
                 if (item.Label)
@@ -964,8 +1021,14 @@ namespace Eldoria.UI.RoyalGold.V2
                         new Vector2(0f, -buttonHeight * .33f);
                     item.Label.fontSize = Mathf.RoundToInt(Mathf.Clamp(
                         cellWidth * .19f, 13f, 17f));
+                    if (ChronicleFont) item.Label.font = ChronicleFont;
+                    item.Label.fontStyle = FontStyle.Normal;
                     item.Label.alignment = TextAnchor.MiddleCenter;
-                    item.Label.color = Ivory;
+                    item.Label.color = item.Button.interactable ? Ivory : new Color(.54f, .55f, .56f);
+                    item.Label.Put(item.Label.text.ToUpperInvariant());
+                    item.Label.horizontalOverflow = HorizontalWrapMode.Overflow;
+                    while (item.Label.fontSize > 11 && item.Label.preferredWidth > caption.rect.width - 2f)
+                        item.Label.fontSize--;
                 }
             }
         }

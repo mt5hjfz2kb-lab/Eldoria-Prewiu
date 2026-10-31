@@ -1,3 +1,136 @@
+## 2026-10-31 — preserve verified art and isolate concurrent cache from live profile
+
+2877 native41217001740 artifact13049450479 shows Aldric alone with restored hand proportions, readable materials, stable74.87% GPU coverage and genuine shadow stage; original GLBs/rig/clips remain exact. Vertical/horizontal images inspected, including small phone. No further art tuning adopted. Full regression running.
+
+Review then identifies the asynchronous-import race: a short-lived inactive Lyra cache render can coexist with the already-open Aldric profile even when explicit cleanup is correct. Both previously used layer31. The one canonical live profile now uses31 and its inactive portrait cache30; renderers, ground, camera and lights follow the same selected layer. Native acceptance actually renders a simultaneous Lyra cache while Aldric stays open, requires disjoint camera masks and inclusion of each own geometry/ground, releases it and still requires exactly one active stage. This is isolation/lifecycle correctness, not another art variant. Follow-up exact-head native proof required. Broader reference fidelity, gallery art-style mismatch and small-phone landscape readability remain explicitly unapproved in PR136.
+
+## 2026-10-31 — native e11 review catches orphaned Lyra capture stage
+
+Exact native run41215158257 artifact13047793630 proves original-unit framing: Aldric bounds(0.36,1.00,0.77), actual GPU silhouette coverage75.65%. Images expose Lyra superimposed on Aldric: the never-active cached-portrait capture object cannot rely on Unity OnDestroy for stage cleanup. HeroesLyraModel now explicitly releases its snapshot in finally before destroying the inactive capture. Native gate counts actual active perspective cameras, including DontSave objects, and requires exactly one. Added isolated soft front fill to retain face/material legibility after excluding scene lights. No source GLB/rig/clip edits. e11 is visually REJECTED despite functional PASS. Follow-up exact native images and regression required.
+
+## 2026-10-31 — exact native 4088 portrait review and framing repair
+
+Native run41213793398 artifact13047638113 passes controls and confirms original pose/live stage. Real screenshots show the giant hand-pincher deformation reduced and Lyra casts a real ground shadow. Aldric appears too small: city metre normalization is counted twice by the legacy baked-skin bounds. Presentation now uses original unit scale and binds/samples animation on an active clone before measuring. Native gate measures actual opaque GPU silhouette coverage (at least58% of portrait height), excluding transparent ground; it would reject the observed4088 framing. Scene directional-light masks are restored after isolating offscreen lighting. Exact follow-up native proof required, no art approval.
+
+## 2026-10-31 — audit response: original Aldric pose and live portrait depth
+
+Owner identifies flat screens and suspect Aldric hands. Native d380 close-ups confirm the concern. Exact approved GLB SHA256 c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b remains untouched. Original Idle already rotates upper arms about 29 degrees; city added a second 35-degree additive layer. Exact-source skinning reproduction shows this extra layer increases hand distortion. Removed its application, preserving geometry, weights, clips and saves. Analytical renders are diagnostic, NOT Unity evidence.
+
+Replaced frozen orthographic baked portrait with an isolated live original-model clone, original Idle sampling, perspective, window key/torch rim and transparent physical contact-shadow receiver. Scene lighting is restored after each offscreen render. No new paid asset or rig. Native acceptance requires original pose and supported live perspective/shadow stage; existing city movement/hand orientation/save gates remain intact. Exact candidate requires real Unity screenshots and full regression; no artistic approval asserted. Earlier candidate 70909884 passed entire native UI/progression/EditMode/PlayMode workflow 41210046641; this does not certify these new changes.
+
+# PIVOTE MACROSCÓPICO DE GALERÍA — 31/10/2026
+
+
+# PIVOTE MACROSCÓPICO DE GALERÍA — 31/10/2026
+
+La captura d3808a31/run41209715548 prueba que la cartela ya no tiene el acceso Vigilantes superpuesto y el save permanece idéntico. Pero el retrato como franja pequeña, incluso con cover, recorta mal a Aldric y no reproduce la lámina. Se descartan las dos variantes (fit-inside en franja y cover en franja), no continuar ajustando ese recorte.
+
+Se recupera la gramática original v14: tres columnas/dos filas, retrato protagonista, nombre/nivel/poder al pie y tarjeta completa como acción real. Se elimina el botón extra VER HÉROE que consumía altura. Aldric/siluetas conservan proporción íntegra, Lyra usa encuadre de torso desde el mismo retrato genuino de su modelo. No hay nuevo rostro, GLB, dato, héroe ni gasto. Dos hitboxes reales, cuatro plazas futuras pasivas. El probe conserva seis plazas/dos acciones y comprueba tres columnas como la referencia; requiere captura nueva antes de aprobar el arte.
+
+El run98e70981 completó los probes V4.1/veto/marchas/retención, pero falló en la travesía V porque el test aún esperaba entrar a entrenamiento tocando el edificio.70909884 cambia el recorrido a los botones reales UNIDADES y Abrir cuartel, sin omitir compras, tiers, guardados o aserciones. Consultar el run del HEAD actual, no usar el anterior como PASS global. El siguiente paso sigue siendo inspección de capturas y regresión, no parar aquí ni publicar.
+
+---
+
+# REVISIÓN VISUAL REAL — 31/10/2026 — continuidad obligatoria
+
+Run 41209056041 sobre 98e70981: fase V4.1 nativa PASS, artifact13045497536 (53.414.009 bytes). Veto PASS: 1 escena, 551 dependencias, 0 assets vetados empaquetables y 0 loaders runtime. Capturas examinadas: Salón y Lyra 390×844, construcción900×1600 y1600×900. Confirman marcos Image y construcción sobre ciudad; la revisión detectó retratos pequeños/arrinconados por fit-inside y acceso Vigilantes superpuesto a cartela durante el primer frame.
+
+Esta revisión aplica la técnica de cover+RectMask2D ya probada en Marchas a los retratos reales del Salón (sin alterar GLB, generar rostros ni pintar UI). Oculta ambos accesos de Retención de forma síncrona al seleccionar edificio; antes esperaban hasta0,3s. El probe comprueba la ausencia de solapamiento en el mismo evento real. EXP omite denominador cuando no existe umbral autoritativo (>0); no se inventa curva de nivel.
+
+El run de98 continúa/termina según Actions: consultar resultado vivo. No extrapolar su PASS a esta revisión; inspeccionar de nuevo capturas y completar regresión del HEAD actual. El intento82af compiló y rechazó correctamente la carpeta residual, pero su metadata folderAsset:yes no es modelo:98e70981 distingue ese metadato de payload/GUID vetado sin permitir el GLB. #86 fue cerrada con evidencia del workflow ya integrado y run41018872267; #109 sigue abierta, corrección solo en candidata. No merge/publicación/gasto. Continuar hasta prueba y revisión reales, no detenerse por este relevo.
+
+---
+
+# CORRECCIÓN P0 VETO BASTIÓN — 31/10/2026
+
+Además de Héroes y navegación, se corrige #109 en la misma PR136: auditoría de fuentes/escenas/prefabs encontró un cargador real en AssetLibraryReprocessingPassV1.cs; su reemplazo queda inerte. GLB rechazado y meta originales se trasladan por el mismo blob Git a ArtSource/RejectedLegacyBastion, fuera de Unity/Resources/StreamingAssets. No se eliminan originales ni se sustituye el Bastión autorizado. Guard de build fail-closed y prueba nativa con informe de dependencias/ausencia de loader. No cerrar #109 sin PASS del nuevo código y capturas ciudad reales. Valoria revisión84; mismo titular. El paquete de interfaz actual requiere su propia certificación, no el PASS de 6bbca109. Continuar acciones de abajo tras inspeccionar el HEAD real.
+
+---
+
+# CONTINUIDAD VIGENTE — 31/10/2026 — PR136
+
+El trabajo 4874286 YA está recuperado y reconciliado en remoto desde 6bbca109343ec4e63c62d9c43e57bf8125ac1345. La cabecera inferior «candidata local» es histórica y NO expresa el estado actual. Su fondo limpio original y el GLB de Lyra se conservan.
+
+Evidencia examinada: run 41198120660 SUCCESS, artifact 13041855793 (59.061.722 bytes, digest d60095f76d5a46280b4dedee8adc1221fe8410135e4b6f50648eaef0c6f56785). Las capturas prueban fondo/modelo reales pero ausencia visible de marcos en Salón, Resumen y Talentos, y tres columnas demasiado estrechas en 390×844. PASS técnico no equivale a calidad artística.
+
+Corrección estructural 877b7e76: marcos por Images estándar uGUI con tinta translúcida y cuatro bordes; dos columnas en vertical, seis plazas/dos héroes reales, composición compacta sin controles falsos. No se asegura una causa interna concreta de la malla ausente; se sustituye el camino de render que falló visualmente por el que ya dibujaba correctamente en la misma captura. Añadidas comprobaciones nativas de bordes/columnas. Pendiente inspección exacta de la candidata nueva.
+
+Corrección de navegación 8d8804ad y esta revisión: CONSTRUIR ya no envía un cuartel construido al destino de reclutamiento; usa la oferta Build inicial o el upgrade existente (Bastión en II, cuartel desde III). Seleccionar el modelo físico de cuartel desde III usa upgrade-barracks. Entrenamiento explícito y reglas/economía quedan conservados. Prueba por botón real de barra inferior y selección real, save idéntico y capturas ciudad vertical/horizontal.
+
+Titular canónico codex-eldoria-autonomous-delivery-20261031; Valoria revisión83, ámbitos Héroes/V4.1/diagnóstico móvil/archivo reconciliados bajo el mismo titular para eliminar el fallo real del gate de propiedad. Consultar main vivo antes de cada escritura. No duplicar Windows; las candidatas pendientes se coalescen y los runs ya iniciados terminan.
+
+Siguiente acción obligatoria: obtener resultado y artefactos del HEAD actual (consultar Actions, no asumir run ID), inspeccionar Salón/Resumen/Talentos/Habilidades y ciudad, reparar cualquier fallo y continuar Marchas → Entrenamiento → Ciudad → Retención/Mundo. Fuentes originales de Marchas/Entrenamiento/Buzón recuperadas y verificables en kit libfile_6934733906d081919f262f38b54c025c; los crops no son fondos limpios. No reactivar motor #138 ni fingir Paladines/Brujos: siguen bloqueados por contrato narrativo y balance. Incidencias vivas 138/131/109/107/105/96/95/88/86/34/33/32; PR127/128 son fuentes/archivo, 134/135/137 están consolidadas selectivamente en 136 y no deben fusionarse ciegamente. No cerrar por presencia de código ni iniciar nuevas ramas.
+
+Sin merge, publicación, gasto ni ART_APPROVED. La fidelidad completa solicitada sigue pendiente; no confundir este relevo con entrega final ni detenerse en un gate reparable.
+
+---
+
+# CANDIDATA LOCAL — 31/10/2026 — NO SUBIDA NI VALIDADA EN UNITY
+
+Base comprobada PR136: `b5a2230aa01fa3b09393080c2bd12e57c1219cc1`. Run 41184256386 SUCCESS y artifact 13037021475 descargado; vistas Salón, Lyra y pestañas inspeccionadas. Su PASS funcional no aprueba el arte.
+
+Preparado localmente: arquitectura limpia independiente basada en v14 (sin texto/héroes/controles), sustitución del recorte aplanado y decorado esquemático; encuadre uniforme sin estirar pilares; modelo real transparente sobre escena; marcos con bordes en lugar de rectángulo opaco subyacente; seis plazas en ambas orientaciones; resumen compacto con experiencia real/umbral; descripción de habilidad desplazable. Prueba nativa ampliada: Salón y todas las pestañas de ambos héroes en las cuatro resoluciones, seis plazas/dos acciones reales y guardado idéntico. Las nuevas pruebas están ESCRITAS, NO EJECUTADAS.
+
+No se ha tocado main, escrito en remoto, cambiado reservas ni ocupado Windows. Registro main observado: owner `chatgpt-eldoria-visual-implementation-20261031`, Valoria revision78/Héroes10/V4.1 13. La orden actual prohíbe modificar main; el protocolo exige transferir allí la titularidad antes de escritura compartida/runner. Pendiente excepción expresa limitada al registro. No reutilizar identidad ajena ni relajar checks para evitarlo.
+
+Siguiente paso: autorización limitada para transferir registro, releer HEAD/PRs/reservas/jobs, CAS de misma identidad canónica, reconciliar y publicar esta candidata en PR136, comprobar Unity y capturas A/B. No abrir otra PR. Si falla, reparar antes de seguir. Mantener DRAFT, sin publicación. Después completar Equipamiento/presentación conforme a datos reales y continuar Marchas → Entrenamiento → Ciudad → Retención → Mundo; nada de eso se considera terminado por este checkpoint.
+
+Hipótesis descartada: CanvasRenderer ausente NO explica el problema; uGUI lo crea en su getter. No se introdujo ese falso arreglo. Causa probada en código: el marco antiguo rellena todo el rectángulo con Border opaco y el Frame añade otro relleno opaco; alpha del material superior no podía revelar la escena. Confirmación visual del cambio pendiente.
+
+Talentos conserva tres ramas/nueve nodos bloqueados. Para completarlo faltan contratos de desbloqueo, costes, bonificaciones, comandos/validaciones y persistencia; no implementarlos por intuición artística. Equipamiento conserva indisponibilidad real, sin inventario/bonificaciones inventadas. Lyra exacta conservada. Motor #138 no activado. No se afirma 100% ni independencia del juicio artístico local.
+
+Manifest y procedencia: `docs/evidence/valoria-reference-clean/heroes-clean-room-20261031/candidate.json`.
+
+---
+
+# RELEVO DEL CHAT NORMAL — 31-10-2026 — PR136 DRAFT
+
+## RELEVO TRAS REVISIÓN DE CAPTURAS NATIVAS — 31-10-2026
+
+Último commit de código de este relevo: 66ad114e4059e16ab70c7226bc0b0800533dbcde. PR #136 sigue DRAFT; rama fix/player-feedback-context-ui-20261030. Si este archivo se actualiza, consultar HEAD actual: no asumir que el último commit de código sigue siendo HEAD.
+
+Evidencia Unity real: run 41144687529 sobre e280120, artifact 13020695089 (eldoria-v41-native-41144687529), capturas heroes-salon-phone.png, heroes-salon-landscape.png, heroes-lyra-resumen-phone.png, heroes-lyra-rotated-landscape.png, Talentos, Marchas y Entrenamiento. Copia duradera: Library /Eldoria/Produccion-pendiente/QA_Heroes_Native_Run41144687529_20261031.zip (capturas, logs y README). Esta es evidencia de ANTES de corregir, NO valida el HEAD nuevo. Las capturas mostraban línea superpuesta a introducción, mucho vacío, panel negro en Lyra, y vista lateral; la foto rotada +30° demuestra pose frontal mejor.
+
+Cambios sustentados en esas pruebas: 0f57d6c restaura la rejilla v14 con hasta seis plazas visuales según resolución (solo dos héroes del host; los huecos extra NO tienen acción, nombre ni stats falsos); elimina la línea que atraviesa texto, llena el portrait sin pantalla intermedia. 7c4f9ab separa la fila de botones de retrato/estado compactos. 66ad114 presenta al mismo GLB Tripo de Lyra a 30° de yaw, cambia exclusivamente el fondo de snapshot ARGB32 a alfa0 para eliminar rectángulo pegado y amplía stage portrait del 44% al 62%; añade geometría Royal Gold v14 detrás de modelo y estadísticas sin romper botones, gameplay, save o render real. También distribuye las cinco métricas autoritativas.
+
+Validación pendiente: los runs 41138763107 (7af82cf) y 41144687529 (e280120) no certifican este commit. Revisar Unity exact-head del nuevo código, 68 EditMode y 73 PlayMode, cuatro orientaciones / tamaños, interacción, V4.1 aislado, save y capturas comparadas con approved master. El fondo completo limpio independiente y fidelidad 100% NO están terminados ni certificados. No publicar, no mergear. Marchas, Entrenamiento y Ciudad después; blue-panel de Marchas alpha .94 sigue ocultando escena; no fingir Paladines/Brujos hasta integrar issue #138.
+
+
+## Nueva pieza v14 integrada — 31/10/2026, commit ce5ade4 (última continuidad)
+
+Se ha recuperado SIN regenerar del paquete de Biblioteca `Eldoria_Heroes_Integracion_Preparada_v14.zip` la clase `Assets/Eldoria/HeroesUI/HeroesGoldFrameGraphic.cs` (SHA256 fuente `d90f5efd4fb146ab49ebf4ecaaa47d1e1c600c7afe663f4988ecc6739b63a748`). Se ha incorporado como `Unity/Assets/Eldoria/HeroesUI/HeroesGoldFrameGraphic.cs` con GUID nuevo y referenciado desde `HeroesApprovedDestination.cs` en tarjetas reales. Usa geometría graduada, bordes dobles y ornamentos de v14; NO añade actores, recursos, fuentes externas ni Canvas. HEAD de código verificado: `ce5ade4cdb561c93767d95e69cea4df714326589` (los commits documentales posteriores pueden cambiar HEAD sin tocar Unity).
+
+Con la corrección de lease `e280120`, el gate de titularidad de PR de `ce5ade4` es SUCCESS (run `41144971815`), V4.1 isolated domain SUCCESS (run `41144973902`); **Unity native exact-head está PENDING** en run `41144973776` en este checkpoint. La certificación anterior `41144687529` ejecuta sobre `e280120` y no certifica el marco agregado.
+
+La captura nativa previa `eldoria_latest_military_31oct.png` muestra Marchas demasiado opaco: `RoyalGoldV3ManagementScreens.cs` crea `blue-panel` con alpha `.94f` en cuatro paneles, ocultando paisaje. La referencia aprobada de Marchas pide tres familias Arqueros/Paladines/Brujos, pero el gameplay actual sólo conecta de forma demostrada arqueros T1/T2: **no simular unidades** ni activar V4.1 antes de #138. Entrenamiento y Ciudad siguen pendientes de nueva certificación estética. No cambiar opacidad a ciegas como sustituto de reconstrucción.
+
+
+- **Ruta canónica:** PR [#136](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/136), rama `fix/player-feedback-context-ui-20261030`. Código añadido: `e42dbf9784cd2ce574b95fd1734c2568943fcedc` (Salón de Héroes con arquitectura original v14 y composición responsive); control nativo reparado: `e280120f0786a9c1d33cf6979a03f6302ea7ccdd`. El commit actual puede ser descendiente documental: consultar HEAD real, no asumir este SHA como HEAD final.
+- **Informe exhaustivo de esta continuación:** [CONTINUITY_NORMAL_CHAT_20261030.md](docs/evidence/valoria-reference-clean/CONTINUITY_NORMAL_CHAT_20261030.md), capítulo inicial 31-10. No sustituye el histórico previo ni autoriza aprobación visual.
+- **Certificado anterior:** HEAD original `7af82cf6` / run `41138763107` ya **SUCCESS**; material real y capturas en artefactos GitHub y Biblioteca. **La modificación nueva del Salón no comparte ese PASS:** primeras nuevas ejecuciones fallaron antes de compilar por identificadores de lease desactualizados, corregidos en `e280120`; revisar nuevas ejecuciones antes de proclamar PASS.
+- **Fondos de Sala:** No hay fondos completos independientes aprobados en repo/Library posteriores a v14. Paquete `Eldoria_Heroes_Integracion_Preparada_v14.zip` contiene 23 recortes aplanados y seis diseños; conservarlo sin importar como UI de juego. Fuente runtime exacta `Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png`, SHA256 `48cbc4e73d4144c45af12731773f0fd60b45e81d2a871256b33fe2a00f7d6800`. En el código se reutiliza solo región ambiental como avance provisional, no se usa lámina completa como fondo ni se inventan estadísticas.
+- **Lyra:** mismo GLB original PR127 incorporado previamente (4.770.000 bytes, SHA256 `a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725`), identidad Tripo aprobada y retrato nativo; sin generación nueva, sin rig ni cambios de gameplay/guardado. Las imágenes alternativas no autorizadas se rechazaron y NO se integraron.
+- **Titular:** registro vivo `pipeline/active-workstreams.json` de main transferido con CAS a `chatgpt-eldoria-normal-handoff-20261031`, Valoria rev76 y ámbitos solapados unificados. Hay que leer registro vivo y procesos antes de continuar; no confiar en las revisiones históricas.
+- **Pendiente inmediato:** validar HEAD en Unity, inspeccionar verdaderas capturas Sala en vertical/horizontal; corregir fallos de integración y volver a probar. A continuación Marchas, Entrenamiento y Ciudad por este orden. Art 100 % NO demostrado. PR DRAFT, sin merge ni publicación. Motor V4.1 laboratorio protegido por issue #138.
+
+---
+
+# RELEVO ACTUAL — WORK → CHAT NORMAL — 30-10-2026
+
+Leer primero [CONTINUITY_NORMAL_CHAT_20261030.md](docs/evidence/valoria-reference-clean/CONTINUITY_NORMAL_CHAT_20261030.md). Inventario verificable: [ASSET_RECOVERY_VERIFIED_20261030.json](docs/evidence/valoria-reference-clean/ASSET_RECOVERY_VERIFIED_20261030.json).
+
+- Única vía: PR136, fix/player-feedback-context-ui-20261030; consultar HEAD vivo. Último runtime al redactar:24de23ca2792325b52a8e16d49fe81322d8ae2de. Este relevo documental es descendiente y conserva el código.
+- Lyra existente PR127 integrada por decisión expresa del propietario. GLB exacto verificado, retrato desde geometría, giro real; sin rig/generación/gasto. V4.1 de0859aaeb pasó; captura mostraba espalda.24de23ca corrige orientación, pendiente de evidencia frontal y regresión propia.
+- Última certificación completa al redactar:0f4a4b578d1cd55acde315b0eb2ee0ccaa61701d, run41131927783,68/68EditMode y73/73PlayMode. No extrapolar a sucesores. Run41137305168 en curso;41137726445 pendiente. Un nuevo commit documental puede reemplazar la candidata en cola: consultar runs delHEAD real.
+- Arte NO aprobado/NO100%, publicación NO realizada. Héroes/Marchas/ciudad siguen requiriendo reconstrucción; no confundir controles conectados con fidelidad.
+- MotorV4.1 y simulaciones preservados: issue138ABIERTO, ProductionApproved=false, RulesVersion=v4.1-laboratory; campaña aúnSliceRules. No activarlo ni cerrar138 silenciosamente.
+- Responsable codex-recovery-ada07b02a31d; Valoriarev74 posee windows-runner-heavy. Verificar main/pipeline/active-workstreams.json y jobs antes del relevo, no interrumpir ajenos.
+- El documento enlazado contiene estado de todas lasPR abiertas, assets/Library/BLEND/GLB/hashes/referencias, evidencias, errores, decisiones, procedimiento GitDataCAS y Actions para continuar sinWork, prioridades y límites. Comentarios posteriores dePR136 actualizan resultados sin borrarhistoria.
+
+---
+
+> **RECUPERACIÓN PR136 ACTIVA — 30/10/2026.** Mismo workstream y rama; responsable codex-recovery-ada07b02a31d, revisión74 (verificar registro vivo). Fallo original resuelto;5a339855 certificada68/68 EditMode y73/73 PlayMode.0f4a4b57 separa identidad del arquero y está en certificación41131927783. El propietario ha elegido el modelo 3D existente de Lyra; esta candidata lo reutiliza sin gasto y requiere su propia importación/capturas/regresión. [Checkpoint actualizado](docs/evidence/valoria-reference-clean/WORK_RECOVERY_20261030.md). DRAFT, fidelidad artística y dispositivo físico pendientes; ningún merge/publicación de esta UI.
+
 > **CONTINUACIÓN ACTIVA — 30-10-2026.** El último encargo de pulido de Vigilantes, Exploradores, Entrenamiento y Marcha continúa en PR136; candidata0cf8c964, todavía sin integrar/publicar y con certificación conjunta pendiente. Responsabilidad transferida al mismo workstream, revisión71. [Estado exacto, evidencia y siguiente acción](docs/evidence/valoria-reference-clean/WORK_RECOVERY_20261030.md). Las entradas históricas inferiores no sustituyen este trabajo activo.
 
 > **PARIDAD PR132 TERMINADA E INTEGRADA — 30-10-2026.** PR132 fusionada en `f016932317e049d340460c408d88b90b1290b692`; incidencia133 cerrada. Corregidos premios/guardados III–V, objetivos V, T2, aceleradores, Acechador y escalas de cámara. Native40965665726:57/57 EditMode,73/73 PlayMode,460 controles y88capturas; general40965672865 y tester41017152807 SUCCESS. Main41018872267 intento2 SUCCESS, incluido ejecutable Windows; primer intento falló al escribir recursos y el mismo código pasó al repetir. [Cierre y límites](docs/bastion-iv-v/PARITY132_CLOSEOUT.md). APK1.19/WebGLnative298 son anteriores al parche. No PASS continuo I→V ni certificación física móvil/ART_APPROVED. Reserva propia liberada, revisión67; se conserva la asignación V4.1 independiente. Esta cabecera prevalece sobre las notas históricas inferiores.
@@ -1277,3 +1410,29 @@ Next prepared block, not started: `docs/VALORIA_LEFT_RIGHT_PARCELS_NEXT_BLOCK_V1
 - Full fresh-save Bastion I→II completed in landscape and portrait, including visible building touch-selection, construction/resources/recruitment/combat, exact reload persistence, deliberate reset, and reset-survives-reload.
 - This is a presentation-parity closure only; do not reinterpret it as final artistic-quality certification. Later concrete owner/iPhone evidence may reopen.
 - Bastion III remains closed.
+
+
+## Continuación chat normal — 31/10/2026 (auditoría de fondos)
+
+- HEAD observado antes de cambios: 7af82cf6a6329a957064ef52588e591f47c43aab. PR136 sigue DRAFT, sin publicación ni merge.
+- CI exacta run 41138763107: SUCCESS (Unity UI Progression). Artefactos 13020030049 (certificación completa), 13018867101 (marchas), 13018792087 (V4.1), 13018102628 (retención). No equivale a aceptación artística.
+- Árbol Git completo (21.804 entradas) comprobado: referencia aprobada docs/heroes-ui/REFERENCIA_MAESTRA_APROBADA.png y Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png; HeroesApprovedDestination.cs y modelo Lyra .bytes 4.770.000 bytes. NO se encontró fondo nuevo independiente de Salón/Héroes integrado en Resources ni ArtSource. No regenerar Lyra.
+- Biblioteca: Eldoria_Heroes_Integracion_Preparada_v14.zip (10.789.610 bytes), incluye seis previews, HeroesRebuiltSalon.cs, HeroesRebuiltProfile.cs, HeroesGoldFrameGraphic.cs, HeroesProductionOverlay.cs, ApprovedParts, contratos y verificaciones offline. Es material reutilizable no fusionado: requiere revisión de compatibilidad Unity y separación de elementos aplanados, no integración ciega.
+- Últimas capturas Biblioteca: eldoria_latest_heroes_31oct.png, eldoria_latest_military_31oct.png, eldoria_latest_city_31oct.png; comparador Eldoria_comparacion_nativa.html. No afirmar que estas capturas prueban fondos definitivos.
+- Prioridad: reconstruir Salón con arquitectura pictórica sin valores/botones incrustados; integrar piezas del paquete v14 únicamente tras verificar transparencia, dimensiones, raycasts y bindings; capturar Unity 390x844 y 844x390; después Marchas, Entrenamiento, Ciudad. Mantener seis pantallas, gameplay, guardados, #138 V4.1 laboratorio y gates tester BLOCKED.
+- Nota de coordinación: main pipeline/active-workstreams.json revisión75 ya registra owner codex-recovery-8545f387ddc2; no cambiar titularidad ni ejecutar Unity en runner compartido sin comprobar su reserva viva. No abrir PR nueva.
+- Una imagen conceptual generada en esta sesión no es la referencia aprobada y no debe sustituirla ni integrarse automáticamente.
+
+
+## Continuación autónoma 31/10/2026 — inspección Unity y nuevos cambios
+
+Se verificó PR136 HEAD inicial b2ae9bbede991d30e6af925e18d93df7c86b014a. Unity exact-head run 41146067236 terminó SUCCESS (shared_scope/certify), artifact 13020454496. Capturas auténticas 900x1600 heroes-salon-phone y heroes-lyra-resumen-phone; march-small-phone y training-small-phone 390x844. Salón tiene seis huecos y Lyra 3D real, pero el título aparece sobre fondo casi negro con una costura abrupta, las cuatro plazas reservadas dominan la pantalla y los marcos siguen siendo muy austeros. Lyra ya frontal y datos reales; aún sin fondo ilustrado independiente completo. Marchas: escenario parcialmente visible, paneles azul opaco y tipografía muy densa. Entrenamiento: arquero y patio ilustrado reales, pero título de unidad se superpone a la escena y los controles son demasiado compactos. Estos son defectos abiertos, no 100% ART_APPROVED.
+
+Nuevos commits: 98e0a715fbda1a711ef586fe89f9e4fea18a7fa4 unifica el color del tapado de texto aplanado del Salón con el fondo real, evitando la franja de color incongruente. 4a5a7d7b026f93db77945f12c4b08569fea7fc99 probó translucidez condicionada, reemplazada inmediatamente por 45580cd06cf719625576566a572d6f4d55c67d15: pergamino de Marchas/Entrenamiento al 86% estático en construcción de pantalla, sin depender de estado no inicializado ni tocar comandos. Requiere prueba nativa y comparación visual: la técnica de transparencia NO sustituye la reconstrucción de composición. No tocar main, no publicar, no crear PR, no activar V4.1 issue #138.
+
+Próxima acción: comprobar HEAD real y CI exacto posterior a 45580cd; corregir errores de Unity si aparecen; capturar Marchas y Entrenamiento con orientación vertical/horizontal y contrastar referencia, luego reconstrucción estructural de Ciudad, Vigilantes, Exploradores, Buzón. La entrega de este checkpoint NO equivale a finalizar ninguna de esas prioridades.
+
+
+## 31/10 — Continuación autorizada tras congelación de Work
+
+El propietario solicita continuidad desde chat normal. La reserva canónica en main fue transferida con CAS al owner `chatgpt-eldoria-recovery-20261031`, revisión 80, commit `f2978851dd71c0a0cbc04a493f214eef1741f2cb`. No se ha tocado otro archivo de main. El commit local `4874286` del Work anterior NO existe en remoto y no es accesible desde este entorno; no declarar recuperación. El HEAD base de PR136 era `b5a2230aa01fa3b09393080c2bd12e57c1219cc1` con Unity native `41184256386` SUCCESS. Se conservan todos los controles, seis plazas, modelo Lyra Tripo y gameplay. Nueva corrección real: commits `1f13e2f` y `ceca1a9` eliminan el mural de concepto recortado, su máscara rectangular y el corte de escenario que causaban apariencia de imagen pegada. `HeroesHallScenicGraphic` queda como arquitectura continua y pasiva; controles reales encima. Esta solución NO reproduce aún la ilustración arquitectónica preparada localmente en Work y requiere nuevas capturas Unity exact-head, comparación v14 y aprobación artística. PR136 sigue DRAFT, sin publicación. Siguiente: pruebas de esta corrección, reconstrucción pictórica limpia si la malla no alcanza la referencia, pestañas de Héroes, Marchas, Entrenamiento, Ciudad. No perder el trabajo de Work si se recupera posteriormente.

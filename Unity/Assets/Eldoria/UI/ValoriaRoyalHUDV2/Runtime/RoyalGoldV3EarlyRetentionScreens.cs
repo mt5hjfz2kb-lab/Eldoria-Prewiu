@@ -34,6 +34,9 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalText victoryTitle, victoryDetail;
         float victoryUntil, victoryStarted, discoverySealPulseUntil;
         RoyalButton vigilantShortcut, scoutsShortcut, back, mainAction, claimXp;
+        RoyalButton scoutStrategyButton;
+        RoyalText scoutStrategyLabel;
+        int scoutStrategyMode;
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
         readonly RoyalText[] scoutTitles=new RoyalText[3];
@@ -65,6 +68,7 @@ namespace Eldoria.UI.RoyalGold.V2
         // Two original zero-cost painterly environments, with the hand-built
         // vector renderer as the graceful fallback in older installations.
         RawImage paintedScene;
+        RoyalGoldV3LayeredFinish scenicDepth;
         Texture2D paintedVigilants, paintedScouts, scoutParchment;
         Sprite scoutParchmentSprite, encounterSkinSprite;
         Image encounterSkin;
@@ -201,7 +205,15 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         void SelectionChanged(string selected)
         {
-            if(!string.IsNullOrEmpty(selected))Close();
+            if(!string.IsNullOrEmpty(selected))
+            {
+                Close();
+                // Selection is synchronous: do not leave shortcuts over the
+                // real building cartouche until the 0.3-second polling tick.
+                if(vigilantShortcut)vigilantShortcut.gameObject.SetActive(false);
+                if(scoutsShortcut)scoutsShortcut.gameObject.SetActive(false);
+            }
+            nextUpdate=0;
         }
         bool Blocked=>Hud==null||Hud.NarrativeOpen ||
             (Hud.Modal && Hud.Modal.gameObject.activeSelf);
@@ -364,6 +376,11 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!paintedScouts)paintedScouts=
                 Resources.Load<Texture2D>("EldoriaRetention/scouts-illustration");
             paintedScene.enabled=paintedVigilants!=null;
+            // A distinct, transparent foreground of fog, raking light and
+            // parchment depth: the photographed environment stays behind it,
+            // while all real route nodes and touch targets remain above it.
+            scenicDepth=RoyalGoldV3LayeredFinish.Install(art,
+                RoyalGoldV3LayeredFinish.Scene.Vigilants,2);
             var seals=Rect("Actual discovered expedition families",art);
             seals.gameObject.AddComponent<CanvasRenderer>();
             discoverySeals=seals.gameObject.AddComponent<RoyalGoldV3ScoutDiscoverySeals>();
@@ -568,6 +585,10 @@ namespace Eldoria.UI.RoyalGold.V2
             footer=Text(panel,"No artificial notifications",15,Muted);
             back=Button(panel,"Return to actual kingdom","VOLVER A VALORIA",
                 Close,out backLabel);
+            // A genuine pre-dispatch decision, not decoration: fewer troops
+            // for more time, or more committed troops for an earlier return.
+            scoutStrategyButton=Button(panel,"Prepare actual march or choose scout strategy",
+                "RUTA NORMAL",TacticalAction,out scoutStrategyLabel);
             // Match the reference's book typography only within this room.
             // Keep compact state/resource text in the proven HUD font.
             var referenceFont=Resources.Load<Font>("EldoriaRetention/reference-serif");
@@ -595,6 +616,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(destination==Destination.Vigilants&&!EarlyRetentionRules.VigilantsUnlocked(s))return;
             if(destination==Destination.Scouts&&!EarlyRetentionRules.ScoutsUnlocked(s))return;
             OpenDestination=destination;
+            scenicDepth?.SetScene(destination==Destination.Scouts?
+                RoyalGoldV3LayeredFinish.Scene.Scouts:
+                RoyalGoldV3LayeredFinish.Scene.Vigilants);
             notice="";
             victoryUntil=0f;
             if(victoryGroup)victoryGroup.alpha=0f;
@@ -662,13 +686,35 @@ namespace Eldoria.UI.RoyalGold.V2
             if(EarlyRetentionRules.StageUnlocked(s,next))Submit("VigilantBattle",next.ToString());
         }
         void CollectXp() => Submit("ClaimVigilantXp","aldric");
+        void TacticalAction()
+        {
+            if(!IsOpen || Hud==null)return;
+            if(OpenDestination==Destination.Scouts){CycleScoutStrategy();return;}
+            // The player's composition is configured in the existing royal
+            // military room, never a second temporary army or fake shortcut.
+            var manager=Hud.GetComponentInChildren<RoyalGoldV3ManagementScreens>(true)
+                ?? UnityEngine.Object.FindFirstObjectByType<RoyalGoldV3ManagementScreens>(
+                    FindObjectsInactive.Include);
+            var state=gateway?.Snapshot();
+            if(manager==null || manager.Hud!=Hud || state==null ||
+                state.BastionLevel<2 || state.BarracksLevel<1)return;
+            Close();
+            manager.Open(RoyalGoldV3ManagementScreens.Destination.March);
+        }
+        void CycleScoutStrategy()
+        {
+            if(!IsOpen || OpenDestination!=Destination.Scouts)return;
+            scoutStrategyMode=(scoutStrategyMode+1)%3;
+            Render(true);
+        }
         void RunScout(int index)
         {
             if(index<0||index>=3||string.IsNullOrEmpty(scoutIds[index]))return;
             var s=gateway.Snapshot();
             var item=s.Retention?.Orders?.FirstOrDefault(x=>x.Id==scoutIds[index]);
             if(item==null||item.Claimed)return;
-            if(item.StartedUtcTicks==0)Submit("ScoutDispatch",item.Id);
+            if(item.StartedUtcTicks==0)
+                Submit("ScoutDispatch",item.Id+"|"+scoutStrategyMode);
             else if(item.EndsUtcTicks<=now())Submit("ScoutClaim",item.Id);
         }
         // Run after a genuine native offscreen canvas resize, just as the
@@ -782,7 +828,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Keep the complete name and the actual tap target legible.
             if(portrait)
             {
-                TL(heading.rectTransform,130f,12f,pw-260f,86f);
+                TL(heading.rectTransform,130f,12f,pw-350f,86f);
                 heading.fontSize=32;
                 TL(kicker.rectTransform,18f,104f,pw-36f,36f);
                 TL((RectTransform)back.transform,18f,14f,100f,88f);
@@ -791,13 +837,18 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             else
             {
-                TL(heading.rectTransform,130f,18f,pw-260f,44f);
+                TL(heading.rectTransform,130f,18f,pw-350f,44f);
                 heading.fontSize=compactLandscape?26:34;
                 TL(kicker.rectTransform,130f,61f,pw-260f,27f);
                 TL((RectTransform)back.transform,20f,compactLandscape?14f:23f,90f,compactLandscape?68f:46f);
                 backLabel.Put("←");
                 backLabel.fontSize=compactLandscape?48:30;
             }
+            TL((RectTransform)scoutStrategyButton.transform,
+                pw-198f,14f,
+                180f,portrait?88f:compactLandscape?68f:76f);
+            // Minimum ~13 real pixels on a 390px phone at roomScale .4875.
+            scoutStrategyLabel.fontSize=portrait?28:compactLandscape?21:19;
             float imageTop=portrait?150f:108f;
             bool scoutsLandscape=!portrait && OpenDestination==Destination.Scouts;
             bool vigilantsLandscape=!portrait && OpenDestination==Destination.Vigilants;
@@ -1104,6 +1155,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 (narrow?"MESA DE EXPLORADORES · ENCARGOS":
                 "Envía a tus exploradores y descubre nuevas tierras"));
             introduction.gameObject.SetActive(false);
+            scoutStrategyButton.gameObject.SetActive(true);
+            if(vig)
+            {
+                bool marchReady=s.BastionLevel>=2 && s.BarracksLevel>=1;
+                scoutStrategyButton.gameObject.SetActive(marchReady);
+                scoutStrategyLabel.Put("FORMAR\nMARCHA");
+                scoutStrategyButton.interactable=marchReady;
+            }
+            else
+            {
+                scoutStrategyLabel.Put(scoutStrategyMode==1?"RUTA\nSIGILO":
+                    scoutStrategyMode==2?"RUTA\nRÁPIDA":"RUTA\nNORMAL");
+                scoutStrategyButton.interactable=true;
+            }
             // The board reserves a 57 px header; show its actual section title
             // instead of leaving a dead band above the three illustrated cards.
             chapter.gameObject.SetActive(vig);
@@ -1342,14 +1407,24 @@ namespace Eldoria.UI.RoyalGold.V2
                             scoutArt[i].SetVerticesDirty();
                         }
                     }
-                    string state=order.StartedUtcTicks==0?"Disponible · "+
-                        TimeSpan.FromSeconds(EarlyRetentionRules.ScoutDurationSeconds(order.Kind)).ToString(@"mm\:ss"):
+                    int route=order.StartedUtcTicks==0?scoutStrategyMode:order.StrategyMode;
+                    int required=EarlyRetentionRules.ScoutTroopsForStrategy(route);
+                    int capacity=MarchCapacityRules.Capacity(s,"aldric");
+                    var party=MarchCapacityRules.AutoSelect(s.Available,Math.Min(required,capacity));
+                    int displayedTroops=route==0?party.Total:required;
+                    string state=order.StartedUtcTicks==0?
+                        displayedTroops+" tropas · "+
+                        TimeSpan.FromSeconds(EarlyRetentionRules.ScoutDurationSeconds(order.Kind,route)).ToString(@"mm\:ss"):
                         order.EndsUtcTicks<=now()?"Listo para reclamar":
                         "Regreso en "+TimeSpan.FromTicks(order.EndsUtcTicks-now()).ToString(@"hh\:mm\:ss");
                     scoutTitles[i].Put(EarlyRetentionRules.ScoutTitle(order.Kind));
                     t.Put(EarlyRetentionRules.ScoutRewardText(order.Kind)+"\n"+state);
-                    a.interactable=order.StartedUtcTicks==0||order.EndsUtcTicks<=now();
-                    label.Put(order.StartedUtcTicks==0?"Enviar":
+                    bool hasParty=MarchCapacityRules.Fits(party,s.Available,capacity)&&
+                        (route==0||party.Total>=required);
+                    bool hasSlot=MarchCapacityRules.CanStart(s,now());
+                    a.interactable=order.StartedUtcTicks==0?hasParty&&hasSlot:
+                        order.EndsUtcTicks<=now();
+                    label.Put(order.StartedUtcTicks==0?(!hasSlot?"Marchas ocupadas":hasParty?"Enviar":"Sin tropas"):
                         order.EndsUtcTicks<=now()?"Recoger":"En camino");
                 }
                 long due=EarlyRetentionRules.NextPeriodUtcTicks(now());

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Eldoria.Domain;
+using Eldoria.Application;
 using Eldoria.Presentation;
 using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
@@ -245,7 +246,10 @@ namespace Eldoria.ReferenceClean.Editor {
     h.Hud.SelectBuilding("");
    },"all world entry points share progression gate");
    h.Select("sawmill");yield return new WaitForSecondsRealtime(.2f);
-   Check(()=>{Capture(h,"integration-construction-landscape.png",1600,900);Capture(h,"integration-construction-portrait.png",900,1600);},"construction panel visible in both orientations");
+   Check(()=>{Capture(h,"integration-construction-landscape.png",1600,900);Capture(h,"integration-construction-portrait.png",900,1600);
+    var preview=h.Hud.GetComponentInChildren<Eldoria.UI.RoyalGold.V2.RoyalGoldV3BuildingPreview>(true);
+    Need(preview&&preview.HasModelPreview,"Sawmill card did not render the canonical building model");
+   },"construction panel visible in both orientations");
    if(Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"Sawmill button unavailable");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"Real Royal button did not build");},"Royal build command")){
     yield return new WaitForSecondsRealtime(.4f);
     Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.SawmillBuildSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Parcels.LeftBuilt.activeSelf,"Built scene model missing");h.Hud.Refresh();Capture(h,"integration-city-built.png",1600,900);},"shared timer and authored model");
@@ -280,7 +284,7 @@ namespace Eldoria.ReferenceClean.Editor {
      "; point="+center+"; hits="+string.Join(",",hits.Select(x=>x.gameObject.name)));
    },"World navigation is touchable even while a building sheet is open");
    var before=JsonUtility.ToJson(city.Gateway.Snapshot());
-   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var entryTarget=h.WorldNavigation.target;float entryZoom=h.WorldCamera.orthographicSize;var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);Debug.Log("ELDORIA_NATIVE_STRATEGIC_ENTRY size="+h.WorldCamera.orthographicSize+" aspect="+h.WorldCamera.aspect+" heading="+h.WorldNavigation.heading+" tilt="+h.WorldNavigation.tilt+" distance="+h.WorldNavigation.cameraDistance+" target="+h.WorldNavigation.target+" min="+h.WorldNavigation.minimum+" max="+h.WorldNavigation.maximum);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Debug.Log("ELDORIA_NATIVE_VERTICAL_PAN before="+start+" after="+h.WorldNavigation.target);Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(entryTarget,h.WorldNavigation.target)<.02f&&Mathf.Abs(entryZoom-h.WorldCamera.orthographicSize)<.02f,"Returning world must restore the canonical Valoria near entry");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");h.WorldNavigation.SetZoomLevel(1,true);float oldRegional=h.WorldCamera.orthographicSize;Capture(h,"integration-issue95-world-before-regional.png",1600,900);Capture(h,"integration-issue95-world-before-portrait.png",900,1600);h.WorldNavigation.EnterStrategicView(h.WorldHome);Need(h.WorldCamera.orthographicSize>oldRegional*1.45f,"World still lacks a genuinely larger strategic entry footprint");Capture(h,"integration-issue95-world-after-strategic.png",1600,900);Capture(h,"integration-issue95-world-after-portrait.png",900,1600);Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return restores near framing without mutating save");
+   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var entryTarget=h.WorldNavigation.target;float entryZoom=h.WorldCamera.orthographicSize;var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);Debug.Log("ELDORIA_NATIVE_STRATEGIC_ENTRY size="+h.WorldCamera.orthographicSize+" aspect="+h.WorldCamera.aspect+" heading="+h.WorldNavigation.heading+" tilt="+h.WorldNavigation.tilt+" distance="+h.WorldNavigation.cameraDistance+" target="+h.WorldNavigation.target+" min="+h.WorldNavigation.minimum+" max="+h.WorldNavigation.maximum);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Debug.Log("ELDORIA_NATIVE_VERTICAL_PAN before="+start+" after="+h.WorldNavigation.target);Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(entryTarget,h.WorldNavigation.target)<.02f&&Mathf.Abs(entryZoom-h.WorldCamera.orthographicSize)<.02f,"Returning world must restore the canonical Valoria near entry");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(string.Equals(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text,"Ciudad",StringComparison.OrdinalIgnoreCase),"World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");h.WorldNavigation.SetZoomLevel(1,true);float oldRegional=h.WorldCamera.orthographicSize;Capture(h,"integration-issue95-world-before-regional.png",1600,900);Capture(h,"integration-issue95-world-before-portrait.png",900,1600);h.WorldNavigation.EnterStrategicView(h.WorldHome);Need(h.WorldCamera.orthographicSize>oldRegional*1.45f,"World still lacks a genuinely larger strategic entry footprint");Capture(h,"integration-issue95-world-after-strategic.png",1600,900);Capture(h,"integration-issue95-world-after-portrait.png",900,1600);Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return restores near framing without mutating save");
    h.SetWorld(true);h.Select("forest-valoria");yield return null;
    Check(()=>{
     var v2=h.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
@@ -531,6 +535,7 @@ namespace Eldoria.ReferenceClean.Editor {
     Check(()=>{Need(!h.Hud.NarrativeOpen,"Narrative obscures destination at capture: "+destination);Capture(h,"integration-art-"+destination+"-landscape.png",1600,900);Capture(h,"integration-art-"+destination+"-portrait.png",900,1600);},"native authored destination capture "+destination);
    }
    h.SetWorld(false);h.Hud.Refresh();
+   if(failure==null)yield return new JourneyContext(Check,()=>failure!=null).ContinueNativeJourneyToV(h);
    var report=new Report{source=Environment.GetEnvironmentVariable("GITHUB_SHA"),status=failure==null?"INTEGRATION_PASS_ART_REVIEW_REQUIRED":"FAIL",error=failure,checks=checks.ToArray(),scene=Scene,framing=framingChecks.ToArray(),management=managementChecks.ToArray()};
    if(failure==null) {
     File.WriteAllText(Path.Combine(Ev,"integration-input-manifest.txt"),ComputeInputManifest());
@@ -538,6 +543,253 @@ namespace Eldoria.ReferenceClean.Editor {
    }
    File.WriteAllText(Path.Combine(Ev,"integration-result.json"),JsonUtility.ToJson(report,true));
    if(failure==null)Debug.Log("VALORIA_REFERENCE_CLEAN_INTEGRATION_COMPLETE");EditorApplication.Exit(failure==null?0:1);
+  }
+  sealed class JourneyContext {
+   readonly Func<Action,string,bool> Check;
+   readonly Func<bool> Failed;
+   public JourneyContext(Func<Action,string,bool> check,Func<bool> failed){Check=check;Failed=failed;}
+  // Continues the SAME saved I-II playthrough above. No prepared III/V save,
+  // injected resources, direct progression flags, or bypassed command buttons.
+  IEnumerator ReadJourneyNarrative(ValoriaIntegratedWorld h){
+   yield return new WaitForSecondsRealtime(.3f);
+   for(int turn=0;turn<40&&h.Hud.NarrativeOpen;turn++){
+    if(h.Hud.NarrativeSpeaker=="Lyra")Check(()=>{
+     Capture(h,"integration-continuous-lyra-landscape.png",1600,900);
+     Capture(h,"integration-continuous-lyra-portrait.png",900,1600);
+    },"continuous journey Lyra dialogue native captures");
+    Check(()=>Click(h.Hud.Modal.Extra),"continuous journey reads canonical narrative");
+    yield return new WaitForSecondsRealtime(.18f);
+    if(Failed())yield break;
+   }
+  }
+  IEnumerator FinishJourneyActivity(ValoriaIntegratedWorld h){
+   var city=h.City;
+   // Preserve all deadlines/rules; advance only the existing disposable QA clock.
+   Check(()=>{
+    ((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(1800);
+    city.Gateway.Advance();city.Presenter.RefreshState();h.Hud.Refresh();
+   },"continuous journey completes real deadlines");
+   yield return new WaitForSecondsRealtime(.3f);
+   yield return ReadJourneyNarrative(h);
+  }
+  IEnumerator JourneyAction(ValoriaIntegratedWorld h,string id,string kind){
+   yield return ReadJourneyNarrative(h);
+   var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+   if(management&&management.IsOpen)management.Close();
+   h.SetWorld(id=="fissure-valoria"||id.StartsWith("hunt-")||id=="ash-stalker-valoria"||
+    id=="forest-valoria"||id=="quarry-valoria"||id.StartsWith("region1:"));
+   h.Select(id);yield return new WaitForSecondsRealtime(.25f);
+   yield return ReadJourneyNarrative(h);
+   if(Failed())yield break;
+   long revision=h.City.Gateway.Snapshot().Revision;
+   Check(()=>{
+    var offer=h.Read(id,false).Building;
+    Need(offer!=null&&offer.Action!=null&&offer.Action.Kind==kind&&offer.Action.Enabled,
+     "Continuous actual offer missing: "+id+" / "+kind);
+    Click(h.Hud.Building.Primary.Button);
+   },"continuous native command "+kind+" "+id);
+   if(Failed())yield break;
+   // ContactLyra commits only after the player finishes its real dialogue.
+   yield return ReadJourneyNarrative(h);
+   Check(()=>Need(h.City.Gateway.Snapshot().Revision>revision,
+    "Real button and narrative did not submit "+kind+" "+id),"continuous command committed "+kind+" "+id);
+   if(Failed())yield break;
+   yield return FinishJourneyActivity(h);
+  }
+  IEnumerator JourneyFunds(ValoriaIntegratedWorld h,int wood,int stone){
+   for(int count=0;count<80;count++){
+    var s=h.City.Gateway.Snapshot();
+    if(s.Resources.Wood>=wood&&s.Resources.Stone>=stone)yield break;
+    string kind=s.Resources.Wood<wood?"wood":"stone";
+    string id=kind=="wood"?"forest-valoria":"quarry-valoria";
+    if(LocalGateway.ResourceRemaining(s,id)==0){
+     id=s.WorldResourceLocations.Where(x=>x.ResourceKind==kind&&x.Remaining>0&&h.FindTarget(x.TargetId))
+      .Select(x=>x.TargetId).FirstOrDefault();
+    }
+    if(string.IsNullOrEmpty(id)){
+     yield return FinishJourneyActivity(h);continue;
+    }
+    yield return JourneyAction(h,id,"Gather");
+    if(Failed())yield break;
+   }
+   Check(()=>Need(false,"No canonical renewable resource met continuous journey budget"),"continuous real economy");
+  }
+  IEnumerator JourneyLevel(ValoriaIntegratedWorld h,int level,int wood,int stone){
+   yield return JourneyFunds(h,wood,stone);
+   if(Failed())yield break;
+   yield return JourneyAction(h,"bastion","AdvanceBastion");
+   if(Failed())yield break;
+   Check(()=>{
+    Need(h.City.Gateway.Snapshot().BastionLevel==level,"Continuous Bastion "+level+" not reached");
+    var before=JsonUtility.ToJson(h.City.Gateway.Snapshot());h.City.ReloadForProbe();
+    Need(before==JsonUtility.ToJson(h.City.Gateway.Snapshot()),"Continuous save/reward mismatch at "+level);
+   },"continuous I-"+level+" native progression and reopened save");
+   yield return new WaitForSecondsRealtime(.3f);
+   h.Hud.SelectBuilding("");h.SetWorld(false);h.Home();
+   Check(()=>{
+    Capture(h,"integration-continuous-bastion-"+level+"-landscape.png",1600,900);
+    Capture(h,"integration-continuous-bastion-"+level+"-portrait.png",900,1600);
+   },"continuous Bastion "+level+" actual city in both orientations");
+  }
+  IEnumerator OpenJourneyTraining(ValoriaIntegratedWorld h){
+   // A physical chapter III+ barracks now correctly selects its city upgrade.
+   // Exercise the user's explicit UNIDADES > Abrir cuartel route instead.
+   h.SetWorld(false);h.Hud.SelectBuilding("");yield return null;
+   Check(()=>Click(h.Hud.Navigation.Items.First(i=>i.Section==RoyalSection.Army).Button),
+    "continuous journey opens actual UNIDADES navigation");
+   if(Failed())yield break;
+   yield return null;
+   Check(()=>{
+    Need(h.Hud.Modal.gameObject.activeInHierarchy,"Actual army destination missing");
+    Click(h.Hud.Modal.Extra);
+   },"continuous journey explicitly opens training from the army destination");
+   yield return new WaitForSecondsRealtime(.3f);
+  }
+  IEnumerator VerifyHeroDestinations(ValoriaIntegratedWorld h){
+   var before=JsonUtility.ToJson(h.City.Gateway.Snapshot());
+   yield return OpenJourneyTraining(h);if(Failed())yield break;
+   Check(()=>Click(GameObject.Find("Open canonical heroes").GetComponent<Button>()),"hero hall opens through actual units navigation");
+   yield return new WaitForSecondsRealtime(.3f);
+   var heroes=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+   Check(()=>{
+    Need(heroes&&heroes.IsOpen,"Integrated hero hall absent");
+    Capture(h,"integration-heroes-hall-landscape.png",1600,900);
+    Capture(h,"integration-heroes-hall-portrait.png",900,1600);
+   },"hero hall actual controls and both orientations");
+   // Captures rebuild the responsive hierarchy when restoring the real screen.
+   // Let uGUI register its new graphics before sending genuine pointer input.
+   yield return null;
+   Check(()=>Click(GameObject.Find("Select hero aldric").GetComponent<Button>()),"select Aldric through actual hero card");
+   yield return new WaitForSecondsRealtime(.3f);
+   foreach(var page in new[]{"Resumen","Habilidades","Talentos","Equipamiento"}){
+    Check(()=>Click(GameObject.Find("Hero tab "+page).GetComponent<Button>()),"genuine hero tab "+page);
+    yield return new WaitForSecondsRealtime(.2f);
+    Check(()=>{
+     Need(heroes.CurrentAuthoritativeHero().Value.Health==SliceRules.HeroIntrinsicStats("aldric").Health,"Hero values do not match combat");
+     Need(heroes.GetComponentInChildren<Eldoria.HeroesUI.HeroesModelSnapshot>(true).HasModel,"Aldric must use actual loaded 3D model");
+     Capture(h,"integration-heroes-aldric-"+page.ToLowerInvariant()+"-landscape.png",1600,900);
+     Capture(h,"integration-heroes-aldric-"+page.ToLowerInvariant()+"-portrait.png",900,1600);
+    },"actual Aldric hero screen "+page);
+    if(Failed())yield break;
+    yield return null;
+   }
+   Check(()=>Click(GameObject.Find("Next available hero").GetComponent<Button>()),"real hero navigation selects narratively recruited Lyra");
+   yield return new WaitForSecondsRealtime(.2f);
+   Check(()=>{
+    Need(heroes.CurrentHeroId=="lyra"&&h.City.Gateway.Snapshot().ChapterThree.LyraRecruited,"Lyra navigation violated narrative unlock");
+    Capture(h,"integration-heroes-lyra-resumen-landscape.png",1600,900);
+    Capture(h,"integration-heroes-lyra-resumen-portrait.png",900,1600);
+   },"actual Lyra screen in both orientations");
+   yield return null;
+   Check(()=>{
+    Click(GameObject.Find("Close heroes").GetComponent<Button>());
+    Need(!heroes.IsOpen&&h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().IsOpen,"Hero close did not return to units");
+    h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().Close();
+    Need(before==JsonUtility.ToJson(h.City.Gateway.Snapshot()),"Hero browsing changed authoritative save");
+   },"six actual hero screens preserve gameplay save and return navigation");
+  }
+  public IEnumerator ContinueNativeJourneyToV(ValoriaIntegratedWorld h){
+   Check(()=>Need(h.City.Gateway.Snapshot().BastionLevel==2&&h.City.Gateway.Snapshot().EngendroDefeated,
+    "Continuous III-V must start with the actual completed I-II state"),"continuous journey preserves original I-II lineage");
+   yield return OpenJourneyTraining(h);if(Failed())yield break;
+   Check(()=>{
+    var heroes=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+    Need(!GameObject.Find("Open canonical heroes").GetComponent<Button>().interactable,"Hero hall prematurely enabled before Lyra recruitment");
+    heroes.Open();
+    Need(!heroes.IsOpen&&!heroes.OpenHero("lyra"),"Hero destination bypassed Bastion III narrative lock");
+    h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().Close();
+   },"hero hall unlock waits for actual Lyra recruitment in Bastion III");
+   if(Failed())yield break;
+   yield return JourneyLevel(h,3,650,500);if(Failed())yield break;
+   yield return JourneyFunds(h,240,180);if(Failed())yield break;
+   yield return JourneyAction(h,"granary","Build");if(Failed())yield break;
+   yield return JourneyAction(h,"fissure-valoria","InvestigateFissure");if(Failed())yield break;
+   yield return JourneyAction(h,"fissure-valoria","ContactLyra");if(Failed())yield break;
+   yield return JourneyAction(h,"fissure-valoria","Fight");if(Failed())yield break;
+   yield return JourneyAction(h,"hunt-wolf","Fight");if(Failed())yield break;
+   yield return JourneyAction(h,"hunt-boar","Fight");if(Failed())yield break;
+   yield return JourneyFunds(h,3000,3000);if(Failed())yield break;
+   foreach(var id in new[]{"sawmill","upgrade-barracks","granary"}){
+    yield return JourneyAction(h,id,"UpgradeBuilding");if(Failed())yield break;
+   }
+   yield return JourneyLevel(h,4,850,700);if(Failed())yield break;
+   h.Select("bastion");yield return new WaitForSecondsRealtime(.3f);
+   yield return ReadJourneyNarrative(h);
+   Check(()=>{
+    var choice=GameObject.Find("Choose civil")?.GetComponent<RoyalButton>();
+    Need(choice&&choice.interactable,"Canonical IV council choice unavailable");Click(choice);
+    Need(h.City.Gateway.Snapshot().ChapterThree.DevelopmentPriority=="civil","Council choice not saved");
+   },"continuous IV real contextual council button");
+   if(Failed())yield break;
+   yield return JourneyLevel(h,5,1100,900);if(Failed())yield break;
+   yield return JourneyFunds(h,500,0);if(Failed())yield break;
+   yield return JourneyAction(h,"stoneworks","Build");if(Failed())yield break;
+   Check(()=>Need(h.City.Gateway.Snapshot().ChapterThree.StoneworksLevel==1,
+    "V quarry did not complete from continuous save"),"continuous V quarry real construction");
+   // Finish the actual authored V objectives on this same uninterrupted save.
+   foreach(var id in new[]{"sawmill","upgrade-barracks","granary","stoneworks"}){
+    for(int level=id=="stoneworks"?1:2;level<5;level++){
+     yield return JourneyFunds(h,4000,4000);if(Failed())yield break;
+     yield return JourneyAction(h,id,"UpgradeBuilding");if(Failed())yield break;
+    }
+   }
+   foreach(int tier in new[]{1,2}){
+    yield return JourneyFunds(h,1000,600);if(Failed())yield break;
+    yield return OpenJourneyTraining(h);if(Failed())yield break;
+    yield return ReadJourneyNarrative(h);
+    Check(()=>{
+     var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+     Need(management&&management.IsOpen&&management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.Training,"V training unavailable");
+     if(management.SelectedTier!=tier)Click(GameObject.Find("Select archer tier").GetComponent<RoyalButton>());
+     GameObject.Find("Quantity slider").GetComponent<UnityEngine.UI.Slider>().value=tier==1?30:20;
+    },"continuous V selects real training tier "+tier);
+    yield return new WaitForSecondsRealtime(.2f);
+    Check(()=>{
+     Click(GameObject.Find("Confirm military command").GetComponent<RoyalButton>());
+     Need(h.City.Gateway.Snapshot().RecruitmentCompletesUtcTicks>0,"V training command rejected");
+    },"continuous V training real purchase "+tier);
+    if(Failed())yield break;
+    yield return FinishJourneyActivity(h);
+    h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().Close();
+   }
+   h.Select("march-main");yield return new WaitForSecondsRealtime(.3f);
+   Check(()=>{
+    var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+    Need(management&&management.IsOpen&&management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.March,"V preparation unavailable");
+    // The second real hero slot adds the now narratively recruited Lyra.
+    Click(GameObject.Find("Hero slot 1").GetComponent<RoyalButton>());
+    if(management.SelectedTier!=1)Click(GameObject.Find("Select archer tier").GetComponent<RoyalButton>());
+    GameObject.Find("Quantity slider").GetComponent<UnityEngine.UI.Slider>().value=20;
+    Click(GameObject.Find("Select archer tier").GetComponent<RoyalButton>());
+    GameObject.Find("Quantity slider").GetComponent<UnityEngine.UI.Slider>().value=20;
+   },"continuous V actual two-hero mixed-tier preparation");
+   yield return new WaitForSecondsRealtime(.2f);
+   Check(()=>{
+    Click(GameObject.Find("Confirm military command").GetComponent<RoyalButton>());
+    var state=h.City.Gateway.Snapshot();
+    Need(state.PreparedTroops.ArcherT1==20&&state.PreparedTroops.ArcherT2==20&&state.PreparedHeroId=="aldric+lyra","V prepared composition not persisted");
+   },"continuous V preparation saved from genuine controls");
+   if(Failed())yield break;
+   yield return JourneyAction(h,"ash-stalker-valoria","Fight");if(Failed())yield break;
+   Check(()=>Need(h.City.Gateway.Snapshot().ChapterThree.AshStalkerDefeated&&
+    SliceRules.CurrentObjectiveKey(h.City.Gateway.Snapshot())=="b5.complete","Continuous V objectives not complete"),
+    "continuous native I-V authored objectives complete");
+   h.Hud.SelectBuilding("");h.SetWorld(false);h.Home();
+   Check(()=>{
+    var architecture=h.GetComponent<BastionIVVWorldPresentation>();
+    foreach(var id in new[]{"bastion","sawmill","barracks","granary","stoneworks"}){
+     var model=architecture.ModelFor(id);
+     Need(model&&model.activeInHierarchy&&model.GetComponentsInChildren<Renderer>().Any(r=>r.enabled),
+      "Completed V building invisible on actual city return: "+id);
+    }
+    Capture(h,"integration-continuous-bastion-5-complete-landscape.png",1600,900);
+    Capture(h,"integration-continuous-bastion-5-complete-portrait.png",900,1600);
+   },"continuous V completed city actual captures");
+   var beforeFinal=JsonUtility.ToJson(h.City.Gateway.Snapshot());h.City.ReloadForProbe();
+   Check(()=>Need(beforeFinal==JsonUtility.ToJson(h.City.Gateway.Snapshot()),"Continuous V final reopen changed state"),
+    "continuous I-V final saved state exact");
+   yield return VerifyHeroDestinations(h);
+  }
   }
   public static string ComputeInputManifest(){
    var files=new HashSet<string>(AssetDatabase.GetDependencies(Scene,true).Where(File.Exists));
@@ -553,7 +805,7 @@ namespace Eldoria.ReferenceClean.Editor {
     return BitConverter.ToString(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(ComputeInputManifest())));
   }
   static string FileHash(string path){if(!File.Exists(path))return "ABSENT";using(var sha=System.Security.Cryptography.SHA256.Create())return BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(path)));}
-  static void Click(RoyalButton button){
+  static void Click(Button button){
    var hud=Object.FindFirstObjectByType<RoyalHUD>();
    if(hud&&hud.NarrativeOpen&&button!=hud.Modal.Extra)
     for(int guard=0;guard<18&&hud.NarrativeOpen;guard++)Click(hud.Modal.Extra);
@@ -608,8 +860,10 @@ namespace Eldoria.ReferenceClean.Editor {
    var buildings=h.Hud.GetComponent<RoyalGoldV3BuildingScreens>();
    var retention=h.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();
    bool buildingOpen=buildings&&buildings.IsOpen,rankingOpen=rankings&&rankings.IsOpen;
-   bool destinationOpen=managementOpen||buildingOpen||rankingOpen;
-   RectTransform destinationRoot=rankingOpen?rankings.VisibleRoot:buildingOpen?buildings.VisibleRoot:managementOpen?GameObject.Find("V3 / Management destination").GetComponent<RectTransform>():null;
+   var heroes=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+   bool heroesOpen=heroes&&heroes.IsOpen;
+   bool destinationOpen=managementOpen||buildingOpen||rankingOpen||heroesOpen;
+   RectTransform destinationRoot=heroesOpen?heroes.VisibleRoot:rankingOpen?rankings.VisibleRoot:buildingOpen?buildings.VisibleRoot:managementOpen?GameObject.Find("V3 / Management destination").GetComponent<RectTransform>():null;
    var c=h.PlayerCamera;var canvas=h.Hud.GetComponent<Canvas>();var oldMode=canvas.renderMode;var oldCam=canvas.worldCamera;var oldDistance=canvas.planeDistance;var oldAspect=c.aspect;var oldMask=c.cullingMask;var oldRt=c.targetTexture;var oldActive=RenderTexture.active;var position=c.transform.position;float size=c.orthographicSize;var worldTarget=h.WorldNavigation.target;
    var scaler=h.Hud.GetComponent<RoyalScaler>();bool scalerEnabled=scaler.enabled;float scale=canvas.scaleFactor,canvasPixels=canvas.referencePixelsPerUnit;var scalerMode=scaler.uiScaleMode;var scalerResolution=scaler.referenceResolution;var scalerMatchMode=scaler.screenMatchMode;float scalerMatch=scaler.matchWidthOrHeight,scalerPixels=scaler.referencePixelsPerUnit;var areas=h.Hud.GetComponentsInChildren<RoyalSafeArea>(true);var areaEnabled=areas.Select(a=>a.enabled).ToArray();
    var rt=new RenderTexture(width,height,24);var tex=new Texture2D(width,height,TextureFormat.RGB24,false);
@@ -619,19 +873,19 @@ namespace Eldoria.ReferenceClean.Editor {
     // include Unity's existing UI layer (5) only during this capture or a real
     // Lyra dialog can appear in the game but disappear from the evidence PNG.
     c.cullingMask|=1<<5;
-    if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();Canvas.ForceUpdateCanvases();if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);if(selectedTarget)h.Focus(selectedTarget.gameObject);}foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
+    if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();if(heroesOpen)heroes.Refresh();Canvas.ForceUpdateCanvases();if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);if(selectedTarget)h.Focus(selectedTarget.gameObject);}foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
     // to participate after its first SRP layout/batch registration.
     c.Render();c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name),tex.EncodeToPNG());validateLayout?.Invoke();
     if(destinationOpen){
      Need(destinationRoot&&destinationRoot.gameObject.activeInHierarchy,"Actual management root not visible: "+name);
-     var background=destinationRoot.GetComponent<Image>();var canvasRect=(RectTransform)canvas.transform;
+     var background=destinationRoot.GetComponent<Image>();var canvasRect=heroesOpen?(RectTransform)destinationRoot.parent:(RectTransform)canvas.transform;
      bool opaque=background&&background.color.a>=.999f;
      bool blocking=background&&background.raycastTarget;
      bool full=destinationRoot.anchorMin==Vector2.zero&&destinationRoot.anchorMax==Vector2.one&&Mathf.Abs(destinationRoot.rect.width-canvasRect.rect.width)<1f&&Mathf.Abs(destinationRoot.rect.height-canvasRect.rect.height)<1f;
      int controls=destinationRoot.GetComponentsInChildren<Button>().Count(b=>b.isActiveAndEnabled&&b.interactable&&((RectTransform)b.transform).rect.width>=20&&((RectTransform)b.transform).rect.height>=20);
      Need(opaque&&blocking&&full&&controls>0&&!h.InWorld,"Native management must be opaque, full-canvas and interactive: "+name);
      if(buildingOpen&&!rankingOpen)Need(buildings.ReferenceTexture&&buildings.ReferenceTexture.width>100,"Native management reference not bound: "+name);
-     managementChecks.Add(new ManagementCapture{capture=name,screen=rankingOpen?"rankings":buildingOpen?"building":"management",target=buildingOpen&&!rankingOpen?buildings.BuildingId:h.Selected,width=width,height=height,pass=true,opaque=opaque,touchBlocking=blocking,fullCanvas=full,activeControls=controls});
+     managementChecks.Add(new ManagementCapture{capture=name,screen=heroesOpen?"heroes":rankingOpen?"rankings":buildingOpen?"building":"management",target=buildingOpen&&!rankingOpen?buildings.BuildingId:h.Selected,width=width,height=height,pass=true,opaque=opaque,touchBlocking=blocking,fullCanvas=full,activeControls=controls});
     }
     if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){
      var focusTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);
@@ -641,7 +895,7 @@ namespace Eldoria.ReferenceClean.Editor {
      }
     }
    }
-   finally{scaler.enabled=scalerEnabled;scaler.uiScaleMode=scalerMode;scaler.referenceResolution=scalerResolution;scaler.screenMatchMode=scalerMatchMode;scaler.matchWidthOrHeight=scalerMatch;scaler.referencePixelsPerUnit=scalerPixels;canvas.scaleFactor=scale;canvas.referencePixelsPerUnit=canvasPixels;for(int i=0;i<areas.Length;i++)areas[i].enabled=areaEnabled[i];canvas.renderMode=oldMode;canvas.worldCamera=oldCam;canvas.planeDistance=oldDistance;c.targetTexture=oldRt;c.aspect=oldAspect;c.cullingMask=oldMask;c.transform.position=position;c.orthographicSize=size;if(h.InWorld)h.WorldNavigation.RestoreView(worldTarget,size);RenderTexture.active=oldActive;rt.Release();Object.Destroy(rt);Object.Destroy(tex);Canvas.ForceUpdateCanvases();foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(((RectTransform)layout.transform).rect.width);if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();}
+   finally{scaler.enabled=scalerEnabled;scaler.uiScaleMode=scalerMode;scaler.referenceResolution=scalerResolution;scaler.screenMatchMode=scalerMatchMode;scaler.matchWidthOrHeight=scalerMatch;scaler.referencePixelsPerUnit=scalerPixels;canvas.scaleFactor=scale;canvas.referencePixelsPerUnit=canvasPixels;for(int i=0;i<areas.Length;i++)areas[i].enabled=areaEnabled[i];canvas.renderMode=oldMode;canvas.worldCamera=oldCam;canvas.planeDistance=oldDistance;c.targetTexture=oldRt;c.aspect=oldAspect;c.cullingMask=oldMask;c.transform.position=position;c.orthographicSize=size;if(h.InWorld)h.WorldNavigation.RestoreView(worldTarget,size);RenderTexture.active=oldActive;rt.Release();Object.Destroy(rt);Object.Destroy(tex);Canvas.ForceUpdateCanvases();foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(((RectTransform)layout.transform).rect.width);if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();if(heroesOpen)heroes.Refresh();}
   }
   static readonly List<Framing> framingChecks=new List<Framing>();
   static readonly List<ManagementCapture> managementChecks=new List<ManagementCapture>();

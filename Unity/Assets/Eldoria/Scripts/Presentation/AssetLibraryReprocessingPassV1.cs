@@ -39,45 +39,10 @@ namespace Eldoria.Presentation
 
         static void ReplaceWithCertifiedHeroBastion(Transform root)
         {
-            // Highest-return historical recovery in this pass. The exact certified optimized GLB is
-            // staged by the proof/promotion workflow from artifact 11143009723 and verified by SHA.
-            // If the source is not present (ordinary source-only checks), leave the current Bastion untouched.
-            var source=Resources.Load<GameObject>("Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1");
-            if(source==null)return;
-
-            HideLegacyBastionVisuals();
-
-            var go=Object.Instantiate(source);
-            go.name="Valoria · AssetLibrary Reprocessing · certified Hero Bastion v1";
-            go.transform.rotation=Quaternion.Euler(0f,180f,0f);
-            DisableGameplay(go);
-
-            var renderers=go.GetComponentsInChildren<Renderer>(true);
-            if(renderers.Length==0)throw new InvalidOperationException("Certified Hero Bastion has no renderers.");
-            var bounds=renderers[0].bounds;
-            for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
-            float span=Mathf.Max(bounds.size.x,bounds.size.z);
-            if(span<=.001f||bounds.size.y<=.001f)throw new InvalidOperationException("Certified Hero Bastion bounds invalid.");
-
-            // Same proportions/orientation as the prior successful integrated proof, now seated into the
-            // accepted Compact Footprint terrain. No mesh edits and no gameplay ownership.
-            const float targetSpan=12.8f;
-            const float targetHeight=10.2f;
-            float scale=Mathf.Min(targetSpan/span,targetHeight/bounds.size.y);
-            go.transform.localScale*=scale;
-
-            renderers=go.GetComponentsInChildren<Renderer>(true);
-            bounds=renderers[0].bounds;
-            for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
-            var targetCenter=new Vector3(0f,0f,8.75f);
-            const float groundY=2.52f;
-            go.transform.position+=new Vector3(
-                targetCenter.x-bounds.center.x,
-                groundY-bounds.min.y,
-                targetCenter.z-bounds.center.z);
-
-            FitCertifiedHeroSurface(go);
-            go.transform.SetParent(root,true);
+            // Owner veto, 25 October 2026: this historical replacement is
+            // permanently inert. Keep existing approved scene geometry and
+            // retain the rejected source only in the nonshipping art archive.
+            // Historical callers cannot silently reactivate the rejected model.
         }
 
         static void HideLegacyBastionVisuals()
