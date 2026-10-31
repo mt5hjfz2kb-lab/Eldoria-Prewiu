@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-31",
+  "updated_at": "2026-10-31T09:29:51.898Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-visual-implementation-20261031",
+      "owner": "codex-eldoria-art-reconstruction-4874286-20261031",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
-      "claimed_at": "2026-10-30T09:30:00Z",
+      "claimed_at": "2026-10-31T09:29:51.898Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -1496,9 +1496,15 @@
           "ownership_revision": 77,
           "transferred_at": "2026-10-31",
           "reason": "Owner reports prior normal-chat session stopped prematurely and explicitly requests continuing same PR136 without restart."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-implementation-20261031",
+          "ownership_revision": 78,
+          "released_at": "2026-10-31T09:29:51.898Z",
+          "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
         }
       ],
-      "ownership_revision": 78,
+      "ownership_revision": 79,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -2513,13 +2519,13 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": "chatgpt-eldoria-visual-implementation-20261031",
+      "owner": "codex-eldoria-art-reconstruction-4874286-20261031",
       "ownership_state": "claimed",
-      "ownership_revision": 13,
+      "ownership_revision": 14,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
-      "claimed_at": "2026-10-30T08:25:40.166Z",
+      "claimed_at": "2026-10-31T09:29:51.898Z",
       "base_main_sha": "f016932317e049d340460c408d88b90b1290b692",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41*.cs",
@@ -2611,6 +2617,12 @@
           "ownership_revision": 12,
           "transferred_at": "2026-10-31",
           "reason": "Owner reports prior normal-chat session stopped prematurely and explicitly requests continuing same PR136 without restart."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-implementation-20261031",
+          "ownership_revision": 13,
+          "released_at": "2026-10-31T09:29:51.898Z",
+          "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
         }
       ],
       "delivery_definition": {
@@ -2696,13 +2708,13 @@
     {
       "id": "eldoria-iphone-lifecycle-diagnostics-20261030",
       "title": "Resume PR97 optional local iPhone lifecycle diagnostics",
-      "owner": "chatgpt-eldoria-visual-implementation-20261031",
+      "owner": "codex-eldoria-art-reconstruction-4874286-20261031",
       "ownership_state": "claimed",
-      "ownership_revision": 9,
+      "ownership_revision": 10,
       "status": "active",
       "branch": "review/native281-iphone-ui-world-triage-20261022",
       "pr": 97,
-      "claimed_at": "2026-10-30",
+      "claimed_at": "2026-10-31T09:29:51.898Z",
       "base_main_sha": "68c18c15ab826cec69f2ff260e5d4b0a6b9aab7e",
       "scope": [
         "tools/delivery/optional-iphone-lifecycle-diagnostics.js",
@@ -2757,6 +2769,12 @@
           "ownership_revision": 8,
           "transferred_at": "2026-10-31",
           "reason": "Owner reports prior normal-chat session stopped prematurely and explicitly requests continuing same PR136 without restart."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-implementation-20261031",
+          "ownership_revision": 9,
+          "released_at": "2026-10-31T09:29:51.898Z",
+          "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
         }
       ],
       "write_scope_released": false,
@@ -2765,13 +2783,13 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": "chatgpt-eldoria-visual-implementation-20261031",
+      "owner": "codex-eldoria-art-reconstruction-4874286-20261031",
       "ownership_state": "claimed",
-      "ownership_revision": 10,
+      "ownership_revision": 11,
       "status": "active",
       "branch": "feature/heroes-approved-ui-integration-20261030",
       "pr": 135,
-      "claimed_at": "2026-10-30",
+      "claimed_at": "2026-10-31T09:29:51.898Z",
       "base_main_sha": "b56f4f0f607ab4325625bd926e0588da1d9b4d73",
       "scope": [
         "Unity/Assets/Eldoria/HeroesUI/**",
@@ -2826,6 +2844,12 @@
           "ownership_revision": 9,
           "transferred_at": "2026-10-31",
           "reason": "Owner reports prior normal-chat session stopped prematurely and explicitly requests continuing same PR136 without restart."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-implementation-20261031",
+          "ownership_revision": 10,
+          "released_at": "2026-10-31T09:29:51.898Z",
+          "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
         }
       ],
       "write_scope_released": false,
@@ -2834,13 +2858,13 @@
     {
       "id": "eldoria-unified-art-vault-20261029",
       "title": "Biblioteca artística unificada 2D/3D — PR128",
-      "owner": "chatgpt-eldoria-visual-implementation-20261031",
+      "owner": "codex-eldoria-art-reconstruction-4874286-20261031",
       "branch": "docs/unified-art-vault-20261029",
       "status": "active",
       "ownership_state": "claimed",
-      "ownership_revision": 9,
+      "ownership_revision": 10,
       "write_scope_released": false,
-      "claimed_at": "2026-10-30T15:31:15.561Z",
+      "claimed_at": "2026-10-31T09:29:51.898Z",
       "base_main_sha": "515555135127195542496ffea3a0852206772bea",
       "scope": [
         "tools/asset-vault/scan_visual_assets.py",
@@ -2898,6 +2922,12 @@
           "ownership_revision": 8,
           "transferred_at": "2026-10-31",
           "reason": "Owner reports prior normal-chat session stopped prematurely and explicitly requests continuing same PR136 without restart."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-implementation-20261031",
+          "ownership_revision": 9,
+          "released_at": "2026-10-31T09:29:51.898Z",
+          "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
         }
       ],
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending."
