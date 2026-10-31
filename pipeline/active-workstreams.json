@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "chatgpt-eldoria-block02-heroes-hall-20261031",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-10-31",
@@ -124,8 +124,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK01_QA_COMPLETED_BLOCK02_ART_RECONSTRUCTION_PENDING",
-      "next": "Block 02: claim this canonical ID before any edits, recover approved original SHA48cbc4e73d4..., reconstruct only Hall and correct 844x390 portraits; reserve Windows only for actual Unity run.",
+      "phase": "BLOCK02_HEROES_HALL_ART_RECONSTRUCTION",
+      "next": "Integrate structural Heroes Hall reference composition, preserve real models and controls, verify four true Unity screenshot sizes and regression.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1543,11 +1543,16 @@
           "evidence": "docs/evidence/block01-20261031/QA_REFERENCIA_VS_UNITY.md",
           "source": "43525a5f2efbd55efe656a969195dad9c14a4583",
           "native_run": 41232151180
+        },
+        {
+          "owner": null,
+          "ownership_revision": 88,
+          "reason": "BLOQUE 01 closed and owner instructed proceed with BLOQUE 02, preserving existing PR136 and deferred unrelated screens."
         }
       ],
-      "ownership_revision": 88,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 89,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-10-31",
       "delivery_definition": {
@@ -1791,7 +1796,7 @@
         "new_credits_used": 0,
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
-      "owner_instruction": "2026-10-31: Start BLOQUE 01 QA in existing canonical PR136; claim ownership before code, Windows only when actually running Unity.",
+      "owner_instruction": "31-10-2026: owner says Adelante con el bloque 2; reuse PR136, fix Heroes Hall and 844x390 occluded portraits, no additional authorization",
       "release_reason": "Block 01 QA verified and recorded, no gameplay/art code changes, not ART_APPROVED or merge-ready."
     },
     {
