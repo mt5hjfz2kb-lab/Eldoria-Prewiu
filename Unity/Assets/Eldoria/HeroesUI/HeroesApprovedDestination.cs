@@ -88,13 +88,24 @@ namespace Eldoria.HeroesUI
         RectTransform Frame(string name,Transform parent,float x,float y,float w,float h)
         {
             var r=Surface(name,parent,x,y,w,h,Color.clear);
-            var material=Rect("Royal Gold / independent material",r);
-            Place(material,0,0,w,h);
-            var graphic=material.gameObject.AddComponent<HeroesGoldFrameGraphic>();
-            graphic.SurfaceTop=new Color(.045f,.059f,.079f,.82f);
-            graphic.SurfaceBottom=new Color(.014f,.021f,.033f,.91f);
-            graphic.raycastTarget=false;
+            // Native 41198120660 proves the custom panel mesh was invisible
+            // while ordinary Images rendered correctly on the same Canvas.
+            // Use the proven uGUI path for actual readable cards and controls.
+            var ink=Surface("Royal Gold / translucent ink",r,2,2,w-4,h-4,
+                new Color(.018f,.030f,.048f,.79f));
+            ink.GetComponent<Image>().raycastTarget=false;
+            float edge=1.5f;
+            Surface("Royal Gold / top rim",r,0,0,w,edge,gold).GetComponent<Image>().raycastTarget=false;
+            Surface("Royal Gold / bottom rim",r,0,h-edge,w,edge,gold).GetComponent<Image>().raycastTarget=false;
+            Surface("Royal Gold / left rim",r,0,0,edge,h,gold).GetComponent<Image>().raycastTarget=false;
+            Surface("Royal Gold / right rim",r,w-edge,0,edge,h,gold).GetComponent<Image>().raycastTarget=false;
             return r;
+        }
+        void TintFrame(RectTransform frame,Color tint)
+        {
+            foreach(Transform child in frame)
+                if(child.name.StartsWith("Royal Gold /")&&child.name.EndsWith("rim"))
+                    child.GetComponent<Image>().color=tint;
         }
         Text Label(string name,Transform parent,string value,float x,float y,float w,float h,int size,TextAnchor align=TextAnchor.MiddleLeft)
         {
@@ -215,17 +226,18 @@ namespace Eldoria.HeroesUI
             // The owner's six-slot v14 salon composition is visual only:
             // slots beyond the real host roster have NO data, actions or unlock.
             // Do not present any fictional hero or mutate progression state.
-            float sceneryH=Mathf.Min(240f,h*.29f);
+            bool portraitLayout=h>w;
+            float sceneryH=portraitLayout?Mathf.Min(180f,h*.20f):Mathf.Min(165f,h*.20f);
             Label("Heroes hall title",content,"SALÓN DE HÉROES",26,18,w*.61f,48,30,
                 TextAnchor.MiddleLeft).color=gold;
             Label("Heroes hall introduction",content,
                 "Aquí residen los héroes de Valoria.\nReclútalos, fortalécelos y lidera con ellos.",
-                27,71,w*.60f,Mathf.Max(40f,sceneryH-82f),18,
+                27,71,w-76f,Mathf.Max(40f,sceneryH-76f),18,
                 TextAnchor.UpperLeft);
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
             bool showFutureSlots=true;
             int displayCount=showFutureSlots?Math.Max(6,heroes.Length):heroes.Length;
-            int columns=w>=380f?3:2;
+            int columns=portraitLayout?2:3;
             int rows=Mathf.Max(1,Mathf.CeilToInt(displayCount/(float)columns));
             float gap=Mathf.Clamp(w*.016f,8f,16f);
             float cardTop=sceneryH+12f;
@@ -255,21 +267,20 @@ namespace Eldoria.HeroesUI
                 bool unlocked=real&&heroes[i].Unlocked;
                 if(compact)
                 {
-                    float portraitW=cardW*.43f;
-                    float portraitH=Mathf.Max(30,cardH-104f);
+                    float portraitW=cardW-24f;
+                    float portraitH=Mathf.Max(30,cardH-132f);
                     if(portrait)
                     {
                         var image=Rect(real?"Verified portrait":"Reserved silhouette",card)
                             .gameObject.AddComponent<Image>();
-                        Place(image.rectTransform,8,43,portraitW,portraitH);
+                        Place(image.rectTransform,12,43,portraitW,portraitH);
                         image.sprite=portrait;image.preserveAspect=true;image.raycastTarget=false;
                         image.color=unlocked?Color.white:new Color(.42f,.42f,.44f,.76f);
                     }
                     Label("Hero card state",card,
-                        real?(unlocked?heroes[i].Role+"\nNIVEL "+heroes[i].Level+
-                            "\nPODER "+heroes[i].HeroPower:"Bloqueado por la historia"):
-                            "Aún no\n disponible",
-                        portraitW+10,47,cardW-portraitW-17,Mathf.Max(32,cardH-106),
+                        real?(unlocked?"NIVEL "+heroes[i].Level+" · PODER "+heroes[i].HeroPower:
+                            "Bloqueado por la historia"):"HUECO RESERVADO",
+                        10,cardH-88,cardW-20,27,
                         15,TextAnchor.MiddleCenter);
                 }
                 else
@@ -319,7 +330,7 @@ namespace Eldoria.HeroesUI
             for(int path=0;path<3;path++){
                 float left=16+path*(trackW+gap);
                 var track=Frame("Reserved talent path "+titles[path],board,left,14,trackW,trackH);
-                track.GetComponentInChildren<HeroesGoldFrameGraphic>().Border=accents[path];
+                TintFrame(track,accents[path]);
                 Label("Reserved path name",track,titles[path],6,14,trackW-12,56,26,TextAnchor.MiddleCenter).color=ivory;
                 float nodeSize=Mathf.Min(76f,trackW*.55f,Mathf.Max(28f,(trackH-110f)/3.4f));
                 float start=80f;
@@ -329,7 +340,7 @@ namespace Eldoria.HeroesUI
                 for(int rank=0;rank<3;rank++){
                     float nodeY=start+rank*step;
                     var node=Frame("Reserved talent node "+path+"-"+rank,track,center-nodeSize*.5f,nodeY,nodeSize,nodeSize);
-                    node.GetComponentInChildren<HeroesGoldFrameGraphic>().Border=accents[path];
+                    TintFrame(node,accents[path]);
                     var locked=node.gameObject.AddComponent<Button>();locked.interactable=false;
                     // Native uGUI lock geometry, not a baked mock level or icon
                     // claiming an implemented talent.

@@ -80,6 +80,17 @@ namespace Eldoria.Editor
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
                         Need(slots.All(t=>t.rect.width>0&&t.rect.height>0),
                             "Six visible hall slots have usable geometry "+name);
+                        foreach(var slot in slots){
+                            var rims=slot.GetComponentsInChildren<Image>()
+                                .Where(i=>i.name.StartsWith("Royal Gold /")&&i.name.EndsWith("rim")).ToArray();
+                            Need(rims.Length==4&&rims.All(i=>i.enabled&&i.color.a>.9f&&
+                                i.rectTransform.rect.width>0&&i.rectTransform.rect.height>0),
+                                "Four real visible Image rims per hall slot "+name);
+                        }
+                        if(height>width){
+                            var firstRow=slots.Count(t=>Mathf.Abs(t.anchoredPosition.y-slots[0].anchoredPosition.y)<1f);
+                            Need(firstRow==2,"Portrait gallery uses two readable columns "+name);
+                        }
                         Need(heroes.VisibleRoot.GetComponentsInChildren<Button>()
                             .Count(b=>b.name.StartsWith("Select hero "))==2,
                             "Only two real heroes are actionable "+name);
