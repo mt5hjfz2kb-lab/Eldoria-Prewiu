@@ -298,9 +298,14 @@ namespace Eldoria.HeroesUI
                 // Cover the actual aperture, not the whole horizontal card.
                 // Legacy fit-inside produced a tiny figure even when a
                 // mask and legitimate approved portrait were present.
-                float imageW=Mathf.Max(w,h*ratio),imageH=imageW/ratio;
-                float offsetY=fullBody ? .27f : .38f;
-                Place(image.rectTransform,(w-imageW)*.5f,-(imageH-h)*offsetY,imageW,imageH);
+                // Tall 3D Lyra requires an aperture cover, while Aldric's
+                // approved illustrated bust must be FIT inside the aperture.
+                // Applying cover to both enlarged Aldric's face to a cropped
+                // forehead at 1600x900; the two sources are not interchangeable.
+                float imageW=fullBody?Mathf.Max(w,h*ratio):Mathf.Min(w,h*ratio);
+                float imageH=imageW/ratio;
+                float top=fullBody?-(imageH-h)*.27f:(h-imageH)*.5f;
+                Place(image.rectTransform,(w-imageW)*.5f,top,imageW,imageH);
                 image.sprite=sprite;image.raycastTarget=false;
                 image.color=unlocked?Color.white:new Color(.42f,.46f,.51f,.90f);
             }
@@ -328,8 +333,9 @@ namespace Eldoria.HeroesUI
                 phoneLandscape?31f:47f,phoneLandscape?24:34).color=ivory;
             if(!phoneLandscape)
                 Label("Heroes hall introduction",content,
-                    "Aquí residen los héroes de Valoria. Reclútalos, fortalécelos y lidera con ellos.",
-                    titleX,92f,Mathf.Min(w*.65f,800f),40f,
+                    portraitLayout?"Reclútalos y forja su leyenda.":
+                        "Aquí residen los héroes de Valoria. Reclútalos, fortalécelos y lidera con ellos.",
+                    titleX,92f,Mathf.Min(w*.65f,800f),portraitLayout?25f:40f,
                     portraitLayout?17:21,TextAnchor.MiddleLeft);
             // The reference contains four category tabs; only TODOS has a
             // backing game-state contract. Future categories are visibly
