@@ -276,7 +276,7 @@ namespace Eldoria.HeroesUI
                 }
             }
             Surface("Hall / elevated header veil",content,0,0,w,headerH-8f,
-                new Color(.010f,.019f,.034f,widePhone?.75f:.66f))
+                new Color(.010f,.019f,.034f,widePhone ? .75f : .66f))
                 .GetComponent<Image>().raycastTarget=false;
             Surface("Hall / header gilding",content,12f,5f,w-24f,2f,
                 new Color(.81f,.60f,.29f,.75f)).GetComponent<Image>().raycastTarget=false;
@@ -299,7 +299,7 @@ namespace Eldoria.HeroesUI
                 // Legacy fit-inside produced a tiny figure even when a
                 // mask and legitimate approved portrait were present.
                 float imageW=Mathf.Max(w,h*ratio),imageH=imageW/ratio;
-                float offsetY=fullBody?.27f:.38f;
+                float offsetY=fullBody ? .27f : .38f;
                 Place(image.rectTransform,(w-imageW)*.5f,-(imageH-h)*offsetY,imageW,imageH);
                 image.sprite=sprite;image.raycastTarget=false;
                 image.color=unlocked?Color.white:new Color(.42f,.46f,.51f,.90f);
@@ -307,7 +307,7 @@ namespace Eldoria.HeroesUI
             // Luminous sill is anchored to the portrait viewport and is
             // decorative only; it does not intercept a hero selection.
             Surface("Hall / portrait contact sill",viewport,0,h-4f,w,4f,
-                new Color(.66f,.48f,.24f,unlocked?.82f:.40f))
+                new Color(.66f,.48f,.24f,unlocked ? .82f : .40f))
                 .GetComponent<Image>().raycastTarget=false;
         }
         void BuildSalon(float w,float h)
@@ -385,7 +385,7 @@ namespace Eldoria.HeroesUI
                 float iw=lateral?cardW-portraitW-15f:cardW-10f;
                 float ih=lateral?cardH-8f:identityH-5f;
                 Surface("Hero card identity shade",card,ix,iy,iw,ih,
-                    new Color(.008f,.016f,.027f,lateral?.84f:.91f))
+                    new Color(.008f,.016f,.027f,lateral ? .84f : .91f))
                     .GetComponent<Image>().raycastTarget=false;
                 if(real){
                     Label("Hero card name",card,heroes[i].DisplayName,ix+3f,
@@ -413,7 +413,7 @@ namespace Eldoria.HeroesUI
                 // rather than a pasted rectangle over a photograph.
                 Surface("Hall / card heraldic top",card,8f,6f,
                     Mathf.Max(12f,cardW-16f),1.5f,
-                    new Color(.89f,.72f,.38f,unlocked?.82f:.37f))
+                    new Color(.89f,.72f,.38f,unlocked ? .82f : .37f))
                     .GetComponent<Image>().raycastTarget=false;
                 if(real){
                     var hero=heroes[i];
