@@ -136,7 +136,7 @@ namespace Eldoria.UI.RoyalGold {
      // Keep initial construction on its real Build offer; use the existing
      // upgrade target once built, with the same gateway, costs and timers.
      var barracks=session.Read("barracks",english).Building;
-     SelectBuilding(barracks?.Action?.Kind=="Build"?"barracks":
+     SelectBuilding(barracks!=null&&barracks.Level==0?"barracks":
       current.BastionLevel>=3?"upgrade-barracks":"bastion");
      return;
     }if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
