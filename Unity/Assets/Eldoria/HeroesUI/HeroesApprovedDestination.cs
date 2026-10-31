@@ -298,7 +298,7 @@ namespace Eldoria.HeroesUI
             leftHallLight.color=new Color(1f,.53f,.17f,.26f);
             rightHallLight.color=new Color(1f,.65f,.27f,.21f);
             float headerH=widePhone?76f:h>w?Mathf.Clamp(h*.19f,130f,174f):142f;
-            float footerH=widePhone?55f:72f;
+            float footerH=widePhone?64f:72f;
             // Separate architectural overlays: stone pilasters, royal banners,
             // cornice and grounded plinth. No large opaque overlay hides the hall.
             var depth=new Color(.017f,.028f,.049f,.53f);
@@ -387,7 +387,7 @@ namespace Eldoria.HeroesUI
             bool portraitLayout=h>w;
             bool phoneLandscape=!portraitLayout&&h<500f;
             float headerH=phoneLandscape?76f:portraitLayout?Mathf.Clamp(h*.19f,130f,174f):142f;
-            float footerH=phoneLandscape?55f:72f;
+            float footerH=phoneLandscape?64f:72f;
             // Title and actual player count are separate from the arch backdrop.
             float titleX=phoneLandscape?18f:42f;
             Label("Hall / Eldoria heraldry",content,"✦  ELDORIA",titleX,
@@ -521,7 +521,7 @@ namespace Eldoria.HeroesUI
             float navWidth=Mathf.Min(w-22f,portraitLayout?540f:820f);
             float navCell=(navWidth-navGap*3f)/4f;
             float navLeft=(w-navWidth)*.5f;
-            float navHeight=phoneLandscape?36f:47f;
+            float navHeight=phoneLandscape?44f:47f;
             float navY=h-footerH+(phoneLandscape?9f:12f);
             var navBack=Button("Hall / nav return","VOLVER",navLeft,navY,navCell,navHeight,Close);
             HallControlArt(navBack.transform,"tab-idle",navCell,navHeight,true);
