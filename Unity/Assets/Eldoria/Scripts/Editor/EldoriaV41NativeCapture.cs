@@ -111,8 +111,10 @@ namespace Eldoria.Editor
                             hallNav.Any(b=>b.name=="Hall / nav reliquary"&&!b.interactable),
                             "Hall footer real navigation and future Relicario lock "+name);
                         if(name.Contains("small-phone")){
+                            var hallLayout=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                                .First(t=>t.name=="Heroes / live controls");
                             float hallScale=host.Hud.GetComponent<Canvas>().scaleFactor*
-                                layout.localScale.x;
+                                hallLayout.localScale.x;
                             Need(hallNav.All(b=>{
                                 var rect=b.GetComponent<RectTransform>();
                                 return rect.rect.width*hallScale>=44f&&
