@@ -110,6 +110,15 @@ namespace Eldoria.Editor
                             hallNav.Any(b=>b.name=="Hall / nav marches"&&b.interactable) &&
                             hallNav.Any(b=>b.name=="Hall / nav reliquary"&&!b.interactable),
                             "Hall footer real navigation and future Relicario lock "+name);
+                        if(name.Contains("small-phone")){
+                            float hallScale=host.Hud.GetComponent<Canvas>().scaleFactor*
+                                layout.localScale.x;
+                            Need(hallNav.All(b=>{
+                                var rect=b.GetComponent<RectTransform>();
+                                return rect.rect.width*hallScale>=44f&&
+                                    rect.rect.height*hallScale>=44f;
+                            }),"Hall four real navigation targets meet 44px touch size "+name);
+                        }
                         var hallTorches=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
                             .Where(t=>t.name.StartsWith("Hall / ")&&t.name.EndsWith(" living torch")).ToArray();
                         Need(hallTorches.Length==2 &&
