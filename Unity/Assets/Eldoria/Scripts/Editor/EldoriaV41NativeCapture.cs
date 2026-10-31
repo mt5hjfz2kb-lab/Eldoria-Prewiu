@@ -113,6 +113,16 @@ namespace Eldoria.Editor
                             var firstRow=slots.Count(t=>Mathf.Abs(t.anchoredPosition.y-slots[0].anchoredPosition.y)<1f);
                             Need(firstRow==3,"Portrait gallery preserves three approved card columns "+name);
                         }
+                        if(height>width){
+                            var intro=heroes.VisibleRoot.GetComponentsInChildren<Text>()
+                                .FirstOrDefault(t=>t.name=="Heroes hall introduction");
+                            var category=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                                .FirstOrDefault(t=>t.name=="Hall / category TODOS");
+                            Need(intro&&category&&
+                                -intro.rectTransform.anchoredPosition.y+intro.rectTransform.rect.height<=
+                                -category.anchoredPosition.y+1f,
+                                "Portrait intro must not collide with real hall category strip "+name);
+                        }
                         // Pixel-independent visual occupancy: the legacy 844x390
                         // hall passed six-slot and 44px controls while an opaque
                         // name band covered most of both real hero portraits.
@@ -130,6 +140,9 @@ namespace Eldoria.Editor
                                     aperture.rect.width*aperture.rect.height>=
                                         slot.rect.width*slot.rect.height*.25f,
                                     "Short-landscape hero artwork keeps prominent visible surface "+name);
+                                Need(portrait.rectTransform.rect.height>=aperture.rect.height*.72f&&
+                                    portrait.rectTransform.rect.width>=aperture.rect.width*.30f,
+                                    "Actual rendered portrait is sufficiently large within its aperture "+name);
                                 Need(shade.anchoredPosition.x>=
                                         aperture.anchoredPosition.x+aperture.rect.width-1f,
                                     "Hero identity panel cannot overlap portrait aperture "+name);
