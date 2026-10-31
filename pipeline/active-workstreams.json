@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-block01-exact-head-qa-20261031",
+      "owner": null,
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-10-31",
@@ -124,8 +124,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK01_EXACT_HEAD_UI_HEROES_QA",
-      "next": "Verify latest PR136 SHA native screenshots/regression and compare Hall/Heroes vertical/horizontal; no changes to source until defects evidenced.",
+      "phase": "BLOCK01_QA_COMPLETED_BLOCK02_ART_RECONSTRUCTION_PENDING",
+      "next": "Block 02: claim this canonical ID before any edits, recover approved original SHA48cbc4e73d4..., reconstruct only Hall and correct 844x390 portraits; reserve Windows only for actual Unity run.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -902,7 +902,7 @@
           "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
         }
       },
-      "previous_owner": "codex-eldoria-work-recovery-394584f46297",
+      "previous_owner": "chatgpt-eldoria-block01-exact-head-qa-20261031",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1533,11 +1533,21 @@
           "owner": null,
           "ownership_revision": 86,
           "reason": "BLOQUE 00 completed and canonical UI workstream released for owner-authorized BLOQUE 01; preserve PR136 and existing art/source evidence."
+        },
+        {
+          "owner": "chatgpt-eldoria-block01-exact-head-qa-20261031",
+          "ownership_revision": 87,
+          "released_at": "2026-10-31",
+          "phase": "BLOCK01_EXACT_HEAD_UI_HEROES_QA",
+          "reason": "Block 01 completed: visual A/B approved master vs native Unity candidate, technical PASS, artistic FAIL documented; continuation explicitly isolated in Block 02 Hall and Block 03 profiles.",
+          "evidence": "docs/evidence/block01-20261031/QA_REFERENCIA_VS_UNITY.md",
+          "source": "43525a5f2efbd55efe656a969195dad9c14a4583",
+          "native_run": 41232151180
         }
       ],
-      "ownership_revision": 87,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 88,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-10-31",
       "delivery_definition": {
@@ -1679,7 +1689,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-10-31T21:38:59.618Z",
+      "released_at": "2026-10-31",
       "delivery_closeout": {
         "completed_at": "2026-10-29T21:34:16.588Z",
         "workstream_id": "valoria-master-plan-layered-construction-20261016",
@@ -1782,7 +1792,7 @@
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
       "owner_instruction": "2026-10-31: Start BLOQUE 01 QA in existing canonical PR136; claim ownership before code, Windows only when actually running Unity.",
-      "release_reason": "BLOQUE 00 OWNER_AUTHORIZED_NORMAL_CHAT_HANDOFF; claim with CAS before BLOQUE 01 mutations; not completed; no release or publication approval."
+      "release_reason": "Block 01 QA verified and recorded, no gameplay/art code changes, not ART_APPROVED or merge-ready."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
