@@ -202,6 +202,12 @@ namespace Eldoria.Editor
             Need(JsonUtility.ToJson(host.City.Gateway.Snapshot())==beforeBuildNavigation,
                 "Construction navigation does not spend resources or recruit troops");
             Shot(host,"construction-shortcut-city-phone",900,1600);
+            host.Hud.SelectBuilding("");host.Select("barracks");yield return null;
+            Need(host.Hud.SelectedBuildingId=="upgrade-barracks"&&!screen.IsOpen,
+                "Physical chapter III+ barracks selection keeps its city upgrade cartouche");
+            Need(JsonUtility.ToJson(host.City.Gateway.Snapshot())==beforeBuildNavigation,
+                "Selecting the real barracks does not change gameplay or recruit troops");
+            Shot(host,"construction-barracks-city-landscape",1600,900);
             host.Hud.SelectBuilding("");
             screen.Open(RoyalGoldV3ManagementScreens.Destination.Training);yield return null;
             Shot(host,"training-reference-ratio",554,542);

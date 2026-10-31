@@ -1,3 +1,21 @@
+# CONTINUIDAD VIGENTE — 31/10/2026 — PR136
+
+El trabajo 4874286 YA está recuperado y reconciliado en remoto desde 6bbca109343ec4e63c62d9c43e57bf8125ac1345. La cabecera inferior «candidata local» es histórica y NO expresa el estado actual. Su fondo limpio original y el GLB de Lyra se conservan.
+
+Evidencia examinada: run 41198120660 SUCCESS, artifact 13041855793 (59.061.722 bytes, digest d60095f76d5a46280b4dedee8adc1221fe8410135e4b6f50648eaef0c6f56785). Las capturas prueban fondo/modelo reales pero ausencia visible de marcos en Salón, Resumen y Talentos, y tres columnas demasiado estrechas en 390×844. PASS técnico no equivale a calidad artística.
+
+Corrección estructural 877b7e76: marcos por Images estándar uGUI con tinta translúcida y cuatro bordes; dos columnas en vertical, seis plazas/dos héroes reales, composición compacta sin controles falsos. No se asegura una causa interna concreta de la malla ausente; se sustituye el camino de render que falló visualmente por el que ya dibujaba correctamente en la misma captura. Añadidas comprobaciones nativas de bordes/columnas. Pendiente inspección exacta de la candidata nueva.
+
+Corrección de navegación 8d8804ad y esta revisión: CONSTRUIR ya no envía un cuartel construido al destino de reclutamiento; usa la oferta Build inicial o el upgrade existente (Bastión en II, cuartel desde III). Seleccionar el modelo físico de cuartel desde III usa upgrade-barracks. Entrenamiento explícito y reglas/economía quedan conservados. Prueba por botón real de barra inferior y selección real, save idéntico y capturas ciudad vertical/horizontal.
+
+Titular canónico codex-eldoria-autonomous-delivery-20261031; Valoria revisión83, ámbitos Héroes/V4.1/diagnóstico móvil/archivo reconciliados bajo el mismo titular para eliminar el fallo real del gate de propiedad. Consultar main vivo antes de cada escritura. No duplicar Windows; las candidatas pendientes se coalescen y los runs ya iniciados terminan.
+
+Siguiente acción obligatoria: obtener resultado y artefactos del HEAD actual (consultar Actions, no asumir run ID), inspeccionar Salón/Resumen/Talentos/Habilidades y ciudad, reparar cualquier fallo y continuar Marchas → Entrenamiento → Ciudad → Retención/Mundo. Fuentes originales de Marchas/Entrenamiento/Buzón recuperadas y verificables en kit libfile_6934733906d081919f262f38b54c025c; los crops no son fondos limpios. No reactivar motor #138 ni fingir Paladines/Brujos: siguen bloqueados por contrato narrativo y balance. Incidencias vivas 138/131/109/107/105/96/95/88/86/34/33/32; PR127/128 son fuentes/archivo, 134/135/137 están consolidadas selectivamente en 136 y no deben fusionarse ciegamente. No cerrar por presencia de código ni iniciar nuevas ramas.
+
+Sin merge, publicación, gasto ni ART_APPROVED. La fidelidad completa solicitada sigue pendiente; no confundir este relevo con entrega final ni detenerse en un gate reparable.
+
+---
+
 # CANDIDATA LOCAL — 31/10/2026 — NO SUBIDA NI VALIDADA EN UNITY
 
 Base comprobada PR136: `b5a2230aa01fa3b09393080c2bd12e57c1219cc1`. Run 41184256386 SUCCESS y artifact 13037021475 descargado; vistas Salón, Lyra y pestañas inspeccionadas. Su PASS funcional no aprueba el arte.

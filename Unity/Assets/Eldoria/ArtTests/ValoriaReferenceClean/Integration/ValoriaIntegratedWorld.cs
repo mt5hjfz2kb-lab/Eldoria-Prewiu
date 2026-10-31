@@ -225,6 +225,13 @@ namespace Eldoria.ReferenceClean {
    if(id=="gate")return TrySetWorld(true);
    if(id=="valoria-map-city")return TrySetWorld(false);
    if(IsWorldTarget(id)&&!TrySetWorld(true))return false;
+   // A physical built barracks is a city building. From chapter III its
+   // upgrade offer has a separate existing target; recruitment remains an
+   // explicit Army/training destination, never an automatic building overlay.
+   if(id=="barracks"){
+    var state=boundGateway.Snapshot();
+    if(state.BastionLevel>=3&&state.BarracksLevel>0)id="upgrade-barracks";
+   }
    Hud.SelectBuilding(id);return true;
   }
   public static bool IsWorldTarget(string id)=>LocalGateway.IsChapterThreeTarget(id)||(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal))||id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria"||id=="old-watch-ruin";
