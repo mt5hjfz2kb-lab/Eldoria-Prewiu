@@ -113,6 +113,20 @@ namespace Eldoria.Editor
                             var firstRow=slots.Count(t=>Mathf.Abs(t.anchoredPosition.y-slots[0].anchoredPosition.y)<1f);
                             Need(firstRow==3,"Portrait gallery preserves three approved card columns "+name);
                         }
+                        foreach(var slot in slots){
+                            var aperture=slot.GetComponentsInChildren<RectTransform>()
+                                .FirstOrDefault(t=>t.name=="Hero card portrait aperture");
+                            var portrait=slot.GetComponentsInChildren<Image>()
+                                .FirstOrDefault(t=>t.name=="Verified portrait");
+                            Need(aperture&&portrait&&portrait.sprite,
+                                "Every hero card has real image source "+name);
+                            Need(portrait.rectTransform.rect.width>=aperture.rect.width*.60f,
+                                "Portrait occupies at least 60% of each live aperture "+name);
+                            if(slot.name.StartsWith("Reserved future hero slot "))
+                                Need(portrait.rectTransform.rect.width>=aperture.rect.width*.95f&&
+                                    portrait.rectTransform.rect.height>=aperture.rect.height*.95f,
+                                    "Locked hero silhouette fills its real portrait aperture "+name);
+                        }
                         if(height>width){
                             var intro=heroes.VisibleRoot.GetComponentsInChildren<Text>()
                                 .FirstOrDefault(t=>t.name=="Heroes hall introduction");
