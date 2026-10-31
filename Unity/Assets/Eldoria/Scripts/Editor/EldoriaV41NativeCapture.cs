@@ -196,13 +196,13 @@ namespace Eldoria.Editor
             var beforeBuildNavigation=JsonUtility.ToJson(host.City.Gateway.Snapshot());
             var buildShortcut=host.Hud.Navigation.Items.First(i=>
                 i.Section==Eldoria.UI.RoyalGold.RoyalSection.Inventory);
-            buildShortcut.Button.onClick.Invoke();yield return null;
+            buildShortcut.Button.onClick.Invoke();
             Need(host.Hud.SelectedBuildingId=="upgrade-barracks"&&!screen.IsOpen,
                 "Real CONSTRUIR navigation keeps the built barracks in its city cartouche");
             Need(JsonUtility.ToJson(host.City.Gateway.Snapshot())==beforeBuildNavigation,
                 "Construction navigation does not spend resources or recruit troops");
             Shot(host,"construction-shortcut-city-phone",900,1600);
-            host.Hud.SelectBuilding("");host.Select("barracks");yield return null;
+            host.Hud.SelectBuilding("");host.Select("barracks");
             Need(host.Hud.SelectedBuildingId=="upgrade-barracks"&&!screen.IsOpen,
                 "Physical chapter III+ barracks selection keeps its city upgrade cartouche");
             Need(JsonUtility.ToJson(host.City.Gateway.Snapshot())==beforeBuildNavigation,
