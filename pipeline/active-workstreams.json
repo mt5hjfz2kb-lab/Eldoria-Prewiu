@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-31T13:43:31.888Z",
+  "updated_at": "2026-10-31T13:55:12.700Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -112,7 +112,8 @@
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
         "Unity/Assets/Eldoria/Tests/EditMode/CameraGestureTests.cs",
         "docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md",
-        "docs/documentation-catalog.json"
+        "docs/documentation-catalog.json",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -1515,7 +1516,7 @@
           "reason": "Owner explicitly requests autonomous continuation of pending Eldoria work in current chat; preserve PR136 and recovered candidate."
         }
       ],
-      "ownership_revision": 82,
+      "ownership_revision": 83,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
