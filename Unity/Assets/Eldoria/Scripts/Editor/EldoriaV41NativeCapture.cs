@@ -193,6 +193,16 @@ namespace Eldoria.Editor
             state.Retention.Orders.Clear();state.ChapterThree.InvestigationEndsUtcTicks=0;
             new FileStateStore(host.City.SaveFile).Save(state);host.City.ReloadForProbe();yield return null;
             var screen=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+            var beforeBuildNavigation=JsonUtility.ToJson(host.City.Gateway.Snapshot());
+            var buildShortcut=host.Hud.Navigation.Items.First(i=>
+                i.Section==Eldoria.UI.RoyalGold.RoyalSection.Inventory);
+            buildShortcut.Button.onClick.Invoke();yield return null;
+            Need(host.Hud.SelectedBuildingId=="upgrade-barracks"&&!screen.IsOpen,
+                "Real CONSTRUIR navigation keeps the built barracks in its city cartouche");
+            Need(JsonUtility.ToJson(host.City.Gateway.Snapshot())==beforeBuildNavigation,
+                "Construction navigation does not spend resources or recruit troops");
+            Shot(host,"construction-shortcut-city-phone",900,1600);
+            host.Hud.SelectBuilding("");
             screen.Open(RoyalGoldV3ManagementScreens.Destination.Training);yield return null;
             Shot(host,"training-reference-ratio",554,542);
             Shot(host,"training-phone",900,1600);Shot(host,"training-small-phone",390,844);Shot(host,"training-small-phone-landscape",844,390);Shot(host,"training-landscape",1600,900);
