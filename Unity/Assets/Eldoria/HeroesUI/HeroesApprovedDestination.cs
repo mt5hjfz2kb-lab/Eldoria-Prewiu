@@ -215,6 +215,20 @@ namespace Eldoria.HeroesUI
         }
         // Production art is independent from the approved sheet. Never crop
         // controls, lettering or characters out of that sheet into runtime UI.
+        // Actual isolated textures already shipping in the approved Royal
+        // Gold UI kit. Never paste baked labels or the complete reference
+        // screenshot into a live control.
+        void HallControlArt(Transform parent,string asset,float w,float h,bool button=false)
+        {
+            var source=Resources.Load<Texture2D>("EldoriaV41/"+asset);
+            if(!source)return;
+            var layer=Rect("Hall / authored control material "+asset,parent);
+            Place(layer,0,0,w,h);
+            var visual=layer.gameObject.AddComponent<RawImage>();
+            visual.texture=source;visual.raycastTarget=false;
+            // Real Button caption always remains above the authored plate.
+            if(button)layer.SetSiblingIndex(Mathf.Min(5,parent.childCount-1));
+        }
         Texture2D hallArchitecture, hallLightTexture;
         RawImage leftHallLight, rightHallLight;
         Texture2D HallGlow()
@@ -401,6 +415,7 @@ namespace Eldoria.HeroesUI
                     barX+i*(filterW+filterGap),barY,filterW,phoneLandscape?32f:31f,
                     i==0?new Color(.39f,.27f,.10f,.92f):new Color(.026f,.038f,.054f,.83f));
                 strip.GetComponent<Image>().raycastTarget=false;
+                HallControlArt(strip,i==0?"tab-active":"tab-idle",filterW,phoneLandscape?32f:31f);
                 Surface("Hall / category top edge",strip,0,0,filterW,1.5f,
                     i==0?gold:new Color(.45f,.39f,.27f,.65f))
                     .GetComponent<Image>().raycastTarget=false;
@@ -508,22 +523,26 @@ namespace Eldoria.HeroesUI
             float navLeft=(w-navWidth)*.5f;
             float navHeight=phoneLandscape?36f:47f;
             float navY=h-footerH+(phoneLandscape?9f:12f);
-            Button("Hall / nav return","VOLVER",navLeft,navY,navCell,navHeight,Close);
+            var navBack=Button("Hall / nav return","VOLVER",navLeft,navY,navCell,navHeight,Close);
+            HallControlArt(navBack.transform,"tab-idle",navCell,navHeight,true);
             Surface("Hall / selected heroes tab glow",content,
                 navLeft+navCell+navGap,navY,navCell,navHeight,
                 new Color(.47f,.25f,.065f,.91f)).GetComponent<Image>().raycastTarget=false;
             var selected=Button("Hall / nav heroes",
                 "HÉROES  "+unlockedCount+"/"+heroes.Length,
                 navLeft+navCell+navGap,navY,navCell,navHeight,()=>Select(Page.Salon));
+            HallControlArt(selected.transform,"gold-button",navCell,navHeight,true);
             foreach(var t in selected.GetComponentsInChildren<Text>())
                 t.color=new Color(.99f,.91f,.65f);
-            Button("Hall / nav marches","MARCHAS",
+            var navMarches=Button("Hall / nav marches","MARCHAS",
                 navLeft+(navCell+navGap)*2f,navY,navCell,navHeight,()=>{
                     var management=GetComponent<RoyalGoldV3ManagementScreens>();
                     if(management){Suspend();management.Open(RoyalGoldV3ManagementScreens.Destination.March);}
                 });
-            Button("Hall / nav reliquary","RELICARIO",
+            HallControlArt(navMarches.transform,"tab-idle",navCell,navHeight,true);
+            var navRelicary=Button("Hall / nav reliquary","RELICARIO",
                 navLeft+(navCell+navGap)*3f,navY,navCell,navHeight,()=>{},false);
+            HallControlArt(navRelicary.transform,"tab-idle",navCell,navHeight,true);
         }
         void BuildReservedTalents(float x,float y,float w,float h,bool portrait)
         {
