@@ -188,6 +188,12 @@ namespace Eldoria.HeroesUI
             var backdrop=Surface("Hall / navy environmental ground",content,0,0,w,h,
                 new Color(.023f,.031f,.047f,1f));
             backdrop.GetComponent<Image>().raycastTarget=false;
+            // Actual independent vaulted chamber behind hero cards. Unlike the
+            // flattened v14 screenshot it contains no heroes, text or controls.
+            // This scene is a passive mesh on the existing HUD (zero raycasts).
+            var scenery=Rect("Hall / independent vaulted chamber",content);
+            Place(scenery,0,0,w,h);
+            scenery.gameObject.AddComponent<HeroesHallScenicGraphic>().raycastTarget=false;
             var source=Resources.Load<Texture2D>("EldoriaV41/HeroesApprovedMaster");
             if(source && source.width==1536 && source.height==1024)
             {
@@ -207,23 +213,9 @@ namespace Eldoria.HeroesUI
             float topHeight=Mathf.Min(210,h*.28f);
             Surface("Bronze hall lintel",content,0,topHeight-3,w,3,
                 new Color(.66f,.43f,.19f)).GetComponent<Image>().raycastTarget=false;
-            // Architectural accents and warm torchlight match the approved
-            // navy / gold language without baking text or fake hero states.
-            for(int i=0;i<5;i++)
-            {
-                float bx=w*(i+.5f)/5f;
-                Surface("Hall vaulted column "+i,content,bx-2,topHeight,4,
-                    Mathf.Max(1,h-topHeight-86),new Color(.22f,.16f,.12f,.35f))
-                    .GetComponent<Image>().raycastTarget=false;
-            }
-            for(int i=0;i<2;i++)
-            {
-                float bx=i==0?10:w-21;
-                Surface("Hall copper torch "+i,content,bx,topHeight+12,11,42,
-                    new Color(.39f,.25f,.10f,.70f)).GetComponent<Image>().raycastTarget=false;
-                Surface("Hall torch glow "+i,content,bx-5,topHeight,21,22,
-                    new Color(.92f,.58f,.18f,.31f)).GetComponent<Image>().raycastTarget=false;
-            }
+            // The old flat vertical rules/rectangular fake torches are replaced
+            // with real mesh arch, floor perspective, banners and light geometry.
+            // The authentic v14 header remains over this independent backdrop.
             Surface("Hall footer gold line",content,16,h-79,w-32,2,gold)
                 .GetComponent<Image>().raycastTarget=false;
         }
