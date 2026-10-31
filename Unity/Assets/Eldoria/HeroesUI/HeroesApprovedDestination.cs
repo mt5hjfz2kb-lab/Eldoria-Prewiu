@@ -201,7 +201,7 @@ namespace Eldoria.HeroesUI
                 // The original strip contains concept lettering on the left.
                 // Cover those pixels completely; the real title below is live.
                 Surface("Hide concept lettering",content,0,0,w*.68f,
-                    Mathf.Min(210,h*.28f),new Color(.029f,.039f,.056f,1f))
+                    Mathf.Min(210,h*.28f),new Color(.023f,.031f,.047f,1f))
                     .GetComponent<Image>().raycastTarget=false;
             }
             float topHeight=Mathf.Min(210,h*.28f);
