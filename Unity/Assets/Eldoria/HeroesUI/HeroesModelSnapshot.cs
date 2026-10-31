@@ -10,7 +10,7 @@ namespace Eldoria.HeroesUI
     {
         RenderTexture texture;GameObject previous,stage,visual;RawImage output;
         Camera camera;Light key,rim,fill;Animation idle;AnimationState idleState;
-        Mesh groundMesh;Material groundMaterial;Bounds bounds;float yaw=90,nextRender;
+        Mesh groundMesh;Material groundMaterial;Bounds bounds;float yaw=90,nextRender;int renderLayer;
         public bool HasModel=>texture&&previous&&stage;
         public bool HasPerspectiveGround=>camera&&!camera.orthographic&&groundMaterial&&groundMaterial.shader.isSupported;
         public bool SamplesOriginalIdle=>idle&&idleState!=null;
@@ -19,7 +19,10 @@ namespace Eldoria.HeroesUI
         {
             if(!model||!target)return false;
             try{
-                if(previous!=model||!stage){Release();yaw=initialYaw;Build(model);previous=model;}
+                // The one canonical live profile and its inactive portrait cache can
+                // coexist while an asynchronous model import completes. Never mix them.
+                int layer=target.gameObject.activeInHierarchy?31:30;
+                if(previous!=model||!stage||renderLayer!=layer){Release();renderLayer=layer;yaw=initialYaw;Build(model);previous=model;}
                 output=target;RenderFrame();target.texture=texture;target.enabled=true;return true;
             }catch(Exception error){Debug.LogWarning("HERO_PREVIEW_UNAVAILABLE "+error);Release();return false;}
         }
@@ -33,7 +36,7 @@ namespace Eldoria.HeroesUI
             // Frame original mesh units; the city normalizes Aldric to metres.
             // Inheriting that parent scale makes legacy skin baking count it twice.
             visual.transform.localScale=Vector3.one;
-            foreach(var node in visual.GetComponentsInChildren<Transform>(true))node.gameObject.layer=31;
+            foreach(var node in visual.GetComponentsInChildren<Transform>(true))node.gameObject.layer=renderLayer;
             foreach(var script in visual.GetComponentsInChildren<MonoBehaviour>(true))script.enabled=false;
             foreach(var animator in visual.GetComponentsInChildren<Animator>(true))animator.enabled=false;
             foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true)){
@@ -62,7 +65,7 @@ namespace Eldoria.HeroesUI
             groundMaterial=new Material(shader){name="Hero / transparent shadow receiver"};
             groundMaterial.SetColor("_ShadowTint",new Color(.035f,.025f,.018f,.72f));
             var floor=new GameObject("Hero / physical ground contact",typeof(MeshFilter),typeof(MeshRenderer));
-            floor.transform.SetParent(stage.transform,false);floor.layer=31;
+            floor.transform.SetParent(stage.transform,false);floor.layer=renderLayer;
             floor.transform.position=new Vector3(bounds.center.x,bounds.min.y-.002f,bounds.center.z);
             float extent=height*1.8f;groundMesh=new Mesh{name="Hero / four-vertex shadow receiver"};
             groundMesh.vertices=new[]{new Vector3(-extent,0,-extent),new Vector3(-extent,0,extent),new Vector3(extent,0,extent),new Vector3(extent,0,-extent)};
@@ -72,7 +75,7 @@ namespace Eldoria.HeroesUI
             ground.shadowCastingMode=ShadowCastingMode.Off;ground.receiveShadows=true;
             var cameraObject=new GameObject("Hero / perspective camera");cameraObject.transform.SetParent(stage.transform,false);
             camera=cameraObject.AddComponent<Camera>();camera.enabled=false;camera.orthographic=false;
-            camera.fieldOfView=32;camera.aspect=2f/3f;camera.cullingMask=1<<31;
+            camera.fieldOfView=32;camera.aspect=2f/3f;camera.cullingMask=1<<renderLayer;
             camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.clear;
             camera.allowHDR=false;camera.allowMSAA=false;camera.nearClipPlane=.01f;camera.farClipPlane=height*12;
             var data=cameraObject.AddComponent<UniversalAdditionalCameraData>();data.renderPostProcessing=false;data.renderShadows=true;
@@ -84,7 +87,7 @@ namespace Eldoria.HeroesUI
         }
         Light Lamp(string name,Color color,float intensity){
             var go=new GameObject(name);go.transform.SetParent(stage.transform,false);
-            var light=go.AddComponent<Light>();light.type=LightType.Directional;light.cullingMask=1<<31;
+            var light=go.AddComponent<Light>();light.type=LightType.Directional;light.cullingMask=1<<renderLayer;
             light.color=color;light.intensity=intensity;return light;
         }
         static Bounds ActualBounds(GameObject model){
@@ -116,7 +119,7 @@ namespace Eldoria.HeroesUI
             var lights=UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
             var masks=new int[lights.Length];for(int i=0;i<lights.Length;i++)masks[i]=lights[i].cullingMask;
             try{
-                for(int i=0;i<lights.Length;i++)if(lights[i]!=key&&lights[i]!=rim&&lights[i]!=fill)lights[i].cullingMask&=~(1<<31);
+                for(int i=0;i<lights.Length;i++)if(lights[i]!=key&&lights[i]!=rim&&lights[i]!=fill)lights[i].cullingMask&=~(1<<renderLayer);
                 RenderSettings.sun=key;RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.ambientLight=new Color(.30f,.32f,.37f);
                 RenderSettings.reflectionIntensity=.35f;RenderSettings.fog=false;camera.Render();nextRender=Time.unscaledTime+.20f;
             }finally{

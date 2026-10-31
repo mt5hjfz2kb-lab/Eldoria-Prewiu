@@ -314,6 +314,27 @@ namespace Eldoria.Editor
             var livePortrait=heroes.VisibleRoot.GetComponent<Eldoria.HeroesUI.HeroesModelSnapshot>();
             Need(livePortrait&&livePortrait.HasModel&&livePortrait.HasPerspectiveGround&&livePortrait.SamplesOriginalIdle,
                 "Aldric profile renders live original Idle in perspective with a supported physical shadow receiver");
+            // Reproduce a late asynchronous Lyra portrait import while Aldric is
+            // already visible. Separate cameras must exclude the other stage.
+            float cacheDeadline=Time.realtimeSinceStartup+30;
+            while(!heroes.ReadModelRoot("lyra")&&Time.realtimeSinceStartup<cacheDeadline)yield return null;
+            var concurrentSource=heroes.ReadModelRoot("lyra");
+            Need(concurrentSource!=null,"Actual Lyra geometry is ready for concurrent-cache isolation probe");
+            var cacheObject=new GameObject("Native / concurrent portrait cache",typeof(RectTransform),typeof(CanvasRenderer),typeof(RawImage));
+            cacheObject.SetActive(false);
+            var cachePreview=cacheObject.AddComponent<Eldoria.HeroesUI.HeroesModelSnapshot>();
+            try{
+                Need(cachePreview.Show(concurrentSource,cacheObject.GetComponent<RawImage>(),30),
+                    "Actual inactive portrait cache can render while Aldric profile stays open");
+                var cameras=Resources.FindObjectsOfTypeAll<Camera>()
+                    .Where(c=>c&&c.name=="Hero / perspective camera"&&c.gameObject.activeInHierarchy).ToArray();
+                Need(cameras.Length==2&&(cameras[0].cullingMask&cameras[1].cullingMask)==0,
+                    "Simultaneous live hero and portrait cache use disjoint camera culling masks");
+                foreach(var camera in cameras)
+                    Need(camera.transform.parent.GetComponentsInChildren<Renderer>(true)
+                        .All(r=>(camera.cullingMask&(1<<r.gameObject.layer))!=0),
+                        "Each camera includes its own original geometry and physical ground");
+            }finally{cachePreview.Release();UnityEngine.Object.Destroy(cacheObject);}
             Need(Resources.FindObjectsOfTypeAll<Camera>()
                 .Count(c=>c&&c.name=="Hero / perspective camera"&&c.gameObject.activeInHierarchy)==1,
                 "Exactly one live hero stage remains; inactive Lyra portrait capture has explicitly released its stage");
