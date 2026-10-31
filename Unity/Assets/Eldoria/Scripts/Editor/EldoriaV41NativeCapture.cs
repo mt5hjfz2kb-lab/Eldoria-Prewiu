@@ -307,6 +307,13 @@ namespace Eldoria.Editor
             float heroDeadline=Time.realtimeSinceStartup+90;
             while(!heroes.ReadModelRoot("aldric")&&Time.realtimeSinceStartup<heroDeadline)yield return null;
             Need(heroes.ReadModelRoot("aldric")!=null,"Approved Aldric geometry is actually available for the profile");
+            var originalAldric=UnityEngine.Object.FindFirstObjectByType<Eldoria.AldricCity.AldricCityRoaming>();
+            Need(originalAldric&&originalAldric.UsesOriginalAnimationPose,
+                "Aldric uses original animation without the duplicate arm deformation layer");
+            heroes.Refresh();yield return null;
+            var livePortrait=heroes.VisibleRoot.GetComponent<Eldoria.HeroesUI.HeroesModelSnapshot>();
+            Need(livePortrait&&livePortrait.HasModel&&livePortrait.HasPerspectiveGround&&livePortrait.SamplesOriginalIdle,
+                "Aldric profile renders live original Idle in perspective with a supported physical shadow receiver");
             foreach(var page in new[]{Eldoria.HeroesUI.HeroesApprovedDestination.Page.Resumen,
                 Eldoria.HeroesUI.HeroesApprovedDestination.Page.Habilidades,
                 Eldoria.HeroesUI.HeroesApprovedDestination.Page.Talentos,

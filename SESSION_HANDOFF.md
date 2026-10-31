@@ -1,3 +1,12 @@
+## 2026-10-31 — audit response: original Aldric pose and live portrait depth
+
+Owner identifies flat screens and suspect Aldric hands. Native d380 close-ups confirm the concern. Exact approved GLB SHA256 c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b remains untouched. Original Idle already rotates upper arms about 29 degrees; city added a second 35-degree additive layer. Exact-source skinning reproduction shows this extra layer increases hand distortion. Removed its application, preserving geometry, weights, clips and saves. Analytical renders are diagnostic, NOT Unity evidence.
+
+Replaced frozen orthographic baked portrait with an isolated live original-model clone, original Idle sampling, perspective, window key/torch rim and transparent physical contact-shadow receiver. Scene lighting is restored after each offscreen render. No new paid asset or rig. Native acceptance requires original pose and supported live perspective/shadow stage; existing city movement/hand orientation/save gates remain intact. Exact candidate requires real Unity screenshots and full regression; no artistic approval asserted. Earlier candidate 70909884 passed entire native UI/progression/EditMode/PlayMode workflow 41210046641; this does not certify these new changes.
+
+# PIVOTE MACROSCÓPICO DE GALERÍA — 31/10/2026
+
+
 # PIVOTE MACROSCÓPICO DE GALERÍA — 31/10/2026
 
 La captura d3808a31/run41209715548 prueba que la cartela ya no tiene el acceso Vigilantes superpuesto y el save permanece idéntico. Pero el retrato como franja pequeña, incluso con cover, recorta mal a Aldric y no reproduce la lámina. Se descartan las dos variantes (fit-inside en franja y cover en franja), no continuar ajustando ese recorte.
