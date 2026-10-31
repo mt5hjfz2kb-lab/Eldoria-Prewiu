@@ -76,6 +76,8 @@ namespace Eldoria.Domain
         public string OwnerId = "player-local";
         public string TargetId = "";
         public string HeroId = "aldric";
+        // V4.1 additive roster: individual selected heroes; HeroId remains legacy resolver key.
+        public List<string> HeroIds = new List<string>();
         public ArmyRoster Troops = new ArmyRoster();
         public string Phase = "idle"; // idle, outbound, gathering, returning
         public long PhaseEndsUtcTicks;
@@ -86,6 +88,7 @@ namespace Eldoria.Domain
         {
             var copy=(MarchState)MemberwiseClone();
             copy.Troops=Troops?.Copy()??new ArmyRoster();
+            copy.HeroIds=HeroIds==null?new List<string>():new List<string>(HeroIds);
             copy.Route=Route?.ConvertAll(x=>x.Copy())??new List<WorldRoutePoint>();
             return copy;
         }
@@ -174,7 +177,11 @@ namespace Eldoria.Domain
         public List<MarchState> ExtraMarches = new List<MarchState>();
         public bool MarchConfigured;
         public string PreparedHeroId = "aldric";
+        // Same three-slot order as the approved march screen; empty slots are not heroes.
+        public List<string> PreparedHeroIds = new List<string>();
         public ArmyRoster PreparedTroops = new ArmyRoster();
+        // Mailbox does not grant rewards; it references reports and reward ledger IDs.
+        public EldoriaV41Mailbox Mailbox = new EldoriaV41Mailbox();
         public List<WorldResourceLocation> WorldResourceLocations = new List<WorldResourceLocation>();
         public List<WorldCreatureLocation> WorldCreatureLocations = new List<WorldCreatureLocation>();
         public int ForestRemaining = 1250;
@@ -207,6 +214,21 @@ namespace Eldoria.Domain
         public const int PerHeroLevel = 5;
         public const int HeroXpPerLevel = 80;
         public const int MaxHeroLevel = 20;
+
+        public static bool HeroAvailable(PlayerState state, string hero)
+        {
+            if(string.IsNullOrEmpty(hero))return true;
+            foreach(var march in MarchCapacityRules.WorldMarches(state))
+            {
+                if(march.Phase=="idle")continue;
+                if(march.HeroIds!=null && march.HeroIds.Count>0)
+                {
+                    if(march.HeroIds.Contains(hero))return false;
+                }
+                else if(march.HeroId==hero || march.HeroId=="aldric+lyra")return false;
+            }
+            return true;
+        }
 
         public static int HeroLevel(PlayerState s, string heroId)
         {

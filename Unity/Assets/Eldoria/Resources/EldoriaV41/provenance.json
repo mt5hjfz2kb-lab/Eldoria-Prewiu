@@ -1,0 +1,321 @@
+{
+  "references": {
+    "march": {
+      "file": "marcha_3_heroes_porcentajes_APROBADA.png",
+      "sha256": "9afd178a57783f83bd0ccb5bbfb78c50643eb75ae74d01cbed63375d7dcd091c",
+      "dimensions": [
+        941,
+        1672
+      ]
+    },
+    "style": {
+      "file": "lamina_estilo_ligero_APROBADA.png",
+      "sha256": "554329927bfd09cf6a42ce8eae930a03a3f0d3193a1a933c1db6d4a9c58cab93",
+      "dimensions": [
+        1536,
+        1024
+      ]
+    },
+    "training": {
+      "file": "entrenamiento_recorte_lamina_APROBADO.png",
+      "sha256": "a110ba0ffd2a08fa4976c488f87e624fa5601fe3f36b223ee82d19f306adbadc",
+      "dimensions": [
+        554,
+        542
+      ]
+    },
+    "mailbox": {
+      "file": "buzon_final_pestanas_APROBADO.png",
+      "sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
+      "dimensions": [
+        1169,
+        1345
+      ]
+    }
+  },
+  "derivatives": [
+    {
+      "name": "mail-battle",
+      "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
+      "regions_xyxy": [
+        [
+          109,
+          407,
+          237,
+          513
+        ]
+      ],
+      "sha256": "d25c8a551e2e4e9ac2a4b938b53c78b5039fc8fb1bf133eefbc7f37a4d022a14",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "unread-dot",
+      "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
+      "regions_xyxy": [
+        [
+          82,
+          380,
+          113,
+          411
+        ]
+      ],
+      "sha256": "c142e1a446c42747bfa6bff0ea87c679edbc4db0b3c1ec92a1c0c4a857aab68e",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "mail-march",
+      "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
+      "regions_xyxy": [
+        [
+          109,
+          564,
+          237,
+          693
+        ]
+      ],
+      "sha256": "2abc9eef2275b0a1f1287e4f3d2a5493dbadb8d7cfda61550cba44dc736607d1",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "mail-reward",
+      "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
+      "regions_xyxy": [
+        [
+          109,
+          746,
+          237,
+          876
+        ]
+      ],
+      "sha256": "c5691169a7dbb1358ca446e9adc8b86b51e258a2d9440a0e1b9d7aecd60580c3",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "mail-system",
+      "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
+      "regions_xyxy": [
+        [
+          109,
+          929,
+          237,
+          1060
+        ]
+      ],
+      "sha256": "ae8ef89f0b7946e9056aa0e9f5d91cbf9a8ce30eceec98387890eb2aa1034d53",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "mail-narrative",
+      "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
+      "regions_xyxy": [
+        [
+          109,
+          1112,
+          237,
+          1244
+        ]
+      ],
+      "sha256": "075dde9baaa0bd2ede8716dbc3422a25ae6428d132d79557befcf68eb1e6953d",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "archer-row",
+      "source_sha256": "9afd178a57783f83bd0ccb5bbfb78c50643eb75ae74d01cbed63375d7dcd091c",
+      "regions_xyxy": [
+        [
+          40,
+          689,
+          309,
+          850
+        ]
+      ],
+      "sha256": "715e362de49563be670a7d8654e887cdcbbd6c09a3e119ddd7e707b04dc82371",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "aldric-face",
+      "source_sha256": "9afd178a57783f83bd0ccb5bbfb78c50643eb75ae74d01cbed63375d7dcd091c",
+      "regions_xyxy": [
+        [
+          118,
+          213,
+          256,
+          447
+        ]
+      ],
+      "sha256": "21d75ad7a3157c36f35fe9feabe4d442c07bff82fa8eb329180814bedb39088a",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "hero-support",
+      "source_sha256": "9afd178a57783f83bd0ccb5bbfb78c50643eb75ae74d01cbed63375d7dcd091c",
+      "regions_xyxy": [
+        [
+          365,
+          210,
+          609,
+          460
+        ]
+      ],
+      "sha256": "48798e7858592e77eafb2626dc59d9572fad16a25dae850c1c8f0e0673b25f21",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "hero-locked",
+      "source_sha256": "9afd178a57783f83bd0ccb5bbfb78c50643eb75ae74d01cbed63375d7dcd091c",
+      "regions_xyxy": [
+        [
+          634,
+          210,
+          880,
+          460
+        ]
+      ],
+      "sha256": "82720b59d754f5246ed4363262e57c2f8e5ec5f92e4617ce42ad575bf39aae45",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "training-archer",
+      "source_sha256": "a110ba0ffd2a08fa4976c488f87e624fa5601fe3f36b223ee82d19f306adbadc",
+      "regions_xyxy": [
+        [
+          111,
+          59,
+          295,
+          535
+        ]
+      ],
+      "sha256": "93c32afd7bad9cd59ad3d5c309f864604483935ef8602c82f9bf88c671796142",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "training-landscape",
+      "source_sha256": "a110ba0ffd2a08fa4976c488f87e624fa5601fe3f36b223ee82d19f306adbadc",
+      "regions_xyxy": [
+        [
+          345,
+          64,
+          537,
+          100
+        ]
+      ],
+      "sha256": "2b6f11d6e40438769e3dd802934b30d78f5637bcf168db285d2c1482a356857b",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "march-scenery",
+      "source_sha256": "9afd178a57783f83bd0ccb5bbfb78c50643eb75ae74d01cbed63375d7dcd091c",
+      "regions_xyxy": [
+        [
+          4,
+          95,
+          937,
+          125
+        ]
+      ],
+      "sha256": "1baaa20c75d5b97f3e42e0c7329f0e1599c08395b0a33e1c4646ed48cfd10a8e",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "mail-card",
+      "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
+      "regions_xyxy": [
+        [
+          63,
+          544,
+          1125,
+          710
+        ],
+        [
+          800,
+          580,
+          950,
+          620
+        ]
+      ],
+      "sha256": "dd396202e5125c427873f9d83eb4b901ba43b27e075387b12527a93f9a8b7dad",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "tab-active",
+      "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
+      "regions_xyxy": [
+        [
+          54,
+          201,
+          322,
+          330
+        ],
+        [
+          80,
+          223,
+          230,
+          240
+        ]
+      ],
+      "sha256": "0ca29073666f09b54c4a514f63c4b82d2fe8915ad17cc4b475a5adc38fd33567",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "tab-idle",
+      "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
+      "regions_xyxy": [
+        [
+          337,
+          204,
+          594,
+          326
+        ],
+        [
+          380,
+          225,
+          550,
+          240
+        ]
+      ],
+      "sha256": "af9b104ca935bc49a02ae81ad6a4b6a04b89015afd1c2a5a6cae35db83e350c3",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "blue-panel",
+      "source_sha256": "9afd178a57783f83bd0ccb5bbfb78c50643eb75ae74d01cbed63375d7dcd091c",
+      "regions_xyxy": [
+        [
+          363,
+          208,
+          612,
+          594
+        ],
+        [
+          400,
+          525,
+          570,
+          570
+        ]
+      ],
+      "sha256": "78733cbf4404ed050f504f1efa1a024f9fffa674b11a667de3ba71eab58d4a28",
+      "method": "source_pixels_only"
+    },
+    {
+      "name": "gold-button",
+      "source_sha256": "9afd178a57783f83bd0ccb5bbfb78c50643eb75ae74d01cbed63375d7dcd091c",
+      "regions_xyxy": [
+        [
+          219,
+          1544,
+          723,
+          1626
+        ],
+        [
+          249,
+          1560,
+          671,
+          1570
+        ]
+      ],
+      "sha256": "bc4eedb19b6871506920136a80e5543b65f852087c328a9a02503ebf1607479c",
+      "method": "source_pixels_only"
+    }
+  ],
+  "art_approved": false
+}
