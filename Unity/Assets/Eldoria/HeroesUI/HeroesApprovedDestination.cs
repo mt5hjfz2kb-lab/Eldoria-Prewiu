@@ -198,7 +198,6 @@ namespace Eldoria.HeroesUI
             // and a hard rectangular matte across the vaulted chamber.
             // Keep the complete architectural mesh as a single continuous scene;
             // all headings, portraits and interactions remain live UI elements.
-            float topHeight=Mathf.Min(210,h*.28f);
             // The old flat vertical rules/rectangular fake torches are replaced
             // with real mesh arch, floor perspective, banners and light geometry.
             // The authentic v14 header remains over this independent backdrop.
