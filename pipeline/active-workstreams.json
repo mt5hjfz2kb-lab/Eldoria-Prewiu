@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-eldoria-art-reconstruction-4874286-20261031",
+      "owner": "chatgpt-eldoria-recovery-20261031",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
-      "claimed_at": "2026-10-31T09:29:51.898Z",
+      "claimed_at": "2026-10-31T10:19:00Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -1504,7 +1504,7 @@
           "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
         }
       ],
-      "ownership_revision": 79,
+      "ownership_revision": 80,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1596,7 +1596,7 @@
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
       "candidate_branch": "fix/player-feedback-context-ui-20261030",
       "canonical_pr": 132,
-      "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
+      "handoff_reason": "Owner explicitly requests current chat continue after frozen Work; preserve PR136 and local 4874286 recovery if available",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
       "scope_extension_reason": "Owner continuation after PR129: administrative closure of the already-completed six-reference source request which incorrectly retains an executable paid composition route. No modification to PR127, assets or spend.",
