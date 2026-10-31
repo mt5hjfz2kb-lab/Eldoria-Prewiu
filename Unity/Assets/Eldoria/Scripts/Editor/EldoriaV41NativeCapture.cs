@@ -115,6 +115,11 @@ namespace Eldoria.Editor
                         Need(hallTorches.Length==2 &&
                             hallTorches.All(t=>t.texture&&t.color.a>.1f&&!t.raycastTarget),
                             "Two independent noninteractive living-light depth layers "+name);
+                        var styledControls=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                            .Where(t=>t.name.StartsWith("Hall / authored control material ")).ToArray();
+                        Need(styledControls.Length==8&&
+                            styledControls.All(t=>t.texture&&!t.raycastTarget),
+                            "Four category and four footer controls use real separate approved textures "+name);
                         Need(slots.All(t=>t.rect.width>0&&t.rect.height>0),
                             "Six visible hall slots have usable geometry "+name);
                         foreach(var slot in slots){
