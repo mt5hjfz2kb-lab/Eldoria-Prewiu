@@ -205,7 +205,15 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         void SelectionChanged(string selected)
         {
-            if(!string.IsNullOrEmpty(selected))Close();
+            if(!string.IsNullOrEmpty(selected))
+            {
+                Close();
+                // Selection is synchronous: do not leave shortcuts over the
+                // real building cartouche until the 0.3-second polling tick.
+                if(vigilantShortcut)vigilantShortcut.gameObject.SetActive(false);
+                if(scoutsShortcut)scoutsShortcut.gameObject.SetActive(false);
+            }
+            nextUpdate=0;
         }
         bool Blocked=>Hud==null||Hud.NarrativeOpen ||
             (Hud.Modal && Hud.Modal.gameObject.activeSelf);

@@ -221,6 +221,20 @@ namespace Eldoria.HeroesUI
                 .GetComponent<Image>().raycastTarget=false;
         }
         Sprite futureSlotArt;
+        void CardPortrait(RectTransform card,Sprite sprite,bool unlocked,float y,float w,float h)
+        {
+            if(!sprite)return;
+            // Use the same masked cover framing proven by the March gallery.
+            // A fit-inside Image reduced a full-body Lyra to a tiny thumbnail.
+            var viewport=Rect("Hero card portrait aperture",card);
+            Place(viewport,12,y,w,h);viewport.gameObject.AddComponent<RectMask2D>();
+            var image=Rect("Verified portrait",viewport).gameObject.AddComponent<Image>();
+            float ratio=sprite.rect.width/Mathf.Max(1f,sprite.rect.height);
+            float imageW=Mathf.Max(w,h*ratio),imageH=imageW/ratio;
+            Place(image.rectTransform,(w-imageW)*.5f,-(imageH-h)*.18f,imageW,imageH);
+            image.sprite=sprite;image.raycastTarget=false;
+            image.color=unlocked?Color.white:new Color(.42f,.42f,.44f,.76f);
+        }
         void BuildSalon(float w,float h)
         {
             // The owner's six-slot v14 salon composition is visual only:
@@ -269,14 +283,7 @@ namespace Eldoria.HeroesUI
                 {
                     float portraitW=cardW-24f;
                     float portraitH=Mathf.Max(30,cardH-132f);
-                    if(portrait)
-                    {
-                        var image=Rect(real?"Verified portrait":"Reserved silhouette",card)
-                            .gameObject.AddComponent<Image>();
-                        Place(image.rectTransform,12,43,portraitW,portraitH);
-                        image.sprite=portrait;image.preserveAspect=true;image.raycastTarget=false;
-                        image.color=unlocked?Color.white:new Color(.42f,.42f,.44f,.76f);
-                    }
+                    CardPortrait(card,portrait,unlocked,43,portraitW,portraitH);
                     Label("Hero card state",card,
                         real?(unlocked?"NIVEL "+heroes[i].Level+" · PODER "+heroes[i].HeroPower:
                             "Bloqueado por la historia"):"HUECO RESERVADO",
@@ -286,14 +293,7 @@ namespace Eldoria.HeroesUI
                 else
                 {
                     float portraitH=Mathf.Max(80,cardH-193f);
-                    if(portrait)
-                    {
-                        var image=Rect(real?"Verified portrait":"Reserved silhouette",card)
-                            .gameObject.AddComponent<Image>();
-                        Place(image.rectTransform,12,60,cardW-24,portraitH);
-                        image.sprite=portrait;image.preserveAspect=true;image.raycastTarget=false;
-                        image.color=unlocked?Color.white:new Color(.42f,.42f,.44f,.76f);
-                    }
+                    CardPortrait(card,portrait,unlocked,60,cardW-24,portraitH);
                     Label("Hero card state",card,
                         real?(unlocked?heroes[i].Role+"\nNIVEL "+heroes[i].Level+
                             " · PODER "+heroes[i].HeroPower:"Se incorpora durante la historia"):
@@ -371,7 +371,7 @@ namespace Eldoria.HeroesUI
                         x+cell*.61f,y,cell*.35f,row,20,TextAnchor.MiddleRight).color=gold;
                 }
                 Label("Persistent experience",pane,
-                    "EXP  "+hero.Experience+" / "+hero.ExperienceToNext+
+                    "EXP  "+hero.Experience+(hero.ExperienceToNext>0?" / "+hero.ExperienceToNext:"")+
                     "\nCAPACIDAD DE MARCHA  "+hero.Capacity,
                     12,h-76f,w-24f,64f,17);
             }else if(CurrentPage==Page.Habilidades){

@@ -201,6 +201,10 @@ namespace Eldoria.Editor
             buildShortcut.Button.onClick.Invoke();
             Need(host.Hud.SelectedBuildingId=="upgrade-barracks"&&!screen.IsOpen,
                 "Real CONSTRUIR navigation keeps the built barracks in its city cartouche");
+            var retention=host.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();
+            Need((!retention.VigilantsShortcut||!retention.VigilantsShortcut.gameObject.activeSelf)&&
+                (!retention.ScoutsShortcut||!retention.ScoutsShortcut.gameObject.activeSelf),
+                "City shortcuts yield to the building cartouche in the same input frame");
             Need(JsonUtility.ToJson(host.City.Gateway.Snapshot())==beforeBuildNavigation,
                 "Construction navigation does not spend resources or recruit troops");
             Shot(host,"construction-shortcut-city-phone",900,1600);

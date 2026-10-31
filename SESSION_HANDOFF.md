@@ -1,3 +1,13 @@
+# REVISIÓN VISUAL REAL — 31/10/2026 — continuidad obligatoria
+
+Run 41209056041 sobre 98e70981: fase V4.1 nativa PASS, artifact13045497536 (53.414.009 bytes). Veto PASS: 1 escena, 551 dependencias, 0 assets vetados empaquetables y 0 loaders runtime. Capturas examinadas: Salón y Lyra 390×844, construcción900×1600 y1600×900. Confirman marcos Image y construcción sobre ciudad; la revisión detectó retratos pequeños/arrinconados por fit-inside y acceso Vigilantes superpuesto a cartela durante el primer frame.
+
+Esta revisión aplica la técnica de cover+RectMask2D ya probada en Marchas a los retratos reales del Salón (sin alterar GLB, generar rostros ni pintar UI). Oculta ambos accesos de Retención de forma síncrona al seleccionar edificio; antes esperaban hasta0,3s. El probe comprueba la ausencia de solapamiento en el mismo evento real. EXP omite denominador cuando no existe umbral autoritativo (>0); no se inventa curva de nivel.
+
+El run de98 continúa/termina según Actions: consultar resultado vivo. No extrapolar su PASS a esta revisión; inspeccionar de nuevo capturas y completar regresión del HEAD actual. El intento82af compiló y rechazó correctamente la carpeta residual, pero su metadata folderAsset:yes no es modelo:98e70981 distingue ese metadato de payload/GUID vetado sin permitir el GLB. #86 fue cerrada con evidencia del workflow ya integrado y run41018872267; #109 sigue abierta, corrección solo en candidata. No merge/publicación/gasto. Continuar hasta prueba y revisión reales, no detenerse por este relevo.
+
+---
+
 # CORRECCIÓN P0 VETO BASTIÓN — 31/10/2026
 
 Además de Héroes y navegación, se corrige #109 en la misma PR136: auditoría de fuentes/escenas/prefabs encontró un cargador real en AssetLibraryReprocessingPassV1.cs; su reemplazo queda inerte. GLB rechazado y meta originales se trasladan por el mismo blob Git a ArtSource/RejectedLegacyBastion, fuera de Unity/Resources/StreamingAssets. No se eliminan originales ni se sustituye el Bastión autorizado. Guard de build fail-closed y prueba nativa con informe de dependencias/ausencia de loader. No cerrar #109 sin PASS del nuevo código y capturas ciudad reales. Valoria revisión84; mismo titular. El paquete de interfaz actual requiere su propia certificación, no el PASS de 6bbca109. Continuar acciones de abajo tras inspeccionar el HEAD real.
