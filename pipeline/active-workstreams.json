@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-31T09:29:51.898Z",
+  "updated_at": "2026-10-31T11:40:49.650Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-recovery-20261031",
+      "owner": "codex-eldoria-continuation-20261031",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-10-31T10:19:00Z",
@@ -899,7 +899,7 @@
           "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
         }
       },
-      "previous_owner": "codex-parity132-continuation-ab04f62d0b26",
+      "previous_owner": "chatgpt-eldoria-recovery-20261031",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1502,9 +1502,14 @@
           "ownership_revision": 78,
           "released_at": "2026-10-31T09:29:51.898Z",
           "reason": "Owner explicitly authorized registry-only main handoff in current session to continue PR136 reconstruction."
+        },
+        {
+          "owner": "chatgpt-eldoria-recovery-20261031",
+          "ownership_revision": 80,
+          "reason": "Owner requests autonomous continuation in current Work session; recovered original local 4874286."
         }
       ],
-      "ownership_revision": 80,
+      "ownership_revision": 81,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1750,7 +1755,7 @@
         "new_credits_used": 0,
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
-      "owner_instruction": "Owner physical playtest 2026-10-30 requests remove independent build screens, align approved HUD/dialogue, and remove dashed yellow marching stripes without changing gameplay. Preserve all other active PRs."
+      "owner_instruction": "Continue pending work and latest UI reconstruction autonomously, per owner 31/10."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
