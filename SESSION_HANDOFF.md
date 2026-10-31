@@ -1,3 +1,13 @@
+# PIVOTE MACROSCÓPICO DE GALERÍA — 31/10/2026
+
+La captura d3808a31/run41209715548 prueba que la cartela ya no tiene el acceso Vigilantes superpuesto y el save permanece idéntico. Pero el retrato como franja pequeña, incluso con cover, recorta mal a Aldric y no reproduce la lámina. Se descartan las dos variantes (fit-inside en franja y cover en franja), no continuar ajustando ese recorte.
+
+Se recupera la gramática original v14: tres columnas/dos filas, retrato protagonista, nombre/nivel/poder al pie y tarjeta completa como acción real. Se elimina el botón extra VER HÉROE que consumía altura. Aldric/siluetas conservan proporción íntegra, Lyra usa encuadre de torso desde el mismo retrato genuino de su modelo. No hay nuevo rostro, GLB, dato, héroe ni gasto. Dos hitboxes reales, cuatro plazas futuras pasivas. El probe conserva seis plazas/dos acciones y comprueba tres columnas como la referencia; requiere captura nueva antes de aprobar el arte.
+
+El run98e70981 completó los probes V4.1/veto/marchas/retención, pero falló en la travesía V porque el test aún esperaba entrar a entrenamiento tocando el edificio.70909884 cambia el recorrido a los botones reales UNIDADES y Abrir cuartel, sin omitir compras, tiers, guardados o aserciones. Consultar el run del HEAD actual, no usar el anterior como PASS global. El siguiente paso sigue siendo inspección de capturas y regresión, no parar aquí ni publicar.
+
+---
+
 # REVISIÓN VISUAL REAL — 31/10/2026 — continuidad obligatoria
 
 Run 41209056041 sobre 98e70981: fase V4.1 nativa PASS, artifact13045497536 (53.414.009 bytes). Veto PASS: 1 escena, 551 dependencias, 0 assets vetados empaquetables y 0 loaders runtime. Capturas examinadas: Salón y Lyra 390×844, construcción900×1600 y1600×900. Confirman marcos Image y construcción sobre ciudad; la revisión detectó retratos pequeños/arrinconados por fit-inside y acceso Vigilantes superpuesto a cartela durante el primer frame.

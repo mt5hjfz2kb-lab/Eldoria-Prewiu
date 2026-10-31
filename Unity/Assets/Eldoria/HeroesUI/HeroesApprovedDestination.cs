@@ -221,7 +221,7 @@ namespace Eldoria.HeroesUI
                 .GetComponent<Image>().raycastTarget=false;
         }
         Sprite futureSlotArt;
-        void CardPortrait(RectTransform card,Sprite sprite,bool unlocked,float y,float w,float h)
+        void CardPortrait(RectTransform card,Sprite sprite,bool unlocked,bool fullBody,float y,float w,float h)
         {
             if(!sprite)return;
             // Use the same masked cover framing proven by the March gallery.
@@ -230,8 +230,10 @@ namespace Eldoria.HeroesUI
             Place(viewport,12,y,w,h);viewport.gameObject.AddComponent<RectMask2D>();
             var image=Rect("Verified portrait",viewport).gameObject.AddComponent<Image>();
             float ratio=sprite.rect.width/Mathf.Max(1f,sprite.rect.height);
-            float imageW=Mathf.Max(w,h*ratio),imageH=imageW/ratio;
-            Place(image.rectTransform,(w-imageW)*.5f,-(imageH-h)*.18f,imageW,imageH);
+            float imageW=fullBody?Mathf.Max(w,h*ratio/.60f):Mathf.Min(w,h*ratio);
+            float imageH=imageW/ratio;
+            Place(image.rectTransform,(w-imageW)*.5f,
+                fullBody?-(imageH-h)*.06f:(h-imageH)*.5f,imageW,imageH);
             image.sprite=sprite;image.raycastTarget=false;
             image.color=unlocked?Color.white:new Color(.42f,.42f,.44f,.76f);
         }
@@ -251,14 +253,14 @@ namespace Eldoria.HeroesUI
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
             bool showFutureSlots=true;
             int displayCount=showFutureSlots?Math.Max(6,heroes.Length):heroes.Length;
-            int columns=portraitLayout?2:3;
+            int columns=3;
             int rows=Mathf.Max(1,Mathf.CeilToInt(displayCount/(float)columns));
             float gap=Mathf.Clamp(w*.016f,8f,16f);
             float cardTop=sceneryH+12f;
             float spaceH=h-cardTop-85f;
             float cardH=Mathf.Min(650f,Mathf.Max(105f,(spaceH-gap*(rows-1))/rows));
             float cardW=Mathf.Min(340f,(w-40f-gap*(columns-1))/columns);
-            bool compact=cardH<260f;
+            bool compact=cardW<190f||cardH<260f;
             if(!futureSlotArt && showFutureSlots)
             {
                 var source=Resources.Load<Texture2D>("EldoriaV41/hero-locked");
@@ -273,44 +275,30 @@ namespace Eldoria.HeroesUI
                 bool real=i<heroes.Length;
                 var card=Frame(real?"Hero card "+heroes[i].Id:"Reserved future hero slot "+(i-heroes.Length),
                     content,left,top,cardW,cardH);
-                string title=real?heroes[i].DisplayName:"RESERVADO";
-                Label("Hero card name",card,title,10,12,cardW-20,
-                    compact?31:42,compact?19:25,TextAnchor.MiddleCenter)
-                    .color=real?gold:new Color(.57f,.53f,.44f);
-                Sprite portrait=real?heroes[i].Portrait:futureSlotArt;
                 bool unlocked=real&&heroes[i].Unlocked;
-                if(compact)
-                {
-                    float portraitW=cardW-24f;
-                    float portraitH=Mathf.Max(30,cardH-132f);
-                    CardPortrait(card,portrait,unlocked,43,portraitW,portraitH);
-                    Label("Hero card state",card,
-                        real?(unlocked?"NIVEL "+heroes[i].Level+" · PODER "+heroes[i].HeroPower:
-                            "Bloqueado por la historia"):"HUECO RESERVADO",
-                        10,cardH-88,cardW-20,27,
-                        15,TextAnchor.MiddleCenter);
-                }
-                else
-                {
-                    float portraitH=Mathf.Max(80,cardH-193f);
-                    CardPortrait(card,portrait,unlocked,60,cardW-24,portraitH);
-                    Label("Hero card state",card,
-                        real?(unlocked?heroes[i].Role+"\nNIVEL "+heroes[i].Level+
-                            " · PODER "+heroes[i].HeroPower:"Se incorpora durante la historia"):
-                            "HUECO RESERVADO\nSin héroe reclutado",
-                        12,cardH-131,cardW-24,63,18,TextAnchor.MiddleCenter);
-                }
+                Sprite portrait=real?heroes[i].Portrait:futureSlotArt;
+                CardPortrait(card,portrait,unlocked,real&&heroes[i].Id=="lyra",
+                    8,cardW-24,Mathf.Max(50,cardH-90));
+                // Restore the approved card grammar: art is the main surface,
+                // identity and real power sit at its foot, and the whole card
+                // is the genuine action. No miniature strip plus extra button.
+                Surface("Hero card identity shade",card,3,cardH-79,cardW-6,76,
+                    new Color(.008f,.014f,.024f,.92f)).GetComponent<Image>().raycastTarget=false;
+                Label("Hero card name",card,real?heroes[i].DisplayName:"???",
+                    6,cardH-77,cardW-12,27,compact?18:24,TextAnchor.MiddleCenter)
+                    .color=real?gold:new Color(.57f,.53f,.44f);
+                Label("Hero card state",card,
+                    real?(unlocked?"NIVEL "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
+                        "Bloqueado por la historia"):"HÉROE POR\nDESCUBRIR",
+                    6,cardH-48,cardW-12,42,compact?14:18,TextAnchor.MiddleCenter);
                 if(real)
                 {
-                    int index=i;var hero=heroes[index];
-                    Button("Select hero "+hero.Id,hero.Unlocked?"VER HÉROE":"BLOQUEADO",
-                        left+9,top+cardH-53,cardW-18,42,
-                        ()=>OpenHero(hero.Id),hero.Unlocked);
+                    var hero=heroes[i];
+                    var hit=Surface("Select hero "+hero.Id,card,0,0,cardW,cardH,Color.clear);
+                    var button=hit.gameObject.AddComponent<Button>();
+                    button.targetGraphic=hit.GetComponent<Image>();button.interactable=unlocked;
+                    button.onClick.AddListener(()=>OpenHero(hero.Id));
                 }
-                else
-                    Label("Non-interactive future slot",card,"NO DISPONIBLE",
-                        8,cardH-53,cardW-16,42,compact?14:18,
-                        TextAnchor.MiddleCenter).color=new Color(.57f,.53f,.44f);
             }
             int unlockedCount=0;foreach(var hero in heroes)if(hero.Unlocked)unlockedCount++;
             Label("Authoritative hall population",content,

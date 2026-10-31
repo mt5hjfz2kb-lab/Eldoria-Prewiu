@@ -91,7 +91,7 @@ namespace Eldoria.Editor
                         }
                         if(height>width){
                             var firstRow=slots.Count(t=>Mathf.Abs(t.anchoredPosition.y-slots[0].anchoredPosition.y)<1f);
-                            Need(firstRow==2,"Portrait gallery uses two readable columns "+name);
+                            Need(firstRow==3,"Portrait gallery preserves three approved card columns "+name);
                         }
                         Need(heroes.VisibleRoot.GetComponentsInChildren<Button>()
                             .Count(b=>b.name.StartsWith("Select hero "))==2,
