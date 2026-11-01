@@ -859,7 +859,7 @@ namespace Eldoria.HeroesUI
                 // The two real identities retain enough room for genuine name,
                 // role, level and power; locked slots have only two short labels.
                 float identityH=lateral?0f:!real?
-                    Mathf.Clamp(cardH*.32f,43f,78f):
+                    Mathf.Clamp(cardH*.32f,60f,78f):
                     cardW<220f?92f:105f;
                 float portraitH=lateral?cardH-12f:Mathf.Max(24f,cardH-identityH-12f);
                 CardPortrait(card,portrait,unlocked,!real||heroes[i].Id=="lyra",
@@ -920,16 +920,16 @@ namespace Eldoria.HeroesUI
                     bool tightLocked=!lateral&&identityH<81f;
                     var lockedTitle=Label("Hero card name",card,
                         lateral?"POR\nDESCUBRIR":"POR DESCUBRIR",ix+3f,
-                        iy+(tightLocked?2f:lateral?3f:3f),iw-6f,
+                        iy+(tightLocked?2f+Mathf.Max(0f,(identityH-60f)*.65f):3f),iw-6f,
                         lateral?Mathf.Max(43f,ih*.49f):
-                            tightLocked?Mathf.Max(24f,identityH*.54f):27f,
+                            tightLocked?22f:27f,
                         compactReserve?15:lateral&&cardW<210f?16:lateral?19:
                             tightLocked?cardW<220f?14:17:19,TextAnchor.MiddleCenter);
                     lockedTitle.color=new Color(.86f,.77f,.57f);
                     var lockedState=Label("Hero card state",card,"BLOQUEADO",ix+3f,
-                        iy+(lateral?ih*.58f:tightLocked?identityH*.59f:30f),iw-6f,
+                        iy+(lateral?ih*.58f:tightLocked?26f+Mathf.Max(0f,(identityH-60f)*.65f):30f),iw-6f,
                         lateral?Mathf.Max(27f,ih*.34f):
-                            tightLocked?Mathf.Max(15f,identityH*.32f):
+                            tightLocked?16f:
                             Mathf.Max(18f,identityH-38f),
                         compactReserve?15:lateral&&cardW<210f?16:lateral?19:
                             tightLocked?13:15,TextAnchor.MiddleCenter);
