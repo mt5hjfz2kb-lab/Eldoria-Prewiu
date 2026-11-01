@@ -83,7 +83,12 @@ namespace Eldoria.HeroesUI
             key.shadows=LightShadows.Soft;key.shadowStrength=.8f;key.shadowBias=.015f;key.shadowNormalBias=.025f;
             rim=Lamp("Hero / torch rim",new Color(1f,.58f,.27f),.55f);
             fill=Lamp("Hero / soft front fill",new Color(.82f,.86f,1f),.65f);
-            texture=new RenderTexture(512,768,24,RenderTextureFormat.ARGB32){name="Hero live perspective portrait"};texture.Create();camera.targetTexture=texture;
+            // Source-space supersampling keeps the approved Lyra's facial/cloth
+            // detail intact when a 3D-derived still fills a tall gallery card.
+            // No extra model, importer, save state or physical camera is added.
+            texture=new RenderTexture(1024,1536,24,RenderTextureFormat.ARGB32){
+                name="Hero live perspective portrait",filterMode=FilterMode.Bilinear};
+            texture.Create();camera.targetTexture=texture;
         }
         Light Lamp(string name,Color color,float intensity){
             var go=new GameObject(name);go.transform.SetParent(stage.transform,false);
@@ -144,6 +149,7 @@ namespace Eldoria.HeroesUI
         public Sprite CopyPortrait(){
             if(!HasModel)return null;var prior=RenderTexture.active;var copy=new Texture2D(texture.width,texture.height,TextureFormat.RGBA32,false);
             try{RenderTexture.active=texture;copy.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);copy.Apply();copy.name="Portrait from approved Unity geometry";
+                copy.filterMode=FilterMode.Bilinear;copy.wrapMode=TextureWrapMode.Clamp;
                 return Sprite.Create(copy,new Rect(copy.width*.20f,copy.height*.48f,copy.width*.60f,copy.height*.48f),new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
             }catch{Destroy(copy);throw;}finally{RenderTexture.active=prior;}
         }

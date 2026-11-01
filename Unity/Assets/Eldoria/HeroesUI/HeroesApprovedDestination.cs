@@ -83,10 +83,10 @@ namespace Eldoria.HeroesUI
             if(IsOpen&&CurrentPage==Page.Salon&&leftHallLight&&rightHallLight){
                 float t=Time.unscaledTime;
                 var left=leftHallLight.color;
-                left.a=.24f+.025f*Mathf.Sin(t*1.7f);
+                left.a=.31f+.025f*Mathf.Sin(t*1.7f);
                 leftHallLight.color=left;
                 var right=rightHallLight.color;
-                right.a=.20f+.023f*Mathf.Sin(t*1.5f+1.3f);
+                right.a=.28f+.023f*Mathf.Sin(t*1.5f+1.3f);
                 rightHallLight.color=right;
             }
         }
@@ -235,8 +235,8 @@ namespace Eldoria.HeroesUI
             // Reuse the canonical vector Royal Gold pictograms rather than
             // pasting the concept sheet's button icons into a flat screenshot.
             // These are visual-only children of genuine state-bound buttons.
-            bool stacked=cell<145f;
-            float size=Mathf.Min(stacked?20f:23f,height*(stacked?.44f:.50f));
+            bool stacked=cell<115f&&height>=54f;
+            float size=Mathf.Min(stacked?28f:30f,height*(stacked?.54f:.58f));
             var frame=Rect("Hall / nav actual vector pictogram "+iconId,button.transform);
             Place(frame,stacked?(cell-size)*.5f:Mathf.Max(5f,cell*.058f),
                 stacked?1f:(height-size)*.5f,size,size);
@@ -264,7 +264,7 @@ namespace Eldoria.HeroesUI
             // Unity Text's default vertical truncation hid the glyph inside
             // a 20px phone icon rectangle although component QA passed.
             // Render a font-safe pictogram that actually fits the aperture.
-            glyph.fontSize=stacked?17:22;
+            glyph.fontSize=24;
             glyph.resizeTextForBestFit=false;
             glyph.verticalOverflow=VerticalWrapMode.Overflow;
             glyph.horizontalOverflow=HorizontalWrapMode.Overflow;
@@ -411,8 +411,8 @@ namespace Eldoria.HeroesUI
                 Mathf.Min(w*.37f,460f),h*.62f);
             rightHallLight=HallLight(scene,"Hall / right living torch",
                 w-Mathf.Min(w*.37f,460f),h*.29f,Mathf.Min(w*.37f,460f),h*.62f);
-            leftHallLight.color=new Color(1f,.53f,.17f,.26f);
-            rightHallLight.color=new Color(1f,.65f,.27f,.21f);
+            leftHallLight.color=new Color(1f,.57f,.20f,.31f);
+            rightHallLight.color=new Color(1f,.68f,.29f,.28f);
             float headerH=widePhone?76f:h>w?Mathf.Clamp(h*.19f,130f,174f):142f;
             float footerH=widePhone?64f:72f;
             // Separate architectural overlays: stone pilasters, royal banners,
@@ -436,7 +436,7 @@ namespace Eldoria.HeroesUI
             Surface("Hall / gilded cornice",content,pillar,headerH-2f,w-2*pillar,2f,
                 new Color(.85f,.66f,.33f,.83f)).GetComponent<Image>().raycastTarget=false;
             Surface("Hall / dark floor plinth",content,0,h-footerH-12f,w,footerH+12f,
-                new Color(.012f,.022f,.036f,.77f)).GetComponent<Image>().raycastTarget=false;
+                new Color(.025f,.029f,.041f,.50f)).GetComponent<Image>().raycastTarget=false;
             Surface("Hall / illuminated floor edge",content,pillar,h-footerH-12f,
                 w-2*pillar,2f,new Color(.84f,.63f,.32f,.79f))
                 .GetComponent<Image>().raycastTarget=false;
@@ -456,7 +456,7 @@ namespace Eldoria.HeroesUI
                 }
             }
             Surface("Hall / elevated header veil",content,0,0,w,headerH-8f,
-                new Color(.010f,.019f,.034f,widePhone ? .75f : .66f))
+                new Color(.014f,.022f,.037f,widePhone ? .53f : .43f)
                 .GetComponent<Image>().raycastTarget=false;
             Surface("Hall / header gilding",content,12f,5f,w-24f,2f,
                 new Color(.81f,.60f,.29f,.75f)).GetComponent<Image>().raycastTarget=false;
@@ -517,10 +517,10 @@ namespace Eldoria.HeroesUI
                 // The side vignette masks the otherwise obvious straight
                 // raster cut; the upper-right sky gets a separate feather.
                 float t=Mathf.Clamp01(edge/.21f);
-                float border=(1f-t*t*(3f-2f*t))*.96f;
+                float border=(1f-t*t*(3f-2f*t))*.62f;
                 float skyRight=Mathf.Clamp01((u-.59f)/.34f)*
                     Mathf.Clamp01((v-.36f)/.43f);
-                float alpha=Mathf.Max(border,skyRight*.84f);
+                float alpha=Mathf.Max(border,skyRight*.58f);
                 pixels[y*n+x]=new Color(night.r,night.g,night.b,alpha);
             }
             hallPortraitTransition.SetPixels(pixels);
@@ -534,7 +534,7 @@ namespace Eldoria.HeroesUI
             Place(viewport,x,y,w,h);
             viewport.gameObject.AddComponent<RectMask2D>();
             Surface("Hall / portrait depth backing",viewport,0,0,w,h,
-                new Color(.055f,.083f,.115f,1f)).GetComponent<Image>().raycastTarget=false;
+                new Color(.075f,.088f,.101f,1f)).GetComponent<Image>().raycastTarget=false;
             // Modular 2.5D character alcove: another genuine art plane behind
             // the actual runtime sprite (including the imported Tripo Lyra),
             // rather than leaving a giant black rectangular card. It reuses
@@ -590,14 +590,15 @@ namespace Eldoria.HeroesUI
                         hallPortraitPaintMaterial=new Material(hallPaintMaterial){
                             name="Eldoria / illustrated canonical hero card",
                             hideFlags=HideFlags.DontSave};
-                        hallPortraitPaintMaterial.SetFloat("_Strength",.28f);
+                        hallPortraitPaintMaterial.SetFloat("_Strength",.12f);
                     }
                     if(slot==0){
                         if(!hallAldricMatteMaterial){
                             hallAldricMatteMaterial=new Material(hallPortraitPaintMaterial){
                                 name="Eldoria / authored Aldric soft-edge stage",
                                 hideFlags=HideFlags.DontSave};
-                            hallAldricMatteMaterial.SetFloat("_PortraitFeather",.14f);
+                            hallAldricMatteMaterial.SetFloat("_PortraitFeather",.22f);
+                            hallAldricMatteMaterial.SetFloat("_Strength",.21f);
                         }
                         image.material=hallAldricMatteMaterial;
                     }else image.material=hallPortraitPaintMaterial;
@@ -625,7 +626,7 @@ namespace Eldoria.HeroesUI
                 var plaque=Rect("Hall / genuine future hero lock seal",viewport);
                 Place(plaque,sealX,sealY,seal,seal);
                 var lockInk=new Color(.89f,.79f,.59f,.95f);
-                var shadow=new Color(.004f,.009f,.016f,.70f);
+                var shadow=new Color(.018f,.022f,.030f,.52f);
                 Surface("Hall / lock contrast only",plaque,seal*.27f,seal*.45f,
                     seal*.46f,seal*.40f,shadow).GetComponent<Image>().raycastTarget=false;
                 Surface("Hall / bronze lock body",plaque,seal*.34f,seal*.48f,
@@ -761,6 +762,10 @@ namespace Eldoria.HeroesUI
             float desktopCardWidth=illustratedDesktop?h*(134f/575f):390f;
             float standardCardW=Mathf.Min(desktopCardWidth,
                 (w-42f-gap*(columns-1))/columns);
+            // On a tall tablet the cathedral must remain visible around the portraits.
+            // Tiny phones keep the full-width hit targets rather than shrinking them.
+            if(portraitLayout&&!narrowPortrait)
+                standardCardW=Mathf.Min(standardCardW,(w*.88f-gap*(columns-1))/columns);
             if(!hallFrameSprite){
                 var metal=Resources.Load<Texture2D>("EldoriaV41/HeroCardNineSliceGold");
                 if(metal)hallFrameSprite=Sprite.Create(metal,
@@ -790,10 +795,13 @@ namespace Eldoria.HeroesUI
                 bool real=i<heroes.Length;
                 bool compactReserve=compactLandscape&&i>=2;
                 Surface("Hall / card cast shadow",content,left+5f,top+7f,
-                    cardW,cardH,new Color(0f,0f,0f,.60f))
+                    cardW,cardH,new Color(0f,0f,0f,.34f))
                     .GetComponent<Image>().raycastTarget=false;
                 var card=Frame(real?"Hero card "+heroes[i].Id:"Reserved future hero slot "+(i-heroes.Length),
                     content,left,top,cardW,cardH);
+                var stageInk=card.Find("Royal Gold / translucent ink");
+                if(stageInk)stageInk.GetComponent<Image>().color=
+                    new Color(.047f,.061f,.078f,.32f);
                 // Reuse the proven 2.5D Royal Gold assembly, including
                 // separate metallic light and shadow planes on EACH card.
                 // This makes the physical card a layered object in the hall,
@@ -816,7 +824,7 @@ namespace Eldoria.HeroesUI
                 float portraitW=lateral?
                     Mathf.Min(cardH-12f,cardW*(compactReserve?.28f:.44f)):
                     cardW-12f;
-                float identityH=lateral?0f:cardH<160f?43f:cardW<220f?85f:74f;
+                float identityH=lateral?0f:cardH<160f?43f:cardW<220f?85f:105f;
                 float portraitH=lateral?cardH-12f:Mathf.Max(24f,cardH-identityH-12f);
                 CardPortrait(card,portrait,unlocked,!real||heroes[i].Id=="lyra",
                     i,portraitX,portraitY,portraitW,portraitH);
@@ -827,7 +835,7 @@ namespace Eldoria.HeroesUI
                 float iw=lateral?cardW-portraitW-(compactReserve?22f:34f):cardW-10f;
                 float ih=lateral?cardH-8f:identityH-5f;
                 Surface("Hero card identity shade",card,ix,iy,iw,ih,
-                    new Color(.008f,.016f,.027f,lateral ? .84f : .91f))
+                    new Color(.033f,.041f,.054f,lateral ? .83f : .81f)
                     .GetComponent<Image>().raycastTarget=false;
                 // Art-first desktop cards are ~210 units wide but tall. They
                 // must use the full hero identity hierarchy, not the narrow
@@ -903,7 +911,7 @@ namespace Eldoria.HeroesUI
                     metal.fillCenter=false;
                     metal.raycastTarget=false;
                     metal.color=unlocked?Color.white:
-                        new Color(.60f,.67f,.78f,.82f);
+                        new Color(.73f,.70f,.64f,.90f);
                 }
                 // Retain the original thin structural rim behind authored art.
                 Surface("Hall / card heraldic top",card,8f,6f,
