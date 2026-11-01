@@ -102,6 +102,20 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        if(width==390&&height==844){
+                            foreach(var slot in slots){
+                                var title=slot.GetComponentsInChildren<Text>().FirstOrDefault(v=>v.name=="Hero card name");
+                                var data=slot.GetComponentsInChildren<Text>().FirstOrDefault(v=>v.name=="Hero card state");
+                                Need(title&&data&&title.rectTransform.rect.height>0&&
+                                    title.rectTransform.anchoredPosition.y-
+                                        title.rectTransform.rect.height>=
+                                    data.rectTransform.anchoredPosition.y-2f&&
+                                    -data.rectTransform.anchoredPosition.y+
+                                        data.rectTransform.rect.height<=
+                                    slot.rect.height-16f,
+                                    "Portrait mobile card labels fit above ornamental lower edge without overlapping "+name);
+                            }
+                        }
                         if(width==1600&&height==900){
                             var al=slots[0].GetComponentsInChildren<Image>()
                                 .FirstOrDefault(t=>t.name=="Verified portrait");

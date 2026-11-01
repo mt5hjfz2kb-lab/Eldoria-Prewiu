@@ -720,7 +720,7 @@ namespace Eldoria.HeroesUI
                 bool lateral=phoneLandscape;
                 float portraitX=6f,portraitY=6f;
                 float portraitW=lateral?Mathf.Min(cardH-12f,cardW*.44f):cardW-12f;
-                float identityH=lateral?0f:cardH<160f?43f:cardW<145f?64f:74f;
+                float identityH=lateral?0f:cardH<160f?43f:cardW<145f?85f:74f;
                 float portraitH=lateral?cardH-12f:Mathf.Max(24f,cardH-identityH-12f);
                 CardPortrait(card,portrait,unlocked,!real||heroes[i].Id=="lyra",
                     i,portraitX,portraitY,portraitW,portraitH);
@@ -731,9 +731,11 @@ namespace Eldoria.HeroesUI
                 Surface("Hero card identity shade",card,ix,iy,iw,ih,
                     new Color(.008f,.016f,.027f,lateral ? .84f : .91f))
                     .GetComponent<Image>().raycastTarget=false;
+                bool compactCard=!lateral&&cardW<150f;
                 if(real){
                     var namePlate=Label("Hero card name",card,heroes[i].DisplayName,ix+3f,
-                        iy+(lateral?5f:2f),iw-6f,lateral?Mathf.Min(39f,ih*.44f):28f,
+                        iy+(lateral?5f:2f),iw-6f,
+                        lateral?Mathf.Min(39f,ih*.44f):compactCard?23f:28f,
                         lateral?25:cardW<150?17:23,
                         TextAnchor.MiddleCenter);
                     namePlate.color=gold;
@@ -743,26 +745,28 @@ namespace Eldoria.HeroesUI
                         Label("Hero / authoritative role",card,heroes[i].Role,
                             ix+3f,iy+29f,iw-6f,17f,15,TextAnchor.MiddleCenter)
                             .color=new Color(.81f,.75f,.63f);
-                    bool compactCard=!lateral&&cardW<150f;
                     var statePlate=Label("Hero card state",card,
                         unlocked?(lateral?"NV. "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
                             compactCard?"NV. "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
                             "NIVEL "+heroes[i].Level+"  ·  PODER "+heroes[i].HeroPower):
                             (compactCard?"BLOQUEADO\nPOR HISTORIA":"BLOQUEADO POR LA HISTORIA"),
-                        ix+3f,iy+(lateral?ih*.49f:largeCard?49f:compactCard?27f:30f),iw-6f,
+                        ix+3f,iy+(lateral?ih*.49f:largeCard?49f:compactCard?26f:30f),iw-6f,
                         lateral?Mathf.Max(40f,ih*.48f):largeCard?20f:
-                            compactCard?Mathf.Max(30f,identityH-31f):Mathf.Max(20f,identityH-39f),
+                            compactCard?Mathf.Max(36f,identityH-46f):Mathf.Max(20f,identityH-39f),
                         lateral?20:compactCard?13:17,TextAnchor.MiddleCenter);
                     if(lateral)statePlate.resizeTextForBestFit=false;
                 } else {
-                    var lockedTitle=Label("Hero card name",card,lateral?"POR\nDESCUBRIR":"POR DESCUBRIR",ix+3f,
-                        iy+(lateral?3f:3f),iw-6f,lateral?Mathf.Max(43f,ih*.49f):27f,
-                        lateral?19:cardW<150?14:19,TextAnchor.MiddleCenter);
+                    var lockedTitle=Label("Hero card name",card,
+                        lateral?"POR\nDESCUBRIR":compactCard?"POR\nDESCUBRIR":"POR DESCUBRIR",ix+3f,
+                        iy+(lateral?3f:compactCard?4f:3f),iw-6f,
+                        lateral?Mathf.Max(43f,ih*.49f):compactCard?40f:27f,
+                        lateral?19:compactCard?13:19,TextAnchor.MiddleCenter);
                     lockedTitle.color=new Color(.78f,.69f,.51f);
                     var lockedState=Label("Hero card state",card,"BLOQUEADO",ix+3f,
-                        iy+(lateral?ih*.58f:30f),iw-6f,
-                        lateral?Mathf.Max(27f,ih*.34f):Mathf.Max(18f,identityH-38f),
-                        lateral?19:15,TextAnchor.MiddleCenter);
+                        iy+(lateral?ih*.58f:compactCard?46f:30f),iw-6f,
+                        lateral?Mathf.Max(27f,ih*.34f):
+                            compactCard?22f:Mathf.Max(18f,identityH-38f),
+                        lateral?19:compactCard?12:15,TextAnchor.MiddleCenter);
                     lockedState.color=new Color(.77f,.76f,.70f);
                     if(lateral){lockedTitle.resizeTextForBestFit=false;lockedState.resizeTextForBestFit=false;}
                 }
