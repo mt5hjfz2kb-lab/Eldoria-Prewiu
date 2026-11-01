@@ -525,7 +525,14 @@ namespace Eldoria.HeroesUI
                 float imageW=fullBody?Mathf.Max(w,h*ratio):
                     Mathf.Max(Mathf.Min(w,h*ratio),w*.64f);
                 float imageH=imageW/ratio;
-                float top=fullBody?-(imageH-h)*.27f:(h-imageH)*.5f;
+                // The previous centered bust cropped Aldric above his
+                // eyebrows when the approved gallery made cards shallower.
+                // A portrait photograph is not an ornamental texture: keep
+                // his identity, hairline and face entirely in the visible
+                // upper aperture, while lower armour may crop naturally.
+                float top=fullBody?-(imageH-h)*.27f:
+                    imageH>h?-Mathf.Min(6f,(imageH-h)*.06f):
+                    (h-imageH)*.5f;
                 Place(image.rectTransform,(w-imageW)*.5f,top,imageW,imageH);
                 image.sprite=sprite;image.raycastTarget=false;
                 image.color=unlocked?Color.white:new Color(.42f,.46f,.51f,.90f);
