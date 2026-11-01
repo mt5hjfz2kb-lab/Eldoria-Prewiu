@@ -618,14 +618,22 @@ namespace Eldoria.HeroesUI
                 portraitLayout?Mathf.Clamp(h*.19f,130f,174f):142f;
             float footerH=phoneLandscape?64f:illustratedDesktop?88f:72f;
             // Title and actual player count are separate from the arch backdrop.
-            float titleX=phoneLandscape?18f:42f;
+            // Reconstruct the 512x575 approved art composition as a protected
+            // central stage on wide desktop. Stretching it to 1600 pixels
+            // made six cards landscape-wide instead of portrait-led.
+            float referenceStageWidth=illustratedDesktop?
+                Mathf.Min(w-40f,h*(512f/575f)):w;
+            float referenceStageLeft=(w-referenceStageWidth)*.5f;
+            float titleX=phoneLandscape?18f:illustratedDesktop?
+                referenceStageLeft+referenceStageWidth*.105f:42f;
             Label("Hall / Eldoria heraldry",content,"✦  ELDORIA",titleX,
                 phoneLandscape?7f:illustratedDesktop?18f:13f,
                 phoneLandscape?170f:245f,phoneLandscape?25f:illustratedDesktop?38f:33f,
                 phoneLandscape?17:illustratedDesktop?27:24).color=gold;
             Label("Heroes hall title",content,"SALÓN DE HÉROES",titleX,
                 phoneLandscape?30f:illustratedDesktop?62f:46f,
-                phoneLandscape?w*.48f:w*.66f,
+                phoneLandscape?w*.48f:illustratedDesktop?
+                    referenceStageWidth*.88f:w*.66f,
                 phoneLandscape?31f:illustratedDesktop?65f:47f,
                 phoneLandscape?24:illustratedDesktop?46:34).color=ivory;
             if(!phoneLandscape)
@@ -635,7 +643,8 @@ namespace Eldoria.HeroesUI
                             "Aquí residen los héroes de Valoria.\nReclútalos, fortalécelos y lidera con ellos.":
                             "Aquí residen los héroes de Valoria. Reclútalos, fortalécelos y lidera con ellos.",
                     titleX,illustratedDesktop?143f:92f,
-                    Mathf.Min(w*.65f,900f),
+                    illustratedDesktop?Mathf.Min(referenceStageWidth*.87f,900f):
+                        Mathf.Min(w*.65f,900f),
                     illustratedDesktop?77f:portraitLayout?25f:40f,
                     illustratedDesktop?24:portraitLayout?17:21,TextAnchor.MiddleLeft);
             // The reference contains four category tabs; only TODOS has a
@@ -647,12 +656,12 @@ namespace Eldoria.HeroesUI
             // status strip. The desktop composition is primary; mobile gets
             // its own, separately validated positions.
             float barX=phoneLandscape?w*.52f:illustratedDesktop?
-                Mathf.Max(28f,(w-Mathf.Min(w-76f,1230f))*.5f):
+                referenceStageLeft+referenceStageWidth*.055f:
                 portraitLayout?18f:w*.55f;
             float barY=phoneLandscape?32f:illustratedDesktop?
                 headerH-70f:headerH-40f;
             float barW=phoneLandscape?w*.46f:illustratedDesktop?
-                Mathf.Min(w-76f,1230f):portraitLayout?w-36f:w*.40f;
+                referenceStageWidth*.89f:portraitLayout?w-36f:w*.40f;
             float filterGap=4f,filterW=(barW-3*filterGap)/4f;
             for(int i=0;i<filters.Length;i++){
                 var strip=Surface("Hall / category "+filters[i],content,
@@ -694,7 +703,12 @@ namespace Eldoria.HeroesUI
                 secondaryH=110f;
                 primaryH=cardGridH-secondaryH*(rows-1);
             }
-            float cardW=Mathf.Min(390f,(w-42f-gap*(columns-1))/columns);
+            // Approved master: 134px-wide featured cards in a 512px-wide
+            // composition. At 1600x900 the art-preserving scale derives
+            // from HEIGHT (575px source), never from the full monitor width.
+            float desktopCardWidth=illustratedDesktop?h*(134f/575f):390f;
+            float cardW=Mathf.Min(desktopCardWidth,
+                (w-42f-gap*(columns-1))/columns);
             if(!hallFrameSprite){
                 var metal=Resources.Load<Texture2D>("EldoriaV41/HeroCardNineSliceGold");
                 if(metal)hallFrameSprite=Sprite.Create(metal,
@@ -760,7 +774,7 @@ namespace Eldoria.HeroesUI
                         TextAnchor.MiddleCenter);
                     namePlate.color=gold;
                     if(lateral)namePlate.resizeTextForBestFit=false;
-                    bool largeCard=!lateral&&cardW>=250f&&identityH>=72f;
+                    bool largeCard=!lateral&&cardH>=260f&&identityH>=72f&&cardW>=200f;
                     if(largeCard)
                         Label("Hero / authoritative role",card,heroes[i].Role,
                             ix+3f,iy+29f,iw-6f,17f,15,TextAnchor.MiddleCenter)
@@ -830,7 +844,8 @@ namespace Eldoria.HeroesUI
             // view, and RELICARIO is genuinely disabled by progression.
             // No fake clickable pixels, no additional scene or canvas.
             float navGap=phoneLandscape?6f:10f;
-            float navWidth=Mathf.Min(w-22f,illustratedDesktop?1230f:portraitLayout?540f:820f);
+            float navWidth=Mathf.Min(w-22f,illustratedDesktop?
+                referenceStageWidth:portraitLayout?540f:820f);
             float navCell=(navWidth-navGap*3f)/4f;
             float navLeft=(w-navWidth)*.5f;
             float navHeight=phoneLandscape?44f:illustratedDesktop?58f:47f;
