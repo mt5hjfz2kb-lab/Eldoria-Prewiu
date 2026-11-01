@@ -513,7 +513,16 @@ namespace Eldoria.HeroesUI
             float gap=Mathf.Clamp(w*.017f,8f,18f);
             float cardTop=headerH+(phoneLandscape?8f:13f);
             float availableH=h-cardTop-footerH-14f;
-            float cardH=Mathf.Max(78f,(availableH-gap*(rows-1))/rows);
+            // Approved six-panel sheet gives the three featured portraits a
+            // taller primary gallery; the future reserves form a lower,
+            // shallower band. Uniform rows made the four empty reserves loom
+            // as large as Aldric/Lyra and ignored the approved hierarchy.
+            // Short mobile landscape keeps equal rows for legibility.
+            float cardGridH=Mathf.Max(rows*78f,availableH-gap*(rows-1));
+            bool tieredRows=rows==2&&!phoneLandscape;
+            float primaryH=tieredRows?cardGridH*.625f:cardGridH/rows;
+            float secondaryH=tieredRows?cardGridH-primaryH:cardGridH/rows;
+            if(tieredRows&&secondaryH<110f){secondaryH=110f;primaryH=cardGridH-secondaryH;}
             float cardW=Mathf.Min(390f,(w-42f-gap*(columns-1))/columns);
             if(!futureSlotArt){
                 var source=Resources.Load<Texture2D>("EldoriaV41/hero-locked");
@@ -522,8 +531,9 @@ namespace Eldoria.HeroesUI
             }
             for(int i=0;i<displayCount;i++){
                 int col=i%columns,row=i/columns;
+                float cardH=(tieredRows?(row==0?primaryH:secondaryH):primaryH);
                 float left=(w-(cardW*columns+gap*(columns-1)))*.5f+col*(cardW+gap);
-                float top=cardTop+row*(cardH+gap);
+                float top=cardTop+(tieredRows?(row==0?0f:primaryH+gap):row*(cardH+gap));
                 bool real=i<heroes.Length;
                 Surface("Hall / card cast shadow",content,left+5f,top+7f,
                     cardW,cardH,new Color(0f,0f,0f,.60f))

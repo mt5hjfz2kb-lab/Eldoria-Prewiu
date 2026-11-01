@@ -182,6 +182,14 @@ namespace Eldoria.Editor
                             var firstRow=slots.Count(t=>Mathf.Abs(t.anchoredPosition.y-slots[0].anchoredPosition.y)<1f);
                             Need(firstRow==3,"Portrait gallery preserves three approved card columns "+name);
                         }
+                        if(height>500){
+                            Need(slots[0].rect.height>slots[3].rect.height*1.30f,
+                                "Primary heroes are genuinely larger than shorter future reserve band "+name);
+                            var bottom=slots[3];
+                            Need(-bottom.anchoredPosition.y+bottom.rect.height<=
+                                    heroes.VisibleRoot.rect.height+1f,
+                                "Tiered approved hero gallery fits its real safe area "+name);
+                        }
                         foreach(var slot in slots){
                             var aperture=slot.GetComponentsInChildren<RectTransform>()
                                 .FirstOrDefault(t=>t.name=="Hero card portrait aperture");
