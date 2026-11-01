@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-01T16:11:59.278Z",
+  "updated_at": "2026-11-01T17:15:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-block02-finish-20261101",
+      "owner": "chatgpt-eldoria-block02-art-pipeline-20261101",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
-      "claimed_at": "2026-11-01T09:52:26.036Z",
+      "claimed_at": "2026-11-01T18:15:00+01:00",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -119,9 +119,7 @@
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
@@ -904,9 +902,9 @@
           "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
         }
       },
-      "previous_owner": "chatgpt-eldoria-block01-exact-head-qa-20261031",
+      "previous_owner": "chatgpt-eldoria-block02-finish-20261101",
       "takeover_at": "2026-10-17",
-      "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
+      "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
       "last_session_reclaim": {
         "date": "2026-10-17",
@@ -925,7 +923,7 @@
       "current_session": null,
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
       "resources_verified_at": "2026-10-31",
-      "resources_evidence": "Block 02 Unity certification for exact Heroes Hall source; previous native run 41246322869 remains in progress; DO NOT cancel it, start another Unity instance or bypass serial runner. Reservation is for later queued run.",
+      "resources_evidence": "Windows lease relinquished during takeover; must verify jobs and reserve before native run",
       "validation_recovery_session": {
         "owner": "chatgpt-validation-recovery-20261019",
         "authorization": "Owner requested review and completion of today's validation failures and pending delivery in current session.",
@@ -1556,13 +1554,19 @@
           "ownership_revision": 90,
           "transferred_at": "2026-11-01T09:52:26.036Z",
           "reason": "Explicit owner instruction 2026-11-01: current normal-chat session takes over BLOQUE 02 to completion on existing PR136. Preserve previous commits, evidence, protected scope and no overlapping Windows actions."
+        },
+        {
+          "owner": "chatgpt-eldoria-block02-finish-20261101",
+          "ownership_revision": 91,
+          "transferred_at": "2026-11-01",
+          "reason": "Owner explicitly directs new chat to assume BLOQUE 02 and finish; preserve PR136 and pending native evidence."
         }
       ],
-      "ownership_revision": 91,
+      "ownership_revision": 92,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
-      "last_claimed_at": "2026-10-31",
+      "last_claimed_at": "2026-11-01T18:15:00+01:00",
       "delivery_definition": {
         "deliverable": "Complete necessary web-to-Unity I–V parity and city/world camera corrections through existing PR132; resolve issue133 with verified evidence.",
         "evidence": "Web-to-Unity matrix, old/new save and idempotency regression tests, native Edit/PlayMode I–V, actual UI/camera captures and exact source/build identity.",
