@@ -175,6 +175,7 @@ namespace Eldoria.HeroesUI
             float bodyH=h-top-92,modelW=portrait?bodyW:bodyW*.43f,modelH=portrait?bodyH*.62f:bodyH;
             var stage=Rect("Hero model stage",content);
             Place(stage,bodyX,top,modelW,modelH);
+            if(CurrentPage!=Page.Talentos)BuildProfileStageDepth(stage,modelW,modelH);
             var source=ReadModelRoot?.Invoke(hero.Id) ?? (hero.Id=="aldric"?ApprovedAldricModel:ApprovedLyraModel);
             var raw=Rect("Genuine hero model render",stage).gameObject.AddComponent<RawImage>();
             Place(raw.rectTransform,5,5,modelW-10,modelH-46);raw.raycastTarget=false;
@@ -210,8 +211,16 @@ namespace Eldoria.HeroesUI
                 stage.gameObject.SetActive(false);info.gameObject.SetActive(false);
                 BuildReservedTalents(bodyX,top,bodyW,bodyH,portrait);
             }
+            // Bottom selector is a genuine navigation control with a
+            // separate recessed metal rail, never a decorative fake button.
+            var selector=Surface("Profile / carved hero selector rail",content,
+                18f,h-78f,w-36f,65f,new Color(.018f,.027f,.044f,.84f));
+            selector.GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / selector brass horizon",selector,6f,0f,w-48f,2f,
+                new Color(.83f,.63f,.32f,.74f)).GetComponent<Image>().raycastTarget=false;
             Button("Previous available hero","‹",20,h-66,64,46,()=>CycleHero(-1));
-            Label("Current hero identity",content,hero.DisplayName,94,h-66,w-188,46,22,TextAnchor.MiddleCenter).color=gold;
+            Label("Current hero identity",content,hero.DisplayName,94,h-66,w-188,46,
+                w<500f?19:24,TextAnchor.MiddleCenter).color=gold;
             Button("Next available hero","›",w-84,h-66,64,46,()=>CycleHero(1));
         }
         // Production art is independent from the approved sheet. Never crop
@@ -392,6 +401,7 @@ namespace Eldoria.HeroesUI
                     float cropH=Mathf.Min(1f,sourceAspect/viewAspect);
                     plate.uvRect=new UnityEngine.Rect((1f-cropW)*.5f,(1f-cropH)*.5f,cropW,cropH);
                 }
+                DrawProfileArchitecturalLayers(scene,w,h);
             }
             leftHallLight=rightHallLight=null;
             if(CurrentPage!=Page.Salon){
@@ -461,6 +471,133 @@ namespace Eldoria.HeroesUI
             Surface("Hall / header gilding",content,12f,5f,w-24f,2f,
                 new Color(.81f,.60f,.29f,.75f)).GetComponent<Image>().raycastTarget=false;
         }
+
+        // Block03: independent layered scenery for hero profiles, installed
+        // behind the genuine model and every state-bound control. The Salon
+        // is intentionally untouched by this treatment.
+        void DrawProfileArchitecturalLayers(RectTransform scene,float w,float h)
+        {
+            bool compact=w>h&&h<500f;
+            // The painted far wall remains visible. Architecture is split
+            // into foreground, middleground, light volumes and floor.
+            HeroesHallParallaxFinish.Install(scene);
+            float side=Mathf.Clamp(w*.033f,compact?8f:12f,46f);
+            float floorY=h*(compact?.80f:.83f);
+            var shadow=new Color(.011f,.018f,.030f,.55f);
+            Surface("Profile / left foreground stone pier",scene,0,h*.17f,side,h*.66f,shadow)
+                .GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / right foreground stone pier",scene,w-side,h*.17f,side,h*.66f,shadow)
+                .GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / left gilded bevel",scene,side-2f,h*.17f,2f,h*.66f,
+                new Color(.67f,.48f,.23f,.56f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / right gilded bevel",scene,w-side,h*.17f,2f,h*.66f,
+                new Color(.67f,.48f,.23f,.56f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / distant floor shade",scene,0,floorY,w,h-floorY,
+                new Color(.010f,.015f,.024f,.34f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / stone floor glint",scene,side,floorY,w-side*2f,1.5f,
+                new Color(.77f,.56f,.29f,.32f)).GetComponent<Image>().raycastTarget=false;
+            float glowSize=Mathf.Min(w*.38f,520f);
+            var warm=HallLight(scene,"Profile / torchlight architectural bounce",
+                side,h*.22f,glowSize,h*.62f);
+            warm.color=new Color(1f,.58f,.25f,.18f);
+            var opposite=HallLight(scene,"Profile / opposite window bounce",
+                w-glowSize-side,h*.10f,glowSize,h*.69f);
+            opposite.color=new Color(.50f,.63f,.83f,.11f);
+        }
+        void BuildProfileStageDepth(RectTransform stage,float w,float h)
+        {
+            // An architectural recess, not an opaque rectangle pasted behind
+            // the original rig. Every element is raycast-free and removable.
+            float border=Mathf.Clamp(w*.045f,5f,22f);
+            Surface("Profile / recessed arch left",stage,0,h*.07f,border,h*.73f,
+                new Color(.035f,.039f,.049f,.31f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / recessed arch right",stage,w-border,h*.07f,border,h*.73f,
+                new Color(.035f,.039f,.049f,.31f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / recessed arch lintel",stage,border,h*.07f,w-border*2f,3f,
+                new Color(.73f,.55f,.30f,.34f)).GetComponent<Image>().raycastTarget=false;
+            float y=h*.81f;
+            var footShadow=HallLight(stage,"Profile / floor contact atmosphere",
+                w*.15f,y-h*.09f,w*.70f,h*.19f);
+            footShadow.color=new Color(.025f,.025f,.037f,.48f);
+            Surface("Profile / physical display plinth shadow",stage,w*.12f,y+5f,w*.76f,10f,
+                new Color(.012f,.015f,.024f,.62f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / floor gilded edge",stage,w*.13f,y,w*.74f,2f,
+                new Color(.86f,.65f,.37f,.52f)).GetComponent<Image>().raycastTarget=false;
+        }
+        RectTransform ProfileModule(string name,Transform parent,float x,float y,float w,float h)
+        {
+            var r=Surface(name,parent,x,y,w,h,new Color(.024f,.036f,.059f,.89f));
+            r.GetComponent<Image>().raycastTarget=false;
+            // Bevel and inset are separate uGUI layers. These render correctly
+            // on actual Unity Canvas, unlike the rejected invisible custom mesh.
+            Surface(name+" / top brass bevel",r,0,0,w,2f,
+                new Color(.84f,.66f,.38f,.84f)).GetComponent<Image>().raycastTarget=false;
+            Surface(name+" / lower recessed edge",r,1f,h-2f,w-2f,2f,
+                new Color(.32f,.25f,.16f,.79f)).GetComponent<Image>().raycastTarget=false;
+            Surface(name+" / left recessed edge",r,0,2f,1f,Mathf.Max(0,h-4f),
+                new Color(.61f,.45f,.26f,.53f)).GetComponent<Image>().raycastTarget=false;
+            Surface(name+" / right recessed edge",r,w-1f,2f,1f,Mathf.Max(0,h-4f),
+                new Color(.61f,.45f,.26f,.53f)).GetComponent<Image>().raycastTarget=false;
+            float ornament=Mathf.Clamp(h*.13f,3f,12f);
+            foreach(float px in new[]{5f,w-ornament-5f})
+                Surface(name+" / corner engraved brass",r,px,5f,ornament,1.5f,
+                    new Color(.92f,.74f,.45f,.78f)).GetComponent<Image>().raycastTarget=false;
+            return r;
+        }
+        void BuildCombatSummary(RectTransform pane,HeroState hero,float w,float h)
+        {
+            float margin=Mathf.Clamp(w*.029f,8f,22f);
+            bool compact=h<280f;
+            float headerH=compact?36f:Mathf.Min(76f,h*.17f);
+            float footerH=compact?39f:Mathf.Min(76f,h*.17f);
+            float gap=compact?5f:Mathf.Min(14f,h*.025f);
+            float colGap=Mathf.Clamp(w*.025f,6f,18f);
+            float colW=Mathf.Max(30f,(w-2f*margin-colGap)*.5f);
+            float upper=margin+headerH+gap;
+            float lower=h-margin-footerH-gap;
+            float space=Mathf.Max(56f,lower-upper);
+            float cellH=Mathf.Clamp((space-gap)*.5f,28f,compact?60f:130f);
+            float cellsY=upper+Mathf.Max(0f,(space-(cellH*2f+gap))*.5f);
+            var titleBar=ProfileModule("Profile / heraldic power banner",pane,
+                margin,margin,w-2f*margin,headerH);
+            float powerW=Mathf.Clamp(w*.32f,106f,235f);
+            int titleFont=compact?15:Mathf.RoundToInt(Mathf.Clamp(w*.025f,17f,25f));
+            Label("Combat attributes title",titleBar,"ATRIBUTOS",10f,4f,
+                Mathf.Max(50f,w-2f*margin-powerW-18f),headerH-8f,
+                titleFont).color=ivory;
+            Label("Real hero power",titleBar,"PODER  "+hero.HeroPower,
+                Mathf.Max(0f,w-2f*margin-powerW-8f),4f,
+                powerW,headerH-8f,compact?17:26,TextAnchor.MiddleRight).color=gold;
+            string[] names={"VIDA","ATAQUE","DEFENSA","RUPTURA"};
+            int[] values={hero.Health,hero.Attack,hero.Defense,hero.Break};
+            for(int i=0;i<4;i++){
+                float x=margin+(i%2)*(colW+colGap);
+                float y=cellsY+(i/2)*(cellH+gap);
+                var plate=ProfileModule("Profile / "+names[i]+" carved attribute",pane,
+                    x,y,colW,cellH);
+                bool tall=cellH>76f;
+                int nameSize=compact?14:tall?21:17;
+                int valueSize=compact?19:tall?34:23;
+                Label(names[i],plate,names[i],9f,tall?14f:4f,
+                    colW*.54f,tall?32f:cellH-7f,nameSize).color=ivory;
+                Label(names[i]+" real value",plate,values[i].ToString(),
+                    colW*.51f,tall?13f:4f,colW*.44f,tall?65f:cellH-7f,
+                    valueSize,TextAnchor.MiddleRight).color=gold;
+                if(tall)Surface("Profile / engraved attribute underline",plate,
+                    11f,cellH-17f,colW-22f,1f,new Color(.76f,.53f,.28f,.42f))
+                    .GetComponent<Image>().raycastTarget=false;
+            }
+            var footer=ProfileModule("Profile / progression and capacity",pane,
+                margin,h-margin-footerH,w-2f*margin,footerH);
+            string exp="EXP  "+hero.Experience+
+                (hero.ExperienceToNext>0?" / "+hero.ExperienceToNext:"");
+            Label("Persistent experience",footer,exp,9f,3f,
+                (w-2f*margin)*.52f,footerH-6f,compact?14:18);
+            Label("Actual march capacity",footer,"MARCHA  "+hero.Capacity,
+                (w-2f*margin)*.51f,3f,(w-2f*margin)*.46f,footerH-6f,
+                compact?14:18,TextAnchor.MiddleRight).color=gold;
+        }
+
         Sprite futureSlotArt, hallFrameSprite;
         readonly Sprite[] approvedReservedPortraits=new Sprite[4];
         // The approved master is archived as art direction, NEVER a flattened
@@ -1054,22 +1191,7 @@ namespace Eldoria.HeroesUI
         void BuildInformation(RectTransform pane,HeroState hero,float w,float h)
         {
             if(CurrentPage==Page.Resumen){
-                string[] names={"VIDA","ATAQUE","DEFENSA","RUPTURA","PODER"};
-                int[] values={hero.Health,hero.Attack,hero.Defense,hero.Break,hero.HeroPower};
-                bool dense=h<340f;
-                int columns=dense?2:1;
-                int rows=Mathf.CeilToInt(names.Length/(float)columns);
-                float row=(h-88f)/rows,cell=(w-24f)/columns;
-                for(int i=0;i<names.Length;i++){
-                    float x=12+(i%columns)*cell,y=8+(i/columns)*row;
-                    Label(names[i],pane,names[i],x,y,cell*.61f,row,17);
-                    Label(names[i]+" real value",pane,values[i].ToString(),
-                        x+cell*.61f,y,cell*.35f,row,20,TextAnchor.MiddleRight).color=gold;
-                }
-                Label("Persistent experience",pane,
-                    "EXP  "+hero.Experience+(hero.ExperienceToNext>0?" / "+hero.ExperienceToNext:"")+
-                    "\nCAPACIDAD DE MARCHA  "+hero.Capacity,
-                    12,h-76f,w-24f,64f,17);
+                BuildCombatSummary(pane,hero,w,h);
             }else if(CurrentPage==Page.Habilidades){
                 Label("Canonical hero ability",pane,hero.AbilityName??"CARACTERÍSTICAS",16,18,w-32,48,24).color=gold;
                 ScrollDescription(pane,hero.AbilityDescription??"",16,76,w-32,Mathf.Max(50,h-96));
