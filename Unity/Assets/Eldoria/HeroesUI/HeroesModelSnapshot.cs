@@ -90,7 +90,7 @@ namespace Eldoria.HeroesUI
                 name="Hero live perspective portrait",filterMode=FilterMode.Bilinear,
                 // Multi-sample the ORIGINAL geometry, not a sharpened sprite.
                 // Mobile uses 2x to limit memory; desktops use 4x.
-                antiAliasing=Application.isMobilePlatform?2:4};
+                antiAliasing=UnityEngine.Application.isMobilePlatform?2:4};
             texture.Create();camera.targetTexture=texture;
         }
         Light Lamp(string name,Color color,float intensity){
