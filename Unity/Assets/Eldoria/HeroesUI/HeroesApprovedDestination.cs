@@ -512,6 +512,31 @@ namespace Eldoria.HeroesUI
                     transition.raycastTarget=false;
                 }
             }
+            // Future hero silhouettes are an illustrated reserve, not
+            // unfinished game buttons. The existing 'hero-locked' picture
+            // contains a large placeholder PLUS glyph; place an independent
+            // physical bronze padlock seal over it as in the approved sheet.
+            // The silhouette remains intact, no fake unlock action exists.
+            if(slot>=2){
+                float seal=Mathf.Clamp(Mathf.Min(w,h)*.46f,28f,104f);
+                float sealX=(w-seal)*.5f;
+                float sealY=Mathf.Clamp(h*.75f-seal*.5f,3f,h-seal-4f);
+                var plaque=Frame("Hall / genuine future hero lock seal",viewport,
+                    sealX,sealY,seal,seal);
+                var deep=plaque.GetComponent<Image>();
+                deep.raycastTarget=false;
+                foreach(var g in plaque.GetComponentsInChildren<Graphic>())
+                    g.raycastTarget=false;
+                var lockInk=new Color(.68f,.53f,.29f,.90f);
+                Surface("Hall / bronze lock body",plaque,seal*.34f,seal*.49f,
+                    seal*.32f,seal*.29f,lockInk).GetComponent<Image>().raycastTarget=false;
+                Surface("Hall / lock left shackle",plaque,seal*.39f,seal*.31f,
+                    seal*.07f,seal*.21f,lockInk).GetComponent<Image>().raycastTarget=false;
+                Surface("Hall / lock right shackle",plaque,seal*.54f,seal*.31f,
+                    seal*.07f,seal*.21f,lockInk).GetComponent<Image>().raycastTarget=false;
+                Surface("Hall / lock shackle arch",plaque,seal*.39f,seal*.28f,
+                    seal*.22f,seal*.08f,lockInk).GetComponent<Image>().raycastTarget=false;
+            }
             // Do not draw a concept-sheet crop on top of this approved image:
             // that flattened the live hero identity and hid Lyra's real model.
             // Luminous sill is anchored to the portrait viewport and is

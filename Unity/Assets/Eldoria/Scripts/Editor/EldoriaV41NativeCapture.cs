@@ -102,6 +102,14 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        for(int lockedSlot=2;lockedSlot<6;lockedSlot++){
+                            var locks=slots[lockedSlot].GetComponentsInChildren<RectTransform>()
+                                .Where(x=>x.name=="Hall / genuine future hero lock seal").ToArray();
+                            Need(locks.Length==1&&locks[0].rect.width>=28f&&
+                                locks[0].GetComponentsInChildren<Graphic>()
+                                    .All(x=>!x.raycastTarget),
+                                "Future hero uses a physical noninteractive locked seal, not fake '+' action "+name);
+                        }
                         for(int slotIndex=0;slotIndex<2;slotIndex++){
                             var realPortrait=slots[slotIndex].GetComponentsInChildren<Image>()
                                 .FirstOrDefault(x=>x.name=="Verified portrait");
