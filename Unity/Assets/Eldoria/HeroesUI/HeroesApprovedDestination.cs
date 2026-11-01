@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Eldoria.UI.RoyalGold.V2;
+using Eldoria.UI.RoyalGold;
 
 namespace Eldoria.HeroesUI
 {
@@ -228,6 +229,23 @@ namespace Eldoria.HeroesUI
             visual.texture=source;visual.raycastTarget=false;
             // Real Button caption always remains above the authored plate.
             if(button)layer.SetSiblingIndex(Mathf.Min(5,parent.childCount-1));
+        }
+        void HallNavIcon(Button button,int iconId,float cell,float height,bool selected)
+        {
+            // Reuse the canonical vector Royal Gold pictograms rather than
+            // pasting the concept sheet's button icons into a flat screenshot.
+            // These are visual-only children of genuine state-bound buttons.
+            float size=Mathf.Min(23f,height*.50f);
+            var frame=Rect("Hall / nav actual vector pictogram "+iconId,button.transform);
+            Place(frame,Mathf.Max(5f,cell*.058f),(height-size)*.5f,size,size);
+            var vector=frame.gameObject.AddComponent<RoyalIconGraphic>();
+            vector.Icon=iconId;
+            vector.color=selected?new Color(.16f,.11f,.045f,.97f):
+                new Color(.92f,.75f,.43f,.92f);
+            vector.raycastTarget=false;
+            var caption=button.GetComponentInChildren<Text>();
+            if(caption)Place(caption.rectTransform,size+9f,3f,
+                Mathf.Max(21f,cell-size-15f),height-6f);
         }
         Texture2D hallArchitecture, hallLightTexture, hallPortraitTransition;
         Material hallPaintMaterial;
@@ -626,6 +644,7 @@ namespace Eldoria.HeroesUI
             float navY=h-footerH+(phoneLandscape?9f:12f);
             var navBack=Button("Hall / nav return","VOLVER",navLeft,navY,navCell,navHeight,Close);
             HallControlArt(navBack.transform,"tab-idle",navCell,navHeight,true);
+            HallNavIcon(navBack,12,navCell,navHeight,false);
             Surface("Hall / selected heroes tab glow",content,
                 navLeft+navCell+navGap,navY,navCell,navHeight,
                 new Color(.47f,.25f,.065f,.91f)).GetComponent<Image>().raycastTarget=false;
@@ -633,6 +652,7 @@ namespace Eldoria.HeroesUI
                 "HÉROES",
                 navLeft+navCell+navGap,navY,navCell,navHeight,()=>Select(Page.Salon));
             HallControlArt(selected.transform,"gold-button",navCell,navHeight,true);
+            HallNavIcon(selected,4,navCell,navHeight,true);
             // The selected gold plate is luminous: use dark ink rather than
             // pale yellow-on-gold, which was illegible on small devices.
             foreach(var t in selected.GetComponentsInChildren<Text>())
@@ -643,9 +663,11 @@ namespace Eldoria.HeroesUI
                     if(management){Suspend();management.Open(RoyalGoldV3ManagementScreens.Destination.March);}
                 });
             HallControlArt(navMarches.transform,"tab-idle",navCell,navHeight,true);
+            HallNavIcon(navMarches,5,navCell,navHeight,false);
             var navRelicary=Button("Hall / nav reliquary","RELICARIO",
                 navLeft+(navCell+navGap)*3f,navY,navCell,navHeight,()=>{},false);
             HallControlArt(navRelicary.transform,"tab-idle",navCell,navHeight,true);
+            HallNavIcon(navRelicary,7,navCell,navHeight,false);
         }
         void BuildReservedTalents(float x,float y,float w,float h,bool portrait)
         {

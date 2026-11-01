@@ -9,6 +9,7 @@ using Eldoria.Infrastructure;
 using Eldoria.ReferenceClean;
 using Eldoria.ReferenceClean.Editor;
 using Eldoria.UI.RoyalGold.V2;
+using Eldoria.UI.RoyalGold;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -143,6 +144,11 @@ namespace Eldoria.Editor
                             hallNav.Any(b=>b.name=="Hall / nav marches"&&b.interactable) &&
                             hallNav.Any(b=>b.name=="Hall / nav reliquary"&&!b.interactable),
                             "Hall footer real navigation and future Relicario lock "+name);
+                        var navIcons=heroes.VisibleRoot
+                            .GetComponentsInChildren<RoyalIconGraphic>()
+                            .Where(v=>v.name.StartsWith("Hall / nav actual vector pictogram ")).ToArray();
+                        Need(navIcons.Length==4&&navIcons.All(v=>!v.raycastTarget),
+                            "Four original vector hall navigation icons on actual buttons "+name);
                         var heroNavLabel=hallNav.First(b=>b.name=="Hall / nav heroes")
                             .GetComponentInChildren<Text>();
                         Need(heroNavLabel&&heroNavLabel.text=="HÉROES"&&
