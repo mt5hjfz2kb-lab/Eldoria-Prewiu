@@ -782,13 +782,21 @@ namespace Eldoria.HeroesUI
                     var statePlate=Label("Hero card state",card,
                         unlocked?(lateral?"NV. "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
                             compactCard?"NV. "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
+                            largeCard?"NV. "+heroes[i].Level+"  ·  PODER "+heroes[i].HeroPower:
                             "NIVEL "+heroes[i].Level+"  ·  PODER "+heroes[i].HeroPower):
                             (compactCard?"BLOQUEADO\nPOR HISTORIA":"BLOQUEADO POR LA HISTORIA"),
                         ix+3f,iy+(lateral?ih*.49f:largeCard?49f:compactCard?26f:30f),iw-6f,
                         lateral?Mathf.Max(40f,ih*.48f):largeCard?20f:
                             compactCard?Mathf.Max(36f,identityH-46f):Mathf.Max(20f,identityH-39f),
-                        lateral?20:compactCard?13:17,TextAnchor.MiddleCenter);
-                    if(lateral)statePlate.resizeTextForBestFit=false;
+                        lateral?20:compactCard?13:largeCard?14:17,TextAnchor.MiddleCenter);
+                    // At 512:575 reference proportions, real hero power must
+                    // remain on ONE visible line instead of wrapping under the
+                    // image and being truncated by its 20-unit stat row.
+                    if(lateral||largeCard){
+                        statePlate.resizeTextForBestFit=false;
+                        if(largeCard)
+                            statePlate.horizontalOverflow=HorizontalWrapMode.Overflow;
+                    }
                 } else {
                     var lockedTitle=Label("Hero card name",card,
                         lateral?"POR\nDESCUBRIR":compactCard?"POR\nDESCUBRIR":"POR DESCUBRIR",ix+3f,
