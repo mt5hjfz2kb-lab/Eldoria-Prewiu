@@ -158,6 +158,21 @@ namespace Eldoria.Editor
                                     portrait.rectTransform.rect.height>=aperture.rect.height*.95f,
                                     "Locked hero silhouette fills its real portrait aperture "+name);
                         }
+                        // Exact illustrated identity from the OWNER-APPROVED
+                        // six-view master: six distinct planes cropped free of
+                        // any baked title, UI caption or fake hero attributes.
+                        var authenticAtlas=Resources.Load<Texture2D>("EldoriaV41/HeroesApprovedMaster");
+                        Need(authenticAtlas&&authenticAtlas.width==1536&&authenticAtlas.height==1024,
+                            "Exact original six-view reference is available for layered Hall "+name);
+                        for(int slotIndex=0;slotIndex<6;slotIndex++){
+                            var slot=slots[slotIndex];
+                            var layer=slot.GetComponentsInChildren<RawImage>()
+                                .FirstOrDefault(t=>t.name=="Hall / approved isolated portrait art "+slotIndex);
+                            Need(layer&&layer.texture==authenticAtlas&&layer.uvRect.width>0f&&
+                                layer.uvRect.height>0f&&layer.uvRect.xMin>=0f&&layer.uvRect.yMin>=0f&&
+                                layer.uvRect.xMax<=1f&&layer.uvRect.yMax<=1f&&!layer.raycastTarget,
+                                "Each authored hero painting is truly isolated and does not intercept game input "+name);
+                        }
                         if(height>width){
                             var intro=heroes.VisibleRoot.GetComponentsInChildren<Text>()
                                 .FirstOrDefault(t=>t.name=="Heroes hall introduction");
