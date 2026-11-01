@@ -101,6 +101,11 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        var originalBustBlend=slots[0].GetComponentsInChildren<RawImage>()
+                            .FirstOrDefault(i=>i.name=="Hall / original portrait edge transition");
+                        Need(originalBustBlend&&originalBustBlend.texture&&
+                            !originalBustBlend.raycastTarget,
+                            "Original Aldric bust blends into its 2.5D gallery frame without a hard pasted edge "+name);
                         // A hand-painted URP material rather than the
                         // original raw flat raster. Real cards, banners and
                         // navigation are still separate live UI components.

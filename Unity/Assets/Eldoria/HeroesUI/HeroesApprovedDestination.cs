@@ -229,7 +229,7 @@ namespace Eldoria.HeroesUI
             // Real Button caption always remains above the authored plate.
             if(button)layer.SetSiblingIndex(Mathf.Min(5,parent.childCount-1));
         }
-        Texture2D hallArchitecture, hallLightTexture;
+        Texture2D hallArchitecture, hallLightTexture, hallPortraitTransition;
         Material hallPaintMaterial;
         RawImage leftHallLight, rightHallLight;
         Texture2D HallGlow()
@@ -260,7 +260,7 @@ namespace Eldoria.HeroesUI
             light.raycastTarget=false;
             return light;
         }
-        void OnDestroy(){if(hallLightTexture)Destroy(hallLightTexture);if(hallPaintMaterial)Destroy(hallPaintMaterial);}
+        void OnDestroy(){if(hallLightTexture)Destroy(hallLightTexture);if(hallPortraitTransition)Destroy(hallPortraitTransition);if(hallPaintMaterial)Destroy(hallPaintMaterial);}
         void DrawApprovedSalonEnvironment(float w,float h)
         {
             if(!hallArchitecture)
@@ -382,6 +382,31 @@ namespace Eldoria.HeroesUI
         // concept is a reference, NOT an atlas to paint over Lyra's validated
         // Tripo identity, Aldric's authored portrait, or future hero slots.
         // Decorative architectural layers remain separate and raycast-free.
+        Texture2D HallPortraitTransition()
+        {
+            if(hallPortraitTransition)return hallPortraitTransition;
+            const int n=128;
+            hallPortraitTransition=new Texture2D(n,n,TextureFormat.RGBA32,false,true);
+            hallPortraitTransition.name="Hall / genuine portrait edge-to-stone paint";
+            hallPortraitTransition.wrapMode=TextureWrapMode.Clamp;
+            hallPortraitTransition.filterMode=FilterMode.Bilinear;
+            hallPortraitTransition.hideFlags=HideFlags.HideAndDontSave;
+            var pixels=new Color[n*n];
+            Color night=new Color(.055f,.083f,.115f,1f);
+            for(int y=0;y<n;y++)for(int x=0;x<n;x++){
+                float u=(x+.5f)/n,v=(y+.5f)/n;
+                float edge=Mathf.Min(Mathf.Min(u,1f-u),Mathf.Min(v,1f-v));
+                // A reversible, non-destructive frame-specific gradient.
+                // The approved portrait GLB/sprite stays exact; only its
+                // bright rectangular sky edges dissolve into the card.
+                float t=Mathf.Clamp01(edge/.16f);
+                float alpha=(1f-t*t*(3f-2f*t))*.94f;
+                pixels[y*n+x]=new Color(night.r,night.g,night.b,alpha);
+            }
+            hallPortraitTransition.SetPixels(pixels);
+            hallPortraitTransition.Apply(false,true);
+            return hallPortraitTransition;
+        }
         void CardPortrait(RectTransform card,Sprite sprite,bool unlocked,bool fullBody,
             int slot,float x,float y,float w,float h)
         {
@@ -407,6 +432,17 @@ namespace Eldoria.HeroesUI
                 Place(image.rectTransform,(w-imageW)*.5f,top,imageW,imageH);
                 image.sprite=sprite;image.raycastTarget=false;
                 image.color=unlocked?Color.white:new Color(.42f,.46f,.51f,.90f);
+                if(slot==0){
+                    // Aldric's genuine illustrated bust has an originally
+                    // baked bright sky. This separate feathered material stage
+                    // eliminates the visibly pasted rectangular photo edge
+                    // while keeping the authoritative source completely intact.
+                    var transition=Rect("Hall / original portrait edge transition",viewport)
+                        .gameObject.AddComponent<RawImage>();
+                    Place(transition.rectTransform,(w-imageW)*.5f,top,imageW,imageH);
+                    transition.texture=HallPortraitTransition();
+                    transition.raycastTarget=false;
+                }
             }
             // Do not draw a concept-sheet crop on top of this approved image:
             // that flattened the live hero identity and hid Lyra's real model.
