@@ -49,7 +49,7 @@ namespace Eldoria.HeroesUI
             capture.hideFlags=HideFlags.HideAndDontSave;capture.SetActive(false);
             var snapshot=capture.AddComponent<HeroesModelSnapshot>();
             try{
-                bool rendered=snapshot.Show(ModelRoot,capture.GetComponent<RawImage>(),0f);
+                bool rendered=snapshot.Show(ModelRoot,capture.GetComponent<RawImage>(),30f);
                 if(rendered)Portrait=snapshot.CopyPortrait();
             }finally{
                 // This capture object never becomes active. Unity does not call
