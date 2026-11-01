@@ -2,11 +2,11 @@
 
 > **Pacto fundacional permanente (ELDORIA_OWNER_AI_COLLABORATION_V1):** leer la sección «Pacto fundacional propietario–IA» de [AGENTS.md](../AGENTS.md) **antes de empezar o continuar cualquier trabajo**. El propietario no programa; la IA debe tomar iniciativa, ejercer juicio crítico independiente, contrastar el resultado real con el objetivo y reconocer errores, sin esperar a que el propietario diagnostique los problemas. No confundir éxito técnico con calidad del juego. Esta responsabilidad subsiste en todos los relevos.
 
-Actualizado el 21-10-2026 por encargo de reducir esperas sin alterar el juego.
+Navegación revisada el 01-11-2026. Entrada general: [README](../README.md). Los datos vivos permanecen en sus registros; esta guía no mantiene otra lista de versiones o responsables.
 
 ## Preflight obligatorio antes de crear una PR — corrección del incidente #115/#116
 
-Antes de abrir una rama o PR o reservar Unity, consultar `main/pipeline/active-workstreams.json` **y las PR abiertas del repositorio**. Si hay una PR canónica para el mismo objetivo (por ejemplo, «Crónica Real» es PR #115, workstream `eldoria-ui-v3-management-completion-20261021`), continuar allí o transferir su titularidad mediante el protocolo; nunca crear otro PR para evitar un conflicto de chat.
+Antes de abrir una rama o PR o reservar Unity, consultar `main/pipeline/active-workstreams.json` **y las PR abiertas del repositorio**. Si hay una PR canónica para el mismo objetivo (el incidente histórico «Crónica Real» #115/#116 explica esta regla, pero no identifica la PR actual de un nuevo encargo), continuar allí o transferir su titularidad mediante el protocolo; nunca crear otro PR para evitar un conflicto de chat.
 
 En PR **#117 en adelante** escribir `Workstream-ID: <id canónico reclamado>` en el cuerpo. `canonical-pr-ownership.yml` comprueba esto automáticamente sin tocar Unity; un gate rojo impide tratar esa candidata como válida. El chequeo es posterior a la apertura, no sustituye la consulta previa, y no desplaza automáticamente procesos/chat existentes. Las PR históricas no deben revivirse por esta regla.
 
@@ -26,6 +26,14 @@ En PR **#117 en adelante** escribir `Workstream-ID: <id canónico reclamado>` en
 - El flujo nativo del engendro conserva una copia de los archivos generados antes de publicarlos, con SHA fuente, identidad del run, hashes y resultado de QA. Si falla Git, recuperar su artefacto `spawnling-native-recovery-RUN_ID-ATTEMPT` antes de repetir Unity.
 - La publicación de esa copia requiere su configuración versionada, QA correcta y el workstream activo original. Rechaza cambios concurrentes de Unity y nunca fuerza el remoto ni limpia, cambia o rebasa el directorio del editor. Un artefacto retenido tampoco equivale a integración ni a aprobación artística.
 - Guía de uso: `tools/workflow-recovery/README.md`. Escena, workflows y UI siguen sus alcances vivos; los responsables pueden cambiar mediante el relevo autorizado. Una identidad histórica no bloquea la continuación; reconciliar antes de conectar otros productores.
+
+## Comprobar integrada, candidata y distribuida
+
+Consultar `main`, el HEAD de la PR canónica y los manifiestos de entrega por separado. Las descripciones y cabeceras pueden citar un SHA anterior: cotejarlo con el resultado real antes de trasladar un PASS. Para WebGL rigen [el manifiesto](../pipeline/playtest-delivery.json) y [la guía itch](../docs/ELDORIA_PLAYTEST_DELIVERY.md); Android usa [el canal familiar](../updates/android/family.json). Pages `unity-owner/` y el antiguo despliegue Sites no son el canal actual.
+
+`active` es la lista de tareas vivas, no una lista de personas ejecutando ahora: comprobar `ownership_state`, `owner`, revisión y alcance. Los campos resumen como `exclusive_priority` y las antiguas cabeceras no desplazan la entrada canónica de `active` ni prueban que un runner esté libre. Ante una discrepancia, respetar la reserva vigente y reconciliarla con su titular antes de escribir o ejecutar.
+
+La orden posterior de [desacoplamiento de Qwen](../docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md) prevalece sobre requisitos históricos de inferencia. Mantener autoría, referencias, fuentes y pruebas; no reinstaurar ese requisito al recuperar un documento antiguo.
 
 ## Capacidades existentes
 
