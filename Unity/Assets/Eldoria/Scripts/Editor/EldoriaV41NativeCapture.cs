@@ -179,7 +179,9 @@ namespace Eldoria.Editor
                                 !realData.resizeTextForBestFit&&
                                 realData.fontSize>=14&&
                                 realData.rectTransform.rect.height>=35f&&
-                                realData.preferredHeight<=realData.rectTransform.rect.height+5f,
+                                -realData.rectTransform.anchoredPosition.y+
+                                    realData.rectTransform.rect.height<=
+                                    slots[0].rect.height+1f,
                                 "Approved-ratio desktop card reserves real visible rows for level and power "+name);
                         }
                         for(int lockedSlot=2;lockedSlot<6;lockedSlot++){
