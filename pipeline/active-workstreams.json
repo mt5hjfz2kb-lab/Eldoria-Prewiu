@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-01T22:21:33.966Z",
+  "updated_at": "2026-11-01T23:13:11.112Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -126,8 +126,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK02_HEROES_HALL_FINAL_ART_RECONSTRUCTION",
-      "next": "Inspect genuine exact-HEAD hero hall captures against approved master; correct compositional failures and four reserve card differentiation and Lyra sampling; Unity visual four resolutions and regression; art-approved remains false until owner signoff.",
+      "phase": "BLOCK02_HEROES_HALL_NATIVE_PASS_ART_REVIEW_PENDING",
+      "next": "Owner review of exact HEAD 82ce4f5 four genuine Unity Hall screenshots (1600x900,900x1600,390x844,844x390) versus docs/heroes-ui/REFERENCIA_MAESTRA_APROBADA.png. Native functional PASS 41360392031 artifact 13104799148; art_approved=false until explicit owner artistic acceptance. Check remainder of full run 41360392031, never conflate CI with artistic acceptance. Do not merge/publish.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -902,7 +902,19 @@
           "art_approved": false,
           "new_credits_used": 0,
           "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
-        }
+        },
+        "heroes_hall_visual_candidate_head": "82ce4f5cf178e5ddfa2fc8bfe5d948c797b4df6b",
+        "heroes_hall_native_run": 41360392031,
+        "heroes_hall_native_artifact": 13104799148,
+        "heroes_hall_native_functional": "PASS",
+        "heroes_hall_native_resolutions": [
+          "1600x900",
+          "900x1600",
+          "390x844",
+          "844x390"
+        ],
+        "heroes_hall_visual_review": "REQUIRED",
+        "heroes_hall_visual_reference": "docs/heroes-ui/REFERENCIA_MAESTRA_APROBADA.png"
       },
       "previous_owner": "chatgpt-eldoria-block02-direct-completion-20261101",
       "takeover_at": "2026-10-17",
