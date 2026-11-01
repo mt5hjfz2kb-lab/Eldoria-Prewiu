@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-01T23:13:11.112Z",
+  "updated_at": "2026-11-02",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-heroes-hall-final-20261101",
+      "owner": "chatgpt-eldoria-hero-profiles-block03-20261102",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
-      "claimed_at": "2026-11-01T22:21:33.966Z",
+      "claimed_at": "2026-11-02",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -126,8 +126,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK02_HEROES_HALL_NATIVE_PASS_ART_REVIEW_PENDING",
-      "next": "Owner review of exact HEAD 82ce4f5 four genuine Unity Hall screenshots (1600x900,900x1600,390x844,844x390) versus docs/heroes-ui/REFERENCIA_MAESTRA_APROBADA.png. Native functional PASS 41360392031 artifact 13104799148; art_approved=false until explicit owner artistic acceptance. Check remainder of full run 41360392031, never conflate CI with artistic acceptance. Do not merge/publish.",
+      "phase": "BLOCK03_HERO_PROFILES_IMPLEMENTATION",
+      "next": "Reconstruir fichas reales Aldric primero y reutilizar diseño Lyra en PR136. A/B 1600x900,900x1600,844x390,390x844; preservar GLB/animaciones/guardados y no publicar/merge. Dejar terminar certificación anterior 41360392031 sin cancelarla y no lanzar job pesado incompatible.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1586,9 +1586,15 @@
           "ownership_revision": 93,
           "transferred_at": "2026-11-01T22:21:33.966Z",
           "reason": "Owner expressly requests continuation in a new chat for final Heroes Hall reconstruction on PR136; prior HEAD and evidence preserved, no duplicate PR or run."
+        },
+        {
+          "owner": "chatgpt-eldoria-heroes-hall-final-20261101",
+          "ownership_revision": 94,
+          "transferred_at": "2026-11-02",
+          "reason": "Propietario encarga Bloque03: reconstruir fichas Aldric y Lyra tras revisión nativa del Salón; relevo autorizado por protocolo, PR136 y HEAD existentes preservados, no modificar ni cancelar job Unity ya iniciado."
         }
       ],
-      "ownership_revision": 94,
+      "ownership_revision": 95,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
