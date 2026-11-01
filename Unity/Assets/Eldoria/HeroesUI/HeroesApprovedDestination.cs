@@ -525,12 +525,15 @@ namespace Eldoria.HeroesUI
                         Label("Hero / authoritative role",card,heroes[i].Role,
                             ix+3f,iy+29f,iw-6f,17f,15,TextAnchor.MiddleCenter)
                             .color=new Color(.81f,.75f,.63f);
+                    bool compactCard=!lateral&&cardW<150f;
                     Label("Hero card state",card,
-                        unlocked?"NIVEL "+heroes[i].Level+"  ·  PODER "+heroes[i].HeroPower:
-                            "BLOQUEADO POR LA HISTORIA",
-                        ix+3f,iy+(lateral?ih*.49f:largeCard?49f:30f),iw-6f,
-                        lateral?Mathf.Max(21f,ih*.33f):largeCard?20f:Mathf.Max(20f,identityH-39f),
-                        lateral?14:cardW<150?13:17,TextAnchor.MiddleCenter);
+                        unlocked?(compactCard?"NV. "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
+                            "NIVEL "+heroes[i].Level+"  ·  PODER "+heroes[i].HeroPower):
+                            (compactCard?"BLOQUEADO\nPOR HISTORIA":"BLOQUEADO POR LA HISTORIA"),
+                        ix+3f,iy+(lateral?ih*.49f:largeCard?49f:compactCard?27f:30f),iw-6f,
+                        lateral?Mathf.Max(21f,ih*.33f):largeCard?20f:
+                            compactCard?Mathf.Max(30f,identityH-31f):Mathf.Max(20f,identityH-39f),
+                        lateral?14:compactCard?13:17,TextAnchor.MiddleCenter);
                 } else {
                     Label("Hero card name",card,"POR DESCUBRIR",ix+3f,
                         iy+(lateral?8f:3f),iw-6f,lateral?Mathf.Max(28f,ih*.43f):27f,
