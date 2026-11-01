@@ -404,8 +404,15 @@ namespace Eldoria.HeroesUI
                 // A reversible, non-destructive frame-specific gradient.
                 // The approved portrait GLB/sprite stays exact; only its
                 // bright rectangular sky edges dissolve into the card.
-                float t=Mathf.Clamp01(edge/.16f);
-                float alpha=(1f-t*t*(3f-2f*t))*.94f;
+                // Preserve the center of the genuine Aldric portrait,
+                // while feathering its bright sky into the stone aperture.
+                // The side vignette masks the otherwise obvious straight
+                // raster cut; the upper-right sky gets a separate feather.
+                float t=Mathf.Clamp01(edge/.21f);
+                float border=(1f-t*t*(3f-2f*t))*.96f;
+                float skyRight=Mathf.Clamp01((u-.59f)/.34f)*
+                    Mathf.Clamp01((v-.36f)/.43f);
+                float alpha=Mathf.Max(border,skyRight*.84f);
                 pixels[y*n+x]=new Color(night.r,night.g,night.b,alpha);
             }
             hallPortraitTransition.SetPixels(pixels);
