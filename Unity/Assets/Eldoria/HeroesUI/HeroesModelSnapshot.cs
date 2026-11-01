@@ -137,24 +137,43 @@ namespace Eldoria.HeroesUI
                 RenderSettings.reflectionIntensity=reflection;RenderSettings.fog=fog;RenderTexture.active=target;
             }
         }
+        // Explicitly resolve the multisampled GPU portrait into a single-sample
+        // temporary texture before any ReadPixels. Direct CPU reads from an
+        // MSAA surface are not portable across Unity graphics backends.
+        RenderTexture CpuReadablePortrait()
+        {
+            if(!texture||texture.antiAliasing<=1)return texture;
+            var resolved=RenderTexture.GetTemporary(texture.width,texture.height,0,
+                RenderTextureFormat.ARGB32);
+            resolved.filterMode=FilterMode.Bilinear;
+            Graphics.Blit(texture,resolved);
+            return resolved;
+        }
+        void ReleaseReadablePortrait(RenderTexture resolved)
+        {
+            if(resolved&&resolved!=texture)RenderTexture.ReleaseTemporary(resolved);
+        }
         // Native visual gate: measure the actual GPU-rendered opaque silhouette,
         // excluding the transparent floor shadow, rather than trusting bounds.
         public float ReadOpaqueHeightCoverage(){
             if(!HasModel)return 0;var prior=RenderTexture.active;
+            var resolved=CpuReadablePortrait();
             var pixels=new Texture2D(texture.width,texture.height,TextureFormat.RGBA32,false);
-            try{RenderTexture.active=texture;pixels.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);pixels.Apply();
+            try{RenderTexture.active=resolved;pixels.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);pixels.Apply();
                 var colors=pixels.GetPixels32();int first=texture.height,last=-1;
                 for(int y=0;y<texture.height;y++)for(int x=0;x<texture.width;x++)
                     if(colors[y*texture.width+x].a>242){first=Mathf.Min(first,y);last=Mathf.Max(last,y);break;}
                 return last<first?0:(last-first+1f)/texture.height;
-            }finally{RenderTexture.active=prior;Destroy(pixels);}
+            }finally{RenderTexture.active=prior;ReleaseReadablePortrait(resolved);Destroy(pixels);}
         }
         public Sprite CopyPortrait(){
-            if(!HasModel)return null;var prior=RenderTexture.active;var copy=new Texture2D(texture.width,texture.height,TextureFormat.RGBA32,false);
-            try{RenderTexture.active=texture;copy.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);copy.Apply();copy.name="Portrait from approved Unity geometry";
+            if(!HasModel)return null;var prior=RenderTexture.active;
+            var resolved=CpuReadablePortrait();
+            var copy=new Texture2D(texture.width,texture.height,TextureFormat.RGBA32,false);
+            try{RenderTexture.active=resolved;copy.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);copy.Apply();copy.name="Portrait from approved Unity geometry";
                 copy.filterMode=FilterMode.Bilinear;copy.wrapMode=TextureWrapMode.Clamp;
                 return Sprite.Create(copy,new Rect(copy.width*.20f,copy.height*.48f,copy.width*.60f,copy.height*.48f),new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
-            }catch{Destroy(copy);throw;}finally{RenderTexture.active=prior;}
+            }catch{Destroy(copy);throw;}finally{RenderTexture.active=prior;ReleaseReadablePortrait(resolved);}
         }
         public void Release(){
             previous=null;output=null;idle=null;idleState=null;camera=null;key=null;rim=null;fill=null;
