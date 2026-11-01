@@ -238,11 +238,24 @@ namespace Eldoria.HeroesUI
             float size=Mathf.Min(23f,height*.50f);
             var frame=Rect("Hall / nav actual vector pictogram "+iconId,button.transform);
             Place(frame,Mathf.Max(5f,cell*.058f),(height-size)*.5f,size,size);
-            var vector=frame.gameObject.AddComponent<RoyalIconGraphic>();
-            vector.Icon=iconId;
-            vector.color=selected?new Color(.16f,.11f,.045f,.97f):
-                new Color(.92f,.75f,.43f,.92f);
-            vector.raycastTarget=false;
+            // The old custom RoyalIconGraphic mesh passed component-based
+            // gates yet painted ZERO pixels in real Unity captures. Render a
+            // real serif glyph (the same proven uGUI Text path as the live
+            // hero captions) inside a raised, separately authored medallion.
+            var medallion=Surface("Hall / nav bronze medallion",button.transform,
+                Mathf.Max(3f,cell*.045f),5f,size+6f,height-10f,
+                selected?new Color(.76f,.53f,.24f,.48f):
+                    new Color(.027f,.043f,.067f,.82f));
+            medallion.GetComponent<Image>().raycastTarget=false;
+            var glyph=frame.gameObject.AddComponent<Text>();
+            glyph.font=font;
+            glyph.text=iconId==12?"‹":iconId==4?"✦":iconId==5?"›":"◇";
+            glyph.alignment=TextAnchor.MiddleCenter;
+            glyph.fontSize=25;
+            glyph.resizeTextForBestFit=false;
+            glyph.color=selected?new Color(.15f,.10f,.045f,.98f):
+                new Color(.96f,.81f,.53f,.98f);
+            glyph.raycastTarget=false;
             var caption=button.GetComponentInChildren<Text>();
             if(caption)Place(caption.rectTransform,size+9f,3f,
                 Mathf.Max(21f,cell-size-15f),height-6f);

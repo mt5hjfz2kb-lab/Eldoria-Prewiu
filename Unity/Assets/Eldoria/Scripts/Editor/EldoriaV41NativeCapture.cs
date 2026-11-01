@@ -145,10 +145,12 @@ namespace Eldoria.Editor
                             hallNav.Any(b=>b.name=="Hall / nav reliquary"&&!b.interactable),
                             "Hall footer real navigation and future Relicario lock "+name);
                         var navIcons=heroes.VisibleRoot
-                            .GetComponentsInChildren<RoyalIconGraphic>()
+                            .GetComponentsInChildren<Text>()
                             .Where(v=>v.name.StartsWith("Hall / nav actual vector pictogram ")).ToArray();
-                        Need(navIcons.Length==4&&navIcons.All(v=>!v.raycastTarget),
-                            "Four original vector hall navigation icons on actual buttons "+name);
+                        Need(navIcons.Length==4&&navIcons.All(v=>
+                            !v.raycastTarget&&v.font&&v.fontSize>=24&&
+                            !string.IsNullOrEmpty(v.text)&&v.color.a>.9f),
+                            "Four visible native-serif hall pictograms on real buttons "+name);
                         var heroNavLabel=hallNav.First(b=>b.name=="Hall / nav heroes")
                             .GetComponentInChildren<Text>();
                         Need(heroNavLabel&&heroNavLabel.text=="HÉROES"&&
