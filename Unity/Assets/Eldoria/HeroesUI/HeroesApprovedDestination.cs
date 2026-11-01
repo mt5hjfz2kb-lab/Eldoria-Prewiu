@@ -742,6 +742,7 @@ namespace Eldoria.HeroesUI
                     tieredRows?(row==0?0f:primaryH+gap+(row-1)*(secondaryH+gap)):
                     row*(cardH+gap));
                 bool real=i<heroes.Length;
+                bool compactReserve=compactLandscape&&i>=2;
                 Surface("Hall / card cast shadow",content,left+5f,top+7f,
                     cardW,cardH,new Color(0f,0f,0f,.60f))
                     .GetComponent<Image>().raycastTarget=false;
@@ -766,16 +767,18 @@ namespace Eldoria.HeroesUI
                 Sprite portrait=real?heroes[i].Portrait:futureSlotArt;
                 bool lateral=phoneLandscape;
                 float portraitX=6f,portraitY=6f;
-                float portraitW=lateral?Mathf.Min(cardH-12f,cardW*.44f):cardW-12f;
+                float portraitW=lateral?
+                    Mathf.Min(cardH-12f,cardW*(compactReserve?.28f:.44f)):
+                    cardW-12f;
                 float identityH=lateral?0f:cardH<160f?43f:cardW<220f?85f:74f;
                 float portraitH=lateral?cardH-12f:Mathf.Max(24f,cardH-identityH-12f);
                 CardPortrait(card,portrait,unlocked,!real||heroes[i].Id=="lyra",
                     i,portraitX,portraitY,portraitW,portraitH);
                 // Phone landscape owns a real safe text gutter. The old 5px right
                 // allowance let gold corners cover actual hero power digits.
-                float ix=lateral?portraitW+16f:5f;
+                float ix=lateral?portraitW+(compactReserve?10f:16f):5f;
                 float iy=lateral?4f:cardH-identityH;
-                float iw=lateral?cardW-portraitW-34f:cardW-10f;
+                float iw=lateral?cardW-portraitW-(compactReserve?22f:34f):cardW-10f;
                 float ih=lateral?cardH-8f:identityH-5f;
                 Surface("Hero card identity shade",card,ix,iy,iw,ih,
                     new Color(.008f,.016f,.027f,lateral ? .84f : .91f))
@@ -825,13 +828,13 @@ namespace Eldoria.HeroesUI
                         lateral?"POR\nDESCUBRIR":compactCard?"POR\nDESCUBRIR":"POR DESCUBRIR",ix+3f,
                         iy+(lateral?3f:compactCard?4f:3f),iw-6f,
                         lateral?Mathf.Max(43f,ih*.49f):compactCard?40f:27f,
-                        lateral&&cardW<210f?16:lateral?19:compactCard?13:19,TextAnchor.MiddleCenter);
+                        compactReserve?15:lateral&&cardW<210f?16:lateral?19:compactCard?13:19,TextAnchor.MiddleCenter);
                     lockedTitle.color=new Color(.78f,.69f,.51f);
                     var lockedState=Label("Hero card state",card,"BLOQUEADO",ix+3f,
                         iy+(lateral?ih*.58f:compactCard?46f:30f),iw-6f,
                         lateral?Mathf.Max(27f,ih*.34f):
                             compactCard?22f:Mathf.Max(18f,identityH-38f),
-                        lateral&&cardW<210f?16:lateral?19:compactCard?12:15,TextAnchor.MiddleCenter);
+                        compactReserve?15:lateral&&cardW<210f?16:lateral?19:compactCard?12:15,TextAnchor.MiddleCenter);
                     lockedState.color=new Color(.77f,.76f,.70f);
                     if(lateral){lockedTitle.resizeTextForBestFit=false;lockedState.resizeTextForBestFit=false;}
                 }
