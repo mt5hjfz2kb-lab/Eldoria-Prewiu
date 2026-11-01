@@ -101,6 +101,15 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        if(width>height && height<500){
+                            foreach(var card in slots){
+                                var title=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card name");
+                                var data=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card state");
+                                Need(title&&data&&!title.resizeTextForBestFit&&
+                                    !data.resizeTextForBestFit&&title.fontSize>=17&&data.fontSize>=16,
+                                    "Landscape hero identity preserves readable non-shrinking real typography "+name);
+                            }
+                        }
                         var originalBustBlend=slots[0].GetComponentsInChildren<RawImage>()
                             .FirstOrDefault(i=>i.name=="Hall / original portrait edge transition");
                         Need(originalBustBlend&&originalBustBlend.texture&&

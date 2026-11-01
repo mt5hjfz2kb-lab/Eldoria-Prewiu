@@ -492,7 +492,7 @@ namespace Eldoria.HeroesUI
                     i==0?gold:new Color(.45f,.39f,.27f,.65f))
                     .GetComponent<Image>().raycastTarget=false;
                 var label=Label("Hall / category label",strip,filters[i],3,3,filterW-6,
-                    phoneLandscape?25f:24f,phoneLandscape?12:14,TextAnchor.MiddleCenter);
+                    phoneLandscape?25f:24f,phoneLandscape?14:14,TextAnchor.MiddleCenter);
                 label.color=i==0?ivory:new Color(.67f,.63f,.54f);
             }
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
@@ -543,34 +543,39 @@ namespace Eldoria.HeroesUI
                     new Color(.008f,.016f,.027f,lateral ? .84f : .91f))
                     .GetComponent<Image>().raycastTarget=false;
                 if(real){
-                    Label("Hero card name",card,heroes[i].DisplayName,ix+3f,
-                        iy+(lateral?10f:2f),iw-6f,lateral?Mathf.Min(36f,ih*.37f):28f,
-                        lateral?Mathf.Clamp((int)(cardH*.17f),15,21):cardW<150?17:23,
-                        TextAnchor.MiddleCenter).color=gold;
+                    var namePlate=Label("Hero card name",card,heroes[i].DisplayName,ix+3f,
+                        iy+(lateral?5f:2f),iw-6f,lateral?Mathf.Min(39f,ih*.44f):28f,
+                        lateral?22:cardW<150?17:23,
+                        TextAnchor.MiddleCenter);
+                    namePlate.color=gold;
+                    if(lateral)namePlate.resizeTextForBestFit=false;
                     bool largeCard=!lateral&&cardW>=250f&&identityH>=72f;
                     if(largeCard)
                         Label("Hero / authoritative role",card,heroes[i].Role,
                             ix+3f,iy+29f,iw-6f,17f,15,TextAnchor.MiddleCenter)
                             .color=new Color(.81f,.75f,.63f);
                     bool compactCard=!lateral&&cardW<150f;
-                    Label("Hero card state",card,
-                        unlocked?(compactCard?"NV. "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
+                    var statePlate=Label("Hero card state",card,
+                        unlocked?(lateral?"NV. "+heroes[i].Level+" · PODER "+heroes[i].HeroPower:
+                            compactCard?"NV. "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
                             "NIVEL "+heroes[i].Level+"  ·  PODER "+heroes[i].HeroPower):
                             (compactCard?"BLOQUEADO\nPOR HISTORIA":"BLOQUEADO POR LA HISTORIA"),
-                        ix+3f,iy+(lateral?ih*.49f:largeCard?49f:compactCard?27f:30f),iw-6f,
-                        lateral?Mathf.Max(21f,ih*.33f):largeCard?20f:
+                        ix+3f,iy+(lateral?ih*.56f:largeCard?49f:compactCard?27f:30f),iw-6f,
+                        lateral?Mathf.Max(24f,ih*.35f):largeCard?20f:
                             compactCard?Mathf.Max(30f,identityH-31f):Mathf.Max(20f,identityH-39f),
-                        lateral?14:compactCard?13:17,TextAnchor.MiddleCenter);
+                        lateral?16:compactCard?13:17,TextAnchor.MiddleCenter);
+                    if(lateral)statePlate.resizeTextForBestFit=false;
                 } else {
-                    Label("Hero card name",card,"POR DESCUBRIR",ix+3f,
-                        iy+(lateral?8f:3f),iw-6f,lateral?Mathf.Max(28f,ih*.43f):27f,
-                        lateral?14:cardW<150?14:19,TextAnchor.MiddleCenter)
-                        .color=new Color(.65f,.58f,.45f);
-                    Label("Hero card state",card,"BLOQUEADO",ix+3f,
-                        iy+(lateral?ih*.47f:30f),iw-6f,
-                        lateral?Mathf.Max(22f,ih*.34f):Mathf.Max(18f,identityH-38f),
-                        lateral?13:15,TextAnchor.MiddleCenter)
-                        .color=new Color(.68f,.67f,.61f);
+                    var lockedTitle=Label("Hero card name",card,"POR DESCUBRIR",ix+3f,
+                        iy+(lateral?7f:3f),iw-6f,lateral?Mathf.Max(29f,ih*.43f):27f,
+                        lateral?17:cardW<150?14:19,TextAnchor.MiddleCenter);
+                    lockedTitle.color=new Color(.78f,.69f,.51f);
+                    var lockedState=Label("Hero card state",card,"BLOQUEADO",ix+3f,
+                        iy+(lateral?ih*.55f:30f),iw-6f,
+                        lateral?Mathf.Max(24f,ih*.34f):Mathf.Max(18f,identityH-38f),
+                        lateral?16:15,TextAnchor.MiddleCenter);
+                    lockedState.color=new Color(.77f,.76f,.70f);
+                    if(lateral){lockedTitle.resizeTextForBestFit=false;lockedState.resizeTextForBestFit=false;}
                 }
                 // An inset gold edge reads as a separate physical card
                 // rather than a pasted rectangle over a photograph.
