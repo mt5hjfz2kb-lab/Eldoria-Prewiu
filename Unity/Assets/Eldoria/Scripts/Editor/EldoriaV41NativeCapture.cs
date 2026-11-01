@@ -202,7 +202,8 @@ namespace Eldoria.Editor
                             "Six visible hall slots have usable geometry "+name);
                         foreach(var slot in slots){
                             var rims=slot.GetComponentsInChildren<Image>()
-                                .Where(i=>i.name.StartsWith("Royal Gold /")&&i.name.EndsWith("rim")).ToArray();
+                                .Where(i=>i.transform.parent==slot&&
+                                    i.name.StartsWith("Royal Gold /")&&i.name.EndsWith("rim")).ToArray();
                             Need(rims.Length==4&&rims.All(i=>i.enabled&&i.color.a>.9f&&
                                 i.rectTransform.rect.width>0&&i.rectTransform.rect.height>0),
                                 "Four real visible Image rims per hall slot "+name);
