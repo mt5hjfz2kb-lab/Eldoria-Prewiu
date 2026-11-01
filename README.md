@@ -1,36 +1,59 @@
-# Eldoria — desarrollo principal
+# Eldoria — entrada al proyecto
 
-> **Regla fundacional para todas las etapas (ELDORIA_OWNER_AI_COLLABORATION_V1):** el propietario no es programador; la IA investiga, ejecuta y cuestiona métodos por iniciativa propia, explica con claridad y no confunde CI verde con resultado útil. [Pacto obligatorio completo en AGENTS.md](AGENTS.md) y [arranque de agentes](tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md).
+> **Pacto fundacional propietario–IA (ELDORIA_OWNER_AI_COLLABORATION_V1):** el propietario no programa; la IA investiga, ejecuta, contrasta el resultado con la visión aprobada y reconoce los límites de sus pruebas. Leer el [pacto completo en AGENTS.md](AGENTS.md) antes de trabajar.
 
-La base vigente es **Valoria integrada native111 en main**: ciudad, Royal Gold y Zona1 4X. [Estado y reglas actuales](docs/ELDORIA_MAIN_BASELINE_20261018.md) · [Revisión y prioridades](docs/ELDORIA_PLAYER_REVIEW_20261018.md) · [Prueba privada](https://valoria-city-world.kbkvc5c45n.chatgpt.site).
+El juego principal se desarrolla en **Unity/**, con Unity **6000.3.23f1**. **main** es la base integrada; las ramas con trabajo autorizado pendiente se consultan en el registro y las PR abiertas. Una candidata, una prueba aprobada y una versión distribuida son estados distintos.
 
-Las demás ramas se conservan como referencia histórica; no son líneas de producción activas. Calidad artística y validación física móvil todavía pendientes.
+## Empezar aquí
 
----
+| Necesito saber… | Consultar |
+| --- | --- |
+| Qué reglas aplicar | [AGENTS.md](AGENTS.md), especialmente el pacto propietario–IA y las órdenes posteriores que revocan requisitos históricos |
+| Quién lleva cada trabajo y qué puede editar | [Registro de trabajos](pipeline/active-workstreams.json): `active`, `owner`, `ownership_state`, `ownership_revision`, `scope` y `resources` |
+| Qué está integrado y qué sigue pendiente | HEAD de [main](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/tree/main), [PR abiertas](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pulls) y sus cambios; después, solo la última cabecera pertinente de [estado](PROJECT_STATE.md) y [relevo](SESSION_HANDOFF.md) |
+| Qué versión se distribuye | [Manifiesto WebGL](pipeline/playtest-delivery.json) y [canal Android familiar](updates/android/family.json), con SHA, versión y evidencia de entrega |
+| Dónde encontrar contratos, referencias y pruebas | [Índice documental](docs/DOCUMENTATION_INDEX.md) |
+| Cómo continuar sin duplicar trabajo | [Arranque técnico](tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md) y [protocolo de concurrencia](docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md) |
 
-# Eldoria — desarrollo canónico Unity
+Con checkout y Node, `node tools/work-status/report.mjs` presenta una consulta breve de trabajos y canales. Es una vista derivada: no modifica el registro ni comprueba por sí sola la actividad de otros chats, la disponibilidad física de Windows o el juego publicado.
 
-> **Índice documental único:** [docs/DOCUMENTATION_INDEX.md](docs/DOCUMENTATION_INDEX.md). **Entrada operativa:** leer [AGENTS.md](AGENTS.md), el estado actual en [SESSION_HANDOFF.md](SESSION_HANDOFF.md), [PROJECT_STATE.md](PROJECT_STATE.md) y la propiedad activa en [pipeline/active-workstreams.json](pipeline/active-workstreams.json). El repositorio `main` y los resultados verificables prevalecen sobre la memoria del chat y los registros históricos.
+## Desarrollo, candidatas y entrega
 
-## Juego principal
+- **Integrado:** código presente en `main`. El origen native111 es un hito histórico de consolidación, no la versión actual del producto.
+- **Candidata:** cambios de una PR todavía sin integrar. Verificar su HEAD y las pruebas de ese mismo candidato; la descripción puede citar un SHA anterior.
+- **Distribuido:** versión identificada por el manifiesto de su canal y evidencia de activación/descarga. No atribuirle automáticamente los cambios de `main` o de una PR.
 
-- **Fuente canónica de gameplay y presentación:** `Unity/` — Unity Editor **6000.3.23f1**.
-- **Rama de integración:** `main`.
-- **Entrega jugable Unity WebGL:** https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/
-- **Identidad de una entrega Unity:** SHA del código, ejecución de compilación, artefacto, QA de candidato, publicación y QA del juego publicado; no se identifica por el número de versión del prototipo web.
-- **Flujo para una tarea autorizada:** implementar en Unity → probar → compilar en runner Windows → probar el candidato exacto → corregir si procede → publicar de forma controlada → verificar la versión pública → entregar. No convertir una tarea de ejecución en una auditoría, aprobación departamental o informe intermedio. Respetar recursos compartidos, gates, gastos y límites reales de sesión.
+**WebGL:** el canal operativo documentado es el proyecto restringido [Eldoria pruebas en itch.io](https://chrismad.itch.io/eldoria-pruebas). Consultar el [manifiesto](pipeline/playtest-delivery.json) y la [guía de entrega](docs/ELDORIA_PLAYTEST_DELIVERY.md) antes de afirmar qué contiene o publicar. Las rutas antiguas de Pages `unity-owner/` y el despliegue Sites de Valoria son históricos, no la entrada actual de pruebas.
 
-## Compatibilidad y legado web (NO fuente Unity)
+**Android:** usar la versión y el enlace del [canal familiar](updates/android/family.json), según la [guía de actualizaciones](docs/ELDORIA_ANDROID_FAMILY_UPDATES.md). No mantener aquí otra copia del número de APK.
 
-- `v0220/index.html` y `v0220/js/`: código editable del **prototipo web heredado**, que puede servir como referencia de paridad, no como autoridad del runtime Unity.
-- La versión **v0.32.0** se refiere a los metadatos del prototipo web, **no** a la versión publicada de Unity. `v0220` es un nombre de directorio heredado.
-- `playtest/`: resultado generado del prototipo web; no editar directamente. Playtest heredado: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/playtest/
-- `tester-v0265/`: instantánea congelada **Eldoria Closed Playtest T1 / 0.26.5-test.2**; no modificar ni utilizar como base de desarrollo.
-- `v019*`, `v020*`, `v0210` y los planes de migración antiguos son historia/referencia, no instrucciones para reiniciar la migración. Los baselines de recuperación se preservan sin reactivación automática.
+Una build verde, un upload aceptado, una versión activada, la aprobación artística y la prueba física móvil son comprobaciones diferentes. Esta página no autoriza publicación, gasto ni transferencia de reservas.
 
-## Validación
+## Mapa de archivos
 
-- **Unity:** seguir [QA_AND_DEPLOY.md](QA_AND_DEPLOY.md), el proceso canónico de compilación, la prueba del artefacto exacto, la publicación controlada y las pruebas WebGL publicadas, con pruebas visuales e interacción reales cuando correspondan.
-- **Solo prototipo web heredado:** `npm install`, `npm run qa:setup`, `npm run validate:local` y sus presets de QA. Estos comandos **no compilan ni certifican Unity**. Una prueba Playwright del prototipo no sustituye una prueba de la build Unity.
+| Ruta | Función |
+| --- | --- |
+| `Unity/` | Proyecto principal: código, escenas, recursos, paquetes y ajustes |
+| `ArtSource/`, `art-source/` | Fuentes artísticas existentes; revisar procedencia y dependencias antes de consolidar nombres o mover archivos |
+| `docs/` | Contratos, guías y referencias; [catálogo](docs/documentation-catalog.json) para vigencia |
+| `docs/evidence/`, `docs/archive/` | Evidencias e historial; sus antiguos estados no son órdenes nuevas |
+| `pipeline/` | Registros y configuración de producción; distinguir campos actuales de históricos |
+| `tools/`, `scripts/`, `.github/workflows/` | Herramientas y automatización; [índice de workflows](docs/WORKFLOW_INDEX.md) |
+| `references/` | Referencias conservadas; usar el contrato vigente del área para identificar el canon |
+| `updates/` | Canales de actualización |
 
-Conservar evidencia de trabajos cerrados. Consultar documentos especializados solo si la tarea los requiere; las instrucciones antiguas no se convierten en trabajo pendiente por aparecer en un archivo.
+`ArtTests` es un nombre de carpeta, no una garantía de que sus recursos estén fuera del juego. Parte de la escena integrada reside allí. Auditar referencias y conservar GUID y `.meta` antes de reorganizar Unity.
+
+## Prototipo web heredado
+
+- `v0220/index.html` y `v0220/js/`: fuente editable del prototipo histórico y referencia de paridad; no son el runtime Unity.
+- `playtest/`: salida generada del prototipo; no editar directamente.
+- `tester-v0265/`: instantánea congelada Closed Playtest T1 / 0.26.5-test.2.
+- `v019*`, `v020*`, `v0210`: versiones históricas; conservar sin reactivar su producción.
+- Los metadatos v0.32.0 pertenecen al prototipo web, no identifican una entrega Unity.
+
+## Verificación y mantenimiento
+
+Seguir [QA_AND_DEPLOY.md](QA_AND_DEPLOY.md) para Unity y el candidato exacto. `npm run validate:local` corresponde al prototipo heredado y no certifica Unity.
+
+Para documentación, aplicar la [política de vigencia](docs/DOCUMENTATION_POLICY.md). Mantener cada dato vivo en su fuente: este README orienta, el registro asigna trabajos y los manifiestos identifican entregas. Conservar el historial y comprobar enlaces antes de mover documentos.
