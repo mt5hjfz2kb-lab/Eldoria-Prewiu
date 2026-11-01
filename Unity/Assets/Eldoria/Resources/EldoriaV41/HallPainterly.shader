@@ -5,6 +5,7 @@ Shader "UI/Eldoria/HallPainterly"
         [PerRendererData] _MainTex ("Source architecture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
         _Strength ("Brush reduction", Range(0,1)) = 0.94
+        _PortraitFeather ("Original portrait edge dissolve", Range(0,0.3)) = 0
     }
     SubShader
     {
@@ -25,6 +26,7 @@ Shader "UI/Eldoria/HallPainterly"
             CBUFFER_START(UnityPerMaterial)
                 half4 _Color;
                 half _Strength;
+                half _PortraitFeather;
             CBUFFER_END
             struct Attributes { float4 vertex : POSITION; float2 uv : TEXCOORD0; float4 color : COLOR; };
             struct Varyings { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; half4 color : COLOR; float4 uiPosition : TEXCOORD1; };
@@ -86,6 +88,17 @@ Shader "UI/Eldoria/HallPainterly"
                         step(i.uiPosition.xy,_ClipRect.zw);
                     result.a*=inside.x*inside.y;
                 #endif
+                // The runtime-approved Aldric image includes a solid pale
+                // rectangular sky. Dissolve its actual pixel alpha into the
+                // separately drawn 2.5D architectural alcove without changing
+                // any character geometry, labels, materials or save state.
+                // The standard Hall background keeps _PortraitFeather=0.
+                if(_PortraitFeather>.001h){
+                    half2 uvEdge=min(i.uv.xy,1.0h-i.uv.xy);
+                    half rim=min(uvEdge.x,uvEdge.y);
+                    half blend=smoothstep(0.0h,_PortraitFeather,rim);
+                    result.a*=blend;
+                }
                 return result;
             }
             ENDHLSL

@@ -291,7 +291,7 @@ namespace Eldoria.HeroesUI
             }
         }
         Texture2D hallArchitecture, hallIllustratedV2, hallLightTexture, hallPortraitTransition;
-        Material hallPaintMaterial, hallPortraitPaintMaterial;
+        Material hallPaintMaterial, hallPortraitPaintMaterial, hallAldricMatteMaterial;
         RawImage leftHallLight, rightHallLight;
         Texture2D HallGlow()
         {
@@ -321,7 +321,7 @@ namespace Eldoria.HeroesUI
             light.raycastTarget=false;
             return light;
         }
-        void OnDestroy(){if(hallFrameSprite)Destroy(hallFrameSprite);if(hallLightTexture)Destroy(hallLightTexture);if(hallPortraitTransition)Destroy(hallPortraitTransition);if(hallPaintMaterial)Destroy(hallPaintMaterial);if(hallPortraitPaintMaterial)Destroy(hallPortraitPaintMaterial);}
+        void OnDestroy(){if(hallFrameSprite)Destroy(hallFrameSprite);if(hallLightTexture)Destroy(hallLightTexture);if(hallPortraitTransition)Destroy(hallPortraitTransition);if(hallPaintMaterial)Destroy(hallPaintMaterial);if(hallPortraitPaintMaterial)Destroy(hallPortraitPaintMaterial);if(hallAldricMatteMaterial)Destroy(hallAldricMatteMaterial);}
         void DrawApprovedSalonEnvironment(float w,float h)
         {
             if(!hallArchitecture)
@@ -547,7 +547,15 @@ namespace Eldoria.HeroesUI
                             hideFlags=HideFlags.DontSave};
                         hallPortraitPaintMaterial.SetFloat("_Strength",.28f);
                     }
-                    image.material=hallPortraitPaintMaterial;
+                    if(slot==0){
+                        if(!hallAldricMatteMaterial){
+                            hallAldricMatteMaterial=new Material(hallPortraitPaintMaterial){
+                                name="Eldoria / authored Aldric soft-edge stage",
+                                hideFlags=HideFlags.DontSave};
+                            hallAldricMatteMaterial.SetFloat("_PortraitFeather",.14f);
+                        }
+                        image.material=hallAldricMatteMaterial;
+                    }else image.material=hallPortraitPaintMaterial;
                 }
                 if(slot==0){
                     // Aldric's genuine illustrated bust has an originally

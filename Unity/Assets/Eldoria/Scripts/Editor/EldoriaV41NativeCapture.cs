@@ -102,6 +102,13 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        var aldricIllustration=slots[0].GetComponentsInChildren<Image>()
+                            .FirstOrDefault(i=>i.name=="Verified portrait");
+                        Need(aldricIllustration&&aldricIllustration.material&&
+                            aldricIllustration.material.HasProperty("_PortraitFeather")&&
+                            aldricIllustration.material.GetFloat("_PortraitFeather")>=.13f,
+                            "Aldric portrait alpha dissolves into independent painted architecture instead of hard photo rectangle "+name);
+
                         if(width==390&&height==844){
                             foreach(var slot in slots){
                                 var title=slot.GetComponentsInChildren<Text>().FirstOrDefault(v=>v.name=="Hero card name");
