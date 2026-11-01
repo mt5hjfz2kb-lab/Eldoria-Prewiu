@@ -103,6 +103,16 @@ namespace Eldoria.Editor
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
                         if(width==1600&&height==900){
+                            var al=slots[0].GetComponentsInChildren<Image>()
+                                .FirstOrDefault(t=>t.name=="Verified portrait");
+                            var viewport=slots[0].GetComponentsInChildren<RectTransform>()
+                                .FirstOrDefault(t=>t.name=="Hero card portrait aperture");
+                            Need(al&&viewport&&al.sprite&&
+                                (al.rectTransform.rect.height<=viewport.rect.height ||
+                                 -al.rectTransform.anchoredPosition.y>=-8f),
+                                "Aldric's true hairline is not clipped by centered oversize portrait "+name);
+                        }
+                        if(width==1600&&height==900){
                             // Against the approved master: heraldic architecture
                             // occupies a real top third, featured cards are
                             // stronger than short reserve band, and the four
