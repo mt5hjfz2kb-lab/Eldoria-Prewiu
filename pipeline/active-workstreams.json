@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-01T17:15:00Z",
+  "updated_at": "2026-11-01T17:17:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-block02-art-pipeline-20261101",
+      "owner": "chatgpt-eldoria-block02-direct-completion-20261101",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
-      "claimed_at": "2026-11-01T18:15:00+01:00",
+      "claimed_at": "2026-11-01T18:17:00+01:00",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -124,8 +124,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK02_HEROES_HALL_ART_RECONSTRUCTION_EXACT_HEAD",
-      "next": "Certify exact PR136 HEAD; inspect genuine Hall screenshots at four sizes; remediate only true visual/functional failures; repeat full regression; release Windows and close Block02 only after independently inspected art.",
+      "phase": "BLOCK02_HEROES_HALL_REFERENCE_FIRST_PILOT_IMPLEMENTATION",
+      "next": "Reconstruct approved-source modular Hall via one verified Unity pilot; then expand with true mobile layouts and genuine capture A/B; keep ART_APPROVED=false.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1560,9 +1560,15 @@
           "ownership_revision": 91,
           "transferred_at": "2026-11-01",
           "reason": "Owner explicitly directs new chat to assume BLOQUE 02 and finish; preserve PR136 and pending native evidence."
+        },
+        {
+          "owner": "chatgpt-eldoria-block02-art-pipeline-20261101",
+          "ownership_revision": 92,
+          "transferred_at": "2026-11-01",
+          "reason": "Owner explicitly requests normal-chat replacement due to repeated interruptions; preserve existing PR136 and art-source pilot."
         }
       ],
-      "ownership_revision": 92,
+      "ownership_revision": 93,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
