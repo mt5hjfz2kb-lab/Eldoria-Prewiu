@@ -482,7 +482,12 @@ namespace Eldoria.HeroesUI
             bool compact=w>h&&h<500f;
             // The painted far wall remains visible. Architecture is split
             // into foreground, middleground, light volumes and floor.
-            HeroesHallParallaxFinish.Install(scene);
+            // The Salon's full-screen perspective-floor mesh draws long
+            // graticule lines across the model on profile pages. Native A/B
+            // showed it visually flattens the hero rather than integrating
+            // them; use distinct, quieter architectural planes here instead.
+            Surface("Profile / deep vault cornice shade",scene,0,h*.10f,w,h*.18f,
+                new Color(.015f,.022f,.037f,.20f)).GetComponent<Image>().raycastTarget=false;
             float side=Mathf.Clamp(w*.033f,compact?8f:12f,46f);
             float floorY=h*(compact?.80f:.83f);
             var shadow=new Color(.011f,.018f,.030f,.55f);
@@ -544,7 +549,7 @@ namespace Eldoria.HeroesUI
         }
         RectTransform ProfileModule(string name,Transform parent,float x,float y,float w,float h)
         {
-            var r=Surface(name,parent,x,y,w,h,new Color(.024f,.036f,.059f,.89f));
+            var r=Surface(name,parent,x,y,w,h,new Color(.054f,.049f,.048f,.95f));
             r.GetComponent<Image>().raycastTarget=false;
             // Bevel and inset are separate uGUI layers. These render correctly
             // on actual Unity Canvas, unlike the rejected invisible custom mesh.
@@ -556,10 +561,13 @@ namespace Eldoria.HeroesUI
                 new Color(.61f,.45f,.26f,.53f)).GetComponent<Image>().raycastTarget=false;
             Surface(name+" / right recessed edge",r,w-1f,2f,1f,Mathf.Max(0,h-4f),
                 new Color(.61f,.45f,.26f,.53f)).GetComponent<Image>().raycastTarget=false;
-            float ornament=Mathf.Clamp(h*.13f,3f,12f);
-            foreach(float px in new[]{5f,w-ornament-5f})
-                Surface(name+" / corner engraved brass",r,px,5f,ornament,1.5f,
-                    new Color(.92f,.74f,.45f,.78f)).GetComponent<Image>().raycastTarget=false;
+            // Soft warm polish across each carved stone surface avoids four
+            // flat opaque black boxes without introducing fake stats or art.
+            var lacquer=HallLight(r,name+" / bronze ambient brush",
+                w*.10f,h*.08f,w*.80f,h*.80f);
+            lacquer.color=new Color(.92f,.65f,.38f,.10f);
+            Surface(name+" / engraved brass spine",r,3f,5f,1f,Mathf.Max(0f,h-10f),
+                new Color(.78f,.56f,.31f,.32f)).GetComponent<Image>().raycastTarget=false;
             return r;
         }
         void BuildCombatSummary(RectTransform pane,HeroState hero,float w,float h)
