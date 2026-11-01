@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-01T17:17:00Z",
+  "updated_at": "2026-11-01T17:52:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -119,13 +119,15 @@
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK02_HEROES_HALL_REFERENCE_FIRST_PILOT_IMPLEMENTATION",
-      "next": "Reconstruct approved-source modular Hall via one verified Unity pilot; then expand with true mobile layouts and genuine capture A/B; keep ART_APPROVED=false.",
+      "phase": "BLOCK02_HALL_EXACT_HEAD_UNITY_CERTIFICATION",
+      "next": "Run exact source Unity native gate; inspect 1600x900 and mobile; preserve PR136; ART_APPROVED=false",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
