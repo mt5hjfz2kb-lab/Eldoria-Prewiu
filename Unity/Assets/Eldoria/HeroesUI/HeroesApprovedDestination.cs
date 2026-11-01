@@ -348,8 +348,49 @@ namespace Eldoria.HeroesUI
         Sprite futureSlotArt;
         // Portrait geometry lives inside its own aperture, never below an
         // opaque full-width card label in short landscape.
+
+        // Exact owner-approved six-view art sheet already ships in Resources.
+        // Atlas coordinates isolate ONLY character paintings, without the
+        // concept sheet's baked labels, buttons, levels or fake game values.
+        // These are independent masked planes: every card, hitbox, frame,
+        // dynamic hero data and navigation control stays a live uGUI object.
+        Texture2D approvedHeroSheet;
+        static readonly UnityEngine.Rect[] ApprovedHallArtRegions = {
+            new UnityEngine.Rect(51,227,104,97), // Aldric, illustration only
+            new UnityEngine.Rect(196,226,111,96), // Lyra, illustration only
+            new UnityEngine.Rect(345,227,112,89), // unrecruited Maelis portrait
+            new UnityEngine.Rect(43,410,113,52), // reserved warrior
+            new UnityEngine.Rect(193,410,117,52), // reserved wanderer
+            new UnityEngine.Rect(342,410,114,52) // reserved ranger
+        };
+        bool ApprovedHallPortrait(RectTransform aperture,int slot,bool unlocked,float w,float h)
+        {
+            if(!approvedHeroSheet)
+                approvedHeroSheet=Resources.Load<Texture2D>("EldoriaV41/HeroesApprovedMaster");
+            if(!approvedHeroSheet||slot<0||slot>=ApprovedHallArtRegions.Length)
+                return false;
+            var crop=ApprovedHallArtRegions[slot];
+            // Coordinates are from the original 1536x1024 master, top-left.
+            if(approvedHeroSheet.width!=1536||approvedHeroSheet.height!=1024)
+                return false;
+            var art=Rect("Hall / approved isolated portrait art "+slot,aperture)
+                .gameObject.AddComponent<RawImage>();
+            float ratio=crop.width/crop.height;
+            float imageW=Mathf.Max(w,h*ratio), imageH=imageW/ratio;
+            Place(art.rectTransform,(w-imageW)*.5f,
+                -(imageH-h)*.34f,imageW,imageH);
+            art.texture=approvedHeroSheet;
+            art.uvRect=new UnityEngine.Rect(
+                crop.x/approvedHeroSheet.width,
+                1f-(crop.y+crop.height)/approvedHeroSheet.height,
+                crop.width/approvedHeroSheet.width,
+                crop.height/approvedHeroSheet.height);
+            art.color=unlocked?Color.white:new Color(.72f,.75f,.79f,1f);
+            art.raycastTarget=false;
+            return true;
+        }
         void CardPortrait(RectTransform card,Sprite sprite,bool unlocked,bool fullBody,
-            float x,float y,float w,float h)
+            int slot,float x,float y,float w,float h)
         {
             var viewport=Rect("Hero card portrait aperture",card);
             Place(viewport,x,y,w,h);
@@ -374,6 +415,10 @@ namespace Eldoria.HeroesUI
                 image.sprite=sprite;image.raycastTarget=false;
                 image.color=unlocked?Color.white:new Color(.42f,.46f,.51f,.90f);
             }
+            // The exact original artwork is a SEPARATE illustrated plane.
+            // This overrides the fallback source only when the authenticated
+            // approved master is present and the 6 source crops are in bounds.
+            ApprovedHallPortrait(viewport,slot,unlocked,w,h);
             // Luminous sill is anchored to the portrait viewport and is
             // decorative only; it does not intercept a hero selection.
             Surface("Hall / portrait contact sill",viewport,0,h-4f,w,4f,
@@ -462,7 +507,7 @@ namespace Eldoria.HeroesUI
                 float identityH=lateral?0f:cardH<160f?43f:cardW<145f?64f:74f;
                 float portraitH=lateral?cardH-12f:Mathf.Max(24f,cardH-identityH-12f);
                 CardPortrait(card,portrait,unlocked,!real||heroes[i].Id=="lyra",
-                    portraitX,portraitY,portraitW,portraitH);
+                    i,portraitX,portraitY,portraitW,portraitH);
                 float ix=lateral?portraitW+10f:5f;
                 float iy=lateral?4f:cardH-identityH;
                 float iw=lateral?cardW-portraitW-15f:cardW-10f;
