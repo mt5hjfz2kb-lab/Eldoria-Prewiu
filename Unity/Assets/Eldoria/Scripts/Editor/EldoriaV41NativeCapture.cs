@@ -102,6 +102,13 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        for(int slotIndex=0;slotIndex<2;slotIndex++){
+                            var realPortrait=slots[slotIndex].GetComponentsInChildren<Image>()
+                                .FirstOrDefault(x=>x.name=="Verified portrait");
+                            Need(realPortrait&&realPortrait.material&&
+                                realPortrait.material.shader.name=="UI/Eldoria/HallPainterly",
+                                "Approved hero card portrait is drawn through a real clipped painterly material "+name);
+                        }
                         Need(slots.All(slot=>{
                             var layered=slot.GetComponentsInChildren<RoyalGoldV3LayeredFinish>();
                             return layered.Length==1 && !layered[0].raycastTarget;

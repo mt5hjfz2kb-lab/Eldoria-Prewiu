@@ -273,7 +273,7 @@ namespace Eldoria.HeroesUI
                 Mathf.Max(21f,cell-size-15f),height-6f);
         }
         Texture2D hallArchitecture, hallLightTexture, hallPortraitTransition;
-        Material hallPaintMaterial;
+        Material hallPaintMaterial, hallPortraitPaintMaterial;
         RawImage leftHallLight, rightHallLight;
         Texture2D HallGlow()
         {
@@ -303,7 +303,7 @@ namespace Eldoria.HeroesUI
             light.raycastTarget=false;
             return light;
         }
-        void OnDestroy(){if(hallLightTexture)Destroy(hallLightTexture);if(hallPortraitTransition)Destroy(hallPortraitTransition);if(hallPaintMaterial)Destroy(hallPaintMaterial);}
+        void OnDestroy(){if(hallLightTexture)Destroy(hallLightTexture);if(hallPortraitTransition)Destroy(hallPortraitTransition);if(hallPaintMaterial)Destroy(hallPaintMaterial);if(hallPortraitPaintMaterial)Destroy(hallPortraitPaintMaterial);}
         void DrawApprovedSalonEnvironment(float w,float h)
         {
             if(!hallArchitecture)
@@ -487,6 +487,19 @@ namespace Eldoria.HeroesUI
                 Place(image.rectTransform,(w-imageW)*.5f,top,imageW,imageH);
                 image.sprite=sprite;image.raycastTarget=false;
                 image.color=unlocked?Color.white:new Color(.42f,.46f,.51f,.90f);
+                if(slot<2 && hallPaintMaterial){
+                    // Render approved source sprites as illustrated character
+                    // cards. Originals, Tripo geometry and saved hero identities
+                    // remain untouched; only card material is painted.
+                    // ClipRect support keeps Lyra safely inside its 2.5D frame.
+                    if(!hallPortraitPaintMaterial){
+                        hallPortraitPaintMaterial=new Material(hallPaintMaterial){
+                            name="Eldoria / illustrated canonical hero card",
+                            hideFlags=HideFlags.DontSave};
+                        hallPortraitPaintMaterial.SetFloat("_Strength",.71f);
+                    }
+                    image.material=hallPortraitPaintMaterial;
+                }
                 if(slot==0){
                     // Aldric's genuine illustrated bust has an originally
                     // baked bright sky. This separate feathered material stage

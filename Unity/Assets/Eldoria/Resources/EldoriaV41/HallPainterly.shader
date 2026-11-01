@@ -17,20 +17,22 @@ Shader "UI/Eldoria/HallPainterly"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
+            float4 _ClipRect;
             CBUFFER_START(UnityPerMaterial)
                 half4 _Color;
                 half _Strength;
             CBUFFER_END
             struct Attributes { float4 vertex : POSITION; float2 uv : TEXCOORD0; float4 color : COLOR; };
-            struct Varyings { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; half4 color : COLOR; };
+            struct Varyings { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; half4 color : COLOR; float4 uiPosition : TEXCOORD1; };
             Varyings vert (Attributes v)
             {
                 Varyings o;
                 o.pos=TransformObjectToHClip(v.vertex.xyz);
-                o.uv=v.uv; o.color=v.color*_Color;
+                o.uv=v.uv; o.color=v.color*_Color; o.uiPosition=v.vertex;
                 return o;
             }
             half4 frag(Varyings i) : SV_Target
@@ -78,7 +80,13 @@ Shader "UI/Eldoria/HallPainterly"
                 half shadow=saturate(1.0h-luminance);
                 ink=ink*(1.0h-.12h*shadow)+half3(.014h,.009h,.004h);
                 half3 merged=lerp(source.rgb,saturate(ink),_Strength);
-                return half4(merged,source.a)*i.color;
+                half4 result=half4(merged,source.a)*i.color;
+                #ifdef UNITY_UI_CLIP_RECT
+                    float2 inside=step(_ClipRect.xy,i.uiPosition.xy)*
+                        step(i.uiPosition.xy,_ClipRect.zw);
+                    result.a*=inside.x*inside.y;
+                #endif
+                return result;
             }
             ENDHLSL
         }
