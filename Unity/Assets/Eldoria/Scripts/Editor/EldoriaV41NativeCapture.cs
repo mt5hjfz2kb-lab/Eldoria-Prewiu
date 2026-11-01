@@ -221,12 +221,23 @@ namespace Eldoria.Editor
                                 "Short mobile landscape really features two readable heroes above four compact future slots "+name);
                         }
                         if(width>height && height<500){
-                            foreach(var card in slots){
+                            // The new 2+4 mobile gallery gives real heroes
+                            // the full readable typography; four passive future
+                            // seals intentionally use smaller secondary labels.
+                            // Never reject the smaller locks as if they were
+                            // active hero names and authoritative statistics.
+                            foreach(var card in slots.Where(t=>t.name.StartsWith("Hero card "))){
                                 var title=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card name");
                                 var data=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card state");
                                 Need(title&&data&&!title.resizeTextForBestFit&&
                                     !data.resizeTextForBestFit&&title.fontSize>=19&&data.fontSize>=19,
-                                    "Landscape hero identity preserves readable non-shrinking real typography "+name);
+                                    "Landscape real hero identity preserves readable non-shrinking typography "+name);
+                            }
+                            foreach(var card in slots.Where(t=>t.name.StartsWith("Reserved future hero slot "))){
+                                var title=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card name");
+                                var data=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card state");
+                                Need(title&&data&&title.fontSize>=15&&data.fontSize>=15,
+                                    "Landscape secondary future seals remain labeled "+name);
                             }
                         }
                         var originalBustBlend=slots[0].GetComponentsInChildren<RawImage>()
