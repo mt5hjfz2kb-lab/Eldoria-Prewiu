@@ -211,6 +211,13 @@ namespace Eldoria.Editor
                             "Four category and four footer controls use real separate approved textures "+name);
                         Need(slots.All(t=>t.rect.width>0&&t.rect.height>0),
                             "Six visible hall slots have usable geometry "+name);
+                        Need(slots.All(card=>{
+                            var alcove=card.GetComponentsInChildren<RawImage>()
+                                .FirstOrDefault(x=>x.name=="Hall / separate illustrated character alcove");
+                            return alcove&&alcove.texture==
+                                Resources.Load<Texture2D>("EldoriaV41/heroes-hall-illustrated-v2")&&
+                                !alcove.raycastTarget;
+                        }),"Each real Hall card has a distinct illustrated recess behind live character art "+name);
                         var gildedFrame=Resources.Load<Texture2D>(
                             "EldoriaV41/HeroCardNineSliceGold");
                         Need(gildedFrame&&gildedFrame.width==512&&gildedFrame.height==672,

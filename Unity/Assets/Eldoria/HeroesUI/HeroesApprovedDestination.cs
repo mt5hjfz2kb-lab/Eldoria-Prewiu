@@ -494,6 +494,24 @@ namespace Eldoria.HeroesUI
             viewport.gameObject.AddComponent<RectMask2D>();
             Surface("Hall / portrait depth backing",viewport,0,0,w,h,
                 new Color(.055f,.083f,.115f,1f)).GetComponent<Image>().raycastTarget=false;
+            // Modular 2.5D character alcove: another genuine art plane behind
+            // the actual runtime sprite (including the imported Tripo Lyra),
+            // rather than leaving a giant black rectangular card. It reuses
+            // only the new clean architectural painting, never a flattened
+            // concept card. Locked slots are dim but not empty.
+            if(hallIllustratedV2){
+                var alcove=Rect("Hall / separate illustrated character alcove",viewport)
+                    .gameObject.AddComponent<RawImage>();
+                Place(alcove.rectTransform,0,0,w,h);
+                alcove.texture=hallIllustratedV2;
+                alcove.uvRect=slot==0?new UnityEngine.Rect(.03f,.22f,.30f,.56f):
+                    slot==1?new UnityEngine.Rect(.64f,.22f,.30f,.56f):
+                    new UnityEngine.Rect(.36f,.13f,.29f,.62f);
+                alcove.color=slot<2?
+                    new Color(.88f,.85f,.86f,.62f):
+                    new Color(.62f,.67f,.76f,.30f);
+                alcove.raycastTarget=false;
+            }
             if(sprite){
                 var image=Rect("Verified portrait",viewport).gameObject.AddComponent<Image>();
                 float ratio=sprite.rect.width/Mathf.Max(1f,sprite.rect.height);
