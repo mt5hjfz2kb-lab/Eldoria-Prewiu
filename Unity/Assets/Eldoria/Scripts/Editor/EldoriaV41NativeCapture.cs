@@ -416,12 +416,15 @@ namespace Eldoria.Editor
             Need(heroes.IsOpen,"Real military navigation opens heroes hall");
             // Presence of a component alone previously passed despite the
             // completely obscured scenery. Require actual independent art.
-            var hall=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
-                .FirstOrDefault(i=>i.name=="Hall / clean architectural plate");
-            Need(hall&&hall.texture,"Heroes hall loads its clean production environment");
-            Need(!hall.raycastTarget,"Heroes hall environment cannot intercept hero-card taps");
-            Need(hall.texture.width==1536&&hall.texture.height==1024,
-                "Independent architecture is loaded rather than the flattened master sheet");
+            var hall=heroes.VisibleRoot.GetComponentsInChildren<HeroesHallScenicGraphic>();
+            Need(hall.Length==1&&hall[0].enabled&&
+                hall[0].rectTransform.rect.width>0f&&hall[0].rectTransform.rect.height>0f,
+                "Heroes hall instantiates one independent illustrated vaulted room");
+            Need(!hall[0].raycastTarget,
+                "Illustrated architectural stage never intercepts hero-card taps");
+            Need(!heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                .Any(i=>i.name=="Hall / clean architectural plate"),
+                "Hall no longer pastes a full-frame photographic environment");
             Need(heroes.VisibleRoot.GetComponentsInChildren<Canvas>(true).Length==0,
                 "Heroes hall reuses the canonical Canvas without another Canvas");
             string saveBeforeHeroes=File.ReadAllText(host.City.SaveFile);
