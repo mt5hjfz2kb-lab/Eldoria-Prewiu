@@ -153,8 +153,10 @@ namespace Eldoria.Editor
                             .Where(v=>v.name.StartsWith("Hall / nav actual vector pictogram ")).ToArray();
                         Need(navIcons.Length==4&&navIcons.All(v=>
                             !v.raycastTarget&&v.font&&v.fontSize>=24&&
-                            !string.IsNullOrEmpty(v.text)&&v.color.a>.9f),
-                            "Four visible native-serif hall pictograms on real buttons "+name);
+                            !string.IsNullOrEmpty(v.text)&&
+                            v.font.HasCharacter(v.text[0])&&v.color.a>.9f&&
+                            v.rectTransform.rect.width>=18f),
+                            "Four visually drawable Hall icon glyphs are separate from real button captions "+name);
                         var heroNavLabel=hallNav.First(b=>b.name=="Hall / nav heroes")
                             .GetComponentInChildren<Text>();
                         Need(heroNavLabel&&heroNavLabel.text=="HÉROES"&&

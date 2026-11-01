@@ -251,14 +251,24 @@ namespace Eldoria.HeroesUI
             frame.SetAsLastSibling();
             var glyph=frame.gameObject.AddComponent<Text>();
             glyph.font=font;
-            glyph.text=iconId==12?"‹":iconId==4?"✦":iconId==5?"›":"◇";
+            string icon=iconId==12?"‹":iconId==4?"✦":iconId==5?"›":"◇";
+            // A missing Unicode glyph in the project's serif font silently
+            // renders an empty black medallion, even with green UI tests.
+            // Use a guaranteed ASCII visual fallback for each identity.
+            char fallback=iconId==12?'<':iconId==4?'H':iconId==5?'>':'R';
+            glyph.text=font&&font.HasCharacter(icon[0])?icon:fallback.ToString();
             glyph.alignment=TextAnchor.MiddleCenter;
             glyph.fontSize=25;
             glyph.resizeTextForBestFit=false;
             glyph.color=selected?new Color(.15f,.10f,.045f,.98f):
                 new Color(.96f,.81f,.53f,.98f);
             glyph.raycastTarget=false;
-            var caption=button.GetComponentInChildren<Text>();
+            // Resolve the original live button caption BY NAME, not the
+            // newly appended pictogram. GetComponentInChildren<Text>() chose
+            // whichever text came first and shifted the icon out of sight.
+            Text caption=null;
+            foreach(var candidate in button.GetComponentsInChildren<Text>())
+                if(candidate.name==button.name+" label"){caption=candidate;break;}
             if(caption)Place(caption.rectTransform,size+9f,3f,
                 Mathf.Max(21f,cell-size-15f),height-6f);
         }
