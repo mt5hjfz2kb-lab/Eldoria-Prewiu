@@ -767,7 +767,10 @@ namespace Eldoria.HeroesUI
                 Surface("Hero card identity shade",card,ix,iy,iw,ih,
                     new Color(.008f,.016f,.027f,lateral ? .84f : .91f))
                     .GetComponent<Image>().raycastTarget=false;
-                bool compactCard=!lateral&&cardW<220f;
+                // Art-first desktop cards are ~210 units wide but tall. They
+                // must use the full hero identity hierarchy, not the narrow
+                // 390px phone's compact 13px text branch.
+                bool compactCard=!lateral&&cardW<200f;
                 if(real){
                     var namePlate=Label("Hero card name",card,heroes[i].DisplayName,ix+3f,
                         iy+(lateral?5f:2f),iw-6f,
