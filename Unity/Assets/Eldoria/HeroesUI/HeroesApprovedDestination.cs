@@ -205,7 +205,9 @@ namespace Eldoria.HeroesUI
             Label("Real hero availability",stage,hero.Available?"EN VALORIA":"EN EXPEDICIÓN",8,modelH-37,modelW-16,30,16,TextAnchor.MiddleCenter);
             float infoX=portrait?bodyX:bodyX+modelW+12,infoY=portrait?top+modelH+12:top;
             float infoW=portrait?bodyW:bodyW-modelW-12,infoH=portrait?bodyH-modelH-12:bodyH;
-            var info=Frame("Hero authoritative information",content,infoX,infoY,infoW,infoH);
+            var info=CurrentPage==Page.Resumen
+                ? ProfileSummaryBoard(content,infoX,infoY,infoW,infoH)
+                : Frame("Hero authoritative information",content,infoX,infoY,infoW,infoH);
             BuildInformation(info,hero,infoW,infoH);
             if(CurrentPage==Page.Talentos){
                 stage.gameObject.SetActive(false);info.gameObject.SetActive(false);
@@ -523,6 +525,22 @@ namespace Eldoria.HeroesUI
                 new Color(.012f,.015f,.024f,.62f)).GetComponent<Image>().raycastTarget=false;
             Surface("Profile / floor gilded edge",stage,w*.13f,y,w*.74f,2f,
                 new Color(.86f,.65f,.37f,.52f)).GetComponent<Image>().raycastTarget=false;
+        }
+        RectTransform ProfileSummaryBoard(Transform parent,float x,float y,float w,float h)
+        {
+            // No opaque black sheet behind the full information column.
+            // Only separate carved tiles float in an open architectural bay.
+            var bay=Rect("Hero authoritative information",parent);
+            Place(bay,x,y,w,h);
+            Surface("Profile / information bay top cornice",bay,0,0,w,2f,
+                new Color(.82f,.63f,.35f,.65f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / information bay left shadow",bay,0,3f,2f,h-6f,
+                new Color(.10f,.09f,.08f,.53f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / information bay right shadow",bay,w-2f,3f,2f,h-6f,
+                new Color(.10f,.09f,.08f,.53f)).GetComponent<Image>().raycastTarget=false;
+            Surface("Profile / information bay lower rim",bay,0,h-2f,w,2f,
+                new Color(.77f,.58f,.32f,.56f)).GetComponent<Image>().raycastTarget=false;
+            return bay;
         }
         RectTransform ProfileModule(string name,Transform parent,float x,float y,float w,float h)
         {
