@@ -456,7 +456,7 @@ namespace Eldoria.HeroesUI
                 }
             }
             Surface("Hall / elevated header veil",content,0,0,w,headerH-8f,
-                new Color(.014f,.022f,.037f,widePhone ? .53f : .43f)
+                new Color(.014f,.022f,.037f,widePhone ? .53f : .43f))
                 .GetComponent<Image>().raycastTarget=false;
             Surface("Hall / header gilding",content,12f,5f,w-24f,2f,
                 new Color(.81f,.60f,.29f,.75f)).GetComponent<Image>().raycastTarget=false;
@@ -835,7 +835,7 @@ namespace Eldoria.HeroesUI
                 float iw=lateral?cardW-portraitW-(compactReserve?22f:34f):cardW-10f;
                 float ih=lateral?cardH-8f:identityH-5f;
                 Surface("Hero card identity shade",card,ix,iy,iw,ih,
-                    new Color(.033f,.041f,.054f,lateral ? .83f : .81f)
+                    new Color(.033f,.041f,.054f,lateral ? .83f : .81f))
                     .GetComponent<Image>().raycastTarget=false;
                 // Art-first desktop cards are ~210 units wide but tall. They
                 // must use the full hero identity hierarchy, not the narrow
