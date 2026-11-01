@@ -571,7 +571,7 @@ namespace Eldoria.HeroesUI
                 // A portrait photograph is not an ornamental texture: keep
                 // his identity, hairline and face entirely in the visible
                 // upper aperture, while lower armour may crop naturally.
-                float top=fullBody?-(imageH-h)*.27f:
+                float top=fullBody?-(imageH-h)*(w>h?.12f:.27f):
                     imageH>h?-Mathf.Min(6f,(imageH-h)*.06f):
                     (h-imageH)*.5f;
                 Place(image.rectTransform,(w-imageW)*.5f,top,imageW,imageH);
@@ -728,7 +728,12 @@ namespace Eldoria.HeroesUI
             // Desktop follows the approved three-column gallery. A real
             // narrow portrait phone needs two columns and three physical rows:
             // scaling three full cards down produced unreadable ribbons.
-            bool narrowPortrait=portraitLayout&&w<600f;
+            // A 900x1600 phone has exactly the same tall aspect as 390x844.
+            // Keeping three narrow columns on the former created portraits
+            // three times taller than wide and made Aldric a pasted rectangle.
+            // Preserve the approved three-column gallery on landscape/desktop;
+            // use two columns and three tiers on BOTH tall phone resolutions.
+            bool narrowPortrait=portraitLayout&&(w<600f||h>w*1.35f);
             int displayCount=Mathf.Max(6,heroes.Length);
             // Short mobile landscape features both genuine heroes above four
             // smaller, inert reserves; three equally wide cards caused
@@ -747,7 +752,7 @@ namespace Eldoria.HeroesUI
             float cardGridH=Mathf.Max(rows*78f,availableH-gap*(rows-1));
             bool tieredRows=(rows==2&&!phoneLandscape)||narrowPortrait||compactLandscape;
             float primaryH=compactLandscape?cardGridH*.60f:
-                narrowPortrait?cardGridH*.40f:
+                narrowPortrait?cardGridH*.46f:
                 tieredRows?cardGridH*.625f:cardGridH/rows;
             float secondaryH=compactLandscape?cardGridH-primaryH:
                 narrowPortrait?(cardGridH-primaryH)/Mathf.Max(1,rows-1):
@@ -822,9 +827,15 @@ namespace Eldoria.HeroesUI
                 bool lateral=phoneLandscape;
                 float portraitX=6f,portraitY=6f;
                 float portraitW=lateral?
-                    Mathf.Min(cardH-12f,cardW*(compactReserve?.28f:.44f)):
+                    Mathf.Min(cardW*(compactReserve?.32f:.53f),
+                        cardH*(compactReserve?.78f:1.80f)):
                     cardW-12f;
-                float identityH=lateral?0f:cardH<160f?43f:cardW<220f?85f:105f;
+                // Future portraits need more of their image and less opaque UI ink.
+                // The two real identities retain enough room for genuine name,
+                // role, level and power; locked slots have only two short labels.
+                float identityH=lateral?0f:!real?
+                    Mathf.Clamp(cardH*.32f,43f,78f):
+                    cardW<220f?82f:105f;
                 float portraitH=lateral?cardH-12f:Mathf.Max(24f,cardH-identityH-12f);
                 CardPortrait(card,portrait,unlocked,!real||heroes[i].Id=="lyra",
                     i,portraitX,portraitY,portraitW,portraitH);
@@ -878,18 +889,26 @@ namespace Eldoria.HeroesUI
                         }
                     }
                 } else {
+                    // The old two-line POR / DESCUBRIR caption consumed the
+                    // entire reserved card on a 390px phone. An anonymous,
+                    // distinct illustrated face is the focal point instead.
+                    bool tightLocked=!lateral&&identityH<81f;
                     var lockedTitle=Label("Hero card name",card,
-                        lateral?"POR\nDESCUBRIR":compactCard?"POR\nDESCUBRIR":"POR DESCUBRIR",ix+3f,
-                        iy+(lateral?3f:compactCard?4f:3f),iw-6f,
-                        lateral?Mathf.Max(43f,ih*.49f):compactCard?40f:27f,
-                        compactReserve?15:lateral&&cardW<210f?16:lateral?19:compactCard?13:19,TextAnchor.MiddleCenter);
-                    lockedTitle.color=new Color(.78f,.69f,.51f);
+                        lateral?"POR\nDESCUBRIR":"POR DESCUBRIR",ix+3f,
+                        iy+(tightLocked?2f:lateral?3f:3f),iw-6f,
+                        lateral?Mathf.Max(43f,ih*.49f):
+                            tightLocked?Mathf.Max(24f,identityH*.54f):27f,
+                        compactReserve?15:lateral&&cardW<210f?16:lateral?19:
+                            tightLocked?cardW<220f?14:17:19,TextAnchor.MiddleCenter);
+                    lockedTitle.color=new Color(.86f,.77f,.57f);
                     var lockedState=Label("Hero card state",card,"BLOQUEADO",ix+3f,
-                        iy+(lateral?ih*.58f:compactCard?46f:30f),iw-6f,
+                        iy+(lateral?ih*.58f:tightLocked?identityH*.59f:30f),iw-6f,
                         lateral?Mathf.Max(27f,ih*.34f):
-                            compactCard?22f:Mathf.Max(18f,identityH-38f),
-                        compactReserve?15:lateral&&cardW<210f?16:lateral?19:compactCard?12:15,TextAnchor.MiddleCenter);
-                    lockedState.color=new Color(.77f,.76f,.70f);
+                            tightLocked?Mathf.Max(15f,identityH*.32f):
+                            Mathf.Max(18f,identityH-38f),
+                        compactReserve?15:lateral&&cardW<210f?16:lateral?19:
+                            tightLocked?13:15,TextAnchor.MiddleCenter);
+                    lockedState.color=new Color(.79f,.77f,.73f);
                     if(lateral){lockedTitle.resizeTextForBestFit=false;lockedState.resizeTextForBestFit=false;}
                 }
                 // Authored 9-slice metallic artwork is a reusable,

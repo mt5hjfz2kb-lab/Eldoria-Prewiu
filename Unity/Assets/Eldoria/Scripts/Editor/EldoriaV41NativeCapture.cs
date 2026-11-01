@@ -332,6 +332,12 @@ namespace Eldoria.Editor
                             "Four category and four footer controls use real separate approved textures "+name);
                         Need(slots.All(t=>t.rect.width>0&&t.rect.height>0),
                             "Six visible hall slots have usable geometry "+name);
+                        var futureArtwork=slots.Where(t=>t.name.StartsWith("Reserved future hero slot "))
+                            .Select(t=>t.GetComponentsInChildren<Image>()
+                                .FirstOrDefault(i=>i.name=="Verified portrait")?.sprite).ToArray();
+                        Need(futureArtwork.Length==4&&futureArtwork.All(s=>s)&&
+                            futureArtwork.Select(s=>s.rect).Distinct().Count()==4,
+                            "Four locked positions retain FOUR distinct painted characters, no repeated filler "+name);
                         Need(slots.All(card=>{
                             var alcove=card.GetComponentsInChildren<RawImage>()
                                 .FirstOrDefault(x=>x.name=="Hall / separate illustrated character alcove");
@@ -359,8 +365,8 @@ namespace Eldoria.Editor
                         }
                         if(height>width){
                             var firstRow=slots.Count(t=>Mathf.Abs(t.anchoredPosition.y-slots[0].anchoredPosition.y)<1f);
-                            Need(firstRow==(width<600?2:3),
-                                "Portrait gallery reflows to two mobile or three desktop columns "+name);
+                            Need(firstRow==((width<600||height>width*1.35f)?2:3),
+                                "Portrait Hall uses two portrait columns on tall phones and three on desktop "+name);
                         }
                         if(height>500){
                             Need(slots[0].rect.height>slots[3].rect.height*1.30f,
@@ -379,6 +385,9 @@ namespace Eldoria.Editor
                                 "Every hero card has real image source "+name);
                             Need(portrait.rectTransform.rect.width>=aperture.rect.width*.60f,
                                 "Portrait occupies at least 60% of each live aperture "+name);
+                            if(height>width&&slot.name.StartsWith("Hero card "))
+                                Need(portrait.rectTransform.rect.height>=aperture.rect.height*.75f,
+                                    "Tall mobile Hall cannot letterbox a small pasted photo "+name);
                             if(slot.name.StartsWith("Reserved future hero slot "))
                                 Need(portrait.rectTransform.rect.width>=aperture.rect.width*.95f&&
                                     portrait.rectTransform.rect.height>=aperture.rect.height*.95f,
