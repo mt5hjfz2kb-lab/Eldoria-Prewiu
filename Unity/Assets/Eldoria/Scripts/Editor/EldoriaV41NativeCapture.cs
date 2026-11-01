@@ -160,6 +160,19 @@ namespace Eldoria.Editor
                                 -filters[0].anchoredPosition.y>=height*.25f &&
                                 slots[0].rect.height>slots[3].rect.height*1.30f,
                                 "1600x900 actual composition matches approved heraldry/gallery spatial hierarchy "+name);
+                            // Pixel-art direction, not merely 6 working buttons:
+                            // the 512x575 reference demands TALL cards even on
+                            // a 16:9 screenshot. A monitor-wide grid is rejected.
+                            float refScale=height/575f;
+                            float expectedCardWidth=134f*refScale;
+                            var footerNav=heroes.VisibleRoot.GetComponentsInChildren<Button>()
+                                .FirstOrDefault(b=>b.name=="Hall / nav heroes");
+                            Need(Mathf.Abs(slots[0].rect.width-expectedCardWidth)<=expectedCardWidth*.12f&&
+                                slots[0].rect.width/Mathf.Max(1f,slots[0].rect.height)<.83f&&
+                                Mathf.Abs(slots[0].anchoredPosition.x + slots[2].anchoredPosition.x+
+                                    slots[2].rect.width-width)<width*.13f&&
+                                footerNav,
+                                "1600x900 actual hero gallery keeps approved 512x575 tall-card proportions "+name);
                         }
                         for(int lockedSlot=2;lockedSlot<6;lockedSlot++){
                             var locks=slots[lockedSlot].GetComponentsInChildren<RectTransform>()
