@@ -758,9 +758,11 @@ namespace Eldoria.HeroesUI
                 float portraitH=lateral?cardH-12f:Mathf.Max(24f,cardH-identityH-12f);
                 CardPortrait(card,portrait,unlocked,!real||heroes[i].Id=="lyra",
                     i,portraitX,portraitY,portraitW,portraitH);
-                float ix=lateral?portraitW+10f:5f;
+                // Phone landscape owns a real safe text gutter. The old 5px right
+                // allowance let gold corners cover actual hero power digits.
+                float ix=lateral?portraitW+16f:5f;
                 float iy=lateral?4f:cardH-identityH;
-                float iw=lateral?cardW-portraitW-15f:cardW-10f;
+                float iw=lateral?cardW-portraitW-34f:cardW-10f;
                 float ih=lateral?cardH-8f:identityH-5f;
                 Surface("Hero card identity shade",card,ix,iy,iw,ih,
                     new Color(.008f,.016f,.027f,lateral ? .84f : .91f))
@@ -770,7 +772,7 @@ namespace Eldoria.HeroesUI
                     var namePlate=Label("Hero card name",card,heroes[i].DisplayName,ix+3f,
                         iy+(lateral?5f:2f),iw-6f,
                         lateral?Mathf.Min(39f,ih*.44f):compactCard?23f:28f,
-                        lateral?25:cardW<150?17:23,
+                        lateral?22:cardW<150?17:23,
                         TextAnchor.MiddleCenter);
                     namePlate.color=gold;
                     if(lateral)namePlate.resizeTextForBestFit=false;
@@ -788,7 +790,7 @@ namespace Eldoria.HeroesUI
                         ix+3f,iy+(lateral?ih*.49f:largeCard?49f:compactCard?26f:30f),iw-6f,
                         lateral?Mathf.Max(40f,ih*.48f):largeCard?20f:
                             compactCard?Mathf.Max(36f,identityH-46f):Mathf.Max(20f,identityH-39f),
-                        lateral?20:compactCard?13:largeCard?14:17,TextAnchor.MiddleCenter);
+                        lateral?19:compactCard?13:largeCard?14:17,TextAnchor.MiddleCenter);
                     // At 512:575 reference proportions, real hero power must
                     // remain on ONE visible line instead of wrapping under the
                     // image and being truncated by its 20-unit stat row.
