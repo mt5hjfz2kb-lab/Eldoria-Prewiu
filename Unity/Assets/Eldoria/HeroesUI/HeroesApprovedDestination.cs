@@ -683,8 +683,12 @@ namespace Eldoria.HeroesUI
             // scaling three full cards down produced unreadable ribbons.
             bool narrowPortrait=portraitLayout&&w<600f;
             int displayCount=Mathf.Max(6,heroes.Length);
+            // Short mobile landscape features both genuine heroes above four
+            // smaller, inert reserves; three equally wide cards caused
+            // clipped real power and unreadable portrait identities.
+            bool compactLandscape=phoneLandscape&&w<1050f&&displayCount==6;
             int columns=narrowPortrait?2:3;
-            int rows=Mathf.CeilToInt(displayCount/(float)columns);
+            int rows=compactLandscape?2:Mathf.CeilToInt(displayCount/(float)columns);
             float gap=Mathf.Clamp(w*.017f,8f,18f);
             float cardTop=headerH+(illustratedDesktop?3f:phoneLandscape?8f:13f);
             float availableH=h-cardTop-footerH-14f;
@@ -694,12 +698,14 @@ namespace Eldoria.HeroesUI
             // as large as Aldric/Lyra and ignored the approved hierarchy.
             // Short mobile landscape keeps equal rows for legibility.
             float cardGridH=Mathf.Max(rows*78f,availableH-gap*(rows-1));
-            bool tieredRows=(rows==2&&!phoneLandscape)||narrowPortrait;
-            float primaryH=narrowPortrait?cardGridH*.40f:
+            bool tieredRows=(rows==2&&!phoneLandscape)||narrowPortrait||compactLandscape;
+            float primaryH=compactLandscape?cardGridH*.60f:
+                narrowPortrait?cardGridH*.40f:
                 tieredRows?cardGridH*.625f:cardGridH/rows;
-            float secondaryH=narrowPortrait?(cardGridH-primaryH)/Mathf.Max(1,rows-1):
+            float secondaryH=compactLandscape?cardGridH-primaryH:
+                narrowPortrait?(cardGridH-primaryH)/Mathf.Max(1,rows-1):
                 tieredRows?cardGridH-primaryH:cardGridH/rows;
-            if(tieredRows&&secondaryH<110f){
+            if(tieredRows&&!compactLandscape&&secondaryH<110f){
                 secondaryH=110f;
                 primaryH=cardGridH-secondaryH*(rows-1);
             }
@@ -707,7 +713,7 @@ namespace Eldoria.HeroesUI
             // composition. At 1600x900 the art-preserving scale derives
             // from HEIGHT (575px source), never from the full monitor width.
             float desktopCardWidth=illustratedDesktop?h*(134f/575f):390f;
-            float cardW=Mathf.Min(desktopCardWidth,
+            float standardCardW=Mathf.Min(desktopCardWidth,
                 (w-42f-gap*(columns-1))/columns);
             if(!hallFrameSprite){
                 var metal=Resources.Load<Texture2D>("EldoriaV41/HeroCardNineSliceGold");
@@ -722,11 +728,18 @@ namespace Eldoria.HeroesUI
                     new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
             }
             for(int i=0;i<displayCount;i++){
-                int col=i%columns,row=i/columns;
+                int col=compactLandscape?(i<2?i:i-2):i%columns;
+                int row=compactLandscape?(i<2?0:1):i/columns;
+                int groupColumns=compactLandscape?(i<2?2:4):columns;
+                float cardW=compactLandscape?
+                    Mathf.Min(i<2?390f:200f,
+                        (w-42f-gap*(groupColumns-1))/groupColumns):
+                    standardCardW;
                 float cardH=tieredRows?(row==0?primaryH:secondaryH):primaryH;
-                float left=(w-(cardW*columns+gap*(columns-1)))*.5f+col*(cardW+gap);
-                float top=cardTop+(tieredRows?
-                    (row==0?0f:primaryH+gap+(row-1)*(secondaryH+gap)):
+                float left=(w-(cardW*groupColumns+gap*(groupColumns-1)))*.5f+
+                    col*(cardW+gap);
+                float top=cardTop+(compactLandscape?(row==0?0f:primaryH+gap):
+                    tieredRows?(row==0?0f:primaryH+gap+(row-1)*(secondaryH+gap)):
                     row*(cardH+gap));
                 bool real=i<heroes.Length;
                 Surface("Hall / card cast shadow",content,left+5f,top+7f,
@@ -812,13 +825,13 @@ namespace Eldoria.HeroesUI
                         lateral?"POR\nDESCUBRIR":compactCard?"POR\nDESCUBRIR":"POR DESCUBRIR",ix+3f,
                         iy+(lateral?3f:compactCard?4f:3f),iw-6f,
                         lateral?Mathf.Max(43f,ih*.49f):compactCard?40f:27f,
-                        lateral?19:compactCard?13:19,TextAnchor.MiddleCenter);
+                        lateral&&cardW<210f?16:lateral?19:compactCard?13:19,TextAnchor.MiddleCenter);
                     lockedTitle.color=new Color(.78f,.69f,.51f);
                     var lockedState=Label("Hero card state",card,"BLOQUEADO",ix+3f,
                         iy+(lateral?ih*.58f:compactCard?46f:30f),iw-6f,
                         lateral?Mathf.Max(27f,ih*.34f):
                             compactCard?22f:Mathf.Max(18f,identityH-38f),
-                        lateral?19:compactCard?12:15,TextAnchor.MiddleCenter);
+                        lateral&&cardW<210f?16:lateral?19:compactCard?12:15,TextAnchor.MiddleCenter);
                     lockedState.color=new Color(.77f,.76f,.70f);
                     if(lateral){lockedTitle.resizeTextForBestFit=false;lockedState.resizeTextForBestFit=false;}
                 }
