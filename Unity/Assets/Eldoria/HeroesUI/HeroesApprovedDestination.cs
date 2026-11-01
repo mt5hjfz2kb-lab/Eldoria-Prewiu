@@ -523,7 +523,6 @@ namespace Eldoria.HeroesUI
                     button.onClick.AddListener(()=>OpenHero(hero.Id));
                 }
             }
-            int unlockedCount=0;foreach(var hero in heroes)if(hero.Unlocked)unlockedCount++;
             // Canonical bottom action bar follows the approved four-destination
             // grammar. VOLVER and MARCHAS are REAL, HEROES stays on this live
             // view, and RELICARIO is genuinely disabled by progression.
@@ -540,11 +539,13 @@ namespace Eldoria.HeroesUI
                 navLeft+navCell+navGap,navY,navCell,navHeight,
                 new Color(.47f,.25f,.065f,.91f)).GetComponent<Image>().raycastTarget=false;
             var selected=Button("Hall / nav heroes",
-                "HÉROES  "+unlockedCount+"/"+heroes.Length,
+                "HÉROES",
                 navLeft+navCell+navGap,navY,navCell,navHeight,()=>Select(Page.Salon));
             HallControlArt(selected.transform,"gold-button",navCell,navHeight,true);
+            // The selected gold plate is luminous: use dark ink rather than
+            // pale yellow-on-gold, which was illegible on small devices.
             foreach(var t in selected.GetComponentsInChildren<Text>())
-                t.color=new Color(.99f,.91f,.65f);
+                t.color=new Color(.064f,.048f,.026f);
             var navMarches=Button("Hall / nav marches","MARCHAS",
                 navLeft+(navCell+navGap)*2f,navY,navCell,navHeight,()=>{
                     var management=GetComponent<RoyalGoldV3ManagementScreens>();

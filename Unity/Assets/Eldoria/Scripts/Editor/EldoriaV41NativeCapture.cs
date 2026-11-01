@@ -110,6 +110,11 @@ namespace Eldoria.Editor
                             hallNav.Any(b=>b.name=="Hall / nav marches"&&b.interactable) &&
                             hallNav.Any(b=>b.name=="Hall / nav reliquary"&&!b.interactable),
                             "Hall footer real navigation and future Relicario lock "+name);
+                        var heroNavLabel=hallNav.First(b=>b.name=="Hall / nav heroes")
+                            .GetComponentInChildren<Text>();
+                        Need(heroNavLabel&&heroNavLabel.text=="HÉROES"&&
+                            heroNavLabel.color.grayscale<.25f,
+                            "Selected gold Hall navigation has one readable dark-ink word "+name);
                         if(name.Contains("small-phone")){
                             var hallLayout=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
                                 .First(t=>t.name=="Heroes / live controls");
