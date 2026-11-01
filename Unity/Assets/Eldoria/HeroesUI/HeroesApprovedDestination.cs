@@ -496,7 +496,7 @@ namespace Eldoria.HeroesUI
                         hallPortraitPaintMaterial=new Material(hallPaintMaterial){
                             name="Eldoria / illustrated canonical hero card",
                             hideFlags=HideFlags.DontSave};
-                        hallPortraitPaintMaterial.SetFloat("_Strength",.71f);
+                        hallPortraitPaintMaterial.SetFloat("_Strength",.28f);
                     }
                     image.material=hallPortraitPaintMaterial;
                 }
