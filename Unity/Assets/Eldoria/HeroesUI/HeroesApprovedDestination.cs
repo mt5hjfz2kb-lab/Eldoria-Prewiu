@@ -321,7 +321,18 @@ namespace Eldoria.HeroesUI
             light.raycastTarget=false;
             return light;
         }
-        void OnDestroy(){if(hallFrameSprite)Destroy(hallFrameSprite);if(hallLightTexture)Destroy(hallLightTexture);if(hallPortraitTransition)Destroy(hallPortraitTransition);if(hallPaintMaterial)Destroy(hallPaintMaterial);if(hallPortraitPaintMaterial)Destroy(hallPortraitPaintMaterial);if(hallAldricMatteMaterial)Destroy(hallAldricMatteMaterial);}
+        void OnDestroy()
+        {
+            foreach(var sprite in approvedReservedPortraits)
+                if(sprite)Destroy(sprite);
+            if(futureSlotArt)Destroy(futureSlotArt);
+            if(hallFrameSprite)Destroy(hallFrameSprite);
+            if(hallLightTexture)Destroy(hallLightTexture);
+            if(hallPortraitTransition)Destroy(hallPortraitTransition);
+            if(hallPaintMaterial)Destroy(hallPaintMaterial);
+            if(hallPortraitPaintMaterial)Destroy(hallPortraitPaintMaterial);
+            if(hallAldricMatteMaterial)Destroy(hallAldricMatteMaterial);
+        }
         void DrawApprovedSalonEnvironment(float w,float h)
         {
             if(!hallArchitecture)
@@ -446,6 +457,31 @@ namespace Eldoria.HeroesUI
                 new Color(.81f,.60f,.29f,.75f)).GetComponent<Image>().raycastTarget=false;
         }
         Sprite futureSlotArt, hallFrameSprite;
+        readonly Sprite[] approvedReservedPortraits=new Sprite[4];
+        // The approved master is archived as art direction, NEVER a flattened
+        // functional UI. Only its four individual, text-free, lock-free
+        // MONOCHROME FUTURE CHARACTER ILLUSTRATIONS are reusable decorative
+        // source artwork. The two live hero identities remain 100% runtime.
+        Sprite ApprovedFuturePortrait(int index)
+        {
+            if(index<0||index>=approvedReservedPortraits.Length)return null;
+            if(approvedReservedPortraits[index])return approvedReservedPortraits[index];
+            var master=Resources.Load<Texture2D>("EldoriaV41/HeroesApprovedMaster");
+            if(!master||master.width!=1536||master.height!=1024)return null;
+            // Coordinates measured from the top-left 512x575 approved Salon.
+            // Exclude all baked labels, levels, star ratings, buttons and
+            // lock pictograms. Game state and live UI remain authoritative.
+            int[] xs={335,36,185,334}, ys={210,407,407,407};
+            int[] widths={130,130,130,130}, heights={102,61,61,61};
+            var crop=new UnityEngine.Rect(xs[index],
+                master.height-(ys[index]+heights[index]),
+                widths[index],heights[index]);
+            var sprite=Sprite.Create(master,crop,new Vector2(.5f,.5f),
+                100f,0,SpriteMeshType.FullRect);
+            sprite.name="Approved future illustration / passive "+index;
+            approvedReservedPortraits[index]=sprite;
+            return sprite;
+        }
         // Portrait geometry lives inside its own aperture, never below an
         // opaque full-width card label in short landscape.
 
@@ -535,7 +571,11 @@ namespace Eldoria.HeroesUI
                     (h-imageH)*.5f;
                 Place(image.rectTransform,(w-imageW)*.5f,top,imageW,imageH);
                 image.sprite=sprite;image.raycastTarget=false;
-                image.color=unlocked?Color.white:new Color(.42f,.46f,.51f,.90f);
+                image.color=unlocked?Color.white:
+                    // The approved reserves are already dark monochrome
+                    // paintings. Applying the old 42% grey tint erased faces.
+                    slot>=2?new Color(.90f,.91f,.94f,.97f):
+                    new Color(.42f,.46f,.51f,.90f);
                 if(slot<2 && hallPaintMaterial){
                     // Render approved source sprites as illustrated character
                     // cards. Originals, Tripo geometry and saved hero identities
@@ -764,7 +804,7 @@ namespace Eldoria.HeroesUI
                 Surface("Hall / card right bevel",card,cardW-6f,6f,2f,cardH-12f,
                     new Color(.82f,.55f,.21f,.43f)).GetComponent<Image>().raycastTarget=false;
                 bool unlocked=real&&heroes[i].Unlocked;
-                Sprite portrait=real?heroes[i].Portrait:futureSlotArt;
+                Sprite portrait=real?heroes[i].Portrait:(ApprovedFuturePortrait(i-heroes.Length)??futureSlotArt);
                 bool lateral=phoneLandscape;
                 float portraitX=6f,portraitY=6f;
                 float portraitW=lateral?
