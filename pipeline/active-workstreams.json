@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-01T09:52:26.036Z",
+  "updated_at": "2026-11-01T15:52:10.881Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3034,6 +3034,32 @@
         }
       ],
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending."
+    },
+    {
+      "id": "eldoria-project-entry-organization-20261101",
+      "title": "Organización documental: entrada única al proyecto",
+      "owner": "codex-eldoria-project-entry-20261101",
+      "branch": "docs/project-entry-organization-20261101",
+      "status": "active",
+      "claimed_at": "2026-11-01T15:52:10.881Z",
+      "base_main_sha": "d7a6d78eb96b19f0350c890fc1dadc131a8f3032",
+      "scope": [
+        "README.md",
+        "docs/DOCUMENTATION_INDEX.md",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md"
+      ],
+      "resources": [],
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Documentation navigation only; no Unity, artwork, builds or delivery mutation.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Entrada coherente a código integrado, candidatas, responsables y entregas, sin duplicar estado vivo.",
+        "evidence": "Enlaces contrastados con árbol Git y guard documental existente; diff limitado a navegación y registro propio.",
+        "handoff": "PR documental revisable; no tocar PR136, handoff ni estado de producto reservados."
+      }
     }
   ],
   "history": [
