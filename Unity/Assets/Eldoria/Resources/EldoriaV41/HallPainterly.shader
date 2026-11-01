@@ -23,6 +23,7 @@ Shader "UI/Eldoria/HallPainterly"
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
             float4 _ClipRect;
+            float4 _MainTex_TexelSize;
             CBUFFER_START(UnityPerMaterial)
                 half4 _Color;
                 half _Strength;
@@ -40,13 +41,12 @@ Shader "UI/Eldoria/HallPainterly"
             half4 frag(Varyings i) : SV_Target
             {
                 half4 source=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);
-                // Kuwahara-inspired 9-tap watercolour reconstruction:
-                // average *within* the calmest local quadrant. Unlike
-                // ordinary 5-tap blur or palette quantization this replaces
-                // photographic microtexture with broad, coherent paint fields.
-                // Architecture only: characters, typography, and buttons
-                // remain native separate Canvas layers.
-                float2 brush=float2(5.2/1536.0,5.2/1024.0);
+                // Nine-tap edge-preserving brush in SOURCE TEXTURE pixels.
+                // Previously a hardcoded 1536x1024 architectural step was
+                // reused for Lyra's genuine model RenderTexture (512x768).
+                // That over-smoothed face/hair at mobile display sizes.
+                // The native texel size now scales with the actual artwork.
+                float2 brush=_MainTex_TexelSize.xy*1.15;
                 half3 a=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+brush*float2(-1,-1)).rgb;
                 half3 b0=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+brush*float2( 0,-1)).rgb;
                 half3 c=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv+brush*float2( 1,-1)).rgb;
@@ -73,7 +73,9 @@ Shader "UI/Eldoria/HallPainterly"
                 if(v1<variance){variance=v1;calm=m1;}
                 if(v2<variance){variance=v2;calm=m2;}
                 if(v3<variance){calm=m3;}
-                half3 quantized=floor(saturate(calm)*14.0h+0.5h)/14.0h;
+                // A 24-step palette retains illustrated fabrics and human faces;
+                // the former 14-step palette visibly posterized Lyra.
+                half3 quantized=floor(saturate(calm)*24.0h+0.5h)/24.0h;
                 half luminance=dot(quantized,half3(.299h,.587h,.114h));
                 half3 ink=lerp(quantized,
                     half3(luminance*1.11h,luminance*.96h,luminance*.81h),.16h);
