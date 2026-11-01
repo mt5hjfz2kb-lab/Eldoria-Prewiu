@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-01T20:45:00Z",
+  "updated_at": "2026-11-01T22:21:33.966Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-block02-direct-completion-20261101",
+      "owner": "chatgpt-eldoria-heroes-hall-final-20261101",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
-      "claimed_at": "2026-11-01T18:17:00+01:00",
+      "claimed_at": "2026-11-01T22:21:33.966Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -126,8 +126,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK02_APPROVED_RESERVE_PORTRAITS_NEW_GOLD_SEALS_EXACT_NATIVE",
-      "next": "Run 41348209139 for exact HEAD de6a9df; inspect 4 genuine Unity screenshots and compare approved master, correct true defects only; ART_APPROVED false.",
+      "phase": "BLOCK02_HEROES_HALL_FINAL_ART_RECONSTRUCTION",
+      "next": "Inspect genuine exact-HEAD hero hall captures against approved master; correct compositional failures and four reserve card differentiation and Lyra sampling; Unity visual four resolutions and regression; art-approved remains false until owner signoff.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -904,7 +904,7 @@
           "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
         }
       },
-      "previous_owner": "chatgpt-eldoria-block02-finish-20261101",
+      "previous_owner": "chatgpt-eldoria-block02-direct-completion-20261101",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -916,7 +916,7 @@
         "goal": "Recover original Source08 Bastion material hierarchy, prove actual renderer influence on SHARP player presentation, art-source/Unity A/B before any promotion",
         "other_workstreams": "remain_paused"
       },
-      "continuation_authorization": "Current owner requests final visual consolidation on integrated main, authentic Unity A/B and functional validation; recover technical blockers autonomously. No APK, Bastion III, spending or external publication.",
+      "continuation_authorization": "Owner 2026-11-01: ELDORIA — RECONSTRUCCIÓN FINAL DEL SALÓN DE HÉROES, continue on PR136 without redoing or overwriting recent advances",
       "handoff_authorization": "Sigue tu con ese trabajo hasta su finalización",
       "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge.",
       "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
@@ -1568,13 +1568,19 @@
           "ownership_revision": 92,
           "transferred_at": "2026-11-01",
           "reason": "Owner explicitly requests normal-chat replacement due to repeated interruptions; preserve existing PR136 and art-source pilot."
+        },
+        {
+          "owner": "chatgpt-eldoria-block02-direct-completion-20261101",
+          "ownership_revision": 93,
+          "transferred_at": "2026-11-01T22:21:33.966Z",
+          "reason": "Owner expressly requests continuation in a new chat for final Heroes Hall reconstruction on PR136; prior HEAD and evidence preserved, no duplicate PR or run."
         }
       ],
-      "ownership_revision": 93,
+      "ownership_revision": 94,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
-      "last_claimed_at": "2026-11-01T18:15:00+01:00",
+      "last_claimed_at": "2026-11-01T22:21:33.966Z",
       "delivery_definition": {
         "deliverable": "Complete necessary web-to-Unity I–V parity and city/world camera corrections through existing PR132; resolve issue133 with verified evidence.",
         "evidence": "Web-to-Unity matrix, old/new save and idempotency regression tests, native Edit/PlayMode I–V, actual UI/camera captures and exact source/build identity.",
