@@ -106,7 +106,7 @@ namespace Eldoria.Editor
                                 var title=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card name");
                                 var data=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card state");
                                 Need(title&&data&&!title.resizeTextForBestFit&&
-                                    !data.resizeTextForBestFit&&title.fontSize>=17&&data.fontSize>=16,
+                                    !data.resizeTextForBestFit&&title.fontSize>=19&&data.fontSize>=19,
                                     "Landscape hero identity preserves readable non-shrinking real typography "+name);
                             }
                         }

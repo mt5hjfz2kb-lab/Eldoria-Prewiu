@@ -492,7 +492,7 @@ namespace Eldoria.HeroesUI
                     i==0?gold:new Color(.45f,.39f,.27f,.65f))
                     .GetComponent<Image>().raycastTarget=false;
                 var label=Label("Hall / category label",strip,filters[i],3,3,filterW-6,
-                    phoneLandscape?25f:24f,phoneLandscape?14:14,TextAnchor.MiddleCenter);
+                    phoneLandscape?25f:24f,phoneLandscape?16:14,TextAnchor.MiddleCenter);
                 label.color=i==0?ivory:new Color(.67f,.63f,.54f);
             }
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
@@ -545,7 +545,7 @@ namespace Eldoria.HeroesUI
                 if(real){
                     var namePlate=Label("Hero card name",card,heroes[i].DisplayName,ix+3f,
                         iy+(lateral?5f:2f),iw-6f,lateral?Mathf.Min(39f,ih*.44f):28f,
-                        lateral?22:cardW<150?17:23,
+                        lateral?25:cardW<150?17:23,
                         TextAnchor.MiddleCenter);
                     namePlate.color=gold;
                     if(lateral)namePlate.resizeTextForBestFit=false;
@@ -556,24 +556,24 @@ namespace Eldoria.HeroesUI
                             .color=new Color(.81f,.75f,.63f);
                     bool compactCard=!lateral&&cardW<150f;
                     var statePlate=Label("Hero card state",card,
-                        unlocked?(lateral?"NV. "+heroes[i].Level+" · PODER "+heroes[i].HeroPower:
+                        unlocked?(lateral?"NV. "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
                             compactCard?"NV. "+heroes[i].Level+"\nPODER "+heroes[i].HeroPower:
                             "NIVEL "+heroes[i].Level+"  ·  PODER "+heroes[i].HeroPower):
                             (compactCard?"BLOQUEADO\nPOR HISTORIA":"BLOQUEADO POR LA HISTORIA"),
-                        ix+3f,iy+(lateral?ih*.56f:largeCard?49f:compactCard?27f:30f),iw-6f,
-                        lateral?Mathf.Max(24f,ih*.35f):largeCard?20f:
+                        ix+3f,iy+(lateral?ih*.49f:largeCard?49f:compactCard?27f:30f),iw-6f,
+                        lateral?Mathf.Max(40f,ih*.48f):largeCard?20f:
                             compactCard?Mathf.Max(30f,identityH-31f):Mathf.Max(20f,identityH-39f),
-                        lateral?16:compactCard?13:17,TextAnchor.MiddleCenter);
+                        lateral?20:compactCard?13:17,TextAnchor.MiddleCenter);
                     if(lateral)statePlate.resizeTextForBestFit=false;
                 } else {
-                    var lockedTitle=Label("Hero card name",card,"POR DESCUBRIR",ix+3f,
-                        iy+(lateral?7f:3f),iw-6f,lateral?Mathf.Max(29f,ih*.43f):27f,
-                        lateral?17:cardW<150?14:19,TextAnchor.MiddleCenter);
+                    var lockedTitle=Label("Hero card name",card,lateral?"POR\nDESCUBRIR":"POR DESCUBRIR",ix+3f,
+                        iy+(lateral?3f:3f),iw-6f,lateral?Mathf.Max(43f,ih*.49f):27f,
+                        lateral?19:cardW<150?14:19,TextAnchor.MiddleCenter);
                     lockedTitle.color=new Color(.78f,.69f,.51f);
                     var lockedState=Label("Hero card state",card,"BLOQUEADO",ix+3f,
-                        iy+(lateral?ih*.55f:30f),iw-6f,
-                        lateral?Mathf.Max(24f,ih*.34f):Mathf.Max(18f,identityH-38f),
-                        lateral?16:15,TextAnchor.MiddleCenter);
+                        iy+(lateral?ih*.58f:30f),iw-6f,
+                        lateral?Mathf.Max(27f,ih*.34f):Mathf.Max(18f,identityH-38f),
+                        lateral?19:15,TextAnchor.MiddleCenter);
                     lockedState.color=new Color(.77f,.76f,.70f);
                     if(lateral){lockedTitle.resizeTextForBestFit=false;lockedState.resizeTextForBestFit=false;}
                 }
