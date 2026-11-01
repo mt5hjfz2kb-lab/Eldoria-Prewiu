@@ -175,11 +175,12 @@ namespace Eldoria.Editor
                                 "1600x900 actual hero gallery keeps approved 512x575 tall-card proportions "+name);
                             var realData=slots[0].GetComponentsInChildren<Text>()
                                 .FirstOrDefault(t=>t.name=="Hero card state");
-                            Need(realData&&realData.text.Contains("PODER")&&
+                            Need(realData&&realData.text.Contains("\nPODER")&&
                                 !realData.resizeTextForBestFit&&
                                 realData.fontSize>=14&&
-                                realData.preferredWidth<=realData.rectTransform.rect.width+5f,
-                                "Approved-ratio desktop card keeps full real power visible on one line "+name);
+                                realData.rectTransform.rect.height>=35f&&
+                                realData.preferredHeight<=realData.rectTransform.rect.height+5f,
+                                "Approved-ratio desktop card reserves real visible rows for level and power "+name);
                         }
                         for(int lockedSlot=2;lockedSlot<6;lockedSlot++){
                             var locks=slots[lockedSlot].GetComponentsInChildren<RectTransform>()
