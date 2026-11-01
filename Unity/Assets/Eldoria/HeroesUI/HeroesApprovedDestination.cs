@@ -629,6 +629,17 @@ namespace Eldoria.HeroesUI
                     transition.raycastTarget=false;
                 }
             }
+            // Four distinct, archival monochrome portraits receive subtle
+            // warm/cool diffuse bounce, like painted figures inside the hall.
+            // A true noninteractive light plane, not another fictitious hero.
+            // Keep the silhouettes subdued but no longer crushed to black.
+            if(slot>=2){
+                var bounce=HallLight(viewport,"Hall / reserved portrait pictorial bounce",
+                    w*.04f,h*.045f,w*.92f,h*.80f);
+                bounce.color=slot%2==0?
+                    new Color(.72f,.60f,.43f,.24f):
+                    new Color(.49f,.57f,.65f,.24f);
+            }
             // Decorative locks follow the approved source: small seals that
             // FLOAT over four independent monochrome paintings. The old Frame
             // built an opaque black box so large it hid each approved face.
