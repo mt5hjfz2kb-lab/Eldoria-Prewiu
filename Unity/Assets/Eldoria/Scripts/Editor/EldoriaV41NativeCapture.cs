@@ -4,6 +4,7 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using Eldoria.Domain;
+using Eldoria.HeroesUI;
 using Eldoria.Infrastructure;
 using Eldoria.ReferenceClean;
 using Eldoria.ReferenceClean.Editor;
