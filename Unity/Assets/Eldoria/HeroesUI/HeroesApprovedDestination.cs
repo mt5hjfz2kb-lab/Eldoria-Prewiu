@@ -740,7 +740,7 @@ namespace Eldoria.HeroesUI
                 bool lateral=phoneLandscape;
                 float portraitX=6f,portraitY=6f;
                 float portraitW=lateral?Mathf.Min(cardH-12f,cardW*.44f):cardW-12f;
-                float identityH=lateral?0f:cardH<160f?43f:cardW<145f?85f:74f;
+                float identityH=lateral?0f:cardH<160f?43f:cardW<220f?85f:74f;
                 float portraitH=lateral?cardH-12f:Mathf.Max(24f,cardH-identityH-12f);
                 CardPortrait(card,portrait,unlocked,!real||heroes[i].Id=="lyra",
                     i,portraitX,portraitY,portraitW,portraitH);
@@ -751,7 +751,7 @@ namespace Eldoria.HeroesUI
                 Surface("Hero card identity shade",card,ix,iy,iw,ih,
                     new Color(.008f,.016f,.027f,lateral ? .84f : .91f))
                     .GetComponent<Image>().raycastTarget=false;
-                bool compactCard=!lateral&&cardW<150f;
+                bool compactCard=!lateral&&cardW<220f;
                 if(real){
                     var namePlate=Label("Hero card name",card,heroes[i].DisplayName,ix+3f,
                         iy+(lateral?5f:2f),iw-6f,
@@ -801,6 +801,11 @@ namespace Eldoria.HeroesUI
                     var metal=frameArt.gameObject.AddComponent<Image>();
                     metal.sprite=hallFrameSprite;
                     metal.type=Image.Type.Sliced;
+                    // The original full-size gold corner engraving occupies
+                    // the entire narrow portrait card if left at desktop
+                    // pixel units. Keep the same approved nine-slice texture
+                    // but scale only its borders on 2-column mobile layouts.
+                    metal.pixelsPerUnitMultiplier=cardW<220f?2.2f:1f;
                     metal.fillCenter=false;
                     metal.raycastTarget=false;
                     metal.color=unlocked?Color.white:

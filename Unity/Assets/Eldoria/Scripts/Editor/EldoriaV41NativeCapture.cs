@@ -110,6 +110,13 @@ namespace Eldoria.Editor
                             "Aldric portrait alpha dissolves into independent painted architecture instead of hard photo rectangle "+name);
 
                         if(width==390&&height==844){
+                            Need(slots.All(slot=>{
+                                var border=slot.GetComponentsInChildren<Image>()
+                                    .FirstOrDefault(i=>i.name=="Hall / sculpted gilded card artwork");
+                                return border && border.type==Image.Type.Sliced &&
+                                    border.pixelsPerUnitMultiplier>=2.1f;
+                            }),"Mobile two-column Gallery uses small true nine-slice corner scale to protect text "+name);
+
                             Need(slots[0].rect.width>=150f&&
                                 slots[0].rect.height>slots[2].rect.height*1.2f &&
                                 Mathf.Abs(slots[0].anchoredPosition.y-slots[1].anchoredPosition.y)<1f,
