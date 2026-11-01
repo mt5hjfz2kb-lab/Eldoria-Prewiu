@@ -101,17 +101,16 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
-                        // Art is a separate medieval illustrated stage,
-                        // not a photographic plate with controls pasted on top.
-                        var hallStage=heroes.VisibleRoot.GetComponentsInChildren<HeroesHallScenicGraphic>();
-                        Need(hallStage.Length==1&&
-                            !hallStage[0].raycastTarget&&hallStage[0].enabled&&
-                            hallStage[0].rectTransform.rect.width>0f,
-                            "One genuinely layered illustrated Hall stage without extra input "+name);
-                        var photoPlates=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
-                            .Where(t=>t.name=="Hall / painted architectural stage").ToArray();
-                        Need(photoPlates.Length==0,
-                            "Salon contains no full-frame photographic raster backdrop "+name);
+                        // A hand-painted URP material rather than the
+                        // original raw flat raster. Real cards, banners and
+                        // navigation are still separate live UI components.
+                        var hallStage=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                            .Where(t=>t.name=="Hall / painterly architectural plate").ToArray();
+                        Need(hallStage.Length==1&&hallStage[0].texture&&
+                            hallStage[0].material&&
+                            hallStage[0].material.shader.name=="UI/Eldoria/HallPainterly"&&
+                            !hallStage[0].raycastTarget,
+                            "Hall uses one stylized architectural image with layered interactive objects "+name);
                         // These are separate operational HUD controls, not
                         // painted navigation pixels in the approved reference.
                         var hallNav=heroes.VisibleRoot.GetComponentsInChildren<Button>()
@@ -416,15 +415,13 @@ namespace Eldoria.Editor
             Need(heroes.IsOpen,"Real military navigation opens heroes hall");
             // Presence of a component alone previously passed despite the
             // completely obscured scenery. Require actual independent art.
-            var hall=heroes.VisibleRoot.GetComponentsInChildren<HeroesHallScenicGraphic>();
-            Need(hall.Length==1&&hall[0].enabled&&
-                hall[0].rectTransform.rect.width>0f&&hall[0].rectTransform.rect.height>0f,
-                "Heroes hall instantiates one independent illustrated vaulted room");
-            Need(!hall[0].raycastTarget,
-                "Illustrated architectural stage never intercepts hero-card taps");
-            Need(!heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
-                .Any(i=>i.name=="Hall / clean architectural plate"),
-                "Hall no longer pastes a full-frame photographic environment");
+            var hall=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                .FirstOrDefault(i=>i.name=="Hall / painterly architectural plate");
+            Need(hall&&hall.texture&&hall.material&&
+                hall.material.shader.name=="UI/Eldoria/HallPainterly",
+                "Heroes hall renders its architectural source through the stylized illustrative material");
+            Need(!hall.raycastTarget,
+                "Hall illustration cannot intercept hero-card taps");
             Need(heroes.VisibleRoot.GetComponentsInChildren<Canvas>(true).Length==0,
                 "Heroes hall reuses the canonical Canvas without another Canvas");
             string saveBeforeHeroes=File.ReadAllText(host.City.SaveFile);

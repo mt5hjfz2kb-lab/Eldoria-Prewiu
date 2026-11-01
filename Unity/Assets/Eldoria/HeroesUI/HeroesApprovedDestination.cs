@@ -230,6 +230,7 @@ namespace Eldoria.HeroesUI
             if(button)layer.SetSiblingIndex(Mathf.Min(5,parent.childCount-1));
         }
         Texture2D hallArchitecture, hallLightTexture;
+        Material hallPaintMaterial;
         RawImage leftHallLight, rightHallLight;
         Texture2D HallGlow()
         {
@@ -259,7 +260,7 @@ namespace Eldoria.HeroesUI
             light.raycastTarget=false;
             return light;
         }
-        void OnDestroy(){if(hallLightTexture)Destroy(hallLightTexture);}
+        void OnDestroy(){if(hallLightTexture)Destroy(hallLightTexture);if(hallPaintMaterial)Destroy(hallPaintMaterial);}
         void DrawApprovedSalonEnvironment(float w,float h)
         {
             if(!hallArchitecture)
@@ -267,17 +268,29 @@ namespace Eldoria.HeroesUI
             var scene=Rect("Hall / painted architectural stage",content);
             Place(scene,0,0,w,h);
             if(CurrentPage==Page.Salon){
-                // A photo-like single raster previously covered the entire
-                // Salon and made its real uGUI cards feel pasted in front.
-                // Switch the public Hall to genuine separate illustrated
-                // geometry: stone vaults, alcoves, floor-perspective, cloth,
-                // torch glow and ornament are authored by a MaskableGraphic.
-                // It has no portraits, controls, gameplay, extra Canvas or
-                // raycast surface. This is an intentional artistic pivot,
-                // not another photo-opacity tweak.
-                var painted=scene.gameObject.AddComponent<HeroesHallScenicGraphic>();
+                // Do not return to a raw photographic background or an
+                // invisible procedural Mesh. Render the architectural source
+                // as brush-like, palette-reduced illustration; the heraldry,
+                // pillars, living lights, six hero cards and buttons remain
+                // independent real Canvas elements with genuine depth/order.
+                var painted=scene.gameObject.AddComponent<RawImage>();
+                painted.name="Hall / painterly architectural plate";
+                painted.texture=hallArchitecture;
                 painted.raycastTarget=false;
-                painted.color=Color.white;
+                if(hallArchitecture){
+                    float sourceAspect=hallArchitecture.width/(float)hallArchitecture.height;
+                    float viewAspect=w/h;
+                    float cropW=Mathf.Min(1f,viewAspect/sourceAspect);
+                    float cropH=Mathf.Min(1f,sourceAspect/viewAspect);
+                    painted.uvRect=new UnityEngine.Rect((1f-cropW)*.5f,(1f-cropH)*.5f,cropW,cropH);
+                }
+                if(!hallPaintMaterial){
+                    var hallShader=Resources.Load<Shader>("EldoriaV41/HallPainterly");
+                    if(hallShader)hallPaintMaterial=new Material(hallShader){
+                        name="Eldoria / hand-painted Hall presentation",
+                        hideFlags=HideFlags.DontSave};
+                }
+                if(hallPaintMaterial)painted.material=hallPaintMaterial;
             }else{
                 // Individual profiles are a separate Block03 responsibility.
                 // Preserve their previously certified render while Block02
