@@ -102,6 +102,10 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        Need(slots.All(slot=>{
+                            var layered=slot.GetComponentsInChildren<RoyalGoldV3LayeredFinish>();
+                            return layered.Length==1 && !layered[0].raycastTarget;
+                        }),"Every Hall card uses an independently rendered passive RoyalGold 2.5D bevel "+name);
                         var independentDepth=heroes.VisibleRoot
                             .GetComponentsInChildren<HeroesHallParallaxFinish>();
                         Need(independentDepth.Length==1&&

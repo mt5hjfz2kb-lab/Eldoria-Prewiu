@@ -573,6 +573,13 @@ namespace Eldoria.HeroesUI
                     .GetComponent<Image>().raycastTarget=false;
                 var card=Frame(real?"Hero card "+heroes[i].Id:"Reserved future hero slot "+(i-heroes.Length),
                     content,left,top,cardW,cardH);
+                // Reuse the proven 2.5D Royal Gold assembly, including
+                // separate metallic light and shadow planes on EACH card.
+                // This makes the physical card a layered object in the hall,
+                // rather than a flat rectangle over a photograph. It cannot
+                // intercept input and never owns state.
+                RoyalGoldV3LayeredFinish.Install(card,
+                    RoyalGoldV3LayeredFinish.Scene.Panel,card.childCount);
                 // A freestanding engraved frame, not an opaque UI rectangle
                 // flattened into the architectural background.
                 Surface("Hall / card inner bronze bevel",card,4f,4f,cardW-8f,2f,
