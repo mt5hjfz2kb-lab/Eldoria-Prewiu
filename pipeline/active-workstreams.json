@@ -126,8 +126,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK03_HERO_PROFILES_IMPLEMENTATION",
-      "next": "Reconstruir fichas reales Aldric primero y reutilizar diseño Lyra en PR136. A/B 1600x900,900x1600,844x390,390x844; preservar GLB/animaciones/guardados y no publicar/merge. Dejar terminar certificación anterior 41360392031 sin cancelarla y no lanzar job pesado incompatible.",
+      "phase": "BLOCK03_HERO_PROFILES_NATIVE_AB_CAPTURED_ART_TARGET_PENDING",
+      "next": "Latest code HEAD 91e620cf18b5c96e3b1ed7cc1e3dfa8b9968d98a in PR136. Exact-head Unity run 41363105548: real native Aldric/Lyra Resumen screenshots 1600x900/900x1600/844x390/390x844 artifact 13106078862 captured; visual layers no longer draw graticule. Await full integrated certificate; inspect its remaining result before claim of PASS. Art 8.5 NOT certified; lingering painterly-background cutout feel and 844x390 text antialias blur in native capture require new coherent strategy, not micro tweaks. Avoid merging/publishing. Earlier intermediate 41362567525 failed at a strict movement test boundary (actual distance .300000012 vs > .300000012), current 41363105548 preflight passed; check final regression.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -914,7 +914,30 @@
           "844x390"
         ],
         "heroes_hall_visual_review": "REQUIRED",
-        "heroes_hall_visual_reference": "docs/heroes-ui/REFERENCIA_MAESTRA_APROBADA.png"
+        "heroes_hall_visual_reference": "docs/heroes-ui/REFERENCIA_MAESTRA_APROBADA.png",
+        "hero_profiles_block03_20261102": {
+          "head": "91e620cf18b5c96e3b1ed7cc1e3dfa8b9968d98a",
+          "baseline_head": "82ce4f5cf178e5ddfa2fc8bfe5d948c797b4df6b",
+          "baseline_run": 41360392031,
+          "latest_run": 41363105548,
+          "latest_capture_artifact": 13106078862,
+          "hero_capture_count": 8,
+          "viewports": [
+            "1600x900",
+            "900x1600",
+            "844x390",
+            "390x844"
+          ],
+          "real_model_unchanged": true,
+          "art_approved": false,
+          "score_8_5_verified": false,
+          "known_art_risks": [
+            "Character silhouette still reads as detached from painted environment",
+            "844x390 legacy-Text looks softly antialiased"
+          ],
+          "full_ci_status": "IN_PROGRESS_WHEN_RECORDED",
+          "separate_runner_collision": false
+        }
       },
       "previous_owner": "chatgpt-eldoria-block02-direct-completion-20261101",
       "takeover_at": "2026-10-17",
