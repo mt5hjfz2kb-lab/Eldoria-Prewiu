@@ -545,12 +545,26 @@ namespace Eldoria.HeroesUI
                     .gameObject.AddComponent<RawImage>();
                 Place(alcove.rectTransform,0,0,w,h);
                 alcove.texture=hallIllustratedV2;
-                alcove.uvRect=slot==0?new UnityEngine.Rect(.03f,.22f,.30f,.56f):
-                    slot==1?new UnityEngine.Rect(.64f,.22f,.30f,.56f):
-                    new UnityEngine.Rect(.36f,.13f,.29f,.62f);
+                // Sample EXACTLY the same painted chamber seen behind this
+                // aperture: the original per-slot UV crops pasted unrelated
+                // banners/walls inside each frame. Full-scene UV continuity
+                // makes 2.5D heroes feel seated in ONE coherent architecture.
+                // This affects only the raycast-free background of each card.
+                float sceneW=Mathf.Max(1f,content.rect.width);
+                float sceneH=Mathf.Max(1f,content.rect.height);
+                float sourceAspect=hallIllustratedV2.width/(float)hallIllustratedV2.height;
+                float viewportAspect=sceneW/sceneH;
+                float visibleU=Mathf.Min(1f,viewportAspect/sourceAspect);
+                float visibleV=Mathf.Min(1f,sourceAspect/viewportAspect);
+                float absoluteX=card.anchoredPosition.x+x;
+                float absoluteY=-card.anchoredPosition.y+y;
+                alcove.uvRect=new UnityEngine.Rect(
+                    (1f-visibleU)*.5f+visibleU*absoluteX/sceneW,
+                    (1f-visibleV)*.5f+visibleV*(1f-(absoluteY+h)/sceneH),
+                    visibleU*w/sceneW,visibleV*h/sceneH);
                 alcove.color=slot<2?
-                    new Color(.88f,.85f,.86f,.62f):
-                    new Color(.62f,.67f,.76f,.30f);
+                    new Color(.98f,.94f,.86f,.86f):
+                    new Color(.79f,.78f,.77f,.61f);
                 alcove.raycastTarget=false;
             }
             if(sprite){
