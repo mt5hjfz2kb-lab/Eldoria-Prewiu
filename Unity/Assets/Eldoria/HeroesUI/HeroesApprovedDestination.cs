@@ -277,8 +277,8 @@ namespace Eldoria.HeroesUI
                     // Four narrow mobile destinations need their icon ABOVE
                     // the caption, not beside it; the latter squeezed 6-9
                     // letters into 35 px and made them wrap over two lines.
-                    Place(caption.rectTransform,3f,size+4f,
-                        cell-6f,Mathf.Max(17f,height-size-6f));
+                    Place(caption.rectTransform,3f,size+9f,
+                        cell-6f,Mathf.Max(17f,height-size-15f));
                     caption.fontSize=14;
                     caption.resizeTextForBestFit=false;
                     caption.horizontalOverflow=HorizontalWrapMode.Overflow;
@@ -654,7 +654,10 @@ namespace Eldoria.HeroesUI
             float headerH=phoneLandscape?76f:illustratedDesktop?
                 Mathf.Clamp(h*.34f,265f,345f):
                 portraitLayout?Mathf.Clamp(h*.19f,130f,174f):142f;
-            float footerH=phoneLandscape?64f:illustratedDesktop?88f:72f;
+            // Dedicated vertical-phone footer region; icons and live captions
+            // need distinct physical rows above the screen safe edge.
+            float footerH=phoneLandscape?64f:illustratedDesktop?88f:
+                portraitLayout&&w<600f?90f:72f;
             // Title and actual player count are separate from the arch backdrop.
             // Reconstruct the 512x575 approved art composition as a protected
             // central stage on wide desktop. Stretching it to 1600 pixels
@@ -920,8 +923,10 @@ namespace Eldoria.HeroesUI
                 referenceStageWidth:portraitLayout?540f:820f);
             float navCell=(navWidth-navGap*3f)/4f;
             float navLeft=(w-navWidth)*.5f;
-            float navHeight=phoneLandscape?44f:illustratedDesktop?58f:47f;
-            float navY=h-footerH+(phoneLandscape?9f:illustratedDesktop?15f:12f);
+            float navHeight=phoneLandscape?44f:illustratedDesktop?58f:
+                portraitLayout&&w<600f?64f:47f;
+            float navY=h-footerH+(phoneLandscape?9f:illustratedDesktop?15f:
+                portraitLayout&&w<600f?9f:12f);
             var navBack=Button("Hall / nav return","VOLVER",navLeft,navY,navCell,navHeight,Close);
             HallControlArt(navBack.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navBack,12,navCell,navHeight,false);
