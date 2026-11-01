@@ -321,7 +321,7 @@ namespace Eldoria.HeroesUI
             light.raycastTarget=false;
             return light;
         }
-        void OnDestroy(){if(hallLightTexture)Destroy(hallLightTexture);if(hallPortraitTransition)Destroy(hallPortraitTransition);if(hallPaintMaterial)Destroy(hallPaintMaterial);if(hallPortraitPaintMaterial)Destroy(hallPortraitPaintMaterial);}
+        void OnDestroy(){if(hallFrameSprite)Destroy(hallFrameSprite);if(hallLightTexture)Destroy(hallLightTexture);if(hallPortraitTransition)Destroy(hallPortraitTransition);if(hallPaintMaterial)Destroy(hallPaintMaterial);if(hallPortraitPaintMaterial)Destroy(hallPortraitPaintMaterial);}
         void DrawApprovedSalonEnvironment(float w,float h)
         {
             if(!hallArchitecture)
@@ -445,7 +445,7 @@ namespace Eldoria.HeroesUI
             Surface("Hall / header gilding",content,12f,5f,w-24f,2f,
                 new Color(.81f,.60f,.29f,.75f)).GetComponent<Image>().raycastTarget=false;
         }
-        Sprite futureSlotArt;
+        Sprite futureSlotArt, hallFrameSprite;
         // Portrait geometry lives inside its own aperture, never below an
         // opaque full-width card label in short landscape.
 
@@ -629,6 +629,13 @@ namespace Eldoria.HeroesUI
             float secondaryH=tieredRows?cardGridH-primaryH:cardGridH/rows;
             if(tieredRows&&secondaryH<110f){secondaryH=110f;primaryH=cardGridH-secondaryH;}
             float cardW=Mathf.Min(390f,(w-42f-gap*(columns-1))/columns);
+            if(!hallFrameSprite){
+                var metal=Resources.Load<Texture2D>("EldoriaV41/HeroCardNineSliceGold");
+                if(metal)hallFrameSprite=Sprite.Create(metal,
+                    new Rect(0,0,metal.width,metal.height),
+                    new Vector2(.5f,.5f),300f,0,SpriteMeshType.FullRect,
+                    new Vector4(112,112,112,112));
+            }
             if(!futureSlotArt){
                 var source=Resources.Load<Texture2D>("EldoriaV41/hero-locked");
                 if(source)futureSlotArt=Sprite.Create(source,new Rect(0,0,source.width,source.height),
@@ -711,8 +718,23 @@ namespace Eldoria.HeroesUI
                     lockedState.color=new Color(.77f,.76f,.70f);
                     if(lateral){lockedTitle.resizeTextForBestFit=false;lockedState.resizeTextForBestFit=false;}
                 }
-                // An inset gold edge reads as a separate physical card
-                // rather than a pasted rectangle over a photograph.
+                // Authored 9-slice metallic artwork is a reusable,
+                // center-transparent material frame, NEVER a flattened card.
+                // Preserves live character renders, names and hitboxes across
+                // all four responsive resolutions; ornamented corners retain
+                // their size while the card can stretch naturally.
+                if(hallFrameSprite){
+                    var frameArt=Rect("Hall / sculpted gilded card artwork",card);
+                    Place(frameArt,0f,0f,cardW,cardH);
+                    var metal=frameArt.gameObject.AddComponent<Image>();
+                    metal.sprite=hallFrameSprite;
+                    metal.type=Image.Type.Sliced;
+                    metal.fillCenter=false;
+                    metal.raycastTarget=false;
+                    metal.color=unlocked?Color.white:
+                        new Color(.60f,.67f,.78f,.82f);
+                }
+                // Retain the original thin structural rim behind authored art.
                 Surface("Hall / card heraldic top",card,8f,6f,
                     Mathf.Max(12f,cardW-16f),1.5f,
                     new Color(.89f,.72f,.38f,unlocked ? .82f : .37f))
