@@ -1,5 +1,7 @@
 # Eldoria — entrada al proyecto
 
+> **Pacto fundacional propietario–IA (ELDORIA_OWNER_AI_COLLABORATION_V1):** el propietario no programa; la IA investiga, ejecuta, contrasta el resultado con la visión aprobada y reconoce los límites de sus pruebas. Leer el [pacto completo en AGENTS.md](AGENTS.md) antes de trabajar.
+
 El juego principal se desarrolla en **Unity/**, con Unity **6000.3.23f1**. **main** es la base integrada; las ramas con trabajo autorizado pendiente se consultan en el registro y las PR abiertas. Una candidata, una prueba aprobada y una versión distribuida son estados distintos.
 
 ## Empezar aquí
