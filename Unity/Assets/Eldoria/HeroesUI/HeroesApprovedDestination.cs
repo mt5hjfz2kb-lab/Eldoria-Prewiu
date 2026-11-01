@@ -291,6 +291,11 @@ namespace Eldoria.HeroesUI
                         hideFlags=HideFlags.DontSave};
                 }
                 if(hallPaintMaterial)painted.material=hallPaintMaterial;
+                // Real 2.5D: four separately rendered depth planes in
+                // foreground geometry, not part of the single photo or the
+                // opaque hero cards. Uses the production-proven RoyalGold
+                // layered-finish CanvasRenderer installation pattern.
+                HeroesHallParallaxFinish.Install(scene);
             }else{
                 // Individual profiles are a separate Block03 responsibility.
                 // Preserve their previously certified render while Block02

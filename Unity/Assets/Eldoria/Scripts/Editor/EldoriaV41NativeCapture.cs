@@ -101,6 +101,14 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        var independentDepth=heroes.VisibleRoot
+                            .GetComponentsInChildren<HeroesHallParallaxFinish>();
+                        Need(independentDepth.Length==1&&
+                            independentDepth[0].enabled&&
+                            !independentDepth[0].raycastTarget&&
+                            independentDepth[0].GetComponent<CanvasRenderer>()&&
+                            independentDepth[0].rectTransform.rect.width>0,
+                            "Hall uses one independently rendered and passive 2.5D foreground "+name);
                         if(width>height && height<500){
                             foreach(var card in slots){
                                 var title=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card name");
