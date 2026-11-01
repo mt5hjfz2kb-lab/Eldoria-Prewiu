@@ -110,6 +110,11 @@ namespace Eldoria.Editor
                             "Aldric portrait alpha dissolves into independent painted architecture instead of hard photo rectangle "+name);
 
                         if(width==390&&height==844){
+                            Need(slots[0].rect.width>=150f&&
+                                slots[0].rect.height>slots[2].rect.height*1.2f &&
+                                Mathf.Abs(slots[0].anchoredPosition.y-slots[1].anchoredPosition.y)<1f,
+                                "Two real heroes anchor a wide primary row over four shorter locked mobile cards "+name);
+
                             foreach(var slot in slots){
                                 var title=slot.GetComponentsInChildren<Text>().FirstOrDefault(v=>v.name=="Hero card name");
                                 var data=slot.GetComponentsInChildren<Text>().FirstOrDefault(v=>v.name=="Hero card state");
@@ -285,7 +290,8 @@ namespace Eldoria.Editor
                         }
                         if(height>width){
                             var firstRow=slots.Count(t=>Mathf.Abs(t.anchoredPosition.y-slots[0].anchoredPosition.y)<1f);
-                            Need(firstRow==3,"Portrait gallery preserves three approved card columns "+name);
+                            Need(firstRow==(width<600?2:3),
+                                "Portrait gallery reflows to two mobile or three desktop columns "+name);
                         }
                         if(height>500){
                             Need(slots[0].rect.height>slots[3].rect.height*1.30f,

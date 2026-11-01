@@ -669,7 +669,12 @@ namespace Eldoria.HeroesUI
                 label.color=i==0?ivory:new Color(.67f,.63f,.54f);
             }
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
-            int displayCount=Mathf.Max(6,heroes.Length),columns=3;
+            // Desktop follows the approved three-column gallery. A real
+            // narrow portrait phone needs two columns and three physical rows:
+            // scaling three full cards down produced unreadable ribbons.
+            bool narrowPortrait=portraitLayout&&w<600f;
+            int displayCount=Mathf.Max(6,heroes.Length);
+            int columns=narrowPortrait?2:3;
             int rows=Mathf.CeilToInt(displayCount/(float)columns);
             float gap=Mathf.Clamp(w*.017f,8f,18f);
             float cardTop=headerH+(illustratedDesktop?3f:phoneLandscape?8f:13f);
@@ -680,10 +685,15 @@ namespace Eldoria.HeroesUI
             // as large as Aldric/Lyra and ignored the approved hierarchy.
             // Short mobile landscape keeps equal rows for legibility.
             float cardGridH=Mathf.Max(rows*78f,availableH-gap*(rows-1));
-            bool tieredRows=rows==2&&!phoneLandscape;
-            float primaryH=tieredRows?cardGridH*.625f:cardGridH/rows;
-            float secondaryH=tieredRows?cardGridH-primaryH:cardGridH/rows;
-            if(tieredRows&&secondaryH<110f){secondaryH=110f;primaryH=cardGridH-secondaryH;}
+            bool tieredRows=(rows==2&&!phoneLandscape)||narrowPortrait;
+            float primaryH=narrowPortrait?cardGridH*.40f:
+                tieredRows?cardGridH*.625f:cardGridH/rows;
+            float secondaryH=narrowPortrait?(cardGridH-primaryH)/Mathf.Max(1,rows-1):
+                tieredRows?cardGridH-primaryH:cardGridH/rows;
+            if(tieredRows&&secondaryH<110f){
+                secondaryH=110f;
+                primaryH=cardGridH-secondaryH*(rows-1);
+            }
             float cardW=Mathf.Min(390f,(w-42f-gap*(columns-1))/columns);
             if(!hallFrameSprite){
                 var metal=Resources.Load<Texture2D>("EldoriaV41/HeroCardNineSliceGold");
@@ -699,9 +709,11 @@ namespace Eldoria.HeroesUI
             }
             for(int i=0;i<displayCount;i++){
                 int col=i%columns,row=i/columns;
-                float cardH=(tieredRows?(row==0?primaryH:secondaryH):primaryH);
+                float cardH=tieredRows?(row==0?primaryH:secondaryH):primaryH;
                 float left=(w-(cardW*columns+gap*(columns-1)))*.5f+col*(cardW+gap);
-                float top=cardTop+(tieredRows?(row==0?0f:primaryH+gap):row*(cardH+gap));
+                float top=cardTop+(tieredRows?
+                    (row==0?0f:primaryH+gap+(row-1)*(secondaryH+gap)):
+                    row*(cardH+gap));
                 bool real=i<heroes.Length;
                 Surface("Hall / card cast shadow",content,left+5f,top+7f,
                     cardW,cardH,new Color(0f,0f,0f,.60f))
