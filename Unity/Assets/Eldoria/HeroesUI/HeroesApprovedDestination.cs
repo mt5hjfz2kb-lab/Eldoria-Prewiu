@@ -261,8 +261,13 @@ namespace Eldoria.HeroesUI
             char fallback=iconId==12?'<':iconId==4?'H':iconId==5?'>':'R';
             glyph.text=font&&font.HasCharacter(icon[0])?icon:fallback.ToString();
             glyph.alignment=TextAnchor.MiddleCenter;
-            glyph.fontSize=25;
+            // Unity Text's default vertical truncation hid the glyph inside
+            // a 20px phone icon rectangle although component QA passed.
+            // Render a font-safe pictogram that actually fits the aperture.
+            glyph.fontSize=stacked?17:22;
             glyph.resizeTextForBestFit=false;
+            glyph.verticalOverflow=VerticalWrapMode.Overflow;
+            glyph.horizontalOverflow=HorizontalWrapMode.Overflow;
             glyph.color=selected?new Color(.15f,.10f,.045f,.98f):
                 new Color(.96f,.81f,.53f,.98f);
             glyph.raycastTarget=false;
