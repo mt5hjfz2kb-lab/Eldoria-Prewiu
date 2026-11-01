@@ -100,6 +100,17 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        // Art is a separate medieval illustrated stage,
+                        // not a photographic plate with controls pasted on top.
+                        var hallStage=heroes.VisibleRoot.GetComponentsInChildren<HeroesHallScenicGraphic>();
+                        Need(hallStage.Length==1&&
+                            !hallStage[0].raycastTarget&&hallStage[0].enabled&&
+                            hallStage[0].rectTransform.rect.width>0f,
+                            "One genuinely layered illustrated Hall stage without extra input "+name);
+                        var photoPlates=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                            .Where(t=>t.name=="Hall / painted architectural stage").ToArray();
+                        Need(photoPlates.Length==0,
+                            "Salon contains no full-frame photographic raster backdrop "+name);
                         // These are separate operational HUD controls, not
                         // painted navigation pixels in the approved reference.
                         var hallNav=heroes.VisibleRoot.GetComponentsInChildren<Button>()

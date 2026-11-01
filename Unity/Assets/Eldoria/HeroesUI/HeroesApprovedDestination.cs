@@ -264,18 +264,33 @@ namespace Eldoria.HeroesUI
         {
             if(!hallArchitecture)
                 hallArchitecture=Resources.Load<Texture2D>("EldoriaV41/heroes-hall-clean-v1");
-            var scene=Rect("Hall / clean architectural plate",content);
+            var scene=Rect("Hall / painted architectural stage",content);
             Place(scene,0,0,w,h);
-            var plate=scene.gameObject.AddComponent<RawImage>();
-            plate.texture=hallArchitecture;plate.raycastTarget=false;
-            // The recovered original is scenery only. The actual playing cards,
-            // typography, banners and controls are separate live uGUI layers.
-            if(hallArchitecture){
-                float sourceAspect=hallArchitecture.width/(float)hallArchitecture.height;
-                float viewAspect=w/h;
-                float cropW=Mathf.Min(1f,viewAspect/sourceAspect);
-                float cropH=Mathf.Min(1f,sourceAspect/viewAspect);
-                plate.uvRect=new UnityEngine.Rect((1f-cropW)*.5f,(1f-cropH)*.5f,cropW,cropH);
+            if(CurrentPage==Page.Salon){
+                // A photo-like single raster previously covered the entire
+                // Salon and made its real uGUI cards feel pasted in front.
+                // Switch the public Hall to genuine separate illustrated
+                // geometry: stone vaults, alcoves, floor-perspective, cloth,
+                // torch glow and ornament are authored by a MaskableGraphic.
+                // It has no portraits, controls, gameplay, extra Canvas or
+                // raycast surface. This is an intentional artistic pivot,
+                // not another photo-opacity tweak.
+                var painted=scene.gameObject.AddComponent<HeroesHallScenicGraphic>();
+                painted.raycastTarget=false;
+                painted.color=Color.white;
+            }else{
+                // Individual profiles are a separate Block03 responsibility.
+                // Preserve their previously certified render while Block02
+                // changes only the Salon's illustrative world.
+                var plate=scene.gameObject.AddComponent<RawImage>();
+                plate.texture=hallArchitecture;plate.raycastTarget=false;
+                if(hallArchitecture){
+                    float sourceAspect=hallArchitecture.width/(float)hallArchitecture.height;
+                    float viewAspect=w/h;
+                    float cropW=Mathf.Min(1f,viewAspect/sourceAspect);
+                    float cropH=Mathf.Min(1f,sourceAspect/viewAspect);
+                    plate.uvRect=new UnityEngine.Rect((1f-cropW)*.5f,(1f-cropH)*.5f,cropW,cropH);
+                }
             }
             leftHallLight=rightHallLight=null;
             if(CurrentPage!=Page.Salon){
