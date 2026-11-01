@@ -148,11 +148,12 @@ namespace Eldoria.Editor
                         // navigation are still separate live UI components.
                         var hallStage=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
                             .Where(t=>t.name=="Hall / painterly architectural plate").ToArray();
-                        Need(hallStage.Length==1&&hallStage[0].texture&&
-                            hallStage[0].material&&
-                            hallStage[0].material.shader.name=="UI/Eldoria/HallPainterly"&&
+                        var independentHall=Resources.Load<Texture2D>(
+                            "EldoriaV41/heroes-hall-illustrated-v2");
+                        Need(independentHall&&independentHall.width==1600&&independentHall.height==900&&
+                            hallStage.Length==1&&hallStage[0].texture==independentHall&&
                             !hallStage[0].raycastTarget,
-                            "Hall uses one stylized architectural image with layered interactive objects "+name);
+                            "Salon's genuine painterly character-free 1600x900 architecture is loaded "+name);
                         // These are separate operational HUD controls, not
                         // painted navigation pixels in the approved reference.
                         var hallNav=heroes.VisibleRoot.GetComponentsInChildren<Button>()
@@ -487,9 +488,10 @@ namespace Eldoria.Editor
             // completely obscured scenery. Require actual independent art.
             var hall=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
                 .FirstOrDefault(i=>i.name=="Hall / painterly architectural plate");
-            Need(hall&&hall.texture&&hall.material&&
-                hall.material.shader.name=="UI/Eldoria/HallPainterly",
-                "Heroes hall renders its architectural source through the stylized illustrative material");
+            var authored=Resources.Load<Texture2D>("EldoriaV41/heroes-hall-illustrated-v2");
+            Need(hall&&authored&&hall.texture==authored&&
+                authored.width==1600&&authored.height==900,
+                "Heroes hall displays the new approved-direction scenic artwork, not legacy photo");
             Need(!hall.raycastTarget,
                 "Hall illustration cannot intercept hero-card taps");
             Need(heroes.VisibleRoot.GetComponentsInChildren<Canvas>(true).Length==0,

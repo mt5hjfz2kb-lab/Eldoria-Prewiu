@@ -290,7 +290,7 @@ namespace Eldoria.HeroesUI
                 }
             }
         }
-        Texture2D hallArchitecture, hallLightTexture, hallPortraitTransition;
+        Texture2D hallArchitecture, hallIllustratedV2, hallLightTexture, hallPortraitTransition;
         Material hallPaintMaterial, hallPortraitPaintMaterial;
         RawImage leftHallLight, rightHallLight;
         Texture2D HallGlow()
@@ -326,32 +326,38 @@ namespace Eldoria.HeroesUI
         {
             if(!hallArchitecture)
                 hallArchitecture=Resources.Load<Texture2D>("EldoriaV41/heroes-hall-clean-v1");
+            if(CurrentPage==Page.Salon&&!hallIllustratedV2)
+                hallIllustratedV2=Resources.Load<Texture2D>("EldoriaV41/heroes-hall-illustrated-v2");
             var scene=Rect("Hall / painted architectural stage",content);
             Place(scene,0,0,w,h);
             if(CurrentPage==Page.Salon){
-                // Do not return to a raw photographic background or an
-                // invisible procedural Mesh. Render the architectural source
-                // as brush-like, palette-reduced illustration; the heraldry,
-                // pillars, living lights, six hero cards and buttons remain
-                // independent real Canvas elements with genuine depth/order.
+                // New authored Hall image is an independently generated,
+                // character-free, UI-free painterly architectural source.
+                // It replaces the old photorealistic raster entirely:
+                // no concept-sheet crop, fake hero, or baked button is used.
+                // Existing UI/2.5D depth planes remain separate and live.
                 var painted=scene.gameObject.AddComponent<RawImage>();
                 painted.name="Hall / painterly architectural plate";
-                painted.texture=hallArchitecture;
+                var source=hallIllustratedV2?hallIllustratedV2:hallArchitecture;
+                painted.texture=source;
                 painted.raycastTarget=false;
-                if(hallArchitecture){
-                    float sourceAspect=hallArchitecture.width/(float)hallArchitecture.height;
+                if(source){
+                    float sourceAspect=source.width/(float)source.height;
                     float viewAspect=w/h;
                     float cropW=Mathf.Min(1f,viewAspect/sourceAspect);
                     float cropH=Mathf.Min(1f,sourceAspect/viewAspect);
                     painted.uvRect=new UnityEngine.Rect((1f-cropW)*.5f,(1f-cropH)*.5f,cropW,cropH);
                 }
+                // Continue using the portrait-specific brush material for
+                // actual approved hero images, not for the clean background.
                 if(!hallPaintMaterial){
                     var hallShader=Resources.Load<Shader>("EldoriaV41/HallPainterly");
                     if(hallShader)hallPaintMaterial=new Material(hallShader){
-                        name="Eldoria / hand-painted Hall presentation",
+                        name="Eldoria / painted hero portrait material",
                         hideFlags=HideFlags.DontSave};
                 }
-                if(hallPaintMaterial)painted.material=hallPaintMaterial;
+                if(!hallIllustratedV2&&hallPaintMaterial)
+                    painted.material=hallPaintMaterial;
                 // Real 2.5D: four separately rendered depth planes in
                 // foreground geometry, not part of the single photo or the
                 // opaque hero cards. Uses the production-proven RoyalGold
