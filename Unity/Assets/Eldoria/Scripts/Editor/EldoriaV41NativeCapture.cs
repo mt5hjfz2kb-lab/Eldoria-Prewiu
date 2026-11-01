@@ -112,9 +112,9 @@ namespace Eldoria.Editor
                             var filters=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
                                 .Where(v=>v.name.StartsWith("Hall / category ")).ToArray();
                             Need(title&&title.rectTransform.rect.height>=60f&&
-                                slots[0].anchoredPosition.y<=-h*.32f &&
+                                slots[0].anchoredPosition.y<=-height*.32f &&
                                 filters.Length>=4 &&
-                                -filters[0].anchoredPosition.y>=h*.25f &&
+                                -filters[0].anchoredPosition.y>=height*.25f &&
                                 slots[0].rect.height>slots[3].rect.height*1.30f,
                                 "1600x900 actual composition matches approved heraldry/gallery spatial hierarchy "+name);
                         }
