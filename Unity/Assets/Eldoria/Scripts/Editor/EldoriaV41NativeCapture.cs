@@ -211,6 +211,15 @@ namespace Eldoria.Editor
                             independentDepth[0].GetComponent<CanvasRenderer>()&&
                             independentDepth[0].rectTransform.rect.width>0,
                             "Hall uses one independently rendered and passive 2.5D foreground "+name);
+                        if(width==844&&height==390){
+                            Need(slots[0].rect.width>slots[2].rect.width*1.65f&&
+                                Mathf.Abs(slots[0].anchoredPosition.y-
+                                    slots[1].anchoredPosition.y)<1f&&
+                                Mathf.Abs(slots[2].anchoredPosition.y-
+                                    slots[5].anchoredPosition.y)<1f&&
+                                slots[0].rect.height>slots[2].rect.height*1.35f,
+                                "Short mobile landscape really features two readable heroes above four compact future slots "+name);
+                        }
                         if(width>height && height<500){
                             foreach(var card in slots){
                                 var title=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card name");
