@@ -2,8 +2,12 @@ name: UI Progression Certification (fast)
 
 on:
   push:
-    branches: [main]
+    branches: [main, fix/player-feedback-context-ui-20261030]
     paths:
+      # Temporary exact-source QA trigger for owner-authorized Block02.
+      - '.github/workflows/ui-progression-cert.yml'
+      - 'Unity/Assets/Eldoria/HeroesUI/**'
+      - 'Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs'
       - 'Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs'
