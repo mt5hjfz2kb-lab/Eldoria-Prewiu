@@ -184,6 +184,19 @@ namespace Eldoria.Editor
                                     slots[0].rect.height+1f,
                                 "Approved-ratio desktop card reserves real visible rows for level and power "+name);
                         }
+                        // Exactly four DIFFERENT approved monochrome paintings, not
+                        // the same repeated placeholder and not live hero data.
+                        var reserveMaster=Resources.Load<Texture2D>(
+                            "EldoriaV41/HeroesApprovedMaster");
+                        var reservePaintings=slots.Skip(2).Take(4).Select(card=>
+                            card.GetComponentsInChildren<Image>()
+                                .FirstOrDefault(x=>x.name=="Verified portrait")?.sprite).ToArray();
+                        Need(reserveMaster&&reserveMaster.width==1536&&
+                            reservePaintings.Length==4&&
+                            reservePaintings.All(s=>s&&s.texture==reserveMaster&&
+                                s.name.StartsWith("Approved future illustration / passive "))&&
+                            reservePaintings.Select(s=>s.rect.x).Distinct().Count()==4,
+                            "Four passive future slots display distinct original approved monochrome art "+name);
                         for(int lockedSlot=2;lockedSlot<6;lockedSlot++){
                             var locks=slots[lockedSlot].GetComponentsInChildren<RectTransform>()
                                 .Where(x=>x.name=="Hall / genuine future hero lock seal").ToArray();
