@@ -860,7 +860,7 @@ namespace Eldoria.HeroesUI
                 // role, level and power; locked slots have only two short labels.
                 float identityH=lateral?0f:!real?
                     Mathf.Clamp(cardH*.32f,43f,78f):
-                    cardW<220f?82f:105f;
+                    cardW<220f?92f:105f;
                 float portraitH=lateral?cardH-12f:Mathf.Max(24f,cardH-identityH-12f);
                 CardPortrait(card,portrait,unlocked,!real||heroes[i].Id=="lyra",
                     i,portraitX,portraitY,portraitW,portraitH);
