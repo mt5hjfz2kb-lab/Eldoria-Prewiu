@@ -171,7 +171,7 @@ namespace Eldoria.Editor
                                 slots[0].rect.width/Mathf.Max(1f,slots[0].rect.height)<.83f&&
                                 Mathf.Abs(slots[0].anchoredPosition.x + slots[2].anchoredPosition.x+
                                     slots[2].rect.width-width)<width*.13f&&
-                                footerNav,
+                                footerNav!=null,
                                 "1600x900 actual hero gallery keeps approved 512x575 tall-card proportions "+name);
                         }
                         for(int lockedSlot=2;lockedSlot<6;lockedSlot++){
