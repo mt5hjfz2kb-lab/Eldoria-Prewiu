@@ -77,17 +77,20 @@ namespace Eldoria.HeroesUI
             camera=cameraObject.AddComponent<Camera>();camera.enabled=false;camera.orthographic=false;
             camera.fieldOfView=32;camera.aspect=2f/3f;camera.cullingMask=1<<renderLayer;
             camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=Color.clear;
-            camera.allowHDR=false;camera.allowMSAA=false;camera.nearClipPlane=.01f;camera.farClipPlane=height*12;
+            camera.allowHDR=false;camera.allowMSAA=true;camera.nearClipPlane=.01f;camera.farClipPlane=height*12;
             var data=cameraObject.AddComponent<UniversalAdditionalCameraData>();data.renderPostProcessing=false;data.renderShadows=true;
-            key=Lamp("Hero / window key",new Color(.88f,.91f,1f),1.15f);
+            key=Lamp("Hero / window key",new Color(.96f,.87f,.72f),1.12f);
             key.shadows=LightShadows.Soft;key.shadowStrength=.8f;key.shadowBias=.015f;key.shadowNormalBias=.025f;
-            rim=Lamp("Hero / torch rim",new Color(1f,.58f,.27f),.55f);
-            fill=Lamp("Hero / soft front fill",new Color(.82f,.86f,1f),.65f);
+            rim=Lamp("Hero / torch rim",new Color(1f,.62f,.33f),.59f);
+            fill=Lamp("Hero / soft front fill",new Color(.76f,.82f,.96f),.56f);
             // Source-space supersampling keeps the approved Lyra's facial/cloth
             // detail intact when a 3D-derived still fills a tall gallery card.
             // No extra model, importer, save state or physical camera is added.
             texture=new RenderTexture(1024,1536,24,RenderTextureFormat.ARGB32){
-                name="Hero live perspective portrait",filterMode=FilterMode.Bilinear};
+                name="Hero live perspective portrait",filterMode=FilterMode.Bilinear,
+                // Multi-sample the ORIGINAL geometry, not a sharpened sprite.
+                // Mobile uses 2x to limit memory; desktops use 4x.
+                antiAliasing=Application.isMobilePlatform?2:4};
             texture.Create();camera.targetTexture=texture;
         }
         Light Lamp(string name,Color color,float intensity){
