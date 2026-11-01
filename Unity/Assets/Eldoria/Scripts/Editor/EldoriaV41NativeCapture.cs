@@ -163,6 +163,16 @@ namespace Eldoria.Editor
                             hallNav.Any(b=>b.name=="Hall / nav marches"&&b.interactable) &&
                             hallNav.Any(b=>b.name=="Hall / nav reliquary"&&!b.interactable),
                             "Hall footer real navigation and future Relicario lock "+name);
+                        if(width<500 && height>width){
+                            foreach(var navButton in hallNav){
+                                var cap=navButton.GetComponentsInChildren<Text>()
+                                    .FirstOrDefault(t=>t.name==navButton.name+" label");
+                                Need(cap&&cap.text.IndexOf('\n')<0&&
+                                    cap.rectTransform.rect.width>=64f&&
+                                    !cap.resizeTextForBestFit&&cap.fontSize>=14,
+                                    "Portrait Hall footer captions are one-line with usable pixel width "+name);
+                            }
+                        }
                         var navIcons=heroes.VisibleRoot
                             .GetComponentsInChildren<Text>()
                             .Where(v=>v.name.StartsWith("Hall / nav actual vector pictogram ")).ToArray();

@@ -235,15 +235,18 @@ namespace Eldoria.HeroesUI
             // Reuse the canonical vector Royal Gold pictograms rather than
             // pasting the concept sheet's button icons into a flat screenshot.
             // These are visual-only children of genuine state-bound buttons.
-            float size=Mathf.Min(23f,height*.50f);
+            bool stacked=cell<145f;
+            float size=Mathf.Min(stacked?20f:23f,height*(stacked?.44f:.50f));
             var frame=Rect("Hall / nav actual vector pictogram "+iconId,button.transform);
-            Place(frame,Mathf.Max(5f,cell*.058f),(height-size)*.5f,size,size);
+            Place(frame,stacked?(cell-size)*.5f:Mathf.Max(5f,cell*.058f),
+                stacked?1f:(height-size)*.5f,size,size);
             // The old custom RoyalIconGraphic mesh passed component-based
             // gates yet painted ZERO pixels in real Unity captures. Render a
             // real serif glyph (the same proven uGUI Text path as the live
             // hero captions) inside a raised, separately authored medallion.
             var medallion=Surface("Hall / nav bronze medallion",button.transform,
-                Mathf.Max(3f,cell*.045f),5f,size+6f,height-10f,
+                stacked?(cell-size-6f)*.5f:Mathf.Max(3f,cell*.045f),
+                stacked?1f:5f,size+6f,stacked?size+3f:height-10f,
                 selected?new Color(.76f,.53f,.24f,.48f):
                     new Color(.027f,.043f,.067f,.82f));
             medallion.GetComponent<Image>().raycastTarget=false;
@@ -269,8 +272,23 @@ namespace Eldoria.HeroesUI
             Text caption=null;
             foreach(var candidate in button.GetComponentsInChildren<Text>())
                 if(candidate.name==button.name+" label"){caption=candidate;break;}
-            if(caption)Place(caption.rectTransform,size+9f,3f,
-                Mathf.Max(21f,cell-size-15f),height-6f);
+            if(caption){
+                if(stacked){
+                    // Four narrow mobile destinations need their icon ABOVE
+                    // the caption, not beside it; the latter squeezed 6-9
+                    // letters into 35 px and made them wrap over two lines.
+                    Place(caption.rectTransform,3f,size+4f,
+                        cell-6f,Mathf.Max(17f,height-size-6f));
+                    caption.fontSize=14;
+                    caption.resizeTextForBestFit=false;
+                    caption.horizontalOverflow=HorizontalWrapMode.Overflow;
+                    caption.verticalOverflow=VerticalWrapMode.Truncate;
+                    caption.alignment=TextAnchor.MiddleCenter;
+                } else {
+                    Place(caption.rectTransform,size+9f,3f,
+                        Mathf.Max(21f,cell-size-15f),height-6f);
+                }
+            }
         }
         Texture2D hallArchitecture, hallLightTexture, hallPortraitTransition;
         Material hallPaintMaterial, hallPortraitPaintMaterial;
