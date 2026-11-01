@@ -593,48 +593,71 @@ namespace Eldoria.HeroesUI
             // future slots. No new hero data, skills, resources or save writes.
             bool portraitLayout=h>w;
             bool phoneLandscape=!portraitLayout&&h<500f;
-            float headerH=phoneLandscape?76f:portraitLayout?Mathf.Clamp(h*.19f,130f,174f):142f;
-            float footerH=phoneLandscape?64f:72f;
+            bool illustratedDesktop=!portraitLayout&&!phoneLandscape&&h>=600f;
+            // Art-first 1600x900 composition measured against the approved
+            // first panel: 34% heraldic hall and categories, 52% layered
+            // portrait gallery, 10% ornamental navigation. Do not solve
+            // a composition failure through repeated micro-margin edits.
+            float headerH=phoneLandscape?76f:illustratedDesktop?
+                Mathf.Clamp(h*.34f,265f,345f):
+                portraitLayout?Mathf.Clamp(h*.19f,130f,174f):142f;
+            float footerH=phoneLandscape?64f:illustratedDesktop?88f:72f;
             // Title and actual player count are separate from the arch backdrop.
             float titleX=phoneLandscape?18f:42f;
             Label("Hall / Eldoria heraldry",content,"✦  ELDORIA",titleX,
-                phoneLandscape?7f:13f,phoneLandscape?170f:245f,phoneLandscape?25f:33f,
-                phoneLandscape?17:24).color=gold;
+                phoneLandscape?7f:illustratedDesktop?18f:13f,
+                phoneLandscape?170f:245f,phoneLandscape?25f:illustratedDesktop?38f:33f,
+                phoneLandscape?17:illustratedDesktop?27:24).color=gold;
             Label("Heroes hall title",content,"SALÓN DE HÉROES",titleX,
-                phoneLandscape?30f:46f,phoneLandscape?w*.48f:w*.66f,
-                phoneLandscape?31f:47f,phoneLandscape?24:34).color=ivory;
+                phoneLandscape?30f:illustratedDesktop?62f:46f,
+                phoneLandscape?w*.48f:w*.66f,
+                phoneLandscape?31f:illustratedDesktop?65f:47f,
+                phoneLandscape?24:illustratedDesktop?46:34).color=ivory;
             if(!phoneLandscape)
                 Label("Heroes hall introduction",content,
                     portraitLayout?"Reclútalos y forja su leyenda.":
-                        "Aquí residen los héroes de Valoria. Reclútalos, fortalécelos y lidera con ellos.",
-                    titleX,92f,Mathf.Min(w*.65f,800f),portraitLayout?25f:40f,
-                    portraitLayout?17:21,TextAnchor.MiddleLeft);
+                        illustratedDesktop?
+                            "Aquí residen los héroes de Valoria.\nReclútalos, fortalécelos y lidera con ellos.":
+                            "Aquí residen los héroes de Valoria. Reclútalos, fortalécelos y lidera con ellos.",
+                    titleX,illustratedDesktop?143f:92f,
+                    Mathf.Min(w*.65f,900f),
+                    illustratedDesktop?77f:portraitLayout?25f:40f,
+                    illustratedDesktop?24:portraitLayout?17:21,TextAnchor.MiddleLeft);
             // The reference contains four category tabs; only TODOS has a
             // backing game-state contract. Future categories are visibly
             // reserved, not fake functional filters or touch targets.
             string[] filters={"TODOS","COMBATE","APOYO","ESTRATEGIA"};
-            float barX=phoneLandscape?w*.52f:portraitLayout?18f:w*.55f;
-            float barY=phoneLandscape?32f:headerH-40f;
-            float barW=phoneLandscape?w*.46f:portraitLayout?w-36f:w*.40f;
+            // Four full-width category plaques reproduce the approved
+            // reference rhythm instead of being a compressed right-corner
+            // status strip. The desktop composition is primary; mobile gets
+            // its own, separately validated positions.
+            float barX=phoneLandscape?w*.52f:illustratedDesktop?
+                Mathf.Max(28f,(w-Mathf.Min(w-76f,1230f))*.5f):
+                portraitLayout?18f:w*.55f;
+            float barY=phoneLandscape?32f:illustratedDesktop?
+                headerH-70f:headerH-40f;
+            float barW=phoneLandscape?w*.46f:illustratedDesktop?
+                Mathf.Min(w-76f,1230f):portraitLayout?w-36f:w*.40f;
             float filterGap=4f,filterW=(barW-3*filterGap)/4f;
             for(int i=0;i<filters.Length;i++){
                 var strip=Surface("Hall / category "+filters[i],content,
-                    barX+i*(filterW+filterGap),barY,filterW,phoneLandscape?32f:31f,
+                    barX+i*(filterW+filterGap),barY,filterW,illustratedDesktop?49f:phoneLandscape?32f:31f,
                     i==0?new Color(.39f,.27f,.10f,.92f):new Color(.026f,.038f,.054f,.83f));
                 strip.GetComponent<Image>().raycastTarget=false;
-                HallControlArt(strip,i==0?"tab-active":"tab-idle",filterW,phoneLandscape?32f:31f);
+                HallControlArt(strip,i==0?"tab-active":"tab-idle",filterW,illustratedDesktop?49f:phoneLandscape?32f:31f);
                 Surface("Hall / category top edge",strip,0,0,filterW,1.5f,
                     i==0?gold:new Color(.45f,.39f,.27f,.65f))
                     .GetComponent<Image>().raycastTarget=false;
                 var label=Label("Hall / category label",strip,filters[i],3,3,filterW-6,
-                    phoneLandscape?25f:24f,phoneLandscape?16:14,TextAnchor.MiddleCenter);
+                    illustratedDesktop?43f:phoneLandscape?25f:24f,
+                    illustratedDesktop?22:phoneLandscape?16:14,TextAnchor.MiddleCenter);
                 label.color=i==0?ivory:new Color(.67f,.63f,.54f);
             }
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
             int displayCount=Mathf.Max(6,heroes.Length),columns=3;
             int rows=Mathf.CeilToInt(displayCount/(float)columns);
             float gap=Mathf.Clamp(w*.017f,8f,18f);
-            float cardTop=headerH+(phoneLandscape?8f:13f);
+            float cardTop=headerH+(illustratedDesktop?3f:phoneLandscape?8f:13f);
             float availableH=h-cardTop-footerH-14f;
             // Approved six-panel sheet gives the three featured portraits a
             // taller primary gallery; the future reserves form a lower,
@@ -771,11 +794,11 @@ namespace Eldoria.HeroesUI
             // view, and RELICARIO is genuinely disabled by progression.
             // No fake clickable pixels, no additional scene or canvas.
             float navGap=phoneLandscape?6f:10f;
-            float navWidth=Mathf.Min(w-22f,portraitLayout?540f:820f);
+            float navWidth=Mathf.Min(w-22f,illustratedDesktop?1230f:portraitLayout?540f:820f);
             float navCell=(navWidth-navGap*3f)/4f;
             float navLeft=(w-navWidth)*.5f;
-            float navHeight=phoneLandscape?44f:47f;
-            float navY=h-footerH+(phoneLandscape?9f:12f);
+            float navHeight=phoneLandscape?44f:illustratedDesktop?58f:47f;
+            float navY=h-footerH+(phoneLandscape?9f:illustratedDesktop?15f:12f);
             var navBack=Button("Hall / nav return","VOLVER",navLeft,navY,navCell,navHeight,Close);
             HallControlArt(navBack.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navBack,12,navCell,navHeight,false);

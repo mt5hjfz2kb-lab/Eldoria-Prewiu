@@ -102,6 +102,22 @@ namespace Eldoria.Editor
                                 (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
                             .ToArray();
                         Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        if(width==1600&&height==900){
+                            // Against the approved master: heraldic architecture
+                            // occupies a real top third, featured cards are
+                            // stronger than short reserve band, and the four
+                            // destination buttons live at the bottom.
+                            var title=heroes.VisibleRoot.GetComponentsInChildren<Text>()
+                                .FirstOrDefault(v=>v.name=="Heroes hall title");
+                            var filters=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                                .Where(v=>v.name.StartsWith("Hall / category ")).ToArray();
+                            Need(title&&title.rectTransform.rect.height>=60f&&
+                                slots[0].anchoredPosition.y<=-h*.32f &&
+                                filters.Length>=4 &&
+                                -filters[0].anchoredPosition.y>=h*.25f &&
+                                slots[0].rect.height>slots[3].rect.height*1.30f,
+                                "1600x900 actual composition matches approved heraldry/gallery spatial hierarchy "+name);
+                        }
                         for(int lockedSlot=2;lockedSlot<6;lockedSlot++){
                             var locks=slots[lockedSlot].GetComponentsInChildren<RectTransform>()
                                 .Where(x=>x.name=="Hall / genuine future hero lock seal").ToArray();
