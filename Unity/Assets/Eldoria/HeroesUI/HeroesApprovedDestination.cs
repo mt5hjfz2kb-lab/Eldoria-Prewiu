@@ -247,6 +247,8 @@ namespace Eldoria.HeroesUI
                 selected?new Color(.76f,.53f,.24f,.48f):
                     new Color(.027f,.043f,.067f,.82f));
             medallion.GetComponent<Image>().raycastTarget=false;
+            // Layer the glyph ABOVE its opaque medallion, not underneath.
+            frame.SetAsLastSibling();
             var glyph=frame.gameObject.AddComponent<Text>();
             glyph.font=font;
             glyph.text=iconId==12?"‹":iconId==4?"✦":iconId==5?"›":"◇";
