@@ -12,7 +12,7 @@ namespace Eldoria.HeroesUI
         Camera camera;Light key,rim,fill;Animation idle;AnimationState idleState;
         Mesh groundMesh;Material groundMaterial;Bounds bounds;float yaw=90,nextRender;int renderLayer;
         readonly Transform[] previewShoulders=new Transform[2],previewElbows=new Transform[2],previewWrists=new Transform[2];
-        Mesh stonePlinthMesh,bronzePlinthMesh;Material stonePlinthMaterial,bronzePlinthMaterial;
+        Mesh stonePlinthMesh,bronzePlinthMesh,stoneJointMesh;Material stonePlinthMaterial,bronzePlinthMaterial,stoneJointMaterial;
         public bool HasPhysicalPlinth=>stonePlinthMesh&&bronzePlinthMesh&&stonePlinthMaterial&&bronzePlinthMaterial;
         bool logPoseOnce;
         public bool HasModel=>texture&&previous&&stage;
@@ -187,10 +187,13 @@ namespace Eldoria.HeroesUI
                         elbow.rotation=Quaternion.RotateTowards(Quaternion.identity,wristSwing,46f)*elbow.rotation;
                     }
                 }
-                if(logPoseOnce)
+                if(logPoseOnce){
                     Debug.Log("HERO_PREVIEW_ARM_POSE "+i+" upper="+arm.name+
                         " elbow="+elbow.name+" before="+before.ToString("F1")+
                         " after="+Vector3.Angle(elbow.position-arm.position,Vector3.down).ToString("F1"));
+                    Debug.Log("HERO_PREVIEW_WRIST_POSE "+i+" wrist="+(wrist?wrist.name:"missing")+
+                        " lower_angle="+(wrist?Vector3.Angle(wrist.position-elbow.position,Vector3.down).ToString("F1"):"n/a"));
+                }
             }
         }
         // Genuine lit 3D geometry within the SAME isolated RenderTexture as
@@ -203,8 +206,10 @@ namespace Eldoria.HeroesUI
             if(!lit)throw new InvalidOperationException("URP hero dais shader unavailable");
             stonePlinthMaterial=new Material(lit){name="Hero / honed blue stone stage"};
             bronzePlinthMaterial=new Material(lit){name="Hero / chased bronze stage edge"};
-            stonePlinthMaterial.SetColor("_BaseColor",new Color(.11f,.125f,.15f,1f));
+            stonePlinthMaterial.SetColor("_BaseColor",new Color(.27f,.275f,.29f,1f));
             bronzePlinthMaterial.SetColor("_BaseColor",new Color(.60f,.40f,.18f,1f));
+            stoneJointMaterial=new Material(lit){name="Hero / engraved stone joints"};
+            stoneJointMaterial.SetColor("_BaseColor",new Color(.55f,.45f,.30f,1f));
             if(stonePlinthMaterial.HasProperty("_Smoothness"))stonePlinthMaterial.SetFloat("_Smoothness",.16f);
             if(bronzePlinthMaterial.HasProperty("_Smoothness"))bronzePlinthMaterial.SetFloat("_Smoothness",.42f);
             var center=new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
@@ -214,6 +219,7 @@ namespace Eldoria.HeroesUI
                 center,height*.51f,height*.38f,-height*.012f,-height*.077f,stonePlinthMaterial);
             bronzePlinthMesh=Disc("Hero / bronze dais rim",
                 center,height*.535f,height*.402f,-height*.034f,-height*.062f,bronzePlinthMaterial);
+            stoneJointMesh=StoneJointEngraving(center,height);
         }
         Mesh Disc(string name,Vector3 center,float radiusX,float radiusZ,
             float upper,float lower,Material material)
@@ -246,6 +252,44 @@ namespace Eldoria.HeroesUI
             var renderer=go.GetComponent<MeshRenderer>();
             renderer.sharedMaterial=material;
             renderer.receiveShadows=true;renderer.shadowCastingMode=ShadowCastingMode.On;
+            return mesh;
+        }
+        Mesh StoneJointEngraving(Vector3 center,float height)
+        {
+            // Twelve actual shallow 3D radial stone joints on the dais top,
+            // lit by the portrait lights, not painted into the background.
+            const int segments=12;
+            var vertices=new Vector3[segments*4];
+            var triangles=new int[segments*6];
+            float top=-height*.0107f,inner=height*.17f,outer=height*.474f;
+            float half=Mathf.Max(.0013f,height*.0020f);
+            for(int i=0;i<segments;i++){
+                float angle=i*Mathf.PI*2f/segments;
+                Vector3 axis=new Vector3(Mathf.Cos(angle),0,Mathf.Sin(angle));
+                Vector3 tangent=new Vector3(-axis.z,0,axis.x);
+                float scaleZ=.38f/.51f;
+                Vector3 a=Vector3.Scale(axis*inner,new Vector3(1,1,scaleZ));
+                Vector3 b=Vector3.Scale(axis*outer,new Vector3(1,1,scaleZ));
+                Vector3 offset=Vector3.Scale(tangent*half,new Vector3(1,1,scaleZ));
+                int v=i*4,t=i*6;
+                vertices[v]=a-offset+Vector3.up*top;
+                vertices[v+1]=b-offset+Vector3.up*top;
+                vertices[v+2]=b+offset+Vector3.up*top;
+                vertices[v+3]=a+offset+Vector3.up*top;
+                triangles[t]=v;triangles[t+1]=v+2;triangles[t+2]=v+1;
+                triangles[t+3]=v;triangles[t+4]=v+3;triangles[t+5]=v+2;
+            }
+            var mesh=new Mesh{name="Hero / physically engraved dais joints"};
+            mesh.vertices=vertices;mesh.triangles=triangles;
+            mesh.RecalculateNormals();mesh.RecalculateBounds();
+            var go=new GameObject(mesh.name,typeof(MeshFilter),typeof(MeshRenderer));
+            go.hideFlags=HideFlags.HideAndDontSave;
+            go.transform.SetParent(stage.transform,false);
+            go.transform.position=center;go.layer=renderLayer;
+            go.GetComponent<MeshFilter>().sharedMesh=mesh;
+            var renderer=go.GetComponent<MeshRenderer>();
+            renderer.sharedMaterial=stoneJointMaterial;renderer.receiveShadows=true;
+            renderer.shadowCastingMode=ShadowCastingMode.Off;
             return mesh;
         }
         void Update(){if(output&&output.enabled&&output.gameObject.activeInHierarchy&&HasModel&&Time.unscaledTime>=nextRender)RenderFrame();}
@@ -316,6 +360,8 @@ namespace Eldoria.HeroesUI
         public void Release(){
             previous=null;output=null;idle=null;idleState=null;camera=null;key=null;rim=null;fill=null;
             for(int i=0;i<2;i++){previewShoulders[i]=null;previewElbows[i]=null;previewWrists[i]=null;}
+            if(stoneJointMesh)Destroy(stoneJointMesh);stoneJointMesh=null;
+            if(stoneJointMaterial)Destroy(stoneJointMaterial);stoneJointMaterial=null;
             if(stonePlinthMesh)Destroy(stonePlinthMesh);stonePlinthMesh=null;
             if(bronzePlinthMesh)Destroy(bronzePlinthMesh);bronzePlinthMesh=null;
             if(stonePlinthMaterial)Destroy(stonePlinthMaterial);stonePlinthMaterial=null;
