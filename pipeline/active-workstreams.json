@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-visual-proof-20261102",
+      "owner": "chatgpt-eldoria-visual-method-verification-20261102",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-02",
@@ -126,8 +126,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "OWNER_AUTHORIZED_MARCH_REAL_VISUAL_PROOF",
-      "next": "Implement significant March visual card hierarchy, real Unity screenshot A/B at 4 resolutions from exact PR136 SHA, inspect quality, fix any failure, do not merge or publish without art approval",
+      "phase": "MARCH_EXACT_NATIVE_ART_REPAIR_20261102",
+      "next": "Resolve genuine V4.1 March phone label overflow; restructure art and typography, rerun same-HEAD Unity, compare A/B at four sizes, report viable-or-reject method with evidence",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1670,9 +1670,15 @@
           "ownership_revision": 98,
           "transferred_at": "2026-11-02",
           "reason": "Owner orders current connected session to finish without interim reports, correcting residual A-pose and reference icon crops discovered in authentic Unity run 41424099554; preserve PR136, GLB, native test evidence."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-proof-20261102",
+          "ownership_revision": 104,
+          "transferred_at": "2026-11-02",
+          "reason": "Owner explicitly requests new chat to continue stalled AI-assisted Unity Marches trial, diagnose failed exact-head screenshots and repair macro visual composition safely in same PR136; preserve sources, no restart, merge, publication or credits."
         }
       ],
-      "ownership_revision": 104,
+      "ownership_revision": 105,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
