@@ -135,6 +135,27 @@ namespace Eldoria.HeroesUI
         // UI-built heraldry keeps the reference's icon positions and does
         // not depend on Unity's previously invisible custom mesh graphics.
         // These icons are decorative children of ACTUAL click targets.
+        readonly Sprite[] exactProfileIcons=new Sprite[6];
+        Sprite ApprovedProfileNavigationIcon(int type)
+        {
+            if(type<0||type>=exactProfileIcons.Length)return null;
+            if(exactProfileIcons[type])return exactProfileIcons[type];
+            var master=Resources.Load<Texture2D>("EldoriaV41/HeroesApprovedMaster");
+            if(!master||master.width!=1536||master.height!=1024)return null;
+            // Only text-free ornament icon crops from the real owner-approved
+            // second panel. No level, character, fake background UI or labels.
+            int[] x={532,535,535,535,534,534};
+            int[] y={62,132,209,280,355,431};
+            int[] width={42,38,38,38,41,41};
+            int[] height={46,43,44,44,43,43};
+            var area=new UnityEngine.Rect(x[type],
+                master.height-y[type]-height[type],width[type],height[type]);
+            var sprite=Sprite.Create(master,area,new Vector2(.5f,.5f),100f,
+                0,SpriteMeshType.FullRect);
+            sprite.name="Exact approved hero navigation icon "+type;
+            exactProfileIcons[type]=sprite;
+            return sprite;
+        }
         void ProfileReferenceSigil(Transform parent,int type,float width,float height,float size)
         {
             float centerX=width*.5f,centerY=height<50f?height*.42f:height*.39f;
@@ -149,6 +170,18 @@ namespace Eldoria.HeroesUI
                 rt.anchoredPosition=new Vector2(centerX+dx*unit,-centerY-dy*unit);
                 rt.localRotation=Quaternion.Euler(0,0,angle);
                 rt.GetComponent<Image>().raycastTarget=false;
+            }
+            // Prefer ONLY the exact, separate pictograms from the approved
+            // original six-screen sheet. The surrounding image/labels/buttons
+            // are NOT reused as fake UI; all interactions remain live.
+            Sprite exact=ApprovedProfileNavigationIcon(type);
+            if(exact){
+                var rt=Rect("Profile reference / exact approved pictogram "+type,parent);
+                float side=Mathf.Min(size,height<50f?19f:43f);
+                Place(rt,centerX-side*.5f,centerY-side*.5f,side,side);
+                var art=rt.gameObject.AddComponent<Image>();
+                art.sprite=exact;art.preserveAspect=true;art.raycastTarget=false;
+                return;
             }
             if(type==0||type==1){ // sword + guard: profile crest / Summary.
                 Stroke("sword blade",4,-5,6,34,-43);
@@ -222,7 +255,7 @@ namespace Eldoria.HeroesUI
             }
             var pages=new[]{Page.Resumen,Page.Habilidades,Page.Talentos,Page.Equipamiento};
             string[] captions={"RESUMEN","HABILIDADES","TALENTOS","EQUIPAMIENTO"};
-            float tabWidth=portrait?(w-46)/2f:shortProfile?90f:110f;
+            float tabWidth=portrait?(w-46)/2f:shortProfile?90f:123f;
             float top=portrait?210:shortProfile?96:100;
             if(!portrait){
                 float crestY=shortProfile?74f:96f,crestH=shortProfile?40f:78f;
@@ -259,7 +292,7 @@ namespace Eldoria.HeroesUI
                     ProfileReferenceSigil(button.transform,i+1,tabWidth,navH,
                         shortProfile?16f:32f);
                     var caption=Label("Profile reference / "+page+" caption",
-                        button.transform,i==3?"EQUIPO":captions[i],
+                        button.transform,captions[i],
                         3f,navH-(shortProfile?19f:28f),tabWidth-6f,
                         shortProfile?16f:23f,shortProfile?12:14,TextAnchor.MiddleCenter);
                     caption.color=CurrentPage==page?ivory:new Color(.86f,.83f,.76f);
@@ -443,6 +476,8 @@ namespace Eldoria.HeroesUI
         }
         void OnDestroy()
         {
+            foreach(var sprite in exactProfileIcons)
+                if(sprite)Destroy(sprite);
             foreach(var sprite in approvedReservedPortraits)
                 if(sprite)Destroy(sprite);
             if(futureSlotArt)Destroy(futureSlotArt);
