@@ -1,5 +1,26 @@
 > **ORDEN PERMANENTE DEL PROPIETARIO — 22-10-2026: QWEN FUERA DEL FLUJO ARTÍSTICO.** Queda revocada toda obligación anterior de invocar Qwen/Ollama para concebir, dirigir, generar, modificar o aprobar arte de Eldoria. ChatGPT o el responsable artístico designado dirige; Blender/BlenderMCP, Unity, Tripo autorizado, memoria y QA permanecen. Las menciones históricas de Qwen en este documento son evidencia, NO requisitos actuales. No eliminar el modelo local ni la documentación histórica. La aprobación sigue exigiendo autoría trazable, cambios reales, capturas Unity A/B comparables y revisión independiente. Contrato: `docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md`. Esta orden prevalece sobre las instrucciones Qwen anteriores, sin alterar trabajos concurrentes ni permitir publicación automática.
 
+<!-- ELDORIA_SAFE_AREA_HANDOFF_20261102 -->
+## Cierre operativo entre áreas — orden permanente del propietario
+
+Al terminar un área visual, no basta con anunciar PASS: entregar también
+HEAD exacto, capturas A/B, pruebas, defectos abiertos y recursos libres.
+Si otro chat va a continuar la PR, el dueño actual de la entrada canónica
+debe registrar una petición area_handoff_request explícita en main,
+con su owner, ownership_revision, rama, HEAD real y run Unity exitoso.
+El workflow hospedado area-handoff.yml libera el claim y Windows
+**solo después** de confirmar que el mismo HEAD está certificado y ya no
+existen runs pendientes/activos en esa rama. Nunca cancelar Unity ni
+inferir la finalización por inactividad, CI verde o mensajes intermedios.
+
+El siguiente chat reutiliza la misma PR y workstream; está autorizado
+a reclamarlo de forma segura sin volver a preguntar al propietario.
+Si el chat original sigue con otra área, mantiene la titularidad de escritura
+pero libera Windows cuando ya no lo necesita. El cierre no equivale
+a ART_APPROVED, merge o publicación. Procedimiento y datos exactos:
+docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md, sección
+«Relevo seguro tras cada área».
+
 # Arranque vigente — mantenimiento autorizado 21-10-2026
 
 <!-- ELDORIA_SINGLE_CANONICAL_PR_GUARD_20261027 -->
