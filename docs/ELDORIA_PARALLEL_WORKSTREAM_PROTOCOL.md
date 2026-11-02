@@ -3,6 +3,64 @@
 Status: **CANONICAL PROCESS**  
 Effective: 2026-10-02
 
+## Relevo seguro tras cada área — 02/11/2026
+
+**Orden permanente del propietario:** cada chat debe cerrar sus recursos y dejar el
+mismo workstream disponible al entregar su área, sin exigir un chat adicional
+de coordinación. Una aceptación provisional de pantalla permite continuar a
+otra área, pero NO significa merge, publicación ni ART_APPROVED global.
+
+**Cierre obligatorio del chat saliente:**
+1. Conservar SHA exacto, capturas Unity en cuatro formatos, referencia A/B,
+   resultado de pruebas y pendientes artísticos; no inferir aprobación subjetiva.
+2. Finalizar o preservar cualquier certificación de Unity ya iniciada. Nunca
+   cancelar jobs para acelerar un relevo, ni asumir que una cola vacía por sí
+   sola prueba que el anterior chat dejó de trabajar.
+3. Si **otro chat** va a continuar la misma PR, releer el registro vivo de main
+   y escribir en el **mismo ID canónico** una petición explícita,
+   area_handoff_request, usando el blob SHA como CAS.
+   Ejemplo del objeto solicitado (reemplazar valores por datos REALES):
+
+       "area_handoff_request": {
+         "status": "ready",
+         "completed": true,
+         "area": "Area 02 - resumen heroes",
+         "owner": "identidad-actual-del-registro",
+         "revision": 99,
+         "branch_head": "SHA-de-40-caracteres-de-la-PR",
+         "run_id": 41434883428,
+         "artistic_approval": "provisional",
+         "note": "Estado, evidencia y defectos restantes"
+       }
+
+   Solo el titular que afirma haber terminado puede solicitar el cierre:
+   no generar la petición a partir de tiempo inactivo, CI verde, otro chat o
+   un mensaje de progreso. El run indicado debe corresponder al SHA exacto.
+4. El workflow seguro de Ubuntu .github/workflows/area-handoff.yml se activa
+   al cambiar el registro, tras cerrar la certificación UI, por ejecución
+   manual o durante su comprobación periódica. Comprueba que dueño, revisión,
+   rama, HEAD, run nativo completo y cola Actions coinciden. Si falla o hay
+   jobs pendientes, **no libera nada** y deja un motivo verificable.
+5. Solo si las condiciones pasan, una escritura CAS en main libera
+   ownership_state=available, owner=null, write_scope_released=true y
+   resources=[], aumenta la revisión, registra el último área y conserva
+   ownership_history. No toca el código Unity ni interrumpe procesos, no
+   crea otra PR, no aprueba arte y no publica APK/WebGL.
+6. El chat nuevo lee main y la cola, reutiliza la PR y el mismo ID, reclama
+   la entrada de forma segura sin solicitar nueva autorización al propietario.
+   Si una ejecución anterior sigue viva, adelanta partes no conflictivas y
+   respeta el bloqueo; no fuerza su eliminación.
+
+**Si el mismo chat continuará encargos inmediatamente:** la titularidad
+de escritura puede permanecer reclamada. Debe liberar la reserva Windows
+cuando ya no la necesite (sin esperar una aprobación artística) y registrar
+el área entregada, pero NO pedir un cierre ficticio de toda la misión.
+
+**Garantías y límites:** es un relevo opt-in, nunca caduca por inactividad.
+No puede apagar Unity local ni terminar sesiones de ChatGPT. No sustituye
+los guardas reales de procesos en el runner. Ante datos incompletos,
+estados cambiados, errores API o certificación roja, falla de forma segura.
+
 ## Protección automática de PR duplicadas — 27/10/2026
 
 **Problema real verificado:** dos sesiones crearon las PR #115 y #116 para recuperar la misma interfaz «Crónica Real». Se conservó la #115 y se cerró la #116 sin integrar. El registro exigía comprobar conflictos, pero no existía una barrera automática al abrir la segunda PR.
