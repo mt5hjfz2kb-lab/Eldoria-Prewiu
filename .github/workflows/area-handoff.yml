@@ -1,9 +1,15 @@
 name: Eldoria area handoff — safe release after Unity
 
-# Hosted Ubuntu guard. Requires explicit area_handoff_request on main.
+# PR verification is read-only; mutation runs ONLY from trusted main.
 # Never dispatches Unity, cancels jobs, merges, publishes or approves art.
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/workstream-lease/area-handoff.mjs'
+      - 'tools/workstream-lease/area-handoff.test.mjs'
+      - '.github/workflows/area-handoff.yml'
   push:
     branches: [main]
     paths:
@@ -19,17 +25,40 @@ on:
     - cron: '13 * * * *'
 
 permissions:
-  contents: write
+  contents: read
   actions: read
 
 concurrency:
-  group: eldoria-safe-area-handoff-main
+  group: eldoria-safe-area-handoff-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'main' }}
   cancel-in-progress: false
 
 jobs:
-  safe-release:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 3
+    steps:
+      - name: Checkout head for PR test, otherwise trusted main
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+          persist-credentials: false
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/workstream-lease/area-handoff.mjs
+            /tools/workstream-lease/area-handoff.test.mjs
+            /.github/workflows/area-handoff.yml
+      - name: Verify safe release and negative cases
+        run: node --test tools/workstream-lease/area-handoff.test.mjs
+
+  safe-release:
+    needs: verify
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
     steps:
       - name: Checkout trusted main only
         uses: actions/checkout@v4
@@ -40,10 +69,6 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/workstream-lease/area-handoff.mjs
-            /tools/workstream-lease/area-handoff.test.mjs
-            /.github/workflows/area-handoff.yml
-      - name: Verify safe release and negative cases
-        run: node --test tools/workstream-lease/area-handoff.test.mjs
       - name: Complete only explicitly requested handoff if no work remains
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
