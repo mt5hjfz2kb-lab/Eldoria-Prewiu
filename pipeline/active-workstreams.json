@@ -2973,9 +2973,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": "chatgpt-eldoria-talents-art-20261102",
-      "ownership_state": "claimed",
-      "ownership_revision": 20,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 21,
       "status": "active",
       "branch": "fix/player-feedback-context-ui-20261030",
       "pr": 136,
@@ -2990,8 +2990,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
-      "phase": "TALENTS_COMPILATION_REPAIR",
-      "next": "Review Talentos native screenshots of last PR136 HEAD after Unity exact-HEAD V4.1; source changed HeroesTalentArt.cs with nine independent medallions, 3 path panels/headers/connectors + nine disabled buttons; A/B from run41441316111. Need inspect 4 orientations for Aldric and Lyra, save unchanged, art target >=8 provisional pending subjective approval. Preserve new doc docs/heroes-ui/TALENTS_ART_IMPLEMENTATION_20261102.md. Current PR136 HEAD must be read live. No merge/publish.",
+      "phase": "TALENTS_COMPILER_ERROR_PATCHED_AWAIT_UNITY_SCREENSHOTS",
+      "next": "PR136 new HEAD 8a6447c9710e9573431a00945574ece1da622440 fixes Unity CS1503 from 41452227776. Wait for exact next Unity Native capture and all nine disabled node tests; inspect A/B on Aldric and Lyra four sizes, compare to approved master, no merge until art owner acceptance.",
       "budget_eur": 0,
       "ownership_history": [
         {
@@ -3094,9 +3094,15 @@
           "ownership_revision": 19,
           "transferred_at": "2026-11-02",
           "reason": "Owner's same Talents request still active; reclaim available HeroesUI source after exact Unity compiler diagnostic CS1503 at line 313."
+        },
+        {
+          "owner": "chatgpt-eldoria-talents-art-20261102",
+          "ownership_revision": 20,
+          "released_at": "2026-11-02",
+          "reason": "Corrected exact Unity CS1503 font size on PR136, source complete; defer exclusive Unity Windows run to canonical Valoria owner. Request native A/B on next HEAD."
         }
       ],
-      "write_scope_released": false,
+      "write_scope_released": true,
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
       "released_at": "2026-11-02",
       "release_reason": "READY_EXACT_HEAD_UNITY_AB_QA",
