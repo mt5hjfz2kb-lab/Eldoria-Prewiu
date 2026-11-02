@@ -2973,9 +2973,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": "chatgpt-eldoria-habilidades-art-20261102",
-      "ownership_state": "claimed",
-      "ownership_revision": 14,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 15,
       "status": "active",
       "branch": "fix/player-feedback-context-ui-20261030",
       "pr": 136,
@@ -2990,8 +2990,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
-      "phase": "HEROES_SKILLS_ART_SOURCE_INTEGRATED_NATIVE_CAPTURE_PENDING",
-      "next": "Skills art committed to PR136 HEAD 72bacf1a8c9a7e7735b704e242e8f0fad3182e3c. Exact approved atlas inspected: 4 ornate skill rows wide, 3 portrait, 1 compact; only Baluarte and Disparo de Ruptura are real. Source-bound name/description, no buttons for reserves, mobile font >=18. Static checks PASS. Native Unity V41 screenshots and full save/controls regression NOT RUN for this HEAD, as windows-runner-heavy remains owned by canonical Valoria workstream; require genuine four-size captures and comparison before visual acceptance 8.2/10. No merge/publish.",
+      "phase": "SOURCE_INTEGRATED_WAIT_FOR_SHARED_NATIVE_GATE",
+      "next": "Canonical PR136 exact HEAD 72bacf1: re-run failed PR ownership gate after HeroesUI source scope release; original Windows owner valoria-master-plan retains exclusive lease, existing native run 41441316111 still in_progress at 12:13 UTC, new pending exact-head run 41442830284. Validate genuine V41 Habilidades Aldric/Lyra screenshots in four sizes and save byte identity. Correct defects before ART_APPROVED or merge; source work ≠ quality pass.",
       "budget_eur": 0,
       "ownership_history": [
         {
@@ -3058,12 +3058,18 @@
           "ownership_revision": 13,
           "transferred_at": "2026-11-02",
           "reason": "Owner requests independent Habilidades artistic reconstruction in PR136; HeroesUI scope available, no windows-runner claim, PR135 preserved as source-only draft."
+        },
+        {
+          "owner": "chatgpt-eldoria-habilidades-art-20261102",
+          "ownership_revision": 14,
+          "released_at": "2026-11-02",
+          "reason": "Habilidades art edits committed to canonical PR136, exact-HEAD native gate required. Release independent HeroesUI writer to remove PR136 foreign-scope CI collision; canonical Valoria owner continues as sole PR owner and retains its Windows lease. No claim of artistic or functional certification."
         }
       ],
-      "write_scope_released": false,
+      "write_scope_released": true,
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
-      "released_at": "2026-10-31T21:38:59.618Z",
-      "release_reason": "BLOQUE 00 OWNER_AUTHORIZED_NORMAL_CHAT_HANDOFF; claim with CAS before BLOQUE 01 mutations; not completed; no release or publication approval.",
+      "released_at": "2026-11-02",
+      "release_reason": "SRC_INTEGRATED_TO_CANONICAL_PR136_AND_HANDOFF_FOR_SHARED_UNITY_QA",
       "original_pr": 135,
       "last_skills_art_commit": "72bacf1a8c9a7e7735b704e242e8f0fad3182e3c",
       "last_skills_art_evidence": "docs/heroes-ui/ABILITIES_ART_20261102.md"
