@@ -849,6 +849,11 @@ namespace Eldoria.UI.RoyalGold.V2
             lastWidth=root.rect.width;lastHeight=root.rect.height;
             float w=lastWidth,h=lastHeight;
             if(w<1||h<1)return;
+            // The real HÉROES destination returns to the canonical top
+            // navigation whenever training follows a preparation screen.
+            if(CurrentDestination==Destination.Training &&
+                heroesButton.transform.parent!=header)
+                heroesButton.transform.SetParent(header,false);
             bool landscape=w>h;
             // Production RoyalScaler matches height; native portrait probes
             // historically matched width. Normalize only this room so both
@@ -1016,6 +1021,8 @@ namespace Eldoria.UI.RoyalGold.V2
             marchEnvironment.gameObject.SetActive(!training);
             marchHeadingSurface.gameObject.SetActive(!training);
             marchTroopSurface.gameObject.SetActive(!training);
+            if(marchTroopChapter)marchTroopChapter.gameObject.SetActive(!training);
+            if(marchReferencePreview)marchReferencePreview.gameObject.SetActive(false);
             destinationArtwork.enabled=false;
             featuredUnitArtwork.enabled=false;
             statusArtwork.enabled=false;
