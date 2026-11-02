@@ -174,10 +174,10 @@ namespace Eldoria.HeroesUI
                 // after the joint reads 10 degrees from vertical. Correct
                 // the presentation-only bone beyond the rig's apparent
                 // spread so the actual rendered arm hangs beside the body.
-                var target=(Vector3.down*.89f-spread.normalized*.46f).normalized;
+                var target=(Vector3.down*.998f-spread.normalized*.06f).normalized;
                 float before=Vector3.Angle(downArm,Vector3.down);
                 var swing=Quaternion.FromToRotation(downArm.normalized,target);
-                arm.rotation=Quaternion.RotateTowards(Quaternion.identity,swing,83f)*arm.rotation;
+                arm.rotation=swing*arm.rotation;
                 // Arm upper segment is now ~10 degrees off vertical. The
                 // original source Idle keeps forearms splayed; reorient only
                 // that preview segment so the gauntlets settle beside the
@@ -187,10 +187,10 @@ namespace Eldoria.HeroesUI
                     Vector3 lower=wrist.position-elbow.position;
                     if(lower.sqrMagnitude>.00001f){
                         var side=Vector3.ProjectOnPlane(lower,Vector3.up);
-                        Vector3 desired=(Vector3.down*.96f-
-                            (side.sqrMagnitude>.00001f?side.normalized*.28f:Vector3.zero)).normalized;
+                        Vector3 desired=(Vector3.down*.999f-
+                            (side.sqrMagnitude>.00001f?side.normalized*.042f:Vector3.zero)).normalized;
                         var wristSwing=Quaternion.FromToRotation(lower.normalized,desired);
-                        elbow.rotation=Quaternion.RotateTowards(Quaternion.identity,wristSwing,77f)*elbow.rotation;
+                        elbow.rotation=wristSwing*elbow.rotation;
                     }
                 }
                 if(logPoseOnce){
