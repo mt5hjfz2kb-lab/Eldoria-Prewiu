@@ -2736,13 +2736,13 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 16,
-      "write_scope_released": true,
+      "owner": "chatgpt-training-art-finish-20261103",
+      "ownership_state": "claimed",
+      "ownership_revision": 17,
+      "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
-      "claimed_at": "2026-10-31T09:29:51.898Z",
+      "claimed_at": "2026-11-03T00:38:00+01:00",
       "base_main_sha": "f016932317e049d340460c408d88b90b1290b692",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41*.cs",
@@ -2773,8 +2773,8 @@
       "resources": [],
       "art_production_routing": "required",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
-      "phase": "FUNCTIONAL_REGRESSION_AND_APPROVED_UI_RECONSTRUCTION",
-      "next": "Resolve active PR136 inherited UI scope collision, then reconstruct reference composition and validate native captures before merging PR134. Technical candidate 32c3109 passed complete Unity certificate.",
+      "phase": "TRAINING_ART_FINISH_NONCONFLICTING_SOURCE_PREPARATION",
+      "next": "Prepare and source-validate a reversible Training art finish patch under tools/eldoria-v41 only. Do not write the live PR136 UI scope or reserve Windows while valoria owner revision 109 holds it; reconcile only after explicit area handoff.",
       "art_production_routing_reason": "Mandatory tracking for exact source reuse and ArtTests code; no new artwork generation authorized.",
       "ownership_history": [
         {
