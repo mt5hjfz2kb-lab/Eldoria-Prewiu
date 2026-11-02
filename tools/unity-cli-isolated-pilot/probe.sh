@@ -7,6 +7,8 @@ umask 077
 RESULT="$RUNNER_TEMP/eldoria-cli-proof"
 mkdir -p "$RESULT"
 export UNITY_NO_CLOUD=1
+# Current Unity CLI release stream is beta; stable latest.json returned HTTP 404 in run 41465891072.
+export UNITY_CLI_CHANNEL=beta
 export UNITY_CLI_HOME="$RUNNER_TEMP/eldoria-cli-binary"
 export PATH="$UNITY_CLI_HOME/bin:$PATH"
 printf '%s\n' 'Unity CLI installation probe' > "$RESULT/notes.txt"
