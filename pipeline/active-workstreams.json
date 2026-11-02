@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
+      "owner": "chatgpt-eldoria-visual-proof-20261102",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-02",
@@ -126,8 +126,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "HERO_PROFILES_PROVISIONAL_ACCEPTED_NEXT_MARCH_TRAINING",
-      "next": "Propietario acepta PROVISIONALMENTE fichas Aldric/Lyra del HEAD 6cb1dd1 (avance artístico sustancial demostrado A/B); no es acabado definitivo/art_approved. NO gastar más ciclos de microajustes ahora. Prioridad siguiente: Marchas y Entrenamiento, luego Ciudad, en misma PR136/alcance sin duplicar trabajos. Mantener anotadas: brazos de Aldric todavía manos en cintura, figura sobre fondo pintado, 844x390 poco legible, detalles del panel aprobados pendientes sin inventar mecánicas. Unity exact-HEAD run 41434883428 artifact13137941355 funcional PASS; regresión general EN CURSO; liberar lease Windows cuando acabe. No fusionar ni publicar por aceptación parcial.",
+      "phase": "OWNER_AUTHORIZED_MARCH_REAL_VISUAL_PROOF",
+      "next": "Implement significant March visual card hierarchy, real Unity screenshot A/B at 4 resolutions from exact PR136 SHA, inspect quality, fix any failure, do not merge or publish without art approval",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -963,7 +963,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": "chatgpt-eldoria-block02-direct-completion-20261101",
+      "previous_owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -976,7 +976,14 @@
         "other_workstreams": "remain_paused"
       },
       "continuation_authorization": "Owner 2026-11-01: ELDORIA — RECONSTRUCCIÓN FINAL DEL SALÓN DE HÉROES, continue on PR136 without redoing or overwriting recent advances",
-      "handoff_authorization": "Sigue tu con ese trabajo hasta su finalización",
+      "handoff_authorization": {
+        "authority": "Owner explicit instruction in current conversation to execute definitive artistic Unity proof, no more reports",
+        "previous_owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
+        "scope": "Continue existing PR136 and same workstream; isolated March military UI art reconstruction; preserve Unity assets, heroes and gameplay",
+        "reason": "No concurrent active native jobs and SHA 0ec806993f2a0459c4c77f967abf3ef13072cefd stable; authorized owner takeover",
+        "resource": "windows-runner-heavy",
+        "expected_existing_branch": "fix/player-feedback-context-ui-20261030"
+      },
       "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge.",
       "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
       "previous_production_branch": "construction/valoria-master-plan-layers-20261016",
@@ -1665,7 +1672,7 @@
           "reason": "Owner orders current connected session to finish without interim reports, correcting residual A-pose and reference icon crops discovered in authentic Unity run 41424099554; preserve PR136, GLB, native test evidence."
         }
       ],
-      "ownership_revision": 103,
+      "ownership_revision": 104,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
