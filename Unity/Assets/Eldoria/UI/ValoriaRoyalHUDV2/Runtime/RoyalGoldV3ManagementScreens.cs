@@ -32,7 +32,7 @@ namespace Eldoria.UI.RoyalGold.V2
         Image approvedArcher,approvedTroopRow,trainingEnvironment,marchEnvironment;
         RectTransform marchHeadingSurface,marchTroopSurface,marchSummaryBacking,marchStatusBacking;
         RectTransform marchReferencePreview;
-        Image marchReferenceScene;
+        Image marchReferenceScene,marchReferenceSummaryPaper;
         RoyalText marchTroopChapter,marchReferenceCaption;
         // Live, reusable stat cards. Never cached gameplay values or text baked into art.
         readonly RectTransform[] marchMetricCards=new RectTransform[6];
@@ -496,9 +496,13 @@ namespace Eldoria.UI.RoyalGold.V2
             RoyalGoldV41MarchArt.DressSummary(marchSummaryBacking);
             // This is environment illustration, not a simulated composition,
             // victory prediction, or newly actionable army preview.
+            marchReferenceSummaryPaper=RoyalGoldV41SourceArt.Surface(right,"blue-panel",14);
+            marchReferenceSummaryPaper.color=new Color(.85f,.90f,.92f,.88f);
+            marchReferenceSummaryPaper.raycastTarget=false;
+            marchReferenceSummaryPaper.gameObject.SetActive(false);
             marchReferencePreview=Frame("March / reference scene inset",right,false);
             marchReferenceScene=RoyalGoldV41SourceArt.Surface(
-                marchReferencePreview,"march-scenery");
+                marchReferencePreview,"training-courtyard-layer-v1");
             marchReferenceScene.preserveAspect=true;
             marchReferenceScene.raycastTarget=false;
             marchReferenceCaption=Text("March / scene illustration disclosure",
@@ -753,7 +757,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 var power=SliceRules.Expedition(troops,selectedHero);
                 int total=troops.Total;
                 int pctT1=total>0?Mathf.RoundToInt(100f*selectedT1/total):0;
-                summary.Put("RESUMEN DE LA MARCHA · COMPOSICIÓN");
+                summary.Put("RESUMEN · COMPOSICIÓN");
                 string[] liveMetric={
                     "ARQUEROS T1\n"+selectedT1+" · "+pctT1+" %",
                     "ARQUEROS T2\n"+selectedT2+" · "+(total>0?100-pctT1:0)+" %",
@@ -769,7 +773,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 // condense the labels into three legible lines. The former
                 // four long sentences wrapped into five lines and were cut
                 // off despite using the full reserved physical phone width.
-                if(compactLandscape)
+                if(!compactLandscape && root.rect.height>root.rect.width)
+                    status.Put("RUPTURA "+power.Break+" · T1 DISP. "+s.Available.ArcherT1+
+                        " · T2 "+s.Available.ArcherT2+
+                        "\nCAPACIDAD "+MarchCapacityRules.Capacity(s,selectedHero)+
+                        " · NIVEL "+MarchCapacityRules.HeroLevel(s,selectedHero)+
+                        "\nMARCHAS "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
+                        " · PREPARADOS "+(s.MarchConfigured?s.PreparedTroops.Total:0));
+                else if(compactLandscape)
                     status.Put("RUPTURA "+power.Break+" · DISP. T1 "+s.Available.ArcherT1+" · T2 "+s.Available.ArcherT2+
                         "\nCAP. "+HeroName(selectedHero)+" "+MarchCapacityRules.Capacity(s,selectedHero)+
                         " · NIVEL "+MarchCapacityRules.HeroLevel(s,selectedHero)+
@@ -1023,6 +1034,8 @@ namespace Eldoria.UI.RoyalGold.V2
             marchTroopSurface.gameObject.SetActive(!training);
             if(marchTroopChapter)marchTroopChapter.gameObject.SetActive(!training);
             if(marchReferencePreview)marchReferencePreview.gameObject.SetActive(false);
+            if(marchReferenceSummaryPaper)
+                marchReferenceSummaryPaper.gameObject.SetActive(!training);
             destinationArtwork.enabled=false;
             featuredUnitArtwork.enabled=false;
             statusArtwork.enabled=false;
@@ -1189,15 +1202,16 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(footer,x,h-footerH-bottom,width,footerH);
 
             // One continuous Crónica Real header as the approved sheet.
+            float headerTextW=width-(wide?260f:230f);
             Place(heading.rectTransform,16f,6f,
-                wide?width*.62f:width-32f,wide?40f:48f);
+                headerTextW,wide?40f:48f);
             Place(subheading.rectTransform,16f,wide?44f:56f,
-                wide?width*.62f:width-32f,wide?24f:32f);
+                headerTextW,wide?24f:32f);
             heading.fontSize=wide?(compact?25:29):32;
             subheading.fontSize=wide?16:19;
             Place(switchDestination.transform as RectTransform,
-                width-(wide?240f:210f)-12f,wide?8f:73f,
-                wide?240f:210f,wide?40f:32f);
+                width-(wide?240f:210f)-12f,wide?8f:17f,
+                wide?240f:210f,wide?40f:58f);
             switchLabel.fontSize=wide?17:16;
             chapterAction.gameObject.SetActive(false);
 
@@ -1309,14 +1323,21 @@ namespace Eldoria.UI.RoyalGold.V2
             // typographic scorecard with no duplicate information surfaces.
             float rw=right.rect.width,rh=right.rect.height;
             bool showInset=!wide && rw>=360f && rh>=165f;
-            float insetW=showInset?rw*.40f:0f;
+            float insetW=showInset?rw*.30f:0f;
             float statsW=showInset?rw-insetW-12f:rw;
             Place(marchSummaryBacking,5f,3f,statsW-10f,wide?43f:49f);
             Place(summary.rectTransform,14f,9f,statsW-28f,wide?34f:40f);
             summary.fontSize=wide?(compact?19:22):25;
+            if(marchReferenceSummaryPaper)
+            {
+                marchReferenceSummaryPaper.gameObject.SetActive(true);
+                Place(marchReferenceSummaryPaper.rectTransform,
+                    5f,2f,statsW-10f,rh-4f);
+                marchReferenceSummaryPaper.transform.SetAsFirstSibling();
+            }
             summary.alignment=TextAnchor.MiddleLeft;
             float tilesTop=wide?53f:59f;
-            float statusH=wide?Mathf.Max(78f,rh*.27f):Mathf.Max(79f,rh*.29f);
+            float statusH=wide?Mathf.Max(78f,rh*.27f):Mathf.Max(135f,rh*.32f);
             int cols=2,rows=3;
             float tileGap=wide?4f:6f;
             float tileW=(statsW-22f-tileGap)/2f;
@@ -1334,14 +1355,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 foreach(var img in art)if(img.name.StartsWith("Approved source /"))
                     img.enabled=false;
                 Place(marchMetricValues[i].rectTransform,5f,2f,tileW-10f,tileH-4f);
-                marchMetricValues[i].fontSize=wide?(compact?15:18):21;
+                marchMetricValues[i].fontSize=wide?(compact?15:18):26;
                 marchMetricValues[i].alignment=TextAnchor.MiddleLeft;
             }
             float statusY=rh-statusH;
             Place(marchStatusBacking,6f,statusY,statsW-12f,statusH-4f);
             Place(status.rectTransform,14f,statusY+4f,
                 statsW-28f,statusH-12f);
-            status.fontSize=wide?(compact?15:17):20;
+            status.fontSize=wide?(compact?15:17):26;
             status.alignment=TextAnchor.UpperLeft;
             if(marchReferencePreview)
             {
