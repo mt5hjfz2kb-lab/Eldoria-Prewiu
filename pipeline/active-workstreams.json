@@ -2973,9 +2973,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 21,
+      "owner": "chatgpt-eldoria-talents-art-20261102",
+      "ownership_state": "claimed",
+      "ownership_revision": 22,
       "status": "active",
       "branch": "fix/player-feedback-context-ui-20261030",
       "pr": 136,
@@ -2990,7 +2990,7 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
-      "phase": "TALENTS_COMPILER_ERROR_PATCHED_AWAIT_UNITY_SCREENSHOTS",
+      "phase": "TALENTS_REAL_UNITY_VISUAL_DEFECT_REPAIR",
       "next": "PR136 new HEAD 8a6447c9710e9573431a00945574ece1da622440 fixes Unity CS1503 from 41452227776. Wait for exact next Unity Native capture and all nine disabled node tests; inspect A/B on Aldric and Lyra four sizes, compare to approved master, no merge until art owner acceptance.",
       "budget_eur": 0,
       "ownership_history": [
@@ -3100,9 +3100,15 @@
           "ownership_revision": 20,
           "released_at": "2026-11-02",
           "reason": "Corrected exact Unity CS1503 font size on PR136, source complete; defer exclusive Unity Windows run to canonical Valoria owner. Request native A/B on next HEAD."
+        },
+        {
+          "owner": null,
+          "ownership_revision": 21,
+          "transferred_at": "2026-11-02",
+          "reason": "Owner requests finished artwork and A/B; true Unity run 41452571966 shows basic metal panels but overly flat, glyphs indistinct and footer low contrast; reconstruct macro visual art."
         }
       ],
-      "write_scope_released": true,
+      "write_scope_released": false,
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
       "released_at": "2026-11-02",
       "release_reason": "READY_EXACT_HEAD_UNITY_AB_QA",
