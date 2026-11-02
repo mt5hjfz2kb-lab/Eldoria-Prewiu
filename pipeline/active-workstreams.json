@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-hero-profile-composition-20261102",
+      "owner": "chatgpt-eldoria-exact-reference-hero-ui-20261102",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-02",
@@ -119,15 +119,13 @@
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK03_PROFILE_NATIVE_FULL_QA_PENDING_VISUAL_ACCEPTANCE",
-      "next": "PR136 HEAD 58aa51f6109ee5c011fe7a88a537b6bc39e8a098. Real 3D stone/bronze dais shares preview light/shadow/render pass with approved Aldric and Lyra. Source 3D stage at f54f06c was captured (artifact 13128721997): original dark stone surface visually insufficient; at 58aa51 revised stone color, 12 engraved radial joints and wrist diagnostics. Restored approved composition: narrower left tab rail, dominant central model, right real power+4-stats+role cabinet, live portrait navigation lower rail with locked archival future slots inert. Latest Unity run 41419185982 pending behind earlier source f54 run 41418070847. Inspect exact-head 4 resolutions for Aldric/Lyra, wrist log, interaction/save, then revise if still wrong. No art approval, merge, publication or spend.",
+      "phase": "BLOCK03_EXACT_REFERENCE_POSE_BUTTONS_NO_FALSE_PEDESTAL",
+      "next": "Remove visually rejected artificial dais; correct Aldric geometry silhouette (not only bone angles), replace old large text-button column with tight actual icon/label rail matching owner reference, retain real stats/save/controls. Exact-head A/B Unity 1600x900/900x1600/844x390/390x844; no approval until inspected.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1635,9 +1633,15 @@
           "ownership_revision": 96,
           "transferred_at": "2026-11-02",
           "reason": "Owner explicitly requests continuation with all connected access; reconstruct genuinely integrated hero profiles and approved composition in existing PR136, preserve previous evidence; no paid credits/merge/publication."
+        },
+        {
+          "owner": "chatgpt-eldoria-hero-profile-composition-20261102",
+          "ownership_revision": 97,
+          "transferred_at": "2026-11-02",
+          "reason": "Propietario solicita directamente reconstruir la ficha exacta: brazos Aldric abajo, sin pedestal artificioso y botones en posiciones de imagen aprobada. Relevo a este chat conectado, mantener PR136 y HEAD."
         }
       ],
-      "ownership_revision": 97,
+      "ownership_revision": 98,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
