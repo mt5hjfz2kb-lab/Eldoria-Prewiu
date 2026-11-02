@@ -178,7 +178,7 @@ namespace Eldoria.HeroesUI
                 new Color(.79f,.62f,.40f,.48f));
             Description(primary,description??string.Empty,
                 14f,descriptionY,usableW-28f,descriptionH,
-                compact?16:19);
+                compact?18:19);
             // Subtle hero accent, not a fake ability power, tier or cooldown.
             Surface("Skills / character identity edge",primary,7f,
                 18f,2f,Mathf.Max(10f,activeH-36f),
@@ -216,7 +216,7 @@ namespace Eldoria.HeroesUI
             var scroll=viewport.gameObject.AddComponent<ScrollRect>();
             var body=Rect("Skills / source-bound description content",
                 viewport,0f,0f,w,h);
-            var label=Label("Skills / native text not painted on art",body,
+            var label=Label("Canonical hero ability description",body,
                 description,0f,0f,w,h,fontSize,
                 TextAnchor.UpperLeft,Ivory);
             label.resizeTextForBestFit=false;
