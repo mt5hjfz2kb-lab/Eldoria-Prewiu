@@ -68,6 +68,10 @@ jobs:
           } finally {
             $report | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $output 'auth-check.json') -Encoding UTF8
           }
+          # Login status exit code 1 is the expected valid finding "not authenticated".
+          # Propagate failures only for lease/process/tool-access errors, not for missing user OAuth.
+          if($report.error_category){exit 2}
+          exit 0
       - name: Upload sanitized evidence only
         if: always()
         uses: actions/upload-artifact@v4
