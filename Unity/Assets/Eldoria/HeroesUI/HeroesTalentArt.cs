@@ -17,7 +17,7 @@ namespace Eldoria.HeroesUI
             new Color(.91f,.38f,.18f), new Color(.29f,.69f,1f),
             new Color(.95f,.73f,.30f)
         };
-        static Sprite[] panels, borders, headers, threads, seals;
+        static Sprite[] panels, borders, headers, threads, horizontalThreads, seals;
         static Sprite[] nodes;
         static Sprite plate, padlock;
         static Font serif;
@@ -282,7 +282,7 @@ namespace Eldoria.HeroesUI
         {
             if(panels!=null && panels[0])return;
             panels=new Sprite[3];borders=new Sprite[3];
-            headers=new Sprite[3];threads=new Sprite[3];
+            headers=new Sprite[3];threads=new Sprite[3];horizontalThreads=new Sprite[3];
             nodes=new Sprite[9];seals=new Sprite[3];
             for(int k=0;k<3;k++)
             {
@@ -297,6 +297,8 @@ namespace Eldoria.HeroesUI
                     new Vector4(34,20,34,20));
                 threads[k]=SpriteFrom("engraved connector "+k,32,128,
                     (u,v)=>Rail(u,v,path),Vector4.zero);
+                horizontalThreads[k]=SpriteFrom("engraved compact horizontal connector "+k,128,32,
+                    (u,v)=>Rail(v,u,path),Vector4.zero);
                 seals[k]=SpriteFrom("header crest "+k,144,144,
                     (u,v)=>Medallion(u,v,path,0),Vector4.zero);
                 for(int rank=0;rank<3;rank++)
@@ -380,24 +382,45 @@ namespace Eldoria.HeroesUI
                 Text("Reserved path name",track,titles[path],4f,3f,
                     trackW-8f,headerH,font,Ivory);
                 float top=headerH+(tiny?7f:Mathf.Clamp(trackH*.035f,9f,26f));
-                float node=Mathf.Min(tiny?28f:96f,
-                    trackW*(tiny?.68f:.62f),
-                    (trackH-top-14f)/3.55f);
+                // A short landscape screen can never fit three premium
+                // medallions vertically. Lay them out across the broad branch
+                // instead of rendering microscopic unreadable vertical locks.
+                bool row=tiny&&trackW>=120f;
+                float node=row?
+                    Mathf.Min(48f,trackW*.24f,(trackH-top-8f)*.78f):
+                    Mathf.Min(96f,trackW*.62f,(trackH-top-14f)/3.55f);
                 node=Mathf.Max(18f,node);
-                float room=trackH-top-node-13f;
-                float step=Mathf.Max(node+1f,room*.5f);
-                if(top+2f*step+node>trackH-5f)
-                    step=(trackH-5f-top-node)/2f;
                 float center=trackW*.5f;
-                Image("Talents / connected forged metallic trunk",track,
-                    center-Mathf.Max(4f,node*.11f),top+node*.5f,
-                    Mathf.Max(8f,node*.22f),Mathf.Max(2f,step*2f),
-                    threads[path],new Color(1f,1f,1f,.85f));
+                float step=0f;
+                float rowY=0f;
+                if(row)
+                {
+                    rowY=top+Mathf.Max(0f,(trackH-top-node)*.48f);
+                    float first=trackW/6f,last=trackW*5f/6f;
+                    Image("Talents / engraved horizontal mobile connector",track,
+                        first,rowY+node*.5f-Mathf.Max(3f,node*.11f),
+                        last-first,Mathf.Max(6f,node*.22f),
+                        horizontalThreads[path],new Color(1f,1f,1f,.90f));
+                }
+                else
+                {
+                    float room=trackH-top-node-13f;
+                    step=Mathf.Max(node+1f,room*.5f);
+                    if(top+2f*step+node>trackH-5f)
+                        step=(trackH-5f-top-node)/2f;
+                    Image("Talents / connected forged metallic trunk",track,
+                        center-Mathf.Max(4f,node*.11f),top+node*.5f,
+                        Mathf.Max(8f,node*.22f),Mathf.Max(2f,step*2f),
+                        threads[path],new Color(1f,1f,1f,.85f));
+                }
                 for(int rank=0;rank<3;rank++)
                 {
-                    float y=top+rank*step;
+                    float y=row?rowY:top+rank*step;
+                    float nx=row?
+                        trackW*(rank+.5f)/3f-node*.5f:
+                        center-node*.5f;
                     var nodeRect=Rect("Reserved talent node "+path+"-"+rank,
-                        track,center-node*.5f,y,node,node);
+                        track,nx,y,node,node);
                     // Nine historical UI button identities are retained for
                     // native verification, but NONE is actionable.
                     var disabled=nodeRect.gameObject.AddComponent<Button>();
