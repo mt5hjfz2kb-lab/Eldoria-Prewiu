@@ -126,8 +126,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK03_STAGE_AND_COMPOSITION_NATIVE_CERTIFICATION",
-      "next": "Exact-head PR136 d30d195086c1f4413b8872d9459d0f9d5c20036c has rendered 3D dais/forearm adjustment and restored profile portrait strip/compact power cabinet. Native certificate 41418314295 waiting behind earlier 41418070847. Compare real captures in four sizes and inspect logs/geometry after PASS. ART_APPROVED=false. Do not merge or publish. No spend.",
+      "phase": "BLOCK03_PROFILE_NATIVE_FULL_QA_PENDING_VISUAL_ACCEPTANCE",
+      "next": "PR136 HEAD 58aa51f6109ee5c011fe7a88a537b6bc39e8a098. Real 3D stone/bronze dais shares preview light/shadow/render pass with approved Aldric and Lyra. Source 3D stage at f54f06c was captured (artifact 13128721997): original dark stone surface visually insufficient; at 58aa51 revised stone color, 12 engraved radial joints and wrist diagnostics. Restored approved composition: narrower left tab rail, dominant central model, right real power+4-stats+role cabinet, live portrait navigation lower rail with locked archival future slots inert. Latest Unity run 41419185982 pending behind earlier source f54 run 41418070847. Inspect exact-head 4 resolutions for Aldric/Lyra, wrist log, interaction/save, then revise if still wrong. No art approval, merge, publication or spend.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -938,12 +938,14 @@
           "full_ci_status": "IN_PROGRESS_WHEN_RECORDED",
           "separate_runner_collision": false
         },
-        "hero_profiles_latest_source": "2897759243d95922d5d4e34e26ce83143ff3140a",
+        "hero_profiles_latest_source": "58aa51f6109ee5c011fe7a88a537b6bc39e8a098",
         "hero_profiles_native_first_pass_run": 41365279075,
         "hero_profiles_native_first_pass_artifact": 13107247339,
         "hero_profiles_native_latest_queued_run": 41366240138,
         "hero_profiles_art_approved": false,
-        "hero_profiles_pose_visual": "FIRST_PASS_INSUFFICIENT_REVISE_PENDING_28977592"
+        "hero_profiles_pose_visual": "FIRST_PASS_INSUFFICIENT_REVISE_PENDING_28977592",
+        "hero_profiles_pending_native_run": 41419185982,
+        "hero_profiles_physical_stage_first_capture_artifact": 13128721997
       },
       "previous_owner": "chatgpt-eldoria-block02-direct-completion-20261101",
       "takeover_at": "2026-10-17",
