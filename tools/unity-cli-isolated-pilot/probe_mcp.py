@@ -43,10 +43,20 @@ def run(path):
         tools=second["result"].get("tools",[])
         names=[x.get("name","") for x in tools]
         if not names:raise RuntimeError("No MCP CLI read-only tools advertised")
+        if "unity-cli-status" not in names:
+            raise RuntimeError("Expected read-only CLI status tool not provided")
+        send({"jsonrpc":"2.0","id":3,"method":"tools/call",
+              "params":{"name":"unity-cli-status","arguments":{}}})
+        third=receive(3,time.monotonic()+20)
+        if "result" not in third or third["result"].get("isError"):
+            raise RuntimeError("Read-only MCP tool returned error: "+str(third)[:300])
+        short=[str(item.get("text",""))[:600] for item in third["result"].get("content",[])]
         result={"mcp_stdio_handshake_success":True,
                 "protocol_reported":first["result"].get("protocolVersion"),
                 "mcp_tool_count":len(names),"mcp_tool_names":names,
-                "editor_connected":False,"tools_invoked":False,
+                "editor_connected":False,"tools_invoked":True,
+                "read_only_tool_invoked":"unity-cli-status",
+                "read_only_tool_result_excerpt":short,
                 "non_json_lines":events}
         Path(path).write_text(json.dumps(result,indent=2))
         print(json.dumps({"success":True,"tool_count":len(names),"tools":names[:8]}))
