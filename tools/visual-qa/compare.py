@@ -119,7 +119,22 @@ def main():
     p.add_argument('--before-sha');p.add_argument('--after-sha');p.add_argument('--output',type=Path,default=Path('visual-report'))
     a=p.parse_args()
     if a.run_id:
-        before,after,meta=source_pair(a.run_id)
+        try:
+            before,after,meta=source_pair(a.run_id)
+        except ValueError as exc:
+            if str(exc) not in ('Current run lacks exact run-ID V4.1 screenshot artifact',
+                                 'No earlier certified run on the same branch with screenshots'):
+                raise
+            a.output.mkdir(parents=True, exist_ok=True)
+            result={'technical_status':'NO_COMPARABLE_EVIDENCE','art_approved':False,
+                    'artistic_progress_machine_decided':False,'reason':str(exc),
+                    'run_id':a.run_id,'manual_review_required':True}
+            (a.output/'report.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+            (a.output/'index.html').write_text('<!doctype html><html lang="es"><meta charset="utf-8">'
+               '<h1>Eldoria: comparación pendiente</h1><p>'+html.escape(str(exc))+'</p>'
+               '<p>No se ha concedido aprobación artística.</p>',encoding='utf-8')
+            print(json.dumps(result))
+            return
     else:
         if not all((a.before_zip,a.after_zip,a.before_sha,a.after_sha)):
             p.error('offline mode requires both ZIPs and both SHAs')
