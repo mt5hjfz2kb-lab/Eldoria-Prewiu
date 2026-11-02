@@ -45,9 +45,12 @@ jobs:
           export CI=true
           echo "NODE_VERSION $(node --version)"
           echo "MADRE_DOCTOR_BEGIN"
+          set +e
           timeout 125s npx --yes @jossuealcala/madre@1.1.1 doctor >"$RUNNER_TEMP/madre-doctor.txt" 2>&1
           ec=$?
+          set -e
           sed -n '1,95p' "$RUNNER_TEMP/madre-doctor.txt"
+          echo "DOCTOR_LOG_END"
           echo "MADRE_DOCTOR_EXIT $ec"
           if [ "$ec" -ne 0 ]; then
             echo "MADRE_DOCTOR_NOT_PASSED_NO_INSTALL_ON_WINDOWS"
