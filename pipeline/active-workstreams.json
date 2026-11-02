@@ -18,31 +18,6 @@
   },
   "active": [
     {
-      "id": "eldoria-codex-unity-cli-isolated-pilot-20261102",
-      "title": "Issue #147: isolated Unity CLI proof without touching Eldoria Windows",
-      "owner": "chatgpt-eldoria-cli-pilot-20261102",
-      "ownership_state": "claimed",
-      "ownership_revision": 1,
-      "branch": "experiment/unity-cli-ubuntu-isolated-20261102",
-      "status": "active",
-      "claimed_at": "2026-11-02",
-      "scope": [
-        ".github/workflows/eldoria-unity-cli-isolated-pilot.yml",
-        "tools/unity-cli-isolated-pilot/**",
-        "docs/unity-cli-isolated-pilot/**"
-      ],
-      "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Prueba de instalación y consulta de la CLI en runner Linux efímero; sin Unity Editor, activos, arte ni capturas nuevas.",
-      "phase": "ISOLATED_UNITY_CLI_PROOF",
-      "next": "Probar oficialmente CLI+plugin en GitHub-hosted Ubuntu; dejar Windows y #136 intactos. Concluir solo evidencias realmente obtenidas.",
-      "delivery_definition": {
-        "deliverable": "Prueba CLI en Linux efímero y reporte de requisitos para conexión Codex-Unity",
-        "evidence": "GitHub Actions workflow exact commit y outputs; no simular control de editor",
-        "handoff": "Issue #147; prueba completa del editor solo cuando Windows realmente esté libre"
-      }
-    },
-    {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
@@ -3264,6 +3239,45 @@
     }
   ],
   "history": [
+    {
+      "id": "eldoria-codex-unity-cli-isolated-pilot-20261102",
+      "title": "Issue #147: isolated Unity CLI proof without touching Eldoria Windows",
+      "owner": null,
+      "ownership_state": "released",
+      "ownership_revision": 2,
+      "branch": "experiment/unity-cli-ubuntu-isolated-20261102",
+      "status": "completed",
+      "claimed_at": "2026-11-02",
+      "scope": [
+        ".github/workflows/eldoria-unity-cli-isolated-pilot.yml",
+        "tools/unity-cli-isolated-pilot/**",
+        "docs/unity-cli-isolated-pilot/**"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Prueba de instalación y consulta de la CLI en runner Linux efímero; sin Unity Editor, activos, arte ni capturas nuevas.",
+      "phase": "ISOLATED_CLI_MCP_PROOF_SUCCESS_EDITOR_NOT_CONNECTED",
+      "next": "CLI and MCP isolated pilot done. Issue #147 remains open; only final live Unity Editor test pending. No supervision task; Windows runner is still claimed by PR136.",
+      "delivery_definition": {
+        "deliverable": "Prueba CLI en Linux efímero y reporte de requisitos para conexión Codex-Unity",
+        "evidence": "GitHub Actions workflow exact commit y outputs; no simular control de editor",
+        "handoff": "Issue #147; prueba completa del editor solo cuando Windows realmente esté libre"
+      },
+      "write_scope_released": true,
+      "completion_evidence": {
+        "pr": 148,
+        "merge_sha": "37311aacc0d7626a3431d6f010ff7370dc2352f7",
+        "ci_run": 41467275565,
+        "artifact": 13154515176,
+        "unity_cli": "1.0.0-beta.15",
+        "mcp_tool_count": 7,
+        "mcp_transport_verified": true,
+        "live_editor_connected": false,
+        "read_only_tool_call_failed_expected_no_editor": true,
+        "no_windows_used": true,
+        "art_approved": false
+      }
+    },
     {
       "id": "eldoria-visual-qa-autogate-20261102",
       "title": "QA visual automática de capturas Unity, sin editor ni aprobación de arte",
