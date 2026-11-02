@@ -54,32 +54,150 @@ namespace Eldoria.HeroesUI
             sprite.name="Talentos / "+name;
             return sprite;
         }
+        // Soft-edged authored heraldic silhouettes: these motifs are atmosphere,
+        // NOT new talents. No gameplay icons or numerical stats are baked here.
+        static float Stroke(float x,float y,float ax,float ay,
+            float bx,float by,float thickness)
+        {
+            float dx=bx-ax,dy=by-ay;
+            float t=Sat(((x-ax)*dx+(y-ay)*dy)/(dx*dx+dy*dy+.00001f));
+            float dist=Mathf.Sqrt(Mathf.Pow(x-(ax+t*dx),2f)+
+                Mathf.Pow(y-(ay+t*dy),2f));
+            return 1f-Smooth(thickness*.64f,thickness,dist);
+        }
+        static float RectShape(float x,float y,float minX,float minY,
+            float maxX,float maxY,float softness)
+        {
+            return Smooth(minX-softness,minX+softness,x)*
+                (1f-Smooth(maxX-softness,maxX+softness,x))*
+                Smooth(minY-softness,minY+softness,y)*
+                (1f-Smooth(maxY-softness,maxY+softness,y));
+        }
+        static float Emblem(int kind,int rank,float x,float y)
+        {
+            float g=0f;
+            if(kind==0) // engraved strike motifs
+            {
+                if(rank==0){
+                    g=Mathf.Max(Stroke(x,y,-.25f,-.25f,.22f,.28f,.055f),
+                        Stroke(x,y,.25f,-.25f,-.22f,.28f,.055f));
+                    g=Mathf.Max(g,Stroke(x,y,-.30f,-.14f,-.13f,-.25f,.05f));
+                }else if(rank==1){
+                    g=Mathf.Max(Stroke(x,y,-.24f,-.22f,.22f,.25f,.049f),
+                        Stroke(x,y,.24f,-.22f,-.22f,.25f,.049f));
+                    g=Mathf.Max(g,Stroke(x,y,-.05f,.04f,.05f,.04f,.08f));
+                }else{
+                    for(int a=0;a<5;a++){
+                        float theta=(a*72f+90f)*Mathf.Deg2Rad;
+                        g=Mathf.Max(g,Stroke(x,y,0,0,
+                            .33f*Mathf.Cos(theta),.33f*Mathf.Sin(theta),.060f));
+                    }
+                }
+            }else if(kind==1) // shield / breastplate / battlement
+            {
+                if(rank==0){
+                    float edge=.28f*(1f-Smooth(-.1f,.38f,y));
+                    float shield=1f-Smooth(.034f,.075f,
+                        Mathf.Abs(Mathf.Abs(x)-edge));
+                    g=Mathf.Max(shield*RectShape(x,y,-.38f,-.34f,.38f,.35f,.06f),
+                        Stroke(x,y,0,.20f,0,-.18f,.053f));
+                    g=Mathf.Max(g,Stroke(x,y,-.25f,.32f,.25f,.32f,.055f));
+                }else if(rank==1){
+                    g=Mathf.Max(Stroke(x,y,-.29f,.21f,-.12f,-.20f,.066f),
+                        Stroke(x,y,.29f,.21f,.12f,-.20f,.066f));
+                    g=Mathf.Max(g,Stroke(x,y,-.17f,-.23f,.17f,-.23f,.064f));
+                    g=Mathf.Max(g,Stroke(x,y,-.27f,.20f,.27f,.20f,.065f));
+                }else{
+                    g=Mathf.Max(RectShape(x,y,-.22f,-.23f,.22f,.08f,.03f),
+                        RectShape(x,y,-.31f,.05f,.31f,.13f,.03f));
+                    for(int i=-1;i<=1;i++)
+                        g=Mathf.Max(g,RectShape(x,y,i*.18f-.055f,.13f,
+                            i*.18f+.055f,.30f,.02f));
+                }
+            }else{ // radiance / protection / flowering
+                if(rank==1){
+                    g=Mathf.Max(RectShape(x,y,-.075f,-.29f,.075f,.29f,.025f),
+                        RectShape(x,y,-.29f,-.075f,.29f,.075f,.025f));
+                }else{
+                    int petals=rank==0?6:8;
+                    for(int i=0;i<petals;i++){
+                        float angle=2f*Mathf.PI*i/petals;
+                        float px=.24f*Mathf.Cos(angle),py=.24f*Mathf.Sin(angle);
+                        float rr=Mathf.Sqrt(Mathf.Pow((x-px)*1.25f,2f)+
+                            Mathf.Pow((y-py)*1.25f,2f));
+                        g=Mathf.Max(g,1f-Smooth(.095f,.155f,rr));
+                    }
+                    g=Mathf.Max(g,1f-Smooth(.035f,.11f,
+                        Mathf.Sqrt(x*x+y*y)));
+                }
+            }
+            return Sat(g);
+        }
         static Color Background(int kind,float u,float v)
         {
-            // Dark authored tapestry: concentric recessed metal, stone grain,
-            // embossed threadwork and muted atmospheric accents.
-            float edge=Mathf.Min(Mathf.Min(u,1f-u),Mathf.Min(v,1f-v));
-            var baseInk=new Color(.030f,.033f,.043f,1f);
-            var tint=Metal[kind];
-            float grain=Noise(Mathf.Floor(u*240),Mathf.Floor(v*300),kind);
-            float cloth=.09f+.06f*(1f-v)+.043f*grain;
-            Color c=Blend(baseInk,tint,cloth);
-            float moon=Mathf.Exp(-(Mathf.Pow((u-.60f)*1.2f,2)+Mathf.Pow((v-.72f)*1.5f,2))*8f);
-            c=Blend(c,tint,.08f*moon);
-            // Faded motifs are kept in the surface, distinct from live nodes.
-            float arch=Mathf.Abs(u-.5f);
-            float archBody=(1f-Smooth(.34f,.42f,arch))*
-                (1f-Smooth(.73f,.9f,v));
-            float archCrown=Ring(Mathf.Sqrt(Mathf.Pow((u-.5f)*1.6f,2)+
-                Mathf.Pow((v-.48f)*1.10f,2)),.66f,.025f);
-            c=Blend(c,new Color(.15f,.12f,.09f),archBody*.15f);
-            c=Blend(c,tint,archCrown*.20f);
-            // Fine filigree at both sides and an engraved ornamental spine.
-            float thread=(Ring(u,.075f,.006f)+Ring(u,.925f,.006f))*.5f;
-            float vine=(Mathf.Abs(Mathf.Sin(v*27f+u*9f))>.97f?1f:0f)
-                * (1f-Smooth(.14f,.20f,Mathf.Min(u,1f-u)));
-            c=Blend(c,tint,.20f*thread+.18f*vine);
-            c=Blend(c,new Color(.010f,.013f,.020f),.35f*(1f-Smooth(.015f,.15f,edge)));
+            var pigment=Metal[kind];
+            float grain=Noise(Mathf.Floor(u*310),Mathf.Floor(v*450),kind);
+            float weave=.09f+.04f*grain+.045f*(1f-v);
+            Color c=Blend(new Color(.019f,.024f,.037f),pigment,weave);
+            // Inlaid tapering vertical columns and illuminated arch tracery.
+            float edge=Mathf.Min(u,1f-u);
+            float side=Ring(edge,.078f,.014f)+
+                Ring(edge,.117f,.006f);
+            float vaulted=Ring(Mathf.Sqrt(Mathf.Pow((u-.5f)*1.18f,2f)+
+                Mathf.Pow((v-.63f)*.85f,2f)),.51f,.021f);
+            c=Blend(c,pigment,side*.22f+vaulted*.14f);
+            if(kind==0)
+            {
+                // Emberlit wall silhouettes and faded heraldic strokes.
+                float battlement=RectShape(u,v,.17f,.05f,.83f,.24f,.02f);
+                float tower=RectShape(u,v,.60f,.14f,.76f,.46f,.02f);
+                float flames=Noise(Mathf.Floor(u*24),Mathf.Floor(v*44),1f);
+                c=Blend(c,new Color(.31f,.10f,.058f),
+                    battlement*.23f+tower*.20f+flames*.024f);
+                for(int i=0;i<6;i++){
+                    float ax=.13f+i*.14f;
+                    float angle=(i*3f+1f)*.61f;
+                    float stroke=Stroke(u,v,ax,.26f,
+                        ax+.17f*Mathf.Cos(angle),.52f+.08f*i,.008f);
+                    c=Blend(c,new Color(.53f,.24f,.09f),stroke*.30f);
+                }
+            }else if(kind==1)
+            {
+                float walls=RectShape(u,v,.1f,.07f,.9f,.35f,.02f);
+                float keep=RectShape(u,v,.35f,.18f,.65f,.55f,.02f);
+                float tower=RectShape(u,v,.17f,.15f,.33f,.44f,.02f)+
+                    RectShape(u,v,.69f,.15f,.84f,.48f,.02f);
+                float teeth=0f;
+                for(int i=0;i<7;i++)
+                    teeth=Mathf.Max(teeth,RectShape(u,v,
+                        .17f+i*.103f,.33f,.225f+i*.103f,.39f,.015f));
+                c=Blend(c,new Color(.095f,.24f,.32f),
+                    walls*.33f+keep*.30f+tower*.32f+teeth*.25f);
+                float mist=Mathf.Exp(-Mathf.Pow((v-.52f)*2.3f,2f));
+                c=Blend(c,new Color(.30f,.42f,.49f),mist*.09f);
+            }else
+            {
+                // Sanctuary canopy with gold dust, tree branches and sunlight.
+                float trunk=Stroke(u,v,.18f,.03f,.27f,.88f,.022f);
+                trunk=Mathf.Max(trunk,Stroke(u,v,.27f,.42f,.56f,.86f,.014f));
+                trunk=Mathf.Max(trunk,Stroke(u,v,.25f,.54f,.08f,.93f,.015f));
+                c=Blend(c,new Color(.35f,.22f,.11f),trunk*.34f);
+                float foliage=0f;
+                for(int i=0;i<13;i++){
+                    float xx=Noise(i,4,4),yy=.63f+Noise(i,5,5)*.32f;
+                    float radius=.10f+Noise(i,6,6)*.095f;
+                    float dist=Mathf.Sqrt(Mathf.Pow(u-xx,2f)+
+                        Mathf.Pow(v-yy,2f));
+                    foliage=Mathf.Max(foliage,
+                        1f-Smooth(radius*.57f,radius,dist));
+                }
+                c=Blend(c,new Color(.30f,.30f,.12f),foliage*.19f);
+                float rays=1f-Smooth(.006f,.035f,
+                    Mathf.Abs(Frac(u*.43f+v*.22f)-.5f));
+                c=Blend(c,new Color(.72f,.57f,.24f),rays*.08f);
+            }
+            float vignette=1f-Smooth(.02f,.16f,edge);
+            c=Blend(c,new Color(.011f,.015f,.025f),vignette*.39f);
             return c;
         }
         static Color Border(float u,float v,Color tint)
@@ -101,16 +219,18 @@ namespace Eldoria.HeroesUI
         }
         static Color Header(float u,float v,int kind)
         {
-            float e=Mathf.Min(Mathf.Min(u,1f-u),Mathf.Min(v,1f-v));
-            float t=1f-Smooth(.018f,.12f,e);
-            float light=Mathf.Exp(-Mathf.Pow((u-.5f)*2.3f,2))*0.25f;
-            Color c=Blend(new Color(.040f,.042f,.056f),Metal[kind],
-                .17f+light);
-            c=Blend(c,new Color(.89f,.70f,.37f),t*.75f);
-            // Embossed side flourishes; no words baked in texture.
-            float wave=Sat(.015f-Mathf.Abs(v-.5f-.17f*Mathf.Sin((u-.5f)*22f)));
-            float wings=(1f-Smooth(.18f,.40f,Mathf.Abs(u-.5f)));
-            c=Blend(c,Metal[kind],wave*wings*.65f);
+            float edge=Mathf.Min(Mathf.Min(u,1f-u),Mathf.Min(v,1f-v));
+            float rim=1f-Smooth(.020f,.095f,edge);
+            float middle=Mathf.Exp(-Mathf.Pow((u-.5f)*2.6f,2f));
+            // Dark inlaid enamel maintains native ivory text contrast.
+            Color c=Blend(new Color(.025f,.030f,.044f),Metal[kind],
+                .10f+.08f*middle);
+            c=Blend(c,new Color(.85f,.66f,.37f),rim*.67f);
+            float incised=Ring(v,.15f,.020f)+Ring(v,.83f,.022f);
+            c=Blend(c,new Color(.92f,.74f,.48f),incised*.55f);
+            float wing=(1f-Smooth(.20f,.40f,Mathf.Abs(u-.5f)))*
+                Ring(v,.51f+.18f*Mathf.Sin(u*16f),.025f);
+            c=Blend(c,Metal[kind],wing*.53f);
             return c;
         }
         static Color Rail(float u,float v,int kind)
@@ -127,38 +247,35 @@ namespace Eldoria.HeroesUI
         {
             float dx=(u-.5f)*2f,dy=(v-.5f)*2f;
             float r=Mathf.Sqrt(dx*dx+dy*dy),a=Mathf.Atan2(dy,dx);
-            float spurs=.024f*Mathf.Cos(a*12f),edge=.88f+spurs;
-            float outer=1f-Smooth(edge-.015f,edge+.016f,r);
-            float halo=Ring(r,.84f,.10f);
-            float golden=Ring(r,.73f,.042f);
-            float inner=Ring(r,.63f,.016f);
-            float shading=Sat(1.1f-r*.67f+.12f*dy);
-            Color c=Blend(new Color(.02f,.026f,.036f),Metal[kind],
-                .18f+.13f*shading);
-            c=Blend(c,new Color(.97f,.79f,.43f),golden*.90f);
-            c=Blend(c,Metal[kind],halo*.85f+inner*.70f);
-            // Distinct rank/runic decorative motif: never claims mechanics.
-            float spoke=Mathf.Abs(Mathf.Sin(a*(kind+rank+4)));
-            float sigil=(1f-Smooth(.16f,.24f,r))+
-                (1f-Smooth(.025f,.065f,spoke))*
-                Smooth(.26f,.35f,r)*(1f-Smooth(.48f,.52f,r));
-            c=Blend(c,new Color(.87f,.76f,.58f),sigil*.38f);
-            c.a=outer*Sat(.95f+(halo+golden)*.18f);
+            float ornament=.022f*Mathf.Cos(a*12f),edge=.88f+ornament;
+            float outer=1f-Smooth(edge-.018f,edge+.023f,r);
+            float halo=Ring(r,.83f,.085f);
+            float goldRing=Ring(r,.72f,.046f);
+            float fineRing=Ring(r,.61f,.018f);
+            float shading=Sat(1.06f-r*.70f+.20f*dy);
+            Color c=Blend(new Color(.016f,.022f,.032f),Metal[kind],
+                .12f+.12f*shading);
+            c=Blend(c,new Color(.94f,.73f,.40f),goldRing*.92f);
+            c=Blend(c,Metal[kind],halo*.85f+fineRing*.65f);
+            float glyph=Emblem(kind,rank,dx,dy);
+            c=Blend(c,new Color(.93f,.81f,.59f),glyph*.85f);
+            c.a=outer*Sat(.90f+goldRing*.30f);
             return c;
         }
         static Color Lock(float u,float v)
         {
-            float dx=Mathf.Abs(u-.5f),dy=Mathf.Abs(v-.53f);
-            float box=(1f-Smooth(.20f,.23f,dx))*
-                (1f-Smooth(.12f,.17f,v-.46f))*
-                Smooth(.45f,.50f,v);
-            float shackle=Mathf.Sqrt(Mathf.Pow(dx*1.7f,2)+
-                Mathf.Pow((v-.50f)*1.4f,2));
-            float bow=Ring(shackle,.29f,.09f)*(1f-Smooth(.55f,.63f,v));
-            float hole=(1f-Smooth(.04f,.07f,dx))*
-                (1f-Smooth(.04f,.08f,Mathf.Abs(v-.68f)));
-            var c=new Color(.86f,.82f,.72f,Sat(box+bow));
-            c=Blend(c,new Color(.1f,.09f,.08f,1f),hole*.95f);
+            float x=u-.5f,y=v-.5f;
+            float body=RectShape(x,y,-.24f,-.25f,.24f,.12f,.027f);
+            float bow=Ring(Mathf.Sqrt(Mathf.Pow(x*1.15f,2f)+
+                Mathf.Pow((y-.14f)*1.1f,2f)),.25f,.077f);
+            bow*=Smooth(-.04f,.02f,y);
+            float hole=1f-Smooth(.045f,.08f,
+                Mathf.Sqrt(x*x+Mathf.Pow(y+.065f,2f)));
+            float alpha=Sat(body+bow);
+            Color c=Blend(new Color(.88f,.83f,.72f,alpha),
+                new Color(.31f,.27f,.22f,alpha),Sat(-y*.30f));
+            c=Blend(c,new Color(.10f,.09f,.08f,alpha),hole*.90f);
+            c.a=alpha;
             return c;
         }
         static void Ensure()
@@ -242,7 +359,7 @@ namespace Eldoria.HeroesUI
             float trackW=Mathf.Max(25f,(width-outer*2-2*gap)/3f);
             float noteH=tiny?39f:Mathf.Clamp(height*.13f,52f,92f);
             float trackH=Mathf.Max(80f,height-noteH-outer*2-6f);
-            int font=tiny?12:trackW<105f?11:trackW<170f?15:24;
+            int font=tiny?(trackW>140f?14:12):trackW<105f?12:trackW<170f?15:24;
             string[] titles={"OFENSIVA","DEFENSA","SOPORTE"};
             for(int path=0;path<3;path++)
             {
@@ -293,9 +410,9 @@ namespace Eldoria.HeroesUI
                             Metal[path].b,.25f));
                     Image("Talent / engraved metallic circular socket",nodeRect,
                         0,0,node,node,nodes[path*3+rank],Color.white);
-                    float lockSize=Mathf.Clamp(node*.43f,12f,40f);
+                    float lockSize=Mathf.Clamp(node*.55f,16f,50f);
                     Image("Talent / visible authentic lock overlay",nodeRect,
-                        (node-lockSize)*.5f,node*.39f,lockSize,lockSize,
+                        (node-lockSize)*.5f,node*.29f,lockSize,lockSize,
                         padlock,new Color(.98f,.92f,.79f,1f));
                 }
             }
@@ -310,12 +427,12 @@ namespace Eldoria.HeroesUI
             Text("Reserved talent availability",plaque,
                 "TALENTOS BLOQUEADOS",7f,0f,labelW,
                 compactLabel?19f:noteH*.49f,
-                compactLabel?15:width<350f?17:25,Ivory);
+                compactLabel?16:width<350f?19:25,Ivory);
             Text("Talents / secondary reserved-state explanation",plaque,
                 "Aún no disponibles en esta etapa del reino.",
                 7f,compactLabel?18f:noteH*.47f,
                 labelW,compactLabel?19f:noteH*.45f,
-                compactLabel?11:width<350f?12:18,
+                compactLabel?13:width<350f?14:18,
                 new Color(.84f,.77f,.65f));
         }
     }
