@@ -18,6 +18,31 @@
   },
   "active": [
     {
+      "id": "eldoria-cli-windows-isolated-proof-20261102",
+      "title": "Issue147: Codex Unity Windows isolated integration proof",
+      "owner": "chatgpt-eldoria-win-cli-proof-20261102",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "branch": "experiment/eldoria-unity-cli-win-pilot-20261102",
+      "status": "active",
+      "claimed_at": "2026-11-02",
+      "scope": [
+        ".github/workflows/eldoria-unity-cli-windows-safe-pilot.yml",
+        "tools/unity-cli-windows-pilot/**",
+        "docs/unity-cli-windows-pilot/**"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Instrumentación de conexión del editor en copia aislada; ningún arte ni mecánica producido para juego canónico.",
+      "phase": "RUNNER_SAFE_PREFLIGHT_READ_ONLY",
+      "next": "Preflight read-only Windows, comprobar procesos reales, runner, cola y reserva ajena; solo transferir lease con autorización del propietario y comprobar seguridad. No tocar PR136 ni Windows antes de informe seguro.",
+      "delivery_definition": {
+        "deliverable": "Comprobar Codex/CLI/Pipeline contra Editor Unity aislado, evidencia de comandos y capturas si factible",
+        "evidence": "SHA exacto, run CI, logs, before/after de escena de prueba y mecanismos de limpieza",
+        "handoff": "Al acabar liberar Windows y dejar Issue147 con evidencia sin alterar juego principal"
+      }
+    },
+    {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
