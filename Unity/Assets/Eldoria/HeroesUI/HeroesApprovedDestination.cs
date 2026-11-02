@@ -255,7 +255,7 @@ namespace Eldoria.HeroesUI
             }
             var pages=new[]{Page.Resumen,Page.Habilidades,Page.Talentos,Page.Equipamiento};
             string[] captions={"RESUMEN","HABILIDADES","TALENTOS","EQUIPAMIENTO"};
-            float tabWidth=portrait?(w-46)/2f:shortProfile?90f:123f;
+            float tabWidth=portrait?(w-46)/2f:shortProfile?112f:123f;
             float top=portrait?210:shortProfile?96:100;
             if(!portrait){
                 float crestY=shortProfile?74f:96f,crestH=shortProfile?40f:78f;
@@ -290,11 +290,19 @@ namespace Eldoria.HeroesUI
                     ProfileReferenceSigil(button.transform,i+1,tabWidth,navH,
                         shortProfile?16f:32f);
                     var caption=Label("Profile reference / "+page+" caption",
-                        button.transform,shortProfile&&i==3?"EQUIPO":captions[i],
+                        button.transform,captions[i],
                         shortProfile?28f:3f,shortProfile?0f:navH-28f,
                         shortProfile?tabWidth-30f:tabWidth-6f,
                         shortProfile?navH:23f,shortProfile?11:14,TextAnchor.MiddleCenter);
                     caption.color=CurrentPage==page?ivory:new Color(.86f,.83f,.76f);
+                    if(shortProfile){
+                        // Never rename or abbreviate an approved destination.
+                        // Fit the full original caption inside the compact
+                        // genuine clickable button without drawing over stage.
+                        caption.resizeTextForBestFit=true;
+                        caption.resizeTextMinSize=9;
+                        caption.resizeTextMaxSize=11;
+                    }
                 }
             }else{
                 for(int i=0;i<pages.Length;i++){
