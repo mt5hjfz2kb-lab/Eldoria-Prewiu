@@ -1,8 +1,5 @@
 name: Eldoria Codex Windows auth read-only probe
 on:
-  push:
-    branches: [experiment/eldoria-codex-auth-20261102]
-    paths: ['.github/workflows/eldoria-codex-auth-readonly.yml']
   workflow_dispatch:
 permissions:
   contents: read
