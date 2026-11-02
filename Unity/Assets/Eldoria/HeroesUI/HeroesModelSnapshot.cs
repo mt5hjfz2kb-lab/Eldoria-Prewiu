@@ -62,9 +62,13 @@ namespace Eldoria.HeroesUI
             visual.SetActive(true);stage.SetActive(true);
             // Bind legacy animation on an active hierarchy before measuring its skin.
             if(idle&&idleState!=null){idle.Play(idleState.name);idleState.speed=0;idleState.time=0;idle.Sample();}
+            Bounds sourceIdleBounds=ActualBounds(visual);
             LocatePreviewShoulders();logPoseOnce=true;RelaxAldricPreviewArms();
             InstallPresentationPoseAnimation();
             bounds=ActualBounds(visual);
+            if(poseState!=null)Debug.Log("HERO_PREVIEW_SKIN_A_B source="+
+                sourceIdleBounds.size+" painted="+bounds.size+
+                " z_delta="+(bounds.size.z-sourceIdleBounds.size.z).ToString("F4"));
             Debug.Log("HERO_PREVIEW_GEOMETRY "+model.name+" source_scale="+model.transform.lossyScale+" local_stage_bounds="+bounds.size);
             float height=Mathf.Max(.1f,bounds.size.y);
             // Do not spawn the rejected round stage. Original hall floor is
