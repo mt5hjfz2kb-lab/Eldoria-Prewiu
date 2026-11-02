@@ -922,7 +922,23 @@ namespace Eldoria.HeroesUI
                 compact?14:18,TextAnchor.MiddleRight).color=gold;
         }
 
-        Sprite futureSlotArt, hallFrameSprite;
+        Sprite futureSlotArt, hallFrameSprite, realBaluarteIcon;
+        // Only the illustration portion of the genuine approved Baluarte
+        // reference is reused: crop excludes every baked Nv.1/status label.
+        // The gameplay icon is a standalone sprite, never a flattened panel.
+        Sprite RealAbilityArtwork(string heroId)
+        {
+            if(heroId!="aldric")return ApprovedProfileNavigationIcon(2);
+            if(realBaluarteIcon)return realBaluarteIcon;
+            var master=Resources.Load<Texture2D>("EldoriaV41/HeroesApprovedMaster");
+            if(master==null||master.width!=1536||master.height!=1024)
+                return ApprovedProfileNavigationIcon(2);
+            realBaluarteIcon=Sprite.Create(master,
+                new Rect(1157,master.height-(326+41),63,41),
+                new Vector2(.5f,.5f),100f,0,SpriteMeshType.FullRect);
+            realBaluarteIcon.name="Baluarte / exact approved decorative pictogram";
+            return realBaluarteIcon;
+        }
         readonly Sprite[] approvedReservedPortraits=new Sprite[4];
         // The approved master is archived as art direction, NEVER a flattened
         // functional UI. Only its four individual, text-free, lock-free
@@ -1521,7 +1537,7 @@ namespace Eldoria.HeroesUI
                 // inert; navigation, models, progression and saves are untouched.
                 HeroesSkillCards.Build(pane,hero.Id,hero.AbilityName,
                     hero.AbilityDescription,w,h,hallFrameSprite,
-                    ApprovedProfileNavigationIcon(2));
+                    RealAbilityArtwork(hero.Id));
             }else{
                 string title=CurrentPage==Page.Talentos?"TALENTOS":"EQUIPAMIENTO";
                 Label("Unavailable system title",pane,title,16,18,w-32,52,24).color=gold;
