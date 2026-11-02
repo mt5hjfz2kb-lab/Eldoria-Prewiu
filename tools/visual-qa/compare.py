@@ -4,7 +4,7 @@ import argparse, hashlib, html, io, json, os, re, sys, zipfile
 from pathlib import Path
 from urllib.request import Request, urlopen
 from urllib.parse import urlencode
-from PIL import Image, ImageChops, ImageStat
+from PIL import Image, ImageChops, ImageStat, ImageDraw, ImageOps
 
 MAX_ARCHIVE = 160 * 1024 * 1024
 MAX_UNPACKED = 500 * 1024 * 1024
@@ -96,6 +96,27 @@ def analyze(before_zip,after_zip,meta,out):
                          'after_sha256':hashlib.sha256(new[name]).hexdigest(),
                          'status':'sin cambios' if same else 'cambio detectado',
                          'artistic_verdict':'NO EVALUADO'})
+    # Every image proof is derived from exact two Unity artifact ZIPs.
+    # This viewer never scores or approves artistic quality.
+    (out/'previews').mkdir(exist_ok=True)
+    for idx, entry in enumerate(rows):
+        name=entry['name']
+        with Image.open(io.BytesIO(old[name])) as o, Image.open(io.BytesIO(new[name])) as n:
+            first=o.convert('RGB'); second=n.convert('RGB')
+            delta=ImageChops.difference(first,second)
+            mask=delta.convert('L').point(lambda v: min(255,v*3))
+            heat=Image.merge('RGB',(mask,Image.new('L',mask.size,0),Image.new('L',mask.size,0)))
+            cw,ch=300,270
+            preview=Image.new('RGB',(cw*3,ch+36),'#15202c')
+            for column,source in enumerate((first,second,heat)):
+                tile=ImageOps.contain(source,(cw-12,ch-12),Image.Resampling.BILINEAR)
+                preview.paste(tile,(column*cw+(cw-tile.width)//2,36+(ch-tile.height)//2))
+            draw=ImageDraw.Draw(preview)
+            for col,title in enumerate(('ANTES','DESPUES','DIFERENCIA')):
+                draw.text((col*cw+12,11),title,fill='#f9dc99')
+            preview_name=f'{idx:03d}.jpg'
+            preview.save(out/'previews'/preview_name,quality=75,optimize=True)
+            entry['preview']='previews/'+preview_name
     report={'provenance':meta,'screens_compared':len(rows),'resolution_mismatches':bad,
             'screens_missing':sorted(set(old)-set(new)),'screens_added':sorted(set(new)-set(old)),
             'technical_status':'INCOMPLETE' if bad else 'COMPARED',
@@ -105,12 +126,17 @@ def analyze(before_zip,after_zip,meta,out):
     (out/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
     e=lambda x:html.escape(str(x),quote=True)
     table=''.join('<tr><td>'+e(x['name'])+'</td><td>'+e(x['status'])+'</td><td>'+e(x['changed_luma_over15_pct'])+' %</td><td>Sin valoración artística</td></tr>' for x in rows)
+    cards=''.join('<article><h3>'+e(x['name'])+'</h3><p>'+e(x['status'])+' · '
+                  +e(x['changed_luma_over15_pct'])+' % píxeles con cambio significativo'
+                  +' · <strong>Arte sin evaluar</strong></p><a href="'+e(x['preview'])+'">'
+                  +'<img loading="lazy" alt="Antes, después y diferencias de '+e(x['name'])+'" src="'+e(x['preview'])+'"></a></article>'
+                  for x in sorted(rows,key=lambda r:r['changed_luma_over15_pct'],reverse=True))
     page=('<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
-          '<title>Eldoria: auditoría visual</title><style>body{font:16px system-ui;background:#101a23;color:#f2f4ee;margin:25px auto;max-width:1100px;padding:0 12px}'
+          '<title>Eldoria: auditoría visual</title><style>body{font:16px system-ui;background:#101a23;color:#f2f4ee;margin:25px auto;max-width:1100px;padding:0 12px}article{border:1px solid #355064;border-radius:12px;padding:14px;margin:18px 0}article h3{overflow-wrap:anywhere}article img{max-width:100%;height:auto;border-radius:6px}article p{font-size:13px;color:#bed0e0}'
           'table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:9px;border-bottom:1px solid #3c505e;text-align:left}th{color:#f6ca82}p{line-height:1.5}</style>'
           '<h1>Auditoría de capturas de Eldoria</h1><p>GitHub '+e(meta['before_sha'][:8])+' → '+e(meta['after_sha'][:8])+' · '+e(meta['branch'])+'</p>'
           '<p><b>'+str(len(rows))+' capturas comparadas.</b> Las métricas NO valoran la calidad ni aprueban arte.</p>'
-          '<table><thead><tr><th>Captura</th><th>Cambio</th><th>Píxeles (luma)</th><th>Arte</th></tr></thead><tbody>'+table+'</tbody></table></html>')
+          '<table><thead><tr><th>Captura</th><th>Cambio</th><th>Píxeles (luma)</th><th>Arte</th></tr></thead><tbody>'+table+'</tbody></table><h2>Antes / después / diferencias</h2>'+cards+'</html>')
     (out/'index.html').write_text(page,encoding='utf-8')
     return report
 
