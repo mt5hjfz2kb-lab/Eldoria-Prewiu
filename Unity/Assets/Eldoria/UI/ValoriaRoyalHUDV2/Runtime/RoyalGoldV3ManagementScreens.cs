@@ -31,6 +31,9 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalGoldV41MailboxScreen mailbox;
         Image approvedArcher,approvedTroopRow,trainingEnvironment,marchEnvironment;
         RectTransform marchHeadingSurface,marchTroopSurface;
+        // Live, reusable stat cards. Never cached gameplay values or text baked into art.
+        readonly RectTransform[] marchMetricCards=new RectTransform[6];
+        readonly RoyalText[] marchMetricValues=new RoyalText[6];
         readonly RectTransform[] heroPortraitViewports=new RectTransform[3];
         readonly Dictionary<RectTransform,Image> paneSurfaces=new Dictionary<RectTransform,Image>();
         readonly Image[] approvedHeroes=new Image[3];
@@ -476,6 +479,28 @@ namespace Eldoria.UI.RoyalGold.V2
             marchTroopSurface=Rect("March / live troop order cartouche",left);
             RoyalGoldV41SourceArt.Surface(marchTroopSurface,"blue-panel",14);
             marchTroopSurface.SetAsFirstSibling();
+            // The reference separates real army numbers into small individual
+            // ornamental cards, not one oversized text-filled blue rectangle.
+            for(int i=0;i<marchMetricCards.Length;i++)
+            {
+                var tile=Frame("March / real metric card "+i,right,false);
+                var tileFrame=tile.GetComponent<RoyalGoldV2FrameGraphic>();
+                tileFrame.DecorativeCorners=true;
+                tileFrame.Primary=false;
+                tileFrame.color=new Color(.94f,.79f,.47f,.88f);
+                var surface=RoyalGoldV41SourceArt.Surface(tile,"blue-panel",14);
+                surface.color=new Color(.96f,.94f,.87f,.77f);
+                surface.raycastTarget=false;
+                surface.rectTransform.anchorMin=Vector2.zero;
+                surface.rectTransform.anchorMax=Vector2.one;
+                surface.rectTransform.offsetMin=Vector2.zero;
+                surface.rectTransform.offsetMax=Vector2.zero;
+                surface.rectTransform.SetAsFirstSibling();
+                marchMetricCards[i]=tile;
+                var label=Text("March / live metric "+i,tile,19,Ivory,true);
+                label.alignment=TextAnchor.MiddleCenter;
+                marchMetricValues[i]=label;
+            }
             approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer-isolated-v1");
             approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
             approvedTroopRow=RoyalGoldV41SourceArt.Surface(left,"archer-row");
@@ -691,14 +716,19 @@ namespace Eldoria.UI.RoyalGold.V2
                 var power=SliceRules.Expedition(troops,selectedHero);
                 int total=troops.Total;
                 int pctT1=total>0?Mathf.RoundToInt(100f*selectedT1/total):0;
-                summary.Put("TROPAS DE LA MARCHA\n"+
-                    "Arqueros T1  "+selectedT1+" · "+pctT1+" %"+
-                    "\nArqueros T2  "+selectedT2+" · "+(total>0?100-pctT1:0)+" %"+
-                    "\n\nPODER  "+power.Power+
-                    "\nATAQUE  "+power.Attack+"   DEFENSA  "+power.Defense+
-                    "\nVIDA  "+power.Health+"   RUPTURA  "+power.Break);
+                summary.Put("COMPOSICIÓN Y FUERZA REAL");
+                string[] liveMetric={
+                    "ARQUEROS T1\n"+selectedT1+" · "+pctT1+" %",
+                    "ARQUEROS T2\n"+selectedT2+" · "+(total>0?100-pctT1:0)+" %",
+                    "PODER TOTAL\n"+power.Power,
+                    "ATAQUE\n"+power.Attack,
+                    "DEFENSA\n"+power.Defense,
+                    "VIDA\n"+power.Health
+                };
+                for(int i=0;i<marchMetricValues.Length;i++)
+                    marchMetricValues[i].Put(liveMetric[i]);
                 int occupied=MarchCapacityRules.ActiveCount(s,utcTicks());
-                status.Put("DISPONIBLES T1  "+s.Available.ArcherT1+" · T2  "+s.Available.ArcherT2+
+                status.Put("RUPTURA  "+power.Break+"   ·   DISPONIBLES T1  "+s.Available.ArcherT1+" · T2  "+s.Available.ArcherT2+
                     "\nCAPACIDAD DE "+HeroName(selectedHero)+"  "+MarchCapacityRules.Capacity(s,selectedHero)+
                     "\nNIVEL HÉROE  "+MarchCapacityRules.HeroLevel(s,selectedHero)+
                     " · MARCHAS ACTIVAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
@@ -947,7 +977,39 @@ namespace Eldoria.UI.RoyalGold.V2
             unitTitle.color=training?new Color(.10f,.08f,.055f):Ivory;
             unitDetail.color=training?new Color(.16f,.13f,.10f):Muted;
             action.transform.SetParent(training?right:footer,false);
-            if(!training)return;
+            for(int i=0;i<marchMetricCards.Length;i++)
+                marchMetricCards[i].gameObject.SetActive(!training);
+            if(!training)
+            {
+                // Two-column heraldic information cards anchor the approved
+                // military order composition. Real summary remains as a compact
+                // header, real capacity/availability as a separate footer.
+                var rw=right.rect.width;
+                var rh=right.rect.height;
+                float pad=wide?17f:20f;
+                float cardGap=wide?10f:12f;
+                float topCard=wide?52f:58f;
+                float band=Mathf.Max(92,rh*.57f-topCard);
+                float cardH=Mathf.Max(28,(band-cardGap*2)/3f);
+                float cardW=(rw-pad*2-cardGap)/2f;
+                Place(summary.rectTransform,pad,10,rw-2*pad,wide?36:42);
+                summary.fontSize=wide?23:25;
+                for(int i=0;i<marchMetricCards.Length;i++)
+                {
+                    float xx=pad+(i%2)*(cardW+cardGap);
+                    float yy=topCard+(i/2)*(cardH+cardGap);
+                    Place(marchMetricCards[i],xx,yy,cardW,cardH);
+                    Place(marchMetricValues[i].rectTransform,7,4,cardW-14,cardH-8);
+                    marchMetricValues[i].fontSize=wide?18:21;
+                }
+                float statusY=Mathf.Min(rh*.73f,topCard+3*(cardH+cardGap)+7);
+                Place(status.rectTransform,pad,statusY,rw-2*pad,
+                    Mathf.Max(24,rh-statusY-10));
+                status.fontSize=wide?16:18;
+                paneSurfaces[right].enabled=false; // no huge opaque blue backdrop
+                right.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
+                return;
+            }
             tierButton.transform.SetParent(right,false);
             float width=w-x-insetRight;
             float hh=wide?86:188;
