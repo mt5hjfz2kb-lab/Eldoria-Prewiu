@@ -65,7 +65,9 @@ namespace Eldoria.HeroesUI
             bounds=ActualBounds(visual);
             Debug.Log("HERO_PREVIEW_GEOMETRY "+model.name+" source_scale="+model.transform.lossyScale+" local_stage_bounds="+bounds.size);
             float height=Mathf.Max(.1f,bounds.size.y);
-            BuildPhysicalHeroDais(height);
+            // Do not spawn the rejected round stage. Original hall floor is
+            // the stage surface; this portrait retains real physical contact
+            // shadow and matched warm/cool lighting, without a pasted pedestal.
             var shader=Resources.Load<Shader>("EldoriaV41/HeroesContactShadow");
             if(!shader||!shader.isSupported)throw new InvalidOperationException("Hero contact-shadow shader unavailable");
             groundMaterial=new Material(shader){name="Hero / transparent shadow receiver"};
@@ -168,10 +170,14 @@ namespace Eldoria.HeroesUI
                 // Slightly open arms, bent naturally at the existing elbow.
                 // The first A/B only changed the framing, not the visibly
                 // abducted arms. Aim for a true near-resting silhouette.
-                var target=(Vector3.down*.98f+spread.normalized*.17f).normalized;
+                // Original weighted armour visibly retains the A-pose even
+                // after the joint reads 10 degrees from vertical. Correct
+                // the presentation-only bone beyond the rig's apparent
+                // spread so the actual rendered arm hangs beside the body.
+                var target=(Vector3.down*.89f-spread.normalized*.46f).normalized;
                 float before=Vector3.Angle(downArm,Vector3.down);
                 var swing=Quaternion.FromToRotation(downArm.normalized,target);
-                arm.rotation=Quaternion.RotateTowards(Quaternion.identity,swing,58f)*arm.rotation;
+                arm.rotation=Quaternion.RotateTowards(Quaternion.identity,swing,83f)*arm.rotation;
                 // Arm upper segment is now ~10 degrees off vertical. The
                 // original source Idle keeps forearms splayed; reorient only
                 // that preview segment so the gauntlets settle beside the
@@ -181,10 +187,10 @@ namespace Eldoria.HeroesUI
                     Vector3 lower=wrist.position-elbow.position;
                     if(lower.sqrMagnitude>.00001f){
                         var side=Vector3.ProjectOnPlane(lower,Vector3.up);
-                        Vector3 desired=(Vector3.down*.99f+
-                            (side.sqrMagnitude>.00001f?side.normalized*.11f:Vector3.zero)).normalized;
+                        Vector3 desired=(Vector3.down*.96f-
+                            (side.sqrMagnitude>.00001f?side.normalized*.28f:Vector3.zero)).normalized;
                         var wristSwing=Quaternion.FromToRotation(lower.normalized,desired);
-                        elbow.rotation=Quaternion.RotateTowards(Quaternion.identity,wristSwing,46f)*elbow.rotation;
+                        elbow.rotation=Quaternion.RotateTowards(Quaternion.identity,wristSwing,77f)*elbow.rotation;
                     }
                 }
                 if(logPoseOnce){
