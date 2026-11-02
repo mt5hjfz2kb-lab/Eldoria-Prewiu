@@ -341,6 +341,8 @@ namespace Eldoria.HeroesUI
                 }
                 else Label("Hero identity without substitute art",stage,hero.DisplayName,14,modelH*.35f,modelW-28,70,25,TextAnchor.MiddleCenter);
             }
+            if(CurrentPage==Page.Equipamiento)
+                HeroesEquipmentArt.BuildSlots(stage,modelW,modelH,hallFrameSprite);
             Label("Real hero availability",stage,hero.Available?"EN VALORIA":"EN EXPEDICIÓN",8,modelH-37,modelW-16,30,16,TextAnchor.MiddleCenter);
             float infoX=portrait?20f:bodyX+modelW+12f,
                 infoY=portrait?top+modelH+12f:top;
@@ -348,7 +350,10 @@ namespace Eldoria.HeroesUI
                 infoH=portrait?bodyH-modelH-12f:bodyH;
             var info=CurrentPage==Page.Resumen
                 ? ProfileSummaryBoard(content,infoX,infoY,infoW,infoH)
-                : Frame("Hero authoritative information",content,infoX,infoY,infoW,infoH);
+                : CurrentPage==Page.Equipamiento
+                    ? Rect("Equipment / open contextual field",content)
+                    : Frame("Hero authoritative information",content,infoX,infoY,infoW,infoH);
+            if(CurrentPage==Page.Equipamiento)Place(info,infoX,infoY,infoW,infoH);
             BuildInformation(info,hero,infoW,infoH);
             if(CurrentPage==Page.Talentos){
                 stage.gameObject.SetActive(false);info.gameObject.SetActive(false);
@@ -1508,9 +1513,12 @@ namespace Eldoria.HeroesUI
                 HeroesSkillCards.Build(pane,hero.Id,hero.AbilityName,
                     hero.AbilityDescription,w,h,hallFrameSprite,
                     RealAbilityArtwork(hero.Id));
+            }else if(CurrentPage==Page.Equipamiento){
+                // Four pictorial locked positions frame the original live model.
+                // The contextual engraving is translucent and creates no actions.
+                HeroesEquipmentArt.BuildContext(pane,w,h);
             }else{
-                string title=CurrentPage==Page.Talentos?"TALENTOS":"EQUIPAMIENTO";
-                Label("Unavailable system title",pane,title,16,18,w-32,52,24).color=gold;
+                Label("Unavailable system title",pane,"TALENTOS",16,18,w-32,52,24).color=gold;
                 Label("Unavailable system state",pane,"Aún no disponible en esta etapa del reino.",16,90,w-32,Mathf.Max(60,h-112),22);
             }
         }
