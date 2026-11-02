@@ -15,7 +15,7 @@ EXPECTED_BLOB = "04c6216dcf486ba56588021c6412e11312569425"
 
 
 def git_blob_sha(data):
-    return hashlib.sha1(b"blob " + str(len(data)).encode() + b"\\0" + data).hexdigest()
+    return hashlib.sha1(b"blob " + str(len(data)).encode() + bytes([0]) + data).hexdigest()
 
 
 def replace_once(text, before, after, name):
