@@ -144,10 +144,10 @@ namespace Eldoria.HeroesUI
             if(!master||master.width!=1536||master.height!=1024)return null;
             // Only text-free ornament icon crops from the real owner-approved
             // second panel. No level, character, fake background UI or labels.
-            int[] x={532,535,535,535,534,534};
-            int[] y={62,132,209,280,355,431};
-            int[] width={42,38,38,38,41,41};
-            int[] height={46,43,44,44,43,43};
+            int[] x={527,535,536,535,534,534};
+            int[] y={63,135,207,282,358,432};
+            int[] width={43,24,24,24,28,28};
+            int[] height={39,27,25,24,29,29};
             var area=new UnityEngine.Rect(x[type],
                 master.height-y[type]-height[type],width[type],height[type]);
             var sprite=Sprite.Create(master,area,new Vector2(.5f,.5f),100f,
