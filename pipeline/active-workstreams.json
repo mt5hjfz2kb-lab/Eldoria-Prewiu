@@ -117,7 +117,8 @@
         "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/**",
         "Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
-        "ArtSource/RejectedLegacyBastion/**"
+        "ArtSource/RejectedLegacyBastion/**",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -127,7 +128,7 @@
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "MARCH_PREPARATION_REFERENCE_REBUILD_20261102",
-      "next": "Reconstruct March 3-hero cards, genuine uncropped portraits, compact troop controls and six real metrics; test 3 marches and A/B four sizes in PR136 without gameplay or save changes.",
+      "next": "Exact-HEAD Unity visual acceptance for March screen; correct old PlayMode assertion of 7 troop count moved into live metric tiles, keep all real gameplay/3 marches and guard assertions.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1684,7 +1685,7 @@
           "reason": "Propietario ordena expresamente 'Hazlo tú' para reconstruir Preparación de Marchas en este chat, reconciliar PR134/136 y entregar Unity A/B. Transferencia del mismo workstream, sin cancelar ejecución nativa previa, publicación, merge ni gastos."
         }
       ],
-      "ownership_revision": 106,
+      "ownership_revision": 107,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1779,7 +1780,7 @@
       "handoff_reason": "Owner-authorized in-progress takeover; prior source preservation and live Windows job must not be cancelled.",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
-      "scope_extension_reason": "Owner continuation after PR129: administrative closure of the already-completed six-reference source request which incorrectly retains an executable paid composition route. No modification to PR127, assets or spend.",
+      "scope_extension_reason": "Owner-directed Marches UI recon: update obsolete PlayMode UI heading assertion to inspect real live metric, preserve gateway 7 troop and save assertions.",
       "android18_signed_candidate": {
         "build_run_id": 40798180869,
         "source": "0f150e6a719f93d312ebb18d1ceac5edd7435ba9",
