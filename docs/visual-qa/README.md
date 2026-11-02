@@ -9,11 +9,11 @@
 - Se dispara después de `UI Progression Certification (fast)` (solo si el run finaliza correctamente); acepta `workflow_dispatch` manual con un run conocido.
 - Selecciona la ejecución anterior **del mismo workflow, rama y repositorio**, cuyo commit SHA completo sea diferente y cuyo ZIP nativo `eldoria-v41-native-<run_id>` siga vigente.
 - Descarga únicamente los ZIP de capturas; controla tamaños, nombres de fichero peligrosos, PNG duplicados, dimensiones y hashes.
-- Produce `visual-report/index.html` y `report.json` con métricas descriptivas, sin inventar una valoración artística.
+- Produce `visual-report/index.html`, `report.json` y 53 imágenes de antes/después/diferencias en el piloto con métricas descriptivas, sin inventar una valoración artística.
 - `art_approved=false` y `artistic_progress_machine_decided=false` siempre.
 
 ## Prueba aislada realizada
-Se compararon 53 pares de PNG reales de Unity de las ejecuciones `41219845900` y `41434883428`: 45 archivos modificados, 8 idénticos, ninguna incompatibilidad de resolución. El prototipo superó 8 pruebas automáticas de manipulación de entradas y seguridad, sin Windows ni Unity abierto.
+Se compararon 53 pares de PNG reales de Unity de las ejecuciones `41219845900` y `41434883428`: 45 archivos modificados, 8 idénticos, ninguna incompatibilidad de resolución. El prototipo superó 11 pruebas automáticas de manipulación de entradas y seguridad, sin Windows ni Unity abierto.
 
 ## Prueba local
 ```bash
