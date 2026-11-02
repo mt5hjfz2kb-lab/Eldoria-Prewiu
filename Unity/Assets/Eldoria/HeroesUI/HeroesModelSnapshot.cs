@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -9,7 +10,7 @@ namespace Eldoria.HeroesUI
     public sealed class HeroesModelSnapshot : MonoBehaviour
     {
         RenderTexture texture;GameObject previous,stage,visual;RawImage output;
-        Camera camera;Light key,rim,fill;Animation idle;AnimationState idleState;
+        Camera camera;Light key,rim,fill;Animation idle;AnimationState idleState,poseState;AnimationClip poseClip;
         Mesh groundMesh;Material groundMaterial;Bounds bounds;float yaw=90,nextRender;int renderLayer;
         readonly Transform[] previewShoulders=new Transform[2],previewElbows=new Transform[2],previewWrists=new Transform[2];
         Mesh stonePlinthMesh,bronzePlinthMesh,stoneJointMesh;Material stonePlinthMaterial,bronzePlinthMaterial,stoneJointMaterial;
@@ -62,6 +63,7 @@ namespace Eldoria.HeroesUI
             // Bind legacy animation on an active hierarchy before measuring its skin.
             if(idle&&idleState!=null){idle.Play(idleState.name);idleState.speed=0;idleState.time=0;idle.Sample();}
             LocatePreviewShoulders();logPoseOnce=true;RelaxAldricPreviewArms();
+            InstallPresentationPoseAnimation();
             bounds=ActualBounds(visual);
             Debug.Log("HERO_PREVIEW_GEOMETRY "+model.name+" source_scale="+model.transform.lossyScale+" local_stage_bounds="+bounds.size);
             float height=Mathf.Max(.1f,bounds.size.y);
@@ -302,11 +304,83 @@ namespace Eldoria.HeroesUI
             renderer.shadowCastingMode=ShadowCastingMode.Off;
             return mesh;
         }
+        // The legacy Animation component owns final skinning before the
+        // camera render. Mutating Transform.rotation after Animation.Sample
+        // changed logged joint angles but the GPU mesh remained in the A-pose
+        // in 8 genuine captures. Give the presentation clone an ANIMATION
+        // LAYER, just as the already working city rig does, rather than
+        // repeatedly applying out-of-band transform rotations.
+        void InstallPresentationPoseAnimation()
+        {
+            if(!idle||!previewShoulders[0]||!previewShoulders[1])return;
+            var clip=new AnimationClip {legacy=true,
+                name="Aldric_Profile_ArmsDown_PresentationOnly",
+                wrapMode=WrapMode.ClampForever};
+            try
+            {
+                int joints=0;
+                for(int i=0;i<2;i++)
+                {
+                    var bones=new[]{previewShoulders[i],previewElbows[i]};
+                    foreach(var bone in bones)
+                    {
+                        if(!bone)continue;
+                        var cursor=bone;var segments=new List<string>();
+                        while(cursor&&cursor!=idle.transform)
+                        {
+                            segments.Add(cursor.name);
+                            cursor=cursor.parent;
+                        }
+                        if(!cursor)throw new InvalidOperationException(
+                            "Presentation joint outside approved clip root: "+bone.name);
+                        segments.Reverse();
+                        var path=string.Join("/",segments);
+                        var q=bone.localRotation;
+                        float[] values={q.x,q.y,q.z,q.w};
+                        string[] properties={"localRotation.x","localRotation.y",
+                            "localRotation.z","localRotation.w"};
+                        for(int c=0;c<4;c++)
+                            clip.SetCurve(path,typeof(Transform),properties[c],
+                                AnimationCurve.Constant(0f,1f,values[c]));
+                        joints++;
+                    }
+                }
+                if(joints!=4)throw new InvalidOperationException(
+                    "Aldric presentation requires two shoulders and two forearms: "+joints);
+                clip.EnsureQuaternionContinuity();
+                idle.AddClip(clip,clip.name);
+                var state=idle[clip.name];
+                state.layer=1;
+                state.blendMode=AnimationBlendMode.Blend;
+                state.wrapMode=WrapMode.ClampForever;
+                state.speed=0f;state.time=0f;state.weight=1f;
+                for(int i=0;i<2;i++){
+                    state.AddMixingTransform(previewShoulders[i],false);
+                    state.AddMixingTransform(previewElbows[i],false);
+                }
+                idle.Play(clip.name,UnityEngine.PlayMode.StopSameLayer);
+                state.speed=0f;state.time=0f;state.weight=1f;
+                poseState=state;poseClip=clip;
+                idle.Sample();
+                Debug.Log("HERO_PREVIEW_POSE_LAYER_ACTIVE "+clip.name+
+                    " joints="+joints+" weight="+state.weight);
+            }
+            catch(Exception error)
+            {
+                Debug.LogError("HERO_PREVIEW_POSE_LAYER_FAILED "+error);
+                if(clip)Destroy(clip);
+                throw;
+            }
+        }
         void Update(){if(output&&output.enabled&&output.gameObject.activeInHierarchy&&HasModel&&Time.unscaledTime>=nextRender)RenderFrame();}
         void RenderFrame(){
             if(!camera)return;
             logPoseOnce=false;
-            if(idle&&idleState!=null){idleState.time=Mathf.Repeat(Time.unscaledTime,Mathf.Max(.01f,idleState.length));idle.Sample();RelaxAldricPreviewArms();}
+            if(idle&&idleState!=null){
+                idleState.time=Mathf.Repeat(Time.unscaledTime,Mathf.Max(.01f,idleState.length));
+                if(poseState!=null){poseState.time=0f;poseState.weight=1f;}
+                idle.Sample();
+            }
             var rotation=Quaternion.Euler(7,yaw,0);var up=rotation*Vector3.up;var right=rotation*Vector3.right;var e=bounds.extents;
             float extent(Vector3 axis)=>Mathf.Abs(axis.x)*e.x+Mathf.Abs(axis.y)*e.y+Mathf.Abs(axis.z)*e.z;
             float tangent=Mathf.Tan(camera.fieldOfView*.5f*Mathf.Deg2Rad);
@@ -368,7 +442,9 @@ namespace Eldoria.HeroesUI
             }catch{Destroy(copy);throw;}finally{RenderTexture.active=prior;ReleaseReadablePortrait(resolved);}
         }
         public void Release(){
-            previous=null;output=null;idle=null;idleState=null;camera=null;key=null;rim=null;fill=null;
+            previous=null;output=null;idle=null;idleState=null;poseState=null;
+            if(poseClip)Destroy(poseClip);poseClip=null;
+            camera=null;key=null;rim=null;fill=null;
             for(int i=0;i<2;i++){previewShoulders[i]=null;previewElbows[i]=null;previewWrists[i]=null;}
             if(stoneJointMesh)Destroy(stoneJointMesh);stoneJointMesh=null;
             if(stoneJointMaterial)Destroy(stoneJointMaterial);stoneJointMaterial=null;
