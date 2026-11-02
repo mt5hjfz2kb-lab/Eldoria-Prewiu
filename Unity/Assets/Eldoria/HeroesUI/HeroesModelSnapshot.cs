@@ -173,32 +173,24 @@ namespace Eldoria.HeroesUI
                 if(downArm.sqrMagnitude<.00001f)continue;
                 var spread=Vector3.ProjectOnPlane(downArm,Vector3.up);
                 if(spread.sqrMagnitude<.00001f)continue;
-                // Slightly open arms, bent naturally at the existing elbow.
-                // The first A/B only changed the framing, not the visibly
-                // abducted arms. Aim for a true near-resting silhouette.
-                // Original weighted armour visibly retains the A-pose even
-                // after the joint reads 10 degrees from vertical. Correct
-                // the presentation-only bone beyond the rig's apparent
-                // spread so the actual rendered arm hangs beside the body.
-                // Native A/B proved a 27-degree inward bone pose still
-                // renders the authored A-pose's metal sleeves far out.
-                // Compensate that bind-space sleeve silhouette on the
-                // throwaway preview only; do not modify gameplay's rig.
-                var target=(Vector3.down*.73f-spread.normalized*.68f).normalized;
+                // Native run 41429595516 measured 42.7 degrees from
+                // vertical after the former INWARD compensation: this made
+                // the arms bend towards the belt and kept gauntlets elevated.
+                // Drive the actual skinned limb toward gravity instead.
+                // Keep a restrained 4.5-degree outward clearance for armor.
+                var target=(Vector3.down*.997f+spread.normalized*.078f).normalized;
                 float before=Vector3.Angle(downArm,Vector3.down);
                 var swing=Quaternion.FromToRotation(downArm.normalized,target);
                 arm.rotation=swing*arm.rotation;
-                // Arm upper segment is now ~10 degrees off vertical. The
-                // original source Idle keeps forearms splayed; reorient only
-                // that preview segment so the gauntlets settle beside the
-                // thighs rather than forming an unnatural claw silhouette.
+                // Independent elbow->hand segment should also hang nearly
+                // vertically, not cross the belly or keep a raised claw.
                 var wrist=previewWrists[i];
                 if(wrist){
                     Vector3 lower=wrist.position-elbow.position;
                     if(lower.sqrMagnitude>.00001f){
                         var side=Vector3.ProjectOnPlane(lower,Vector3.up);
-                        Vector3 desired=(Vector3.down*.82f-
-                            (side.sqrMagnitude>.00001f?side.normalized*.57f:Vector3.zero)).normalized;
+                        Vector3 desired=(Vector3.down*.997f+
+                            (side.sqrMagnitude>.00001f?side.normalized*.073f:Vector3.zero)).normalized;
                         var wristSwing=Quaternion.FromToRotation(lower.normalized,desired);
                         elbow.rotation=wristSwing*elbow.rotation;
                     }
