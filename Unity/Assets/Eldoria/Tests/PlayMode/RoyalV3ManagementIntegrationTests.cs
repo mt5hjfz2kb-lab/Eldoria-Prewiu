@@ -146,8 +146,17 @@ namespace Eldoria.Tests
                 var slider=GameObject.Find("Quantity slider")?.GetComponent<Slider>();
                 Assert.That(slider,Is.Not.Null);
                 slider.value=7;
+                // March presentation now separates an authored chapter title
+                // from the six genuine, state-bound number tiles. The former
+                // "7" assertion on the title was stale; exercise the real
+                // visible T1 tile while retaining the gateway assertion below.
                 var composition=GameObject.Find("Training or expedition breakdown")?.GetComponent<Text>();
-                Assert.That(composition.text,Does.Contain("7"));
+                Assert.That(composition,Is.Not.Null);
+                Assert.That(composition.text,Does.Contain("COMPOSICIÓN"));
+                var selectedT1Metric=GameObject.Find("March / live metric 0")?.GetComponent<Text>();
+                Assert.That(selectedT1Metric,Is.Not.Null);
+                Assert.That(selectedT1Metric.text,Does.Contain("ARQUEROS T1"));
+                Assert.That(selectedT1Metric.text,Does.Contain("7"));
                 confirm=GameObject.Find("Confirm military command")?.GetComponent<Button>();
                 confirm.onClick.Invoke();
                 Assert.That(fake.Snapshot().PreparedTroops.ArcherT1,Is.EqualTo(7));
