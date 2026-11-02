@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-hero-profiles-finalization-20261102",
+      "owner": "chatgpt-eldoria-hero-profile-composition-20261102",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-02",
@@ -119,15 +119,13 @@
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK03_HERO_POSE_AND_GOLD_RELIEFS_NATIVE_FINAL_RUN_QUEUED",
-      "next": "PR136 HEAD 2897759243d95922d5d4e34e26ce83143ff3140a, second pass: constrained presentation-only upper-arm rotation to ~10 degrees from vertical and use sans font for 844x390, preserve GLB/saves. Exact-head Unity certificate 41366240138 pending behind earlier comprehensive regression 41365279075. First-pass f435b741 native V4.1 functional PASS artifact 13107247339, visually Aldric arms still too wide; do NOT call 8.5/10 or art_approved. Once new native captures available inspect arm-angle logs and both four-resolution A/B; repair remaining pose/legibility if needed. Do not merge/publish, no paid assets.",
+      "phase": "BLOCK03_REBUILD_STAGE_AND_APPROVED_COMPOSITION",
+      "next": "Rebuild hero RenderTexture with real 3D dais and controlled arm plus forearm stance; align left icon rail, right power/stat panel and actual-hero portrait selector with six-screen reference. Preserve GLB, Unity host, save. Reserve windows only for genuine native certification, compare exact-head captures before acceptance.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1627,9 +1625,15 @@
           "ownership_revision": 95,
           "transferred_at": "2026-11-02",
           "reason": "User explicitly orders the connected chat to continue and finish PR136 hero-profile corrections; preserve earlier native evidence and in-flight run, do not duplicate PR or cancel Windows job."
+        },
+        {
+          "owner": "chatgpt-eldoria-hero-profiles-finalization-20261102",
+          "ownership_revision": 96,
+          "transferred_at": "2026-11-02",
+          "reason": "Owner explicitly requests continuation with all connected access; reconstruct genuinely integrated hero profiles and approved composition in existing PR136, preserve previous evidence; no paid credits/merge/publication."
         }
       ],
-      "ownership_revision": 96,
+      "ownership_revision": 97,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
