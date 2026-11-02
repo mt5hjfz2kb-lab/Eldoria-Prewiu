@@ -35,7 +35,7 @@ namespace Eldoria.HeroesUI
         public RectTransform VisibleRoot => IsOpen ? root : null;
         RectTransform root, content;
         HeroesModelSnapshot preview;
-        Font font;
+        Font font,compactFont;
         float observedWidth, observedHeight;
         readonly Color gold = new Color(.78f,.63f,.37f), ivory = new Color(.96f,.91f,.80f),
             midnight = new Color(.035f,.049f,.069f), panel = new Color(.065f,.079f,.099f);
@@ -44,7 +44,8 @@ namespace Eldoria.HeroesUI
         {
             if (!safeArea || readHeroes == null) throw new ArgumentNullException();
             ExistingHudSafeArea=safeArea;ReadHeroes=readHeroes;
-            font=Resources.Load<Font>("EldoriaRetention/reference-serif") ?? Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            compactFont=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            font=Resources.Load<Font>("EldoriaRetention/reference-serif") ?? compactFont;
             if(root)return;
             root=Rect("Heroes / canonical destination",safeArea);
             root.anchorMin=Vector2.zero;root.anchorMax=Vector2.one;
@@ -121,7 +122,7 @@ namespace Eldoria.HeroesUI
         Text Label(string name,Transform parent,string value,float x,float y,float w,float h,int size,TextAnchor align=TextAnchor.MiddleLeft)
         {
             var r=Rect(name,parent);Place(r,x,y,w,h);var t=r.gameObject.AddComponent<Text>();
-            t.font=font;t.text=value??"";t.fontSize=size;t.color=ivory;t.alignment=align;t.raycastTarget=false;
+            t.font=(CurrentPage!=Page.Salon && content && content.rect.width>content.rect.height && content.rect.height<500f) ? compactFont : font;t.text=value??"";t.fontSize=size;t.color=ivory;t.alignment=align;t.raycastTarget=false;
             t.horizontalOverflow=HorizontalWrapMode.Wrap;t.verticalOverflow=VerticalWrapMode.Truncate;
             t.resizeTextForBestFit=true;t.resizeTextMinSize=12;t.resizeTextMaxSize=size;return t;
         }
@@ -172,7 +173,7 @@ namespace Eldoria.HeroesUI
                 var b=Button("Hero tab "+page,caption,x,y,tabWidth,portrait?43:shortProfile?40:52,()=>Select(page));
                 if(shortProfile){
                     var t=b.GetComponentInChildren<Text>();
-                    if(t){t.fontStyle=FontStyle.Bold;t.fontSize=17;t.resizeTextMinSize=15;}
+                    if(t){t.fontStyle=FontStyle.Normal;t.fontSize=18;t.resizeTextForBestFit=false;}
                 }
                 if(CurrentPage==page)b.targetGraphic.color=new Color(.95f,.78f,.43f);
             }

@@ -12,6 +12,7 @@ namespace Eldoria.HeroesUI
         Camera camera;Light key,rim,fill;Animation idle;AnimationState idleState;
         Mesh groundMesh;Material groundMaterial;Bounds bounds;float yaw=90,nextRender;int renderLayer;
         readonly Transform[] previewShoulders=new Transform[2],previewElbows=new Transform[2];
+        bool logPoseOnce;
         public bool HasModel=>texture&&previous&&stage;
         public bool HasPerspectiveGround=>camera&&!camera.orthographic&&groundMaterial&&groundMaterial.shader.isSupported;
         public bool SamplesOriginalIdle=>idle&&idleState!=null;
@@ -58,7 +59,7 @@ namespace Eldoria.HeroesUI
             visual.SetActive(true);stage.SetActive(true);
             // Bind legacy animation on an active hierarchy before measuring its skin.
             if(idle&&idleState!=null){idle.Play(idleState.name);idleState.speed=0;idleState.time=0;idle.Sample();}
-            LocatePreviewShoulders();RelaxAldricPreviewArms();
+            LocatePreviewShoulders();logPoseOnce=true;RelaxAldricPreviewArms();
             bounds=ActualBounds(visual);
             Debug.Log("HERO_PREVIEW_GEOMETRY "+model.name+" source_scale="+model.transform.lossyScale+" local_stage_bounds="+bounds.size);
             float height=Mathf.Max(.1f,bounds.size.y);
@@ -152,14 +153,22 @@ namespace Eldoria.HeroesUI
                 var spread=Vector3.ProjectOnPlane(downArm,Vector3.up);
                 if(spread.sqrMagnitude<.00001f)continue;
                 // Slightly open arms, bent naturally at the existing elbow.
-                var target=(Vector3.down*.94f+spread.normalized*.34f).normalized;
+                // The first A/B only changed the framing, not the visibly
+                // abducted arms. Aim for a true near-resting silhouette.
+                var target=(Vector3.down*.98f+spread.normalized*.17f).normalized;
+                float before=Vector3.Angle(downArm,Vector3.down);
                 var swing=Quaternion.FromToRotation(downArm.normalized,target);
-                arm.rotation=Quaternion.RotateTowards(Quaternion.identity,swing,28f)*arm.rotation;
+                arm.rotation=Quaternion.RotateTowards(Quaternion.identity,swing,58f)*arm.rotation;
+                if(logPoseOnce)
+                    Debug.Log("HERO_PREVIEW_ARM_POSE "+i+" upper="+arm.name+
+                        " elbow="+elbow.name+" before="+before.ToString("F1")+
+                        " after="+Vector3.Angle(elbow.position-arm.position,Vector3.down).ToString("F1"));
             }
         }
         void Update(){if(output&&output.enabled&&output.gameObject.activeInHierarchy&&HasModel&&Time.unscaledTime>=nextRender)RenderFrame();}
         void RenderFrame(){
             if(!camera)return;
+            logPoseOnce=false;
             if(idle&&idleState!=null){idleState.time=Mathf.Repeat(Time.unscaledTime,Mathf.Max(.01f,idleState.length));idle.Sample();RelaxAldricPreviewArms();}
             var rotation=Quaternion.Euler(7,yaw,0);var up=rotation*Vector3.up;var right=rotation*Vector3.right;var e=bounds.extents;
             float extent(Vector3 axis)=>Mathf.Abs(axis.x)*e.x+Mathf.Abs(axis.y)*e.y+Mathf.Abs(axis.z)*e.z;
