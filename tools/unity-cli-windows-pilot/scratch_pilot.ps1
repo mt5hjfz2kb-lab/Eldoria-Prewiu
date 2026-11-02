@@ -25,11 +25,15 @@ function Save-Report {
   $report | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath (Join-Path $root 'proof.json') -Encoding utf8
 }
 function Run-Cli($argList,$file) {
-  $text = (& unity @argList 2>&1 | Out-String)
-  $exit = $LASTEXITCODE
+  $prior = $ErrorActionPreference
+  try {
+    $ErrorActionPreference = 'Continue'
+    $text = (& unity @argList 2>&1 | Out-String)
+    $exit = $LASTEXITCODE
+  } finally { $ErrorActionPreference = $prior }
   [IO.File]::WriteAllText((Join-Path $root $file), $text)
   if($exit -ne 0) { throw "Unity CLI exit $exit at $file. See evidence." }
-  if($text -match '"success"\s*:\s*false' -or $text -match '"error"\s*:\s*"Compilation Failed"') { throw "Unity Editor command reported semantic error despite CLI exit 0: $file" }
+  if($text -match '"success"\s*:\s*false' -or $text -match '"error"\s*:\s*"Compilation Failed"') { throw "Unity Editor command returned semantic failure: $file" }
   return $text
 }
 function Unity-Child($argList,$timeoutSec,$logName) {
@@ -97,7 +101,16 @@ try {
   }
   if(-not $ready){throw 'Unity Pipeline Editor did not expose CLI commands within safe bound.'}
   Stage 'editor-connected' 'PASS' 'Unity CLI discovered live Pipeline commands on isolated scratch Editor.'
-  $identity=Run-Cli @('command','script','eval','return UnityEngine.Application.unityVersion;','--project-path',$project) 'unity-editor-eval-version.txt'
+  $identity=$null
+  for($retry=0;$retry -lt 8;$retry++){
+    try {
+      $identity=Run-Cli @('command','script','eval','return UnityEngine.Application.unityVersion;','--project-path',$project) 'unity-editor-eval-version.txt'
+      break
+    } catch {
+      if($retry -eq 7){throw}
+      Start-Sleep -Seconds 3
+    }
+  }
   Stage 'editor-eval-readonly' 'PASS' $identity.Trim().Substring(0,[Math]::Min(150,$identity.Trim().Length))
   # Real Editor screenshot via RenderTexture, with literal-free C# for Windows CLI quoting safety.
   function Capture-Scratch([string]$fileName) {
