@@ -80,7 +80,15 @@ try {
   for($i=0;$i -lt 70;$i++){
     if($resident.HasExited){throw ('Scratch Editor terminated early: '+$resident.ExitCode)}
     Start-Sleep -Seconds 5
-    $detected=((& unity command --project-path $project 2>&1) | Out-String)
+    # Expected while the scratch Editor imports Pipeline; native stderr is not a fatal exception.
+    $prior=$ErrorActionPreference
+    $detected=''
+    try {
+      $ErrorActionPreference='Continue'
+      $detected=((& unity command --project-path $project 2>&1) | Out-String)
+    } catch {
+      $detected=[string]$_
+    } finally { $ErrorActionPreference=$prior }
     if($detected -match 'script eval|eval_file|editor\.playmode'){
       [IO.File]::WriteAllText((Join-Path $root 'editor-commands.txt'),$detected)
       $ready=$true;break
