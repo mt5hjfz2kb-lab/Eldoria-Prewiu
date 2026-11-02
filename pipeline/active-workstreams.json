@@ -2990,8 +2990,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
-      "phase": "MOBILE_QA_CORRECTION_COMMITTED_UNITY_AB_PENDING",
-      "next": "PR136 HEAD efab2810418a7243d85636b1d7fb51c80b46336b fixes 390x844 description font 24px and label/icon overlap, adds Baluarte original illustration without Nv1. Previous Unity run 41442830284 failed before Lyra on mobile readability; execute new HEAD native screenshot gate and inspect both hero A/B. No artistic approval or merge.",
+      "phase": "OWNER_ACCEPTED_PROVISIONALLY_ART_DEBT_DEFERRED",
+      "next": "El propietario acepta el A/B real de Habilidades como baseline provisional 2026-11-02. NO ART_APPROVED, NO 8.2/10 definitivo, NO más pulido de esta área hasta que el propietario la reprograme; continuar a otra área. Deuda y pruebas: issue #145. A/B conservado en Biblioteca /Eldoria/Baselines/Eldoria_Habilidades_AB_Aceptacion_Provisional_2026-11-02.zip, capturas intermedias Unity run 41445683487 PASS, fuente final PR136 efab281... pendiente de comprobación run 41445804365 al registrar. No merge/publicación.",
       "budget_eur": 0,
       "ownership_history": [
         {
@@ -3084,7 +3084,15 @@
       "release_reason": "READY_EXACT_HEAD_UNITY_AB_QA",
       "original_pr": 135,
       "last_skills_art_commit": "72bacf1a8c9a7e7735b704e242e8f0fad3182e3c",
-      "last_skills_art_evidence": "docs/heroes-ui/ABILITIES_ART_20261102.md"
+      "last_skills_art_evidence": "docs/heroes-ui/ABILITIES_ART_20261102.md",
+      "owner_accepted_provisional": true,
+      "art_approved": false,
+      "deferred_issue": 145,
+      "accepted_baseline_library_path": "/Eldoria/Baselines/Eldoria_Habilidades_AB_Aceptacion_Provisional_2026-11-02.zip",
+      "accepted_baseline_source_sha": "8b64cbb077d170652d6242c01e76210f4aae7422",
+      "latest_implementation_sha": "efab2810418a7243d85636b1d7fb51c80b46336b",
+      "last_native_capture_run": 41445683487,
+      "pending_final_native_run": 41445804365
     },
     {
       "id": "eldoria-unified-art-vault-20261029",
