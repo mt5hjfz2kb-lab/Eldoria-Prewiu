@@ -33,7 +33,7 @@ namespace Eldoria.HeroesUI
         static float Noise(float x,float y,float z) =>
             Frac(Mathf.Sin(x*127.1f+y*311.7f+z*74.7f)*43758.5453f);
         static float Ring(float r,float center,float width) =>
-            1f-Smooth(width*.70f,width,r-Mathf.Abs(center));
+            1f-Smooth(width*.70f,width,Mathf.Abs(r-center));
         static Color Blend(Color a,Color b,float f) => Color.Lerp(a,b,Sat(f));
         static Sprite SpriteFrom(string name,int width,int height,
             Func<float,float,Color> shade,Vector4 border)
