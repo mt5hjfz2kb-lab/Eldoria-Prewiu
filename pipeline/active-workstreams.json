@@ -126,8 +126,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK03_EXACT_HEAD_NATIVE_POSE_AND_ICON_VALIDATION",
-      "next": "PR136 current HEAD c87ab07427082bf5e5e29df48f45b2c8c3e20819; native run 41425891411 pending behind 41424099554. Actual previous native 41424099554 produced broad arms, logged shoulder before40, after27.2; source corrected to ~3.4deg inward and forearm ~2.4deg; icon crops now exact text-free region (instead of labels baked). No pedestal. Inspect genuine Unity PNG at 4 sizes each for both heroes, compare reference, check actual arm contact/silhouette and buttons; do not approve until verified, no merge or publish.",
+      "phase": "HERO_PROFILES_PROVISIONAL_ACCEPTED_NEXT_MARCH_TRAINING",
+      "next": "Propietario acepta PROVISIONALMENTE fichas Aldric/Lyra del HEAD 6cb1dd1 (avance artístico sustancial demostrado A/B); no es acabado definitivo/art_approved. NO gastar más ciclos de microajustes ahora. Prioridad siguiente: Marchas y Entrenamiento, luego Ciudad, en misma PR136/alcance sin duplicar trabajos. Mantener anotadas: brazos de Aldric todavía manos en cintura, figura sobre fondo pintado, 844x390 poco legible, detalles del panel aprobados pendientes sin inventar mecánicas. Unity exact-HEAD run 41434883428 artifact13137941355 funcional PASS; regresión general EN CURSO; liberar lease Windows cuando acabe. No fusionar ni publicar por aceptación parcial.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -938,7 +938,7 @@
           "full_ci_status": "IN_PROGRESS_WHEN_RECORDED",
           "separate_runner_collision": false
         },
-        "hero_profiles_latest_source": "c87ab07427082bf5e5e29df48f45b2c8c3e20819",
+        "hero_profiles_latest_source": "6cb1dd1fe46be76dca51af932aead7f2fc189f79",
         "hero_profiles_native_first_pass_run": 41365279075,
         "hero_profiles_native_first_pass_artifact": 13107247339,
         "hero_profiles_native_latest_queued_run": 41366240138,
@@ -949,9 +949,19 @@
         "hero_profiles_latest_native_run": 41424099554,
         "hero_profiles_visual_last_seen_run": 41419185982,
         "hero_profiles_source_check": "NO_DAIS_INSTANCE_EXACT_ICON_SPRITES_5_BUTTON_NAV_ARM_INWARD_PRESENT",
-        "hero_profiles_native_run": 41425891411,
+        "hero_profiles_native_run": 41434883428,
         "hero_profiles_reference_icon_crop": "NO_BAKED_TEXT_APPROVED_MASTER",
-        "hero_profiles_visual_approval": false
+        "hero_profiles_visual_approval": false,
+        "hero_profiles_native_artifact": 13137941355,
+        "hero_profiles_functional": "PASS_NATIVE_V41_RESULT_JSON",
+        "hero_profiles_owner_provisional_accepted": true,
+        "hero_profiles_provisional_date": "2026-11-02",
+        "hero_profiles_general_regression_status": "IN_PROGRESS",
+        "hero_profiles_next_focus": [
+          "Marchas",
+          "Entrenamiento",
+          "Ciudad"
+        ]
       },
       "previous_owner": "chatgpt-eldoria-block02-direct-completion-20261101",
       "takeover_at": "2026-10-17",
