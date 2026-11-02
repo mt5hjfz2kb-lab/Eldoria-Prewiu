@@ -1217,12 +1217,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(unitTitle.rectTransform,14,8,lw-28,wide?30:50);
                 // More room for the real troop controls below the hero gallery.
                 float cardsY=wide?43:65;
-                float cardsH=Mathf.Max(90,lh*(compactLandscape?.35f:wide?.42f:.31f));
+                float cardsH=Mathf.Max(90,lh*(compactLandscape?.35f:wide?.42f:.42f));
                 float cardW=(lw-40)/3f;
                 for(int i=0;i<3;i++)
                 {
                     Place((RectTransform)heroSlotButtons[i].transform,14+i*(cardW+6),cardsY,cardW,cardsH);
-                    float portraitH=compactLandscape?Mathf.Max(40,cardsH-70):cardsH*.66f;
+                    float portraitH=compactLandscape?Mathf.Max(40,cardsH-70):cardsH*.59f;
                     var portraitSprite=approvedHeroes[i].sprite;
                     float ratio=portraitSprite?portraitSprite.rect.width/Mathf.Max(1f,portraitSprite.rect.height):1f;
                     // Original source always fits wholly inside its own portrait recess.
@@ -1237,9 +1237,9 @@ namespace Eldoria.UI.RoyalGold.V2
                         (apertureW-portraitW)*.5f,
                         (portraitH-portraitHeight)*.5f,portraitW,portraitHeight);
                     Place(heroSlotLabels[i].rectTransform,6,
-                        compactLandscape?cardsH-60:cardsH*(wide?.72f:.69f),
-                        cardW-12,compactLandscape?54:cardsH*(wide?.27f:.30f));
-                    heroSlotLabels[i].fontSize=compactLandscape?27:wide?22:32;
+                        compactLandscape?cardsH-60:cardsH*.62f,
+                        cardW-12,compactLandscape?54:cardsH*.36f);
+                    heroSlotLabels[i].fontSize=compactLandscape?23:wide?22:26;
                     if(compactLandscape)
                     {
                         // A horizontal phone cannot support a short panoramic
@@ -1257,11 +1257,22 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Only the order controls need enamel: expose scenic archer art.
                 Place(marchTroopSurface,lw*.31f,rowY-4,lw*.67f,lh-rowY-4);
                 Place(approvedTroopRow.rectTransform,14,rowY,lw*.29f,lh-rowY-18);
-                Place(unitDetail.rectTransform,lw*.34f,rowY,lw*.63f,wide?40:76);
-                Place(tierButton.transform as RectTransform,lw*.34f,rowY+(wide?42:84),lw*.63f,wide?32:80);
-                Place(percentModeButton.transform as RectTransform,lw*.34f,rowY+(wide?82:172),lw*(wide?.28f:.24f),wide?32:88);
-                Place(quantityRow,lw*(wide?.65f:.61f),rowY+(wide?82:172),lw*(wide?.32f:.36f),wide?38:88);
-                Place(slider.transform as RectTransform,lw*.34f,rowY+(wide?129:270),lw*.63f,wide?16:24);
+                // Responsive live order: proportional rows in the actual
+                // remaining troop region. No portrait/control collisions and no
+                // artificial T3+ troops, fake stat or second inventory.
+                float orderSpace=Mathf.Max(140f,lh-rowY-8f);
+                float detailH=Mathf.Clamp(orderSpace*.19f,wide?31f:47f,wide?54f:74f);
+                float tierH=Mathf.Clamp(orderSpace*.18f,wide?31f:45f,wide?55f:74f);
+                float controlY=rowY+orderSpace*.50f;
+                float controlH=Mathf.Clamp(orderSpace*.24f,wide?36f:54f,wide?50f:80f);
+                Place(unitDetail.rectTransform,lw*.34f,rowY+2f,lw*.63f,detailH);
+                Place(tierButton.transform as RectTransform,lw*.34f,rowY+detailH+7f,lw*.63f,tierH);
+                Place(percentModeButton.transform as RectTransform,lw*.34f,controlY,
+                    lw*(wide?.28f:.24f),controlH);
+                Place(quantityRow,lw*(wide?.65f:.61f),controlY,
+                    lw*(wide?.32f:.36f),controlH);
+                Place(slider.transform as RectTransform,lw*.34f,
+                    rowY+orderSpace*.86f,lw*.63f,wide?16f:24f);
                 float rw=right.rect.width,rh=right.rect.height;
                 Place(summary.rectTransform,14,8,rw-28,rh*.58f);
                 Place(status.rectTransform,14,rh*.60f,rw-28,rh*.38f);
