@@ -7,6 +7,9 @@ umask 077
 RESULT="$RUNNER_TEMP/eldoria-cli-proof"
 mkdir -p "$RESULT"
 export UNITY_NO_CLOUD=1
+export UNITY_NO_CRASH_REPORT=1
+export UNITY_NO_CLI_INVOKED_TELEMETRY=1
+export UNITY_NON_INTERACTIVE=1
 # Current Unity CLI release stream is beta; stable latest.json returned HTTP 404 in run 41465891072.
 export UNITY_CLI_CHANNEL=beta
 export UNITY_CLI_HOME="$RUNNER_TEMP/eldoria-cli-binary"
@@ -22,10 +25,12 @@ if ! command -v unity >/dev/null; then
 fi
 timeout 25 unity --version > "$RESULT/version.txt" 2>&1
 timeout 25 unity --help > "$RESULT/help.txt" 2>&1
+timeout 25 unity command --help > "$RESULT/command-help.txt" 2>&1
+timeout 25 unity mcp --help > "$RESULT/mcp-help.txt" 2>&1
 set +e
-timeout 25 unity editors --format json > "$RESULT/editors.json" 2> "$RESULT/editors-error.txt"
+timeout 25 unity editors --installed --format json > "$RESULT/editors.json" 2> "$RESULT/editors-error.txt"
 editors_rc=$?
-timeout 25 unity pipeline list > "$RESULT/pipeline-list.txt" 2>&1
+timeout 25 unity pipeline editors --format json > "$RESULT/pipeline-editors.json" 2> "$RESULT/pipeline-error.txt"
 pipeline_rc=$?
 set -e
 # Inspect the official agent integration repository read-only.
@@ -44,7 +49,7 @@ data={
  "unity_cli_version_stdout":(root/"version.txt").read_text().strip()[:500],
  "unity_help_present":(root/"help.txt").stat().st_size>50,
  "editor_list_exit_code":int(sys.argv[2]),
- "pipeline_list_exit_code":int(sys.argv[3]),
+ "pipeline_editors_exit_code":int(sys.argv[3]),
  "plugin_repo_sha":(root/"plugin-sha.txt").read_text().strip(),
  "codex_plugin_manifest_files":(root/"codex-plugin-files.txt").read_text().splitlines(),
  "no_windows_used":True,
