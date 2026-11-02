@@ -2973,9 +2973,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": "chatgpt-eldoria-talents-art-20261102",
-      "ownership_state": "claimed",
-      "ownership_revision": 18,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 19,
       "status": "active",
       "branch": "fix/player-feedback-context-ui-20261030",
       "pr": 136,
@@ -2990,8 +2990,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
-      "phase": "TALENTS_ART_FINISH_SOURCE_AND_NATIVE_AB",
-      "next": "Rebuild actual blocked 3x3 Talent page as per approved gold-dark art reference: procedural independent medallion, connector, header and engraved nine-slice assets, native four-size Unity A/B for Aldric/Lyra; no gameplay/saves mutations; do not compete for Valoria-owned Windows until release.",
+      "phase": "TALENTS_SOURCE_IMPLEMENTED_UNITY_AB_REQUIRED",
+      "next": "Review Talentos native screenshots of last PR136 HEAD after Unity exact-HEAD V4.1; source changed HeroesTalentArt.cs with nine independent medallions, 3 path panels/headers/connectors + nine disabled buttons; A/B from run41441316111. Need inspect 4 orientations for Aldric and Lyra, save unchanged, art target >=8 provisional pending subjective approval. Preserve new doc docs/heroes-ui/TALENTS_ART_IMPLEMENTATION_20261102.md. Current PR136 HEAD must be read live. No merge/publish.",
       "budget_eur": 0,
       "ownership_history": [
         {
@@ -3082,9 +3082,15 @@
           "ownership_revision": 17,
           "transferred_at": "2026-11-02",
           "reason": "Owner expressly requests actual Unity Talents reconstruction, not another mockup or report; separate HeroesUI source scope, no Windows runner claim."
+        },
+        {
+          "owner": "chatgpt-eldoria-talents-art-20261102",
+          "ownership_revision": 18,
+          "released_at": "2026-11-02",
+          "reason": "Actual Talents art implementation complete on canonical PR136; release separate HeroesUI source claim for joint canonical Valoria exact-HEAD native Unity certification. Do not claim ART_APPROVED or cancel any ongoing Windows job."
         }
       ],
-      "write_scope_released": false,
+      "write_scope_released": true,
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
       "released_at": "2026-11-02",
       "release_reason": "READY_EXACT_HEAD_UNITY_AB_QA",
