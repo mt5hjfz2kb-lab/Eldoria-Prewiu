@@ -176,7 +176,10 @@ namespace Eldoria.HeroesUI
                     margin,y,usableW,cardHeight,frame,real);
                 float iconSize=Mathf.Clamp(
                     Mathf.Min(usableW*.17f,cardHeight*.69f),32f,74f);
-                float iconY=(cardHeight-iconSize)*.5f;
+                // The prior center-aligned real icon crossed the description on tall
+                // portrait layouts. Future locks can be centered; real artwork
+                // belongs to a fixed headline row above the scrolling paragraph.
+                float iconY=real?12f:(cardHeight-iconSize)*.5f;
                 Sigil(card,12f,iconY,iconSize,skillIcon,real,!real);
                 float textX=iconSize+26f;
                 float textW=Mathf.Max(45f,usableW-textX-16f);
@@ -193,29 +196,30 @@ namespace Eldoria.HeroesUI
                         new Color(.59f,.55f,.49f));
                     continue;
                 }
+                // Live title and classification use two distinct measured rows.
+                // Neither row is proportional to a tall portrait card: scaling
+                // title height with the card previously covered the paragraph.
+                float nameY=compact?11f:8f;
+                float nameH=compact?36f:Mathf.Clamp(cardHeight*.20f,30f,45f);
+                float stateY=nameY+nameH+2f;
+                float stateH=compact?20f:24f;
                 Label("Skills / actual ability name",card,
                     hasAbility?abilityName:"SIN HABILIDAD REGISTRADA",
-                    textX,compact?11f:8f,textW,
-                    compact?Mathf.Max(36f,iconSize*.55f):
-                        Mathf.Max(32f,cardHeight*.28f),
-                    compact?18:23,TextAnchor.MiddleLeft,Ivory);
-                // The host does not expose active/passive classification:
-                // explicitly do not fabricate that state from concept art.
+                    textX,nameY,textW,nameH,compact?18:23,
+                    TextAnchor.MiddleLeft,Ivory);
+                // Do not invent active/passive status: host supplies none.
                 Label("Skills / source-bound availability",card,
-                    "HABILIDAD DEL HÉROE",
-                    textX,compact?49f:cardHeight*.30f,textW,
-                    compact?22f:Mathf.Min(26f,cardHeight*.22f),
-                    compact?12:14,TextAnchor.MiddleLeft,Gold);
-                bool shortCard=count==1;
-                float descX=shortCard?14f:textX;
-                float descW=shortCard?usableW-28f:textW;
-                float descY=shortCard?Mathf.Max(iconSize+22f,79f):
-                    Mathf.Max(50f,cardHeight*.53f);
-                float descH=Mathf.Max(20f,cardHeight-descY-11f);
+                    "HABILIDAD DEL HÉROE",textX,stateY,textW,stateH,
+                    compact?13:15,TextAnchor.MiddleLeft,Gold);
+                float descY=Mathf.Max(iconY+iconSize+12f,
+                    stateY+stateH+8f);
+                float descX=14f;
+                float descW=usableW-28f;
+                float descH=Mathf.Max(20f,cardHeight-descY-12f);
                 Surface("Skills / manuscript separator",card,descX,
                     descY-4f,descW,1f,new Color(.79f,.62f,.40f,.48f));
                 Description(card,description??string.Empty,
-                    descX,descY,descW,descH,compact?18:19);
+                    descX,descY,descW,descH,compact?24:21);
                 Surface("Skills / character identity edge",card,7f,
                     18f,2f,Mathf.Max(10f,cardHeight-36f),
                     heroId=="lyra"?new Color(.45f,.69f,.62f,.78f):
