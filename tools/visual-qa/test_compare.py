@@ -62,6 +62,19 @@ class Tests(unittest.TestCase):
         with patch.dict('os.environ',{'GITHUB_REPOSITORY':'foo/bar','GITHUB_TOKEN':'fake'}):
             with patch.object(compare,'api',side_effect=fake):
                 with self.assertRaises(ValueError): compare.source_pair(12)
+    def test_redirect_does_not_leak_github_token(self):
+        from urllib.request import Request
+        request=Request('https://api.github.com/repos/example/test/artifacts/1/zip',
+                        headers={'Authorization':'Bearer DONT-LEAK','Cookie':'secret'})
+        redirected=compare.TokenSafeRedirect().redirect_request(request,None,302,'Found',{},
+                         'https://example.blob.core.windows.net/zip')
+        self.assertNotIn('Authorization',redirected.headers)
+        self.assertNotIn('Cookie',redirected.headers)
+    def test_redirect_rejects_downgrade(self):
+        from urllib.request import Request
+        with self.assertRaises(ValueError):
+            compare.TokenSafeRedirect().redirect_request(Request('https://api.github.com'),
+                       None,302,'Found',{},'http://example.test/zip')
     def test_no_native_artifact_is_explicit(self):
         with tempfile.TemporaryDirectory() as t, patch.object(compare,'source_pair',side_effect=ValueError('Current run lacks exact run-ID V4.1 screenshot artifact')):
             with patch.object(sys,'argv',['compare','--run-id','12','--output',t]):
