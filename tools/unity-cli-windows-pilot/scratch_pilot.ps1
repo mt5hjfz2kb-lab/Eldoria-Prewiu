@@ -24,15 +24,15 @@ function Stage($name,$status,$note) {
 function Save-Report {
   $report | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath (Join-Path $root 'proof.json') -Encoding utf8
 }
-function Run-Cli($args,$file) {
-  $text = (& unity @args 2>&1 | Out-String)
+function Run-Cli($argList,$file) {
+  $text = (& unity @argList 2>&1 | Out-String)
   $exit = $LASTEXITCODE
   [IO.File]::WriteAllText((Join-Path $root $file), $text)
   if($exit -ne 0) { throw "Unity CLI exit $exit at $file. See evidence." }
   return $text
 }
-function Unity-Child($args,$timeoutSec,$logName) {
-  $p = Start-Process -FilePath $editor -ArgumentList $args -PassThru
+function Unity-Child($argList,$timeoutSec,$logName) {
+  $p = Start-Process -FilePath $editor -ArgumentList $argList -PassThru
   $script:ownChildPids += $p.Id
   if(-not $p.WaitForExit($timeoutSec*1000)){
     Stage $logName 'TIMEOUT' 'Only the scratch Unity process will be stopped.'
