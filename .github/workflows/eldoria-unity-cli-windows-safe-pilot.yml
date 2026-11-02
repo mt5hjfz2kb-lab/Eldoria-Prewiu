@@ -1,0 +1,56 @@
+name: Eldoria Issue147 Windows preflight (read-only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-cli-windows-preflight-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native-preflight:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 10
+    steps:
+      - name: Fast zero-checkout Windows read-only safety check
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $root = Join-Path $env:RUNNER_TEMP ('eldoria-cli-preflight-' + $env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Force -Path $root | Out-Null
+          $names = @('Unity','blender','UnityShaderCompiler','UnityPackageManager','UnityCrashHandler64')
+          $counts = foreach($name in $names) {
+            $ps = @(Get-Process -Name $name -ErrorAction SilentlyContinue)
+            [pscustomobject]@{ name=$name; count=$ps.Count }
+          }
+          $cli = @(foreach($n in @('unity','codex')) {
+            [pscustomobject]@{ name=$n; installed=[bool](Get-Command $n -ErrorAction SilentlyContinue) }
+          })
+          $editor = $env:UNITY_EDITOR_PATH
+          $good = @($counts | Where-Object { $_.count -gt 0 }).Count -eq 0
+          $report = [ordered]@{
+            check = 'Windows read only no-checkout'
+            run_id = $env:GITHUB_RUN_ID
+            exact_sha = $env:GITHUB_SHA
+            timestamp_utc = [DateTime]::UtcNow.ToString('o')
+            os = [Environment]::OSVersion.VersionString
+            editor_path_set = [bool]$editor
+            editor_file_exists = [bool]($editor -and (Test-Path -LiteralPath $editor -PathType Leaf))
+            tools = @($cli)
+            relevant_processes = @($counts)
+            safe_to_launch_isolated_editor = $good
+            no_windows_restart = $true
+            no_installs_or_file_writes_to_project = $true
+            game_unmodified = $true
+          }
+          $report | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $root 'preflight.json') -Encoding utf8
+          Write-Host ('WINDOWS_PREVIEW_SAFE=' + $good)
+          Write-Host ('UNITY_EDITOR_FILE_EXISTS=' + $report.editor_file_exists)
+          if(-not $good){ Write-Warning 'Existing Unity/Blender processes are active; do not launch any Editor.' }
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue147-win-preflight-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-cli-preflight-${{ github.run_id }}/
+          retention-days: 14
+          if-no-files-found: warn
