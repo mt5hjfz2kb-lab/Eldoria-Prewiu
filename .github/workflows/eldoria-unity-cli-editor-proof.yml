@@ -1,0 +1,72 @@
+name: Eldoria Issue147 - isolated Windows Unity editor real connection proof
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-unity-cli-editor-proof.yml'
+      - 'tools/unity-cli-windows-pilot/scratch_pilot.ps1'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: issue147-scratch-editor-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  native-isolated-editor:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - name: Restore installed Git to PATH without changing machine
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $candidates = @("${env:ProgramFiles}\Git\cmd\git.exe", "${env:LOCALAPPDATA}\Programs\Git\cmd\git.exe")
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            if(Test-Path $desktop){
+              $candidates += @(Get-ChildItem $desktop -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' })
+            }
+            $found = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $found){ throw 'Git is missing; refuse full-repo REST archive download' }
+            Add-Content -Path $env:GITHUB_PATH -Value (Split-Path $found)
+            $env:PATH = "$(Split-Path $found);$env:PATH"
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          path: issue147-scratch-${{ github.run_id }}
+          persist-credentials: false
+          clean: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/unity-cli-windows-pilot/scratch_pilot.ps1
+      - name: Fail-closed lease check from live main and zero native processes
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{ Authorization="Bearer $env:GH_TOKEN"; Accept='application/vnd.github+json'; 'X-GitHub-Api-Version'='2022-11-28' }
+          $u='https://api.github.com/repos/${{ github.repository }}/contents/pipeline/active-workstreams.json?ref=main'
+          $r=Invoke-RestMethod -Uri $u -Headers $h
+          $data=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($r.content -replace '\s','')))|ConvertFrom-Json
+          $holder=@($data.active | Where-Object { @($_.resources) -contains 'windows-runner-heavy' })
+          if($holder.Count -ne 1 -or $holder[0].id -ne 'eldoria-cli-windows-isolated-proof-20261102' -or $holder[0].owner -ne 'chatgpt-eldoria-win-cli-proof-20261102'){
+            throw 'Lease holder changed or another native workstream owns Windows. No Unity launch.'
+          }
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
+            throw 'Unity or Blender already active on Windows. No new editor launched.'
+          }
+          Write-Host 'ELDORIA_NATIVE_LEASE_AND_IDLE_PASS'
+      - name: Open scratch project, install Pipeline and drive real Editor
+        shell: powershell
+        run: '& "${{ github.workspace }}/issue147-scratch-${{ github.run_id }}/tools/unity-cli-windows-pilot/scratch_pilot.ps1"'
+      - name: Preserve real run evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue147-scratch-editor-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-cli-editor-proof-${{ github.run_id }}/
+          if-no-files-found: warn
+          retention-days: 14
