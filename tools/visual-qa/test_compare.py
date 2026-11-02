@@ -62,4 +62,13 @@ class Tests(unittest.TestCase):
         with patch.dict('os.environ',{'GITHUB_REPOSITORY':'foo/bar','GITHUB_TOKEN':'fake'}):
             with patch.object(compare,'api',side_effect=fake):
                 with self.assertRaises(ValueError): compare.source_pair(12)
+    def test_no_native_artifact_is_explicit(self):
+        with tempfile.TemporaryDirectory() as t, patch.object(compare,'source_pair',side_effect=ValueError('Current run lacks exact run-ID V4.1 screenshot artifact')):
+            with patch.object(sys,'argv',['compare','--run-id','12','--output',t]):
+                compare.main()
+            import json
+            r=json.loads(Path(t,'report.json').read_text())
+            self.assertEqual(r['technical_status'],'NO_COMPARABLE_EVIDENCE')
+            self.assertFalse(r['art_approved'])
+
 if __name__=='__main__':unittest.main()
