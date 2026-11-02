@@ -75,8 +75,17 @@ namespace Eldoria.HeroesUI
             return Vector2.Distance(new Vector2(x,y),new Vector2(ax+t*dx,ay+t*dy));
         }
 
+        // Mathf.SmoothStep(from,to,t) expects a normalized t, not an input
+        // interval! Applying it directly to pixel distance made all four
+        // category emblems almost fully opaque squares in genuine Unity shots.
+        static float Fade(float from,float to,float value)
+        {
+            float t=Mathf.Clamp01((value-from)/Mathf.Max(.0001f,to-from));
+            return t*t*(3f-2f*t);
+        }
+
         static float Line(float x,float y,float ax,float ay,float bx,float by,float thickness)
-            => 1f-Mathf.SmoothStep(thickness*.55f,thickness,Segment(x,y,ax,ay,bx,by));
+            => 1f-Fade(thickness*.55f,thickness,Segment(x,y,ax,ay,bx,by));
 
         static Sprite DrawSprite(string name,int size,Func<float,float,float> alpha, Vector4 border)
         {
@@ -149,8 +158,8 @@ namespace Eldoria.HeroesUI
             metalBorder=DrawSprite("independent engraved nine-slice border",96,
                 (x,y)=>{
                     float edge=Mathf.Min(Mathf.Min(x,1-x),Mathf.Min(y,1-y));
-                    float band=1f-Mathf.SmoothStep(.065f,.115f,edge);
-                    float inner=1f-Mathf.SmoothStep(.155f,.19f,edge);
+                    float band=1f-Fade(.065f,.115f,edge);
+                    float inner=1f-Fade(.155f,.19f,edge);
                     float corners=(Mathf.Abs(x-.5f)>.35f && Mathf.Abs(y-.5f)>.35f)?1f:0f;
                     return Mathf.Clamp01(band*.90f+inner*.24f+corners*.25f);
                 },new Vector4(19,19,19,19));
@@ -231,6 +240,15 @@ namespace Eldoria.HeroesUI
             float margin=Mathf.Clamp(width*.045f,11f,27f);
             float usable=Mathf.Max(80f,width-margin*2f);
             bool compact=height<270f;
+            // A carved, limited-height nameplate ensures legibility over the
+            // authentic brightly lit 3D hall. Never cover the whole pane with
+            // one giant opaque rectangle, nor flatten the reference artwork.
+            Surface("Equipment / small translucent information plaque",pane,
+                margin-6f,5f,usable+12f,compact?122f:174f,
+                new Color(.035f,.041f,.053f,.84f));
+            Surface("Equipment / plaque engraved left edge",pane,
+                margin-6f,5f,2f,compact?122f:174f,
+                new Color(.79f,.59f,.34f,.83f));
             Label("Equipment / contextual heading",pane,"EQUIPAMIENTO",
                 margin,12f,usable,compact?31f:48f,
                 compact?21:28,Gold,TextAnchor.MiddleLeft);
@@ -277,7 +295,7 @@ namespace Eldoria.HeroesUI
                     var plate=Rect("Equipment / context locked row "+i,pane,
                         margin,y,usable,cellH);
                     Surface("Equipment / brushed translucent row",plate,0,0,usable,cellH,
-                        new Color(.10f,.102f,.106f,.64f));
+                        new Color(.055f,.061f,.072f,.87f));
                     Surface("Equipment / row ornament left",plate,0f,0f,2.5f,cellH,
                         new Color(.79f,.60f,.35f,.89f));
                     Surface("Equipment / row category icon",plate,8f,6f,
