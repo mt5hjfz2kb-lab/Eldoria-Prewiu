@@ -15,6 +15,13 @@ timeout 120 codex plugin marketplace add Unity-Technologies/unity-agent-plugin >
 timeout 120 codex plugin add unity@unity-agent-plugin > "$ROOT/plugin-install.log" 2>&1
 timeout 40 codex plugin list > "$ROOT/plugin-list.txt" 2>&1
 grep -F 'unity@unity-agent-plugin' "$ROOT/plugin-list.txt" >/dev/null
+set +e
+timeout 12 codex login status > "$ROOT/codex-login-status-internal.txt" 2>&1
+LOGIN_RC=$?
+set -e
+# Do not upload login output: may contain user identifiers.
+rm -f "$ROOT/codex-login-status-internal.txt"
+export ELDORIA_CODEX_LOGIN_EXIT_CODE="$LOGIN_RC"
 python - "$ROOT" <<'PY'
 import json,pathlib,sys
 root=pathlib.Path(sys.argv[1])
@@ -27,6 +34,9 @@ result={
   'plugin_status_excerpt':items[:900],
   'tested_model_or_authenticated_session':False,
   'no_chatgpt_api_or_model_calls':True,
+  'auth_status_command_executed':True,
+  'auth_status_exit_code':int(__import__('os').environ.get('ELDORIA_CODEX_LOGIN_EXIT_CODE','255')),
+  'authenticated_model_session_observed':False,
   'no_windows_or_unity_editor_used':True,
   'no_game_changes':True,
   'no_new_paid_subscription':True,
