@@ -13,8 +13,6 @@ namespace Eldoria.World4XCanon
         Camera worldCamera; Light sun,configuredSun,fill; Quaternion rotation; LightShadows shadows; float strength,distance,depthBias,normalBias;int cascades;
         UniversalRenderPipelineAsset pipeline; bool scoped; Color background;
         readonly List<Material> owned=new List<Material>();
-        readonly List<Mesh> artMeshes=new List<Mesh>();
-        readonly List<Renderer> oldPlateRenderers=new List<Renderer>();
         readonly List<Material> minerals=new List<Material>();
         readonly List<Material> meadows=new List<Material>();
         readonly List<Renderer> fineDetails=new List<Renderer>();
@@ -30,7 +28,7 @@ namespace Eldoria.World4XCanon
             scope.authoredShader=shader;scope.origin=artwork.transform.position;scope.ApplyMaterials(artwork);
             // A/B art candidate: reuse the actual terrain height + eleven canonical
             // faults; never replace the gameplay scene, the GLB, or colliders.
-            scope.BuildFaultGuidedBreach(artwork);
+            scope.ApplyExistingFaultFootprint(artwork);
             var fillObject=new GameObject("Region 1 scoped sky fill");fillObject.transform.SetParent(artwork.transform,false);fillObject.layer=29;
             scope.fill=fillObject.AddComponent<Light>();scope.fill.type=LightType.Directional;scope.fill.shadows=LightShadows.None;
             scope.fill.color=new Color(.65f,.71f,.84f);scope.fill.intensity=.20f;scope.fill.cullingMask=1<<29;
@@ -44,103 +42,40 @@ namespace Eldoria.World4XCanon
             }
         }
 
-        // Eleven fault coordinates are copied from the authoritative
-        // production-region.json, not extrapolated from a circular vignette.
-        // Production geometry and exact source GLB remain byte-identical.
-        static readonly Vector4[] BreachFaults={
-            new Vector4(-385,260,-345,218),new Vector4(-345,218,-308,206),
-            new Vector4(-308,206,-280,165),new Vector4(-280,165,-260,150),
-            new Vector4(-260,150,-222,137),new Vector4(-222,137,-195,86),
-            new Vector4(-195,86,-135,40),new Vector4(-308,206,-350,140),
-            new Vector4(-350,140,-365,110),new Vector4(-222,137,-175,187),
-            new Vector4(-175,187,-150,230)
-        };
-        void BuildFaultGuidedBreach(GameObject artwork)
+
+        // A/B revision: no floating ribbons, extra GLB or new geometry.
+        // Restore the originally imported rock's shape and albedo; display only
+        // the physically authored fault footprint, not the circular plate halo.
+        void ApplyExistingFaultFootprint(GameObject artwork)
         {
-            // The historical tessellated plate cap is the visual cause of
-            // the circular mosaic. Keep the mesh, UVs, and test fixtures
-            // intact, hiding only its presentation renderers.
-            foreach(var renderer in artwork.GetComponentsInChildren<Renderer>(true))
+            int treated=0;
+            foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
             {
+                bool sourcePlate=false;
                 for(var t=renderer.transform;t&&t!=artwork.transform;t=t.parent)
-                    if(t.name=="BLD_BreachBrokenBasaltPlates")
-                    {
-                        oldPlateRenderers.Add(renderer);
-                        renderer.enabled=false;
-                        break;
-                    }
-            }
-            if(oldPlateRenderers.Count==0)
-                throw new InvalidOperationException("Source geological plates not found; refusing a false A/B");
-            var ground=artwork.GetComponentsInChildren<Renderer>(true)
-                .FirstOrDefault(r=>r.name=="BLD_BreachFloor");
-            if(!ground)throw new InvalidOperationException("Breach floor missing for source-driven art");
-            var shale=FaultMaterial("Eldoria / real fault slate",new Color(.095f,.088f,.125f,1));
-            var vein=FaultMaterial("Eldoria / restrained mineral cracks",new Color(.26f,.075f,.39f,1),.50f);
-            BuildFaultMesh("Breach / source-led fractured shale",artwork,ground.gameObject.layer,shale,false);
-            BuildFaultMesh("Breach / source-led recessed mineral seams",artwork,ground.gameObject.layer,vein,true);
-            Debug.Log("ELDORIA_BREACH_FAULT_STAGE_CANONICAL segments=11 original_plates_preserved="+oldPlateRenderers.Count+
-                " game_colliders_added=0");
-        }
-        Material FaultMaterial(string label,Color pigment,float mineral=0f)
-        {
-            var material=new Material(authoredShader){name=label,enableInstancing=true};
-            material.SetColor("_BaseColor",pigment);
-            material.SetTexture("_BaseMap",Texture2D.whiteTexture);
-            material.SetVector("_RegionOrigin",origin);
-            material.SetFloat("_MineralEmission",mineral);
-            owned.Add(material);
-            return material;
-        }
-        void BuildFaultMesh(string label,GameObject artwork,int layer,Material material,bool interior)
-        {
-            var verts=new List<Vector3>();var uv=new List<Vector2>();var tris=new List<int>();
-            for(int branch=0;branch<BreachFaults.Length;branch++)
-            {
-                var f=BreachFaults[branch];
-                Vector2 a=new Vector2(f.x,f.y),b=new Vector2(f.z,f.w);
-                Vector2 delta=b-a;float length=delta.magnitude;
-                Vector2 side=new Vector2(-delta.y,delta.x)/Mathf.Max(.001f,length);
-                int steps=Mathf.Max(3,Mathf.CeilToInt(length/3.5f));
-                int begin=verts.Count;
-                for(int k=0;k<=steps;k++)
+                    if(t.name=="BLD_BreachBrokenBasaltPlates"){sourcePlate=true;break;}
+                if(!sourcePlate)continue;
+                var materials=renderer.sharedMaterials;
+                for(int i=0;i<materials.Length;i++)
                 {
-                    float t=k/(float)steps;
-                    Vector2 centre=Vector2.Lerp(a,b,t);
-                    float branching=(branch<7?1f:.72f);
-                    float width=(interior?1.3f:12.5f)*branching;
-                    // Taper only free ends. At connected ends, preserve contact
-                    // so the fault network remains continuous.
-                    float taper=Mathf.Lerp(.65f,1f,Mathf.Sin(Mathf.PI*t));
-                    width*=taper;
-                    float erode=.86f+.14f*Mathf.Sin(k*.74f+branch*2.19f);
-                    for(int edge=-1;edge<=1;edge+=2)
-                    {
-                        Vector2 p=centre+side*(edge*width*erode);
-                        float y=RegionOneBlenderLandscape.Height(p.x,p.y)+(interior?.105f:.065f);
-                        Vector3 world=origin+new Vector3(p.x,y,p.y);
-                        verts.Add(artwork.transform.InverseTransformPoint(world));
-                        uv.Add(new Vector2(p.x/14f,p.y/14f));
-                    }
-                    if(k==0)continue;
-                    int index=begin+2*k;
-                    tris.Add(index-2);tris.Add(index-1);tris.Add(index);
-                    tris.Add(index);tris.Add(index-1);tris.Add(index+1);
+                    if(!materials[i])throw new InvalidOperationException("Source plate material missing");
+                    // Other geological renderers can share the source material:
+                    // clone it only on this historic plate cap.
+                    var candidate=new Material(materials[i]){
+                        name=materials[i].name+" source-led fault silhouette",
+                        enableInstancing=true
+                    };
+                    candidate.SetFloat("_BreachFaultCut",1f);
+                    owned.Add(candidate);
+                    materials[i]=candidate;
                 }
+                renderer.sharedMaterials=materials;
+                renderer.enabled=true;
+                treated++;
             }
-            var mesh=new Mesh{name=label};mesh.SetVertices(verts);
-            mesh.SetUVs(0,uv);mesh.SetTriangles(tris,0);
-            mesh.RecalculateBounds();
-            mesh.normals=Enumerable.Repeat(Vector3.up,verts.Count).ToArray();
-            artMeshes.Add(mesh);
-            var go=new GameObject(label);go.transform.SetParent(artwork.transform,false);
-            go.layer=layer;
-            go.AddComponent<MeshFilter>().sharedMesh=mesh;
-            var renderer=go.AddComponent<MeshRenderer>();
-            renderer.sharedMaterial=material;
-            renderer.shadowCastingMode=ShadowCastingMode.Off;
-            renderer.receiveShadows=true;
-            // Pure presentation overlays; no collider, no gameplay target.
+            if(treated==0)throw new InvalidOperationException("Cannot locate the imported Breach plate cap");
+            Debug.Log("ELDORIA_BREACH_FAULT_MASK_ON_AUTHENTIC_MESH count="+treated+
+                " faults=11 new_meshes=0 colliders=0");
         }
 
         static Texture BasePigment(Material source)
@@ -328,7 +263,7 @@ namespace Eldoria.World4XCanon
         void End(ScriptableRenderContext context,Camera camera){if(camera==worldCamera)Restore();}
         void Restore(){if(!scoped)return;if(fill)fill.enabled=false;foreach(var light in interiorLights)if(light)light.enabled=false;RenderSettings.sun=configuredSun?configuredSun:null;if(sun){sun.transform.rotation=rotation;sun.shadows=shadows;sun.shadowStrength=strength;sun.shadowBias=depthBias;sun.shadowNormalBias=normalBias;}if(pipeline){pipeline.shadowDistance=distance;pipeline.shadowCascadeCount=cascades;}if(worldCamera)worldCamera.backgroundColor=background;scoped=false;}
         void OnDisable(){RenderPipelineManager.beginCameraRendering-=Begin;RenderPipelineManager.endCameraRendering-=End;Restore();}
-        void OnDestroy(){foreach(var renderer in oldPlateRenderers)if(renderer)renderer.enabled=true;foreach(var mesh in artMeshes)if(mesh)Destroy(mesh);foreach(var material in owned)if(material)Destroy(material);}
+        void OnDestroy(){foreach(var material in owned)if(material)Destroy(material);}
     }
 }
 
