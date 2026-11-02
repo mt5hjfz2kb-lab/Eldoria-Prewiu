@@ -96,6 +96,49 @@ namespace Eldoria.Editor
                             }
                         }
                     }
+                    if(heroes.CurrentPage==Eldoria.HeroesUI.HeroesApprovedDestination.Page.Equipamiento)
+                    {
+                        // Real 3D portrait remains the protagonist; the four
+                        // independent equipment ornaments never create loadout
+                        // interactions or substitute a photographic backdrop.
+                        var equipmentSlots=heroes.VisibleRoot
+                            .GetComponentsInChildren<RectTransform>()
+                            .Where(r=>r.name.StartsWith("Equipment / reserved slot ")).ToArray();
+                        Need(equipmentSlots.Length==4,
+                            "Four approved-direction equipment positions exist "+name);
+                        var equipmentStage=heroes.VisibleRoot
+                            .GetComponentsInChildren<RectTransform>()
+                            .FirstOrDefault(r=>r.name=="Hero model stage");
+                        Need(equipmentStage&&equipmentSlots.All(s=>s.parent==equipmentStage &&
+                            s.anchoredPosition.x>=-1f &&
+                            s.anchoredPosition.x+s.rect.width<=equipmentStage.rect.width+1f &&
+                            -s.anchoredPosition.y+s.rect.height<=equipmentStage.rect.height-7f),
+                            "Four equipment slots remain inside the hero stage at this orientation "+name);
+                        Need(equipmentSlots.All(s=>s.GetComponentsInChildren<Button>(true).Length==0 &&
+                            s.GetComponentsInChildren<Image>(true).All(i=>!i.raycastTarget) &&
+                            s.GetComponentsInChildren<Image>(true).Any(i=>
+                                i.name=="Equipment / nine-slice ornamental frame" &&
+                                i.sprite && i.type==Image.Type.Sliced) &&
+                            s.GetComponentsInChildren<Image>(true).Any(i=>
+                                i.name=="Equipment / original category icon" && i.sprite) &&
+                            s.GetComponentsInChildren<Image>(true).Any(i=>
+                                i.name=="Equipment / engraved locked seal" && i.sprite)),
+                            "All equipment ornaments have sliced frames, icons and visible locks; none are interactive "+name);
+                        var equippedContext=heroes.VisibleRoot
+                            .GetComponentsInChildren<RectTransform>()
+                            .FirstOrDefault(r=>r.name=="Equipment / open contextual field");
+                        Need(equippedContext &&
+                            equippedContext.GetComponentsInChildren<Text>(true)
+                                .Any(t=>t.text=="CUATRO POSICIONES BLOQUEADAS") &&
+                            equipmentSlots.Select(s=>s.GetComponentsInChildren<Text>()
+                                .First(t=>t.name.StartsWith("Equipment / slot category ")).text)
+                                .Distinct().Count()==4,
+                            "Context and all four slot labels clearly convey unavailable equipment "+name);
+                        var modelImage=equipmentStage.GetComponentsInChildren<RawImage>()
+                            .FirstOrDefault(r=>r.name=="Genuine hero model render");
+                        Need(modelImage&&modelImage.enabled&&modelImage.texture,
+                            "Equipment tab preserves the authentic 3D model instead of a pasted substitute "+name);
+                    }
                     if(heroes.CurrentPage==Eldoria.HeroesUI.HeroesApprovedDestination.Page.Salon){
                         var slots=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
                             .Where(t=>t.parent&&t.parent.name=="Heroes / live controls"&&
