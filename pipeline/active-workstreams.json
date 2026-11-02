@@ -2736,10 +2736,10 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": "chatgpt-training-art-finish-20261103",
-      "ownership_state": "claimed",
-      "ownership_revision": 17,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 18,
+      "write_scope_released": true,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
       "claimed_at": "2026-11-03T00:38:00+01:00",
@@ -2773,10 +2773,11 @@
       "resources": [],
       "art_production_routing": "required",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
-      "phase": "TRAINING_ART_FINISH_NONCONFLICTING_SOURCE_PREPARATION",
-      "next": "Prepare and source-validate a reversible Training art finish patch under tools/eldoria-v41 only. Do not write the live PR136 UI scope or reserve Windows while valoria owner revision 109 holds it; reconcile only after explicit area handoff.",
+      "phase": "TRAINING_ART_PATCH_STAGED_BLOCKED_ON_PR136_SCOPE",
+      "next": "Guarded training-art patch staged at PR134 commit 70739fd836e9980c0896374bc6550f8ebb3b3704 (tools/eldoria-v41/training-finish-20261103.py), NOT applied. PR136 Valoria owner revision 109 controls overlapping Unity UI and Windows; PR134 ownership gate fails on inherited cross-PR files. Reconcile ownership/branch before application, then require exact-HEAD Unity captures 1600x900,900x1600,390x844,844x390 plus gameplay tests. No art approval or release.",
       "art_production_routing_reason": "Mandatory tracking for exact source reuse and ArtTests code; no new artwork generation authorized.",
       "ownership_history": [
+        {"owner":"chatgpt-training-art-finish-20261103","from_revision":17,"to_revision":18,"note":"Staged guarded patch only; no contested Unity writes; ownership gate on PR134 red due inherited cross-PR overlap; no native validation."},
         {
           "owner": "chatgpt-gpt6-v41-integration-20261030",
           "ownership_revision": 2,
@@ -2883,7 +2884,7 @@
       },
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
       "released_at": "2026-10-31T21:38:59.618Z",
-      "release_reason": "BLOQUE 00 OWNER_AUTHORIZED_NORMAL_CHAT_HANDOFF; claim with CAS before BLOQUE 01 mutations; not completed; no release or publication approval."
+      "release_reason": "TRAINING_ART_STAGED_20261103_NO_UNITY_WRITE; canonical PR136 scope actively claimed by different Valoria owner, no Windows reservation, no tested artistic A/B."
     },
     {
       "id": "eldoria-art-memory-continuity-hardening-20261024",
