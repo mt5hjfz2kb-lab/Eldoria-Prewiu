@@ -11,7 +11,9 @@ namespace Eldoria.HeroesUI
         RenderTexture texture;GameObject previous,stage,visual;RawImage output;
         Camera camera;Light key,rim,fill;Animation idle;AnimationState idleState;
         Mesh groundMesh;Material groundMaterial;Bounds bounds;float yaw=90,nextRender;int renderLayer;
-        readonly Transform[] previewShoulders=new Transform[2],previewElbows=new Transform[2];
+        readonly Transform[] previewShoulders=new Transform[2],previewElbows=new Transform[2],previewWrists=new Transform[2];
+        Mesh stonePlinthMesh,bronzePlinthMesh;Material stonePlinthMaterial,bronzePlinthMaterial;
+        public bool HasPhysicalPlinth=>stonePlinthMesh&&bronzePlinthMesh&&stonePlinthMaterial&&bronzePlinthMaterial;
         bool logPoseOnce;
         public bool HasModel=>texture&&previous&&stage;
         public bool HasPerspectiveGround=>camera&&!camera.orthographic&&groundMaterial&&groundMaterial.shader.isSupported;
@@ -63,6 +65,7 @@ namespace Eldoria.HeroesUI
             bounds=ActualBounds(visual);
             Debug.Log("HERO_PREVIEW_GEOMETRY "+model.name+" source_scale="+model.transform.lossyScale+" local_stage_bounds="+bounds.size);
             float height=Mathf.Max(.1f,bounds.size.y);
+            BuildPhysicalHeroDais(height);
             var shader=Resources.Load<Shader>("EldoriaV41/HeroesContactShadow");
             if(!shader||!shader.isSupported)throw new InvalidOperationException("Hero contact-shadow shader unavailable");
             groundMaterial=new Material(shader){name="Hero / transparent shadow receiver"};
@@ -139,6 +142,16 @@ namespace Eldoria.HeroesUI
                     {fallback=joint;break;}
                 }
                 previewElbows[i]=fallback;
+                if(fallback){
+                    Transform wrist=null;
+                    foreach(var node in fallback.GetComponentsInChildren<Transform>(true)){
+                        if(node==fallback||(node.position-fallback.position).sqrMagnitude<.00001f)continue;
+                        string n=node.name.ToLowerInvariant();
+                        if(n.Contains("hand")||n.Contains("wrist")){wrist=node;break;}
+                        if(!wrist)wrist=node;
+                    }
+                    previewWrists[i]=wrist;
+                }
             }
         }
         void RelaxAldricPreviewArms()
@@ -159,11 +172,81 @@ namespace Eldoria.HeroesUI
                 float before=Vector3.Angle(downArm,Vector3.down);
                 var swing=Quaternion.FromToRotation(downArm.normalized,target);
                 arm.rotation=Quaternion.RotateTowards(Quaternion.identity,swing,58f)*arm.rotation;
+                // Arm upper segment is now ~10 degrees off vertical. The
+                // original source Idle keeps forearms splayed; reorient only
+                // that preview segment so the gauntlets settle beside the
+                // thighs rather than forming an unnatural claw silhouette.
+                var wrist=previewWrists[i];
+                if(wrist){
+                    Vector3 lower=wrist.position-elbow.position;
+                    if(lower.sqrMagnitude>.00001f){
+                        var side=Vector3.ProjectOnPlane(lower,Vector3.up);
+                        Vector3 desired=(Vector3.down*.99f+
+                            (side.sqrMagnitude>.00001f?side.normalized*.11f:Vector3.zero)).normalized;
+                        var wristSwing=Quaternion.FromToRotation(lower.normalized,desired);
+                        elbow.rotation=Quaternion.RotateTowards(Quaternion.identity,wristSwing,46f)*elbow.rotation;
+                    }
+                }
                 if(logPoseOnce)
                     Debug.Log("HERO_PREVIEW_ARM_POSE "+i+" upper="+arm.name+
                         " elbow="+elbow.name+" before="+before.ToString("F1")+
                         " after="+Vector3.Angle(elbow.position-arm.position,Vector3.down).ToString("F1"));
             }
+        }
+        // Genuine lit 3D geometry within the SAME isolated RenderTexture as
+        // the original hero. This is not a pasted/plotted 2D ellipse: both
+        // hero and stage share real shadows, light, occlusion and camera.
+        void BuildPhysicalHeroDais(float height)
+        {
+            Shader lit=Shader.Find("Universal Render Pipeline/Lit");
+            if(!lit)lit=Shader.Find("Universal Render Pipeline/Simple Lit");
+            if(!lit)throw new InvalidOperationException("URP hero dais shader unavailable");
+            stonePlinthMaterial=new Material(lit){name="Hero / honed blue stone stage"};
+            bronzePlinthMaterial=new Material(lit){name="Hero / chased bronze stage edge"};
+            stonePlinthMaterial.SetColor("_BaseColor",new Color(.11f,.125f,.15f,1f));
+            bronzePlinthMaterial.SetColor("_BaseColor",new Color(.60f,.40f,.18f,1f));
+            if(stonePlinthMaterial.HasProperty("_Smoothness"))stonePlinthMaterial.SetFloat("_Smoothness",.16f);
+            if(bronzePlinthMaterial.HasProperty("_Smoothness"))bronzePlinthMaterial.SetFloat("_Smoothness",.42f);
+            var center=new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+            // Slightly elliptical in perspective; a low solid stone top,
+            // physically joined to the hero's foot level, over a gold rim.
+            stonePlinthMesh=Disc("Hero / stone dais, shared depth and shadows",
+                center,height*.51f,height*.38f,-height*.012f,-height*.077f,stonePlinthMaterial);
+            bronzePlinthMesh=Disc("Hero / bronze dais rim",
+                center,height*.535f,height*.402f,-height*.034f,-height*.062f,bronzePlinthMaterial);
+        }
+        Mesh Disc(string name,Vector3 center,float radiusX,float radiusZ,
+            float upper,float lower,Material material)
+        {
+            const int count=48;
+            var go=new GameObject(name,typeof(MeshFilter),typeof(MeshRenderer));
+            go.hideFlags=HideFlags.HideAndDontSave;
+            go.transform.SetParent(stage.transform,false);
+            go.transform.position=center;
+            go.layer=renderLayer;
+            var vertices=new Vector3[1+count*2];
+            var triangles=new int[count*9];vertices[0]=new Vector3(0,upper,0);
+            for(int i=0;i<count;i++){
+                float angle=i*Mathf.PI*2f/count;
+                float px=Mathf.Cos(angle)*radiusX,pz=Mathf.Sin(angle)*radiusZ;
+                vertices[1+i]=new Vector3(px,upper,pz);
+                vertices[1+count+i]=new Vector3(px,lower,pz);
+            }
+            int t=0;
+            for(int i=0;i<count;i++){
+                int next=(i+1)%count,top=1+i,topNext=1+next,
+                    bottom=1+count+i,bottomNext=1+count+next;
+                triangles[t++]=0;triangles[t++]=topNext;triangles[t++]=top;
+                triangles[t++]=top;triangles[t++]=topNext;triangles[t++]=bottom;
+                triangles[t++]=topNext;triangles[t++]=bottomNext;triangles[t++]=bottom;
+            }
+            var mesh=new Mesh{name=name};mesh.vertices=vertices;mesh.triangles=triangles;
+            mesh.RecalculateNormals();mesh.RecalculateBounds();
+            go.GetComponent<MeshFilter>().sharedMesh=mesh;
+            var renderer=go.GetComponent<MeshRenderer>();
+            renderer.sharedMaterial=material;
+            renderer.receiveShadows=true;renderer.shadowCastingMode=ShadowCastingMode.On;
+            return mesh;
         }
         void Update(){if(output&&output.enabled&&output.gameObject.activeInHierarchy&&HasModel&&Time.unscaledTime>=nextRender)RenderFrame();}
         void RenderFrame(){
@@ -232,7 +315,11 @@ namespace Eldoria.HeroesUI
         }
         public void Release(){
             previous=null;output=null;idle=null;idleState=null;camera=null;key=null;rim=null;fill=null;
-            for(int i=0;i<2;i++){previewShoulders[i]=null;previewElbows[i]=null;}
+            for(int i=0;i<2;i++){previewShoulders[i]=null;previewElbows[i]=null;previewWrists[i]=null;}
+            if(stonePlinthMesh)Destroy(stonePlinthMesh);stonePlinthMesh=null;
+            if(bronzePlinthMesh)Destroy(bronzePlinthMesh);bronzePlinthMesh=null;
+            if(stonePlinthMaterial)Destroy(stonePlinthMaterial);stonePlinthMaterial=null;
+            if(bronzePlinthMaterial)Destroy(bronzePlinthMaterial);bronzePlinthMaterial=null;
             if(stage){stage.SetActive(false);Destroy(stage);}stage=null;visual=null;
             if(groundMesh)Destroy(groundMesh);groundMesh=null;if(groundMaterial)Destroy(groundMaterial);groundMaterial=null;
             if(texture){texture.Release();Destroy(texture);}texture=null;
