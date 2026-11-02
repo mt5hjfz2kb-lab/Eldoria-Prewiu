@@ -30,7 +30,7 @@ namespace Eldoria.UI.RoyalGold.V2
         ICommandGateway gateway;
         RoyalGoldV41MailboxScreen mailbox;
         Image approvedArcher,approvedTroopRow,trainingEnvironment,marchEnvironment;
-        RectTransform marchHeadingSurface,marchTroopSurface;
+        RectTransform marchHeadingSurface,marchTroopSurface,marchSummaryBacking,marchStatusBacking;
         // Live, reusable stat cards. Never cached gameplay values or text baked into art.
         readonly RectTransform[] marchMetricCards=new RectTransform[6];
         readonly RoyalText[] marchMetricValues=new RoyalText[6];
@@ -479,6 +479,20 @@ namespace Eldoria.UI.RoyalGold.V2
             marchTroopSurface=Rect("March / live troop order cartouche",left);
             RoyalGoldV41SourceArt.Surface(marchTroopSurface,"blue-panel",14);
             marchTroopSurface.SetAsFirstSibling();
+            // Small opaque cartouches, not a second full-height blue pane:
+            // live military text must remain legible against the stone courtyard.
+            marchSummaryBacking=Frame("March / statistics title cartouche",right,false);
+            var summaryPaper=RoyalGoldV41SourceArt.Surface(marchSummaryBacking,"blue-panel",14);
+            summaryPaper.color=new Color(.95f,.94f,.88f,.87f);
+            summaryPaper.raycastTarget=false;
+            summaryPaper.rectTransform.SetAsFirstSibling();
+            marchSummaryBacking.SetAsFirstSibling();
+            marchStatusBacking=Frame("March / status parchment cartouche",right,false);
+            var statusPaper=RoyalGoldV41SourceArt.Surface(marchStatusBacking,"blue-panel",14);
+            statusPaper.color=new Color(.95f,.94f,.88f,.86f);
+            statusPaper.raycastTarget=false;
+            statusPaper.rectTransform.SetAsFirstSibling();
+            marchStatusBacking.SetAsFirstSibling();
             // The reference separates real army numbers into small individual
             // ornamental cards, not one oversized text-filled blue rectangle.
             for(int i=0;i<marchMetricCards.Length;i++)
@@ -840,7 +854,9 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             else
             {
-                float lh=(bodyH-gap)*.48f;
+                // The old 48/52 split starved the six source-bound metrics
+                // in narrow portrait and clipped their two-line labels.
+                float lh=(bodyH-gap)*(CurrentDestination==Destination.March?.40f:.48f);
                 Place(left,leftSide,bodyY,usable,lh);
                 Place(right,leftSide,bodyY+lh+gap,usable,bodyH-lh-gap);
             }
@@ -861,7 +877,8 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(unitDetail.rectTransform,landscape?15:18,landscape?46:69,uw-35,landscape?42:60);
             // New controls stay entirely in existing left pane; never allocate a second
             // canvas. These are functional placements, NOT final visual approval.
-            float heroY=landscape?Mathf.Min(100,uh*.31f):Mathf.Min(90,uh*.42f);
+            float heroY=landscape?Mathf.Min(100,uh*.31f):
+                Mathf.Min(CurrentDestination==Destination.March?68f:90f,uh*.31f);
             float slotW=(uw-30-12)/3f;
             for(int i=0;i<3;i++)
                 Place(heroSlotButtons[i].transform as RectTransform,
@@ -869,7 +886,8 @@ namespace Eldoria.UI.RoyalGold.V2
             float percentY=Mathf.Min(heroY+42,Mathf.Max(48,uh-110));
             Place(percentModeButton.transform as RectTransform,
                 15,percentY,uw-30,landscape?29:27);
-            float qy=landscape?Mathf.Max(90,uh-95):uh-129;
+            float qy=landscape?Mathf.Max(90,uh-95):
+                uh-(CurrentDestination==Destination.March?112:129);
             Place(quantityRow,landscape?14:20,qy,uw-(landscape?28:40),landscape?39:48);
             float qw=quantityRow.rect.width;
             float ctrl=landscape?43:50;
@@ -979,6 +997,8 @@ namespace Eldoria.UI.RoyalGold.V2
             action.transform.SetParent(training?right:footer,false);
             for(int i=0;i<marchMetricCards.Length;i++)
                 marchMetricCards[i].gameObject.SetActive(!training);
+            marchSummaryBacking.gameObject.SetActive(!training);
+            marchStatusBacking.gameObject.SetActive(!training);
             if(!training)
             {
                 // Two-column heraldic information cards anchor the approved
@@ -987,11 +1007,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 var rw=right.rect.width;
                 var rh=right.rect.height;
                 float metricPad=wide?17f:20f;
-                float cardGap=wide?10f:12f;
+                float cardGap=8f;
                 float topCard=wide?52f:58f;
-                float band=Mathf.Max(92,rh*.57f-topCard);
-                float cardH=Mathf.Max(28,(band-cardGap*2)/3f);
+                // Reserve actual reading height for the four live status lines.
+                // The remaining space becomes three proper tile rows, rather
+                // than stretching the status and clipping every metric label.
+                float statusReserve=wide?Mathf.Max(78f,rh*.24f):120f;
+                float cardH=Mathf.Max(46,(rh-topCard-statusReserve-22f-cardGap*2)/3f);
                 float cardW=(rw-metricPad*2-cardGap)/2f;
+                Place(marchSummaryBacking,metricPad-4,6,rw-2*metricPad+8,wide?45:49);
                 Place(summary.rectTransform,metricPad,10,rw-2*metricPad,wide?36:42);
                 summary.fontSize=wide?23:25;
                 for(int i=0;i<marchMetricCards.Length;i++)
@@ -1002,7 +1026,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     Place(marchMetricValues[i].rectTransform,7,4,cardW-14,cardH-8);
                     marchMetricValues[i].fontSize=wide?18:21;
                 }
-                float statusY=Mathf.Min(rh*.73f,topCard+3*(cardH+cardGap)+7);
+                float statusY=topCard+3*cardH+2*cardGap+8;
+                Place(marchStatusBacking,metricPad-4,statusY-5,
+                    rw-2*metricPad+8,Mathf.Max(30,rh-statusY+1));
                 Place(status.rectTransform,metricPad,statusY,rw-2*metricPad,
                     Mathf.Max(24,rh-statusY-10));
                 status.fontSize=wide?16:18;
