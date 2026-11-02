@@ -1,15 +1,5 @@
 name: Eldoria Issue147 Windows preflight (read-only)
 on:
-  push:
-    branches: [experiment/eldoria-unity-cli-win-pilot-20261102]
-    paths:
-      - '.github/workflows/eldoria-unity-cli-windows-safe-pilot.yml'
-      - 'tools/unity-cli-windows-pilot/**'
-  pull_request:
-    branches: [main]
-    paths:
-      - '.github/workflows/eldoria-unity-cli-windows-safe-pilot.yml'
-      - 'tools/unity-cli-windows-pilot/**'
   workflow_dispatch:
 permissions:
   contents: read
