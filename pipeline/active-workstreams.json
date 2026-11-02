@@ -2973,9 +2973,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 15,
+      "owner": "chatgpt-eldoria-skills-native-fix-20261102",
+      "ownership_state": "claimed",
+      "ownership_revision": 16,
       "status": "active",
       "branch": "fix/player-feedback-context-ui-20261030",
       "pr": 136,
@@ -2990,8 +2990,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
-      "phase": "SOURCE_INTEGRATED_WAIT_FOR_SHARED_NATIVE_GATE",
-      "next": "Canonical PR136 exact HEAD 72bacf1: re-run failed PR ownership gate after HeroesUI source scope release; original Windows owner valoria-master-plan retains exclusive lease, existing native run 41441316111 still in_progress at 12:13 UTC, new pending exact-head run 41442830284. Validate genuine V41 Habilidades Aldric/Lyra screenshots in four sizes and save byte identity. Correct defects before ART_APPROVED or merge; source work ≠ quality pass.",
+      "phase": "REMEDIATE_EXACT_HEAD_MOBILE_QA_AND_RENDER_OVERLAPS",
+      "next": "Unity run 41442830284 failed on 390x844 visible-scale 18px text, and real 900x1600 screenshot shows overlap of availability label and description plus icon. Fix real mobile layout and font, requeue native QA, capture authentic A/B for both heroes, do not merge/publish.",
       "budget_eur": 0,
       "ownership_history": [
         {
@@ -3064,9 +3064,15 @@
           "ownership_revision": 14,
           "released_at": "2026-11-02",
           "reason": "Habilidades art edits committed to canonical PR136, exact-HEAD native gate required. Release independent HeroesUI writer to remove PR136 foreign-scope CI collision; canonical Valoria owner continues as sole PR owner and retains its Windows lease. No claim of artistic or functional certification."
+        },
+        {
+          "owner": null,
+          "ownership_revision": 15,
+          "transferred_at": "2026-11-02",
+          "reason": "Owner explicitly directs autonomous continuation to visual A/B; previous HeroesUI claim available; canonical Valoria retains Windows-runner claim."
         }
       ],
-      "write_scope_released": true,
+      "write_scope_released": false,
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
       "released_at": "2026-11-02",
       "release_reason": "SRC_INTEGRATED_TO_CANONICAL_PR136_AND_HANDOFF_FOR_SHARED_UNITY_QA",
