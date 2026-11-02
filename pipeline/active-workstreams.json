@@ -18,31 +18,6 @@
   },
   "active": [
     {
-      "id": "eldoria-visual-qa-autogate-20261102",
-      "title": "QA visual automática de capturas Unity, sin editor ni aprobación de arte",
-      "owner": "chatgpt-eldoria-independent-visual-qa-20261102",
-      "ownership_state": "claimed",
-      "ownership_revision": 1,
-      "branch": "feature/eldoria-visual-qa-autogate-20261102",
-      "status": "active",
-      "claimed_at": "2026-11-02",
-      "scope": [
-        "tools/visual-qa/**",
-        ".github/workflows/eldoria-visual-qa-auto.yml",
-        "docs/visual-qa/**"
-      ],
-      "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Comparación de capturas de Unity ya existentes; solo métricas e informes, no generación ni edición de arte.",
-      "phase": "ISOLATED_CODE_TESTED_GITHUB_INTEGRATION",
-      "next": "Integrar en PR separada y verificar controles Ubuntu; sin Unity Windows ni merge/publicación hasta revisión del QA.",
-      "delivery_definition": {
-        "deliverable": "Workflow Ubuntu de QA sobre ZIP auténticos y scripts de comparación, con provenance SHA y art_approved=false",
-        "evidence": "53 capturas comparadas offline, 8 pruebas de seguridad, cero diferencias de resolución.",
-        "handoff": "No tocar PR136, ejecución Windows o recursos de arte; entrega solo lectura"
-      }
-    },
-    {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
@@ -3264,6 +3239,42 @@
     }
   ],
   "history": [
+    {
+      "id": "eldoria-visual-qa-autogate-20261102",
+      "title": "QA visual automática de capturas Unity, sin editor ni aprobación de arte",
+      "owner": null,
+      "ownership_state": "released",
+      "ownership_revision": 2,
+      "branch": "feature/eldoria-visual-qa-autogate-20261102",
+      "status": "completed",
+      "claimed_at": "2026-11-02",
+      "scope": [
+        "tools/visual-qa/**",
+        ".github/workflows/eldoria-visual-qa-auto.yml",
+        "docs/visual-qa/**"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Comparación de capturas de Unity ya existentes; solo métricas e informes, no generación ni edición de arte.",
+      "phase": "GITHUB_VISUAL_QA_MERGED_AND_TESTED",
+      "next": "Read-only automatic QA installed. Unity CLI/AI connection is separate and not installed on shared Windows.",
+      "delivery_definition": {
+        "deliverable": "Workflow Ubuntu de QA sobre ZIP auténticos y scripts de comparación, con provenance SHA y art_approved=false",
+        "evidence": "53 capturas comparadas offline, 8 pruebas de seguridad, cero diferencias de resolución.",
+        "handoff": "No tocar PR136, ejecución Windows o recursos de arte; entrega solo lectura"
+      },
+      "write_scope_released": true,
+      "completion_evidence": {
+        "pr": 146,
+        "merge_sha": "b8859c82344d2944ea5a798fae631531b1aaa173",
+        "ci_run": 41458254950,
+        "unit_tests": 11,
+        "screens_compared": 53,
+        "windows_used": false,
+        "art_approved": false,
+        "unity_cli_installed": false
+      }
+    },
     {
       "id": "eldoria-autonomy-ci-triage-20261026",
       "title": "Eldoria — diagnóstico automático de evidencias CI y próximo paso seguro",
