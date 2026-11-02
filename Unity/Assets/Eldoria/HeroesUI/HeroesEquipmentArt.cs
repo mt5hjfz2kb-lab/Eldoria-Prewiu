@@ -219,7 +219,7 @@ namespace Eldoria.HeroesUI
                 Surface("Equipment / label divider",slot,8f,size*.68f,size-16f,1.5f,
                     new Color(.81f,.58f,.28f,.71f));
                 Label("Equipment / slot category "+i,slot,Positions[i],4f,size*.71f,
-                    size-8f,size*.21f,size<72f?11:14,Parchment);
+                    size-8f,size*.21f,size<62f?12:size<80f?13:14,Parchment);
             }
             // Separate ornament only; no model clipping or extra photograph.
             Surface("Equipment / vertical heraldic left line",stage,inset+size*.5f,
@@ -256,11 +256,11 @@ namespace Eldoria.HeroesUI
                 usable,1.5f,new Color(.91f,.67f,.33f,.85f));
             Label("Equipment / canonical locked status",pane,
                 "CUATRO POSICIONES BLOQUEADAS",margin,compact?53f:76f,
-                usable,compact?31f:36f,compact?13:17,Parchment,TextAnchor.MiddleLeft);
+                usable,compact?31f:36f,compact?16:17,Parchment,TextAnchor.MiddleLeft);
             Label("Equipment / absence of invented items",pane,
                 "Aún no disponible en esta etapa del reino.",margin,
                 compact?85f:117f,usable,compact?40f:58f,
-                compact?13:17,Dim,TextAnchor.UpperLeft);
+                compact?15:17,Dim,TextAnchor.UpperLeft);
 
             float bottom=height-12f;
             if(compact)
@@ -276,11 +276,12 @@ namespace Eldoria.HeroesUI
                     float x=margin+i*(cell+gap);
                     var card=Rect("Equipment / context mini-category "+i,pane,
                         x,start,cell,Mathf.Max(22f,bottom-start));
-                    Surface("Equipment / mini category symbol",card,2f,3f,iconSize,iconSize,
-                        new Color(.80f,.72f,.59f,.91f),emblems[i]);
-                    Label("Equipment / mini category text",card,Positions[i],iconSize+3f,1f,
-                        Mathf.Max(13f,cell-iconSize-3f),31f,
-                        cell<75f?9:11,Parchment,TextAnchor.MiddleLeft);
+                    Surface("Equipment / mini category symbol",card,
+                        (cell-iconSize)*.5f,2f,iconSize,iconSize,
+                        new Color(.80f,.72f,.59f,.94f),emblems[i]);
+                    Label("Equipment / mini category text",card,Positions[i],
+                        0f,iconSize+4f,cell,Mathf.Max(17f,bottom-start-iconSize-4f),
+                        cell<68f?11:13,Parchment,TextAnchor.MiddleCenter);
                 }
             }
             else
