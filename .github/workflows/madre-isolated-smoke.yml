@@ -52,11 +52,47 @@ jobs:
           sed -n '1,95p' "$RUNNER_TEMP/madre-doctor.txt"
           echo "DOCTOR_LOG_END"
           echo "MADRE_DOCTOR_EXIT $ec"
-          if [ "$ec" -ne 0 ]; then
-            echo "MADRE_DOCTOR_NOT_PASSED_NO_INSTALL_ON_WINDOWS"
+          # On a disposable runner with no credentials, MADRE doctor is EXPECTED
+          # to return 1 while reporting the absence of configured agent CLIs.
+          # Only accept that specific known failure as an install smoke success.
+          if [ "$ec" -eq 0 ]; then
+            echo "MADRE_DOCTOR_AVAILABLE"
+          elif [ "$ec" -eq 1 ] && grep -q 'Todavía no hay ningún agente conectado' "$RUNNER_TEMP/madre-doctor.txt" && grep -q '1.1.1' "$RUNNER_TEMP/madre-doctor.txt"; then
+            echo "MADRE_DOCTOR_EXPECTED_NO_AGENT_WARNING"
+          else
+            echo "MADRE_DOCTOR_UNEXPECTED_FAILURE"
             exit 1
           fi
-          echo "MADRE_READONLY_DOCTOR_SUCCESS"
+
+      - name: Verify MADRE localhost interface starts without an agent
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/madre-home" "$RUNNER_TEMP/madre-project" "$RUNNER_TEMP/madre-npm-cache"
+          export HOME="$RUNNER_TEMP/madre-home"
+          export npm_config_cache="$RUNNER_TEMP/madre-npm-cache"
+          export npm_config_ignore_scripts=true
+          export BROWSER=none CI=true
+          timeout 95s npx --yes @jossuealcala/madre@1.1.1 start --no-open --project "$RUNNER_TEMP/madre-project" > "$RUNNER_TEMP/madre-start.log" 2>&1 &
+          proc=$!
+          trap 'kill "$proc" 2>/dev/null || true' EXIT
+          ready=0
+          for i in $(seq 1 24); do
+            if curl -fsS --max-time 2 -o /dev/null http://127.0.0.1:4317/; then
+              ready=1
+              break
+            fi
+            if ! kill -0 "$proc" 2>/dev/null; then break; fi
+            sleep 1
+          done
+          if [ "$ready" -eq 1 ]; then
+            echo "MADRE_LOCALHOST_HTTP_PASS"
+          else
+            echo "MADRE_LOCALHOST_HTTP_NOT_READY"
+            sed -n '1,60p' "$RUNNER_TEMP/madre-start.log"
+            exit 1
+          fi
+          echo "GITHUB_TEMP_VM_ONLY_WINDOWS_UNTOUCHED"
 
       - name: Confirm no installation on local Windows
         if: always()
