@@ -1217,12 +1217,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(unitTitle.rectTransform,14,8,lw-28,wide?30:50);
                 // More room for the real troop controls below the hero gallery.
                 float cardsY=wide?43:65;
-                float cardsH=Mathf.Max(90,lh*(compactLandscape?.35f:wide?.42f:.42f));
+                float cardsH=Mathf.Max(90,lh*(compactLandscape?.35f:wide?.42f:.48f));
                 float cardW=(lw-40)/3f;
                 for(int i=0;i<3;i++)
                 {
                     Place((RectTransform)heroSlotButtons[i].transform,14+i*(cardW+6),cardsY,cardW,cardsH);
-                    float portraitH=compactLandscape?Mathf.Max(40,cardsH-70):cardsH*.59f;
+                    float portraitH=compactLandscape?Mathf.Max(40,cardsH-70):cardsH*.72f;
                     var portraitSprite=approvedHeroes[i].sprite;
                     float ratio=portraitSprite?portraitSprite.rect.width/Mathf.Max(1f,portraitSprite.rect.height):1f;
                     // Original source always fits wholly inside its own portrait recess.
@@ -1237,9 +1237,9 @@ namespace Eldoria.UI.RoyalGold.V2
                         (apertureW-portraitW)*.5f,
                         (portraitH-portraitHeight)*.5f,portraitW,portraitHeight);
                     Place(heroSlotLabels[i].rectTransform,6,
-                        compactLandscape?cardsH-60:cardsH*.62f,
-                        cardW-12,compactLandscape?54:cardsH*.36f);
-                    heroSlotLabels[i].fontSize=compactLandscape?23:wide?22:26;
+                        compactLandscape?cardsH-60:cardsH*.73f,
+                        cardW-12,compactLandscape?54:cardsH*.26f);
+                    heroSlotLabels[i].fontSize=compactLandscape?23:wide?21:23;
                     if(compactLandscape)
                     {
                         // A horizontal phone cannot support a short panoramic
@@ -1261,7 +1261,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // remaining troop region. No portrait/control collisions and no
                 // artificial T3+ troops, fake stat or second inventory.
                 float orderSpace=Mathf.Max(140f,lh-rowY-8f);
-                float detailH=Mathf.Clamp(orderSpace*.19f,wide?31f:47f,wide?54f:74f);
+                float detailH=Mathf.Clamp(orderSpace*.25f,wide?31f:60f,wide?54f:84f);
                 float tierH=Mathf.Clamp(orderSpace*.18f,wide?31f:45f,wide?55f:74f);
                 float controlY=rowY+orderSpace*.50f;
                 float controlH=Mathf.Clamp(orderSpace*.24f,wide?36f:54f,wide?50f:80f);
