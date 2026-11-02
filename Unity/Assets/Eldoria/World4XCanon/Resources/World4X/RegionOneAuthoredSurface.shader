@@ -1,5 +1,5 @@
 Shader "Eldoria/RegionOneAuthoredSurface" {
- Properties { _HiddenCrossing("Replaced existing crossing",Vector)=(0,0,0,0) _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 _WaterSurface("Two sided water lighting",Float)=0 _GeologicalRock("Physical stratification",Float)=0 _QuarryFloor("Grounded extraction edge",Float)=0 _MeadowBrush("Painted grass and earth",2D)="gray"{} _MeadowBrushEnabled("Painted brush weight",Float)=0 _BasinPigment("Same authored basin pigment",2D)="white"{} _BasinPigmentEnabled("Continuous geological pigment",Float)=0 _MeadowSourceMean("Measured source pigment mean",Vector)=(.5,.5,.25,1) _MeadowBrushMean("Neutral pigment mean",Vector)=(.51184069,.47712201,.18659264,1) _ExistingPathDistance("Existing authored earth distance",2D)="white"{} _ExistingPathEnabled("Path distance readability",Float)=0 }
+ Properties { _HiddenCrossing("Replaced existing crossing",Vector)=(0,0,0,0) _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 _WaterSurface("Two sided water lighting",Float)=0 _GeologicalRock("Physical stratification",Float)=0 _QuarryFloor("Grounded extraction edge",Float)=0 _BreachFaultCut("Source fault footprint on original rock",Float)=0 _MeadowBrush("Painted grass and earth",2D)="gray"{} _MeadowBrushEnabled("Painted brush weight",Float)=0 _BasinPigment("Same authored basin pigment",2D)="white"{} _BasinPigmentEnabled("Continuous geological pigment",Float)=0 _MeadowSourceMean("Measured source pigment mean",Vector)=(.5,.5,.25,1) _MeadowBrushMean("Neutral pigment mean",Vector)=(.51184069,.47712201,.18659264,1) _ExistingPathDistance("Existing authored earth distance",2D)="white"{} _ExistingPathEnabled("Path distance readability",Float)=0 }
  SubShader {Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="TransparentCutout" "Queue"="AlphaTest"}
  HLSLINCLUDE
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -10,7 +10,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  TEXTURE2D(_BasinPigment); SAMPLER(sampler_BasinPigment);
  TEXTURE2D(_ExistingPathDistance); SAMPLER(sampler_ExistingPathDistance);
  CBUFFER_START(UnityPerMaterial)
- float4 _HiddenCrossing;float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;float _WaterSurface;float _GeologicalRock;float _QuarryFloor;float _MeadowBrushEnabled;float4 _MeadowBrushMean;float4 _MeadowSourceMean;float _ExistingPathEnabled;float _BasinPigmentEnabled;
+ float4 _HiddenCrossing;float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;float _WaterSurface;float _GeologicalRock;float _QuarryFloor;float _MeadowBrushEnabled;float4 _MeadowBrushMean;float4 _MeadowSourceMean;float _ExistingPathEnabled;float _BasinPigmentEnabled;float _BreachFaultCut;
  CBUFFER_END
  UNITY_INSTANCING_BUFFER_START(PerTree)
  UNITY_DEFINE_INSTANCED_PROP(float4, _InstanceTint)
@@ -18,6 +18,28 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  struct A{float4 positionOS:POSITION;float3 normalOS:NORMAL;float2 uv:TEXCOORD0;UNITY_VERTEX_INPUT_INSTANCE_ID};
  struct V{float4 p:SV_POSITION;float3 normal:TEXCOORD0;float2 uv:TEXCOORD1;float3 world:TEXCOORD2;UNITY_VERTEX_INPUT_INSTANCE_ID};
  V vert(A a){V o;UNITY_SETUP_INSTANCE_ID(a);UNITY_TRANSFER_INSTANCE_ID(a,o);o.world=TransformObjectToWorld(a.positionOS.xyz);o.p=TransformWorldToHClip(o.world);o.normal=TransformObjectToWorldNormal(a.normalOS);o.uv=TRANSFORM_TEX(a.uv,_BaseMap);return o;}
+
+ // World-space positions taken from production-region.json's 11 authored
+ // geological fault segments. Only marked legacy plate material samples this.
+ float SourceFaultSegment(float2 p,float2 a,float2 b){
+     float2 ab=b-a;
+     float k=saturate(dot(p-a,ab)/max(dot(ab,ab),.0001));
+     return length(p-(a+k*ab));
+ }
+ float SourceFaultDistance(float2 p){
+     float d=SourceFaultSegment(p,float2(-385,260),float2(-345,218));
+     d=min(d,SourceFaultSegment(p,float2(-345,218),float2(-308,206)));
+     d=min(d,SourceFaultSegment(p,float2(-308,206),float2(-280,165)));
+     d=min(d,SourceFaultSegment(p,float2(-280,165),float2(-260,150)));
+     d=min(d,SourceFaultSegment(p,float2(-260,150),float2(-222,137)));
+     d=min(d,SourceFaultSegment(p,float2(-222,137),float2(-195,86)));
+     d=min(d,SourceFaultSegment(p,float2(-195,86),float2(-135,40)));
+     d=min(d,SourceFaultSegment(p,float2(-308,206),float2(-350,140)));
+     d=min(d,SourceFaultSegment(p,float2(-350,140),float2(-365,110)));
+     d=min(d,SourceFaultSegment(p,float2(-222,137),float2(-175,187)));
+     d=min(d,SourceFaultSegment(p,float2(-175,187),float2(-150,230)));
+     return d;
+ }
  ENDHLSL
  Pass { Name "ForwardLit" Tags {"LightMode"="UniversalForward"} Cull Off Blend SrcAlpha OneMinusSrcAlpha
  HLSLPROGRAM
@@ -38,6 +60,14 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  clip(unity_LODFade.x-(unity_LODFade.x<0?-lodDither:lodDither));
  #endif
  half4 c=SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,i.uv)*_BaseColor*UNITY_ACCESS_INSTANCED_PROP(PerTree,_InstanceTint);clip(c.a-.35);
+ // Keep physical imported rock and its painterly material. Clip only the
+ // old circular plate layer against the actual branching source faults.
+ if(_BreachFaultCut>.5){
+     float2 p=i.world.xz-_RegionOrigin.xz;
+     float distanceToFault=SourceFaultDistance(p);
+     float jagged=2.2*sin(p.x*.18+p.y*.06)+1.8*cos(p.y*.13-p.x*.04);
+     clip(18.0+jagged-distanceToFault);
+ }
  float d=frac(52.9829189*frac(dot(floor(i.p.xy),float2(.06711056,.00583715))));clip(_Baked>.5?_Fade-d:d-_Fade);
  #if defined(_MAIN_LIGHT_SHADOWS_SCREEN)
  float4 shadowCoord=ComputeScreenPos(TransformWorldToHClip(i.world));
