@@ -168,7 +168,12 @@ namespace Eldoria.HeroesUI
             float tabWidth=portrait?(w-46)/2f:Mathf.Clamp(w*.16f,140,190),top=portrait?210:shortProfile?96:100;
             for(int i=0;i<pages.Length;i++){
                 var page=pages[i];float x=portrait?20+(i%2)*(tabWidth+6):20,y=portrait?96+(i/2)*49:shortProfile?96+i*46:110+i*62;
-                var b=Button("Hero tab "+page,captions[i],x,y,tabWidth,portrait?43:shortProfile?40:52,()=>Select(page));
+                var caption=shortProfile&&page==Page.Equipamiento?"EQUIPO":captions[i];
+                var b=Button("Hero tab "+page,caption,x,y,tabWidth,portrait?43:shortProfile?40:52,()=>Select(page));
+                if(shortProfile){
+                    var t=b.GetComponentInChildren<Text>();
+                    if(t){t.fontStyle=FontStyle.Bold;t.fontSize=17;t.resizeTextMinSize=15;}
+                }
                 if(CurrentPage==page)b.targetGraphic.color=new Color(.95f,.78f,.43f);
             }
             float bodyX=portrait?20:tabWidth+36,bodyW=w-bodyX-20;
@@ -549,7 +554,7 @@ namespace Eldoria.HeroesUI
         }
         RectTransform ProfileModule(string name,Transform parent,float x,float y,float w,float h)
         {
-            var r=Surface(name,parent,x,y,w,h,new Color(.054f,.049f,.048f,.95f));
+            var r=Surface(name,parent,x,y,w,h,new Color(.057f,.052f,.060f,.90f));
             r.GetComponent<Image>().raycastTarget=false;
             // Bevel and inset are separate uGUI layers. These render correctly
             // on actual Unity Canvas, unlike the rejected invisible custom mesh.
@@ -568,7 +573,59 @@ namespace Eldoria.HeroesUI
             lacquer.color=new Color(.92f,.65f,.38f,.10f);
             Surface(name+" / engraved brass spine",r,3f,5f,1f,Mathf.Max(0f,h-10f),
                 new Color(.78f,.56f,.31f,.32f)).GetComponent<Image>().raycastTarget=false;
+            if(w>65f&&h>28f){
+                Surface(name+" / upper inset reflection",r,5f,5f,w-10f,1f,
+                    new Color(.95f,.75f,.45f,.18f)).GetComponent<Image>().raycastTarget=false;
+                Surface(name+" / lower inset shadow",r,5f,h-6f,w-10f,1f,
+                    new Color(.015f,.015f,.022f,.82f)).GetComponent<Image>().raycastTarget=false;
+                float corner=Mathf.Clamp(h*.14f,3.5f,9f);
+                for(int side=0;side<2;side++){
+                    float cx=side==0?5f:w-5f-corner;
+                    Surface(name+" / chased upper corner",r,cx,5f,corner,2f,
+                        new Color(.92f,.70f,.40f,.67f)).GetComponent<Image>().raycastTarget=false;
+                    Surface(name+" / corner drop",r,side==0?5f:w-7f,5f,2f,corner,
+                        new Color(.92f,.70f,.40f,.67f)).GetComponent<Image>().raycastTarget=false;
+                }
+            }
             return r;
+        }
+        // Each real combat stat receives its own inlaid heraldic seal,
+        // assembled from known-working uGUI Images (not an opaque screenshot).
+        void AttributeRelief(RectTransform plate,int id,float w,float h)
+        {
+            float size=Mathf.Clamp(h*.49f,20f,49f),cx=11f+size*.5f,cy=h*.50f;
+            var recess=Surface("Attribute / carved oval recess",plate,
+                cx-size*.5f,cy-size*.5f,size,size,new Color(.11f,.082f,.062f,.83f));
+            recess.GetComponent<Image>().raycastTarget=false;
+            var coin=Surface("Attribute / chased bronze diamond",plate,
+                cx-size*.32f,cy-size*.32f,size*.64f,size*.64f,
+                new Color(.65f,.46f,.25f,.80f));
+            coin.pivot=new Vector2(.5f,.5f);
+            coin.anchoredPosition=new Vector2(cx,-cy);
+            coin.localRotation=Quaternion.Euler(0f,0f,45f);
+            coin.GetComponent<Image>().raycastTarget=false;
+            var inset=Surface("Attribute / royal enamel inlay",plate,
+                cx-size*.235f,cy-size*.235f,size*.47f,size*.47f,
+                new Color(.035f,.074f,.113f,.95f));
+            inset.pivot=new Vector2(.5f,.5f);
+            inset.anchoredPosition=new Vector2(cx,-cy);
+            inset.localRotation=Quaternion.Euler(0f,0f,45f);
+            inset.GetComponent<Image>().raycastTarget=false;
+            float thickness=Mathf.Clamp(size*.10f,2f,4f);
+            void Mark(string suffix,float dx,float dy,float len,float thick,float angle)
+            {
+                var mark=Surface("Attribute / "+id+" "+suffix,plate,
+                    cx+dx-len*.5f,cy+dy-thick*.5f,len,thick,
+                    new Color(.96f,.79f,.53f,.96f));
+                mark.pivot=new Vector2(.5f,.5f);
+                mark.anchoredPosition=new Vector2(cx+dx,-cy-dy);
+                mark.localRotation=Quaternion.Euler(0f,0f,angle);
+                mark.GetComponent<Image>().raycastTarget=false;
+            }
+            if(id==0){Mark("vital vertical",0,0,thickness,size*.30f,90);Mark("vital cross",0,0,size*.30f,thickness,0);}
+            else if(id==1){Mark("sword left",-thickness*.25f,0,size*.32f,thickness*.6f,48);Mark("sword right",thickness*.25f,0,size*.32f,thickness*.6f,-48);}
+            else if(id==2){Mark("shield rim",0,-size*.11f,size*.27f,thickness*.7f,0);Mark("shield spine",0,0,thickness*.8f,size*.29f,90);Mark("shield foot",0,size*.16f,size*.19f,thickness*.6f,0);}
+            else{Mark("rift edge one",0,0,size*.35f,thickness*.6f,45);Mark("rift edge two",0,0,size*.35f,thickness*.6f,-45);}
         }
         void BuildCombatSummary(RectTransform pane,HeroState hero,float w,float h)
         {
@@ -602,12 +659,18 @@ namespace Eldoria.HeroesUI
                 var plate=ProfileModule("Profile / "+names[i]+" carved attribute",pane,
                     x,y,colW,cellH);
                 bool tall=cellH>76f;
-                int nameSize=compact?14:tall?21:17;
-                int valueSize=compact?19:tall?34:23;
-                Label(names[i],plate,names[i],9f,tall?14f:4f,
-                    colW*.54f,tall?32f:cellH-7f,nameSize).color=ivory;
+                AttributeRelief(plate,i,colW,cellH);
+                float iconEnd=11f+Mathf.Clamp(cellH*.49f,20f,49f)+9f;
+                float numbersW=Mathf.Clamp(colW*.28f,38f,105f);
+                float labelW=Mathf.Max(24f,colW-iconEnd-numbersW-10f);
+                int nameSize=compact?15:tall?20:17;
+                int valueSize=compact?22:tall?36:25;
+                var statLabel=Label(names[i],plate,names[i],iconEnd,tall?14f:4f,
+                    labelW,tall?32f:cellH-7f,nameSize);
+                statLabel.color=ivory;
+                if(compact)statLabel.fontStyle=FontStyle.Bold;
                 Label(names[i]+" real value",plate,values[i].ToString(),
-                    colW*.51f,tall?13f:4f,colW*.44f,tall?65f:cellH-7f,
+                    colW-numbersW-6f,tall?13f:4f,numbersW,tall?65f:cellH-7f,
                     valueSize,TextAnchor.MiddleRight).color=gold;
                 if(tall)Surface("Profile / engraved attribute underline",plate,
                     11f,cellH-17f,colW-22f,1f,new Color(.76f,.53f,.28f,.42f))

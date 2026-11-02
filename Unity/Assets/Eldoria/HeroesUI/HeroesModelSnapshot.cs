@@ -11,6 +11,7 @@ namespace Eldoria.HeroesUI
         RenderTexture texture;GameObject previous,stage,visual;RawImage output;
         Camera camera;Light key,rim,fill;Animation idle;AnimationState idleState;
         Mesh groundMesh;Material groundMaterial;Bounds bounds;float yaw=90,nextRender;int renderLayer;
+        readonly Transform[] previewShoulders=new Transform[2],previewElbows=new Transform[2];
         public bool HasModel=>texture&&previous&&stage;
         public bool HasPerspectiveGround=>camera&&!camera.orthographic&&groundMaterial&&groundMaterial.shader.isSupported;
         public bool SamplesOriginalIdle=>idle&&idleState!=null;
@@ -57,6 +58,7 @@ namespace Eldoria.HeroesUI
             visual.SetActive(true);stage.SetActive(true);
             // Bind legacy animation on an active hierarchy before measuring its skin.
             if(idle&&idleState!=null){idle.Play(idleState.name);idleState.speed=0;idleState.time=0;idle.Sample();}
+            LocatePreviewShoulders();RelaxAldricPreviewArms();
             bounds=ActualBounds(visual);
             Debug.Log("HERO_PREVIEW_GEOMETRY "+model.name+" source_scale="+model.transform.lossyScale+" local_stage_bounds="+bounds.size);
             float height=Mathf.Max(.1f,bounds.size.y);
@@ -111,10 +113,54 @@ namespace Eldoria.HeroesUI
             }
             if(!found)throw new InvalidOperationException("Approved portrait contains no geometry");return result;
         }
+
+        // Relax ONLY the isolated display clone. Real city animation, GLB,
+        // skin weights and original clips are byte-for-byte untouched.
+        // Shoulder -> elbow is measured in world space to avoid the sign
+        // error introduced by a previous rig-local +/-35 degree additive clip.
+        void LocatePreviewShoulders()
+        {
+            if(!visual||!idle)return;
+            var nodes=visual.GetComponentsInChildren<Transform>(true);
+            string[] ids={"Eldoria_Aldric_upperarm_L","Eldoria_Aldric_upperarm_R"};
+            for(int i=0;i<2;i++)
+            {
+                previewShoulders[i]=null;previewElbows[i]=null;
+                foreach(var node in nodes)if(node.name==ids[i]){previewShoulders[i]=node;break;}
+                var upper=previewShoulders[i];if(!upper)continue;
+                Transform fallback=null;
+                foreach(var joint in upper.GetComponentsInChildren<Transform>(true))
+                {
+                    if(joint==upper||(joint.position-upper.position).sqrMagnitude<.00001f)continue;
+                    if(!fallback)fallback=joint;
+                    string name=joint.name.ToLowerInvariant();
+                    if(name.Contains("forearm")||name.Contains("lowerarm")||name.Contains("elbow"))
+                    {fallback=joint;break;}
+                }
+                previewElbows[i]=fallback;
+            }
+        }
+        void RelaxAldricPreviewArms()
+        {
+            if(!idle)return;
+            for(int i=0;i<2;i++)
+            {
+                var arm=previewShoulders[i];var elbow=previewElbows[i];
+                if(!arm||!elbow)continue;
+                var downArm=elbow.position-arm.position;
+                if(downArm.sqrMagnitude<.00001f)continue;
+                var spread=Vector3.ProjectOnPlane(downArm,Vector3.up);
+                if(spread.sqrMagnitude<.00001f)continue;
+                // Slightly open arms, bent naturally at the existing elbow.
+                var target=(Vector3.down*.94f+spread.normalized*.34f).normalized;
+                var swing=Quaternion.FromToRotation(downArm.normalized,target);
+                arm.rotation=Quaternion.RotateTowards(Quaternion.identity,swing,28f)*arm.rotation;
+            }
+        }
         void Update(){if(output&&output.enabled&&output.gameObject.activeInHierarchy&&HasModel&&Time.unscaledTime>=nextRender)RenderFrame();}
         void RenderFrame(){
             if(!camera)return;
-            if(idle&&idleState!=null){idleState.time=Mathf.Repeat(Time.unscaledTime,Mathf.Max(.01f,idleState.length));idle.Sample();}
+            if(idle&&idleState!=null){idleState.time=Mathf.Repeat(Time.unscaledTime,Mathf.Max(.01f,idleState.length));idle.Sample();RelaxAldricPreviewArms();}
             var rotation=Quaternion.Euler(7,yaw,0);var up=rotation*Vector3.up;var right=rotation*Vector3.right;var e=bounds.extents;
             float extent(Vector3 axis)=>Mathf.Abs(axis.x)*e.x+Mathf.Abs(axis.y)*e.y+Mathf.Abs(axis.z)*e.z;
             float tangent=Mathf.Tan(camera.fieldOfView*.5f*Mathf.Deg2Rad);
@@ -177,6 +223,7 @@ namespace Eldoria.HeroesUI
         }
         public void Release(){
             previous=null;output=null;idle=null;idleState=null;camera=null;key=null;rim=null;fill=null;
+            for(int i=0;i<2;i++){previewShoulders[i]=null;previewElbows[i]=null;}
             if(stage){stage.SetActive(false);Destroy(stage);}stage=null;visual=null;
             if(groundMesh)Destroy(groundMesh);groundMesh=null;if(groundMaterial)Destroy(groundMaterial);groundMaterial=null;
             if(texture){texture.Release();Destroy(texture);}texture=null;
