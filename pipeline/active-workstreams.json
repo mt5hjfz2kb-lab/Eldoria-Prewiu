@@ -18,40 +18,6 @@
   },
   "active": [
     {
-      "id": "eldoria-codex-windows-auth-probe-20261102",
-      "title": "Issue147 - inspect Windows Codex login status without exposing credentials",
-      "owner": "chatgpt-eldoria-codex-auth-inspection-20261102",
-      "ownership_state": "claimed",
-      "ownership_revision": 2,
-      "branch": "experiment/eldoria-codex-auth-20261102",
-      "status": "active",
-      "claimed_at": "2026-11-02",
-      "scope": [
-        ".github/workflows/eldoria-codex-auth-readonly.yml",
-        "tools/codex-auth-probe/**",
-        "docs/codex-auth-probe/**"
-      ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Read-only login state inspection; does not generate/edit artwork, scenes or gameplay.",
-      "phase": "TEMP_WINDOWS_LEASE_FOR_CREDENTIAL_FREE_AUTH_INSPECTION",
-      "next": "With owner permission, briefly reserve idle Windows, check CLI and auth status, release lease and preserve only non-secret proof. No auth code or token in public logs.",
-      "delivery_definition": {
-        "deliverable": "Authenticated yes/no, Codex version and capability, with exact CI evidence, no tokens",
-        "evidence": "GitHub-hosted workflow report without secrets",
-        "handoff": "No restarting Windows, no installing on game, no touching PR136; log auth blocker if needed"
-      },
-      "windows_reservation": {
-        "source": "valoria-master-plan-layered-construction-20261016",
-        "temporary": true,
-        "authorized_by": "Eldoria owner",
-        "precondition": "No Unity/Blender active at step start",
-        "restore_automatically_on_completion": true
-      }
-    },
-    {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
@@ -153,7 +119,9 @@
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
@@ -1697,7 +1665,7 @@
           "reason": "Owner orders current connected session to finish without interim reports, correcting residual A-pose and reference icon crops discovered in authentic Unity run 41424099554; preserve PR136, GLB, native test evidence."
         }
       ],
-      "ownership_revision": 102,
+      "ownership_revision": 103,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1961,6 +1929,12 @@
         "authorized_by": "Eldoria owner this chat",
         "scope": "Codex auth presence check only; no Unity run, code change or model call",
         "reason": "No native process jobs in current Actions; do not modify PR136"
+      },
+      "codex_auth_probe_20261102_released": {
+        "workstream": "eldoria-codex-windows-auth-probe-20261102",
+        "reason": "Credential-safe Codex login check completed; game unchanged; original Valoria owner/resource restored",
+        "run": 41489835191,
+        "source_sha": "88011e26f54a7eaeb036499d85c1d4d59c241670"
       }
     },
     {
@@ -3288,6 +3262,51 @@
     }
   ],
   "history": [
+    {
+      "id": "eldoria-codex-windows-auth-probe-20261102",
+      "title": "Issue147 - inspect Windows Codex login status without exposing credentials",
+      "owner": null,
+      "ownership_state": "released",
+      "ownership_revision": 3,
+      "branch": "experiment/eldoria-codex-auth-20261102",
+      "status": "completed",
+      "claimed_at": "2026-11-02",
+      "scope": [
+        ".github/workflows/eldoria-codex-auth-readonly.yml",
+        "tools/codex-auth-probe/**",
+        "docs/codex-auth-probe/**"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only login state inspection; does not generate/edit artwork, scenes or gameplay.",
+      "phase": "CODEX_CLI_AUTH_NOT_PRESENT_ON_WINDOWS",
+      "next": "Issue147 remains open: user OAuth approval required. Do not initiate device codes in public Actions logs.",
+      "delivery_definition": {
+        "deliverable": "Authenticated yes/no, Codex version and capability, with exact CI evidence, no tokens",
+        "evidence": "GitHub-hosted workflow report without secrets",
+        "handoff": "No restarting Windows, no installing on game, no touching PR136; log auth blocker if needed"
+      },
+      "windows_reservation": {
+        "source": "valoria-master-plan-layered-construction-20261016",
+        "temporary": true,
+        "authorized_by": "Eldoria owner",
+        "precondition": "No Unity/Blender active at step start",
+        "restore_automatically_on_completion": true
+      },
+      "write_scope_released": true,
+      "completion_evidence": {
+        "run": 41489835191,
+        "artifact": 13163636825,
+        "codex_cli": "0.166.0",
+        "login_rc": 1,
+        "authenticated": false,
+        "authfile_exists": false,
+        "game_modified": false,
+        "unity_launched": false,
+        "no_secrets_disclosed": true,
+        "release_windows": true
+      }
+    },
     {
       "id": "eldoria-cli-windows-isolated-proof-20261102",
       "title": "Issue147: Codex Unity Windows isolated integration proof",
