@@ -18,6 +18,31 @@
   },
   "active": [
     {
+      "id": "eldoria-reference-fidelity-qa-20261102",
+      "title": "Visual quality reference-aware triage: compare real Unity captures to exact approved originals",
+      "owner": "chatgpt-eldoria-reference-qa-20261102",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "branch": "feature/eldoria-reference-fidelity-qa-20261102",
+      "status": "active",
+      "claimed_at": "2026-11-02",
+      "scope": [
+        "tools/visual-qa/reference_triage.py",
+        "tools/visual-qa/test_reference_triage.py",
+        "docs/visual-qa/REFERENCE_TRIAGE_20261102.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only comparison of authentic PNG and approved reference hashes, no art generation or edits.",
+      "phase": "LOCAL_TRIPLE_EVIDENCE_SUCCESS_TO_GITHUB",
+      "next": "Install read-only reference triage and unit tests; use reference kit under Library without distributing or overwriting source originals; never grant art approval automatically.",
+      "delivery_definition": {
+        "deliverable": "Three-way fidelity report for March/Training on authentic Unity captures; regression watch, no auto art approval",
+        "evidence": "Exact refs SHA and real Unity run IDs with 7 local tests",
+        "handoff": "No game source, runner or existing PR136 edits"
+      }
+    },
+    {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
