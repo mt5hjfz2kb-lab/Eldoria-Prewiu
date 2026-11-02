@@ -5,6 +5,7 @@ ROOT="$RUNNER_TEMP/eldoria-codex-plugin-$GITHUB_RUN_ID"
 mkdir -p "$ROOT/home" "$ROOT/codex"
 export HOME="$ROOT/home"
 export CODEX_HOME="$ROOT/home/.codex"
+mkdir -p "$CODEX_HOME"
 export PATH="$ROOT/codex/node_modules/.bin:$PATH"
 unset OPENAI_API_KEY CODEX_API_KEY
 printf '%s\n' 'NO agent model calls or API auth permitted in this test' > "$ROOT/policy.txt"
