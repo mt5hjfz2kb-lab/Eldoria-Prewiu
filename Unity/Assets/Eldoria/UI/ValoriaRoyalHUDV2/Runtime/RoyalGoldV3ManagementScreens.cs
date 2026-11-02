@@ -986,24 +986,24 @@ namespace Eldoria.UI.RoyalGold.V2
                 // header, real capacity/availability as a separate footer.
                 var rw=right.rect.width;
                 var rh=right.rect.height;
-                float pad=wide?17f:20f;
+                float metricPad=wide?17f:20f;
                 float cardGap=wide?10f:12f;
                 float topCard=wide?52f:58f;
                 float band=Mathf.Max(92,rh*.57f-topCard);
                 float cardH=Mathf.Max(28,(band-cardGap*2)/3f);
-                float cardW=(rw-pad*2-cardGap)/2f;
-                Place(summary.rectTransform,pad,10,rw-2*pad,wide?36:42);
+                float cardW=(rw-metricPad*2-cardGap)/2f;
+                Place(summary.rectTransform,metricPad,10,rw-2*metricPad,wide?36:42);
                 summary.fontSize=wide?23:25;
                 for(int i=0;i<marchMetricCards.Length;i++)
                 {
-                    float xx=pad+(i%2)*(cardW+cardGap);
+                    float xx=metricPad+(i%2)*(cardW+cardGap);
                     float yy=topCard+(i/2)*(cardH+cardGap);
                     Place(marchMetricCards[i],xx,yy,cardW,cardH);
                     Place(marchMetricValues[i].rectTransform,7,4,cardW-14,cardH-8);
                     marchMetricValues[i].fontSize=wide?18:21;
                 }
                 float statusY=Mathf.Min(rh*.73f,topCard+3*(cardH+cardGap)+7);
-                Place(status.rectTransform,pad,statusY,rw-2*pad,
+                Place(status.rectTransform,metricPad,statusY,rw-2*metricPad,
                     Mathf.Max(24,rh-statusY-10));
                 status.fontSize=wide?16:18;
                 paneSurfaces[right].enabled=false; // no huge opaque blue backdrop
