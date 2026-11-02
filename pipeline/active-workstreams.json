@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-march-preparation-art-20261102",
+      "owner": "chatgpt-eldoria-strict-march-reference-20261102",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-02",
@@ -127,8 +127,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "MARCH_PREPARATION_REFERENCE_REBUILD_20261102",
-      "next": "Exact-HEAD Unity visual acceptance for March screen; correct old PlayMode assertion of 7 troop count moved into live metric tiles, keep all real gameplay/3 marches and guard assertions.",
+      "phase": "STRICT_MARCH_REFERENCE_RECONSTRUCTION_20261102",
+      "next": "Reference-first macro layout reconstruction, do not invent heroes/troops or damage battle/save. Unity A/B 4 resolutions, true quantity/percent and three-march regression, owner approval remains pending.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -964,7 +964,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": "chatgpt-eldoria-visual-method-verification-20261102",
+      "previous_owner": "chatgpt-eldoria-march-preparation-art-20261102",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1683,9 +1683,15 @@
           "ownership_revision": 105,
           "transferred_at": "2026-11-02",
           "reason": "Propietario ordena expresamente 'Hazlo tú' para reconstruir Preparación de Marchas en este chat, reconciliar PR134/136 y entregar Unity A/B. Transferencia del mismo workstream, sin cancelar ejecución nativa previa, publicación, merge ni gastos."
+        },
+        {
+          "owner": "chatgpt-eldoria-march-preparation-art-20261102",
+          "ownership_revision": 107,
+          "transferred_at": "2026-11-02",
+          "reason": "Owner directly requires this chat to execute another strict artistic Marches pass, not a mere plan. Continue same PR136, preserve the certified base and protect existing work."
         }
       ],
-      "ownership_revision": 107,
+      "ownership_revision": 108,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1931,7 +1937,7 @@
         "new_credits_used": 0,
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
-      "owner_instruction": "2026-11-02: el propietario ordena hacer directamente la reconstrucción artística de Preparación de Marchas en esta sesión; target >=8.3/10 sujeto a fotos Unity y aceptación humana.",
+      "owner_instruction": "2026-11-02: Hazlo tú! Eres un chat de trabajo! Reconstruct genuinely like approved March reference, remove mismatched elements and recover missing visual hierarchy.",
       "release_reason": "Block 01 QA verified and recorded, no gameplay/art code changes, not ART_APPROVED or merge-ready.",
       "windows_resource_handoff_20261102": {
         "authorized_by": "owner current chat",
