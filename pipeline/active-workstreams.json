@@ -18,6 +18,31 @@
   },
   "active": [
     {
+      "id": "eldoria-codex-windows-auth-probe-20261102",
+      "title": "Issue147 - inspect Windows Codex login status without exposing credentials",
+      "owner": "chatgpt-eldoria-codex-auth-inspection-20261102",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "branch": "experiment/eldoria-codex-auth-20261102",
+      "status": "active",
+      "claimed_at": "2026-11-02",
+      "scope": [
+        ".github/workflows/eldoria-codex-auth-readonly.yml",
+        "tools/codex-auth-probe/**",
+        "docs/codex-auth-probe/**"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only login state inspection; does not generate/edit artwork, scenes or gameplay.",
+      "phase": "GITHUB_ACTIONS_READONLY_WINDOWS_AUTH_DIAGNOSTIC",
+      "next": "With owner permission, briefly reserve idle Windows, check CLI and auth status, release lease and preserve only non-secret proof. No auth code or token in public logs.",
+      "delivery_definition": {
+        "deliverable": "Authenticated yes/no, Codex version and capability, with exact CI evidence, no tokens",
+        "evidence": "GitHub-hosted workflow report without secrets",
+        "handoff": "No restarting Windows, no installing on game, no touching PR136; log auth blocker if needed"
+      }
+    },
+    {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
