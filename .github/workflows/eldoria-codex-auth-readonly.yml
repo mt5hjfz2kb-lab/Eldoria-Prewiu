@@ -1,0 +1,75 @@
+name: Eldoria Codex Windows auth read-only probe
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-codex-auth-check
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 12
+    steps:
+      - name: Read only Codex auth state without exposing secrets
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $output=Join-Path $env:RUNNER_TEMP ('eldoria-codex-auth-'+$env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Path $output -Force | Out-Null
+          $report=[ordered]@{run_id=$env:GITHUB_RUN_ID; exact_source_sha=$env:GITHUB_SHA; purpose='Codex authentication presence only'; user_auth_checked=$false; codex_version=''; login_exit_code=$null; authenticated=$false; original_user_auth_file_exists=$false; temporary_codex_install=$false; no_game_changes=$true; no_editor_launched=$true; no_device_codes_created=$true; no_login_attempted=$true; no_tokens_disclosed=$true; error_category=''}
+          try {
+            $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'X-GitHub-Api-Version'='2022-11-28'}
+            $u='https://api.github.com/repos/${{ github.repository }}/contents/pipeline/active-workstreams.json?ref=main'
+            $v=Invoke-RestMethod -Uri $u -Headers $h
+            $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($v.content -replace '\s',''))) | ConvertFrom-Json
+            $owners=@($registry.active | Where-Object {@($_.resources) -contains 'windows-runner-heavy'})
+            if($owners.Count -ne 1 -or $owners[0].id -ne 'eldoria-codex-windows-auth-probe-20261102'){throw 'Windows_lease_not_owned_by_auth_probe'}
+            if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){throw 'Native_processes_active'}
+            $originalHome=Join-Path $env:USERPROFILE '.codex'
+            $report.original_user_auth_file_exists=Test-Path -LiteralPath (Join-Path $originalHome 'auth.json') -PathType Leaf
+            $cmd=Get-Command codex.exe,codex.cmd -ErrorAction SilentlyContinue | Select-Object -First 1
+            if(-not $cmd){
+              $path=Join-Path $env:RUNNER_TEMP ('eldoria-codex-package-'+$env:GITHUB_RUN_ID)
+              New-Item -ItemType Directory -Force -Path $path | Out-Null
+              & npm.cmd install --prefix $path --ignore-scripts --no-audit --no-fund --silent '@openai/codex@0.166.0' *> $null
+              if($LASTEXITCODE -ne 0){throw 'Temporary_codex_package_install_failed'}
+              $report.temporary_codex_install=$true
+              $command=Join-Path $path 'node_modules\.bin\codex.cmd'
+              if(-not(Test-Path -LiteralPath $command)){throw 'Codex_command_missing_after_temp_install'}
+            }else{$command=$cmd.Source}
+            $prior=$ErrorActionPreference
+            try {
+              $ErrorActionPreference='Continue'
+              $versionText=(& $command --version 2>&1 | Out-String)
+              $versionRC=$LASTEXITCODE
+              $statusText=(& $command login status 2>&1 | Out-String)
+              $loginRC=$LASTEXITCODE
+            }finally{$ErrorActionPreference=$prior}
+            $report.codex_version=if($versionRC -eq 0 -and $versionText -match '(codex(?:-cli)?\s+\d+[.][\d.]+)'){$Matches[1]}else{'unknown'}
+            $report.user_auth_checked=$true
+            $report.login_exit_code=$loginRC
+            $report.authenticated=($loginRC -eq 0)
+            $statusText=$null; $versionText=$null
+            Write-Host ('CODEX_AUTHENTICATED='+$report.authenticated)
+            Write-Host ('CODEX_VERSION='+$report.codex_version)
+          } catch {
+            $msg=[string]$_
+            if($msg -match 'Windows_lease_not_owned_by_auth_probe'){$report.error_category='lease_changed'}
+            elseif($msg -match 'Native_processes_active'){$report.error_category='native_busy'}
+            elseif($msg -match 'Temporary_codex_package_install_failed'){$report.error_category='npm_install_failed'}
+            else{$report.error_category='unclassified_error'}
+            Write-Host ('AUTH_CHECK_BLOCKED='+$report.error_category)
+          } finally {
+            $report | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $output 'auth-check.json') -Encoding UTF8
+          }
+      - name: Upload sanitized evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-codex-auth-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-codex-auth-${{ github.run_id }}/auth-check.json
+          retention-days: 7
+          if-no-files-found: warn
