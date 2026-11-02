@@ -1,0 +1,37 @@
+name: Eldoria Issue147 - Codex Unity plugin isolated verification
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-codex-plugin-isolated-qa.yml'
+      - 'tools/unity-cli-windows-pilot/codex_plugin_probe.sh'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  plugin-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/unity-cli-windows-pilot/codex_plugin_probe.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Codex and official Unity plugin in temp home only
+        run: bash tools/unity-cli-windows-pilot/codex_plugin_probe.sh
+      - name: Preserve safe evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue147-codex-unity-plugin-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/eldoria-codex-plugin-${{ github.run_id }}/*.json
+            ${{ runner.temp }}/eldoria-codex-plugin-${{ github.run_id }}/*.txt
+            ${{ runner.temp }}/eldoria-codex-plugin-${{ github.run_id }}/*.log
+          retention-days: 14
+          if-no-files-found: warn
