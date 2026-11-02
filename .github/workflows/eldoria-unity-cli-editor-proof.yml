@@ -67,6 +67,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: issue147-scratch-editor-${{ github.run_id }}
-          path: ${{ runner.temp }}/eldoria-cli-editor-proof-${{ github.run_id }}/
+          path: |
+            ${{ runner.temp }}/eldoria-cli-editor-proof-${{ github.run_id }}/*.json
+            ${{ runner.temp }}/eldoria-cli-editor-proof-${{ github.run_id }}/*.txt
+            ${{ runner.temp }}/eldoria-cli-editor-proof-${{ github.run_id }}/*.log
+            ${{ runner.temp }}/eldoria-cli-editor-proof-${{ github.run_id }}/*.png
           if-no-files-found: warn
           retention-days: 14
