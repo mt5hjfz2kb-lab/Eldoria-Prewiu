@@ -1,0 +1,64 @@
+name: "MADRE independent Ubuntu smoke test — no Windows"
+# One-time pilot: executes on a disposable GITHUB-HOSTED UBUNTU VM only.
+# NEVER runs PowerShell, WSL, Windows or Eldoria Unity; no restart commands.
+on:
+  push:
+    branches:
+      - pilot/madre-safe-readonly-20261102
+    paths:
+      - '.github/workflows/madre-isolated-smoke.yml'
+  workflow_dispatch:
+
+permissions: {}
+concurrency:
+  group: madre-sandbox-smoke-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  madre-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Verify this is not Windows or any self-hosted runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(uname -s)" = "Linux"
+          test "${RUNNER_ENVIRONMENT:-}" = "github-hosted"
+          test "${RUNNER_OS:-}" = "Linux"
+          echo "PILOT_HOSTED_UBUNTU_ONLY_NO_WINDOWS_NO_REBOOT"
+
+      - name: Set up temporary Node.js (ephemeral)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Test MADRE CLI without project credentials or edits
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p "$RUNNER_TEMP/madre-home" "$RUNNER_TEMP/madre-project" "$RUNNER_TEMP/madre-npm-cache"
+          export HOME="$RUNNER_TEMP/madre-home"
+          export npm_config_cache="$RUNNER_TEMP/madre-npm-cache"
+          export npm_config_ignore_scripts=true
+          export BROWSER=none
+          export CI=true
+          echo "NODE_VERSION $(node --version)"
+          echo "MADRE_DOCTOR_BEGIN"
+          timeout 125s npx --yes @jossuealcala/madre@1.1.1 doctor >"$RUNNER_TEMP/madre-doctor.txt" 2>&1
+          ec=$?
+          sed -n '1,95p' "$RUNNER_TEMP/madre-doctor.txt"
+          echo "MADRE_DOCTOR_EXIT $ec"
+          if [ "$ec" -ne 0 ]; then
+            echo "MADRE_DOCTOR_NOT_PASSED_NO_INSTALL_ON_WINDOWS"
+            exit 1
+          fi
+          echo "MADRE_READONLY_DOCTOR_SUCCESS"
+
+      - name: Confirm no installation on local Windows
+        if: always()
+        shell: bash
+        run: |
+          echo "MADRE_SMOKE_GITHUB_HOSTED_ONLY"
+          echo "NO_PC_RESTART_NO_WSL_NO_WINDOWS_RUNNER_NO_UNITY"
+          echo "NO_CREDENTIALS_NO_PROJECT_CHECKOUT_NO_GIT_PUSH"
