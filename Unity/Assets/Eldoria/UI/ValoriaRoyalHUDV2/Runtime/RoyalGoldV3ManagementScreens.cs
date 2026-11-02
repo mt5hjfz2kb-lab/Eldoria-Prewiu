@@ -778,7 +778,7 @@ namespace Eldoria.UI.RoyalGold.V2
                         " · T2 "+s.Available.ArcherT2+
                         "\nCAPACIDAD "+MarchCapacityRules.Capacity(s,selectedHero)+
                         " · NIVEL "+MarchCapacityRules.HeroLevel(s,selectedHero)+
-                        "\nMARCHAS "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
+                        "\nMARCHAS ACTIVAS "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
                         " · PREPARADOS "+(s.MarchConfigured?s.PreparedTroops.Total:0));
                 else if(compactLandscape)
                     status.Put("RUPTURA "+power.Break+" · DISP. T1 "+s.Available.ArcherT1+" · T2 "+s.Available.ArcherT2+
