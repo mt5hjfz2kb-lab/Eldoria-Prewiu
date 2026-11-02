@@ -22,7 +22,7 @@
       "title": "Issue147 - inspect Windows Codex login status without exposing credentials",
       "owner": "chatgpt-eldoria-codex-auth-inspection-20261102",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "branch": "experiment/eldoria-codex-auth-20261102",
       "status": "active",
       "claimed_at": "2026-11-02",
@@ -31,15 +31,24 @@
         "tools/codex-auth-probe/**",
         "docs/codex-auth-probe/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Read-only login state inspection; does not generate/edit artwork, scenes or gameplay.",
-      "phase": "GITHUB_ACTIONS_READONLY_WINDOWS_AUTH_DIAGNOSTIC",
+      "phase": "TEMP_WINDOWS_LEASE_FOR_CREDENTIAL_FREE_AUTH_INSPECTION",
       "next": "With owner permission, briefly reserve idle Windows, check CLI and auth status, release lease and preserve only non-secret proof. No auth code or token in public logs.",
       "delivery_definition": {
         "deliverable": "Authenticated yes/no, Codex version and capability, with exact CI evidence, no tokens",
         "evidence": "GitHub-hosted workflow report without secrets",
         "handoff": "No restarting Windows, no installing on game, no touching PR136; log auth blocker if needed"
+      },
+      "windows_reservation": {
+        "source": "valoria-master-plan-layered-construction-20261016",
+        "temporary": true,
+        "authorized_by": "Eldoria owner",
+        "precondition": "No Unity/Blender active at step start",
+        "restore_automatically_on_completion": true
       }
     },
     {
@@ -144,9 +153,7 @@
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
@@ -1690,7 +1697,7 @@
           "reason": "Owner orders current connected session to finish without interim reports, correcting residual A-pose and reference icon crops discovered in authentic Unity run 41424099554; preserve PR136, GLB, native test evidence."
         }
       ],
-      "ownership_revision": 101,
+      "ownership_revision": 102,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1948,6 +1955,12 @@
         "returned_by": "chatgpt-eldoria-win-cli-proof-20261102",
         "returned_on": "2026-11-02",
         "proof": "real 320x180 Unity A/B captured; source untouched"
+      },
+      "codex_auth_diag_temporary_release": {
+        "to_workstream": "eldoria-codex-windows-auth-probe-20261102",
+        "authorized_by": "Eldoria owner this chat",
+        "scope": "Codex auth presence check only; no Unity run, code change or model call",
+        "reason": "No native process jobs in current Actions; do not modify PR136"
       }
     },
     {
