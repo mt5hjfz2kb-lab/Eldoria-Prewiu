@@ -119,13 +119,15 @@
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK03_REBUILD_STAGE_AND_APPROVED_COMPOSITION",
-      "next": "Rebuild hero RenderTexture with real 3D dais and controlled arm plus forearm stance; align left icon rail, right power/stat panel and actual-hero portrait selector with six-screen reference. Preserve GLB, Unity host, save. Reserve windows only for genuine native certification, compare exact-head captures before acceptance.",
+      "phase": "BLOCK03_STAGE_AND_COMPOSITION_NATIVE_CERTIFICATION",
+      "next": "Exact-head PR136 d30d195086c1f4413b8872d9459d0f9d5c20036c has rendered 3D dais/forearm adjustment and restored profile portrait strip/compact power cabinet. Native certificate 41418314295 waiting behind earlier 41418070847. Compare real captures in four sizes and inspect logs/geometry after PASS. ART_APPROVED=false. Do not merge or publish. No spend.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
