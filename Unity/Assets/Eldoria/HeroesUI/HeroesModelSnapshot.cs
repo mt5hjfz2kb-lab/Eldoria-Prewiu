@@ -77,7 +77,7 @@ namespace Eldoria.HeroesUI
             var shader=Resources.Load<Shader>("EldoriaV41/HeroesContactShadow");
             if(!shader||!shader.isSupported)throw new InvalidOperationException("Hero contact-shadow shader unavailable");
             groundMaterial=new Material(shader){name="Hero / transparent shadow receiver"};
-            groundMaterial.SetColor("_ShadowTint",new Color(.035f,.025f,.018f,.72f));
+            groundMaterial.SetColor("_ShadowTint",new Color(.025f,.022f,.018f,.92f));
             var floor=new GameObject("Hero / physical ground contact",typeof(MeshFilter),typeof(MeshRenderer));
             floor.transform.SetParent(stage.transform,false);floor.layer=renderLayer;
             floor.transform.position=new Vector3(bounds.center.x,bounds.min.y-.002f,bounds.center.z);
@@ -94,7 +94,7 @@ namespace Eldoria.HeroesUI
             camera.allowHDR=false;camera.allowMSAA=true;camera.nearClipPlane=.01f;camera.farClipPlane=height*12;
             var data=cameraObject.AddComponent<UniversalAdditionalCameraData>();data.renderPostProcessing=false;data.renderShadows=true;
             key=Lamp("Hero / window key",new Color(.96f,.87f,.72f),1.12f);
-            key.shadows=LightShadows.Soft;key.shadowStrength=.8f;key.shadowBias=.015f;key.shadowNormalBias=.025f;
+            key.shadows=LightShadows.Soft;key.shadowStrength=.95f;key.shadowBias=.009f;key.shadowNormalBias=.018f;
             rim=Lamp("Hero / torch rim",new Color(1f,.62f,.33f),.59f);
             fill=Lamp("Hero / soft front fill",new Color(.76f,.82f,.96f),.56f);
             // Source-space supersampling keeps the approved Lyra's facial/cloth
