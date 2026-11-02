@@ -1517,8 +1517,11 @@ namespace Eldoria.HeroesUI
             if(CurrentPage==Page.Resumen){
                 BuildCombatSummary(pane,hero,w,h);
             }else if(CurrentPage==Page.Habilidades){
-                Label("Canonical hero ability",pane,hero.AbilityName??"CARACTERÍSTICAS",16,18,w-32,48,24).color=gold;
-                ScrollDescription(pane,hero.AbilityDescription??"",16,76,w-32,Mathf.Max(50,h-96));
+                // Exactly one source-bound ability. Decorative reserve cards are
+                // inert; navigation, models, progression and saves are untouched.
+                HeroesSkillCards.Build(pane,hero.Id,hero.AbilityName,
+                    hero.AbilityDescription,w,h,hallFrameSprite,
+                    ApprovedProfileNavigationIcon(2));
             }else{
                 string title=CurrentPage==Page.Talentos?"TALENTOS":"EQUIPAMIENTO";
                 Label("Unavailable system title",pane,title,16,18,w-32,52,24).color=gold;
