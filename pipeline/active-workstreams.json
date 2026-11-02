@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-exact-reference-hero-ui-20261102",
+      "owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-02",
@@ -124,8 +124,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK03_LITERAL_REFERENCE_POSE_PENDING_EXACT_HEAD_NATIVE",
-      "next": "PR136 latest HEAD a94fe3b6cb396f2fd28e907520d53cb7807e0260. Removed call to artificial pedestal; original character remains isolated with real contact shadow. More emphatic inward/down arm/forearm rig correction in preview clone only; UI left menu restored to approved 5-icon positions, actual icon crops from approved 1536x1024 master (without labels/controls) and amber active state; bottom actual profile strip preserved, no invented Historia functionality. Native workflow 41424099554 is pending behind previous long PlayMode 41419185982. DO NOT describe as visually approved until exact-HEAD Unity PNG for Aldric/Lyra at 1600x900/900x1600/844x390/390x844 inspected, compare actual arm silhouette and icon alignment. No merge/publication/paid credits. If current pose still fails, inspect arm skin attachment rather than repeating micro-rotations.",
+      "phase": "BLOCK03_LIVE_RENDER_POSE_ICON_FIDELITY_FIX",
+      "next": "Correct source-backed A-pose from measured upperarm ~27 degrees to <=6 degrees and forearms <5, crop only authentic icon art without baked labels, validate native 4-resolution A/B in existing PR136, preserve real controls/GLB/save. Existing run 41424099554 has genuine captures already.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1642,9 +1642,15 @@
           "ownership_revision": 97,
           "transferred_at": "2026-11-02",
           "reason": "Propietario solicita directamente reconstruir la ficha exacta: brazos Aldric abajo, sin pedestal artificioso y botones en posiciones de imagen aprobada. Relevo a este chat conectado, mantener PR136 y HEAD."
+        },
+        {
+          "owner": "chatgpt-eldoria-exact-reference-hero-ui-20261102",
+          "ownership_revision": 98,
+          "transferred_at": "2026-11-02",
+          "reason": "Owner orders current connected session to finish without interim reports, correcting residual A-pose and reference icon crops discovered in authentic Unity run 41424099554; preserve PR136, GLB, native test evidence."
         }
       ],
-      "ownership_revision": 98,
+      "ownership_revision": 99,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
