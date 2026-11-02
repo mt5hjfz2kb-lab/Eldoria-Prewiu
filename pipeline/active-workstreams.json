@@ -126,8 +126,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK03_POSE_AND_PREMIUM_ATTRIBUTE_RECONSTRUCTION",
-      "next": "Apply non-destructive Aldric relaxed shoulders on isolated presentation clone; sculpt real heraldic attribute modules for both heroes, improve compact landscape. Do not merge or publish without genuine Unity captures/functional QA. Prior run 41363105548 may still be in progress and must not be cancelled or overwritten.",
+      "phase": "BLOCK03_HERO_POSE_AND_GOLD_RELIEFS_NATIVE_FINAL_RUN_QUEUED",
+      "next": "PR136 HEAD 2897759243d95922d5d4e34e26ce83143ff3140a, second pass: constrained presentation-only upper-arm rotation to ~10 degrees from vertical and use sans font for 844x390, preserve GLB/saves. Exact-head Unity certificate 41366240138 pending behind earlier comprehensive regression 41365279075. First-pass f435b741 native V4.1 functional PASS artifact 13107247339, visually Aldric arms still too wide; do NOT call 8.5/10 or art_approved. Once new native captures available inspect arm-angle logs and both four-resolution A/B; repair remaining pose/legibility if needed. Do not merge/publish, no paid assets.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -937,7 +937,13 @@
           ],
           "full_ci_status": "IN_PROGRESS_WHEN_RECORDED",
           "separate_runner_collision": false
-        }
+        },
+        "hero_profiles_latest_source": "2897759243d95922d5d4e34e26ce83143ff3140a",
+        "hero_profiles_native_first_pass_run": 41365279075,
+        "hero_profiles_native_first_pass_artifact": 13107247339,
+        "hero_profiles_native_latest_queued_run": 41366240138,
+        "hero_profiles_art_approved": false,
+        "hero_profiles_pose_visual": "FIRST_PASS_INSUFFICIENT_REVISE_PENDING_28977592"
       },
       "previous_owner": "chatgpt-eldoria-block02-direct-completion-20261101",
       "takeover_at": "2026-10-17",
