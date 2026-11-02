@@ -124,8 +124,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK03_EXACT_REFERENCE_POSE_BUTTONS_NO_FALSE_PEDESTAL",
-      "next": "Remove visually rejected artificial dais; correct Aldric geometry silhouette (not only bone angles), replace old large text-button column with tight actual icon/label rail matching owner reference, retain real stats/save/controls. Exact-head A/B Unity 1600x900/900x1600/844x390/390x844; no approval until inspected.",
+      "phase": "BLOCK03_LITERAL_REFERENCE_POSE_PENDING_EXACT_HEAD_NATIVE",
+      "next": "PR136 latest HEAD a94fe3b6cb396f2fd28e907520d53cb7807e0260. Removed call to artificial pedestal; original character remains isolated with real contact shadow. More emphatic inward/down arm/forearm rig correction in preview clone only; UI left menu restored to approved 5-icon positions, actual icon crops from approved 1536x1024 master (without labels/controls) and amber active state; bottom actual profile strip preserved, no invented Historia functionality. Native workflow 41424099554 is pending behind previous long PlayMode 41419185982. DO NOT describe as visually approved until exact-HEAD Unity PNG for Aldric/Lyra at 1600x900/900x1600/844x390/390x844 inspected, compare actual arm silhouette and icon alignment. No merge/publication/paid credits. If current pose still fails, inspect arm skin attachment rather than repeating micro-rotations.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -936,14 +936,17 @@
           "full_ci_status": "IN_PROGRESS_WHEN_RECORDED",
           "separate_runner_collision": false
         },
-        "hero_profiles_latest_source": "58aa51f6109ee5c011fe7a88a537b6bc39e8a098",
+        "hero_profiles_latest_source": "a94fe3b6cb396f2fd28e907520d53cb7807e0260",
         "hero_profiles_native_first_pass_run": 41365279075,
         "hero_profiles_native_first_pass_artifact": 13107247339,
         "hero_profiles_native_latest_queued_run": 41366240138,
         "hero_profiles_art_approved": false,
         "hero_profiles_pose_visual": "FIRST_PASS_INSUFFICIENT_REVISE_PENDING_28977592",
         "hero_profiles_pending_native_run": 41419185982,
-        "hero_profiles_physical_stage_first_capture_artifact": 13128721997
+        "hero_profiles_physical_stage_first_capture_artifact": 13128721997,
+        "hero_profiles_latest_native_run": 41424099554,
+        "hero_profiles_visual_last_seen_run": 41419185982,
+        "hero_profiles_source_check": "NO_DAIS_INSTANCE_EXACT_ICON_SPRITES_5_BUTTON_NAV_ARM_INWARD_PRESENT"
       },
       "previous_owner": "chatgpt-eldoria-block02-direct-completion-20261101",
       "takeover_at": "2026-10-17",
