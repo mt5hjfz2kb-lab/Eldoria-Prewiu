@@ -3162,35 +3162,6 @@
         }
       ],
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending."
-    },
-    {
-      "id": "eldoria-area-handoff-safety-20261102",
-      "title": "Eldoria — relevo operativo seguro y cierre verificable de áreas",
-      "owner": "chatgpt-eldoria-safe-area-handoff-20261102",
-      "branch": "docs/area-handoff-safety-20261102",
-      "status": "active",
-      "claimed_at": "2026-11-02",
-      "base_main_sha": null,
-      "scope": [
-        "tools/workstream-lease/area-handoff.mjs",
-        "tools/workstream-lease/area-handoff.test.mjs",
-        ".github/workflows/area-handoff.yml",
-        "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-        "AGENTS.md"
-      ],
-      "resources": [],
-      "ownership_state": "claimed",
-      "ownership_revision": 1,
-      "write_scope_released": false,
-      "art_production_routing": "not_applicable",
-      "budget_eur": 0,
-      "phase": "SAFE_HANDOFF_GOVERNANCE_IMPLEMENTATION",
-      "next": "Implement tested opt-in per-area handoff, no automatic release without explicit owner-completion request; no Unity, no PR136 edits, no runner use.",
-      "delivery_definition": {
-        "deliverable": "Guarded release only after explicit area completion and real GitHub Actions readiness checks.",
-        "evidence": "Node unit tests + Ubuntu workflow; exact governance-only PR.",
-        "handoff": "On merge, release governance claim."
-      }
     }
   ],
   "history": [
@@ -10482,6 +10453,46 @@
         "publication_performed": false
       },
       "next": "Primera etapa documental completada. Revisión de .meta y consolidación de recursos pendientes, sin reclamar alcances Unity de otros titulares."
+    },
+    {
+      "id": "eldoria-area-handoff-safety-20261102",
+      "title": "Eldoria — relevo operativo seguro y cierre verificable de áreas",
+      "owner": null,
+      "branch": "docs/area-handoff-safety-20261102",
+      "status": "completed",
+      "claimed_at": "2026-11-02",
+      "base_main_sha": null,
+      "scope": [
+        "tools/workstream-lease/area-handoff.mjs",
+        "tools/workstream-lease/area-handoff.test.mjs",
+        ".github/workflows/area-handoff.yml",
+        "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
+        "AGENTS.md"
+      ],
+      "resources": [],
+      "ownership_state": "available",
+      "ownership_revision": 2,
+      "write_scope_released": true,
+      "art_production_routing": "not_applicable",
+      "budget_eur": 0,
+      "phase": "MERGED_GOVERNANCE_DEPLOYED",
+      "next": "Safe handoff workflow active on main; owner finishes area with explicit area_handoff_request on live canonical claim.",
+      "delivery_definition": {
+        "deliverable": "Guarded release only after explicit area completion and real GitHub Actions readiness checks.",
+        "evidence": "Node unit tests + Ubuntu workflow; exact governance-only PR.",
+        "handoff": "On merge, release governance claim."
+      },
+      "previous_owner": "chatgpt-eldoria-safe-area-handoff-20261102",
+      "completed_at": "2026-11-02",
+      "evidence": {
+        "pr": 144,
+        "merge_sha": "a5669508628531a32f20214ec2fd77412134ec9c",
+        "test_run": 41445328741,
+        "architecture_gate": 41445328773,
+        "governance_gate": 41445328869,
+        "unity_modified": false,
+        "runner_used": false
+      }
     }
   ],
   "owner_specific_pauses": [
