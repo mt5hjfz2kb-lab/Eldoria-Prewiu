@@ -2973,13 +2973,13 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 13,
+      "owner": "chatgpt-eldoria-habilidades-art-20261102",
+      "ownership_state": "claimed",
+      "ownership_revision": 14,
       "status": "active",
-      "branch": "feature/heroes-approved-ui-integration-20261030",
-      "pr": 135,
-      "claimed_at": "2026-10-31T09:29:51.898Z",
+      "branch": "fix/player-feedback-context-ui-20261030",
+      "pr": 136,
+      "claimed_at": "2026-11-02",
       "base_main_sha": "b56f4f0f607ab4325625bd926e0588da1d9b4d73",
       "scope": [
         "Unity/Assets/Eldoria/HeroesUI/**",
@@ -2990,8 +2990,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
-      "phase": "REBUILD_REAL_COMPONENTS_FROM_APPROVED_SIX_SCREENS",
-      "next": "Combined PR136 binds canonical state and loaded Aldric geometry; native six-screen proof required.",
+      "phase": "HEROES_SKILLS_ART_RECONSTRUCTION",
+      "next": "Replace Aldric/Lyra Skills unstyled text with faithful real-ability gilt icon cards, preserve all data and controls; certify native screenshots only when Windows resource is released by canonical Valoria owner.",
       "budget_eur": 0,
       "ownership_history": [
         {
@@ -3052,12 +3052,19 @@
           "ownership_revision": 12,
           "released_at": "2026-10-31T21:38:59.618Z",
           "reason": "Owner explicitly authorized BLOQUE 00 safe handoff from unstable Work to independent normal chats. Current phase ends read-only; preserve PR136 and existing source/evidence. Next BLOQUE 01 session must acquire this exact ID with a fresh CAS before any writes or Windows job."
+        },
+        {
+          "owner": "available",
+          "ownership_revision": 13,
+          "transferred_at": "2026-11-02",
+          "reason": "Owner requests independent Habilidades artistic reconstruction in PR136; HeroesUI scope available, no windows-runner claim, PR135 preserved as source-only draft."
         }
       ],
-      "write_scope_released": true,
+      "write_scope_released": false,
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
       "released_at": "2026-10-31T21:38:59.618Z",
-      "release_reason": "BLOQUE 00 OWNER_AUTHORIZED_NORMAL_CHAT_HANDOFF; claim with CAS before BLOQUE 01 mutations; not completed; no release or publication approval."
+      "release_reason": "BLOQUE 00 OWNER_AUTHORIZED_NORMAL_CHAT_HANDOFF; claim with CAS before BLOQUE 01 mutations; not completed; no release or publication approval.",
+      "original_pr": 135
     },
     {
       "id": "eldoria-unified-art-vault-20261029",
