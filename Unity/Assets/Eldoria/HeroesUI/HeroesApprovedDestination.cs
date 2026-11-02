@@ -132,6 +132,52 @@ namespace Eldoria.HeroesUI
             b.onClick.AddListener(()=>action());var t=Label(name+" label",r,caption,5,3,w-10,h-6,20,TextAnchor.MiddleCenter);
             t.color=enabled?ivory:new Color(.48f,.48f,.48f);return b;
         }
+        // UI-built heraldry keeps the reference's icon positions and does
+        // not depend on Unity's previously invisible custom mesh graphics.
+        // These icons are decorative children of ACTUAL click targets.
+        void ProfileReferenceSigil(Transform parent,int type,float width,float height,float size)
+        {
+            float centerX=width*.5f,centerY=height<50f?height*.42f:height*.39f;
+            float unit=size/48f;
+            Color bright=new Color(.94f,.73f,.39f,.98f);
+            void Stroke(string name,float dx,float dy,float w,float h,float angle)
+            {
+                var rt=Surface("Profile reference / "+name,parent,
+                    centerX+dx*unit-w*unit*.5f,centerY+dy*unit-h*unit*.5f,
+                    w*unit,h*unit,bright);
+                rt.pivot=new Vector2(.5f,.5f);
+                rt.anchoredPosition=new Vector2(centerX+dx*unit,-centerY-dy*unit);
+                rt.localRotation=Quaternion.Euler(0,0,angle);
+                rt.GetComponent<Image>().raycastTarget=false;
+            }
+            if(type==0||type==1){ // sword + guard: profile crest / Summary.
+                Stroke("sword blade",4,-5,6,34,-43);
+                Stroke("sword pommel",-9,11,7,7,-43);
+                Stroke("sword cross",-3,5,22,4,-43);
+            }else if(type==2){ // Skills: embossed radiant circle.
+                for(int a=0;a<8;a++){
+                    float rad=a*Mathf.PI/4f;
+                    Stroke("skill ray "+a,Mathf.Sin(rad)*14,Mathf.Cos(rad)*14,
+                        4f,10f,-a*45f);
+                }
+                Stroke("skill kernel",0,0,10,10,45);
+            }else if(type==3){ // Talents: star/compass.
+                Stroke("talent north",0,0,5,38,0);
+                Stroke("talent east",0,0,38,5,0);
+                Stroke("talent slash",0,0,5,30,45);
+                Stroke("talent inverse",0,0,5,30,-45);
+            }else if(type==4){ // Equipment: original shield-shaped crest.
+                Stroke("equipment top",0,-11,29,4,0);
+                Stroke("equipment left",-11,0,4,25,-14);
+                Stroke("equipment right",11,0,4,25,14);
+                Stroke("equipment heel",0,15,21,4,0);
+            }else{
+                Stroke("history binding",-11,0,4,29,0);
+                Stroke("history top",0,-13,24,4,0);
+                Stroke("history bottom",0,13,24,4,0);
+                Stroke("history pages",11,0,4,29,0);
+            }
+        }
         void Rebuild()
         {
             if(!IsOpen)return;
@@ -160,22 +206,71 @@ namespace Eldoria.HeroesUI
             var selected=CurrentAuthoritativeHero();
             if(!selected.HasValue||!selected.Value.Unlocked){CurrentPage=Page.Salon;CurrentHeroId=null;BuildSalon(w,h);return;}
             var hero=selected.Value;
-            Button("Heroes hall","‹",20,14,48,48,()=>Select(Page.Salon));
-            Label("Hero name",content,hero.DisplayName?.ToUpperInvariant(),82,12,w-164,36,30,TextAnchor.MiddleCenter).color=gold;
-            Label("Hero role and real level",content,hero.Role+" · NIVEL "+hero.Level,82,48,w-164,26,20,TextAnchor.MiddleCenter);
+            bool shortProfile=!portrait&&h<500f;
+            if(portrait){
+                Button("Heroes hall","‹",20,14,48,48,()=>Select(Page.Salon));
+                Label("Hero name",content,hero.DisplayName?.ToUpperInvariant(),82,12,w-164,36,30,TextAnchor.MiddleCenter).color=gold;
+                Label("Hero role and real level",content,hero.Role+" · NIVEL "+hero.Level,82,48,w-164,26,20,TextAnchor.MiddleCenter);
+            }else{
+                // The owner's original: brand top-left, hero identity adjacent
+                // to the central portrait, compact iconic left control column.
+                Label("Profile reference / Eldoria brand",content,"ELDORIA",20,11,124,33,shortProfile?18:22).color=gold;
+                float titleX=shortProfile?157f:200f;
+                Label("Hero name",content,hero.DisplayName, titleX,12,w-titleX-90f,34,shortProfile?24:32).color=ivory;
+                Label("Hero role and real level",content,hero.Role+"  ·  NIVEL "+hero.Level,
+                    titleX,47,w-titleX-90f,29,shortProfile?15:20).color=ivory;
+            }
             var pages=new[]{Page.Resumen,Page.Habilidades,Page.Talentos,Page.Equipamiento};
             string[] captions={"RESUMEN","HABILIDADES","TALENTOS","EQUIPAMIENTO"};
-            bool shortProfile=!portrait&&h<500f;
-            float tabWidth=portrait?(w-46)/2f:Mathf.Clamp(w*.09f,108,152),top=portrait?210:shortProfile?96:100;
-            for(int i=0;i<pages.Length;i++){
-                var page=pages[i];float x=portrait?20+(i%2)*(tabWidth+6):20,y=portrait?96+(i/2)*49:shortProfile?96+i*46:110+i*62;
-                var caption=!portrait&&page==Page.Equipamiento?"EQUIPO":captions[i];
-                var b=Button("Hero tab "+page,caption,x,y,tabWidth,portrait?43:shortProfile?40:52,()=>Select(page));
-                if(!portrait){
-                    var t=b.GetComponentInChildren<Text>();
-                    if(t){t.fontStyle=FontStyle.Normal;t.fontSize=shortProfile?16:17;t.resizeTextForBestFit=false;}
+            float tabWidth=portrait?(w-46)/2f:shortProfile?90f:110f;
+            float top=portrait?210:shortProfile?96:100;
+            if(!portrait){
+                float crestY=shortProfile?74f:96f,crestH=shortProfile?40f:78f;
+                var returnButton=Button("Heroes hall","",20,crestY,tabWidth,crestH,()=>Select(Page.Salon));
+                ProfileReferenceSigil(returnButton.transform,0,tabWidth,crestH,shortProfile?19f:42f);
+                // The approved reference has five vertically stacked
+                // destinations, each with an icon and a caption.
+                float start=shortProfile?118f:190f;
+                float navH=shortProfile?38f:Mathf.Clamp((h-start-132f)/5f,72f,94f);
+                float navGap=shortProfile?5f:10f;
+                for(int i=0;i<5;i++){
+                    if(i==4){
+                        var locked=Frame("Hero tab Historia / not yet available",content,
+                            20,start+i*(navH+navGap),tabWidth,navH);
+                        ProfileReferenceSigil(locked,5,tabWidth,navH,shortProfile?16f:31f);
+                        var label=Label("Profile reference / Historia unavailable",locked,
+                            "HISTORIA",2f,navH-(shortProfile?19f:28f),tabWidth-4f,
+                            shortProfile?15f:23f,shortProfile?12:14,TextAnchor.MiddleCenter);
+                        label.color=new Color(.63f,.62f,.59f,.82f);
+                        continue;
+                    }
+                    var page=pages[i];
+                    var button=Button("Hero tab "+page,"",20,
+                        start+i*(navH+navGap),tabWidth,navH,()=>Select(page));
+                    TintFrame(button.GetComponent<RectTransform>(),CurrentPage==page?
+                        new Color(.97f,.70f,.33f,1f):new Color(.45f,.38f,.26f,.85f));
+                    var plate=button.GetComponent<RectTransform>();
+                    if(CurrentPage==page){
+                        var metal=Surface("Profile reference / selected amber inset",plate,
+                            4f,4f,tabWidth-8f,navH-8f,new Color(.49f,.27f,.085f,.56f));
+                        metal.GetComponent<Image>().raycastTarget=false;
+                        metal.SetAsFirstSibling();
+                    }
+                    ProfileReferenceSigil(button.transform,i+1,tabWidth,navH,
+                        shortProfile?16f:32f);
+                    var caption=Label("Profile reference / "+page+" caption",
+                        button.transform,i==3?"EQUIPO":captions[i],
+                        3f,navH-(shortProfile?19f:28f),tabWidth-6f,
+                        shortProfile?16f:23f,shortProfile?12:14,TextAnchor.MiddleCenter);
+                    caption.color=CurrentPage==page?ivory:new Color(.86f,.83f,.76f);
                 }
-                if(CurrentPage==page)b.targetGraphic.color=new Color(.95f,.78f,.43f);
+            }else{
+                for(int i=0;i<pages.Length;i++){
+                    var page=pages[i];
+                    float x=20+(i%2)*(tabWidth+6),y=96+(i/2)*49;
+                    var b=Button("Hero tab "+page,captions[i],x,y,tabWidth,43,()=>Select(page));
+                    if(CurrentPage==page)b.targetGraphic.color=new Color(.95f,.78f,.43f);
+                }
             }
             float bodyX=portrait?20:tabWidth+36,bodyW=w-bodyX-20;
             float bodyH=h-top-92,modelW=portrait?bodyW:bodyW*(shortProfile?.47f:.58f),modelH=portrait?bodyH*.62f:bodyH;
@@ -532,8 +627,9 @@ namespace Eldoria.HeroesUI
                 new Color(.035f,.039f,.049f,.31f)).GetComponent<Image>().raycastTarget=false;
             Surface("Profile / recessed arch lintel",stage,border,h*.07f,w-border*2f,3f,
                 new Color(.73f,.55f,.30f,.34f)).GetComponent<Image>().raycastTarget=false;
-            // Foreground niche does not fake the floor. Perspective stone
-            // geometry and real shared shadows are in HeroesModelSnapshot.
+            // No fake visual floor or pedestal: the illustrated hall carries
+            // the real horizon; the character's RenderTexture holds only
+            // genuine geometry and its transparent ground-contact shadow.
             var warm=HallLight(stage,"Profile / living window bounce",
                 w*.12f,h*.27f,w*.75f,h*.62f);
             warm.color=new Color(1f,.64f,.31f,.11f);
@@ -544,7 +640,7 @@ namespace Eldoria.HeroesUI
             int visible=w<470f?2:w<720f?4:6;
             float available=Mathf.Max(95f,w-210f);
             float gap=w<470f?8f:10f;
-            float cell=Mathf.Min(51f,(available-gap*(visible-1))/visible);
+            float cell=Mathf.Min(65f,(available-gap*(visible-1))/visible);
             cell=Mathf.Max(28f,cell);
             float all=visible*cell+(visible-1)*gap;
             float start=(w-all)*.5f;
