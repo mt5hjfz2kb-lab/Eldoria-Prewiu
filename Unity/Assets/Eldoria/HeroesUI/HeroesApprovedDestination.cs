@@ -158,7 +158,9 @@ namespace Eldoria.HeroesUI
         }
         void ProfileReferenceSigil(Transform parent,int type,float width,float height,float size)
         {
-            float centerX=height<50f?14f:width*.5f,centerY=height<50f?height*.5f:height*.39f;
+            bool lateral=height<44f&&width>=100f;
+            float centerX=lateral?14f:width*.5f,
+                centerY=lateral?height*.5f:height*.35f;
             float unit=size/48f;
             Color bright=new Color(.94f,.73f,.39f,.98f);
             void Stroke(string name,float dx,float dy,float w,float h,float angle)
@@ -177,7 +179,7 @@ namespace Eldoria.HeroesUI
             Sprite exact=ApprovedProfileNavigationIcon(type);
             if(exact){
                 var rt=Rect("Profile reference / exact approved pictogram "+type,parent);
-                float side=Mathf.Min(size,height<50f?19f:43f);
+                float side=Mathf.Min(size,lateral?19f:43f);
                 Place(rt,centerX-side*.5f,centerY-side*.5f,side,side);
                 var art=rt.gameObject.AddComponent<Image>();
                 art.sprite=exact;art.preserveAspect=true;art.raycastTarget=false;
@@ -240,79 +242,75 @@ namespace Eldoria.HeroesUI
             if(!selected.HasValue||!selected.Value.Unlocked){CurrentPage=Page.Salon;CurrentHeroId=null;BuildSalon(w,h);return;}
             var hero=selected.Value;
             bool shortProfile=!portrait&&h<500f;
-            if(portrait){
-                Button("Heroes hall","‹",20,14,48,48,()=>Select(Page.Salon));
-                Label("Hero name",content,hero.DisplayName?.ToUpperInvariant(),82,12,w-164,36,30,TextAnchor.MiddleCenter).color=gold;
-                Label("Hero role and real level",content,hero.Role+" · NIVEL "+hero.Level,82,48,w-164,26,20,TextAnchor.MiddleCenter);
-            }else{
-                // The owner's original: brand top-left, hero identity adjacent
-                // to the central portrait, compact iconic left control column.
-                Label("Profile reference / Eldoria brand",content,"ELDORIA",20,11,124,33,shortProfile?18:22).color=gold;
-                float titleX=shortProfile?157f:200f;
-                Label("Hero name",content,hero.DisplayName, titleX,12,w-titleX-90f,34,shortProfile?24:32).color=ivory;
-                Label("Hero role and real level",content,hero.Role+"  ·  NIVEL "+hero.Level,
-                    titleX,47,w-titleX-90f,29,shortProfile?15:20).color=ivory;
-            }
+            bool narrowPortrait=portrait&&w<600f;
+            // The approved character profile has ONE vertical icon rail
+            // regardless of orientation. The old portrait-only four big
+            // horizontal tabs were a reinterpretation rejected by the owner.
+            float titleX=narrowPortrait?128f:portrait?200f:shortProfile?157f:200f;
+            Label("Profile reference / Eldoria brand",content,"ELDORIA",20,11,
+                narrowPortrait?98f:140f,33,narrowPortrait?16:shortProfile?18:22).color=gold;
+            Label("Hero name",content,hero.DisplayName,titleX,12,
+                Mathf.Max(65f,w-titleX-82f),34,
+                narrowPortrait?21:shortProfile?24:32).color=ivory;
+            Label("Hero role and real level",content,
+                hero.Role+"  ·  NIVEL "+hero.Level,titleX,47,
+                Mathf.Max(65f,w-titleX-82f),29,
+                narrowPortrait?13:shortProfile?15:20).color=ivory;
             var pages=new[]{Page.Resumen,Page.Habilidades,Page.Talentos,Page.Equipamiento};
             string[] captions={"RESUMEN","HABILIDADES","TALENTOS","EQUIPAMIENTO"};
-            float tabWidth=portrait?(w-46)/2f:shortProfile?112f:123f;
-            float top=portrait?210:shortProfile?96:100;
-            if(!portrait){
-                float crestY=shortProfile?74f:96f,crestH=shortProfile?40f:78f;
-                var returnButton=Button("Heroes hall","",20,crestY,tabWidth,crestH,()=>Select(Page.Salon));
-                ProfileReferenceSigil(returnButton.transform,0,tabWidth,crestH,shortProfile?19f:42f);
-                // The approved reference has five vertically stacked
-                // destinations, each with an icon and a caption.
-                float start=shortProfile?118f:190f;
-                float navH=shortProfile?32f:Mathf.Clamp((h-start-132f)/5f,72f,94f);
-                float navGap=shortProfile?4f:10f;
-                for(int i=0;i<5;i++){
-                    if(i==4){
-                        var locked=Frame("Hero tab Historia / not yet available",content,
-                            20,start+i*(navH+navGap),tabWidth,navH);
-                        ProfileReferenceSigil(locked,5,tabWidth,navH,shortProfile?16f:31f);
-                        var label=Label("Profile reference / Historia unavailable",locked,
-                            "HISTORIA",shortProfile?28f:2f,shortProfile?0f:navH-28f,
-                            shortProfile?tabWidth-30f:tabWidth-4f,
-                            shortProfile?navH:23f,shortProfile?11:14,TextAnchor.MiddleCenter);
-                        label.color=new Color(.63f,.62f,.59f,.82f);
-                        continue;
-                    }
-                    var page=pages[i];
-                    var button=Button("Hero tab "+page,"",20,
-                        start+i*(navH+navGap),tabWidth,navH,()=>Select(page));
-                    TintFrame(button.GetComponent<RectTransform>(),CurrentPage==page?
-                        new Color(.97f,.70f,.33f,1f):new Color(.45f,.38f,.26f,.85f));
-                    var plate=button.GetComponent<RectTransform>();
-                    var panelInk=plate.Find("Royal Gold / translucent ink");
-                    if(CurrentPage==page && panelInk)
-                        panelInk.GetComponent<Image>().color=new Color(.47f,.25f,.075f,.81f);
-                    ProfileReferenceSigil(button.transform,i+1,tabWidth,navH,
-                        shortProfile?16f:32f);
-                    var caption=Label("Profile reference / "+page+" caption",
-                        button.transform,captions[i],
-                        shortProfile?28f:3f,shortProfile?0f:navH-28f,
-                        shortProfile?tabWidth-30f:tabWidth-6f,
-                        shortProfile?navH:23f,shortProfile?11:14,TextAnchor.MiddleCenter);
-                    caption.color=CurrentPage==page?ivory:new Color(.86f,.83f,.76f);
-                    if(shortProfile){
-                        // Never rename or abbreviate an approved destination.
-                        // Fit the full original caption inside the compact
-                        // genuine clickable button without drawing over stage.
-                        caption.resizeTextForBestFit=true;
-                        caption.resizeTextMinSize=9;
-                        caption.resizeTextMaxSize=11;
-                    }
+            float tabWidth=portrait?(narrowPortrait?72f:132f):shortProfile?112f:123f;
+            float top=portrait?(narrowPortrait?182f:194f):shortProfile?96f:100f;
+            float startNav=portrait?(narrowPortrait?132f:170f):shortProfile?118f:190f;
+            float navH=portrait?(narrowPortrait?46f:74f):
+                shortProfile?32f:Mathf.Clamp((h-startNav-132f)/5f,72f,94f);
+            float navGap=portrait?(narrowPortrait?6f:10f):shortProfile?4f:10f;
+            var returnButton=Button("Heroes hall","",20,
+                startNav-navH-navGap,tabWidth,navH,()=>Select(Page.Salon));
+            ProfileReferenceSigil(returnButton.transform,0,tabWidth,navH,
+                narrowPortrait?24f:shortProfile?19f:42f);
+            for(int n=0;n<5;n++){
+                float navY=startNav+n*(navH+navGap);
+                if(n==4){
+                    var locked=Frame("Hero tab Historia / not yet available",
+                        content,20,navY,tabWidth,navH);
+                    ProfileReferenceSigil(locked,5,tabWidth,navH,
+                        narrowPortrait?21f:shortProfile?16f:31f);
+                    var label=Label("Profile reference / Historia unavailable",locked,
+                        "HISTORIA",shortProfile?28f:2f,
+                        shortProfile?0f:navH-(narrowPortrait?20f:28f),
+                        shortProfile?tabWidth-30f:tabWidth-4f,
+                        shortProfile?navH:narrowPortrait?19f:23f,
+                        shortProfile?11:narrowPortrait?11:14,TextAnchor.MiddleCenter);
+                    label.color=new Color(.63f,.62f,.59f,.82f);
+                    continue;
                 }
-            }else{
-                for(int i=0;i<pages.Length;i++){
-                    var page=pages[i];
-                    float x=20+(i%2)*(tabWidth+6),y=96+(i/2)*49;
-                    var b=Button("Hero tab "+page,captions[i],x,y,tabWidth,43,()=>Select(page));
-                    if(CurrentPage==page)b.targetGraphic.color=new Color(.95f,.78f,.43f);
+                var page=pages[n];
+                var button=Button("Hero tab "+page,"",20,navY,tabWidth,navH,
+                    ()=>Select(page));
+                TintFrame(button.GetComponent<RectTransform>(),CurrentPage==page?
+                    new Color(.97f,.70f,.33f,1f):new Color(.45f,.38f,.26f,.85f));
+                var plate=button.GetComponent<RectTransform>();
+                var panelInk=plate.Find("Royal Gold / translucent ink");
+                if(CurrentPage==page&&panelInk)
+                    panelInk.GetComponent<Image>().color=new Color(.47f,.25f,.075f,.81f);
+                ProfileReferenceSigil(button.transform,n+1,tabWidth,navH,
+                    narrowPortrait?21f:shortProfile?16f:32f);
+                var caption=Label("Profile reference / "+page+" caption",
+                    button.transform,captions[n],shortProfile?28f:3f,
+                    shortProfile?0f:navH-(narrowPortrait?20f:28f),
+                    shortProfile?tabWidth-30f:tabWidth-6f,
+                    shortProfile?navH:narrowPortrait?19f:23f,
+                    shortProfile?11:narrowPortrait?11:14,TextAnchor.MiddleCenter);
+                caption.color=CurrentPage==page?ivory:new Color(.86f,.83f,.76f);
+                if(shortProfile){
+                    // Full approved word EQUIPAMIENTO, never EQUIPO.
+                    caption.resizeTextForBestFit=true;
+                    caption.resizeTextMinSize=9;
+                    caption.resizeTextMaxSize=11;
                 }
             }
-            float bodyX=portrait?20:tabWidth+36,bodyW=w-bodyX-20;
+            float bodyX=tabWidth+(portrait?32f:36f),
+                bodyW=w-bodyX-20f;
             float bodyH=h-top-92,modelW=portrait?bodyW:bodyW*(shortProfile?.47f:.58f),modelH=portrait?bodyH*.62f:bodyH;
             var stage=Rect("Hero model stage",content);
             Place(stage,bodyX,top,modelW,modelH);
@@ -344,8 +342,10 @@ namespace Eldoria.HeroesUI
                 else Label("Hero identity without substitute art",stage,hero.DisplayName,14,modelH*.35f,modelW-28,70,25,TextAnchor.MiddleCenter);
             }
             Label("Real hero availability",stage,hero.Available?"EN VALORIA":"EN EXPEDICIÓN",8,modelH-37,modelW-16,30,16,TextAnchor.MiddleCenter);
-            float infoX=portrait?bodyX:bodyX+modelW+12,infoY=portrait?top+modelH+12:top;
-            float infoW=portrait?bodyW:bodyW-modelW-12,infoH=portrait?bodyH-modelH-12:bodyH;
+            float infoX=portrait?20f:bodyX+modelW+12f,
+                infoY=portrait?top+modelH+12f:top;
+            float infoW=portrait?w-40f:bodyW-modelW-12f,
+                infoH=portrait?bodyH-modelH-12f:bodyH;
             var info=CurrentPage==Page.Resumen
                 ? ProfileSummaryBoard(content,infoX,infoY,infoW,infoH)
                 : Frame("Hero authoritative information",content,infoX,infoY,infoW,infoH);
