@@ -2,7 +2,8 @@
 """Review exact-head Unity screenshot artifacts, never infer artistic quality from pixels."""
 import argparse, hashlib, html, io, json, os, re, sys, zipfile
 from pathlib import Path
-from urllib.request import Request, urlopen
+from urllib.request import Request, urlopen, build_opener, HTTPRedirectHandler
+from urllib.parse import urlsplit
 from urllib.parse import urlencode
 from PIL import Image, ImageChops, ImageStat, ImageDraw, ImageOps
 
@@ -12,11 +13,22 @@ MAX_IMAGE = 25 * 1024 * 1024
 SHA = re.compile(r'^[0-9a-f]{40}$')
 Image.MAX_IMAGE_PIXELS = 22_000_000
 
+class TokenSafeRedirect(HTTPRedirectHandler):
+    """Never forward the GitHub Actions bearer token to ZIP storage/CDN hosts."""
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        if urlsplit(newurl).scheme != 'https':
+            raise ValueError('Refuse non-HTTPS artifact redirect')
+        new_req = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if new_req is not None and urlsplit(req.full_url).hostname != urlsplit(newurl).hostname:
+            for sensitive in ('Authorization', 'Cookie'):
+                new_req.remove_header(sensitive)
+        return new_req
+
 def api(repo, token, path, binary=False):
     req = Request('https://api.github.com/repos/' + repo + path,
                   headers={'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json',
                            'X-GitHub-Api-Version':'2022-11-28','User-Agent':'eldoria-qa'})
-    with urlopen(req,timeout=75) as res:
+    with build_opener(TokenSafeRedirect()).open(req,timeout=75) as res:
         data = res.read(MAX_ARCHIVE + 1)
     if len(data)>MAX_ARCHIVE: raise ValueError('Archive/API response too large')
     return data if binary else json.loads(data)
