@@ -233,6 +233,19 @@ namespace Eldoria.HeroesUI
             c=Blend(c,Metal[kind],wing*.53f);
             return c;
         }
+        static Color Cartouche(float u,float v)
+        {
+            // Text-safe deep enamel. No bright stripes behind live words.
+            // Only the outer engraved boundary is golden.
+            float e=Mathf.Min(Mathf.Min(u,1f-u),Mathf.Min(v,1f-v));
+            float edge=1f-Smooth(.017f,.082f,e);
+            float inner=Ring(e,.095f,.018f);
+            Color c=new Color(.017f,.024f,.038f,1f);
+            c=Blend(c,new Color(.16f,.105f,.055f,1f),.14f);
+            c=Blend(c,new Color(.80f,.61f,.31f,1f),edge*.79f);
+            c=Blend(c,new Color(.43f,.33f,.18f,1f),inner*.32f);
+            return c;
+        }
         static Color Rail(float u,float v,int kind)
         {
             float line=1f-Smooth(.08f,.23f,Mathf.Abs(u-.5f));
@@ -309,7 +322,7 @@ namespace Eldoria.HeroesUI
                 }
             }
             plate=SpriteFrom("unavailable brass cartouche",256,88,
-                (u,v)=>Header(u,v,2),new Vector4(38,22,38,22));
+                (u,v)=>Cartouche(u,v),new Vector4(30,14,30,14));
             padlock=SpriteFrom("locked overlay",96,96,Lock,Vector4.zero);
         }
         static RectTransform Rect(string name,Transform parent,
@@ -370,11 +383,15 @@ namespace Eldoria.HeroesUI
                     left,outer,trackW,trackH);
                 Image("Talents / painted parchment and carved columns",track,
                     0,0,trackW,trackH,panels[path],Color.white);
-                Image("Talents / ornate nine-slice structural border",track,
+                var metalFrame=Image("Talents / ornate nine-slice structural border",track,
                     0,0,trackW,trackH,borders[path],Color.white,true);
+                metalFrame.pixelsPerUnitMultiplier=trackW<155f?2.3f:1f;
                 float headerH=tiny?30f:Mathf.Clamp(trackH*.16f,37f,82f);
-                Image("Talents / embossed crest plaque",track,
+                var titleFrame=Image("Talents / embossed crest plaque",track,
                     4f,3f,trackW-8f,headerH,headers[path],Color.white,true);
+                // Wide 34px etched corners completely filled narrow phone
+                // headers; sliced pixel multiplier preserves a dark text field.
+                titleFrame.pixelsPerUnitMultiplier=trackW<155f?2.5f:1f;
                 if(trackW>145f && trackH>300f)
                     Image("Talents / independent title medallion",track,
                         (trackW-51f)*.5f,4f,51f,51f,seals[path],
@@ -450,7 +467,7 @@ namespace Eldoria.HeroesUI
             Text("Reserved talent availability",plaque,
                 "TALENTOS BLOQUEADOS",7f,0f,labelW,
                 compactLabel?19f:noteH*.49f,
-                compactLabel?16:width<350f?19:25,Ivory);
+                compactLabel?16:width<350f?14:25,Ivory);
             Text("Talents / secondary reserved-state explanation",plaque,
                 "Aún no disponibles en esta etapa del reino.",
                 7f,compactLabel?18f:noteH*.47f,
