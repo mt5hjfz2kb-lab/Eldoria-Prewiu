@@ -129,11 +129,13 @@ namespace Eldoria.HeroesUI
             }
         }
 
-        // The only active ability is bound to the real host. The optional two
-        // decorative reserved cards carry no IDs, button, level or gameplay.
-        // Small mobile layouts hide reserves to prioritize actual description.
+        // The approved Aldric composition has four engraved skill-card rows.
+        // Only one is gameplay-backed today (Baluarte for Aldric and Disparo
+        // de Ruptura for Lyra). All others are passive art, with no IDs,
+        // action buttons, level, cooldown, tags or fabricated combat rules.
+        // When mobile height is short, the one REAL card takes priority.
         internal static bool ShowReserves(float width,float height)
-            => width>=290f && height>=345f;
+            => width>=290f && height>=355f;
 
         internal static void Build(RectTransform pane, string heroId, string abilityName,
             string description, float width, float height, Sprite frame, Sprite skillIcon)
@@ -141,67 +143,75 @@ namespace Eldoria.HeroesUI
             float margin=Mathf.Clamp(width*.028f,7f,18f);
             float usableW=Mathf.Max(80f,width-2f*margin);
             bool compact=height<305f || width<290f;
-            float titleH=compact?32f:48f;
+            float titleH=compact?32f:46f;
             Label("Skills / art-directed heading",pane,"HABILIDADES",
                 margin,margin,usableW,titleH,compact?19:26,
                 TextAnchor.MiddleLeft,Gold);
             Surface("Skills / chapter divider",pane,margin,margin+titleH,
                 usableW,1.5f,new Color(.82f,.62f,.34f,.86f));
-
             float top=margin+titleH+9f;
             float available=Mathf.Max(70f,height-top-margin);
+            float gap=Mathf.Clamp(height*.02f,7f,13f);
             bool reserves=ShowReserves(width,height);
-            float gap=reserves?Mathf.Clamp(height*.02f,7f,14f):0f;
-            float reserveH=reserves?Mathf.Clamp(available*.22f,76f,125f):0f;
-            float activeH=available-(reserves?2f*reserveH+2f*gap:0f);
-            if(reserves && activeH<140f)
-            {
-                reserves=false; reserveH=0f;gap=0f;activeH=available;
-            }
-            var primary=Card("Skills / only real skill card",pane,
-                margin,top,usableW,activeH,frame,true);
-            float iconSize=Mathf.Clamp(Mathf.Min(usableW*.17f,activeH*.39f),32f,70f);
-            Sigil(primary,12f,12f,iconSize,skillIcon,true,false);
-            float textX=iconSize+23f;
-            float titleW=Mathf.Max(40f,usableW-textX-13f);
-            Label("Skills / actual ability type",primary,"HABILIDAD ACTIVA",
-                textX,12f,titleW,21f,compact?13:15,TextAnchor.MiddleLeft,Gold);
+            float cardHeight=reserves?(available-3f*gap)/4f:available;
+            // Never force tiny fictional slots into the mobile safe area.
+            if(cardHeight<80f){reserves=false;cardHeight=available;}
+            int count=reserves?4:1;
+            int realIndex=reserves&&heroId=="aldric"?2:0;
             bool hasAbility=!string.IsNullOrWhiteSpace(abilityName);
-            Label("Skills / actual ability name",primary,
-                hasAbility?abilityName:"SIN HABILIDAD REGISTRADA",
-                textX,34f,titleW,Mathf.Max(25f,iconSize-14f),
-                compact?17:24,TextAnchor.MiddleLeft,Ivory);
-            float descriptionY=Mathf.Max(iconSize+22f,compact?78f:99f);
-            float descriptionH=Mathf.Max(20f,activeH-descriptionY-16f);
-            Surface("Skills / manuscript description rule",primary,13f,
-                descriptionY-6f,usableW-26f,1f,
-                new Color(.79f,.62f,.40f,.48f));
-            Description(primary,description??string.Empty,
-                14f,descriptionY,usableW-28f,descriptionH,
-                compact?18:19);
-            // Subtle hero accent, not a fake ability power, tier or cooldown.
-            Surface("Skills / character identity edge",primary,7f,
-                18f,2f,Mathf.Max(10f,activeH-36f),
-                heroId=="lyra"?new Color(.45f,.69f,.62f,.78f):
-                    new Color(.88f,.68f,.40f,.78f));
-
-            if(!reserves)return;
-            for(int i=0;i<2;i++)
+            for(int i=0;i<count;i++)
             {
-                float y=top+activeH+gap+i*(reserveH+gap);
-                var reserved=Card("Skills / future slot unavailable "+i,pane,
-                    margin,y,usableW,reserveH,frame,false);
-                float lockSize=Mathf.Clamp(reserveH*.58f,36f,62f);
-                Sigil(reserved,14f,(reserveH-lockSize)*.5f,
-                    lockSize,skillIcon,false,true);
-                float tx=lockSize+29f;
-                float tw=Mathf.Max(45f,usableW-tx-14f);
-                Label("Skills / future state",reserved,"POR DESCUBRIR",
-                    tx,Mathf.Max(4f,reserveH*.18f),tw,reserveH*.36f,
-                    21,TextAnchor.MiddleLeft,Faded);
-                Label("Skills / no unapproved mechanics",reserved,"BLOQUEADA",
-                    tx,reserveH*.54f,tw,reserveH*.28f,16,
-                    TextAnchor.MiddleLeft,new Color(.59f,.55f,.49f));
+                bool real=i==realIndex;
+                float y=top+i*(cardHeight+gap);
+                var card=Card(real?"Skills / only real skill card":
+                    "Skills / future slot unavailable "+i,pane,
+                    margin,y,usableW,cardHeight,frame,real);
+                float iconSize=Mathf.Clamp(
+                    Mathf.Min(usableW*.17f,cardHeight*.69f),32f,74f);
+                float iconY=(cardHeight-iconSize)*.5f;
+                Sigil(card,12f,iconY,iconSize,skillIcon,real,!real);
+                float textX=iconSize+26f;
+                float textW=Mathf.Max(45f,usableW-textX-16f);
+                if(!real)
+                {
+                    Label("Skills / future state",card,"POR DESCUBRIR",
+                        textX,Mathf.Max(5f,cardHeight*.18f),textW,
+                        Mathf.Min(37f,cardHeight*.40f),
+                        cardHeight<105f?18:23,TextAnchor.MiddleLeft,Faded);
+                    Label("Skills / no unapproved mechanics",card,"BLOQUEADA",
+                        textX,cardHeight*.55f,textW,
+                        Mathf.Min(30f,cardHeight*.28f),
+                        16,TextAnchor.MiddleLeft,
+                        new Color(.59f,.55f,.49f));
+                    continue;
+                }
+                Label("Skills / actual ability name",card,
+                    hasAbility?abilityName:"SIN HABILIDAD REGISTRADA",
+                    textX,compact?11f:8f,textW,
+                    compact?Mathf.Max(36f,iconSize*.55f):
+                        Mathf.Max(32f,cardHeight*.28f),
+                    compact?18:23,TextAnchor.MiddleLeft,Ivory);
+                // The host does not expose active/passive classification:
+                // explicitly do not fabricate that state from concept art.
+                Label("Skills / source-bound availability",card,
+                    "HABILIDAD DISPONIBLE",
+                    textX,compact?49f:cardHeight*.30f,textW,
+                    compact?22f:Mathf.Min(26f,cardHeight*.22f),
+                    compact?12:14,TextAnchor.MiddleLeft,Gold);
+                bool shortCard=count==1;
+                float descX=shortCard?14f:textX;
+                float descW=shortCard?usableW-28f:textW;
+                float descY=shortCard?Mathf.Max(iconSize+22f,79f):
+                    Mathf.Max(50f,cardHeight*.53f);
+                float descH=Mathf.Max(20f,cardHeight-descY-11f);
+                Surface("Skills / manuscript separator",card,descX,
+                    descY-4f,descW,1f,new Color(.79f,.62f,.40f,.48f));
+                Description(card,description??string.Empty,
+                    descX,descY,descW,descH,compact?18:19);
+                Surface("Skills / character identity edge",card,7f,
+                    18f,2f,Mathf.Max(10f,cardHeight-36f),
+                    heroId=="lyra"?new Color(.45f,.69f,.62f,.78f):
+                        new Color(.88f,.68f,.40f,.78f));
             }
         }
 
