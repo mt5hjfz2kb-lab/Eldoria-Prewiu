@@ -742,11 +742,22 @@ namespace Eldoria.UI.RoyalGold.V2
                 for(int i=0;i<marchMetricValues.Length;i++)
                     marchMetricValues[i].Put(liveMetric[i]);
                 int occupied=MarchCapacityRules.ActiveCount(s,utcTicks());
-                status.Put("RUPTURA  "+power.Break+"   ·   DISPONIBLES T1  "+s.Available.ArcherT1+" · T2  "+s.Available.ArcherT2+
-                    "\nCAPACIDAD DE "+HeroName(selectedHero)+"  "+MarchCapacityRules.Capacity(s,selectedHero)+
-                    "\nNIVEL HÉROE  "+MarchCapacityRules.HeroLevel(s,selectedHero)+
-                    " · MARCHAS ACTIVAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
-                    "\nYA PREPARADOS  "+(s.MarchConfigured?s.PreparedTroops.Total:0));
+                // Keep every authoritative value in compact landscape but
+                // condense the labels into three legible lines. The former
+                // four long sentences wrapped into five lines and were cut
+                // off despite using the full reserved physical phone width.
+                if(compactLandscape)
+                    status.Put("RUPTURA "+power.Break+" · DISP. T1 "+s.Available.ArcherT1+" · T2 "+s.Available.ArcherT2+
+                        "\nCAP. "+HeroName(selectedHero)+" "+MarchCapacityRules.Capacity(s,selectedHero)+
+                        " · NIVEL "+MarchCapacityRules.HeroLevel(s,selectedHero)+
+                        "\nMARCHAS "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
+                        " · PREPARADOS "+(s.MarchConfigured?s.PreparedTroops.Total:0));
+                else
+                    status.Put("RUPTURA  "+power.Break+"   ·   DISPONIBLES T1  "+s.Available.ArcherT1+" · T2  "+s.Available.ArcherT2+
+                        "\nCAPACIDAD DE "+HeroName(selectedHero)+"  "+MarchCapacityRules.Capacity(s,selectedHero)+
+                        "\nNIVEL HÉROE  "+MarchCapacityRules.HeroLevel(s,selectedHero)+
+                        " · MARCHAS ACTIVAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
+                        "\nYA PREPARADOS  "+(s.MarchConfigured?s.PreparedTroops.Total:0));
                 bool allowed=MarchCapacityRules.CanStart(s,utcTicks()) && troops.Total>0 &&
                     MarchCapacityRules.Fits(troops,s.Available,capacity);
                 foreach(var hero in heroSlots)if(!MarchCapacityRules.HeroAvailable(s,hero))allowed=false;
