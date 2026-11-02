@@ -10,7 +10,7 @@ namespace Eldoria.UI.RoyalGold.V2
     /// </summary>
     internal static class RoyalGoldV41MarchArt
     {
-        static readonly Color Edge = new Color(.84f,.66f,.37f,.88f);
+        static readonly Color Edge = new Color(.84f,.66f,.37f,.65f);
         static readonly Color Glow = new Color(.98f,.85f,.53f,.35f);
         static readonly Color Recess = new Color(.028f,.046f,.069f,.75f);
 
@@ -50,10 +50,19 @@ namespace Eldoria.UI.RoyalGold.V2
             var rim=Layer("March art / independent hero nine-slice",card,Edge);
             rim.sprite=RoyalGoldV41SourceArt.Get("HeroCardNineSliceGold",48);
             if(rim.sprite){rim.type=Image.Type.Sliced;rim.fillCenter=false;}
+            rim.pixelsPerUnitMultiplier=3.5f;
             var rect=rim.rectTransform;
             rect.offsetMin=new Vector2(3f,3f);
             rect.offsetMax=new Vector2(-3f,-3f);
             rim.transform.SetAsLastSibling();
+            // A separate, narrow identity plate makes the live hero label
+            // legible without replacing the original portrait with a bitmap.
+            var identity=Layer("March art / real-name enamel ribbon",card,
+                new Color(.029f,.045f,.062f,.85f));
+            identity.rectTransform.anchorMin=new Vector2(.035f,.02f);
+            identity.rectTransform.anchorMax=new Vector2(.965f,.39f);
+            identity.rectTransform.offsetMin=identity.rectTransform.offsetMax=Vector2.zero;
+            identity.transform.SetSiblingIndex(name.transform.GetSiblingIndex());
 
             Stroke("March art / left heraldic engraving",card,
                 new Vector2(.04f,.50f),new Vector2(.04f,.50f),
@@ -74,6 +83,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 new Color(.88f,.70f,.41f,.85f));
             rim.sprite=RoyalGoldV41SourceArt.Get("HeroCardNineSliceGold",48);
             if(rim.sprite){rim.type=Image.Type.Sliced;rim.fillCenter=false;}
+            rim.pixelsPerUnitMultiplier=3.7f;
+            rim.color=new Color(.84f,.66f,.37f,.53f);
             rim.transform.SetAsLastSibling();
             rim.rectTransform.offsetMin=new Vector2(3f,3f);
             rim.rectTransform.offsetMax=new Vector2(-3f,-3f);
@@ -87,6 +98,8 @@ namespace Eldoria.UI.RoyalGold.V2
             var rim=Layer("March art / independent summary border",summary,Edge);
             rim.sprite=RoyalGoldV41SourceArt.Get("HeroCardNineSliceGold",44);
             if(rim.sprite){rim.type=Image.Type.Sliced;rim.fillCenter=false;}
+            rim.pixelsPerUnitMultiplier=3.8f;
+            rim.color=new Color(.84f,.66f,.37f,.49f);
             rim.rectTransform.offsetMin=new Vector2(3,3);
             rim.rectTransform.offsetMax=new Vector2(-3,-3);
             rim.transform.SetAsLastSibling();
