@@ -1222,7 +1222,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float headerTextW=width-105f;
             Place(heading.rectTransform,87f,6f,
                 headerTextW,wide?40f:48f);
-            Place(subheading.rectTransform,87f,wide?44f:56f,
+            Place(subheading.rectTransform,87f,wide?51f:56f,
                 headerTextW,wide?24f:32f);
             heading.fontSize=wide?(compact?25:29):32;
             subheading.fontSize=wide?16:19;
