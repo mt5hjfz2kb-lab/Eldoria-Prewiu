@@ -310,7 +310,7 @@ namespace Eldoria.HeroesUI
             Text("Reserved talent availability",plaque,
                 "TALENTOS BLOQUEADOS",7f,0f,labelW,
                 compactLabel?19f:noteH*.49f,
-                compactLabel?15f:width<350f?17:25,Ivory);
+                compactLabel?15:width<350f?17:25,Ivory);
             Text("Talents / secondary reserved-state explanation",plaque,
                 "Aún no disponibles en esta etapa del reino.",
                 7f,compactLabel?18f:noteH*.47f,
