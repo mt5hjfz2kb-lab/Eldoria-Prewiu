@@ -1264,7 +1264,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 float detailH=Mathf.Clamp(orderSpace*.25f,wide?31f:60f,wide?54f:84f);
                 float tierH=Mathf.Clamp(orderSpace*.18f,wide?31f:45f,wide?55f:74f);
                 float controlY=rowY+orderSpace*.50f;
-                float controlH=Mathf.Clamp(orderSpace*.24f,wide?36f:54f,wide?50f:80f);
+                float controlH=Mathf.Clamp(orderSpace*.30f,wide?40f:69f,wide?60f:90f);
                 Place(unitDetail.rectTransform,lw*.34f,rowY+2f,lw*.63f,detailH);
                 Place(tierButton.transform as RectTransform,lw*.34f,rowY+detailH+7f,lw*.63f,tierH);
                 Place(percentModeButton.transform as RectTransform,lw*.34f,controlY,
@@ -1289,7 +1289,8 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             // Quantity buttons remain genuine controls within their moved container.
             float qw=quantityRow.rect.width;
-            float control=compactLandscape?68:wide?36:88,controlHeight=compactLandscape?68:wide?38:88;
+            float control=compactLandscape?68:wide?36:Mathf.Min(88f,quantityRow.rect.height);
+            float controlHeight=compactLandscape?68:wide?38:quantityRow.rect.height;
             Place(minus.transform as RectTransform,0,0,control,controlHeight);
             Place(plus.transform as RectTransform,qw-control,0,control,controlHeight);
             Place(selectedText.rectTransform,control+2,0,qw-2*(control+2),controlHeight);
