@@ -48,18 +48,26 @@ def run(path):
         send({"jsonrpc":"2.0","id":3,"method":"tools/call",
               "params":{"name":"unity-cli-status","arguments":{}}})
         third=receive(3,time.monotonic()+20)
-        if "result" not in third or third["result"].get("isError"):
-            raise RuntimeError("Read-only MCP tool returned error: "+str(third)[:300])
+        if "result" not in third:
+            raise RuntimeError("MCP tools/call failed protocol: "+str(third)[:300])
         short=[str(item.get("text",""))[:600] for item in third["result"].get("content",[])]
+        tool_is_error=bool(third["result"].get("isError"))
+        expected_no_editor=tool_is_error and any(
+            "No Unity Editor instances found with reachable Pipeline servers" in msg for msg in short)
+        if tool_is_error and not expected_no_editor:
+            raise RuntimeError("Unexpected MCP tool failure: "+str(third)[:300])
         result={"mcp_stdio_handshake_success":True,
                 "protocol_reported":first["result"].get("protocolVersion"),
                 "mcp_tool_count":len(names),"mcp_tool_names":names,
                 "editor_connected":False,"tools_invoked":True,
                 "read_only_tool_invoked":"unity-cli-status",
+                "read_only_tool_success":not tool_is_error,
+                "expected_no_editor_failure":expected_no_editor,
                 "read_only_tool_result_excerpt":short,
                 "non_json_lines":events}
         Path(path).write_text(json.dumps(result,indent=2))
-        print(json.dumps({"success":True,"tool_count":len(names),"tools":names[:8]}))
+        print(json.dumps({"protocol_success":True,"tool_count":len(names),
+                          "read_only_tool_success":not tool_is_error,"no_editor":expected_no_editor}))
     finally:
         try:p.stdin.close()
         except Exception:pass
