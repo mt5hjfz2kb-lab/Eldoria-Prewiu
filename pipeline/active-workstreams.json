@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-strict-march-reference-20261102",
+      "owner": "chatgpt-eldoria-breach-native-proof-20261102",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-02",
@@ -127,8 +127,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "STRICT_MARCH_REFERENCE_RECONSTRUCTION_20261102",
-      "next": "Reference-first macro layout reconstruction, do not invent heroes/troops or damage battle/save. Unity A/B 4 resolutions, true quantity/percent and three-march regression, owner approval remains pending.",
+      "phase": "BREACH_REAL_UNITY_REFERENCE_A_B",
+      "next": "Implement reversible fault-driven Breach source correction over latest PR136 in same branch; capture real Unity canonical close/regional H/V and verify gameplay; visually reject or retain, no merge or publish.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1689,9 +1689,15 @@
           "ownership_revision": 107,
           "transferred_at": "2026-11-02",
           "reason": "Owner directly requires this chat to execute another strict artistic Marches pass, not a mere plan. Continue same PR136, preserve the certified base and protect existing work."
+        },
+        {
+          "owner": "chatgpt-eldoria-strict-march-reference-20261102",
+          "ownership_revision": 108,
+          "transferred_at": "2026-11-02",
+          "reason": "Owner explicitly orders continuation to tangible real Unity Breach evidence after blocked prior session; same workstream/PR136, all current Actions complete. Preserve completed March changes; no restart, force-push, publication, credits."
         }
       ],
-      "ownership_revision": 108,
+      "ownership_revision": 109,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
