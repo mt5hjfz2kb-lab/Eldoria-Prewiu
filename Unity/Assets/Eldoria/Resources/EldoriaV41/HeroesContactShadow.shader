@@ -1,6 +1,10 @@
 Shader "Eldoria/Heroes/ContactShadow"
 {
-    Properties { _ShadowTint ("Shadow tint", Color) = (0.035,0.025,0.018,0.72) }
+    Properties {
+        _ShadowTint ("Shadow tint", Color) = (0.035,0.025,0.018,0.72)
+        _ShadowCenter ("Ground contact center", Vector) = (0,0,0,0)
+        _ShadowRadius ("Ground contact reach", Float) = 1
+    }
     SubShader
     {
         Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent" }
@@ -18,6 +22,8 @@ Shader "Eldoria/Heroes/ContactShadow"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             CBUFFER_START(UnityPerMaterial)
                 half4 _ShadowTint;
+                float4 _ShadowCenter;
+                float _ShadowRadius;
             CBUFFER_END
             struct Attributes { float4 positionOS : POSITION; };
             struct Varyings { float4 positionCS : SV_POSITION; float3 positionWS : TEXCOORD0; };
@@ -31,7 +37,15 @@ Shader "Eldoria/Heroes/ContactShadow"
             half4 Frag(Varyings input) : SV_Target
             {
                 Light light=GetMainLight(TransformWorldToShadowCoord(input.positionWS));
-                return half4(_ShadowTint.rgb,(1.0h-light.shadowAttenuation)*_ShadowTint.a);
+                // Physically sampled shadow fades with distance from the
+                // genuine footfall. The previous unbounded shadow plane
+                // projected a black wedge across the entire painted floor.
+                float2 delta=(input.positionWS.xz-_ShadowCenter.xz)/
+                    max(_ShadowRadius,0.01f);
+                half local=saturate(1.0h-dot(delta,delta));
+                local*=local;
+                return half4(_ShadowTint.rgb,
+                    (1.0h-light.shadowAttenuation)*_ShadowTint.a*local);
             }
             ENDHLSL
         }

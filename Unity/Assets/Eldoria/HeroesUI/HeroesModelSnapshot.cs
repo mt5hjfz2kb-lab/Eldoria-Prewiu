@@ -77,7 +77,10 @@ namespace Eldoria.HeroesUI
             var shader=Resources.Load<Shader>("EldoriaV41/HeroesContactShadow");
             if(!shader||!shader.isSupported)throw new InvalidOperationException("Hero contact-shadow shader unavailable");
             groundMaterial=new Material(shader){name="Hero / transparent shadow receiver"};
-            groundMaterial.SetColor("_ShadowTint",new Color(.025f,.022f,.018f,.92f));
+            groundMaterial.SetColor("_ShadowTint",new Color(.025f,.022f,.018f,.78f));
+            groundMaterial.SetVector("_ShadowCenter",
+                new Vector4(bounds.center.x,bounds.min.y,bounds.center.z,0f));
+            groundMaterial.SetFloat("_ShadowRadius",height*.64f);
             var floor=new GameObject("Hero / physical ground contact",typeof(MeshFilter),typeof(MeshRenderer));
             floor.transform.SetParent(stage.transform,false);floor.layer=renderLayer;
             floor.transform.position=new Vector3(bounds.center.x,bounds.min.y-.002f,bounds.center.z);
@@ -382,7 +385,7 @@ namespace Eldoria.HeroesUI
             float tangent=Mathf.Tan(camera.fieldOfView*.5f*Mathf.Deg2Rad);
             float distance=Mathf.Max(extent(up)/tangent,extent(right)/(tangent*camera.aspect))*1.17f+extent(rotation*Vector3.forward)*.35f;
             camera.transform.rotation=rotation;camera.transform.position=bounds.center-camera.transform.forward*distance;
-            key.transform.rotation=Quaternion.Euler(38,yaw-35,0);rim.transform.rotation=Quaternion.Euler(22,yaw+145,0);fill.transform.rotation=Quaternion.Euler(10,yaw,0);
+            key.transform.rotation=Quaternion.Euler(58,yaw-35,0);rim.transform.rotation=Quaternion.Euler(22,yaw+145,0);fill.transform.rotation=Quaternion.Euler(10,yaw,0);
             var sun=RenderSettings.sun;var mode=RenderSettings.ambientMode;var ambient=RenderSettings.ambientLight;
             var sky=RenderSettings.ambientSkyColor;var equator=RenderSettings.ambientEquatorColor;var ground=RenderSettings.ambientGroundColor;
             float reflection=RenderSettings.reflectionIntensity;bool fog=RenderSettings.fog;var target=RenderTexture.active;
