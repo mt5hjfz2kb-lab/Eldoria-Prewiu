@@ -2973,9 +2973,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 17,
+      "owner": "chatgpt-eldoria-talents-art-20261102",
+      "ownership_state": "claimed",
+      "ownership_revision": 18,
       "status": "active",
       "branch": "fix/player-feedback-context-ui-20261030",
       "pr": 136,
@@ -2990,8 +2990,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
-      "phase": "OWNER_ACCEPTED_PROVISIONALLY_ART_DEBT_DEFERRED",
-      "next": "El propietario acepta el A/B real de Habilidades como baseline provisional 2026-11-02. NO ART_APPROVED, NO 8.2/10 definitivo, NO más pulido de esta área hasta que el propietario la reprograme; continuar a otra área. Deuda y pruebas: issue #145. A/B conservado en Biblioteca /Eldoria/Baselines/Eldoria_Habilidades_AB_Aceptacion_Provisional_2026-11-02.zip, capturas intermedias Unity run 41445683487 PASS, fuente final PR136 efab281... pendiente de comprobación run 41445804365 al registrar. No merge/publicación.",
+      "phase": "TALENTS_ART_FINISH_SOURCE_AND_NATIVE_AB",
+      "next": "Rebuild actual blocked 3x3 Talent page as per approved gold-dark art reference: procedural independent medallion, connector, header and engraved nine-slice assets, native four-size Unity A/B for Aldric/Lyra; no gameplay/saves mutations; do not compete for Valoria-owned Windows until release.",
       "budget_eur": 0,
       "ownership_history": [
         {
@@ -3076,9 +3076,15 @@
           "ownership_revision": 16,
           "released_at": "2026-11-02",
           "reason": "Fixed actual Unity capture failures for text readability and label/icon overlap, connected approved Baluarte sprite; independent source editing complete; canonical Valoria PR136 Windows gate remains exclusively owned elsewhere."
+        },
+        {
+          "owner": null,
+          "ownership_revision": 17,
+          "transferred_at": "2026-11-02",
+          "reason": "Owner expressly requests actual Unity Talents reconstruction, not another mockup or report; separate HeroesUI source scope, no Windows runner claim."
         }
       ],
-      "write_scope_released": true,
+      "write_scope_released": false,
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
       "released_at": "2026-11-02",
       "release_reason": "READY_EXACT_HEAD_UNITY_AB_QA",
