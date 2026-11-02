@@ -18,52 +18,6 @@
   },
   "active": [
     {
-      "id": "eldoria-cli-windows-isolated-proof-20261102",
-      "title": "Issue147: Codex Unity Windows isolated integration proof",
-      "owner": "chatgpt-eldoria-win-cli-proof-20261102",
-      "ownership_state": "claimed",
-      "ownership_revision": 3,
-      "branch": "experiment/eldoria-unity-cli-win-pilot-20261102",
-      "status": "active",
-      "claimed_at": "2026-11-02",
-      "scope": [
-        ".github/workflows/eldoria-unity-cli-windows-safe-pilot.yml",
-        "tools/unity-cli-windows-pilot/**",
-        "docs/unity-cli-windows-pilot/**",
-        ".github/workflows/eldoria-codex-plugin-isolated-qa.yml"
-      ],
-      "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Instrumentación de conexión del editor en copia aislada; ningún arte ni mecánica producido para juego canónico.",
-      "phase": "EDITOR_PIPELINE_SCRATCH_PASS_Codex_PLUGIN_Ubuntu_PENDING",
-      "next": "Windows real isolated Editor+Pipeline success, Unity CLI edited cube and 2 PNG. Next test Codex plugin installation on Ubuntu, no more Windows; issue147 final review.",
-      "delivery_definition": {
-        "deliverable": "Comprobar Codex/CLI/Pipeline contra Editor Unity aislado, evidencia de comandos y capturas si factible",
-        "evidence": "SHA exacto, run CI, logs, before/after de escena de prueba y mecanismos de limpieza",
-        "handoff": "Al acabar liberar Windows y dejar Issue147 con evidencia sin alterar juego principal"
-      },
-      "windows_reservation": {
-        "authorized_by": "owner current chat",
-        "from_workstream": "valoria-master-plan-layered-construction-20261016",
-        "temporary": true,
-        "safety": "Read-only preflight required before any tool installation or editor launch; restore lease when complete",
-        "queued_preflight_run": 41474821703,
-        "prior_preflight_run": 41474606899
-      },
-      "native_proof": {
-        "run_id": 41478984732,
-        "artifact_id": 13158597570,
-        "sha": "f737603e7f532c6c59ae8cac0ee9270890ca2f13",
-        "unity_editor": "6000.3.23f1",
-        "unity_cli": "1.0.0-beta.8",
-        "pipeline": "0.9.1-exp.1",
-        "real_scene_write": true,
-        "real_unity_png_ab": true,
-        "game_modified": false,
-        "windows_resources_released": true
-      }
-    },
-    {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
@@ -3296,6 +3250,72 @@
     }
   ],
   "history": [
+    {
+      "id": "eldoria-cli-windows-isolated-proof-20261102",
+      "title": "Issue147: Codex Unity Windows isolated integration proof",
+      "owner": null,
+      "ownership_state": "released",
+      "ownership_revision": 4,
+      "branch": "experiment/eldoria-unity-cli-win-pilot-20261102",
+      "status": "completed",
+      "claimed_at": "2026-11-02",
+      "scope": [
+        ".github/workflows/eldoria-unity-cli-windows-safe-pilot.yml",
+        "tools/unity-cli-windows-pilot/**",
+        "docs/unity-cli-windows-pilot/**",
+        ".github/workflows/eldoria-codex-plugin-isolated-qa.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Instrumentación de conexión del editor en copia aislada; ningún arte ni mecánica producido para juego canónico.",
+      "phase": "UNITY_EDITOR_CLI_Codex_PLUGIN_INTEGRATED_MODEL_AUTH_PENDING",
+      "next": "Repeat authenticated Codex agent UI art pilot only after explicit secure Codex login and Valoria Windows lease release; Issue #147 remains open.",
+      "delivery_definition": {
+        "deliverable": "Comprobar Codex/CLI/Pipeline contra Editor Unity aislado, evidencia de comandos y capturas si factible",
+        "evidence": "SHA exacto, run CI, logs, before/after de escena de prueba y mecanismos de limpieza",
+        "handoff": "Al acabar liberar Windows y dejar Issue147 con evidencia sin alterar juego principal"
+      },
+      "windows_reservation": {
+        "authorized_by": "owner current chat",
+        "from_workstream": "valoria-master-plan-layered-construction-20261016",
+        "temporary": true,
+        "safety": "Read-only preflight required before any tool installation or editor launch; restore lease when complete",
+        "queued_preflight_run": 41474821703,
+        "prior_preflight_run": 41474606899
+      },
+      "native_proof": {
+        "run_id": 41478984732,
+        "artifact_id": 13158597570,
+        "sha": "f737603e7f532c6c59ae8cac0ee9270890ca2f13",
+        "unity_editor": "6000.3.23f1",
+        "unity_cli": "1.0.0-beta.8",
+        "pipeline": "0.9.1-exp.1",
+        "real_scene_write": true,
+        "real_unity_png_ab": true,
+        "game_modified": false,
+        "windows_resources_released": true
+      },
+      "write_scope_released": true,
+      "completion_evidence": {
+        "pr": 149,
+        "merge_sha": "d4ae67c5fa60894a95e157d4c0defa93e1785fdb",
+        "windows_unity_native_run": 41478984732,
+        "scratch_native_artifact": 13158597570,
+        "plugin_install_run": 41486031681,
+        "plugin_install_artifact": 13162665843,
+        "plugin_version": "0.1.8-beta",
+        "codex_cli": "0.166.0",
+        "cli_version_windows": "1.0.0-beta.8",
+        "unity_version": "6000.3.23f1",
+        "pipeline_version": "0.9.1-exp.1",
+        "codex_authenticated": false,
+        "live_codex_model_operations": false,
+        "art_approved": false,
+        "production_game_modified": false,
+        "windows_resource_released": true,
+        "manual_only_windows_workflows": true
+      }
+    },
     {
       "id": "eldoria-codex-unity-cli-isolated-pilot-20261102",
       "title": "Issue #147: isolated Unity CLI proof without touching Eldoria Windows",
