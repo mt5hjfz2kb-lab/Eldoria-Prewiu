@@ -1,5 +1,10 @@
 name: Eldoria Issue147 - Codex Unity plugin isolated verification
 on:
+  push:
+    branches: [experiment/eldoria-unity-cli-win-pilot-20261102]
+    paths:
+      - '.github/workflows/eldoria-codex-plugin-isolated-qa.yml'
+      - 'tools/unity-cli-windows-pilot/codex_plugin_probe.sh'
   pull_request:
     branches: [main]
     paths:
