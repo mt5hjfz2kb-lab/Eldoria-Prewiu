@@ -33,6 +33,8 @@ editors_rc=$?
 timeout 25 unity pipeline editors --format json > "$RESULT/pipeline-editors.json" 2> "$RESULT/pipeline-error.txt"
 pipeline_rc=$?
 set -e
+# Real MCP server/client handshake; no Editor and no write-capable tools invoked.
+timeout 60 python3 tools/unity-cli-isolated-pilot/probe_mcp.py "$RESULT/mcp-handshake.json"
 # Inspect the official agent integration repository read-only.
 git clone -q --depth=1 https://github.com/Unity-Technologies/unity-agent-plugin.git "$RESULT/plugin-source"
 git -C "$RESULT/plugin-source" rev-parse HEAD > "$RESULT/plugin-sha.txt"
@@ -57,6 +59,7 @@ data={
  "no_unity_project_modified":True,
  "no_codex_editor_control_demonstrated":True,
  "art_approved":False,
+ "mcp_handshake":json.loads((root/"mcp-handshake.json").read_text()),
  "next_required_step":"Run the Unity Editor and install Pipeline in an isolated copy with exclusive native resource permission"
 }
 (root/"proof.json").write_text(json.dumps(data,indent=2),encoding="utf-8")
