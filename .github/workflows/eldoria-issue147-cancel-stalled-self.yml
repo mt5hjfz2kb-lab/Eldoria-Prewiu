@@ -1,11 +1,6 @@
-name: Eldoria Issue147 safety cleanup - own stalled preflight only
+name: Eldoria Issue147 safety cleanup - manual only
 on:
-  push:
-    branches: [experiment/eldoria-unity-cli-win-pilot-20261102]
-    paths: ['.github/workflows/eldoria-issue147-cancel-stalled-self.yml']
-  pull_request:
-    branches: [main]
-    paths: ['.github/workflows/eldoria-issue147-cancel-stalled-self.yml']
+  workflow_dispatch:
 permissions:
   contents: read
   actions: write
