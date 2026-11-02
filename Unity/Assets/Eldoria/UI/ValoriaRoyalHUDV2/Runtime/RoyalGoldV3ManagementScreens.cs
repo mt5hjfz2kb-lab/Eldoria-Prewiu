@@ -712,7 +712,7 @@ namespace Eldoria.UI.RoyalGold.V2
             percentModeButton.gameObject.SetActive(!training);
             percentModeLabel.Put(percentMode?"EDITAR POR %":"EDITAR CANTIDAD");
             unitDetail.Put(training?(compactLandscape?"":"Arqueros · nivel de tropa T"+selectedTier+"\n")+(selectedTier==2?"Desbloqueados por Cuartel IV":"Unidad inicial del reino"):
-                "TROPAS · ARQUEROS T"+selectedTier+"\nAjusta cantidad o porcentaje.");
+                "ARQUEROS T"+selectedTier+" · DISPONIBLES "+selectedAvailable);
             switchLabel.Put(training?"PREPARAR MARCHA":"ENTRENAR TROPAS");
             switchDestination.interactable=true;
             bool busy=s.RecruitmentCompletesUtcTicks>0;
@@ -862,9 +862,15 @@ namespace Eldoria.UI.RoyalGold.V2
             if(w<1||h<1)return;
             // The real HÉROES destination returns to the canonical top
             // navigation whenever training follows a preparation screen.
-            if(CurrentDestination==Destination.Training &&
-                heroesButton.transform.parent!=header)
-                heroesButton.transform.SetParent(header,false);
+            if(CurrentDestination==Destination.Training)
+            {
+                if(heroesButton.transform.parent!=header)
+                    heroesButton.transform.SetParent(header,false);
+                if(back.transform.parent!=footer)
+                    back.transform.SetParent(footer,false);
+                var backText=back.GetComponentInChildren<RoyalText>(true);
+                if(backText)backText.Put("VOLVER A LA CIUDAD");
+            }
             bool landscape=w>h;
             // Production RoyalScaler matches height; native portrait probes
             // historically matched width. Normalize only this room so both
@@ -1205,10 +1211,18 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(footer,x,h-footerH-bottom,width,footerH);
 
             // One continuous Crónica Real header as the approved sheet.
-            float headerTextW=width-32f;
-            Place(heading.rectTransform,16f,6f,
+            // Reference back arrow belongs in the upper-left corner; the
+            // confirm command is the sole primary action on the lower edge.
+            if(back.transform.parent!=header)
+                back.transform.SetParent(header,false);
+            var returnLabel=back.GetComponentInChildren<RoyalText>(true);
+            if(returnLabel)returnLabel.Put("‹");
+            Place((RectTransform)back.transform,8f,9f,64f,headingH-18f);
+            if(returnLabel)returnLabel.fontSize=38;
+            float headerTextW=width-105f;
+            Place(heading.rectTransform,87f,6f,
                 headerTextW,wide?40f:48f);
-            Place(subheading.rectTransform,16f,wide?44f:56f,
+            Place(subheading.rectTransform,87f,wide?44f:56f,
                 headerTextW,wide?24f:32f);
             heading.fontSize=wide?(compact?25:29):32;
             subheading.fontSize=wide?16:19;
@@ -1382,13 +1396,11 @@ namespace Eldoria.UI.RoyalGold.V2
             }
 
             // Reference: one large decisive gold confirmation below the army.
-            Place(back.transform as RectTransform,12f,footerH*.16f,
-                wide?width*.29f:width*.27f,footerH*.67f);
-            Place(action.transform as RectTransform,wide?width*.40f:width*.32f,
-                footerH*.12f,wide?width*.58f:width*.66f,footerH*.76f);
+            Place(action.transform as RectTransform,width*.16f,
+                footerH*.15f,width*.68f,footerH*.75f);
             actionLabel.fontSize=wide?(compact?17:19):25;
-            Place(feedback.rectTransform,wide?width*.30f:width*.28f,
-                footerH*.02f,wide?width*.64f:width*.67f,18f);
+            Place(feedback.rectTransform,12f,
+                1f,width-24f,17f);
             feedback.fontSize=wide?14:15;
         }
 
