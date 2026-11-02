@@ -1,0 +1,50 @@
+name: Eldoria area handoff — safe release after Unity
+
+# Hosted Ubuntu guard. Requires explicit area_handoff_request on main.
+# Never dispatches Unity, cancels jobs, merges, publishes or approves art.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/active-workstreams.json'
+      - 'tools/workstream-lease/area-handoff.mjs'
+      - 'tools/workstream-lease/area-handoff.test.mjs'
+      - '.github/workflows/area-handoff.yml'
+  workflow_run:
+    workflows:
+      - 'UI Progression Certification (fast)'
+    types: [completed]
+  schedule:
+    - cron: '13 * * * *'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: eldoria-safe-area-handoff-main
+  cancel-in-progress: false
+
+jobs:
+  safe-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Checkout trusted main only
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/workstream-lease/area-handoff.mjs
+            /tools/workstream-lease/area-handoff.test.mjs
+            /.github/workflows/area-handoff.yml
+      - name: Verify safe release and negative cases
+        run: node --test tools/workstream-lease/area-handoff.test.mjs
+      - name: Complete only explicitly requested handoff if no work remains
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node tools/workstream-lease/area-handoff.mjs
