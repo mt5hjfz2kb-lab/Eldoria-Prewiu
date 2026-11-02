@@ -2998,9 +2998,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 25,
+      "owner": "chatgpt-eldoria-talents-art-20261102",
+      "ownership_state": "claimed",
+      "ownership_revision": 26,
       "status": "active",
       "branch": "fix/player-feedback-context-ui-20261030",
       "pr": 136,
@@ -3015,7 +3015,7 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
-      "phase": "TALENTS_COMPACT_MOBILE_FIXED_AWAIT_FINAL_NATIVE_AB",
+      "phase": "TALENTS_FINAL_REAL_IMAGE_LEGIBILITY_FIX",
       "next": "PR136 HEAD 70763c15725136be0cd04ecabfa7bdac35fd0069 with horizontal mobile layout and richer branch art. Exact V4.1 and A/B in all four resolutions required for both heroes; 9 nodes remain disabled. No merge/publication nor ART_APPROVED until visual accepted.",
       "budget_eur": 0,
       "ownership_history": [
@@ -3149,9 +3149,15 @@
           "ownership_revision": 24,
           "released_at": "2026-11-02",
           "reason": "Real screenshot shows tiny vertical medallions on 844x390. Source now uses horizontal engraved connectors + three medallions in narrow landscape only, other orientations unchanged; release to canonical native QA."
+        },
+        {
+          "owner": null,
+          "ownership_revision": 25,
+          "transferred_at": "2026-11-02",
+          "reason": "Actual Unity 70763c V4.1 screenshot passed but 390x844/844x390 lower Talents banner has light-on-gold overlap; adjust text-safe dark cartouche and compact nine-slice borders before final owner A/B."
         }
       ],
-      "write_scope_released": true,
+      "write_scope_released": false,
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
       "released_at": "2026-11-02",
       "release_reason": "READY_EXACT_HEAD_UNITY_AB_QA",
