@@ -157,7 +157,7 @@ namespace Eldoria.HeroesUI
             // decorative unavailable reserves, so its full real text scrolls.
             int count=ShowReserves(width,height)?(height>=600f?4:3):1;
             float activeH=count==1?available:
-                Mathf.Clamp(available*(count==4?.38f:.48f),150f,
+                Mathf.Clamp(available*(count==4 ? .38f : .48f),150f,
                     available-(count-1)*(76f+gap));
             float reserveH=count>1?
                 (available-activeH-gap*(count-1))/(count-1):0f;
@@ -202,7 +202,7 @@ namespace Eldoria.HeroesUI
                 // The host does not expose active/passive classification:
                 // explicitly do not fabricate that state from concept art.
                 Label("Skills / source-bound availability",card,
-                    "HABILIDAD DISPONIBLE",
+                    "HABILIDAD DEL HÉROE",
                     textX,compact?49f:cardHeight*.30f,textW,
                     compact?22f:Mathf.Min(26f,cardHeight*.22f),
                     compact?12:14,TextAnchor.MiddleLeft,Gold);
