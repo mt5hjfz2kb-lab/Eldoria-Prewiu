@@ -31,6 +31,9 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalGoldV41MailboxScreen mailbox;
         Image approvedArcher,approvedTroopRow,trainingEnvironment,marchEnvironment;
         RectTransform marchHeadingSurface,marchTroopSurface,marchSummaryBacking,marchStatusBacking;
+        RectTransform marchReferencePreview;
+        Image marchReferenceScene;
+        RoyalText marchTroopChapter,marchReferenceCaption;
         // Live, reusable stat cards. Never cached gameplay values or text baked into art.
         readonly RectTransform[] marchMetricCards=new RectTransform[6];
         readonly RoyalText[] marchMetricValues=new RoyalText[6];
@@ -480,6 +483,8 @@ namespace Eldoria.UI.RoyalGold.V2
             RoyalGoldV41SourceArt.Surface(marchTroopSurface,"blue-panel",14);
             marchTroopSurface.SetAsFirstSibling();
             RoyalGoldV41MarchArt.DressTroopSurface(marchTroopSurface);
+            marchTroopChapter=Text("March / reference troop chapter",left,22,Gold,true);
+            marchTroopChapter.Put("TROPAS");
             // Small opaque cartouches, not a second full-height blue pane:
             // live military text must remain legible against the stone courtyard.
             marchSummaryBacking=Frame("March / statistics title cartouche",right,false);
@@ -489,6 +494,18 @@ namespace Eldoria.UI.RoyalGold.V2
             summaryPaper.rectTransform.SetAsFirstSibling();
             marchSummaryBacking.SetAsFirstSibling();
             RoyalGoldV41MarchArt.DressSummary(marchSummaryBacking);
+            // This is environment illustration, not a simulated composition,
+            // victory prediction, or newly actionable army preview.
+            marchReferencePreview=Frame("March / reference scene inset",right,false);
+            marchReferenceScene=RoyalGoldV41SourceArt.Surface(
+                marchReferencePreview,"march-scenery");
+            marchReferenceScene.preserveAspect=true;
+            marchReferenceScene.raycastTarget=false;
+            marchReferenceCaption=Text("March / scene illustration disclosure",
+                marchReferencePreview,15,Ivory,true);
+            marchReferenceCaption.Put("ENTORNO DE LA MARCHA");
+            marchReferenceCaption.alignment=TextAnchor.MiddleCenter;
+            marchReferencePreview.gameObject.SetActive(false);
             marchStatusBacking=Frame("March / status parchment cartouche",right,false);
             var statusPaper=RoyalGoldV41SourceArt.Surface(marchStatusBacking,"blue-panel",14);
             statusPaper.color=new Color(.95f,.94f,.88f,.86f);
@@ -663,7 +680,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 percentMode?CurrentDisplayedPercent<100:selectedCount<maxCount)&&slider.interactable;
             selectedText.Put(!training&&percentMode?CurrentDisplayedPercent+" %":
                 maxCount>0?selectedCount.ToString():"—");
-            heading.Put(training?"ENTRENAMIENTO":"SALA DE MARCHAS");
+            heading.Put(training?"ENTRENAMIENTO":"PREPARACIÓN DE MARCHA");
             subheading.Put(training?"VALORIA · RECLUTAMIENTO DE TROPAS":"VALORIA · PREPARACIÓN DE EXPEDICIONES");
             unitTitle.Put(training?"ARQUERO · T"+selectedTier:"HÉROES DE LA MARCHA");
             chapterAction.gameObject.SetActive(training&&s.BastionLevel>=3);
@@ -736,7 +753,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 var power=SliceRules.Expedition(troops,selectedHero);
                 int total=troops.Total;
                 int pctT1=total>0?Mathf.RoundToInt(100f*selectedT1/total):0;
-                summary.Put("COMPOSICIÓN Y FUERZA REAL");
+                summary.Put("RESUMEN DE LA MARCHA · COMPOSICIÓN");
                 string[] liveMetric={
                     "ARQUEROS T1\n"+selectedT1+" · "+pctT1+" %",
                     "ARQUEROS T2\n"+selectedT2+" · "+(total>0?100-pctT1:0)+" %",
@@ -962,6 +979,8 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             ReflowApprovedSurfaces(leftSide,top,usable,bodyY,bodyH,gap,landscape);
             ApplyMilitaryComposition(w,h,leftSide,rightSide,top,bottom,landscape);
+            if(CurrentDestination==Destination.March)
+                ApplyStrictMarchReference(w,h,leftSide,rightSide,top,bottom,landscape);
             if(!landscape)
             {
                 // Portrait captures use 800 canvas units: 26 units remain
@@ -1141,6 +1160,206 @@ namespace Eldoria.UI.RoyalGold.V2
             // Explicit stacking retains live controls above source surfaces.
             approvedArcher.rectTransform.SetAsFirstSibling();
             if(!wide)trainingEnvironment.rectTransform.SetAsFirstSibling();
+        }
+
+
+        // Reference-first *macroscopic* composition, not an additional
+        // full-screen backdrop. Portrait matches the owner's approved bands:
+        // top navigation / three heroes / actual troop order / summary and
+        // scenic inset / confirm. Landscape preserves their reading order
+        // without losing the true count, percent or three-march controls.
+        void ApplyStrictMarchReference(float w,float h,float x,float insetRight,
+            float top,float bottom,bool wide)
+        {
+            float width=w-x-insetRight;
+            bool compact=compactLandscape;
+            float headingH=wide?(compact?86f:91f):110f;
+            float footerH=wide?(compact?65f:70f):100f;
+            float bodyY=top+headingH+8f;
+            float bodyH=Mathf.Max(240f,h-bodyY-footerH-bottom-10f);
+            float gap=wide?Mathf.Clamp(width*.015f,10f,22f):12f;
+            Place(header,x,top,width,headingH);
+            Place(footer,x,h-footerH-bottom,width,footerH);
+
+            // One continuous Crónica Real header as the approved sheet.
+            Place(heading.rectTransform,16f,6f,
+                wide?width*.62f:width-32f,wide?40f:48f);
+            Place(subheading.rectTransform,16f,wide?44f:56f,
+                wide?width*.62f:width-32f,wide?24f:32f);
+            heading.fontSize=wide?(compact?25:29):32;
+            subheading.fontSize=wide?16:19;
+            Place(switchDestination.transform as RectTransform,
+                width-(wide?240f:210f)-12f,wide?8f:73f,
+                wide?240f:210f,wide?40f:32f);
+            switchLabel.fontSize=wide?17:16;
+            chapterAction.gameObject.SetActive(false);
+
+            float leftW=wide?(width-gap)*.58f:width;
+            float rightW=wide?width-leftW-gap:width;
+            float heroH=wide?bodyH*.53f:bodyH*.38f;
+            float troopH=wide?bodyH-heroH:bodyH*.34f;
+            float summaryH=wide?bodyH:bodyH-heroH-troopH-gap;
+            Place(left,x,bodyY,leftW,heroH+troopH);
+            Place(right,wide?x+leftW+gap:x,
+                wide?bodyY:bodyY+heroH+troopH+gap,rightW,summaryH);
+            float lw=left.rect.width;
+            float lh=left.rect.height;
+
+            // The owner's three vertical character cards own the top third;
+            // they remain exactly three. The third stays narratively locked.
+            float heroTitleH=wide?39f:57f;
+            Place(marchHeadingSurface,7f,2f,lw-14f,heroTitleH);
+            Place(unitTitle.rectTransform,17f,5f,lw*.61f,heroTitleH-8f);
+            unitTitle.fontSize=wide?23:30;
+            unitTitle.alignment=TextAnchor.MiddleLeft;
+            heroesButton.transform.SetParent(left,false);
+            Place((RectTransform)heroesButton.transform,
+                lw*.67f,5f,lw*.30f,heroTitleH-8f);
+            heroSlotLabels[0].alignment=TextAnchor.MiddleCenter;
+            float cardTop=heroTitleH+7f;
+            float cardHeight=Mathf.Max(83f,heroH-cardTop-6f);
+            float cardGap=Mathf.Clamp(lw*.010f,5f,11f);
+            float cardW=(lw-24f-cardGap*2f)/3f;
+            for(int i=0;i<3;i++)
+            {
+                var card=(RectTransform)heroSlotButtons[i].transform;
+                Place(card,12f+i*(cardW+cardGap),cardTop,cardW,cardHeight);
+                var source=approvedHeroes[i].sprite;
+                float ratio=source?source.rect.width/Mathf.Max(1f,source.rect.height):.82f;
+                if(compact)
+                {
+                    // Compact landscape: keep complete portrait at left, text
+                    // at right. The name band cannot cover the model's face.
+                    float apW=cardW*.44f-9f,apH=cardHeight-12f;
+                    Place(heroPortraitViewports[i],5f,6f,apW,apH);
+                    float imgW=Mathf.Min(apW-5f,apH*ratio);
+                    float imgH=imgW/Mathf.Max(.1f,ratio);
+                    Place(approvedHeroes[i].rectTransform,(apW-imgW)*.5f,
+                        (apH-imgH)*.5f,imgW,imgH);
+                    Place(heroSlotLabels[i].rectTransform,cardW*.46f,7f,
+                        cardW*.51f,cardHeight-14f);
+                    heroSlotLabels[i].fontSize=20;
+                }
+                else
+                {
+                    float nameH=Mathf.Clamp(cardHeight*.23f,37f,68f);
+                    float apH=cardHeight-nameH-12f,apW=cardW-12f;
+                    Place(heroPortraitViewports[i],6f,5f,apW,apH);
+                    float imgW=Mathf.Min(apW-8f,apH*ratio);
+                    float imgH=imgW/Mathf.Max(.1f,ratio);
+                    Place(approvedHeroes[i].rectTransform,(apW-imgW)*.5f,
+                        (apH-imgH)*.5f,imgW,imgH);
+                    Place(heroSlotLabels[i].rectTransform,6f,apH+7f,
+                        cardW-12f,nameH);
+                    heroSlotLabels[i].fontSize=wide?20:27;
+                }
+                heroSlotLabels[i].alignment=TextAnchor.MiddleCenter;
+                heroSlotLabels[i].verticalOverflow=VerticalWrapMode.Truncate;
+            }
+
+            // T1/T2 only. One active roster portrait and the existing real
+            // T1/T2 selector, quantities and slider. No fictitious reference
+            // paladins, mages, third troop family or victory percentages.
+            float troopTop=heroH+4f;
+            Place(marchTroopSurface,7f,troopTop,lw-14f,troopH-9f);
+            Place(marchTroopChapter.rectTransform,19f,troopTop+5f,
+                lw-38f,wide?34f:43f);
+            marchTroopChapter.fontSize=wide?22:29;
+            marchTroopChapter.gameObject.SetActive(true);
+            float troopPicW=wide?lw*.25f:lw*.26f;
+            float picY=troopTop+(wide?46f:53f);
+            float picH=Mathf.Max(55f,troopH-(wide?54f:62f));
+            Place(approvedTroopRow.rectTransform,13f,picY,troopPicW,picH);
+            float orderX=troopPicW+23f;
+            float orderW=Mathf.Max(120f,lw-orderX-14f);
+            float orderY=troopTop+(wide?43f:52f);
+            float orderH=Mathf.Max(95f,troopH-(wide?49f:58f));
+            float descH=Mathf.Clamp(orderH*.20f,30f,wide?46f:65f);
+            Place(unitDetail.rectTransform,orderX,orderY,orderW,descH);
+            unitDetail.fontSize=wide?(compact?17:18):24;
+            Place(tierButton.transform as RectTransform,orderX,
+                orderY+descH+4f,orderW,wide?36f:Mathf.Min(60f,orderH*.20f));
+            float selectorsY=orderY+descH+4f+(wide?40f:Mathf.Min(64f,orderH*.20f))+5f;
+            float selectorsH=Mathf.Clamp(orderH*.26f,wide?40f:56f,wide?54f:83f);
+            float quantityW=orderW*.53f;
+            float percentW=orderW-quantityW-8f;
+            Place(percentModeButton.transform as RectTransform,
+                orderX,selectorsY,percentW,selectorsH);
+            Place(quantityRow,orderX+percentW+8f,selectorsY,quantityW,selectorsH);
+            float buttonW=Mathf.Min(selectorsH*.85f,quantityW*.29f);
+            Place(minus.transform as RectTransform,0f,0f,buttonW,selectorsH);
+            Place(plus.transform as RectTransform,quantityW-buttonW,0f,buttonW,selectorsH);
+            Place(selectedText.rectTransform,buttonW+3f,0f,
+                Mathf.Max(36f,quantityW-2f*buttonW-6f),selectorsH);
+            selectedText.fontSize=wide?21:27;
+            percentModeLabel.fontSize=wide?16:21;
+            float sliderY=selectorsY+selectorsH+(wide?8f:11f);
+            Place(slider.transform as RectTransform,orderX+8f,sliderY,
+                orderW-16f,wide?16f:22f);
+
+            // Summary is a manuscript, not six giant independent blue tiles.
+            // Keep all six authoritative values, compress them into a real
+            // typographic scorecard with no duplicate information surfaces.
+            float rw=right.rect.width,rh=right.rect.height;
+            bool showInset=!wide && rw>=360f && rh>=165f;
+            float insetW=showInset?rw*.40f:0f;
+            float statsW=showInset?rw-insetW-12f:rw;
+            Place(marchSummaryBacking,5f,3f,statsW-10f,wide?43f:49f);
+            Place(summary.rectTransform,14f,9f,statsW-28f,wide?34f:40f);
+            summary.fontSize=wide?(compact?19:22):25;
+            summary.alignment=TextAnchor.MiddleLeft;
+            float tilesTop=wide?53f:59f;
+            float statusH=wide?Mathf.Max(78f,rh*.27f):Mathf.Max(79f,rh*.29f);
+            int cols=2,rows=3;
+            float tileGap=wide?4f:6f;
+            float tileW=(statsW-22f-tileGap)/2f;
+            float tileH=Mathf.Max(24f,
+                (rh-tilesTop-statusH-11f-(rows-1)*tileGap)/rows);
+            for(int i=0;i<marchMetricCards.Length;i++)
+            {
+                var card=marchMetricCards[i];
+                Place(card,10f+(i%cols)*(tileW+tileGap),
+                    tilesTop+(i/cols)*(tileH+tileGap),tileW,tileH);
+                var frame=card.GetComponent<RoyalGoldV2FrameGraphic>();
+                if(frame)frame.enabled=false;
+                // Remove giant decorative dark boxes; retain the real texts.
+                var art=card.GetComponentsInChildren<Image>(true);
+                foreach(var img in art)if(img.name.StartsWith("Approved source /"))
+                    img.enabled=false;
+                Place(marchMetricValues[i].rectTransform,5f,2f,tileW-10f,tileH-4f);
+                marchMetricValues[i].fontSize=wide?(compact?15:18):21;
+                marchMetricValues[i].alignment=TextAnchor.MiddleLeft;
+            }
+            float statusY=rh-statusH;
+            Place(marchStatusBacking,6f,statusY,statsW-12f,statusH-4f);
+            Place(status.rectTransform,14f,statusY+4f,
+                statsW-28f,statusH-12f);
+            status.fontSize=wide?(compact?15:17):20;
+            status.alignment=TextAnchor.UpperLeft;
+            if(marchReferencePreview)
+            {
+                marchReferencePreview.gameObject.SetActive(showInset);
+                if(showInset)
+                {
+                    Place(marchReferencePreview,statsW+4f,6f,
+                        insetW-8f,rh-12f);
+                    Place(marchReferenceScene.rectTransform,6f,6f,
+                        insetW-20f,rh-58f);
+                    Place(marchReferenceCaption.rectTransform,6f,rh-55f,
+                        insetW-20f,38f);
+                    marchReferenceCaption.fontSize=18;
+                }
+            }
+
+            // Reference: one large decisive gold confirmation below the army.
+            Place(back.transform as RectTransform,12f,footerH*.16f,
+                wide?width*.29f:width*.27f,footerH*.67f);
+            Place(action.transform as RectTransform,wide?width*.40f:width*.32f,
+                footerH*.12f,wide?width*.58f:width*.66f,footerH*.76f);
+            actionLabel.fontSize=wide?(compact?17:19):25;
+            Place(feedback.rectTransform,wide?width*.30f:width*.28f,
+                footerH*.02f,wide?width*.64f:width*.67f,18f);
+            feedback.fontSize=wide?14:15;
         }
 
         void ReflowApprovedSurfaces(float x,float top,float width,float y,float height,float gap,bool wide)
