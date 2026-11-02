@@ -158,7 +158,7 @@ namespace Eldoria.HeroesUI
         }
         void ProfileReferenceSigil(Transform parent,int type,float width,float height,float size)
         {
-            float centerX=width*.5f,centerY=height<50f?height*.42f:height*.39f;
+            float centerX=height<50f?14f:width*.5f,centerY=height<50f?height*.5f:height*.39f;
             float unit=size/48f;
             Color bright=new Color(.94f,.73f,.39f,.98f);
             void Stroke(string name,float dx,float dy,float w,float h,float angle)
@@ -264,16 +264,17 @@ namespace Eldoria.HeroesUI
                 // The approved reference has five vertically stacked
                 // destinations, each with an icon and a caption.
                 float start=shortProfile?118f:190f;
-                float navH=shortProfile?38f:Mathf.Clamp((h-start-132f)/5f,72f,94f);
-                float navGap=shortProfile?5f:10f;
+                float navH=shortProfile?32f:Mathf.Clamp((h-start-132f)/5f,72f,94f);
+                float navGap=shortProfile?4f:10f;
                 for(int i=0;i<5;i++){
                     if(i==4){
                         var locked=Frame("Hero tab Historia / not yet available",content,
                             20,start+i*(navH+navGap),tabWidth,navH);
                         ProfileReferenceSigil(locked,5,tabWidth,navH,shortProfile?16f:31f);
                         var label=Label("Profile reference / Historia unavailable",locked,
-                            "HISTORIA",2f,navH-(shortProfile?19f:28f),tabWidth-4f,
-                            shortProfile?15f:23f,shortProfile?12:14,TextAnchor.MiddleCenter);
+                            "HISTORIA",shortProfile?28f:2f,shortProfile?0f:navH-28f,
+                            shortProfile?tabWidth-30f:tabWidth-4f,
+                            shortProfile?navH:23f,shortProfile?11:14,TextAnchor.MiddleCenter);
                         label.color=new Color(.63f,.62f,.59f,.82f);
                         continue;
                     }
@@ -283,18 +284,16 @@ namespace Eldoria.HeroesUI
                     TintFrame(button.GetComponent<RectTransform>(),CurrentPage==page?
                         new Color(.97f,.70f,.33f,1f):new Color(.45f,.38f,.26f,.85f));
                     var plate=button.GetComponent<RectTransform>();
-                    if(CurrentPage==page){
-                        var metal=Surface("Profile reference / selected amber inset",plate,
-                            4f,4f,tabWidth-8f,navH-8f,new Color(.49f,.27f,.085f,.56f));
-                        metal.GetComponent<Image>().raycastTarget=false;
-                        metal.SetAsFirstSibling();
-                    }
+                    var panelInk=plate.Find("Royal Gold / translucent ink");
+                    if(CurrentPage==page && panelInk)
+                        panelInk.GetComponent<Image>().color=new Color(.47f,.25f,.075f,.81f);
                     ProfileReferenceSigil(button.transform,i+1,tabWidth,navH,
                         shortProfile?16f:32f);
                     var caption=Label("Profile reference / "+page+" caption",
-                        button.transform,captions[i],
-                        3f,navH-(shortProfile?19f:28f),tabWidth-6f,
-                        shortProfile?16f:23f,shortProfile?12:14,TextAnchor.MiddleCenter);
+                        button.transform,shortProfile&&i==3?"EQUIPO":captions[i],
+                        shortProfile?28f:3f,shortProfile?0f:navH-28f,
+                        shortProfile?tabWidth-30f:tabWidth-6f,
+                        shortProfile?navH:23f,shortProfile?11:14,TextAnchor.MiddleCenter);
                     caption.color=CurrentPage==page?ivory:new Color(.86f,.83f,.76f);
                 }
             }else{
