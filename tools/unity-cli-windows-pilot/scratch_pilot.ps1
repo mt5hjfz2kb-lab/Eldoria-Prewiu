@@ -29,6 +29,7 @@ function Run-Cli($argList,$file) {
   $exit = $LASTEXITCODE
   [IO.File]::WriteAllText((Join-Path $root $file), $text)
   if($exit -ne 0) { throw "Unity CLI exit $exit at $file. See evidence." }
+  if($text -match '"success"\s*:\s*false' -or $text -match '"error"\s*:\s*"Compilation Failed"') { throw "Unity Editor command reported semantic error despite CLI exit 0: $file" }
   return $text
 }
 function Unity-Child($argList,$timeoutSec,$logName) {
@@ -98,46 +99,58 @@ try {
   Stage 'editor-connected' 'PASS' 'Unity CLI discovered live Pipeline commands on isolated scratch Editor.'
   $identity=Run-Cli @('command','script','eval','return UnityEngine.Application.unityVersion;','--project-path',$project) 'unity-editor-eval-version.txt'
   Stage 'editor-eval-readonly' 'PASS' $identity.Trim().Substring(0,[Math]::Min(150,$identity.Trim().Length))
-  # Exercise a real reversible edit through Unity CLI, not through project file patching.
-  $createCode='var p=UnityEngine.GameObject.CreatePrimitive(UnityEngine.PrimitiveType.Cube); p.name="ELDORIA_CLI_TEST_CUBE"; p.transform.position=new UnityEngine.Vector3(0,0,0); return p.name;'
-  $created=Run-Cli @('command','script','eval',$createCode,'--project-path',$project) 'unity-editor-create-cube.txt'
-  if($created -notmatch 'ELDORIA_CLI_TEST_CUBE'){throw 'Editor eval did not report scratch GameObject created.'}
-  Stage 'editor-live-edit' 'PASS' 'Created one cube in isolated Unity Editor through CLI.'
-  $readCode='return UnityEngine.GameObject.Find("ELDORIA_CLI_TEST_CUBE") != null;'
-  $exists=Run-Cli @('command','script','eval',$readCode,'--project-path',$project) 'unity-editor-verify-cube.txt'
-  if($exists -notmatch 'true'){throw 'Live Editor could not find object created via CLI.'}
-  Stage 'editor-live-verify' 'PASS' 'Verified object exists in editor memory.'
-  # Capture deterministic images through the live Unity camera, not a fabricated mock.
-  $env:ELDORIA_CLI_EVIDENCE = $root
-  # The resident Editor inherits this variable only if set before launch, so pass absolute literal escaped path.
-  $forCSharp=$root.Replace('\','/').Replace('"','\"')
-  $captureCode=@'
-var camGo=new UnityEngine.GameObject("ELDORIA_SCRATCH_CAPTURE_CAMERA");
-var cam=camGo.AddComponent<UnityEngine.Camera>();
+  # Real Editor screenshot via RenderTexture, with literal-free C# for Windows CLI quoting safety.
+  function Capture-Scratch([string]$fileName) {
+    $codes = ($fileName.ToCharArray() | ForEach-Object { '(char)' + [int][char]$_ }) -join ','
+    $fileExpr = 'new string(new char[]{' + $codes + '})'
+    $cs = @'
+var camGo = new UnityEngine.GameObject();
+var cam = camGo.AddComponent<UnityEngine.Camera>();
 cam.orthographic=true; cam.orthographicSize=3f;
 cam.clearFlags=UnityEngine.CameraClearFlags.SolidColor;
 cam.backgroundColor=UnityEngine.Color.black;
 cam.transform.position=new UnityEngine.Vector3(0f,0f,-10f);
 cam.transform.rotation=UnityEngine.Quaternion.identity;
-var rt=new UnityEngine.RenderTexture(320,180,24);
+var rt = new UnityEngine.RenderTexture(320,180,24);
 cam.targetTexture=rt;
 cam.Render();
 UnityEngine.RenderTexture.active=rt;
-var image=new UnityEngine.Texture2D(320,180,UnityEngine.TextureFormat.RGB24,false);
+var image = new UnityEngine.Texture2D(320,180,UnityEngine.TextureFormat.RGB24,false);
 image.ReadPixels(new UnityEngine.Rect(0,0,320,180),0,0);
 image.Apply();
-System.IO.File.WriteAllBytes("__OUTPUT_PATH__",image.EncodeToPNG());
+System.IO.File.WriteAllBytes(System.IO.Path.Combine(UnityEngine.Application.dataPath,__FILE_EXPR__),image.EncodeToPNG());
 cam.targetTexture=null;
 UnityEngine.RenderTexture.active=null;
 UnityEngine.Object.DestroyImmediate(image);
 UnityEngine.Object.DestroyImmediate(rt);
 UnityEngine.Object.DestroyImmediate(camGo);
-return "SCRATCH_PNG_CAPTURE_OK";
+return 320;
 '@
-  $captureCode=$captureCode.Replace('__OUTPUT_PATH__',($forCSharp + '/after-unity-cube.png'))
-  $capture=Run-Cli @('command','script','eval',$captureCode,'--project-path',$project) 'unity-editor-capture-output.txt'
-  if(-not(Test-Path -LiteralPath (Join-Path $root 'after-unity-cube.png'))) { throw 'No real Unity PNG from editor render.' }
-  Stage 'real-unity-capture' 'PASS' 'Unity RenderTexture PNG captured in scratch scene.'
+    $cs = $cs.Replace('__FILE_EXPR__',$fileExpr)
+    $null = Run-Cli @('command','script','eval',$cs,'--project-path',$project) ('unity-capture-' + $fileName + '.txt')
+    $actual = Join-Path (Join-Path $project 'Assets') $fileName
+    if(-not (Test-Path -LiteralPath $actual -PathType Leaf)) { throw "Unity Editor did not create $fileName" }
+    if((Get-Item $actual).Length -lt 100){throw "Unity generated invalid/empty PNG $fileName"}
+    Copy-Item -LiteralPath $actual -Destination (Join-Path $root $fileName) -Force
+  }
+  Capture-Scratch 'before-unity-cube.png'
+  Stage 'before-unity-capture' 'PASS' 'Captured empty scene in actual scratch Unity Editor.'
+  # No quotes in C# expressions: Unity CLI on PowerShell legacy command line strips literal quotes.
+  $createCode='var p=UnityEngine.GameObject.CreatePrimitive(UnityEngine.PrimitiveType.Cube); p.transform.position=new UnityEngine.Vector3(0,0,0); return p.GetInstanceID();'
+  $created = Run-Cli @('command','script','eval',$createCode,'--project-path',$project) 'unity-editor-create-cube.txt'
+  if($created -notmatch '"result"\s*:\s*-?[0-9]+'){throw 'Editor did not confirm scratch GameObject instance ID.'}
+  Stage 'editor-live-edit' 'PASS' 'Created an actual primitive cube in the isolated Unity Editor through CLI.'
+  $readCode='return UnityEngine.Object.FindObjectsByType<UnityEngine.MeshRenderer>(UnityEngine.FindObjectsSortMode.None).Length;'
+  $exists = Run-Cli @('command','script','eval',$readCode,'--project-path',$project) 'unity-editor-verify-cube.txt'
+  if($exists -notmatch '"result"\s*:\s*[1-9]'){throw 'Editor could not detect the new MeshRenderer.'}
+  Stage 'editor-live-verify' 'PASS' 'Verified actual MeshRenderer exists inside scratch Editor.'
+  Capture-Scratch 'after-unity-cube.png'
+  $beforeHash = (Get-FileHash (Join-Path $root 'before-unity-cube.png') -Algorithm SHA256).Hash
+  $afterHash = (Get-FileHash (Join-Path $root 'after-unity-cube.png') -Algorithm SHA256).Hash
+  $report.visual_before_sha256=$beforeHash
+  $report.visual_after_sha256=$afterHash
+  if($beforeHash -eq $afterHash){throw 'Before/after RenderTexture images identical; no visual change verified.'}
+  Stage 'real-unity-ab-captures' 'PASS' 'Two different native PNG captures rendered by Unity in scratch scene.'
   $report.success=$true
   Save-Report
 } catch {
