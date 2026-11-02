@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-hero-profiles-block03-20261102",
+      "owner": "chatgpt-eldoria-hero-profiles-finalization-20261102",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-02",
@@ -126,8 +126,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BLOCK03_HERO_PROFILES_NATIVE_AB_CAPTURED_ART_TARGET_PENDING",
-      "next": "Latest code HEAD 91e620cf18b5c96e3b1ed7cc1e3dfa8b9968d98a in PR136. Exact-head Unity run 41363105548: real native Aldric/Lyra Resumen screenshots 1600x900/900x1600/844x390/390x844 artifact 13106078862 captured; visual layers no longer draw graticule. Await full integrated certificate; inspect its remaining result before claim of PASS. Art 8.5 NOT certified; lingering painterly-background cutout feel and 844x390 text antialias blur in native capture require new coherent strategy, not micro tweaks. Avoid merging/publishing. Earlier intermediate 41362567525 failed at a strict movement test boundary (actual distance .300000012 vs > .300000012), current 41363105548 preflight passed; check final regression.",
+      "phase": "BLOCK03_POSE_AND_PREMIUM_ATTRIBUTE_RECONSTRUCTION",
+      "next": "Apply non-destructive Aldric relaxed shoulders on isolated presentation clone; sculpt real heraldic attribute modules for both heroes, improve compact landscape. Do not merge or publish without genuine Unity captures/functional QA. Prior run 41363105548 may still be in progress and must not be cancelled or overwritten.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1615,9 +1615,15 @@
           "ownership_revision": 94,
           "transferred_at": "2026-11-02",
           "reason": "Propietario encarga Bloque03: reconstruir fichas Aldric y Lyra tras revisión nativa del Salón; relevo autorizado por protocolo, PR136 y HEAD existentes preservados, no modificar ni cancelar job Unity ya iniciado."
+        },
+        {
+          "owner": "chatgpt-eldoria-hero-profiles-block03-20261102",
+          "ownership_revision": 95,
+          "transferred_at": "2026-11-02",
+          "reason": "User explicitly orders the connected chat to continue and finish PR136 hero-profile corrections; preserve earlier native evidence and in-flight run, do not duplicate PR or cancel Windows job."
         }
       ],
-      "ownership_revision": 95,
+      "ownership_revision": 96,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
