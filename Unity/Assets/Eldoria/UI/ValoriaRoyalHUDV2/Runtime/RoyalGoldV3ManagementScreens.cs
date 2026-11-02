@@ -1036,6 +1036,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(marchReferencePreview)marchReferencePreview.gameObject.SetActive(false);
             if(marchReferenceSummaryPaper)
                 marchReferenceSummaryPaper.gameObject.SetActive(!training);
+            // The approved March header has no Training toggle. Retain that
+            // existing destination in its canonical Training/UNIDADES route.
+            switchDestination.gameObject.SetActive(training);
             destinationArtwork.enabled=false;
             featuredUnitArtwork.enabled=false;
             statusArtwork.enabled=false;
@@ -1202,17 +1205,16 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(footer,x,h-footerH-bottom,width,footerH);
 
             // One continuous Crónica Real header as the approved sheet.
-            float headerTextW=width-(wide?285f:295f);
+            float headerTextW=width-32f;
             Place(heading.rectTransform,16f,6f,
                 headerTextW,wide?40f:48f);
             Place(subheading.rectTransform,16f,wide?44f:56f,
                 headerTextW,wide?24f:32f);
             heading.fontSize=wide?(compact?25:29):32;
             subheading.fontSize=wide?16:19;
-            Place(switchDestination.transform as RectTransform,
-                width-(wide?240f:210f)-12f,wide?8f:17f,
-                wide?240f:210f,wide?40f:58f);
-            switchLabel.fontSize=wide?17:16;
+            // No extra action is allowed to collide with the full, real
+            // "PREPARACIÓN DE MARCHA" heading or its contextual subtitle.
+            switchDestination.gameObject.SetActive(false);
             chapterAction.gameObject.SetActive(false);
 
             float leftW=wide?(width-gap)*.58f:width;
