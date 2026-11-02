@@ -364,9 +364,13 @@ namespace Eldoria.HeroesUI
                 new Color(.83f,.63f,.32f,.78f)).GetComponent<Image>().raycastTarget=false;
             Button("Previous available hero","‹",20,h-66,64,46,()=>CycleHero(-1));
             Button("Next available hero","›",w-84,h-66,64,46,()=>CycleHero(1));
-            Label("Current hero identity",content,w>560f?hero.DisplayName:"",
-                90,h-66,Mathf.Max(10f,Mathf.Min(185f,w*.16f)),46,
-                w<500f?17:20,TextAnchor.MiddleCenter).color=gold;
+            // Hero identity is already prominent in the reference header.
+            // Duplicating it next to the portrait strip obscured the first
+            // actual hero portrait at 900x1600.
+            if(!portrait)
+                Label("Current hero identity",content,hero.DisplayName,
+                    90,h-66,Mathf.Max(10f,Mathf.Min(185f,w*.16f)),46,
+                    w<500f?17:20,TextAnchor.MiddleCenter).color=gold;
             BuildProfilePortraitRail(w,h);
         }
         // Production art is independent from the approved sheet. Never crop
@@ -660,26 +664,19 @@ namespace Eldoria.HeroesUI
         }
         void BuildProfileStageDepth(RectTransform stage,float w,float h)
         {
-            // An architectural recess, not an opaque rectangle pasted behind
-            // the original rig. Every element is raycast-free and removable.
-            float border=Mathf.Clamp(w*.045f,5f,22f);
-            Surface("Profile / recessed arch left",stage,0,h*.07f,border,h*.73f,
-                new Color(.035f,.039f,.049f,.31f)).GetComponent<Image>().raycastTarget=false;
-            Surface("Profile / recessed arch right",stage,w-border,h*.07f,border,h*.73f,
-                new Color(.035f,.039f,.049f,.31f)).GetComponent<Image>().raycastTarget=false;
-            Surface("Profile / recessed arch lintel",stage,border,h*.07f,w-border*2f,3f,
-                new Color(.73f,.55f,.30f,.34f)).GetComponent<Image>().raycastTarget=false;
-            // No fake visual floor or pedestal: the illustrated hall carries
-            // the real horizon; the character's RenderTexture holds only
-            // genuine geometry and its transparent ground-contact shadow.
+            // The painted hall already owns the arches, columns and floor.
+            // Repeating those edges as a rectangular overlay around the 3D
+            // character made the portrait appear pasted on top of the world.
+            // Keep only diffuse bounced light behind the *real* skinned mesh.
+            // Its physical receiver/light/camera remain in HeroesModelSnapshot.
             var warm=HallLight(stage,"Profile / living window bounce",
                 w*.12f,h*.27f,w*.75f,h*.62f);
-            warm.color=new Color(1f,.64f,.31f,.11f);
+            warm.color=new Color(1f,.64f,.31f,.09f);
         }
         void BuildProfilePortraitRail(float w,float h)
         {
             var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
-            int visible=w<470f?2:w<720f?4:6;
+            int visible=w<470f?2:w<720f?4:5;
             float available=Mathf.Max(95f,w-210f);
             float gap=w<470f?8f:10f;
             float cell=Mathf.Min(65f,(available-gap*(visible-1))/visible);
