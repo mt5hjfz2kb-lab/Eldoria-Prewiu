@@ -2973,9 +2973,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": "chatgpt-eldoria-skills-native-fix-20261102",
-      "ownership_state": "claimed",
-      "ownership_revision": 16,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 17,
       "status": "active",
       "branch": "fix/player-feedback-context-ui-20261030",
       "pr": 136,
@@ -2990,8 +2990,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
-      "phase": "REMEDIATE_EXACT_HEAD_MOBILE_QA_AND_RENDER_OVERLAPS",
-      "next": "Unity run 41442830284 failed on 390x844 visible-scale 18px text, and real 900x1600 screenshot shows overlap of availability label and description plus icon. Fix real mobile layout and font, requeue native QA, capture authentic A/B for both heroes, do not merge/publish.",
+      "phase": "MOBILE_QA_CORRECTION_COMMITTED_UNITY_AB_PENDING",
+      "next": "PR136 HEAD efab2810418a7243d85636b1d7fb51c80b46336b fixes 390x844 description font 24px and label/icon overlap, adds Baluarte original illustration without Nv1. Previous Unity run 41442830284 failed before Lyra on mobile readability; execute new HEAD native screenshot gate and inspect both hero A/B. No artistic approval or merge.",
       "budget_eur": 0,
       "ownership_history": [
         {
@@ -3070,12 +3070,18 @@
           "ownership_revision": 15,
           "transferred_at": "2026-11-02",
           "reason": "Owner explicitly directs autonomous continuation to visual A/B; previous HeroesUI claim available; canonical Valoria retains Windows-runner claim."
+        },
+        {
+          "owner": "chatgpt-eldoria-skills-native-fix-20261102",
+          "ownership_revision": 16,
+          "released_at": "2026-11-02",
+          "reason": "Fixed actual Unity capture failures for text readability and label/icon overlap, connected approved Baluarte sprite; independent source editing complete; canonical Valoria PR136 Windows gate remains exclusively owned elsewhere."
         }
       ],
-      "write_scope_released": false,
+      "write_scope_released": true,
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
       "released_at": "2026-11-02",
-      "release_reason": "SRC_INTEGRATED_TO_CANONICAL_PR136_AND_HANDOFF_FOR_SHARED_UNITY_QA",
+      "release_reason": "READY_EXACT_HEAD_UNITY_AB_QA",
       "original_pr": 135,
       "last_skills_art_commit": "72bacf1a8c9a7e7735b704e242e8f0fad3182e3c",
       "last_skills_art_evidence": "docs/heroes-ui/ABILITIES_ART_20261102.md"
