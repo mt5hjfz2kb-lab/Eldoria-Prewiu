@@ -1,10 +1,5 @@
-name: Eldoria Issue147 - isolated Windows Unity editor real connection proof
+name: Eldoria Issue147 - manual isolated Windows Unity Editor proof
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - '.github/workflows/eldoria-unity-cli-editor-proof.yml'
-      - 'tools/unity-cli-windows-pilot/scratch_pilot.ps1'
   workflow_dispatch:
 permissions:
   contents: read
