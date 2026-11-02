@@ -18,31 +18,6 @@
   },
   "active": [
     {
-      "id": "eldoria-reference-fidelity-qa-20261102",
-      "title": "Visual quality reference-aware triage: compare real Unity captures to exact approved originals",
-      "owner": "chatgpt-eldoria-reference-qa-20261102",
-      "ownership_state": "claimed",
-      "ownership_revision": 1,
-      "branch": "feature/eldoria-reference-fidelity-qa-20261102",
-      "status": "active",
-      "claimed_at": "2026-11-02",
-      "scope": [
-        "tools/visual-qa/reference_triage.py",
-        "tools/visual-qa/test_reference_triage.py",
-        "docs/visual-qa/REFERENCE_TRIAGE_20261102.md"
-      ],
-      "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Read-only comparison of authentic PNG and approved reference hashes, no art generation or edits.",
-      "phase": "LOCAL_TRIPLE_EVIDENCE_SUCCESS_TO_GITHUB",
-      "next": "Install read-only reference triage and unit tests; use reference kit under Library without distributing or overwriting source originals; never grant art approval automatically.",
-      "delivery_definition": {
-        "deliverable": "Three-way fidelity report for March/Training on authentic Unity captures; regression watch, no auto art approval",
-        "evidence": "Exact refs SHA and real Unity run IDs with 7 local tests",
-        "handoff": "No game source, runner or existing PR136 edits"
-      }
-    },
-    {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
@@ -3287,6 +3262,50 @@
     }
   ],
   "history": [
+    {
+      "id": "eldoria-reference-fidelity-qa-20261102",
+      "title": "Visual quality reference-aware triage: compare real Unity captures to exact approved originals",
+      "owner": null,
+      "ownership_state": "released",
+      "ownership_revision": 2,
+      "branch": "feature/eldoria-reference-fidelity-qa-20261102",
+      "status": "completed",
+      "claimed_at": "2026-11-02",
+      "scope": [
+        "tools/visual-qa/reference_triage.py",
+        "tools/visual-qa/test_reference_triage.py",
+        "docs/visual-qa/REFERENCE_TRIAGE_20261102.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only comparison of authentic PNG and approved reference hashes, no art generation or edits.",
+      "phase": "REFERENCE_VERIFIED_TRIAGE_MERGED",
+      "next": "Real artistic changes remain on owner PR136, inspect actual latest-head native captures before subjective art acceptance.",
+      "delivery_definition": {
+        "deliverable": "Three-way fidelity report for March/Training on authentic Unity captures; regression watch, no auto art approval",
+        "evidence": "Exact refs SHA and real Unity run IDs with 7 local tests",
+        "handoff": "No game source, runner or existing PR136 edits"
+      },
+      "write_scope_released": true,
+      "completion_evidence": {
+        "pr": 150,
+        "merge_sha": "641056cd652a51b3d199d9667984b94aab4f67cd",
+        "qa_unity_runs": [
+          41219845900,
+          41434883428
+        ],
+        "real_unity_screens": [
+          "march-reference-ratio.png",
+          "training-reference-ratio.png"
+        ],
+        "march_changed_pixels_pct": 0.94,
+        "training_changed_pixels_pct": 0,
+        "tests": 7,
+        "windows_used": false,
+        "game_source_modified": false,
+        "art_approved": false
+      }
+    },
     {
       "id": "eldoria-codex-windows-auth-probe-20261102",
       "title": "Issue147 - inspect Windows Codex login status without exposing credentials",
