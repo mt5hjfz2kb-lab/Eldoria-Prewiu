@@ -22,22 +22,21 @@
       "title": "Issue147: Codex Unity Windows isolated integration proof",
       "owner": "chatgpt-eldoria-win-cli-proof-20261102",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "branch": "experiment/eldoria-unity-cli-win-pilot-20261102",
       "status": "active",
       "claimed_at": "2026-11-02",
       "scope": [
         ".github/workflows/eldoria-unity-cli-windows-safe-pilot.yml",
         "tools/unity-cli-windows-pilot/**",
-        "docs/unity-cli-windows-pilot/**"
+        "docs/unity-cli-windows-pilot/**",
+        ".github/workflows/eldoria-codex-plugin-isolated-qa.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Instrumentación de conexión del editor en copia aislada; ningún arte ni mecánica producido para juego canónico.",
-      "phase": "WINDOWS_LEASE_CLAIMED_PREFLIGHT_PENDING",
-      "next": "Preflight read-only Windows, comprobar procesos reales, runner, cola y reserva ajena; solo transferir lease con autorización del propietario y comprobar seguridad. No tocar PR136 ni Windows antes de informe seguro.",
+      "phase": "EDITOR_PIPELINE_SCRATCH_PASS_Codex_PLUGIN_Ubuntu_PENDING",
+      "next": "Windows real isolated Editor+Pipeline success, Unity CLI edited cube and 2 PNG. Next test Codex plugin installation on Ubuntu, no more Windows; issue147 final review.",
       "delivery_definition": {
         "deliverable": "Comprobar Codex/CLI/Pipeline contra Editor Unity aislado, evidencia de comandos y capturas si factible",
         "evidence": "SHA exacto, run CI, logs, before/after de escena de prueba y mecanismos de limpieza",
@@ -50,6 +49,18 @@
         "safety": "Read-only preflight required before any tool installation or editor launch; restore lease when complete",
         "queued_preflight_run": 41474821703,
         "prior_preflight_run": 41474606899
+      },
+      "native_proof": {
+        "run_id": 41478984732,
+        "artifact_id": 13158597570,
+        "sha": "f737603e7f532c6c59ae8cac0ee9270890ca2f13",
+        "unity_editor": "6000.3.23f1",
+        "unity_cli": "1.0.0-beta.8",
+        "pipeline": "0.9.1-exp.1",
+        "real_scene_write": true,
+        "real_unity_png_ab": true,
+        "game_modified": false,
+        "windows_resources_released": true
       }
     },
     {
@@ -154,7 +165,9 @@
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
@@ -1698,7 +1711,7 @@
           "reason": "Owner orders current connected session to finish without interim reports, correcting residual A-pose and reference icon crops discovered in authentic Unity run 41424099554; preserve PR136, GLB, native test evidence."
         }
       ],
-      "ownership_revision": 100,
+      "ownership_revision": 101,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1951,7 +1964,11 @@
         "to_workstream": "eldoria-cli-windows-isolated-proof-20261102",
         "reason": "Owner explicitly authorizes temporary Windows lease transfer for issue #147; original PR136 code scope/owner retained. No third-party CI jobs currently running.",
         "safety": "No Unity launch until native preflight confirms zero relevant processes; no editor changes, restarts or cancellation of workflows",
-        "previous_revision": 99
+        "previous_revision": 99,
+        "returned_after_run": 41478984732,
+        "returned_by": "chatgpt-eldoria-win-cli-proof-20261102",
+        "returned_on": "2026-11-02",
+        "proof": "real 320x180 Unity A/B captured; source untouched"
       }
     },
     {
