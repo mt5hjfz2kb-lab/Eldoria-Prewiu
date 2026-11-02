@@ -26,9 +26,6 @@ namespace Eldoria.World4XCanon
             var shader=Resources.Load<Shader>("World4X/RegionOneAuthoredSurface");
             if(!shader||!shader.isSupported)throw new InvalidOperationException("Authored AG surface shader missing");
             scope.authoredShader=shader;scope.origin=artwork.transform.position;scope.ApplyMaterials(artwork);
-            // A/B art candidate: reuse the actual terrain height + eleven canonical
-            // faults; never replace the gameplay scene, the GLB, or colliders.
-            scope.ApplyExistingFaultFootprint(artwork);
             var fillObject=new GameObject("Region 1 scoped sky fill");fillObject.transform.SetParent(artwork.transform,false);fillObject.layer=29;
             scope.fill=fillObject.AddComponent<Light>();scope.fill.type=LightType.Directional;scope.fill.shadows=LightShadows.None;
             scope.fill.color=new Color(.65f,.71f,.84f);scope.fill.intensity=.20f;scope.fill.cullingMask=1<<29;
@@ -41,43 +38,6 @@ namespace Eldoria.World4XCanon
                 light.renderMode=LightRenderMode.ForcePixel;light.enabled=false;scope.interiorLights.Add(light);
             }
         }
-
-
-        // A/B revision: no floating ribbons, extra GLB or new geometry.
-        // Restore the originally imported rock's shape and albedo; display only
-        // the physically authored fault footprint, not the circular plate halo.
-        void ApplyExistingFaultFootprint(GameObject artwork)
-        {
-            int treated=0;
-            foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
-            {
-                bool sourcePlate=false;
-                for(var t=renderer.transform;t&&t!=artwork.transform;t=t.parent)
-                    if(t.name=="BLD_BreachBrokenBasaltPlates"){sourcePlate=true;break;}
-                if(!sourcePlate)continue;
-                var materials=renderer.sharedMaterials;
-                for(int i=0;i<materials.Length;i++)
-                {
-                    if(!materials[i])throw new InvalidOperationException("Source plate material missing");
-                    // Other geological renderers can share the source material:
-                    // clone it only on this historic plate cap.
-                    var candidate=new Material(materials[i]){
-                        name=materials[i].name+" source-led fault silhouette",
-                        enableInstancing=true
-                    };
-                    candidate.SetFloat("_BreachFaultCut",1f);
-                    owned.Add(candidate);
-                    materials[i]=candidate;
-                }
-                renderer.sharedMaterials=materials;
-                renderer.enabled=true;
-                treated++;
-            }
-            if(treated==0)throw new InvalidOperationException("Cannot locate the imported Breach plate cap");
-            Debug.Log("ELDORIA_BREACH_FAULT_MASK_ON_AUTHENTIC_MESH count="+treated+
-                " faults=11 new_meshes=0 colliders=0");
-        }
-
         static Texture BasePigment(Material source)
         {
             for(int p=0;p<source.shader.GetPropertyCount();p++)

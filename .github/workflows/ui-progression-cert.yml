@@ -6,8 +6,6 @@ on:
     paths:
       # Temporary exact-source QA trigger for owner-authorized Block02.
       - '.github/workflows/ui-progression-cert.yml'
-      # Canonical world look-development must produce authentic Unity A/B too.
-      - 'Unity/Assets/Eldoria/World4XCanon/RegionOneLookDevelopment.cs'
       - 'Unity/Assets/Eldoria/HeroesUI/**'
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs'
       - 'Unity/Assets/Eldoria/Resources/EldoriaV41/**'
