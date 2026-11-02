@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-visual-method-verification-20261102",
+      "owner": "chatgpt-eldoria-march-preparation-art-20261102",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-02",
@@ -126,8 +126,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "MARCH_EXACT_NATIVE_ART_REPAIR_20261102",
-      "next": "Resolve genuine V4.1 March phone label overflow; restructure art and typography, rerun same-HEAD Unity, compare A/B at four sizes, report viable-or-reject method with evidence",
+      "phase": "MARCH_PREPARATION_REFERENCE_REBUILD_20261102",
+      "next": "Reconstruct March 3-hero cards, genuine uncropped portraits, compact troop controls and six real metrics; test 3 marches and A/B four sizes in PR136 without gameplay or save changes.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -963,7 +963,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": "chatgpt-eldoria-ref-fidelity-completion-20261102",
+      "previous_owner": "chatgpt-eldoria-visual-method-verification-20261102",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -991,7 +991,7 @@
       "current_session": null,
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
       "resources_verified_at": "2026-10-31",
-      "resources_evidence": "Windows lease relinquished during takeover; must verify jobs and reserve before native run",
+      "resources_evidence": "Existing run 41516706630 remains in_progress; preserve it before launching any new exact-head Unity run.",
       "validation_recovery_session": {
         "owner": "chatgpt-validation-recovery-20261019",
         "authorization": "Owner requested review and completion of today's validation failures and pending delivery in current session.",
@@ -1676,13 +1676,19 @@
           "ownership_revision": 104,
           "transferred_at": "2026-11-02",
           "reason": "Owner explicitly requests new chat to continue stalled AI-assisted Unity Marches trial, diagnose failed exact-head screenshots and repair macro visual composition safely in same PR136; preserve sources, no restart, merge, publication or credits."
+        },
+        {
+          "owner": "chatgpt-eldoria-visual-method-verification-20261102",
+          "ownership_revision": 105,
+          "transferred_at": "2026-11-02",
+          "reason": "Propietario ordena expresamente 'Hazlo tú' para reconstruir Preparación de Marchas en este chat, reconciliar PR134/136 y entregar Unity A/B. Transferencia del mismo workstream, sin cancelar ejecución nativa previa, publicación, merge ni gastos."
         }
       ],
-      "ownership_revision": 105,
+      "ownership_revision": 106,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
-      "last_claimed_at": "2026-11-01T22:21:33.966Z",
+      "last_claimed_at": "2026-11-02",
       "delivery_definition": {
         "deliverable": "Complete necessary web-to-Unity I–V parity and city/world camera corrections through existing PR132; resolve issue133 with verified evidence.",
         "evidence": "Web-to-Unity matrix, old/new save and idempotency regression tests, native Edit/PlayMode I–V, actual UI/camera captures and exact source/build identity.",
@@ -1770,7 +1776,7 @@
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
       "candidate_branch": "fix/player-feedback-context-ui-20261030",
       "canonical_pr": 132,
-      "handoff_reason": "Owner explicitly requests current chat continue after frozen Work; preserve PR136 and local 4874286 recovery if available",
+      "handoff_reason": "Owner-authorized in-progress takeover; prior source preservation and live Windows job must not be cancelled.",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
       "scope_extension_reason": "Owner continuation after PR129: administrative closure of the already-completed six-reference source request which incorrectly retains an executable paid composition route. No modification to PR127, assets or spend.",
@@ -1924,7 +1930,7 @@
         "new_credits_used": 0,
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
-      "owner_instruction": "31-10-2026: owner says Adelante con el bloque 2; reuse PR136, fix Heroes Hall and 844x390 occluded portraits, no additional authorization",
+      "owner_instruction": "2026-11-02: el propietario ordena hacer directamente la reconstrucción artística de Preparación de Marchas en esta sesión; target >=8.3/10 sujeto a fotos Unity y aceptación humana.",
       "release_reason": "Block 01 QA verified and recorded, no gameplay/art code changes, not ART_APPROVED or merge-ready.",
       "windows_resource_handoff_20261102": {
         "authorized_by": "owner current chat",
