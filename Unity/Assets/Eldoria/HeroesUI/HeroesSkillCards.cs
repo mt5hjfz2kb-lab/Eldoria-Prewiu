@@ -135,7 +135,7 @@ namespace Eldoria.HeroesUI
         // action buttons, level, cooldown, tags or fabricated combat rules.
         // When mobile height is short, the one REAL card takes priority.
         internal static bool ShowReserves(float width,float height)
-            => width>=290f && height>=355f;
+            => width>=290f && height>=430f;
 
         internal static void Build(RectTransform pane, string heroId, string abilityName,
             string description, float width, float height, Sprite frame, Sprite skillIcon)
@@ -152,17 +152,25 @@ namespace Eldoria.HeroesUI
             float top=margin+titleH+9f;
             float available=Mathf.Max(70f,height-top-margin);
             float gap=Mathf.Clamp(height*.02f,7f,13f);
-            bool reserves=ShowReserves(width,height);
-            float cardHeight=reserves?(available-3f*gap)/4f:available;
-            // Never force tiny fictional slots into the mobile safe area.
-            if(cardHeight<80f){reserves=false;cardHeight=available;}
-            int count=reserves?4:1;
-            int realIndex=reserves&&heroId=="aldric"?2:0;
+            // Four reference rows in ample landscape; three responsive rows
+            // in tall portrait. The actual ability gets more vertical room than
+            // decorative unavailable reserves, so its full real text scrolls.
+            int count=ShowReserves(width,height)?(height>=600f?4:3):1;
+            float activeH=count==1?available:
+                Mathf.Clamp(available*(count==4?.38f:.48f),150f,
+                    available-(count-1)*(76f+gap));
+            float reserveH=count>1?
+                (available-activeH-gap*(count-1))/(count-1):0f;
+            if(count>1&&reserveH<72f)
+            {count=1;activeH=available;reserveH=0f;}
+            int realIndex=count>1&&heroId=="aldric"?2:0;
             bool hasAbility=!string.IsNullOrWhiteSpace(abilityName);
             for(int i=0;i<count;i++)
             {
                 bool real=i==realIndex;
-                float y=top+i*(cardHeight+gap);
+                float cardHeight=real?activeH:reserveH;
+                float y=top+i*(reserveH+gap)+
+                    (i>realIndex?activeH-reserveH:0f);
                 var card=Card(real?"Skills / only real skill card":
                     "Skills / future slot unavailable "+i,pane,
                     margin,y,usableW,cardHeight,frame,real);
