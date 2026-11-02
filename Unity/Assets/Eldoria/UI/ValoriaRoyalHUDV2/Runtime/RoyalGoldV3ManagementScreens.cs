@@ -885,7 +885,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     15+i*(slotW+6),heroY,slotW,landscape?37:32);
             float percentY=Mathf.Min(heroY+42,Mathf.Max(48,uh-110));
             Place(percentModeButton.transform as RectTransform,
-                15,percentY,uw-30,landscape?29:27);
+                15,percentY,uw-30,landscape?29:42);
             float qy=landscape?Mathf.Max(90,uh-95):
                 uh-(CurrentDestination==Destination.March?112:129);
             Place(quantityRow,landscape?14:20,qy,uw-(landscape?28:40),landscape?39:48);
@@ -1009,24 +1009,26 @@ namespace Eldoria.UI.RoyalGold.V2
                 float metricPad=wide?17f:20f;
                 float cardGap=8f;
                 float topCard=wide?52f:58f;
-                // Reserve actual reading height for the four live status lines.
-                // The remaining space becomes three proper tile rows, rather
-                // than stretching the status and clipping every metric label.
+                // Portrait uses three columns and two rows: the source-approved
+                // army overview is a compact band rather than three tiny rows.
+                // Preserve a genuine readable status footer at both ratios.
+                int cols=wide?2:3;
+                int rows=wide?3:2;
                 float statusReserve=wide?Mathf.Max(78f,rh*.24f):120f;
-                float cardH=Mathf.Max(46,(rh-topCard-statusReserve-22f-cardGap*2)/3f);
-                float cardW=(rw-metricPad*2-cardGap)/2f;
+                float cardH=Mathf.Max(64,(rh-topCard-statusReserve-22f-cardGap*(rows-1))/rows);
+                float cardW=(rw-metricPad*2-cardGap*(cols-1))/cols;
                 Place(marchSummaryBacking,metricPad-4,6,rw-2*metricPad+8,wide?45:49);
                 Place(summary.rectTransform,metricPad,10,rw-2*metricPad,wide?36:42);
                 summary.fontSize=wide?23:25;
                 for(int i=0;i<marchMetricCards.Length;i++)
                 {
-                    float xx=metricPad+(i%2)*(cardW+cardGap);
-                    float yy=topCard+(i/2)*(cardH+cardGap);
+                    float xx=metricPad+(i%cols)*(cardW+cardGap);
+                    float yy=topCard+(i/cols)*(cardH+cardGap);
                     Place(marchMetricCards[i],xx,yy,cardW,cardH);
                     Place(marchMetricValues[i].rectTransform,7,4,cardW-14,cardH-8);
                     marchMetricValues[i].fontSize=wide?18:21;
                 }
-                float statusY=topCard+3*cardH+2*cardGap+8;
+                float statusY=topCard+rows*cardH+(rows-1)*cardGap+8;
                 Place(marchStatusBacking,metricPad-4,statusY-5,
                     rw-2*metricPad+8,Mathf.Max(30,rh-statusY+1));
                 Place(status.rectTransform,metricPad,statusY,rw-2*metricPad,
