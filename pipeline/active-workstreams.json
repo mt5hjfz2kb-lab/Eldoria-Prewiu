@@ -22,7 +22,7 @@
       "title": "Issue147: Codex Unity Windows isolated integration proof",
       "owner": "chatgpt-eldoria-win-cli-proof-20261102",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "branch": "experiment/eldoria-unity-cli-win-pilot-20261102",
       "status": "active",
       "claimed_at": "2026-11-02",
@@ -31,15 +31,25 @@
         "tools/unity-cli-windows-pilot/**",
         "docs/unity-cli-windows-pilot/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Instrumentación de conexión del editor en copia aislada; ningún arte ni mecánica producido para juego canónico.",
-      "phase": "RUNNER_SAFE_PREFLIGHT_READ_ONLY",
+      "phase": "WINDOWS_LEASE_CLAIMED_PREFLIGHT_PENDING",
       "next": "Preflight read-only Windows, comprobar procesos reales, runner, cola y reserva ajena; solo transferir lease con autorización del propietario y comprobar seguridad. No tocar PR136 ni Windows antes de informe seguro.",
       "delivery_definition": {
         "deliverable": "Comprobar Codex/CLI/Pipeline contra Editor Unity aislado, evidencia de comandos y capturas si factible",
         "evidence": "SHA exacto, run CI, logs, before/after de escena de prueba y mecanismos de limpieza",
         "handoff": "Al acabar liberar Windows y dejar Issue147 con evidencia sin alterar juego principal"
+      },
+      "windows_reservation": {
+        "authorized_by": "owner current chat",
+        "from_workstream": "valoria-master-plan-layered-construction-20261016",
+        "temporary": true,
+        "safety": "Read-only preflight required before any tool installation or editor launch; restore lease when complete",
+        "queued_preflight_run": 41474821703,
+        "prior_preflight_run": 41474606899
       }
     },
     {
@@ -144,9 +154,7 @@
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
@@ -1690,7 +1698,7 @@
           "reason": "Owner orders current connected session to finish without interim reports, correcting residual A-pose and reference icon crops discovered in authentic Unity run 41424099554; preserve PR136, GLB, native test evidence."
         }
       ],
-      "ownership_revision": 99,
+      "ownership_revision": 100,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1937,7 +1945,14 @@
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
       "owner_instruction": "31-10-2026: owner says Adelante con el bloque 2; reuse PR136, fix Heroes Hall and 844x390 occluded portraits, no additional authorization",
-      "release_reason": "Block 01 QA verified and recorded, no gameplay/art code changes, not ART_APPROVED or merge-ready."
+      "release_reason": "Block 01 QA verified and recorded, no gameplay/art code changes, not ART_APPROVED or merge-ready.",
+      "windows_resource_handoff_20261102": {
+        "authorized_by": "owner current chat",
+        "to_workstream": "eldoria-cli-windows-isolated-proof-20261102",
+        "reason": "Owner explicitly authorizes temporary Windows lease transfer for issue #147; original PR136 code scope/owner retained. No third-party CI jobs currently running.",
+        "safety": "No Unity launch until native preflight confirms zero relevant processes; no editor changes, restarts or cancellation of workflows",
+        "previous_revision": 99
+      }
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
