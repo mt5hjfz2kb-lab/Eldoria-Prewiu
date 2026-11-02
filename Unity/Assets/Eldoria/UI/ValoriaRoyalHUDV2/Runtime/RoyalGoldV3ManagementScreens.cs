@@ -507,7 +507,7 @@ namespace Eldoria.UI.RoyalGold.V2
             marchReferenceScene.raycastTarget=false;
             marchReferenceCaption=Text("March / scene illustration disclosure",
                 marchReferencePreview,15,Ivory,true);
-            marchReferenceCaption.Put("ENTORNO DE LA MARCHA");
+            marchReferenceCaption.Put("VISTA DEL ENTORNO");
             marchReferenceCaption.alignment=TextAnchor.MiddleCenter;
             marchReferencePreview.gameObject.SetActive(false);
             marchStatusBacking=Frame("March / status parchment cartouche",right,false);
@@ -685,7 +685,7 @@ namespace Eldoria.UI.RoyalGold.V2
             selectedText.Put(!training&&percentMode?CurrentDisplayedPercent+" %":
                 maxCount>0?selectedCount.ToString():"—");
             heading.Put(training?"ENTRENAMIENTO":"PREPARACIÓN DE MARCHA");
-            subheading.Put(training?"VALORIA · RECLUTAMIENTO DE TROPAS":"VALORIA · PREPARACIÓN DE EXPEDICIONES");
+            subheading.Put(training?"VALORIA · RECLUTAMIENTO DE TROPAS":"VALORIA · EXPEDICIONES");
             unitTitle.Put(training?"ARQUERO · T"+selectedTier:"HÉROES DE LA MARCHA");
             chapterAction.gameObject.SetActive(training&&s.BastionLevel>=3);
             chapterActionLabel.Put("MEJORAR CUARTEL");
@@ -1202,7 +1202,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(footer,x,h-footerH-bottom,width,footerH);
 
             // One continuous Crónica Real header as the approved sheet.
-            float headerTextW=width-(wide?260f:230f);
+            float headerTextW=width-(wide?285f:295f);
             Place(heading.rectTransform,16f,6f,
                 headerTextW,wide?40f:48f);
             Place(subheading.rectTransform,16f,wide?44f:56f,
@@ -1217,8 +1217,8 @@ namespace Eldoria.UI.RoyalGold.V2
 
             float leftW=wide?(width-gap)*.58f:width;
             float rightW=wide?width-leftW-gap:width;
-            float heroH=wide?bodyH*.53f:bodyH*.38f;
-            float troopH=wide?bodyH-heroH:bodyH*.34f;
+            float heroH=wide?bodyH*.53f:bodyH*.34f;
+            float troopH=wide?bodyH-heroH:bodyH*.28f;
             float summaryH=wide?bodyH:bodyH-heroH-troopH-gap;
             Place(left,x,bodyY,leftW,heroH+troopH);
             Place(right,wide?x+leftW+gap:x,
@@ -1372,9 +1372,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     Place(marchReferencePreview,statsW+4f,6f,
                         insetW-8f,rh-12f);
                     Place(marchReferenceScene.rectTransform,6f,6f,
-                        insetW-20f,rh-58f);
-                    Place(marchReferenceCaption.rectTransform,6f,rh-55f,
-                        insetW-20f,38f);
+                        insetW-20f,rh-82f);
+                    Place(marchReferenceCaption.rectTransform,6f,rh-75f,
+                        insetW-20f,65f);
                     marchReferenceCaption.fontSize=18;
                 }
             }
