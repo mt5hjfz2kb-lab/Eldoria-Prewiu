@@ -479,6 +479,7 @@ namespace Eldoria.UI.RoyalGold.V2
             marchTroopSurface=Rect("March / live troop order cartouche",left);
             RoyalGoldV41SourceArt.Surface(marchTroopSurface,"blue-panel",14);
             marchTroopSurface.SetAsFirstSibling();
+            RoyalGoldV41MarchArt.DressTroopSurface(marchTroopSurface);
             // Small opaque cartouches, not a second full-height blue pane:
             // live military text must remain legible against the stone courtyard.
             marchSummaryBacking=Frame("March / statistics title cartouche",right,false);
@@ -487,6 +488,7 @@ namespace Eldoria.UI.RoyalGold.V2
             summaryPaper.raycastTarget=false;
             summaryPaper.rectTransform.SetAsFirstSibling();
             marchSummaryBacking.SetAsFirstSibling();
+            RoyalGoldV41MarchArt.DressSummary(marchSummaryBacking);
             marchStatusBacking=Frame("March / status parchment cartouche",right,false);
             var statusPaper=RoyalGoldV41SourceArt.Surface(marchStatusBacking,"blue-panel",14);
             statusPaper.color=new Color(.95f,.94f,.88f,.86f);
@@ -503,7 +505,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 tileFrame.Primary=false;
                 tileFrame.color=new Color(.94f,.79f,.47f,.88f);
                 var surface=RoyalGoldV41SourceArt.Surface(tile,"blue-panel",14);
-                surface.color=new Color(.96f,.94f,.87f,.77f);
+                // Small independent metric badges, rather than opaque slabs.
+                surface.color=new Color(.94f,.91f,.82f,.57f);
                 surface.raycastTarget=false;
                 surface.rectTransform.anchorMin=Vector2.zero;
                 surface.rectTransform.anchorMax=Vector2.one;
@@ -525,6 +528,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 heroPortraitViewports[i].gameObject.AddComponent<RectMask2D>();
                 approvedHeroes[i]=RoyalGoldV41SourceArt.Surface(heroPortraitViewports[i],"aldric-face");
                 approvedHeroes[i].preserveAspect=true;
+                RoyalGoldV41MarchArt.DressHeroCard(
+                    (RectTransform)heroSlotButtons[i].transform,
+                    heroPortraitViewports[i],heroSlotLabels[i]);
             }
             var goldAction=RoyalGoldV41SourceArt.Surface((RectTransform)action.transform,"gold-button",14);
             action.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
@@ -1209,26 +1215,31 @@ namespace Eldoria.UI.RoyalGold.V2
                     wide?width-lw-gap:width,wide?height:height-lh-gap);
                 Place(marchHeadingSurface,8,0,lw-16,wide?38:58);
                 Place(unitTitle.rectTransform,14,8,lw-28,wide?30:50);
-                float cardsY=wide?43:65,cardsH=Mathf.Max(60,lh*(compactLandscape?.36f:wide?.48f:.42f)),cardW=(lw-40)/3f;
+                // More room for the real troop controls below the hero gallery.
+                float cardsY=wide?43:65;
+                float cardsH=Mathf.Max(90,lh*(compactLandscape?.35f:wide?.42f:.31f));
+                float cardW=(lw-40)/3f;
                 for(int i=0;i<3;i++)
                 {
                     Place((RectTransform)heroSlotButtons[i].transform,14+i*(cardW+6),cardsY,cardW,cardsH);
-                    float portraitH=compactLandscape?Mathf.Max(40,cardsH-70):cardsH*.70f;
+                    float portraitH=compactLandscape?Mathf.Max(40,cardsH-70):cardsH*.66f;
                     var portraitSprite=approvedHeroes[i].sprite;
                     float ratio=portraitSprite?portraitSprite.rect.width/Mathf.Max(1f,portraitSprite.rect.height):1f;
-                    // Fill the portrait aperture with authentic pixels, crop only
-                    // inside its mask, and keep live names outside that aperture.
+                    // Original source always fits wholly inside its own portrait recess.
+                    // Avoid pseudo-photographic face crops for both approved heroes.
                     float apertureW=cardW-16;
                     Place(heroPortraitViewports[i],8,6,apertureW,portraitH);
-                    float portraitW=Mathf.Max(apertureW,portraitH*ratio);
-                    float portraitHeight=portraitW/ratio;
-                    // Faces sit near the upper fifth of these original portraits.
-                    // A top-aligned cover crop showed only foreheads on 844x390.
-                    float cropOffset=string.IsNullOrEmpty(heroSlots[i])?.5f:.18f;
-                    Place(approvedHeroes[i].rectTransform,(apertureW-portraitW)*.5f,
-                        -(portraitHeight-portraitH)*cropOffset,portraitW,portraitHeight);
-                    Place(heroSlotLabels[i].rectTransform,4,compactLandscape?cardsH-60:cardsH*(wide?.74f:.72f),cardW-8,compactLandscape?54:cardsH*(wide?.24f:.26f));
-                    heroSlotLabels[i].fontSize=wide?14:13;
+                    float maxW=Mathf.Max(16f,apertureW-8f);
+                    float maxH=Mathf.Max(16f,portraitH-6f);
+                    float portraitW=Mathf.Min(maxW,maxH*ratio);
+                    float portraitHeight=portraitW/Mathf.Max(.1f,ratio);
+                    Place(approvedHeroes[i].rectTransform,
+                        (apertureW-portraitW)*.5f,
+                        (portraitH-portraitHeight)*.5f,portraitW,portraitHeight);
+                    Place(heroSlotLabels[i].rectTransform,6,
+                        compactLandscape?cardsH-60:cardsH*(wide?.72f:.69f),
+                        cardW-12,compactLandscape?54:cardsH*(wide?.27f:.30f));
+                    heroSlotLabels[i].fontSize=compactLandscape?27:wide?22:32;
                     if(compactLandscape)
                     {
                         // A horizontal phone cannot support a short panoramic
@@ -1243,7 +1254,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     }
                 }
                 float rowY=cardsY+cardsH+8;
-                Place(marchTroopSurface,8,rowY-4,lw-16,lh-rowY-4);
+                // Only the order controls need enamel: expose scenic archer art.
+                Place(marchTroopSurface,lw*.31f,rowY-4,lw*.67f,lh-rowY-4);
                 Place(approvedTroopRow.rectTransform,14,rowY,lw*.29f,lh-rowY-18);
                 Place(unitDetail.rectTransform,lw*.34f,rowY,lw*.63f,wide?40:76);
                 Place(tierButton.transform as RectTransform,lw*.34f,rowY+(wide?42:84),lw*.63f,wide?32:80);
