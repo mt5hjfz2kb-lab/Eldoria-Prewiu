@@ -1490,43 +1490,13 @@ namespace Eldoria.HeroesUI
         }
         void BuildReservedTalents(float x,float y,float w,float h,bool portrait)
         {
-            // These are the three reserved visual paths in the exact approved
-            // master. No talent data, level, price or bonus exists in the host.
-            // All nodes remain disabled and create no command or save state.
+            // Owner-approved three branches / nine disabled nodes; all previous
+            // gameplay, source portraits, navigation, and saves remain untouched.
+            // Nine distinct metallic medallion sprites and a layered header,
+            // connector and ornamental nine-slice frame are authored separately.
+            // Do not use a flattened reference sheet as a clickable backdrop.
             var board=Frame("Heroes / reserved talent paths",content,x,y,w,h);
-            float gap=portrait?12f:18f,trackW=(w-32-2*gap)/3f;
-            bool compact=h<260f;
-            float noteH=compact?52f:portrait?120f:90f,trackH=h-noteH-28;
-            string[] titles={"OFENSIVA","DEFENSA","SOPORTE"};
-            Color[] accents={new Color(.76f,.24f,.12f),new Color(.17f,.51f,.90f),gold};
-            for(int path=0;path<3;path++){
-                float left=16+path*(trackW+gap);
-                var track=Frame("Reserved talent path "+titles[path],board,left,14,trackW,trackH);
-                TintFrame(track,accents[path]);
-                Label("Reserved path name",track,titles[path],6,compact?4:14,trackW-12,compact?28:56,compact?18:26,TextAnchor.MiddleCenter).color=ivory;
-                float nodeSize=compact?Mathf.Min(32f,trackW*.22f):Mathf.Min(76f,trackW*.55f,Mathf.Max(28f,(trackH-110f)/3.4f));
-                float start=compact?44f:80f;
-                float step=Mathf.Max(0f,(trackH-start-nodeSize-18f)/2f);
-                float center=trackW*.5f;
-                Surface("Path connection",track,compact?trackW*.18f:center-1.5f,start+nodeSize*.5f,compact?trackW*.64f:3,compact?3:2*step,accents[path]).GetComponent<Image>().raycastTarget=false;
-                for(int rank=0;rank<3;rank++){
-                    float nodeY=compact?start:start+rank*step;
-                    float nodeX=compact?trackW*(.18f+rank*.32f)-nodeSize*.5f:center-nodeSize*.5f;
-                    var node=Frame("Reserved talent node "+path+"-"+rank,track,nodeX,nodeY,nodeSize,nodeSize);
-                    TintFrame(node,accents[path]);
-                    var locked=node.gameObject.AddComponent<Button>();locked.interactable=false;
-                    // Native uGUI lock geometry, not a baked mock level or icon
-                    // claiming an implemented talent.
-                    float lockW=nodeSize*.42f,lockH=nodeSize*.36f,lockX=(nodeSize-lockW)*.5f;
-                    var lockColor=new Color(.58f,.57f,.54f);
-                    Surface("Lock body",node,lockX,nodeSize*.46f,lockW,lockH,lockColor).GetComponent<Image>().raycastTarget=false;
-                    Surface("Lock shackle top",node,lockX+lockW*.18f,nodeSize*.25f,lockW*.64f,nodeSize*.08f,lockColor).GetComponent<Image>().raycastTarget=false;
-                    Surface("Lock shackle left",node,lockX+lockW*.18f,nodeSize*.27f,lockW*.15f,nodeSize*.22f,lockColor).GetComponent<Image>().raycastTarget=false;
-                    Surface("Lock shackle right",node,lockX+lockW*.67f,nodeSize*.27f,lockW*.15f,nodeSize*.22f,lockColor).GetComponent<Image>().raycastTarget=false;
-                }
-            }
-            Label("Reserved talent availability",board,"TALENTOS BLOQUEADOS\nAún no disponibles en esta etapa del reino.",
-                18,h-noteH,w-36,noteH-12,compact?18:26,TextAnchor.MiddleCenter);
+            HeroesTalentArt.Build(board,w,h,portrait);
         }
         void BuildInformation(RectTransform pane,HeroState hero,float w,float h)
         {
