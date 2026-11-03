@@ -1,0 +1,26 @@
+# Eldoria / Construction Delight v1 — candidata no aprobada artísticamente
+
+## Qué implementa
+Actividad visual en los edificios reales de Valoria: polvo fino, virutas y apertura discreta al comenzar una obra; movimiento ligero durante la obra; al finalizar, polvo, motas de oro envejecido, un aro suave y un realce cálido que dura aproximadamente 1,7 segundos.
+
+El componente ValoriaConstructionDelightV1 se incorpora automáticamente al host jugable de la ciudad. Lee el mismo LocalGateway, PlayerState y modelos/colisionadores existentes. No cambia el gameplay, el HUD, el tiempo de las obras, el esquema de guardado, modelos, materiales del edificio ni las escenas. Usa partículas tradicionales y texturas procedurales pequeñas; gasto cero.
+
+La lógica ConstructionDelightState reconoce construcción inicial del aserradero y cuartel, las mejoras de Bastión y las obras/mejoras c3 de aserradero, cuartel, granero y cantera. Solo dispara la celebración cuando aumenta el nivel real. Una partida cargada a mitad de obra reanuda la actividad, pero no muestra inicio ni finalización falsos. Desde mundo 4X el efecto se mantiene pendiente durante un breve plazo y no se dibuja sobre el mapa.
+
+## Estrategia de calidad
+Inspiración: reparación medieval y renacimiento de Valoria. Colores ocre, polvo, ámbar y oro envejecido; sin flashes blancos, confeti, hologramas gigantes ni sacudidas de cámara. Los efectos se centran en las posiciones auténticas de los edificios; son de baja emisión y se suspenden al entrar al mundo.
+
+No se ha añadido un sonido sintetizado de baja calidad. Un efecto sonoro original de calidad necesitará escucha y revisión independientes.
+
+## Compatibilidad con trabajo activo
+Esta candidata se desarrolla en alcance y PR separados de la PR #136: no modifica SlicePresenter, cartelas, integración, escenas, modelos, referencias, Main ni archivos del otro propietario de Valoria. La integración final requerirá reconciliar el estado canónico y la calidad de ambos trabajos.
+
+## Pruebas obligatorias pendientes
+- Ejecutar Unity 6000.3.23f1 real y ConstructionDelightStateTests en la revisión exacta.
+- Capturar vídeo auténtico A/B en 390x844 y 844x390 de inicio, bucle y fin en aserradero y cuartel; comprobar el brillo y la geometría en la cámara aprobada.
+- Verificar mejoras c3, Bastión, carga de obra, caducidad, retorno de mundo y no alteración de guardados.
+- Comprobar que los materiales están soportados en URP WebGL y Android, sin quads rosas, overdraw molesto ni partículas ocultas por Gaussian splats.
+- Medir rendimiento de la escena y probar toque y gestos sin interferencias.
+- Rechazar y reajustar el arte si no resulta claramente bonito en movimiento; compilar no es ART APPROVED.
+
+Estado: código y pruebas en fuente; sin Unity ejecutado ni A/B visual certificado, sin merge ni publicación.
