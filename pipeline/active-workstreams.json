@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-03T11:25:00Z",
+  "updated_at": "2026-11-03",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-vigilants-depth-20261103",
+      "owner": null,
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-03",
@@ -120,15 +120,13 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VIGILANTS_NATIVE_AB_WINDOWS_RESERVED",
-      "next": "Single push to canonical PR136 of tested art candidate; Unity UI Progression Certification native will exercise real retention (guardians5/10/15/20/25, victory/defeat), mobile raycasts and saved state. Inspect current-HEAD B images before merging.",
+      "phase": "VIGILANTS_B2_NATIVE_AB_READY_OWNER_VISUAL_DECISION",
+      "next": "Native A/B from 178d12ca vs 877d7fe4 delivered. User to decide direction: retain technically green B2 as provisional candidate or revise deeper (no 8.3 artistic proof). Any further visual change must reclaim this workstream/Windows and rerun exact source captures; never merge PR137 blindly. Preserve PR136 and artifacts.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -964,7 +962,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": "chatgpt-eldoria-mailbox-v41-20261103",
+      "previous_owner": "chatgpt-eldoria-vigilants-depth-20261103",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1727,8 +1725,8 @@
           "reason": "Completed area Buzón V4.1 — reconstrucción visual aceptada provisionalmente; explicit verified handoff to next normal chat"
         }
       ],
-      "ownership_revision": 116,
-      "ownership_state": "claimed",
+      "ownership_revision": 117,
+      "ownership_state": "released",
       "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-03T11:20:00Z",
@@ -1871,7 +1869,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-11-03T11:08:24.157Z",
+      "released_at": "2026-11-03",
       "delivery_closeout": {
         "completed_at": "2026-10-29T21:34:16.588Z",
         "workstream_id": "valoria-master-plan-layered-construction-20261016",
@@ -1974,7 +1972,7 @@
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
       "owner_instruction": "2026-11-02: Hazlo tú! Eres un chat de trabajo! Reconstruct genuinely like approved March reference, remove mismatched elements and recover missing visual hierarchy.",
-      "release_reason": "Block 01 QA verified and recorded, no gameplay/art code changes, not ART_APPROVED or merge-ready.",
+      "release_reason": "Native A/B presented for explicit owner's subjective art direction; Windows idle and released.",
       "windows_resource_handoff_20261102": {
         "authorized_by": "owner current chat",
         "to_workstream": "eldoria-cli-windows-isolated-proof-20261102",
@@ -2044,14 +2042,22 @@
         "release_authorized": false
       },
       "last_completed_area": {
-        "area": "Buzón V4.1 — reconstrucción visual aceptada provisionalmente",
-        "owner": "chatgpt-eldoria-mailbox-v41-20261103",
-        "revision": 114,
-        "source_sha": "178d12ca8e6467c00b78ac96a1a86bd7511e4df8",
-        "unity_run_id": 41621181708,
-        "closed_at": "2026-11-03T11:08:24.157Z",
-        "artistic_approval": "provisional",
-        "note": "Owner accepted mailbox provisional 2026-11-03; native exact SHA SUCCESS (V4.1, three marches, EditMode, PlayMode). Preserve visual debts (empty dark space; incomplete reference fidelity and typography/materials). PR136 DRAFT; no merge/release. Documentation: docs/ui-v3/MAILBOX_V41_PROVISIONAL_ACCEPTANCE_20261103.md."
+        "area": "Camino de los Vigilantes — B2 A/B Unity native delivered, subjective artistic decision open",
+        "owner": "chatgpt-eldoria-vigilants-depth-20261103",
+        "revision": 117,
+        "source_sha": "877d7fe4d455285a15a9f1f15992b4cc1c4e2679",
+        "baseline_sha": "178d12ca8e6467c00b78ac96a1a86bd7511e4df8",
+        "unity_run_id": 41627656196,
+        "reference_run_id": 41621181708,
+        "original_retention_artifact": 13224061203,
+        "candidate_retention_artifact": 13226723271,
+        "tests": "EditMode 78/78 PASS; PlayMode 73/73 PASS; native retention/artifact success",
+        "verdict": "Candidate B2 technically certified and real A/B delivered; artistic 8.3/10 NOT PROVEN, scene still painterly flat; no main merge/publish",
+        "open_visual_issues": "subtle global landscape depth; circular portal effect on regular guardian image; geometric purple fissure lines under Spawnling",
+        "comment_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/136#issuecomment-6603240547",
+        "physical_mobile_tested": false,
+        "art_approved": false,
+        "closed_at": "2026-11-03"
       }
     },
     {
@@ -11023,8 +11029,8 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-    "status": "claimed",
-    "owner": "chatgpt-eldoria-vigilants-depth-20261103",
+    "status": "available",
+    "owner": null,
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
