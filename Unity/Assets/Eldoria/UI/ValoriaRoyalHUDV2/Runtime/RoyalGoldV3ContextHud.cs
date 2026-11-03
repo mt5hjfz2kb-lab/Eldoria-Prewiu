@@ -609,8 +609,28 @@ namespace Eldoria.UI.RoyalGold.V2
             var chronicle=Source?Source.GetComponent<RoyalGoldV2Hud>():null;
             Rect free=chronicle?chronicle.GetFreeSceneViewport():
                 Source?Source.GetVisibleSceneViewport():new Rect(.06f,.14f,.88f,.72f);
-            float topMargin=Mathf.Max(94f,
-                (1f-Mathf.Clamp01(free.yMax))*safe.rect.height+12f);
+            // Horizontal-conditional exclusion: a small upper-left quest
+            // never forbids an unrelated countdown above a right-hand roof.
+            // Read the live manuscript's four corners in the SAME safe-local
+            // coordinate space as the actual projected building hotspot.
+            float topMargin=Mathf.Max(105f,safe.rect.height*.12f);
+            if(chronicle&&chronicle.ChronicleObjectiveVisible&&
+                chronicle.ChronicleObjectiveRect)
+            {
+                var mission=chronicle.ChronicleObjectiveRect;
+                var worldCorners=new Vector3[4];mission.GetWorldCorners(worldCorners);
+                float left=float.PositiveInfinity,right=float.NegativeInfinity;
+                float bottom=float.PositiveInfinity;
+                foreach(var corner in worldCorners)
+                {
+                    var local=safe.InverseTransformPoint(corner);
+                    left=Mathf.Min(left,local.x);right=Mathf.Max(right,local.x);
+                    bottom=Mathf.Min(bottom,local.y);
+                }
+                if(screen.x+width*.5f>=left-8f&&
+                    screen.x-width*.5f<=right+8f)
+                    topMargin=Mathf.Max(topMargin,safe.rect.yMax-bottom+12f);
+            }
             float bottomMargin=Mathf.Max(88f,
                 Mathf.Clamp01(free.yMin)*safe.rect.height+10f);
             var center=FitToSafe(screen,width,height,safe,

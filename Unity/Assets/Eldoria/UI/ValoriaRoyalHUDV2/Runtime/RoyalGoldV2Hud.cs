@@ -53,6 +53,11 @@ namespace Eldoria.UI.RoyalGold.V2
         public RoyalButton ChronicleBuildingAction => buildingAction;
         public RoyalButton ChronicleBuildingClose => buildingClose;
         public RectTransform ChronicleBuildingRect => buildingCard;
+        // Real measured objective bounds for spatially-aware city timer placement.
+        // A tiny top-left manuscript must not exclude the entire screen width.
+        public RectTransform ChronicleObjectiveRect => objectiveCard;
+        public bool ChronicleObjectiveVisible =>
+            objectiveCard&&objectiveGroup&&objectiveGroup.alpha>.01f;
         public bool ChronicleBuildingActionVisible => ChronicleIllustratedBuildingVisible &&
             buildingActionGroup && buildingActionGroup.blocksRaycasts &&
             Source && Source.Building && !Source.Building.OperationActive;
