@@ -120,15 +120,13 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "TRAINING_PROVISIONAL_ACCEPTED_FINAL_NATIVE_PENDING",
-      "next": "Owner accepted Training 408f0a1 provisionally. No further art edits now. Verify exact native run 41597116608 final result before safe handoff, then release Windows and same canonical workstream via protocol. Two visual debts remain: duplicated alpha archer T1/T2 and excess dark horizontal order space. PR136 stays DRAFT; no merge, release or ART_APPROVED.",
+      "phase": "TRAINING_PROVISIONAL_ACCEPTED_PAUSED_FOR_OWNER_PRIORITY",
+      "next": "Preserve Training art source unchanged, final exact PR136 SHA and provisional owner's visual acceptance; resume only after separate pilot releases Windows and registrar confirms availability.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1707,9 +1705,15 @@
           "ownership_revision": 110,
           "transferred_at": "2026-11-03",
           "reason": "Owner explicitly requests further corrections and 4-resolution A/B for Training in a new chat. Prior exact PR136 native certification 41551164177 SUCCESS. No live incompatible PR136 workflow."
+        },
+        {
+          "owner": "chatgpt-eldoria-training-art-ab-20261103",
+          "revision": 111,
+          "resource_released_at": "2026-11-03",
+          "reason": "Owner reprioritizes one isolated high-impact visual proof. Training is provisionally accepted, full native run 41597116608 SUCCESS for art-code-equivalent HEAD; retain PR136 ownership and pending exact-head closeout. All Actions jobs completed. No file ownership transferred."
         }
       ],
-      "ownership_revision": 111,
+      "ownership_revision": 112,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -2009,7 +2013,7 @@
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
       "owner": "chatgpt-eldoria-spawnling-presence-proof-20261103",
-      "ownership_revision": 20,
+      "ownership_revision": 21,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "art/issue95-spawnling-presence-proof-20261103",
@@ -2037,18 +2041,20 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "ISSUE95_SPAWNLING_PRESENCE_ART_AB_PROOF",
+      "phase": "ISSUE95_SPAWNLING_VISUAL_NATIVE_AB_CAPTURE",
       "dependency": "Valoria training still owns heavy Windows runner and canonical PR136; do not run Unity concurrently, edit ValoriaIntegratedWorld or #136. Only existing Spawnling source and its tests in isolated issue95 branch.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Build 1.5x visual presence candidate on actual Spawnling V4, benchmark near/regional authentic Unity camera against same source and validate bounds, animations, gameplay, no release unless approved.",
+      "next": "Run same-scene Unity A/B near/regional on branch art/issue95-spawnling-presence-proof-20261103 and reject or retain based on visual plus functionality. No main merge, no release.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
@@ -2118,6 +2124,12 @@
           "ownership_revision": 19,
           "transferred_at": "2026-11-03",
           "reason": "Owner requested a single high-impact, falsifiable visual intervention using prior audit; focus existing approved V4 Spawnling presence calculation only, no model/animation/gameplay replacement, no Windows until release."
+        },
+        {
+          "owner": "chatgpt-eldoria-spawnling-presence-proof-20261103",
+          "revision": 20,
+          "resource_claimed_at": "2026-11-03",
+          "reason": "Owner-directed high-impact Spawnling presence pilot; no running jobs, previous Unity training run completed successfully; isolated issue95 branch only, preserve all gameplay/PR136."
         }
       ],
       "write_scope_released": false,
