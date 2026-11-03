@@ -149,6 +149,36 @@ namespace Eldoria.Tests
             }
         }
 
+        [TestCase(1,0)]
+        [TestCase(5,5)]
+        [TestCase(10,10)]
+        [TestCase(15,0)]
+        [TestCase(20,20)]
+        [TestCase(25,25)]
+        public void GuardianReliefIsOriginalNonPhotographicArtAndNeverCapturesTaps(
+            int actualStage,int expectedRelief)
+        {
+            var host=new GameObject("Authentic royal manuscript",typeof(RectTransform));
+            try
+            {
+                var relief=new GameObject("Guardian / embossed visual only",
+                    typeof(RectTransform),typeof(CanvasRenderer),
+                    typeof(RoyalGoldV3GuardianReliefGraphic));
+                relief.transform.SetParent(host.transform,false);
+                var graphic=relief.GetComponent<RoyalGoldV3GuardianReliefGraphic>();
+                graphic.raycastTarget=false;
+                graphic.SetStage(actualStage);
+                Assert.That(graphic.StageStep,Is.EqualTo(expectedRelief));
+                Assert.That(graphic.raycastTarget,Is.False);
+                Assert.That(relief.GetComponent<RawImage>(),Is.Null,
+                    "The actual guardian must not be another pasted photographic rectangle");
+                Assert.That(host.GetComponentsInChildren<RawImage>(true).Length,Is.Zero);
+                Assert.That(host.GetComponentsInChildren<Canvas>(true).Length,Is.Zero);
+                Assert.That(host.GetComponentsInChildren<EventSystem>(true).Length,Is.Zero);
+            }
+            finally { Object.DestroyImmediate(host); }
+        }
+
         [TestCase(1)]
         [TestCase(5)]
         [TestCase(10)]
