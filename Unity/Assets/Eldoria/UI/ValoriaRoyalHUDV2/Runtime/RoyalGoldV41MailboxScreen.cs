@@ -323,7 +323,12 @@ namespace Eldoria.UI.RoyalGold.V2
             // Portrait and desktop fit five messages. A very short mobile
             // landscape page fits only TWO readable cards; pagination keeps
             // the full list and its authoritative order.
-            currentPageSize=wide && h*scale<600f ? 2 : 5;
+            int pageSize=wide && h*scale<600f ? 2 : 5;
+            if(pageSize!=currentPageSize)
+                offset=(offset/pageSize)*pageSize;
+            currentPageSize=pageSize;
+            offset=Mathf.Clamp(offset,0,
+                Mathf.Max(0,(Mathf.Max(0,total-1)/currentPageSize)*currentPageSize));
             int count=VisibleCountFor(total,offset,currentPageSize);
             bool selected=!string.IsNullOrEmpty(selectedId)&&
                 mail?.Messages?.Any(m=>m.EventId==selectedId)==true;
@@ -503,7 +508,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
             }
             navLabel.Put(total==0?"No hay mensajes":
-                total<=5?"Mostrando "+list.Count+" de "+total+" mensajes":
+                total<=currentPageSize?"Mostrando "+list.Count+" de "+total+" mensajes":
                 "Mensajes "+(offset+1)+"–"+(offset+list.Count)+" de "+total);
             var selected=mail?.Messages?.Find(m=>m.EventId==selectedId);
             detailViewport.gameObject.SetActive(selected!=null);
@@ -520,7 +525,8 @@ namespace Eldoria.UI.RoyalGold.V2
             // combat coefficients, secret formulas or optimal strategies.
             // Rewards were already settled by the gateway; reading never pays.
             detail.color=new Color(.19f,.15f,.115f);
-            detail.Put(selected.Title.ToUpperInvariant()+"\n"+selected.Subtitle+
+            detail.Put(selected.Title.ToUpperInvariant()+"\n"+
+                (battle==null?selected.Subtitle:"Encuentro: "+TargetName(battle.TargetId))+
                 (battle==null?"":"\n\n"+(battle.Won?"RESULTADO · VICTORIA":"RESULTADO · DERROTA")+
                 "\nHéroes: "+HeroName(battle.HeroId)+
                 "\nTropas enviadas: "+battle.Troops+
