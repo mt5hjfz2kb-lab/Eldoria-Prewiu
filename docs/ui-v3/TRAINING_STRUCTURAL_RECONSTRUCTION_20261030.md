@@ -75,3 +75,28 @@ Downloaded full regression evidence for0fdaa4c3:68/68EditMode;72/73PlayMode, zer
 Exact native artifact13013775424 (SHA256 d3c0845ce334dc6797c661a261e6f9021d319aad66d593e1bf2bda4334c48b24) has functional PASS and art_approved=false. Training square has restored full-height figure, grounded courtyard and live roster. Compact March now shows complete portraits beside the live names; the rejected strip crop is gone. Talents has three real visual paths/nine disabled nodes but still lacks the approved material/environment finish. Training phone and compact landscape reveal identity text crossing the archer's face/silhouette. This candidate explicitly separates the identity column from the figure: portrait figure moves into the left corridor, text begins at 67% width; compact landscape text begins at 36% of full usable width instead of deriving from a narrow sprite. Full labels and descriptions remain, with sufficient vertical allocation; no font shrink, text removal or validation weakening.
 
 The full regression for5a339855 is still running at authoring time. Its result must not certify this successor. Personal Context reports unavailable; no historical decision resolving v14 pale-haired Lyra versus PR127 brown-haired model was recovered. Preserve both and do not substitute the unvalidated model or spend credits.
+
+
+## 2026-11-03 — Entrenamiento: aceptación artística PROVISIONAL del propietario
+
+**Decisión literal del propietario:** «Acepto provisionalmente la nueva pantalla de Entrenamiento de Eldoria. Conserva la candidata y documenta sus defectos artísticos pendientes».
+
+### Candidata conservada / alcance exacto
+
+- PR canónica: [#136](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/136), rama `fix/player-feedback-context-ui-20261030`, commit de pantalla presentado al propietario **`408f0a1f25e3e170bff7a4fa34affe7a0585387c`**. Mantener rama DRAFT y sin merge/publicación en virtud de esta aceptación.
+- La candidata conserva arquero aislado con alfa, patio por capas, cartela breve de identidad, selectores reales T1/T2, cantidad +/- y deslizador, costes reales de madera/piedra, duración, estado y orden de entrenar. No crea tiers nuevos ni modifica precios, desbloqueos, progreso, recompensas o guardados.
+- A/B visual presentado al propietario: **A `328c4bb7789f7da5a6b22ea9a63da48bce2df3e7` vs B `408f0a1f25e3e170bff7a4fa34affe7a0585387c`**, capturas Unity genuinas vertical y horizontal a 390×844, 900×1600, 844×390 y 1600×900 (no mockup ni nota subjetiva automática). Comparación por referencia `entrenamiento_recorte_lamina_APROBADO.png` / SHA256 `a110ba0ffd2a08fa4976c488f87e624fa5601fe3f36b223ee82d19f306adbadc`.
+- Prueba nativa fuente exacta: [run 41597116608](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41597116608), artifact V4.1 `13212698652`; **V4.1 controles/capturas PASS**, y tres marchas PASS. La regresión general del mismo run estaba todavía `in_progress` en el momento de documentar; verificar su conclusión antes de usar «certificación completa SUCCESS».
+
+### Defectos artísticos pendientes — NO CERRADOS
+
+1. **Tarjetas T1/T2 sin ilustración individual diferenciada:** ambas usan el retrato del mismo arquero aislado con distintos estados visuales. Funcionalmente corresponden a tiers reales, pero la reutilización parece duplicación; conservar el desbloqueo narrativo de T2 en Cuartel IV, sin representar una tropa T3+ ni inventar armas/unidades. Corregir con ilustración de fuente validada o variación legítima que preserve identidad y alfa, no con una foto recortada de la pantalla o texto horneado.
+2. **Horizontal: superficie oscura vacía todavía excesiva:** el módulo de órdenes es más integrado y legible que la versión A, pero el espacio sobrante impide igualar la jerarquía artística de la referencia. Ajustar proporciones de escena/arquero/selección/órdenes según 844×390 y 1600×900, sin reducir tipografía hasta hacerla ilegible ni ocultar costes y tiempo.
+3. **Fidelidad de acabado aún provisional:** no hay verificación de objetivo subjetivo >=8,2/10 ni aprobación artística final. Revisar coherencia de materiales, iluminación, contacto entre figura y patio y continuidad del dorado/pergamino tras cualquier nueva pasada. La mejora no autoriza regenerar modelos, gastar créditos, crear mecánicas ni publicar build.
+
+### Siguiente relevo / condiciones de cierre
+
+- Este bloque visual se **acepta provisionalmente y se conserva como baseline para el siguiente bloque**. No reabrir ni descartar sus mejoras por defecto.
+- Al recibir una nueva orden artística, retomar exactamente el último HEAD y este A/B, modificar solamente la composición necesitada, y exigir capturas **reales del nuevo SHA** en cuatro resoluciones, raycasts/controles, costes, timers, guardado y recolección, sin certificación heredada.
+- La aceptación provisional no equivale a `ART_APPROVED=true`, no es autorización para merge, publicación Android/WebGL ni prueba en dispositivo físico. Mantener `art_approved=false` en los registros.
+- Antes del relevo operativo definitivo, comprobar el run nativo completo, documentar resultado final y liberar Windows y la titularidad usando `docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md` y el registro vivo de `main`; no liberar por asumir que la cola está vacía.
