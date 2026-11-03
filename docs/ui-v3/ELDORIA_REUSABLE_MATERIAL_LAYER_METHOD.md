@@ -19,12 +19,12 @@ La técnica reutilizable no es «poner más efectos», sino hacer una **jerarqu�
 ## Exploradores — implementación candidata
 
 Recurso nativo: \`RoyalGoldV3ScoutPaperDepth.cs\`.
-Tres módulos visuales independientes *por cada contrato real*:
+Cuatro módulos visuales independientes *por cada contrato real*:
 - \`DeskContact\`: sombras de apoyo y canto de papel debajo del pergamino nine-slice existente.
 - \`InsetUnderlay\`: lecho oscuro y marco de cuero/piedra detrás de la miniatura ilustrada.
 - \`InsetLip\`: reborde diferenciado e irregularidad de esquinas que oculta sutilmente la unión con la miniatura.
   
-Los tres modos se alimentan únicamente de \`ScoutOrder.Kind\`, \`StartedUtcTicks\` y \`EndsUtcTicks\`; estados listo, en marcha y cobrable existentes. El \`RoyalGoldV3ScoutContractGraphic\` conserva el medallón y la textura de sello real; \`scout-parchment-v3\` sigue siendo la hoja original nine-slice; \`scout-mission-vignettes-v4\` conserva UV y escala de imagen por tipo. Botones, gateway y economía no se tocan.
+Las cuatro capas visuales se alimentan únicamente de \`ScoutOrder.Kind\`, \`StartedUtcTicks\` y \`EndsUtcTicks\`; estados listo, en marcha y cobrable existentes. El \`RoyalGoldV3ScoutContractGraphic\` conserva el medallón y la textura de sello real; \`scout-parchment-v3\` sigue siendo la hoja original nine-slice; \`scout-mission-vignettes-v4\` conserva UV y escala de imagen por tipo. Botones, gateway y economía no se tocan.
 
 ## Investigación #137 — NO promover por accidente
 
@@ -35,3 +35,7 @@ La PR #137 (\`68cc0508a47facd99e79a4e8ac566a05ad7b4717\`) propuso tres rutas: NO
 Tres contratos distintos visualmente, miniaturas reales y medallones propios; estados de preparado/enviado/retornado y cobro; sin raycasts ocultos; sin recortes de texto; 1600×900, 900×1600, 390×844, 844×390; tres envíos/cobros UTC idempotentes, reload real, misma partida y QA del mismo SHA. Entregar capturas A/B legibles *en el chat*, no solo ZIP. PR #136 DRAFT, sin publicación ni merge; si el arte sigue por debajo del objetivo, conservar evidencia y reabrir mejora, no afirmar nota.
 
 **Protocolo de relevo:** leer este archivo junto a \`pipeline/active-workstreams.json\`, \`docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md\`, \`SESSION_HANDOFF.md\`, PR #136 y #137 antes de editar. No reconstruir el método desde cero.
+
+## Segunda pasada (técnica de macro-material)
+
+Una primera compilación con nueve capas (tres por contrato) preservó controles y aportó profundidad principalmente al encastre de las pinturas, pero el canto de la hoja seguía demasiado plano en móvil. En vez de añadir un filtro a toda la mesa, se añadió la cuarta capa PaperBevel con luz rasante en el papel, asiento del medallón y cartera de cuero bajo las tres hojas. A/B y juicio artístico deben registrarse **solo** después de Unity nativa, sin confundir las capturas de la pasada inicial con la segunda.

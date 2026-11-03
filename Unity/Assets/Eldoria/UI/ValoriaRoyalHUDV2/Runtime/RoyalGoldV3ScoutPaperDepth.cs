@@ -17,7 +17,7 @@ namespace Eldoria.UI.RoyalGold.V2
     [DisallowMultipleComponent]
     public sealed class RoyalGoldV3ScoutPaperDepth : MaskableGraphic
     {
-        public enum MaterialLayer { DeskContact, InsetUnderlay, InsetLip }
+        public enum MaterialLayer { DeskContact, PaperBevel, InsetUnderlay, InsetLip }
         public MaterialLayer Role;
         public int Kind { get; private set; }
         public bool InProgress { get; private set; }
@@ -101,6 +101,21 @@ namespace Eldoria.UI.RoyalGold.V2
             v.AddVert(xy,c,Vector2.zero);
         }
 
+        static void MedallionSeat(VertexHelper v,Vector2 center,float radius)
+        {
+            int k=v.currentVertCount;
+            v.AddVert(center+new Vector2(1.5f,-2.5f),
+                Ink(.09f,.07f,.06f,.43f),Vector2.zero);
+            for(int n=0;n<=22;n++)
+            {
+                float t=n*Mathf.PI*2f/22f;
+                var at=center+new Vector2(
+                    Mathf.Cos(t)*radius,Mathf.Sin(t)*radius*.72f);
+                v.AddVert(at,Ink(.05f,.04f,.03f,.03f),Vector2.zero);
+                if(n>0)v.AddTriangle(k,k+n,k+n+1);
+            }
+        }
+
         protected override void OnPopulateMesh(VertexHelper v)
         {
             v.Clear();
@@ -131,6 +146,19 @@ namespace Eldoria.UI.RoyalGold.V2
                     Contour(v,r,dx,dy,Ink(.015f,.012f,.009f,a),
                         Ink(.045f,.028f,.014f,a*.48f));
                 }
+                // B2 macro material: a dark, visible leather portfolio sits
+                // BELOW each real paper sheet, not a flat overlay on the map.
+                // Its real protruding edge and shadow change the silhouette.
+                float side=-5.6f+(Kind-1)*1.2f;
+                Contour(v,r,side,-7.7f,
+                    Ink(.075f,.051f,.036f,.92f),
+                    Ink(.23f,.145f,.075f,.79f));
+                Box(v,x+side+1f,y+16f,4.5f,h-34f,
+                    Ink(edge.r,edge.g,edge.b,.96f),
+                    Ink(.64f,.42f,.20f,.68f));
+                Box(v,x+15f,y-9f,w-30f,5f,
+                    Ink(.085f,.06f,.04f,.86f),
+                    Ink(.25f,.17f,.09f,.82f));
                 // Actual paper thickness: warmer upper lip, dark lower face.
                 Box(v,x+13f,y-5.1f,w-25f,7.5f,
                     Ink(.22f,.13f,.07f,.89f),Ink(.59f,.40f,.23f,.68f));
@@ -143,6 +171,36 @@ namespace Eldoria.UI.RoyalGold.V2
                 Box(v,x+11f,y+h-9f,w-22f,3f,
                     Ink(edge.r,edge.g,edge.b,.27f),
                     Ink(lip.r,lip.g,lip.b,.23f));
+                return;
+            }
+
+            if(Role==MaterialLayer.PaperBevel)
+            {
+                // Upper and lower rolled-paper edges have deliberately
+                // DIFFERENT physical responses to the cartographer lamp.
+                // Thin enough to leave all live ink/reward glyphs readable.
+                float thickness=Mathf.Clamp(Mathf.Min(w,h)*.033f,2.5f,8.5f);
+                Box(v,x+17f,y+h-thickness-3f,w-34f,thickness,
+                    Ink(.75f,.52f,.26f,.10f),
+                    Ink(1f,.85f,.53f,.40f));
+                Box(v,x+17f,y+3f,w-34f,thickness*.83f,
+                    Ink(.27f,.15f,.08f,.37f),
+                    Ink(.60f,.42f,.24f,.10f));
+                Box(v,x+4f,y+14f,thickness*.62f,h-28f,
+                    Ink(.71f,.46f,.21f,.24f),
+                    Ink(1f,.89f,.62f,.18f));
+                Box(v,x+w-7f,y+15f,thickness*.63f,h-30f,
+                    Ink(.22f,.12f,.065f,.36f),
+                    Ink(.74f,.50f,.25f,.18f));
+                // Each real embossed medallion now owns a contact shadow,
+                // centred on the original live/painted seal geometry.
+                float radius=Mathf.Clamp(w*.070f,17f,30f);
+                MedallionSeat(v,new Vector2(x+w*.5f,y+h-22f),radius+8f);
+                // The same upper edge gleams differently by mission family;
+                // a subtle coloured bookbinder's thread, not a new ability.
+                Box(v,x+16f,y+h-9f,w-32f,1.6f,
+                    Ink(lip.r,lip.g,lip.b,.50f),
+                    Ink(lip.r,lip.g,lip.b,.28f));
                 return;
             }
 

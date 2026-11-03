@@ -54,6 +54,7 @@ namespace Eldoria.UI.RoyalGold.V2
         // Independent tactile material assembly. Never treated as a click
         // target or source of scouting mechanics/state.
         readonly RoyalGoldV3ScoutPaperDepth[] scoutContact=new RoyalGoldV3ScoutPaperDepth[3];
+        readonly RoyalGoldV3ScoutPaperDepth[] scoutBevel=new RoyalGoldV3ScoutPaperDepth[3];
         readonly RoyalGoldV3ScoutPaperDepth[] scoutInsetUnder=new RoyalGoldV3ScoutPaperDepth[3];
         readonly RoyalGoldV3ScoutPaperDepth[] scoutInsetLip=new RoyalGoldV3ScoutPaperDepth[3];
         readonly string[] scoutIds=new string[3];
@@ -636,6 +637,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     Stretch(paper);
                     paper.SetAsFirstSibling();
                 }
+                scoutBevel[i]=RoyalGoldV3ScoutPaperDepth.Install(cell,
+                    "Scout / raised paper grain, medallion seat and rolled edge",
+                    RoyalGoldV3ScoutPaperDepth.MaterialLayer.PaperBevel,i);
                 scoutInsetUnder[i]=RoyalGoldV3ScoutPaperDepth.Install(cell,
                     "Scout / inset picture stone and leather underlay",
                     RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetUnderlay,i);
@@ -663,10 +667,11 @@ namespace Eldoria.UI.RoyalGold.V2
                     var sheet=cell.Find("Reference parchment / visual only");
                     if(sheet)sheet.SetSiblingIndex(1);
                 }
-                scoutInsetUnder[i].transform.SetSiblingIndex(2);
-                scoutThumbnails[i].transform.SetSiblingIndex(3);
-                scoutInsetLip[i].transform.SetSiblingIndex(4);
-                scoutArt[i].transform.SetSiblingIndex(5);
+                scoutBevel[i].transform.SetSiblingIndex(2);
+                scoutInsetUnder[i].transform.SetSiblingIndex(3);
+                scoutThumbnails[i].transform.SetSiblingIndex(4);
+                scoutInsetLip[i].transform.SetSiblingIndex(5);
+                scoutArt[i].transform.SetSiblingIndex(6);
                 cell.name="Scout / live contract "+(i+1);
             }
             footer=Text(panel,"No artificial notifications",15,Muted);
@@ -1675,6 +1680,7 @@ namespace Eldoria.UI.RoyalGold.V2
                         // All three layers inherit the genuine persisted
                         // order's kind and state. No fake or derived missions.
                         scoutContact[i]?.SetLiveState(order.Kind,underway,completed);
+                        scoutBevel[i]?.SetLiveState(order.Kind,underway,completed);
                         scoutInsetUnder[i]?.SetLiveState(order.Kind,underway,completed);
                         scoutInsetLip[i]?.SetLiveState(order.Kind,underway,completed);
                         if(scoutArt[i].Kind!=order.Kind||

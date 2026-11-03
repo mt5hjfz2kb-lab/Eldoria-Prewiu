@@ -26,6 +26,9 @@ namespace Eldoria.Tests
                     var paper=RoyalGoldV3ScoutPaperDepth.Install(parent,
                         "Scout / physical parchment-to-desk shadow "+kind,
                         RoyalGoldV3ScoutPaperDepth.MaterialLayer.DeskContact,kind);
+                    var bevel=RoyalGoldV3ScoutPaperDepth.Install(parent,
+                        "Scout / raised paper grain and medallion seat "+kind,
+                        RoyalGoldV3ScoutPaperDepth.MaterialLayer.PaperBevel,kind);
                     var under=RoyalGoldV3ScoutPaperDepth.Install(parent,
                         "Scout / inset picture stone and leather underlay "+kind,
                         RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetUnderlay,kind);
@@ -37,7 +40,9 @@ namespace Eldoria.Tests
                         Is.EqualTo(RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetUnderlay));
                     Assert.That(rim.Role,
                         Is.EqualTo(RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetLip));
-                    foreach(var layer in new[]{paper,under,rim})
+                    Assert.That(bevel.Role,
+                        Is.EqualTo(RoyalGoldV3ScoutPaperDepth.MaterialLayer.PaperBevel));
+                    foreach(var layer in new[]{paper,bevel,under,rim})
                     {
                         Assert.That(layer.raycastTarget,Is.False);
                         Assert.That(layer.mainTexture,
@@ -55,7 +60,7 @@ namespace Eldoria.Tests
                     }
                 }
                 Assert.That(holder.GetComponentsInChildren<RoyalGoldV3ScoutPaperDepth>()
-                    .Length,Is.EqualTo(9));
+                    .Length,Is.EqualTo(12));
                 Assert.That(holder.GetComponentsInChildren<Canvas>(true).Length,
                     Is.Zero);
                 Assert.That(holder.GetComponentsInChildren<EventSystem>(true).Length,
