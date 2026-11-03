@@ -1108,20 +1108,23 @@ namespace Eldoria.UI.RoyalGold.V2
                 float actionTop=ih-(height>width?114f:compactLandscape?84f:106f);
                 TL(chapter.rectTransform,26f,10f,iw-52f,47f);
                 TL(opponent.rectTransform,18f,60f,textWidth,95f);
-                TL(formation.rectTransform,18f,163f,textWidth,46f);
-                TL(reward.rectTransform,18f,214f,textWidth,67f);
-                float idleTop=Mathf.Min(296f,Mathf.Max(272f,actionTop-110f));
+                TL(formation.rectTransform,18f,158f,textWidth,70f);
+                TL(reward.rectTransform,18f,231f,textWidth,74f);
+                float idleTop=Mathf.Min(317f,Mathf.Max(302f,actionTop-119f));
                 TL(passive.rectTransform,18f,idleTop,textWidth,
-                    Mathf.Max(58f,Mathf.Min(100f,actionTop-idleTop-6f)));
-                if(battleFeedback.gameObject.activeSelf)
-                    TL(battleFeedback.rectTransform,18f,
-                        Mathf.Max(376f,actionTop-126f),textWidth,
-                        Mathf.Max(38f,Mathf.Min(98f,actionTop-386f)));
+                    Mathf.Max(66f,Mathf.Min(105f,actionTop-idleTop-8f)));
+                // Render may activate battle feedback AFTER Layout has run.
+                // Always constrain its full message to the text column so
+                // that it never paints across the authentic Engendro.
+                TL(battleFeedback.rectTransform,18f,
+                    Mathf.Max(384f,actionTop-128f),textWidth,
+                    Mathf.Max(42f,Mathf.Min(96f,actionTop-416f)));
                 chapter.fontSize=height>width?29:compactLandscape?23:30;
                 opponent.fontSize=height>width?27:compactLandscape?22:26;
-                formation.fontSize=height>width?25:compactLandscape?20:23;
-                reward.fontSize=height>width?24:compactLandscape?20:23;
-                passive.fontSize=height>width?23:compactLandscape?19:21;
+                formation.fontSize=height>width?26:compactLandscape?20:23;
+                // Real 390px mobile -> .4875 room scale: min ~12.7px.
+                reward.fontSize=height>width?26:compactLandscape?20:23;
+                passive.fontSize=height>width?26:compactLandscape?19:21;
                 battleFeedback.fontSize=height>width?23:compactLandscape?18:21;
             }
 
@@ -1448,12 +1451,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 string heroName=selectedHero=="lyra"?"Lyra":
                     selectedHero=="aldric+lyra"?"Aldric + Lyra":"Aldric";
                 formation.Put(heroName+" · "+selectedTroops.Total+"/"+capacity+
-                    " tropas · Poder "+marchStats.Power);
+                    " tropas\nPoder "+marchStats.Power);
                 reward.Put("Al vencer: "+(30+stage*2)+" madera · "+(10+stage)+
                     " piedra · "+(20+stage/5*3)+" XP");
                 int xp=EarlyRetentionRules.UnclaimedIdleXp(p,now());
-                string xpSummary=height>width||compactLandscape
-                    ?"EXP. "+xp+" XP · Máx. 8 h\n":"EXP. ACUMULADA: "+xp+" XP / máximo 8 h\n";
+                // Preserve true XP and cap while guaranteeing the original
+                // mobile font never shrinks below 12 physical pixels.
+                string xpSummary="EXP. "+xp+" XP · Máx. 8 h\n";
                 passive.Put(xpSummary+
                     "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+
                     " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"));

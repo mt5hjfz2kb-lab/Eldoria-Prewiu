@@ -164,6 +164,13 @@ namespace Eldoria.Tests
                 Assert.That(light.CurrentStage,Is.EqualTo(15));
                 Assert.That(light.CoverUv,
                     Is.EqualTo(new Rect(.10f,.12f,.73f,.76f)));
+                // Recycled live-stage markers move the illumination without
+                // adding a second node or anything interactable.
+                light.SetState(new Rect(.10f,.12f,.73f,.76f),
+                    19,20,new Vector2(39f,56f));
+                Assert.That(light.LastCleared,Is.EqualTo(19));
+                Assert.That(light.CurrentStage,Is.EqualTo(20));
+                Assert.That(light.raycastTarget,Is.False);
                 Assert.That(room.GetComponentsInChildren<Canvas>(true).Length,
                     Is.Zero);
                 Assert.That(room.GetComponentsInChildren<EventSystem>(true).Length,
