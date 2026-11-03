@@ -60,8 +60,12 @@ namespace Eldoria.UI.RoyalGold.V2
         };
         readonly RawImage[] planeImages=new RawImage[6];
         readonly RectTransform[] planeRects=new RectTransform[6];
-        bool materialized,attemptedMaterialization;
+        bool materialized,attemptedMaterialization,structuralB11;
         public bool HasMaterializedDepth => materialized;
+        // The original photograph is NEVER used as the background when this
+        // proof is true. Six distinct painterly pieces sit above a backplate
+        // whose removed silhouettes are independently inpainted, no duplicates.
+        public bool HasStructuralB11 => materialized && structuralB11;
         public int MaterializedPlaneCount => materialized ? planeImages.Length : 0;
         public Rect SourceUvForPlane(int index) => DepthUv[Mathf.Clamp(index,0,DepthUv.Length-1)];
 
@@ -115,12 +119,32 @@ namespace Eldoria.UI.RoyalGold.V2
             // the Scouts or an arbitrary 8x8 fixture.
             if(!artwork || artwork.name!="vigilants-painterly-v2")return;
             var textures=new Texture2D[DepthNames.Length];
-            for(int i=0;i<textures.Length;i++)
+            var clean=Resources.Load<Texture2D>(
+                "EldoriaRetention/DepthB11/clean_backdrop");
+            bool useB11=clean && clean.width==artwork.width &&
+                clean.height==artwork.height;
+            if(useB11)
             {
-                textures[i]=Resources.Load<Texture2D>(
-                    "EldoriaRetention/DepthB10/"+DepthNames[i]);
-                if(!textures[i])return; // all-or-nothing, never partial cut-outs
+                for(int i=0;i<textures.Length;i++)
+                {
+                    textures[i]=Resources.Load<Texture2D>(
+                        "EldoriaRetention/DepthB11/"+DepthNames[i]);
+                    if(!textures[i]){ useB11=false; break; }
+                }
             }
+            if(!useB11)
+            {
+                // Legacy certified source remains intact until ALL seven B11
+                // textures have imported successfully into this exact Unity
+                // build. No missing castles on partial import/fallback.
+                for(int i=0;i<textures.Length;i++)
+                {
+                    textures[i]=Resources.Load<Texture2D>(
+                        "EldoriaRetention/DepthB10/"+DepthNames[i]);
+                    if(!textures[i])return;
+                }
+            }
+            structuralB11=useB11;
             for(int i=0;i<textures.Length;i++)
             {
                 var go=new GameObject("Vigilants / original paint plane / "+DepthNames[i],
@@ -174,7 +198,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 for(int i=0;i<planeRects.Length;i++)
                 {
                     var r=planeRects[i];
-                    var k=DepthMotion[i]*minSide;
+                    // Genuine independent scenic masses: this B11 variant
+                    // has separately materialized backgrounds. Motion has
+                    // an occlusion-safe backplate instead of duplicate pixels.
+                    // Closest road-facing terrain remains nearly fixed: the
+                    // REAL 25 interactive stage stones must never detach.
+                    var k=DepthMotion[i]*minSide*
+                        (structuralB11 && i!=5 ? 2.0f : 1f);
                     var offset=new Vector2(
                         Mathf.Sin(phase+i*.47f)*k,
                         Mathf.Cos(phase*.72f+i*.51f)*k*.57f);
