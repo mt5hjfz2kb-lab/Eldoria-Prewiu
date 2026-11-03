@@ -36,7 +36,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public System.Func<string, GameObject> BuildingModelFor;
         private CanvasGroup objectiveGroup, chapterCloseGroup, buildingGroup, buildingActionGroup;
         private bool buildingVisible;
-        private bool ready, expanded, portrait, hasGeometry, compactObjective;
+        private bool ready, expanded, portrait, hasGeometry, compactObjective, lastCouncil;
         private float lastWidth = -1f, lastHeight = -1f;
         private string lastDetails = "";
         private readonly string[] councilKeys = {"production","defense","civil"};
@@ -1170,8 +1170,11 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!UnityEngine.Application.isPlaying) return;
             EnsureView();
             if (!ready) return;
+            bool isCouncil=GetComponent<RoyalGoldV3BuildingScreens>()?.
+                InlineCouncilNeeded(Source.SelectedBuildingId)==true;
             bool resized = !hasGeometry || Mathf.Abs(safe.rect.width - lastWidth) > .5f ||
-                Mathf.Abs(safe.rect.height - lastHeight) > .5f;
+                Mathf.Abs(safe.rect.height - lastHeight) > .5f || isCouncil!=lastCouncil;
+            lastCouncil=isCouncil;
             if (resized)
             {
                 Layout();

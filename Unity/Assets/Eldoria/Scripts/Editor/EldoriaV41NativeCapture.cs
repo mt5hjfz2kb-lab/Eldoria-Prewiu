@@ -84,6 +84,11 @@ namespace Eldoria.Editor
                     Canvas.ForceUpdateCanvases();
                 }
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
+                // Real contextual city card is responsive too. Test the actual
+                // 390x844 screen, not a 900-unit layout stretched to phone.
+                host.Hud.GetComponent<RoyalGoldV2Hud>()?.SynchronizeNow();
+                host.Hud.GetComponent<RoyalGoldV3ContextHud>()?.SynchronizeNow();
+                Canvas.ForceUpdateCanvases();
                 var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
                 if(heroes&&heroes.IsOpen){
                     heroes.Refresh();Canvas.ForceUpdateCanvases();
@@ -611,6 +616,23 @@ namespace Eldoria.Editor
             Need(JsonUtility.ToJson(host.City.Gateway.Snapshot())==beforeBuildNavigation,
                 "Selecting the real barracks does not change gameplay or recruit troops");
             Shot(host,"construction-barracks-city-landscape",1600,900);
+            Shot(host,"construction-barracks-city-small-phone",390,844);
+            Shot(host,"construction-barracks-city-small-phone-landscape",844,390);
+            var actualCityCard=host.Hud.GetComponent<RoyalGoldV2Hud>();
+            var physicalPaper=host.Hud.GetComponentsInChildren<RoyalGoldV3BuildingCartoucheFinish>(true)
+                .FirstOrDefault(x=>x.name=="Building / physical cartouche parchment");
+            var nineSlice=host.Hud.GetComponentsInChildren<Image>(true)
+                .FirstOrDefault(x=>x.name=="Building / real nine-slice outline");
+            Need(actualCityCard&&actualCityCard.ChronicleIllustratedBuildingVisible&&
+                physicalPaper&&!physicalPaper.raycastTarget&&
+                nineSlice&&nineSlice.sprite&&nineSlice.type==Image.Type.Sliced&&
+                !nineSlice.raycastTarget,
+                "Actual city-local construction sheet owns layered parchment and true nine-slice border");
+            var preview=host.Hud.GetComponentInChildren<RoyalGoldV3BuildingPreview>(true);
+            Need(preview&&preview.HasModelPreview,
+                "Real selected building mesh remains the only 3D construction thumbnail");
+            Need(!(host.Hud.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen??true),
+                "No independent management modal interrupts construction");
             host.Hud.SelectBuilding("");
             screen.Open(RoyalGoldV3ManagementScreens.Destination.Training);yield return null;
             Shot(host,"training-reference-ratio",554,542);
