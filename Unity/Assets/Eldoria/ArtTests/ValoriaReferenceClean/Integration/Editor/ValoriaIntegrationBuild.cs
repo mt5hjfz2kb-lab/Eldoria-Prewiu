@@ -716,9 +716,17 @@ namespace Eldoria.ReferenceClean.Editor {
    h.Select("bastion");yield return new WaitForSecondsRealtime(.3f);
    yield return ReadJourneyNarrative(h);
    Check(()=>{
-    var choice=GameObject.Find("Choose civil")?.GetComponent<RoyalButton>();
-    Need(choice&&choice.interactable,"Canonical IV council choice unavailable");Click(choice);
-    Need(h.City.Gateway.Snapshot().ChapterThree.DevelopmentPriority=="civil","Council choice not saved");
+    // Build and council now share ONE city-local parchment. The
+    // former full-canvas \"Choose civil\" modal was intentionally removed.
+    var choice=h.Hud.GetComponentsInChildren<RoyalButton>(true)
+        .FirstOrDefault(b=>b.name=="Building / council civil"&&
+            b.gameObject.activeInHierarchy);
+    var buildingUtility=h.Hud.GetComponent<RoyalGoldV3BuildingScreens>();
+    Need(choice&&choice.interactable&&buildingUtility&&!buildingUtility.IsOpen,
+        "Canonical IV council choice unavailable in the actual city cartouche");
+    Click(choice);
+    Need(h.City.Gateway.Snapshot().ChapterThree.DevelopmentPriority=="civil",
+        "Inline royal council decision not saved");
    },"continuous IV real contextual council button");
    if(Failed())yield break;
    yield return JourneyLevel(h,5,1100,900);if(Failed())yield break;
