@@ -72,6 +72,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalGoldV3LayeredFinish scenicDepth;
         RoyalGoldV3VigilantsParallax vigilantsParallax;
         RoyalGoldV3VigilantsTerrainOcclusion nearTerrain;
+        RoyalGoldV3VigilantsWorldLight landscapeLight;
         RoyalGoldV3EncounterGrounding enemyGroundBack, enemyGroundFront;
         RoyalGoldV3GuardianReliefGraphic guardianRelief;
         Texture2D paintedVigilants, paintedScouts, scoutParchment;
@@ -492,12 +493,13 @@ namespace Eldoria.UI.RoyalGold.V2
             // Both share the existing picture frame and never catch raycasts.
             enemyGroundBack=RoyalGoldV3EncounterGrounding.Install(creature,false);
             enemyGroundFront=RoyalGoldV3EncounterGrounding.Install(creature,true);
-            // The encounter is NO LONGER reparented to the information card.
-            // It stands inside the actual world painting. Live 25-stage
-            // medallions always render above it and preserve raycasts.
-            creature.SetSiblingIndex(chapterTrail.transform.GetSiblingIndex());
+            // Near-ground rock remains a separate scenic plane independent
+            // of the encounter. The enemy itself will be seated in the royal
+            // tactical manuscript instead of occupying the path.
             nearTerrain=RoyalGoldV3VigilantsTerrainOcclusion.Install(
                 heroScene,chapterTrail.transform.GetSiblingIndex());
+            landscapeLight=RoyalGoldV3VigilantsWorldLight.Install(
+                heroScene,nearTerrain.transform.GetSiblingIndex());
             creature.gameObject.SetActive(false);
             victoryBanner=Panel(heroScene,"Crónica Real / combat outcome gilded announcement");
             var victoryPlate=victoryBanner.GetComponent<RoyalGoldV2FrameGraphic>();
@@ -552,6 +554,11 @@ namespace Eldoria.UI.RoyalGold.V2
             guardianPainted.uvRect=new Rect(0f,0f,1f,1f);
             guardianPainted.color=Color.white;
             guardianPainted.gameObject.SetActive(false);
+            // Both the original alpha Engendro and each independent guardian
+            // occupy the SAME illustrated encounter bay. The source art has
+            // no painted background or rectangular photograph.
+            creature.SetParent(infoCard,false);
+            creature.SetSiblingIndex(guardianPainted.transform.GetSiblingIndex()+1);
             // Keep the original atlas intact for its approved scout missions.
             // Do not fabricate new encounter stats, letters or models.
             chapter=Text(infoCard,"Stage progression",23,Gold,true);
@@ -903,10 +910,10 @@ namespace Eldoria.UI.RoyalGold.V2
             float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-760f):
                 portrait?Mathf.Clamp(ph-988f,220f,880f):
                 ph-155f;
-            // The landscape gains meaningful horizontal area; the tactical
-            // card remains a separate interactive region to its right.
+            // The landscape remains dominant, but the enemy and all real
+            // stats get sufficient room in a proper illustrated card.
             TL(heroScene,portrait?18f:20f,imageTop,
-                portrait?pw-36f:vigilantsLandscape?pw*.61f-24f:pw-40f,scenicHeight);
+                portrait?pw-36f:vigilantsLandscape?pw*.56f-24f:pw-40f,scenicHeight);
             if(vigilantsLandscape)
             {
                 chapterTrail.rectTransform.anchorMin=new Vector2(.04f,.13f);
@@ -919,23 +926,8 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             chapterTrail.rectTransform.offsetMin=Vector2.zero;
             chapterTrail.rectTransform.offsetMax=Vector2.zero;
-            if(engendroPortrait)
-            {
-                var frame=engendroPortrait.transform.parent as RectTransform;
-                float sceneW=heroScene.rect.width,sceneH=heroScene.rect.height;
-                // Reserved lower-right foreground. The continuous historic
-                // path runs through central ledges and northern fortress.
-                // No real stage marker is ever inside this rectangle.
-                float regionW=sceneW*(portrait?.41f:.35f);
-                float regionH=sceneH*(portrait?.44f:.43f);
-                float aspect=engendroTexture?engendroUvRect.width*engendroTexture.width/
-                    Mathf.Max(1f,engendroUvRect.height*engendroTexture.height):1f;
-                float cw=regionW,ch=regionH;
-                if(cw/ch>aspect)cw=ch*aspect;
-                else ch=cw/aspect;
-                TL(frame,sceneW*(portrait?.57f:.61f)+(regionW-cw)*.5f,
-                    sceneH*(portrait?.54f:.55f)+(regionH-ch)*.5f,cw,ch);
-            }
+            // Scene layers have their own full-frame geometry, independent
+            // of the card's real encounter layout below.
             if(progressPlaque)
             {
                 float mapW=heroScene.rect.width;
@@ -988,10 +980,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(infoCard,bodyX,imageTop+scenicHeight+10f,
                     bodyWidth,ph-(imageTop+scenicHeight+58f));
             else if(vigilantsLandscape&&!compactLandscape)
-                TL(infoCard,pw*.63f,imageTop,pw*.36f-14f,ph-imageTop-47f);
+                TL(infoCard,pw*.575f,imageTop,pw*.415f-12f,ph-imageTop-47f);
             else if(compactLandscape)
-                TL(infoCard,scoutsLandscape?18f:pw*.63f,imageTop+8f,
-                    scoutsLandscape?pw-36f:pw*.36f-14f,ph-imageTop-56f);
+                TL(infoCard,scoutsLandscape?18f:pw*.575f,imageTop+8f,
+                    scoutsLandscape?pw-36f:pw*.415f-12f,ph-imageTop-56f);
             else if(scoutsLandscape)
                 TL(infoCard,pw*.18f,ph*.43f,pw*.64f,ph*.57f-55f);
             else
@@ -1000,20 +992,27 @@ namespace Eldoria.UI.RoyalGold.V2
             if(iw<=0||ih<=0)return;
             if(OpenDestination==Destination.Vigilants && guardianRelief)
             {
-                // In the original Royal Gold manuscript, the enemy is an
-                // embossed figure mounted on an arch-shaped stone recess.
-                // There is deliberately no texture or rectangular photo.
-                float x=iw*(compactLandscape?.68f:.57f);
-                float w=iw*(compactLandscape?.29f:.40f);
-                float h=Mathf.Max(86f,Mathf.Min(ih-(compactLandscape?86f:135f),
-                    compactLandscape?185f:385f));
-                float artTop=compactLandscape?39f:51f;
+                // The SAME diegetic bay is used by four guardian cutouts and
+                // stage-15's authentic transparent Engendro. Its soft light
+                // and stone footing are part of the card, not a photo-frame.
+                bool portraitRoom=height>width;
+                float w=iw*(portraitRoom?.39f:compactLandscape?.38f:.405f);
+                float x=iw-w-14f;
+                float artTop=portraitRoom?51f:compactLandscape?37f:51f;
+                float h=Mathf.Max(95f,ih-(portraitRoom?165f:125f));
                 TL(guardianRelief.rectTransform,x,artTop,w,h);
+                float side=Mathf.Min(w*.98f,h*.90f);
+                float artX=x+(w-side)*.50f;
+                float artY=artTop+h-side-h*.10f;
                 if(guardianPainted)
+                    TL(guardianPainted.rectTransform,artX,artY,side,side);
+                if(engendroPortrait)
                 {
-                    float side=Mathf.Min(w*.98f,h*.88f);
-                    TL(guardianPainted.rectTransform,
-                        x+(w-side)*.5f,artTop+h-side-h*.07f,side,side);
+                    var frame=engendroPortrait.transform.parent as RectTransform;
+                    float creatureSide=Mathf.Min(w*.995f,h*.92f);
+                    TL(frame,x+(w-creatureSide)*.5f,
+                        artTop+h-creatureSide-h*.095f,
+                        creatureSide,creatureSide);
                 }
             }
             if(vigilantsPortrait || (vigilantsLandscape&&!compactLandscape))
@@ -1098,6 +1097,32 @@ namespace Eldoria.UI.RoyalGold.V2
                 formation.fontSize=tiny?21:portrait?26:24;
                 reward.fontSize=tiny?21:portrait?27:24;
                 passive.fontSize=tiny?21:portrait?27:22;
+            }
+
+            // A usable portrait is as important as a readable military
+            // report. Keep all enemy labels in a dedicated LEFT column so
+            // neither original Engendro nor alpha guardians cover the text.
+            if(OpenDestination==Destination.Vigilants)
+            {
+                float textWidth=Mathf.Max(132f,iw*.585f-34f);
+                float actionTop=ih-(height>width?114f:compactLandscape?84f:106f);
+                TL(chapter.rectTransform,26f,10f,iw-52f,47f);
+                TL(opponent.rectTransform,18f,60f,textWidth,95f);
+                TL(formation.rectTransform,18f,163f,textWidth,46f);
+                TL(reward.rectTransform,18f,214f,textWidth,67f);
+                float idleTop=Mathf.Min(296f,Mathf.Max(272f,actionTop-110f));
+                TL(passive.rectTransform,18f,idleTop,textWidth,
+                    Mathf.Max(58f,Mathf.Min(100f,actionTop-idleTop-6f)));
+                if(battleFeedback.gameObject.activeSelf)
+                    TL(battleFeedback.rectTransform,18f,
+                        Mathf.Max(376f,actionTop-126f),textWidth,
+                        Mathf.Max(38f,Mathf.Min(98f,actionTop-386f)));
+                chapter.fontSize=height>width?29:compactLandscape?23:30;
+                opponent.fontSize=height>width?27:compactLandscape?22:26;
+                formation.fontSize=height>width?25:compactLandscape?20:23;
+                reward.fontSize=height>width?24:compactLandscape?20:23;
+                passive.fontSize=height>width?23:compactLandscape?19:21;
+                battleFeedback.fontSize=height>width?23:compactLandscape?18:21;
             }
 
             // The approved quest-board cards occupy the actual manuscript,
@@ -1205,6 +1230,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     if(hasApprovedScene)
                         nearTerrain.Configure(paintedVigilants,paintedScene.uvRect);
                 }
+                if(landscapeLight)
+                    landscapeLight.gameObject.SetActive(hasApprovedScene);
             }
             if(!vig && engendroPortrait)
                 engendroPortrait.transform.parent.gameObject.SetActive(false);
@@ -1292,9 +1319,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 var info=EarlyRetentionRules.Stage(Math.Min(stage,10000));
                 bool boss=info.Step%5==0;
                 bool showEngendro=info.Step==15 && engendroTexture!=null;
-                // The previous atlas crop looked like a small pasted photo.
-                // Stage-15 remains authentic alpha art in the landscape;
-                // every other real stage is a transparent relief in the card.
+                // No ordinary encounter can insert a second painted
+                // landscape. Both Engendro and four distinct guardians are
+                // integrated into the SAME tactile royal encounter bay.
                 bool showEncounterArt=showEngendro;
                 Texture2D paintedBoss=info.Step==5?guardianArt[0]:
                     info.Step==10?guardianArt[1]:
@@ -1303,8 +1330,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(guardianRelief)
                 {
                     guardianRelief.SetStage(info.Step);
-                    guardianRelief.UsePaintedFigure(paintedBoss!=null);
-                    guardianRelief.gameObject.SetActive(!showEngendro);
+                    guardianRelief.SetBreach(showEngendro);
+                    guardianRelief.UsePaintedFigure(paintedBoss!=null||showEngendro);
+                    guardianRelief.gameObject.SetActive(true);
                 }
                 if(guardianPainted)
                 {
@@ -1339,10 +1367,17 @@ namespace Eldoria.UI.RoyalGold.V2
                 chapterTrail.rectTransform.offsetMax=new Vector2(-5,-5);
                 chapterTrail.ArtworkUv=paintedScene.uvRect;
                 chapterTrail.SetVerticesDirty();
-                // Full-size enemy art now inhabits the actual lower-right
-                // valley, in front of the original painting and BEHIND rock
-                // occlusion/25 stage markers. No photographic block remains
-                // inside the tactical panel; text uses its full width.
+                if(landscapeLight && landscapeLight.gameObject.activeSelf)
+                {
+                    int liveLightStep=p.LastClearedStage%25+1;
+                    var road=chapterTrail.StagePosition(liveLightStep);
+                    var scenePoint=landscapeLight.transform.InverseTransformPoint(
+                        chapterTrail.transform.TransformPoint(road));
+                    landscapeLight.SetState(paintedScene.uvRect,p.LastClearedStage,
+                        liveLightStep,new Vector2(scenePoint.x,scenePoint.y));
+                }
+                // The actual stage road now lights its next real checkpoint
+                // in-place; the encounter remains in its original royal card.
                 // Update labels only AFTER the Engendro-relative trail
                 // anchors are chosen. Otherwise the captured stage-15 numbers
                 // can retain coordinates from a different panel size.

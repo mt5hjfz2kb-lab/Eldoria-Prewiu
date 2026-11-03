@@ -16,8 +16,16 @@ namespace Eldoria.UI.RoyalGold.V2
     {
         [SerializeField] int stageStep;
         [SerializeField] bool paintedFigure;
+        [SerializeField] bool breach;
         public int StageStep => stageStep;
         public bool PaintedFigure => paintedFigure;
+        public bool Breach => breach;
+        public void SetBreach(bool active)
+        {
+            if(breach==active)return;
+            breach=active;
+            SetVerticesDirty();
+        }
         public void UsePaintedFigure(bool enabled)
         {
             if(paintedFigure==enabled)return;
@@ -92,8 +100,32 @@ namespace Eldoria.UI.RoyalGold.V2
             bool fortress=stageStep==5;
             bool endurance=stageStep==20;
             bool oath=stageStep==25;
-            Color accent=hunter?violet:endurance?C(.63f,.75f,.77f):
+            Color accent=breach?violet:hunter?violet:endurance?C(.63f,.75f,.77f):
                 oath?C(.96f,.74f,.37f):gold;
+
+            if(paintedFigure)
+            {
+                // B6: no inset window and no hard gothic arch behind the image.
+                // Real cutout art shares the card material, its warm raking
+                // light and the SAME stone footing as the rest of this room.
+                O(v,A(.58f,.57f),r.width*.42f,r.height*.50f,
+                    C(accent.r,accent.g,accent.b,breach ? .24f : .15f));
+                O(v,A(.47f,.37f),r.width*.24f,r.height*.42f,
+                    C(.99f,.70f,.39f,breach ? .065f : .105f));
+                O(v,A(.50f,.155f),r.width*.40f,r.height*.115f,
+                    C(.013f,.021f,.026f,.85f));
+                O(v,A(.51f,.185f),r.width*.29f,r.height*.11f,
+                    C(accent.r,accent.g,accent.b,breach ? .36f : .21f));
+                P(v,C(.13f,.15f,.16f,.74f),
+                    A(.09f,.135f),A(.17f,.18f),A(.30f,.17f),
+                    A(.47f,.18f),A(.59f,.17f),A(.81f,.175f),
+                    A(.91f,.135f),A(.89f,.10f),A(.10f,.10f));
+                S(v,A(.16f,.175f),A(.87f,.175f),line*.82f,
+                    C(.86f,.64f,.33f,.56f));
+                S(v,A(.12f,.102f),A(.90f,.102f),line*.88f,
+                    C(.032f,.048f,.056f,.70f));
+                return;
+            }
 
             // Sculpted niche and stone plinth are part of the royal card.
             // Open arch instead of a framed square/photograph.
@@ -110,19 +142,6 @@ namespace Eldoria.UI.RoyalGold.V2
             S(v,A(.28f,.90f),A(.50f,.98f),line*1.5f,C(.83f,.65f,.33f,.68f));
             S(v,A(.72f,.90f),A(.50f,.98f),line*1.5f,C(.83f,.65f,.33f,.68f));
             O(v,A(.50f,.23f),r.width*.34f,r.height*.075f,C(.00f,.01f,.018f,.65f));
-
-            // The four painted, individually alpha-isolated candidates need
-            // the SAME architecture/lighting but must not be stamped over a
-            // second duplicate vector figure. Leave the natural stone niche
-            // and plinth behind the authentic cutout, with zero photo backing.
-            if(paintedFigure)
-            {
-                Q(v,A(.12f,.12f),A(.88f,.18f),
-                    C(.10f,.10f,.10f),C(.54f,.42f,.27f));
-                S(v,A(.16f,.17f),A(.84f,.17f),line*1.2f,gold);
-                S(v,A(.20f,.12f),A(.80f,.12f),line*.9f,black);
-                return;
-            }
 
             // Layer I: cloak and steel-backed mass with leg shadows.
             P(v,black,A(.35f,.65f),A(.65f,.66f),A(.81f,.16f),A(.19f,.16f));

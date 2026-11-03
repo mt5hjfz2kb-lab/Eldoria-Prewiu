@@ -149,6 +149,56 @@ namespace Eldoria.Tests
             }
         }
 
+        [Test]
+        public void LiveStageLightUsesOnlyExistingRoadAndCannotTakeInput()
+        {
+            var room=new GameObject("Royal diorama",typeof(RectTransform));
+            try
+            {
+                var light=RoyalGoldV3VigilantsWorldLight.Install(
+                    (RectTransform)room.transform,0);
+                light.SetState(new Rect(.10f,.12f,.73f,.76f),
+                    14,15,new Vector2(25f,40f));
+                Assert.That(light.raycastTarget,Is.False);
+                Assert.That(light.LastCleared,Is.EqualTo(14));
+                Assert.That(light.CurrentStage,Is.EqualTo(15));
+                Assert.That(light.CoverUv,
+                    Is.EqualTo(new Rect(.10f,.12f,.73f,.76f)));
+                Assert.That(room.GetComponentsInChildren<Canvas>(true).Length,
+                    Is.Zero);
+                Assert.That(room.GetComponentsInChildren<EventSystem>(true).Length,
+                    Is.Zero);
+            }
+            finally { Object.DestroyImmediate(room); }
+        }
+
+        [Test]
+        public void EngendroUsesOriginalAlphaWithSharedCardLighting()
+        {
+            var room=new GameObject("Royal encounter",typeof(RectTransform));
+            try
+            {
+                var r=new GameObject("Shared stone and ambient backlight",
+                    typeof(RectTransform),typeof(CanvasRenderer),
+                    typeof(RoyalGoldV3GuardianReliefGraphic));
+                r.transform.SetParent(room.transform,false);
+                var graphic=r.GetComponent<RoyalGoldV3GuardianReliefGraphic>();
+                graphic.raycastTarget=false;
+                graphic.SetStage(15);
+                graphic.SetBreach(true);
+                graphic.UsePaintedFigure(true);
+                Assert.That(graphic.StageStep,Is.Zero);
+                Assert.That(graphic.PaintedFigure,Is.True);
+                Assert.That(graphic.Breach,Is.True);
+                Assert.That(graphic.raycastTarget,Is.False);
+                Assert.That(room.GetComponentsInChildren<RawImage>(true).Length,
+                    Is.Zero,"Card lighting does not contain a fake photo");
+                graphic.SetBreach(false);
+                Assert.That(graphic.Breach,Is.False);
+            }
+            finally { Object.DestroyImmediate(room); }
+        }
+
         [TestCase(1,0)]
         [TestCase(5,5)]
         [TestCase(10,10)]
