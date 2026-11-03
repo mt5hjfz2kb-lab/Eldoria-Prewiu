@@ -138,16 +138,16 @@ namespace Eldoria.UI.RoyalGold.V2
             // less, and near vegetation/waterfall banks more. Painting pixels
             // are sampled from their own original UV, not a second image.
             Cutout(vh,bounds,FortressRidge,
-                new Vector2(.26f*slower,.12f*slow)*unit,
+                new Vector2(.95f*slower,.44f*slow)*unit,
                 new Color(1f,.93f,.85f,.41f));
             Cutout(vh,bounds,MiddleCliff,
-                new Vector2(.78f*slow,.35f*slower)*unit,
+                new Vector2(3.8f*slow,2.1f*slower)*unit,
                 new Color(.96f,.98f,1f,.60f));
             Cutout(vh,bounds,NearLeft,
-                new Vector2(2.9f*slow,1.4f*slower)*unit,
+                new Vector2(-4.0f+12f*slow,5.0f*slower)*unit,
                 new Color(1f,.96f,.88f,.91f));
             Cutout(vh,bounds,NearRight,
-                new Vector2(-2.6f*slow,1.2f*slower)*unit,
+                new Vector2(4.4f-13f*slow,5.2f*slower)*unit,
                 new Color(.94f,1f,.94f,.89f));
         }
     }

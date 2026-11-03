@@ -47,53 +47,51 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             if(transparentCreature)
             {
-                // Preserve every pixel of the authentic stage-15 alpha art.
+                // Keep the exact approved translucent Engendro image; it is
+                // now standing in the LANDSCAPE, not on a separate combat card.
                 base.OnPopulateMesh(vh);
                 return;
             }
 
             vh.Clear();
-            Rect r=GetPixelAdjustedRect();
-            if(r.width<16f || r.height<16f)return;
-
-            Vector2 center=new Vector2(.50f,.51f);
-            int first=vh.currentVertCount;
-            Color32 tint=color;
-            vh.AddVert(FromUnit(r,center),Modulate(tint,1f),OriginalUv(center));
-
-            // The polygon has an irregular rounded-arch perimeter, not a
-            // straight rectangular screenshot. Soft outside (alpha 0) and
-            // strong central mass retain the original guardian scene subject.
-            var core=new Vector2[Edges];
-            var rim=new Vector2[Edges];
-            for(int i=0;i<Edges;i++)
+            var r=GetPixelAdjustedRect();
+            if(r.width<16f||r.height<16f)return;
+            // Painted encounter fragment, NOT the circular peephole seen in
+            // B2: a broad, asymmetrically feathered terrain patch whose
+            // exterior dissolves into the same approved world composition.
+            const int columns=22,rows=18;
+            Color c=color;
+            for(int j=0;j<=rows;j++)
             {
-                float a=i*Mathf.PI*2f/Edges;
-                float shape=1f+.024f*Mathf.Sin(a*5f+.9f)
-                    +.018f*Mathf.Sin(a*9f+1.7f);
-                Vector2 boundary=center+new Vector2(
-                    Mathf.Cos(a)*.49f*shape,
-                    Mathf.Sin(a)*.49f*shape);
-                boundary.x=Mathf.Clamp01(boundary.x);
-                boundary.y=Mathf.Clamp01(boundary.y);
-                rim[i]=boundary;
-                core[i]=Vector2.Lerp(center,boundary,.79f);
-
-                vh.AddVert(FromUnit(r,core[i]),
-                    Modulate(tint,1f),OriginalUv(core[i]));
+                float v=(float)j/rows;
+                float ragged=.021f*Mathf.Sin(v*19.2f+1.6f)
+                    +.013f*Mathf.Sin(v*43f+2.1f);
+                float edgeLeft=.025f+ragged;
+                float edgeRight=.965f+.018f*Mathf.Sin(v*26.1f+.7f);
+                for(int i=0;i<=columns;i++)
+                {
+                    float u=(float)i/columns;
+                    float irregularTop=.965f-.013f*Mathf.Sin(u*21.3f);
+                    float irregularBottom=.025f+.024f*Mathf.Sin(u*16.2f);
+                    float innerEdge=Mathf.Min(
+                        Mathf.Min(u-edgeLeft,edgeRight-u),
+                        Mathf.Min(v-irregularBottom,irregularTop-v));
+                    float strength=Mathf.SmoothStep(0f,1f,
+                        Mathf.Clamp01(innerEdge/.17f));
+                    // Tiny ragged edge variation avoids a perfect photo
+                    // rectangle, but the patrol scene remains authoritative.
+                    var tone=new Color(c.r*.93f,c.g*.99f,c.b*.96f,
+                        c.a*strength*.83f);
+                    var uv=new Vector2(u,v);
+                    vh.AddVert(FromUnit(r,uv),tone,OriginalUv(uv));
+                }
             }
-            for(int i=0;i<Edges;i++)
-                vh.AddVert(FromUnit(r,rim[i]),
-                    Modulate(tint,0f),OriginalUv(rim[i]));
-
-            for(int i=0;i<Edges;i++)
+            for(int j=0;j<rows;j++)
+            for(int i=0;i<columns;i++)
             {
-                int j=(i+1)%Edges;
-                // Centre/inner fan; outer ring feathers in physical
-                // coordinates and uses the original atlas quadrant UV.
-                vh.AddTriangle(first,first+1+i,first+1+j);
-                vh.AddTriangle(first+1+i,first+1+Edges+i,first+1+Edges+j);
-                vh.AddTriangle(first+1+i,first+1+Edges+j,first+1+j);
+                int k=j*(columns+1)+i;
+                vh.AddTriangle(k,k+1,k+columns+2);
+                vh.AddTriangle(k,k+columns+2,k+columns+1);
             }
         }
     }
