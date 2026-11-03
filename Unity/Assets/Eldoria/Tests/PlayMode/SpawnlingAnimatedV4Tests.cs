@@ -1,6 +1,12 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections;
+using Eldoria.World4XCanon;
+using Eldoria.SpawnlingBastion2;
+using Eldoria.ReferenceClean;
+using UnityEngine.SceneManagement;
+using System.Linq;
+using System.IO;
 using System.Reflection;
 using Eldoria.Application;
 using Eldoria.Domain;
@@ -64,6 +70,125 @@ namespace Eldoria.Tests
             Assert.That((float)far.GetValue(actor),Is.EqualTo(baselineFar));
             Assert.IsFalse(actor.gameObject.GetComponent<Collider>());
             Assert.IsFalse(actor.gameObject.GetComponent<Rigidbody>());
+        }
+
+
+        static object ProofMember(object item,string name)
+        {
+            var binding=BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic;
+            var prop=item.GetType().GetProperty(name,binding);
+            if(prop!=null)return prop.GetValue(item);
+            var field=item.GetType().GetField(name,binding);
+            Assert.IsNotNull(field,"Missing integrated player field "+name);
+            return field.GetValue(item);
+        }
+        static object ProofCall(object item,string name,params object[] args)
+        {
+            var methods=item.GetType().GetMethods(BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic);
+            var method=methods.FirstOrDefault(m=>m.Name==name&&m.GetParameters().Length==args.Length);
+            Assert.IsNotNull(method,"Missing integrated player method "+name);
+            return method.Invoke(item,args);
+        }
+        static void ProofPng(Camera camera,string path,int width,int height)
+        {
+            var target=RenderTexture.GetTemporary(width,height,24,RenderTextureFormat.ARGB32);
+            var texture=new Texture2D(width,height,TextureFormat.RGB24,false);
+            var oldTarget=camera.targetTexture;var oldActive=RenderTexture.active;
+            try {
+                camera.targetTexture=target;
+                camera.Render();
+                RenderTexture.active=target;
+                texture.ReadPixels(new Rect(0,0,width,height),0,0);
+                texture.Apply();
+                File.WriteAllBytes(path,texture.EncodeToPNG());
+            } finally {
+                camera.targetTexture=oldTarget;
+                RenderTexture.active=oldActive;
+                RenderTexture.ReleaseTemporary(target);
+                UnityEngine.Object.DestroyImmediate(texture);
+            }
+        }
+        [UnityTest]public IEnumerator OriginalIntegratedWorldShows1_5xSpawnlingA_BFromSameCameraWithoutGameplayChange()
+        {
+            SceneManager.LoadScene("Valoria_City_World_UI");
+            ValoriaIntegratedWorld host=null;SpawnlingEncounterVisual actor=null;
+            for(int frame=0;frame<300;frame++)
+            {
+                yield return null;
+                host=UnityEngine.Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
+                if(host==null||!host.Ready||!host.WorldRoot)continue;
+                if(!host.WorldRoot.transform.Find("Region 1 canonical continuous geography"))continue;
+                actor=host.WorldRoot.GetComponentsInChildren<SpawnlingEncounterVisual>(true).FirstOrDefault();
+                if(actor!=null&&actor.ModelRoot!=null&&actor.MotionPivot!=null)break;
+            }
+            Assert.IsNotNull(host,"Canonical integrated game did not boot");
+            Assert.IsNotNull(actor,"Original authenticated Spawnling actor not present");
+            bool opened=host.TrySetWorld(true);
+            if(!opened)
+            {
+                var offer=ProofMember(ProofCall(host,"Read","sawmill",false),"Building");
+                var action=ProofMember(offer,"Action");
+                ProofCall(host,"Submit",action);
+                var city=ProofMember(host,"City");
+                ProofCall(ProofMember(city,"Clock"),"Step",SliceRules.SawmillBuildSeconds+1);
+                ProofCall(ProofMember(city,"Gateway"),"Advance");
+                yield return null;
+                opened=host.TrySetWorld(true);
+            }
+            Assert.IsTrue(opened,"Original world unlock must work before the art proof");
+            var hotspot=host.FindTarget("engendro-valoria");
+            Assert.IsNotNull(hotspot,"Original enemy hotspot absent");
+            var gateway=(ICommandGateway)ProofMember(ProofMember(host,"City"),"Gateway");
+            var initial=JsonUtility.ToJson(gateway.Snapshot());
+            Assert.IsFalse(gateway.Snapshot().EngendroDefeated,"A/B requires an undefeated original encounter");
+            var navigator=host.WorldNavigation;
+            var camera=host.WorldCamera;
+            var landscape=UnityEngine.Object.FindFirstObjectByType<RegionOneCanonicalLandscape>();
+            Assert.IsNotNull(landscape);
+            var oldTarget=navigator.target;float oldZoom=camera.orthographicSize;
+            float originalMultiplier=actor.ArtProofPresenceMultiplier;
+            float oldBreathe=actor.BreatheAmplitude,oldSway=actor.SwayDegrees;
+            string output=Path.GetFullPath(Path.Combine(Application.dataPath,"..","..",
+                "docs","evidence","valoria-reference-clean"));
+            Directory.CreateDirectory(output);
+            actor.BreatheAmplitude=0f;actor.SwayDegrees=0f;
+            try
+            {
+                camera.aspect=16f/9f;
+                foreach(var view in new[]{(level:2,label:"close"),(level:1,label:"regional")})
+                {
+                    navigator.SetZoomLevel(view.level,true);
+                    navigator.PanTo(hotspot.transform.position);
+                    landscape.RefreshForCapture();
+                    actor.ArtProofPresenceMultiplier=1f;
+                    yield return null;
+                    Assert.IsTrue(actor.ModelRoot.activeInHierarchy,"Original actor must render");
+                    Assert.IsTrue(actor.TryGeometryBounds(out var before),"Actual imported skinned vertices required");
+                    var prefix="integration-issue95-spawnling-"+view.label+"-";
+                    ProofPng(camera,Path.Combine(output,prefix+"before.png"),1280,720);
+                    actor.ArtProofPresenceMultiplier=1.50f;
+                    yield return null;
+                    Assert.IsTrue(actor.TryGeometryBounds(out var after),"Actual source mesh lost");
+                    ProofPng(camera,Path.Combine(output,prefix+"after.png"),1280,720);
+                    Assert.That(after.size.y,Is.GreaterThanOrEqualTo(before.size.y*1.35f),
+                        "Native source height must increase visibly, not just metadata");
+                    Assert.That(Mathf.Abs(after.min.y-before.min.y),Is.LessThan(.50f),
+                        "Upscaling must not lift the original enemy off the terrain");
+                    Debug.Log("ELDORIA_ISSUE95_SPAWNLING_NATIVE_AB view="+view.label+
+                        " before_height="+before.size.y.ToString("F3")+
+                        " after_height="+after.size.y.ToString("F3")+
+                        " camera_zoom="+camera.orthographicSize.ToString("F1"));
+                }
+                Assert.That(JsonUtility.ToJson(gateway.Snapshot()),Is.EqualTo(initial),
+                    "Visual only scale must preserve the authoritative player state");
+                Assert.IsNotNull(hotspot.GetComponent<Collider>(),"Original encounter selection retained");
+            }
+            finally
+            {
+                actor.ArtProofPresenceMultiplier=originalMultiplier;
+                actor.BreatheAmplitude=oldBreathe;actor.SwayDegrees=oldSway;
+                navigator.RestoreView(oldTarget,oldZoom);
+            }
         }
 
         [UnityTest]public IEnumerator OriginalGatewayArrivalDrivesVisualWithoutChangingCombatOrSave()
