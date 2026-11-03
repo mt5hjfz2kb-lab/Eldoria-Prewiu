@@ -40,6 +40,31 @@ namespace Eldoria.UI.RoyalGold.V2
         Rect cover = new Rect(0f,0f,1f,1f);
         float nextRepaint;
 
+        // The source-approved castle/bridge/cliff masks are individually
+        // materialized in CI from the UNCHANGED original image. Cropped
+        // rectangles use bottom-left source UV; no additional canvas/camera.
+        static readonly string[] DepthNames = {
+            "left_castle","bridge","right_castle",
+            "left_rock","right_cliff","near_cliff"
+        };
+        static readonly Rect[] DepthUv = {
+            new Rect(.05924479f,.58789062f,.30143229f,.38574219f),
+            new Rect(.25195312f,.39550781f,.34765625f,.30957031f),
+            new Rect(.52539062f,.48632812f,.39778646f,.48730469f),
+            new Rect(0f,.30566406f,.39583333f,.53808594f),
+            new Rect(.51757812f,.04199219f,.48242188f,.68945312f),
+            new Rect(0f,0f,.59895833f,.36816406f)
+        };
+        static readonly float[] DepthMotion = {
+            .0035f,.0018f,.0032f,.0055f,.0060f,.0011f
+        };
+        readonly RawImage[] planeImages=new RawImage[6];
+        readonly RectTransform[] planeRects=new RectTransform[6];
+        bool materialized,attemptedMaterialization;
+        public bool HasMaterializedDepth => materialized;
+        public int MaterializedPlaneCount => materialized ? planeImages.Length : 0;
+        public Rect SourceUvForPlane(int index) => DepthUv[Mathf.Clamp(index,0,DepthUv.Length-1)];
+
         public Texture2D OriginalArtwork => artwork;
         public Rect CoverUv => cover;
         public override Texture mainTexture => artwork ? artwork : Texture2D.whiteTexture;
@@ -72,7 +97,65 @@ namespace Eldoria.UI.RoyalGold.V2
                 (cover.size-exactRawImageCover.size).sqrMagnitude>.0000001f;
             artwork=original;
             cover=exactRawImageCover;
-            if(changed)SetVerticesDirty();
+            if(!attemptedMaterialization)
+                TryInstallDepthAssets();
+            if(materialized)
+            {
+                PositionPlanesForCover();
+                if(changed)SetVerticesDirty();
+            }
+            else if(changed)SetVerticesDirty();
+        }
+
+        void TryInstallDepthAssets()
+        {
+            attemptedMaterialization=true;
+            // Tests and legacy installations keep their safe original shader
+            // and approved texture. Never enable optional B10 material for
+            // the Scouts or an arbitrary 8x8 fixture.
+            if(!artwork || artwork.name!="vigilants-painterly-v2")return;
+            var textures=new Texture2D[DepthNames.Length];
+            for(int i=0;i<textures.Length;i++)
+            {
+                textures[i]=Resources.Load<Texture2D>(
+                    "EldoriaRetention/DepthB10/"+DepthNames[i]);
+                if(!textures[i])return; // all-or-nothing, never partial cut-outs
+            }
+            for(int i=0;i<textures.Length;i++)
+            {
+                var go=new GameObject("Vigilants / original paint plane / "+DepthNames[i],
+                    typeof(RectTransform),typeof(CanvasRenderer),typeof(RawImage));
+                go.layer=gameObject.layer;
+                var rect=(RectTransform)go.transform;
+                rect.SetParent(transform,false);
+                rect.pivot=new Vector2(.5f,.5f);
+                var image=go.GetComponent<RawImage>();
+                image.texture=textures[i];
+                image.color=Color.white;
+                image.raycastTarget=false;
+                image.uvRect=new Rect(0f,0f,1f,1f);
+                planeImages[i]=image;
+                planeRects[i]=rect;
+            }
+            materialized=true;
+            SetVerticesDirty();
+        }
+
+        void PositionPlanesForCover()
+        {
+            if(!materialized)return;
+            for(int i=0;i<planeRects.Length;i++)
+            {
+                var r=planeRects[i];
+                var bounds=DepthUv[i];
+                r.anchorMin=new Vector2(
+                    (bounds.xMin-cover.xMin)/cover.width,
+                    (bounds.yMin-cover.yMin)/cover.height);
+                r.anchorMax=new Vector2(
+                    (bounds.xMax-cover.xMin)/cover.width,
+                    (bounds.yMax-cover.yMin)/cover.height);
+                r.offsetMin=r.offsetMax=Vector2.zero;
+            }
         }
 
         void Update()
@@ -82,6 +165,24 @@ namespace Eldoria.UI.RoyalGold.V2
             // Five mesh updates a second; mesh is small and reuses the
             // existing imported texture. The canonical route stays fixed.
             nextRepaint=Time.unscaledTime+.20f;
+            if(materialized)
+            {
+                // Quiet camera drift: near rock is nearly fixed so the
+                // original 25 stage stones NEVER detach from their road.
+                float phase=Time.unscaledTime*.35f;
+                float minSide=Mathf.Min(rectTransform.rect.width,rectTransform.rect.height);
+                for(int i=0;i<planeRects.Length;i++)
+                {
+                    var r=planeRects[i];
+                    var k=DepthMotion[i]*minSide;
+                    var offset=new Vector2(
+                        Mathf.Sin(phase+i*.47f)*k,
+                        Mathf.Cos(phase*.72f+i*.51f)*k*.57f);
+                    if((r.anchoredPosition-offset).sqrMagnitude>.001f)
+                        r.anchoredPosition=offset;
+                }
+                return;
+            }
             SetVerticesDirty();
         }
 
@@ -127,6 +228,7 @@ namespace Eldoria.UI.RoyalGold.V2
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             vh.Clear();
+            if(materialized)return; // actual separated PNG depth planes render as children
             if(!artwork)return;
             var bounds=GetPixelAdjustedRect();
             if(bounds.width<36f||bounds.height<36f)return;
