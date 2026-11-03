@@ -611,6 +611,8 @@ namespace Eldoria.Editor
             Need(councilViewport.height>.40f,
                 "Centered royal Bastion retains enough vertical city camera space above the contextual council");
             Shot(host,"building-council-desktop",1600,900);
+            // The native capture also verifies real castle silhouette
+            // framing after its selection-only terrain-safe portrait fit.
             Shot(host,"building-council-small-phone",390,844);
             var priorityWood=host.City.Gateway.Snapshot().Resources.Wood;
             councilButtons.First(x=>x.name=="Building / council production").onClick.Invoke();
