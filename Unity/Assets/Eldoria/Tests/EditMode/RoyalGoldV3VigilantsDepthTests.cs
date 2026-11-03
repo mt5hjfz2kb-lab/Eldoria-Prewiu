@@ -116,6 +116,37 @@ namespace Eldoria.Tests
             }
         }
 
+        [Test]
+        public void ScenicEnemyAndTerrainReuseOriginalArtworkWithoutAdditionalCanvas()
+        {
+            var scene=new GameObject("Scenic illustration",typeof(RectTransform));
+            var approved=new Texture2D(16,16,TextureFormat.RGBA32,false);
+            try
+            {
+                var bounds=(RectTransform)scene.transform;
+                var source=new GameObject("Original illustrated world / decorative only",
+                    typeof(RectTransform),typeof(CanvasRenderer),typeof(RawImage));
+                source.transform.SetParent(scene.transform,false);
+                var painting=source.GetComponent<RawImage>();
+                painting.texture=approved;
+                painting.uvRect=new Rect(.08f,.07f,.84f,.86f);
+                var occlusion=RoyalGoldV3VigilantsTerrainOcclusion.Install(bounds,1);
+                occlusion.Configure(approved,painting.uvRect);
+                Assert.That(occlusion.OriginalArtwork,Is.SameAs(painting.texture));
+                Assert.That(occlusion.mainTexture,Is.SameAs(approved));
+                Assert.That(occlusion.CoverUv,Is.EqualTo(painting.uvRect));
+                Assert.That(occlusion.raycastTarget,Is.False);
+                Assert.That(occlusion.transform.parent,Is.SameAs(scene.transform));
+                Assert.That(scene.GetComponentsInChildren<Canvas>(true).Length,Is.Zero);
+                Assert.That(scene.GetComponentsInChildren<EventSystem>(true).Length,Is.Zero);
+            }
+            finally
+            {
+                Object.DestroyImmediate(scene);
+                Object.DestroyImmediate(approved);
+            }
+        }
+
         [TestCase(1)]
         [TestCase(5)]
         [TestCase(10)]
