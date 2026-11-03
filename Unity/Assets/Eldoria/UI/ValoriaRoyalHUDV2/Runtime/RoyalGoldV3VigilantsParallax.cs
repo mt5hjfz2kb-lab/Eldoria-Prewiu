@@ -55,6 +55,17 @@ namespace Eldoria.UI.RoyalGold.V2
             new Rect(.51757812f,.04199219f,.48242188f,.68945312f),
             new Rect(0f,0f,.59895833f,.36816406f)
         };
+        // B11: each original silhouette now sits over a cleaned backplate.
+        // Distant structures recede into cold valley air; near rocks keep
+        // warmer contact contrast. Never alter original source pixels.
+        static readonly Color[] DepthTints = {
+            new Color(.89f,.94f,1f,1f),
+            new Color(.95f,.97f,1f,1f),
+            new Color(1f,.975f,.93f,1f),
+            new Color(.98f,.97f,.93f,1f),
+            new Color(1f,.975f,.92f,1f),
+            new Color(1f,.975f,.91f,1f)
+        };
         static readonly float[] DepthMotion = {
             .0035f,.0018f,.0032f,.0055f,.0060f,.0011f
         };
@@ -131,7 +142,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 rect.pivot=new Vector2(.5f,.5f);
                 var image=go.GetComponent<RawImage>();
                 image.texture=textures[i];
-                image.color=Color.white;
+                image.color=DepthTints[i];
                 image.raycastTarget=false;
                 image.uvRect=new Rect(0f,0f,1f,1f);
                 planeImages[i]=image;
@@ -258,6 +269,33 @@ namespace Eldoria.UI.RoyalGold.V2
     public sealed class RoyalGoldV3VigilantsLivingLandscape : RawImage
     {
         const int Columns=28,Rows=24,Steps=25;
+        // The original source stays assigned to RawImage.texture for
+        // ownership/reference QA. Render the independently cleaned B11
+        // backplate only for the approved Vigilants world, never Scouts.
+        Texture2D structuralBackplate;
+        bool structuralRequested,structuralProbeAttempted;
+        public bool HasStructuralBackdrop => structuralRequested && structuralBackplate;
+        public Texture2D StructuralBackdrop => structuralBackplate;
+        public override Texture mainTexture =>
+            structuralRequested && structuralBackplate ? structuralBackplate : base.mainTexture;
+
+        public void UseStructuralBackdrop(bool enable)
+        {
+            bool originalSource=texture && texture.name=="vigilants-painterly-v2";
+            if(enable && originalSource && !structuralProbeAttempted)
+            {
+                structuralProbeAttempted=true;
+                structuralBackplate=Resources.Load<Texture2D>(
+                    "EldoriaRetention/DepthB11/clean_backdrop");
+            }
+            bool active=enable && originalSource && structuralBackplate &&
+                structuralBackplate.width==texture.width &&
+                structuralBackplate.height==texture.height;
+            if(structuralRequested==active)return;
+            structuralRequested=active;
+            SetVerticesDirty();
+            SetMaterialDirty();
+        }
         readonly Vector2[] road=new Vector2[Steps];
         bool live,roadBound;
         int cleared=-1;

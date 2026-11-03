@@ -273,6 +273,20 @@ namespace Eldoria.ReferenceClean.Editor
                 illustration.texture.name.EndsWith("painterly-v2"),
                 "New painterly Vigilants scene loads through actual Unity Resources");
             var vigilantsPainting=illustration.texture;
+            var structural=illustration as RoyalGoldV3VigilantsLivingLandscape;
+            var independentBackdrop=Resources.Load<Texture2D>(
+                "EldoriaRetention/DepthB11/clean_backdrop");
+            Need(structural && structural.HasStructuralBackdrop &&
+                independentBackdrop && structural.mainTexture==independentBackdrop &&
+                structural.texture==vigilantsPainting &&
+                structural.mainTexture!=structural.texture && !structural.raycastTarget,
+                "B11 actual Vigilants canvas renders genuine cleaned landscape; original remains preserved");
+            var sixPlanes=hud.GetComponentsInChildren<RoyalGoldV3VigilantsParallax>(true)
+                .FirstOrDefault(x=>x.gameObject.activeInHierarchy);
+            Need(sixPlanes && sixPlanes.HasMaterializedDepth &&
+                sixPlanes.MaterializedPlaneCount==6 &&
+                sixPlanes.GetComponentsInChildren<RawImage>(true).Length==6,
+                "B11 actual Unity render requires six distinct alpha silhouette planes, no original photo duplication");
             Screenshot(h,"vigilants-first-trial",1600,900);
             Screenshot(h,"vigilants-first-trial",900,1600);
             Screenshot(h,"vigilants-first-trial",390,844);

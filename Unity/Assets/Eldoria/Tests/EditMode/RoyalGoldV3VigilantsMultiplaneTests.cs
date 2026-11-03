@@ -81,6 +81,55 @@ namespace Eldoria.Tests
             finally { Object.DestroyImmediate(parent); }
         }
 
+
+        [Test]
+        public void B11CleanSourceIsDrawnOnlyBehindSixOriginalGuardianPlanes()
+        {
+            var original=Resources.Load<Texture2D>(
+                "EldoriaRetention/vigilants-painterly-v2");
+            var clean=Resources.Load<Texture2D>(
+                "EldoriaRetention/DepthB11/clean_backdrop");
+            Assert.That(original,Is.Not.Null);
+            Assert.That(clean,Is.Not.Null);
+            Assert.That(clean,Is.Not.SameAs(original));
+            Assert.That(clean.name,Is.EqualTo("clean_backdrop"));
+            Assert.That(clean.width,Is.EqualTo(1536));
+            Assert.That(clean.height,Is.EqualTo(1024));
+            var room=new GameObject("B11 drawn source",typeof(RectTransform),
+                typeof(CanvasRenderer),typeof(RoyalGoldV3VigilantsLivingLandscape));
+            Texture2D scouts=null;
+            try
+            {
+                var paint=room.GetComponent<RoyalGoldV3VigilantsLivingLandscape>();
+                paint.raycastTarget=false;
+                paint.texture=original;
+                paint.UseStructuralBackdrop(true);
+                Assert.That(paint.HasStructuralBackdrop,Is.True);
+                Assert.That(paint.StructuralBackdrop,Is.SameAs(clean));
+                Assert.That(paint.mainTexture,Is.SameAs(clean));
+                Assert.That(paint.texture,Is.SameAs(original),
+                    "Approved artwork must remain the original assigned source");
+                paint.UseStructuralBackdrop(false);
+                Assert.That(paint.HasStructuralBackdrop,Is.False);
+                Assert.That(paint.mainTexture,Is.SameAs(original));
+                scouts=new Texture2D(8,8,TextureFormat.RGBA32,false);
+                scouts.name="scouts-not-vigilants";
+                paint.texture=scouts;
+                paint.UseStructuralBackdrop(true);
+                Assert.That(paint.HasStructuralBackdrop,Is.False);
+                Assert.That(paint.mainTexture,Is.SameAs(scouts),
+                    "Scout room must never inherit the B11 Vigilants scenery");
+                Assert.That(paint.raycastTarget,Is.False);
+                Assert.That(room.GetComponentsInChildren<Canvas>(true).Length,Is.Zero);
+                Assert.That(room.GetComponentsInChildren<EventSystem>(true).Length,Is.Zero);
+            }
+            finally
+            {
+                Object.DestroyImmediate(room);
+                if(scouts)Object.DestroyImmediate(scouts);
+            }
+        }
+
         [Test]
         public void ScoutsNeverReceiveVigilantsDepthAssets()
         {

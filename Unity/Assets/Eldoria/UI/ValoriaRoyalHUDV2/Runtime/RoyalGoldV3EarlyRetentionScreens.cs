@@ -1230,6 +1230,11 @@ namespace Eldoria.UI.RoyalGold.V2
                             panelRatio/pictureRatio,1f);
                 }
             }
+            // B11 replaces the original printed castle/bridge/cliff pixels
+            // underneath six already-independent cutouts. The original
+            // art source remains in .texture and controls retain their order.
+            if(paintedScene is RoyalGoldV3VigilantsLivingLandscape liveLandscape)
+                liveLandscape.UseStructuralBackdrop(vig);
             if(vigilantsParallax)
             {
                 bool hasApprovedScene=vig && paintedVigilants!=null;
