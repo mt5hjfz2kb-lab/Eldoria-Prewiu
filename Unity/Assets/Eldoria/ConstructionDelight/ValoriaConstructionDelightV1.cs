@@ -448,7 +448,8 @@ namespace Eldoria.ReferenceClean
 
         static Material CreateMaterial(string title, Texture2D texture)
         {
-            var shader = Shader.Find("Universal Render Pipeline/Particles/Unlit") ??
+            var shader = Resources.Load<Shader>("ConstructionDelightSoft") ??
+                         Shader.Find("Universal Render Pipeline/Particles/Unlit") ??
                          Shader.Find("UI/Default") ??
                          Shader.Find("Sprites/Default");
             if (!shader) return null;
