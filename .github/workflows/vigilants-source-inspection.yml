@@ -25,7 +25,7 @@ jobs:
           for stem in ('scout-mission-vignettes-v4','engendro-reference-v3','vigilants-painterly-v2'):
               f=p/(stem+'.png')
               d=f.read_bytes()
-              assert d[:8]==b'\\x89PNG\\r\\n\\x1a\\n',stem
+              assert d[:4] == bytes([137,80,78,71]),stem
               print(stem,len(d),hashlib.sha256(d).hexdigest())
           PY
       - uses: actions/upload-artifact@v4
