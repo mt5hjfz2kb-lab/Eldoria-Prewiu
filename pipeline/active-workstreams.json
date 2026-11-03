@@ -120,13 +120,15 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VIGILANTS_B11_STRUCTURAL_DIARAMA_SOURCE_GATE",
-      "next": "Reconstruir backplate limpio y castillo/acantilado derecho con capas 2.5D no duplicadas; conservar 25 hitos, Engendro en tarjeta, tests, realizar A/B nativo; reservar Windows mediante CAS antes de Unity. PR136 DRAFT, cero gasto, sin main merge.",
+      "phase": "VIGILANTS_B11_CANONICAL_NATIVE_CERTIFICATION_41696039463",
+      "next": "Unity run 41696039463 en curso sobre af610329. Revisar results PNG de guardián 5/15 horizontales y móvil, EditMode/PlayMode. No ampliar si hay fallo de source import o artefactos visuales; corregir primero. Sin merge/publicación ni ART_APPROVED.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
