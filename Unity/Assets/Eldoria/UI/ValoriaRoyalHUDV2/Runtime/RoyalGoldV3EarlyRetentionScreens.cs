@@ -1067,16 +1067,16 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 bool tiny=compactLandscape;
                 float textWidth=iw*(tiny?.65f:.54f)-20f;
-                TL(opponent.rectTransform,18f,tiny?49f:65f,textWidth,tiny?65f:92f);
-                TL(formation.rectTransform,18f,tiny?120f:168f,textWidth,tiny?35f:43f);
-                TL(reward.rectTransform,18f,tiny?161f:222f,textWidth,tiny?52f:75f);
+                TL(opponent.rectTransform,18f,tiny?49f:65f,textWidth,tiny?65f:98f);
+                TL(formation.rectTransform,18f,tiny?120f:172f,textWidth,tiny?40f:60f);
+                TL(reward.rectTransform,18f,tiny?162f:239f,textWidth,tiny?59f:86f);
                 TL(passive.rectTransform,18f,
-                    tiny?Mathf.Min(ih-143f,221f):Mathf.Min(ih-190f,335f),
-                    iw-36f,tiny?56f:80f);
-                opponent.fontSize=tiny?19:portrait?27:25;
-                formation.fontSize=tiny?18:portrait?25:23;
-                reward.fontSize=tiny?18:portrait?24:22;
-                passive.fontSize=tiny?17:portrait?21:20;
+                    tiny?Mathf.Max(222f,ih-155f):Mathf.Min(ih-180f,339f),
+                    iw-36f,tiny?60f:83f);
+                opponent.fontSize=tiny?21:portrait?27:25;
+                formation.fontSize=tiny?21:portrait?26:24;
+                reward.fontSize=tiny?21:portrait?27:24;
+                passive.fontSize=tiny?21:portrait?27:22;
             }
 
             // The approved quest-board cards occupy the actual manuscript,
