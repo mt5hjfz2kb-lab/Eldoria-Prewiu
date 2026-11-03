@@ -514,6 +514,11 @@ namespace Eldoria.UI.RoyalGold.V2
             resourceAmounts[2].Put(CompactAmount(s.Resources.Food));
             if(entryLabel!=null)entryLabel.Put("CORREO"+(mail?.Unread()>0?" ("+mail.Unread()+")":""));
             if(!IsOpen)return;
+            // Layout can change responsive page size (5 portrait / 2 compact
+            // landscape) and snap the offset. Apply that BEFORE fetching the
+            // authoritative visible page; otherwise row widgets briefly show
+            // a stale page after an orientation or scale transition.
+            Layout();
             foreach(var t in tabLabels)
             {
                 string key=t.transform.parent.name.Replace("Buzón ","");
