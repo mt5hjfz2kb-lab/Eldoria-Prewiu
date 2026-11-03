@@ -359,7 +359,8 @@ namespace Eldoria.Domain
                 var army=ExpeditionWithMastery(s,available,hero);
                 var battle=SliceRules.FightCreature(army,enemy.Enemy);
                 s.LastBattleReport=new BattleReportState{TargetId="vigilant:"+stage,
-                    HeroId=hero,Troops=available.Total,PlayerPower=army.Power,
+                    HeroId=hero,Troops=available.Total,OwnRoster=available.Copy(),
+                    PlayerPower=army.Power,
                     EnemyPower=enemy.Difficulty,Won=battle.Won,Rounds=battle.Rounds,
                     RemainingHealth=battle.RemainingHealth,
                     Reason=battle.Won?"Superaste la "+enemy.Trait.ToLowerInvariant()+".":

@@ -98,6 +98,8 @@ namespace Eldoria.Domain
         public string TargetId = "";
         public string HeroId = "aldric";
         public int Troops;
+        // Optional immutable snapshot of player-owned deployed troops, absent from legacy reports.
+        public ArmyRoster OwnRoster;
         public int PlayerPower;
         public int EnemyPower;
         public bool Won;

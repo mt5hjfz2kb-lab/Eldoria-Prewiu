@@ -149,7 +149,13 @@ namespace Eldoria.Domain
         public int Troops,PlayerPower,EnemyPower,Rounds,RemainingHealth;
         public int RewardWood,RewardStone,RewardFood;
         public bool Won;
-        public EldoriaV41CombatRecord Copy() => (EldoriaV41CombatRecord)MemberwiseClone();
+        public ArmyRoster OwnRoster;
+        public EldoriaV41CombatRecord Copy()
+        {
+            var copy=(EldoriaV41CombatRecord)MemberwiseClone();
+            copy.OwnRoster=OwnRoster?.Copy();
+            return copy;
+        }
     }
 
     [Serializable] public sealed class EldoriaV41Message

@@ -297,6 +297,7 @@ namespace Eldoria.Application
                     TargetId=s.LastBattleReport?.TargetId??"",
                     HeroId=s.LastBattleReport?.HeroId??"aldric",
                     Troops=s.LastBattleReport?.Troops??0,
+                    OwnRoster=s.LastBattleReport?.OwnRoster?.Copy(),
                     PlayerPower=s.LastBattleReport?.PlayerPower??0,
                     EnemyPower=s.LastBattleReport?.EnemyPower??0,
                     Won=s.LastBattleReport?.Won??false,
@@ -349,7 +350,9 @@ namespace Eldoria.Application
                         ReportId="vigilant:"+command.Id,OccurredAtUtcTicks=clock.UtcTicks,
                         Battle=new EldoriaV41CombatRecord {
                             TargetId=state.LastBattleReport.TargetId,HeroId=state.LastBattleReport.HeroId,
-                            Troops=state.LastBattleReport.Troops,Won=state.LastBattleReport.Won,
+                            Troops=state.LastBattleReport.Troops,
+                            OwnRoster=state.LastBattleReport.OwnRoster?.Copy(),
+                            Won=state.LastBattleReport.Won,
                             PlayerPower=state.LastBattleReport.PlayerPower,
                             EnemyPower=state.LastBattleReport.EnemyPower,
                             Rounds=state.LastBattleReport.Rounds,
@@ -768,6 +771,7 @@ namespace Eldoria.Application
                             TargetId = m.TargetId,
                             HeroId = m.HeroId,
                             Troops = m.Troops.Total,
+                            OwnRoster = m.Troops?.Copy(),
                             PlayerPower = expedition.Power,
                             EnemyPower = creature!=null?enemy.Health+enemy.Attack+enemy.Defense+enemy.Break:0,
                             Won = report.Won,
@@ -786,7 +790,9 @@ namespace Eldoria.Application
                             OccurredAtUtcTicks=due,
                             Battle=new EldoriaV41CombatRecord {
                                 TargetId=state.LastBattleReport.TargetId,HeroId=state.LastBattleReport.HeroId,
-                                Troops=state.LastBattleReport.Troops,Won=state.LastBattleReport.Won,
+                                Troops=state.LastBattleReport.Troops,
+                            OwnRoster=state.LastBattleReport.OwnRoster?.Copy(),
+                            Won=state.LastBattleReport.Won,
                                 PlayerPower=state.LastBattleReport.PlayerPower,
                                 EnemyPower=state.LastBattleReport.EnemyPower,
                                 Rounds=state.LastBattleReport.Rounds,
@@ -1058,7 +1064,7 @@ namespace Eldoria.Application
                 Subtitle=report.Reason,ReportId=id,OccurredAtUtcTicks=due,
                 Battle=new EldoriaV41CombatRecord {
                     TargetId=report.TargetId,HeroId=report.HeroId,Troops=report.Troops,
-                    PlayerPower=report.PlayerPower,EnemyPower=report.EnemyPower,Won=report.Won,
+                    OwnRoster=report.OwnRoster?.Copy(),PlayerPower=report.PlayerPower,EnemyPower=report.EnemyPower,Won=report.Won,
                     Rounds=report.Rounds,RemainingHealth=report.RemainingHealth,
                     RewardWood=report.RewardWood,RewardStone=report.RewardStone,
                     RewardFood=report.RewardFood,Reason=report.Reason
@@ -1075,7 +1081,7 @@ namespace Eldoria.Application
                 if(report.Won){c.AshStalkerDefeated=true;c.AshStalkerRespawnUtcTicks=due+TimeSpan.FromSeconds(60).Ticks;m.PendingFood=120;m.PendingStone=110;}
                 state.LastBattleReport=new BattleReportState{
                     TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,
-                    PlayerPower=stats.Power,EnemyPower=3600,Won=report.Won,
+                    OwnRoster=m.Troops?.Copy(),PlayerPower=stats.Power,EnemyPower=3600,Won=report.Won,
                     Rounds=report.Rounds,RemainingHealth=report.RemainingHealth,
                     RewardFood=m.PendingFood,RewardStone=m.PendingStone,
                     Reason=report.Reason+(report.Won?" Botín: 120 comida y 110 piedra al regresar.":"")
@@ -1096,7 +1102,8 @@ namespace Eldoria.Application
                 if(wolf)c.WolfRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;else c.BoarRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;
                 string item=wolf?"treated-hide":"stone-tusk";if(!c.Inventory.Contains(item))c.Inventory.Add(item);
             }
-            state.LastBattleReport=new BattleReportState{TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,PlayerPower=power,Won=win,RewardStone=m.PendingStone,
+            state.LastBattleReport=new BattleReportState{TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,
+                OwnRoster=m.Troops?.Copy(),PlayerPower=power,Won=win,RewardStone=m.PendingStone,
                 Reason=m.TargetId=="fissure-valoria"?"Aldric y Lyra cierran la fisura. Lyra reconoce el símbolo de su hermano y se une a Valoria.":win?"La caza proporciona alimento y materiales, no Poder.":"La expedición no alcanza el Poder necesario para esta cacería."};
             state.LastBattleReason=state.LastBattleReport.Reason;
             RecordChapterThreeCombatMail(m,due);
