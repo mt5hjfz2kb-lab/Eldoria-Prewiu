@@ -120,13 +120,15 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "SCOUTS_ART_MATERIAL_CONTRACT_DEPTH_NATIVE_AB_20261103",
-      "next": "Reconstruir tres contratos con elementos independientes: sombra real, espesor pergamino, encastre pictórico, encuadre móvil y tres estados; verificar PR137 modos solo como candidatas y conservar gameplay. A/B Unity 1600x900 900x1600 390x844 844x390 y validación persistencia. PR136 canónica, sin merge/publicación/gasto.",
+      "phase": "SCOUTS_PHYSICAL_PARCHMENT_NATIVE_AB_20261103",
+      "next": "Unity exact-head A/B for three scout contracts with 3 passive material layers each; verify ready/active/claim persistence at 1600x900,900x1600,390x844,844x390. No gameplay changes; preserve PR137 route candidates. No merge or release.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
