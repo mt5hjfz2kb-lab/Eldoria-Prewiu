@@ -120,13 +120,15 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VIGILANTS_DEEP_SCENE_RECONSTRUCTION_EXCLUSIVE_CANONICAL",
-      "next": "Replace B2 pasted portrait with authentic environment-integrated scene for 25-stage Vigilants. Recompose scenic and encounter UI, retain original textures/guardians/save/rules, validate strict exact-HEAD native A/B before any approval. Reconcile PR137; no main merge or publication.",
+      "phase": "VIGILANTS_B3_NATIVE_DEEP_REBUILD_WINDOWS_RESERVED",
+      "next": "Run exact Unity B3 on PR136; review A/B with original and B2 at same states; correct layout until native all green and compare images. Do not publish/merge main.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -989,7 +991,7 @@
       "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied",
       "current_session": null,
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
-      "resources_verified_at": "2026-11-03T11:25:00Z",
+      "resources_verified_at": "2026-11-03",
       "resources_evidence": "GitHub Actions queued=0, in_progress=0 (recent); prior handoff run41624989872 success; lease owner revision116",
       "validation_recovery_session": {
         "owner": "chatgpt-validation-recovery-20261019",
