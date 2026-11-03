@@ -578,6 +578,109 @@ namespace Eldoria.Editor
             Need(quantity.rectTransform.rect.width>=36,
                 "Quantity remains legible between real minus and plus controls "+shot);
         }
+        // Disposable ACTUAL gateway / scene / HUD acceptance for the complete
+        // construction flow. Every build, timer and resource refusal comes from
+        // existing gameplay; never write or seed the user's real save.
+        static IEnumerator VerifyCityConstruction(ValoriaIntegratedWorld host)
+        {
+            Need(host.City.Probe,"Construction probe must use disposable file state");
+            var saved=File.ReadAllText(host.City.SaveFile);
+            var state=host.City.Gateway.Snapshot();
+            state.SawmillLevel=0;
+            state.BuildingCompletesUtcTicks=0;state.BuildingTaskId="";
+            state.Resources.Wood=9000;state.Resources.Stone=6000;
+            new FileStateStore(host.City.SaveFile).Save(state);
+            host.City.ReloadForProbe();yield return null;
+            var context=host.Hud.GetComponent<RoyalGoldV3ContextHud>();
+            var sheet=host.Hud.GetComponent<RoyalGoldV2Hud>();
+            var utility=host.Hud.GetComponent<RoyalGoldV3BuildingScreens>();
+            host.Hud.SelectBuilding("sawmill");yield return null;
+            sheet.SynchronizeNow();context.SynchronizeNow();
+            var first=host.Read("sawmill",false).Building;
+            Need(first!=null&&first.Action!=null&&first.Action.Kind=="Build"&&
+                first.Action.Enabled&&!first.OperationActive,
+                "Real initial Sawmill construction is eligible in disposable kingdom");
+            Need(sheet.ChronicleBuildingAction&&sheet.ChronicleBuildingAction.interactable&&
+                !utility.IsOpen,
+                "One bottom parchment owns the initial build, with no extra modal");
+            Shot(host,"building-initial-desktop",1600,900);
+            Shot(host,"building-initial-portrait",900,1600);
+            Shot(host,"building-initial-small-phone",390,844);
+            Shot(host,"building-initial-small-landscape",844,390);
+            var before=host.City.Gateway.Snapshot();
+            var wood=before.Resources.Wood;
+            sheet.ChronicleBuildingAction.onClick.Invoke();
+            var running=host.Read("sawmill",false).Building;
+            Need(running.OperationActive&&host.City.Gateway.Snapshot().Resources.Wood<wood,
+                "Sawmill construction starts and pays exactly the real gateway price");
+            context.SynchronizeNow();
+            Need(context.ActiveTimers>=1&&!sheet.ChronicleBuildingAction.interactable,
+                "Initial purchase becomes one projected timer, never a duplicate offer");
+            Shot(host,"building-in-progress-desktop",1600,900);
+            Shot(host,"building-in-progress-portrait",900,1600);
+            Shot(host,"building-in-progress-small-phone",390,844);
+            host.Hud.SelectBuilding("");
+            context.SynchronizeNow();
+            Need(context.ActiveTimers>=1,
+                "Closing a building selection preserves its original live timer");
+            host.Hud.SelectBuilding("sawmill");
+            host.City.ReloadForProbe();yield return null;
+            context.SynchronizeNow();
+            Need(host.Read("sawmill",false).Building.OperationActive,
+                "Reloading a real in-progress building retains its deadline");
+            Shot(host,"building-resumed-small-phone",390,844);
+            var clock=(ValoriaReferenceCleanGameplay.TestClock)host.City.Clock;
+            long due=host.City.Gateway.Snapshot().BuildingCompletesUtcTicks;
+            Need(due>clock.UtcTicks,"Initial Sawmill uses a saved real UTC completion deadline");
+            clock.Step((int)Math.Ceiling((due-clock.UtcTicks)/(double)TimeSpan.TicksPerSecond)+1);
+            host.City.Gateway.Advance();
+            Need(host.City.Gateway.Snapshot().SawmillLevel>=1,
+                "Real construction completes after advancing only the disposable clock");
+            var insufficient=host.City.Gateway.Snapshot();
+            insufficient.Resources.Wood=0;insufficient.Resources.Stone=0;
+            new FileStateStore(host.City.SaveFile).Save(insufficient);
+            host.City.ReloadForProbe();yield return null;
+            host.Hud.SelectBuilding("sawmill");yield return null;
+            sheet.SynchronizeNow();
+            var noMoney=host.Read("sawmill",false).Building;
+            Need(noMoney!=null&&noMoney.Action!=null&&!noMoney.Action.Enabled&&
+                !sheet.ChronicleBuildingAction.interactable,
+                "Insufficient resources disable the authentic upgrade, not a fake button");
+            Shot(host,"building-insufficient-portrait",900,1600);
+            Shot(host,"building-insufficient-small-phone",390,844);
+            var refill=host.City.Gateway.Snapshot();
+            refill.Resources.Wood=9000;refill.Resources.Stone=6000;
+            new FileStateStore(host.City.SaveFile).Save(refill);
+            host.City.ReloadForProbe();yield return null;
+            host.Hud.SelectBuilding("sawmill");yield return null;
+            sheet.SynchronizeNow();
+            var upgrade=host.Read("sawmill",false).Building;
+            Need(upgrade!=null&&upgrade.Action!=null&&upgrade.Action.Enabled&&
+                upgrade.Action.Kind!="Build"&&sheet.ChronicleBuildingAction.interactable,
+                "Real level-one Sawmill now offers its authorized upgrade");
+            Shot(host,"building-upgrade-desktop",1600,900);
+            Shot(host,"building-upgrade-portrait",900,1600);
+            Shot(host,"building-upgrade-small-phone",390,844);
+            sheet.ChronicleBuildingAction.onClick.Invoke();
+            var upRunning=host.Read("sawmill",false).Building;
+            Need(upRunning.OperationActive,
+                "Real upgrade creates one persisted operation");
+            context.SynchronizeNow();
+            Need(context.ActiveTimers>=1&&!utility.IsOpen,
+                "Upgrade work stays attached to the building, without another modal");
+            Shot(host,"building-upgrading-portrait",900,1600);
+            host.Hud.SelectBuilding("");
+            host.City.ReloadForProbe();yield return null;
+            Need(host.Read("sawmill",false).Building.OperationActive,
+                "Reload never loses an in-progress upgrade");
+            // Restore the original disposable probe fixture before the suite's
+            // unrelated training and marching tests. No player save touched.
+            File.WriteAllText(host.City.SaveFile,saved);
+            host.City.ReloadForProbe();yield return null;
+            Need(File.ReadAllText(host.City.SaveFile)==saved,
+                "Construction QA returned its temporary gateway fixture exactly");
+            host.Hud.SelectBuilding("");
+        }
         static IEnumerator Exercise(ValoriaIntegratedWorld host)
         {
             for(int i=0;i<300&&!host.Ready;i++)yield return null;
@@ -634,6 +737,8 @@ namespace Eldoria.Editor
             Need(!(host.Hud.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen??true),
                 "No independent management modal interrupts construction");
             host.Hud.SelectBuilding("");
+            var buildingSuite=VerifyCityConstruction(host);
+            while(buildingSuite.MoveNext())yield return buildingSuite.Current;
             screen.Open(RoyalGoldV3ManagementScreens.Destination.Training);yield return null;
             Shot(host,"training-reference-ratio",554,542);
             Shot(host,"training-phone",900,1600);Shot(host,"training-small-phone",390,844);Shot(host,"training-small-phone-landscape",844,390);Shot(host,"training-landscape",1600,900);
