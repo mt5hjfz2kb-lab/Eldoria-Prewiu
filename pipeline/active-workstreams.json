@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-training-native-integration-20261103",
+      "owner": "chatgpt-eldoria-training-art-ab-20261103",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
-      "claimed_at": "2026-11-03T00:05:00Z",
+      "claimed_at": "2026-11-03",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -127,8 +127,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "TRAINING_ART_FINISH_NATIVE_AB_FOUR_RESOLUTIONS",
-      "next": "Integrate guarded Training art patch from V4.1 over PR136 HEAD 59905af6; native four-resolution A/B and gameplay/retention tests, inspect real captures, revert failed visuals. Breach evidence preserved and remains separate pending work.",
+      "phase": "TRAINING_REFERENCE_STRUCTURAL_FINISH_AB",
+      "next": "Correct visual hierarchy/miniatures/identity in existing PR136; run native four-resolution genuine Training captures, compare with commit 328c4bb, preserve economy and March controls; no release or merge before owner visual decision.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1701,9 +1701,15 @@
           "ownership_revision": 109,
           "transferred_at": "2026-11-03",
           "reason": "Owner explicitly orders continuation of artistic Training block in this chat. Prior native run 41547437884 completed SUCCESS on SHA 59905af6; preserve Breach work, do not merge or publish."
+        },
+        {
+          "owner": "chatgpt-eldoria-training-native-integration-20261103",
+          "ownership_revision": 110,
+          "transferred_at": "2026-11-03",
+          "reason": "Owner explicitly requests further corrections and 4-resolution A/B for Training in a new chat. Prior exact PR136 native certification 41551164177 SUCCESS. No live incompatible PR136 workflow."
         }
       ],
-      "ownership_revision": 110,
+      "ownership_revision": 111,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1795,7 +1801,7 @@
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
       "candidate_branch": "fix/player-feedback-context-ui-20261030",
       "canonical_pr": 132,
-      "handoff_reason": "Explicit owner instruction 2026-11-03; prior Windows CI completed, no incompatible PR136 run in progress. Keep the same canonical workstream/PR and runner reservation.",
+      "handoff_reason": "Owner-authorized continuation of same Training workstream; native preceding run completed, write scope preserved, no parallel PR.",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
       "scope_extension_reason": "Owner-directed Marches UI recon: update obsolete PlayMode UI heading assertion to inspect real live metric, preserve gateway 7 troop and save assertions.",
