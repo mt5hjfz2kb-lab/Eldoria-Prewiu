@@ -589,11 +589,29 @@ namespace Eldoria.Editor
             state.SawmillLevel=0;
             state.BuildingCompletesUtcTicks=0;state.BuildingTaskId="";
             state.Resources.Wood=9000;state.Resources.Stone=6000;
+            state.SpeedupOneMinute=2;state.SpeedupFiveMinutes=1;
+            state.ChapterThree.DevelopmentPriority="";
             new FileStateStore(host.City.SaveFile).Save(state);
             host.City.ReloadForProbe();yield return null;
             var context=host.Hud.GetComponent<RoyalGoldV3ContextHud>();
             var sheet=host.Hud.GetComponent<RoyalGoldV2Hud>();
             var utility=host.Hud.GetComponent<RoyalGoldV3BuildingScreens>();
+            host.Hud.SelectBuilding("bastion");yield return null;
+            sheet.SynchronizeNow();
+            Need(utility.InlineCouncilNeeded("bastion")&&!utility.IsOpen,
+                "Council decision is integrated into the city parchment, never another management screen");
+            var councilButtons=host.Hud.GetComponentsInChildren<Button>()
+                .Where(x=>x.name.StartsWith("Building / council ")).ToArray();
+            Need(councilButtons.Length==3&&councilButtons.All(x=>x.gameObject.activeInHierarchy),
+                "All three genuine development choices fit inside the same city cartouche");
+            Shot(host,"building-council-desktop",1600,900);
+            Shot(host,"building-council-small-phone",390,844);
+            var priorityWood=host.City.Gateway.Snapshot().Resources.Wood;
+            councilButtons.First(x=>x.name=="Building / council production").onClick.Invoke();
+            Need(host.City.Gateway.Snapshot().ChapterThree.DevelopmentPriority=="production"&&
+                host.City.Gateway.Snapshot().Resources.Wood==priorityWood+260,
+                "Existing development command grants only its real production branch once");
+            host.Hud.SelectBuilding("");
             host.Hud.SelectBuilding("sawmill");yield return null;
             sheet.SynchronizeNow();context.SynchronizeNow();
             var first=host.Read("sawmill",false).Building;
@@ -669,10 +687,24 @@ namespace Eldoria.Editor
             Need(context.ActiveTimers>=1&&!utility.IsOpen,
                 "Upgrade work stays attached to the building, without another modal");
             Shot(host,"building-upgrading-portrait",900,1600);
+            Shot(host,"building-upgrading-small-phone",390,844);
             host.Hud.SelectBuilding("");
             host.City.ReloadForProbe();yield return null;
             Need(host.Read("sawmill",false).Building.OperationActive,
                 "Reload never loses an in-progress upgrade");
+            host.Hud.SelectBuilding("sawmill");yield return null;
+            sheet.SynchronizeNow();
+            var boost=host.Hud.GetComponentsInChildren<Button>()
+                .FirstOrDefault(x=>x.name=="Building / accelerate one minute");
+            Need(boost&&boost.gameObject.activeInHierarchy&&
+                utility.InlineSpeedupCharges(1)==2&&!utility.IsOpen,
+                "Only real available speed-ups appear inside the selected building sheet");
+            boost.onClick.Invoke();
+            Need(host.City.Gateway.Snapshot().SpeedupOneMinute==1,
+                "Inline boost charges exactly one saved accelerator with existing gateway");
+            context.SynchronizeNow();
+            Need(!utility.IsOpen,
+                "Using the inline speed-up does not open an extra modal");
             // Restore the original disposable probe fixture before the suite's
             // unrelated training and marching tests. No player save touched.
             File.WriteAllText(host.City.SaveFile,saved);
