@@ -747,16 +747,23 @@ namespace Eldoria.Editor
             }
             mailbox.Initialize(host.Hud,new MailboxDisplayFixture(fixtureState));
             mailbox.Refresh();yield return null;
+            // Previous mailbox capture ended at 844x390, where the live
+            // landscape design intentionally shows TWO items. Restore a
+            // genuine portrait canvas before asserting FIVE visible cards.
+            Shot(host,"mailbox-qa-twelve-phone",900,1600);
             Need(mailbox.VisibleMessageRows==5,
-                "QA-only 12-message inbox shows exactly five cards on the first portrait page");
+                "QA-only 12-message inbox shows exactly five cards on the first portrait page (actual "+
+                    mailbox.VisibleMessageRows+")");
             var qaCards=host.Hud.GetComponentsInChildren<Image>()
                 .Where(x=>x.name=="Approved source / mail-card").ToArray();
             Need(qaCards.Any(x=>x.color.r<.90f) &&
                 qaCards.Any(x=>x.color.r>.95f),
                 "Genuine Read state and Unread state draw visibly different parchment tones");
             Shot(host,"mailbox-qa-twelve-reference-ratio",1169,1345);
-            Shot(host,"mailbox-qa-twelve-phone",900,1600);
             Shot(host,"mailbox-qa-twelve-landscape",1600,900);
+            // Pagination 5/5/2 is the portrait contract. A landscape
+            // screenshot cannot silently change the expected page length.
+            Shot(host,"mailbox-qa-twelve-portrait-pagination-start",900,1600);
             var nextPage=host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Página siguiente");
             nextPage.onClick.Invoke();yield return null;
             Need(mailbox.VisibleMessageRows==5,
