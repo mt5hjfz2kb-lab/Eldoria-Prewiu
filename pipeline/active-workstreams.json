@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-03T11:20:00Z",
+  "updated_at": "2026-11-03T11:25:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -120,13 +120,15 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VIGILANTS_ART_ISOLATED_SOURCE_CANDIDATE_TEST_PREP",
-      "next": "Integrate tested Vigilants art candidate into existing canonical PR136 after exact diff reconciliation, run native Unity A/B on same SHA with guardian5/10/15/20/25, victory/defeat, four ratios, raycast/save/performance; no main merge/release or score claim without proof.",
+      "phase": "VIGILANTS_NATIVE_AB_WINDOWS_RESERVED",
+      "next": "Single push to canonical PR136 of tested art candidate; Unity UI Progression Certification native will exercise real retention (guardians5/10/15/20/25, victory/defeat), mobile raycasts and saved state. Inspect current-HEAD B images before merging.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -989,8 +991,8 @@
       "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied",
       "current_session": null,
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
-      "resources_verified_at": "2026-10-31",
-      "resources_evidence": "Existing run 41516706630 remains in_progress; preserve it before launching any new exact-head Unity run.",
+      "resources_verified_at": "2026-11-03T11:25:00Z",
+      "resources_evidence": "GitHub Actions queued=0, in_progress=0 (recent); prior handoff run41624989872 success; lease owner revision116",
       "validation_recovery_session": {
         "owner": "chatgpt-validation-recovery-20261019",
         "authorization": "Owner requested review and completion of today's validation failures and pending delivery in current session.",
