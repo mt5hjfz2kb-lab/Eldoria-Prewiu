@@ -181,6 +181,8 @@ namespace Eldoria.Tests
                     Debug.Log("ELDORIA_ISSUE95_SPAWNLING_NATIVE_AB view="+view.label+
                         " before_height="+before.size.y.ToString("F3")+
                         " after_height="+after.size.y.ToString("F3")+
+                        " before_width="+before.size.x.ToString("F3")+
+                        " after_width="+after.size.x.ToString("F3")+
                         " camera_zoom="+camera.orthographicSize.ToString("F1"));
                 }
                 Assert.That(JsonUtility.ToJson(gateway.Snapshot()),Is.EqualTo(initial),
