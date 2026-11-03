@@ -42,3 +42,12 @@ Titular canónico Valoria revisión 113: `chatgpt-eldoria-mailbox-v41-20261103`,
 ## Cierre pendiente
 
 B native A/B real 4 resoluciones, evaluar vacíos/un informe/paginación larga y detalle, completar dominio y Unity íntegros, conservar SHA y artefactos, documentar veredicto y liberar recursos conforme a `docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md`.
+
+## Revisión de código 03/11 — QA trazable, no certificación Unity
+
+- **HEAD exacto de código + pruebas:** `57cfbc636b34c258628a7fa2441fba0e2eddbb06`. Comparado con A `3ced690c...`: solo se han modificado tres archivos `Unity` (Buzón UI, capturador Editor, test EditMode) y este documento. Ninguna fuente de dominio, campaña, recompensas, guardados o V4.1 combat fue editada.
+- `EldoriaV41NativeCapture`: fotografías reales pendientes del Buzón en cuatro dimensiones y vista de informe, vacío después de borrar y cuatro pestañas; el capturador añade una pasarela `ICommandGateway` **solo en Unity Editor** con 11 eventos QA añadidos a una COPIA del estado real (uno auténtico + once de prueba). Es de solo lectura, `Execute` siempre falla y se verifica que el fichero de guardado original quede byte a byte igual. Nunca se inserta correo ficticio en la UI de producción ni se altera el estado definitivo.
+- La prueba real de `Read` usa `Mailbox.MarkRead` tras `Receive` porque `Receive` no copia el bit `Read` del remitente; QA distingue verdaderamente papel leído y no leído, no un tinte de marcador inventado.
+- Layout prevalidado por cálculo acotado: 0/1/2/5/12 eventos en 390×844, 900×1600, 844×390 y 1600×900; a 844×390 página de 2 en lugar de 5, sin superposición con footer. **Esta cuenta no reemplaza captura ni test Unity.**
+- El workflow UI Progression Certification se encuentra en estado `pending` para este HEAD a la espera de recurso Windows. Issue95 Spawnling (workstream `eldoria-tripo-art-brain-phase2-20261021`) mantiene `windows-runner-heavy` y ha lanzado workflows nativos. **No** ejecutar Unity a la vez, reasignar la reserva por inactividad ni cancelar trabajos ajenos.
+- Reanudación segura: comprobar en `main` el registro y los workflows. Tras la liberación explícita de la reserva Issue95 y exclusión de procesos Unity incompatibles, reservar Windows para el mismo workstream Valoria vía CAS, lanzar el gate nativo del **HEAD exacto** (re-dispatch/re-run si la ejecución pendiente es anterior), inspeccionar las capturas y resolver cualquier gate rojo. No atribuir pruebas del commit `408f0a1` a la nueva UI.
