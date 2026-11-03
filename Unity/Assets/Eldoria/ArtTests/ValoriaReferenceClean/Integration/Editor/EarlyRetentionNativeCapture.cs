@@ -353,9 +353,10 @@ namespace Eldoria.ReferenceClean.Editor
                 "Stage15 actually displays the selected reference-derived creature illustration");
             Need(engendroArt.uvRect==new Rect(0,0,1,1) && !referencePortrait.isReadable,
                 "Authored transparent portrait needs no destructive studio-key or extra readable mobile texture");
-            Need(relief && !relief.gameObject.activeInHierarchy &&
+            Need(relief && relief.gameObject.activeInHierarchy &&
+                relief.PaintedFigure && relief.Breach &&
                 engendroArt.gameObject.activeInHierarchy,
-                "The authentic stage-15 Engendro takes visual authority; no duplicate guardian relief");
+                "Engendro stands alone on a shared Breach-lit stone footing, with no duplicated vector guardian");
             var portraitBytes=File.ReadAllBytes("Assets/Eldoria/Resources/EldoriaRetention/engendro-reference-v3.png");
             using(var sha=System.Security.Cryptography.SHA256.Create())
                 Need(BitConverter.ToString(sha.ComputeHash(portraitBytes)).Replace("-","").ToLowerInvariant()==
@@ -381,12 +382,15 @@ namespace Eldoria.ReferenceClean.Editor
             Need(stageTrail!=null && creatureFrame!=null && trailParent!=null,
                 "Real route and authentic creature are present");
             var occlusion=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsTerrainOcclusion>(true);
-            Need(creatureFrame.parent==trailParent &&
-                occlusion!=null && occlusion.isActiveAndEnabled &&
-                !occlusion.raycastTarget &&
+            var lighting=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsWorldLight>(true);
+            Need(creatureFrame.parent.name=="Progression and expedition information" &&
+                !engendroArt.raycastTarget && 
+                occlusion && occlusion.isActiveAndEnabled && !occlusion.raycastTarget &&
                 occlusion.OriginalArtwork==vigilantsPainting &&
-                occlusion.CoverUv==illustration.uvRect,
-                "Engendro occupies its actual landscape depth, behind original rock and live stages");
+                lighting && lighting.isActiveAndEnabled && !lighting.raycastTarget &&
+                lighting.LastCleared==14 && lighting.CurrentStage==15 &&
+                lighting.CoverUv==illustration.uvRect,
+                "Stage15 returns to an illustrated non-photo encounter card while the real road receives independent stage-linked sunlight and foreground occlusion");
             for(int stage=1;stage<=25;stage++)
             {
                 var point=stageTrail.transform.TransformPoint(stageTrail.StagePosition(stage));
