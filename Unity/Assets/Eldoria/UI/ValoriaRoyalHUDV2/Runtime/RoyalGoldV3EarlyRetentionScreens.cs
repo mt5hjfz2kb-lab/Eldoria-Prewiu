@@ -1011,23 +1011,6 @@ namespace Eldoria.UI.RoyalGold.V2
                 reward.fontSize=26;passive.fontSize=26;battleFeedback.fontSize=26;
                 if(!portrait)TL(battleFeedback.rectTransform,14f,450f,iw-28f,130f);
             }
-            // Text must sit BESIDE the figure, not beneath it. Compact
-            // landscape uses a reduced engraving in the far right niche.
-            if(OpenDestination==Destination.Vigilants && !encounterPortraitVisible)
-            {
-                bool tiny=compactLandscape;
-                float textWidth=iw*(tiny?.65f:.54f)-20f;
-                TL(opponent.rectTransform,18f,tiny?49f:65f,textWidth,tiny?65f:92f);
-                TL(formation.rectTransform,18f,tiny?120f:168f,textWidth,tiny?35f:43f);
-                TL(reward.rectTransform,18f,tiny?161f:222f,textWidth,tiny?52f:75f);
-                TL(passive.rectTransform,18f,
-                    tiny?Mathf.Min(ih-143f,221f):Mathf.Min(ih-190f,335f),
-                    iw-36f,tiny?56f:80f);
-                opponent.fontSize=tiny?19:portrait?27:25;
-                formation.fontSize=tiny?18:portrait?25:23;
-                reward.fontSize=tiny?18:portrait?24:22;
-                passive.fontSize=tiny?17:portrait?21:20;
-            }
             else if(portrait)
             {
                 // Scouts occupies three real contracts and keeps their original
@@ -1078,6 +1061,24 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(chapter.rectTransform,16f,10f,iw-32f,41f);
                 chapter.fontSize=27;
             }
+            // Text must sit BESIDE the figure, not beneath it. Compact
+            // landscape uses a reduced engraving in the far right niche.
+            if(OpenDestination==Destination.Vigilants && !encounterPortraitVisible)
+            {
+                bool tiny=compactLandscape;
+                float textWidth=iw*(tiny?.65f:.54f)-20f;
+                TL(opponent.rectTransform,18f,tiny?49f:65f,textWidth,tiny?65f:92f);
+                TL(formation.rectTransform,18f,tiny?120f:168f,textWidth,tiny?35f:43f);
+                TL(reward.rectTransform,18f,tiny?161f:222f,textWidth,tiny?52f:75f);
+                TL(passive.rectTransform,18f,
+                    tiny?Mathf.Min(ih-143f,221f):Mathf.Min(ih-190f,335f),
+                    iw-36f,tiny?56f:80f);
+                opponent.fontSize=tiny?19:portrait?27:25;
+                formation.fontSize=tiny?18:portrait?25:23;
+                reward.fontSize=tiny?18:portrait?24:22;
+                passive.fontSize=tiny?17:portrait?21:20;
+            }
+
             // The approved quest-board cards occupy the actual manuscript,
             // not three tiny 95-point rows floating at the top of a phone.
             // Scale all three naturally with their destination's usable height.
