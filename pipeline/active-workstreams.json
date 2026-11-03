@@ -2013,7 +2013,7 @@
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
       "owner": "chatgpt-eldoria-spawnling-presence-proof-20261103",
-      "ownership_revision": 21,
+      "ownership_revision": 22,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "art/issue95-spawnling-presence-proof-20261103",
@@ -2039,7 +2039,8 @@
         "docs/evidence/spawnling-animation-v4-review-20261021/**",
         "Unity/Assets/Eldoria/SpawnlingBastion2/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs.meta"
+        "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs.meta",
+        ".github/workflows/issue95-spawnling-presence-native-ab.yml"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -2054,7 +2055,7 @@
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Run same-scene Unity A/B near/regional on branch art/issue95-spawnling-presence-proof-20261103 and reject or retain based on visual plus functionality. No main merge, no release.",
+      "next": "Exact A/B Unity PlayMode test on existing V4 actor: 4 native PNGs with matched near/regional camera and no state changes. Dedicated push-only workflow, zero external credits. Reject or retain on visual evidence.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
