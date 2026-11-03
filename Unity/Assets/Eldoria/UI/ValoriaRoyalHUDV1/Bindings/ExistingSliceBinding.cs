@@ -140,14 +140,33 @@ namespace Eldoria.UI.RoyalGold {
     b.Level=target=="stoneworks"?c.StoneworksLevel:target=="granary"?c.GranaryLevel:target=="sawmill"?s.SawmillLevel:s.BarracksLevel;
     b.Function=target=="barracks"?L(en,"Infraestructura militar. Recluta desde el Cuartel.","Military infrastructure. Recruit from the Barracks."):
      (target=="stoneworks"?b.Level*2:b.Level)+L(en,target=="stoneworks"?" piedra/s":target=="granary"?" comida/s":" madera/s",target=="stoneworks"?" stone/s":target=="granary"?" food/s":" wood/s");
-    wood=b.Level==0?(target=="stoneworks"?500:240):(target=="barracks"?140:120)*b.Level;stone=b.Level==0?(target=="stoneworks"?0:180):(target=="barracks"?90:78)*b.Level;
+    // Bastion III+ reuses the *original* Build gateway for a first Sawmill
+    // or Barracks. It does NOT use the later chapter-three cost/duration
+    // formula until the first building exists. Display exactly what the
+    // gateway will charge rather than an invented higher introductory price.
+    bool initialLegacy=b.Level==0&&(target=="sawmill"||target=="barracks");
+    wood=initialLegacy?(target=="sawmill"?SliceRules.SawmillWoodCost:SliceRules.BarracksWoodCost):
+        b.Level==0?(target=="stoneworks"?500:240):(target=="barracks"?140:120)*b.Level;
+    stone=initialLegacy?(target=="sawmill"?0:SliceRules.BarracksStoneCost):
+        b.Level==0?(target=="stoneworks"?0:180):(target=="barracks"?90:78)*b.Level;
     food=b.Level==0&&target=="stoneworks"?200:0;
-    seconds=b.Level==0?(target=="stoneworks"?12:9):8+b.Level*2;kind=b.Level==0?"Build":"UpgradeBuilding";label=L(en,b.Level==0?"Construir":"Mejorar",b.Level==0?"Build":"Upgrade");
+    seconds=initialLegacy?(target=="sawmill"?SliceRules.SawmillBuildSeconds:SliceRules.BarracksBuildSeconds):
+        b.Level==0?(target=="stoneworks"?12:9):8+b.Level*2;
+    kind=b.Level==0?"Build":"UpgradeBuilding";
+    label=L(en,b.Level==0?"Construir":"Mejorar",b.Level==0?"Build":"Upgrade");
     if(target=="stoneworks"&&s.BastionLevel<5)reason=L(en,"Requiere Bastión V.","Requires Bastion V.");
     if(b.Level>=s.BastionLevel||b.Level>=5)reason=L(en,"Nivel máximo para el Bastión actual.","Maximum level for the current Bastion.");
     if(b.Level>=2&&target!="barracks"&&!c.Inventory.Contains(target=="sawmill"?"iron-brace":target=="stoneworks"?"stone-tusk":"treated-hide"))reason=L(en,"Falta material especial del mundo.","Requires a special world material.");
-    if(s.BuildingTaskId.StartsWith("c3:"+target+":",StringComparison.Ordinal))deadline=s.BuildingCompletesUtcTicks;
-    else if(s.BuildingCompletesUtcTicks>0||s.BastionUpgradeCompletesUtcTicks>0)reason=L(en,"Otra obra está en curso.","Another construction is in progress.");
+    // Both valid sources of construction are represented: initial I-II
+    // tasks ("sawmill:<id>"/"barracks:<id>") and chapter-three upgrades
+    // ("c3:<building>:<id>"). An already paid initial build must not
+    // turn into an empty offer or lose its timer on reload.
+    var task=s.BuildingTaskId??"";
+    if(task.StartsWith("c3:"+target+":",StringComparison.Ordinal)||
+       (initialLegacy&&task.StartsWith(target+":",StringComparison.Ordinal)))
+        deadline=s.BuildingCompletesUtcTicks;
+    else if(s.BuildingCompletesUtcTicks>0||s.BastionUpgradeCompletesUtcTicks>0)
+        reason=L(en,"Otra obra está en curso.","Another construction is in progress.");
    }else{
     b.Name=id=="fissure-valoria"?L(en,"Fisura","Fissure"):id=="hunt-wolf"?L(en,"Lobo ceniciento","Ash wolf"):id=="hunt-boar"?L(en,"Jabalí de roca","Rock boar"):id=="ash-stalker-valoria"?L(en,"Acechador de Ceniza","Ash Stalker"):L(en,"Reserva de carne","Meat reserve");
     kind=id=="meat-valoria"?"Gather":"Fight";label=L(en,"Enviar expedición","Send expedition");
