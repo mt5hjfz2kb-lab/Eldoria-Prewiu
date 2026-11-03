@@ -826,6 +826,12 @@ namespace Eldoria.Editor
             var metricValue=host.Hud.GetComponentsInChildren<Text>(true)
                 .FirstOrDefault(t=>t.name=="Mailbox / genuine metric 1");
             var realRecord=gateway.Snapshot().Mailbox.List("informes")[0].Battle;
+            var visibleComposition=host.Hud.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(t=>t.name=="Mailbox / own roster historical composition");
+            Need(realRecord.OwnRoster!=null&&realRecord.OwnRoster.Total==realRecord.Troops &&
+                visibleComposition&&visibleComposition.text.Contains("ARQUEROS") &&
+                visibleComposition.text.Contains("T1: "+realRecord.OwnRoster.ArcherT1),
+                "Historical own-roster tiers come from the actual dispatched army, never guesses");
             Need(reportText&&metricTitle&&metricTitle.text=="TROPAS ENVIADAS"&&
                 metricValue&&metricValue.text==realRecord.Troops.ToString()&&
                 !reportText.text.Contains("Ruptura super")&&

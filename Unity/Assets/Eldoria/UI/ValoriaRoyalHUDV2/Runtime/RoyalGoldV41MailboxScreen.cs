@@ -27,7 +27,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RectTransform detailSheet;
         RoyalGoldV41ReportArtwork reportArtwork;
         RoyalText reportKicker,reportHeading,reportOrigin,reportDate,reportSeal;
-        RoyalText reportSection,reportFooter,reportToggleText;
+        RoyalText reportSection,reportFooter,reportToggleText,reportComposition;
         readonly RoyalText[] metricNames=new RoyalText[4];
         readonly RoyalText[] metricValues=new RoyalText[4];
         Button reportToggle;
@@ -296,6 +296,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 metricNames[i]=Label("Mailbox / metric caption "+i,detailSheet,14,true);
                 metricValues[i]=Label("Mailbox / genuine metric "+i,detailSheet,22,true);
             }
+            reportComposition=Label("Mailbox / own roster historical composition",detailSheet,17,true);
+            reportComposition.verticalOverflow=VerticalWrapMode.Overflow;
             reportSection=Label("Mailbox / report section heading",detailSheet,17,true);
             reportToggle=MakeButton("Mailbox / collapse or expand report",detailSheet,
                 "OCULTAR",()=>{reportExpanded=!reportExpanded;Refresh();},out reportToggleText);
@@ -552,7 +554,19 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             float metricHeight=reportMetricCount>0?
                 Mathf.Ceil(reportMetricCount/(float)cols)*(cardH+gap)-gap:0f;
-            float storyTop=metricTop+metricHeight+(reportMetricCount>0?18f:0f);
+            float compositionTop=metricTop+metricHeight+14f;
+            float compositionH=0f;
+            if(reportMetricCount>0)
+            {
+                Position(reportComposition.rectTransform,30f,compositionTop,
+                    width-60f,36f);
+                reportComposition.fontSize=narrow?15:18;
+                reportComposition.color=new Color(.41f,.27f,.14f);
+                compositionH=Mathf.Max(42f,reportComposition.preferredHeight+15f);
+                Position(reportComposition.rectTransform,30f,compositionTop,
+                    width-60f,compositionH);
+            }
+            float storyTop=compositionTop+compositionH+16f;
             reportSection.color=new Color(.35f,.225f,.105f);
             reportSection.fontSize=narrow?16:19;
             Position(reportSection.rectTransform,38f,storyTop+18f,
@@ -666,6 +680,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     metricNames[i].Put(names[i]);metricValues[i].Put(values[i]);
                 }
+                reportComposition.gameObject.SetActive(true);
+                var own=battle.OwnRoster;
+                reportComposition.Put(own!=null&&own.Total>0?
+                    "COMPOSICIÓN PROPIA · ARQUEROS  T1: "+own.ArcherT1+
+                    "  ·  T2: "+own.ArcherT2+"  ·  T3: "+own.ArcherT3:
+                    "COMPOSICIÓN PROPIA · desglose no archivado en este informe");
                 reportSection.Put("OBSERVACIONES DEL ENCUENTRO");
                 detail.Put(ObservedReason(battle));
                 reportFooter.Put("PODER PROPIO REGISTRADO · "+battle.PlayerPower+
@@ -676,6 +696,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             else if(scouting)
             {
+                reportComposition.gameObject.SetActive(false);
                 reportSection.Put("RELATO CONSERVADO");
                 detail.Put(hasNarrative?selected.DiscoveryText:
                     "Este mensaje anterior solo conserva el título. No se recrea un relato sin el registro original.");
@@ -688,6 +709,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             else
             {
+                reportComposition.gameObject.SetActive(false);
                 reportSection.Put("CONTENIDO RECIBIDO");
                 detail.Put(selected.Subtitle??"");
                 reportFooter.Put("MENSAJE DEL REGISTRO DEL REINO");

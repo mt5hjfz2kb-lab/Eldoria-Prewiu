@@ -101,6 +101,9 @@ namespace Eldoria.Tests
             Assert.That(first.Ok,Is.True,first.Message);
             Assert.That(g.Snapshot().Retention.LastClearedStage,Is.EqualTo(1));
             Assert.That(g.Snapshot().LastBattleReport.TargetId,Is.EqualTo("vigilant:1"));
+            Assert.That(g.Snapshot().LastBattleReport.OwnRoster,Is.Not.Null);
+            Assert.That(g.Snapshot().LastBattleReport.OwnRoster.Total,
+                Is.EqualTo(g.Snapshot().LastBattleReport.Troops));
             Assert.That(g.Snapshot().Resources.Wood,Is.GreaterThan(before));
             long revision=g.Snapshot().Revision;
             int loot=g.Snapshot().Resources.Wood;

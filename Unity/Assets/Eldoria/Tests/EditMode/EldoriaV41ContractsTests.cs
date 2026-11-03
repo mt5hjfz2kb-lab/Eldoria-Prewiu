@@ -60,6 +60,13 @@ namespace Eldoria.Tests
             var reports=gateway.Snapshot().Mailbox.List("informes");
             Assert.That(reports.Count,Is.EqualTo(1));
             Assert.That(reports[0].Battle.TargetId,Is.EqualTo("corrupt-scout"));
+            Assert.That(reports[0].Battle.OwnRoster,Is.Not.Null);
+            Assert.That(reports[0].Battle.OwnRoster.ArcherT1,Is.EqualTo(40));
+            Assert.That(reports[0].Battle.OwnRoster.Total,Is.EqualTo(reports[0].Battle.Troops));
+            var recordCopy=reports[0].Battle.Copy();
+            recordCopy.OwnRoster.ArcherT1=999;
+            Assert.That(reports[0].Battle.OwnRoster.ArcherT1,Is.EqualTo(40),
+                "Historical roster deep-copy cannot modify the authoritative report");
             int wood=gateway.Snapshot().Resources.Wood;
             Assert.That(Run(gateway,"m3","MailRead",reports[0].EventId).Ok,Is.True);
             Assert.That(gateway.Snapshot().Mailbox.Unread("informes"),Is.Zero);
