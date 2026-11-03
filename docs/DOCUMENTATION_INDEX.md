@@ -32,6 +32,10 @@ El [README](../README.md) es la puerta de entrada al proyecto. Distingue código
 4. Elegir la documentación especializada de la siguiente tabla y sus evidencias originales. Respetar el [protocolo de concurrencia](ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md) y las reservas de archivos/runner.
 5. Ejecutar y verificar el trabajo autorizado. Un CI verde, un commit o una renderización no equivalen a entrega funcional y artística.
 
+## Auditoría causal visual y piloto único (03-11-2026)
+
+[Clasificación completa, soluciones por familia, evidencias y piloto falsable escalera–descanso–terreno de Valoria](ELDORIA_AUDITORIA_VISUAL_CAUSAL_Y_PILOTO_20261103.md). **Diagnóstico y handoff, no ART_APPROVED ni orden de edición.** Para ejecutarlo, verificar HEAD/titularidad en el registro vivo: Entrenamiento tiene prioridad y Windows compartido. Las conclusiones documentan aceptación provisional y ensayos de Brecha rechazados, no sustituyen fuentes actuales.
+
 ## Fuentes de verdad por asunto
 
 | Asunto | Documento prioritario | Complementos / límite de autoridad |
