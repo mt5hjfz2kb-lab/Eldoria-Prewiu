@@ -628,12 +628,18 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 Top((RectTransform)councilChoice[i].transform,councilLeft+i*(councilWidth+3f),
                     cardHeight-(portrait?47f:52f),councilWidth-2f,41f);
-                // Three real council choices share a compact phone ribbon. The
-                // approved labels must each fit their 96-unit inner widths;
-                // Unity's real text generator wrapped 14pt PRODUCCIÓN into
-                // an invisible second line in a 25-unit label rectangle.
-                councilCaptions[i].fontSize=portrait?13:17;
+                // The original generic button inset of 8 units removed
+                // sixteen pixels from a three-column mobile council choice.
+                // Give its native text the actual 4-unit optical inset, so
+                // PRODUCCIÓN and VIDA CIVIL fit as readable single lines.
+                Stretch(councilCaptions[i].rectTransform,4f);
+                councilCaptions[i].fontSize=portrait?15:17;
             }
+            // Use an optical inset for *labels*, not for action hit targets.
+            // Keep the real full-height button and its existing callbacks.
+            Stretch(primaryLabel.rectTransform,4f);
+            Stretch(speedOneLabel.rectTransform,4f);
+            Stretch(speedFiveLabel.rectTransform,4f);
             primaryLabel.fontSize=portrait?18:21;
             speedOneLabel.fontSize=portrait?16:15;
             speedFiveLabel.fontSize=portrait?16:15;
