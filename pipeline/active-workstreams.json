@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "chatgpt-eldoria-building-cartouche-20261103",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-03",
@@ -125,8 +125,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "AREA_COMPLETE_READY_FOR_NEXT_CHAT",
-      "next": "Next owner may claim canonical workstream valoria-master-plan-layered-construction-20261016 on existing PR after live queue check; preserve 3cff0cc0264b386be4d3b5b34f6e28ee83237b12 and last_completed_area.",
+      "phase": "BUILDING_CONSTRUCTION_UPGRADE_ART_NATIVE_AB_20261103",
+      "next": "Revisar vistas y referencias maestras de edificios, construir nueve-slice, miniatura auténtica, obra/timer sobre ciudad, guardado y pruebas desktop/móvil. No tocar fórmulas, estados ni escenas 3D.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1755,9 +1755,9 @@
           "reason": "Completed area Vigilantes — acabado de informes y Exploradores — descubrimientos ilustrados; explicit verified handoff to next normal chat"
         }
       ],
-      "ownership_revision": 127,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 128,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-03",
       "delivery_definition": {
@@ -2081,7 +2081,7 @@
         "artistic_approval": "not_asserted",
         "note": "Candidate visual reports implemented with source-authentic scout illustrations and historical source/army snapshots. Unity exact HEAD 3cff0cc FULL SUCCESS run 41720866050: native V4.1, EditMode, PlayMode, retention, marches, scenes, Aldric. A/B native screenshots inspected; no fabricated lore/enemy data, formulas or loot changes. No merge/publication. Preserve draft PR #136; future owner feedback may refine artistic rating."
       },
-      "claim_reason": "Orden expresa del propietario 03/11/2026: siguiente bloque informes y descubrimientos, continuar sobre PR136 liberada con metodología de capas y A/B; sin publicar."
+      "claim_reason": "Orden expresa del propietario: reconstrucción visual y funcional real de cartela contextual inferior de construcción/mejora; ejecutar PR136 existente, aportar A/B Unity y pruebas completas. No merge ni publicación automática."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
