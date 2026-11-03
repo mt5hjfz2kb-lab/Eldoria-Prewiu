@@ -89,6 +89,15 @@ namespace Eldoria.Editor
                 host.Hud.GetComponent<RoyalGoldV2Hud>()?.SynchronizeNow();
                 host.Hud.GetComponent<RoyalGoldV3ContextHud>()?.SynchronizeNow();
                 Canvas.ForceUpdateCanvases();
+                if(name=="building-council-small-phone")
+                {
+                    var sheet=host.Hud.GetComponent<RoyalGoldV2Hud>()?.ChronicleBuildingRect;
+                    var scroll=host.Hud.GetComponentsInChildren<RectTransform>(true)
+                        .FirstOrDefault(x=>x.name=="Scrollable real building details");
+                    Need(sheet&&sheet.rect.height<=160f&&scroll&&
+                        !scroll.gameObject.activeInHierarchy,
+                        "390x844 council is a compact city-local three-choice ribbon, not another management sheet");
+                }
                 var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
                 if(heroes&&heroes.IsOpen){
                     heroes.Refresh();Canvas.ForceUpdateCanvases();
