@@ -816,19 +816,118 @@ namespace Eldoria.Editor
             var row=host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Buzón / mensaje 0");row.onClick.Invoke();yield return null;
             Need(gateway.Snapshot().Mailbox.Unread("informes")==0,"Opening actual message marks it read");
             Shot(host,"mailbox-real-report",900,1600);
+            Shot(host,"mailbox-real-report-landscape",1600,900);
             Shot(host,"mailbox-report-small-phone",390,844);
             Shot(host,"mailbox-report-small-phone-landscape",844,390);
             var reportText=host.Hud.GetComponentsInChildren<Text>(true)
                 .FirstOrDefault(t=>t.name=="Contenido del mensaje");
-            Need(reportText&&reportText.text.Contains("Tropas enviadas:")&&
-                !reportText.text.Contains("Poder:")&&
+            var metricTitle=host.Hud.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(t=>t.name=="Mailbox / metric caption 1");
+            var metricValue=host.Hud.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(t=>t.name=="Mailbox / genuine metric 1");
+            var realRecord=gateway.Snapshot().Mailbox.List("informes")[0].Battle;
+            Need(reportText&&metricTitle&&metricTitle.text=="TROPAS ENVIADAS"&&
+                metricValue&&metricValue.text==realRecord.Troops.ToString()&&
                 !reportText.text.Contains("Ruptura super")&&
-                !reportText.text.Contains("estrategia óptima"),
-                "Actual battle report contains real army/results but no hidden combat formulas or optimal strategy");
+                !reportText.text.Contains("estrategia óptima")&&
+                !reportText.text.Contains("Prepara otra composición"),
+                "Actual report shows real own-army metrics and observed outcome without tactical formulas");
+            var authenticSheet=host.Hud.GetComponentsInChildren<RoyalGoldV41ReportArtwork>(true)
+                .FirstOrDefault();
+            Need(authenticSheet && authenticSheet.enabled && !authenticSheet.raycastTarget &&
+                authenticSheet.GetComponent<CanvasRenderer>()!=null,
+                "Report uses a separate passive layered parchment, no pasted UI screenshot");
             var reportScroller=host.Hud.GetComponentsInChildren<ScrollRect>(true)
                 .FirstOrDefault(x=>x.name=="Mailbox / report scroll viewport");
             Need(reportScroller&&reportScroller.vertical&&reportScroller.viewport!=null,
                 "Actual report document uses live vertical scrolling at compact mobile resolutions");
+            // Outcome/family/long-text visual matrix. Every candidate below
+            // lives ONLY in an isolated READ-ONLY fixture. Its narrative is
+            // generated from the real deterministic ScoutOrder family rules,
+            // not from made-up player discoveries or paid rewards.
+            var visualSave=File.ReadAllText(host.City.SaveFile);
+            var actualReport=gateway.Snapshot().Mailbox.List("informes")[0];
+            for(int variant=0;variant<7;variant++)
+            {
+                var isolated=gateway.Snapshot();
+                isolated.Mailbox=new EldoriaV41Mailbox();
+                string label;
+                if(variant<2)
+                {
+                    var observed=actualReport.Battle.Copy();
+                    observed.Won=variant==0;
+                    observed.Reason=observed.Won?
+                        "Encuentro superado en el escenario de prueba visual.":
+                        "El encuentro no fue superado en el escenario de prueba visual.";
+                    label=observed.Won?"victory":"defeat";
+                    isolated.Mailbox.Receive(new EldoriaV41Message {
+                        EventId="qa-outcome-"+label,Category="informes",Type="battle",
+                        Title=observed.Won?"Victoria en los Vigilantes":"Derrota en los Vigilantes",
+                        Battle=observed,OccurredAtUtcTicks=actualReport.OccurredAtUtcTicks
+                    });
+                }
+                else
+                {
+                    int kind=(variant-2)%4;
+                    var order=new ScoutOrder{Id="qa-only-order-"+kind,Kind=kind,Period=19,Slot=kind};
+                    string realLore=EarlyRetentionRules.ScoutDiscoveryText(order);
+                    bool verbose=variant==6;
+                    label=verbose?"long-text":"family-"+kind;
+                    isolated.Mailbox.Receive(new EldoriaV41Message {
+                        EventId="qa-scout-"+label,Category="informes",Type="exploration",
+                        Title="Informe de exploración",
+                        Subtitle=EarlyRetentionRules.ScoutDiscoveryTitle(order),
+                        DiscoveryKind=kind,DiscoveryOrderId=order.Id,
+                        DiscoveryText=verbose?string.Join(" ",Enumerable.Repeat(realLore,14)):realLore,
+                        OccurredAtUtcTicks=actualReport.OccurredAtUtcTicks
+                    });
+                }
+                mailbox.Initialize(host.Hud,new MailboxDisplayFixture(isolated));
+                mailbox.Close();mailbox.Open();yield return null;
+                var qaRow=host.Hud.GetComponentsInChildren<Button>()
+                    .First(x=>x.name=="Buzón / mensaje 0");
+                qaRow.onClick.Invoke();yield return null;
+                var sheet=host.Hud.GetComponentsInChildren<RectTransform>()
+                    .First(x=>x.name=="Mailbox / scrollable assembled report");
+                var viewport=host.Hud.GetComponentsInChildren<RectTransform>()
+                    .First(x=>x.name=="Mailbox / report scroll viewport");
+                Need(sheet.rect.width<=viewport.rect.width+1f &&
+                    sheet.rect.height>=viewport.rect.height,
+                    "Report composition stays width-clipped and genuinely scrollable");
+                if(variant>=2)
+                {
+                    var visualStory=host.Hud.GetComponentsInChildren<Text>()
+                        .First(x=>x.name=="Contenido del mensaje");
+                    Need(visualStory.text.Contains("La ")||visualStory.text.Contains("Los ")||
+                        visualStory.text.Contains("Una ")||visualStory.text.Contains("Un ")||
+                        visualStory.text.Contains("Encontraron ")||visualStory.text.Contains("El "),
+                        "The exploration sheet contains narrative from a genuine rule-defined family");
+                }
+                Shot(host,"mailbox-report-qa-"+label+"-portrait",900,1600);
+                Shot(host,"mailbox-report-qa-"+label+"-landscape",1600,900);
+                Shot(host,"mailbox-report-qa-"+label+"-mobile",390,844);
+                Shot(host,"mailbox-report-qa-"+label+"-mobile-landscape",844,390);
+                if(variant==6)
+                {
+                    Need(sheet.rect.height>viewport.rect.height+100f,
+                        "Long authentic-source narrative expands the scroll sheet without truncation");
+                    var toggle=host.Hud.GetComponentsInChildren<Button>()
+                        .First(x=>x.name=="Mailbox / collapse or expand report");
+                    toggle.onClick.Invoke();yield return null;
+                    Need(!host.Hud.GetComponentsInChildren<Text>(true)
+                        .First(x=>x.name=="Contenido del mensaje").gameObject.activeSelf,
+                        "Expandable story really collapses without losing stored text");
+                    Shot(host,"mailbox-report-qa-long-text-collapsed-mobile",390,844);
+                    toggle.onClick.Invoke();yield return null;
+                }
+            }
+            mailbox.Initialize(host.Hud,gateway);
+            mailbox.Close();mailbox.Open();yield return null;
+            host.Hud.GetComponentsInChildren<Button>()
+                .First(x=>x.name=="Buzón / mensaje 0").onClick.Invoke();
+            yield return null;
+            Need(File.ReadAllText(host.City.SaveFile)==visualSave,
+                "All four discovery family and outcome QA shots left actual saved game bytes identical");
             int wood=gateway.Snapshot().Resources.Wood;
             host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Eliminar").onClick.Invoke();
             Need(gateway.Snapshot().Mailbox.List("informes").Count==0&&gateway.Snapshot().Resources.Wood==wood,"Delete neither replays battle nor pays again");

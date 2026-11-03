@@ -156,11 +156,14 @@ namespace Eldoria.UI.RoyalGold.V2
                     new Color(.36f,.20f,.095f,.065f),
                     new Color(.36f,.20f,.095f,.025f));
             }
-            Fill(vh,Area(15f,16f,w-39f,125f),
+            // The header follows actual wrapped report titles, including
+            // narrow screens and translated/long discovery names.
+            float headerHeight=Mathf.Max(125f,metricTop-25f);
+            Fill(vh,Area(15f,16f,w-39f,headerHeight),
                 new Color(.24f,.166f,.108f,.95f),
                 new Color(.39f,.276f,.16f,.97f));
             Fill(vh,Area(20f,21f,w-49f,2f),Brass,Brass);
-            Fill(vh,Area(20f,137f,w-49f,1.8f),Brass,Brass);
+            Fill(vh,Area(20f,16f+headerHeight-5f,w-49f,1.8f),Brass,Brass);
             var wax=motif==Motif.BattleDefeat?new Color(.58f,.19f,.18f):
                 motif==Motif.Rift?new Color(.40f,.26f,.52f):
                 motif==Motif.BattleVictory?new Color(.43f,.26f,.14f):
