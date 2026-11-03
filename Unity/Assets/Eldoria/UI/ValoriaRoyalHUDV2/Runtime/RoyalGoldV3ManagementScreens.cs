@@ -52,6 +52,7 @@ namespace Eldoria.UI.RoyalGold.V2
         readonly RoyalText[] trainingTierLabels=new RoyalText[2];
         readonly Image[] trainingTierPortraits=new Image[2];
         RectTransform root, layoutRoot, header, left, right, footer, quantityRow;
+        RectTransform trainingCostCard, trainingStatusCard, trainingIdentityCard;
         bool compactLandscape;
         struct TextDensity { public int Font; public Vector2 Size; public Vector3 Scale; }
         readonly Dictionary<RoyalText,TextDensity> textDensity=new Dictionary<RoyalText,TextDensity>();
@@ -393,6 +394,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     (RectTransform)trainingTierChoices[i].transform,"archer-row");
                 trainingTierPortraits[i].sprite=trainingCardPortrait;
                 trainingTierPortraits[i].preserveAspect=true;
+                trainingTierChoices[i].GetComponent<RoyalGoldV2FrameGraphic>().color=new Color(1f,1f,1f,.07f);
+                TrainingPaper((RectTransform)trainingTierChoices[i].transform,"Training / layered tier "+tier,.90f);
             }
             quantityRow = Rect("Quantity controls",left);
             minus = Button("Reduce quantity",quantityRow,"−",()=>SetQuantity(CurrentDestination==Destination.March&&percentMode?CurrentDisplayedPercent-1:selectedCount-1),false,out _);
@@ -440,6 +443,9 @@ namespace Eldoria.UI.RoyalGold.V2
             progressInk.color=Gold; progressInk.raycastTarget=false;
             summary=Text("Training or expedition breakdown",right,20,Ivory);
             status=Text("Available and pending troops",right,16,Muted);
+            trainingCostCard=TrainingPaper(right,"Training / genuine costs",.91f);
+            trainingStatusCard=TrainingPaper(right,"Training / actual timer",.88f);
+            trainingIdentityCard=TrainingPaper(left,"Training / unit manuscript",.77f);
             feedback=Text("Command feedback",footer,15,Gold);
             back=Button("Return to Valoria",footer,"VOLVER A LA CIUDAD",Close,false,out _);
             action=Button("Confirm military command",footer,"CONFIRMAR",Confirm,true,out actionLabel);
@@ -638,7 +644,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 bool unlocked=i==0||s.BarracksLevel>=4;
                 trainingTierChoices[i].interactable=training&&!trainingActive&&unlocked;
                 trainingTierPortraits[i].color=unlocked?Color.white:new Color(.45f,.45f,.45f,.75f);
-                trainingTierLabels[i].color=selectedTier==i+1?Gold:Muted;
+                trainingTierLabels[i].color=selectedTier==i+1?new Color(.18f,.11f,.055f):new Color(.37f,.26f,.16f);
             }
             if(!tier2Unlocked && selectedTier==2)selectedTier=1;
             if(trainingActive)selectedTier=s.PendingRecruitTier==2?2:1;
@@ -1057,6 +1063,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 foreach(var finish in pane.GetComponentsInChildren<RoyalGoldV3LayeredFinish>(true))
                     finish.gameObject.SetActive(false);
             }
+            trainingCostCard.gameObject.SetActive(training);
+            trainingStatusCard.gameObject.SetActive(training);
+            trainingIdentityCard.gameObject.SetActive(training);
+            if(training)
+            {
+                paneSurfaces[right].enabled=false;
+                right.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
+            }
+            summary.color=training?new Color(.14f,.10f,.065f):Ivory;
+            status.color=training?new Color(.22f,.17f,.11f):Muted;
             unitTitle.color=training?new Color(.10f,.08f,.055f):Ivory;
             unitDetail.color=training?new Color(.16f,.13f,.10f):Muted;
             action.transform.SetParent(training?right:footer,false);
@@ -1137,16 +1153,34 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(trainingTierPortraits[i].rectTransform,6,6,rosterW-12,rosterH-48);
                 Place(trainingTierLabels[i].rectTransform,6,rosterH-40,rosterW-12,34);
             }
-            unitTitle.rectTransform.SetParent(left,false);
-            unitDetail.rectTransform.SetParent(left,false);
-            bool stackedIdentity=wide&&!compactLandscape;
-            // Reserve a separate identity column: the previous compact title crossed the face.
-            float titleX=stackedIdentity?width*.56f:wide?width*.36f:width*.67f;
-            float titleW=stackedIdentity?width*.44f:wide?left.rect.width-titleX:width-titleX-12;
-            Place(unitTitle.rectTransform,titleX,artH*.04f,titleW,wide?72:90);
-            Place(unitDetail.rectTransform,titleX,artH*.04f+(wide?82:100),titleW,wide?160:230);
-            unitTitle.fontSize=wide?28:34;
-            unitDetail.fontSize=wide?20:28;
+            // Labels no longer use total-screen coordinates inside a half-width parent.
+            bool elevatedIdentity=wide&&!compactLandscape;
+            var identityParent=elevatedIdentity?layoutRoot:left;
+            unitTitle.rectTransform.SetParent(identityParent,false);
+            unitDetail.rectTransform.SetParent(identityParent,false);
+            trainingIdentityCard.SetParent(identityParent,false);
+            float titleX=elevatedIdentity?x+width*.57f:
+                wide?left.rect.width*.67f:width*.68f;
+            float titleW=elevatedIdentity?width*.39f:
+                Mathf.Max(84f,left.rect.width-titleX-13f);
+            float previewOrderH=wide?(compactLandscape?bodyH:
+                Mathf.Min(bodyH,Mathf.Max(390,bodyH*.60f))):portraitOrderH;
+            float availableIdentityH=elevatedIdentity?
+                Mathf.Max(92f,bodyH-previewOrderH-19f):artH;
+            float titleY=elevatedIdentity?bodyY+9f:artH*.04f;
+            float titleHeight=elevatedIdentity?
+                Mathf.Clamp(availableIdentityH*.38f,36f,56f):wide?64f:89f;
+            float detailY=titleY+titleHeight+(elevatedIdentity?5f:12f);
+            float detailHeight=elevatedIdentity?
+                Mathf.Max(34f,availableIdentityH-titleHeight-12f):
+                Mathf.Clamp(artH-(detailY-titleY)-20f,62f,wide?156f:213f);
+            Place(unitTitle.rectTransform,titleX,titleY,titleW,titleHeight);
+            Place(unitDetail.rectTransform,titleX,detailY,titleW,detailHeight);
+            Place(trainingIdentityCard,titleX-7f,titleY-8f,titleW+14f,
+                detailY+detailHeight-titleY+17f);
+            trainingIdentityCard.SetAsFirstSibling();
+            unitTitle.fontSize=wide?27:30;
+            unitDetail.fontSize=wide?19:25;
             float orderW=wide?width*.44f:width;
             float orderH=wide?(compactLandscape?bodyH:Mathf.Min(bodyH,Mathf.Max(390,bodyH*.60f))):portraitOrderH;
             Place(right,wide?x+width-orderW:x,wide?bodyY+bodyH-orderH:bodyY+artH+12,orderW,orderH);
@@ -1186,6 +1220,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 trainingEnvironment.rectTransform.SetParent(root,false);
                 trainingEnvironment.rectTransform.SetSiblingIndex(Mathf.Max(0,layoutRoot.GetSiblingIndex()-1));
             }
+            if(wide)
+            {
+                Place(trainingCostCard,pad-8f,orderH*.28f-9f,
+                    orderW-pad*2f+16f,orderH*.20f+18f);
+                Place(trainingStatusCard,pad-8f,orderH*.63f-9f,
+                    orderW-pad*2f+16f,72f);
+            }
+            else
+            {
+                Place(trainingCostCard,pad-8f,145f,orderW-pad*2f+16f,86f);
+                Place(trainingStatusCard,pad-8f,331f,orderW-pad*2f+16f,88f);
+            }
+            trainingCostCard.SetAsFirstSibling();
+            trainingStatusCard.SetAsFirstSibling();
             // Explicit stacking retains live controls above source surfaces.
             approvedArcher.rectTransform.SetAsFirstSibling();
             if(!wide)trainingEnvironment.rectTransform.SetAsFirstSibling();
@@ -1556,6 +1604,29 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(plus.transform as RectTransform,qw-control,0,control,controlHeight);
             Place(selectedText.rectTransform,control+2,0,qw-2*(control+2),controlHeight);
             selectedText.fontSize=wide?20:32;
+        }
+
+        static RectTransform TrainingPaper(RectTransform parent,string name,float opacity)
+        {
+            var r=Rect(name,parent);
+            r.gameObject.AddComponent<CanvasRenderer>();
+            var paper=r.gameObject.AddComponent<Image>();
+            paper.color=new Color(.965f,.895f,.735f,opacity);
+            paper.raycastTarget=false;
+            var rim=RoyalGoldV41SourceArt.Surface(r,"HeroCardNineSliceGold",48);
+            if(rim.sprite)
+            {
+                rim.type=Image.Type.Sliced;
+                rim.fillCenter=false;
+                rim.pixelsPerUnitMultiplier=3.4f;
+                rim.color=new Color(.82f,.65f,.34f,.72f);
+                rim.rectTransform.offsetMin=new Vector2(2f,2f);
+                rim.rectTransform.offsetMax=new Vector2(-2f,-2f);
+            }
+            else rim.enabled=false;
+            rim.raycastTarget=false;
+            r.SetAsFirstSibling();
+            return r;
         }
 
         static RectTransform Rect(string name,Transform parent)
