@@ -227,6 +227,9 @@ namespace Eldoria.UI.RoyalGold.V2
             MakeButton("Página siguiente",w,">",()=>Page(1),out _);
             navLabel=Label("Página",w,14);
             detailViewport=Node("Mailbox / report scroll viewport",w);
+            detailViewport.gameObject.AddComponent<CanvasRenderer>();
+            var touchSurface=detailViewport.gameObject.AddComponent<Image>();
+            touchSurface.color=Color.clear;touchSurface.raycastTarget=true;
             detailViewport.gameObject.AddComponent<RectMask2D>();
             detailScroll=detailViewport.gameObject.AddComponent<ScrollRect>();
             detailScroll.horizontal=false;detailScroll.vertical=true;
@@ -513,6 +516,60 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!detailVisible||visibleRowCount!=list.Count)
                 detailScroll.verticalNormalizedPosition=1f;
             Layout();
+        }
+    }
+
+    /// <summary>
+    /// Non-interactive illustrated environment. Drawn as lightweight uGUI
+    /// geometry so the sparse mailbox never falls back to a black void and
+    /// no full reference screenshot or baked message text is displayed.
+    /// </summary>
+    [AddComponentMenu("Eldoria/UI/Mailbox V4.1 matte")]
+    public sealed class RoyalGoldV41MailboxBackdrop : MaskableGraphic
+    {
+        static readonly Color Bronze=new Color(.55f,.37f,.18f,.63f);
+        void Fill(VertexHelper vh,Rect r,Color bottom,Color top)
+        {
+            if(r.width<=0f||r.height<=0f)return;
+            int index=vh.currentVertCount;
+            vh.AddVert(new Vector3(r.xMin,r.yMin),bottom,Vector2.zero);
+            vh.AddVert(new Vector3(r.xMin,r.yMax),top,Vector2.up);
+            vh.AddVert(new Vector3(r.xMax,r.yMax),top,Vector2.one);
+            vh.AddVert(new Vector3(r.xMax,r.yMin),bottom,Vector2.right);
+            vh.AddTriangle(index,index+1,index+2);
+            vh.AddTriangle(index,index+2,index+3);
+        }
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            vh.Clear();
+            var r=rectTransform.rect;
+            if(r.width<10f||r.height<10f)return;
+            Fill(vh,r,new Color(.165f,.14f,.117f,1f),
+                new Color(.07f,.095f,.113f,1f));
+            // Layered shadows and faint brass dividers form a single
+            // coherent parchment-reading environment on every aspect.
+            float edge=Mathf.Clamp(r.width*.012f,4f,16f);
+            Fill(vh,new Rect(r.xMin+edge,r.yMin+edge,
+                r.width-edge*2f,2f),Bronze,Bronze);
+            Fill(vh,new Rect(r.xMin+edge,r.yMax-edge-2f,
+                r.width-edge*2f,2f),Bronze,Bronze);
+            var subtle=new Color(.71f,.55f,.33f,.09f);
+            for(int i=0;i<4;i++)
+            {
+                float y=r.yMin+r.height*(.19f+i*.20f);
+                Fill(vh,new Rect(r.xMin+edge*1.8f,y,
+                    r.width-edge*3.6f,1.25f),subtle,subtle);
+            }
+            var corner=new Color(.81f,.63f,.34f,.23f);
+            float size=Mathf.Min(22f,r.width*.035f);
+            Fill(vh,new Rect(r.xMin+edge,r.yMax-edge-size,2f,size),
+                corner,corner);
+            Fill(vh,new Rect(r.xMax-edge-2f,r.yMax-edge-size,2f,size),
+                corner,corner);
+            Fill(vh,new Rect(r.xMin+edge,r.yMin+edge,2f,size),
+                corner,corner);
+            Fill(vh,new Rect(r.xMax-edge-2f,r.yMin+edge,2f,size),
+                corner,corner);
         }
     }
 }
