@@ -799,6 +799,19 @@ namespace Eldoria.UI.RoyalGold.V2
                 buildingAction.interactable=source.Offer!=null&&
                     source.Primary.Button&&source.Primary.Button.interactable;
             }
+            // Visual state is derived exclusively from the canonical button
+            // availability: an unaffordable/level-capped action must not look
+            // identical to a payable one. Never invent a resource estimate,
+            // disable extra mechanics or open a modal.
+            bool unavailable=offered&&!buildingAction.interactable;
+            if(buildingAction.targetGraphic)
+                buildingAction.targetGraphic.color=unavailable?
+                    new Color(.67f,.61f,.53f,1f):Color.white;
+            if(primaryLabel)primaryLabel.color=unavailable?
+                new Color(.78f,.70f,.60f,1f):Ivory;
+            if(buildingCost)buildingCost.color=unavailable?
+                new Color(.59f,.27f,.19f,1f):
+                new Color(.29f,.18f,.085f,1f);
             bool hasOne=utility&&utility.InlineSpeedupCharges(1)>0&&building;
             bool hasFive=utility&&utility.InlineSpeedupCharges(5)>0&&building;
             speedOne.gameObject.SetActive(hasOne);
