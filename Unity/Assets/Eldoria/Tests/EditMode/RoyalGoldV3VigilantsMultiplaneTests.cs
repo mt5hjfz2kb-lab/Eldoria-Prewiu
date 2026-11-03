@@ -91,6 +91,48 @@ namespace Eldoria.Tests
         }
 
         [Test]
+        public void TwentyFourActualStoneTerracesFollowExactlyTwentyFiveRealProgressionPositions()
+        {
+            var room=new GameObject("Real 25-stage terrace fixture",
+                typeof(RectTransform));
+            try
+            {
+                var area=(RectTransform)room.transform;
+                area.sizeDelta=new Vector2(900f,600f);
+                var stage=new GameObject("Actual route",typeof(RectTransform),
+                    typeof(CanvasRenderer),typeof(RoyalGoldV3StageTrailGraphic));
+                var stageRect=(RectTransform)stage.transform;
+                stageRect.SetParent(area,false);
+                stageRect.anchorMin=Vector2.zero;
+                stageRect.anchorMax=Vector2.one;
+                stageRect.offsetMin=stageRect.offsetMax=Vector2.zero;
+                var route=stage.GetComponent<RoyalGoldV3StageTrailGraphic>();
+                route.ArtworkUv=new Rect(0f,0f,1f,1f);
+                var foundation=RoyalGoldV3VigilantsRoadFoundation.Install(area,0);
+                foundation.BindRealRoad(route,14);
+                Assert.That(foundation.BoundStageCount,Is.EqualTo(25));
+                Assert.That(foundation.ActualReliefSpans,Is.EqualTo(24),
+                    "The physical terrain must have all 24 continuous real spans");
+                Assert.That(foundation.Cleared,Is.EqualTo(14));
+                Assert.That(foundation.NextStage,Is.EqualTo(15));
+                for(int i=1;i<=25;i++)
+                {
+                    var actual=foundation.rectTransform.InverseTransformPoint(
+                        stageRect.TransformPoint(route.StagePosition(i)));
+                    Assert.That(Vector2.Distance(actual,foundation.StagePosition(i)),
+                        Is.LessThan(.1f),
+                        "Terrace "+i+" must be bound to a true gameplay stage");
+                }
+                Assert.That(foundation.raycastTarget,Is.False);
+                Assert.That(room.GetComponentsInChildren<Canvas>(true).Length,
+                    Is.Zero);
+                Assert.That(room.GetComponentsInChildren<EventSystem>(true).Length,
+                    Is.Zero);
+            }
+            finally { Object.DestroyImmediate(room); }
+        }
+
+        [Test]
         public void ScoutsNeverReceiveVigilantsDepthAssets()
         {
             var parent=new GameObject("Non-Vigilants reference room",
