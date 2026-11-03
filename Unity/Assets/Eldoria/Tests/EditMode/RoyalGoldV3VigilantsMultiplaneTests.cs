@@ -53,6 +53,8 @@ namespace Eldoria.Tests
                     var art=Resources.Load<Texture2D>(
                         "EldoriaRetention/DepthB10/"+Layers[i]);
                     Assert.That(art,Is.Not.Null,Layers[i]+" source must be imported");
+                    Assert.That(art.name,Is.EqualTo(Layers[i]),
+                        "Exact original cut-out must not silently use a different asset");
                     Assert.That(art.width,Is.EqualTo(Dimensions[i].x),Layers[i]);
                     Assert.That(art.height,Is.EqualTo(Dimensions[i].y),Layers[i]);
                     var plane=parallax.transform.Find(
