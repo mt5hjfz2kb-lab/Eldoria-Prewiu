@@ -17,6 +17,7 @@ namespace Eldoria.UI.RoyalGold.V2
         const int Edges=28;
 
         public bool TransparentCreature => transparentCreature;
+        public bool PatrolSilhouettes => !transparentCreature;
 
         public void Configure(bool sourceHasOriginalCutout)
         {
