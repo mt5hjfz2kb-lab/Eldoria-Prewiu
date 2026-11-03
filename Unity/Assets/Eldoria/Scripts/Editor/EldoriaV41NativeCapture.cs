@@ -898,7 +898,7 @@ namespace Eldoria.Editor
                 {
                     var visualStory=host.Hud.GetComponentsInChildren<Text>()
                         .First(x=>x.name=="Contenido del mensaje");
-                    Need(visualStory.text.Contains("La ")||visualStory.text.Contains("Los ")||
+                    Need(visualStory.text.Contains("La ")||visualStory.text.Contains("Las ")||visualStory.text.Contains("Los ")||
                         visualStory.text.Contains("Una ")||visualStory.text.Contains("Un ")||
                         visualStory.text.Contains("Encontraron ")||visualStory.text.Contains("El "),
                         "The exploration sheet contains narrative from a genuine rule-defined family");
