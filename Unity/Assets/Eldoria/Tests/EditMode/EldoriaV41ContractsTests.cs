@@ -108,6 +108,39 @@ namespace Eldoria.Tests
             Assert.That(loaded.ReceivedEventIds.Contains(newest),Is.True);
         }
 
+        [Test] public void ExplorationMessagePreservesAllFourSourceFamiliesAndLegacyDoesNotInventText()
+        {
+            var mailbox=new EldoriaV41Mailbox();
+            for(int kind=0;kind<4;kind++)
+            {
+                var order=new ScoutOrder {Id="test-scout-"+kind,Kind=kind,Period=17,Slot=kind};
+                mailbox.Receive(new EldoriaV41Message {
+                    EventId="test-report-"+kind,Category="informes",Type="exploration",
+                    Title="Informe de exploración",
+                    Subtitle=EarlyRetentionRules.ScoutDiscoveryTitle(order),
+                    DiscoveryText=EarlyRetentionRules.ScoutDiscoveryText(order),
+                    DiscoveryKind=order.Kind,DiscoveryOrderId=order.Id
+                });
+            }
+            mailbox.Receive(new EldoriaV41Message {
+                EventId="historical-report",Category="informes",Type="exploration",
+                Title="Informe anterior",Subtitle="Solo título registrado"
+            });
+            var saved=UnityEngine.JsonUtility.ToJson(mailbox);
+            var restored=UnityEngine.JsonUtility.FromJson<EldoriaV41Mailbox>(saved);
+            for(int kind=0;kind<4;kind++)
+            {
+                var report=restored.Messages.Single(x=>x.DiscoveryOrderId=="test-scout-"+kind);
+                var order=new ScoutOrder{Id=report.DiscoveryOrderId,Kind=kind,Period=17,Slot=kind};
+                Assert.That(report.DiscoveryText,Is.EqualTo(EarlyRetentionRules.ScoutDiscoveryText(order)));
+                Assert.That(report.DiscoveryKind,Is.EqualTo(kind));
+            }
+            var legacy=restored.Messages.Single(x=>x.EventId=="historical-report");
+            Assert.That(string.IsNullOrEmpty(legacy.DiscoveryText),Is.True);
+            Assert.That(string.IsNullOrEmpty(legacy.DiscoveryOrderId),Is.True);
+            Assert.That(restored.ReceivedEventIds.Count,Is.EqualTo(5));
+        }
+
         [Test] public void TierStrengthComparisonIsNotEqualizedAway()
         {
             var low=new EldoriaV41Combat.Force().Add(0,1,30).Add(1,1,40).Add(2,1,30);

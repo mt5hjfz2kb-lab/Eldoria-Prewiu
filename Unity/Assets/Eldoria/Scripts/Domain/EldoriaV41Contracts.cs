@@ -156,6 +156,10 @@ namespace Eldoria.Domain
     {
         public string EventId="", Category="", Type="", Title="", Subtitle="";
         public string ReportId="", RewardReceiptId="";
+        // Immutable copy of the AUTHORITATIVE claimed order: later discoveries must
+        // never overwrite this message. Absent in legacy saves, so optional.
+        public string DiscoveryText="", DiscoveryOrderId="";
+        public int DiscoveryKind=-1;
         public long OccurredAtUtcTicks;
         public EldoriaV41CombatRecord Battle;
         public bool Read;
@@ -184,6 +188,8 @@ namespace Eldoria.Domain
                     EventId=m.EventId,Category=m.Category,Type=m.Type,
                     Title=m.Title,Subtitle=m.Subtitle,ReportId=m.ReportId,
                     RewardReceiptId=m.RewardReceiptId,OccurredAtUtcTicks=m.OccurredAtUtcTicks,
+                    DiscoveryText=m.DiscoveryText,DiscoveryOrderId=m.DiscoveryOrderId,
+                    DiscoveryKind=m.DiscoveryKind,
                     Battle=m.Battle?.Copy(),Read=m.Read
                 });
             return other;
@@ -200,6 +206,8 @@ namespace Eldoria.Domain
                 EventId=value.EventId, Category=value.Category, Type=value.Type,
                 Title=value.Title, Subtitle=value.Subtitle, ReportId=value.ReportId,
                 RewardReceiptId=value.RewardReceiptId, OccurredAtUtcTicks=value.OccurredAtUtcTicks,
+                DiscoveryText=value.DiscoveryText,DiscoveryOrderId=value.DiscoveryOrderId,
+                DiscoveryKind=value.DiscoveryKind,
                 Battle=value.Battle?.Copy()
             });
             Revision++;return true;

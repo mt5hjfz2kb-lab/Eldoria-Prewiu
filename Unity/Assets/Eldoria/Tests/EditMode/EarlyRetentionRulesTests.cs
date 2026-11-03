@@ -218,6 +218,11 @@ namespace Eldoria.Tests
             gateway=new LocalGateway(time,store);
             Assert.That(gateway.Execute(Cmd(gateway,"scout-story-claim","ScoutClaim",order.Id)).Ok,Is.True);
             var after=gateway.Snapshot();
+            var historical=after.Mailbox.List("informes").Single(x=>x.Type=="exploration");
+            Assert.That(historical.DiscoveryText,Is.EqualTo(expected));
+            Assert.That(historical.DiscoveryKind,Is.EqualTo(order.Kind));
+            Assert.That(historical.DiscoveryOrderId,Is.EqualTo(order.Id));
+            Assert.That(historical.Subtitle,Is.EqualTo(EarlyRetentionRules.ScoutDiscoveryTitle(order)));
             Assert.That(after.Retention.TotalScoutReports,Is.EqualTo(1));
             Assert.That(after.Retention.ScoutDiscoveryMask,Is.EqualTo(1<<order.Kind));
             Assert.That(after.Retention.LatestDiscoveryText,Is.EqualTo(expected));
@@ -226,6 +231,8 @@ namespace Eldoria.Tests
             gateway=new LocalGateway(time,store);
             Assert.That(gateway.Snapshot().Retention.LatestDiscoveryTitle,Is.EqualTo(title));
             Assert.That(gateway.Snapshot().Retention.LatestDiscoveryText,Is.EqualTo(expected));
+            Assert.That(gateway.Snapshot().Mailbox.List("informes").Single(x=>x.Type=="exploration").DiscoveryText,
+                Is.EqualTo(expected),"Reload must retain the original discovery, not a later latest note");
             Assert.That(gateway.Execute(Cmd(gateway,"scout-story-claim-again","ScoutClaim",order.Id)).Ok,Is.False);
             Assert.That(gateway.Snapshot().Retention.TotalScoutReports,Is.EqualTo(claimCount));
             Assert.That(EarlyRetentionRules.RevealedScoutReports(gateway.Snapshot().Retention),Is.EqualTo(1));

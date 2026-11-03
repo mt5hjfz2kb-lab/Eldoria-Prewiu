@@ -361,12 +361,23 @@ namespace Eldoria.Application
                         }
                     });
                 if(command.Kind=="ScoutClaim")
+                {
+                    // Bind the historical message to the actually claimed order.
+                    // Do not read a mutable "latest discovery" when rebuilding an
+                    // older message; never reroll narrative or grant another reward.
+                    var claimed=state.Retention?.Orders?.Find(o=>
+                        o!=null&&o.Id==command.TargetId&&o.Claimed);
                     state.Mailbox.Receive(new EldoriaV41Message {
                         EventId="exploration:"+command.Id,Category="informes",Type="exploration",
                         Title="Informe de exploración",
-                        Subtitle=state.Retention?.LatestDiscoveryTitle??"Exploración concluida",
+                        Subtitle=claimed!=null?EarlyRetentionRules.ScoutDiscoveryTitle(claimed):
+                            state.Retention?.LatestDiscoveryTitle??"Exploración concluida",
+                        DiscoveryText=claimed!=null?EarlyRetentionRules.ScoutDiscoveryText(claimed):"",
+                        DiscoveryKind=claimed?.Kind??-1,
+                        DiscoveryOrderId=claimed?.Id??"",
                         RewardReceiptId=command.Id,OccurredAtUtcTicks=clock.UtcTicks
                     });
+                }
                 // A claim frees a board slot. Refill/migration belongs to THIS
                 // accepted revision, not the next command's Advance preflight.
                 // Otherwise the next fresh UI claim can reject itself as stale.
