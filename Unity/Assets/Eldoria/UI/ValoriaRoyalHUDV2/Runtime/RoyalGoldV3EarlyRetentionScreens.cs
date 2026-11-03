@@ -70,6 +70,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RawImage paintedScene;
         RoyalGoldV3LayeredFinish scenicDepth;
         RoyalGoldV3VigilantsParallax vigilantsParallax;
+        RoyalGoldV3VigilantsTerrainOcclusion nearTerrain;
         RoyalGoldV3EncounterGrounding enemyGroundBack, enemyGroundFront;
         Texture2D paintedVigilants, paintedScouts, scoutParchment;
         Sprite scoutParchmentSprite, encounterSkinSprite;
@@ -489,6 +490,12 @@ namespace Eldoria.UI.RoyalGold.V2
             // Both share the existing picture frame and never catch raycasts.
             enemyGroundBack=RoyalGoldV3EncounterGrounding.Install(creature,false);
             enemyGroundFront=RoyalGoldV3EncounterGrounding.Install(creature,true);
+            // The encounter is NO LONGER reparented to the information card.
+            // It stands inside the actual world painting. Live 25-stage
+            // medallions always render above it and preserve raycasts.
+            creature.SetSiblingIndex(chapterTrail.transform.GetSiblingIndex());
+            nearTerrain=RoyalGoldV3VigilantsTerrainOcclusion.Install(
+                heroScene,chapterTrail.transform.GetSiblingIndex());
             creature.gameObject.SetActive(false);
             victoryBanner=Panel(heroScene,"Crónica Real / combat outcome gilded announcement");
             var victoryPlate=victoryBanner.GetComponent<RoyalGoldV2FrameGraphic>();
@@ -522,9 +529,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 encounterSkin.raycastTarget=false;
                 Stretch(skin);
             }
-            // The adversary belongs to the encounter card, as in the reference;
-            // it must never cover the painted route or any chapter milestone.
-            creature.SetParent(infoCard,false);
+            // The actual enemy is an element of the landscape, not an
+            // illustration pasted into the controls. The historic atlas
+            // remains intact and all original lore/resources are retained.
             chapter=Text(infoCard,"Stage progression",23,Gold,true);
             opponent=Text(infoCard,"Real enemy and trait",19,Ivory);
             formation=Text(infoCard,"Actual available army",17,Muted);
@@ -874,8 +881,10 @@ namespace Eldoria.UI.RoyalGold.V2
             float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-760f):
                 portrait?Mathf.Clamp(ph-988f,220f,880f):
                 ph-155f;
+            // The landscape gains meaningful horizontal area; the tactical
+            // card remains a separate interactive region to its right.
             TL(heroScene,portrait?18f:20f,imageTop,
-                portrait?pw-36f:vigilantsLandscape?pw*.47f-20f:pw-40f,scenicHeight);
+                portrait?pw-36f:vigilantsLandscape?pw*.61f-24f:pw-40f,scenicHeight);
             if(vigilantsLandscape)
             {
                 chapterTrail.rectTransform.anchorMin=new Vector2(.04f,.13f);
@@ -891,13 +900,19 @@ namespace Eldoria.UI.RoyalGold.V2
             if(engendroPortrait)
             {
                 var frame=engendroPortrait.transform.parent as RectTransform;
-                float w=Mathf.Min(heroScene.rect.width*(portrait?.48f:.37f),portrait?360f:330f);
-                float h=Mathf.Min(heroScene.rect.height*.49f,portrait?360f:310f);
-                float artAspect=engendroTexture?engendroUvRect.width*engendroTexture.width/
+                float sceneW=heroScene.rect.width,sceneH=heroScene.rect.height;
+                // Reserved lower-right foreground. The continuous historic
+                // path runs through central ledges and northern fortress.
+                // No real stage marker is ever inside this rectangle.
+                float regionW=sceneW*(portrait?.34f:.35f);
+                float regionH=sceneH*(portrait?.42f:.43f);
+                float aspect=engendroTexture?engendroUvRect.width*engendroTexture.width/
                     Mathf.Max(1f,engendroUvRect.height*engendroTexture.height):1f;
-                if(w/h>artAspect)w=h*artAspect;else h=w/artAspect;
-                TL(frame,portrait?16f:26f,
-                    Mathf.Max(90f,heroScene.rect.height-h-19f),w,h);
+                float cw=regionW,ch=regionH;
+                if(cw/ch>aspect)cw=ch*aspect;
+                else ch=cw/aspect;
+                TL(frame,sceneW*.61f+(regionW-cw)*.5f,
+                    sceneH*.55f+(regionH-ch)*.5f,cw,ch);
             }
             if(progressPlaque)
             {
@@ -951,10 +966,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(infoCard,bodyX,imageTop+scenicHeight+10f,
                     bodyWidth,ph-(imageTop+scenicHeight+58f));
             else if(vigilantsLandscape&&!compactLandscape)
-                TL(infoCard,pw*.49f,imageTop,pw*.50f-20f,ph-imageTop-47f);
+                TL(infoCard,pw*.63f,imageTop,pw*.36f-14f,ph-imageTop-47f);
             else if(compactLandscape)
-                TL(infoCard,scoutsLandscape?18f:pw*.48f,imageTop+8f,
-                    scoutsLandscape?pw-36f:pw*.50f-20f,ph-imageTop-56f);
+                TL(infoCard,scoutsLandscape?18f:pw*.63f,imageTop+8f,
+                    scoutsLandscape?pw-36f:pw*.36f-14f,ph-imageTop-56f);
             else if(scoutsLandscape)
                 TL(infoCard,pw*.18f,ph*.43f,pw*.64f,ph*.57f-55f);
             else
@@ -1126,7 +1141,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 vigilantsParallax.gameObject.SetActive(hasApprovedScene);
                 if(hasApprovedScene)
                     vigilantsParallax.Configure(paintedVigilants,paintedScene.uvRect);
+                if(nearTerrain)
+                {
+                    nearTerrain.gameObject.SetActive(hasApprovedScene);
+                    if(hasApprovedScene)
+                        nearTerrain.Configure(paintedVigilants,paintedScene.uvRect);
+                }
             }
+            if(!vig && engendroPortrait)
+                engendroPortrait.transform.parent.gameObject.SetActive(false);
             chapterTrail.gameObject.SetActive(vig);
             discoverySeals.DiscoveredMask=p.ScoutDiscoveryMask&15;
             discoverySeals.gameObject.SetActive(!vig&&discoverySeals.DiscoveredMask!=0);
@@ -1224,6 +1247,11 @@ namespace Eldoria.UI.RoyalGold.V2
                     engendroPortrait.uvRect=showEngendro?new Rect(0,0,1,1):new Rect(.01f,.51f,.48f,.48f);
                     var painterlyPortrait=engendroPortrait as RoyalGoldV3VigilantsPortraitGraphic;
                     if(painterlyPortrait)painterlyPortrait.Configure(showEngendro);
+                    // Ordinary authored patrol art dissolves into the same
+                    // environment; the authentic transparent Engendro keeps
+                    // its exact original colour and silhouette.
+                    engendroPortrait.color=showEngendro?Color.white:
+                        new Color(.90f,.96f,.89f,.63f);
                 }
                 if(enemyGroundBack)enemyGroundBack.Configure(showEngendro,boss);
                 if(enemyGroundFront)enemyGroundFront.Configure(showEngendro,boss);
@@ -1233,34 +1261,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 chapterTrail.rectTransform.offsetMax=new Vector2(-5,-5);
                 chapterTrail.ArtworkUv=paintedScene.uvRect;
                 chapterTrail.SetVerticesDirty();
-                // All milestones now occupy the painted road. The encounter
-                // card sits below the scene, so neither creature nor text hides it.
-                if(showEncounterArt)
-                {
-                    bool portrait=height>width;
-                    var frame=engendroPortrait.transform.parent as RectTransform;
-                    bool fullEncounter=portrait||!compactLandscape;
-                    float boxWidth=infoCard.rect.width*(fullEncounter?.49f:.29f);
-                    float boxHeight=fullEncounter?360f:Mathf.Min(infoCard.rect.height*.44f,180f);
-                    float artAspect=engendroTexture?engendroUvRect.width*engendroTexture.width/
-                        Mathf.Max(1f,engendroUvRect.height*engendroTexture.height):1f;
-                    float cw=boxWidth,ch=boxHeight;
-                    if((cw-8f)/(ch-8f)>artAspect)cw=(ch-8f)*artAspect+8f;
-                    else ch=(cw-8f)/artAspect+8f;
-                    TL(frame,12f+(boxWidth-cw)*.5f,fullEncounter?64f:54f,cw,ch);
-                    float textX=infoCard.rect.width*(fullEncounter?.51f:.34f);
-                    float textW=infoCard.rect.width-textX-16f;
-                    TL(opponent.rectTransform,textX,fullEncounter?62f:54f,textW,fullEncounter?110f:64f);
-                    TL(formation.rectTransform,textX,fullEncounter?178f:108f,textW,fullEncounter?66f:28f);
-                    TL(reward.rectTransform,textX,fullEncounter?252f:144f,textW,fullEncounter?64f:52f);
-                    if(fullEncounter)
-                    {
-                        opponent.fontSize=30;
-                        TL(passive.rectTransform,textX,328f,textW,104f);
-                    }
-                    else if(compactLandscape)
-                        TL(passive.rectTransform,textX,202f,textW,78f);
-                }
+                // Full-size enemy art now inhabits the actual lower-right
+                // valley, in front of the original painting and BEHIND rock
+                // occlusion/25 stage markers. No photographic block remains
+                // inside the tactical panel; text uses its full width.
                 // Update labels only AFTER the Engendro-relative trail
                 // anchors are chosen. Otherwise the captured stage-15 numbers
                 // can retain coordinates from a different panel size.
@@ -1335,7 +1339,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 reward.Put("Al vencer: "+(30+stage*2)+" madera · "+(10+stage)+
                     " piedra · "+(20+stage/5*3)+" XP");
                 int xp=EarlyRetentionRules.UnclaimedIdleXp(p,now());
-                string xpSummary=showEncounterArt&&(height>width||compactLandscape)
+                string xpSummary=height>width||compactLandscape
                     ?"EXP. "+xp+" XP · Máx. 8 h\n":"EXP. ACUMULADA: "+xp+" XP / máximo 8 h\n";
                 passive.Put(xpSummary+
                     "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+
