@@ -127,8 +127,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "TRAINING_REFERENCE_STRUCTURAL_FINISH_AB",
-      "next": "Correct visual hierarchy/miniatures/identity in existing PR136; run native four-resolution genuine Training captures, compare with commit 328c4bb, preserve economy and March controls; no release or merge before owner visual decision.",
+      "phase": "TRAINING_PROVISIONAL_ACCEPTED_FINAL_NATIVE_PENDING",
+      "next": "Owner accepted Training 408f0a1 provisionally. No further art edits now. Verify exact native run 41597116608 final result before safe handoff, then release Windows and same canonical workstream via protocol. Two visual debts remain: duplicated alpha archer T1/T2 and excess dark horizontal order space. PR136 stays DRAFT; no merge, release or ART_APPROVED.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1979,6 +1979,30 @@
         "reason": "Credential-safe Codex login check completed; game unchanged; original Valoria owner/resource restored",
         "run": 41489835191,
         "source_sha": "88011e26f54a7eaeb036499d85c1d4d59c241670"
+      },
+      "training_provisional_acceptance": {
+        "date": "2026-11-03",
+        "decision": "OWNER_ACCEPTED_PROVISIONALLY",
+        "selected_screen_commit": "408f0a1f25e3e170bff7a4fa34affe7a0585387c",
+        "documentation_commit": "3ced690c11230f67f6890a00d63b0b473c66dada",
+        "documentation_path": "docs/ui-v3/TRAINING_STRUCTURAL_RECONSTRUCTION_20261030.md",
+        "source_pr": 136,
+        "before_commit": "328c4bb7789f7da5a6b22ea9a63da48bce2df3e7",
+        "native_run": 41597116608,
+        "v41_controls_pass": true,
+        "three_marches_pass": true,
+        "full_native_conclusion": "IN_PROGRESS_AT_RECORDING",
+        "art_approved": false,
+        "visual_debts": [
+          "T1/T2 share alpha archer illustration; distinguish without fictitious tier/lock",
+          "Landscape order remains too dark / disproportionate empty area"
+        ],
+        "four_ratios": [
+          "390x844",
+          "900x1600",
+          "844x390",
+          "1600x900"
+        ]
       }
     },
     {
