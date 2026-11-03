@@ -1173,14 +1173,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 // No typography is suppressed, faded or moved behind artwork.
                 TL(chapter.rectTransform,17f,7f,iw-34f,40f);
                 float textColumn=iw*.57f;
-                TL(opponent.rectTransform,14f,51f,textColumn,65f);
-                TL(formation.rectTransform,14f,119f,textColumn,47f);
-                TL(reward.rectTransform,14f,168f,textColumn,43f);
-                TL(passive.rectTransform,14f,213f,textColumn,64f);
-                TL(battleFeedback.rectTransform,14f,279f,iw-28f,63f);
-                chapter.fontSize=25;opponent.fontSize=22;formation.fontSize=20;
+                // Genuine 1600px captures caught three narrow text boxes.
+                // Give the complete enemy trait and rewards their native
+                // measured line-height; never suppress earned text.
+                TL(opponent.rectTransform,14f,50f,textColumn,70f);
+                TL(formation.rectTransform,14f,122f,textColumn,44f);
+                TL(reward.rectTransform,14f,168f,textColumn,48f);
+                TL(passive.rectTransform,14f,217f,textColumn,61f);
+                TL(battleFeedback.rectTransform,14f,280f,iw-28f,62f);
+                chapter.fontSize=25;opponent.fontSize=20;formation.fontSize=20;
                 reward.fontSize=20;passive.fontSize=18;
                 battleFeedback.fontSize=17;
+                // The XP button itself is a genuine control. Scale only its
+                // native label to the available 54px, preserving both lines.
+                xpLabel.fontSize=21;
                 float figureX=iw*.60f,figureW=iw*.365f;
                 if(guardianRelief)TL(guardianRelief.rectTransform,
                     figureX,58f,figureW,Mathf.Min(205f,ih*.52f));
