@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-vigilants-system-depth-b8-20261103",
+      "owner": "chatgpt-eldoria-vigilants-multiplane-b10-20261103",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-03",
@@ -127,8 +127,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VIGILANTS_B8_PHYSICAL_ROAD_EXACT_NATIVE_RESERVED",
-      "next": "Push exact isolated six-file B8 into canonical PR136 on parent 111b5661; run native Unity and inspect same-stage B7/B8 A/B. Preserve all combat/save/guardian artwork. No merge main/release.",
+      "phase": "VIGILANTS_MULTIPLANE_B10_ART_BAKE_AND_NATIVE_AB",
+      "next": "Finish actual six-plane alpha bake in isolated B10 branch, reconcile canonical PR136 from HEAD1fa21d, validate six imported texture assets, 25 route + native EditMode/PlayMode and same-state camera captures 390x844/1600x900. Do not publish or merge main without visual sign-off.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -964,7 +964,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": null,
+      "previous_owner": "chatgpt-eldoria-vigilants-system-depth-b8-20261103",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1727,7 +1727,7 @@
           "reason": "Completed area Buzón V4.1 — reconstrucción visual aceptada provisionalmente; explicit verified handoff to next normal chat"
         }
       ],
-      "ownership_revision": 120,
+      "ownership_revision": 121,
       "ownership_state": "claimed",
       "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1817,7 +1817,7 @@
         "budget_eur": 0
       },
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
-      "candidate_branch": "art/vigilants-physical-road-b8-20261103",
+      "candidate_branch": "art/vigilants-multiplane-b10-20261103",
       "canonical_pr": 136,
       "handoff_reason": "Owner directs completion of Mailbox A/B. Issue95 job 41603285296 completed/cancelled before Unity and no live Actions jobs; exclusive Windows lease transferred without altering Issue95 source/ownership.",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
@@ -11032,7 +11032,7 @@
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
     "status": "claimed",
-    "owner": "chatgpt-eldoria-vigilants-system-depth-b8-20261103",
+    "owner": "chatgpt-eldoria-vigilants-multiplane-b10-20261103",
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
