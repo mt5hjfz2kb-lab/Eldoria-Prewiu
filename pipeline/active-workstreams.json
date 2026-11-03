@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-02",
+  "updated_at": "2026-11-03T11:08:24.157Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-mailbox-v41-20261103",
+      "owner": null,
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-03",
@@ -120,15 +120,13 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "MAILBOX_V41_PROVISIONAL_ACCEPTED_HANDOFF_REQUESTED",
-      "next": "Owner provisionally accepted Buzón 178d12c (run 41621181708 SUCCESS), no further work in this area now. Safe area-handoff on same canonical workstream; retain DRAFT PR136; future work resume from new assigned area. Unapproved visual debts in docs/ui-v3/MAILBOX_V41_PROVISIONAL_ACCEPTANCE_20261103.md.",
+      "phase": "AREA_COMPLETE_READY_FOR_NEXT_CHAT",
+      "next": "Next owner may claim canonical workstream valoria-master-plan-layered-construction-20261016 on existing PR after live queue check; preserve 178d12ca8e6467c00b78ac96a1a86bd7511e4df8 and last_completed_area.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -964,7 +962,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": "chatgpt-eldoria-march-preparation-art-20261102",
+      "previous_owner": "chatgpt-eldoria-mailbox-v41-20261103",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1719,11 +1717,17 @@
           "ownership_revision": 112,
           "transferred_at": "2026-11-03",
           "reason": "Owner explicitly orders new Mailbox V4.1 reconstruction with real A/B in this chat. Training is accepted provisionally. Issue95 Windows runner currently reserved separately; do not claim it."
+        },
+        {
+          "owner": "chatgpt-eldoria-mailbox-v41-20261103",
+          "ownership_revision": 114,
+          "transferred_at": "2026-11-03T11:08:24.157Z",
+          "reason": "Completed area Buzón V4.1 — reconstrucción visual aceptada provisionalmente; explicit verified handoff to next normal chat"
         }
       ],
-      "ownership_revision": 114,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 115,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-02",
       "delivery_definition": {
@@ -1865,7 +1869,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-10-31",
+      "released_at": "2026-11-03T11:08:24.157Z",
       "delivery_closeout": {
         "completed_at": "2026-10-29T21:34:16.588Z",
         "workstream_id": "valoria-master-plan-layered-construction-20261016",
@@ -2037,14 +2041,13 @@
         "art_approved": false,
         "release_authorized": false
       },
-      "area_handoff_request": {
-        "status": "ready",
-        "completed": true,
+      "last_completed_area": {
         "area": "Buzón V4.1 — reconstrucción visual aceptada provisionalmente",
         "owner": "chatgpt-eldoria-mailbox-v41-20261103",
         "revision": 114,
-        "branch_head": "178d12ca8e6467c00b78ac96a1a86bd7511e4df8",
-        "run_id": 41621181708,
+        "source_sha": "178d12ca8e6467c00b78ac96a1a86bd7511e4df8",
+        "unity_run_id": 41621181708,
+        "closed_at": "2026-11-03T11:08:24.157Z",
         "artistic_approval": "provisional",
         "note": "Owner accepted mailbox provisional 2026-11-03; native exact SHA SUCCESS (V4.1, three marches, EditMode, PlayMode). Preserve visual debts (empty dark space; incomplete reference fidelity and typography/materials). PR136 DRAFT; no merge/release. Documentation: docs/ui-v3/MAILBOX_V41_PROVISIONAL_ACCEPTANCE_20261103.md."
       }
