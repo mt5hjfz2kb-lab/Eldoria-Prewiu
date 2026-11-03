@@ -175,13 +175,13 @@ namespace Eldoria.UI.RoyalGold.V2
             var matte=scenery.gameObject.AddComponent<RoyalGoldV41MailboxBackdrop>();
             matte.color=Color.white;matte.raycastTarget=false;
             listBoard=PaperFrame("Mailbox / adaptive collection frame",w,
-                new Color(.11f,.11f,.105f,.93f),.68f);
+                new Color(.19f,.155f,.115f,.95f),.68f);
             detailBoard=PaperFrame("Mailbox / report document",w,
                 new Color(.925f,.865f,.752f,.99f),.86f);
             detailBoard.gameObject.SetActive(false);
             watermark=RoyalGoldV41SourceArt.Surface(w,"mail-narrative");
             watermark.name="Mailbox / passive manuscript watermark";
-            watermark.color=new Color(.84f,.70f,.43f,.14f);
+            watermark.color=new Color(.84f,.70f,.43f,.28f);
             watermark.raycastTarget=false;
             // Above the matte but behind the manuscript: a decorative
             // source icon, never a fabricated message or input.
@@ -609,8 +609,8 @@ namespace Eldoria.UI.RoyalGold.V2
             vh.Clear();
             var r=rectTransform.rect;
             if(r.width<10f||r.height<10f)return;
-            Fill(vh,r,new Color(.165f,.14f,.117f,1f),
-                new Color(.07f,.095f,.113f,1f));
+            Fill(vh,r,new Color(.32f,.255f,.19f,1f),
+                new Color(.105f,.133f,.149f,1f));
             // Layered shadows and faint brass dividers form a single
             // coherent parchment-reading environment on every aspect.
             float edge=Mathf.Clamp(r.width*.012f,4f,16f);
@@ -618,14 +618,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 r.width-edge*2f,2f),Bronze,Bronze);
             Fill(vh,new Rect(r.xMin+edge,r.yMax-edge-2f,
                 r.width-edge*2f,2f),Bronze,Bronze);
-            var subtle=new Color(.71f,.55f,.33f,.09f);
+            var subtle=new Color(.81f,.67f,.47f,.16f);
             for(int i=0;i<4;i++)
             {
                 float y=r.yMin+r.height*(.19f+i*.20f);
                 Fill(vh,new Rect(r.xMin+edge*1.8f,y,
                     r.width-edge*3.6f,1.25f),subtle,subtle);
             }
-            var corner=new Color(.81f,.63f,.34f,.23f);
+            var corner=new Color(.87f,.69f,.4f,.37f);
             float size=Mathf.Min(22f,r.width*.035f);
             Fill(vh,new Rect(r.xMin+edge,r.yMax-edge-size,2f,size),
                 corner,corner);
