@@ -478,7 +478,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(creaturePlate){creaturePlate.raycastTarget=false;creaturePlate.enabled=false;}
             var creatureArt=Rect("Engendro / authentic creature illustration",creature);
             creatureArt.gameObject.AddComponent<CanvasRenderer>();
-            engendroPortrait=creatureArt.gameObject.AddComponent<RawImage>();
+            engendroPortrait=creatureArt.gameObject.AddComponent<RoyalGoldV3VigilantsPortraitGraphic>();
             engendroPortrait.raycastTarget=false;
             engendroPortrait.texture=engendroCutout?engendroCutout:engendroTexture;
             engendroPortrait.uvRect=engendroCutout?engendroUvRect:
@@ -1222,6 +1222,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     // illustration too; never present an empty adversary card.
                     engendroPortrait.texture=showEngendro?engendroTexture:scoutVignettes;
                     engendroPortrait.uvRect=showEngendro?new Rect(0,0,1,1):new Rect(.01f,.51f,.48f,.48f);
+                    var painterlyPortrait=engendroPortrait as RoyalGoldV3VigilantsPortraitGraphic;
+                    if(painterlyPortrait)painterlyPortrait.Configure(showEngendro);
                 }
                 if(enemyGroundBack)enemyGroundBack.Configure(showEngendro,boss);
                 if(enemyGroundFront)enemyGroundFront.Configure(showEngendro,boss);

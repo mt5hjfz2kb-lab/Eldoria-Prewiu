@@ -34,3 +34,12 @@
 ## Estado
 
 Candidato de código en desarrollo; fuente y prueba EditMode preparadas. La prueba visual definitiva depende de ejecutar Unity con reserva Windows canónica. El `A` no sustituye el `B`.
+
+
+## Primera A/B real — RECHAZADO, avance hacia segunda candidata
+
+- A exacta: Unity run `41621181708`, SHA `178d12ca8e6467c00b78ac96a1a86bd7511e4df8`, artefacto `eldoria-retention-evolution-native-41621181708` (ID `13224061203`).
+- B1 exacta: Unity run `41625793021`, SHA `108b7065e6ab5bfbb2aa9f0fdffc97b50df89468`, captura nativa `eldoria-retention-evolution-native-41625793021` (ID `13225219014`). Ambas tienen 26 capturas Vigilantes, identidad de compilación verificada y estados equivalentes.
+- Las 26 capturas reales se han comparado. En paisaje, la media RGB de diferencia es solo `≈2.2/255`, menos del `7.4%` de píxeles con diferencia ≥12 en las etapas 1/5/10/20/25. **Mejora visual insuficiente**. En guardián 15 aparece además una franja morada rectangular bajo la silueta: **B1 RECHAZADO** sin puntuación de 8,3.
+- La primera compilación de Unity pasó; retención/25 hitos/persistencia/capturas pasaron. Pero EditMode global falló con `71/77` pruebas: seis casos de la prueba recién añadida `OriginalStageProjectionAndFiveGuardianCoordinatesRemain` esperaban que `Graphic.raycastTarget` fuese false al crear el componente en vacío; uGUI lo crea true, mientras la instalación real del Camino ya lo fija false. Es defecto del **fixture del test**, no una regresión jugable. Corregido igualando el fixture a instalación nativa; volver a comprobar.
+- B2: reemplazar `RawImage` rectangular por subtipo `RoyalGoldV3VigilantsPortraitGraphic : RawImage`. Mantiene UV, fuente, hit flags y API de foto auténtica, pero da contorno pictórico con alpha sólo a enemigos normales; para el Engendro transparente v3 se invoca `base.OnPopulateMesh` para preservar silueta completa. Sustituir las bandas rectangulares frontales por neblina elíptica radial y grietas de luz bajo la criatura. **Necesita nueva captura B2 y batería completa**; no aceptar por inspección de B1.

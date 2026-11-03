@@ -82,6 +82,40 @@ namespace Eldoria.Tests
             finally { Object.DestroyImmediate(frame); }
         }
 
+        [Test]
+        public void PainterlyPortraitPreservesAuthenticRawImageApiAndUvForStage15()
+        {
+            var host=new GameObject("Encounter",typeof(RectTransform));
+            var source=new Texture2D(8,8,TextureFormat.RGBA32,false);
+            try
+            {
+                var portrait=new GameObject("Authentic illustrated encounter",
+                    typeof(RectTransform),typeof(CanvasRenderer),
+                    typeof(RoyalGoldV3VigilantsPortraitGraphic));
+                portrait.transform.SetParent(host.transform,false);
+                var renderer=portrait.GetComponent<RoyalGoldV3VigilantsPortraitGraphic>();
+                renderer.texture=source;
+                renderer.uvRect=new Rect(.01f,.51f,.48f,.48f);
+                renderer.raycastTarget=false;
+                renderer.Configure(false);
+                Assert.That(renderer.TransparentCreature,Is.False);
+                Assert.That(renderer.mainTexture,Is.SameAs(source));
+                Assert.That(renderer.uvRect,Is.EqualTo(new Rect(.01f,.51f,.48f,.48f)));
+                Assert.That(portrait.GetComponent<RawImage>(),Is.SameAs(renderer));
+                renderer.Configure(true);
+                Assert.That(renderer.TransparentCreature,Is.True,
+                    "The real alpha silhouette must NOT be clipped to a new mask");
+                Assert.That(renderer.texture,Is.SameAs(source));
+                Assert.That(renderer.raycastTarget,Is.False);
+                Assert.That(host.GetComponentsInChildren<Canvas>(true).Length,Is.Zero);
+            }
+            finally
+            {
+                Object.DestroyImmediate(host);
+                Object.DestroyImmediate(source);
+            }
+        }
+
         [TestCase(1)]
         [TestCase(5)]
         [TestCase(10)]
@@ -96,6 +130,9 @@ namespace Eldoria.Tests
             try
             {
                 var trail=node.GetComponent<RoyalGoldV3StageTrailGraphic>();
+                // MaskableGraphic defaults to raycastTarget=true on direct
+                // AddComponent; the real screen sets it false at installation.
+                trail.raycastTarget=false;
                 trail.rectTransform.sizeDelta=new Vector2(800f,620f);
                 trail.ArtworkUv=new Rect(0f,0f,1f,1f);
                 var point=trail.StagePosition(stage);
