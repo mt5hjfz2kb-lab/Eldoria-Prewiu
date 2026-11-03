@@ -25,9 +25,35 @@ jobs:
         timeout-minutes: 12
         run: |
           $ErrorActionPreference='Stop'
+          # This self-hosted Windows service does not expose git.exe on PATH.
+          # actions/checkout falls back to the full 26GB GitHub archive.
+          # Use official portable MinGit (no installation/reboot), SHA-256 pinned.
+          $gitCommand=Get-Command git.exe -ErrorAction SilentlyContinue
+          if($gitCommand){$gitExe=$gitCommand.Source}
+          else{
+            [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
+            $gitHome=Join-Path $env:RUNNER_TEMP 'issue95-mingit-2.56.0.4'
+            $zip=Join-Path $env:RUNNER_TEMP 'issue95-MinGit-2.56.0.4-64-bit.zip'
+            $url='https://github.com/git-for-windows/git/releases/download/v2.56.0.windows.4/MinGit-2.56.0.4-64-bit.zip'
+            $expected='e3bf78351fe777fba47ddee5950082f8a98bb0f02604fdc7ba3ee2cb68ffa877'
+            if(-not(Test-Path (Join-Path $gitHome 'cmd/git.exe'))){
+              if(-not(Test-Path $zip)){Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $zip}
+              if((Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){
+                throw 'Official MinGit archive SHA-256 mismatch; abort'
+              }
+              Expand-Archive -LiteralPath $zip -DestinationPath $gitHome -Force
+            }
+            $gitExe=Join-Path $gitHome 'cmd/git.exe'
+            if(-not(Test-Path $gitExe)){throw 'Portable Git executable absent'}
+          }
+          $gitBin=Split-Path $gitExe -Parent
+          $env:PATH="$gitBin;$env:PATH"
+          Add-Content -Path $env:GITHUB_PATH -Value $gitBin
+          & $gitExe --version
+          if($LASTEXITCODE -ne 0){throw 'Git provisioning failed'}
           $root=Join-Path $env:RUNNER_TEMP ("issue95-ab-"+$env:GITHUB_RUN_ID+"-"+$env:GITHUB_RUN_ATTEMPT)
           if(Test-Path $root){throw "Refuse to overwrite existing A/B workspace: $root"}
-          & git -c protocol.version=2 clone --quiet --no-tags --depth=1 --filter=blob:none --sparse --branch art/issue95-spawnling-presence-proof-20261103 ("https://github.com/"+$env:GITHUB_REPOSITORY+".git") $root
+          & $gitExe -c protocol.version=2 clone --quiet --no-tags --depth=1 --filter=blob:none --sparse --branch art/issue95-spawnling-presence-proof-20261103 ("https://github.com/"+$env:GITHUB_REPOSITORY+".git") $root
           if($LASTEXITCODE -ne 0){throw 'Partial sparse clone failed'}
           $paths=@(
             'Unity/Packages',
@@ -63,9 +89,9 @@ jobs:
             'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedBridgeV1',
             'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedPlayableEntryV3'
           )
-          & git -C $root sparse-checkout set --cone -- $paths
+          & $gitExe -C $root sparse-checkout set --cone -- $paths
           if($LASTEXITCODE -ne 0){throw 'Sparse Unity path checkout failed'}
-          $actual=(& git -C $root rev-parse HEAD).Trim()
+          $actual=(& $gitExe -C $root rev-parse HEAD).Trim()
           if($actual -ne $env:GITHUB_SHA){throw 'SHA changed during clone; fail closed'}
           if(-not(Test-Path (Join-Path $root 'Unity/Assets/Eldoria/SpawnlingBastion2/SpawnlingEncounterVisual.cs'))){throw 'Spawnling source missing'}
           if(-not(Test-Path (Join-Path $root 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'))){throw 'World scene missing'}
