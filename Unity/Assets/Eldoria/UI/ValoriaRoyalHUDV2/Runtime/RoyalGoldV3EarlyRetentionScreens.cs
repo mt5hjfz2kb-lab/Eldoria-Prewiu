@@ -73,6 +73,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalGoldV3VigilantsParallax vigilantsParallax;
         RoyalGoldV3VigilantsTerrainOcclusion nearTerrain;
         RoyalGoldV3VigilantsWorldLight landscapeLight;
+        RoyalGoldV3VigilantsRoadFoundation pathFoundation;
         RoyalGoldV3EncounterGrounding enemyGroundBack, enemyGroundFront;
         RoyalGoldV3GuardianReliefGraphic guardianRelief;
         Texture2D paintedVigilants, paintedScouts, scoutParchment;
@@ -500,6 +501,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 heroScene,chapterTrail.transform.GetSiblingIndex());
             landscapeLight=RoyalGoldV3VigilantsWorldLight.Install(
                 heroScene,nearTerrain.transform.GetSiblingIndex());
+            // A genuine physical base under the existing 25 real milestones.
+            // Its positions come from the SAME painting UV and live trail,
+            // never from a separately authored decorative route.
+            pathFoundation=RoyalGoldV3VigilantsRoadFoundation.Install(
+                heroScene,chapterTrail.transform.GetSiblingIndex());
             creature.gameObject.SetActive(false);
             victoryBanner=Panel(heroScene,"Crónica Real / combat outcome gilded announcement");
             var victoryPlate=victoryBanner.GetComponent<RoyalGoldV2FrameGraphic>();
@@ -1235,6 +1241,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
                 if(landscapeLight)
                     landscapeLight.gameObject.SetActive(hasApprovedScene);
+                if(pathFoundation)
+                    pathFoundation.gameObject.SetActive(hasApprovedScene);
             }
             if(!vig && engendroPortrait)
                 engendroPortrait.transform.parent.gameObject.SetActive(false);
@@ -1370,6 +1378,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 chapterTrail.rectTransform.offsetMax=new Vector2(-5,-5);
                 chapterTrail.ArtworkUv=paintedScene.uvRect;
                 chapterTrail.SetVerticesDirty();
+                if(pathFoundation && pathFoundation.gameObject.activeSelf)
+                    pathFoundation.BindRealRoad(chapterTrail,p.LastClearedStage);
                 if(landscapeLight && landscapeLight.gameObject.activeSelf)
                 {
                     int liveLightStep=p.LastClearedStage%25+1;
