@@ -774,9 +774,17 @@ namespace Eldoria.Editor
             {
                 var visible=fixtureState.Mailbox.List("informes",
                     mailbox.CurrentPageOffset,mailbox.CurrentPageSize);
+                Debug.Log("MAILBOX_QA_PAGE pageProbe="+pageProbe+
+                    " offset="+mailbox.CurrentPageOffset+
+                    " size="+mailbox.CurrentPageSize+
+                    " expected="+visible.Count+
+                    " active="+mailbox.VisibleMessageRows+
+                    " total="+fixtureState.Mailbox.List("informes").Count);
                 Need(mailbox.VisibleMessageRows==visible.Count &&
                     visible.Count>0 && visible.Count<=mailbox.CurrentPageSize,
-                    "Responsive pagination shows only the actual isolated fixture rows");
+                    "Responsive pagination shows actual fixture rows: expected="+visible.Count+
+                        ", active="+mailbox.VisibleMessageRows+", offset="+mailbox.CurrentPageOffset+
+                        ", size="+mailbox.CurrentPageSize+", probe="+pageProbe);
                 foreach(var item in visible)covered.Add(item.EventId);
                 int beforeOffset=mailbox.CurrentPageOffset;
                 nextPage.onClick.Invoke();yield return null;
