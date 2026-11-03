@@ -1,0 +1,38 @@
+name: Vigilants source art inspection (zero Unity)
+on:
+  push:
+    branches: [fix/player-feedback-context-ui-20261030]
+    paths:
+      - '.github/workflows/vigilants-source-inspection.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Resources/EldoriaRetention
+      - name: Preserve the ORIGINAL source atlas and its metadata for local visual isolation
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, pathlib
+          p=pathlib.Path('Unity/Assets/Eldoria/Resources/EldoriaRetention')
+          for stem in ('scout-mission-vignettes-v4','engendro-reference-v3','vigilants-painterly-v2'):
+              f=p/(stem+'.png')
+              d=f.read_bytes()
+              assert d[:8]==b'\\x89PNG\\r\\n\\x1a\\n',stem
+              print(stem,len(d),hashlib.sha256(d).hexdigest())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-vigilants-authentic-source-${{ github.sha }}
+          path: |
+            Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-mission-vignettes-v4.png
+            Unity/Assets/Eldoria/Resources/EldoriaRetention/engendro-reference-v3.png
+            Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png
+          retention-days: 14
