@@ -384,6 +384,11 @@ namespace Eldoria.ReferenceClean.Editor
             var occlusion=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsTerrainOcclusion>(true);
             var lighting=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsWorldLight>(true);
             var foundation=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsRoadFoundation>(true);
+            var livingPaint=illustration as RoyalGoldV3VigilantsLivingLandscape;
+            Need(livingPaint!=null && livingPaint.LivingScene &&
+                livingPaint.RoadStageCount==25 && livingPaint.ActualCleared==14 &&
+                livingPaint.texture==vigilantsPainting && !livingPaint.raycastTarget,
+                "The actual original landscape must render as stage-aware terrain without photo duplication or touch interception");
             Need(foundation!=null && foundation.isActiveAndEnabled &&
                 foundation.BoundStageCount==25 && foundation.NextStage==15 &&
                 foundation.Cleared==14 && !foundation.raycastTarget,
