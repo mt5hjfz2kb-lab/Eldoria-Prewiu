@@ -595,6 +595,7 @@ namespace Eldoria.Editor
         {
             Need(host.City.Probe,"Construction probe must use disposable file state");
             var saved=File.ReadAllText(host.City.SaveFile);
+            long originalClockTicks=host.City.Clock.UtcTicks;
             var state=host.City.Gateway.Snapshot();
             state.SawmillLevel=0;
             state.BuildingCompletesUtcTicks=0;state.BuildingTaskId="";
@@ -747,10 +748,19 @@ namespace Eldoria.Editor
                 "Using the inline speed-up does not open an extra modal");
             // Restore the original disposable probe fixture before the suite's
             // unrelated training and marching tests. No player save touched.
+            // The probe deliberately advanced time to complete a real build.
+            // Restore the disposable clock BEFORE restoring the fixture;
+            // otherwise the next LocalGateway reload correctly accrues
+            // economy/mission progress and mutates the restored JSON again.
+            var advancedTicks=clock.UtcTicks-originalClockTicks;
+            Need(advancedTicks>=0&&advancedTicks%TimeSpan.TicksPerSecond==0&&
+                advancedTicks/TimeSpan.TicksPerSecond<=int.MaxValue,
+                "Construction QA only advanced the isolated clock in whole seconds");
+            clock.Step(-(int)(advancedTicks/TimeSpan.TicksPerSecond));
             File.WriteAllText(host.City.SaveFile,saved);
             host.City.ReloadForProbe();yield return null;
             Need(File.ReadAllText(host.City.SaveFile)==saved,
-                "Construction QA returned its temporary gateway fixture exactly");
+                "Construction QA restored exact probe file and its original clock");
             host.Hud.SelectBuilding("");
         }
         static IEnumerator Exercise(ValoriaIntegratedWorld host)
