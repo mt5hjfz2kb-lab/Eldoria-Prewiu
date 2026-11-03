@@ -407,8 +407,8 @@ namespace Eldoria.ReferenceClean.Editor
                 livingPaint.texture==b11CleanPlate && !livingPaint.raycastTarget,
                 "B11 physical stage-aware relief must draw the no-duplicate backplate while still binding all 25 live stages");
             Need(foundation!=null && foundation.isActiveAndEnabled &&
-                foundation.BoundStageCount==25 && foundation.NextStage==15 &&
-                foundation.Cleared==14 && !foundation.raycastTarget,
+                foundation.BoundStageCount==25 && foundation.ActualReliefSpans==24 &&
+                foundation.NextStage==15 && foundation.Cleared==14 && !foundation.raycastTarget,
                 "Exactly 25 live physical stone sockets underpin canonical road stages without intercepting touches");
             for(int actualStage=1;actualStage<=25;actualStage++)
             {
