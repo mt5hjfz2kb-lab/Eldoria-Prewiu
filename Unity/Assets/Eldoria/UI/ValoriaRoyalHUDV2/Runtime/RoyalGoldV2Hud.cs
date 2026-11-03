@@ -578,19 +578,23 @@ namespace Eldoria.UI.RoyalGold.V2
             float actionWidth = portrait ? 0f : 194f;
             float middleWidth = Mathf.Max(100f, cardWidth - textLeft -
                 actionWidth - (portrait ? 18f : 26f));
-            Top(buildingTitle.rectTransform,textLeft,10f,Mathf.Max(72f,middleWidth-(portrait?45f:0f)),33f);
-            buildingTitle.fontSize=29;
+            Top(buildingTitle.rectTransform,textLeft,8f,
+                Mathf.Max(72f,middleWidth-(portrait?45f:0f)),37f);
+            // Dynamic uGUI Text is vertically truncated when the original
+            // 29pt line-height exceeds its 33-unit slot. Native captures proved
+            // that the heading disappeared entirely despite depth/cull PASS.
+            buildingTitle.fontSize=portrait?21:23;
             Top(buildingLevel.rectTransform,textLeft,44f,middleWidth,23f);
-            buildingLevel.fontSize=portrait?21:18;
+            buildingLevel.fontSize=portrait?17:18;
             Top(buildingCost.rectTransform,textLeft,68f,middleWidth,32f);
-            buildingCost.fontSize=portrait?23:19;
+            buildingCost.fontSize=portrait?16:19;
             // The council is a short, one-time bottom decision ribbon.
             // Do not let a full management-window-sized card occupy the
             // screen when only three legitimate choices are available.
             Top(buildingWorkState.rectTransform,textLeft,
-                council?(portrait?68f:72f):(portrait?100f:99f),
-                middleWidth,council?(portrait?24f:29f):32f);
-            buildingWorkState.fontSize=portrait?21:17;
+                council?(portrait?68f:72f):(portrait?99f:99f),
+                middleWidth,council?(portrait?24f:29f):(portrait?47f:33f));
+            buildingWorkState.fontSize=portrait?16:17;
             buildingWorkState.verticalOverflow=VerticalWrapMode.Truncate;
             Top((RectTransform)buildingClose.transform,cardWidth-49f,5f,44f,44f);
             float detailsY=portrait?136f:132f;
@@ -601,7 +605,7 @@ namespace Eldoria.UI.RoyalGold.V2
             scrollContent.pivot=new Vector2(.5f,1);scrollContent.anchoredPosition=Vector2.zero;
             scrollContent.sizeDelta=new Vector2(0,Mathf.Max(85f,scrollViewport.rect.height));
             Top(buildingBody.rectTransform,0,0,middleWidth-5f,scrollContent.rect.height);
-            buildingBody.fontSize=portrait?19:18;
+            buildingBody.fontSize=portrait?16:18;
             if(portrait)
                 Top((RectTransform)buildingAction.transform,14f,cardHeight-51f,cardWidth-28f,40f);
             else
@@ -619,11 +623,11 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 Top((RectTransform)councilChoice[i].transform,councilLeft+i*(councilWidth+3f),
                     cardHeight-(portrait?47f:52f),councilWidth-2f,41f);
-                councilCaptions[i].fontSize=portrait?22:18;
+                councilCaptions[i].fontSize=portrait?14:17;
             }
-            primaryLabel.fontSize=portrait?29:22;
-            speedOneLabel.fontSize=portrait?24:18;
-            speedFiveLabel.fontSize=portrait?24:18;
+            primaryLabel.fontSize=portrait?18:21;
+            speedOneLabel.fontSize=portrait?16:15;
+            speedFiveLabel.fontSize=portrait?16:15;
             lastDetails = null; // Recompute scroll extent after rotation even when the offer text is unchanged.
             hasGeometry = true;
             lastWidth = width;
@@ -709,9 +713,13 @@ namespace Eldoria.UI.RoyalGold.V2
             buildingTitle.Put(Safe(source.Title));
             buildingLevel.Put(Safe(source.Level));
             buildingCost.Put(Safe(source.Costs).Replace("Coste de la acción\n","Coste · "));
-            buildingWorkState.Put(source.OperationActive?Safe(source.Time):
-                !string.IsNullOrWhiteSpace(Safe(source.Requirements))?
-                Safe(source.Requirements):Safe(source.Status));
+            // No fabricated state text: show the saved operation timer, or
+            // the genuine restriction, or the actual offered duration.
+            var restriction=Safe(source.Requirements);
+            var sourceTime=Safe(source.Time);
+            buildingWorkState.Put(source.OperationActive?sourceTime:
+                !string.IsNullOrWhiteSpace(restriction)?restriction:
+                !string.IsNullOrWhiteSpace(sourceTime)?sourceTime:Safe(source.Status));
             if (modelPreview)
             {
                 modelPreview.ModelFor = BuildingModelFor;
@@ -738,9 +746,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // The exact requirements/denial are already in the legible
             // fixed status line. Do not repeat them as the first clipped
             // scroll row: show the selected building's real purpose first.
+            // Cost and time already occupy the two readable fixed rows.
+            // Repeating the timer below them caused partially clipped
+            // duplicate "0:06" text over the bottom CTA in native Unity.
             Append(body, Safe(source.Function));
-            Append(body, Safe(source.Time));
-            Append(body, Safe(source.Status));
             // All costs, requirements and state above are sourced directly from
             // the current authoritative offer. Do not synthesize extras.
             string details = body.ToString();
@@ -763,8 +772,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // When the one-time council is presented, its genuine choice row
             // replaces the descriptive scroll, rather than overprinting text
             // behind the three live buttons on narrow phones.
-            if(buildingScroll)buildingScroll.gameObject.SetActive(!council);
             bool building=source.OperationActive;
+            bool hasLongRestriction=!building&&!council&&
+                !string.IsNullOrWhiteSpace(Safe(source.Requirements));
+            if(buildingScroll)buildingScroll.gameObject.SetActive(
+                !council&&!(portrait&&hasLongRestriction));
             bool offered=!building&&!council&&source.Primary&&source.Primary.Visible;
             SetVisible(buildingActionGroup,offered);
             if(offered){
@@ -780,8 +792,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // Preserve the actual time saved and the authoritative balance.
             int oneAvailable=utility?utility.InlineSpeedupCharges(1):0;
             int fiveAvailable=utility?utility.InlineSpeedupCharges(5):0;
-            speedOneLabel.Put(portrait?"1 MIN · x"+oneAvailable:"ACELERAR 1 MIN · x"+oneAvailable);
-            speedFiveLabel.Put(portrait?"5 MIN · x"+fiveAvailable:"ACELERAR 5 MIN · x"+fiveAvailable);
+            // A half-width 194px desktop action is only 90 logical units.
+            // Full "ACELERAR 1 MIN · x2" was clipped to "ACELE"; the
+            // approved compact icon-action grammar uses duration + stock.
+            speedOneLabel.Put("1 MIN · x"+oneAvailable);
+            speedFiveLabel.Put("5 MIN · x"+fiveAvailable);
             for(int i=0;i<3;i++)councilChoice[i].gameObject.SetActive(council);
             buildingCost.gameObject.SetActive(!building&&!council&&
                 !string.IsNullOrWhiteSpace(buildingCost.text));
