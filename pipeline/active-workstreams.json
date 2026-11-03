@@ -2075,7 +2075,18 @@
         "artistic_approval": "provisional",
         "note": "Propietario aprobó provisionalmente B11 de Exploradores al ver A/B Unity; 3 contratos distintos y estados reales; deuda artística 8,3 aún pendiente, rutas #137 sin promover. GitHub PR136 issuecomment 6614930908; método documentado en docs/ui-v3/ELDORIA_REUSABLE_MATERIAL_LAYER_METHOD.md; artefacto 13265898832. Liberar Windows y propietario con cierre seguro. PR136 DRAFT sin merge/publicación."
       },
-      "claim_reason": "Orden expresa del propietario 03/11/2026: siguiente bloque informes y descubrimientos, continuar sobre PR136 liberada con metodología de capas y A/B; sin publicar."
+      "claim_reason": "Orden expresa del propietario 03/11/2026: siguiente bloque informes y descubrimientos, continuar sobre PR136 liberada con metodología de capas y A/B; sin publicar.",
+      "area_handoff_request": {
+        "status": "ready",
+        "completed": true,
+        "area": "Vigilantes — acabado de informes y Exploradores — descubrimientos ilustrados",
+        "owner": "chatgpt-eldoria-reports-discoveries-20261103",
+        "revision": 126,
+        "branch_head": "3cff0cc0264b386be4d3b5b34f6e28ee83237b12",
+        "run_id": 41720866050,
+        "artistic_approval": "not_asserted",
+        "note": "Candidate visual reports implemented with source-authentic scout illustrations and historical source/army snapshots. Unity exact HEAD 3cff0cc FULL SUCCESS run 41720866050: native V4.1, EditMode, PlayMode, retention, marches, scenes, Aldric. A/B native screenshots inspected; no fabricated lore/enemy data, formulas or loot changes. No merge/publication. Preserve draft PR #136; future owner feedback may refine artistic rating."
+      }
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
