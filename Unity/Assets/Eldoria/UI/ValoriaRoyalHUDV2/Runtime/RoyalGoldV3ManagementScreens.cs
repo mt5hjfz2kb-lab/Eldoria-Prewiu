@@ -1219,9 +1219,9 @@ namespace Eldoria.UI.RoyalGold.V2
             float summaryH=wide?Mathf.Clamp(orderH*.15f,43f,65f):79f;
             float tierY=summaryY+summaryH+7f;
             float tierH=wide?34f:51f;
-            float statusY=tierY+tierH+6f;
+            float trainingStatusY=tierY+tierH+6f;
             float actionY=orderH-(wide?63f:90f);
-            float statusH=Mathf.Max(35f,actionY-statusY-8f);
+            float statusH=Mathf.Max(35f,actionY-trainingStatusY-8f);
             Place(trainingOrderBoard,2f,0f,orderW-4f,orderH);
             trainingOrderBoard.SetAsFirstSibling();
             Place(trainingOrderChapter.rectTransform,
@@ -1234,8 +1234,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 orderW-pad*2f,summaryH);
             Place(tierButton.transform as RectTransform,
                 pad,tierY,orderW-pad*2f,tierH);
-            Place(status.rectTransform,pad,statusY,orderW-pad*2f,statusH);
-            Place(trainingProgress,pad,statusY-11f,orderW-pad*2f,7f);
+            Place(status.rectTransform,pad,trainingStatusY,orderW-pad*2f,statusH);
+            Place(trainingProgress,pad,trainingStatusY-11f,orderW-pad*2f,7f);
             Place(action.transform as RectTransform,pad,
                 actionY,orderW-pad*2f,wide?52f:78f);
             summary.fontSize=wide?21:26;
