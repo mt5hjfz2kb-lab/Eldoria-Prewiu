@@ -120,13 +120,15 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "MAILBOX_V41_SOURCE_READY_WAITING_FOREIGN_WINDOWS_RUNNER",
-      "next": "PR136 Buzón reconstructed and QA-native capture fully authored through source HEAD 7c3e424829a431f44db2713074c82853ea135c1a. CI workflow 41607310312 pending. Other Issue95 workstream still owns windows-runner-heavy with job 41603285296 in_progress. Do NOT steal, cancel, or certify visually. When foreign owner actually releases resource and no processes/jobs conflict, reserve Windows via CAS; run exact HEAD V4.1/UI regression and inspect genuine mailbox one/empty/twelve QA/read/delete/reload 390x844,900x1600,844x390,1600x900. Reject visual defects, publish nothing, ART_APPROVED remains false.",
+      "phase": "MAILBOX_NATIVE_AB_EXCLUSIVE_WINDOWS_RESERVED",
+      "next": "UI Progression Certification on PR136 current head, real V4.1 mailbox screenshots for one/empty/12 QA/detail in four resolutions, gameplay regression, no fake mail or reward payments. Respect existing owner and check local process guard; no merge/release.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1719,7 +1721,7 @@
           "reason": "Owner explicitly orders new Mailbox V4.1 reconstruction with real A/B in this chat. Training is accepted provisionally. Issue95 Windows runner currently reserved separately; do not claim it."
         }
       ],
-      "ownership_revision": 113,
+      "ownership_revision": 114,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1811,7 +1813,7 @@
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
       "candidate_branch": "fix/player-feedback-context-ui-20261030",
       "canonical_pr": 132,
-      "handoff_reason": "Owner-directed next block authorized. Separate Issue95 currently owns Windows; do not interfere.",
+      "handoff_reason": "Owner directs completion of Mailbox A/B. Issue95 job 41603285296 completed/cancelled before Unity and no live Actions jobs; exclusive Windows lease transferred without altering Issue95 source/ownership.",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
       "scope_extension_reason": "Owner-directed Marches UI recon: update obsolete PlayMode UI heading assertion to inspect real live metric, preserve gateway 7 troop and save assertions.",
@@ -2040,7 +2042,7 @@
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
       "owner": "chatgpt-eldoria-spawnling-presence-proof-20261103",
-      "ownership_revision": 22,
+      "ownership_revision": 23,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "art/issue95-spawnling-presence-proof-20261103",
@@ -2069,20 +2071,18 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs.meta",
         ".github/workflows/issue95-spawnling-presence-native-ab.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "ISSUE95_SPAWNLING_VISUAL_NATIVE_AB_CAPTURE",
+      "phase": "ISSUE95_NATIVE_CHECKOUT_CANCELLED_RUNNER_RELEASED_FOR_OWNER_MAILBOX_PRIORITY",
       "dependency": "Valoria training still owns heavy Windows runner and canonical PR136; do not run Unity concurrently, edit ValoriaIntegratedWorld or #136. Only existing Spawnling source and its tests in isolated issue95 branch.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Exact A/B Unity PlayMode test on existing V4 actor: 4 native PNGs with matched near/regional camera and no state changes. Dedicated push-only workflow, zero external credits. Reject or retain on visual evidence.",
+      "next": "Issue95 code/art sources preserved. Last native run 41603285296 completed/cancelled at checkout, with no Unity A/B or art acceptance. After Mailbox completes and releases Windows, reclaim own runner with current revision and retry; do not cite failed run as PASS.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
@@ -2158,6 +2158,12 @@
           "revision": 20,
           "resource_claimed_at": "2026-11-03",
           "reason": "Owner-directed high-impact Spawnling presence pilot; no running jobs, previous Unity training run completed successfully; isolated issue95 branch only, preserve all gameplay/PR136."
+        },
+        {
+          "owner": "chatgpt-eldoria-spawnling-presence-proof-20261103",
+          "ownership_revision": 22,
+          "resource_released_at": "2026-11-03",
+          "reason": "External native Issue95 run 41603285296 reached completed/cancelled before Unity after checkout; zero active workflow runs. Owner explicitly reprioritized Mailbox A/B in subsequent task. Workstream owner, branch and unmerged source preserved; only runner reservation transferred via one CAS."
         }
       ],
       "write_scope_released": false,
