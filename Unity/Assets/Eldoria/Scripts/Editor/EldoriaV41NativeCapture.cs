@@ -670,6 +670,13 @@ namespace Eldoria.Editor
             Shot(host,"mailbox-entry-city",900,1600);
             mailbox.EntryButton.onClick.Invoke();yield return null;
             Need(mailbox.IsOpen,"Actual HUD shortcut opens mailbox");
+            var currencyGlyphs=host.Hud.GetComponentsInChildren<RoyalIconGraphic>()
+                .Where(g=>g.name.StartsWith("Mailbox / real resource icon ")).ToArray();
+            Need(currencyGlyphs.Length==3 &&
+                currencyGlyphs.Select(g=>g.Icon).OrderBy(x=>x)
+                    .SequenceEqual(new[]{1,2,3}) &&
+                currencyGlyphs.All(g=>!g.raycastTarget&&g.rectTransform.rect.width>0f),
+                "Mailbox renders three real HUD currency glyphs without fake purchase controls");
             Shot(host,"mailbox-reference-ratio",1169,1345);
             Shot(host,"mailbox-phone",900,1600);
             Shot(host,"mailbox-landscape",1600,900);
