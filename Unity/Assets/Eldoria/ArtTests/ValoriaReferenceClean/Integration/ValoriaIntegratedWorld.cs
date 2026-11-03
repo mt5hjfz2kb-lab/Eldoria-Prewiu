@@ -337,7 +337,14 @@ namespace Eldoria.ReferenceClean {
    // Focus against the actual unobstructed HUD rectangle, not the whole screen.
    // Terrain-wide camera clamps can reverse the final adjustment when the
    // selected Bastion roof is close to the upper chapter panel.
-   var padded=Rect.MinMaxRect(safe.xMin+.012f,safe.yMin+.012f,safe.xMax-.012f,safe.yMax-.012f);
+   // The physical bottom cartouche projects just above the navigation dock.
+   // Leave extra clearance from its raised border so Bastion roofs and
+   // construction sites do not visually clip even with rasterized corner
+   // boxes or after off-screen portrait/desktop camera recomposition.
+   float bottomClearance=!InWorld&&Hud.GetComponent<RoyalGoldV2Hud>()?.
+       ChronicleIllustratedBuildingVisible==true ? .036f : .012f;
+   var padded=Rect.MinMaxRect(safe.xMin+.012f,safe.yMin+bottomClearance,
+       safe.xMax-.012f,safe.yMax-.012f);
    for(int attempt=0;attempt<5;attempt++){
     if(!ProjectFocus(camera,points,out projected))break;
     if(projected.xMin>=padded.xMin&&projected.xMax<=padded.xMax&&projected.yMin>=padded.yMin&&projected.yMax<=padded.yMax){var context=Hud.GetComponent<RoyalGoldV3ContextHud>();if(context)context.SynchronizeNow();return;}
