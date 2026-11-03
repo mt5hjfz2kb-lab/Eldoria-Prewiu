@@ -33,7 +33,40 @@ namespace Eldoria.UI.RoyalGold.V2 {
   }
   void OnDestroy(){if(hud){hud.SelectionChanged-=Select;hud.NarrativeOpening-=Suspend;}}
   void Suspend(){if(IsOpen){root.gameObject.SetActive(false);suspended=true;}}
+  public bool InlineCouncilNeeded(string id){
+   if(id!="bastion"||gateway==null)return false;
+   var s=gateway.Snapshot();
+   return s.BastionLevel>=4&&string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority);
+  }
+  public int InlineSpeedupCharges(int minutes){
+   if(gateway==null)return 0;
+   var s=gateway.Snapshot();
+   return minutes==5?s.SpeedupFiveMinutes:minutes==1?s.SpeedupOneMinute:0;
+  }
+  public bool ExecuteInlinePriority(string key){
+   if(hud==null||!InlineCouncilNeeded(hud.SelectedBuildingId)||
+      Array.IndexOf(new[]{"production","defense","civil"},key)<0)return false;
+   var s=gateway.Snapshot();
+   var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
+       s.PlayerId,"ChooseDevelopment",key,s.Revision));
+   message=result.Message;refreshed?.Invoke();return result.Ok;
+  }
+  public bool ExecuteInlineSpeedup(string id,int minutes){
+   if(hud==null||id!=hud.SelectedBuildingId||minutes!=1&&minutes!=5||
+      gateway==null||InlineSpeedupCharges(minutes)<=0)return false;
+   var building=read!=null?read(id):null;
+   if(building==null||!building.OperationActive)return false;
+   var s=gateway.Snapshot();
+   var target=(id=="bastion"?"bastion":"building")+(minutes==5?":5m":":1m");
+   var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
+       s.PlayerId,"UseSpeedup",target,s.Revision));
+   message=result.Message;refreshed?.Invoke();return result.Ok;
+  }
   bool NeedsInlineControl(string id){
+   // When the canonical city parchment exists, ALL building controls must
+   // remain inside that one bottom sheet: no second modal for boosts/council.
+   var chronicle=hud?hud.GetComponent<RoyalGoldV2Hud>():null;
+   if(chronicle&&chronicle.ChronicleBuildingRect!=null)return false;
    if((Array.IndexOf(Ids,id)<0&&id!="barracks")||gateway==null)return false;
    var state=gateway.Snapshot();
    if(id=="bastion"&&state.BastionLevel>=4&&

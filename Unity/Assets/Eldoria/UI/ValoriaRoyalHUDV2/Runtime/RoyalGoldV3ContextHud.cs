@@ -202,17 +202,27 @@ namespace Eldoria.UI.RoyalGold.V2
         private TimerView CreateTimer(string id)
         {
             var r = Frame("V3 / real-time operation / " + id, safe, false);
-            var label = Text("Live remaining time", r, 18, Ivory, true);
+            var flat=r.GetComponent<RoyalGoldV2FrameGraphic>();
+            if(flat)flat.enabled=false;
+            var paper=Rect("Building / physical timer parchment",r);
+            paper.gameObject.AddComponent<CanvasRenderer>();
+            var finish=paper.gameObject.AddComponent<RoyalGoldV3BuildingCartoucheFinish>();
+            finish.TimerScale=true;
+            finish.SetPhase(RoyalGoldV3BuildingCartoucheFinish.Phase.InProgress);
+            finish.raycastTarget=false;
+            paper.anchorMin=Vector2.zero;paper.anchorMax=Vector2.one;
+            paper.offsetMin=paper.offsetMax=Vector2.zero;paper.SetAsFirstSibling();
+            var label = Text("Live remaining time", r, 18, new Color(.28f,.18f,.09f), true);
             label.alignment = TextAnchor.MiddleCenter;
             var track = Rect("Actual progress", r);
             track.gameObject.AddComponent<CanvasRenderer>();
             var bg = track.gameObject.AddComponent<Image>();
-            bg.color = new Color(.09f, .115f, .15f, .97f);
+            bg.color = new Color(.41f, .31f, .19f, .84f);
             bg.raycastTarget = false;
             var fill = Rect("Gateway progress fill", track);
             fill.gameObject.AddComponent<CanvasRenderer>();
             var ink = fill.gameObject.AddComponent<Image>();
-            ink.color = Gold;
+            ink.color = new Color(.48f,.55f,.34f,1f);
             ink.raycastTarget = false;
             fill.anchorMin = new Vector2(0, 0);
             fill.anchorMax = new Vector2(0, 1);

@@ -20,7 +20,14 @@ namespace Eldoria.UI.RoyalGold.V2
         public RoyalHUD Source;
 
         private RectTransform safe, headerPlate, objectiveCard, heraldicBanner, buildingCard, buildingMiniature, scrollContent, scrollViewport;
+        private RoyalGoldV3BuildingCartoucheFinish buildingFinish;
+        private Image buildingGoldRim, miniatureGoldRim;
         private RoyalText chapterText, objectiveText, progressText, buildingTitle, buildingLevel, buildingBody, primaryLabel;
+        private RoyalText buildingCost, buildingWorkState;
+        private RoyalButton speedOne, speedFive;
+        private readonly RoyalButton[] councilChoice = new RoyalButton[3];
+        private readonly RoyalText[] councilCaptions = new RoyalText[3];
+        private RoyalText speedOneLabel, speedFiveLabel;
         private RoyalText objectiveActionLabel, objectivesButtonLabel;
         private RoyalButton objectiveAction, objectivesButton, chapterClose, buildingClose, buildingAction;
         private ScrollRect buildingScroll;
@@ -32,6 +39,8 @@ namespace Eldoria.UI.RoyalGold.V2
         private bool ready, expanded, portrait, hasGeometry, compactObjective;
         private float lastWidth = -1f, lastHeight = -1f;
         private string lastDetails = "";
+        private readonly string[] councilKeys = {"production","defense","civil"};
+        private readonly string[] councilNames = {"PRODUCCIÓN","DEFENSA","VIDA CIVIL"};
         private static Font chronicleFont;
         private static Font ChronicleFont => chronicleFont ? chronicleFont :
             (chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif"));
@@ -284,13 +293,40 @@ namespace Eldoria.UI.RoyalGold.V2
             });
 
             buildingCard = Panel("V2 / contextual building sheet", safe);
+            // The original single-canvas contextual action stays authoritative.
+            // The old flat midnight window becomes a raised parchment made from
+            // an independent illustrated mesh and approved nine-slice brass.
+            var legacyBuildingFrame=buildingCard.GetComponent<RoyalGoldV2FrameGraphic>();
+            if(legacyBuildingFrame){legacyBuildingFrame.enabled=false;legacyBuildingFrame.raycastTarget=false;}
+            var material = NewRect("Building / physical cartouche parchment",buildingCard);
+            material.gameObject.AddComponent<CanvasRenderer>();
+            buildingFinish=material.gameObject.AddComponent<RoyalGoldV3BuildingCartoucheFinish>();
+            buildingFinish.raycastTarget=false;Stretch(material,0f);
+            var goldRim=NewRect("Building / real nine-slice outline",buildingCard);
+            goldRim.gameObject.AddComponent<CanvasRenderer>();
+            buildingGoldRim=goldRim.gameObject.AddComponent<Image>();
+            buildingGoldRim.sprite=RoyalGoldV41SourceArt.Get("HeroCardNineSliceGold",36);
+            buildingGoldRim.raycastTarget=false;
+            if(buildingGoldRim.sprite){buildingGoldRim.type=Image.Type.Sliced;buildingGoldRim.fillCenter=false;buildingGoldRim.pixelsPerUnitMultiplier=2.2f;}
+            else buildingGoldRim.enabled=false;
+            buildingGoldRim.color=new Color(.79f,.55f,.28f,.86f);
+            Stretch(goldRim,3f);
             // The approved Crónica Real has an architectural illustration inside
             // its broad bottom building cartouche. Draw an actual live, authored
             // native miniature rather than a placeholder or static UI screenshot.
             buildingMiniature = Panel("V3 / engraved real building miniature", buildingCard);
             var miniSkin = buildingMiniature.GetComponent<RoyalGoldV2FrameGraphic>();
             miniSkin.raycastTarget = false;
-            miniSkin.DecorativeCorners = true;
+            miniSkin.enabled=false;
+            var miniFrame=NewRect("Building / recessed authentic miniature edge",buildingMiniature);
+            miniFrame.gameObject.AddComponent<CanvasRenderer>();
+            miniatureGoldRim=miniFrame.gameObject.AddComponent<Image>();
+            miniatureGoldRim.sprite=RoyalGoldV41SourceArt.Get("HeroCardNineSliceGold",36);
+            miniatureGoldRim.raycastTarget=false;
+            if(miniatureGoldRim.sprite){miniatureGoldRim.type=Image.Type.Sliced;miniatureGoldRim.fillCenter=false;miniatureGoldRim.pixelsPerUnitMultiplier=1.7f;}
+            else miniatureGoldRim.enabled=false;
+            miniatureGoldRim.color=new Color(.67f,.42f,.20f,.94f);
+            Stretch(miniFrame,0f);
             var miniSurface = NewRect("V3 / illuminated architectural illustration", buildingMiniature);
             miniSurface.gameObject.AddComponent<CanvasRenderer>();
             miniatureArt = miniSurface.gameObject.AddComponent<RoyalGoldV3BuildingEngravingGraphic>();
@@ -302,8 +338,10 @@ namespace Eldoria.UI.RoyalGold.V2
             Stretch(previewRect, 5f);
             modelPreview = previewRect.gameObject.AddComponent<RoyalGoldV3BuildingPreview>();
             modelPreview.Initialize(previewImage);
-            buildingTitle = Text("Selected building", buildingCard, 30, Ivory, true);
-            buildingLevel = Text("Real level", buildingCard, 18, Gold);
+            buildingTitle = Text("Selected building", buildingCard, 30, new Color(.26f,.16f,.085f), true);
+            buildingLevel = Text("Real level", buildingCard, 18, new Color(.48f,.31f,.14f));
+            buildingCost = Text("Building / genuine offer cost", buildingCard, 18, new Color(.29f,.18f,.085f), true);
+            buildingWorkState = Text("Building / live state or countdown",buildingCard,16,new Color(.43f,.26f,.13f),true);
             buildingClose = Button("Close selected building", buildingCard, out var closeBuildingText, false);
             closeBuildingText.Put("×");
             closeBuildingText.fontSize = 24;
@@ -323,7 +361,7 @@ namespace Eldoria.UI.RoyalGold.V2
             hitArea.raycastTarget = true;
             scrollViewport.gameObject.AddComponent<RectMask2D>();
             scrollContent = NewRect("Building details content", scrollViewport);
-            buildingBody = Text("Real status costs and requirements", scrollContent, 22, Ivory);
+            buildingBody = Text("Real status costs and requirements", scrollContent, 22, new Color(.33f,.23f,.15f));
             buildingBody.alignment = TextAnchor.UpperLeft;
             buildingBody.horizontalOverflow = HorizontalWrapMode.Wrap;
             buildingBody.verticalOverflow = VerticalWrapMode.Overflow;
@@ -337,6 +375,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 var sourceButton = Source.Building.Primary.Button;
                 if (sourceButton && sourceButton.interactable) sourceButton.onClick.Invoke();
             });
+            // Inline supplementary buttons share the SAME bottom cartouche.
+            // They delegate to the pre-existing gateway/command handlers; no
+            // separate building modal, clock, economy or state machine.
+            speedOne=Button("Building / accelerate one minute",buildingCard,out speedOneLabel,true);
+            speedOne.onClick.AddListener(()=>GetComponent<RoyalGoldV3BuildingScreens>()?.ExecuteInlineSpeedup(Source.SelectedBuildingId,1));
+            speedFive=Button("Building / accelerate five minutes",buildingCard,out speedFiveLabel,true);
+            speedFive.onClick.AddListener(()=>GetComponent<RoyalGoldV3BuildingScreens>()?.ExecuteInlineSpeedup(Source.SelectedBuildingId,5));
+            for(int i=0;i<3;i++)
+            {
+                int index=i;
+                councilChoice[i]=Button("Building / council "+councilKeys[i],buildingCard,out councilCaptions[i],true);
+                councilCaptions[i].Put(councilNames[i]);
+                councilChoice[i].onClick.AddListener(()=>GetComponent<RoyalGoldV3BuildingScreens>()?.ExecuteInlinePriority(councilKeys[index]));
+            }
             // Keep dynamically created uGUI graphics registered with the
             // parent canvas. Disabling the GameObject caused new buttons to
             // have Graphic.depth=-1 even after the building changed state.
@@ -501,8 +553,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // Keep only the timer projected beside the actual building.
             // This cartouche owns the sole canonical purchase control.
             float cardWidth = Mathf.Min(width - (portrait ? 18f : 32f),
-                portrait ? 720f : 1300f);
-            float cardHeight = portrait ? 210f : 178f;
+                portrait ? 720f : 1280f);
+            // Preserve more real city in both orientations. A council choice
+            // is a modestly taller version of this SAME in-world card.
+            bool council=GetComponent<RoyalGoldV3BuildingScreens>()?.InlineCouncilNeeded(Source.SelectedBuildingId)==true;
+            float cardHeight = council?(portrait?227f:175f):(portrait?189f:152f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -511,35 +566,50 @@ namespace Eldoria.UI.RoyalGold.V2
             // The narrow phone keeps one illustrated thumbnail and a real
             // right-hand text/CTA column. Never squeeze its text into a 90px
             // sliver to fit a third decorative region.
-            float picture = portrait ? 137f : cardHeight - 19f;
+            float picture = portrait?Mathf.Clamp(cardWidth*.23f,88f,123f):cardHeight-22f;
             Place(buildingMiniature, new Vector2(0, 1), new Vector2(0, 1),
-                9f, -9f, picture, picture);
-            float textLeft = picture + 24f;
+                12f, -12f, picture, picture);
+            float textLeft = picture + 28f;
             float actionWidth = portrait ? 0f : 194f;
-            float middleWidth = Mathf.Max(115f, cardWidth - textLeft -
-                actionWidth - (portrait ? 14f : 24f));
-            Top(buildingTitle.rectTransform, textLeft, 10f, middleWidth, 35f);
-            buildingTitle.fontSize = portrait ? 22 : 30;
-            Top(buildingLevel.rectTransform, textLeft, 44f, middleWidth, 22f);
-            Top((RectTransform)buildingClose.transform, cardWidth - 49f, 5f, 44f, 44f);
-            Top((RectTransform)buildingScroll.transform, textLeft, 66f,
-                middleWidth, portrait ? cardHeight - 123f : cardHeight - 74f);
-            Stretch(scrollViewport, 0);
-            scrollContent.anchorMin = new Vector2(0, 1);
-            scrollContent.anchorMax = new Vector2(1, 1);
-            scrollContent.pivot = new Vector2(.5f, 1);
-            scrollContent.anchoredPosition = Vector2.zero;
-            scrollContent.sizeDelta = new Vector2(0, Mathf.Max(85f, scrollViewport.rect.height));
-            Top(buildingBody.rectTransform, 0, 0, middleWidth - 4f,
-                scrollContent.rect.height);
-            buildingBody.fontSize = portrait ? 15 : 19;
-            if (portrait)
-                Top((RectTransform)buildingAction.transform,
-                    textLeft, cardHeight - 53f, middleWidth, 44f);
+            float middleWidth = Mathf.Max(100f, cardWidth - textLeft -
+                actionWidth - (portrait ? 18f : 26f));
+            Top(buildingTitle.rectTransform,textLeft,10f,Mathf.Max(72f,middleWidth-(portrait?45f:0f)),33f);
+            buildingTitle.fontSize=portrait?23:29;
+            Top(buildingLevel.rectTransform,textLeft,44f,middleWidth,23f);
+            buildingLevel.fontSize=portrait?15:18;
+            Top(buildingCost.rectTransform,textLeft,67f,middleWidth,37f);
+            buildingCost.fontSize=portrait?15:19;
+            Top(buildingWorkState.rectTransform,textLeft,103f,middleWidth,26f);
+            buildingWorkState.fontSize=portrait?14:17;
+            Top((RectTransform)buildingClose.transform,cardWidth-49f,5f,44f,44f);
+            float detailsY=portrait?130f:119f;
+            Top((RectTransform)buildingScroll.transform,textLeft,detailsY,
+                middleWidth,Mathf.Max(19f,cardHeight-detailsY-(portrait?53f:7f)));
+            Stretch(scrollViewport,0);
+            scrollContent.anchorMin=new Vector2(0,1);scrollContent.anchorMax=new Vector2(1,1);
+            scrollContent.pivot=new Vector2(.5f,1);scrollContent.anchoredPosition=Vector2.zero;
+            scrollContent.sizeDelta=new Vector2(0,Mathf.Max(85f,scrollViewport.rect.height));
+            Top(buildingBody.rectTransform,0,0,middleWidth-5f,scrollContent.rect.height);
+            buildingBody.fontSize=portrait?15:18;
+            if(portrait)
+                Top((RectTransform)buildingAction.transform,14f,cardHeight-51f,cardWidth-28f,40f);
             else
                 Top((RectTransform)buildingAction.transform,
-                    cardWidth - actionWidth - 12f, cardHeight - 66f,
-                    actionWidth, 51f);
+                    cardWidth-actionWidth-14f,cardHeight-66f,actionWidth,51f);
+            // Accelerators occupy the identical action row, only if a real
+            // timer is active and the player's ledger contains a speed-up.
+            float extraWidth=portrait?(cardWidth-34f)*.5f:actionWidth*.50f;
+            float extraLeft=portrait?14f:cardWidth-actionWidth-14f;
+            float extraY=cardHeight-(portrait?51f:65f);
+            Top((RectTransform)speedOne.transform,extraLeft,extraY,extraWidth-4f,portrait?40f:49f);
+            Top((RectTransform)speedFive.transform,extraLeft+extraWidth+4f,extraY,extraWidth-4f,portrait?40f:49f);
+            float councilLeft=14f,councilWidth=(cardWidth-34f)/3f;
+            for(int i=0;i<3;i++)
+            {
+                Top((RectTransform)councilChoice[i].transform,councilLeft+i*(councilWidth+3f),
+                    cardHeight-52f,councilWidth-2f,41f);
+                councilCaptions[i].fontSize=portrait?13:18;
+            }
             lastDetails = null; // Recompute scroll extent after rotation even when the offer text is unchanged.
             hasGeometry = true;
             lastWidth = width;
@@ -624,6 +694,8 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!show) return;
             buildingTitle.Put(Safe(source.Title));
             buildingLevel.Put(Safe(source.Level));
+            buildingCost.Put(Safe(source.Costs).Replace("Coste de la acción\n","Coste · "));
+            buildingWorkState.Put(source.OperationActive?Safe(source.Time):Safe(source.Status));
             if (modelPreview)
             {
                 modelPreview.ModelFor = BuildingModelFor;
@@ -645,13 +717,12 @@ namespace Eldoria.UI.RoyalGold.V2
             }
 
             var body = new StringBuilder(280);
-            // Put purchase information before descriptive prose so the
-            // compact viewport exposes the cost before the player commits.
-            Append(body, Safe(source.Costs).Replace("Coste de la acción\n", "Coste · "));
+            // Live cost and timer have dedicated readable rows outside the
+            // scroll. Full genuine requirements/function remain scrollable.
             Append(body, Safe(source.Requirements));
+            Append(body, Safe(source.Function));
             Append(body, Safe(source.Time));
             Append(body, Safe(source.Status));
-            Append(body, Safe(source.Function));
             // All costs, requirements and state above are sourced directly from
             // the current authoritative offer. Do not synthesize extras.
             string details = body.ToString();
@@ -669,14 +740,32 @@ namespace Eldoria.UI.RoyalGold.V2
                     buildingScroll.verticalNormalizedPosition = 1f;
                 }
             }
-            bool offered = !source.OperationActive && source.Primary && source.Primary.Visible;
-            SetVisible(buildingActionGroup, offered);
-            if (offered)
-            {
+            var utility=GetComponent<RoyalGoldV3BuildingScreens>();
+            bool council=utility&&utility.InlineCouncilNeeded(Source.SelectedBuildingId);
+            bool building=source.OperationActive;
+            bool offered=!building&&!council&&source.Primary&&source.Primary.Visible;
+            SetVisible(buildingActionGroup,offered);
+            if(offered){
                 primaryLabel.Put(Safe(source.Primary.Label));
-                buildingAction.interactable =
-                    source.Offer != null && source.Primary.Button && source.Primary.Button.interactable;
+                buildingAction.interactable=source.Offer!=null&&
+                    source.Primary.Button&&source.Primary.Button.interactable;
             }
+            bool hasOne=utility&&utility.InlineSpeedupCharges(1)>0&&building;
+            bool hasFive=utility&&utility.InlineSpeedupCharges(5)>0&&building;
+            speedOne.gameObject.SetActive(hasOne);
+            speedFive.gameObject.SetActive(hasFive);
+            speedOneLabel.Put("ACELERAR 1 MIN · x"+(utility?utility.InlineSpeedupCharges(1):0));
+            speedFiveLabel.Put("ACELERAR 5 MIN · x"+(utility?utility.InlineSpeedupCharges(5):0));
+            for(int i=0;i<3;i++)councilChoice[i].gameObject.SetActive(council);
+            buildingCost.gameObject.SetActive(!building&&!council&&
+                !string.IsNullOrWhiteSpace(buildingCost.text));
+            if(council)buildingWorkState.Put("ELIGE EL DESARROLLO DEL REINO");
+            if(buildingFinish)buildingFinish.SetPhase(council?
+                RoyalGoldV3BuildingCartoucheFinish.Phase.Council:
+                building?RoyalGoldV3BuildingCartoucheFinish.Phase.InProgress:
+                offered&&buildingAction.interactable?
+                    RoyalGoldV3BuildingCartoucheFinish.Phase.Ready:
+                    RoyalGoldV3BuildingCartoucheFinish.Phase.Unavailable);
         }
 
         private static void SetVisible(CanvasGroup group, bool show)

@@ -69,7 +69,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 camera.aspect = 1;
                 camera.cullingMask = 1 << 31;
                 camera.clearFlags = CameraClearFlags.SolidColor;
-                camera.backgroundColor = new Color(.035f, .055f, .075f, 1);
+                // Warm architect's vellum, sampled behind the genuine model. No
+                // composited photo or change to the canonical city mesh.
+                camera.backgroundColor = new Color(.89f, .814f, .666f, 1);
                 camera.allowHDR = false;
                 camera.allowMSAA = false;
                 camera.nearClipPlane = .01f;
