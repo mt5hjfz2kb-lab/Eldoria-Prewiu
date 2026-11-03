@@ -291,6 +291,12 @@ namespace Eldoria.ReferenceClean.Editor
                 x.texture==Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4") &&
                 x.uvRect==new Rect(.01f,.51f,.48f,.48f)),
                 "Normal corrupt encounters show their own authored patrol illustration, never an empty card");
+            var ordinaryArt=hud.GetComponentsInChildren<RawImage>().First(x=>
+                x.name=="Engendro / authentic creature illustration");
+            Need(ordinaryArt.transform.parent.parent.name=="Scenic illustration" &&
+                ordinaryArt.transform.parent.parent!=null &&
+                ordinaryArt.transform.parent.GetComponent<RoyalGoldV2FrameGraphic>()?.enabled==false,
+                "Actual enemy illustration belongs to the world, not a pasted UI photo card");
             Screenshot(h,"vigilants-chapter-one",1600,900);
             Screenshot(h,"vigilants-chapter-one",900,1600);
             Screenshot(h,"vigilants-chapter-one",390,844);
@@ -365,6 +371,13 @@ namespace Eldoria.ReferenceClean.Editor
             var trailParent=stageTrail?stageTrail.transform.parent as RectTransform:null;
             Need(stageTrail!=null && creatureFrame!=null && trailParent!=null,
                 "Real route and authentic creature are present");
+            var occlusion=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsTerrainOcclusion>(true);
+            Need(creatureFrame.parent==trailParent &&
+                occlusion!=null && occlusion.isActiveAndEnabled &&
+                !occlusion.raycastTarget &&
+                occlusion.OriginalArtwork==vigilantsPainting &&
+                occlusion.CoverUv==illustration.uvRect,
+                "Engendro occupies its actual landscape depth, behind original rock and live stages");
             for(int stage=1;stage<=25;stage++)
             {
                 var point=stageTrail.transform.TransformPoint(stageTrail.StagePosition(stage));
