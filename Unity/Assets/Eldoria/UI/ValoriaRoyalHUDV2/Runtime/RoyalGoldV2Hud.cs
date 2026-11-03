@@ -557,7 +557,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Preserve more real city in both orientations. A council choice
             // is a modestly taller version of this SAME in-world card.
             bool council=GetComponent<RoyalGoldV3BuildingScreens>()?.InlineCouncilNeeded(Source.SelectedBuildingId)==true;
-            float cardHeight = council?(portrait?155f:169f):(portrait?218f:166f);
+            float cardHeight = council?(portrait?142f:169f):(portrait?218f:166f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -567,6 +567,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // right-hand text/CTA column. Never squeeze its text into a 90px
             // sliver to fit a third decorative region.
             float picture = portrait?Mathf.Clamp(cardWidth*.23f,88f,123f):cardHeight-22f;
+            if(council&&portrait)picture=Mathf.Min(picture,70f);
             Place(buildingMiniature, new Vector2(0, 1), new Vector2(0, 1),
                 12f, -12f, picture, picture);
             float textLeft = picture + 28f;
@@ -582,8 +583,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // The council is a short, one-time bottom decision ribbon.
             // Do not let a full management-window-sized card occupy the
             // screen when only three legitimate choices are available.
-            Top(buildingWorkState.rectTransform,textLeft,council?72f:102f,
-                middleWidth,council?29f:36f);
+            Top(buildingWorkState.rectTransform,textLeft,
+                council?(portrait?68f:72f):102f,
+                middleWidth,council?(portrait?24f:29f):36f);
             buildingWorkState.fontSize=portrait?14:17;
             buildingWorkState.verticalOverflow=VerticalWrapMode.Truncate;
             Top((RectTransform)buildingClose.transform,cardWidth-49f,5f,44f,44f);
@@ -612,7 +614,7 @@ namespace Eldoria.UI.RoyalGold.V2
             for(int i=0;i<3;i++)
             {
                 Top((RectTransform)councilChoice[i].transform,councilLeft+i*(councilWidth+3f),
-                    cardHeight-52f,councilWidth-2f,41f);
+                    cardHeight-(portrait?47f:52f),councilWidth-2f,41f);
                 councilCaptions[i].fontSize=portrait?13:18;
             }
             lastDetails = null; // Recompute scroll extent after rotation even when the offer text is unchanged.
@@ -770,7 +772,8 @@ namespace Eldoria.UI.RoyalGold.V2
             for(int i=0;i<3;i++)councilChoice[i].gameObject.SetActive(council);
             buildingCost.gameObject.SetActive(!building&&!council&&
                 !string.IsNullOrWhiteSpace(buildingCost.text));
-            if(council)buildingWorkState.Put("ELIGE EL DESARROLLO DEL REINO");
+            if(council)buildingWorkState.Put(portrait?
+                "ELIGE PRIORIDAD":"ELIGE EL DESARROLLO DEL REINO");
             if(buildingFinish)buildingFinish.SetPhase(council?
                 RoyalGoldV3BuildingCartoucheFinish.Phase.Council:
                 building?RoyalGoldV3BuildingCartoucheFinish.Phase.InProgress:
