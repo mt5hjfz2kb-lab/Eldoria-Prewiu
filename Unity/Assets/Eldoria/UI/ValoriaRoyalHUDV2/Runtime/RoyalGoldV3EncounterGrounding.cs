@@ -104,17 +104,17 @@ namespace Eldoria.UI.RoyalGold.V2
                     new Color(near.r,near.g,near.b,Breach ? .47f : .30f));
                 if(Breach)
                 {
-                    // The authentic Engendro now appears to stand above a
-                    // fissured Breach foothold rather than floating in a void.
-                    // Procedural luminosity only; it is NOT a new enemy asset.
-                    var purple=new Color(.84f,.31f,.98f,.64f);
-                    var origin=new Vector2(x+w*.51f,y+h*.12f);
-                    Rift(vh,origin,new Vector2(x+w*.10f,y+h*.08f),w*.022f,purple);
-                    Rift(vh,origin,new Vector2(x+w*.88f,y+h*.055f),w*.022f,purple);
-                    Rift(vh,origin,new Vector2(x+w*.69f,y+h*.24f),w*.017f,purple);
-                    Rift(vh,origin,new Vector2(x+w*.29f,y+h*.20f),w*.013f,purple);
-                    Glow(vh,origin,w*.31f,h*.11f,
-                        new Color(.65f,.26f,.88f,.30f));
+                    // The Breach is an atmospheric emergence from the real
+                    // painted rocks. B2's four straight lavender polygon
+                    // strokes were visible as artificial UI lines; remove
+                    // them instead of concealing them behind another frame.
+                    var origin=new Vector2(x+w*.51f,y+h*.13f);
+                    Glow(vh,origin,w*.36f,h*.16f,
+                        new Color(.53f,.22f,.79f,.29f));
+                    Glow(vh,new Vector2(x+w*.36f,y+h*.19f),
+                        w*.22f,h*.18f,new Color(.46f,.24f,.62f,.15f));
+                    Glow(vh,new Vector2(x+w*.69f,y+h*.20f),
+                        w*.17f,h*.15f,new Color(.66f,.39f,.85f,.17f));
                 }
             }
             else
