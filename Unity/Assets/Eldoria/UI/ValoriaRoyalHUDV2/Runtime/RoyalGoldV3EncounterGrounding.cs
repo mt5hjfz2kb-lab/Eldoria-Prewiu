@@ -95,7 +95,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Large bloom is BEHIND the authentic guardian: it gives the
                 // purple or amber light a plausible environmental origin.
                 Glow(vh,new Vector2(x+w*.54f,y+h*.50f),w*.53f,h*.60f,
-                    new Color(near.r,near.g,near.b,Breach?.27f:.19f));
+                    new Color(near.r,near.g,near.b,Breach ? 0.27f : 0.19f));
                 // Receding stony floor and an actual grounding/contact ellipse.
                 Quad(vh,new Vector2(x+w*.07f,y+h*.045f),
                     new Vector2(x+w*.93f,y+h*.18f),
@@ -107,7 +107,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     new Color(near.r,near.g,near.b,.29f));
                 // Light is strongest where the creature meets the ground.
                 Glow(vh,new Vector2(x+w*.55f,y+h*.22f),w*.29f,h*.24f,
-                    new Color(fog.r,fog.g,fog.b,Breach?.18f:.12f));
+                    new Color(fog.r,fog.g,fog.b,Breach ? 0.18f : 0.12f));
             }
             else
             {
