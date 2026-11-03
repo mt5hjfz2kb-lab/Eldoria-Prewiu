@@ -140,10 +140,10 @@ namespace Eldoria.ReferenceClean.Editor
                 "  \"save_unchanged_after_reload\": true,\n"+
                 "  \"construction_from\": \"LocalGateway.Execute(Build)\",\n"+
                 "  \"completion_from\": \"TestClock + LocalGateway.Advance\",\n"+
-                "  \"images\": 10,\n"+
+                "  \"images\": 12,\n"+
                 "  \"art_approved\": false\n"+
                 "}\n");
-            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=10 save-preserved=true");
+            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=12 save-preserved=true");
             EditorApplication.Exit(0);
         }
 
