@@ -68,6 +68,46 @@ namespace Eldoria.Tests
             Assert.That(gateway.Snapshot().Mailbox.List("informes").Count,Is.Zero);
             Assert.That(gateway.Snapshot().Resources.Wood,Is.EqualTo(wood));
         }
+        [Test] public void MailboxPaginationReadDeleteAndEventLedgerSurviveSerialization()
+        {
+            // Test-only synthetic event fixture: NEVER inserted into a player
+            // save, not generated as screen content to hide empty UI.
+            var mailbox=new EldoriaV41Mailbox();
+            Assert.That(mailbox.List("informes",0,5).Count,Is.Zero);
+            for(int i=0;i<12;i++)
+            {
+                Assert.That(mailbox.Receive(new EldoriaV41Message{
+                    EventId="test-only-event-"+i,
+                    Category="informes",Type="battle",
+                    Title="Prueba aislada "+i,
+                    Subtitle="Evento de prueba",
+                    OccurredAtUtcTicks=TimeSpan.FromSeconds(100+i).Ticks,
+                    Read=false
+                }),Is.True);
+            }
+            Assert.That(mailbox.List("informes",0,5).Count,Is.EqualTo(5));
+            Assert.That(mailbox.List("informes",5,5).Count,Is.EqualTo(5));
+            Assert.That(mailbox.List("informes",10,5).Count,Is.EqualTo(2));
+            Assert.That(mailbox.List("recompensas",0,5).Count,Is.Zero);
+            Assert.That(mailbox.Unread("informes"),Is.EqualTo(12));
+            string newest=mailbox.List("informes",0,1)[0].EventId;
+            mailbox.MarkRead(newest);
+            Assert.That(mailbox.Unread("informes"),Is.EqualTo(11));
+            mailbox.Delete(newest);
+            Assert.That(mailbox.Messages.Count,Is.EqualTo(11));
+            Assert.That(mailbox.ReceivedEventIds.Contains(newest),Is.True);
+            Assert.That(mailbox.Receive(new EldoriaV41Message{
+                EventId=newest,Category="informes",Type="battle",
+                Title="Repetido"
+            }),Is.False,"Deleted report must never be replayed by repeated delivery");
+            var serialized=UnityEngine.JsonUtility.ToJson(mailbox);
+            var loaded=UnityEngine.JsonUtility.FromJson<EldoriaV41Mailbox>(serialized);
+            Assert.That(loaded.List("informes",0,5).Count,Is.EqualTo(5));
+            Assert.That(loaded.List("informes",5,5).Count,Is.EqualTo(5));
+            Assert.That(loaded.List("informes",10,5).Count,Is.EqualTo(1));
+            Assert.That(loaded.ReceivedEventIds.Contains(newest),Is.True);
+        }
+
         [Test] public void TierStrengthComparisonIsNotEqualizedAway()
         {
             var low=new EldoriaV41Combat.Force().Add(0,1,30).Add(1,1,40).Add(2,1,30);
