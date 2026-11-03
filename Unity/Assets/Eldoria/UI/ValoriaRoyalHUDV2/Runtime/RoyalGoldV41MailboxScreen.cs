@@ -533,7 +533,7 @@ namespace Eldoria.UI.RoyalGold.V2
             reportDate.fontSize=narrow?11:14;
 
             int cols=narrow?2:4;
-            float cardH=narrow?79f:94f;
+            float cardH=narrow?104f:94f;
             float gap=11f,cardW=(width-48f-gap*(cols-1))/cols;
             float metricTop=headerH+19f;
             for(int i=0;i<4;i++)
@@ -547,7 +547,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 metricNames[i].color=new Color(.37f,.26f,.17f);
                 metricValues[i].color=new Color(.20f,.125f,.075f);
                 metricNames[i].fontSize=narrow?12:15;
-                metricValues[i].fontSize=narrow?19:26;
+                metricValues[i].fontSize=narrow?18:26;
                 Position(metricNames[i].rectTransform,x+11f,y+10f,cardW-22f,24f);
                 Position(metricValues[i].rectTransform,x+11f,y+34f,
                     cardW-22f,cardH-39f);
@@ -570,22 +570,25 @@ namespace Eldoria.UI.RoyalGold.V2
             reportSection.color=new Color(.35f,.225f,.105f);
             reportSection.fontSize=narrow?16:19;
             Position(reportSection.rectTransform,38f,storyTop+18f,
-                Mathf.Max(75f,width-210f),26f);
+                narrow?width-76f:Mathf.Max(75f,width-210f),narrow?46f:30f);
             Position((RectTransform)reportToggle.transform,width-178f,
-                storyTop+13f,139f,37f);
+                storyTop+(narrow?66f:13f),139f,37f);
             reportToggleText.fontSize=narrow?12:15;
             reportToggleText.Put(reportExpanded?"OCULTAR":"DESPLEGAR");
             detail.fontSize=narrow?19:23;
             detail.color=new Color(.25f,.175f,.115f);
             detail.gameObject.SetActive(reportExpanded);
             float textH=0f;
+            float storyContentTop=narrow?111f:59f;
             if(reportExpanded)
             {
-                Position(detail.rectTransform,40f,storyTop+59f,width-80f,40f);
+                Position(detail.rectTransform,40f,storyTop+storyContentTop,width-80f,40f);
                 textH=Mathf.Max(40f,detail.preferredHeight+12f);
-                Position(detail.rectTransform,40f,storyTop+59f,width-80f,textH);
+                Position(detail.rectTransform,40f,storyTop+storyContentTop,width-80f,textH);
             }
-            float storyHeight=reportExpanded?Mathf.Max(111f,textH+85f):69f;
+            float storyHeight=reportExpanded?
+                Mathf.Max(storyContentTop+textH+25f,narrow?169f:111f):
+                (narrow?111f:69f);
             float footerTop=storyTop+storyHeight+20f;
             reportFooter.fontSize=narrow?16:19;
             reportFooter.color=new Color(.38f,.25f,.14f);
@@ -595,7 +598,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float totalHeight=Mathf.Max(viewportHeight+4f,footerTop+footerH+32f);
             Position(detailSheet,0f,0f,width,totalHeight);
             reportArtwork.Configure(reportMotif,reportMetricCount,cols,metricTop,
-                cardH,storyTop,storyHeight);
+                cardH,storyTop,storyHeight,footerTop+footerH);
         }
         void SetCategory(string value){category=value;offset=0;selectedId=null;reportExpanded=true;Refresh();}
         void Page(int delta)
@@ -642,8 +645,15 @@ namespace Eldoria.UI.RoyalGold.V2
             string reason=(battle?.Reason??"").Trim();
             // A legacy defeat reason may carry automatic tactical advice.
             // The illustrated report only displays the observed outcome.
-            if(reason.StartsWith("Prepara otra composición:",StringComparison.OrdinalIgnoreCase))
+            // Native resolver reasons sometimes contain an action directive
+            // or a shorthand about damage/break. The report documents only
+            // what the player's own march observed, never derives tactics.
+            if(reason.StartsWith("Prepara otra composición:",StringComparison.OrdinalIgnoreCase) ||
+                reason.IndexOf("Refuerza las tropas",StringComparison.OrdinalIgnoreCase)>=0 ||
+                reason.IndexOf("Mejora las tropas",StringComparison.OrdinalIgnoreCase)>=0)
                 return "La expedición no superó el encuentro registrado.";
+            if(reason.IndexOf("Ruptura super",StringComparison.OrdinalIgnoreCase)>=0)
+                return "La marcha venció al objetivo registrado.";
             return !string.IsNullOrEmpty(reason)?reason:
                 battle!=null&&battle.Won?"Encuentro superado.":"No se registró victoria.";
         }
@@ -659,13 +669,17 @@ namespace Eldoria.UI.RoyalGold.V2
                 hasNarrative&&selected.DiscoveryKind>=0&&selected.DiscoveryKind<=3?
                 (RoyalGoldV41ReportArtwork.Motif)((int)RoyalGoldV41ReportArtwork.Motif.Frontier+
                     selected.DiscoveryKind):RoyalGoldV41ReportArtwork.Motif.Archive;
-            reportKicker.Put(battle!=null?"CRÓNICA DEL CAMINO · INFORME AUTÉNTICO":
-                scouting?"CUADERNO DEL CARTÓGRAFO · HALLAZGO REGISTRADO":
-                "ARCHIVO REAL · MENSAJE RECIBIDO");
+            bool compact=window!=null&&window.rect.width<520f;
+            reportKicker.Put(battle!=null?(compact?"CRÓNICA DEL CAMINO":
+                "CRÓNICA DEL CAMINO · INFORME AUTÉNTICO"):
+                scouting?(compact?"HALLAZGO REGISTRADO":
+                "CUADERNO DEL CARTÓGRAFO · HALLAZGO REGISTRADO"):
+                compact?"ARCHIVO REAL":"ARCHIVO REAL · MENSAJE RECIBIDO");
             reportHeading.Put(scouting&&!string.IsNullOrEmpty(selected.Subtitle)?
                 selected.Subtitle:selected.Title);
-            reportSeal.Put(battle!=null?(battle.Won?"VICTORIA":"DERROTA"):
-                scouting?"HALLAZGO":"ARCHIVO");
+            // Result and family are spelled out in the real title/kicker.
+            // Let the raised wax seal remain a legible original engraving.
+            reportSeal.Put("");
             reportOrigin.Put(battle!=null?"ENCUENTRO · "+TargetName(battle.TargetId):
                 scouting?"ORIGEN · ENCARGO COMPLETADO":
                 "ORIGEN · CORREO EXISTENTE");

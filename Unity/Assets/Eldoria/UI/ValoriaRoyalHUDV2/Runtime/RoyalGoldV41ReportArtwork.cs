@@ -14,7 +14,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public enum Motif { BattleVictory, BattleDefeat, Frontier, Road, Supply, Rift, Archive }
         Motif motif=Motif.Archive;
         int metricCount,columns=4;
-        float metricTop,metricHeight,narrativeTop,narrativeHeight;
+        float metricTop,metricHeight,narrativeTop,narrativeHeight,footerBottom;
         static readonly Color Paper=new Color(.94f,.859f,.706f,1f);
         static readonly Color Shadow=new Color(.16f,.095f,.048f,.35f);
         static readonly Color Brass=new Color(.65f,.424f,.18f,.85f);
@@ -22,13 +22,15 @@ namespace Eldoria.UI.RoyalGold.V2
         public override Texture mainTexture=>Texture2D.whiteTexture;
 
         public void Configure(Motif newMotif,int count,int cols,float top,float cardH,
-            float bodyTop,float bodyH)
+            float bodyTop,float bodyH,float lowerTextBottom)
         {
             if(motif==newMotif&&metricCount==count&&columns==cols&&
                 Mathf.Approximately(metricTop,top)&&Mathf.Approximately(metricHeight,cardH)&&
-                Mathf.Approximately(narrativeTop,bodyTop)&&Mathf.Approximately(narrativeHeight,bodyH))return;
+                Mathf.Approximately(narrativeTop,bodyTop)&&Mathf.Approximately(narrativeHeight,bodyH)&&
+                Mathf.Approximately(footerBottom,lowerTextBottom))return;
             motif=newMotif;metricCount=count;columns=Mathf.Max(1,cols);
-            metricTop=top;metricHeight=cardH;narrativeTop=bodyTop;narrativeHeight=bodyH;
+            metricTop=top;metricHeight=cardH;narrativeTop=bodyTop;
+            narrativeHeight=bodyH;footerBottom=lowerTextBottom;
             SetVerticesDirty();
         }
         static void Quad(VertexHelper vh,Vector2 a,Vector2 b,Vector2 c,Vector2 d,
@@ -197,6 +199,19 @@ namespace Eldoria.UI.RoyalGold.V2
                     Fill(vh,Area(x+7f,y+6f,cardW-14f,1.4f),Brass,Brass);
                 }
             }
+            if(count>0)
+            {
+                // The own-roster strip is a separate raised material band,
+                // not text floating between four disconnected metric tiles.
+                float rowBottom=metricTop+
+                    Mathf.Ceil(count/(float)cols)*(metricHeight+11f)-11f;
+                float bandY=rowBottom+13f,bandH=narrativeTop-bandY-15f;
+                Fill(vh,Area(25f,bandY+2f,w-50f,bandH),
+                    new Color(.35f,.24f,.12f,.16f),new Color(.35f,.24f,.12f,.16f));
+                Fill(vh,Area(23f,bandY,w-46f,bandH),
+                    new Color(.87f,.745f,.52f,.78f),new Color(.95f,.865f,.71f,.78f));
+                Fill(vh,Area(30f,bandY+6f,w-60f,1.5f),Brass,Brass);
+            }
             float storyX=24f,storyW=w-48f;
             Fill(vh,Area(storyX+3f,narrativeTop+4f,storyW,narrativeHeight),
                 new Color(.23f,.11f,.06f,.22f),new Color(.23f,.11f,.06f,.22f));
@@ -208,6 +223,23 @@ namespace Eldoria.UI.RoyalGold.V2
             Fill(vh,Area(storyX+10f,narrativeTop+narrativeHeight-13f,
                 Mathf.Max(0f,storyW-20f),1f),new Color(.55f,.38f,.20f,.36f),
                 new Color(.55f,.38f,.20f,.36f));
+            // When a single short report sits on a tall phone, fill the
+            // unused paper with a PALE stamped emblem of the actual event
+            // family. This is purely ornamental, never a dummy data card.
+            float breathing=h-42f-footerBottom;
+            if(breathing>100f)
+            {
+                float size=Mathf.Min(w*.17f,breathing*.34f);
+                var middle=new Vector2(r.xMin+w*.50f,
+                    r.yMax-footerBottom-breathing*.50f);
+                Disc(vh,middle+new Vector2(4f,-6f),size*1.20f,
+                    new Color(.36f,.25f,.12f,.045f),
+                    new Color(.36f,.25f,.12f,.04f));
+                Disc(vh,middle,size,
+                    new Color(.57f,.40f,.24f,.065f),
+                    new Color(.49f,.32f,.16f,.08f));
+                DrawGlyph(vh,middle,size*.78f,new Color(.48f,.32f,.16f,.13f));
+            }
         }
     }
 }
