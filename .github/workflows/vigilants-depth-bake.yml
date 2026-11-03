@@ -51,6 +51,11 @@ jobs:
           git add Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10
           if ! git diff --cached --quiet; then
             git commit -m "art(vigilants): bake six cropped 2.5D layers from original approved source"
+            # The isolated art branch may have advanced while the offline
+            # bake was running. Rebase only these generated assets; never
+            # force-push, rewrite main or overwrite another artist's changes.
+            git fetch origin "$ART_BRANCH"
+            git rebase "origin/$ART_BRANCH"
             git push origin "HEAD:$ART_BRANCH"
           fi
           test -f Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json
