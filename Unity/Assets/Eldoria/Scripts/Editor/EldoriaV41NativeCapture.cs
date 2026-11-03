@@ -634,8 +634,10 @@ namespace Eldoria.Editor
             sheet.SynchronizeNow();context.SynchronizeNow();
             var first=host.Read("sawmill",false).Building;
             Need(first!=null&&first.Action!=null&&first.Action.Kind=="Build"&&
-                first.Action.Enabled&&!first.OperationActive,
-                "Real initial Sawmill construction is eligible in disposable kingdom");
+                first.Action.Enabled&&!first.OperationActive &&
+                first.Costs.Contains(SliceRules.SawmillWoodCost.ToString()) &&
+                first.Time.Contains(SliceRules.SawmillBuildSeconds.ToString()),
+                "Bastion IV still shows exact legacy first Sawmill gateway cost/time, not chapter-three upgrade numbers");
             Need(sheet.ChronicleBuildingAction&&sheet.ChronicleBuildingAction.interactable&&
                 !utility.IsOpen,
                 "One bottom parchment owns the initial build, with no extra modal");
@@ -655,8 +657,12 @@ namespace Eldoria.Editor
             var wood=before.Resources.Wood;
             sheet.ChronicleBuildingAction.onClick.Invoke();
             var running=host.Read("sawmill",false).Building;
-            Need(running.OperationActive&&host.City.Gateway.Snapshot().Resources.Wood<wood,
-                "Sawmill paid build: state="+running.State+" operation="+running.OperationActive+
+            Need(running.OperationActive&&
+                (host.City.Gateway.Snapshot().BuildingTaskId??"").StartsWith("sawmill:") &&
+                host.City.Gateway.Snapshot().BuildingCompletesUtcTicks>host.City.Clock.UtcTicks &&
+                host.City.Gateway.Snapshot().Resources.Wood==wood-SliceRules.SawmillWoodCost,
+                "Sawmill paid legacy task must project one real timer at the true gateway cost: state="+
+                running.State+" operation="+running.OperationActive+
                 " woodBefore="+wood+" woodAfter="+host.City.Gateway.Snapshot().Resources.Wood+
                 " feedback="+(host.Hud.Feedback?host.Hud.Feedback.text:"missing"));
             context.SynchronizeNow();
