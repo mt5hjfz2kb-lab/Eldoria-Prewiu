@@ -89,6 +89,35 @@ namespace Eldoria.Editor
                 host.Hud.GetComponent<RoyalGoldV2Hud>()?.SynchronizeNow();
                 host.Hud.GetComponent<RoyalGoldV3ContextHud>()?.SynchronizeNow();
                 Canvas.ForceUpdateCanvases();
+                // A CanvasRenderer.depth/cull PASS is insufficient:
+                // oversized dynamic fonts can produce no rasterized glyphs.
+                // Check Unity's actual preferred layout height against the
+                // native RectTransform for every context-state screenshot.
+                if(name.StartsWith("building-")||name.StartsWith("construction-"))
+                {
+                    var realTitle=host.Hud.GetComponentsInChildren<Text>(true)
+                        .FirstOrDefault(t=>t.name=="Selected building");
+                    Need(realTitle&&realTitle.fontSize<=24&&
+                        realTitle.preferredHeight<=realTitle.rectTransform.rect.height+3f,
+                        "Building heading is typographically fitted, not merely registered "+name);
+                    var realCost=host.Hud.GetComponentsInChildren<Text>(true)
+                        .FirstOrDefault(t=>t.name=="Building / genuine offer cost");
+                    if(realCost&&realCost.gameObject.activeInHierarchy)
+                        Need(realCost.preferredHeight<=realCost.rectTransform.rect.height+3f,
+                            "Full authentic wood/stone price fits the cost row "+name);
+                    var realButtons=host.Hud.GetComponentsInChildren<Button>(true)
+                        .Where(b=>b.gameObject.activeInHierarchy&&(
+                            b.name=="Execute existing authorised offer"||
+                            b.name.StartsWith("Building / council ")||
+                            b.name.StartsWith("Building / accelerate ")));
+                    foreach(var b in realButtons)
+                    {
+                        var caption=b.GetComponentInChildren<Text>(true);
+                        Need(caption&&!string.IsNullOrEmpty(caption.text)&&
+                            caption.preferredHeight<=caption.rectTransform.rect.height+3f,
+                            "Visible cartouche action has real legible text "+name+" / "+b.name);
+                    }
+                }
                 if(name=="building-initial-desktop"||name=="building-upgrade-desktop"||
                     name=="construction-barracks-city-landscape")
                 {
