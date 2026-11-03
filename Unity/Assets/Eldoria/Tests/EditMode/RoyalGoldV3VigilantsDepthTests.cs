@@ -242,6 +242,53 @@ namespace Eldoria.Tests
         }
 
         [Test]
+        public void LivingLandscapeUsesOneApprovedTextureAndAuthoritativeRealStages()
+        {
+            var host=new GameObject("Original scenic illustration",typeof(RectTransform));
+            var tex=new Texture2D(16,16,TextureFormat.RGBA32,false);
+            try
+            {
+                var scene=(RectTransform)host.transform;
+                scene.sizeDelta=new Vector2(900f,640f);
+                var picture=new GameObject("Approved landscape",
+                    typeof(RectTransform),typeof(CanvasRenderer),
+                    typeof(RoyalGoldV3VigilantsLivingLandscape));
+                picture.transform.SetParent(host.transform,false);
+                var painting=picture.GetComponent<RoyalGoldV3VigilantsLivingLandscape>();
+                painting.texture=tex;
+                painting.raycastTarget=false;
+                painting.rectTransform.sizeDelta=new Vector2(900f,640f);
+                painting.uvRect=new Rect(.08f,.04f,.84f,.92f);
+                var stage=new GameObject("True stage trail",
+                    typeof(RectTransform),typeof(CanvasRenderer),
+                    typeof(RoyalGoldV3StageTrailGraphic));
+                stage.transform.SetParent(host.transform,false);
+                var trail=stage.GetComponent<RoyalGoldV3StageTrailGraphic>();
+                trail.rectTransform.sizeDelta=new Vector2(900f,640f);
+                trail.ArtworkUv=painting.uvRect;
+                trail.raycastTarget=false;
+                painting.SetLivingScene(true,trail,14);
+                Assert.That(painting.LivingScene,Is.True);
+                Assert.That(painting.RoadStageCount,Is.EqualTo(25));
+                Assert.That(painting.ActualCleared,Is.EqualTo(14));
+                Assert.That(painting.texture,Is.SameAs(tex),
+                    "One original image remains the only texture");
+                Assert.That(painting.uvRect,Is.EqualTo(new Rect(.08f,.04f,.84f,.92f)));
+                Assert.That(painting.raycastTarget,Is.False);
+                painting.SetLivingScene(false,null,14);
+                Assert.That(painting.LivingScene,Is.False,
+                    "Other Royal destinations must still use the original raw quad");
+                Assert.That(host.GetComponentsInChildren<Canvas>(true).Length,Is.Zero);
+                Assert.That(host.GetComponentsInChildren<EventSystem>(true).Length,Is.Zero);
+            }
+            finally
+            {
+                Object.DestroyImmediate(host);
+                Object.DestroyImmediate(tex);
+            }
+        }
+
+        [Test]
         public void RealRoadStoneFoundationFollowsEveryActualStageAndNoTouch()
         {
             var host=new GameObject("Existing scenic manuscript",typeof(RectTransform));

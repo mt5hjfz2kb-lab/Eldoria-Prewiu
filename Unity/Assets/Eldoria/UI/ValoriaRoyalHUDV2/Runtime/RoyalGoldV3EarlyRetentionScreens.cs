@@ -366,7 +366,10 @@ namespace Eldoria.UI.RoyalGold.V2
             Stretch(picture,5);
             var painting=Rect("Original illustrated world / decorative only",art);
             painting.gameObject.AddComponent<CanvasRenderer>();
-            paintedScene=painting.gameObject.AddComponent<RawImage>();
+            // The original PNG is still the only source; its UI quad now
+            // draws separate stone/river/fortress materials along the actual
+            // saved road, not a pasted rectangular photograph.
+            paintedScene=painting.gameObject.AddComponent<RoyalGoldV3VigilantsLivingLandscape>();
             paintedScene.raycastTarget=false;
             paintedScene.color=Color.white;
             Stretch(painting,5);
@@ -1249,6 +1252,8 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!vig && guardianRelief)guardianRelief.gameObject.SetActive(false);
             if(!vig && guardianPainted)guardianPainted.gameObject.SetActive(false);
             chapterTrail.gameObject.SetActive(vig);
+            if(!vig && paintedScene is RoyalGoldV3VigilantsLivingLandscape inactive)
+                inactive.SetLivingScene(false,null,p.LastClearedStage);
             discoverySeals.DiscoveredMask=p.ScoutDiscoveryMask&15;
             discoverySeals.gameObject.SetActive(!vig&&discoverySeals.DiscoveredMask!=0);
             discoverySeals.SetVerticesDirty();
@@ -1378,6 +1383,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 chapterTrail.rectTransform.offsetMax=new Vector2(-5,-5);
                 chapterTrail.ArtworkUv=paintedScene.uvRect;
                 chapterTrail.SetVerticesDirty();
+                if(paintedScene is RoyalGoldV3VigilantsLivingLandscape living)
+                    living.SetLivingScene(true,chapterTrail,p.LastClearedStage);
                 if(pathFoundation && pathFoundation.gameObject.activeSelf)
                     pathFoundation.BindRealRoad(chapterTrail,p.LastClearedStage);
                 if(landscapeLight && landscapeLight.gameObject.activeSelf)
