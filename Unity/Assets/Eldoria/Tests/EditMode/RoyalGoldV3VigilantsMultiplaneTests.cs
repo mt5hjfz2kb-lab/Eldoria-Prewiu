@@ -38,7 +38,12 @@ namespace Eldoria.Tests
                 var uv=new Rect(.04f,.09f,.88f,.79f);
                 parallax.Configure(approved,uv);
                 Assert.That(parallax.HasMaterializedDepth,Is.True,
-                    "The new depth test MUST NOT pass with only the old flat mesh");
+                    "The depth test MUST NOT pass with only the old flat mesh");
+                Assert.That(parallax.HasStructuralB11,Is.True,
+                    "Reject previous B10: six genuine lit planes must be paired with the clean backplate");
+                Assert.That(Resources.Load<Texture2D>(
+                    "EldoriaRetention/DepthB11/clean_backdrop"),Is.Not.Null,
+                    "A single complete original paint cannot remain underneath all foreground planes");
                 Assert.That(parallax.MaterializedPlaneCount,Is.EqualTo(6));
                 Assert.That(parallax.OriginalArtwork,Is.SameAs(approved));
                 Assert.That(parallax.CoverUv,Is.EqualTo(uv));
@@ -51,7 +56,7 @@ namespace Eldoria.Tests
                 for(int i=0;i<Layers.Length;i++)
                 {
                     var art=Resources.Load<Texture2D>(
-                        "EldoriaRetention/DepthB10/"+Layers[i]);
+                        "EldoriaRetention/DepthB11/"+Layers[i]);
                     Assert.That(art,Is.Not.Null,Layers[i]+" source must be imported");
                     Assert.That(art.name,Is.EqualTo(Layers[i]),
                         "Exact original cut-out must not silently use a different asset");
@@ -94,6 +99,7 @@ namespace Eldoria.Tests
                     (RectTransform)parent.transform,0);
                 parallax.Configure(unrelated,new Rect(0f,0f,1f,1f));
                 Assert.That(parallax.HasMaterializedDepth,Is.False);
+                Assert.That(parallax.HasStructuralB11,Is.False);
                 Assert.That(parallax.MaterializedPlaneCount,Is.Zero);
                 Assert.That(parallax.GetComponentsInChildren<RawImage>(true).Length,
                     Is.Zero);
