@@ -55,24 +55,17 @@ namespace Eldoria.UI.RoyalGold.V2
             new Rect(.51757812f,.04199219f,.48242188f,.68945312f),
             new Rect(0f,0f,.59895833f,.36816406f)
         };
-        // B11: each original silhouette now sits over a cleaned backplate.
-        // Distant structures recede into cold valley air; near rocks keep
-        // warmer contact contrast. Never alter original source pixels.
-        static readonly Color[] DepthTints = {
-            new Color(.89f,.94f,1f,1f),
-            new Color(.95f,.97f,1f,1f),
-            new Color(1f,.975f,.93f,1f),
-            new Color(.98f,.97f,.93f,1f),
-            new Color(1f,.975f,.92f,1f),
-            new Color(1f,.975f,.91f,1f)
-        };
         static readonly float[] DepthMotion = {
             .0035f,.0018f,.0032f,.0055f,.0060f,.0011f
         };
         readonly RawImage[] planeImages=new RawImage[6];
         readonly RectTransform[] planeRects=new RectTransform[6];
-        bool materialized,attemptedMaterialization;
+        bool materialized,attemptedMaterialization,structuralB11;
         public bool HasMaterializedDepth => materialized;
+        // The original photograph is NEVER used as the background when this
+        // proof is true. Six distinct painterly pieces sit above a backplate
+        // whose removed silhouettes are independently inpainted, no duplicates.
+        public bool HasStructuralB11 => materialized && structuralB11;
         public int MaterializedPlaneCount => materialized ? planeImages.Length : 0;
         public Rect SourceUvForPlane(int index) => DepthUv[Mathf.Clamp(index,0,DepthUv.Length-1)];
 
@@ -126,12 +119,32 @@ namespace Eldoria.UI.RoyalGold.V2
             // the Scouts or an arbitrary 8x8 fixture.
             if(!artwork || artwork.name!="vigilants-painterly-v2")return;
             var textures=new Texture2D[DepthNames.Length];
-            for(int i=0;i<textures.Length;i++)
+            var clean=Resources.Load<Texture2D>(
+                "EldoriaRetention/DepthB11/clean_backdrop");
+            bool useB11=clean && clean.width==artwork.width &&
+                clean.height==artwork.height;
+            if(useB11)
             {
-                textures[i]=Resources.Load<Texture2D>(
-                    "EldoriaRetention/DepthB10/"+DepthNames[i]);
-                if(!textures[i])return; // all-or-nothing, never partial cut-outs
+                for(int i=0;i<textures.Length;i++)
+                {
+                    textures[i]=Resources.Load<Texture2D>(
+                        "EldoriaRetention/DepthB11/"+DepthNames[i]);
+                    if(!textures[i]){ useB11=false; break; }
+                }
             }
+            if(!useB11)
+            {
+                // Legacy certified source remains intact until ALL seven B11
+                // textures have imported successfully into this exact Unity
+                // build. No missing castles on partial import/fallback.
+                for(int i=0;i<textures.Length;i++)
+                {
+                    textures[i]=Resources.Load<Texture2D>(
+                        "EldoriaRetention/DepthB10/"+DepthNames[i]);
+                    if(!textures[i])return;
+                }
+            }
+            structuralB11=useB11;
             for(int i=0;i<textures.Length;i++)
             {
                 var go=new GameObject("Vigilants / original paint plane / "+DepthNames[i],
@@ -142,7 +155,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 rect.pivot=new Vector2(.5f,.5f);
                 var image=go.GetComponent<RawImage>();
                 image.texture=textures[i];
-                image.color=DepthTints[i];
+                image.color=Color.white;
                 image.raycastTarget=false;
                 image.uvRect=new Rect(0f,0f,1f,1f);
                 planeImages[i]=image;
@@ -185,7 +198,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 for(int i=0;i<planeRects.Length;i++)
                 {
                     var r=planeRects[i];
-                    var k=DepthMotion[i]*minSide;
+                    // Genuine independent scenic masses: this B11 variant
+                    // has separately materialized backgrounds. Motion has
+                    // an occlusion-safe backplate instead of duplicate pixels.
+                    // Closest road-facing terrain remains nearly fixed: the
+                    // REAL 25 interactive stage stones must never detach.
+                    var k=DepthMotion[i]*minSide*
+                        (structuralB11 && i!=5 ? 2.0f : 1f);
                     var offset=new Vector2(
                         Mathf.Sin(phase+i*.47f)*k,
                         Mathf.Cos(phase*.72f+i*.51f)*k*.57f);
@@ -269,33 +288,6 @@ namespace Eldoria.UI.RoyalGold.V2
     public sealed class RoyalGoldV3VigilantsLivingLandscape : RawImage
     {
         const int Columns=28,Rows=24,Steps=25;
-        // The original source stays assigned to RawImage.texture for
-        // ownership/reference QA. Render the independently cleaned B11
-        // backplate only for the approved Vigilants world, never Scouts.
-        Texture2D structuralBackplate;
-        bool structuralRequested,structuralProbeAttempted;
-        public bool HasStructuralBackdrop => structuralRequested && structuralBackplate;
-        public Texture2D StructuralBackdrop => structuralBackplate;
-        public override Texture mainTexture =>
-            structuralRequested && structuralBackplate ? structuralBackplate : base.mainTexture;
-
-        public void UseStructuralBackdrop(bool enable)
-        {
-            bool originalSource=texture && texture.name=="vigilants-painterly-v2";
-            if(enable && originalSource && !structuralProbeAttempted)
-            {
-                structuralProbeAttempted=true;
-                structuralBackplate=Resources.Load<Texture2D>(
-                    "EldoriaRetention/DepthB11/clean_backdrop");
-            }
-            bool active=enable && originalSource && structuralBackplate &&
-                structuralBackplate.width==texture.width &&
-                structuralBackplate.height==texture.height;
-            if(structuralRequested==active)return;
-            structuralRequested=active;
-            SetVerticesDirty();
-            SetMaterialDirty();
-        }
         readonly Vector2[] road=new Vector2[Steps];
         bool live,roadBound;
         int cleared=-1;

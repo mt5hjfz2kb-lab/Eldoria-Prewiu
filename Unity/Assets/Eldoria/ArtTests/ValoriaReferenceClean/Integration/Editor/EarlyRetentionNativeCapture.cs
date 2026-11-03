@@ -268,25 +268,16 @@ namespace Eldoria.ReferenceClean.Editor
             Need(ui.IsOpen,"Vigilants' independent full-screen scene opens");
             var illustration=hud.GetComponentsInChildren<RawImage>(true)
                 .FirstOrDefault(x=>x.name=="Original illustrated world / decorative only");
-            Need(illustration && illustration.enabled && illustration.texture!=null &&
-                illustration.texture.width>=1024 && illustration.texture.height>=1024 &&
-                illustration.texture.name.EndsWith("painterly-v2"),
-                "New painterly Vigilants scene loads through actual Unity Resources");
-            var vigilantsPainting=illustration.texture;
-            var structural=illustration as RoyalGoldV3VigilantsLivingLandscape;
-            var independentBackdrop=Resources.Load<Texture2D>(
+            var vigilantsPainting=Resources.Load<Texture2D>(
+                "EldoriaRetention/vigilants-painterly-v2");
+            var b11CleanPlate=Resources.Load<Texture2D>(
                 "EldoriaRetention/DepthB11/clean_backdrop");
-            Need(structural && structural.HasStructuralBackdrop &&
-                independentBackdrop && structural.mainTexture==independentBackdrop &&
-                structural.texture==vigilantsPainting &&
-                structural.mainTexture!=structural.texture && !structural.raycastTarget,
-                "B11 actual Vigilants canvas renders genuine cleaned landscape; original remains preserved");
-            var sixPlanes=hud.GetComponentsInChildren<RoyalGoldV3VigilantsParallax>(true)
-                .FirstOrDefault(x=>x.gameObject.activeInHierarchy);
-            Need(sixPlanes && sixPlanes.HasMaterializedDepth &&
-                sixPlanes.MaterializedPlaneCount==6 &&
-                sixPlanes.GetComponentsInChildren<RawImage>(true).Length==6,
-                "B11 actual Unity render requires six distinct alpha silhouette planes, no original photo duplication");
+            Need(illustration && illustration.enabled &&
+                vigilantsPainting && b11CleanPlate &&
+                illustration.texture==b11CleanPlate &&
+                b11CleanPlate.width==vigilantsPainting.width &&
+                b11CleanPlate.height==vigilantsPainting.height,
+                "B11 native: visually rendered clean source plate MUST replace the original double-image");
             Screenshot(h,"vigilants-first-trial",1600,900);
             Screenshot(h,"vigilants-first-trial",900,1600);
             Screenshot(h,"vigilants-first-trial",390,844);
@@ -404,8 +395,8 @@ namespace Eldoria.ReferenceClean.Editor
             Need(depth!=null && depth.isActiveAndEnabled &&
                 depth.OriginalArtwork==vigilantsPainting &&
                 depth.HasMaterializedDepth && depth.MaterializedPlaneCount==6 &&
-                !depth.raycastTarget,
-                "B10 native scene must render exactly six authentic source-derived parallax planes");
+                depth.HasStructuralB11 && !depth.raycastTarget,
+                "B11 native must use the six exact shaded source planes over a cleaned no-duplicate backplate");
             var artPlanes=depth.GetComponentsInChildren<RawImage>(true);
             Need(artPlanes.Length==6 && artPlanes.All(x=>
                 x.texture && !x.raycastTarget && x.uvRect==new Rect(0f,0f,1f,1f)),
@@ -413,11 +404,11 @@ namespace Eldoria.ReferenceClean.Editor
             var livingPaint=illustration as RoyalGoldV3VigilantsLivingLandscape;
             Need(livingPaint!=null && livingPaint.LivingScene &&
                 livingPaint.RoadStageCount==25 && livingPaint.ActualCleared==14 &&
-                livingPaint.texture==vigilantsPainting && !livingPaint.raycastTarget,
-                "The actual original landscape must render as stage-aware terrain without photo duplication or touch interception");
+                livingPaint.texture==b11CleanPlate && !livingPaint.raycastTarget,
+                "B11 physical stage-aware relief must draw the no-duplicate backplate while still binding all 25 live stages");
             Need(foundation!=null && foundation.isActiveAndEnabled &&
-                foundation.BoundStageCount==25 && foundation.NextStage==15 &&
-                foundation.Cleared==14 && !foundation.raycastTarget,
+                foundation.BoundStageCount==25 && foundation.ActualReliefSpans==24 &&
+                foundation.NextStage==15 && foundation.Cleared==14 && !foundation.raycastTarget,
                 "Exactly 25 live physical stone sockets underpin canonical road stages without intercepting touches");
             for(int actualStage=1;actualStage<=25;actualStage++)
             {

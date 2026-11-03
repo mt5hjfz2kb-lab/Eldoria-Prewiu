@@ -1,0 +1,77 @@
+name: Eldoria B11 clean structural depth source (zero Unity)
+on:
+  push:
+    branches: [art/vigilants-structural-b11-20261103]
+    paths:
+      - 'tools/vigilants-depth/bake_backplate_b11.py'
+      - '.github/workflows/vigilants-b11-source.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render-structural-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/vigilants-depth/bake_backplate_b11.py
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install offline open-source source reconstruction dependencies
+        run: python -m pip install --disable-pip-version-check Pillow==12.0.0 numpy==2.2.6 opencv-python-headless==4.11.0.86
+      - name: Remove duplicated scenery from the actual approved source
+        run: python tools/vigilants-depth/bake_backplate_b11.py
+      - name: Verify authenticity, output source and isolation
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,pathlib,hashlib
+          root=pathlib.Path('Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11')
+          j=json.loads((root/'source_manifest.json').read_text())
+          assert j['original_preserved'] and j['no_duplicate_complete_painting_in_new_backplate']
+          assert not j['native_unity_capture'] and not j['approval'] and j['no_paid_credit']
+          p=root/'clean_backdrop.png'
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==j['clean_backdrop_sha256']
+          assert p.with_suffix('.png.meta').exists()
+          print('B11_STRUCTURAL_SOURCE_AND_HASH_PASS')
+          PY
+      - name: Commit verified generated source only on isolated B11 branch
+        if: success()
+        shell: bash
+        env:
+          ART_BRANCH: art/vigilants-structural-b11-20261103
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/$ART_BRANCH"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --sparse Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11 Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11.meta
+          if ! git diff --cached --quiet; then
+            git commit -m "art(vigilants B11): bake cleaned original backplate for true independent depth"
+            # Never force-push. Changes to the isolated source branch are
+            # rebased and retried without interrupting other GitHub jobs.
+            pushed=0
+            for attempt in 1 2 3 4 5; do
+              git fetch origin "$ART_BRANCH"
+              git rebase "origin/$ART_BRANCH"
+              if git push origin "HEAD:$ART_BRANCH"; then pushed=1; break; fi
+              sleep 2
+            done
+            test "$pushed" -eq 1
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-vigilants-B11-clean-source
+          path: |
+            Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/
+            docs/evidence/vigilants-b11-source/
+          retention-days: 21
