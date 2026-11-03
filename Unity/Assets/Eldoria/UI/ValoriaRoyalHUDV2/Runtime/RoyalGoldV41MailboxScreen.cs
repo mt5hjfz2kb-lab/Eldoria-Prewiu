@@ -39,9 +39,11 @@ namespace Eldoria.UI.RoyalGold.V2
         Image watermark;
         ScrollRect detailScroll;
         int visibleRowCount=-1;
+        int currentPageSize=5;
         bool detailVisible;
         public int VisibleMessageRows=>messageButtons.Count(b=>b&&b.gameObject.activeSelf);
-        public static int VisibleCountFor(int total,int offset)=>Mathf.Clamp(total-offset,0,5);
+        public static int VisibleCountFor(int total,int offset,int pageSize=5)=>
+            Mathf.Clamp(total-offset,0,Mathf.Clamp(pageSize,1,5));
         string[] categories={"informes","recompensas","sistema","narrativa"};
         string category="informes",selectedId;
         int offset;
@@ -318,7 +320,11 @@ namespace Eldoria.UI.RoyalGold.V2
 
             var mail=gateway.Snapshot().Mailbox;
             int total=mail?.Messages?.Count(m=>m.Category==category)??0;
-            int count=VisibleCountFor(total,offset);
+            // Portrait and desktop fit five messages. A very short mobile
+            // landscape page fits only TWO readable cards; pagination keeps
+            // the full list and its authoritative order.
+            currentPageSize=wide && h*scale<600f ? 2 : 5;
+            int count=VisibleCountFor(total,offset,currentPageSize);
             bool selected=!string.IsNullOrEmpty(selectedId)&&
                 mail?.Messages?.Any(m=>m.EventId==selectedId)==true;
             float contentTop=tabsY+tabH+Mathf.Clamp(h*.022f,12f,24f);
@@ -326,8 +332,8 @@ namespace Eldoria.UI.RoyalGold.V2
             float available=Mathf.Max(110f,h-contentTop-bottom-navH-7f);
             float rowH=wide?Mathf.Clamp(h*.14f,71f,124f):
                 Mathf.Clamp(h*.105f,87f,145f);
-            rowH=Mathf.Min(rowH,(available-42f)/Mathf.Max(1,count));
-            rowH=Mathf.Max(48f,rowH);
+            rowH=Mathf.Max(48f,
+                Mathf.Min(rowH,(available-46f)/Mathf.Max(1,count)));
             float bodyHeight=selected?available:Mathf.Min(available,
                 Mathf.Max(wide?143f:196f,Mathf.Max(1,count)*rowH+46f));
             float margin=selected?0f:Mathf.Min(78f,Mathf.Max(0f,available-bodyHeight)*.10f);
@@ -406,7 +412,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 left+detailPad*2f+(usable-3f*detailPad)*.5f,
                 contentTop+available-actionH-detailPad,
                 (usable-3f*detailPad)*.5f,actionH);
-            bool showPages=!selected&&total>5;
+            bool showPages=!selected&&total>currentPageSize;
             var prev=Find("Página anterior");var next=Find("Página siguiente");
             prev.gameObject.SetActive(showPages);next.gameObject.SetActive(showPages);
             float navY=h-bottom-navH;
@@ -423,12 +429,13 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             var s=gateway?.Snapshot();
             int total=s?.Mailbox?.Messages.Count(m=>m.Category==category)??0;
-            offset=Mathf.Clamp(offset+delta*5,0,Mathf.Max(0,(Mathf.Max(0,total-1)/5)*5));
+            offset=Mathf.Clamp(offset+delta*currentPageSize,0,
+                Mathf.Max(0,(Mathf.Max(0,total-1)/currentPageSize)*currentPageSize));
             selectedId=null;Refresh();
         }
         void SelectRow(int index)
         {
-            var list=gateway?.Snapshot()?.Mailbox?.List(category,offset,5);
+            var list=gateway?.Snapshot()?.Mailbox?.List(category,offset,currentPageSize);
             if(list==null||index>=list.Count)return;
             selectedId=list[index].EventId;ExecuteMail("MailRead");
         }
@@ -468,7 +475,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 tabBadges[index].Put(unread.ToString());
                 t.Put(char.ToUpperInvariant(key[0])+key.Substring(1));
             }
-            var list=mail?.List(category,offset,5)??new List<EldoriaV41Message>();
+            var list=mail?.List(category,offset,currentPageSize)??new List<EldoriaV41Message>();
             int total=mail?.Messages?.Count(m=>m.Category==category)??0;
             listSummary.Put(total==0?"SIN CORREO EN ESTA CATEGORÍA":
                 total==1?"1 MENSAJE REAL · "+char.ToUpperInvariant(category[0])+category.Substring(1):
