@@ -557,7 +557,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Preserve more real city in both orientations. A council choice
             // is a modestly taller version of this SAME in-world card.
             bool council=GetComponent<RoyalGoldV3BuildingScreens>()?.InlineCouncilNeeded(Source.SelectedBuildingId)==true;
-            float cardHeight = council?(portrait?227f:175f):(portrait?189f:152f);
+            float cardHeight = council?(portrait?242f:181f):(portrait?218f:166f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -579,12 +579,13 @@ namespace Eldoria.UI.RoyalGold.V2
             buildingLevel.fontSize=portrait?15:18;
             Top(buildingCost.rectTransform,textLeft,67f,middleWidth,37f);
             buildingCost.fontSize=portrait?15:19;
-            Top(buildingWorkState.rectTransform,textLeft,103f,middleWidth,26f);
+            Top(buildingWorkState.rectTransform,textLeft,102f,middleWidth,36f);
             buildingWorkState.fontSize=portrait?14:17;
+            buildingWorkState.verticalOverflow=VerticalWrapMode.Truncate;
             Top((RectTransform)buildingClose.transform,cardWidth-49f,5f,44f,44f);
-            float detailsY=portrait?130f:119f;
+            float detailsY=portrait?141f:134f;
             Top((RectTransform)buildingScroll.transform,textLeft,detailsY,
-                middleWidth,Mathf.Max(19f,cardHeight-detailsY-(portrait?53f:7f)));
+                middleWidth,Mathf.Max(19f,cardHeight-detailsY-(portrait?58f:12f)));
             Stretch(scrollViewport,0);
             scrollContent.anchorMin=new Vector2(0,1);scrollContent.anchorMax=new Vector2(1,1);
             scrollContent.pivot=new Vector2(.5f,1);scrollContent.anchoredPosition=Vector2.zero;
@@ -695,7 +696,9 @@ namespace Eldoria.UI.RoyalGold.V2
             buildingTitle.Put(Safe(source.Title));
             buildingLevel.Put(Safe(source.Level));
             buildingCost.Put(Safe(source.Costs).Replace("Coste de la acción\n","Coste · "));
-            buildingWorkState.Put(source.OperationActive?Safe(source.Time):Safe(source.Status));
+            buildingWorkState.Put(source.OperationActive?Safe(source.Time):
+                !string.IsNullOrWhiteSpace(Safe(source.Requirements))?
+                Safe(source.Requirements):Safe(source.Status));
             if (modelPreview)
             {
                 modelPreview.ModelFor = BuildingModelFor;
@@ -1143,6 +1146,26 @@ namespace Eldoria.UI.RoyalGold.V2
             SetWidthAndHeight(rect, Mathf.Max(240f, width), portrait ? 56f : 48f);
         }
 
+        private static void RebindCartoucheGraphic(Graphic graphic)
+        {
+            if(!graphic||!graphic.enabled)return;
+            // Resolution/offscreen-capture reflow can leave a live child at
+            // Graphic.depth == -1 until re-registered. Preserve the original
+            // Text/Button and its listeners, never duplicate a control.
+            graphic.enabled=false;graphic.enabled=true;graphic.SetAllDirty();
+        }
+        private void RebindBuildingArtwork()
+        {
+            RebindCartoucheGraphic(buildingTitle);
+            RebindCartoucheGraphic(buildingLevel);
+            RebindCartoucheGraphic(buildingCost);
+            RebindCartoucheGraphic(buildingWorkState);
+            RebindCartoucheGraphic(buildingBody);
+            RebindCartoucheGraphic(primaryLabel);
+            RebindCartoucheGraphic(buildingAction?buildingAction.targetGraphic:null);
+            RebindCartoucheGraphic(buildingGoldRim);
+            if(buildingFinish)buildingFinish.SetVerticesDirty();
+        }
         private static void RebindObjectiveLabel(RoyalText label)
         {
             if (!label) return;
@@ -1189,6 +1212,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // the actual clickable mission buttons render WITHOUT text.
                 RebindObjectiveLabel(objectiveActionLabel);
                 RebindObjectiveLabel(objectivesButtonLabel);
+                RebindBuildingArtwork();
             }
             if (!hasGeometry) return;
             LayoutHeaderAlongSafeTop();
