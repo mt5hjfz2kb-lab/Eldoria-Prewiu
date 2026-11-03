@@ -557,7 +557,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Preserve more real city in both orientations. A council choice
             // is a modestly taller version of this SAME in-world card.
             bool council=GetComponent<RoyalGoldV3BuildingScreens>()?.InlineCouncilNeeded(Source.SelectedBuildingId)==true;
-            float cardHeight = council?(portrait?242f:181f):(portrait?218f:166f);
+            float cardHeight = council?(portrait?218f:169f):(portrait?218f:166f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -745,6 +745,10 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             var utility=GetComponent<RoyalGoldV3BuildingScreens>();
             bool council=utility&&utility.InlineCouncilNeeded(Source.SelectedBuildingId);
+            // When the one-time council is presented, its genuine choice row
+            // replaces the descriptive scroll, rather than overprinting text
+            // behind the three live buttons on narrow phones.
+            if(buildingScroll)buildingScroll.gameObject.SetActive(!council);
             bool building=source.OperationActive;
             bool offered=!building&&!council&&source.Primary&&source.Primary.Visible;
             SetVisible(buildingActionGroup,offered);
