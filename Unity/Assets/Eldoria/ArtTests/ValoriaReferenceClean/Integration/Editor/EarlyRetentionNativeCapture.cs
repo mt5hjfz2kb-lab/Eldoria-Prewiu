@@ -384,6 +384,18 @@ namespace Eldoria.ReferenceClean.Editor
             var occlusion=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsTerrainOcclusion>(true);
             var lighting=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsWorldLight>(true);
             var foundation=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsRoadFoundation>(true);
+            // B10 must actually compose SIX independently imported source
+            // planes; passing with the old flat/UV-only component is forbidden.
+            var depth=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsParallax>(true);
+            Need(depth!=null && depth.isActiveAndEnabled &&
+                depth.OriginalArtwork==vigilantsPainting &&
+                depth.HasMaterializedDepth && depth.MaterializedPlaneCount==6 &&
+                !depth.raycastTarget,
+                "B10 native scene must render exactly six authentic source-derived parallax planes");
+            var artPlanes=depth.GetComponentsInChildren<RawImage>(true);
+            Need(artPlanes.Length==6 && artPlanes.All(x=>
+                x.texture && !x.raycastTarget && x.uvRect==new Rect(0f,0f,1f,1f)),
+                "Imported paint layers share canonical scene hierarchy; no extra photo overlays or touch targets");
             var livingPaint=illustration as RoyalGoldV3VigilantsLivingLandscape;
             Need(livingPaint!=null && livingPaint.LivingScene &&
                 livingPaint.RoadStageCount==25 && livingPaint.ActualCleared==14 &&
