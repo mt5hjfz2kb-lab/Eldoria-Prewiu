@@ -599,8 +599,22 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(timer.Label.rectTransform, 8f, 7f, width - 16f, 42f);
             Place(timer.Progress, 10f, 57f, width - 20f, 6f);
             timer.Fill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(data.Progress), 1f);
-            var center = FitToSafe(screen, width, height, safe,
-                safe.rect.height > safe.rect.width ? 421f : 266f, 88f, true);
+            // The original 421-unit portrait top exclusion belonged to an
+            // obsolete full-height quest window. Native 390×844 screenshots
+            // showed it pushing the genuine timer DOWN across the Sawmill's
+            // roof even though the current quest occupies only a small
+            // upper-left manuscript. Use the current HUD geometry instead:
+            // place above the model when it fits, and stay clear of both
+            // the live objective and the actual bottom cartouche.
+            var chronicle=Source?Source.GetComponent<RoyalGoldV2Hud>():null;
+            Rect free=chronicle?chronicle.GetFreeSceneViewport():
+                Source?Source.GetVisibleSceneViewport():new Rect(.06f,.14f,.88f,.72f);
+            float topMargin=Mathf.Max(94f,
+                (1f-Mathf.Clamp01(free.yMax))*safe.rect.height+12f);
+            float bottomMargin=Mathf.Max(88f,
+                Mathf.Clamp01(free.yMin)*safe.rect.height+10f);
+            var center=FitToSafe(screen,width,height,safe,
+                topMargin,bottomMargin,true);
             timer.Root.anchorMin = timer.Root.anchorMax = timer.Root.pivot = new Vector2(.5f, .5f);
             timer.Root.anchoredPosition = center;
             Visible(timer.Visibility, true, false);
