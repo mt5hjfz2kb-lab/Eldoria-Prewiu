@@ -730,12 +730,18 @@ namespace Eldoria.Editor
             sheet.SynchronizeNow();
             var boost=host.Hud.GetComponentsInChildren<Button>()
                 .FirstOrDefault(x=>x.name=="Building / accelerate one minute");
+            // The existing chapter-IV mission can legitimately grant a
+            // one-minute accelerator when the first eligible construction
+            // starts. Read the actual live ledger rather than asserting the
+            // fixture's original count after real progression has advanced.
+            int availableBoosts=utility.InlineSpeedupCharges(1);
             Need(boost&&boost.gameObject.activeInHierarchy&&
-                utility.InlineSpeedupCharges(1)==2&&!utility.IsOpen,
-                "Only real available speed-ups appear inside the selected building sheet");
+                availableBoosts>0&&!utility.IsOpen,
+                "Only genuine remaining speed-ups appear in the same city sheet; live="+
+                availableBoosts+" visible="+(boost&&boost.gameObject.activeInHierarchy));
             boost.onClick.Invoke();
-            Need(host.City.Gateway.Snapshot().SpeedupOneMinute==1,
-                "Inline boost charges exactly one saved accelerator with existing gateway");
+            Need(host.City.Gateway.Snapshot().SpeedupOneMinute==availableBoosts-1,
+                "Inline boost debits exactly one authoritative accelerator, including mission grants");
             context.SynchronizeNow();
             Need(!utility.IsOpen,
                 "Using the inline speed-up does not open an extra modal");
