@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-03T23:45:02.954Z",
+  "updated_at": "2026-11-03T23:51:59.678Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3436,7 +3436,7 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "write_scope_released": false,
       "branch": "feature/eldoria-construction-delight-20261104",
       "status": "active",
@@ -3450,15 +3450,17 @@
         "Unity/Assets/Eldoria/Tests/EditMode/ConstructionDelightStateTests.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/ConstructionDelightStateTests.cs.meta",
         "docs/CONSTRUCTION_DELIGHT_V1.md",
-        "pipeline/art-production-requests/eldoria-construction-delight-v1-20261104.json"
+        "pipeline/art-production-requests/eldoria-construction-delight-v1-20261104.json",
+        ".github/workflows/eldoria-construction-delight-native.yml",
+        "tools/construction-delight/**"
       ],
       "resources": [],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "SOURCE_IMPLEMENTATION_INDEPENDENT_NO_WINDOWS",
-      "next": "Source branch PR152 drafted; add production request, resolve source gates, then exact Unity moving A/B after Windows resource is legitimately free. No artistic approval before viewing real capture.",
+      "phase": "SOURCE_AND_NATIVE_CAPTURE_HARNESS_PREPARATION",
+      "next": "Prepare isolated exact-source Unity capture and gated workflow; do not run Windows while PR136 native certification active; capture A/B from 390x844/844x390.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Source tests + real Unity 390x844 and 844x390 moving captures at exact HEAD, GPU/frame QA, human visual assessment",
