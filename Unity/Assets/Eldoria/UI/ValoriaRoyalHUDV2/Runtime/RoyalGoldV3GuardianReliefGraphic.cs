@@ -109,13 +109,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Real cutout art shares the card material, its warm raking
                 // light and the SAME stone footing as the rest of this room.
                 O(v,A(.58f,.57f),r.width*.42f,r.height*.50f,
-                    C(accent.r,accent.g,accent.b,breach?.24f:.15f));
+                    C(accent.r,accent.g,accent.b,breach ? .24f : .15f));
                 O(v,A(.47f,.37f),r.width*.24f,r.height*.42f,
-                    C(.99f,.70f,.39f,breach?.065f:.105f));
+                    C(.99f,.70f,.39f,breach ? .065f : .105f));
                 O(v,A(.50f,.155f),r.width*.40f,r.height*.115f,
                     C(.013f,.021f,.026f,.85f));
                 O(v,A(.51f,.185f),r.width*.29f,r.height*.11f,
-                    C(accent.r,accent.g,accent.b,breach?.36f:.21f));
+                    C(accent.r,accent.g,accent.b,breach ? .36f : .21f));
                 P(v,C(.13f,.15f,.16f,.74f),
                     A(.09f,.135f),A(.17f,.18f),A(.30f,.17f),
                     A(.47f,.18f),A(.59f,.17f),A(.81f,.175f),
