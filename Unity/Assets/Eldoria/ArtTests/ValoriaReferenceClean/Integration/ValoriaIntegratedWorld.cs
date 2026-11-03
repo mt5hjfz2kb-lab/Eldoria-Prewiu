@@ -353,7 +353,23 @@ namespace Eldoria.ReferenceClean {
      if(required>1.001f){
       float size=camera.orthographicSize*required*1.05f;
       if(InWorld)WorldNavigation.RestoreView(WorldNavigation.target,Mathf.Min(size,WorldNavigation.globalZoom));
-      else city.Controls.ZoomBy(size-camera.orthographicSize);
+      else
+      {
+       city.Controls.ZoomBy(size-camera.orthographicSize);
+       // Portrait Bastion IV can be taller than the usable strip between
+       // quest and bottom in-world parchment. The normal gesture zoom is
+       // capped at 65, so a selection-only focus may need to briefly fit
+       // further out. Keep it bounded and use the same terrain safety
+       // clamp; player wheel/pinch still uses the historical 14..65 limits.
+       if(Hud.GetComponent<RoyalGoldV2Hud>()?.
+              ChronicleIllustratedBuildingVisible==true &&
+          Hud.SelectedBuildingId=="bastion" &&
+          camera.orthographicSize<size*.99f)
+       {
+        camera.orthographicSize=Mathf.Min(size,85f);
+        city.Controls.FitToTerrain();
+       }
+      }
       if(!ProjectFocus(camera,points,out projected))break;
      }
      // Translate parallel to the picture plane. Using an arbitrary horizontal
