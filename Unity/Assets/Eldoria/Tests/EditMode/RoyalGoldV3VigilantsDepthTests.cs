@@ -169,6 +169,11 @@ namespace Eldoria.Tests
                 graphic.raycastTarget=false;
                 graphic.SetStage(actualStage);
                 Assert.That(graphic.StageStep,Is.EqualTo(expectedRelief));
+                graphic.UsePaintedFigure(expectedRelief!=0);
+                Assert.That(graphic.PaintedFigure,Is.EqualTo(expectedRelief!=0));
+                graphic.UsePaintedFigure(false);
+                Assert.That(graphic.PaintedFigure,Is.False,
+                    "The stone/ink fallback remains when a candidate PNG is absent");
                 Assert.That(graphic.raycastTarget,Is.False);
                 Assert.That(relief.GetComponent<RawImage>(),Is.Null,
                     "The actual guardian must not be another pasted photographic rectangle");
