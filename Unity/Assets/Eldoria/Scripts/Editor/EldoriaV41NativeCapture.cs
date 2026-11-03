@@ -659,13 +659,31 @@ namespace Eldoria.Editor
             Shot(host,"mailbox-entry-city",900,1600);
             mailbox.EntryButton.onClick.Invoke();yield return null;
             Need(mailbox.IsOpen,"Actual HUD shortcut opens mailbox");
-            Shot(host,"mailbox-reference-ratio",1169,1345);Shot(host,"mailbox-phone",900,1600);Shot(host,"mailbox-landscape",1600,900);
+            Shot(host,"mailbox-reference-ratio",1169,1345);
+            Shot(host,"mailbox-phone",900,1600);
+            Shot(host,"mailbox-landscape",1600,900);
+            Shot(host,"mailbox-small-phone",390,844);
+            Shot(host,"mailbox-small-phone-landscape",844,390);
+            Need(mailbox.VisibleMessageRows==1,
+                "Actual single-message inbox shows exactly one real card, not five filler emails");
+            Need(RoyalGoldV41MailboxScreen.VisibleCountFor(0,0)==0 &&
+                RoyalGoldV41MailboxScreen.VisibleCountFor(1,0)==1 &&
+                RoyalGoldV41MailboxScreen.VisibleCountFor(5,0)==5 &&
+                RoyalGoldV41MailboxScreen.VisibleCountFor(12,0)==5 &&
+                RoyalGoldV41MailboxScreen.VisibleCountFor(12,5)==5 &&
+                RoyalGoldV41MailboxScreen.VisibleCountFor(12,10)==2,
+                "Empty, one, five and paginated twelve-message list cardinality all use real counts");
             var row=host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Buzón / mensaje 0");row.onClick.Invoke();yield return null;
             Need(gateway.Snapshot().Mailbox.Unread("informes")==0,"Opening actual message marks it read");
             Shot(host,"mailbox-real-report",900,1600);
             int wood=gateway.Snapshot().Resources.Wood;
             host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Eliminar").onClick.Invoke();
             Need(gateway.Snapshot().Mailbox.List("informes").Count==0&&gateway.Snapshot().Resources.Wood==wood,"Delete neither replays battle nor pays again");
+            mailbox.Refresh();yield return null;
+            Shot(host,"mailbox-empty-phone",900,1600);
+            Shot(host,"mailbox-empty-small-phone",390,844);
+            Shot(host,"mailbox-empty-small-phone-landscape",844,390);
+            Need(mailbox.VisibleMessageRows==0,"Empty mailbox is genuinely empty without fabricated message rows");
             host.City.ReloadForProbe();yield return null;
             Need(host.City.Gateway.Snapshot().Mailbox.List("informes").Count==0,"Deleted battle remains deleted after real file reload");
             var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
