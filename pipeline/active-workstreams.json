@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-vigilants-deep-rebuild-20261103",
+      "owner": null,
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-03",
@@ -120,15 +120,13 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VIGILANTS_B3_NATIVE_DEEP_REBUILD_WINDOWS_RESERVED",
-      "next": "Run exact Unity B3 on PR136; review A/B with original and B2 at same states; correct layout until native all green and compare images. Do not publish/merge main.",
+      "phase": "VIGILANTS_B7_NATIVE_AB_DELIVERED_VISUAL_APPROVAL_NOT_ASSERTED",
+      "next": "Owner receives exact B5 vs B7 native A/B. Subjective artistic gate remains: approved landscape still dominates. Do not merge #137 or PR136 to main or publish. If new owner requests deeper 2.5D reconstruction, reclaim same canonical workstream and rerun Unity exact SHA. Windows released.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -964,7 +962,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": null,
+      "previous_owner": "chatgpt-eldoria-vigilants-deep-rebuild-20261103",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1727,8 +1725,8 @@
           "reason": "Completed area Buzón V4.1 — reconstrucción visual aceptada provisionalmente; explicit verified handoff to next normal chat"
         }
       ],
-      "ownership_revision": 118,
-      "ownership_state": "claimed",
+      "ownership_revision": 119,
+      "ownership_state": "released",
       "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-03",
@@ -1974,7 +1972,7 @@
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
       "owner_instruction": "2026-11-02: Hazlo tú! Eres un chat de trabajo! Reconstruct genuinely like approved March reference, remove mismatched elements and recover missing visual hierarchy.",
-      "release_reason": "Native A/B presented for explicit owner's subjective art direction; Windows idle and released.",
+      "release_reason": "B7 native evidence and A/B completed; release Windows for other workstreams pending subjective art direction.",
       "windows_resource_handoff_20261102": {
         "authorized_by": "owner current chat",
         "to_workstream": "eldoria-cli-windows-isolated-proof-20261102",
@@ -2044,21 +2042,21 @@
         "release_authorized": false
       },
       "last_completed_area": {
-        "area": "Camino de los Vigilantes — B2 A/B Unity native delivered, subjective artistic decision open",
-        "owner": "chatgpt-eldoria-vigilants-depth-20261103",
-        "revision": 117,
-        "source_sha": "877d7fe4d455285a15a9f1f15992b4cc1c4e2679",
-        "baseline_sha": "178d12ca8e6467c00b78ac96a1a86bd7511e4df8",
-        "unity_run_id": 41627656196,
-        "reference_run_id": 41621181708,
-        "original_retention_artifact": 13224061203,
-        "candidate_retention_artifact": 13226723271,
-        "tests": "EditMode 78/78 PASS; PlayMode 73/73 PASS; native retention/artifact success",
-        "verdict": "Candidate B2 technically certified and real A/B delivered; artistic 8.3/10 NOT PROVEN, scene still painterly flat; no main merge/publish",
-        "open_visual_issues": "subtle global landscape depth; circular portal effect on regular guardian image; geometric purple fissure lines under Spawnling",
-        "comment_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/136#issuecomment-6603240547",
-        "physical_mobile_tested": false,
+        "area": "Camino de los Vigilantes B7 — diorama con iluminación de hitos y Engendro en tarjeta; A/B Unity real",
+        "owner": "chatgpt-eldoria-vigilants-deep-rebuild-20261103",
+        "revision": 119,
+        "source_sha": "111b5661dc5453260907a608e041b259217b2073",
+        "baseline_sha": "3d4786bc8d3707f7b67679be5234512639cb59cc",
+        "unity_run_id": 41663824030,
+        "baseline_run_id": 41648354560,
+        "retention_artifact": 13246035458,
+        "ui_artifact": 13246592871,
+        "tests": "Unity 6.3.23f1 native SUCCESS: EditMode 87/87, PlayMode 73/73; Retention, 3 marches, V4.1 and controls PASS",
+        "artistic_verdict": "Candidate: no second photo on card; Engendro back inside card; pathway still uses visually dominant approved illustration; >=8.3 not proven",
         "art_approved": false,
+        "physical_mobile_tested": false,
+        "release": false,
+        "owner_comment_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/136#issuecomment-6608313787",
         "closed_at": "2026-11-03"
       }
     },
@@ -11031,8 +11029,8 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-    "status": "claimed",
-    "owner": "chatgpt-eldoria-vigilants-deep-rebuild-20261103",
+    "status": "available",
+    "owner": null,
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
