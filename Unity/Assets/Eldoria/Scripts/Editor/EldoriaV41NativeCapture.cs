@@ -95,7 +95,8 @@ namespace Eldoria.Editor
                     var scroll=host.Hud.GetComponentsInChildren<RectTransform>(true)
                         .FirstOrDefault(x=>x.name=="Scrollable real building details");
                     Need(sheet&&sheet.rect.height<=148f&&scroll&&
-                        !scroll.gameObject.activeInHierarchy,
+                        !scroll.gameObject.activeInHierarchy&&
+                        host.Hud.GetComponent<RoyalGoldV2Hud>().GetFreeSceneViewport().height>.46f,
                         "390x844 council is a compact city-local three-choice ribbon, not another management sheet");
                 }
                 var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
