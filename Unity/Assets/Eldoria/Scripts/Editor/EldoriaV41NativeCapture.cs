@@ -733,11 +733,20 @@ namespace Eldoria.Editor
                     Read=i%3==0
                 });
                 Need(added,"Read-only QA fixture can create one separate unique list item");
+                // Receive deliberately ignores caller-supplied Read. Exercise
+                // the same actual mailbox transition used by production.
+                if(i%3==0)
+                    fixtureState.Mailbox.MarkRead("mailbox-qa-layout-only-"+i);
             }
             mailbox.Initialize(host.Hud,new MailboxDisplayFixture(fixtureState));
             mailbox.Refresh();yield return null;
             Need(mailbox.VisibleMessageRows==5,
                 "QA-only 12-message inbox shows exactly five cards on the first portrait page");
+            var qaCards=host.Hud.GetComponentsInChildren<Image>()
+                .Where(x=>x.name=="Approved source / mail-card").ToArray();
+            Need(qaCards.Any(x=>x.color.r<.90f) &&
+                qaCards.Any(x=>x.color.r>.95f),
+                "Genuine Read state and Unread state draw visibly different parchment tones");
             Shot(host,"mailbox-qa-twelve-reference-ratio",1169,1345);
             Shot(host,"mailbox-qa-twelve-phone",900,1600);
             Shot(host,"mailbox-qa-twelve-landscape",1600,900);
