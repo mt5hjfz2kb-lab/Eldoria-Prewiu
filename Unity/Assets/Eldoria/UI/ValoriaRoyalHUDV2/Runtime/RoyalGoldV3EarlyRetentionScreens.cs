@@ -72,6 +72,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalGoldV3VigilantsParallax vigilantsParallax;
         RoyalGoldV3VigilantsTerrainOcclusion nearTerrain;
         RoyalGoldV3EncounterGrounding enemyGroundBack, enemyGroundFront;
+        RoyalGoldV3GuardianReliefGraphic guardianRelief;
         Texture2D paintedVigilants, paintedScouts, scoutParchment;
         Sprite scoutParchmentSprite, encounterSkinSprite;
         Image encounterSkin;
@@ -529,9 +530,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 encounterSkin.raycastTarget=false;
                 Stretch(skin);
             }
-            // The actual enemy is an element of the landscape, not an
-            // illustration pasted into the controls. The historic atlas
-            // remains intact and all original lore/resources are retained.
+            // The authentic stage-15 creature remains in the world. Other
+            // actual canonical adversaries get an engraved, deeply integrated
+            // heraldic presence inside the manuscript, NOT a photo crop.
+            var reliefRect=Rect("True guardian / engraved heroic relief",infoCard);
+            reliefRect.gameObject.AddComponent<CanvasRenderer>();
+            guardianRelief=reliefRect.gameObject.AddComponent<RoyalGoldV3GuardianReliefGraphic>();
+            guardianRelief.raycastTarget=false;
+            guardianRelief.gameObject.SetActive(false);
+            // Keep the original atlas intact for its approved scout missions.
+            // Do not fabricate new encounter stats, letters or models.
             chapter=Text(infoCard,"Stage progression",23,Gold,true);
             opponent=Text(infoCard,"Real enemy and trait",19,Ivory);
             formation=Text(infoCard,"Actual available army",17,Muted);
@@ -976,6 +984,17 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(infoCard,pw*.37f,ph*.55f,pw*.61f,ph*.45f-55f);
             float iw=infoCard.rect.width,ih=infoCard.rect.height;
             if(iw<=0||ih<=0)return;
+            if(OpenDestination==Destination.Vigilants && guardianRelief)
+            {
+                // In the original Royal Gold manuscript, the enemy is an
+                // embossed figure mounted on an arch-shaped stone recess.
+                // There is deliberately no texture or rectangular photo.
+                float x=iw*(compactLandscape?.68f:.57f);
+                float w=iw*(compactLandscape?.29f:.40f);
+                float h=Mathf.Max(86f,Mathf.Min(ih-(compactLandscape?86f:135f),
+                    compactLandscape?185f:385f));
+                TL(guardianRelief.rectTransform,x,compactLandscape?39f:51f,w,h);
+            }
             if(vigilantsPortrait || (vigilantsLandscape&&!compactLandscape))
             {
                 // Layout in canvas units must remain readable after the real
@@ -991,6 +1010,23 @@ namespace Eldoria.UI.RoyalGold.V2
                 chapter.fontSize=32;opponent.fontSize=32;formation.fontSize=26;
                 reward.fontSize=26;passive.fontSize=26;battleFeedback.fontSize=26;
                 if(!portrait)TL(battleFeedback.rectTransform,14f,450f,iw-28f,130f);
+            }
+            // Text must sit BESIDE the figure, not beneath it. Compact
+            // landscape uses a reduced engraving in the far right niche.
+            if(OpenDestination==Destination.Vigilants && !encounterPortraitVisible)
+            {
+                bool tiny=compactLandscape;
+                float textWidth=iw*(tiny?.65f:.54f)-20f;
+                TL(opponent.rectTransform,18f,tiny?49f:65f,textWidth,tiny?65f:92f);
+                TL(formation.rectTransform,18f,tiny?120f:168f,textWidth,tiny?35f:43f);
+                TL(reward.rectTransform,18f,tiny?161f:222f,textWidth,tiny?52f:75f);
+                TL(passive.rectTransform,18f,
+                    tiny?Mathf.Min(ih-143f,221f):Mathf.Min(ih-190f,335f),
+                    iw-36f,tiny?56f:80f);
+                opponent.fontSize=tiny?19:portrait?27:25;
+                formation.fontSize=tiny?18:portrait?25:23;
+                reward.fontSize=tiny?18:portrait?24:22;
+                passive.fontSize=tiny?17:portrait?21:20;
             }
             else if(portrait)
             {
@@ -1232,7 +1268,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 var info=EarlyRetentionRules.Stage(Math.Min(stage,10000));
                 bool boss=info.Step%5==0;
                 bool showEngendro=info.Step==15 && engendroTexture!=null;
-                bool showEncounterArt=showEngendro||scoutVignettes!=null;
+                // The previous atlas crop looked like a small pasted photo.
+                // Stage-15 remains authentic alpha art in the landscape;
+                // every other real stage is a transparent relief in the card.
+                bool showEncounterArt=showEngendro;
+                if(guardianRelief)
+                {
+                    guardianRelief.SetStage(info.Step);
+                    guardianRelief.gameObject.SetActive(!showEngendro);
+                }
                 if(showEncounterArt!=encounterPortraitVisible)
                 {
                     encounterPortraitVisible=showEncounterArt;
