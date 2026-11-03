@@ -7,7 +7,6 @@ on:
     paths:
       - 'Unity/Assets/Eldoria/SpawnlingBastion2/SpawnlingEncounterVisual.cs'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs'
-      - '.github/workflows/issue95-spawnling-presence-native-ab.yml'
 
 permissions:
   contents: read
