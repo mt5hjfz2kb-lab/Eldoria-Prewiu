@@ -158,6 +158,12 @@
       "note": "Roadmap de biblioteca sujeto a cambios recientes"
     },
     {
+      "path": "docs/ELDORIA_AUDITORIA_VISUAL_CAUSAL_Y_PILOTO_20261103.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Auditoría causal visual y piloto Valoria 03/11: G0 no confirma fallo estructural; descartado sin editar Unity. No ART APPROVED."
+    },
+    {
       "path": "docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md",
       "domain": "art",
       "status": "review_pending"
