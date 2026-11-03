@@ -145,7 +145,7 @@ namespace Eldoria.Tests
             var camera=host.WorldCamera;
             var landscape=UnityEngine.Object.FindFirstObjectByType<RegionOneCanonicalLandscape>();
             Assert.IsNotNull(landscape);
-            var oldTarget=navigator.target;float oldZoom=camera.orthographicSize;
+            var oldTarget=navigator.target;float oldZoom=camera.orthographicSize;float oldAspect=camera.aspect;
             float originalMultiplier=actor.ArtProofPresenceMultiplier;
             float oldBreathe=actor.BreatheAmplitude,oldSway=actor.SwayDegrees;
             string output=Path.GetFullPath(Path.Combine(Application.dataPath,"..","..",
@@ -154,9 +154,11 @@ namespace Eldoria.Tests
             actor.BreatheAmplitude=0f;actor.SwayDegrees=0f;
             try
             {
-                camera.aspect=16f/9f;
-                foreach(var view in new[]{(level:2,label:"close"),(level:1,label:"regional")})
+                foreach(var view in new[]{(level:2,label:"close",aspect:16f/9f,width:1280,height:720),
+                    (level:1,label:"regional",aspect:16f/9f,width:1280,height:720),
+                    (level:2,label:"close-portrait",aspect:390f/844f,width:390,height:844)})
                 {
+                    camera.aspect=view.aspect;
                     navigator.SetZoomLevel(view.level,true);
                     navigator.PanTo(hotspot.transform.position);
                     landscape.RefreshForCapture();
@@ -165,11 +167,11 @@ namespace Eldoria.Tests
                     Assert.IsTrue(actor.ModelRoot.activeInHierarchy,"Original actor must render");
                     Assert.IsTrue(actor.TryGeometryBounds(out var before),"Actual imported skinned vertices required");
                     var prefix="integration-issue95-spawnling-"+view.label+"-";
-                    ProofPng(camera,Path.Combine(output,prefix+"before.png"),1280,720);
+                    ProofPng(camera,Path.Combine(output,prefix+"before.png"),view.width,view.height);
                     actor.ArtProofPresenceMultiplier=1.50f;
                     yield return null;
                     Assert.IsTrue(actor.TryGeometryBounds(out var after),"Actual source mesh lost");
-                    ProofPng(camera,Path.Combine(output,prefix+"after.png"),1280,720);
+                    ProofPng(camera,Path.Combine(output,prefix+"after.png"),view.width,view.height);
                     Assert.That(after.size.y,Is.GreaterThanOrEqualTo(before.size.y*1.35f),
                         "Native source height must increase visibly, not just metadata");
                     Assert.That(Mathf.Abs(after.min.y-before.min.y),Is.LessThan(.50f),
@@ -187,6 +189,7 @@ namespace Eldoria.Tests
             {
                 actor.ArtProofPresenceMultiplier=originalMultiplier;
                 actor.BreatheAmplitude=oldBreathe;actor.SwayDegrees=oldSway;
+                camera.aspect=oldAspect;
                 navigator.RestoreView(oldTarget,oldZoom);
             }
         }

@@ -61,7 +61,7 @@ jobs:
           $xml=Join-Path $env:RUNNER_TEMP 'issue95-spawnling-native-ab.xml'
           $log=Join-Path $env:RUNNER_TEMP 'issue95-spawnling-native-ab.log'
           $out=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-reference-clean'
-          foreach($view in @('close','regional')){
+          foreach($view in @('close','regional','close-portrait')){
             foreach($state in @('before','after')){
               $file=Join-Path $out "integration-issue95-spawnling-$view-$state.png"
               if(Test-Path $file){throw "Refuse to reuse old evidence $file"}
@@ -89,7 +89,7 @@ jobs:
             Get-Content $log -Tail 100
             throw 'Required real camera A/B test did not pass'
           }
-          foreach($view in @('close','regional')){
+          foreach($view in @('close','regional','close-portrait')){
             foreach($state in @('before','after')){
               $file=Join-Path $out "integration-issue95-spawnling-$view-$state.png"
               if(-not(Test-Path $file) -or (Get-Item $file).Length -lt 15000){
@@ -97,7 +97,7 @@ jobs:
               }
             }
           }
-          Write-Host "ISSUE95_NATIVE_UNITY_A_B_TECH_PASS sha=$env:GITHUB_SHA images=4 art_approved=false"
+          Write-Host "ISSUE95_NATIVE_UNITY_A_B_TECH_PASS sha=$env:GITHUB_SHA images=6 art_approved=false"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
