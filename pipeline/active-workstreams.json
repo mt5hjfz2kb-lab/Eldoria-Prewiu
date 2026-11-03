@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-breach-native-proof-20261102",
+      "owner": "chatgpt-eldoria-training-native-integration-20261103",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
-      "claimed_at": "2026-11-02",
+      "claimed_at": "2026-11-03T00:05:00Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -127,8 +127,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BREACH_REAL_UNITY_REFERENCE_A_B",
-      "next": "Implement reversible fault-driven Breach source correction over latest PR136 in same branch; capture real Unity canonical close/regional H/V and verify gameplay; visually reject or retain, no merge or publish.",
+      "phase": "TRAINING_ART_FINISH_NATIVE_AB_FOUR_RESOLUTIONS",
+      "next": "Integrate guarded Training art patch from V4.1 over PR136 HEAD 59905af6; native four-resolution A/B and gameplay/retention tests, inspect real captures, revert failed visuals. Breach evidence preserved and remains separate pending work.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1695,9 +1695,15 @@
           "ownership_revision": 108,
           "transferred_at": "2026-11-02",
           "reason": "Owner explicitly orders continuation to tangible real Unity Breach evidence after blocked prior session; same workstream/PR136, all current Actions complete. Preserve completed March changes; no restart, force-push, publication, credits."
+        },
+        {
+          "owner": "chatgpt-eldoria-breach-native-proof-20261102",
+          "ownership_revision": 109,
+          "transferred_at": "2026-11-03",
+          "reason": "Owner explicitly orders continuation of artistic Training block in this chat. Prior native run 41547437884 completed SUCCESS on SHA 59905af6; preserve Breach work, do not merge or publish."
         }
       ],
-      "ownership_revision": 109,
+      "ownership_revision": 110,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1789,7 +1795,7 @@
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
       "candidate_branch": "fix/player-feedback-context-ui-20261030",
       "canonical_pr": 132,
-      "handoff_reason": "Owner-authorized in-progress takeover; prior source preservation and live Windows job must not be cancelled.",
+      "handoff_reason": "Explicit owner instruction 2026-11-03; prior Windows CI completed, no incompatible PR136 run in progress. Keep the same canonical workstream/PR and runner reservation.",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
       "scope_extension_reason": "Owner-directed Marches UI recon: update obsolete PlayMode UI heading assertion to inspect real live metric, preserve gateway 7 troop and save assertions.",
@@ -2777,7 +2783,12 @@
       "next": "Guarded training-art patch staged at PR134 commit 70739fd836e9980c0896374bc6550f8ebb3b3704 (tools/eldoria-v41/training-finish-20261103.py), NOT applied. PR136 Valoria owner revision 109 controls overlapping Unity UI and Windows; PR134 ownership gate fails on inherited cross-PR files. Reconcile ownership/branch before application, then require exact-HEAD Unity captures 1600x900,900x1600,390x844,844x390 plus gameplay tests. No art approval or release.",
       "art_production_routing_reason": "Mandatory tracking for exact source reuse and ArtTests code; no new artwork generation authorized.",
       "ownership_history": [
-        {"owner":"chatgpt-training-art-finish-20261103","from_revision":17,"to_revision":18,"note":"Staged guarded patch only; no contested Unity writes; ownership gate on PR134 red due inherited cross-PR overlap; no native validation."},
+        {
+          "owner": "chatgpt-training-art-finish-20261103",
+          "from_revision": 17,
+          "to_revision": 18,
+          "note": "Staged guarded patch only; no contested Unity writes; ownership gate on PR134 red due inherited cross-PR overlap; no native validation."
+        },
         {
           "owner": "chatgpt-gpt6-v41-integration-20261030",
           "ownership_revision": 2,
