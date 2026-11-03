@@ -15,8 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 1
           persist-credentials: true
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/vigilants-depth/bake_layers.py
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -48,7 +52,7 @@ jobs:
           test "$GITHUB_REF" = "refs/heads/$ART_BRANCH"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10
+          git add --sparse Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10
           if ! git diff --cached --quiet; then
             git commit -m "art(vigilants): bake six cropped 2.5D layers from original approved source"
             # The isolated art branch may have advanced while the offline
