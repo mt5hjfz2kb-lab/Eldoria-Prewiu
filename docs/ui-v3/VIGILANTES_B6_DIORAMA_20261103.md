@@ -20,3 +20,10 @@
 
 ## Evidencias
 B5: [UI Progression Certification 41648354560](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41648354560). La futura B6 registrará run/sha exactos y su veredicto artístico aquí o en comentario PR136; no confundir documentación con A/B aprobado.
+
+
+## Iteración B6 Unity y corrección B7
+
+- B6 `9523f8482f89fe7d71b1470e9332b59f09ded5b9` ejecutó en Unity 6.3.23f1, [run 41662012599](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41662012599). Compilación, V4.1 y tres marchas pasaron. El gate de captura de Retención detectó un defecto genuino de **maquetación**; no se falsifica PASS.
+- Artefacto de fallo `eldoria-retention-evolution-native-41662012599`, ID `13242622025`, contiene 19 capturas y `failure.txt`: a 1600 px la línea de formación requería 52 unidades y solo disponía de 46; a 390 px `reward`/ `passive` eran menores de los 12 píxeles obligatorios. Las imágenes mostraron asimismo un texto de estrategia solapado sobre el Engendro en horizontal.
+- B7 corrige estas regresiones sin tocar contratos: la formación mantiene cada número con un salto natural de línea antes de `Poder`, la experiencia usa abreviatura real `EXP. … XP · Máx. 8 h` sin perder el valor ni el límite, se reservan alturas y se elevan reward/passive a 26 unidades en retrato (>12 px reales a 390), y se posiciona el informe de estrategia en la columna izquierda aunque esté oculto cuando Layout se ejecuta. Requiere revalidación Unity del nuevo SHA antes de etiquetar éxito.
