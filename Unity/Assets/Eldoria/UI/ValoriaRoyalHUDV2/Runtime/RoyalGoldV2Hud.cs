@@ -1289,7 +1289,12 @@ namespace Eldoria.UI.RoyalGold.V2
             // imaginary left rail that shifts the city/world away from centre.
             float width = Mathf.Max(1, safe.rect.width);
             float height = Mathf.Max(1, safe.rect.height);
-            float padding = .025f;
+            // The measured 390x844 council now fits the full Bastion mesh
+            // between the upper quest and physical lower ribbon. Keep a
+            // positive 1.2% clearance instead of reserving an unnecessary
+            // second 2.5% band that rejected this genuine, unobscured frame.
+            float padding = buildingVisible &&
+                Source.SelectedBuildingId=="bastion" ? .012f : .025f;
             // Crónica Real's illustrated card is bottom-docked in BOTH
             // orientations. The former landscape right-sheet exclusion made
             // the free width negative on 4:3 displays, so automatic focus
