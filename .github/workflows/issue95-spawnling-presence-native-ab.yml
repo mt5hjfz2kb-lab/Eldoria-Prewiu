@@ -24,6 +24,9 @@ jobs:
         with:
           clean: false
           fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            Unity
       - name: Validate exact owner and Windows lease without editing another workstream
         shell: powershell
         env:
