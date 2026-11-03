@@ -62,10 +62,14 @@ namespace Eldoria.Tests
                         "Exact original cut-out must not silently use a different asset");
                     Assert.That(art.width,Is.EqualTo(Dimensions[i].x),Layers[i]);
                     Assert.That(art.height,Is.EqualTo(Dimensions[i].y),Layers[i]);
-                    var plane=parallax.transform.Find(
-                        "Vigilants / original paint plane / "+Layers[i]);
-                    Assert.That(plane,Is.Not.Null);
-                    var picture=plane.GetComponent<RawImage>();
+                    RawImage picture=null;
+                    // Unity's Transform.Find treats the slash as a path
+                    // delimiter, but the actual imported source child name
+                    // itself contains slashes. Match direct children by exact
+                    // name: do not weaken the asset-identity assertion.
+                    foreach(var item in children)
+                        if(item.name=="Vigilants / original paint plane / "+Layers[i])
+                        { picture=item; break; }
                     Assert.That(picture,Is.Not.Null);
                     Assert.That(picture.texture,Is.SameAs(art));
                     Assert.That(picture.raycastTarget,Is.False,
