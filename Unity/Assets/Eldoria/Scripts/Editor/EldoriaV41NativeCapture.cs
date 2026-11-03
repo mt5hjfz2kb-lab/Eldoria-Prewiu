@@ -604,6 +604,12 @@ namespace Eldoria.Editor
                 .Where(x=>x.name.StartsWith("Building / council ")).ToArray();
             Need(councilButtons.Length==3&&councilButtons.All(x=>x.gameObject.activeInHierarchy),
                 "All three genuine development choices fit inside the same city cartouche");
+            // A centrally placed real Bastion must use the clear upper center
+            // instead of treating the small top-LEFT quest as a full-width
+            // obstruction. The lower council stays above the genuine dock.
+            var councilViewport=sheet.GetFreeSceneViewport();
+            Need(councilViewport.height>.40f,
+                "Centered royal Bastion retains enough vertical city camera space above the contextual council");
             Shot(host,"building-council-desktop",1600,900);
             Shot(host,"building-council-small-phone",390,844);
             var priorityWood=host.City.Gateway.Snapshot().Resources.Wood;
