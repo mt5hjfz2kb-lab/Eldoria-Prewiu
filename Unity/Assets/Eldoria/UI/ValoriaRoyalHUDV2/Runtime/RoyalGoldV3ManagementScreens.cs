@@ -52,7 +52,9 @@ namespace Eldoria.UI.RoyalGold.V2
         readonly RoyalText[] trainingTierLabels=new RoyalText[2];
         readonly Image[] trainingTierPortraits=new Image[2];
         RectTransform root, layoutRoot, header, left, right, footer, quantityRow;
-        RectTransform trainingCostCard, trainingStatusCard, trainingIdentityCard, trainingQuantityCard;
+        RectTransform trainingCostCard, trainingStatusCard, trainingIdentityCard, trainingQuantityCard, trainingOrderBoard;
+        RoyalText trainingOrderChapter;
+        readonly Image[] trainingTierMaterials=new Image[2];
         bool compactLandscape;
         struct TextDensity { public int Font; public Vector2 Size; public Vector3 Scale; }
         readonly Dictionary<RoyalText,TextDensity> textDensity=new Dictionary<RoyalText,TextDensity>();
@@ -398,7 +400,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 trainingTierPortraits[i].sprite=trainingCardPortrait;
                 trainingTierPortraits[i].preserveAspect=true;
                 trainingTierChoices[i].GetComponent<RoyalGoldV2FrameGraphic>().color=new Color(1f,1f,1f,.07f);
-                TrainingPaper((RectTransform)trainingTierChoices[i].transform,"Training / layered tier "+tier,.90f);
+                trainingTierMaterials[i]=TrainingPaper(
+                    (RectTransform)trainingTierChoices[i].transform,
+                    "Training / framed transparent bust T"+tier,.88f).GetComponent<Image>();
+                // The source contains real isolated alpha. Mask the enlarged
+                // bust to the physical engraved card; no background crop.
+                trainingTierChoices[i].gameObject.AddComponent<RectMask2D>();
             }
             quantityRow = Rect("Quantity controls",left);
             minus = Button("Reduce quantity",quantityRow,"−",()=>SetQuantity(CurrentDestination==Destination.March&&percentMode?CurrentDisplayedPercent-1:selectedCount-1),false,out _);
@@ -450,6 +457,10 @@ namespace Eldoria.UI.RoyalGold.V2
             trainingStatusCard=TrainingPaper(right,"Training / actual timer",.88f);
             trainingIdentityCard=TrainingPaper(left,"Training / unit manuscript",.77f);
             trainingQuantityCard=TrainingPaper(right,"Training / live quantity instruments",.73f);
+            trainingOrderBoard=TrainingPaper(right,"Training / one continuous military order",.95f);
+            trainingOrderChapter=Text("Training / ordered command heading",right,19,Gold,true);
+            trainingOrderChapter.Put("ORDEN DE ENTRENAMIENTO");
+            trainingOrderChapter.alignment=TextAnchor.MiddleCenter;
             feedback=Text("Command feedback",footer,15,Gold);
             back=Button("Return to Valoria",footer,"VOLVER A LA CIUDAD",Close,false,out _);
             action=Button("Confirm military command",footer,"CONFIRMAR",Confirm,true,out actionLabel);
@@ -647,8 +658,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 trainingTierChoices[i].gameObject.SetActive(training);
                 bool unlocked=i==0||s.BarracksLevel>=4;
                 trainingTierChoices[i].interactable=training&&!trainingActive&&unlocked;
-                trainingTierPortraits[i].color=unlocked?Color.white:new Color(.45f,.45f,.45f,.75f);
-                trainingTierLabels[i].color=selectedTier==i+1?Gold:Muted;
+                trainingTierPortraits[i].color=unlocked?Color.white:new Color(.42f,.45f,.48f,.59f);
+                trainingTierLabels[i].color=unlocked?
+                    (selectedTier==i+1?Gold:Ivory):Muted;
+                if(trainingTierMaterials[i])
+                    trainingTierMaterials[i].color=selectedTier==i+1&&unlocked?
+                        new Color(.09f,.135f,.15f,.95f):
+                        new Color(.038f,.06f,.078f,.82f);
             }
             if(!tier2Unlocked && selectedTier==2)selectedTier=1;
             if(trainingActive)selectedTier=s.PendingRecruitTier==2?2:1;
@@ -1067,21 +1083,25 @@ namespace Eldoria.UI.RoyalGold.V2
                 foreach(var finish in pane.GetComponentsInChildren<RoyalGoldV3LayeredFinish>(true))
                     finish.gameObject.SetActive(false);
             }
-            trainingCostCard.gameObject.SetActive(training);
-            trainingStatusCard.gameObject.SetActive(training);
-            // Identity remains on the illustrated court as in the owner's
-            // reference: no giant parchment obscuring the scene.
-            trainingIdentityCard.gameObject.SetActive(false);
-            trainingQuantityCard.gameObject.SetActive(training);
+            // Structural finish: one integrated order rather than three
+            // independently floating cards, all data remains live.
+            trainingCostCard.gameObject.SetActive(false);
+            trainingStatusCard.gameObject.SetActive(false);
+            trainingQuantityCard.gameObject.SetActive(false);
+            trainingOrderBoard.gameObject.SetActive(training);
+            trainingOrderChapter.gameObject.SetActive(training);
+            trainingIdentityCard.gameObject.SetActive(training);
+            var identityPaper=trainingIdentityCard.GetComponent<Image>();
+            if(identityPaper)identityPaper.color=new Color(.91f,.84f,.70f,.86f);
             if(training)
             {
                 paneSurfaces[right].enabled=false;
                 right.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
             }
-            summary.color=training?Ivory:Ivory;
-            status.color=training?Muted:Muted;
-            unitTitle.color=training?new Color(.10f,.08f,.055f):Ivory;
-            unitDetail.color=training?new Color(.16f,.13f,.10f):Muted;
+            summary.color=Ivory;
+            status.color=Muted;
+            unitTitle.color=training?new Color(.12f,.10f,.075f):Ivory;
+            unitDetail.color=training?new Color(.22f,.18f,.13f):Muted;
             action.transform.SetParent(training?right:footer,false);
             for(int i=0;i<marchMetricCards.Length;i++)
                 marchMetricCards[i].gameObject.SetActive(!training);
@@ -1152,56 +1172,75 @@ namespace Eldoria.UI.RoyalGold.V2
             float archerH=Mathf.Min(artH, (wide?width*.51f:width*.65f)*1.5f);
             float archerW=archerH/1.5f;
             Place(approvedArcher.rectTransform,width*(wide?.10f:.04f),artH-archerH,archerW,archerH);
-            float rosterW=Mathf.Clamp(width*.14f,110f,150f);
-            float rosterH=wide?Mathf.Min(150f,artH*.29f):160f;
+            float rosterW=Mathf.Clamp(width*.15f,114f,156f);
+            float rosterH=wide?Mathf.Min(155f,artH*.30f):164f;
+            float rosterTop=artH*.15f;
             for(int i=0;i<2;i++)
             {
-                Place((RectTransform)trainingTierChoices[i].transform,8,artH*.18f+i*(rosterH+12),rosterW,rosterH);
-                Place(trainingTierPortraits[i].rectTransform,6,6,rosterW-12,rosterH-48);
-                Place(trainingTierLabels[i].rectTransform,6,rosterH-40,rosterW-12,34);
+                Place((RectTransform)trainingTierChoices[i].transform,
+                    8,rosterTop+i*(rosterH+11f),rosterW,rosterH);
+                // Oversized, transparently clipped upper bust: no old
+                // screenshot pixels or dark box inside the aperture.
+                Place(trainingTierPortraits[i].rectTransform,
+                    -7f,-9f,rosterW+14f,rosterH-24f);
+                Place(trainingTierLabels[i].rectTransform,
+                    5f,rosterH-36f,rosterW-10f,32f);
+                trainingTierLabels[i].fontSize=wide?21:25;
             }
-            // Labels no longer use total-screen coordinates inside a half-width parent.
-            bool elevatedIdentity=wide&&!compactLandscape;
-            var identityParent=elevatedIdentity?layoutRoot:left;
+            // The label is a physically bounded parchment nameplate, not
+            // dark letters placed on an unpredictable bright sky.
+            var identityParent=wide?layoutRoot:left;
             unitTitle.rectTransform.SetParent(identityParent,false);
             unitDetail.rectTransform.SetParent(identityParent,false);
             trainingIdentityCard.SetParent(identityParent,false);
-            float titleX=elevatedIdentity?x+width*.57f:
-                wide?left.rect.width*.67f:width*.68f;
-            float titleW=elevatedIdentity?width*.39f:
-                Mathf.Max(84f,left.rect.width-titleX-13f);
-            float previewOrderH=wide?(compactLandscape?bodyH:
-                Mathf.Min(bodyH,Mathf.Max(390,bodyH*.60f))):portraitOrderH;
-            float availableIdentityH=elevatedIdentity?
-                Mathf.Max(92f,bodyH-previewOrderH-19f):artH;
-            float titleY=elevatedIdentity?bodyY+9f:artH*.04f;
-            float titleHeight=elevatedIdentity?
-                Mathf.Clamp(availableIdentityH*.38f,36f,56f):wide?64f:89f;
-            float detailY=titleY+titleHeight+(elevatedIdentity?5f:12f);
-            float detailHeight=elevatedIdentity?
-                Mathf.Max(34f,availableIdentityH-titleHeight-12f):
-                Mathf.Clamp(artH-(detailY-titleY)-20f,62f,wide?156f:213f);
+            float titleX=wide?
+                x+width*(compactLandscape?.36f:.57f):width*.59f;
+            float titleW=wide?width*(compactLandscape?.185f:.385f):
+                width*.38f;
+            float titleY=wide?bodyY+11f:artH*.045f;
+            float titleHeight=wide?45f:52f;
+            float detailY=titleY+titleHeight+5f;
+            float detailHeight=wide?(compactLandscape?91f:91f):104f;
             Place(unitTitle.rectTransform,titleX,titleY,titleW,titleHeight);
             Place(unitDetail.rectTransform,titleX,detailY,titleW,detailHeight);
-            Place(trainingIdentityCard,titleX-7f,titleY-8f,titleW+14f,
-                detailY+detailHeight-titleY+17f);
+            Place(trainingIdentityCard,titleX-11f,titleY-10f,
+                titleW+22f,titleHeight+detailHeight+26f);
             trainingIdentityCard.SetAsFirstSibling();
-            unitTitle.fontSize=wide?27:30;
-            unitDetail.fontSize=wide?19:25;
+            unitTitle.fontSize=wide?26:29;
+            unitDetail.fontSize=wide?19:24;
             float orderW=wide?width*.44f:width;
             float orderH=wide?(compactLandscape?bodyH:Mathf.Min(bodyH,Mathf.Max(390,bodyH*.60f))):portraitOrderH;
             Place(right,wide?x+width-orderW:x,wide?bodyY+bodyH-orderH:bodyY+artH+12,orderW,orderH);
-            float pad=wide?22:26;
-            float qh=wide?48:78;
-            Place(quantityRow,pad,orderH*.04f,orderW-pad*2,qh);
-            Place(slider.transform as RectTransform,pad+6,orderH*.04f+qh+10,orderW-pad*2-12,wide?16:24);
-            Place(summary.rectTransform,pad,orderH*.28f,orderW-pad*2,orderH*.20f);
-            Place(tierButton.transform as RectTransform,pad,orderH*.51f,orderW-pad*2,wide?34:52);
-            Place(status.rectTransform,pad,orderH*.63f,orderW-pad*2,wide?48:70);
-            Place(trainingProgress,pad,orderH*.61f-8,orderW-pad*2,8);
-            Place(action.transform as RectTransform,pad,orderH-(wide?65:94),orderW-pad*2,wide?52:80);
-            summary.fontSize=wide?22:28;status.fontSize=wide?17:26;
-            actionLabel.fontSize=wide?19:26;
+            float pad=wide?20f:26f;
+            float qh=wide?Mathf.Min(43f,orderH*.13f):72f;
+            float qy=wide?Mathf.Max(37f,orderH*.105f):54f;
+            float sliderY=qy+qh+(wide?8f:11f);
+            float summaryY=sliderY+(wide?21f:38f);
+            float summaryH=wide?Mathf.Clamp(orderH*.15f,43f,65f):79f;
+            float tierY=summaryY+summaryH+7f;
+            float tierH=wide?34f:51f;
+            float statusY=tierY+tierH+6f;
+            float actionY=orderH-(wide?63f:90f);
+            float statusH=Mathf.Max(35f,actionY-statusY-8f);
+            Place(trainingOrderBoard,2f,0f,orderW-4f,orderH);
+            trainingOrderBoard.SetAsFirstSibling();
+            Place(trainingOrderChapter.rectTransform,
+                pad,5f,orderW-pad*2f,wide?29f:40f);
+            trainingOrderChapter.fontSize=wide?20:27;
+            Place(quantityRow,pad,qy,orderW-pad*2f,qh);
+            Place(slider.transform as RectTransform,
+                pad+7f,sliderY,orderW-pad*2f-14f,wide?16f:22f);
+            Place(summary.rectTransform,pad,summaryY,
+                orderW-pad*2f,summaryH);
+            Place(tierButton.transform as RectTransform,
+                pad,tierY,orderW-pad*2f,tierH);
+            Place(status.rectTransform,pad,statusY,orderW-pad*2f,statusH);
+            Place(trainingProgress,pad,statusY-11f,orderW-pad*2f,7f);
+            Place(action.transform as RectTransform,pad,
+                actionY,orderW-pad*2f,wide?52f:78f);
+            summary.fontSize=wide?21:26;
+            status.fontSize=wide?16:23;
+            actionLabel.fontSize=wide?18:25;
             float qw=quantityRow.rect.width;
             Place(minus.transform as RectTransform,0,0,qh,qh);
             Place(plus.transform as RectTransform,qw-qh,0,qh,qh);
@@ -1215,39 +1254,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 // to the entire tall phone put its floor underneath the order,
                 // leaving the otherwise bottom-aligned character in the sky.
                 trainingEnvironment.rectTransform.SetParent(left,false);
-                Place(quantityRow,pad,20,orderW-pad*2,qh);
-                Place(slider.transform as RectTransform,pad+6,110,orderW-pad*2-12,24);
-                Place(summary.rectTransform,pad,154,orderW-pad*2,72);
-                Place(tierButton.transform as RectTransform,pad,240,orderW-pad*2,52);
-                Place(trainingProgress,pad,312,orderW-pad*2,8);
-                Place(status.rectTransform,pad,340,orderW-pad*2,70);
+                // The integrated order geometry above is shared on every
+                // orientation; only the scenic courtyard stays inside LEFT.
             }
             else
             {
                 trainingEnvironment.rectTransform.SetParent(root,false);
                 trainingEnvironment.rectTransform.SetSiblingIndex(Mathf.Max(0,layoutRoot.GetSiblingIndex()-1));
             }
-            if(wide)
-            {
-                Place(trainingCostCard,pad-8f,orderH*.28f-9f,
-                    orderW-pad*2f+16f,orderH*.20f+18f);
-                Place(trainingStatusCard,pad-8f,orderH*.63f-9f,
-                    orderW-pad*2f+16f,72f);
-            }
-            else
-            {
-                Place(trainingCostCard,pad-8f,145f,orderW-pad*2f+16f,86f);
-                Place(trainingStatusCard,pad-8f,331f,orderW-pad*2f+16f,88f);
-            }
-            if(wide)
-                Place(trainingQuantityCard,pad-8f,orderH*.025f,
-                    orderW-pad*2f+16f,orderH*.235f);
-            else
-                Place(trainingQuantityCard,pad-8f,11f,
-                    orderW-pad*2f+16f,137f);
-            trainingCostCard.SetAsFirstSibling();
-            trainingStatusCard.SetAsFirstSibling();
-            trainingQuantityCard.SetAsFirstSibling();
+            // Legacy floating boxes deliberately remain disabled. All
+            // material is owned by the one continuous order board.
             // Explicit stacking retains live controls above source surfaces.
             approvedArcher.rectTransform.SetAsFirstSibling();
             if(!wide)trainingEnvironment.rectTransform.SetAsFirstSibling();
