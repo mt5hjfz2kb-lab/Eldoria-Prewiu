@@ -286,21 +286,23 @@ namespace Eldoria.ReferenceClean.Editor
                 "The actual unlocked Scouts button shows the genuine Valoria crest art");
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
             Need(ui.IsOpen,"Vigilants opens after first barracks");
-            Need(hud.GetComponentsInChildren<RawImage>().Any(x=>
-                x.name=="Engendro / authentic creature illustration" && x.enabled &&
-                x.texture==Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4") &&
-                x.uvRect==new Rect(.01f,.51f,.48f,.48f)),
-                "Normal corrupt encounters show their own authored patrol illustration, never an empty card");
-            var ordinaryArt=hud.GetComponentsInChildren<RawImage>().First(x=>
-                x.name=="Engendro / authentic creature illustration");
-            Need(ordinaryArt.transform.parent.parent.name=="Scenic illustration" &&
-                ordinaryArt.transform.parent.parent!=null &&
-                ordinaryArt.transform.parent.GetComponent<RoyalGoldV2FrameGraphic>()?.enabled==false,
-                "Actual enemy illustration belongs to the world, not a pasted UI photo card");
-            Need(ordinaryArt is RoyalGoldV3VigilantsPortraitGraphic patrol &&
-                patrol.PatrolSilhouettes && !patrol.TransparentCreature &&
-                !patrol.raycastTarget,
-                "Ordinary patrol uses authentic soldier silhouettes, never a second rectangular scenery photo");
+            // The original source atlas remains available to the three
+            // real scout contracts, but NEVER becomes a second photo inside
+            // an ordinary Vigilants encounter.
+            var sourceAtlas=Resources.Load<Texture2D>(
+                "EldoriaRetention/scout-mission-vignettes-v4");
+            var originalPortrait=hud.GetComponentsInChildren<RawImage>(true)
+                .FirstOrDefault(x=>x.name=="Engendro / authentic creature illustration");
+            Need(sourceAtlas && originalPortrait &&
+                originalPortrait.texture==sourceAtlas &&
+                !originalPortrait.gameObject.activeInHierarchy,
+                "The authentic scout atlas remains preserved, but ordinary enemy photos are hidden");
+            var relief=hud.GetComponentsInChildren<RoyalGoldV3GuardianReliefGraphic>(true)
+                .FirstOrDefault();
+            Need(relief && relief.gameObject.activeInHierarchy &&
+                relief.StageStep==0 && relief.enabled && !relief.raycastTarget &&
+                !relief.GetComponent<RawImage>(),
+                "The actual ordinary encounter is a legible non-photo metal/ink relief, not a pasted atlas crop");
             Screenshot(h,"vigilants-chapter-one",1600,900);
             Screenshot(h,"vigilants-chapter-one",900,1600);
             Screenshot(h,"vigilants-chapter-one",390,844);
@@ -351,6 +353,9 @@ namespace Eldoria.ReferenceClean.Editor
                 "Stage15 actually displays the selected reference-derived creature illustration");
             Need(engendroArt.uvRect==new Rect(0,0,1,1) && !referencePortrait.isReadable,
                 "Authored transparent portrait needs no destructive studio-key or extra readable mobile texture");
+            Need(relief && !relief.gameObject.activeInHierarchy &&
+                engendroArt.gameObject.activeInHierarchy,
+                "The authentic stage-15 Engendro takes visual authority; no duplicate guardian relief");
             var portraitBytes=File.ReadAllBytes("Assets/Eldoria/Resources/EldoriaRetention/engendro-reference-v3.png");
             using(var sha=System.Security.Cryptography.SHA256.Create())
                 Need(BitConverter.ToString(sha.ComputeHash(portraitBytes)).Replace("-","").ToLowerInvariant()==
