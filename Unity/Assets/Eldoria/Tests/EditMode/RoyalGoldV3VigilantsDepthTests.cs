@@ -241,6 +241,49 @@ namespace Eldoria.Tests
             finally { Object.DestroyImmediate(host); }
         }
 
+        [Test]
+        public void RealRoadStoneFoundationFollowsEveryActualStageAndNoTouch()
+        {
+            var host=new GameObject("Existing scenic manuscript",typeof(RectTransform));
+            try
+            {
+                var area=(RectTransform)host.transform;
+                area.sizeDelta=new Vector2(900f,640f);
+                var trailObject=new GameObject("True real stage road",
+                    typeof(RectTransform),typeof(CanvasRenderer),
+                    typeof(RoyalGoldV3StageTrailGraphic));
+                var rt=(RectTransform)trailObject.transform;
+                rt.SetParent(host.transform,false);
+                rt.sizeDelta=new Vector2(900f,640f);
+                var trail=trailObject.GetComponent<RoyalGoldV3StageTrailGraphic>();
+                trail.raycastTarget=false;
+                trail.ArtworkUv=new Rect(0f,0f,1f,1f);
+                var foundation=RoyalGoldV3VigilantsRoadFoundation.Install(area,0);
+                foundation.BindRealRoad(trail,4);
+                Assert.That(foundation.BoundStageCount,Is.EqualTo(25));
+                Assert.That(foundation.Cleared,Is.EqualTo(4));
+                Assert.That(foundation.NextStage,Is.EqualTo(5));
+                Assert.That(foundation.raycastTarget,Is.False);
+                for(int step=1;step<=25;step++)
+                {
+                    var actual=foundation.rectTransform.InverseTransformPoint(
+                        trail.transform.TransformPoint(trail.StagePosition(step)));
+                    Assert.That(Vector2.Distance(foundation.StagePosition(step),actual),
+                        Is.LessThan(.01f),
+                        "Real stage "+step+" shares the existing in-world road");
+                }
+                foundation.BindRealRoad(trail,14);
+                Assert.That(foundation.NextStage,Is.EqualTo(15));
+                foundation.BindRealRoad(trail,24);
+                Assert.That(foundation.NextStage,Is.EqualTo(25));
+                Assert.That(host.GetComponentsInChildren<Canvas>(true).Length,Is.Zero);
+                Assert.That(host.GetComponentsInChildren<EventSystem>(true).Length,Is.Zero);
+                Assert.That(host.GetComponentsInChildren<RawImage>(true).Length,Is.Zero,
+                    "Stone relief never adds another photograph to the scene");
+            }
+            finally { Object.DestroyImmediate(host); }
+        }
+
         [TestCase(1)]
         [TestCase(5)]
         [TestCase(10)]
