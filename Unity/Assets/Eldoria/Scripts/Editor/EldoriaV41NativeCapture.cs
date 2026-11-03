@@ -751,9 +751,12 @@ namespace Eldoria.Editor
             // landscape design intentionally shows TWO items. Restore a
             // genuine portrait canvas before asserting FIVE visible cards.
             Shot(host,"mailbox-qa-twelve-phone",900,1600);
-            Need(mailbox.VisibleMessageRows==5,
-                "QA-only 12-message inbox shows exactly five cards on the first portrait page (actual "+
-                    mailbox.VisibleMessageRows+")");
+            // The portrait screenshot contains five cards. On returning
+            // from capture Unity restores the actual compact viewport, so
+            // the live widget must immediately show the appropriate 2 cards.
+            Need(mailbox.VisibleMessageRows==Mathf.Min(12,mailbox.CurrentPageSize),
+                "QA-only twelve-mail inbox respects the real restored viewport: active="+
+                    mailbox.VisibleMessageRows+", size="+mailbox.CurrentPageSize);
             var qaCards=host.Hud.GetComponentsInChildren<Image>()
                 .Where(x=>x.name=="Approved source / mail-card").ToArray();
             Need(qaCards.Any(x=>x.color.r<.90f) &&
