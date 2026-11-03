@@ -523,7 +523,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 int unread=mail?.Unread(key)??0,index=Array.IndexOf(categories,key);
                 tabBadges[index].transform.parent.gameObject.SetActive(unread>0);
                 tabBadges[index].Put(unread.ToString());
-                t.Put(char.ToUpperInvariant(key[0])+key.Substring(1));
+                // Four real categories; compact mobile uses an unambiguous
+                // short caption rather than breaking Recompensas into fragments.
+                t.Put(window.rect.width<520f && key=="recompensas"?"Premios":
+                    char.ToUpperInvariant(key[0])+key.Substring(1));
             }
             var list=mail?.List(category,offset,currentPageSize)??new List<EldoriaV41Message>();
             int total=mail?.Messages?.Count(m=>m.Category==category)??0;
@@ -544,8 +547,16 @@ namespace Eldoria.UI.RoyalGold.V2
                     messageUnreadDots[i].gameObject.SetActive(!msg.Read);
                     messageSurfaces[i].color=msg.Read?
                         new Color(.84f,.84f,.83f,.92f):Color.white;
-                    messageSubtitles[i].Put(msg.Battle==null?msg.Subtitle:
-                        (msg.Battle.Won?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId));
+                    // Ink belongs on the pale parchment; the inherited ivory
+                    // made both subtitles and timestamps nearly invisible.
+                    messageSubtitles[i].color=msg.Read?
+                        new Color(.38f,.33f,.29f):new Color(.28f,.22f,.16f);
+                    messageDates[i].color=new Color(.38f,.31f,.24f);
+                    string preview=msg.Battle==null?msg.Subtitle:
+                        (msg.Battle.Won?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId);
+                    if(window.rect.width<520f && preview.Length>22)
+                        preview=preview.Substring(0,19)+"…";
+                    messageSubtitles[i].Put(preview);
                     messageDates[i].Put(msg.OccurredAtUtcTicks>0?new DateTime(msg.OccurredAtUtcTicks,DateTimeKind.Utc).ToString("dd/MM HH:mm"):"");
                     string icon=msg.Category=="recompensas"?"mail-reward":msg.Category=="narrativa"?"mail-narrative":
                         msg.Category=="sistema"?"mail-system":msg.Type=="battle"?"mail-battle":"mail-march";
