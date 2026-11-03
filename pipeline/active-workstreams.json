@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-03T23:35:16.561Z",
+  "updated_at": "2026-11-03T23:45:02.954Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3436,7 +3436,7 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "write_scope_released": false,
       "branch": "feature/eldoria-construction-delight-20261104",
       "status": "active",
@@ -3449,7 +3449,8 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs.meta",
         "Unity/Assets/Eldoria/Tests/EditMode/ConstructionDelightStateTests.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/ConstructionDelightStateTests.cs.meta",
-        "docs/CONSTRUCTION_DELIGHT_V1.md"
+        "docs/CONSTRUCTION_DELIGHT_V1.md",
+        "pipeline/art-production-requests/eldoria-construction-delight-v1-20261104.json"
       ],
       "resources": [],
       "budget_eur": 0,
@@ -3457,12 +3458,13 @@
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
       "phase": "SOURCE_IMPLEMENTATION_INDEPENDENT_NO_WINDOWS",
-      "next": "Implement and test thin construction lifecycle observer and restrained art-directed VFX; no merging/publishing or success claims absent exact Unity captures.",
+      "next": "Source branch PR152 drafted; add production request, resolve source gates, then exact Unity moving A/B after Windows resource is legitimately free. No artistic approval before viewing real capture.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Source tests + real Unity 390x844 and 844x390 moving captures at exact HEAD, GPU/frame QA, human visual assessment",
         "art_approved": false
-      }
+      },
+      "art_production_request": "pipeline/art-production-requests/eldoria-construction-delight-v1-20261104.json"
     }
   ],
   "history": [
