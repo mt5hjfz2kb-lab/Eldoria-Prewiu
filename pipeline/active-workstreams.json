@@ -2008,11 +2008,11 @@
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
-      "owner": "chatgpt-issue95-visual-experience-20261022",
-      "ownership_revision": 19,
+      "owner": "chatgpt-eldoria-spawnling-presence-proof-20261103",
+      "ownership_revision": 20,
       "ownership_state": "claimed",
       "status": "active",
-      "branch": "main",
+      "branch": "art/issue95-spawnling-presence-proof-20261103",
       "claimed_at": "2026-10-22",
       "base_main_sha": "aff74900f2cc38996b49be85da3b39ccf9d33d5a",
       "scope": [
@@ -2041,18 +2041,18 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "ISSUE95_DESIGN_CORRECTION_SOURCE_WORK",
-      "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
+      "phase": "ISSUE95_SPAWNLING_PRESENCE_ART_AB_PROOF",
+      "dependency": "Valoria training still owns heavy Windows runner and canonical PR136; do not run Unity concurrently, edit ValoriaIntegratedWorld or #136. Only existing Spawnling source and its tests in isolated issue95 branch.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Correct strategic camera with global initial composition, scale Spawnling substantial at strategic distance and reconcile V3 with owner reference. Independent semantic-Qwen reviewer untouched. Require Unity/Chrome A-B and full I-II QA before main release; native281 do not re-upload.",
+      "next": "Build 1.5x visual presence candidate on actual Spawnling V4, benchmark near/regional authentic Unity camera against same source and validate bounds, animations, gameplay, no release unless approved.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
-      "previous_owner": "chatgpt-eldoria-tripo-brain-chat-recovery-20261021",
+      "previous_owner": "chatgpt-issue95-visual-experience-20261022",
       "coordination_note": "Explicit user request to continue exact prior Tripo work; read main and claim revision before mutating. Other chats must reread registry. Valoria retains windows-runner-heavy.",
       "last_owner_handoff": {
         "date": "2026-10-21",
@@ -2112,6 +2112,12 @@
           "owner": "codex-three-workstreams-completion-20261021",
           "revision": 18,
           "reason": "Owner-directed handoff 2026-10-22 for issue #95; retain native281 and all certified work; joint 4X/world Spawnling V3 visual correction. No cancellation of Qwen independent QA."
+        },
+        {
+          "owner": "chatgpt-issue95-visual-experience-20261022",
+          "ownership_revision": 19,
+          "transferred_at": "2026-11-03",
+          "reason": "Owner requested a single high-impact, falsifiable visual intervention using prior audit; focus existing approved V4 Spawnling presence calculation only, no model/animation/gameplay replacement, no Windows until release."
         }
       ],
       "write_scope_released": false,
