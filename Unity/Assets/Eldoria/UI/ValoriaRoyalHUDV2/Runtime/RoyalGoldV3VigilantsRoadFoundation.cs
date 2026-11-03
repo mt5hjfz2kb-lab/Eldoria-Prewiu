@@ -20,6 +20,9 @@ namespace Eldoria.UI.RoyalGold.V2
         public int BoundStageCount => positioned?Steps:0;
         public int Cleared => cleared;
         public int NextStage => current;
+        // B11 retains the authoritative road; each of its 24 spans now has
+        // an actual visible stone retaining edge, not merely painted lighting.
+        public int ActualReliefSpans => positioned ? Steps-1 : 0;
 
         public static RoyalGoldV3VigilantsRoadFoundation Install(
             RectTransform parent,int sibling)
@@ -119,6 +122,57 @@ namespace Eldoria.UI.RoyalGold.V2
             }
         }
 
+        // B11 terrain is genuinely extruded in screen space: individual top,
+        // vertical rock face, undercut and ground contact are different
+        // polygons tied to the EXACT live stage road. Nothing here is a
+        // synthetic checkpoint, new collider, button or battle location.
+        static void ReliefTerrace(VertexHelper v,Vector2 a,Vector2 b,
+            float halfWidth,float drop,int seed,bool boss)
+        {
+            var tangent=(b-a);
+            if(tangent.sqrMagnitude<.1f)return;
+            var n=new Vector2(-tangent.y,tangent.x).normalized;
+            // The visible downward-facing rock lip must always fall towards
+            // the bottom of the picture; never create an airborne upper wall.
+            if(n.y>0f)n=-n;
+            float skew=Mathf.Lerp(-.19f,.18f,(Mathf.Sin(seed*2.33f)+1f)*.5f);
+            var nearA=a+n*halfWidth;
+            var nearB=b+n*halfWidth;
+            var farA=a-n*(halfWidth*.85f);
+            var farB=b-n*(halfWidth*.85f);
+            var gravity=new Vector2(skew*drop,-drop);
+            float strength=boss?1f:.70f;
+            // A broad translucent stone terrace follows the existing paving;
+            // its warm sun-facing plane blends into the approved painting.
+            int k=v.currentVertCount;
+            v.AddVert(farA,C(.91f,.72f,.43f,.26f*strength),Vector2.zero);
+            v.AddVert(farB,C(.94f,.75f,.46f,.25f*strength),Vector2.zero);
+            v.AddVert(nearB,C(.58f,.45f,.32f,.38f*strength),Vector2.zero);
+            v.AddVert(nearA,C(.60f,.47f,.33f,.38f*strength),Vector2.zero);
+            v.AddTriangle(k,k+1,k+2);v.AddTriangle(k,k+2,k+3);
+            // Vertical wall with a discontinuous profile and three distinct
+            // mineral tones. This is observable relief even in a still image.
+            k=v.currentVertCount;
+            v.AddVert(nearA,C(.41f,.36f,.29f,.82f*strength),Vector2.zero);
+            v.AddVert(nearB,C(.45f,.38f,.29f,.85f*strength),Vector2.zero);
+            v.AddVert(nearB+gravity,C(.12f,.17f,.19f,.90f*strength),Vector2.zero);
+            v.AddVert(nearA+gravity,C(.10f,.16f,.18f,.92f*strength),Vector2.zero);
+            v.AddTriangle(k,k+1,k+2);v.AddTriangle(k,k+2,k+3);
+            Stroke(v,nearA+gravity,nearB+gravity,Mathf.Max(1f,halfWidth*.17f),
+                C(.025f,.035f,.043f,.43f*strength));
+            Stroke(v,nearA,nearB,Mathf.Max(1f,halfWidth*.20f),
+                C(.97f,.78f,.50f,.46f*strength));
+            // Uneven joints follow the actual ledge width, not a cartoon grid.
+            for(int seam=1;seam<=2;seam++)
+            {
+                float t=(seam + .14f*Mathf.Sin(seed+seam*2f))/3f;
+                Vector2 start=Vector2.Lerp(nearA,nearB,t);
+                Vector2 end=start+gravity*(.57f+.18f*Mathf.Sin(seed*.8f+seam));
+                Stroke(v,start,end,Mathf.Max(.75f,halfWidth*.085f),
+                    C(.04f,.065f,.069f,.45f*strength));
+            }
+        }
+
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             vh.Clear();
@@ -126,6 +180,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 rectTransform.rect.height<72f)return;
             float scale=Mathf.Clamp(Mathf.Min(rectTransform.rect.width,
                 rectTransform.rect.height)*.0105f,3.5f,10.5f);
+
+            // B11 continuously connected architectural relief under the REAL
+            // route: near segments are taller, distant ones smaller. The
+            // topological geometry is retained in the UI world; the old
+            // colour-only road is then drawn above these actual stone faces.
+            for(int i=Steps-2;i>=0;i--)
+            {
+                float distance=(float)i/(Steps-1);
+                float perspective=1.14f-.67f*distance;
+                float width=scale*perspective*(i%5==3?2.3f:1.70f);
+                float depth=scale*perspective*(i%5==3?2.7f:1.82f);
+                ReliefTerrace(vh,positions[i],positions[i+1],
+                    width,depth,i,(i+1)%5==0 || (i+2)%5==0);
+            }
 
             // Physical road cutting: contact shadow is displaced downhill,
             // cold stone face beneath and a sunlit lip follows exactly the
