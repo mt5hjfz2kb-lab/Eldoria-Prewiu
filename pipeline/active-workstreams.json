@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-03T11:08:24.157Z",
+  "updated_at": "2026-11-03T11:20:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "chatgpt-eldoria-vigilants-depth-20261103",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-03",
@@ -125,8 +125,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "AREA_COMPLETE_READY_FOR_NEXT_CHAT",
-      "next": "Next owner may claim canonical workstream valoria-master-plan-layered-construction-20261016 on existing PR after live queue check; preserve 178d12ca8e6467c00b78ac96a1a86bd7511e4df8 and last_completed_area.",
+      "phase": "VIGILANTS_ART_ISOLATED_SOURCE_CANDIDATE_TEST_PREP",
+      "next": "Integrate tested Vigilants art candidate into existing canonical PR136 after exact diff reconciliation, run native Unity A/B on same SHA with guardian5/10/15/20/25, victory/defeat, four ratios, raycast/save/performance; no main merge/release or score claim without proof.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1725,11 +1725,11 @@
           "reason": "Completed area Buzón V4.1 — reconstrucción visual aceptada provisionalmente; explicit verified handoff to next normal chat"
         }
       ],
-      "ownership_revision": 115,
-      "ownership_state": "available",
+      "ownership_revision": 116,
+      "ownership_state": "claimed",
       "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
-      "last_claimed_at": "2026-11-02",
+      "last_claimed_at": "2026-11-03T11:20:00Z",
       "delivery_definition": {
         "deliverable": "Complete necessary web-to-Unity I–V parity and city/world camera corrections through existing PR132; resolve issue133 with verified evidence.",
         "evidence": "Web-to-Unity matrix, old/new save and idempotency regression tests, native Edit/PlayMode I–V, actual UI/camera captures and exact source/build identity.",
@@ -1815,8 +1815,8 @@
         "budget_eur": 0
       },
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
-      "candidate_branch": "fix/player-feedback-context-ui-20261030",
-      "canonical_pr": 132,
+      "candidate_branch": "art/vigilants-depth-candidate-20261103",
+      "canonical_pr": 136,
       "handoff_reason": "Owner directs completion of Mailbox A/B. Issue95 job 41603285296 completed/cancelled before Unity and no live Actions jobs; exclusive Windows lease transferred without altering Issue95 source/ownership.",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
@@ -11021,8 +11021,8 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-    "status": "available",
-    "owner": null,
+    "status": "claimed",
+    "owner": "chatgpt-eldoria-vigilants-depth-20261103",
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
