@@ -382,8 +382,8 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 var area=rosterSource.rect;
                 trainingCardPortrait=Sprite.Create(rosterSource.texture,
-                    new Rect(area.x+area.width*.12f,area.y+area.height*.47f,
-                        area.width*.76f,area.height*.52f),
+                    new Rect(area.x+area.width*.12f,area.y+area.height*.61f,
+                        area.width*.76f,area.height*.37f),
                     new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
             }
             for(int i=0;i<2;i++)
@@ -658,7 +658,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 trainingTierChoices[i].gameObject.SetActive(training);
                 bool unlocked=i==0||s.BarracksLevel>=4;
                 trainingTierChoices[i].interactable=training&&!trainingActive&&unlocked;
-                trainingTierPortraits[i].color=unlocked?Color.white:new Color(.42f,.45f,.48f,.59f);
+                trainingTierPortraits[i].color=!unlocked?
+                    new Color(.36f,.39f,.43f,.57f):
+                    (i==0?Color.white:new Color(.63f,.76f,.83f,.92f));
                 trainingTierLabels[i].color=unlocked?
                     (selectedTier==i+1?Gold:Ivory):Muted;
                 if(trainingTierMaterials[i])
@@ -737,7 +739,7 @@ namespace Eldoria.UI.RoyalGold.V2
             approvedTroopRow.gameObject.SetActive(!training);
             percentModeButton.gameObject.SetActive(!training);
             percentModeLabel.Put(percentMode?"EDITAR POR %":"EDITAR CANTIDAD");
-            unitDetail.Put(training?(compactLandscape?"":"Arqueros · nivel de tropa T"+selectedTier+"\n")+(selectedTier==2?"Desbloqueados por Cuartel IV":"Unidad inicial del reino"):
+            unitDetail.Put(training?(selectedTier==2?"Desbloqueados por Cuartel IV":"Unidad inicial del reino"):
                 "ARQUEROS T"+selectedTier+" · DISPONIBLES "+selectedAvailable);
             switchLabel.Put(training?"PREPARAR MARCHA":"ENTRENAR TROPAS");
             switchDestination.interactable=true;
@@ -1166,7 +1168,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // The approved composition places a full-height archer on the
             // courtyard floor and the order below the unit identity at right.
             // Narrow portrait keeps those same layers, stacking only the order.
-            float portraitOrderH=Mathf.Min(540,bodyH*.52f);
+            float portraitOrderH=Mathf.Min(485f,bodyH*.47f);
             float artH=wide?bodyH:bodyH-portraitOrderH-12;
             Place(left,x,bodyY,wide?width*.54f:width,artH);
             float archerH=Mathf.Min(artH, (wide?width*.51f:width*.65f)*1.5f);
@@ -1212,15 +1214,15 @@ namespace Eldoria.UI.RoyalGold.V2
             float orderH=wide?(compactLandscape?bodyH:Mathf.Min(bodyH,Mathf.Max(390,bodyH*.60f))):portraitOrderH;
             Place(right,wide?x+width-orderW:x,wide?bodyY+bodyH-orderH:bodyY+artH+12,orderW,orderH);
             float pad=wide?20f:26f;
-            float qh=wide?Mathf.Min(43f,orderH*.13f):72f;
-            float qy=wide?Mathf.Max(37f,orderH*.105f):54f;
-            float sliderY=qy+qh+(wide?8f:11f);
-            float summaryY=sliderY+(wide?21f:38f);
-            float summaryH=wide?Mathf.Clamp(orderH*.15f,43f,65f):79f;
+            float qh=wide?Mathf.Min(43f,orderH*.13f):68f;
+            float qy=wide?Mathf.Max(37f,orderH*.105f):43f;
+            float sliderY=qy+qh+(wide?8f:10f);
+            float summaryY=sliderY+(wide?21f:31f);
+            float summaryH=wide?Mathf.Clamp(orderH*.15f,43f,65f):72f;
             float tierY=summaryY+summaryH+7f;
-            float tierH=wide?34f:51f;
+            float tierH=wide?34f:49f;
             float trainingStatusY=tierY+tierH+6f;
-            float actionY=orderH-(wide?63f:90f);
+            float actionY=orderH-(wide?63f:86f);
             float statusH=Mathf.Max(35f,actionY-trainingStatusY-8f);
             Place(trainingOrderBoard,2f,0f,orderW-4f,orderH);
             trainingOrderBoard.SetAsFirstSibling();
