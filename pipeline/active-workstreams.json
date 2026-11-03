@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-03T20:42:37.473Z",
+  "updated_at": "2026-11-03T21:52:10.204Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-reports-discoveries-20261103",
+      "owner": null,
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-03",
@@ -125,8 +125,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REPORTS_AND_DISCOVERIES_VISUAL_FINISH_20261103",
-      "next": "Reconstruir informes de Vigilantes y descubrimientos de Exploradores por composición de pergamino en misma PR136; verificar dominio, no cambiar premios, informes ni persistencia, A/B Unity real 4 tamaños; release claim tras certificación.",
+      "phase": "AREA_COMPLETE_READY_FOR_NEXT_CHAT",
+      "next": "Next owner may claim canonical workstream valoria-master-plan-layered-construction-20261016 on existing PR after live queue check; preserve 3cff0cc0264b386be4d3b5b34f6e28ee83237b12 and last_completed_area.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -962,7 +962,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": "chatgpt-eldoria-scout-contract-art-20261103",
+      "previous_owner": "chatgpt-eldoria-reports-discoveries-20261103",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1747,11 +1747,17 @@
           "ownership_revision": 124,
           "transferred_at": "2026-11-03T20:42:37.473Z",
           "reason": "Completed area Exploradores — reconstrucción material por capas; explicit verified handoff to next normal chat"
+        },
+        {
+          "owner": "chatgpt-eldoria-reports-discoveries-20261103",
+          "ownership_revision": 126,
+          "transferred_at": "2026-11-03T21:52:10.204Z",
+          "reason": "Completed area Vigilantes — acabado de informes y Exploradores — descubrimientos ilustrados; explicit verified handoff to next normal chat"
         }
       ],
-      "ownership_revision": 126,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 127,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-03",
       "delivery_definition": {
@@ -1893,7 +1899,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-11-03T20:42:37.473Z",
+      "released_at": "2026-11-03T21:52:10.204Z",
       "delivery_closeout": {
         "completed_at": "2026-10-29T21:34:16.588Z",
         "workstream_id": "valoria-master-plan-layered-construction-20261016",
@@ -2066,27 +2072,16 @@
         "release_authorized": false
       },
       "last_completed_area": {
-        "area": "Exploradores — reconstrucción material por capas",
-        "owner": "chatgpt-eldoria-scout-contract-art-20261103",
-        "revision": 124,
-        "source_sha": "6ec2b986116d0fcd8f6f20c4b36e66af02e5f258",
-        "unity_run_id": 41709931831,
-        "closed_at": "2026-11-03T20:42:37.473Z",
-        "artistic_approval": "provisional",
-        "note": "Propietario aprobó provisionalmente B11 de Exploradores al ver A/B Unity; 3 contratos distintos y estados reales; deuda artística 8,3 aún pendiente, rutas #137 sin promover. GitHub PR136 issuecomment 6614930908; método documentado en docs/ui-v3/ELDORIA_REUSABLE_MATERIAL_LAYER_METHOD.md; artefacto 13265898832. Liberar Windows y propietario con cierre seguro. PR136 DRAFT sin merge/publicación."
-      },
-      "claim_reason": "Orden expresa del propietario 03/11/2026: siguiente bloque informes y descubrimientos, continuar sobre PR136 liberada con metodología de capas y A/B; sin publicar.",
-      "area_handoff_request": {
-        "status": "ready",
-        "completed": true,
         "area": "Vigilantes — acabado de informes y Exploradores — descubrimientos ilustrados",
         "owner": "chatgpt-eldoria-reports-discoveries-20261103",
         "revision": 126,
-        "branch_head": "3cff0cc0264b386be4d3b5b34f6e28ee83237b12",
-        "run_id": 41720866050,
+        "source_sha": "3cff0cc0264b386be4d3b5b34f6e28ee83237b12",
+        "unity_run_id": 41720866050,
+        "closed_at": "2026-11-03T21:52:10.204Z",
         "artistic_approval": "not_asserted",
         "note": "Candidate visual reports implemented with source-authentic scout illustrations and historical source/army snapshots. Unity exact HEAD 3cff0cc FULL SUCCESS run 41720866050: native V4.1, EditMode, PlayMode, retention, marches, scenes, Aldric. A/B native screenshots inspected; no fabricated lore/enemy data, formulas or loot changes. No merge/publication. Preserve draft PR #136; future owner feedback may refine artistic rating."
-      }
+      },
+      "claim_reason": "Orden expresa del propietario 03/11/2026: siguiente bloque informes y descubrimientos, continuar sobre PR136 liberada con metodología de capas y A/B; sin publicar."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
