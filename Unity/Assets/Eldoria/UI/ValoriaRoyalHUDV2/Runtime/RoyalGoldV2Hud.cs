@@ -557,7 +557,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Preserve more real city in both orientations. A council choice
             // is a modestly taller version of this SAME in-world card.
             bool council=GetComponent<RoyalGoldV3BuildingScreens>()?.InlineCouncilNeeded(Source.SelectedBuildingId)==true;
-            float cardHeight = council?(portrait?218f:169f):(portrait?218f:166f);
+            float cardHeight = council?(portrait?155f:169f):(portrait?218f:166f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -579,7 +579,11 @@ namespace Eldoria.UI.RoyalGold.V2
             buildingLevel.fontSize=portrait?15:18;
             Top(buildingCost.rectTransform,textLeft,67f,middleWidth,37f);
             buildingCost.fontSize=portrait?15:19;
-            Top(buildingWorkState.rectTransform,textLeft,102f,middleWidth,36f);
+            // The council is a short, one-time bottom decision ribbon.
+            // Do not let a full management-window-sized card occupy the
+            // screen when only three legitimate choices are available.
+            Top(buildingWorkState.rectTransform,textLeft,council?72f:102f,
+                middleWidth,council?29f:36f);
             buildingWorkState.fontSize=portrait?14:17;
             buildingWorkState.verticalOverflow=VerticalWrapMode.Truncate;
             Top((RectTransform)buildingClose.transform,cardWidth-49f,5f,44f,44f);
