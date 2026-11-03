@@ -99,6 +99,8 @@ namespace Eldoria.Tests
                 renderer.raycastTarget=false;
                 renderer.Configure(false);
                 Assert.That(renderer.TransparentCreature,Is.False);
+                Assert.That(renderer.PatrolSilhouettes,Is.True,
+                    "Normal patrols render separate authentic figures, not a full photo");
                 Assert.That(renderer.mainTexture,Is.SameAs(source));
                 Assert.That(renderer.uvRect,Is.EqualTo(new Rect(.01f,.51f,.48f,.48f)));
                 Assert.That(portrait.GetComponent<RawImage>(),Is.SameAs(renderer));

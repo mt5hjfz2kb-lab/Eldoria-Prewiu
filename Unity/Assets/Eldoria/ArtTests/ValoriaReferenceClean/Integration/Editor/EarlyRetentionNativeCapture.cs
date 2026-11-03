@@ -297,6 +297,10 @@ namespace Eldoria.ReferenceClean.Editor
                 ordinaryArt.transform.parent.parent!=null &&
                 ordinaryArt.transform.parent.GetComponent<RoyalGoldV2FrameGraphic>()?.enabled==false,
                 "Actual enemy illustration belongs to the world, not a pasted UI photo card");
+            Need(ordinaryArt is RoyalGoldV3VigilantsPortraitGraphic patrol &&
+                patrol.PatrolSilhouettes && !patrol.TransparentCreature &&
+                !patrol.raycastTarget,
+                "Ordinary patrol uses authentic soldier silhouettes, never a second rectangular scenery photo");
             Screenshot(h,"vigilants-chapter-one",1600,900);
             Screenshot(h,"vigilants-chapter-one",900,1600);
             Screenshot(h,"vigilants-chapter-one",390,844);
