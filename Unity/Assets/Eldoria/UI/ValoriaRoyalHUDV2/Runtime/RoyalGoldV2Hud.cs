@@ -575,18 +575,18 @@ namespace Eldoria.UI.RoyalGold.V2
             float middleWidth = Mathf.Max(100f, cardWidth - textLeft -
                 actionWidth - (portrait ? 18f : 26f));
             Top(buildingTitle.rectTransform,textLeft,10f,Mathf.Max(72f,middleWidth-(portrait?45f:0f)),33f);
-            buildingTitle.fontSize=portrait?23:29;
+            buildingTitle.fontSize=29;
             Top(buildingLevel.rectTransform,textLeft,44f,middleWidth,23f);
-            buildingLevel.fontSize=portrait?15:18;
+            buildingLevel.fontSize=portrait?21:18;
             Top(buildingCost.rectTransform,textLeft,67f,middleWidth,37f);
-            buildingCost.fontSize=portrait?15:19;
+            buildingCost.fontSize=portrait?23:19;
             // The council is a short, one-time bottom decision ribbon.
             // Do not let a full management-window-sized card occupy the
             // screen when only three legitimate choices are available.
             Top(buildingWorkState.rectTransform,textLeft,
                 council?(portrait?68f:72f):102f,
                 middleWidth,council?(portrait?24f:29f):36f);
-            buildingWorkState.fontSize=portrait?14:17;
+            buildingWorkState.fontSize=portrait?21:17;
             buildingWorkState.verticalOverflow=VerticalWrapMode.Truncate;
             Top((RectTransform)buildingClose.transform,cardWidth-49f,5f,44f,44f);
             float detailsY=portrait?141f:134f;
@@ -597,7 +597,7 @@ namespace Eldoria.UI.RoyalGold.V2
             scrollContent.pivot=new Vector2(.5f,1);scrollContent.anchoredPosition=Vector2.zero;
             scrollContent.sizeDelta=new Vector2(0,Mathf.Max(85f,scrollViewport.rect.height));
             Top(buildingBody.rectTransform,0,0,middleWidth-5f,scrollContent.rect.height);
-            buildingBody.fontSize=portrait?15:18;
+            buildingBody.fontSize=portrait?19:18;
             if(portrait)
                 Top((RectTransform)buildingAction.transform,14f,cardHeight-51f,cardWidth-28f,40f);
             else
@@ -615,8 +615,11 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 Top((RectTransform)councilChoice[i].transform,councilLeft+i*(councilWidth+3f),
                     cardHeight-(portrait?47f:52f),councilWidth-2f,41f);
-                councilCaptions[i].fontSize=portrait?13:18;
+                councilCaptions[i].fontSize=portrait?22:18;
             }
+            primaryLabel.fontSize=portrait?29:22;
+            speedOneLabel.fontSize=portrait?24:18;
+            speedFiveLabel.fontSize=portrait?24:18;
             lastDetails = null; // Recompute scroll extent after rotation even when the offer text is unchanged.
             hasGeometry = true;
             lastWidth = width;
@@ -767,8 +770,12 @@ namespace Eldoria.UI.RoyalGold.V2
             bool hasFive=utility&&utility.InlineSpeedupCharges(5)>0&&building;
             speedOne.gameObject.SetActive(hasOne);
             speedFive.gameObject.SetActive(hasFive);
-            speedOneLabel.Put("ACELERAR 1 MIN · x"+(utility?utility.InlineSpeedupCharges(1):0));
-            speedFiveLabel.Put("ACELERAR 5 MIN · x"+(utility?utility.InlineSpeedupCharges(5):0));
+            // Half-width mobile buttons cannot show a wrapped sentence.
+            // Preserve the actual time saved and the authoritative balance.
+            int oneAvailable=utility?utility.InlineSpeedupCharges(1):0;
+            int fiveAvailable=utility?utility.InlineSpeedupCharges(5):0;
+            speedOneLabel.Put(portrait?"1 MIN · x"+oneAvailable:"ACELERAR 1 MIN · x"+oneAvailable);
+            speedFiveLabel.Put(portrait?"5 MIN · x"+fiveAvailable:"ACELERAR 5 MIN · x"+fiveAvailable);
             for(int i=0;i<3;i++)councilChoice[i].gameObject.SetActive(council);
             buildingCost.gameObject.SetActive(!building&&!council&&
                 !string.IsNullOrWhiteSpace(buildingCost.text));
@@ -1223,7 +1230,6 @@ namespace Eldoria.UI.RoyalGold.V2
                 // the actual clickable mission buttons render WITHOUT text.
                 RebindObjectiveLabel(objectiveActionLabel);
                 RebindObjectiveLabel(objectivesButtonLabel);
-                RebindBuildingArtwork();
             }
             if (!hasGeometry) return;
             LayoutHeaderAlongSafeTop();
@@ -1264,6 +1270,11 @@ namespace Eldoria.UI.RoyalGold.V2
             SetVisible(chapterCloseGroup, showExpanded);
 
             RenderBuilding(modalOpen);
+            // Restore the registered uGUI mesh AFTER binding the genuine
+            // building name and live costs. The prior pre-bind repair left
+            // the first 1600×900 capture with no heading above its costs.
+            if(buildingVisible&&(resized||
+                (buildingTitle&&buildingTitle.depth<0)))RebindBuildingArtwork();
 
             // The V1 detail sheet is only a data/command source in this isolated
             // candidate. Hide it after each V1 refresh so it cannot intercept
