@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-03",
+  "updated_at": "2026-11-03T20:42:37.473Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-scout-contract-art-20261103",
+      "owner": null,
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-03",
@@ -120,15 +120,13 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "SCOUTS_PHYSICAL_PARCHMENT_NATIVE_AB_20261103",
-      "next": "Área Exploradores aprobada provisional, cero cambios de gameplay; tras release segura de Windows/claim, siguiente chat toma mismo workstream/PR136 y otra área. B11 SHA 6ec2b98, Unity41709931831 SUCCESS. Conservar candidatos #137 por separado.",
+      "phase": "AREA_COMPLETE_READY_FOR_NEXT_CHAT",
+      "next": "Next owner may claim canonical workstream valoria-master-plan-layered-construction-20261016 on existing PR after live queue check; preserve 6ec2b986116d0fcd8f6f20c4b36e66af02e5f258 and last_completed_area.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -964,7 +962,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": "chatgpt-eldoria-vigilants-system-depth-b8-20261103",
+      "previous_owner": "chatgpt-eldoria-scout-contract-art-20261103",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1743,11 +1741,17 @@
           "ownership_revision": 123,
           "transferred_at": "2026-11-03",
           "reason": "El propietario aprueba B11 Vigilantes provisional y ordena expresamente al nuevo chat ejecutar Exploradores en PR136 con A/B Unity, sin cambiar lógica de #137 ni publicar."
+        },
+        {
+          "owner": "chatgpt-eldoria-scout-contract-art-20261103",
+          "ownership_revision": 124,
+          "transferred_at": "2026-11-03T20:42:37.473Z",
+          "reason": "Completed area Exploradores — reconstrucción material por capas; explicit verified handoff to next normal chat"
         }
       ],
-      "ownership_revision": 124,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 125,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-03",
       "delivery_definition": {
@@ -1889,7 +1893,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-11-03",
+      "released_at": "2026-11-03T20:42:37.473Z",
       "delivery_closeout": {
         "completed_at": "2026-10-29T21:34:16.588Z",
         "workstream_id": "valoria-master-plan-layered-construction-20261016",
@@ -2062,31 +2066,12 @@
         "release_authorized": false
       },
       "last_completed_area": {
-        "area": "Camino de los Vigilantes B7 — diorama con iluminación de hitos y Engendro en tarjeta; A/B Unity real",
-        "owner": "chatgpt-eldoria-vigilants-deep-rebuild-20261103",
-        "revision": 119,
-        "source_sha": "111b5661dc5453260907a608e041b259217b2073",
-        "baseline_sha": "3d4786bc8d3707f7b67679be5234512639cb59cc",
-        "unity_run_id": 41663824030,
-        "baseline_run_id": 41648354560,
-        "retention_artifact": 13246035458,
-        "ui_artifact": 13246592871,
-        "tests": "Unity 6.3.23f1 native SUCCESS: EditMode 87/87, PlayMode 73/73; Retention, 3 marches, V4.1 and controls PASS",
-        "artistic_verdict": "Candidate: no second photo on card; Engendro back inside card; pathway still uses visually dominant approved illustration; >=8.3 not proven",
-        "art_approved": false,
-        "physical_mobile_tested": false,
-        "release": false,
-        "owner_comment_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/136#issuecomment-6608313787",
-        "closed_at": "2026-11-03"
-      },
-      "area_handoff_request": {
-        "status": "ready",
-        "completed": true,
         "area": "Exploradores — reconstrucción material por capas",
         "owner": "chatgpt-eldoria-scout-contract-art-20261103",
         "revision": 124,
-        "branch_head": "6ec2b986116d0fcd8f6f20c4b36e66af02e5f258",
-        "run_id": 41709931831,
+        "source_sha": "6ec2b986116d0fcd8f6f20c4b36e66af02e5f258",
+        "unity_run_id": 41709931831,
+        "closed_at": "2026-11-03T20:42:37.473Z",
         "artistic_approval": "provisional",
         "note": "Propietario aprobó provisionalmente B11 de Exploradores al ver A/B Unity; 3 contratos distintos y estados reales; deuda artística 8,3 aún pendiente, rutas #137 sin promover. GitHub PR136 issuecomment 6614930908; método documentado en docs/ui-v3/ELDORIA_REUSABLE_MATERIAL_LAYER_METHOD.md; artefacto 13265898832. Liberar Windows y propietario con cierre seguro. PR136 DRAFT sin merge/publicación."
       }
