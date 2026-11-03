@@ -625,12 +625,22 @@ namespace Eldoria.Editor
             Shot(host,"building-initial-portrait",900,1600);
             Shot(host,"building-initial-small-phone",390,844);
             Shot(host,"building-initial-small-landscape",844,390);
+            // Off-screen camera QA can advance the running local clock while
+            // its last V1 offer still refers to an earlier player revision.
+            // A real tap reads fresh authoritative state just before purchase.
+            host.Hud.Refresh();sheet.SynchronizeNow();
+            Need(host.Hud.Building.Offer!=null&&
+                host.Hud.Building.Primary.Button.interactable&&
+                sheet.ChronicleBuildingAction.interactable,
+                "Fresh genuine Sawmill purchase offer remains enabled after all four capture resolutions");
             var before=host.City.Gateway.Snapshot();
             var wood=before.Resources.Wood;
             sheet.ChronicleBuildingAction.onClick.Invoke();
             var running=host.Read("sawmill",false).Building;
             Need(running.OperationActive&&host.City.Gateway.Snapshot().Resources.Wood<wood,
-                "Sawmill construction starts and pays exactly the real gateway price");
+                "Sawmill paid build: state="+running.State+" operation="+running.OperationActive+
+                " woodBefore="+wood+" woodAfter="+host.City.Gateway.Snapshot().Resources.Wood+
+                " feedback="+(host.Hud.Feedback?host.Hud.Feedback.text:"missing"));
             context.SynchronizeNow();
             Need(context.ActiveTimers>=1&&!sheet.ChronicleBuildingAction.interactable,
                 "Initial purchase becomes one projected timer, never a duplicate offer");
