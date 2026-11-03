@@ -127,8 +127,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "MAILBOX_NATIVE_AB_EXCLUSIVE_WINDOWS_RESERVED",
-      "next": "UI Progression Certification on PR136 current head, real V4.1 mailbox screenshots for one/empty/12 QA/detail in four resolutions, gameplay regression, no fake mail or reward payments. Respect existing owner and check local process guard; no merge/release.",
+      "phase": "MAILBOX_V41_PROVISIONAL_ACCEPTED_HANDOFF_REQUESTED",
+      "next": "Owner provisionally accepted Buzón 178d12c (run 41621181708 SUCCESS), no further work in this area now. Safe area-handoff on same canonical workstream; retain DRAFT PR136; future work resume from new assigned area. Unapproved visual debts in docs/ui-v3/MAILBOX_V41_PROVISIONAL_ACCEPTANCE_20261103.md.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -2036,6 +2036,17 @@
         "native_unity_pass": false,
         "art_approved": false,
         "release_authorized": false
+      },
+      "area_handoff_request": {
+        "status": "ready",
+        "completed": true,
+        "area": "Buzón V4.1 — reconstrucción visual aceptada provisionalmente",
+        "owner": "chatgpt-eldoria-mailbox-v41-20261103",
+        "revision": 114,
+        "branch_head": "178d12ca8e6467c00b78ac96a1a86bd7511e4df8",
+        "run_id": 41621181708,
+        "artistic_approval": "provisional",
+        "note": "Owner accepted mailbox provisional 2026-11-03; native exact SHA SUCCESS (V4.1, three marches, EditMode, PlayMode). Preserve visual debts (empty dark space; incomplete reference fidelity and typography/materials). PR136 DRAFT; no merge/release. Documentation: docs/ui-v3/MAILBOX_V41_PROVISIONAL_ACCEPTANCE_20261103.md."
       }
     },
     {
