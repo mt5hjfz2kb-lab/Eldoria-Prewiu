@@ -43,7 +43,8 @@ namespace Eldoria.UI.RoyalGold.V2
         // Four reference-derived mission paintings share one mobile texture.
         // The actual persisted mission kind selects the corresponding quadrant.
         readonly RawImage[] scoutThumbnails=new RawImage[3];
-        RawImage engendroPortrait, guardianBanner;
+        RawImage engendroPortrait, guardianBanner, guardianPainted;
+        readonly Texture2D[] guardianArt=new Texture2D[4];
         Texture2D scoutVignettes, guardianBannerTexture;
         Texture2D engendroTexture;
         Texture2D engendroCutout;
@@ -538,6 +539,19 @@ namespace Eldoria.UI.RoyalGold.V2
             guardianRelief=reliefRect.gameObject.AddComponent<RoyalGoldV3GuardianReliefGraphic>();
             guardianRelief.raycastTarget=false;
             guardianRelief.gameObject.SetActive(false);
+            // The boss is a unique transparent image, not a cropped second
+            // landscape. The stone niche belongs to the existing card.
+            guardianArt[0]=Resources.Load<Texture2D>("EldoriaRetention/vigilant-guardian-coraza-v5");
+            guardianArt[1]=Resources.Load<Texture2D>("EldoriaRetention/vigilant-guardian-umbral-v5");
+            guardianArt[2]=Resources.Load<Texture2D>("EldoriaRetention/vigilant-guardian-centinela-v5");
+            guardianArt[3]=Resources.Load<Texture2D>("EldoriaRetention/vigilant-guardian-vigia-v5");
+            var paintedGuardian=Rect("Guardian / distinct alpha cutout on original royal stone",infoCard);
+            paintedGuardian.gameObject.AddComponent<CanvasRenderer>();
+            guardianPainted=paintedGuardian.gameObject.AddComponent<RawImage>();
+            guardianPainted.raycastTarget=false;
+            guardianPainted.uvRect=new Rect(0f,0f,1f,1f);
+            guardianPainted.color=Color.white;
+            guardianPainted.gameObject.SetActive(false);
             // Keep the original atlas intact for its approved scout missions.
             // Do not fabricate new encounter stats, letters or models.
             chapter=Text(infoCard,"Stage progression",23,Gold,true);
@@ -993,7 +1007,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 float w=iw*(compactLandscape?.29f:.40f);
                 float h=Mathf.Max(86f,Mathf.Min(ih-(compactLandscape?86f:135f),
                     compactLandscape?185f:385f));
-                TL(guardianRelief.rectTransform,x,compactLandscape?39f:51f,w,h);
+                float artTop=compactLandscape?39f:51f;
+                TL(guardianRelief.rectTransform,x,artTop,w,h);
+                if(guardianPainted)
+                {
+                    float side=Mathf.Min(w*.98f,h*.88f);
+                    TL(guardianPainted.rectTransform,
+                        x+(w-side)*.5f,artTop+h-side-h*.07f,side,side);
+                }
             }
             if(vigilantsPortrait || (vigilantsLandscape&&!compactLandscape))
             {
@@ -1187,6 +1208,8 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             if(!vig && engendroPortrait)
                 engendroPortrait.transform.parent.gameObject.SetActive(false);
+            if(!vig && guardianRelief)guardianRelief.gameObject.SetActive(false);
+            if(!vig && guardianPainted)guardianPainted.gameObject.SetActive(false);
             chapterTrail.gameObject.SetActive(vig);
             discoverySeals.DiscoveredMask=p.ScoutDiscoveryMask&15;
             discoverySeals.gameObject.SetActive(!vig&&discoverySeals.DiscoveredMask!=0);
@@ -1273,10 +1296,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Stage-15 remains authentic alpha art in the landscape;
                 // every other real stage is a transparent relief in the card.
                 bool showEncounterArt=showEngendro;
+                Texture2D paintedBoss=info.Step==5?guardianArt[0]:
+                    info.Step==10?guardianArt[1]:
+                    info.Step==20?guardianArt[2]:
+                    info.Step==25?guardianArt[3]:null;
                 if(guardianRelief)
                 {
                     guardianRelief.SetStage(info.Step);
+                    guardianRelief.UsePaintedFigure(paintedBoss!=null);
                     guardianRelief.gameObject.SetActive(!showEngendro);
+                }
+                if(guardianPainted)
+                {
+                    guardianPainted.texture=paintedBoss;
+                    guardianPainted.gameObject.SetActive(!showEngendro && paintedBoss!=null);
                 }
                 if(showEncounterArt!=encounterPortraitVisible)
                 {
