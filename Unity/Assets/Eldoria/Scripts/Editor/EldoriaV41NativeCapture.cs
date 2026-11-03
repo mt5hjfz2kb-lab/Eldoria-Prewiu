@@ -118,6 +118,53 @@ namespace Eldoria.Editor
                             "Visible cartouche action has real legible text "+name+" / "+b.name);
                     }
                 }
+                // The genuine operation countdown must be attached to
+                // its building WITHOUT painting across the actual 3D roof.
+                // Assert screen-space non-overlap against the same hotspot
+                // collider that the production timer projects, not a guessed
+                // screenshot crop or an unrelated icon.
+                if(name.StartsWith("building-in-progress-")||
+                    name.StartsWith("building-upgrading-"))
+                {
+                    var target=host.FindTarget("sawmill");
+                    var collider=target?target.GetComponent<Collider>():null;
+                    if(!collider&&target)collider=target.GetComponentInChildren<Collider>();
+                    var countdown=host.Hud.GetComponentsInChildren<RectTransform>(true)
+                        .FirstOrDefault(x=>x.name=="V3 / real-time operation / sawmill");
+                    Need(target&&collider&&countdown&&countdown.gameObject.activeInHierarchy,
+                        "Genuine Sawmill timer and scene hotspot are present "+name);
+                    var bounds=collider.bounds;
+                    var min=bounds.min;var max=bounds.max;
+                    float minX=float.PositiveInfinity,maxX=float.NegativeInfinity;
+                    float minY=float.PositiveInfinity,maxY=float.NegativeInfinity;
+                    for(int n=0;n<8;n++)
+                    {
+                        var corner=new Vector3((n&1)==0?min.x:max.x,
+                            (n&2)==0?min.y:max.y,(n&4)==0?min.z:max.z);
+                        var projected=host.PlayerCamera.WorldToScreenPoint(corner);
+                        if(projected.z<=host.PlayerCamera.nearClipPlane)continue;
+                        minX=Mathf.Min(minX,projected.x);maxX=Mathf.Max(maxX,projected.x);
+                        minY=Mathf.Min(minY,projected.y);maxY=Mathf.Max(maxY,projected.y);
+                    }
+                    var canvas=host.Hud.GetComponent<Canvas>();
+                    Camera graphicCamera=canvas.renderMode==RenderMode.ScreenSpaceOverlay?
+                        null:canvas.worldCamera;
+                    var corners=new Vector3[4];countdown.GetWorldCorners(corners);
+                    float tMinX=float.PositiveInfinity,tMaxX=float.NegativeInfinity;
+                    float tMinY=float.PositiveInfinity,tMaxY=float.NegativeInfinity;
+                    foreach(var corner in corners)
+                    {
+                        var point=RectTransformUtility.WorldToScreenPoint(graphicCamera,corner);
+                        tMinX=Mathf.Min(tMinX,point.x);tMaxX=Mathf.Max(tMaxX,point.x);
+                        tMinY=Mathf.Min(tMinY,point.y);tMaxY=Mathf.Max(tMaxY,point.y);
+                    }
+                    var modelRect=Rect.MinMaxRect(minX,minY,maxX,maxY);
+                    var timerRect=Rect.MinMaxRect(tMinX,tMinY,tMaxX,tMaxY);
+                    Need(minX<maxX&&minY<maxY&&
+                        !timerRect.Overlaps(modelRect),
+                        "Live timer stays off the real building silhouette "+name+
+                        " timer="+timerRect+" model="+modelRect);
+                }
                 if(name=="building-initial-desktop"||name=="building-upgrade-desktop"||
                     name=="construction-barracks-city-landscape")
                 {
