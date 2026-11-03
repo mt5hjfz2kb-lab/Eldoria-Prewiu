@@ -177,8 +177,11 @@ namespace Eldoria.UI.RoyalGold.V2
             detailBoard.gameObject.SetActive(false);
             watermark=RoyalGoldV41SourceArt.Surface(w,"mail-narrative");
             watermark.name="Mailbox / passive manuscript watermark";
-            watermark.color=new Color(.84f,.70f,.43f,.12f);
+            watermark.color=new Color(.84f,.70f,.43f,.14f);
             watermark.raycastTarget=false;
+            // Above the matte but behind the manuscript: a decorative
+            // source icon, never a fabricated message or input.
+            watermark.rectTransform.SetSiblingIndex(1);
             emptyState=Label("Mailbox / genuine empty state",w,24,true);
             emptyState.color=new Color(.93f,.83f,.64f);
             emptyState.alignment=TextAnchor.MiddleCenter;
@@ -214,6 +217,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 var unread=RoyalGoldV41SourceArt.Surface((RectTransform)button.transform,"unread-dot");
                 unread.name="Mailbox / actual unread indicator "+i;
                 unread.raycastTarget=false;
+                unread.rectTransform.SetAsLastSibling();
                 messageUnreadDots.Add(unread);
                 messageSubtitles.Add(Label("Mensaje resumen "+i,button.transform,17));
                 messageDates.Add(Label("Fecha del mensaje "+i,button.transform,13));
@@ -314,7 +318,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
             var mail=gateway.Snapshot().Mailbox;
             int total=mail?.Messages?.Count(m=>m.Category==category)??0;
-            int count=mail?.List(category,offset,5).Count??0;
+            int count=VisibleCountFor(total,offset);
             bool selected=!string.IsNullOrEmpty(selectedId)&&
                 mail?.Messages?.Any(m=>m.EventId==selectedId)==true;
             float contentTop=tabsY+tabH+Mathf.Clamp(h*.022f,12f,24f);
@@ -332,9 +336,15 @@ namespace Eldoria.UI.RoyalGold.V2
             listBoard.gameObject.SetActive(!selected);
             Position(detailBoard,left,contentTop,usable,available);
             detailBoard.gameObject.SetActive(selected);
+            float lowerStart=bodyY+bodyHeight+Mathf.Min(30f,h*.035f);
+            float lowerEnd=h-bottom-navH;
+            float lowerRoom=Mathf.Max(0f,lowerEnd-lowerStart);
+            float watermarkSize=Mathf.Min(usable*.55f,
+                Mathf.Clamp(lowerRoom*.65f,105f,460f));
             Position(watermark.rectTransform,
-                left+usable*.34f,Mathf.Min(h-bottom-180f,bodyY+bodyHeight+25f),
-                usable*.32f,Mathf.Min(150f,h*.21f));
+                left+(usable-watermarkSize)*.5f,
+                lowerStart+Mathf.Max(0f,(lowerRoom-watermarkSize)*.5f),
+                watermarkSize,watermarkSize);
             watermark.gameObject.SetActive(!selected && count<=1);
             Position(listSummary.rectTransform,left+18f,
                 bodyY+bodyHeight-33f,usable-36f,27f);
