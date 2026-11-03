@@ -113,6 +113,10 @@ namespace Eldoria.Tests
                 Assert.That(foundation.BoundStageCount,Is.EqualTo(25));
                 Assert.That(foundation.ActualReliefSpans,Is.EqualTo(24),
                     "The physical terrain must have all 24 continuous real spans");
+                Assert.That(Vector2.Distance(
+                    foundation.StagePosition(1),foundation.StagePosition(25)),
+                    Is.GreaterThan(40f),
+                    "All real stages must extend across the route, not collapse into the card");
                 Assert.That(foundation.Cleared,Is.EqualTo(14));
                 Assert.That(foundation.NextStage,Is.EqualTo(15));
                 for(int i=1;i<=25;i++)
