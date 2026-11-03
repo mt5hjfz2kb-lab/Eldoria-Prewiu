@@ -174,6 +174,8 @@ namespace Eldoria.Tests
                     ProofPng(camera,Path.Combine(output,prefix+"after.png"),view.width,view.height);
                     Assert.That(after.size.y,Is.GreaterThanOrEqualTo(before.size.y*1.35f),
                         "Native source height must increase visibly, not just metadata");
+                    Assert.That(after.size.x,Is.GreaterThanOrEqualTo(before.size.x*1.30f),
+                        "Original source width must expand as well; reject height-only distortions");
                     Assert.That(Mathf.Abs(after.min.y-before.min.y),Is.LessThan(.50f),
                         "Upscaling must not lift the original enemy off the terrain");
                     Debug.Log("ELDORIA_ISSUE95_SPAWNLING_NATIVE_AB view="+view.label+
