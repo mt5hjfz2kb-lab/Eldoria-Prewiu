@@ -628,7 +628,11 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 Top((RectTransform)councilChoice[i].transform,councilLeft+i*(councilWidth+3f),
                     cardHeight-(portrait?47f:52f),councilWidth-2f,41f);
-                councilCaptions[i].fontSize=portrait?14:17;
+                // Three real council choices share a compact phone ribbon. The
+                // approved labels must each fit their 96-unit inner widths;
+                // Unity's real text generator wrapped 14pt PRODUCCIÓN into
+                // an invisible second line in a 25-unit label rectangle.
+                councilCaptions[i].fontSize=portrait?13:17;
             }
             primaryLabel.fontSize=portrait?18:21;
             speedOneLabel.fontSize=portrait?16:15;

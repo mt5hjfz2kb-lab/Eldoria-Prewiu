@@ -117,7 +117,13 @@ namespace Eldoria.Editor
                         var caption=b.GetComponentInChildren<Text>(true);
                         Need(caption&&!string.IsNullOrEmpty(caption.text)&&
                             caption.preferredHeight<=caption.rectTransform.rect.height+3f,
-                            "Visible cartouche action has real legible text "+name+" / "+b.name);
+                            "Visible cartouche action has real legible text "+name+" / "+b.name+
+                            " label="+(caption?caption.text:"MISSING")+
+                            " font="+(caption?caption.fontSize.ToString():"MISSING")+
+                            " preferredH="+(caption?caption.preferredHeight.ToString("F1"):"MISSING")+
+                            " slotH="+(caption?caption.rectTransform.rect.height.ToString("F1"):"MISSING")+
+                            " preferredW="+(caption?caption.preferredWidth.ToString("F1"):"MISSING")+
+                            " slotW="+(caption?caption.rectTransform.rect.width.ToString("F1"):"MISSING"));
                     }
                 }
                 // The genuine operation countdown must be attached to
