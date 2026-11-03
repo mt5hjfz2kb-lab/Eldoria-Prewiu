@@ -89,6 +89,21 @@ namespace Eldoria.Editor
                 host.Hud.GetComponent<RoyalGoldV2Hud>()?.SynchronizeNow();
                 host.Hud.GetComponent<RoyalGoldV3ContextHud>()?.SynchronizeNow();
                 Canvas.ForceUpdateCanvases();
+                if(name=="building-initial-desktop"||name=="building-upgrade-desktop"||
+                    name=="construction-barracks-city-landscape")
+                {
+                    var heading=host.Hud.GetComponentsInChildren<Text>(true)
+                        .FirstOrDefault(t=>t.name=="Selected building");
+                    Debug.Log("BUILDING_HEADING_VISUAL_QA "+name+
+                        " text="+(heading?heading.text:"MISSING")+
+                        " depth="+(heading?heading.depth.ToString():"MISSING")+
+                        " culled="+(heading?heading.canvasRenderer.cull.ToString():"MISSING")+
+                        " active="+(heading&&heading.gameObject.activeInHierarchy));
+                    Need(heading&&heading.gameObject.activeInHierarchy&&
+                        !string.IsNullOrWhiteSpace(heading.text)&&
+                        heading.depth>=0&&!heading.canvasRenderer.cull,
+                        "Desktop construction cartouche must actually render its original building title "+name);
+                }
                 if(name=="building-council-small-phone")
                 {
                     var sheet=host.Hud.GetComponent<RoyalGoldV2Hud>()?.ChronicleBuildingRect;
