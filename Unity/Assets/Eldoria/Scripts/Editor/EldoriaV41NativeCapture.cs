@@ -106,7 +106,9 @@ namespace Eldoria.Editor
                         Need(realCost.preferredHeight<=realCost.rectTransform.rect.height+3f,
                             "Full authentic wood/stone price fits the cost row "+name);
                     var realButtons=host.Hud.GetComponentsInChildren<Button>(true)
-                        .Where(b=>b.gameObject.activeInHierarchy&&(
+                        .Where(b=>b.gameObject.activeInHierarchy&&
+                            (b.GetComponent<CanvasGroup>()==null||
+                             b.GetComponent<CanvasGroup>().alpha>.01f)&&(
                             b.name=="Execute existing authorised offer"||
                             b.name.StartsWith("Building / council ")||
                             b.name.StartsWith("Building / accelerate ")));
