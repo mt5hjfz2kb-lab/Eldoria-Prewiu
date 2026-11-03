@@ -860,11 +860,31 @@ namespace Eldoria.Editor
                 string label;
                 if(variant<2)
                 {
-                    var observed=actualReport.Battle.Copy();
-                    observed.Won=variant==0;
-                    observed.Reason=observed.Won?
-                        "Encuentro superado en el escenario de prueba visual.":
-                        "El encuentro no fue superado en el escenario de prueba visual.";
+                    // Simulate BOTH outcomes with the production combat
+                    // rules in a disposable snapshot, never flip a winning
+                    // report or manufacture a defeat for the visual evidence.
+                    var combatState=new PlayerState {
+                        BastionLevel=2,SawmillLevel=1,BarracksLevel=1,
+                        Available=new ArmyRoster{ArcherT1=variant==0?60:1},
+                        ChapterProgress=new ChapterProgressState{MarchConfirmed=true}
+                    };
+                    string combatNotice;
+                    var applied=EarlyRetentionRules.Apply(combatState,
+                        "VigilantBattle","1",
+                        new DateTime(2026,11,3,12,0,0,DateTimeKind.Utc).Ticks,
+                        out combatNotice);
+                    Need(applied==true&&combatState.LastBattleReport.Won==(variant==0),
+                        "Native screenshot represents a REAL outcome of the actual Vigilants resolver");
+                    var result=combatState.LastBattleReport;
+                    var observed=new EldoriaV41CombatRecord {
+                        TargetId=result.TargetId,HeroId=result.HeroId,
+                        Troops=result.Troops,OwnRoster=result.OwnRoster?.Copy(),
+                        PlayerPower=result.PlayerPower,EnemyPower=result.EnemyPower,
+                        Won=result.Won,Rounds=result.Rounds,
+                        RemainingHealth=result.RemainingHealth,
+                        RewardWood=result.RewardWood,RewardStone=result.RewardStone,
+                        RewardFood=result.RewardFood,Reason=result.Reason
+                    };
                     label=observed.Won?"victory":"defeat";
                     isolated.Mailbox.Receive(new EldoriaV41Message {
                         EventId="qa-outcome-"+label,Category="informes",Type="battle",
