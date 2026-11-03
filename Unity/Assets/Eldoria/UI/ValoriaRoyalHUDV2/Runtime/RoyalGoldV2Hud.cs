@@ -399,6 +399,10 @@ namespace Eldoria.UI.RoyalGold.V2
             SetVisible(buildingGroup, false);
             SetVisible(buildingActionGroup, false);
             SetVisible(chapterCloseGroup, false);
+            // The report's live heading is the visual frontmost text; it must
+            // not be hidden by the runtime scroll/CTA graphics during the
+            // first off-screen desktop render.
+            buildingTitle.transform.SetAsLastSibling();
             ready = true;
         }
 
@@ -557,7 +561,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Preserve more real city in both orientations. A council choice
             // is a modestly taller version of this SAME in-world card.
             bool council=GetComponent<RoyalGoldV3BuildingScreens>()?.InlineCouncilNeeded(Source.SelectedBuildingId)==true;
-            float cardHeight = council?(portrait?142f:169f):(portrait?218f:166f);
+            float cardHeight = council?(portrait?142f:169f):(portrait?218f:184f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -578,20 +582,20 @@ namespace Eldoria.UI.RoyalGold.V2
             buildingTitle.fontSize=29;
             Top(buildingLevel.rectTransform,textLeft,44f,middleWidth,23f);
             buildingLevel.fontSize=portrait?21:18;
-            Top(buildingCost.rectTransform,textLeft,67f,middleWidth,37f);
+            Top(buildingCost.rectTransform,textLeft,68f,middleWidth,32f);
             buildingCost.fontSize=portrait?23:19;
             // The council is a short, one-time bottom decision ribbon.
             // Do not let a full management-window-sized card occupy the
             // screen when only three legitimate choices are available.
             Top(buildingWorkState.rectTransform,textLeft,
-                council?(portrait?68f:72f):102f,
-                middleWidth,council?(portrait?24f:29f):36f);
+                council?(portrait?68f:72f):(portrait?100f:99f),
+                middleWidth,council?(portrait?24f:29f):32f);
             buildingWorkState.fontSize=portrait?21:17;
             buildingWorkState.verticalOverflow=VerticalWrapMode.Truncate;
             Top((RectTransform)buildingClose.transform,cardWidth-49f,5f,44f,44f);
-            float detailsY=portrait?141f:134f;
+            float detailsY=portrait?136f:132f;
             Top((RectTransform)buildingScroll.transform,textLeft,detailsY,
-                middleWidth,Mathf.Max(19f,cardHeight-detailsY-(portrait?58f:12f)));
+                middleWidth,Mathf.Max(28f,cardHeight-detailsY-(portrait?55f:14f)));
             Stretch(scrollViewport,0);
             scrollContent.anchorMin=new Vector2(0,1);scrollContent.anchorMax=new Vector2(1,1);
             scrollContent.pivot=new Vector2(.5f,1);scrollContent.anchoredPosition=Vector2.zero;
@@ -731,7 +735,9 @@ namespace Eldoria.UI.RoyalGold.V2
             var body = new StringBuilder(280);
             // Live cost and timer have dedicated readable rows outside the
             // scroll. Full genuine requirements/function remain scrollable.
-            Append(body, Safe(source.Requirements));
+            // The exact requirements/denial are already in the legible
+            // fixed status line. Do not repeat them as the first clipped
+            // scroll row: show the selected building's real purpose first.
             Append(body, Safe(source.Function));
             Append(body, Safe(source.Time));
             Append(body, Safe(source.Status));
