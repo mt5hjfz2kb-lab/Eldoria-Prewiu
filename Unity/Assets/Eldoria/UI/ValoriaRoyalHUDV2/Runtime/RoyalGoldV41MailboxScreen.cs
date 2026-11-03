@@ -44,6 +44,9 @@ namespace Eldoria.UI.RoyalGold.V2
         int currentPageSize=5;
         bool detailVisible;
         public int VisibleMessageRows=>messageButtons.Count(b=>b&&b.gameObject.activeSelf);
+        // Read-only QA observations; preserve command authority and save logic.
+        public int CurrentPageOffset=>offset;
+        public int CurrentPageSize=>currentPageSize;
         public static int VisibleCountFor(int total,int offset,int pageSize=5)=>
             Mathf.Clamp(total-offset,0,Mathf.Clamp(pageSize,1,5));
         string[] categories={"informes","recompensas","sistema","narrativa"};

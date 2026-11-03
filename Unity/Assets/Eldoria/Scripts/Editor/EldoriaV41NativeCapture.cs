@@ -765,12 +765,27 @@ namespace Eldoria.Editor
             // screenshot cannot silently change the expected page length.
             Shot(host,"mailbox-qa-twelve-portrait-pagination-start",900,1600);
             var nextPage=host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Página siguiente");
-            nextPage.onClick.Invoke();yield return null;
-            Need(mailbox.VisibleMessageRows==5,
-                "QA-only many-mail second page still shows exactly five actual fixture rows");
-            nextPage.onClick.Invoke();yield return null;
-            Need(mailbox.VisibleMessageRows==2,
-                "QA-only twelve-mail third page ends with exactly two, never invented filler");
+            // Portrait=5/page, compact landscape=2/page. The render capture
+            // temporarily changes Unity dimensions, then restores the live
+            // canvas. Check every real page at its CURRENT responsive size,
+            // not a stale portrait page count left by a screenshot.
+            var covered=new System.Collections.Generic.HashSet<string>();
+            for(int pageProbe=0;pageProbe<10;pageProbe++)
+            {
+                var visible=fixtureState.Mailbox.List("informes",
+                    mailbox.CurrentPageOffset,mailbox.CurrentPageSize);
+                Need(mailbox.VisibleMessageRows==visible.Count &&
+                    visible.Count>0 && visible.Count<=mailbox.CurrentPageSize,
+                    "Responsive pagination shows only the actual isolated fixture rows");
+                foreach(var item in visible)covered.Add(item.EventId);
+                int beforeOffset=mailbox.CurrentPageOffset;
+                nextPage.onClick.Invoke();yield return null;
+                if(mailbox.CurrentPageOffset==beforeOffset)break;
+                Need(mailbox.CurrentPageOffset>beforeOffset,
+                    "Mailbox pagination advances rather than looping or duplicating a page");
+            }
+            Need(covered.Count==12,
+                "All twelve distinct QA fixture messages are reachable by real paging without filler");
             mailbox.Close();mailbox.Open();yield return null;
             Shot(host,"mailbox-qa-twelve-small-phone",390,844);
             Shot(host,"mailbox-qa-twelve-small-phone-landscape",844,390);
