@@ -24,6 +24,8 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalHUD hud;ICommandGateway gateway;
         RectTransform window,entry;
         RoyalText entryLabel,title,detail,navLabel,resources;
+        readonly RoyalText[] resourceAmounts=new RoyalText[3];
+        readonly RoyalIconGraphic[] resourceIcons=new RoyalIconGraphic[3];
         readonly List<Image> messageIcons=new List<Image>();
         readonly List<RoyalText> messageDates=new List<RoyalText>();
         readonly List<RoyalText> messageSubtitles=new List<RoyalText>();
@@ -191,6 +193,20 @@ namespace Eldoria.UI.RoyalGold.V2
             listSummary.color=new Color(.83f,.76f,.61f);
             title=Label("Buzón heading",w,29,true);title.Put("BUZÓN");
             resources=Label("Recursos actuales",w,16);
+            resources.gameObject.SetActive(false); // Retain real backing data only.
+            for(int i=0;i<3;i++)
+            {
+                var pictogram=Node("Mailbox / real resource icon "+i,w);
+                pictogram.gameObject.AddComponent<CanvasRenderer>();
+                resourceIcons[i]=pictogram.gameObject.AddComponent<RoyalIconGraphic>();
+                resourceIcons[i].Icon=i+1;resourceIcons[i].raycastTarget=false;
+                resourceIcons[i].color=i==0?
+                    new Color(.98f,.72f,.34f):i==1?
+                    new Color(.83f,.86f,.90f):new Color(.95f,.79f,.49f);
+                resourceAmounts[i]=Label("Mailbox / real resource amount "+i,w,17,true);
+                resourceAmounts[i].color=Ivory;
+                resourceAmounts[i].alignment=TextAnchor.MiddleLeft;
+            }
             MakeButton("Volver",w,"VOLVER",()=>{if(selectedId!=null){selectedId=null;Refresh();}else Close();},out _);
             for(int i=0;i<4;i++)
             {
@@ -296,6 +312,23 @@ namespace Eldoria.UI.RoyalGold.V2
                 Mathf.Clamp(Mathf.RoundToInt(w*.042f),25,37);
             Position(resources.rectTransform,left+usable*.53f,top+2f,usable*.46f,headerH-4f);
             resources.fontSize=Mathf.Clamp(Mathf.RoundToInt(17f*fontScale),15,22);
+            // Three genuine live counters reuse the kingdom's own vector
+            // resource glyphs. No fictitious "+" purchase action.
+            float resourceX=left+usable*.51f;
+            float stripWidth=usable*.49f;
+            float resourceW=stripWidth/3f;
+            for(int i=0;i<3;i++)
+            {
+                float glyphSize=Mathf.Clamp(resourceW*.25f,15f,31f);
+                Position((RectTransform)resourceIcons[i].transform,
+                    resourceX+i*resourceW+3f,top+(headerH-glyphSize)*.5f,
+                    glyphSize,glyphSize);
+                Position(resourceAmounts[i].rectTransform,
+                    resourceX+i*resourceW+glyphSize+6f,top+3f,
+                    Mathf.Max(24f,resourceW-glyphSize-8f),headerH-6f);
+                resourceAmounts[i].fontSize=Mathf.Clamp(
+                    Mathf.RoundToInt(18f*fontScale),15,24);
+            }
             var back=Find("Volver");
             Position((RectTransform)back.transform,left,top,Mathf.Max(48f,headerH*.72f),headerH);
             back.GetComponentInChildren<RoyalText>().Put("‹");
@@ -460,6 +493,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 case "hunt-wolf":return "Lobo";case "hunt-boar":return "Jabalí";case "ash-stalker-valoria":return "Acechador de Ceniza";
                 case "fissure-valoria":return "Fisura";default:return (id??"").StartsWith("vigilant:")?"Vigilante":"el enemigo";}
         }
+        static string CompactAmount(int value)
+        {
+            if(value>=1000000)return (value/1000000f).ToString("0.#")+"M";
+            if(value>=1000)return (value/1000f).ToString("0.#")+"K";
+            return value.ToString();
+        }
         public void Refresh()
         {
             if(hud==null||gateway==null)return;
@@ -467,6 +506,9 @@ namespace Eldoria.UI.RoyalGold.V2
             var s=gateway.Snapshot();var mail=s.Mailbox;
             RefreshEntryVisibility();
             resources.Put("Madera "+s.Resources.Wood+"  ·  Piedra "+s.Resources.Stone+"  ·  Comida "+s.Resources.Food);
+            resourceAmounts[0].Put(CompactAmount(s.Resources.Wood));
+            resourceAmounts[1].Put(CompactAmount(s.Resources.Stone));
+            resourceAmounts[2].Put(CompactAmount(s.Resources.Food));
             if(entryLabel!=null)entryLabel.Put("CORREO"+(mail?.Unread()>0?" ("+mail.Unread()+")":""));
             if(!IsOpen)return;
             foreach(var t in tabLabels)
