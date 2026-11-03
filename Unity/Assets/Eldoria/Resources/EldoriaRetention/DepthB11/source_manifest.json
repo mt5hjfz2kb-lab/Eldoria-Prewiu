@@ -4,9 +4,9 @@
   "native_unity_capture": false,
   "original_sha256": "9503ca15c74e0e41d3268f7af9e4c5a0c24aabf4e4ecbae2a0d64e3585796149",
   "original_preserved": true,
-  "clean_backdrop_sha256": "e027d4257008ec52cf2488740a838f83ee06801d56544676dad00755ad4316da",
+  "clean_backdrop_sha256": "073e586f601260ddf496e811b41cbe567807e67f757da4931b30ca0ef3960353",
   "clean_backdrop_path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/clean_backdrop.png",
-  "removed_regions_coverage": 0.6096827189127604,
+  "removed_regions_coverage": 0.520043690999349,
   "distinct_real_layers": [
     "left_castle",
     "bridge",
