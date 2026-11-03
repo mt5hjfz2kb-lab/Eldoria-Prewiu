@@ -26,6 +26,17 @@ namespace Eldoria.Editor
         static string Output=>Path.GetFullPath(Environment.GetEnvironmentVariable("ELDORIA_V41_EVIDENCE")??"v41-native");
         static EldoriaV41NativeCapture()=>EditorApplication.playModeStateChanged+=Entered;
         static void Need(bool good,string reason){if(!good)throw new InvalidOperationException(reason);Debug.Log("V41_CHECK "+reason);}
+        // Disposable layout-only snapshot: does not own a state store, issue
+        // gameplay commands or write to the player's local file.
+        sealed class MailboxDisplayFixture : Eldoria.Application.ICommandGateway
+        {
+            readonly PlayerState snapshot;
+            public MailboxDisplayFixture(PlayerState source){snapshot=source;}
+            public PlayerState Snapshot()=>snapshot;
+            public Eldoria.Application.CommandResult Execute(Eldoria.Application.GameCommand command)=>
+                new Eldoria.Application.CommandResult(false,"QA de solo lectura",snapshot.Revision);
+            public bool Advance()=>false;
+        }
         public static void Capture()
         {
             try
@@ -705,6 +716,50 @@ namespace Eldoria.Editor
                 RoyalGoldV41MailboxScreen.VisibleCountFor(12,5)==5 &&
                 RoyalGoldV41MailboxScreen.VisibleCountFor(12,10)==2,
                 "Empty, one, five and paginated twelve-message list cardinality all use real counts");
+            // QA ONLY: exercise a filled mailbox with *temporary* event
+            // copies in an isolated read-only gateway. Do not commit, store,
+            // seed or publish any of these sample messages as real content.
+            var saveBeforeQa=File.ReadAllText(host.City.SaveFile);
+            var fixtureState=gateway.Snapshot();
+            var sample=fixtureState.Mailbox.List("informes")[0];
+            for(int i=0;i<11;i++)
+            {
+                var added=fixtureState.Mailbox.Receive(new EldoriaV41Message{
+                    EventId="mailbox-qa-layout-only-"+i,
+                    Category="informes",Type=i%2==0?"battle":"exploration",
+                    Title="PRUEBA DE DISEÑO · "+(i+1),
+                    Subtitle="Evento aislado para validar la lista",
+                    OccurredAtUtcTicks=sample.OccurredAtUtcTicks+TimeSpan.FromSeconds(i+1).Ticks,
+                    Read=i%3==0
+                });
+                Need(added,"Read-only QA fixture can create one separate unique list item");
+            }
+            mailbox.Initialize(host.Hud,new MailboxDisplayFixture(fixtureState));
+            mailbox.Refresh();yield return null;
+            Need(mailbox.VisibleMessageRows==5,
+                "QA-only 12-message inbox shows exactly five cards on the first portrait page");
+            Shot(host,"mailbox-qa-twelve-reference-ratio",1169,1345);
+            Shot(host,"mailbox-qa-twelve-phone",900,1600);
+            Shot(host,"mailbox-qa-twelve-landscape",1600,900);
+            var nextPage=host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Página siguiente");
+            nextPage.onClick.Invoke();yield return null;
+            Need(mailbox.VisibleMessageRows==5,
+                "QA-only many-mail second page still shows exactly five actual fixture rows");
+            nextPage.onClick.Invoke();yield return null;
+            Need(mailbox.VisibleMessageRows==2,
+                "QA-only twelve-mail third page ends with exactly two, never invented filler");
+            mailbox.Close();mailbox.Open();yield return null;
+            Shot(host,"mailbox-qa-twelve-small-phone",390,844);
+            Shot(host,"mailbox-qa-twelve-small-phone-landscape",844,390);
+            Need(mailbox.VisibleMessageRows==2,
+                "Compact 844x390 uses two readable items per real paginated QA page");
+            mailbox.Initialize(host.Hud,gateway);
+            mailbox.Close();mailbox.Open();yield return null;
+            Need(File.ReadAllText(host.City.SaveFile)==saveBeforeQa,
+                "QA-only full inbox screenshots did not change any owner save bytes");
+            Need(gateway.Snapshot().Mailbox.List("informes").Count==1 &&
+                mailbox.VisibleMessageRows==1,
+                "Real mailbox is restored exactly after isolated multi-message proof");
             var row=host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Buzón / mensaje 0");row.onClick.Invoke();yield return null;
             Need(gateway.Snapshot().Mailbox.Unread("informes")==0,"Opening actual message marks it read");
             Shot(host,"mailbox-real-report",900,1600);
