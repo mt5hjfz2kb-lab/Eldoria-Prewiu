@@ -69,6 +69,8 @@ namespace Eldoria.UI.RoyalGold.V2
         // vector renderer as the graceful fallback in older installations.
         RawImage paintedScene;
         RoyalGoldV3LayeredFinish scenicDepth;
+        RoyalGoldV3VigilantsParallax vigilantsParallax;
+        RoyalGoldV3EncounterGrounding enemyGroundBack, enemyGroundFront;
         Texture2D paintedVigilants, paintedScouts, scoutParchment;
         Sprite scoutParchmentSprite, encounterSkinSprite;
         Image encounterSkin;
@@ -381,6 +383,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // while all real route nodes and touch targets remain above it.
             scenicDepth=RoyalGoldV3LayeredFinish.Install(art,
                 RoyalGoldV3LayeredFinish.Scene.Vigilants,2);
+            // Reuse the SAME approved painting in four feathered perspective
+            // planes. Its original pixel-space crop stays authoritative.
+            // Draw above the painting but below mist, markers and buttons.
+            vigilantsParallax=RoyalGoldV3VigilantsParallax.Install(art,2);
             var seals=Rect("Actual discovered expedition families",art);
             seals.gameObject.AddComponent<CanvasRenderer>();
             discoverySeals=seals.gameObject.AddComponent<RoyalGoldV3ScoutDiscoverySeals>();
@@ -478,6 +484,11 @@ namespace Eldoria.UI.RoyalGold.V2
             engendroPortrait.uvRect=engendroCutout?engendroUvRect:
                 new Rect(0f,0f,1f,1f);
             Stretch(creatureArt,4f);
+            // True two-sided vignette: bounced light + ground contact BEHIND
+            // each real portrait; soft foreground occlusion ABOVE it.
+            // Both share the existing picture frame and never catch raycasts.
+            enemyGroundBack=RoyalGoldV3EncounterGrounding.Install(creature,false);
+            enemyGroundFront=RoyalGoldV3EncounterGrounding.Install(creature,true);
             creature.gameObject.SetActive(false);
             victoryBanner=Panel(heroScene,"Crónica Real / combat outcome gilded announcement");
             var victoryPlate=victoryBanner.GetComponent<RoyalGoldV2FrameGraphic>();
@@ -1109,6 +1120,13 @@ namespace Eldoria.UI.RoyalGold.V2
                             panelRatio/pictureRatio,1f);
                 }
             }
+            if(vigilantsParallax)
+            {
+                bool hasApprovedScene=vig && paintedVigilants!=null;
+                vigilantsParallax.gameObject.SetActive(hasApprovedScene);
+                if(hasApprovedScene)
+                    vigilantsParallax.Configure(paintedVigilants,paintedScene.uvRect);
+            }
             chapterTrail.gameObject.SetActive(vig);
             discoverySeals.DiscoveredMask=p.ScoutDiscoveryMask&15;
             discoverySeals.gameObject.SetActive(!vig&&discoverySeals.DiscoveredMask!=0);
@@ -1205,6 +1223,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     engendroPortrait.texture=showEngendro?engendroTexture:scoutVignettes;
                     engendroPortrait.uvRect=showEngendro?new Rect(0,0,1,1):new Rect(.01f,.51f,.48f,.48f);
                 }
+                if(enemyGroundBack)enemyGroundBack.Configure(showEngendro,boss);
+                if(enemyGroundFront)enemyGroundFront.Configure(showEngendro,boss);
                 chapterTrail.rectTransform.anchorMin=Vector2.zero;
                 chapterTrail.rectTransform.anchorMax=Vector2.one;
                 chapterTrail.rectTransform.offsetMin=new Vector2(5,5);
