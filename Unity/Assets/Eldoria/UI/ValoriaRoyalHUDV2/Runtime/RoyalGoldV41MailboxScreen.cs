@@ -26,6 +26,9 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalText entryLabel,title,detail,navLabel,resources;
         RectTransform detailSheet;
         RoyalGoldV41ReportArtwork reportArtwork;
+        RawImage scoutVignette;
+        Texture2D scoutVignettesAtlas;
+        int scoutFamily=-1;
         RoyalText reportKicker,reportHeading,reportOrigin,reportDate,reportSeal;
         RoyalText reportSection,reportFooter,reportToggleText,reportComposition;
         readonly RoyalText[] metricNames=new RoyalText[4];
@@ -284,6 +287,18 @@ namespace Eldoria.UI.RoyalGold.V2
             detailSheet.gameObject.AddComponent<CanvasRenderer>();
             reportArtwork=detailSheet.gameObject.AddComponent<RoyalGoldV41ReportArtwork>();
             reportArtwork.raycastTarget=false;
+            // Exactly the same four real-source vignette quadrants as the
+            // Explorers table. Every detail reads its persisted Kind; no new
+            // map coordinates, unseen enemy or fabricated expedition exists.
+            scoutVignettesAtlas=Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4");
+            var vignette=Node("Mailbox / authentic discovery family illustration",detailSheet);
+            vignette.gameObject.AddComponent<CanvasRenderer>();
+            scoutVignette=vignette.gameObject.AddComponent<RawImage>();
+            scoutVignette.raycastTarget=false;
+            scoutVignette.texture=scoutVignettesAtlas?
+                scoutVignettesAtlas:Resources.Load<Texture2D>("EldoriaRetention/scouts-painterly-v2");
+            scoutVignette.color=new Color(1f,.96f,.88f,1f);
+            scoutVignette.gameObject.SetActive(false);
             reportKicker=Label("Mailbox / manuscript series",detailSheet,17,true);
             reportHeading=Label("Mailbox / report genuine heading",detailSheet,29,true);
             reportHeading.verticalOverflow=VerticalWrapMode.Overflow;
@@ -567,6 +582,36 @@ namespace Eldoria.UI.RoyalGold.V2
                     width-60f,compositionH);
             }
             float storyTop=compositionTop+compositionH+16f;
+            Rect artPicture=Rect.zero;
+            if(scoutVignette!=null && scoutVignette.gameObject.activeSelf &&
+                scoutVignette.texture!=null)
+            {
+                float imageWidth=Mathf.Min(width-64f,narrow?width-64f:width*.68f);
+                float imageHeight=narrow?
+                    Mathf.Min(180f,imageWidth*.58f):Mathf.Min(244f,imageWidth*.46f);
+                float imageX=(width-imageWidth)*.5f;
+                float imageY=compositionTop+compositionH+10f;
+                Position(scoutVignette.rectTransform,imageX,imageY,imageWidth,imageHeight);
+                var source=scoutVignette.texture;
+                float aspect=imageWidth/Mathf.Max(1f,imageHeight);
+                float sourceAspect=(float)source.width/Mathf.Max(1,source.height);
+                var kind=Mathf.Clamp(scoutFamily,0,3);
+                // Preserve the exact inset 2x2 source atlas family mapping
+                // from RoyalGoldV3EarlyRetentionScreens.
+                Rect tile=scoutVignettesAtlas!=null?
+                    new Rect((kind%2)*.5f+.01f,(kind<2?.5f:0f)+.01f,.48f,.48f):
+                    new Rect(0f,0f,1f,1f);
+                float cropW=tile.width,cropH=cropW*sourceAspect/aspect;
+                if(cropH>tile.height)
+                {
+                    cropH=tile.height;
+                    cropW=cropH*aspect/sourceAspect;
+                }
+                scoutVignette.uvRect=new Rect(tile.center.x-cropW*.5f,
+                    tile.center.y-cropH*.5f,cropW,cropH);
+                artPicture=new Rect(imageX,imageY,imageWidth,imageHeight);
+                storyTop=imageY+imageHeight+29f;
+            }
             reportSection.color=new Color(.35f,.225f,.105f);
             reportSection.fontSize=narrow?16:19;
             Position(reportSection.rectTransform,38f,storyTop+18f,
@@ -598,7 +643,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float totalHeight=Mathf.Max(viewportHeight+4f,footerTop+footerH+32f);
             Position(detailSheet,0f,0f,width,totalHeight);
             reportArtwork.Configure(reportMotif,reportMetricCount,cols,metricTop,
-                cardH,storyTop,storyHeight,footerTop+footerH);
+                cardH,storyTop,storyHeight,footerTop+footerH,artPicture);
         }
         void SetCategory(string value){category=value;offset=0;selectedId=null;reportExpanded=true;Refresh();}
         void Page(int delta)
@@ -663,13 +708,17 @@ namespace Eldoria.UI.RoyalGold.V2
             bool scouting=battle==null&&selected.Type=="exploration";
             bool hasNarrative=scouting&&!string.IsNullOrEmpty(selected.DiscoveryText);
             reportMetricCount=battle!=null?4:0;
+            scoutFamily=hasNarrative?selected.DiscoveryKind:-1;
+            if(scoutVignette!=null)
+                scoutVignette.gameObject.SetActive(hasNarrative&&scoutFamily>=0&&
+                    scoutFamily<=3&&scoutVignette.texture!=null);
             reportMotif=battle!=null?(battle.Won?
                 RoyalGoldV41ReportArtwork.Motif.BattleVictory:
                 RoyalGoldV41ReportArtwork.Motif.BattleDefeat):
                 hasNarrative&&selected.DiscoveryKind>=0&&selected.DiscoveryKind<=3?
                 (RoyalGoldV41ReportArtwork.Motif)((int)RoyalGoldV41ReportArtwork.Motif.Frontier+
                     selected.DiscoveryKind):RoyalGoldV41ReportArtwork.Motif.Archive;
-            bool compact=window!=null&&window.rect.width<520f;
+            bool compact=detailViewport!=null&&detailViewport.rect.width<580f;
             reportKicker.Put(battle!=null?(compact?"CRÓNICA DEL CAMINO":
                 "CRÓNICA DEL CAMINO · INFORME AUTÉNTICO"):
                 scouting?(compact?"HALLAZGO REGISTRADO":
@@ -681,8 +730,12 @@ namespace Eldoria.UI.RoyalGold.V2
             // Let the raised wax seal remain a legible original engraving.
             reportSeal.Put("");
             reportOrigin.Put(battle!=null?"ENCUENTRO · "+TargetName(battle.TargetId):
-                scouting?"ORIGEN · ENCARGO COMPLETADO":
-                "ORIGEN · CORREO EXISTENTE");
+                scouting&&hasNarrative?
+                    "ORIGEN · "+(selected.DiscoveryKind==0?"FRONTERA":
+                        selected.DiscoveryKind==1?"CAMINO":
+                        selected.DiscoveryKind==2?"SUMINISTROS":
+                        selected.DiscoveryKind==3?"BRECHA":"ENCARGO"):
+                scouting?"ORIGEN · ENCARGO ANTERIOR":"ORIGEN · CORREO EXISTENTE");
             reportDate.Put(selected.OccurredAtUtcTicks>0?
                 new DateTime(selected.OccurredAtUtcTicks,DateTimeKind.Utc).ToString("dd/MM/yy HH:mm"):"");
             if(battle!=null)

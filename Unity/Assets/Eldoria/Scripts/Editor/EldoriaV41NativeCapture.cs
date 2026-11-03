@@ -928,6 +928,12 @@ namespace Eldoria.Editor
                 {
                     var visualStory=host.Hud.GetComponentsInChildren<Text>()
                         .First(x=>x.name=="Contenido del mensaje");
+                    var realPicture=host.Hud.GetComponentsInChildren<RawImage>()
+                        .FirstOrDefault(x=>x.name=="Mailbox / authentic discovery family illustration");
+                    Need(realPicture&&realPicture.texture!=null&&
+                        realPicture.gameObject.activeInHierarchy&&
+                        realPicture.uvRect.width>.01f,
+                        "Each persisted scout family opens its own genuine illustrated source quadrant");
                     Need(visualStory.text.Contains("La ")||visualStory.text.Contains("Las ")||visualStory.text.Contains("Los ")||
                         visualStory.text.Contains("Una ")||visualStory.text.Contains("Un ")||
                         visualStory.text.Contains("Encontraron ")||visualStory.text.Contains("El "),
@@ -935,8 +941,8 @@ namespace Eldoria.Editor
                 }
                 Shot(host,"mailbox-report-qa-"+label+"-portrait",900,1600);
                 Shot(host,"mailbox-report-qa-"+label+"-landscape",1600,900);
-                Shot(host,"mailbox-report-qa-"+label+"-mobile",390,844);
-                Shot(host,"mailbox-report-qa-"+label+"-mobile-landscape",844,390);
+                Shot(host,"mailbox-report-qa-"+label+"-small-phone",390,844);
+                Shot(host,"mailbox-report-qa-"+label+"-small-phone-landscape",844,390);
                 if(variant==6)
                 {
                     Need(sheet.rect.height>viewport.rect.height+100f,
@@ -947,7 +953,7 @@ namespace Eldoria.Editor
                     Need(!host.Hud.GetComponentsInChildren<Text>(true)
                         .First(x=>x.name=="Contenido del mensaje").gameObject.activeSelf,
                         "Expandable story really collapses without losing stored text");
-                    Shot(host,"mailbox-report-qa-long-text-collapsed-mobile",390,844);
+                    Shot(host,"mailbox-report-qa-long-text-collapsed-small-phone",390,844);
                     toggle.onClick.Invoke();yield return null;
                 }
             }

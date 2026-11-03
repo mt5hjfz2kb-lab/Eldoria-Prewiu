@@ -15,6 +15,7 @@ namespace Eldoria.UI.RoyalGold.V2
         Motif motif=Motif.Archive;
         int metricCount,columns=4;
         float metricTop,metricHeight,narrativeTop,narrativeHeight,footerBottom;
+        Rect familyPicture;
         static readonly Color Paper=new Color(.94f,.859f,.706f,1f);
         static readonly Color Shadow=new Color(.16f,.095f,.048f,.35f);
         static readonly Color Brass=new Color(.65f,.424f,.18f,.85f);
@@ -22,15 +23,17 @@ namespace Eldoria.UI.RoyalGold.V2
         public override Texture mainTexture=>Texture2D.whiteTexture;
 
         public void Configure(Motif newMotif,int count,int cols,float top,float cardH,
-            float bodyTop,float bodyH,float lowerTextBottom)
+            float bodyTop,float bodyH,float lowerTextBottom,Rect illustration)
         {
             if(motif==newMotif&&metricCount==count&&columns==cols&&
                 Mathf.Approximately(metricTop,top)&&Mathf.Approximately(metricHeight,cardH)&&
                 Mathf.Approximately(narrativeTop,bodyTop)&&Mathf.Approximately(narrativeHeight,bodyH)&&
-                Mathf.Approximately(footerBottom,lowerTextBottom))return;
+                Mathf.Approximately(footerBottom,lowerTextBottom)&&
+                familyPicture==illustration)return;
             motif=newMotif;metricCount=count;columns=Mathf.Max(1,cols);
             metricTop=top;metricHeight=cardH;narrativeTop=bodyTop;
             narrativeHeight=bodyH;footerBottom=lowerTextBottom;
+            familyPicture=illustration;
             SetVerticesDirty();
         }
         static void Quad(VertexHelper vh,Vector2 a,Vector2 b,Vector2 c,Vector2 d,
@@ -211,6 +214,21 @@ namespace Eldoria.UI.RoyalGold.V2
                 Fill(vh,Area(23f,bandY,w-46f,bandH),
                     new Color(.87f,.745f,.52f,.78f),new Color(.95f,.865f,.71f,.78f));
                 Fill(vh,Area(30f,bandY+6f,w-60f,1.5f),Brass,Brass);
+            }
+            if(familyPicture.width>30f&&familyPicture.height>30f)
+            {
+                // Four family-specific source paintings are physically
+                // inset into the paper. Natural bevel/shadow is independent
+                // of the original atlas so no opaque crop border returns.
+                var pic=familyPicture;
+                Fill(vh,Area(pic.x-9f,pic.y-7f,pic.width+18f,pic.height+18f),
+                    new Color(.19f,.13f,.066f,.29f),new Color(.19f,.13f,.066f,.20f));
+                Fill(vh,Area(pic.x-5f,pic.y-6f,pic.width+10f,pic.height+10f),
+                    new Color(.58f,.40f,.19f,1f),new Color(.79f,.62f,.31f,1f));
+                Fill(vh,Area(pic.x-3f,pic.y-4f,pic.width+6f,pic.height+6f),
+                    new Color(.90f,.81f,.59f,1f),new Color(.96f,.87f,.65f,1f));
+                Fill(vh,Area(pic.x-3f,pic.y-4f,pic.width+6f,2f),Brass,Brass);
+                Fill(vh,Area(pic.x-3f,pic.y+pic.height+2f,pic.width+6f,2f),Brass,Brass);
             }
             float storyX=24f,storyW=w-48f;
             Fill(vh,Area(storyX+3f,narrativeTop+4f,storyW,narrativeHeight),
