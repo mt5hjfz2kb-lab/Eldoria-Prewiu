@@ -383,6 +383,18 @@ namespace Eldoria.ReferenceClean.Editor
                 "Real route and authentic creature are present");
             var occlusion=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsTerrainOcclusion>(true);
             var lighting=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsWorldLight>(true);
+            var foundation=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsRoadFoundation>(true);
+            Need(foundation!=null && foundation.isActiveAndEnabled &&
+                foundation.BoundStageCount==25 && foundation.NextStage==15 &&
+                foundation.Cleared==14 && !foundation.raycastTarget,
+                "Exactly 25 live physical stone sockets underpin canonical road stages without intercepting touches");
+            for(int actualStage=1;actualStage<=25;actualStage++)
+            {
+                var actual=foundation.rectTransform.InverseTransformPoint(
+                    stageTrail.transform.TransformPoint(stageTrail.StagePosition(actualStage)));
+                Need(Vector2.Distance(actual,foundation.StagePosition(actualStage))<.1f,
+                    "Physical stone foundation "+actualStage+" must match the same live pixel-space road");
+            }
             Need(creatureFrame.parent.name=="Progression and expedition information" &&
                 !engendroArt.raycastTarget && 
                 occlusion && occlusion.isActiveAndEnabled && !occlusion.raycastTarget &&
