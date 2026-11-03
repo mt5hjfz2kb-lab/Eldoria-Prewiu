@@ -24,6 +24,16 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalHUD hud;ICommandGateway gateway;
         RectTransform window,entry;
         RoyalText entryLabel,title,detail,navLabel,resources;
+        RectTransform detailSheet;
+        RoyalGoldV41ReportArtwork reportArtwork;
+        RoyalText reportKicker,reportHeading,reportOrigin,reportDate,reportSeal;
+        RoyalText reportSection,reportFooter,reportToggleText;
+        readonly RoyalText[] metricNames=new RoyalText[4];
+        readonly RoyalText[] metricValues=new RoyalText[4];
+        Button reportToggle;
+        bool reportExpanded=true;
+        int reportMetricCount;
+        RoyalGoldV41ReportArtwork.Motif reportMotif;
         readonly RoyalText[] resourceAmounts=new RoyalText[3];
         readonly RoyalIconGraphic[] resourceIcons=new RoyalIconGraphic[3];
         readonly List<Image> messageIcons=new List<Image>();
@@ -270,10 +280,31 @@ namespace Eldoria.UI.RoyalGold.V2
             detailScroll.horizontal=false;detailScroll.vertical=true;
             detailScroll.inertia=false;detailScroll.movementType=ScrollRect.MovementType.Clamped;
             detailScroll.viewport=detailViewport;
-            detail=Label("Contenido del mensaje",detailViewport,18);
+            detailSheet=Node("Mailbox / scrollable assembled report",detailViewport);
+            detailSheet.gameObject.AddComponent<CanvasRenderer>();
+            reportArtwork=detailSheet.gameObject.AddComponent<RoyalGoldV41ReportArtwork>();
+            reportArtwork.raycastTarget=false;
+            reportKicker=Label("Mailbox / manuscript series",detailSheet,17,true);
+            reportHeading=Label("Mailbox / report genuine heading",detailSheet,29,true);
+            reportHeading.verticalOverflow=VerticalWrapMode.Overflow;
+            reportOrigin=Label("Mailbox / actual event origin",detailSheet,15);
+            reportDate=Label("Mailbox / stored event date",detailSheet,14);
+            reportSeal=Label("Mailbox / outcome seal caption",detailSheet,15,true);
+            reportSeal.alignment=TextAnchor.MiddleCenter;
+            for(int i=0;i<4;i++)
+            {
+                metricNames[i]=Label("Mailbox / metric caption "+i,detailSheet,14,true);
+                metricValues[i]=Label("Mailbox / genuine metric "+i,detailSheet,22,true);
+            }
+            reportSection=Label("Mailbox / report section heading",detailSheet,17,true);
+            reportToggle=MakeButton("Mailbox / collapse or expand report",detailSheet,
+                "OCULTAR",()=>{reportExpanded=!reportExpanded;Refresh();},out reportToggleText);
+            detail=Label("Contenido del mensaje",detailSheet,19);
             detail.alignment=TextAnchor.UpperLeft;
             detail.verticalOverflow=VerticalWrapMode.Overflow;
-            detailScroll.content=detail.rectTransform;
+            reportFooter=Label("Mailbox / original record and receipt",detailSheet,16);
+            reportFooter.verticalOverflow=VerticalWrapMode.Overflow;
+            detailScroll.content=detailSheet;
             MakeButton("Leer",w,"MARCAR LEÍDO",()=>ExecuteMail("MailRead"),out _);
             MakeButton("Eliminar",w,"ELIMINAR",()=>ExecuteMail("MailDelete"),out _);
             w.gameObject.SetActive(false);
@@ -448,11 +479,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float detailPad=Mathf.Clamp(usable*.038f,15f,35f);
             Position(detailViewport,left+detailPad,contentTop+detailPad,
                 usable-detailPad*2f,available-actionH-detailPad*3f);
-            detail.fontSize=Mathf.Clamp(Mathf.RoundToInt(
-                (wide?22f:24f)*fontScale),17,28);
-            float textHeight=Mathf.Max(detailViewport.rect.height,
-                detail.preferredHeight+26f);
-            Position(detail.rectTransform,0f,0f,detailViewport.rect.width,textHeight);
+            LayoutReport(detailViewport.rect.width,detailViewport.rect.height);
             detailScroll.verticalNormalizedPosition=Mathf.Clamp01(
                 detailScroll.verticalNormalizedPosition);
             var read=Find("Leer");var del=Find("Eliminar");
@@ -475,7 +502,88 @@ namespace Eldoria.UI.RoyalGold.V2
             Position((RectTransform)next.transform,left+usable-44f,navY,44f,navH);
             visibleRowCount=count;detailVisible=selected;
         }
-        void SetCategory(string value){category=value;offset=0;selectedId=null;Refresh();}
+        void LayoutReport(float width,float viewportHeight)
+        {
+            if(detailSheet==null||width<100f)return;
+            bool narrow=width<580f;
+            float inner=width-48f;
+            reportKicker.fontSize=narrow?15:19;
+            reportHeading.fontSize=narrow?24:32;
+            reportHeading.color=new Color(.96f,.85f,.64f);
+            reportKicker.color=new Color(.91f,.73f,.42f);
+            reportOrigin.color=new Color(.94f,.86f,.72f);
+            reportDate.color=new Color(.87f,.77f,.60f);
+            reportSeal.color=new Color(.99f,.86f,.61f);
+            Position(reportKicker.rectTransform,24f,25f,Mathf.Max(75f,width-151f),26f);
+            Position(reportHeading.rectTransform,24f,58f,
+                Mathf.Max(76f,width-153f),50f);
+            float headingH=Mathf.Max(55f,reportHeading.preferredHeight+6f);
+            Position(reportHeading.rectTransform,24f,58f,
+                Mathf.Max(76f,width-153f),headingH);
+            float headerH=Mathf.Max(150f,71f+headingH+43f);
+            Position(reportSeal.rectTransform,width-99f,45f,69f,51f);
+            reportSeal.fontSize=narrow?12:15;
+            Position(reportOrigin.rectTransform,24f,headerH-35f,
+                Mathf.Max(75f,inner*.65f),25f);
+            Position(reportDate.rectTransform,24f+inner*.65f,headerH-35f,
+                inner*.35f,25f);
+            reportOrigin.fontSize=narrow?12:15;
+            reportDate.fontSize=narrow?11:14;
+
+            int cols=narrow?2:4;
+            float cardH=narrow?79f:94f;
+            float gap=11f,cardW=(width-48f-gap*(cols-1))/cols;
+            float metricTop=headerH+19f;
+            for(int i=0;i<4;i++)
+            {
+                bool visible=i<reportMetricCount;
+                metricNames[i].gameObject.SetActive(visible);
+                metricValues[i].gameObject.SetActive(visible);
+                if(!visible)continue;
+                int cx=i%cols,cy=i/cols;
+                float x=24f+cx*(cardW+gap),y=metricTop+cy*(cardH+gap);
+                metricNames[i].color=new Color(.37f,.26f,.17f);
+                metricValues[i].color=new Color(.20f,.125f,.075f);
+                metricNames[i].fontSize=narrow?12:15;
+                metricValues[i].fontSize=narrow?19:26;
+                Position(metricNames[i].rectTransform,x+11f,y+10f,cardW-22f,24f);
+                Position(metricValues[i].rectTransform,x+11f,y+34f,
+                    cardW-22f,cardH-39f);
+            }
+            float metricHeight=reportMetricCount>0?
+                Mathf.Ceil(reportMetricCount/(float)cols)*(cardH+gap)-gap:0f;
+            float storyTop=metricTop+metricHeight+(reportMetricCount>0?18f:0f);
+            reportSection.color=new Color(.35f,.225f,.105f);
+            reportSection.fontSize=narrow?16:19;
+            Position(reportSection.rectTransform,38f,storyTop+18f,
+                Mathf.Max(75f,width-210f),26f);
+            Position((RectTransform)reportToggle.transform,width-178f,
+                storyTop+13f,139f,37f);
+            reportToggleText.fontSize=narrow?12:15;
+            reportToggleText.Put(reportExpanded?"OCULTAR":"DESPLEGAR");
+            detail.fontSize=narrow?19:23;
+            detail.color=new Color(.25f,.175f,.115f);
+            detail.gameObject.SetActive(reportExpanded);
+            float textH=0f;
+            if(reportExpanded)
+            {
+                Position(detail.rectTransform,40f,storyTop+59f,width-80f,40f);
+                textH=Mathf.Max(40f,detail.preferredHeight+12f);
+                Position(detail.rectTransform,40f,storyTop+59f,width-80f,textH);
+            }
+            float storyHeight=reportExpanded?Mathf.Max(111f,textH+85f):69f;
+            float footerTop=storyTop+storyHeight+20f;
+            reportFooter.fontSize=narrow?16:19;
+            reportFooter.color=new Color(.38f,.25f,.14f);
+            Position(reportFooter.rectTransform,26f,footerTop,width-52f,70f);
+            float footerH=Mathf.Max(48f,reportFooter.preferredHeight+10f);
+            Position(reportFooter.rectTransform,26f,footerTop,width-52f,footerH);
+            float totalHeight=Mathf.Max(viewportHeight+4f,footerTop+footerH+32f);
+            Position(detailSheet,0f,0f,width,totalHeight);
+            reportArtwork.Configure(reportMotif,reportMetricCount,cols,metricTop,
+                cardH,storyTop,storyHeight);
+        }
+        void SetCategory(string value){category=value;offset=0;selectedId=null;reportExpanded=true;Refresh();}
         void Page(int delta)
         {
             var s=gateway?.Snapshot();
@@ -488,7 +596,10 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             var list=gateway?.Snapshot()?.Mailbox?.List(category,offset,currentPageSize);
             if(list==null||index>=list.Count)return;
-            selectedId=list[index].EventId;ExecuteMail("MailRead");
+            selectedId=list[index].EventId;
+            reportExpanded=true;
+            if(detailScroll!=null)detailScroll.verticalNormalizedPosition=1f;
+            ExecuteMail("MailRead");
         }
         void ExecuteMail(string kind)
         {
@@ -511,6 +622,77 @@ namespace Eldoria.UI.RoyalGold.V2
             if(value>=1000000)return (value/1000000f).ToString("0.#")+"M";
             if(value>=1000)return (value/1000f).ToString("0.#")+"K";
             return value.ToString();
+        }
+        static string ObservedReason(EldoriaV41CombatRecord battle)
+        {
+            string reason=(battle?.Reason??"").Trim();
+            // A legacy defeat reason may carry automatic tactical advice.
+            // The illustrated report only displays the observed outcome.
+            if(reason.StartsWith("Prepara otra composición:",StringComparison.OrdinalIgnoreCase))
+                return "La expedición no superó el encuentro registrado.";
+            return !string.IsNullOrEmpty(reason)?reason:
+                battle!=null&&battle.Won?"Encuentro superado.":"No se registró victoria.";
+        }
+        void PresentReport(EldoriaV41Message selected)
+        {
+            var battle=selected.Battle;
+            bool scouting=battle==null&&selected.Type=="exploration";
+            bool hasNarrative=scouting&&!string.IsNullOrEmpty(selected.DiscoveryText);
+            reportMetricCount=battle!=null?4:0;
+            reportMotif=battle!=null?(battle.Won?
+                RoyalGoldV41ReportArtwork.Motif.BattleVictory:
+                RoyalGoldV41ReportArtwork.Motif.BattleDefeat):
+                hasNarrative&&selected.DiscoveryKind>=0&&selected.DiscoveryKind<=3?
+                (RoyalGoldV41ReportArtwork.Motif)((int)RoyalGoldV41ReportArtwork.Motif.Frontier+
+                    selected.DiscoveryKind):RoyalGoldV41ReportArtwork.Motif.Archive;
+            reportKicker.Put(battle!=null?"CRÓNICA DEL CAMINO · INFORME AUTÉNTICO":
+                scouting?"CUADERNO DEL CARTÓGRAFO · HALLAZGO REGISTRADO":
+                "ARCHIVO REAL · MENSAJE RECIBIDO");
+            reportHeading.Put(scouting&&!string.IsNullOrEmpty(selected.Subtitle)?
+                selected.Subtitle:selected.Title);
+            reportSeal.Put(battle!=null?(battle.Won?"VICTORIA":"DERROTA"):
+                scouting?"HALLAZGO":"ARCHIVO");
+            reportOrigin.Put(battle!=null?"ENCUENTRO · "+TargetName(battle.TargetId):
+                scouting?"ORIGEN · ENCARGO COMPLETADO":
+                "ORIGEN · CORREO EXISTENTE");
+            reportDate.Put(selected.OccurredAtUtcTicks>0?
+                new DateTime(selected.OccurredAtUtcTicks,DateTimeKind.Utc).ToString("dd/MM/yy HH:mm"):"");
+            if(battle!=null)
+            {
+                string[] names={"HÉROES","TROPAS ENVIADAS","RONDAS","VIDA RESTANTE"};
+                string[] values={HeroName(battle.HeroId),battle.Troops.ToString(),
+                    battle.Rounds.ToString(),battle.RemainingHealth.ToString()};
+                for(int i=0;i<4;i++)
+                {
+                    metricNames[i].Put(names[i]);metricValues[i].Put(values[i]);
+                }
+                reportSection.Put("OBSERVACIONES DEL ENCUENTRO");
+                detail.Put(ObservedReason(battle));
+                reportFooter.Put("PODER PROPIO REGISTRADO · "+battle.PlayerPower+
+                    "\nBOTÍN REGISTRADO · "+battle.RewardWood+" madera · "+
+                    battle.RewardStone+" piedra · "+battle.RewardFood+" comida"+
+                    (string.IsNullOrEmpty(selected.RewardReceiptId)?"":
+                    "\nLa recompensa ya estaba registrada; abrir el informe no la duplica."));
+            }
+            else if(scouting)
+            {
+                reportSection.Put("RELATO CONSERVADO");
+                detail.Put(hasNarrative?selected.DiscoveryText:
+                    "Este mensaje anterior solo conserva el título. No se recrea un relato sin el registro original.");
+                reportFooter.Put(!string.IsNullOrEmpty(selected.DiscoveryOrderId)?
+                    "PROCEDENCIA · ENCARGO REAL ARCHIVADO":
+                    "PROCEDENCIA · MENSAJE ANTIGUO O SIN REFERENCIA DE ORDEN");
+                if(!string.IsNullOrEmpty(selected.RewardReceiptId))
+                    reportFooter.Put(reportFooter.text+
+                        "\nRecompensa registrada al reclamar; leer no realiza otro abono.");
+            }
+            else
+            {
+                reportSection.Put("CONTENIDO RECIBIDO");
+                detail.Put(selected.Subtitle??"");
+                reportFooter.Put("MENSAJE DEL REGISTRO DEL REINO");
+            }
+            reportToggle.gameObject.SetActive(!string.IsNullOrEmpty(detail.text));
         }
         public void Refresh()
         {
@@ -591,22 +773,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Layout();
                 return;
             }
-            var battle=selected.Battle;
-            // A battle report describes observable outcomes, never hidden
-            // combat coefficients, secret formulas or optimal strategies.
-            // Rewards were already settled by the gateway; reading never pays.
-            detail.color=new Color(.19f,.15f,.115f);
-            detail.Put(selected.Title.ToUpperInvariant()+"\n"+
-                (battle==null?selected.Subtitle:"Encuentro: "+TargetName(battle.TargetId))+
-                (battle==null?"":"\n\n"+(battle.Won?"RESULTADO · VICTORIA":"RESULTADO · DERROTA")+
-                "\nHéroes: "+HeroName(battle.HeroId)+
-                "\nTropas enviadas: "+battle.Troops+
-                "\nRondas disputadas: "+battle.Rounds+
-                "\nVida restante: "+battle.RemainingHealth+
-                "\nBotín obtenido: "+battle.RewardWood+" madera · "+
-                    battle.RewardStone+" piedra · "+battle.RewardFood+" comida")+
-                (string.IsNullOrEmpty(selected.RewardReceiptId)?"":
-                    "\n\nRecompensa registrada previamente; consultar el correo no vuelve a abonarla."));
+            PresentReport(selected);
             if(!detailVisible||visibleRowCount!=list.Count)
                 detailScroll.verticalNormalizedPosition=1f;
             Layout();
