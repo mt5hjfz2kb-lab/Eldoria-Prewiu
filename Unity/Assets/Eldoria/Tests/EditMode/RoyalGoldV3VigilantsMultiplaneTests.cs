@@ -57,9 +57,22 @@ namespace Eldoria.Tests
                         "Exact original cut-out must not silently use a different asset");
                     Assert.That(art.width,Is.EqualTo(Dimensions[i].x),Layers[i]);
                     Assert.That(art.height,Is.EqualTo(Dimensions[i].y),Layers[i]);
-                    var plane=parallax.transform.Find(
-                        "Vigilants / original paint plane / "+Layers[i]);
-                    Assert.That(plane,Is.Not.Null);
+                    // Transform.Find interprets '/' in this literal UI
+                    // object's name as a hierarchy separator. Search direct
+                    // children by exact name, while retaining all six strong
+                    // asset/UV/raycast assertions and the real count check.
+                    Transform plane=null;
+                    for(int c=0;c<parallax.transform.childCount;c++)
+                    {
+                        var candidate=parallax.transform.GetChild(c);
+                        if(candidate.name==
+                            "Vigilants / original paint plane / "+Layers[i])
+                        {
+                            plane=candidate;
+                            break;
+                        }
+                    }
+                    Assert.That(plane,Is.Not.Null,Layers[i]);
                     var picture=plane.GetComponent<RawImage>();
                     Assert.That(picture,Is.Not.Null);
                     Assert.That(picture.texture,Is.SameAs(art));
