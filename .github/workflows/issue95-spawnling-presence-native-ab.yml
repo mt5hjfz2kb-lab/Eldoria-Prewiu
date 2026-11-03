@@ -20,47 +20,57 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 27
     steps:
-      - uses: actions/checkout@v4
-        with:
-          clean: false
-          fetch-depth: 1
-          # Do NOT combine filter: blob:none with sparse-checkout:
-          # actions/checkout ignores sparse checkout when filter is supplied.
-          # Unity/Assets/Eldoria/ArtTests contains ~10GB of historical source;
-          # only current world scene + necessary gameplay/visual dependencies are needed.
-          sparse-checkout: |
-            Unity/Packages
-            Unity/ProjectSettings
-            Unity/Assets/Bublik
-            Unity/Assets/EmaceArt
-            Unity/Assets/Holotna
-            Unity/Assets/Mega Fantasy Props Pack
-            Unity/Assets/NatureStarterKit2
-            Unity/Assets/Plugins
-            Unity/Assets/PolyOne
-            Unity/Assets/StreamingAssets
-            Unity/Assets/Tree_Packs
-            Unity/Assets/WorldPackCompare
-            Unity/Assets/Eldoria/AldricCity
-            Unity/Assets/Eldoria/Content
-            Unity/Assets/Eldoria/Resources
-            Unity/Assets/Eldoria/Scenes
-            Unity/Assets/Eldoria/Scripts
-            Unity/Assets/Eldoria/Shaders
-            Unity/Assets/Eldoria/SpawnlingBastion2
-            Unity/Assets/Eldoria/Tests
-            Unity/Assets/Eldoria/UI
-            Unity/Assets/Eldoria/World4XCanon
-            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration
-            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt
-            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets
-            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources
-            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean
-            Unity/Assets/Eldoria/ArtTests/World4XZone1/Models
-            Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD
-            Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedE
-            Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedBridgeV1
-            Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedPlayableEntryV3
+      - name: Exact partial sparse clone; avoid 26GB archive
+        shell: powershell
+        timeout-minutes: 12
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP ("issue95-ab-"+$env:GITHUB_RUN_ID+"-"+$env:GITHUB_RUN_ATTEMPT)
+          if(Test-Path $root){throw "Refuse to overwrite existing A/B workspace: $root"}
+          & git -c protocol.version=2 clone --quiet --no-tags --depth=1 --filter=blob:none --sparse --branch art/issue95-spawnling-presence-proof-20261103 ("https://github.com/"+$env:GITHUB_REPOSITORY+".git") $root
+          if($LASTEXITCODE -ne 0){throw 'Partial sparse clone failed'}
+          $paths=@(
+            'Unity/Packages',
+            'Unity/ProjectSettings',
+            'Unity/Assets/Bublik',
+            'Unity/Assets/EmaceArt',
+            'Unity/Assets/Holotna',
+            'Unity/Assets/Mega Fantasy Props Pack',
+            'Unity/Assets/NatureStarterKit2',
+            'Unity/Assets/Plugins',
+            'Unity/Assets/PolyOne',
+            'Unity/Assets/StreamingAssets',
+            'Unity/Assets/Tree_Packs',
+            'Unity/Assets/WorldPackCompare',
+            'Unity/Assets/Eldoria/AldricCity',
+            'Unity/Assets/Eldoria/Content',
+            'Unity/Assets/Eldoria/Resources',
+            'Unity/Assets/Eldoria/Scenes',
+            'Unity/Assets/Eldoria/Scripts',
+            'Unity/Assets/Eldoria/Shaders',
+            'Unity/Assets/Eldoria/SpawnlingBastion2',
+            'Unity/Assets/Eldoria/Tests',
+            'Unity/Assets/Eldoria/UI',
+            'Unity/Assets/Eldoria/World4XCanon',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean',
+            'Unity/Assets/Eldoria/ArtTests/World4XZone1/Models',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedE',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedBridgeV1',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedPlayableEntryV3'
+          )
+          & git -C $root sparse-checkout set --cone -- $paths
+          if($LASTEXITCODE -ne 0){throw 'Sparse Unity path checkout failed'}
+          $actual=(& git -C $root rev-parse HEAD).Trim()
+          if($actual -ne $env:GITHUB_SHA){throw 'SHA changed during clone; fail closed'}
+          if(-not(Test-Path (Join-Path $root 'Unity/Assets/Eldoria/SpawnlingBastion2/SpawnlingEncounterVisual.cs'))){throw 'Spawnling source missing'}
+          if(-not(Test-Path (Join-Path $root 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'))){throw 'World scene missing'}
+          Add-Content -Path $env:GITHUB_ENV -Value ("ISSUE95_ROOT="+$root)
+          Write-Host "ISSUE95_SPARSE_CLONE_PASS sha=$actual"
       - name: Validate exact owner and Windows lease without editing another workstream
         shell: powershell
         env:
@@ -85,7 +95,7 @@ jobs:
             $_.resources -contains 'windows-runner-heavy'
           })
           if($other.Count){throw 'Another workstream owns Unity runner'}
-          $actual=(& git rev-parse HEAD).Trim()
+          $actual=(& git -C $env:ISSUE95_ROOT rev-parse HEAD).Trim()
           if($actual -ne $env:GITHUB_SHA){throw 'Checkout drifted from requested candidate'}
           Write-Host "ISSUE95_SOURCE_AND_LEASE_VALIDATED sha=$actual revision=22"
       - name: Execute focused real Unity PlayMode A/B, retaining original player data
@@ -94,7 +104,7 @@ jobs:
           $ErrorActionPreference='Stop'
           $xml=Join-Path $env:RUNNER_TEMP 'issue95-spawnling-native-ab.xml'
           $log=Join-Path $env:RUNNER_TEMP 'issue95-spawnling-native-ab.log'
-          $out=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-reference-clean'
+          $out=Join-Path $env:ISSUE95_ROOT 'docs/evidence/valoria-reference-clean'
           foreach($view in @('close','regional','close-portrait')){
             foreach($state in @('before','after')){
               $file=Join-Path $out "integration-issue95-spawnling-$view-$state.png"
@@ -102,11 +112,11 @@ jobs:
             }
           }
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor path unavailable'}
-          $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-runTests',
+          $args=@('-batchmode','-force-d3d11','-projectPath',(Join-Path $env:ISSUE95_ROOT 'Unity'),'-runTests',
             '-testPlatform','PlayMode',
             '-testFilter','Eldoria.Tests.SpawnlingAnimatedV4Tests.OriginalIntegratedWorldShows1_5xSpawnlingA_BFromSameCameraWithoutGameplayChange',
             '-testResults',$xml,'-logFile',$log)
-          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ISSUE95_ROOT -PassThru
           if(-not($p.WaitForExit(900000))){
             & taskkill.exe /PID $p.Id /T /F | Out-Null
             if(Test-Path $log){Get-Content $log -Tail 110}
@@ -131,6 +141,9 @@ jobs:
               }
             }
           }
+          $published=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-reference-clean'
+          New-Item -Path $published -ItemType Directory -Force|Out-Null
+          Copy-Item -Path (Join-Path $out 'integration-issue95-spawnling-*.png') -Destination $published -ErrorAction Stop
           Write-Host "ISSUE95_NATIVE_UNITY_A_B_TECH_PASS sha=$env:GITHUB_SHA images=6 art_approved=false"
       - uses: actions/upload-artifact@v4
         if: always()
