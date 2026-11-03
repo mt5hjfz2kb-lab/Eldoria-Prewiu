@@ -77,8 +77,10 @@ def main():
         originals[name] = (cut, x, y)
         combined = ImageChops.lighter(combined, footprint)
 
-    deletion = combined.point(lambda p: 255 if p > 37 else 0)
-    deletion = deletion.filter(ImageFilter.MaxFilter(27))
+    # B11 corrective pass: preserve the alpha edge exactly. Dilation 27 px
+    # removed valid sky/rock pixels beyond the painterly silhouette and
+    # introduced obvious pasted/foggy triangles. That source was REJECTED.
+    deletion = combined
     # At low resolution, Telea fills underlying distant landscape from
     # surrounding real image colors. No AI generation, no invented photography.
     size = (w // 4, h // 4)
@@ -86,52 +88,69 @@ def main():
     small_mask = cv2.resize(np.array(deletion), size, interpolation=cv2.INTER_NEAREST)
     restored_small = cv2.inpaint(small_rgb, small_mask, 13, cv2.INPAINT_TELEA)
     restored = Image.fromarray(restored_small[:, :, ::-1], mode="RGB").resize(
-        (w, h), Image.Resampling.BICUBIC).filter(ImageFilter.GaussianBlur(3.5))
+        (w, h), Image.Resampling.BICUBIC).filter(ImageFilter.GaussianBlur(1.0))
     # Preserve every unrelated source pixel, feather only the removed surface.
-    feather = deletion.filter(ImageFilter.GaussianBlur(18))
-    clean = Image.composite(restored, source, feather)
+    # Subtract exactly what each individually imported cutout can cover;
+    # this prevents a dark halo when a matte is translucent at its edge.
+    clean = Image.composite(restored, source, deletion)
 
     # Physical depth cue: distant air slightly cooler and lower contrast.
     # This is deliberately *below* all real cutouts; source pixels never
     # masquerade as two castles. Do not paint a gradient on top of the stage.
-    clean = ImageEnhance.Color(clean).enhance(.86)
-    clean = ImageEnhance.Contrast(clean).enhance(.93)
+    clean = ImageEnhance.Color(clean).enhance(.93)
+    clean = ImageEnhance.Contrast(clean).enhance(.965)
     cold = Image.new("RGB", (w, h), (115, 144, 166))
-    clean = Image.blend(clean, cold, .075)
+    clean = Image.blend(clean, cold, .048)
     OUTPUT.mkdir(parents=True, exist_ok=True)
     EVIDENCE.mkdir(parents=True, exist_ok=True)
     backplate = OUTPUT / "clean_backdrop.png"
     clean.save(backplate, optimize=True)
     (OUTPUT / "clean_backdrop.png.meta").write_text(META, encoding="utf-8")
 
-    # Source-only composition proof. This is NOT a Unity screenshot and not
-    # artistic acceptance; the native head will still produce real A/B PNG.
+    # Six actual material variants: sculpt local stone/light using intensity
+    # derivatives, rather than putting more photograph patches over a photograph.
+    # Source and B10 cutouts are immutable. This is a zero-credit art experiment.
+    tone = {
+        "left_castle": (.955,.990,1.018),
+        "bridge": (.995,1.012,1.012),
+        "right_castle": (1.055,1.016,.958),
+        "left_rock": (1.056,1.024,.950),
+        "right_cliff": (1.066,1.021,.942),
+        "near_cliff": (1.075,1.037,.930),
+    }
     demo = clean.convert("RGBA")
-    depth_tones = {
-        "left_castle": (.94, .98, 1.03),
-        "bridge": (1.03, 1.02, .96),
-        "right_castle": (1.065, 1.035, .965),
-        "left_rock": (1.025, 1.015, .99),
-        "right_cliff": (1.045, 1.018, .97),
-        "near_cliff": (1.06, 1.03, .955),
-    }
-    offsets = {
-        "left_castle": (-4, 1), "bridge": (-2, 2),
-        "right_castle": (7, 2), "left_rock": (-4, -3),
-        "right_cliff": (6, -4), "near_cliff": (0, 0),
-    }
-    for name in EXPECTED:
+    for i,name in enumerate(EXPECTED):
         cut, x, y = originals[name]
-        c = np.array(cut).copy()
-        tone = depth_tones[name]
-        c[:, :, 0:3] = np.clip(c[:, :, 0:3].astype(np.float32) *
-                                np.array(tone, dtype=np.float32), 0, 255).astype(np.uint8)
-        colored = Image.fromarray(c, mode="RGBA")
-        dx, dy = offsets[name]
-        # Clip own contact edge; don't shift stage objects or their hit zones.
-        layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-        layer.paste(colored, (x + dx, y + dy), colored)
-        demo.alpha_composite(layer)
+        arr = np.array(cut, dtype=np.float32)
+        gray = cv2.cvtColor(arr[:, :, :3].astype(np.uint8), cv2.COLOR_RGB2GRAY)
+        gray = cv2.GaussianBlur(gray.astype(np.float32)/255, (0, 0), 2.8)
+        gy, gx = np.gradient(gray)
+        surface = np.clip(1.0 + (-.7*gx-.65*gy) * (1.2 + i*.15), .81, 1.16)
+        arr[:, :, :3] = np.clip(arr[:, :, :3] * surface[:, :, None] *
+                                  np.asarray(tone[name])[None,None,:], 0, 255)
+        tinted = Image.fromarray(arr.astype(np.uint8), "RGBA")
+        tinted.save(OUTPUT / (name + ".png"), optimize=True)
+        # Each asset has its own stable GUID. Do not reuse B10 GUIDs.
+        identity = f"776494a73bb14331ad5435af8e2e{6200+i:04d}"
+        (OUTPUT / (name + ".png.meta")).write_text(
+            META.replace("776494a73bb14331ad5435af8e2e6111", identity),
+            encoding="utf-8")
+        full_plane = Image.new("RGBA", (w,h), (0,0,0,0))
+        full_plane.alpha_composite(tinted, (x,y))  # no pasted offset at rest
+        demo.alpha_composite(full_plane)
+    folder_meta = """fileFormatVersion: 2
+guid: 776494a73bb14331ad5435af8e2e6f00
+folderAsset: yes
+DefaultImporter:
+  externalObjects: {}
+  userData:
+  assetBundleName:
+  assetBundleVariant:
+"""
+    (ROOT/"DepthB11.meta").write_text(folder_meta, encoding="utf-8")
+
+    # Source-only composition proof, NOT Unity. Mandatory visual QA must
+    # reject even technically passing source prep if it resembles cutout collage.
     preview = EVIDENCE / "B11_source_only_preview_NOT_UNITY.png"
     demo.convert("RGB").save(preview, optimize=True)
     deletion.save(EVIDENCE / "removed_duplicate_source_regions.png", optimize=True)
