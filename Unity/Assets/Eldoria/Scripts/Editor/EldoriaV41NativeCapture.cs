@@ -868,9 +868,13 @@ namespace Eldoria.Editor
                         Available=new ArmyRoster{ArcherT1=variant==0?60:1},
                         ChapterProgress=new ChapterProgressState{MarchConfirmed=true}
                     };
+                    // The starter hero can beat stage 1 even with one T1;
+                    // stage 25 is the legitimate first-chapter power wall.
+                    int stage=variant==0?1:25;
+                    if(stage==25)combatState.Retention.LastClearedStage=24;
                     string combatNotice;
                     var applied=EarlyRetentionRules.Apply(combatState,
-                        "VigilantBattle","1",
+                        "VigilantBattle",stage.ToString(),
                         new DateTime(2026,11,3,12,0,0,DateTimeKind.Utc).Ticks,
                         out combatNotice);
                     Need(applied==true&&combatState.LastBattleReport.Won==(variant==0),
