@@ -666,6 +666,17 @@ namespace Eldoria.Editor
             Shot(host,"mailbox-small-phone-landscape",844,390);
             Need(mailbox.VisibleMessageRows==1,
                 "Actual single-message inbox shows exactly one real card, not five filler emails");
+            var mailboxFrame=host.Hud.GetComponentsInChildren<RectTransform>(true)
+                .First(t=>t.name=="Mailbox / adaptive collection frame");
+            var mailboxWindow=host.Hud.GetComponentsInChildren<RectTransform>(true)
+                .First(t=>t.name=="V41 / Buzón destination");
+            Need(mailboxFrame.rect.height>80f&&
+                mailboxFrame.rect.height<mailboxWindow.rect.height*.63f,
+                "Single real report uses a compact illustrated card frame, not five empty rows");
+            Need(mailboxFrame.GetComponentsInChildren<Image>(true)
+                .Any(i=>i.name.EndsWith("independent metal nine-slice")&&
+                    i.sprite&&i.type==Image.Type.Sliced&&!i.raycastTarget),
+                "Mailbox outer collection has an independent real nine-slice gold rim");
             Need(RoyalGoldV41MailboxScreen.VisibleCountFor(0,0)==0 &&
                 RoyalGoldV41MailboxScreen.VisibleCountFor(1,0)==1 &&
                 RoyalGoldV41MailboxScreen.VisibleCountFor(5,0)==5 &&
@@ -676,11 +687,25 @@ namespace Eldoria.Editor
             var row=host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Buzón / mensaje 0");row.onClick.Invoke();yield return null;
             Need(gateway.Snapshot().Mailbox.Unread("informes")==0,"Opening actual message marks it read");
             Shot(host,"mailbox-real-report",900,1600);
+            Shot(host,"mailbox-report-small-phone",390,844);
+            Shot(host,"mailbox-report-small-phone-landscape",844,390);
+            var reportText=host.Hud.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(t=>t.name=="Contenido del mensaje");
+            Need(reportText&&reportText.text.Contains("Tropas enviadas:")&&
+                !reportText.text.Contains("Poder:")&&
+                !reportText.text.Contains("Ruptura super")&&
+                !reportText.text.Contains("estrategia óptima"),
+                "Actual battle report contains real army/results but no hidden combat formulas or optimal strategy");
+            var reportScroller=host.Hud.GetComponentsInChildren<ScrollRect>(true)
+                .FirstOrDefault(x=>x.name=="Mailbox / report scroll viewport");
+            Need(reportScroller&&reportScroller.vertical&&reportScroller.viewport!=null,
+                "Actual report document uses live vertical scrolling at compact mobile resolutions");
             int wood=gateway.Snapshot().Resources.Wood;
             host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Eliminar").onClick.Invoke();
             Need(gateway.Snapshot().Mailbox.List("informes").Count==0&&gateway.Snapshot().Resources.Wood==wood,"Delete neither replays battle nor pays again");
             mailbox.Refresh();yield return null;
             Shot(host,"mailbox-empty-phone",900,1600);
+            Shot(host,"mailbox-empty-landscape",1600,900);
             Shot(host,"mailbox-empty-small-phone",390,844);
             Shot(host,"mailbox-empty-small-phone-landscape",844,390);
             Need(mailbox.VisibleMessageRows==0,"Empty mailbox is genuinely empty without fabricated message rows");
