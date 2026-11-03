@@ -76,7 +76,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalGoldV3VigilantsRoadFoundation pathFoundation;
         RoyalGoldV3EncounterGrounding enemyGroundBack, enemyGroundFront;
         RoyalGoldV3GuardianReliefGraphic guardianRelief;
-        Texture2D paintedVigilants, paintedScouts, scoutParchment;
+        Texture2D paintedVigilants, paintedVigilantsClean, paintedScouts, scoutParchment;
         Sprite scoutParchmentSprite, encounterSkinSprite;
         Image encounterSkin;
         GameObject screen;
@@ -378,6 +378,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // remain separate, live Unity controls layered above the painting.
             paintedVigilants=Resources.Load<Texture2D>("EldoriaRetention/vigilants-painterly-v2")
                 ?? Resources.Load<Texture2D>("EldoriaRetention/vigilants-painterly");
+            // B11 is source-derived but does NOT print six complete pieces
+            // behind their real painterly stage planes. Legacy falls back intact.
+            paintedVigilantsClean=Resources.Load<Texture2D>(
+                "EldoriaRetention/DepthB11/clean_backdrop");
             paintedScouts=Resources.Load<Texture2D>("EldoriaRetention/scouts-painterly-v2")
                 ?? Resources.Load<Texture2D>("EldoriaRetention/scouts-painterly");
             // Keep the earlier zero-cost procedural texture as resilient fallback.
@@ -1215,7 +1219,6 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 var source=vig?paintedVigilants:paintedScouts;
                 paintedScene.enabled=source!=null;
-                if(source && paintedScene.texture!=source)paintedScene.texture=source;
                 if(source)
                 {
                     // Cover the changing portrait/landscape panel without
@@ -1246,6 +1249,19 @@ namespace Eldoria.UI.RoyalGold.V2
                     landscapeLight.gameObject.SetActive(hasApprovedScene);
                 if(pathFoundation)
                     pathFoundation.gameObject.SetActive(hasApprovedScene);
+            }
+            // Only after the six independent artist-authored source masses
+            // have materialized may the original complete image disappear.
+            // This removes the repeated/photographic single image underneath
+            // all cutouts. The original texture is still the immutable
+            // reference for UV placement, progression and fallback.
+            if(paintedScene)
+            {
+                bool b11=vig && paintedVigilantsClean &&
+                    vigilantsParallax && vigilantsParallax.HasStructuralB11;
+                var shown=b11 ? paintedVigilantsClean :
+                    vig ? paintedVigilants : paintedScouts;
+                if(paintedScene.texture!=shown)paintedScene.texture=shown;
             }
             if(!vig && engendroPortrait)
                 engendroPortrait.transform.parent.gameObject.SetActive(false);
