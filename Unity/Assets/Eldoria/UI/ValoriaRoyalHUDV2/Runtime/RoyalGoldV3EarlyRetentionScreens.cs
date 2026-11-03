@@ -913,6 +913,11 @@ namespace Eldoria.UI.RoyalGold.V2
             bool scoutsLandscape=!portrait && OpenDestination==Destination.Scouts;
             bool vigilantsLandscape=!portrait && OpenDestination==Destination.Vigilants;
             bool vigilantsPortrait=portrait && OpenDestination==Destination.Vigilants;
+            // Reference-first structural pass: Vigilants is not two pasted
+            // rectangular panels. The map is the dominant continuous scene;
+            // the genuinely playable manuscript becomes its lower tabletop.
+            // Narrow-landscape and portrait retain their proven safe layout.
+            bool vignetteLandscape=vigilantsLandscape&&!compactLandscape;
             // The approved reference is scenic-first. In wide views the landscape
             // or cartographer's desk spans the available width; actual missions
             // and the combat panel float over the LOWER portion of that artwork.
@@ -926,8 +931,17 @@ namespace Eldoria.UI.RoyalGold.V2
             // The landscape remains dominant, but the enemy and all real
             // stats get sufficient room in a proper illustrated card.
             TL(heroScene,portrait?18f:20f,imageTop,
-                portrait?pw-36f:vigilantsLandscape?pw*.56f-24f:pw-40f,scenicHeight);
-            if(vigilantsLandscape)
+                portrait?pw-36f:vignetteLandscape?pw-40f:
+                vigilantsLandscape?pw*.56f-24f:pw-40f,scenicHeight);
+            if(vignetteLandscape)
+            {
+                // The 25 authentic stages now span an environment, not a
+                // photographic sidebar. Keep the last 22% of the backdrop
+                // free for the painterly mountain and final fortress.
+                chapterTrail.rectTransform.anchorMin=new Vector2(.06f,.45f);
+                chapterTrail.rectTransform.anchorMax=new Vector2(.77f,.94f);
+            }
+            else if(vigilantsLandscape)
             {
                 chapterTrail.rectTransform.anchorMin=new Vector2(.04f,.13f);
                 chapterTrail.rectTransform.anchorMax=new Vector2(.34f,.86f);
@@ -992,8 +1006,14 @@ namespace Eldoria.UI.RoyalGold.V2
             if(portrait)
                 TL(infoCard,bodyX,imageTop+scenicHeight+10f,
                     bodyWidth,ph-(imageTop+scenicHeight+58f));
-            else if(vigilantsLandscape&&!compactLandscape)
-                TL(infoCard,pw*.575f,imageTop,pw*.415f-12f,ph-imageTop-47f);
+            else if(vignetteLandscape)
+            {
+                // Approved composition places the battle ledger UNDER the
+                // continuous route art. It no longer divides the screen into
+                // two photograph-like rectangles. No new panel or dummy data.
+                float cardHeight=Mathf.Clamp(ph*.33f,188f,248f);
+                TL(infoCard,20f,ph-cardHeight-46f,pw-40f,cardHeight);
+            }
             else if(compactLandscape)
                 TL(infoCard,scoutsLandscape?18f:pw*.575f,imageTop+8f,
                     scoutsLandscape?pw-36f:pw*.415f-12f,ph-imageTop-56f);
@@ -1141,6 +1161,38 @@ namespace Eldoria.UI.RoyalGold.V2
                 battleFeedback.fontSize=height>width?23:compactLandscape?18:21;
             }
 
+            if(vignetteLandscape)
+            {
+                // Genuine 3-column diorama ledger beneath the broad landscape.
+                // This uses the same REAL chapter, unit counts, rewards and
+                // combat command. Both title/text and painted enemy coexist.
+                // The panorama above stays untouched by inactive controls.
+                TL(chapter.rectTransform,22f,7f,iw-44f,34f);
+                float leftWidth=iw*.35f;
+                TL(opponent.rectTransform,20f,45f,leftWidth,62f);
+                TL(formation.rectTransform,20f,109f,leftWidth,47f);
+                TL(reward.rectTransform,20f,157f,leftWidth,43f);
+                TL(passive.rectTransform,iw*.56f,52f,iw*.41f,73f);
+                TL(battleFeedback.rectTransform,iw*.56f,120f,iw*.41f,32f);
+                chapter.fontSize=26;opponent.fontSize=22;formation.fontSize=21;
+                reward.fontSize=20;passive.fontSize=19;battleFeedback.fontSize=18;
+                float figureX=iw*.38f,figureW=iw*.17f;
+                if(guardianRelief)TL(guardianRelief.rectTransform,
+                    figureX,35f,figureW,Mathf.Max(110f,ih-77f));
+                if(guardianPainted)TL(guardianPainted.rectTransform,
+                    figureX+8f,43f,figureW-16f,Mathf.Max(105f,ih-90f));
+                if(engendroPortrait)
+                {
+                    var figureRect=engendroPortrait.transform.parent as RectTransform;
+                    if(figureRect)TL(figureRect,
+                        figureX,35f,figureW,Mathf.Max(110f,ih-75f));
+                }
+                float buttonTop=ih-57f;
+                TL((RectTransform)claimXp.transform,iw*.565f,buttonTop,
+                    iw*.185f,49f);
+                TL((RectTransform)mainAction.transform,iw*.765f,buttonTop,
+                    iw*.205f,49f);
+            }
             // The approved quest-board cards occupy the actual manuscript,
             // not three tiny 95-point rows floating at the top of a phone.
             // Scale all three naturally with their destination's usable height.
