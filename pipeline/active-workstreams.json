@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-vigilants-b11-structural-20261103",
+      "owner": "chatgpt-eldoria-vigilants-b11-terraces-20261103",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-03",
@@ -127,8 +127,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VIGILANTS_B11_CANONICAL_NATIVE_CERTIFICATION_41696039463",
-      "next": "Unity run 41696039463 en curso sobre af610329. Revisar results PNG de guardián 5/15 horizontales y móvil, EditMode/PlayMode. No ampliar si hay fallo de source import o artefactos visuales; corregir primero. Sin merge/publicación ni ART_APPROVED.",
+      "phase": "VIGILANTS_B11_TERRACED_DIARAMA_NATIVE_AB_20261103",
+      "next": "Certificar commit ca9980c sobre PR136, verificar textura B11 7 assets y 24 terrazas frente a 25 hitos; comparar PNG Unity 1600x900 / 390x844 y 900x1600 / 844x390 con HEAD cf283c6. Sin merge/publicación; nunca usar screenshot fuente como prueba Unity.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1731,9 +1731,15 @@
           "ownership_revision": 121,
           "transferred_at": "2026-11-03",
           "reason": "Propietario: 'Hazlo tú, tienes todas las conexiones a tu alcance'. Relevo explícito B10 a B11 para reconstrucción estructural real (fondo sin duplicado, castillo/acantilado, diorama 2.5D) conservando PR136 y todos los assets/gameplay."
+        },
+        {
+          "owner": "chatgpt-eldoria-vigilants-b11-structural-20261103",
+          "ownership_revision": 122,
+          "transferred_at": "2026-11-03",
+          "reason": "Propietario autoriza continuación autónoma hasta A/B real con relieve, plataformas, composición fiel y validación Unity; run B11 previo 41697753493 SUCCESS y ya no usa Windows."
         }
       ],
-      "ownership_revision": 122,
+      "ownership_revision": 123,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -11038,7 +11044,7 @@
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
     "status": "claimed",
-    "owner": "chatgpt-eldoria-vigilants-b11-structural-20261103",
+    "owner": "chatgpt-eldoria-vigilants-b11-terraces-20261103",
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
