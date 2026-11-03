@@ -394,10 +394,13 @@ jobs:
           Remove-Item $log -Force -ErrorAction SilentlyContinue
           $args=@('-batchmode','-nographics','-quit','-projectPath','Unity','-logFile',$log)
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
-          if(-not $p.WaitForExit(240000)){
+          # After a cold Package Manager refresh, the correct Unity 6 editor
+          # may spend more than four minutes importing existing packages.
+          # Preserve the exact-source compiler-error check and native suite.
+          if(-not $p.WaitForExit(600000)){
             & taskkill.exe /PID $p.Id /T /F|Out-Null
-            if(Test-Path $log){Get-Content $log -Tail 100}
-            throw 'Exact Unity source compilation timed out before art preparation'
+            if(Test-Path $log){Get-Content $log -Tail 140}
+            throw 'Exact Unity source compilation timed out after ten minutes before art preparation'
           }
           if(-not(Test-Path $log)){throw 'Actual Unity compilation log missing'}
           $text=Get-Content $log -Raw
