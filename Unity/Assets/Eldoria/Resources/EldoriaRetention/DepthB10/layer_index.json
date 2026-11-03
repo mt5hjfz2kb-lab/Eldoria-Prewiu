@@ -1,0 +1,121 @@
+{
+  "source_sha256": "9503ca15c74e0e41d3268f7af9e4c5a0c24aabf4e4ecbae2a0d64e3585796149",
+  "original_preserved": true,
+  "new_art_invented": false,
+  "format": "cropped approved painted masks with alpha",
+  "original_width": 1536,
+  "original_height": 1024,
+  "layers": [
+    {
+      "name": "left_castle",
+      "pixel_bbox": [
+        91,
+        27,
+        463,
+        395
+      ],
+      "uv": [
+        0.059244791666666664,
+        0.587890625,
+        0.3014322916666667,
+        0.3857421875
+      ],
+      "bytes": 198319,
+      "sha256": "cdc060b8f83a5e940a70f42b2539f47bcf9e604222f97441117395145d6542af"
+    },
+    {
+      "name": "bridge",
+      "pixel_bbox": [
+        387,
+        302,
+        534,
+        317
+      ],
+      "uv": [
+        0.251953125,
+        0.3955078125,
+        0.34765625,
+        0.3095703125
+      ],
+      "bytes": 209578,
+      "sha256": "35338921226264a7ed2d654d007d3d266f600d13c7c341aeb8e724b6a1fbcca6"
+    },
+    {
+      "name": "right_castle",
+      "pixel_bbox": [
+        807,
+        27,
+        611,
+        499
+      ],
+      "uv": [
+        0.525390625,
+        0.486328125,
+        0.3977864583333333,
+        0.4873046875
+      ],
+      "bytes": 344014,
+      "sha256": "862984c66704b7328fe7167af484eb018cb0eb9add8497d5b2a44a607d4987a7"
+    },
+    {
+      "name": "left_rock",
+      "pixel_bbox": [
+        0,
+        160,
+        608,
+        551
+      ],
+      "uv": [
+        0.0,
+        0.3056640625,
+        0.3958333333333333,
+        0.5380859375
+      ],
+      "bytes": 453129,
+      "sha256": "bd4ac0624b68513e1cc01963ef78f9d7d7a3a42978eec3e6adea929d78f5ada7"
+    },
+    {
+      "name": "right_cliff",
+      "pixel_bbox": [
+        795,
+        275,
+        741,
+        706
+      ],
+      "uv": [
+        0.517578125,
+        0.0419921875,
+        0.482421875,
+        0.689453125
+      ],
+      "bytes": 640343,
+      "sha256": "295a0f7631492b474727b7c5522f4c2378cad7ee8e5a272d74e2fddf4c53c423"
+    },
+    {
+      "name": "near_cliff",
+      "pixel_bbox": [
+        0,
+        647,
+        920,
+        377
+      ],
+      "uv": [
+        0.0,
+        0.0,
+        0.5989583333333334,
+        0.3681640625
+      ],
+      "bytes": 506781,
+      "sha256": "46a520490a504d6f04e1f7a3cc6920defc1a89c434470a1c1e64d88f8e05cddb"
+    }
+  ],
+  "depth_order": [
+    "left_castle",
+    "bridge",
+    "right_castle",
+    "left_rock",
+    "right_cliff",
+    "near_cliff"
+  ],
+  "no_new_canvas": true
+}
