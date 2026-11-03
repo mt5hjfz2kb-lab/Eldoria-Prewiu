@@ -1295,16 +1295,20 @@ namespace Eldoria.UI.RoyalGold.V2
                     float fromTop = -objectiveCard.anchoredPosition.y + objectiveCard.rect.height;
                     free.yMax = Mathf.Min(free.yMax, 1f - fromTop / height - padding);
                 }
-                else
+                else if (!(buildingVisible && Source.SelectedBuildingId=="bastion"))
                 {
-                    // The chapter occupies only the TOP-LEFT. Rejecting that
-                    // entire horizontal strip even at the middle of the screen
-                    // prevented genuine world POIs from being selected/framed.
-                    // Exclude its top band instead; the edge-anchored bottom navigation is measured separately.
-                    float fromTop = -objectiveCard.anchoredPosition.y +
+                    // The top-left quest occupies this band for objects that
+                    // could share its horizontal footprint. Preserve it for
+                    // other targets, including left-side buildings.
+                    float fromTop=-objectiveCard.anchoredPosition.y+
                         objectiveCard.rect.height;
-                    free.yMax = Mathf.Min(free.yMax, 1f - fromTop / height - padding);
+                    free.yMax=Mathf.Min(free.yMax,1f-fromTop/height-padding);
                 }
+                // The actual Bastion is centered, outside the top-LEFT quest.
+                // Reserving a full-width upper strip falsely left a slot
+                // shorter than its real 3D mesh, forcing the castle behind
+                // the lower council card on desktop. Its full height can fit
+                // above the card while the separate left quest stays visible.
             }
             return free;
         }
