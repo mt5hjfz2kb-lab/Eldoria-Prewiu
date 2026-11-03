@@ -953,11 +953,14 @@ namespace Eldoria.Editor
             }
             mailbox.Initialize(host.Hud,gateway);
             mailbox.Close();mailbox.Open();yield return null;
+            Need(File.ReadAllText(host.City.SaveFile)==visualSave,
+                "All four discovery family and outcome QA shots left actual saved game bytes identical");
+            // Opening even an already-read actual record issues a fresh
+            // MailRead command and writes a command receipt. Compare saved
+            // bytes BEFORE returning to that authorized gameplay action.
             host.Hud.GetComponentsInChildren<Button>()
                 .First(x=>x.name=="Buzón / mensaje 0").onClick.Invoke();
             yield return null;
-            Need(File.ReadAllText(host.City.SaveFile)==visualSave,
-                "All four discovery family and outcome QA shots left actual saved game bytes identical");
             int wood=gateway.Snapshot().Resources.Wood;
             host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Eliminar").onClick.Invoke();
             Need(gateway.Snapshot().Mailbox.List("informes").Count==0&&gateway.Snapshot().Resources.Wood==wood,"Delete neither replays battle nor pays again");
