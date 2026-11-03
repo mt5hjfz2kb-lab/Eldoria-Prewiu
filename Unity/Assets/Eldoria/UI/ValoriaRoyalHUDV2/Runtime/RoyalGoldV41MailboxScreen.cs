@@ -69,7 +69,14 @@ namespace Eldoria.UI.RoyalGold.V2
         void BeforeCanvasRender()
         {
             if(!window||!hud)return;
-            if(Mathf.Abs(window.rect.width-lastWidth)>.5f||Mathf.Abs(window.rect.height-lastHeight)>.5f)Layout();
+            if(Mathf.Abs(window.rect.width-lastWidth)>.5f||
+                Mathf.Abs(window.rect.height-lastHeight)>.5f)
+            {
+                // An aspect-ratio change can switch 5-row portrait pagination
+                // to 2-row compact landscape pagination. Recreate the real
+                // visible rows, not just their RectTransforms.
+                if(IsOpen)Refresh();else Layout();
+            }
             RefreshEntryVisibility();
         }
         bool MailboxIntroduced
@@ -110,7 +117,10 @@ namespace Eldoria.UI.RoyalGold.V2
             if(hud==null||gateway==null)return;
             if(IsOpen && hud.NarrativeOpen){Close();return;}
             if(window!=null && (Mathf.Abs(window.rect.width-lastWidth)>.5f ||
-                          Mathf.Abs(window.rect.height-lastHeight)>.5f))Layout();
+                          Mathf.Abs(window.rect.height-lastHeight)>.5f))
+            {
+                if(IsOpen)Refresh();else Layout();
+            }
             if(Time.unscaledTime>=nextRefresh)
             {
                 nextRefresh=Time.unscaledTime+.6f;

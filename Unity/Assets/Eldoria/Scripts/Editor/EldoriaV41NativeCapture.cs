@@ -765,6 +765,10 @@ namespace Eldoria.Editor
             // screenshot cannot silently change the expected page length.
             Shot(host,"mailbox-qa-twelve-portrait-pagination-start",900,1600);
             var nextPage=host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Página siguiente");
+            // A native capture temporarily changes the render target and
+            // restores its prior display dimensions. Allow one actual Unity
+            // frame to reconcile the live UI before asserting page state.
+            mailbox.Refresh();yield return null;
             // Portrait=5/page, compact landscape=2/page. The render capture
             // temporarily changes Unity dimensions, then restores the live
             // canvas. Check every real page at its CURRENT responsive size,
