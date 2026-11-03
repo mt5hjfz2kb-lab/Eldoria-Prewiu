@@ -666,6 +666,27 @@ namespace Eldoria.Editor
             Shot(host,"mailbox-small-phone-landscape",844,390);
             Need(mailbox.VisibleMessageRows==1,
                 "Actual single-message inbox shows exactly one real card, not five filler emails");
+            // Exercise all four existing categories without filling any with
+            // fictional mail. The real economy ledger retains reward receipts.
+            var rewardsTab=host.Hud.GetComponentsInChildren<Button>()
+                .First(x=>x.name=="Buzón recompensas");
+            rewardsTab.onClick.Invoke();yield return null;
+            Need(mailbox.VisibleMessageRows==
+                Mathf.Min(5,gateway.Snapshot().Mailbox.List("recompensas").Count),
+                "Real rewards category shows only actual delivered messages");
+            Shot(host,"mailbox-rewards-phone",900,1600);
+            var systemTab=host.Hud.GetComponentsInChildren<Button>()
+                .First(x=>x.name=="Buzón sistema");
+            systemTab.onClick.Invoke();yield return null;
+            Shot(host,"mailbox-system-phone",900,1600);
+            var narrativeTab=host.Hud.GetComponentsInChildren<Button>()
+                .First(x=>x.name=="Buzón narrativa");
+            narrativeTab.onClick.Invoke();yield return null;
+            Shot(host,"mailbox-narrative-phone",900,1600);
+            var reportsTab=host.Hud.GetComponentsInChildren<Button>()
+                .First(x=>x.name=="Buzón informes");
+            reportsTab.onClick.Invoke();yield return null;
+            Shot(host,"mailbox-reports-restored-phone",900,1600);
             var mailboxFrame=host.Hud.GetComponentsInChildren<RectTransform>(true)
                 .First(t=>t.name=="Mailbox / adaptive collection frame");
             var mailboxWindow=host.Hud.GetComponentsInChildren<RectTransform>(true)
@@ -705,6 +726,7 @@ namespace Eldoria.Editor
             Need(gateway.Snapshot().Mailbox.List("informes").Count==0&&gateway.Snapshot().Resources.Wood==wood,"Delete neither replays battle nor pays again");
             mailbox.Refresh();yield return null;
             Shot(host,"mailbox-empty-phone",900,1600);
+            Shot(host,"mailbox-empty-reference-ratio",1169,1345);
             Shot(host,"mailbox-empty-landscape",1600,900);
             Shot(host,"mailbox-empty-small-phone",390,844);
             Shot(host,"mailbox-empty-small-phone-landscape",844,390);
