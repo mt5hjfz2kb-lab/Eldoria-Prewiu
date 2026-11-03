@@ -255,6 +255,9 @@ namespace Eldoria.Tests
                     typeof(RoyalGoldV3VigilantsLivingLandscape));
                 picture.transform.SetParent(host.transform,false);
                 var painting=picture.GetComponent<RoyalGoldV3VigilantsLivingLandscape>();
+                Assert.That(typeof(RoyalGoldV3VigilantsLivingLandscape).Assembly,
+                    Is.SameAs(typeof(RoyalGoldV3VigilantsParallax).Assembly),
+                    "The one-texture landscape must be included in the existing Unity UI assembly");
                 painting.texture=tex;
                 painting.raycastTarget=false;
                 painting.rectTransform.sizeDelta=new Vector2(900f,640f);
