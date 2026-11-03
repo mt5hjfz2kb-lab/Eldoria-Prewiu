@@ -179,7 +179,7 @@ namespace Eldoria.ReferenceClean
 
         void Complete(string id)
         {
-            if (!CanShow() || !MoveToSite(id)) return;
+            if (!CanShow() || !MoveToSite(id, true)) return;
             Color accent = id == "bastion"
                 ? new Color(1f, .85f, .53f, .47f)
                 : new Color(.98f, .75f, .40f, .39f);
@@ -204,9 +204,9 @@ namespace Eldoria.ReferenceClean
         }
 
         // Site calculations always come from a real building collider or mesh.
-        bool MoveToSite(string id)
+        bool MoveToSite(string id, bool preferFinishedModel = false)
         {
-            if (!FindSite(id, out var b)) return false;
+            if (!FindSite(id, preferFinishedModel, out var b)) return false;
             var cam = city.PlayerCamera;
             Vector3 towardCamera = cam ? cam.transform.position - b.center : Vector3.back;
             towardCamera.y = 0f;
@@ -216,9 +216,13 @@ namespace Eldoria.ReferenceClean
             float footprint = Mathf.Clamp(Mathf.Max(b.size.x, b.size.z) * .78f, 1.25f, 6.25f);
             Vector3 ground = new Vector3(b.center.x, b.min.y + .22f, b.center.z) +
                              towardCamera * .24f;
-            Vector3 facade = b.center +
-                             Vector3.up * Mathf.Clamp(b.extents.y * .12f, .18f, .60f) +
-                             towardCamera * .48f;
+            // Project the finished ornament onto the facade-facing side of the
+            // TRUE model bounds, not through the middle of its roof or splats.
+            Vector3 eye = cam ? (cam.transform.position - b.center).normalized : Vector3.back;
+            float nearSurface = Mathf.Abs(eye.x) * b.extents.x +
+                                Mathf.Abs(eye.y) * b.extents.y +
+                                Mathf.Abs(eye.z) * b.extents.z;
+            Vector3 facade = b.center + eye * Mathf.Min(nearSurface + .12f, 20f);
 
             Place(loopDust, ground, footprint);
             Place(loopMotes, ground + Vector3.up * .18f, footprint * .65f);
@@ -234,9 +238,10 @@ namespace Eldoria.ReferenceClean
             return true;
         }
 
-        bool FindSite(string id, out Bounds bounds)
+        bool FindSite(string id, bool preferFinishedModel, out Bounds bounds)
         {
             bounds = default;
+            if (preferFinishedModel && TryModelBounds(id, out bounds)) return true;
             Collider target = null;
             var parcels = city.Parcels;
             if (parcels)
@@ -267,6 +272,13 @@ namespace Eldoria.ReferenceClean
                 return true;
             }
 
+            return TryModelBounds(id, out bounds);
+        }
+
+        bool TryModelBounds(string id, out Bounds bounds)
+        {
+            bounds = default;
+            var parcels = city.Parcels;
             GameObject model = null;
             if (id == "bastion")
                 model = city.BastionTwo && city.BastionTwo.activeInHierarchy
@@ -445,6 +457,8 @@ namespace Eldoria.ReferenceClean
             if (m.HasProperty("_MainTex")) m.SetTexture("_MainTex", texture);
             if (m.HasProperty("_Surface")) m.SetFloat("_Surface", 1f);
             if (m.HasProperty("_ZWrite")) m.SetFloat("_ZWrite", 0f);
+            if (m.HasProperty("_SrcBlend")) m.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+            if (m.HasProperty("_DstBlend")) m.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
             m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
             m.SetOverrideTag("RenderType", "Transparent");
             m.renderQueue = (int)RenderQueue.Transparent;
