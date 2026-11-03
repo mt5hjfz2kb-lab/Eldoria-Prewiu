@@ -34,6 +34,38 @@ namespace Eldoria.Tests
                 Is.InRange(close,far),"Presence must interpolate without replacing the model or collider");
         }
 
+
+        [Test]public void NonserializedArtPresenceUpliftChangesRuntimeNearAndFarWithoutChangingSourceOrGameplay()
+        {
+            var actorType=Type.GetType("Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual, Assembly-CSharp");
+            Assert.IsNotNull(actorType);
+            root=new GameObject("Eldoria Spawnling exact visual candidate A/B");
+            var actor=root.AddComponent(actorType);
+            var near=actorType.GetField("NearPresence");
+            var far=actorType.GetField("StrategicPresence");
+            var multiplier=actorType.GetField("ArtProofPresenceMultiplier");
+            var presence=actorType.GetMethod("PresenceAtZoom",BindingFlags.Public|BindingFlags.Instance);
+            Assert.IsNotNull(near);Assert.IsNotNull(far);
+            Assert.IsNotNull(multiplier);Assert.IsNotNull(presence);
+            float baselineNear=(float)near.GetValue(actor), baselineFar=(float)far.GetValue(actor);
+            Assert.That(baselineNear,Is.GreaterThan(0f));
+            Assert.That(baselineFar,Is.GreaterThan(baselineNear));
+            // Simulate old serialized scene: the NearPresence/StrategicPresence
+            // fields are untouched. Only the new nonserialized runtime factor moves.
+            multiplier.SetValue(actor,1f);
+            float oldClose=(float)presence.Invoke(actor,new object[]{14f});
+            float oldRegional=(float)presence.Invoke(actor,new object[]{280f});
+            multiplier.SetValue(actor,1.50f);
+            float candidateClose=(float)presence.Invoke(actor,new object[]{14f});
+            float candidateRegional=(float)presence.Invoke(actor,new object[]{280f});
+            Assert.That(candidateClose,Is.EqualTo(oldClose*1.50f).Within(.001f));
+            Assert.That(candidateRegional,Is.EqualTo(oldRegional*1.50f).Within(.001f));
+            Assert.That((float)near.GetValue(actor),Is.EqualTo(baselineNear));
+            Assert.That((float)far.GetValue(actor),Is.EqualTo(baselineFar));
+            Assert.IsFalse(actor.gameObject.GetComponent<Collider>());
+            Assert.IsFalse(actor.gameObject.GetComponent<Rigidbody>());
+        }
+
         [UnityTest]public IEnumerator OriginalGatewayArrivalDrivesVisualWithoutChangingCombatOrSave()
         {
             previousProfile=SliceContentProfiles.ActiveRuntimeProfile;
