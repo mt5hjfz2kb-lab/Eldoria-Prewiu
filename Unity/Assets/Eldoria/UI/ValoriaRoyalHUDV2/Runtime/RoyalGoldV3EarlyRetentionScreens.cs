@@ -51,6 +51,11 @@ namespace Eldoria.UI.RoyalGold.V2
         Rect engendroUvRect=new Rect(0f,0f,1f,1f);
         readonly RoyalText[] scoutActionLabels=new RoyalText[3];
         readonly RoyalGoldV3ScoutContractGraphic[] scoutArt=new RoyalGoldV3ScoutContractGraphic[3];
+        // Independent tactile material assembly. Never treated as a click
+        // target or source of scouting mechanics/state.
+        readonly RoyalGoldV3ScoutPaperDepth[] scoutContact=new RoyalGoldV3ScoutPaperDepth[3];
+        readonly RoyalGoldV3ScoutPaperDepth[] scoutInsetUnder=new RoyalGoldV3ScoutPaperDepth[3];
+        readonly RoyalGoldV3ScoutPaperDepth[] scoutInsetLip=new RoyalGoldV3ScoutPaperDepth[3];
         readonly string[] scoutIds=new string[3];
         RoyalText heading, kicker, introduction, chapter, opponent, formation,
             reward, battleFeedback, passive, footer, mainActionLabel, xpLabel, backLabel;
@@ -603,6 +608,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 // visual: the existing action remains the one touch target.
                 var backplate=cell.GetComponent<RoyalGoldV2FrameGraphic>();
                 if(backplate){backplate.enabled=false;backplate.raycastTarget=false;}
+                scoutContact[i]=RoyalGoldV3ScoutPaperDepth.Install(cell,
+                    "Scout / physical parchment-to-desk shadow",
+                    RoyalGoldV3ScoutPaperDepth.MaterialLayer.DeskContact,i);
                 var artwork=Rect("Crónica Real / illuminated scout contract",cell);
                 artwork.gameObject.AddComponent<CanvasRenderer>();
                 scoutArt[i]=artwork.gameObject.AddComponent<RoyalGoldV3ScoutContractGraphic>();
@@ -628,6 +636,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     Stretch(paper);
                     paper.SetAsFirstSibling();
                 }
+                scoutInsetUnder[i]=RoyalGoldV3ScoutPaperDepth.Install(cell,
+                    "Scout / inset picture stone and leather underlay",
+                    RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetUnderlay,i);
                 var vignette=Rect("Mission map detail (visual only)",cell);
                 vignette.gameObject.AddComponent<CanvasRenderer>();
                 scoutThumbnails[i]=vignette.gameObject.AddComponent<RawImage>();
@@ -635,11 +646,27 @@ namespace Eldoria.UI.RoyalGold.V2
                 scoutThumbnails[i].texture=scoutVignettes?scoutVignettes:paintedScouts;
                 scoutThumbnails[i].uvRect=new Rect(.04f+i*.27f,.14f,.22f,.56f);
                 scoutThumbnails[i].gameObject.SetActive(false);
+                scoutInsetLip[i]=RoyalGoldV3ScoutPaperDepth.Install(cell,
+                    "Scout / gilded inset edge and natural occlusion",
+                    RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetLip,i);
                 scoutTitles[i]=Text(cell,"Readable contract heading",22,Ink,true);
                 scoutCards[i]=Text(cell,"Real scout order reward and status",18,Ink);
                 scoutActions[i]=Button(cell,"Dispatch or claim scout "+(i+1),
                     "Enviar",()=>RunScout(index),out scoutActionLabels[i],true,false);
                 scoutActions[i].transform.SetParent(cell,false);
+                // Deterministic physical stack: contact shadow under original
+                // nine-sliced paper; inset underside below authentic thumbnail;
+                // corner lip above thumbnail; original wax medallion above all.
+                scoutContact[i].transform.SetSiblingIndex(0);
+                if(scoutParchment)
+                {
+                    var sheet=cell.Find("Reference parchment / visual only");
+                    if(sheet)sheet.SetSiblingIndex(1);
+                }
+                scoutInsetUnder[i].transform.SetSiblingIndex(2);
+                scoutThumbnails[i].transform.SetSiblingIndex(3);
+                scoutInsetLip[i].transform.SetSiblingIndex(4);
+                scoutArt[i].transform.SetSiblingIndex(5);
                 cell.name="Scout / live contract "+(i+1);
             }
             footer=Text(panel,"No artificial notifications",15,Muted);
@@ -1222,8 +1249,13 @@ namespace Eldoria.UI.RoyalGold.V2
                     TL(cell,14f+i*(cardW+gap),8f,cardW,cardH);
                     float inset=20f;
                     TL(scoutTitles[i].rectTransform,inset,44f,cardW-40f,62f);
+                    float paintingHeight=Mathf.Max(54f,cardH*.28f);
                     TL((RectTransform)scoutThumbnails[i].transform,
-                        inset,118f,cardW-40f,Mathf.Max(54f,cardH*.28f));
+                        inset,118f,cardW-40f,paintingHeight);
+                    TL(scoutInsetUnder[i].rectTransform,
+                        inset-7f,111f,cardW-26f,paintingHeight+14f);
+                    TL(scoutInsetLip[i].rectTransform,
+                        inset,118f,cardW-40f,paintingHeight);
                     float actionTop=cardH-(compactLandscape?83f:61f);
                     float descriptionTop=128f+cardH*.28f;
                     TL(scoutCards[i].rectTransform,inset,descriptionTop,cardW-40f,
@@ -1246,6 +1278,10 @@ namespace Eldoria.UI.RoyalGold.V2
                     float imageW=portrait?128f:70f;
                     float imageH=portrait?98f:50f;
                     TL(scoutThumbnails[i].rectTransform,32f,detailTop,imageW,imageH);
+                    TL(scoutInsetUnder[i].rectTransform,
+                        26f,detailTop-6f,imageW+12f,imageH+12f);
+                    TL(scoutInsetLip[i].rectTransform,
+                        32f,detailTop,imageW,imageH);
                     float captionX=32f+imageW+18f;
                     float buttonW=portrait?158f:120f;
                     float contentWidth=Mathf.Max(75f,cellW-captionX-buttonW-34f);
@@ -1636,6 +1672,11 @@ namespace Eldoria.UI.RoyalGold.V2
                     {
                         bool completed=order.StartedUtcTicks>0&&order.EndsUtcTicks<=now();
                         bool underway=order.StartedUtcTicks>0&&!completed;
+                        // All three layers inherit the genuine persisted
+                        // order's kind and state. No fake or derived missions.
+                        scoutContact[i]?.SetLiveState(order.Kind,underway,completed);
+                        scoutInsetUnder[i]?.SetLiveState(order.Kind,underway,completed);
+                        scoutInsetLip[i]?.SetLiveState(order.Kind,underway,completed);
                         if(scoutArt[i].Kind!=order.Kind||
                            scoutArt[i].Completed!=completed||
                            scoutArt[i].InProgress!=underway)

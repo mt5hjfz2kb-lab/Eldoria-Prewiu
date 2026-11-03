@@ -464,6 +464,39 @@ namespace Eldoria.ReferenceClean.Editor
             var different=contractArt.Select(x=>x.Kind).Distinct().Count();
             Need(different==3,
                 "Three live board entries show their distinct authored contract illustrations");
+            // Three independent material layers PER actual contract. They are
+            // native responsive geometry, not a flattened substitute image
+            // or a duplicated gameplay/card hierarchy.
+            var tactile=hud.GetComponentsInChildren<RoyalGoldV3ScoutPaperDepth>(true);
+            Need(tactile.Length==9 && tactile.All(x=>x &&
+                x.gameObject.activeInHierarchy && !x.raycastTarget &&
+                x.mainTexture==Texture2D.whiteTexture),
+                "All three live contract stacks have nine passive real-material components");
+            for(int i=0;i<3;i++)
+            {
+                var root=contractArt[i].transform.parent;
+                var material=root.GetComponentsInChildren<RoyalGoldV3ScoutPaperDepth>(true);
+                Need(material.Length==3 &&
+                    material.Count(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.DeskContact)==1 &&
+                    material.Count(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetUnderlay)==1 &&
+                    material.Count(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetLip)==1,
+                    "Three physical paper/picture layers belong to each authentic order, not to another card");
+                var thumb=root.GetComponentsInChildren<RawImage>(true)
+                    .First(x=>x.name=="Mission map detail (visual only)");
+                var under=material.First(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetUnderlay);
+                var lip=material.First(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetLip);
+                var shadow=material.First(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.DeskContact);
+                Need(shadow.transform.GetSiblingIndex() <
+                     thumb.transform.GetSiblingIndex() &&
+                     under.transform.GetSiblingIndex() <
+                     thumb.transform.GetSiblingIndex() &&
+                     lip.transform.GetSiblingIndex() >
+                     thumb.transform.GetSiblingIndex(),
+                     "Physical desk shadow, original image and inset corner lip render in true material order");
+                Need(under.rectTransform.rect.width>=thumb.rectTransform.rect.width+8f &&
+                    lip.rectTransform.rect.width>=thumb.rectTransform.rect.width-1f,
+                    "Real mission painting is seated within a deeper independent leather-and-gold window");
+            }
             Screenshot(h,"scout-mission-board",1600,900);
             var mapPreviews=hud.GetComponentsInChildren<RawImage>(true)
                 .Where(x=>x.name=="Mission map detail (visual only)").ToArray();
@@ -501,6 +534,9 @@ namespace Eldoria.ReferenceClean.Editor
             }
             var sent=h.City.Gateway.Snapshot().Retention.Orders.Where(x=>x.StartedUtcTicks>0).ToArray();
             Need(sent.Length==3,"All three cards dispatch and persist their genuine UTC return time");
+            Need(tactile.Count(x=>x.InProgress)==9 &&
+                tactile.All(x=>!x.Completed),
+                "The nine passive material layers react to the three actual dispatched UTC orders");
             Screenshot(h,"scout-missions-underway",390,844);
             var clock=h.City.Clock as ValoriaReferenceCleanGameplay.TestClock;
             Need(clock!=null,"Only disposable probe clock advances for offline return proof");
@@ -511,6 +547,9 @@ namespace Eldoria.ReferenceClean.Editor
             clock.Step((int)Math.Ceiling((sent.Max(x=>x.EndsUtcTicks)-clock.UtcTicks)/(double)TimeSpan.TicksPerSecond)+1);
             ui.SynchronizeLayout();
             yield return null;
+            Need(tactile.Count(x=>x.Completed)==9 &&
+                tactile.All(x=>!x.InProgress),
+                "Real returned orders turn all nine material layers to their ready state without fake rewards");
             Screenshot(h,"scout-missions-ready",390,844);
             yield return null;
             for(int i=3;i>=1;i--)
