@@ -47,16 +47,19 @@ namespace Eldoria.UI.RoyalGold.V2
             SetVerticesDirty();
         }
 
-        static void Quad(VertexHelper vh,Vector2 a,Vector2 b,
-            Color bottomLeft,Color bottomRight,Color topRight,Color topLeft)
+        static void Rift(VertexHelper vh,Vector2 a,Vector2 b,
+            float width,Color glow)
         {
-            int k=vh.currentVertCount;
-            vh.AddVert(new Vector2(a.x,a.y),bottomLeft,Vector2.zero);
-            vh.AddVert(new Vector2(b.x,a.y),bottomRight,Vector2.zero);
-            vh.AddVert(new Vector2(b.x,b.y),topRight,Vector2.zero);
-            vh.AddVert(new Vector2(a.x,b.y),topLeft,Vector2.zero);
-            vh.AddTriangle(k,k+1,k+2);
-            vh.AddTriangle(k,k+2,k+3);
+            var dir=b-a;
+            if(dir.sqrMagnitude<.0001f)return;
+            var normal=new Vector2(-dir.y,dir.x).normalized*(width*.5f);
+            int start=vh.currentVertCount;
+            vh.AddVert(a-normal,glow,Vector2.zero);
+            vh.AddVert(a+normal,glow,Vector2.zero);
+            vh.AddVert(b+normal,new Color(glow.r,glow.g,glow.b,0f),Vector2.zero);
+            vh.AddVert(b-normal,new Color(glow.r,glow.g,glow.b,0f),Vector2.zero);
+            vh.AddTriangle(start,start+1,start+2);
+            vh.AddTriangle(start,start+2,start+3);
         }
 
         static void Glow(VertexHelper vh,Vector2 center,float radiusX,
@@ -89,49 +92,40 @@ namespace Eldoria.UI.RoyalGold.V2
                 new Color(.46f,.30f,.63f,.22f):
                 Guardian?new Color(.57f,.48f,.30f,.14f):
                          new Color(.43f,.52f,.47f,.12f);
-            var clear=new Color(0f,0f,0f,0f);
             if(!Front)
             {
-                // Large bloom is BEHIND the authentic guardian: it gives the
-                // purple or amber light a plausible environmental origin.
-                Glow(vh,new Vector2(x+w*.54f,y+h*.50f),w*.53f,h*.60f,
-                    new Color(near.r,near.g,near.b,Breach ? 0.27f : 0.19f));
-                // Receding stony floor and an actual grounding/contact ellipse.
-                Quad(vh,new Vector2(x+w*.07f,y+h*.045f),
-                    new Vector2(x+w*.93f,y+h*.18f),
-                    new Color(.045f,.065f,.075f,.35f),
-                    new Color(.06f,.08f,.08f,.35f),clear,clear);
-                Glow(vh,new Vector2(x+w*.51f,y+h*.14f),w*.43f,h*.12f,
-                    new Color(.015f,.021f,.028f,.79f));
-                Glow(vh,new Vector2(x+w*.54f,y+h*.17f),w*.43f,h*.18f,
-                    new Color(near.r,near.g,near.b,.29f));
-                // Light is strongest where the creature meets the ground.
-                Glow(vh,new Vector2(x+w*.55f,y+h*.22f),w*.29f,h*.24f,
-                    new Color(fog.r,fog.g,fog.b,Breach ? 0.18f : 0.12f));
+                // Radial bounce light comes from the existing approved enemy.
+                // No rectangular photo plates or full-viewport overlays.
+                Glow(vh,new Vector2(x+w*.51f,y+h*.51f),w*.54f,h*.58f,
+                    new Color(near.r,near.g,near.b,Breach ? .36f : .24f));
+                Glow(vh,new Vector2(x+w*.51f,y+h*.14f),w*.44f,h*.125f,
+                    new Color(.012f,.018f,.024f,.82f));
+                Glow(vh,new Vector2(x+w*.54f,y+h*.18f),w*.45f,h*.18f,
+                    new Color(near.r,near.g,near.b,Breach ? .47f : .30f));
+                if(Breach)
+                {
+                    // The authentic Engendro now appears to stand above a
+                    // fissured Breach foothold rather than floating in a void.
+                    // Procedural luminosity only; it is NOT a new enemy asset.
+                    var purple=new Color(.84f,.31f,.98f,.64f);
+                    var origin=new Vector2(x+w*.51f,y+h*.12f);
+                    Rift(vh,origin,new Vector2(x+w*.10f,y+h*.08f),w*.022f,purple);
+                    Rift(vh,origin,new Vector2(x+w*.88f,y+h*.055f),w*.022f,purple);
+                    Rift(vh,origin,new Vector2(x+w*.69f,y+h*.24f),w*.017f,purple);
+                    Rift(vh,origin,new Vector2(x+w*.29f,y+h*.20f),w*.013f,purple);
+                    Glow(vh,origin,w*.31f,h*.11f,
+                        new Color(.65f,.26f,.88f,.30f));
+                }
             }
             else
             {
-                // Front mattes hide the hard crop edges of both full-painting
-                // enemy portraits and transparent figures; eyes/torso remain
-                // visible and the button/text live OUTSIDE this frame.
-                Color edge=new Color(.025f,.035f,.060f,.52f);
-                Quad(vh,new Vector2(x,y),new Vector2(x+w*.20f,y+h),
-                    edge,clear,clear,edge);
-                Quad(vh,new Vector2(x+w*.80f,y),new Vector2(x+w,y+h),
-                    clear,edge,edge,clear);
-                Quad(vh,new Vector2(x,y),new Vector2(x+w,y+h*.25f),
-                    new Color(near.r,near.g,near.b,.40f),
-                    new Color(near.r,near.g,near.b,.40f),clear,clear);
-                Quad(vh,new Vector2(x,y+h*.89f),new Vector2(x+w,y+h),
-                    clear,clear,
-                    new Color(.015f,.025f,.040f,.27f),
-                    new Color(.015f,.025f,.040f,.27f));
-                // A translucent foreground fog bank makes feet/terrain meet,
-                // not a rectangular photograph standing in front of the HUD.
-                Quad(vh,new Vector2(x+w*.13f,y+h*.09f),
-                    new Vector2(x+w*.88f,y+h*.19f),
-                    new Color(fog.r,fog.g,fog.b,fog.a),
-                    new Color(fog.r,fog.g,fog.b,fog.a),clear,clear);
+                // Only soft organic shapes. The older rectangular gradients
+                // created a visible purple block under the Engendro in the
+                // first exact-source Unity A/B, and are intentionally removed.
+                Glow(vh,new Vector2(x+w*.47f,y+h*.075f),w*.52f,h*.19f,
+                    new Color(fog.r,fog.g,fog.b,Breach ? .25f : .17f));
+                Glow(vh,new Vector2(x+w*.77f,y+h*.16f),w*.24f,h*.12f,
+                    new Color(fog.r,fog.g,fog.b,Breach ? .11f : .08f));
             }
         }
     }
