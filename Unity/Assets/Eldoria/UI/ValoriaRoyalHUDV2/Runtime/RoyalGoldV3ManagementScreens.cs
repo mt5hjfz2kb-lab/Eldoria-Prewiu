@@ -52,7 +52,7 @@ namespace Eldoria.UI.RoyalGold.V2
         readonly RoyalText[] trainingTierLabels=new RoyalText[2];
         readonly Image[] trainingTierPortraits=new Image[2];
         RectTransform root, layoutRoot, header, left, right, footer, quantityRow;
-        RectTransform trainingCostCard, trainingStatusCard, trainingIdentityCard;
+        RectTransform trainingCostCard, trainingStatusCard, trainingIdentityCard, trainingQuantityCard;
         bool compactLandscape;
         struct TextDensity { public int Font; public Vector2 Size; public Vector3 Scale; }
         readonly Dictionary<RoyalText,TextDensity> textDensity=new Dictionary<RoyalText,TextDensity>();
@@ -373,12 +373,15 @@ namespace Eldoria.UI.RoyalGold.V2
             unitTitle = Text("Unit or hero title",left,26,Ivory,true);
             tierButton=Button("Select archer tier",left,"ARQUEROS T1",()=>{if(CurrentDestination==Destination.Training&&gateway.Snapshot().RecruitmentCompletesUtcTicks>0)speedMinutes=speedMinutes==1?5:1;else selectedTier=selectedTier==1?2:1;Refresh();},false,out tierLabel);
             unitDetail = Text("Unit profile and composition",left,18,Muted);
-            var rosterSource=RoyalGoldV41SourceArt.Get("archer-row");
+            // The troop thumbnails must come from genuine isolated alpha art,
+            // not the old archer-row screenshot with baked courtyard pixels.
+            var rosterSource=RoyalGoldV41SourceArt.Get("training-archer-isolated-v1");
             if(rosterSource)
             {
                 var area=rosterSource.rect;
                 trainingCardPortrait=Sprite.Create(rosterSource.texture,
-                    new Rect(area.x+area.width*.22f,area.y,area.width*.58f,area.height),
+                    new Rect(area.x+area.width*.12f,area.y+area.height*.47f,
+                        area.width*.76f,area.height*.52f),
                     new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
             }
             for(int i=0;i<2;i++)
@@ -391,7 +394,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     selectedTier=tier;Refresh();
                 },false,out trainingTierLabels[i]);
                 trainingTierPortraits[i]=RoyalGoldV41SourceArt.Surface(
-                    (RectTransform)trainingTierChoices[i].transform,"archer-row");
+                    (RectTransform)trainingTierChoices[i].transform,"training-archer-isolated-v1");
                 trainingTierPortraits[i].sprite=trainingCardPortrait;
                 trainingTierPortraits[i].preserveAspect=true;
                 trainingTierChoices[i].GetComponent<RoyalGoldV2FrameGraphic>().color=new Color(1f,1f,1f,.07f);
@@ -446,6 +449,7 @@ namespace Eldoria.UI.RoyalGold.V2
             trainingCostCard=TrainingPaper(right,"Training / genuine costs",.91f);
             trainingStatusCard=TrainingPaper(right,"Training / actual timer",.88f);
             trainingIdentityCard=TrainingPaper(left,"Training / unit manuscript",.77f);
+            trainingQuantityCard=TrainingPaper(right,"Training / live quantity instruments",.73f);
             feedback=Text("Command feedback",footer,15,Gold);
             back=Button("Return to Valoria",footer,"VOLVER A LA CIUDAD",Close,false,out _);
             action=Button("Confirm military command",footer,"CONFIRMAR",Confirm,true,out actionLabel);
@@ -644,7 +648,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 bool unlocked=i==0||s.BarracksLevel>=4;
                 trainingTierChoices[i].interactable=training&&!trainingActive&&unlocked;
                 trainingTierPortraits[i].color=unlocked?Color.white:new Color(.45f,.45f,.45f,.75f);
-                trainingTierLabels[i].color=selectedTier==i+1?new Color(.18f,.11f,.055f):new Color(.37f,.26f,.16f);
+                trainingTierLabels[i].color=selectedTier==i+1?Gold:Muted;
             }
             if(!tier2Unlocked && selectedTier==2)selectedTier=1;
             if(trainingActive)selectedTier=s.PendingRecruitTier==2?2:1;
@@ -1065,14 +1069,17 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             trainingCostCard.gameObject.SetActive(training);
             trainingStatusCard.gameObject.SetActive(training);
-            trainingIdentityCard.gameObject.SetActive(training);
+            // Identity remains on the illustrated court as in the owner's
+            // reference: no giant parchment obscuring the scene.
+            trainingIdentityCard.gameObject.SetActive(false);
+            trainingQuantityCard.gameObject.SetActive(training);
             if(training)
             {
                 paneSurfaces[right].enabled=false;
                 right.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
             }
-            summary.color=training?new Color(.14f,.10f,.065f):Ivory;
-            status.color=training?new Color(.22f,.17f,.11f):Muted;
+            summary.color=training?Ivory:Ivory;
+            status.color=training?Muted:Muted;
             unitTitle.color=training?new Color(.10f,.08f,.055f):Ivory;
             unitDetail.color=training?new Color(.16f,.13f,.10f):Muted;
             action.transform.SetParent(training?right:footer,false);
@@ -1232,8 +1239,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(trainingCostCard,pad-8f,145f,orderW-pad*2f+16f,86f);
                 Place(trainingStatusCard,pad-8f,331f,orderW-pad*2f+16f,88f);
             }
+            if(wide)
+                Place(trainingQuantityCard,pad-8f,orderH*.025f,
+                    orderW-pad*2f+16f,orderH*.235f);
+            else
+                Place(trainingQuantityCard,pad-8f,11f,
+                    orderW-pad*2f+16f,137f);
             trainingCostCard.SetAsFirstSibling();
             trainingStatusCard.SetAsFirstSibling();
+            trainingQuantityCard.SetAsFirstSibling();
             // Explicit stacking retains live controls above source surfaces.
             approvedArcher.rectTransform.SetAsFirstSibling();
             if(!wide)trainingEnvironment.rectTransform.SetAsFirstSibling();
@@ -1611,7 +1625,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var r=Rect(name,parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var paper=r.gameObject.AddComponent<Image>();
-            paper.color=new Color(.965f,.895f,.735f,opacity);
+            paper.color=new Color(.048f,.075f,.099f,opacity);
             paper.raycastTarget=false;
             var rim=RoyalGoldV41SourceArt.Surface(r,"HeroCardNineSliceGold",48);
             if(rim.sprite)
@@ -1619,7 +1633,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 rim.type=Image.Type.Sliced;
                 rim.fillCenter=false;
                 rim.pixelsPerUnitMultiplier=3.4f;
-                rim.color=new Color(.82f,.65f,.34f,.72f);
+                rim.color=new Color(.82f,.65f,.34f,.62f);
                 rim.rectTransform.offsetMin=new Vector2(2f,2f);
                 rim.rectTransform.offsetMax=new Vector2(-2f,-2f);
             }
