@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-training-art-ab-20261103",
+      "owner": "chatgpt-eldoria-mailbox-v41-20261103",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-03",
@@ -125,8 +125,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "TRAINING_PROVISIONAL_ACCEPTED_PAUSED_FOR_OWNER_PRIORITY",
-      "next": "Preserve Training art source unchanged, final exact PR136 SHA and provisional owner's visual acceptance; resume only after separate pilot releases Windows and registrar confirms availability.",
+      "phase": "MAILBOX_V41_REFERENCE_ART_RECONSTRUCTION",
+      "next": "Only Buzón V4.1 source on canonical PR136. Preserve Training provisional baseline, source art and V4.1 domain. Native A/B four resolutions, empty/single/many/read/delete/reload and no duplicate rewards once Issue95 releases Windows. Never publish/merge; maintain ART_APPROVED=false.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1711,9 +1711,15 @@
           "revision": 111,
           "resource_released_at": "2026-11-03",
           "reason": "Owner reprioritizes one isolated high-impact visual proof. Training is provisionally accepted, full native run 41597116608 SUCCESS for art-code-equivalent HEAD; retain PR136 ownership and pending exact-head closeout. All Actions jobs completed. No file ownership transferred."
+        },
+        {
+          "owner": "chatgpt-eldoria-training-art-ab-20261103",
+          "ownership_revision": 112,
+          "transferred_at": "2026-11-03",
+          "reason": "Owner explicitly orders new Mailbox V4.1 reconstruction with real A/B in this chat. Training is accepted provisionally. Issue95 Windows runner currently reserved separately; do not claim it."
         }
       ],
-      "ownership_revision": 112,
+      "ownership_revision": 113,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1805,7 +1811,7 @@
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
       "candidate_branch": "fix/player-feedback-context-ui-20261030",
       "canonical_pr": 132,
-      "handoff_reason": "Owner-authorized continuation of same Training workstream; native preceding run completed, write scope preserved, no parallel PR.",
+      "handoff_reason": "Owner-directed next block authorized. Separate Issue95 currently owns Windows; do not interfere.",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
       "scope_extension_reason": "Owner-directed Marches UI recon: update obsolete PlayMode UI heading assertion to inspect real live metric, preserve gateway 7 troop and save assertions.",
