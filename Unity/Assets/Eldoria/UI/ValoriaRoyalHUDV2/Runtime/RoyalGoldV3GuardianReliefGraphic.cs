@@ -15,7 +15,15 @@ namespace Eldoria.UI.RoyalGold.V2
     public sealed class RoyalGoldV3GuardianReliefGraphic : MaskableGraphic
     {
         [SerializeField] int stageStep;
+        [SerializeField] bool paintedFigure;
         public int StageStep => stageStep;
+        public bool PaintedFigure => paintedFigure;
+        public void UsePaintedFigure(bool enabled)
+        {
+            if(paintedFigure==enabled)return;
+            paintedFigure=enabled;
+            SetVerticesDirty();
+        }
         public void SetStage(int actualStep)
         {
             int next=actualStep==5||actualStep==10||actualStep==20||actualStep==25
@@ -102,6 +110,19 @@ namespace Eldoria.UI.RoyalGold.V2
             S(v,A(.28f,.90f),A(.50f,.98f),line*1.5f,C(.83f,.65f,.33f,.68f));
             S(v,A(.72f,.90f),A(.50f,.98f),line*1.5f,C(.83f,.65f,.33f,.68f));
             O(v,A(.50f,.23f),r.width*.34f,r.height*.075f,C(.00f,.01f,.018f,.65f));
+
+            // The four painted, individually alpha-isolated candidates need
+            // the SAME architecture/lighting but must not be stamped over a
+            // second duplicate vector figure. Leave the natural stone niche
+            // and plinth behind the authentic cutout, with zero photo backing.
+            if(paintedFigure)
+            {
+                Q(v,A(.12f,.12f),A(.88f,.18f),
+                    C(.10f,.10f,.10f),C(.54f,.42f,.27f));
+                S(v,A(.16f,.17f),A(.84f,.17f),line*1.2f,gold);
+                S(v,A(.20f,.12f),A(.80f,.12f),line*.9f,black);
+                return;
+            }
 
             // Layer I: cloak and steel-backed mass with leg shadows.
             P(v,black,A(.35f,.65f),A(.65f,.66f),A(.81f,.16f),A(.19f,.16f));
