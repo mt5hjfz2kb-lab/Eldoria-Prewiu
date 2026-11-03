@@ -904,15 +904,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Reserved lower-right foreground. The continuous historic
                 // path runs through central ledges and northern fortress.
                 // No real stage marker is ever inside this rectangle.
-                float regionW=sceneW*(portrait?.34f:.35f);
-                float regionH=sceneH*(portrait?.42f:.43f);
+                float regionW=sceneW*(portrait?.41f:.35f);
+                float regionH=sceneH*(portrait?.44f:.43f);
                 float aspect=engendroTexture?engendroUvRect.width*engendroTexture.width/
                     Mathf.Max(1f,engendroUvRect.height*engendroTexture.height):1f;
                 float cw=regionW,ch=regionH;
                 if(cw/ch>aspect)cw=ch*aspect;
                 else ch=cw/aspect;
-                TL(frame,sceneW*.61f+(regionW-cw)*.5f,
-                    sceneH*.55f+(regionH-ch)*.5f,cw,ch);
+                TL(frame,sceneW*(portrait?.57f:.61f)+(regionW-cw)*.5f,
+                    sceneH*(portrait?.54f:.55f)+(regionH-ch)*.5f,cw,ch);
             }
             if(progressPlaque)
             {
