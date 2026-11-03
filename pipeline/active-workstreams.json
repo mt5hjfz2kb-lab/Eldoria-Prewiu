@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-vigilants-multiplane-b10-20261103",
+      "owner": "chatgpt-eldoria-vigilants-b11-structural-20261103",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-03",
@@ -120,15 +120,13 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VIGILANTS_MULTIPLANE_B10_ART_BAKE_AND_NATIVE_AB",
-      "next": "Finish actual six-plane alpha bake in isolated B10 branch, reconcile canonical PR136 from HEAD1fa21d, validate six imported texture assets, 25 route + native EditMode/PlayMode and same-state camera captures 390x844/1600x900. Do not publish or merge main without visual sign-off.",
+      "phase": "VIGILANTS_B11_STRUCTURAL_DIARAMA_SOURCE_GATE",
+      "next": "Reconstruir backplate limpio y castillo/acantilado derecho con capas 2.5D no duplicadas; conservar 25 hitos, Engendro en tarjeta, tests, realizar A/B nativo; reservar Windows mediante CAS antes de Unity. PR136 DRAFT, cero gasto, sin main merge.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1725,11 +1723,17 @@
           "ownership_revision": 114,
           "transferred_at": "2026-11-03T11:08:24.157Z",
           "reason": "Completed area Buzón V4.1 — reconstrucción visual aceptada provisionalmente; explicit verified handoff to next normal chat"
+        },
+        {
+          "owner": "chatgpt-eldoria-vigilants-multiplane-b10-20261103",
+          "ownership_revision": 121,
+          "transferred_at": "2026-11-03",
+          "reason": "Propietario: 'Hazlo tú, tienes todas las conexiones a tu alcance'. Relevo explícito B10 a B11 para reconstrucción estructural real (fondo sin duplicado, castillo/acantilado, diorama 2.5D) conservando PR136 y todos los assets/gameplay."
         }
       ],
-      "ownership_revision": 121,
+      "ownership_revision": 122,
       "ownership_state": "claimed",
-      "write_scope_released": true,
+      "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-03",
       "delivery_definition": {
@@ -11032,7 +11036,7 @@
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
     "status": "claimed",
-    "owner": "chatgpt-eldoria-vigilants-multiplane-b10-20261103",
+    "owner": "chatgpt-eldoria-vigilants-b11-structural-20261103",
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
