@@ -1,0 +1,108 @@
+name: "[EXPERIMENT] Issue95 Spawnling actual Unity A/B"
+
+on:
+  push:
+    branches:
+      - art/issue95-spawnling-presence-proof-20261103
+    paths:
+      - 'Unity/Assets/Eldoria/SpawnlingBastion2/SpawnlingEncounterVisual.cs'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs'
+      - '.github/workflows/issue95-spawnling-presence-native-ab.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: issue95-spawnling-presence-native-ab
+  cancel-in-progress: false
+
+jobs:
+  native_ab:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 27
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 1
+      - name: Validate exact owner and Windows lease without editing another workstream
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $request="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main"
+          $response=Invoke-RestMethod -UseBasicParsing -Headers $headers -Uri $request
+          $json=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($response.content -replace '\s','')))
+          $registry=$json|ConvertFrom-Json
+          $owner=@($registry.active|Where-Object{$_.id -eq 'eldoria-tripo-art-brain-phase2-20261021'})
+          if($owner.Count -ne 1){throw 'Unique Issue95 live owner missing'}
+          if($owner[0].owner -ne 'chatgpt-eldoria-spawnling-presence-proof-20261103' -or
+             $owner[0].ownership_revision -ne 22 -or
+             $owner[0].branch -ne 'art/issue95-spawnling-presence-proof-20261103' -or
+             -not($owner[0].resources -contains 'windows-runner-heavy')){
+            throw 'Issue95 live ownership/branch/Windows lease changed; fail closed'
+          }
+          $other=@($registry.active|Where-Object{
+            $_.id -ne 'eldoria-tripo-art-brain-phase2-20261021' -and
+            $_.resources -contains 'windows-runner-heavy'
+          })
+          if($other.Count){throw 'Another workstream owns Unity runner'}
+          $actual=(& git rev-parse HEAD).Trim()
+          if($actual -ne $env:GITHUB_SHA){throw 'Checkout drifted from requested candidate'}
+          Write-Host "ISSUE95_SOURCE_AND_LEASE_VALIDATED sha=$actual revision=22"
+      - name: Execute focused real Unity PlayMode A/B, retaining original player data
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $xml=Join-Path $env:RUNNER_TEMP 'issue95-spawnling-native-ab.xml'
+          $log=Join-Path $env:RUNNER_TEMP 'issue95-spawnling-native-ab.log'
+          $out=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-reference-clean'
+          foreach($view in @('close','regional')){
+            foreach($state in @('before','after')){
+              $file=Join-Path $out "integration-issue95-spawnling-$view-$state.png"
+              if(Test-Path $file){throw "Refuse to reuse old evidence $file"}
+            }
+          }
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor path unavailable'}
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-runTests',
+            '-testPlatform','PlayMode',
+            '-testFilter','Eldoria.Tests.SpawnlingAnimatedV4Tests.OriginalIntegratedWorldShows1_5xSpawnlingA_BFromSameCameraWithoutGameplayChange',
+            '-testResults',$xml,'-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          if(-not($p.WaitForExit(900000))){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 110}
+            throw 'Focused Unity A/B timed out'
+          }
+          if($p.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 140}
+            throw "Focused real Unity A/B failed: $($p.ExitCode)"
+          }
+          if(-not(Test-Path $xml)){throw 'PlayMode test XML missing'}
+          [xml]$result=Get-Content $xml -Raw
+          $case=@($result.SelectNodes("//test-case[contains(@fullname,'OriginalIntegratedWorldShows1_5xSpawnlingA_BFromSameCameraWithoutGameplayChange')]"))
+          if($case.Count -ne 1 -or $case[0].result -ne 'Passed'){
+            Get-Content $log -Tail 100
+            throw 'Required real camera A/B test did not pass'
+          }
+          foreach($view in @('close','regional')){
+            foreach($state in @('before','after')){
+              $file=Join-Path $out "integration-issue95-spawnling-$view-$state.png"
+              if(-not(Test-Path $file) -or (Get-Item $file).Length -lt 15000){
+                throw "Missing genuine Unity screenshot $file"
+              }
+            }
+          }
+          Write-Host "ISSUE95_NATIVE_UNITY_A_B_TECH_PASS sha=$env:GITHUB_SHA images=4 art_approved=false"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue95-spawnling-native-ab-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            docs/evidence/valoria-reference-clean/integration-issue95-spawnling-*.png
+            ${{ runner.temp }}/issue95-spawnling-native-ab.xml
+            ${{ runner.temp }}/issue95-spawnling-native-ab.log
+          if-no-files-found: warn
+          retention-days: 30
