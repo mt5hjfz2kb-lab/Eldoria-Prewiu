@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "request_id": "eldoria-construction-delight-native-ab-20261104",
+  "workstream_id": "eldoria-construction-delight-v1-20261104",
+  "source_head_before_request": "91b3cb2c735cd654604202490d69928bbeeacb92",
+  "ownership_revision": 5,
+  "mode": "REAL_UNITY_6000_3_23F1_ART_MOVEMENT_AB",
+  "expected_images": 26,
+  "formats": [
+    "844x390",
+    "390x844"
+  ],
+  "shots": [
+    "city overview",
+    "focused building idle",
+    "true sawmill construction",
+    "in-progress A/B",
+    "true level-up completion A/B",
+    "six time-resolved finishing frames",
+    "finished building and saved-state reload"
+  ],
+  "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
+  "budget_eur": 0,
+  "art_approved": false
+}
