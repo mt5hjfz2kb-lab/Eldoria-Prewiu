@@ -76,3 +76,15 @@ Reanudación exacta: revisar `main/pipeline/active-workstreams.json`, reclamar e
 - Reserva Windows liberada correctamente después de la prueba anterior; ahora el workstream eldoria-unity-metadata-integrity-20261104 controla windows-runner-heavy para su recuperación prioritaria. No interferir, no editar archivos del otro chat ni disparar Unity hasta su liberación. PR152 sigue aislada.
 
 **Cierre pendiente:** reclamar Windows mediante CAS tras su liberación, sincronizar registro principal, lanzar el workflow nativo y revisar las 26 imágenes reales A/B y seis fotogramas de finalización por orientación; corregir hasta lograr calidad artística. Hasta entonces sin capturas de los efectos nuevos, ART_APPROVED=false, sin merge y sin publicación.
+
+
+## Control preventivo de geometría — 4/11/2026
+
+La revisión del código aislado detectó un fallo introducido durante la corrección del anclaje: `VisibleBounds(GameObject,out Bounds)` llamaba recursivamente a sí misma sin condición de salida. Podía desbordar la pila si el emplazamiento no tenía collider utilizable y requería consultar los renderizadores del andamio o suelo.
+
+- **Corregido en commit `b3fec12e1bb7cf14cefca15de2f342b7d91203ab`**: agrega los `Renderer.bounds` reales de los objetos visibles y devuelve false cuando no hay geometría.
+- **Prevención añadida en commit `fb8abdd62fb1d1a19aa29a0593b6954072492c14`**: Roslyn exige que `VisibleBounds` no se invoque a sí misma y que inspeccione/agregue renderizadores auténticos.
+- **Prueba offline [41848714887](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41848714887)**: 36 assertions de dominio correctas; cero errores de sintaxis en tres archivos C#; guardia `CONSTRUCTION_DELIGHT_BOUNDS_GUARD_PASS`.
+- El ejecutor Windows permanece reservado por `eldoria-unity-metadata-integrity-20261104`. No se lanzó Unity para verificar esta corrección. Cuando se libere, reclamar el recurso mediante el registro CAS y generar los A/B auténticos antes de valorar calidad, fusionar o publicar.
+
+**Estado:** código corregido y prueba estática verificada; implementación todavía pendiente de ejecución Unity nativa y revisión artística.
