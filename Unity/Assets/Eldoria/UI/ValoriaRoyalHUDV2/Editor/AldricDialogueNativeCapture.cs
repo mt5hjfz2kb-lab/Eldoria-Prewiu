@@ -283,6 +283,19 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
                     finish.SynchronizeNow();v4.SynchronizeNow();
                     Canvas.ForceUpdateCanvases();
                     Screenshot(host,"B-after-"+stem,pair[0],pair[1]);
+                    // A bright renderer can still have dark geometry errors:
+                    // a successful image and button click did NOT catch the
+                    // speaker role being obscured by the illustrated title tab.
+                    // Check the real visible subtitle lane after each viewport
+                    // resize, for all speakers and both narrative lengths.
+                    float roleTop=-roleNode.rectTransform.anchoredPosition.y;
+                    float roleBottom=roleTop+roleNode.rectTransform.rect.height;
+                    float bodyTop=-hud.Modal.Body.rectTransform.anchoredPosition.y;
+                    Assert(roleNode.gameObject.activeInHierarchy &&
+                        !string.IsNullOrWhiteSpace(roleNode.text) &&
+                        roleTop>=90f && bodyTop>=roleBottom+8f,
+                        "Visible complete subtitle lane, disjoint from illustrated tab and narrative text in "+
+                        stem+" "+pair[0]+"x"+pair[1]);
                 }
                 for(int k=0;k<25 && hud.NarrativeOpen;k++) { button.onClick.Invoke(); yield return null; }
                 Assert(!hud.NarrativeOpen,"No dialogue progression regression after "+speaker);

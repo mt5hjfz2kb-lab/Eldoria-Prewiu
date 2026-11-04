@@ -249,7 +249,16 @@ namespace Eldoria.UI.RoyalGold.V2
             float portraitSize=compact?Mathf.Min(235f,width*.33f):Mathf.Min(column+25f,height-25f);
             float portraitX=compact?-23f:-18f;
             float portraitY=compact?7f:Mathf.Max(5f,(height-portraitSize)*.45f);
-            float bodyTop=compact?portraitY+portraitSize+17f:landscape?102f:116f;
+            // The illustrated header tab spans roughly y=26..87 from the
+            // frame's top. The previous role started at y=71, so its first
+            // line was hidden behind that tab in native Unity screenshots.
+            // Reserve a real subtitle lane below the tab, then put the
+            // complete narrative below both the role and the portrait.
+            float roleTop=92f;
+            int roleFont=Mathf.RoundToInt(Mathf.Clamp(16f/scale,16f,32f));
+            float roleHeight=Mathf.Max(29f,roleFont*1.27f);
+            float bodyTop=Mathf.Max(roleTop+roleHeight+11f,
+                compact?portraitY+portraitSize+17f:0f);
             float buttonH=Mathf.Clamp(48f/scale,48f,112f);
             float footer=buttonH+23f;
             float available=height-bodyTop-footer;
@@ -351,7 +360,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(role)
             {
                 role.color=isOrin?new Color(.95f,.85f,1f):isLyra?gold:parchmentInk;
-                role.fontSize=Mathf.RoundToInt(Mathf.Clamp(16f/scale,16f,32f));
+                role.fontSize=roleFont;
                 if(isOrin&&!roleOverridden&&role.text!="Custodio del Relicario")
                 {
                     canonicalRoleBeforeOverride=role.text;
@@ -364,8 +373,7 @@ namespace Eldoria.UI.RoyalGold.V2
                         role.Put(canonicalRoleBeforeOverride);
                     roleOverridden=false;
                 }
-                Top(role.rectTransform,titleX+2f,27f+titleH,titleWidth-2f,
-                    Mathf.Max(29f,role.fontSize*1.27f));
+                Top(role.rectTransform,titleX+2f,roleTop,titleWidth-2f,roleHeight);
             }
             modal.Body.color=isOrin?new Color(.96f,.89f,1f):isLyra?gold:parchmentInk;
             modal.Body.alignment=TextAnchor.UpperLeft;
