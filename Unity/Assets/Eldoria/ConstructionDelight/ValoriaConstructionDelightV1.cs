@@ -56,6 +56,7 @@ namespace Eldoria.ReferenceClean
         Material dustMaterial, ringMaterial;
         Transform particleRoot;
 
+        public string ActiveBuildingId => activeBuilding ?? "";
         public int ActiveConstructionSprites => (loopDust?.VisibleCount ?? 0) +
                                                  (loopMotes?.VisibleCount ?? 0);
         public int ActiveFinishSprites => (finishDust?.VisibleCount ?? 0) +
