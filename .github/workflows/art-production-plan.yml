@@ -108,3 +108,4 @@ jobs:
             pipeline/toolchain-capabilities.json
             pipeline/blender-professional-authoring-standard.json
           if-no-files-found: error
+          retention-days: 3
