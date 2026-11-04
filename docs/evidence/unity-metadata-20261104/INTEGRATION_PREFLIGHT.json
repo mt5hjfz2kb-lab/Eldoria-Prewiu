@@ -17,6 +17,9 @@
   "original_bytes_before_and_after_tests": 345,
   "unexpected_tracked_changes": 0,
   "native_result": "PASS",
-  "merged": false,
-  "published": false
+  "merged": true,
+  "published": false,
+  "merge_commit": "91419eadbb1b7c678e249438f0b449cbd7dec0bd",
+  "pull_request": 153,
+  "post_merge_verification": "See CLOSEOUT.json for separately recorded canonical pipeline outcomes; native proof above is complete."
 }
