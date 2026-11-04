@@ -319,7 +319,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Keep the actual image silhouette overlapping the real
                 // manuscript edge at every length, not just long dialogues.
                 float paperLeft=column*.68f;
-                portraitX=Mathf.Max(portraitX,paperLeft+70f-portraitSize*.96f);
+                // The approved cinematic bust must visibly cross the paper
+                // edge without entering the first text glyph. The old +70
+                // rule yielded only a feather-thin contact once the model's
+                // transparent source edge was dissolved; use a broader visual
+                // overlap, with the text still starting at column + 12.
+                portraitX=Mathf.Max(portraitX,paperLeft+135f-portraitSize*.96f);
             }
             frame.anchorMin=frame.anchorMax=new Vector2(.5f,0);
             frame.pivot=new Vector2(.5f,0);

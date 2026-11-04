@@ -120,10 +120,32 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
                     var actualFrame=actualHud.Modal.Title.rectTransform.parent as RectTransform;
                     var actualAperture=actualFrame?
                         actualFrame.Find("Dialogue / genuine portrait aperture") as RectTransform:null;
-                    Assert(actualAperture&&actualAperture.gameObject.activeInHierarchy&&
-                        actualAperture.anchoredPosition.x+actualAperture.rect.width>=
-                        actualPaper.PortraitColumn*.68f+40f,
-                        "Cinematic approved-source portrait intersects real manuscript without floating apart "+name);
+                    // RectTransform's anchoredPosition uses anchor/pivot
+                    // coordinates. The manuscript is a mesh in its own
+                    // centred rect. Comparing these raw values is not a
+                    // reliable proof of ON-SCREEN intersection. Compare the
+                    // actual camera-time world corners instead and record
+                    // precise geometry for diagnosing any failure.
+                    bool visible=actualAperture&&actualAperture.gameObject.activeInHierarchy;
+                    var portraitCorners=new Vector3[4];
+                    var manuscriptCorners=new Vector3[4];
+                    if(actualAperture)actualAperture.GetWorldCorners(portraitCorners);
+                    actualPaper.rectTransform.GetWorldCorners(manuscriptCorners);
+                    float realPaperLeft=manuscriptCorners[0].x+
+                        (manuscriptCorners[3].x-manuscriptCorners[0].x)*
+                        actualPaper.PortraitColumn*.68f/
+                        Mathf.Max(1f,actualPaper.rectTransform.rect.width);
+                    float realPortraitRight=portraitCorners[2].x;
+                    float margin=(manuscriptCorners[3].x-manuscriptCorners[0].x)*
+                        28f/Mathf.Max(1f,actualPaper.rectTransform.rect.width);
+                    Assert(visible&&realPortraitRight>=realPaperLeft+margin,
+                        "Cinematic portrait reaches genuine manuscript "+name+
+                        " visible="+visible+
+                        " right="+realPortraitRight.ToString("F3")+
+                        " pageLeft="+realPaperLeft.ToString("F3")+
+                        " margin="+margin.ToString("F3")+
+                        " anchorX="+(actualAperture?actualAperture.anchoredPosition.x:0f).ToString("F2")+
+                        " viewportPaperColumn="+actualPaper.PortraitColumn.ToString("F2"));
                 }
             };
             method.Invoke(null,new object[] {host,path,width,height,validateComposition});
