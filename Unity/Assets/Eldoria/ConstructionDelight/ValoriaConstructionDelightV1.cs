@@ -58,7 +58,9 @@ namespace Eldoria.ReferenceClean
         Texture2D dustTexture, ringTexture;
         Material dustMaterial, ringMaterial;
         Transform particleRoot;
+        readonly ArchitecturalCompletionLustre materialLustre = new ArchitecturalCompletionLustre();
 
+        public int ActiveArchitecturalSurfaces => materialLustre.LayerCount;
         public string ActiveBuildingId => activeBuilding ?? "";
         public int ActiveConstructionSprites => (loopDust?.VisibleCount ?? 0) +
                                                  (loopMotes?.VisibleCount ?? 0);
@@ -84,6 +86,7 @@ namespace Eldoria.ReferenceClean
                 initialized = false;
                 pendingCompletion = false;
                 StopWork();
+                materialLustre.Clear();
                 foreach (var field in allFields) field.Clear();
             }
 
@@ -106,6 +109,7 @@ namespace Eldoria.ReferenceClean
                 // the *completion* sprites may leak into the world 4X camera.
                 // A hidden/resumed building keeps only the Gateway's real task.
                 foreach (var field in allFields) field.Clear();
+                materialLustre.Clear();
                 return;
             }
             if (activeBuilding != null)
@@ -128,7 +132,17 @@ namespace Eldoria.ReferenceClean
             var cam = city.PlayerCamera;
             float dt = Mathf.Min(.06f, Time.unscaledDeltaTime);
             foreach (var field in allFields) field.Tick(dt, cam);
+            materialLustre.Tick(Time.unscaledTime);
         }
+
+#if UNITY_EDITOR
+        // The native A/B harness suppresses/restores only the temporary sheen,
+        // without touching the building's original shared materials or gameplay.
+        public void SetArchitecturalLustreVisibleForCapture(bool visible)
+        {
+            materialLustre.SetVisible(visible);
+        }
+#endif
 
         bool CanShow()
         {
@@ -217,7 +231,11 @@ namespace Eldoria.ReferenceClean
             finishEmbers.Emit(id == "bastion" ? 43 : 38);
             finishEmbers.EmitAccents(facadeAccents,.46f,.73f);
             finishHalo.Emit(1);
-            // No model, material or level mutations. Existing scene switching is authoritative.
+            // A brief, restrained warm highlight on the ACTUAL stone/timber
+            // renderers is more satisfying than gold specks on empty grass.
+            // MaterialPropertyBlocks preserve all shared assets and are restored.
+            materialLustre.Begin(CompletedModel(id),Time.unscaledTime);
+            // Gameplay models, levels, saves and shared materials stay unchanged.
         }
 
         // Real colliders and visible model bounds only; never guess city coordinates.
@@ -339,17 +357,21 @@ namespace Eldoria.ReferenceClean
             return found && bounds.size.sqrMagnitude>.001f;
         }
 
+        GameObject CompletedModel(string id)
+        {
+            var parcels=city.Parcels;
+            if(id=="bastion")
+                return city.BastionTwo && city.BastionTwo.activeInHierarchy
+                    ? city.BastionTwo : city.BastionOne;
+            if(!parcels)return null;
+            return id=="sawmill" ? parcels.LeftBuilt :
+                   id=="barracks" ? parcels.RightBuilt : null;
+        }
+
         bool ModelBounds(string id, out Bounds bounds)
         {
             bounds=default;
-            var parcels=city.Parcels;
-            GameObject model=null;
-            if(id=="bastion")
-                model=city.BastionTwo && city.BastionTwo.activeInHierarchy
-                    ? city.BastionTwo : city.BastionOne;
-            else if(parcels)
-                model=id=="sawmill" ? parcels.LeftBuilt :
-                      id=="barracks" ? parcels.RightBuilt : null;
+            GameObject model=CompletedModel(id);
             if(!model || !model.activeInHierarchy)return false;
             bool has=false;
             foreach(var renderer in model.GetComponentsInChildren<Renderer>())
@@ -435,11 +457,106 @@ namespace Eldoria.ReferenceClean
 
         void OnDestroy()
         {
+            materialLustre.Clear();
             if(allFields!=null)foreach(var field in allFields)field.Dispose();
             if(dustMaterial)Destroy(dustMaterial);
             if(ringMaterial)Destroy(ringMaterial);
             if(dustTexture)Destroy(dustTexture);
             if(ringTexture)Destroy(ringTexture);
+        }
+
+        // Real geometry-based reward: a brief antique-gold sheen on the
+        // existing building's original URP surfaces. No camera stickers, lights,
+        // new meshes, shader keywords, scene edits or material instantiation.
+        sealed class ArchitecturalCompletionLustre
+        {
+            struct Layer
+            {
+                public Renderer renderer;
+                public int materialIndex;
+                public MaterialPropertyBlock original;
+                public MaterialPropertyBlock animated;
+                public Color source;
+            }
+            const float Duration=1.45f;
+            static readonly int BaseColorId=Shader.PropertyToID("_BaseColor");
+            readonly System.Collections.Generic.List<Layer> layers =
+                new System.Collections.Generic.List<Layer>(48);
+            float startedAt;
+            bool shown=true;
+            public int LayerCount => layers.Count;
+
+            public void Begin(GameObject building,float now)
+            {
+                Clear();
+                if(!building || !building.activeInHierarchy)return;
+                foreach(var renderer in building.GetComponentsInChildren<Renderer>())
+                {
+                    if(!renderer || !renderer.enabled || !renderer.gameObject.activeInHierarchy)continue;
+                    var materials=renderer.sharedMaterials;
+                    for(int i=0;i<materials.Length;i++)
+                    {
+                        var material=materials[i];
+                        if(!material || !material.HasProperty(BaseColorId) ||
+                           material.renderQueue >= (int)RenderQueue.Transparent)continue;
+                        var original=new MaterialPropertyBlock();
+                        renderer.GetPropertyBlock(original,i);
+                        // Existing animated property blocks must not be overridden.
+                        if(!original.isEmpty)continue;
+                        layers.Add(new Layer{
+                            renderer=renderer,materialIndex=i,
+                            original=original,animated=new MaterialPropertyBlock(),
+                            source=material.GetColor(BaseColorId)
+                        });
+                    }
+                }
+                startedAt=now;
+                shown=true;
+                Tick(now+.02f);
+            }
+
+            public void SetVisible(bool visible)
+            {
+                shown=visible;
+                if(!visible)Restore();
+                else Tick(Time.unscaledTime);
+            }
+
+            public void Tick(float now)
+            {
+                if(layers.Count==0)return;
+                float age=now-startedAt;
+                if(age>=Duration){Clear();return;}
+                if(!shown)return;
+                float time=Mathf.Clamp01(age/Duration);
+                // Gradual warm rise and fall. Keeps the original wood/stone
+                // textures and light response, without a bright yellow flash.
+                float warmth=Mathf.Sin(Mathf.PI*time);
+                float red=1f+warmth*.31f;
+                float green=1f+warmth*.13f;
+                float blue=1f+warmth*.015f;
+                foreach(var l in layers)
+                {
+                    if(!l.renderer)continue;
+                    l.animated.SetColor(BaseColorId,new Color(
+                        l.source.r*red,l.source.g*green,
+                        l.source.b*blue,l.source.a));
+                    l.renderer.SetPropertyBlock(l.animated,l.materialIndex);
+                }
+            }
+
+            void Restore()
+            {
+                foreach(var l in layers)
+                    if(l.renderer)l.renderer.SetPropertyBlock(l.original,l.materialIndex);
+            }
+
+            public void Clear()
+            {
+                Restore();
+                layers.Clear();
+                shown=true;
+            }
         }
 
         // Seven small batched quad fields replace an unavailable ParticleSystem
