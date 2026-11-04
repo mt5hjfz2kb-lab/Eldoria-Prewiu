@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T08:08:47.586Z",
+  "updated_at": "2026-11-04T08:19:50.154Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3443,9 +3443,9 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "write_scope_released": false,
-      "branch": "feature/eldoria-construction-delight-20261104",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-03T23:35:16.557Z",
       "base_main_sha": "d01bffc48f85d65b1061c2fc50ce78c49d9c3344",
@@ -3460,13 +3460,15 @@
         ".github/workflows/eldoria-construction-delight-native.yml",
         "tools/construction-delight/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "EXTERNAL_BLOCKER_UNITY_HEADLESS_LICENSE_EXIT198_20261104",
-      "next": "OWNER ACTION REQUIRED: On Windows, open Unity Hub, sign in to the correct Unity account, in Licenses refresh/activate the assigned Editor license. Once Unity 6000.3.23f1 batchmode has valid entitlement, this workstream can reclaim windows-runner-heavy, sync main/branch ownership, trigger tools/construction-delight/native-request.json on PR152, inspect 26 genuine Unity captures and iterate art; no publication without visual acceptance.",
+      "phase": "READ_ONLY_SESSION_TOPOLOGY_DIAGNOSTIC_20261104",
+      "next": "Compare worker/Hub/client against explorer interactive Windows SessionIds without accessing licenses or credentials; if ghost session confirmed, consider one-shot interactive task only if desktop logged in and no native jobs. Then retry Unity exact source.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Source tests + real Unity 390x844 and 844x390 moving captures at exact HEAD, GPU/frame QA, human visual assessment",
