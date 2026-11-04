@@ -292,6 +292,7 @@ namespace Eldoria.ReferenceClean
             materialLustre.Begin(visual,Time.unscaledTime);
             structureReveal.Complete(visual,city.PlayerCamera,Time.unscaledTime);
             stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
+            structureReveal.Tick(Time.unscaledTime);
             // A reversible 3D timber-and-roof landing; all source flags restore.
         }
 
