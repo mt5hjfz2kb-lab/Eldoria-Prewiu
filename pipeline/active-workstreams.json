@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T10:42:51.869Z",
+  "updated_at": "2026-11-04T10:58:26.564Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3961,7 +3961,7 @@
         "windows-runner-heavy"
       ],
       "ownership_state": "claimed",
-      "ownership_revision": 9,
+      "ownership_revision": 10,
       "write_scope_released": false,
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing art-path guard also covers .meta restoration; administrative request explicitly limits this work to original metadata preservation.",
@@ -3971,9 +3971,9 @@
         "evidence": "Inventario por SHA, procedencia de cada meta recuperado, detector de GUID duplicados y pruebas focalizadas; pendientes explícitos sin GUID inventados.",
         "handoff": "Misma PR para esta etapa; corregir recursos solo después de comprobar procedencia y titularidad."
       },
-      "next": "Retry exact candidate cc6195728515999fa175272ee76e6f79fc65486d after actual PowerShell syntax/isolation CI passed; preserve Windows lease revision9. First run failed before compilation because Unity child process could not find Git.",
+      "next": "Current run41816327312 may finish its current Editor naturally. Revision10 fences additional Editor starts prepared with revision9: baseline AssetLibraryReprocessingPassV1 has Enabled=true and directly loads/instantiates the expressly rejected legacy model for BastionLevel>=3. Resolve archive/runtime exclusion under existing owner veto before full gameplay certification or Player build. No job/process cancelled.",
       "art_production_request": "pipeline/art-production-requests/eldoria-unity-metadata-integrity-20261104.json",
-      "phase": "NATIVE_RETRY_PREPARED_GIT_PATH_FIXED",
+      "phase": "IMPORT_MAY_FINISH_NO_FURTHER_EDITOR_UNTIL_LEGACY_POLICY_RECONCILED",
       "previous_owner": "codex-eldoria-metadata-recovery-20261104",
       "evidence": {
         "pr": 153,
@@ -6421,7 +6421,14 @@
             "reboot": false
           }
         }
-      ]
+      ],
+      "legacy_policy_fence": {
+        "at": "2026-11-04T10:58:26.564Z",
+        "source": "Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs:40",
+        "live_resource_path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+        "new_editor_launches_blocked_for_request_revision": 9,
+        "current_editor_interrupted": false
+      }
     }
   ],
   "history": [
