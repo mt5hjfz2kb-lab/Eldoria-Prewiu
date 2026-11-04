@@ -156,6 +156,15 @@ namespace Eldoria.ReferenceClean.Editor
                         captureWidth+"px: Real stage marker "+stage+" stays clear of the information card");
                 }
             }
+            if(trail!=null&&captureWidth>captureHeight&&captureHeight<500)
+            {
+                var passive=card.GetComponentsInChildren<Text>().First(x=>x.name=="Offline hero experience");
+                var claim=card.GetComponentsInChildren<RectTransform>().First(x=>x.name=="Claim earned hero experience");
+                var textCorners=new Vector3[4];var buttonCorners=new Vector3[4];
+                passive.rectTransform.GetWorldCorners(textCorners);claim.GetWorldCorners(buttonCorners);
+                CheckLayout(textCorners[0].y>buttonCorners[1].y,
+                    captureWidth+"px: Complete XP and mastery text remains above the real claim button");
+            }
             var banner=page.GetComponentsInChildren<RawImage>().FirstOrDefault(x=>
                 x.name=="Current guardian / reference skull banner");
             if(banner)

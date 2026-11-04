@@ -1194,6 +1194,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 reward.fontSize=height>width?26:compactLandscape?20:23;
                 passive.fontSize=height>width?26:compactLandscape?19:21;
                 battleFeedback.fontSize=height>width?23:compactLandscape?18:21;
+                if(compactLandscape)
+                {
+                    // Keep the complete XP/mastery text above the real buttons.
+                    // The desktop row offsets otherwise cross the action bay.
+                    TL(opponent.rectTransform,18f,60f,textWidth,80f);
+                    TL(formation.rectTransform,18f,144f,textWidth,48f);
+                    TL(reward.rectTransform,18f,196f,textWidth,48f);
+                    TL(passive.rectTransform,18f,248f,textWidth,actionTop-256f);
+                }
             }
 
             if(vignetteLandscape)

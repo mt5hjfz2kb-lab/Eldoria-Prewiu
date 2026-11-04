@@ -896,7 +896,7 @@ namespace Eldoria.HeroesUI
 
         void BuildCombatSummary(RectTransform pane,HeroState hero,float w,float h)
         {
-            // Native world-corner checks certify both heroes at all four resolutions.
+            // Native world-corner checks cover both heroes at all four resolutions.
             // Below 444 layout units the minimum-height rows cannot fit with
             // the power header, real role and progression footer.
             if(w>460f&&h>=444f){BuildReferenceCombatSummary(pane,hero,w,h);return;}
