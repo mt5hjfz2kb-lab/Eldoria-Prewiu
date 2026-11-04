@@ -131,6 +131,10 @@ namespace Eldoria.ReferenceClean.Editor
                 VisualIssues.Add("No flowing construction sprites; task="+
                     city.Gateway.Snapshot().BuildingTaskId+
                     " visual_work="+fx.ActiveBuildingId);
+            Debug.Log("CONSTRUCTION_DELIGHT_WORK_STRUCTURAL_MESHES="+fx.ActiveStructuralRevealMeshes);
+            if(fx.ActiveStructuralRevealMeshes<=0)
+                VisualIssues.Add("No real scaffold/visible building geometry available "+
+                                 "for the construction highlight");
             Comparison(host,renderers,"work",844,390);
             Comparison(host,renderers,"work",390,844);
 
@@ -156,6 +160,11 @@ namespace Eldoria.ReferenceClean.Editor
             if(fx.ActiveArchitecturalSurfaces<=0)
                 VisualIssues.Add("No actual opaque URP _BaseColor building surfaces eligible "+
                     "for architectural material sheen after real construction");
+            Debug.Log("CONSTRUCTION_DELIGHT_COMPLETION_STRUCTURAL_MESHES="+
+                      fx.ActiveStructuralRevealMeshes);
+            if(fx.ActiveStructuralRevealMeshes<=0)
+                VisualIssues.Add("No authentic built mesh surfaces available for "+
+                                 "the structural HDR sweep and localized light");
             Comparison(host,renderers,"finish",844,390);
             Comparison(host,renderers,"finish",390,844);
             // An artistic approval needs temporal evidence, not one lucky frame.
