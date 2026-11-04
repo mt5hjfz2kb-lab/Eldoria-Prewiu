@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "0f4413053c813e2fc82593f502e70b6451f1e8aa",
   "ownership_revision": 11,
-  "mode": "OFFLINE_SOURCE_SYNTAX_GATE_WHILE_PRIORITY_WINDOWS_CLAIM_OWNED_BY_METADATA",
+  "mode": "SOURCE_ROSLYN_AFTER_ALL_26_FRAMES_CAPTURE_FIX",
   "expected_images": 26,
   "formats": [
     "844x390",
@@ -58,7 +58,7 @@
     "tools/construction-delight/DomainProbe.csproj",
     "tools/construction-delight/SyntaxProbe.csproj"
   ],
-  "reason": "Continue verifying actual C# sources while Editor license is unavailable; independent from graphical A/B acceptance",
+  "reason": "Collect weak A/B captures before failing and keep source C# syntax green",
   "source_project_repair": "d6e623ec824131d543c2543bf8358774e5ea1757",
   "native_unity_editor_not_called": true,
   "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c",
@@ -80,7 +80,7 @@
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 1,
+  "offline_validation_attempt": 2,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
@@ -88,5 +88,6 @@
     "Fallback to active authentic construction scaffolds and parcel ground",
     "QA refreshes real Presenter state after direct command",
     "QA uses real city host camera focus"
-  ]
+  ],
+  "windows_runner_reserved_by": "eldoria-unity-metadata-integrity-20261104"
 }
