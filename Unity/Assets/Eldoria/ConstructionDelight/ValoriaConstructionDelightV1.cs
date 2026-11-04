@@ -447,6 +447,13 @@ namespace Eldoria.ReferenceClean
             {
                 GameObject scaffold=id=="sawmill" ? parcels.LeftConstruction :
                                     id=="barracks" ? parcels.RightConstruction : null;
+                if(!scaffold && parcels.Bindings!=null)
+                    foreach(var binding in parcels.Bindings)
+                        if(binding!=null && binding.BuildingId==id && binding.Construction)
+                        {
+                            scaffold=binding.Construction;
+                            break;
+                        }
                 if(scaffold && scaffold.activeInHierarchy)return scaffold;
             }
             // On upgrades the existing structure may remain visible while
@@ -461,8 +468,15 @@ namespace Eldoria.ReferenceClean
                 return city.BastionTwo && city.BastionTwo.activeInHierarchy
                     ? city.BastionTwo : city.BastionOne;
             if(!parcels)return null;
-            return id=="sawmill" ? parcels.LeftBuilt :
-                   id=="barracks" ? parcels.RightBuilt : null;
+            if(id=="sawmill")return parcels.LeftBuilt;
+            if(id=="barracks")return parcels.RightBuilt;
+            // Chapter III plots use the same authoritative parcel bindings;
+            // never leave real granary/stoneworks upgrades without art.
+            if(parcels.Bindings!=null)
+                foreach(var binding in parcels.Bindings)
+                    if(binding!=null && binding.BuildingId==id && binding.Built)
+                        return binding.Built;
+            return null;
         }
 
         bool ModelBounds(string id, out Bounds bounds)
