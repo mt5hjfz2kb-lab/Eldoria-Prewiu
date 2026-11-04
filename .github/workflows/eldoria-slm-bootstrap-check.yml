@@ -1,0 +1,47 @@
+name: "Eldoria SLM isolated installer preflight (no Windows)"
+on:
+  push:
+    branches: [pilot/slm-permanent-bootstrap-20261104]
+    paths:
+      - 'pilot/slm-bootstrap/**'
+      - '.github/workflows/eldoria-slm-bootstrap-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pilot/slm-bootstrap/
+            /.github/workflows/eldoria-slm-bootstrap-check.yml
+      - name: Parse Windows installer, without running it
+        shell: pwsh
+        run: |
+          $p='pilot/slm-bootstrap/Install-SlmWindows.ps1'
+          $tokens=$null; $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $pwd $p),[ref]$tokens,[ref]$errors) | Out-Null
+          if($errors.Count){throw ($errors | Out-String)}
+          'POWERSHELL_PARSE_PASS'
+      - name: Verify source Git SHAs and data format, no game or system writes
+        shell: python
+        run: |
+          import json,urllib.request,urllib.parse,re
+          d=json.load(open("pilot/slm-bootstrap/verified-facts.json"))
+          assert d["repository"]=="mt5hjfz2kb-lab/Eldoria-Prewiu"
+          assert len(d["entries"])==10 and d["schema_version"]==1
+          sources={(x["source_path"],x["source_blob_sha"]) for x in d["entries"]}
+          assert len(sources)==8
+          for path,sha in sorted(sources):
+            assert re.fullmatch(r"[a-f0-9]{40}",sha)
+            assert ".." not in path
+            url="https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/"+urllib.parse.quote(path,safe="/")+"?ref=main"
+            req=urllib.request.Request(url,headers={"User-Agent":"eldoria-slm-safe-check"})
+            with urllib.request.urlopen(req,timeout=25) as response: item=json.load(response)
+            assert item["sha"]==sha,(path,"source changed")
+          print("VERIFIED_SOURCES_PASS",len(sources),"no Windows/Unity used")
