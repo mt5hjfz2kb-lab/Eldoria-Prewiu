@@ -127,6 +127,11 @@ namespace Eldoria.ReferenceClean
                     loopDust.Play();
                     loopMotes.Play();
                 }
+                // Returning from 4X clears temporary graphics but the real
+                // task continues. Rebuild the worksite highlight from the
+                // authoritative city scene, never from a synthetic timer.
+                if(structureReveal.MeshCount==0)
+                    structureReveal.BeginWork(WorksiteModel(activeBuilding),Time.unscaledTime);
                 if (Time.unscaledTime >= nextWorkPulse)
                 {
                     // Occasional short bursts suggest real medieval joinery,
