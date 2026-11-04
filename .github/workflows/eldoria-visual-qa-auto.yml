@@ -65,4 +65,4 @@ jobs:
           name: eldoria-visual-qa-${{ github.run_id }}
           path: visual-report/
           if-no-files-found: warn
-          retention-days: 14
+          retention-days: 2
