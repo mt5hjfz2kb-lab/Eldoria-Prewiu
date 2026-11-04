@@ -22,7 +22,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 2,
+  "attempt": 3,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "Avoid Transform.Find slash interpretation: owned effect group uses slash-free name",
@@ -35,5 +35,18 @@
     "source_sha": "9f7e46db29ad04138c2d3a071dbb6cc8ddf59f36",
     "status": "running_on_old_revision",
     "reason": "known deterministic QA Transform.Find slash path issue; leave running until safe completion"
-  }
+  },
+  "corrected_source_head": "1ed54ba1b94ea5af1d38df4bc29e0fde93caa5ac",
+  "pivot": "Missing Unity built-in com.unity.modules.particlesystem; render low-cost custom meshes with 7 batched sprite systems without modifying PR136-owned Packages/manifest.json",
+  "previous_runs": [
+    {
+      "run": 41746271850,
+      "status": "failed_compile_missing_particle_module"
+    },
+    {
+      "run": 41746717881,
+      "status": "failed_compile_missing_particle_module"
+    }
+  ],
+  "validation": "Actual editor compile, 26 A/B source captures, 390x844 & 844x390, real canonical gateway task and completion, unchanged save"
 }
