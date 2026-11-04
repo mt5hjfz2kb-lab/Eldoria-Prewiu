@@ -58,6 +58,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 Nocturne?new Color(.11f,.14f,.17f):new Color(.98f,.91f,.77f);
             Quad(h,new Rect(p.x+7,p.y-7,p.width,p.height),new Color(.07f,.03f,.015f,.48f),new Color(.10f,.055f,.03f,.27f));
             Quad(h,p,new Color(rim.r*.65f,rim.g*.65f,rim.b*.55f),rim);
+            // In the genuine cinematic royal dialogue a retained nine-slice
+            // vellum asset sits underneath this illustration mesh. Blend
+            // only the material fill so its photographic grain and moulded
+            // edge remain perceptible. Gold borders, title plaque and text
+            // stay fully native and independent.
+            if(Cinematic&&!Arcane&&!Nocturne)
+            {
+                paperBottom.a=.57f;
+                paperTop.a=.57f;
+            }
             Quad(h,Inset(p,4f),paperBottom,paperTop);
             Quad(h,Inset(p,10f),
                 new Color(paperBottom.r,paperBottom.g,paperBottom.b,.20f),
@@ -81,6 +91,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 Arcane?new Color(.34f,.22f,.42f):
                 Nocturne?new Color(.14f,.19f,.22f):new Color(.39f,.29f,.17f));
             Quad(h,new Rect(p.xMin+18,p.yMin+17,p.width-36,2),rim,rim);
+            if(Cinematic)
+            {
+                Quad(h,new Rect(tab.xMin+10f,tab.yMax-6f,
+                    Mathf.Max(8f,tab.width-20f),1.4f),rim,rim);
+                Seal(h,new Vector2(tab.xMax-16f,tab.yMin+tab.height*.50f),
+                    3.5f,new Color(.96f,.80f,.49f,.82f));
+            }
             // In the approved cinematic style the real character cuts
             // into the scene instead of sitting inside a large medallion.
             // Keep the ornamental seal for smaller integrated layouts.

@@ -15,7 +15,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalGoldV4DialogueParchment paper;
         RoyalGoldV3ParchmentGraphic v3Paper;
         RawImage priorBust,bust;
-        Image lyra;
+        Image lyra, manuscriptTexture;
         RoyalText sigil,role;
         Graphic dimmer;
         Color oldDimmer;
@@ -145,6 +145,21 @@ namespace Eldoria.UI.RoyalGold.V2
             parchmentNode.transform.SetAsFirstSibling();
             paper=parchmentNode.GetComponent<RoyalGoldV4DialogueParchment>();
             paper.raycastTarget=false;Stretch(paper.rectTransform);paper.enabled=false;
+            // A genuine, retained Eldoria vellum sprite already used by
+            // the Royal mailbox. Slice the ORIGINAL asset; no flattened
+            // dialogue mockup, extra Canvas, texture generation or Tripo.
+            // It is a behind-the-mesh material layer, never a text image.
+            var parchmentTextureNode=new GameObject("Dialogue / genuine vellum grain",
+                typeof(RectTransform),typeof(CanvasRenderer),typeof(Image));
+            parchmentTextureNode.layer=frame.gameObject.layer;
+            parchmentTextureNode.transform.SetParent(frame,false);
+            parchmentTextureNode.transform.SetAsFirstSibling();
+            manuscriptTexture=parchmentTextureNode.GetComponent<Image>();
+            manuscriptTexture.sprite=RoyalGoldV41SourceArt.Get("mail-card",20);
+            manuscriptTexture.type=Image.Type.Sliced;
+            manuscriptTexture.raycastTarget=false;
+            manuscriptTexture.color=Color.white;
+            manuscriptTexture.gameObject.SetActive(false);
             var maskNode=new GameObject("Dialogue / genuine portrait aperture",
                 typeof(RectTransform),typeof(RectMask2D));
             maskNode.layer=frame.gameObject.layer;maskNode.transform.SetParent(frame,false);
@@ -185,6 +200,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!applied)return;
             applied=false;
             if(paper)paper.enabled=false;
+            if(manuscriptTexture)manuscriptTexture.gameObject.SetActive(false);
             if(aperture)aperture.gameObject.SetActive(false);
             if(v3Paper)v3Paper.enabled=oldV3PaperEnabled;
             if(priorBust)priorBust.enabled=oldBustEnabled;
@@ -261,13 +277,14 @@ namespace Eldoria.UI.RoyalGold.V2
             // vignette. Lyra's atlas portrait is smaller, so cap its
             // size to avoid visibly magnifying the source pixels.
             float portraitSize=cinematic?
-                (isLyra?Mathf.Min(height*.95f,350f):Mathf.Min(height*1.18f,465f)):
+                (isLyra?Mathf.Min(330f,column*.87f):
+                    Mathf.Min(420f,column*1.10f)):
                 compact?Mathf.Min(235f,width*.33f):Mathf.Min(column+25f,height-25f);
             // Lyra's narrower approved sprite needs a little more overlap
             // with the manuscript; its alpha silhouette otherwise floats
             // tens of pixels away from the paper in real 1600x900 renders.
             float portraitX=cinematic?(isLyra?10f:-54f):compact?-23f:-18f;
-            float portraitY=cinematic?(isLyra?-25f:-56f):
+            float portraitY=cinematic?height-portraitSize-7f:
                 compact?7f:Mathf.Max(5f,(height-portraitSize)*.45f);
             // The illustrated header tab spans roughly y=26..87 from the
             // frame's top. The previous role started at y=71, so its first
@@ -298,9 +315,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 var add=Mathf.Min(needed-available,maxHeight-height);
                 height+=add;available+=add;
             }
-            // Cinematic portraits should not collapse to tiny avatars on a
-            // short line of dialogue. Keep the character composition stable.
-            float minimum=Mathf.Min(height,cinematic?350f:
+            // Long and short dialogue share the same substantial approved
+            // portrait. The manuscript alone follows real text length:
+            // no 350-pixel management window for a one-line narrative.
+            float minimum=Mathf.Min(height,cinematic?288f:
                 compact?330f:landscape?270f:310f);
             float natural=bodyTop+Mathf.Max(needed,compact?68f:75f)+footer+14f;
             if(natural<height)
@@ -309,13 +327,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 available=height-bodyTop-footer;
             }
             portraitSize=cinematic?
-                (isLyra?Mathf.Min(height*.95f,350f):Mathf.Min(height*1.18f,465f)):
+                (isLyra?Mathf.Min(330f,column*.87f):
+                    Mathf.Min(420f,column*1.10f)):
                 compact?Mathf.Min(235f,width*.33f):Mathf.Min(column+25f,height-25f);
-            portraitY=cinematic?(isLyra?-25f:-56f):
+            portraitY=cinematic?height-portraitSize-7f:
                 compact?7f:Mathf.Max(5f,(height-portraitSize)*.45f);
             if(cinematic)
             {
-                // The panel can still contract to 350 units for short text.
+                // The parchment contracts to its actual dialogue content.
                 // Keep the actual image silhouette overlapping the real
                 // manuscript edge at every length, not just long dialogues.
                 float paperLeft=column*.68f;
@@ -341,6 +360,18 @@ namespace Eldoria.UI.RoyalGold.V2
             Top(aperture,portraitX+portraitSize*.04f,portraitY+portraitSize*.04f,
                 portraitSize*.92f,portraitSize*.92f);
             paper.Configure(isOrin,isLyra,compact?0f:column,cinematic);
+            if(manuscriptTexture)
+            {
+                // Preserve the distinct night-blue Lyra material and Orín's
+                // arcane treatment. The warm aged vellum is for royal
+                // Aldric's cinematic manuscript only.
+                bool textured=cinematic&&isAldric&&manuscriptTexture.sprite;
+                manuscriptTexture.gameObject.SetActive(textured);
+                if(textured)
+                    Top(manuscriptTexture.rectTransform,
+                        column*.68f+12f,19f,
+                        width-column*.68f-32f,Mathf.Max(12f,height-38f));
+            }
             if(priorBust)priorBust.enabled=false;
             if(isAldric)
             {

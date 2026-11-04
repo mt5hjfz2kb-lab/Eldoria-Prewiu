@@ -115,6 +115,15 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
                     "Real capture matches cinematic-only approved dialogue framing "+name);
                 if(expectedCinematic)
                 {
+                    if(name.IndexOf("aldric",StringComparison.OrdinalIgnoreCase)>=0)
+                    {
+                        var vellum=actualPaper.rectTransform.parent.Cast<Transform>()
+                            .FirstOrDefault(t=>t.name=="Dialogue / genuine vellum grain");
+                        var texture=vellum?vellum.GetComponent<Image>():null;
+                        Assert(texture&&texture.gameObject.activeInHierarchy&&
+                            texture.sprite&&texture.type==Image.Type.Sliced,
+                            "Real Eldoria nine-slice vellum visible behind royal manuscript "+name);
+                    }
                     Assert(actualPaper.NameplateWidth<=365f,
                         "Cinematic speaker plaque is SHORT, not a management-width header "+name);
                     // Source of truth: the V4 manuscript and cutout are created
