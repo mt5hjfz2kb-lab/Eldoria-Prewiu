@@ -569,7 +569,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always() && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030' && github.event.pull_request.head.repo.full_name == github.repository))
         with:
-          name: eldoria-pr136-performance-${{ github.sha }}
+          name: eldoria-pr136-performance-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/eldoria-consolidation-performance-${{ github.run_id }}/**
           if-no-files-found: error
           retention-days: 30
@@ -1091,7 +1091,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always() && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030' && github.event.pull_request.head.repo.full_name == github.repository))
         with:
-          name: eldoria-pr136-candidate-${{ github.sha }}
+          name: eldoria-pr136-candidate-${{ github.event.pull_request.head.sha || github.sha }}
           path: |
             Unity/Builds/PR136Candidate/**
             docs/evidence/valoria-reference-clean/windows-candidate*.json
@@ -1142,7 +1142,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: eldoria-ui-progression-cert-${{ github.sha }}
+          name: eldoria-ui-progression-cert-${{ github.event.pull_request.head.sha || github.sha }}
           path: |
             ${{ runner.temp }}/Eldoria-UIProgression-EditMode.xml
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.xml
@@ -1161,7 +1161,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: eldoria-aldric-shared-native-${{ github.sha }}
+          name: eldoria-aldric-shared-native-${{ github.event.pull_request.head.sha || github.sha }}
           path: |
             ${{ env.ALDRIC_CITY_SCREENSHOT_DIR }}/*
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.xml

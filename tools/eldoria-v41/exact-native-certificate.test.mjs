@@ -47,3 +47,5 @@ await test('unhashed artifact',f=>f.artifacts[0].digest=null,false);
 await test('wrong PR',f=>f.context.payload.pull_request.number=137,false);
 await test('foreign repository',f=>f.context.payload.pull_request.head.repo.full_name='foreign/repo',false);
 console.log(count+' exact-certificate positive/negative checks PASS');
+
+assert.equal((workflow.match(/name: eldoria-(?:pr136-performance|pr136-candidate|ui-progression-cert|aldric-shared-native)-\$\{\{ github.event.pull_request.head.sha \|\| github.sha \}\}/g)||[]).length,4,'All source-bound artifacts use the exact checked-out head, not the synthetic PR merge SHA');
