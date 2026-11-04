@@ -263,7 +263,10 @@ namespace Eldoria.UI.RoyalGold.V2
             float portraitSize=cinematic?
                 (isLyra?Mathf.Min(height*.95f,350f):Mathf.Min(height*1.18f,465f)):
                 compact?Mathf.Min(235f,width*.33f):Mathf.Min(column+25f,height-25f);
-            float portraitX=cinematic?-54f:compact?-23f:-18f;
+            // Lyra's narrower approved sprite needs a little more overlap
+            // with the manuscript; its alpha silhouette otherwise floats
+            // tens of pixels away from the paper in real 1600x900 renders.
+            float portraitX=cinematic?(isLyra?10f:-54f):compact?-23f:-18f;
             float portraitY=cinematic?(isLyra?-25f:-56f):
                 compact?7f:Mathf.Max(5f,(height-portraitSize)*.45f);
             // The illustrated header tab spans roughly y=26..87 from the
@@ -325,6 +328,12 @@ namespace Eldoria.UI.RoyalGold.V2
             if(priorBust)priorBust.enabled=false;
             if(isAldric)
             {
+                // In the full cinematic cutout there is no medallion to
+                // hide the approved bust's bright outer shoulder edge.
+                // Soften its genuine source alpha at the right silhouette;
+                // mobile keeps the earlier, less aggressive feather.
+                if(feather&&feather.HasProperty("_PortraitFeather"))
+                    feather.SetFloat("_PortraitFeather",cinematic?.265f:.18f);
                 Texture portrait=priorBust?priorBust.texture:null;
                 if(!portrait)portrait=Resources.Load<Texture2D>("UI/AldricDialogue/aldric_neutral");
                 bust.texture=portrait;bust.gameObject.SetActive(portrait!=null);

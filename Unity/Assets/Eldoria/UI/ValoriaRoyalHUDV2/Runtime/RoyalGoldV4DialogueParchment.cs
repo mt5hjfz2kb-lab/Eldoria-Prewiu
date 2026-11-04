@@ -10,6 +10,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public bool Arcane {get;private set;}
         public bool Nocturne {get;private set;}
         public bool Cinematic {get;private set;}
+        public float NameplateWidth {get;private set;}
         public float PortraitColumn {get;private set;}
         public override Texture mainTexture=>Texture2D.whiteTexture;
         static void Quad(VertexHelper h,Rect r,Color lo,Color hi)
@@ -68,7 +69,12 @@ namespace Eldoria.UI.RoyalGold.V2
                     new Color(rim.r,rim.g,rim.b,.045f),new Color(rim.r,rim.g,rim.b,.025f));
             }
             float left=r.xMin+(col>0?col+12f:Mathf.Min(r.width*.30f,230f));
-            var tab=new Rect(left,p.yMax-80,Mathf.Max(56,r.xMax-left-15),61);
+            // The approved Diálogo 1 has a SHORT nameplate over the paper.
+            // A full-width dark bar still looked like a management modal
+            // even after the real character became cinematic.
+            float fullTabWidth=Mathf.Max(56f,r.xMax-left-15f);
+            NameplateWidth=Cinematic?Mathf.Min(fullTabWidth,360f):fullTabWidth;
+            var tab=new Rect(left,p.yMax-80,NameplateWidth,61);
             Quad(h,tab,new Color(rim.r*.5f,rim.g*.43f,rim.b*.32f),rim);
             Quad(h,Inset(tab,2f),Arcane?new Color(.21f,.12f,.27f):
                 Nocturne?new Color(.08f,.11f,.15f):new Color(.25f,.19f,.13f),

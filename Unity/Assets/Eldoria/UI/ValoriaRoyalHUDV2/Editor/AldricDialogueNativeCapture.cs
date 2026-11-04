@@ -99,7 +99,34 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
             var method=type.GetMethod("Capture", BindingFlags.Public|BindingFlags.Static);
             Assert(method != null, "Existing true 3D/Canvas capture method available");
             string path=Path.Combine(Evidence, name+"-"+width+"x"+height+".png");
-            method.Invoke(null,new object[] {host,path,width,height,null});
+            // Validate at the exact native camera dimensions before the
+            // capture helper restores the original Canvas scaler. Otherwise
+            // 1600x900 cinematic checks would run on the wrong viewport.
+            Action validateComposition=()=>
+            {
+                if(!name.StartsWith("B-after-",StringComparison.Ordinal))return;
+                var actualHud=Read(host,"Hud") as RoyalHUD;
+                var actualPaper=actualHud?
+                    actualHud.GetComponentInChildren<RoyalGoldV4DialogueParchment>(true):null;
+                bool expectedCinematic=width==1600&&height==900&&
+                    (name.IndexOf("aldric",StringComparison.OrdinalIgnoreCase)>=0||
+                     name.IndexOf("lyra",StringComparison.OrdinalIgnoreCase)>=0);
+                Assert(actualPaper&&actualPaper.Cinematic==expectedCinematic,
+                    "Real capture matches cinematic-only approved dialogue framing "+name);
+                if(expectedCinematic)
+                {
+                    Assert(actualPaper.NameplateWidth<=365f,
+                        "Cinematic speaker plaque is SHORT, not a management-width header "+name);
+                    var actualFrame=actualHud.Modal.Title.rectTransform.parent as RectTransform;
+                    var actualAperture=actualFrame?
+                        actualFrame.Find("Dialogue / genuine portrait aperture") as RectTransform:null;
+                    Assert(actualAperture&&actualAperture.gameObject.activeInHierarchy&&
+                        actualAperture.anchoredPosition.x+actualAperture.rect.width>=
+                        actualPaper.PortraitColumn*.68f+40f,
+                        "Cinematic approved-source portrait intersects real manuscript without floating apart "+name);
+                }
+            };
+            method.Invoke(null,new object[] {host,path,width,height,validateComposition});
             Assert(File.Exists(path) && new FileInfo(path).Length>35000, name+" true Unity camera capture written");
             var texture=new Texture2D(2,2,TextureFormat.RGBA32,false);
             try
