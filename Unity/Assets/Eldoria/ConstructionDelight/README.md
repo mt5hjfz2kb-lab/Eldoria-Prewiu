@@ -88,3 +88,19 @@ La revisión del código aislado detectó un fallo introducido durante la correc
 - El ejecutor Windows permanece reservado por `eldoria-unity-metadata-integrity-20261104`. No se lanzó Unity para verificar esta corrección. Cuando se libere, reclamar el recurso mediante el registro CAS y generar los A/B auténticos antes de valorar calidad, fusionar o publicar.
 
 **Estado:** código corregido y prueba estática verificada; implementación todavía pendiente de ejecución Unity nativa y revisión artística.
+
+
+## Evidencias nativas de la pasada de cubierta y fachada — 04/11/2026
+
+**Prueba real pasada:** [41872572157](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41872572157), commit exacto `b1b17576a50b24ca12b31f74080bb29e632008c2`, Unity 6000.3.23f1 / URP. `NATIVE_PASS`; archivo [13345725500](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41872572157/artifacts/13345725500), **26 capturas auténticas** de escena integrada (844×390, 390×844); comprobantes de tarea construida y guardado inalterado tras recarga. Siete capas de materiales de edificio con resplandor temporal no invasivo. Nunca se fusionó con main.
+
+Evolución A/B comprobada:
+- Primera pasada sin pulso arquitectónico [41868962109](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41868962109): diferencia de finalización 0,447% paisaje y 2,069% retrato. Oro concentrado en el suelo; **rechazo artístico**.
+- Segunda pasada con luz cálida mediante MaterialPropertyBlock [41871246928](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41871246928): finalización 1,391% paisaje y 6,451% retrato, 7 superficies reales; mejor, pero tejado aún oscuro. **Rechazo del objetivo 8,2**.
+- Tercera pasada con glints y gleam sobre cubierta/cornisa [41872572157](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41872572157): finalización 1,601% paisaje y 7,448% retrato. Realzado de materiales sin alterar texturas compartidas, glints en 4 ubicaciones de cubierta; éxito técnico y guardado correcto. No se puede deducir belleza ni calidad de un porcentaje de píxeles.
+
+**Calidad visual:** candidato entregado para evaluación humana, **ART_APPROVED=false**. Efectos más integrados, pero no acreditados >=8,2/10; algunas tomas siguen pareciendo sobrias. No se añadió sonido de finalización aprobado ni se ejecutó QA de rendimiento móvil físico/WebGL de esta revisión. Evitar prometer 8,2 sin opinión del usuario sobre la captura auténtica.
+
+**Próxima decisión:** el usuario revisa A/B y secuencia. Si pide más realce, priorizar mejoras de iluminación/arquitectura con comparación real, no agregar humo/confeti. Ningún cambio en gameplay, save, timers, modelos, escenas, PR #136 o main.
+
+El registro `pipeline/active-workstreams.json` refleja fuente y evidencia exacta y reserva temporal de Windows debe liberarse tras el workflow. Mantener PR #152 DRAFT hasta la aprobación explícita.
