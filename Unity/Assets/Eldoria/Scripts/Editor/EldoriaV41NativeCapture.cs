@@ -47,6 +47,8 @@ namespace Eldoria.Editor
             try
             {
                 Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
+                Need(SystemInfo.graphicsDeviceType!=UnityEngine.Rendering.GraphicsDeviceType.Null,
+                    "Authentic native capture and benchmark require the actual graphics device");
                 Directory.CreateDirectory(Output);
                 File.WriteAllText(Path.Combine(Output,"legacy-bastion-veto.json"),
                     RejectedLegacyBastionBuildGuard.Validate());

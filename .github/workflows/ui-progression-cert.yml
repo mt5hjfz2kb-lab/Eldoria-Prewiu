@@ -1018,7 +1018,7 @@ jobs:
         run: |
           $ErrorActionPreference='Stop'
           $log=Join-Path $env:RUNNER_TEMP 'Eldoria-PR136-CandidateBuild.log'
-          $args=@('-batchmode','-nographics','-projectPath','Unity','-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.BuildWindowsCandidate','-logFile',$log)
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.BuildWindowsCandidate','-logFile',$log)
           $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if(-not $process.WaitForExit(1200000)){throw "Candidate build exceeded 20 minutes; preserve process $($process.Id) and diagnose before another Unity run"}
           if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 160};throw "Candidate build failed: $($process.ExitCode)"}

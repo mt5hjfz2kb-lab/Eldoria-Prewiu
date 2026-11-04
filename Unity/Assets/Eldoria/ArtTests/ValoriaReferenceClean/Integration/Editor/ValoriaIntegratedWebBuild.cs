@@ -24,6 +24,7 @@ namespace Eldoria.ReferenceClean.Editor {
    var libraries=new Dictionary<string,byte[]>();int exit=1;
    try{
     Directory.CreateDirectory(Ev);
+    if(SystemInfo.graphicsDeviceType==GraphicsDeviceType.Null)throw new Exception("Canonical Windows build requires the native-tested Direct3D graphics device");
     if(!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone,BuildTarget.StandaloneWindows64))throw new Exception("Windows64 module unavailable");
     if(!File.ReadAllText(Ev+"/integration-result.json").Contains("INTEGRATION_PASS_ART_REVIEW_REQUIRED"))throw new Exception("Native integrated journey proof missing");
     if(File.ReadAllText(Ev+"/integration-input-signature.txt").Trim()!=ValoriaIntegrationBuild.ComputeInputSignature())throw new Exception("Candidate sources differ from native journey proof");
