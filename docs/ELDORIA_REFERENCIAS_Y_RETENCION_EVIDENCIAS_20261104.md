@@ -20,7 +20,7 @@ Fecha: 2026-11-04. Decisión del propietario: conservar las imágenes **de refer
 
 | Artefacto | Retención de NUEVAS ejecuciones | Justificación |
 | --- | ---: | --- |
-| `eldoria-visual-qa-*` | 2 días | Comparaciones A/B efímeras tras validación |
+| `eldoria-visual-qa-*` | 2 días | Se conserva únicamente `report.json` técnico; las imágenes A/B no se suben |
 | `eldoria-work-status-*` | 1 día | Estado regenerable; el resumen de Actions también está disponible |
 | `eldoria-art-production-plans-*` | 3 días | Planes regenerables por workflow_dispatch |
 | `eldoria-ui-progression-cert-*` y paquetes nativos de Unity | **Sin cambio por ahora** | Su workflow y artefactos están bajo trabajo activo; dependen de pruebas y pruebas de identidad |
