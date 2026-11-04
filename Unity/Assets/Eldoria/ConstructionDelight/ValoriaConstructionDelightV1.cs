@@ -56,6 +56,7 @@ namespace Eldoria.ReferenceClean
         ParticleSystem finishDust, finishEmbers, finishRing, finishHalo;
         Texture2D dustTexture, ringTexture;
         Material dustMaterial, ringMaterial;
+        Transform particleRoot;
 
         void Awake()
         {
@@ -322,6 +323,9 @@ namespace Eldoria.ReferenceClean
 
         void InitializeArt()
         {
+            var ownedRoot=new GameObject("Construction Delight / owned particles");
+            ownedRoot.transform.SetParent(transform,false);
+            particleRoot=ownedRoot.transform;
             dustTexture = MakeParticleTexture(false);
             ringTexture = MakeParticleTexture(true);
             dustMaterial = CreateMaterial("Eldoria / artisan dust", dustTexture);
@@ -363,7 +367,7 @@ namespace Eldoria.ReferenceClean
             float upward, int countLimit)
         {
             var obj = new GameObject("Delight · " + name, typeof(ParticleSystem));
-            obj.transform.SetParent(transform, true);
+            obj.transform.SetParent(particleRoot, true);
             var ps = obj.GetComponent<ParticleSystem>();
             var main = ps.main;
             main.playOnAwake = false;
