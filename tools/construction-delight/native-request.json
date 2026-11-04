@@ -2,9 +2,9 @@
   "schema_version": 1,
   "request_id": "eldoria-construction-delight-native-ab-20261104",
   "workstream_id": "eldoria-construction-delight-v1-20261104",
-  "source_head_before_request": "91b3cb2c735cd654604202490d69928bbeeacb92",
-  "ownership_revision": 5,
-  "mode": "LICENSE_FREE_DOMAIN_AND_ROSLYN_SOURCE_QA",
+  "source_head_before_request": "0f4413053c813e2fc82593f502e70b6451f1e8aa",
+  "ownership_revision": 11,
+  "mode": "EXACT_UNITY_EDITOR_NATIVE_GENUINE_AB_AFTER_LICENSE_RECOVERY",
   "expected_images": 26,
   "formats": [
     "844x390",
@@ -22,7 +22,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 7,
+  "attempt": 8,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "Avoid Transform.Find slash interpretation: owned effect group uses slash-free name",
@@ -48,7 +48,7 @@
       "status": "failed_compile_missing_particle_module"
     }
   ],
-  "validation": "Actual editor compile, 26 A/B source captures, 390x844 & 844x390, real canonical gateway task and completion, unchanged save",
+  "validation": "Unity actual 6000.3.23f1 builds full PR152, uses exact-authoritative LocalGateway construction, emits 26 authentic before/after time-resolved camera shots including mobile resolutions, checks true completion receipt and save persistence; no art approval automatically.",
   "editor_launch": false,
   "windows_runner_requested": false,
   "test_project": "tools/construction-delight/DomainProbe.csproj",
@@ -66,5 +66,13 @@
   "purpose": "Verify current authoritative completion receipt, no World4X bleed, URP real renderer and localized camera proof syntax",
   "native_editor_invocation": false,
   "window_runner_reservation": false,
-  "real_visual_QA_pending": true
+  "real_visual_QA_pending": true,
+  "license_evidence": {
+    "auth_run": 41807267627,
+    "unity_editor_compilation_run": 41804846844,
+    "local_named_user_license_valid_until": "2026-12-04T09:21:58Z"
+  },
+  "physical_mobile_tested": false,
+  "no_reboot": true,
+  "no_interference": true
 }
