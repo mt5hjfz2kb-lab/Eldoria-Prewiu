@@ -96,7 +96,8 @@ jobs:
             Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
             throw 'Only the isolated license-probe Editor exceeded 3-minute limit'
           }
-          $body=Test-Path $log ? (Get-Content $log -Raw) : ''
+          $body=''
+          if(Test-Path $log){$body=Get-Content $log -Raw}
           $denied=$body -match 'No valid Unity Editor license found|com.unity.editor.headless.*not found'
           Write-Host "DELIGHT_LICENSE_PROBE editor_exit=$($p.ExitCode)"
           Write-Host "DELIGHT_LICENSE_PROBE licence_denied=$denied"
