@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "0f4413053c813e2fc82593f502e70b6451f1e8aa",
   "ownership_revision": 11,
-  "mode": "EXACT_UNITY_EDITOR_NATIVE_GENUINE_AB_AFTER_LICENSE_RECOVERY",
+  "mode": "REAL_UNITY_EDITOR_AFTER_CSHARP_NAMESPACE_COLLISION_FIX",
   "expected_images": 26,
   "formats": [
     "844x390",
@@ -22,7 +22,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 8,
+  "attempt": 9,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "Avoid Transform.Find slash interpretation: owned effect group uses slash-free name",
@@ -74,5 +74,8 @@
   },
   "physical_mobile_tested": false,
   "no_reboot": true,
-  "no_interference": true
+  "no_interference": true,
+  "root_cause_last_compile": "Compilation CS0234 Application.dataPath resolves to Eldoria.Application namespace. Fixed via UnityEngine.Application.dataPath.",
+  "previous_native_run": 41807760515,
+  "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea"
 }
