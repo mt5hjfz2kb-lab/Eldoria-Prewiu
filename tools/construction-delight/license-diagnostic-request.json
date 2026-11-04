@@ -1,24 +1,23 @@
 {
   "workstream_id": "eldoria-construction-delight-v1-20261104",
-  "mode": "READ_ONLY_RECHECK_OF_CURRENT_WINDOWS_PROCESSES_AND_ACCOUNT_SESSION",
+  "mode": "READ_ONLY_LICENSE_EVENT_TIMELINE_20261104",
   "source_branch": "feature/eldoria-construction-delight-20261104",
   "reason": "Unity 6000.3.23f1 headless startup exit 198: token unavailable and no com.unity.editor.headless entitlement; inspect only file existence and Hub/Editor processes",
   "no_credential_access": true,
   "no_process_changes": true,
   "build_not_authorized": true,
   "art_approved": false,
-  "attempt": 10,
+  "attempt": 11,
   "valid_workflow_head": "82b75bb11cfc55d6aa674f8cc8097e69e58cbdb2",
   "read_only_checks": [
-    "Unity/Blender process counts only",
-    "Hub/Client/Explorer SessionId only",
-    "Unity CLI auth status exit only",
-    "Unity CLI license status exit only"
+    "Named user entitlement file UTC last modification (no contents)",
+    "Licensing client auth event classification counts (no message texts)",
+    "Unity Hub auth event classification counts (no message texts)"
   ],
   "human_login_not_automated": true,
   "processes_not_terminated": true,
   "system_not_restarted": true,
-  "expected": "Check if GUI using Unity now; no license activation or Editor launch; preserve other chat.",
+  "expected": "Determine if existing local entitlement recently changed or auth failures accumulated. No personal login attempt.",
   "production_scene_modified": false,
   "production_save_modified": false,
   "accept_new_eula": false,
@@ -36,5 +35,7 @@
   "no_login_or_switch": true,
   "no_secrets": true,
   "executed_under_lease": false,
-  "triggered_by_user_request": "Continue Construction Delight while other chat uses Windows; avoid native processes"
+  "triggered_by_user_request": "Continue Construction Delight while other chat uses Windows; avoid native processes",
+  "no_license_edits": true,
+  "no_unity_start": true
 }
