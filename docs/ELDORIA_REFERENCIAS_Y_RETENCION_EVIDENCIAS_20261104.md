@@ -41,3 +41,11 @@ Los cambios de retención a través de `actions/upload-artifact` afectan a **nue
 Rama independiente: `cost/artifact-retention-references-20261104`. Se acortan retenciones de tres salidas regenerables y se actualiza `docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md`.
 
 No se modifica `main`, ni el runner Windows, ni `.github/workflows/ui-progression-cert.yml` (archivo con titulares activos), ni el canal de APK/WebGL. Ninguna limpieza histórica se considera ejecutada sin verificación de dependencias y resultado real.
+
+## Validación ejecutada en GitHub (rama aislada)
+
+- Ejecución: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41898038881
+- Resultado observado: `success`; job `verify`, sin pasos fallidos.
+- Comprobaciones reales: sintaxis YAML con PyYAML, `retention-days` de los tres uploads, `visual-report/report.json` como único resultado persistente del QA visual, presencia de las condiciones de política y SHA-256 del JPEG canónico comparado con `pipeline/visual-authority-routing-v1.json`.
+- Estas pruebas **no** certifican todavía ejecución del workflow modificado en `main`, consumo real facturado ni limpieza de los artefactos históricos.
+- El workflow de comprobación fue temporal y debe retirarse del candidato; ninguna comprobación Unity se canceló ni se publicó ninguna APK/WebGL.
