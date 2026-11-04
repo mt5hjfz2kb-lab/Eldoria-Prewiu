@@ -6255,6 +6255,27 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
+    },
+    {
+      "id": "eldoria-documentation-semantic-review-batch3-20261104",
+      "title": "Eldoria — revisión semántica de importación, licencias y arte, lote 3",
+      "owner": "chatgpt-eldoria-semantic-review-batch3-20261104",
+      "branch": "docs/semantic-review-batch3-20261104",
+      "status": "active",
+      "claimed_at": "2026-11-04T20:11:00Z",
+      "base_main_sha": "887d4e1e455b44f40cf55b04bb163683463fc9a6",
+      "scope": [
+        "docs/project-organization/SEMANTIC_REVIEW_BATCH3_20261104.md"
+      ],
+      "resources": [],
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Documentation-only triage, no Unity or art source modifications.",
+      "budget_eur": 0,
+      "phase": "SEMANTIC_REVIEW_BATCH3",
+      "next": "Audit import/license/art source documents against later binding decisions and record non-destructive dispositions."
     }
   ],
   "history": [
