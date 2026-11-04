@@ -6255,59 +6255,6 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
-    },
-    {
-      "id": "eldoria-project-entry-organization-20261101",
-      "title": "Organización documental: entrada única al proyecto",
-      "owner": "chatgpt-eldoria-global-organization-continuation-20261104",
-      "branch": "docs/global-organization-20261104",
-      "status": "active",
-      "claimed_at": "2026-11-04T19:35:45Z",
-      "base_main_sha": "d7a6d78eb96b19f0350c890fc1dadc131a8f3032",
-      "scope": [
-        "README.md",
-        "docs/DOCUMENTATION_INDEX.md",
-        "docs/DOCUMENTATION_POLICY.md",
-        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
-        "docs/project-organization/**",
-        "tools/repository-organization/**",
-        "docs/ELDORIA_STABILIZATION_HANDOFF_20261014.md",
-        "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
-        "docs/VALORIA_VISUAL_BIBLE.md",
-        "docs/BASTION_I_GLOBAL_ART_DIRECTION_20261014.md"
-      ],
-      "resources": [],
-      "ownership_state": "claimed",
-      "ownership_revision": 5,
-      "write_scope_released": false,
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Documentation navigation only; no Unity, artwork, builds or delivery mutation.",
-      "budget_eur": 0,
-      "delivery_definition": {
-        "deliverable": "Global inventory and safe organization of repository files, reference-aware cleanup, single placement guide and verified links.",
-        "evidence": "Pinned source tree, coverage counts, duplicate/reference inventory, documented dispositions and existing architecture/documentation checks.",
-        "handoff": "Same canonical organization mission; no Unity build or publication."
-      },
-      "previous_owner": "codex-eldoria-global-organization-20261104",
-      "ownership_history": [
-        {"owner":"codex-eldoria-global-organization-20261104","relinquished_on":"2026-11-04","reason":"Owner-directed continuation of same canonical organization workstream; existing branch, inventory and evidence preserved"}
-      ],
-      "handoff_authorization": "Owner instruction 2026-11-04: continue with the next safe organization steps, no re-audit or duplicate PR",
-      "evidence": {
-        "pr": 140,
-        "head_sha": "e4f93fca5f89b40ebbc22b6bcecf928528330d23",
-        "merge_sha": "ff94e3070454051f388d459411dfaa2442a0f4c6",
-        "architecture_run": 41323649901,
-        "ownership_run": 41323647137,
-        "domain_run": 41323649909,
-        "tester_qa_run": 41323649900,
-        "local_documentation_tests": "10/10 PASS with ELDORIA_CI_TRACKED_TREE=1",
-        "local_navigation_links": "74/74 PASS",
-        "unity_changed": false,
-        "publication_performed": false
-      },
-      "next": "Audit complete tracked tree, classify root directories and duplicate groups, verify references and apply safe navigation/organization repairs; preserve reserved source/catalog and historic evidence.",
-      "phase": "GLOBAL_ORGANIZATION_PR154_VALIDATION"
     }
   ],
   "history": [
@@ -14607,6 +14554,83 @@
         "native_holder": "eldoria-construction-delight-v1-20261104",
         "observed_native_run": 41811262373
       }
+    },
+    {
+      "id": "eldoria-project-entry-organization-20261101",
+      "title": "Organización documental: entrada única al proyecto",
+      "owner": null,
+      "branch": "docs/global-organization-20261104",
+      "status": "completed",
+      "claimed_at": "2026-11-04T19:35:45Z",
+      "base_main_sha": "d7a6d78eb96b19f0350c890fc1dadc131a8f3032",
+      "scope": [
+        "README.md",
+        "docs/DOCUMENTATION_INDEX.md",
+        "docs/DOCUMENTATION_POLICY.md",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
+        "docs/project-organization/**",
+        "tools/repository-organization/**",
+        "docs/ELDORIA_STABILIZATION_HANDOFF_20261014.md",
+        "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
+        "docs/VALORIA_VISUAL_BIBLE.md",
+        "docs/BASTION_I_GLOBAL_ART_DIRECTION_20261014.md"
+      ],
+      "resources": [],
+      "ownership_state": "available",
+      "ownership_revision": 6,
+      "write_scope_released": true,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Documentation navigation only; no Unity, artwork, builds or delivery mutation.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Global inventory and safe organization of repository files, reference-aware cleanup, single placement guide and verified links.",
+        "evidence": "Pinned source tree, coverage counts, duplicate/reference inventory, documented dispositions and existing architecture/documentation checks.",
+        "handoff": "Same canonical organization mission; no Unity build or publication."
+      },
+      "previous_owner": "codex-eldoria-global-organization-20261104",
+      "ownership_history": [
+        {
+          "owner": "codex-eldoria-project-entry-20261101",
+          "reason": "Original project-entry workstream owner retained from pre-continuation registry"
+        },
+        {
+          "owner": "codex-eldoria-global-organization-20261104",
+          "relinquished_on": "2026-11-04",
+          "reason": "Owner-directed continuation of same canonical organization workstream; existing branch, inventory and evidence preserved"
+        },
+        {
+          "owner": "chatgpt-eldoria-global-organization-continuation-20261104",
+          "reason": "Global structural inventory PR154 merged; release following verified checks on 2026-11-04"
+        }
+      ],
+      "handoff_authorization": "Owner instruction 2026-11-04: continue with the next safe organization steps, no re-audit or duplicate PR",
+      "evidence": {
+        "pr": 140,
+        "head_sha": "e4f93fca5f89b40ebbc22b6bcecf928528330d23",
+        "merge_sha": "ff94e3070454051f388d459411dfaa2442a0f4c6",
+        "architecture_run": 41323649901,
+        "ownership_run": 41323647137,
+        "domain_run": 41323649909,
+        "tester_qa_run": 41323649900,
+        "local_documentation_tests": "10/10 PASS with ELDORIA_CI_TRACKED_TREE=1",
+        "local_navigation_links": "74/74 PASS",
+        "unity_changed": false,
+        "publication_performed": false,
+        "global_organization_pr": 154,
+        "global_organization_merge_sha": "d70082792866d395c8f6e31523ff54633c08f13e",
+        "organization_inventory_source_sha": "95c00907071b79fc8069e671117f8073aa1ccc86",
+        "organization_files_inventory": 21177,
+        "organization_duplicate_groups_cataloged": 1025,
+        "organization_inline_broken_links": 0,
+        "documentation_review_pending": 175,
+        "global_architecture_run": 41897096503,
+        "global_ownership_run": 41899000453,
+        "global_tester_qa_run": 41897096478,
+        "unity_files_modified": false
+      },
+      "next": "Follow-up dependent review: 175 documents pending semantic verification and 43 cross-root duplicate groups requiring reference/license/provenance checks; do not delete or move Unity assets without native dependency validation.",
+      "phase": "GLOBAL_STRUCTURAL_ORGANIZATION_VERIFIED",
+      "closed_reason": "Inventory, navigation and safe structural organization merged. Semantic review of 175 documents and asset-dependency cleanup are separate pending work, not certified by this closeout."
     }
   ],
   "owner_specific_pauses": [
