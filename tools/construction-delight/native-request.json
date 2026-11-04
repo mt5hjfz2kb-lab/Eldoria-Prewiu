@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
   "ownership_revision": 13,
-  "mode": "EXACT_NATIVE_UNITY_A_B_ARCHITECTURAL_GOLD_LUSTRE",
+  "mode": "REAL_UNITY_NATIVE_EVIDENCE_V4_ANCHORED_SCAFFOLD",
   "expected_images": 26,
   "formats": [
     "844x390",
@@ -22,7 +22,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 14,
+  "attempt": 15,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "latest certified main & metadata merged into candidate",
@@ -65,7 +65,7 @@
   "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c",
   "source_domain_attempt": 2,
   "purpose": "Verify current authoritative completion receipt, no World4X bleed, URP real renderer and localized camera proof syntax",
-  "native_editor_invocation": false,
+  "native_editor_invocation": true,
   "window_runner_reservation": false,
   "real_visual_QA_pending": true,
   "license_evidence": {
@@ -145,5 +145,8 @@
     "A/B on real city camera",
     "6 time-resolved finish frames",
     "no change to local saved gateway"
-  ]
+  ],
+  "latest_source_qa_run": 41871088213,
+  "root_correction": "Worksite anchored to real visible scaffold / existing model bounds; foundation dust moved to site footprint, no detached grass puffs",
+  "previous_pass_native_run": 41870250590
 }
