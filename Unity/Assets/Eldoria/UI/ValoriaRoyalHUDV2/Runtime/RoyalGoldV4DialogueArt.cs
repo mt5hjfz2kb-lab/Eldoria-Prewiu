@@ -238,17 +238,34 @@ namespace Eldoria.UI.RoyalGold.V2
             bool landscape=safe.rect.width>safe.rect.height;
             float scale=Mathf.Max(.18f,canvas.scaleFactor);
             bool compact=!landscape&&safe.rect.width*scale<610f;
-            float width=Mathf.Min(safe.rect.width-(landscape?26f:18f),landscape?1100f:730f);
+            // The proprietor chose "Diálogo 1 / Estilo Real Narrativo":
+            // a cinematic character emerging beside a broad manuscript.
+            // Preserve the previous compact layout on 844x390 mobile;
+            // a wide character portrait would conceal the text there.
+            // Orín remains a distinct arcane QA treatment until the
+            // story event actually exists.
+            bool cinematic=landscape&&safe.rect.width*scale>=1050f&&
+                (isAldric||isLyra);
+            float width=Mathf.Min(safe.rect.width-(landscape?26f:18f),
+                cinematic?1360f:landscape?1100f:730f);
             var nav=Source.Navigation?Source.Navigation.transform as RectTransform:null;
             float dock=nav?Mathf.Max(0f,nav.anchoredPosition.y+nav.rect.height+10f):0f;
             float maxHeight=Mathf.Max(155f,safe.rect.height-dock-18f);
-            float height=Mathf.Min(maxHeight,landscape?345f:470f);
-            float column=compact?170f:Mathf.Clamp(width*.265f,175f,290f);
-            float x=compact?22f:column+15f;
-            float textWidth=width-x-24f;
-            float portraitSize=compact?Mathf.Min(235f,width*.33f):Mathf.Min(column+25f,height-25f);
-            float portraitX=compact?-23f:-18f;
-            float portraitY=compact?7f:Mathf.Max(5f,(height-portraitSize)*.45f);
+            float height=Mathf.Min(maxHeight,cinematic?395f:landscape?345f:470f);
+            float column=compact?170f:cinematic?
+                Mathf.Clamp(width*.30f,315f,425f):
+                Mathf.Clamp(width*.265f,175f,290f);
+            float x=compact?22f:column+(cinematic?12f:15f);
+            float textWidth=Mathf.Min(width-x-24f,cinematic?795f:float.MaxValue);
+            // Aldric's genuine 512px approved bust can fill a large
+            // vignette. Lyra's atlas portrait is smaller, so cap its
+            // size to avoid visibly magnifying the source pixels.
+            float portraitSize=cinematic?
+                (isLyra?Mathf.Min(height*.95f,350f):Mathf.Min(height*1.18f,465f)):
+                compact?Mathf.Min(235f,width*.33f):Mathf.Min(column+25f,height-25f);
+            float portraitX=cinematic?-54f:compact?-23f:-18f;
+            float portraitY=cinematic?(isLyra?-25f:-56f):
+                compact?7f:Mathf.Max(5f,(height-portraitSize)*.45f);
             // The illustrated header tab spans roughly y=26..87 from the
             // frame's top. The previous role started at y=71, so its first
             // line was hidden behind that tab in native Unity screenshots.
@@ -285,8 +302,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 height=Mathf.Clamp(natural,minimum,height);
                 available=height-bodyTop-footer;
             }
-            portraitSize=compact?Mathf.Min(235f,width*.33f):Mathf.Min(column+25f,height-25f);
-            portraitY=compact?7f:Mathf.Max(5f,(height-portraitSize)*.45f);
+            portraitSize=cinematic?
+                (isLyra?Mathf.Min(height*.95f,350f):Mathf.Min(height*1.18f,465f)):
+                compact?Mathf.Min(235f,width*.33f):Mathf.Min(column+25f,height-25f);
+            portraitY=cinematic?(isLyra?-25f:-56f):
+                compact?7f:Mathf.Max(5f,(height-portraitSize)*.45f);
             frame.anchorMin=frame.anchorMax=new Vector2(.5f,0);
             frame.pivot=new Vector2(.5f,0);
             frame.sizeDelta=new Vector2(width,height);
@@ -301,7 +321,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             Top(aperture,portraitX+portraitSize*.04f,portraitY+portraitSize*.04f,
                 portraitSize*.92f,portraitSize*.92f);
-            paper.Configure(isOrin,isLyra,compact?0f:column);
+            paper.Configure(isOrin,isLyra,compact?0f:column,cinematic);
             if(priorBust)priorBust.enabled=false;
             if(isAldric)
             {

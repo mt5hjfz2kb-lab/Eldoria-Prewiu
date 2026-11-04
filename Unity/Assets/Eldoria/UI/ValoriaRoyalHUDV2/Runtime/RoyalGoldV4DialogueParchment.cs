@@ -9,6 +9,7 @@ namespace Eldoria.UI.RoyalGold.V2
     {
         public bool Arcane {get;private set;}
         public bool Nocturne {get;private set;}
+        public bool Cinematic {get;private set;}
         public float PortraitColumn {get;private set;}
         public override Texture mainTexture=>Texture2D.whiteTexture;
         static void Quad(VertexHelper h,Rect r,Color lo,Color hi)
@@ -36,10 +37,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 h.AddTriangle(n,n+1,n+2);
             }
         }
-        public void Configure(bool orin,bool lyra,float column)
+        public void Configure(bool orin,bool lyra,float column,bool cinematic=false)
         {
-            if(Arcane==orin&&Nocturne==lyra&&Mathf.Abs(PortraitColumn-column)<.1f)return;
-            Arcane=orin;Nocturne=lyra;PortraitColumn=column;SetVerticesDirty();
+            if(Arcane==orin&&Nocturne==lyra&&Cinematic==cinematic&&
+                Mathf.Abs(PortraitColumn-column)<.1f)return;
+            Arcane=orin;Nocturne=lyra;Cinematic=cinematic;
+            PortraitColumn=column;SetVerticesDirty();
         }
         protected override void OnPopulateMesh(VertexHelper h)
         {
@@ -72,7 +75,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 Arcane?new Color(.34f,.22f,.42f):
                 Nocturne?new Color(.14f,.19f,.22f):new Color(.39f,.29f,.17f));
             Quad(h,new Rect(p.xMin+18,p.yMin+17,p.width-36,2),rim,rim);
-            if(col>50)
+            // In the approved cinematic style the real character cuts
+            // into the scene instead of sitting inside a large medallion.
+            // Keep the ornamental seal for smaller integrated layouts.
+            if(col>50&&!Cinematic)
             {
                 var centre=new Vector2(r.xMin+col*.5f,r.yMin+r.height*.55f);
                 float radius=Mathf.Min(col*.46f,r.height*.43f);
