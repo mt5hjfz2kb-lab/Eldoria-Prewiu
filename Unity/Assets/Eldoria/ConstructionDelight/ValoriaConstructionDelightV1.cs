@@ -62,7 +62,10 @@ namespace Eldoria.ReferenceClean
         readonly ArchitecturalCompletionLustre materialLustre = new ArchitecturalCompletionLustre();
         readonly ConstructionDelightArchitecturalReveal structureReveal =
             new ConstructionDelightArchitecturalReveal();
+        readonly ConstructionDelightStageAssembly stagedBuilding =
+            new ConstructionDelightStageAssembly();
 
+        public int ActiveStagedBuildingMeshes => stagedBuilding.MeshCount;
         public int ActiveStructuralRevealMeshes => structureReveal.MeshCount;
         public int ActiveArchitecturalSurfaces => materialLustre.LayerCount;
         public string ActiveBuildingId => activeBuilding ?? "";
@@ -94,6 +97,7 @@ namespace Eldoria.ReferenceClean
                 StopWork();
                 materialLustre.Clear();
                 structureReveal.Clear();
+                stagedBuilding.Clear();
                 foreach (var field in allFields) field.Clear();
             }
 
@@ -118,10 +122,16 @@ namespace Eldoria.ReferenceClean
                 foreach (var field in allFields) field.Clear();
                 materialLustre.Clear();
                 structureReveal.Clear();
+                stagedBuilding.Clear();
                 return;
             }
             if (activeBuilding != null)
             {
+                if(!stagedBuilding.Running && previous.IsValid &&
+                   previous.LevelAtStart==0)
+                    stagedBuilding.BeginWork(CompletedModel(previous.BuildingId),
+                        previous.DeadlineUtcTicks,city.Clock.UtcTicks,
+                        WorkDuration(previous),Time.unscaledTime);
                 if (!loopDust.Running)
                 {
                     loopDust.Play();
@@ -145,6 +155,7 @@ namespace Eldoria.ReferenceClean
             var cam = city.PlayerCamera;
             float dt = Mathf.Min(.06f, Time.unscaledDeltaTime);
             foreach (var field in allFields) field.Tick(dt, cam);
+            stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
             materialLustre.Tick(Time.unscaledTime);
             structureReveal.Tick(Time.unscaledTime);
         }
@@ -154,6 +165,9 @@ namespace Eldoria.ReferenceClean
         // without touching the building's original shared materials or gameplay.
         public void SetArchitecturalLustreVisibleForCapture(bool visible)
         {
+            stagedBuilding.SetVisible(visible);
+            if(city && city.Clock!=null)
+                stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
             materialLustre.SetVisible(visible);
             structureReveal.SetVisible(visible,Time.unscaledTime);
         }
@@ -173,7 +187,7 @@ namespace Eldoria.ReferenceClean
             {
                 initialized = true;
                 previous = hasTask ? current : default;
-                if (hasTask) StartWork(current.BuildingId, false);
+                if (hasTask) StartWork(current, false);
                 return;
             }
             bool same = hasTask && ConstructionDelightState.SameTask(previous, current);
@@ -192,13 +206,14 @@ namespace Eldoria.ReferenceClean
                     }
                 }
             }
-            if (hasTask && !same) StartWork(current.BuildingId, true);
-            else if (hasTask && activeBuilding == null) StartWork(current.BuildingId, false);
+            if (hasTask && !same) StartWork(current, true);
+            else if (hasTask && activeBuilding == null) StartWork(current, false);
             previous = hasTask ? current : default;
         }
 
-        void StartWork(string id, bool animateStart)
+        void StartWork(ConstructionDelightTask task, bool animateStart)
         {
+            string id=task.BuildingId;
             StopWork();
             if (!PositionSite(id, false)) return;
             activeBuilding = id;
@@ -213,6 +228,9 @@ namespace Eldoria.ReferenceClean
             loopDust.Emit(24);
             loopMotes.Emit(13);
             structureReveal.BeginWork(WorksiteModel(id),Time.unscaledTime);
+            if(task.LevelAtStart==0)
+                stagedBuilding.BeginWork(CompletedModel(id),task.DeadlineUtcTicks,
+                    city.Clock.UtcTicks,WorkDuration(task),Time.unscaledTime);
             nextWorkPulse = Time.unscaledTime + 1.55f;
             if (animateStart)
             {
@@ -229,6 +247,18 @@ namespace Eldoria.ReferenceClean
             if (loopDust != null) loopDust.Clear();
             if (loopMotes != null) loopMotes.Clear();
             structureReveal.Clear();
+            stagedBuilding.Clear();
+        }
+
+        static float WorkDuration(ConstructionDelightTask task)
+        {
+            if(task.TaskKey.StartsWith("c3:",StringComparison.Ordinal))
+                return task.LevelAtStart==0 ?
+                    (task.BuildingId=="stoneworks" ? 12f:9f) :
+                    (8f+task.LevelAtStart*2f);
+            if(task.BuildingId=="sawmill")return SliceRules.SawmillBuildSeconds;
+            if(task.BuildingId=="barracks")return SliceRules.BarracksBuildSeconds;
+            return 20f;
         }
 
         void Complete(string id)
@@ -256,9 +286,13 @@ namespace Eldoria.ReferenceClean
             // A brief, restrained warm highlight on the ACTUAL stone/timber
             // renderers is more satisfying than gold specks on empty grass.
             // MaterialPropertyBlocks preserve all shared assets and are restored.
-            materialLustre.Begin(CompletedModel(id),Time.unscaledTime);
-            structureReveal.Complete(CompletedModel(id),city.PlayerCamera,Time.unscaledTime);
-            // Gameplay models, levels, saves and shared materials stay unchanged.
+            var completed=CompletedModel(id);
+            bool staged=stagedBuilding.Complete(completed,Time.unscaledTime);
+            var visual=staged ? stagedBuilding.VisualRoot : completed;
+            materialLustre.Begin(visual,Time.unscaledTime);
+            structureReveal.Complete(visual,city.PlayerCamera,Time.unscaledTime);
+            stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
+            // A reversible 3D timber-and-roof landing; all source flags restore.
         }
 
         // Real colliders and visible model bounds only; never guess city coordinates.
@@ -523,6 +557,7 @@ namespace Eldoria.ReferenceClean
         {
             structureReveal.Clear();
             materialLustre.Clear();
+            stagedBuilding.Clear();
             if(allFields!=null)foreach(var field in allFields)field.Dispose();
             if(dustMaterial)Destroy(dustMaterial);
             if(ringMaterial)Destroy(ringMaterial);
