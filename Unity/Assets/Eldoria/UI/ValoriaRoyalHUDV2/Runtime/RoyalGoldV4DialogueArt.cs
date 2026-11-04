@@ -22,8 +22,86 @@ namespace Eldoria.UI.RoyalGold.V2
         Canvas canvas;
         Material feather, lyraFeather;
         Sprite lyraSprite;
-        bool applied,busy;
+        bool applied,busy,oldSigilActive,oldBustEnabled,oldV3PaperEnabled,roleOverridden;
+        string canonicalRoleBeforeOverride;
+        float originalBodyLineSpacing;
+        Geometry[] originalGeometry;
+        Typography[] originalTypography;
         readonly TextGenerator textSize=new TextGenerator(256);
+        // V4 is a reversible visual layer. The same canonical ModalWindow must
+        // return to V3 precisely when QA alternates A/B or the component stops.
+        struct Geometry
+        {
+            readonly RectTransform target;
+            readonly Vector2 anchorMin,anchorMax,pivot,position,size;
+            public Geometry(RectTransform r)
+            {
+                target=r;
+                anchorMin=r?r.anchorMin:Vector2.zero;
+                anchorMax=r?r.anchorMax:Vector2.zero;
+                pivot=r?r.pivot:Vector2.zero;
+                position=r?r.anchoredPosition:Vector2.zero;
+                size=r?r.sizeDelta:Vector2.zero;
+            }
+            public void Restore()
+            {
+                if(!target)return;
+                target.anchorMin=anchorMin;target.anchorMax=anchorMax;
+                target.pivot=pivot;target.anchoredPosition=position;
+                target.sizeDelta=size;
+            }
+        }
+        struct Typography
+        {
+            readonly RoyalText target;
+            readonly int fontSize;
+            readonly Color color;
+            readonly TextAnchor alignment;
+            readonly float lineSpacing;
+            readonly HorizontalWrapMode horizontal;
+            readonly VerticalWrapMode vertical;
+            public Typography(RoyalText t)
+            {
+                target=t;
+                fontSize=t?t.fontSize:0;color=t?t.color:Color.white;
+                alignment=t?t.alignment:TextAnchor.UpperLeft;
+                lineSpacing=t?t.lineSpacing:1f;
+                horizontal=t?t.horizontalOverflow:HorizontalWrapMode.Wrap;
+                vertical=t?t.verticalOverflow:VerticalWrapMode.Truncate;
+            }
+            public void Restore()
+            {
+                if(!target)return;
+                target.fontSize=fontSize;target.color=color;
+                target.alignment=alignment;target.lineSpacing=lineSpacing;
+                target.horizontalOverflow=horizontal;target.verticalOverflow=vertical;
+            }
+        }
+        void CaptureBaseline()
+        {
+            var modal=Source.Modal;
+            originalGeometry=new[]
+            {
+                new Geometry(frame),
+                new Geometry(modal.Title.rectTransform),
+                new Geometry(modal.Body.rectTransform),
+                new Geometry(modal.Extra.transform as RectTransform),
+                new Geometry(modal.ExtraLabel.rectTransform),
+                new Geometry(role?role.rectTransform:null),
+                new Geometry(sigil?sigil.rectTransform:null)
+            };
+            originalTypography=new[]
+            {
+                new Typography(modal.Title),new Typography(modal.Body),
+                new Typography(modal.ExtraLabel),new Typography(role),
+                new Typography(sigil)
+            };
+            oldDimmer=dimmer?dimmer.color:Color.clear;
+            oldSigilActive=sigil&&sigil.gameObject.activeSelf;
+            oldBustEnabled=priorBust&&priorBust.enabled;
+            oldV3PaperEnabled=v3Paper&&v3Paper.enabled;
+            originalBodyLineSpacing=modal.Body.lineSpacing;
+        }
         static readonly Color parchmentInk=new Color(.30f,.19f,.115f);
         static readonly Color gold=new Color(.96f,.88f,.70f);
         static void Top(RectTransform r,float x,float y,float w,float h)
@@ -100,17 +178,33 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             aperture.gameObject.SetActive(false);
             dimmer=Source.Modal.GetComponent<Graphic>();
-            if(dimmer)oldDimmer=dimmer.color;
             return true;
         }
         void Restore()
         {
-            if(!applied)return;applied=false;
+            if(!applied)return;
+            applied=false;
             if(paper)paper.enabled=false;
             if(aperture)aperture.gameObject.SetActive(false);
-            if(v3Paper)v3Paper.enabled=true;
-            if(priorBust)priorBust.enabled=true;
-            if(dimmer)dimmer.color=oldDimmer;
+            if(v3Paper)v3Paper.enabled=oldV3PaperEnabled;
+            if(priorBust)priorBust.enabled=oldBustEnabled;
+            // The original narrative controller restores ordinary modal
+            // geometry/backdrop on Close. Never undo its already-run restore.
+            bool narrativeStillOpen=Source&&Source.NarrativeOpen;
+            if(narrativeStillOpen)
+            {
+                if(originalGeometry!=null)
+                    foreach(var g in originalGeometry)g.Restore();
+                if(originalTypography!=null)
+                    foreach(var t in originalTypography)t.Restore();
+                if(sigil)sigil.gameObject.SetActive(oldSigilActive);
+                if(dimmer)dimmer.color=oldDimmer;
+            }
+            else if(Source&&Source.Modal&&Source.Modal.Body)
+                Source.Modal.Body.lineSpacing=originalBodyLineSpacing;
+            if(roleOverridden&&role&&role.text=="Custodio del Relicario")
+                role.Put(canonicalRoleBeforeOverride);
+            roleOverridden=false;
         }
         float Height(RoyalText text,string full,float width)
         {
@@ -132,6 +226,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var modal=Source.Modal;
             var narrative=modal.GetComponent<RoyalNarrativePresentation>();
             if(!narrative||!modal.Title||!modal.Body||!modal.Extra||!modal.ExtraLabel)return;
+            if(!applied)CaptureBaseline();
             applied=true;
             if(v3Paper)v3Paper.enabled=false;
             paper.enabled=true;
@@ -257,7 +352,18 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 role.color=isOrin?new Color(.95f,.85f,1f):isLyra?gold:parchmentInk;
                 role.fontSize=Mathf.RoundToInt(Mathf.Clamp(16f/scale,16f,32f));
-                if(isOrin)role.Put("Custodio del Relicario");
+                if(isOrin&&!roleOverridden&&role.text!="Custodio del Relicario")
+                {
+                    canonicalRoleBeforeOverride=role.text;
+                    roleOverridden=true;
+                    role.Put("Custodio del Relicario");
+                }
+                else if(!isOrin&&roleOverridden)
+                {
+                    if(role.text=="Custodio del Relicario")
+                        role.Put(canonicalRoleBeforeOverride);
+                    roleOverridden=false;
+                }
                 Top(role.rectTransform,titleX+2f,27f+titleH,titleWidth-2f,
                     Mathf.Max(29f,role.fontSize*1.27f));
             }
