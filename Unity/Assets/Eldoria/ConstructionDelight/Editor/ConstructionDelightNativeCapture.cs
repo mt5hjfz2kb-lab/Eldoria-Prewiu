@@ -24,7 +24,7 @@ namespace Eldoria.ReferenceClean.Editor
         const string Flag = "Eldoria.ConstructionDelight.NativeCapture";
         const string Scene = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
         static readonly string Output = Path.GetFullPath(Path.Combine(
-            Application.dataPath,"../../artifacts/construction-delight-native"));
+            UnityEngine.Application.dataPath,"../../artifacts/construction-delight-native"));
         static ConstructionDelightNativeCapture()
         {
             EditorApplication.playModeStateChanged += OnPlayMode;
