@@ -48,6 +48,8 @@ if($LASTEXITCODE -ne 0){ throw 'Isolated source clone failed' }
 & $gitExe -C $sourceRoot config core.longpaths true
 & $gitExe -C $sourceRoot fetch --depth=1 origin $requestMetadata.candidate_sha
 if($LASTEXITCODE -ne 0){ throw 'Exact candidate fetch failed' }
+& $gitExe -C $sourceRoot sparse-checkout set --no-cone '/Unity/' '/tools/' '/scripts/' '/pipeline/' '/docs/**/*.md' '/docs/**/*.json' '/docs/evidence/unity-metadata-20261104/' '/v0220/' '/tester-v0265/' '/references/' '/.gitattributes' '/.gitignore'
+if($LASTEXITCODE -ne 0){ throw 'Isolated project materialization failed' }
 & $gitExe -C $sourceRoot -c core.autocrlf=false checkout --force $requestMetadata.candidate_sha
 if($LASTEXITCODE -ne 0){ throw 'Exact isolated checkout failed' }
 $checked=(& $gitExe -C $sourceRoot rev-parse HEAD).Trim()
@@ -58,6 +60,10 @@ New-Item -ItemType Directory -Force -Path $harnessDirectory | Out-Null
 Copy-Item -LiteralPath (Join-Path $sourceRoot 'tools/unity-metadata/MetadataNativeVerification.cs') -Destination (Join-Path $harnessDirectory 'MetadataNativeVerification.cs')
 $manifest=Join-Path $sourceRoot 'docs/evidence/unity-metadata-20261104/recovery-manifest.json'
 $nativeReport=Join-Path $evidenceRoot 'metadata-native.json'
+. (Join-Path $sourceRoot 'tools/unity-metadata/native_settings.ps1')
+$testIdentity=Set-MetadataTestIdentity (Join-Path $projectRoot 'ProjectSettings/ProjectSettings.asset') $env:GITHUB_RUN_ID
+@{company=$testIdentity.Company;product=$testIdentity.Product;isolated_from_normal_save_identity=$true} |
+    ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidenceRoot 'persistence-isolation.json')
 
 function Invoke-MetadataEditor([string]$name,[string[]]$extra) {
     Assert-MetadataLease
@@ -73,18 +79,22 @@ function Invoke-MetadataEditor([string]$name,[string[]]$extra) {
     if($process.ExitCode -ne 0){ Get-Content -LiteralPath $editorLog -Tail 100; throw "$name failed with exit $($process.ExitCode)" }
 }
 
-Invoke-MetadataEditor 'import-and-identities' @('-quit','-executeMethod','EldoriaMetadataNativeVerification.Run','-metadataManifest',$manifest,'-metadataCandidate',$checked,'-metadataReport',$nativeReport)
-$proof=Get-Content -LiteralPath $nativeReport -Raw | ConvertFrom-Json
-if($proof.state -ne 'PASS' -or $proof.candidate_sha -ne $checked){ throw 'Native identity verification did not pass' }
-foreach($platform in @('EditMode','PlayMode')){
-    $result=Join-Path $evidenceRoot ($platform + '.xml')
-    Invoke-MetadataEditor $platform @('-runTests','-testPlatform',$platform,'-testResults',$result)
-    [xml]$xml=Get-Content -LiteralPath $result -Raw
-    if([int]$xml.'test-run'.failed -ne 0 -or [int]$xml.'test-run'.passed -lt 1){ throw "$platform test results are not passing" }
+try {
+    Invoke-MetadataEditor 'import-and-identities' @('-quit','-executeMethod','EldoriaMetadataNativeVerification.Run','-metadataManifest',$manifest,'-metadataCandidate',$checked,'-metadataReport',$nativeReport,'-metadataCompany',$testIdentity.Company,'-metadataProduct',$testIdentity.Product)
+    $proof=Get-Content -LiteralPath $nativeReport -Raw | ConvertFrom-Json
+    if($proof.state -ne 'PASS' -or $proof.candidate_sha -ne $checked){ throw 'Native identity verification did not pass' }
+    foreach($platform in @('EditMode','PlayMode')){
+        $result=Join-Path $evidenceRoot ($platform + '.xml')
+        Invoke-MetadataEditor $platform @('-runTests','-testPlatform',$platform,'-testResults',$result)
+        [xml]$xml=Get-Content -LiteralPath $result -Raw
+        if([int]$xml.'test-run'.failed -ne 0 -or [int]$xml.'test-run'.passed -lt 1){ throw "$platform test results are not passing" }
+    }
+} finally {
+    Restore-MetadataTestIdentity $testIdentity
 }
 $status=& $gitExe -C $sourceRoot status --porcelain --untracked-files=no
 if($LASTEXITCODE -ne 0){ throw 'Post-import tracked state unavailable' }
 $status | Set-Content -LiteralPath (Join-Path $evidenceRoot 'tracked-state.txt')
 if(@($status).Count -gt 0){ throw 'Unity changed tracked files in the isolated candidate; inspect evidence' }
-@{state='PASS';candidate_sha=$checked;run_id=$env:GITHUB_RUN_ID;unity_version=$proof.unity_version;restored_entries=@($proof.entries).Count;production_projects_modified=$false;harness_editor_only=$true} |
+@{state='PASS';candidate_sha=$checked;run_id=$env:GITHUB_RUN_ID;unity_version=$proof.unity_version;restored_entries=@($proof.entries).Count;production_projects_modified=$false;harness_editor_only=$true;test_persistence_isolated=$true;original_project_settings_restored=$true} |
     ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidenceRoot 'certificate.json')

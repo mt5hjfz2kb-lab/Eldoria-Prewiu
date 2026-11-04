@@ -35,6 +35,8 @@ public static class EldoriaMetadataNativeVerification
         public string[] failures;
         public int enabled_scenes;
         public int missing_scripts;
+        public string company_name;
+        public string product_name;
     }
 
     static string Argument(string key)
@@ -60,6 +62,10 @@ public static class EldoriaMetadataNativeVerification
             candidate_sha = Argument("-metadataCandidate") };
         try
         {
+            report.company_name = UnityEngine.Application.companyName;
+            report.product_name = UnityEngine.Application.productName;
+            if (report.company_name != Argument("-metadataCompany") || report.product_name != Argument("-metadataProduct"))
+                throw new Exception("Test persistence identity not isolated");
             string root = Directory.GetParent(UnityEngine.Application.dataPath).FullName;
             var manifest = JsonUtility.FromJson<Manifest>(File.ReadAllText(Argument("-metadataManifest")));
             if (manifest == null || manifest.entries == null) throw new Exception("Recovery manifest is empty");

@@ -41,3 +41,6 @@ jobs:
             (Join-Path $pwd 'tools/unity-metadata/native_validate.ps1'),
             [ref]$tokens,[ref]$errors) | Out-Null
           if($errors.Count -gt 0){ $errors | Format-List; throw 'Native validation syntax invalid' }
+      - name: Verify test save identity isolation and exact settings restoration
+        shell: pwsh
+        run: ./tools/unity-metadata/test_native_settings.ps1
