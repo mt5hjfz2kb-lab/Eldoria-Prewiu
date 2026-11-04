@@ -6255,6 +6255,27 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
+    },
+    {
+      "id": "eldoria-documentation-semantic-review-batch2-20261104",
+      "title": "Eldoria — revisión semántica de ingeniería y coordinación, lote 2",
+      "owner": "chatgpt-eldoria-semantic-review-batch2-20261104",
+      "branch": "docs/semantic-review-batch2-20261104",
+      "status": "active",
+      "claimed_at": "2026-11-04T20:03:00Z",
+      "base_main_sha": "866aa9fd59cfdd1334fce226380043280e1f6257",
+      "scope": [
+        "docs/project-organization/SEMANTIC_REVIEW_BATCH2_20261104.md"
+      ],
+      "resources": [],
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only documentation review; no Unity or art production.",
+      "budget_eur": 0,
+      "phase": "SEMANTIC_REVIEW_BATCH2",
+      "next": "Review outdated engineering and coordination instructions, preserve catalog and protected scopes, publish evidence-backed report."
     }
   ],
   "history": [
