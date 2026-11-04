@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T09:27:24.065Z",
+  "updated_at": "2026-11-04T09:27:38.942Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3443,9 +3443,9 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 10,
+      "ownership_revision": 11,
       "write_scope_released": false,
-      "branch": "feature/eldoria-construction-delight-20261104",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-03T23:35:16.557Z",
       "base_main_sha": "d01bffc48f85d65b1061c2fc50ce78c49d9c3344",
@@ -3460,13 +3460,15 @@
         ".github/workflows/eldoria-construction-delight-native.yml",
         "tools/construction-delight/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "PR152_SOURCE_36_ASSERTIONS_PASS_AND_URP_ART_GATES_READY__UNITY_EDITOR_AUTH_UNAVAILABLE",
-      "next": "After an authenticated Unity Editor is verifiably accessible in the SAME Windows runner, claim windows-runner-heavy with registry CAS and no other editor process, sync registry into PR152, dispatch gated native-request to compile Unity and render 26 true screenshots, inspect aesthetic quality and iterate. Do not guess license/account status or claim ART_APPROVED while exit198 persists. Continue only offline source validation until genuine Unity capture possible.",
+      "phase": "EDITOR_LICENSE_RECOVERED_NATIVE_QA_AUTHENTIC_20261104",
+      "next": "Run PR152 isolated Unity 6000.3.23f1 and exact real A/B capture; keep PR152 draft until visually approved; release windows-runner-heavy after run; do not alter PR136.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Source tests + real Unity 390x844 and 844x390 moving captures at exact HEAD, GPU/frame QA, human visual assessment",
@@ -3530,9 +3532,11 @@
       },
       "candidate_branch": "feature/eldoria-construction-delight-20261104",
       "native_lease": {
-        "reserved_at": "2026-11-04T00:21:31.253Z",
-        "source": "Owner explicitly requests finishing Construction Delight with genuine visual A/B; runner free after PR136 41742424858 success.",
-        "previous_run": 41742424858
+        "reserved_at": "2026-11-04T09:27:38.939Z",
+        "evidence": "Run 41807267627 Unity auth exit 0 license exit 0; run 41804846844 reached C# compile, proving Unity Editor licence active. No concurrent native Windows CI and zero other heavy registry owners.",
+        "no_reboot": true,
+        "no_process_kill": true,
+        "disjoint_from_pr136": true
       },
       "license_diagnostics": {
         "read_only_check_run": 41796258446,
