@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T17:01:48.469Z",
+  "updated_at": "2026-11-04T17:03:42.546Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -120,13 +120,15 @@
         "ArtSource/RejectedLegacyBastion/**",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "DIALOGUE_V4_NATIVE_AB_RECERTIFY_20261104",
-      "next": "Metadata recovery merged in PR153. Re-read main and the actual Windows queue before native work; canonical post-merge runs 41850579988 and 41850579678 still occupy/queue Windows. Verificar resultado QA de diálogos de HEAD 09715611, correr Unity en Windows únicamente tras release de windows-runner-heavy ajeno, corregir, capturar A/B reales en 4 resoluciones, mantener cambios no publicados.",
+      "phase": "DIALOGUE_V4_NATIVE_AB_HEAD_5A50FA25",
+      "next": "Certificar exclusivamente Unity V4 sobre HEAD 5a50fa25; validar restauración exacta V3 durante A/B y 48 capturas; conservar DRAFT sin merge ni publicación hasta comprobar calidad.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1787,7 +1789,7 @@
           "reason": "PR153 integrated and full native41844806444 passed; restore latest pre-pause owner and writing scope."
         }
       ],
-      "ownership_revision": 136,
+      "ownership_revision": 137,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
