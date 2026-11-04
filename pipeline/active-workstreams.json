@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T17:03:42.546Z",
+  "updated_at": "2026-11-04T17:36:07.130Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-dialogue-v4-native-ab-20261104",
+      "owner": "chatgpt-eldoria-dialogue-v4-recovery-20261104",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-04",
@@ -127,8 +127,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "DIALOGUE_V4_NATIVE_AB_HEAD_5A50FA25",
-      "next": "Certificar exclusivamente Unity V4 sobre HEAD 5a50fa25; validar restauración exacta V3 durante A/B y 48 capturas; conservar DRAFT sin merge ni publicación hasta comprobar calidad.",
+      "phase": "DIALOGUE_V4_NATIVE_A_B_SUBTITLE_FIX_2482B22B",
+      "next": "Prove 2482b22b exact-head Unity regression and 48 real A/B captures, inspect subtitle on three speakers in four formats; keep PR136 draft/no merge or publication; document and release Windows after evidence.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1787,13 +1787,21 @@
           "revision": 136,
           "restored_at": "2026-11-04T14:56:25.841Z",
           "reason": "PR153 integrated and full native41844806444 passed; restore latest pre-pause owner and writing scope."
+        },
+        {
+          "from": "chatgpt-eldoria-dialogue-v4-native-ab-20261104",
+          "to": "chatgpt-eldoria-dialogue-v4-recovery-20261104",
+          "previous_revision": 137,
+          "revision": 138,
+          "transferred_at": "2026-11-04T17:36:07.130Z",
+          "reason": "The owner explicitly instructed this new chat to take over the frozen dialogue task and continue PR136 through authentic Unity A/B. 48 PNG and 409 native checks exist on 5a50fa25; subtitle collision found by direct visual review and corrected in candidate 2482b22b. Preserve previous artifacts and release only after exact-head QA."
         }
       ],
-      "ownership_revision": 137,
+      "ownership_revision": 138,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
-      "last_claimed_at": "2026-11-03",
+      "last_claimed_at": "2026-11-04T17:36:07.130Z",
       "delivery_definition": {
         "deliverable": "Complete necessary web-to-Unity I–V parity and city/world camera corrections through existing PR132; resolve issue133 with verified evidence.",
         "evidence": "Web-to-Unity matrix, old/new save and idempotency regression tests, native Edit/PlayMode I–V, actual UI/camera captures and exact source/build identity.",
@@ -2116,7 +2124,7 @@
         "note": "Exact PR136 HEAD certified with full Unity SUCCESS at run 41742424858: native V4.1, EditMode, PlayMode, city build/upgrade/resource shortage, save/reopen and inline council/speed-ups. Native A/B desktop and mobile delivered for owner evaluation. Technical closure only; artistic >=8.2/10 not approved yet. No merge, publication, invented economy or new modals.",
         "artistic_approval_note": "El propietario acepta provisionalmente el A/B visual de construcción y mejoras el 04/11/2026. Mantenerlo como baseline candidato certificado; no equivale a ≥8,2/10 definitivo ni autoriza merge o publicación. Mejorar en una pasada artística futura sólo tras nueva decisión."
       },
-      "claim_reason": "Propietario: continuar hasta capturas A/B nativas de diálogos, sin detenerse con informes intermedios. Relevo de workstream disponible, mismo PR #136. No reservar Windows mientras otro titular lo utiliza.",
+      "claim_reason": "Direct owner-authorized takeover 2026-11-04: previous dialogue chat frozen; new agent must finish work and provide real native A/B not animation. No new PR, no production release, no game state changes.",
       "last_priority_pause": {
         "by": "eldoria-unity-metadata-integrity-20261104",
         "at": "2026-11-04T10:42:51.869Z",
