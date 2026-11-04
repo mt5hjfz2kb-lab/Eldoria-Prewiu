@@ -44,6 +44,13 @@ jobs:
         with:
           path: delight-source
           clean: false
+          # Same exact Unity source, without cloning unrelated multi-GB art
+          # history, previous captures and archived Blender experiments.
+          sparse-checkout: |
+            Unity
+            tools
+            pipeline
+          sparse-checkout-cone-mode: true
 
       - uses: actions/checkout@v4
         with:
