@@ -1,0 +1,90 @@
+param([Parameter(Mandatory=$true)][string]$RequestPath)
+$ErrorActionPreference='Stop'
+$requestMetadata=Get-Content -LiteralPath $RequestPath -Raw | ConvertFrom-Json
+if($requestMetadata.candidate_sha -notmatch '^[0-9a-f]{40}$'){ throw 'Invalid exact candidate SHA' }
+$headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+
+function Assert-MetadataLease {
+    $url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+    $response=Invoke-RestMethod -Uri $url -Headers $headers
+    $live=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($response.content -replace '\s',''))) | ConvertFrom-Json
+    $holders=@($live.active | Where-Object { @($_.resources) -contains 'windows-runner-heavy' })
+    if($holders.Count -ne 1 -or $holders[0].id -ne $requestMetadata.workstream_id -or
+       $holders[0].owner -ne $requestMetadata.owner -or
+       $holders[0].ownership_revision -ne $requestMetadata.ownership_revision -or
+       $holders[0].ownership_state -ne 'claimed'){
+        throw 'Live Windows lease unavailable or changed; no Editor launched'
+    }
+}
+
+Assert-MetadataLease
+if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAction SilentlyContinue).Count){
+    throw 'Existing native processes detected; do not touch their projects'
+}
+if(-not (Test-Path -LiteralPath $env:UNITY_EDITOR_PATH -PathType Leaf)){ throw 'Installed Editor missing' }
+$editorVersion=& $env:UNITY_EDITOR_PATH -version
+if($editorVersion -notmatch '6000\.3\.23f1'){ throw 'Unexpected Unity Editor version' }
+$gitMetadata=Get-Command git.exe -ErrorAction SilentlyContinue
+if($gitMetadata){ $gitExe=$gitMetadata.Source }
+else {
+    $desktop=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+    $gitExe=Get-ChildItem -LiteralPath $desktop -Directory -Filter 'app-*' |
+        Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+        Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
+}
+if(-not $gitExe){ throw 'No existing Git executable; no install performed' }
+$scratchRoot=Join-Path $env:RUNNER_TEMP ('em-native-' + $env:GITHUB_RUN_ID)
+if(Test-Path -LiteralPath $scratchRoot){ throw 'Refuse to overwrite a previous native proof' }
+New-Item -ItemType Directory -Path $scratchRoot | Out-Null
+$sourceRoot=Join-Path $scratchRoot 'source'
+$evidenceRoot=Join-Path $scratchRoot 'evidence'
+New-Item -ItemType Directory -Path $evidenceRoot | Out-Null
+$seed=Join-Path $env:GITHUB_WORKSPACE '.git'
+$cloneArguments=@('clone','--filter=blob:none','--no-checkout','--depth=1','--branch','fix/unity-metadata-integrity-20261104')
+if(Test-Path -LiteralPath $seed){ $cloneArguments+=@('--reference-if-able',$seed) }
+$cloneArguments+=@('https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git',$sourceRoot)
+& $gitExe @cloneArguments
+if($LASTEXITCODE -ne 0){ throw 'Isolated source clone failed' }
+& $gitExe -C $sourceRoot config core.longpaths true
+& $gitExe -C $sourceRoot fetch --depth=1 origin $requestMetadata.candidate_sha
+if($LASTEXITCODE -ne 0){ throw 'Exact candidate fetch failed' }
+& $gitExe -C $sourceRoot -c core.autocrlf=false checkout --force $requestMetadata.candidate_sha
+if($LASTEXITCODE -ne 0){ throw 'Exact isolated checkout failed' }
+$checked=(& $gitExe -C $sourceRoot rev-parse HEAD).Trim()
+if($checked -ne $requestMetadata.candidate_sha){ throw 'Checkout identity mismatch' }
+$projectRoot=Join-Path $sourceRoot 'Unity'
+$harnessDirectory=Join-Path $projectRoot 'Assets/Editor'
+New-Item -ItemType Directory -Force -Path $harnessDirectory | Out-Null
+Copy-Item -LiteralPath (Join-Path $sourceRoot 'tools/unity-metadata/MetadataNativeVerification.cs') -Destination (Join-Path $harnessDirectory 'MetadataNativeVerification.cs')
+$manifest=Join-Path $sourceRoot 'docs/evidence/unity-metadata-20261104/recovery-manifest.json'
+$nativeReport=Join-Path $evidenceRoot 'metadata-native.json'
+
+function Invoke-MetadataEditor([string]$name,[string[]]$extra) {
+    Assert-MetadataLease
+    $editorLog=Join-Path $evidenceRoot ($name + '.log')
+    $editorArguments=@('-batchmode','-force-d3d11','-projectPath',$projectRoot,'-logFile',$editorLog)+$extra
+    $quotedArguments=@($editorArguments | ForEach-Object {if($_ -match '\s'){'"'+$_+'"'}else{$_}})
+    $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $quotedArguments -PassThru
+    if(-not $process.WaitForExit(1800000)){
+        & taskkill.exe /PID $process.Id /T /F | Out-Null
+        throw "Only this isolated Editor timed out: $name"
+    }
+    $process.Refresh()
+    if($process.ExitCode -ne 0){ Get-Content -LiteralPath $editorLog -Tail 100; throw "$name failed with exit $($process.ExitCode)" }
+}
+
+Invoke-MetadataEditor 'import-and-identities' @('-quit','-executeMethod','EldoriaMetadataNativeVerification.Run','-metadataManifest',$manifest,'-metadataCandidate',$checked,'-metadataReport',$nativeReport)
+$proof=Get-Content -LiteralPath $nativeReport -Raw | ConvertFrom-Json
+if($proof.state -ne 'PASS' -or $proof.candidate_sha -ne $checked){ throw 'Native identity verification did not pass' }
+foreach($platform in @('EditMode','PlayMode')){
+    $result=Join-Path $evidenceRoot ($platform + '.xml')
+    Invoke-MetadataEditor $platform @('-runTests','-testPlatform',$platform,'-testResults',$result)
+    [xml]$xml=Get-Content -LiteralPath $result -Raw
+    if([int]$xml.'test-run'.failed -ne 0 -or [int]$xml.'test-run'.passed -lt 1){ throw "$platform test results are not passing" }
+}
+$status=& $gitExe -C $sourceRoot status --porcelain --untracked-files=no
+if($LASTEXITCODE -ne 0){ throw 'Post-import tracked state unavailable' }
+$status | Set-Content -LiteralPath (Join-Path $evidenceRoot 'tracked-state.txt')
+if(@($status).Count -gt 0){ throw 'Unity changed tracked files in the isolated candidate; inspect evidence' }
+@{state='PASS';candidate_sha=$checked;run_id=$env:GITHUB_RUN_ID;unity_version=$proof.unity_version;restored_entries=@($proof.entries).Count;production_projects_modified=$false;harness_editor_only=$true} |
+    ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidenceRoot 'certificate.json')

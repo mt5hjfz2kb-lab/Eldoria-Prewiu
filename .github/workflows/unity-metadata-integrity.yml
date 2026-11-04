@@ -32,3 +32,12 @@ jobs:
         run: python3 tools/unity-metadata/audit.py
       - name: Exercise recovery and integrity behavior
         run: python3 -m unittest discover -s tools/unity-metadata -p 'test_*.py' -v
+      - name: Parse native validation PowerShell without launching Unity
+        shell: pwsh
+        run: |
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            (Join-Path $pwd 'tools/unity-metadata/native_validate.ps1'),
+            [ref]$tokens,[ref]$errors) | Out-Null
+          if($errors.Count -gt 0){ $errors | Format-List; throw 'Native validation syntax invalid' }

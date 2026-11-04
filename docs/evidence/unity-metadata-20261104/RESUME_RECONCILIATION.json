@@ -1,0 +1,1435 @@
+{
+  "source_heads": {
+    "main": "origin/main",
+    "pr136": "c1ac08e8afc304fb2a0bba96ff680bdd8c697166",
+    "pr151": "f4ddc09dbbf325c467aee660420c8510a4914d7c"
+  },
+  "pending_count": 57,
+  "entries": [
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaAuthenticBridgeLayerE.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "ed84809d6e8b69191c07ef4bea81f02d5b1ddd5388f613305e3432e597c949eb",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionFacingProbe.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "b5375b692f706cd8fe44f464a047e21585e365a62219eafc58f941f1a40d0834",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionVisibilityGate.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "74d59bff5fcdcea058c284080eef37e6866713b0413b3b14e9803793b19e363e",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryFinishV8.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "6c53f268c6ee88e79989dc59b4e90fd152ea227c11600767b0822485413fbf18",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV5Integration.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "32843440fe58131f2995ebce7af26d6c1c159f6a3f6e1e925f361f83dfd9f78d",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaLayeredMasterSceneBuilder.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "0b63507dd43b542696b8f4a3037395c294d276545bcef4c4f2dbfa29a827d0a2",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaMacroScreenEnvelopeCandidateV1.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "ddc8e3a8c460facba0e958015277fa371c27396abafdea82613e3c2cbea9b09a",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaModularGateLayerD.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "34228a28e40b60a6a8252ebbedcc77e425be8651dd08be6954b642f7707654ce",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSceneVisualOwnershipGate.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "04707d1f73b21972c1ea8c42560628419653b18e01257de1a06a85061f18633f",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSharpPlayerCameraCorrespondence.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "70fa9924c703689d17fdf1f5b34dc38e5e3b8596472fcb9a5a8fa0fabfb0fecb",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSharpSemanticContactRepairV1.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "02f607c042ccee5aa2d1dc8f4c10b9f123c5136de187911c4aea04aaffcb0e7f",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaTerrainRiverCliffV2Integration.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "24904cc36baa2b7dec454712e8a98b2d853746c6e6221137afc4350d86da106d",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaTerrainRiverCliffV3Integration.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "bc5dd9f374075262429dcf53601da4349f77fc71d4d913e1f85463f30ca22796",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout/certified-legacy-skeleton.json.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "7c99120fc3779e30eedb595e685446ea1f526d29a504cf1ac1fc26e6a477d196",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_BridgeTerrainV1.unity.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "856bb66225a4167d3dcba3b8eb8d9f6e20fd66c7566dd7bd63f8584c62b2f6f4",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "94101b760cbbee658995635f4160b4cefb87ae51b56779e1398e25a30855026c",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "d98e2baa7bd087596a17fc79288f0fffd394d74ce742180083b62a4b105597e0",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCDE.unity.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "78a2b6fbf42c5acb0f5080b1bf21c3f7d42056a8aa738e0498ccf64ecdac3120",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD_BridgeV1.unity.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "d6f25e8ca9541c7b9c9856708db0c9fa7677dd9680df8074ed8eb3ffa39c7749",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Camera_Mapping_DIAGNOSTIC.unity.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "d511aeefad7640887cbe05ce3477b0611ccb55707fd943ae3a8bdc430c8dfbe8",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV5_CANDIDATE.unity.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "c1b8ec76cfb2102ce4e336fefef1ba662319a90e92d94e1a21bb3699e50533fd",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_MacroEnvelope_CANDIDATE.unity.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "0d237d805b9b89e4a68cd2617ea4c64277cd6d645bd836ff53317c60cfb2f1d1",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV2_CANDIDATE.unity.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "e3b458853e3bc8dc5bb8145f7de79c4879c1e7dd52fbb668954fd0b2e8af18f9",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV3_CANDIDATE.unity.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "8ffa7cbf3693e574105d00b33bf12842d861347be1d6fc4d337326260882a53c",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_SemanticContact_IsolatedV1.unity.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "6d3b1f609af31da96390b1adb39614cf4dd3254626aeaa8b8ecdc4fe20bf2538",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1/Editor/ValoriaBridgeLevelAccessV1.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "eecbf49f391494b648b1edb4852bb6864b545297985c633c4d54269f14fa81ec",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor/ValoriaTerrainRiverCliffV1.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "986a439f3f0166d8205cc4038c192d3d34a93047c966fecd88e05f10e7ead87a",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "0a8cbda39716bf28660d4f85a895363cdf37ed0f41d0ac24bfc0e0bccf20fa2d",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/source-identity.json.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "17fac4ae5eaab28bd0e12fc9867be32096f9fd8bc190bc81ea3c8f215c595733",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "0994cac9ae070c448fc38c246c61ae40a5e88bcda76cba7be8301c713e9b5eb3",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneRiberaPilot.cs.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "0325d0bfbd68e0f73a52fd50f5ad06ddedad241814bac8c09d84db2f1dbcd111",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RiberaFade.shader.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "71c13e93271968090be97a57ba4524bfe5c6d81dfde7e5a7a8f6d775bc89f98c",
+      "kind": "file",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": true,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "e860c00409557aaed2d1b35a44495d530f378921ea16b3890f8add0e4db8e6e1",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "4be6f3bbdb8757392b30bbe9811f223e6736fd4cf5af35a2eb611c1170d53a85",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "7edf465245814d9ee849be9e004d4da0baa6e8d3ecbeab8e94f77918a2ef00c7",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedBridgeV1.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "ef5e746aa5736ed55cdbb08b36980c9bea2de861de022f6f4dfe05d98d8b2a28",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "fd8572740dc952477dacdb23bff4a651c83e1bc0d62d49ffc2d305cbf069ecc7",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedE.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "9a9f66db2f5ded0e07070ad02a5af950564efbb3c0a43fc92b74cd4c8f3b9be8",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "1c57dd8cd1a4f5e594ed20ae3a77f8e50ab5bf33d15094eef06fb429341f4e23",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV1.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "024296f02ae1373efc4ab92946a9812684acc605b91855825848101ec6946486",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV2.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "ff603619de2dfa2e3a8f73314e91bf0b19464f5b2200a34c3086e75363442ab3",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV3.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "6267f44afdfac06e90e0c1cbf47bcc9c8cd68f539a8cb0fc583acf14ad0afd88",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "f72d7000249ae5216c2846b96d714db730c4d4d0123e9ca6b787cf8a9627027b",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "6c6163651298bfea303613c7a6045476dc97049c5231687960e9ed5a980fbf5f",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "b6b8aa810f47cda8ef36f12fc7b9dfe8087edcf7b3243978c4fef1583dad4e5f",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1/Editor.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "d491ee7282730fa797ba28502f05dc8bd59bd6d1d6d74bea47fc5333c4d97708",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "7dbfd0624aad6af68ec2552ae5546b69602b24afb6a559dcc1ecb2dffc232a4e",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "1884f87ea699a117d4b76108af23ac542a87429bb5b37d19a9c34e4e47cab8b7",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "e87bbb7112ee29d6faca4334a1f6eae742727eb473e2de6af35e06998e057d0f",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "d8fac617f6d6aaaa4bd1a829ef5dcddadd226d7f01e8944892729f91ca9c1392",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Models.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "fd1e5b9ddd6c994210c747af64493c08b9adebbae6d9f576251a0cb332199cfa",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "b30780eb836c1bdeccb0bc89febc249aaed35c4895f9c6e4e4e20b69247db677",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "09915de865dfb6111c77340d9820fcb69e75debc98ba132234c91c997ed86400",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "e2cea55fe7f573819b774595d044ae6c568e6f75f858a6c9a93f93565df545f4",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/SpawnlingBastion2.meta",
+      "reserved_by": [
+        "eldoria-tripo-art-brain-phase2-20261021"
+      ],
+      "recovery_sha256": "191c79f38f28a34179f260e453a6805d479a228ab49bede0a0786641bbdbc08a",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "01daff24da7fca3ed7787c42ccdfe62f7a4609efc9d976aad7aae1e639efc693",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/P0ArtMasks.meta",
+      "reserved_by": [
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "recovery_sha256": "c25c0c7ea3a4c7389d038657955e877d43178a000abcc0f22718a21e4e212a65",
+      "kind": "folder",
+      "branches": {
+        "main": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr136": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        },
+        "pr151": {
+          "asset_present": true,
+          "original_file_matches": null,
+          "metadata_already_versioned": false
+        }
+      }
+    }
+  ]
+}
