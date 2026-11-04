@@ -6255,6 +6255,27 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
+    },
+    {
+      "id": "eldoria-catalog-reconciliation-staged-20261104",
+      "title": "Eldoria — propuesta de reclasificación del catálogo, sin editar el archivo reservado",
+      "owner": "chatgpt-eldoria-catalog-reconciliation-staged-20261104",
+      "branch": "docs/catalog-reconciliation-staged-20261104",
+      "status": "active",
+      "claimed_at": "2026-11-04T21:53:00Z",
+      "base_main_sha": "62aaa35be484c1dae9fa876ad17c34fab29d47ff",
+      "scope": [
+        "docs/project-organization/CATALOG_RECONCILIATION_STAGED_20261104.json"
+      ],
+      "resources": [],
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only a staged JSON proposal; actual catalog remains owned by PR136.",
+      "budget_eur": 0,
+      "phase": "CATALOG_RECONCILIATION_STAGED",
+      "next": "Validate four staged historical classifications; merge proposal only; do not apply catalog until explicit owner handoff."
     }
   ],
   "history": [
