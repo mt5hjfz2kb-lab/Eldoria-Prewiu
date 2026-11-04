@@ -431,7 +431,15 @@
       "source_blob": "8e5308d17dfd6f1e65823f076ddc7c46f3d5913e",
       "preexisting_main_blob": "8e5308d17dfd6f1e65823f076ddc7c46f3d5913e",
       "observed_blob": "14b7824e17b12b4d7ff0d021234ae834e885abfe",
-      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+      "reason": "Existing vendor binary-to-YAML migration creates DemoSettings.lighting with a fresh GUID. Require that exact generated file/reference and identical normalized scene bytes; all other changes remain rejected.",
+      "generated_lighting_reference": {
+        "path": "Unity/Assets/NatureStarterKit2/Scene/DemoSettings.lighting",
+        "normalized_scene_sha256": "21846a699bb16441b6baaafc8a789f6fbb0df27d50969eee4df4f795ea5ce9f8",
+        "verified_runs": [
+          41832431346,
+          41839002020
+        ]
+      }
     },
     {
       "path": "Unity/Assets/NatureStarterKit2/Scene/New Terrain.asset",
