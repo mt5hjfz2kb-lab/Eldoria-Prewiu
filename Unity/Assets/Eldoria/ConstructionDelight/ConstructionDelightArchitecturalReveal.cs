@@ -179,6 +179,7 @@ namespace Eldoria.ReferenceClean
         {
             if(!running || !glowMaterial)return;
             float t=Mathf.Max(0f,time-began);
+            bool drawSurfaces=true;
             if(finishing)
             {
                 float progress=Mathf.Clamp01((t-.08f)/1.20f);
@@ -206,11 +207,14 @@ namespace Eldoria.ReferenceClean
             {
                 // Tactile scaffold activity, not constant magic on unfinished work.
                 float cycle=Mathf.Repeat(t/3.0f,1f);
+                // Render scaffold highlights only in short active work pulses.
+                // Keeps mobile GPU cost low during long real-world build timers.
+                drawSurfaces=cycle<.35f;
                 glowMaterial.SetFloat(Mode,0f);
                 glowMaterial.SetFloat(Sweep,Mathf.Lerp(-.18f,1.16f,cycle));
                 glowMaterial.SetFloat(Strength,.20f+.11f*Mathf.Sin(Mathf.PI*cycle));
             }
-            foreach(var overlay in overlays)if(overlay)overlay.enabled=visible;
+            foreach(var overlay in overlays)if(overlay)overlay.enabled=visible && drawSurfaces;
         }
 
         public void SetVisible(bool show,float time)
