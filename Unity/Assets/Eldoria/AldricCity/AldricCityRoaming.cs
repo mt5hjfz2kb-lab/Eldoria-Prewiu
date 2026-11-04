@@ -74,6 +74,8 @@ namespace Eldoria.AldricCity
         // Native verification probes. Read-only; never mutate player saves or gameplay.
         public bool ApprovedVisualReady => visualConfigured && actor && model && clips && path != null &&
             renderers != null && renderers.Length > 0;
+        public GameObject ApprovedModelRoot => ApprovedVisualReady ? model : null;
+        public bool UsesOriginalAnimationPose => clips && cityPoseCorrection == null;
         public MeshCollider ActualPavingCollider => road;
         public int RoadWaypoints => path == null ? 0 : path.Length;
         // A legacy looping state may remain registered while its visible
@@ -480,7 +482,10 @@ namespace Eldoria.AldricCity
             foreach (var renderer in renderers) renderer.enabled = false;
             actor.SetActive(true);
             clips.Play(Idle,UnityEngine.PlayMode.StopSameLayer);
-            ConfigureCityRestPose(skins);
+            // The approved Idle already rotates upper arms by about 29 degrees.
+            // Adding another 35 degrees stretches the weighted hand region into
+            // the claw silhouette reported by the owner. Use the original clip.
+            // Preserve the original GLB, 26 bones, weights and five animations.
             clips.Sample();
             if (!ActualSkinnedPoseBounds(skins, out var bounds) || bounds.size.y < .1f || bounds.size.y > 100f)
                 return RejectImport("invalid actual skinned idle geometry bounds " + bounds);

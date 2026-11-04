@@ -17,6 +17,43 @@ namespace Eldoria.ReferenceClean.Editor {
   const string Output="Builds/ValoriaWebPlaytest";
   const string Ev="../docs/evidence/valoria-reference-clean";
   [Serializable] class Result {public string source_sha,status,scene,error;public long bytes;public bool physical_iphone_tested;public string[] files;}
+  // Private validation artifact: preserve the authored canonical scene; never regenerate it.
+  public static void BuildWindowsCandidate(){
+   const string output="Builds/PR136Candidate/Eldoria.exe";
+   var result=new Result{source_sha=Environment.GetEnvironmentVariable("ALDRIC_REQUEST_SOURCE_SHA"),scene=Scene,status="WINDOWS_CANDIDATE_FAILED"};
+   var libraries=new Dictionary<string,byte[]>();int exit=1;
+   try{
+    Directory.CreateDirectory(Ev);
+    if(SystemInfo.graphicsDeviceType==GraphicsDeviceType.Null)throw new Exception("Canonical Windows build requires the native-tested Direct3D graphics device");
+    if(!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone,BuildTarget.StandaloneWindows64))throw new Exception("Windows64 module unavailable");
+    if(!File.ReadAllText(Ev+"/integration-result.json").Contains("INTEGRATION_PASS_ART_REVIEW_REQUIRED"))throw new Exception("Native integrated journey proof missing");
+    if(File.ReadAllText(Ev+"/integration-input-signature.txt").Trim()!=ValoriaIntegrationBuild.ComputeInputSignature())throw new Exception("Candidate sources differ from native journey proof");
+    EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
+    var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
+    if(!host||!host.HudPrefab||!host.WorldRoot||!host.WorldCamera)throw new Exception("Canonical scene bindings missing");
+    var render=Object.FindFirstObjectByType<ValoriaReferenceCleanRenderSettings>();
+    if(!render||!render.scenePipeline)throw new Exception("Canonical scene pipeline missing");
+    GraphicsSettings.defaultRenderPipeline=render.scenePipeline;QualitySettings.renderPipeline=render.scenePipeline;
+    var dependencies=new HashSet<string>(AssetDatabase.GetDependencies(Scene,true));
+    // Same verified exclusion as the integrated Web build; restore every source byte.
+    foreach(var path in AssetDatabase.FindAssets("t:ValoriaExternalAssetLibrary").Select(AssetDatabase.GUIDToAssetPath)){
+     if(dependencies.Contains(path))throw new Exception("Canonical scene depends on legacy library: "+path);
+     libraries[path]=File.ReadAllBytes(path);
+     var asset=AssetDatabase.LoadMainAssetAtPath(path);var serialized=new SerializedObject(asset);var it=serialized.GetIterator();
+     while(it.Next(true))if(it.propertyType==SerializedPropertyType.ObjectReference&&it.name!="m_Script")it.objectReferenceValue=null;
+     serialized.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(asset);
+    }
+    AssetDatabase.SaveAssets();
+    File.WriteAllLines(Ev+"/windows-candidate-dependencies.txt",dependencies.OrderBy(x=>x));
+    Directory.CreateDirectory(Path.GetDirectoryName(output));
+    var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{Scene},locationPathName=output,target=BuildTarget.StandaloneWindows64,options=BuildOptions.StrictMode});
+    if(report.summary.result!=BuildResult.Succeeded||report.summary.totalErrors!=0||!File.Exists(output))throw new Exception("Canonical Windows candidate failed: "+report.summary.result);
+    result.bytes=(long)report.summary.totalSize;result.files=Directory.GetFiles(Path.GetDirectoryName(output),"*",SearchOption.AllDirectories);
+    result.status="WINDOWS_CANDIDATE_COMPILED_NOT_PUBLISHED";exit=0;
+   }catch(Exception e){result.error=e.ToString();Debug.LogException(e);}
+   finally{foreach(var pair in libraries)File.WriteAllBytes(pair.Key,pair.Value);File.WriteAllText(Ev+"/windows-candidate.json",JsonUtility.ToJson(result,true));}
+   EditorApplication.Exit(exit);
+  }
   public static void Build(){
    var result=new Result{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),scene=Scene,status="WEB_BUILD_FAILED"};
    var libraries=new Dictionary<string,byte[]>();int exit=1;

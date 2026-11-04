@@ -1,7 +1,7 @@
 name: Early Retention domain contract (Ubuntu zero-Unity)
 on:
   pull_request:
-    branches: [main]
+    branches: [main, 'fix/player-feedback-context-ui-20261030']
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
@@ -9,6 +9,9 @@ on:
       - 'tools/early-retention/**'
       - 'Unity/Assets/Eldoria/Resources/EldoriaRetention/**'
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3LayeredFinish.cs'
+      - 'Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs'
+      - 'Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3LayeredFinishTests.cs'
       - '.github/workflows/early-retention-domain.yml'
   workflow_dispatch:
 permissions:

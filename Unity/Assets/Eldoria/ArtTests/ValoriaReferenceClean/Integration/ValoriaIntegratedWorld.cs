@@ -68,7 +68,22 @@ namespace Eldoria.ReferenceClean {
    Hud.ResetPlaytestProgress=()=>city.ResetPlaytestProgress();
    // One authoritative Royal Gold session; V2 alters presentation only.
    if(!Hud.GetComponent<RoyalGoldV2Hud>())Hud.gameObject.AddComponent<RoyalGoldV2Hud>();
+   Hud.GetComponent<RoyalGoldV2Hud>().BuildingModelFor=id=>{
+    if(id=="upgrade-barracks"||id=="march-main")id="barracks";
+    var advanced=GetComponent<BastionIVVWorldPresentation>();
+    var current=advanced?advanced.ModelFor(id):null;
+    if(current&&current.activeInHierarchy)return current;
+    if(id=="bastion")return boundGateway!=null&&boundGateway.Snapshot().BastionLevel>=2?city.BastionTwo:city.BastionOne;
+    if(city.Parcels&&id=="sawmill")return city.Parcels.LeftBuilt;
+    if(city.Parcels&&id=="barracks")return city.Parcels.RightBuilt;
+    if(id=="granary")return Resources.Load<GameObject>("BastionIII/Granary/Granary");
+    if(id=="stoneworks")return Resources.Load<GameObject>("BastionIII/Granary/StoneWorkshop");
+    return null;
+   };
    if(!Hud.GetComponent<RoyalGoldV2Narrative>())Hud.gameObject.AddComponent<RoyalGoldV2Narrative>();
+   var dialogue=Hud.GetComponent<RoyalGoldV4DialogueArt>();
+   if(!dialogue)dialogue=Hud.gameObject.AddComponent<RoyalGoldV4DialogueArt>();
+   dialogue.Source=Hud;
    // V3 shares the one RoyalHUD and receives only read-only target/camera
    // projections and the exact existing IRoyalSession building snapshot.
    // No second Canvas, controller, timer, EventSystem or gameplay rules.
@@ -76,6 +91,9 @@ namespace Eldoria.ReferenceClean {
    if(!context)context=Hud.gameObject.AddComponent<RoyalGoldV3ContextHud>();
    context.Source=Hud;
    context.FindAnchor=id=>{
+     // Barracks upgrading is an action against the existing Barracks model,
+     // never a separate full-screen or an imaginary world target.
+     if(id=="upgrade-barracks")id="barracks";
     // Recruitment belongs visually to the built barracks, not the logical
     // parcel hotspot, which can lie outside the portrait camera frame.
     // Selection/raycast/authoritative gameplay still use FindTarget unchanged.
@@ -117,6 +135,7 @@ namespace Eldoria.ReferenceClean {
     if(!management)management=Hud.gameObject.AddComponent<RoyalGoldV3ManagementScreens>();
     management.Initialize(Hud,boundGateway,()=>city.Clock.UtcTicks,()=>city.Presenter.RefreshState());
     management.ReturnToCity=()=>{if(InWorld)TrySetWorld(false);};
+    BindHeroDestination(management);
     // The Camino de los Vigilantes and Mesa de Exploradores are independent
     // top-level destinations. They are NOT inside Crónicas/Códice; their two
     // access ribbons only appear after progression actually unlocks each.
@@ -133,6 +152,56 @@ namespace Eldoria.ReferenceClean {
       if(resources)resources.RefreshForZoom();
     }
    }
+  void BindHeroDestination(RoyalGoldV3ManagementScreens management){
+   var heroes=Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+   if(!heroes)heroes=Hud.gameObject.AddComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+   var safe=Hud.GetComponentInChildren<RoyalHudLayout>(true).transform as RectTransform;
+   heroes.Initialize(safe,ReadCanonicalHeroes);
+   heroes.CanOpenDestination=()=>boundGateway.Snapshot().ChapterThree.LyraRecruited;
+   management.CanOpenHeroes=heroes.CanOpenDestination;
+   heroes.CanOpenHero=id=>id=="aldric"||id=="lyra"&&boundGateway.Snapshot().ChapterThree.LyraRecruited;
+   var lyra=Hud.GetComponent<Eldoria.HeroesUI.HeroesLyraModel>();
+   if(!lyra)lyra=Hud.gameObject.AddComponent<Eldoria.HeroesUI.HeroesLyraModel>();
+   lyra.Loaded=()=>{if(heroes)heroes.Refresh();if(management)management.SynchronizeLayout();};
+   RoyalGoldV41SourceArt.LyraPortraitProvider=()=>{
+    if(!lyra||!boundGateway.Snapshot().ChapterThree.LyraRecruited)return null;
+    lyra.Request();return lyra.Portrait;
+   };
+   heroes.ReadModelRoot=id=>{
+    if(id=="lyra"){lyra.Request();return lyra.Ready?lyra.ModelRoot:null;}
+    if(id!="aldric")return null;
+    var roaming=Object.FindFirstObjectByType<Eldoria.AldricCity.AldricCityRoaming>();
+    return roaming?roaming.ApprovedModelRoot:null;
+   };
+   var mailbox=Hud.GetComponent<RoyalGoldV41MailboxScreen>();
+   if(mailbox)mailbox.CanShowEntry=()=>!heroes.IsOpen;
+   management.HeroesRequested=()=>{heroes.Open();if(mailbox)mailbox.Refresh();};
+   heroes.Closed=()=>management.Open(management.CurrentDestination);
+   Hud.NarrativeOpening-=SuspendHeroDestination;Hud.NarrativeOpening+=SuspendHeroDestination;
+  }
+  void SuspendHeroDestination(){var heroes=Hud?Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>():null;if(heroes)heroes.Suspend();}
+  Eldoria.HeroesUI.HeroesApprovedDestination.HeroState[] ReadCanonicalHeroes(){
+   var state=boundGateway.Snapshot();
+   return new[]{ReadCanonicalHero(state,"aldric"),ReadCanonicalHero(state,"lyra")};
+  }
+  Eldoria.HeroesUI.HeroesApprovedDestination.HeroState ReadCanonicalHero(PlayerState state,string id){
+   bool lyra=id=="lyra";var stats=SliceRules.HeroIntrinsicStats(id);
+   int xp=lyra?Math.Max(state.Retention?.LyraExperience??0,state.ChapterThree?.LyraXp??0):state.Retention?.AldricExperience??0;
+   int mastery=EarlyRetentionRules.HeroMasteryLevel(state,id);
+   return new Eldoria.HeroesUI.HeroesApprovedDestination.HeroState{
+    Id=id,DisplayName=lyra?"Lyra":"Sir Aldric",Role=lyra?"Exploradora":"Guardián de Valoria",
+    Unlocked=!lyra||state.ChapterThree.LyraRecruited,Available=MarchCapacityRules.HeroAvailable(state,id),
+    Level=MarchCapacityRules.HeroLevel(state,id),Experience=Math.Max(0,xp),Mastery=mastery,
+    Capacity=MarchCapacityRules.Capacity(state,id),Health=stats.Health,Attack=stats.Attack,
+    Defense=stats.Defense,Break=stats.Break,HeroPower=stats.Power,
+    Portrait=RoyalGoldV41SourceArt.HeroPortrait(id),
+    AbilityName=lyra?"Disparo de Ruptura":"Baluarte",
+    AbilityDescription=(lyra?"Lyra aporta sus atributos a la expedición y mejora un 3 % el ataque de sus tropas.":
+     "Aldric aporta sus atributos de defensa, vida, ataque y ruptura a la expedición.")+
+     "\n\nEl combate se resuelve automáticamente; prepara héroes y tropas antes de partir."+
+     "\n\nMaestría PvE: "+mastery+". Sus mejoras se aplican a las actividades personales de los Vigilantes y Exploradores."
+   };
+  }
   public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
   void LateUpdate(){
    if(!Ready)return;
@@ -159,6 +228,13 @@ namespace Eldoria.ReferenceClean {
    if(id=="gate")return TrySetWorld(true);
    if(id=="valoria-map-city")return TrySetWorld(false);
    if(IsWorldTarget(id)&&!TrySetWorld(true))return false;
+   // A physical built barracks is a city building. From chapter III its
+   // upgrade offer has a separate existing target; recruitment remains an
+   // explicit Army/training destination, never an automatic building overlay.
+   if(id=="barracks"){
+    var state=boundGateway.Snapshot();
+    if(state.BastionLevel>=3&&state.BarracksLevel>0)id="upgrade-barracks";
+   }
    Hud.SelectBuilding(id);return true;
   }
   public static bool IsWorldTarget(string id)=>LocalGateway.IsChapterThreeTarget(id)||(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal))||id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria"||id=="old-watch-ruin";
@@ -188,7 +264,11 @@ namespace Eldoria.ReferenceClean {
     // bring the near camera back to the genuine Valoria start point.
     WorldNavigation.PanTo(WorldHome);
    }
-   SyncWorldCity();Hud.Refresh();RefreshNavigation();Guidance?.Refresh();return true;
+   SyncWorldCity();
+   // Restore the existing tier-V city models before the first render after
+   // returning from the world; do not leave the city empty until LateUpdate.
+   var advanced=GetComponent<BastionIVVWorldPresentation>();if(advanced)advanced.Apply();
+   Hud.Refresh();RefreshNavigation();Guidance?.Refresh();return true;
   }
   public bool CanOpen(RoyalSection section){
    if(city==null||city.Gateway==null)return false;var s=city.Gateway.Snapshot();
@@ -260,7 +340,14 @@ namespace Eldoria.ReferenceClean {
    // Focus against the actual unobstructed HUD rectangle, not the whole screen.
    // Terrain-wide camera clamps can reverse the final adjustment when the
    // selected Bastion roof is close to the upper chapter panel.
-   var padded=Rect.MinMaxRect(safe.xMin+.012f,safe.yMin+.012f,safe.xMax-.012f,safe.yMax-.012f);
+   // The physical bottom cartouche projects just above the navigation dock.
+   // Leave extra clearance from its raised border so Bastion roofs and
+   // construction sites do not visually clip even with rasterized corner
+   // boxes or after off-screen portrait/desktop camera recomposition.
+   float bottomClearance=!InWorld&&Hud.GetComponent<RoyalGoldV2Hud>()?.
+       ChronicleIllustratedBuildingVisible==true ? .036f : .012f;
+   var padded=Rect.MinMaxRect(safe.xMin+.012f,safe.yMin+bottomClearance,
+       safe.xMax-.012f,safe.yMax-.012f);
    for(int attempt=0;attempt<5;attempt++){
     if(!ProjectFocus(camera,points,out projected))break;
     if(projected.xMin>=padded.xMin&&projected.xMax<=padded.xMax&&projected.yMin>=padded.yMin&&projected.yMax<=padded.yMax){var context=Hud.GetComponent<RoyalGoldV3ContextHud>();if(context)context.SynchronizeNow();return;}
@@ -269,7 +356,23 @@ namespace Eldoria.ReferenceClean {
      if(required>1.001f){
       float size=camera.orthographicSize*required*1.05f;
       if(InWorld)WorldNavigation.RestoreView(WorldNavigation.target,Mathf.Min(size,WorldNavigation.globalZoom));
-      else city.Controls.ZoomBy(size-camera.orthographicSize);
+      else
+      {
+       city.Controls.ZoomBy(size-camera.orthographicSize);
+       // Portrait Bastion IV can be taller than the usable strip between
+       // quest and bottom in-world parchment. The normal gesture zoom is
+       // capped at 65, so a selection-only focus may need to briefly fit
+       // further out. Keep it bounded and use the same terrain safety
+       // clamp; player wheel/pinch still uses the historical 14..65 limits.
+       if(Hud.GetComponent<RoyalGoldV2Hud>()?.
+              ChronicleIllustratedBuildingVisible==true &&
+          Hud.SelectedBuildingId=="bastion" &&
+          camera.orthographicSize<size*.99f)
+       {
+        camera.orthographicSize=Mathf.Min(size,85f);
+        city.Controls.FitToTerrain();
+       }
+      }
       if(!ProjectFocus(camera,points,out projected))break;
      }
      // Translate parallel to the picture plane. Using an arbitrary horizontal

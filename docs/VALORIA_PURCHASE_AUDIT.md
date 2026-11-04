@@ -1,5 +1,7 @@
 # Valoria — pre-purchase art and financial audit
 
+> **AVISO DE VIGENCIA (04/11/2026): PROPUESTA DE COMPRA SUPERADA.** Este análisis del 26/09 **no autoriza comprar Skyreach ni otros paquetes**, tampoco comprar para probar y solicitar devolución. La decisión posterior [VALORIA_FINAL_ASSET_DECISION.md](VALORIA_FINAL_ASSET_DECISION.md) descartó esa estrategia y fijó **ninguna compra en aquel momento**. Cualquier adquisición futura necesita una nueva autorización expresa, licencia verificada y precio actualizado. Los importes de septiembre son históricos.
+
 Date: 2026-09-26  
 Repository baseline reviewed: `main` at `6e30d21d2130872b0489fcaca2e05c404477bd10`  
 Budget authorized for this block: **0 €**  

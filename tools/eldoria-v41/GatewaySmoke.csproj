@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup>
+<OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework>
+<EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+</PropertyGroup>
+<ItemGroup>
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/GameState.cs"/>
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs"/>
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs"/>
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs"/>
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Combat.cs"/>
+<Compile Include="../../Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs"/>
+<Compile Include="GatewaySmoke.cs"/>
+</ItemGroup>
+</Project>

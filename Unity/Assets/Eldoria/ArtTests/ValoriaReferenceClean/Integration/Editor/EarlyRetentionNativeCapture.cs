@@ -156,6 +156,15 @@ namespace Eldoria.ReferenceClean.Editor
                         captureWidth+"px: Real stage marker "+stage+" stays clear of the information card");
                 }
             }
+            if(trail!=null&&captureWidth>captureHeight&&captureHeight<500)
+            {
+                var passive=card.GetComponentsInChildren<Text>().First(x=>x.name=="Offline hero experience");
+                var claim=card.GetComponentsInChildren<RectTransform>().First(x=>x.name=="Claim earned hero experience");
+                var textCorners=new Vector3[4];var buttonCorners=new Vector3[4];
+                passive.rectTransform.GetWorldCorners(textCorners);claim.GetWorldCorners(buttonCorners);
+                CheckLayout(textCorners[0].y>buttonCorners[1].y,
+                    captureWidth+"px: Complete XP and mastery text remains above the real claim button");
+            }
             var banner=page.GetComponentsInChildren<RawImage>().FirstOrDefault(x=>
                 x.name=="Current guardian / reference skull banner");
             if(banner)
@@ -268,11 +277,16 @@ namespace Eldoria.ReferenceClean.Editor
             Need(ui.IsOpen,"Vigilants' independent full-screen scene opens");
             var illustration=hud.GetComponentsInChildren<RawImage>(true)
                 .FirstOrDefault(x=>x.name=="Original illustrated world / decorative only");
-            Need(illustration && illustration.enabled && illustration.texture!=null &&
-                illustration.texture.width>=1024 && illustration.texture.height>=1024 &&
-                illustration.texture.name.EndsWith("painterly-v2"),
-                "New painterly Vigilants scene loads through actual Unity Resources");
-            var vigilantsPainting=illustration.texture;
+            var vigilantsPainting=Resources.Load<Texture2D>(
+                "EldoriaRetention/vigilants-painterly-v2");
+            var b11CleanPlate=Resources.Load<Texture2D>(
+                "EldoriaRetention/DepthB11/clean_backdrop");
+            Need(illustration && illustration.enabled &&
+                vigilantsPainting && b11CleanPlate &&
+                illustration.texture==b11CleanPlate &&
+                b11CleanPlate.width==vigilantsPainting.width &&
+                b11CleanPlate.height==vigilantsPainting.height,
+                "B11 native: visually rendered clean source plate MUST replace the original double-image");
             Screenshot(h,"vigilants-first-trial",1600,900);
             Screenshot(h,"vigilants-first-trial",900,1600);
             Screenshot(h,"vigilants-first-trial",390,844);
@@ -286,11 +300,23 @@ namespace Eldoria.ReferenceClean.Editor
                 "The actual unlocked Scouts button shows the genuine Valoria crest art");
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
             Need(ui.IsOpen,"Vigilants opens after first barracks");
-            Need(hud.GetComponentsInChildren<RawImage>().Any(x=>
-                x.name=="Engendro / authentic creature illustration" && x.enabled &&
-                x.texture==Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4") &&
-                x.uvRect==new Rect(.01f,.51f,.48f,.48f)),
-                "Normal corrupt encounters show their own authored patrol illustration, never an empty card");
+            // The original source atlas remains available to the three
+            // real scout contracts, but NEVER becomes a second photo inside
+            // an ordinary Vigilants encounter.
+            var sourceAtlas=Resources.Load<Texture2D>(
+                "EldoriaRetention/scout-mission-vignettes-v4");
+            var originalPortrait=hud.GetComponentsInChildren<RawImage>(true)
+                .FirstOrDefault(x=>x.name=="Engendro / authentic creature illustration");
+            Need(sourceAtlas && originalPortrait &&
+                originalPortrait.texture==sourceAtlas &&
+                !originalPortrait.gameObject.activeInHierarchy,
+                "The authentic scout atlas remains preserved, but ordinary enemy photos are hidden");
+            var relief=hud.GetComponentsInChildren<RoyalGoldV3GuardianReliefGraphic>(true)
+                .FirstOrDefault();
+            Need(relief && relief.gameObject.activeInHierarchy &&
+                relief.StageStep==0 && relief.enabled && !relief.raycastTarget &&
+                !relief.GetComponent<RawImage>(),
+                "The actual ordinary encounter is a legible non-photo metal/ink relief, not a pasted atlas crop");
             Screenshot(h,"vigilants-chapter-one",1600,900);
             Screenshot(h,"vigilants-chapter-one",900,1600);
             Screenshot(h,"vigilants-chapter-one",390,844);
@@ -341,6 +367,10 @@ namespace Eldoria.ReferenceClean.Editor
                 "Stage15 actually displays the selected reference-derived creature illustration");
             Need(engendroArt.uvRect==new Rect(0,0,1,1) && !referencePortrait.isReadable,
                 "Authored transparent portrait needs no destructive studio-key or extra readable mobile texture");
+            Need(relief && relief.gameObject.activeInHierarchy &&
+                relief.PaintedFigure && relief.Breach &&
+                engendroArt.gameObject.activeInHierarchy,
+                "Engendro stands alone on a shared Breach-lit stone footing, with no duplicated vector guardian");
             var portraitBytes=File.ReadAllBytes("Assets/Eldoria/Resources/EldoriaRetention/engendro-reference-v3.png");
             using(var sha=System.Security.Cryptography.SHA256.Create())
                 Need(BitConverter.ToString(sha.ComputeHash(portraitBytes)).Replace("-","").ToLowerInvariant()==
@@ -365,6 +395,45 @@ namespace Eldoria.ReferenceClean.Editor
             var trailParent=stageTrail?stageTrail.transform.parent as RectTransform:null;
             Need(stageTrail!=null && creatureFrame!=null && trailParent!=null,
                 "Real route and authentic creature are present");
+            var occlusion=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsTerrainOcclusion>(true);
+            var lighting=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsWorldLight>(true);
+            var foundation=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsRoadFoundation>(true);
+            // B10 must actually compose SIX independently imported source
+            // planes; passing with the old flat/UV-only component is forbidden.
+            var depth=trailParent.GetComponentInChildren<RoyalGoldV3VigilantsParallax>(true);
+            Need(depth!=null && depth.isActiveAndEnabled &&
+                depth.OriginalArtwork==vigilantsPainting &&
+                depth.HasMaterializedDepth && depth.MaterializedPlaneCount==6 &&
+                depth.HasStructuralB11 && !depth.raycastTarget,
+                "B11 native must use the six exact shaded source planes over a cleaned no-duplicate backplate");
+            var artPlanes=depth.GetComponentsInChildren<RawImage>(true);
+            Need(artPlanes.Length==6 && artPlanes.All(x=>
+                x.texture && !x.raycastTarget && x.uvRect==new Rect(0f,0f,1f,1f)),
+                "Imported paint layers share canonical scene hierarchy; no extra photo overlays or touch targets");
+            var livingPaint=illustration as RoyalGoldV3VigilantsLivingLandscape;
+            Need(livingPaint!=null && livingPaint.LivingScene &&
+                livingPaint.RoadStageCount==25 && livingPaint.ActualCleared==14 &&
+                livingPaint.texture==b11CleanPlate && !livingPaint.raycastTarget,
+                "B11 physical stage-aware relief must draw the no-duplicate backplate while still binding all 25 live stages");
+            Need(foundation!=null && foundation.isActiveAndEnabled &&
+                foundation.BoundStageCount==25 && foundation.ActualReliefSpans==24 &&
+                foundation.NextStage==15 && foundation.Cleared==14 && !foundation.raycastTarget,
+                "Exactly 25 live physical stone sockets underpin canonical road stages without intercepting touches");
+            for(int actualStage=1;actualStage<=25;actualStage++)
+            {
+                var actual=foundation.rectTransform.InverseTransformPoint(
+                    stageTrail.transform.TransformPoint(stageTrail.StagePosition(actualStage)));
+                Need(Vector2.Distance(actual,foundation.StagePosition(actualStage))<.1f,
+                    "Physical stone foundation "+actualStage+" must match the same live pixel-space road");
+            }
+            Need(creatureFrame.parent.name=="Progression and expedition information" &&
+                !engendroArt.raycastTarget && 
+                occlusion && occlusion.isActiveAndEnabled && !occlusion.raycastTarget &&
+                occlusion.OriginalArtwork==vigilantsPainting &&
+                lighting && lighting.isActiveAndEnabled && !lighting.raycastTarget &&
+                lighting.LastCleared==14 && lighting.CurrentStage==15 &&
+                lighting.CoverUv==illustration.uvRect,
+                "Stage15 returns to an illustrated non-photo encounter card while the real road receives independent stage-linked sunlight and foreground occlusion");
             for(int stage=1;stage<=25;stage++)
             {
                 var point=stageTrail.transform.TransformPoint(stageTrail.StagePosition(stage));
@@ -404,6 +473,43 @@ namespace Eldoria.ReferenceClean.Editor
             var different=contractArt.Select(x=>x.Kind).Distinct().Count();
             Need(different==3,
                 "Three live board entries show their distinct authored contract illustrations");
+            // Three independent material layers PER actual contract. They are
+            // native responsive geometry, not a flattened substitute image
+            // or a duplicated gameplay/card hierarchy.
+            var tactile=hud.GetComponentsInChildren<RoyalGoldV3ScoutPaperDepth>(true);
+            Need(tactile.Length==12 && tactile.All(x=>x &&
+                x.gameObject.activeInHierarchy && !x.raycastTarget &&
+                x.mainTexture==Texture2D.whiteTexture),
+                "All three live contract stacks have twelve passive real-material components");
+            for(int i=0;i<3;i++)
+            {
+                var root=contractArt[i].transform.parent;
+                var material=root.GetComponentsInChildren<RoyalGoldV3ScoutPaperDepth>(true);
+                Need(material.Length==4 &&
+                    material.Count(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.PaperBevel)==1 &&
+                    material.Count(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.DeskContact)==1 &&
+                    material.Count(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetUnderlay)==1 &&
+                    material.Count(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetLip)==1,
+                    "Three physical paper/picture layers belong to each authentic order, not to another card");
+                var thumb=root.GetComponentsInChildren<RawImage>(true)
+                    .First(x=>x.name=="Mission map detail (visual only)");
+                var bevel=material.First(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.PaperBevel);
+                var under=material.First(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetUnderlay);
+                var lip=material.First(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetLip);
+                var shadow=material.First(x=>x.Role==RoyalGoldV3ScoutPaperDepth.MaterialLayer.DeskContact);
+                Need(shadow.transform.GetSiblingIndex() <
+                     thumb.transform.GetSiblingIndex() &&
+                     bevel.transform.GetSiblingIndex() <
+                     under.transform.GetSiblingIndex() &&
+                     under.transform.GetSiblingIndex() <
+                     thumb.transform.GetSiblingIndex() &&
+                     lip.transform.GetSiblingIndex() >
+                     thumb.transform.GetSiblingIndex(),
+                     "Physical desk shadow, original image and inset corner lip render in true material order");
+                Need(under.rectTransform.rect.width>=thumb.rectTransform.rect.width+8f &&
+                    lip.rectTransform.rect.width>=thumb.rectTransform.rect.width-1f,
+                    "Real mission painting is seated within a deeper independent leather-and-gold window");
+            }
             Screenshot(h,"scout-mission-board",1600,900);
             var mapPreviews=hud.GetComponentsInChildren<RawImage>(true)
                 .Where(x=>x.name=="Mission map detail (visual only)").ToArray();
@@ -441,6 +547,9 @@ namespace Eldoria.ReferenceClean.Editor
             }
             var sent=h.City.Gateway.Snapshot().Retention.Orders.Where(x=>x.StartedUtcTicks>0).ToArray();
             Need(sent.Length==3,"All three cards dispatch and persist their genuine UTC return time");
+            Need(tactile.Count(x=>x.InProgress)==12 &&
+                tactile.All(x=>!x.Completed),
+                "The twelve passive material layers react to the three actual dispatched UTC orders");
             Screenshot(h,"scout-missions-underway",390,844);
             var clock=h.City.Clock as ValoriaReferenceCleanGameplay.TestClock;
             Need(clock!=null,"Only disposable probe clock advances for offline return proof");
@@ -451,6 +560,9 @@ namespace Eldoria.ReferenceClean.Editor
             clock.Step((int)Math.Ceiling((sent.Max(x=>x.EndsUtcTicks)-clock.UtcTicks)/(double)TimeSpan.TicksPerSecond)+1);
             ui.SynchronizeLayout();
             yield return null;
+            Need(tactile.Count(x=>x.Completed)==12 &&
+                tactile.All(x=>!x.InProgress),
+                "Real returned orders turn all twelve material layers to their ready state without fake rewards");
             Screenshot(h,"scout-missions-ready",390,844);
             yield return null;
             for(int i=3;i>=1;i--)

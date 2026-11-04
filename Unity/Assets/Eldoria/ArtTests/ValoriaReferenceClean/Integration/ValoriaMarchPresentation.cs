@@ -186,7 +186,9 @@ namespace Eldoria.ReferenceClean {
     for(int i=0;i<3;i++){
      var m=operations[i];var target=m==null?null:host.FindTarget(m.TargetId);
      active[i]=host.InWorld&&m!=null&&m.Phase!="idle"&&origin&&target&&free.width>0&&free.height>0;
-     standards[i].gameObject.SetActive(active[i]);routes[i].gameObject.SetActive(active[i]);
+     // Movement and ETA remain authoritative, but the player's map
+     // must not show dotted yellow/cyan route strokes.
+     standards[i].gameObject.SetActive(active[i]);routes[i].gameObject.SetActive(false);
      if(!active[i])continue;
      var a=origin.transform.position;var b=target.transform.position;
      float fraction=m.Phase=="gathering"?1:m.Phase=="investigating"?

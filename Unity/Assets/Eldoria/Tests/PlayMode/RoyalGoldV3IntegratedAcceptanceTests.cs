@@ -133,6 +133,27 @@ namespace Eldoria.Tests
                 "Crónica Real requires a genuine native illustrated selected-building sheet");
             Assert.That(art.raycastTarget, Is.False,
                 "Decorative preview must not eat building or world input");
+            var preview = hud.GetComponentsInChildren<MonoBehaviour>(true)
+                .FirstOrDefault(x => x && x.GetType().Name == "RoyalGoldV3BuildingPreview");
+            Assert.That(preview, Is.Not.Null);
+            Assert.That(Member(preview, "HasModelPreview"), Is.EqualTo(true),
+                "The building card must render the canonical model, not the generic house fallback");
+            var thumbnail = preview.GetComponent<RawImage>();
+            Assert.That(thumbnail.raycastTarget, Is.False);
+            Assert.That(thumbnail.texture.width, Is.EqualTo(256),
+                "One bounded cached thumbnail; no full-screen render texture per building");
+            var previousTarget = RenderTexture.active;
+            var pixels = new Texture2D(256, 256, TextureFormat.RGB24, false);
+            try
+            {
+                RenderTexture.active = (RenderTexture)thumbnail.texture;
+                pixels.ReadPixels(new Rect(0, 0, 256, 256), 0, 0);
+                pixels.Apply();
+                Assert.That(pixels.GetPixels32().Select(c => ((int)c.r << 16) | ((int)c.g << 8) | c.b)
+                    .Distinct().Count(), Is.GreaterThan(32),
+                    "The render texture must contain real rendered geometry, not just a cleared background");
+            }
+            finally { RenderTexture.active = previousTarget; Object.Destroy(pixels); }
             var context = hud.GetComponentsInChildren<MonoBehaviour>(true)
                 .FirstOrDefault(x => x && x.GetType().Name == "RoyalGoldV3ContextHud");
             Assert.That(context, Is.Not.Null,
@@ -478,21 +499,26 @@ namespace Eldoria.Tests
                 var liveButton = Member(entry, "Button") as Button;
                 return liveButton && liveButton.gameObject.activeSelf;
             }).ToArray();
-            int expectedVisible = 3; // Reino, Construir, Crónicas always make sense
+            const int expectedVisible = 5; // Stable approved navigation; locks remain real
             foreach (var entry in entries)
             {
                 string category = Member(entry, "Section").ToString();
                 if(category != "Army" && category != "World") continue;
                 bool trulyUnlocked = (bool)Call(host, "CanOpen", Member(entry, "Section"));
                 var entryButton=Member(entry, "Button") as Button;
-                Assert.That(entryButton.gameObject.activeSelf, Is.EqualTo(trulyUnlocked),
-                    "Never display an Army or World button before real gameplay unlock");
-                if(trulyUnlocked)expectedVisible++;
+                Assert.That(entryButton.gameObject.activeSelf, Is.True,
+                    "All five approved destinations remain visible");
+                Assert.That(entryButton.interactable, Is.EqualTo(trulyUnlocked),
+                    "Visible locked Army/World controls must not bypass narrative unlocks");
             }
             Assert.That(visible.Length, Is.EqualTo(expectedVisible),
                 "Only coherent Crónica Real destinations may appear at this Bastion level");
             foreach (var entry in visible)
             {
+                var navigationCaption = Member(entry, "Label") as Text;
+                Assert.That(navigationCaption, Is.Not.Null);
+                Assert.That(navigationCaption.preferredWidth, Is.LessThanOrEqualTo(navigationCaption.rectTransform.rect.width + 1f),
+                    "Complete approved navigation labels must fit without truncation");
                 string section = Member(entry, "Section").ToString();
                 if (section == "Army" || section == "World") continue;
                 var button = Member(entry, "Button") as Button;
@@ -606,17 +632,26 @@ namespace Eldoria.Tests
             Assert.That(Member(hud, "SelectedBuildingId"), Is.EqualTo("sawmill"));
             var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
             var management = FindComponent(hud.gameObject, "RoyalGoldV3BuildingScreens");
-            Assert.That(Member(management, "IsOpen"), Is.EqualTo(true), "Selection opens the independent management destination");
-            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false), "No duplicate floating card behind management");
+            Assert.That(Member(management, "IsOpen"), Is.EqualTo(false),
+                "Selecting a normal building must not open a new page");
+            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(true),
+                "City-bound building selection must remain contextual");
             Assert.That(Member(v2, "BuildingActionVisible"), Is.EqualTo(true),
-                "Existing browser telemetry must discover the genuine V3 action");
+                "Existing browser telemetry must see the genuine contextual action");
             Assert.That(Member(v2, "VisibleBuildingButton"),
-                Is.SameAs(Member(management, "VisibleAction")));
-            Assert.That(Member(management, "VisibleClose"), Is.Not.Null,
-                "The mobile player must be able to close selection without Escape");
+                Is.SameAs(Member(v3, "VisibleActionButton")));
+            Assert.That(Member(v2, "VisibleBuildingButton"),
+                Is.SameAs(Member(v2, "ChronicleBuildingAction")),
+                "The illustrated city cartouche must own the only build command");
+            var floating = hud.GetComponentsInChildren<CanvasGroup>(true)
+                .First(x => x.name == "V3 / selected building contextual action");
+            Assert.That(floating.blocksRaycasts, Is.False,
+                "No duplicate floating action may intercept the city");
+            Assert.That(floating.alpha, Is.EqualTo(0f));
             var actualClose = Member(v2, "VisibleBuildingCloseButton") as Button;
             Assert.That(actualClose, Is.Not.Null);
-            Assert.That(actualClose, Is.SameAs(Member(management, "VisibleClose")));
+            Assert.That(actualClose, Is.SameAs(Member(v3, "VisibleCloseButton")),
+                "Closing the city selection must not depend on an independent page");
             var closeCorners = new Vector3[4];
             ((RectTransform)actualClose.transform).GetWorldCorners(closeCorners);
             var closePoint = RectTransformUtility.WorldToScreenPoint(null,
@@ -677,7 +712,8 @@ namespace Eldoria.Tests
             Call(v3, "SynchronizeNow");
 
             var management = FindComponent(hud.gameObject, "RoyalGoldV3BuildingScreens");
-            var command = Member(management, "VisibleAction") as Button;
+            Assert.That(Member(management, "IsOpen"), Is.False);
+            var command = Member(v3, "VisibleActionButton") as Button;
             Assert.That(command, Is.Not.Null);
             Assert.That(command.interactable, Is.True, "Actual sawmill Build must be actionable");
             var offer = Member(Member(Call(host, "Read", "sawmill", false),
@@ -695,18 +731,22 @@ namespace Eldoria.Tests
             // No wait/yield: the first UI sync after payment must project
             // the same authoritative timer, not a stale pre-purchase offer.
             Call(v3, "SynchronizeNow");
-            Assert.That(Member(management, "IsOpen"), Is.EqualTo(true));
-            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(0), "Independent management owns the countdown; no duplicate floating timer");
-            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false));
-            Assert.That(Member(management, "VisibleOperationText") as string,
-                Does.Contain(Member(operation, "Time") as string), "The same rendered frame shows the gateway countdown");
-            Assert.That(command.interactable, Is.False, "Paid construction cannot be purchased twice");
-            var fill = Member(management, "VisibleProgress") as RectTransform;
-            Assert.That(fill, Is.Not.Null);
-            Assert.That(fill.anchorMax.x, Is.EqualTo((float)Member(operation, "Progress")).Within(.001f));
-            Call(management, "Close");
+            Assert.That(Member(management, "IsOpen"), Is.EqualTo(false));
+            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
+                "The paid work must show one anchored timer immediately");
+            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false),
+                "The paid offer is never duplicated while work is active");
+            Assert.That(command.interactable, Is.False,
+                "Paid construction cannot be purchased twice");
+            var operationTime = Member(operation, "Time") as string;
+            Assert.That(hud.GetComponentsInChildren<Text>(true).Any(x =>
+                x.gameObject.name=="Live remaining time" &&
+                x.gameObject.activeInHierarchy && x.text.Contains(operationTime)),
+                Is.True,"The genuine city timer must show the gateway countdown");
+            Call(hud, "SelectBuilding", "");
             Call(v3, "SynchronizeNow");
-            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1), "Returning to the city restores one real anchored timer");
+            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
+                "Closing the contextual selection must preserve the real timer");
 
         }
 

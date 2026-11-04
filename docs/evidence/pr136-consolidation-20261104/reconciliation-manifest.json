@@ -1,0 +1,2079 @@
+{
+  "main_sha": "98c051984614e0cc478fb007be88d06fbc2a669b",
+  "pr136_sha": "c5051220294db3781c56878bab28eccaa798452d",
+  "merge_base": "56a47e9a774e1ccf6e4a54248cf09bc715176e56",
+  "files": [
+    {
+      "path": ".github/workflows/early-retention-domain.yml",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "2e9e83a87589186f5a1d91ecc22096e46a6984d2",
+      "main_blob": "2e9e83a87589186f5a1d91ecc22096e46a6984d2",
+      "pr136_blob": "84ebd230130f4575181a4e279eb466b491f0ead5"
+    },
+    {
+      "path": ".github/workflows/eldoria-v41-domain.yml",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "915d4f3cdfccaab3fd143abe1ddf289cc76e2062"
+    },
+    {
+      "path": ".github/workflows/ui-progression-cert.yml",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "531a084d7c1cde0c8d9fc4571d49e70b71940db5",
+      "main_blob": "531a084d7c1cde0c8d9fc4571d49e70b71940db5",
+      "pr136_blob": "7c24dd8b87c95c1f59a0bba14b0bf216d06fbeba"
+    },
+    {
+      "path": ".github/workflows/ui-v3-domain-smoke.yml",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "083dba16c25b105a3563fa016620ae7047b9a640",
+      "main_blob": "083dba16c25b105a3563fa016620ae7047b9a640",
+      "pr136_blob": "f71583feb35853a250a71bfa5c64950d6f6e46e1"
+    },
+    {
+      "path": ".github/workflows/vigilants-b11-source.yml",
+      "classification": "historical_manual_only",
+      "reason": "Preserve diagnostic workflow as LEGACY manual only; no new automatic production.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "743a55da373f039eea70213ea5ae734636262233"
+    },
+    {
+      "path": ".github/workflows/vigilants-source-inspection.yml",
+      "classification": "historical_manual_only",
+      "reason": "Preserve diagnostic workflow as LEGACY manual only; no new automatic production.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "cab67e634ac51eb8d05fa6e691b45b58b91f82b0"
+    },
+    {
+      "path": "ArtSource/Eldoria/HeroesHall/generate_hall_frame.py",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "6a88f9797c4ce46cfb62a5b908e58a3f45708953"
+    },
+    {
+      "path": "ArtSource/RejectedLegacyBastion/README.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": "4c7a54f904833c7247b87dc8847356166a1d059f",
+      "pr136_blob": "07c920a5e70ea482168b1746684f5078fd321638"
+    },
+    {
+      "path": "ArtSource/RejectedLegacyBastion/Valoria_HeroBastion_v1.glb",
+      "classification": "already_main",
+      "reason": "Exact Git blob already present in current main.",
+      "merge_base_blob": null,
+      "main_blob": "e31aa6a63af826f4c6f666bb369fc270233c8d66",
+      "pr136_blob": "e31aa6a63af826f4c6f666bb369fc270233c8d66"
+    },
+    {
+      "path": "ArtSource/RejectedLegacyBastion/Valoria_HeroBastion_v1.glb.meta",
+      "classification": "already_main",
+      "reason": "Exact Git blob already present in current main.",
+      "merge_base_blob": null,
+      "main_blob": "bab32c587d4bd8c194a242304ae97dd937bcc29b",
+      "pr136_blob": "bab32c587d4bd8c194a242304ae97dd937bcc29b"
+    },
+    {
+      "path": "SESSION_HANDOFF.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": "459410488477995a25015fc0168f700c827c6d39",
+      "main_blob": "459410488477995a25015fc0168f700c827c6d39",
+      "pr136_blob": "d0d2f468c2897eb75d4e3c745e351b33f31943a2"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "3c4d70215c52058f446868b39c690b4f1c4df96c",
+      "main_blob": "3c4d70215c52058f446868b39c690b4f1c4df96c",
+      "pr136_blob": "29961e5a09212fc42dec15722b215f1844ddf3ad"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/BastionIVVNativeProof.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "399d5fa59bb4877dcaec88092a7ec79213905017",
+      "main_blob": "399d5fa59bb4877dcaec88092a7ec79213905017",
+      "pr136_blob": "243802119babdf1c907bd007d393c6b9a9e47549"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "3f837e2107df003a12eaff76f588839334112836",
+      "main_blob": "3f837e2107df003a12eaff76f588839334112836",
+      "pr136_blob": "c3d2583af0dddea143cec492f3fafcd7b6aac3df"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "c0b75f9eed8cb67971638315b361f1077d7df70f",
+      "main_blob": "c0b75f9eed8cb67971638315b361f1077d7df70f",
+      "pr136_blob": "53bc55d06e81db7ea973d8dfb7e64a2433f5b223"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "aefeb0cddbb28f5998087b8800c862a0a4e4c8c1",
+      "main_blob": "aefeb0cddbb28f5998087b8800c862a0a4e4c8c1",
+      "pr136_blob": "0a135c57000afa5f701fb4d09d2646b4fe51f7b3"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "816c122f9ded3913d92a844a4c42b907cf4550b1",
+      "main_blob": "816c122f9ded3913d92a844a4c42b907cf4550b1",
+      "pr136_blob": "5bab1952f0f182fd800b017553934cd266499118"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaMarchPresentation.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "61e5be72bbc65ce1bb7a7c9e799c617fadaacb42",
+      "main_blob": "61e5be72bbc65ce1bb7a7c9e799c617fadaacb42",
+      "pr136_blob": "65e39714a9b2635c077fa57105a75c84e08528f9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "c8a0a3faeddd32ee77fbfd28c969d402f5096348"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "735678a9f378b3aae9555b246a217d1a4724f73b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d3ca1239622c2de249b10d6677adfe6a6b8e2678"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesEquipmentArt.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "4b333aec1c32ccb3719f07eb49709763dd5de26a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesEquipmentArt.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "e942ee5083c95d2d34f6388774baef0c3585b2ed"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesGoldFrameGraphic.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "fb245b117df17eb3449b2d66581dcee2b3892b63"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesGoldFrameGraphic.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "ddb7d74f052c9aae840ecc5b569930862d59032f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesHallParallaxFinish.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "765377e5b00574f667d5716cd010a3b5a47f7ee8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesHallParallaxFinish.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "59653f4a97d8eb379cb683b103f03a88ffa4eb93"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesHallScenicGraphic.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "bb5026b6b46339f835cda5133b3fed7a6582b92e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesHallScenicGraphic.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "c9388852168d70d4e6ae6ad6a8a02b9e020b42c3"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesLyraModel.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "9a44125b1ae460e6d3789f8448f9939756687827"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesLyraModel.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d0b64f3fac2079f3286a0e9e8f5e017ffde06815"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesModelSnapshot.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "aa3de43dcc826554453b1e7fa1a8eceb591db311"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesModelSnapshot.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "64acc58b72213e5ed09933f37726dcd78d0c37ad"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesSkillCards.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "7bd73b2a6df9ea97b19719aa4b20005d58b50fd9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesSkillCards.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "b69941595c0086fd4b3c1da971c7630f6db8f636"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesTalentArt.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "dae310c7127cf575881d77045ca43beb133f44b7"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/HeroesUI/HeroesTalentArt.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "ec1f14ccc47fdf0c08944c4a614af6c490dad490"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "8954a4793f7f34e61c2a5b184ed053321a4878bd"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/bridge.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "0f36c651520ae6fbd6723ad0019600133ee7248e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/bridge.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "6d4cb8f3cc1ed8e2561ac0f6a6d1f696661881e0"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "4965d6aa07316b160a204d1a5373777f584b0f08"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/layer_index.json.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "9a2a55ef82522563ffda5dc5c6b62644951f62a9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/left_castle.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "490f049c27115681145e135719b134a3ee5b271a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/left_castle.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "2664cad269ac57915550ad554005bd463d363c54"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/left_rock.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "2c589235ce2efa56b5bed1ddcb2c58cddb51df72"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/left_rock.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "5523cc571f6d2ff6aa345b987407542c8136241b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/near_cliff.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "4cd31586418e50a70c9a9d9379bb7aa2a1eaeb49"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/near_cliff.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "8ed5bae4893f06d6e36563dc64730ea962c7e09b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/right_castle.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "b68315930933160ee0a34a4be5d22c76cde12754"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/right_castle.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "7abb84f6521941aa759e637e60872a76daca087e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/right_cliff.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "e8819a38b8dff9b7ab03c711b26a6e1b9f869553"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB10/right_cliff.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "01d34da5e056877a68b7bc008719140392c8d8aa"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "4a076faa933b42184df434966f71bbf7f64a6f11"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/bridge.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "e4e8b13fb01791af72bd9645afb4eee9d86d01e2"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/bridge.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d13c9cad0ac1b320738d1f5eda4889862bc8b34c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/clean_backdrop.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d94e3d1df8a4070e57a60cb8c1922445a6d8fee5"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/clean_backdrop.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "0426c7b850d58c1de0564e564c672a0295a0b141"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/left_castle.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "712cc17c97544533432dd8cb75d36ebb105140cd"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/left_castle.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "2fc005462f886c616541fdae5a556165b62161cf"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/left_rock.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "4de82da01bc0dd81ab82ebbebebee9673564e81e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/left_rock.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "ce6fb51b8db0fbc8477bc6dbf1a21a0ad24d8ce6"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/near_cliff.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d5736d566c54c3ae8c63adb6456d730d3fb36124"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/near_cliff.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "f8029841a4b804fa910405b2e0f6f9a96164830f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/right_castle.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "5e7b59076b3ce0452fc8a112446b983d90d48cab"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/right_castle.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "228d9e915a721132541d148d63697178cdfdb0ae"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/right_cliff.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "872873956013d945ca1b14e32d583f62bfea5387"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/right_cliff.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "7f2016dcadbc1c79ae1102d685bbff90ec8e870e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/source_manifest.json",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "5e0b8beb8dfc5fe0c13a79500817d67135604da5"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/DepthB11/source_manifest.json.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "52ad066c6691f29a354a85b8f4deda5d058b6bde"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilant-guardian-centinela-v5.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "b7f8ef019a8bd8856e484720ac660781a67b629b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilant-guardian-centinela-v5.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "0f1a13427aa3b216628fbe7c8a30133d6631fb36"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilant-guardian-coraza-v5.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "87cb5a241416586896db9b7a357f80c285762c7d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilant-guardian-coraza-v5.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "cbd7b4a2eb4692b09eb8b4311ece891009921133"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilant-guardian-umbral-v5.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d1be1f62a472e96a87707266a7eb74b774f6d3fb"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilant-guardian-umbral-v5.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "65ecaa6f6d817383032f68661b9944fe56e47b0d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilant-guardian-vigia-v5.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "e35b562a0df38dc55850765283e1826ce5bc18c9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilant-guardian-vigia-v5.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d0dd9754434400828dd1edfc4a88e8605bb0019e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "c8c06e454bf2a0dbb737841e003f5dc24ddac2df"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/HallPainterly.shader",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "058bae366a79a3a5695321a43616d01104bc2b8e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/HallPainterly.shader.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "4b1e30794d09b6d048e7e1b981c1fe5b4c894227"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/HeroCardNineSliceGold.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d9c6c1a446f0e1a44af7e4997ff776548f5edacb"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/HeroCardNineSliceGold.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "51fb179379cacd2cfa6fe2f280096de275e1498e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "7f5c9a3f8c47d6b9927094df38b3e58c67bbb3db"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "f29dd549bd4edbacb57a1add97ad30e23c3d6dae"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesContactShadow.shader",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "c44f7031ebbbd2582a0166d766595f0bdb573aca"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesContactShadow.shader.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "2576861fb2301361ddaa4d04c2c72b6a8d99f717"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/aldric-face.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "5f10658fe8b1024e165087b8bcaddd1bbc87a506"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/aldric-face.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "5e55f0ac84830a02bfb0ff10005772c31835e581"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/archer-row.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "cdb82058f808275742209f8da4efaa8146bf6cc8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/archer-row.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "66ff74b99e1be433722238df2375c400d06e1b71"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/blue-panel.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "6d89b855001b31504cde0b02132c453ead4e01a8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/blue-panel.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "bd8a680bf55553b1bc26fa71a1eb514ac43ee510"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/gold-button.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "bafa9f095237fa8484bc70ede22f2cf7aa736f53"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/gold-button.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "363d38155d2212746a6cb5c84387f9450125f609"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/hero-locked.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "1afacef51704ae9d845271c41fdfb38a598bd8d3"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/hero-locked.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "9b44380686a2e977d5bd7abcc3210a0952b720e1"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/hero-support.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "905cec157e9daa371c8f45447faf5e93b0eb97f2"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/hero-support.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "769b9fa6f938f1862c068781968c3c5e2de5798d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-clean-v1.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "14b9cbe66475e8d5abe8f801126146e84c3ca05b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-clean-v1.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "ce001ffb968e56cc6d2aa6738592c76e127f8fbf"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "ddae4953e8a166e35d82abf32ba7a9d0f3feda97"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "91f2ca1d916832753df353b04572f4d456aa8ff4"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "290c9803242911741ff810fdbddb7591ea39737a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/lyra-approved-model-v1.bytes.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "12563eeb7c0a58a2c8f1c4117bb71c1598d77877"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-battle.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "fb05db86fc36c2dc670f6db6849dcac829036b82"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-battle.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "7a6df79254f7c0aa372b34d1dd7fdf27093681eb"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-card.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "e6987f72e66a074941760d8e05df819385c1c927"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-card.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "121b38e7af52d04716b27486a046aa489718f468"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-march.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "6d8d5476da6eeda5aadb141855613db384d2c98e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-march.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "1d6782d5edee2c0004c8d8b0776d0b5427fde795"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-narrative.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "93048c30559bbebfda1fab7f0cb3b1ee31c6a7db"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-narrative.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "5a10b0d1c20111a15cf2dccc2a18cb65b06c6466"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-reward.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "e21bfe0e102a819fdaf9a7581e4a2be5d539eda7"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-reward.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "0e7831b7d2f9f2ed88565678c1a3588ab3fc25f9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-system.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "e8c7ebc2ef626be7dc2e049d1d2259f7f209c852"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/mail-system.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "048f9294461f83d0911f1c381c88af59bd421caa"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/march-scenery.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "ee6dee608c304bb042baa513887c93a6f5559387"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/march-scenery.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d1afdf0c13cc2909469ada18ba99d0ee24e9f84c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/provenance.json",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "4218f3f76aea3a9ecd5265cee4f5ac8a924750fb"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/provenance.json.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "41f53dbbd2749a3606d262d979abd43b41f0df42"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/tab-active.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d8e4c54d46ea1fe96c4adf0a172fa240b70d95fa"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/tab-active.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "bf71f029fa27dde819fd76c3a7ff465eedc10c7a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/tab-idle.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d100c1da653c0b36f9b52a8b7c3eb56f320342bb"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/tab-idle.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "276ace113162dc05343648536e06debf07388a70"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/training-archer-isolated-v1.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "237879bc881d477b57b702a7f4eaf2941c190c02"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/training-archer-isolated-v1.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "24ad9ec6b98782f00935cbde2b86093fb59dea65"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/training-archer.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "9c2b3cfbb00d998a6b2e568aa5f62e21661a0b7c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/training-archer.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "f15a88022a00bdf9635beca38f16b3a0e8e5a673"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/training-courtyard-layer-v1.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "381d407444578a2c15f5260ede930e5e87b7e6b5"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/training-courtyard-layer-v1.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "f5d8277652aeb7565e7f14bb09564b2f8a4c282d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/training-landscape.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "2cb1e7f5dfa05f0f0156dfc5644e55b655ac748f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/training-landscape.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "9e91a4c6718a9ec09c17cb86a01dc3e9adc1b453"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/unread-dot.png",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "b06b736424613fa8b82b16785ae084add206ecce"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaV41/unread-dot.png.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d0869efbee080f6373b35ba96bb7e29dd88edf00"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "72bd3cb680f155a4b34688bcc40bbbac673eae5b",
+      "main_blob": "72bd3cb680f155a4b34688bcc40bbbac673eae5b",
+      "pr136_blob": "edaed40ebf1862eb2411762202f37f049e519282"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "36637694aa217728f98330d3bf03e74e7554214b",
+      "main_blob": "36637694aa217728f98330d3bf03e74e7554214b",
+      "pr136_blob": "fc20235066944183a9af9312ca298fb65b61905b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Combat.cs",
+      "classification": "laboratory_disabled",
+      "reason": "ProductionApproved remains false; no runtime resolver caller. Contract tests retained.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "f5ea32a5590b04bf91dd0a96dbdcf60871b0bb33"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Combat.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "e1fe578a0b4b99e28cb24196aca886d53b51d7a2"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "4aa9daf5f05f0ce8133b743b40c3a8398ed4872e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d16c10b93d00bc984c87022c3d78bcd4147ae1b7"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "a71162d91c34a2c4ba0d6aa7bb181efec1b1dc82",
+      "main_blob": "a71162d91c34a2c4ba0d6aa7bb181efec1b1dc82",
+      "pr136_blob": "754e05656ac5383ca6e2ce6f4bdac94794725c55"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Editor/EarlyRetentionEngagementNativeCapture.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "17f5becdf1a5390ed84fbc24df22482ac8cbaf7f",
+      "main_blob": "17f5becdf1a5390ed84fbc24df22482ac8cbaf7f",
+      "pr136_blob": "83e134a5c65a38f71548b678ebe1cd3ce0a23e10"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "09443807391201971b274f3bcb83a2a74daee874"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "5ced105a88a9f250ffa0a7166effe0766e251234"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "55d49dd21fe542c8527f17e8cf34aef1df1361bb"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "f2d0523ba622dc4d2a78831d215ee8a849604af0"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "5933a6e5e022dca9376765cb633370e4b59fc70e",
+      "main_blob": "5933a6e5e022dca9376765cb633370e4b59fc70e",
+      "pr136_blob": "35599446649e4f40283ab558898f4729d5ca5647"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "eef0f451c97975fdaa57128091326939742fe209",
+      "main_blob": "eef0f451c97975fdaa57128091326939742fe209",
+      "pr136_blob": "4e59896bb0c3ab41793d7013f887f57a9686de1a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/Eldoria.Tests.EditMode.asmdef",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "9bf99b2c83d9d37feabc3be99a2928da39baf644",
+      "main_blob": "9bf99b2c83d9d37feabc3be99a2928da39baf644",
+      "pr136_blob": "b60496a8bdc2836ece5a3b051b8d9724adea36d8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/EldoriaV41ContractsTests.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "243337181947b6f3522fbe5655e809a7715a6373"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/EldoriaV41ContractsTests.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "310c7a8fa17bd135fffd1a4d5c3e7a74d8c0e84b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3LayeredFinishTests.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "dd18bb5fd631b3817988674c4f46a0d01a59aad9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3LayeredFinishTests.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "c213317c97e59abd02fcd6dd13c4a4c985f58a45"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3ScoutPaperDepthTests.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "096f23dcb91082633b1c3f14f1a17149710f38dd"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3ScoutPaperDepthTests.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "81a552a35e48732ff40369ffa9363d4428b21aed"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3VigilantsDepthTests.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "0b98e6885274a8925bb96ed6da65a32f49b6f6df"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3VigilantsDepthTests.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "8d6a40512e5e3203aed15cdcff4bd90cf76bdcd8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3VigilantsMultiplaneTests.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "afe9b052628b102e89201abf08bc6bfeb7ed183e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3VigilantsMultiplaneTests.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "cab8b02b52646165d8a863b12d72d56241bca66c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "7eeef021688023a71ff73c4de72ced6ab6bff91a",
+      "main_blob": "7eeef021688023a71ff73c4de72ced6ab6bff91a",
+      "pr136_blob": "92ca47885e835f0dcf7fb200189d4721de0cf91c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3CinematicAcceptanceTests.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "98fdb6b1b662fcbc12ea77b85bd9516e4ce463ce",
+      "main_blob": "98fdb6b1b662fcbc12ea77b85bd9516e4ce463ce",
+      "pr136_blob": "11b973e17d701ee6e4350b78fcd53ebb0119deff"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "54e8d4853ae056ffdd59a0948a73f09538cf77cd",
+      "main_blob": "54e8d4853ae056ffdd59a0948a73f09538cf77cd",
+      "pr136_blob": "f7e540ab01a44ef6fb3281342239aff9b07e1248"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "0150d2e4e63ca1492e4eb2c308a19ddf10910061",
+      "main_blob": "0150d2e4e63ca1492e4eb2c308a19ddf10910061",
+      "pr136_blob": "cdb4bface2201f4de21cf1f5b4a3ea6082c72b8c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "840103c83e2f9171963f2b7afcc5a06a384ed1e8",
+      "main_blob": "840103c83e2f9171963f2b7afcc5a06a384ed1e8",
+      "pr136_blob": "50e5e76d6faf3792065f2c3db7e5dbbd7c26be0d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/BottomNavigation.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "9029da95cecb07d81b78afa87a8083918c4120e4",
+      "main_blob": "9029da95cecb07d81b78afa87a8083918c4120e4",
+      "pr136_blob": "6381684326589b0ed576b12d0d60d6ec0ebcca6a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "9067510a978ed4461d99602c6ecb54022751a041",
+      "main_blob": "9067510a978ed4461d99602c6ecb54022751a041",
+      "pr136_blob": "28bfcb966597f57f74df1810c02bdef9f68acff8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalIconGraphic.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "0be19e34447d562e03a7de5cf732033a1f2823c7",
+      "main_blob": "0be19e34447d562e03a7de5cf732033a1f2823c7",
+      "pr136_blob": "2854215f19e42ab73e1034d5b92784f97a376734"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalNarrativePresentation.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "476083b042a16dae54dbb9c71c2b58c6152e780c",
+      "main_blob": "476083b042a16dae54dbb9c71c2b58c6152e780c",
+      "pr136_blob": "0baa100967bb67b3b6a2df9786e339043ba57d79"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Editor/AldricDialogueNativeCapture.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "63c05ec0e89a1f1e657792ce0094a72072c24bb5",
+      "main_blob": "63c05ec0e89a1f1e657792ce0094a72072c24bb5",
+      "pr136_blob": "7514a675fb393fec59128a03c76786dad0dc0c15"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2FrameGraphic.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "5e39b7e583fd138b7824ee818be4360976f3339c",
+      "main_blob": "5e39b7e583fd138b7824ee818be4360976f3339c",
+      "pr136_blob": "b8fc0a62be21bacaeb57f34e19f74a680d37be12"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "44999adb3544188f068b1e7044c04245e935ea7d",
+      "main_blob": "44999adb3544188f068b1e7044c04245e935ea7d",
+      "pr136_blob": "46247df64939338e6bf279b2a5c1f6110bb14093"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingCartoucheFinish.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "07e3012a59dd7e071e2724c1e3f92b294aa7ea30"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingCartoucheFinish.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "9620831164743af5fc3691fffe67b9ea08548da3"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingPreview.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "bbf5e1e5c0a3592a9ca279f2ba6281fc1775aa91"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingPreview.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "31cca54b5e4c9433db9f0ce56e76fa7db20da7d5"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingScreens.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "86cff11e1d0627e97384dab73736e77a1e1faf67",
+      "main_blob": "86cff11e1d0627e97384dab73736e77a1e1faf67",
+      "pr136_blob": "77fcb95c5308fefee9f3cd8dd493cf693759e57d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "40b91f2871a6b0affb50fd5be60c0721362ecbc1",
+      "main_blob": "40b91f2871a6b0affb50fd5be60c0721362ecbc1",
+      "pr136_blob": "8f669f21e82bc726d1a8c3ce9fa4a2989bd8e202"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "2f0b1076bf83862effe83a309ca69d3bb4b1c716",
+      "main_blob": "2f0b1076bf83862effe83a309ca69d3bb4b1c716",
+      "pr136_blob": "a1a7aaabf80119369a775eeb71c8e5807e357e02"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionArtwork.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "b814c683138e3506e482a61f6a28ce85f0dd6ecb",
+      "main_blob": "b814c683138e3506e482a61f6a28ce85f0dd6ecb",
+      "pr136_blob": "eda398363dd32cc124eaea11627177187753fd72"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "ba97b766e18a3cfc73fc8541fdba205578d9f0ca",
+      "main_blob": "ba97b766e18a3cfc73fc8541fdba205578d9f0ca",
+      "pr136_blob": "aecf6c6f3fb946058b4f1261bbb99a5a4398b5ac"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EncounterGrounding.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "f47d385c20cfc5a770b43cd3375ca1dc58326a58"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EncounterGrounding.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "5d4a343f165f44034ed64bcf0f957b2e104da44b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3GuardianReliefGraphic.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "1602bfe79b06e4424fbf1c32cf8124cc51553f41"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3GuardianReliefGraphic.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "ba0ba653f2a551e11297f6e818734ebf14651517"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3LayeredFinish.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "1d5be5276ad96881335a8874bd37655634813d8b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3LayeredFinish.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "66ea98b5e4a32fd792a71a008e25d1b56ecb29c1"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "284db35ca95517e597f5f5125e4fc084a5316fc6",
+      "main_blob": "284db35ca95517e597f5f5125e4fc084a5316fc6",
+      "pr136_blob": "bc30379eeea62082c4c9667e03a6f03219daedbf"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "8a91cebfbd15ace1c98adb1533a89dc52d05e363",
+      "main_blob": "8a91cebfbd15ace1c98adb1533a89dc52d05e363",
+      "pr136_blob": "59f531e831d0253ae2049cc4407170f35857d869"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutPaperDepth.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d3d067ef41f7f329a17c499247608b47665789ae"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutPaperDepth.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "e03d6a6769169a55a2f00a3784b23b3c1321b04f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsParallax.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "518dceecbbb87338cc18c7ed6f172c10b2a96a52"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsParallax.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "f8dc219e58a202b2553816c42f274ba88e5877f3"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsPortraitGraphic.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "4207050894349658863e5f3007e767fa32b96771"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsPortraitGraphic.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "04e312c35a77bfc8b22375d819d81e249a7c8b1e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsRoadFoundation.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "22ea0a76b5661f7e28a68d7d183e3b8760b1d426"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsRoadFoundation.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d4f72ae628958e51e191e6050f60f354f2429a2c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsTerrainOcclusion.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "14a07be3587c8250fe465963edbe08d069225452"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsTerrainOcclusion.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "f552c43541311cf2528ecfbd9373d118c72bc18d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsWorldLight.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "eb04e8b568ecae0eead5ec78dec9e71f3cc3c7b6"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3VigilantsWorldLight.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "545947f157bead6cd24ee566947f0e68d3ad6ed1"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "1d004ec13ad76d1729bf14a8df859d7790a7827b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MailboxScreen.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "289a99c86def0c53584cadb51e954b4596945c05"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MarchArt.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "38474d6847d14e94207798a1d8923ecfcaea29a9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41MarchArt.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "6baa77e78f051b7115f24de74f08776fe6d1a255"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41ReportArtwork.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "fb95d3c1d34a379744ecaeaff2efda44e77a5651"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41ReportArtwork.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "a13e2bdbcb613951729509fcccf76e8c23c81953"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41SourceArt.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "bf83970404407fbe2609ff276e68ad1e7dd7b7e6"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41SourceArt.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "fcb944fcc7cdb6e1cc07e6659577badcbe964848"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV4DialogueArt.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "3e33394e8e1f2da106f0f0e61b89d86f03c23b11"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV4DialogueArt.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "1e2aa5f04273f08cb1e09878f292473d314193da"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV4DialogueParchment.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "53e8f7e49c7c8632a9d1172e70e869324a413e12"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV4DialogueParchment.cs.meta",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "f08d8e7d98e321c7be1e11a3d577ac61e10dd552"
+    },
+    {
+      "path": "docs/economy/ECONOMY_I_XXV_OWNER_CONTRACT_20261101.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d75c4ddb301503f0ab83ad453c395303380bf6d0"
+    },
+    {
+      "path": "docs/eldoria-v41/IMPLEMENTATION_STATUS.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "8b6562b50d35bd087744ef11af94bade0168bdd8"
+    },
+    {
+      "path": "docs/evidence/block01-20261031/QA_REFERENCIA_VS_UNITY.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "816acbabbbc987c1fff275b72b5779962a5290cc"
+    },
+    {
+      "path": "docs/evidence/block02-20261101/HALL_GILDED_FRAME_V2.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d933a580e7e6818537180876afd91ce069aa6c54"
+    },
+    {
+      "path": "docs/evidence/block02-20261101/HALL_ILLUSTRATED_V2_SOURCE.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d9273945a88e6f570a7b086d1470fac83fe79cbb"
+    },
+    {
+      "path": "docs/evidence/valoria-reference-clean/ASSET_RECOVERY_VERIFIED_20261030.json",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "79dd90d3b30655b06041cb263811fbfdca381ede"
+    },
+    {
+      "path": "docs/evidence/valoria-reference-clean/CONTINUITY_NORMAL_CHAT_20261030.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "5538dafd1b2cf27b3a9e4c9ae549f10ade73ca65"
+    },
+    {
+      "path": "docs/evidence/valoria-reference-clean/WORK_RECOVERY_20261030.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": "e41253066c54e4fcac15649ebf6e26ef521a72b4",
+      "main_blob": "e41253066c54e4fcac15649ebf6e26ef521a72b4",
+      "pr136_blob": "2f54c5ee914c0509b2cb85253ca025bbf6027bde"
+    },
+    {
+      "path": "docs/evidence/valoria-reference-clean/heroes-clean-room-20261031/GENERATION_PROMPT.txt",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "11b186105ca32ca6a2f7f7be163ec8274941d16d"
+    },
+    {
+      "path": "docs/evidence/valoria-reference-clean/heroes-clean-room-20261031/candidate.json",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "a80f68a47a00e4d6aef07d147f0773c930760a1d"
+    },
+    {
+      "path": "docs/heroes-ui/ABILITIES_ART_20261102.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "b81c64d03d2002b515f279b4ad23ed15d2330d61"
+    },
+    {
+      "path": "docs/heroes-ui/EQUIPMENT_ART_IMPLEMENTATION_20261102.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "8137979de9e3902e31eb93576e60cae15244ce9a"
+    },
+    {
+      "path": "docs/heroes-ui/IMPLEMENTATION_PROGRESS_20261030.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "f8fbbc37704ec6666e81fb7677dab451b7b5493a"
+    },
+    {
+      "path": "docs/heroes-ui/INTEGRATION_GATE_20261030.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "85ccae9856bd57f5ea378e2d009db858548d6b31"
+    },
+    {
+      "path": "docs/heroes-ui/REFERENCE_PROVENANCE.json",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "77d71da203b05b26123840e4e4e0de247e81f260"
+    },
+    {
+      "path": "docs/heroes-ui/REFERENCIA_MAESTRA_APROBADA.png",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "7f5c9a3f8c47d6b9927094df38b3e58c67bbb3db"
+    },
+    {
+      "path": "docs/heroes-ui/TALENTS_ART_IMPLEMENTATION_20261102.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "e6206eec02f88e375a3b0e514e577d13fb9d3a8e"
+    },
+    {
+      "path": "docs/incident-native281/OWNER_PLAYTEST_CORRECTION_CONTRACT_20261022.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": "6aaba830af93454ed649f214aa53696d84b2424e",
+      "main_blob": "6aaba830af93454ed649f214aa53696d84b2424e",
+      "pr136_blob": "e8f7ff01ad4d80d03d704ebcd195c1cdb4f95d1f"
+    },
+    {
+      "path": "docs/marches/PREPARATION_ART_AB_20261102.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "0f328a7e6bf46634ff1985477c858eea3c24ba75"
+    },
+    {
+      "path": "docs/ui-v3/ELDORIA_REUSABLE_MATERIAL_LAYER_METHOD.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "9114a67ac5263243ad94c76b6517aecc35c08ac9"
+    },
+    {
+      "path": "docs/ui-v3/MAILBOX_V41_ART_RECONSTRUCTION_20261103.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "d83541afbce5ff9b84d1478bcdf6ea90ac5f4e5d"
+    },
+    {
+      "path": "docs/ui-v3/TRAINING_STRUCTURAL_RECONSTRUCTION_20261030.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "ba703a2d1302ca9a7153fc4a614fd24c52b9d09a"
+    },
+    {
+      "path": "docs/ui-v3/VIGILANTES_B10_SIX_PLANE_NATIVE_GATE_20261103.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "9adcc93327d8602bdebe29f7421bcdfcd8cb5aae"
+    },
+    {
+      "path": "docs/ui-v3/VIGILANTES_B11_STRUCTURAL_AB_20261103.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "8da349a13326c482a7b49da710358f45eeec8dbd"
+    },
+    {
+      "path": "docs/ui-v3/VIGILANTES_B6_DIORAMA_20261103.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "79398594faf4b2c55527fda4b8ccc6cf4dda01a4"
+    },
+    {
+      "path": "docs/ui-v3/VIGILANTES_B8_PHYSICAL_DEPTH_NATIVE_20261103.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "7cd3e15c2232701b6f8e1b230b9d512b0b868ade"
+    },
+    {
+      "path": "docs/ui-v3/VIGILANTES_B9_MATERIALIZED_LANDSCAPE_20261103.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "7ad81f19a81a945c2d429551f3de2bcce561a384"
+    },
+    {
+      "path": "docs/ui-v3/VIGILANTES_DEEP_SCENE_REBUILD_20261103.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "b43acbcb178c90f410023abeb31356246ea526f1"
+    },
+    {
+      "path": "docs/ui-v3/VIGILANTES_DEPTH_AB_20261103.md",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "fc0b595a5203fb5c565614751c2dfdd03f656350"
+    },
+    {
+      "path": "pipeline/active-workstreams.json",
+      "classification": "superseded",
+      "reason": "Use live main registry and explicit owner-authorized handoff, never revive historical owners.",
+      "merge_base_blob": "60e0a33391cabdd7b0e3757602e4a6661702c298",
+      "main_blob": "94868a0c18f1e1480f18b37ad01c2e0f4eeedaee",
+      "pr136_blob": "93e6f978d67c69b23e112c2fa4a33ffea34c8e52"
+    },
+    {
+      "path": "pipeline/art-production-requests/eldoria-v41-combate-buzon-ui-20261030.json",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "0386857f09c8285ae06d0fc2b3de86faca033d06",
+      "main_blob": "0386857f09c8285ae06d0fc2b3de86faca033d06",
+      "pr136_blob": "23645ec7e429e388bd59217d22bd1f033a2a0ee9"
+    },
+    {
+      "path": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "734ccc015ea7ed54455b344068c2ac67ea94a630",
+      "main_blob": "734ccc015ea7ed54455b344068c2ac67ea94a630",
+      "pr136_blob": "aa4b4ad032c94b986d3edeb4e69fabc3f9787301"
+    },
+    {
+      "path": "tools/early-retention/Program.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "df47caa74eb131e95ff26fb430c71f781088b085",
+      "main_blob": "df47caa74eb131e95ff26fb430c71f781088b085",
+      "pr136_blob": "99c1ec79eb4af9984cbe84448bade68b355ddfb9"
+    },
+    {
+      "path": "tools/early-retention/Smoke.csproj",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "cc5d2c72a5ecea21cc8c0947d7ff5cd0512a4935",
+      "main_blob": "cc5d2c72a5ecea21cc8c0947d7ff5cd0512a4935",
+      "pr136_blob": "c08d4533dee5e1a57833ec3292d3c73a26add0cd"
+    },
+    {
+      "path": "tools/eldoria-v41/ContinuousJourney.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "e5c6e0bbd94af7559f4fd18c2dfadbec31940729"
+    },
+    {
+      "path": "tools/eldoria-v41/ContinuousJourney.csproj",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "80c847e5337c44a3f6b9597b4b1ca8c5137ad0e4"
+    },
+    {
+      "path": "tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "733b1c6d78568c5d2c8902727775f8295f6e3f9b"
+    },
+    {
+      "path": "tools/eldoria-v41/GatewaySmoke.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "95b1aa6b2a26d95d1098a44145fd0a649e0f8e4f"
+    },
+    {
+      "path": "tools/eldoria-v41/GatewaySmoke.csproj",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "a01dfdac326579fd2038c1f7735ae95f18ccf6dd"
+    },
+    {
+      "path": "tools/eldoria-v41/Program.cs",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "a8e5405c5ab42e664de2c25f6be801b10baa40a9"
+    },
+    {
+      "path": "tools/eldoria-v41/approved-art-manifest.json",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "4a75d00965fa75113eb8364c2b9b1311455d3325"
+    },
+    {
+      "path": "tools/eldoria-v41/extract-approved-ui.py",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "9d9382364b87c37fdca1a40553174b4dd7501cf3"
+    },
+    {
+      "path": "tools/eldoria-v41/verify_art_references.py",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "91a4f04e4690ff200de645fbb280310df55e9185"
+    },
+    {
+      "path": "tools/march-capacity/Smoke.csproj",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "71b1f596d9787ec06ef18121f2d69f3d19243267",
+      "main_blob": "71b1f596d9787ec06ef18121f2d69f3d19243267",
+      "pr136_blob": "cce7e2eed06f1fe4df9bfd87ca03726631b84847"
+    },
+    {
+      "path": "tools/ui-v3-domain-smoke/Smoke.csproj",
+      "classification": "preserve_pr136",
+      "reason": "PR136 final implementation retained with current-main additions by three-way reconciliation; exact candidate native verification pending.",
+      "merge_base_blob": "9a4ba73975cde2586ba85004c4d408d06d159a94",
+      "main_blob": "9a4ba73975cde2586ba85004c4d408d06d159a94",
+      "pr136_blob": "18e785244dd1e0a29aabce10c69bbb53235127a6"
+    },
+    {
+      "path": "tools/vigilants-depth/bake_backplate_b11.py",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "53e9b0c05f3d28766c5c53e8e0277cef050dea59"
+    },
+    {
+      "path": "tools/vigilants-depth/bake_layers.py",
+      "classification": "historical_or_reference",
+      "reason": "Preserve provenance, original reference or repeatable authoring source; no gameplay activation or new artistic approval.",
+      "merge_base_blob": null,
+      "main_blob": null,
+      "pr136_blob": "c4a0b092f2b022b2a9534d2935d36e9b6f386b0c"
+    }
+  ]
+}

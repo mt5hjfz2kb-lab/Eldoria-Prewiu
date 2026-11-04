@@ -1,3 +1,27 @@
+# Actualización de relevo a chat normal
+
+El checkpoint exhaustivo vigente está en [CONTINUITY_NORMAL_CHAT_20261030.md](CONTINUITY_NORMAL_CHAT_20261030.md). Último runtime24de23ca; Lyra frontal pendiente de certificación exacta. Issue138 conserva motor/simulaciones de laboratorio, no activados en campaña. Leer comentarios posteriores dePR136 y HEAD vivo. Se preserva debajo el registro completo de recuperación.
+
+---
+
+# Recuperación vigente — PR136, 30/10/2026
+
+Responsable codex-recovery-ada07b02a31d; workstream Valoria revision74. Releer siempre main/pipeline/active-workstreams.json. Continúa la misma PR136; PR134/135/137 ya incorporadas. No reintegrar, no abrir otra PR, no tocar main jugable ni publicaciones.
+
+Base recuperada a5ea2aa1d6d47252e8b71fa79089d0e26a64196c. Fallo original41111056120 corregido con altura real de etiquetas y separación de títulos; ninguna assertion debilitada. Se preservan y usan training-archer-isolated-v1.png y training-courtyard-layer-v1.png. Entrenamiento añade tarjetas T1/T2 reales, bloqueo por Cuartel IV/reclutamiento y separa texto de silueta en cuatro resoluciones. Marchas conserva retratos completos en horizontal compacto. Navegación conserva cinco entradas visibles con bloqueo real; Héroes mantiene entrada visible/bloqueada y Talentos presenta tres rutas/nueve nodos reservados.
+
+5a33985521f2d7d1b3a68234bb852b1e777e1549: native41130365064 SUCCESS,68/68 EditMode,73/73 PlayMode,0 fallos. Corrección posterior de columnas de Entrenamiento:0f4a4b578d1cd55acde315b0eb2ee0ccaa61701d, native41131927783; V4.1/tres marchas/retención/Aldric/progresión integrada/EditMode superados y PlayMode en curso al escribir. Compilado67e93161319feb442f6b7a0c8e4fc320d0bb9648; comparación con0f4a4b57 muestra solo2 documentos, Unity/workflow idénticos. Revisar estado final, no extrapolar a la candidata Lyra siguiente.
+
+El propietario acaba de resolver la identidad de Lyra: usar MODELO 3D EXISTENTE castaño, conservando composición v14. Se integra la fuente recuperada sin generar ni riggear; ver docs/heroes-ui/IMPLEMENTATION_PROGRESS_20261030.md. Certificar importación/capturas/giro/guardado de la nueva candidata. Se han verificado203 archivos de los6 paquetes PR127 conservados: raw GLB y referencia coinciden con su manifiesto, todos mantienen optimizado y Blender editable. No se declaran integrados los otros5 ni cerradas PR127/128.
+
+Aceptación artística PENDIENTE. Entrenamiento ha mejorado estructuralmente; Marchas, Héroes, Buzón y el resto conservan diferencias importantes. Priorizar composición, no cadenas de tintes/márgenes. No100%, no móvil físico, no promoción externa. Entregas registradas: Android1.20/d2ed96d5, WebGLnative298/c8580934, anteriores a esta candidata. Inc109 sigue abierta: ausencia de GUID directo en la escena no certifica ausencia de geometría derivada/build.
+
+Próximo paso autónomo: terminar ejecución en vuelo sin cancelarla; certificar el nuevo HEAD Lyra con misma reserva; inspeccionar PNGs originales y corregir importación/encuadre reales si fallan; continuar prioridades visuales sin confundir PASS técnico con aprobación. Resultados finales y SHA exacto se actualizan en comentarios/descripción de PR136 para evitar otra ejecución pesada solo documental.
+
+---
+
+## Historial conservado del relevo anterior
+
 # Continuación del chat bloqueado — 30-10-2026
 
 ## Autoridad y alcance

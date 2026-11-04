@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "reference": "REFERENCIA_MAESTRA_APROBADA.png",
+  "sha256": "48cbc4e73d4144c45af12731773f0fd60b45e81d2a871256b33fe2a00f7d6800",
+  "bytes": 2544078,
+  "git_blob": "7f5c9a3f8c47d6b9927094df38b3e58c67bbb3db",
+  "origin": {
+    "package": "eldoria_heroes_v14_work",
+    "library_file_id": "libfile_8e8bacfa68108191b23f205a5b62b529",
+    "package_path": "Assets/Eldoria/HeroesUI/Resources/Approved/REFERENCIA_MAESTRA_APROBADA.png",
+    "art_lock": "docs/HEROES_UI_APPROVED_ART_LOCK_20261030.md"
+  },
+  "purpose": "Exact archived approved six-panel reference; never rendered as a flat functional UI.",
+  "runtime_art_approved": false,
+  "known_gaps": [
+    "Native hero hall lacks approved illustrated environment and Lyra portrait/model.",
+    "Hero profile native captures and exact source comparison still required.",
+    "Talents and equipment have no implemented gameplay and remain unavailable."
+  ],
+  "native_evidence": {
+    "run_id": 41081100531,
+    "source": "f68bf6dfa4c13650a787a326c7a839054186d000",
+    "artifact_id": 12990091842,
+    "result": "V_COMPLETE_VISIBLE; HERO_HALL_CAPTURED; POINTER_TEST_FAILED_AFTER_CAPTURE",
+    "art_approved": false
+  },
+  "narrative_rule": "Hero hall unlocks only after actual Lyra recruitment in Bastion III; profile values use the existing combat and save state."
+}

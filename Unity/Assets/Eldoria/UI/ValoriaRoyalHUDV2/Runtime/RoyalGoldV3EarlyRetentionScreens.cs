@@ -34,19 +34,29 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalText victoryTitle, victoryDetail;
         float victoryUntil, victoryStarted, discoverySealPulseUntil;
         RoyalButton vigilantShortcut, scoutsShortcut, back, mainAction, claimXp;
+        RoyalButton scoutStrategyButton;
+        RoyalText scoutStrategyLabel;
+        int scoutStrategyMode;
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
         readonly RoyalText[] scoutTitles=new RoyalText[3];
         // Four reference-derived mission paintings share one mobile texture.
         // The actual persisted mission kind selects the corresponding quadrant.
         readonly RawImage[] scoutThumbnails=new RawImage[3];
-        RawImage engendroPortrait, guardianBanner;
+        RawImage engendroPortrait, guardianBanner, guardianPainted;
+        readonly Texture2D[] guardianArt=new Texture2D[4];
         Texture2D scoutVignettes, guardianBannerTexture;
         Texture2D engendroTexture;
         Texture2D engendroCutout;
         Rect engendroUvRect=new Rect(0f,0f,1f,1f);
         readonly RoyalText[] scoutActionLabels=new RoyalText[3];
         readonly RoyalGoldV3ScoutContractGraphic[] scoutArt=new RoyalGoldV3ScoutContractGraphic[3];
+        // Independent tactile material assembly. Never treated as a click
+        // target or source of scouting mechanics/state.
+        readonly RoyalGoldV3ScoutPaperDepth[] scoutContact=new RoyalGoldV3ScoutPaperDepth[3];
+        readonly RoyalGoldV3ScoutPaperDepth[] scoutBevel=new RoyalGoldV3ScoutPaperDepth[3];
+        readonly RoyalGoldV3ScoutPaperDepth[] scoutInsetUnder=new RoyalGoldV3ScoutPaperDepth[3];
+        readonly RoyalGoldV3ScoutPaperDepth[] scoutInsetLip=new RoyalGoldV3ScoutPaperDepth[3];
         readonly string[] scoutIds=new string[3];
         RoyalText heading, kicker, introduction, chapter, opponent, formation,
             reward, battleFeedback, passive, footer, mainActionLabel, xpLabel, backLabel;
@@ -65,7 +75,14 @@ namespace Eldoria.UI.RoyalGold.V2
         // Two original zero-cost painterly environments, with the hand-built
         // vector renderer as the graceful fallback in older installations.
         RawImage paintedScene;
-        Texture2D paintedVigilants, paintedScouts, scoutParchment;
+        RoyalGoldV3LayeredFinish scenicDepth;
+        RoyalGoldV3VigilantsParallax vigilantsParallax;
+        RoyalGoldV3VigilantsTerrainOcclusion nearTerrain;
+        RoyalGoldV3VigilantsWorldLight landscapeLight;
+        RoyalGoldV3VigilantsRoadFoundation pathFoundation;
+        RoyalGoldV3EncounterGrounding enemyGroundBack, enemyGroundFront;
+        RoyalGoldV3GuardianReliefGraphic guardianRelief;
+        Texture2D paintedVigilants, paintedVigilantsClean, paintedScouts, scoutParchment;
         Sprite scoutParchmentSprite, encounterSkinSprite;
         Image encounterSkin;
         GameObject screen;
@@ -201,7 +218,15 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         void SelectionChanged(string selected)
         {
-            if(!string.IsNullOrEmpty(selected))Close();
+            if(!string.IsNullOrEmpty(selected))
+            {
+                Close();
+                // Selection is synchronous: do not leave shortcuts over the
+                // real building cartouche until the 0.3-second polling tick.
+                if(vigilantShortcut)vigilantShortcut.gameObject.SetActive(false);
+                if(scoutsShortcut)scoutsShortcut.gameObject.SetActive(false);
+            }
+            nextUpdate=0;
         }
         bool Blocked=>Hud==null||Hud.NarrativeOpen ||
             (Hud.Modal && Hud.Modal.gameObject.activeSelf);
@@ -347,7 +372,10 @@ namespace Eldoria.UI.RoyalGold.V2
             Stretch(picture,5);
             var painting=Rect("Original illustrated world / decorative only",art);
             painting.gameObject.AddComponent<CanvasRenderer>();
-            paintedScene=painting.gameObject.AddComponent<RawImage>();
+            // The original PNG is still the only source; its UI quad now
+            // draws separate stone/river/fortress materials along the actual
+            // saved road, not a pasted rectangular photograph.
+            paintedScene=painting.gameObject.AddComponent<RoyalGoldV3VigilantsLivingLandscape>();
             paintedScene.raycastTarget=false;
             paintedScene.color=Color.white;
             Stretch(painting,5);
@@ -356,6 +384,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // remain separate, live Unity controls layered above the painting.
             paintedVigilants=Resources.Load<Texture2D>("EldoriaRetention/vigilants-painterly-v2")
                 ?? Resources.Load<Texture2D>("EldoriaRetention/vigilants-painterly");
+            // B11 is source-derived but does NOT print six complete pieces
+            // behind their real painterly stage planes. Legacy falls back intact.
+            paintedVigilantsClean=Resources.Load<Texture2D>(
+                "EldoriaRetention/DepthB11/clean_backdrop");
             paintedScouts=Resources.Load<Texture2D>("EldoriaRetention/scouts-painterly-v2")
                 ?? Resources.Load<Texture2D>("EldoriaRetention/scouts-painterly");
             // Keep the earlier zero-cost procedural texture as resilient fallback.
@@ -364,6 +396,15 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!paintedScouts)paintedScouts=
                 Resources.Load<Texture2D>("EldoriaRetention/scouts-illustration");
             paintedScene.enabled=paintedVigilants!=null;
+            // A distinct, transparent foreground of fog, raking light and
+            // parchment depth: the photographed environment stays behind it,
+            // while all real route nodes and touch targets remain above it.
+            scenicDepth=RoyalGoldV3LayeredFinish.Install(art,
+                RoyalGoldV3LayeredFinish.Scene.Vigilants,2);
+            // Reuse the SAME approved painting in four feathered perspective
+            // planes. Its original pixel-space crop stays authoritative.
+            // Draw above the painting but below mist, markers and buttons.
+            vigilantsParallax=RoyalGoldV3VigilantsParallax.Install(art,2);
             var seals=Rect("Actual discovered expedition families",art);
             seals.gameObject.AddComponent<CanvasRenderer>();
             discoverySeals=seals.gameObject.AddComponent<RoyalGoldV3ScoutDiscoverySeals>();
@@ -455,12 +496,29 @@ namespace Eldoria.UI.RoyalGold.V2
             if(creaturePlate){creaturePlate.raycastTarget=false;creaturePlate.enabled=false;}
             var creatureArt=Rect("Engendro / authentic creature illustration",creature);
             creatureArt.gameObject.AddComponent<CanvasRenderer>();
-            engendroPortrait=creatureArt.gameObject.AddComponent<RawImage>();
+            engendroPortrait=creatureArt.gameObject.AddComponent<RoyalGoldV3VigilantsPortraitGraphic>();
             engendroPortrait.raycastTarget=false;
             engendroPortrait.texture=engendroCutout?engendroCutout:engendroTexture;
             engendroPortrait.uvRect=engendroCutout?engendroUvRect:
                 new Rect(0f,0f,1f,1f);
             Stretch(creatureArt,4f);
+            // True two-sided vignette: bounced light + ground contact BEHIND
+            // each real portrait; soft foreground occlusion ABOVE it.
+            // Both share the existing picture frame and never catch raycasts.
+            enemyGroundBack=RoyalGoldV3EncounterGrounding.Install(creature,false);
+            enemyGroundFront=RoyalGoldV3EncounterGrounding.Install(creature,true);
+            // Near-ground rock remains a separate scenic plane independent
+            // of the encounter. The enemy itself will be seated in the royal
+            // tactical manuscript instead of occupying the path.
+            nearTerrain=RoyalGoldV3VigilantsTerrainOcclusion.Install(
+                heroScene,chapterTrail.transform.GetSiblingIndex());
+            landscapeLight=RoyalGoldV3VigilantsWorldLight.Install(
+                heroScene,nearTerrain.transform.GetSiblingIndex());
+            // A genuine physical base under the existing 25 real milestones.
+            // Its positions come from the SAME painting UV and live trail,
+            // never from a separately authored decorative route.
+            pathFoundation=RoyalGoldV3VigilantsRoadFoundation.Install(
+                heroScene,chapterTrail.transform.GetSiblingIndex());
             creature.gameObject.SetActive(false);
             victoryBanner=Panel(heroScene,"Crónica Real / combat outcome gilded announcement");
             var victoryPlate=victoryBanner.GetComponent<RoyalGoldV2FrameGraphic>();
@@ -494,9 +552,34 @@ namespace Eldoria.UI.RoyalGold.V2
                 encounterSkin.raycastTarget=false;
                 Stretch(skin);
             }
-            // The adversary belongs to the encounter card, as in the reference;
-            // it must never cover the painted route or any chapter milestone.
+            // The authentic stage-15 creature remains in the world. Other
+            // actual canonical adversaries get an engraved, deeply integrated
+            // heraldic presence inside the manuscript, NOT a photo crop.
+            var reliefRect=Rect("True guardian / engraved heroic relief",infoCard);
+            reliefRect.gameObject.AddComponent<CanvasRenderer>();
+            guardianRelief=reliefRect.gameObject.AddComponent<RoyalGoldV3GuardianReliefGraphic>();
+            guardianRelief.raycastTarget=false;
+            guardianRelief.gameObject.SetActive(false);
+            // The boss is a unique transparent image, not a cropped second
+            // landscape. The stone niche belongs to the existing card.
+            guardianArt[0]=Resources.Load<Texture2D>("EldoriaRetention/vigilant-guardian-coraza-v5");
+            guardianArt[1]=Resources.Load<Texture2D>("EldoriaRetention/vigilant-guardian-umbral-v5");
+            guardianArt[2]=Resources.Load<Texture2D>("EldoriaRetention/vigilant-guardian-centinela-v5");
+            guardianArt[3]=Resources.Load<Texture2D>("EldoriaRetention/vigilant-guardian-vigia-v5");
+            var paintedGuardian=Rect("Guardian / distinct alpha cutout on original royal stone",infoCard);
+            paintedGuardian.gameObject.AddComponent<CanvasRenderer>();
+            guardianPainted=paintedGuardian.gameObject.AddComponent<RawImage>();
+            guardianPainted.raycastTarget=false;
+            guardianPainted.uvRect=new Rect(0f,0f,1f,1f);
+            guardianPainted.color=Color.white;
+            guardianPainted.gameObject.SetActive(false);
+            // Both the original alpha Engendro and each independent guardian
+            // occupy the SAME illustrated encounter bay. The source art has
+            // no painted background or rectangular photograph.
             creature.SetParent(infoCard,false);
+            creature.SetSiblingIndex(guardianPainted.transform.GetSiblingIndex()+1);
+            // Keep the original atlas intact for its approved scout missions.
+            // Do not fabricate new encounter stats, letters or models.
             chapter=Text(infoCard,"Stage progression",23,Gold,true);
             opponent=Text(infoCard,"Real enemy and trait",19,Ivory);
             formation=Text(infoCard,"Actual available army",17,Muted);
@@ -526,6 +609,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 // visual: the existing action remains the one touch target.
                 var backplate=cell.GetComponent<RoyalGoldV2FrameGraphic>();
                 if(backplate){backplate.enabled=false;backplate.raycastTarget=false;}
+                scoutContact[i]=RoyalGoldV3ScoutPaperDepth.Install(cell,
+                    "Scout / physical parchment-to-desk shadow",
+                    RoyalGoldV3ScoutPaperDepth.MaterialLayer.DeskContact,i);
                 var artwork=Rect("Crónica Real / illuminated scout contract",cell);
                 artwork.gameObject.AddComponent<CanvasRenderer>();
                 scoutArt[i]=artwork.gameObject.AddComponent<RoyalGoldV3ScoutContractGraphic>();
@@ -551,6 +637,12 @@ namespace Eldoria.UI.RoyalGold.V2
                     Stretch(paper);
                     paper.SetAsFirstSibling();
                 }
+                scoutBevel[i]=RoyalGoldV3ScoutPaperDepth.Install(cell,
+                    "Scout / raised paper grain, medallion seat and rolled edge",
+                    RoyalGoldV3ScoutPaperDepth.MaterialLayer.PaperBevel,i);
+                scoutInsetUnder[i]=RoyalGoldV3ScoutPaperDepth.Install(cell,
+                    "Scout / inset picture stone and leather underlay",
+                    RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetUnderlay,i);
                 var vignette=Rect("Mission map detail (visual only)",cell);
                 vignette.gameObject.AddComponent<CanvasRenderer>();
                 scoutThumbnails[i]=vignette.gameObject.AddComponent<RawImage>();
@@ -558,16 +650,37 @@ namespace Eldoria.UI.RoyalGold.V2
                 scoutThumbnails[i].texture=scoutVignettes?scoutVignettes:paintedScouts;
                 scoutThumbnails[i].uvRect=new Rect(.04f+i*.27f,.14f,.22f,.56f);
                 scoutThumbnails[i].gameObject.SetActive(false);
+                scoutInsetLip[i]=RoyalGoldV3ScoutPaperDepth.Install(cell,
+                    "Scout / gilded inset edge and natural occlusion",
+                    RoyalGoldV3ScoutPaperDepth.MaterialLayer.InsetLip,i);
                 scoutTitles[i]=Text(cell,"Readable contract heading",22,Ink,true);
                 scoutCards[i]=Text(cell,"Real scout order reward and status",18,Ink);
                 scoutActions[i]=Button(cell,"Dispatch or claim scout "+(i+1),
                     "Enviar",()=>RunScout(index),out scoutActionLabels[i],true,false);
                 scoutActions[i].transform.SetParent(cell,false);
+                // Deterministic physical stack: contact shadow under original
+                // nine-sliced paper; inset underside below authentic thumbnail;
+                // corner lip above thumbnail; original wax medallion above all.
+                scoutContact[i].transform.SetSiblingIndex(0);
+                if(scoutParchment)
+                {
+                    var sheet=cell.Find("Reference parchment / visual only");
+                    if(sheet)sheet.SetSiblingIndex(1);
+                }
+                scoutBevel[i].transform.SetSiblingIndex(2);
+                scoutInsetUnder[i].transform.SetSiblingIndex(3);
+                scoutThumbnails[i].transform.SetSiblingIndex(4);
+                scoutInsetLip[i].transform.SetSiblingIndex(5);
+                scoutArt[i].transform.SetSiblingIndex(6);
                 cell.name="Scout / live contract "+(i+1);
             }
             footer=Text(panel,"No artificial notifications",15,Muted);
             back=Button(panel,"Return to actual kingdom","VOLVER A VALORIA",
                 Close,out backLabel);
+            // A genuine pre-dispatch decision, not decoration: fewer troops
+            // for more time, or more committed troops for an earlier return.
+            scoutStrategyButton=Button(panel,"Prepare actual march or choose scout strategy",
+                "RUTA NORMAL",TacticalAction,out scoutStrategyLabel);
             // Match the reference's book typography only within this room.
             // Keep compact state/resource text in the proven HUD font.
             var referenceFont=Resources.Load<Font>("EldoriaRetention/reference-serif");
@@ -595,6 +708,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(destination==Destination.Vigilants&&!EarlyRetentionRules.VigilantsUnlocked(s))return;
             if(destination==Destination.Scouts&&!EarlyRetentionRules.ScoutsUnlocked(s))return;
             OpenDestination=destination;
+            scenicDepth?.SetScene(destination==Destination.Scouts?
+                RoyalGoldV3LayeredFinish.Scene.Scouts:
+                RoyalGoldV3LayeredFinish.Scene.Vigilants);
             notice="";
             victoryUntil=0f;
             if(victoryGroup)victoryGroup.alpha=0f;
@@ -662,13 +778,35 @@ namespace Eldoria.UI.RoyalGold.V2
             if(EarlyRetentionRules.StageUnlocked(s,next))Submit("VigilantBattle",next.ToString());
         }
         void CollectXp() => Submit("ClaimVigilantXp","aldric");
+        void TacticalAction()
+        {
+            if(!IsOpen || Hud==null)return;
+            if(OpenDestination==Destination.Scouts){CycleScoutStrategy();return;}
+            // The player's composition is configured in the existing royal
+            // military room, never a second temporary army or fake shortcut.
+            var manager=Hud.GetComponentInChildren<RoyalGoldV3ManagementScreens>(true)
+                ?? UnityEngine.Object.FindFirstObjectByType<RoyalGoldV3ManagementScreens>(
+                    FindObjectsInactive.Include);
+            var state=gateway?.Snapshot();
+            if(manager==null || manager.Hud!=Hud || state==null ||
+                state.BastionLevel<2 || state.BarracksLevel<1)return;
+            Close();
+            manager.Open(RoyalGoldV3ManagementScreens.Destination.March);
+        }
+        void CycleScoutStrategy()
+        {
+            if(!IsOpen || OpenDestination!=Destination.Scouts)return;
+            scoutStrategyMode=(scoutStrategyMode+1)%3;
+            Render(true);
+        }
         void RunScout(int index)
         {
             if(index<0||index>=3||string.IsNullOrEmpty(scoutIds[index]))return;
             var s=gateway.Snapshot();
             var item=s.Retention?.Orders?.FirstOrDefault(x=>x.Id==scoutIds[index]);
             if(item==null||item.Claimed)return;
-            if(item.StartedUtcTicks==0)Submit("ScoutDispatch",item.Id);
+            if(item.StartedUtcTicks==0)
+                Submit("ScoutDispatch",item.Id+"|"+scoutStrategyMode);
             else if(item.EndsUtcTicks<=now())Submit("ScoutClaim",item.Id);
         }
         // Run after a genuine native offscreen canvas resize, just as the
@@ -782,7 +920,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Keep the complete name and the actual tap target legible.
             if(portrait)
             {
-                TL(heading.rectTransform,130f,12f,pw-260f,86f);
+                TL(heading.rectTransform,130f,12f,pw-350f,86f);
                 heading.fontSize=32;
                 TL(kicker.rectTransform,18f,104f,pw-36f,36f);
                 TL((RectTransform)back.transform,18f,14f,100f,88f);
@@ -791,17 +929,27 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             else
             {
-                TL(heading.rectTransform,130f,18f,pw-260f,44f);
+                TL(heading.rectTransform,130f,18f,pw-350f,44f);
                 heading.fontSize=compactLandscape?26:34;
                 TL(kicker.rectTransform,130f,61f,pw-260f,27f);
                 TL((RectTransform)back.transform,20f,compactLandscape?14f:23f,90f,compactLandscape?68f:46f);
                 backLabel.Put("←");
                 backLabel.fontSize=compactLandscape?48:30;
             }
+            TL((RectTransform)scoutStrategyButton.transform,
+                pw-198f,14f,
+                180f,portrait?88f:compactLandscape?68f:76f);
+            // Minimum ~13 real pixels on a 390px phone at roomScale .4875.
+            scoutStrategyLabel.fontSize=portrait?28:compactLandscape?21:19;
             float imageTop=portrait?150f:108f;
             bool scoutsLandscape=!portrait && OpenDestination==Destination.Scouts;
             bool vigilantsLandscape=!portrait && OpenDestination==Destination.Vigilants;
             bool vigilantsPortrait=portrait && OpenDestination==Destination.Vigilants;
+            // Reference-first structural pass: Vigilants is not two pasted
+            // rectangular panels. The map is the dominant continuous scene;
+            // the genuinely playable manuscript becomes its lower tabletop.
+            // Narrow-landscape and portrait retain their proven safe layout.
+            bool vignetteLandscape=vigilantsLandscape&&!compactLandscape;
             // The approved reference is scenic-first. In wide views the landscape
             // or cartographer's desk spans the available width; actual missions
             // and the combat panel float over the LOWER portion of that artwork.
@@ -812,9 +960,20 @@ namespace Eldoria.UI.RoyalGold.V2
             float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-760f):
                 portrait?Mathf.Clamp(ph-988f,220f,880f):
                 ph-155f;
+            // The landscape remains dominant, but the enemy and all real
+            // stats get sufficient room in a proper illustrated card.
             TL(heroScene,portrait?18f:20f,imageTop,
-                portrait?pw-36f:vigilantsLandscape?pw*.47f-20f:pw-40f,scenicHeight);
-            if(vigilantsLandscape)
+                portrait?pw-36f:vignetteLandscape?pw-40f:
+                vigilantsLandscape?pw*.56f-24f:pw-40f,scenicHeight);
+            if(vignetteLandscape)
+            {
+                // The 25 authentic stages now span an environment, not a
+                // photographic sidebar. Keep the last 22% of the backdrop
+                // free for the painterly mountain and final fortress.
+                chapterTrail.rectTransform.anchorMin=new Vector2(.06f,.45f);
+                chapterTrail.rectTransform.anchorMax=new Vector2(.77f,.94f);
+            }
+            else if(vigilantsLandscape)
             {
                 chapterTrail.rectTransform.anchorMin=new Vector2(.04f,.13f);
                 chapterTrail.rectTransform.anchorMax=new Vector2(.34f,.86f);
@@ -826,17 +985,8 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             chapterTrail.rectTransform.offsetMin=Vector2.zero;
             chapterTrail.rectTransform.offsetMax=Vector2.zero;
-            if(engendroPortrait)
-            {
-                var frame=engendroPortrait.transform.parent as RectTransform;
-                float w=Mathf.Min(heroScene.rect.width*(portrait?.48f:.37f),portrait?360f:330f);
-                float h=Mathf.Min(heroScene.rect.height*.49f,portrait?360f:310f);
-                float artAspect=engendroTexture?engendroUvRect.width*engendroTexture.width/
-                    Mathf.Max(1f,engendroUvRect.height*engendroTexture.height):1f;
-                if(w/h>artAspect)w=h*artAspect;else h=w/artAspect;
-                TL(frame,portrait?16f:26f,
-                    Mathf.Max(90f,heroScene.rect.height-h-19f),w,h);
-            }
+            // Scene layers have their own full-frame geometry, independent
+            // of the card's real encounter layout below.
             if(progressPlaque)
             {
                 float mapW=heroScene.rect.width;
@@ -888,17 +1038,51 @@ namespace Eldoria.UI.RoyalGold.V2
             if(portrait)
                 TL(infoCard,bodyX,imageTop+scenicHeight+10f,
                     bodyWidth,ph-(imageTop+scenicHeight+58f));
-            else if(vigilantsLandscape&&!compactLandscape)
-                TL(infoCard,pw*.49f,imageTop,pw*.50f-20f,ph-imageTop-47f);
+            else if(vignetteLandscape)
+            {
+                // The native 1600x900 probe found that a FULL-WIDTH bottom
+                // board concealed real stages 1-11. The actual 25-point road
+                // is authoritative: reclaim its lower-left region, keep the
+                // landscape panoramic and move the playable tactical manuscript
+                // to the lower-right clear basin (no marker overlaps it).
+                float cardHeight=Mathf.Clamp(ph*.48f,350f,410f);
+                TL(infoCard,pw*.64f,ph-cardHeight-46f,
+                    pw*.34f,cardHeight);
+            }
             else if(compactLandscape)
-                TL(infoCard,scoutsLandscape?18f:pw*.48f,imageTop+8f,
-                    scoutsLandscape?pw-36f:pw*.50f-20f,ph-imageTop-56f);
+                TL(infoCard,scoutsLandscape?18f:pw*.575f,imageTop+8f,
+                    scoutsLandscape?pw-36f:pw*.415f-12f,ph-imageTop-56f);
             else if(scoutsLandscape)
                 TL(infoCard,pw*.18f,ph*.43f,pw*.64f,ph*.57f-55f);
             else
                 TL(infoCard,pw*.37f,ph*.55f,pw*.61f,ph*.45f-55f);
             float iw=infoCard.rect.width,ih=infoCard.rect.height;
             if(iw<=0||ih<=0)return;
+            if(OpenDestination==Destination.Vigilants && guardianRelief)
+            {
+                // The SAME diegetic bay is used by four guardian cutouts and
+                // stage-15's authentic transparent Engendro. Its soft light
+                // and stone footing are part of the card, not a photo-frame.
+                bool portraitRoom=height>width;
+                float w=iw*(portraitRoom?.39f:compactLandscape?.38f:.405f);
+                float x=iw-w-14f;
+                float artTop=portraitRoom?51f:compactLandscape?37f:51f;
+                float h=Mathf.Max(95f,ih-(portraitRoom?165f:125f));
+                TL(guardianRelief.rectTransform,x,artTop,w,h);
+                float side=Mathf.Min(w*.98f,h*.90f);
+                float artX=x+(w-side)*.50f;
+                float artY=artTop+h-side-h*.10f;
+                if(guardianPainted)
+                    TL(guardianPainted.rectTransform,artX,artY,side,side);
+                if(engendroPortrait)
+                {
+                    var frame=engendroPortrait.transform.parent as RectTransform;
+                    float creatureSide=Mathf.Min(w*.995f,h*.92f);
+                    TL(frame,x+(w-creatureSide)*.5f,
+                        artTop+h-creatureSide-h*.095f,
+                        creatureSide,creatureSide);
+                }
+            }
             if(vigilantsPortrait || (vigilantsLandscape&&!compactLandscape))
             {
                 // Layout in canvas units must remain readable after the real
@@ -965,6 +1149,102 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(chapter.rectTransform,16f,10f,iw-32f,41f);
                 chapter.fontSize=27;
             }
+            // Text must sit BESIDE the figure, not beneath it. Compact
+            // landscape uses a reduced engraving in the far right niche.
+            if(OpenDestination==Destination.Vigilants && !encounterPortraitVisible)
+            {
+                bool tiny=compactLandscape;
+                float textWidth=iw*(tiny?.65f:.54f)-20f;
+                TL(opponent.rectTransform,18f,tiny?49f:65f,textWidth,tiny?65f:98f);
+                TL(formation.rectTransform,18f,tiny?120f:172f,textWidth,tiny?40f:60f);
+                TL(reward.rectTransform,18f,tiny?162f:239f,textWidth,tiny?59f:86f);
+                TL(passive.rectTransform,18f,
+                    tiny?Mathf.Max(222f,ih-155f):Mathf.Min(ih-180f,339f),
+                    iw-36f,tiny?60f:83f);
+                opponent.fontSize=tiny?21:portrait?27:25;
+                formation.fontSize=tiny?21:portrait?26:24;
+                reward.fontSize=tiny?21:portrait?27:24;
+                passive.fontSize=tiny?21:portrait?27:22;
+            }
+
+            // A usable portrait is as important as a readable military
+            // report. Keep all enemy labels in a dedicated LEFT column so
+            // neither original Engendro nor alpha guardians cover the text.
+            if(OpenDestination==Destination.Vigilants)
+            {
+                float textWidth=Mathf.Max(132f,iw*.585f-34f);
+                float actionTop=ih-(height>width?114f:compactLandscape?84f:106f);
+                TL(chapter.rectTransform,26f,10f,iw-52f,47f);
+                TL(opponent.rectTransform,18f,60f,textWidth,95f);
+                TL(formation.rectTransform,18f,158f,textWidth,70f);
+                TL(reward.rectTransform,18f,231f,textWidth,74f);
+                float idleTop=Mathf.Min(317f,Mathf.Max(302f,actionTop-119f));
+                TL(passive.rectTransform,18f,idleTop,textWidth,
+                    Mathf.Max(66f,Mathf.Min(105f,actionTop-idleTop-8f)));
+                // Render may activate battle feedback AFTER Layout has run.
+                // Always constrain its full message to the text column so
+                // that it never paints across the authentic Engendro.
+                TL(battleFeedback.rectTransform,18f,
+                    Mathf.Max(384f,actionTop-128f),textWidth,
+                    Mathf.Max(42f,Mathf.Min(96f,actionTop-416f)));
+                chapter.fontSize=height>width?29:compactLandscape?23:30;
+                opponent.fontSize=height>width?27:compactLandscape?22:26;
+                formation.fontSize=height>width?26:compactLandscape?20:23;
+                // Real 390px mobile -> .4875 room scale: min ~12.7px.
+                reward.fontSize=height>width?26:compactLandscape?20:23;
+                passive.fontSize=height>width?26:compactLandscape?19:21;
+                battleFeedback.fontSize=height>width?23:compactLandscape?18:21;
+                if(compactLandscape)
+                {
+                    // Keep the complete XP/mastery text above the real buttons.
+                    // The desktop row offsets otherwise cross the action bay.
+                    TL(opponent.rectTransform,18f,60f,textWidth,80f);
+                    TL(formation.rectTransform,18f,144f,textWidth,48f);
+                    TL(reward.rectTransform,18f,196f,textWidth,48f);
+                    TL(passive.rectTransform,18f,248f,textWidth,actionTop-256f);
+                }
+            }
+
+            if(vignetteLandscape)
+            {
+                // B11: actual authored full-width landscape, with ALL 25
+                // real stone milestones visible and physically unobstructed.
+                // The tactical manuscript has a distinct bottom-right bay,
+                // preserving original battle, rewards, XP and scout controls.
+                // No typography is suppressed, faded or moved behind artwork.
+                TL(chapter.rectTransform,17f,7f,iw-34f,40f);
+                float textColumn=iw*.57f;
+                // Genuine 1600px captures caught three narrow text boxes.
+                // Give the complete enemy trait and rewards their native
+                // measured line-height; never suppress earned text.
+                TL(opponent.rectTransform,14f,50f,textColumn,70f);
+                TL(formation.rectTransform,14f,122f,textColumn,44f);
+                TL(reward.rectTransform,14f,168f,textColumn,48f);
+                TL(passive.rectTransform,14f,217f,textColumn,61f);
+                TL(battleFeedback.rectTransform,14f,280f,iw-28f,62f);
+                chapter.fontSize=25;opponent.fontSize=20;formation.fontSize=20;
+                reward.fontSize=20;passive.fontSize=18;
+                battleFeedback.fontSize=17;
+                // The XP button itself is a genuine control. Scale only its
+                // native label to the available 54px, preserving both lines.
+                xpLabel.fontSize=21;
+                float figureX=iw*.60f,figureW=iw*.365f;
+                if(guardianRelief)TL(guardianRelief.rectTransform,
+                    figureX,58f,figureW,Mathf.Min(205f,ih*.52f));
+                if(guardianPainted)TL(guardianPainted.rectTransform,
+                    figureX+6f,62f,figureW-12f,Mathf.Min(194f,ih*.49f));
+                if(engendroPortrait)
+                {
+                    var figureRect=engendroPortrait.transform.parent as RectTransform;
+                    if(figureRect)TL(figureRect,
+                        figureX,58f,figureW,Mathf.Min(205f,ih*.52f));
+                }
+                float buttonTop=ih-68f;
+                TL((RectTransform)claimXp.transform,14f,buttonTop,
+                    iw*.46f,64f);
+                TL((RectTransform)mainAction.transform,iw*.52f,buttonTop,
+                    iw*.45f,64f);
+            }
             // The approved quest-board cards occupy the actual manuscript,
             // not three tiny 95-point rows floating at the top of a phone.
             // Scale all three naturally with their destination's usable height.
@@ -983,8 +1263,13 @@ namespace Eldoria.UI.RoyalGold.V2
                     TL(cell,14f+i*(cardW+gap),8f,cardW,cardH);
                     float inset=20f;
                     TL(scoutTitles[i].rectTransform,inset,44f,cardW-40f,62f);
+                    float paintingHeight=Mathf.Max(54f,cardH*.28f);
                     TL((RectTransform)scoutThumbnails[i].transform,
-                        inset,118f,cardW-40f,Mathf.Max(54f,cardH*.28f));
+                        inset,118f,cardW-40f,paintingHeight);
+                    TL(scoutInsetUnder[i].rectTransform,
+                        inset-7f,111f,cardW-26f,paintingHeight+14f);
+                    TL(scoutInsetLip[i].rectTransform,
+                        inset,118f,cardW-40f,paintingHeight);
                     float actionTop=cardH-(compactLandscape?83f:61f);
                     float descriptionTop=128f+cardH*.28f;
                     TL(scoutCards[i].rectTransform,inset,descriptionTop,cardW-40f,
@@ -1007,6 +1292,10 @@ namespace Eldoria.UI.RoyalGold.V2
                     float imageW=portrait?128f:70f;
                     float imageH=portrait?98f:50f;
                     TL(scoutThumbnails[i].rectTransform,32f,detailTop,imageW,imageH);
+                    TL(scoutInsetUnder[i].rectTransform,
+                        26f,detailTop-6f,imageW+12f,imageH+12f);
+                    TL(scoutInsetLip[i].rectTransform,
+                        32f,detailTop,imageW,imageH);
                     float captionX=32f+imageW+18f;
                     float buttonW=portrait?158f:120f;
                     float contentWidth=Mathf.Max(75f,cellW-captionX-buttonW-34f);
@@ -1043,7 +1332,6 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 var source=vig?paintedVigilants:paintedScouts;
                 paintedScene.enabled=source!=null;
-                if(source && paintedScene.texture!=source)paintedScene.texture=source;
                 if(source)
                 {
                     // Cover the changing portrait/landscape panel without
@@ -1058,7 +1346,43 @@ namespace Eldoria.UI.RoyalGold.V2
                             panelRatio/pictureRatio,1f);
                 }
             }
+            if(vigilantsParallax)
+            {
+                bool hasApprovedScene=vig && paintedVigilants!=null;
+                vigilantsParallax.gameObject.SetActive(hasApprovedScene);
+                if(hasApprovedScene)
+                    vigilantsParallax.Configure(paintedVigilants,paintedScene.uvRect);
+                if(nearTerrain)
+                {
+                    nearTerrain.gameObject.SetActive(hasApprovedScene);
+                    if(hasApprovedScene)
+                        nearTerrain.Configure(paintedVigilants,paintedScene.uvRect);
+                }
+                if(landscapeLight)
+                    landscapeLight.gameObject.SetActive(hasApprovedScene);
+                if(pathFoundation)
+                    pathFoundation.gameObject.SetActive(hasApprovedScene);
+            }
+            // Only after the six independent artist-authored source masses
+            // have materialized may the original complete image disappear.
+            // This removes the repeated/photographic single image underneath
+            // all cutouts. The original texture is still the immutable
+            // reference for UV placement, progression and fallback.
+            if(paintedScene)
+            {
+                bool b11=vig && paintedVigilantsClean &&
+                    vigilantsParallax && vigilantsParallax.HasStructuralB11;
+                var shown=b11 ? paintedVigilantsClean :
+                    vig ? paintedVigilants : paintedScouts;
+                if(paintedScene.texture!=shown)paintedScene.texture=shown;
+            }
+            if(!vig && engendroPortrait)
+                engendroPortrait.transform.parent.gameObject.SetActive(false);
+            if(!vig && guardianRelief)guardianRelief.gameObject.SetActive(false);
+            if(!vig && guardianPainted)guardianPainted.gameObject.SetActive(false);
             chapterTrail.gameObject.SetActive(vig);
+            if(!vig && paintedScene is RoyalGoldV3VigilantsLivingLandscape inactive)
+                inactive.SetLivingScene(false,null,p.LastClearedStage);
             discoverySeals.DiscoveredMask=p.ScoutDiscoveryMask&15;
             discoverySeals.gameObject.SetActive(!vig&&discoverySeals.DiscoveredMask!=0);
             discoverySeals.SetVerticesDirty();
@@ -1104,6 +1428,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 (narrow?"MESA DE EXPLORADORES · ENCARGOS":
                 "Envía a tus exploradores y descubre nuevas tierras"));
             introduction.gameObject.SetActive(false);
+            scoutStrategyButton.gameObject.SetActive(true);
+            if(vig)
+            {
+                bool marchReady=s.BastionLevel>=2 && s.BarracksLevel>=1;
+                scoutStrategyButton.gameObject.SetActive(marchReady);
+                scoutStrategyLabel.Put("FORMAR\nMARCHA");
+                scoutStrategyButton.interactable=marchReady;
+            }
+            else
+            {
+                scoutStrategyLabel.Put(scoutStrategyMode==1?"RUTA\nSIGILO":
+                    scoutStrategyMode==2?"RUTA\nRÁPIDA":"RUTA\nNORMAL");
+                scoutStrategyButton.interactable=true;
+            }
             // The board reserves a 57 px header; show its actual section title
             // instead of leaving a dead band above the three illustrated cards.
             chapter.gameObject.SetActive(vig);
@@ -1126,7 +1464,26 @@ namespace Eldoria.UI.RoyalGold.V2
                 var info=EarlyRetentionRules.Stage(Math.Min(stage,10000));
                 bool boss=info.Step%5==0;
                 bool showEngendro=info.Step==15 && engendroTexture!=null;
-                bool showEncounterArt=showEngendro||scoutVignettes!=null;
+                // No ordinary encounter can insert a second painted
+                // landscape. Both Engendro and four distinct guardians are
+                // integrated into the SAME tactile royal encounter bay.
+                bool showEncounterArt=showEngendro;
+                Texture2D paintedBoss=info.Step==5?guardianArt[0]:
+                    info.Step==10?guardianArt[1]:
+                    info.Step==20?guardianArt[2]:
+                    info.Step==25?guardianArt[3]:null;
+                if(guardianRelief)
+                {
+                    guardianRelief.SetStage(info.Step);
+                    guardianRelief.SetBreach(showEngendro);
+                    guardianRelief.UsePaintedFigure(paintedBoss!=null||showEngendro);
+                    guardianRelief.gameObject.SetActive(true);
+                }
+                if(guardianPainted)
+                {
+                    guardianPainted.texture=paintedBoss;
+                    guardianPainted.gameObject.SetActive(!showEngendro && paintedBoss!=null);
+                }
                 if(showEncounterArt!=encounterPortraitVisible)
                 {
                     encounterPortraitVisible=showEncounterArt;
@@ -1139,41 +1496,37 @@ namespace Eldoria.UI.RoyalGold.V2
                     // illustration too; never present an empty adversary card.
                     engendroPortrait.texture=showEngendro?engendroTexture:scoutVignettes;
                     engendroPortrait.uvRect=showEngendro?new Rect(0,0,1,1):new Rect(.01f,.51f,.48f,.48f);
+                    var painterlyPortrait=engendroPortrait as RoyalGoldV3VigilantsPortraitGraphic;
+                    if(painterlyPortrait)painterlyPortrait.Configure(showEngendro);
+                    // Ordinary authored patrol art dissolves into the same
+                    // environment; the authentic transparent Engendro keeps
+                    // its exact original colour and silhouette.
+                    engendroPortrait.color=showEngendro?Color.white:
+                        new Color(.90f,.96f,.89f,.63f);
                 }
+                if(enemyGroundBack)enemyGroundBack.Configure(showEngendro,boss);
+                if(enemyGroundFront)enemyGroundFront.Configure(showEngendro,boss);
                 chapterTrail.rectTransform.anchorMin=Vector2.zero;
                 chapterTrail.rectTransform.anchorMax=Vector2.one;
                 chapterTrail.rectTransform.offsetMin=new Vector2(5,5);
                 chapterTrail.rectTransform.offsetMax=new Vector2(-5,-5);
                 chapterTrail.ArtworkUv=paintedScene.uvRect;
                 chapterTrail.SetVerticesDirty();
-                // All milestones now occupy the painted road. The encounter
-                // card sits below the scene, so neither creature nor text hides it.
-                if(showEncounterArt)
+                if(paintedScene is RoyalGoldV3VigilantsLivingLandscape living)
+                    living.SetLivingScene(true,chapterTrail,p.LastClearedStage);
+                if(pathFoundation && pathFoundation.gameObject.activeSelf)
+                    pathFoundation.BindRealRoad(chapterTrail,p.LastClearedStage);
+                if(landscapeLight && landscapeLight.gameObject.activeSelf)
                 {
-                    bool portrait=height>width;
-                    var frame=engendroPortrait.transform.parent as RectTransform;
-                    bool fullEncounter=portrait||!compactLandscape;
-                    float boxWidth=infoCard.rect.width*(fullEncounter?.49f:.29f);
-                    float boxHeight=fullEncounter?360f:Mathf.Min(infoCard.rect.height*.44f,180f);
-                    float artAspect=engendroTexture?engendroUvRect.width*engendroTexture.width/
-                        Mathf.Max(1f,engendroUvRect.height*engendroTexture.height):1f;
-                    float cw=boxWidth,ch=boxHeight;
-                    if((cw-8f)/(ch-8f)>artAspect)cw=(ch-8f)*artAspect+8f;
-                    else ch=(cw-8f)/artAspect+8f;
-                    TL(frame,12f+(boxWidth-cw)*.5f,fullEncounter?64f:54f,cw,ch);
-                    float textX=infoCard.rect.width*(fullEncounter?.51f:.34f);
-                    float textW=infoCard.rect.width-textX-16f;
-                    TL(opponent.rectTransform,textX,fullEncounter?62f:54f,textW,fullEncounter?110f:64f);
-                    TL(formation.rectTransform,textX,fullEncounter?178f:108f,textW,fullEncounter?66f:28f);
-                    TL(reward.rectTransform,textX,fullEncounter?252f:144f,textW,fullEncounter?64f:52f);
-                    if(fullEncounter)
-                    {
-                        opponent.fontSize=30;
-                        TL(passive.rectTransform,textX,328f,textW,104f);
-                    }
-                    else if(compactLandscape)
-                        TL(passive.rectTransform,textX,202f,textW,78f);
+                    int liveLightStep=p.LastClearedStage%25+1;
+                    var road=chapterTrail.StagePosition(liveLightStep);
+                    var scenePoint=landscapeLight.transform.InverseTransformPoint(
+                        chapterTrail.transform.TransformPoint(road));
+                    landscapeLight.SetState(paintedScene.uvRect,p.LastClearedStage,
+                        liveLightStep,new Vector2(scenePoint.x,scenePoint.y));
                 }
+                // The actual stage road now lights its next real checkpoint
+                // in-place; the encounter remains in its original royal card.
                 // Update labels only AFTER the Engendro-relative trail
                 // anchors are chosen. Otherwise the captured stage-15 numbers
                 // can retain coordinates from a different panel size.
@@ -1244,12 +1597,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 string heroName=selectedHero=="lyra"?"Lyra":
                     selectedHero=="aldric+lyra"?"Aldric + Lyra":"Aldric";
                 formation.Put(heroName+" · "+selectedTroops.Total+"/"+capacity+
-                    " tropas · Poder "+marchStats.Power);
+                    " tropas\nPoder "+marchStats.Power);
                 reward.Put("Al vencer: "+(30+stage*2)+" madera · "+(10+stage)+
                     " piedra · "+(20+stage/5*3)+" XP");
                 int xp=EarlyRetentionRules.UnclaimedIdleXp(p,now());
-                string xpSummary=showEncounterArt&&(height>width||compactLandscape)
-                    ?"EXP. "+xp+" XP · Máx. 8 h\n":"EXP. ACUMULADA: "+xp+" XP / máximo 8 h\n";
+                // Preserve true XP and cap while guaranteeing the original
+                // mobile font never shrinks below 12 physical pixels.
+                string xpSummary="EXP. "+xp+" XP · Máx. 8 h\n";
                 passive.Put(xpSummary+
                     "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+
                     " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"));
@@ -1332,6 +1686,12 @@ namespace Eldoria.UI.RoyalGold.V2
                     {
                         bool completed=order.StartedUtcTicks>0&&order.EndsUtcTicks<=now();
                         bool underway=order.StartedUtcTicks>0&&!completed;
+                        // All three layers inherit the genuine persisted
+                        // order's kind and state. No fake or derived missions.
+                        scoutContact[i]?.SetLiveState(order.Kind,underway,completed);
+                        scoutBevel[i]?.SetLiveState(order.Kind,underway,completed);
+                        scoutInsetUnder[i]?.SetLiveState(order.Kind,underway,completed);
+                        scoutInsetLip[i]?.SetLiveState(order.Kind,underway,completed);
                         if(scoutArt[i].Kind!=order.Kind||
                            scoutArt[i].Completed!=completed||
                            scoutArt[i].InProgress!=underway)
@@ -1342,14 +1702,24 @@ namespace Eldoria.UI.RoyalGold.V2
                             scoutArt[i].SetVerticesDirty();
                         }
                     }
-                    string state=order.StartedUtcTicks==0?"Disponible · "+
-                        TimeSpan.FromSeconds(EarlyRetentionRules.ScoutDurationSeconds(order.Kind)).ToString(@"mm\:ss"):
+                    int route=order.StartedUtcTicks==0?scoutStrategyMode:order.StrategyMode;
+                    int required=EarlyRetentionRules.ScoutTroopsForStrategy(route);
+                    int capacity=MarchCapacityRules.Capacity(s,"aldric");
+                    var party=MarchCapacityRules.AutoSelect(s.Available,Math.Min(required,capacity));
+                    int displayedTroops=route==0?party.Total:required;
+                    string state=order.StartedUtcTicks==0?
+                        displayedTroops+" tropas · "+
+                        TimeSpan.FromSeconds(EarlyRetentionRules.ScoutDurationSeconds(order.Kind,route)).ToString(@"mm\:ss"):
                         order.EndsUtcTicks<=now()?"Listo para reclamar":
                         "Regreso en "+TimeSpan.FromTicks(order.EndsUtcTicks-now()).ToString(@"hh\:mm\:ss");
                     scoutTitles[i].Put(EarlyRetentionRules.ScoutTitle(order.Kind));
                     t.Put(EarlyRetentionRules.ScoutRewardText(order.Kind)+"\n"+state);
-                    a.interactable=order.StartedUtcTicks==0||order.EndsUtcTicks<=now();
-                    label.Put(order.StartedUtcTicks==0?"Enviar":
+                    bool hasParty=MarchCapacityRules.Fits(party,s.Available,capacity)&&
+                        (route==0||party.Total>=required);
+                    bool hasSlot=MarchCapacityRules.CanStart(s,now());
+                    a.interactable=order.StartedUtcTicks==0?hasParty&&hasSlot:
+                        order.EndsUtcTicks<=now();
+                    label.Put(order.StartedUtcTicks==0?(!hasSlot?"Marchas ocupadas":hasParty?"Enviar":"Sin tropas"):
                         order.EndsUtcTicks<=now()?"Recoger":"En camino");
                 }
                 long due=EarlyRetentionRules.NextPeriodUtcTicks(now());

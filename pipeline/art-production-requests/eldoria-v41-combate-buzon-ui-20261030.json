@@ -22,7 +22,19 @@
   },
   "validation": {
     "source_gate": "Four original SHA256 hashes verified by tools/eldoria-v41/verify_art_references.py; derivative regions and hashes in Resources/EldoriaV41/provenance.json.",
-    "final_gate": "Matched actual Unity screenshots and owner-approved composition, live controls, real save/reload, three marches and regression; no ART_APPROVED from functional checks."
+    "final_gate": "Matched actual Unity screenshots and owner-approved composition, live controls, real save/reload, three marches and regression; no ART_APPROVED from functional checks.",
+    "hero_portrait_source": {
+      "source": "docs/heroes-ui/REFERENCIA_MAESTRA_APROBADA.png",
+      "sha256": "48cbc4e73d4144c45af12731773f0fd60b45e81d2a871256b33fe2a00f7d6800",
+      "runtime_copy": "Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png",
+      "lyra_text_free_crop_top_left": [
+        1224,
+        662,
+        148,
+        180
+      ],
+      "policy": "Exact approved source copy; only the text-free portrait is rendered by native hero and march controls. No new artwork or visual approval."
+    }
   },
   "art_approved": false,
   "physical_mobile_tested": false,
