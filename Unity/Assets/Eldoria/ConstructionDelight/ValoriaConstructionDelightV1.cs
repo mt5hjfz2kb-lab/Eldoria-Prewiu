@@ -364,9 +364,7 @@ namespace Eldoria.ReferenceClean
                 // Canonical City state has already enabled the real scaffolding.
                 // Bounds of visible geometry are much tighter than the large
                 // invisible touch-target collider used for selecting the parcel.
-                GameObject scaffold=id=="sawmill" ? parcels.LeftConstruction :
-                                    id=="barracks" ? parcels.RightConstruction : null;
-                if(VisibleBounds(scaffold,out bounds))return true;
+                if(VisibleBounds(WorksiteModel(id),out bounds))return true;
                 // During an upgrade, the built structure remains visible.
                 if(ModelBounds(id,out bounds))return true;
             }
@@ -410,12 +408,17 @@ namespace Eldoria.ReferenceClean
             // from the same real scene, never a placeholder world position.
             if(parcels)
             {
-                GameObject construction=id=="sawmill" ? parcels.LeftConstruction :
-                                        id=="barracks" ? parcels.RightConstruction : null;
                 GameObject ground=id=="sawmill" ? parcels.LeftGround :
                                   id=="barracks" ? parcels.RightGround : null;
-                if(VisibleBounds(construction,out bounds) ||
-                   VisibleBounds(ground,out bounds)) return true;
+                if(!ground && parcels.Bindings!=null)
+                    foreach(var binding in parcels.Bindings)
+                        if(binding!=null && binding.BuildingId==id && binding.Ground)
+                        {
+                            ground=binding.Ground;
+                            break;
+                        }
+                if(VisibleBounds(WorksiteModel(id),out bounds) ||
+                   VisibleBounds(ground,out bounds))return true;
             }
             return ModelBounds(id,out bounds);
         }
