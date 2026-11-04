@@ -37,6 +37,7 @@ await test('incomplete run',f=>f.run.status='in_progress',false);
 await test('failed run',f=>f.run.conclusion='failure',false);
 await test('native job absent',f=>f.jobs=[],false);
 await test('reused/skipped native job',f=>f.jobs[0].conclusion='skipped',false);
+await test('missing exact compiled commit identity guard',f=>f.jobs[0].steps=f.jobs[0].steps.filter(s=>s.name!=='Verify exact requested commit before any native execution'),false);
 await test('missing PlayMode',f=>f.jobs[0].steps=f.jobs[0].steps.filter(s=>!s.name.startsWith('PlayMode')),false);
 await test('skipped player build',f=>f.jobs[0].steps.find(s=>s.name.startsWith('Compile canonical playable')).conclusion='skipped',false);
 await test('performance not executed',f=>f.jobs[0].steps.find(s=>s.name.startsWith('Compare reconciled')).conclusion='skipped',false);
@@ -49,3 +50,8 @@ await test('foreign repository',f=>f.context.payload.pull_request.head.repo.full
 console.log(count+' exact-certificate positive/negative checks PASS');
 
 assert.equal((workflow.match(/name: eldoria-(?:pr136-performance|pr136-candidate|ui-progression-cert|aldric-shared-native)-\$\{\{ github.event.pull_request.head.sha \|\| github.sha \}\}/g)||[]).length,4,'All source-bound artifacts use the exact checked-out head, not the synthetic PR merge SHA');
+
+const nativeJob=workflow.slice(workflow.indexOf('  certify:\n'));
+assert.ok(nativeJob.includes('ref: ${{ github.event.pull_request.head.sha || github.sha }}\n          clean: false'),'Native checkout pins the requested PR head');
+assert.ok(!nativeJob.includes('$env:GITHUB_SHA'),'Native source recovery never switches back to the synthetic merge SHA');
+assert.ok(nativeJob.indexOf('Verify exact requested commit before any native execution')<nativeJob.indexOf('Compile the exact Unity candidate before preparing unchanged art resources'),'Exact identity is checked before Unity starts');
