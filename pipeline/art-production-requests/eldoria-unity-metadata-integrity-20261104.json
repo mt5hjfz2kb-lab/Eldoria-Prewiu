@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "enabled": true,
-  "status": "ACTIVE",
+  "enabled": false,
+  "status": "COMPLETED",
   "workstream_id": "eldoria-unity-metadata-integrity-20261104",
   "request_id": "eldoria-unity-metadata-integrity-20261104",
   "asset_or_sector": "Original metadata preservation and byte-identical archival of expressly owner-rejected legacy source outside Unity",
@@ -30,5 +30,11 @@
   "art_approved": false,
   "unity_visual_acceptance": "NOT_REQUESTED_NO_NEW_ART",
   "physical_mobile_tested": false,
-  "notes": "Archive enforces existing 25Oct owner veto/preservation instruction and removes the last unrecoverable folder obligation. Full proof pending corrected checkout bytes/scene probes."
+  "notes": "PR153 merged in 91419eadbb1b7c678e249438f0b449cbd7dec0bd. Native41844806444 PASS: 345 original metadata identities/bytes before and after tests, 57 EditMode and 73 PlayMode, zero failures/skips/unexpected tracked changes. Existing serialization side effects are not committed. No art approval or publication.",
+  "completion": {
+    "native_run": 41844806444,
+    "merge_sha": "91419eadbb1b7c678e249438f0b449cbd7dec0bd",
+    "art_approved": false,
+    "published": false
+  }
 }
