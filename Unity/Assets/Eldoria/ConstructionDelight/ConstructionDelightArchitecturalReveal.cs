@@ -182,7 +182,7 @@ namespace Eldoria.ReferenceClean
             bool drawSurfaces=true;
             if(finishing)
             {
-                float progress=Mathf.Clamp01((t-.08f)/1.20f);
+                float progress=Mathf.Clamp01((t-.03f)/.84f);
                 float sweep=Mathf.Lerp(-.18f,1.20f,Mathf.SmoothStep(0f,1f,progress));
                 float rise=Mathf.SmoothStep(0f,1f,Mathf.Clamp01(t/.32f));
                 float fade=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((FinishSeconds-t)/.52f));
