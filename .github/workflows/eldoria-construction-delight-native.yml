@@ -132,6 +132,38 @@ jobs:
           Write-Host "DELIGHT_SESSION_DIAGNOSTIC hub_in_interactive_desktop=$($hubInInteractive.Count -gt 0)"
           Write-Host 'No usernames, passwords, license contents, account/session tokens, process mutations or system restart'
 
+      - name: Read only installed Unity CLI signed-in and license status
+        if: ${{ contains(github.event.head_commit.message, '[delight-cli-status]') }}
+        shell: powershell
+        run: |
+          # This step never prints usernames, emails, license identifiers or raw CLI output.
+          # Unity CLI is optional; absence is a legitimate diagnostic result.
+          $cli=Get-Command 'unity' -ErrorAction SilentlyContinue
+          if(-not $cli -or -not $cli.Source){
+            Write-Host 'DELIGHT_CLI_STATUS installed=false'
+            exit 0
+          }
+          if($cli.Source -match '(?i)\\Editor\\Unity.exe$'){
+            Write-Host 'DELIGHT_CLI_STATUS installed=false reason=editor_command_not_cli'
+            exit 0
+          }
+          Write-Host 'DELIGHT_CLI_STATUS installed=true'
+          $env:UNITY_NO_CLI_INVOKED_TELEMETRY='1'
+          foreach($item in @(@('auth','status'),@('license','status'))){
+            $mode=$item[0]
+            $result=''
+            $exit=-1
+            try{
+              $output=& $cli.Source $item[0] $item[1] --format json --non-interactive 2>&1
+              $exit=$LASTEXITCODE
+              $result=$output|Out-String
+            }catch{$exit=-1}
+            $looksSignedOut=($result -match 'NOT_SIGNED_IN|SESSION_EXPIRED|signedIn["'': ]+false')
+            $looksNoLicense=($result -match 'LICENSE_NOT_ACTIVE|No active license|active["'': ]+false')
+            Write-Host "DELIGHT_CLI_STATUS mode=$mode exit=$exit signed_out=$looksSignedOut no_license=$looksNoLicense"
+          }
+          Write-Host 'READ_ONLY_RESULT no secrets, session tokens, usernames or license data exported'
+
   native-art:
     if: ${{ !contains(github.event.head_commit.message, '[delight-license-diagnostic]') }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
