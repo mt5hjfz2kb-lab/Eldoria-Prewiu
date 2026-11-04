@@ -1,0 +1,56 @@
+name: Unity metadata integrity (no Editor)
+on:
+  pull_request:
+    paths:
+      - 'Unity/Assets/**'
+      - 'Unity/.gitignore'
+      - 'tools/unity-metadata/**'
+      - '.github/workflows/unity-metadata-integrity.yml'
+  push:
+    branches: [main, 'fix/unity-metadata-integrity-20261104']
+    paths:
+      - 'Unity/Assets/**'
+      - 'Unity/.gitignore'
+      - 'tools/unity-metadata/**'
+      - '.github/workflows/unity-metadata-integrity.yml'
+permissions:
+  contents: read
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.gitignore
+            /tools/unity-metadata/
+            /Unity/.gitignore
+            /Unity/**/*.meta
+            /docs/evidence/unity-metadata-20261104/recovery-manifest.json
+      - name: Reject new missing metadata, malformed GUIDs and duplicate identities
+        run: python3 tools/unity-metadata/audit.py --archive-manifest docs/evidence/unity-metadata-20261104/recovery-manifest.json
+      - name: Exercise recovery and integrity behavior
+        run: python3 -m unittest discover -s tools/unity-metadata -p 'test_*.py' -v
+      - name: Parse native validation PowerShell without launching Unity
+        shell: pwsh
+        run: |
+          $tokens=$null
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            (Join-Path $pwd 'tools/unity-metadata/native_validate.ps1'),
+            [ref]$tokens,[ref]$errors) | Out-Null
+          if($errors.Count -gt 0){ $errors | Format-List; throw 'Native validation syntax invalid' }
+      - name: Verify test save identity isolation and exact settings restoration
+        shell: pwsh
+        run: ./tools/unity-metadata/test_native_settings.ps1
+      - name: Verify complete native fixtures, zero skips and exact test assembly source
+        shell: pwsh
+        run: ./tools/unity-metadata/test_native_test_contract.ps1
+      - name: Verify redirected native process exit codes and retained handles
+        shell: pwsh
+        run: ./tools/unity-metadata/test_native_process.ps1
+      - name: Verify exact baseline serialization limits and protect recovered identities
+        shell: pwsh
+        run: ./tools/unity-metadata/test_native_tracked_state.ps1

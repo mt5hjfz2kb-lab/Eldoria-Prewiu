@@ -1,0 +1,117 @@
+{
+  "attempts": [
+    {
+      "run": 41814006124,
+      "candidate": "6b9ff55aafe4296b6d9973008cbcfe2c09f3d397",
+      "status": "FAILED_BEFORE_COMPILATION",
+      "cause": "Unity Package Manager could not find git executable; using an absolute Git path in the parent script did not expose Git to Unity child processes.",
+      "fix": "Prepend existing Git executable directory to inherited PATH before launching Unity.",
+      "artifact": 13313179486,
+      "artifact_zip_sha256": "101868f79c2f7d4f72dd08624ca7bf93724de4439c658e440b80f82dd75e9b4a",
+      "asset_or_metadata_failure_proven": false
+    },
+    {
+      "run": 41816079304,
+      "candidate": "6c02784fc6fca56e8fdf54edd78e25a77c9cff3e",
+      "status": "STOPPED_BEFORE_EDITOR",
+      "cause": "Optional prior-run object cache unavailable: GitHub runner clears RUNNER_TEMP between jobs.",
+      "fix": "Remove source_seed_run_id from the next request; use a new canonical clone. No third-party workspace or project touched.",
+      "asset_or_metadata_failure_proven": false
+    },
+    {
+      "run": 41816327312,
+      "candidate": "6c02784fc6fca56e8fdf54edd78e25a77c9cff3e",
+      "status": "COMPILED_GUIDS_MATCH_BUT_VALIDATION_FAILED",
+      "artifact": 13315313760,
+      "artifact_zip_sha256": "0b2168dc362d00cef12c9414720b971e93bf736d26266d5ee6824c2de937f1e2",
+      "native_guid_matches": 345,
+      "restored_entries": 345,
+      "raw_hash_failures": 345,
+      "scene_load_probe_failures": 11,
+      "enabled_scene_missing_scripts": 0,
+      "enabled_scenes_opened": 1,
+      "editmode_playmode_run": false,
+      "diagnosis": "No pre-import raw-byte checkpoint existed, so the original report cannot attribute byte differences to Unity. Reproduction proves text=auto plus native/CRLF core.eol changes checkout bytes even when autocrlf=false. Eleven scenes were incorrectly checked as sub-asset arrays; use documented typed SceneAsset loading.",
+      "fix": "Pin core.eol=lf before checkout; verify all original SHA256 before launching Unity; capture any genuine later byte differences; load SceneAsset by type; separate identities-only proof from full scene/runtime validation."
+    },
+    {
+      "run": 41821882671,
+      "candidate": "ae663ca494ea7d62eb4416b04eecf5cc38d0e266",
+      "status": "IDENTITIES_AND_EDITMODE_PASS_PLAYMODE_FAILED_FIXTURE_PREPARATION",
+      "artifact": 13319371112,
+      "artifact_zip_sha256": "2f69cf5f018c2ccba6bc3f033d33e3bffdde5f91be26ec58b7961c614b1e2c4a",
+      "metadata_identity_result": "345/345 GUID and raw-byte matches, before/after import; enabled scene missing scripts=0",
+      "editmode": {
+        "passed": 57,
+        "failed": 0,
+        "skipped": 0
+      },
+      "playmode": {
+        "passed": 40,
+        "failed": 24,
+        "skipped": 9
+      },
+      "observed_causes": {
+        "missing_disposable_probe_and_capture_fixture": true,
+        "canonical_bastion_iii_preparation_omitted": true,
+        "missing_art_log_failures": 23
+      },
+      "fix": "Replay exact existing unity-slice.yml canonical author-frontier and BastionIIIArtBake preparation in isolated project; enable disposable fixture and capture output; require 61+ PlayMode cases with no skips and exact assembly source. Do not silence logs or alter gameplay assertions.",
+      "runtime_or_art_source_changed": false
+    },
+    {
+      "run": 41827869628,
+      "candidate": "3354c44a5956d541e5f18715c9824835eb728591",
+      "status": "PRE_IMPORT_HASHES_PASS_FRONTIER_EXPORT_LOG_SUCCESS_LAUNCHER_REJECTED_EXIT",
+      "artifact": 13322025499,
+      "artifact_zip_sha256": "48a8760ea8b7834376dc3debe629c2b0574e89500bbd59a0f5eb653b13fa1a88",
+      "pre_import_metadata_exact": 345,
+      "actual_log": "Blender5.2.2 emitted completed glTF export, saved PrivateFissure.blend, BASTION_III_IRREGULAR_SOIL_FISSURE_EXPORTED and Blender quit; stderr contained only a deprecation warning.",
+      "uncertainty": "The old launcher did not print its observed exit code, so a true nonzero exit cannot be distinguished from missing ExitCode in that artifact.",
+      "primary_documented_matching_issue": "https://github.com/PowerShell/PowerShell/issues/5421",
+      "fix": "Cache the Windows process handle before waiting; reject null codes explicitly; record actual exit code. Real redirected child exit0 and exit7 contract tests run in CI and on Windows BEFORE cloning/Unity. Do not infer success from export marker alone."
+    },
+    {
+      "run": 41832431346,
+      "candidate": "fecab45b15ad62d766d8f97b9bccda6abb68c885",
+      "status": "ALL_METADATA_AND_TESTS_PASS_EXISTING_BASELINE_SERIALIZATION_CHECK_FAILED",
+      "artifact": 13327216247,
+      "artifact_zip_sha256": "f4d43e62475a8dc922ef616fbf7bceccaa3dd0b1e481873c309eaa0ff469897d",
+      "metadata_originals_passed": 345,
+      "editmode_passed": 57,
+      "playmode_passed": 73,
+      "failed_or_skipped_cases": 0,
+      "baseline_serializations": 61,
+      "recovered_entries_changed": 0,
+      "fix": "Require exact source and observed Git blobs for only these 61 known baseline paths; all new paths, differing source/output blobs and every recovery overlap remain rejected. Rerun full native certificate."
+    },
+    {
+      "run": 41839002020,
+      "candidate": "2a6dacddc08a1e56c4e57ba87b2df80d000010b2",
+      "status": "345_ORIGINALS_AND_130_TESTS_PASS_VENDOR_GENERATED_LIGHTING_GUID_DIFFERS",
+      "artifact": 13330272205,
+      "artifact_zip_sha256": "ae0cf76f4aae26adb4e144b0e2e92b2d85c828cecbeb3c1cf40dc6f5cea9b692",
+      "comparison": "60 of 61 tracked side effects byte-identical to prior run; only Demo.unity differs, solely 29 bytes within one generated LightingSettings GUID. Both normalized scenes have SHA256 21846a699bb16441b6baaafc8a789f6fbb0df27d50969eee4df4f795ea5ce9f8. Import log confirms DemoSettings.lighting generated with that GUID.",
+      "fix": "Require exact normalized demo bytes plus generated LightingSettings file and matching metadata GUID. All other paths retain exact source/output blobs."
+    },
+    {
+      "run": 41844806444,
+      "candidate": "aae457d6a203fe19a7e74f88fdc14b3d6ec2d948",
+      "status": "FULL_NATIVE_PASS",
+      "artifact": 13334186188,
+      "artifact_zip_sha256": "94aa33bba2ab7ff4677413fd30ce49e981c952bc71ce2ec263711878eaac3779",
+      "original_metadata_before_and_after_tests": 345,
+      "editmode_passed": 57,
+      "playmode_passed": 73,
+      "failed_or_skipped": 0,
+      "unexpected_tracked_changes": 0,
+      "existing_baseline_serializations": 61
+    }
+  ],
+  "checkout_checks": {
+    "autocrlf_true_then_first_checkout_false": "PASS, metadata LF bytes preserved",
+    "partial_clone_local_clone": "FAILED in disposable reproduction, approach rejected before native dispatch",
+    "canonical_clone_seed_immutable_pack_objects": "Disposable local proof passed, but NOT usable across native jobs: runner cleanup removes the source cache. Abandoned for this environment."
+  },
+  "next_mode": "Native proof complete; integrate and verify main, then release temporary claims"
+}

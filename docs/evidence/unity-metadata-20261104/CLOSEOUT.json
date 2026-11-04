@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "workstream_id": "eldoria-unity-metadata-integrity-20261104",
+  "scope": "Repository organization and original Unity metadata integrity recovery",
+  "pull_request": 153,
+  "merge_commit": "91419eadbb1b7c678e249438f0b449cbd7dec0bd",
+  "certified_unity_tree": "de254f892ae05109d813af82366d63ea808747d8",
+  "native_certificate": {
+    "run": 41844806444,
+    "result": "success",
+    "restored_original_guid_and_bytes": 345,
+    "editmode_passed": 57,
+    "playmode_passed": 73,
+    "failed": 0,
+    "skipped": 0,
+    "unexpected_tracked_changes": 0,
+    "pristine_checkout": false,
+    "reviewed_preexisting_serialization_side_effects": 61,
+    "evidence": "CERTIFICATE_41844806444.json"
+  },
+  "post_merge": {
+    "unity_run": 41850579988,
+    "result": "success",
+    "editmode_passed": 57,
+    "playmode_passed": 73,
+    "failed": 0,
+    "skipped": 0,
+    "source_identity_verified": true,
+    "windows_build": "success",
+    "native_test_artifact": {
+      "id": 13338402986,
+      "zip_sha256": "e57daddf4272fdf81f1e4ace37e08f90fe1837acf2128c4fc9c60a01a31b0330",
+      "zip_download_hash_and_xml_verified": true
+    },
+    "artifacts": [
+      {
+        "id": 13338402986,
+        "name": "eldoria-native-test-evidence-41850579988",
+        "digest": "sha256:e57daddf4272fdf81f1e4ace37e08f90fe1837acf2128c4fc9c60a01a31b0330",
+        "size_in_bytes": 62276
+      },
+      {
+        "id": 13337853348,
+        "name": "eldoria-valoria-captures-91419eadbb1b7c678e249438f0b449cbd7dec0bd",
+        "digest": "sha256:913c599867f012d81175a36844ae8029ec01d11a71d86f040aac04395b6d2784",
+        "size_in_bytes": 14915629
+      },
+      {
+        "id": 13337699419,
+        "name": "eldoria-unity-checks-91419eadbb1b7c678e249438f0b449cbd7dec0bd",
+        "digest": "sha256:58c3a7d6c46ed51e6c3d9177db1e432b2eed3b7caa978371426a4f0d3a489f6c",
+        "size_in_bytes": 1493149346
+      }
+    ],
+    "ui_run": 41850579678,
+    "ui_result": "in_progress",
+    "world_map_run": 41850580060,
+    "world_map_result": "success",
+    "static_checks": [
+      {
+        "id": 41850579640,
+        "name": "Repository architecture guard",
+        "result": "success"
+      },
+      {
+        "id": 41850579923,
+        "name": "Workflow quarantine guard",
+        "result": "success"
+      },
+      {
+        "id": 41850579958,
+        "name": "Art production governance",
+        "result": "success"
+      },
+      {
+        "id": 41850579628,
+        "name": "Workflow governance",
+        "result": "success"
+      },
+      {
+        "id": 41850579788,
+        "name": "Eldoria Asset Vault - Automatic 3D Discovery",
+        "result": "success"
+      },
+      {
+        "id": 41850579550,
+        "name": "Unity metadata integrity (no Editor)",
+        "result": "success"
+      },
+      {
+        "id": 41850579858,
+        "name": "Eldoria art production planner",
+        "result": "success"
+      }
+    ],
+    "ui_technical_result": "PASS",
+    "ui_editmode_passed": 57,
+    "ui_playmode_passed": 73,
+    "ui_failed": 0,
+    "ui_skipped": 0,
+    "ui_source_identity_verified": true,
+    "ui_actual_views": 12,
+    "ui_shared_artifact": {
+      "id": 13340850681,
+      "zip_sha256": "810c2ee10a2e4308d6a9334b0bd3a81fa4be52530e8d8c85322b62378c06c6cd",
+      "zip_hash_identity_xml_and_image_count_verified": true
+    },
+    "ui_retention_extra_probe": "SKIPPED_BY_EXISTING_WORKFLOW_NOT_CLAIMED_AS_PASS",
+    "ui_artifacts": [
+      {
+        "id": 13340850681,
+        "name": "eldoria-aldric-shared-native-91419eadbb1b7c678e249438f0b449cbd7dec0bd",
+        "digest": "sha256:810c2ee10a2e4308d6a9334b0bd3a81fa4be52530e8d8c85322b62378c06c6cd",
+        "size_in_bytes": 14597919
+      },
+      {
+        "id": 13340087015,
+        "name": "eldoria-ui-progression-cert-91419eadbb1b7c678e249438f0b449cbd7dec0bd",
+        "digest": "sha256:58f6afa90592a86953c6cf131476d08e0369e6afac0c74c4844cf6c0ab60693e",
+        "size_in_bytes": 276453526
+      },
+      {
+        "id": 13339691204,
+        "name": "eldoria-three-marches-native-41850579678",
+        "digest": "sha256:93eb369eff49fd159725a3af19d78565f9bc2d6574fca73346de40a85de31d06",
+        "size_in_bytes": 9638983
+      },
+      {
+        "id": 13338364531,
+        "name": "eldoria-aldric-preflight-evidence-41850579678",
+        "digest": "sha256:e854dada574eca9d34c0ae471782e9b77f5fedad7b10bde26a6afd2c1dbbe843",
+        "size_in_bytes": 14569158
+      }
+    ],
+    "ui_completion_discrepancy": "All job steps including Complete job succeeded by 2026-11-04T15:50:37Z; global job/run still in_progress when queried afterward. Do not equate the technical proof with a completed GitHub workflow."
+  },
+  "coordination": {
+    "windows_claim_released": true,
+    "paused_writers_restored_commit": "c61876316f0b55c2aaf9f09ab48317d31ee67f6c",
+    "production_request_completed_commit": "166134d645cf25767e39ddac2572da351d6322a4",
+    "administrative_claim": "pending_closeout"
+  },
+  "limits": {
+    "art_approval": false,
+    "physical_mobile_certification": false,
+    "published": false,
+    "remaining": "Known third-party example FPSController missing-script warning and legacy shader/import warnings; metadata repair does not certify all vendor examples or artistic quality."
+  },
+  "status": "IMPLEMENTED_AND_TESTED_ACTIONS_FINAL_STATUS_PENDING",
+  "updated_at": "2026-11-04T15:59:32.070Z"
+}

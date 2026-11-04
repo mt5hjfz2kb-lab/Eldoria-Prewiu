@@ -1,0 +1,25 @@
+{
+  "run": 41844806444,
+  "candidate": "aae457d6a203fe19a7e74f88fdc14b3d6ec2d948",
+  "unity_tree": "de254f892ae05109d813af82366d63ea808747d8",
+  "artifact": 13334186188,
+  "artifact_zip_sha256": "94aa33bba2ab7ff4677413fd30ce49e981c952bc71ce2ec263711878eaac3779",
+  "files": {
+    "certificate.json": "b751857b4feca8df7bf6c5f19e3eee3ac8683efa63c8c21b1d5048f901f5e5e2",
+    "metadata-native.json": "458dac35f307ea4b67910489ada4d78680085543d327e5f4e9ff5fd3980069fe",
+    "metadata-before-import.json": "5aa18694b541187935ef8571f3d32f2c70c9f67cc40c9afc06961baa47c5b552",
+    "metadata-after-tests.json": "5aa18694b541187935ef8571f3d32f2c70c9f67cc40c9afc06961baa47c5b552",
+    "EditMode.xml": "7fe7a6232d3fe2f8ec240be95a2c3684e12cfe1e5fd296220d11e509da5ee33e",
+    "PlayMode.xml": "658201072714c8af9ff2620cf49b11479d862ee06f91793ccaffb8bec1cb8b39",
+    "tracked-changes.patch": "b451e8826ceb0102eeaefe272f88d57d7bb82485f4fb87339f3c83d2ef0fb7f7",
+    "tracked-state-review.json": "8aa4a4a97ddb70d070d7004ac9c8b76c735c637e18da078aa62bdd3e64193733"
+  },
+  "original_bytes_before_and_after_tests": 345,
+  "unexpected_tracked_changes": 0,
+  "native_result": "PASS",
+  "merged": true,
+  "published": false,
+  "merge_commit": "91419eadbb1b7c678e249438f0b449cbd7dec0bd",
+  "pull_request": 153,
+  "post_merge_verification": "See CLOSEOUT.json for separately recorded canonical pipeline outcomes; native proof above is complete."
+}

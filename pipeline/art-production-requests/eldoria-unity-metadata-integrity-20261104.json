@@ -1,0 +1,40 @@
+{
+  "schema_version": 2,
+  "enabled": false,
+  "status": "COMPLETED",
+  "workstream_id": "eldoria-unity-metadata-integrity-20261104",
+  "request_id": "eldoria-unity-metadata-integrity-20261104",
+  "asset_or_sector": "Original metadata preservation and byte-identical archival of expressly owner-rejected legacy source outside Unity",
+  "profile": "environment_composition",
+  "visual_gate_state": "METADATA_RECOVERY_CANDIDATE_NO_NEW_ART",
+  "ai_authorship_policy": "required",
+  "diagnosis": "The protected art paths include .meta files, so this administrative recovery is registered with the existing art guard. Restore existing exact bytes from the primary Unity project. No new artwork, geometry, texture pixels, scenes, runtime, import tuning, visual approval or production promotion is performed. Rejected assets retain their restrictions. The only asset location change archives the expressly owner-rejected legacy Bastion and its existing metadata outside Assets, retaining both exact Git blobs/GUID. No replacement model, art editing or runtime-code/scene modification.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "metadata_recovery_only": true,
+    "rejected_source_archive_only": true
+  },
+  "reuse_sources": [
+    "docs/evidence/unity-metadata-20261104/recovery-manifest.json"
+  ],
+  "validation": {
+    "source_gate": "Exact asset Git blob, original metadata SHA-256, stable read-only snapshot; folder identities distinguished from full tree validation.",
+    "final_gate": "Verify recovery bytes, no duplicate GUIDs, no new missing file/folder metadata, no metadata ignore regression and all required CI. Reconcile live production scopes and obtain exact native certification before integration that would occupy Windows."
+  },
+  "art_approved": false,
+  "unity_visual_acceptance": "NOT_REQUESTED_NO_NEW_ART",
+  "physical_mobile_tested": false,
+  "notes": "PR153 merged in 91419eadbb1b7c678e249438f0b449cbd7dec0bd. Native41844806444 PASS: 345 original metadata identities/bytes before and after tests, 57 EditMode and 73 PlayMode, zero failures/skips/unexpected tracked changes. Existing serialization side effects are not committed. No art approval or publication.",
+  "completion": {
+    "native_run": 41844806444,
+    "merge_sha": "91419eadbb1b7c678e249438f0b449cbd7dec0bd",
+    "art_approved": false,
+    "published": false
+  }
+}
