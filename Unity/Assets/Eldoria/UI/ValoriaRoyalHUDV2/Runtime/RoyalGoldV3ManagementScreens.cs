@@ -721,7 +721,7 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 heroSlotButtons[i].gameObject.SetActive(!training);
                 heroSlotLabels[i].Put(string.IsNullOrEmpty(heroSlots[i])?
-                    (i==2?"HÉROE 3 · BLOQUEADO":"HÉROE "+(i+1)+" · +"):
+                    (i==2?"HÉROE 3\nCERRADO":"HÉROE "+(i+1)+" · +"):
                     (i==0?"LÍDER · ":"APOYO · ")+HeroName(heroSlots[i]));
                 heroSlotButtons[i].interactable=i<2 &&
                     (i==0||s.ChapterThree.LyraRecruited);

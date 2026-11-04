@@ -108,7 +108,7 @@ jobs:
             const ownHeads=new Set(['6744fb6984320fdcf2ef3cb8067830fe95d38ea1',
               '2d16dd5d268e25e278f7cb6ae86fc0fd53bb83ff','99041df3127fd89766d56c7b9c2496325721a088',
               '61d0724c202a6bdaa970340d2fcfd4693b54bbc8','1aa97d9bd9d68fe196a50862f6cece49ea7244bd',
-              '17dfeb3e37bcb4615acfbe60e26e9099cfd9cfc9']);
+              '17dfeb3e37bcb4615acfbe60e26e9099cfd9cfc9','f1d73d68789faf9aa7d85c38500b4568dcc943fc']);
             const pr=(await github.rest.pulls.get({...context.repo,pull_number:136})).data;
             if(pr.head.sha!==head||pr.head.ref!==branch)return;
             const raw=(await github.rest.repos.getContent({...context.repo,path:'pipeline/active-workstreams.json',ref:'main'})).data;
