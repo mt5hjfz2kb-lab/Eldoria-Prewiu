@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T10:58:26.564Z",
+  "updated_at": "2026-11-04T11:12:46.441Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3971,9 +3971,9 @@
         "evidence": "Inventario por SHA, procedencia de cada meta recuperado, detector de GUID duplicados y pruebas focalizadas; pendientes explícitos sin GUID inventados.",
         "handoff": "Misma PR para esta etapa; corregir recursos solo después de comprobar procedencia y titularidad."
       },
-      "next": "Current run41816327312 may finish its current Editor naturally. Revision10 fences additional Editor starts prepared with revision9: baseline AssetLibraryReprocessingPassV1 has Enabled=true and directly loads/instantiates the expressly rejected legacy model for BastionLevel>=3. Resolve archive/runtime exclusion under existing owner veto before full gameplay certification or Player build. No job/process cancelled.",
+      "next": "Run corrected metadata-only proof: core.eol=lf and all 345 pre-import hashes, typed SceneAsset references, no scene opening or runtime tests. Runtime/Player validation remains blocked by explicit rejected legacy Resource policy. Archive-only proposal c2dab945bf1d3994703abfbbd2cb137d67e85443 is prepared, not applied.",
       "art_production_request": "pipeline/art-production-requests/eldoria-unity-metadata-integrity-20261104.json",
-      "phase": "IMPORT_MAY_FINISH_NO_FURTHER_EDITOR_UNTIL_LEGACY_POLICY_RECONCILED",
+      "phase": "IDENTITIES_ONLY_EDITOR_ALLOWED_SCENE_RUNTIME_BLOCKED",
       "previous_owner": "codex-eldoria-metadata-recovery-20261104",
       "evidence": {
         "pr": 153,
@@ -3990,7 +3990,7 @@
           41805832811,
           41806653964
         ],
-        "unit_tests": "20 PASS",
+        "unit_tests": "21 PASS",
         "serialized_yaml_inspected": 3617,
         "new_identity_serialized_references": 0,
         "duplicate_guids": 0,
@@ -4006,8 +4006,11 @@
         "powershell_syntax": "PASS",
         "test_save_identity_isolation": "PASS LF/CRLF, exact restore and rejected inputs",
         "unity_native_executed": false,
-        "native_attempt_run": 41814006124,
-        "native_attempt_result": "FAILED_BEFORE_COMPILATION_PACKAGE_MANAGER_GIT_PATH"
+        "native_attempt_run": 41816327312,
+        "native_attempt_result": "COMPILED_345_GUID_MATCHES_HARNESS_BYTES_AND_SCENE_PROBES_FAILED",
+        "native_artifact": 13315313760,
+        "full_unity_certification": false,
+        "legacy_archive_proposal": "c2dab945bf1d3994703abfbbd2cb137d67e85443"
       },
       "lessons_learned": [
         "Windows python.exe may be a Microsoft Store alias; validate an existing interpreter and use Blender's Python executable without launching Blender.",
