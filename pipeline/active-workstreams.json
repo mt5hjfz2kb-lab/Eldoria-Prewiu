@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T16:06:48.279Z",
+  "updated_at": "2026-11-04T16:13:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3499,7 +3499,7 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 12,
+      "ownership_revision": 13,
       "write_scope_released": false,
       "branch": "main",
       "status": "active",
@@ -3516,13 +3516,15 @@
         ".github/workflows/eldoria-construction-delight-native.yml",
         "tools/construction-delight/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "EDITOR_LICENSE_RECOVERED_NATIVE_QA_AUTHENTIC_20261104",
-      "next": "Run PR152 isolated Unity 6000.3.23f1 and exact real A/B capture; keep PR152 draft until visually approved; release windows-runner-heavy after run; do not alter PR136.",
+      "phase": "NATIVE_RESTART_ON_RECOVERED_WINDOWS_AFTER_METADATA_CLOSEOUT",
+      "next": "Refresh source branch from latest main safely, trigger exact Unity 6000.3.23f1 candidate with 26 native A/B images; review motion and visual quality, correct and rerun. No merge/publish until approval. Release Windows after QA.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Source tests + real Unity 390x844 and 844x390 moving captures at exact HEAD, GPU/frame QA, human visual assessment",
@@ -3586,11 +3588,9 @@
       },
       "candidate_branch": "feature/eldoria-construction-delight-20261104",
       "native_lease": {
-        "reserved_at": "2026-11-04T09:27:38.939Z",
-        "evidence": "Run 41807267627 Unity auth exit 0 license exit 0; run 41804846844 reached C# compile, proving Unity Editor licence active. No concurrent native Windows CI and zero other heavy registry owners.",
-        "no_reboot": true,
-        "no_process_kill": true,
-        "disjoint_from_pr136": true
+        "reserved_at": "2026-11-04T16:13:00Z",
+        "source": "PR153 merged; metadata registry resource released; UI Progression Certification job all native steps completed success (post-run complete), process guard will be checked again before Unity launch.",
+        "prior_certification": 41850579678
       },
       "license_diagnostics": {
         "read_only_check_run": 41796258446,
