@@ -49,3 +49,12 @@ No se modifica `main`, ni el runner Windows, ni `.github/workflows/ui-progressio
 - Comprobaciones reales: sintaxis YAML con PyYAML, `retention-days` de los tres uploads, `visual-report/report.json` como único resultado persistente del QA visual, presencia de las condiciones de política y SHA-256 del JPEG canónico comparado con `pipeline/visual-authority-routing-v1.json`.
 - Estas pruebas **no** certifican todavía ejecución del workflow modificado en `main`, consumo real facturado ni limpieza de los artefactos históricos.
 - El workflow de comprobación fue temporal y debe retirarse del candidato; ninguna comprobación Unity se canceló ni se publicó ninguna APK/WebGL.
+
+## Limpieza retrospectiva realmente ejecutada (04/11/2026)
+
+- Se examinaron **7.660 registros** de artefactos de GitHub Actions en un inventario de solo lectura, ejecución `41898650149`.
+- Se borraron exclusivamente **6** artefactos `eldoria-visual-qa-<run_id>` anteriores al 03/11/2026, con comprobación explícita de nombre, ID, tamaño, ejecución de origen, fecha y ausencia en cuatro manifiestos protegidos.
+- Espacio retirado: **6.525.095 bytes (6,22 MiB)**. Ejecución de borrado: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41899021623 — estado `success`.
+- Segunda comprobación independiente: los seis artefactos ya no aparecen al consultar los archivos de sus ejecuciones de origen.
+- No se eliminaron referencias del repositorio, evidencias nativas `eldoria-v41-native-*`, paquetes Unity `eldoria-ui-progression-cert-*`, certificados con ID en los registros, APK, WebGL ni historial Git.
+- Los workflows excepcionales de inventario y borrado eran **temporales** y se retiran en el mismo commit de este cierre. No se deja limpieza recurrente sin control.
