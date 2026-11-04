@@ -2,9 +2,9 @@
   "schema_version": 1,
   "request_id": "eldoria-construction-delight-native-ab-20261104",
   "workstream_id": "eldoria-construction-delight-v1-20261104",
-  "source_head_before_request": "0f4413053c813e2fc82593f502e70b6451f1e8aa",
-  "ownership_revision": 11,
-  "mode": "SOURCE_DOMAIN_AND_ROSLYN_VISIBLEBOUNDS_RECURSION_PREVENTION",
+  "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
+  "ownership_revision": 13,
+  "mode": "REAL_UNITY_6000_3_23F1_26_AB_EVIDENCE_LATEST_MAIN",
   "expected_images": 26,
   "formats": [
     "844x390",
@@ -22,13 +22,14 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 10,
+  "attempt": 11,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
-    "Avoid Transform.Find slash interpretation: owned effect group uses slash-free name",
-    "Sparse-checkout only true Unity project + tools/pipeline",
-    "Clear isolated screenshot folder before new run",
-    "26 camera images with 6 finishing timestamps"
+    "latest certified main & metadata merged into candidate",
+    "fixed infinite recursion in VisibleBounds",
+    "sawmill true hotspot and scaffold bounds",
+    "native visual gate captures all 26 frames even when visually weak",
+    "Roslyn guard on scaffold bounds recursion"
   ],
   "previous_attempt": {
     "run_id": 41746271850,
@@ -48,7 +49,7 @@
       "status": "failed_compile_missing_particle_module"
     }
   ],
-  "validation": "Unity actual 6000.3.23f1 builds full PR152, uses exact-authoritative LocalGateway construction, emits 26 authentic before/after time-resolved camera shots including mobile resolutions, checks true completion receipt and save persistence; no art approval automatically.",
+  "validation": "Exact SHA Unity compile and integrated authentic Valoria reference scene, 26 PNG genuine work/finish A/B in both orientations, task completion receipt, save invariant, per-pixel site delta, source Unity 6000.3.23f1.",
   "editor_launch": false,
   "windows_runner_requested": false,
   "test_project": "tools/construction-delight/DomainProbe.csproj",
@@ -64,7 +65,7 @@
   "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c",
   "source_domain_attempt": 2,
   "purpose": "Verify current authoritative completion receipt, no World4X bleed, URP real renderer and localized camera proof syntax",
-  "native_editor_invocation": false,
+  "native_editor_invocation": true,
   "window_runner_reservation": false,
   "real_visual_QA_pending": true,
   "license_evidence": {
@@ -76,12 +77,12 @@
   "no_reboot": true,
   "no_interference": true,
   "root_cause_last_compile": "Compilation CS0234 Application.dataPath resolves to Eldoria.Application namespace. Fixed via UnityEngine.Application.dataPath.",
-  "previous_native_run": 41809767387,
+  "previous_native_run": 41811262373,
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
   "offline_validation_attempt": 3,
-  "no_windows_resource_use": true,
+  "no_windows_resource_use": false,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
     "Integrated WorldHotspot fallback for site bounds",
@@ -91,5 +92,6 @@
   ],
   "windows_runner_reserved_by": "eldoria-unity-metadata-integrity-20261104",
   "source_qa_change": "Fixed VisibleBounds infinite recursion from previous scaffold fallback and added semantic Roslyn nonrecursive/visible-renderer guard",
-  "native_qa_pending": true
+  "native_qa_pending": true,
+  "current_main_parent": "7ed30ed8a599c461e0b5f8b0883c60092822fd4e"
 }
