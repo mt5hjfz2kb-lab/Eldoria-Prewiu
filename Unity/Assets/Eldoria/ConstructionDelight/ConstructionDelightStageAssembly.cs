@@ -182,9 +182,16 @@ namespace Eldoria.ReferenceClean
         public void Clear()
         {
             foreach(var p in parts)
+            {
+                if(p.clone)p.clone.enabled=false;
                 if(p.original)p.original.enabled=p.originalEnabled;
+            }
             parts.Clear();
-            if(root)UnityEngine.Object.Destroy(root);
+            if(root)
+            {
+                root.SetActive(false); // no deferred frame of stale geometry
+                UnityEngine.Object.Destroy(root);
+            }
             root=null;working=false;completing=false;visible=true;
             deadline=0;totalSeconds=0f;
         }
