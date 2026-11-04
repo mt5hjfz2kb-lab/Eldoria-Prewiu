@@ -289,6 +289,16 @@ namespace Eldoria.Editor
                                 "Profile dynamic glyphs are never enlarged from an undersized raster: "+name+" / "+text.name);
                         }
                     }
+                    var cabinet=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                        .FirstOrDefault(t=>t.name=="Profile / royal integrated combat cabinet");
+                    if(cabinet)
+                    {
+                        var parts=cabinet.GetComponentsInChildren<RectTransform>();
+                        var lastRow=parts.First(t=>t.name=="Profile / RUPTURA carved attribute");
+                        var roleDivider=parts.First(t=>t.name=="Profile / role cabinet divider");
+                        Need(Bounds(lastRow).yMin>Bounds(roleDivider).yMax,
+                            "All four real hero attributes remain above the role divider "+name);
+                    }
                     if(name.Contains("small-phone")){
                         var layout=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
                             .First(t=>t.name=="Heroes / live controls");

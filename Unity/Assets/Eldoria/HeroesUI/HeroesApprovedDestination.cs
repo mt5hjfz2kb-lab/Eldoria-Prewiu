@@ -335,6 +335,11 @@ namespace Eldoria.HeroesUI
             float bodyX=tabWidth+(portrait?32f:36f),
                 bodyW=w-bodyX-20f;
             float bodyH=h-top-92,modelW=portrait?bodyW:bodyW*(shortProfile?.47f:.58f),modelH=portrait?bodyH*.62f:bodyH;
+            // Reserve the four real attribute rows and role/footer before sizing
+            // the portrait stage. Otherwise the 36-unit row minimum can overlap
+            // the role divider at 900x1600.
+            if(portrait&&CurrentPage==Page.Resumen&&w-40f>460f&&bodyH>=700f)
+                modelH=Mathf.Min(modelH,bodyH-456f);
             var stage=Rect("Hero model stage",content);
             Place(stage,bodyX,top,modelW,modelH);
             if(CurrentPage!=Page.Talentos)BuildProfileStageDepth(stage,modelW,modelH);
@@ -891,7 +896,7 @@ namespace Eldoria.HeroesUI
 
         void BuildCombatSummary(RectTransform pane,HeroState hero,float w,float h)
         {
-            if(w>460f&&h>340f){BuildReferenceCombatSummary(pane,hero,w,h);return;}
+            if(w>460f&&h>=444f){BuildReferenceCombatSummary(pane,hero,w,h);return;}
             float margin=Mathf.Clamp(w*.029f,8f,22f);
             bool compact=h<280f;
             float headerH=compact?36f:Mathf.Min(76f,h*.17f);
