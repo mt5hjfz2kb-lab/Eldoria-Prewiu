@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "repository": "mt5hjfz2kb-lab/Eldoria-Prewiu",
+  "date": "2026-11-04",
+  "meaning": "Indice publico de memorias verificadas. NO sustituye el HEAD ni las decisiones actuales.",
+  "entries": [
+    {
+      "id": "main-runtime",
+      "kind": "rule",
+      "source_path": "README.md",
+      "source_blob_sha": "c75ff6e819c56aac49369bd04866848b39463784",
+      "text": "El proyecto jugable vigente de Eldoria está en Unity/; v0220 es un prototipo web histórico."
+    },
+    {
+      "id": "unity-version",
+      "kind": "rule",
+      "source_path": "Unity/ProjectSettings/ProjectVersion.txt",
+      "source_blob_sha": "5c6ad6f36e7e26862bb074b475a1265d26ff53a5",
+      "text": "La versión Unity observada en ProjectVersion.txt es 6000.3.23f1; comprobar el manifiesto vigente antes de instalar paquetes."
+    },
+    {
+      "id": "urp-version",
+      "kind": "rule",
+      "source_path": "Unity/Packages/manifest.json",
+      "source_blob_sha": "41d328a11b76e737a2a153eb42450cd029bbba8e",
+      "text": "La versión URP registrada en el manifiesto revisado es 17.3.0; verificar la versión actual antes de cualquier modificación."
+    },
+    {
+      "id": "lease",
+      "kind": "rule",
+      "source_path": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
+      "source_blob_sha": "208cf43779e3d3d81c25163bb1c7df16e9dc3aac",
+      "text": "La reserva de Windows debe comprobarse en el registro vivo y no se libera por inactividad, cola vacía o PASS técnico."
+    },
+    {
+      "id": "art-approval",
+      "kind": "rule",
+      "source_path": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
+      "source_blob_sha": "208cf43779e3d3d81c25163bb1c7df16e9dc3aac",
+      "text": "La aprobación artística provisional de un área no equivale a ART_APPROVED, merge ni publicación."
+    },
+    {
+      "id": "qwen-superseded",
+      "kind": "rule",
+      "source_path": "docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md",
+      "source_blob_sha": "08d330d23ffcab9f18fa56e73be55a1efea301f1",
+      "text": "Qwen/Ollama dejó de ser obligatorio en la creación y aprobación artística de Eldoria el 22 de octubre de 2026; las órdenes antiguas quedan sustituidas."
+    },
+    {
+      "id": "qa",
+      "kind": "rule",
+      "source_path": "QA_AND_DEPLOY.md",
+      "source_blob_sha": "32d8b34dccc17697a57a97c46ed998e78e90ed2d",
+      "text": "Las pruebas del prototipo JavaScript anterior no certifican el juego Unity; la evidencia requiere pruebas del artefacto exacto."
+    },
+    {
+      "id": "doc-precedence",
+      "kind": "rule",
+      "source_path": "docs/DOCUMENTATION_POLICY.md",
+      "source_blob_sha": "2dfca17850b88e8efdf4005c50bd6ebb4267569f",
+      "text": "Ante contradicciones mandan las instrucciones vigentes del propietario, la seguridad, AGENTS.md y los contratos actuales; los handoffs históricos no son órdenes."
+    },
+    {
+      "id": "no-old-bastion",
+      "kind": "rule",
+      "source_path": "AGENTS.md",
+      "source_blob_sha": "75d27a4b3b19cd3528cb2562cf55c1ea5c51e1ea",
+      "text": "El modelo de Bastión antiguo Valoria_HeroBastion_v1.glb está vetado para uso jugable o artístico nuevo salvo nueva autorización expresa."
+    },
+    {
+      "id": "owner-role",
+      "kind": "rule",
+      "source_path": "README.md",
+      "source_blob_sha": "c75ff6e819c56aac49369bd04866848b39463784",
+      "text": "El propietario decide visión creativa y aprueba resultados; el agente debe investigar, ejecutar, probar, evaluar calidad y reconocer límites sin trasladar trabajo técnico al propietario."
+    }
+  ]
+}
