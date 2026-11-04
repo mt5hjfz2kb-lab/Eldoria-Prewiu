@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Eldoria.Application;
@@ -22,6 +23,7 @@ namespace Eldoria.ReferenceClean.Editor
     public static class ConstructionDelightNativeCapture
     {
         const string Flag = "Eldoria.ConstructionDelight.NativeCapture";
+        static readonly List<string> VisualIssues = new List<string>();
         const string Scene = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
         static readonly string Output = Path.GetFullPath(Path.Combine(
             UnityEngine.Application.dataPath,"../../artifacts/construction-delight-native"));
@@ -75,6 +77,7 @@ namespace Eldoria.ReferenceClean.Editor
 
         static IEnumerator Probe(ValoriaIntegratedWorld host)
         {
+            VisualIssues.Clear();
             int frames=0;
             while(!host.Ready && frames++<300)yield return null;
             Require(host.Ready,"Integrated scene did not become ready");
@@ -124,10 +127,10 @@ namespace Eldoria.ReferenceClean.Editor
             host.Hud.Refresh();
 
             yield return new WaitForSecondsRealtime(.42f);
-            Require(fx.ActiveConstructionSprites>0,
-                "No real, flowing construction sprites over the scene; task="+
-                city.Gateway.Snapshot().BuildingTaskId+
-                " visual_work="+fx.ActiveBuildingId);
+            if(fx.ActiveConstructionSprites<=0)
+                VisualIssues.Add("No flowing construction sprites; task="+
+                    city.Gateway.Snapshot().BuildingTaskId+
+                    " visual_work="+fx.ActiveBuildingId);
             Comparison(host,renderers,"work",844,390);
             Comparison(host,renderers,"work",390,844);
 
@@ -146,8 +149,8 @@ namespace Eldoria.ReferenceClean.Editor
                 "Real completion lacks the persisted LocalGateway task receipt");
 
             yield return new WaitForSecondsRealtime(.36f);
-            Require(fx.ActiveFinishSprites>0,
-                "Completion gilded sprite flourish missing from actual build");
+            if(fx.ActiveFinishSprites<=0)
+                VisualIssues.Add("No completion gilded sprites after real Gateway.Advance");
             Comparison(host,renderers,"finish",844,390);
             Comparison(host,renderers,"finish",390,844);
             // An artistic approval needs temporal evidence, not one lucky frame.
@@ -170,6 +173,14 @@ namespace Eldoria.ReferenceClean.Editor
             Require(fx.ActiveFinishSprites==0,
                 "False completion animation triggered on reload");
 
+            // Preserve all 26 actual camera frames even on substandard FX:
+            // failing fast before an A/B hid visual defects from the artist.
+            if(VisualIssues.Count>0)
+            {
+                File.WriteAllLines(Path.Combine(Output,"visual-issues.txt"),VisualIssues.ToArray());
+                throw new InvalidOperationException("CONSTRUCTION_DELIGHT_VISUAL_GATE_FAILED: "+
+                    string.Join(" | ",VisualIssues.ToArray()));
+            }
             File.WriteAllText(Path.Combine(Output,"result.json"),
                 "{\n"+
                 "  \"status\": \"NATIVE_PASS\",\n"+
@@ -236,9 +247,10 @@ namespace Eldoria.ReferenceClean.Editor
                 Debug.Log("CONSTRUCTION_DELIGHT_PIXEL_DELTA stage="+stage+
                           " resolution="+width+"x"+height+
                           " global="+changedPixels+" sawmill_site="+siteChanged);
-                Require(changedPixels>=50 && siteChanged>=30,
-                    "Effects insufficient at AUTHENTIC sawmill on "+stage+" "+
-                    width+"x"+height+": global="+changedPixels+" site="+siteChanged);
+                if(changedPixels<50 || siteChanged<30)
+                    VisualIssues.Add("Insufficient authentic sawmill pixels in "+stage+
+                        " "+width+"x"+height+" global="+changedPixels+
+                        " site="+siteChanged);
             }
             finally
             {
