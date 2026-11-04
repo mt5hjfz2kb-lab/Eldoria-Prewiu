@@ -194,6 +194,8 @@ namespace Eldoria.ReferenceClean.Editor
                 "Graphics changed the authoritative save state after reload");
             Require(fx.ActiveFinishSprites==0,
                 "False completion animation triggered on reload");
+            Require(fx.ActiveStructuralRevealMeshes==0,
+                "Temporary building overlay remained active after real save reload");
 
             // Preserve all 26 actual camera frames even on substandard FX:
             // failing fast before an A/B hid visual defects from the artist.
