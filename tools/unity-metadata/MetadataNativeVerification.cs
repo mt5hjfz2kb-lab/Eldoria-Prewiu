@@ -25,6 +25,7 @@ public static class EldoriaMetadataNativeVerification
         public bool bytes_preserved;
         public bool folder;
         public int objects;
+        public bool scene_asset;
     }
     [Serializable] public class Report
     {
@@ -37,6 +38,8 @@ public static class EldoriaMetadataNativeVerification
         public int missing_scripts;
         public string company_name;
         public string product_name;
+        public string validation_mode;
+        public bool scene_content_verified;
     }
 
     static string Argument(string key)
@@ -59,7 +62,7 @@ public static class EldoriaMetadataNativeVerification
         var failures = new List<string>();
         var rows = new List<Row>();
         var report = new Report { unity_version = UnityEngine.Application.unityVersion,
-            candidate_sha = Argument("-metadataCandidate") };
+            candidate_sha = Argument("-metadataCandidate"), validation_mode = Argument("-metadataMode") };
         try
         {
             report.company_name = UnityEngine.Application.companyName;
@@ -87,15 +90,25 @@ public static class EldoriaMetadataNativeVerification
                     failures.Add("GUID mismatch: " + asset);
                 if (!row.folder)
                 {
-                    var objects = AssetDatabase.LoadAllAssetsAtPath(asset);
-                    row.objects = objects == null ? 0 : objects.Length;
+                    // Scene assets are Editor references, not the object array
+                    // of a prefab/model. Do not open or instantiate a scene here.
+                    row.scene_asset = asset.EndsWith(".unity", StringComparison.OrdinalIgnoreCase);
+                    if (row.scene_asset)
+                        row.objects = AssetDatabase.LoadAssetAtPath<SceneAsset>(asset) == null ? 0 : 1;
+                    else
+                    {
+                        var objects = AssetDatabase.LoadAllAssetsAtPath(asset);
+                        row.objects = objects == null ? 0 : objects.Length;
+                    }
                     if (row.objects == 0) failures.Add("Imported asset not loadable: " + asset);
                 }
                 if (!row.bytes_preserved) failures.Add("Unity rewrote original metadata: " + asset);
                 rows.Add(row);
             }
             if (rows.Count == 0) failures.Add("No restored metadata was verified");
-            foreach (var scene in EditorBuildSettings.scenes)
+            if (report.validation_mode != "identities_only" && report.validation_mode != "full")
+                throw new Exception("Unknown validation mode");
+            if (report.validation_mode == "full") foreach (var scene in EditorBuildSettings.scenes)
             {
                 if (!scene.enabled) continue;
                 report.enabled_scenes++;
@@ -104,6 +117,7 @@ public static class EldoriaMetadataNativeVerification
                     foreach (var transform in go.GetComponentsInChildren<Transform>(true))
                         report.missing_scripts += GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(transform.gameObject);
             }
+            report.scene_content_verified = report.validation_mode == "full";
             if (report.missing_scripts != 0) failures.Add("Enabled scenes contain missing MonoBehaviours");
         }
         catch (Exception e) { failures.Add(e.ToString()); }

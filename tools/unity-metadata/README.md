@@ -47,3 +47,22 @@ Authoritative references:
 
 - [Unity 6000.3 asset metadata](https://docs.unity.com/en-us/engine/6000.3/manual/assets-and-media/import-assets/asset-metadata)
 - [Unity plug-in import and bundled folders](https://docs.unity3d.com/cn/2023.2/Manual/PluginInspector.html)
+
+## Native proof modes and checkout bytes
+
+The request must explicitly select `identities_only` or `full`.
+`identities_only` compiles/imports and checks original GUIDs, importer bytes and
+asset/typed SceneAsset references; it does not open scenes, run game tests or
+build a Player. Its certificate is `IDENTITIES_PASS_ONLY`, not a full game PASS.
+`full` additionally opens enabled scenes and runs EditMode/PlayMode; it refuses to
+start while the expressly rejected legacy Resource remains in the project.
+Neither mode publishes or builds a Player.
+
+Pin BOTH `core.autocrlf=false` and `core.eol=lf` before the first checkout.
+`* text=auto` still converts checkout bytes to CRLF with Windows/native core.eol
+even when autocrlf is disabled. A real Git regression fixture reproduces this.
+Every recovered SHA-256 is checked **before** Unity starts. Any subsequent byte
+difference is captured as raw metadata plus a path/hash mapping, rather than
+assuming a checkout difference was an importer rewrite. Scenes are loaded as
+`SceneAsset` Editor references, never as sub-asset arrays or instantiated objects.
+Runner temporary files are removed between jobs; do not rely on them as caches.

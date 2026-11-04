@@ -3,5 +3,6 @@
   "serialized_yaml_checked": 3617,
   "recovered_identities": 345,
   "references": [],
-  "missing_checkout_files": []
+  "missing_checkout_files": [],
+  "scanned_root": "Unity/Assets"
 }

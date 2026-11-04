@@ -9,11 +9,36 @@
       "artifact": 13313179486,
       "artifact_zip_sha256": "101868f79c2f7d4f72dd08624ca7bf93724de4439c658e440b80f82dd75e9b4a",
       "asset_or_metadata_failure_proven": false
+    },
+    {
+      "run": 41816079304,
+      "candidate": "6c02784fc6fca56e8fdf54edd78e25a77c9cff3e",
+      "status": "STOPPED_BEFORE_EDITOR",
+      "cause": "Optional prior-run object cache unavailable: GitHub runner clears RUNNER_TEMP between jobs.",
+      "fix": "Remove source_seed_run_id from the next request; use a new canonical clone. No third-party workspace or project touched.",
+      "asset_or_metadata_failure_proven": false
+    },
+    {
+      "run": 41816327312,
+      "candidate": "6c02784fc6fca56e8fdf54edd78e25a77c9cff3e",
+      "status": "COMPILED_GUIDS_MATCH_BUT_VALIDATION_FAILED",
+      "artifact": 13315313760,
+      "artifact_zip_sha256": "0b2168dc362d00cef12c9414720b971e93bf736d26266d5ee6824c2de937f1e2",
+      "native_guid_matches": 345,
+      "restored_entries": 345,
+      "raw_hash_failures": 345,
+      "scene_load_probe_failures": 11,
+      "enabled_scene_missing_scripts": 0,
+      "enabled_scenes_opened": 1,
+      "editmode_playmode_run": false,
+      "diagnosis": "No pre-import raw-byte checkpoint existed, so the original report cannot attribute byte differences to Unity. Reproduction proves text=auto plus native/CRLF core.eol changes checkout bytes even when autocrlf=false. Eleven scenes were incorrectly checked as sub-asset arrays; use documented typed SceneAsset loading.",
+      "fix": "Pin core.eol=lf before checkout; verify all original SHA256 before launching Unity; capture any genuine later byte differences; load SceneAsset by type; separate identities-only proof from full scene/runtime validation."
     }
   ],
   "checkout_checks": {
     "autocrlf_true_then_first_checkout_false": "PASS, metadata LF bytes preserved",
     "partial_clone_local_clone": "FAILED in disposable reproduction, approach rejected before native dispatch",
-    "canonical_clone_seed_immutable_pack_objects": "PASS in disposable partial-clone reproduction with network disabled during checkout; no prior project/untracked files copied"
-  }
+    "canonical_clone_seed_immutable_pack_objects": "Disposable local proof passed, but NOT usable across native jobs: runner cleanup removes the source cache. Abandoned for this environment."
+  },
+  "next_mode": "identities_only; no scene opening or PlayMode while rejected Resource policy is unresolved"
 }

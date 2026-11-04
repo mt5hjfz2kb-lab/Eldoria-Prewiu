@@ -2,6 +2,8 @@ param([Parameter(Mandatory=$true)][string]$RequestPath)
 $ErrorActionPreference='Stop'
 $requestMetadata=Get-Content -LiteralPath $RequestPath -Raw | ConvertFrom-Json
 if($requestMetadata.candidate_sha -notmatch '^[0-9a-f]{40}$'){ throw 'Invalid exact candidate SHA' }
+$validationMode=[string]$requestMetadata.validation_mode
+if($validationMode -notin @('identities_only','full')){ throw 'Explicit validation_mode required' }
 $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
 
 function Assert-MetadataLease {
@@ -45,34 +47,14 @@ $sourceRoot=Join-Path $scratchRoot 'source'
 $evidenceRoot=Join-Path $scratchRoot 'evidence'
 New-Item -ItemType Directory -Path $evidenceRoot | Out-Null
 $repositoryUrl='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
-$priorPackDirectory=$null
-if($requestMetadata.source_seed_run_id){
-    if([string]$requestMetadata.source_seed_run_id -notmatch '^[0-9]+$'){ throw 'Invalid prior isolated run ID' }
-    $seed=Join-Path $env:RUNNER_TEMP ('em-native-' + $requestMetadata.source_seed_run_id + '/source')
-    if(-not (Test-Path -LiteralPath (Join-Path $seed '.git/HEAD'))){ throw 'Prior isolated Git seed missing' }
-    if((Get-Item -LiteralPath $seed).Attributes -band [IO.FileAttributes]::ReparsePoint){ throw 'Linked seed refused' }
-    $seedRemote=(& $gitExe -C $seed remote get-url origin).Trim()
-    if($LASTEXITCODE -ne 0 -or $seedRemote -ne $repositoryUrl){ throw 'Seed is not an earlier isolated canonical repository clone' }
-    $priorPackDirectory=Join-Path $seed '.git/objects/pack'
-}
+# RUNNER_TEMP is cleaned between jobs. Always use an independent canonical
+# clone; prior temporary checkouts are not durable cache or recovery sources.
 $cloneArguments=@('clone','--filter=blob:none','--no-checkout','--depth=1','--branch','fix/unity-metadata-integrity-20261104',$repositoryUrl,$sourceRoot)
 & $gitExe @cloneArguments
 if($LASTEXITCODE -ne 0){ throw 'Isolated source clone failed' }
-if($priorPackDirectory){
-    # Local cloning of a partial repository is unsafe: its missing blobs can
-    # make upload-pack fail. Seed immutable, content-addressed object packs into
-    # this NEW canonical partial clone instead; no project/settings are copied.
-    $newPackDirectory=Join-Path $sourceRoot '.git/objects/pack'
-    Get-ChildItem -LiteralPath $priorPackDirectory -File | Where-Object {
-        $_.Name -match '^pack-[0-9a-f]{40}\.(pack|idx|rev|promisor)$'
-    } | ForEach-Object {
-        if($_.Attributes -band [IO.FileAttributes]::ReparsePoint){ throw 'Linked object pack refused' }
-        $destination=Join-Path $newPackDirectory $_.Name
-        if(-not(Test-Path -LiteralPath $destination)){Copy-Item -LiteralPath $_.FullName -Destination $destination}
-    }
-}
 & $gitExe -C $sourceRoot config core.longpaths true
 & $gitExe -C $sourceRoot config core.autocrlf false
+& $gitExe -C $sourceRoot config core.eol lf
 & $gitExe -C $sourceRoot fetch --depth=1 origin $requestMetadata.candidate_sha
 if($LASTEXITCODE -ne 0){ throw 'Exact candidate fetch failed' }
 & $gitExe -C $sourceRoot sparse-checkout set --no-cone '/Unity/' '/tools/' '/scripts/' '/pipeline/' '/docs/**/*.md' '/docs/**/*.json' '/docs/evidence/unity-metadata-20261104/' '/v0220/' '/tester-v0265/' '/references/' '/.gitattributes' '/.gitignore'
@@ -82,6 +64,9 @@ if($LASTEXITCODE -ne 0){ throw 'Exact isolated checkout failed' }
 $checked=(& $gitExe -C $sourceRoot rev-parse HEAD).Trim()
 if($checked -ne $requestMetadata.candidate_sha){ throw 'Checkout identity mismatch' }
 $projectRoot=Join-Path $sourceRoot 'Unity'
+if($validationMode -eq 'full' -and (Test-Path -LiteralPath (Join-Path $projectRoot 'Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb'))){
+    throw 'Owner-rejected legacy Resource still present: no scene/runtime validation or Player build permitted'
+}
 # Git stores folder metadata but cannot store the corresponding empty directory.
 # Reconstruct only explicitly declared folder identities before the first import.
 Get-ChildItem -LiteralPath (Join-Path $projectRoot 'Assets') -Filter '*.meta' -File -Recurse | ForEach-Object {
@@ -96,6 +81,14 @@ $harnessDirectory=Join-Path $projectRoot 'Assets/Editor'
 New-Item -ItemType Directory -Force -Path $harnessDirectory | Out-Null
 Copy-Item -LiteralPath (Join-Path $sourceRoot 'tools/unity-metadata/MetadataNativeVerification.cs') -Destination (Join-Path $harnessDirectory 'MetadataNativeVerification.cs')
 $manifest=Join-Path $sourceRoot 'docs/evidence/unity-metadata-20261104/recovery-manifest.json'
+$recoveryEntries=@((Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json).entries | Where-Object {$_.disposition -eq 'restored'})
+$checkoutRows=@($recoveryEntries | ForEach-Object {
+    $metadataPath=Join-Path $sourceRoot $_.path
+    $actual=(Get-FileHash -LiteralPath $metadataPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    @{path=$_.path;expected=$_.meta_sha256;actual=$actual;exact=($actual -eq $_.meta_sha256)}
+})
+$checkoutRows | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'metadata-before-import.json')
+if(@($checkoutRows | Where-Object {-not $_.exact}).Count){ throw 'Checkout changed original metadata bytes BEFORE Unity; inspect line endings/configuration' }
 $nativeReport=Join-Path $evidenceRoot 'metadata-native.json'
 . (Join-Path $sourceRoot 'tools/unity-metadata/native_settings.ps1')
 $testIdentity=Set-MetadataTestIdentity (Join-Path $projectRoot 'ProjectSettings/ProjectSettings.asset') $env:GITHUB_RUN_ID
@@ -117,7 +110,21 @@ function Invoke-MetadataEditor([string]$name,[string[]]$extra) {
 }
 
 try {
-    Invoke-MetadataEditor 'import-and-identities' @('-quit','-executeMethod','EldoriaMetadataNativeVerification.Run','-metadataManifest',$manifest,'-metadataCandidate',$checked,'-metadataReport',$nativeReport,'-metadataCompany',$testIdentity.Company,'-metadataProduct',$testIdentity.Product)
+    try {
+        Invoke-MetadataEditor 'import-and-identities' @('-quit','-executeMethod','EldoriaMetadataNativeVerification.Run','-metadataManifest',$manifest,'-metadataCandidate',$checked,'-metadataReport',$nativeReport,'-metadataCompany',$testIdentity.Company,'-metadataProduct',$testIdentity.Product,'-metadataMode',$validationMode)
+    } finally {
+        $observedDirectory=Join-Path $evidenceRoot 'metadata-observed'
+        New-Item -ItemType Directory -Path $observedDirectory | Out-Null
+        $changedRows=@($recoveryEntries | ForEach-Object {
+            $metadataPath=Join-Path $sourceRoot $_.path
+            $actual=(Get-FileHash -LiteralPath $metadataPath -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($actual -ne $_.meta_sha256){
+                Copy-Item -LiteralPath $metadataPath -Destination (Join-Path $observedDirectory ($_.guid+'.meta'))
+                @{path=$_.path;expected=$_.meta_sha256;actual=$actual;captured_file=$_.guid+'.meta'}
+            }
+        })
+        ConvertTo-Json -InputObject $changedRows -Depth 4 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'metadata-byte-differences.json')
+    }
     # This historical folder identity could not be recovered. Preserve whatever
     # Unity genuinely generates in isolation, without calling it an original or
     # changing/instantiating the rejected model contained in that folder.
@@ -130,11 +137,12 @@ try {
     }
     $proof=Get-Content -LiteralPath $nativeReport -Raw | ConvertFrom-Json
     if($proof.state -ne 'PASS' -or $proof.candidate_sha -ne $checked){ throw 'Native identity verification did not pass' }
-    foreach($platform in @('EditMode','PlayMode')){
+    if($validationMode -eq 'full') { foreach($platform in @('EditMode','PlayMode')){
         $result=Join-Path $evidenceRoot ($platform + '.xml')
         Invoke-MetadataEditor $platform @('-runTests','-testPlatform',$platform,'-testResults',$result)
         [xml]$xml=Get-Content -LiteralPath $result -Raw
         if([int]$xml.'test-run'.failed -ne 0 -or [int]$xml.'test-run'.passed -lt 1){ throw "$platform test results are not passing" }
+    }
     }
 } finally {
     Restore-MetadataTestIdentity $testIdentity
@@ -143,5 +151,6 @@ $status=& $gitExe -C $sourceRoot status --porcelain --untracked-files=no
 if($LASTEXITCODE -ne 0){ throw 'Post-import tracked state unavailable' }
 $status | Set-Content -LiteralPath (Join-Path $evidenceRoot 'tracked-state.txt')
 if(@($status).Count -gt 0){ throw 'Unity changed tracked files in the isolated candidate; inspect evidence' }
-@{state='PASS';candidate_sha=$checked;run_id=$env:GITHUB_RUN_ID;unity_version=$proof.unity_version;restored_entries=@($proof.entries).Count;production_projects_modified=$false;harness_editor_only=$true;test_persistence_isolated=$true;original_project_settings_restored=$true} |
+$certificateState=if($validationMode -eq 'full'){'PASS'}else{'IDENTITIES_PASS_ONLY'}
+@{state=$certificateState;validation_mode=$validationMode;full_tests_run=($validationMode -eq 'full');player_build_run=$false;candidate_sha=$checked;run_id=$env:GITHUB_RUN_ID;unity_version=$proof.unity_version;restored_entries=@($proof.entries).Count;production_projects_modified=$false;harness_editor_only=$true;test_persistence_isolated=$true;original_project_settings_restored=$true} |
     ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidenceRoot 'certificate.json')

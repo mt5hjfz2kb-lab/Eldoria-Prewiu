@@ -34,7 +34,7 @@ metadata repair.
 
 The unused `URP_Material.unitypackage.meta` is archived byte for byte outside
 Unity. Its GUID occurs in none of the 3,617 inspected versioned Unity YAML files.
-The two empty-folder metadata files remain in place.
+The valid empty-folder metadata remain in place; after archiving the orphan payload metadata, the audit preserves three empty-folder identities.
 
 All 277 file recovery records match the expected Git asset blob, with exact
 newline conversion verification for the two shaders. Folder records separately
@@ -52,7 +52,7 @@ projects. Original archive digests were checked before extraction and use.
 
 ## Verification and limits
 
-- Recovery, integrity, ignore rules and exact known-debt behavior have 20 focused
+- Recovery, integrity, ignore rules and exact known-debt behavior have 21 focused
   tests. Workflow governance passes.
 - Every recovered or archived metadata file is checked against its original
   SHA-256. Existing tracked metadata GUIDs are not rewritten; asset source contents
@@ -63,7 +63,7 @@ projects. Original archive digests were checked before extraction and use.
   Unity YAML files. Dynamic Resources loads remain relevant; preserving original
   importer bytes avoids silently resetting their import settings.
 - The preventive audit now expects zero missing file metadata and records only the one unrecovered rejected legacy folder as known debt.
-- Native run 41814006124 on candidate 6b9ff55aafe4296b6d9973008cbcfe2c09f3d397 failed before compilation: Package Manager could not find Git for com.arloopa.unitysplats. The harness now exposes the existing Git directory through the inherited PATH; retry pending. No Unity import/PlayMode certification is asserted. No player build, visual approval or device certification is claimed.
+- Native run 41816327312 compiled/imported candidate 6c02784fc6fca56e8fdf54edd78e25a77c9cff3e and recognized all 345 expected GUIDs. The overall validation FAILED: 345 raw-byte checks lacked a pre-import checkpoint and 11 scenes were probed with an inappropriate sub-asset API. A real Git reproduction demonstrates CRLF checkout conversion despite autocrlf=false; the corrected harness pins core.eol=lf and verifies original bytes BEFORE Unity, and uses typed SceneAsset references. No full native PASS or PlayMode certification is asserted. No player build, visual approval or device certification is claimed.
 
 ## Remaining integration
 
@@ -74,15 +74,22 @@ before Windows transferred; no running job was cancelled. All 57 pending paths w
 reconciled against exact main and PR136 heads in RESUME_RECONCILIATION.json: all 32
 file asset blobs match; folder checks prove existence, not full tree equality.
 
-Native validation is prepared, not yet executed: isolated exact checkout, unique
+Native validation uses an isolated exact checkout and unique
 company/product save identity, original metadata GUID and importer-byte checks,
 enabled-scene missing-script checks, full EditMode/PlayMode, exact settings restore.
-The one unrecovered folder may acquire a genuinely new Unity-generated identity;
-if captured, that must be disclosed as new, never labelled recovered. The rejected
-model must remain unmodified and prohibited. Integration and restoration of the
-temporarily paused claims remain pending real evidence and relevant checks.
+The baseline runtime still loads/instantiates the rejected legacy Resource at Bastion III+, and the main Unity workflow builds a Player. Full scene/runtime validation and integration are therefore fenced while that owner policy is unresolved. A byte-preserving archive-only proposal is prepared separately (LEGACY_ARCHIVE_PROPOSAL.json, commit c2dab945bf1d3994703abfbbd2cb137d67e85443); it is NOT applied to this branch or main. Its static audit has zero missing metadata/folders and zero failures without inventing a folder GUID. The authorized metadata proof can continue in identities_only mode, with no scene opening or runtime tests.
 
 The complete previous snapshots are recoverable through Actions runs
 41805832811 and 41806653964; artifacts are temporary. The metadata needed for this
 candidate and its owner handoff is preserved in Git rather than relying on that
 artifact retention period.
+
+## Additional baseline findings from native import
+
+The actual import log also reports a missing script while upgrading the third-party
+`Mega Fantasy Props Pack/Example Scenes/Prefabs/FPSController.prefab`, plus legacy
+shader fallback warnings. Those paths are outside this metadata recovery and have
+not been silently changed. Zero missing scripts in the one enabled scene does not
+mean all vendor examples are healthy. The exact raw native report is retained in
+NATIVE_41816327312.json; native attempt causes and rejected techniques are recorded
+in NATIVE_ATTEMPTS.json. New metadata-only validation remains pending.
