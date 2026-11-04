@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "chatgpt-dialogue-art-20261104",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
-      "claimed_at": "2026-11-03",
+      "claimed_at": "2026-11-04",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -125,8 +125,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "AREA_COMPLETE_READY_FOR_NEXT_CHAT",
-      "next": "Next owner may claim canonical workstream valoria-master-plan-layered-construction-20261016 on existing PR after live queue check; preserve a5582aeeead5c68874f5a33edb33065bf2f43591 and last_completed_area.",
+      "phase": "DIALOGUE_ART_20261104",
+      "next": "Implementar y validar artísticamente diálogos con Unity y A/B nativo sin cambios de gameplay.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1761,9 +1761,9 @@
           "reason": "Completed area Valoria — cierre de cartela contextual de construcción y mejoras, costes, estados y temporizador sobre ciudad; explicit verified handoff to next normal chat"
         }
       ],
-      "ownership_revision": 129,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 130,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-03",
       "delivery_definition": {
