@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "enabled": true,
-  "status": "ACTIVE",
+  "enabled": false,
+  "status": "BLOCKED",
   "workstream_id": "eldoria-unity-metadata-integrity-20261104",
   "request_id": "eldoria-unity-metadata-integrity-20261104",
   "asset_or_sector": "Original metadata identity and importer preservation only; no art source modification",
@@ -29,5 +29,6 @@
   "art_approved": false,
   "unity_visual_acceptance": "NOT_REQUESTED_NO_NEW_ART",
   "physical_mobile_tested": false,
-  "notes": "ai_authorship_policy preserves the permanent requirement for any genuine art work. This record makes no claim of a newly executed artistic cycle. Generic planner stages are consultative; do not execute geometry/scene authoring or spend credits for this metadata task."
+  "notes": "ai_authorship_policy preserves the permanent requirement for any genuine art work. This record makes no claim of a newly executed artistic cycle. Generic planner stages are consultative; do not execute geometry/scene authoring or spend credits for this metadata task. Candidate is preserved in PR153; scoped restoration/native integration is blocked on concurrent owners. No automatic art execution is authorized.",
+  "blocked_at": "2026-11-04T09:38:59.194Z"
 }
