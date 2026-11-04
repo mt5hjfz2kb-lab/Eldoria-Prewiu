@@ -75,6 +75,38 @@ jobs:
           Write-Host "DELIGHT_HUB_AFTER_START processes=$after licensing_client_processes=$lic"
           Write-Host 'No credentials entered, EULA accepted, license files altered by this workflow, or system restarted'
 
+      - name: Test Unity headless license on a disposable empty project while Hub is active
+        if: ${{ contains(github.event.head_commit.message, '[delight-hub-license-probe]') }}
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Existing native application active, do not interfere'
+          }
+          $editor=$env:UNITY_EDITOR_PATH
+          if(-not(Test-Path $editor)){throw 'Editor binary unavailable'}
+          $project=Join-Path $env:RUNNER_TEMP "DelightLicenseProbe-$env:GITHUB_RUN_ID"
+          $assets=Join-Path $project 'Assets'
+          $settings=Join-Path $project 'ProjectSettings'
+          New-Item -ItemType Directory -Force $assets,$settings|Out-Null
+          Set-Content (Join-Path $settings 'ProjectVersion.txt') 'm_EditorVersion: 6000.3.23f1'
+          $log=Join-Path $env:RUNNER_TEMP "DelightLicenseProbe-$env:GITHUB_RUN_ID.log"
+          $args=@('-batchmode','-nographics','-quit','-projectPath',$project,'-logFile',$log)
+          $p=Start-Process -FilePath $editor -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(180000)){
+            Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+            throw 'Only the isolated license-probe Editor exceeded 3-minute limit'
+          }
+          $body=Test-Path $log ? (Get-Content $log -Raw) : ''
+          $denied=$body -match 'No valid Unity Editor license found|com.unity.editor.headless.*not found'
+          Write-Host "DELIGHT_LICENSE_PROBE editor_exit=$($p.ExitCode)"
+          Write-Host "DELIGHT_LICENSE_PROBE licence_denied=$denied"
+          Write-Host 'No production project opened and no license/credential contents emitted'
+          if($denied -or $p.ExitCode -eq 198){
+            throw 'Existing Hub session did not restore a valid Unity headless entitlement; human sign-in may be needed'
+          }
+          if($p.ExitCode -ne 0){throw 'Disposable Editor exited abnormally for a reason other than explicit licensing denial'}
+          Write-Host 'DELIGHT_LICENSE_PROBE_PASS'
+
   native-art:
     if: ${{ !contains(github.event.head_commit.message, '[delight-license-diagnostic]') }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
