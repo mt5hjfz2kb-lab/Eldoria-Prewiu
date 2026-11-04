@@ -106,21 +106,39 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
             {
                 Assert(texture.LoadImage(File.ReadAllBytes(path)), "Actual camera PNG decodes");
                 Assert(texture.width==width && texture.height==height, "Actual native capture dimensions "+width+"x"+height);
-                // The authored Orín dialogue uses genuine dark-purple ARCANE
-                // parchment, unlike Aldric/Lyra/narrator's warm manuscript.
-                // Evaluate the actual correct material, not a universal sepia
-                // threshold that rejects correct Orín Unity screenshots.
-                var pixels=texture.GetPixels32(); int warm=0, arcane=0;
-                for (int y=0;y<texture.height/2;y+=3) for(int x=0;x<texture.width;x+=3)
+                // Original V3 uses warm paper for Aldric and Lyra; the
+                // V4 reference-approved Lyra panel is NIGHT-BLUE. Previous QA
+                // incorrectly demanded GOLD for V4 Lyra and rejected genuine
+                // Unity screenshots after three successful mobile captures.
+                // Orín uses the approved purple-only treatment in BOTH A/B.
+                var pixels=texture.GetPixels32(); int warm=0,arcane=0,nocturne=0;
+                for(int y=0;y<texture.height/2;y+=3) for(int x=0;x<texture.width;x+=3)
                 {
                     var p=pixels[y*texture.width+x];
-                    if (p.r>=188&&p.g>=162&&p.b>=95&&p.b<=210&&p.r>p.g&&p.g>p.b+14) warm++;
-                    if (p.b>p.g+10&&p.r>p.g+8&&p.b>40&&p.r>28) arcane++;
+                    if(p.r>=188&&p.g>=162&&p.b>=95&&p.b<=210&&p.r>p.g&&p.g>p.b+14)warm++;
+                    if(p.b>p.g+10&&p.r>p.g+8&&p.b>40&&p.r>28)arcane++;
+                    if(p.b>p.r+10&&p.b>p.g+6&&p.b>38&&p.r>14&&p.r<120)nocturne++;
                 }
-                bool expectsArcane=name.IndexOf("orin",StringComparison.OrdinalIgnoreCase)>=0;
-                Assert((expectsArcane?arcane:warm)>width*height/1200,
-                    "Correct authored "+(expectsArcane?"arcane purple":"warm gold")+
-                    " dialogue parchment visually present in "+name);
+                bool v4=name.StartsWith("B-after-",StringComparison.Ordinal);
+                bool orin=name.IndexOf("orin",StringComparison.OrdinalIgnoreCase)>=0;
+                bool lyra=name.IndexOf("lyra",StringComparison.OrdinalIgnoreCase)>=0;
+                bool expectsArcane=orin;
+                bool expectsNocturne=v4&&lyra;
+                int materialPixels=expectsArcane?arcane:expectsNocturne?nocturne:warm;
+                string materialName=expectsArcane?"arcane purple":
+                    expectsNocturne?"approved Lyra night-blue":"warm royal gold";
+                Assert(materialPixels>width*height/1200,
+                    "Correct "+materialName+" dialogue material in "+name+
+                    " count="+materialPixels+" minimum="+(width*height/1200));
+                if(v4)
+                {
+                    var authenticHud=Read(host,"Hud") as RoyalHUD;
+                    var material=authenticHud?
+                        authenticHud.GetComponentInChildren<RoyalGoldV4DialogueParchment>(true):null;
+                    Assert(material&&material.enabled&&material.Arcane==expectsArcane&&
+                        material.Nocturne==expectsNocturne,
+                        "Live V4 UI material matches authored speaker "+name);
+                }
             }
             finally { Object.Destroy(texture); }
         }
