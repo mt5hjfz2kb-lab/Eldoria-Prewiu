@@ -117,7 +117,10 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
                 {
                     Assert(actualPaper.NameplateWidth<=365f,
                         "Cinematic speaker plaque is SHORT, not a management-width header "+name);
-                    var actualFrame=actualHud.Modal.Title.rectTransform.parent as RectTransform;
+                    // Source of truth: the V4 manuscript and cutout are created
+                    // together under the same frame. Title can be temporarily
+                    // presented under another layout parent by Unity.
+                    var actualFrame=actualPaper.rectTransform.parent as RectTransform;
                     var actualAperture=actualFrame?
                         actualFrame.Find("Dialogue / genuine portrait aperture") as RectTransform:null;
                     // RectTransform's anchoredPosition uses anchor/pivot
