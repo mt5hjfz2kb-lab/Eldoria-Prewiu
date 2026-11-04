@@ -96,21 +96,18 @@ namespace Eldoria.ReferenceClean
                 pendingCompletion = false;
             }
 
-            if (activeBuilding != null)
+            if (!visible)
             {
-                if (visible && !loopDust.Running)
-                {
-                    loopDust.Play(); loopMotes.Play();
-                }
-                else if (!visible && loopDust.Running)
-                {
-                    loopDust.Clear(); loopMotes.Clear();
-                }
-            }
-            if (!visible && activeBuilding == null)
-            {
-                // No decorative construction geometry over the strategic map.
+                // Important: even when another construction is active, none of
+                // the *completion* sprites may leak into the world 4X camera.
+                // A hidden/resumed building keeps only the Gateway's real task.
                 foreach (var field in allFields) field.Clear();
+                return;
+            }
+            if (activeBuilding != null && !loopDust.Running)
+            {
+                loopDust.Play();
+                loopMotes.Play();
             }
 
             var cam = city.PlayerCamera;
