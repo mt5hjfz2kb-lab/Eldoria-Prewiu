@@ -14762,6 +14762,36 @@
         "catalog_changed": false,
         "unity_changed": false
       }
+    },
+    {
+      "id": "eldoria-catalog-reconciliation-staged-20261104",
+      "title": "Eldoria — propuesta de reclasificación del catálogo, sin editar el archivo reservado",
+      "owner": null,
+      "branch": "docs/catalog-reconciliation-staged-20261104",
+      "status": "completed",
+      "claimed_at": "2026-11-04T21:53:00Z",
+      "base_main_sha": "62aaa35be484c1dae9fa876ad17c34fab29d47ff",
+      "scope": [
+        "docs/project-organization/CATALOG_RECONCILIATION_STAGED_20261104.json"
+      ],
+      "resources": [],
+      "ownership_state": "available",
+      "ownership_revision": 2,
+      "write_scope_released": true,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only a staged JSON proposal; actual catalog remains owned by PR136.",
+      "budget_eur": 0,
+      "phase": "STAGED_RECONCILIATION_VERIFIED",
+      "next": "Await explicit PR136 catalog handoff and apply only entries whose status/source still match.",
+      "closed_reason": "PR159 merged with scoped ownership and architecture checks; staged four proposed catalog classifications, no edit to catalog claimed by PR136.",
+      "evidence": {
+        "pr": 159,
+        "merge_sha": "6bf08fc7387c0322b90397541f9f306b08b18757",
+        "proposed_entries": 4,
+        "catalog_changed": false,
+        "ownership_check": "success",
+        "architecture_check": "success"
+      }
     }
   ],
   "owner_specific_pauses": [
