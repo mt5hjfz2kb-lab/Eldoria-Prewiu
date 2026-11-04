@@ -246,6 +246,36 @@ jobs:
           }
           Write-Host 'DELIGHT_LICENSE_TIMELINE_READ_ONLY_COMPLETE no credentials, tokens, raw logs or license XML output'
 
+      - name: Check named user license expiration timestamps without exposing XML
+        if: ${{ contains(github.event.head_commit.message, '[delight-license-expiry]') }}
+        shell: powershell
+        run: |
+          $license=Join-Path $env:LOCALAPPDATA 'Unity/licenses/UnityEntitlementLicense.xml'
+          if(-not(Test-Path $license)){Write-Host 'DELIGHT_EXPIRY named_user_xml=false';exit 0}
+          # Confidential Unity license contents remain on the original Windows
+          # runner. Only date proximity and counts are emitted.
+          $file=Get-Item -LiteralPath $license -ErrorAction Stop
+          $body=Get-Content -LiteralPath $license -Raw -ErrorAction Stop
+          $pattern='[12][0-9]{3}-[01][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,7})?(?:Z|[+\-][0-2][0-9]:[0-5][0-9])'
+          $matches=[regex]::Matches($body,$pattern)
+          $dates=New-Object 'System.Collections.Generic.List[System.DateTime]'
+          foreach($item in $matches){
+            try{
+              $date=[DateTimeOffset]::Parse($item.Value,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime
+              $dates.Add($date)
+            }catch{}
+          }
+          $failure=[DateTime]'2026-11-04T07:55:23Z'
+          $lastSuccess=[DateTime]'2026-11-04T00:42:56Z'
+          $nearFailure=@($dates|Where-Object { [math]::Abs(($_-$failure).TotalHours) -le 4 })
+          $inGap=@($dates|Where-Object {$_ -gt $lastSuccess -and $_ -le $failure})
+          $afterLastSuccess=@($dates|Where-Object {$_ -gt $lastSuccess})
+          $thirtyDays=$file.LastWriteTimeUtc.AddDays(30)
+          $delta=[math]::Round(($failure-$thirtyDays).TotalMinutes,1)
+          Write-Host "DELIGHT_EXPIRY recognized_iso_dates=$($dates.Count) near_first_failure_4h=$($nearFailure.Count) dates_between_last_success_and_failure=$($inGap.Count)"
+          Write-Host "DELIGHT_EXPIRY dates_after_success=$($afterLastSuccess.Count) file_age_at_failure_days=$([math]::Round(($failure-$file.LastWriteTimeUtc).TotalDays,3)) failure_minutes_after_30days=$delta"
+          Write-Host 'DELIGHT_EXPIRY_READONLY_COMPLETE no XML or token values exported, no files modified'
+
   source-domain:
     if: ${{ contains(github.event.head_commit.message, '[delight-domain-test]') }}
     runs-on: ubuntu-latest
