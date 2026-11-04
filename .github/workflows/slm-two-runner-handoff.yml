@@ -1,0 +1,71 @@
+name: "ELDORIA - SLM independent runner handoff (public fixture only)"
+on:
+  push:
+    branches: [pilot/slm-two-runner-memory-handoff-20261104]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: slm-handoff-20261104
+  cancel-in-progress: false
+jobs:
+  writer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned SuperLocalMemory locally on ephemeral Linux
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv "$RUNNER_TEMP/slm-venv"
+          "$RUNNER_TEMP/slm-venv/bin/pip" -q install --disable-pip-version-check --no-cache-dir "superlocalmemory==4.2.12"
+          "$RUNNER_TEMP/slm-venv/bin/slm" --version
+      - name: Agent A - store public reviewed memory and seal stopped snapshot
+        run: |
+          export PATH="$RUNNER_TEMP/slm-venv/bin:$PATH"
+          python pilot/handoff.py writer
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: slm-eldoria-writer
+          path: "${{ runner.temp }}/eldoria-writer-result/"
+          if-no-files-found: warn
+          retention-days: 7
+  reader:
+    needs: writer
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Independently install pinned memory engine
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv "$RUNNER_TEMP/slm-venv"
+          "$RUNNER_TEMP/slm-venv/bin/pip" -q install --disable-pip-version-check --no-cache-dir "superlocalmemory==4.2.12"
+      - uses: actions/download-artifact@v4
+        with:
+          name: slm-eldoria-writer
+          path: "${{ runner.temp }}/eldoria-handoff-input/"
+      - name: Agent B - restore data, check historical sources via MCP, write new fact
+        run: |
+          export PATH="$RUNNER_TEMP/slm-venv/bin:$PATH"
+          python pilot/handoff.py reader
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: slm-eldoria-reader
+          path: "${{ runner.temp }}/eldoria-reader-result/"
+          if-no-files-found: warn
+          retention-days: 7

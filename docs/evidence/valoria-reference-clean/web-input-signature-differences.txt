@@ -1,2 +1,0 @@
-Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitBase.shader
-Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainLitBase.shader.meta
