@@ -15,6 +15,7 @@ namespace Eldoria.ReferenceClean
         const int MaxOverlayMeshes=28;
 
         readonly List<MeshRenderer> overlays=new List<MeshRenderer>(MaxOverlayMeshes);
+        readonly List<GameObject> overlayObjects=new List<GameObject>(MaxOverlayMeshes);
         Material glowMaterial;
         GameObject overlayRoot;
         GameObject lightRoot;
@@ -143,6 +144,7 @@ namespace Eldoria.ReferenceClean
                 renderer.receiveShadows=false;
                 renderer.enabled=true;
                 overlays.Add(renderer);
+                overlayObjects.Add(child);
             }
             if(!hasBounds || overlays.Count==0){Clear();return false;}
             boundsMinY=combined.min.y;
@@ -226,6 +228,8 @@ namespace Eldoria.ReferenceClean
         public void Clear()
         {
             foreach(var overlay in overlays)if(overlay)overlay.enabled=false;
+            foreach(var child in overlayObjects)if(child)Object.Destroy(child);
+            overlayObjects.Clear();
             overlays.Clear();
             builtCount=0;
             running=false;finishing=false;visible=true;
