@@ -197,6 +197,55 @@ jobs:
           Write-Host 'No CLI login or account switch; no tokens, account identifiers or license data printed'
           $global:LASTEXITCODE=0
 
+      - name: Inspect only license file timestamps and classification of auth events
+        if: ${{ contains(github.event.head_commit.message, '[delight-license-timeline]') }}
+        shell: powershell
+        run: |
+          # No Editor/Hub process is launched, no license is renewed, no secret
+          # value, username, file body, paths or log text leaves Windows.
+          $files=@(
+            @{label='named_user_entitlement'; path=(Join-Path $env:LOCALAPPDATA 'Unity/licenses/UnityEntitlementLicense.xml')},
+            @{label='unity_licensing_log'; path=(Join-Path $env:LOCALAPPDATA 'Unity/Unity.Licensing.Client.log')},
+            @{label='unity_hub_info_log'; path=(Join-Path $env:APPDATA 'UnityHub/logs/info-log.json')},
+            @{label='unity_entitlements_audit'; path=(Join-Path $env:LOCALAPPDATA 'Unity/Unity.Entitlements.Audit.log')}
+          )
+          $now=[DateTime]::UtcNow
+          foreach($entry in $files){
+            $file=Get-Item -LiteralPath $entry.path -ErrorAction SilentlyContinue
+            if(-not $file){
+              Write-Host "DELIGHT_LICENSE_TIMELINE name=$($entry.label) exists=false"
+              continue
+            }
+            $hours=[math]::Round(($now-$file.LastWriteTimeUtc).TotalHours,2)
+            Write-Host "DELIGHT_LICENSE_TIMELINE name=$($entry.label) exists=true last_write_utc=$($file.LastWriteTimeUtc.ToString('yyyy-MM-ddTHH:mm:ssZ')) age_hours=$hours"
+            # Account logs are read privately on the PC; print only numerical
+            # incident categories, never paths, credentials or raw messages.
+            if($entry.label -eq 'named_user_entitlement'){continue}
+            try{
+              $tail=Get-Content -LiteralPath $entry.path -Tail 1500 -ErrorAction Stop
+              $events=@{
+                missing_access_token=0
+                signed_out=0
+                refresh_failed=0
+                authentication_error=0
+                entitlement_missing=0
+                licensing_client_connection=0
+              }
+              foreach($line in $tail){
+                if($line -match 'Access token is unavailable'){$events.missing_access_token++}
+                if($line -match 'sign(ed)?[ _-]?out|log(out|ged out)|not signed in'){$events.signed_out++}
+                if($line -match 'token.*(refresh|expired|failed)|refresh.*(fail|error)'){$events.refresh_failed++}
+                if($line -match 'auth.*(fail|error|expired)|invalid.*(token|credentials)'){$events.authentication_error++}
+                if($line -match 'entitlement.*(not found|missing|0 free|no valid)'){$events.entitlement_missing++}
+                if($line -match 'LicensingClient|licensing client'){$events.licensing_client_connection++}
+              }
+              Write-Host "DELIGHT_LICENSE_TIMELINE name=$($entry.label) sanitized_counts=$($events|ConvertTo-Json -Compress)"
+            }catch{
+              Write-Host "DELIGHT_LICENSE_TIMELINE name=$($entry.label) content_accessible=false"
+            }
+          }
+          Write-Host 'DELIGHT_LICENSE_TIMELINE_READ_ONLY_COMPLETE no credentials, tokens, raw logs or license XML output'
+
   source-domain:
     if: ${{ contains(github.event.head_commit.message, '[delight-domain-test]') }}
     runs-on: ubuntu-latest
