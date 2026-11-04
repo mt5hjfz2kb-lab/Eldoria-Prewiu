@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T08:35:24.530Z",
+  "updated_at": "2026-11-04T08:35:40.353Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3443,7 +3443,7 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 8,
+      "ownership_revision": 9,
       "write_scope_released": false,
       "branch": "feature/eldoria-construction-delight-20261104",
       "status": "active",
@@ -3510,7 +3510,7 @@
         "unity_cli_license_exit": 4,
         "unity_hub_adoptable_run": 41799334303,
         "unity_hub_session_adoptable": false,
-        "csharp_state_run": 418999,
+        "csharp_state_run": 41799938783,
         "csharp_state_assertions_passed": 34,
         "csharp_syntax_run": 41800430492,
         "csharp_syntax_files_passed": 3,
