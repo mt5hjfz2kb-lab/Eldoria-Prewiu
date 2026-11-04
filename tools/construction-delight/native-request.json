@@ -21,5 +21,19 @@
   ],
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
-  "art_approved": false
+  "art_approved": false,
+  "attempt": 2,
+  "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
+  "corrections": [
+    "Avoid Transform.Find slash interpretation: owned effect group uses slash-free name",
+    "Sparse-checkout only true Unity project + tools/pipeline",
+    "Clear isolated screenshot folder before new run",
+    "26 camera images with 6 finishing timestamps"
+  ],
+  "previous_attempt": {
+    "run_id": 41746271850,
+    "source_sha": "9f7e46db29ad04138c2d3a071dbb6cc8ddf59f36",
+    "status": "running_on_old_revision",
+    "reason": "known deterministic QA Transform.Find slash path issue; leave running until safe completion"
+  }
 }
