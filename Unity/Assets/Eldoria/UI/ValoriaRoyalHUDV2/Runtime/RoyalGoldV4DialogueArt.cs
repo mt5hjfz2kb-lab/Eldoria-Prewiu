@@ -298,7 +298,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 var add=Mathf.Min(needed-available,maxHeight-height);
                 height+=add;available+=add;
             }
-            float minimum=Mathf.Min(height,compact?330f:landscape?270f:310f);
+            // Cinematic portraits should not collapse to tiny avatars on a
+            // short line of dialogue. Keep the character composition stable.
+            float minimum=Mathf.Min(height,cinematic?350f:
+                compact?330f:landscape?270f:310f);
             float natural=bodyTop+Mathf.Max(needed,compact?68f:75f)+footer+14f;
             if(natural<height)
             {
@@ -310,6 +313,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 compact?Mathf.Min(235f,width*.33f):Mathf.Min(column+25f,height-25f);
             portraitY=cinematic?(isLyra?-25f:-56f):
                 compact?7f:Mathf.Max(5f,(height-portraitSize)*.45f);
+            if(cinematic)
+            {
+                // The panel can still contract to 350 units for short text.
+                // Keep the actual image silhouette overlapping the real
+                // manuscript edge at every length, not just long dialogues.
+                float paperLeft=column*.68f;
+                portraitX=Mathf.Max(portraitX,paperLeft+70f-portraitSize*.96f);
+            }
             frame.anchorMin=frame.anchorMax=new Vector2(.5f,0);
             frame.pivot=new Vector2(.5f,0);
             frame.sizeDelta=new Vector2(width,height);
