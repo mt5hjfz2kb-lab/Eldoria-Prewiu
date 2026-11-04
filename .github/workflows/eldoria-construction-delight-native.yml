@@ -44,6 +44,8 @@ jobs:
         with:
           path: delight-source
           clean: false
+          filter: blob:none
+          fetch-depth: 1
           # Same exact Unity source, without cloning unrelated multi-GB art
           # history, previous captures and archived Blender experiments.
           sparse-checkout: |
