@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "enabled": true,
-  "status": "ACTIVE",
+  "enabled": false,
+  "status": "BLOCKED",
   "workstream_id": "eldoria-unity-metadata-integrity-20261104",
   "request_id": "eldoria-unity-metadata-integrity-20261104",
   "asset_or_sector": "Original metadata identity and importer preservation only; no art source modification",
@@ -29,5 +29,6 @@
   "art_approved": false,
   "unity_visual_acceptance": "NOT_REQUESTED_NO_NEW_ART",
   "physical_mobile_tested": false,
-  "notes": "Metadata-only preservation resumed by owner instruction. No new artwork or credit spend. Existing active production scopes remain protected. Isolated Unity validation requires this workstream's live Windows lease."
+  "notes": "PR153 reconciliation and isolated native proof prepared. Native execution has not occurred. Explicit priority/ownership conflict remains with dialogue/spawnling scopes and the active Construction Windows holder; no competing Editor or source takeover performed.",
+  "blocked_at": "2026-11-04T10:13:29.997Z"
 }
