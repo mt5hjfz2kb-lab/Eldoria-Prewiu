@@ -6255,27 +6255,6 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
-    },
-    {
-      "id": "eldoria-documentation-semantic-review-20261104",
-      "title": "Eldoria — revisión semántica documental, lote 1",
-      "owner": "chatgpt-eldoria-semantic-review-20261104",
-      "branch": "docs/semantic-review-batch1-20261104",
-      "status": "active",
-      "claimed_at": "2026-11-04T19:47:00Z",
-      "base_main_sha": "4fbfb2be22ca51ef8c48ae90838f4e6bce5f19d2",
-      "scope": [
-        "docs/project-organization/SEMANTIC_REVIEW_BATCH1_20261104.md"
-      ],
-      "resources": [],
-      "ownership_state": "claimed",
-      "ownership_revision": 1,
-      "write_scope_released": false,
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Read-only review of existing source docs; new report only, no Unity/catalog edits.",
-      "budget_eur": 0,
-      "phase": "SEMANTIC_REVIEW_BATCH1",
-      "next": "Review high-risk historical operational docs against binding current contracts; document evidence and safe dispositions without editing claimed docs/catalog."
     }
   ],
   "history": [
@@ -14652,6 +14631,38 @@
       "next": "Follow-up dependent review: 175 documents pending semantic verification and 43 cross-root duplicate groups requiring reference/license/provenance checks; do not delete or move Unity assets without native dependency validation.",
       "phase": "GLOBAL_STRUCTURAL_ORGANIZATION_VERIFIED",
       "closed_reason": "Inventory, navigation and safe structural organization merged. Semantic review of 175 documents and asset-dependency cleanup are separate pending work, not certified by this closeout."
+    },
+    {
+      "id": "eldoria-documentation-semantic-review-20261104",
+      "title": "Eldoria — revisión semántica documental, lote 1",
+      "owner": null,
+      "branch": "docs/semantic-review-batch1-20261104",
+      "status": "completed",
+      "claimed_at": "2026-11-04T19:47:00Z",
+      "base_main_sha": "4fbfb2be22ca51ef8c48ae90838f4e6bce5f19d2",
+      "scope": [
+        "docs/project-organization/SEMANTIC_REVIEW_BATCH1_20261104.md"
+      ],
+      "resources": [],
+      "ownership_state": "available",
+      "ownership_revision": 2,
+      "write_scope_released": true,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only review of existing source docs; new report only, no Unity/catalog edits.",
+      "budget_eur": 0,
+      "phase": "SEMANTIC_REVIEW_BATCH1_VERIFIED",
+      "next": "Review remaining unverified documents; apply catalog classification only after authorized transfer from live claimants.",
+      "closed_reason": "First semantic review batch merged with CI success; catalog updates reserved to other owners.",
+      "evidence": {
+        "pr": 155,
+        "merge_sha": "7b821c92d1a92dc4eb673504c3feb3214a1e71ba",
+        "documents_inspected": 6,
+        "groups": 5,
+        "architecture_run": 41902316451,
+        "ownership_run": 41902313288,
+        "catalog_changed": false,
+        "unity_changed": false
+      }
     }
   ],
   "owner_specific_pauses": [
