@@ -246,20 +246,54 @@ namespace Eldoria.ReferenceClean
                             break;
                         }
             }
+            if(!ColliderUsable(target)) target=null;
+            // The canonical integrated scene does not necessarily parent its
+            // WorldHotspots under ValoriaReferenceCleanGameplay. The authoritative
+            // host already indexes real game targets; reuse it, not guessed coords.
+            if(!target && integrated && integrated.Ready)
+            {
+                var hotspot=integrated.FindTarget(id);
+                if(hotspot && hotspot.TryGetComponent(out Collider found) &&
+                   ColliderUsable(found)) target=found;
+            }
             if(!target)
                 foreach(var point in GetComponentsInChildren<WorldHotspot>(true))
-                    if(point && point.Id==id && point.TryGetComponent(out Collider found))
+                    if(point && point.Id==id && point.TryGetComponent(out Collider found) &&
+                       ColliderUsable(found))
                     {
                         target=found;
                         break;
                     }
-            if(target && target.enabled && target.gameObject.activeInHierarchy &&
-               target.bounds.size.sqrMagnitude>.001f)
+            if(ColliderUsable(target))
             {
                 bounds=target.bounds;
                 return true;
             }
+            // During a genuine first construction the future built model is
+            // intentionally inactive. Use the visible scaffold or parcel ground
+            // from the same real scene, never a placeholder world position.
+            if(parcels)
+            {
+                GameObject construction=id=="sawmill" ? parcels.LeftConstruction :
+                                        id=="barracks" ? parcels.RightConstruction : null;
+                GameObject ground=id=="sawmill" ? parcels.LeftGround :
+                                  id=="barracks" ? parcels.RightGround : null;
+                if(VisibleBounds(construction,out bounds) ||
+                   VisibleBounds(ground,out bounds)) return true;
+            }
             return ModelBounds(id,out bounds);
+        }
+
+        static bool ColliderUsable(Collider c)
+        {
+            return c && c.enabled && c.gameObject.activeInHierarchy &&
+                   c.bounds.size.sqrMagnitude>.001f;
+        }
+
+        static bool VisibleBounds(GameObject model, out Bounds bounds)
+        {
+            bounds=default;
+            return VisibleBounds(model,out bounds);
         }
 
         bool ModelBounds(string id, out Bounds bounds)
