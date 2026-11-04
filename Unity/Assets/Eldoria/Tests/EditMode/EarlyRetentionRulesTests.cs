@@ -101,6 +101,9 @@ namespace Eldoria.Tests
             Assert.That(first.Ok,Is.True,first.Message);
             Assert.That(g.Snapshot().Retention.LastClearedStage,Is.EqualTo(1));
             Assert.That(g.Snapshot().LastBattleReport.TargetId,Is.EqualTo("vigilant:1"));
+            Assert.That(g.Snapshot().LastBattleReport.OwnRoster,Is.Not.Null);
+            Assert.That(g.Snapshot().LastBattleReport.OwnRoster.Total,
+                Is.EqualTo(g.Snapshot().LastBattleReport.Troops));
             Assert.That(g.Snapshot().Resources.Wood,Is.GreaterThan(before));
             long revision=g.Snapshot().Revision;
             int loot=g.Snapshot().Resources.Wood;
@@ -218,6 +221,11 @@ namespace Eldoria.Tests
             gateway=new LocalGateway(time,store);
             Assert.That(gateway.Execute(Cmd(gateway,"scout-story-claim","ScoutClaim",order.Id)).Ok,Is.True);
             var after=gateway.Snapshot();
+            var historical=after.Mailbox.List("informes").Single(x=>x.Type=="exploration");
+            Assert.That(historical.DiscoveryText,Is.EqualTo(expected));
+            Assert.That(historical.DiscoveryKind,Is.EqualTo(order.Kind));
+            Assert.That(historical.DiscoveryOrderId,Is.EqualTo(order.Id));
+            Assert.That(historical.Subtitle,Is.EqualTo(EarlyRetentionRules.ScoutDiscoveryTitle(order)));
             Assert.That(after.Retention.TotalScoutReports,Is.EqualTo(1));
             Assert.That(after.Retention.ScoutDiscoveryMask,Is.EqualTo(1<<order.Kind));
             Assert.That(after.Retention.LatestDiscoveryText,Is.EqualTo(expected));
@@ -226,6 +234,8 @@ namespace Eldoria.Tests
             gateway=new LocalGateway(time,store);
             Assert.That(gateway.Snapshot().Retention.LatestDiscoveryTitle,Is.EqualTo(title));
             Assert.That(gateway.Snapshot().Retention.LatestDiscoveryText,Is.EqualTo(expected));
+            Assert.That(gateway.Snapshot().Mailbox.List("informes").Single(x=>x.Type=="exploration").DiscoveryText,
+                Is.EqualTo(expected),"Reload must retain the original discovery, not a later latest note");
             Assert.That(gateway.Execute(Cmd(gateway,"scout-story-claim-again","ScoutClaim",order.Id)).Ok,Is.False);
             Assert.That(gateway.Snapshot().Retention.TotalScoutReports,Is.EqualTo(claimCount));
             Assert.That(EarlyRetentionRules.RevealedScoutReports(gateway.Snapshot().Retention),Is.EqualTo(1));
@@ -287,6 +297,72 @@ namespace Eldoria.Tests
             tampered.Retention.LastClearedStage=250;
             Assert.That(g.Snapshot().Retention.Orders[0].Id,Is.EqualTo(before));
             Assert.That(g.Snapshot().Retention.LastClearedStage,Is.Zero);
+        }
+
+        [Test] public void ScoutStrategyTradesRealTroopsForRealUtcTimeAndPreservesLegacy()
+        {
+            Assert.That(EarlyRetentionRules.ScoutTroopsForStrategy(0),Is.EqualTo(12));
+            Assert.That(EarlyRetentionRules.ScoutTroopsForStrategy(1),Is.EqualTo(8));
+            Assert.That(EarlyRetentionRules.ScoutTroopsForStrategy(2),Is.EqualTo(20));
+            var clock=new Clock();
+            var store=new MemoryStateStore{Value=Ready()};
+            var gateway=new LocalGateway(clock,store);
+            var chosen=gateway.Snapshot().Retention.Orders.First(o=>o.Kind!=0);
+            var stealth=gateway.Execute(Cmd(gateway,"scout-stealth","ScoutDispatch",chosen.Id+"|1"));
+            Assert.That(stealth.Ok,Is.True,stealth.Message);
+            var order=gateway.Snapshot().Retention.Orders.First(o=>o.Id==chosen.Id);
+            Assert.That(order.StrategyMode,Is.EqualTo(1));
+            Assert.That(order.Troops.Total,Is.EqualTo(8));
+            Assert.That(order.EndsUtcTicks-order.StartedUtcTicks,
+                Is.EqualTo(TimeSpan.FromSeconds(
+                    EarlyRetentionRules.ScoutDurationSeconds(order.Kind,1)).Ticks));
+            Assert.That(EarlyRetentionRules.ScoutDurationSeconds(order.Kind,1),
+                Is.GreaterThan(EarlyRetentionRules.ScoutDurationSeconds(order.Kind)));
+            var reload=new LocalGateway(clock,store).Snapshot();
+            Assert.That(reload.Retention.Orders.First(o=>o.Id==chosen.Id).StrategyMode,
+                Is.EqualTo(1),"Strategy must survive an actual save/load");
+            clock.AddSeconds(EarlyRetentionRules.ScoutDurationSeconds(order.Kind,1));
+            gateway=new LocalGateway(clock,store);
+            var claim=gateway.Execute(Cmd(gateway,"scout-claim","ScoutClaim",chosen.Id));
+            Assert.That(claim.Ok,Is.True,claim.Message);
+            int reports=gateway.Snapshot().Retention.TotalScoutReports;
+            Assert.That(gateway.Execute(Cmd(gateway,"scout-repeat","ScoutClaim",chosen.Id)).Ok,
+                Is.False);
+            Assert.That(gateway.Snapshot().Retention.TotalScoutReports,Is.EqualTo(reports));
+
+            var fastClock=new Clock();
+            var fastStore=new MemoryStateStore{Value=Ready()};
+            var fastGateway=new LocalGateway(fastClock,fastStore);
+            var fastOrder=fastGateway.Snapshot().Retention.Orders.First(o=>o.Kind!=0);
+            var fast=fastGateway.Execute(Cmd(fastGateway,"scout-fast","ScoutDispatch",fastOrder.Id+"|2"));
+            Assert.That(fast.Ok,Is.True,fast.Message);
+            var dispatched=fastGateway.Snapshot().Retention.Orders.First(o=>o.Id==fastOrder.Id);
+            Assert.That(dispatched.StrategyMode,Is.EqualTo(2));
+            Assert.That(dispatched.Troops.Total,Is.EqualTo(20));
+            Assert.That(EarlyRetentionRules.ScoutDurationSeconds(dispatched.Kind,2),
+                Is.LessThan(EarlyRetentionRules.ScoutDurationSeconds(dispatched.Kind)));
+        }
+
+        [Test] public void ScoutStrategyRejectsUnknownModesAndInsufficientSpecialDetachment()
+        {
+            var clock=new Clock();
+            var state=Ready();
+            var store=new MemoryStateStore{Value=state};
+            var gateway=new LocalGateway(clock,store);
+            var order=gateway.Snapshot().Retention.Orders.First(o=>o.Kind!=0);
+            Assert.That(gateway.Execute(Cmd(gateway,"bad-mode","ScoutDispatch",order.Id+"|9")).Ok,
+                Is.False);
+            Assert.That(gateway.Snapshot().Retention.Orders.First(o=>o.Id==order.Id).StartedUtcTicks,
+                Is.Zero);
+            state=Ready();
+            state.Available=new ArmyRoster{ArcherT1=12};
+            var limited=new LocalGateway(clock,new MemoryStateStore{Value=state});
+            var limitedId=limited.Snapshot().Retention.Orders.First(o=>o.Kind!=0).Id;
+            Assert.That(limited.Execute(Cmd(limited,"insufficient","ScoutDispatch",limitedId+"|2")).Ok,
+                Is.False);
+            // The legacy normal mode stays available with 12 troops.
+            Assert.That(limited.Execute(Cmd(limited,"legacy","ScoutDispatch",limitedId)).Ok,
+                Is.True);
         }
     }
 }

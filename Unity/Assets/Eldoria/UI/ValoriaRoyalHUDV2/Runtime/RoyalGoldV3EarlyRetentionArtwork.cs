@@ -325,8 +325,15 @@ namespace Eldoria.UI.RoyalGold.V2
                         Vector2.Lerp(bend,end,t0),t0);
                     var p1=Vector2.Lerp(Vector2.Lerp(a,bend,t1),
                         Vector2.Lerp(bend,end,t1),t1);
-                    Line(vh,p0,p1,Mathf.Max(3f,b.width/145f),
-                        new Color(.13f,.10f,.08f,.86f));
+                    // A real cut into the painted road: cast/contact shadow
+                    // on the downslope, warm stone edge, then the *unchanged*
+                    // cleared-state colour. No second fictitious route.
+                    var relief=new Vector2(0f,-Mathf.Clamp(b.height*.004f,1.2f,2.6f));
+                    Line(vh,p0+relief,p1+relief,
+                        Mathf.Max(4.5f,b.width/125f),
+                        new Color(.025f,.032f,.032f,.72f));
+                    Line(vh,p0,p1,Mathf.Max(3.5f,b.width/145f),
+                        new Color(.43f,.34f,.22f,.79f));
                     Line(vh,p0,p1,Mathf.Max(1.5f,b.width/245f),
                         (Chapter-1)*25+step+1<=Cleared
                             ?new Color(.99f,.78f,.35f,.96f)
@@ -345,6 +352,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(boss)r*=1.3f;
                 var gold=new Color(.78f,.63f,.39f,1);
                 var dark=new Color(.12f,.15f,.17f,.92f);
+                // Stone-mounted stage seal, not a floating UI dot. The
+                // bottom-offset dark lip casts onto its actual map position;
+                // top-left gold catches the sunset of the approved painting.
+                var down=new Vector2(0f,-Mathf.Max(1.4f,r*.27f));
+                Disc(vh,nodes[i]+down,r+4f,
+                    new Color(.016f,.027f,.024f,.68f));
+                Disc(vh,nodes[i]+new Vector2(-r*.10f,r*.07f),r+2.8f,
+                    new Color(.91f,.75f,.49f,.34f));
                 if(current){
                     Disc(vh,nodes[i],r+9,new Color(1f,.50f,.05f,.20f));
                     Disc(vh,nodes[i],r+5,new Color(1f,.70f,.12f,.75f));

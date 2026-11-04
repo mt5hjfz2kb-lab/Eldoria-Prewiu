@@ -324,6 +324,12 @@ namespace Eldoria.Tests
                 "Returning from World resumes the interrupted leg and visibly pauses in Idle at its genuine destination");
 
             var state = Gateway().Snapshot();
+            // This verifies a named hero leaving, so select him through the real
+            // command; automatic supply marches may carry troops without a hero.
+            var prepared = Gateway().Execute(new GameCommand(Guid.NewGuid().ToString("N"),
+                state.PlayerId, "ConfigureMarch", "march-main:60:aldric", state.Revision));
+            Assert.That(prepared.Ok, Is.True, prepared.Message);
+            state = Gateway().Snapshot();
             var sent = Gateway().Execute(new GameCommand(Guid.NewGuid().ToString("N"),
                 state.PlayerId, "Gather", "forest-valoria", state.Revision));
             Assert.That(sent.Ok, Is.True, sent.Message);

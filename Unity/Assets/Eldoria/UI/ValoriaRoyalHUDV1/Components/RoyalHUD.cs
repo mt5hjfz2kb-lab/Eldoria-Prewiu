@@ -130,7 +130,14 @@ namespace Eldoria.UI.RoyalGold {
      // The approved CONSTRUIR medallion is a genuine contextual shortcut,
      // not an extra economy system. All costs, timers, locks and spending
      // remain on the original selected building and its gateway offer.
-     SelectBuilding(current.BastionLevel>=2?"barracks":"sawmill");
+     if(current.BastionLevel<2){SelectBuilding("sawmill");return;}
+     // A built barracks projects Recruit on its training target. Sending
+     // CONSTRUIR there opened the military room instead of the city cartouche.
+     // Keep initial construction on its real Build offer; use the existing
+     // upgrade target once built, with the same gateway, costs and timers.
+     var barracks=session.Read("barracks",english).Building;
+     SelectBuilding(barracks!=null&&barracks.Level==0?"barracks":
+      current.BastionLevel>=3?"upgrade-barracks":"bastion");
      return;
     }if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
   void Extra(){if(narrative){if(cinematic)cinematic.Advance();return;}if(shown==RoyalSection.Heroes){Modal.Hide();host?.Open(RoyalSection.Inventory);return;}if(shown==RoyalSection.Settings){resetArmed=false;resetArmedUntil=0f;SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}

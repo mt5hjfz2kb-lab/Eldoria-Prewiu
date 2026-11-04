@@ -21,3 +21,9 @@ both archived Git blobs. The native validation script refuses full scene/runtime
 validation while that forbidden Resource exists. Catalog entries remain
 OWNER_BLOCKED_NO_USE. These are preservation safeguards, not artistic approval
 or a claim that the separate PR136 C# build guard has been integrated.
+
+PR136 additionally makes the historical runtime replacement inert.
+RejectedLegacyBastionBuildGuard rejects prohibited shipping identities, runtime
+source references and enabled-scene dependencies. The native proof writes
+legacy-bastion-veto.json. Retain both this build guard and the metadata audit.
+No replacement model or artistic approval is implied.
