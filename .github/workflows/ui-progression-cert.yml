@@ -476,8 +476,15 @@ jobs:
             & git fetch --no-tags --depth=1 origin $baseline
             if($LASTEXITCODE -ne 0){throw 'Cannot fetch immutable runtime baseline'}
             foreach($path in $paths){
-              $lines=@(& git show "${baseline}:$path");if($LASTEXITCODE -ne 0){throw "Missing baseline source $path"}
-              [IO.File]::WriteAllText((Join-Path $env:GITHUB_WORKSPACE $path),($lines -join "`n")+"`n",(New-Object Text.UTF8Encoding($false)))
+              # Copy raw Git stdout, bypassing Windows PowerShell's text code page.
+              $info=New-Object Diagnostics.ProcessStartInfo
+              $info.FileName=(Get-Command git.exe).Source;$info.Arguments="show ${baseline}:$path"
+              $info.UseShellExecute=$false;$info.RedirectStandardOutput=$true;$info.CreateNoWindow=$true
+              $gitProcess=New-Object Diagnostics.Process;$gitProcess.StartInfo=$info
+              if(-not $gitProcess.Start()){throw "Cannot read baseline source $path"}
+              $stream=[IO.File]::Create((Join-Path $env:GITHUB_WORKSPACE $path))
+              try{$gitProcess.StandardOutput.BaseStream.CopyTo($stream)}finally{$stream.Dispose()}
+              $gitProcess.WaitForExit();if($gitProcess.ExitCode -ne 0){throw "Missing baseline source $path"}
               $actual=(& git hash-object $path).Trim();$wanted=(& git rev-parse "${baseline}:$path").Trim()
               if($actual -ne $wanted){throw "Baseline source bytes differ: $path"}
             }
@@ -1015,6 +1022,8 @@ jobs:
           $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if(-not $process.WaitForExit(1200000)){throw "Candidate build exceeded 20 minutes; preserve process $($process.Id) and diagnose before another Unity run"}
           if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 160};throw "Candidate build failed: $($process.ExitCode)"}
+          $launcher='@echo off'+"`r`n"+'cd /d "%~dp0"'+"`r`n"+'Eldoria.exe --eldoria-profile=OWNER_I_II'+"`r`n"
+          [IO.File]::WriteAllText((Join-Path $env:GITHUB_WORKSPACE 'Unity/Builds/PR136Candidate/PLAY_OWNER_I_II_CANDIDATE.bat'),$launcher,[Text.Encoding]::ASCII)
           $proof=Get-Content 'docs/evidence/valoria-reference-clean/windows-candidate.json' -Raw|ConvertFrom-Json
           if($proof.status -ne 'WINDOWS_CANDIDATE_COMPILED_NOT_PUBLISHED' -or $proof.source_sha -ne $env:ALDRIC_REQUEST_SOURCE_SHA){throw 'Candidate build identity mismatch'}
       - uses: actions/upload-artifact@v4
