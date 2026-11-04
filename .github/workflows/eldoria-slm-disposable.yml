@@ -1,0 +1,46 @@
+name: "ELDORIA - SuperLocalMemory isolated memory benchmark"
+on:
+  push:
+    branches: [pilot/slm-disposable-validation-20261104]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  slm-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned memory package in disposable virtualenv
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv "$RUNNER_TEMP/eldoria-slm-venv"
+          "$RUNNER_TEMP/eldoria-slm-venv/bin/python" -m pip install --disable-pip-version-check --no-cache-dir --timeout 45 "superlocalmemory==4.2.12"
+          "$RUNNER_TEMP/eldoria-slm-venv/bin/slm" --version
+      - name: Verify memory persistence, retrieval and abstention using only public data
+        shell: bash
+        env:
+          SLM_SKIP_LAYA: "1"
+          SLM_MCP_PROFILE: core
+        run: |
+          set -euo pipefail
+          export HOME="$RUNNER_TEMP/eldoria-slm-home"
+          export SLM_HOME="$RUNNER_TEMP/eldoria-slm-home/data"
+          mkdir -p "$HOME" "$RUNNER_TEMP/eldoria-slm-result"
+          export PATH="$RUNNER_TEMP/eldoria-slm-venv/bin:$PATH"
+          python isolated_slm_benchmark.py | tee "$RUNNER_TEMP/eldoria-slm-result/console.log"
+      - name: Upload isolated results (no private memory or credentials)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-slm-disposable-proof
+          path: "$RUNNER_TEMP/eldoria-slm-result/"
+          if-no-files-found: warn
+          retention-days: 14

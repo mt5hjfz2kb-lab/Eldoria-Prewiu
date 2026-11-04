@@ -1,1 +1,0 @@
-Native213: fissure visibility recovered but visually rejected: continuous bright sinusoidal stripe, ribbed tall inner rock and stretched wall UV. Native214 changes geometry to lower broken edges, irregular interrupted seam and dominant-plane UV. No integration or target-score claim.
