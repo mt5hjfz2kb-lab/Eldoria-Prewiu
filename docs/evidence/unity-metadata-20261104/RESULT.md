@@ -23,9 +23,9 @@ external backup ever held them. Existing runner projects provided recovery copie
 
 | Item | Restored in Unity candidate | Preserved pending active owner |
 | --- | ---: | ---: |
-| File metadata | 245 | 32 |
-| Folder metadata | 43 | 25 |
-| Total original metadata | 288 | 57 |
+| File metadata | 277 | 0 |
+| Folder metadata | 68 | 0 |
+| Total original metadata | 345 | 0 |
 
 One additional folder, `Resources/Valoria/HeroBastionGenerated`, was absent from
 the inspected runner copies. Its identity was not invented. The folder belongs to
@@ -46,7 +46,7 @@ project and are retained unchanged.
 
 Provenance is in [recovery-manifest.json](recovery-manifest.json): asset blob,
 original metadata SHA-256, GUID, destination, disposition, owner dependency, native
-snapshot run and artifact digest. Pending originals are under `pending/Unity/`.
+snapshot run and artifact digest. The 57 formerly reserved originals have now been restored after explicit owner priority authorization; byte-identical backup copies remain under `pending/Unity/`.
 The snapshot read existing files only; it did not open Unity or change the PC's
 projects. Original archive digests were checked before extraction and use.
 
@@ -58,29 +58,29 @@ projects. Original archive digests were checked before extraction and use.
   SHA-256. Existing tracked metadata GUIDs are not rewritten; asset source contents
   are not edited. The one orphan is explicitly archived, not silently discarded.
 - No duplicate GUIDs or metadata-excluding ignore rules remain in this candidate.
-- The 288 restored identities have no references in the 3,617 inspected versioned
+- The initial 288 restored identities have no references in the 3,617 inspected versioned
   Unity YAML files. Dynamic Resources loads remain relevant; preserving original
   importer bytes avoids silently resetting their import settings.
-- The preventive audit reports the 32 protected missing file metadata and 26
-  missing folder identities explicitly. They are debt, not a claim of a fully
-  clean repository.
+- The preventive audit now expects zero missing file metadata and records only the one unrecovered rejected legacy folder as known debt.
 - This candidate has no new Unity import, PlayMode, player build, visual approval
   or device certification. Successful static checks do not substitute for those.
 
 ## Remaining integration
 
-Read the current `main/pipeline/active-workstreams.json` before acting. The exact
-reserved owners and metadata paths are in the manifest; 57 originals are ready
-for the corresponding owners to reconcile. Do not copy across an active claim.
-The work remains on the same PR #153 and workstream
-`eldoria-unity-metadata-integrity-20261104`.
+The owner explicitly authorized metadata priority on 4 November. Dialogue/spawnling
+write reservations are temporarily paused with their exact prior states retained
+in the live metadata workstream. Construction run 41811262373 finished with failure
+before Windows transferred; no running job was cancelled. All 57 pending paths were
+reconciled against exact main and PR136 heads in RESUME_RECONCILIATION.json: all 32
+file asset blobs match; folder checks prove existence, not full tree equality.
 
-After the affected owners release the scopes, claim them safely, verify that
-their assets still match the recovery records, restore the pending originals,
-remove resolved baseline entries, and validate the resulting exact Unity
-candidate. Reconcile changes from #136 and other live branches first. Do not merge
-the metadata candidate in a way that triggers a competing native checkout while
-the Windows resource remains reserved.
+Native validation is prepared, not yet executed: isolated exact checkout, unique
+company/product save identity, original metadata GUID and importer-byte checks,
+enabled-scene missing-script checks, full EditMode/PlayMode, exact settings restore.
+The one unrecovered folder may acquire a genuinely new Unity-generated identity;
+if captured, that must be disclosed as new, never labelled recovered. The rejected
+model must remain unmodified and prohibited. Integration and restoration of the
+temporarily paused claims remain pending real evidence and relevant checks.
 
 The complete previous snapshots are recoverable through Actions runs
 41805832811 and 41806653964; artifacts are temporary. The metadata needed for this
