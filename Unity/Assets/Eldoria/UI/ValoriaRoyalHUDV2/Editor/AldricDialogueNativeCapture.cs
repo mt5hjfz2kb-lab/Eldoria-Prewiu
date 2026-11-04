@@ -209,6 +209,16 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
                 var raw=portrait.GetComponent<RawImage>();
                 Assert(raw!=null,"Original RawImage, no duplicate UI");
                 bool aldric=(speaker=="Sir Aldric"||speaker=="Aldric");
+                // Remember the actual V3 presentation BEFORE enabling V4.
+                // The A/B is invalid if V4 only hides its art while retaining
+                // altered positions, font sizes or a speaker-role override.
+                Vector2 v3FrameSize=frame.sizeDelta;
+                Vector2 v3TitlePosition=hud.Modal.Title.rectTransform.anchoredPosition;
+                Vector2 v3BodyPosition=hud.Modal.Body.rectTransform.anchoredPosition;
+                Vector2 v3ButtonPosition=((RectTransform)button.transform).anchoredPosition;
+                int v3BodySize=hud.Modal.Body.fontSize;
+                var roleNode=frame.Find("Narrative character role").GetComponent<RoyalText>();
+                string v3Role=roleNode.text;
                 Assert(raw.gameObject.activeSelf==aldric,"Correct portrait identity for "+speaker);
                 Assert(sigil.gameObject.activeSelf!=aldric,"Correct alternate speaker sigil for "+speaker);
                 if(aldric)
@@ -237,6 +247,21 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
                     var actual=aperture.GetComponentInChildren<RawImage>(true);
                     Assert(actual&&actual.texture==neutral,"Original genuine Aldric bust retained in V4");
                 }
+                // Exercise the exact same switch used between native A/B
+                // frames: V3 must be restored before any source screenshot.
+                v4.enabled=false;
+                var layeredPaper=frame.GetComponentInChildren<RoyalGoldV4DialogueParchment>(true);
+                var originalPaper=frame.GetComponentInChildren<RoyalGoldV3ParchmentGraphic>(true);
+                Assert(layeredPaper&&!layeredPaper.enabled&&originalPaper&&originalPaper.enabled,
+                    "A/B toggle restores the original V3 parchment without a layered remnant");
+                Assert(Vector2.Distance(frame.sizeDelta,v3FrameSize)<.1f&&
+                    Vector2.Distance(hud.Modal.Title.rectTransform.anchoredPosition,v3TitlePosition)<.1f&&
+                    Vector2.Distance(hud.Modal.Body.rectTransform.anchoredPosition,v3BodyPosition)<.1f&&
+                    Vector2.Distance(((RectTransform)button.transform).anchoredPosition,v3ButtonPosition)<.1f&&
+                    hud.Modal.Body.fontSize==v3BodySize&&roleNode.text==v3Role,
+                    "V4 fully restores original V3 frame, text and Continue placement");
+                v4.enabled=true;finish.SynchronizeNow();v4.SynchronizeNow();
+                Canvas.ForceUpdateCanvases();
                 if(hud.NarrativeIsRevealing) button.onClick.Invoke();
                 yield return null;
                 finish.SynchronizeNow();v4.SynchronizeNow();
