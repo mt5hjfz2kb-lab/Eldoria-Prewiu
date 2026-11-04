@@ -51,6 +51,8 @@ namespace Eldoria.ReferenceClean
 
         SpriteField loopDust, loopMotes, openingDust, finishDust;
         SpriteField finishEmbers, finishRing, finishHalo;
+        // Actual facade details, relative to the real renderer bounds.
+        readonly Vector3[] facadeAccents = new Vector3[4];
         SpriteField[] allFields;
         Texture2D dustTexture, ringTexture;
         Material dustMaterial, ringMaterial;
@@ -160,15 +162,15 @@ namespace Eldoria.ReferenceClean
             if (!PositionSite(id, false)) return;
             activeBuilding = id;
             loopDust.Tint = id == "bastion"
-                ? new Color(.86f,.72f,.51f,.23f) : new Color(.77f,.69f,.53f,.26f);
+                ? new Color(.84f,.73f,.55f,.48f) : new Color(.78f,.70f,.57f,.47f);
             loopMotes.Tint = id == "sawmill"
-                ? new Color(.99f,.76f,.46f,.56f) : new Color(.91f,.76f,.58f,.44f);
+                ? new Color(.96f,.74f,.47f,.78f) : new Color(.89f,.75f,.56f,.72f);
             if (!CanShow()) return;
 
             loopDust.Play();
             loopMotes.Play();
-            loopDust.Emit(9);
-            loopMotes.Emit(5);
+            loopDust.Emit(18);
+            loopMotes.Emit(9);
             if (animateStart)
             {
                 openingDust.Emit(14);
@@ -187,14 +189,17 @@ namespace Eldoria.ReferenceClean
         void Complete(string id)
         {
             if (!CanShow() || !PositionSite(id, true)) return;
-            finishDust.Tint = new Color(.84f,.75f,.60f,.33f);
+            finishDust.Tint = new Color(.85f,.76f,.61f,.51f);
             finishEmbers.Tint = id == "bastion"
-                ? new Color(1f,.91f,.67f,.83f) : new Color(1f,.82f,.49f,.77f);
-            finishRing.Tint = new Color(1f,.78f,.48f,.22f);
-            finishHalo.Tint = new Color(1f,.82f,.54f,.14f);
+                ? new Color(1f,.90f,.64f,.88f) : new Color(1f,.82f,.50f,.82f);
+            // The thin ring lies flat at the foundation like settling dust,
+            // not a magic hologram floating in front of the roof.
+            finishRing.Tint = new Color(.91f,.79f,.59f,.25f);
+            finishHalo.Tint = new Color(1f,.85f,.57f,.20f);
 
-            finishDust.Emit(17);
-            finishEmbers.Emit(id == "bastion" ? 32 : 26);
+            finishDust.Emit(27);
+            finishEmbers.Emit(id == "bastion" ? 40 : 33);
+            finishEmbers.EmitAccents(facadeAccents,.30f,.52f);
             finishRing.Emit(1);
             finishHalo.Emit(1);
             // No model, material or level mutations. Existing scene switching is authoritative.
@@ -211,21 +216,35 @@ namespace Eldoria.ReferenceClean
             toward = toward.sqrMagnitude > .001f ? toward.normalized : Vector3.back;
             float footprint = Mathf.Clamp(Mathf.Max(b.size.x,b.size.z)*.78f,1.25f,6.25f);
 
-            Vector3 ground = new Vector3(b.center.x,b.min.y + .22f,b.center.z) + toward*.26f;
-            float frontDepth = Mathf.Abs(eye.x)*b.extents.x +
-                               Mathf.Abs(eye.y)*b.extents.y +
-                               Mathf.Abs(eye.z)*b.extents.z;
-            Vector3 facade = b.center + eye*Mathf.Min(frontDepth+.18f,20f);
-            loopDust.Site(ground,footprint);
-            loopMotes.Site(ground+Vector3.up*.17f,footprint*.62f);
+            // Dust must emerge from the near-side edge of the actual worksite.
+            // Its previous position was behind the building's depth-tested roof,
+            // making the entire construction loop invisible in real Unity A/B.
+            float frontDepth = Mathf.Abs(toward.x)*b.extents.x +
+                               Mathf.Abs(toward.z)*b.extents.z;
+            Vector3 ground = new Vector3(b.center.x,b.min.y+.18f,b.center.z) +
+                             toward*(frontDepth+.28f);
+            Vector3 facade = new Vector3(b.center.x,b.min.y+b.size.y*.46f,b.center.z) +
+                             toward*(frontDepth+.30f);
+            Vector3 lateral = cam ? cam.transform.right : Vector3.right;
+            lateral.y=0f;
+            lateral=lateral.sqrMagnitude>.001f?lateral.normalized:Vector3.right;
+            float halfWidth=Mathf.Clamp(footprint*.29f,.42f,2.25f);
+            float upper=b.extents.y*.37f;
+            float lower=b.extents.y*.30f;
+            facadeAccents[0]=lateral*(-halfWidth)+Vector3.up*upper;
+            facadeAccents[1]=lateral*halfWidth+Vector3.up*upper;
+            facadeAccents[2]=lateral*(-halfWidth*.67f)-Vector3.up*lower;
+            facadeAccents[3]=lateral*(halfWidth*.67f)-Vector3.up*lower;
+            loopDust.Site(ground,footprint*.90f);
+            loopMotes.Site(ground+Vector3.up*.20f,footprint*.70f);
             openingDust.Site(ground,footprint);
-            finishDust.Site(ground,footprint);
+            finishDust.Site(ground,footprint*.93f);
             finishEmbers.Site(facade,footprint*.85f);
-            finishRing.Site(facade,0f);
+            // A foundation-aligned sand ripple, not a screen-facing roof ring.
+            finishRing.Site(ground+Vector3.up*.04f,0f);
             finishHalo.Site(facade,0f);
-            float diameter = Mathf.Clamp(footprint*1.40f,2f,8.5f);
-            finishRing.BaseSize = diameter;
-            finishHalo.BaseSize = diameter*.83f;
+            finishRing.BaseSize=Mathf.Clamp(footprint*1.05f,1.8f,7.2f);
+            finishHalo.BaseSize=Mathf.Clamp(footprint*.82f,1.45f,6.0f);
             return true;
         }
 
@@ -342,21 +361,24 @@ namespace Eldoria.ReferenceClean
                 enabled=false;
                 return;
             }
-            loopDust=NewField("Work / drifting pale stone dust",dustMaterial,65,5.2f,.65f,1.40f,.14f,.33f,.13f,false,19);
-            loopMotes=NewField("Work / timber and mortar flecks",dustMaterial,34,2.7f,.50f,1.05f,.06f,.13f,.37f,false,27);
-            openingDust=NewField("Start / scattering construction dust",dustMaterial,34,0f,.32f,.85f,.15f,.33f,.28f,false,39);
-            finishDust=NewField("Finish / last gentle dust",dustMaterial,45,0f,.45f,1.10f,.17f,.37f,.39f,false,43);
-            finishEmbers=NewField("Finish / antique gold fine glints",dustMaterial,70,0f,.57f,1.22f,.07f,.15f,.76f,false,57);
-            finishRing=NewField("Finish / soft engraved rim",ringMaterial,2,0f,1.44f,1.44f,1f,1f,0f,true,79);
-            finishHalo=NewField("Finish / diffuse warm reveal",dustMaterial,2,0f,1.20f,1.20f,1f,1f,0f,true,83);
+            // Larger soft puffs at the REAL construction perimeter preserve
+            // legibility in the distant mobile camera without noisy confetti.
+            loopDust=NewField("Work / fine masonry dust",dustMaterial,65,8.0f,.70f,1.33f,.36f,.84f,.22f,false,19);
+            loopMotes=NewField("Work / timber motes",dustMaterial,34,4.0f,.57f,1.02f,.16f,.34f,.41f,false,27);
+            openingDust=NewField("Start / settling artisan dust",dustMaterial,34,0f,.38f,.90f,.37f,.81f,.28f,false,39);
+            finishDust=NewField("Finish / last settling dust",dustMaterial,45,0f,.55f,1.10f,.40f,.91f,.38f,false,43);
+            finishEmbers=NewField("Finish / antique-gold glints",dustMaterial,70,0f,.58f,1.18f,.15f,.31f,.66f,false,57);
+            finishRing=NewField("Finish / foundation settling wave",ringMaterial,2,0f,1.28f,1.28f,1f,1f,0f,true,79,true);
+            finishHalo=NewField("Finish / warm timber reveal",dustMaterial,2,0f,1.12f,1.12f,1f,1f,0f,true,83);
             allFields=new[]{loopDust,loopMotes,openingDust,finishDust,finishEmbers,finishRing,finishHalo};
         }
 
         SpriteField NewField(string name,Material material,int cap,float rate,
-            float lifeLow,float lifeHigh,float sizeLow,float sizeHigh,float up,bool fixedCenter,int seed)
+            float lifeLow,float lifeHigh,float sizeLow,float sizeHigh,float up,
+            bool fixedCenter,int seed,bool flatOnFoundation=false)
         {
             return new SpriteField(particleRoot,name,material,cap,rate,lifeLow,lifeHigh,
-                                   sizeLow,sizeHigh,up,fixedCenter,seed);
+                                   sizeLow,sizeHigh,up,fixedCenter,seed,flatOnFoundation);
         }
 
         static Texture2D MakeTexture(bool ring)
@@ -424,7 +446,7 @@ namespace Eldoria.ReferenceClean
             readonly Vector2[] uvs;
             readonly int capacity;
             readonly float rate,minLife,maxLife,minSize,maxSize,upward;
-            readonly bool centered;
+            readonly bool centered, groundAligned;
             readonly System.Random rng;
             readonly Transform holder;
             float accumulator;
@@ -439,10 +461,12 @@ namespace Eldoria.ReferenceClean
 
             public SpriteField(Transform parent,string name,Material material,
                 int cap,float spawnRate,float lifeLow,float lifeHigh,
-                float sizeLow,float sizeHigh,float up,bool fixedCenter,int seed)
+                float sizeLow,float sizeHigh,float up,bool fixedCenter,int seed,
+                bool flatOnFoundation=false)
             {
                 capacity=cap;rate=spawnRate;minLife=lifeLow;maxLife=lifeHigh;
                 minSize=sizeLow;maxSize=sizeHigh;upward=up;centered=fixedCenter;
+                groundAligned=flatOnFoundation;
                 rng=new System.Random(seed);
                 sprites=new Sprite[capacity];
                 vertices=new Vector3[capacity*4];
@@ -513,6 +537,24 @@ namespace Eldoria.ReferenceClean
                 }
             }
 
+            // Place a few larger glints on real facade beam locations using
+            // a single existing mesh batch (no additional draw calls).
+            public void EmitAccents(Vector3[] offsets,float sizeMin,float sizeMax)
+            {
+                if(offsets==null)return;
+                foreach(var at in offsets)
+                {
+                    int slot=cursor++%capacity;
+                    sprites[slot]=new Sprite{
+                        live=true,offset=at,
+                        drift=new Vector3(0f,RandomBetween(.08f,.17f),0f),
+                        age=0f,life=RandomBetween(.56f,.92f),
+                        size=RandomBetween(sizeMin,sizeMax),
+                        twist=RandomBetween(-.8f,.8f)
+                    };
+                }
+            }
+
             public void Tick(float dt,Camera cam)
             {
                 if(running && rate>0f)
@@ -521,8 +563,10 @@ namespace Eldoria.ReferenceClean
                     int spawn=Mathf.Min(capacity,(int)accumulator);
                     if(spawn>0){accumulator-=spawn;Emit(spawn);}
                 }
-                var right=cam?cam.transform.right:Vector3.right;
-                var up=cam?cam.transform.up:Vector3.up;
+                var right=groundAligned?Vector3.right:
+                          (cam?cam.transform.right:Vector3.right);
+                var up=groundAligned?Vector3.forward:
+                       (cam?cam.transform.up:Vector3.up);
                 VisibleCount=0;
                 for(int i=0;i<capacity;i++)
                 {
