@@ -467,6 +467,42 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - name: Real Diálogo 1 before/after — original HUD, three speakers, four formats
+        if: github.head_ref == 'fix/player-feedback-context-ui-20261030'
+        shell: powershell
+        env:
+          ALDRIC_NATIVE_OUTPUT: ${{ github.workspace }}/dialogue-v4-native-${{ github.run_id }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Editor busy'}
+          $e=$env:ALDRIC_NATIVE_OUTPUT
+          New-Item -ItemType Directory -Force $e|Out-Null
+          $log=Join-Path $e 'native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
+            '-executeMethod','Eldoria.UI.RoyalGold.V2.Editor.AldricDialogueNativeCapture.Capture',
+            '-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(900000)){
+            & taskkill.exe /PID $p.Id /T /F|Out-Null
+            throw 'Native Dialogue A/B timed out'
+          }
+          $p.Refresh()
+          if($p.ExitCode -ne 0 -or -not(Test-Path (Join-Path $e 'ALDRIC_NATIVE_PASS.txt'))){
+            if(Test-Path $log){Get-Content $log -Tail 140}
+            throw 'Exact Unity dialogue A/B did not pass'
+          }
+          $imgs=@(Get-ChildItem $e -File -Filter '*.png')
+          if($imgs.Count -ne 48){throw "Missing native A/B PNGs: $($imgs.Count)/48"}
+          Write-Host "ELDORIA_DIALOGUE_V4_AB_NATIVE_PASS images=$($imgs.Count)"
+
+      - uses: actions/upload-artifact@v4
+        if: always() && github.head_ref == 'fix/player-feedback-context-ui-20261030'
+        with:
+          name: eldoria-dialogue-v4-native-${{ github.run_id }}
+          path: dialogue-v4-native-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Verify three simultaneous marches in the actual integrated scene
         id: march_preflight
         shell: powershell
