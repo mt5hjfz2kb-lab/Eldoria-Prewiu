@@ -151,6 +151,11 @@ namespace Eldoria.ReferenceClean.Editor
             yield return new WaitForSecondsRealtime(.36f);
             if(fx.ActiveFinishSprites<=0)
                 VisualIssues.Add("No completion gilded sprites after real Gateway.Advance");
+            Debug.Log("CONSTRUCTION_DELIGHT_ARCHITECTURAL_LUSTRE_LAYERS="+
+                      fx.ActiveArchitecturalSurfaces);
+            if(fx.ActiveArchitecturalSurfaces<=0)
+                VisualIssues.Add("No actual opaque URP _BaseColor building surfaces eligible "+
+                    "for architectural material sheen after real construction");
             Comparison(host,renderers,"finish",844,390);
             Comparison(host,renderers,"finish",390,844);
             // An artistic approval needs temporal evidence, not one lucky frame.
@@ -199,11 +204,17 @@ namespace Eldoria.ReferenceClean.Editor
             MeshRenderer[] effects, string stage, int width, int height)
         {
             var enabled=effects.Select(x=>x.enabled).ToArray();
+            var fx=host.City.GetComponent<ValoriaConstructionDelightV1>();
             try
             {
+                // Stage A suppresses both sprite FX and the temporary warmth
+                // on the real wood/stone materials. Otherwise the A/B camera
+                // would contain architectural sheen in both halves.
+                if(fx)fx.SetArchitecturalLustreVisibleForCapture(false);
                 for(int i=0;i<effects.Length;i++)effects[i].enabled=false;
                 var before=Shot(host.PlayerCamera,stage+"-A-no-fx-"+width+"x"+height,width,height);
                 for(int i=0;i<effects.Length;i++)effects[i].enabled=enabled[i];
+                if(fx)fx.SetArchitecturalLustreVisibleForCapture(true);
                 var after=Shot(host.PlayerCamera,stage+"-B-delight-"+width+"x"+height,width,height);
                 int changedPixels=0;
                 for(int p=0;p<before.Length;p++)
@@ -256,6 +267,7 @@ namespace Eldoria.ReferenceClean.Editor
             finally
             {
                 for(int i=0;i<effects.Length;i++)if(effects[i])effects[i].enabled=enabled[i];
+                if(fx)fx.SetArchitecturalLustreVisibleForCapture(true);
             }
         }
 
