@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T07:33:20.632Z",
+  "updated_at": "2026-11-04T08:08:47.586Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3443,9 +3443,9 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 5,
+      "ownership_revision": 6,
       "write_scope_released": false,
-      "branch": "main",
+      "branch": "feature/eldoria-construction-delight-20261104",
       "status": "active",
       "claimed_at": "2026-11-03T23:35:16.557Z",
       "base_main_sha": "d01bffc48f85d65b1061c2fc50ce78c49d9c3344",
@@ -3460,15 +3460,13 @@
         ".github/workflows/eldoria-construction-delight-native.yml",
         "tools/construction-delight/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "UNITY_NATIVE_AB_PROOF_DISPATCH_20261104",
-      "next": "Trigger opt-in native-request.json on isolated PR152; after exact-head Unity run, inspect and correct all images before ART approval; release runner when run ends.",
+      "phase": "EXTERNAL_BLOCKER_UNITY_HEADLESS_LICENSE_EXIT198_20261104",
+      "next": "OWNER ACTION REQUIRED: On Windows, open Unity Hub, sign in to the correct Unity account, in Licenses refresh/activate the assigned Editor license. Once Unity 6000.3.23f1 batchmode has valid entitlement, this workstream can reclaim windows-runner-heavy, sync main/branch ownership, trigger tools/construction-delight/native-request.json on PR152, inspect 26 genuine Unity captures and iterate art; no publication without visual acceptance.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Source tests + real Unity 390x844 and 844x390 moving captures at exact HEAD, GPU/frame QA, human visual assessment",
@@ -3477,7 +3475,7 @@
       "art_production_request": "pipeline/art-production-requests/eldoria-construction-delight-v1-20261104.json",
       "pr": 152,
       "last_verified": {
-        "source_sha": "ed380d25e5e4a54e17be3169b9fb16b8c5c530e8",
+        "source_sha": "1ed54ba1b94ea5af1d38df4bc29e0fde93caa5ac",
         "source_checks": "PASS: architecture / owner scope / art governance / planner / workflow quarantine / routing / domain",
         "unity_compile_tested": false,
         "unity_capture_count": 0,
@@ -3489,13 +3487,38 @@
         "native_request_trigger": "tools/construction-delight/native-request.json",
         "native_request_dispatched": false,
         "resources_claimed": [],
-        "budget_eur": 0
+        "budget_eur": 0,
+        "headless_licence_blocker": true,
+        "unity_exit_code": 198,
+        "latest_native_attempt": 41793699479,
+        "latest_license_probe": 41797026292,
+        "licensing_client_probe_started": true,
+        "unity_hub_process_activated": true,
+        "personal_login_available_to_agent": false,
+        "unity_source_compiled": false,
+        "real_delight_captures": 0,
+        "windows_runner_released": true,
+        "reason": "Real Unity Editor returned exit 198 after installed Unity Hub launched and existing UnityEntitlementLicense.xml detected. No successful authenticated headless entitlement; do not claim visual QA."
       },
       "candidate_branch": "feature/eldoria-construction-delight-20261104",
       "native_lease": {
         "reserved_at": "2026-11-04T00:21:31.253Z",
         "source": "Owner explicitly requests finishing Construction Delight with genuine visual A/B; runner free after PR136 41742424858 success.",
         "previous_run": 41742424858
+      },
+      "license_diagnostics": {
+        "read_only_check_run": 41796258446,
+        "hub_start_run": 41796661851,
+        "disposable_editor_run": 41797026292,
+        "device": "existing Windows Unity 6000.3.23f1 self-hosted runner",
+        "entitlement_file_exists": true,
+        "hub_started_in_test": true,
+        "licensing_client_started_in_test": true,
+        "editor_return_code": 198,
+        "editor_denied_headless": true,
+        "credential_read": false,
+        "process_killed": false,
+        "reboot": false
       }
     }
   ],
