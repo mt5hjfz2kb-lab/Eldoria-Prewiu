@@ -112,6 +112,10 @@ namespace Eldoria.Editor
                 for(int i=0;i<30;i++)yield return null;
                 var timings=new float[240];
                 for(int i=0;i<timings.Length;i++){yield return null;timings[i]=Time.unscaledDeltaTime*1000f;}
+                Need(timings.All(x=>x>0f&&!float.IsNaN(x)&&!float.IsInfinity(x)),
+                    "Benchmark records finite positive frame times "+screen);
+                Need(Screen.width>0&&Screen.height>0,
+                    "Benchmark records actual rendering dimensions "+screen);
                 Array.Sort(timings);
                 samples.Add(new BenchmarkSample{screen=screen,width=Screen.width,height=Screen.height,
                     median_ms=timings[120],p95_ms=timings[228],
