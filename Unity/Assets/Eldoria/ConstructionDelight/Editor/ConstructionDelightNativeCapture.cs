@@ -84,9 +84,8 @@ namespace Eldoria.ReferenceClean.Editor
             Require(fx && fx.enabled,"Runtime self-attaching Delight component missing");
             var owned=fx.transform.Find("ConstructionDelightOwnedParticles");
             Require(owned,"Dedicated construction particle root missing");
-            var systems=owned.GetComponentsInChildren<ParticleSystem>();
-            var renderers=owned.GetComponentsInChildren<ParticleSystemRenderer>();
-            Require(systems.Length>=7&&renderers.Length>=7,"Complete visual layer not instantiated");
+            var renderers=owned.GetComponentsInChildren<MeshRenderer>(true);
+            Require(renderers.Length>=7,"Complete batched mesh visual layer not instantiated");
             Require(renderers.All(x=>x && x.sharedMaterial && x.sharedMaterial.shader &&
                     x.sharedMaterial.shader.isSupported),
                 "At least one particle shader missing/unsupported; no visual acceptance");
@@ -118,8 +117,8 @@ namespace Eldoria.ReferenceClean.Editor
                 "Canonical construction timer did not start");
 
             yield return new WaitForSecondsRealtime(.42f);
-            Require(systems.Any(p=>p.isPlaying && p.particleCount>0),
-                "No real, flowing construction particles over the scene");
+            Require(fx.ActiveConstructionSprites>0,
+                "No real, flowing construction sprites over the scene");
             Comparison(host,renderers,"work",844,390);
             Comparison(host,renderers,"work",390,844);
 
@@ -134,8 +133,8 @@ namespace Eldoria.ReferenceClean.Editor
             Require(city.Gateway.Snapshot().SawmillLevel==1,"Real level did not increment");
 
             yield return new WaitForSecondsRealtime(.36f);
-            Require(systems.Any(p=>p.name.Contains("Completion") && p.particleCount>0),
-                "Completion particle burst missing from actual build");
+            Require(fx.ActiveFinishSprites>0,
+                "Completion gilded sprite flourish missing from actual build");
             Comparison(host,renderers,"finish",844,390);
             Comparison(host,renderers,"finish",390,844);
             // An artistic approval needs temporal evidence, not one lucky frame.
@@ -155,7 +154,7 @@ namespace Eldoria.ReferenceClean.Editor
             yield return new WaitForSecondsRealtime(.35f);
             Require(snapshotBefore==JsonUtility.ToJson(city.Gateway.Snapshot()),
                 "Graphics changed the authoritative save state after reload");
-            Require(!systems.Any(p=>p.name.Contains("Completion") && p.particleCount>0),
+            Require(fx.ActiveFinishSprites==0,
                 "False completion animation triggered on reload");
 
             File.WriteAllText(Path.Combine(Output,"result.json"),
@@ -173,7 +172,7 @@ namespace Eldoria.ReferenceClean.Editor
         }
 
         static void Comparison(ValoriaIntegratedWorld host,
-            ParticleSystemRenderer[] effects, string stage, int width, int height)
+            MeshRenderer[] effects, string stage, int width, int height)
         {
             var enabled=effects.Select(x=>x.enabled).ToArray();
             try
