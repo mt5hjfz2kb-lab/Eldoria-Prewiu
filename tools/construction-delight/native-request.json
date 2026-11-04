@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
   "ownership_revision": 13,
-  "mode": "NATIVE_REAL_ART_REVIEW_ROOFLINE_2ND_PASS",
+  "mode": "NATIVE_ONLY_CURRENT_ROOF_GOLD_PASS",
   "expected_images": 26,
   "formats": [
     "844x390",
@@ -22,7 +22,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 16,
+  "attempt": 17,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "latest certified main & metadata merged into candidate",
@@ -152,5 +152,8 @@
   "visual_state": "Second corrected work/finish candidate. Adds roofline glints/gleam, raises authentic stone/timber brief amber warmth; reject if visual ugly.",
   "previous_art_candidate_run": 41871246928,
   "previous_art_result": "PASS 26 true Unity images, 7 material layers but roof still too dark / gold concentrated in yard",
-  "no_gameplay_changes": true
+  "no_gameplay_changes": true,
+  "source_domain_run": 41872333925,
+  "source_domain_result": "passed",
+  "action": "Real Unity 6000.3.23f1, 26 screenshots, material pulse + roof glints, no source mockups"
 }
