@@ -98,7 +98,7 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
             Assert(type != null, "Existing native integration camera capture helper available");
             var method=type.GetMethod("Capture", BindingFlags.Public|BindingFlags.Static);
             Assert(method != null, "Existing true 3D/Canvas capture method available");
-            string path=Path.Combine(Evidence, name+"-"+(width>height?"horizontal":"vertical")+".png");
+            string path=Path.Combine(Evidence, name+"-"+width+"x"+height+".png");
             method.Invoke(null,new object[] {host,path,width,height,null});
             Assert(File.Exists(path) && new FileInfo(path).Length>35000, name+" true Unity camera capture written");
             var texture=new Texture2D(2,2,TextureFormat.RGBA32,false);
