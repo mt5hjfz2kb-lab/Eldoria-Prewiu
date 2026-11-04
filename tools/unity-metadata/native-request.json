@@ -1,6 +1,7 @@
 {
-  "candidate_sha": "6c02784fc6fca56e8fdf54edd78e25a77c9cff3e",
+  "candidate_sha": "ae663ca494ea7d62eb4416b04eecf5cc38d0e266",
   "workstream_id": "eldoria-unity-metadata-integrity-20261104",
   "owner": "codex-eldoria-metadata-recovery-20261104",
-  "ownership_revision": 9
+  "ownership_revision": 10,
+  "validation_mode": "full"
 }
