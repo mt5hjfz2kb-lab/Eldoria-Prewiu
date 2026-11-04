@@ -1,0 +1,34 @@
+name: Unity metadata integrity (no Editor)
+on:
+  pull_request:
+    paths:
+      - 'Unity/Assets/**'
+      - 'Unity/.gitignore'
+      - 'tools/unity-metadata/**'
+      - '.github/workflows/unity-metadata-integrity.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'Unity/Assets/**'
+      - 'Unity/.gitignore'
+      - 'tools/unity-metadata/**'
+      - '.github/workflows/unity-metadata-integrity.yml'
+permissions:
+  contents: read
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.gitignore
+            /tools/unity-metadata/
+            /Unity/.gitignore
+            /Unity/**/*.meta
+      - name: Reject new missing metadata, malformed GUIDs and duplicate identities
+        run: python3 tools/unity-metadata/audit.py
+      - name: Exercise recovery and integrity behavior
+        run: python3 -m unittest discover -s tools/unity-metadata -p 'test_*.py' -v
