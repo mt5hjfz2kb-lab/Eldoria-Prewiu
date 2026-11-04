@@ -127,6 +127,9 @@ namespace Eldoria.ReferenceClean.Editor
             host.Hud.Refresh();
 
             yield return new WaitForSecondsRealtime(.42f);
+            if(fx.ActiveStagedBuildingMeshes<=0)
+                VisualIssues.Add("No actual construction-stage 3D model parts during the real initial build");
+            Debug.Log("CONSTRUCTION_DELIGHT_WORK_STAGED_MESHES="+fx.ActiveStagedBuildingMeshes);
             if(fx.ActiveConstructionSprites<=0)
                 VisualIssues.Add("No flowing construction sprites; task="+
                     city.Gateway.Snapshot().BuildingTaskId+
