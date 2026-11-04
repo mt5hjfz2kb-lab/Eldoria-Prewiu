@@ -26,6 +26,8 @@ if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager -ErrorAct
 if(-not (Test-Path -LiteralPath $env:UNITY_EDITOR_PATH -PathType Leaf)){ throw 'Installed Editor missing' }
 $editorVersion=& $env:UNITY_EDITOR_PATH -version
 if($editorVersion -notmatch '6000\.3\.23f1'){ throw 'Unexpected Unity Editor version' }
+. (Join-Path $PSScriptRoot 'native_process.ps1')
+$processContract=& (Join-Path $PSScriptRoot 'test_native_process.ps1')
 $gitMetadata=Get-Command git.exe -ErrorAction SilentlyContinue
 if($gitMetadata){ $gitExe=$gitMetadata.Source }
 else {
@@ -46,6 +48,7 @@ New-Item -ItemType Directory -Path $scratchRoot | Out-Null
 $sourceRoot=Join-Path $scratchRoot 'source'
 $evidenceRoot=Join-Path $scratchRoot 'evidence'
 New-Item -ItemType Directory -Path $evidenceRoot | Out-Null
+$processContract | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'process-contract.json')
 $repositoryUrl='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
 # RUNNER_TEMP is cleaned between jobs. Always use an independent canonical
 # clone; prior temporary checkouts are not durable cache or recovery sources.
@@ -103,6 +106,7 @@ function Invoke-MetadataEditor([string]$name,[string[]]$extra) {
     $editorArguments=@('-batchmode','-force-d3d11','-projectPath',$projectRoot,'-logFile',$editorLog)+$extra
     $quotedArguments=@($editorArguments | ForEach-Object {if($_ -match '\s'){'"'+$_+'"'}else{$_}})
     $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $quotedArguments -WorkingDirectory $projectRoot -PassThru
+    $retainedEditorHandle=$process.Handle
     if(-not $process.WaitForExit(1800000)){
         & taskkill.exe /PID $process.Id /T /F | Out-Null
         throw "Only this isolated Editor timed out: $name"
@@ -127,13 +131,9 @@ try {
         }
         if(-not $blenderPath){throw 'Existing canonical Blender executable missing; no installation performed'}
         $authorScript=Join-Path $sourceRoot 'tools/bastion-iii/author-frontier.py'
-        $blenderProcess=Start-Process -FilePath $blenderPath -ArgumentList @('-b','--python',('"'+$authorScript+'"')) -WorkingDirectory $sourceRoot -PassThru -RedirectStandardOutput (Join-Path $evidenceRoot 'canonical-frontier.log') -RedirectStandardError (Join-Path $evidenceRoot 'canonical-frontier.stderr.log')
-        if(-not $blenderProcess.WaitForExit(300000)){
-            & taskkill.exe /PID $blenderProcess.Id /T /F | Out-Null
-            throw 'Only this canonical fixture preparation timed out'
-        }
-        $blenderProcess.Refresh()
-        if($blenderProcess.ExitCode -ne 0){throw 'Canonical frontier fixture generation failed'}
+        $blenderResult=Invoke-MetadataLoggedProcess $blenderPath @('-b','--python',$authorScript) $sourceRoot (Join-Path $evidenceRoot 'canonical-frontier.log') (Join-Path $evidenceRoot 'canonical-frontier.stderr.log') 300000
+        $blenderResult | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidenceRoot 'blender-process.json')
+        if($blenderResult.exit_code -ne 0){throw "Canonical frontier fixture generation failed, actual exit=$($blenderResult.exit_code)"}
         Invoke-MetadataEditor 'prepare-bastion-iii' @('-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build')
         $preparedRoot=Join-Path $projectRoot 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary'
         $preparedRows=@(foreach($part in @('Granary','StockCrate','StockSack','StockBarrel','StoneWorkshop')){

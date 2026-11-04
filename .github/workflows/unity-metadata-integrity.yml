@@ -48,3 +48,6 @@ jobs:
       - name: Verify complete native fixtures, zero skips and exact test assembly source
         shell: pwsh
         run: ./tools/unity-metadata/test_native_test_contract.ps1
+      - name: Verify redirected native process exit codes and retained handles
+        shell: pwsh
+        run: ./tools/unity-metadata/test_native_process.ps1

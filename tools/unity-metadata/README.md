@@ -89,3 +89,10 @@ outputs, never a new art source or a committed model. Omitting this preparation
 causes BASTION_III_MISSING_ART and invalidates gameplay acceptance.
 Tracked state/differences are captured even when a test fails; no source reset is
 used to hide a dirty checkout. Only the run's own timed-out processes are stopped.
+
+Windows PowerShell redirected Start-Process can expose a null ExitCode unless its
+handle is retained before waiting (PowerShell/PowerShell issue5421). The logged
+launcher caches that handle, rejects missing codes and records the real result.
+A real child-process contract checks exit0, exit7 and both redirected streams in
+CI and again on the Windows host before the expensive clone/Unity preparation.
+The Blender export marker alone never authorizes PASS.

@@ -26,7 +26,7 @@ jobs:
           $root=Join-Path $env:RUNNER_TEMP ('em-tools-' + $env:GITHUB_RUN_ID)
           New-Item -ItemType Directory -Path $root | Out-Null
           $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
-          foreach($name in @('native_validate.ps1','native-request.json')){
+          foreach($name in @('native_validate.ps1','native-request.json','native_process.ps1','test_native_process.ps1')){
             $url='https://api.github.com/repos/${{ github.repository }}/contents/tools/unity-metadata/'+$name+'?ref=${{ github.sha }}'
             $file=Invoke-RestMethod -Uri $url -Headers $headers
             [IO.File]::WriteAllBytes((Join-Path $root $name),[Convert]::FromBase64String(($file.content -replace '\s','')))

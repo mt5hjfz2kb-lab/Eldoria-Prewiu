@@ -58,6 +58,18 @@
       },
       "fix": "Replay exact existing unity-slice.yml canonical author-frontier and BastionIIIArtBake preparation in isolated project; enable disposable fixture and capture output; require 61+ PlayMode cases with no skips and exact assembly source. Do not silence logs or alter gameplay assertions.",
       "runtime_or_art_source_changed": false
+    },
+    {
+      "run": 41827869628,
+      "candidate": "3354c44a5956d541e5f18715c9824835eb728591",
+      "status": "PRE_IMPORT_HASHES_PASS_FRONTIER_EXPORT_LOG_SUCCESS_LAUNCHER_REJECTED_EXIT",
+      "artifact": 13322025499,
+      "artifact_zip_sha256": "48a8760ea8b7834376dc3debe629c2b0574e89500bbd59a0f5eb653b13fa1a88",
+      "pre_import_metadata_exact": 345,
+      "actual_log": "Blender5.2.2 emitted completed glTF export, saved PrivateFissure.blend, BASTION_III_IRREGULAR_SOIL_FISSURE_EXPORTED and Blender quit; stderr contained only a deprecation warning.",
+      "uncertainty": "The old launcher did not print its observed exit code, so a true nonzero exit cannot be distinguished from missing ExitCode in that artifact.",
+      "primary_documented_matching_issue": "https://github.com/PowerShell/PowerShell/issues/5421",
+      "fix": "Cache the Windows process handle before waiting; reject null codes explicitly; record actual exit code. Real redirected child exit0 and exit7 contract tests run in CI and on Windows BEFORE cloning/Unity. Do not infer success from export marker alone."
     }
   ],
   "checkout_checks": {
