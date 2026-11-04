@@ -79,7 +79,7 @@ namespace Eldoria.ReferenceClean.Editor
             Require(city && city.Ready && city.Probe,"QA must have isolated save and TestClock");
             var fx=city.GetComponent<ValoriaConstructionDelightV1>();
             Require(fx && fx.enabled,"Runtime self-attaching Delight component missing");
-            var owned=fx.transform.Find("Construction Delight / owned particles");
+            var owned=fx.transform.Find("ConstructionDelightOwnedParticles");
             Require(owned,"Dedicated construction particle root missing");
             var systems=owned.GetComponentsInChildren<ParticleSystem>();
             var renderers=owned.GetComponentsInChildren<ParticleSystemRenderer>();
