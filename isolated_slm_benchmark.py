@@ -105,9 +105,9 @@ try:
         text = (r["stdout"] + "\n" + r["stderr"]).casefold()
         abstained = any(x in text for x in ["isn't in superlocalmemory",
               "no confident", "no matching", "no memories", "not found",
-              "no relevant", "no results", "no answer", "no tengo", "no se encuentra"])
+              "no relevant", "no results", "no answer", "no tengo", "no se encuentra", "i don't have this exactly"])
         summary["unknown_checks"].append({"question":q, "abstention_indicator":abstained,
-                                            "rc":r["rc"],"reply":r["stdout"][-700:]})
+                                            "rc":r["rc"],"reply":r["stdout"][:1900]})
     summary["result"] = ("PASS_BASIC_MEMORY" if remembered == len(facts) and hit>=1
                          else "INCOMPLETE_OR_FAILED")
 except Exception as err:
