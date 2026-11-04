@@ -161,7 +161,12 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
             {
                 hud.ShowNarrative(speaker,longText);
                 yield return null;
-                finish.SynchronizeNow();
+                // The V3-only identity check must run against V3. With V4
+                // enabled, Lyra correctly uses her approved masked portrait
+                // instead of the V3 fallback glyph. Mixing the two contexts
+                // produced a false QA failure before native capture.
+                v4.enabled=false;
+                finish.SynchronizeNow();Canvas.ForceUpdateCanvases();
                 Assert(hud.NarrativeOpen,"Real HUD opens interactive narrative for "+speaker);
                 var frame = hud.Modal.Title.transform.parent as RectTransform;
                 Assert(frame!=null,"Canonical narrative paper frame exists");
@@ -178,9 +183,30 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
                     Assert(raw.texture==neutral,"Actual approved 3D head-shoulder PNG visible for "+speaker);
                     Assert(portrait.rect.width>=115,"Portrait legible at dialog scale");
                 }
+                // Now verify the actual new material/portrait separately,
+                // without discarding the single canonical Continue callback.
+                v4.enabled=true;
+                finish.SynchronizeNow();v4.SynchronizeNow();
+                Canvas.ForceUpdateCanvases();
+                var aperture=frame.Cast<Transform>().FirstOrDefault(t=>
+                    t.name=="Dialogue / genuine portrait aperture") as RectTransform;
+                Assert(aperture!=null,"V4 illustrated speaker aperture exists");
+                bool lyraSpeaker=string.Equals(speaker,"Lyra",StringComparison.OrdinalIgnoreCase);
+                Assert(aperture.gameObject.activeInHierarchy==(aldric||lyraSpeaker),
+                    "V4 original portrait versus approved-source identity for "+speaker);
+                if(lyraSpeaker)
+                {
+                    var approved=aperture.GetComponentInChildren<Image>(true);
+                    Assert(approved&&approved.sprite,"Only approved Lyra portrait is used");
+                }
+                if(aldric)
+                {
+                    var actual=aperture.GetComponentInChildren<RawImage>(true);
+                    Assert(actual&&actual.texture==neutral,"Original genuine Aldric bust retained in V4");
+                }
                 if(hud.NarrativeIsRevealing) button.onClick.Invoke();
                 yield return null;
-                finish.SynchronizeNow();
+                finish.SynchronizeNow();v4.SynchronizeNow();
                 Assert(hud.Modal.Body.text.Length>100,"Full first page revealed with actual Continue");
                 Assert(button.gameObject.activeInHierarchy&&button.interactable,"Original Continue remains interactive");
                 // The canonical dialogue enters with a 0.28 s transition.
