@@ -32,7 +32,10 @@ MEMORIES=[
 "ELDORIA-PILOT-SOURCE: docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md; state=reviewed; A technical PASS and a provisional artistic acceptance do not mean ART_APPROVED or a published game.",
 "ELDORIA-PILOT-SOURCE: QA_AND_DEPLOY.md; state=reviewed; Native Unity runs and comparable A/B captures are required for Unity change evidence; inherited JavaScript prototypes do not certify Unity."
 ]
+boot_path=pathlib.Path("/proc/sys/kernel/random/boot_id")
+boot_id_hash=hashlib.sha256(boot_path.read_bytes()).hexdigest()[:20] if boot_path.exists() else None
 stamp={"role":ROLE,"timestamp_utc":datetime.now(timezone.utc).isoformat(),"hostname":socket.gethostname(),
+       "boot_id_hash":boot_id_hash,
        "job":os.environ.get("GITHUB_JOB"),"run_id":os.environ.get("GITHUB_RUN_ID"),"package_pin":"4.2.12",
        "no_windows":True,"no_unity":True,"no_personal_memories":True}
 try:
@@ -81,7 +84,17 @@ try:
         inp=pathlib.Path(os.environ["RUNNER_TEMP"])/"eldoria-handoff-input"
         writer=json.loads((inp/"writer.json").read_text(encoding="utf-8"))
         assert writer["role"]=="writer"
-        assert writer["hostname"] != stamp["hostname"], "Writer and reader were not demonstrated on distinct hosts"
+        assert writer["job"]=="writer" and stamp["job"]=="reader", "Different GitHub job roles required"
+        assert writer["run_id"]==stamp["run_id"], "Writer/reader must belong to the same workflow run"
+        # A copied VM image can reuse its hostname. Compare boot IDs and empty initial memory instead.
+        stamp["writer_boot_id_hash"]=writer.get("boot_id_hash")
+        stamp["different_vm_boot_ids"]=bool(stamp["boot_id_hash"] and writer.get("boot_id_hash") and
+                                             stamp["boot_id_hash"]!=writer["boot_id_hash"])
+        if stamp["boot_id_hash"] and writer.get("boot_id_hash"):
+            assert stamp["different_vm_boot_ids"], "OS boot identity reused; cannot establish separate VM"
+        pre=run("recall","ELDORIA-PILOT-SOURCE canonical Unity source",timeout=70)
+        assert "ELDORIA-PILOT-SOURCE" not in pre["out"], "Reader was not a clean memory instance before import"
+        stamp["reader_memory_empty_before_import"]=True
         archive=inp/"slm-public-memory.tar.gz"
         assert hashlib.sha256(archive.read_bytes()).hexdigest()==writer["snapshot_sha256"]
         run("serve","stop",timeout=35)
@@ -123,7 +136,8 @@ try:
         assert_known(new["out"],"agent=B")
         stamp["agent_b_write_visible_to_independent_cli_process"]=True
         stamp["writer_hostname"]=writer["hostname"]
-        stamp["distinct_runner_hosts"]=writer["hostname"]!=stamp["hostname"]
+        stamp["distinct_runner_hosts_by_boot_id"]=stamp["different_vm_boot_ids"]
+        stamp["hostname_reused"]=writer["hostname"]==stamp["hostname"]
         stamp["snapshot_hash_validated"]=True
         run("serve","stop",timeout=35)
         stamp["status"]="PASS_SHARED_MEMORY_HANDOFF"
