@@ -1,0 +1,190 @@
+{
+  "root": {
+    "id": "2",
+    "testcasecount": "73",
+    "result": "Failed(Child)",
+    "total": "73",
+    "passed": "40",
+    "failed": "24",
+    "inconclusive": "0",
+    "skipped": "9",
+    "asserts": "0",
+    "engine-version": "3.5.0.0",
+    "clr-version": "4.0.30319.42000",
+    "start-time": "2026-11-04 11:54:16Z",
+    "end-time": "2026-11-04 11:58:27Z",
+    "duration": "251,0620042"
+  },
+  "case_results": {
+    "passed": 40,
+    "failed": 24,
+    "skipped": 9
+  },
+  "nonpassed_cases": [
+    {
+      "name": "Eldoria.Tests.AldricCityRoamingNativeTests.ApprovedFullBodyAldricWalksOnActualValoriaPaving",
+      "result": "Skipped",
+      "message": "Only run with isolated VALORIA_GAMEPLAY_PROBE=1 save"
+    },
+    {
+      "name": "Eldoria.Tests.AldricDialogueBustPresentationTests.ApprovedChestUpAldricAppearsOnlyForHisSpeakerAndNeverForLyraOrOrin",
+      "result": "Skipped",
+      "message": "Requires isolated disposable Unity playtest save."
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe",
+      "result": "Skipped",
+      "message": "Real-camera capture requires disposable Valoria native probe store."
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.BothTripoFamiliesRemainReadableInBothRegionalOrientations",
+      "result": "Failed",
+      "message": "  Legibility verification requires the existing disposable gameplay probe.\n  Expected: \"1\"\n  But was:  null\n"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.BreachIsGeologicalGroundGeometryNotTargetOrVerticalPortal",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ContactQueriesMatchActualImportedTriangles",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.EachMobileWorldEntryResetsToNearViewWithoutRelocatingNodesOrSaves",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.EnemyCampPlaceholdersAreVisuallyAbsentButRealTargetsRemain",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.OneGeographyAndNoInventedGameplayHotspots",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.PanoramaHidesOldSquareWithoutRemovingWorldGameObjects",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.PanoramaHidesRealResourcesAndEncountersWithoutChangingSavedState",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ProductionResourcesHavePersistentDistinctTerrainSites",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealTerrainHasBothTripoFamiliesAcrossFiveDangerLevels",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealTerrainRespawnSurvivesGatewayRestartWithoutDuplicatingSites",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealTerrainRoutesReachPopulationAndReserveCities",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealWoodNodeRemainsReachableWithBothMobileCameraAspects",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ResourceModelsHaveMeasuredTerrainSupportWithoutMovingColliders",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.TargetedEcotoneHasRealTwoDonorCanopiesAndDoesNotCreateGameplayNodes",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ThreeScalesUseSameWorldHomeWithoutCameraResetOrFakeBounds",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3CinematicAcceptanceTests.CinematicManuscriptRetainsCanonicalButtonsAndRestoresRegularModal",
+      "result": "Skipped",
+      "message": "Requires disposable native probe save"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.ActualPanoramaHasNoTinyUiMarkersButRegionalKeepsTheCityObjective",
+      "result": "Skipped",
+      "message": "A disposable gameplay probe is required before entering the true world."
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.ApprovedCronicaRealUsesAuthenticParchmentAndSafeEdgeNavigation",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.AuthoredWorldOpensWithMateriallyWiderStrategicFraming",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.BastionIIIWolfBodyMatchesBoarBodyScale",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.BuildingSelectionRetainsAuthoritativeGatewayOffer",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.ChronicleRealKeepsNativeBuildingIllustrationWithCanonicalOffer",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.ClosingActualPrologueKeepsIntegratedNavigationOwnership",
+      "result": "Skipped",
+      "message": "Requires disposable native probe save"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.NativeProbeResetStartsFreshWithoutDeletingAnyRealDeviceSave",
+      "result": "Skipped",
+      "message": "The destructive path is only tested against a disposable probe file"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.RealSawmillPurchaseProjectsTimerInTheSameRenderedFrame",
+      "result": "Skipped",
+      "message": "Timer purchase test requires the disposable Valoria native probe save"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.ReducedWorldForestPreservesExistingHudAndNoninteractiveDecorations",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.SettingsResetRequiresSecondExplicitTap",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.SingleHudCompactObjectiveAndNoOverlayAtRest",
+      "result": "Failed",
+      "message": "Unhandled log message: '[Error] BASTION_III_MISSING_ART BastionIII/Granary/Granary'. Use UnityEngine.TestTools.LogAssert.Expect"
+    },
+    {
+      "name": "Eldoria.Tests.RoyalV3ManagementIntegrationTests.FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave",
+      "result": "Skipped",
+      "message": "Requires a disposable Unity native gameplay-probe save"
+    }
+  ]
+}

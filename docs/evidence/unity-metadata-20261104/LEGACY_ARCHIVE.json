@@ -1,0 +1,40 @@
+{
+  "status": "APPLIED_TO_CANDIDATE_UNDER_EXISTING_OWNER_VETO",
+  "scope": "Move only rejected model and its exact metadata outside Unity; no geometry, texture, runtime code, scene or gameplay settings changes.",
+  "operations": [
+    {
+      "from": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+      "to": "ArtSource/RejectedLegacyBastion/Valoria_HeroBastion_v1.glb",
+      "same_git_blob": "e31aa6a63af826f4c6f666bb369fc270233c8d66"
+    },
+    {
+      "from": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb.meta",
+      "to": "ArtSource/RejectedLegacyBastion/Valoria_HeroBastion_v1.glb.meta",
+      "same_git_blob": "bab32c587d4bd8c194a242304ae97dd937bcc29b",
+      "guid_preserved": "fa36c6abf91adc7778caeac12130f567"
+    }
+  ],
+  "serialized_reference_files": 0,
+  "serialized_yaml_checked": 3617,
+  "csharp_sources_inspected": 448,
+  "runtime_load_caller": "AssetLibraryReprocessingPassV1.ReplaceWithCertifiedHeroBastion returns immediately when Resources.Load is null; archive prevents loading this rejected model.",
+  "static_proposal_audit": {
+    "missing_file_metadata": 0,
+    "missing_folder_metadata": 0,
+    "duplicate_guids": 0,
+    "ignored_metadata": 0,
+    "failures": 0
+  },
+  "native_validation": "Full corrected native proof required and pending.",
+  "baseline_debt_resolution": "Former rejected Assets folder disappears because its two tracked files move outside Assets. No folder GUID invented.",
+  "branch_or_main_updated": "Candidate layout applied in this change; main integration pending native tests.",
+  "proposal_commit": "c2dab945bf1d3994703abfbbd2cb137d67e85443",
+  "proposal_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/commit/c2dab945bf1d3994703abfbbd2cb137d67e85443",
+  "basis": "Binding owner rejection and archival preservation, project organization audit continuation. No reauthorization for use.",
+  "source_digests": {
+    "asset_sha256": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
+    "asset_bytes": 13257704,
+    "metadata_sha256": "403b8109e21b2aff016ead7e775250df519a8992c4cc077eddb41be0217ebd81"
+  },
+  "proposal_readme_reconciled": "Candidate README describes only the Python audit and native validation fences actually implemented here; PR136 C# build guard is not claimed as integrated."
+}

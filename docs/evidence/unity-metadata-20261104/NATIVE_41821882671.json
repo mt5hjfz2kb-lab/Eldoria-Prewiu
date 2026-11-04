@@ -1,0 +1,3119 @@
+{
+    "unity_version": "6000.3.23f1",
+    "candidate_sha": "ae663ca494ea7d62eb4416b04eecf5cc38d0e266",
+    "state": "PASS",
+    "entries": [
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_albedo.png",
+            "expected_guid": "7e47a7413d7bfa143ab3e06ea6bb776b",
+            "actual_guid": "7e47a7413d7bfa143ab3e06ea6bb776b",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_ao.png",
+            "expected_guid": "7d2030c35537f31478e915a24c319a59",
+            "actual_guid": "7d2030c35537f31478e915a24c319a59",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_normal.png",
+            "expected_guid": "bc65d5d4ddc5fe241a742b435ce72f32",
+            "actual_guid": "bc65d5d4ddc5fe241a742b435ce72f32",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_smoothness.png",
+            "expected_guid": "8095dd1497db0ef45bc9697c2bde8bf0",
+            "actual_guid": "8095dd1497db0ef45bc9697c2bde8bf0",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_albedo.png",
+            "expected_guid": "f3ce58ae5287442468f6d3307c68da91",
+            "actual_guid": "f3ce58ae5287442468f6d3307c68da91",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_ao.png",
+            "expected_guid": "494bba1715c81f14fa922025b5b8bd88",
+            "actual_guid": "494bba1715c81f14fa922025b5b8bd88",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_normal.png",
+            "expected_guid": "d2cca6f1bdb893e44bd9009e62980638",
+            "actual_guid": "d2cca6f1bdb893e44bd9009e62980638",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_smoothness.png",
+            "expected_guid": "af62d73158adfcb41a14500b7f5db7c2",
+            "actual_guid": "af62d73158adfcb41a14500b7f5db7c2",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_albedo.png",
+            "expected_guid": "1d8a94a2a64cf894a802b4d1b44728a2",
+            "actual_guid": "1d8a94a2a64cf894a802b4d1b44728a2",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_ao.png",
+            "expected_guid": "a0902c492b965c341a939cc4b1a57dcb",
+            "actual_guid": "a0902c492b965c341a939cc4b1a57dcb",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_normal.png",
+            "expected_guid": "151a9c8bb3bb0c64ca7e3b5961446b40",
+            "actual_guid": "151a9c8bb3bb0c64ca7e3b5961446b40",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_smoothness.png",
+            "expected_guid": "7b881fbbd40d2b343b621362e3f877c1",
+            "actual_guid": "7b881fbbd40d2b343b621362e3f877c1",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_albedo.png",
+            "expected_guid": "48424d26a7539d04e8e29fb262f3a0d6",
+            "actual_guid": "48424d26a7539d04e8e29fb262f3a0d6",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_ao.png",
+            "expected_guid": "9edcb84e48072e34891dcddc2b46b2e1",
+            "actual_guid": "9edcb84e48072e34891dcddc2b46b2e1",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_normal.png",
+            "expected_guid": "2c5fb4225e3af9f4fa9f2e33e9ef6c7c",
+            "actual_guid": "2c5fb4225e3af9f4fa9f2e33e9ef6c7c",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_smoothness.png",
+            "expected_guid": "54193979b5d05a647b34e82bbebffce6",
+            "actual_guid": "54193979b5d05a647b34e82bbebffce6",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_albedo.png",
+            "expected_guid": "1e65e2ba36f61164ca4e3a0f6a254b13",
+            "actual_guid": "1e65e2ba36f61164ca4e3a0f6a254b13",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_ao.png",
+            "expected_guid": "6f7de7c71d73e594380f52f17775bc27",
+            "actual_guid": "6f7de7c71d73e594380f52f17775bc27",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_normal.png",
+            "expected_guid": "436e636415bd3554fbc5be2e211b61c0",
+            "actual_guid": "436e636415bd3554fbc5be2e211b61c0",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_smoothness.png",
+            "expected_guid": "1749938696507d641ba4cc0ecd34965c",
+            "actual_guid": "1749938696507d641ba4cc0ecd34965c",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/BastionSelectionProbe.cs",
+            "expected_guid": "e7b8e570408859741ae3d9232af22e4d",
+            "actual_guid": "e7b8e570408859741ae3d9232af22e4d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/BastionImageTo3DReview.cs",
+            "expected_guid": "34bc8b2422014104aa173a71c2a24998",
+            "actual_guid": "34bc8b2422014104aa173a71c2a24998",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoria2Review.cs",
+            "expected_guid": "fec262add8ac2664d97305da2b722f3a",
+            "actual_guid": "fec262add8ac2664d97305da2b722f3a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaInterfaceReview.cs",
+            "expected_guid": "19cd9a37f732fb448ab06c9c2ed50d45",
+            "actual_guid": "19cd9a37f732fb448ab06c9c2ed50d45",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaOwnerReview.cs",
+            "expected_guid": "654e3d3faa42f02498b6c285c653d888",
+            "actual_guid": "654e3d3faa42f02498b6c285c653d888",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaReview.cs",
+            "expected_guid": "0a5f13bc5fe186a4092029e90bd9b955",
+            "actual_guid": "0a5f13bc5fe186a4092029e90bd9b955",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoAppearanceV4Review.cs",
+            "expected_guid": "ca0dc8b6ecf97f24cb8b00fd4f9dd288",
+            "actual_guid": "ca0dc8b6ecf97f24cb8b00fd4f9dd288",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoGateStreetModuleReview.cs",
+            "expected_guid": "40a0c9317d821474ea3889b5d58f341c",
+            "actual_guid": "40a0c9317d821474ea3889b5d58f341c",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoGenericModuleReview.cs",
+            "expected_guid": "fce7b19570b496b44a625e1792ce29b1",
+            "actual_guid": "fce7b19570b496b44a625e1792ce29b1",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoModuleReview.cs",
+            "expected_guid": "1c83e4c41ca1bbf40ac3f9c9c08a9a01",
+            "actual_guid": "1c83e4c41ca1bbf40ac3f9c9c08a9a01",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoMultipieceReview.cs",
+            "expected_guid": "5a82006d604fd184099ae241a6f348bc",
+            "actual_guid": "5a82006d604fd184099ae241a6f348bc",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoTerraceModuleReview.cs",
+            "expected_guid": "56bcc3623dc709c41980f8019840c5d0",
+            "actual_guid": "56bcc3623dc709c41980f8019840c5d0",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoTextureImportDebug.cs",
+            "expected_guid": "d278da185d2a0d245969c40de285ccf6",
+            "actual_guid": "d278da185d2a0d245969c40de285ccf6",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor/ValoriaInterfaceShortChainReview.cs",
+            "expected_guid": "60cd95174b2446e46824cb3132d71aba",
+            "actual_guid": "60cd95174b2446e46824cb3132d71aba",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Source/SOURCE.md",
+            "expected_guid": "cf2cb21869c89f448a7e9545f1a1d93f",
+            "actual_guid": "cf2cb21869c89f448a7e9545f1a1d93f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/LayeredValoria/bastion-stage-1.png",
+            "expected_guid": "ca9a9516f346d0e4c9ad809f353236a8",
+            "actual_guid": "ca9a9516f346d0e4c9ad809f353236a8",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/LayeredValoria/bastion-stage-2.png",
+            "expected_guid": "0bd7c06ba84f8d74a86638d337c56aef",
+            "actual_guid": "0bd7c06ba84f8d74a86638d337c56aef",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/LayeredValoria/valley-backdrop.png",
+            "expected_guid": "5be1065c8ac213541853b607352826dd",
+            "actual_guid": "5be1065c8ac213541853b607352826dd",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/OriginalHero/Textures/limestone.png",
+            "expected_guid": "3187b46198ecce948b3dd4ebb6a9ae0d",
+            "actual_guid": "3187b46198ecce948b3dd4ebb6a9ae0d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/OriginalHero/Textures/oak.png",
+            "expected_guid": "3a7eab785d7a4114d8d749c265e1978c",
+            "actual_guid": "3a7eab785d7a4114d8d749c265e1978c",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/OriginalHero/Textures/oldstone.png",
+            "expected_guid": "f0bfb51406b0e14489c24a82a3cdc413",
+            "actual_guid": "f0bfb51406b0e14489c24a82a3cdc413",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/OriginalHero/Textures/rock.png",
+            "expected_guid": "93e8e0446f8192f4dbf682f156d4b305",
+            "actual_guid": "93e8e0446f8192f4dbf682f156d4b305",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/OriginalHero/Textures/slate.png",
+            "expected_guid": "fbb8b5c0c648ea044b688cb0aea74b59",
+            "actual_guid": "fbb8b5c0c648ea044b688cb0aea74b59",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/OriginalHero/review-approach.png",
+            "expected_guid": "ba3bb4481dc51d84eaf0d9e4672c1f6a",
+            "actual_guid": "ba3bb4481dc51d84eaf0d9e4672c1f6a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/OriginalHero/review-establishing.png",
+            "expected_guid": "de1e0fe04e6be214688cd7e67eb95d4e",
+            "actual_guid": "de1e0fe04e6be214688cd7e67eb95d4e",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/OriginalHero/review-oblique.png",
+            "expected_guid": "931ab27fab82c894db56e47daa56aeb1",
+            "actual_guid": "931ab27fab82c894db56e47daa56aeb1",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/OriginalHero/valoria_hero_fragment.fbx",
+            "expected_guid": "8da6020fadc1ebd41a4cbe0203505f04",
+            "actual_guid": "8da6020fadc1ebd41a4cbe0203505f04",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 80,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaAuthenticBridgeLayerE.cs",
+            "expected_guid": "3aa6bfd3ede4dcb49a757869f07e2d35",
+            "actual_guid": "3aa6bfd3ede4dcb49a757869f07e2d35",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionFacingProbe.cs",
+            "expected_guid": "c42f07d18eefa544ea479330e02cff8b",
+            "actual_guid": "c42f07d18eefa544ea479330e02cff8b",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionVisibilityGate.cs",
+            "expected_guid": "cde23c50d1789c344a75b35d8353bf36",
+            "actual_guid": "cde23c50d1789c344a75b35d8353bf36",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryFinishV8.cs",
+            "expected_guid": "655400c058c05554d9e7acef50391481",
+            "actual_guid": "655400c058c05554d9e7acef50391481",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV5Integration.cs",
+            "expected_guid": "04b18484758015a4b9cffadba3a6770a",
+            "actual_guid": "04b18484758015a4b9cffadba3a6770a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaLayeredMasterSceneBuilder.cs",
+            "expected_guid": "73c36b3fcafc63b459e44f1fd27ff858",
+            "actual_guid": "73c36b3fcafc63b459e44f1fd27ff858",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaMacroScreenEnvelopeCandidateV1.cs",
+            "expected_guid": "2d0e28e3ab2baf9429dd6abc03f9e27b",
+            "actual_guid": "2d0e28e3ab2baf9429dd6abc03f9e27b",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaModularGateLayerD.cs",
+            "expected_guid": "4e51f78ce4356b0459b32646db067495",
+            "actual_guid": "4e51f78ce4356b0459b32646db067495",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSceneVisualOwnershipGate.cs",
+            "expected_guid": "a22faa3651ab13647be824e1c58ea6cd",
+            "actual_guid": "a22faa3651ab13647be824e1c58ea6cd",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSharpPlayerCameraCorrespondence.cs",
+            "expected_guid": "b01b4b08cd70ebb44af984e0ff879bdb",
+            "actual_guid": "b01b4b08cd70ebb44af984e0ff879bdb",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSharpSemanticContactRepairV1.cs",
+            "expected_guid": "bc3e8fe184db0ba499f313c4d7d294fa",
+            "actual_guid": "bc3e8fe184db0ba499f313c4d7d294fa",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaTerrainRiverCliffV2Integration.cs",
+            "expected_guid": "24b2d6ee47fd50145a220bbfb120b248",
+            "actual_guid": "24b2d6ee47fd50145a220bbfb120b248",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaTerrainRiverCliffV3Integration.cs",
+            "expected_guid": "a4ab77abee6c75d42aaaf3cea10d3069",
+            "actual_guid": "a4ab77abee6c75d42aaaf3cea10d3069",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout/certified-legacy-skeleton.json",
+            "expected_guid": "a53f4b66af212dd44b741e8893069e1e",
+            "actual_guid": "a53f4b66af212dd44b741e8893069e1e",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_BridgeTerrainV1.unity",
+            "expected_guid": "6250a580c25a0a644aec4f0c47109c16",
+            "actual_guid": "6250a580c25a0a644aec4f0c47109c16",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": true
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity",
+            "expected_guid": "55e6d351575e6b944b975522a56a75f5",
+            "actual_guid": "55e6d351575e6b944b975522a56a75f5",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": true
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity",
+            "expected_guid": "b789e834c147ea04aa1e65c4198ea20a",
+            "actual_guid": "b789e834c147ea04aa1e65c4198ea20a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": true
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCDE.unity",
+            "expected_guid": "345105d9578c4e945b5699f348cea987",
+            "actual_guid": "345105d9578c4e945b5699f348cea987",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": true
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD_BridgeV1.unity",
+            "expected_guid": "d073433fdd8bff745a3649d46f414ee4",
+            "actual_guid": "d073433fdd8bff745a3649d46f414ee4",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": true
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Camera_Mapping_DIAGNOSTIC.unity",
+            "expected_guid": "ef249ffb5864e8245a63ae7c0a4cdb4c",
+            "actual_guid": "ef249ffb5864e8245a63ae7c0a4cdb4c",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": true
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV5_CANDIDATE.unity",
+            "expected_guid": "b523051573f3b8c4287dbf152e44d4a8",
+            "actual_guid": "b523051573f3b8c4287dbf152e44d4a8",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": true
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_MacroEnvelope_CANDIDATE.unity",
+            "expected_guid": "36c938a97bcede143be451d60bfe480a",
+            "actual_guid": "36c938a97bcede143be451d60bfe480a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": true
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV2_CANDIDATE.unity",
+            "expected_guid": "7df14b6e1e090c04ba9eb05c21c222f4",
+            "actual_guid": "7df14b6e1e090c04ba9eb05c21c222f4",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": true
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV3_CANDIDATE.unity",
+            "expected_guid": "c48bb410712c0f24b9d1a064090b8399",
+            "actual_guid": "c48bb410712c0f24b9d1a064090b8399",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": true
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_SemanticContact_IsolatedV1.unity",
+            "expected_guid": "7fdb5977305107447b99605800b29376",
+            "actual_guid": "7fdb5977305107447b99605800b29376",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": true
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1/Editor/ValoriaBridgeLevelAccessV1.cs",
+            "expected_guid": "0ae6e4f7dbb3baf42851fd6307efb9e6",
+            "actual_guid": "0ae6e4f7dbb3baf42851fd6307efb9e6",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor/ValoriaTerrainRiverCliffV1.cs",
+            "expected_guid": "9c1913ef62f4b174088322be9489818f",
+            "actual_guid": "9c1913ef62f4b174088322be9489818f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb",
+            "expected_guid": "388c7c41ebf8d1f49a48377caf6997cb",
+            "actual_guid": "388c7c41ebf8d1f49a48377caf6997cb",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 7,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/source-identity.json",
+            "expected_guid": "8759291475c23d9419f87e56af4e9fb2",
+            "actual_guid": "8759291475c23d9419f87e56af4e9fb2",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/UI/AldricDialogue/ALDRIC_BUST_PROVENANCE.json",
+            "expected_guid": "548568d89d6547e4698dda6729045c12",
+            "actual_guid": "548568d89d6547e4698dda6729045c12",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Cuartel_CFSv1.glb",
+            "expected_guid": "a3dc98dabba11fd4c85f93290fc0386f",
+            "actual_guid": "a3dc98dabba11fd4c85f93290fc0386f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 95,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1/Valoria_Granero_CFSv1.glb",
+            "expected_guid": "57088f29fe2025747b508fe7c383114d",
+            "actual_guid": "57088f29fe2025747b508fe7c383114d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 90,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_CivicHouse_CohV1.glb",
+            "expected_guid": "3958c0322c2e4f946afacee65e54cd7f",
+            "actual_guid": "3958c0322c2e4f946afacee65e54cd7f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 6,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_MainGate_CohV1.glb",
+            "expected_guid": "18c24c869da25804abd59ddb128dba2f",
+            "actual_guid": "18c24c869da25804abd59ddb128dba2f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 30,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Tower_CohV1.glb",
+            "expected_guid": "4ca97911821869146b76b93840c58b5f",
+            "actual_guid": "4ca97911821869146b76b93840c58b5f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 6,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_WallSegment_CohV1.glb",
+            "expected_guid": "0a2a5e31252a05a49afbf4c0495fef10",
+            "actual_guid": "0a2a5e31252a05a49afbf4c0495fef10",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 6,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1/Valoria_Workshop_CohV1.glb",
+            "expected_guid": "83b6c4b4c8f8995458ef72eb32387a37",
+            "actual_guid": "83b6c4b4c8f8995458ef72eb32387a37",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 6,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_MainGate_DefV1.glb",
+            "expected_guid": "240247c727dc74a4aa7b597064ec8a92",
+            "actual_guid": "240247c727dc74a4aa7b597064ec8a92",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 302,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_Tower_DefV1.glb",
+            "expected_guid": "12eac5eaa18a43b449de9df56810f032",
+            "actual_guid": "12eac5eaa18a43b449de9df56810f032",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 137,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1/Valoria_WallSegment_DefV1.glb",
+            "expected_guid": "f0b657b17283834458266aed1ce172af",
+            "actual_guid": "f0b657b17283834458266aed1ce172af",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 189,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_MainGate_SkinV1.glb",
+            "expected_guid": "c6446ec7df82e614aa9f3c347d345833",
+            "actual_guid": "c6446ec7df82e614aa9f3c347d345833",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 40,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_Tower_SkinV1.glb",
+            "expected_guid": "9731d045561f39f42801c3e30a11e0b9",
+            "actual_guid": "9731d045561f39f42801c3e30a11e0b9",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 44,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1/Valoria_WallSegment_SkinV1.glb",
+            "expected_guid": "fe2c87212d985694882d127a91b82437",
+            "actual_guid": "fe2c87212d985694882d127a91b82437",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 17,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Cuartel_FPDv1.glb",
+            "expected_guid": "15e73db099b739a49a0f6b187261143d",
+            "actual_guid": "15e73db099b739a49a0f6b187261143d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 37,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseTower_FPDv1.glb",
+            "expected_guid": "314e79710b4b3584a8058e9e7fab681c",
+            "actual_guid": "314e79710b4b3584a8058e9e7fab681c",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 24,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_DefenseWall_FPDv1.glb",
+            "expected_guid": "ba817d7c7857561478545b607a95bd3d",
+            "actual_guid": "ba817d7c7857561478545b607a95bd3d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 9,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_Granero_FPDv1.glb",
+            "expected_guid": "f4b5a271b945d9d40844f13cb93ab272",
+            "actual_guid": "f4b5a271b945d9d40844f13cb93ab272",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 23,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1/Valoria_MainGate_FPDv1.glb",
+            "expected_guid": "6ad8580e8ce5fe14da52e8cf0a8d6f4b",
+            "actual_guid": "6ad8580e8ce5fe14da52e8cf0a8d6f4b",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 35,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Cuartel_GCSUv1.glb",
+            "expected_guid": "41ad4b9bed36c3e448699bbbd7b482d1",
+            "actual_guid": "41ad4b9bed36c3e448699bbbd7b482d1",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 45,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1/Valoria_Granero_GCSUv1.glb",
+            "expected_guid": "70dc1d0f47461dd4084308f83006ff47",
+            "actual_guid": "70dc1d0f47461dd4084308f83006ff47",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 9,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroRichCameraFirstV1/Valoria_Granero_RCFv1.glb",
+            "expected_guid": "11ef2928cd664994daa7d93e51756adf",
+            "actual_guid": "11ef2928cd664994daa7d93e51756adf",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 23,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_CivicHouse_v1.glb",
+            "expected_guid": "7f5cf97ce033fa443a85adbdb7fe90d9",
+            "actual_guid": "7f5cf97ce033fa443a85adbdb7fe90d9",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 258,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_MainGate_v1.glb",
+            "expected_guid": "aa4c9ba011b68424789b38a3c137ab8a",
+            "actual_guid": "aa4c9ba011b68424789b38a3c137ab8a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 154,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_Tower_v1.glb",
+            "expected_guid": "61d73b818930e37438296d7062787e3a",
+            "actual_guid": "61d73b818930e37438296d7062787e3a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 149,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_WallSegment_v1.glb",
+            "expected_guid": "b871aba22f5010a4688503d417f56afb",
+            "actual_guid": "b871aba22f5010a4688503d417f56afb",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 89,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily/Valoria_Workshop_v1.glb",
+            "expected_guid": "cdd21e8e49b852944870a8b5f02e2504",
+            "actual_guid": "cdd21e8e49b852944870a8b5f02e2504",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 148,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_CivicHouse_v2.glb",
+            "expected_guid": "cb06a48c2b3ede5448775e17e40f95c1",
+            "actual_guid": "cb06a48c2b3ede5448775e17e40f95c1",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 18,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_MainGate_v2.glb",
+            "expected_guid": "b4dfae06f8a008449b1397e670cce323",
+            "actual_guid": "b4dfae06f8a008449b1397e670cce323",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 37,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_Tower_v2.glb",
+            "expected_guid": "64c043e66974b924caa61ecb855f491f",
+            "actual_guid": "64c043e66974b924caa61ecb855f491f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 13,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_WallSegment_v2.glb",
+            "expected_guid": "e87638b9946d5c348b775dcd594f9fdb",
+            "actual_guid": "e87638b9946d5c348b775dcd594f9fdb",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 9,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2/Valoria_Workshop_v2.glb",
+            "expected_guid": "193ceaf72a5b80c4a9fa6733be901037",
+            "actual_guid": "193ceaf72a5b80c4a9fa6733be901037",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 9,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_CivicHouse_v3.glb",
+            "expected_guid": "47f7305613f4ff447bbe2d5862365d23",
+            "actual_guid": "47f7305613f4ff447bbe2d5862365d23",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 18,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_MainGate_v3.glb",
+            "expected_guid": "f1432eb8e6477ca4cae1c0af558b62fe",
+            "actual_guid": "f1432eb8e6477ca4cae1c0af558b62fe",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 23,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_Tower_v3.glb",
+            "expected_guid": "6e10e98f96c49ad488d6748db4509c51",
+            "actual_guid": "6e10e98f96c49ad488d6748db4509c51",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 7,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_WallSegment_v3.glb",
+            "expected_guid": "449e43287653ed340a16090fa92fca2a",
+            "actual_guid": "449e43287653ed340a16090fa92fca2a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 18,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3/Valoria_Workshop_v3.glb",
+            "expected_guid": "942675f1645c3964f9e9f8a33477dd13",
+            "actual_guid": "942675f1645c3964f9e9f8a33477dd13",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 18,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_MainGate_StoneDefV2.glb",
+            "expected_guid": "93521215f1cd2bc4398f78081f112756",
+            "actual_guid": "93521215f1cd2bc4398f78081f112756",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 36,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_Tower_StoneDefV2.glb",
+            "expected_guid": "2137c6da70469e145aae32c92bca6e79",
+            "actual_guid": "2137c6da70469e145aae32c92bca6e79",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 46,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2/Valoria_WallSegment_StoneDefV2.glb",
+            "expected_guid": "fd46a79d5596c5a46ab96e95da54a572",
+            "actual_guid": "fd46a79d5596c5a46ab96e95da54a572",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 9,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/CivicRetainingBay.glb",
+            "expected_guid": "47e5fb65561b3c442b0a35bb3fe9db1a",
+            "actual_guid": "47e5fb65561b3c442b0a35bb3fe9db1a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 206,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/CuartelTerraceSupport.glb",
+            "expected_guid": "d552bd6d5e74fb846bf59600de1a1c07",
+            "actual_guid": "d552bd6d5e74fb846bf59600de1a1c07",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 216,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1/LowerArcadedFront.glb",
+            "expected_guid": "8c5ecfe12b657714190c9a0428ed16a8",
+            "actual_guid": "8c5ecfe12b657714190c9a0428ed16a8",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 280,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs",
+            "expected_guid": "f533f1964a619864193fe50629cecd7d",
+            "actual_guid": "f533f1964a619864193fe50629cecd7d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/GoldenSurfaceAuthoringV1.cs",
+            "expected_guid": "03f7aea0ce05a544e86d281f61d7e369",
+            "actual_guid": "03f7aea0ce05a544e86d281f61d7e369",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/GoldenSurfaceV2TextureImporter.cs",
+            "expected_guid": "0fdc9a6713f11034d862f6cdd4ffe275",
+            "actual_guid": "0fdc9a6713f11034d862f6cdd4ffe275",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/MidTierDistrictProductionGate.cs",
+            "expected_guid": "7d0ee84c72adabd499b5420d9bfdd728",
+            "actual_guid": "7d0ee84c72adabd499b5420d9bfdd728",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/PreproductionSceneCapture.cs",
+            "expected_guid": "221ff723cbde66241bf93724b2aa80b8",
+            "actual_guid": "221ff723cbde66241bf93724b2aa80b8",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaAdaptiveMobileHomePoseGateV1.cs",
+            "expected_guid": "d3187fb4a0d6c4d41a5480807b209ee7",
+            "actual_guid": "d3187fb4a0d6c4d41a5480807b209ee7",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaArchitectureCoherenceGateV1.cs",
+            "expected_guid": "d20aba6534f9cb84ab04f6406d3bca9c",
+            "actual_guid": "d20aba6534f9cb84ab04f6406d3bca9c",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaBackdropHorizonCropGateV2.cs",
+            "expected_guid": "7a747eeed7fd54d40b86aed85538c2da",
+            "actual_guid": "7a747eeed7fd54d40b86aed85538c2da",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaBackplateCandidateGateV1.cs",
+            "expected_guid": "ad2107202f6844e40bf231ab8b3679a9",
+            "actual_guid": "ad2107202f6844e40bf231ab8b3679a9",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaBenchmarkCompositeGateV1.cs",
+            "expected_guid": "c95bc0a94d7b24742b94d289513a9605",
+            "actual_guid": "c95bc0a94d7b24742b94d289513a9605",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaBenchmarkCompositeGateV2.cs",
+            "expected_guid": "fabaf78814641684585cdc472396fde7",
+            "actual_guid": "fabaf78814641684585cdc472396fde7",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCameraBackdropGateV1.cs",
+            "expected_guid": "cd91f3d31cce0684d90f305fb2c80c53",
+            "actual_guid": "cd91f3d31cce0684d90f305fb2c80c53",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCameraBackdropGateV2.cs",
+            "expected_guid": "931c8fd98878c7f438e137db62a0dce7",
+            "actual_guid": "931c8fd98878c7f438e137db62a0dce7",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCameraBackdropGateV3.cs",
+            "expected_guid": "567ad3ea609adf04b8bf566e658ef266",
+            "actual_guid": "567ad3ea609adf04b8bf566e658ef266",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCameraBackdropGateV4.cs",
+            "expected_guid": "e774c8232fc16ac46a2bdb5bde2bd055",
+            "actual_guid": "e774c8232fc16ac46a2bdb5bde2bd055",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCameraFirstDepthShellGateV1.cs",
+            "expected_guid": "3a66068e04c978740a6184aa35ecb985",
+            "actual_guid": "3a66068e04c978740a6184aa35ecb985",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCameraFirstFunctionalUnityGateV1.cs",
+            "expected_guid": "01d3794b644a811439576f431e0aa7ac",
+            "actual_guid": "01d3794b644a811439576f431e0aa7ac",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCameraFirstResetTargetShellGateV1.cs",
+            "expected_guid": "18404c667653e0740a0e98d5f75e9b53",
+            "actual_guid": "18404c667653e0740a0e98d5f75e9b53",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCameraFramingGateV1.cs",
+            "expected_guid": "5ccdc129381d2b54cb6288a30f61a52e",
+            "actual_guid": "5ccdc129381d2b54cb6288a30f61a52e",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCliffIslandCleanupGateV2.cs",
+            "expected_guid": "7ead7588b9b48da4c9f67e4a8171c761",
+            "actual_guid": "7ead7588b9b48da4c9f67e4a8171c761",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCliffIslandReframeGateV1.cs",
+            "expected_guid": "868b0e4729145c448aee75ab4e8ae4e2",
+            "actual_guid": "868b0e4729145c448aee75ab4e8ae4e2",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCoherencePruneGateV1.cs",
+            "expected_guid": "a1581db70c5a3a7418b9e702e063cdcf",
+            "actual_guid": "a1581db70c5a3a7418b9e702e063cdcf",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaCurrentWebGLBuildV1.cs",
+            "expected_guid": "446267b96f0a4714ba3d8c55b0a677d0",
+            "actual_guid": "446267b96f0a4714ba3d8c55b0a677d0",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaDarkMassDiagnosticGateV1.cs",
+            "expected_guid": "8e851ddef37d5ae4891509a2736a27e1",
+            "actual_guid": "8e851ddef37d5ae4891509a2736a27e1",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaDarkMassScreenDiagnosticV2.cs",
+            "expected_guid": "844c762721d063e4797682e9e64d7593",
+            "actual_guid": "844c762721d063e4797682e9e64d7593",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaDarkRendererAuditV1.cs",
+            "expected_guid": "73473816bbdbfcf48b3bdff88ed73f1d",
+            "actual_guid": "73473816bbdbfcf48b3bdff88ed73f1d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaDistantWorldCompositeGateV1.cs",
+            "expected_guid": "32061357d63c83b45b78b830d0c62c55",
+            "actual_guid": "32061357d63c83b45b78b830d0c62c55",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaEnvironmentUpliftGateV1.cs",
+            "expected_guid": "4e46b703c09dce94ab2ca86c4b43b5e6",
+            "actual_guid": "4e46b703c09dce94ab2ca86c4b43b5e6",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaExternalCliffProofGateV1.cs",
+            "expected_guid": "d17e985b25028a34bba1da713b54539a",
+            "actual_guid": "d17e985b25028a34bba1da713b54539a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFirstPlayableCitySliceV1.cs",
+            "expected_guid": "7ba397960fd4fd6498de69c82456edad",
+            "actual_guid": "7ba397960fd4fd6498de69c82456edad",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFirstProductionDistrictGateV1.cs",
+            "expected_guid": "7f27a14d6b6a71b479acc2f56825a2cb",
+            "actual_guid": "7f27a14d6b6a71b479acc2f56825a2cb",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFrameCompositionGateV1.cs",
+            "expected_guid": "cd60ef7ddb99bc545948b4e8073e327b",
+            "actual_guid": "cd60ef7ddb99bc545948b4e8073e327b",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameArchitectureBatchGateV1.cs",
+            "expected_guid": "de288c152d4ef18489cbc2d285692c97",
+            "actual_guid": "de288c152d4ef18489cbc2d285692c97",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameArtifactCleanupGateV1.cs",
+            "expected_guid": "18af2b0192373924ba62d963b5357064",
+            "actual_guid": "18af2b0192373924ba62d963b5357064",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameConvergenceGateV1.cs",
+            "expected_guid": "5551346b73adc1342af92cca7e8f820f",
+            "actual_guid": "5551346b73adc1342af92cca7e8f820f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameConvergenceGateV2.cs",
+            "expected_guid": "26a29afac903d914cb04236c7172c2e0",
+            "actual_guid": "26a29afac903d914cb04236c7172c2e0",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameFinishGateV1.cs",
+            "expected_guid": "d42df3baf12369d45999db9e912b4ab7",
+            "actual_guid": "d42df3baf12369d45999db9e912b4ab7",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameForegroundEdgeGateV1.cs",
+            "expected_guid": "afc890a6c7e4b194da19aebdbc092884",
+            "actual_guid": "afc890a6c7e4b194da19aebdbc092884",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameHorizonAssetGateV1.cs",
+            "expected_guid": "061b3d721da805749ae611d82d1fced3",
+            "actual_guid": "061b3d721da805749ae611d82d1fced3",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameRuinFrameGateV1.cs",
+            "expected_guid": "5c03f6de5b1f5324b9979f1a2a2f7b84",
+            "actual_guid": "5c03f6de5b1f5324b9979f1a2a2f7b84",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameSurfaceLifeBatchGateV1.cs",
+            "expected_guid": "3f80c8d0c7b5834449029559fd38d22d",
+            "actual_guid": "3f80c8d0c7b5834449029559fd38d22d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameTerrainContinuityGateV1.cs",
+            "expected_guid": "307098ba0a5bc4e408afc23be409e849",
+            "actual_guid": "307098ba0a5bc4e408afc23be409e849",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameValueHierarchyGateV1.cs",
+            "expected_guid": "96120ced877bbb94091233c331a823c0",
+            "actual_guid": "96120ced877bbb94091233c331a823c0",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameWorldSurroundGateV1.cs",
+            "expected_guid": "64ac984ef07d1c44b8a794e1334cbcf9",
+            "actual_guid": "64ac984ef07d1c44b8a794e1334cbcf9",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFullFrameWorldSurroundGateV2.cs",
+            "expected_guid": "3bf1094f11121b84c83644b2b1c9d715",
+            "actual_guid": "3bf1094f11121b84c83644b2b1c9d715",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaFunctionalScreenReadabilityGateV1.cs",
+            "expected_guid": "2efe99340f964704a922b06da69694c1",
+            "actual_guid": "2efe99340f964704a922b06da69694c1",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaGraneroCuartelSourceUpgradeGateV1.cs",
+            "expected_guid": "888998933d5c3ca4281db33396bab5df",
+            "actual_guid": "888998933d5c3ca4281db33396bab5df",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaInCitySurfaceGateV1.cs",
+            "expected_guid": "46d0654f006bb7a4aaab78d8da9c955f",
+            "actual_guid": "46d0654f006bb7a4aaab78d8da9c955f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaIntegratedSideRuinsGateV2.cs",
+            "expected_guid": "c31d5813a4d56084c97aa0ce0e02dfe3",
+            "actual_guid": "c31d5813a4d56084c97aa0ce0e02dfe3",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaJaggedBackdropGateV1.cs",
+            "expected_guid": "4e1b64e4436948948917dad5fed14496",
+            "actual_guid": "4e1b64e4436948948917dad5fed14496",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaLookDevCapture.cs",
+            "expected_guid": "3839de028b61b6e49b1c28b151670af8",
+            "actual_guid": "3839de028b61b6e49b1c28b151670af8",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaLowerCityUrbanMassingGateV1.cs",
+            "expected_guid": "9d01da172bd46564e8f9c99f067b8fc0",
+            "actual_guid": "9d01da172bd46564e8f9c99f067b8fc0",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaMaterialResidueCleanupGateV2.cs",
+            "expected_guid": "e109de5f94f8e974ea2f522d0e5f0a4f",
+            "actual_guid": "e109de5f94f8e974ea2f522d0e5f0a4f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaMatteBackdropGateV1.cs",
+            "expected_guid": "2bb5f8d717de28643ae13ebf9c3b3013",
+            "actual_guid": "2bb5f8d717de28643ae13ebf9c3b3013",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaMegaArchitectureAtlasGateV1.cs",
+            "expected_guid": "d785a27f2b123be4a8188f7f0a29f2b7",
+            "actual_guid": "d785a27f2b123be4a8188f7f0a29f2b7",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaMobileNavigableCityGateV1.cs",
+            "expected_guid": "b4d747c0549485e4799a541bcf6dfb16",
+            "actual_guid": "b4d747c0549485e4799a541bcf6dfb16",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaMonumentalArchFrameGateV2.cs",
+            "expected_guid": "e5ed58c439ef7b4488ccf94762924f87",
+            "actual_guid": "e5ed58c439ef7b4488ccf94762924f87",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaOpenValleyCompositionGateV1.cs",
+            "expected_guid": "33bdc0ff0f951c84e9c0a87bb4e8b5df",
+            "actual_guid": "33bdc0ff0f951c84e9c0a87bb4e8b5df",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaPairedFunctionalUnityGateV1.cs",
+            "expected_guid": "477ab04352444be49bbd434ff001572f",
+            "actual_guid": "477ab04352444be49bbd434ff001572f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaPanoramicSkyCandidateGateV1.cs",
+            "expected_guid": "f46c1974385386f42a5439b2b9aaf94f",
+            "actual_guid": "f46c1974385386f42a5439b2b9aaf94f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaPanoramicSkyCandidateGateV2.cs",
+            "expected_guid": "b0b86907498dc57469fb0bb1ee7768fd",
+            "actual_guid": "b0b86907498dc57469fb0bb1ee7768fd",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaPerAssetImpostorUnityProofV1.cs",
+            "expected_guid": "d9cd79ff49cf426429eefe5fe369f1e9",
+            "actual_guid": "d9cd79ff49cf426429eefe5fe369f1e9",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaPerspectivePanoramaGateV1.cs",
+            "expected_guid": "23d1392451ca506498923b95fb5a4c11",
+            "actual_guid": "23d1392451ca506498923b95fb5a4c11",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaProductionArtResetGateV1.cs",
+            "expected_guid": "c9a4adfaeb9095a4087dd637cbef7a8b",
+            "actual_guid": "c9a4adfaeb9095a4087dd637cbef7a8b",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaResidualCleanupGateV1.cs",
+            "expected_guid": "e2ee2816c8a176649819d5ede2e9e4e2",
+            "actual_guid": "e2ee2816c8a176649819d5ede2e9e4e2",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaScreenSpaceBreakpointGateV1.cs",
+            "expected_guid": "0521ee10ee62a7342a01ab7087083b8f",
+            "actual_guid": "0521ee10ee62a7342a01ab7087083b8f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaSecondaryArchitectureReplacementGateV1.cs",
+            "expected_guid": "9b43295d438bacd4ba6db66285630ea6",
+            "actual_guid": "9b43295d438bacd4ba6db66285630ea6",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaSecondarySupportFormReplacementGateV1.cs",
+            "expected_guid": "21a9ad4188d144c4b81b8ca1a3f4e53d",
+            "actual_guid": "21a9ad4188d144c4b81b8ca1a3f4e53d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaSharpGameplaySelectionGateV1.cs",
+            "expected_guid": "8ff9fae917a6f1b40bbcec2b08c7b018",
+            "actual_guid": "8ff9fae917a6f1b40bbcec2b08c7b018",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaSharpGaussianUnityProofV1.cs",
+            "expected_guid": "30dde12f759757640b7b5a4ec5ce5e6d",
+            "actual_guid": "30dde12f759757640b7b5a4ec5ce5e6d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaSharpInteractiveSubstrateGateV1.cs",
+            "expected_guid": "6823be5c3eb18814083d4e7931bab4e6",
+            "actual_guid": "6823be5c3eb18814083d4e7931bab4e6",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaSharpLowerGateAppearanceGateV1.cs",
+            "expected_guid": "e02fa08bc6e06564c85d5cad24565920",
+            "actual_guid": "e02fa08bc6e06564c85d5cad24565920",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaSharpLowerGateGeometryGateV1.cs",
+            "expected_guid": "8704bbd938921634abf09c05be5a6fee",
+            "actual_guid": "8704bbd938921634abf09c05be5a6fee",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaSharpRuntimeBudgetGateV1.cs",
+            "expected_guid": "c9c355d034554e740932be8987e80cdc",
+            "actual_guid": "c9c355d034554e740932be8987e80cdc",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaSlavicPremiumFamilyGateV1.cs",
+            "expected_guid": "2710e35c7db897b4d91f640350a65333",
+            "actual_guid": "2710e35c7db897b4d91f640350a65333",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaStairLandingIntegrationGateV1.cs",
+            "expected_guid": "cb97afb3e8efa944aa753c38501d597e",
+            "actual_guid": "cb97afb3e8efa944aa753c38501d597e",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeDarkAuditV1.cs",
+            "expected_guid": "a2c4dc93ac5e1f54f8134816abe1af0b",
+            "actual_guid": "a2c4dc93ac5e1f54f8134816abe1af0b",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV1.cs",
+            "expected_guid": "7d045af2d64381340a0c2c88d93f4538",
+            "actual_guid": "7d045af2d64381340a0c2c88d93f4538",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaStrongestCompositeGateV2.cs",
+            "expected_guid": "c75db1a7988600c41a783090d2188929",
+            "actual_guid": "c75db1a7988600c41a783090d2188929",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaStrongestJaggedCompositeGateV1.cs",
+            "expected_guid": "f95923858ec8b6c4b9b45045f7212822",
+            "actual_guid": "f95923858ec8b6c4b9b45045f7212822",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaStructuralFrameUrbanSupportIntegrationGateV1.cs",
+            "expected_guid": "5b4c5974ed925c144b7aea9d6d7d3b9f",
+            "actual_guid": "5b4c5974ed925c144b7aea9d6d7d3b9f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaVisibleFrameCohesionGateV1.cs",
+            "expected_guid": "7b24215fcffa69f40903e11a369d0179",
+            "actual_guid": "7b24215fcffa69f40903e11a369d0179",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaVisibleFrameRebalanceGateV1.cs",
+            "expected_guid": "62a481248ea86fc47b2e5a4a7cee61aa",
+            "actual_guid": "62a481248ea86fc47b2e5a4a7cee61aa",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaVisibleFrameRebalanceGateV2.cs",
+            "expected_guid": "a59d37e21c3e239428099adcaca488a7",
+            "actual_guid": "a59d37e21c3e239428099adcaca488a7",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs",
+            "expected_guid": "8dd5b9da9006a794f869908765797ee6",
+            "actual_guid": "8dd5b9da9006a794f869908765797ee6",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/ValoriaWorldFrameMountainTerrainGateV1.cs",
+            "expected_guid": "52f9bf49f17a5d94788bf09923fc9781",
+            "actual_guid": "52f9bf49f17a5d94788bf09923fc9781",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/WorldMapVisualFormulaGate.cs",
+            "expected_guid": "c1690d6d7864b5040af1843a146c1f8d",
+            "actual_guid": "c1690d6d7864b5040af1843a146c1f8d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Editor/WorldPack4XComparisonGate.cs",
+            "expected_guid": "723a03bcf326d03478635db27f99704d",
+            "actual_guid": "723a03bcf326d03478635db27f99704d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/MidTierDistrictProduction.cs",
+            "expected_guid": "7294ce561263f2b4f91e6b054160591d",
+            "actual_guid": "7294ce561263f2b4f91e6b054160591d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaAdaptiveMobileHomePoseV1.cs",
+            "expected_guid": "ea7cd5d45da1ddb48903d021282dbf22",
+            "actual_guid": "ea7cd5d45da1ddb48903d021282dbf22",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaArchitectureCoherenceV1.cs",
+            "expected_guid": "3ac19c6a82a75574280b0c613085bc09",
+            "actual_guid": "3ac19c6a82a75574280b0c613085bc09",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaBackplateCandidateV1.cs",
+            "expected_guid": "b1a19e54fabaa86448f5e1bf942256f5",
+            "actual_guid": "b1a19e54fabaa86448f5e1bf942256f5",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaBenchmarkCompositeV1.cs",
+            "expected_guid": "d967b4de3446fde4e89afba8c9630f48",
+            "actual_guid": "d967b4de3446fde4e89afba8c9630f48",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaBenchmarkCompositeV2.cs",
+            "expected_guid": "a57e9e721439cb647a11ca5b6568513b",
+            "actual_guid": "a57e9e721439cb647a11ca5b6568513b",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV1.cs",
+            "expected_guid": "cf1240eb17c053a418b5c00e23bffb8e",
+            "actual_guid": "cf1240eb17c053a418b5c00e23bffb8e",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV2.cs",
+            "expected_guid": "daa796577f39cd349895ddc1e7967e3a",
+            "actual_guid": "daa796577f39cd349895ddc1e7967e3a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV3.cs",
+            "expected_guid": "e7c5da87ce256fd4597c9119c5d6494e",
+            "actual_guid": "e7c5da87ce256fd4597c9119c5d6494e",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdropV4.cs",
+            "expected_guid": "5c04cffb45497624093e127c02c0cc1b",
+            "actual_guid": "5c04cffb45497624093e127c02c0cc1b",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaCameraFirstFunctionalSourceV1.cs",
+            "expected_guid": "542bfdf898fa37b40a75958f3d8f6410",
+            "actual_guid": "542bfdf898fa37b40a75958f3d8f6410",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaCanonicalRuntimeGuard.cs",
+            "expected_guid": "1b9f31ebebcabf84099cfa9fd033810e",
+            "actual_guid": "1b9f31ebebcabf84099cfa9fd033810e",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaCliffIslandCleanupV2.cs",
+            "expected_guid": "2ab221bc85a1d9d42974d044867871a7",
+            "actual_guid": "2ab221bc85a1d9d42974d044867871a7",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaCliffIslandReframeV1.cs",
+            "expected_guid": "2ea63b0dc51b7eb46a0c92cce35cfe31",
+            "actual_guid": "2ea63b0dc51b7eb46a0c92cce35cfe31",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaCliffSubstrateV1.cs",
+            "expected_guid": "ea8d13e0c089a2c40ad78297dd0e223e",
+            "actual_guid": "ea8d13e0c089a2c40ad78297dd0e223e",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaCoherencePruneV1.cs",
+            "expected_guid": "d4b33c12bbc50cb4dbee4597860cc80f",
+            "actual_guid": "d4b33c12bbc50cb4dbee4597860cc80f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaCompactStairMeshV1.cs",
+            "expected_guid": "342c6983eb90b114b90c63abbf33f199",
+            "actual_guid": "342c6983eb90b114b90c63abbf33f199",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaDistantWorldCompositeV1.cs",
+            "expected_guid": "a936fdfbcb080524dab88537860d66ac",
+            "actual_guid": "a936fdfbcb080524dab88537860d66ac",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaEnvironmentUpliftV1.cs",
+            "expected_guid": "8baa64cbc2a3b004fa89900cdab5e466",
+            "actual_guid": "8baa64cbc2a3b004fa89900cdab5e466",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFirstProductionDistrictV1.cs",
+            "expected_guid": "40183664e05cde247b62545dffffe5e0",
+            "actual_guid": "40183664e05cde247b62545dffffe5e0",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameArchitectureBatchV1.cs",
+            "expected_guid": "da884795334671d48bfce89183007a8d",
+            "actual_guid": "da884795334671d48bfce89183007a8d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameArtifactCleanupV1.cs",
+            "expected_guid": "4eeb05748bffa5a4ba791b8afbf32ff9",
+            "actual_guid": "4eeb05748bffa5a4ba791b8afbf32ff9",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameConvergenceIteration1.cs",
+            "expected_guid": "8b3802f7acfa74a4a99e5ba29bea5295",
+            "actual_guid": "8b3802f7acfa74a4a99e5ba29bea5295",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameConvergenceIteration2.cs",
+            "expected_guid": "c2b68cdbdf05cc94bbd40e7bc74b8c92",
+            "actual_guid": "c2b68cdbdf05cc94bbd40e7bc74b8c92",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameFinishV1.cs",
+            "expected_guid": "804d5e5088582ee40aaf1a0088bc9dee",
+            "actual_guid": "804d5e5088582ee40aaf1a0088bc9dee",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameForegroundEdgePassV1.cs",
+            "expected_guid": "81de7699c4e749f4cb1f314b0327e825",
+            "actual_guid": "81de7699c4e749f4cb1f314b0327e825",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameHorizonAssetPassV1.cs",
+            "expected_guid": "e4956f3bde017014f9da9b6e1a9c7d42",
+            "actual_guid": "e4956f3bde017014f9da9b6e1a9c7d42",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameRuinFrameV1.cs",
+            "expected_guid": "7f3a3c3062c44c9418369daf7f099870",
+            "actual_guid": "7f3a3c3062c44c9418369daf7f099870",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameSurfaceLifeBatchV1.cs",
+            "expected_guid": "c1e05842d65ca9240b9dce0e0d2fb4a4",
+            "actual_guid": "c1e05842d65ca9240b9dce0e0d2fb4a4",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameTerrainContinuityV1.cs",
+            "expected_guid": "276a701d6869c2847a7724429259cb83",
+            "actual_guid": "276a701d6869c2847a7724429259cb83",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameValueHierarchyV1.cs",
+            "expected_guid": "cb26f91beda2cf641a2c3cdff819f310",
+            "actual_guid": "cb26f91beda2cf641a2c3cdff819f310",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameWorldSurroundV1.cs",
+            "expected_guid": "4313352b7d4df0d4a8cdb54b7c8b7fa4",
+            "actual_guid": "4313352b7d4df0d4a8cdb54b7c8b7fa4",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFullFrameWorldSurroundV2.cs",
+            "expected_guid": "1ec60f81a95f57c4593f263ed73045ab",
+            "actual_guid": "1ec60f81a95f57c4593f263ed73045ab",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaFunctionalScreenReadabilityV1.cs",
+            "expected_guid": "28f6ecdf32ba210458b7bde7eaf825aa",
+            "actual_guid": "28f6ecdf32ba210458b7bde7eaf825aa",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaGraneroCuartelSourceUpgradeV1.cs",
+            "expected_guid": "35d9953d38a91d4499b67fe0e39e6740",
+            "actual_guid": "35d9953d38a91d4499b67fe0e39e6740",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaGroundKit.cs",
+            "expected_guid": "d04a3c77a3f06a94a82a536ce03dec19",
+            "actual_guid": "d04a3c77a3f06a94a82a536ce03dec19",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaGroundMaterialHarmonizationV1.cs",
+            "expected_guid": "c6017b2c29976dc4f9da2930b5cf2b48",
+            "actual_guid": "c6017b2c29976dc4f9da2930b5cf2b48",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaInCitySurfacePassV1.cs",
+            "expected_guid": "aab2183767bfaff45966d42c4f32dad3",
+            "actual_guid": "aab2183767bfaff45966d42c4f32dad3",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaJaggedBackdropV1.cs",
+            "expected_guid": "e39ea316d4b801c4e9fb97a8012a22a3",
+            "actual_guid": "e39ea316d4b801c4e9fb97a8012a22a3",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaLowerCityPlateauV1.cs",
+            "expected_guid": "10d3f48f7d602134b87cdadfab32b30d",
+            "actual_guid": "10d3f48f7d602134b87cdadfab32b30d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaLowerCityTerracedMeshV1.cs",
+            "expected_guid": "45cea581d82a84b478e9838f14cf1b5d",
+            "actual_guid": "45cea581d82a84b478e9838f14cf1b5d",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaLowerCityTerrainV1.cs",
+            "expected_guid": "2caf67b5c8044a945843b17f37f59d09",
+            "actual_guid": "2caf67b5c8044a945843b17f37f59d09",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaLowerCityUrbanMassingReauthoringV1.cs",
+            "expected_guid": "5f27a88ce4327e746b679d3af89fe553",
+            "actual_guid": "5f27a88ce4327e746b679d3af89fe553",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaMaterialResidueCleanupV2.cs",
+            "expected_guid": "be88516ae9b83db4297f3f9bd1a1adc5",
+            "actual_guid": "be88516ae9b83db4297f3f9bd1a1adc5",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaMatteBackdropV1.cs",
+            "expected_guid": "bda69dd65f6c5dd4ca3376b30f5de016",
+            "actual_guid": "bda69dd65f6c5dd4ca3376b30f5de016",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaMobileNavigableCityV1.cs",
+            "expected_guid": "b0825b78207d81b458b1cc144c2f08d2",
+            "actual_guid": "b0825b78207d81b458b1cc144c2f08d2",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaMonumentalArchFrameV2.cs",
+            "expected_guid": "5782ba2660c3e4a4383d53093ac6e7f3",
+            "actual_guid": "5782ba2660c3e4a4383d53093ac6e7f3",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaOpenValleyCompositionV1.cs",
+            "expected_guid": "f4b8b44efcf52cf48a1369c2b8928810",
+            "actual_guid": "f4b8b44efcf52cf48a1369c2b8928810",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaPairedFunctionalSourceV1.cs",
+            "expected_guid": "2016efddd986dbd43b9935079c4495fc",
+            "actual_guid": "2016efddd986dbd43b9935079c4495fc",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaPanoramicSkyCandidateV1.cs",
+            "expected_guid": "f46b37470742a7b4495e47f1d98f97f2",
+            "actual_guid": "f46b37470742a7b4495e47f1d98f97f2",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaPanoramicSkyCandidateV2.cs",
+            "expected_guid": "3e0398a0c7791e642aeab3e598cd143a",
+            "actual_guid": "3e0398a0c7791e642aeab3e598cd143a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaProductionArtResetV1.cs",
+            "expected_guid": "478f4c625d2f09c4986ca7c77581c91c",
+            "actual_guid": "478f4c625d2f09c4986ca7c77581c91c",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaProductionDensityLifeV1.cs",
+            "expected_guid": "028114c3124e9284c82a88653c0cd461",
+            "actual_guid": "028114c3124e9284c82a88653c0cd461",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaProductionFinalLookV1.cs",
+            "expected_guid": "ddd4e63940255ed4d89873c00f39b228",
+            "actual_guid": "ddd4e63940255ed4d89873c00f39b228",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaResidualCleanupV1.cs",
+            "expected_guid": "3e075ff2523400748a53252bbc7c77ab",
+            "actual_guid": "3e075ff2523400748a53252bbc7c77ab",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaScreenSpaceBreakpointV1.cs",
+            "expected_guid": "1216a1e0b58252646b6a445924414e90",
+            "actual_guid": "1216a1e0b58252646b6a445924414e90",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaSecondarySupportFormReplacementV1.cs",
+            "expected_guid": "130b7c0de789e2e47b4af40b056b3888",
+            "actual_guid": "130b7c0de789e2e47b4af40b056b3888",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaStairLandingIntegrationV1.cs",
+            "expected_guid": "d6b33714578553049b653ac4050c7244",
+            "actual_guid": "d6b33714578553049b653ac4050c7244",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaStructuralFrameUrbanSupportIntegrationV1.cs",
+            "expected_guid": "864b94b67c0fdc342aedc39d3f83dffb",
+            "actual_guid": "864b94b67c0fdc342aedc39d3f83dffb",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaVisibleFrameCohesionV1.cs",
+            "expected_guid": "914ba82d8e64e8d40a4068f6e0b8e02f",
+            "actual_guid": "914ba82d8e64e8d40a4068f6e0b8e02f",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaVisibleFrameRebalanceV1.cs",
+            "expected_guid": "8bd8dc166ae91904893ba066ac5a2cb3",
+            "actual_guid": "8bd8dc166ae91904893ba066ac5a2cb3",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaWebGLSplatStateLoader.cs",
+            "expected_guid": "4d957ae9edcffa64da1320048ba70629",
+            "actual_guid": "4d957ae9edcffa64da1320048ba70629",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/ValoriaWorldFrameMountainTerrainV1.cs",
+            "expected_guid": "61f32624f3ecc8b4d9e839d19a74dfc6",
+            "actual_guid": "61f32624f3ecc8b4d9e839d19a74dfc6",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/WorldRegion1Runtime.cs",
+            "expected_guid": "5c92a28bde875e04a9b6c17f77b38793",
+            "actual_guid": "5c92a28bde875e04a9b6c17f77b38793",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/WorldResourceKit.cs",
+            "expected_guid": "50f07d4bcf9591c4085026e8218bfc56",
+            "actual_guid": "50f07d4bcf9591c4085026e8218bfc56",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Scripts/Presentation/WorldRouteKit.cs",
+            "expected_guid": "c870a9d0ae7ed464bae9b071364280cd",
+            "actual_guid": "c870a9d0ae7ed464bae9b071364280cd",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Shaders/ValoriaLowerGateProjection.shader",
+            "expected_guid": "54d26d3ea402d4440aea36174dce65cc",
+            "actual_guid": "54d26d3ea402d4440aea36174dce65cc",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Tests/PlayMode/WorldRegion1RuntimeTests.cs",
+            "expected_guid": "52b5853f1732af947a316e569bc0f5a2",
+            "actual_guid": "52b5853f1732af947a316e569bc0f5a2",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/World4XCanon/RegionOneRiberaPilot.cs",
+            "expected_guid": "1d9a3b02d5d15e649a6c233339e08f76",
+            "actual_guid": "1d9a3b02d5d15e649a6c233339e08f76",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/World4XCanon/RiberaFade.shader",
+            "expected_guid": "ac92777de2348514693c5776fc58147a",
+            "actual_guid": "ac92777de2348514693c5776fc58147a",
+            "bytes_preserved": true,
+            "folder": false,
+            "objects": 1,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests",
+            "expected_guid": "c8b3a27366cd90a4ebb39be4beacb50b",
+            "actual_guid": "c8b3a27366cd90a4ebb39be4beacb50b",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/Bastion1Assembly",
+            "expected_guid": "caa1134a8a2f3be4593ab83c2b2f2493",
+            "actual_guid": "caa1134a8a2f3be4593ab83c2b2f2493",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/Bastion1Assembly/Editor",
+            "expected_guid": "ac24c8d1bc5a764419959892ee866fb7",
+            "actual_guid": "ac24c8d1bc5a764419959892ee866fb7",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2",
+            "expected_guid": "f891b80dad53ac342ba475069a1e812e",
+            "actual_guid": "f891b80dad53ac342ba475069a1e812e",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures",
+            "expected_guid": "3396c17bdf95b9941bf1d0188ec6deb2",
+            "actual_guid": "3396c17bdf95b9941bf1d0188ec6deb2",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D",
+            "expected_guid": "422c50b57d4c7f944a521bfa6982c6be",
+            "actual_guid": "422c50b57d4c7f944a521bfa6982c6be",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Editor",
+            "expected_guid": "65974a0834e28db4a92c34d8ba60f9ab",
+            "actual_guid": "65974a0834e28db4a92c34d8ba60f9ab",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ImageTo3D/Source",
+            "expected_guid": "dd178faf8208eff40a3276381c3bf067",
+            "actual_guid": "dd178faf8208eff40a3276381c3bf067",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/LayeredValoria",
+            "expected_guid": "fa403348367471f44af51d795676fc8d",
+            "actual_guid": "fa403348367471f44af51d795676fc8d",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/OriginalHero",
+            "expected_guid": "04123e2d770d7474088b90e19233116d",
+            "actual_guid": "04123e2d770d7474088b90e19233116d",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/OriginalHero/Textures",
+            "expected_guid": "958a7552d8abe2349b7e712a55d6d5b2",
+            "actual_guid": "958a7552d8abe2349b7e712a55d6d5b2",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction",
+            "expected_guid": "4a196e65d562bc144ace1c53f0c19eee",
+            "actual_guid": "4a196e65d562bc144ace1c53f0c19eee",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor",
+            "expected_guid": "6c8b8f26ba501a1458fac4f025194b25",
+            "actual_guid": "6c8b8f26ba501a1458fac4f025194b25",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated",
+            "expected_guid": "274e34c508fb6f54daca57ad50fa2a50",
+            "actual_guid": "274e34c508fb6f54daca57ad50fa2a50",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedBridgeV1",
+            "expected_guid": "a44291357bd3c77499027b19804f3a20",
+            "actual_guid": "a44291357bd3c77499027b19804f3a20",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD",
+            "expected_guid": "12f379f24e53ab241b9cb400db0949b6",
+            "actual_guid": "12f379f24e53ab241b9cb400db0949b6",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedE",
+            "expected_guid": "58db1cbae825b5941ac4507beb65c352",
+            "actual_guid": "58db1cbae825b5941ac4507beb65c352",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5",
+            "expected_guid": "6e3e5dbf5999e8943a2e7dcb9bf45b39",
+            "actual_guid": "6e3e5dbf5999e8943a2e7dcb9bf45b39",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV1",
+            "expected_guid": "92b71fa6d75cbd54ea9af5bad09b9c5e",
+            "actual_guid": "92b71fa6d75cbd54ea9af5bad09b9c5e",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV2",
+            "expected_guid": "b20b16b14c0e8a5419bb711bd2f24357",
+            "actual_guid": "b20b16b14c0e8a5419bb711bd2f24357",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV3",
+            "expected_guid": "da50db2973b820b4aab3b28de1c8730a",
+            "actual_guid": "da50db2973b820b4aab3b28de1c8730a",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout",
+            "expected_guid": "5833ed36e15dde743ad30701a0e20ca6",
+            "actual_guid": "5833ed36e15dde743ad30701a0e20ca6",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants",
+            "expected_guid": "945a0c35cd725324e9fa8565e51c70e6",
+            "actual_guid": "945a0c35cd725324e9fa8565e51c70e6",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1",
+            "expected_guid": "6adcb5f6a8f3ab24da08ed2237748095",
+            "actual_guid": "6adcb5f6a8f3ab24da08ed2237748095",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1/Editor",
+            "expected_guid": "650ad2bbe8444414eb36431480bf4c06",
+            "actual_guid": "650ad2bbe8444414eb36431480bf4c06",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1",
+            "expected_guid": "e3c8e58fd2848bd428e58d3dd4d01dbd",
+            "actual_guid": "e3c8e58fd2848bd428e58d3dd4d01dbd",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor",
+            "expected_guid": "dd9dee7cccdf6d741a98bda7d9815769",
+            "actual_guid": "dd9dee7cccdf6d741a98bda7d9815769",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean",
+            "expected_guid": "cd7c906fbba3c4f4b9f698a5e3573427",
+            "actual_guid": "cd7c906fbba3c4f4b9f698a5e3573427",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV",
+            "expected_guid": "c1d9b5b02feee324e9c06bb2f0d669af",
+            "actual_guid": "c1d9b5b02feee324e9c06bb2f0d669af",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Models",
+            "expected_guid": "bfa77e5b4829ab14786895f84a6d4da3",
+            "actual_guid": "bfa77e5b4829ab14786895f84a6d4da3",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits",
+            "expected_guid": "df64d3bfd75efec41b9c2c9ff500fbfe",
+            "actual_guid": "df64d3bfd75efec41b9c2c9ff500fbfe",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/World4XZone1",
+            "expected_guid": "72ee09e70971e9f4d9cd4c230c1b5bb4",
+            "actual_guid": "72ee09e70971e9f4d9cd4c230c1b5bb4",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/ArtTests/World4XZone1/Models/Ground",
+            "expected_guid": "8efdd2eeedf49ce43a07d9608b077812",
+            "actual_guid": "8efdd2eeedf49ce43a07d9608b077812",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/UI",
+            "expected_guid": "7c7d43eef3bc5054081f57330035ece7",
+            "actual_guid": "7c7d43eef3bc5054081f57330035ece7",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/HistoricalLandmarks",
+            "expected_guid": "8f6fe000f89e34f4abe14cd4a01e77aa",
+            "actual_guid": "8f6fe000f89e34f4abe14cd4a01e77aa",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt",
+            "expected_guid": "5c36cd41e37505340ae3f3da65c2928c",
+            "actual_guid": "5c36cd41e37505340ae3f3da65c2928c",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1",
+            "expected_guid": "92aa101b99de34a40a5131b96a7473f9",
+            "actual_guid": "92aa101b99de34a40a5131b96a7473f9",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1",
+            "expected_guid": "5b04736727c3cf245b42d52f6fc691be",
+            "actual_guid": "5b04736727c3cf245b42d52f6fc691be",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1",
+            "expected_guid": "581a509918f081b43869275390eb02f4",
+            "actual_guid": "581a509918f081b43869275390eb02f4",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1",
+            "expected_guid": "33903525f01b0c748b5f3c83ba65d1f8",
+            "actual_guid": "33903525f01b0c748b5f3c83ba65d1f8",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1",
+            "expected_guid": "a07491a1a2b248e46bd69fd9a4533924",
+            "actual_guid": "a07491a1a2b248e46bd69fd9a4533924",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1",
+            "expected_guid": "0435fdc688c2ed04db29e6a48c2ab10f",
+            "actual_guid": "0435fdc688c2ed04db29e6a48c2ab10f",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroRichCameraFirstV1",
+            "expected_guid": "3ac27e555c4d11f408bf469b6cb78be2",
+            "actual_guid": "3ac27e555c4d11f408bf469b6cb78be2",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily",
+            "expected_guid": "7dd85c020918dac48abdfb8515b932f5",
+            "actual_guid": "7dd85c020918dac48abdfb8515b932f5",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2",
+            "expected_guid": "0ce01c9cdf225ae45a47ec06f284e6bc",
+            "actual_guid": "0ce01c9cdf225ae45a47ec06f284e6bc",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3",
+            "expected_guid": "e5379e6ef14296f4daf5b1d7e2e53fb3",
+            "actual_guid": "e5379e6ef14296f4daf5b1d7e2e53fb3",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2",
+            "expected_guid": "44dd84daacc467145b92c6805a254917",
+            "actual_guid": "44dd84daacc467145b92c6805a254917",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1",
+            "expected_guid": "fe4afa0a28596f34ba17d940869ebbc3",
+            "actual_guid": "fe4afa0a28596f34ba17d940869ebbc3",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/Rescued",
+            "expected_guid": "e36a0198bce96884299b49a588314452",
+            "actual_guid": "e36a0198bce96884299b49a588314452",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1",
+            "expected_guid": "8173c38695a8c5240955403e1f20774e",
+            "actual_guid": "8173c38695a8c5240955403e1f20774e",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/StoneKit",
+            "expected_guid": "7c8c57e7d79f78f4f8ddfc8f7f7d5944",
+            "actual_guid": "7c8c57e7d79f78f4f8ddfc8f7f7d5944",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1",
+            "expected_guid": "02788d0d8f18e4b42a26e4fad1f2b85c",
+            "actual_guid": "02788d0d8f18e4b42a26e4fad1f2b85c",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/WorldInventory",
+            "expected_guid": "240c35c338e267d4b94270e669d42c97",
+            "actual_guid": "240c35c338e267d4b94270e669d42c97",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Resources/WorldPlayerCity",
+            "expected_guid": "1effa1e8e3c66c947b2744a724ca0232",
+            "actual_guid": "1effa1e8e3c66c947b2744a724ca0232",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/Shaders",
+            "expected_guid": "962d125680c88b54691f2816e634226c",
+            "actual_guid": "962d125680c88b54691f2816e634226c",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/SpawnlingBastion2",
+            "expected_guid": "cf380c8220655284c8c877aafe9aacac",
+            "actual_guid": "cf380c8220655284c8c877aafe9aacac",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/UI",
+            "expected_guid": "5440675b3df6c884e8103569d33b7868",
+            "actual_guid": "5440675b3df6c884e8103569d33b7868",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/UI/ValoriaRoyalHUDV1",
+            "expected_guid": "30856dbd2cec7e54e82e4dda2e0d4b2e",
+            "actual_guid": "30856dbd2cec7e54e82e4dda2e0d4b2e",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Eldoria/World4XCanon/P0ArtMasks",
+            "expected_guid": "a880c27c67b4f254ebd96cdf2fa7a573",
+            "actual_guid": "a880c27c67b4f254ebd96cdf2fa7a573",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Holotna",
+            "expected_guid": "287d606d80e181b4f87a595a3fc86aac",
+            "actual_guid": "287d606d80e181b4f87a595a3fc86aac",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Holotna/Mountain",
+            "expected_guid": "0c131454320888141ad0c8bb65c6e0b2",
+            "actual_guid": "0c131454320888141ad0c8bb65c6e0b2",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Holotna/Mountain/Materials",
+            "expected_guid": "c4eb5469f248f4945b6a89cb9318a2d9",
+            "actual_guid": "c4eb5469f248f4945b6a89cb9318a2d9",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Holotna/Mountain/Models",
+            "expected_guid": "6a20435d31c536f4fb7495b66e5c8a1a",
+            "actual_guid": "6a20435d31c536f4fb7495b66e5c8a1a",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Holotna/Mountain/Shaders",
+            "expected_guid": "d31ecbc62cffba84c9c83a633d0cf37d",
+            "actual_guid": "d31ecbc62cffba84c9c83a633d0cf37d",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/Holotna/Mountain/Textures",
+            "expected_guid": "22ac31daebcceae43a44c1427b6477fc",
+            "actual_guid": "22ac31daebcceae43a44c1427b6477fc",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/WorldPackCompare",
+            "expected_guid": "c0f9eefe3a785b146a207503c44568ea",
+            "actual_guid": "c0f9eefe3a785b146a207503c44568ea",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/WorldPackCompare/Quaternius",
+            "expected_guid": "09106292123da51478cc33ccd4a18b60",
+            "actual_guid": "09106292123da51478cc33ccd4a18b60",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        },
+        {
+            "path": "Assets/WorldPackCompare/Quaternius/FBX",
+            "expected_guid": "a2cd11fab897cc84c8e3c89f6744b346",
+            "actual_guid": "a2cd11fab897cc84c8e3c89f6744b346",
+            "bytes_preserved": true,
+            "folder": true,
+            "objects": 0,
+            "scene_asset": false
+        }
+    ],
+    "failures": [],
+    "enabled_scenes": 1,
+    "missing_scripts": 0,
+    "company_name": "MetadataValidation_41821882671",
+    "product_name": "EldoriaMetadata_41821882671",
+    "validation_mode": "full",
+    "scene_content_verified": true
+}

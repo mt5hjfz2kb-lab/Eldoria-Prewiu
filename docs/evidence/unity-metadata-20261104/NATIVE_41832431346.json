@@ -1,0 +1,62 @@
+{
+  "run": 41832431346,
+  "candidate": "fecab45b15ad62d766d8f97b9bccda6abb68c885",
+  "overall_workflow": "FAIL",
+  "scope_results": {
+    "metadata_original_guid_and_bytes": "PASS 345/345, zero differences",
+    "enabled_scene_missing_scripts": 0,
+    "EditMode": {
+      "result": "Passed",
+      "passed": 57,
+      "failed": 0,
+      "skipped": 0,
+      "cases": 57,
+      "assemblies": [
+        "C:/actions-runner-eldoria/_work/_temp/em-native-41832431346/source/Unity/Library/ScriptAssemblies/Eldoria.Tests.EditMode.dll"
+      ],
+      "xml_sha256": "c260f7cb1ada08f69884b6d4ad780b5ac586c266363d9eebe0fd553defb7f4a7"
+    },
+    "PlayMode": {
+      "result": "Passed",
+      "passed": 73,
+      "failed": 0,
+      "skipped": 0,
+      "cases": 73,
+      "assemblies": [
+        "C:/actions-runner-eldoria/_work/_temp/em-native-41832431346/source/Unity/Library/ScriptAssemblies/Assembly-CSharp.dll",
+        "C:/actions-runner-eldoria/_work/_temp/em-native-41832431346/source/Unity/Library/ScriptAssemblies/Eldoria.Tests.PlayMode.dll"
+      ],
+      "xml_sha256": "809a58f1afa7a475bce182880985e912046a77a0414236cdee40745479f0bdb6"
+    }
+  },
+  "process_contract": {
+    "shell_version": "5.1.19041.6456",
+    "cases": [
+      {
+        "expected": 0,
+        "actual": 0,
+        "handle_retained": true,
+        "windows": true
+      },
+      {
+        "expected": 7,
+        "actual": 7,
+        "handle_retained": true,
+        "windows": true
+      }
+    ],
+    "state": "PASS"
+  },
+  "blender": {
+    "windows": true,
+    "process_id": 23280,
+    "handle_retained": true,
+    "exit_code": 0
+  },
+  "artifact": 13327216247,
+  "artifact_zip_sha256": "f4d43e62475a8dc922ef616fbf7bceccaa3dd0b1e481873c309eaa0ff469897d",
+  "native_report_sha256": "e3b895a32986a0638d26533e15f93922a72a664439a45f2c4742264e9528d431",
+  "tracked_diff_sha256": "634069ca753e9060b50e802506fb62efcb8911a80aa9451d8c6d396dc11e464a",
+  "failure": "Blanket pristine-checkout assertion rejected 61 pre-existing import/canonical-fixture serializations. No restored entry changed. All 61 source blobs are identical to main c574abf before this repair. Raw binary/text patch replay verified; original 27 other GUIDs retained. No side-effect source files are committed.",
+  "followup": "Require exact source and observed Git blobs for only these 61 known baseline paths; all new paths, differing source/output blobs and every recovery overlap remain rejected. Rerun full native certificate."
+}

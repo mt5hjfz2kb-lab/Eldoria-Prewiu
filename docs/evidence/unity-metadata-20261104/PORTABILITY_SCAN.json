@@ -1,0 +1,9 @@
+{
+  "candidate_sha": "e6b9a651bfcda50c7c9fe6d0ac5a2b74ac0e51ff",
+  "tracked_files": 21211,
+  "casefold_file_collisions": [],
+  "casefold_directory_variants": [],
+  "paths_over_240_chars": 0,
+  "longest_path_chars": 173,
+  "scope": "Read-only portability inventory, not source relocation or Windows filesystem certification"
+}

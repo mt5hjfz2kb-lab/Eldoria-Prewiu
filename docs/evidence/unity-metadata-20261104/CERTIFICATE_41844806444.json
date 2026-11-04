@@ -1,0 +1,38 @@
+{
+  "original_save_identity_settings_restored": true,
+  "pristine_checkout": false,
+  "canonical_runtime_prepared": true,
+  "restored_entries": 345,
+  "test_persistence_isolated": true,
+  "unexpected_tracked_changes": 0,
+  "production_projects_modified": false,
+  "run_id": "41844806444",
+  "validation_mode": "full",
+  "unity_version": "6000.3.23f1",
+  "player_build_run": false,
+  "full_tests_run": true,
+  "candidate_sha": "aae457d6a203fe19a7e74f88fdc14b3d6ec2d948",
+  "test_summary": [
+    {
+      "passed": 57,
+      "cases": 57,
+      "assemblies": 1,
+      "failed": 0,
+      "source_verified": true,
+      "platform": "EditMode",
+      "skipped": 0
+    },
+    {
+      "passed": 73,
+      "cases": 73,
+      "assemblies": 2,
+      "failed": 0,
+      "source_verified": true,
+      "platform": "PlayMode",
+      "skipped": 0
+    }
+  ],
+  "harness_editor_only": true,
+  "reviewed_baseline_serializations": 61,
+  "state": "PASS"
+}
