@@ -1,13 +1,13 @@
 {
   "workstream_id": "eldoria-construction-delight-v1-20261104",
-  "mode": "SANITIZED_UNITY_CLI_AUTH_AND_LICENSE_STATUS_ONLY",
+  "mode": "READ_ONLY_HUB_SESSION_ADOPTABILITY_BOOLEAN",
   "source_branch": "feature/eldoria-construction-delight-20261104",
   "reason": "Unity 6000.3.23f1 headless startup exit 198: token unavailable and no com.unity.editor.headless entitlement; inspect only file existence and Hub/Editor processes",
   "no_credential_access": true,
   "no_process_changes": true,
   "build_not_authorized": true,
   "art_approved": false,
-  "attempt": 7,
+  "attempt": 8,
   "valid_workflow_head": "82b75bb11cfc55d6aa674f8cc8097e69e58cbdb2",
   "read_only_checks": [
     "license_file_exists",
@@ -33,5 +33,8 @@
   "ownership_revision": 7,
   "previous_session_test": 41798743304,
   "no_interactive_login": true,
-  "no_secret_output": true
+  "no_secret_output": true,
+  "latest_window_session_test": 41798743304,
+  "no_login_or_switch": true,
+  "no_secrets": true
 }
