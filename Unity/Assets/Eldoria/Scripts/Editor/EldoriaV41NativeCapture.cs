@@ -4,10 +4,12 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using Eldoria.Domain;
+using Eldoria.HeroesUI;
 using Eldoria.Infrastructure;
 using Eldoria.ReferenceClean;
 using Eldoria.ReferenceClean.Editor;
 using Eldoria.UI.RoyalGold.V2;
+using Eldoria.UI.RoyalGold;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -24,12 +26,32 @@ namespace Eldoria.Editor
         static string Output=>Path.GetFullPath(Environment.GetEnvironmentVariable("ELDORIA_V41_EVIDENCE")??"v41-native");
         static EldoriaV41NativeCapture()=>EditorApplication.playModeStateChanged+=Entered;
         static void Need(bool good,string reason){if(!good)throw new InvalidOperationException(reason);Debug.Log("V41_CHECK "+reason);}
+        // Disposable layout-only snapshot: does not own a state store, issue
+        // gameplay commands or write to the player's local file.
+        sealed class MailboxDisplayFixture : Eldoria.Application.ICommandGateway
+        {
+            readonly PlayerState snapshot;
+            public MailboxDisplayFixture(PlayerState source){snapshot=source;}
+            public PlayerState Snapshot()=>snapshot;
+            public Eldoria.Application.CommandResult Execute(Eldoria.Application.GameCommand command)=>
+                new Eldoria.Application.CommandResult(false,"QA de solo lectura",snapshot.Revision);
+            public bool Advance()=>false;
+        }
+        public static void Benchmark()
+        {
+            Environment.SetEnvironmentVariable("ELDORIA_CONSOLIDATION_BENCHMARK","1");
+            Capture();
+        }
         public static void Capture()
         {
             try
             {
                 Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
+                Need(SystemInfo.graphicsDeviceType!=UnityEngine.Rendering.GraphicsDeviceType.Null,
+                    "Authentic native capture and benchmark require the actual graphics device");
                 Directory.CreateDirectory(Output);
+                File.WriteAllText(Path.Combine(Output,"legacy-bastion-veto.json"),
+                    RejectedLegacyBastionBuildGuard.Validate());
                 EditorSceneManager.OpenScene("Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity");
                 SessionState.SetBool(Flag,true);EditorApplication.EnterPlaymode();
             }
@@ -47,7 +69,7 @@ namespace Eldoria.Editor
         }
         static IEnumerator Guard(ValoriaIntegratedWorld host)
         {
-            var probe=Exercise(host);
+            var probe=Environment.GetEnvironmentVariable("ELDORIA_CONSOLIDATION_BENCHMARK")=="1"?BenchmarkExercise(host):Exercise(host);
             while(true)
             {
                 bool more;object value=null;
@@ -56,23 +78,887 @@ namespace Eldoria.Editor
                 if(!more)yield break;yield return value;
             }
         }
+        [Serializable] sealed class BenchmarkSample
+        {
+            public string screen; public int width,height; public float median_ms,p95_ms;
+            public long allocated_bytes,reserved_bytes;
+        }
+        [Serializable] sealed class BenchmarkResult
+        {
+            // Source identity binds this measurement to its exact native certification commit.
+            public string variant,source_sha; public bool physical_mobile_tested=false;
+            public string baseline_runtime_sha="c5051220294db3781c56878bab28eccaa798452d";
+            public string comparison_scope="Two reconciled runtime files; identical approved assets, metadata and instrumentation";
+            public BenchmarkSample[] samples;
+        }
+        static IEnumerator BenchmarkExercise(ValoriaIntegratedWorld host)
+        {
+            for(int i=0;i<300&&!host.Ready;i++)yield return null;
+            Need(host.Ready&&host.City.Probe,"Benchmark uses disposable canonical scene");
+            if(host.Guidance)host.Guidance.enabled=false;
+            for(int i=0;i<50&&host.Hud.NarrativeOpen;i++){host.Hud.Modal.Extra.onClick.Invoke();yield return null;}
+            host.Hud.Modal.Hide();host.Hud.SelectBuilding("");
+            var state=host.City.Gateway.Snapshot();state.BastionLevel=4;state.BarracksLevel=4;
+            state.ChapterThree.LyraRecruited=true;
+            new FileStateStore(host.City.SaveFile).Save(state);host.City.ReloadForProbe();yield return null;
+            var heroes=host.Hud.GetComponent<HeroesApprovedDestination>();
+            // Freeze save bytes after fixture initialization; measure navigation without save mutation.
+            string benchmarkSave=File.ReadAllText(host.City.SaveFile);
+            var samples=new System.Collections.Generic.List<BenchmarkSample>();
+            foreach(var screen in new[]{"city","aldric","lyra"})
+            {
+                if(screen!="city"){
+                    heroes.Open();Need(heroes.OpenHero(screen),"Benchmark real hero opens "+screen);
+                    float deadline=Time.realtimeSinceStartup+40f;
+                    while(heroes.ReadModelRoot(screen)==null&&Time.realtimeSinceStartup<deadline)yield return null;
+                    Need(heroes.ReadModelRoot(screen)!=null,"Benchmark approved model ready "+screen);
+                    heroes.Refresh();
+                }
+                for(int i=0;i<90;i++)yield return null;
+                yield return Resources.UnloadUnusedAssets();GC.Collect();
+                for(int i=0;i<30;i++)yield return null;
+                var timings=new float[240];
+                for(int i=0;i<timings.Length;i++){yield return null;timings[i]=Time.unscaledDeltaTime*1000f;}
+                Need(timings.All(x=>x>0f&&!float.IsNaN(x)&&!float.IsInfinity(x)),
+                    "Benchmark records finite positive frame times "+screen);
+                Need(Screen.width>0&&Screen.height>0,
+                    "Benchmark records actual rendering dimensions "+screen);
+                Array.Sort(timings);
+                samples.Add(new BenchmarkSample{screen=screen,width=Screen.width,height=Screen.height,
+                    median_ms=timings[120],p95_ms=timings[228],
+                    allocated_bytes=UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong(),
+                    reserved_bytes=UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong()});
+                if(screen!="city"){heroes.Close();yield return null;}
+            }
+            Need(File.ReadAllText(host.City.SaveFile)==benchmarkSave,
+                "Benchmark navigation preserves the disposable save byte for byte");
+            var result=new BenchmarkResult{variant=Environment.GetEnvironmentVariable("ELDORIA_BENCHMARK_VARIANT"),
+                source_sha=Environment.GetEnvironmentVariable("ALDRIC_REQUEST_SOURCE_SHA"),samples=samples.ToArray()};
+            File.WriteAllText(Path.Combine(Output,"benchmark.json"),JsonUtility.ToJson(result,true));
+            Debug.Log("ELDORIA_CONSOLIDATION_BENCHMARK_RECORDED");EditorApplication.Exit(0);
+        }
         static void Shot(ValoriaIntegratedWorld host,string name,int width,int height)
         {
             var management=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
             var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
             ValoriaIntegrationBuild.Capture(host,Path.Combine(Output,name+".png"),width,height,()=>{
+                if(name.Contains("small-phone"))
+                {
+                    // Exercise the actual production height-based scaler,
+                    // not merely the older 800-unit capture convention.
+                    host.Hud.GetComponent<Canvas>().scaleFactor=height/900f;
+                    Canvas.ForceUpdateCanvases();
+                }
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
+                // Real contextual city card is responsive too. Test the actual
+                // 390x844 screen, not a 900-unit layout stretched to phone.
+                host.Hud.GetComponent<RoyalGoldV2Hud>()?.SynchronizeNow();
+                host.Hud.GetComponent<RoyalGoldV3ContextHud>()?.SynchronizeNow();
+                Canvas.ForceUpdateCanvases();
+                // A CanvasRenderer.depth/cull PASS is insufficient:
+                // oversized dynamic fonts can produce no rasterized glyphs.
+                // Check Unity's actual preferred layout height against the
+                // native RectTransform for every context-state screenshot.
+                if(name.StartsWith("building-")||name.StartsWith("construction-"))
+                {
+                    var realTitle=host.Hud.GetComponentsInChildren<Text>(true)
+                        .FirstOrDefault(t=>t.name=="Selected building");
+                    Need(realTitle&&realTitle.fontSize<=24&&
+                        realTitle.preferredHeight<=realTitle.rectTransform.rect.height+3f,
+                        "Building heading is typographically fitted, not merely registered "+name);
+                    var realCost=host.Hud.GetComponentsInChildren<Text>(true)
+                        .FirstOrDefault(t=>t.name=="Building / genuine offer cost");
+                    if(realCost&&realCost.gameObject.activeInHierarchy)
+                        Need(realCost.preferredHeight<=realCost.rectTransform.rect.height+3f,
+                            "Full authentic wood/stone price fits the cost row "+name);
+                    var realButtons=host.Hud.GetComponentsInChildren<Button>(true)
+                        .Where(b=>b.gameObject.activeInHierarchy&&
+                            (b.GetComponent<CanvasGroup>()==null||
+                             b.GetComponent<CanvasGroup>().alpha>.01f)&&(
+                            b.name=="Execute existing authorised offer"||
+                            b.name.StartsWith("Building / council ")||
+                            b.name.StartsWith("Building / accelerate ")));
+                    foreach(var b in realButtons)
+                    {
+                        var caption=b.GetComponentInChildren<Text>(true);
+                        Need(caption&&!string.IsNullOrEmpty(caption.text)&&
+                            caption.preferredHeight<=caption.rectTransform.rect.height+3f,
+                            "Visible cartouche action has real legible text "+name+" / "+b.name+
+                            " label="+(caption?caption.text:"MISSING")+
+                            " font="+(caption?caption.fontSize.ToString():"MISSING")+
+                            " preferredH="+(caption?caption.preferredHeight.ToString("F1"):"MISSING")+
+                            " slotH="+(caption?caption.rectTransform.rect.height.ToString("F1"):"MISSING")+
+                            " preferredW="+(caption?caption.preferredWidth.ToString("F1"):"MISSING")+
+                            " slotW="+(caption?caption.rectTransform.rect.width.ToString("F1"):"MISSING"));
+                    }
+                }
+                // The genuine operation countdown must be attached to
+                // its building WITHOUT painting across the actual 3D roof.
+                // Assert screen-space non-overlap against the same hotspot
+                // collider that the production timer projects, not a guessed
+                // screenshot crop or an unrelated icon.
+                if(name.StartsWith("building-in-progress-")||
+                    name.StartsWith("building-upgrading-"))
+                {
+                    var target=host.FindTarget("sawmill");
+                    var collider=target?target.GetComponent<Collider>():null;
+                    if(!collider&&target)collider=target.GetComponentInChildren<Collider>();
+                    var countdown=host.Hud.GetComponentsInChildren<RectTransform>(true)
+                        .FirstOrDefault(x=>x.name=="V3 / real-time operation / sawmill");
+                    Need(target&&collider&&countdown&&countdown.gameObject.activeInHierarchy,
+                        "Genuine Sawmill timer and scene hotspot are present "+name);
+                    var bounds=collider.bounds;
+                    var min=bounds.min;var max=bounds.max;
+                    float minX=float.PositiveInfinity,maxX=float.NegativeInfinity;
+                    float minY=float.PositiveInfinity,maxY=float.NegativeInfinity;
+                    for(int n=0;n<8;n++)
+                    {
+                        var corner=new Vector3((n&1)==0?min.x:max.x,
+                            (n&2)==0?min.y:max.y,(n&4)==0?min.z:max.z);
+                        var projected=host.PlayerCamera.WorldToScreenPoint(corner);
+                        if(projected.z<=host.PlayerCamera.nearClipPlane)continue;
+                        minX=Mathf.Min(minX,projected.x);maxX=Mathf.Max(maxX,projected.x);
+                        minY=Mathf.Min(minY,projected.y);maxY=Mathf.Max(maxY,projected.y);
+                    }
+                    var canvas=host.Hud.GetComponent<Canvas>();
+                    Camera graphicCamera=canvas.renderMode==RenderMode.ScreenSpaceOverlay?
+                        null:canvas.worldCamera;
+                    var corners=new Vector3[4];countdown.GetWorldCorners(corners);
+                    float tMinX=float.PositiveInfinity,tMaxX=float.NegativeInfinity;
+                    float tMinY=float.PositiveInfinity,tMaxY=float.NegativeInfinity;
+                    foreach(var corner in corners)
+                    {
+                        var point=RectTransformUtility.WorldToScreenPoint(graphicCamera,corner);
+                        tMinX=Mathf.Min(tMinX,point.x);tMaxX=Mathf.Max(tMaxX,point.x);
+                        tMinY=Mathf.Min(tMinY,point.y);tMaxY=Mathf.Max(tMaxY,point.y);
+                    }
+                    var modelRect=Rect.MinMaxRect(minX,minY,maxX,maxY);
+                    var timerRect=Rect.MinMaxRect(tMinX,tMinY,tMaxX,tMaxY);
+                    Need(minX<maxX&&minY<maxY&&
+                        !timerRect.Overlaps(modelRect),
+                        "Live timer stays off the real building silhouette "+name+
+                        " timer="+timerRect+" model="+modelRect);
+                }
+                if(name=="building-initial-desktop"||name=="building-upgrade-desktop"||
+                    name=="construction-barracks-city-landscape")
+                {
+                    var heading=host.Hud.GetComponentsInChildren<Text>(true)
+                        .FirstOrDefault(t=>t.name=="Selected building");
+                    Debug.Log("BUILDING_HEADING_VISUAL_QA "+name+
+                        " text="+(heading?heading.text:"MISSING")+
+                        " depth="+(heading?heading.depth.ToString():"MISSING")+
+                        " culled="+(heading?heading.canvasRenderer.cull.ToString():"MISSING")+
+                        " active="+(heading&&heading.gameObject.activeInHierarchy));
+                    Need(heading&&heading.gameObject.activeInHierarchy&&
+                        !string.IsNullOrWhiteSpace(heading.text)&&
+                        heading.depth>=0&&!heading.canvasRenderer.cull,
+                        "Desktop construction cartouche must actually render its original building title "+name);
+                }
+                if(name=="building-council-small-phone")
+                {
+                    var sheet=host.Hud.GetComponent<RoyalGoldV2Hud>()?.ChronicleBuildingRect;
+                    var scroll=host.Hud.GetComponentsInChildren<RectTransform>(true)
+                        .FirstOrDefault(x=>x.name=="Scrollable real building details");
+                    Need(sheet&&sheet.rect.height<=148f&&scroll&&
+                        !scroll.gameObject.activeInHierarchy&&
+                        host.Hud.GetComponent<RoyalGoldV2Hud>().GetFreeSceneViewport().height>.46f,
+                        "390x844 council is a compact city-local three-choice ribbon, not another management sheet");
+                }
+                var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+                if(heroes&&heroes.IsOpen){
+                    heroes.Refresh();Canvas.ForceUpdateCanvases();
+                    if(name.EndsWith("-scroll-end"))
+                    {
+                        var scroll=heroes.VisibleRoot.GetComponentsInChildren<ScrollRect>()
+                            .First(x=>x.content&&x.content.name=="Skills / source-bound description content");
+                        Need(scroll.content.rect.height>scroll.viewport.rect.height,
+                            "Long real ability description requires scrolling "+name);
+                        scroll.OnScroll(new PointerEventData(EventSystem.current){scrollDelta=new Vector2(0,-10000)});
+                        Canvas.ForceUpdateCanvases();
+                        Need(scroll.verticalNormalizedPosition<=.01f,
+                            "Actual scroll input reaches the end of the full ability description "+name);
+                    }
+                    if(heroes.CurrentPage!=HeroesApprovedDestination.Page.Salon)
+                    {
+                        var canvas=host.Hud.GetComponent<Canvas>();
+                        foreach(var text in heroes.VisibleRoot.GetComponentsInChildren<Text>())
+                        {
+                            if(!text.font || !text.font.dynamic || string.IsNullOrEmpty(text.text))continue;
+                            float magnification=text.transform.lossyScale.x/canvas.transform.lossyScale.x;
+                            Need(magnification<=1.01f,
+                                "Profile dynamic glyphs are never enlarged from an undersized raster: "+name+" / "+text.name);
+                        }
+                    }
+                    var cabinet=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                        .FirstOrDefault(t=>t.name=="Profile / royal integrated combat cabinet");
+                    if(cabinet)
+                    {
+                        var parts=cabinet.GetComponentsInChildren<RectTransform>();
+                        var lastRow=parts.First(t=>t.name=="Profile / RUPTURA carved attribute");
+                        var roleDivider=parts.First(t=>t.name=="Profile / role cabinet divider");
+                        Need(Bounds(lastRow).yMin>Bounds(roleDivider).yMax,
+                            "All four real hero attributes remain above the role divider "+name);
+                    }
+                    if(name.Contains("small-phone")){
+                        var layout=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                            .First(t=>t.name=="Heroes / live controls");
+                        float visibleScale=host.Hud.GetComponent<Canvas>().scaleFactor*layout.localScale.x;
+                        var close=layout.GetComponentsInChildren<Button>().First(b=>b.name=="Close heroes")
+                            .GetComponent<RectTransform>();
+                        Need(close.rect.width*visibleScale>=44f&&close.rect.height*visibleScale>=44f,
+                            "Phone hero close target remains at least44 visible pixels "+name);
+                        var description=layout.GetComponentsInChildren<Text>()
+                            .FirstOrDefault(t=>t.name=="Canonical hero ability description");
+                        if(description)Need(!description.resizeTextForBestFit&&description.fontSize*description.rectTransform.localScale.x*visibleScale>=18f,
+                            "Phone ability description stays readable without shrinking "+name);
+                        if(width>height){
+                            foreach(var tab in layout.GetComponentsInChildren<Button>().Where(b=>b.name.StartsWith("Hero tab "))){
+                                var r=tab.GetComponent<RectTransform>();
+                                Need(-r.anchoredPosition.y+r.rect.height<=layout.rect.height-80f,
+                                    "Landscape hero tabs clear the bottom navigation "+name);
+                            }
+                        }
+                    }
+                    if(heroes.CurrentPage==Eldoria.HeroesUI.HeroesApprovedDestination.Page.Equipamiento)
+                    {
+                        // Real 3D portrait remains the protagonist; the four
+                        // independent equipment ornaments never create loadout
+                        // interactions or substitute a photographic backdrop.
+                        var equipmentSlots=heroes.VisibleRoot
+                            .GetComponentsInChildren<RectTransform>()
+                            .Where(r=>r.name.StartsWith("Equipment / reserved slot ")).ToArray();
+                        Need(equipmentSlots.Length==4,
+                            "Four approved-direction equipment positions exist "+name);
+                        var equipmentStage=heroes.VisibleRoot
+                            .GetComponentsInChildren<RectTransform>()
+                            .FirstOrDefault(r=>r.name=="Hero model stage");
+                        Need(equipmentStage&&equipmentSlots.All(s=>s.parent==equipmentStage &&
+                            s.anchoredPosition.x>=-1f &&
+                            s.anchoredPosition.x+s.rect.width<=equipmentStage.rect.width+1f &&
+                            -s.anchoredPosition.y+s.rect.height<=equipmentStage.rect.height-7f),
+                            "Four equipment slots remain inside the hero stage at this orientation "+name);
+                        Need(equipmentSlots.All(s=>s.GetComponentsInChildren<Button>(true).Length==0 &&
+                            s.GetComponentsInChildren<Image>(true).All(i=>!i.raycastTarget) &&
+                            s.GetComponentsInChildren<Image>(true).Any(i=>
+                                i.name=="Equipment / nine-slice ornamental frame" &&
+                                i.sprite && i.type==Image.Type.Sliced) &&
+                            s.GetComponentsInChildren<Image>(true).Any(i=>
+                                i.name=="Equipment / original category icon" && i.sprite) &&
+                            s.GetComponentsInChildren<Image>(true).Any(i=>
+                                i.name=="Equipment / engraved locked seal" && i.sprite)),
+                            "All equipment ornaments have sliced frames, icons and visible locks; none are interactive "+name);
+                        var equippedContext=heroes.VisibleRoot
+                            .GetComponentsInChildren<RectTransform>()
+                            .FirstOrDefault(r=>r.name=="Equipment / open contextual field");
+                        Need(equippedContext &&
+                            equippedContext.GetComponentsInChildren<Text>(true)
+                                .Any(t=>t.text=="CUATRO POSICIONES BLOQUEADAS") &&
+                            equipmentSlots.Select(s=>s.GetComponentsInChildren<Text>()
+                                .First(t=>t.name.StartsWith("Equipment / slot category ")).text)
+                                .Distinct().Count()==4,
+                            "Context and all four slot labels clearly convey unavailable equipment "+name);
+                        var modelImage=equipmentStage.GetComponentsInChildren<RawImage>()
+                            .FirstOrDefault(r=>r.name=="Genuine hero model render");
+                        Need(modelImage&&modelImage.enabled&&modelImage.texture,
+                            "Equipment tab preserves the authentic 3D model instead of a pasted substitute "+name);
+                    }
+                    if(heroes.CurrentPage==Eldoria.HeroesUI.HeroesApprovedDestination.Page.Salon){
+                        var slots=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                            .Where(t=>t.parent&&t.parent.name=="Heroes / live controls"&&
+                                (t.name.StartsWith("Hero card ")||t.name.StartsWith("Reserved future hero slot ")))
+                            .ToArray();
+                        Need(slots.Length==6,"Six hall slots survive orientation changes "+name);
+                        var aldricIllustration=slots[0].GetComponentsInChildren<Image>()
+                            .FirstOrDefault(i=>i.name=="Verified portrait");
+                        Need(aldricIllustration&&aldricIllustration.material&&
+                            aldricIllustration.material.HasProperty("_PortraitFeather")&&
+                            aldricIllustration.material.GetFloat("_PortraitFeather")>=.13f,
+                            "Aldric portrait alpha dissolves into independent painted architecture instead of hard photo rectangle "+name);
+
+                        if(width==390&&height==844){
+                            Need(slots.All(slot=>{
+                                var border=slot.GetComponentsInChildren<Image>()
+                                    .FirstOrDefault(i=>i.name=="Hall / sculpted gilded card artwork");
+                                return border && border.type==Image.Type.Sliced &&
+                                    border.pixelsPerUnitMultiplier>=2.1f;
+                            }),"Mobile two-column Gallery uses small true nine-slice corner scale to protect text "+name);
+
+                            Need(slots[0].rect.width>=150f&&
+                                slots[0].rect.height>slots[2].rect.height*1.2f &&
+                                Mathf.Abs(slots[0].anchoredPosition.y-slots[1].anchoredPosition.y)<1f,
+                                "Two real heroes anchor a wide primary row over four shorter locked mobile cards "+name);
+
+                            foreach(var slot in slots){
+                                var title=slot.GetComponentsInChildren<Text>().FirstOrDefault(v=>v.name=="Hero card name");
+                                var data=slot.GetComponentsInChildren<Text>().FirstOrDefault(v=>v.name=="Hero card state");
+                                Need(title&&data&&title.rectTransform.rect.height>0&&
+                                    title.rectTransform.anchoredPosition.y-
+                                        title.rectTransform.rect.height>=
+                                    data.rectTransform.anchoredPosition.y-2f&&
+                                    -data.rectTransform.anchoredPosition.y+
+                                        data.rectTransform.rect.height<=
+                                    slot.rect.height-16f,
+                                    "Portrait mobile card labels fit above ornamental lower edge without overlapping "+name);
+                            }
+                        }
+                        if(width==1600&&height==900){
+                            var al=slots[0].GetComponentsInChildren<Image>()
+                                .FirstOrDefault(t=>t.name=="Verified portrait");
+                            var viewport=slots[0].GetComponentsInChildren<RectTransform>()
+                                .FirstOrDefault(t=>t.name=="Hero card portrait aperture");
+                            Need(al&&viewport&&al.sprite&&
+                                (al.rectTransform.rect.height<=viewport.rect.height ||
+                                 -al.rectTransform.anchoredPosition.y>=-8f),
+                                "Aldric's true hairline is not clipped by centered oversize portrait "+name);
+                        }
+                        if(width==1600&&height==900){
+                            // Against the approved master: heraldic architecture
+                            // occupies a real top third, featured cards are
+                            // stronger than short reserve band, and the four
+                            // destination buttons live at the bottom.
+                            var title=heroes.VisibleRoot.GetComponentsInChildren<Text>()
+                                .FirstOrDefault(v=>v.name=="Heroes hall title");
+                            var filters=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                                .Where(v=>v.name.StartsWith("Hall / category ")).ToArray();
+                            Need(title&&title.rectTransform.rect.height>=60f&&
+                                slots[0].anchoredPosition.y<=-height*.32f &&
+                                filters.Length>=4 &&
+                                -filters[0].anchoredPosition.y>=height*.25f &&
+                                slots[0].rect.height>slots[3].rect.height*1.30f,
+                                "1600x900 actual composition matches approved heraldry/gallery spatial hierarchy "+name);
+                            // Pixel-art direction, not merely 6 working buttons:
+                            // the 512x575 reference demands TALL cards even on
+                            // a 16:9 screenshot. A monitor-wide grid is rejected.
+                            float refScale=height/575f;
+                            float expectedCardWidth=134f*refScale;
+                            var footerNav=heroes.VisibleRoot.GetComponentsInChildren<Button>()
+                                .FirstOrDefault(b=>b.name=="Hall / nav heroes");
+                            Need(Mathf.Abs(slots[0].rect.width-expectedCardWidth)<=expectedCardWidth*.12f&&
+                                slots[0].rect.width/Mathf.Max(1f,slots[0].rect.height)<.83f&&
+                                Mathf.Abs(slots[0].anchoredPosition.x + slots[2].anchoredPosition.x+
+                                    slots[2].rect.width-width)<width*.13f&&
+                                footerNav!=null,
+                                "1600x900 actual hero gallery keeps approved 512x575 tall-card proportions "+name);
+                            var realData=slots[0].GetComponentsInChildren<Text>()
+                                .FirstOrDefault(t=>t.name=="Hero card state");
+                            Need(realData&&realData.text.Contains("\nPODER")&&
+                                !realData.resizeTextForBestFit&&
+                                realData.fontSize>=14&&
+                                realData.rectTransform.rect.height>=35f&&
+                                -realData.rectTransform.anchoredPosition.y+
+                                    realData.rectTransform.rect.height<=
+                                    slots[0].rect.height+1f,
+                                "Approved-ratio desktop card reserves real visible rows for level and power "+name);
+                        }
+                        // Exactly four DIFFERENT approved monochrome paintings, not
+                        // the same repeated placeholder and not live hero data.
+                        var reserveMaster=Resources.Load<Texture2D>(
+                            "EldoriaV41/HeroesApprovedMaster");
+                        var reservePaintings=slots.Skip(2).Take(4).Select(card=>
+                            card.GetComponentsInChildren<Image>()
+                                .FirstOrDefault(x=>x.name=="Verified portrait")?.sprite).ToArray();
+                        Need(reserveMaster&&reserveMaster.width==1536&&
+                            reservePaintings.Length==4&&
+                            reservePaintings.All(s=>s&&s.texture==reserveMaster&&
+                                s.name.StartsWith("Approved future illustration / passive "))&&
+                            reservePaintings.Select(s=>s.rect.x).Distinct().Count()==4,
+                            "Four passive future slots display distinct original approved monochrome art "+name);
+                        for(int lockedSlot=2;lockedSlot<6;lockedSlot++){
+                            var locks=slots[lockedSlot].GetComponentsInChildren<RectTransform>()
+                                .Where(x=>x.name=="Hall / genuine future hero lock seal").ToArray();
+                            Need(locks.Length==1&&locks[0].rect.width>=28f&&
+                                locks[0].GetComponentsInChildren<Graphic>()
+                                    .All(x=>!x.raycastTarget),
+                                "Future hero uses a physical noninteractive locked seal, not fake '+' action "+name);
+                        }
+                        for(int slotIndex=0;slotIndex<2;slotIndex++){
+                            var realPortrait=slots[slotIndex].GetComponentsInChildren<Image>()
+                                .FirstOrDefault(x=>x.name=="Verified portrait");
+                            Need(realPortrait&&realPortrait.material&&
+                                realPortrait.material.shader.name=="UI/Eldoria/HallPainterly",
+                                "Approved hero card portrait is drawn through a real clipped painterly material "+name);
+                        }
+                        Need(slots.All(slot=>{
+                            var layered=slot.GetComponentsInChildren<RoyalGoldV3LayeredFinish>();
+                            return layered.Length==1 && !layered[0].raycastTarget;
+                        }),"Every Hall card uses an independently rendered passive RoyalGold 2.5D bevel "+name);
+                        var independentDepth=heroes.VisibleRoot
+                            .GetComponentsInChildren<HeroesHallParallaxFinish>();
+                        Need(independentDepth.Length==1&&
+                            independentDepth[0].enabled&&
+                            !independentDepth[0].raycastTarget&&
+                            independentDepth[0].GetComponent<CanvasRenderer>()&&
+                            independentDepth[0].rectTransform.rect.width>0,
+                            "Hall uses one independently rendered and passive 2.5D foreground "+name);
+                        if(width==844&&height==390){
+                            Need(slots[0].rect.width>slots[2].rect.width*1.65f&&
+                                Mathf.Abs(slots[0].anchoredPosition.y-
+                                    slots[1].anchoredPosition.y)<1f&&
+                                Mathf.Abs(slots[2].anchoredPosition.y-
+                                    slots[5].anchoredPosition.y)<1f&&
+                                slots[0].rect.height>slots[2].rect.height*1.35f,
+                                "Short mobile landscape really features two readable heroes above four compact future slots "+name);
+                        }
+                        if(width>height && height<500){
+                            // The new 2+4 mobile gallery gives real heroes
+                            // the full readable typography; four passive future
+                            // seals intentionally use smaller secondary labels.
+                            // Never reject the smaller locks as if they were
+                            // active hero names and authoritative statistics.
+                            foreach(var card in slots.Where(t=>t.name.StartsWith("Hero card "))){
+                                var title=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card name");
+                                var data=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card state");
+                                Need(title&&data&&!title.resizeTextForBestFit&&
+                                    !data.resizeTextForBestFit&&title.fontSize>=19&&data.fontSize>=19,
+                                    "Landscape real hero identity preserves readable non-shrinking typography "+name);
+                            }
+                            foreach(var card in slots.Where(t=>t.name.StartsWith("Reserved future hero slot "))){
+                                var title=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card name");
+                                var data=card.GetComponentsInChildren<Text>().FirstOrDefault(t=>t.name=="Hero card state");
+                                Need(title&&data&&title.fontSize>=15&&data.fontSize>=15,
+                                    "Landscape secondary future seals remain labeled "+name);
+                            }
+                        }
+                        var originalBustBlend=slots[0].GetComponentsInChildren<RawImage>()
+                            .FirstOrDefault(i=>i.name=="Hall / original portrait edge transition");
+                        Need(originalBustBlend&&originalBustBlend.texture&&
+                            !originalBustBlend.raycastTarget,
+                            "Original Aldric bust blends into its 2.5D gallery frame without a hard pasted edge "+name);
+                        // A hand-painted URP material rather than the
+                        // original raw flat raster. Real cards, banners and
+                        // navigation are still separate live UI components.
+                        var hallStage=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                            .Where(t=>t.name=="Hall / painterly architectural plate").ToArray();
+                        var independentHall=Resources.Load<Texture2D>(
+                            "EldoriaV41/heroes-hall-illustrated-v2");
+                        Need(independentHall&&independentHall.width==1600&&independentHall.height==900&&
+                            hallStage.Length==1&&hallStage[0].texture==independentHall&&
+                            !hallStage[0].raycastTarget,
+                            "Salon's genuine painterly character-free 1600x900 architecture is loaded "+name);
+                        // These are separate operational HUD controls, not
+                        // painted navigation pixels in the approved reference.
+                        var hallNav=heroes.VisibleRoot.GetComponentsInChildren<Button>()
+                            .Where(b=>b.name.StartsWith("Hall / nav ")).ToArray();
+                        Need(hallNav.Length==4 &&
+                            hallNav.Any(b=>b.name=="Hall / nav return"&&b.interactable) &&
+                            hallNav.Any(b=>b.name=="Hall / nav heroes"&&b.interactable) &&
+                            hallNav.Any(b=>b.name=="Hall / nav marches"&&b.interactable) &&
+                            hallNav.Any(b=>b.name=="Hall / nav reliquary"&&!b.interactable),
+                            "Hall footer real navigation and future Relicario lock "+name);
+                        if(width<500 && height>width){
+                            foreach(var navButton in hallNav){
+                                var cap=navButton.GetComponentsInChildren<Text>()
+                                    .FirstOrDefault(t=>t.name==navButton.name+" label");
+                                Need(cap&&cap.text.IndexOf('\n')<0&&
+                                    cap.rectTransform.rect.width>=64f&&
+                                    !cap.resizeTextForBestFit&&cap.fontSize>=14&&
+                                    -cap.rectTransform.anchoredPosition.y+
+                                        cap.rectTransform.rect.height<=
+                                        navButton.GetComponent<RectTransform>().rect.height-4f&&
+                                    -navButton.GetComponent<RectTransform>().anchoredPosition.y+
+                                        navButton.GetComponent<RectTransform>().rect.height<=
+                                        heroes.VisibleRoot.rect.height-8f,
+                                    "Portrait Hall footer captions are one-line with usable pixel width "+name);
+                            }
+                        }
+                        var navIcons=heroes.VisibleRoot
+                            .GetComponentsInChildren<Text>()
+                            .Where(v=>v.name.StartsWith("Hall / nav actual vector pictogram ")).ToArray();
+                        Need(navIcons.Length==4&&navIcons.All(v=>
+                            !v.raycastTarget&&v.font&&v.fontSize>=24&&
+                            !string.IsNullOrEmpty(v.text)&&
+                            v.font.HasCharacter(v.text[0])&&v.color.a>.9f&&
+                            v.rectTransform.rect.width>=18f),
+                            "Four visually drawable Hall icon glyphs are separate from real button captions "+name);
+                        var heroNavLabel=hallNav.First(b=>b.name=="Hall / nav heroes")
+                            .GetComponentInChildren<Text>();
+                        Need(heroNavLabel&&heroNavLabel.text=="HÉROES"&&
+                            heroNavLabel.color.grayscale<.25f,
+                            "Selected gold Hall navigation has one readable dark-ink word "+name);
+                        if(name.Contains("small-phone")){
+                            var hallLayout=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                                .First(t=>t.name=="Heroes / live controls");
+                            float hallScale=host.Hud.GetComponent<Canvas>().scaleFactor*
+                                hallLayout.localScale.x;
+                            Need(hallNav.All(b=>{
+                                var rect=b.GetComponent<RectTransform>();
+                                return rect.rect.width*hallScale>=44f&&
+                                    rect.rect.height*hallScale>=44f;
+                            }),"Hall four real navigation targets meet 44px touch size "+name);
+                        }
+                        var hallTorches=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                            .Where(t=>t.name.StartsWith("Hall / ")&&t.name.EndsWith(" living torch")).ToArray();
+                        Need(hallTorches.Length==2 &&
+                            hallTorches.All(t=>t.texture&&t.color.a>.1f&&!t.raycastTarget),
+                            "Two independent noninteractive living-light depth layers "+name);
+                        var styledControls=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                            .Where(t=>t.name.StartsWith("Hall / authored control material ")).ToArray();
+                        Need(styledControls.Length==8&&
+                            styledControls.All(t=>t.texture&&!t.raycastTarget),
+                            "Four category and four footer controls use real separate approved textures "+name);
+                        Need(slots.All(t=>t.rect.width>0&&t.rect.height>0),
+                            "Six visible hall slots have usable geometry "+name);
+                        var futureArtwork=slots.Where(t=>t.name.StartsWith("Reserved future hero slot "))
+                            .Select(t=>t.GetComponentsInChildren<Image>()
+                                .FirstOrDefault(i=>i.name=="Verified portrait")?.sprite).ToArray();
+                        Need(futureArtwork.Length==4&&futureArtwork.All(s=>s)&&
+                            futureArtwork.Select(s=>s.rect).Distinct().Count()==4,
+                            "Four locked positions retain FOUR distinct painted characters, no repeated filler "+name);
+                        Need(slots.All(card=>{
+                            var alcove=card.GetComponentsInChildren<RawImage>()
+                                .FirstOrDefault(x=>x.name=="Hall / separate illustrated character alcove");
+                            return alcove&&alcove.texture==
+                                Resources.Load<Texture2D>("EldoriaV41/heroes-hall-illustrated-v2")&&
+                                !alcove.raycastTarget;
+                        }),"Each real Hall card has a distinct illustrated recess behind live character art "+name);
+                        var gildedFrame=Resources.Load<Texture2D>(
+                            "EldoriaV41/HeroCardNineSliceGold");
+                        Need(gildedFrame&&gildedFrame.width==512&&gildedFrame.height==672,
+                            "Authenticated editable metal-work texture exists "+name);
+                        Need(slots.All(card=>{
+                            var image=card.GetComponentsInChildren<Image>()
+                                .FirstOrDefault(x=>x.name=="Hall / sculpted gilded card artwork");
+                            return image&&image.sprite&&image.sprite.texture==gildedFrame&&
+                                image.type==Image.Type.Sliced&&!image.raycastTarget;
+                        }),"All six real Hall slots have 9-sliced individually layered ornamental frames "+name);
+                        foreach(var slot in slots){
+                            var rims=slot.GetComponentsInChildren<Image>()
+                                .Where(i=>i.transform.parent==slot&&
+                                    i.name.StartsWith("Royal Gold /")&&i.name.EndsWith("rim")).ToArray();
+                            Need(rims.Length==4&&rims.All(i=>i.enabled&&i.color.a>.9f&&
+                                i.rectTransform.rect.width>0&&i.rectTransform.rect.height>0),
+                                "Four real visible Image rims per hall slot "+name);
+                        }
+                        if(height>width){
+                            var firstRow=slots.Count(t=>Mathf.Abs(t.anchoredPosition.y-slots[0].anchoredPosition.y)<1f);
+                            Need(firstRow==((width<600||height>width*1.35f)?2:3),
+                                "Portrait Hall uses two portrait columns on tall phones and three on desktop "+name);
+                        }
+                        if(height>500){
+                            Need(slots[0].rect.height>slots[3].rect.height*1.30f,
+                                "Primary heroes are genuinely larger than shorter future reserve band "+name);
+                            var bottom=slots[3];
+                            Need(-bottom.anchoredPosition.y+bottom.rect.height<=
+                                    heroes.VisibleRoot.rect.height+1f,
+                                "Tiered approved hero gallery fits its real safe area "+name);
+                        }
+                        foreach(var slot in slots){
+                            var aperture=slot.GetComponentsInChildren<RectTransform>()
+                                .FirstOrDefault(t=>t.name=="Hero card portrait aperture");
+                            var portrait=slot.GetComponentsInChildren<Image>()
+                                .FirstOrDefault(t=>t.name=="Verified portrait");
+                            Need(aperture&&portrait&&portrait.sprite,
+                                "Every hero card has real image source "+name);
+                            Need(portrait.rectTransform.rect.width>=aperture.rect.width*.60f,
+                                "Portrait occupies at least 60% of each live aperture "+name);
+                            if(height>width&&slot.name.StartsWith("Hero card "))
+                                Need(portrait.rectTransform.rect.height>=aperture.rect.height*.75f,
+                                    "Tall mobile Hall cannot letterbox a small pasted photo "+name);
+                            if(slot.name.StartsWith("Reserved future hero slot "))
+                                Need(portrait.rectTransform.rect.width>=aperture.rect.width*.95f&&
+                                    portrait.rectTransform.rect.height>=aperture.rect.height*.95f,
+                                    "Locked hero silhouette fills its real portrait aperture "+name);
+                        }
+                        // A reference atlas is never an on-screen character.
+                        // Its old masked crops hid the genuine approved Tripo
+                        // Lyra portrait while fooling six-slot geometry tests.
+                        // Keep the true state-bound portraits and silhouettes.
+                        var referenceSheetOverlays=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                            .Where(t=>t.name.StartsWith("Hall / approved isolated portrait art ")).ToArray();
+                        Need(referenceSheetOverlays.Length==0,
+                            "No flat concept-sheet hero crops may cover canonical character sources "+name);
+                        if(height>width){
+                            var intro=heroes.VisibleRoot.GetComponentsInChildren<Text>()
+                                .FirstOrDefault(t=>t.name=="Heroes hall introduction");
+                            var category=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                                .FirstOrDefault(t=>t.name=="Hall / category TODOS");
+                            Need(intro&&category&&
+                                -intro.rectTransform.anchoredPosition.y+intro.rectTransform.rect.height<=
+                                -category.anchoredPosition.y+1f,
+                                "Portrait intro must not collide with real hall category strip "+name);
+                        }
+                        // Pixel-independent visual occupancy: the legacy 844x390
+                        // hall passed six-slot and 44px controls while an opaque
+                        // name band covered most of both real hero portraits.
+                        if(width>height&&height<=450){
+                            foreach(var slot in slots.Where(t=>t.name.StartsWith("Hero card "))){
+                                var aperture=slot.GetComponentsInChildren<RectTransform>()
+                                    .FirstOrDefault(t=>t.name=="Hero card portrait aperture");
+                                var shade=slot.GetComponentsInChildren<RectTransform>()
+                                    .FirstOrDefault(t=>t.name=="Hero card identity shade");
+                                var portrait=slot.GetComponentsInChildren<Image>()
+                                    .FirstOrDefault(t=>t.name=="Verified portrait");
+                                Need(aperture&&shade&&portrait&&portrait.sprite,
+                                    "Actual short-landscape hero portrait stays loaded "+name);
+                                Need(aperture.rect.height>=slot.rect.height*.70f&&
+                                    aperture.rect.width*aperture.rect.height>=
+                                        slot.rect.width*slot.rect.height*.25f,
+                                    "Short-landscape hero artwork keeps prominent visible surface "+name);
+                                Need(portrait.rectTransform.rect.height>=aperture.rect.height*.72f&&
+                                    portrait.rectTransform.rect.width>=aperture.rect.width*.30f,
+                                    "Actual rendered portrait is sufficiently large within its aperture "+name);
+                                Need(shade.anchoredPosition.x>=
+                                        aperture.anchoredPosition.x+aperture.rect.width-1f,
+                                    "Hero identity panel cannot overlap portrait aperture "+name);
+                            }
+                        }
+                        Need(heroes.VisibleRoot.GetComponentsInChildren<Button>()
+                            .Count(b=>b.name.StartsWith("Select hero "))==2,
+                            "Only two real heroes are actionable "+name);
+                    }
+                }
                 // Render again after mailbox reflow inside the canonical off-screen target.
                 host.PlayerCamera.Render();host.PlayerCamera.Render();
                 RenderTexture.active=host.PlayerCamera.targetTexture;
                 var pixels=new Texture2D(width,height,TextureFormat.RGB24,false);
                 try{pixels.ReadPixels(new Rect(0,0,width,height),0,0);pixels.Apply();File.WriteAllBytes(Path.Combine(Output,name+".png"),pixels.EncodeToPNG());}
                 finally{Object.Destroy(pixels);}
+                // Preserve the exact rendered failure before enforcing every gate.
+                // A rejected layout must still be visually diagnosable.
+                if(management.IsOpen)
+                {
+                    var report=management.VisibleRoot.GetComponentsInChildren<Text>()
+                        .Select(t=>t.transform.parent.name+"/"+t.name+" | "+t.text.Replace("\n"," / ")+
+                            " | preferred="+t.preferredHeight+" actual="+t.rectTransform.rect);
+                    File.WriteAllLines(Path.Combine(Output,name+"-layout.txt"),report);
+                    ValidateMilitaryLayout(management,name);
+                }
                 Need(host.Hud.GetComponentsInChildren<Canvas>(true).Length==1,"One canonical Canvas "+name);
                 foreach(var image in host.Hud.GetComponentsInChildren<Image>(false).Where(x=>x.name.StartsWith("Approved source /")))
                     Need(image.sprite!=null,"Source texture loaded "+image.name);
             });
             Need(new FileInfo(Path.Combine(Output,name+".png")).Length>15000,"Real nonempty capture "+name);
+        }
+        static Rect Bounds(RectTransform rect)
+        {
+            var corners=new Vector3[4];rect.GetWorldCorners(corners);
+            return Rect.MinMaxRect(corners[0].x,corners[0].y,corners[2].x,corners[2].y);
+        }
+        static void ValidateMilitaryLayout(RoyalGoldV3ManagementScreens screen,string shot)
+        {
+            var labels=screen.VisibleRoot.GetComponentsInChildren<Text>();
+            var title=labels.First(t=>t.name=="Destination title");
+            var subtitle=labels.First(t=>t.name=="Royal gold description");
+            Need(title.preferredHeight<=title.rectTransform.rect.height+1,
+                "Full destination title fits its actual text area "+shot+" (needed "+title.preferredHeight+", available "+title.rectTransform.rect.height+")");
+            Need(!Bounds(title.rectTransform).Overlaps(Bounds(subtitle.rectTransform)),
+                "Destination title and subtitle never overlap "+shot);
+            foreach(var button in screen.VisibleRoot.GetComponentsInChildren<Button>()
+                .Where(b=>b.transform.parent==title.transform.parent&&b.gameObject.activeInHierarchy))
+                Need(!Bounds((RectTransform)button.transform).Overlaps(Bounds(title.rectTransform))&&
+                     !Bounds((RectTransform)button.transform).Overlaps(Bounds(subtitle.rectTransform)),
+                     "Header navigation does not cover title or subtitle "+button.name+" "+shot);
+            if(screen.VisibleRoot.rect.height>screen.VisibleRoot.rect.width||shot.Contains("small-phone"))
+                foreach(var label in labels.Where(t=>!string.IsNullOrWhiteSpace(t.text)))
+                {
+                    var canvas=screen.GetComponentInParent<Canvas>();
+                    float physicalScale=canvas.scaleFactor;
+                    for(var parent=label.transform;parent&&parent!=canvas.transform;parent=parent.parent)
+                        physicalScale*=Mathf.Abs(parent.localScale.x);
+                    Need(label.fontSize*physicalScale>=12,
+                        "Small-phone text is at least twelve actual pixels "+label.name);
+                    Need(label.preferredHeight<=label.rectTransform.rect.height+1,
+                        "Small-phone complete label fits "+label.transform.parent.name+"/"+label.name+" text=["+label.text+"] "+shot+" (needed "+label.preferredHeight+", available "+label.rectTransform.rect.height+")");
+                }
+            if(shot=="training-small-phone-landscape")
+            {
+                var profile=labels.First(t=>t.name=="Unit profile and composition");
+                var tier=screen.VisibleRoot.GetComponentsInChildren<Button>().First(b=>b.name=="Select archer tier");
+                Need(!Bounds(profile.rectTransform).Overlaps(Bounds((RectTransform)tier.transform)),
+                    "Compact training profile is not covered by the tier selector");
+            }
+            if(shot.StartsWith("training-"))
+            {
+                var tier=screen.VisibleRoot.GetComponentsInChildren<Button>().First(b=>b.name=="Select archer tier");
+                var order=screen.VisibleRoot.GetComponentsInChildren<RectTransform>().First(r=>r.name=="V3 / Authoritative status and cost");
+                Need(tier.transform.parent==order,"Tier control belongs to the live order in both orientations "+shot);
+                var panes=screen.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                    .Where(r=>r.name=="V3 / Featured military unit"||r.name=="V3 / Destination actions");
+                foreach(var pane in panes)
+                    Need(!pane.GetComponent<RoyalGoldV2FrameGraphic>().enabled,
+                        "Courtyard and character remain unobscured by legacy opaque frames "+shot);
+                foreach(var text in labels.Where(t=>t.transform.parent==order))
+                    Need(!Bounds(text.rectTransform).Overlaps(Bounds((RectTransform)tier.transform)),
+                        "Order text does not overlap tier control "+text.name+" "+shot);
+            }
+            var quantity=labels.First(t=>t.name=="Authoritative quantity");
+            Need(quantity.rectTransform.rect.width>=36,
+                "Quantity remains legible between real minus and plus controls "+shot);
+        }
+        // Disposable ACTUAL gateway / scene / HUD acceptance for the complete
+        // construction flow. Every build, timer and resource refusal comes from
+        // existing gameplay; never write or seed the user's real save.
+        static IEnumerator VerifyCityConstruction(ValoriaIntegratedWorld host)
+        {
+            Need(host.City.Probe,"Construction probe must use disposable file state");
+            var saved=File.ReadAllText(host.City.SaveFile);
+            long originalClockTicks=host.City.Clock.UtcTicks;
+            var state=host.City.Gateway.Snapshot();
+            state.SawmillLevel=0;
+            state.BuildingCompletesUtcTicks=0;state.BuildingTaskId="";
+            state.Resources.Wood=9000;state.Resources.Stone=6000;
+            state.SpeedupOneMinute=2;state.SpeedupFiveMinutes=1;
+            state.ChapterThree.DevelopmentPriority="";
+            new FileStateStore(host.City.SaveFile).Save(state);
+            host.City.ReloadForProbe();yield return null;
+            var context=host.Hud.GetComponent<RoyalGoldV3ContextHud>();
+            var sheet=host.Hud.GetComponent<RoyalGoldV2Hud>();
+            var utility=host.Hud.GetComponent<RoyalGoldV3BuildingScreens>();
+            host.Hud.SelectBuilding("bastion");yield return null;
+            sheet.SynchronizeNow();
+            Need(utility.InlineCouncilNeeded("bastion")&&!utility.IsOpen,
+                "Council decision is integrated into the city parchment, never another management screen");
+            var councilButtons=host.Hud.GetComponentsInChildren<Button>()
+                .Where(x=>x.name.StartsWith("Building / council ")).ToArray();
+            Need(councilButtons.Length==3&&councilButtons.All(x=>x.gameObject.activeInHierarchy),
+                "All three genuine development choices fit inside the same city cartouche");
+            // A centrally placed real Bastion must use the clear upper center
+            // instead of treating the small top-LEFT quest as a full-width
+            // obstruction. The lower council stays above the genuine dock.
+            var councilViewport=sheet.GetFreeSceneViewport();
+            Need(councilViewport.height>.40f,
+                "Centered royal Bastion retains enough vertical city camera space above the contextual council");
+            Shot(host,"building-council-desktop",1600,900);
+            // The native capture also verifies real castle silhouette
+            // framing after its selection-only terrain-safe portrait fit.
+            Shot(host,"building-council-small-phone",390,844);
+            var priorityWood=host.City.Gateway.Snapshot().Resources.Wood;
+            councilButtons.First(x=>x.name=="Building / council production").onClick.Invoke();
+            Need(host.City.Gateway.Snapshot().ChapterThree.DevelopmentPriority=="production"&&
+                host.City.Gateway.Snapshot().Resources.Wood==priorityWood+260,
+                "Existing development command grants only its real production branch once");
+            host.Hud.SelectBuilding("");
+            host.Hud.SelectBuilding("sawmill");yield return null;
+            sheet.SynchronizeNow();context.SynchronizeNow();
+            var first=host.Read("sawmill",false).Building;
+            Need(first!=null&&first.Action!=null&&first.Action.Kind=="Build"&&
+                first.Action.Enabled&&!first.OperationActive &&
+                first.Costs.Contains(SliceRules.SawmillWoodCost.ToString()) &&
+                first.Time.Contains(SliceRules.SawmillBuildSeconds.ToString()),
+                "Bastion IV still shows exact legacy first Sawmill gateway cost/time, not chapter-three upgrade numbers");
+            Need(sheet.ChronicleBuildingAction&&sheet.ChronicleBuildingAction.interactable&&
+                !utility.IsOpen,
+                "One bottom parchment owns the initial build, with no extra modal");
+            Shot(host,"building-initial-desktop",1600,900);
+            Shot(host,"building-initial-portrait",900,1600);
+            Shot(host,"building-initial-small-phone",390,844);
+            Shot(host,"building-initial-small-landscape",844,390);
+            // Off-screen camera QA can advance the running local clock while
+            // its last V1 offer still refers to an earlier player revision.
+            // A real tap reads fresh authoritative state just before purchase.
+            host.Hud.Refresh();sheet.SynchronizeNow();
+            Need(host.Hud.Building.Offer!=null&&
+                host.Hud.Building.Primary.Button.interactable&&
+                sheet.ChronicleBuildingAction.interactable,
+                "Fresh genuine Sawmill purchase offer remains enabled after all four capture resolutions");
+            var before=host.City.Gateway.Snapshot();
+            var wood=before.Resources.Wood;
+            sheet.ChronicleBuildingAction.onClick.Invoke();
+            var running=host.Read("sawmill",false).Building;
+            Need(running.OperationActive&&
+                (host.City.Gateway.Snapshot().BuildingTaskId??"").StartsWith("sawmill:") &&
+                host.City.Gateway.Snapshot().BuildingCompletesUtcTicks>host.City.Clock.UtcTicks &&
+                host.City.Gateway.Snapshot().Resources.Wood==wood-SliceRules.SawmillWoodCost,
+                "Sawmill paid legacy task must project one real timer at the true gateway cost: state="+
+                running.State+" operation="+running.OperationActive+
+                " woodBefore="+wood+" woodAfter="+host.City.Gateway.Snapshot().Resources.Wood+
+                " feedback="+(host.Hud.Feedback?host.Hud.Feedback.text:"missing"));
+            context.SynchronizeNow();
+            Need(context.ActiveTimers>=1&&!sheet.ChronicleBuildingAction.interactable,
+                "Initial purchase becomes one projected timer, never a duplicate offer");
+            Shot(host,"building-in-progress-desktop",1600,900);
+            Shot(host,"building-in-progress-portrait",900,1600);
+            Shot(host,"building-in-progress-small-phone",390,844);
+            host.Hud.SelectBuilding("");
+            context.SynchronizeNow();
+            Need(context.ActiveTimers>=1,
+                "Closing a building selection preserves its original live timer");
+            host.Hud.SelectBuilding("sawmill");
+            host.City.ReloadForProbe();yield return null;
+            context.SynchronizeNow();
+            Need(host.Read("sawmill",false).Building.OperationActive,
+                "Reloading a real in-progress building retains its deadline");
+            Shot(host,"building-resumed-small-phone",390,844);
+            var clock=(ValoriaReferenceCleanGameplay.TestClock)host.City.Clock;
+            long due=host.City.Gateway.Snapshot().BuildingCompletesUtcTicks;
+            Need(due>clock.UtcTicks,"Initial Sawmill uses a saved real UTC completion deadline");
+            clock.Step((int)Math.Ceiling((due-clock.UtcTicks)/(double)TimeSpan.TicksPerSecond)+1);
+            host.City.Gateway.Advance();
+            Need(host.City.Gateway.Snapshot().SawmillLevel>=1,
+                "Real construction completes after advancing only the disposable clock");
+            var insufficient=host.City.Gateway.Snapshot();
+            insufficient.Resources.Wood=0;insufficient.Resources.Stone=0;
+            new FileStateStore(host.City.SaveFile).Save(insufficient);
+            host.City.ReloadForProbe();yield return null;
+            host.Hud.SelectBuilding("sawmill");yield return null;
+            sheet.SynchronizeNow();
+            var noMoney=host.Read("sawmill",false).Building;
+            Need(noMoney!=null&&noMoney.Action!=null&&!noMoney.Action.Enabled&&
+                !sheet.ChronicleBuildingAction.interactable,
+                "Insufficient resources disable the authentic upgrade, not a fake button");
+            Shot(host,"building-insufficient-portrait",900,1600);
+            Shot(host,"building-insufficient-small-phone",390,844);
+            var refill=host.City.Gateway.Snapshot();
+            refill.Resources.Wood=9000;refill.Resources.Stone=6000;
+            new FileStateStore(host.City.SaveFile).Save(refill);
+            host.City.ReloadForProbe();yield return null;
+            host.Hud.SelectBuilding("sawmill");yield return null;
+            sheet.SynchronizeNow();
+            var upgrade=host.Read("sawmill",false).Building;
+            Need(upgrade!=null&&upgrade.Action!=null&&upgrade.Action.Enabled&&
+                upgrade.Action.Kind!="Build"&&sheet.ChronicleBuildingAction.interactable,
+                "Real level-one Sawmill now offers its authorized upgrade");
+            Shot(host,"building-upgrade-desktop",1600,900);
+            Shot(host,"building-upgrade-portrait",900,1600);
+            Shot(host,"building-upgrade-small-phone",390,844);
+            sheet.ChronicleBuildingAction.onClick.Invoke();
+            var upRunning=host.Read("sawmill",false).Building;
+            Need(upRunning.OperationActive,
+                "Real upgrade creates one persisted operation");
+            context.SynchronizeNow();
+            Need(context.ActiveTimers>=1&&!utility.IsOpen,
+                "Upgrade work stays attached to the building, without another modal");
+            Shot(host,"building-upgrading-portrait",900,1600);
+            Shot(host,"building-upgrading-small-phone",390,844);
+            host.Hud.SelectBuilding("");
+            host.City.ReloadForProbe();yield return null;
+            Need(host.Read("sawmill",false).Building.OperationActive,
+                "Reload never loses an in-progress upgrade");
+            host.Hud.SelectBuilding("sawmill");yield return null;
+            sheet.SynchronizeNow();
+            var boost=host.Hud.GetComponentsInChildren<Button>()
+                .FirstOrDefault(x=>x.name=="Building / accelerate one minute");
+            // The existing chapter-IV mission can legitimately grant a
+            // one-minute accelerator when the first eligible construction
+            // starts. Read the actual live ledger rather than asserting the
+            // fixture's original count after real progression has advanced.
+            int availableBoosts=utility.InlineSpeedupCharges(1);
+            Need(boost&&boost.gameObject.activeInHierarchy&&
+                availableBoosts>0&&!utility.IsOpen,
+                "Only genuine remaining speed-ups appear in the same city sheet; live="+
+                availableBoosts+" visible="+(boost&&boost.gameObject.activeInHierarchy));
+            boost.onClick.Invoke();
+            Need(host.City.Gateway.Snapshot().SpeedupOneMinute==availableBoosts-1,
+                "Inline boost debits exactly one authoritative accelerator, including mission grants");
+            context.SynchronizeNow();
+            Need(!utility.IsOpen,
+                "Using the inline speed-up does not open an extra modal");
+            // Restore the original disposable probe fixture before the suite's
+            // unrelated training and marching tests. No player save touched.
+            // The probe deliberately advanced time to complete a real build.
+            // Restore the disposable clock BEFORE restoring the fixture;
+            // otherwise the next LocalGateway reload correctly accrues
+            // economy/mission progress and mutates the restored JSON again.
+            var advancedTicks=clock.UtcTicks-originalClockTicks;
+            Need(advancedTicks>=0&&advancedTicks%TimeSpan.TicksPerSecond==0&&
+                advancedTicks/TimeSpan.TicksPerSecond<=int.MaxValue,
+                "Construction QA only advanced the isolated clock in whole seconds");
+            clock.Step(-(int)(advancedTicks/TimeSpan.TicksPerSecond));
+            File.WriteAllText(host.City.SaveFile,saved);
+            host.City.ReloadForProbe();yield return null;
+            Need(File.ReadAllText(host.City.SaveFile)==saved,
+                "Construction QA restored exact probe file and its original clock");
+            host.Hud.SelectBuilding("");
         }
         static IEnumerator Exercise(ValoriaIntegratedWorld host)
         {
@@ -93,12 +979,71 @@ namespace Eldoria.Editor
             state.Retention.Orders.Clear();state.ChapterThree.InvestigationEndsUtcTicks=0;
             new FileStateStore(host.City.SaveFile).Save(state);host.City.ReloadForProbe();yield return null;
             var screen=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+            var beforeBuildNavigation=JsonUtility.ToJson(host.City.Gateway.Snapshot());
+            var buildShortcut=host.Hud.Navigation.Items.First(i=>
+                i.Section==Eldoria.UI.RoyalGold.RoyalSection.Inventory);
+            buildShortcut.Button.onClick.Invoke();
+            Need(host.Hud.SelectedBuildingId=="upgrade-barracks"&&!screen.IsOpen,
+                "Real CONSTRUIR navigation keeps the built barracks in its city cartouche");
+            var retention=host.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();
+            Need((!retention.VigilantsShortcut||!retention.VigilantsShortcut.gameObject.activeSelf)&&
+                (!retention.ScoutsShortcut||!retention.ScoutsShortcut.gameObject.activeSelf),
+                "City shortcuts yield to the building cartouche in the same input frame");
+            Need(JsonUtility.ToJson(host.City.Gateway.Snapshot())==beforeBuildNavigation,
+                "Construction navigation does not spend resources or recruit troops");
+            Shot(host,"construction-shortcut-city-phone",900,1600);
+            host.Hud.SelectBuilding("");host.Select("barracks");
+            Need(host.Hud.SelectedBuildingId=="upgrade-barracks"&&!screen.IsOpen,
+                "Physical chapter III+ barracks selection keeps its city upgrade cartouche");
+            Need(JsonUtility.ToJson(host.City.Gateway.Snapshot())==beforeBuildNavigation,
+                "Selecting the real barracks does not change gameplay or recruit troops");
+            Shot(host,"construction-barracks-city-landscape",1600,900);
+            Shot(host,"construction-barracks-city-small-phone",390,844);
+            Shot(host,"construction-barracks-city-small-phone-landscape",844,390);
+            var actualCityCard=host.Hud.GetComponent<RoyalGoldV2Hud>();
+            var physicalPaper=host.Hud.GetComponentsInChildren<RoyalGoldV3BuildingCartoucheFinish>(true)
+                .FirstOrDefault(x=>x.name=="Building / physical cartouche parchment");
+            var nineSlice=host.Hud.GetComponentsInChildren<Image>(true)
+                .FirstOrDefault(x=>x.name=="Building / real nine-slice outline");
+            Need(actualCityCard&&actualCityCard.ChronicleIllustratedBuildingVisible&&
+                physicalPaper&&!physicalPaper.raycastTarget&&
+                nineSlice&&nineSlice.sprite&&nineSlice.type==Image.Type.Sliced&&
+                !nineSlice.raycastTarget,
+                "Actual city-local construction sheet owns layered parchment and true nine-slice border");
+            var preview=host.Hud.GetComponentInChildren<RoyalGoldV3BuildingPreview>(true);
+            Need(preview&&preview.HasModelPreview,
+                "Real selected building mesh remains the only 3D construction thumbnail");
+            Need(!(host.Hud.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen??true),
+                "No independent management modal interrupts construction");
+            host.Hud.SelectBuilding("");
+            var buildingSuite=VerifyCityConstruction(host);
+            while(buildingSuite.MoveNext())yield return buildingSuite.Current;
             screen.Open(RoyalGoldV3ManagementScreens.Destination.Training);yield return null;
             Shot(host,"training-reference-ratio",554,542);
-            Shot(host,"training-phone",900,1600);Shot(host,"training-landscape",1600,900);
+            Shot(host,"training-phone",900,1600);Shot(host,"training-small-phone",390,844);Shot(host,"training-small-phone-landscape",844,390);Shot(host,"training-landscape",1600,900);
+            var tierChoices=screen.VisibleRoot.GetComponentsInChildren<Button>()
+                .Where(b=>b.name.StartsWith("Training unit card T")).ToArray();
+            Need(tierChoices.Length==2,"Training roster exposes only the two real archer tiers");
+            string beforeTierChoice=JsonUtility.ToJson(host.City.Gateway.Snapshot());
+            tierChoices.First(b=>b.name=="Training unit card T2").onClick.Invoke();
+            Need(screen.SelectedTier==2,"Real T2 card selects its authoritative training tier");
+            tierChoices.First(b=>b.name=="Training unit card T1").onClick.Invoke();
+            Need(screen.SelectedTier==1,"Real T1 card restores its authoritative training tier");
+            Need(beforeTierChoice==JsonUtility.ToJson(host.City.Gateway.Snapshot()),
+                "Browsing training tiers does not spend resources or mutate the save");
             Need(screen.VisibleAction.interactable,"Training command is actionable");
             screen.VisibleAction.onClick.Invoke();
             Need(host.City.Gateway.Snapshot().PendingRecruitArchers>0,"Actual training reserves recruits");
+            Need(tierChoices.All(b=>!b.interactable),"Pending training locks both real tier cards");
+            // Marches now shares Lyra's genuine asynchronously imported model portrait.
+            // Wait for its actual readiness; keep the subsequent source/layout assertions.
+            var marchLyraModel=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesLyraModel>();
+            Need(marchLyraModel!=null,"March portrait loader is bound to the stable HUD");
+            marchLyraModel.Request();
+            float marchPortraitDeadline=Time.realtimeSinceStartup+30f;
+            while(!marchLyraModel.Ready&&Time.realtimeSinceStartup<marchPortraitDeadline)yield return null;
+            Need(marchLyraModel.Ready&&marchLyraModel.Portrait,
+                "March Lyra portrait is rendered from the preserved model before visual certification");
             screen.Open(RoyalGoldV3ManagementScreens.Destination.March);yield return null;
             Need(!screen.VisibleRoot.GetComponentsInChildren<Text>().Any(t=>t.text=="APOYO · SIR ALDRIC"),"Empty saved slots never display invented Aldric companions");
             var controls=screen.VisibleRoot.GetComponentsInChildren<Button>();
@@ -106,7 +1051,7 @@ namespace Eldoria.Editor
             controls.First(b=>b.name=="Edit march by percent").onClick.Invoke();
             screen.VisibleRoot.GetComponentInChildren<Slider>().value=50;
             Need(screen.SelectedQuantity==60,"Real percent slider keeps 120 troops and assigns 50 percent to T1");
-            Shot(host,"march-reference-ratio",941,1672);Shot(host,"march-landscape",1600,900);
+            Shot(host,"march-reference-ratio",941,1672);Shot(host,"march-landscape",1600,900);Shot(host,"march-small-phone",390,844);Shot(host,"march-small-phone-landscape",844,390);
             Need(screen.VisibleAction.interactable,"Actual march composer actionable");
             screen.VisibleAction.onClick.Invoke();
             var composed=host.City.Gateway.Snapshot();
@@ -131,15 +1076,431 @@ namespace Eldoria.Editor
             Shot(host,"mailbox-entry-city",900,1600);
             mailbox.EntryButton.onClick.Invoke();yield return null;
             Need(mailbox.IsOpen,"Actual HUD shortcut opens mailbox");
-            Shot(host,"mailbox-reference-ratio",1169,1345);Shot(host,"mailbox-phone",900,1600);Shot(host,"mailbox-landscape",1600,900);
+            var currencyGlyphs=host.Hud.GetComponentsInChildren<RoyalIconGraphic>()
+                .Where(g=>g.name.StartsWith("Mailbox / real resource icon ")).ToArray();
+            Need(currencyGlyphs.Length==3 &&
+                currencyGlyphs.Select(g=>g.Icon).OrderBy(x=>x)
+                    .SequenceEqual(new[]{1,2,3}) &&
+                currencyGlyphs.All(g=>!g.raycastTarget&&g.rectTransform.rect.width>0f),
+                "Mailbox renders three real HUD currency glyphs without fake purchase controls");
+            Shot(host,"mailbox-reference-ratio",1169,1345);
+            Shot(host,"mailbox-phone",900,1600);
+            Shot(host,"mailbox-landscape",1600,900);
+            Shot(host,"mailbox-small-phone",390,844);
+            Shot(host,"mailbox-small-phone-landscape",844,390);
+            Need(mailbox.VisibleMessageRows==1,
+                "Actual single-message inbox shows exactly one real card, not five filler emails");
+            // Exercise all four existing categories without filling any with
+            // fictional mail. The real economy ledger retains reward receipts.
+            var rewardsTab=host.Hud.GetComponentsInChildren<Button>()
+                .First(x=>x.name=="Buzón recompensas");
+            rewardsTab.onClick.Invoke();yield return null;
+            Need(mailbox.VisibleMessageRows==
+                Mathf.Min(5,gateway.Snapshot().Mailbox.List("recompensas").Count),
+                "Real rewards category shows only actual delivered messages");
+            Shot(host,"mailbox-rewards-phone",900,1600);
+            var systemTab=host.Hud.GetComponentsInChildren<Button>()
+                .First(x=>x.name=="Buzón sistema");
+            systemTab.onClick.Invoke();yield return null;
+            Shot(host,"mailbox-system-phone",900,1600);
+            var narrativeTab=host.Hud.GetComponentsInChildren<Button>()
+                .First(x=>x.name=="Buzón narrativa");
+            narrativeTab.onClick.Invoke();yield return null;
+            Shot(host,"mailbox-narrative-phone",900,1600);
+            var reportsTab=host.Hud.GetComponentsInChildren<Button>()
+                .First(x=>x.name=="Buzón informes");
+            reportsTab.onClick.Invoke();yield return null;
+            Shot(host,"mailbox-reports-restored-phone",900,1600);
+            var mailboxFrame=host.Hud.GetComponentsInChildren<RectTransform>(true)
+                .First(t=>t.name=="Mailbox / adaptive collection frame");
+            var mailboxWindow=host.Hud.GetComponentsInChildren<RectTransform>(true)
+                .First(t=>t.name=="V41 / Buzón destination");
+            Need(mailboxFrame.rect.height>80f&&
+                mailboxFrame.rect.height<mailboxWindow.rect.height*.63f,
+                "Single real report uses a compact illustrated card frame, not five empty rows");
+            Need(mailboxFrame.GetComponentsInChildren<Image>(true)
+                .Any(i=>i.name.EndsWith("independent metal nine-slice")&&
+                    i.sprite&&i.type==Image.Type.Sliced&&!i.raycastTarget),
+                "Mailbox outer collection has an independent real nine-slice gold rim");
+            Need(RoyalGoldV41MailboxScreen.VisibleCountFor(0,0)==0 &&
+                RoyalGoldV41MailboxScreen.VisibleCountFor(1,0)==1 &&
+                RoyalGoldV41MailboxScreen.VisibleCountFor(5,0)==5 &&
+                RoyalGoldV41MailboxScreen.VisibleCountFor(12,0)==5 &&
+                RoyalGoldV41MailboxScreen.VisibleCountFor(12,5)==5 &&
+                RoyalGoldV41MailboxScreen.VisibleCountFor(12,10)==2,
+                "Empty, one, five and paginated twelve-message list cardinality all use real counts");
+            // QA ONLY: exercise a filled mailbox with *temporary* event
+            // copies in an isolated read-only gateway. Do not commit, store,
+            // seed or publish any of these sample messages as real content.
+            var saveBeforeQa=File.ReadAllText(host.City.SaveFile);
+            var fixtureState=gateway.Snapshot();
+            var sample=fixtureState.Mailbox.List("informes")[0];
+            for(int i=0;i<11;i++)
+            {
+                var added=fixtureState.Mailbox.Receive(new EldoriaV41Message{
+                    EventId="mailbox-qa-layout-only-"+i,
+                    Category="informes",Type=i%2==0?"battle":"exploration",
+                    Title="PRUEBA DE DISEÑO · "+(i+1),
+                    Subtitle="Evento aislado para validar la lista",
+                    OccurredAtUtcTicks=sample.OccurredAtUtcTicks+TimeSpan.FromSeconds(i+1).Ticks,
+                    Read=i%3==0
+                });
+                Need(added,"Read-only QA fixture can create one separate unique list item");
+                // Receive deliberately ignores caller-supplied Read. Exercise
+                // the same actual mailbox transition used by production.
+                if(i%3==0)
+                    fixtureState.Mailbox.MarkRead("mailbox-qa-layout-only-"+i);
+            }
+            mailbox.Initialize(host.Hud,new MailboxDisplayFixture(fixtureState));
+            mailbox.Refresh();yield return null;
+            // Previous mailbox capture ended at 844x390, where the live
+            // landscape design intentionally shows TWO items. Restore a
+            // genuine portrait canvas before asserting FIVE visible cards.
+            Shot(host,"mailbox-qa-twelve-phone",900,1600);
+            // The portrait screenshot contains five cards. On returning
+            // from capture Unity restores the actual compact viewport, so
+            // the live widget must immediately show the appropriate 2 cards.
+            Need(mailbox.VisibleMessageRows==Mathf.Min(12,mailbox.CurrentPageSize),
+                "QA-only twelve-mail inbox respects the real restored viewport: active="+
+                    mailbox.VisibleMessageRows+", size="+mailbox.CurrentPageSize);
+            var qaCards=host.Hud.GetComponentsInChildren<Image>()
+                .Where(x=>x.name=="Approved source / mail-card").ToArray();
+            Need(qaCards.Any(x=>x.color.r<.90f) &&
+                qaCards.Any(x=>x.color.r>.95f),
+                "Genuine Read state and Unread state draw visibly different parchment tones");
+            Shot(host,"mailbox-qa-twelve-reference-ratio",1169,1345);
+            Shot(host,"mailbox-qa-twelve-landscape",1600,900);
+            // Pagination 5/5/2 is the portrait contract. A landscape
+            // screenshot cannot silently change the expected page length.
+            Shot(host,"mailbox-qa-twelve-portrait-pagination-start",900,1600);
+            var nextPage=host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Página siguiente");
+            // A native capture temporarily changes the render target and
+            // restores its prior display dimensions. Allow one actual Unity
+            // frame to reconcile the live UI before asserting page state.
+            mailbox.Refresh();yield return null;
+            // Portrait=5/page, compact landscape=2/page. The render capture
+            // temporarily changes Unity dimensions, then restores the live
+            // canvas. Check every real page at its CURRENT responsive size,
+            // not a stale portrait page count left by a screenshot.
+            var covered=new System.Collections.Generic.HashSet<string>();
+            for(int pageProbe=0;pageProbe<10;pageProbe++)
+            {
+                var visible=fixtureState.Mailbox.List("informes",
+                    mailbox.CurrentPageOffset,mailbox.CurrentPageSize);
+                Debug.Log("MAILBOX_QA_PAGE pageProbe="+pageProbe+
+                    " offset="+mailbox.CurrentPageOffset+
+                    " size="+mailbox.CurrentPageSize+
+                    " expected="+visible.Count+
+                    " active="+mailbox.VisibleMessageRows+
+                    " total="+fixtureState.Mailbox.List("informes").Count);
+                Need(mailbox.VisibleMessageRows==visible.Count &&
+                    visible.Count>0 && visible.Count<=mailbox.CurrentPageSize,
+                    "Responsive pagination shows actual fixture rows: expected="+visible.Count+
+                        ", active="+mailbox.VisibleMessageRows+", offset="+mailbox.CurrentPageOffset+
+                        ", size="+mailbox.CurrentPageSize+", probe="+pageProbe);
+                foreach(var item in visible)covered.Add(item.EventId);
+                int beforeOffset=mailbox.CurrentPageOffset;
+                nextPage.onClick.Invoke();yield return null;
+                if(mailbox.CurrentPageOffset==beforeOffset)break;
+                Need(mailbox.CurrentPageOffset>beforeOffset,
+                    "Mailbox pagination advances rather than looping or duplicating a page");
+            }
+            Need(covered.Count==12,
+                "All twelve distinct QA fixture messages are reachable by real paging without filler");
+            mailbox.Close();mailbox.Open();yield return null;
+            Shot(host,"mailbox-qa-twelve-small-phone",390,844);
+            Shot(host,"mailbox-qa-twelve-small-phone-landscape",844,390);
+            Need(mailbox.VisibleMessageRows==2,
+                "Compact 844x390 uses two readable items per real paginated QA page");
+            mailbox.Initialize(host.Hud,gateway);
+            mailbox.Close();mailbox.Open();yield return null;
+            Need(File.ReadAllText(host.City.SaveFile)==saveBeforeQa,
+                "QA-only full inbox screenshots did not change any owner save bytes");
+            Need(gateway.Snapshot().Mailbox.List("informes").Count==1 &&
+                mailbox.VisibleMessageRows==1,
+                "Real mailbox is restored exactly after isolated multi-message proof");
             var row=host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Buzón / mensaje 0");row.onClick.Invoke();yield return null;
             Need(gateway.Snapshot().Mailbox.Unread("informes")==0,"Opening actual message marks it read");
             Shot(host,"mailbox-real-report",900,1600);
+            Shot(host,"mailbox-real-report-landscape",1600,900);
+            Shot(host,"mailbox-report-small-phone",390,844);
+            Shot(host,"mailbox-report-small-phone-landscape",844,390);
+            var reportText=host.Hud.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(t=>t.name=="Contenido del mensaje");
+            var metricTitle=host.Hud.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(t=>t.name=="Mailbox / metric caption 1");
+            var metricValue=host.Hud.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(t=>t.name=="Mailbox / genuine metric 1");
+            var realRecord=gateway.Snapshot().Mailbox.List("informes")[0].Battle;
+            var visibleComposition=host.Hud.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(t=>t.name=="Mailbox / own roster historical composition");
+            Need(realRecord.OwnRoster!=null&&realRecord.OwnRoster.Total==realRecord.Troops &&
+                visibleComposition&&visibleComposition.text.Contains("ARQUEROS") &&
+                visibleComposition.text.Contains("T1: "+realRecord.OwnRoster.ArcherT1),
+                "Historical own-roster tiers come from the actual dispatched army, never guesses");
+            Need(reportText&&metricTitle&&metricTitle.text=="TROPAS ENVIADAS"&&
+                metricValue&&metricValue.text==realRecord.Troops.ToString()&&
+                !reportText.text.Contains("Ruptura super")&&
+                !reportText.text.Contains("estrategia óptima")&&
+                !reportText.text.Contains("Prepara otra composición"),
+                "Actual report shows real own-army metrics and observed outcome without tactical formulas");
+            var authenticSheet=host.Hud.GetComponentsInChildren<RoyalGoldV41ReportArtwork>(true)
+                .FirstOrDefault();
+            Need(authenticSheet && authenticSheet.enabled && !authenticSheet.raycastTarget &&
+                authenticSheet.GetComponent<CanvasRenderer>()!=null,
+                "Report uses a separate passive layered parchment, no pasted UI screenshot");
+            var reportScroller=host.Hud.GetComponentsInChildren<ScrollRect>(true)
+                .FirstOrDefault(x=>x.name=="Mailbox / report scroll viewport");
+            Need(reportScroller&&reportScroller.vertical&&reportScroller.viewport!=null,
+                "Actual report document uses live vertical scrolling at compact mobile resolutions");
+            // Outcome/family/long-text visual matrix. Every candidate below
+            // lives ONLY in an isolated READ-ONLY fixture. Its narrative is
+            // generated from the real deterministic ScoutOrder family rules,
+            // not from made-up player discoveries or paid rewards.
+            var visualSave=File.ReadAllText(host.City.SaveFile);
+            var actualReport=gateway.Snapshot().Mailbox.List("informes")[0];
+            for(int variant=0;variant<7;variant++)
+            {
+                var isolated=gateway.Snapshot();
+                isolated.Mailbox=new EldoriaV41Mailbox();
+                string label;
+                if(variant<2)
+                {
+                    // Simulate BOTH outcomes with the production combat
+                    // rules in a disposable snapshot, never flip a winning
+                    // report or manufacture a defeat for the visual evidence.
+                    var combatState=new PlayerState {
+                        BastionLevel=2,SawmillLevel=1,BarracksLevel=1,
+                        Available=new ArmyRoster{ArcherT1=variant==0?60:1},
+                        ChapterProgress=new ChapterProgressState{MarchConfirmed=true}
+                    };
+                    // The starter hero can beat stage 1 even with one T1;
+                    // stage 25 is the legitimate first-chapter power wall.
+                    int stage=variant==0?1:25;
+                    if(stage==25)combatState.Retention.LastClearedStage=24;
+                    string combatNotice;
+                    var applied=EarlyRetentionRules.Apply(combatState,
+                        "VigilantBattle",stage.ToString(),
+                        new DateTime(2026,11,3,12,0,0,DateTimeKind.Utc).Ticks,
+                        out combatNotice);
+                    Need(applied==true&&combatState.LastBattleReport.Won==(variant==0),
+                        "Native screenshot represents a REAL outcome of the actual Vigilants resolver");
+                    var result=combatState.LastBattleReport;
+                    var observed=new EldoriaV41CombatRecord {
+                        TargetId=result.TargetId,HeroId=result.HeroId,
+                        Troops=result.Troops,OwnRoster=result.OwnRoster?.Copy(),
+                        PlayerPower=result.PlayerPower,EnemyPower=result.EnemyPower,
+                        Won=result.Won,Rounds=result.Rounds,
+                        RemainingHealth=result.RemainingHealth,
+                        RewardWood=result.RewardWood,RewardStone=result.RewardStone,
+                        RewardFood=result.RewardFood,Reason=result.Reason
+                    };
+                    label=observed.Won?"victory":"defeat";
+                    isolated.Mailbox.Receive(new EldoriaV41Message {
+                        EventId="qa-outcome-"+label,Category="informes",Type="battle",
+                        Title=observed.Won?"Victoria en los Vigilantes":"Derrota en los Vigilantes",
+                        Battle=observed,OccurredAtUtcTicks=actualReport.OccurredAtUtcTicks
+                    });
+                }
+                else
+                {
+                    int kind=(variant-2)%4;
+                    var order=new ScoutOrder{Id="qa-only-order-"+kind,Kind=kind,Period=19,Slot=kind};
+                    string realLore=EarlyRetentionRules.ScoutDiscoveryText(order);
+                    bool verbose=variant==6;
+                    label=verbose?"long-text":"family-"+kind;
+                    isolated.Mailbox.Receive(new EldoriaV41Message {
+                        EventId="qa-scout-"+label,Category="informes",Type="exploration",
+                        Title="Informe de exploración",
+                        Subtitle=EarlyRetentionRules.ScoutDiscoveryTitle(order),
+                        DiscoveryKind=kind,DiscoveryOrderId=order.Id,
+                        DiscoveryText=verbose?string.Join(" ",Enumerable.Repeat(realLore,14)):realLore,
+                        OccurredAtUtcTicks=actualReport.OccurredAtUtcTicks
+                    });
+                }
+                mailbox.Initialize(host.Hud,new MailboxDisplayFixture(isolated));
+                mailbox.Close();mailbox.Open();yield return null;
+                var qaRow=host.Hud.GetComponentsInChildren<Button>()
+                    .First(x=>x.name=="Buzón / mensaje 0");
+                qaRow.onClick.Invoke();yield return null;
+                var sheet=host.Hud.GetComponentsInChildren<RectTransform>()
+                    .First(x=>x.name=="Mailbox / scrollable assembled report");
+                var viewport=host.Hud.GetComponentsInChildren<RectTransform>()
+                    .First(x=>x.name=="Mailbox / report scroll viewport");
+                Need(sheet.rect.width<=viewport.rect.width+1f &&
+                    sheet.rect.height>=viewport.rect.height,
+                    "Report composition stays width-clipped and genuinely scrollable");
+                if(variant>=2)
+                {
+                    var visualStory=host.Hud.GetComponentsInChildren<Text>()
+                        .First(x=>x.name=="Contenido del mensaje");
+                    var realPicture=host.Hud.GetComponentsInChildren<RawImage>()
+                        .FirstOrDefault(x=>x.name=="Mailbox / authentic discovery family illustration");
+                    Need(realPicture&&realPicture.texture!=null&&
+                        realPicture.gameObject.activeInHierarchy&&
+                        realPicture.uvRect.width>.01f,
+                        "Each persisted scout family opens its own genuine illustrated source quadrant");
+                    Need(visualStory.text.Contains("La ")||visualStory.text.Contains("Las ")||visualStory.text.Contains("Los ")||
+                        visualStory.text.Contains("Una ")||visualStory.text.Contains("Un ")||
+                        visualStory.text.Contains("Encontraron ")||visualStory.text.Contains("El "),
+                        "The exploration sheet contains narrative from a genuine rule-defined family");
+                }
+                Shot(host,"mailbox-report-qa-"+label+"-portrait",900,1600);
+                Shot(host,"mailbox-report-qa-"+label+"-landscape",1600,900);
+                Shot(host,"mailbox-report-qa-"+label+"-small-phone",390,844);
+                Shot(host,"mailbox-report-qa-"+label+"-small-phone-landscape",844,390);
+                if(variant==6)
+                {
+                    Need(sheet.rect.height>viewport.rect.height+100f,
+                        "Long authentic-source narrative expands the scroll sheet without truncation");
+                    var toggle=host.Hud.GetComponentsInChildren<Button>()
+                        .First(x=>x.name=="Mailbox / collapse or expand report");
+                    toggle.onClick.Invoke();yield return null;
+                    Need(!host.Hud.GetComponentsInChildren<Text>(true)
+                        .First(x=>x.name=="Contenido del mensaje").gameObject.activeSelf,
+                        "Expandable story really collapses without losing stored text");
+                    Shot(host,"mailbox-report-qa-long-text-collapsed-small-phone",390,844);
+                    toggle.onClick.Invoke();yield return null;
+                }
+            }
+            mailbox.Initialize(host.Hud,gateway);
+            mailbox.Close();mailbox.Open();yield return null;
+            Need(File.ReadAllText(host.City.SaveFile)==visualSave,
+                "All four discovery family and outcome QA shots left actual saved game bytes identical");
+            // Opening even an already-read actual record issues a fresh
+            // MailRead command and writes a command receipt. Compare saved
+            // bytes BEFORE returning to that authorized gameplay action.
+            host.Hud.GetComponentsInChildren<Button>()
+                .First(x=>x.name=="Buzón / mensaje 0").onClick.Invoke();
+            yield return null;
             int wood=gateway.Snapshot().Resources.Wood;
             host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Eliminar").onClick.Invoke();
             Need(gateway.Snapshot().Mailbox.List("informes").Count==0&&gateway.Snapshot().Resources.Wood==wood,"Delete neither replays battle nor pays again");
+            mailbox.Refresh();yield return null;
+            Shot(host,"mailbox-empty-phone",900,1600);
+            Shot(host,"mailbox-empty-reference-ratio",1169,1345);
+            Shot(host,"mailbox-empty-landscape",1600,900);
+            Shot(host,"mailbox-empty-small-phone",390,844);
+            Shot(host,"mailbox-empty-small-phone-landscape",844,390);
+            Need(mailbox.VisibleMessageRows==0,"Empty mailbox is genuinely empty without fabricated message rows");
             host.City.ReloadForProbe();yield return null;
             Need(host.City.Gateway.Snapshot().Mailbox.List("informes").Count==0,"Deleted battle remains deleted after real file reload");
+            var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+            Need(heroes!=null,"Heroes destination is mounted on the existing royal HUD");
+            mailbox.Close();screen.Open(RoyalGoldV3ManagementScreens.Destination.Training);
+            var heroEntry=screen.VisibleRoot.GetComponentsInChildren<Button>().First(b=>b.name=="Open canonical heroes");
+            Need(heroEntry.interactable,"Narratively unlocked heroes entry is actionable");
+            heroEntry.onClick.Invoke();yield return null;
+            Need(heroes.IsOpen,"Real military navigation opens heroes hall");
+            // Presence of a component alone previously passed despite the
+            // completely obscured scenery. Require actual independent art.
+            var hall=heroes.VisibleRoot.GetComponentsInChildren<RawImage>()
+                .FirstOrDefault(i=>i.name=="Hall / painterly architectural plate");
+            var authored=Resources.Load<Texture2D>("EldoriaV41/heroes-hall-illustrated-v2");
+            Need(hall&&authored&&hall.texture==authored&&
+                authored.width==1600&&authored.height==900,
+                "Heroes hall displays the new approved-direction scenic artwork, not legacy photo");
+            Need(!hall.raycastTarget,
+                "Hall illustration cannot intercept hero-card taps");
+            Need(heroes.VisibleRoot.GetComponentsInChildren<Canvas>(true).Length==0,
+                "Heroes hall reuses the canonical Canvas without another Canvas");
+            string saveBeforeHeroes=File.ReadAllText(host.City.SaveFile);
+            Shot(host,"heroes-salon-landscape",1600,900);Shot(host,"heroes-salon-phone",900,1600);
+            Shot(host,"heroes-salon-small-phone",390,844);
+            Shot(host,"heroes-salon-small-phone-landscape",844,390);
+            Need(heroes.OpenHero("aldric"),"Actual unlocked Aldric can be selected");
+            float heroDeadline=Time.realtimeSinceStartup+90;
+            while(!heroes.ReadModelRoot("aldric")&&Time.realtimeSinceStartup<heroDeadline)yield return null;
+            Need(heroes.ReadModelRoot("aldric")!=null,"Approved Aldric geometry is actually available for the profile");
+            var originalAldric=UnityEngine.Object.FindFirstObjectByType<Eldoria.AldricCity.AldricCityRoaming>();
+            Need(originalAldric&&originalAldric.UsesOriginalAnimationPose,
+                "Aldric uses original animation without the duplicate arm deformation layer");
+            heroes.Refresh();yield return null;
+            var livePortrait=heroes.VisibleRoot.GetComponent<Eldoria.HeroesUI.HeroesModelSnapshot>();
+            Need(livePortrait&&livePortrait.HasModel&&livePortrait.HasPerspectiveGround&&livePortrait.SamplesOriginalIdle,
+                "Aldric profile renders live original Idle in perspective with a supported physical shadow receiver");
+            // Reproduce a late asynchronous Lyra portrait import while Aldric is
+            // already visible. Separate cameras must exclude the other stage.
+            float cacheDeadline=Time.realtimeSinceStartup+30;
+            while(!heroes.ReadModelRoot("lyra")&&Time.realtimeSinceStartup<cacheDeadline)yield return null;
+            var concurrentSource=heroes.ReadModelRoot("lyra");
+            Need(concurrentSource!=null,"Actual Lyra geometry is ready for concurrent-cache isolation probe");
+            var cacheObject=new GameObject("Native / concurrent portrait cache",typeof(RectTransform),typeof(CanvasRenderer),typeof(RawImage));
+            cacheObject.SetActive(false);
+            var cachePreview=cacheObject.AddComponent<Eldoria.HeroesUI.HeroesModelSnapshot>();
+            try{
+                Need(cachePreview.Show(concurrentSource,cacheObject.GetComponent<RawImage>(),30),
+                    "Actual inactive portrait cache can render while Aldric profile stays open");
+                var cameras=Resources.FindObjectsOfTypeAll<Camera>()
+                    .Where(c=>c&&c.name=="Hero / perspective camera"&&c.gameObject.activeInHierarchy).ToArray();
+                Need(cameras.Length==2&&(cameras[0].cullingMask&cameras[1].cullingMask)==0,
+                    "Simultaneous live hero and portrait cache use disjoint camera culling masks");
+                foreach(var camera in cameras)
+                    Need(camera.transform.parent.GetComponentsInChildren<Renderer>(true)
+                        .All(r=>(camera.cullingMask&(1<<r.gameObject.layer))!=0),
+                        "Each camera includes its own original geometry and physical ground");
+            }finally{cachePreview.Release();UnityEngine.Object.Destroy(cacheObject);}
+            Need(Resources.FindObjectsOfTypeAll<Camera>()
+                .Count(c=>c&&c.name=="Hero / perspective camera"&&c.gameObject.activeInHierarchy)==1,
+                "Exactly one live hero stage remains; inactive Lyra portrait capture has explicitly released its stage");
+            float aldricCoverage=livePortrait.ReadOpaqueHeightCoverage();
+            Need(aldricCoverage>=.58f,"Actual Aldric silhouette fills the portrait instead of inheriting a doubly scaled skin bound: "+aldricCoverage);
+            foreach(var page in new[]{Eldoria.HeroesUI.HeroesApprovedDestination.Page.Resumen,
+                Eldoria.HeroesUI.HeroesApprovedDestination.Page.Habilidades,
+                Eldoria.HeroesUI.HeroesApprovedDestination.Page.Talentos,
+                Eldoria.HeroesUI.HeroesApprovedDestination.Page.Equipamiento})
+            {
+                heroes.Select(page);yield return null;
+                if(page==Eldoria.HeroesUI.HeroesApprovedDestination.Page.Talentos)
+                {
+                    var paths=heroes.VisibleRoot.GetComponentsInChildren<RectTransform>()
+                        .First(t=>t.name=="Heroes / reserved talent paths");
+                    var nodes=paths.GetComponentsInChildren<Button>(true);
+                    Need(nodes.Length==9&&nodes.All(b=>!b.interactable),
+                        "All nine reserved talent nodes remain disabled without invented gameplay");
+                    Need(paths.GetComponentsInChildren<RectTransform>()
+                        .Count(t=>t.name.StartsWith("Reserved talent path "))==3,
+                        "Talents retain the three approved reserved visual paths");
+                }
+                Shot(host,"heroes-aldric-"+page+"-landscape",1600,900);
+                Shot(host,"heroes-aldric-"+page+"-phone",900,1600);
+                Shot(host,"heroes-aldric-"+page+"-small-phone",390,844);
+                Shot(host,"heroes-aldric-"+page+"-small-phone-landscape",844,390);
+                if(page==HeroesApprovedDestination.Page.Habilidades)
+                    Shot(host,"heroes-aldric-"+page+"-small-phone-scroll-end",390,844);
+            }
+            Need(heroes.OpenHero("lyra"),"Narratively recruited Lyra opens her own profile");
+            var lyraModel=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesLyraModel>();
+            float lyraDeadline=Time.realtimeSinceStartup+30f;
+            while(lyraModel&&!lyraModel.Ready&&Time.realtimeSinceStartup<lyraDeadline)yield return null;
+            Need(lyraModel&&lyraModel.Ready&&lyraModel.ModelRoot,
+                "Owner-selected existing Lyra GLB imports and renders with its exact preserved SHA256");
+            heroes.Refresh();yield return null;
+            Need(heroes.CurrentAuthoritativeHero().Value.Portrait==lyraModel.Portrait,
+                "Lyra portrait is derived from her actual model, not the conflicting pale-haired master");
+            Need(heroes.VisibleRoot.GetComponentsInChildren<RawImage>().Any(r=>r.enabled&&r.texture),
+                "Lyra profile displays actual model geometry rather than a flat fallback");
+            Shot(host,"heroes-lyra-resumen-landscape",1600,900);Shot(host,"heroes-lyra-resumen-phone",900,1600);
+            Shot(host,"heroes-lyra-resumen-small-phone",390,844);
+            Shot(host,"heroes-lyra-resumen-small-phone-landscape",844,390);
+            var rotateLyra=heroes.VisibleRoot.GetComponentsInChildren<Button>().First(b=>b.name=="Rotate hero right");
+            rotateLyra.onClick.Invoke();yield return null;
+            Shot(host,"heroes-lyra-rotated-landscape",1600,900);
+            foreach(var page in new[]{Eldoria.HeroesUI.HeroesApprovedDestination.Page.Habilidades,
+                Eldoria.HeroesUI.HeroesApprovedDestination.Page.Talentos,
+                Eldoria.HeroesUI.HeroesApprovedDestination.Page.Equipamiento})
+            {
+                heroes.Select(page);yield return null;
+                Shot(host,"heroes-lyra-"+page+"-landscape",1600,900);
+                Shot(host,"heroes-lyra-"+page+"-phone",900,1600);
+                Shot(host,"heroes-lyra-"+page+"-small-phone",390,844);
+                Shot(host,"heroes-lyra-"+page+"-small-phone-landscape",844,390);
+                if(page==HeroesApprovedDestination.Page.Habilidades)
+                    Shot(host,"heroes-lyra-"+page+"-small-phone-scroll-end",390,844);
+            }
+            Need(File.ReadAllText(host.City.SaveFile)==saveBeforeHeroes,
+                "All six hero screens preserve the authoritative save byte for byte");
+            heroes.Close();yield return null;
             File.WriteAllText(Path.Combine(Output,"result.json"),"{\"functional\":\"PASS\",\"visual_review\":\"REQUIRED\",\"art_approved\":false}");
             Debug.Log("ELDORIA_V41_NATIVE_PASS");EditorApplication.Exit(0);
         }

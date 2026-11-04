@@ -13,6 +13,7 @@ namespace Eldoria.UI.RoyalGold.V2
     public sealed class RoyalGoldV2FrameGraphic : MaskableGraphic
     {
         public bool Primary;
+        public bool AntiqueGoldAction;
         public bool DecorativeCorners = true;
 
         private static readonly Color Shadow = new Color(.006f, .012f, .021f, .80f);
@@ -85,7 +86,9 @@ namespace Eldoria.UI.RoyalGold.V2
             Plate(vh, r, 0f, Shadow, Shadow);
             Plate(vh, r, 1.5f, RimLow, RimHigh);
             Plate(vh, r, 3.0f, Edge, Edge);
-            Plate(vh, r, 4.4f, Primary ? ActionBase : Ink, Primary ? ActionTop : Slate);
+            Plate(vh, r, 4.4f,
+                Primary ? (AntiqueGoldAction ? new Color(.23f, .135f, .048f, 1f) : ActionBase) : Ink,
+                Primary ? (AntiqueGoldAction ? new Color(.55f, .36f, .13f, 1f) : ActionTop) : Slate);
             // Small gold corner marks communicate the approved medieval
             // identity without covering text or adding full-panel ornament.
             if (!DecorativeCorners || r.width < 110f || r.height < 45f) return;

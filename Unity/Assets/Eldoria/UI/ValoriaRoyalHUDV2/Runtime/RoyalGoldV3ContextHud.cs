@@ -37,8 +37,11 @@ namespace Eldoria.UI.RoyalGold.V2
         private string lastProbeMismatch = "";
         private static readonly string[] TimedTargets =
         {
-            "sawmill", "barracks", "bastion", "forest-valoria",
-            "quarry-valoria", "corrupt-scout", "engendro-valoria"
+            // Include individual III–V city building operations alongside
+            // original Bastion, world expeditions and training.
+            "sawmill", "barracks", "upgrade-barracks", "granary",
+            "stoneworks", "bastion", "forest-valoria", "quarry-valoria",
+            "corrupt-scout", "engendro-valoria"
         };
         private static readonly Color Ivory = new Color(.95f, .925f, .865f);
         private static readonly Color Gold = new Color(.89f, .73f, .46f);
@@ -52,11 +55,17 @@ namespace Eldoria.UI.RoyalGold.V2
             public Image Fill;
         }
 
-        public bool ContextVisible => cardGroup && cardGroup.blocksRaycasts;
-        public RoyalButton VisibleActionButton => actionButton;
-        public RoyalButton VisibleCloseButton => closeButton;
-        public bool CloseVisible => closeGroup && closeGroup.blocksRaycasts;
-        public RectTransform ContextRect => card;
+        private RoyalGoldV2Hud Chronicle => Source ? Source.GetComponent<RoyalGoldV2Hud>() : null;
+        public bool ContextVisible => (Chronicle && Chronicle.ChronicleBuildingActionVisible) ||
+            (cardGroup && cardGroup.blocksRaycasts);
+        public RoyalButton VisibleActionButton => Chronicle && Chronicle.ChronicleIllustratedBuildingVisible
+            ? Chronicle.ChronicleBuildingAction : actionButton;
+        public RoyalButton VisibleCloseButton => Chronicle && Chronicle.ChronicleIllustratedBuildingVisible
+            ? Chronicle.ChronicleBuildingClose : closeButton;
+        public bool CloseVisible => (Chronicle && Chronicle.ChronicleIllustratedBuildingVisible) ||
+            (closeGroup && closeGroup.blocksRaycasts);
+        public RectTransform ContextRect => Chronicle && Chronicle.ChronicleIllustratedBuildingVisible
+            ? Chronicle.ChronicleBuildingRect : card;
         public bool IsConfigured => FindAnchor != null && ActiveCamera != null && ReadBuilding != null;
         public int ActiveTimers
         {
@@ -193,17 +202,27 @@ namespace Eldoria.UI.RoyalGold.V2
         private TimerView CreateTimer(string id)
         {
             var r = Frame("V3 / real-time operation / " + id, safe, false);
-            var label = Text("Live remaining time", r, 18, Ivory, true);
+            var flat=r.GetComponent<RoyalGoldV2FrameGraphic>();
+            if(flat)flat.enabled=false;
+            var paper=Rect("Building / physical timer parchment",r);
+            paper.gameObject.AddComponent<CanvasRenderer>();
+            var finish=paper.gameObject.AddComponent<RoyalGoldV3BuildingCartoucheFinish>();
+            finish.TimerScale=true;
+            finish.SetPhase(RoyalGoldV3BuildingCartoucheFinish.Phase.InProgress);
+            finish.raycastTarget=false;
+            paper.anchorMin=Vector2.zero;paper.anchorMax=Vector2.one;
+            paper.offsetMin=paper.offsetMax=Vector2.zero;paper.SetAsFirstSibling();
+            var label = Text("Live remaining time", r, 18, new Color(.28f,.18f,.09f), true);
             label.alignment = TextAnchor.MiddleCenter;
             var track = Rect("Actual progress", r);
             track.gameObject.AddComponent<CanvasRenderer>();
             var bg = track.gameObject.AddComponent<Image>();
-            bg.color = new Color(.09f, .115f, .15f, .97f);
+            bg.color = new Color(.41f, .31f, .19f, .84f);
             bg.raycastTarget = false;
             var fill = Rect("Gateway progress fill", track);
             fill.gameObject.AddComponent<CanvasRenderer>();
             var ink = fill.gameObject.AddComponent<Image>();
-            ink.color = Gold;
+            ink.color = new Color(.48f,.55f,.34f,1f);
             ink.raycastTarget = false;
             fill.anchorMin = new Vector2(0, 0);
             fill.anchorMax = new Vector2(0, 1);
@@ -240,13 +259,14 @@ namespace Eldoria.UI.RoyalGold.V2
             var camera = ActiveCamera();
             bool blocked = (Source.Modal && Source.Modal.gameObject.activeInHierarchy) ||
                 (Source.Mission && Source.Mission.gameObject.activeInHierarchy) ||
-                (Source.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen??false) ||
                 (Source.GetComponent<RoyalGoldV3RankingScreen>()?.IsOpen??false) ||
                 (Source.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false) ||
                 (Source.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false);
-            RenderSelection(camera, blocked);
+            // Inline utility does not suppress the ongoing timers of other buildings.
+            bool inlineUtility = Source.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen ?? false;
+            RenderSelection(camera, blocked || inlineUtility);
             foreach (var id in TimedTargets) RenderTimer(id, camera, blocked);
-            RenderClose(blocked);
+            RenderClose(blocked || inlineUtility);
 
             // A live V3 selection button can retain Graphic.depth == -1 after
             // a native 640x480 / portrait Canvas resize, despite remaining
@@ -423,6 +443,16 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         private void RenderSelectedBuilding(string id, RoyalBuilding value, Camera camera)
         {
+            // Crónica Real already owns a real, illustrated cartouche and its
+            // canonical command. Never add a second floating purchase button.
+            var chronicle = Chronicle;
+            if (chronicle && chronicle.ChronicleIllustratedBuildingVisible)
+            {
+                if (value.OperationActive) chronicle.HideConsumedBuildingAction();
+                actionButton.interactable = false;
+                Visible(cardGroup, false, true);
+                return;
+            }
             var target = FindAnchor(id == "march-main" ? "barracks" : id);
             if (!CanProject(target, camera, safe, false, out var screen))
             {
@@ -438,6 +468,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // object must not create a second, competing action panel.
             if (value.OperationActive)
             {
+                // Disable the paid offer immediately, even when its parent
+                // CanvasGroup is hidden while the real timer remains visible.
+                actionButton.interactable = false;
                 Visible(cardGroup, false, true);
                 return;
             }
@@ -451,34 +484,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 Source.Building.Primary.Button.interactable && Source.Building.Offer != null;
             if (!actionButton.interactable) ProbeMismatch(id, value, "OFFER_DISABLED");
             cardButton.gameObject.SetActive(offered);
-            // Keep the approved big illustrated cartouche for building DETAILS
-            // and the vertically-sliced projected button for the actual ACTION.
-            // Never display two competing text/cards over the 3D city.
-            var chronicle = Source.GetComponent<RoyalGoldV2Hud>();
-            bool illustrated = chronicle && chronicle.ChronicleIllustratedBuildingVisible;
-            float width, height;
-            if (illustrated && offered)
-            {
-                title.gameObject.SetActive(false);
-                status.gameObject.SetActive(false);
-                costs.gameObject.SetActive(false);
-                requirements.gameObject.SetActive(false);
-                width = Mathf.Min(230f, safe.rect.width - 24f);
-                height = 63f;
-                Place(cardButton, 10f, 8f, width - 20f, 47f);
-            }
-            else
-            {
-                width = Mathf.Min(290f, safe.rect.width - 24f);
-                float contentWidth = width - 24f;
-                float y = 10f;
-                y = PositionRow(title, y, Mathf.Max(90f, contentWidth - 42f), 27f, 3f);
-                y = PositionRow(status, y, contentWidth, 20f, 5f);
-                y = PositionRow(costs, y, contentWidth, 0f, 5f);
-                y = PositionRow(requirements, y, contentWidth, 0f, 6f);
-                if (offered) { Place(cardButton, 12f, y, width - 24f, 48f); y += 56f; }
-                height = Mathf.Max(62f, y + 6f);
-            }
+            float width = Mathf.Min(290f, safe.rect.width - 24f);
+            float contentWidth = width - 24f;
+            float y = 10f;
+            y = PositionRow(title, y, Mathf.Max(90f, contentWidth - 42f), 27f, 3f);
+            y = PositionRow(status, y, contentWidth, 20f, 5f);
+            y = PositionRow(costs, y, contentWidth, 0f, 5f);
+            y = PositionRow(requirements, y, contentWidth, 0f, 6f);
+            if (offered) { Place(cardButton, 12f, y, width - 24f, 48f); y += 56f; }
+            float height = Mathf.Max(62f, y + 6f);
             card.sizeDelta = new Vector2(width, height);
             // Keep the selection card below the real resources/feedback/compact
             // chapter instead of solving overlap with unreadable tiny text.
@@ -529,7 +543,8 @@ namespace Eldoria.UI.RoyalGold.V2
 
         private void RenderClose(bool blocked)
         {
-            if (blocked || string.IsNullOrEmpty(Source.SelectedBuildingId))
+            if (blocked || string.IsNullOrEmpty(Source.SelectedBuildingId) ||
+                (Chronicle && Chronicle.ChronicleIllustratedBuildingVisible))
             {
                 Visible(closeGroup, false, true);
                 return;
@@ -584,8 +599,42 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(timer.Label.rectTransform, 8f, 7f, width - 16f, 42f);
             Place(timer.Progress, 10f, 57f, width - 20f, 6f);
             timer.Fill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(data.Progress), 1f);
-            var center = FitToSafe(screen, width, height, safe,
-                safe.rect.height > safe.rect.width ? 421f : 266f, 88f, true);
+            // The original 421-unit portrait top exclusion belonged to an
+            // obsolete full-height quest window. Native 390×844 screenshots
+            // showed it pushing the genuine timer DOWN across the Sawmill's
+            // roof even though the current quest occupies only a small
+            // upper-left manuscript. Use the current HUD geometry instead:
+            // place above the model when it fits, and stay clear of both
+            // the live objective and the actual bottom cartouche.
+            var chronicle=Source?Source.GetComponent<RoyalGoldV2Hud>():null;
+            Rect free=chronicle?chronicle.GetFreeSceneViewport():
+                Source?Source.GetVisibleSceneViewport():new Rect(.06f,.14f,.88f,.72f);
+            // Horizontal-conditional exclusion: a small upper-left quest
+            // never forbids an unrelated countdown above a right-hand roof.
+            // Read the live manuscript's four corners in the SAME safe-local
+            // coordinate space as the actual projected building hotspot.
+            float topMargin=Mathf.Max(105f,safe.rect.height*.12f);
+            if(chronicle&&chronicle.ChronicleObjectiveVisible&&
+                chronicle.ChronicleObjectiveRect)
+            {
+                var mission=chronicle.ChronicleObjectiveRect;
+                var worldCorners=new Vector3[4];mission.GetWorldCorners(worldCorners);
+                float left=float.PositiveInfinity,right=float.NegativeInfinity;
+                float bottom=float.PositiveInfinity;
+                foreach(var corner in worldCorners)
+                {
+                    var local=safe.InverseTransformPoint(corner);
+                    left=Mathf.Min(left,local.x);right=Mathf.Max(right,local.x);
+                    bottom=Mathf.Min(bottom,local.y);
+                }
+                if(screen.x+width*.5f>=left-8f&&
+                    screen.x-width*.5f<=right+8f)
+                    topMargin=Mathf.Max(topMargin,safe.rect.yMax-bottom+12f);
+            }
+            float bottomMargin=Mathf.Max(88f,
+                Mathf.Clamp01(free.yMin)*safe.rect.height+10f);
+            var center=FitToSafe(screen,width,height,safe,
+                topMargin,bottomMargin,true);
             timer.Root.anchorMin = timer.Root.anchorMax = timer.Root.pivot = new Vector2(.5f, .5f);
             timer.Root.anchoredPosition = center;
             Visible(timer.Visibility, true, false);

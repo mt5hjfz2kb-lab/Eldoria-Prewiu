@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "enabled": false,
+  "audience": "external_testers",
+  "status": "BLOCKED",
+  "note": "Do not activate before exact-candidate visual, native I-V, hosted, physical device and final owner acceptance evidence pass. Internal owner staging builds remain permitted."
+}

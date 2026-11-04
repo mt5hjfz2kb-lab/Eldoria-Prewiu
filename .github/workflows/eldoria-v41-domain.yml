@@ -3,11 +3,12 @@ on:
   pull_request:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Combat.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Combat*.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
       - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
       - 'tools/eldoria-v41/**'
       - '.github/workflows/eldoria-v41-domain.yml'
+      - '.github/workflows/ui-progression-cert.yml'
   workflow_dispatch:
 jobs:
   v41-domain:
@@ -18,6 +19,11 @@ jobs:
         with:
           sparse-checkout: |
             tools/eldoria-v41
+            .github/workflows
+            tools/bastion-iii
+            tools/bastion-iv-v
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings
             Unity/Assets/Eldoria/Scripts/Domain
             Unity/Assets/Eldoria/Scripts/Application
           sparse-checkout-cone-mode: true
@@ -30,3 +36,11 @@ jobs:
         run: dotnet run --configuration Release --project tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj
       - name: Test real gateway commands, persistent mailbox and legacy campaign
         run: dotnet run --configuration Release --project tools/eldoria-v41/GatewaySmoke.csproj
+      - name: Preserve Bastion III narrative and economy after V4.1 integration
+        run: dotnet run --configuration Release --project tools/bastion-iii/DomainProbe.csproj
+      - name: Preserve Bastion IV V costs, rewards, upgrades and save parity
+        run: dotnet run --configuration Release --project tools/bastion-iv-v/DomainProbe.csproj
+      - name: Traverse Bastions I V continuously from a fresh save without seeded progression
+        run: dotnet run --configuration Release --project tools/eldoria-v41/ContinuousJourney.csproj
+      - name: Reject incomplete or mismatched exact native certificates
+        run: node tools/eldoria-v41/exact-native-certificate.test.mjs

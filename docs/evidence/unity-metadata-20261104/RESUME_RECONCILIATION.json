@@ -1,0 +1,296 @@
+{
+  "source_heads": {
+    "main": "02bbc48345b36f9ea49331627c3422584810494e",
+    "pr136": "af344ccddaab9bb7fd473bac99c8c6ca61ae7b3c",
+    "pr153": "4e275f844f4306419c87f37b12b18b0520a372dc"
+  },
+  "count": 57,
+  "file_blobs_changed": 0,
+  "checks": [
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaAuthenticBridgeLayerE.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionFacingProbe.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionVisibilityGate.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryFinishV8.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV5Integration.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaLayeredMasterSceneBuilder.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaMacroScreenEnvelopeCandidateV1.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaModularGateLayerD.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSceneVisualOwnershipGate.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSharpPlayerCameraCorrespondence.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSharpSemanticContactRepairV1.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaTerrainRiverCliffV2Integration.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaTerrainRiverCliffV3Integration.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout/certified-legacy-skeleton.json.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_BridgeTerrainV1.unity.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCDE.unity.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD_BridgeV1.unity.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Camera_Mapping_DIAGNOSTIC.unity.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV5_CANDIDATE.unity.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_MacroEnvelope_CANDIDATE.unity.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV2_CANDIDATE.unity.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV3_CANDIDATE.unity.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_SemanticContact_IsolatedV1.unity.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1/Editor/ValoriaBridgeLevelAccessV1.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor/ValoriaTerrainRiverCliffV1.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/source-identity.json.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RegionOneRiberaPilot.cs.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/RiberaFade.shader.meta",
+      "file_blob_verified": true,
+      "folder_identity_only": false
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedBridgeV1.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedE.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV1.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV2.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV3.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1/Editor.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Models.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/SpawnlingBastion2.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/P0ArtMasks.meta",
+      "file_blob_verified": false,
+      "folder_identity_only": true
+    }
+  ]
+}

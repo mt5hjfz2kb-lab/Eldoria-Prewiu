@@ -3,7 +3,7 @@ using UnityEngine.UI;
 namespace Eldoria.UI.RoyalGold {
  /// <summary>Original icon source geometry. Names and numbers remain real Text, never baked into art.</summary>
  public sealed class RoyalIconGraphic:MaskableGraphic {
-  public int Icon; // 0 crest,1 wood,2 stone,3 food,4 hero,5 army,6 mission,7 bag,8 world,9 bastion,10 settings,11 close,12 arrow,13 collapse,14 expand
+  public int Icon; // 0 crest,1 wood,2 stone,3 food,4 hero,5 army,6 mission,7 bag,8 world,9 bastion,10 settings,11 close,12 arrow,13 collapse,14 expand,15 construction hammer,16 compass
   VertexHelper v;
   void Shape(params Vector2[] p){if(p.Length<3)return;var r=rectTransform.rect;int k=v.currentVertCount;foreach(var t in p)v.AddVert(new Vector2(r.xMin+r.width*t.x/100,r.yMin+r.height*t.y/100),color,Vector2.zero);for(int i=1;i<p.Length-1;i++)v.AddTriangle(k,k+i,k+i+1);}
   Vector2 P(float x,float y)=>new Vector2(x,y);
@@ -27,6 +27,11 @@ namespace Eldoria.UI.RoyalGold {
     case 11:Stroke(29,29,71,71,5);Stroke(29,71,71,29,5);break;
     case 13:Stroke(28,50,72,50,6);break;
     case 14:Stroke(28,50,72,50,6);Stroke(50,28,50,72,6);break;
+    case 15:Stroke(27,22,67,68,10);Shape(P(47,74),P(59,87),P(88,62),P(77,49));break;
+    case 16:
+     for(int i=0;i<40;i++){float a=i*Mathf.PI/20,b=(i+1)*Mathf.PI/20;Stroke(50+32*Mathf.Cos(a),50+32*Mathf.Sin(a),50+32*Mathf.Cos(b),50+32*Mathf.Sin(b),2);}
+     Shape(P(50,96),P(57,56),P(50,50),P(43,56));Shape(P(50,4),P(43,44),P(50,50),P(57,44));
+     Shape(P(4,50),P(44,57),P(50,50),P(44,43));Shape(P(96,50),P(56,43),P(50,50),P(56,57));break;
     default:Stroke(34,24,62,50,5);Stroke(62,50,34,76,5);break;
    }
   }

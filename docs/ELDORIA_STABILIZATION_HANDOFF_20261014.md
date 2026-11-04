@@ -1,3 +1,5 @@
+> **HISTÓRICO — pausa de 14/10/2026, no orden global actual.** La consolidación posterior en `main` y las órdenes vigentes de [AGENTS.md](../AGENTS.md) sustituyen el alcance operativo de esta pausa. Leer los titulares y reservas actuales en [el registro](../pipeline/active-workstreams.json). El texto siguiente conserva las pruebas y decisiones de aquella fecha; no autoriza reactivar ramas, modificar workflows ni bloquear trabajos actuales.
+
 # ELDORIA — ESTABILIZACIÓN TÉCNICA / ENTREGA Y PUERTA DE REANUDACIÓN (14-10-2026)
 
 **ESTADO: PAUSA GLOBAL DE PRODUCCIÓN ORDENADA POR EL PROPIETARIO.**

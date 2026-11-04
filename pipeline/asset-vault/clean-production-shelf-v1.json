@@ -548,13 +548,13 @@
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-herobastiongenerated-valoria-herobastion-v1-glb",
           "name": "Valoria_HeroBastion_v1",
-          "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+          "path": "ArtSource/RejectedLegacyBastion/Valoria_HeroBastion_v1.glb",
           "recorded_sha256": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
           "preview": "docs/asset-vault/previews/Valoria_HeroBastion_v1.png",
           "role": "Historical legacy AI-authored Bastion; owner has NOT approved for Eldoria production",
           "limitations": "OWNER EXPLICIT PROHIBITION 2026-10-25: Do not use, introduce, instantiate, reimport, reassemble, regenerate, promote or publish this legacy Bastion model in any scene or build unless the project owner personally gives explicit new authorization. Preserve existing files and references until runtime owners can verify safe replacement.",
           "allowed_uses": "NO_USE_WITHOUT_OWNER_EXPLICIT_PERMISSION",
-          "source_verified": "October 2 previous audit + October 25 file/meta exists in main",
+          "source_verified": "2026-11-04 original asset/metadata Git blobs and raw SHA256 verified; archived outside Assets; no use approval.",
           "production_grade": false,
           "current_camera_approval": "OWNER_REJECTED_FOR_USE",
           "mobile_performance_independently_certified": false,
@@ -562,10 +562,22 @@
           "measured_triangles": 49800,
           "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
           "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
-          "unity_resources_load_key": "Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1",
+          "unity_resources_load_key": null,
           "mobile_reuse_policy": "DO_NOT_USE; previous technical GLB certification is preservation-only",
           "reuse_authorization": "OWNER_EXPLICIT_PERMISSION_REQUIRED",
-          "owner_decision_date": "2026-10-25"
+          "owner_decision_date": "2026-10-25",
+          "previous_path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+          "previous_unity_resources_load_key": "Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1",
+          "archival_verification": {
+            "asset_sha256": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
+            "asset_bytes": 13257704,
+            "metadata_sha256": "403b8109e21b2aff016ead7e775250df519a8992c4cc077eddb41be0217ebd81",
+            "asset_git_blob": "e31aa6a63af826f4c6f666bb369fc270233c8d66",
+            "metadata_git_blob": "bab32c587d4bd8c194a242304ae97dd937bcc29b",
+            "guid": "fa36c6abf91adc7778caeac12130f567",
+            "date": "2026-11-04",
+            "purpose": "Preservation only; OWNER_BLOCKED_NO_USE unchanged; no art/gameplay acceptance."
+          }
         }
       ]
     }

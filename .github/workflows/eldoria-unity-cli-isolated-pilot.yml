@@ -1,0 +1,41 @@
+name: Eldoria Issue147 - isolated Unity CLI proof (no Windows)
+on:
+  push:
+    branches: [experiment/unity-cli-ubuntu-isolated-20261102]
+    paths:
+      - '.github/workflows/eldoria-unity-cli-isolated-pilot.yml'
+      - 'tools/unity-cli-isolated-pilot/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-unity-cli-isolated-pilot.yml'
+      - 'tools/unity-cli-isolated-pilot/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-issue147-cli-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  cli:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/unity-cli-isolated-pilot
+          sparse-checkout-cone-mode: false
+      - name: Probe only official Unity CLI and official Codex plugin manifests
+        id: probe
+        shell: bash
+        run: bash tools/unity-cli-isolated-pilot/probe.sh
+      - name: Preserve version and installation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: issue147-ubuntu-cli-proof-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-cli-proof/
+          if-no-files-found: warn
+          retention-days: 14

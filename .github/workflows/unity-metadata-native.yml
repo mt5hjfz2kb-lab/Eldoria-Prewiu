@@ -1,0 +1,42 @@
+name: Unity metadata - isolated native proof
+on:
+  push:
+    branches: ['fix/unity-metadata-integrity-20261104']
+    paths:
+      - 'tools/unity-metadata/native-request.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: unity-metadata-isolated-native
+  cancel-in-progress: false
+jobs:
+  native:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 90
+    steps:
+      # No shared checkout. The script verifies the live lease before cloning
+      # into a unique temporary directory or launching any Editor process.
+      - name: Obtain exact validation tools without a shared checkout
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:RUNNER_TEMP ('em-tools-' + $env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Path $root | Out-Null
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          foreach($name in @('native_validate.ps1','native-request.json','native_process.ps1','test_native_process.ps1')){
+            $url='https://api.github.com/repos/${{ github.repository }}/contents/tools/unity-metadata/'+$name+'?ref=${{ github.sha }}'
+            $file=Invoke-RestMethod -Uri $url -Headers $headers
+            [IO.File]::WriteAllBytes((Join-Path $root $name),[Convert]::FromBase64String(($file.content -replace '\s','')))
+          }
+          & (Join-Path $root 'native_validate.ps1') -RequestPath (Join-Path $root 'native-request.json')
+      - name: Preserve exact import and test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unity-metadata-native-${{ github.run_id }}
+          path: ${{ runner.temp }}/em-native-${{ github.run_id }}/evidence/
+          if-no-files-found: warn
+          retention-days: 30

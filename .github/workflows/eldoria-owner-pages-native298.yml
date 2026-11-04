@@ -1,0 +1,141 @@
+name: '[ELDORIA] Publish exact tested WebGL to GitHub Pages'
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-owner-pages-native298.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: eldoria-pages-owner-delivery
+  cancel-in-progress: false
+
+jobs:
+  publish-verified-native298:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}unity-owner/
+    steps:
+      - name: Checkout only delivery metadata and exact transport test
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            pipeline/playtest-delivery.json
+            tools/delivery/test-exact-decoded-transport.mjs
+            tools/delivery/exact-decoded-transport.js
+          sparse-checkout-cone-mode: false
+
+      - name: Confirm existing Pages configuration (without Windows/Unity)
+        uses: actions/configure-pages@v5
+
+      - name: Require exact previously QA-tested and uploaded native298
+        run: |
+          python3 - <<'PY'
+          import json
+          c=json.load(open('pipeline/playtest-delivery.json'))
+          q=c['candidate']
+          assert q['revision']=='native298', 'Revision changed: stop instead of publishing an unreviewed build'
+          assert q['qa_run']==40955956262 and q['artifact_id']==12934337346, 'QA identity changed'
+          assert q['source_sha']=='c8580934201ae1e17543b8683749d40751fb1e12'
+          assert q['artifact_sha256']=='06645df98aa632721062082f2a8f295631b55d9b612848fe1c78f26bf1db62fd'
+          assert c['uploaded']['run_id']==40958364194 and c['uploaded']['revision']=='native298'
+          assert c['uploaded']['zip_sha256']=='15b79882a59b30e1fcc63203eb9bfbda379937a889def21164d0dfd88c23ba89'
+          assert c['current_revision_qa']['windows_gpu_webgl_pass'] is True
+          print('EXACT_NATIVE298_QA_IDENTITY_PASS')
+          PY
+
+      - name: Download existing delivery artifact (no Unity rebuild)
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40958364194
+          name: eldoria-external-playtest-40958364194
+          path: existing-package
+
+      - name: Verify original files and stage standalone Pages site
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, zipfile
+          from pathlib import Path, PurePosixPath
+          c=json.load(open('pipeline/playtest-delivery.json'))
+          d=Path('existing-package')
+          report=json.loads((d/'identity.json').read_text())
+          assert report['candidate']==c['candidate'], 'Delivery report does not match tested candidate'
+          package=d/'Eldoria-native298-itch.zip'
+          assert package.is_file(), 'Exact tested delivery zip missing'
+          assert hashlib.file_digest(open(package,'rb'),'sha256').hexdigest()==c['uploaded']['zip_sha256'], 'Delivery ZIP checksum mismatch'
+          assert report['zip_sha256']==c['uploaded']['zip_sha256'], 'Delivery report checksum mismatch'
+          out=Path('site/unity-owner')
+          out.mkdir(parents=True,exist_ok=True)
+          with zipfile.ZipFile(package) as z:
+            infos=z.infolist()
+            assert infos and len(infos)<=1000
+            assert sum(x.file_size for x in infos)<=950_000_000, 'Published site exceeds Pages 1 GB limit'
+            for info in infos:
+              path=PurePosixPath(info.filename)
+              assert not path.is_absolute() and '..' not in path.parts, 'Unsafe ZIP path'
+              assert not (info.external_attr>>16)&0o170000==0o120000, 'ZIP symlink forbidden'
+              target=out.joinpath(*path.parts)
+              if info.is_dir():
+                target.mkdir(parents=True,exist_ok=True);continue
+              target.parent.mkdir(parents=True,exist_ok=True)
+              with z.open(info) as source, target.open('wb') as dest:
+                import shutil;shutil.copyfileobj(source,dest)
+          actual={str(p.relative_to(out).as_posix()):p for p in out.rglob('*') if p.is_file()}
+          expected={e['file']:e for e in report['files']}
+          assert actual.keys()==expected.keys(), 'Package file list mismatch'
+          for name, p in actual.items():
+            f=expected[name]
+            assert p.stat().st_size==f['bytes'], 'Unexpected file size: '+name
+            with p.open('rb') as stream: h=hashlib.file_digest(stream,'sha256').hexdigest()
+            assert h==f['sha256'], 'File corruption: '+name
+          assert (out/'index.html').is_file() and (out/'play.js').is_file() and (out/'build-manifest.json').is_file()
+          (Path('site')/'.nojekyll').touch()
+          Path('site/index.html').write_text('<!doctype html><html lang="es"><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=./unity-owner/"><title>Eldoria</title><a href="./unity-owner/">Jugar Eldoria</a></html>\n')
+          Path('site/unity-owner/release-identity.json').write_text(json.dumps({'revision':'native298','build_source':c['candidate']['source_sha'],'qa_run':c['candidate']['qa_run'],'delivery_run':c['uploaded']['run_id'],'delivery_zip_sha256':c['uploaded']['zip_sha256'],'note':'Chrome QA only; physical Safari/iPhone not certified'},indent=2)+'\n')
+          print('PAGES_VERIFIED_FILE_INTEGRITY_PASS files='+str(len(actual))+' bytes='+str(sum(p.stat().st_size for p in actual.values())))
+          PY
+
+      - name: Validate loader JavaScript and original Unity decoded-stream adapter
+        run: |
+          node --check site/unity-owner/play.js
+          node tools/delivery/test-exact-decoded-transport.mjs site/unity-owner
+
+      - name: Package GitHub Pages (only the game, not the 15 GB repository)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
+
+      - name: Deploy existing exact game
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Check published HTML and release identity
+        env:
+          PAGE: ${{ steps.deploy.outputs.page_url }}
+        run: |
+          python3 - <<'PY'
+          import json, os, time, urllib.request
+          base=os.environ['PAGE'].rstrip('/')+'/unity-owner/'
+          last=None
+          for attempt in range(8):
+            try:
+              with urllib.request.urlopen(base+'index.html?verify='+str(attempt), timeout=25) as response:
+                html=response.read()
+                assert response.status==200 and (b'html' in html.lower()), 'Bad game page'
+              with urllib.request.urlopen(base+'release-identity.json?verify='+str(attempt), timeout=25) as response:
+                j=json.load(response)
+                assert j['revision']=='native298' and j['qa_run']==40955956262
+              print('GITHUB_PAGES_LIVE_HTTP_PASS '+base);break
+            except Exception as ex:
+              last=str(ex);time.sleep(10)
+          else: raise RuntimeError('Pages not externally confirmed: '+str(last))
+          PY

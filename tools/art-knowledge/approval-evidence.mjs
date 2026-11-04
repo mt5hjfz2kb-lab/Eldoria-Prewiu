@@ -25,3 +25,6 @@ export function checkFutureApprovedQwenMemory(request,workstreamId,repoRoot=proc
  if(request?.workstream_id!==workstreamId)violations.push('ART_MEMORY_WORKSTREAM_MISMATCH');
  return violations;
 }
+
+// Retained for validation of historical Qwen provenance only. Not a mandatory
+// approval gate for new direct-author art cycles after 2026-10-22.

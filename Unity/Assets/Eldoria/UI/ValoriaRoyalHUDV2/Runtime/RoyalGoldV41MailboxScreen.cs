@@ -20,9 +20,25 @@ namespace Eldoria.UI.RoyalGold.V2
         public bool IsOpen=>window!=null&&window.gameObject.activeSelf;
         public Button EntryButton=>entry?entry.GetComponent<Button>():null;
         public int UnreadCount=>gateway?.Snapshot()?.Mailbox?.Unread()??0;
+        public Func<bool> CanShowEntry { get; set; }
         RoyalHUD hud;ICommandGateway gateway;
         RectTransform window,entry;
         RoyalText entryLabel,title,detail,navLabel,resources;
+        RectTransform detailSheet;
+        RoyalGoldV41ReportArtwork reportArtwork;
+        RawImage scoutVignette;
+        Texture2D scoutVignettesAtlas;
+        int scoutFamily=-1;
+        RoyalText reportKicker,reportHeading,reportOrigin,reportDate,reportSeal;
+        RoyalText reportSection,reportFooter,reportToggleText,reportComposition;
+        readonly RoyalText[] metricNames=new RoyalText[4];
+        readonly RoyalText[] metricValues=new RoyalText[4];
+        Button reportToggle;
+        bool reportExpanded=true;
+        int reportMetricCount;
+        RoyalGoldV41ReportArtwork.Motif reportMotif;
+        readonly RoyalText[] resourceAmounts=new RoyalText[3];
+        readonly RoyalIconGraphic[] resourceIcons=new RoyalIconGraphic[3];
         readonly List<Image> messageIcons=new List<Image>();
         readonly List<RoyalText> messageDates=new List<RoyalText>();
         readonly List<RoyalText> messageSubtitles=new List<RoyalText>();
@@ -30,6 +46,22 @@ namespace Eldoria.UI.RoyalGold.V2
         readonly List<RoyalText> tabLabels=new List<RoyalText>();
         readonly List<RoyalText> messageLabels=new List<RoyalText>();
         readonly List<Button> messageButtons=new List<Button>();
+        readonly List<Image> messageSurfaces=new List<Image>();
+        readonly List<Image> messageUnreadDots=new List<Image>();
+        readonly List<RoyalText> messageArrows=new List<RoyalText>();
+        RectTransform listBoard,detailBoard,detailViewport;
+        RoyalText emptyState,listSummary;
+        Image watermark;
+        ScrollRect detailScroll;
+        int visibleRowCount=-1;
+        int currentPageSize=5;
+        bool detailVisible;
+        public int VisibleMessageRows=>messageButtons.Count(b=>b&&b.gameObject.activeSelf);
+        // Read-only QA observations; preserve command authority and save logic.
+        public int CurrentPageOffset=>offset;
+        public int CurrentPageSize=>currentPageSize;
+        public static int VisibleCountFor(int total,int offset,int pageSize=5)=>
+            Mathf.Clamp(total-offset,0,Mathf.Clamp(pageSize,1,5));
         string[] categories={"informes","recompensas","sistema","narrativa"};
         string category="informes",selectedId;
         int offset;
@@ -45,9 +77,44 @@ namespace Eldoria.UI.RoyalGold.V2
             if(hud!=null && gateway!=null)Ensure();
             Refresh();
         }
+        void OnEnable(){Canvas.willRenderCanvases+=BeforeCanvasRender;}
+        void OnDisable(){Canvas.willRenderCanvases-=BeforeCanvasRender;}
+        void BeforeCanvasRender()
+        {
+            if(!window||!hud)return;
+            if(Mathf.Abs(window.rect.width-lastWidth)>.5f||
+                Mathf.Abs(window.rect.height-lastHeight)>.5f)
+            {
+                // An aspect-ratio change can switch 5-row portrait pagination
+                // to 2-row compact landscape pagination. Recreate the real
+                // visible rows, not just their RectTransforms.
+                if(IsOpen)Refresh();else Layout();
+            }
+            RefreshEntryVisibility();
+        }
+        bool MailboxIntroduced
+        {
+            get
+            {
+                var mailbox=gateway?.Snapshot()?.Mailbox;
+                // The first real delivery introduces mail. Its event ledger
+                // survives deletion, so an introduced destination stays visible.
+                return mailbox!=null&&((mailbox.ReceivedEventIds?.Count??0)>0 ||
+                    (mailbox.Messages?.Count??0)>0);
+            }
+        }
+        void RefreshEntryVisibility()
+        {
+            if(!entry||!hud)return;
+            entry.gameObject.SetActive(MailboxIntroduced&&!IsOpen&&!hud.NarrativeOpen&&
+                !(hud.Modal!=null&&hud.Modal.gameObject.activeSelf)&&
+                !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false)&&
+                !(hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false)&&
+                (CanShowEntry==null||CanShowEntry())&&string.IsNullOrEmpty(hud.SelectedBuildingId));
+        }
         public void Open()
         {
-            if(hud==null||gateway==null || hud.NarrativeOpen ||
+            if(hud==null||gateway==null || !MailboxIntroduced || hud.NarrativeOpen ||
                (hud.Modal!=null&&hud.Modal.gameObject.activeSelf))return;
             Ensure();window.gameObject.SetActive(true);
             window.SetAsLastSibling();offset=0;selectedId=null;
@@ -63,7 +130,10 @@ namespace Eldoria.UI.RoyalGold.V2
             if(hud==null||gateway==null)return;
             if(IsOpen && hud.NarrativeOpen){Close();return;}
             if(window!=null && (Mathf.Abs(window.rect.width-lastWidth)>.5f ||
-                          Mathf.Abs(window.rect.height-lastHeight)>.5f))Layout();
+                          Mathf.Abs(window.rect.height-lastHeight)>.5f))
+            {
+                if(IsOpen)Refresh();else Layout();
+            }
             if(Time.unscaledTime>=nextRefresh)
             {
                 nextRefresh=Time.unscaledTime+.6f;
@@ -122,8 +192,47 @@ namespace Eldoria.UI.RoyalGold.V2
             w.offsetMin=w.offsetMax=Vector2.zero;
             w.gameObject.AddComponent<CanvasRenderer>();
             var bg=w.gameObject.AddComponent<Image>();bg.color=Night;bg.raycastTarget=true;
+            // Full-scene painted vellum and brass underlay replaces the blank
+            // black screen; it never owns interaction or game state.
+            var scenery=Node("Mailbox / illustrated matte background",w);
+            scenery.anchorMin=Vector2.zero;scenery.anchorMax=Vector2.one;
+            scenery.offsetMin=scenery.offsetMax=Vector2.zero;
+            scenery.gameObject.AddComponent<CanvasRenderer>();
+            var matte=scenery.gameObject.AddComponent<RoyalGoldV41MailboxBackdrop>();
+            matte.color=Color.white;matte.raycastTarget=false;
+            listBoard=PaperFrame("Mailbox / adaptive collection frame",w,
+                new Color(.19f,.155f,.115f,.95f),.68f);
+            detailBoard=PaperFrame("Mailbox / report document",w,
+                new Color(.925f,.865f,.752f,.99f),.86f);
+            detailBoard.gameObject.SetActive(false);
+            watermark=RoyalGoldV41SourceArt.Surface(w,"mail-narrative");
+            watermark.name="Mailbox / passive manuscript watermark";
+            watermark.color=new Color(.84f,.70f,.43f,.28f);
+            watermark.raycastTarget=false;
+            // Above the matte but behind the manuscript: a decorative
+            // source icon, never a fabricated message or input.
+            watermark.rectTransform.SetSiblingIndex(1);
+            emptyState=Label("Mailbox / genuine empty state",w,24,true);
+            emptyState.color=new Color(.93f,.83f,.64f);
+            emptyState.alignment=TextAnchor.MiddleCenter;
+            listSummary=Label("Mailbox / real collection summary",w,16);
+            listSummary.color=new Color(.83f,.76f,.61f);
             title=Label("Buzón heading",w,29,true);title.Put("BUZÓN");
             resources=Label("Recursos actuales",w,16);
+            resources.gameObject.SetActive(false); // Retain real backing data only.
+            for(int i=0;i<3;i++)
+            {
+                var pictogram=Node("Mailbox / real resource icon "+i,w);
+                pictogram.gameObject.AddComponent<CanvasRenderer>();
+                resourceIcons[i]=pictogram.gameObject.AddComponent<RoyalIconGraphic>();
+                resourceIcons[i].Icon=i+1;resourceIcons[i].raycastTarget=false;
+                resourceIcons[i].color=i==0?
+                    new Color(.98f,.72f,.34f):i==1?
+                    new Color(.83f,.86f,.90f):new Color(.95f,.79f,.49f);
+                resourceAmounts[i]=Label("Mailbox / real resource amount "+i,w,17,true);
+                resourceAmounts[i].color=Ivory;
+                resourceAmounts[i].alignment=TextAnchor.MiddleLeft;
+            }
             MakeButton("Volver",w,"VOLVER",()=>{if(selectedId!=null){selectedId=null;Refresh();}else Close();},out _);
             for(int i=0;i<4;i++)
             {
@@ -147,89 +256,412 @@ namespace Eldoria.UI.RoyalGold.V2
                 button.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
                 var surface=RoyalGoldV41SourceArt.Surface((RectTransform)button.transform,"mail-card",20);
                 surface.raycastTarget=true;button.targetGraphic=surface;
+                messageSurfaces.Add(surface);
                 label.color=new Color(.08f,.07f,.05f);label.alignment=TextAnchor.MiddleLeft;
+                var unread=RoyalGoldV41SourceArt.Surface((RectTransform)button.transform,"unread-dot");
+                unread.name="Mailbox / actual unread indicator "+i;
+                unread.raycastTarget=false;
+                unread.rectTransform.SetAsLastSibling();
+                messageUnreadDots.Add(unread);
                 messageSubtitles.Add(Label("Mensaje resumen "+i,button.transform,17));
                 messageDates.Add(Label("Fecha del mensaje "+i,button.transform,13));
                 var icon=Node("Icono de mensaje "+i,button.transform).gameObject.AddComponent<Image>();
                 icon.raycastTarget=false;icon.preserveAspect=true;messageIcons.Add(icon);
+                var arrow=Label("Mailbox / message open chevron "+i,button.transform,28,true);
+                arrow.Put("›");arrow.alignment=TextAnchor.MiddleCenter;
+                arrow.color=new Color(.27f,.19f,.10f);messageArrows.Add(arrow);
             }
             MakeButton("Página anterior",w,"<",()=>Page(-1),out _);
             MakeButton("Página siguiente",w,">",()=>Page(1),out _);
             navLabel=Label("Página",w,14);
-            detail=Label("Contenido del mensaje",w,18);
+            detailViewport=Node("Mailbox / report scroll viewport",w);
+            detailViewport.gameObject.AddComponent<CanvasRenderer>();
+            var touchSurface=detailViewport.gameObject.AddComponent<Image>();
+            touchSurface.color=Color.clear;touchSurface.raycastTarget=true;
+            detailViewport.gameObject.AddComponent<RectMask2D>();
+            detailScroll=detailViewport.gameObject.AddComponent<ScrollRect>();
+            detailScroll.horizontal=false;detailScroll.vertical=true;
+            detailScroll.inertia=false;detailScroll.movementType=ScrollRect.MovementType.Clamped;
+            detailScroll.viewport=detailViewport;
+            detailSheet=Node("Mailbox / scrollable assembled report",detailViewport);
+            detailSheet.gameObject.AddComponent<CanvasRenderer>();
+            reportArtwork=detailSheet.gameObject.AddComponent<RoyalGoldV41ReportArtwork>();
+            reportArtwork.raycastTarget=false;
+            // Exactly the same four real-source vignette quadrants as the
+            // Explorers table. Every detail reads its persisted Kind; no new
+            // map coordinates, unseen enemy or fabricated expedition exists.
+            scoutVignettesAtlas=Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4");
+            var vignette=Node("Mailbox / authentic discovery family illustration",detailSheet);
+            vignette.gameObject.AddComponent<CanvasRenderer>();
+            scoutVignette=vignette.gameObject.AddComponent<RawImage>();
+            scoutVignette.raycastTarget=false;
+            scoutVignette.texture=scoutVignettesAtlas?
+                scoutVignettesAtlas:Resources.Load<Texture2D>("EldoriaRetention/scouts-painterly-v2");
+            scoutVignette.color=new Color(1f,.96f,.88f,1f);
+            scoutVignette.gameObject.SetActive(false);
+            reportKicker=Label("Mailbox / manuscript series",detailSheet,17,true);
+            reportHeading=Label("Mailbox / report genuine heading",detailSheet,29,true);
+            reportHeading.verticalOverflow=VerticalWrapMode.Overflow;
+            reportOrigin=Label("Mailbox / actual event origin",detailSheet,15);
+            reportDate=Label("Mailbox / stored event date",detailSheet,14);
+            reportSeal=Label("Mailbox / outcome seal caption",detailSheet,15,true);
+            reportSeal.alignment=TextAnchor.MiddleCenter;
+            for(int i=0;i<4;i++)
+            {
+                metricNames[i]=Label("Mailbox / metric caption "+i,detailSheet,14,true);
+                metricValues[i]=Label("Mailbox / genuine metric "+i,detailSheet,22,true);
+            }
+            reportComposition=Label("Mailbox / own roster historical composition",detailSheet,17,true);
+            reportComposition.verticalOverflow=VerticalWrapMode.Overflow;
+            reportSection=Label("Mailbox / report section heading",detailSheet,17,true);
+            reportToggle=MakeButton("Mailbox / collapse or expand report",detailSheet,
+                "OCULTAR",()=>{reportExpanded=!reportExpanded;Refresh();},out reportToggleText);
+            detail=Label("Contenido del mensaje",detailSheet,19);
+            detail.alignment=TextAnchor.UpperLeft;
+            detail.verticalOverflow=VerticalWrapMode.Overflow;
+            reportFooter=Label("Mailbox / original record and receipt",detailSheet,16);
+            reportFooter.verticalOverflow=VerticalWrapMode.Overflow;
+            detailScroll.content=detailSheet;
             MakeButton("Leer",w,"MARCAR LEÍDO",()=>ExecuteMail("MailRead"),out _);
             MakeButton("Eliminar",w,"ELIMINAR",()=>ExecuteMail("MailDelete"),out _);
             w.gameObject.SetActive(false);
             Layout();
         }
         public void SynchronizeLayout(){if(window!=null){Canvas.ForceUpdateCanvases();Layout();Refresh();}}
+        static RectTransform PaperFrame(string name,Transform parent,Color color,float rimOpacity)
+        {
+            var rect=Node(name,parent);
+            rect.gameObject.AddComponent<CanvasRenderer>();
+            var back=rect.gameObject.AddComponent<Image>();
+            back.color=color;back.raycastTarget=false;
+            var edge=RoyalGoldV41SourceArt.Surface(rect,"HeroCardNineSliceGold",48);
+            edge.name=name+" / independent metal nine-slice";
+            if(edge.sprite)
+            {
+                edge.type=Image.Type.Sliced;edge.fillCenter=false;
+                edge.pixelsPerUnitMultiplier=3.4f;
+                edge.color=new Color(.93f,.73f,.38f,rimOpacity);
+            }
+            else edge.enabled=false;
+            edge.raycastTarget=false;
+            return rect;
+        }
         void Layout()
         {
-            if(window==null)return;
-            float w=window.rect.width,h=window.rect.height;if(w<=0||h<=0)return;
+            if(window==null || gateway==null)return;
+            float w=window.rect.width,h=window.rect.height;
+            if(w<=0f||h<=0f)return;
             lastWidth=w;lastHeight=h;
             float scale=hud.GetComponentInParent<Canvas>()?.scaleFactor??1f;
             Rect safe=Screen.safeArea;
-            float pad=Mathf.Max(14,w*.04f),top=pad+(Screen.height-safe.yMax)/Mathf.Max(.01f,scale);
-            float bottom=pad+safe.yMin/Mathf.Max(.01f,scale);
-            float left=Mathf.Max(pad,safe.xMin/Mathf.Max(.01f,scale)+8);
-            float right=Mathf.Max(pad,(Screen.width-safe.xMax)/Mathf.Max(.01f,scale)+8);
-            float usable=w-left-right;bool wide=w>h;
-            var children=window.GetComponentsInChildren<Button>(true);
-            Button Find(string name)=>children.First(b=>b.name==name);
-            float entryWidth=Mathf.Min(140,w*.22f);
-            Position(entry,w-right-entryWidth,h-bottom-(wide?118:165)-54,entryWidth,44);
-            Position(title.rectTransform,left+58,top,usable*.4f,45);
-            Position(resources.rectTransform,left+usable*.48f,top,usable*.52f,45);
-            var back=Find("Volver");Position((RectTransform)back.transform,left,top,48,44);
+            float left=Mathf.Max(12f,w*.026f+safe.xMin/Mathf.Max(.01f,scale));
+            float right=Mathf.Max(12f,w*.026f+(Screen.width-safe.xMax)/Mathf.Max(.01f,scale));
+            float top=Mathf.Max(12f,h*.018f+(Screen.height-safe.yMax)/Mathf.Max(.01f,scale));
+            float bottom=Mathf.Max(12f,h*.018f+safe.yMin/Mathf.Max(.01f,scale));
+            float usable=Mathf.Max(180f,w-left-right);
+            bool wide=w>h;
+            float fontScale=Mathf.Clamp(w/900f,.76f,1.38f);
+            var buttons=window.GetComponentsInChildren<Button>(true);
+            Button Find(string name)=>buttons.First(b=>b.name==name);
+            float entryWidth=Mathf.Clamp(w*.20f,90f,150f);
+            Position(entry,w-right-entryWidth,h-bottom-(wide?112f:150f)-52f,entryWidth,44f);
+
+            float headerH=wide?Mathf.Clamp(h*.085f,48f,79f):Mathf.Clamp(h*.072f,60f,100f);
+            Position(title.rectTransform,left+Mathf.Max(53f,headerH*.67f),
+                top,usable*.40f,headerH);
+            title.fontSize=wide?Mathf.Clamp(Mathf.RoundToInt(w*.023f),25,38):
+                Mathf.Clamp(Mathf.RoundToInt(w*.042f),25,37);
+            Position(resources.rectTransform,left+usable*.53f,top+2f,usable*.46f,headerH-4f);
+            resources.fontSize=Mathf.Clamp(Mathf.RoundToInt(17f*fontScale),15,22);
+            // Three genuine live counters reuse the kingdom's own vector
+            // resource glyphs. No fictitious "+" purchase action.
+            float resourceX=left+usable*.51f;
+            float stripWidth=usable*.49f;
+            float resourceW=stripWidth/3f;
+            for(int i=0;i<3;i++)
+            {
+                float glyphSize=Mathf.Clamp(resourceW*.25f,15f,31f);
+                Position((RectTransform)resourceIcons[i].transform,
+                    resourceX+i*resourceW+3f,top+(headerH-glyphSize)*.5f,
+                    glyphSize,glyphSize);
+                Position(resourceAmounts[i].rectTransform,
+                    resourceX+i*resourceW+glyphSize+6f,top+3f,
+                    Mathf.Max(24f,resourceW-glyphSize-8f),headerH-6f);
+                resourceAmounts[i].fontSize=Mathf.Clamp(
+                    Mathf.RoundToInt(18f*fontScale),15,24);
+            }
+            var back=Find("Volver");
+            Position((RectTransform)back.transform,left,top,Mathf.Max(48f,headerH*.72f),headerH);
             back.GetComponentInChildren<RoyalText>().Put("‹");
-            float tabsY=top+100,tabH=wide?44:Mathf.Clamp(h*.09f,46,75),gap=7;
-            float tabW=(usable-3*gap)/4;
+
+            float tabsY=top+headerH+Mathf.Clamp(h*.028f,9f,24f);
+            float tabH=wide?Mathf.Clamp(h*.088f,45f,72f):
+                Mathf.Clamp(h*.079f,49f,91f);
+            float tabGap=wide?Mathf.Clamp(w*.008f,6f,15f):5f;
+            float tabW=(usable-3f*tabGap)/4f;
             for(int i=0;i<4;i++)
             {
-                var button=Find("Buzón "+categories[i]);
-                Position((RectTransform)button.transform,left+i*(tabW+gap),tabsY,tabW,tabH);
-                tabLabels[i].fontSize=Mathf.Clamp(Mathf.RoundToInt(tabW*.13f),16,25);
-                Position((RectTransform)tabBadges[i].transform.parent,tabW-27,-9,31,31);
-                tabLabels[i].horizontalOverflow=HorizontalWrapMode.Overflow;
+                var b=Find("Buzón "+categories[i]);
+                Position((RectTransform)b.transform,left+i*(tabW+tabGap),
+                    tabsY,tabW,tabH);
+                tabLabels[i].fontSize=Mathf.Clamp(
+                    Mathf.RoundToInt(tabW*(wide?.112f:.135f)),15,27);
+                tabLabels[i].horizontalOverflow=HorizontalWrapMode.Wrap;
+                Position((RectTransform)tabBadges[i].transform.parent,
+                    tabW-23f,-9f,27f,27f);
+                tabBadges[i].fontSize=15;
             }
-            float bodyY=tabsY+tabH+26,bodyH=h-bodyY-bottom-46;
-            float rowH=bodyH/5f;
-            for(int i=0;i<5;i++)
+
+            var mail=gateway.Snapshot().Mailbox;
+            int total=mail?.Messages?.Count(m=>m.Category==category)??0;
+            // Portrait and desktop fit five messages. A very short mobile
+            // landscape page fits only TWO readable cards; pagination keeps
+            // the full list and its authoritative order.
+            int pageSize=wide && h*scale<600f ? 2 : 5;
+            if(pageSize!=currentPageSize)
+                offset=(offset/pageSize)*pageSize;
+            currentPageSize=pageSize;
+            offset=Mathf.Clamp(offset,0,
+                Mathf.Max(0,(Mathf.Max(0,total-1)/currentPageSize)*currentPageSize));
+            int count=VisibleCountFor(total,offset,currentPageSize);
+            bool selected=!string.IsNullOrEmpty(selectedId)&&
+                mail?.Messages?.Any(m=>m.EventId==selectedId)==true;
+            float contentTop=tabsY+tabH+Mathf.Clamp(h*.022f,12f,24f);
+            float navH=wide?Mathf.Clamp(h*.055f,39f,51f):47f;
+            float available=Mathf.Max(110f,h-contentTop-bottom-navH-7f);
+            float rowH=wide?Mathf.Clamp(h*.14f,71f,124f):
+                Mathf.Clamp(h*.105f,87f,145f);
+            rowH=Mathf.Max(48f,
+                Mathf.Min(rowH,(available-46f)/Mathf.Max(1,count)));
+            float bodyHeight=selected?available:Mathf.Min(available,
+                Mathf.Max(wide?143f:196f,Mathf.Max(1,count)*rowH+46f));
+            float margin=selected?0f:Mathf.Min(78f,Mathf.Max(0f,available-bodyHeight)*.10f);
+            float bodyY=contentTop+margin;
+            Position(listBoard,left,bodyY,usable,bodyHeight);
+            listBoard.gameObject.SetActive(!selected);
+            Position(detailBoard,left,contentTop,usable,available);
+            detailBoard.gameObject.SetActive(selected);
+            float lowerStart=bodyY+bodyHeight+Mathf.Min(30f,h*.035f);
+            float lowerEnd=h-bottom-navH;
+            float lowerRoom=Mathf.Max(0f,lowerEnd-lowerStart);
+            float watermarkSize=Mathf.Min(usable*.55f,
+                Mathf.Clamp(lowerRoom*.65f,105f,460f));
+            Position(watermark.rectTransform,
+                left+(usable-watermarkSize)*.5f,
+                lowerStart+Mathf.Max(0f,(lowerRoom-watermarkSize)*.5f),
+                watermarkSize,watermarkSize);
+            watermark.gameObject.SetActive(!selected && count<=1);
+            Position(listSummary.rectTransform,left+18f,
+                bodyY+bodyHeight-33f,usable-36f,27f);
+            listSummary.gameObject.SetActive(!selected);
+            Position(emptyState.rectTransform,left+30f,bodyY+42f,
+                usable-60f,Mathf.Max(65f,bodyHeight-86f));
+            emptyState.fontSize=Mathf.Clamp(Mathf.RoundToInt(23f*fontScale),19,28);
+            emptyState.gameObject.SetActive(!selected && count==0);
+            float rowPad=wide?12f:11f;
+            float innerW=usable-2f*rowPad;
+            for(int i=0;i<messageButtons.Count;i++)
             {
-                var button=messageButtons[i];Position((RectTransform)button.transform,left,bodyY+i*rowH,usable,rowH-7);
-                float iconSize=Mathf.Min(rowH-23,usable*.16f);
-                Position(messageIcons[i].rectTransform,14,(rowH-7-iconSize)*.5f,iconSize,iconSize);
-                Position(messageLabels[i].rectTransform,iconSize+30,7,usable-iconSize-46,(rowH-12)*.48f);
-                Position(messageSubtitles[i].rectTransform,iconSize+30,rowH*.48f,usable-iconSize-164,rowH*.39f);
-                Position(messageDates[i].rectTransform,usable-126,rowH*.48f,110,rowH*.39f);
-                messageDates[i].color=new Color(.20f,.18f,.15f);
-                messageLabels[i].fontSize=Mathf.Clamp(Mathf.RoundToInt(rowH*.23f),17,29);
-                messageSubtitles[i].fontSize=Mathf.Clamp(Mathf.RoundToInt(rowH*.18f),14,23);
-                messageSubtitles[i].color=new Color(.20f,.18f,.15f);
+                var button=messageButtons[i];
+                float rowY=bodyY+rowPad+i*rowH;
+                Position((RectTransform)button.transform,
+                    left+rowPad,rowY,innerW,rowH-6f);
+                float iconSize=Mathf.Clamp((rowH-6f)*.58f,40f,92f);
+                float iconX=Mathf.Max(9f,rowH*.09f);
+                float iconY=(rowH-6f-iconSize)*.50f;
+                Position(messageIcons[i].rectTransform,iconX,iconY,iconSize,iconSize);
+                Position(messageUnreadDots[i].rectTransform,
+                    iconX-7f,iconY-8f,wide?19f:18f,wide?19f:18f);
+                float textX=iconX+iconSize+Mathf.Clamp(w*.016f,10f,22f);
+                float arrowW=wide?37f:27f;
+                float copyWidth=Mathf.Max(70f,innerW-textX-arrowW-16f);
+                Position(messageLabels[i].rectTransform,textX,
+                    Mathf.Max(6f,rowH*.12f),copyWidth,rowH*.35f);
+                Position(messageSubtitles[i].rectTransform,textX,rowH*.52f,
+                    Mathf.Max(45f,copyWidth-(wide?130f:72f)),rowH*.31f);
+                float dateW=wide?119f:65f;
+                Position(messageDates[i].rectTransform,
+                    textX+copyWidth-dateW,rowH*.53f,dateW,rowH*.29f);
+                Position(messageArrows[i].rectTransform,
+                    innerW-arrowW-7f,(rowH-6f-36f)*.50f,
+                    arrowW,36f);
+                messageLabels[i].fontSize=Mathf.Clamp(
+                    Mathf.RoundToInt((wide?23f:26f)*fontScale),18,30);
+                messageSubtitles[i].fontSize=Mathf.Clamp(
+                    Mathf.RoundToInt((wide?17f:21f)*fontScale),15,25);
+                messageDates[i].fontSize=Mathf.Clamp(
+                    Mathf.RoundToInt((wide?14f:16f)*fontScale),13,18);
             }
-            Position(detail.rectTransform,left+16,bodyY+12,usable-32,Mathf.Max(40,bodyH-70));
-            Position((RectTransform)Find("Leer").transform,left,bodyY+bodyH-48,usable*.49f,44);
-            Position((RectTransform)Find("Eliminar").transform,left+usable*.51f,bodyY+bodyH-48,usable*.49f,44);
-            float pageY=h-bottom-37;
-            Position((RectTransform)Find("Página anterior").transform,left,pageY,44,37);
-            Position(navLabel.rectTransform,left+52,pageY,usable-104,37);
-            Position((RectTransform)Find("Página siguiente").transform,left+usable-44,pageY,44,37);
-            detail.fontSize=wide?18:19;
+            float actionH=Mathf.Clamp(available*.13f,40f,57f);
+            float detailPad=Mathf.Clamp(usable*.038f,15f,35f);
+            Position(detailViewport,left+detailPad,contentTop+detailPad,
+                usable-detailPad*2f,available-actionH-detailPad*3f);
+            LayoutReport(detailViewport.rect.width,detailViewport.rect.height);
+            detailScroll.verticalNormalizedPosition=Mathf.Clamp01(
+                detailScroll.verticalNormalizedPosition);
+            var read=Find("Leer");var del=Find("Eliminar");
+            Position((RectTransform)read.transform,
+                left+detailPad,contentTop+available-actionH-detailPad,
+                (usable-3f*detailPad)*.5f,actionH);
+            Position((RectTransform)del.transform,
+                left+detailPad*2f+(usable-3f*detailPad)*.5f,
+                contentTop+available-actionH-detailPad,
+                (usable-3f*detailPad)*.5f,actionH);
+            bool showPages=!selected&&total>currentPageSize;
+            var prev=Find("Página anterior");var next=Find("Página siguiente");
+            prev.gameObject.SetActive(showPages);next.gameObject.SetActive(showPages);
+            float navY=h-bottom-navH;
+            Position((RectTransform)prev.transform,left,navY,44f,navH);
+            Position(navLabel.rectTransform,left+(showPages?53f:5f),
+                navY,usable-(showPages?106f:10f),navH);
+            navLabel.alignment=showPages?TextAnchor.MiddleCenter:TextAnchor.MiddleLeft;
+            navLabel.fontSize=Mathf.Clamp(Mathf.RoundToInt(16f*fontScale),14,21);
+            Position((RectTransform)next.transform,left+usable-44f,navY,44f,navH);
+            visibleRowCount=count;detailVisible=selected;
         }
-        void SetCategory(string value){category=value;offset=0;selectedId=null;Refresh();}
+        void LayoutReport(float width,float viewportHeight)
+        {
+            if(detailSheet==null||width<100f)return;
+            bool narrow=width<580f;
+            float inner=width-48f;
+            reportKicker.fontSize=narrow?15:19;
+            reportHeading.fontSize=narrow?24:32;
+            reportHeading.color=new Color(.96f,.85f,.64f);
+            reportKicker.color=new Color(.91f,.73f,.42f);
+            reportOrigin.color=new Color(.94f,.86f,.72f);
+            reportDate.color=new Color(.87f,.77f,.60f);
+            reportSeal.color=new Color(.99f,.86f,.61f);
+            Position(reportKicker.rectTransform,24f,25f,Mathf.Max(75f,width-151f),26f);
+            Position(reportHeading.rectTransform,24f,58f,
+                Mathf.Max(76f,width-153f),50f);
+            float headingH=Mathf.Max(55f,reportHeading.preferredHeight+6f);
+            Position(reportHeading.rectTransform,24f,58f,
+                Mathf.Max(76f,width-153f),headingH);
+            float headerH=Mathf.Max(150f,71f+headingH+43f);
+            Position(reportSeal.rectTransform,width-99f,45f,69f,51f);
+            reportSeal.fontSize=narrow?12:15;
+            Position(reportOrigin.rectTransform,24f,headerH-35f,
+                Mathf.Max(75f,inner*.65f),25f);
+            Position(reportDate.rectTransform,24f+inner*.65f,headerH-35f,
+                inner*.35f,25f);
+            reportOrigin.fontSize=narrow?12:15;
+            reportDate.fontSize=narrow?11:14;
+
+            int cols=narrow?2:4;
+            float cardH=narrow?104f:94f;
+            float gap=11f,cardW=(width-48f-gap*(cols-1))/cols;
+            float metricTop=headerH+19f;
+            for(int i=0;i<4;i++)
+            {
+                bool visible=i<reportMetricCount;
+                metricNames[i].gameObject.SetActive(visible);
+                metricValues[i].gameObject.SetActive(visible);
+                if(!visible)continue;
+                int cx=i%cols,cy=i/cols;
+                float x=24f+cx*(cardW+gap),y=metricTop+cy*(cardH+gap);
+                metricNames[i].color=new Color(.37f,.26f,.17f);
+                metricValues[i].color=new Color(.20f,.125f,.075f);
+                metricNames[i].fontSize=narrow?12:15;
+                metricValues[i].fontSize=narrow?18:26;
+                Position(metricNames[i].rectTransform,x+11f,y+10f,cardW-22f,24f);
+                Position(metricValues[i].rectTransform,x+11f,y+34f,
+                    cardW-22f,cardH-39f);
+            }
+            float metricHeight=reportMetricCount>0?
+                Mathf.Ceil(reportMetricCount/(float)cols)*(cardH+gap)-gap:0f;
+            float compositionTop=metricTop+metricHeight+14f;
+            float compositionH=0f;
+            if(reportMetricCount>0)
+            {
+                Position(reportComposition.rectTransform,30f,compositionTop,
+                    width-60f,36f);
+                reportComposition.fontSize=narrow?15:18;
+                reportComposition.color=new Color(.41f,.27f,.14f);
+                compositionH=Mathf.Max(42f,reportComposition.preferredHeight+15f);
+                Position(reportComposition.rectTransform,30f,compositionTop,
+                    width-60f,compositionH);
+            }
+            float storyTop=compositionTop+compositionH+16f;
+            Rect artPicture=Rect.zero;
+            if(scoutVignette!=null && scoutVignette.gameObject.activeSelf &&
+                scoutVignette.texture!=null)
+            {
+                float imageWidth=Mathf.Min(width-64f,narrow?width-64f:width*.68f);
+                float imageHeight=narrow?
+                    Mathf.Min(180f,imageWidth*.58f):Mathf.Min(244f,imageWidth*.46f);
+                float imageX=(width-imageWidth)*.5f;
+                float imageY=compositionTop+compositionH+10f;
+                Position(scoutVignette.rectTransform,imageX,imageY,imageWidth,imageHeight);
+                var source=scoutVignette.texture;
+                float aspect=imageWidth/Mathf.Max(1f,imageHeight);
+                float sourceAspect=(float)source.width/Mathf.Max(1,source.height);
+                var kind=Mathf.Clamp(scoutFamily,0,3);
+                // Preserve the exact inset 2x2 source atlas family mapping
+                // from RoyalGoldV3EarlyRetentionScreens.
+                Rect tile=scoutVignettesAtlas!=null?
+                    new Rect((kind%2)*.5f+.01f,(kind<2?.5f:0f)+.01f,.48f,.48f):
+                    new Rect(0f,0f,1f,1f);
+                float cropW=tile.width,cropH=cropW*sourceAspect/aspect;
+                if(cropH>tile.height)
+                {
+                    cropH=tile.height;
+                    cropW=cropH*aspect/sourceAspect;
+                }
+                scoutVignette.uvRect=new Rect(tile.center.x-cropW*.5f,
+                    tile.center.y-cropH*.5f,cropW,cropH);
+                artPicture=new Rect(imageX,imageY,imageWidth,imageHeight);
+                storyTop=imageY+imageHeight+29f;
+            }
+            reportSection.color=new Color(.35f,.225f,.105f);
+            reportSection.fontSize=narrow?16:19;
+            Position(reportSection.rectTransform,38f,storyTop+18f,
+                narrow?width-76f:Mathf.Max(75f,width-210f),narrow?46f:30f);
+            Position((RectTransform)reportToggle.transform,width-178f,
+                storyTop+(narrow?66f:13f),139f,37f);
+            reportToggleText.fontSize=narrow?12:15;
+            reportToggleText.Put(reportExpanded?"OCULTAR":"DESPLEGAR");
+            detail.fontSize=narrow?19:23;
+            detail.color=new Color(.25f,.175f,.115f);
+            detail.gameObject.SetActive(reportExpanded);
+            float textH=0f;
+            float storyContentTop=narrow?111f:59f;
+            if(reportExpanded)
+            {
+                Position(detail.rectTransform,40f,storyTop+storyContentTop,width-80f,40f);
+                textH=Mathf.Max(40f,detail.preferredHeight+12f);
+                Position(detail.rectTransform,40f,storyTop+storyContentTop,width-80f,textH);
+            }
+            float storyHeight=reportExpanded?
+                Mathf.Max(storyContentTop+textH+25f,narrow?169f:111f):
+                (narrow?111f:69f);
+            float footerTop=storyTop+storyHeight+20f;
+            reportFooter.fontSize=narrow?16:19;
+            reportFooter.color=new Color(.38f,.25f,.14f);
+            Position(reportFooter.rectTransform,26f,footerTop,width-52f,70f);
+            float footerH=Mathf.Max(48f,reportFooter.preferredHeight+10f);
+            Position(reportFooter.rectTransform,26f,footerTop,width-52f,footerH);
+            float totalHeight=Mathf.Max(viewportHeight+4f,footerTop+footerH+32f);
+            Position(detailSheet,0f,0f,width,totalHeight);
+            reportArtwork.Configure(reportMotif,reportMetricCount,cols,metricTop,
+                cardH,storyTop,storyHeight,footerTop+footerH,artPicture);
+        }
+        void SetCategory(string value){category=value;offset=0;selectedId=null;reportExpanded=true;Refresh();}
         void Page(int delta)
         {
             var s=gateway?.Snapshot();
             int total=s?.Mailbox?.Messages.Count(m=>m.Category==category)??0;
-            offset=Mathf.Clamp(offset+delta*5,0,Mathf.Max(0,(Mathf.Max(0,total-1)/5)*5));
+            offset=Mathf.Clamp(offset+delta*currentPageSize,0,
+                Mathf.Max(0,(Mathf.Max(0,total-1)/currentPageSize)*currentPageSize));
             selectedId=null;Refresh();
         }
         void SelectRow(int index)
         {
-            var list=gateway?.Snapshot()?.Mailbox?.List(category,offset,5);
+            var list=gateway?.Snapshot()?.Mailbox?.List(category,offset,currentPageSize);
             if(list==null||index>=list.Count)return;
-            selectedId=list[index].EventId;ExecuteMail("MailRead");
+            selectedId=list[index].EventId;
+            reportExpanded=true;
+            if(detailScroll!=null)detailScroll.verticalNormalizedPosition=1f;
+            ExecuteMail("MailRead");
         }
         void ExecuteMail(string kind)
         {
@@ -247,18 +679,127 @@ namespace Eldoria.UI.RoyalGold.V2
                 case "hunt-wolf":return "Lobo";case "hunt-boar":return "Jabalí";case "ash-stalker-valoria":return "Acechador de Ceniza";
                 case "fissure-valoria":return "Fisura";default:return (id??"").StartsWith("vigilant:")?"Vigilante":"el enemigo";}
         }
+        static string CompactAmount(int value)
+        {
+            if(value>=1000000)return (value/1000000f).ToString("0.#")+"M";
+            if(value>=1000)return (value/1000f).ToString("0.#")+"K";
+            return value.ToString();
+        }
+        static string ObservedReason(EldoriaV41CombatRecord battle)
+        {
+            string reason=(battle?.Reason??"").Trim();
+            // A legacy defeat reason may carry automatic tactical advice.
+            // The illustrated report only displays the observed outcome.
+            // Native resolver reasons sometimes contain an action directive
+            // or a shorthand about damage/break. The report documents only
+            // what the player's own march observed, never derives tactics.
+            if(reason.StartsWith("Prepara otra composición:",StringComparison.OrdinalIgnoreCase) ||
+                reason.IndexOf("Refuerza las tropas",StringComparison.OrdinalIgnoreCase)>=0 ||
+                reason.IndexOf("Mejora las tropas",StringComparison.OrdinalIgnoreCase)>=0)
+                return "La expedición no superó el encuentro registrado.";
+            if(reason.IndexOf("Ruptura super",StringComparison.OrdinalIgnoreCase)>=0)
+                return "La marcha venció al objetivo registrado.";
+            return !string.IsNullOrEmpty(reason)?reason:
+                battle!=null&&battle.Won?"Encuentro superado.":"No se registró victoria.";
+        }
+        void PresentReport(EldoriaV41Message selected)
+        {
+            var battle=selected.Battle;
+            bool scouting=battle==null&&selected.Type=="exploration";
+            bool hasNarrative=scouting&&!string.IsNullOrEmpty(selected.DiscoveryText);
+            reportMetricCount=battle!=null?4:0;
+            scoutFamily=hasNarrative?selected.DiscoveryKind:-1;
+            if(scoutVignette!=null)
+                scoutVignette.gameObject.SetActive(hasNarrative&&scoutFamily>=0&&
+                    scoutFamily<=3&&scoutVignette.texture!=null);
+            reportMotif=battle!=null?(battle.Won?
+                RoyalGoldV41ReportArtwork.Motif.BattleVictory:
+                RoyalGoldV41ReportArtwork.Motif.BattleDefeat):
+                hasNarrative&&selected.DiscoveryKind>=0&&selected.DiscoveryKind<=3?
+                (RoyalGoldV41ReportArtwork.Motif)((int)RoyalGoldV41ReportArtwork.Motif.Frontier+
+                    selected.DiscoveryKind):RoyalGoldV41ReportArtwork.Motif.Archive;
+            bool compact=detailViewport!=null&&detailViewport.rect.width<580f;
+            reportKicker.Put(battle!=null?(compact?"CRÓNICA DEL CAMINO":
+                "CRÓNICA DEL CAMINO · INFORME AUTÉNTICO"):
+                scouting?(compact?"HALLAZGO REGISTRADO":
+                "CUADERNO DEL CARTÓGRAFO · HALLAZGO REGISTRADO"):
+                compact?"ARCHIVO REAL":"ARCHIVO REAL · MENSAJE RECIBIDO");
+            reportHeading.Put(scouting&&!string.IsNullOrEmpty(selected.Subtitle)?
+                selected.Subtitle:selected.Title);
+            // Result and family are spelled out in the real title/kicker.
+            // Let the raised wax seal remain a legible original engraving.
+            reportSeal.Put("");
+            reportOrigin.Put(battle!=null?"ENCUENTRO · "+TargetName(battle.TargetId):
+                scouting&&hasNarrative?
+                    "ORIGEN · "+(selected.DiscoveryKind==0?"FRONTERA":
+                        selected.DiscoveryKind==1?"CAMINO":
+                        selected.DiscoveryKind==2?"SUMINISTROS":
+                        selected.DiscoveryKind==3?"BRECHA":"ENCARGO"):
+                scouting?"ORIGEN · ENCARGO ANTERIOR":"ORIGEN · CORREO EXISTENTE");
+            reportDate.Put(selected.OccurredAtUtcTicks>0?
+                new DateTime(selected.OccurredAtUtcTicks,DateTimeKind.Utc).ToString("dd/MM/yy HH:mm"):"");
+            if(battle!=null)
+            {
+                string[] names={"HÉROES","TROPAS ENVIADAS","RONDAS","VIDA RESTANTE"};
+                string[] values={HeroName(battle.HeroId),battle.Troops.ToString(),
+                    battle.Rounds.ToString(),battle.RemainingHealth.ToString()};
+                for(int i=0;i<4;i++)
+                {
+                    metricNames[i].Put(names[i]);metricValues[i].Put(values[i]);
+                }
+                reportComposition.gameObject.SetActive(true);
+                var own=battle.OwnRoster;
+                reportComposition.Put(own!=null&&own.Total>0?
+                    "COMPOSICIÓN PROPIA · ARQUEROS  T1: "+own.ArcherT1+
+                    "  ·  T2: "+own.ArcherT2+"  ·  T3: "+own.ArcherT3:
+                    "COMPOSICIÓN PROPIA · desglose no archivado en este informe");
+                reportSection.Put("OBSERVACIONES DEL ENCUENTRO");
+                detail.Put(ObservedReason(battle));
+                reportFooter.Put("PODER PROPIO REGISTRADO · "+battle.PlayerPower+
+                    "\nBOTÍN REGISTRADO · "+battle.RewardWood+" madera · "+
+                    battle.RewardStone+" piedra · "+battle.RewardFood+" comida"+
+                    (string.IsNullOrEmpty(selected.RewardReceiptId)?"":
+                    "\nLa recompensa ya estaba registrada; abrir el informe no la duplica."));
+            }
+            else if(scouting)
+            {
+                reportComposition.gameObject.SetActive(false);
+                reportSection.Put("RELATO CONSERVADO");
+                detail.Put(hasNarrative?selected.DiscoveryText:
+                    "Este mensaje anterior solo conserva el título. No se recrea un relato sin el registro original.");
+                reportFooter.Put(!string.IsNullOrEmpty(selected.DiscoveryOrderId)?
+                    "PROCEDENCIA · ENCARGO REAL ARCHIVADO":
+                    "PROCEDENCIA · MENSAJE ANTIGUO O SIN REFERENCIA DE ORDEN");
+                if(!string.IsNullOrEmpty(selected.RewardReceiptId))
+                    reportFooter.Put(reportFooter.text+
+                        "\nRecompensa registrada al reclamar; leer no realiza otro abono.");
+            }
+            else
+            {
+                reportComposition.gameObject.SetActive(false);
+                reportSection.Put("CONTENIDO RECIBIDO");
+                detail.Put(selected.Subtitle??"");
+                reportFooter.Put("MENSAJE DEL REGISTRO DEL REINO");
+            }
+            reportToggle.gameObject.SetActive(!string.IsNullOrEmpty(detail.text));
+        }
         public void Refresh()
         {
             if(hud==null||gateway==null)return;
             if(window==null)Ensure();
             var s=gateway.Snapshot();var mail=s.Mailbox;
-            entry.gameObject.SetActive(!IsOpen&&!hud.NarrativeOpen&&
-                !(hud.Modal!=null&&hud.Modal.gameObject.activeSelf)&&
-                !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false)&&
-                string.IsNullOrEmpty(hud.SelectedBuildingId));
+            RefreshEntryVisibility();
             resources.Put("Madera "+s.Resources.Wood+"  ·  Piedra "+s.Resources.Stone+"  ·  Comida "+s.Resources.Food);
+            resourceAmounts[0].Put(CompactAmount(s.Resources.Wood));
+            resourceAmounts[1].Put(CompactAmount(s.Resources.Stone));
+            resourceAmounts[2].Put(CompactAmount(s.Resources.Food));
             if(entryLabel!=null)entryLabel.Put("CORREO"+(mail?.Unread()>0?" ("+mail.Unread()+")":""));
             if(!IsOpen)return;
+            // Layout can change responsive page size (5 portrait / 2 compact
+            // landscape) and snap the offset. Apply that BEFORE fetching the
+            // authoritative visible page; otherwise row widgets briefly show
+            // a stale page after an orientation or scale transition.
+            Layout();
             foreach(var t in tabLabels)
             {
                 string key=t.transform.parent.name.Replace("Buzón ","");
@@ -268,9 +809,17 @@ namespace Eldoria.UI.RoyalGold.V2
                 int unread=mail?.Unread(key)??0,index=Array.IndexOf(categories,key);
                 tabBadges[index].transform.parent.gameObject.SetActive(unread>0);
                 tabBadges[index].Put(unread.ToString());
-                t.Put(char.ToUpperInvariant(key[0])+key.Substring(1));
+                // Four real categories; compact mobile uses an unambiguous
+                // short caption rather than breaking Recompensas into fragments.
+                t.Put(window.rect.width<520f && key=="recompensas"?"Premios":
+                    char.ToUpperInvariant(key[0])+key.Substring(1));
             }
-            var list=mail?.List(category,offset,5)??new List<EldoriaV41Message>();
+            var list=mail?.List(category,offset,currentPageSize)??new List<EldoriaV41Message>();
+            int total=mail?.Messages?.Count(m=>m.Category==category)??0;
+            listSummary.Put(total==0?"SIN CORREO EN ESTA CATEGORÍA":
+                total==1?"1 MENSAJE REAL · "+char.ToUpperInvariant(category[0])+category.Substring(1):
+                total+" MENSAJES REALES · "+char.ToUpperInvariant(category[0])+category.Substring(1));
+            emptyState.Put("No hay mensajes en "+category+".");
             for(int i=0;i<5;i++)
             {
                 bool shown=i<list.Count && selectedId==null;
@@ -278,35 +827,99 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(shown)
                 {
                     var msg=list[i];
-                    messageLabels[i].color=new Color(.08f,.07f,.05f);
-                    messageLabels[i].Put((msg.Read?"":"● ")+msg.Title);
-                    messageSubtitles[i].Put(msg.Battle==null?msg.Subtitle:
-                        (msg.Battle.Won?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId));
+                    messageLabels[i].color=msg.Read?
+                        new Color(.26f,.22f,.18f):new Color(.11f,.08f,.045f);
+                    messageLabels[i].Put(msg.Title);
+                    messageUnreadDots[i].gameObject.SetActive(!msg.Read);
+                    messageSurfaces[i].color=msg.Read?
+                        new Color(.84f,.84f,.83f,.92f):Color.white;
+                    // Ink belongs on the pale parchment; the inherited ivory
+                    // made both subtitles and timestamps nearly invisible.
+                    messageSubtitles[i].color=msg.Read?
+                        new Color(.38f,.33f,.29f):new Color(.28f,.22f,.16f);
+                    messageDates[i].color=new Color(.38f,.31f,.24f);
+                    string preview=msg.Battle==null?msg.Subtitle:
+                        (msg.Battle.Won?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId);
+                    if(window.rect.width<520f && preview.Length>22)
+                        preview=preview.Substring(0,19)+"…";
+                    messageSubtitles[i].Put(preview);
                     messageDates[i].Put(msg.OccurredAtUtcTicks>0?new DateTime(msg.OccurredAtUtcTicks,DateTimeKind.Utc).ToString("dd/MM HH:mm"):"");
                     string icon=msg.Category=="recompensas"?"mail-reward":msg.Category=="narrativa"?"mail-narrative":
                         msg.Category=="sistema"?"mail-system":msg.Type=="battle"?"mail-battle":"mail-march";
                     messageIcons[i].sprite=RoyalGoldV41SourceArt.Get(icon);
                 }
             }
-            navLabel.Put((list.Count==0?"Sin mensajes":"Mensajes "+(offset+1)+"–"+(offset+list.Count)));
+            navLabel.Put(total==0?"No hay mensajes":
+                total<=currentPageSize?"Mostrando "+list.Count+" de "+total+" mensajes":
+                "Mensajes "+(offset+1)+"–"+(offset+list.Count)+" de "+total);
             var selected=mail?.Messages?.Find(m=>m.EventId==selectedId);
-            detail.gameObject.SetActive(selected!=null);
+            detailViewport.gameObject.SetActive(selected!=null);
             foreach(var button in window.GetComponentsInChildren<Button>(true))
                 if(button.name=="Leer"||button.name=="Eliminar")button.gameObject.SetActive(selected!=null);
             if(selected==null)
             {
-                detail.Put("Selecciona un mensaje para consultar su contenido.");
+                detail.Put("");
+                Layout();
                 return;
             }
-            var battle=selected.Battle;
-            detail.Put(selected.Title+"\n"+selected.Subtitle+
-                (battle==null?"":"\n\n"+(battle.Won?"VICTORIA":"DERROTA")+
-                "\nHéroe: "+HeroName(battle.HeroId)+" · Tropas: "+battle.Troops+
-                "\nRondas: "+battle.Rounds+" · Poder: "+battle.PlayerPower+
-                "\nVida restante: "+battle.RemainingHealth+
-                "\nBotín: "+battle.RewardWood+" madera · "+battle.RewardStone+" piedra · "+battle.RewardFood+" comida"+
-                "\n\n"+battle.Reason)+
-                (string.IsNullOrEmpty(selected.RewardReceiptId)?"":"\n\nRecompensa registrada."));
+            PresentReport(selected);
+            if(!detailVisible||visibleRowCount!=list.Count)
+                detailScroll.verticalNormalizedPosition=1f;
+            Layout();
+        }
+    }
+
+    /// <summary>
+    /// Non-interactive illustrated environment. Drawn as lightweight uGUI
+    /// geometry so the sparse mailbox never falls back to a black void and
+    /// no full reference screenshot or baked message text is displayed.
+    /// </summary>
+    [AddComponentMenu("Eldoria/UI/Mailbox V4.1 matte")]
+    public sealed class RoyalGoldV41MailboxBackdrop : MaskableGraphic
+    {
+        static readonly Color Bronze=new Color(.55f,.37f,.18f,.63f);
+        void Fill(VertexHelper vh,Rect r,Color bottom,Color top)
+        {
+            if(r.width<=0f||r.height<=0f)return;
+            int index=vh.currentVertCount;
+            vh.AddVert(new Vector3(r.xMin,r.yMin),bottom,Vector2.zero);
+            vh.AddVert(new Vector3(r.xMin,r.yMax),top,Vector2.up);
+            vh.AddVert(new Vector3(r.xMax,r.yMax),top,Vector2.one);
+            vh.AddVert(new Vector3(r.xMax,r.yMin),bottom,Vector2.right);
+            vh.AddTriangle(index,index+1,index+2);
+            vh.AddTriangle(index,index+2,index+3);
+        }
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            vh.Clear();
+            var r=rectTransform.rect;
+            if(r.width<10f||r.height<10f)return;
+            Fill(vh,r,new Color(.32f,.255f,.19f,1f),
+                new Color(.105f,.133f,.149f,1f));
+            // Layered shadows and faint brass dividers form a single
+            // coherent parchment-reading environment on every aspect.
+            float edge=Mathf.Clamp(r.width*.012f,4f,16f);
+            Fill(vh,new Rect(r.xMin+edge,r.yMin+edge,
+                r.width-edge*2f,2f),Bronze,Bronze);
+            Fill(vh,new Rect(r.xMin+edge,r.yMax-edge-2f,
+                r.width-edge*2f,2f),Bronze,Bronze);
+            var subtle=new Color(.81f,.67f,.47f,.16f);
+            for(int i=0;i<4;i++)
+            {
+                float y=r.yMin+r.height*(.19f+i*.20f);
+                Fill(vh,new Rect(r.xMin+edge*1.8f,y,
+                    r.width-edge*3.6f,1.25f),subtle,subtle);
+            }
+            var corner=new Color(.87f,.69f,.4f,.37f);
+            float size=Mathf.Min(22f,r.width*.035f);
+            Fill(vh,new Rect(r.xMin+edge,r.yMax-edge-size,2f,size),
+                corner,corner);
+            Fill(vh,new Rect(r.xMax-edge-2f,r.yMax-edge-size,2f,size),
+                corner,corner);
+            Fill(vh,new Rect(r.xMin+edge,r.yMin+edge,2f,size),
+                corner,corner);
+            Fill(vh,new Rect(r.xMax-edge-2f,r.yMin+edge,2f,size),
+                corner,corner);
         }
     }
 }

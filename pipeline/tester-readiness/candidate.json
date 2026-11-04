@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "state": "BLOCKED",
+  "scope": "next Unity Bastion I-V external tester candidate (not historical frozen T1)",
+  "reason": "Owner physical playtest 2026-10-30 exposed UI and art deviations; PR136 visual certification failure; no exact-source physical mobile/hosted and owner art approvals.",
+  "source_sha": null,
+  "artifact_sha256": null,
+  "channels": [],
+  "visual_evidence": [],
+  "gameplay": null,
+  "device_tests": [],
+  "delivery": {},
+  "final_review": null,
+  "blockers": [
+    "PR136 genuine Unity UI visual/interaction certification must pass",
+    "Reconcile PR134 marches and PR135 heroes without replacing approved UI",
+    "Twenty reference vs actual screenshots in both orientations independently reviewed",
+    "Uninterrupted Bastion I-V Unity gameplay from fresh save",
+    "Exact published artifact hosted QA and physical device gameplay",
+    "Final owner review of real candidate"
+  ]
+}

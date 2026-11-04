@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "source_catalog_blob_sha": "b10dad0382bb9926f5eb9e65a33f8e7aa4c6654b",
+  "source_catalog_review_pending": 175,
+  "status": "STAGED_ONLY_DO_NOT_APPLY_WHILE_PR136_OWNS_CATALOG",
+  "owner_workstream": "valoria-master-plan-layered-construction-20261016",
+  "owner_pr": 136,
+  "authorization": "Apply only after exact file ownership transfer/release in pipeline/active-workstreams.json; reconcile current catalog SHA, then run documentation governance tests.",
+  "items": [
+    {
+      "path": "docs/ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md",
+      "from": "review_pending",
+      "to": "historical",
+      "reason": "Qwen/Ollama mandatory art process revoked on 2026-10-22",
+      "authority": "docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md",
+      "warning_integrated_pr": 158
+    },
+    {
+      "path": "docs/VALORIA_PURCHASE_AUDIT.md",
+      "from": "review_pending",
+      "to": "historical",
+      "reason": "September purchase-for-trial proposal superseded by no-purchase decision",
+      "authority": "docs/VALORIA_FINAL_ASSET_DECISION.md",
+      "warning_integrated_pr": 158
+    },
+    {
+      "path": "docs/VALORIA_CAMERA_FIRST_PROJECTION_SHELL_V1.md",
+      "from": "review_pending",
+      "to": "historical",
+      "reason": "Original ACTIVE hypothesis rejected by later FINAL FAIL",
+      "authority": "docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md",
+      "warning_integrated_pr": 158
+    },
+    {
+      "path": "docs/ELDORIA_PARALLEL_DELIVERY_HANDOFF_20261010.md",
+      "from": "review_pending",
+      "to": "historical",
+      "reason": "Dated ownership and runner reservations are not live status",
+      "authority": "pipeline/active-workstreams.json",
+      "warning_integrated_pr": 158
+    }
+  ],
+  "other_reviewed_documents": "Remain review_pending until semantic and ownership validation; no mass classification.",
+  "verification": [
+    "Confirm catalog file claim released by PR136 owner",
+    "Fetch live main catalog SHA and inspect each path/status",
+    "Apply only still-matching entries; abort on divergence",
+    "Run node tools/check-documentation-governance.mjs --tracked-tree and architecture CI",
+    "Confirm pending count decreases by exactly number of applied entries, never assume 175 unchanged",
+    "Do not remove or move original historical documents"
+  ]
+}

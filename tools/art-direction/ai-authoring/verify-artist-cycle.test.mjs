@@ -122,7 +122,7 @@ test('Reject a supposedly real Blender source that is only text',()=>{const {roo
 test('Artist-directed sculpt path can prove structural mesh changes',()=>{const {root,c,syncLogs}=fixture();c.authorship.planned_actions[0].type='sculpt_path';c.authorship.planned_actions[0].parameters={knots:[{center:[0,0,0],delta:[0,1,1],radius:5},{center:[6,0,3],delta:[0,0,2],radius:7}]};c.authorship.executed_actions[0].type='sculpt_path';syncLogs();assert.deepEqual(verifyCycle(c,root),[])});
 test('Boundary bridge with actual faces can prove topological change',()=>{const {root,c,syncLogs}=fixture();c.authorship.planned_actions[0].type='bridge_boundary_loops';c.authorship.planned_actions[0].parameters={loop_a:[1,2,3],loop_b:[8,9,10]};c.authorship.executed_actions[0].type='bridge_boundary_loops';c.authorship.executed_actions[0].changed_vertices=0;c.authorship.executed_actions[0].changed_faces=3;syncLogs();assert.deepEqual(verifyCycle(c,root),[])});
 test('Topology bridge with no changed faces or vertices fails',()=>{const {root,c,syncLogs}=fixture();c.authorship.planned_actions[0].type='bridge_boundary_loops';c.authorship.executed_actions[0].type='bridge_boundary_loops';c.authorship.executed_actions[0].changed_vertices=0;c.authorship.executed_actions[0].changed_faces=0;syncLogs();assert.ok(verifyCycle(c,root).some(e=>e.includes('must change vertices/faces')))});
-test('Replaced Qwen inference plan fails even with internally consistent cycle metadata',()=>{const {root,c}=fixture();c.authorship.planned_actions[0].rationale='A different later script decision, not from the actual model';assert.ok(verifyCycle(c,root).some(e=>e.includes('recorded Qwen decisions mismatch')))});
+test('Replaced Qwen inference plan fails even with internally consistent cycle metadata',()=>{const {root,c}=fixture();c.authorship.planned_actions[0].rationale='A different later script decision, not from the actual model';assert.ok(verifyCycle(c,root).some(e=>e.includes('recorded artist decisions mismatch')))});
 test('A purported Blender export inconsistent with execution log fails',()=>{const {root,c}=fixture();c.authorship.result_mesh_sha256='c'.repeat(64);assert.ok(verifyCycle(c,root).some(e=>e.includes('mesh provenance mismatches')))});
 test('Executable action not selected by approved allowlist fails',()=>{const {root,c,syncLogs}=fixture();c.authorship.planned_actions[0].type='mesh_cut';c.authorship.executed_actions[0].type='mesh_cut';syncLogs();assert.ok(verifyCycle(c,root).some(e=>e.includes('unsupported/preset-only')))});
 
@@ -130,3 +130,25 @@ test('Preflight accepts a model-authored organic terrain path',()=>{const ops=[{
 test('Preflight rejects unsafe generated geometry at no Blender cost',()=>{const ops=[{id:'bad',type:'sculpt_path',target:'Terrain',rationale:'Move the entire cliff using infinite displacement',parameters:{knots:[{center:[0,0,0],delta:[Infinity,0,0],radius:9},{center:[1,0,0],delta:[0,1,0],radius:9}]}}];assert.ok(preflightArtistPlan(ops,'Terrain','existing').some(s=>s.includes('Invalid artist sculpt path')))});
 test('Preflight requires validated distinct boundary indices',()=>{const ops=[{id:'bad-seam',type:'bridge_boundary_loops',target:'Terrain',rationale:'Bridge two distinct cliff segments without their actual borders',parameters:{loop_a:[1,2,3],loop_b:[2,9,10]}}];assert.ok(preflightArtistPlan(ops,'Terrain','existing').some(s=>s.includes('boundary loops')))});
 test('Preflight prohibits duplicate meshes in existing-object mode',()=>{const ops=[{id:'dup',type:'construct_mesh',target:'Terrain',rationale:'Duplicate the mountain instead of modifying the original',parameters:{vertices:[[0,0,0],[1,0,0],[0,1,0],[0,0,1]],faces:[[0,1,2],[0,1,3],[0,2,3]]}}];assert.ok(preflightArtistPlan(ops,'Terrain','existing').some(s=>s.includes('Existing source cannot')))});
+
+// Fixtures validate the contract only; they are not an artistic approval.
+test('Direct artist cycle needs no Ollama system prompt or inference service',()=>{
+ const {root,c}=fixture();
+ c.authorship.mode='DIRECT_ARTIST_BLENDER';c.artist.model='designated-artist';
+ delete c.artist.system_role;delete c.artist.system_prompt;delete c.artist.inference_log;
+ assert.deepEqual(verifyCycle(c,root),[]);
+});
+test('Direct artist still needs genuine Unity frames and independent review',()=>{
+ const {root,c}=fixture();c.authorship.mode='DIRECT_ARTIST_BLENDER';
+ delete c.artist.system_prompt;delete c.artist.inference_log;
+ delete c.unity.after;c.reviews.visual.independent=false;
+ const errors=verifyCycle(c,root);
+ assert.ok(errors.some(e=>e.includes('unity_after')));
+ assert.ok(errors.some(e=>e.includes('independent visual')));
+});
+test('Direct authorship cannot bypass the pinned executed Blender plan',()=>{
+ const {root,c}=fixture();c.authorship.mode='DIRECT_ARTIST_BLENDER';
+ delete c.artist.system_prompt;delete c.artist.inference_log;
+ c.authorship.executed_actions[0].target='different-object';
+ assert.ok(verifyCycle(c,root).some(e=>e.includes('type/target')));
+});

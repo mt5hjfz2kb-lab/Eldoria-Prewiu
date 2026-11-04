@@ -36,6 +36,7 @@ namespace Eldoria.UI.RoyalGold {
   public bool IsRevealing=>active&&shown<CurrentPage.Length;
   public string FullText=>active?string.Join("\n",turns.ConvertAll(l=>english?l.English:l.Spanish)):"";
   public string CurrentSpeaker=>active&&lineIndex<turns.Count?turns[lineIndex].Speaker:"";
+  public string CurrentPageText=>active?CurrentPage:"";
   public int TurnIndex=>lineIndex;
   public int TurnCount=>turns.Count;
   string CurrentPage=>pageIndex<pages.Count?pages[pageIndex]:"";

@@ -1,0 +1,42 @@
+name: Eldoria tester release readiness (zero-cost)
+on:
+  workflow_call:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/tester-readiness/**'
+      - 'pipeline/tester-readiness/**'
+      - '.github/workflows/tester-release-readiness.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/tester-readiness/**'
+      - 'pipeline/tester-readiness/**'
+      - '.github/workflows/tester-release-readiness.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  candidate-evidence:
+    name: Tester candidate evidence (no Windows)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/tester-readiness
+            pipeline/tester-readiness
+      - name: Materialize all original evidence only for a READY claim
+        shell: bash
+        run: |
+          if grep -Eq '"state"[[:space:]]*:[[:space:]]*"READY"' pipeline/tester-readiness/candidate.json; then
+            git sparse-checkout disable
+          fi
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Contract and fail-closed regression tests
+        run: node --test tools/tester-readiness/verify.test.mjs
+      - name: Reject release requests without verified visual + gameplay + physical QA
+        run: node tools/tester-readiness/verify.mjs

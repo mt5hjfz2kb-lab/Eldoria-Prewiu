@@ -158,6 +158,12 @@
       "note": "Roadmap de biblioteca sujeto a cambios recientes"
     },
     {
+      "path": "docs/ELDORIA_AUDITORIA_VISUAL_CAUSAL_Y_PILOTO_20261103.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Auditoría causal visual y piloto Valoria 03/11: G0 no confirma fallo estructural; descartado sin editar Unity. No ART APPROVED."
+    },
+    {
       "path": "docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md",
       "domain": "art",
       "status": "review_pending"
@@ -251,6 +257,12 @@
       "path": "docs/ELDORIA_PUBLISHED_PROBE_INTEGRITY_V1.md",
       "domain": "project",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md",
+      "domain": "art",
+      "status": "current",
+      "note": "Decisión del propietario: Qwen opcional, no obligatorio para autoría artística; validación visual y técnica conservada"
     },
     {
       "path": "docs/ELDORIA_SHARED_RUNNER_CHECKOUT_COLLISION_20261020.md",

@@ -1,0 +1,314 @@
+{
+  "known_baseline_serializations": 61,
+  "unexpected_changes": 0,
+  "reviewed": [
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/aserradero-v.jpeg.meta",
+      "observed_blob": "879b11e32c2ca0393351c333664d259e92511b00",
+      "source_blob": "77935e7b0d810bb0b871fc0b13eb4c8043a6d5f0"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/bastion-v.jpeg.meta",
+      "observed_blob": "0ef42a1f964feb4caa6785ad1604212dd9c99196",
+      "source_blob": "1d1d9a131cfbfb18d76dfce74f83cccf5a205a21"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/cantera-v.jpeg.meta",
+      "observed_blob": "74afa50183b93f867b08766fd7fd546a4dafbc88",
+      "source_blob": "f5fb20a4aa908576329b655faf07509436e1b12f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/cuartel-v.jpeg.meta",
+      "observed_blob": "78efb793853979bde3095722c563b32a67f483c2",
+      "source_blob": "36c9679f895198b7bf77671c582855cb38f88f3a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/granero-v.jpeg.meta",
+      "observed_blob": "c10567c7e6d31bf6e3869d666515dbf7fd7cf091",
+      "source_blob": "57e078f46a4ade192932a5b7818932a97fd12d52"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-crest.png.meta",
+      "observed_blob": "8db5a16cb41719933f1be039a4c48bfb246113b5",
+      "source_blob": "bd46f3185faaa6f5bfc0af8d72ac4ebbc14afe53"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-compass.png.meta",
+      "observed_blob": "f88392759749eb0758ddcfce6d161fa36eafa8e3",
+      "source_blob": "ee5f9c476a43c6a98cab47e103dcd61da3db2635"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0ae5cda562b231f7d8ef7675cefc845f0379a0e3.png.meta",
+      "observed_blob": "858d84ffb0341ff6acdad46a9e4e1fcb58d4ccbb",
+      "source_blob": "c79440988064659d2feb572eefed7a70d29986c5"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0c0df987935c1d1544a9e52da33325edb19f5f98.png.meta",
+      "observed_blob": "ac05fade0f9954c7337e1fc11c8ad2827887d890",
+      "source_blob": "985d2c1dafe6c2f2bde50c26efd4d66877315d1b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0f317cfd9dae387cf6b154ed623b9c700762edd0.png.meta",
+      "observed_blob": "c5c4d355f0cd87806e080bf6166bc53cad0ae7e1",
+      "source_blob": "32847ff0c5c8445d18fc2a2f034b571a606c6967"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/371ea4cbee26ce47c0f6d086edccae097a74e921.png.meta",
+      "observed_blob": "cad45e483393e081b46ab4c164f2848d5222cb97",
+      "source_blob": "dcdd7a596c02dafd39ee30b4f33031e472a73024"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png.meta",
+      "observed_blob": "3880b64e3708192a587a4cfaf8ad14af82ac9424",
+      "source_blob": "2285fa72c4bc73fb85ff2b8fd573aab1c127123e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png.meta",
+      "observed_blob": "38390fefad7f353bea9997c9ca7e7a16dbfadaee",
+      "source_blob": "8323c9585f23ba427dd1e44f8a1c9f4e377ec6bd"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5b052e69fc6c091f74e1815a64e2c92f243997ca.png.meta",
+      "observed_blob": "d44cef91970f4fad25d3f1f4f1aeb9c7314e4360",
+      "source_blob": "ed0edd646d78cfeace6f78b080557df0e50bed52"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5e7ef7c03cb0f9c10c2df31cb690ec9950f2195c.png.meta",
+      "observed_blob": "d6a0e936c34fd9bf8e6c638542478b5196b88d3c",
+      "source_blob": "ec1a354f8b131e1f760b3fb1091e98898b8f8ef8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5fbc98ff6a7e71858eb407a77cc5c94fcc4717e3.png.meta",
+      "observed_blob": "25aca32aec6a827319f5288445b012dc05374302",
+      "source_blob": "68930258e94302a51ea0a194e46e67609bd95070"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/6043301ad238ef62b417d2baeefed8ac84738571.png.meta",
+      "observed_blob": "f8f0e42e78c32b11c8334d644d73bb5d2d456b6f",
+      "source_blob": "824882d91d3355186e25d48a9b40830a4664ce91"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/69e84cc6421486a43699ec47282e7a6272dd2d83.png.meta",
+      "observed_blob": "a4fa45c94abf1816071e3b2a69efc8e56bd09b73",
+      "source_blob": "bab3f2e3e959ec91b1a31c3eed22b847020c3e6b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/74a843ad16e3deb30b6035d168fe4ef5570c0d24.png.meta",
+      "observed_blob": "98a86e56206008857d2d0c6c194ef2d327a54d33",
+      "source_blob": "609647c27823595768dbcf7d34bde1a3d5dab3f9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/75eceae72c3fbd48e2ba51d93a91885b2080b860.png.meta",
+      "observed_blob": "dbff7fe7429806bf8bc391239b3309cabb9b76a2",
+      "source_blob": "100e02448c385c8005d5aa48f8a3dbad7f9f98e1"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/7b6848358871a30918c4842349c301c9fc0b722c.png.meta",
+      "observed_blob": "63c2e690878f28bcc7f753cb67d675c9edc6bb46",
+      "source_blob": "2a3fa2106bb80e9a4722579ad28059058e6ebac4"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/9f99c1930e3952d23a516e70e0867aa424031840.png.meta",
+      "observed_blob": "42ee32847a851400a9e33e1b265d69dbb75d12b5",
+      "source_blob": "db2ede64ed45b0e28b09b0a40ccaf33bc765769c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/a4599f4ad6d5e2ec45e961b5fa6d4872b9b776f8.png.meta",
+      "observed_blob": "f4357b29268190bf7f496e243a7fa261370a1d69",
+      "source_blob": "b37ddca70839de196f29da2f5c8b3e6c436854d6"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5a7a2191c98f3ded4fd02d5839a352b7d316612.png.meta",
+      "observed_blob": "17990c786e2c6a14ea840d5f3f22b1f4b886e169",
+      "source_blob": "d7cac56416febb63b81ca7f07cf38d29e9fa0126"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5ab68274bb848b27a08c26e9751b94b656bfe22.png.meta",
+      "observed_blob": "4bd005b0294bbc542197a3aa871c9cde9235bddc",
+      "source_blob": "9f392bfa0834d66ad8f64cbc0ebacd70ed0b245f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/de2514e4480e1c590de14765da4854cfac3c5157.png.meta",
+      "observed_blob": "66780a7bf767b2d270d9a96dc24621c4319cead8",
+      "source_blob": "7743b7d20882dbd3b1beab3c4c66eaec44c379c0"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/f87f5ed5f4c059864855106ee339d761b913f0b1.png.meta",
+      "observed_blob": "a9615de5847409a03859502a1dda948d73e04b6c",
+      "source_blob": "4b5aedbf486a48a7a3d76e57ecbbef80b19abd34"
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain/Materials/Bush01.mat",
+      "observed_blob": "010670980912d3e9c86752ddb34336c96dbcf439",
+      "source_blob": "f5b7ad3c67776970b18a7ce52870f55d6e55eab1"
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain/Materials/Leaf01A.mat",
+      "observed_blob": "4f2dc9059ccb30c05eef656e5910997c91ab494d",
+      "source_blob": "2c98627981b106888e59d05865afd2bd029842da"
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain/Materials/Leaf01B.mat",
+      "observed_blob": "bf1e041cf9fa9fc605e0a0176f04605672de1bc3",
+      "source_blob": "83f7a61d09ae267fdc56f9f0cf487feb5b753f27"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/bark_2_d.mat",
+      "observed_blob": "04479d7005f001046039dc677af4e8c9cf48e9b8",
+      "source_blob": "22c270c3a6840d0ee727c4af003dbaa5daa22851"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/cobblestone_wall_1_fixed_d.mat",
+      "observed_blob": "70d4a61876543e30e0e222985526c2463ea73918",
+      "source_blob": "89e2e25b0ed9861ab2a33a4e37cc7955e3c6fdb0"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/granite_1_d.mat",
+      "observed_blob": "01761667fa22e97dcf5c7bbc6f6b12fb1db80c48",
+      "source_blob": "718937f8ef9e469cbe338601cfb7e2923b4e0a38"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/stone_wall_3_d.mat",
+      "observed_blob": "f41498a00741f7848b55a0ce711d2aaeefad61ee",
+      "source_blob": "635b8086e955cb3787dd94bea004551312439580"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/wood_1_d.mat",
+      "observed_blob": "e52d7989127969804996de268406c674a081a5cd",
+      "source_blob": "12417c94fff6a2d318d5455ae8d82003be752f53"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/wooden-boards-texture_d.mat",
+      "observed_blob": "391b549ae1bfd65c1dd2a43adadd2d2462a27f54",
+      "source_blob": "f4faea0c3deef5e0b578ab8ba7ebafdc418f0070"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Animations/Main Camera.controller",
+      "observed_blob": "7b6afc0ca5702965636b1a5c03a3e07b0ddb1923",
+      "source_blob": "90e09d7f0f966557663439ee2e4aa56418ef7884"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Animations/cameraanim.anim",
+      "observed_blob": "38af4f30e78b785f566afb88299116fd3dbb55b5",
+      "source_blob": "6534f364db76e12c26456b7390f443e7397094c2"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/bark01.mat",
+      "observed_blob": "b5373dd19bb70f741faca0f23bc165273de59c0b",
+      "source_blob": "666ed33d4b7ac64ec4a770b215688e4408928a6b"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/bark02.mat",
+      "observed_blob": "9a59d9c120396d34ec414234a75ed28e7e262da1",
+      "source_blob": "12ec1734ff51bc77a27f186a25a82382e9ec05e0"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/branch01.mat",
+      "observed_blob": "f993e2c62b08486e3bf9f10776e6b253191e1fa6",
+      "source_blob": "88cdc031ea655b3a417f1113043cf2162e64aa8a"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/branch02.mat",
+      "observed_blob": "b3524704c2d7a130358cad50930b152817f14a98",
+      "source_blob": "16449dbf0bd077c30bc93508660efad4117f2304"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/bush01.mat",
+      "observed_blob": "19c893824baa9decd981c2f41b41ef9e72ca2b71",
+      "source_blob": "b73898cfb71b02bf7940eb80a3a29b273fa74218"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/bush02.mat",
+      "observed_blob": "0cff699592132fc1658b19f15f724b512e764f2a",
+      "source_blob": "8cae041a36fb1842366b545f9985efa32d78d806"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/sky.mat",
+      "observed_blob": "3317b2f95513f1a005159fa541d4bbfef1b15c75",
+      "source_blob": "955a8e4cf7d17de62e21dae1f992a1cfeb688a99"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/skybox.mat",
+      "observed_blob": "5cbfe757e07a4c9bc912471563394efcdbbd09e5",
+      "source_blob": "b77ceb0d2c45ba180a6cf3f9ebc6c684fe6b67dc"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush01.prefab",
+      "observed_blob": "c2979036d97434bf314bf534357200763b79cdd0",
+      "source_blob": "188596a39689830aa18c8521b4ba42cbe72d763e"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush02.prefab",
+      "observed_blob": "9242cb56286bf7d4d41b1439c7adcc59895b8136",
+      "source_blob": "a0af4e5ca6ed3f0c0ee4236577f72fab2e40616d"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush03.prefab",
+      "observed_blob": "5e9f307c314d616dfcafe8205662ca1dd963e1ca",
+      "source_blob": "2d758a150ff1bf7c6b47289827fe06f66bcc5d0c"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush04.prefab",
+      "observed_blob": "716452dc8e99cc4825cb0b7f5f87ba924711aa8e",
+      "source_blob": "05e02f66333d96926ef39bf991dca60b8e59a267"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush05.prefab",
+      "observed_blob": "a4770c18914c9335a88008ff7e601ea7fcdbcbfc",
+      "source_blob": "aac1458230b9f8c3aa814101aa98572c9d24a159"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush06.prefab",
+      "observed_blob": "9fac5760903a2d8a7cda16a708ec1efe1081ca64",
+      "source_blob": "3c0503365723e558d8a70a45929a47f5dd5edf6d"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/tree01.prefab",
+      "observed_blob": "cd866c272816d9aedc2bfd2afa2a882786688a54",
+      "source_blob": "cf6db84b60b50d1b31a4d99b0a8af4d533313a50"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/tree02.prefab",
+      "observed_blob": "d174315669ee7895afc8892b3f5f448334ef7c65",
+      "source_blob": "b872e32d718e8ffaedc922be79c06782d2b57857"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/tree03.prefab",
+      "observed_blob": "3d3c8dfa118ca4ff02a04caf632a8fed5eb30b4e",
+      "source_blob": "aaa322e1670c6757916d92d24a1158025b898836"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/tree04.prefab",
+      "observed_blob": "324dcfbcd241634eb705d771660e726ca49bc280",
+      "source_blob": "22d7e9cedc28a0ce2f35aa016b3d4bab94a17238"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Scene/Demo.unity",
+      "observed_blob": "4fa7a5e047fb6d81175e61954ade08b21098c53b",
+      "source_blob": "8e5308d17dfd6f1e65823f076ddc7c46f3d5913e"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Scene/New Terrain.asset",
+      "observed_blob": "e821bdd1a1080e23a66a1503da8fd3efe06ffa0a",
+      "source_blob": "992b3fa854f4a064e38f5df744702dfedf2fe799"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Scene/SecondaryTerrain.asset",
+      "observed_blob": "e82c0fa10919720b7bd57980605c04cb96457e05",
+      "source_blob": "b0c60048c57ba1d2c11a3026fe504b1a6cc726db"
+    },
+    {
+      "path": "Unity/ProjectSettings/EditorBuildSettings.asset",
+      "observed_blob": "cfc20e6443f0c98f425247699e4db7a63723e22c",
+      "source_blob": "64cc6305e9963e906cda4c85882dd33eb9f870f3"
+    },
+    {
+      "path": "Unity/ProjectSettings/QualitySettings.asset",
+      "observed_blob": "ee009d573934ffb7545f0899ca5ff31d83aa573f",
+      "source_blob": "890e4e5aab0956513f5472ce46ae6b74a456ff04"
+    }
+  ],
+  "pristine_checkout": false,
+  "state": "PASS",
+  "recovered_entries_exempted": 0
+}

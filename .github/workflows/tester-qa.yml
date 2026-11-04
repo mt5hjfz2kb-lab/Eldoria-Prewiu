@@ -40,7 +40,10 @@ jobs:
                 // The unknown-path fallback and this workflow's self-change still require full QA.
                 if (['tools/work-status/report.mjs', 'tools/work-status/report.test.mjs',
                      'tools/check-documentation-governance.mjs',
-                     'tools/check-documentation-governance.test.mjs'].includes(p)) return false;
+                     'tools/check-documentation-governance.test.mjs',
+                     'tools/art-knowledge/select.mjs', 'tools/art-knowledge/select.test.mjs',
+                     'tools/mission-continuity/core.mjs',
+                     'tools/mission-continuity/core.test.mjs'].includes(p)) return false;
                 return true;
               };
               return relevant(file.filename) ||

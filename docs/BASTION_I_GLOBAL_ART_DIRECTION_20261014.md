@@ -1,3 +1,5 @@
+> **CONTEXTO HISTÓRICO DE EJECUCIÓN — método sujeto al canon actual.** La rama indicada abajo es histórica, no una rama viva de producción: la base integrada actual es `main`. Las propuestas de masas y parcelas del 14/10 no sustituyen [el canon de Valoria de 20/10](VALORIA_VISUAL_REFERENCE_CANON_20261020.md), la eliminación posterior de parcelas visibles ni [AGENTS.md](../AGENTS.md). Se conserva el método de crítica global y la evidencia de ensayos; los permisos de edición se consultan en [el registro](../pipeline/active-workstreams.json).
+
 # BASTIÓN I — DIRECCIÓN ARTÍSTICA GLOBAL, CAMBIO DE MÉTODO
 Fecha: 2026-10-14 · Estado: instrucción de producción, NO aprobación de arte.
 Repositorio: Eldoria-Prewiu · Rama viva: integration/valoria-bastion1-player-scene-20261012.

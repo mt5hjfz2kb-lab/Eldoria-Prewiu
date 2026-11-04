@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "valoria-master-plan-layered-construction-20261016",
+  "request_id": "valoria-master-plan-layered-construction-20261016",
+  "asset_or_sector": "Reference-led layered military UI reconstruction and canonical UI corrections",
+  "profile": "environment_composition",
+  "visual_gate_state": "NATIVE_UI_WIP",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Inspected authentic training capture: narrow photographic strip and oversized blue panes erase approved courtyard composition. Rebuild with independently derived courtyard and isolated archer, compact order controls, preserve original source images and domain commands.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "unity_native_uGUI": true,
+    "existing_3d_assets_modified": false
+  },
+  "validation": {
+    "source_gate": "Owner authorizes structural technique change. Built-in image editing derives two candidate layers from approved training source. Record source and output hashes; derivatives are not original references or ART_APPROVED.",
+    "final_gate": "Real Unity both orientation native captures and PlayMode EditMode including III–V progression, real march state, no duplicate construction page, dialogues in safe area, raycasts, zero save loss. Owner artistic approval remains separate."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "notes": "PR136 only. No Tripo or paid API call. Genuine new native screenshots required; generated resources are never proof of runtime."
+}
