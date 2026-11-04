@@ -130,7 +130,11 @@ namespace Eldoria.ReferenceClean.Editor
             Require(city.Gateway.Advance(),"Real gateway did not complete build");
             city.Presenter.RefreshState();
             host.Hud.Refresh();
-            Require(city.Gateway.Snapshot().SawmillLevel==1,"Real level did not increment");
+            var finishedState=city.Gateway.Snapshot();
+            Require(finishedState.SawmillLevel==1,"Real level did not increment");
+            Require(finishedState.CompletedTaskIds!=null &&
+                    finishedState.CompletedTaskIds.Contains("sawmill:delight-sawmill-test"),
+                "Real completion lacks the persisted LocalGateway task receipt");
 
             yield return new WaitForSecondsRealtime(.36f);
             Require(fx.ActiveFinishSprites>0,
@@ -189,11 +193,43 @@ namespace Eldoria.ReferenceClean.Editor
                                    Math.Abs(before[p].b-after[p].b);
                     if(difference>18)changedPixels++;
                 }
+                // Measure local visual change at the REAL sawmill hotspot,
+                // not just an unrelated animated sky/background pixel.
+                var site=host.FindTarget("sawmill");
+                Require(site,"Canonical sawmill hotspot absent during A/B");
+                var collider=site.GetComponent<Collider>();
+                Require(collider,"Cannot establish genuine sawmill capture region");
+                var camera=host.PlayerCamera;
+                float previousAspect=camera.aspect;
+                Vector3 screenSite;
+                try
+                {
+                    camera.aspect=width/(float)height;
+                    screenSite=camera.WorldToViewportPoint(collider.bounds.center);
+                }
+                finally { camera.aspect=previousAspect; }
+                Require(screenSite.z>0f && screenSite.x>0f && screenSite.x<1f &&
+                        screenSite.y>0f && screenSite.y<1f,
+                    "Sawmill site not framed inside real camera");
+                int x0=Mathf.Clamp(Mathf.FloorToInt((screenSite.x-.24f)*width),0,width-1);
+                int x1=Mathf.Clamp(Mathf.CeilToInt((screenSite.x+.24f)*width),0,width);
+                int y0=Mathf.Clamp(Mathf.FloorToInt((screenSite.y-.24f)*height),0,height-1);
+                int y1=Mathf.Clamp(Mathf.CeilToInt((screenSite.y+.24f)*height),0,height);
+                int siteChanged=0;
+                for(int y=y0;y<y1;y++)for(int x=x0;x<x1;x++)
+                {
+                    int index=y*width+x;
+                    int difference=Math.Abs(before[index].r-after[index].r)+
+                                   Math.Abs(before[index].g-after[index].g)+
+                                   Math.Abs(before[index].b-after[index].b);
+                    if(difference>18)siteChanged++;
+                }
                 Debug.Log("CONSTRUCTION_DELIGHT_PIXEL_DELTA stage="+stage+
-                          " resolution="+width+"x"+height+" changed="+changedPixels);
-                Require(changedPixels>=50,
-                    "Effects do not materially reach the authentic player camera: "+
-                    stage+" "+width+"x"+height+" changed="+changedPixels);
+                          " resolution="+width+"x"+height+
+                          " global="+changedPixels+" sawmill_site="+siteChanged);
+                Require(changedPixels>=50 && siteChanged>=30,
+                    "Effects insufficient at AUTHENTIC sawmill on "+stage+" "+
+                    width+"x"+height+": global="+changedPixels+" site="+siteChanged);
             }
             finally
             {
