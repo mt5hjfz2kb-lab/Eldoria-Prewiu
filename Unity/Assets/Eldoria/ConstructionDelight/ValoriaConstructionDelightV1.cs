@@ -51,9 +51,10 @@ namespace Eldoria.ReferenceClean
         float nextWorkPulse;
 
         SpriteField loopDust, loopMotes, openingDust, finishDust;
-        SpriteField finishEmbers, finishRing, finishHalo;
+        SpriteField finishEmbers, finishRing, finishHalo, roofGlints, roofGleam;
         // Actual facade details, relative to the real renderer bounds.
         readonly Vector3[] facadeAccents = new Vector3[4];
+        readonly Vector3[] roofAccents = new Vector3[4];
         SpriteField[] allFields;
         Texture2D dustTexture, ringTexture;
         Material dustMaterial, ringMaterial;
@@ -67,7 +68,9 @@ namespace Eldoria.ReferenceClean
         public int ActiveFinishSprites => (finishDust?.VisibleCount ?? 0) +
                                          (finishEmbers?.VisibleCount ?? 0) +
                                          (finishRing?.VisibleCount ?? 0) +
-                                         (finishHalo?.VisibleCount ?? 0);
+                                         (finishHalo?.VisibleCount ?? 0) +
+                                         (roofGlints?.VisibleCount ?? 0) +
+                                         (roofGleam?.VisibleCount ?? 0);
 
         void Awake()
         {
@@ -225,11 +228,16 @@ namespace Eldoria.ReferenceClean
             // No drifting geometric circle on the grass: real completion
             // instead illuminates the facade and releases fine artisan dust.
             finishRing.Tint = new Color(.91f,.79f,.59f,0f);
-            finishHalo.Tint = new Color(1f,.85f,.64f,.27f);
+            finishHalo.Tint = new Color(1f,.87f,.67f,.33f);
+            roofGlints.Tint = new Color(1f,.82f,.55f,.79f);
+            roofGleam.Tint = new Color(1f,.88f,.68f,.32f);
 
             finishDust.Emit(29);
             finishEmbers.Emit(id == "bastion" ? 43 : 38);
             finishEmbers.EmitAccents(facadeAccents,.46f,.73f);
+            roofGlints.Emit(12);
+            roofGlints.EmitAccents(roofAccents,.28f,.47f);
+            roofGleam.Emit(1);
             finishHalo.Emit(1);
             // A brief, restrained warm highlight on the ACTUAL stone/timber
             // renderers is more satisfying than gold specks on empty grass.
@@ -259,8 +267,12 @@ namespace Eldoria.ReferenceClean
             float foundationOffset=frontDepth*.40f+.07f;
             Vector3 ground = new Vector3(b.center.x,b.min.y+.43f,b.center.z) +
                              toward*foundationOffset;
-            Vector3 facade = new Vector3(b.center.x,b.min.y+b.size.y*.46f,b.center.z) +
+            Vector3 facade = new Vector3(b.center.x,b.min.y+b.size.y*.60f,b.center.z) +
                              toward*(frontDepth+.30f);
+            // Camera-side gold glints follow the true roof and front gable,
+            // not the empty foreground soil.
+            Vector3 roofFront=new Vector3(b.center.x,b.min.y+b.size.y*.84f,b.center.z)+
+                toward*(frontDepth+.36f);
             Vector3 lateral = cam ? cam.transform.right : Vector3.right;
             lateral.y=0f;
             lateral=lateral.sqrMagnitude>.001f?lateral.normalized:Vector3.right;
@@ -271,6 +283,10 @@ namespace Eldoria.ReferenceClean
             facadeAccents[1]=lateral*halfWidth+Vector3.up*upper;
             facadeAccents[2]=lateral*(-halfWidth*.67f)-Vector3.up*lower;
             facadeAccents[3]=lateral*(halfWidth*.67f)-Vector3.up*lower;
+            roofAccents[0]=lateral*(-halfWidth*.93f)-Vector3.up*(b.extents.y*.17f);
+            roofAccents[1]=lateral*(halfWidth*.93f)-Vector3.up*(b.extents.y*.17f);
+            roofAccents[2]=lateral*(-halfWidth*.50f)+Vector3.up*(b.extents.y*.10f);
+            roofAccents[3]=lateral*(halfWidth*.50f)+Vector3.up*(b.extents.y*.10f);
             loopDust.Site(ground,footprint*.77f);
             loopMotes.Site(ground+Vector3.up*.24f,footprint*.69f);
             openingDust.Site(ground,footprint*.84f);
@@ -278,9 +294,12 @@ namespace Eldoria.ReferenceClean
             finishEmbers.Site(facade,footprint*.85f);
             // A foundation-aligned sand ripple, not a screen-facing roof ring.
             finishRing.Site(ground+Vector3.up*.04f,0f);
-            finishHalo.Site(facade,0f);
+            finishHalo.Site(roofFront,0f);
+            roofGlints.Site(roofFront,footprint*.48f);
+            roofGleam.Site(roofFront,0f);
             finishRing.BaseSize=Mathf.Clamp(footprint*1.05f,1.8f,7.2f);
-            finishHalo.BaseSize=Mathf.Clamp(footprint*.99f,1.6f,6.3f);
+            finishHalo.BaseSize=Mathf.Clamp(footprint*.85f,1.5f,5.6f);
+            roofGleam.BaseSize=Mathf.Clamp(footprint*.70f,1.3f,4.4f);
             return true;
         }
 
@@ -421,7 +440,9 @@ namespace Eldoria.ReferenceClean
             finishEmbers=NewField("Finish / antique-gold glints",dustMaterial,70,0f,.58f,1.18f,.15f,.31f,.66f,false,57);
             finishRing=NewField("Finish / foundation settling wave",ringMaterial,2,0f,1.28f,1.28f,1f,1f,0f,true,79,true);
             finishHalo=NewField("Finish / warm timber reveal",dustMaterial,2,0f,1.12f,1.12f,1f,1f,0f,true,83);
-            allFields=new[]{loopDust,loopMotes,openingDust,finishDust,finishEmbers,finishRing,finishHalo};
+            roofGlints=NewField("Finish / artisan roof accents",dustMaterial,30,0f,.73f,1.32f,.13f,.25f,.30f,false,97);
+            roofGleam=NewField("Finish / soft rooflight reveal",dustMaterial,2,0f,1.28f,1.28f,1f,1f,0f,true,103);
+            allFields=new[]{loopDust,loopMotes,openingDust,finishDust,finishEmbers,finishRing,finishHalo,roofGlints,roofGleam};
         }
 
         SpriteField NewField(string name,Material material,int cap,float rate,
@@ -546,8 +567,8 @@ namespace Eldoria.ReferenceClean
                 // Gradual warm rise and fall. Keeps the original wood/stone
                 // textures and light response, without a bright yellow flash.
                 float warmth=Mathf.Sin(Mathf.PI*time);
-                float red=1f+warmth*.31f;
-                float green=1f+warmth*.13f;
+                float red=1f+warmth*.40f;
+                float green=1f+warmth*.19f;
                 float blue=1f+warmth*.015f;
                 foreach(var l in layers)
                 {
