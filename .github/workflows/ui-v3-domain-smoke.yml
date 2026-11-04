@@ -108,7 +108,7 @@ jobs:
             const ownHeads=new Set(['6744fb6984320fdcf2ef3cb8067830fe95d38ea1',
               '2d16dd5d268e25e278f7cb6ae86fc0fd53bb83ff','99041df3127fd89766d56c7b9c2496325721a088',
               '61d0724c202a6bdaa970340d2fcfd4693b54bbc8','1aa97d9bd9d68fe196a50862f6cece49ea7244bd',
-              '17dfeb3e37bcb4615acfbe60e26e9099cfd9cfc9','f1d73d68789faf9aa7d85c38500b4568dcc943fc','39f2b9bb5bb9f1a19450fa41967d97dae268f373']);
+              '17dfeb3e37bcb4615acfbe60e26e9099cfd9cfc9','f1d73d68789faf9aa7d85c38500b4568dcc943fc','39f2b9bb5bb9f1a19450fa41967d97dae268f373','e37efca1eff0ca13d9b2b51c3173a67212fa427a']);
             const pr=(await github.rest.pulls.get({...context.repo,pull_number:136})).data;
             if(pr.head.sha!==head||pr.head.ref!==branch)return;
             const raw=(await github.rest.repos.getContent({...context.repo,path:'pipeline/active-workstreams.json',ref:'main'})).data;
@@ -142,5 +142,24 @@ jobs:
               const fresh=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id})).data.jobs;
               if(!neverStarted(fresh)){core.info('Runner started; preserve '+run.id);continue;}
               await github.rest.actions.cancelWorkflowRun({...context.repo,run_id:run.id});
-              core.info('OWN_SUPERSEDED_NATIVE_NEVER_STARTED '+run.id+' source='+run.head_sha);
+              core.info('OWN_SUPERSEDED_NATIVE_CANCEL_REQUESTED '+run.id+' source='+run.head_sha);
+              // GitHub's ordinary cancel preserves jobs guarded by always().
+              // Use the documented fallback ONLY if that request did not stop
+              // this own obsolete job and it still has never acquired a runner.
+              await new Promise(resolve=>setTimeout(resolve,15000));
+              const after=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:run.id})).data;
+              if(after.status==='completed')continue;
+              const ownerNow=(await github.rest.pulls.get({...context.repo,pull_number:136})).data;
+              if(ownerNow.head.sha!==head)return;
+              const leaseNow=(await github.rest.repos.getContent({...context.repo,path:'pipeline/active-workstreams.json',ref:'main'})).data;
+              const holdersNow=JSON.parse(Buffer.from(leaseNow.content,'base64').toString('utf8')).active
+                .filter(w=>w.resources?.includes('windows-runner-heavy'));
+              if(holdersNow.length!==1||holdersNow[0].owner!==holders[0].owner||
+                holdersNow[0].id!==holders[0].id||holdersNow[0].ownership_revision!==holders[0].ownership_revision||
+                holdersNow[0].ownership_state!=='claimed')return;
+              const remaining=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id})).data.jobs;
+              if(!neverStarted(remaining)){core.info('Preserve job that started after cancel request '+run.id);continue;}
+              await github.request('POST /repos/{owner}/{repo}/actions/runs/{run_id}/force-cancel',
+                {...context.repo,run_id:run.id});
+              core.info('OWN_SUPERSEDED_NEVER_STARTED_FORCE_CANCEL_REQUESTED '+run.id);
             }
