@@ -121,8 +121,16 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
                     // together under the same frame. Title can be temporarily
                     // presented under another layout parent by Unity.
                     var actualFrame=actualPaper.rectTransform.parent as RectTransform;
+                    // The UI node's literal name contains " / ". Unity's
+                    // Transform.Find treats '/' as a CHILD PATH separator,
+                    // not part of a literal name. Enumerate the direct
+                    // children, as the 48-frame certified preflight does.
+                    // This fixes false negatives; it does not weaken the
+                    // on-screen overlap or any other native assertion.
                     var actualAperture=actualFrame?
-                        actualFrame.Find("Dialogue / genuine portrait aperture") as RectTransform:null;
+                        actualFrame.Cast<Transform>().FirstOrDefault(child=>
+                            child.name=="Dialogue / genuine portrait aperture")
+                        as RectTransform:null;
                     // RectTransform's anchoredPosition uses anchor/pivot
                     // coordinates. The manuscript is a mesh in its own
                     // centred rect. Comparing these raw values is not a
