@@ -53,6 +53,28 @@ jobs:
           Write-Host "DELIGHT_LICENSE_DIAGNOSTIC editor_processes=$editor"
           Write-Host 'READ_ONLY_ONLY: no license strings, refresh, Hub start, process termination or file edits'
 
+      - name: Try normal existing Unity Hub startup with no sign-in, no restart
+        if: ${{ contains(github.event.head_commit.message, '[delight-hub-try]') }}
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Other native programs active; do not interfere'
+          }
+          $hub=Join-Path $env:ProgramFiles 'Unity Hub/Unity Hub.exe'
+          if(-not(Test-Path $hub)){throw 'Unity Hub executable missing; no installation attempted'}
+          $before=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity Hub|UnityHub'}).Count
+          if($before -eq 0){
+            Start-Process -FilePath $hub -WindowStyle Minimized
+            Write-Host 'DELIGHT_HUB_START_REQUESTED existing-installed-application-only'
+          }else{
+            Write-Host 'DELIGHT_HUB_ALREADY_RUNNING no-change'
+          }
+          Start-Sleep -Seconds 18
+          $after=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity Hub|UnityHub'}).Count
+          $lic=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity.Licensing.Client'}).Count
+          Write-Host "DELIGHT_HUB_AFTER_START processes=$after licensing_client_processes=$lic"
+          Write-Host 'No credentials entered, EULA accepted, license files altered by this workflow, or system restarted'
+
   native-art:
     if: ${{ !contains(github.event.head_commit.message, '[delight-license-diagnostic]') }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
