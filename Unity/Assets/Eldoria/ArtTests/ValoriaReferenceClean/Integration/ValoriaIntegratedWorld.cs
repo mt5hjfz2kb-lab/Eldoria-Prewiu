@@ -81,6 +81,9 @@ namespace Eldoria.ReferenceClean {
     return null;
    };
    if(!Hud.GetComponent<RoyalGoldV2Narrative>())Hud.gameObject.AddComponent<RoyalGoldV2Narrative>();
+   var dialogue=Hud.GetComponent<RoyalGoldV4DialogueArt>();
+   if(!dialogue)dialogue=Hud.gameObject.AddComponent<RoyalGoldV4DialogueArt>();
+   dialogue.Source=Hud;
    // V3 shares the one RoyalHUD and receives only read-only target/camera
    // projections and the exact existing IRoyalSession building snapshot.
    // No second Canvas, controller, timer, EventSystem or gameplay rules.
