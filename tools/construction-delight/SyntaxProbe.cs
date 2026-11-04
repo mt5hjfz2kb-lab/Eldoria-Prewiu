@@ -76,6 +76,35 @@ internal static class SyntaxProbe
                 }
             }
         }
+        // StageAssembly must render authentic building parts, never leave the
+        // source hidden after completion, and never copy gameplay components.
+        var staging="Unity/Assets/Eldoria/ConstructionDelight/"+
+                    "ConstructionDelightStageAssembly.cs";
+        if(File.Exists(staging))
+        {
+            string src=File.ReadAllText(staging);
+            bool realMeshes=src.Contains("GetComponentsInChildren<MeshRenderer>(true)",
+                                         StringComparison.Ordinal) &&
+                            src.Contains("sharedMesh=filter.sharedMesh",
+                                         StringComparison.Ordinal) &&
+                            src.Contains("r.sharedMaterials=src.sharedMaterials",
+                                         StringComparison.Ordinal);
+            bool reversible=src.Contains("p.original.enabled=p.originalEnabled",
+                                         StringComparison.Ordinal) &&
+                            src.Contains("public void Clear()",StringComparison.Ordinal);
+            bool noFakeProgress=src.Contains("deadline-nowTicks",StringComparison.Ordinal) &&
+                                !src.Contains("Gateway.Execute(",StringComparison.Ordinal) &&
+                                !src.Contains("PlayerState.",StringComparison.Ordinal);
+            if(!realMeshes || !reversible || !noFakeProgress)
+            {
+                Console.Error.WriteLine("CONSTRUCTION_DELIGHT_STAGE_GUARD_FAIL");
+                errors++;
+            }
+            else Console.WriteLine("CONSTRUCTION_DELIGHT_STAGE_GUARD_PASS "+
+                "original mesh/material copy; reversible flags; real timer read-only");
+        }
+        else { Console.Error.WriteLine("CONSTRUCTION_DELIGHT_STAGE_MISSING");errors++; }
+
         // A resource path referenced by the runtime must exist in the exact
         // Unity checkout. Roslyn syntax alone cannot detect a missing shader.
         var shader="Unity/Assets/Eldoria/ConstructionDelight/Resources/"+
