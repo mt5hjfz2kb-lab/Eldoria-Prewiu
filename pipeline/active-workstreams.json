@@ -2084,8 +2084,9 @@
         "source_sha": "a5582aeeead5c68874f5a33edb33065bf2f43591",
         "unity_run_id": 41742424858,
         "closed_at": "2026-11-04T07:33:20.632Z",
-        "artistic_approval": "not_asserted",
-        "note": "Exact PR136 HEAD certified with full Unity SUCCESS at run 41742424858: native V4.1, EditMode, PlayMode, city build/upgrade/resource shortage, save/reopen and inline council/speed-ups. Native A/B desktop and mobile delivered for owner evaluation. Technical closure only; artistic >=8.2/10 not approved yet. No merge, publication, invented economy or new modals."
+        "artistic_approval": "provisional",
+        "note": "Exact PR136 HEAD certified with full Unity SUCCESS at run 41742424858: native V4.1, EditMode, PlayMode, city build/upgrade/resource shortage, save/reopen and inline council/speed-ups. Native A/B desktop and mobile delivered for owner evaluation. Technical closure only; artistic >=8.2/10 not approved yet. No merge, publication, invented economy or new modals.",
+        "artistic_approval_note": "El propietario acepta provisionalmente el A/B visual de construcción y mejoras el 04/11/2026. Mantenerlo como baseline candidato certificado; no equivale a ≥8,2/10 definitivo ni autoriza merge o publicación. Mejorar en una pasada artística futura sólo tras nueva decisión."
       },
       "claim_reason": "Orden expresa del propietario: reconstrucción visual y funcional real de cartela contextual inferior de construcción/mejora; ejecutar PR136 existente, aportar A/B Unity y pruebas completas. No merge ni publicación automática."
     },
