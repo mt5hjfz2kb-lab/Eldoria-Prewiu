@@ -86,6 +86,8 @@ namespace Eldoria.Editor
         [Serializable] sealed class BenchmarkResult
         {
             public string variant,source_sha; public bool physical_mobile_tested=false;
+            public string baseline_runtime_sha="c5051220294db3781c56878bab28eccaa798452d";
+            public string comparison_scope="Two reconciled runtime files; identical approved assets, metadata and instrumentation";
             public BenchmarkSample[] samples;
         }
         static IEnumerator BenchmarkExercise(ValoriaIntegratedWorld host)
