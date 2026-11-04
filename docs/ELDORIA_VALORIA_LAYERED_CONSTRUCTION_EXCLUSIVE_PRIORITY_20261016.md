@@ -1,3 +1,5 @@
+> **HISTÓRICO — prioridad y referencia del 16/10/2026.** La pausa general, el SHA de referencia y la escena aislada descritos abajo pertenecen a esa etapa. Para trabajo actual, prevalecen [AGENTS.md](../AGENTS.md), [el registro vivo](../pipeline/active-workstreams.json) y [el canon de Valoria de 20/10](VALORIA_VISUAL_REFERENCE_CANON_20261020.md). No reconstruir parcelas visibles ni reactivar otras ramas a partir de este texto. Se conserva íntegro como procedencia del método por capas.
+
 # ELDORIA — PRIORIDAD EXCLUSIVA DEL PROPIETARIO: CONSTRUCCIÓN DE VALORIA POR CAPAS (2026-10-16)
 
 ## Orden vigente y alcance
