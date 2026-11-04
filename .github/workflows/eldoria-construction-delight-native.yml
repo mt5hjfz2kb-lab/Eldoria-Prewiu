@@ -30,10 +30,19 @@ jobs:
             const d=JSON.parse(Buffer.from(r.data.content,'base64').toString('utf8'));
             const w=d.active.find(x=>x.id==='eldoria-construction-delight-v1-20261104');
             const claims=d.active.filter(x=>x.resources?.includes('windows-runner-heavy'));
+            const change=context.payload.head_commit?.message||'';
+            const asksNativeProcess=change.includes('[delight-hub-try]') ||
+                                    change.includes('[delight-hub-license-probe]');
             if(!w || w.owner!=='chatgpt-eldoria-construction-delight-20261104' ||
-               claims.length!==1 || claims[0].id!==w.id)
-              throw Error('No exclusive Delight runner claim');
-            core.info('READ_ONLY_DIAGNOSTIC_LEASE_PASS');
+               w.ownership_state!=='claimed' ||
+               w.branch!=='feature/eldoria-construction-delight-20261104')
+              throw Error('Canonical read-only diagnostic has no current owner');
+            if(asksNativeProcess &&
+               (claims.length!==1 || claims[0].id!==w.id))
+              throw Error('Changing or opening a native Windows process requires exclusive lease');
+            core.info(asksNativeProcess ?
+              'NATIVE_DIAGNOSTIC_EXCLUSIVE_LEASE_PASS' :
+              'READ_ONLY_DIAGNOSTIC_NO_HEAVY_LEASE_REQUIRED');
       - name: Inspect local licensing availability (existence only, never read tokens)
         shell: powershell
         run: |
