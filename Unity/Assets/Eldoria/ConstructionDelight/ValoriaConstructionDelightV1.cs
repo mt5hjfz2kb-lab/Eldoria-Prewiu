@@ -323,7 +323,7 @@ namespace Eldoria.ReferenceClean
 
         void InitializeArt()
         {
-            var ownedRoot=new GameObject("Construction Delight / owned particles");
+            var ownedRoot=new GameObject("ConstructionDelightOwnedParticles");
             ownedRoot.transform.SetParent(transform,false);
             particleRoot=ownedRoot.transform;
             dustTexture = MakeParticleTexture(false);
