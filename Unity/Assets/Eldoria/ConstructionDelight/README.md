@@ -104,3 +104,29 @@ Evolución A/B comprobada:
 **Próxima decisión:** el usuario revisa A/B y secuencia. Si pide más realce, priorizar mejoras de iluminación/arquitectura con comparación real, no agregar humo/confeti. Ningún cambio en gameplay, save, timers, modelos, escenas, PR #136 o main.
 
 El registro `pipeline/active-workstreams.json` refleja fuente y evidencia exacta y reserva temporal de Windows debe liberarse tras el workflow. Mantener PR #152 DRAFT hasta la aprobación explícita.
+
+
+## Rediseño artístico estructural — 05/11/2026
+
+El propietario rechazó expresamente la calidad del A/B V3. No añadir más confeti, humo o aros sobre la hierba. Diagnóstico causal: la escena solo recibía motas suspendidas y un tinte general a _BaseColor; no existía una progresión de luz que recorriera la arquitectura misma. Los porcentajes de píxeles cambiados no miden belleza.
+
+### Cambios realmente implementados en la rama PR #152 (sin certificación Unity de esta nueva revisión)
+
+1. Nuevo ConstructionDelightArchitecturalReveal.cs con renderizadores temporales sobre MeshFilter.sharedMesh auténticos del andamio durante obra y del edificio terminado al completar. No hay reemplazo de modelos, clon de materiales originales ni cambios en escena/guardado. Clímax 1,65 s, avance vertical de 0,03 a 0,87 s, disipación elegante.
+2. Shader URP Resources/ConstructionDelightArchitecturalReveal.shader con una línea luminosa en maderas/piedras, normal de superficie y acento en bordes; ZTest LEqual, sin escritura de profundidad ni sombras. Brillo de cimentación a cubierta SOBRE los triángulos originales, no un halo superpuesto.
+3. Una única luz cálida transitoria, sin sombras, sobre la fachada real. Bloom URP global solo si cámara ya habilita postprocesado y su capa lo permite. No se cambia configuración de cámara compartida. Se deshabilita todo al pasar a Mundo4X y destruye al acabar.
+4. En obra, polvo existente como apoyo y luz intermitente sobre el andamio auténtico: solo 35% de cada ciclo de 3 s para reducir coste GPU en temporizadores largos. Sin progreso falso.
+5. Se corrigió posible fuga de GameObjects: los nuevos MeshRenderer hijos se registran y desactivan/destruyen en Clear(), también en cambios de mundo/Gateway y OnDestroy().
+6. A/B suprime emisores y materiales, mallas, luz y Bloom transitorio en A; los restaura en B. Prueba de 34 PNG (26 anteriores + 8 de movimiento durante la obra), comprobante de tarea y save idéntico tras recarga. Verifica inexistencia de overlays tras recarga.
+7. SyntaxProbe.cs comprueba cuatro archivos C# y exige shader con GUID. Sin alterar Unity/Packages/manifest.json, donde NO está habilitado com.unity.modules.particlesystem, ajeno al alcance de escritura. Se conservan partículas batched de apoyo. VFX Graph no se adopta como base por sus requisitos compute/SSBO y compatibilidad móvil/WebGL.
+
+### Investigado / implementado / probado / pendiente
+
+- INVESTIGADO: APIs oficiales Unity/URP de shaders, Volumes, Bloom y restricciones móviles, contraste con 26 capturas verdaderas V3.
+- IMPLEMENTADO: shader, componente de revelado estructural, conexión con LocalGateway y captura nativa de 34 imágenes; cambios aislados en PR #152.
+- PROBADO SOLO FUENTE: [Run 41936083331](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41936083331): 36 assertions PASS, cuatro archivos con sintaxis Roslyn PASS, recurso shader presente. Ejecutado ANTES de la última optimización/timing: repetir a HEAD.
+- PENDIENTE: compilación Unity de esta revisión, ejecución de HDR shader/light/Bloom en escena, 34 capturas A/B auténticas, inspección artística, draw calls/tiempo en móvil, Android/WebGL, cuartel/Bastión/c3. NO hay evidencia >=8,2/10 y el propietario no ha aprobado arte. PR DRAFT, sin fusión/publicación.
+
+### Reanudar de forma segura
+
+Consultar main/pipeline/active-workstreams.json. Reclamar windows-runner-heavy con CAS cuando titular PR #136 lo libere, sincronizar snapshot al PR, activar tools/construction-delight/native-request.json con [delight-native], ejecutar Unity 6000.3.23f1 con escena real y evaluar todos los fotogramas. Liberar runner al concluir. No confundir verde CI con calidad; no alterar main, Packages/manifest.json, escenas ni modelos canónicos.
