@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T19:35:45Z",
+  "updated_at": "2026-11-04T23:36:46.647Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -143,8 +143,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR136_EXACT_CANDIDATE_NATIVE_CERTIFICATION",
-      "next": "Run complete reconciled candidate certification and private canonical Windows build; inspect four-format evidence, resolve failures, then reconcile live main before integration.",
+      "phase": "PR136_MERGED_POSTMERGE_VALIDATION",
+      "next": "Finish runs41933936250 and41933936233; record consolidation closeout. Same owner starts existing V41 workstream without interrupting these jobs.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -2998,13 +2998,13 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 18,
-      "write_scope_released": true,
+      "owner": "codex-eldoria-pr136-consolidation-20261104",
+      "ownership_state": "claimed",
+      "ownership_revision": 19,
+      "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
-      "claimed_at": "2026-11-03T00:38:00+01:00",
+      "claimed_at": "2026-11-04T23:36:46.647Z",
       "base_main_sha": "f016932317e049d340460c408d88b90b1290b692",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41*.cs",
@@ -3035,8 +3035,8 @@
       "resources": [],
       "art_production_routing": "required",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
-      "phase": "TRAINING_ART_PATCH_STAGED_BLOCKED_ON_PR136_SCOPE",
-      "next": "Guarded training-art patch staged at PR134 commit 70739fd836e9980c0896374bc6550f8ebb3b3704 (tools/eldoria-v41/training-finish-20261103.py), NOT applied. PR136 Valoria owner revision 109 controls overlapping Unity UI and Windows; PR134 ownership gate fails on inherited cross-PR files. Reconcile ownership/branch before application, then require exact-HEAD Unity captures 1600x900,900x1600,390x844,844x390 plus gameplay tests. No art approval or release.",
+      "phase": "COMBAT_T1_T5_IMPLEMENTATION_OWNER_AUTHORIZED",
+      "next": "Reconcile existing PR134 with main, implement preserved combat candidate and save-safe adapter; native validation before production promotion. Parameters remain candidates. No publication or spending.",
       "art_production_routing_reason": "Mandatory tracking for exact source reuse and ArtTests code; no new artwork generation authorized.",
       "ownership_history": [
         {
@@ -3151,7 +3151,12 @@
       },
       "handoff_reason": "Owner-directed takeover after interrupted normal chat 2026-10-31; same canonical PR136 and zero additional spending.",
       "released_at": "2026-10-31T21:38:59.618Z",
-      "release_reason": "TRAINING_ART_STAGED_20261103_NO_UNITY_WRITE; canonical PR136 scope actively claimed by different Valoria owner, no Windows reservation, no tested artistic A/B."
+      "release_reason": "TRAINING_ART_STAGED_20261103_NO_UNITY_WRITE; canonical PR136 scope actively claimed by different Valoria owner, no Windows reservation, no tested artistic A/B.",
+      "owner_instruction_20261105": {
+        "implement_combat": true,
+        "pve_hospital_overflow": "Owner explicitly chooses permanent loss of excess seriously wounded in PvE; light wounds unaffected",
+        "production_balance_approved": false
+      }
     },
     {
       "id": "eldoria-art-memory-continuity-hardening-20261024",
