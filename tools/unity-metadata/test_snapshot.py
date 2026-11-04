@@ -42,6 +42,21 @@ class SnapshotTests(unittest.TestCase):
         self.assertFalse(report['candidates'])
         self.assertEqual(report['observations'][0]['status'], 'ASSET_DIFFERS')
 
+    def test_accepts_exact_git_text_checkout_eol_conversion(self):
+        self.asset.write_bytes(self.asset.read_bytes().replace(b'\n', b'\r\n'))
+        report = snapshot(self.request, [self.root], self.root / 'result')
+        self.assertEqual(report['candidates'][0]['asset_match_mode'], 'git_crlf_to_lf')
+
+    def test_does_not_normalize_binary_assets(self):
+        old = self.asset
+        self.asset = self.asset.with_suffix('.glb')
+        old.rename(self.asset)
+        self.meta.rename(Path(str(self.asset) + '.meta'))
+        self.request['targets'][0]['path'] = 'Unity/Assets/Hero.glb'
+        self.asset.write_bytes(self.asset.read_bytes().replace(b'\n', b'\r\n'))
+        report = snapshot(self.request, [self.root], self.root / 'result')
+        self.assertFalse(report['candidates'])
+
     def test_missing_metadata_is_not_generated(self):
         self.meta.unlink()
         report = snapshot(self.request, [self.root], self.root / 'result')

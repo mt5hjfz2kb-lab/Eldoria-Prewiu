@@ -86,6 +86,18 @@ def snapshot(request, roots, output, byte_budget=2 * 1024**3):
                     raise ValueError('Asset hashing budget reached')
                 first = meta.read_bytes()
                 actual = git_blob(asset)
+                match_mode = 'exact_bytes'
+                # Git's automatic text checkout can use CRLF on Windows.
+                # Accept only an exact match after that specific conversion,
+                # never a fuzzy match or a transformation of binary assets.
+                if actual != target['blob_sha'] and asset.suffix in {'.shader', '.cs', '.json'}:
+                    data = asset.read_bytes()
+                    if b'\0' not in data:
+                        normalized = data.replace(b'\r\n', b'\n')
+                        normalized_blob = hashlib.sha1(
+                            f'blob {len(normalized)}\0'.encode('ascii') + normalized).hexdigest()
+                        if normalized_blob == target['blob_sha']:
+                            actual, match_mode = normalized_blob, 'git_crlf_to_lf'
                 read_bytes += before[0][0]
                 if before != (signature(asset), signature(meta)) or first != meta.read_bytes():
                     raise ValueError('Source changed during snapshot')
@@ -98,6 +110,7 @@ def snapshot(request, roots, output, byte_budget=2 * 1024**3):
                     report['candidates'].append({
                         'project': index, 'path': relative + '.meta',
                         'asset_blob_sha': actual,
+                        'asset_match_mode': match_mode,
                         'meta_sha256': hashlib.sha256(first).hexdigest(),
                         'snapshot_path': destination.relative_to(output).as_posix()})
                     observation['status'] = 'MATCHED_STABLE_SOURCE'
