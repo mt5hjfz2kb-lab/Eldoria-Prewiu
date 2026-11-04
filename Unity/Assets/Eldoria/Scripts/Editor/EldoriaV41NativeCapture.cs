@@ -99,6 +99,7 @@ namespace Eldoria.Editor
             state.ChapterThree.LyraRecruited=true;
             new FileStateStore(host.City.SaveFile).Save(state);host.City.ReloadForProbe();yield return null;
             var heroes=host.Hud.GetComponent<HeroesApprovedDestination>();
+            string benchmarkSave=File.ReadAllText(host.City.SaveFile);
             var samples=new System.Collections.Generic.List<BenchmarkSample>();
             foreach(var screen in new[]{"city","aldric","lyra"})
             {
@@ -125,6 +126,8 @@ namespace Eldoria.Editor
                     reserved_bytes=UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong()});
                 if(screen!="city"){heroes.Close();yield return null;}
             }
+            Need(File.ReadAllText(host.City.SaveFile)==benchmarkSave,
+                "Benchmark navigation preserves the disposable save byte for byte");
             var result=new BenchmarkResult{variant=Environment.GetEnvironmentVariable("ELDORIA_BENCHMARK_VARIANT"),
                 source_sha=Environment.GetEnvironmentVariable("ALDRIC_REQUEST_SOURCE_SHA"),samples=samples.ToArray()};
             File.WriteAllText(Path.Combine(Output,"benchmark.json"),JsonUtility.ToJson(result,true));

@@ -12,6 +12,7 @@ El juego principal se desarrolla en **Unity/**, con Unity **6000.3.23f1**. **mai
 | Quién lleva cada trabajo y qué puede editar | [Registro de trabajos](pipeline/active-workstreams.json): `active`, `owner`, `ownership_state`, `ownership_revision`, `scope` y `resources` |
 | Qué está integrado y qué sigue pendiente | HEAD de [main](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/tree/main), [PR abiertas](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pulls) y sus cambios; después, solo la última cabecera pertinente de [estado](PROJECT_STATE.md) y [relevo](SESSION_HANDOFF.md) |
 | Qué versión se distribuye | [Manifiesto WebGL](pipeline/playtest-delivery.json) y [canal Android familiar](updates/android/family.json), con SHA, versión y evidencia de entrega |
+| Dónde guardar cada archivo y qué conservar como histórico | [Guía de organización y auditoría completa del árbol](docs/project-organization/README.md) |
 | Dónde encontrar contratos, referencias y pruebas | [Índice documental](docs/DOCUMENTATION_INDEX.md) |
 | Cómo continuar sin duplicar trabajo | [Arranque técnico](tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md) y [protocolo de concurrencia](docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md) |
 
@@ -47,7 +48,7 @@ Una build verde, un upload aceptado, una versión activada, la aprobación artí
 ## Prototipo web heredado
 
 - `v0220/index.html` y `v0220/js/`: fuente editable del prototipo histórico y referencia de paridad; no son el runtime Unity.
-- `playtest/`: salida generada del prototipo; no editar directamente.
+- `playtest/`: nombre de salida generada del prototipo; no forma parte del árbol auditado. Puede crearse al preparar una entrega; no es una carpeta fuente pendiente de recuperar.
 - `tester-v0265/`: instantánea congelada Closed Playtest T1 / 0.26.5-test.2.
 - `v019*`, `v020*`, `v0210`: versiones históricas; conservar sin reactivar su producción.
 - Los metadatos v0.32.0 pertenecen al prototipo web, no identifican una entrega Unity.

@@ -2,7 +2,7 @@
 
 > **Pacto fundacional permanente (ELDORIA_OWNER_AI_COLLABORATION_V1):** leer la sección «Pacto fundacional propietario–IA» de [AGENTS.md](../AGENTS.md) **antes de empezar o continuar cualquier trabajo**. El propietario no programa; la IA debe tomar iniciativa, ejercer juicio crítico independiente, contrastar el resultado real con el objetivo y reconocer errores, sin esperar a que el propietario diagnostique los problemas. No confundir éxito técnico con calidad del juego. Esta responsabilidad subsiste en todos los relevos.
 
-Navegación revisada el 01-11-2026. Entrada general: [README](../README.md). Los datos vivos permanecen en sus registros; esta guía no mantiene otra lista de versiones o responsables.
+Navegación revisada el 04-11-2026. Entrada general: [README](../README.md). Los datos vivos permanecen en sus registros; esta guía no mantiene otra lista de versiones o responsables.
 
 ## Preflight obligatorio antes de crear una PR — corrección del incidente #115/#116
 
@@ -57,6 +57,10 @@ El mismo resumen separa desarrollo, candidata con QA técnica registrada para su
 - Un fallo requiere diagnóstico concreto; una denegación de seguridad no se elude por otra API. Continuar trabajo independiente permitido.
 - Mensajes de progreso no son pausas. No pedir «continúa» para pasos ya autorizados. No afirmar ejecución de fondo al terminar un turno.
 - Cerrar solo con resultado solicitado comprobado o bloqueo real; registrar rama/SHA, evidencia y pendiente exacto. No modificar los estados de entrega de otros propietarios.
+
+## Antes de crear o mover archivos
+
+Consultar [la guía de ubicación de archivos](../docs/project-organization/README.md). Reutilizar la carpeta del área; conservar GUID y referencias. Para inventario estructural sin Unity: `python3 tools/repository-organization/audit.py --output /tmp/eldoria-organization.json`. El resultado distingue copias idénticas, documentación pendiente y límites de la búsqueda; no autoriza borrado ni declara un recurso sin uso.
 
 ## Historia bajo demanda
 
