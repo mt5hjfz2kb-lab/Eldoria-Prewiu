@@ -38,7 +38,23 @@ jobs:
             [IO.File]::WriteAllBytes((Join-Path $root $name),$bytes)
           }
           $args=@((Join-Path $root 'snapshot.py'),'--request',(Join-Path $root 'recovery-request.json'),'--output',(Join-Path $root 'output'),'--search-root',$env:RUNNER_WORKSPACE,'--search-root',$env:RUNNER_TEMP)
-          & python @args
+          $candidates=@()
+          foreach($name in @('python.exe','py.exe')){
+            $command=Get-Command $name -ErrorAction SilentlyContinue
+            if($command -and $command.Source -notmatch 'WindowsApps'){ $candidates += $command.Source }
+          }
+          foreach($base in @((Join-Path $env:ProgramFiles 'Blender Foundation'),(Join-Path $env:LOCALAPPDATA 'Programs/Python'))){
+            if(Test-Path -LiteralPath $base){
+              $candidates += @(Get-ChildItem -LiteralPath $base -Recurse -File -Filter python.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName)
+            }
+          }
+          $pythonExe=$null
+          foreach($candidate in @($candidates | Select-Object -Unique)){
+            & $candidate -c 'import sys; sys.exit(0 if sys.version_info >= (3,9) else 1)'
+            if($LASTEXITCODE -eq 0){ $pythonExe=$candidate; break }
+          }
+          if(-not $pythonExe){ throw 'No existing Python 3.9+ interpreter found; no software installed' }
+          & $pythonExe @args
           if($LASTEXITCODE -ne 0){ throw 'Read-only metadata snapshot failed' }
       - name: Preserve original metadata and source match evidence
         if: always()
