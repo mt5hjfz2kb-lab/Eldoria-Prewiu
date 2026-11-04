@@ -1,5 +1,7 @@
 # Eldoria — Direct delivery coordination, 2026-10-10
 
+> **AVISO DE VIGENCIA (04/11/2026): INSTANTÁNEA DE COORDINACIÓN DEL 10/10, NO REGISTRO VIVO.** Los propietarios, HEAD, reservas Windows/Pages, estados de CI y prioridades citados aquí pueden haber cambiado. **No reclamar ni liberar recursos basándose en este texto.** Para trabajar, consultar [AGENTS.md](../AGENTS.md), [pipeline/active-workstreams.json](../pipeline/active-workstreams.json) y [ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md](ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md), y verificar las ejecuciones y ramas actuales. Se conserva el handoff como evidencia histórica.
+
 Purpose: durable, read-only-to-production coordination for disconnected chats. This document does not change ownership, create an additional department, authorize spending, or constitute a CI trigger. Always re-read live branch HEAD and GitHub Actions before making decisions.
 
 ## Workstream A — Region 1 visual v3
