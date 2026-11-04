@@ -137,6 +137,14 @@ namespace Eldoria.ReferenceClean.Editor
                                  "for the construction highlight");
             Comparison(host,renderers,"work",844,390);
             Comparison(host,renderers,"work",390,844);
+            // Real motion over time matters more than a still-frame pixel count.
+            // All captures come from the native Unity player camera.
+            for(int frame=0;frame<4;frame++)
+            {
+                yield return new WaitForSecondsRealtime(.24f);
+                Shot(host.PlayerCamera,"work-motion-"+frame+"-landscape",844,390);
+                Shot(host.PlayerCamera,"work-motion-"+frame+"-portrait",390,844);
+            }
 
             // The ONLY way to complete is through the real gateway and the
             // native isolated TestClock. No PlayerState edits or mock result.
@@ -202,10 +210,10 @@ namespace Eldoria.ReferenceClean.Editor
                 "  \"save_unchanged_after_reload\": true,\n"+
                 "  \"construction_from\": \"LocalGateway.Execute(Build)\",\n"+
                 "  \"completion_from\": \"TestClock + LocalGateway.Advance\",\n"+
-                "  \"images\": 26,\n"+
+                "  \"images\": 34,\n"+
                 "  \"art_approved\": false\n"+
                 "}\n");
-            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=26 save-preserved=true");
+            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=34 save-preserved=true");
             EditorApplication.Exit(0);
         }
 
