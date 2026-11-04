@@ -490,11 +490,11 @@ jobs:
           if(-not(Test-Path $receipt)){throw 'Missing real Unity native proof'}
           $d=Get-Content $receipt -Raw|ConvertFrom-Json
           $pngs=@(Get-ChildItem $folder -Filter '*.png' -File)
-          if($d.status -ne 'NATIVE_PASS' -or $d.images -ne 26 -or $pngs.Count -ne 26){
+          if($d.status -ne 'NATIVE_PASS' -or $d.images -ne 34 -or $pngs.Count -ne 34){
             throw "Real camera evidence failed: $($pngs.Count) images"
           }
           Copy-Item $log (Join-Path $folder 'unity-native.log') -Force
-          Write-Host 'DELIGHT_UNITY_NATIVE_PASS=26_CAMERA_CAPTURES'
+          Write-Host 'DELIGHT_UNITY_NATIVE_PASS=34_CAMERA_CAPTURES'
 
       - name: Restore original editor Search settings
         if: always()
