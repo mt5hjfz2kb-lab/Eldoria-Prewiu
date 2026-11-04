@@ -6255,6 +6255,27 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
+    },
+    {
+      "id": "eldoria-documentation-semantic-review-20261104",
+      "title": "Eldoria — revisión semántica documental, lote 1",
+      "owner": "chatgpt-eldoria-semantic-review-20261104",
+      "branch": "docs/semantic-review-batch1-20261104",
+      "status": "active",
+      "claimed_at": "2026-11-04T19:47:00Z",
+      "base_main_sha": "4fbfb2be22ca51ef8c48ae90838f4e6bce5f19d2",
+      "scope": [
+        "docs/project-organization/SEMANTIC_REVIEW_BATCH1_20261104.md"
+      ],
+      "resources": [],
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only review of existing source docs; new report only, no Unity/catalog edits.",
+      "budget_eur": 0,
+      "phase": "SEMANTIC_REVIEW_BATCH1",
+      "next": "Review high-risk historical operational docs against binding current contracts; document evidence and safe dispositions without editing claimed docs/catalog."
     }
   ],
   "history": [
