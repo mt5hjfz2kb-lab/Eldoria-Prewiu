@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "0f4413053c813e2fc82593f502e70b6451f1e8aa",
   "ownership_revision": 11,
-  "mode": "REAL_UNITY_EDITOR_AFTER_CSHARP_NAMESPACE_COLLISION_FIX",
+  "mode": "REAL_UNITY_NATIVE_AB_CORRECTED_BATTCHED_MESH_ROOT",
   "expected_images": 26,
   "formats": [
     "844x390",
@@ -22,7 +22,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 9,
+  "attempt": 10,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "Avoid Transform.Find slash interpretation: owned effect group uses slash-free name",
@@ -76,6 +76,8 @@
   "no_reboot": true,
   "no_interference": true,
   "root_cause_last_compile": "Compilation CS0234 Application.dataPath resolves to Eldoria.Application namespace. Fixed via UnityEngine.Application.dataPath.",
-  "previous_native_run": 41807760515,
-  "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea"
+  "previous_native_run": 41809767387,
+  "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
+  "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
+  "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06"
 }
