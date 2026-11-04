@@ -214,7 +214,16 @@ namespace Eldoria.ReferenceClean
                 glowMaterial.SetFloat(Sweep,Mathf.Lerp(-.18f,1.16f,cycle));
                 glowMaterial.SetFloat(Strength,.20f+.11f*Mathf.Sin(Mathf.PI*cycle));
             }
-            foreach(var overlay in overlays)if(overlay)overlay.enabled=visible && drawSurfaces;
+            foreach(var overlay in overlays)
+            {
+                if(!overlay)continue;
+                // A staged structure's original mesh part may still be landing.
+                // Never draw a glowing outline of a roof before that roof exists.
+                var source=overlay.transform.parent ?
+                    overlay.transform.parent.GetComponent<MeshRenderer>() : null;
+                overlay.enabled=visible && drawSurfaces &&
+                    (!source || source.enabled);
+            }
         }
 
         public void SetVisible(bool show,float time)
