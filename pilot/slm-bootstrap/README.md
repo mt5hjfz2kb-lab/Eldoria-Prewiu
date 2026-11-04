@@ -20,3 +20,16 @@ La reserva `windows-runner-heavy` está actualmente asignada a `eldoria-unity-me
 
 ## Límites
 No es posible activar una memoria permanente en el servidor Windows ocupado con las garantías de no interferencia vigentes. El paquete y los datos están preparados; el resto sigue **pendiente de implementar y validar**. Las pruebas temporales NO demuestran conexión con chats reales.
+
+
+## Ejecución comprobada de la preparación (4/11/2026)
+
+- Script de instalación segura y preflight: [`Install-SlmWindows.ps1`](Install-SlmWindows.ps1). Solo instala con `-Mode install`, y únicamente con una **reserva propia explícita en main** para el ID `eldoria-slm-permanent-bootstrap-20261104`, owner `chatgpt-eldoria-slm-bootstrap-20261104`.
+- Validación aislada hospedada (sin Windows): [GitHub Actions #41820422456](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41820422456) **SUCCESS**. El parser PowerShell informó `POWERSHELL_PARSE_PASS` y el verificador online confirmó `VERIFIED_SOURCES_PASS 8`.
+- El script y sus dependencias **NO se han ejecutado en un Windows real**. Comprobar un parser y una fuente no equivale a probar una instalación.
+- **No utilizar `-Mode install`** mientras el registro mantenga la reserva ajena. Tampoco activar automáticamente Web access o servicios en segundo plano.
+- No se ha modificado `main`, el código del juego, las PR abiertas, las reservas ni el instalador de Unity.
+
+### Orden de continuación
+
+Releer el registro de reservas. Una vez liberada oficialmente la reserva, asignar en main el ID del piloto SLM bajo CAS, verificar usuario y RAM, ejecutar el script en modo `check`; si pasa, ejecutar `install` en ese mismo usuario sin reiniciar. Comprobar después que los recuerdos se mantienen tras cerrar y reabrir el proceso, que Codex puede consultar MCP, y por último solicitar al propietario la autorización OAuth específica de ChatGPT.
