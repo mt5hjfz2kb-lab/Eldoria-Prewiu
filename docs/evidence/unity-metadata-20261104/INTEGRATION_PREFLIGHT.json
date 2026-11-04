@@ -1,28 +1,22 @@
 {
-  "status": "CANDIDATE_REJECTED_RESOURCE_ARCHIVED_FULL_NATIVE_PENDING",
-  "source_candidate": "6b9ff55aafe4296b6d9973008cbcfe2c09f3d397",
-  "observed": {
-    "legacy_model_still_in_main_resources": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
-    "main_unity_workflow": "Windows desktop build calls SceneSetup.BuildWindows, whose Build() regenerates scenes and invokes BuildPipeline.BuildPlayer.",
-    "pr136": "Prepared archive outside Unity and RejectedLegacyBastionBuildGuard are on the other unmerged branch; not silently consumed by metadata repair."
+  "run": 41844806444,
+  "candidate": "aae457d6a203fe19a7e74f88fdc14b3d6ec2d948",
+  "unity_tree": "de254f892ae05109d813af82366d63ea808747d8",
+  "artifact": 13334186188,
+  "artifact_zip_sha256": "94aa33bba2ab7ff4677413fd30ce49e981c952bc71ce2ec263711878eaac3779",
+  "files": {
+    "certificate.json": "b751857b4feca8df7bf6c5f19e3eee3ac8683efa63c8c21b1d5048f901f5e5e2",
+    "metadata-native.json": "458dac35f307ea4b67910489ada4d78680085543d327e5f4e9ff5fd3980069fe",
+    "metadata-before-import.json": "5aa18694b541187935ef8571f3d32f2c70c9f67cc40c9afc06961baa47c5b552",
+    "metadata-after-tests.json": "5aa18694b541187935ef8571f3d32f2c70c9f67cc40c9afc06961baa47c5b552",
+    "EditMode.xml": "7fe7a6232d3fe2f8ec240be95a2c3684e12cfe1e5fd296220d11e509da5ee33e",
+    "PlayMode.xml": "658201072714c8af9ff2620cf49b11479d862ee06f91793ccaffb8bec1cb8b39",
+    "tracked-changes.patch": "b451e8826ceb0102eeaefe272f88d57d7bb82485f4fb87339f3c83d2ef0fb7f7",
+    "tracked-state-review.json": "8aa4a4a97ddb70d070d7004ac9c8b76c735c637e18da078aa62bdd3e64193733"
   },
-  "official_reference": "https://docs.unity.com/en-us/engine/6000.3/manual/assets-and-media/assets-managing-runtime/introduction",
-  "inference": "Resources content is included in Player builds. Verify exclusion/guard before merging a metadata push that triggers the main player workflow; do not create a new build containing the owner-rejected model.",
-  "native_scope": "Next exact-candidate full proof: import/identity bytes, enabled-scene missing scripts, EditMode/PlayMode; script checks rejected Resource absence before Editor starts.",
-  "runtime_caller": {
-    "path": "Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs",
-    "enabled_default": true,
-    "level_gate": 3,
-    "operation": "Resources.Load of the rejected path followed by Instantiate when present; returns if null"
-  },
-  "csharp_sources_inspected": 448,
-  "pre_build_processor_interfaces_found": 0,
-  "search_index_limitation": "GitHub code search returned no results for known terms; absence was not trusted. Exact candidate C# blob contents were subsequently inspected.",
-  "revision_fence": {
-    "from": 9,
-    "to": 10,
-    "current_editor_interrupted": false
-  },
-  "candidate_action": "Move exact existing model/metadata blobs outside Assets under binding owner veto, without runtime-code or scene edits. Catalog locators synchronized with block preserved.",
-  "current_main_still_unmerged": true
+  "original_bytes_before_and_after_tests": 345,
+  "unexpected_tracked_changes": 0,
+  "native_result": "PASS",
+  "merged": false,
+  "published": false
 }

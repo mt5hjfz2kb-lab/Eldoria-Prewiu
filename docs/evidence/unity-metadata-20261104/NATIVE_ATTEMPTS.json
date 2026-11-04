@@ -93,6 +93,19 @@
       "artifact_zip_sha256": "ae0cf76f4aae26adb4e144b0e2e92b2d85c828cecbeb3c1cf40dc6f5cea9b692",
       "comparison": "60 of 61 tracked side effects byte-identical to prior run; only Demo.unity differs, solely 29 bytes within one generated LightingSettings GUID. Both normalized scenes have SHA256 21846a699bb16441b6baaafc8a789f6fbb0df27d50969eee4df4f795ea5ce9f8. Import log confirms DemoSettings.lighting generated with that GUID.",
       "fix": "Require exact normalized demo bytes plus generated LightingSettings file and matching metadata GUID. All other paths retain exact source/output blobs."
+    },
+    {
+      "run": 41844806444,
+      "candidate": "aae457d6a203fe19a7e74f88fdc14b3d6ec2d948",
+      "status": "FULL_NATIVE_PASS",
+      "artifact": 13334186188,
+      "artifact_zip_sha256": "94aa33bba2ab7ff4677413fd30ce49e981c952bc71ce2ec263711878eaac3779",
+      "original_metadata_before_and_after_tests": 345,
+      "editmode_passed": 57,
+      "playmode_passed": 73,
+      "failed_or_skipped": 0,
+      "unexpected_tracked_changes": 0,
+      "existing_baseline_serializations": 61
     }
   ],
   "checkout_checks": {
@@ -100,5 +113,5 @@
     "partial_clone_local_clone": "FAILED in disposable reproduction, approach rejected before native dispatch",
     "canonical_clone_seed_immutable_pack_objects": "Disposable local proof passed, but NOT usable across native jobs: runner cleanup removes the source cache. Abandoned for this environment."
   },
-  "next_mode": "Full native with exact known-baseline serialization hashes and post-test original-byte checkpoint"
+  "next_mode": "Native proof complete; integrate and verify main, then release temporary claims"
 }

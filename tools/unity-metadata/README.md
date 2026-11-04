@@ -108,3 +108,9 @@ are neither committed nor artistically approved. Unknown paths, changed source
 blobs, changed results or overlap with any recovered entry still fail. The
 certificate distinguishes a pristine checkout from these explicit side effects.
 All 345 raw hashes are checked again after the tests.
+
+The vendor Demo.unity migration creates DemoSettings.lighting with a fresh GUID.
+For this single exact scene, the checker binds that GUID to the generated asset's
+metadata and LightingSettings type, then verifies the complete normalized scene
+SHA-256. Every byte outside that one reference remains protected. Two prior real
+runs demonstrated identical normalized content; full run41844806444 passed.
