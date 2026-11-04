@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-03T23:58:40.315Z",
+  "updated_at": "2026-11-04T00:21:31.254Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3436,9 +3436,9 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 4,
+      "ownership_revision": 5,
       "write_scope_released": false,
-      "branch": "feature/eldoria-construction-delight-20261104",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-03T23:35:16.557Z",
       "base_main_sha": "d01bffc48f85d65b1061c2fc50ce78c49d9c3344",
@@ -3453,13 +3453,15 @@
         ".github/workflows/eldoria-construction-delight-native.yml",
         "tools/construction-delight/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "SOURCE_GATES_PASS_NATIVE_VISUAL_PROOF_BLOCKED_BY_ACTIVE_PR136_WINDOWS",
-      "next": "After PR136 active Windows run ends and area/runner genuinely released, claim windows-runner-heavy with fresh CAS; sync branch registry and create own scoped native-request.json to trigger gated Unity. Inspect 12 real camera PNGs at 390x844 and 844x390, correct art and rerun until quality merits owner A/B. No merge/publish before native proof and art approval.",
+      "phase": "UNITY_NATIVE_AB_PROOF_DISPATCH_20261104",
+      "next": "Trigger opt-in native-request.json on isolated PR152; after exact-head Unity run, inspect and correct all images before ART approval; release runner when run ends.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Source tests + real Unity 390x844 and 844x390 moving captures at exact HEAD, GPU/frame QA, human visual assessment",
@@ -3481,6 +3483,12 @@
         "native_request_dispatched": false,
         "resources_claimed": [],
         "budget_eur": 0
+      },
+      "candidate_branch": "feature/eldoria-construction-delight-20261104",
+      "native_lease": {
+        "reserved_at": "2026-11-04T00:21:31.253Z",
+        "source": "Owner explicitly requests finishing Construction Delight with genuine visual A/B; runner free after PR136 41742424858 success.",
+        "previous_run": 41742424858
       }
     }
   ],
