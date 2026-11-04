@@ -40,5 +40,12 @@
     "partial_clone_local_clone": "FAILED in disposable reproduction, approach rejected before native dispatch",
     "canonical_clone_seed_immutable_pack_objects": "Disposable local proof passed, but NOT usable across native jobs: runner cleanup removes the source cache. Abandoned for this environment."
   },
-  "next_mode": "full, only on candidate with rejected model and its metadata archived outside Unity"
+  "next_mode": "full, only on candidate with rejected model and its metadata archived outside Unity",
+  "in_progress_run_review": {
+    "run": 41821882671,
+    "candidate": "ae663ca494ea7d62eb4416b04eecf5cc38d0e266",
+    "actual_result_pending": true,
+    "configuration_gap_found_during_review": "Canonical full suite requires VALORIA_GAMEPLAY_PROBE=1 and an explicit ELDORIA_REGION1_CAPTURE_OUT; initial custom full harness omitted these and did not reject skipped cases.",
+    "next_harness_contract": "Enable disposable fixture/capture directory, require 61+ PlayMode cases with every case Passed, reject any skipped/failed/empty/foreign-assembly evidence. Exact Unity project root is also checked. Current Editor/job is not cancelled."
+  }
 }

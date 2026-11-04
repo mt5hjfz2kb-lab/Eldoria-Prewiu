@@ -45,3 +45,6 @@ jobs:
       - name: Verify test save identity isolation and exact settings restoration
         shell: pwsh
         run: ./tools/unity-metadata/test_native_settings.ps1
+      - name: Verify complete native fixtures, zero skips and exact test assembly source
+        shell: pwsh
+        run: ./tools/unity-metadata/test_native_test_contract.ps1

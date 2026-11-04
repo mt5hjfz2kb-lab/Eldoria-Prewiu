@@ -74,3 +74,10 @@ opening an Editor. Archived source bytes and GUID are preserved; ordinary asset
 reuse and all artistic approval remain blocked. The two existing catalog locators
 are updated, not promoted. Historical pending recovery copies are referenced by
 commit in the manifest after their exact restored destinations were verified.
+
+Full PlayMode uses the canonical `VALORIA_GAMEPLAY_PROBE=1` disposable save
+fixture and a new `ELDORIA_REGION1_CAPTURE_OUT` directory. NUnit acceptance requires
+61+ PlayMode cases and every selected case Passed, with no skips. Both suites must
+identify assemblies inside the exact project's Library/ScriptAssemblies directory;
+zero tests, foreign project output or a Passed root hiding skips are rejected.
+The contract has real PowerShell XML/disposable-fixture regression checks.

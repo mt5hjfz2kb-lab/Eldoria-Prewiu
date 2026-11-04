@@ -40,6 +40,7 @@ public static class EldoriaMetadataNativeVerification
         public string product_name;
         public string validation_mode;
         public bool scene_content_verified;
+        public string project_root;
     }
 
     static string Argument(string key)
@@ -70,6 +71,10 @@ public static class EldoriaMetadataNativeVerification
             if (report.company_name != Argument("-metadataCompany") || report.product_name != Argument("-metadataProduct"))
                 throw new Exception("Test persistence identity not isolated");
             string root = Directory.GetParent(UnityEngine.Application.dataPath).FullName;
+            report.project_root = Path.GetFullPath(root).Replace('\\', '/').TrimEnd('/');
+            string expectedRoot = Path.GetFullPath(Argument("-metadataProjectRoot")).Replace('\\', '/').TrimEnd('/');
+            if (!string.Equals(report.project_root, expectedRoot, StringComparison.OrdinalIgnoreCase))
+                throw new Exception("Unity opened a different project: " + report.project_root);
             var manifest = JsonUtility.FromJson<Manifest>(File.ReadAllText(Argument("-metadataManifest")));
             if (manifest == null || manifest.entries == null) throw new Exception("Recovery manifest is empty");
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);

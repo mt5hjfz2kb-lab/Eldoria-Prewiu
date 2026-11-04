@@ -91,6 +91,7 @@ $checkoutRows | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $e
 if(@($checkoutRows | Where-Object {-not $_.exact}).Count){ throw 'Checkout changed original metadata bytes BEFORE Unity; inspect line endings/configuration' }
 $nativeReport=Join-Path $evidenceRoot 'metadata-native.json'
 . (Join-Path $sourceRoot 'tools/unity-metadata/native_settings.ps1')
+. (Join-Path $sourceRoot 'tools/unity-metadata/native_test_contract.ps1')
 $testIdentity=Set-MetadataTestIdentity (Join-Path $projectRoot 'ProjectSettings/ProjectSettings.asset') $env:GITHUB_RUN_ID
 @{company=$testIdentity.Company;product=$testIdentity.Product;isolated_from_normal_save_identity=$true} |
     ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidenceRoot 'persistence-isolation.json')
@@ -109,9 +110,10 @@ function Invoke-MetadataEditor([string]$name,[string[]]$extra) {
     if($process.ExitCode -ne 0){ Get-Content -LiteralPath $editorLog -Tail 100; throw "$name failed with exit $($process.ExitCode)" }
 }
 
+$testSummary=@()
 try {
     try {
-        Invoke-MetadataEditor 'import-and-identities' @('-quit','-executeMethod','EldoriaMetadataNativeVerification.Run','-metadataManifest',$manifest,'-metadataCandidate',$checked,'-metadataReport',$nativeReport,'-metadataCompany',$testIdentity.Company,'-metadataProduct',$testIdentity.Product,'-metadataMode',$validationMode)
+        Invoke-MetadataEditor 'import-and-identities' @('-quit','-executeMethod','EldoriaMetadataNativeVerification.Run','-metadataManifest',$manifest,'-metadataCandidate',$checked,'-metadataReport',$nativeReport,'-metadataCompany',$testIdentity.Company,'-metadataProduct',$testIdentity.Product,'-metadataMode',$validationMode,'-metadataProjectRoot',$projectRoot)
     } finally {
         $observedDirectory=Join-Path $evidenceRoot 'metadata-observed'
         New-Item -ItemType Directory -Path $observedDirectory | Out-Null
@@ -138,10 +140,13 @@ try {
     $proof=Get-Content -LiteralPath $nativeReport -Raw | ConvertFrom-Json
     if($proof.state -ne 'PASS' -or $proof.candidate_sha -ne $checked){ throw 'Native identity verification did not pass' }
     if($validationMode -eq 'full') { foreach($platform in @('EditMode','PlayMode')){
+        if($platform -eq 'PlayMode'){
+            $fixture=Set-MetadataPlayModeFixture $evidenceRoot
+            $fixture | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidenceRoot 'playmode-fixture.json')
+        }
         $result=Join-Path $evidenceRoot ($platform + '.xml')
         Invoke-MetadataEditor $platform @('-runTests','-testPlatform',$platform,'-testResults',$result)
-        [xml]$xml=Get-Content -LiteralPath $result -Raw
-        if([int]$xml.'test-run'.failed -ne 0 -or [int]$xml.'test-run'.passed -lt 1){ throw "$platform test results are not passing" }
+        $testSummary+=Assert-MetadataTestResult $result $platform $projectRoot
     }
     }
 } finally {
@@ -152,5 +157,5 @@ if($LASTEXITCODE -ne 0){ throw 'Post-import tracked state unavailable' }
 $status | Set-Content -LiteralPath (Join-Path $evidenceRoot 'tracked-state.txt')
 if(@($status).Count -gt 0){ throw 'Unity changed tracked files in the isolated candidate; inspect evidence' }
 $certificateState=if($validationMode -eq 'full'){'PASS'}else{'IDENTITIES_PASS_ONLY'}
-@{state=$certificateState;validation_mode=$validationMode;full_tests_run=($validationMode -eq 'full');player_build_run=$false;candidate_sha=$checked;run_id=$env:GITHUB_RUN_ID;unity_version=$proof.unity_version;restored_entries=@($proof.entries).Count;production_projects_modified=$false;harness_editor_only=$true;test_persistence_isolated=$true;original_project_settings_restored=$true} |
-    ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidenceRoot 'certificate.json')
+@{state=$certificateState;validation_mode=$validationMode;full_tests_run=($validationMode -eq 'full');test_summary=$testSummary;player_build_run=$false;candidate_sha=$checked;run_id=$env:GITHUB_RUN_ID;unity_version=$proof.unity_version;restored_entries=@($proof.entries).Count;production_projects_modified=$false;harness_editor_only=$true;test_persistence_isolated=$true;original_project_settings_restored=$true} |
+    ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'certificate.json')
