@@ -4,11 +4,11 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "enabled": true,
   "status": "ACTIVE",
-  "asset_or_sector": "Valoria: activity while constructing and short antique-gold completion reveal on genuine building models",
+  "asset_or_sector": "Valoria: artisan construction activity + surface-based structural reveal over actual model geometry",
   "profile": "environment_composition",
   "visual_gate_state": "SOURCE_CANDIDATE_UNVERIFIED",
   "ai_authorship_policy": "required",
-  "diagnosis": "The current game already has persisted real building tasks and minimal flat ambient FX. Owner asks for premium-feeling movement and gratifying finish while preserving approved building cartouches. Add read-only world-space dust/chips/small gold halo with native Unity particles and no model deformation, no cheap flash, no fake progress, no extra HUD.",
+  "diagnosis": "Owner rejected all previous real Unity A/B effects as too weak/artificial. Three native passes demonstrated powder + glints + _BaseColor warm tint cannot supply satisfying construction/finish. Pivot: architectural surface sweep (faithfully follows existing meshes) with temporary local light and optional URP Bloom, timed reveal on authentic LocalGateway completion; keep dust as support and no invented mechanics.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -17,20 +17,23 @@
   },
   "capabilities": {
     "existing_qualified_donor_assets": true,
-    "unity_native_particle_system": true,
-    "existing_3d_assets_modified": false
+    "unity_native_particle_system": false,
+    "existing_3d_assets_modified": false,
+    "additive_hdr_mesh_shader": true,
+    "urplight_temporary": true,
+    "urp_bloom_conditional": true
   },
   "artist": {
-    "design": "Artist-directed warm stone/wood/antique gold; subtle persistent loop, 1.7s finish reveal, sparse particles and rings",
-    "source": "Unity/Assets/Eldoria/ConstructionDelight/ValoriaConstructionDelightV1.cs",
+    "design": "Cohesive timber/masonry light progression: soft worksite glints, authentic geometry rising warm reveal from foundations through roof, restrained shadowless facade glow and selective URP Bloom; no lawn halo or golden confetti overload",
+    "source": "Unity/Assets/Eldoria/ConstructionDelight/ValoriaConstructionDelightV1.cs + ConstructionDelightArchitecturalReveal.cs + Resources/ConstructionDelightArchitecturalReveal.shader",
     "reference": "Approved Valoria cinematic reference; user 2026-11-04"
   },
   "validation": {
-    "source_gate": "No spend, new meshes, gameplay timers or save fields. Preserve all original building/level authorities and release all GPU buffers on scene unload.",
-    "final_gate": "Exact-head real Unity, 390x844/844x390 moving A/B, sawmill/barracks/Bastion and c3 upgrade, reload, save identity, WebGL and Android/URP material and overdraw, no cartoon-looking overlay. Owner subjective art evaluation before ART_APPROVED."
+    "source_gate": "No change to shared manifest, canon scenes or 3D models; no duplicated saved material changes; temporary mesh overlays use existing MeshFilter.sharedMesh and URP shader; restore light/Bloom/renderers, guard cancellation/world switch; Roslyn 4 sources and 36 domain assertions",
+    "final_gate": "Repeat exact-source Unity 6000.3.23f1 real A/B after HDR mesh sweep + optional bloom; verified camera 844x390 and 390x844, 26 frames, native shader compilation, authentic task receipt and save identity. Measure visuals and mobile draw calls; separately require multi-building and Android/WebGL runtime before release."
   },
   "art_approved": false,
   "physical_mobile_tested": false,
   "budget_eur": 0,
-  "notes": "Independent PR #152 from active PR #136 building cartouche work; new isolated presentation-only folder and read-only state observer. Workstream claimed, no Windows runner reservation. A source commit is not a rendered Unity success."
+  "notes": "Rework authorized 2026-11-05; user rejected prior look. Existing com.unity.modules.particlesystem absent from canonical Unity/Packages/manifest.json, and is NOT added across PR boundaries. Use isolated authored URP shader, avoid Visual Effect Graph mobile compute/SSBO limitation, no purchases, no 3D models, no merge."
 }
