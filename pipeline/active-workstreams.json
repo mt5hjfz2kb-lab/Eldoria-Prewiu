@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T10:23:58.476Z",
+  "updated_at": "2026-11-04T10:42:51.869Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,9 +20,9 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-dialogue-v4-native-ab-20261104",
+      "owner": null,
       "branch": "fix/player-feedback-context-ui-20261030",
-      "status": "active",
+      "status": "paused",
       "claimed_at": "2026-11-04",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
@@ -125,8 +125,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "DIALOGUE_V4_NATIVE_AB_RECERTIFY_20261104",
-      "next": "Verificar resultado QA de diálogos de HEAD 09715611, correr Unity en Windows únicamente tras release de windows-runner-heavy ajeno, corregir, capturar A/B reales en 4 resoluciones, mantener cambios no publicados.",
+      "phase": "OWNER_PAUSED_FOR_METADATA_PRIORITY",
+      "next": "Do not reclaim this overlapping writing scope until eldoria-unity-metadata-integrity-20261104 closes or a later explicit owner instruction supersedes this specific priority pause. Existing source/PR/evidence preserved; metadata owner restores latest pre-pause owner/state after validation.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -962,7 +962,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": "chatgpt-eldoria-building-cartouche-20261103",
+      "previous_owner": "chatgpt-eldoria-dialogue-v4-native-ab-20261104",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1771,11 +1771,17 @@
           "ownership_revision": 132,
           "ended_at": "2026-11-04T10:23:58.476Z",
           "reason": "Reapply explicit owner-authorized temporary metadata write priority. Dialogue may retain all work/PR but must not reclaim overlapping scopes until PR153 metadata restoration validates."
+        },
+        {
+          "owner": "chatgpt-eldoria-dialogue-v4-native-ab-20261104",
+          "ownership_revision": 134,
+          "ended_at": "2026-11-04T10:42:51.869Z",
+          "reason": "Owner-authorized metadata priority remains in force. Explicit paused status replaces misleading available/active state so routine continuation cannot reclaim early."
         }
       ],
-      "ownership_revision": 134,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 135,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-03",
       "delivery_definition": {
@@ -2103,18 +2109,18 @@
       "claim_reason": "Propietario: continuar hasta capturas A/B nativas de diálogos, sin detenerse con informes intermedios. Relevo de workstream disponible, mismo PR #136. No reservar Windows mientras otro titular lo utiliza.",
       "priority_pause": {
         "by": "eldoria-unity-metadata-integrity-20261104",
-        "at": "2026-11-04T10:23:58.476Z",
-        "reason": "Explicit owner authorization for temporary metadata repair priority remains in force; latest dialogue progress preserved for restoration.",
-        "resume_after": "PR153 repair closes; no automatic early write reclaim."
+        "at": "2026-11-04T10:42:51.869Z",
+        "reason": "Owner explicitly authorized temporary dialogue/spawnling write pause for original metadata repair and validation.",
+        "resume_after": "Metadata repair closes; not ordinary availability for early reclaim."
       }
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
       "owner": null,
-      "ownership_revision": 24,
+      "ownership_revision": 25,
       "ownership_state": "available",
-      "status": "active",
+      "status": "paused",
       "branch": "art/issue95-spawnling-presence-proof-20261103",
       "claimed_at": "2026-10-22",
       "base_main_sha": "aff74900f2cc38996b49be85da3b39ccf9d33d5a",
@@ -2145,14 +2151,14 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "ISSUE95_NATIVE_CHECKOUT_CANCELLED_RUNNER_RELEASED_FOR_OWNER_MAILBOX_PRIORITY",
+      "phase": "OWNER_PAUSED_FOR_METADATA_PRIORITY",
       "dependency": "Valoria training still owns heavy Windows runner and canonical PR136; do not run Unity concurrently, edit ValoriaIntegratedWorld or #136. Only existing Spawnling source and its tests in isolated issue95 branch.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Issue95 code/art sources preserved. Last native run 41603285296 completed/cancelled at checkout, with no Unity A/B or art acceptance. After Mailbox completes and releases Windows, reclaim own runner with current revision and retry; do not cite failed run as PASS.",
+      "next": "Do not reclaim this overlapping writing scope until eldoria-unity-metadata-integrity-20261104 closes or a later explicit owner instruction supersedes this specific priority pause. Existing source/PR/evidence preserved; metadata owner restores latest pre-pause owner/state after validation.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
@@ -2299,9 +2305,9 @@
       },
       "priority_pause": {
         "by": "eldoria-unity-metadata-integrity-20261104",
-        "at": "2026-11-04T10:20:23.431Z",
-        "reason": "Owner authorized temporary dialogue/spawnling writing pause for 57 original metadata restoration and validation.",
-        "resume_after": "Metadata repair closes; restore prior owner if no later owner-directed claim or instruction."
+        "at": "2026-11-04T10:42:51.869Z",
+        "reason": "Owner explicitly authorized temporary dialogue/spawnling write pause for original metadata repair and validation.",
+        "resume_after": "Metadata repair closes; not ordinary availability for early reclaim."
       }
     },
     {
@@ -3965,18 +3971,18 @@
         "evidence": "Inventario por SHA, procedencia de cada meta recuperado, detector de GUID duplicados y pruebas focalizadas; pendientes explícitos sin GUID inventados.",
         "handoff": "Misma PR para esta etapa; corregir recursos solo después de comprobar procedencia y titularidad."
       },
-      "next": "Restore 57 original metadata bytes after exact live source reconciliation; isolated Unity validation; preserve all art/source and paused owners.",
+      "next": "Retry exact candidate cc6195728515999fa175272ee76e6f79fc65486d after actual PowerShell syntax/isolation CI passed; preserve Windows lease revision9. First run failed before compilation because Unity child process could not find Git.",
       "art_production_request": "pipeline/art-production-requests/eldoria-unity-metadata-integrity-20261104.json",
-      "phase": "OWNER_AUTHORIZED_PRIORITY_RESTORATION",
+      "phase": "NATIVE_RETRY_PREPARED_GIT_PATH_FIXED",
       "previous_owner": "codex-eldoria-metadata-recovery-20261104",
       "evidence": {
         "pr": 153,
         "head_sha": "4e275f844f4306419c87f37b12b18b0520a372dc",
         "original_file_metadata_recovered": 277,
         "original_folder_metadata_recovered": 68,
-        "restored_in_candidate": 288,
-        "reserved_originals_preserved": 57,
-        "metadata_ci_run": 41811485015,
+        "restored_in_candidate": 345,
+        "reserved_originals_preserved": 0,
+        "metadata_ci_run": 41815729517,
         "architecture_ci_run": 41808790947,
         "ownership_ci_run": 41808786506,
         "art_governance_ci_run": 41808790587,
@@ -3999,7 +4005,9 @@
         "pending_file_blobs_changed_in_pr136": 0,
         "powershell_syntax": "PASS",
         "test_save_identity_isolation": "PASS LF/CRLF, exact restore and rejected inputs",
-        "unity_native_executed": false
+        "unity_native_executed": false,
+        "native_attempt_run": 41814006124,
+        "native_attempt_result": "FAILED_BEFORE_COMPILATION_PACKAGE_MANAGER_GIT_PATH"
       },
       "lessons_learned": [
         "Windows python.exe may be a Microsoft Store alias; validate an existing interpreter and use Blender's Python executable without launching Blender.",
@@ -4026,7 +4034,7 @@
         {
           "id": "valoria-master-plan-layered-construction-20261016",
           "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-          "owner": "chatgpt-dialogue-art-20261104",
+          "owner": "chatgpt-eldoria-dialogue-v4-native-ab-20261104",
           "branch": "fix/player-feedback-context-ui-20261030",
           "status": "active",
           "claimed_at": "2026-11-04",
@@ -4131,8 +4139,8 @@
           "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
           "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
           "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-          "phase": "DIALOGUE_V4_NATIVE_AB_QA_20261104",
-          "next": "Cerrar diálogo V4 PR136 HEAD 09715611 con captura nativa auténtica 48 A/B; resguardar autoría Aldric/Lyra, Orín solo estilo aprobado, cuatro resoluciones y sin colisiones. Reservar Windows solo cuando libre tras metadata-integrity; no reiniciar ni colisionar.",
+          "phase": "DIALOGUE_V4_NATIVE_AB_RECERTIFY_20261104",
+          "next": "Verificar resultado QA de diálogos de HEAD 09715611, correr Unity en Windows únicamente tras release de windows-runner-heavy ajeno, corregir, capturar A/B reales en 4 resoluciones, mantener cambios no publicados.",
           "last_verified": {
             "source_topology_status": "SOURCE_TOPOLOGY_PASS",
             "source_footprints": 22,
@@ -4968,7 +4976,7 @@
               "Ciudad"
             ]
           },
-          "previous_owner": "chatgpt-dialogue-art-20261104",
+          "previous_owner": "chatgpt-eldoria-building-cartouche-20261103",
           "takeover_at": "2026-10-17",
           "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
           "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -5771,9 +5779,15 @@
               "ownership_revision": 130,
               "ended_at": "2026-11-04T10:20:23.431Z",
               "reason": "Temporary metadata priority pause explicitly authorized by owner in audit conversation, 2026-11-04; preserve PR, source and evidence."
+            },
+            {
+              "owner": "chatgpt-dialogue-art-20261104",
+              "ownership_revision": 132,
+              "ended_at": "2026-11-04T10:23:58.476Z",
+              "reason": "Reapply explicit owner-authorized temporary metadata write priority. Dialogue may retain all work/PR but must not reclaim overlapping scopes until PR153 metadata restoration validates."
             }
           ],
-          "ownership_revision": 132,
+          "ownership_revision": 134,
           "ownership_state": "claimed",
           "write_scope_released": false,
           "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -6100,12 +6114,12 @@
             "note": "Exact PR136 HEAD certified with full Unity SUCCESS at run 41742424858: native V4.1, EditMode, PlayMode, city build/upgrade/resource shortage, save/reopen and inline council/speed-ups. Native A/B desktop and mobile delivered for owner evaluation. Technical closure only; artistic >=8.2/10 not approved yet. No merge, publication, invented economy or new modals.",
             "artistic_approval_note": "El propietario acepta provisionalmente el A/B visual de construcción y mejoras el 04/11/2026. Mantenerlo como baseline candidato certificado; no equivale a ≥8,2/10 definitivo ni autoriza merge o publicación. Mejorar en una pasada artística futura sólo tras nueva decisión."
           },
-          "claim_reason": "Orden expresa de propietario de continuar hasta A/B auténtico; claim tras liberación canónica rev 131.",
+          "claim_reason": "Propietario: continuar hasta capturas A/B nativas de diálogos, sin detenerse con informes intermedios. Relevo de workstream disponible, mismo PR #136. No reservar Windows mientras otro titular lo utiliza.",
           "priority_pause": {
             "by": "eldoria-unity-metadata-integrity-20261104",
-            "at": "2026-11-04T10:20:23.431Z",
-            "reason": "Owner authorized temporary dialogue/spawnling writing pause for 57 original metadata restoration and validation.",
-            "resume_after": "Metadata repair closes; restore prior owner if no later owner-directed claim or instruction."
+            "at": "2026-11-04T10:23:58.476Z",
+            "reason": "Explicit owner authorization for temporary metadata repair priority remains in force; latest dialogue progress preserved for restoration.",
+            "resume_after": "PR153 repair closes; no automatic early write reclaim."
           }
         },
         {
