@@ -276,6 +276,37 @@ jobs:
           Write-Host "DELIGHT_EXPIRY dates_after_success=$($afterLastSuccess.Count) file_age_at_failure_days=$([math]::Round(($failure-$file.LastWriteTimeUtc).TotalDays,3)) failure_minutes_after_30days=$delta"
           Write-Host 'DELIGHT_EXPIRY_READONLY_COMPLETE no XML or token values exported, no files modified'
 
+      - name: Classify local entitlement expiration field safely
+        if: ${{ contains(github.event.head_commit.message, '[delight-expiry-details]') }}
+        shell: powershell
+        run: |
+          $f=Join-Path $env:LOCALAPPDATA 'Unity/licenses/UnityEntitlementLicense.xml'
+          if(-not(Test-Path $f)){Write-Host 'DELIGHT_EXPIRY_DETAIL exists=false';exit 0}
+          # The XML remains on Windows. Export ONLY sanitized field labels and
+          # date distance relative to the historical failure, no names/IDs/tokens.
+          $xml=Get-Content -LiteralPath $f -Raw -ErrorAction Stop
+          $pat='[12][0-9]{3}-[01][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,7})?(?:Z|[+\-][0-2][0-9]:[0-5][0-9])'
+          $fail=[datetime]'2026-11-04T07:55:23Z'
+          $prior=[datetime]'2026-11-04T00:42:56Z'
+          $m=[regex]::Matches($xml,$pat)
+          $index=0
+          foreach($match in $m){
+            try{
+              $stamp=[DateTimeOffset]::Parse($match.Value,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime
+              if($stamp -le $prior -or $stamp -gt $fail){continue}
+              $start=[math]::Max(0,$match.Index-90)
+              $context=$xml.Substring($start,$match.Index-$start).ToLowerInvariant()
+              $field='unclassified'
+              if($context -match 'expir|validto|enddate|validuntil|validtill'){$field='expiry_label'}
+              elseif($context -match 'issue|issued|activation|created|startdate'){$field='issue_label'}
+              $index++
+              Write-Host "DELIGHT_EXPIRY_DETAIL candidate=$index field_class=$field utc=$($stamp.ToString('yyyy-MM-ddTHH:mm:ssZ')) minutes_before_failed_launch=$([math]::Round(($fail-$stamp).TotalMinutes,1))"
+            }catch{
+              Write-Host 'DELIGHT_EXPIRY_DETAIL invalid_iso_value_skipped'
+            }
+          }
+          Write-Host "DELIGHT_EXPIRY_DETAIL matched_dates=$index values_released=only_timestamps_and_field_classes"
+
   source-domain:
     if: ${{ contains(github.event.head_commit.message, '[delight-domain-test]') }}
     runs-on: ubuntu-latest
