@@ -1,21 +1,19 @@
 {
   "workstream_id": "eldoria-construction-delight-v1-20261104",
-  "mode": "READ_ONLY_HUB_SESSION_ADOPTABILITY_BOOLEAN",
+  "mode": "READ_ONLY_WIN_SESSION_AND_CLI_AUTH_STATUS_WHILE_GUI_ACTIVE",
   "source_branch": "feature/eldoria-construction-delight-20261104",
   "reason": "Unity 6000.3.23f1 headless startup exit 198: token unavailable and no com.unity.editor.headless entitlement; inspect only file existence and Hub/Editor processes",
   "no_credential_access": true,
   "no_process_changes": true,
   "build_not_authorized": true,
   "art_approved": false,
-  "attempt": 8,
+  "attempt": 9,
   "valid_workflow_head": "82b75bb11cfc55d6aa674f8cc8097e69e58cbdb2",
   "read_only_checks": [
-    "license_file_exists",
-    "machine_ulf_exists",
-    "xml_file_count",
-    "Hub_running",
-    "Licensing_Client_running",
-    "Editor_running"
+    "Unity/Blender process counts only",
+    "Hub/Client/Explorer SessionId only",
+    "Unity CLI auth status exit only",
+    "Unity CLI license status exit only"
   ],
   "human_login_not_automated": true,
   "processes_not_terminated": true,
@@ -36,5 +34,7 @@
   "no_secret_output": true,
   "latest_window_session_test": 41798743304,
   "no_login_or_switch": true,
-  "no_secrets": true
+  "no_secrets": true,
+  "executed_under_lease": false,
+  "triggered_by_user_request": "Continue Construction Delight while other chat uses Windows; avoid native processes"
 }
