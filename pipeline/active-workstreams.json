@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T11:28:17.933Z",
+  "updated_at": "2026-11-04T13:33:17.655Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3977,9 +3977,9 @@
         "evidence": "Inventario por SHA, procedencia de cada meta recuperado, detector de GUID duplicados y pruebas focalizadas; pendientes explícitos sin GUID inventados.",
         "handoff": "Misma PR para esta etapa; corregir recursos solo después de comprobar procedencia y titularidad."
       },
-      "next": "Finish exact full proof after replaying existing canonical Blender frontier + BastionIIIArtBake preparation and disposable probe/capture fixtures. Current native run41821882671 finished failure: metadata345/345 raw bytes and GUIDs PASS, EditMode57 PASS, PlayMode40 pass/24 fail/9 skip from missing preparations. No gameplay/source/art-design assertions weakened; preserve temporary owners until integration/resource release.",
+      "next": "Inspect full native run 41839002020 for candidate 2a6dacddc08a1e56c4e57ba87b2df80d000010b2. Then preserve certificate, pass CI, integrate PR153, verify main gates and restore latest paused dialogue/spawnling owners/release Windows. No jobs cancelled; no new source/art/publishing approval implied.",
       "art_production_request": "pipeline/art-production-requests/eldoria-unity-metadata-integrity-20261104.json",
-      "phase": "NATIVE_IDENTITIES_345_EDITMODE_57_PASS_FULL_CANONICAL_PREP_RETRY",
+      "phase": "NATIVE_IDENTITIES_345_AND_ALL_130_TESTS_PASS_EXACT_BASELINE_CHECK_RECERTIFY",
       "previous_owner": "codex-eldoria-metadata-recovery-20261104",
       "evidence": {
         "pr": 153,
@@ -6452,6 +6452,32 @@
         "source_bytes_changed": false,
         "runtime_code_changed": false,
         "other_pr_branches_untouched": true
+      },
+      "last_verified": {
+        "candidate_sha": "fecab45b15ad62d766d8f97b9bccda6abb68c885",
+        "run_id": 41832431346,
+        "artifact_id": 13327216247,
+        "artifact_zip_sha256": "f4d43e62475a8dc922ef616fbf7bceccaa3dd0b1e481873c309eaa0ff469897d",
+        "unity_version": "6000.3.23f1",
+        "original_guid_and_raw_bytes_passed": 345,
+        "editmode": {
+          "passed": 57,
+          "failed": 0,
+          "skipped": 0
+        },
+        "playmode": {
+          "passed": 73,
+          "failed": 0,
+          "skipped": 0
+        },
+        "overall_workflow": "FAIL_BLANKET_CLEAN_CHECK_REJECTED_61_EXISTING_SERIALIZATIONS",
+        "recovered_entries_changed": 0,
+        "baseline_side_effects_committed": false,
+        "followup_candidate": "2a6dacddc08a1e56c4e57ba87b2df80d000010b2",
+        "followup_run": 41839002020,
+        "followup_policy": "Exact old/new Git blobs for only 61 pre-existing baseline paths; unknown changes and recovery overlaps rejected; recheck original bytes after all tests.",
+        "merged": false,
+        "published": false
       }
     }
   ],
