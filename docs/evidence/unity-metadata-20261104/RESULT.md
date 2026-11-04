@@ -1,7 +1,8 @@
 # Unity metadata recovery — 4 November 2026
 
-Status: native certification PASS; PR153 prepared for integration. Merge and
-post-merge verification are recorded separately in CLOSEOUT.json when complete.
+Status: PR153 merged into main at `91419eadbb1b7c678e249438f0b449cbd7dec0bd`.
+Native metadata certification and post-merge Unity editor/game tests plus Windows
+build PASS. The separate post-merge UI gate is still running; see CLOSEOUT.json.
 
 ## What changed
 
