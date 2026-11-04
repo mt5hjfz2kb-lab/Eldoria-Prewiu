@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
   "ownership_revision": 13,
-  "mode": "OFFLINE_ROSLYN_VISUAL_MESH_REFINEMENT",
+  "mode": "REAL_UNITY_6000_3_23F1_VISUAL_ITERATION_TWO",
   "expected_images": 26,
   "formats": [
     "844x390",
@@ -22,7 +22,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 11,
+  "attempt": 12,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "latest certified main & metadata merged into candidate",
@@ -65,7 +65,7 @@
   "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c",
   "source_domain_attempt": 2,
   "purpose": "Verify current authoritative completion receipt, no World4X bleed, URP real renderer and localized camera proof syntax",
-  "native_editor_invocation": false,
+  "native_editor_invocation": true,
   "window_runner_reservation": false,
   "real_visual_QA_pending": true,
   "license_evidence": {
@@ -110,5 +110,7 @@
     "thin sand ripple lies flat on foundation instead of floating on roof",
     "brief warm eave/post glints anchored to geometry",
     "fade entirely after completion"
-  ]
+  ],
+  "review_scope": "Compare true native Unity work, finish, six temporal frames; visual pass requires materially visible construction dust and tasteful foundation/warm facade reveal",
+  "confirmed_source_QA_run": 41868551397
 }
