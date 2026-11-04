@@ -108,6 +108,30 @@ jobs:
           if($p.ExitCode -ne 0){throw 'Disposable Editor exited abnormally for a reason other than explicit licensing denial'}
           Write-Host 'DELIGHT_LICENSE_PROBE_PASS'
 
+      - name: Read only Windows logon and Hub session topology
+        if: ${{ contains(github.event.head_commit.message, '[delight-session-inspect]') }}
+        shell: powershell
+        run: |
+          # Windows SessionId, not a Unity account/license identifier.
+          $worker=(Get-Process -Id $PID).SessionId
+          $explorer=@(Get-Process -Name explorer -ErrorAction SilentlyContinue)
+          $hub=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity Hub|UnityHub'})
+          $client=@(Get-Process -ErrorAction SilentlyContinue|Where-Object {$_.ProcessName -match 'Unity.Licensing.Client'})
+          $editor=@(Get-Process -Name Unity -ErrorAction SilentlyContinue)
+          $expIds=@($explorer|ForEach-Object {$_.SessionId}|Sort-Object -Unique)
+          $hubIds=@($hub|ForEach-Object {$_.SessionId}|Sort-Object -Unique)
+          $clientIds=@($client|ForEach-Object {$_.SessionId}|Sort-Object -Unique)
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC runner_session=$worker"
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC explorer_session_ids=$($expIds -join ',') explorer_count=$($explorer.Count)"
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC hub_session_ids=$($hubIds -join ',') hub_count=$($hub.Count)"
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC licensing_client_session_ids=$($clientIds -join ',') client_count=$($client.Count)"
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC editor_count=$($editor.Count)"
+          $interactive=@($expIds|Where-Object {$_ -gt 0})
+          $hubInInteractive=@($hubIds|Where-Object {$interactive -contains $_})
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC interactive_desktop_available=$($interactive.Count -gt 0)"
+          Write-Host "DELIGHT_SESSION_DIAGNOSTIC hub_in_interactive_desktop=$($hubInInteractive.Count -gt 0)"
+          Write-Host 'No usernames, passwords, license contents, account/session tokens, process mutations or system restart'
+
   native-art:
     if: ${{ !contains(github.event.head_commit.message, '[delight-license-diagnostic]') }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
