@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T18:05:00.295Z",
+  "updated_at": "2026-11-04T18:32:13.877Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6220,6 +6220,51 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
+    },
+    {
+      "id": "eldoria-project-entry-organization-20261101",
+      "title": "Organización documental: entrada única al proyecto",
+      "owner": "codex-eldoria-global-organization-20261104",
+      "branch": "docs/global-organization-20261104",
+      "status": "active",
+      "claimed_at": "2026-11-04T18:32:13.877Z",
+      "base_main_sha": "d7a6d78eb96b19f0350c890fc1dadc131a8f3032",
+      "scope": [
+        "README.md",
+        "docs/DOCUMENTATION_INDEX.md",
+        "docs/DOCUMENTATION_POLICY.md",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
+        "docs/project-organization/**",
+        "tools/repository-organization/**"
+      ],
+      "resources": [],
+      "ownership_state": "claimed",
+      "ownership_revision": 3,
+      "write_scope_released": false,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Documentation navigation only; no Unity, artwork, builds or delivery mutation.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Global inventory and safe organization of repository files, reference-aware cleanup, single placement guide and verified links.",
+        "evidence": "Pinned source tree, coverage counts, duplicate/reference inventory, documented dispositions and existing architecture/documentation checks.",
+        "handoff": "Same canonical organization mission; no Unity build or publication."
+      },
+      "previous_owner": "codex-eldoria-project-entry-20261101",
+      "evidence": {
+        "pr": 140,
+        "head_sha": "e4f93fca5f89b40ebbc22b6bcecf928528330d23",
+        "merge_sha": "ff94e3070454051f388d459411dfaa2442a0f4c6",
+        "architecture_run": 41323649901,
+        "ownership_run": 41323647137,
+        "domain_run": 41323649909,
+        "tester_qa_run": 41323649900,
+        "local_documentation_tests": "10/10 PASS with ELDORIA_CI_TRACKED_TREE=1",
+        "local_navigation_links": "74/74 PASS",
+        "unity_changed": false,
+        "publication_performed": false
+      },
+      "next": "Audit complete tracked tree, classify root directories and duplicate groups, verify references and apply safe navigation/organization repairs; preserve reserved source/catalog and historic evidence.",
+      "phase": "GLOBAL_INVENTORY_AND_SAFE_ORGANIZATION"
     }
   ],
   "history": [
