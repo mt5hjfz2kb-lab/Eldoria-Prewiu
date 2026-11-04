@@ -6255,27 +6255,6 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
-    },
-    {
-      "id": "eldoria-documentation-semantic-review-batch2-20261104",
-      "title": "Eldoria — revisión semántica de ingeniería y coordinación, lote 2",
-      "owner": "chatgpt-eldoria-semantic-review-batch2-20261104",
-      "branch": "docs/semantic-review-batch2-20261104",
-      "status": "active",
-      "claimed_at": "2026-11-04T20:03:00Z",
-      "base_main_sha": "866aa9fd59cfdd1334fce226380043280e1f6257",
-      "scope": [
-        "docs/project-organization/SEMANTIC_REVIEW_BATCH2_20261104.md"
-      ],
-      "resources": [],
-      "ownership_state": "claimed",
-      "ownership_revision": 1,
-      "write_scope_released": false,
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Read-only documentation review; no Unity or art production.",
-      "budget_eur": 0,
-      "phase": "SEMANTIC_REVIEW_BATCH2",
-      "next": "Review outdated engineering and coordination instructions, preserve catalog and protected scopes, publish evidence-backed report."
     }
   ],
   "history": [
@@ -14681,6 +14660,37 @@
         "groups": 5,
         "architecture_run": 41902316451,
         "ownership_run": 41902313288,
+        "catalog_changed": false,
+        "unity_changed": false
+      }
+    },
+    {
+      "id": "eldoria-documentation-semantic-review-batch2-20261104",
+      "title": "Eldoria — revisión semántica de ingeniería y coordinación, lote 2",
+      "owner": null,
+      "branch": "docs/semantic-review-batch2-20261104",
+      "status": "completed",
+      "claimed_at": "2026-11-04T20:03:00Z",
+      "base_main_sha": "866aa9fd59cfdd1334fce226380043280e1f6257",
+      "scope": [
+        "docs/project-organization/SEMANTIC_REVIEW_BATCH2_20261104.md"
+      ],
+      "resources": [],
+      "ownership_state": "available",
+      "ownership_revision": 2,
+      "write_scope_released": true,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only documentation review; no Unity or art production.",
+      "budget_eur": 0,
+      "phase": "SEMANTIC_REVIEW_BATCH2_VERIFIED",
+      "next": "Next semantic batch and eventual authorized catalog reconciliation; no mass deletion or reclassification.",
+      "closed_reason": "Eight-document semantic review merged in PR156 with architecture and ownership checks passed. Catalog classifications not edited because claimed by other workstreams.",
+      "evidence": {
+        "pr": 156,
+        "merge_sha": "ef4ba19b006834e9d317c6f019600dfe977d084a",
+        "documents_inspected": 8,
+        "architecture_check": "success",
+        "ownership_check": "success",
         "catalog_changed": false,
         "unity_changed": false
       }

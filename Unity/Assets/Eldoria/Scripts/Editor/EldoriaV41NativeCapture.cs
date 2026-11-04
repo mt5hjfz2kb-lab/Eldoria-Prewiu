@@ -99,6 +99,7 @@ namespace Eldoria.Editor
             state.ChapterThree.LyraRecruited=true;
             new FileStateStore(host.City.SaveFile).Save(state);host.City.ReloadForProbe();yield return null;
             var heroes=host.Hud.GetComponent<HeroesApprovedDestination>();
+            // Freeze save bytes after fixture initialization; measured navigation must remain read-only.
             string benchmarkSave=File.ReadAllText(host.City.SaveFile);
             var samples=new System.Collections.Generic.List<BenchmarkSample>();
             foreach(var screen in new[]{"city","aldric","lyra"})
