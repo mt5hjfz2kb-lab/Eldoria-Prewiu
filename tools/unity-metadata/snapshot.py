@@ -69,6 +69,38 @@ def snapshot(request, roots, output, byte_budget=2 * 1024**3):
                 raise ValueError('Unsafe request path: ' + relative)
             asset = project.joinpath(*parts[1:])
             meta = Path(str(asset) + '.meta')
+            if target.get('kind') == 'folder':
+                if not asset.is_dir() or not meta.is_file():
+                    continue
+                observation = {'project': index, 'path': relative}
+                try:
+                    for path in (asset, meta, *asset.parents):
+                        if path == project.parent:
+                            break
+                        if path.is_symlink() or (hasattr(path, 'is_junction') and path.is_junction()):
+                            raise ValueError('Linked source path')
+                    if meta.stat().st_size > 2 * 1024**2:
+                        raise ValueError('Metadata exceeds size budget')
+                    before = signature(asset), signature(meta)
+                    data = meta.read_bytes()
+                    if b'folderAsset: yes' not in data:
+                        raise ValueError('Not Unity folder metadata')
+                    if before != (signature(asset), signature(meta)) or data != meta.read_bytes():
+                        raise ValueError('Folder changed during snapshot')
+                    destination = output / f'project-{index:03d}' / (relative + '.meta')
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    destination.write_bytes(data)
+                    report['candidates'].append({
+                        'project': index, 'path': relative + '.meta',
+                        'asset_blob_sha': None, 'expected_tree_sha': target['tree_sha'],
+                        'asset_match_mode': 'existing_folder_identity_only',
+                        'meta_sha256': hashlib.sha256(data).hexdigest(),
+                        'snapshot_path': destination.relative_to(output).as_posix()})
+                    observation['status'] = 'STABLE_FOLDER_IDENTITY_TREE_NOT_VERIFIED'
+                except (OSError, ValueError) as e:
+                    observation.update(status='SKIPPED', reason=str(e))
+                report['observations'].append(observation)
+                continue
             if not asset.is_file() or not meta.is_file():
                 continue
             observation = {'project': index, 'path': relative}

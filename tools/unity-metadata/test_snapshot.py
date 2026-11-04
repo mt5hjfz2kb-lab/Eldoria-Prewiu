@@ -76,6 +76,20 @@ class SnapshotTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             snapshot(self.request, [self.root], out)
 
+    def test_folder_identity_is_recovered_without_claiming_tree_match(self):
+        folder = self.asset.parent
+        meta = Path(str(folder) + '.meta')
+        meta.write_text('guid: 0123456789abcdef0123456789abcdef\nfolderAsset: yes\n')
+        self.request['targets'] = [{'path': 'Unity/Assets', 'kind': 'folder', 'tree_sha': 'tree'}]
+        # Request only paths below Assets, matching the real recovery boundary.
+        sub = folder / 'Sub'
+        sub.mkdir()
+        Path(str(sub) + '.meta').write_bytes(meta.read_bytes())
+        self.request['targets'][0]['path'] = 'Unity/Assets/Sub'
+        report = snapshot(self.request, [self.root], self.root / 'result')
+        self.assertEqual(report['candidates'][0]['asset_match_mode'], 'existing_folder_identity_only')
+        self.assertIsNone(report['candidates'][0]['asset_blob_sha'])
+
     def test_refuses_path_escape(self):
         self.request['targets'][0]['path'] = 'Unity/Assets/../../outside'
         with self.assertRaises(ValueError):

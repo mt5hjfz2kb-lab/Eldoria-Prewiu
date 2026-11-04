@@ -1117,7 +1117,352 @@
     {
       "path": "Unity/Assets/Plugins/Android/EldoriaInstallPermission.androidlib/src/main/AndroidManifest.xml",
       "blob_sha": "62afa4db110681b0bb89e1b0f0c3d2d14c18fa9d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests",
+      "kind": "folder",
+      "tree_sha": "2d63a88df993044737d41697f6670d3512b35316"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly",
+      "kind": "folder",
+      "tree_sha": "bd6795dd7633756cc6364108e03826ae2254c7d8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor",
+      "kind": "folder",
+      "tree_sha": "f0571378d4da473f97f1d1455115a8d9917f4d93"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2",
+      "kind": "folder",
+      "tree_sha": "9ea84ecadad3efc906735165b72be5af385ca237"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures",
+      "kind": "folder",
+      "tree_sha": "fe7ec3587a8ee0f47fa77d2197aac158d801e1ce"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D",
+      "kind": "folder",
+      "tree_sha": "8151862174bc23595f262c2ca89619eacbf9a0f6"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor",
+      "kind": "folder",
+      "tree_sha": "ba673164eca90c1af2d93fb8a9342d24432dc56a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source",
+      "kind": "folder",
+      "tree_sha": "c75707d53ce91b3332023d9759d11443e0377ec7"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/LayeredValoria",
+      "kind": "folder",
+      "tree_sha": "2dfb0e5c795a6d0fb862ec0bd6d664106e43f2a5"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/OriginalHero",
+      "kind": "folder",
+      "tree_sha": "dcb68e3f6a473569c4e9cc706af4353bf620698a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/OriginalHero/Textures",
+      "kind": "folder",
+      "tree_sha": "34cfb128efa3b703cb20cad71e92acc53c77abd4"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction",
+      "kind": "folder",
+      "tree_sha": "a40ce49c7f352c3ea112dcbe728ab84506076268"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor",
+      "kind": "folder",
+      "tree_sha": "04dbb84e4bbaee3db1687f78bfb88fbf02fec68d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated",
+      "kind": "folder",
+      "tree_sha": "e69a0684e44652c103964badc95a00b811d4c625"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedBridgeV1",
+      "kind": "folder",
+      "tree_sha": "60c28147eb39880787bfbf5e6096d13643214478"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD",
+      "kind": "folder",
+      "tree_sha": "662ecf0b9349409946835554f07a2e230ad3e0b8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedE",
+      "kind": "folder",
+      "tree_sha": "0eaf244ac06483173cd69a266f30de9100e29da6"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5",
+      "kind": "folder",
+      "tree_sha": "42b38f886d3405d69badfa993bccee3f85872055"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV1",
+      "kind": "folder",
+      "tree_sha": "9d5f78f317f7ac5ef3813c1d18fe990f0f4a328b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV2",
+      "kind": "folder",
+      "tree_sha": "268f3a99156babac989189704f525aa87bc1fe15"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV3",
+      "kind": "folder",
+      "tree_sha": "c306069a7e2e9cbe088310d5903b44584ed2013b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout",
+      "kind": "folder",
+      "tree_sha": "b707f45e81b8315d40ba7c392bd3127c011400b1"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants",
+      "kind": "folder",
+      "tree_sha": "aa1e1ead7aed2ccd19e24f53f76bcad7cee9c303"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1",
+      "kind": "folder",
+      "tree_sha": "b443d95178e49e9ca760407ec7fa1024fce48119"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1/Editor",
+      "kind": "folder",
+      "tree_sha": "a572c8bd91d15fe6a6154010de66d5229caa2ec8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1",
+      "kind": "folder",
+      "tree_sha": "8baacc6e3119770c863eccfb8518f3f687ae623f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor",
+      "kind": "folder",
+      "tree_sha": "152678a44944b2e92e0d12c25631370f7a2623e4"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean",
+      "kind": "folder",
+      "tree_sha": "1a06c5e51ba8d60efd9a073802316763516b13a7"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV",
+      "kind": "folder",
+      "tree_sha": "6c4fc582d1f8bd9a0197fcdcb090b83c8430e8ab"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Models",
+      "kind": "folder",
+      "tree_sha": "ac39a66fd49df31d02366c47a814838fd196a8b8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits",
+      "kind": "folder",
+      "tree_sha": "247ea0ef540fe96da308ad1b73e2057214454f4e"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1",
+      "kind": "folder",
+      "tree_sha": "ff391be78e118674736fa84e7383131b976d48f0"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground",
+      "kind": "folder",
+      "tree_sha": "24c9bbc4309c0669af4dd11e739c9359394f15bd"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/UI",
+      "kind": "folder",
+      "tree_sha": "db23fd2b81a5b61234841e42a342edb156e15ea2"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated",
+      "kind": "folder",
+      "tree_sha": "a7c8fa34f5dd79905883523804121722b0ae8fef"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks",
+      "kind": "folder",
+      "tree_sha": "0c639f5cd3c70799c345ba41e66beaf40e2a2472"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt",
+      "kind": "folder",
+      "tree_sha": "ae48f906664c9c10e03c7fede3d6e734d0714ead"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CameraFirstFunctionalSourceV1",
+      "kind": "folder",
+      "tree_sha": "700dd029dfff049eef1893a883c11951d68779c9"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/CoherentFamilyV1",
+      "kind": "folder",
+      "tree_sha": "9b314391b9f676ca5c7f8c6e95a50123ed84e32a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveFamilyV1",
+      "kind": "folder",
+      "tree_sha": "7050eb876b7ca33a9d10f388b9de47c126635607"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/DefensiveSkinV1",
+      "kind": "folder",
+      "tree_sha": "8ad84c26b9599a95560ee925a310f2d4db7573db"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/FirstProductionDistrictV1",
+      "kind": "folder",
+      "tree_sha": "ed11ddbb315431eca6058c981e2fd843c0418299"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroCuartelSourceUpgradeV1",
+      "kind": "folder",
+      "tree_sha": "3abde50d42b038bd4c37512b28f8727929dca40b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/GraneroRichCameraFirstV1",
+      "kind": "folder",
+      "tree_sha": "e6924a7849c3f520599b85aad5ac185139c1c8a7"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamily",
+      "kind": "folder",
+      "tree_sha": "6ebe47d91baa708121c49b6ee7fcbc603fa3377d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV2",
+      "kind": "folder",
+      "tree_sha": "3dc40c99e2c869ac805df49232a4a958105b5cfa"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StarterFamilyV3",
+      "kind": "folder",
+      "tree_sha": "ee1cf0d26e80e8e28c3e7de76e1e9519808fe781"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StoneDefensiveFamilyV2",
+      "kind": "folder",
+      "tree_sha": "2d3710bba62ea0a6f2f1621ecd58c119c7ddb22d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/ProductionArt/StructuralFrameUrbanSupportIntegrationV1",
+      "kind": "folder",
+      "tree_sha": "212eec43cd2a8eddb289efc3bb8f2c98258f4a20"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued",
+      "kind": "folder",
+      "tree_sha": "b3a3a728c7888560b6931a920a298642fe1db897"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1",
+      "kind": "folder",
+      "tree_sha": "0c4a52777d67db1a9a875de7e0dff7ac5956efba"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit",
+      "kind": "folder",
+      "tree_sha": "f9de1db9a3b3429fca3295203c5cbe5bd0bb75a6"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1",
+      "kind": "folder",
+      "tree_sha": "e3a7fac13a9817c3e171fd8a1afcd721fd242854"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/WorldInventory",
+      "kind": "folder",
+      "tree_sha": "b45c0c5bcef116ab59aa8301ea99925209a70f38"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/WorldPlayerCity",
+      "kind": "folder",
+      "tree_sha": "1d32bda9db324a2a110c423c2c98e7c9886be4f5"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Shaders",
+      "kind": "folder",
+      "tree_sha": "968efdab2ed71c0fe236690be7ff2c73ac489b1f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/SpawnlingBastion2",
+      "kind": "folder",
+      "tree_sha": "1a97b2574623985d1cac908b6d0672fcd5ebe780"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI",
+      "kind": "folder",
+      "tree_sha": "8533bd81331ddf04807261507439b1e3b55516c5"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1",
+      "kind": "folder",
+      "tree_sha": "94c1fabe92db590eb3b4595e4177a24f96f7f034"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/World4XCanon/P0ArtMasks",
+      "kind": "folder",
+      "tree_sha": "03caa2ffc9d7bb2d047a1c1923a1ef01ca255f1a"
+    },
+    {
+      "path": "Unity/Assets/Holotna",
+      "kind": "folder",
+      "tree_sha": "dd6992b5daa9ec548f1860201c436c077cdc26d6"
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain",
+      "kind": "folder",
+      "tree_sha": "617e0a8243d3778dd71e1387453106baee214726"
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain/Materials",
+      "kind": "folder",
+      "tree_sha": "80c54d4d3c9bbb12498b7e1239846e699b71b239"
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain/Models",
+      "kind": "folder",
+      "tree_sha": "37213ed48d75b01c784f91b4d506a1c2e05e36d3"
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain/Shaders",
+      "kind": "folder",
+      "tree_sha": "060ca0161298841d4a5d91fcd26f8458e0cb51a6"
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain/Textures",
+      "kind": "folder",
+      "tree_sha": "0ae89ea114ff2f5e77e30b9a1b61d2384ccb63fb"
+    },
+    {
+      "path": "Unity/Assets/WorldPackCompare",
+      "kind": "folder",
+      "tree_sha": "175f986f1c199e663a9ecb7df87fbfd13434d77e"
+    },
+    {
+      "path": "Unity/Assets/WorldPackCompare/Quaternius",
+      "kind": "folder",
+      "tree_sha": "f21d2b0e32358327085f5bb954ccfad50eaebe57"
+    },
+    {
+      "path": "Unity/Assets/WorldPackCompare/Quaternius/FBX",
+      "kind": "folder",
+      "tree_sha": "ff45b634a34ffb5425f8f7e9e5a83aaa67e8696e"
     }
   ],
-  "snapshot_attempt": 3
+  "snapshot_attempt": 4
 }
