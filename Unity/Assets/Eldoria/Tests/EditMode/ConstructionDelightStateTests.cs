@@ -16,6 +16,11 @@ namespace Eldoria.Tests
             s.BuildingTaskId="";s.BuildingCompletesUtcTicks=0;
             Assert.IsFalse(ConstructionDelightState.JustCompleted(task,s));
             s.SawmillLevel=1;
+            Assert.IsFalse(ConstructionDelightState.JustCompleted(task,s),
+                "Uncorroborated level change must not simulate a completed construction.");
+            s.CompletedTaskIds.Add("different:task");
+            Assert.IsFalse(ConstructionDelightState.JustCompleted(task,s));
+            s.CompletedTaskIds.Add(task.TaskKey);
             Assert.IsTrue(ConstructionDelightState.JustCompleted(task,s));
         }
 
@@ -25,6 +30,7 @@ namespace Eldoria.Tests
             Assert.IsTrue(ConstructionDelightState.TryRead(s,out var task));
             Assert.AreEqual(2,task.LevelAtStart);
             s.BuildingCompletesUtcTicks=0;s.BuildingTaskId="";s.SawmillLevel=3;
+            s.CompletedTaskIds.Add(task.TaskKey);
             Assert.IsTrue(ConstructionDelightState.JustCompleted(task,s));
         }
 
@@ -35,6 +41,7 @@ namespace Eldoria.Tests
             Assert.IsTrue(ConstructionDelightState.TryRead(s,out var t));
             Assert.AreEqual("bastion",t.BuildingId);
             s.BastionUpgradeTaskId="";s.BastionUpgradeCompletesUtcTicks=0;s.BastionLevel=3;
+            s.CompletedTaskIds.Add(t.TaskKey);
             Assert.IsTrue(ConstructionDelightState.JustCompleted(t,s));
             s.BuildingTaskId="c3:granary:job";s.BuildingCompletesUtcTicks=50;
             Assert.IsTrue(ConstructionDelightState.TryRead(s,out t));
