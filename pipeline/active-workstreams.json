@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T11:24:04.134Z",
+  "updated_at": "2026-11-04T11:28:17.933Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3960,7 +3960,8 @@
         "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb.meta",
         "ArtSource/RejectedLegacyBastion/**",
         "pipeline/asset-vault/master-catalog-v1.json",
-        "pipeline/asset-vault/clean-production-shelf-v1.json"
+        "pipeline/asset-vault/clean-production-shelf-v1.json",
+        ".github/workflows/asset-vault-clean-shelf-qa.yml"
       ],
       "resources": [
         "windows-runner-heavy"
