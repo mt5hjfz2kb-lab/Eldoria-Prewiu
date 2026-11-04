@@ -44,8 +44,9 @@ jobs:
         with:
           path: delight-source
           clean: false
-          filter: blob:none
           fetch-depth: 1
+          # Sparse-checkout retained: checkout@v4 explicitly ignores
+          # sparse-checkout when filter is supplied.
           # Same exact Unity source, without cloning unrelated multi-GB art
           # history, previous captures and archived Blender experiments.
           sparse-checkout: |
