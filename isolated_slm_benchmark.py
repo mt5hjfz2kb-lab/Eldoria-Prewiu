@@ -108,6 +108,38 @@ try:
               "no relevant", "no results", "no answer", "no tengo", "no se encuentra", "i don't have this exactly"])
         summary["unknown_checks"].append({"question":q, "abstention_indicator":abstained,
                                             "rc":r["rc"],"reply":r["stdout"][:1900]})
+    # Investigate the one miss: use more precise queries against the same store.
+    summary["retry_checks"] = []
+    for q in ("¿Qué resoluciones móviles usa la validación visual de Eldoria?",
+              "¿Qué resolución de QA tiene ancho 844 y alto 390?",
+              "Eldoria 844x390 resolución horizontal móvil QA"):
+        r = run("recall", q, timeout=60)
+        summary["retry_checks"].append({"question":q,
+            "exact_resolution_seen": "844x390" in r["stdout"],
+            "returncode":r["rc"],"reply":r["stdout"][:1100]})
+
+    # Independent MCP client process reading facts previously stored via CLI.
+    # This validates protocol interoperability, not actual ChatGPT/Codex sign-in.
+    import asyncio, shutil
+    async def probe_mcp():
+        from mcp import Client, StdioServerParameters
+        exe = shutil.which("slm")
+        async with Client(StdioServerParameters(command=exe,args=["mcp"],env=dict(os.environ))) as client:
+            listing = await client.list_tools()
+            names=[t.name for t in listing.tools]
+            name=next((x for x in ("recall","slm_recall") if x in names), None)
+            if not name:
+                return {"connected":True, "tool_count":len(names), "read_match":False,
+                        "error":"No recall tool present", "names":names}
+            result=await client.call_tool(name,{"query":"¿Qué versión de Unity Editor utiliza Eldoria?","limit":5})
+            content="\n".join(getattr(c,"text",str(c)) for c in result.content)
+            return {"connected":True,"tool_count":len(names),"read_tool":name,
+                    "error_flag":result.is_error,"read_match":"6000.3.23f1" in content,
+                    "content_excerpt":content[:1450]}
+    try:
+        summary["mcp_probe"] = asyncio.run(asyncio.wait_for(probe_mcp(),timeout=85))
+    except Exception as e:
+        summary["mcp_probe"]={"connected":False,"read_match":False,"error":str(e)[:500]}
     summary["result"] = ("PASS_BASIC_MEMORY" if remembered == len(facts) and hit>=1
                          else "INCOMPLETE_OR_FAILED")
 except Exception as err:
@@ -121,5 +153,5 @@ finally:
         pass
     (outdir/"benchmark.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding="utf-8")
     print(json.dumps({k:summary.get(k) for k in ("result","package_pin","facts_count","remembered_count","queries_count",
-        "simple_substring_hits","unknown_checks","outcomes","error") if k in summary},ensure_ascii=False,indent=2))
+        "simple_substring_hits","unknown_checks","mcp_probe","retry_checks","outcomes","error") if k in summary},ensure_ascii=False,indent=2))
 sys.exit(0 if summary["result"]=="PASS_BASIC_MEMORY" else 2)
