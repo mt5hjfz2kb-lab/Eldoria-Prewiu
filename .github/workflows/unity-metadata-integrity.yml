@@ -7,7 +7,7 @@ on:
       - 'tools/unity-metadata/**'
       - '.github/workflows/unity-metadata-integrity.yml'
   push:
-    branches: [main]
+    branches: [main, 'fix/unity-metadata-integrity-20261104']
     paths:
       - 'Unity/Assets/**'
       - 'Unity/.gitignore'
