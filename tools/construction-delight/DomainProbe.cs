@@ -12,6 +12,7 @@ namespace Eldoria.Domain
         public string BuildingTaskId="", BastionUpgradeTaskId="", RecruitmentTaskId="";
         public long BuildingCompletesUtcTicks, BastionUpgradeCompletesUtcTicks, RecruitmentCompletesUtcTicks;
         public BastionThreeState ChapterThree=new BastionThreeState();
+        public System.Collections.Generic.List<string> CompletedTaskIds=new System.Collections.Generic.List<string>();
     }
 }
 
@@ -43,7 +44,14 @@ internal static class DomainProbe
         s.BuildingTaskId="";s.BuildingCompletesUtcTicks=0;
         Expect(!ConstructionDelightState.JustCompleted(original,s),"time expiry without level not celebrated");
         s.SawmillLevel=1;
-        Expect(ConstructionDelightState.JustCompleted(original,s),"true level increase celebrated");
+        Expect(!ConstructionDelightState.JustCompleted(original,s),
+            "level increase without canonical task receipt must not be celebrated");
+        s.CompletedTaskIds.Add("different-sawmill:job");
+        Expect(!ConstructionDelightState.JustCompleted(original,s),
+            "wrong task receipt cannot celebrate original");
+        s.CompletedTaskIds.Add(original.TaskKey);
+        Expect(ConstructionDelightState.JustCompleted(original,s),
+            "canonical completion receipt plus level increase celebrated");
 
         s.BuildingTaskId="barracks:build";s.BuildingCompletesUtcTicks=1200;
         Expect(ConstructionDelightState.TryRead(s,out var barracks),"real barracks build task");
@@ -51,12 +59,14 @@ internal static class DomainProbe
         Expect(!ConstructionDelightState.SameTask(original,barracks),"two buildings not same task");
         s.BuildingTaskId="";s.BuildingCompletesUtcTicks=0;
         s.BarracksLevel=1;
+        s.CompletedTaskIds.Add(barracks.TaskKey);
         Expect(ConstructionDelightState.JustCompleted(barracks,s),"barracks completion");
 
         s.BuildingTaskId="c3:sawmill:upgrade-2";s.BuildingCompletesUtcTicks=1400;
         Expect(ConstructionDelightState.TryRead(s,out var sawUpgrade),"chapter III sawmill upgrade");
         Expect(sawUpgrade.LevelAtStart==1,"upgrade remembers real level");
         s.BuildingTaskId="";s.BuildingCompletesUtcTicks=0;s.SawmillLevel=2;
+        s.CompletedTaskIds.Add(sawUpgrade.TaskKey);
         Expect(ConstructionDelightState.JustCompleted(sawUpgrade,s),"sawmill upgrade completes on real level");
 
         foreach(string id in new[]{"granary","stoneworks","barracks"})
@@ -68,6 +78,7 @@ internal static class DomainProbe
             if(id=="granary")s.ChapterThree.GranaryLevel++;
             if(id=="stoneworks")s.ChapterThree.StoneworksLevel++;
             if(id=="barracks")s.BarracksLevel++;
+            s.CompletedTaskIds.Add(building.TaskKey);
             Expect(ConstructionDelightState.JustCompleted(building,s),"chapter III increase "+id);
         }
 
@@ -75,6 +86,7 @@ internal static class DomainProbe
         Expect(ConstructionDelightState.TryRead(s,out var bastion),"bastion upgrade");
         Expect(bastion.BuildingId=="bastion"&&bastion.LevelAtStart==1,"bastion base level");
         s.BastionUpgradeTaskId="";s.BastionUpgradeCompletesUtcTicks=0;s.BastionLevel=2;
+        s.CompletedTaskIds.Add(bastion.TaskKey);
         Expect(ConstructionDelightState.JustCompleted(bastion,s),"bastion true completion");
 
         s.RecruitmentTaskId="recruit:t1";s.RecruitmentCompletesUtcTicks=2200;
