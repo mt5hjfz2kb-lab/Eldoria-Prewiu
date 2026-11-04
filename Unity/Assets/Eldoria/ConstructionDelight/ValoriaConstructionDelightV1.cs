@@ -254,8 +254,11 @@ namespace Eldoria.ReferenceClean
             // making the entire construction loop invisible in real Unity A/B.
             float frontDepth = Mathf.Abs(toward.x)*b.extents.x +
                                Mathf.Abs(toward.z)*b.extents.z;
-            Vector3 ground = new Vector3(b.center.x,b.min.y+.18f,b.center.z) +
-                             toward*(frontDepth+.28f);
+            // Put work dust on the authentic stone/wood foundations, not
+            // several metres into the grass in front of a large click target.
+            float foundationOffset=frontDepth*.40f+.07f;
+            Vector3 ground = new Vector3(b.center.x,b.min.y+.43f,b.center.z) +
+                             toward*foundationOffset;
             Vector3 facade = new Vector3(b.center.x,b.min.y+b.size.y*.46f,b.center.z) +
                              toward*(frontDepth+.30f);
             Vector3 lateral = cam ? cam.transform.right : Vector3.right;
@@ -268,10 +271,10 @@ namespace Eldoria.ReferenceClean
             facadeAccents[1]=lateral*halfWidth+Vector3.up*upper;
             facadeAccents[2]=lateral*(-halfWidth*.67f)-Vector3.up*lower;
             facadeAccents[3]=lateral*(halfWidth*.67f)-Vector3.up*lower;
-            loopDust.Site(ground,footprint*.90f);
-            loopMotes.Site(ground+Vector3.up*.20f,footprint*.70f);
-            openingDust.Site(ground,footprint);
-            finishDust.Site(ground,footprint*.93f);
+            loopDust.Site(ground,footprint*.77f);
+            loopMotes.Site(ground+Vector3.up*.24f,footprint*.69f);
+            openingDust.Site(ground,footprint*.84f);
+            finishDust.Site(ground,footprint*.86f);
             finishEmbers.Site(facade,footprint*.85f);
             // A foundation-aligned sand ripple, not a screen-facing roof ring.
             finishRing.Site(ground+Vector3.up*.04f,0f);
@@ -287,6 +290,17 @@ namespace Eldoria.ReferenceClean
             if (preferModel && ModelBounds(id,out bounds)) return true;
             Collider target=null;
             var parcels=city.Parcels;
+            if(parcels && !preferModel)
+            {
+                // Canonical City state has already enabled the real scaffolding.
+                // Bounds of visible geometry are much tighter than the large
+                // invisible touch-target collider used for selecting the parcel.
+                GameObject scaffold=id=="sawmill" ? parcels.LeftConstruction :
+                                    id=="barracks" ? parcels.RightConstruction : null;
+                if(VisibleBounds(scaffold,out bounds))return true;
+                // During an upgrade, the built structure remains visible.
+                if(ModelBounds(id,out bounds))return true;
+            }
             if(parcels)
             {
                 if(id=="sawmill")target=parcels.LeftTarget;
