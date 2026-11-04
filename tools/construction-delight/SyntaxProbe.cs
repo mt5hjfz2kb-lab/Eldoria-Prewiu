@@ -13,6 +13,7 @@ internal static class SyntaxProbe
         var files=new[]{
             "Unity/Assets/Eldoria/ConstructionDelight/ValoriaConstructionDelightV1.cs",
             "Unity/Assets/Eldoria/ConstructionDelight/ConstructionDelightArchitecturalReveal.cs",
+            "Unity/Assets/Eldoria/ConstructionDelight/ConstructionDelightStageAssembly.cs",
             "Unity/Assets/Eldoria/ConstructionDelight/Editor/ConstructionDelightNativeCapture.cs",
             "Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs"
         };
