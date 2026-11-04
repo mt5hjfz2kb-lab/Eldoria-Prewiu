@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T08:35:40.353Z",
+  "updated_at": "2026-11-04T09:08:00.962Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3536,6 +3536,33 @@
         "credential_read": false,
         "process_killed": false,
         "reboot": false
+      }
+    },
+    {
+      "id": "eldoria-unity-metadata-integrity-20261104",
+      "title": "Integridad de metadatos Unity: recuperación y prevención",
+      "owner": "codex-eldoria-metadata-recovery-20261104",
+      "branch": "fix/unity-metadata-integrity-20261104",
+      "status": "active",
+      "claimed_at": "2026-11-04T09:08:00.962Z",
+      "base_main_sha": "58831b69c146f498cd2917194c36efb8f31a7741",
+      "scope": [
+        "Unity/.gitignore",
+        "tools/unity-metadata/**",
+        ".github/workflows/unity-metadata-snapshot.yml",
+        "docs/evidence/unity-metadata-20261104/**"
+      ],
+      "resources": [],
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Metadata recovery, read-only runner snapshot and integrity checks; no art generation or Unity launch.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Recuperar metadata existente verificable y prevenir exclusión accidental, conservando GUID/importadores y trabajo concurrente.",
+        "evidence": "Inventario por SHA, procedencia de cada meta recuperado, detector de GUID duplicados y pruebas focalizadas; pendientes explícitos sin GUID inventados.",
+        "handoff": "Misma PR para esta etapa; corregir recursos solo después de comprobar procedencia y titularidad."
       }
     }
   ],
