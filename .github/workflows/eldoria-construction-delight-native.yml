@@ -163,6 +163,27 @@ jobs:
           }
           Write-Host 'READ_ONLY_RESULT no secrets, session tokens, usernames or license data exported'
 
+      - name: Inspect whether Unity CLI can adopt an existing Hub sign-in
+        if: ${{ contains(github.event.head_commit.message, '[delight-adoptability-check]') }}
+        shell: powershell
+        run: |
+          $cli=Get-Command 'unity' -ErrorAction SilentlyContinue
+          if(-not $cli){Write-Host 'DELIGHT_AUTH_ADOPTABILITY cli_installed=false';exit 0}
+          $env:UNITY_NO_CLI_INVOKED_TELEMETRY='1'
+          $output=''
+          $code=-1
+          try{
+            $rows=& $cli.Source 'auth' 'status' '--format' 'json' '--non-interactive' 2>&1
+            $code=$LASTEXITCODE
+            $output=$rows|Out-String
+          }catch{$code=-1}
+          $adoptable=($output -match '"adoptable"\s*:\s*true')
+          $expired=($output -match 'SESSION_EXPIRED')
+          $notSigned=($output -match 'NOT_SIGNED_IN')
+          Write-Host "DELIGHT_AUTH_ADOPTABILITY cli_installed=true auth_exit=$code hub_session_adoptable=$adoptable session_expired=$expired not_signed_in=$notSigned"
+          Write-Host 'No CLI login or account switch; no tokens, account identifiers or license data printed'
+          $global:LASTEXITCODE=0
+
   native-art:
     if: ${{ !contains(github.event.head_commit.message, '[delight-license-diagnostic]') }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
