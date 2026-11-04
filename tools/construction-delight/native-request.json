@@ -61,5 +61,10 @@
   "reason": "Continue verifying actual C# sources while Editor license is unavailable; independent from graphical A/B acceptance",
   "source_project_repair": "d6e623ec824131d543c2543bf8358774e5ea1757",
   "native_unity_editor_not_called": true,
-  "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c"
+  "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c",
+  "source_domain_attempt": 1,
+  "purpose": "Offline source-domain assertions and Roslyn syntax for current PR152 after receipt and World4X visibility fixes",
+  "native_editor_invocation": false,
+  "window_runner_reservation": false,
+  "real_visual_QA_pending": true
 }
