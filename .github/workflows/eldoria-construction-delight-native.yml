@@ -184,8 +184,30 @@ jobs:
           Write-Host 'No CLI login or account switch; no tokens, account identifiers or license data printed'
           $global:LASTEXITCODE=0
 
+  source-domain:
+    if: ${{ contains(github.event.head_commit.message, '[delight-domain-test]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/construction-delight
+            /Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile exact Unity C# source against disposable domain fixture
+        shell: bash
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+        run: |
+          set -euo pipefail
+          dotnet run --project tools/construction-delight/DomainProbe.csproj --configuration Release
+
   native-art:
-    if: ${{ !contains(github.event.head_commit.message, '[delight-license-diagnostic]') }}
+    if: ${{ !contains(github.event.head_commit.message, '[delight-license-diagnostic]') && !contains(github.event.head_commit.message, '[delight-domain-test]') }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 75
     defaults:
