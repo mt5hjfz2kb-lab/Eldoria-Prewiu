@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T16:13:00Z",
+  "updated_at": "2026-11-04T17:01:48.469Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3499,9 +3499,9 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 13,
+      "ownership_revision": 14,
       "write_scope_released": false,
-      "branch": "main",
+      "branch": "feature/eldoria-construction-delight-20261104",
       "status": "active",
       "claimed_at": "2026-11-03T23:35:16.557Z",
       "base_main_sha": "d01bffc48f85d65b1061c2fc50ce78c49d9c3344",
@@ -3516,24 +3516,22 @@
         ".github/workflows/eldoria-construction-delight-native.yml",
         "tools/construction-delight/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "NATIVE_RESTART_ON_RECOVERED_WINDOWS_AFTER_METADATA_CLOSEOUT",
-      "next": "Refresh source branch from latest main safely, trigger exact Unity 6000.3.23f1 candidate with 26 native A/B images; review motion and visual quality, correct and rerun. No merge/publish until approval. Release Windows after QA.",
+      "phase": "NATIVE_A_B_26_CAPTURED_PASS_ARTISTIC_OWNER_REVIEW_PENDING",
+      "next": "Show owner authentic Construction Delight v3 A/B and motion. Await explicit art feedback; do NOT claim >=8.2 or merge. If user requests higher quality, improve roof architectural sheen rather than generic dust, reserve Windows with CAS, rerun real 26-frame Unity proof; preserve PR152 draft and original art.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
-        "evidence": "Source tests + real Unity 390x844 and 844x390 moving captures at exact HEAD, GPU/frame QA, human visual assessment",
+        "evidence": "Native unity 41872572157 (26 screenshots A/B, short motion), artifacts 13345725500, saved-state invariant; local contact sheets",
         "art_approved": false
       },
       "art_production_request": "pipeline/art-production-requests/eldoria-construction-delight-v1-20261104.json",
       "pr": 152,
       "last_verified": {
-        "source_sha": "1ed54ba1b94ea5af1d38df4bc29e0fde93caa5ac",
+        "source_sha": "b1b17576a50b24ca12b31f74080bb29e632008c2",
         "source_checks": "PASS: architecture / owner scope / art governance / planner / workflow quarantine / routing / domain",
         "unity_compile_tested": false,
         "unity_capture_count": 0,
@@ -3554,7 +3552,7 @@
         "unity_hub_process_activated": true,
         "personal_login_available_to_agent": false,
         "unity_source_compiled": false,
-        "real_delight_captures": 0,
+        "real_delight_captures": 26,
         "windows_runner_released": true,
         "reason": "Real Unity Editor returned exit 198 after installed Unity Hub launched and existing UnityEntitlementLicense.xml detected. No successful authenticated headless entitlement; do not claim visual QA.",
         "license_diagnostic_sessions_run": 41798743304,
@@ -3573,7 +3571,7 @@
         "csharp_syntax_run": 41800430492,
         "csharp_syntax_files_passed": 3,
         "csharp_syntax_errors": 0,
-        "unity_runtime_compiled": false,
+        "unity_runtime_compiled": true,
         "domain_run": 41804060440,
         "domain_result": "PASS: 36 authoritative task assertions (receipt gated), linked exact source",
         "roslyn_result": "PASS: 0 syntax errors in renderer, observer, native capture; not Unity semantic compile",
@@ -3584,14 +3582,18 @@
         "actual_unity_compile_for_latest_sha": false,
         "source_qa_updated": "2026-11-04",
         "resource_held": false,
-        "qa_procedures": "URP StandardRequest, authenticated full Unity 6.3.23f1, A/B real camera in 26 frames, sightline/site delta and save invariant"
+        "qa_procedures": "URP StandardRequest, authenticated full Unity 6.3.23f1, A/B real camera in 26 frames, sightline/site delta and save invariant",
+        "full_native_run": 41872572157,
+        "full_native_conclusion": "success",
+        "artifact_id": 13345725500,
+        "unity_version": "6000.3.23f1",
+        "save_unchanged_after_reload": true,
+        "actual_opaque_material_layers": 7,
+        "finish_pixel_change_landscape_pct": 1.601,
+        "finish_pixel_change_portrait_pct": 7.448
       },
       "candidate_branch": "feature/eldoria-construction-delight-20261104",
-      "native_lease": {
-        "reserved_at": "2026-11-04T16:13:00Z",
-        "source": "PR153 merged; metadata registry resource released; UI Progression Certification job all native steps completed success (post-run complete), process guard will be checked again before Unity launch.",
-        "prior_certification": 41850579678
-      },
+      "native_lease": null,
       "license_diagnostics": {
         "read_only_check_run": 41796258446,
         "hub_start_run": 41796661851,
