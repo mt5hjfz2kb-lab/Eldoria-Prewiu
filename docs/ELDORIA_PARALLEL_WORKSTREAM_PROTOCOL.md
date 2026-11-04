@@ -11,8 +11,11 @@ de coordinación. Una aceptación provisional de pantalla permite continuar a
 otra área, pero NO significa merge, publicación ni ART_APPROVED global.
 
 **Cierre obligatorio del chat saliente:**
-1. Conservar SHA exacto, capturas Unity en cuatro formatos, referencia A/B,
-   resultado de pruebas y pendientes artísticos; no inferir aprobación subjetiva.
+1. Conservar SHA exacto, resultados de pruebas, pendientes artísticos y las imágenes
+   de referencia aprobadas. Generar capturas Unity y A/B auténticas cuando se
+   necesiten para evaluar o certificar un cambio, pero tratarlas como temporales:
+   no archivarlas indefinidamente tras cerrar las comprobaciones dependientes.
+   Nunca inferir aprobación subjetiva a partir de una captura o un test.
 2. Finalizar o preservar cualquier certificación de Unity ya iniciada. Nunca
    cancelar jobs para acelerar un relevo, ni asumir que una cola vacía por sí
    sola prueba que el anterior chat dejó de trabajar.
