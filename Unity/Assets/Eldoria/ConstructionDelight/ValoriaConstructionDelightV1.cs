@@ -294,7 +294,15 @@ namespace Eldoria.ReferenceClean
         static bool VisibleBounds(GameObject model, out Bounds bounds)
         {
             bounds=default;
-            return VisibleBounds(model,out bounds);
+            if(!model || !model.activeInHierarchy)return false;
+            bool found=false;
+            foreach(var renderer in model.GetComponentsInChildren<Renderer>())
+            {
+                if(!renderer || !renderer.enabled)continue;
+                if(!found){bounds=renderer.bounds;found=true;}
+                else bounds.Encapsulate(renderer.bounds);
+            }
+            return found && bounds.size.sqrMagnitude>.001f;
         }
 
         bool ModelBounds(string id, out Bounds bounds)
