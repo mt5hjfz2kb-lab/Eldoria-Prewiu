@@ -6255,6 +6255,30 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
+    },
+    {
+      "id": "eldoria-obsolete-document-warnings-20261104",
+      "title": "Eldoria — avisos correctivos en instrucciones históricas de alto riesgo",
+      "owner": "chatgpt-eldoria-obsolete-doc-warnings-20261104",
+      "branch": "docs/obsolete-instruction-warnings-20261104",
+      "status": "active",
+      "claimed_at": "2026-11-04T20:20:00Z",
+      "base_main_sha": "b8dccb02b290c7199d098a37e535baa57dd618d8",
+      "scope": [
+        "docs/ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md",
+        "docs/VALORIA_PURCHASE_AUDIT.md",
+        "docs/VALORIA_CAMERA_FIRST_PROJECTION_SHELL_V1.md",
+        "docs/ELDORIA_PARALLEL_DELIVERY_HANDOFF_20261010.md"
+      ],
+      "resources": [],
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Documentation warnings only; no asset production, runtime changes or paid tools.",
+      "budget_eur": 0,
+      "phase": "WARNINGS_ON_OBSOLETE_INSTRUCTIONS",
+      "next": "Insert source-grounded non-destructive warnings in four historical documents; verify links and governance; merge and release claim."
     }
   ],
   "history": [
