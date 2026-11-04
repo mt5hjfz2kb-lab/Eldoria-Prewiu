@@ -1,5 +1,7 @@
 # ELDORIA — Implantación verificable de autoría artística IA V1
 
+> **AVISO DE VIGENCIA (04/11/2026): DOCUMENTO HISTÓRICO, NO INSTRUCCIÓN OPERATIVA ACTUAL.** La obligación de usar Qwen/Ollama local descrita en «Proceso obligatorio» fue retirada expresamente el 22/10/2026. **No exigir, instalar ni ejecutar Qwen por este documento.** Consultar primero [AGENTS.md](../AGENTS.md) y [ELDORIA_QWEN_ART_DECOUPLING_20261022.md](ELDORIA_QWEN_ART_DECOUPLING_20261022.md). Conservar este texto para trazabilidad; sus criterios de calidad visual solo se reutilizan cuando no contradicen decisiones posteriores.
+
 **Estado: código y pruebas de contrato preparados en rama aislada; falta prueba en el Windows del artista y verificación visual real.** Alcance: Issue #34. Cero créditos de pago. No modificar trabajos concurrentes de Bastión I ni el runner ocupado.
 
 ## Proceso obligatorio para todos los siguientes encargos artísticos
