@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T09:21:43.603Z",
+  "updated_at": "2026-11-04T09:27:24.065Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3850,11 +3850,12 @@
         "Unity/Assets/Holotna/Mountain/Textures.meta",
         "Unity/Assets/WorldPackCompare.meta",
         "Unity/Assets/WorldPackCompare/Quaternius.meta",
-        "Unity/Assets/WorldPackCompare/Quaternius/FBX.meta"
+        "Unity/Assets/WorldPackCompare/Quaternius/FBX.meta",
+        "Unity/Assets/EmaceArt/Slavic World Free/URP_Support/URP/URP_Material.unitypackage.meta"
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "write_scope_released": false,
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Metadata recovery, read-only runner snapshot and integrity checks; no art generation or Unity launch.",
