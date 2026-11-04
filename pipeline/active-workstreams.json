@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T18:32:13.877Z",
+  "updated_at": "2026-11-04T18:36:52.214Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6235,11 +6235,15 @@
         "docs/DOCUMENTATION_POLICY.md",
         "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
         "docs/project-organization/**",
-        "tools/repository-organization/**"
+        "tools/repository-organization/**",
+        "docs/ELDORIA_STABILIZATION_HANDOFF_20261014.md",
+        "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
+        "docs/VALORIA_VISUAL_BIBLE.md",
+        "docs/BASTION_I_GLOBAL_ART_DIRECTION_20261014.md"
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "write_scope_released": false,
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Documentation navigation only; no Unity, artwork, builds or delivery mutation.",
