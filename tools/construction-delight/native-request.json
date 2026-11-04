@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
   "ownership_revision": 13,
-  "mode": "SOURCE_DOMAIN_AND_ROSLYN_NO_GRASS_RING_WORK_PUFFS",
+  "mode": "REAL_UNITY_NATIVE_VISUAL_ITERATION_THREE",
   "expected_images": 26,
   "formats": [
     "844x390",
@@ -22,7 +22,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 12,
+  "attempt": 13,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "latest certified main & metadata merged into candidate",
@@ -65,7 +65,7 @@
   "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c",
   "source_domain_attempt": 2,
   "purpose": "Verify current authoritative completion receipt, no World4X bleed, URP real renderer and localized camera proof syntax",
-  "native_editor_invocation": false,
+  "native_editor_invocation": true,
   "window_runner_reservation": false,
   "real_visual_QA_pending": true,
   "license_evidence": {
@@ -122,5 +122,7 @@
     "finish_changed_portrait": 6818,
     "save_unchanged": true
   },
-  "refinement_commit": "c7da536fd9f8af0548ce39f5f88ba1b8ef116a5a"
+  "refinement_commit": "c7da536fd9f8af0548ce39f5f88ba1b8ef116a5a",
+  "latest_source_qa": 41870075541,
+  "visual_goal": "medieval wood/stone reconstruction with visible rhythmic dust, no floating roof or dirt grass ring, warm facade glints, tasteful restrained finish"
 }
