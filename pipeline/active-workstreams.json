@@ -6255,27 +6255,6 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
-    },
-    {
-      "id": "eldoria-documentation-semantic-review-batch3-20261104",
-      "title": "Eldoria — revisión semántica de importación, licencias y arte, lote 3",
-      "owner": "chatgpt-eldoria-semantic-review-batch3-20261104",
-      "branch": "docs/semantic-review-batch3-20261104",
-      "status": "active",
-      "claimed_at": "2026-11-04T20:11:00Z",
-      "base_main_sha": "887d4e1e455b44f40cf55b04bb163683463fc9a6",
-      "scope": [
-        "docs/project-organization/SEMANTIC_REVIEW_BATCH3_20261104.md"
-      ],
-      "resources": [],
-      "ownership_state": "claimed",
-      "ownership_revision": 1,
-      "write_scope_released": false,
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Documentation-only triage, no Unity or art source modifications.",
-      "budget_eur": 0,
-      "phase": "SEMANTIC_REVIEW_BATCH3",
-      "next": "Audit import/license/art source documents against later binding decisions and record non-destructive dispositions."
     }
   ],
   "history": [
@@ -14712,6 +14691,38 @@
         "documents_inspected": 8,
         "architecture_check": "success",
         "ownership_check": "success",
+        "catalog_changed": false,
+        "unity_changed": false
+      }
+    },
+    {
+      "id": "eldoria-documentation-semantic-review-batch3-20261104",
+      "title": "Eldoria — revisión semántica de importación, licencias y arte, lote 3",
+      "owner": null,
+      "branch": "docs/semantic-review-batch3-20261104",
+      "status": "completed",
+      "claimed_at": "2026-11-04T20:11:00Z",
+      "base_main_sha": "887d4e1e455b44f40cf55b04bb163683463fc9a6",
+      "scope": [
+        "docs/project-organization/SEMANTIC_REVIEW_BATCH3_20261104.md"
+      ],
+      "resources": [],
+      "ownership_state": "available",
+      "ownership_revision": 2,
+      "write_scope_released": true,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Documentation-only triage, no Unity or art source modifications.",
+      "budget_eur": 0,
+      "phase": "SEMANTIC_REVIEW_BATCH3_VERIFIED",
+      "next": "Continue authorized catalog reconciliation when other workstreams release its shared scope; review license provenance independently.",
+      "closed_reason": "PR157 merged after architecture, domain, scope and ownership checks. Shared catalog untouched.",
+      "evidence": {
+        "pr": 157,
+        "merge_sha": "1ae872568734aa463de01c9763fe88851d454218",
+        "documents_inspected": 10,
+        "architecture_check": "success",
+        "ownership_check": "success",
+        "domain_check": "success",
         "catalog_changed": false,
         "unity_changed": false
       }
