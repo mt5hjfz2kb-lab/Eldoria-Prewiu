@@ -101,6 +101,9 @@ namespace Eldoria.ReferenceClean.Editor
             // 14 is the actual player camera's minimum allowed zoom.
             // Native close-up QA must show the material quality of the effect.
             host.Zoom(14f-host.PlayerCamera.orthographicSize);
+            // First move the REAL city camera to the hotspot; the integrated
+            // safe-area Focus() refuses fully offscreen city targets.
+            city.Focus(genuineTarget.gameObject);
             host.Focus(genuineTarget.gameObject);
             yield return new WaitForSecondsRealtime(.32f);
             // Baseline: identical real scene, no action.
@@ -115,10 +118,16 @@ namespace Eldoria.ReferenceClean.Editor
             Require(result.Ok,"Canonical sawmill build rejected: "+result.Message);
             Require(city.Gateway.Snapshot().BuildingCompletesUtcTicks>0,
                 "Canonical construction timer did not start");
+            // A direct QA Gateway command bypasses the game's building button.
+            // Explicitly apply its real state to activate the real scaffold.
+            city.Presenter.RefreshState();
+            host.Hud.Refresh();
 
             yield return new WaitForSecondsRealtime(.42f);
             Require(fx.ActiveConstructionSprites>0,
-                "No real, flowing construction sprites over the scene");
+                "No real, flowing construction sprites over the scene; task="+
+                city.Gateway.Snapshot().BuildingTaskId+
+                " visual_work="+fx.ActiveBuildingId);
             Comparison(host,renderers,"work",844,390);
             Comparison(host,renderers,"work",390,844);
 
