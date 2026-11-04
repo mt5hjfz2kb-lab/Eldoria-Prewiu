@@ -27,3 +27,11 @@ Build the canonical integrated scene as a Windows candidate after complete nativ
 ## Still required — no merge authorization inferred from old proof
 
 Exact candidate Unity import, complete EditMode/PlayMode, native journeys/save/mailbox/marches/retention/heroes/dialogues, four-format authentic captures and visual review, canonical playable compilation, performance/memory comparison, refreshed main/ownership reconciliation and post-merge checks. Original PR136 run41889063433 (95 EditMode,73 PlayMode) is a baseline, not a certificate for this candidate. Artistic acceptance remains provisional. PR136 must remain open until all valid content is integrated and verified.
+
+## First native candidate 6744fb69
+
+Push run41898392357 has passed native V4.1, dialogue, three marches and retention steps; full suite/build is still running. Artifact13356503193 SHA256 f3348ebe85ace170b35131494267fce2057c00aa703bfe572887fc0a1e8b6aed downloaded and verified. Original 844x390 Aldric versus candidate shows clear text replacing visibly blurred rasterization; Lyra portrait retains scene/model and full navigation captions. Full native result remains pending.
+
+Ubuntu contract test found a real missing ArmyRoster compile dependency in its csproj; add the three actual domain source files, preserving all assertions. Ownership/art-scope failures used stale PR base56a47e9a; refreshing PR metadata restored the actual259-file diff. Exact ownership rerun passes; art gate must pass on the next commit. No foreign files were modified to satisfy the gate. Concurrent main c85ed4c8 changes only the other organization workstream owner; preserve it by reconciliation.
+
+Next candidate additionally exercises actual scrolling to the end of long hero descriptions, with genuine screenshots. It compares the two reconciled runtime source files against their exact verified c5051220 bytes using the same native instrumentation, assets and recovered metadata: city, Aldric and Lyra;90 warmup frames, collection,30 settling frames,240 measured frames per scenario. Thresholds detect p95 regression over25%+5ms or allocated-memory growth over10%+128MiB. Restore and hash-check every temporary source byte before running the candidate. This measures native Editor regression, not physical phone performance. No test suppression or artistic approval.

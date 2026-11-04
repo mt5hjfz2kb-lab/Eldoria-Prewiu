@@ -37,6 +37,11 @@ namespace Eldoria.Editor
                 new Eldoria.Application.CommandResult(false,"QA de solo lectura",snapshot.Revision);
             public bool Advance()=>false;
         }
+        public static void Benchmark()
+        {
+            Environment.SetEnvironmentVariable("ELDORIA_CONSOLIDATION_BENCHMARK","1");
+            Capture();
+        }
         public static void Capture()
         {
             try
@@ -62,7 +67,7 @@ namespace Eldoria.Editor
         }
         static IEnumerator Guard(ValoriaIntegratedWorld host)
         {
-            var probe=Exercise(host);
+            var probe=Environment.GetEnvironmentVariable("ELDORIA_CONSOLIDATION_BENCHMARK")=="1"?BenchmarkExercise(host):Exercise(host);
             while(true)
             {
                 bool more;object value=null;
@@ -70,6 +75,54 @@ namespace Eldoria.Editor
                 catch(Exception e){Fail(e);yield break;}
                 if(!more)yield break;yield return value;
             }
+        }
+        [Serializable] sealed class BenchmarkSample
+        {
+            public string screen; public int width,height; public float median_ms,p95_ms;
+            public long allocated_bytes,reserved_bytes;
+        }
+        [Serializable] sealed class BenchmarkResult
+        {
+            public string variant,source_sha; public bool physical_mobile_tested=false;
+            public BenchmarkSample[] samples;
+        }
+        static IEnumerator BenchmarkExercise(ValoriaIntegratedWorld host)
+        {
+            for(int i=0;i<300&&!host.Ready;i++)yield return null;
+            Need(host.Ready&&host.City.Probe,"Benchmark uses disposable canonical scene");
+            if(host.Guidance)host.Guidance.enabled=false;
+            for(int i=0;i<50&&host.Hud.NarrativeOpen;i++){host.Hud.Modal.Extra.onClick.Invoke();yield return null;}
+            host.Hud.Modal.Hide();host.Hud.SelectBuilding("");
+            var state=host.City.Gateway.Snapshot();state.BastionLevel=4;state.BarracksLevel=4;
+            state.ChapterThree.LyraRecruited=true;
+            new FileStateStore(host.City.SaveFile).Save(state);host.City.ReloadForProbe();yield return null;
+            var heroes=host.Hud.GetComponent<HeroesApprovedDestination>();
+            var samples=new System.Collections.Generic.List<BenchmarkSample>();
+            foreach(var screen in new[]{"city","aldric","lyra"})
+            {
+                if(screen!="city"){
+                    heroes.Open();Need(heroes.OpenHero(screen),"Benchmark real hero opens "+screen);
+                    float deadline=Time.realtimeSinceStartup+40f;
+                    while(heroes.ReadModelRoot(screen)==null&&Time.realtimeSinceStartup<deadline)yield return null;
+                    Need(heroes.ReadModelRoot(screen)!=null,"Benchmark approved model ready "+screen);
+                    heroes.Refresh();
+                }
+                for(int i=0;i<90;i++)yield return null;
+                yield return Resources.UnloadUnusedAssets();GC.Collect();
+                for(int i=0;i<30;i++)yield return null;
+                var timings=new float[240];
+                for(int i=0;i<timings.Length;i++){yield return null;timings[i]=Time.unscaledDeltaTime*1000f;}
+                Array.Sort(timings);
+                samples.Add(new BenchmarkSample{screen=screen,width=Screen.width,height=Screen.height,
+                    median_ms=timings[120],p95_ms=timings[228],
+                    allocated_bytes=UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong(),
+                    reserved_bytes=UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong()});
+                if(screen!="city"){heroes.Close();yield return null;}
+            }
+            var result=new BenchmarkResult{variant=Environment.GetEnvironmentVariable("ELDORIA_BENCHMARK_VARIANT"),
+                source_sha=Environment.GetEnvironmentVariable("ALDRIC_REQUEST_SOURCE_SHA"),samples=samples.ToArray()};
+            File.WriteAllText(Path.Combine(Output,"benchmark.json"),JsonUtility.ToJson(result,true));
+            Debug.Log("ELDORIA_CONSOLIDATION_BENCHMARK_RECORDED");EditorApplication.Exit(0);
         }
         static void Shot(ValoriaIntegratedWorld host,string name,int width,int height)
         {
@@ -201,6 +254,17 @@ namespace Eldoria.Editor
                 var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
                 if(heroes&&heroes.IsOpen){
                     heroes.Refresh();Canvas.ForceUpdateCanvases();
+                    if(name.EndsWith("-scroll-end"))
+                    {
+                        var scroll=heroes.VisibleRoot.GetComponentsInChildren<ScrollRect>()
+                            .First(x=>x.content&&x.content.name=="Skills / source-bound description content");
+                        Need(scroll.content.rect.height>scroll.viewport.rect.height,
+                            "Long real ability description requires scrolling "+name);
+                        scroll.OnScroll(new PointerEventData(EventSystem.current){scrollDelta=new Vector2(0,-10000)});
+                        Canvas.ForceUpdateCanvases();
+                        Need(scroll.verticalNormalizedPosition<=.01f,
+                            "Actual scroll input reaches the end of the full ability description "+name);
+                    }
                     if(heroes.CurrentPage!=HeroesApprovedDestination.Page.Salon)
                     {
                         var canvas=host.Hud.GetComponent<Canvas>();
@@ -1379,6 +1443,8 @@ namespace Eldoria.Editor
                 Shot(host,"heroes-aldric-"+page+"-phone",900,1600);
                 Shot(host,"heroes-aldric-"+page+"-small-phone",390,844);
                 Shot(host,"heroes-aldric-"+page+"-small-phone-landscape",844,390);
+                if(page==HeroesApprovedDestination.Page.Habilidades)
+                    Shot(host,"heroes-aldric-"+page+"-small-phone-scroll-end",390,844);
             }
             Need(heroes.OpenHero("lyra"),"Narratively recruited Lyra opens her own profile");
             var lyraModel=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesLyraModel>();
@@ -1406,6 +1472,8 @@ namespace Eldoria.Editor
                 Shot(host,"heroes-lyra-"+page+"-phone",900,1600);
                 Shot(host,"heroes-lyra-"+page+"-small-phone",390,844);
                 Shot(host,"heroes-lyra-"+page+"-small-phone-landscape",844,390);
+                if(page==HeroesApprovedDestination.Page.Habilidades)
+                    Shot(host,"heroes-lyra-"+page+"-small-phone-scroll-end",390,844);
             }
             Need(File.ReadAllText(host.City.SaveFile)==saveBeforeHeroes,
                 "All six hero screens preserve the authoritative save byte for byte");

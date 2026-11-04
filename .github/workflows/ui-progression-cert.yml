@@ -190,7 +190,7 @@ jobs:
       ALDRIC_CITY_SCREENSHOT_DIR: ${{ github.workspace }}/aldric-ui-native-${{ github.run_id }}
       ALDRIC_REQUEST_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 85
+    timeout-minutes: 100
     steps:
       - name: Check live native-editor lease before downloading the Unity project
         shell: powershell
@@ -446,6 +446,64 @@ jobs:
             '-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',$log)
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
           if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
+
+      - name: Compare reconciled runtime performance with the verified PR136 baseline
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $baseline='c5051220294db3781c56878bab28eccaa798452d'
+          $paths=@('Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs','Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3LayeredFinish.cs','Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3LayeredFinishTests.cs')
+          $original=@{}; $expected=@{}
+          foreach($path in $paths){$original[$path]=[IO.File]::ReadAllBytes((Join-Path $env:GITHUB_WORKSPACE $path));$expected[$path]=(& git hash-object $path).Trim()}
+          $e=Join-Path $env:RUNNER_TEMP "eldoria-consolidation-performance-$env:GITHUB_RUN_ID"
+          New-Item -ItemType Directory -Force $e | Out-Null
+          function Measure-Runtime($variant){
+            $env:ELDORIA_BENCHMARK_VARIANT=$variant
+            $env:ELDORIA_V41_EVIDENCE=Join-Path $e $variant
+            New-Item -ItemType Directory -Force $env:ELDORIA_V41_EVIDENCE | Out-Null
+            $log=Join-Path $e ($variant+'.log')
+            $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-executeMethod','Eldoria.Editor.EldoriaV41NativeCapture.Benchmark','-logFile',$log)
+            $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+            if(-not $process.WaitForExit(600000)){& taskkill.exe /PID $process.Id /T /F | Out-Null;throw "Own benchmark $variant timed out"}
+            if($process.ExitCode -ne 0){Get-Content $log -Tail 100;throw "Benchmark $variant failed"}
+            if(-not(Test-Path (Join-Path $env:ELDORIA_V41_EVIDENCE 'benchmark.json'))){throw "Benchmark $variant proof missing"}
+          }
+          try {
+            # Only the two reconciled runtime files differ from the verified PR136.
+            # The third path restores their matching test source for compilation.
+            # Keep all approved assets, recovered metadata and identical benchmark instrumentation.
+            & git fetch --no-tags --depth=1 origin $baseline
+            if($LASTEXITCODE -ne 0){throw 'Cannot fetch immutable runtime baseline'}
+            foreach($path in $paths){
+              $lines=@(& git show "${baseline}:$path");if($LASTEXITCODE -ne 0){throw "Missing baseline source $path"}
+              [IO.File]::WriteAllText((Join-Path $env:GITHUB_WORKSPACE $path),($lines -join "`n")+"`n",(New-Object Text.UTF8Encoding($false)))
+              $actual=(& git hash-object $path).Trim();$wanted=(& git rev-parse "${baseline}:$path").Trim()
+              if($actual -ne $wanted){throw "Baseline source bytes differ: $path"}
+            }
+            Measure-Runtime 'verified-pr136-runtime'
+          } finally {
+            foreach($path in $paths){[IO.File]::WriteAllBytes((Join-Path $env:GITHUB_WORKSPACE $path),$original[$path])}
+          }
+          foreach($path in $paths){if((& git hash-object $path).Trim() -ne $expected[$path]){throw "Candidate restoration failed: $path"}}
+          Measure-Runtime 'reconciled-candidate'
+          $old=Get-Content (Join-Path $e 'verified-pr136-runtime/benchmark.json') -Raw|ConvertFrom-Json
+          $new=Get-Content (Join-Path $e 'reconciled-candidate/benchmark.json') -Raw|ConvertFrom-Json
+          if(@($old.samples).Count -ne 3 -or @($new.samples).Count -ne 3){throw 'Incomplete performance samples'}
+          foreach($now in $new.samples){
+            $before=@($old.samples|Where-Object {$_.screen -eq $now.screen})
+            if($before.Count -ne 1 -or $before[0].width -ne $now.width -or $before[0].height -ne $now.height){throw 'Benchmark scenario/resolution mismatch'}
+            if($now.p95_ms -gt ($before[0].p95_ms*1.25+5)){throw "Significant frame-time regression in $($now.screen)"}
+            if($now.allocated_bytes -gt ($before[0].allocated_bytes*1.10+134217728)){throw "Significant allocated-memory regression in $($now.screen)"}
+          }
+          [IO.File]::WriteAllText((Join-Path $e 'comparison.txt'),"PASS: identical native scenarios, 240 measured frames each after warmup. Baseline runtime $baseline; candidate $env:ALDRIC_REQUEST_SOURCE_SHA. Native Editor comparison, not physical mobile certification.")
+      - uses: actions/upload-artifact@v4
+        if: always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')
+        with:
+          name: eldoria-pr136-performance-${{ github.sha }}
+          path: ${{ runner.temp }}/eldoria-consolidation-performance-${{ github.run_id }}/**
+          if-no-files-found: error
+          retention-days: 30
 
       - name: V4.1 real controls, persistent mailbox and approved-source captures
         if: (github.head_ref == 'feature/eldoria-v41-contracts-20261030' || (github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main'))
