@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T18:36:52.214Z",
+  "updated_at": "2026-11-04T19:23:34.381Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-dialogue-v4-recovery-20261104",
+      "owner": "codex-eldoria-pr136-consolidation-20261104",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-04",
@@ -118,17 +118,31 @@
         "Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/RejectedLegacyBastionBuildGuard.cs*",
         "ArtSource/RejectedLegacyBastion/**",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs"
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3ManagementIntegrationTests.cs",
+        "Unity/Assets/Eldoria/HeroesUI/**",
+        "Unity/Assets/Eldoria/HeroesUI.meta",
+        "Unity/Assets/Eldoria/Resources/EldoriaV41/**",
+        "Unity/Assets/Eldoria/Resources/EldoriaV41.meta",
+        "Unity/Assets/Eldoria/Resources/EldoriaRetention/**",
+        "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41*.cs*",
+        "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41*.cs*",
+        "Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3*.cs*",
+        "Unity/Assets/Eldoria/Tests/EditMode/EldoriaV41*.cs*",
+        "Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs",
+        "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs",
+        "docs/heroes-ui/**",
+        "docs/eldoria-v41/**",
+        "tools/eldoria-v41/**",
+        "docs/evidence/pr136-consolidation-20261104/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "DIALOGUE1_CINEMATIC_REAL_NATIVE_AB_B20E5972",
-      "next": "Obtener 48 capturas A/B Unity de HEAD b20e59721ac6708f29dabf2d12259e8c2b9683d7, run 41883405500; revisar placa de nombre corta, superposición real Lyra/pergamino, retrato Aldric sin medallón, móvil 390x844, 844x390, 900x1600, y variantes Orín QA; 433+ aserciones esperadas. Mantener DRAFT sin merge/publicación ni art approval automática. Liberar Windows y registrar evidencia después.",
+      "phase": "PR136_CONTROLLED_CONSOLIDATION_AUDIT",
+      "next": "Reconcile latest main and all valid PR136 changes; diagnose mobile text; exact candidate Unity suites/captures/build; merge only after all mandatory checks. No publish/spend/foreign cancellation.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -964,7 +978,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": "chatgpt-eldoria-dialogue-v4-native-ab-20261104",
+      "previous_owner": "chatgpt-eldoria-dialogue-v4-recovery-20261104",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1795,9 +1809,15 @@
           "revision": 138,
           "transferred_at": "2026-11-04T17:36:07.130Z",
           "reason": "The owner explicitly instructed this new chat to take over the frozen dialogue task and continue PR136 through authentic Unity A/B. 48 PNG and 409 native checks exist on 5a50fa25; subtitle collision found by direct visual review and corrected in candidate 2482b22b. Preserve previous artifacts and release only after exact-head QA."
+        },
+        {
+          "owner": "chatgpt-eldoria-dialogue-v4-recovery-20261104",
+          "ownership_revision": 138,
+          "ended_at": "2026-11-04T19:23:34.381Z",
+          "reason": "Explicit owner authorization in current conversation to perform handoff and continue complete PR136 consolidation; previous exact-head run41889063433 completed successfully. No jobs cancelled."
         }
       ],
-      "ownership_revision": 138,
+      "ownership_revision": 139,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -2153,6 +2173,13 @@
         "changes": "short illustrated header plaque <=360, improved Lyra paper overlap, cinematic min height 350 and dynamic portrait overlap on short+long, Aldric right-edge feather, additional viewport-native assertions",
         "technical_state": "source_committed_exact_head_ci_pending",
         "artistic_state": "NOT_ART_APPROVED"
+      },
+      "owner_handoff_authorization": {
+        "at": "2026-11-04T19:23:34.381Z",
+        "instruction": "Tienes autorización para realizar el relevo y continuar con el trabajo.",
+        "prior_head": "c5051220294db3781c56878bab28eccaa798452d",
+        "prior_certified_run": 41889063433,
+        "scope": "Complete controlled PR136 consolidation; main merge authorized only after mandatory checks."
       }
     },
     {
@@ -14644,13 +14671,13 @@
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
     "status": "claimed",
-    "owner": "chatgpt-eldoria-scout-contract-art-20261103",
+    "owner": "codex-eldoria-pr136-consolidation-20261104",
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
     "branch": "main",
     "restrictions": "Preserve native111 baseline; staged improvements with focused tests. No old independent branch production. No paid credits.",
-    "previous_owner": "codex-release-continuation-ab04f62d0b26",
+    "previous_owner": "chatgpt-eldoria-scout-contract-art-20261103",
     "ownership_source": "active[id=valoria-master-plan-layered-construction-20261016]; transferable owner-directed claim",
     "released_at": "2026-10-30T07:52:24.023Z",
     "release_evidence": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
