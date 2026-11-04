@@ -1,11 +1,15 @@
 # Eldoria — Índice documental único
 
-> **DECISIÓN ACTUAL DEL PROPIETARIO, 25/10/2026 (PREVALECE SOBRE ESTA DOCUMENTACIÓN HISTÓRICA):** el modelo antiguo `Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb` **NO está aprobado para uso**. Se conserva solo como archivo histórico y no puede sugerirse, incorporarse en escenas ni publicarse salvo autorización específica, nueva y expresa del propietario. Ningún anterior `PASS` o mención a "Hero Bastion producción" revoca esta prohibición. Antes de sustituir una posible instancia preexistente, su responsable debe comprobar las referencias y la compatibilidad de Unity sin romper el juego.
+> **DECISIÓN ACTUAL DEL PROPIETARIO, 25/10/2026 (PREVALECE SOBRE ESTA DOCUMENTACIÓN HISTÓRICA):** el modelo antiguo `Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb` **NO está aprobado para uso**. Su ubicación archivada actual es `ArtSource/RejectedLegacyBastion/`; la ruta de Unity citada es la ubicación antigua prohibida. Se conserva solo como archivo histórico y no puede sugerirse, incorporarse en escenas ni publicarse salvo autorización específica, nueva y expresa del propietario. Ningún anterior `PASS` o mención a "Hero Bastion producción" revoca esta prohibición. Antes de sustituir una posible instancia preexistente, su responsable debe comprobar las referencias y la compatibilidad de Unity sin romper el juego.
 
 
-> **Navegación documental actualizada:** 2026-11-01 · **Rol:** navegación, no autorización de desarrollo. Este índice reemplaza los mapas de navegación dispersos, pero no reemplaza las reglas técnicas ni los criterios de calidad.
+> **Navegación documental actualizada:** 2026-11-04 · **Rol:** navegación, no autorización de desarrollo. Este índice reemplaza los mapas de navegación dispersos, pero no reemplaza las reglas técnicas ni los criterios de calidad.
 
 > **Pacto fundacional propietario–IA (ELDORIA_OWNER_AI_COLLABORATION_V1):** el dueño no programa; cualquier chat o agente ha de aportar iniciativa, criterio técnico propio, crítica, alternativa cuando un método falle y evidencia real, como obliga [AGENTS.md](../AGENTS.md). Se mantiene vigente en todos los relevos; no reemplaza las autorizaciones.
+
+## Organización de archivos
+
+[Mapa completo de carpetas, destinos para nuevos archivos y resultados de la auditoría](project-organization/README.md). El inventario cubre el árbol versionado completo; las copias idénticas y los documentos pendientes de revisión no se convierten automáticamente en material eliminable o vigente.
 
 ## Entrada y estado actual
 
@@ -64,6 +68,8 @@ El [README](../README.md) es la puerta de entrada al proyecto. Distingue código
 - **`reference`**: dirección, antecedentes o instrucciones de un ámbito concreto; puede contener logros históricos, no es estado actual.
 - **`historical`**: reemplazado o cerrado; conservar para rastrear decisiones, jamás arrancar trabajo por sus encabezados `ACTIVE`.
 - **`review_pending`**: inventariado pero aún no verificado o con contradicciones de vigencia. No se usa como autoridad operativa hasta reconciliarlo.
+
+**Advertencia de vigencia:** el catálogo declara estados, pero algunos documentos conservan instrucciones revocadas. Los avisos de supersesión de sus cabeceras y AGENTS prevalecen. La revisión de 04/11 documenta cuatro correcciones de cabecera y la conciliación pendiente del catálogo en [los resultados](project-organization/README.md#hallazgos-y-decisiones).
 
 El [catálogo versionado](documentation-catalog.json) inventaría **todos los Markdown directos de `docs/`** y sus estados explícitos; no borra el pasado. El [protocolo documental](DOCUMENTATION_POLICY.md) explica vigencia, mantenimiento, conflictos y criterios de migración. El [catálogo de workflows](WORKFLOW_INDEX.md) distingue rutas comprobadas de otras aún sin clasificación.
 
