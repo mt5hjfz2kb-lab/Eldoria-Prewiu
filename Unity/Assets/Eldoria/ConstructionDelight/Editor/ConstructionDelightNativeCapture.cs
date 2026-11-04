@@ -213,8 +213,13 @@ namespace Eldoria.ReferenceClean.Editor
             try
             {
                 camera.aspect=width/(float)height;
-                camera.targetTexture=rt;
-                camera.Render();camera.Render();
+                // Camera.Render can omit URP camera-stack content. Request a real
+                // pipeline frame at the exact target resolution instead.
+                // StandardRequest is supported by URP base cameras on Unity 6.
+                var request=new RenderPipeline.StandardRequest{destination=rt};
+                Require(RenderPipeline.SupportsRenderRequest(camera,request),
+                    "URP StandardRequest unavailable for the actual player camera");
+                RenderPipeline.SubmitRenderRequest(camera,request);
                 RenderTexture.active=rt;
                 image.ReadPixels(new Rect(0,0,width,height),0,0);
                 image.Apply(false,false);
