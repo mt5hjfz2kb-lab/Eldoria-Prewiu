@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T19:23:34.381Z",
+  "updated_at": "2026-11-04T19:32:08.996Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -136,13 +136,15 @@
         "tools/eldoria-v41/**",
         "docs/evidence/pr136-consolidation-20261104/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR136_CONTROLLED_CONSOLIDATION_AUDIT",
-      "next": "Reconcile latest main and all valid PR136 changes; diagnose mobile text; exact candidate Unity suites/captures/build; merge only after all mandatory checks. No publish/spend/foreign cancellation.",
+      "phase": "PR136_EXACT_CANDIDATE_NATIVE_CERTIFICATION",
+      "next": "Run complete reconciled candidate certification and private canonical Windows build; inspect four-format evidence, resolve failures, then reconcile live main before integration.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1817,7 +1819,7 @@
           "reason": "Explicit owner authorization in current conversation to perform handoff and continue complete PR136 consolidation; previous exact-head run41889063433 completed successfully. No jobs cancelled."
         }
       ],
-      "ownership_revision": 139,
+      "ownership_revision": 140,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -2180,6 +2182,12 @@
         "prior_head": "c5051220294db3781c56878bab28eccaa798452d",
         "prior_certified_run": 41889063433,
         "scope": "Complete controlled PR136 consolidation; main merge authorized only after mandatory checks."
+      },
+      "runner_reservation": {
+        "owner": "codex-eldoria-pr136-consolidation-20261104",
+        "reason": "Owner-authorized PR136 consolidation exact candidate native certification",
+        "previous_native_run": 41889063433,
+        "publish": false
       }
     },
     {
