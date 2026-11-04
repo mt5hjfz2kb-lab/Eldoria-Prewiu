@@ -125,8 +125,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "DIALOGUE_ART_20261104",
-      "next": "Implementar y validar artísticamente diálogos con Unity y A/B nativo sin cambios de gameplay.",
+      "phase": "DIALOGUE_ART_IMPLEMENTED_UNITY_LICENSE_BLOCKED",
+      "next": "PR136 HEAD 96d1becff2f6d7961326e741258ffa139f228b3a: UI V4 integrated; run 41804846844 failed twice on Unity Personal license BEFORE compilation. Need Unity Hub interactive license in Windows runner identity, then exact HEAD full Unity compile, 48 native A/B, EditMode/PlayMode, art review. Do not merge/publish or invent Orin gameplay.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
