@@ -1,5 +1,5 @@
 {
-  "status": "PLAYER_BUILD_POLICY_REVIEW_REQUIRED",
+  "status": "CANDIDATE_REJECTED_RESOURCE_ARCHIVED_FULL_NATIVE_PENDING",
   "source_candidate": "6b9ff55aafe4296b6d9973008cbcfe2c09f3d397",
   "observed": {
     "legacy_model_still_in_main_resources": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
@@ -8,7 +8,7 @@
   },
   "official_reference": "https://docs.unity.com/en-us/engine/6000.3/manual/assets-and-media/assets-managing-runtime/introduction",
   "inference": "Resources content is included in Player builds. Verify exclusion/guard before merging a metadata push that triggers the main player workflow; do not create a new build containing the owner-rejected model.",
-  "native_scope": "Current metadata workflow only imports and runs EditMode/PlayMode; no Player build or publication requested.",
+  "native_scope": "Next exact-candidate full proof: import/identity bytes, enabled-scene missing scripts, EditMode/PlayMode; script checks rejected Resource absence before Editor starts.",
   "runtime_caller": {
     "path": "Unity/Assets/Eldoria/Scripts/Presentation/AssetLibraryReprocessingPassV1.cs",
     "enabled_default": true,
@@ -22,5 +22,7 @@
     "from": 9,
     "to": 10,
     "current_editor_interrupted": false
-  }
+  },
+  "candidate_action": "Move exact existing model/metadata blobs outside Assets under binding owner veto, without runtime-code or scene edits. Catalog locators synchronized with block preserved.",
+  "current_main_still_unmerged": true
 }

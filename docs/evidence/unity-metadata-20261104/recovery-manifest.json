@@ -491,7 +491,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaAuthenticBridgeLayerE.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionFacingProbe.cs.meta",
@@ -505,7 +506,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionFacingProbe.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionVisibilityGate.cs.meta",
@@ -519,7 +521,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaBastionVisibilityGate.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryFinishV8.cs.meta",
@@ -533,7 +536,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryFinishV8.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV5Integration.cs.meta",
@@ -547,7 +551,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaEntryZoneV5Integration.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaLayeredMasterSceneBuilder.cs.meta",
@@ -561,7 +566,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaLayeredMasterSceneBuilder.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaMacroScreenEnvelopeCandidateV1.cs.meta",
@@ -575,7 +581,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaMacroScreenEnvelopeCandidateV1.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaModularGateLayerD.cs.meta",
@@ -589,7 +596,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaModularGateLayerD.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSceneVisualOwnershipGate.cs.meta",
@@ -603,7 +611,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSceneVisualOwnershipGate.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSharpPlayerCameraCorrespondence.cs.meta",
@@ -617,7 +626,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSharpPlayerCameraCorrespondence.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSharpSemanticContactRepairV1.cs.meta",
@@ -631,7 +641,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaSharpSemanticContactRepairV1.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaTerrainRiverCliffV2Integration.cs.meta",
@@ -645,7 +656,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaTerrainRiverCliffV2Integration.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaTerrainRiverCliffV3Integration.cs.meta",
@@ -659,7 +671,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor/ValoriaTerrainRiverCliffV3Integration.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout/certified-legacy-skeleton.json.meta",
@@ -673,7 +686,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout/certified-legacy-skeleton.json.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_BridgeTerrainV1.unity.meta",
@@ -687,7 +701,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_BridgeTerrainV1.unity.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity.meta",
@@ -701,7 +716,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABC.unity.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity.meta",
@@ -715,7 +731,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD.unity.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCDE.unity.meta",
@@ -729,7 +746,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCDE.unity.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD_BridgeV1.unity.meta",
@@ -743,7 +761,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_MasterPlan_Layers_ABCD_BridgeV1.unity.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Camera_Mapping_DIAGNOSTIC.unity.meta",
@@ -757,7 +776,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_Camera_Mapping_DIAGNOSTIC.unity.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV5_CANDIDATE.unity.meta",
@@ -771,7 +791,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_EntryZoneV5_CANDIDATE.unity.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_MacroEnvelope_CANDIDATE.unity.meta",
@@ -785,7 +806,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_MacroEnvelope_CANDIDATE.unity.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV2_CANDIDATE.unity.meta",
@@ -799,7 +821,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV2_CANDIDATE.unity.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV3_CANDIDATE.unity.meta",
@@ -813,7 +836,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_RiverCliffV3_CANDIDATE.unity.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_SemanticContact_IsolatedV1.unity.meta",
@@ -827,7 +851,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Valoria_SHARP_SemanticContact_IsolatedV1.unity.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1/Editor/ValoriaBridgeLevelAccessV1.cs.meta",
@@ -841,7 +866,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1/Editor/ValoriaBridgeLevelAccessV1.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor/ValoriaTerrainRiverCliffV1.cs.meta",
@@ -855,7 +881,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor/ValoriaTerrainRiverCliffV1.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb.meta",
@@ -869,7 +896,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/source-identity.json.meta",
@@ -883,7 +911,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/source-identity.json.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/Resources/UI/AldricDialogue/ALDRIC_BUST_PROVENANCE.json.meta",
@@ -1327,7 +1356,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/Scripts/Editor/GoldenSurfaceAuthoringV1.cs.meta",
@@ -2891,7 +2921,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/World4XCanon/RegionOneRiberaPilot.cs.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/World4XCanon/RiberaFade.shader.meta",
@@ -2905,7 +2936,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/World4XCanon/RiberaFade.shader.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests.meta",
@@ -3041,7 +3073,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor.meta",
@@ -3056,7 +3089,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Editor.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated.meta",
@@ -3071,7 +3105,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Generated.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedBridgeV1.meta",
@@ -3086,7 +3121,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedBridgeV1.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD.meta",
@@ -3101,7 +3137,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedE.meta",
@@ -3116,7 +3153,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedE.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5.meta",
@@ -3131,7 +3169,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV5.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV1.meta",
@@ -3146,7 +3185,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV1.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV2.meta",
@@ -3161,7 +3201,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV2.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV3.meta",
@@ -3176,7 +3217,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedTerrainV3.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout.meta",
@@ -3191,7 +3233,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Layout.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants.meta",
@@ -3206,7 +3249,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1.meta",
@@ -3221,7 +3265,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1/Editor.meta",
@@ -3236,7 +3281,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/BridgeLevelAccessV1/Editor.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1.meta",
@@ -3251,7 +3297,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor.meta",
@@ -3266,7 +3313,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/Variants/TerrainRiverCliffV1/Editor.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean.meta",
@@ -3281,7 +3329,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV.meta",
@@ -3296,7 +3345,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Models.meta",
@@ -3311,7 +3361,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Models.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits.meta",
@@ -3326,7 +3377,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1.meta",
@@ -3341,7 +3393,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/World4XZone1.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground.meta",
@@ -3356,7 +3409,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/Resources/UI.meta",
@@ -3613,7 +3667,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/SpawnlingBastion2.meta",
       "previous_reserved_by": [
         "eldoria-tripo-art-brain-phase2-20261021"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/UI.meta",
@@ -3639,7 +3694,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Eldoria/World4XCanon/P0ArtMasks.meta",
@@ -3654,7 +3710,8 @@
       "recovered_from_pending_path": "docs/evidence/unity-metadata-20261104/pending/Unity/Assets/Eldoria/World4XCanon/P0ArtMasks.meta",
       "previous_reserved_by": [
         "valoria-master-plan-layered-construction-20261016"
-      ]
+      ],
+      "historical_pending_commit": "4e275f844f4306419c87f37b12b18b0520a372dc"
     },
     {
       "path": "Unity/Assets/Holotna.meta",
@@ -3766,9 +3823,7 @@
     "zip_sha256": "cd97cdbc53c2806b5e44480a376b0ed8c7d292781c149efda895e58bc284ac24",
     "scope": "Existing stable folder metadata; directory content equality is not claimed."
   },
-  "unrecovered_folders": [
-    "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated"
-  ],
+  "unrecovered_folders": [],
   "archived_orphans": [
     {
       "original_path": "Unity/Assets/EmaceArt/Slavic World Free/URP_Support/URP/URP_Material.unitypackage.meta",
@@ -3777,6 +3832,30 @@
       "guid": "63eaccd68f436bb46b1a33047ac9b295",
       "serialized_references": 0,
       "reason": "Package payload absent from Git; importer metadata has no serialized references in 3617 inspected Unity YAML files. Original bytes retained."
+    }
+  ],
+  "asset_locations_changed": true,
+  "unrecovered_archived_folders": [
+    {
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated",
+      "reason": "Original folder identity remains unrecovered. Proposed archival moves its two tracked files outside Assets; the former folder no longer requires a Unity identity. No GUID invented."
+    }
+  ],
+  "archived_rejected_assets": [
+    {
+      "source": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+      "destination": "ArtSource/RejectedLegacyBastion/Valoria_HeroBastion_v1.glb",
+      "asset_blob_sha": "e31aa6a63af826f4c6f666bb369fc270233c8d66",
+      "metadata_blob_sha": "bab32c587d4bd8c194a242304ae97dd937bcc29b",
+      "guid": "fa36c6abf91adc7778caeac12130f567",
+      "authorization_state": "ARCHIVED_UNDER_BINDING_OWNER_REJECTION_20261025",
+      "source_bytes_changed": false,
+      "metadata_bytes_changed": false,
+      "art_approved": false,
+      "basis": "Existing owner prohibition and archival preservation in AGENTS.md; current file-organization audit continuation. No new art or source-byte change.",
+      "asset_sha256": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
+      "asset_bytes": 13257704,
+      "metadata_sha256": "403b8109e21b2aff016ead7e775250df519a8992c4cc077eddb41be0217ebd81"
     }
   ]
 }

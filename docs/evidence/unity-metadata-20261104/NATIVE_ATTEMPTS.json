@@ -40,5 +40,5 @@
     "partial_clone_local_clone": "FAILED in disposable reproduction, approach rejected before native dispatch",
     "canonical_clone_seed_immutable_pack_objects": "Disposable local proof passed, but NOT usable across native jobs: runner cleanup removes the source cache. Abandoned for this environment."
   },
-  "next_mode": "identities_only; no scene opening or PlayMode while rejected Resource policy is unresolved"
+  "next_mode": "full, only on candidate with rejected model and its metadata archived outside Unity"
 }

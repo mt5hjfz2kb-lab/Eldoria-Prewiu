@@ -28,8 +28,9 @@ jobs:
             /tools/unity-metadata/
             /Unity/.gitignore
             /Unity/**/*.meta
+            /docs/evidence/unity-metadata-20261104/recovery-manifest.json
       - name: Reject new missing metadata, malformed GUIDs and duplicate identities
-        run: python3 tools/unity-metadata/audit.py
+        run: python3 tools/unity-metadata/audit.py --archive-manifest docs/evidence/unity-metadata-20261104/recovery-manifest.json
       - name: Exercise recovery and integrity behavior
         run: python3 -m unittest discover -s tools/unity-metadata -p 'test_*.py' -v
       - name: Parse native validation PowerShell without launching Unity

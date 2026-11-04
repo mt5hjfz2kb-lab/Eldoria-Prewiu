@@ -1,6 +1,6 @@
 # Unity metadata recovery and prevention
 
-Run from the repository root:
+Run from the repository root (use --archive-manifest to verify archived source blobs):
 
 ```sh
 python3 tools/unity-metadata/audit.py
@@ -66,3 +66,11 @@ difference is captured as raw metadata plus a path/hash mapping, rather than
 assuming a checkout difference was an importer rewrite. Scenes are loaded as
 `SceneAsset` Editor references, never as sub-asset arrays or instantiated objects.
 Runner temporary files are removed between jobs; do not rely on them as caches.
+
+The existing owner-rejected legacy Resource is forbidden in tracked Unity paths.
+The archive ledger can be checked using Git tree blob identities without checking
+large model binaries out. Native full validation also refuses that Resource before
+opening an Editor. Archived source bytes and GUID are preserved; ordinary asset
+reuse and all artistic approval remain blocked. The two existing catalog locators
+are updated, not promoted. Historical pending recovery copies are referenced by
+commit in the manifest after their exact restored destinations were verified.

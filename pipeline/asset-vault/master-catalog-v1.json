@@ -59,7 +59,7 @@
       "priority": "prohibited_without_owner_permission",
       "source_kind": "tracked_GLb",
       "ref": "main",
-      "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+      "path": "ArtSource/RejectedLegacyBastion/Valoria_HeroBastion_v1.glb",
       "sha256_recorded": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
       "bytes_recorded": 13257704,
       "unity_meta_recorded": true,
@@ -72,7 +72,19 @@
         "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
       ],
       "owner_use_authorization": "OWNER_EXPLICIT_PERMISSION_REQUIRED",
-      "owner_decision_date": "2026-10-25"
+      "owner_decision_date": "2026-10-25",
+      "previous_path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+      "archived_outside_unity": true,
+      "archival_verification": {
+        "asset_sha256": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
+        "asset_bytes": 13257704,
+        "metadata_sha256": "403b8109e21b2aff016ead7e775250df519a8992c4cc077eddb41be0217ebd81",
+        "asset_git_blob": "e31aa6a63af826f4c6f666bb369fc270233c8d66",
+        "metadata_git_blob": "bab32c587d4bd8c194a242304ae97dd937bcc29b",
+        "guid": "fa36c6abf91adc7778caeac12130f567",
+        "date": "2026-11-04",
+        "purpose": "Preservation only; OWNER_BLOCKED_NO_USE unchanged; no art/gameplay acceptance."
+      }
     },
     {
       "id": "canon-unity-assets-eldoria-resources-valoria-historicallandmarks-gatestreetriserock-mv1-glb",

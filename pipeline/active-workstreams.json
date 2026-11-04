@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T11:12:46.441Z",
+  "updated_at": "2026-11-04T11:28:17.933Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -22,7 +22,7 @@
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": null,
       "branch": "fix/player-feedback-context-ui-20261030",
-      "status": "paused",
+      "status": "blocked",
       "claimed_at": "2026-11-04",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
@@ -2120,7 +2120,7 @@
       "owner": null,
       "ownership_revision": 25,
       "ownership_state": "available",
-      "status": "paused",
+      "status": "blocked",
       "branch": "art/issue95-spawnling-presence-proof-20261103",
       "claimed_at": "2026-10-22",
       "base_main_sha": "aff74900f2cc38996b49be85da3b39ccf9d33d5a",
@@ -3955,7 +3955,13 @@
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground.meta",
         "Unity/Assets/Eldoria/SpawnlingBastion2.meta",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1.meta",
-        "Unity/Assets/Eldoria/World4XCanon/P0ArtMasks.meta"
+        "Unity/Assets/Eldoria/World4XCanon/P0ArtMasks.meta",
+        "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+        "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb.meta",
+        "ArtSource/RejectedLegacyBastion/**",
+        "pipeline/asset-vault/master-catalog-v1.json",
+        "pipeline/asset-vault/clean-production-shelf-v1.json",
+        ".github/workflows/asset-vault-clean-shelf-qa.yml"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -3971,9 +3977,9 @@
         "evidence": "Inventario por SHA, procedencia de cada meta recuperado, detector de GUID duplicados y pruebas focalizadas; pendientes explícitos sin GUID inventados.",
         "handoff": "Misma PR para esta etapa; corregir recursos solo después de comprobar procedencia y titularidad."
       },
-      "next": "Run corrected metadata-only proof: core.eol=lf and all 345 pre-import hashes, typed SceneAsset references, no scene opening or runtime tests. Runtime/Player validation remains blocked by explicit rejected legacy Resource policy. Archive-only proposal c2dab945bf1d3994703abfbbd2cb137d67e85443 is prepared, not applied.",
+      "next": "Apply exact reviewed archive c2dab945 of rejected source/model metadata with unchanged blobs and GUID, no runtime-code/scene/art edits. This enforces binding owner rejection/archive preservation from AGENTS25Oct while resolving the unrecovered folder without invention. Run full corrected native proof only after rejected Resource absent. Synchronize only the two existing blocked catalog locators, preserving OWNER_BLOCKED_NO_USE and all approval restrictions.",
       "art_production_request": "pipeline/art-production-requests/eldoria-unity-metadata-integrity-20261104.json",
-      "phase": "IDENTITIES_ONLY_EDITOR_ALLOWED_SCENE_RUNTIME_BLOCKED",
+      "phase": "APPLY_EXISTING_OWNER_VETO_BYTE_PRESERVING_ARCHIVE_THEN_FULL_PROOF",
       "previous_owner": "codex-eldoria-metadata-recovery-20261104",
       "evidence": {
         "pr": 153,
@@ -6431,6 +6437,16 @@
         "live_resource_path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
         "new_editor_launches_blocked_for_request_revision": 9,
         "current_editor_interrupted": false
+      },
+      "source_layout_reconciliation": {
+        "basis": "Existing explicit owner prohibition and required archival preservation, current project organization audit continuation; no new art/model or publication approval",
+        "proposal": "c2dab945bf1d3994703abfbbd2cb137d67e85443",
+        "asset_blob": "e31aa6a63af826f4c6f666bb369fc270233c8d66",
+        "metadata_blob": "bab32c587d4bd8c194a242304ae97dd937bcc29b",
+        "serialized_references": 0,
+        "source_bytes_changed": false,
+        "runtime_code_changed": false,
+        "other_pr_branches_untouched": true
       }
     }
   ],

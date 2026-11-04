@@ -1,10 +1,8 @@
 {
   "schema": 1,
   "source_sha": "58831b69c146f498cd2917194c36efb8f31a7741",
-  "reason": "All 345 recovered original metadata identities restored. One rejected legacy folder identity remains unrecovered; no new GUID is represented as historical recovery.",
+  "reason": "No remaining metadata debt: all 345 originals restored; rejected legacy source and existing metadata archived outside Unity with identical Git blobs, without inventing its folder identity.",
   "allowed_missing": {},
   "allowed_orphans": {},
-  "allowed_missing_folders": [
-    "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated"
-  ]
+  "allowed_missing_folders": []
 }

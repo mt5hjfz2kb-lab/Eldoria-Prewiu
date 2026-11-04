@@ -1,95 +1,103 @@
 # Unity metadata recovery — 4 November 2026
 
-Status: **candidate in PR #153; not integrated or published**.
+Status: candidate in PR153; not merged or published. Full corrected native proof pending.
 
-## What was found
+## Implemented in this candidate
 
-The original count of 279 versioned files without metadata contains 277 assets
-that need metadata and two internal files in an Android bundled plug-in. Unity
-treats that bundle as one plug-in. A subsequent directory audit found 69 missing
-folder identities. Three apparent orphan metadata files resolve to two legitimate
-empty-folder identities and one metadata file whose `.unitypackage` payload is
-absent from Git.
+- Restored 277 original file metadata and 68 original folder metadata: **345**
+  recovered identities. All 57 previously reserved originals are now restored.
+- Removed the three broad ArtTests metadata exclusions from Unity/.gitignore.
+- Archived the orphan URP_Material.unitypackage.meta outside Unity, retaining its
+  exact bytes. Preserved three legitimate empty-folder identities.
+- The original 279-file count included two Android bundled-plugin internals that
+  correctly do not require individual metadata. They are not hidden debt.
+- Enforced the existing owner veto by moving the rejected legacy Bastion GLB and
+  its existing metadata to ArtSource/RejectedLegacyBastion. Both original Git blobs,
+  fresh SHA-256 hashes and GUID are unchanged. No runtime code, scenes, geometry,
+  textures, replacement art, gameplay settings or publication were added.
+- Updated only its two blocked catalog locators; OWNER_BLOCKED_NO_USE and the
+  prohibition on ordinary reuse remain. Real ordinary reuse search excludes it.
+- The rejected source folder no longer exists inside Assets. Its original folder
+  identity was never recovered or invented; archival resolves that obligation.
+- Removed the 57 redundant pending copies after byte equality with their restored
+  destinations was proved. Their original pending paths remain recoverable in
+  commit 4e275f844f4306419c87f37b12b18b0520a372dc and in manifest provenance.
 
-`Unity/.gitignore` excluded metadata throughout `ArtTests`. That directory also
-contains integrated production. This candidate removes the three broad metadata
-exclusions, retaining cache and generated-output exclusions.
+The archive README describes the Python/native safeguards actually implemented
+here; the separate PR136 C# build guard and dialogue changes are not claimed as
+integrated. No other branch or PR source was overwritten.
 
-No original for the 277 file metadata paths was found in the complete ancestry of
-`main` or the inspected PR #136 tree. This is not proof that no other branch or
-external backup ever held them. Existing runner projects provided recovery copies.
+## Provenance and integrity
 
-## Recovery and changes
+Original metadata came from stable read-only snapshots of existing runner projects
+(runs 41805832811 and 41806653964). All 277 file asset Git blobs matched; only the
+two explicit shader text cases required an exact CRLF-to-LF checkout equivalence.
+Folder records prove stable existing identity, not full directory-tree equality.
+The selected primary project retained full import settings; secondary projects
+had differing GUIDs and often GUID-only stubs, so were not substituted.
 
-| Item | Restored in Unity candidate | Preserved pending active owner |
-| --- | ---: | ---: |
-| File metadata | 277 | 0 |
-| Folder metadata | 68 | 0 |
-| Total original metadata | 345 | 0 |
+recovery-manifest.json records original metadata SHA-256, GUID, asset/tree identity,
+destination and provenance. The rejected source archive retains asset blob
+e31aa6a63af826f4c6f666bb369fc270233c8d66, metadata blob
+bab32c587d4bd8c194a242304ae97dd937bcc29b and GUID
+fa36c6abf91adc7778caeac12130f567. The 13,257,704-byte model's freshly verified SHA-256
+is afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c.
+Structural parsing confirms preservation only, not artistic approval.
 
-One additional folder, `Resources/Valoria/HeroBastionGenerated`, was absent from
-the inspected runner copies. Its identity was not invented. The folder belongs to
-the rejected legacy Bastion area: do not recreate or reactivate that model as a
-metadata repair.
+Static integrity expects **zero** missing file/folder metadata, zero duplicate
+GUIDs, zero file orphans and zero metadata ignore regressions. It also rejects the
+forbidden Resource's return and checks both archived Git blobs without requiring
+large model downloads. The metadata/recovery suite has **23 passing tests**;
+the existing asset-vault utility suite has **10 passing tests**.
 
-The unused `URP_Material.unitypackage.meta` is archived byte for byte outside
-Unity. Its GUID occurs in none of the 3,617 inspected versioned Unity YAML files.
-The valid empty-folder metadata remain in place; after archiving the orphan payload metadata, the audit preserves three empty-folder identities.
+All 345 recovered identities, and separately the rejected model GUID, have no
+references in the 3,617 verified serialized Assets YAML files. Exact candidate
+C# contents (448 files) were inspected: the one historical runtime Resource
+caller returns when that model is absent. Full runtime tests must still verify
+that fallback; static findings are not a gameplay acceptance claim.
 
-All 277 file recovery records match the expected Git asset blob, with exact
-newline conversion verification for the two shaders. Folder records separately
-state that stable identity was recovered without proving equality of all folder
-contents. Two runner projects had different identities; the primary Unity project
-retained complete importer settings, whereas many secondary construction scratch
-metadata files were GUID-only stubs. The selected originals come from the primary
-project and are retained unchanged.
+The pinned portability scan covered 21,211 earlier-candidate paths: no casefold
+file/directory collisions, no relative paths over 240 characters, maximum 173.
+That does not certify Windows absolute paths or later package cache paths.
 
-Provenance is in [recovery-manifest.json](recovery-manifest.json): asset blob,
-original metadata SHA-256, GUID, destination, disposition, owner dependency, native
-snapshot run and artifact digest. The 57 formerly reserved originals have now been restored after explicit owner priority authorization; byte-identical backup copies remain under `pending/Unity/`.
-The snapshot read existing files only; it did not open Unity or change the PC's
-projects. Original archive digests were checked before extraction and use.
+## Actual native attempts and corrections
 
-## Verification and limits
+1. Run41814006124 stopped before compilation: Unity Package Manager could not
+   locate Git. The existing Git directory is now inherited through PATH.
+2. Run41816079304 stopped before Editor: the optional temporary cache had been
+   removed by runner cleanup. That unsupported approach was abandoned; each run
+   uses an independent canonical clone.
+3. Run41816327312 compiled/imported and recognized **345/345 expected GUIDs**.
+   One enabled scene had zero missing scripts. The overall result was **FAIL**:
+   all raw-byte checks differed without a pre-import checkpoint, and eleven
+   scenes were incorrectly probed as sub-asset arrays. EditMode/PlayMode did not
+   run. The immutable native report is NATIVE_41816327312.json.
 
-- Recovery, integrity, ignore rules and exact known-debt behavior have 21 focused
-  tests. Workflow governance passes.
-- Every recovered or archived metadata file is checked against its original
-  SHA-256. Existing tracked metadata GUIDs are not rewritten; asset source contents
-  are not edited. The one orphan is explicitly archived, not silently discarded.
-- No duplicate GUIDs or metadata-excluding ignore rules remain in this candidate.
-- A read-only portability inventory of 21,211 versioned paths found no case-insensitive file collisions or directory variants, no repository-relative paths over 240 characters, and a maximum relative length of 173. This does not certify all Windows paths after checkout or package-cache expansion.
-- All 345 restored identities have no references in the 3,617 inspected versioned
-  Unity YAML files. Dynamic Resources loads remain relevant; preserving original
-  importer bytes avoids silently resetting their import settings.
-- The preventive audit now expects zero missing file metadata and records only the one unrecovered rejected legacy folder as known debt.
-- Native run 41816327312 compiled/imported candidate 6c02784fc6fca56e8fdf54edd78e25a77c9cff3e and recognized all 345 expected GUIDs. The overall validation FAILED: 345 raw-byte checks lacked a pre-import checkpoint and 11 scenes were probed with an inappropriate sub-asset API. A real Git reproduction demonstrates CRLF checkout conversion despite autocrlf=false; the corrected harness pins core.eol=lf and verifies original bytes BEFORE Unity, and uses typed SceneAsset references. No full native PASS or PlayMode certification is asserted. No player build, visual approval or device certification is claimed.
+A real Git reproduction proves that text=auto plus Windows/native core.eol can
+convert LF to CRLF even with autocrlf=false. The corrected checkout pins BOTH
+core.autocrlf=false and core.eol=lf, and verifies all original SHA-256 values
+BEFORE Unity starts. Any genuine later differences are captured as raw metadata.
+Scene references now use the documented typed SceneAsset API without instantiation.
+Both validation modes are explicit: identities_only never opens scenes/runs tests;
+full checks enabled scenes and EditMode/PlayMode, refusing the rejected Resource.
 
-## Remaining integration
+The initial import also logged a missing script in the third-party example
+Mega Fantasy Props Pack/Example Scenes/Prefabs/FPSController.prefab and legacy
+shader fallback warnings. Those unrelated vendor files have not been silently
+changed. Zero missing scripts in one enabled scene is not a clean bill for every
+vendor example. Record any resulting native failure rather than suppressing it.
 
-The owner explicitly authorized metadata priority on 4 November. Dialogue/spawnling
-write reservations are temporarily paused with their exact prior states retained
-in the live metadata workstream. Construction run 41811262373 finished with failure
-before Windows transferred; no running job was cancelled. All 57 pending paths were
-reconciled against exact main and PR136 heads in RESUME_RECONCILIATION.json: all 32
-file asset blobs match; folder checks prove existence, not full tree equality.
+## Coordination and remaining verification
 
-Native validation uses an isolated exact checkout and unique
-company/product save identity, original metadata GUID and importer-byte checks,
-enabled-scene missing-script checks, full EditMode/PlayMode, exact settings restore.
-The baseline runtime still loads/instantiates the rejected legacy Resource at Bastion III+, and the main Unity workflow builds a Player. Full scene/runtime validation and integration are therefore fenced while that owner policy is unresolved. A byte-preserving archive-only proposal is prepared separately (LEGACY_ARCHIVE_PROPOSAL.json, commit c2dab945bf1d3994703abfbbd2cb137d67e85443); it is NOT applied to this branch or main. Its static audit has zero missing metadata/folders and zero failures without inventing a folder GUID. The authorized metadata proof can continue in identities_only mode, with no scene opening or runtime tests.
+The owner authorized metadata priority and a temporary dialogue/spawnling writing
+pause. Exact latest prior owners/states were preserved for restoration. Construction
+run41811262373 had already finished before Windows transferred; no running native
+job was cancelled. The temporary pause uses the registry's valid blocked status,
+not an unsupported paused status. Native revision fencing prevented further starts
+of stale requests while the rejected-resource policy was reconciled.
 
-The complete previous snapshots are recoverable through Actions runs
-41805832811 and 41806653964; artifacts are temporary. The metadata needed for this
-candidate and its owner handoff is preserved in Git rather than relying on that
-artifact retention period.
-
-## Additional baseline findings from native import
-
-The actual import log also reports a missing script while upgrading the third-party
-`Mega Fantasy Props Pack/Example Scenes/Prefabs/FPSController.prefab`, plus legacy
-shader fallback warnings. Those paths are outside this metadata recovery and have
-not been silently changed. Zero missing scripts in the one enabled scene does not
-mean all vendor examples are healthy. The exact raw native report is retained in
-NATIVE_41816327312.json; native attempt causes and rejected techniques are recorded
-in NATIVE_ATTEMPTS.json. New metadata-only validation remains pending.
+Next: actual full corrected native proof on the exact archived candidate, review
+all output and tracked changes, pass relevant CI, then integrate safely and restore
+or release temporary claims/resources. The main push may run its normal Windows
+Editor/player gate only after the rejected source is absent. No PASS, merge,
+player build, mobile certification or visual approval is claimed in advance.

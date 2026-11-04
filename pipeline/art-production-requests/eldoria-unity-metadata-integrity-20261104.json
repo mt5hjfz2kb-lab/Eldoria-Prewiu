@@ -4,11 +4,11 @@
   "status": "ACTIVE",
   "workstream_id": "eldoria-unity-metadata-integrity-20261104",
   "request_id": "eldoria-unity-metadata-integrity-20261104",
-  "asset_or_sector": "Original metadata identity and importer preservation only; no art source modification",
+  "asset_or_sector": "Original metadata preservation and byte-identical archival of expressly owner-rejected legacy source outside Unity",
   "profile": "environment_composition",
   "visual_gate_state": "METADATA_RECOVERY_CANDIDATE_NO_NEW_ART",
   "ai_authorship_policy": "required",
-  "diagnosis": "The protected art paths include .meta files, so this administrative recovery is registered with the existing art guard. Restore existing exact bytes from the primary Unity project. No new artwork, geometry, texture pixels, scenes, runtime, import tuning, visual approval or production promotion is performed. Rejected assets retain their restrictions.",
+  "diagnosis": "The protected art paths include .meta files, so this administrative recovery is registered with the existing art guard. Restore existing exact bytes from the primary Unity project. No new artwork, geometry, texture pixels, scenes, runtime, import tuning, visual approval or production promotion is performed. Rejected assets retain their restrictions. The only asset location change archives the expressly owner-rejected legacy Bastion and its existing metadata outside Assets, retaining both exact Git blobs/GUID. No replacement model, art editing or runtime-code/scene modification.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -17,7 +17,8 @@
   },
   "capabilities": {
     "existing_qualified_donor_assets": true,
-    "metadata_recovery_only": true
+    "metadata_recovery_only": true,
+    "rejected_source_archive_only": true
   },
   "reuse_sources": [
     "docs/evidence/unity-metadata-20261104/recovery-manifest.json"
@@ -29,5 +30,5 @@
   "art_approved": false,
   "unity_visual_acceptance": "NOT_REQUESTED_NO_NEW_ART",
   "physical_mobile_tested": false,
-  "notes": "Owner authorized metadata priority and temporary claim pause; no new art or art approval. Native proof pending."
+  "notes": "Archive enforces existing 25Oct owner veto/preservation instruction and removes the last unrecoverable folder obligation. Full proof pending corrected checkout bytes/scene probes."
 }

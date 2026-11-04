@@ -8,6 +8,10 @@ import subprocess
 
 PREFIX = 'Unity/Assets/'
 BUNDLES = {'.androidlib', '.bundle', '.framework', '.plugin'}
+# Binding owner veto, 25 October 2026 (AGENTS.md). Preserve the source outside
+# Assets; Resources content would otherwise be included even without references.
+REJECTED_RESOURCE = (PREFIX + 'Eldoria/Resources/Valoria/HeroBastionGenerated/'
+                     'Valoria_HeroBastion_v1.glb')
 
 
 def bundled_internal(path):
@@ -17,6 +21,8 @@ def bundled_internal(path):
 def audit(entries, read_bytes, baseline):
     paths = set(entries)
     failures, missing, known, orphans, empty_folders = [], [], [], [], []
+    if REJECTED_RESOURCE in paths:
+        failures.append('Owner-rejected legacy model must remain archived outside Unity: ' + REJECTED_RESOURCE)
     guids = {}
     directories = set()
     for p in paths:
@@ -86,6 +92,20 @@ def verify_recovery(root, manifest):
     return failures
 
 
+def verify_archives(entries, manifest):
+    """Check immutable archived blobs using Git, without loading large models."""
+    failures = []
+    for item in manifest.get('archived_rejected_assets', []):
+        for path, expected in [(item['destination'], item['asset_blob_sha']),
+                               (item['destination'] + '.meta', item['metadata_blob_sha'])]:
+            if entries.get(path) != expected:
+                failures.append('Archived original Git blob differs or is missing: ' + path)
+        for path in [item['source'], item['source'] + '.meta']:
+            if path in entries:
+                failures.append('Rejected source remains inside Unity: ' + path)
+    return failures
+
+
 def ignored_metadata(root, paths):
     probe = subprocess.run(['git', 'check-ignore', '--no-index', '-z', '--stdin'],
                            cwd=root, input=b'\0'.join(p.encode() for p in paths) + b'\0',
@@ -100,6 +120,7 @@ if __name__ == '__main__':
     ap.add_argument('--ref', default='HEAD')
     ap.add_argument('--baseline', default='tools/unity-metadata/baseline.json')
     ap.add_argument('--verify-recovery')
+    ap.add_argument('--archive-manifest')
     ap.add_argument('--output')
     args = ap.parse_args()
     root = Path(subprocess.check_output(['git', 'rev-parse', '--show-toplevel']).decode().strip())
@@ -113,6 +134,8 @@ if __name__ == '__main__':
     result['failures'] += ['Metadata excluded by ignore rules: ' + p for p in result['ignored_metadata']]
     if args.verify_recovery:
         result['failures'] += verify_recovery(root, json.loads((root / args.verify_recovery).read_text()))
+    if args.archive_manifest:
+        result['failures'] += verify_archives(entries, json.loads((root / args.archive_manifest).read_text()))
     if args.output:
         Path(args.output).write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({k: len(result[k]) for k in result}))

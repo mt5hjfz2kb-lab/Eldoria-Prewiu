@@ -2,10 +2,25 @@ import unittest
 import tempfile
 import subprocess
 from pathlib import Path
-from audit import audit, ignored_metadata
+from audit import audit, ignored_metadata, verify_archives, REJECTED_RESOURCE
 
 
 class AuditTests(unittest.TestCase):
+    def test_rejected_resource_cannot_return_even_with_valid_metadata(self):
+        entries = {REJECTED_RESOURCE: 'model', REJECTED_RESOURCE + '.meta': 'meta'}
+        result = audit(entries, lambda p: b'guid: 0123456789abcdef0123456789abcdef\n', {})
+        self.assertTrue(any('Owner-rejected legacy model' in f for f in result['failures']))
+
+    def test_archive_preserves_both_original_blobs_outside_unity(self):
+        destination = 'ArtSource/RejectedLegacyBastion/Hero.glb'
+        manifest = {'archived_rejected_assets': [{'source': REJECTED_RESOURCE,
+            'destination': destination, 'asset_blob_sha': 'original-model',
+            'metadata_blob_sha': 'original-meta'}]}
+        entries = {destination: 'original-model', destination + '.meta': 'original-meta'}
+        self.assertFalse(verify_archives(entries, manifest))
+        for changed in [{destination: 'changed'}, {}, {REJECTED_RESOURCE: 'original-model'}]:
+            self.assertTrue(verify_archives(changed, manifest))
+
     def test_missing_file_requires_exact_baselined_asset(self):
         p = 'Unity/Assets/Hero.cs'
         self.assertTrue(audit({p: 'new'}, lambda p: b'', {})['failures'])

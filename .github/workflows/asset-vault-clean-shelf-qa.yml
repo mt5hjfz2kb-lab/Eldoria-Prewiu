@@ -32,6 +32,7 @@ jobs:
             /tools/asset-vault/
             /Unity/Assets/Eldoria/Resources/Valoria/
             /Unity/Assets/Eldoria/Resources/WorldPlayerCity/
+            /ArtSource/RejectedLegacyBastion/
       - name: Check Python utility regression tests
         run: python3 -m unittest discover -s tools/asset-vault -p 'test_*.py'
       - name: Validate real GLB source identity and geometric structures
