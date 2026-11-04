@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "0f4413053c813e2fc82593f502e70b6451f1e8aa",
   "ownership_revision": 11,
-  "mode": "SOURCE_ROSLYN_AFTER_ALL_26_FRAMES_CAPTURE_FIX",
+  "mode": "SOURCE_DOMAIN_AND_ROSLYN_VISIBLEBOUNDS_RECURSION_PREVENTION",
   "expected_images": 26,
   "formats": [
     "844x390",
@@ -80,7 +80,7 @@
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 2,
+  "offline_validation_attempt": 3,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
@@ -89,5 +89,7 @@
     "QA refreshes real Presenter state after direct command",
     "QA uses real city host camera focus"
   ],
-  "windows_runner_reserved_by": "eldoria-unity-metadata-integrity-20261104"
+  "windows_runner_reserved_by": "eldoria-unity-metadata-integrity-20261104",
+  "source_qa_change": "Fixed VisibleBounds infinite recursion from previous scaffold fallback and added semantic Roslyn nonrecursive/visible-renderer guard",
+  "native_qa_pending": true
 }
