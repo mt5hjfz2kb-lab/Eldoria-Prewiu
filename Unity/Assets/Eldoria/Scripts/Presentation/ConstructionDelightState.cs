@@ -77,6 +77,11 @@ namespace Eldoria.Presentation
         {
             if(!previous.IsValid||current==null)return false;
             if(TryRead(current,out var active)&&SameTask(previous,active))return false;
+            // LocalGateway records every genuinely completed building task.
+            // A changed level on its own could belong to another task, reload,
+            // or a cancelled/replaced operation; never celebrate that.
+            if(current.CompletedTaskIds==null ||
+               !current.CompletedTaskIds.Contains(previous.TaskKey))return false;
             return Level(current,previous.BuildingId)>previous.LevelAtStart;
         }
     }
