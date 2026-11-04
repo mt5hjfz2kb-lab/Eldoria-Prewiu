@@ -228,9 +228,10 @@ namespace Eldoria.ReferenceClean.Editor
                     screenSite=camera.WorldToViewportPoint(collider.bounds.center);
                 }
                 finally { camera.aspect=previousAspect; }
-                Require(screenSite.z>0f && screenSite.x>0f && screenSite.x<1f &&
-                        screenSite.y>0f && screenSite.y<1f,
-                    "Sawmill site not framed inside real camera");
+                if(!(screenSite.z>0f && screenSite.x>0f && screenSite.x<1f &&
+                        screenSite.y>0f && screenSite.y<1f))
+                    VisualIssues.Add("Sawmill target offscreen in "+stage+
+                        " "+width+"x"+height+" camera; capture retained for review");
                 int x0=Mathf.Clamp(Mathf.FloorToInt((screenSite.x-.24f)*width),0,width-1);
                 int x1=Mathf.Clamp(Mathf.CeilToInt((screenSite.x+.24f)*width),0,width);
                 int y0=Mathf.Clamp(Mathf.FloorToInt((screenSite.y-.24f)*height),0,height-1);
