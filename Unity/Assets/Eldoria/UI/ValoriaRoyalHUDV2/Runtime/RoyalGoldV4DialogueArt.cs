@@ -20,7 +20,7 @@ namespace Eldoria.UI.RoyalGold.V2
         Graphic dimmer;
         Color oldDimmer;
         Canvas canvas;
-        Material feather;
+        Material feather, lyraFeather;
         Sprite lyraSprite;
         bool applied,busy;
         readonly TextGenerator textSize=new TextGenerator(256);
@@ -40,7 +40,7 @@ namespace Eldoria.UI.RoyalGold.V2
         void Awake(){if(!Source)Source=GetComponent<RoyalHUD>();}
         void OnEnable(){Canvas.willRenderCanvases+=SynchronizeNow;}
         void OnDisable(){Canvas.willRenderCanvases-=SynchronizeNow;Restore();}
-        void OnDestroy(){if(feather)Destroy(feather);}
+        void OnDestroy(){if(feather)Destroy(feather);if(lyraFeather)Destroy(lyraFeather);}
         void LateUpdate(){SynchronizeNow();}
         bool Ensure()
         {
@@ -88,7 +88,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 feather=new Material(shader);
                 if(feather.HasProperty("_PortraitFeather"))feather.SetFloat("_PortraitFeather",.18f);
                 if(feather.HasProperty("_PortraitBleed"))feather.SetFloat("_PortraitBleed",.08f);
-                bust.material=feather;lyra.material=feather;
+                bust.material=feather;
+                // Lyra is sourced from a verified sprite subregion of the
+                // HeroesApprovedMaster, not a 0..1 UV photograph. A separate
+                // material keeps her true sprite bounds independent of
+                // Aldric's original 3D bust and other Royal Hall portraits.
+                lyraFeather=new Material(feather);
+                if(lyraFeather.HasProperty("_PortraitFeather"))
+                    lyraFeather.SetFloat("_PortraitFeather",.22f);
+                lyra.material=lyraFeather;
             }
             aperture.gameObject.SetActive(false);
             dimmer=Source.Modal.GetComponent<Graphic>();
@@ -209,6 +217,20 @@ namespace Eldoria.UI.RoyalGold.V2
                             new Vector2(.5f,.5f),100);
                 }
                 lyra.sprite=lyraSprite;lyra.gameObject.SetActive(lyraSprite!=null);
+                if(lyraSprite&&lyraFeather)
+                {
+                    var texUV=lyraSprite.uv;
+                    float minU=float.PositiveInfinity,minV=float.PositiveInfinity;
+                    float maxU=float.NegativeInfinity,maxV=float.NegativeInfinity;
+                    foreach(var uv in texUV)
+                    {
+                        minU=Mathf.Min(minU,uv.x);minV=Mathf.Min(minV,uv.y);
+                        maxU=Mathf.Max(maxU,uv.x);maxV=Mathf.Max(maxV,uv.y);
+                    }
+                    if(minU<maxU&&minV<maxV)
+                        lyraFeather.SetVector("_PortraitUVRect",
+                            new Vector4(minU,minV,maxU,maxV));
+                }
                 bust.gameObject.SetActive(false);aperture.gameObject.SetActive(lyraSprite!=null);
             }
             else

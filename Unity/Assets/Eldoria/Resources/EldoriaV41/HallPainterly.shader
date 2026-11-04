@@ -6,6 +6,7 @@ Shader "UI/Eldoria/HallPainterly"
         _Color ("Tint", Color) = (1,1,1,1)
         _Strength ("Brush reduction", Range(0,1)) = 0.94
         _PortraitFeather ("Original portrait edge dissolve", Range(0,0.3)) = 0
+        _PortraitUVRect ("Actual approved portrait UV region", Vector) = (0,0,1,1)
     }
     SubShader
     {
@@ -28,6 +29,7 @@ Shader "UI/Eldoria/HallPainterly"
                 half4 _Color;
                 half _Strength;
                 half _PortraitFeather;
+                float4 _PortraitUVRect;
             CBUFFER_END
             struct Attributes { float4 vertex : POSITION; float2 uv : TEXCOORD0; float4 color : COLOR; };
             struct Varyings { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; half4 color : COLOR; float4 uiPosition : TEXCOORD1; };
@@ -96,7 +98,14 @@ Shader "UI/Eldoria/HallPainterly"
                 // any character geometry, labels, materials or save state.
                 // The standard Hall background keeps _PortraitFeather=0.
                 if(_PortraitFeather>.001h){
-                    half2 uvEdge=min(i.uv.xy,1.0h-i.uv.xy);
+                    // Image.sprite uses atlas-relative UVs. Normalize to
+                    // the approved portrait's OWN sprite rectangle instead
+                    // of dissolving only the 1536x1024 atlas outer edges.
+                    // Default (0,0,1,1) preserves all original Hall usage.
+                    float2 uvRange=max(_PortraitUVRect.zw-_PortraitUVRect.xy,
+                        float2(.0001,.0001));
+                    float2 portraitUV=saturate((i.uv.xy-_PortraitUVRect.xy)/uvRange);
+                    half2 uvEdge=min((half2)portraitUV,1.0h-(half2)portraitUV);
                     half rim=min(uvEdge.x,uvEdge.y);
                     half blend=smoothstep(0.0h,_PortraitFeather,rim);
                     result.a*=blend;
