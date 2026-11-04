@@ -93,6 +93,12 @@ namespace Eldoria.ReferenceClean.Editor
             // A far-away whole-kingdom shot cannot reveal cheap-looking FX.
             var genuineTarget=host.FindTarget("sawmill");
             Require(genuineTarget,"Real sawmill hotspot missing");
+            // Preserve the default real-player overview before changing zoom.
+            Shot(host.PlayerCamera,"city-overview-landscape",844,390);
+            Shot(host.PlayerCamera,"city-overview-portrait",390,844);
+            // 14 is the actual player camera's minimum allowed zoom.
+            // Native close-up QA must show the material quality of the effect.
+            host.Zoom(14f-host.PlayerCamera.orthographicSize);
             host.Focus(genuineTarget.gameObject);
             yield return new WaitForSecondsRealtime(.32f);
             // Baseline: identical real scene, no action.
@@ -156,10 +162,10 @@ namespace Eldoria.ReferenceClean.Editor
                 "  \"save_unchanged_after_reload\": true,\n"+
                 "  \"construction_from\": \"LocalGateway.Execute(Build)\",\n"+
                 "  \"completion_from\": \"TestClock + LocalGateway.Advance\",\n"+
-                "  \"images\": 24,\n"+
+                "  \"images\": 26,\n"+
                 "  \"art_approved\": false\n"+
                 "}\n");
-            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=24 save-preserved=true");
+            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=26 save-preserved=true");
             EditorApplication.Exit(0);
         }
 
