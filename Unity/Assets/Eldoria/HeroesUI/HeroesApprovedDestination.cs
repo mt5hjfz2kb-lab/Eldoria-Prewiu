@@ -896,6 +896,8 @@ namespace Eldoria.HeroesUI
 
         void BuildCombatSummary(RectTransform pane,HeroState hero,float w,float h)
         {
+            // Below 444 layout units the minimum-height rows cannot fit with
+            // the power header, real role and progression footer.
             if(w>460f&&h>=444f){BuildReferenceCombatSummary(pane,hero,w,h);return;}
             float margin=Mathf.Clamp(w*.029f,8f,22f);
             bool compact=h<280f;

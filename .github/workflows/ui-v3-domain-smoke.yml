@@ -108,7 +108,7 @@ jobs:
             const ownHeads=new Set(['6744fb6984320fdcf2ef3cb8067830fe95d38ea1',
               '2d16dd5d268e25e278f7cb6ae86fc0fd53bb83ff','99041df3127fd89766d56c7b9c2496325721a088',
               '61d0724c202a6bdaa970340d2fcfd4693b54bbc8','1aa97d9bd9d68fe196a50862f6cece49ea7244bd',
-              '17dfeb3e37bcb4615acfbe60e26e9099cfd9cfc9','f1d73d68789faf9aa7d85c38500b4568dcc943fc','39f2b9bb5bb9f1a19450fa41967d97dae268f373','e37efca1eff0ca13d9b2b51c3173a67212fa427a','f5573cf82b1fb4ca997d76a2994a03ca79535b43','21b0ea0e4622d92137fb608c6c904497187a07e9','c09cb6382b0637dae58110c5f5998ed0a7237c6d','44bd1e72c3c428d2cf85bf817f7fab61d1b0f3e2']);
+              '17dfeb3e37bcb4615acfbe60e26e9099cfd9cfc9','f1d73d68789faf9aa7d85c38500b4568dcc943fc','39f2b9bb5bb9f1a19450fa41967d97dae268f373','e37efca1eff0ca13d9b2b51c3173a67212fa427a','f5573cf82b1fb4ca997d76a2994a03ca79535b43','21b0ea0e4622d92137fb608c6c904497187a07e9','c09cb6382b0637dae58110c5f5998ed0a7237c6d','44bd1e72c3c428d2cf85bf817f7fab61d1b0f3e2','d2fb6d21b9fc9fcee171643ef6c1b001a1e3d312']);
             const pr=(await github.rest.pulls.get({...context.repo,pull_number:136})).data;
             if(pr.head.sha!==head||pr.head.ref!==branch)return;
             const raw=(await github.rest.repos.getContent({...context.repo,path:'pipeline/active-workstreams.json',ref:'main'})).data;
