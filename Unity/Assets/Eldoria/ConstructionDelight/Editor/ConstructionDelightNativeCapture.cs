@@ -87,6 +87,12 @@ namespace Eldoria.ReferenceClean.Editor
                 "At least one particle shader missing/unsupported; no visual acceptance");
 
             yield return new WaitForSecondsRealtime(.4f);
+            // Use the authentic player camera, focused on the real building.
+            // A far-away whole-kingdom shot cannot reveal cheap-looking FX.
+            var genuineTarget=host.FindTarget("sawmill");
+            Require(genuineTarget,"Real sawmill hotspot missing");
+            host.Focus(genuineTarget.gameObject);
+            yield return new WaitForSecondsRealtime(.32f);
             // Baseline: identical real scene, no action.
             Shot(host.PlayerCamera,"city-clean-landscape",844,390);
             Shot(host.PlayerCamera,"city-clean-portrait",390,844);
@@ -121,7 +127,15 @@ namespace Eldoria.ReferenceClean.Editor
                 "Completion particle burst missing from actual build");
             Comparison(host,renderers,"finish",844,390);
             Comparison(host,renderers,"finish",390,844);
-            yield return new WaitForSecondsRealtime(2f);
+            // An artistic approval needs temporal evidence, not one lucky frame.
+            // Sample the true particle lifetime in BOTH mobile orientations.
+            for(int frame=0;frame<6;frame++)
+            {
+                yield return new WaitForSecondsRealtime(.20f);
+                Shot(host.PlayerCamera,"finish-motion-"+frame+"-landscape",844,390);
+                Shot(host.PlayerCamera,"finish-motion-"+frame+"-portrait",390,844);
+            }
+            yield return new WaitForSecondsRealtime(.55f);
             Shot(host.PlayerCamera,"city-finished-landscape",844,390);
             Shot(host.PlayerCamera,"city-finished-portrait",390,844);
 
@@ -140,10 +154,10 @@ namespace Eldoria.ReferenceClean.Editor
                 "  \"save_unchanged_after_reload\": true,\n"+
                 "  \"construction_from\": \"LocalGateway.Execute(Build)\",\n"+
                 "  \"completion_from\": \"TestClock + LocalGateway.Advance\",\n"+
-                "  \"images\": 12,\n"+
+                "  \"images\": 24,\n"+
                 "  \"art_approved\": false\n"+
                 "}\n");
-            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=12 save-preserved=true");
+            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=24 save-preserved=true");
             EditorApplication.Exit(0);
         }
 
@@ -154,9 +168,22 @@ namespace Eldoria.ReferenceClean.Editor
             try
             {
                 for(int i=0;i<effects.Length;i++)effects[i].enabled=false;
-                Shot(host.PlayerCamera,stage+"-A-no-fx-"+width+"x"+height,width,height);
+                var before=Shot(host.PlayerCamera,stage+"-A-no-fx-"+width+"x"+height,width,height);
                 for(int i=0;i<effects.Length;i++)effects[i].enabled=enabled[i];
-                Shot(host.PlayerCamera,stage+"-B-delight-"+width+"x"+height,width,height);
+                var after=Shot(host.PlayerCamera,stage+"-B-delight-"+width+"x"+height,width,height);
+                int changedPixels=0;
+                for(int p=0;p<before.Length;p++)
+                {
+                    int difference=Math.Abs(before[p].r-after[p].r)+
+                                   Math.Abs(before[p].g-after[p].g)+
+                                   Math.Abs(before[p].b-after[p].b);
+                    if(difference>18)changedPixels++;
+                }
+                Debug.Log("CONSTRUCTION_DELIGHT_PIXEL_DELTA stage="+stage+
+                          " resolution="+width+"x"+height+" changed="+changedPixels);
+                Require(changedPixels>=50,
+                    "Effects do not materially reach the authentic player camera: "+
+                    stage+" "+width+"x"+height+" changed="+changedPixels);
             }
             finally
             {
@@ -164,7 +191,7 @@ namespace Eldoria.ReferenceClean.Editor
             }
         }
 
-        static void Shot(Camera camera,string name,int width,int height)
+        static Color32[] Shot(Camera camera,string name,int width,int height)
         {
             Require(camera,"Actual player camera missing");
             var priorTarget=camera.targetTexture;
@@ -181,7 +208,9 @@ namespace Eldoria.ReferenceClean.Editor
                 RenderTexture.active=rt;
                 image.ReadPixels(new Rect(0,0,width,height),0,0);
                 image.Apply(false,false);
+                var pixels=image.GetPixels32();
                 File.WriteAllBytes(Path.Combine(Output,name+".png"),image.EncodeToPNG());
+                return pixels;
             }
             finally
             {
