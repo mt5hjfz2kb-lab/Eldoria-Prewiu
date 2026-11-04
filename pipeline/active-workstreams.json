@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T11:17:21.447Z",
+  "updated_at": "2026-11-04T11:24:04.134Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3958,7 +3958,9 @@
         "Unity/Assets/Eldoria/World4XCanon/P0ArtMasks.meta",
         "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
         "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb.meta",
-        "ArtSource/RejectedLegacyBastion/**"
+        "ArtSource/RejectedLegacyBastion/**",
+        "pipeline/asset-vault/master-catalog-v1.json",
+        "pipeline/asset-vault/clean-production-shelf-v1.json"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -3974,7 +3976,7 @@
         "evidence": "Inventario por SHA, procedencia de cada meta recuperado, detector de GUID duplicados y pruebas focalizadas; pendientes explícitos sin GUID inventados.",
         "handoff": "Misma PR para esta etapa; corregir recursos solo después de comprobar procedencia y titularidad."
       },
-      "next": "Apply exact reviewed archive c2dab945 of rejected source/model metadata with unchanged blobs and GUID, no runtime-code/scene/art edits. This enforces binding owner rejection/archive preservation from AGENTS25Oct while resolving the unrecovered folder without invention. Run full corrected native proof only after rejected Resource absent.",
+      "next": "Apply exact reviewed archive c2dab945 of rejected source/model metadata with unchanged blobs and GUID, no runtime-code/scene/art edits. This enforces binding owner rejection/archive preservation from AGENTS25Oct while resolving the unrecovered folder without invention. Run full corrected native proof only after rejected Resource absent. Synchronize only the two existing blocked catalog locators, preserving OWNER_BLOCKED_NO_USE and all approval restrictions.",
       "art_production_request": "pipeline/art-production-requests/eldoria-unity-metadata-integrity-20261104.json",
       "phase": "APPLY_EXISTING_OWNER_VETO_BYTE_PRESERVING_ARCHIVE_THEN_FULL_PROOF",
       "previous_owner": "codex-eldoria-metadata-recovery-20261104",
