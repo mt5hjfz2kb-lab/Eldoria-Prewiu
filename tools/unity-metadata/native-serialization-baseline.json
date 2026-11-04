@@ -1,0 +1,465 @@
+{
+  "unity_version": "6000.3.23f1",
+  "observed_run": 41832431346,
+  "observed_candidate": "fecab45b15ad62d766d8f97b9bccda6abb68c885",
+  "original_main": "c574abfa0d3aecedaf805e8e9c26a75008291c13",
+  "artifact": 13327216247,
+  "artifact_zip_sha256": "f4d43e62475a8dc922ef616fbf7bceccaa3dd0b1e481873c309eaa0ff469897d",
+  "scope": "Exact existing baseline import/fixture side effects only. No recovery entry is exempted, no GUID changes accepted, no source changes committed, no vendor visual approval. Any new path or differing before/after Git blob fails.",
+  "entries": [
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/aserradero-v.jpeg.meta",
+      "source_blob": "77935e7b0d810bb0b871fc0b13eb4c8043a6d5f0",
+      "preexisting_main_blob": "77935e7b0d810bb0b871fc0b13eb4c8043a6d5f0",
+      "observed_blob": "879b11e32c2ca0393351c333664d259e92511b00",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "daf0e16a851f5a94859387fa980e7569"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/bastion-v.jpeg.meta",
+      "source_blob": "1d1d9a131cfbfb18d76dfce74f83cccf5a205a21",
+      "preexisting_main_blob": "1d1d9a131cfbfb18d76dfce74f83cccf5a205a21",
+      "observed_blob": "0ef42a1f964feb4caa6785ad1604212dd9c99196",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "1492bb75b5b253f1bd7edb81c4277d34"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/cantera-v.jpeg.meta",
+      "source_blob": "f5fb20a4aa908576329b655faf07509436e1b12f",
+      "preexisting_main_blob": "f5fb20a4aa908576329b655faf07509436e1b12f",
+      "observed_blob": "74afa50183b93f867b08766fd7fd546a4dafbc88",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "674b0501bd2d55b89057927aaae4b673"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/cuartel-v.jpeg.meta",
+      "source_blob": "36c9679f895198b7bf77671c582855cb38f88f3a",
+      "preexisting_main_blob": "36c9679f895198b7bf77671c582855cb38f88f3a",
+      "observed_blob": "78efb793853979bde3095722c563b32a67f483c2",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "de5cf0387fa2550093cbf09842d5e2e7"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/granero-v.jpeg.meta",
+      "source_blob": "57e078f46a4ade192932a5b7818932a97fd12d52",
+      "preexisting_main_blob": "57e078f46a4ade192932a5b7818932a97fd12d52",
+      "observed_blob": "c10567c7e6d31bf6e3869d666515dbf7fd7cf091",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "8af2e5b0fe6a5b57a31e4589f29db01b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-crest.png.meta",
+      "source_blob": "bd46f3185faaa6f5bfc0af8d72ac4ebbc14afe53",
+      "preexisting_main_blob": "bd46f3185faaa6f5bfc0af8d72ac4ebbc14afe53",
+      "observed_blob": "8db5a16cb41719933f1be039a4c48bfb246113b5",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "e74cfc076aa94745a5beace8bb7d1d1f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-compass.png.meta",
+      "source_blob": "ee5f9c476a43c6a98cab47e103dcd61da3db2635",
+      "preexisting_main_blob": "ee5f9c476a43c6a98cab47e103dcd61da3db2635",
+      "observed_blob": "f88392759749eb0758ddcfce6d161fa36eafa8e3",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "b41291f974cd483d8320f042b8d9d930"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0ae5cda562b231f7d8ef7675cefc845f0379a0e3.png.meta",
+      "source_blob": "c79440988064659d2feb572eefed7a70d29986c5",
+      "preexisting_main_blob": "c79440988064659d2feb572eefed7a70d29986c5",
+      "observed_blob": "858d84ffb0341ff6acdad46a9e4e1fcb58d4ccbb",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "f1a4ead5895cee17df5be53da0484f6f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0c0df987935c1d1544a9e52da33325edb19f5f98.png.meta",
+      "source_blob": "985d2c1dafe6c2f2bde50c26efd4d66877315d1b",
+      "preexisting_main_blob": "985d2c1dafe6c2f2bde50c26efd4d66877315d1b",
+      "observed_blob": "ac05fade0f9954c7337e1fc11c8ad2827887d890",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "5cff41e3a556b49f54d1f43391bf745f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0f317cfd9dae387cf6b154ed623b9c700762edd0.png.meta",
+      "source_blob": "32847ff0c5c8445d18fc2a2f034b571a606c6967",
+      "preexisting_main_blob": "32847ff0c5c8445d18fc2a2f034b571a606c6967",
+      "observed_blob": "c5c4d355f0cd87806e080bf6166bc53cad0ae7e1",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "6ac48fc21388830be58a908280df5a8b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/371ea4cbee26ce47c0f6d086edccae097a74e921.png.meta",
+      "source_blob": "dcdd7a596c02dafd39ee30b4f33031e472a73024",
+      "preexisting_main_blob": "dcdd7a596c02dafd39ee30b4f33031e472a73024",
+      "observed_blob": "cad45e483393e081b46ab4c164f2848d5222cb97",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "2a90ae10e8213c2e8b230c72d215f5b3"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png.meta",
+      "source_blob": "2285fa72c4bc73fb85ff2b8fd573aab1c127123e",
+      "preexisting_main_blob": "2285fa72c4bc73fb85ff2b8fd573aab1c127123e",
+      "observed_blob": "3880b64e3708192a587a4cfaf8ad14af82ac9424",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "7dd8175d34f883b95d97dfc72f700e82"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png.meta",
+      "source_blob": "8323c9585f23ba427dd1e44f8a1c9f4e377ec6bd",
+      "preexisting_main_blob": "8323c9585f23ba427dd1e44f8a1c9f4e377ec6bd",
+      "observed_blob": "38390fefad7f353bea9997c9ca7e7a16dbfadaee",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "a4918cb9eb52a2c4becac0e7a18bc44a"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5b052e69fc6c091f74e1815a64e2c92f243997ca.png.meta",
+      "source_blob": "ed0edd646d78cfeace6f78b080557df0e50bed52",
+      "preexisting_main_blob": "ed0edd646d78cfeace6f78b080557df0e50bed52",
+      "observed_blob": "d44cef91970f4fad25d3f1f4f1aeb9c7314e4360",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "1df8613645789f22b7624fc2271cf165"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5e7ef7c03cb0f9c10c2df31cb690ec9950f2195c.png.meta",
+      "source_blob": "ec1a354f8b131e1f760b3fb1091e98898b8f8ef8",
+      "preexisting_main_blob": "ec1a354f8b131e1f760b3fb1091e98898b8f8ef8",
+      "observed_blob": "d6a0e936c34fd9bf8e6c638542478b5196b88d3c",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "022d549855c3dfaa70e5760fbe9becc0"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5fbc98ff6a7e71858eb407a77cc5c94fcc4717e3.png.meta",
+      "source_blob": "68930258e94302a51ea0a194e46e67609bd95070",
+      "preexisting_main_blob": "68930258e94302a51ea0a194e46e67609bd95070",
+      "observed_blob": "25aca32aec6a827319f5288445b012dc05374302",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "1ae172588cc7a3be66164008eb1b7cd3"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/6043301ad238ef62b417d2baeefed8ac84738571.png.meta",
+      "source_blob": "824882d91d3355186e25d48a9b40830a4664ce91",
+      "preexisting_main_blob": "824882d91d3355186e25d48a9b40830a4664ce91",
+      "observed_blob": "f8f0e42e78c32b11c8334d644d73bb5d2d456b6f",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "57dd687066cdc3bdfb64c7de861f56ab"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/69e84cc6421486a43699ec47282e7a6272dd2d83.png.meta",
+      "source_blob": "bab3f2e3e959ec91b1a31c3eed22b847020c3e6b",
+      "preexisting_main_blob": "bab3f2e3e959ec91b1a31c3eed22b847020c3e6b",
+      "observed_blob": "a4fa45c94abf1816071e3b2a69efc8e56bd09b73",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "d5066a919a1f589b3b63650b1c7b8230"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/74a843ad16e3deb30b6035d168fe4ef5570c0d24.png.meta",
+      "source_blob": "609647c27823595768dbcf7d34bde1a3d5dab3f9",
+      "preexisting_main_blob": "609647c27823595768dbcf7d34bde1a3d5dab3f9",
+      "observed_blob": "98a86e56206008857d2d0c6c194ef2d327a54d33",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "eed111b269a9c90a9fee86ac5c533746"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/75eceae72c3fbd48e2ba51d93a91885b2080b860.png.meta",
+      "source_blob": "100e02448c385c8005d5aa48f8a3dbad7f9f98e1",
+      "preexisting_main_blob": "100e02448c385c8005d5aa48f8a3dbad7f9f98e1",
+      "observed_blob": "dbff7fe7429806bf8bc391239b3309cabb9b76a2",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "f88695073ca7897a3cb0a553047b08a2"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/7b6848358871a30918c4842349c301c9fc0b722c.png.meta",
+      "source_blob": "2a3fa2106bb80e9a4722579ad28059058e6ebac4",
+      "preexisting_main_blob": "2a3fa2106bb80e9a4722579ad28059058e6ebac4",
+      "observed_blob": "63c2e690878f28bcc7f753cb67d675c9edc6bb46",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "719f29c5d9fa983a45280bdba238194b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/9f99c1930e3952d23a516e70e0867aa424031840.png.meta",
+      "source_blob": "db2ede64ed45b0e28b09b0a40ccaf33bc765769c",
+      "preexisting_main_blob": "db2ede64ed45b0e28b09b0a40ccaf33bc765769c",
+      "observed_blob": "42ee32847a851400a9e33e1b265d69dbb75d12b5",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "d0c9556f5cc0ca18fea90fdaa3823991"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/a4599f4ad6d5e2ec45e961b5fa6d4872b9b776f8.png.meta",
+      "source_blob": "b37ddca70839de196f29da2f5c8b3e6c436854d6",
+      "preexisting_main_blob": "b37ddca70839de196f29da2f5c8b3e6c436854d6",
+      "observed_blob": "f4357b29268190bf7f496e243a7fa261370a1d69",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "981760fd70593dc5727a640da799dc99"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5a7a2191c98f3ded4fd02d5839a352b7d316612.png.meta",
+      "source_blob": "d7cac56416febb63b81ca7f07cf38d29e9fa0126",
+      "preexisting_main_blob": "d7cac56416febb63b81ca7f07cf38d29e9fa0126",
+      "observed_blob": "17990c786e2c6a14ea840d5f3f22b1f4b886e169",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "189eb84d40be3d7816973ce5b25f2cfe"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5ab68274bb848b27a08c26e9751b94b656bfe22.png.meta",
+      "source_blob": "9f392bfa0834d66ad8f64cbc0ebacd70ed0b245f",
+      "preexisting_main_blob": "9f392bfa0834d66ad8f64cbc0ebacd70ed0b245f",
+      "observed_blob": "4bd005b0294bbc542197a3aa871c9cde9235bddc",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "0cc8565597f8e13b40e06ffcd65cbe4d"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/de2514e4480e1c590de14765da4854cfac3c5157.png.meta",
+      "source_blob": "7743b7d20882dbd3b1beab3c4c66eaec44c379c0",
+      "preexisting_main_blob": "7743b7d20882dbd3b1beab3c4c66eaec44c379c0",
+      "observed_blob": "66780a7bf767b2d270d9a96dc24621c4319cead8",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "28eeb9270a3e8984fa92ef4c55471a5f"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/f87f5ed5f4c059864855106ee339d761b913f0b1.png.meta",
+      "source_blob": "4b5aedbf486a48a7a3d76e57ecbbef80b19abd34",
+      "preexisting_main_blob": "4b5aedbf486a48a7a3d76e57ecbbef80b19abd34",
+      "observed_blob": "a9615de5847409a03859502a1dda948d73e04b6c",
+      "reason": "Existing TextureImporter stub serialization; GUID retained",
+      "guid": "9b40c33bc6012eb92eb761ff85f59cba"
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain/Materials/Bush01.mat",
+      "source_blob": "f5b7ad3c67776970b18a7ce52870f55d6e55eab1",
+      "preexisting_main_blob": "f5b7ad3c67776970b18a7ce52870f55d6e55eab1",
+      "observed_blob": "010670980912d3e9c86752ddb34336c96dbcf439",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain/Materials/Leaf01A.mat",
+      "source_blob": "2c98627981b106888e59d05865afd2bd029842da",
+      "preexisting_main_blob": "2c98627981b106888e59d05865afd2bd029842da",
+      "observed_blob": "4f2dc9059ccb30c05eef656e5910997c91ab494d",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/Holotna/Mountain/Materials/Leaf01B.mat",
+      "source_blob": "83f7a61d09ae267fdc56f9f0cf487feb5b753f27",
+      "preexisting_main_blob": "83f7a61d09ae267fdc56f9f0cf487feb5b753f27",
+      "observed_blob": "bf1e041cf9fa9fc605e0a0176f04605672de1bc3",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/bark_2_d.mat",
+      "source_blob": "22c270c3a6840d0ee727c4af003dbaa5daa22851",
+      "preexisting_main_blob": "22c270c3a6840d0ee727c4af003dbaa5daa22851",
+      "observed_blob": "04479d7005f001046039dc677af4e8c9cf48e9b8",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/cobblestone_wall_1_fixed_d.mat",
+      "source_blob": "89e2e25b0ed9861ab2a33a4e37cc7955e3c6fdb0",
+      "preexisting_main_blob": "89e2e25b0ed9861ab2a33a4e37cc7955e3c6fdb0",
+      "observed_blob": "70d4a61876543e30e0e222985526c2463ea73918",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/granite_1_d.mat",
+      "source_blob": "718937f8ef9e469cbe338601cfb7e2923b4e0a38",
+      "preexisting_main_blob": "718937f8ef9e469cbe338601cfb7e2923b4e0a38",
+      "observed_blob": "01761667fa22e97dcf5c7bbc6f6b12fb1db80c48",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/stone_wall_3_d.mat",
+      "source_blob": "635b8086e955cb3787dd94bea004551312439580",
+      "preexisting_main_blob": "635b8086e955cb3787dd94bea004551312439580",
+      "observed_blob": "f41498a00741f7848b55a0ce711d2aaeefad61ee",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/wood_1_d.mat",
+      "source_blob": "12417c94fff6a2d318d5455ae8d82003be752f53",
+      "preexisting_main_blob": "12417c94fff6a2d318d5455ae8d82003be752f53",
+      "observed_blob": "e52d7989127969804996de268406c674a081a5cd",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/Mega Fantasy Props Pack/Materials/wooden-boards-texture_d.mat",
+      "source_blob": "f4faea0c3deef5e0b578ab8ba7ebafdc418f0070",
+      "preexisting_main_blob": "f4faea0c3deef5e0b578ab8ba7ebafdc418f0070",
+      "observed_blob": "391b549ae1bfd65c1dd2a43adadd2d2462a27f54",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Animations/Main Camera.controller",
+      "source_blob": "90e09d7f0f966557663439ee2e4aa56418ef7884",
+      "preexisting_main_blob": "90e09d7f0f966557663439ee2e4aa56418ef7884",
+      "observed_blob": "7b6afc0ca5702965636b1a5c03a3e07b0ddb1923",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Animations/cameraanim.anim",
+      "source_blob": "6534f364db76e12c26456b7390f443e7397094c2",
+      "preexisting_main_blob": "6534f364db76e12c26456b7390f443e7397094c2",
+      "observed_blob": "38af4f30e78b785f566afb88299116fd3dbb55b5",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/bark01.mat",
+      "source_blob": "666ed33d4b7ac64ec4a770b215688e4408928a6b",
+      "preexisting_main_blob": "666ed33d4b7ac64ec4a770b215688e4408928a6b",
+      "observed_blob": "b5373dd19bb70f741faca0f23bc165273de59c0b",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/bark02.mat",
+      "source_blob": "12ec1734ff51bc77a27f186a25a82382e9ec05e0",
+      "preexisting_main_blob": "12ec1734ff51bc77a27f186a25a82382e9ec05e0",
+      "observed_blob": "9a59d9c120396d34ec414234a75ed28e7e262da1",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/branch01.mat",
+      "source_blob": "88cdc031ea655b3a417f1113043cf2162e64aa8a",
+      "preexisting_main_blob": "88cdc031ea655b3a417f1113043cf2162e64aa8a",
+      "observed_blob": "f993e2c62b08486e3bf9f10776e6b253191e1fa6",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/branch02.mat",
+      "source_blob": "16449dbf0bd077c30bc93508660efad4117f2304",
+      "preexisting_main_blob": "16449dbf0bd077c30bc93508660efad4117f2304",
+      "observed_blob": "b3524704c2d7a130358cad50930b152817f14a98",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/bush01.mat",
+      "source_blob": "b73898cfb71b02bf7940eb80a3a29b273fa74218",
+      "preexisting_main_blob": "b73898cfb71b02bf7940eb80a3a29b273fa74218",
+      "observed_blob": "19c893824baa9decd981c2f41b41ef9e72ca2b71",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/bush02.mat",
+      "source_blob": "8cae041a36fb1842366b545f9985efa32d78d806",
+      "preexisting_main_blob": "8cae041a36fb1842366b545f9985efa32d78d806",
+      "observed_blob": "0cff699592132fc1658b19f15f724b512e764f2a",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/sky.mat",
+      "source_blob": "955a8e4cf7d17de62e21dae1f992a1cfeb688a99",
+      "preexisting_main_blob": "955a8e4cf7d17de62e21dae1f992a1cfeb688a99",
+      "observed_blob": "3317b2f95513f1a005159fa541d4bbfef1b15c75",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Materials/skybox.mat",
+      "source_blob": "b77ceb0d2c45ba180a6cf3f9ebc6c684fe6b67dc",
+      "preexisting_main_blob": "b77ceb0d2c45ba180a6cf3f9ebc6c684fe6b67dc",
+      "observed_blob": "5cbfe757e07a4c9bc912471563394efcdbbd09e5",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush01.prefab",
+      "source_blob": "188596a39689830aa18c8521b4ba42cbe72d763e",
+      "preexisting_main_blob": "188596a39689830aa18c8521b4ba42cbe72d763e",
+      "observed_blob": "c2979036d97434bf314bf534357200763b79cdd0",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush02.prefab",
+      "source_blob": "a0af4e5ca6ed3f0c0ee4236577f72fab2e40616d",
+      "preexisting_main_blob": "a0af4e5ca6ed3f0c0ee4236577f72fab2e40616d",
+      "observed_blob": "9242cb56286bf7d4d41b1439c7adcc59895b8136",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush03.prefab",
+      "source_blob": "2d758a150ff1bf7c6b47289827fe06f66bcc5d0c",
+      "preexisting_main_blob": "2d758a150ff1bf7c6b47289827fe06f66bcc5d0c",
+      "observed_blob": "5e9f307c314d616dfcafe8205662ca1dd963e1ca",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush04.prefab",
+      "source_blob": "05e02f66333d96926ef39bf991dca60b8e59a267",
+      "preexisting_main_blob": "05e02f66333d96926ef39bf991dca60b8e59a267",
+      "observed_blob": "716452dc8e99cc4825cb0b7f5f87ba924711aa8e",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush05.prefab",
+      "source_blob": "aac1458230b9f8c3aa814101aa98572c9d24a159",
+      "preexisting_main_blob": "aac1458230b9f8c3aa814101aa98572c9d24a159",
+      "observed_blob": "a4770c18914c9335a88008ff7e601ea7fcdbcbfc",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/bush06.prefab",
+      "source_blob": "3c0503365723e558d8a70a45929a47f5dd5edf6d",
+      "preexisting_main_blob": "3c0503365723e558d8a70a45929a47f5dd5edf6d",
+      "observed_blob": "9fac5760903a2d8a7cda16a708ec1efe1081ca64",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/tree01.prefab",
+      "source_blob": "cf6db84b60b50d1b31a4d99b0a8af4d533313a50",
+      "preexisting_main_blob": "cf6db84b60b50d1b31a4d99b0a8af4d533313a50",
+      "observed_blob": "cd866c272816d9aedc2bfd2afa2a882786688a54",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/tree02.prefab",
+      "source_blob": "b872e32d718e8ffaedc922be79c06782d2b57857",
+      "preexisting_main_blob": "b872e32d718e8ffaedc922be79c06782d2b57857",
+      "observed_blob": "d174315669ee7895afc8892b3f5f448334ef7c65",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/tree03.prefab",
+      "source_blob": "aaa322e1670c6757916d92d24a1158025b898836",
+      "preexisting_main_blob": "aaa322e1670c6757916d92d24a1158025b898836",
+      "observed_blob": "3d3c8dfa118ca4ff02a04caf632a8fed5eb30b4e",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Nature/tree04.prefab",
+      "source_blob": "22d7e9cedc28a0ce2f35aa016b3d4bab94a17238",
+      "preexisting_main_blob": "22d7e9cedc28a0ce2f35aa016b3d4bab94a17238",
+      "observed_blob": "324dcfbcd241634eb705d771660e726ca49bc280",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Scene/Demo.unity",
+      "source_blob": "8e5308d17dfd6f1e65823f076ddc7c46f3d5913e",
+      "preexisting_main_blob": "8e5308d17dfd6f1e65823f076ddc7c46f3d5913e",
+      "observed_blob": "14b7824e17b12b4d7ff0d021234ae834e885abfe",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Scene/New Terrain.asset",
+      "source_blob": "992b3fa854f4a064e38f5df744702dfedf2fe799",
+      "preexisting_main_blob": "992b3fa854f4a064e38f5df744702dfedf2fe799",
+      "observed_blob": "e821bdd1a1080e23a66a1503da8fd3efe06ffa0a",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Scene/SecondaryTerrain.asset",
+      "source_blob": "b0c60048c57ba1d2c11a3026fe504b1a6cc726db",
+      "preexisting_main_blob": "b0c60048c57ba1d2c11a3026fe504b1a6cc726db",
+      "observed_blob": "e82c0fa10919720b7bd57980605c04cb96457e05",
+      "reason": "Existing vendor asset serialized by canonical BastionIIIArtBake AssetDatabase.SaveAssets; not committed or artistically approved"
+    },
+    {
+      "path": "Unity/ProjectSettings/EditorBuildSettings.asset",
+      "source_blob": "64cc6305e9963e906cda4c85882dd33eb9f870f3",
+      "preexisting_main_blob": "64cc6305e9963e906cda4c85882dd33eb9f870f3",
+      "observed_blob": "cfc20e6443f0c98f425247699e4db7a63723e22c",
+      "reason": "Unity 6000.3 EditorBuildSettings serialization field"
+    },
+    {
+      "path": "Unity/ProjectSettings/QualitySettings.asset",
+      "source_blob": "890e4e5aab0956513f5472ce46ae6b74a456ff04",
+      "preexisting_main_blob": "890e4e5aab0956513f5472ce46ae6b74a456ff04",
+      "observed_blob": "ee009d573934ffb7545f0899ca5ff31d83aa573f",
+      "reason": "Canonical SceneSetup pipeline fixture"
+    }
+  ]
+}

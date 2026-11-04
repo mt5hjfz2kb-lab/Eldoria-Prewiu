@@ -70,6 +70,20 @@
       "uncertainty": "The old launcher did not print its observed exit code, so a true nonzero exit cannot be distinguished from missing ExitCode in that artifact.",
       "primary_documented_matching_issue": "https://github.com/PowerShell/PowerShell/issues/5421",
       "fix": "Cache the Windows process handle before waiting; reject null codes explicitly; record actual exit code. Real redirected child exit0 and exit7 contract tests run in CI and on Windows BEFORE cloning/Unity. Do not infer success from export marker alone."
+    },
+    {
+      "run": 41832431346,
+      "candidate": "fecab45b15ad62d766d8f97b9bccda6abb68c885",
+      "status": "ALL_METADATA_AND_TESTS_PASS_EXISTING_BASELINE_SERIALIZATION_CHECK_FAILED",
+      "artifact": 13327216247,
+      "artifact_zip_sha256": "f4d43e62475a8dc922ef616fbf7bceccaa3dd0b1e481873c309eaa0ff469897d",
+      "metadata_originals_passed": 345,
+      "editmode_passed": 57,
+      "playmode_passed": 73,
+      "failed_or_skipped_cases": 0,
+      "baseline_serializations": 61,
+      "recovered_entries_changed": 0,
+      "fix": "Require exact source and observed Git blobs for only these 61 known baseline paths; all new paths, differing source/output blobs and every recovery overlap remain rejected. Rerun full native certificate."
     }
   ],
   "checkout_checks": {
@@ -77,5 +91,5 @@
     "partial_clone_local_clone": "FAILED in disposable reproduction, approach rejected before native dispatch",
     "canonical_clone_seed_immutable_pack_objects": "Disposable local proof passed, but NOT usable across native jobs: runner cleanup removes the source cache. Abandoned for this environment."
   },
-  "next_mode": "full with all canonical existing preparations and strict zero-skip test contract"
+  "next_mode": "Full native with exact known-baseline serialization hashes and post-test original-byte checkpoint"
 }

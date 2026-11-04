@@ -113,3 +113,16 @@ BastionIII Granary art, because the custom harness omitted the preparation alrea
 required by unity-slice.yml. Other omissions require the canonical disposable
 probe/capture fixture. Both setup defects are corrected in the next harness;
 real full results, source assembly identity and zero skips remain mandatory.
+
+## Native checkpoint 41832431346
+
+Unity6000.3.23f1 passed all 345 restored GUIDs/original bytes, 57 EditMode and
+73 PlayMode cases with zero failures or skips. Canonical preparation completed,
+and actual Windows redirected-process exit0/exit7 checks passed. The overall
+workflow nevertheless FAILED its blanket clean-checkout assertion: 61 older
+baseline files were serialized by import/canonical fixtures. Their source blobs
+match unchanged main; no recovered entry changed. The exact binary/text patch
+was reconstructed and all 27 other metadata GUIDs remain unchanged. See the
+checkpoint JSON and exact serialization ledger. No side effects are committed.
+The next run rejects every unknown path or differing before/after blob and
+rechecks all restored raw bytes after tests. Full certificate remains pending.

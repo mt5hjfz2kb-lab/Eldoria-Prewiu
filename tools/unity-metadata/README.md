@@ -18,11 +18,11 @@ identities are retained because Git cannot represent an empty directory.
 Contents of bundled plug-ins such as `.androidlib` are treated as one plug-in;
 the bundle root still needs its own metadata.
 
-`baseline.json` records precise existing debt protected by concurrent production
-work. File exceptions include the asset blob SHA: changing an asset cannot quietly
-inherit the exception. Folder exceptions identify existing folders, not permission
-to omit metadata in new ones. Passing this check means no new integrity failure;
-the output still reports outstanding known debt. It is not Unity certification.
+`baseline.json` has no allowed missing metadata or orphan exceptions after this
+recovery. The audit therefore requires zero outstanding integrity debt. The
+baseline format can pin a historical file exception to its exact asset blob, but
+no such exception is currently enabled. Static integrity is separate from native
+Unity import and gameplay certification.
 
 `snapshot.py` copies existing metadata into a **new** output directory. It never
 opens Unity, generates a GUID, edits a project or installs software. It rejects
@@ -96,3 +96,15 @@ launcher caches that handle, rejects missing codes and records the real result.
 A real child-process contract checks exit0, exit7 and both redirected streams in
 CI and again on the Windows host before the expensive clone/Unity preparation.
 The Blender export marker alone never authorizes PASS.
+
+The canonical preparation calls SaveAssets, which serializes older existing
+TextureImporter stubs and vendor assets. Native41832431346 passed all 345 original
+identities/bytes, 57 EditMode and 73 PlayMode cases, but the original blanket
+pristine-checkout assertion rejected 61 other baseline files. The exact
+source/observed Git blobs are recorded in native-serialization-baseline.json:
+27 existing metadata files retain their GUIDs, 32 vendor assets and two project
+settings are serialized. Every source blob matches pre-repair main. These files
+are neither committed nor artistically approved. Unknown paths, changed source
+blobs, changed results or overlap with any recovered entry still fail. The
+certificate distinguishes a pristine checkout from these explicit side effects.
+All 345 raw hashes are checked again after the tests.

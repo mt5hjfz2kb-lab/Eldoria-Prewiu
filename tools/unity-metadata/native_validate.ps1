@@ -193,7 +193,17 @@ try {
 $status=& $gitExe -C $sourceRoot status --porcelain --untracked-files=no
 if($LASTEXITCODE -ne 0){ throw 'Post-import tracked state unavailable' }
 $status | Set-Content -LiteralPath (Join-Path $evidenceRoot 'tracked-state.txt')
-if(@($status).Count -gt 0){ throw 'Unity changed tracked files in the isolated candidate; inspect evidence' }
+. (Join-Path $sourceRoot 'tools/unity-metadata/native_tracked_state.ps1')
+$trackedReview=Assert-MetadataTrackedState $sourceRoot $gitExe (Join-Path $sourceRoot 'tools/unity-metadata/native-serialization-baseline.json') $manifest
+$trackedReview | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'tracked-state-review.json')
+# Recheck originals AFTER tests as well as after import. No recovered entry is
+# ever exempted by the separate existing-project serialization ledger.
+$finalRows=@($recoveryEntries | ForEach-Object {
+    $actual=(Get-FileHash -LiteralPath (Join-Path $sourceRoot $_.path) -Algorithm SHA256).Hash.ToLowerInvariant()
+    @{path=$_.path;expected=$_.meta_sha256;actual=$actual;exact=($actual -eq $_.meta_sha256)}
+})
+$finalRows | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'metadata-after-tests.json')
+if(@($finalRows | Where-Object {-not $_.exact}).Count){throw 'Tests changed restored original metadata bytes'}
 $certificateState=if($validationMode -eq 'full'){'PASS'}else{'IDENTITIES_PASS_ONLY'}
-@{state=$certificateState;validation_mode=$validationMode;full_tests_run=($validationMode -eq 'full');canonical_runtime_prepared=$runtimePrepared;test_summary=$testSummary;player_build_run=$false;candidate_sha=$checked;run_id=$env:GITHUB_RUN_ID;unity_version=$proof.unity_version;restored_entries=@($proof.entries).Count;production_projects_modified=$false;harness_editor_only=$true;test_persistence_isolated=$true;original_project_settings_restored=$true} |
+@{state=$certificateState;validation_mode=$validationMode;full_tests_run=($validationMode -eq 'full');canonical_runtime_prepared=$runtimePrepared;test_summary=$testSummary;player_build_run=$false;candidate_sha=$checked;run_id=$env:GITHUB_RUN_ID;unity_version=$proof.unity_version;restored_entries=@($proof.entries).Count;production_projects_modified=$false;harness_editor_only=$true;test_persistence_isolated=$true;original_save_identity_settings_restored=$true;pristine_checkout=$trackedReview.pristine_checkout;reviewed_baseline_serializations=$trackedReview.known_baseline_serializations;unexpected_tracked_changes=0} |
     ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'certificate.json')
