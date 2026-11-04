@@ -44,6 +44,8 @@ namespace Eldoria.HeroesUI
             vh.AddVert(new Vector3(x+w,y),bottom,Vector2.right);
             vh.AddTriangle(n,n+1,n+2);vh.AddTriangle(n,n+2,n+3);
         }
+#if UNITY_EDITOR
         protected override void OnValidate(){base.OnValidate();SetVerticesDirty();}
+#endif
     }
 }
