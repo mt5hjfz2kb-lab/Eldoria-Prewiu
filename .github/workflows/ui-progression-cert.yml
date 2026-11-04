@@ -6,6 +6,11 @@ on:
     paths:
       # Temporary exact-source QA trigger for owner-authorized Block02.
       - '.github/workflows/ui-progression-cert.yml'
+      # Certify exact V4 art code with a branch push even when the DRAFT PR
+      # has unresolved main conflicts; no base change, merge or release.
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV4DialogueArt.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV4DialogueParchment.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Editor/AldricDialogueNativeCapture.cs'
       - 'Unity/Assets/Eldoria/HeroesUI/**'
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs'
       # Every actual building-cartouche edit must certify its EXACT HEAD.
@@ -468,7 +473,7 @@ jobs:
           retention-days: 30
 
       - name: Real Diálogo 1 before/after — original HUD, three speakers, four formats
-        if: github.head_ref == 'fix/player-feedback-context-ui-20261030'
+        if: github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030'
         shell: powershell
         env:
           ALDRIC_NATIVE_OUTPUT: ${{ github.workspace }}/dialogue-v4-native-${{ github.run_id }}
@@ -496,7 +501,7 @@ jobs:
           Write-Host "ELDORIA_DIALOGUE_V4_AB_NATIVE_PASS images=$($imgs.Count)"
 
       - uses: actions/upload-artifact@v4
-        if: always() && github.head_ref == 'fix/player-feedback-context-ui-20261030'
+        if: always() && (github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030')
         with:
           name: eldoria-dialogue-v4-native-${{ github.run_id }}
           path: dialogue-v4-native-${{ github.run_id }}
