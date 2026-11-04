@@ -149,12 +149,11 @@ jobs:
           }
           Write-Host 'DELIGHT_CLI_STATUS installed=true'
           $env:UNITY_NO_CLI_INVOKED_TELEMETRY='1'
-          foreach($item in @(@('auth','status'),@('license','status'))){
-            $mode=$item[0]
+          foreach($mode in @('auth','license')){
             $result=''
             $exit=-1
             try{
-              $output=& $cli.Source $item[0] $item[1] --format json --non-interactive 2>&1
+              $output=& $cli.Source $mode 'status' --format json --non-interactive 2>&1
               $exit=$LASTEXITCODE
               $result=$output|Out-String
             }catch{$exit=-1}
