@@ -2,7 +2,10 @@
 
 Status: PR153 merged into main at `91419eadbb1b7c678e249438f0b449cbd7dec0bd`.
 Native metadata certification and post-merge Unity editor/game tests plus Windows
-build PASS. The separate post-merge UI gate is still running; see CLOSEOUT.json.
+build PASS. The post-merge UI job has also passed every executed test/validation
+step and uploaded its evidence, but GitHub still reports its aggregate status as
+in_progress with no conclusion. Technical repair is verified; administrative
+closure remains pending that external acknowledgement. See CLOSEOUT.json.
 
 ## What changed
 
@@ -60,3 +63,31 @@ clean. No external publication was requested or performed.
 
 Original provenance and archived bytes: recovery-manifest.json and LEGACY_ARCHIVE.json.
 Earlier reference/portability scans remain explicitly pinned to their source commits.
+
+## Post-merge evidence and remaining administrative state
+
+- Unity run 41850579988 completed successfully on the exact merge commit:
+  57 EditMode + 73 PlayMode cases passed, zero failed/skipped, Windows build and
+  benchmark capture succeeded. Downloaded test ZIP SHA256 and XML were verified.
+- UI run 41850579678: all executed steps, including Complete job, succeeded by
+  2026-11-04T15:50:37Z. Logs report 57 EditMode and 73 PlayMode passed. The downloaded
+  shared-native artifact independently verifies exact requested/compiled merge SHA,
+  73/73 PlayMode cases with no failures/skips, and twelve actual PNG files.
+- The optional retention reference/discovery probe was SKIPPED by the existing
+  workflow; it is not counted as a passed probe or an artistic approval.
+- Despite completed steps and uploaded evidence, GitHub's run, job and commit-check
+  endpoints still report in_progress with null conclusion. The cause is unconfirmed.
+  No job cancellation, runner restart, fabricated status or extra native run was used.
+- Final administrative closure must reread that run and inspect its actual conclusion;
+  if successful, close this same workstream. If failure, diagnose its final logs.
+  This is an external reporting discrepancy, not evidence of a failed Unity test.
+
+## Resumen práctico
+
+Se recuperaron 345 archivos originales que identifican y configuran los recursos
+para Unity, se retiraron 57 copias redundantes y se archivó el modelo descartado
+conservando sus originales. Los controles automáticos detectan futuras pérdidas
+o duplicaciones. Esto reduce inconsistencias al descargar el proyecto en otro
+ordenador y al integrar nuevos trabajos. No añade mecánicas ni certifica la calidad
+visual de todo el juego. La reparación está integrada y probada; queda la confirmación
+administrativa final de GitHub descrita arriba.
