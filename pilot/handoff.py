@@ -50,11 +50,21 @@ try:
         stamp["verified_pre_snapshot"]=True
         # Never archive a running SQLite database. The source directory is disposable and contains PUBLIC synthetic summaries.
         run("serve","stop",timeout=35)
-        files=[p for p in DB.rglob("*") if p.is_file() and not p.is_symlink()]
-        if not files: raise AssertionError("SLM_HOME has no persistent files")
-        if any(any(x in p.name.lower() for x in ("secret","auth","token","credential")) or
-               p.suffix.lower() in (".key",".pem",".env") for p in files):
-            raise AssertionError("Refuse uploading snapshot with files that look like credentials")
+        all_files=[p for p in DB.rglob("*") if p.is_file() and not p.is_symlink()]
+        # Strict allowlist; NEVER upload config, access tokens, auth state, secrets or passwords.
+        db_suffixes=(".db",".db-shm",".db-wal",".sqlite",".sqlite-shm",".sqlite-wal",
+                     ".sqlite3",".sqlite3-shm",".sqlite3-wal")
+        def is_public_data_file(p):
+            relative=p.relative_to(DB)
+            parts=[s.casefold() for s in relative.parts]
+            if any(any(term in s for term in ("secret","auth","token","credential","password","keyfile")) for s in parts):
+                return False
+            return p.name.casefold().endswith(db_suffixes) or "lance" in parts or "lancedb" in parts
+        files=[p for p in all_files if is_public_data_file(p)]
+        stamp["non_data_files_excluded_count"]=len(all_files)-len(files)
+        stamp["database_files_count"]=sum(p.name.casefold().endswith(db_suffixes) for p in files)
+        if not files or not stamp["database_files_count"]:
+            raise AssertionError("No SQLite memory DB in safe allowlist; do not upload arbitrary files")
         size=sum(p.stat().st_size for p in files)
         if size > 45_000_000: raise AssertionError(f"Snapshot too large: {size}")
         archive=OUT/"slm-public-memory.tar.gz"
