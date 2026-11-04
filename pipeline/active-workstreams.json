@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T17:36:07.130Z",
+  "updated_at": "2026-11-04T18:05:00.295Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -127,8 +127,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "DIALOGUE_V4_NATIVE_A_B_SUBTITLE_FIX_2482B22B",
-      "next": "Prove 2482b22b exact-head Unity regression and 48 real A/B captures, inspect subtitle on three speakers in four formats; keep PR136 draft/no merge or publication; document and release Windows after evidence.",
+      "phase": "DIALOGUE1_CINEMATIC_REAL_NATIVE_AB_B20E5972",
+      "next": "Obtener 48 capturas A/B Unity de HEAD b20e59721ac6708f29dabf2d12259e8c2b9683d7, run 41883405500; revisar placa de nombre corta, superposición real Lyra/pergamino, retrato Aldric sin medallón, móvil 390x844, 844x390, 900x1600, y variantes Orín QA; 433+ aserciones esperadas. Mantener DRAFT sin merge/publicación ni art approval automática. Liberar Windows y registrar evidencia después.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -2132,6 +2132,27 @@
         "resume_after": "Metadata repair closes; not ordinary availability for early reclaim.",
         "status": "COMPLETED",
         "restored_at": "2026-11-04T14:56:25.841Z"
+      },
+      "last_dialogue_checkpoint": {
+        "date": "2026-11-04",
+        "owner": "chatgpt-eldoria-dialogue-v4-recovery-20261104",
+        "canonical_pr": 136,
+        "branch": "fix/player-feedback-context-ui-20261030",
+        "prior_certified_head": "2482b22b594bce7aa6fbbf7d25d5c428c2957c0d",
+        "prior_certified_run": 41878752565,
+        "prior_real_captures": 48,
+        "prior_native_checks": 433,
+        "owner_reference": "Interfaz medieval de Valoria en evolución.png; opción DIÁLOGO 1 / ESTILO REAL NARRATIVO, no Diálogo 2 compacto",
+        "cinematic_probed_head": "9c15d1cc41584f435aef3e81f7b0e20da1e723f6",
+        "cinematic_probe_run": 41880041853,
+        "cinematic_probe_captures": 48,
+        "cinematic_probe_native_checks": 433,
+        "cinematic_defects": "Aldric's very long management-like speaker header; Lyra portrait too detached from paper, short dialogue pane too small. Genuine source Aldric neutral approved 512px bust, head and shoulders only (prior owner direction).",
+        "new_head": "b20e59721ac6708f29dabf2d12259e8c2b9683d7",
+        "new_run": 41883405500,
+        "changes": "short illustrated header plaque <=360, improved Lyra paper overlap, cinematic min height 350 and dynamic portrait overlap on short+long, Aldric right-edge feather, additional viewport-native assertions",
+        "technical_state": "source_committed_exact_head_ci_pending",
+        "artistic_state": "NOT_ART_APPROVED"
       }
     },
     {
