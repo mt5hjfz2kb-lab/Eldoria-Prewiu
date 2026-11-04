@@ -112,7 +112,7 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         public void SynchronizeNow()
         {
-            if(busy||!Application.isPlaying||!Source)return;
+            if(busy||!UnityEngine.Application.isPlaying||!Source)return;
             if(!Source.NarrativeOpen){Restore();return;}
             if(!Ensure()||safe.rect.width<250f||safe.rect.height<270f)return;
             busy=true;
