@@ -51,7 +51,9 @@ permissions:
 concurrency:
   # Exact Unity certification must finish once started; branch updates should
   # replace pending candidates rather than kill a running Windows Editor.
-  group: eldoria-ui-progression-cert-${{ github.event.pull_request.number || github.ref }}
+  # Push and PR for one branch share a queue; only an already complete exact
+  # commit certificate may avoid repeating the identical native execution.
+  group: eldoria-ui-progression-cert-${{ github.event.pull_request.head.ref || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -63,9 +65,66 @@ jobs:
       actions: read
       pull-requests: read
     outputs:
-      heavy_required: ${{ steps.compare.outputs.heavy_required || 'true' }}
+      heavy_required: ${{ steps.exact.outputs.reused == 'true' && 'false' || steps.compare.outputs.heavy_required || 'true' }}
     steps:
+      - name: Reuse only an already completed full certificate for this exact commit
+        id: exact
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.setOutput('reused','false');
+            const canonical='fix/player-feedback-context-ui-20261030';
+            const pr=context.payload.pull_request;
+            const eligible=(context.eventName==='pull_request'&&pr?.number===136&&
+              pr.head.ref===canonical&&pr.head.repo.full_name===context.repo.owner+'/'+context.repo.repo)||
+              (context.eventName==='push'&&context.ref==='refs/heads/main');
+            if(!eligible)return;
+            const source=pr?.head.sha||context.sha;
+            if(!/^[a-f0-9]{40}$/.test(source))throw Error('Invalid exact source identity');
+            const runs=(await github.rest.actions.listWorkflowRuns({...context.repo,
+              workflow_id:'ui-progression-cert.yml',branch:canonical,status:'success',per_page:100})).data.workflow_runs;
+            const run=runs.find(r=>r.head_sha===source&&r.head_branch===canonical&&r.event==='push'&&
+              r.status==='completed'&&r.conclusion==='success'&&r.path==='.github/workflows/ui-progression-cert.yml');
+            if(!run)return;
+            const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id,per_page:100})).data.jobs;
+            const native=jobs.filter(j=>j.name==='certify');
+            const required=[
+              'Compile the exact Unity candidate before preparing unchanged art resources',
+              'Prepare canonical build-safe Bastion III resources required by scene tests',
+              'Compare reconciled runtime performance with the verified PR136 baseline',
+              'V4.1 real controls, persistent mailbox and approved-source captures',
+              'Real Diálogo 1 before/after — original HUD, three speakers, four formats',
+              'Verify three simultaneous marches in the actual integrated scene',
+              'Verify retention reference composition and real guardian/discovery interaction',
+              'Verify Aldric native integration before the complete shared regression',
+              'Capture and validate existing real integrated I-II scene in Unity',
+              'EditMode','PlayMode — UI and progression contract',
+              'Require genuine Aldric motion visibility save proof and twelve camera views',
+              'Compile canonical playable Windows candidate without publication',
+              'Summarize certified checks',
+              'Restore original Unity Editor Search preferences and cache after native checks'];
+            if(native.length!==1||native[0].status!=='completed'||native[0].conclusion!=='success'||
+              required.some(name=>!native[0].steps?.some(s=>s.name===name&&s.status==='completed'&&s.conclusion==='success'))){
+              core.info('Exact native execution incomplete; execute the complete gate');return;
+            }
+            const artifacts=(await github.rest.actions.listWorkflowRunArtifacts({...context.repo,run_id:run.id,per_page:100})).data.artifacts;
+            const names=[
+              'eldoria-pr136-performance-'+source,'eldoria-pr136-candidate-'+source,
+              'eldoria-ui-progression-cert-'+source,'eldoria-aldric-shared-native-'+source,
+              'eldoria-v41-native-'+run.id,'eldoria-dialogue-v4-native-'+run.id,
+              'eldoria-three-marches-native-'+run.id,'eldoria-retention-evolution-native-'+run.id,
+              'eldoria-aldric-preflight-evidence-'+run.id];
+            if(names.some(name=>!artifacts.some(a=>a.name===name&&!a.expired&&a.size_in_bytes>0&&
+              a.workflow_run?.id===run.id&&/^sha256:[a-f0-9]{64}$/.test(a.digest)))){
+              core.info('Exact native artifacts unavailable; execute the complete gate');return;
+            }
+            core.setOutput('reused','true');core.setOutput('source',source);core.setOutput('run_id',String(run.id));
+            core.info('EXACT_COMMIT_NATIVE_CERTIFICATE_REUSED source='+source+' run='+run.id+
+              ' complete EditMode/PlayMode, I-V journey, controls, four-format captures, performance and canonical player all executed successfully');
+            await core.summary.addRaw('Exact commit '+source+' certified by https://github.com/'+context.repo.owner+'/'+context.repo.repo+'/actions/runs/'+run.id+'. Every required native step and all nine hashed artifacts verified; no source-tree approximation.').write();
       - name: Verify completed exact shared UI and Aldric native certificate
+        if: steps.exact.outputs.reused != 'true'
         id: baseline
         continue-on-error: true
         uses: actions/github-script@v7
