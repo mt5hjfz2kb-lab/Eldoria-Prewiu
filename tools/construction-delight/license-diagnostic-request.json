@@ -6,5 +6,15 @@
   "no_credential_access": true,
   "no_process_changes": true,
   "build_not_authorized": true,
-  "art_approved": false
+  "art_approved": false,
+  "attempt": 2,
+  "valid_workflow_head": "82b75bb11cfc55d6aa674f8cc8097e69e58cbdb2",
+  "read_only_checks": [
+    "license_file_exists",
+    "machine_ulf_exists",
+    "xml_file_count",
+    "Hub_running",
+    "Licensing_Client_running",
+    "Editor_running"
+  ]
 }
