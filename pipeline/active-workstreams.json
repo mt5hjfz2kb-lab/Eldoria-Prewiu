@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T10:20:23.431Z",
+  "updated_at": "2026-11-04T10:23:58.476Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-dialogue-art-20261104",
+      "owner": null,
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-04",
@@ -1765,11 +1765,17 @@
           "ownership_revision": 130,
           "ended_at": "2026-11-04T10:20:23.431Z",
           "reason": "Temporary metadata priority pause explicitly authorized by owner in audit conversation, 2026-11-04; preserve PR, source and evidence."
+        },
+        {
+          "owner": "chatgpt-dialogue-art-20261104",
+          "ownership_revision": 132,
+          "ended_at": "2026-11-04T10:23:58.476Z",
+          "reason": "Reapply explicit owner-authorized temporary metadata write priority. Dialogue may retain all work/PR but must not reclaim overlapping scopes until PR153 metadata restoration validates."
         }
       ],
-      "ownership_revision": 132,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 133,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-03",
       "delivery_definition": {
@@ -2097,9 +2103,9 @@
       "claim_reason": "Orden expresa de propietario de continuar hasta A/B auténtico; claim tras liberación canónica rev 131.",
       "priority_pause": {
         "by": "eldoria-unity-metadata-integrity-20261104",
-        "at": "2026-11-04T10:20:23.431Z",
-        "reason": "Owner authorized temporary dialogue/spawnling writing pause for 57 original metadata restoration and validation.",
-        "resume_after": "Metadata repair closes; restore prior owner if no later owner-directed claim or instruction."
+        "at": "2026-11-04T10:23:58.476Z",
+        "reason": "Explicit owner authorization for temporary metadata repair priority remains in force; latest dialogue progress preserved for restoration.",
+        "resume_after": "PR153 repair closes; no automatic early write reclaim."
       }
     },
     {
@@ -4125,8 +4131,8 @@
           "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
           "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
           "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-          "phase": "DIALOGUE_ART_IMPLEMENTED_UNITY_LICENSE_BLOCKED",
-          "next": "PR136 HEAD 96d1becff2f6d7961326e741258ffa139f228b3a: UI V4 integrated; run 41804846844 failed twice on Unity Personal license BEFORE compilation. Need Unity Hub interactive license in Windows runner identity, then exact HEAD full Unity compile, 48 native A/B, EditMode/PlayMode, art review. Do not merge/publish or invent Orin gameplay.",
+          "phase": "DIALOGUE_V4_NATIVE_AB_QA_20261104",
+          "next": "Cerrar diálogo V4 PR136 HEAD 09715611 con captura nativa auténtica 48 A/B; resguardar autoría Aldric/Lyra, Orín solo estilo aprobado, cuatro resoluciones y sin colisiones. Reservar Windows solo cuando libre tras metadata-integrity; no reiniciar ni colisionar.",
           "last_verified": {
             "source_topology_status": "SOURCE_TOPOLOGY_PASS",
             "source_footprints": 22,
@@ -4962,7 +4968,7 @@
               "Ciudad"
             ]
           },
-          "previous_owner": "chatgpt-eldoria-building-cartouche-20261103",
+          "previous_owner": "chatgpt-dialogue-art-20261104",
           "takeover_at": "2026-10-17",
           "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
           "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -5759,9 +5765,15 @@
               "ownership_revision": 128,
               "transferred_at": "2026-11-04T07:33:20.632Z",
               "reason": "Completed area Valoria — cierre de cartela contextual de construcción y mejoras, costes, estados y temporizador sobre ciudad; explicit verified handoff to next normal chat"
+            },
+            {
+              "owner": "chatgpt-dialogue-art-20261104",
+              "ownership_revision": 130,
+              "ended_at": "2026-11-04T10:20:23.431Z",
+              "reason": "Temporary metadata priority pause explicitly authorized by owner in audit conversation, 2026-11-04; preserve PR, source and evidence."
             }
           ],
-          "ownership_revision": 130,
+          "ownership_revision": 132,
           "ownership_state": "claimed",
           "write_scope_released": false,
           "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -6088,7 +6100,13 @@
             "note": "Exact PR136 HEAD certified with full Unity SUCCESS at run 41742424858: native V4.1, EditMode, PlayMode, city build/upgrade/resource shortage, save/reopen and inline council/speed-ups. Native A/B desktop and mobile delivered for owner evaluation. Technical closure only; artistic >=8.2/10 not approved yet. No merge, publication, invented economy or new modals.",
             "artistic_approval_note": "El propietario acepta provisionalmente el A/B visual de construcción y mejoras el 04/11/2026. Mantenerlo como baseline candidato certificado; no equivale a ≥8,2/10 definitivo ni autoriza merge o publicación. Mejorar en una pasada artística futura sólo tras nueva decisión."
           },
-          "claim_reason": "Orden expresa del propietario: reconstrucción visual y funcional real de cartela contextual inferior de construcción/mejora; ejecutar PR136 existente, aportar A/B Unity y pruebas completas. No merge ni publicación automática."
+          "claim_reason": "Orden expresa de propietario de continuar hasta A/B auténtico; claim tras liberación canónica rev 131.",
+          "priority_pause": {
+            "by": "eldoria-unity-metadata-integrity-20261104",
+            "at": "2026-11-04T10:20:23.431Z",
+            "reason": "Owner authorized temporary dialogue/spawnling writing pause for 57 original metadata restoration and validation.",
+            "resume_after": "Metadata repair closes; restore prior owner if no later owner-directed claim or instruction."
+          }
         },
         {
           "id": "eldoria-tripo-art-brain-phase2-20261021",
