@@ -195,6 +195,7 @@ jobs:
           sparse-checkout: |
             /tools/construction-delight
             /Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs
+            /Unity/Assets/Eldoria/ConstructionDelight
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
@@ -205,6 +206,7 @@ jobs:
         run: |
           set -euo pipefail
           dotnet run --project tools/construction-delight/DomainProbe.csproj --configuration Release
+          dotnet run --project tools/construction-delight/SyntaxProbe.csproj --configuration Release
 
   native-art:
     if: ${{ !contains(github.event.head_commit.message, '[delight-license-diagnostic]') && !contains(github.event.head_commit.message, '[delight-domain-test]') }}
