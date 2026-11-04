@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "91b3cb2c735cd654604202490d69928bbeeacb92",
   "ownership_revision": 5,
-  "mode": "REAL_UNITY_6000_3_23F1_ART_MOVEMENT_AB",
+  "mode": "LICENSE_FREE_CSHARP_DOMAIN_TEST",
   "expected_images": 26,
   "formats": [
     "844x390",
@@ -22,7 +22,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 3,
+  "attempt": 4,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "Avoid Transform.Find slash interpretation: owned effect group uses slash-free name",
@@ -48,5 +48,10 @@
       "status": "failed_compile_missing_particle_module"
     }
   ],
-  "validation": "Actual editor compile, 26 A/B source captures, 390x844 & 844x390, real canonical gateway task and completion, unchanged save"
+  "validation": "Actual editor compile, 26 A/B source captures, 390x844 & 844x390, real canonical gateway task and completion, unchanged save",
+  "editor_launch": false,
+  "windows_runner_requested": false,
+  "test_project": "tools/construction-delight/DomainProbe.csproj",
+  "asserts_production_source": "Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs",
+  "last_source_qa": "DomainProbe.cs built against 8.0 SDK with exact Unity state source linked in"
 }
