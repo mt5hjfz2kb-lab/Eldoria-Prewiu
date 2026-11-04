@@ -1,5 +1,7 @@
 # VALORIA CAMERA-FIRST PROJECTION SHELL v1
 
+> **AVISO DE VIGENCIA (04/11/2026): EXPERIMENTO RECHAZADO; NO REACTIVAR.** El encabezado original «ACTIVE» es una instantánea del 06/10, **no el estado actual**. El resultado posterior [VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md](VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md) registró **FINAL FAIL / REJECTED** para este shell de proyección. No ejecutar la secuencia como tarea pendiente ni promover sus resultados. Esto no prohíbe toda técnica 2.5D futura, solo esta solución descartada.
+
 Status: ACTIVE — ZERO-SPEND TECHNOLOGY PROOF
 Date: 2026-10-06
 
