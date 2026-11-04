@@ -12,6 +12,7 @@ internal static class SyntaxProbe
     {
         var files=new[]{
             "Unity/Assets/Eldoria/ConstructionDelight/ValoriaConstructionDelightV1.cs",
+            "Unity/Assets/Eldoria/ConstructionDelight/ConstructionDelightArchitecturalReveal.cs",
             "Unity/Assets/Eldoria/ConstructionDelight/Editor/ConstructionDelightNativeCapture.cs",
             "Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs"
         };
@@ -74,6 +75,17 @@ internal static class SyntaxProbe
                 }
             }
         }
+        // A resource path referenced by the runtime must exist in the exact
+        // Unity checkout. Roslyn syntax alone cannot detect a missing shader.
+        var shader="Unity/Assets/Eldoria/ConstructionDelight/Resources/"+
+                   "ConstructionDelightArchitecturalReveal.shader";
+        if(!File.Exists(shader) || !File.Exists(shader+".meta"))
+        {
+            Console.Error.WriteLine("CONSTRUCTION_DELIGHT_REVEAL_SHADER_MISSING");
+            errors++;
+        }
+        else Console.WriteLine("CONSTRUCTION_DELIGHT_REVEAL_SHADER_RESOURCE_PRESENT");
+
         if(errors>0)return 1;
         Console.WriteLine("CONSTRUCTION_DELIGHT_SYNTAX_PASS files="+files.Length+
                           " compiler=RoslynSDK runtime_Unity_API_not_verified");
