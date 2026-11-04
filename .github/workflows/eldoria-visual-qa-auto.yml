@@ -63,6 +63,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: eldoria-visual-qa-${{ github.run_id }}
-          path: visual-report/
+          # Only technical provenance/metrics survive; A/B previews stay ephemeral in the job.
+          path: visual-report/report.json
           if-no-files-found: warn
           retention-days: 2
