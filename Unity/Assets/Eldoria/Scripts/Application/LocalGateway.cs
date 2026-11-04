@@ -461,6 +461,7 @@ namespace Eldoria.Application
                         MarchCapacityRules.Capacity(state,marchHero));
                     if(parts.Length>1)
                     {
+                        nextTroops=new ArmyRoster(); // Explicit legacy composition must not retain auto-selected new families.
                         if(!int.TryParse(parts[1],out nextTroops.ArcherT1))return Fail("Composición desconocida");
                         nextTroops.ArcherT2=0;nextTroops.ArcherT3=0;
                     }

@@ -19,3 +19,9 @@ El 5 noviembre confirma «Sí, mueren los excedentes»: también en PvE, los gra
 5. Validar campaña I–V, marchas, Vigilantes, economía, capturas reales, guardados y builds. No activar coeficientes, capacidad/costes médicos o tasas PvP como aprobados: el paquete los identifica como candidatos pendientes de calibración.
 
 Los parámetros de balance permanecen candidatos. No se publica APK/WebGL, no se gasta ni se introducen nuevos modelos. La PR sigue en borrador hasta superar la validación aplicable; la presencia de código no equivale a integración jugable.
+
+## Primera prueba C# real
+
+Commit 2aec623e40b0ab15130b0c08c08f42455074a842, run41935426546: contrato V4.1 y motor T1–T5 compilados en .NET8; controles del gateway y recorrido continuo I–V (149 comandos,119 recargas) pasan. No equivale a certificado Unity ni a activación del nuevo motor en campaña.
+
+Segunda fase incorpora los quince campos al ArmyRoster existente, preservando ArcherT1/T2/T3, copia, límites, reserva y devolución atómicos. Los nuevos campos no conceden tropas ni desbloquean tiers. El correo conserva una instantánea completa del ejército. Se añaden controles de conservación por familia/tier, rechazo de valores negativos y devolución sin mutaciones parciales ante overflow; prueba Unity de deserialización del formato antiguo.

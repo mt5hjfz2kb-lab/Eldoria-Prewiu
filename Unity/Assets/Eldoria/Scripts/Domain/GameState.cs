@@ -62,11 +62,64 @@ namespace Eldoria.Domain
     [Serializable] public sealed class ResourceWallet { public int Wood; public int Stone; public int Food; }
     [Serializable] public sealed class ArmyRoster
     {
-        public int ArcherT1;
-        public int ArcherT2;
-        public int ArcherT3;
-        public int Total => ArcherT1 + ArcherT2 + ArcherT3;
-        public ArmyRoster Copy() => new ArmyRoster { ArcherT1 = ArcherT1, ArcherT2 = ArcherT2, ArcherT3 = ArcherT3 };
+        // Preserve original field names: old saves deserialize new slots as zero.
+        public int PaladinT1, PaladinT2, PaladinT3, PaladinT4, PaladinT5;
+        public int ArcherT1, ArcherT2, ArcherT3, ArcherT4, ArcherT5;
+        public int WarlockT1, WarlockT2, WarlockT3, WarlockT4, WarlockT5;
+        public int Get(int family, int tier)
+        {
+            if(family<0 || family>2 || tier<1 || tier>5)throw new ArgumentOutOfRangeException();
+            switch(family*5+tier-1)
+            {
+                case 0: return PaladinT1;
+                case 1: return PaladinT2;
+                case 2: return PaladinT3;
+                case 3: return PaladinT4;
+                case 4: return PaladinT5;
+                case 5: return ArcherT1;
+                case 6: return ArcherT2;
+                case 7: return ArcherT3;
+                case 8: return ArcherT4;
+                case 9: return ArcherT5;
+                case 10: return WarlockT1;
+                case 11: return WarlockT2;
+                case 12: return WarlockT3;
+                case 13: return WarlockT4;
+                case 14: return WarlockT5;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+        public void Set(int family,int tier,int count)
+        {
+            if(family<0 || family>2 || tier<1 || tier>5 || count<0)throw new ArgumentOutOfRangeException();
+            switch(family*5+tier-1)
+            {
+                case 0: PaladinT1=count; break;
+                case 1: PaladinT2=count; break;
+                case 2: PaladinT3=count; break;
+                case 3: PaladinT4=count; break;
+                case 4: PaladinT5=count; break;
+                case 5: ArcherT1=count; break;
+                case 6: ArcherT2=count; break;
+                case 7: ArcherT3=count; break;
+                case 8: ArcherT4=count; break;
+                case 9: ArcherT5=count; break;
+                case 10: WarlockT1=count; break;
+                case 11: WarlockT2=count; break;
+                case 12: WarlockT3=count; break;
+                case 13: WarlockT4=count; break;
+                case 14: WarlockT5=count; break;
+            }
+        }
+        public bool IsNonNegative
+        {
+            get { for(int f=0;f<3;f++)for(int t=1;t<=5;t++)if(Get(f,t)<0)return false; return true; }
+        }
+        public int Total
+        {
+            get { int total=0;for(int f=0;f<3;f++)for(int t=1;t<=5;t++)total=checked(total+Get(f,t));return total; }
+        }
+        public ArmyRoster Copy() => (ArmyRoster)MemberwiseClone();
     }
     [Serializable] public sealed class WorldRoutePoint { public float X,Y,Z; public WorldRoutePoint Copy()=>(WorldRoutePoint)MemberwiseClone(); }
     [Serializable] public sealed class MarchState
@@ -271,33 +324,39 @@ namespace Eldoria.Domain
         public static bool CanStart(PlayerState s,long utcTicks)
             => s!=null && ActiveCount(s,utcTicks)<MaxConcurrentMarches;
         public static bool Fits(ArmyRoster troops,ArmyRoster available,int capacity)
-            => troops!=null&&available!=null&&troops.Total>0&&troops.Total<=capacity&&
-               troops.ArcherT1>=0&&troops.ArcherT2>=0&&troops.ArcherT3>=0&&
-               troops.ArcherT1<=available.ArcherT1&&troops.ArcherT2<=available.ArcherT2&&
-               troops.ArcherT3<=available.ArcherT3;
+        {
+            if(troops==null || available==null || capacity<1 || !troops.IsNonNegative || !available.IsNonNegative)return false;
+            long total=0;
+            for(int f=0;f<3;f++)for(int t=1;t<=5;t++)
+            { int n=troops.Get(f,t);if(n>available.Get(f,t))return false;total+=n; }
+            return total>0 && total<=capacity;
+        }
         public static ArmyRoster AutoSelect(ArmyRoster available,int capacity)
         {
             var result=new ArmyRoster();
-            if(available==null||capacity<=0)return result;
+            if(available==null || capacity<=0)return result;
             int remaining=capacity;
-            result.ArcherT3=Math.Min(Math.Max(0,available.ArcherT3),remaining);
-            remaining-=result.ArcherT3;
-            result.ArcherT2=Math.Min(Math.Max(0,available.ArcherT2),remaining);
-            remaining-=result.ArcherT2;
-            result.ArcherT1=Math.Min(Math.Max(0,available.ArcherT1),remaining);
+            for(int tier=5;tier>=1;tier--)foreach(int family in new[]{1,0,2})
+            {
+                int take=Math.Min(Math.Max(0,available.Get(family,tier)),remaining);
+                result.Set(family,tier,take);remaining-=take;
+            }
             return result;
         }
         public static void Reserve(PlayerState s,ArmyRoster troops)
         {
-            s.Available.ArcherT1-=troops.ArcherT1;
-            s.Available.ArcherT2-=troops.ArcherT2;
-            s.Available.ArcherT3-=troops.ArcherT3;
+            if(s==null || !Fits(troops,s.Available,int.MaxValue))throw new ArgumentException("Invalid troop reservation");
+            var next=s.Available.Copy();
+            for(int f=0;f<3;f++)for(int t=1;t<=5;t++)next.Set(f,t,next.Get(f,t)-troops.Get(f,t));
+            s.Available=next;
         }
         public static void Return(PlayerState s,ArmyRoster troops)
         {
-            s.Available.ArcherT1=checked(s.Available.ArcherT1+troops.ArcherT1);
-            s.Available.ArcherT2=checked(s.Available.ArcherT2+troops.ArcherT2);
-            s.Available.ArcherT3=checked(s.Available.ArcherT3+troops.ArcherT3);
+            if(s?.Available==null || troops==null || !troops.IsNonNegative || !s.Available.IsNonNegative)
+                throw new ArgumentException("Invalid troop return");
+            var next=s.Available.Copy();
+            for(int f=0;f<3;f++)for(int t=1;t<=5;t++)next.Set(f,t,checked(next.Get(f,t)+troops.Get(f,t)));
+            s.Available=next;
         }
         public static MarchState AvailableSlot(PlayerState s)
         {

@@ -47,6 +47,21 @@ namespace Eldoria.Domain
                 get { int total=0; foreach (int x in Troops) total=checked(total+x); return total; }
             }
         }
+        // Mapping only: the existing ArmyRoster remains the single persisted authority.
+        public static Force FromRoster(ArmyRoster roster, string leader, string second=null)
+        {
+            if(roster==null || !roster.IsNonNegative)throw new ArgumentException("Invalid authoritative roster");
+            var force=new Force().WithHeroes(leader,second);
+            for(int f=0;f<Families;f++)for(int t=1;t<=Tiers;t++)force.Add(f,t,roster.Get(f,t));
+            Validate(force);
+            return force;
+        }
+        static ArmyRoster ToRoster(Force force)
+        {
+            var roster=new ArmyRoster();
+            for(int f=0;f<Families;f++)for(int t=1;t<=Tiers;t++)roster.Set(f,t,force.Troops[f,t-1]);
+            return roster;
+        }
         public sealed class Turn
         {
             public int Number;
@@ -341,7 +356,7 @@ namespace Eldoria.Domain
                 RewardReceiptId=committedRewardReceiptId??"",OccurredAtUtcTicks=occurredUtcTicks,
                 Battle=new EldoriaV41CombatRecord {
                     TargetId=targetId,HeroId=string.Join("+",player.HeroIds.Where(x=>!string.IsNullOrEmpty(x)).ToArray()),
-                    Troops=player.Count,Won=r.Winner==1,Rounds=r.Rounds,
+                    Troops=player.Count,OwnRoster=ToRoster(player),Won=r.Winner==1,Rounds=r.Rounds,
                     Outcome=r.Winner==1?"victory":r.Winner==-1?"defeat":"draw",
                     RemainingHealth=(int)Math.Round(100*r.RemainingA,MidpointRounding.AwayFromZero),
                     PlayerComposition=lineup.ToString(),

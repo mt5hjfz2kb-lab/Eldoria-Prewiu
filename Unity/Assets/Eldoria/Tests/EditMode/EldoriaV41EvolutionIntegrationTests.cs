@@ -10,6 +10,23 @@ namespace Eldoria.Tests
     /// require separate PlayMode tests before enabling production.</summary>
     public sealed class EldoriaV41EvolutionIntegrationTests
     {
+        [Test] public void HistoricalSaveFieldsSurviveAdditiveRosterMigration()
+        {
+            var old=UnityEngine.JsonUtility.FromJson<ArmyRoster>("{\"ArcherT1\":12,\"ArcherT2\":8,\"ArcherT3\":4}");
+            Assert.That(old.Total,Is.EqualTo(24));
+            Assert.That(old.PaladinT5,Is.Zero);
+            Assert.That(old.WarlockT1,Is.Zero);
+            for(int f=0;f<3;f++)for(int t=1;t<=5;t++)old.Set(f,t,f*5+t);
+            var restored=UnityEngine.JsonUtility.FromJson<ArmyRoster>(UnityEngine.JsonUtility.ToJson(old));
+            for(int f=0;f<3;f++)for(int t=1;t<=5;t++)Assert.That(restored.Get(f,t),Is.EqualTo(old.Get(f,t)));
+            var state=new PlayerState{Available=restored};
+            var selected=MarchCapacityRules.AutoSelect(restored,40);
+            int before=state.Available.Total;
+            MarchCapacityRules.Reserve(state,selected);
+            Assert.That(state.Available.Total+selected.Total,Is.EqualTo(before));
+            MarchCapacityRules.Return(state,selected);
+            Assert.That(state.Available.Total,Is.EqualTo(before));
+        }
         static EldoriaV41CombatEvolution.Force Force(int family,int tier,int count)
             => new EldoriaV41CombatEvolution.Force().Add(family,tier,count);
 
