@@ -60,7 +60,10 @@ namespace Eldoria.ReferenceClean
         Material dustMaterial, ringMaterial;
         Transform particleRoot;
         readonly ArchitecturalCompletionLustre materialLustre = new ArchitecturalCompletionLustre();
+        readonly ConstructionDelightArchitecturalReveal structureReveal =
+            new ConstructionDelightArchitecturalReveal();
 
+        public int ActiveStructuralRevealMeshes => structureReveal.MeshCount;
         public int ActiveArchitecturalSurfaces => materialLustre.LayerCount;
         public string ActiveBuildingId => activeBuilding ?? "";
         public int ActiveConstructionSprites => (loopDust?.VisibleCount ?? 0) +
@@ -90,6 +93,7 @@ namespace Eldoria.ReferenceClean
                 pendingCompletion = false;
                 StopWork();
                 materialLustre.Clear();
+                structureReveal.Clear();
                 foreach (var field in allFields) field.Clear();
             }
 
@@ -113,6 +117,7 @@ namespace Eldoria.ReferenceClean
                 // A hidden/resumed building keeps only the Gateway's real task.
                 foreach (var field in allFields) field.Clear();
                 materialLustre.Clear();
+                structureReveal.Clear();
                 return;
             }
             if (activeBuilding != null)
@@ -136,6 +141,7 @@ namespace Eldoria.ReferenceClean
             float dt = Mathf.Min(.06f, Time.unscaledDeltaTime);
             foreach (var field in allFields) field.Tick(dt, cam);
             materialLustre.Tick(Time.unscaledTime);
+            structureReveal.Tick(Time.unscaledTime);
         }
 
 #if UNITY_EDITOR
@@ -144,6 +150,7 @@ namespace Eldoria.ReferenceClean
         public void SetArchitecturalLustreVisibleForCapture(bool visible)
         {
             materialLustre.SetVisible(visible);
+            structureReveal.SetVisible(visible,Time.unscaledTime);
         }
 #endif
 
@@ -200,6 +207,7 @@ namespace Eldoria.ReferenceClean
             loopMotes.Play();
             loopDust.Emit(24);
             loopMotes.Emit(13);
+            structureReveal.BeginWork(WorksiteModel(id),Time.unscaledTime);
             nextWorkPulse = Time.unscaledTime + 1.55f;
             if (animateStart)
             {
@@ -215,6 +223,7 @@ namespace Eldoria.ReferenceClean
             activeBuilding = null;
             if (loopDust != null) loopDust.Clear();
             if (loopMotes != null) loopMotes.Clear();
+            structureReveal.Clear();
         }
 
         void Complete(string id)
@@ -243,6 +252,7 @@ namespace Eldoria.ReferenceClean
             // renderers is more satisfying than gold specks on empty grass.
             // MaterialPropertyBlocks preserve all shared assets and are restored.
             materialLustre.Begin(CompletedModel(id),Time.unscaledTime);
+            structureReveal.Complete(CompletedModel(id),city.PlayerCamera,Time.unscaledTime);
             // Gameplay models, levels, saves and shared materials stay unchanged.
         }
 
@@ -390,6 +400,20 @@ namespace Eldoria.ReferenceClean
             return found && bounds.size.sqrMagnitude>.001f;
         }
 
+        GameObject WorksiteModel(string id)
+        {
+            var parcels=city.Parcels;
+            if(parcels)
+            {
+                GameObject scaffold=id=="sawmill" ? parcels.LeftConstruction :
+                                    id=="barracks" ? parcels.RightConstruction : null;
+                if(scaffold && scaffold.activeInHierarchy)return scaffold;
+            }
+            // On upgrades the existing structure may remain visible while
+            // its real timer runs. Highlight those surfaces, never a fake asset.
+            return CompletedModel(id);
+        }
+
         GameObject CompletedModel(string id)
         {
             var parcels=city.Parcels;
@@ -492,6 +516,7 @@ namespace Eldoria.ReferenceClean
 
         void OnDestroy()
         {
+            structureReveal.Clear();
             materialLustre.Clear();
             if(allFields!=null)foreach(var field in allFields)field.Dispose();
             if(dustMaterial)Destroy(dustMaterial);
