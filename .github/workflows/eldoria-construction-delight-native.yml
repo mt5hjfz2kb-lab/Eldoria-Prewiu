@@ -293,7 +293,9 @@ jobs:
           foreach($match in $m){
             try{
               $stamp=[DateTimeOffset]::Parse($match.Value,[Globalization.CultureInfo]::InvariantCulture).UtcDateTime
-              if($stamp -le $prior -or $stamp -gt $fail){continue}
+              # Display dates alone, never the enclosing XML. This also
+              # lets QA detect whether the earlier interval filter was affected
+              # by a date/time kind conversion on Windows PowerShell 5.1.
               $start=[math]::Max(0,$match.Index-90)
               $context=$xml.Substring($start,$match.Index-$start).ToLowerInvariant()
               $field='unclassified'
