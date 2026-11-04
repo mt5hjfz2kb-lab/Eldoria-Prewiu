@@ -48,6 +48,7 @@ namespace Eldoria.ReferenceClean
         bool pendingCompletion;
         string pendingId;
         float pendingExpiresAt;
+        float nextWorkPulse;
 
         SpriteField loopDust, loopMotes, openingDust, finishDust;
         SpriteField finishEmbers, finishRing, finishHalo;
@@ -107,10 +108,21 @@ namespace Eldoria.ReferenceClean
                 foreach (var field in allFields) field.Clear();
                 return;
             }
-            if (activeBuilding != null && !loopDust.Running)
+            if (activeBuilding != null)
             {
-                loopDust.Play();
-                loopMotes.Play();
+                if (!loopDust.Running)
+                {
+                    loopDust.Play();
+                    loopMotes.Play();
+                }
+                if (Time.unscaledTime >= nextWorkPulse)
+                {
+                    // Occasional short bursts suggest real medieval joinery,
+                    // not a continuous cartoon smoke plume.
+                    openingDust.Tint = new Color(.83f,.76f,.62f,.34f);
+                    openingDust.Emit(7);
+                    nextWorkPulse = Time.unscaledTime + 1.70f;
+                }
             }
 
             var cam = city.PlayerCamera;
@@ -162,18 +174,20 @@ namespace Eldoria.ReferenceClean
             if (!PositionSite(id, false)) return;
             activeBuilding = id;
             loopDust.Tint = id == "bastion"
-                ? new Color(.84f,.73f,.55f,.48f) : new Color(.78f,.70f,.57f,.47f);
+                ? new Color(.84f,.73f,.55f,.57f) : new Color(.79f,.71f,.57f,.56f);
             loopMotes.Tint = id == "sawmill"
-                ? new Color(.96f,.74f,.47f,.78f) : new Color(.89f,.75f,.56f,.72f);
+                ? new Color(.97f,.76f,.50f,.85f) : new Color(.90f,.76f,.59f,.78f);
             if (!CanShow()) return;
 
             loopDust.Play();
             loopMotes.Play();
-            loopDust.Emit(18);
-            loopMotes.Emit(9);
+            loopDust.Emit(24);
+            loopMotes.Emit(13);
+            nextWorkPulse = Time.unscaledTime + 1.55f;
             if (animateStart)
             {
-                openingDust.Emit(14);
+                openingDust.Tint = new Color(.84f,.77f,.63f,.40f);
+                openingDust.Emit(23);
                 finishEmbers.Tint = new Color(1f,.78f,.45f,.27f);
                 finishEmbers.Emit(4);
             }
@@ -194,13 +208,14 @@ namespace Eldoria.ReferenceClean
                 ? new Color(1f,.90f,.64f,.88f) : new Color(1f,.82f,.50f,.82f);
             // The thin ring lies flat at the foundation like settling dust,
             // not a magic hologram floating in front of the roof.
-            finishRing.Tint = new Color(.91f,.79f,.59f,.25f);
-            finishHalo.Tint = new Color(1f,.85f,.57f,.20f);
+            // No drifting geometric circle on the grass: real completion
+            // instead illuminates the facade and releases fine artisan dust.
+            finishRing.Tint = new Color(.91f,.79f,.59f,0f);
+            finishHalo.Tint = new Color(1f,.85f,.64f,.27f);
 
-            finishDust.Emit(27);
-            finishEmbers.Emit(id == "bastion" ? 40 : 33);
-            finishEmbers.EmitAccents(facadeAccents,.30f,.52f);
-            finishRing.Emit(1);
+            finishDust.Emit(29);
+            finishEmbers.Emit(id == "bastion" ? 43 : 38);
+            finishEmbers.EmitAccents(facadeAccents,.46f,.73f);
             finishHalo.Emit(1);
             // No model, material or level mutations. Existing scene switching is authoritative.
         }
@@ -244,7 +259,7 @@ namespace Eldoria.ReferenceClean
             finishRing.Site(ground+Vector3.up*.04f,0f);
             finishHalo.Site(facade,0f);
             finishRing.BaseSize=Mathf.Clamp(footprint*1.05f,1.8f,7.2f);
-            finishHalo.BaseSize=Mathf.Clamp(footprint*.82f,1.45f,6.0f);
+            finishHalo.BaseSize=Mathf.Clamp(footprint*.99f,1.6f,6.3f);
             return true;
         }
 
@@ -363,9 +378,9 @@ namespace Eldoria.ReferenceClean
             }
             // Larger soft puffs at the REAL construction perimeter preserve
             // legibility in the distant mobile camera without noisy confetti.
-            loopDust=NewField("Work / fine masonry dust",dustMaterial,65,8.0f,.70f,1.33f,.36f,.84f,.22f,false,19);
-            loopMotes=NewField("Work / timber motes",dustMaterial,34,4.0f,.57f,1.02f,.16f,.34f,.41f,false,27);
-            openingDust=NewField("Start / settling artisan dust",dustMaterial,34,0f,.38f,.90f,.37f,.81f,.28f,false,39);
+            loopDust=NewField("Work / fine masonry dust",dustMaterial,65,9.2f,.70f,1.34f,.49f,1.05f,.24f,false,19);
+            loopMotes=NewField("Work / timber motes",dustMaterial,34,5.2f,.57f,1.03f,.23f,.45f,.44f,false,27);
+            openingDust=NewField("Start / settling artisan dust",dustMaterial,34,0f,.42f,.95f,.60f,1.16f,.27f,false,39);
             finishDust=NewField("Finish / last settling dust",dustMaterial,45,0f,.55f,1.10f,.40f,.91f,.38f,false,43);
             finishEmbers=NewField("Finish / antique-gold glints",dustMaterial,70,0f,.58f,1.18f,.15f,.31f,.66f,false,57);
             finishRing=NewField("Finish / foundation settling wave",ringMaterial,2,0f,1.28f,1.28f,1f,1f,0f,true,79,true);
