@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T08:35:40.353Z",
+  "updated_at": "2026-11-04T09:08:18.660Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3443,7 +3443,7 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 9,
+      "ownership_revision": 10,
       "write_scope_released": false,
       "branch": "feature/eldoria-construction-delight-20261104",
       "status": "active",
@@ -3465,8 +3465,8 @@
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "EXTERNAL_UNITY_PERSONAL_AUTH_BLOCKER_VERIFIED_CSHARP_QA_PASS_20261104",
-      "next": "Need a valid Unity Personal sign-in/license on desktop (Unity Hub, not new credentials in chat). After owner signs in/refreshes legitimate license, verify Editor can launch batchmode, claim Windows via fresh CAS, sync PR152, run existing exact native A/B capture, inspect and iterate artistic visuals before approving. No restart/publish/merge until evidence.",
+      "phase": "PR152_SOURCE_36_ASSERTIONS_PASS_AND_URP_ART_GATES_READY__UNITY_EDITOR_AUTH_UNAVAILABLE",
+      "next": "After an authenticated Unity Editor is verifiably accessible in the SAME Windows runner, claim windows-runner-heavy with registry CAS and no other editor process, sync registry into PR152, dispatch gated native-request to compile Unity and render 26 true screenshots, inspect aesthetic quality and iterate. Do not guess license/account status or claim ART_APPROVED while exit198 persists. Continue only offline source validation until genuine Unity capture possible.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Source tests + real Unity 390x844 and 844x390 moving captures at exact HEAD, GPU/frame QA, human visual assessment",
@@ -3515,7 +3515,18 @@
         "csharp_syntax_run": 41800430492,
         "csharp_syntax_files_passed": 3,
         "csharp_syntax_errors": 0,
-        "unity_runtime_compiled": false
+        "unity_runtime_compiled": false,
+        "domain_run": 41804060440,
+        "domain_result": "PASS: 36 authoritative task assertions (receipt gated), linked exact source",
+        "roslyn_result": "PASS: 0 syntax errors in renderer, observer, native capture; not Unity semantic compile",
+        "visual_authority_run": 41803412696,
+        "visual_authority_result": "PASS after candidate registry synced to canonical owner",
+        "readonly_auth_probe_run": 41804158624,
+        "readonly_probe_result": "PASS diagnostic: Window SessionId2; no Editor/Hub/Client; CLI auth exit3, license exit4; Unity Editor auth not proven",
+        "actual_unity_compile_for_latest_sha": false,
+        "source_qa_updated": "2026-11-04",
+        "resource_held": false,
+        "qa_procedures": "URP StandardRequest, authenticated full Unity 6.3.23f1, A/B real camera in 26 frames, sightline/site delta and save invariant"
       },
       "candidate_branch": "feature/eldoria-construction-delight-20261104",
       "native_lease": {
@@ -3536,6 +3547,33 @@
         "credential_read": false,
         "process_killed": false,
         "reboot": false
+      }
+    },
+    {
+      "id": "eldoria-unity-metadata-integrity-20261104",
+      "title": "Integridad de metadatos Unity: recuperación y prevención",
+      "owner": "codex-eldoria-metadata-recovery-20261104",
+      "branch": "fix/unity-metadata-integrity-20261104",
+      "status": "active",
+      "claimed_at": "2026-11-04T09:08:00.962Z",
+      "base_main_sha": "58831b69c146f498cd2917194c36efb8f31a7741",
+      "scope": [
+        "Unity/.gitignore",
+        "tools/unity-metadata/**",
+        ".github/workflows/unity-metadata-snapshot.yml",
+        "docs/evidence/unity-metadata-20261104/**"
+      ],
+      "resources": [],
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Metadata recovery, read-only runner snapshot and integrity checks; no art generation or Unity launch.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Recuperar metadata existente verificable y prevenir exclusión accidental, conservando GUID/importadores y trabajo concurrente.",
+        "evidence": "Inventario por SHA, procedencia de cada meta recuperado, detector de GUID duplicados y pruebas focalizadas; pendientes explícitos sin GUID inventados.",
+        "handoff": "Misma PR para esta etapa; corregir recursos solo después de comprobar procedencia y titularidad."
       }
     }
   ],
