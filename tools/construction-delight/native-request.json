@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
   "ownership_revision": 13,
-  "mode": "SOURCE_RETEST_AFTER_WORLD4X_REENTRY_FIX",
+  "mode": "OFFLINE_STAGE_ASSEMBLY_SYNTAX_AND_DOMAIN_REGRESSION",
   "expected_images": 34,
   "formats": [
     "844x390",
@@ -81,7 +81,7 @@
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 9,
+  "offline_validation_attempt": 10,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
@@ -159,5 +159,6 @@
   "new_redesign": "Actual mesh-cloned URP HDR vertical architectural sweep; conditional temporary Bloom; shadowless local warm practical light; real scaffold shimmer; cleanup tracked GameObjects; more work motion frames.",
   "last_approved_visual": "V3 rejected by owner as really bad; no artistic approval",
   "dispatched_reason": "Exact four-C# structural source validation after mesh cleanup, duty-cycled work shader, 0.87s roof reveal and 34-frame QA",
-  "last_source_fix": "Restart worksite HDR mesh sheen when returning from World4X to ongoing real construction"
+  "last_source_fix": "Restart worksite HDR mesh sheen when returning from World4X to ongoing real construction",
+  "implementation": "Reversible genuine 3D building mesh staging and roof landing; actual Gateway task remains sole source of progress"
 }
