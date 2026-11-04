@@ -33,19 +33,46 @@ else {
         Where-Object {Test-Path -LiteralPath $_} | Select-Object -First 1
 }
 if(-not $gitExe){ throw 'No existing Git executable; no install performed' }
+# Unity Package Manager launches its own git process for Git dependencies.
+# Calling Git through an absolute path alone does not expose it to Unity.
+$gitDirectory=Split-Path -Parent $gitExe
+$env:PATH=$gitDirectory + [IO.Path]::PathSeparator + $env:PATH
+if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){ throw 'Git is not visible to child processes' }
 $scratchRoot=Join-Path $env:RUNNER_TEMP ('em-native-' + $env:GITHUB_RUN_ID)
 if(Test-Path -LiteralPath $scratchRoot){ throw 'Refuse to overwrite a previous native proof' }
 New-Item -ItemType Directory -Path $scratchRoot | Out-Null
 $sourceRoot=Join-Path $scratchRoot 'source'
 $evidenceRoot=Join-Path $scratchRoot 'evidence'
 New-Item -ItemType Directory -Path $evidenceRoot | Out-Null
-$seed=Join-Path $env:GITHUB_WORKSPACE '.git'
-$cloneArguments=@('clone','--filter=blob:none','--no-checkout','--depth=1','--branch','fix/unity-metadata-integrity-20261104')
-if(Test-Path -LiteralPath $seed){ $cloneArguments+=@('--reference-if-able',$seed) }
-$cloneArguments+=@('https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git',$sourceRoot)
+$repositoryUrl='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
+$priorPackDirectory=$null
+if($requestMetadata.source_seed_run_id){
+    if([string]$requestMetadata.source_seed_run_id -notmatch '^[0-9]+$'){ throw 'Invalid prior isolated run ID' }
+    $seed=Join-Path $env:RUNNER_TEMP ('em-native-' + $requestMetadata.source_seed_run_id + '/source')
+    if(-not (Test-Path -LiteralPath (Join-Path $seed '.git/HEAD'))){ throw 'Prior isolated Git seed missing' }
+    if((Get-Item -LiteralPath $seed).Attributes -band [IO.FileAttributes]::ReparsePoint){ throw 'Linked seed refused' }
+    $seedRemote=(& $gitExe -C $seed remote get-url origin).Trim()
+    if($LASTEXITCODE -ne 0 -or $seedRemote -ne $repositoryUrl){ throw 'Seed is not an earlier isolated canonical repository clone' }
+    $priorPackDirectory=Join-Path $seed '.git/objects/pack'
+}
+$cloneArguments=@('clone','--filter=blob:none','--no-checkout','--depth=1','--branch','fix/unity-metadata-integrity-20261104',$repositoryUrl,$sourceRoot)
 & $gitExe @cloneArguments
 if($LASTEXITCODE -ne 0){ throw 'Isolated source clone failed' }
+if($priorPackDirectory){
+    # Local cloning of a partial repository is unsafe: its missing blobs can
+    # make upload-pack fail. Seed immutable, content-addressed object packs into
+    # this NEW canonical partial clone instead; no project/settings are copied.
+    $newPackDirectory=Join-Path $sourceRoot '.git/objects/pack'
+    Get-ChildItem -LiteralPath $priorPackDirectory -File | Where-Object {
+        $_.Name -match '^pack-[0-9a-f]{40}\.(pack|idx|rev|promisor)$'
+    } | ForEach-Object {
+        if($_.Attributes -band [IO.FileAttributes]::ReparsePoint){ throw 'Linked object pack refused' }
+        $destination=Join-Path $newPackDirectory $_.Name
+        if(-not(Test-Path -LiteralPath $destination)){Copy-Item -LiteralPath $_.FullName -Destination $destination}
+    }
+}
 & $gitExe -C $sourceRoot config core.longpaths true
+& $gitExe -C $sourceRoot config core.autocrlf false
 & $gitExe -C $sourceRoot fetch --depth=1 origin $requestMetadata.candidate_sha
 if($LASTEXITCODE -ne 0){ throw 'Exact candidate fetch failed' }
 & $gitExe -C $sourceRoot sparse-checkout set --no-cone '/Unity/' '/tools/' '/scripts/' '/pipeline/' '/docs/**/*.md' '/docs/**/*.json' '/docs/evidence/unity-metadata-20261104/' '/v0220/' '/tester-v0265/' '/references/' '/.gitattributes' '/.gitignore'

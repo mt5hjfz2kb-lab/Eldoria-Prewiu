@@ -58,12 +58,12 @@ projects. Original archive digests were checked before extraction and use.
   SHA-256. Existing tracked metadata GUIDs are not rewritten; asset source contents
   are not edited. The one orphan is explicitly archived, not silently discarded.
 - No duplicate GUIDs or metadata-excluding ignore rules remain in this candidate.
-- The initial 288 restored identities have no references in the 3,617 inspected versioned
+- A read-only portability inventory of 21,211 versioned paths found no case-insensitive file collisions or directory variants, no repository-relative paths over 240 characters, and a maximum relative length of 173. This does not certify all Windows paths after checkout or package-cache expansion.
+- All 345 restored identities have no references in the 3,617 inspected versioned
   Unity YAML files. Dynamic Resources loads remain relevant; preserving original
   importer bytes avoids silently resetting their import settings.
 - The preventive audit now expects zero missing file metadata and records only the one unrecovered rejected legacy folder as known debt.
-- This candidate has no new Unity import, PlayMode, player build, visual approval
-  or device certification. Successful static checks do not substitute for those.
+- Native run 41814006124 on candidate 6b9ff55aafe4296b6d9973008cbcfe2c09f3d397 failed before compilation: Package Manager could not find Git for com.arloopa.unitysplats. The harness now exposes the existing Git directory through the inherited PATH; retry pending. No Unity import/PlayMode certification is asserted. No player build, visual approval or device certification is claimed.
 
 ## Remaining integration
 

@@ -1,0 +1,19 @@
+{
+  "attempts": [
+    {
+      "run": 41814006124,
+      "candidate": "6b9ff55aafe4296b6d9973008cbcfe2c09f3d397",
+      "status": "FAILED_BEFORE_COMPILATION",
+      "cause": "Unity Package Manager could not find git executable; using an absolute Git path in the parent script did not expose Git to Unity child processes.",
+      "fix": "Prepend existing Git executable directory to inherited PATH before launching Unity.",
+      "artifact": 13313179486,
+      "artifact_zip_sha256": "101868f79c2f7d4f72dd08624ca7bf93724de4439c658e440b80f82dd75e9b4a",
+      "asset_or_metadata_failure_proven": false
+    }
+  ],
+  "checkout_checks": {
+    "autocrlf_true_then_first_checkout_false": "PASS, metadata LF bytes preserved",
+    "partial_clone_local_clone": "FAILED in disposable reproduction, approach rejected before native dispatch",
+    "canonical_clone_seed_immutable_pack_objects": "PASS in disposable partial-clone reproduction with network disabled during checkout; no prior project/untracked files copied"
+  }
+}
