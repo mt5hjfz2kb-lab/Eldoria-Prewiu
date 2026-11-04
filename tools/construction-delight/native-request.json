@@ -22,7 +22,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 6,
+  "attempt": 7,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "Avoid Transform.Find slash interpretation: owned effect group uses slash-free name",
@@ -60,5 +60,6 @@
   ],
   "reason": "Continue verifying actual C# sources while Editor license is unavailable; independent from graphical A/B acceptance",
   "source_project_repair": "d6e623ec824131d543c2543bf8358774e5ea1757",
-  "native_unity_editor_not_called": true
+  "native_unity_editor_not_called": true,
+  "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c"
 }
