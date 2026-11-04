@@ -99,7 +99,7 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
             var method=type.GetMethod("Capture", BindingFlags.Public|BindingFlags.Static);
             Assert(method != null, "Existing true 3D/Canvas capture method available");
             string path=Path.Combine(Evidence, name+"-"+(width>height?"horizontal":"vertical")+".png");
-            method.Invoke(null,new object[] {host,path,width,height});
+            method.Invoke(null,new object[] {host,path,width,height,null});
             Assert(File.Exists(path) && new FileInfo(path).Length>35000, name+" true Unity camera capture written");
             var texture=new Texture2D(2,2,TextureFormat.RGBA32,false);
             try
@@ -141,6 +141,8 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
             Assert(finish!=null, "ONE canonical V3 cinematic presenter active");
             var button=hud.Modal.Extra;
             Assert(button!=null, "Original narrative Continue button present");
+            var v4=hud.GetComponent<RoyalGoldV4DialogueArt>();
+            Assert(v4!=null, "Same canonical HUD has the new layered visual finish");
             for(int i=0;i<60 && hud.NarrativeOpen;i++)
             {
                 button.onClick.Invoke(); yield return null;
@@ -187,15 +189,24 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
                 finish.SynchronizeNow();
                 string stem=speaker=="Sir Aldric"?"sir-aldric":
                     speaker=="Aldric"?"aldric":speaker=="Orín"?"orin":speaker.ToLowerInvariant();
-                Screenshot(host,"aldric-dialogue-"+stem,1600,900);
-                Screenshot(host,"aldric-dialogue-"+stem,900,1600);
+                foreach(var pair in new[]{new[]{390,844},new[]{844,390},
+                    new[]{900,1600},new[]{1600,900}})
+                {
+                    v4.enabled=false;
+                    yield return null;
+                    Screenshot(host,"A-before-"+stem,pair[0],pair[1]);
+                    v4.enabled=true;
+                    finish.SynchronizeNow();v4.SynchronizeNow();
+                    Canvas.ForceUpdateCanvases();
+                    Screenshot(host,"B-after-"+stem,pair[0],pair[1]);
+                }
                 for(int k=0;k<25 && hud.NarrativeOpen;k++) { button.onClick.Invoke(); yield return null; }
                 Assert(!hud.NarrativeOpen,"No dialogue progression regression after "+speaker);
             }
             // Two orientations for EACH of the five distinct speaker labels, with no
             // duplicate filenames overwriting 'Sir Aldric' with 'Aldric'.
-            Assert(Directory.GetFiles(Evidence,"aldric-dialogue-*.png").Length==10,
-                "Five independent Spanish speaker captures, horizontal and vertical");
+            Assert(Directory.GetFiles(Evidence,"*-after-*.png").Length==20,
+                "Five independent speaker treatments in all four screen formats");
             // Verify an independently authored 218-character English dialogue using
             // the same existing runtime, Continue button and locale switch.
             hud.SetEnglish(true);
@@ -213,17 +224,24 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
             Assert(hud.Modal.Body.text.Length>100,"English original Continue reveals the real text");
             Assert(button.gameObject.activeInHierarchy&&button.interactable,
                 "English original Continue remains interactive");
-            Screenshot(host,"aldric-dialogue-sir-aldric-en",1600,900);
-            Screenshot(host,"aldric-dialogue-sir-aldric-en",900,1600);
+            foreach(var pair in new[]{new[]{390,844},new[]{844,390},
+                new[]{900,1600},new[]{1600,900}})
+            {
+                v4.enabled=false;yield return null;
+                Screenshot(host,"A-before-sir-aldric-en",pair[0],pair[1]);
+                v4.enabled=true;finish.SynchronizeNow();v4.SynchronizeNow();
+                Canvas.ForceUpdateCanvases();
+                Screenshot(host,"B-after-sir-aldric-en",pair[0],pair[1]);
+            }
             for(int k=0;k<25&&hud.NarrativeOpen;k++){button.onClick.Invoke();yield return null;}
             Assert(!hud.NarrativeOpen,"English Continue closes the narrative without changing gameplay");
             hud.SetEnglish(false);
-            Assert(Directory.GetFiles(Evidence,"aldric-dialogue-*.png").Length==12,
-                "Exactly 12 independent real Unity captures: five ES speakers and Aldric EN in two orientations");
+            Assert(Directory.GetFiles(Evidence,"*.png").Length==48,
+                "48 like-for-like real Unity A/B captures: 6 authored speaker/text cases in four orientations");
             Directory.CreateDirectory(Evidence);
             var output=Path.Combine(Evidence,"ALDRIC_NATIVE_PASS.txt");
             File.WriteAllLines(output,new[]{"result=PASS","source="+Source,"mode=real integrated Unity camera and HUD","notes=not physical Android device"}.Concat(Checks));
-            Debug.Log("ALDRIC_DIALOGUE_UNITY_INTEGRATED_PASS images=12 checks="+Checks.Count);
+            Debug.Log("ALDRIC_DIALOGUE_UNITY_INTEGRATED_PASS images=48 checks="+Checks.Count);
             EditorApplication.Exit(0);
         }
     }
