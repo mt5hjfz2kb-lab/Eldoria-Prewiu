@@ -84,7 +84,10 @@ jobs:
             if(!/^[a-f0-9]{40}$/.test(source))throw Error('Invalid exact source identity');
             const runs=(await github.rest.actions.listWorkflowRuns({...context.repo,
               workflow_id:'ui-progression-cert.yml',branch:canonical,status:'success',per_page:100})).data.workflow_runs;
-            const run=runs.find(r=>r.head_sha===source&&r.head_branch===canonical&&r.event==='push'&&
+            const run=runs.find(r=>r.head_sha===source&&r.head_branch===canonical&&
+              (r.event==='push'||(r.event==='pull_request'&&
+                r.head_repository?.full_name===context.repo.owner+'/'+context.repo.repo&&
+                r.pull_requests?.some(p=>p.number===136&&p.head?.ref===canonical)))&&
               r.status==='completed'&&r.conclusion==='success'&&r.path==='.github/workflows/ui-progression-cert.yml');
             if(!run)return;
             const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id,per_page:100})).data.jobs;
@@ -507,7 +510,7 @@ jobs:
           if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
 
       - name: Compare reconciled runtime performance with the verified PR136 baseline
-        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')
+        if: ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030' && github.event.pull_request.head.repo.full_name == github.repository))
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
@@ -564,7 +567,7 @@ jobs:
           }
           [IO.File]::WriteAllText((Join-Path $e 'comparison.txt'),"PASS: identical native scenarios, 240 measured frames each after warmup. Baseline runtime $baseline; candidate $env:ALDRIC_REQUEST_SOURCE_SHA. Native Editor comparison, not physical mobile certification.")
       - uses: actions/upload-artifact@v4
-        if: always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')
+        if: always() && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030' && github.event.pull_request.head.repo.full_name == github.repository))
         with:
           name: eldoria-pr136-performance-${{ github.sha }}
           path: ${{ runner.temp }}/eldoria-consolidation-performance-${{ github.run_id }}/**
@@ -1072,7 +1075,7 @@ jobs:
           Write-Host 'ALDRIC_SHARED_NATIVE_COMPLETE_CASE_AND_TWELVE_VIEWS_PASS'
 
       - name: Compile canonical playable Windows candidate without publication
-        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')
+        if: ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030' && github.event.pull_request.head.repo.full_name == github.repository))
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
@@ -1086,7 +1089,7 @@ jobs:
           $proof=Get-Content 'docs/evidence/valoria-reference-clean/windows-candidate.json' -Raw|ConvertFrom-Json
           if($proof.status -ne 'WINDOWS_CANDIDATE_COMPILED_NOT_PUBLISHED' -or $proof.source_sha -ne $env:ALDRIC_REQUEST_SOURCE_SHA){throw 'Candidate build identity mismatch'}
       - uses: actions/upload-artifact@v4
-        if: always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')
+        if: always() && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030' && github.event.pull_request.head.repo.full_name == github.repository))
         with:
           name: eldoria-pr136-candidate-${{ github.sha }}
           path: |

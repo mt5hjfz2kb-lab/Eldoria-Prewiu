@@ -27,7 +27,12 @@ await test('candidate push must execute native tests',f=>{f.context={eventName:'
 await test('different source',f=>f.run.head_sha='c'.repeat(40),false);
 await test('wrong branch',f=>f.run.head_branch='other',false);
 await test('wrong workflow',f=>f.run.path='.github/workflows/other.yml',false);
-await test('PR run cannot prove canonical package',f=>f.run.event='pull_request',false);
+await test('unbound PR run cannot prove canonical package',f=>f.run.event='pull_request',false);
+await test('full canonical PR native certificate',f=>{f.run.event='pull_request';f.run.head_repository={full_name:'o/r'};f.run.pull_requests=[{number:136,head:{ref:branch}}]},true);
+await test('foreign PR certificate',f=>{f.run.event='pull_request';f.run.head_repository={full_name:'foreign/r'};f.run.pull_requests=[{number:136,head:{ref:branch}}]},false);
+await test('other PR certificate',f=>{f.run.event='pull_request';f.run.head_repository={full_name:'o/r'};f.run.pull_requests=[{number:137,head:{ref:branch}}]},false);
+await test('canonical PR skipped build is insufficient',f=>{f.run.event='pull_request';f.run.head_repository={full_name:'o/r'};f.run.pull_requests=[{number:136,head:{ref:branch}}];f.jobs[0].steps.find(s=>s.name.startsWith('Compile canonical playable')).conclusion='skipped'},false);
+assert.equal((workflow.match(/github.event.pull_request.number == 136 && github.event.pull_request.head.ref/g)||[]).length,4,'Both native performance/build and their uploads execute for canonical PR136');
 await test('incomplete run',f=>f.run.status='in_progress',false);
 await test('failed run',f=>f.run.conclusion='failure',false);
 await test('native job absent',f=>f.jobs=[],false);
