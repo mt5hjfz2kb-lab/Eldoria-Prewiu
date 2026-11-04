@@ -98,10 +98,11 @@ $testIdentity=Set-MetadataTestIdentity (Join-Path $projectRoot 'ProjectSettings/
 
 function Invoke-MetadataEditor([string]$name,[string[]]$extra) {
     Assert-MetadataLease
+    if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools became busy; preserve their projects'}
     $editorLog=Join-Path $evidenceRoot ($name + '.log')
     $editorArguments=@('-batchmode','-force-d3d11','-projectPath',$projectRoot,'-logFile',$editorLog)+$extra
     $quotedArguments=@($editorArguments | ForEach-Object {if($_ -match '\s'){'"'+$_+'"'}else{$_}})
-    $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $quotedArguments -PassThru
+    $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $quotedArguments -WorkingDirectory $projectRoot -PassThru
     if(-not $process.WaitForExit(1800000)){
         & taskkill.exe /PID $process.Id /T /F | Out-Null
         throw "Only this isolated Editor timed out: $name"
@@ -111,7 +112,40 @@ function Invoke-MetadataEditor([string]$name,[string[]]$extra) {
 }
 
 $testSummary=@()
+$runtimePrepared=$false
 try {
+    if($validationMode -eq 'full'){
+        # Reproduce the EXISTING canonical unity-slice.yml build preparation.
+        # No source/geometry redesign or generated art is committed to Git.
+        Assert-MetadataLease
+        if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy before canonical preparation'}
+        $blenderCommand=Get-Command blender.exe -ErrorAction SilentlyContinue
+        $blenderPath=if($blenderCommand){$blenderCommand.Source}else{$null}
+        if(-not $blenderPath){
+            $blenderPath=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -File -Filter blender.exe -ErrorAction SilentlyContinue |
+                Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+        }
+        if(-not $blenderPath){throw 'Existing canonical Blender executable missing; no installation performed'}
+        $authorScript=Join-Path $sourceRoot 'tools/bastion-iii/author-frontier.py'
+        $blenderProcess=Start-Process -FilePath $blenderPath -ArgumentList @('-b','--python',('"'+$authorScript+'"')) -WorkingDirectory $sourceRoot -PassThru -RedirectStandardOutput (Join-Path $evidenceRoot 'canonical-frontier.log') -RedirectStandardError (Join-Path $evidenceRoot 'canonical-frontier.stderr.log')
+        if(-not $blenderProcess.WaitForExit(300000)){
+            & taskkill.exe /PID $blenderProcess.Id /T /F | Out-Null
+            throw 'Only this canonical fixture preparation timed out'
+        }
+        $blenderProcess.Refresh()
+        if($blenderProcess.ExitCode -ne 0){throw 'Canonical frontier fixture generation failed'}
+        Invoke-MetadataEditor 'prepare-bastion-iii' @('-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build')
+        $preparedRoot=Join-Path $projectRoot 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary'
+        $preparedRows=@(foreach($part in @('Granary','StockCrate','StockSack','StockBarrel','StoneWorkshop')){
+            $prefab=Join-Path $preparedRoot ($part+'.prefab')
+            if(-not(Test-Path -LiteralPath $prefab -PathType Leaf)){throw "Missing canonical runtime prefab: $part"}
+            @{name=$part;sha256=(Get-FileHash -LiteralPath $prefab -Algorithm SHA256).Hash.ToLowerInvariant()}
+        })
+        @{scope='Unchanged canonical source replay in isolated project, not new artistic authoring';author_script_blob=(& $gitExe -C $sourceRoot rev-parse 'HEAD:tools/bastion-iii/author-frontier.py').Trim();prefabs=$preparedRows} |
+            ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'canonical-runtime-preparation.json')
+        Copy-Item -LiteralPath (Join-Path $sourceRoot 'docs/bastion-iii/native/granary-bake.json') -Destination (Join-Path $evidenceRoot 'granary-bake.json')
+        $runtimePrepared=$true
+    }
     try {
         Invoke-MetadataEditor 'import-and-identities' @('-quit','-executeMethod','EldoriaMetadataNativeVerification.Run','-metadataManifest',$manifest,'-metadataCandidate',$checked,'-metadataReport',$nativeReport,'-metadataCompany',$testIdentity.Company,'-metadataProduct',$testIdentity.Product,'-metadataMode',$validationMode,'-metadataProjectRoot',$projectRoot)
     } finally {
@@ -151,11 +185,15 @@ try {
     }
 } finally {
     Restore-MetadataTestIdentity $testIdentity
+    # Preserve diagnostics even when an importer or a test fails, before runner
+    # cleanup removes this isolated checkout. Never reset differences to fake PASS.
+    & $gitExe -C $sourceRoot status --porcelain --untracked-files=no | Set-Content -LiteralPath (Join-Path $evidenceRoot 'tracked-state.txt')
+    & $gitExe -C $sourceRoot diff --no-ext-diff --binary HEAD -- . | Set-Content -LiteralPath (Join-Path $evidenceRoot 'tracked-changes.patch') -Encoding UTF8
 }
 $status=& $gitExe -C $sourceRoot status --porcelain --untracked-files=no
 if($LASTEXITCODE -ne 0){ throw 'Post-import tracked state unavailable' }
 $status | Set-Content -LiteralPath (Join-Path $evidenceRoot 'tracked-state.txt')
 if(@($status).Count -gt 0){ throw 'Unity changed tracked files in the isolated candidate; inspect evidence' }
 $certificateState=if($validationMode -eq 'full'){'PASS'}else{'IDENTITIES_PASS_ONLY'}
-@{state=$certificateState;validation_mode=$validationMode;full_tests_run=($validationMode -eq 'full');test_summary=$testSummary;player_build_run=$false;candidate_sha=$checked;run_id=$env:GITHUB_RUN_ID;unity_version=$proof.unity_version;restored_entries=@($proof.entries).Count;production_projects_modified=$false;harness_editor_only=$true;test_persistence_isolated=$true;original_project_settings_restored=$true} |
+@{state=$certificateState;validation_mode=$validationMode;full_tests_run=($validationMode -eq 'full');canonical_runtime_prepared=$runtimePrepared;test_summary=$testSummary;player_build_run=$false;candidate_sha=$checked;run_id=$env:GITHUB_RUN_ID;unity_version=$proof.unity_version;restored_entries=@($proof.entries).Count;production_projects_modified=$false;harness_editor_only=$true;test_persistence_isolated=$true;original_project_settings_restored=$true} |
     ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $evidenceRoot 'certificate.json')

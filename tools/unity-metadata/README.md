@@ -81,3 +81,11 @@ fixture and a new `ELDORIA_REGION1_CAPTURE_OUT` directory. NUnit acceptance requ
 identify assemblies inside the exact project's Library/ScriptAssemblies directory;
 zero tests, foreign project output or a Passed root hiding skips are rejected.
 The contract has real PowerShell XML/disposable-fixture regression checks.
+
+Full validation also reproduces the existing unity-slice.yml preparation:
+unchanged author-frontier.py in the installed Blender, then BastionIIIArtBake.Build
+and the five original build-safe prefabs. These are isolated derived test/build
+outputs, never a new art source or a committed model. Omitting this preparation
+causes BASTION_III_MISSING_ART and invalidates gameplay acceptance.
+Tracked state/differences are captured even when a test fails; no source reset is
+used to hide a dirty checkout. Only the run's own timed-out processes are stopped.

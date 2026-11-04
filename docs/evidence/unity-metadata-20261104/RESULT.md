@@ -1,6 +1,6 @@
 # Unity metadata recovery — 4 November 2026
 
-Status: candidate in PR153; not merged or published. Full corrected native proof pending.
+Status: candidate in PR153; not merged or published. Native original-identity/byte verification and 57 EditMode tests PASS; complete PlayMode proof still pending.
 
 ## Implemented in this candidate
 
@@ -101,3 +101,15 @@ all output and tracked changes, pass relevant CI, then integrate safely and rest
 or release temporary claims/resources. The main push may run its normal Windows
 Editor/player gate only after the rejected source is absent. No PASS, merge,
 player build, mobile certification or visual approval is claimed in advance.
+
+## Native checkpoint 41821882671
+
+Actual Unity6000.3.23f1 import now verifies all 345 recovered GUIDs AND original
+raw metadata bytes, with a successful pre-import checkpoint and no post-import
+byte differences. The one enabled scene has zero missing scripts. EditMode:
+57 passed, zero failed/skipped. PlayMode: 40 passed, 24 failed, 9 skipped; this
+is NOT a full native PASS. Twenty-three failures report missing build-safe
+BastionIII Granary art, because the custom harness omitted the preparation already
+required by unity-slice.yml. Other omissions require the canonical disposable
+probe/capture fixture. Both setup defects are corrected in the next harness;
+real full results, source assembly identity and zero skips remain mandatory.

@@ -3977,9 +3977,9 @@
         "evidence": "Inventario por SHA, procedencia de cada meta recuperado, detector de GUID duplicados y pruebas focalizadas; pendientes explícitos sin GUID inventados.",
         "handoff": "Misma PR para esta etapa; corregir recursos solo después de comprobar procedencia y titularidad."
       },
-      "next": "Apply exact reviewed archive c2dab945 of rejected source/model metadata with unchanged blobs and GUID, no runtime-code/scene/art edits. This enforces binding owner rejection/archive preservation from AGENTS25Oct while resolving the unrecovered folder without invention. Run full corrected native proof only after rejected Resource absent. Synchronize only the two existing blocked catalog locators, preserving OWNER_BLOCKED_NO_USE and all approval restrictions.",
+      "next": "Finish exact full proof after replaying existing canonical Blender frontier + BastionIIIArtBake preparation and disposable probe/capture fixtures. Current native run41821882671 finished failure: metadata345/345 raw bytes and GUIDs PASS, EditMode57 PASS, PlayMode40 pass/24 fail/9 skip from missing preparations. No gameplay/source/art-design assertions weakened; preserve temporary owners until integration/resource release.",
       "art_production_request": "pipeline/art-production-requests/eldoria-unity-metadata-integrity-20261104.json",
-      "phase": "APPLY_EXISTING_OWNER_VETO_BYTE_PRESERVING_ARCHIVE_THEN_FULL_PROOF",
+      "phase": "NATIVE_IDENTITIES_345_EDITMODE_57_PASS_FULL_CANONICAL_PREP_RETRY",
       "previous_owner": "codex-eldoria-metadata-recovery-20261104",
       "evidence": {
         "pr": 153,
@@ -4012,11 +4012,16 @@
         "powershell_syntax": "PASS",
         "test_save_identity_isolation": "PASS LF/CRLF, exact restore and rejected inputs",
         "unity_native_executed": false,
-        "native_attempt_run": 41816327312,
+        "native_attempt_run": 41821882671,
         "native_attempt_result": "COMPILED_345_GUID_MATCHES_HARNESS_BYTES_AND_SCENE_PROBES_FAILED",
         "native_artifact": 13315313760,
         "full_unity_certification": false,
-        "legacy_archive_proposal": "c2dab945bf1d3994703abfbbd2cb137d67e85443"
+        "legacy_archive_proposal": "c2dab945bf1d3994703abfbbd2cb137d67e85443",
+        "native_guid_matches": 345,
+        "native_metadata_bytes_preserved": 345,
+        "native_editmode_passed": 57,
+        "native_playmode_failed": 24,
+        "native_playmode_skipped": 9
       },
       "lessons_learned": [
         "Windows python.exe may be a Microsoft Store alias; validate an existing interpreter and use Blender's Python executable without launching Blender.",

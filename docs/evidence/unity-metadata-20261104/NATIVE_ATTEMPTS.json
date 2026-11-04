@@ -33,6 +33,31 @@
       "editmode_playmode_run": false,
       "diagnosis": "No pre-import raw-byte checkpoint existed, so the original report cannot attribute byte differences to Unity. Reproduction proves text=auto plus native/CRLF core.eol changes checkout bytes even when autocrlf=false. Eleven scenes were incorrectly checked as sub-asset arrays; use documented typed SceneAsset loading.",
       "fix": "Pin core.eol=lf before checkout; verify all original SHA256 before launching Unity; capture any genuine later byte differences; load SceneAsset by type; separate identities-only proof from full scene/runtime validation."
+    },
+    {
+      "run": 41821882671,
+      "candidate": "ae663ca494ea7d62eb4416b04eecf5cc38d0e266",
+      "status": "IDENTITIES_AND_EDITMODE_PASS_PLAYMODE_FAILED_FIXTURE_PREPARATION",
+      "artifact": 13319371112,
+      "artifact_zip_sha256": "2f69cf5f018c2ccba6bc3f033d33e3bffdde5f91be26ec58b7961c614b1e2c4a",
+      "metadata_identity_result": "345/345 GUID and raw-byte matches, before/after import; enabled scene missing scripts=0",
+      "editmode": {
+        "passed": 57,
+        "failed": 0,
+        "skipped": 0
+      },
+      "playmode": {
+        "passed": 40,
+        "failed": 24,
+        "skipped": 9
+      },
+      "observed_causes": {
+        "missing_disposable_probe_and_capture_fixture": true,
+        "canonical_bastion_iii_preparation_omitted": true,
+        "missing_art_log_failures": 23
+      },
+      "fix": "Replay exact existing unity-slice.yml canonical author-frontier and BastionIIIArtBake preparation in isolated project; enable disposable fixture and capture output; require 61+ PlayMode cases with no skips and exact assembly source. Do not silence logs or alter gameplay assertions.",
+      "runtime_or_art_source_changed": false
     }
   ],
   "checkout_checks": {
@@ -40,12 +65,5 @@
     "partial_clone_local_clone": "FAILED in disposable reproduction, approach rejected before native dispatch",
     "canonical_clone_seed_immutable_pack_objects": "Disposable local proof passed, but NOT usable across native jobs: runner cleanup removes the source cache. Abandoned for this environment."
   },
-  "next_mode": "full, only on candidate with rejected model and its metadata archived outside Unity",
-  "in_progress_run_review": {
-    "run": 41821882671,
-    "candidate": "ae663ca494ea7d62eb4416b04eecf5cc38d0e266",
-    "actual_result_pending": true,
-    "configuration_gap_found_during_review": "Canonical full suite requires VALORIA_GAMEPLAY_PROBE=1 and an explicit ELDORIA_REGION1_CAPTURE_OUT; initial custom full harness omitted these and did not reject skipped cases.",
-    "next_harness_contract": "Enable disposable fixture/capture directory, require 61+ PlayMode cases with every case Passed, reject any skipped/failed/empty/foreign-assembly evidence. Exact Unity project root is also checked. Current Editor/job is not cancelled."
-  }
+  "next_mode": "full with all canonical existing preparations and strict zero-skip test contract"
 }
