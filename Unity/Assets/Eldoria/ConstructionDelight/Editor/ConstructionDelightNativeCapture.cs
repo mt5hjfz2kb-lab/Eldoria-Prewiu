@@ -35,6 +35,9 @@ namespace Eldoria.ReferenceClean.Editor
             try
             {
                 Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
+                // Isolated QA folder only; keep previous run artifacts in GitHub
+                // while refusing stale frame mixes after a failed first pass.
+                if(Directory.Exists(Output))Directory.Delete(Output,true);
                 Directory.CreateDirectory(Output);
                 EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
                 SessionState.SetBool(Flag,true);
