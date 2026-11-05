@@ -697,6 +697,7 @@ namespace Eldoria.Application
         public bool Advance()
         {
             bool changed = AdvanceChapterThree();
+            bool newlyOpenedEconomy = false;
             changed |= EarlyRetentionRules.Synchronize(state,clock.UtcTicks);
             if (state.BastionUpgradeCompletesUtcTicks > 0 && state.BastionUpgradeCompletesUtcTicks <= clock.UtcTicks)
             {
@@ -718,6 +719,7 @@ namespace Eldoria.Application
                             state.ChapterThree.WoodProductionMicro=0;
                             state.ChapterThree.StoneProductionMicro=0;
                             state.ChapterThree.FoodProductionMicro=0;
+                            newlyOpenedEconomy=true;
                         }
                     }
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
@@ -728,6 +730,9 @@ namespace Eldoria.Application
                 state.BastionUpgradeTaskId = "";
                 changed = true;
             }
+            // Pay production accrued after the III unlock even on the FIRST offline load.
+            // AdvanceChapterThree at method entry ran while this was still Bastion II.
+            if(newlyOpenedEconomy)changed |= AdvanceChapterThree();
             if (state.BuildingCompletesUtcTicks > 0 && state.BuildingCompletesUtcTicks <= clock.UtcTicks)
             {
                 if (!state.CompletedTaskIds.Contains(state.BuildingTaskId))

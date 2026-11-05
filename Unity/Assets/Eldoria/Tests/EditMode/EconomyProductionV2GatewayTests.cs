@@ -109,6 +109,36 @@ namespace Eldoria.Tests.EditMode
             Assert.That(upgraded.Snapshot().ChapterThree.WoodProductionMicro,Is.EqualTo(200000));
         }
         [Test]
+        public void BastionIIIUnlockedDuringLongOfflineIntervalPaysWoodInFirstReopen()
+        {
+            PlayerState Seed() => new PlayerState {
+                BastionLevel=2,SawmillLevel=1,BarracksLevel=1,JourneyComplete=true,
+                Available=new ArmyRoster { ArcherT1=56 },
+                Resources=new ResourceWallet { Wood=50000,Stone=50000,Food=50000 }
+            };
+            var controlClock=new TestClock();
+            var controlStore=new JsonStore { Seed=Seed() };
+            var control=new LocalGateway(controlClock,controlStore);
+            var ready=control.Snapshot();
+            Assert.That(control.Execute(new GameCommand("ascend",ready.PlayerId,"AdvanceBastion","bastion",ready.Revision)).Ok,Is.True);
+            controlClock.Advance(240);
+            control=new LocalGateway(controlClock,controlStore);
+            int woodAtAscension=control.Snapshot().Resources.Wood;
+            var offlineClock=new TestClock();
+            var offlineStore=new JsonStore { Seed=Seed() };
+            var offline=new LocalGateway(offlineClock,offlineStore);
+            ready=offline.Snapshot();
+            Assert.That(offline.Execute(new GameCommand("ascend",ready.PlayerId,"AdvanceBastion","bastion",ready.Revision)).Ok,Is.True);
+            offlineClock.Advance(240+3600);
+            offline=new LocalGateway(offlineClock,offlineStore);
+            Assert.That(offline.Snapshot().BastionLevel,Is.EqualTo(3));
+            Assert.That(offline.Snapshot().Resources.Wood,Is.EqualTo(woodAtAscension+432));
+            Assert.That(offline.Snapshot().ChapterThree.EconomyUtcTicks,Is.EqualTo(offlineClock.UtcTicks));
+            int credited=offline.Snapshot().Resources.Wood;
+            offline=new LocalGateway(offlineClock,offlineStore);
+            Assert.That(offline.Snapshot().Resources.Wood,Is.EqualTo(credited));
+        }
+        [Test]
         public void TimingsApplyOnlyToAuthoredBastionTwoThroughFive()
         {
             Assert.That(BastionProgressionCatalog.ForLevel(2).DurationSeconds,Is.EqualTo(120));
