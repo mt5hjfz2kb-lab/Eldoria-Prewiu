@@ -23,8 +23,12 @@ namespace Eldoria.PlayerClarity.Tests
                 graphic.Kind = kind;
                 using (var helper = new VertexHelper())
                 {
+                    // MaskableGraphic also exposes an OnPopulateMesh(Mesh) overload.
+                    // Select the real VertexHelper override rather than
+                    // a reflection lookup that throws AmbiguousMatchException.
                     var populate = typeof(RoyalResourcePictogram).GetMethod(
-                        "OnPopulateMesh", BindingFlags.Instance | BindingFlags.NonPublic);
+                        "OnPopulateMesh", BindingFlags.Instance | BindingFlags.NonPublic,
+                        null, new[] { typeof(VertexHelper) }, null);
                     Assert.That(populate, Is.Not.Null);
                     populate.Invoke(graphic, new object[] {helper});
                     Assert.That(helper.currentVertCount, Is.GreaterThan(20));
