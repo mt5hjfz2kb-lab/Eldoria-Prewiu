@@ -291,12 +291,19 @@ jobs:
               } catch { $_.Exception.Message|Set-Content -LiteralPath (Join-Path $folder 'blender-mcp-error.txt') } finally {if($client){$client.Close()}}
             }else{'No listener owned by PID9852 on the documented BlenderMCP port'|Set-Content -LiteralPath (Join-Path $folder 'blender-mcp-unavailable.txt')}
             Add-Type -AssemblyName System.Drawing
-            Add-Type 'using System; using System.Runtime.InteropServices; public class EldoriaWindowCapture { [StructLayout(LayoutKind.Sequential)] public struct RECT { public int Left,Top,Right,Bottom; } [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h,out RECT r); [DllImport("user32.dll")] public static extern bool PrintWindow(IntPtr h,IntPtr dc,uint flags); }'
+            Add-Type 'using System; using System.Runtime.InteropServices; public class EldoriaWindowCapture { [StructLayout(LayoutKind.Sequential)] public struct RECT { public int Left,Top,Right,Bottom; } [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h,out RECT r); [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr h,int cmd); [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h); [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow(); [DllImport("user32.dll")] public static extern bool PrintWindow(IntPtr h,IntPtr dc,uint flags); }'
+            # Owner authorizes inspection of this exact idle session; no keystrokes or scene edits.
+            [void][EldoriaWindowCapture]::ShowWindow($known.MainWindowHandle,9)
+            [void][EldoriaWindowCapture]::SetForegroundWindow($known.MainWindowHandle)
+            Start-Sleep -Seconds 2
             $rect=New-Object EldoriaWindowCapture+RECT
             if($known.MainWindowHandle -ne 0 -and [EldoriaWindowCapture]::GetWindowRect($known.MainWindowHandle,[ref]$rect)){
               $bitmap=New-Object Drawing.Bitmap ($rect.Right-$rect.Left),($rect.Bottom-$rect.Top)
               $graphics=[Drawing.Graphics]::FromImage($bitmap);$dc=$graphics.GetHdc()
               try{$captured=[EldoriaWindowCapture]::PrintWindow($known.MainWindowHandle,$dc,2)}finally{$graphics.ReleaseHdc($dc)}
+              if([EldoriaWindowCapture]::GetForegroundWindow() -eq $known.MainWindowHandle){
+                $graphics.CopyFromScreen($rect.Left,$rect.Top,0,0,$bitmap.Size)
+              }
               $bitmap.Save((Join-Path $folder 'blender-window.png'),[Drawing.Imaging.ImageFormat]::Png)
               $graphics.Dispose();$bitmap.Dispose()
             }
