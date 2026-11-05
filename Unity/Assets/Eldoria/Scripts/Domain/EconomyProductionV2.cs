@@ -8,6 +8,17 @@ namespace Eldoria.Domain
     public static class EconomyProductionV2
     {
         public const long Scale = 1000000L;
+        // Production credited while away stops after 48h. A new active session
+        // starts a fresh window; previously stored resources are unaffected.
+        public const int MaxOfflineProductionHours = 48;
+        public const long MaxOfflineProductionTicks = MaxOfflineProductionHours * TimeSpan.TicksPerHour;
+
+        public static long OfflineWindowDeadline(long lastUtcTicks)
+        {
+            if (lastUtcTicks < 0) throw new ArgumentOutOfRangeException(nameof(lastUtcTicks));
+            return lastUtcTicks > long.MaxValue - MaxOfflineProductionTicks
+                ? long.MaxValue : lastUtcTicks + MaxOfflineProductionTicks;
+        }
         public static readonly long[] WoodPerSecond = { 0, 120000, 220000, 360000, 540000, 750000 };
         public static readonly long[] StonePerSecond = { 0, 80000, 150000, 250000, 380000, 540000 };
         public static readonly long[] FoodPerSecond = { 0, 100000, 190000, 310000, 460000, 640000 };
@@ -23,28 +34,36 @@ namespace Eldoria.Domain
             return rates[level];
         }
 
-        // The ledger stores sub-second precision and prevents repeat payment.
-        // A future level-completion timestamp can split the interval into two rates.
+        // Production is capped at the first 48 hours of a disconnected interval.
+        // productionDeadlineUtcTicks lets a gateway preserve that same window
+        // across a building upgrade and its two separate accrual calls.
+        // Always settle through "now", including skipped time, to prevent backpay.
         public static ProductionResult Accrue(
             long lastUtcTicks, long nowUtcTicks, long fractionalMicrounits,
             int currentLevel, string resource, long upgradeCompletedUtcTicks = 0,
-            int previousLevel = -1)
+            int previousLevel = -1, long productionDeadlineUtcTicks = long.MaxValue)
         {
             if (lastUtcTicks < 0 || nowUtcTicks < 0 ||
-                fractionalMicrounits < 0 || fractionalMicrounits >= Scale)
+                fractionalMicrounits < 0 || fractionalMicrounits >= Scale ||
+                productionDeadlineUtcTicks < 0)
                 throw new ArgumentOutOfRangeException("Invalid production ledger");
             if (nowUtcTicks <= lastUtcTicks)
                 return new ProductionResult(0, fractionalMicrounits, lastUtcTicks);
+            long payableUntil = Math.Min(nowUtcTicks,
+                Math.Min(OfflineWindowDeadline(lastUtcTicks), productionDeadlineUtcTicks));
+            if (payableUntil <= lastUtcTicks)
+                return new ProductionResult(0, fractionalMicrounits, nowUtcTicks);
             long micro = fractionalMicrounits;
-            if (upgradeCompletedUtcTicks > lastUtcTicks &&
-                upgradeCompletedUtcTicks < nowUtcTicks && previousLevel >= 0)
+            if (upgradeCompletedUtcTicks > lastUtcTicks && previousLevel >= 0)
             {
-                micro = checked(micro + Integrate(lastUtcTicks, upgradeCompletedUtcTicks,
+                long oldLevelUntil = Math.Min(payableUntil, upgradeCompletedUtcTicks);
+                micro = checked(micro + Integrate(lastUtcTicks, oldLevelUntil,
                     Rate(resource, previousLevel)));
-                micro = checked(micro + Integrate(upgradeCompletedUtcTicks, nowUtcTicks,
-                    Rate(resource, currentLevel)));
+                if (payableUntil > upgradeCompletedUtcTicks)
+                    micro = checked(micro + Integrate(upgradeCompletedUtcTicks, payableUntil,
+                        Rate(resource, currentLevel)));
             }
-            else micro = checked(micro + Integrate(lastUtcTicks, nowUtcTicks,
+            else micro = checked(micro + Integrate(lastUtcTicks, payableUntil,
                 Rate(resource, currentLevel)));
             long whole = micro / Scale;
             if (whole > int.MaxValue)
