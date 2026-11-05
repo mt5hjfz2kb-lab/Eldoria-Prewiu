@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
   "ownership_revision": 13,
-  "mode": "FINAL_V4_SOURCE_40_FRAME_GUARDS",
+  "mode": "V4_CONTROLLED_ARCHITECTURAL_VS_STAGED_TECHNIQUE_AB_SOURCE_GATE",
   "expected_images": 34,
   "formats": [
     "844x390",
@@ -81,7 +81,7 @@
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 20,
+  "offline_validation_attempt": 21,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
@@ -175,5 +175,14 @@
     "Construction roof glow obeys visible staged geometry",
     "Reload clears preview and restores original source renderers"
   ],
-  "images_expected_in_future_native_run": 40
+  "images_expected_in_future_native_run": 40,
+  "native_capture_expected_images": 64,
+  "technique_comparison": {
+    "A": "URP architectural shader sweep, Bloom, local light and artisan particles without 3D assembly",
+    "B": "Exactly same camera/state/timing/shader/Bloom/particles with authentic 3D staged model assembly",
+    "shared_script": "Unity/Assets/Eldoria/ConstructionDelight/Editor/ConstructionDelightNativeCapture.cs",
+    "capture_images": 24,
+    "baseline_images": 40,
+    "art_approved": false
+  }
 }
