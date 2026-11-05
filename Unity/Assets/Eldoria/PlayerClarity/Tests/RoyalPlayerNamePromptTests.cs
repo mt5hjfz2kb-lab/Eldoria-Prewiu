@@ -55,6 +55,22 @@ namespace Eldoria.PlayerClarity.Tests
         }
 
         [Test]
+        public void KeyboardDoneOrFocusLossDoesNotLockInAnUnconfirmedName()
+        {
+            var prompt=RoyalPlayerNamePrompt.Create((RectTransform)canvas.transform);
+            int writes=0;
+            prompt.Open(false,_=>{writes++;return true;});
+            var field=prompt.GetComponentInChildren<InputField>(true);
+            field.text="Valoria QA";
+            field.onEndEdit.Invoke(field.text);
+            Assert.IsTrue(prompt.IsOpen,"Keyboard Done must not permanently save a nickname");
+            Assert.AreEqual(0,writes,"Only the visible Continue button may commit");
+            prompt.Confirm();
+            Assert.IsFalse(prompt.IsOpen);
+            Assert.AreEqual(1,writes);
+        }
+
+        [Test]
         public void PromptUsesActualInputFieldAndRealButtonsNotAnImageMockup()
         {
             var prompt=RoyalPlayerNamePrompt.Create((RectTransform)canvas.transform);
