@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T22:21:24.224Z",
+  "updated_at": "2026-11-05T22:37:29.751Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3503,9 +3503,9 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 21,
+      "ownership_revision": 22,
       "write_scope_released": false,
-      "branch": "main",
+      "branch": "feature/eldoria-construction-delight-20261104",
       "status": "active",
       "claimed_at": "2026-11-03T23:35:16.557Z",
       "base_main_sha": "d01bffc48f85d65b1061c2fc50ce78c49d9c3344",
@@ -3520,15 +3520,13 @@
         ".github/workflows/eldoria-construction-delight-native.yml",
         "tools/construction-delight/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "V5_HAMMER_DENSE_DUST_EXCLUSIVE_NATIVE_QA_RUNNING",
-      "next": "Validate exact candidate head with 72 original URP camera images, native Editor compilation, stage 3D restoration, two hammer impacts and dense dust, reload/saves; release Windows lease after run succeeds or fails; do not merge before owner art approval.",
+      "phase": "UNITY_V6_72_NATIVE_PASS_ART_VISUAL_REVIEW_PENDING",
+      "next": "V6 native Unity 6000.3.23f1 PASS 72 genuine PNG run 42122481739, artifact 13458423128 commit 96bd7b02a612b2e924411617edbae3287bfe1fd8. Two small 3D hammer impacts now readable, dust clouds materially denser than V5 but still visually elementary in normal city scale. Owner should review A/B frames and decide whether art >=8.2; no ART_APPROVED or merge/publication; Android/WebGL FPS not tested.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Native unity 41872572157 (26 screenshots A/B, short motion), artifacts 13345725500, saved-state invariant; local contact sheets",
@@ -3539,7 +3537,7 @@
       "last_verified": {
         "source_sha": "b1b17576a50b24ca12b31f74080bb29e632008c2",
         "source_checks": "PASS: architecture / owner scope / art governance / planner / workflow quarantine / routing / domain",
-        "unity_compile_tested": false,
+        "unity_compile_tested": true,
         "unity_capture_count": 0,
         "art_approved": false,
         "physical_mobile_tested": false,
@@ -3551,13 +3549,13 @@
         "resources_claimed": [],
         "budget_eur": 0,
         "headless_licence_blocker": true,
-        "unity_exit_code": 198,
-        "latest_native_attempt": 41793699479,
+        "unity_exit_code": 0,
+        "latest_native_attempt": 42122481739,
         "latest_license_probe": 41797026292,
         "licensing_client_probe_started": true,
         "unity_hub_process_activated": true,
         "personal_login_available_to_agent": false,
-        "unity_source_compiled": false,
+        "unity_source_compiled": true,
         "real_delight_captures": 26,
         "windows_runner_released": true,
         "reason": "Real Unity Editor returned exit 198 after installed Unity Hub launched and existing UnityEntitlementLicense.xml detected. No successful authenticated headless entitlement; do not claim visual QA.",
@@ -3606,20 +3604,21 @@
         "claim_revision": 17,
         "native_capture_expected": 64,
         "native_art_verified": true,
-        "native_run_id": 42077629878,
+        "native_run_id": 42122481739,
         "native_run_conclusion": "success",
-        "native_artifact_id": 13438897479,
-        "native_source_head": "c6b23953231d2675bdb397b01b4873f880da4aea",
+        "native_artifact_id": 13458423128,
+        "native_source_head": "96bd7b02a612b2e924411617edbae3287bfe1fd8",
         "pink_shader_native_issue_run": 42075455491,
         "pink_shader_native_issue_artifact": 13438197392,
         "source_qa_after_fix": 42077227281,
         "previous_visual_review": "REJECTED_UNITY_ERROR_MAGENTA",
-        "native_capture_count": 64,
+        "native_capture_count": 72,
         "technique_ab_capture_count": 24,
         "shader_fallback_pixels": 0,
         "real_gateway_receipt_verified": true,
         "staged_renderers_restored": true,
-        "visual_review_images_available": true
+        "visual_review_images_available": true,
+        "latest_visual_review": "V6 smoke/hammers not yet approved by user."
       },
       "candidate_branch": "feature/eldoria-construction-delight-20261104",
       "native_lease": {
@@ -3628,7 +3627,9 @@
         "prior_run": 42113741237,
         "owner": "chatgpt-eldoria-construction-delight-20261104",
         "no_reboot": true,
-        "no_kill_foreign_processes": true
+        "no_kill_foreign_processes": true,
+        "released_at": "2026-11-05T22:37:29.751Z",
+        "result": "SUCCESS run 42122481739, resource released after native Unity terminated"
       },
       "license_diagnostics": {
         "read_only_check_run": 41796258446,
@@ -3656,7 +3657,17 @@
         "controlled_ab_capture_expected_images": 64,
         "latest_source_head": "3d01b3115966da5fc73f4d059e26aa1f2a9d82fa",
         "native_art_verified": false,
-        "art_approved": false
+        "art_approved": false,
+        "latest_native_run": 42122481739,
+        "latest_native_artifact_id": 13458423128,
+        "latest_native_sha": "96bd7b02a612b2e924411617edbae3287bfe1fd8",
+        "latest_native_png_count": 72,
+        "hammer_strikes_verified": 6,
+        "technique_ab_png_count": 24,
+        "visual_quality_approved": false,
+        "physical_android_fps_verified": false,
+        "release_rev": 22,
+        "visual_review": "Improved visibility relative to V5 but dust remains two somewhat round clouds and hammer geometry is basic; do not declare final art quality."
       }
     },
     {
