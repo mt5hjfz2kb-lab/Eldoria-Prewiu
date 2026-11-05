@@ -21,6 +21,10 @@ namespace Eldoria
     internal sealed class PlayerClarityStoryRenewal
     {
         private readonly Dictionary<string,int> applied = new Dictionary<string,int>();
+        private readonly Dictionary<string,Vector3> originalSites = new Dictionary<string,Vector3>();
+        private static readonly string[] RenewableIds = {
+            "hunt-wolf", "hunt-boar", "meat-valoria", "ash-stalker-valoria"
+        };
         private ValoriaIntegratedWorld bound;
         private ICommandGateway boundGateway;
 
@@ -30,11 +34,29 @@ namespace Eldoria
                 host.City?.Gateway == null || state == null ||
                 state.WorldId != "world-local" || state.BastionLevel < 3 ||
                 state.ChapterThree == null || !host.WorldRoot) return;
-            // Playtest reset rebinds the canonical gateway on the SAME scene
-            // host. Never reuse generation-cache entries from an older save.
-            if (bound != host || !ReferenceEquals(boundGateway,host.City.Gateway))
+            // A save-reset can replace the gateway without destroying this
+            // scene. Preserve the original authored/routed sites once per
+            // host and restore them before reading the new save's generations.
+            // Otherwise a brand-new player would inherit relocated wildlife
+            // positions from the previous test save.
+            if (bound != host)
             {
                 bound = host;
+                originalSites.Clear();
+                foreach (var id in RenewableIds)
+                {
+                    var original=host.FindTarget(id);
+                    if (original) originalSites[id]=original.transform.position;
+                }
+                boundGateway = null;
+            }
+            if (!ReferenceEquals(boundGateway,host.City.Gateway))
+            {
+                foreach (var entry in originalSites)
+                {
+                    var target=host.FindTarget(entry.Key);
+                    if (target) target.transform.position=entry.Value;
+                }
                 boundGateway = host.City.Gateway;
                 applied.Clear();
             }
