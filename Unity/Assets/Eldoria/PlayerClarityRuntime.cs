@@ -211,6 +211,24 @@ namespace Eldoria
                 meat.gameObject.activeInHierarchy)
                 Place("meat-valoria", "", ResourcePictogramKind.Food,
                     meat, camera, false, 0);
+            // Chapter III hunt difficulty comes from the genuine power
+            // threshold currently used in combat, not from a decorative
+            // creature counter. Hide a defeated hunt until it returns.
+            if (s.BastionLevel >= 3 && s.ChapterThree != null)
+            {
+                if (s.ChapterThree.WolfRespawnUtcTicks == 0 &&
+                    TryHotspot("hunt-wolf", out var wolf) &&
+                    wolf.gameObject.activeInHierarchy)
+                    Place("hunt-wolf",
+                        "Nv. " + ChapterThreeHuntDifficultyPolicy.Level("hunt-wolf"),
+                        null, wolf, camera, false, 0);
+                if (s.ChapterThree.BoarRespawnUtcTicks == 0 &&
+                    TryHotspot("hunt-boar", out var boar) &&
+                    boar.gameObject.activeInHierarchy)
+                    Place("hunt-boar",
+                        "Nv. " + ChapterThreeHuntDifficultyPolicy.Level("hunt-boar"),
+                        null, boar, camera, false, 0);
+            }
             foreach (var creature in s.WorldCreatureLocations)
             {
                 if (!creature.Alive || creature.Level < 1 ||
