@@ -23,7 +23,7 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            const run_id=42028053896, oldHead='0ce99ae186bae2c6575e6eb465d75aa6738120b2';
+            const run_id=42032877566, oldHead='ca3853de722442d86838d0199f51c5240b55823d';
             const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id})).data;
             if(run.status!=='in_progress')return;
             if(run.head_sha!==oldHead || run.head_branch!=='feature/eldoria-v41-contracts-20261030' || run.path!=='.github/workflows/ui-progression-cert.yml')throw Error('Not the known obsolete own wait');
@@ -34,13 +34,18 @@ jobs:
             if(owners.length!==1 || owners[0].id!=='eldoria-v41-combate-buzon-ui-20261030' || owners[0].owner!=='codex-eldoria-pr136-consolidation-20261104')throw Error('Native ownership changed');
             const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id,filter:'latest'})).data.jobs;
             const native=jobs.find(x=>x.name==='certify');
-            const waiting=native?.steps?.find(x=>x.number===2);
-            if(native?.status!=='in_progress' || waiting?.name!=='Check live native-editor lease before downloading the Unity project' || waiting.status!=='in_progress' || native.steps.some(x=>x.number>2 && x.started_at)) {
+            const waiting=native?.steps?.find(x=>x.name==='Check live native-editor lease before downloading the Unity project');
+            if(native?.status!=='in_progress' || waiting?.name!=='Check live native-editor lease before downloading the Unity project' || waiting.status!=='in_progress' || native.steps.some(x=>x.number>waiting.number && x.started_at)) {
               core.info('Preserve run: checkout/editor/test may have started');return;
             }
-            // Normal cancel returned202 at13:01 UTC but always() kept this read-only wait alive.
+            // Only this identified superseded read-only wait; the job's always() retains normal cancellation.
+            await github.rest.actions.cancelWorkflowRun({...context.repo,run_id});
+            await new Promise(resolve=>setTimeout(resolve,2000));
+            const fresh=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id,filter:'latest'})).data.jobs.find(x=>x.name==='certify');
+            const hold=fresh?.steps?.find(x=>x.name===waiting.name);
+            if(fresh?.status!=='in_progress' || hold?.status!=='in_progress' || fresh.steps.some(x=>x.number>hold.number && x.started_at))return;
             await github.request('POST /repos/{owner}/{repo}/actions/runs/{run_id}/force-cancel',{...context.repo,run_id});
-            core.info('Cancelled only known superseded read-only waiting run42028053896; no editor or foreign job targeted');
+            core.info('Cancelled only known superseded read-only waiting run42032877566; no editor or foreign job targeted');
   v41-domain:
     runs-on: ubuntu-latest
     timeout-minutes: 10

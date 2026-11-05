@@ -274,12 +274,39 @@ jobs:
             $parent=Get-Process -Id $origin.ParentProcessId -ErrorAction SilentlyContinue
             [pscustomobject]@{id=$editor.Id;name=$editor.ProcessName;startUtc=$editor.StartTime.ToUniversalTime().ToString('o');cpu=$editor.CPU;memory=$editor.WorkingSet64;responding=$editor.Responding;windowTitle=$editor.MainWindowTitle;parentId=$origin.ParentProcessId;parentName=$parent.ProcessName;background=[bool]($origin.CommandLine -match '(?:^|\s)(?:--background|-b)(?:\s|$)')}
           })
+          $known=Get-Process -Id 9852 -ErrorAction SilentlyContinue
+          if($known -and $known.ProcessName -eq 'blender' -and $known.StartTime.ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ss') -eq '2026-11-05T11:52:42'){
+            $listener=@(Get-NetTCPConnection -State Listen -LocalPort 9876 -ErrorAction SilentlyContinue|Where-Object {$_.OwningProcess -eq 9852})
+            if($listener.Count){
+              try {
+                $client=New-Object Net.Sockets.TcpClient
+                $client.Connect('127.0.0.1',9876)
+                $stream=$client.GetStream();$stream.ReadTimeout=8000
+                $code="import bpy,json; print(json.dumps({'file':bpy.data.filepath,'dirty':bpy.data.is_dirty,'rendering':bpy.app.is_job_running('RENDER'),'objects':[{'name':o.name,'type':o.type,'vertices':len(o.data.vertices) if o.type=='MESH' else 0,'modifiers':len(o.modifiers),'animated':bool(o.animation_data)} for o in bpy.data.objects],'texts':[t.name for t in bpy.data.texts]}))"
+                $payload=@{type='execute_code';params=@{code=$code}}|ConvertTo-Json -Depth 5 -Compress
+                $bytes=[Text.Encoding]::UTF8.GetBytes($payload);$stream.Write($bytes,0,$bytes.Length)
+                $buf=New-Object byte[] 65536;$reply=''
+                do {$n=$stream.Read($buf,0,$buf.Length);if($n -eq 0){break};$reply+=[Text.Encoding]::UTF8.GetString($buf,0,$n);try{$parsed=$reply|ConvertFrom-Json;break}catch{}}while($reply.Length -lt 1000000)
+                $reply|Set-Content -LiteralPath (Join-Path $folder 'blender-scene.json') -Encoding utf8
+              } catch { $_.Exception.Message|Set-Content -LiteralPath (Join-Path $folder 'blender-mcp-error.txt') } finally {if($client){$client.Close()}}
+            }else{'No listener owned by PID9852 on the documented BlenderMCP port'|Set-Content -LiteralPath (Join-Path $folder 'blender-mcp-unavailable.txt')}
+            Add-Type -AssemblyName System.Drawing
+            Add-Type 'using System; using System.Runtime.InteropServices; public class EldoriaWindowCapture { [StructLayout(LayoutKind.Sequential)] public struct RECT { public int Left,Top,Right,Bottom; } [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h,out RECT r); [DllImport("user32.dll")] public static extern bool PrintWindow(IntPtr h,IntPtr dc,uint flags); }'
+            $rect=New-Object EldoriaWindowCapture+RECT
+            if($known.MainWindowHandle -ne 0 -and [EldoriaWindowCapture]::GetWindowRect($known.MainWindowHandle,[ref]$rect)){
+              $bitmap=New-Object Drawing.Bitmap ($rect.Right-$rect.Left),($rect.Bottom-$rect.Top)
+              $graphics=[Drawing.Graphics]::FromImage($bitmap);$dc=$graphics.GetHdc()
+              try{$captured=[EldoriaWindowCapture]::PrintWindow($known.MainWindowHandle,$dc,2)}finally{$graphics.ReleaseHdc($dc)}
+              $bitmap.Save((Join-Path $folder 'blender-window.png'),[Drawing.Imaging.ImageFormat]::Png)
+              $graphics.Dispose();$bitmap.Dispose()
+            }
+          }
           $os=Get-CimInstance Win32_OperatingSystem
           [ordered]@{checkedUtc=[DateTime]::UtcNow.ToString('o');source=$env:ALDRIC_REQUEST_SOURCE_SHA;lastBoot=$os.LastBootUpTime.ToUniversalTime().ToString('o');freeMemoryKiB=$os.FreePhysicalMemory;processes=$entries;readOnly=$true}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $folder 'origin.json') -Encoding utf8
       - uses: actions/upload-artifact@v4
         with:
           name: eldoria-editor-origin-${{ github.run_id }}
-          path: ${{ runner.temp }}/eldoria-editor-origin-${{ github.run_id }}/origin.json
+          path: ${{ runner.temp }}/eldoria-editor-origin-${{ github.run_id }}/
           retention-days: 7
           if-no-files-found: error
       - name: Check live native-editor lease before downloading the Unity project
