@@ -6,9 +6,9 @@
   "status": "ACTIVE",
   "asset_or_sector": "Valoria: activity while constructing and short antique-gold completion reveal on genuine building models",
   "profile": "environment_composition",
-  "visual_gate_state": "SOURCE_CANDIDATE_UNVERIFIED",
+  "visual_gate_state": "SOURCE_V4_REAL_MESH_ASSEMBLY_PENDING_UNITY_RENDER",
   "ai_authorship_policy": "required",
-  "diagnosis": "The current game already has persisted real building tasks and minimal flat ambient FX. Owner asks for premium-feeling movement and gratifying finish while preserving approved building cartouches. Add read-only world-space dust/chips/small gold halo with native Unity particles and no model deformation, no cheap flash, no fake progress, no extra HUD.",
+  "diagnosis": "V3 actual Unity A/B (41872572157) was technically correct but artistically underwhelming: no physical building motion, weak completion, dark roof. V4 adds reversible real model sections arranged foundation-to-roof, timed from original Gateway state, with synchronized modest stone dust, roof glints, and optional URP light.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -17,20 +17,21 @@
   },
   "capabilities": {
     "existing_qualified_donor_assets": true,
-    "unity_native_particle_system": true,
-    "existing_3d_assets_modified": false
+    "unity_native_particle_system": false,
+    "existing_3d_assets_modified": false,
+    "real_mesh_reuse": true
   },
   "artist": {
-    "design": "Artist-directed warm stone/wood/antique gold; subtle persistent loop, 1.7s finish reveal, sparse particles and rings",
-    "source": "Unity/Assets/Eldoria/ConstructionDelight/ValoriaConstructionDelightV1.cs",
+    "design": "Foundation timbers to roof panel assembly using genuine production meshes and existing materials; 1.68s roof-landing completion, warm facade/roof sweep, tiny synchronized dust. Strict preservation of camera, scene, save, scripts.",
+    "source": "Unity/Assets/Eldoria/ConstructionDelight/ConstructionDelightStageAssembly.cs + ValoriaConstructionDelightV1.cs",
     "reference": "Approved Valoria cinematic reference; user 2026-11-04"
   },
   "validation": {
-    "source_gate": "No spend, new meshes, gameplay timers or save fields. Preserve all original building/level authorities and release all GPU buffers on scene unload.",
-    "final_gate": "Exact-head real Unity, 390x844/844x390 moving A/B, sawmill/barracks/Bastion and c3 upgrade, reload, save identity, WebGL and Android/URP material and overdraw, no cartoon-looking overlay. Owner subjective art evaluation before ART_APPROVED."
+    "source_gate": "36 domain assertions, 5-file Roslyn parse, no self recursion, no second timer or Gateway writes, source MeshFilter/sharedMaterials borrowed and returned; full Unity compile still pending",
+    "final_gate": "Unity 6000.3.23f1 exact head, 34 genuine camera PNG A/B in 390x844 and 844x390 with work+finish time sequence; benchmark against V3, inspect roof/cornice, prefab fidelity, 4X isolation, reload, mobile + WebGL performance. Human art approval >=8.2 required."
   },
   "art_approved": false,
   "physical_mobile_tested": false,
   "budget_eur": 0,
-  "notes": "Independent PR #152 from active PR #136 building cartouche work; new isolated presentation-only folder and read-only state observer. Workstream claimed, no Windows runner reservation. A source commit is not a rendered Unity success."
+  "notes": "No merge/publish. Current main Windows heavy runner still claimed by PR136 postmerge certification; source-only changes remain on separate draft PR152 until native QA possible."
 }
