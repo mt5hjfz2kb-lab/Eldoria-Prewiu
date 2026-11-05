@@ -314,6 +314,17 @@ namespace Eldoria.ReferenceClean.Editor
                 var staged=Shot(camera,
                     "technique-"+stage+"-B-staged-"+width+"x"+height,
                     width,height);
+                // Unity's pink error material can pass isSupported and inflate pixel
+                // deltas; genuine shader compilation is a mandatory visual gate.
+                int invalidA=CountBrokenShaderPixels(architectural);
+                int invalidB=CountBrokenShaderPixels(staged);
+                Debug.Log("CONSTRUCTION_DELIGHT_SHADER_FALLBACK_GATE stage="+stage+
+                          " resolution="+width+"x"+height+
+                          " error_pixels_A="+invalidA+" error_pixels_B="+invalidB);
+                if(invalidA>64 || invalidB>64)
+                    VisualIssues.Add("Unity pink shader fallback on genuine sawmill "+
+                                     stage+" "+width+"x"+height+
+                                     ": A="+invalidA+" B="+invalidB);
                 int changed=0;
                 for(int i=0;i<architectural.Length;i++)
                 {
@@ -333,6 +344,18 @@ namespace Eldoria.ReferenceClean.Editor
                         height+" changed="+changed);
             }
             finally {fx.SetTechniqueForCapture(true);}
+        }
+
+        static int CountBrokenShaderPixels(Color32[] pixels)
+        {
+            int count=0;
+            for(int i=0;i<pixels.Length;i++)
+            {
+                // Reserved saturated hot-pink error material, not warm Bloom/stone.
+                Color32 c=pixels[i];
+                if(c.r>=230 && c.g<=80 && c.b>=210)count++;
+            }
+            return count;
         }
 
         static void Comparison(ValoriaIntegratedWorld host,
