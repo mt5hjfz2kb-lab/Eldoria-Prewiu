@@ -330,8 +330,10 @@ namespace Eldoria.ReferenceClean
             lateFinishBurstPending=staged;
             lateFinishBurstAt=Time.unscaledTime+.91f;
             var visual=staged ? stagedBuilding.VisualRoot : completed;
-            materialLustre.Begin(visual,Time.unscaledTime);
-            structureReveal.Complete(visual,city.PlayerCamera,Time.unscaledTime);
+            // Include currently hidden roof copies so their real material
+            // acquires the warm finishing sweep WHEN the roof lands.
+            materialLustre.Begin(visual,Time.unscaledTime,staged);
+            structureReveal.Complete(visual,city.PlayerCamera,Time.unscaledTime,staged);
             stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
             structureReveal.Tick(Time.unscaledTime);
             // A reversible 3D timber-and-roof landing; all source flags restore.
@@ -645,13 +647,14 @@ namespace Eldoria.ReferenceClean
             bool shown=true;
             public int LayerCount => layers.Count;
 
-            public void Begin(GameObject building,float now)
+            public void Begin(GameObject building,float now,bool includeStagedParts=false)
             {
                 Clear();
                 if(!building || !building.activeInHierarchy)return;
                 foreach(var renderer in building.GetComponentsInChildren<Renderer>())
                 {
-                    if(!renderer || !renderer.enabled || !renderer.gameObject.activeInHierarchy)continue;
+                    if(!renderer || (!renderer.enabled && !includeStagedParts) ||
+                       !renderer.gameObject.activeInHierarchy)continue;
                     var materials=renderer.sharedMaterials;
                     for(int i=0;i<materials.Length;i++)
                     {
