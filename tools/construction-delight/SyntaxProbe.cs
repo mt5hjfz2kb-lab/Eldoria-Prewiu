@@ -118,10 +118,18 @@ internal static class SyntaxProbe
             bool noFakeProgress=src.Contains("deadline-nowTicks",StringComparison.Ordinal) &&
                                 !src.Contains("Gateway.Execute(",StringComparison.Ordinal) &&
                                 !src.Contains("PlayerState.",StringComparison.Ordinal);
-            bool stageContinuity=src.Contains("alreadyBuilt",StringComparison.Ordinal) &&
-                                  src.Contains("if(i<alreadyBuilt)",StringComparison.Ordinal) &&
-                                  src.Contains("Place(parts[i],1f,false)",StringComparison.Ordinal) &&
+            bool stageContinuity=src.Contains("bool retain=working && Running",
+                                               StringComparison.Ordinal) &&
+                                  src.Contains("if(!retain)",StringComparison.Ordinal) &&
+                                  src.Contains("part.transitionPosition=part.wasVisible",
+                                               StringComparison.Ordinal) &&
+                                  src.Contains("p.transitionPosition,p.position",
+                                               StringComparison.Ordinal) &&
                                   src.Contains("Mathf.Min(.69f",StringComparison.Ordinal);
+            // The previous check expected an artificial hard cutoff at 70%
+            // and forced all lower pieces to teleport into their final pose.
+            // That produced visible resets. Validate real work-pose continuity
+            // instead, without losing any save/renderer restoration guarantees.
             if(!realMeshes || !reversible || !noFakeProgress || !stageContinuity)
             {
                 Console.Error.WriteLine("CONSTRUCTION_DELIGHT_STAGE_GUARD_FAIL");
