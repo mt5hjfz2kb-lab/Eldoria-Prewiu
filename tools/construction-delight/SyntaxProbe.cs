@@ -40,6 +40,29 @@ internal static class SyntaxProbe
             }
             Console.WriteLine("CONSTRUCTION_DELIGHT_SYNTAX_FILE "+
                               path+" syntax_errors="+failures.Length);
+            if(path.EndsWith("/ConstructionDelightStageAssembly.cs",StringComparison.Ordinal))
+            {
+                // Prevent the expensive visual regression where a completed
+                // building disappears and reassembles from zero again.
+                var complete=tree.GetCompilationUnitRoot().DescendantNodes()
+                    .OfType<MethodDeclarationSyntax>()
+                    .SingleOrDefault(m=>m.Identifier.ValueText=="Complete");
+                string body=complete?.Body?.ToFullString()??"";
+                bool preserves=body.Contains("bool retain=working && Running",
+                    StringComparison.Ordinal) &&
+                    body.Contains("if(!retain)",StringComparison.Ordinal) &&
+                    body.Contains("part.transitionPosition",StringComparison.Ordinal);
+                bool notResetUpfront=!body.TrimStart().StartsWith("{\n            Clear();",
+                    StringComparison.Ordinal);
+                if(!preserves || !notResetUpfront)
+                {
+                    Console.Error.WriteLine("CONSTRUCTION_DELIGHT_STAGE_CONTINUITY_FAIL "+
+                        "completion destroys authentic in-progress mesh poses");
+                    errors++;
+                }
+                else Console.WriteLine("CONSTRUCTION_DELIGHT_STAGE_CONTINUITY_PASS "+
+                                       "work-to-finish geometry maintained");
+            }
             if(path.EndsWith("/ValoriaConstructionDelightV1.cs",StringComparison.Ordinal))
             {
                 // Prevent a real regression found in Unity's scene-site
@@ -108,6 +131,23 @@ internal static class SyntaxProbe
                 "original mesh/material copy; reversible flags; real timer read-only");
         }
         else { Console.Error.WriteLine("CONSTRUCTION_DELIGHT_STAGE_MISSING");errors++; }
+
+        // A real gateway completion must hand off the currently assembled
+        // mesh copies before doing any visual reset or start-of-build rewind.
+        var ownerSource="Unity/Assets/Eldoria/ConstructionDelight/ValoriaConstructionDelightV1.cs";
+        if(File.Exists(ownerSource))
+        {
+            var owner=File.ReadAllText(ownerSource);
+            if(!owner.Contains("StopWork(preserveStage)",StringComparison.Ordinal) ||
+               !owner.Contains("bool preserveStage=actualCompletion && CanShow()",
+                               StringComparison.Ordinal))
+            {
+                Console.Error.WriteLine("CONSTRUCTION_DELIGHT_GATEWAY_HANDOFF_FAIL "+
+                    "world assembler cleared before authentic completion");
+                errors++;
+            }
+            else Console.WriteLine("CONSTRUCTION_DELIGHT_GATEWAY_HANDOFF_PASS");
+        }
 
         // A resource path referenced by the runtime must exist in the exact
         // Unity checkout. Roslyn syntax alone cannot detect a missing shader.
