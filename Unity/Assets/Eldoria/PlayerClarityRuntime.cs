@@ -193,15 +193,19 @@ namespace Eldoria
                 if (resource.ResourceKind == "wood") kind = ResourcePictogramKind.Wood;
                 else if (resource.ResourceKind == "stone") kind = ResourcePictogramKind.Stone;
                 else continue;
-                Place(resource.TargetId, "", kind, hot, camera, false, 0);
+                // Until the schema-1 Level field is integrated, capacity
+                // is already authoritative and permits a truthful legacy L1.
+                int level = ResourceNodeTierPolicy.ExistingSaveLevel(
+                    resource.ResourceKind, resource.Capacity);
+                Place(resource.TargetId, "Nv." + level, kind, hot, camera, false, level);
             }
             foreach (var id in new[] {"forest-valoria", "quarry-valoria"})
             {
                 if (LocalGateway.ResourceRemaining(s, id) <= 0 ||
                     !TryHotspot(id, out var hot) || !hot.gameObject.activeInHierarchy) continue;
-                Place(id, "", id == "forest-valoria"
+                Place(id, "Nv.1", id == "forest-valoria"
                     ? ResourcePictogramKind.Wood : ResourcePictogramKind.Stone,
-                    hot, camera, false, 0);
+                    hot, camera, false, 1);
             }
             // The meat reserve is the third real resource category in the
             // Bastion III frontier. Use the same food pictogram as the HUD.
@@ -210,8 +214,8 @@ namespace Eldoria
                 s.ChapterThree.MeatRemaining > 0 &&
                 TryHotspot("meat-valoria", out var meat) &&
                 meat.gameObject.activeInHierarchy)
-                Place("meat-valoria", "", ResourcePictogramKind.Food,
-                    meat, camera, false, 0);
+                Place("meat-valoria", "Nv.1", ResourcePictogramKind.Food,
+                    meat, camera, false, 1);
             // Chapter III hunt difficulty comes from the genuine power
             // threshold currently used in combat, not from a decorative
             // creature counter. Hide a defeated hunt until it returns.
@@ -343,13 +347,14 @@ namespace Eldoria
             {
                 marker.LastSizeMultiplier = multiplier;
                 marker.Rect.sizeDelta = marker.Icon
-                    ? new Vector2(28f * multiplier, 28f * multiplier)
+                    ? new Vector2(72f * multiplier, 28f * multiplier)
                     : new Vector2(73f * multiplier, 28f * multiplier);
                 if (marker.Icon)
                     ((RectTransform)marker.Icon.transform).sizeDelta =
-                        new Vector2(22f * multiplier, 22f * multiplier);
+                        new Vector2(23f * multiplier, 23f * multiplier);
                 if (marker.Text)
-                    marker.Text.fontSize = Mathf.RoundToInt(15f * multiplier);
+                    marker.Text.fontSize = Mathf.RoundToInt(
+                        (marker.Icon ? 14f : 15f) * multiplier);
             }
             var uiCam = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -363,7 +368,7 @@ namespace Eldoria
             var rect = (RectTransform)root.transform;
             rect.SetParent(layer, false);
             rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, .5f);
-            rect.sizeDelta = new Vector2(icon ? 26f : 67f, 25f);
+            rect.sizeDelta = new Vector2(icon ? 72f : 67f, 28f);
             var background = root.GetComponent<Image>();
             background.color = new Color(.09f, .105f, .10f, .86f);
             background.raycastTarget = false;
@@ -379,11 +384,26 @@ namespace Eldoria
                     typeof(RectTransform), typeof(RoyalResourcePictogram));
                 var ir = (RectTransform)iconGo.transform;
                 ir.SetParent(rect, false);
-                ir.anchorMin = ir.anchorMax = ir.pivot = new Vector2(.5f, .5f);
-                ir.sizeDelta = new Vector2(21f, 21f);
+                ir.anchorMin = ir.anchorMax = ir.pivot = new Vector2(.22f, .5f);
+                ir.sizeDelta = new Vector2(23f, 23f);
                 marker.Icon = iconGo.GetComponent<RoyalResourcePictogram>();
                 marker.Icon.color = Color.white;
                 marker.Icon.raycastTarget = false;
+                // Short tier text uses the exact same persisted capacity as
+                // gathering. Keep each icon recognizable at small phone size.
+                var tierGo = new GameObject("Real resource tier",
+                    typeof(RectTransform), typeof(Text));
+                var tr = (RectTransform)tierGo.transform;
+                tr.SetParent(rect, false);
+                tr.anchorMin = new Vector2(.42f, 0f);
+                tr.anchorMax = new Vector2(.99f, 1f);
+                tr.offsetMin = tr.offsetMax = Vector2.zero;
+                marker.Text = tierGo.GetComponent<Text>();
+                marker.Text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                marker.Text.fontSize = 14;
+                marker.Text.alignment = TextAnchor.MiddleCenter;
+                marker.Text.color = new Color(.97f,.82f,.57f);
+                marker.Text.raycastTarget = false;
             }
             else
             {
