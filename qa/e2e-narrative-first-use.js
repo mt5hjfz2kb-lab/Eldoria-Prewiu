@@ -23,11 +23,17 @@ const url=process.env.ELDORIA_URL||'http://127.0.0.1:4173/v0220/';
    }
    let who=await modal.locator('.aldric-name').first().innerText().catch(()=>'?');
    speakers.push(who);
+   // Only the CURRENT visible dialogue may signal it has finished.
+   // A hidden older .done element must never advance another scene.
+   await modal.locator('.aldric-dialogue.done').first().waitFor({state:'visible',timeout:14000});
    if(captures<4){
     await page.screenshot({path:'narrative-first-use-'+String(++captures).padStart(2,'0')+'.png',fullPage:true});
    }
-   await page.waitForFunction(()=>Boolean(document.querySelector('.aldric-cinematic .aldric-dialogue.done')),null,{timeout:14000});
+   const before=await modal.elementHandle();
+   const copy=await modal.locator('.aldric-typed').first().innerText();
+   console.log('NARRATIVE_STEP '+JSON.stringify({who,text:copy.slice(0,160),step:i+1}));
    await modal.locator('.aldric-continue').first().click({force:true});
+   await page.waitForFunction(el=>!el.isConnected,before,{timeout:4500});
    await page.waitForTimeout(240);
    stage=await get();
    if(stage.missionIntroSeen&&stage.tutorialSeen?.start)break;
@@ -38,6 +44,8 @@ const url=process.env.ELDORIA_URL||'http://127.0.0.1:4173/v0220/';
   assert.ok(stage.missionIntroSeen,'Chapter panel must be taught after the real dialogue');
   assert.ok(stage.tutorialSeen?.start,'First construction action must be taught');
   assert.ok(speakers.length>=3,'Narrator, Aldric and first-use guidance should appear');
+  assert.ok(speakers.some(n=>/SIR ALDRIC/i.test(n)),
+    'Must observe Aldric himself, not repeatedly click a stale narrator modal');
   assert.equal(problems.length,0,JSON.stringify(problems));
   console.log(JSON.stringify({result:'PASS',speakers,flags:{intro:stage.introSeen,missionIntro:stage.missionIntroSeen,firstAction:stage.tutorialSeen.start},captured:captures}));
  }finally{await browser.close();}
