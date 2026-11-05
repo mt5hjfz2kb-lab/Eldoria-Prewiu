@@ -223,8 +223,9 @@ namespace Eldoria
                 else continue;
                 // Until the schema-1 Level field is integrated, capacity
                 // is already authoritative and permits a truthful legacy L1.
-                int level = ResourceNodeTierPolicy.ExistingSaveLevel(
-                    resource.ResourceKind, resource.Capacity);
+                int level = resource.Level > 0 ? resource.Level :
+                    ResourceNodeTierPolicy.ExistingSaveLevel(
+                        resource.ResourceKind, resource.Capacity);
                 Place(resource.TargetId, "Nv." + level, kind, hot, camera, false, level);
             }
             foreach (var id in new[] {"forest-valoria", "quarry-valoria"})
