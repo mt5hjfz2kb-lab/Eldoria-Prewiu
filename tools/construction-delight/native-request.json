@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "55a934d8af428b14b99bf54dab664e77a1727c77",
   "ownership_revision": 19,
-  "mode": "HAMMER_STROKES_DENSE_DUST_ART_SOURCE_AND_EDITOR_CSHARP_GATES",
+  "mode": "V5_WORK_HAMMERS_DENSE_DUST_FINAL_EDITOR_AND_DOMAIN_QA",
   "expected_images": 64,
   "formats": [
     "844x390",
@@ -81,7 +81,7 @@
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 25,
+  "offline_validation_attempt": 26,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
@@ -226,5 +226,14 @@
     "dust": "Two additional batched sprite fields, radial dense gray-tan impact plumes bound to real hammer contacts",
     "reward": "Preserve existing URP shader sweep and Bloom for completion without construction tools leaking into finish"
   },
-  "expected_native_capture_images": 64
+  "expected_native_capture_images": 64,
+  "quality_targets": [
+    "Hammers visibly swing and iron heads contact real scaffold",
+    ">=12 dense dust sprites around actual contact",
+    "At least one impact during work motion",
+    "No hammer/dust after completion or reload",
+    "A/B architectural vs staged preserves same common effects"
+  ],
+  "visual_approval": false,
+  "native_expected_png": 64
 }
