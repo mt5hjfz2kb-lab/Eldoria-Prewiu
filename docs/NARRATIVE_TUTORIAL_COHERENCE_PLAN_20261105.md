@@ -17,7 +17,7 @@
 6. **Bloque VI — Combate:** reconciliar con el trabajo canónico de PR #134 antes de reemplazar cualquier regla o resultado. La resolución del combate y el tutorial deben reflejar victorias, heridos y recompensas reales, no inventadas.
 
 ## Qué se ha implementado en esta PR (solo Unity)
-- `NarrativeCoherenceRules` en `GameState.cs`: selección y orden de eventos, etapas de conocimiento de la fisura.
+- `NarrativeCoherenceRules` en `NarrativeCoherenceRules.cs` (separado del dominio de combate): selección y orden de eventos, etapas de conocimiento de la fisura.
 - `ValoriaJourneyGuidance.cs`: elección de escena por progreso guardado y mejora textual del consejo IV.
 - `ExistingSliceBinding.cs`: descripción contextual de la fisura, nombres de acciones sin spoilers y etiquetas de Bastión, no capítulos falsos.
 - `ValoriaMarchPresentation.cs`: terminología de investigación coherente.
@@ -52,3 +52,6 @@ Una pasada anterior había añadido pruebas y cambios a `v0220/**` y `qa/**`. Se
 **Interferencia con el combate:** PR #134 y #160 modifican `GameState.cs`. Los parches del momento revisado usan regiones diferentes (PR #134 en modelos de tropas/marchas/combate; #160 en reglas narrativas), pero su combinación, compilación y titularidad aún deben verificarse contra los HEAD definitivos. No sobrescribir la PR #134 ni ejecutar Unity sobre el PC que tiene reservado.
 
 **Alcance estricto:** la candidata no modifica `v0220/**`, `qa/**` ni recursos artísticos. No se ha publicado ninguna build. La PR #160 sigue en DRAFT y el gate de titularidad permanece rojo: **no fusionar hasta reconciliar el trabajo con sus titulares legítimos y superar la validación Unity completa**.
+
+## Integración sin conflicto — 5/11/2026
+Se ha separado `NarrativeCoherenceRules` del archivo compartido `GameState.cs` en un script independiente de Unity con metadatos estables. `GameState.cs` recupera exactamente los bytes de `main`, sin interferir con PR #134. La prueba .NET de dominio usa el glob existente de scripts de Unity y debe pasar en el nuevo HEAD. Este refactor no valida por sí solo ni reemplaza la compilación Unity nativa.
