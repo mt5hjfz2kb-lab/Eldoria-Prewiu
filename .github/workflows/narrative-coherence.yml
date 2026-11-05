@@ -6,6 +6,8 @@ on:
       - "v0220/index.html"
       - "v0220/js/chapters.js"
       - "tools/narrative/**"
+      - "qa/e2e-narrative-first-use.js"
+      - "qa/e2e-full-arc1.js"
       - "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs"
       - "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs"
       - "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs"
@@ -37,3 +39,48 @@ jobs:
           node-version: "22"
       - name: Test dialogue sequencing and tutorial acknowledgement
         run: node --test tools/narrative/coherence.test.mjs
+
+  narrative-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /v0220/**
+            /qa/e2e-narrative-first-use.js
+            /qa/e2e-full-arc1.js
+            /package.json
+            /package-lock.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install browser for real Web tutorial QA
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Serve versioned Eldoria prototype
+        run: |
+          python3 -m http.server 4173 > /tmp/eldoria-narrative-http.log 2>&1 &
+          sleep 2
+          curl --fail http://127.0.0.1:4173/v0220/ > /dev/null
+      - name: First-use narration (normal clock, not QA)
+        env:
+          ELDORIA_URL: http://127.0.0.1:4173/v0220/
+        run: node qa/e2e-narrative-first-use.js
+      - name: Full Arc I gameplay regression (QA clock)
+        env:
+          ELDORIA_URL: http://127.0.0.1:4173/v0220/?qa=1
+        run: node qa/e2e-full-arc1.js
+      - name: Preserve genuine browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: narrative-browser-evidence
+          path: |
+            narrative-first-use-*.png
+            qa-failure-*.png
+          if-no-files-found: ignore
