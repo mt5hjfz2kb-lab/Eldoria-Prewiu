@@ -34,3 +34,21 @@
 
 ## Registro de corrección de alcance
 Una pasada anterior había añadido pruebas y cambios a `v0220/**` y `qa/**`. Se han revertido de esta rama sin alterar `main` ni el historial del proyecto. Las evidencias de navegador pertenecen a ese intento descartado y **no certifican Unity**.
+
+## Avance Unity validado (05/11/2026)
+
+**Código en PR #160, SHA `154f42fd79114d08119b8ad8cc0ac11437f366a8` (sin integración en main).**
+
+- **Orden de acontecimientos:** `NarrativeCoherenceRules` conserva el cierre de la fisura y la incorporación de Lyra aunque el guardado ya esté en Bastión V. Si la fisura se ha cerrado, no reproduce una introducción obsoleta sobre una frontera aún inexplorada.
+- **Primera utilización sin ventanas nuevas:** `EarlyRetentionFirstUseTutorial` utiliza victorias reales de Vigilantes e informes realmente recogidos de Exploradores para cambiar el mensaje entre primer paso, encargo en marcha y sistema aprendido. Ningún texto marca la lección como aprendida por abrir o cerrar una ventana.
+- **Orientación en 14 objetivos:** `UnityContextTutorial` ofrece textos breves en español e inglés para entrenamiento, composición de marchas, Poder, comida, caza, fisura, infraestructura, consejo IV y Cantera V. Se muestra en la ayuda contextual ya existente; no crea nuevos paneles.
+- **Sin interrupciones:** `ValoriaJourneyGuidance` pospone escenas automáticas si hay diálogo, modal, entrenamiento/marcha, Vigilantes/Exploradores o buzón abiertos, y separa 1,5 segundos los eventos narrativos consecutivos. El ledger real de diálogos sigue preservado.
+- **Metadatos nuevos:** GUIDs de nuevos `.cs.meta` incluidos; la comprobación de integridad del repositorio pasó.
+
+**Pruebas técnicas del SHA anterior exacto:** run GitHub Actions `42047722536` completado correctamente: 54 afirmaciones del probe de dominio con clases reales de Unity + `BASTION_III_DOMAIN_PROBE_PASS` + `MIGRATION_PARITY_DOMAIN_PASS` + `BASTION_IV_V_DOMAIN_PASS`. Controles de arquitectura (`42047722646`), gobernanza (`42047722403`) y metadatos Unity (`42047722440`) completados SUCCESS.
+
+**Lo que no se ha probado:** Editor/PlayMode del SHA, renderizado visual real, A/B de móvil y recorrido humano a ritmo normal. No confundir las pruebas de dominio con esa aceptación.
+
+**Interferencia con el combate:** PR #134 y #160 modifican `GameState.cs`. Los parches del momento revisado usan regiones diferentes (PR #134 en modelos de tropas/marchas/combate; #160 en reglas narrativas), pero su combinación, compilación y titularidad aún deben verificarse contra los HEAD definitivos. No sobrescribir la PR #134 ni ejecutar Unity sobre el PC que tiene reservado.
+
+**Alcance estricto:** la candidata no modifica `v0220/**`, `qa/**` ni recursos artísticos. No se ha publicado ninguna build. La PR #160 sigue en DRAFT y el gate de titularidad permanece rojo: **no fusionar hasta reconciliar el trabajo con sus titulares legítimos y superar la validación Unity completa**.
