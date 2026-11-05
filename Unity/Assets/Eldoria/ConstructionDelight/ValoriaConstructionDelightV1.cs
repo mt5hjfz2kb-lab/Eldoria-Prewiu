@@ -60,8 +60,8 @@ namespace Eldoria.ReferenceClean
         readonly Vector3[] facadeAccents = new Vector3[4];
         readonly Vector3[] roofAccents = new Vector3[4];
         SpriteField[] allFields;
-        Texture2D dustTexture, ringTexture;
-        Material dustMaterial, ringMaterial;
+        Texture2D dustTexture, ringTexture, denseTexture;
+        Material dustMaterial, ringMaterial, denseMaterial;
         Transform particleRoot;
         readonly ArchitecturalCompletionLustre materialLustre = new ArchitecturalCompletionLustre();
         readonly ConstructionDelightArchitecturalReveal structureReveal =
@@ -193,7 +193,7 @@ namespace Eldoria.ReferenceClean
                     openingDust.Tint = new Color(.83f,.76f,.62f,.34f);
                     openingDust.Emit(7);
                     if(hammerTools.Running)
-                        denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,15,.85f);
+                        denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,25,.88f);
                     nextWorkPulse = Time.unscaledTime + 1.70f;
                 }
             }
@@ -205,14 +205,14 @@ namespace Eldoria.ReferenceClean
             int hammerHits=hammerTools.Tick(Time.unscaledTime);
             if(hammerHits>0)
             {
-                hammerImpactDust.EmitAtWorld(hammerTools.FirstImpact,15,.40f);
-                denseWorkDust.EmitAtWorld(hammerTools.FirstImpact,19,.76f);
+                hammerImpactDust.EmitAtWorld(hammerTools.FirstImpact,24,.45f);
+                denseWorkDust.EmitAtWorld(hammerTools.FirstImpact,34,.86f);
                 loopMotes.EmitAtWorld(hammerTools.FirstImpact,4,.22f);
             }
             if(hammerHits>1)
             {
-                hammerImpactDust.EmitAtWorld(hammerTools.SecondImpact,13,.36f);
-                denseWorkDust.EmitAtWorld(hammerTools.SecondImpact,17,.67f);
+                hammerImpactDust.EmitAtWorld(hammerTools.SecondImpact,22,.44f);
+                denseWorkDust.EmitAtWorld(hammerTools.SecondImpact,30,.77f);
                 loopMotes.EmitAtWorld(hammerTools.SecondImpact,3,.20f);
             }
             foreach (var field in allFields) field.Tick(dt, cam);
@@ -227,7 +227,7 @@ namespace Eldoria.ReferenceClean
                 // A new genuine timber/stone section has seated; it should
                 // release a visible, locally contained puff at the join.
                 if(hammerTools.Running)
-                    denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,16,.64f);
+                    denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,26,.77f);
                 nextStageDustAt=Time.unscaledTime+.38f;
             }
             previousStagedVisibleParts=currentParts;
@@ -355,7 +355,7 @@ namespace Eldoria.ReferenceClean
             if(FindSite(id,false,out var hammerSite))
                 hammerTools.Begin(hammerSite,city.PlayerCamera,Time.unscaledTime);
             if(hammerTools.Running)
-                denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,24,.98f);
+                denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,38,.92f);
             previousStagedVisibleParts=stagedBuilding.VisibleMeshCount;
             nextStageDustAt=Time.unscaledTime+.38f;
             nextWorkPulse = Time.unscaledTime + 1.55f;
@@ -671,9 +671,11 @@ namespace Eldoria.ReferenceClean
             particleRoot=container.transform;
             dustTexture=MakeTexture(false);
             ringTexture=MakeTexture(true);
+            denseTexture=MakeDenseDustTexture();
             dustMaterial=MakeMaterial("Eldoria / artisan dust",dustTexture);
             ringMaterial=MakeMaterial("Eldoria / worn-gold aureole",ringTexture);
-            if(!dustMaterial || !ringMaterial)
+            denseMaterial=MakeMaterial("Eldoria / soft irregular masonry cloud",denseTexture);
+            if(!dustMaterial || !ringMaterial || !denseMaterial)
             {
                 Debug.LogError("CONSTRUCTION_DELIGHT_SHADER_UNAVAILABLE");
                 enabled=false;
@@ -687,10 +689,10 @@ namespace Eldoria.ReferenceClean
             // Two additional BATCHED atmospheric fields, not hundreds of
             // renderer GameObjects. High density near the true hammer contact,
             // but softly feathered and short lived to keep wood and roof legible.
-            denseWorkDust=NewField("Work / dense scaffold dust",dustMaterial,115,0f,.82f,1.42f,.78f,1.52f,.18f,false,113);
-            hammerImpactDust=NewField("Work / hammer impact puffs",dustMaterial,90,0f,.53f,.93f,.38f,.84f,.32f,false,127);
-            denseWorkDust.Tint=new Color(.72f,.66f,.55f,.67f);
-            hammerImpactDust.Tint=new Color(.84f,.74f,.60f,.74f);
+            denseWorkDust=NewField("Work / dense scaffold dust",denseMaterial,150,0f,.97f,1.62f,.92f,1.98f,.20f,false,113);
+            hammerImpactDust=NewField("Work / hammer impact puffs",denseMaterial,110,0f,.67f,1.18f,.51f,1.17f,.31f,false,127);
+            denseWorkDust.Tint=new Color(.73f,.67f,.57f,.83f);
+            hammerImpactDust.Tint=new Color(.82f,.75f,.64f,.83f);
             finishDust=NewField("Finish / last settling dust",dustMaterial,45,0f,.55f,1.10f,.40f,.91f,.38f,false,43);
             finishEmbers=NewField("Finish / antique-gold glints",dustMaterial,70,0f,.58f,1.18f,.15f,.31f,.66f,false,57);
             finishRing=NewField("Finish / foundation settling wave",ringMaterial,2,0f,1.28f,1.28f,1f,1f,0f,true,79,true);
@@ -733,6 +735,39 @@ namespace Eldoria.ReferenceClean
             return t;
         }
 
+        // Same low-cost URP quad batches, but the denser work dust gets a
+        // dedicated feathered cloud texture. The soft Perlin-distorted rim
+        // breaks the obvious circular sprite silhouette; no disk assets or
+        // heavy smoke simulation, only a one-time 64x64 procedural texture.
+        static Texture2D MakeDenseDustTexture()
+        {
+            const int n=64;
+            var texture=new Texture2D(n,n,TextureFormat.RGBA32,false,true)
+            {
+                name="Eldoria / irregular artisan masonry plume",
+                filterMode=FilterMode.Bilinear,
+                wrapMode=TextureWrapMode.Clamp
+            };
+            var colors=new Color[n*n];
+            for(int y=0;y<n;y++)
+                for(int x=0;x<n;x++)
+                {
+                    float u=(x+.5f)/n, v=(y+.5f)/n;
+                    float px=2f*u-1f, py=2f*v-1f;
+                    float radius=Mathf.Sqrt(px*px+py*py);
+                    float clouds=Mathf.PerlinNoise(1.41f+u*3.4f,2.38f+v*3.4f);
+                    float grain=Mathf.PerlinNoise(5.13f+u*8.2f,7.82f+v*8.2f);
+                    float soft=Mathf.Pow(Mathf.Clamp01(1f-radius),.68f);
+                    float irregular=Mathf.Clamp01((1.01f-radius+
+                                  (clouds-.5f)*.18f)/.22f);
+                    float opacity=soft*irregular*(.78f+.22f*grain);
+                    colors[y*n+x]=new Color(1f,1f,1f,opacity);
+                }
+            texture.SetPixels(colors);
+            texture.Apply(false,true);
+            return texture;
+        }
+
         static Material MakeMaterial(string name,Texture2D texture)
         {
             var shader=Resources.Load<Shader>("ConstructionDelightSoft") ??
@@ -758,8 +793,10 @@ namespace Eldoria.ReferenceClean
             if(allFields!=null)foreach(var field in allFields)field.Dispose();
             if(dustMaterial)Destroy(dustMaterial);
             if(ringMaterial)Destroy(ringMaterial);
+            if(denseMaterial)Destroy(denseMaterial);
             if(dustTexture)Destroy(dustTexture);
             if(ringTexture)Destroy(ringTexture);
+            if(denseTexture)Destroy(denseTexture);
         }
 
         // Real geometry-based reward: a brief antique-gold sheen on the
