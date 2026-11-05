@@ -40,6 +40,27 @@ internal static class SyntaxProbe
             }
             Console.WriteLine("CONSTRUCTION_DELIGHT_SYNTAX_FILE "+
                               path+" syntax_errors="+failures.Length);
+            // The actual Unity native art runner compiles with UNITY_EDITOR.
+            // Parse that preprocessor branch too: the ordinary standalone
+            // Roslyn default intentionally skips Editor-only comparison code.
+            if(path.EndsWith("/ValoriaConstructionDelightV1.cs",StringComparison.Ordinal) ||
+               path.EndsWith("/Editor/ConstructionDelightNativeCapture.cs",StringComparison.Ordinal))
+            {
+                var editorOptions=CSharpParseOptions.Default
+                    .WithLanguageVersion(LanguageVersion.Latest)
+                    .WithPreprocessorSymbols(new[]{"UNITY_EDITOR"});
+                var editorTree=CSharpSyntaxTree.ParseText(text,editorOptions,path);
+                var editorFailures=editorTree.GetDiagnostics()
+                    .Where(d=>d.Severity==DiagnosticSeverity.Error).ToArray();
+                foreach(var error in editorFailures)
+                {
+                    Console.Error.WriteLine("CONSTRUCTION_DELIGHT_EDITOR_SYNTAX_ERROR "+
+                        error.Id+" "+error.Location.GetLineSpan()+" "+error.GetMessage());
+                    errors++;
+                }
+                Console.WriteLine("CONSTRUCTION_DELIGHT_EDITOR_SYNTAX_FILE "+
+                    path+" syntax_errors="+editorFailures.Length);
+            }
             if(path.EndsWith("/ConstructionDelightStageAssembly.cs",StringComparison.Ordinal))
             {
                 // Prevent the expensive visual regression where a completed
