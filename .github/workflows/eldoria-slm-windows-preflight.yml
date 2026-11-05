@@ -1,0 +1,58 @@
+name: "ELDORIA - SLM Windows safe read-only preflight"
+on:
+  workflow_dispatch:
+  push:
+    branches: [pilot/slm-permanent-bootstrap-20261104]
+    paths: ['.github/workflows/eldoria-slm-windows-preflight.yml']
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-slm-preflight-native
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 8
+    steps:
+      - name: Check machine capacities and project lease (no edits or downloads)
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $u='https://api.github.com/repos/${{ github.repository }}/contents/pipeline/active-workstreams.json?ref=main'
+          $h=@{Accept='application/vnd.github+json';'User-Agent'='eldoria-slm-readonly-preflight'}
+          $r=Invoke-RestMethod -Uri $u -Headers $h -TimeoutSec 25
+          if (-not $r.content -or -not $r.sha) {throw 'Cannot validate lease'}
+          $d=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($r.content -replace '\s',''))) | ConvertFrom-Json
+          $holders=@($d.active | Where-Object { @($_.resources) -contains 'windows-runner-heavy' })
+          $pnames=@('Unity','blender','UnityShaderCompiler','UnityPackageManager','UnityCrashHandler64','ollama')
+          $running=@(Get-Process -Name $pnames -ErrorAction SilentlyContinue)
+          $os=Get-CimInstance Win32_OperatingSystem
+          $freeRam=[math]::Round(($os.FreePhysicalMemory*1KB)/1GB,2)
+          $profile=$env:LOCALAPPDATA
+          if (-not $profile) {throw 'Missing LOCALAPPDATA'}
+          $drive=[System.IO.Path]::GetPathRoot($profile)
+          $disk=Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='$($drive.TrimEnd([char]92))'"
+          if(-not $disk) {throw 'Cannot check disk'}
+          $diskGb=[math]::Round($disk.FreeSpace/1GB,2)
+          $py=Get-Command py.exe -ErrorAction SilentlyContinue
+          $has312=$false
+          if ($py) {
+            $v=& $py.Source -3.12 --version 2>&1
+            $has312=($LASTEXITCODE -eq 0 -and "$v" -match '^Python 3\.12\.')
+          }
+          $userOk=($env:USERNAME -ine 'SYSTEM' -and $env:USERPROFILE -notmatch 'systemprofile' -and $profile -notmatch '(?i)[\\/]_temp[\\/]')
+          $report=[ordered]@{
+            checked_at_utc=[DateTime]::UtcNow.ToString('o')
+            machine_os=[Environment]::OSVersion.VersionString
+            approved_lease_holders=@($holders | ForEach-Object {$_.id})
+            lease_free=($holders.Count -eq 0)
+            running_native_processes=@($running | Select-Object -ExpandProperty ProcessName -Unique)
+            free_ram_gb=$freeRam
+            free_disk_gb=$diskGb
+            python312=$has312
+            stable_user=$userOk
+            installation_ready=($holders.Count -eq 0 -and $running.Count -eq 0 -and $freeRam -ge 6 -and $diskGb -ge 10 -and $has312 -and $userOk)
+          }
+          $report|ConvertTo-Json -Compress -Depth 5|Write-Host
+          if(-not $report.installation_ready){Write-Host 'READ_ONLY_PREFLIGHT_BLOCKED';exit 0}
+          Write-Host 'READ_ONLY_PREFLIGHT_READY'
