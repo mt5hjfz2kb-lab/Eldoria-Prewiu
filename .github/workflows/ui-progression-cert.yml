@@ -1090,6 +1090,7 @@ jobs:
           Write-Host 'ALDRIC_SHARED_NATIVE_COMPLETE_CASE_AND_TWELVE_VIEWS_PASS'
 
       - name: Compile canonical playable Windows candidate without publication
+        id: candidate_build
         if: ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && ((github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030') || (github.event.pull_request.number == 134 && github.event.pull_request.head.ref == 'feature/eldoria-v41-contracts-20261030')) && github.event.pull_request.head.repo.full_name == github.repository))
         shell: powershell
         run: |
@@ -1104,7 +1105,7 @@ jobs:
           $proof=Get-Content 'docs/evidence/valoria-reference-clean/windows-candidate.json' -Raw|ConvertFrom-Json
           if($proof.status -ne 'WINDOWS_CANDIDATE_COMPILED_NOT_PUBLISHED' -or $proof.source_sha -ne $env:ALDRIC_REQUEST_SOURCE_SHA){throw 'Candidate build identity mismatch'}
       - uses: actions/upload-artifact@v4
-        if: always() && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && ((github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030') || (github.event.pull_request.number == 134 && github.event.pull_request.head.ref == 'feature/eldoria-v41-contracts-20261030')) && github.event.pull_request.head.repo.full_name == github.repository))
+        if: always() && steps.candidate_build.conclusion == 'success' && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && ((github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030') || (github.event.pull_request.number == 134 && github.event.pull_request.head.ref == 'feature/eldoria-v41-contracts-20261030')) && github.event.pull_request.head.repo.full_name == github.repository))
         with:
           name: eldoria-pr136-candidate-${{ github.event.pull_request.head.sha || github.sha }}
           path: |
@@ -1164,6 +1165,7 @@ jobs:
             ${{ runner.temp }}/Eldoria-UIProgression-EditMode.log
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.log
             ${{ runner.temp }}/eldoria-ui-region1-captures-${{ github.run_id }}-${{ github.run_attempt }}/**
+            ${{ runner.temp }}/Eldoria-PR136-CandidateBuild.log
             ${{ runner.temp }}/Eldoria-UI-SourceCompile.log
             ${{ runner.temp }}/Eldoria-UI-III-ResourcePreparation.log
             ${{ runner.temp }}/Eldoria-V3-Native-I-II-Visual.log

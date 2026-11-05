@@ -738,7 +738,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 var report=gateway.Snapshot().LastBattleReport;
                 if(report!=null && report.TargetId=="vigilant:"+target)
                 {
-                    victoryTitle.Put(report.Won?"VICTORIA":"DERROTA");
+                    victoryTitle.Put(report.VersionedOutcome?.Outcome=="draw"?"EMPATE":report.Won?"VICTORIA":"DERROTA");
                     victoryTitle.color=report.Won?Gold:new Color(.93f,.51f,.41f,1f);
                     var challenge=EarlyRetentionRules.Stage(int.Parse(target));
                     victoryDetail.Put(EarlyRetentionRules.BattleReview(report,challenge));
@@ -1625,13 +1625,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 // visible after its celebration fades and after a genuine reload.
                 // The existing XP claim button still shows the real claimable amount.
                 if(height>width&&hasPrevious&&!previous.Won&&previous.TargetId=="vigilant:"+stage)
-                    passive.Put("DERROTA · "+previous.Rounds+" RONDAS\n"+EarlyRetentionRules.CombatAdvice(info));
+                    passive.Put((previous.VersionedOutcome?.Outcome=="draw"?"EMPATE":"DERROTA")+" · "+previous.Rounds+" RONDAS\n"+EarlyRetentionRules.CombatAdvice(info));
                 battleFeedback.Put(hasPrevious?
                     EarlyRetentionRules.BattleReview(previous,EarlyRetentionRules.Stage(
                         previous.TargetId=="vigilant:"+stage?stage:stage-1)):
                     "RASGO OBSERVADO · "+EarlyRetentionRules.CombatAdvice(info));
                 footer.Put(hasPrevious?
-                    "ÚLTIMA MARCHA · "+(previous.Won?"VICTORIA":"DERROTA")+
+                    "ÚLTIMA MARCHA · "+(previous.VersionedOutcome?.Outcome=="draw"?"EMPATE":previous.Won?"VICTORIA":"DERROTA")+
                         " · "+previous.Rounds+" rondas · Poder "+previous.PlayerPower:
                     "Cada victoria ilumina el siguiente tramo del camino.");
             }
