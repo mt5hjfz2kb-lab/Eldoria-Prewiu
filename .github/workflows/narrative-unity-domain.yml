@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/NarrativeCoherenceRules.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaMarchPresentation.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionFirstUseTutorial.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/UnityContextTutorial.cs'
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs'

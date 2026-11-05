@@ -4,6 +4,25 @@ namespace Eldoria.Domain
     // timed task or reward. The actual player state controls the objective key.
     public static class UnityContextTutorial
     {
+        // Teach first Mailbox use only after a genuine message arrives.
+        // Opening and reading reports cannot grant duplicate loot.
+        public static bool NeedsMailboxOpening(PlayerState state)
+        {
+            var box=state?.Mailbox;
+            if(box?.Messages==null)return false;
+            bool unread=false, read=false;
+            foreach(var message in box.Messages)
+            {
+                if(message==null)continue;
+                if(message.Read)read=true;else unread=true;
+            }
+            return unread&&!read;
+        }
+
+        public static string MailboxFirstUse(bool en) => en?
+            "New Mailbox: open Mail and select your first message. Reading does not claim extra rewards.":
+            "Nuevo Buzón: abre Correo y lee tu primer mensaje. Leer no concede recompensas adicionales.";
+
         public static string ForObjective(string key,bool en)
         {
             switch(key)

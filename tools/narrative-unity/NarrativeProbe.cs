@@ -126,6 +126,25 @@ public static class NarrativeProbe {
         "Vigilants and Scouts are uninterrupted");
   Check(!NarrativeCoherenceRules.CanPresent(false,false,false,false,true),
         "Reading mailbox reports is uninterrupted");
+  var inbox=State(3);
+  Check(!UnityContextTutorial.NeedsMailboxOpening(inbox),
+        "Mailbox is not introduced before a genuine delivery");
+  Check(inbox.Mailbox.Receive(new EldoriaV41Message {
+    EventId="first-real-mail",Category="informes",Title="Exploración"
+  }),"A genuine first mail event is delivered");
+  Check(UnityContextTutorial.NeedsMailboxOpening(inbox),
+        "First unread message teaches the Mailbox");
+  Check(UnityContextTutorial.MailboxFirstUse(false).Contains("Correo") &&
+        UnityContextTutorial.MailboxFirstUse(true).Contains("Mail"),
+        "Mailbox explanation is available in both languages");
+  inbox.Mailbox.MarkRead("first-real-mail");
+  Check(!UnityContextTutorial.NeedsMailboxOpening(inbox),
+        "Reading the first message completes the guidance");
+  inbox.Mailbox.Receive(new EldoriaV41Message {
+    EventId="second-mail",Category="informes",Title="Segundo mensaje"
+  });
+  Check(!UnityContextTutorial.NeedsMailboxOpening(inbox),
+        "New reports do not repeat a lesson after it was learned");
   var store=new Store{Value=State(3)};
   var clock=new Clock();
   var gateway=new LocalGateway(clock,store);

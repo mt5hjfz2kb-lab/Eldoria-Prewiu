@@ -187,6 +187,9 @@ namespace Eldoria.ReferenceClean {
    if(s.BuildingCompletesUtcTicks>0)return (en?"Construction paid · ":"Obra pagada · ")+RoyalFormatting.Remaining(s.BuildingCompletesUtcTicks,city.Clock.UtcTicks,en);
    if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+SliceRules.RecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en);
    if(s.BastionUpgradeCompletesUtcTicks>0)return (en?"Bastion upgrade paid · ":"Mejora del Bastión pagada · ")+RoyalFormatting.Remaining(s.BastionUpgradeCompletesUtcTicks,city.Clock.UtcTicks,en);
+   // Teach the real first delivery in the existing contextual hint.
+   if(UnityContextTutorial.NeedsMailboxOpening(s))
+    return UnityContextTutorial.MailboxFirstUse(en);
    string key=SliceRules.CurrentObjectiveKey(s),target=ObjectiveTarget();
    // One useful instruction for the real objective; it is never a modal.
    string teaching=UnityContextTutorial.ForObjective(key,en);
