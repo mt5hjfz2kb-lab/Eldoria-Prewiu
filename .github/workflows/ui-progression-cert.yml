@@ -280,7 +280,21 @@ jobs:
             $busy=@(Get-Process Unity,blender -ErrorAction SilentlyContinue)
             if($busy.Count){
               # Read-only diagnostics BEFORE checkout: preserve any surviving editor and its project.
-              $busy | Select-Object Id,ProcessName,StartTime,CPU,WorkingSet64,Responding | Format-Table -AutoSize
+              $busy | Select-Object Id,ProcessName,StartTime,CPU,WorkingSet64,Responding,MainWindowTitle,SessionId | Format-List
+              if(-not $originReported){
+                Get-CimInstance Win32_OperatingSystem | Select-Object LastBootUpTime,FreePhysicalMemory | Format-List
+                foreach($editor in $busy){
+                  $origin=Get-CimInstance Win32_Process -Filter ("ProcessId = " + $editor.Id) -ErrorAction SilentlyContinue
+                  $parent=Get-Process -Id $origin.ParentProcessId -ErrorAction SilentlyContinue
+                  Write-Host ("Editor PID="+$editor.Id+" ParentPID="+$origin.ParentProcessId+" ParentName="+$parent.ProcessName)
+                  # Only file names and mode, never dump arbitrary command arguments or Python expressions.
+                  if($editor.ProcessName -eq 'blender'){
+                    Write-Host ("Blender background="+[bool]($origin.CommandLine -match '(?:^|\s)(?:--background|-b)(?:\s|$)'))
+                    [regex]::Matches($origin.CommandLine,'"([^"\r\n]+\.blend)"|(?:^|\s)([^"\s]+\.blend)(?:\s|$)') | ForEach-Object {Write-Host ("Blend file="+$_.Groups[1].Value+$_.Groups[2].Value)}
+                  }
+                }
+                $originReported=$true
+              }
               foreach($process in $busy){
                 if($process.ProcessName -eq 'Unity'){
                   $native=Get-CimInstance Win32_Process -Filter ("ProcessId = " + $process.Id) -ErrorAction SilentlyContinue
