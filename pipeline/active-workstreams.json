@@ -6200,6 +6200,28 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
+    },
+    {
+      "id": "eldoria-first-login-map-signage-respawn-20261105",
+      "title": "Eldoria — bienvenida con nick, pictogramas, niveles del mapa y reposición de 5 min",
+      "owner": "chatgpt-eldoria-player-clarity-20261105",
+      "branch": "feature/player-clarity-first-login-map-signage-20261105",
+      "status": "active",
+      "ownership_state": "claimed",
+      "write_scope_released": false,
+      "ownership_revision": 1,
+      "claimed_at": "2026-11-05T19:53:00Z",
+      "base_main_sha": "32176b06afee2a507ea76ff9087832e6b0cec4c8",
+      "scope": [
+        "Unity/Assets/Eldoria/PlayerClarity/**",
+        "docs/player-clarity/**",
+        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarity*"
+      ],
+      "resources": [],
+      "phase": "ISOLATED_ICON_SOURCE_PREPARATION",
+      "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
+      "next": "Build independently packaged icon artwork and design/test contract for nickname, world labels, and five-minute authoritative respawns. Integrate core pieces after PR141 is reconciled.",
+      "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent."
     }
   ],
   "history": [
