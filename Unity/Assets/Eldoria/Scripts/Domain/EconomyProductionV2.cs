@@ -82,5 +82,11 @@ namespace Eldoria.Domain
         };
         public static bool TryGetSeconds(int targetLevel, out int seconds)
             => SecondsByTargetLevel.TryGetValue(targetLevel, out seconds);
+        public static int GetSeconds(int targetLevel)
+        {
+            if (!TryGetSeconds(targetLevel, out var seconds))
+                throw new ArgumentOutOfRangeException(nameof(targetLevel));
+            return seconds;
+        }
     }
 }
