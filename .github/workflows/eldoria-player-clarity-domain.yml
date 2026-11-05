@@ -1,0 +1,36 @@
+name: Player Clarity - isolated nickname and five-minute policy
+on:
+  push:
+    branches: [feature/player-clarity-first-login-map-signage-20261105]
+    paths:
+      - '.github/workflows/eldoria-player-clarity-domain.yml'
+      - 'tools/player-clarity/**'
+      - 'Unity/Assets/Eldoria/PlayerClarity/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-player-clarity-domain.yml'
+      - 'tools/player-clarity/**'
+      - 'Unity/Assets/Eldoria/PlayerClarity/**'
+permissions:
+  contents: read
+concurrency:
+  group: player-clarity-domain-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  pure-csharp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            tools/player-clarity/
+            Unity/Assets/Eldoria/PlayerClarity/
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile the actual production source and run focused assertions
+        run: dotnet run --project tools/player-clarity/Smoke.csproj --configuration Release
