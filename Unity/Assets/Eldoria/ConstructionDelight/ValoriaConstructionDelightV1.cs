@@ -967,6 +967,36 @@ namespace Eldoria.ReferenceClean
                 }
             }
 
+            // A dense but very local layered cloud at a REAL strike point.
+            // Keep each sprite's position in the field's stable local space,
+            // so earlier puffs never teleport when another hammer strikes.
+            // No per-hit objects, meshes, textures, physics or garbage.
+            public void EmitAtWorld(Vector3 world,int count,float radius)
+            {
+                Vector3 local=holder.InverseTransformPoint(world);
+                float spread=Mathf.Max(.02f,radius);
+                for(int i=0;i<count;i++)
+                {
+                    int slot=cursor++%capacity;
+                    float angle=RandomBetween(0f,Mathf.PI*2f);
+                    float distance=Mathf.Sqrt((float)Random01())*spread;
+                    var at=local+new Vector3(
+                        Mathf.Cos(angle)*distance,
+                        RandomBetween(-.13f,.22f),
+                        Mathf.Sin(angle)*distance*.64f);
+                    var drift=new Vector3(
+                        RandomBetween(-.20f,.20f),
+                        RandomBetween(upward*.65f,upward*1.35f),
+                        RandomBetween(-.17f,.17f));
+                    sprites[slot]=new Sprite{
+                        live=true,offset=at,drift=drift,
+                        age=0f,life=RandomBetween(minLife,maxLife),
+                        size=RandomBetween(minSize,maxSize),
+                        twist=RandomBetween(-1.4f,1.4f)
+                    };
+                }
+            }
+
             // Place a few larger glints on real facade beam locations using
             // a single existing mesh batch (no additional draw calls).
             public void EmitAccents(Vector3[] offsets,float sizeMin,float sizeMax)
