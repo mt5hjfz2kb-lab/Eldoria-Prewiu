@@ -30,6 +30,16 @@ namespace Eldoria.ReferenceClean
         public bool Running=>root && parts.Count>0;
         public bool Working=>Running && working;
         public int MeshCount=>parts.Count;
+        public int VisibleMeshCount
+        {
+            get
+            {
+                int visibleParts=0;
+                foreach(var part in parts)
+                    if(part.clone && part.clone.enabled)visibleParts++;
+                return visibleParts;
+            }
+        }
         public GameObject VisualRoot=>root;
 
         public bool BeginWork(GameObject dormantModel,long deadlineTicks,
@@ -152,6 +162,10 @@ namespace Eldoria.ReferenceClean
                 r.sharedMaterials=src.sharedMaterials;
                 r.receiveShadows=src.receiveShadows;
                 r.shadowCastingMode=src.shadowCastingMode;
+                r.lightmapIndex=src.lightmapIndex;
+                r.lightmapScaleOffset=src.lightmapScaleOffset;
+                r.sortingLayerID=src.sortingLayerID;
+                r.sortingOrder=src.sortingOrder;
                 r.lightProbeUsage=src.lightProbeUsage;
                 r.reflectionProbeUsage=src.reflectionProbeUsage;
                 parts.Add(new Part{
