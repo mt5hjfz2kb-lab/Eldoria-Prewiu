@@ -62,7 +62,7 @@ namespace Eldoria.UI.RoyalGold {
     case "b3.food":title=L(en,"Reúne 500 comida","Gather 500 food");done=s.Resources.Food;total=500;break;
     case "b3.hunt":title=L(en,"Completa dos cacerías","Complete two hunts");done=s.ChapterThree.Hunts;total=2;break;
     case "b3.investigate":title=L(en,"Investiga la fisura","Investigate the fissure");break;
-    case "b3.lyra":title=L(en,"Conoce a Lyra","Meet Lyra");break;
+    case "b3.lyra":title=L(en,"Investiga las huellas humanas","Investigate the human tracks");break;
     case "b3.fissure":title=L(en,"Asalta la fisura junto a Lyra","Assault the fissure with Lyra");break;
     case "b3.infrastructure":title=L(en,"Aserradero, Cuartel y Granero a nivel 2","Sawmill, Barracks and Granary to level 2");break;
     case "b3.complete":title=L(en,"Eleva el Bastión a nivel IV","Upgrade the Bastion to level IV");break;
@@ -173,7 +173,7 @@ namespace Eldoria.UI.RoyalGold {
     if(id=="fissure-valoria"){
      if(c.FissureClosed){b.State=L(en,"Fisura cerrada","Fissure closed");return b;}
      kind=!c.FissureExplored?"InvestigateFissure":!c.LyraContacted?"ContactLyra":"Fight";
-     label=L(en,kind=="InvestigateFissure"?"Investigar · 20 min":kind=="ContactLyra"?"Hablar con Lyra":"Asaltar con Lyra",kind=="InvestigateFissure"?"Investigate · 20 min":kind=="ContactLyra"?"Talk to Lyra":"Assault with Lyra");
+     label=L(en,kind=="InvestigateFissure"?"Investigar · 20 min":kind=="ContactLyra"?"Acercarse a la arquera":"Asaltar con Lyra",kind=="InvestigateFissure"?"Investigate · 20 min":kind=="ContactLyra"?"Approach the archer":"Assault with Lyra");
      int knowledge=NarrativeCoherenceRules.FissureKnowledgeStage(s);
     b.Function=knowledge==0?
      L(en,"Una fractura extraña cerca de Valoria. Aldric debe investigar antes de acercarse.","An unusual fracture near Valoria. Aldric must investigate before approaching."):

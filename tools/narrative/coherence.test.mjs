@@ -159,6 +159,9 @@ test('Unity prevents pre-discovery spoilers and orders saved narrative milestone
  assert.match(journey,/NarrativeCoherenceRules.NextUnseenBeat\(s\)/);
  assert.match(journey,/if\(string.IsNullOrEmpty\(beat\)\)return;/);
  assert.doesNotMatch(binding,/Una fisura local\. Lyra busca a su hermano/);
+ assert.doesNotMatch(binding,/case "b3.lyra":title=L\(en,"Conoce a Lyra"/);
+ assert.match(binding,/case "b3.lyra":title=L\(en,"Investiga las huellas humanas"/);
+ assert.match(html,/s.fissureExplored\?'ACERCARSE A LA ARQUERA'/);
  assert.match(binding,/knowledge==0\?/);
  assert.match(html,/maybeCodexTutorial\(\);tutorialBeat\(\)/);
  assert.match(html,/s.bastionLevel===9&&!s.trialWon/);
