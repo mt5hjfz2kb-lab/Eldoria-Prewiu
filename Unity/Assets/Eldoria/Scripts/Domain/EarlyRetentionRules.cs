@@ -162,37 +162,27 @@ namespace Eldoria.Domain
         {
             switch(stage.Step)
             {
-                case 5:return "DEFENSA ALTA · USA RUPTURA";
-                case 10:return "ATAQUE ALTO · USA DEFENSA";
-                case 15:return "RUPTURA ALTA · USA VIDA";
-                case 20:return "VIDA ALTA · USA ATAQUE";
-                case 25:return "EQUILIBRIO · PREPARA TU MARCHA";
+                case 5:return "CORAZA REFORZADA";
+                case 10:return "GOLPES CONTUNDENTES";
+                case 15:return "GARRAS PENETRANTES";
+                case 20:return "RESISTENCIA TENAZ";
+                case 25:return "GUARDIÁN DEL JURAMENTO";
                 default:return "DESAFÍO DEL CAMINO";
             }
         }
-        // Short, truthful advice anchored in a DIFFERENT actual enemy stat.
-        // It never promises a win or grants an automatic counter-bonus.
+        // Compatibility name retained for callers. Only observable traits, never
+        // composition advice or hidden combat parameters (issues #138/#139).
         public static string CombatAdvice(VigilantStage stage)
-        {
-            switch(stage.Step)
-            {
-                case 5:return "Prioriza daño y ruptura frente a su coraza.";
-                case 10:return "Refuerza defensa y vida ante sus golpes.";
-                case 15:return "Su ruptura castiga la defensa: lleva resistencia.";
-                case 20:return "Su vida es elevada: necesitas daño sostenido.";
-                case 25:return "Equilibra daño, defensa y ruptura.";
-                default:return "Observa sus estadísticas y prepara tu marcha.";
-            }
-        }
+            => GuardianBadge(stage);
         public static string BattleReview(BattleReportState report,VigilantStage stage)
         {
             if(report==null||report.TargetId!="vigilant:"+stage.Absolute)return "";
             var hero=report.HeroId=="lyra"?"Lyra":
                 report.HeroId=="aldric+lyra"?"Aldric y Lyra":"Aldric";
             return report.Rounds+" rondas · "+report.Troops+" tropas · "+hero+
-                "\nPoder "+report.PlayerPower+" · Índice "+report.EnemyPower+
-                " · Vida "+report.RemainingHealth+
-                "\n"+CombatAdvice(stage);
+                "\nPoder de marcha "+report.PlayerPower+
+                " · Vida "+report.RemainingHealth+(string.IsNullOrEmpty(report.VersionedOutcome?.Outcome)?"":"%")+
+                "\n"+(report.Won?"Encuentro superado.":"La marcha no superó el encuentro.");
         }
         // Lore variants are deterministic from the saved order, so a reload
         // never rerolls the story, fakes a rare item or duplicates a reward.
@@ -335,7 +325,7 @@ namespace Eldoria.Domain
         // null = unrelated command; false = refused without mutation; true = accepted.
         // The host verifies PlayerId, Revision and idempotent command ID FIRST.
         public static bool? Apply(PlayerState s,string kind,string target,long utcNow,
-            out string message)
+            out string message, IEldoriaCampaignBattleResolver resolver=null)
         {
             message="";
             if(kind!="VigilantBattle" && kind!="ClaimVigilantXp" &&
@@ -350,6 +340,9 @@ namespace Eldoria.Domain
                 string hero=s.ChapterThree!=null&&s.ChapterThree.LyraRecruited&&
                     (s.PreparedHeroId=="lyra"||s.PreparedHeroId=="aldric+lyra")
                     ?s.PreparedHeroId:"aldric";
+                if((hero!="lyra"&&!MarchCapacityRules.HeroAvailable(s,"aldric")) ||
+                    (hero!="aldric"&&!MarchCapacityRules.HeroAvailable(s,"lyra")))
+                {message="El héroe está en otra marcha";return false;}
                 var available=s.MarchConfigured&&s.PreparedTroops!=null&&s.PreparedTroops.Total>0?
                     s.PreparedTroops.Copy():
                     MarchCapacityRules.AutoSelect(s.Available,MarchCapacityRules.Capacity(s,hero));
@@ -357,18 +350,33 @@ namespace Eldoria.Domain
                 {message="La composición supera la capacidad de marcha o no está disponible";return false;}
                 var enemy=Stage(stage);
                 var army=ExpeditionWithMastery(s,available,hero);
-                var battle=SliceRules.FightCreature(army,enemy.Enemy);
+                EldoriaV41CombatRecord evolved=null;
+                if(resolver!=null && resolver.UsesCampaignCreatures)
+                {
+                    var heroes=hero=="aldric+lyra"?new[]{"aldric","lyra",null}:new[]{hero,null,null};
+                    var input=resolver.PrepareCreature(available,heroes,"vigilant:"+stage,enemy.Enemy);
+                    input.OwnMasteryLevel=HeroMasteryLevel(s,hero);
+                    evolved=resolver.Resolve(input);
+                    evolved.PlayerPower=army.Power;
+                }
+                var battle=evolved==null?SliceRules.FightCreature(army,enemy.Enemy):
+                    new CombatReport(evolved.Won,evolved.RemainingHealth,evolved.Rounds,evolved.Reason);
                 s.LastBattleReport=new BattleReportState{TargetId="vigilant:"+stage,
-                    HeroId=hero,Troops=available.Total,OwnRoster=available.Copy(),
+                    HeroId=hero,Troops=available.Total,OwnRoster=available.Copy(),VersionedOutcome=evolved?.Copy(),
                     PlayerPower=army.Power,
                     EnemyPower=enemy.Difficulty,Won=battle.Won,Rounds=battle.Rounds,
                     RemainingHealth=battle.RemainingHealth,
                     Reason=battle.Won?"Superaste la "+enemy.Trait.ToLowerInvariant()+".":
-                        "Prepara otra composición: "+CombatAdvice(enemy)};
+                        "La marcha no superó el encuentro."};
                 s.LastBattleReason=s.LastBattleReport.Reason;
                 if(!battle.Won){message="La etapa resistió. Mejora tu ejército.";return true;}
                 p.LastClearedStage=stage;
                 if(p.LastIdleClaimUtcTicks==0)p.LastIdleClaimUtcTicks=utcNow;
+                if(evolved!=null)
+                {
+                    evolved.RewardWood=30+stage*2;evolved.RewardStone=10+stage;
+                    s.LastBattleReport.VersionedOutcome=evolved.Copy();
+                }
                 int xp=20+stage/5*3;
                 if(hero=="lyra")p.LyraExperience=checked(p.LyraExperience+xp);
                 else p.AldricExperience=checked(p.AldricExperience+xp);
@@ -431,9 +439,16 @@ namespace Eldoria.Domain
                 {message="No hay tropas disponibles";return false;}
                 if(order.Kind==0)
                 {
-                    var fight=SliceRules.FightCreature(ExpeditionWithMastery(s,party,"aldric"),
-                        new WorldCreatureStats(430,48,43,18,0,0));
-                    if(!fight.Won){message="La patrulla es demasiado fuerte; refuerza tropas";return false;}
+                    var stats=new WorldCreatureStats(430,48,43,18,0,0);
+                    bool won;
+                    if(resolver!=null && resolver.UsesCampaignCreatures)
+                    {
+                        var input=resolver.PrepareCreature(party,new[]{"aldric",null,null},"scout:"+order.Id,stats);
+                        input.OwnMasteryLevel=HeroMasteryLevel(s,"aldric");
+                        won=resolver.Resolve(input).Won;
+                    }
+                    else won=SliceRules.FightCreature(ExpeditionWithMastery(s,party,"aldric"),stats).Won;
+                    if(!won){message="La patrulla es demasiado fuerte; refuerza tropas";return false;}
                 }
                 MarchCapacityRules.Reserve(s,party);
                 order.HeroId="aldric";

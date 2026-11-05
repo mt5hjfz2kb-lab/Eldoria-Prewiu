@@ -47,6 +47,7 @@ namespace Eldoria.Application
     {
         private readonly IClock clock;
         private readonly IStateStore store;
+        private readonly IEldoriaVersionedBattleResolver battleResolver;
         private PlayerState state;
         private IWorldResourcePlacement resourcePlacement;
         private long resourceRespawnTicks;
@@ -180,9 +181,9 @@ namespace Eldoria.Application
             }
             return changed;
         }
-        public LocalGateway(IClock clock, IStateStore store)
+        public LocalGateway(IClock clock, IStateStore store, IEldoriaVersionedBattleResolver battleResolver=null)
         {
-            this.clock = clock; this.store = store;
+            this.clock = clock; this.store = store; this.battleResolver=battleResolver;
             state = store.Load() ?? new PlayerState();
             if (state.SchemaVersion != 1) throw new InvalidOperationException("Unsupported Eldoria save schema");
             if (state.WorldResourceLocations == null)
@@ -204,6 +205,13 @@ namespace Eldoria.Application
             if(state.ExtraMarches==null)state.ExtraMarches=new System.Collections.Generic.List<MarchState>();
             if(state.ExtraMarches.Count>MarchCapacityRules.MaxConcurrentMarches-1 || state.ExtraMarches.Exists(x=>x==null))
                 throw new InvalidOperationException("Invalid persistent march slots");
+            foreach(var existingMarch in MarchCapacityRules.WorldMarches(state))
+            {
+                if(existingMarch.VersionedBattle?.IsLegacyPlaceholder==true)existingMarch.VersionedBattle=null;
+                if(existingMarch.VersionedBattle!=null && existingMarch.Phase!="idle" &&
+                    (battleResolver==null || existingMarch.VersionedBattle.RulesVersion!=battleResolver.RulesVersion))
+                    throw new InvalidOperationException("The persisted march requires its original combat resolver");
+            }
             if(state.Retention==null)state.Retention=new EarlyRetentionState();
             if(state.Retention.Orders==null)state.Retention.Orders=new System.Collections.Generic.List<ScoutOrder>();
             if(state.Mailbox==null)state.Mailbox=new EldoriaV41Mailbox();
@@ -277,6 +285,7 @@ namespace Eldoria.Application
                 ExtraMarches=s.ExtraMarches.ConvertAll(x=>x.Copy()),
                 March=new MarchState { MarchId=s.March.MarchId, OwnerId=s.March.OwnerId,
                     TargetId=s.March.TargetId, HeroId=s.March.HeroId, Troops=s.March.Troops.Copy(),
+                    VersionedBattle=s.March.VersionedBattle?.Copy(),
                     HeroIds=new System.Collections.Generic.List<string>(s.March.HeroIds??new System.Collections.Generic.List<string>()),
                     Route=s.March.Route?.ConvertAll(x=>x.Copy())??new System.Collections.Generic.List<WorldRoutePoint>(),
                     Phase=s.March.Phase, PhaseEndsUtcTicks=s.March.PhaseEndsUtcTicks,
@@ -298,6 +307,7 @@ namespace Eldoria.Application
                     HeroId=s.LastBattleReport?.HeroId??"aldric",
                     Troops=s.LastBattleReport?.Troops??0,
                     OwnRoster=s.LastBattleReport?.OwnRoster?.Copy(),
+                    VersionedOutcome=s.LastBattleReport?.VersionedOutcome?.Copy(),
                     PlayerPower=s.LastBattleReport?.PlayerPower??0,
                     EnemyPower=s.LastBattleReport?.EnemyPower??0,
                     Won=s.LastBattleReport?.Won??false,
@@ -337,7 +347,7 @@ namespace Eldoria.Application
             if (command.ActorId != state.PlayerId) return Fail("Propietario incorrecto");
             if (command.ExpectedRevision != observedRevision) return Fail("Estado desactualizado");
             var early=EarlyRetentionRules.Apply(state,command.Kind,command.TargetId,
-                clock.UtcTicks,out string earlyMessage);
+                clock.UtcTicks,out string earlyMessage,battleResolver as IEldoriaCampaignBattleResolver);
             if(early.HasValue)
             {
                 if(!early.Value)return Fail(earlyMessage);
@@ -345,10 +355,10 @@ namespace Eldoria.Application
                     (state.LastBattleReport.TargetId??"").StartsWith("vigilant:",StringComparison.Ordinal))
                     state.Mailbox.Receive(new EldoriaV41Message {
                         EventId="vigilant:"+command.Id,Category="informes",Type="battle",
-                        Title=state.LastBattleReport.Won?"Victoria en los Vigilantes":"Derrota en los Vigilantes",
+                        Title=state.LastBattleReport.VersionedOutcome?.Outcome=="draw"?"Empate en los Vigilantes":state.LastBattleReport.Won?"Victoria en los Vigilantes":"Derrota en los Vigilantes",
                         Subtitle=state.LastBattleReport.Reason,
                         ReportId="vigilant:"+command.Id,OccurredAtUtcTicks=clock.UtcTicks,
-                        Battle=new EldoriaV41CombatRecord {
+                        Battle=state.LastBattleReport.VersionedOutcome?.Copy()??new EldoriaV41CombatRecord {
                             TargetId=state.LastBattleReport.TargetId,HeroId=state.LastBattleReport.HeroId,
                             Troops=state.LastBattleReport.Troops,
                             OwnRoster=state.LastBattleReport.OwnRoster?.Copy(),
@@ -461,6 +471,7 @@ namespace Eldoria.Application
                         MarchCapacityRules.Capacity(state,marchHero));
                     if(parts.Length>1)
                     {
+                        nextTroops=new ArmyRoster(); // Explicit legacy composition must not retain auto-selected new families.
                         if(!int.TryParse(parts[1],out nextTroops.ArcherT1))return Fail("Composición desconocida");
                         nextTroops.ArcherT2=0;nextTroops.ArcherT3=0;
                     }
@@ -651,10 +662,30 @@ namespace Eldoria.Application
             var troops=usePrepared?state.PreparedTroops.Copy():
                 MarchCapacityRules.AutoSelect(state.Available,MarchCapacityRules.Capacity(state,hero));
             if(!MarchCapacityRules.Fits(troops,state.Available,MarchCapacityRules.Capacity(state,hero)))return false;
+            var versioned=gathering||IsChapterThreeTarget(targetId)?null:battleResolver?.Prepare(troops.Copy(),new System.Collections.Generic.List<string>(party),targetId);
+            if(versioned==null && !gathering && (!IsChapterThreeTarget(targetId)||targetId=="ash-stalker-valoria") &&
+                battleResolver is IEldoriaCampaignBattleResolver campaign && campaign.UsesCampaignCreatures)
+            {
+                var creature=Creature(state,targetId);
+                var stats=targetId=="ash-stalker-valoria"?new WorldCreatureStats(920,132,68,54,0,0):creature!=null?WorldCreatureCatalog.For(creature.CreatureKind,creature.Level):SliceRules.CampaignEnemy(targetId);
+                versioned=campaign.PrepareCreature(troops,party,targetId,stats);
+                versioned.EnemyAmbush=targetId=="ash-stalker-valoria";
+            }
+            if(versioned!=null && (versioned.RulesVersion!=battleResolver.RulesVersion || versioned.TargetId!=targetId))
+                throw new InvalidOperationException("Combat definition identity mismatch");
+            if(versioned!=null)
+            {
+                if(versioned.OwnTroops==null || versioned.OwnHeroes==null || versioned.OwnHeroes.Length!=party.Count)
+                    throw new InvalidOperationException("Incomplete own battle snapshot");
+                for(int f=0;f<3;f++)for(int t=1;t<=5;t++)
+                    if(versioned.OwnTroops.Get(f,t)!=troops.Get(f,t))throw new InvalidOperationException("Combat cannot change reserved troops");
+                for(int h=0;h<party.Count;h++)if(versioned.OwnHeroes[h]!=party[h])throw new InvalidOperationException("Combat cannot change reserved heroes");
+            }
             var m=MarchCapacityRules.AvailableSlot(state);
             if(m==null)return false;
             m.Route=planned;
             m.Troops=troops;
+            m.VersionedBattle=versioned?.Copy();
             m.HeroId=hero;
             m.HeroIds=party;
             MarchCapacityRules.Reserve(state,troops);
@@ -740,7 +771,12 @@ namespace Eldoria.Application
                         var expedition = SliceRules.Expedition(m.Troops, m.HeroId);
                         var creature=Creature(state,m.TargetId);
                         var enemy=creature!=null?WorldCreatureCatalog.For(creature.CreatureKind,creature.Level):default(WorldCreatureStats);
-                        var report=creature!=null?SliceRules.FightCreature(expedition,enemy):SliceRules.Fight(expedition,m.TargetId);
+                        var evolved=m.VersionedBattle==null?null:battleResolver.Resolve(m.VersionedBattle.Copy());
+                        if(m.VersionedBattle!=null && (evolved==null || evolved.TargetId!=m.TargetId ||
+                            (evolved.Outcome!="victory" && evolved.Outcome!="defeat" && evolved.Outcome!="draw")))
+                            throw new InvalidOperationException("Invalid versioned battle result");
+                        var report=evolved!=null?new CombatReport(evolved.Outcome=="victory",evolved.RemainingHealth,evolved.Rounds,evolved.Reason):
+                            creature!=null?SliceRules.FightCreature(expedition,enemy):SliceRules.Fight(expedition,m.TargetId);
                         state.LastBattleReason = report.Reason;
                         int rewardWood = 0, rewardStone = 0;
                         if (report.Won)
@@ -781,14 +817,20 @@ namespace Eldoria.Application
                             RewardStone = rewardStone,
                             Reason = report.Reason
                         };
+                        if(evolved!=null)
+                        {
+                            evolved.RewardWood=rewardWood;evolved.RewardStone=rewardStone;
+                            evolved.OwnRoster=m.Troops.Copy();
+                            state.LastBattleReport.VersionedOutcome=evolved.Copy();
+                        }
                         state.Mailbox.Receive(new EldoriaV41Message {
                             EventId="battle:"+m.MarchId+":"+m.TargetId+":"+due,
                             Category="informes",Type="battle",
-                            Title=report.Won?"Victoria en batalla":"Derrota en batalla",
+                            Title=evolved!=null&&evolved.Outcome=="draw"?"Empate en batalla":report.Won?"Victoria en batalla":"Derrota en batalla",
                             Subtitle="Informe de "+m.TargetId,
                             ReportId="battle:"+m.MarchId+":"+m.TargetId+":"+due,
                             OccurredAtUtcTicks=due,
-                            Battle=new EldoriaV41CombatRecord {
+                            Battle=evolved??new EldoriaV41CombatRecord {
                                 TargetId=state.LastBattleReport.TargetId,HeroId=state.LastBattleReport.HeroId,
                                 Troops=state.LastBattleReport.Troops,
                             OwnRoster=state.LastBattleReport.OwnRoster?.Copy(),
@@ -861,6 +903,7 @@ namespace Eldoria.Application
                         }
                         MarchCapacityRules.Return(state,m.Troops);
                     }
+                    m.VersionedBattle=null;
                     m.Troops = new ArmyRoster(); m.PendingFood = m.PendingWood = m.PendingStone = 0;
                     m.TargetId = ""; m.Phase = "idle"; m.PhaseEndsUtcTicks = 0;
                 }
@@ -1060,9 +1103,9 @@ namespace Eldoria.Application
             string id="battle:"+m.MarchId+":"+m.TargetId+":"+due;
             state.Mailbox.Receive(new EldoriaV41Message {
                 EventId=id,Category="informes",Type="battle",
-                Title=report.Won?"Victoria en batalla":"Derrota en batalla",
+                Title=report.VersionedOutcome?.Outcome=="draw"?"Empate en batalla":report.Won?"Victoria en batalla":"Derrota en batalla",
                 Subtitle=report.Reason,ReportId=id,OccurredAtUtcTicks=due,
-                Battle=new EldoriaV41CombatRecord {
+                Battle=report.VersionedOutcome?.Copy()??new EldoriaV41CombatRecord {
                     TargetId=report.TargetId,HeroId=report.HeroId,Troops=report.Troops,
                     OwnRoster=report.OwnRoster?.Copy(),PlayerPower=report.PlayerPower,EnemyPower=report.EnemyPower,Won=report.Won,
                     Rounds=report.Rounds,RemainingHealth=report.RemainingHealth,
@@ -1077,11 +1120,14 @@ namespace Eldoria.Application
             if(m.TargetId=="ash-stalker-valoria")
             {
                 var stats=SliceRules.Expedition(m.Troops,m.HeroId);
-                var report=SliceRules.FightCreature(stats,new WorldCreatureStats(920,132,68,54,0,0),ambush:true);
+                var evolved=m.VersionedBattle==null?null:battleResolver.Resolve(m.VersionedBattle.Copy());
+                var report=evolved==null?SliceRules.FightCreature(stats,new WorldCreatureStats(920,132,68,54,0,0),ambush:true):
+                    new CombatReport(evolved.Won,evolved.RemainingHealth,evolved.Rounds,evolved.Reason);
                 if(report.Won){c.AshStalkerDefeated=true;c.AshStalkerRespawnUtcTicks=due+TimeSpan.FromSeconds(60).Ticks;m.PendingFood=120;m.PendingStone=110;}
+                if(evolved!=null){evolved.RewardFood=m.PendingFood;evolved.RewardStone=m.PendingStone;}
                 state.LastBattleReport=new BattleReportState{
                     TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,
-                    OwnRoster=m.Troops?.Copy(),PlayerPower=stats.Power,EnemyPower=3600,Won=report.Won,
+                    OwnRoster=m.Troops?.Copy(),VersionedOutcome=evolved?.Copy(),PlayerPower=stats.Power,EnemyPower=3600,Won=report.Won,
                     Rounds=report.Rounds,RemainingHealth=report.RemainingHealth,
                     RewardFood=m.PendingFood,RewardStone=m.PendingStone,
                     Reason=report.Reason+(report.Won?" Botín: 120 comida y 110 piedra al regresar.":"")

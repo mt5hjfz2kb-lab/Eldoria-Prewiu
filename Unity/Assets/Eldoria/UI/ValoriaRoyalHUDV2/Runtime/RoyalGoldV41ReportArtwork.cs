@@ -16,6 +16,7 @@ namespace Eldoria.UI.RoyalGold.V2
         int metricCount,columns=4;
         float metricTop,metricHeight,narrativeTop,narrativeHeight,footerBottom;
         Rect familyPicture;
+        float layoutUnit=1f;
         static readonly Color Paper=new Color(.94f,.859f,.706f,1f);
         static readonly Color Shadow=new Color(.16f,.095f,.048f,.35f);
         static readonly Color Brass=new Color(.65f,.424f,.18f,.85f);
@@ -23,17 +24,17 @@ namespace Eldoria.UI.RoyalGold.V2
         public override Texture mainTexture=>Texture2D.whiteTexture;
 
         public void Configure(Motif newMotif,int count,int cols,float top,float cardH,
-            float bodyTop,float bodyH,float lowerTextBottom,Rect illustration)
+            float bodyTop,float bodyH,float lowerTextBottom,Rect illustration,float units=1f)
         {
             if(motif==newMotif&&metricCount==count&&columns==cols&&
                 Mathf.Approximately(metricTop,top)&&Mathf.Approximately(metricHeight,cardH)&&
                 Mathf.Approximately(narrativeTop,bodyTop)&&Mathf.Approximately(narrativeHeight,bodyH)&&
                 Mathf.Approximately(footerBottom,lowerTextBottom)&&
-                familyPicture==illustration)return;
+                familyPicture==illustration&&Mathf.Approximately(layoutUnit,units))return;
             motif=newMotif;metricCount=count;columns=Mathf.Max(1,cols);
             metricTop=top;metricHeight=cardH;narrativeTop=bodyTop;
             narrativeHeight=bodyH;footerBottom=lowerTextBottom;
-            familyPicture=illustration;
+            familyPicture=illustration;layoutUnit=Mathf.Max(1f,units);
             SetVerticesDirty();
         }
         static void Quad(VertexHelper vh,Vector2 a,Vector2 b,Vector2 c,Vector2 d,
@@ -139,7 +140,8 @@ namespace Eldoria.UI.RoyalGold.V2
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             vh.Clear();
-            var r=rectTransform.rect;
+            var actual=rectTransform.rect;
+            var r=new Rect(actual.x/layoutUnit,actual.y/layoutUnit,actual.width/layoutUnit,actual.height/layoutUnit);
             float w=r.width,h=r.height;
             if(w<80f||h<80f)return;
             Rect Area(float x,float y,float width,float height)=>
@@ -258,6 +260,15 @@ namespace Eldoria.UI.RoyalGold.V2
                     new Color(.49f,.32f,.16f,.08f));
                 DrawGlyph(vh,middle,size*.78f,new Color(.48f,.32f,.16f,.13f));
             }
+            // Scale generated vector vertices, not the text-bearing transform.
+            if(layoutUnit>1f)
+                for(int i=0;i<vh.currentVertCount;i++)
+                {
+                    var vertex=UIVertex.simpleVert;
+                    vh.PopulateUIVertex(ref vertex,i);
+                    vertex.position*=layoutUnit;
+                    vh.SetUIVertex(vertex,i);
+                }
         }
     }
 }

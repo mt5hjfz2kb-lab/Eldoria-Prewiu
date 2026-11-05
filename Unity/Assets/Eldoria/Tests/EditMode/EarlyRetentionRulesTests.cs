@@ -200,7 +200,16 @@ namespace Eldoria.Tests
             Assert.That(text,Does.Contain("6 rondas"));
             Assert.That(text,Does.Contain("37 tropas"));
             Assert.That(text,Does.Contain("Lyra"));
-            Assert.That(text,Does.Contain("ruptura"));
+            Assert.That(text,Does.Contain("La marcha no superó el encuentro."));
+            Assert.That(text,Does.Not.Contain("Índice"));
+            Assert.That(text,Does.Not.Contain("lleva resistencia"));
+            foreach(var stage in new[]{5,10,15,20,25})
+            {
+                var trait=EarlyRetentionRules.CombatAdvice(EarlyRetentionRules.Stage(stage));
+                Assert.That(trait,Does.Not.Contain("USA"));
+                Assert.That(trait,Does.Not.Contain("Prioriza"));
+                Assert.That(trait,Does.Not.Contain("Refuerza"));
+            }
             Assert.That(EarlyRetentionRules.BattleReview(report,EarlyRetentionRules.Stage(10)),
                 Is.Empty,"Reports cannot be shown as an unrelated battle");
         }

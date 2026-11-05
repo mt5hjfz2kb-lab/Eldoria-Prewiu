@@ -202,7 +202,7 @@ namespace Eldoria.ReferenceClean {
      long seconds=Math.Max(0,(m.PhaseEndsUtcTicks-host.City.Clock.UtcTicks)/TimeSpan.TicksPerSecond);
      if(labelSeconds[i]!=seconds||labelTroops[i]!=m.Troops.Total||labelHeroes[i]!=m.HeroId||labelPhases[i]!=m.Phase){
       string hero=m.HeroId=="lyra"?"Lyra":m.HeroId=="aldric+lyra"?"Aldric + Lyra":"Aldric";
-      labels[i].Put(hero+"\n"+(m.Phase=="investigating"?(host.English?"Fissure":"Brecha"):m.Troops.Total+(host.English?" troops":" tropas"))+" · "+
+      labels[i].Put(hero+"\n"+(m.Phase=="investigating"?(host.English?"Fissure":"Fisura"):m.Troops.Total+(host.English?" troops":" tropas"))+" · "+
        (seconds/60)+":"+(seconds%60).ToString("00"));
       labelSeconds[i]=seconds;labelTroops[i]=m.Troops.Total;labelHeroes[i]=m.HeroId;labelPhases[i]=m.Phase;
      }

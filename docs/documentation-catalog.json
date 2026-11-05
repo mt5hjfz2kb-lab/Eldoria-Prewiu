@@ -394,6 +394,12 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/NARRATIVE_TUTORIAL_COHERENCE_PLAN_20261105.md",
+      "domain": "gameplay",
+      "status": "reference",
+      "note": "Cierre de PR160 integrada en Unity I–V sobre combate PR134: diálogo, tutorial y guardados certificados en main por 42065390835/42065391163. Sin cambios en prototipo web, publicación ni QA física."
+    },
+    {
       "path": "docs/PLAYER_CITY_V1_UNIVERSAL_ICON.md",
       "domain": "project",
       "status": "review_pending"

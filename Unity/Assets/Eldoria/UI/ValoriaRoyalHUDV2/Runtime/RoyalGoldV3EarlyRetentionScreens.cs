@@ -738,7 +738,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 var report=gateway.Snapshot().LastBattleReport;
                 if(report!=null && report.TargetId=="vigilant:"+target)
                 {
-                    victoryTitle.Put(report.Won?"VICTORIA":"DERROTA");
+                    victoryTitle.Put(report.VersionedOutcome?.Outcome=="draw"?"EMPATE":report.Won?"VICTORIA":"DERROTA");
                     victoryTitle.color=report.Won?Gold:new Color(.93f,.51f,.41f,1f);
                     var challenge=EarlyRetentionRules.Stage(int.Parse(target));
                     victoryDetail.Put(EarlyRetentionRules.BattleReview(report,challenge));
@@ -1322,6 +1322,8 @@ namespace Eldoria.UI.RoyalGold.V2
             var s=gateway.Snapshot();
             var p=s.Retention??new EarlyRetentionState();
             bool vig=OpenDestination==Destination.Vigilants;
+            var firstUse=vig?EarlyRetentionFirstUseTutorial.Vigilants(s):
+                EarlyRetentionFirstUseTutorial.Explorers(s);
             if(guardianBanner)guardianBanner.gameObject.SetActive(false);
             var boardBacking=infoCard.GetComponent<RoyalGoldV2FrameGraphic>();
             if(boardBacking)boardBacking.enabled=vig&&!encounterSkin;
@@ -1423,10 +1425,14 @@ namespace Eldoria.UI.RoyalGold.V2
             bool narrow=height>width && width<640f;
             heading.Put(vig?(narrow?"Vigilantes":"Camino de los Vigilantes"):
                 (narrow?"Exploradores":"Mesa de Exploradores"));
-            kicker.Put(vig?(narrow?"CAMINO DE LOS VIGILANTES · PvE":
-                "PRUEBAS DEL REINO · COMBATE AUTOMÁTICO"):
+            kicker.Put(firstUse==FirstUseTutorialPhase.FirstAction?
+                (vig?"NUEVO · PRIMER COMBATE AUTOMÁTICO":"NUEVO · TU PRIMER ENCARGO"):
+                firstUse==FirstUseTutorialPhase.AwaitingResult?
+                "EN CURSO · RECOGE EL INFORME AL VOLVER":
+                vig?(narrow?"CAMINO DE LOS VIGILANTES · PvE":
+                    "PRUEBAS DEL REINO · COMBATE AUTOMÁTICO"):
                 (narrow?"MESA DE EXPLORADORES · ENCARGOS":
-                "Envía a tus exploradores y descubre nuevas tierras"));
+                    "Envía a tus exploradores y descubre nuevas tierras"));
             introduction.gameObject.SetActive(false);
             scoutStrategyButton.gameObject.SetActive(true);
             if(vig)
@@ -1591,6 +1597,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     MarchCapacityRules.AutoSelect(s.Available,capacity);
                 bool eligibleTroops=MarchCapacityRules.Fits(selectedTroops,s.Available,capacity);
                 bool hasMarchSlot=MarchCapacityRules.CanStart(s,now());
+                bool heroReady=(selectedHero=="lyra"||MarchCapacityRules.HeroAvailable(s,"aldric"))&&
+                    (selectedHero=="aldric"||MarchCapacityRules.HeroAvailable(s,"lyra"));
                 var marchStats=eligibleTroops?
                     EarlyRetentionRules.ExpeditionWithMastery(s,selectedTroops,selectedHero):
                     default(CombatStats);
@@ -1606,13 +1614,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 string xpSummary="EXP. "+xp+" XP · Máx. 8 h\n";
                 passive.Put(xpSummary+
                     "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+
-                    " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"));
+                    (s.ChapterThree!=null&&s.ChapterThree.LyraRecruited?
+                        " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"):""));
                 mainAction.interactable=EarlyRetentionRules.StageUnlocked(s,stage)&&
-                    eligibleTroops&&hasMarchSlot;
+                    eligibleTroops&&hasMarchSlot&&heroReady;
                 // The action cannot promise a battle if the real Gateway will
                 // reject it for capacity, unavailable troops or three active slots.
                 mainActionLabel.Put(mainAction.interactable?"Combatir":
-                    !hasMarchSlot?"3 MARCHAS OCUPADAS":
+                    !hasMarchSlot?"3 MARCHAS OCUPADAS":!heroReady?"HÉROE EN MARCHA":
                     !eligibleTroops?"AJUSTA TU MARCHA":"AÚN NO DISPONIBLE");
                 claimXp.interactable=xp>0;
                 xpLabel.Put(xp>0?"RECOGER "+xp+" XP":"EXPERIENCIA EN PROGRESO");
@@ -1623,21 +1632,24 @@ namespace Eldoria.UI.RoyalGold.V2
                 // visible after its celebration fades and after a genuine reload.
                 // The existing XP claim button still shows the real claimable amount.
                 if(height>width&&hasPrevious&&!previous.Won&&previous.TargetId=="vigilant:"+stage)
-                    passive.Put("DERROTA · "+previous.Rounds+" RONDAS\n"+EarlyRetentionRules.CombatAdvice(info));
+                    passive.Put((previous.VersionedOutcome?.Outcome=="draw"?"EMPATE":"DERROTA")+" · "+previous.Rounds+" RONDAS\n"+EarlyRetentionRules.CombatAdvice(info));
                 battleFeedback.Put(hasPrevious?
                     EarlyRetentionRules.BattleReview(previous,EarlyRetentionRules.Stage(
                         previous.TargetId=="vigilant:"+stage?stage:stage-1)):
-                    "ESTRATEGIA · "+EarlyRetentionRules.CombatAdvice(info));
+                    "RASGO OBSERVADO · "+EarlyRetentionRules.CombatAdvice(info));
                 footer.Put(hasPrevious?
-                    "ÚLTIMA MARCHA · "+(previous.Won?"VICTORIA":"DERROTA")+
+                    "ÚLTIMA MARCHA · "+(previous.VersionedOutcome?.Outcome=="draw"?"EMPATE":previous.Won?"VICTORIA":"DERROTA")+
                         " · "+previous.Rounds+" rondas · Poder "+previous.PlayerPower:
-                    "Cada victoria ilumina el siguiente tramo del camino.");
+                    firstUse==FirstUseTutorialPhase.FirstAction?
+                     "PRIMERA PRUEBA · Pulsa Combatir y revisa el resultado.":
+                     "Cada victoria ilumina el siguiente tramo del camino.");
             }
             else
             {
                 if(engendroPortrait)
                     engendroPortrait.transform.parent.gameObject.SetActive(false);
-                chapter.Put("ENCARGOS EN CURSO");
+                chapter.Put(firstUse==FirstUseTutorialPhase.FirstAction?
+                    "PRIMER ENCARGO":"ENCARGOS EN CURSO");
                 var list=p.Orders.Where(x=>x!=null&&!x.Claimed)
                     .OrderBy(x=>x.StartedUtcTicks>0?0:1)
                     .ThenBy(x=>x.Period).ThenBy(x=>x.Slot).Take(3).ToArray();
@@ -1723,7 +1735,11 @@ namespace Eldoria.UI.RoyalGold.V2
                         order.EndsUtcTicks<=now()?"Recoger":"En camino");
                 }
                 long due=EarlyRetentionRules.NextPeriodUtcTicks(now());
-                footer.Put("Nuevos encargos: "+
+                footer.Put(firstUse==FirstUseTutorialPhase.FirstAction?
+                    "PRIMER PASO · Elige un encargo y pulsa Enviar.":
+                    firstUse==FirstUseTutorialPhase.AwaitingResult?
+                    "EN CURSO · Al regresar la marcha, pulsa Recoger.":
+                    "Nuevos encargos: "+
                     TimeSpan.FromTicks(Math.Max(0,due-now())).ToString(@"hh\:mm\:ss")+
                     " · Máximo 6 pendientes");
             }

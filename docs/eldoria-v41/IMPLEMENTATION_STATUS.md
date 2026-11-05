@@ -1,3 +1,13 @@
+# Eldoria V4.1 — combate integrado y verificado (5 noviembre 2026)
+
+PR #134 integrada en main: `d19df6fc1d521204926b735a05a06786c80f37a5`. PR #136 también integrada y verificada. El anfitrión Unity usa el resolver T1–T5 final; los viajes antiguos conservan su versión. Mundo, Vigilantes, patrullas y emboscada usan datos reales, con informes y premios idempotentes. El motor experimental histórico no es la autoridad del nuevo resolver.
+
+Unity exacto42044569900: 117/117 EditMode,73/73 PlayMode, cuatro resoluciones revisadas y Windows privado PASS. Postverificación42052170803/42052170653 completada SUCCESS. Detalle de reconciliación, hashes, reglas y límites en [COMBAT_IMPLEMENTATION_20261105.md](COMBAT_IMPLEMENTATION_20261105.md).
+
+El arte continúa provisional. Hospital/PvP, porcentajes médicos candidatos, familias/tiers aún no descubiertos y catálogo hipotético de50 enemigos no se activan. No se publica APK/WebGL ni se afirma prueba física móvil.
+
+## Histórico anterior, sustituido por el estado superior
+
 # Eldoria V4.1 — implementación real en curso (PR #134)
 
 **Fuente principal:** Issue #131 y referencias originales verificadas que están en la biblioteca ChatGPT

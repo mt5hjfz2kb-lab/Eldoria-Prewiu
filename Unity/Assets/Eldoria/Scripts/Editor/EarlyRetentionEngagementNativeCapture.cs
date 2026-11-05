@@ -130,8 +130,8 @@ namespace Eldoria.ReferenceClean.Editor
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
             yield return new WaitForSecondsRealtime(.25f);
             var subtitle=FindText(hud,"Chapter overline");
-            Need(subtitle && subtitle.text.Contains("DEFENSA ALTA"),
-                "Real stage-five player banner warns of the actual defense profile");
+            Need(subtitle && subtitle.text.Contains("CORAZA REFORZADA")&&!subtitle.text.Contains("USA RUPTURA"),
+                "Real stage-five banner shows observable armor without a tactical recommendation");
             var badge=FindText(hud,"Live progress / no decorative counters");
             Need(badge&&badge.text.Contains("4 ETAPAS"),
                 "Gilded landscape plaque reflects canonical saved path progress");
@@ -149,7 +149,9 @@ namespace Eldoria.ReferenceClean.Editor
             var victory=FindText(hud,"Original victory heading");
             Need(victory&&victory.text=="VICTORIA"&&victory.gameObject.activeInHierarchy,
                 "A genuine gold combat celebration is shown, not only a report in code");
-            Need(after.LastBattleReport.TargetId=="vigilant:5",
+            Need(after.LastBattleReport.TargetId=="vigilant:5"&&
+                after.LastBattleReport.VersionedOutcome?.Outcome=="victory"&&
+                !string.IsNullOrEmpty(after.LastBattleReport.VersionedOutcome.OwnDamageByFamily),
                 "Real combat report attached to the fifth guardian");
             Need(after.LastBattleReport.Rounds>0&&after.LastBattleReport.Troops<=
                 MarchCapacityRules.Capacity(after,"aldric"),
@@ -178,7 +180,7 @@ namespace Eldoria.ReferenceClean.Editor
             Save(host,state);yield return new WaitForSecondsRealtime(.3f);
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
             ui.SynchronizeLayout();
-            Need(subtitle.text.Contains("RUPTURA ALTA"),
+            Need(subtitle.text.Contains("GARRAS PENETRANTES")&&!subtitle.text.Contains("USA VIDA"),
                 "The canonical Engendro warns against its real Breach trait");
             Need(FindText(hud,"Real enemy and trait").text.Contains("Engendro de la Brecha"),
                 "The original authored Spawnling lore is preserved");
@@ -211,8 +213,8 @@ namespace Eldoria.ReferenceClean.Editor
             Shot(host,"vigilants-defeat-reopened-phone",390,844,()=>{
                 var persisted=FindText(hud,"Offline hero experience");
                 Need(persisted&&persisted.gameObject.activeInHierarchy&&persisted.text.Contains("DERROTA")&&
-                    persisted.text.Contains("ruptura")&&persisted.preferredHeight<=persisted.rectTransform.rect.height+1f,
-                    "Real phone manuscript preserves the readable defeat lesson after reload and banner expiry");
+                    persisted.text.Contains("GARRAS PENETRANTES")&&!persisted.text.Contains("lleva resistencia")&&persisted.preferredHeight<=persisted.rectTransform.rect.height+1f,
+                    "Real phone manuscript preserves the readable observed defeat after reload and banner expiry");
             });
             ui.Close();
             state=host.City.Gateway.Snapshot();

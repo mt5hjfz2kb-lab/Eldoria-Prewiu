@@ -1,0 +1,43 @@
+name: Unity Narrative Domain (Ubuntu, no Editor)
+on:
+  pull_request:
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/NarrativeCoherenceRules.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaMarchPresentation.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionFirstUseTutorial.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/UnityContextTutorial.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs'
+      - 'Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs'
+      - 'tools/narrative-unity/**'
+      - '.github/workflows/narrative-unity-domain.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  narrative-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/narrative-unity
+            tools/bastion-iii
+            tools/bastion-iv-v
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Execute real Unity game-state and gateway narrative assertions
+        run: dotnet run --project tools/narrative-unity/NarrativeProbe.csproj --configuration Release
+      - name: Verify canonical 20-minute fissure and Lyra progression
+        run: dotnet run --project tools/bastion-iii/DomainProbe.csproj --configuration Release
+      - name: Verify Bastion IV-V Unity gateway and objective parity
+        run: dotnet run --project tools/bastion-iv-v/DomainProbe.csproj --configuration Release
