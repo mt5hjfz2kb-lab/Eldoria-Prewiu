@@ -208,8 +208,8 @@ internal static class SyntaxProbe
                                  runtime.Contains("if(staged)stagedBuilding.SetVisible(false)",StringComparison.Ordinal) &&
                                  runtime.Contains("if(staged)stagedBuilding.SetVisible(true)",StringComparison.Ordinal) &&
                                  runtime.Contains("if(city && city.Probe)",StringComparison.Ordinal);
-            bool expectedCount=capture.Contains("\\\"images\\\": 64",StringComparison.Ordinal) ||
-                               capture.Contains("images=64",StringComparison.Ordinal);
+            bool expectedCount=capture.Contains("\\\"images\\\": 72",StringComparison.Ordinal) ||
+                               capture.Contains("images=72",StringComparison.Ordinal);
             if(!exactCaseNames || !bothStates || !sharedView ||
                !geometrySwitch || !matchingEffects || !expectedCount)
             {
@@ -262,7 +262,11 @@ internal static class SyntaxProbe
                 owner.Contains("denseWorkDust.EmitAtWorld(hammerTools.FirstImpact",
                     StringComparison.Ordinal) &&
                 owner.Contains("holder.InverseTransformPoint(world)",StringComparison.Ordinal);
-            bool nativeValidated=capture.Contains("fx.ActiveHammerRenderers",
+            bool eventSnapshots=capture.Contains("hammer-strike-",StringComparison.Ordinal) &&
+                                 capture.Contains("hammer-dust-",StringComparison.Ordinal) &&
+                                 capture.Contains("hammerSamples!=2",StringComparison.Ordinal);
+            bool nativeValidated=eventSnapshots &&
+                capture.Contains("fx.ActiveHammerRenderers",
                 StringComparison.Ordinal) &&
                 capture.Contains("fx.TotalHammerImpacts",
                     StringComparison.Ordinal) &&
