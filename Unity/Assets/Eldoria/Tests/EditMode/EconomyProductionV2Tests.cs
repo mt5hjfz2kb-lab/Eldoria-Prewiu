@@ -60,19 +60,64 @@ namespace Eldoria.Tests.EditMode
         }
 
         [Test]
-        public void ThirtyDaysOfflineAtHighestProductionLevelDoesNotOverflowTicks()
+        public void ThirtyDaysOfflineAtHighestProductionLevelStopsAfterFortyEightHours()
         {
             long start = new DateTime(2026, 11, 1, 0, 0, 0, DateTimeKind.Utc).Ticks;
             long end = start + TimeSpan.FromDays(30).Ticks;
             var wood = EconomyProductionV2.Accrue(start, end, 0, 5, "wood");
             var stone = EconomyProductionV2.Accrue(start, end, 0, 5, "stone");
             var food = EconomyProductionV2.Accrue(start, end, 0, 5, "food");
-            Assert.AreEqual(1944000, wood.WholeUnits);
-            Assert.AreEqual(1399680, stone.WholeUnits);
-            Assert.AreEqual(1658880, food.WholeUnits);
+            Assert.AreEqual(129600, wood.WholeUnits);
+            Assert.AreEqual(93312, stone.WholeUnits);
+            Assert.AreEqual(110592, food.WholeUnits);
             Assert.AreEqual(0, wood.FractionalMicrounits);
             var repeat = EconomyProductionV2.Accrue(wood.SettledThroughUtcTicks,
                 end, wood.FractionalMicrounits, 5, "wood");
+            Assert.AreEqual(0, repeat.WholeUnits);
+        }
+
+        [Test]
+        public void FortyEightHourBoundaryAndLongerAbsencePayIdenticalResources()
+        {
+            long start = new DateTime(2026,11,5,0,0,0,DateTimeKind.Utc).Ticks;
+            long cutoff = start + TimeSpan.FromHours(48).Ticks;
+            var exact = EconomyProductionV2.Accrue(start, cutoff, 0, 1, "wood");
+            var longer = EconomyProductionV2.Accrue(start,
+                cutoff + TimeSpan.FromDays(90).Ticks, 0, 1, "wood");
+            Assert.AreEqual(20736, exact.WholeUnits);
+            Assert.AreEqual(exact.WholeUnits, longer.WholeUnits);
+            Assert.AreEqual(cutoff + TimeSpan.FromDays(90).Ticks, longer.SettledThroughUtcTicks);
+            var reopen = EconomyProductionV2.Accrue(longer.SettledThroughUtcTicks,
+                longer.SettledThroughUtcTicks, longer.FractionalMicrounits, 1, "wood");
+            Assert.AreEqual(0, reopen.WholeUnits);
+        }
+
+        [Test]
+        public void UpgradeAfterFortyEightHoursCannotBoostEarlierProduction()
+        {
+            long start = new DateTime(2026,11,5,0,0,0,DateTimeKind.Utc).Ticks;
+            var upgradedAfterCap = EconomyProductionV2.Accrue(start,
+                start + TimeSpan.FromDays(5).Ticks, 0, 5, "food",
+                start + TimeSpan.FromHours(60).Ticks, 1);
+            Assert.AreEqual(17280, upgradedAfterCap.WholeUnits);
+        }
+
+        [Test]
+        public void UpgradingDuringAbsenceCannotResetFortyEightHourBudget()
+        {
+            long start = new DateTime(2026,11,5,0,0,0,DateTimeKind.Utc).Ticks;
+            long upgradeTime = start + TimeSpan.FromHours(1).Ticks;
+            long cap = EconomyProductionV2.OfflineWindowDeadline(start);
+            long returned = start + TimeSpan.FromDays(5).Ticks;
+            var first = EconomyProductionV2.Accrue(start, upgradeTime, 0, 1,
+                "wood", productionDeadlineUtcTicks:cap);
+            var second = EconomyProductionV2.Accrue(first.SettledThroughUtcTicks, returned,
+                first.FractionalMicrounits, 2, "wood", productionDeadlineUtcTicks:cap);
+            Assert.AreEqual(432, first.WholeUnits);
+            Assert.AreEqual(37224, second.WholeUnits);
+            Assert.AreEqual(returned, second.SettledThroughUtcTicks);
+            var repeat = EconomyProductionV2.Accrue(returned, returned,
+                second.FractionalMicrounits, 2, "wood");
             Assert.AreEqual(0, repeat.WholeUnits);
         }
 
