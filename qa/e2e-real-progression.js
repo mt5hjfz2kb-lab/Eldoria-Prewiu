@@ -38,7 +38,7 @@ const {chromium}=require('playwright');
  // 20-minute/offline/idempotence mechanics are separately proven by domain QA.
  await set({...s,tasks:(s.tasks||[]).filter(t=>t.key!=='explore-fissure'),fissureExplored:true,view:'world'});
  await select();
- if(!(await action.innerText()).includes('HABLAR CON LYRA'))throw Error('Research must unlock CONTACT, not an immediate boss battle');
+ if(!(await action.innerText()).includes('ACERCARSE A LA ARQUERA'))throw Error('Research must reveal a stranger before naming Lyra, not an immediate boss battle');
  await action.evaluate(el=>el.click());
  const advance=async speaker=>{
   const dialogue=page.locator('.aldric-cinematic[data-scene="story-dialogue"][data-speaker="'+speaker+'"]');
