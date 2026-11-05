@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T22:37:29.751Z",
+  "updated_at": "2026-11-05T23:28:26.859Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6247,12 +6247,12 @@
     {
       "id": "eldoria-first-login-map-signage-respawn-20261105",
       "title": "Eldoria — bienvenida con nick, pictogramas, niveles del mapa y reposición de 5 min",
-      "owner": "chatgpt-eldoria-first-entry-autonomous-20261105",
+      "owner": "chatgpt-eldoria-pr162-direct-20261106",
       "branch": "feature/player-clarity-first-login-map-signage-20261105",
       "status": "active",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "claimed_at": "2026-11-05T22:37:43.640Z",
       "base_main_sha": "32176b06afee2a507ea76ff9087832e6b0cec4c8",
       "scope": [
@@ -6303,9 +6303,9 @@
         "Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs"
       ],
       "resources": [],
-      "phase": "FULL_NATIVE_I_V_PASS_EDITMODE_TEST_ADAPTATION_REQUIRED",
+      "phase": "PLAYER_CLARITY_PLAYMODE_AND_VISUAL_QA",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "Native PR162 42124710953 full real I-V integration PASS; 216 EditMode ran 212 pass/4 fail: 3 geometry tests ambiguous overload via reflection and old meat test asserts 45s recovery contradicting newly required 300s. Fix reflection to explicit VertexHelper signature, update meat boundary test to actual saved UTC deadline; then native again; do not weaken 300s or tests.",
+      "next": "Correct verified Unity native failures from run42126226230 (legacy narrated tests, dynamic capacity expectation) and visually overlapping portrait nameplate; run full exact SHA Unity and merge after quality checks.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6322,6 +6322,12 @@
           "revision": 2,
           "at": "2026-11-05T22:37:43.640Z",
           "reason": "Owner directed autonomous continuation on canonical PR162; previously committed fix and tests retained; no native shared runner claimed"
+        },
+        {
+          "owner": "chatgpt-eldoria-first-entry-autonomous-20261105",
+          "revision": 3,
+          "at": "2026-11-06",
+          "reason": "User expressly requested direct completion PR162; prior named automation disabled; maintain same PR and exact scope"
         }
       ],
       "dependencies": {
