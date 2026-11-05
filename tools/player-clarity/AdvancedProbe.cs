@@ -28,6 +28,8 @@ internal static class PlayerClarityAdvancedProbe
             Check(!PlayerIdentityPolicy.TryNormalize(raw,out _,out _),"bad name");
         Check(PlayerIdentityPolicy.TryNormalize("012345678901234567",out var full,out _)&&
             full.Length==18,"maximum length");
+        Check(PlayerIdentityPolicy.TryNormalize("Jose\u0301",out var composed,out _) &&
+            composed=="José", "iPhone decomposed accent normalized");
     }
 
     private static void Tier()
