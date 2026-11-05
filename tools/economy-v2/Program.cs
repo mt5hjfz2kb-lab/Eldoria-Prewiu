@@ -146,13 +146,19 @@ internal static class EconomyV2IntegratedProbe
     }
     static void LateAscensionCap()
     {
+        // Compare two identical save paths after Bastion III's *one-time* mission
+        // rewards have been credited. Those rewards are not capped production.
+        var controlClock=new Clock();var controlStore=new Store{Seed=ReadyToAscend()};
+        var control=new LocalGateway(controlClock,controlStore);
+        Check(Do(control,"AdvanceBastion","bastion").Ok,"start baseline ascension");
+        controlClock.Add(240);control=new LocalGateway(controlClock,controlStore);
+        var baselineWood=control.Snapshot().Resources.Wood;
         var clock=new Clock();var store=new Store{Seed=ReadyToAscend()};
         var game=new LocalGateway(clock,store);
         Check(Do(game,"AdvanceBastion","bastion").Ok,"start ascension for 5d offline cap");
-        var afterStarting=game.Snapshot().Resources.Wood;
         clock.Add(5*24*3600);game=new LocalGateway(clock,store);
         Check(game.Snapshot().BastionLevel==3,"ascension finished before return");
-        Check(game.Snapshot().Resources.Wood==afterStarting+20736,
+        Check(game.Snapshot().Resources.Wood==baselineWood+20736,
               "offline ascension earns only 48h after Bastion III unlock");
         var wallet=game.Snapshot().Resources.Wood;
         game=new LocalGateway(clock,store);
