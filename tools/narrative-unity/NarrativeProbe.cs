@@ -38,6 +38,14 @@ public static class NarrativeProbe {
   first.EngendroDefeated=true;
   Check(NarrativeCoherenceRules.NextUnseenBeat(first)=="secured","Bastion II completes after the actual creature victory");
 
+  var legacy=State(1);legacy.ChapterProgress.GatheredWood=130;
+  Func<string,bool> legacyRead=beat=>beat=="start"||beat=="world";
+  Check(NarrativeCoherenceRules.NextUnseenBeat(legacy,true,legacyRead)=="mark",
+    "Legacy acknowledgements cannot starve the next unread narrative");
+  Check(NarrativeCoherenceRules.NextUnseenBeat(legacy,false,legacyRead)=="start",
+    "A new game ignores another game's historical preferences");
+  Check(legacy.ChapterProgress.SeenNarrative.Count==0,
+    "Selecting a story neither marks it read nor mutates the save");
   var c3=State(3);
   Check(NarrativeCoherenceRules.NextUnseenBeat(c3)=="frontier-open","Bastion III announces unexplored frontier");
   Check(NarrativeCoherenceRules.FissureKnowledgeStage(c3)==0,"Undiscovered fissure does not reveal Lyra");
@@ -158,3 +166,4 @@ public static class NarrativeProbe {
   Console.WriteLine("UNITY_NARRATIVE_DOMAIN_PROBE_PASS");
  }
 }
+

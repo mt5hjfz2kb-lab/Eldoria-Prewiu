@@ -92,6 +92,15 @@ namespace Eldoria.Tests {
   [Test]public void FullMeatReserveAndRespawnSurviveOneLongOfflineInterval(){var c=new Clock();var st=Ready();var g=new LocalGateway(c,st);int food=g.Snapshot().Resources.Food;Assert.That(Do(g,"Gather","meat-valoria").Ok);c.Add(60);g=new LocalGateway(c,st);Assert.That(g.Snapshot().March.Phase,Is.EqualTo("idle"));Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+1100));Assert.That(g.Snapshot().ChapterThree.MeatRemaining,Is.EqualTo(1100));Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));g=new LocalGateway(c,st);Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+1100));Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));}
   [Test]public void OfflineProductionCapsAtOneHourAcrossPendingUpgrade(){var c=new Clock();var st=Ready();st.Value.ChapterThree.GranaryLevel=1;var g=new LocalGateway(c,st);int food=g.Snapshot().Resources.Food;Assert.That(Do(g,"UpgradeBuilding","granary").Ok);c.Add(7200);g=new LocalGateway(c,st);Assert.That(g.Snapshot().ChapterThree.GranaryLevel,Is.EqualTo(2));Assert.That(g.Snapshot().Resources.Food-food,Is.EqualTo(7200));}
 
+  [Test]public void LegacyReadBeatDoesNotBlockLaterStoryAndNeverSuppressesFreshPrologue(){
+   var s=Ready(1).Value;s.SawmillLevel=1;s.ChapterProgress.GatheredWood=130;
+   Func<string,bool> old=beat=>beat=="start"||beat=="world";
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s,true,old),Is.EqualTo("mark"));
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s,false,old),Is.EqualTo("start"));
+   Assert.That(s.ChapterProgress.SeenNarrative,Is.Empty,"Selection must not acknowledge unread dialogue");
+   s.BastionLevel=5;s.ChapterThree.FissureClosed=true;
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s,true,beat=>beat=="fissure-closed"),Is.EqualTo("productive-valoria"));
+  }
   [Test]public void FissureDescriptionNeverSpoilsLyraBeforeContact(){
    var s=Ready(3).Value;
    Assert.That(NarrativeCoherenceRules.FissureKnowledgeStage(s),Is.Zero);
@@ -175,3 +184,4 @@ namespace Eldoria.Tests {
 
  }
 }
+

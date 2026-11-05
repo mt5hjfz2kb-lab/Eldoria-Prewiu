@@ -26,30 +26,33 @@ namespace Eldoria.Domain
             bool managementOpen,bool retentionOpen,bool mailboxOpen,bool contextSelected=false)
             => !narrativeOpen&&!modalOpen&&!managementOpen&&!retentionOpen&&!mailboxOpen&&!contextSelected;
 
-        public static string NextUnseenBeat(PlayerState s)
+        public static string NextUnseenBeat(PlayerState s, bool loadedExistingSave=false, Func<string,bool> legacyRead=null)
         {
             if(s==null)return "";
+            // Skip legacy acknowledgements while selecting, not after selecting:
+            // otherwise the first old beat blocks every later unread scene forever.
+            Func<string,bool> seen=beat=>Seen(s,beat)||(loadedExistingSave&&legacyRead!=null&&legacyRead(beat));
             int level=s.BastionLevel;
             var p=s.ChapterProgress;
             var c=s.ChapterThree;
             // Never replay the entire opening in a mature legacy save.
-            if(level==1 && !Seen(s,"start"))return "start";
+            if(level==1 && !seen("start"))return "start";
             if(level<=2)
             {
-                if(s.SawmillLevel>0&&!Seen(s,"world"))return "world";
-                if((p?.GatheredWood??0)>0&&!Seen(s,"mark"))return "mark";
-                if(level==2&&!Seen(s,"barracks"))return "barracks";
-                if(level==2&&(s.EngendroDefeated||p?.EngendroDefeated==true)&&!Seen(s,"secured"))return "secured";
+                if(s.SawmillLevel>0&&!seen("world"))return "world";
+                if((p?.GatheredWood??0)>0&&!seen("mark"))return "mark";
+                if(level==2&&!seen("barracks"))return "barracks";
+                if(level==2&&(s.EngendroDefeated||p?.EngendroDefeated==true)&&!seen("secured"))return "secured";
             }
-            if(level==3&&c?.FissureClosed!=true&&!Seen(s,"frontier-open"))return "frontier-open";
+            if(level==3&&c?.FissureClosed!=true&&!seen("frontier-open"))return "frontier-open";
             // The conclusion of Lyra's story must precede the next Bastion's
             // council even if a saved game advances several states offline.
-            if(level>=3&&c?.FissureClosed==true&&!Seen(s,"fissure-closed"))return "fissure-closed";
-            if(level==4&&!Seen(s,"consolidate-valoria"))return "consolidate-valoria";
+            if(level>=3&&c?.FissureClosed==true&&!seen("fissure-closed"))return "fissure-closed";
+            if(level==4&&!seen("consolidate-valoria"))return "consolidate-valoria";
             if(level>=5)
             {
-                if(!Seen(s,"productive-valoria"))return "productive-valoria";
-                if(c?.ExtractionOddity==true&&!Seen(s,"extraction-oddity"))return "extraction-oddity";
+                if(!seen("productive-valoria"))return "productive-valoria";
+                if(c?.ExtractionOddity==true&&!seen("extraction-oddity"))return "extraction-oddity";
             }
             return "";
         }
@@ -65,3 +68,4 @@ namespace Eldoria.Domain
         }
     }
 }
+

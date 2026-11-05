@@ -19,10 +19,12 @@ namespace Eldoria.ReferenceClean {
   string Beat {
    get {
     var s=city.Gateway.Snapshot();
-    var pending=NarrativeCoherenceRules.NextUnseenBeat(s);
+    var pending=PendingBeat(s);
     return string.IsNullOrEmpty(pending)?NarrativeCoherenceRules.RecapBeat(s):pending;
    }
   }
+  string PendingBeat(PlayerState s)=>NarrativeCoherenceRules.NextUnseenBeat(s,city.HadExistingSave,
+   beat=>PlayerPrefs.GetInt("valoria.journey.story."+beat,0)==1);
   static RoyalNarrativePresentation.Line L(string who,string es,string en)
    =>new RoyalNarrativePresentation.Line(who,es,en);
   RoyalNarrativePresentation.Line[] Lines(string beat){
@@ -39,8 +41,8 @@ namespace Eldoria.ReferenceClean {
      L("Sir Aldric","Entonces Valoria también será tu hogar. Guardaremos el manuscrito; aún no sabemos qué significa.","Then Valoria will be your home too. We will keep the manuscript; we do not yet know what it means."),
      L("NARRADOR","Lyra se incorpora al Salón de Héroes: allí podrás preparar sus habilidades para futuras marchas. El manuscrito queda en el Arcón. Hemos cerrado la fisura local, no la Brecha principal.","Lyra joins the Heroes Hall: prepare her abilities there for future marches. The manuscript is kept in the Chest. We have closed the local fissure, not the main Breach.")};
     case "start":return new[]{
-     L("NARRADOR","La Brecha apareció sobre Valoria antes del amanecer. Cuando cesaron los temblores, las murallas seguían en pie. El reino, no.",
-        "The Breach appeared above Valoria before dawn. When the tremors stopped, the walls were still standing. The kingdom was not."),
+     L("NARRADOR","La Brecha se abrió en la tierra junto a Valoria antes del amanecer. Cuando cesaron los temblores, las murallas seguían en pie. El reino, no.",
+        "The Breach opened in the ground beside Valoria before dawn. When the tremors stopped, the walls were still standing. The kingdom was not."),
      L("Sir Aldric","Valoria sobrevivió a la noche. No puedo decir lo mismo de nuestro reino.\n\nLa Brecha sigue ahí. Mientras permanezca abierta, esto volverá a ocurrir.\n\nEmpecemos por lo que aún podemos salvar.",
         "Valoria survived the night. I cannot say the same of our kingdom.\n\nThe Breach is still there. As long as it remains open, this will happen again.\n\nLet us begin with what we can still save."),
      L("NARRADOR","Valoria sobrevivió a la caída, pero no puede reconstruirse sola. Cada mejora del reino necesita recursos recuperados más allá de sus murallas. Empieza por el Aserradero.",
@@ -89,11 +91,8 @@ namespace Eldoria.ReferenceClean {
       hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false,
       hud.GetComponent<RoyalGoldV41MailboxScreen>()?.IsOpen??false,
        !string.IsNullOrEmpty(hud.SelectedBuildingId)))return;
-   var s=city.Gateway.Snapshot();string beat=NarrativeCoherenceRules.NextUnseenBeat(s);
+   var s=city.Gateway.Snapshot();string beat=PendingBeat(s);
    if(string.IsNullOrEmpty(beat))return;
-   // Honour the historical PlayerPrefs only for a loaded pre-migration save.
-   // They must NEVER suppress a fresh game's first introduction.
-   if(city.HadExistingSave&&PlayerPrefs.GetInt("valoria.journey.story."+beat,0)==1)return;
    host.Hud.ShowNarrativeSequence(Lines(beat),()=>{
     // Completing text, unlike merely opening a modal, commits the milestone.
     city.Gateway.AcknowledgeNarrative(beat);
@@ -247,6 +246,15 @@ namespace Eldoria.ReferenceClean {
    if(!host.TrySetWorld(!town))return;
    host.Select(id);Refresh();
   }
-  public void ShowStory(){Refresh();if(!host.Hud.Modal.gameObject.activeSelf)host.Hud.ShowNarrativeSequence(Lines(Beat),null);}
+  public void ShowStory(){
+   Refresh();if(host.Hud.Modal.gameObject.activeSelf)return;
+   string beat=Beat;
+   host.Hud.ShowNarrativeSequence(Lines(beat),()=>{
+    city.Gateway.AcknowledgeNarrative(beat);
+    nextNarrativeAt=Time.unscaledTime+1.5f;
+    Refresh();
+   });
+  }
  }
 }
+
