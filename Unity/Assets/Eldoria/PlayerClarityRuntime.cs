@@ -44,6 +44,7 @@ namespace Eldoria
         private bool creaturesConfigured;
         private float nextUpdate;
         private float nextScan;
+        private Rect visibleViewport = new Rect(0, 0, 1, 1);
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Register()
@@ -82,6 +83,11 @@ namespace Eldoria
                 Bind(candidate);
             ConfigureRenewableDelay();
             if (!layer || !host.PlayerCamera) return;
+            // Calculate the canonical camera-safe UI viewport ONCE per sweep.
+            // The V2 method forces Canvas geometry; calling it per node
+            // would multiply layout work on 84+ renewable map targets.
+            var v2 = hud.GetComponent<RoyalGoldV2Hud>();
+            visibleViewport = v2 ? v2.GetFreeSceneViewport() : new Rect(0, 0, 1, 1);
             foreach (var marker in markers.Values) marker.Touched = false;
             occupiedScreenCells.Clear();
 
@@ -269,14 +275,11 @@ namespace Eldoria
             if (point.z <= camera.nearClipPlane || !camera.pixelRect.Contains(point)) return;
             var norm = new Vector2(point.x / Mathf.Max(1, Screen.width),
                 point.y / Mathf.Max(1, Screen.height));
-            var viewport = hud.GetComponent<RoyalGoldV2Hud>();
-            if (viewport)
-            {
-                var free = viewport.GetFreeSceneViewport();
-                if (norm.x < free.xMin + .005f || norm.x > free.xMax - .005f ||
-                    norm.y < free.yMin + .005f || norm.y > free.yMax - .005f)
-                    return;
-            }
+            if (norm.x < visibleViewport.xMin + .005f ||
+                norm.x > visibleViewport.xMax - .005f ||
+                norm.y < visibleViewport.yMin + .005f ||
+                norm.y > visibleViewport.yMax - .005f)
+                return;
             // Prefer the real resource/node identity but prevent overlapping
             // labels from turning the mobile world into a wall of text.
             int cellX = Mathf.FloorToInt(point.x / 29f);
