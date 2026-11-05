@@ -125,6 +125,22 @@ namespace Eldoria
             hotspots.Clear();
             host = candidate;
             hud = candidate.Hud;
+            // One authoritative player name on the already loaded local save.
+            // Re-read the current gateway for reset/reload, never use PlayerPrefs.
+            var nameGate = hud.GetComponent<RoyalPlayerEntryCoordinator>();
+            if (!nameGate) nameGate = hud.gameObject.AddComponent<RoyalPlayerEntryCoordinator>();
+            nameGate.Initialize(hud,
+                () => host.City.Gateway.Snapshot().PlayerName,
+                chosen =>
+                {
+                    var gateway = host.City.Gateway;
+                    var current = gateway.Snapshot();
+                    var cmd = new GameCommand("player-name:" + Guid.NewGuid().ToString("N"),
+                        current.PlayerId, "ChoosePlayerName", chosen, current.Revision);
+                    var result = gateway.Execute(cmd);
+                    return result.Ok;
+                },
+                () => host.English);
             configuredGateway = null;
             configuredTerrain = null;
             creaturesConfigured = false;
