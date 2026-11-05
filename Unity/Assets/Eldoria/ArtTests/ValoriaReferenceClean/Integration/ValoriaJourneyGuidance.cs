@@ -176,6 +176,9 @@ namespace Eldoria.ReferenceClean {
    if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+SliceRules.RecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en);
    if(s.BastionUpgradeCompletesUtcTicks>0)return (en?"Bastion upgrade paid · ":"Mejora del Bastión pagada · ")+RoyalFormatting.Remaining(s.BastionUpgradeCompletesUtcTicks,city.Clock.UtcTicks,en);
    string key=SliceRules.CurrentObjectiveKey(s),target=ObjectiveTarget();
+   // One useful instruction for the real objective; it is never a modal.
+   string teaching=UnityContextTutorial.ForObjective(key,en);
+   if(!string.IsNullOrEmpty(teaching))return teaching;
    if(key=="b2.complete")return en?"Bastion II secured. Prepare 650 wood and 500 stone to open the frontier.":"Bastión II asegurado. Prepara 650 madera y 500 piedra para abrir la frontera.";
    if(target=="forest-valoria")return en?"Select the forest, then Gather wood. Resources arrive with the returning troops.":"Selecciona el bosque y pulsa Recoger madera. Los recursos llegan con las tropas.";
    if(target=="quarry-valoria")return en?"Select the quarry, then Gather stone. Resources arrive with the returning troops.":"Selecciona la cantera y pulsa Recoger piedra. Los recursos llegan con las tropas.";

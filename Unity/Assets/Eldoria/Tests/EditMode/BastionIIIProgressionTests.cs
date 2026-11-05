@@ -146,6 +146,16 @@ namespace Eldoria.Tests {
    s.Retention.TotalScoutReports=1;
    Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.Learned));
   }
+  [Test]public void ContextHelpDoesNotIntroduceLyraBeforeTheMeeting(){
+   Assert.That(UnityContextTutorial.ForObjective("b3.lyra",false),Does.Not.Contain("Lyra"));
+   Assert.That(UnityContextTutorial.ForObjective("b3.lyra",true),Does.Not.Contain("Lyra"));
+   Assert.That(UnityContextTutorial.ForObjective("b3.fissure",false),Does.Contain("Lyra"));
+  }
+  [Test]public void ContextHelpTeachesRealTrainingAndMarchActions(){
+   Assert.That(UnityContextTutorial.ForObjective("b2.train-archers",false),Does.Contain("Cuartel"));
+   Assert.That(UnityContextTutorial.ForObjective("b2.prepare-march",false),Does.Contain("no envía"));
+   Assert.That(UnityContextTutorial.ForObjective("b2.raise-expedition-power",false),Does.Contain("no del Bastión"));
+  }
   [Test]public void IncompleteNarrativeIsNotRecordedAndAcknowledgementIsIdempotent(){
    var clock=new Clock();var store=Ready(3);var gateway=new LocalGateway(clock,store);
    Assert.That(NarrativeCoherenceRules.NextUnseenBeat(gateway.Snapshot()),Is.EqualTo("frontier-open"));

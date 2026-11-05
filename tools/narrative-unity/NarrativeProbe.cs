@@ -86,6 +86,22 @@ public static class NarrativeProbe {
   firstS.Retention.TotalScoutReports=1;
   Check(EarlyRetentionFirstUseTutorial.Explorers(firstS)==FirstUseTutorialPhase.Learned,
         "Scouts stop repeating after an earned report");
+  Check(UnityContextTutorial.ForObjective("b2.train-archers",false).Contains("Cuartel"),
+        "Training first action is explained");
+  Check(UnityContextTutorial.ForObjective("b2.prepare-march",false).Contains("no envía"),
+        "Preparing a march is distinct from sending it");
+  Check(UnityContextTutorial.ForObjective("b2.raise-expedition-power",false).Contains("no del Bastión"),
+        "Expedition power is not Bastion power");
+  Check(!UnityContextTutorial.ForObjective("b3.lyra",false).Contains("Lyra"),
+        "The mysterious frontier contact remains unknown");
+  Check(UnityContextTutorial.ForObjective("b3.investigate",false).Contains("20 minutos"),
+        "Fissure investigation keeps the canonical duration");
+  Check(UnityContextTutorial.ForObjective("b3.fissure",false).Contains("Lyra"),
+        "Lyra is named after contact");
+  Check(UnityContextTutorial.ForObjective("b4.priority",true).Contains("does not lock"),
+        "Governance choice never closes alternatives");
+  Check(UnityContextTutorial.ForObjective("unknown",false)==null,
+        "No fabricated lesson for an unknown action");
   var store=new Store{Value=State(3)};
   var clock=new Clock();
   var gateway=new LocalGateway(clock,store);
