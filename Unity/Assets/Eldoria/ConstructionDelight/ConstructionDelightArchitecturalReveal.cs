@@ -49,10 +49,11 @@ namespace Eldoria.ReferenceClean
             UpdateVisuals(time);
         }
 
-        public void Complete(GameObject finishedBuilding,Camera camera,float time)
+        public void Complete(GameObject finishedBuilding,Camera camera,float time,
+                             bool includeStagedParts=false)
         {
             Clear();
-            if(!BuildOverlays(finishedBuilding))return;
+            if(!BuildOverlays(finishedBuilding,includeStagedParts))return;
             began=time;
             finishing=true;
             running=true;
@@ -101,7 +102,7 @@ namespace Eldoria.ReferenceClean
             UpdateVisuals(time);
         }
 
-        bool BuildOverlays(GameObject building)
+        bool BuildOverlays(GameObject building,bool includeStagedParts=false)
         {
             if(!building || !building.activeInHierarchy)return false;
             var shader=Resources.Load<Shader>("ConstructionDelightArchitecturalReveal");
@@ -121,7 +122,8 @@ namespace Eldoria.ReferenceClean
             for(int j=0;j<sources.Length && overlays.Count<MaxOverlayMeshes;j++)
             {
                 var source=sources[j];
-                if(!source || !source.enabled || !source.gameObject.activeInHierarchy ||
+                if(!source || (!source.enabled && !includeStagedParts) ||
+                   !source.gameObject.activeInHierarchy ||
                    source.transform.IsChildOf(overlayRoot.transform))continue;
                 var filter=source.GetComponent<MeshFilter>();
                 if(!filter || !filter.sharedMesh || !source.sharedMaterial)continue;
