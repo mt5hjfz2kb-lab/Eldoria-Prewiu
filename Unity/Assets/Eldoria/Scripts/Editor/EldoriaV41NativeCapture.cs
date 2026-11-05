@@ -182,6 +182,12 @@ namespace Eldoria.Editor
                     var canvas=host.Hud.GetComponent<Canvas>();
                     var destination=host.Hud.GetComponentsInChildren<RectTransform>()
                         .First(x=>x.name=="V41 / Buzón destination");
+                    Need(destination.localScale==Vector3.one,
+                        "Landscape text is rasterized at native size, never magnified as a blurry transform");
+                    var viewport=destination.GetComponentsInChildren<ScrollRect>()
+                        .First(x=>x.name=="Mailbox / report scroll viewport").viewport;
+                    Need(viewport.rect.height*canvas.scaleFactor>=140f,
+                        "Landscape report preserves a usable reading viewport");
                     foreach(var label in destination.GetComponentsInChildren<Text>()
                         .Where(x=>!string.IsNullOrWhiteSpace(x.text)&&
                             (x.name=="Contenido del mensaje"||
@@ -195,6 +201,16 @@ namespace Eldoria.Editor
                         Need(label.fontSize*physicalScale>=(label.name=="Contenido del mensaje"?18f:12f),
                             "Landscape report retains readable physical text size "+label.name);
                     }
+                }
+                if(name=="mailbox-qa-twelve-small-phone-landscape")
+                {
+                    var titles=host.Hud.GetComponentsInChildren<Text>()
+                        .Where(x=>x.transform.parent.name.StartsWith("Buzón / mensaje ")&&
+                            x.name.EndsWith(" label")&&!string.IsNullOrWhiteSpace(x.text)).ToArray();
+                    Need(titles.Length==2,"Both real compact landscape message titles are tested");
+                    foreach(var label in titles)
+                        Need(label.preferredHeight<=label.rectTransform.rect.height+1f,
+                            "Compact landscape list retains the complete real message title "+label.text);
                 }
                 if(name.StartsWith("mailbox-evolution-analysis-"))
                     foreach(var metric in host.Hud.GetComponentsInChildren<Text>())
