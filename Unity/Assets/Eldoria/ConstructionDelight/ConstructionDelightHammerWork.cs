@@ -90,9 +90,14 @@ namespace Eldoria.ReferenceClean
                     right*(side*width*.20f)+toward*(front*.91f+.09f);
                 var holder=new GameObject("Hammer swing pivot "+i);
                 holder.transform.SetParent(root.transform,false);
-                holder.transform.position=contact;
-                holder.transform.rotation=Quaternion.LookRotation(-toward,Vector3.up);
+                var baseRotation=Quaternion.LookRotation(-toward,Vector3.up);
+                holder.transform.rotation=baseRotation;
                 holder.transform.localScale=Vector3.one*size;
+                // The iron head, not an invisible pivot, must actually reach
+                // the timber at the instant the dust/impact event is emitted.
+                var contactPose=baseRotation*Quaternion.Euler(0f,0f,-17f*side);
+                holder.transform.position=contact-
+                    contactPose*(Vector3.up*(.63f*size));
                 var handle=MakePart("oak grip",holder.transform,wood,
                     new Vector3(0f,.31f,0f),new Vector3(.14f,.62f,.17f));
                 var head=MakePart("forged iron head",holder.transform,iron,
