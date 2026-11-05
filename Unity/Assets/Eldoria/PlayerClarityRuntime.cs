@@ -202,6 +202,15 @@ namespace Eldoria
                     ? ResourcePictogramKind.Wood : ResourcePictogramKind.Stone,
                     hot, camera, false, 0);
             }
+            // The meat reserve is the third real resource category in the
+            // Bastion III frontier. Use the same food pictogram as the HUD.
+            // Its actual remaining amount and unlock gate come from PlayerState.
+            if (s.BastionLevel >= 3 && s.ChapterThree != null &&
+                s.ChapterThree.MeatRemaining > 0 &&
+                TryHotspot("meat-valoria", out var meat) &&
+                meat.gameObject.activeInHierarchy)
+                Place("meat-valoria", "", ResourcePictogramKind.Food,
+                    meat, camera, false, 0);
             foreach (var creature in s.WorldCreatureLocations)
             {
                 if (!creature.Alive || creature.Level < 1 ||
