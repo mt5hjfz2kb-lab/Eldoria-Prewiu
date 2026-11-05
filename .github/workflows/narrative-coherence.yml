@@ -21,6 +21,17 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /v0220/index.html
+            /v0220/js/chapters.js
+            /tools/narrative/coherence.test.mjs
+            /Unity/Assets/Eldoria/Scripts/Domain/GameState.cs
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs
+            /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs
       - uses: actions/setup-node@v4
         with:
           node-version: "22"

@@ -122,6 +122,9 @@ test('Bastion story resumes a pending milestone and only marks it read after its
  const s={storySeen:{},bastionLevel:3,chapterProgress:{}};
  const ctx=context({s,storySequence:(lines,done)=>{staged={lines,done}},save(){},render(){}});
  vm.runInContext(part('let narrativeQueue=[]','function exploreFissure('),ctx);
+ // Replace the renderer with a controlled acknowledgement harness before
+ // invoking Bastion prose; no DOM or timer can accidentally consume the beat.
+ ctx.storySequence=(lines,done)=>{staged={lines,done}};
  vm.runInContext(part('function bastionNarrative(n){','function upgradeMaterial('),ctx);
  ctx.bastionNarrative(3);
  assert.equal(s.storySeen['bastion-3'],undefined);
