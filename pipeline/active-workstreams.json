@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T21:23:05.212Z",
+  "updated_at": "2026-11-05T22:21:24.224Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3503,9 +3503,9 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 20,
+      "ownership_revision": 21,
       "write_scope_released": false,
-      "branch": "feature/eldoria-construction-delight-20261104",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-03T23:35:16.557Z",
       "base_main_sha": "d01bffc48f85d65b1061c2fc50ce78c49d9c3344",
@@ -3520,13 +3520,15 @@
         ".github/workflows/eldoria-construction-delight-native.yml",
         "tools/construction-delight/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "UNITY_64_NATIVE_AB_PASS_ART_REVIEW_PENDING",
-      "next": "Genuine 64 camera PNG and 24 controlled technique A/B frames stored in Unity Actions artifact 13438897479 run 42077629878 commit c6b23953231d2675bdb397b01b4873f880da4aea. D3D11 HLSL shader corrected; zero magenta fallback pixels in 12 A/B comparisons. LocalGateway completion and save reload PASS, staged mesh flags restored. Owner evaluates visuals; no ART_APPROVED or merge. Windows released rev20.",
+      "phase": "V5_HAMMER_DENSE_DUST_EXCLUSIVE_NATIVE_QA_RUNNING",
+      "next": "Validate exact candidate head with 72 original URP camera images, native Editor compilation, stage 3D restoration, two hammer impacts and dense dust, reload/saves; release Windows lease after run succeeds or fails; do not merge before owner art approval.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Native unity 41872572157 (26 screenshots A/B, short motion), artifacts 13345725500, saved-state invariant; local contact sheets",
@@ -3620,7 +3622,14 @@
         "visual_review_images_available": true
       },
       "candidate_branch": "feature/eldoria-construction-delight-20261104",
-      "native_lease": null,
+      "native_lease": {
+        "reserved_at": "2026-11-05T22:21:24.220Z",
+        "target": "Unity 6000.3.23f1 native 72-image evidence with two real carpenter hammers and dense contact dust; no merge",
+        "prior_run": 42113741237,
+        "owner": "chatgpt-eldoria-construction-delight-20261104",
+        "no_reboot": true,
+        "no_kill_foreign_processes": true
+      },
       "license_diagnostics": {
         "read_only_check_run": 41796258446,
         "hub_start_run": 41796661851,
