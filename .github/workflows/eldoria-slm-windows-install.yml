@@ -1,0 +1,93 @@
+name: "ELDORIA - SuperLocalMemory Windows guarded bootstrap"
+on:
+  push:
+    branches: [pilot/slm-permanent-bootstrap-20261104]
+    paths:
+      - 'pilot/slm-bootstrap/install-trigger.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-slm-windows-bootstrap
+  cancel-in-progress: false
+jobs:
+  install:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 55
+    steps:
+      - name: Read live registry and reject foreign native reservations before code checkout
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Accept='application/vnd.github+json';'User-Agent'='eldoria-slm-guard'}
+          $u='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $r=Invoke-RestMethod -Uri $u -Headers $h -TimeoutSec 25
+          if(-not $r.content) {throw 'No trustworthy lease response'}
+          $data=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($r.content -replace '\s',''))) | ConvertFrom-Json
+          $holders=@($data.active | Where-Object { @($_.resources) -contains 'windows-runner-heavy' })
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-slm-permanent-bootstrap-20261104' -or $holders[0].owner -ne 'chatgpt-eldoria-slm-bootstrap-20261104' -or $holders[0].ownership_state -ne 'claimed') {
+            throw 'SLM_EXCLUSIVE_LEASE_NOT_CONFIRMED; no installation'
+          }
+          if(@(Get-Process -Name Unity,blender,UnityShaderCompiler,UnityPackageManager,UnityCrashHandler64,ollama -ErrorAction SilentlyContinue).Count){
+            throw 'NATIVE_OR_LOCAL_AI_PROCESS_ACTIVE; no installation'
+          }
+          Write-Host 'ELDORIA_SLM_GUARDED_PREFLIGHT_READY'
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pilot/slm-bootstrap/Install-SlmWindows.ps1
+            /pilot/slm-bootstrap/verified-facts.json
+            /pilot/slm-bootstrap/install-trigger.json
+      - name: Install privately under the runner user; import only verified public Eldoria facts
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          & (Join-Path $pwd 'pilot\slm-bootstrap\Install-SlmWindows.ps1') -Mode install
+          if($LASTEXITCODE -ne 0){throw ('Installer exited '+$LASTEXITCODE)}
+      - name: Validate local memory status without exposing tokens
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:LOCALAPPDATA 'EldoriaSLM'
+          $data=Join-Path $root 'data'
+          $slm=Join-Path $root 'venv-4.2.12\Scripts\slm.exe'
+          if(-not (Test-Path -LiteralPath $slm)){throw 'Isolated SLM executable missing'}
+          $env:SLM_HOME=$data;$env:SLM_SKIP_LAYA='1';$env:SLM_MCP_PROFILE='core'
+          & $slm serve start
+          if($LASTEXITCODE -ne 0){throw 'Cannot restart memory daemon'}
+          try {
+            $a=& $slm recall 'Unity main runtime v0220 prototype' --tag source-reviewed --limit 6
+            if($LASTEXITCODE -ne 0 -or "$a" -notmatch 'Unity/'){throw 'Stored memory cannot be retrieved'}
+            $b=& $slm recall 'Qwen Ollama art discontinued October 2026' --tag source-reviewed --limit 6
+            if($LASTEXITCODE -ne 0 -or "$b" -notmatch 'Qwen'){throw 'Superseded art rule cannot be retrieved'}
+            Write-Host 'SLM_WIN_VERIFIED: true; two source-reviewed recall queries passed'
+          } finally {
+            & $slm serve stop | Out-Null
+            Write-Host 'SLM_DAEMON_STOPPED_SAFELY'
+          }
+      - name: Preserve sanitized output marker
+        if: always()
+        shell: powershell
+        run: |
+          $report=@{
+            run_id='${{ github.run_id }}'
+            exact_sha='${{ github.sha }}'
+            win_editor_not_launched=$true
+            unity_build_not_launched=$true
+            no_windows_restart=$true
+            no_web_access_enabled=$true
+            utc=[DateTime]::UtcNow.ToString('o')
+          }
+          $path=Join-Path $env:RUNNER_TEMP 'eldoria-slm-guarded-result'
+          New-Item -ItemType Directory -Path $path -Force|Out-Null
+          ($report|ConvertTo-Json)|Set-Content -LiteralPath (Join-Path $path 'preflight-safety.json') -Encoding UTF8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-slm-guarded-install-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-slm-guarded-result/
+          retention-days: 14
+          if-no-files-found: warn
