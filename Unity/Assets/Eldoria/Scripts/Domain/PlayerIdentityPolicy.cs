@@ -21,9 +21,10 @@ namespace Eldoria.Domain
                 error = "Escribe un nombre para continuar.";
                 return false;
             }
-            var output = new StringBuilder(proposed.Length);
+            var canonical = proposed.Normalize(NormalizationForm.FormC);
+            var output = new StringBuilder(canonical.Length);
             var previousSpace = false;
-            foreach (char c in proposed.Trim())
+            foreach (char c in canonical.Trim())
             {
                 if (c == ' ')
                 {
