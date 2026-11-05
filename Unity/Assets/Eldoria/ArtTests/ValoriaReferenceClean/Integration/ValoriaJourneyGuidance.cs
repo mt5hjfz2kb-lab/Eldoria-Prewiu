@@ -86,6 +86,10 @@ namespace Eldoria.ReferenceClean {
   }
   public void PresentMilestone(){
    if(!host||!host.Ready||Time.unscaledTime<nextNarrativeAt)return;
+   // The owner's first words must be the name prompt, not Aldric's narration.
+   // Persisting the nickname is a precondition for the first story beat;
+   // already named returning players keep their original tutorial progress.
+   if(city?.Gateway==null||string.IsNullOrWhiteSpace(city.Gateway.Snapshot().PlayerName))return;
    var hud=host.Hud;
    if(!hud)return;
    if(!NarrativeCoherenceRules.CanPresent(
