@@ -116,7 +116,7 @@ namespace Eldoria.World4XCanon
             for(int pass=0;pass<3;pass++)
             for(int k=0;k<sites.Count;k++)
             {
-                var site=sites[(first+k+generation*23)%sites.Count];
+                var site=sites[Eldoria.PlayerClarity.DistributedSiteOrder.Candidate(sites.Count,targetId,generation,k)];
                 if(site.Id==previousSiteId)continue;
                 float x=site.Point.x-host.WorldHome.x,z=site.Point.z-host.WorldHome.z;
                 float breach=4000;
@@ -146,7 +146,7 @@ namespace Eldoria.World4XCanon
                        Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(item.X,item.Z))<28)occupied=true;
                 foreach(var other in snapshot.WorldCreatureLocations)
                     if(other.TargetId!=targetId&&other.Alive&&
-                       Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(other.X,other.Z))<34)occupied=true;
+                       Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(other.X,other.Z))<56)occupied=true;
                 foreach(var historic in new[]{"valoria-map-city","forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria"})
                 {
                     var target=host.FindTarget(historic);
@@ -169,24 +169,23 @@ namespace Eldoria.World4XCanon
             if(snapshot.WorldId!="world-local"||snapshot.BastionLevel<1)return false;
             bool wood=LocalGateway.ResourceKind(snapshot,targetId)=="wood";
             if(!wood&&LocalGateway.ResourceKind(snapshot,targetId)!="stone")return false;
-            // Stable identity-specific ordering spreads resources over valid biomes.
-            // The chosen site remains authoritative persisted state, never client randomness.
-            uint identity=2166136261;foreach(char c in targetId)identity=unchecked((identity^c)*16777619);
-            int first=(int)(identity%(uint)Math.Max(1,sites.Count));
+            // Deterministic pseudorandom full-cycle visitation (no repeats).
+            // Resource/generation identity distributes sites across verified
+            // terrain instead of walking each neighboring grid cell in order.
             for(int offset=0;offset<sites.Count;offset++)
             {
-                var site=sites[(first+offset+generation*17)%sites.Count];
+                var site=sites[Eldoria.PlayerClarity.DistributedSiteOrder.Candidate(sites.Count,targetId,generation,offset)];
                 if(site.Wood!=wood||site.Id==previousSiteId||(initial.TryGetValue(targetId,out var original)&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(original.x,original.z))<24))continue;
                 bool occupied=Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(host.WorldHome.x,host.WorldHome.z))<32;
                 foreach(var city in cities)if(Vector2.Distance(new Vector2(site.Point.x-host.WorldHome.x,site.Point.z-host.WorldHome.z),new Vector2(city.x,city.z))<city.radius+9)occupied=true;
                 foreach(var item in snapshot.WorldResourceLocations)
-                    if(item.TargetId!=targetId&&item.Generation>0&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(item.X,item.Z))<20)occupied=true;
+                    if(item.TargetId!=targetId&&item.Generation>0&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(item.X,item.Z))<44)occupied=true;
                 // Do not place an exhausted node on the active creature population.
                 foreach(var creature in snapshot.WorldCreatureLocations)
                     if(creature.Alive&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),
-                      new Vector2(creature.X,creature.Z))<28)occupied=true;
+                      new Vector2(creature.X,creature.Z))<48)occupied=true;
                 foreach(var hotspot in host.WorldRoot.GetComponentsInChildren<Eldoria.Presentation.WorldHotspot>(true))
-                    if(hotspot.Id!=targetId&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(hotspot.transform.position.x,hotspot.transform.position.z))<24)occupied=true;
+                    if(hotspot.Id!=targetId&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(hotspot.transform.position.x,hotspot.transform.position.z))<38)occupied=true;
                 // Same 9 m canopy footprint clearance, now including original AF/AG
                 // trees as well as continental crowns, through the exact spatial index.
                 if(occupied||routes==null||!routes.FootprintClear(site.Point,9))continue;
