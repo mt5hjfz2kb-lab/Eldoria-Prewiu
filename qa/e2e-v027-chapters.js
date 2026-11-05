@@ -11,10 +11,10 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
  await set({...base,view:'kingdom',introSeen:true,bastionLevel:1,bastion:1,sawmill:false,missionIntroSeen:true,missionPanelOpen:false,chapterProgress:{version:27,current:1,completedMissions:{},claimedChapters:{},missionRewards:{},chapterStarted:{1:Date.now()},counters:{gathered:{wood:0,stone:0,food:0},trained:0,hunts:0,wins:{spawnling:0,ashStalker:0,herald:0},speedupsUsed:0,relicDecisions:0,heroInterventions:0}},speedups:{m1:0,m5:0,m15:0}});
  const compact=p.locator('[data-testid="chapter-compact"]');await compact.waitFor({state:'visible'});
  if(await p.locator('[data-testid="guided-step"]').count())throw Error('legacy guided-step remains visible');
- let txt=await compact.innerText();if(!/CAPÍTULO 1/i.test(txt)||!/Reconstruye el Aserradero/i.test(txt))throw Error('wrong compact mission '+txt);
+ let txt=await compact.innerText();if(!/ETAPA 1/i.test(txt)||!/Reconstruye el Aserradero/i.test(txt))throw Error('wrong compact mission '+txt);
  await compact.tap({force:true});const drawer=p.locator('[data-testid="chapter-drawer"]');await drawer.waitFor({state:'visible'});
  let box=await drawer.boundingBox();if(!box||box.width>360||box.height>590)throw Error('chapter drawer exceeds mobile budget '+JSON.stringify(box));
- txt=await drawer.innerText();if(!/RECOMPENSA DE CAPÍTULO/i.test(txt)||!/ACELERADORES UNIVERSALES/i.test(txt))throw Error('chapter details incomplete');
+ txt=await drawer.innerText();if(!/RECOMPENSA DE ETAPA/i.test(txt)||!/ACELERADORES UNIVERSALES/i.test(txt))throw Error('chapter details incomplete');
  await drawer.locator('[data-chapter-toggle]').tap({force:true});
 
  // Numeric mission progress.

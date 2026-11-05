@@ -26,7 +26,9 @@ namespace Eldoria.ReferenceClean {
   RoyalNarrativePresentation.Line[] Lines(string beat){
    switch(beat){
     case "extraction-oddity":return new[]{L("Sir Aldric","Detened los picos. Esa veta no refleja la luz como la piedra de Valoria. Guardad cualquier fragmento extraño. Si la tierra está cambiando cerca de la Brecha, necesitaremos saber por qué.","Stop the picks. That vein does not reflect light like Valoria's stone. Keep any unusual fragments. If the ground is changing near the Breach, we must learn why.")};
-    case "consolidate-valoria":return new[]{L("NARRADOR","El nivel IV consolida Valoria. Elige la prioridad del reino y reúne recursos para alcanzar el V y desbloquear la Cantera.","Level IV consolidates Valoria. Choose the realm's priority and gather resources to reach V and unlock the Stoneworks.")};
+    case "consolidate-valoria":return new[]{
+     L("Sir Aldric","Valoria no puede reconstruirlo todo a la vez. Elige qué proteger primero: producción, defensa o refugio. Ninguna ruta quedará cerrada para siempre.","Valoria cannot rebuild everything at once. Choose what to protect first: production, defence or shelter. The other paths will remain open."),
+     L("NARRADOR","La elección se reflejará en la ciudad. El siguiente paso será reunir los recursos para el Bastión V.","Your choice will be reflected in the city. The next step is gathering the resources for Bastion V.")};
     case "productive-valoria":return new[]{L("NARRADOR","Bastión V permite construir la Cantera de Valoria para generar piedra de forma continua. Cada edificio crece mediante sus propias mejoras.","Bastion V unlocks Valoria's Stoneworks for continuous stone production. Each building grows through its own upgrades.")};
     case "frontier-open":return new[]{
      L("Sir Aldric","La frontera se abre. El Granero nos dará alimento para explorarla. Hay una anomalía en la tierra, pero todavía no sabemos qué encontraremos allí.","The frontier opens. The Granary will feed our expeditions. There is an anomaly in the ground, but we do not yet know what awaits us.")};

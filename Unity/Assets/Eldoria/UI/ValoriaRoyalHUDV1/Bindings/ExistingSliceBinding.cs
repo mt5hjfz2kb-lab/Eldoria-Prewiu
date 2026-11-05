@@ -15,9 +15,9 @@ namespace Eldoria.UI.RoyalGold {
    var d=new RoyalSnapshot{Revision=s.Revision,Wood=s.Resources.Wood,Stone=s.Resources.Stone,Food=s.Resources.Food,Power=p.Total,
     BastionLevel=s.BastionLevel,Available=s.Available.Total,Wounded=s.Wounded.Total,Prepared=s.PreparedTroops.Total,HeroPower=p.Heroes+(s.ChapterThree.LyraRecruited?1278:0),
     Hero=s.PreparedHeroId=="aldric"?"Sir Aldric":s.PreparedHeroId,IsTest=test,Profile=SliceContentProfiles.ActiveRuntimeProfile,
-    Chapter=L(en,s.BastionLevel<2?"CAPÍTULO I":"CAPÍTULO II",s.BastionLevel<2?"CHAPTER I":"CHAPTER II"),March=MarchText(s,en)};
+    Chapter=L(en,"BASTIÓN ","BASTION ")+(s.BastionLevel<=1?"I":s.BastionLevel==2?"II":s.BastionLevel==3?"III":s.BastionLevel==4?"IV":"V"),March=MarchText(s,en)};
    if(s.ChapterThree.LyraRecruited)d.Hero="Sir Aldric · Lyra ("+s.ChapterThree.LyraXp+" XP)";
-   d.ShowFood=s.BastionLevel>=3;if(s.BastionLevel>=3)d.Chapter=L(en,"CAPÍTULO ","CHAPTER ")+(s.BastionLevel==3?"III":s.BastionLevel==4?"IV":"V");
+   d.ShowFood=s.BastionLevel>=3;
    ObserveRecruitment(s);Mission(s,d,en); d.Building=Building(s,selection,en); return d;
   }
   public RoyalResult Submit(RoyalAction offer){
@@ -73,7 +73,7 @@ namespace Eldoria.UI.RoyalGold {
     case "b5.army":title=L(en,"Alcanza 60 arqueros","Reach 60 archers");done=s.Available.Total+s.Wounded.Total;foreach(var march in MarchCapacityRules.WorldMarches(s))if(march!=null&&march.Phase!="idle")done+=march.Troops.Total;total=60;break;
     case "b5.rare":title=L(en,"Derrota al Acechador de Ceniza","Defeat the Ash Stalker");done=s.ChapterThree.AshStalkerDefeated?1:0;break;
     case "b5.infrastructure":title=L(en,"Desarrolla los edificios a nivel V","Develop each building to level V");break;
-    case "b5.complete":title=L(en,"Bastión V completado · próximo capítulo VI","Bastion V complete · chapter VI next");done=1;break;
+    case "b5.complete":title=L(en,"Bastión V asegurado · próximo hito Bastión VI","Bastion V secured · next milestone Bastion VI");done=1;break;
     default:title=L(en,"Sin objetivo disponible","No objective available");total=0;break;
    }
    d.Objective=title;d.MissionFraction=total>0?Math.Min(1f,Math.Max(0f,done/(float)total)):0;d.ObjectiveProgress=total>0?Math.Min(done,total)+" / "+total:"";

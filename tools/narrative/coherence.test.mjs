@@ -165,4 +165,8 @@ test('Unity prevents pre-discovery spoilers and orders saved narrative milestone
  assert.match(binding,/knowledge==0\?/);
  assert.match(html,/maybeCodexTutorial\(\);tutorialBeat\(\)/);
  assert.match(html,/s.bastionLevel===9&&!s.trialWon/);
+ assert.doesNotMatch(html,/Bastión IX es la prueba de autonomía/);
+ assert.doesNotMatch(html,/En las vetas más profundas, sin embargo, aparecen fragmentos/);
+ assert.match(html,/popup\('CAPÍTULO I COMPLETADO'/);
+ assert.match(chapters,/ETAPA '\+ch.id/);
 });
