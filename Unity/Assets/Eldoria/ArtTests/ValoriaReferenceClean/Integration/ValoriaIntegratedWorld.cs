@@ -143,6 +143,23 @@ namespace Eldoria.ReferenceClean {
     if(!retention)retention=Hud.gameObject.AddComponent<RoyalGoldV3EarlyRetentionScreens>();
     retention.Initialize(Hud,boundGateway,()=>city.Clock.UtcTicks,
       ()=>{Hud.Refresh();city.Presenter.RefreshState();});
+    // This uses the single canonical saved PlayerState, original gateway,
+    // RoyalHUD and existing Unity Canvas. Configure it BEFORE Guidance is
+    // created so naming is genuinely the first interaction on a fresh save.
+    var naming=Hud.GetComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>();
+    if(!naming)naming=Hud.gameObject.AddComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>();
+    naming.Initialize(Hud,
+      ()=>boundGateway.Snapshot().PlayerName,
+      name=>{
+        var snapshot=boundGateway.Snapshot();
+        var receipt=boundGateway.Execute(new GameCommand(
+          "choose-name:"+Guid.NewGuid().ToString("N"),
+          snapshot.PlayerId,"ChoosePlayerName",name,snapshot.Revision));
+        if(receipt.Ok){Hud.Refresh();city.Presenter.RefreshState();}
+        return receipt.Ok;
+      },
+      ()=>English);
+
     // The saved LocalGateway is replaced on ReloadForProbe/load. Reconnect the
     // existing terrain route/population service in the very same session
     // rebind, before the first post-reload hunting or gathering command.
