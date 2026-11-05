@@ -132,6 +132,7 @@ namespace Eldoria.Domain
         // V4.1 additive roster: individual selected heroes; HeroId remains legacy resolver key.
         public List<string> HeroIds = new List<string>();
         public ArmyRoster Troops = new ArmyRoster();
+        public EldoriaV41BattleInput VersionedBattle;
         public string Phase = "idle"; // idle, outbound, gathering, returning
         public long PhaseEndsUtcTicks;
         public int PendingFood;
@@ -141,6 +142,7 @@ namespace Eldoria.Domain
         {
             var copy=(MarchState)MemberwiseClone();
             copy.Troops=Troops?.Copy()??new ArmyRoster();
+            copy.VersionedBattle=VersionedBattle?.Copy();
             copy.HeroIds=HeroIds==null?new List<string>():new List<string>(HeroIds);
             copy.Route=Route?.ConvertAll(x=>x.Copy())??new List<WorldRoutePoint>();
             return copy;

@@ -92,6 +92,7 @@ namespace Eldoria.Domain
             public double CurrentHp { get { return Hp.Sum(); } }
             public double InitialHp { get { return Initial.Sum(); } }
         }
+        public static void ValidateForce(Force force) => Validate(force);
         static void Validate(Force f)
         {
             if (f == null || f.Troops == null || f.Troops.GetLength(0) != Families ||

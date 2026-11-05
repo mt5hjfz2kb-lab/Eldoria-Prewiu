@@ -143,6 +143,24 @@ namespace Eldoria.Domain
 
     /// <summary>Immutable-at-write combat summary kept with each inbox item;
     /// older reports must not depend on the mutable LastBattleReport field.</summary>
+    // The definition provider is application configuration, never a player command.
+    // Persist both sides at departure so offline resolution cannot use a changed catalog.
+    [Serializable] public sealed class EldoriaV41BattleInput
+    {
+        public string RulesVersion,TargetId;
+        public ArmyRoster OwnTroops,EnemyTroops;
+        public string[] OwnHeroes,EnemyHeroes;
+        public EldoriaV41BattleInput Copy()=>new EldoriaV41BattleInput{
+            RulesVersion=RulesVersion,TargetId=TargetId,OwnTroops=OwnTroops?.Copy(),EnemyTroops=EnemyTroops?.Copy(),
+            OwnHeroes=(string[])OwnHeroes?.Clone(),EnemyHeroes=(string[])EnemyHeroes?.Clone()};
+    }
+    public interface IEldoriaVersionedBattleResolver
+    {
+        string RulesVersion { get; }
+        EldoriaV41BattleInput Prepare(ArmyRoster troops,IList<string> heroes,string targetId);
+        EldoriaV41CombatRecord Resolve(EldoriaV41BattleInput input);
+    }
+
     [Serializable] public sealed class EldoriaV41CombatRecord
     {
         public string TargetId="",HeroId="",Reason="";
@@ -154,6 +172,7 @@ namespace Eldoria.Domain
         public string Outcome="", PlayerComposition="", ObservedAttrition="";
         public string EnemyObservedResistance="", ObservedTotalDamageDealt="", ObservedTotalDamageReceived="";
         public string OwnDamageByFamily="", OwnReceivedByFamily="", OwnRemainingByFamily="";
+        public string EffectiveOutcome => Outcome=="victory" || Outcome=="defeat" || Outcome=="draw" ? Outcome : Won?"victory":"defeat";
         public EldoriaV41CombatRecord Copy()
         {
             var copy=(EldoriaV41CombatRecord)MemberwiseClone();

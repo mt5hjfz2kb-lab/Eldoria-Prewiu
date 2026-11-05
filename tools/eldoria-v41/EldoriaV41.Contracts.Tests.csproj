@@ -13,7 +13,11 @@
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs" Link="EarlyRetentionRules.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs" Link="SliceContentProfiles.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41CombatEvolution.cs" Link="EldoriaV41CombatEvolution.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Medical.cs" Link="EldoriaV41Medical.cs" />
+    <Compile Include="MedicalChecks.cs" />
     <Compile Include="EvolutionChecks.cs" />
+    <Compile Include="ParityChecks.cs" />
+    <Compile Include="DepthChecks.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
 </Project>

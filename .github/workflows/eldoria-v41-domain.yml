@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Combat*.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41*.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
       - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
       - 'tools/eldoria-v41/**'

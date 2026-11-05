@@ -659,7 +659,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var list=gateway?.Snapshot()?.Mailbox?.List(category,offset,currentPageSize);
             if(list==null||index>=list.Count)return;
             selectedId=list[index].EventId;
-            reportExpanded=true;
+            reportExpanded=string.IsNullOrEmpty(list[index].Battle?.Outcome);
             if(detailScroll!=null)detailScroll.verticalNormalizedPosition=1f;
             ExecuteMail("MailRead");
         }
@@ -712,7 +712,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(scoutVignette!=null)
                 scoutVignette.gameObject.SetActive(hasNarrative&&scoutFamily>=0&&
                     scoutFamily<=3&&scoutVignette.texture!=null);
-            reportMotif=battle!=null?(battle.Won?
+            reportMotif=battle!=null?(battle.EffectiveOutcome=="draw"?RoyalGoldV41ReportArtwork.Motif.Archive:battle.EffectiveOutcome=="victory"?
                 RoyalGoldV41ReportArtwork.Motif.BattleVictory:
                 RoyalGoldV41ReportArtwork.Motif.BattleDefeat):
                 hasNarrative&&selected.DiscoveryKind>=0&&selected.DiscoveryKind<=3?
@@ -742,20 +742,27 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 string[] names={"HÉROES","TROPAS ENVIADAS","RONDAS","VIDA RESTANTE"};
                 string[] values={HeroName(battle.HeroId),battle.Troops.ToString(),
-                    battle.Rounds.ToString(),battle.RemainingHealth.ToString()};
+                    battle.Rounds.ToString(),battle.RemainingHealth.ToString()+(string.IsNullOrEmpty(battle.Outcome)?"":"%")};
                 for(int i=0;i<4;i++)
                 {
                     metricNames[i].Put(names[i]);metricValues[i].Put(values[i]);
                 }
                 reportComposition.gameObject.SetActive(true);
                 var own=battle.OwnRoster;
-                reportComposition.Put(own!=null&&own.Total>0?
+                reportComposition.Put(!string.IsNullOrEmpty(battle.PlayerComposition)?
+                    "COMPOSICIÓN PROPIA · "+battle.PlayerComposition:own!=null&&own.Total>0?
                     "COMPOSICIÓN PROPIA · ARQUEROS  T1: "+own.ArcherT1+
                     "  ·  T2: "+own.ArcherT2+"  ·  T3: "+own.ArcherT3:
                     "COMPOSICIÓN PROPIA · desglose no archivado en este informe");
-                reportSection.Put("OBSERVACIONES DEL ENCUENTRO");
-                detail.Put(ObservedReason(battle));
-                reportFooter.Put("PODER PROPIO REGISTRADO · "+battle.PlayerPower+
+                bool evolved=!string.IsNullOrEmpty(battle.Outcome);
+                reportSection.Put(evolved?"MI MARCHA · ANÁLISIS OPCIONAL":"OBSERVACIONES DEL ENCUENTRO");
+                detail.Put(ObservedReason(battle)+(evolved?
+                    "\n\nDESGASTE OBSERVADO · "+battle.ObservedAttrition+
+                    "\n\nDAÑO PROPIO CAUSADO · "+battle.OwnDamageByFamily+
+                    "\n\nDAÑO PROPIO RECIBIDO · "+battle.OwnReceivedByFamily+
+                    "\n\nVIDA PROPIA RESTANTE · "+battle.OwnRemainingByFamily:""));
+                reportFooter.Put((evolved?"RESISTENCIA OBSERVADA DEL ENEMIGO · "+battle.EnemyObservedResistance:
+                    "PODER PROPIO REGISTRADO · "+battle.PlayerPower)+
                     "\nBOTÍN REGISTRADO · "+battle.RewardWood+" madera · "+
                     battle.RewardStone+" piedra · "+battle.RewardFood+" comida"+
                     (string.IsNullOrEmpty(selected.RewardReceiptId)?"":
@@ -839,7 +846,7 @@ namespace Eldoria.UI.RoyalGold.V2
                         new Color(.38f,.33f,.29f):new Color(.28f,.22f,.16f);
                     messageDates[i].color=new Color(.38f,.31f,.24f);
                     string preview=msg.Battle==null?msg.Subtitle:
-                        (msg.Battle.Won?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId);
+                        (msg.Battle.EffectiveOutcome=="draw"?"Empate ante ":msg.Battle.EffectiveOutcome=="victory"?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId);
                     if(window.rect.width<520f && preview.Length>22)
                         preview=preview.Substring(0,19)+"…";
                     messageSubtitles[i].Put(preview);

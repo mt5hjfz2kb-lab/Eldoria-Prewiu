@@ -22,6 +22,9 @@ static class Tests
     static void Main()
     {
         EvolutionChecks.Run();
+        ParityChecks.Run();
+        DepthChecks.Run();
+        MedicalChecks.Run();
         var all=new[]{"archer","paladin","warlock"};
         var stock=Counts(800,600,400);
         var count=Counts(120,80,60);
