@@ -143,3 +143,20 @@ QA A/B: ya registra y exige presencia de piezas 3D durante obra y finalización,
 **Última prueba offline de esta arquitectura:** [41937883348](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41937883348): 36 tests de dominio PASS, cinco archivos C# sin errores de sintaxis Roslyn, shader presente, guardia contra recursión PASS. Las correcciones finales de emplazamiento C3 se registraron después; repetir esta prueba en el HEAD final. Ninguna de estas comprobaciones equivale a Unity compilado ni calidad visual.
 
 **Pendiente obligatorio:** Unity Editor real exacto, 34 capturas A/B, revisión de movimiento de piezas y su integración con el brillo, rendimiento Android/WebGL y aprobación artística. Windows runner-heavy continúa reservado al cierre post-merge de PR #136 en main, y esta rama no lo reclama ni inicia Unity mientras esté ocupado. Preservar PR #152 DRAFT; no fusionar/publicar.
+
+
+## V4 — construcción física del edificio real (05/11/2026)
+
+**Diagnóstico artístico:** las tomas auténticas V3 (run 41872572157) muestran brillo y polvo discretos, pero el modelo completo aparece instantáneamente al acabar. Eso no ofrece una verdadera construcción ni recompensa satisfactoria; la V3 no estaba aprobada.
+
+**V4 implementada como candidata en PR #152:**
+- Nuevo ConstructionDelightStageAssembly.cs: clona hasta 28 componentes de malla auténticos del edificio final reutilizando EXACTAMENTE sus mallas, materiales, sombras, lightmaps y capas. No clona scripts ni colliders.
+- Durante una primera obra real, revela los componentes desde cimientos y vigas hacia el techo. La duración y el progreso proceden exclusivamente de Clock y el deadline persistido de LocalGateway, no de una segunda economía o un segundo temporizador.
+- Al completar una tarea con su comprobante auténtico, monta físicamente los componentes del edificio por orden durante 1,68 segundos. Temporalmente oculta solo sus renderizadores originales, restaurando el estado anterior incluso ante recarga, salida a mundo 4X y destrucción de escena.
+- Las partículas artesanales, barrido URP y breve luz de fachada quedan subordinados a ese montaje. Polvo y destellos finales se sincronizan con el aterrizaje de las vigas y la cubierta.
+- La captura A/B restaura el edificio auténtico durante «A» y activa las copias en movimiento durante «B», sin alteraciones de guardado ni gameplay.
+- La prueba estructural Roslyn exige copia de malla/material original, ausencia de mutaciones del Gateway y restauración de Renderer.enabled.
+
+**Verificado:** run 41938038416 y pasada posterior de fuente: 36 assertions de dominio, cinco archivos C# sin errores sintácticos, guarda de montaje original PASS. Se reconcilió la rama con el main actual mediante commit de fusión de dos padres, sin modificar producción ni sobrescribir PR #136.
+
+**Pendiente:** compilar la V4 en Unity 6000.3.23f1 cuando el titular de windows-runner-heavy libere su ejecución; evaluar los 34 fotogramas A/B reales en retrato y paisaje y seis momentos de finalización; comprobar contacto, profundidad con splats, popping, rendimiento móvil, WebGL y recarga. Corregir si la animación de piezas se ve artificial. Nada de ART_APPROVED ni merge/publicación hasta evidencia y aceptación.
