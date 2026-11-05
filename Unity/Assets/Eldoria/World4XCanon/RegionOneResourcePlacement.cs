@@ -214,7 +214,7 @@ namespace Eldoria.World4XCanon
                 if(bound is LocalGateway local&&bound.Snapshot().WorldId=="world-local")
                 {
                     local.ConfigureLocalMarchRoutes(routes);
-                    local.ConfigureLocalResourceRespawn(this,TimeSpan.FromMinutes(30));
+                    local.ConfigureLocalResourceRespawn(this,RenewablePopulationPolicy.Delay);
                     if(Resources.Load<GameObject>("World4X/Blender/RegionOneResources"))local.EnsureLocalRenewablePopulation(24,24);
                 }
             }
