@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "eldoria-first-login-map-signage-respawn-20261105",
+  "request_id": "eldoria-first-login-map-signage-respawn-20261105",
+  "asset_or_sector": "Iconos legibles de madera, piedra y comida, señalización de niveles y primer contacto narrativo en HUD canónico de Valoria",
+  "profile": "environment_composition",
+  "visual_gate_state": "SOURCE_ICON_WIP",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Iconografía Royal Gold actual plana/abstracta; madera, roca y comida poco reconocibles en móvil. Fuente 2D vectorial con troncos/anillos, cantera facetada y espigas; seguir la referencia navy/antique-gold, mantener todos los valores reales. No fingir que código de geometría equivale a aprobación visual.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "unity_native_uGUI": true,
+    "existing_3d_assets_modified": false
+  },
+  "artist": {
+    "design": "Siluetas compactas de madera/piedra/espiga, tres contrastes distinguibles a 20-25px, sin emojis ni overlays intrusivos",
+    "source": "Unity/Assets/Eldoria/PlayerClarity/RoyalResourcePictogram.cs",
+    "reference": "HUD Royal Gold real; orden del propietario 05/11/2026"
+  },
+  "validation": {
+    "source_gate": "Añadir solo archivos aislados hasta finalización y reconciliación del propietario de la economía PR #141. Sin paquetes externos, créditos, cambios de escenas, monedas ni saves.",
+    "final_gate": "Compilar y probar EditMode+PlayMode nativos del código exacto de la PR; inspeccionar capturas reales A/B 390×844, 844×390, 900×1600, 1600×900, lectura de iconos a tamaño real y distribución de placas. Comprobar persistencia nickname y temporizador 300 s bajo reloj de sistema, ruta, guardados y campaña I–V. No declarar ART_APPROVED ni publicar sin validación."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0,
+  "notes": "Workstream separado con código aislado. PR162 en borrador; issue161. Económica #141 controla GameState/LocalGateway/World4X/HUD. Qwen no es obligatorio ni se usa."
+}
