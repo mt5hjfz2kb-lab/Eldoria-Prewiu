@@ -69,6 +69,7 @@ namespace Eldoria.ReferenceClean
             new ConstructionDelightStageAssembly();
 
         public int ActiveStagedVisibleMeshes => stagedBuilding.VisibleMeshCount;
+        public bool StagingContinuedAtCompletion => stagedBuilding.CompletionContinuedFromWork;
         public int ActiveStagedBuildingMeshes => stagedBuilding.MeshCount;
         public int ActiveStructuralRevealMeshes => structureReveal.MeshCount;
         public int ActiveArchitecturalSurfaces => materialLustre.LayerCount;
