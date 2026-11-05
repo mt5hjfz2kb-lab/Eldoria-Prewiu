@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T21:18:52.134Z",
+  "updated_at": "2026-11-05T21:19:06.108Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6273,12 +6273,13 @@
         "tools/eldoria-v41/GatewaySmoke.csproj",
         "tools/march-capacity/Smoke.csproj",
         "tools/ui-v3-domain-smoke/Smoke.csproj",
-        "tools/bastion-iii/DomainProbe.cs"
+        "tools/bastion-iii/DomainProbe.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs"
       ],
       "resources": [],
       "phase": "CANONICAL_GATHER_COMBAT_NAMING_AND_NATIVE_QA",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "Extend four existing .NET smoke probes with three newly introduced domain policy sources and correct a prior 45-second expectation to the approved 300-second hunt/resource cooldown.",
+      "next": "Repair native end-to-end first-session acceptance: capture new player naming (portrait/landscape) before narrator; run full EditMode/PlayMode and verify exact source without touching 48h economy.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
