@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T20:41:41.102Z",
+  "updated_at": "2026-11-05T20:46:21.276Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6227,7 +6227,9 @@
         "tools/player-clarity/**",
         ".github/workflows/player-clarity-domain.yml",
         "Unity/Assets/Eldoria/Scripts/Domain/ChapterThreeHuntDifficultyPolicy.cs",
-        "Unity/Assets/Eldoria/Scripts/Domain/ChapterThreeHuntDifficultyPolicy.cs.meta"
+        "Unity/Assets/Eldoria/Scripts/Domain/ChapterThreeHuntDifficultyPolicy.cs.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs.meta"
       ],
       "resources": [],
       "phase": "ISOLATED_WORLD_UI_AND_TESTS_PENDING_NATIVE_INTEGRATION",
