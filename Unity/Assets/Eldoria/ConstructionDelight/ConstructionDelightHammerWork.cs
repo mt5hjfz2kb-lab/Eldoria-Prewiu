@@ -87,7 +87,7 @@ namespace Eldoria.ReferenceClean
             {
                 float side=i==0?-1f:1f;
                 Vector3 contact=new Vector3(site.center.x,baseline,site.center.z)+
-                    right*(side*width*.20f)+toward*(front*.48f+.04f);
+                    right*(side*width*.20f)+toward*(front*.91f+.09f);
                 var holder=new GameObject("Hammer swing pivot "+i);
                 holder.transform.SetParent(root.transform,false);
                 holder.transform.position=contact;
