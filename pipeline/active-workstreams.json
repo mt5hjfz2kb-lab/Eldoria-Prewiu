@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T17:19:52.346Z",
+  "updated_at": "2026-11-05T17:27:16.035Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3474,9 +3474,9 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 16,
+      "ownership_revision": 17,
       "write_scope_released": false,
-      "branch": "feature/eldoria-construction-delight-20261104",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-03T23:35:16.557Z",
       "base_main_sha": "d01bffc48f85d65b1061c2fc50ce78c49d9c3344",
@@ -3491,13 +3491,15 @@
         ".github/workflows/eldoria-construction-delight-native.yml",
         "tools/construction-delight/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "CONTROLLED_TECHNIQUE_AB_64_FRAMES_SOURCE_PASS__UNITY_RESOURCE_OWNED_BY_COMBAT",
-      "next": "Native proof requested by owner: A=URP architectural sweep + real material warmth + transient Bloom/particles (no staged geometry); B=identical camera, LocalGateway task, shader, Bloom and particles, plus reversible 3D assembly. Source gates run 42033957308 green: 36 assertions, five C# files and Editor-preprocessor branches syntax, fixed technique AB. Wait for combat workstream to RELEASE windows-runner-heavy; never steal or start Unity concurrently. Then CAS claim rev17 in main; mirror registry to this PR branch and trigger [delight-native] native 6000.3.23f1 64 PNG, inspect both orientations, 6-point temporal A/B, check Bloom supported; release lease. ART_APPROVED remains false, no merge or APK.",
+      "phase": "CONTROLLED_AB_64_FRAME_NATIVE_LEASE_CLAIMED",
+      "next": "Mirror main registry snapshot in PR152 feature branch then commit native-request [delight-native]. Capture 64 authentic Unity screenshots technique A vs B, release Windows CAS on completion/failure, leave PR draft and ART_APPROVED=false",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Native unity 41872572157 (26 screenshots A/B, short motion), artifacts 13345725500, saved-state invariant; local contact sheets",
@@ -3528,7 +3530,7 @@
         "personal_login_available_to_agent": false,
         "unity_source_compiled": false,
         "real_delight_captures": 26,
-        "windows_runner_released": true,
+        "windows_runner_released": false,
         "reason": "Real Unity Editor returned exit 198 after installed Unity Hub launched and existing UnityEntitlementLicense.xml detected. No successful authenticated headless entitlement; do not claim visual QA.",
         "license_diagnostic_sessions_run": 41798743304,
         "runner_session_id": 2,
@@ -3556,7 +3558,7 @@
         "readonly_probe_result": "PASS diagnostic: Window SessionId2; no Editor/Hub/Client; CLI auth exit3, license exit4; Unity Editor auth not proven",
         "actual_unity_compile_for_latest_sha": false,
         "source_qa_updated": "2026-11-04",
-        "resource_held": false,
+        "resource_held": true,
         "qa_procedures": "URP StandardRequest, authenticated full Unity 6.3.23f1, A/B real camera in 26 frames, sightline/site delta and save invariant",
         "full_native_run": 41872572157,
         "full_native_conclusion": "success",
@@ -3571,10 +3573,20 @@
         "v4_exact_current_head_unity_tested": false,
         "v4_art_approved": false,
         "v4_pending_reason": "Native Windows runner leased to V41 combat; artwork not validated",
-        "v4_quality_target": "Visibly incremental authentic timber/roof assembly; no reset or flashes at gateway completion; convincing final landing; real mobile QA pending"
+        "v4_quality_target": "Visibly incremental authentic timber/roof assembly; no reset or flashes at gateway completion; convincing final landing; real mobile QA pending",
+        "claim_revision": 17,
+        "native_capture_expected": 64,
+        "native_art_verified": false
       },
       "candidate_branch": "feature/eldoria-construction-delight-20261104",
-      "native_lease": null,
+      "native_lease": {
+        "resource": "windows-runner-heavy",
+        "owner": "chatgpt-eldoria-construction-delight-20261104",
+        "ownership_revision": 17,
+        "claimed_at": "2026-11-05T17:27:16.035Z",
+        "branch": "main",
+        "purpose": "Unity 6000.3.23f1, construction architectural A/B, 64 real PNGs; release CAS after run"
+      },
       "license_diagnostics": {
         "read_only_check_run": 41796258446,
         "hub_start_run": 41796661851,
