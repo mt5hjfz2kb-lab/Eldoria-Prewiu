@@ -142,6 +142,15 @@ namespace Eldoria.ReferenceClean.Editor
                fx.ActiveStagedVisibleMeshes>=fx.ActiveStagedBuildingMeshes)
                 VisualIssues.Add("Construction already exposes every building mesh before "+
                     "authoritative completion");
+            Debug.Log("CONSTRUCTION_DELIGHT_WORK_HAMMER_RENDERERS="+
+                      fx.ActiveHammerRenderers+
+                      " dense_dust="+fx.ActiveDenseConstructionDust);
+            if(fx.ActiveHammerRenderers<4)
+                VisualIssues.Add("Real hammer heads and handles not visible at "+
+                    "canonical sawmill worksite");
+            if(fx.ActiveDenseConstructionDust<12)
+                VisualIssues.Add("Dense impact dust absent or insufficient "+
+                    "around actual building joinery");
             if(fx.ActiveConstructionSprites<=0)
                 VisualIssues.Add("No flowing construction sprites; task="+
                     city.Gateway.Snapshot().BuildingTaskId+
@@ -168,6 +177,11 @@ namespace Eldoria.ReferenceClean.Editor
                 }
             }
 
+            Debug.Log("CONSTRUCTION_DELIGHT_REAL_HAMMER_IMPACTS="+
+                      fx.TotalHammerImpacts);
+            if(fx.TotalHammerImpacts<1)
+                VisualIssues.Add("No actual animated hammer swing/impact was "+
+                    "observed during real work motion");
             // The ONLY way to complete is through the real gateway and the
             // native isolated TestClock. No PlayerState edits or mock result.
             var clock=city.Clock as ValoriaReferenceCleanGameplay.TestClock;
@@ -206,6 +220,9 @@ namespace Eldoria.ReferenceClean.Editor
                     "the real partly assembled building");
             if(fx.ActiveStagedVisibleMeshes<workVisibleMeshes)
                 VisualIssues.Add("Visible building sections disappeared at completion");
+            if(fx.ActiveHammerRenderers!=0 || fx.ActiveDenseConstructionDust!=0)
+                VisualIssues.Add("Construction hammers or dense dust leaked "+
+                    "into ceremonial completion");
             if(fx.ActiveFinishSprites<=0)
                 VisualIssues.Add("No completion gilded sprites after real Gateway.Advance");
             Debug.Log("CONSTRUCTION_DELIGHT_ARCHITECTURAL_LUSTRE_LAYERS="+
@@ -254,6 +271,9 @@ namespace Eldoria.ReferenceClean.Editor
                 "False completion animation triggered on reload");
             Require(fx.ActiveStagedBuildingMeshes==0,
                 "Temporary staged 3D construction was not removed after reload");
+            Require(fx.ActiveHammerRenderers==0 &&
+                    fx.ActiveDenseConstructionDust==0,
+                "Hammer tools or dense worksite dust survived real save reload");
             var built=city.Parcels ? city.Parcels.LeftBuilt : null;
             Require(built && built.activeInHierarchy,
                 "Authentic sawmill model was not restored after the real reload");
