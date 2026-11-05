@@ -111,8 +111,12 @@ namespace Eldoria.ReferenceClean
             float ease=1f-Mathf.Pow(1f-progress,3f);
             float offset=finishing ? Mathf.Lerp(.53f,.88f,p.height) :
                                      Mathf.Lerp(.22f,.42f,p.height);
-            float settle=finishing ? Mathf.Sin(progress*Mathf.PI)*.035f:0f;
-            p.transform.position=p.position+Vector3.down*(1f-ease)*offset+
+            // While building, timbers rise from the scaffold. For the
+            // completion, masonry and roof modules settle DOWN into the
+            // authentic final positions: never make a roof emerge from soil.
+            Vector3 approach=finishing ? Vector3.up : Vector3.down;
+            float settle=finishing ? -Mathf.Sin(progress*Mathf.PI)*.025f : 0f;
+            p.transform.position=p.position+approach*(1f-ease)*offset+
                                  Vector3.up*settle;
             p.transform.rotation=p.rotation;
             p.transform.localScale=p.scale*(.90f+.10f*ease);
