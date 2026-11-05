@@ -67,6 +67,14 @@ namespace Eldoria.ReferenceClean
             new ConstructionDelightArchitecturalReveal();
         readonly ConstructionDelightStageAssembly stagedBuilding =
             new ConstructionDelightStageAssembly();
+#if UNITY_EDITOR
+        // Editor-only control to compare exactly the same animated construction
+        // with/without staged 3D, using equivalent shader/Bloom timelines.
+        readonly ConstructionDelightArchitecturalReveal architectureOnlyReveal =
+            new ConstructionDelightArchitecturalReveal();
+        readonly ArchitecturalCompletionLustre architectureOnlyLustre =
+            new ArchitecturalCompletionLustre();
+#endif
 
         public int ActiveStagedVisibleMeshes => stagedBuilding.VisibleMeshCount;
         public bool StagingContinuedAtCompletion => stagedBuilding.CompletionContinuedFromWork;
@@ -103,6 +111,10 @@ namespace Eldoria.ReferenceClean
                 materialLustre.Clear();
                 structureReveal.Clear();
                 stagedBuilding.Clear();
+#if UNITY_EDITOR
+                architectureOnlyReveal.Clear();
+                architectureOnlyLustre.Clear();
+#endif
                 lateFinishBurstPending=false;
                 previousStagedVisibleParts=0;
                 foreach (var field in allFields) field.Clear();
@@ -130,6 +142,10 @@ namespace Eldoria.ReferenceClean
                 materialLustre.Clear();
                 structureReveal.Clear();
                 stagedBuilding.Clear();
+#if UNITY_EDITOR
+                architectureOnlyReveal.Clear();
+                architectureOnlyLustre.Clear();
+#endif
                 lateFinishBurstPending=false;
                 previousStagedVisibleParts=0;
                 return;
@@ -185,6 +201,10 @@ namespace Eldoria.ReferenceClean
             }
             materialLustre.Tick(Time.unscaledTime);
             structureReveal.Tick(Time.unscaledTime);
+#if UNITY_EDITOR
+            architectureOnlyLustre.Tick(Time.unscaledTime);
+            architectureOnlyReveal.Tick(Time.unscaledTime);
+#endif
         }
 
 #if UNITY_EDITOR
@@ -197,6 +217,37 @@ namespace Eldoria.ReferenceClean
                 stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
             materialLustre.SetVisible(visible);
             structureReveal.SetVisible(visible,Time.unscaledTime);
+        }
+
+        /// <summary>
+        /// Same real task and fixed camera, same sprites and synchronized
+        /// architectural shader/Bloom; only 3D staged placement is toggled.
+        /// Unity Editor-only API, excluded from builds and production gameplay.
+        /// </summary>
+        public void SetTechniqueForCapture(bool useStagedAssembly)
+        {
+            float now=Time.unscaledTime;
+            bool isCompletion=stagedBuilding.Running && !stagedBuilding.Working;
+            if(useStagedAssembly)
+            {
+                architectureOnlyReveal.SetVisible(false,now);
+                architectureOnlyLustre.SetVisible(false);
+                stagedBuilding.SetVisible(true);
+                if(city && city.Clock!=null)
+                    stagedBuilding.Tick(city.Clock.UtcTicks,now);
+                structureReveal.SetVisible(true,now);
+                materialLustre.SetVisible(true);
+            }
+            else
+            {
+                structureReveal.SetVisible(!isCompletion,now);
+                materialLustre.SetVisible(false);
+                stagedBuilding.SetVisible(false);
+                if(city && city.Clock!=null)
+                    stagedBuilding.Tick(city.Clock.UtcTicks,now);
+                architectureOnlyReveal.SetVisible(isCompletion,now);
+                architectureOnlyLustre.SetVisible(isCompletion);
+            }
         }
 #endif
 
@@ -334,6 +385,15 @@ namespace Eldoria.ReferenceClean
             // acquires the warm finishing sweep WHEN the roof lands.
             materialLustre.Begin(visual,Time.unscaledTime,staged);
             structureReveal.Complete(visual,city.PlayerCamera,Time.unscaledTime,staged);
+#if UNITY_EDITOR
+            // Separate visual-only reference on the AUTHENTIC un-staged
+            // building; start both at the identical receipt time.
+            architectureOnlyLustre.Begin(completed,Time.unscaledTime,staged);
+            architectureOnlyReveal.Complete(completed,city.PlayerCamera,
+                Time.unscaledTime,staged);
+            architectureOnlyLustre.SetVisible(false);
+            architectureOnlyReveal.SetVisible(false,Time.unscaledTime);
+#endif
             stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
             structureReveal.Tick(Time.unscaledTime);
             // A reversible 3D timber-and-roof landing; all source flags restore.
@@ -619,6 +679,10 @@ namespace Eldoria.ReferenceClean
             structureReveal.Clear();
             materialLustre.Clear();
             stagedBuilding.Clear();
+#if UNITY_EDITOR
+            architectureOnlyReveal.Clear();
+            architectureOnlyLustre.Clear();
+#endif
             if(allFields!=null)foreach(var field in allFields)field.Dispose();
             if(dustMaterial)Destroy(dustMaterial);
             if(ringMaterial)Destroy(ringMaterial);
