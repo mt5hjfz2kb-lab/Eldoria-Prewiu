@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.PlayerClarity;
 using Eldoria.Presentation;
@@ -21,6 +22,7 @@ namespace Eldoria
     {
         private readonly Dictionary<string,int> applied = new Dictionary<string,int>();
         private ValoriaIntegratedWorld bound;
+        private ICommandGateway boundGateway;
 
         public void Sync(ValoriaIntegratedWorld host, PlayerState state)
         {
@@ -28,9 +30,12 @@ namespace Eldoria
                 host.City?.Gateway == null || state == null ||
                 state.WorldId != "world-local" || state.BastionLevel < 3 ||
                 state.ChapterThree == null || !host.WorldRoot) return;
-            if (bound != host)
+            // Playtest reset rebinds the canonical gateway on the SAME scene
+            // host. Never reuse generation-cache entries from an older save.
+            if (bound != host || !ReferenceEquals(boundGateway,host.City.Gateway))
             {
                 bound = host;
+                boundGateway = host.City.Gateway;
                 applied.Clear();
             }
 
