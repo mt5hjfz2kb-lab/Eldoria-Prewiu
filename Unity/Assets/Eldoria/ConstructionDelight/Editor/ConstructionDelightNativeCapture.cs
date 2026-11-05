@@ -279,6 +279,11 @@ namespace Eldoria.ReferenceClean.Editor
                 "  \"save_unchanged_after_reload\": true,\n"+
                 "  \"construction_from\": \"LocalGateway.Execute(Build)\",\n"+
                 "  \"completion_from\": \"TestClock + LocalGateway.Advance\",\n"+
+                "  \"unity_version\": \"" + UnityEngine.Application.unityVersion + "\",\n"+
+                "  \"source_sha\": \"" + (Environment.GetEnvironmentVariable("GITHUB_SHA")??"") + "\",\n"+
+                "  \"technique_A\": \"URP shader, Bloom, artisan particles\",\n"+
+                "  \"technique_B\": \"same plus authentic 3D staged assembly\",\n"+
+                "  \"technique_ab_images\": 24,\n"+
                 "  \"images\": 64,\n"+
                 "  \"art_approved\": false\n"+
                 "}\n");
