@@ -181,7 +181,7 @@ namespace Eldoria.Domain
                 report.HeroId=="aldric+lyra"?"Aldric y Lyra":"Aldric";
             return report.Rounds+" rondas · "+report.Troops+" tropas · "+hero+
                 "\nPoder de marcha "+report.PlayerPower+
-                " · Vida "+report.RemainingHealth+
+                " · Vida "+report.RemainingHealth+(string.IsNullOrEmpty(report.VersionedOutcome?.Outcome)?"":"%")+
                 "\n"+(report.Won?"Encuentro superado.":"La marcha no superó el encuentro.");
         }
         // Lore variants are deterministic from the saved order, so a reload
@@ -325,7 +325,7 @@ namespace Eldoria.Domain
         // null = unrelated command; false = refused without mutation; true = accepted.
         // The host verifies PlayerId, Revision and idempotent command ID FIRST.
         public static bool? Apply(PlayerState s,string kind,string target,long utcNow,
-            out string message)
+            out string message, IEldoriaCampaignBattleResolver resolver=null)
         {
             message="";
             if(kind!="VigilantBattle" && kind!="ClaimVigilantXp" &&
@@ -347,9 +347,19 @@ namespace Eldoria.Domain
                 {message="La composición supera la capacidad de marcha o no está disponible";return false;}
                 var enemy=Stage(stage);
                 var army=ExpeditionWithMastery(s,available,hero);
-                var battle=SliceRules.FightCreature(army,enemy.Enemy);
+                EldoriaV41CombatRecord evolved=null;
+                if(resolver!=null && resolver.UsesCampaignCreatures)
+                {
+                    var heroes=hero=="aldric+lyra"?new[]{"aldric","lyra",null}:new[]{hero,null,null};
+                    var input=resolver.PrepareCreature(available,heroes,"vigilant:"+stage,enemy.Enemy);
+                    input.OwnMasteryLevel=HeroMasteryLevel(s,hero);
+                    evolved=resolver.Resolve(input);
+                    evolved.PlayerPower=army.Power;
+                }
+                var battle=evolved==null?SliceRules.FightCreature(army,enemy.Enemy):
+                    new CombatReport(evolved.Won,evolved.RemainingHealth,evolved.Rounds,evolved.Reason);
                 s.LastBattleReport=new BattleReportState{TargetId="vigilant:"+stage,
-                    HeroId=hero,Troops=available.Total,OwnRoster=available.Copy(),
+                    HeroId=hero,Troops=available.Total,OwnRoster=available.Copy(),VersionedOutcome=evolved?.Copy(),
                     PlayerPower=army.Power,
                     EnemyPower=enemy.Difficulty,Won=battle.Won,Rounds=battle.Rounds,
                     RemainingHealth=battle.RemainingHealth,
@@ -359,6 +369,11 @@ namespace Eldoria.Domain
                 if(!battle.Won){message="La etapa resistió. Mejora tu ejército.";return true;}
                 p.LastClearedStage=stage;
                 if(p.LastIdleClaimUtcTicks==0)p.LastIdleClaimUtcTicks=utcNow;
+                if(evolved!=null)
+                {
+                    evolved.RewardWood=30+stage*2;evolved.RewardStone=10+stage;
+                    s.LastBattleReport.VersionedOutcome=evolved.Copy();
+                }
                 int xp=20+stage/5*3;
                 if(hero=="lyra")p.LyraExperience=checked(p.LyraExperience+xp);
                 else p.AldricExperience=checked(p.AldricExperience+xp);
@@ -421,9 +436,16 @@ namespace Eldoria.Domain
                 {message="No hay tropas disponibles";return false;}
                 if(order.Kind==0)
                 {
-                    var fight=SliceRules.FightCreature(ExpeditionWithMastery(s,party,"aldric"),
-                        new WorldCreatureStats(430,48,43,18,0,0));
-                    if(!fight.Won){message="La patrulla es demasiado fuerte; refuerza tropas";return false;}
+                    var stats=new WorldCreatureStats(430,48,43,18,0,0);
+                    bool won;
+                    if(resolver!=null && resolver.UsesCampaignCreatures)
+                    {
+                        var input=resolver.PrepareCreature(party,new[]{"aldric",null,null},"scout:"+order.Id,stats);
+                        input.OwnMasteryLevel=HeroMasteryLevel(s,"aldric");
+                        won=resolver.Resolve(input).Won;
+                    }
+                    else won=SliceRules.FightCreature(ExpeditionWithMastery(s,party,"aldric"),stats).Won;
+                    if(!won){message="La patrulla es demasiado fuerte; refuerza tropas";return false;}
                 }
                 MarchCapacityRules.Reserve(s,party);
                 order.HeroId="aldric";

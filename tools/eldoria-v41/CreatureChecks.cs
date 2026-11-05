@@ -2,7 +2,8 @@ using System;
 using Eldoria.Domain;
 static class CreatureChecks
 {
- static void Check(bool value,string name){if(!value)throw new Exception("V41_CREATURE_FAIL "+name);}
+ static int checks;
+ static void Check(bool value,string name){checks++;if(!value)throw new Exception("V41_CREATURE_FAIL "+name);}
  public static void Run()
  {
   var weak=new EldoriaV41CombatEvolution.Force().Add(1,1,1);
@@ -28,6 +29,19 @@ static class CreatureChecks
   var shell=new EldoriaV41BattleInput{OwnTroops=new ArmyRoster(),EnemyTroops=new ArmyRoster(),EnemyCreature=new EldoriaV41CreatureInput(),OwnHeroes=new[]{"","",""}};
   Check(shell.IsLegacyPlaceholder,"Unity empty legacy shell recognized");shell.TargetId="corrupt-scout";
   Check(!shell.IsLegacyPlaceholder,"partial battle input cannot downgrade silently");
-  Console.WriteLine("V41_CREATURE_ADAPTER_PASS 39");
+  for(int level=0;level<=20;level++)
+  {
+   var result=EldoriaV41CombatEvolution.ResolveCreature(starter,EarlyRetentionRules.Stage(25).Enemy,masteryLevel:level);
+   double initial=0,damage=0;
+   for(int i=0;i<15;i++)initial+=result.InitialHpA[i];
+   foreach(double hit in result.DamagedHpA)damage+=hit;
+   Check(Math.Abs((initial-damage)/initial-result.RemainingA)<1e-8,"mastery own health and reported damage reconcile");
+  }
+  var ambush=resolver.PrepareCreature(new ArmyRoster{ArcherT1=36},new[]{"aldric",null,null},"ash-stalker-valoria",new WorldCreatureStats(920,132,68,54,0,0));
+  ambush.EnemyAmbush=true;
+  Check(ambush.Copy().EnemyAmbush,"ambush persists in immutable input");
+  var ambushed=EldoriaV41CombatEvolution.ResolveCreature(starter,ambush.EnemyCreature.Stats,ambush:true);
+  Check(ambushed.DealtB[0]>0 && ambushed.RemainingA>=0 && ambushed.RemainingA<=1,"finite authored ambush damage");
+  Console.WriteLine("V41_CREATURE_ADAPTER_PASS "+checks);
  }
 }

@@ -76,6 +76,7 @@ namespace Eldoria.Domain
             public double RemainingA, RemainingB;
             public double[] DealtA, DealtB;
             public double[,] DamagedHpA, DamagedHpB;
+            public double[] InitialHpA;
             public double AldricBlockedA, AldricBlockedB;
             public double CounterAdvantage;
             public double LyraFirstStrikeA, LyraFirstStrikeB;
@@ -240,7 +241,7 @@ namespace Eldoria.Domain
         }
         // Creatures retain their authored finite stats. They are not assigned a
         // fictitious troop family, tier, hero, or counter advantage.
-        public static Result ResolveCreature(Force player, WorldCreatureStats creature, int maxRounds=120)
+        public static Result ResolveCreature(Force player, WorldCreatureStats creature, int maxRounds=120, int masteryLevel=0, bool ambush=false)
         {
             if(creature.Health<=0 || creature.Attack<0 || creature.Defense<0 || creature.Break<0 || maxRounds<1 || maxRounds>1000)
                 throw new ArgumentException("Invalid real creature profile");
@@ -248,15 +249,40 @@ namespace Eldoria.Domain
             for(int i=0;i<Families*Tiers;i++)enemy.HpPer[i]=1;
             enemy.Hp[0]=enemy.Initial[0]=enemy.HpPer[0]=creature.Health;
             enemy.Atk[0]=creature.Attack;enemy.Def[0]=creature.Defense;enemy.Rup[0]=creature.Break;
-            return ResolveSides(Build(player),enemy,0,maxRounds,true);
+            var own=Build(player);
+            if(masteryLevel<0 || masteryLevel>20)throw new ArgumentOutOfRangeException(nameof(masteryLevel));
+            if(masteryLevel>0)
+            {
+                // Preserve the existing progression's proportional stat benefit.
+                // Soldier profiles remain immutable; no new XP curve or coefficients.
+                var hero=Has(own,"aldric")&&Has(own,"lyra")?"aldric+lyra":player.HeroIds[0];
+                var baseline=SliceRules.Expedition(ToRoster(player),hero);
+                double attack=(baseline.Attack+masteryLevel*4.0)/baseline.Attack;
+                double defense=(baseline.Defense+masteryLevel*3.0)/baseline.Defense;
+                double health=(baseline.Health+masteryLevel*15.0)/baseline.Health;
+                double rupture=(baseline.Break+masteryLevel*2.0)/baseline.Break;
+                for(int i=0;i<Families*Tiers;i++)
+                {
+                    own.Atk[i]*=attack;own.Def[i]*=defense;own.Rup[i]*=rupture;
+                    own.HpPer[i]*=health;own.Hp[i]*=health;own.Initial[i]*=health;
+                }
+            }
+            if(ambush)
+            {
+                var opening=Outgoing(enemy,own,1);
+                Scale(opening,1.42);Apply(enemy,own,opening);
+                enemy.Def[0]=Math.Round(enemy.Def[0]*.82,MidpointRounding.AwayFromZero);
+            }
+            return ResolveSides(own,enemy,0,maxRounds,true,ambush);
         }
-        static Result ResolveSides(Side x,Side y,double coherence,int maxRounds,bool heroSkills)
+        static Result ResolveSides(Side x,Side y,double coherence,int maxRounds,bool heroSkills,bool ambushRecovery=false)
         {
             var turns=new List<Turn>();
             for(int round=1;round<=maxRounds && x.CurrentHp>Epsilon && y.CurrentHp>Epsilon;round++)
             {
                 var xy=Outgoing(x,y,1+TacticalBonus*coherence);
                 var yx=Outgoing(y,x,1-TacticalBonus*coherence);
+                if(ambushRecovery && round==1)Scale(xy,1.08);
                 if(heroSkills && round==1)
                 {
                     x.FirstStrike=Lyra(x,y,xy);y.FirstStrike=Lyra(y,x,yx);
@@ -275,7 +301,7 @@ namespace Eldoria.Domain
                 RemainingA=leftA/x.InitialHp,RemainingB=leftB/y.InitialHp,
                 DealtA=(double[])x.Damage.Clone(),DealtB=(double[])y.Damage.Clone(),
                 CounterAdvantage=coherence,
-                DamagedHpA=Damaged(x),DamagedHpB=Damaged(y),
+                DamagedHpA=Damaged(x),DamagedHpB=Damaged(y),InitialHpA=(double[])x.Initial.Clone(),
                 AldricBlockedA=x.ShieldBlocked,AldricBlockedB=y.ShieldBlocked,
                 LyraFirstStrikeA=x.FirstStrike,LyraFirstStrikeB=y.FirstStrike,Turns=turns
             };
@@ -314,7 +340,7 @@ namespace Eldoria.Domain
             {
                 double initial=0,lost=0;
                 for(int t=0;t<Tiers;t++)
-                { initial+=player.Troops[f,t]*Health[f]*Tier[t];lost+=result.DamagedHpA[f,t]; }
+                { initial+=result.InitialHpA==null?player.Troops[f,t]*Health[f]*Tier[t]:result.InitialHpA[f*Tiers+t];lost+=result.DamagedHpA[f,t]; }
                 values[f]=FamilyLabels[f]+": "+(initial>0?
                     (100*Math.Max(0,initial-lost)/initial).ToString("F1",CultureInfo.InvariantCulture)+"%": "sin tropas");
             }
@@ -358,7 +384,7 @@ namespace Eldoria.Domain
                 {
                     int count=player.Troops[family,tier];
                     if(count==0)continue;
-                    double initial=count*Health[family]*Tier[tier];
+                    double initial=r.InitialHpA==null?count*Health[family]*Tier[tier]:r.InitialHpA[family*Tiers+tier];
                     double damaged=Math.Max(0,Math.Min(initial,r.DamagedHpA[family,tier]));
                     double fraction=initial>0?damaged/initial:0;
                     string wear=fraction>.80?"muy castigados":

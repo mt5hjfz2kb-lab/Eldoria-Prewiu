@@ -49,19 +49,57 @@ namespace Eldoria.Tests
             Assert.That(gateway.Snapshot().Resources.Wood,Is.EqualTo(wood));
             if(outcome=="draw")Assert.That(mail.Title,Does.Contain("Empate"));
         }
-        [Test] public void UnityLegacyEmptyMarchPlaceholderRetainsOriginalResolver()
+        [TestCase(false)]
+        [TestCase(true)] public void UnityLegacyEmptyMarchPlaceholderRetainsOriginalResolver(bool newResolverInstalled)
         {
             var clock=new Clock();var store=new Store();
             store.Save(new PlayerState{BastionLevel=2,Available=new ArmyRoster{ArcherT1=100}});
             var game=new LocalGateway(clock,store);
             Assert.That(Send(game,"legacy-launch","Fight","corrupt-scout").Ok,Is.True);
             // Native serializer, including null nested class behavior.
-            game=new LocalGateway(clock,store);
+            var resolver=newResolverInstalled?EldoriaV41GatewayResolver.Campaign():null;
+            game=new LocalGateway(clock,store,resolver);
             Assert.That(game.Snapshot().March.VersionedBattle,Is.Null);
             clock.UtcTicks+=TimeSpan.FromSeconds(30).Ticks;
-            game=new LocalGateway(clock,store);
+            game=new LocalGateway(clock,store,resolver);
             Assert.That(game.Snapshot().March.Phase,Is.EqualTo("idle"));
             Assert.That(game.Snapshot().Available.ArcherT1,Is.EqualTo(100));
+        }
+        [Test] public void RealCampaignCreatureSnapshotSurvivesUnitySerialization()
+        {
+            var clock=new Clock();var store=new Store();
+            store.Save(new PlayerState{BastionLevel=2,Available=new ArmyRoster{ArcherT1=100}});
+            var resolver=EldoriaV41GatewayResolver.Campaign();
+            var game=new LocalGateway(clock,store,resolver);
+            Assert.That(Send(game,"creature-launch","Fight","corrupt-scout").Ok,Is.True);
+            var frozen=store.Load().March.VersionedBattle;
+            Assert.That(frozen.EnemyCreature.Health,Is.EqualTo(620));
+            clock.UtcTicks+=TimeSpan.FromSeconds(30).Ticks;
+            game=new LocalGateway(clock,store,resolver);
+            var battle=game.Snapshot().Mailbox.List("informes").Single().Battle;
+            Assert.That(battle.Outcome,Is.EqualTo("victory"));
+            Assert.That(battle.OwnDamageByFamily,Is.Not.Empty);
+            Assert.That(game.Snapshot().Available.ArcherT1,Is.EqualTo(100));
+        }
+        [Test] public void NativeVigilantResultAndEarnedMasterySurviveReloadWithoutDoubleReward()
+        {
+            var clock=new Clock();var store=new Store();
+            store.Save(new PlayerState{BastionLevel=2,BarracksLevel=5,SawmillLevel=1,
+                ChapterProgress=new ChapterProgressState{MarchConfirmed=true},Available=new ArmyRoster{ArcherT1=200}});
+            var resolver=EldoriaV41GatewayResolver.Campaign();
+            var game=new LocalGateway(clock,store,resolver);
+            Assert.That(Send(game,"guardian","VigilantBattle","1").Ok,Is.True);
+            var before=game.Snapshot();
+            Assert.That(before.Retention.LastClearedStage,Is.EqualTo(1));
+            Assert.That(before.LastBattleReport.VersionedOutcome.Outcome,Is.EqualTo("victory"));
+            game=new LocalGateway(clock,store,resolver);
+            var mail=game.Snapshot().Mailbox.List("informes").Single();
+            Assert.That(mail.Battle.OwnDamageByFamily,Is.Not.Empty);
+            Assert.That(mail.Battle.RewardWood,Is.EqualTo(32));
+            Assert.That(Send(game,"guardian","VigilantBattle","1").Ok,Is.True);
+            Assert.That(game.Snapshot().Resources.Wood,Is.EqualTo(before.Resources.Wood));
+            Assert.That(game.Snapshot().Retention.AldricExperience,Is.EqualTo(before.Retention.AldricExperience));
+            Assert.That(game.Snapshot().Available.ArcherT1,Is.EqualTo(200));
         }
         [Test] public void HistoricalReportsRetainOutcomeWithoutNewFields()
         {

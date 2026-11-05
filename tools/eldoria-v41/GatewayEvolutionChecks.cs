@@ -38,6 +38,26 @@ static class GatewayEvolutionChecks
         Check(Send(gateway,"v41-read","MailRead",mail.EventId).Ok && Send(gateway,"v41-delete","MailDelete",mail.EventId).Ok,"read/delete through authority");
         gateway=new LocalGateway(clock,store,resolver);
         Check(gateway.Snapshot().Mailbox.List("informes").Count==0 && gateway.Snapshot().Resources.Wood==wood,"deleted battle not resurrected or repaid");
+        var campaign=EldoriaV41GatewayResolver.Campaign();
+        var veteran=new Store{State=new PlayerState{BastionLevel=2,BarracksLevel=5,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},Available=new ArmyRoster{ArcherT1=200}}};
+        var journey=new LocalGateway(clock,veteran,campaign);
+        for(int stage=1;stage<=25;stage++)
+        {
+            Check(Send(journey,"guard-"+stage,"VigilantBattle",stage.ToString()).Ok,"actual guardian command "+stage);
+            var after=journey.Snapshot();
+            Check(after.Retention.LastClearedStage==stage,"earned guardian progression "+stage);
+            var report=after.Mailbox.List("informes").First(m=>m.EventId=="vigilant:guard-"+stage).Battle;
+            Check(report.Outcome=="victory" && report.OwnDamageByFamily.Length>0,"evolved guardian report "+stage);
+            Check(report.RewardWood==30+stage*2 && after.Available.ArcherT1==200,"reward facts and troop conservation "+stage);
+            int paid=after.Resources.Wood;
+            journey=new LocalGateway(clock,veteran,campaign);
+            Check(Send(journey,"guard-"+stage,"VigilantBattle",stage.ToString()).Ok && journey.Snapshot().Resources.Wood==paid,"idempotent reload "+stage);
+        }
+        var low=campaign.PrepareCreature(new ArmyRoster{ArcherT1=36},new[]{"aldric",null,null},"vigilant:25",EarlyRetentionRules.Stage(25).Enemy);
+        var high=low.Copy();high.OwnMasteryLevel=20;
+        Check(campaign.Resolve(high).RemainingHealth>=campaign.Resolve(low).RemainingHealth,"earned mastery retains benefit");
+        Check(high.OwnTroops.ArcherT1==36 && low.OwnMasteryLevel==0,"mastery does not invent troops or mutate snapshot");
         Console.WriteLine("V41_VERSIONED_GATEWAY_PASS "+checks);
     }
 }

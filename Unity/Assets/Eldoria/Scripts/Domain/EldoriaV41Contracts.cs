@@ -154,19 +154,21 @@ namespace Eldoria.Domain
     [Serializable] public sealed class EldoriaV41BattleInput
     {
         public string RulesVersion,TargetId;
+        public int OwnMasteryLevel;
+        public bool EnemyAmbush;
         public ArmyRoster OwnTroops,EnemyTroops;
         public EldoriaV41CreatureInput EnemyCreature;
         public string[] OwnHeroes,EnemyHeroes;
         // Unity JsonUtility may materialize null class fields as empty shells.
         // Only an entirely empty shell is legacy; a partially populated input is corrupt.
-        public bool IsLegacyPlaceholder => string.IsNullOrEmpty(RulesVersion) && string.IsNullOrEmpty(TargetId) &&
+        public bool IsLegacyPlaceholder => string.IsNullOrEmpty(RulesVersion) && string.IsNullOrEmpty(TargetId) && OwnMasteryLevel==0 && !EnemyAmbush &&
             (OwnTroops==null || OwnTroops.IsNonNegative && OwnTroops.Total==0) &&
             (EnemyTroops==null || EnemyTroops.IsNonNegative && EnemyTroops.Total==0) &&
             (OwnHeroes==null || Array.TrueForAll(OwnHeroes,string.IsNullOrEmpty)) &&
             (EnemyHeroes==null || Array.TrueForAll(EnemyHeroes,string.IsNullOrEmpty)) &&
             (EnemyCreature==null || EnemyCreature.Health==0 && EnemyCreature.Attack==0 && EnemyCreature.Defense==0 && EnemyCreature.Break==0);
         public EldoriaV41BattleInput Copy()=>new EldoriaV41BattleInput{
-            RulesVersion=RulesVersion,TargetId=TargetId,EnemyCreature=EnemyCreature?.Copy(),OwnTroops=OwnTroops?.Copy(),EnemyTroops=EnemyTroops?.Copy(),
+            RulesVersion=RulesVersion,TargetId=TargetId,OwnMasteryLevel=OwnMasteryLevel,EnemyAmbush=EnemyAmbush,EnemyCreature=EnemyCreature?.Copy(),OwnTroops=OwnTroops?.Copy(),EnemyTroops=EnemyTroops?.Copy(),
             OwnHeroes=(string[])OwnHeroes?.Clone(),EnemyHeroes=(string[])EnemyHeroes?.Clone()};
     }
     public interface IEldoriaVersionedBattleResolver

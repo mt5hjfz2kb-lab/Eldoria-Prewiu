@@ -613,7 +613,7 @@ jobs:
           retention-days: 30
 
       - name: Real Diálogo 1 before/after — original HUD, three speakers, four formats
-        if: github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main'
+        if: github.event.pull_request.number == 134 || github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main'
         shell: powershell
         env:
           ALDRIC_NATIVE_OUTPUT: ${{ github.workspace }}/dialogue-v4-native-${{ github.run_id }}
@@ -687,7 +687,7 @@ jobs:
 
       - name: Verify retention reference composition and real guardian/discovery interaction
         id: retention_preflight
-        if: github.event.pull_request.number == 124 || github.event.pull_request.number == 125 || (github.event.pull_request.number == 136 || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main')
+        if: github.event.pull_request.number == 124 || github.event.pull_request.number == 125 || (github.event.pull_request.number == 134 || github.event.pull_request.number == 136 || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main')
         shell: powershell
         env:
           EARLY_RETENTION_EVIDENCE: ${{ github.workspace }}/retention-reference-${{ github.run_id }}
@@ -722,7 +722,7 @@ jobs:
           }
 
       - uses: actions/upload-artifact@v4
-        if: always() && (github.event.pull_request.number == 124 || github.event.pull_request.number == 125 || (github.event.pull_request.number == 136 || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main'))
+        if: always() && (github.event.pull_request.number == 124 || github.event.pull_request.number == 125 || (github.event.pull_request.number == 134 || github.event.pull_request.number == 136 || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main'))
         with:
           name: eldoria-retention-evolution-native-${{ github.run_id }}
           if-no-files-found: error

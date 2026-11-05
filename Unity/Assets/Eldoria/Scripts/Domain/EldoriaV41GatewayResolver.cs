@@ -57,7 +57,7 @@ namespace Eldoria.Domain
             if(input.EnemyCreature!=null && (input.EnemyCreature.Health!=0 || input.EnemyCreature.Attack!=0 || input.EnemyCreature.Defense!=0 || input.EnemyCreature.Break!=0))
             {
                 if((input.EnemyTroops!=null && input.EnemyTroops.Total!=0) || (input.EnemyHeroes!=null && !Array.TrueForAll(input.EnemyHeroes,string.IsNullOrEmpty)))throw new ArgumentException("Ambiguous enemy profile");
-                var actual=EldoriaV41CombatEvolution.ResolveCreature(player,input.EnemyCreature.Stats);
+                var actual=EldoriaV41CombatEvolution.ResolveCreature(player,input.EnemyCreature.Stats,masteryLevel:input.OwnMasteryLevel,ambush:input.EnemyAmbush);
                 return EldoriaV41CombatEvolution.ToCreatureMailbox(actual,player,"uncommitted",input.TargetId,1).Battle;
             }
             var enemy=Force(input.EnemyTroops,input.EnemyHeroes);

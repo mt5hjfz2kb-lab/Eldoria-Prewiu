@@ -307,6 +307,7 @@ namespace Eldoria.Application
                     HeroId=s.LastBattleReport?.HeroId??"aldric",
                     Troops=s.LastBattleReport?.Troops??0,
                     OwnRoster=s.LastBattleReport?.OwnRoster?.Copy(),
+                    VersionedOutcome=s.LastBattleReport?.VersionedOutcome?.Copy(),
                     PlayerPower=s.LastBattleReport?.PlayerPower??0,
                     EnemyPower=s.LastBattleReport?.EnemyPower??0,
                     Won=s.LastBattleReport?.Won??false,
@@ -346,7 +347,7 @@ namespace Eldoria.Application
             if (command.ActorId != state.PlayerId) return Fail("Propietario incorrecto");
             if (command.ExpectedRevision != observedRevision) return Fail("Estado desactualizado");
             var early=EarlyRetentionRules.Apply(state,command.Kind,command.TargetId,
-                clock.UtcTicks,out string earlyMessage);
+                clock.UtcTicks,out string earlyMessage,battleResolver as IEldoriaCampaignBattleResolver);
             if(early.HasValue)
             {
                 if(!early.Value)return Fail(earlyMessage);
@@ -354,10 +355,10 @@ namespace Eldoria.Application
                     (state.LastBattleReport.TargetId??"").StartsWith("vigilant:",StringComparison.Ordinal))
                     state.Mailbox.Receive(new EldoriaV41Message {
                         EventId="vigilant:"+command.Id,Category="informes",Type="battle",
-                        Title=state.LastBattleReport.Won?"Victoria en los Vigilantes":"Derrota en los Vigilantes",
+                        Title=state.LastBattleReport.VersionedOutcome?.Outcome=="draw"?"Empate en los Vigilantes":state.LastBattleReport.Won?"Victoria en los Vigilantes":"Derrota en los Vigilantes",
                         Subtitle=state.LastBattleReport.Reason,
                         ReportId="vigilant:"+command.Id,OccurredAtUtcTicks=clock.UtcTicks,
-                        Battle=new EldoriaV41CombatRecord {
+                        Battle=state.LastBattleReport.VersionedOutcome?.Copy()??new EldoriaV41CombatRecord {
                             TargetId=state.LastBattleReport.TargetId,HeroId=state.LastBattleReport.HeroId,
                             Troops=state.LastBattleReport.Troops,
                             OwnRoster=state.LastBattleReport.OwnRoster?.Copy(),
@@ -662,12 +663,13 @@ namespace Eldoria.Application
                 MarchCapacityRules.AutoSelect(state.Available,MarchCapacityRules.Capacity(state,hero));
             if(!MarchCapacityRules.Fits(troops,state.Available,MarchCapacityRules.Capacity(state,hero)))return false;
             var versioned=gathering||IsChapterThreeTarget(targetId)?null:battleResolver?.Prepare(troops.Copy(),new System.Collections.Generic.List<string>(party),targetId);
-            if(versioned==null && !gathering && !IsChapterThreeTarget(targetId) &&
+            if(versioned==null && !gathering && (!IsChapterThreeTarget(targetId)||targetId=="ash-stalker-valoria") &&
                 battleResolver is IEldoriaCampaignBattleResolver campaign && campaign.UsesCampaignCreatures)
             {
                 var creature=Creature(state,targetId);
-                var stats=creature!=null?WorldCreatureCatalog.For(creature.CreatureKind,creature.Level):SliceRules.CampaignEnemy(targetId);
+                var stats=targetId=="ash-stalker-valoria"?new WorldCreatureStats(920,132,68,54,0,0):creature!=null?WorldCreatureCatalog.For(creature.CreatureKind,creature.Level):SliceRules.CampaignEnemy(targetId);
                 versioned=campaign.PrepareCreature(troops,party,targetId,stats);
+                versioned.EnemyAmbush=targetId=="ash-stalker-valoria";
             }
             if(versioned!=null && (versioned.RulesVersion!=battleResolver.RulesVersion || versioned.TargetId!=targetId))
                 throw new InvalidOperationException("Combat definition identity mismatch");
@@ -1102,7 +1104,7 @@ namespace Eldoria.Application
                 EventId=id,Category="informes",Type="battle",
                 Title=report.Won?"Victoria en batalla":"Derrota en batalla",
                 Subtitle=report.Reason,ReportId=id,OccurredAtUtcTicks=due,
-                Battle=new EldoriaV41CombatRecord {
+                Battle=report.VersionedOutcome?.Copy()??new EldoriaV41CombatRecord {
                     TargetId=report.TargetId,HeroId=report.HeroId,Troops=report.Troops,
                     OwnRoster=report.OwnRoster?.Copy(),PlayerPower=report.PlayerPower,EnemyPower=report.EnemyPower,Won=report.Won,
                     Rounds=report.Rounds,RemainingHealth=report.RemainingHealth,
@@ -1117,11 +1119,14 @@ namespace Eldoria.Application
             if(m.TargetId=="ash-stalker-valoria")
             {
                 var stats=SliceRules.Expedition(m.Troops,m.HeroId);
-                var report=SliceRules.FightCreature(stats,new WorldCreatureStats(920,132,68,54,0,0),ambush:true);
+                var evolved=m.VersionedBattle==null?null:battleResolver.Resolve(m.VersionedBattle.Copy());
+                var report=evolved==null?SliceRules.FightCreature(stats,new WorldCreatureStats(920,132,68,54,0,0),ambush:true):
+                    new CombatReport(evolved.Won,evolved.RemainingHealth,evolved.Rounds,evolved.Reason);
                 if(report.Won){c.AshStalkerDefeated=true;c.AshStalkerRespawnUtcTicks=due+TimeSpan.FromSeconds(60).Ticks;m.PendingFood=120;m.PendingStone=110;}
+                if(evolved!=null){evolved.RewardFood=m.PendingFood;evolved.RewardStone=m.PendingStone;}
                 state.LastBattleReport=new BattleReportState{
                     TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,
-                    OwnRoster=m.Troops?.Copy(),PlayerPower=stats.Power,EnemyPower=3600,Won=report.Won,
+                    OwnRoster=m.Troops?.Copy(),VersionedOutcome=evolved?.Copy(),PlayerPower=stats.Power,EnemyPower=3600,Won=report.Won,
                     Rounds=report.Rounds,RemainingHealth=report.RemainingHealth,
                     RewardFood=m.PendingFood,RewardStone=m.PendingStone,
                     Reason=report.Reason+(report.Won?" Botín: 120 comida y 110 piedra al regresar.":"")

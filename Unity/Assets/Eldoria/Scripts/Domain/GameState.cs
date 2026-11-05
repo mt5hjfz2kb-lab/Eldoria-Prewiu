@@ -155,6 +155,7 @@ namespace Eldoria.Domain
         public int Troops;
         // Optional immutable snapshot of player-owned deployed troops, absent from legacy reports.
         public ArmyRoster OwnRoster;
+        public EldoriaV41CombatRecord VersionedOutcome;
         public int PlayerPower;
         public int EnemyPower;
         public bool Won;
