@@ -28,6 +28,14 @@ namespace Eldoria.UI.RoyalGold {
    try{var r=gateway.Execute(new GameCommand("royal-ui:"+offer.Id,current.PlayerId,offer.Kind,offer.Target,offer.Revision));return new RoyalResult(r.Ok,r.Message);}finally{submitting=false;}
   }
   static string L(bool en,string es,string eg)=>RoyalFormatting.L(en,es,eg);
+  // Read the same V2 rates that LocalGateway actually credits; the previous
+  // level/second label overstated stone, wood and food production in Unity.
+  static string V2ProductionLabel(string resource,int level,bool en){
+   decimal perSecond=EconomyProductionV2.Rate(resource,level)/(decimal)EconomyProductionV2.Scale;
+   var culture=en?System.Globalization.CultureInfo.InvariantCulture:System.Globalization.CultureInfo.GetCultureInfo("es-ES");
+   string label=resource=="stone"?L(en," piedra/s"," stone/s"):resource=="food"?L(en," comida/s"," food/s"):L(en," madera/s"," wood/s");
+   return perSecond.ToString("0.##",culture)+label;
+  }
   void ObserveRecruitment(PlayerState s){
    // A completion message follows an observed, completed gateway task. Reloading never grants troops or invents a result.
    if(s.RecruitmentCompletesUtcTicks>0){observedRecruitment=s.RecruitmentTaskId??"";observedRecruitCount=s.PendingRecruitArchers;completionShownUntil=0;}
@@ -145,7 +153,7 @@ namespace Eldoria.UI.RoyalGold {
     b.Name=target=="stoneworks"?L(en,"Cantera","Stoneworks"):target=="granary"?L(en,"Granero","Granary"):target=="sawmill"?L(en,"Aserradero","Sawmill"):L(en,"Cuartel","Barracks");
     b.Level=target=="stoneworks"?c.StoneworksLevel:target=="granary"?c.GranaryLevel:target=="sawmill"?s.SawmillLevel:s.BarracksLevel;
     b.Function=target=="barracks"?L(en,"Infraestructura militar. Recluta desde el Cuartel.","Military infrastructure. Recruit from the Barracks."):
-     (target=="stoneworks"?b.Level*2:b.Level)+L(en,target=="stoneworks"?" piedra/s":target=="granary"?" comida/s":" madera/s",target=="stoneworks"?" stone/s":target=="granary"?" food/s":" wood/s");
+     V2ProductionLabel(target=="stoneworks"?"stone":target=="granary"?"food":"wood",b.Level,en);
     // Bastion III+ reuses the *original* Build gateway for a first Sawmill
     // or Barracks. It does NOT use the later chapter-three cost/duration
     // formula until the first building exists. Display exactly what the

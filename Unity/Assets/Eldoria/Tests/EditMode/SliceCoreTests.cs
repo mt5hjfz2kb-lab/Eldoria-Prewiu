@@ -161,7 +161,7 @@ namespace Eldoria.Tests
             Assert.That(g.Execute(ascend).Ok,Is.True);
             Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(1));
             Assert.That(g.Snapshot().BastionUpgradeCompletesUtcTicks,Is.GreaterThan(clock.UtcTicks));
-            clock.Add(SliceContentProfiles.WebContract.Bastion2UpgradeSeconds);g=new LocalGateway(clock,store);
+            clock.Add(BastionProgressionCatalog.ForLevel(2).DurationSeconds);g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(2));
             Assert.That(g.Snapshot().ChapterProgress.BastionTwoReached,Is.True);
             Assert.That(SliceRules.TotalPower(g.Snapshot()).Total,Is.EqualTo(3222));
@@ -349,7 +349,7 @@ namespace Eldoria.Tests
 
             Assert.That(g.Execute(Cmd(g,"e2e-bastion2","AdvanceBastion","bastion")).Ok,Is.True);
             Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(1));
-            clock.Add(SliceContentProfiles.WebContract.Bastion2UpgradeSeconds);g=new LocalGateway(clock,store);
+            clock.Add(BastionProgressionCatalog.ForLevel(2).DurationSeconds);g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().BastionLevel,Is.EqualTo(2));
             Assert.That(g.Snapshot().ChapterProgress.BastionTwoReached,Is.True);
 
