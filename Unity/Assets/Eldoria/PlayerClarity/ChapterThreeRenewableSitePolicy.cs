@@ -3,20 +3,22 @@ using System;
 namespace Eldoria.PlayerClarity
 {
     /// <summary>
-    /// Chapter III's authored one-off geography is immutable. Only the wolf,
-    /// boar and meat reserve re-select a safe routed site after each real
-    /// generation increment. Generation zero preserves historical placement
+    /// One-time campaign geography is immutable. Recurring Chapter III
+    /// wolf/boar/meat and Chapter V Ash Stalker use the same deterministic
+    /// reachable-site policy after each authoritative generation increment.
+    /// Generation zero preserves historical placement
     /// for existing saves; live marches must finish before relocation.
     /// </summary>
     public static class ChapterThreeRenewableSitePolicy
     {
-        public const int RadialBands = 7;
+        public const int RadialBands = 12;
         public const int BearingsPerBand = 24;
         public const int SiteCount = RadialBands * BearingsPerBand;
 
         public static bool IsRenewable(string id)
         {
-            return id == "hunt-wolf" || id == "hunt-boar" || id == "meat-valoria";
+            return id == "hunt-wolf" || id == "hunt-boar" ||
+                id == "meat-valoria" || id == "ash-stalker-valoria";
         }
 
         public static bool CanRelocate(string id, int generationBefore,
@@ -29,7 +31,7 @@ namespace Eldoria.PlayerClarity
         public static int CandidateIndex(string id, int generation, int attempt)
         {
             if (!IsRenewable(id))
-                throw new ArgumentException("Only Chapter III renewable hunt and meat nodes", nameof(id));
+                throw new ArgumentException("Only recurring Chapter III/V wildlife and resource nodes", nameof(id));
             if (generation < 0) throw new ArgumentOutOfRangeException(nameof(generation));
             if (attempt < 0 || attempt >= SiteCount)
                 throw new ArgumentOutOfRangeException(nameof(attempt));
@@ -43,7 +45,7 @@ namespace Eldoria.PlayerClarity
         {
             if (candidateIndex < 0 || candidateIndex >= SiteCount)
                 throw new ArgumentOutOfRangeException(nameof(candidateIndex));
-            return 72 + 16 * (candidateIndex / BearingsPerBand);
+            return 88 + 16 * (candidateIndex / BearingsPerBand);
         }
 
         public static int BearingAt(int candidateIndex)
