@@ -169,7 +169,10 @@ namespace Eldoria.ReferenceClean.Editor
             yield return new WaitForSecondsRealtime(.36f);
             if(fx.ActiveStagedBuildingMeshes<=0)
                 VisualIssues.Add("No actual 3D timber/roof landing during completed construction");
-            Debug.Log("CONSTRUCTION_DELIGHT_FINISH_STAGED_MESHES="+fx.ActiveStagedBuildingMeshes);
+            Debug.Log("CONSTRUCTION_DELIGHT_FINISH_STAGED_MESHES="+fx.ActiveStagedBuildingMeshes+
+                      " visible="+fx.ActiveStagedVisibleMeshes);
+            if(fx.ActiveStagedBuildingMeshes>0 && fx.ActiveStagedVisibleMeshes<=0)
+                VisualIssues.Add("Completion staged meshes exist but none are visibly landing");
             if(fx.ActiveFinishSprites<=0)
                 VisualIssues.Add("No completion gilded sprites after real Gateway.Advance");
             Debug.Log("CONSTRUCTION_DELIGHT_ARCHITECTURAL_LUSTRE_LAYERS="+
