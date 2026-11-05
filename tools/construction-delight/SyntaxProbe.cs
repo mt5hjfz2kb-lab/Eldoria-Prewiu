@@ -157,6 +157,45 @@ internal static class SyntaxProbe
             else Console.WriteLine("CONSTRUCTION_DELIGHT_GATEWAY_HANDOFF_PASS");
         }
 
+        // The controlled technique A/B must compare the exact same Gateway
+        // receipt, player camera, URP shader/Bloom and particles, changing only
+        // the reversible authentic 3D staged geometry. No fake screenshots.
+        var qa="Unity/Assets/Eldoria/ConstructionDelight/Editor/"+
+               "ConstructionDelightNativeCapture.cs";
+        if(!File.Exists(qa) || !File.Exists(ownerSource))
+        {
+            Console.Error.WriteLine("CONSTRUCTION_DELIGHT_TECHNIQUE_AB_MISSING");
+            errors++;
+        }
+        else
+        {
+            var capture=File.ReadAllText(qa);
+            var runtime=File.ReadAllText(ownerSource);
+            bool exactCaseNames=capture.Contains("A-architectural-",StringComparison.Ordinal) &&
+                                capture.Contains("B-staged-",StringComparison.Ordinal);
+            bool bothStates=capture.Contains("fx.SetTechniqueForCapture(false)",StringComparison.Ordinal) &&
+                            capture.Contains("fx.SetTechniqueForCapture(true)",StringComparison.Ordinal);
+            bool sharedView=capture.Contains("TechniqueComparison(host,fx,\"work\"",StringComparison.Ordinal) &&
+                            capture.Contains("TechniqueComparison(host,fx,\"finish\"",StringComparison.Ordinal) &&
+                            capture.Contains("camera,\n                    \"technique-\"",StringComparison.Ordinal);
+            bool geometrySwitch=runtime.Contains("public void SetTechniqueForCapture(bool useStagedAssembly)",StringComparison.Ordinal) &&
+                                runtime.Contains("stagedBuilding.SetVisible(false)",StringComparison.Ordinal) &&
+                                runtime.Contains("stagedBuilding.SetVisible(true)",StringComparison.Ordinal);
+            bool matchingEffects=runtime.Contains("architectureOnlyReveal.Complete(completed,city.PlayerCamera,",StringComparison.Ordinal) &&
+                                 runtime.Contains("architectureOnlyLustre.Begin(completed,Time.unscaledTime,staged)",StringComparison.Ordinal);
+            bool expectedCount=capture.Contains("\\\"images\\\": 64",StringComparison.Ordinal) ||
+                               capture.Contains("images=64",StringComparison.Ordinal);
+            if(!exactCaseNames || !bothStates || !sharedView ||
+               !geometrySwitch || !matchingEffects || !expectedCount)
+            {
+                Console.Error.WriteLine("CONSTRUCTION_DELIGHT_TECHNIQUE_AB_GUARD_FAIL "+
+                    "two comparable techniques, real same-time camera and shader/Bloom required");
+                errors++;
+            }
+            else Console.WriteLine("CONSTRUCTION_DELIGHT_TECHNIQUE_AB_GUARD_PASS "+
+                "same Gateway and camera, synchronized URP reveal and 3D-only toggle");
+        }
+
         // A resource path referenced by the runtime must exist in the exact
         // Unity checkout. Roslyn syntax alone cannot detect a missing shader.
         var shader="Unity/Assets/Eldoria/ConstructionDelight/Resources/"+
