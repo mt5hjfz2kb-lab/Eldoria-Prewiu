@@ -80,7 +80,7 @@ namespace Eldoria.ReferenceClean
             float front=Mathf.Abs(toward.x)*site.extents.x+
                         Mathf.Abs(toward.z)*site.extents.z;
             float width=Mathf.Clamp(Mathf.Max(site.size.x,site.size.z),1.6f,7f);
-            float size=Mathf.Clamp(width*.095f,.22f,.53f);
+            float size=Mathf.Clamp(width*.12f,.34f,.72f);
             float baseline=site.min.y+Mathf.Clamp(site.size.y*.30f,.34f,1.10f);
 
             for(int i=0;i<HammerCount;i++)
