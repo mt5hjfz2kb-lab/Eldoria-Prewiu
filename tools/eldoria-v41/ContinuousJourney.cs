@@ -32,11 +32,12 @@ class ContinuousJourney
     static Clock clock = new();
     static Store store = new();
     static LocalGateway game;
+    static bool candidate = Environment.GetEnvironmentVariable("ELDORIA_V41_CAMPAIGN_PROBE")=="1";
     static int commands, reloads;
     static void Check(bool value, string text) { if (!value) throw new Exception(text); Console.WriteLine("PASS " + text); }
     static void Reload()
     {
-        game = new LocalGateway(clock, store);
+        game = new LocalGateway(clock, store, candidate?EldoriaV41GatewayResolver.Campaign():null);
         // Same production gateway respawn API; no direct save edits.
         game.ConfigureLocalResourceRespawn(new Sites(), TimeSpan.FromSeconds(45));
         reloads++;

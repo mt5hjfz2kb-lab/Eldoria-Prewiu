@@ -90,6 +90,7 @@ namespace Eldoria.Editor
             public string baseline_runtime_sha="c5051220294db3781c56878bab28eccaa798452d";
             public string comparison_scope="Two reconciled runtime files; identical approved assets, metadata and instrumentation";
             public BenchmarkSample[] samples;
+            public float combat_p95_ms; public long combat_retained_bytes;
         }
         static IEnumerator BenchmarkExercise(ValoriaIntegratedWorld host)
         {
@@ -134,6 +135,32 @@ namespace Eldoria.Editor
                 "Benchmark navigation preserves the disposable save byte for byte");
             var result=new BenchmarkResult{variant=Environment.GetEnvironmentVariable("ELDORIA_BENCHMARK_VARIANT"),
                 source_sha=Environment.GetEnvironmentVariable("ALDRIC_REQUEST_SOURCE_SHA"),samples=samples.ToArray()};
+            if(Environment.GetEnvironmentVariable("ELDORIA_COMBAT_BENCHMARK")=="1")
+            {
+                result.baseline_runtime_sha=result.source_sha;
+                result.comparison_scope="Same exact source, assets and scenario; explicit legacy versus evolution resolver in disposable QA";
+                bool legacy=Environment.GetEnvironmentVariable("ELDORIA_BENCHMARK_LEGACY")=="1";
+                var roster=new ArmyRoster{ArcherT1=100};
+                var force=EldoriaV41CombatEvolution.FromRoster(roster,"aldric");
+                var stats=SliceRules.Expedition(roster,"aldric");
+                float worst=0;long retained=0;
+                foreach(var target in new[]{SliceRules.CampaignEnemy("corrupt-scout"),EarlyRetentionRules.Stage(25).Enemy,new WorldCreatureStats(920,132,68,54,0,0)})
+                {
+                    for(int i=0;i<10;i++)
+                        if(legacy)SliceRules.FightCreature(stats,target);else EldoriaV41CombatEvolution.ResolveCreature(force,target);
+                    GC.Collect();long before=GC.GetTotalMemory(true);
+                    var elapsed=new float[100];
+                    for(int i=0;i<elapsed.Length;i++)
+                    {
+                        var watch=System.Diagnostics.Stopwatch.StartNew();
+                        if(legacy)SliceRules.FightCreature(stats,target);else EldoriaV41CombatEvolution.ResolveCreature(force,target);
+                        watch.Stop();elapsed[i]=(float)watch.Elapsed.TotalMilliseconds;
+                    }
+                    Array.Sort(elapsed);worst=Math.Max(worst,elapsed[95]);
+                    retained=Math.Max(retained,Math.Max(0,GC.GetTotalMemory(true)-before));
+                }
+                result.combat_p95_ms=worst;result.combat_retained_bytes=retained;
+            }
             File.WriteAllText(Path.Combine(Output,"benchmark.json"),JsonUtility.ToJson(result,true));
             Debug.Log("ELDORIA_CONSOLIDATION_BENCHMARK_RECORDED");EditorApplication.Exit(0);
         }
@@ -150,6 +177,60 @@ namespace Eldoria.Editor
                     Canvas.ForceUpdateCanvases();
                 }
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
+                if(name.StartsWith("mailbox-evolution-analysis-")&&width==844&&height==390)
+                {
+                    var canvas=host.Hud.GetComponent<Canvas>();
+                    var destination=host.Hud.GetComponentsInChildren<RectTransform>()
+                        .First(x=>x.name=="V41 / Buzón destination");
+                    Need(destination.localScale==Vector3.one,
+                        "Landscape text is rasterized at native size, never magnified as a blurry transform");
+                    var viewport=destination.GetComponentsInChildren<ScrollRect>()
+                        .First(x=>x.name=="Mailbox / report scroll viewport").viewport;
+                    Need(viewport.rect.height*canvas.scaleFactor>=140f,
+                        "Landscape report preserves a usable reading viewport");
+                    foreach(var label in destination.GetComponentsInChildren<Text>()
+                        .Where(x=>!string.IsNullOrWhiteSpace(x.text)&&
+                            (x.name=="Contenido del mensaje"||
+                             x.name=="Mailbox / original record and receipt"||
+                             x.name.StartsWith("Mailbox / metric caption ")||
+                             x.name.StartsWith("Mailbox / genuine metric "))))
+                    {
+                        float physicalScale=canvas.scaleFactor;
+                        for(var parent=label.transform;parent&&parent!=canvas.transform;parent=parent.parent)
+                            physicalScale*=Mathf.Abs(parent.localScale.x);
+                        Need(label.fontSize*physicalScale>=(label.name=="Contenido del mensaje"?18f:12f),
+                            "Landscape report retains readable physical text size "+label.name);
+                    }
+                }
+                if(name=="mailbox-qa-twelve-small-phone-landscape")
+                {
+                    var titles=host.Hud.GetComponentsInChildren<Text>()
+                        .Where(x=>x.transform.parent.name.StartsWith("Buzón / mensaje ")&&
+                            x.name.EndsWith(" label")&&!string.IsNullOrWhiteSpace(x.text)).ToArray();
+                    Need(titles.Length==2,"Both real compact landscape message titles are tested");
+                    foreach(var label in titles)
+                        Need(label.preferredHeight<=label.rectTransform.rect.height+1f,
+                            "Compact landscape list retains the complete real message title "+label.text);
+                }
+                if(name.StartsWith("mailbox-evolution-analysis-"))
+                    foreach(var metric in host.Hud.GetComponentsInChildren<Text>())
+                        if(metric.name.StartsWith("Mailbox / genuine metric ")||
+                            metric.name.StartsWith("Mailbox / metric caption "))
+                            Need(metric.preferredHeight<=metric.rectTransform.rect.height+1f,
+                                "Every saved hero name and metric caption is fully readable "+name+" / "+metric.name);
+                if(name.StartsWith("mailbox-evolution-analysis-")&&name.EndsWith("-scroll-end"))
+                {
+                    var scroll=host.Hud.GetComponentsInChildren<ScrollRect>(true)
+                        .First(x=>x.name=="Mailbox / report scroll viewport");
+                    Need(scroll.content&&scroll.viewport,"Actual analysis document and viewport exist "+name);
+                    if(scroll.content.rect.height>scroll.viewport.rect.height)
+                    {
+                        scroll.OnScroll(new PointerEventData(EventSystem.current){scrollDelta=new Vector2(0,-10000)});
+                        Canvas.ForceUpdateCanvases();
+                        Need(scroll.verticalNormalizedPosition<=.01f,
+                            "Actual scroll input reaches all own-army analysis figures "+name);
+                    }
+                }
                 // Real contextual city card is responsive too. Test the actual
                 // 390x844 screen, not a 900-unit layout stretched to phone.
                 host.Hud.GetComponent<RoyalGoldV2Hud>()?.SynchronizeNow();
@@ -1062,6 +1143,10 @@ namespace Eldoria.Editor
             screen.Close();yield return null;
             var gateway=host.City.Gateway;var snap=gateway.Snapshot();
             Need(gateway.Execute(new Eldoria.Application.GameCommand("v41-native-battle",snap.PlayerId,"Fight","corrupt-scout",snap.Revision)).Ok,"Real battle departure");
+            var liveBattle=gateway.Snapshot().March.VersionedBattle;
+            Need(liveBattle!=null&&liveBattle.RulesVersion==EldoriaV41CombatEvolution.RulesVersion&&
+                liveBattle.EnemyCreature!=null&&liveBattle.EnemyCreature.Health==620,
+                "Canonical playable host actually dispatches the new immutable campaign resolver");
             ((ValoriaReferenceCleanGameplay.TestClock)host.City.Clock).Step(30);gateway.Advance();yield return null;
             Need(gateway.Snapshot().Mailbox.List("informes").Count==1,"Real result creates one report");
             var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();mailbox.Refresh();yield return null;
@@ -1232,12 +1317,25 @@ namespace Eldoria.Editor
             var metricValue=host.Hud.GetComponentsInChildren<Text>(true)
                 .FirstOrDefault(t=>t.name=="Mailbox / genuine metric 1");
             var realRecord=gateway.Snapshot().Mailbox.List("informes")[0].Battle;
+            Need(realRecord.Outcome=="victory"&&!string.IsNullOrEmpty(realRecord.OwnDamageByFamily),
+                "Canonical encounter actually resolves the new motor and persists its own analysis");
             var visibleComposition=host.Hud.GetComponentsInChildren<Text>(true)
                 .FirstOrDefault(t=>t.name=="Mailbox / own roster historical composition");
             Need(realRecord.OwnRoster!=null&&realRecord.OwnRoster.Total==realRecord.Troops &&
-                visibleComposition&&visibleComposition.text.Contains("ARQUEROS") &&
+                realRecord.OwnRoster.ArcherT1==composed.PreparedTroops.ArcherT1 &&
+                realRecord.OwnRoster.ArcherT2==composed.PreparedTroops.ArcherT2 && visibleComposition,
+                "Historical own-roster tiers equal the actual dispatched army");
+            if(!string.IsNullOrEmpty(realRecord.Outcome))
+            {
+                string[] families={"Paladines","Arqueros","Brujos"};
+                for(int f=0;f<3;f++)for(int t=1;t<=5;t++)
+                    if(realRecord.OwnRoster.Get(f,t)>0)
+                        Need(visibleComposition.text.Contains(families[f]+" T"+t+" ×"+realRecord.OwnRoster.Get(f,t)),
+                            "Actual evolved report displays authoritative family and tier "+f+":"+t);
+            }
+            else Need(visibleComposition.text.Contains("ARQUEROS")&&
                 visibleComposition.text.Contains("T1: "+realRecord.OwnRoster.ArcherT1),
-                "Historical own-roster tiers come from the actual dispatched army, never guesses");
+                "Historical legacy composition remains readable");
             Need(reportText&&metricTitle&&metricTitle.text=="TROPAS ENVIADAS"&&
                 metricValue&&metricValue.text==realRecord.Troops.ToString()&&
                 !reportText.text.Contains("Ruptura super")&&
@@ -1253,6 +1351,27 @@ namespace Eldoria.Editor
                 .FirstOrDefault(x=>x.name=="Mailbox / report scroll viewport");
             Need(reportScroller&&reportScroller.vertical&&reportScroller.viewport!=null,
                 "Actual report document uses live vertical scrolling at compact mobile resolutions");
+            if(!string.IsNullOrEmpty(realRecord.Outcome))
+            {
+                var ownAnalysis=host.Hud.GetComponentsInChildren<Button>()
+                    .First(x=>x.name=="Mailbox / collapse or expand report");
+                Need(!reportText.gameObject.activeSelf,"Own analysis is optional and initially collapsed");
+                ownAnalysis.onClick.Invoke();yield return null;
+                Need(reportText.gameObject.activeSelf&&reportText.text.Contains(realRecord.OwnDamageByFamily)&&
+                    reportText.text.Contains(realRecord.OwnReceivedByFamily),
+                    "Expanded own analysis uses saved actual damage facts");
+                Need(!reportText.text.Contains("Paladines")&&!reportText.text.Contains("Brujos"),
+                    "Real archer-only report does not preview unshipped future families");
+                Shot(host,"mailbox-evolution-analysis-portrait",900,1600);
+                Shot(host,"mailbox-evolution-analysis-landscape",1600,900);
+                Shot(host,"mailbox-evolution-analysis-small-phone",390,844);
+                Shot(host,"mailbox-evolution-analysis-small-phone-landscape",844,390);
+                Shot(host,"mailbox-evolution-analysis-portrait-scroll-end",900,1600);
+                Shot(host,"mailbox-evolution-analysis-landscape-scroll-end",1600,900);
+                Shot(host,"mailbox-evolution-analysis-small-phone-scroll-end",390,844);
+                Shot(host,"mailbox-evolution-analysis-small-phone-landscape-scroll-end",844,390);
+                ownAnalysis.onClick.Invoke();yield return null;
+            }
             // Outcome/family/long-text visual matrix. Every candidate below
             // lives ONLY in an isolated READ-ONLY fixture. Its narrative is
             // generated from the real deterministic ScoutOrder family rules,
@@ -1282,11 +1401,11 @@ namespace Eldoria.Editor
                     var applied=EarlyRetentionRules.Apply(combatState,
                         "VigilantBattle",stage.ToString(),
                         new DateTime(2026,11,3,12,0,0,DateTimeKind.Utc).Ticks,
-                        out combatNotice);
+                        out combatNotice,EldoriaV41GatewayResolver.Campaign());
                     Need(applied==true&&combatState.LastBattleReport.Won==(variant==0),
                         "Native screenshot represents a REAL outcome of the actual Vigilants resolver");
                     var result=combatState.LastBattleReport;
-                    var observed=new EldoriaV41CombatRecord {
+                    var observed=result.VersionedOutcome?.Copy()??new EldoriaV41CombatRecord {
                         TargetId=result.TargetId,HeroId=result.HeroId,
                         Troops=result.Troops,OwnRoster=result.OwnRoster?.Copy(),
                         PlayerPower=result.PlayerPower,EnemyPower=result.EnemyPower,

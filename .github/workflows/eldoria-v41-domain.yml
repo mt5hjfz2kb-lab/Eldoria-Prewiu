@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Combat.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41*.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
       - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
       - 'tools/eldoria-v41/**'
@@ -41,6 +41,10 @@ jobs:
       - name: Preserve Bastion IV V costs, rewards, upgrades and save parity
         run: dotnet run --configuration Release --project tools/bastion-iv-v/DomainProbe.csproj
       - name: Traverse Bastions I V continuously from a fresh save without seeded progression
+        run: dotnet run --configuration Release --project tools/eldoria-v41/ContinuousJourney.csproj
+      - name: Traverse the same continuous campaign with the production candidate resolver
+        env:
+          ELDORIA_V41_CAMPAIGN_PROBE: '1'
         run: dotnet run --configuration Release --project tools/eldoria-v41/ContinuousJourney.csproj
       - name: Reject incomplete or mismatched exact native certificates
         run: node tools/eldoria-v41/exact-native-certificate.test.mjs

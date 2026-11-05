@@ -47,6 +47,20 @@ await test('artifact from other execution',f=>f.artifacts[0].workflow_run.id=7,f
 await test('unhashed artifact',f=>f.artifacts[0].digest=null,false);
 await test('wrong PR',f=>f.context.payload.pull_request.number=137,false);
 await test('foreign repository',f=>f.context.payload.pull_request.head.repo.full_name='foreign/repo',false);
+function combatFixture(f){
+ const combat='feature/eldoria-v41-contracts-20261030';
+ f.run.head_branch=combat;f.run.event='pull_request';
+ f.run.head_repository={full_name:'o/r'};f.run.pull_requests=[{number:134,head:{ref:combat}}];
+ f.context.payload.pull_request.number=134;f.context.payload.pull_request.head.ref=combat;
+}
+await test('complete exact combat certificate',combatFixture,true);
+await test('same exact combat on main',f=>{combatFixture(f);f.context={eventName:'push',ref:'refs/heads/main',sha,payload:{},repo:{owner:'o',repo:'r'}}},true);
+await test('combat different source rejected',f=>{combatFixture(f);f.run.head_sha='c'.repeat(40)},false);
+await test('combat foreign repository rejected',f=>{combatFixture(f);f.run.head_repository.full_name='foreign/r'},false);
+await test('combat wrong PR rejected',f=>{combatFixture(f);f.run.pull_requests[0].number=136},false);
+await test('combat skipped retention rejected',f=>{combatFixture(f);f.jobs[0].steps.find(s=>s.name.startsWith('Verify retention')).conclusion='skipped'},false);
+await test('combat missing dialogue evidence rejected',f=>{combatFixture(f);f.artifacts=f.artifacts.filter(a=>!a.name.startsWith('eldoria-dialogue-'))},false);
+await test('combat skipped build rejected',f=>{combatFixture(f);f.jobs[0].steps.find(s=>s.name.startsWith('Compile canonical playable')).conclusion='skipped'},false);
 console.log(count+' exact-certificate positive/negative checks PASS');
 
 assert.equal((workflow.match(/name: eldoria-(?:pr136-performance|pr136-candidate|ui-progression-cert|aldric-shared-native)-\$\{\{ github.event.pull_request.head.sha \|\| github.sha \}\}/g)||[]).length,4,'All source-bound artifacts use the exact checked-out head, not the synthetic PR merge SHA');

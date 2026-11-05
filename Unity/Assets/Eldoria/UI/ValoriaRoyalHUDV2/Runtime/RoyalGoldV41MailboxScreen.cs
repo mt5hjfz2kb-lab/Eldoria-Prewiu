@@ -65,7 +65,8 @@ namespace Eldoria.UI.RoyalGold.V2
         string[] categories={"informes","recompensas","sistema","narrativa"};
         string category="informes",selectedId;
         int offset;
-        float lastWidth,lastHeight,nextRefresh;
+        float lastWidth,lastHeight,nextRefresh,lastCanvasScale;
+        float layoutUnit=1f;
         static readonly Color Night=new Color(.025f,.046f,.076f,1);
         static readonly Color Muted=new Color(.79f,.82f,.83f,1);
         static readonly Color Ivory=new Color(.96f,.93f,.88f,1);
@@ -83,7 +84,8 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             if(!window||!hud)return;
             if(Mathf.Abs(window.rect.width-lastWidth)>.5f||
-                Mathf.Abs(window.rect.height-lastHeight)>.5f)
+                Mathf.Abs(window.rect.height-lastHeight)>.5f||
+                !Mathf.Approximately(lastCanvasScale,hud.GetComponentInParent<Canvas>()?.scaleFactor??1f))
             {
                 // An aspect-ratio change can switch 5-row portrait pagination
                 // to 2-row compact landscape pagination. Recreate the real
@@ -123,7 +125,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public void Close()
         {
             if(window!=null)window.gameObject.SetActive(false);
-            Refresh();
+            Layout();Refresh();
         }
         void Update()
         {
@@ -174,11 +176,12 @@ namespace Eldoria.UI.RoyalGold.V2
             button.onClick.AddListener(()=>action());
             return button;
         }
-        static void Position(RectTransform r,float x,float y,float w,float h)
+        int Pixels(float logical)=>Mathf.Max(1,Mathf.RoundToInt(logical*layoutUnit));
+        void Position(RectTransform r,float x,float y,float w,float h)
         {
             r.anchorMin=r.anchorMax=new Vector2(0,1);
-            r.pivot=new Vector2(0,1);r.anchoredPosition=new Vector2(x,-y);
-            r.sizeDelta=new Vector2(Mathf.Max(0,w),Mathf.Max(0,h));
+            r.pivot=new Vector2(0,1);r.anchoredPosition=new Vector2(x,-y)*layoutUnit;
+            r.sizeDelta=new Vector2(Mathf.Max(0,w),Mathf.Max(0,h))*layoutUnit;
         }
         void Ensure()
         {
@@ -352,7 +355,15 @@ namespace Eldoria.UI.RoyalGold.V2
             float w=window.rect.width,h=window.rect.height;
             if(w<=0f||h<=0f)return;
             lastWidth=w;lastHeight=h;
-            float scale=hud.GetComponentInParent<Canvas>()?.scaleFactor??1f;
+            float canvasScale=hud.GetComponentInParent<Canvas>()?.scaleFactor??1f;
+            lastCanvasScale=canvasScale;
+            // Rasterize larger glyphs at their final size. Transform magnification
+            // blurred the atlas and clipped list titles in genuine 844x390 captures.
+            layoutUnit=IsOpen&&w>h&&h*canvasScale<600f?
+                Mathf.Max(1f,.9f/Mathf.Max(.01f,canvasScale)):1f;
+            window.localScale=Vector3.one;
+            w/=layoutUnit;h/=layoutUnit;
+            float scale=canvasScale*layoutUnit;
             Rect safe=Screen.safeArea;
             float left=Mathf.Max(12f,w*.026f+safe.xMin/Mathf.Max(.01f,scale));
             float right=Mathf.Max(12f,w*.026f+(Screen.width-safe.xMax)/Mathf.Max(.01f,scale));
@@ -362,6 +373,12 @@ namespace Eldoria.UI.RoyalGold.V2
             bool wide=w>h;
             float fontScale=Mathf.Clamp(w/900f,.76f,1.38f);
             var buttons=window.GetComponentsInChildren<Button>(true);
+            foreach(var button in buttons)
+            {
+                var caption=button.GetComponentInChildren<RoyalText>(true);
+                if(caption)caption.fontSize=Pixels(17);
+            }
+            listSummary.fontSize=Pixels(16);
             Button Find(string name)=>buttons.First(b=>b.name==name);
             float entryWidth=Mathf.Clamp(w*.20f,90f,150f);
             Position(entry,w-right-entryWidth,h-bottom-(wide?112f:150f)-52f,entryWidth,44f);
@@ -369,10 +386,10 @@ namespace Eldoria.UI.RoyalGold.V2
             float headerH=wide?Mathf.Clamp(h*.085f,48f,79f):Mathf.Clamp(h*.072f,60f,100f);
             Position(title.rectTransform,left+Mathf.Max(53f,headerH*.67f),
                 top,usable*.40f,headerH);
-            title.fontSize=wide?Mathf.Clamp(Mathf.RoundToInt(w*.023f),25,38):
-                Mathf.Clamp(Mathf.RoundToInt(w*.042f),25,37);
+            title.fontSize=Pixels(wide?Mathf.Clamp(Mathf.RoundToInt(w*.023f),25,38):
+                Mathf.Clamp(Mathf.RoundToInt(w*.042f),25,37));
             Position(resources.rectTransform,left+usable*.53f,top+2f,usable*.46f,headerH-4f);
-            resources.fontSize=Mathf.Clamp(Mathf.RoundToInt(17f*fontScale),15,22);
+            resources.fontSize=Pixels(Mathf.Clamp(Mathf.RoundToInt(17f*fontScale),15,22));
             // Three genuine live counters reuse the kingdom's own vector
             // resource glyphs. No fictitious "+" purchase action.
             float resourceX=left+usable*.51f;
@@ -387,8 +404,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 Position(resourceAmounts[i].rectTransform,
                     resourceX+i*resourceW+glyphSize+6f,top+3f,
                     Mathf.Max(24f,resourceW-glyphSize-8f),headerH-6f);
-                resourceAmounts[i].fontSize=Mathf.Clamp(
-                    Mathf.RoundToInt(18f*fontScale),15,24);
+                resourceAmounts[i].fontSize=Pixels(Mathf.Clamp(
+                    Mathf.RoundToInt(18f*fontScale),15,24));
             }
             var back=Find("Volver");
             Position((RectTransform)back.transform,left,top,Mathf.Max(48f,headerH*.72f),headerH);
@@ -404,12 +421,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 var b=Find("Buzón "+categories[i]);
                 Position((RectTransform)b.transform,left+i*(tabW+tabGap),
                     tabsY,tabW,tabH);
-                tabLabels[i].fontSize=Mathf.Clamp(
-                    Mathf.RoundToInt(tabW*(wide?.112f:.135f)),15,27);
+                tabLabels[i].fontSize=Pixels(Mathf.Clamp(
+                    Mathf.RoundToInt(tabW*(wide?.112f:.135f)),15,27));
                 tabLabels[i].horizontalOverflow=HorizontalWrapMode.Wrap;
                 Position((RectTransform)tabBadges[i].transform.parent,
                     tabW-23f,-9f,27f,27f);
-                tabBadges[i].fontSize=15;
+                tabBadges[i].fontSize=Pixels(15);
             }
 
             var mail=gateway.Snapshot().Mailbox;
@@ -429,7 +446,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float contentTop=tabsY+tabH+Mathf.Clamp(h*.022f,12f,24f);
             float navH=wide?Mathf.Clamp(h*.055f,39f,51f):47f;
             float available=Mathf.Max(110f,h-contentTop-bottom-navH-7f);
-            float rowH=wide?Mathf.Clamp(h*.14f,71f,124f):
+            float rowH=wide?Mathf.Clamp(h*.14f,layoutUnit>1f?88f:71f,124f):
                 Mathf.Clamp(h*.105f,87f,145f);
             rowH=Mathf.Max(48f,
                 Mathf.Min(rowH,(available-46f)/Mathf.Max(1,count)));
@@ -456,7 +473,7 @@ namespace Eldoria.UI.RoyalGold.V2
             listSummary.gameObject.SetActive(!selected);
             Position(emptyState.rectTransform,left+30f,bodyY+42f,
                 usable-60f,Mathf.Max(65f,bodyHeight-86f));
-            emptyState.fontSize=Mathf.Clamp(Mathf.RoundToInt(23f*fontScale),19,28);
+            emptyState.fontSize=Pixels(Mathf.Clamp(Mathf.RoundToInt(23f*fontScale),19,28));
             emptyState.gameObject.SetActive(!selected && count==0);
             float rowPad=wide?12f:11f;
             float innerW=usable-2f*rowPad;
@@ -485,18 +502,19 @@ namespace Eldoria.UI.RoyalGold.V2
                 Position(messageArrows[i].rectTransform,
                     innerW-arrowW-7f,(rowH-6f-36f)*.50f,
                     arrowW,36f);
-                messageLabels[i].fontSize=Mathf.Clamp(
-                    Mathf.RoundToInt((wide?23f:26f)*fontScale),18,30);
-                messageSubtitles[i].fontSize=Mathf.Clamp(
-                    Mathf.RoundToInt((wide?17f:21f)*fontScale),15,25);
-                messageDates[i].fontSize=Mathf.Clamp(
-                    Mathf.RoundToInt((wide?14f:16f)*fontScale),13,18);
+                messageArrows[i].fontSize=Pixels(28);
+                messageLabels[i].fontSize=Pixels(Mathf.Clamp(
+                    Mathf.RoundToInt((wide?23f:26f)*fontScale),18,30));
+                messageSubtitles[i].fontSize=Pixels(Mathf.Clamp(
+                    Mathf.RoundToInt((wide?17f:21f)*fontScale),15,25));
+                messageDates[i].fontSize=Pixels(Mathf.Clamp(
+                    Mathf.RoundToInt((wide?14f:16f)*fontScale),13,18));
             }
             float actionH=Mathf.Clamp(available*.13f,40f,57f);
-            float detailPad=Mathf.Clamp(usable*.038f,15f,35f);
+            float detailPad=layoutUnit>1f?12f/scale:Mathf.Clamp(usable*.038f,15f,35f);
             Position(detailViewport,left+detailPad,contentTop+detailPad,
                 usable-detailPad*2f,available-actionH-detailPad*3f);
-            LayoutReport(detailViewport.rect.width,detailViewport.rect.height);
+            LayoutReport(detailViewport.rect.width/layoutUnit,detailViewport.rect.height/layoutUnit);
             detailScroll.verticalNormalizedPosition=Mathf.Clamp01(
                 detailScroll.verticalNormalizedPosition);
             var read=Find("Leer");var del=Find("Eliminar");
@@ -515,7 +533,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Position(navLabel.rectTransform,left+(showPages?53f:5f),
                 navY,usable-(showPages?106f:10f),navH);
             navLabel.alignment=showPages?TextAnchor.MiddleCenter:TextAnchor.MiddleLeft;
-            navLabel.fontSize=Mathf.Clamp(Mathf.RoundToInt(16f*fontScale),14,21);
+            navLabel.fontSize=Pixels(Mathf.Clamp(Mathf.RoundToInt(16f*fontScale),14,21));
             Position((RectTransform)next.transform,left+usable-44f,navY,44f,navH);
             visibleRowCount=count;detailVisible=selected;
         }
@@ -524,8 +542,8 @@ namespace Eldoria.UI.RoyalGold.V2
             if(detailSheet==null||width<100f)return;
             bool narrow=width<580f;
             float inner=width-48f;
-            reportKicker.fontSize=narrow?15:19;
-            reportHeading.fontSize=narrow?24:32;
+            reportKicker.fontSize=Pixels(narrow?15:19);
+            reportHeading.fontSize=Pixels(narrow?24:32);
             reportHeading.color=new Color(.96f,.85f,.64f);
             reportKicker.color=new Color(.91f,.73f,.42f);
             reportOrigin.color=new Color(.94f,.86f,.72f);
@@ -534,23 +552,37 @@ namespace Eldoria.UI.RoyalGold.V2
             Position(reportKicker.rectTransform,24f,25f,Mathf.Max(75f,width-151f),26f);
             Position(reportHeading.rectTransform,24f,58f,
                 Mathf.Max(76f,width-153f),50f);
-            float headingH=Mathf.Max(55f,reportHeading.preferredHeight+6f);
+            float headingH=Mathf.Max(55f,reportHeading.preferredHeight/layoutUnit+6f);
             Position(reportHeading.rectTransform,24f,58f,
                 Mathf.Max(76f,width-153f),headingH);
             float headerH=Mathf.Max(150f,71f+headingH+43f);
             Position(reportSeal.rectTransform,width-99f,45f,69f,51f);
-            reportSeal.fontSize=narrow?12:15;
+            reportSeal.fontSize=Pixels(narrow?12:15);
             Position(reportOrigin.rectTransform,24f,headerH-35f,
                 Mathf.Max(75f,inner*.65f),25f);
             Position(reportDate.rectTransform,24f+inner*.65f,headerH-35f,
                 inner*.35f,25f);
-            reportOrigin.fontSize=narrow?12:15;
-            reportDate.fontSize=narrow?11:14;
+            reportOrigin.fontSize=Pixels(narrow?12:15);
+            reportDate.fontSize=Pixels(narrow?11:14);
 
             int cols=narrow?2:4;
             float cardH=narrow?104f:94f;
             float gap=11f,cardW=(width-48f-gap*(cols-1))/cols;
             float metricTop=headerH+19f;
+            float captionH=24f,valueH=0f;
+            // Measure the real saved names at the final column width. At
+            // 900x1600 four columns can wrap both heroes onto several lines.
+            for(int i=0;i<reportMetricCount;i++)
+            {
+                metricNames[i].fontSize=Pixels(narrow?12:15);
+                metricValues[i].fontSize=Pixels(narrow?18:26);
+                Position(metricNames[i].rectTransform,0f,0f,cardW-22f,24f);
+                Position(metricValues[i].rectTransform,0f,0f,cardW-22f,55f);
+                captionH=Mathf.Max(captionH,metricNames[i].preferredHeight/layoutUnit+3f);
+                valueH=Mathf.Max(valueH,metricValues[i].preferredHeight/layoutUnit+5f);
+            }
+            float valueTop=10f+captionH;
+            cardH=Mathf.Max(cardH,valueTop+valueH+5f);
             for(int i=0;i<4;i++)
             {
                 bool visible=i<reportMetricCount;
@@ -561,11 +593,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 float x=24f+cx*(cardW+gap),y=metricTop+cy*(cardH+gap);
                 metricNames[i].color=new Color(.37f,.26f,.17f);
                 metricValues[i].color=new Color(.20f,.125f,.075f);
-                metricNames[i].fontSize=narrow?12:15;
-                metricValues[i].fontSize=narrow?18:26;
-                Position(metricNames[i].rectTransform,x+11f,y+10f,cardW-22f,24f);
-                Position(metricValues[i].rectTransform,x+11f,y+34f,
-                    cardW-22f,cardH-39f);
+                metricNames[i].fontSize=Pixels(narrow?12:15);
+                metricValues[i].fontSize=Pixels(narrow?18:26);
+                Position(metricNames[i].rectTransform,x+11f,y+10f,cardW-22f,captionH);
+                Position(metricValues[i].rectTransform,x+11f,y+valueTop,
+                    cardW-22f,cardH-valueTop-5f);
             }
             float metricHeight=reportMetricCount>0?
                 Mathf.Ceil(reportMetricCount/(float)cols)*(cardH+gap)-gap:0f;
@@ -575,9 +607,9 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 Position(reportComposition.rectTransform,30f,compositionTop,
                     width-60f,36f);
-                reportComposition.fontSize=narrow?15:18;
+                reportComposition.fontSize=Pixels(narrow?15:18);
                 reportComposition.color=new Color(.41f,.27f,.14f);
-                compositionH=Mathf.Max(42f,reportComposition.preferredHeight+15f);
+                compositionH=Mathf.Max(42f,reportComposition.preferredHeight/layoutUnit+15f);
                 Position(reportComposition.rectTransform,30f,compositionTop,
                     width-60f,compositionH);
             }
@@ -613,14 +645,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 storyTop=imageY+imageHeight+29f;
             }
             reportSection.color=new Color(.35f,.225f,.105f);
-            reportSection.fontSize=narrow?16:19;
+            reportSection.fontSize=Pixels(narrow?16:19);
             Position(reportSection.rectTransform,38f,storyTop+18f,
                 narrow?width-76f:Mathf.Max(75f,width-210f),narrow?46f:30f);
             Position((RectTransform)reportToggle.transform,width-178f,
                 storyTop+(narrow?66f:13f),139f,37f);
-            reportToggleText.fontSize=narrow?12:15;
+            reportToggleText.fontSize=Pixels(narrow?12:15);
             reportToggleText.Put(reportExpanded?"OCULTAR":"DESPLEGAR");
-            detail.fontSize=narrow?19:23;
+            detail.fontSize=Pixels(narrow?19:23);
             detail.color=new Color(.25f,.175f,.115f);
             detail.gameObject.SetActive(reportExpanded);
             float textH=0f;
@@ -628,22 +660,22 @@ namespace Eldoria.UI.RoyalGold.V2
             if(reportExpanded)
             {
                 Position(detail.rectTransform,40f,storyTop+storyContentTop,width-80f,40f);
-                textH=Mathf.Max(40f,detail.preferredHeight+12f);
+                textH=Mathf.Max(40f,detail.preferredHeight/layoutUnit+12f);
                 Position(detail.rectTransform,40f,storyTop+storyContentTop,width-80f,textH);
             }
             float storyHeight=reportExpanded?
                 Mathf.Max(storyContentTop+textH+25f,narrow?169f:111f):
                 (narrow?111f:69f);
             float footerTop=storyTop+storyHeight+20f;
-            reportFooter.fontSize=narrow?16:19;
+            reportFooter.fontSize=Pixels(narrow?16:19);
             reportFooter.color=new Color(.38f,.25f,.14f);
             Position(reportFooter.rectTransform,26f,footerTop,width-52f,70f);
-            float footerH=Mathf.Max(48f,reportFooter.preferredHeight+10f);
+            float footerH=Mathf.Max(48f,reportFooter.preferredHeight/layoutUnit+10f);
             Position(reportFooter.rectTransform,26f,footerTop,width-52f,footerH);
             float totalHeight=Mathf.Max(viewportHeight+4f,footerTop+footerH+32f);
             Position(detailSheet,0f,0f,width,totalHeight);
             reportArtwork.Configure(reportMotif,reportMetricCount,cols,metricTop,
-                cardH,storyTop,storyHeight,footerTop+footerH,artPicture);
+                cardH,storyTop,storyHeight,footerTop+footerH,artPicture,layoutUnit);
         }
         void SetCategory(string value){category=value;offset=0;selectedId=null;reportExpanded=true;Refresh();}
         void Page(int delta)
@@ -659,7 +691,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var list=gateway?.Snapshot()?.Mailbox?.List(category,offset,currentPageSize);
             if(list==null||index>=list.Count)return;
             selectedId=list[index].EventId;
-            reportExpanded=true;
+            reportExpanded=string.IsNullOrEmpty(list[index].Battle?.Outcome);
             if(detailScroll!=null)detailScroll.verticalNormalizedPosition=1f;
             ExecuteMail("MailRead");
         }
@@ -712,7 +744,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(scoutVignette!=null)
                 scoutVignette.gameObject.SetActive(hasNarrative&&scoutFamily>=0&&
                     scoutFamily<=3&&scoutVignette.texture!=null);
-            reportMotif=battle!=null?(battle.Won?
+            reportMotif=battle!=null?(battle.EffectiveOutcome=="draw"?RoyalGoldV41ReportArtwork.Motif.Archive:battle.EffectiveOutcome=="victory"?
                 RoyalGoldV41ReportArtwork.Motif.BattleVictory:
                 RoyalGoldV41ReportArtwork.Motif.BattleDefeat):
                 hasNarrative&&selected.DiscoveryKind>=0&&selected.DiscoveryKind<=3?
@@ -742,20 +774,27 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 string[] names={"HÉROES","TROPAS ENVIADAS","RONDAS","VIDA RESTANTE"};
                 string[] values={HeroName(battle.HeroId),battle.Troops.ToString(),
-                    battle.Rounds.ToString(),battle.RemainingHealth.ToString()};
+                    battle.Rounds.ToString(),battle.RemainingHealth.ToString()+(string.IsNullOrEmpty(battle.Outcome)?"":"%")};
                 for(int i=0;i<4;i++)
                 {
                     metricNames[i].Put(names[i]);metricValues[i].Put(values[i]);
                 }
                 reportComposition.gameObject.SetActive(true);
                 var own=battle.OwnRoster;
-                reportComposition.Put(own!=null&&own.Total>0?
+                reportComposition.Put(!string.IsNullOrEmpty(battle.PlayerComposition)?
+                    "COMPOSICIÓN PROPIA · "+battle.PlayerComposition:own!=null&&own.Total>0?
                     "COMPOSICIÓN PROPIA · ARQUEROS  T1: "+own.ArcherT1+
                     "  ·  T2: "+own.ArcherT2+"  ·  T3: "+own.ArcherT3:
                     "COMPOSICIÓN PROPIA · desglose no archivado en este informe");
-                reportSection.Put("OBSERVACIONES DEL ENCUENTRO");
-                detail.Put(ObservedReason(battle));
-                reportFooter.Put("PODER PROPIO REGISTRADO · "+battle.PlayerPower+
+                bool evolved=!string.IsNullOrEmpty(battle.Outcome);
+                reportSection.Put(evolved?"MI MARCHA · ANÁLISIS OPCIONAL":"OBSERVACIONES DEL ENCUENTRO");
+                detail.Put(ObservedReason(battle)+(evolved?
+                    "\n\nDESGASTE OBSERVADO · "+battle.ObservedAttrition+
+                    "\n\nDAÑO PROPIO CAUSADO · "+battle.OwnDamageByFamily+
+                    "\n\nDAÑO PROPIO RECIBIDO · "+battle.OwnReceivedByFamily+
+                    "\n\nVIDA PROPIA RESTANTE · "+battle.OwnRemainingByFamily:""));
+                reportFooter.Put((evolved?"RESISTENCIA OBSERVADA DEL ENEMIGO · "+battle.EnemyObservedResistance:
+                    "PODER PROPIO REGISTRADO · "+battle.PlayerPower)+
                     "\nBOTÍN REGISTRADO · "+battle.RewardWood+" madera · "+
                     battle.RewardStone+" piedra · "+battle.RewardFood+" comida"+
                     (string.IsNullOrEmpty(selected.RewardReceiptId)?"":
@@ -839,7 +878,7 @@ namespace Eldoria.UI.RoyalGold.V2
                         new Color(.38f,.33f,.29f):new Color(.28f,.22f,.16f);
                     messageDates[i].color=new Color(.38f,.31f,.24f);
                     string preview=msg.Battle==null?msg.Subtitle:
-                        (msg.Battle.Won?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId);
+                        (msg.Battle.EffectiveOutcome=="draw"?"Empate ante ":msg.Battle.EffectiveOutcome=="victory"?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId);
                     if(window.rect.width<520f && preview.Length>22)
                         preview=preview.Substring(0,19)+"…";
                     messageSubtitles[i].Put(preview);

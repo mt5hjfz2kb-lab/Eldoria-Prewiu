@@ -21,6 +21,10 @@ static class Tests
         => new Dictionary<string,int>{{"archer",a},{"paladin",p},{"warlock",w}};
     static void Main()
     {
+        EvolutionChecks.Run();
+        ParityChecks.Run();
+        DepthChecks.Run();
+        MedicalChecks.Run();
         var all=new[]{"archer","paladin","warlock"};
         var stock=Counts(800,600,400);
         var count=Counts(120,80,60);

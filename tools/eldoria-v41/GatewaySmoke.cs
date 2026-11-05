@@ -86,6 +86,8 @@ static class V41GatewaySmoke
         clock.Add(30);story=new LocalGateway(clock,storyStore);
         Check(Send(story,"returnedHero","ConfigureMarch","march-main:40:0:0:lyra::").Ok,
               "hero becomes available after real offline return");
+        GatewayEvolutionChecks.Run();
+        CreatureChecks.Run();
         Console.WriteLine("ELDORIA_V41_GATEWAY_PASS");
     }
 }

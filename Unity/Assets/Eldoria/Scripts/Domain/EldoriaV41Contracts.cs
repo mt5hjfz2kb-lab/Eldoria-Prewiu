@@ -143,6 +143,47 @@ namespace Eldoria.Domain
 
     /// <summary>Immutable-at-write combat summary kept with each inbox item;
     /// older reports must not depend on the mutable LastBattleReport field.</summary>
+    // The definition provider is application configuration, never a player command.
+    // Persist both sides at departure so offline resolution cannot use a changed catalog.
+    [Serializable] public sealed class EldoriaV41CreatureInput
+    {
+        public int Health,Attack,Defense,Break;
+        public WorldCreatureStats Stats => new WorldCreatureStats(Health,Attack,Defense,Break,0,0);
+        public EldoriaV41CreatureInput Copy() => (EldoriaV41CreatureInput)MemberwiseClone();
+    }
+    [Serializable] public sealed class EldoriaV41BattleInput
+    {
+        public string RulesVersion,TargetId;
+        public int OwnMasteryLevel;
+        public bool EnemyAmbush;
+        public ArmyRoster OwnTroops,EnemyTroops;
+        public EldoriaV41CreatureInput EnemyCreature;
+        public string[] OwnHeroes,EnemyHeroes;
+        // Unity JsonUtility may materialize null class fields as empty shells.
+        // Only an entirely empty shell is legacy; a partially populated input is corrupt.
+        public bool IsLegacyPlaceholder => string.IsNullOrEmpty(RulesVersion) && string.IsNullOrEmpty(TargetId) && OwnMasteryLevel==0 && !EnemyAmbush &&
+            (OwnTroops==null || OwnTroops.IsNonNegative && OwnTroops.Total==0) &&
+            (EnemyTroops==null || EnemyTroops.IsNonNegative && EnemyTroops.Total==0) &&
+            (OwnHeroes==null || Array.TrueForAll(OwnHeroes,string.IsNullOrEmpty)) &&
+            (EnemyHeroes==null || Array.TrueForAll(EnemyHeroes,string.IsNullOrEmpty)) &&
+            (EnemyCreature==null || EnemyCreature.Health==0 && EnemyCreature.Attack==0 && EnemyCreature.Defense==0 && EnemyCreature.Break==0);
+        public EldoriaV41BattleInput Copy()=>new EldoriaV41BattleInput{
+            RulesVersion=RulesVersion,TargetId=TargetId,OwnMasteryLevel=OwnMasteryLevel,EnemyAmbush=EnemyAmbush,EnemyCreature=EnemyCreature?.Copy(),OwnTroops=OwnTroops?.Copy(),EnemyTroops=EnemyTroops?.Copy(),
+            OwnHeroes=(string[])OwnHeroes?.Clone(),EnemyHeroes=(string[])EnemyHeroes?.Clone()};
+    }
+    public interface IEldoriaVersionedBattleResolver
+    {
+        string RulesVersion { get; }
+        EldoriaV41BattleInput Prepare(ArmyRoster troops,IList<string> heroes,string targetId);
+        EldoriaV41CombatRecord Resolve(EldoriaV41BattleInput input);
+    }
+
+    public interface IEldoriaCampaignBattleResolver : IEldoriaVersionedBattleResolver
+    {
+        bool UsesCampaignCreatures { get; }
+        EldoriaV41BattleInput PrepareCreature(ArmyRoster troops,IList<string> heroes,string targetId,WorldCreatureStats enemy);
+    }
+
     [Serializable] public sealed class EldoriaV41CombatRecord
     {
         public string TargetId="",HeroId="",Reason="";
@@ -150,6 +191,11 @@ namespace Eldoria.Domain
         public int RewardWood,RewardStone,RewardFood;
         public bool Won;
         public ArmyRoster OwnRoster;
+        // Additive V4.1 evolution report; empty in historical saves. No reward authority.
+        public string Outcome="", PlayerComposition="", ObservedAttrition="";
+        public string EnemyObservedResistance="", ObservedTotalDamageDealt="", ObservedTotalDamageReceived="";
+        public string OwnDamageByFamily="", OwnReceivedByFamily="", OwnRemainingByFamily="";
+        public string EffectiveOutcome => Outcome=="victory" || Outcome=="defeat" || Outcome=="draw" ? Outcome : Won?"victory":"defeat";
         public EldoriaV41CombatRecord Copy()
         {
             var copy=(EldoriaV41CombatRecord)MemberwiseClone();
