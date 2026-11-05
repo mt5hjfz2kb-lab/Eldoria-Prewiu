@@ -1,0 +1,15 @@
+{
+  "name": "Eldoria.PlayerClarity.Tests",
+  "rootNamespace": "Eldoria.PlayerClarity.Tests",
+  "references": [
+    "Eldoria.PlayerClarity",
+    "Unity.ugui"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "autoReferenced": false
+}
