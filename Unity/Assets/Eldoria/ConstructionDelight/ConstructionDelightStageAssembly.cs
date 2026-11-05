@@ -28,6 +28,7 @@ namespace Eldoria.ReferenceClean
         readonly List<Part> parts=new List<Part>(12);
         GameObject root;
         bool working,completing,visible=true;
+        public bool CompletionContinuedFromWork {get;private set;}
         long deadline;
         float totalSeconds,started;
         public bool Running=>root && parts.Count>0;
@@ -78,6 +79,7 @@ namespace Eldoria.ReferenceClean
                 Clear();
                 if(!CloneVisibleMeshComponents(builtModel))return false;
             }
+            CompletionContinuedFromWork=retain;
             working=false;completing=true;visible=true;started=time;
             foreach(var part in parts)
             {
@@ -249,6 +251,7 @@ namespace Eldoria.ReferenceClean
                 UnityEngine.Object.Destroy(root);
             }
             root=null;working=false;completing=false;visible=true;
+            CompletionContinuedFromWork=false;
             deadline=0;totalSeconds=0f;
         }
     }
