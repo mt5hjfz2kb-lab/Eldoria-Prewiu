@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "55a934d8af428b14b99bf54dab664e77a1727c77",
   "ownership_revision": 19,
-  "mode": "A_B_64_CAMERA_FINAL_SOURCE_WITH_NATIVE_PROVENANCE",
+  "mode": "HAMMER_STROKES_DENSE_DUST_ART_SOURCE_AND_EDITOR_CSHARP_GATES",
   "expected_images": 64,
   "formats": [
     "844x390",
@@ -81,7 +81,7 @@
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 24,
+  "offline_validation_attempt": 25,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
@@ -220,5 +220,11 @@
     "framework_status": "NATIVE_PASS",
     "visual_status": "REJECTED_SHADER_FALLBACK_MAGENTA"
   },
-  "domain_proof_requested_at": "2026-11-05T17:42:19.481Z"
+  "domain_proof_requested_at": "2026-11-05T17:42:19.481Z",
+  "new_visuals": {
+    "tool": "Two small forged-iron and oak 3D hammers swinging near actual camera-facing scaffold",
+    "dust": "Two additional batched sprite fields, radial dense gray-tan impact plumes bound to real hammer contacts",
+    "reward": "Preserve existing URP shader sweep and Bloom for completion without construction tools leaking into finish"
+  },
+  "expected_native_capture_images": 64
 }
