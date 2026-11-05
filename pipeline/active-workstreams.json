@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T16:20:01.291Z",
+  "updated_at": "2026-11-05T17:18:16.458Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-combat-dialogues-fc0ef62e-20261105",
+      "owner": null,
       "branch": "fix/narrative-tutorial-coherence-20261105",
       "status": "active",
       "claimed_at": "2026-11-04",
@@ -152,15 +152,13 @@
         "tools/narrative-unity/NarrativeProbe.cs",
         "tools/narrative-unity/NarrativeProbe.csproj"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "NARRATIVE_TUTORIAL_POSTMERGE_VALIDATION",
-      "next": "Complete exact PR160 native certification, merge after green checks, then verify main Unity tests and private Windows build before releasing resources.",
+      "phase": "AREA_COMPLETE_READY_FOR_NEXT_CHAT",
+      "next": "Combat PR134 and narrative PR160 are merged and certified. Next authorized improvement may claim the canonical Valoria ID after checking live main and queue; preserve completed evidence and do not reopen these completed scopes without new work.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -996,7 +994,7 @@
           "Ciudad"
         ]
       },
-      "previous_owner": "chatgpt-eldoria-dialogue-v4-recovery-20261104",
+      "previous_owner": "codex-combat-dialogues-fc0ef62e-20261105",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1839,11 +1837,17 @@
           "ownership_revision": 141,
           "transferred_at": "2026-11-05T15:42:54.852Z",
           "reason": "Owner explicitly directs this chat to finish the almost-complete combat work, then dialogues. Preserve all running jobs and existing PR134/PR160; recover uncommitted closeout."
+        },
+        {
+          "owner": "codex-combat-dialogues-fc0ef62e-20261105",
+          "ownership_revision": 144,
+          "transferred_at": "2026-11-05T17:18:16.458Z",
+          "reason": "Combat and narrative work completed and merged; both main native runs passed. Release canonical area and Windows after all matching runs completed."
         }
       ],
-      "ownership_revision": 144,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 145,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-04T17:36:07.130Z",
       "delivery_definition": {
@@ -1985,7 +1989,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-11-04T07:33:20.632Z",
+      "released_at": "2026-11-05T17:18:16.458Z",
       "delivery_closeout": {
         "completed_at": "2026-10-29T21:34:16.588Z",
         "workstream_id": "valoria-master-plan-layered-construction-20261016",
@@ -2158,15 +2162,15 @@
         "release_authorized": false
       },
       "last_completed_area": {
-        "area": "Valoria — cierre de cartela contextual de construcción y mejoras, costes, estados y temporizador sobre ciudad",
-        "owner": "chatgpt-eldoria-building-cartouche-20261103",
-        "revision": 128,
-        "source_sha": "a5582aeeead5c68874f5a33edb33065bf2f43591",
-        "unity_run_id": 41742424858,
-        "closed_at": "2026-11-04T07:33:20.632Z",
-        "artistic_approval": "provisional",
-        "note": "Exact PR136 HEAD certified with full Unity SUCCESS at run 41742424858: native V4.1, EditMode, PlayMode, city build/upgrade/resource shortage, save/reopen and inline council/speed-ups. Native A/B desktop and mobile delivered for owner evaluation. Technical closure only; artistic >=8.2/10 not approved yet. No merge, publication, invented economy or new modals.",
-        "artistic_approval_note": "El propietario acepta provisionalmente el A/B visual de construcción y mejoras el 04/11/2026. Mantenerlo como baseline candidato certificado; no equivale a ≥8,2/10 definitivo ni autoriza merge o publicación. Mejorar en una pasada artística futura sólo tras nueva decisión."
+        "area": "Combate reconciliado y diálogos/tutorial Unity I–V",
+        "owner": "codex-combat-dialogues-fc0ef62e-20261105",
+        "revision": 144,
+        "source_sha": "a52a115753a421bf906d1891e69db09c1abab1c0",
+        "main_merge": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
+        "unity_run_id": 42065391163,
+        "closed_at": "2026-11-05T17:18:16.458Z",
+        "artistic_approval": "not_asserted",
+        "note": "PR134 and PR160 merged; issue138 completed. Main 128 EditMode/74 PlayMode, full I–V, native dialogue A/B, V4.1 real controls and Windows build PASS. No publication or physical-device claim."
       },
       "claim_reason": "Direct owner-authorized takeover 2026-11-04: previous dialogue chat frozen; new agent must finish work and provide real native A/B not animation. No new PR, no production release, no game state changes.",
       "last_priority_pause": {
@@ -2206,19 +2210,51 @@
         "scope": "Complete controlled PR136 consolidation; main merge authorized only after mandatory checks."
       },
       "runner_reservation": {
-        "owner": "codex-eldoria-pr136-consolidation-20261104",
-        "reason": "Owner-authorized PR136 consolidation exact candidate native certification",
+        "owner": null,
+        "reason": "Completed combat and narrative native checks, main integration and private Windows build.",
         "previous_native_run": 41889063433,
-        "publish": false
+        "publish": false,
+        "previous_owner": "codex-eldoria-pr136-consolidation-20261104",
+        "status": "released",
+        "released_at": "2026-11-05T17:18:16.458Z",
+        "released_after_run": 42065391163
       },
       "last_native_verification": {
-        "source_sha": "26db55c892572a0e4a9ea68feda028408757d535",
+        "source_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
         "postmerge_runs": [
-          41933936250,
-          41933936233
+          42065390835,
+          42065391163
         ],
         "conclusion": "success",
-        "note": "Same owner continues combat; releases Windows after both native postmerge runs completed. Artistic acceptance remains provisional."
+        "note": "Complete native gameplay, UI, save tests and private Windows build verified; owner/resources released after completion."
+      },
+      "narrative_tutorial_closeout": {
+        "completed_at": "2026-11-05T17:18:16.458Z",
+        "pr": 160,
+        "source_sha": "a52a115753a421bf906d1891e69db09c1abab1c0",
+        "main_merge": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
+        "native_run": 42061039754,
+        "postmerge_runs": [
+          42065390835,
+          42065391163
+        ],
+        "conclusion": "success",
+        "editmode_passed": 128,
+        "playmode_passed": 74,
+        "failed": 0,
+        "skipped": 0,
+        "continuous_i_v_checks": 208,
+        "dialogue_ab_captures": 48,
+        "windows_build": "success",
+        "windows_artifact": 13434039453,
+        "dialogue_artifact": 13436220048,
+        "postmerge_native_artifact": 13437038023,
+        "postmerge_native_sha256": "0171d2203bd70eea72433c78174a54c5339335252804375b325a5d543c1d6c5b",
+        "native_archive_download_verified": true,
+        "physical_mobile_tested": false,
+        "art_approved": false,
+        "published": false,
+        "report": "docs/NARRATIVE_TUTORIAL_COHERENCE_PLAN_20261105.md"
       }
     },
     {
@@ -14932,16 +14968,17 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-    "status": "claimed",
-    "owner": "codex-eldoria-pr136-consolidation-20261104",
+    "status": "available",
+    "owner": null,
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
     "branch": "main",
     "restrictions": "Preserve native111 baseline; staged improvements with focused tests. No old independent branch production. No paid credits.",
-    "previous_owner": "chatgpt-eldoria-scout-contract-art-20261103",
+    "previous_owner": "codex-eldoria-pr136-consolidation-20261104",
     "ownership_source": "active[id=valoria-master-plan-layered-construction-20261016]; transferable owner-directed claim",
-    "released_at": "2026-10-30T07:52:24.023Z",
-    "release_evidence": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
+    "released_at": "2026-11-05T17:18:16.458Z",
+    "release_evidence": "docs/NARRATIVE_TUTORIAL_COHERENCE_PLAN_20261105.md",
+    "ownership_revision": 145
   }
 }

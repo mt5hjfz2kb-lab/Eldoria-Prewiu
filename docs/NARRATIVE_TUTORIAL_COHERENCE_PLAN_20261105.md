@@ -1,57 +1,46 @@
-# ELDORIA — Plan de corrección narrativa y tutorial en UNITY
-**Reorientación del alcance — 5 de noviembre de 2026**
+# ELDORIA — Coherencia narrativa y tutorial de Unity
+Fecha de cierre: 5 de noviembre de 2026.
 
-## Fuente y destino
-- **Destino exclusivo de implementación: Unity** (escena jugable canónica, guardado real, HUD y sistemas reales).
-- **Prototipo web: referencia de consulta**, exclusivamente para comparar lore, orden de acontecimientos y diseño de desbloqueos. No modificar sus archivos, UI, textos, lógica, efectos ni pruebas de la versión web.
-- Canon: `docs/BASTION_I_X_MASTER_TABLE.md` y `docs/BASTION_III_FISSURE_CANON_20261027.md`. Las decisiones recientes del propietario prevalecen sobre textos históricos.
-- Sin nuevas ilustraciones o modificaciones artísticas en esta fase. Ni gastos ni publicación.
-- Respetar los trabajos existentes: PR #134 (combate), PR #152 (construcción), titulares del área Valoria/UI. La PR #160 permanece DRAFT hasta reconciliar titularidades.
+## Resultado
+La PR #160 completa el trabajo narrativo I–V sobre el combate V4.1 ya integrado por PR #134 y la interfaz de PR #136. Los textos, condiciones y tutoriales se ejecutan en la escena canónica de Unity. El prototipo web conserva su papel de referencia y no recibe cambios.
 
-## Diagnóstico e implementación en Unity
-1. **Bloque I — Historia I–V:** ordenar las escenas por estado autorizado del jugador y no por simple consulta de pantalla; evitar que se reintroduzcan escenas completadas. Revisar la persistencia tras volver a entrar.
-2. **Bloque II — Conocimiento del jugador:** revelar Lyra y los detalles de su hermano solo después de la investigación y el encuentro. Tras victoria, reclutarla y revelar el manuscrito. La fisura local es distinta de la Brecha principal.
-3. **Bloque III — Redacción y nomenclatura:** corregir encabezados del Bastión, diálogos del consejo IV, términos Fisura/Brecha y textos de misiones que podrían adelantar descubrimientos.
-4. **Bloque IV — Tutorial Unity:** introducir cada destino después de su desbloqueo: producción, expediciones, cuartel, marchas, Vigilantes, Exploradores, buzón, héroes, mejoras. La primera ayuda debe invitar a una acción real y quedar completada solo al realizarla.
-5. **Bloque V — Progresión hasta X:** el canon web describe el arco I–X, pero la implementación Unity actual solo llega a V. Diseñar y trasladar el tutorial VI–X a Unity cuando se implemente la progresión real. No fingir que existe en la build Unity.
-6. **Bloque VI — Combate:** reconciliar con el trabajo canónico de PR #134 antes de reemplazar cualquier regla o resultado. La resolución del combate y el tutorial deben reflejar victorias, heridos y recompensas reales, no inventadas.
+## Correcciones implementadas
+- Orden narrativo derivado de la partida: el cierre de la fisura y la incorporación de Lyra preceden al consejo, incluso al cargar una partida avanzada. No se reproduce una introducción obsoleta de frontera después del cierre.
+- Conocimiento progresivo: primero la investigación, después el contacto y finalmente la historia del hermano. La fisura local no se confunde con la Brecha principal; el prólogo sitúa la Brecha en el suelo junto a Valoria.
+- Lectura persistente: una conversación queda reconocida al completar su última página, también si se abre manualmente desde Historia. Abrir la ventana no completa la lectura.
+- Compatibilidad de guardados: solo una serialización histórica sin SeenNarrative importa las preferencias antiguas, una vez mediante el gateway. Una lista moderna vacía significa pendiente de leer y permanece así tras reiniciar. No se borran preferencias, partidas, recursos ni recompensas.
+- Ritmo contextual: las escenas automáticas esperan mientras hay una pantalla, buzón o contexto de construcción abierto, y mantienen 1,5 segundos entre escenas.
+- Consejo IV: distingue una prioridad pendiente de otra ya elegida. La disponibilidad de otras mejoras no se presenta como permiso para repetir la elección.
+- Tutoriales: 14 ayudas contextuales en español e inglés, presentación de sistemas realmente desbloqueados y mensajes de primer uso de Vigilantes, Exploradores y buzón basados en acciones reales.
+- Nomenclatura: etiquetas de Bastión coherentes con I–V; no se presentan etapas VI–X todavía no implementadas.
+- Compatibilidad: las reglas narrativas permanecen separadas de GameState y no sustituyen la resolución de combate, marchas ni recompensas reconciliadas.
 
-## Qué se ha implementado en esta PR (solo Unity)
-- `NarrativeCoherenceRules` en `NarrativeCoherenceRules.cs` (separado del dominio de combate): selección y orden de eventos, etapas de conocimiento de la fisura.
-- `ValoriaJourneyGuidance.cs`: elección de escena por progreso guardado y mejora textual del consejo IV.
-- `ExistingSliceBinding.cs`: descripción contextual de la fisura, nombres de acciones sin spoilers y etiquetas de Bastión, no capítulos falsos.
-- `ValoriaMarchPresentation.cs`: terminología de investigación coherente.
-- `RoyalGoldV3EarlyRetentionScreens.cs`: no mostrar la maestría de Lyra antes de desbloquearla.
-- `BastionIIIProgressionTests.cs`: pruebas EditMode de información conocida, orden de eventos y persistencia.
+## Validación
+- PR #160 integrada en main mediante 65ffa83f9e5f7e1a37cb6d0db2ec352539afb169.
+- Candidata exacta a52a115753a421bf906d1891e69db09c1abab1c0: run 42061039754 SUCCESS, 128/128 EditMode, 74/74 PlayMode, cero fallos/omisiones. Recorrido continuo I–V con 208 comprobaciones, tres marchas y guardado/recarga.
+- Artefacto nativo 13434755044 descargado y SHA256 verificado: ade882d1adb9b37cf70a350646c2cab0fed49e92f4a8c358d8f92d68bd04933e.
+- El árbol Unity de candidata y merge es idéntico: 40b451eb1e76eda8471aebc283f630e2fffac968; también coinciden los árboles de herramientas y workflows.
+- Pruebas posteriores del merge: run 42065390835, 128/128 EditMode y 74/74 PlayMode sin fallos ni omisiones. XML descargados del artefacto 13433024751 y SHA256 verificado: 4439f26b2b7d6d06aa2703a220195af2561572b21eb98bfb78491ad73d5e00d0.
+- Controles V4.1 posteriores en main: funcional PASS; artefacto 13433644803 descargado, SHA256 3b8a89825fe84e771e5c45b6744d5feadfacb301e05b0761bab36af796288bec verificado. Veto de recursos antiguos PASS: 550 dependencias comprobadas, cero recursos o cargadores rechazados.
+- Diálogos A/B posteriores: PASS con source exacto 65ffa83f9e5f7e1a37cb6d0db2ec352539afb169 y 48 capturas. Artefacto 13436220048 descargado, SHA256 83d74f5d5e8d2c2007f31c1c72a4c01c22a8f975759bcb22ddd9f9105e5c2594 verificado.
+- Run general posterior 42065390835 completado SUCCESS, incluida compilación Windows. Artefacto privado 13434039453: 1.507.734.907 bytes; digest publicado por GitHub 2b9bc7c84640c43a5f18fcabcf47785f9dfe8d524514e33f37e75942cba0bea8 (archivo de build no redescargado; la verificación local de bytes corresponde a los XML y evidencias indicados arriba).
+- Certificación UI posterior 42065391163 completada SUCCESS: 128/128 EditMode, 74/74 PlayMode, cero fallos/omisiones y recorrido I–V de 208 comprobaciones. Artefacto 13437038023 descargado y SHA256 verificado: 0171d2203bd70eea72433c78174a54c5339335252804375b325a5d543c1d6c5b. Recursos liberados después de completar todas las ejecuciones de este trabajo.
+- Dominio narrativo 42061039845, dominio V4.1 42061042587, regresión general 42061039837 y controles de metadatos, arquitectura y gobernanza SUCCESS.
 
-## Pruebas y criterios de cierre
-- Ejecutar EditMode/PlayMode de Unity sobre el **HEAD exacto** tras aprobar la titularidad de archivos y liberar el runner, sin desplazar otros trabajos.
-- Partida nueva real de Unity I–V, incluidos primer inicio, reconstrucción, salida al mundo, fisura de 20 minutos, contacto con Lyra, victoria, reclutamiento, recarga y Bastión IV–V.
-- Pantallas reales de Unity en orientación vertical/horizontal: cero bloqueos, recortes y escenas superpuestas. Compararlas con las referencias gráficas aprobadas de Unity, no con capturas experimentales del web.
-- Prueba de regreso offline y guardados históricos: cero revelaciones prematuras o recompensas repetidas.
-- La calidad de ritmo y redacción requiere revisión jugable; un test funcional PASS no equivale a aprobación artística.
-- **Pendiente de verificar**: CI completo de Unity, pruebas físicas móvil y compatibilidad final con PR #134. No fusionar ni publicar antes de resolver los requisitos de integración.
 
-## Registro de corrección de alcance
-Una pasada anterior había añadido pruebas y cambios a `v0220/**` y `qa/**`. Se han revertido de esta rama sin alterar `main` ni el historial del proyecto. Las evidencias de navegador pertenecen a ese intento descartado y **no certifican Unity**.
+## Revisión de capturas y límites
+Se revisaron capturas reales de Unity de Aldric, Lyra, el tutorial del aserradero y los estados finales en vertical/horizontal. La certificación posterior generó además 48 capturas A/B en 390×844, 844×390, 900×1600 y 1600×900. Incluyen diálogos cortos/largos de Aldric y Lyra; Orín es una muestra de estilo claramente marcada como QA, no una escena de campaña. Se revisaron también las capturas de texto largo a tamaño móvil de ese artefacto final. Los textos revisados caben en los paneles y el botón Continuar permanece accesible. Una captura inicial del prólogo coincide con su transición de aparición; no sirve por sí sola para valorar el contraste final.
+La aceptación artística previa sigue siendo provisional: esta corrección no reconstruye la ilustración ni afirma una nota visual nueva. No se ha realizado una sesión humana a ritmo normal ni pruebas en un teléfono físico. No se publica APK, WebGL ni itch.io.
+El recorrido automatizado respeta clics, raycasts y pausas de presentación; acelera los temporizadores de juego únicamente en la partida desechable de pruebas. No equivale a jugar durante todos los tiempos de espera reales.
 
-## Avance Unity validado (05/11/2026)
+## Técnicas conservadas
+1. La lectura pertenece al guardado, no a una preferencia global del dispositivo. Detectar la serialización histórica antes de normalizar evita confundir una partida moderna vacía con un guardado anterior al ledger.
+2. Probar el contexto de construcción seleccionado antes de esperar un diálogo: cerrar ese contexto en el probe, sin desactivar la protección del jugador.
+3. Conservar pruebas de conocimiento y decisiones previas: avanzar el Bastión no debe borrar un desenlace pendiente ni repetir una elección del consejo.
+4. La procedencia de la evidencia se acredita con el SHA exacto del checkout y el run. El campo source de integration-result.json conserva un identificador histórico incrustado y no debe usarse como prueba del código ejecutado.
 
-**Código en PR #160, SHA `154f42fd79114d08119b8ad8cc0ac11437f366a8` (sin integración en main).**
-
-- **Orden de acontecimientos:** `NarrativeCoherenceRules` conserva el cierre de la fisura y la incorporación de Lyra aunque el guardado ya esté en Bastión V. Si la fisura se ha cerrado, no reproduce una introducción obsoleta sobre una frontera aún inexplorada.
-- **Primera utilización sin ventanas nuevas:** `EarlyRetentionFirstUseTutorial` utiliza victorias reales de Vigilantes e informes realmente recogidos de Exploradores para cambiar el mensaje entre primer paso, encargo en marcha y sistema aprendido. Ningún texto marca la lección como aprendida por abrir o cerrar una ventana.
-- **Orientación en 14 objetivos:** `UnityContextTutorial` ofrece textos breves en español e inglés para entrenamiento, composición de marchas, Poder, comida, caza, fisura, infraestructura, consejo IV y Cantera V. Se muestra en la ayuda contextual ya existente; no crea nuevos paneles.
-- **Sin interrupciones:** `ValoriaJourneyGuidance` pospone escenas automáticas si hay diálogo, modal, entrenamiento/marcha, Vigilantes/Exploradores o buzón abiertos, y separa 1,5 segundos los eventos narrativos consecutivos. El ledger real de diálogos sigue preservado.
-- **Metadatos nuevos:** GUIDs de nuevos `.cs.meta` incluidos; la comprobación de integridad del repositorio pasó.
-
-**Pruebas técnicas del SHA anterior exacto:** run GitHub Actions `42047722536` completado correctamente: 54 afirmaciones del probe de dominio con clases reales de Unity + `BASTION_III_DOMAIN_PROBE_PASS` + `MIGRATION_PARITY_DOMAIN_PASS` + `BASTION_IV_V_DOMAIN_PASS`. Controles de arquitectura (`42047722646`), gobernanza (`42047722403`) y metadatos Unity (`42047722440`) completados SUCCESS.
-
-**Lo que no se ha probado:** Editor/PlayMode del SHA, renderizado visual real, A/B de móvil y recorrido humano a ritmo normal. No confundir las pruebas de dominio con esa aceptación.
-
-**Interferencia con el combate:** PR #134 y #160 modifican `GameState.cs`. Los parches del momento revisado usan regiones diferentes (PR #134 en modelos de tropas/marchas/combate; #160 en reglas narrativas), pero su combinación, compilación y titularidad aún deben verificarse contra los HEAD definitivos. No sobrescribir la PR #134 ni ejecutar Unity sobre el PC que tiene reservado.
-
-**Alcance estricto:** la candidata no modifica `v0220/**`, `qa/**` ni recursos artísticos. No se ha publicado ninguna build. La PR #160 sigue en DRAFT y el gate de titularidad permanece rojo: **no fusionar hasta reconciliar el trabajo con sus titulares legítimos y superar la validación Unity completa**.
-
-## Integración sin conflicto — 5/11/2026
-Se ha separado `NarrativeCoherenceRules` del archivo compartido `GameState.cs` en un script independiente de Unity con metadatos estables. `GameState.cs` recupera exactamente los bytes de `main`, sin interferir con PR #134. La prueba .NET de dominio usa el glob existente de scripts de Unity y debe pasar en el nuevo HEAD. Este refactor no valida por sí solo ni reemplaza la compilación Unity nativa.
+## Historial relevante
+- La primera tentativa en v0220/qa fue revertida; no certifica Unity.
+- La auditoría inicial quedó pendiente de reconciliación con combate y titularidad. El relevo autorizado resolvió ambas y continuó la PR existente.
+- Certificación intermedia 566b2ea7486b54db1e464fff8e47943793dd2368: run 42059370768 SUCCESS, 128 EditMode y 74 PlayMode. Artefacto 13430633400 descargado y SHA256 verificado 2bdf09ba9ed311e72b053771b028386ab9ac3d39b19cff68548994f806560be7.
+- Candidata final a52a115753a421bf906d1891e69db09c1abab1c0 añade la protección de recarga para preferencias históricas. Su evidencia definitiva y la comprobación posterior a la integración figuran arriba.
