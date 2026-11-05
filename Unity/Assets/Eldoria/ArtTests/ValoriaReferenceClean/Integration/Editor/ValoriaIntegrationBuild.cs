@@ -177,6 +177,36 @@ namespace Eldoria.ReferenceClean.Editor {
    string failure=null;var checks=new List<string>();var city=h.GetComponent<ValoriaReferenceCleanGameplay>();
    bool Check(Action action,string name){if(failure!=null)return false;try{action();checks.Add(name);return true;}catch(Exception e){failure=e.ToString();Debug.LogException(e);return false;}}
    Check(()=>{
+    // Real first-entry on the original RoyalHUD, before the narrator.
+    // Capture both orientations at the very first visible interaction.
+    var naming=h.Hud.GetComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>();
+    var parchment=h.Hud.GetComponentInChildren<Eldoria.PlayerClarity.RoyalPlayerNamePrompt>(true);
+    Need(naming&&parchment&&parchment.IsOpen&&naming.IsBlockingNarrative,
+      "First entry must open an actual editable nickname parchment");
+    h.Guidance.PresentMilestone();
+    Need(!h.Hud.NarrativeOpen,"The narrator must wait until the real name is saved");
+    Capture(h,"integration-player-name-landscape.png",1600,900);
+    Capture(h,"integration-player-name-portrait.png",900,1600);
+    var editor=parchment.GetComponentInChildren<InputField>(true);
+    var save=parchment.GetComponentInChildren<Button>(true);
+    Need(editor&&save&&save.interactable&&save.targetGraphic&&save.targetGraphic.raycastTarget,
+      "First entry needs a real raycastable UGUI input and confirmation");
+    editor.text="AB";
+    parchment.Confirm();
+    Need(parchment.IsOpen&&string.IsNullOrEmpty(city.Gateway.Snapshot().PlayerName),
+      "An invalid name must not dismiss or persist the prompt");
+    editor.text="  Prueba   Valoria  ";
+    parchment.Confirm();
+    Need(!parchment.IsOpen&&city.Gateway.Snapshot().PlayerName=="Prueba Valoria",
+      "Normalized name was not committed through the canonical gateway");
+    var header=h.Hud.Realm.GetComponent<Eldoria.PlayerClarity.PlayerNameHeader>();
+    header.Refresh();
+    Need(header&&h.Hud.Realm.gameObject.activeSelf,
+      "The original realm header must remain active alongside the character name");
+    Need(h.Hud.Realm.GetComponentInChildren<Eldoria.UI.RoyalGold.RoyalText>(true)!=null,
+      "Player nameplate not integrated in the Royal HUD");
+   },"editable first-entry parchment, invalid nick validation, saved display and real screenshots");
+   Check(()=>{
     h.Guidance.PresentMilestone();
     Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR"&&h.Hud.NarrativeSourceText.Contains("La Brecha se abrió en la tierra junto a Valoria"),"Original introductory narrator missing");
     Need(h.Hud.NarrativeTurnCount==3,"Web narrator, Aldric and tutorial turns not preserved");
