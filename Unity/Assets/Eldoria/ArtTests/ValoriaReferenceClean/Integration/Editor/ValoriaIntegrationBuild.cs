@@ -200,11 +200,14 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(!parchment.IsOpen&&city.Gateway.Snapshot().PlayerName=="Prueba Valoria",
       "Normalized name was not committed through the canonical gateway");
     var header=h.Hud.Realm.GetComponent<Eldoria.PlayerClarity.PlayerNameHeader>();
+    Need(header,"Original realm header lacks the player name adapter");
     header.Refresh();
-    Need(header&&h.Hud.Realm.gameObject.activeSelf,
-      "The original realm header must remain active alongside the character name");
-    Need(h.Hud.Realm.GetComponentInChildren<Eldoria.UI.RoyalGold.RoyalText>(true)!=null,
-      "Player nameplate not integrated in the Royal HUD");
+    var label=h.Hud.Realm.transform.Find("Character name");
+    Need(label&&label.gameObject.activeInHierarchy&&
+      label.GetComponent<Eldoria.UI.RoyalGold.RoyalText>().text=="Prueba Valoria",
+      "The saved name is not visible beside the original crest");
+    Need(h.Hud.Realm.Power&&h.Hud.Realm.Power.gameObject.activeInHierarchy,
+      "Power cannot disappear when the nameplate is displayed");
    },"editable first-entry parchment, invalid nick validation, saved display and real screenshots");
    Check(()=>{
     h.Guidance.PresentMilestone();
