@@ -220,8 +220,10 @@ namespace Eldoria.ReferenceClean
             if (previous.IsValid && !same)
             {
                 var finished = previous;
-                StopWork();
-                if (ConstructionDelightState.JustCompleted(finished, state))
+                bool actualCompletion=ConstructionDelightState.JustCompleted(finished,state);
+                bool preserveStage=actualCompletion && CanShow();
+                StopWork(preserveStage);
+                if (actualCompletion)
                 {
                     if (CanShow()) Complete(finished.BuildingId);
                     else
@@ -269,13 +271,15 @@ namespace Eldoria.ReferenceClean
             }
         }
 
-        void StopWork()
+        void StopWork(bool carryAuthenticAssembly=false)
         {
             activeBuilding = null;
             if (loopDust != null) loopDust.Clear();
             if (loopMotes != null) loopMotes.Clear();
             structureReveal.Clear();
-            stagedBuilding.Clear();
+            // A real gateway completion must keep the in-progress mesh poses:
+            // clearing here would reset the roof/foundation choreography.
+            if(!carryAuthenticAssembly)stagedBuilding.Clear();
             previousStagedVisibleParts=0;
             lateFinishBurstPending=false;
         }
@@ -293,7 +297,11 @@ namespace Eldoria.ReferenceClean
 
         void Complete(string id)
         {
-            if (!CanShow() || !PositionSite(id, true)) return;
+            if (!CanShow() || !PositionSite(id, true))
+            {
+                stagedBuilding.Clear(); // no orphan presentation on missing site
+                return;
+            }
             finishDust.Tint = new Color(.85f,.76f,.61f,.51f);
             finishEmbers.Tint = id == "bastion"
                 ? new Color(1f,.90f,.64f,.88f) : new Color(1f,.82f,.50f,.82f);
