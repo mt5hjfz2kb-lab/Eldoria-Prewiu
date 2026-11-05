@@ -62,16 +62,37 @@ namespace Eldoria.PlayerClarity
         {
             var icon = parent.Find(slot);
             if (!icon) return false;
-            var replacement = icon.GetComponent<RoyalResourcePictogram>();
+            // A Unity UI slot already contains Image (Graphic).
+            // Adding another Graphic to the SAME GameObject is rejected by
+            // Unity's component constraints on the real HUD and returns null.
+            // Use a single child Graphic instead; keep the existing slot,
+            // RectTransform, layout and input ownership intact.
+            const string childName = "Eldoria resource pictogram";
+            var child = icon.Find(childName);
+            if (!child)
+            {
+                var go = new GameObject(childName,
+                    typeof(RectTransform), typeof(CanvasRenderer));
+                var rect = (RectTransform)go.transform;
+                rect.SetParent(icon, false);
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = Vector2.one;
+                rect.offsetMin = Vector2.zero;
+                rect.offsetMax = Vector2.zero;
+                child = rect;
+            }
+            var replacement = child.GetComponent<RoyalResourcePictogram>();
             if (!replacement)
-                replacement = icon.gameObject.AddComponent<RoyalResourcePictogram>();
+                replacement = child.gameObject.AddComponent<RoyalResourcePictogram>();
+            if (!replacement) throw new InvalidOperationException(
+                "Could not create an isolated resource Graphic for " + slot);
             replacement.Kind = kind;
             replacement.color = Color.white;
             replacement.raycastTarget = false;
-            // Disabling the former flat artwork preserves its source and
-            // active/inactive state; Food still unlocks with its real wallet.
+            // Disable ONLY the old flat sibling Graphic. Keep inactive food
+            // slots inactive and do not modify the parent's click handlers.
             foreach (var graphic in icon.GetComponents<Graphic>())
-                if (graphic != replacement) graphic.enabled = false;
+                graphic.enabled = false;
             return true;
         }
     }
