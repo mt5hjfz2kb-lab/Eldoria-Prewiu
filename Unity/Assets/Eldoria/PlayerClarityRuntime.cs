@@ -37,6 +37,7 @@ namespace Eldoria
         private readonly Dictionary<string, Marker> markers = new Dictionary<string, Marker>();
         private readonly Dictionary<string, WorldHotspot> hotspots = new Dictionary<string, WorldHotspot>();
         private readonly HashSet<long> occupiedScreenCells = new HashSet<long>();
+        private readonly PlayerClarityStoryRenewal storyRenewal = new PlayerClarityStoryRenewal();
         private ValoriaIntegratedWorld host;
         private RoyalHUD hud;
         private RectTransform layer;
@@ -93,6 +94,9 @@ namespace Eldoria
             occupiedScreenCells.Clear();
 
             var snapshot = host.City.Gateway.Snapshot();
+            // Relocate an original Chapter III hunt hotspot only after the
+            // authoritative UTC regeneration increments its saved generation.
+            storyRenewal.Sync(host, snapshot);
             bool modal = hud.Modal && hud.Modal.gameObject.activeSelf;
             var management = hud.GetComponent<RoyalGoldV3ManagementScreens>();
             var retention = hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();
