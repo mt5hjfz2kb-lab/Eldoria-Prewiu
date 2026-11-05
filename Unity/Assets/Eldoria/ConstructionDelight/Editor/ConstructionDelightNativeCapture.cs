@@ -152,6 +152,8 @@ namespace Eldoria.ReferenceClean.Editor
                                  "for the construction highlight");
             Comparison(host,renderers,"work",844,390);
             Comparison(host,renderers,"work",390,844);
+            TechniqueComparison(host,fx,"work",844,390,true);
+            TechniqueComparison(host,fx,"work",390,844,true);
             // Real motion over time matters more than a still-frame pixel count.
             // All captures come from the native Unity player camera.
             for(int frame=0;frame<4;frame++)
@@ -159,6 +161,11 @@ namespace Eldoria.ReferenceClean.Editor
                 yield return new WaitForSecondsRealtime(.24f);
                 Shot(host.PlayerCamera,"work-motion-"+frame+"-landscape",844,390);
                 Shot(host.PlayerCamera,"work-motion-"+frame+"-portrait",390,844);
+                if(frame==0 || frame==3)
+                {
+                    TechniqueComparison(host,fx,"work-motion-"+frame,844,390,false);
+                    TechniqueComparison(host,fx,"work-motion-"+frame,390,844,false);
+                }
             }
 
             // The ONLY way to complete is through the real gateway and the
@@ -213,6 +220,8 @@ namespace Eldoria.ReferenceClean.Editor
                                  "the structural HDR sweep and localized light");
             Comparison(host,renderers,"finish",844,390);
             Comparison(host,renderers,"finish",390,844);
+            TechniqueComparison(host,fx,"finish",844,390,true);
+            TechniqueComparison(host,fx,"finish",390,844,true);
             // An artistic approval needs temporal evidence, not one lucky frame.
             // Sample the true particle lifetime in BOTH mobile orientations.
             for(int frame=0;frame<6;frame++)
@@ -220,6 +229,11 @@ namespace Eldoria.ReferenceClean.Editor
                 yield return new WaitForSecondsRealtime(.20f);
                 Shot(host.PlayerCamera,"finish-motion-"+frame+"-landscape",844,390);
                 Shot(host.PlayerCamera,"finish-motion-"+frame+"-portrait",390,844);
+                if(frame==0 || frame==3)
+                {
+                    TechniqueComparison(host,fx,"finish-motion-"+frame,844,390,false);
+                    TechniqueComparison(host,fx,"finish-motion-"+frame,390,844,false);
+                }
             }
             yield return new WaitForSecondsRealtime(.55f);
             Shot(host.PlayerCamera,"city-finished-landscape",844,390);
@@ -259,11 +273,55 @@ namespace Eldoria.ReferenceClean.Editor
                 "  \"save_unchanged_after_reload\": true,\n"+
                 "  \"construction_from\": \"LocalGateway.Execute(Build)\",\n"+
                 "  \"completion_from\": \"TestClock + LocalGateway.Advance\",\n"+
-                "  \"images\": 40,\n"+
+                "  \"images\": 64,\n"+
                 "  \"art_approved\": false\n"+
                 "}\n");
-            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=40 save-preserved=true");
+            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=64 technique-variants=24 save-preserved=true");
             EditorApplication.Exit(0);
+        }
+
+        /// <summary>
+        /// This is the controlled A/B requested by the owner. Both variants
+        /// retain the same shader, short URP Bloom, dust/motes, city camera,
+        /// persistent Gateway receipt and exact capture instant. Only staged
+        /// 3D geometry is switched; this Editor-only method never changes saves.
+        /// A: authentic model/scaffold + architectural sweep + Bloom.
+        /// B: identical FX plus real-source staged mesh choreography.
+        /// </summary>
+        static void TechniqueComparison(ValoriaIntegratedWorld host,
+            ValoriaConstructionDelightV1 fx, string stage, int width,int height,
+            bool requireVisibleDifference)
+        {
+            var camera=host.PlayerCamera;
+            try
+            {
+                fx.SetTechniqueForCapture(false);
+                var architectural=Shot(camera,
+                    "technique-"+stage+"-A-architectural-"+width+"x"+height,
+                    width,height);
+                fx.SetTechniqueForCapture(true);
+                var staged=Shot(camera,
+                    "technique-"+stage+"-B-staged-"+width+"x"+height,
+                    width,height);
+                int changed=0;
+                for(int i=0;i<architectural.Length;i++)
+                {
+                    int difference=Math.Abs(architectural[i].r-staged[i].r)+
+                                   Math.Abs(architectural[i].g-staged[i].g)+
+                                   Math.Abs(architectural[i].b-staged[i].b);
+                    if(difference>18)changed++;
+                }
+                Debug.Log("CONSTRUCTION_DELIGHT_TECHNIQUE_AB stage="+stage+
+                          " resolution="+width+"x"+height+
+                          " technique_delta_pixels="+changed+
+                          " staged_meshes="+fx.ActiveStagedBuildingMeshes);
+                if(requireVisibleDifference && fx.ActiveStagedBuildingMeshes>0 &&
+                   changed<45)
+                    VisualIssues.Add("Staged vs architectural difference not "+
+                        "visible at canonical camera: "+stage+" "+width+"x"+
+                        height+" changed="+changed);
+            }
+            finally {fx.SetTechniqueForCapture(true);}
         }
 
         static void Comparison(ValoriaIntegratedWorld host,
