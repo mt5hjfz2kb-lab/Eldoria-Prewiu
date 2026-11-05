@@ -96,7 +96,7 @@ namespace Eldoria.Tests
             const long when=637000000000000000L;
             var msg=EldoriaV41CombatEvolution.ToMailbox(battle,a,enemy,
                 "v41:test:event","vigilant:25",when);
-            Assert.That(msg.Battle.Outcome,Is.AnyOf("victory","defeat","draw"));
+            Assert.That(msg.Battle.Outcome,Is.EqualTo("victory").Or.EqualTo("defeat").Or.EqualTo("draw"));
             Assert.That(msg.Battle.PlayerComposition,Does.Contain("Paladines"));
             Assert.That(msg.Battle.OwnDamageByFamily,Does.Contain("Arqueros"));
             Assert.That(msg.Battle.OwnReceivedByFamily,Does.Contain("Brujos"));
