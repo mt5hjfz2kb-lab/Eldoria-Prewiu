@@ -6,12 +6,16 @@ on:
       - '.github/workflows/eldoria-player-clarity-domain.yml'
       - 'tools/player-clarity/**'
       - 'Unity/Assets/Eldoria/PlayerClarity/**'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs'
   pull_request:
     branches: [main]
     paths:
       - '.github/workflows/eldoria-player-clarity-domain.yml'
       - 'tools/player-clarity/**'
       - 'Unity/Assets/Eldoria/PlayerClarity/**'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs'
 permissions:
   contents: read
 concurrency:
@@ -28,6 +32,7 @@ jobs:
           sparse-checkout: |
             tools/player-clarity/
             Unity/Assets/Eldoria/PlayerClarity/
+            Unity/Assets/Eldoria/Scripts/Domain/
           sparse-checkout-cone-mode: true
       - uses: actions/setup-dotnet@v4
         with:
