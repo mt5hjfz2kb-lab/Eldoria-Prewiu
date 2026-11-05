@@ -92,5 +92,99 @@ namespace Eldoria.Tests {
   [Test]public void FullMeatReserveAndRespawnSurviveOneLongOfflineInterval(){var c=new Clock();var st=Ready();var g=new LocalGateway(c,st);int food=g.Snapshot().Resources.Food;Assert.That(Do(g,"Gather","meat-valoria").Ok);c.Add(60);g=new LocalGateway(c,st);Assert.That(g.Snapshot().March.Phase,Is.EqualTo("idle"));Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+1100));Assert.That(g.Snapshot().ChapterThree.MeatRemaining,Is.EqualTo(1100));Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));g=new LocalGateway(c,st);Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+1100));Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));}
   [Test]public void OfflineProductionCapsAtOneHourAcrossPendingUpgrade(){var c=new Clock();var st=Ready();st.Value.ChapterThree.GranaryLevel=1;var g=new LocalGateway(c,st);int food=g.Snapshot().Resources.Food;Assert.That(Do(g,"UpgradeBuilding","granary").Ok);c.Add(7200);g=new LocalGateway(c,st);Assert.That(g.Snapshot().ChapterThree.GranaryLevel,Is.EqualTo(2));Assert.That(g.Snapshot().Resources.Food-food,Is.EqualTo(7200));}
 
+  [Test]public void ModernEmptyLedgerNeverImportsAnotherPlaythroughGlobalFlags(){
+   Assert.That(NarrativeCoherenceRules.LegacyAcknowledgements(null,beat=>true),Is.Empty);
+   Assert.That(NarrativeCoherenceRules.LegacyAcknowledgements("{\"ChapterProgress\":{\"SeenNarrative\":[]}}",beat=>true),Is.Empty);
+   var old=NarrativeCoherenceRules.LegacyAcknowledgements("{\"SchemaVersion\":1}",beat=>beat=="start"||beat=="world");
+   CollectionAssert.AreEqual(new[]{"start","world"},old);
+   var clock=new Clock();var store=Ready(1);store.Value.SawmillLevel=1;store.Value.ChapterProgress.GatheredWood=130;
+   var gateway=new LocalGateway(clock,store);
+   foreach(var beat in old)gateway.AcknowledgeNarrative(beat);
+   gateway=new LocalGateway(clock,store);
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(gateway.Snapshot()),Is.EqualTo("mark"));
+   Assert.That(gateway.Snapshot().ChapterProgress.SeenNarrative.Count,Is.EqualTo(2));
+  }
+  [Test]public void FissureDescriptionNeverSpoilsLyraBeforeContact(){
+   var s=Ready(3).Value;
+   Assert.That(NarrativeCoherenceRules.FissureKnowledgeStage(s),Is.Zero);
+   s.ChapterThree.InvestigationEndsUtcTicks=DateTime.UtcNow.Ticks+TimeSpan.FromMinutes(20).Ticks;
+   Assert.That(NarrativeCoherenceRules.FissureKnowledgeStage(s),Is.Zero);
+   s.ChapterThree.InvestigationEndsUtcTicks=0;s.ChapterThree.FissureExplored=true;
+   Assert.That(NarrativeCoherenceRules.FissureKnowledgeStage(s),Is.EqualTo(1));
+   s.ChapterThree.LyraContacted=true;
+   Assert.That(NarrativeCoherenceRules.FissureKnowledgeStage(s),Is.EqualTo(2));
+  }
+  [Test]public void StoryQueueShowsFissureConclusionBeforeCouncilAndKeepsExtractionAfterLevelFive(){
+   var s=Ready(3).Value;s.ChapterThree.FissureClosed=true;
+   s.ChapterProgress.SeenNarrative.Add("frontier-open");
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("fissure-closed"));
+   s.BastionLevel=4;
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("fissure-closed"));
+   s.ChapterProgress.SeenNarrative.Add("fissure-closed");
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("consolidate-valoria"));
+   s.BastionLevel=5;s.ChapterThree.ExtractionOddity=true;
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("productive-valoria"));
+   s.ChapterProgress.SeenNarrative.Add("productive-valoria");
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("extraction-oddity"));
+  }
+  [Test]public void ClosingFissureAtBastionThreeSkipsObsoleteFrontierIntro(){
+   var s=Ready(3).Value;s.ChapterThree.FissureClosed=true;
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("fissure-closed"));
+  }
+  [Test]public void UnreadLyraConclusionSurvivesTransitionToBastionFive(){
+   var s=Ready(5).Value;s.ChapterThree.FissureClosed=true;
+   s.ChapterThree.ExtractionOddity=true;
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("fissure-closed"));
+   s.ChapterProgress.SeenNarrative.Add("fissure-closed");
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("productive-valoria"));
+   s.ChapterProgress.SeenNarrative.Add("productive-valoria");
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("extraction-oddity"));
+  }
+  [Test]public void VigilantsFirstUseGuideEndsOnlyAfterRealVictory(){
+   var s=Ready(1).Value;s.SawmillLevel=0;
+   Assert.That(EarlyRetentionFirstUseTutorial.Vigilants(s),Is.EqualTo(FirstUseTutorialPhase.Locked));
+   s.SawmillLevel=1;
+   Assert.That(EarlyRetentionFirstUseTutorial.Vigilants(s),Is.EqualTo(FirstUseTutorialPhase.FirstAction));
+   s.Retention.LastClearedStage=1;
+   Assert.That(EarlyRetentionFirstUseTutorial.Vigilants(s),Is.EqualTo(FirstUseTutorialPhase.Learned));
+  }
+  [Test]public void ScoutsFirstUseGuideTracksRealOrdersAndReports(){
+   var s=Ready(2).Value;
+   Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.Locked));
+   s.ChapterProgress.MarchConfirmed=true;
+   Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.FirstAction));
+   s.Retention.Orders.Add(new ScoutOrder{Id="real-order",StartedUtcTicks=1,EndsUtcTicks=2});
+   Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.AwaitingResult));
+   s.Retention.TotalScoutReports=1;
+   Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.Learned));
+  }
+  [Test]public void ContextHelpDoesNotIntroduceLyraBeforeTheMeeting(){
+   Assert.That(UnityContextTutorial.ForObjective("b3.lyra",false),Does.Not.Contain("Lyra"));
+   Assert.That(UnityContextTutorial.ForObjective("b3.lyra",true),Does.Not.Contain("Lyra"));
+   Assert.That(UnityContextTutorial.ForObjective("b3.fissure",false),Does.Contain("Lyra"));
+  }
+  [Test]public void ContextHelpTeachesRealTrainingAndMarchActions(){
+   Assert.That(UnityContextTutorial.ForObjective("b2.train-archers",false),Does.Contain("Cuartel"));
+   Assert.That(UnityContextTutorial.ForObjective("b2.prepare-march",false),Does.Contain("no envía"));
+   Assert.That(UnityContextTutorial.ForObjective("b2.raise-expedition-power",false),Does.Contain("no del Bastión"));
+  }
+  [Test]public void AutomaticNarrativeNeverInterruptsAnotherGameSurface(){
+   Assert.That(NarrativeCoherenceRules.CanPresent(false,false,false,false,false),Is.True);
+   Assert.That(NarrativeCoherenceRules.CanPresent(true,false,false,false,false),Is.False);
+   Assert.That(NarrativeCoherenceRules.CanPresent(false,true,false,false,false),Is.False);
+   Assert.That(NarrativeCoherenceRules.CanPresent(false,false,true,false,false),Is.False);
+   Assert.That(NarrativeCoherenceRules.CanPresent(false,false,false,true,false),Is.False);
+   Assert.That(NarrativeCoherenceRules.CanPresent(false,false,false,false,true),Is.False);
+  }
+  [Test]public void IncompleteNarrativeIsNotRecordedAndAcknowledgementIsIdempotent(){
+   var clock=new Clock();var store=Ready(3);var gateway=new LocalGateway(clock,store);
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(gateway.Snapshot()),Is.EqualTo("frontier-open"));
+   Assert.That(gateway.AcknowledgeNarrative("frontier-open"),Is.True);
+   Assert.That(gateway.AcknowledgeNarrative("frontier-open"),Is.False);
+   gateway=new LocalGateway(clock,store);
+   Assert.That(gateway.Snapshot().ChapterProgress.SeenNarrative.FindAll(x=>x=="frontier-open").Count,Is.EqualTo(1));
+  }
+
  }
 }
+

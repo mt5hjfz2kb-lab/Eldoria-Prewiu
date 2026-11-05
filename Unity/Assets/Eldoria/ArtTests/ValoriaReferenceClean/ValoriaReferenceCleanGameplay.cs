@@ -41,7 +41,19 @@ namespace Eldoria.ReferenceClean {
     // Treat both an existing owner save and a legacy save awaiting import as
     // continued games. Fresh players must always receive the full prologue;
     // existing players retain their earlier narrative acknowledgements.
-    HadExistingSave=!Probe&&(File.Exists(SaveFile)||File.Exists(legacySave));
+    // Read the original serialization before gateway normalization can save it.
+    // Global flags from another playthrough must never suppress a modern ledger.
+    string originalNarrativeSave=null;
+    if(!Probe){
+#if UNITY_WEBGL && !UNITY_EDITOR
+     string saveKey="eldoria.save."+Path.GetFileName(SaveFile);
+     if(PlayerPrefs.HasKey(saveKey))originalNarrativeSave=PlayerPrefs.GetString(saveKey);
+#else
+     string existing=File.Exists(SaveFile)?SaveFile:File.Exists(legacySave)?legacySave:null;
+     if(existing!=null)originalNarrativeSave=File.ReadAllText(existing);
+#endif
+    }
+    HadExistingSave=originalNarrativeSave!=null;
     var store=new FileStateStore(SaveFile);
     // Existing owner save always wins. Preserve the legacy file byte-for-byte when
     // adopting it; no resource scaling, reset, or replacement of an existing save.
@@ -50,6 +62,9 @@ namespace Eldoria.ReferenceClean {
      if(File.Exists(legacy)){var old=new FileStateStore(legacy).Load();if(old!=null)store.Save(old);}
     }
     Gateway=new LocalGateway(Clock,store,RuntimeResolver);
+    foreach(var beat in NarrativeCoherenceRules.LegacyAcknowledgements(originalNarrativeSave,
+     key=>PlayerPrefs.GetInt("valoria.journey.story."+key,0)==1))
+     Gateway.AcknowledgeNarrative(beat);
     if(Presenter==null)Presenter=GetComponent<SlicePresenter>();
     Presenter.SceneHost=this;Presenter.UtcNowTicks=()=>Clock.UtcTicks;Presenter.Initialize(Gateway);Ready=true;
    }catch(Exception e){LoadError="No se pudo abrir el guardado. Se conserva intacto.";Debug.LogError("VALORIA_SAVE_PRESERVED "+e);}

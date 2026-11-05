@@ -5,6 +5,7 @@ using Eldoria.Application;
 using Eldoria.Presentation;
 using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
+using Eldoria.UI.RoyalGold.V2;
 using UnityEngine;
 
 namespace Eldoria.ReferenceClean {
@@ -13,36 +14,39 @@ namespace Eldoria.ReferenceClean {
   ValoriaIntegratedWorld host;ValoriaReferenceCleanGameplay city;
   readonly Dictionary<string,BuildingLabel> labels=new Dictionary<string,BuildingLabel>();
   float next;
+  float nextNarrativeAt;
   public string Help=>ContextHint();
   string Beat {
    get {
     var s=city.Gateway.Snapshot();
-    if(s.BastionLevel>=5)return s.ChapterThree.ExtractionOddity&&!s.ChapterProgress.SeenNarrative.Contains("extraction-oddity")?"extraction-oddity":"productive-valoria";
-    if(s.BastionLevel==4)return "consolidate-valoria";
-    if(s.BastionLevel>=3)return s.ChapterThree.FissureClosed?"fissure-closed":"frontier-open";
-    if(s.EngendroDefeated)return "secured";
-    if(s.BastionLevel>=2)return "barracks";
-    if(s.ChapterProgress.GatheredWood>0)return "mark";
-    if(s.SawmillLevel>0)return "world";
-    return "start";
+    var pending=PendingBeat(s);
+    return string.IsNullOrEmpty(pending)?NarrativeCoherenceRules.RecapBeat(s):pending;
    }
   }
+  string PendingBeat(PlayerState s)=>NarrativeCoherenceRules.NextUnseenBeat(s);
   static RoyalNarrativePresentation.Line L(string who,string es,string en)
    =>new RoyalNarrativePresentation.Line(who,es,en);
   RoyalNarrativePresentation.Line[] Lines(string beat){
    switch(beat){
     case "extraction-oddity":return new[]{L("Sir Aldric","Detened los picos. Esa veta no refleja la luz como la piedra de Valoria. Guardad cualquier fragmento extraño. Si la tierra está cambiando cerca de la Brecha, necesitaremos saber por qué.","Stop the picks. That vein does not reflect light like Valoria's stone. Keep any unusual fragments. If the ground is changing near the Breach, we must learn why.")};
-    case "consolidate-valoria":return new[]{L("NARRADOR","El nivel IV consolida Valoria. Elige la prioridad del reino y reúne recursos para alcanzar el V y desbloquear la Cantera.","Level IV consolidates Valoria. Choose the realm's priority and gather resources to reach V and unlock the Stoneworks.")};
+    case "consolidate-valoria":return new[]{
+     L("Sir Aldric",string.IsNullOrEmpty(city.Gateway.Snapshot().ChapterThree.DevelopmentPriority)?
+      "Valoria no puede reconstruirlo todo a la vez. Elige una prioridad: producción, defensa o refugio. Las mejoras de las otras áreas seguirán disponibles.":
+      "Valoria ya tiene una prioridad de desarrollo. Seguiremos reconstruyendo sin renunciar a las mejoras de las otras áreas.",
+      string.IsNullOrEmpty(city.Gateway.Snapshot().ChapterThree.DevelopmentPriority)?
+      "Valoria cannot rebuild everything at once. Choose a priority: production, defence or shelter. Improvements in the other areas remain available.":
+      "Valoria has chosen a development priority. We will keep rebuilding while preserving improvements in the other areas."),
+     L("NARRADOR","La elección se reflejará en la ciudad. El siguiente paso será reunir los recursos para el Bastión V.","Your choice will be reflected in the city. The next step is gathering the resources for Bastion V.")};
     case "productive-valoria":return new[]{L("NARRADOR","Bastión V permite construir la Cantera de Valoria para generar piedra de forma continua. Cada edificio crece mediante sus propias mejoras.","Bastion V unlocks Valoria's Stoneworks for continuous stone production. Each building grows through its own upgrades.")};
     case "frontier-open":return new[]{
-     L("Sir Aldric","La frontera se abre. Necesitamos un Granero y alimento para sostener las expediciones. Hay nuevas huellas cerca de la fisura: las investigaré.","The frontier opens. We need a Granary and food to sustain expeditions. There are new tracks near the fissure: I will investigate them.")};
+     L("Sir Aldric","La frontera se abre. El Granero nos dará alimento para explorarla. Hay una anomalía en la tierra, pero todavía no sabemos qué encontraremos allí.","The frontier opens. The Granary will feed our expeditions. There is an anomaly in the ground, but we do not yet know what awaits us.")};
     case "fissure-closed":return new[]{
      L("Lyra","Ese símbolo… pertenecía a mi hermano. No abandonaré su búsqueda. Lucharé junto a Valoria para seguir sus rutas.","That symbol… it belonged to my brother. I will not abandon the search. I will fight alongside Valoria to follow his trail."),
-     L("Sir Aldric","Entonces eres una de los nuestros. Guardaremos el manuscrito; aún no sabemos qué significa.","Then you are one of us. We will keep the manuscript; we do not yet know what it means."),
-     L("NARRADOR","Lyra se incorpora a los héroes. El Manuscrito de la Fisura queda en el Arcón. La fisura local se ha cerrado; la Brecha principal permanece abierta.","Lyra joins the heroes. The Fissure Manuscript is kept in the Chest. The local fissure is closed; the main Breach remains open.")};
+     L("Sir Aldric","Entonces Valoria también será tu hogar. Guardaremos el manuscrito; aún no sabemos qué significa.","Then Valoria will be your home too. We will keep the manuscript; we do not yet know what it means."),
+     L("NARRADOR","Lyra se incorpora al Salón de Héroes: allí podrás preparar sus habilidades para futuras marchas. El manuscrito queda en el Arcón. Hemos cerrado la fisura local, no la Brecha principal.","Lyra joins the Heroes Hall: prepare her abilities there for future marches. The manuscript is kept in the Chest. We have closed the local fissure, not the main Breach.")};
     case "start":return new[]{
-     L("NARRADOR","La Brecha apareció sobre Valoria antes del amanecer. Cuando cesaron los temblores, las murallas seguían en pie. El reino, no.",
-        "The Breach appeared above Valoria before dawn. When the tremors stopped, the walls were still standing. The kingdom was not."),
+     L("NARRADOR","La Brecha se abrió en la tierra junto a Valoria antes del amanecer. Cuando cesaron los temblores, las murallas seguían en pie. El reino, no.",
+        "The Breach opened in the ground beside Valoria before dawn. When the tremors stopped, the walls were still standing. The kingdom was not."),
      L("Sir Aldric","Valoria sobrevivió a la noche. No puedo decir lo mismo de nuestro reino.\n\nLa Brecha sigue ahí. Mientras permanezca abierta, esto volverá a ocurrir.\n\nEmpecemos por lo que aún podemos salvar.",
         "Valoria survived the night. I cannot say the same of our kingdom.\n\nThe Breach is still there. As long as it remains open, this will happen again.\n\nLet us begin with what we can still save."),
      L("NARRADOR","Valoria sobrevivió a la caída, pero no puede reconstruirse sola. Cada mejora del reino necesita recursos recuperados más allá de sus murallas. Empieza por el Aserradero.",
@@ -81,15 +85,23 @@ namespace Eldoria.ReferenceClean {
    }
   }
   public void PresentMilestone(){
-   if(!host||!host.Ready||host.Hud.NarrativeOpen||host.Hud.Modal.gameObject.activeSelf)return;
-   var s=city.Gateway.Snapshot();string beat=Beat;
-   if(s.ChapterProgress!=null&&s.ChapterProgress.SeenNarrative!=null&&s.ChapterProgress.SeenNarrative.Contains(beat))return;
-   // Honour the historical PlayerPrefs only for a loaded pre-migration save.
-   // They must NEVER suppress a fresh game's first introduction.
-   if(city.HadExistingSave&&PlayerPrefs.GetInt("valoria.journey.story."+beat,0)==1)return;
+   if(!host||!host.Ready||Time.unscaledTime<nextNarrativeAt)return;
+   var hud=host.Hud;
+   if(!hud)return;
+   if(!NarrativeCoherenceRules.CanPresent(
+      hud.NarrativeOpen,
+      hud.Modal&&hud.Modal.gameObject.activeSelf,
+      hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false,
+      hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false,
+      hud.GetComponent<RoyalGoldV41MailboxScreen>()?.IsOpen??false,
+       !string.IsNullOrEmpty(hud.SelectedBuildingId)))return;
+   var s=city.Gateway.Snapshot();string beat=PendingBeat(s);
+   if(string.IsNullOrEmpty(beat))return;
    host.Hud.ShowNarrativeSequence(Lines(beat),()=>{
     // Completing text, unlike merely opening a modal, commits the milestone.
     city.Gateway.AcknowledgeNarrative(beat);
+    // A cluster of completed tasks must never spam uninterrupted popups.
+    nextNarrativeAt=Time.unscaledTime+1.5f;
     Refresh();
    });
   }
@@ -179,7 +191,13 @@ namespace Eldoria.ReferenceClean {
    if(s.BuildingCompletesUtcTicks>0)return (en?"Construction paid · ":"Obra pagada · ")+RoyalFormatting.Remaining(s.BuildingCompletesUtcTicks,city.Clock.UtcTicks,en);
    if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+SliceRules.RecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en);
    if(s.BastionUpgradeCompletesUtcTicks>0)return (en?"Bastion upgrade paid · ":"Mejora del Bastión pagada · ")+RoyalFormatting.Remaining(s.BastionUpgradeCompletesUtcTicks,city.Clock.UtcTicks,en);
+   // Teach the real first delivery in the existing contextual hint.
+   if(UnityContextTutorial.NeedsMailboxOpening(s))
+    return UnityContextTutorial.MailboxFirstUse(en);
    string key=SliceRules.CurrentObjectiveKey(s),target=ObjectiveTarget();
+   // One useful instruction for the real objective; it is never a modal.
+   string teaching=UnityContextTutorial.ForObjective(key,en);
+   if(!string.IsNullOrEmpty(teaching))return teaching;
    if(key=="b2.complete")return en?"Bastion II secured. Prepare 650 wood and 500 stone to open the frontier.":"Bastión II asegurado. Prepara 650 madera y 500 piedra para abrir la frontera.";
    if(target=="forest-valoria")return en?"Select the forest, then Gather wood. Resources arrive with the returning troops.":"Selecciona el bosque y pulsa Recoger madera. Los recursos llegan con las tropas.";
    if(target=="quarry-valoria")return en?"Select the quarry, then Gather stone. Resources arrive with the returning troops.":"Selecciona la cantera y pulsa Recoger piedra. Los recursos llegan con las tropas.";
@@ -232,6 +250,15 @@ namespace Eldoria.ReferenceClean {
    if(!host.TrySetWorld(!town))return;
    host.Select(id);Refresh();
   }
-  public void ShowStory(){Refresh();if(!host.Hud.Modal.gameObject.activeSelf)host.Hud.ShowNarrativeSequence(Lines(Beat),null);}
+  public void ShowStory(){
+   Refresh();if(host.Hud.Modal.gameObject.activeSelf)return;
+   string beat=Beat;
+   host.Hud.ShowNarrativeSequence(Lines(beat),()=>{
+    city.Gateway.AcknowledgeNarrative(beat);
+    nextNarrativeAt=Time.unscaledTime+1.5f;
+    Refresh();
+   });
+  }
  }
 }
+

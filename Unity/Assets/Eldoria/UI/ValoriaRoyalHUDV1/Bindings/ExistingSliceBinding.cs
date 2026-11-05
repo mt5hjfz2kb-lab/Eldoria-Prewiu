@@ -15,9 +15,9 @@ namespace Eldoria.UI.RoyalGold {
    var d=new RoyalSnapshot{Revision=s.Revision,Wood=s.Resources.Wood,Stone=s.Resources.Stone,Food=s.Resources.Food,Power=p.Total,
     BastionLevel=s.BastionLevel,Available=s.Available.Total,Wounded=s.Wounded.Total,Prepared=s.PreparedTroops.Total,HeroPower=p.Heroes+(s.ChapterThree.LyraRecruited?1278:0),
     Hero=s.PreparedHeroId=="aldric"?"Sir Aldric":s.PreparedHeroId,IsTest=test,Profile=SliceContentProfiles.ActiveRuntimeProfile,
-    Chapter=L(en,s.BastionLevel<2?"CAPÍTULO I":"CAPÍTULO II",s.BastionLevel<2?"CHAPTER I":"CHAPTER II"),March=MarchText(s,en)};
+    Chapter=L(en,"BASTIÓN ","BASTION ")+(s.BastionLevel<=1?"I":s.BastionLevel==2?"II":s.BastionLevel==3?"III":s.BastionLevel==4?"IV":"V"),March=MarchText(s,en)};
    if(s.ChapterThree.LyraRecruited)d.Hero="Sir Aldric · Lyra ("+s.ChapterThree.LyraXp+" XP)";
-   d.ShowFood=s.BastionLevel>=3;if(s.BastionLevel>=3)d.Chapter=L(en,"CAPÍTULO ","CHAPTER ")+(s.BastionLevel==3?"III":s.BastionLevel==4?"IV":"V");
+   d.ShowFood=s.BastionLevel>=3;
    ObserveRecruitment(s);Mission(s,d,en); d.Building=Building(s,selection,en); return d;
   }
   public RoyalResult Submit(RoyalAction offer){
@@ -62,7 +62,7 @@ namespace Eldoria.UI.RoyalGold {
     case "b3.food":title=L(en,"Reúne 500 comida","Gather 500 food");done=s.Resources.Food;total=500;break;
     case "b3.hunt":title=L(en,"Completa dos cacerías","Complete two hunts");done=s.ChapterThree.Hunts;total=2;break;
     case "b3.investigate":title=L(en,"Investiga la fisura","Investigate the fissure");break;
-    case "b3.lyra":title=L(en,"Conoce a Lyra","Meet Lyra");break;
+    case "b3.lyra":title=L(en,"Investiga las huellas humanas","Investigate the human tracks");break;
     case "b3.fissure":title=L(en,"Asalta la fisura junto a Lyra","Assault the fissure with Lyra");break;
     case "b3.infrastructure":title=L(en,"Aserradero, Cuartel y Granero a nivel 2","Sawmill, Barracks and Granary to level 2");break;
     case "b3.complete":title=L(en,"Eleva el Bastión a nivel IV","Upgrade the Bastion to level IV");break;
@@ -73,7 +73,7 @@ namespace Eldoria.UI.RoyalGold {
     case "b5.army":title=L(en,"Alcanza 60 arqueros","Reach 60 archers");done=s.Available.Total+s.Wounded.Total;foreach(var march in MarchCapacityRules.WorldMarches(s))if(march!=null&&march.Phase!="idle")done+=march.Troops.Total;total=60;break;
     case "b5.rare":title=L(en,"Derrota al Acechador de Ceniza","Defeat the Ash Stalker");done=s.ChapterThree.AshStalkerDefeated?1:0;break;
     case "b5.infrastructure":title=L(en,"Desarrolla los edificios a nivel V","Develop each building to level V");break;
-    case "b5.complete":title=L(en,"Bastión V completado · próximo capítulo VI","Bastion V complete · chapter VI next");done=1;break;
+    case "b5.complete":title=L(en,"Bastión V asegurado · próximo hito Bastión VI","Bastion V secured · next milestone Bastion VI");done=1;break;
     default:title=L(en,"Sin objetivo disponible","No objective available");total=0;break;
    }
    d.Objective=title;d.MissionFraction=total>0?Math.Min(1f,Math.Max(0f,done/(float)total)):0;d.ObjectiveProgress=total>0?Math.Min(done,total)+" / "+total:"";
@@ -109,7 +109,13 @@ namespace Eldoria.UI.RoyalGold {
     d.MissionSteps=new[]{new RoyalMissionStep(L(en,"Granero construido","Granary built"),s.ChapterThree.GranaryLevel>0),
      new RoyalMissionStep(L(en,"500 comida reunida","500 food gathered"),p.GrantedRewards.Contains("c3-food")),
      new RoyalMissionStep(L(en,"Dos cacerías","Two hunts"),s.ChapterThree.Hunts>=2),
-     new RoyalMissionStep(L(en,"Fisura cerrada · Lyra reclutada","Fissure closed · Lyra recruited"),s.ChapterThree.FissureClosed),
+     new RoyalMissionStep(
+      s.ChapterThree.FissureClosed?
+       L(en,"Fisura cerrada · Lyra reclutada","Fissure closed · Lyra recruited"):
+      s.ChapterThree.LyraContacted?
+       L(en,"Cierra la fisura junto a Lyra","Close the fissure with Lyra"):
+       L(en,"Investiga la anomalía de la frontera","Investigate the frontier anomaly"),
+      s.ChapterThree.FissureClosed),
      new RoyalMissionStep(L(en,"Infraestructura a nivel 2","Infrastructure at level 2"),s.SawmillLevel>=2&&s.BarracksLevel>=2&&s.ChapterThree.GranaryLevel>=2)};
    }else{
     d.MissionSteps=new[]{
@@ -173,8 +179,13 @@ namespace Eldoria.UI.RoyalGold {
     if(id=="fissure-valoria"){
      if(c.FissureClosed){b.State=L(en,"Fisura cerrada","Fissure closed");return b;}
      kind=!c.FissureExplored?"InvestigateFissure":!c.LyraContacted?"ContactLyra":"Fight";
-     label=L(en,kind=="InvestigateFissure"?"Investigar · 20 min":kind=="ContactLyra"?"Hablar con Lyra":"Asaltar con Lyra",kind=="InvestigateFissure"?"Investigate · 20 min":kind=="ContactLyra"?"Talk to Lyra":"Assault with Lyra");
-     b.Function=L(en,"Una fisura local. Lyra busca a su hermano; aún nadie conoce el origen de la Brecha.","A local fissure. Lyra seeks her brother; the Breach's origin remains unknown.");
+     label=L(en,kind=="InvestigateFissure"?"Investigar · 20 min":kind=="ContactLyra"?"Acercarse a la arquera":"Asaltar con Lyra",kind=="InvestigateFissure"?"Investigate · 20 min":kind=="ContactLyra"?"Approach the archer":"Assault with Lyra");
+     int knowledge=NarrativeCoherenceRules.FissureKnowledgeStage(s);
+    b.Function=knowledge==0?
+     L(en,"Una fractura extraña cerca de Valoria. Aldric debe investigar antes de acercarse.","An unusual fracture near Valoria. Aldric must investigate before approaching."):
+     knowledge==1?
+     L(en,"La investigación ha encontrado huellas humanas. Acércate para descubrir quién las dejó.","The investigation found human tracks. Approach to discover who left them."):
+     L(en,"Lyra busca a su hermano desaparecido. Combatirá junto a Aldric; todavía no se ha unido al reino.","Lyra is searching for her missing brother. She will fight beside Aldric, but has not yet joined the realm.");
      deadline=c.InvestigationEndsUtcTicks;seconds=1200;
     }else if(id=="meat-valoria")b.Function=c.MeatRemaining+L(en," comida disponible"," food available");
     else if(id=="ash-stalker-valoria"){
