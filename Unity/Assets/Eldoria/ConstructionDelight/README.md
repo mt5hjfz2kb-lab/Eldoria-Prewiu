@@ -130,3 +130,16 @@ El propietario rechazó expresamente la calidad del A/B V3. No añadir más conf
 ### Reanudar de forma segura
 
 Consultar main/pipeline/active-workstreams.json. Reclamar windows-runner-heavy con CAS cuando titular PR #136 lo libere, sincronizar snapshot al PR, activar tools/construction-delight/native-request.json con [delight-native], ejecutar Unity 6000.3.23f1 con escena real y evaluar todos los fotogramas. Liberar runner al concluir. No confundir verde CI con calidad; no alterar main, Packages/manifest.json, escenas ni modelos canónicos.
+
+
+## Animación estructural por etapas y ampliación C3 — 05/11/2026
+
+Además del shader, el candidato incorpora ConstructionDelightStageAssembly.cs: duplicados visuales temporales de mallas 3D auténticas, con las mismas geometrías y materiales existentes, sin clonar colisionadores, scripts ni estados. Durante obras nuevas, las piezas se van colocando en orden de altura conforme al temporizador real, y en los 1,68 s posteriores a la finalización se apoyan sobre su posición definitiva. Los renderizadores originales se restauran incluso al abandonar la ciudad/recargar; nunca se alteran archivos de modelos/escenas. No equivale todavía a arte aprobado.
+
+Se verificó directamente en main/Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs que las duraciones C3 empleadas por WorkDuration coinciden con las reglas auténticas de Granero, Cantera y mejoras (9 / 12 / 8+2*n segundos), por lo que el escalonado visual no se basa en una cuenta arbitraria. Para los modelos C3 se añadieron rutas de selección desde ValoriaParcelPresentation.Bindings usando BuildingId, Built, Construction y Ground, que son referencias reales de la escena, sin coordenadas simuladas.
+
+QA A/B: ya registra y exige presencia de piezas 3D durante obra y finalización, shader de barrido sobre mallas visibles, comprobantes LocalGateway, guardado inalterado al recargar y desaparición de duplicados temporales. Se requieren 34 capturas auténticas en horizontal/vertical, incluidas cuatro etapas de movimiento de obra y seis de terminación por orientación.
+
+**Última prueba offline de esta arquitectura:** [41937883348](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41937883348): 36 tests de dominio PASS, cinco archivos C# sin errores de sintaxis Roslyn, shader presente, guardia contra recursión PASS. Las correcciones finales de emplazamiento C3 se registraron después; repetir esta prueba en el HEAD final. Ninguna de estas comprobaciones equivale a Unity compilado ni calidad visual.
+
+**Pendiente obligatorio:** Unity Editor real exacto, 34 capturas A/B, revisión de movimiento de piezas y su integración con el brillo, rendimiento Android/WebGL y aprobación artística. Windows runner-heavy continúa reservado al cierre post-merge de PR #136 en main, y esta rama no lo reclama ni inicia Unity mientras esté ocupado. Preservar PR #152 DRAFT; no fusionar/publicar.
