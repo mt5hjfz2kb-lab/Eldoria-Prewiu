@@ -1235,9 +1235,20 @@ namespace Eldoria.Editor
             var visibleComposition=host.Hud.GetComponentsInChildren<Text>(true)
                 .FirstOrDefault(t=>t.name=="Mailbox / own roster historical composition");
             Need(realRecord.OwnRoster!=null&&realRecord.OwnRoster.Total==realRecord.Troops &&
-                visibleComposition&&visibleComposition.text.Contains("ARQUEROS") &&
+                realRecord.OwnRoster.ArcherT1==composed.PreparedTroops.ArcherT1 &&
+                realRecord.OwnRoster.ArcherT2==composed.PreparedTroops.ArcherT2 && visibleComposition,
+                "Historical own-roster tiers equal the actual dispatched army");
+            if(!string.IsNullOrEmpty(realRecord.Outcome))
+            {
+                string[] families={"Paladines","Arqueros","Brujos"};
+                for(int f=0;f<3;f++)for(int t=1;t<=5;t++)
+                    if(realRecord.OwnRoster.Get(f,t)>0)
+                        Need(visibleComposition.text.Contains(families[f]+" T"+t+" ×"+realRecord.OwnRoster.Get(f,t)),
+                            "Actual evolved report displays authoritative family and tier "+f+":"+t);
+            }
+            else Need(visibleComposition.text.Contains("ARQUEROS")&&
                 visibleComposition.text.Contains("T1: "+realRecord.OwnRoster.ArcherT1),
-                "Historical own-roster tiers come from the actual dispatched army, never guesses");
+                "Historical legacy composition remains readable");
             Need(reportText&&metricTitle&&metricTitle.text=="TROPAS ENVIADAS"&&
                 metricValue&&metricValue.text==realRecord.Troops.ToString()&&
                 !reportText.text.Contains("Ruptura super")&&
@@ -1253,6 +1264,21 @@ namespace Eldoria.Editor
                 .FirstOrDefault(x=>x.name=="Mailbox / report scroll viewport");
             Need(reportScroller&&reportScroller.vertical&&reportScroller.viewport!=null,
                 "Actual report document uses live vertical scrolling at compact mobile resolutions");
+            if(!string.IsNullOrEmpty(realRecord.Outcome))
+            {
+                var ownAnalysis=host.Hud.GetComponentsInChildren<Button>()
+                    .First(x=>x.name=="Mailbox / collapse or expand report");
+                Need(!reportText.gameObject.activeSelf,"Own analysis is optional and initially collapsed");
+                ownAnalysis.onClick.Invoke();yield return null;
+                Need(reportText.gameObject.activeSelf&&reportText.text.Contains(realRecord.OwnDamageByFamily)&&
+                    reportText.text.Contains(realRecord.OwnReceivedByFamily),
+                    "Expanded own analysis uses saved actual damage facts");
+                Shot(host,"mailbox-evolution-analysis-portrait",900,1600);
+                Shot(host,"mailbox-evolution-analysis-landscape",1600,900);
+                Shot(host,"mailbox-evolution-analysis-small-phone",390,844);
+                Shot(host,"mailbox-evolution-analysis-small-phone-landscape",844,390);
+                ownAnalysis.onClick.Invoke();yield return null;
+            }
             // Outcome/family/long-text visual matrix. Every candidate below
             // lives ONLY in an isolated READ-ONLY fixture. Its narrative is
             // generated from the real deterministic ScoutOrder family rules,
@@ -1282,11 +1308,11 @@ namespace Eldoria.Editor
                     var applied=EarlyRetentionRules.Apply(combatState,
                         "VigilantBattle",stage.ToString(),
                         new DateTime(2026,11,3,12,0,0,DateTimeKind.Utc).Ticks,
-                        out combatNotice);
+                        out combatNotice,EldoriaV41GatewayResolver.Campaign());
                     Need(applied==true&&combatState.LastBattleReport.Won==(variant==0),
                         "Native screenshot represents a REAL outcome of the actual Vigilants resolver");
                     var result=combatState.LastBattleReport;
-                    var observed=new EldoriaV41CombatRecord {
+                    var observed=result.VersionedOutcome?.Copy()??new EldoriaV41CombatRecord {
                         TargetId=result.TargetId,HeroId=result.HeroId,
                         Troops=result.Troops,OwnRoster=result.OwnRoster?.Copy(),
                         PlayerPower=result.PlayerPower,EnemyPower=result.EnemyPower,
