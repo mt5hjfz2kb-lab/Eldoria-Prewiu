@@ -551,6 +551,20 @@ namespace Eldoria.UI.RoyalGold.V2
             float cardH=narrow?104f:94f;
             float gap=11f,cardW=(width-48f-gap*(cols-1))/cols;
             float metricTop=headerH+19f;
+            float captionH=24f,valueH=0f;
+            // Measure the real saved names at the final column width. At
+            // 900x1600 four columns can wrap both heroes onto several lines.
+            for(int i=0;i<reportMetricCount;i++)
+            {
+                metricNames[i].fontSize=narrow?12:15;
+                metricValues[i].fontSize=narrow?18:26;
+                Position(metricNames[i].rectTransform,0f,0f,cardW-22f,24f);
+                Position(metricValues[i].rectTransform,0f,0f,cardW-22f,55f);
+                captionH=Mathf.Max(captionH,metricNames[i].preferredHeight+3f);
+                valueH=Mathf.Max(valueH,metricValues[i].preferredHeight+5f);
+            }
+            float valueTop=10f+captionH;
+            cardH=Mathf.Max(cardH,valueTop+valueH+5f);
             for(int i=0;i<4;i++)
             {
                 bool visible=i<reportMetricCount;
@@ -563,9 +577,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 metricValues[i].color=new Color(.20f,.125f,.075f);
                 metricNames[i].fontSize=narrow?12:15;
                 metricValues[i].fontSize=narrow?18:26;
-                Position(metricNames[i].rectTransform,x+11f,y+10f,cardW-22f,24f);
-                Position(metricValues[i].rectTransform,x+11f,y+34f,
-                    cardW-22f,cardH-39f);
+                Position(metricNames[i].rectTransform,x+11f,y+10f,cardW-22f,captionH);
+                Position(metricValues[i].rectTransform,x+11f,y+valueTop,
+                    cardW-22f,cardH-valueTop-5f);
             }
             float metricHeight=reportMetricCount>0?
                 Mathf.Ceil(reportMetricCount/(float)cols)*(cardH+gap)-gap:0f;

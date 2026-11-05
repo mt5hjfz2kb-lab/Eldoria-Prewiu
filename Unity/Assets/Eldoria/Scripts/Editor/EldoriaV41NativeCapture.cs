@@ -177,6 +177,25 @@ namespace Eldoria.Editor
                     Canvas.ForceUpdateCanvases();
                 }
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
+                if(name.StartsWith("mailbox-evolution-analysis-"))
+                    foreach(var metric in host.Hud.GetComponentsInChildren<Text>())
+                        if(metric.name.StartsWith("Mailbox / genuine metric ")||
+                            metric.name.StartsWith("Mailbox / metric caption "))
+                            Need(metric.preferredHeight<=metric.rectTransform.rect.height+1f,
+                                "Every saved hero name and metric caption is fully readable "+name+" / "+metric.name);
+                if(name.StartsWith("mailbox-evolution-analysis-")&&name.EndsWith("-scroll-end"))
+                {
+                    var scroll=host.Hud.GetComponentsInChildren<ScrollRect>(true)
+                        .First(x=>x.name=="Mailbox / report scroll viewport");
+                    Need(scroll.content&&scroll.viewport,"Actual analysis document and viewport exist "+name);
+                    if(scroll.content.rect.height>scroll.viewport.rect.height)
+                    {
+                        scroll.OnScroll(new PointerEventData(EventSystem.current){scrollDelta=new Vector2(0,-10000)});
+                        Canvas.ForceUpdateCanvases();
+                        Need(scroll.verticalNormalizedPosition<=.01f,
+                            "Actual scroll input reaches all own-army analysis figures "+name);
+                    }
+                }
                 // Real contextual city card is responsive too. Test the actual
                 // 390x844 screen, not a 900-unit layout stretched to phone.
                 host.Hud.GetComponent<RoyalGoldV2Hud>()?.SynchronizeNow();
@@ -1310,6 +1329,10 @@ namespace Eldoria.Editor
                 Shot(host,"mailbox-evolution-analysis-landscape",1600,900);
                 Shot(host,"mailbox-evolution-analysis-small-phone",390,844);
                 Shot(host,"mailbox-evolution-analysis-small-phone-landscape",844,390);
+                Shot(host,"mailbox-evolution-analysis-portrait-scroll-end",900,1600);
+                Shot(host,"mailbox-evolution-analysis-landscape-scroll-end",1600,900);
+                Shot(host,"mailbox-evolution-analysis-small-phone-scroll-end",390,844);
+                Shot(host,"mailbox-evolution-analysis-small-phone-landscape-scroll-end",844,390);
                 ownAnalysis.onClick.Invoke();yield return null;
             }
             // Outcome/family/long-text visual matrix. Every candidate below
