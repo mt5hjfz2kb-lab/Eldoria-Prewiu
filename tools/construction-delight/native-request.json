@@ -2,8 +2,8 @@
   "schema_version": 1,
   "request_id": "eldoria-construction-delight-native-ab-20261104",
   "workstream_id": "eldoria-construction-delight-v1-20261104",
-  "source_head_before_request": "e19014ffcef00fda0ea77436d46fcc7bcc284110",
-  "ownership_revision": 17,
+  "source_head_before_request": "db798a445f85e446deef92b00d39309ba75ece58",
+  "ownership_revision": 18,
   "mode": "A_B_64_CAMERA_FINAL_SOURCE_WITH_NATIVE_PROVENANCE",
   "expected_images": 64,
   "formats": [
@@ -66,7 +66,7 @@
   "source_domain_attempt": 2,
   "purpose": "Verify current authoritative completion receipt, no World4X bleed, URP real renderer and localized camera proof syntax",
   "native_editor_invocation": false,
-  "window_runner_reservation": true,
+  "window_runner_reservation": false,
   "real_visual_QA_pending": true,
   "license_evidence": {
     "auth_run": 41807267627,
@@ -90,7 +90,7 @@
     "QA refreshes real Presenter state after direct command",
     "QA uses real city host camera focus"
   ],
-  "windows_runner_reserved_by": "eldoria-construction-delight-v1-20261104",
+  "windows_runner_reserved_by": null,
   "source_qa_change": "Fixed VisibleBounds infinite recursion from previous scaffold fallback and added semantic Roslyn nonrecursive/visible-renderer guard",
   "native_qa_pending": true,
   "current_main_parent": "7ed30ed8a599c461e0b5f8b0883c60092822fd4e",
@@ -205,10 +205,20 @@
     "images",
     "art_approved"
   ],
-  "native_editor_launch_requested": true,
-  "native_editor_invocation_requested": true,
+  "native_editor_launch_requested": false,
+  "native_editor_invocation_requested": false,
   "native_request_at": "2026-11-05T17:31:27.544Z",
   "main_claim_commit": "9d0f3feecd54507220ae9a77a1688372cbeed2d0",
   "merged_main_commit": "9d0f3feecd54507220ae9a77a1688372cbeed2d0",
-  "branch_head_before_trigger": "e19014ffcef00fda0ea77436d46fcc7bcc284110"
+  "branch_head_before_trigger": "e19014ffcef00fda0ea77436d46fcc7bcc284110",
+  "source_fix_shadermagenta": "HLSL 'half alpha=0h' invalid syntax unexpected token h on D3D11; use 0.0h",
+  "source_fix_visual_gate": "Detect pink Unity error material in genuine camera A/B; do not count shader-fallback pixels as authentic visual improvement",
+  "failed_art_pass_before_fix": {
+    "run": 42075455491,
+    "artifact": 13438197392,
+    "had_64_real_images": true,
+    "framework_status": "NATIVE_PASS",
+    "visual_status": "REJECTED_SHADER_FALLBACK_MAGENTA"
+  },
+  "domain_proof_requested_at": "2026-11-05T17:42:19.481Z"
 }
