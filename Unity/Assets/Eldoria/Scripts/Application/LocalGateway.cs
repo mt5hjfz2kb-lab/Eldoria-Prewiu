@@ -1064,7 +1064,7 @@ namespace Eldoria.Application
             GrantWebMissionRewards();state.CompletedCommandIds.Add(command.Id);Commit();
             return new CommandResult(true,"Acción iniciada",state.Revision);
         }
-        void AccrueChapterThree(long until)
+        void AccrueChapterThree(long until, long productionDeadlineUtcTicks = long.MaxValue)
         {
             var c=state.ChapterThree;
             if(c.EconomyUtcTicks<=0){c.EconomyUtcTicks=until;return;}
@@ -1083,9 +1083,9 @@ namespace Eldoria.Application
             }
             // Calculate every wallet balance before writing any ledger fields.
             // A failed checked overflow cannot partially credit resources.
-            var wood=EconomyProductionV2.Accrue(c.EconomyUtcTicks,until,c.WoodProductionMicro,state.SawmillLevel,"wood");
-            var stone=EconomyProductionV2.Accrue(c.EconomyUtcTicks,until,c.StoneProductionMicro,c.StoneworksLevel,"stone");
-            var food=EconomyProductionV2.Accrue(c.EconomyUtcTicks,until,c.FoodProductionMicro,c.GranaryLevel,"food");
+            var wood=EconomyProductionV2.Accrue(c.EconomyUtcTicks,until,c.WoodProductionMicro,state.SawmillLevel,"wood",productionDeadlineUtcTicks:productionDeadlineUtcTicks);
+            var stone=EconomyProductionV2.Accrue(c.EconomyUtcTicks,until,c.StoneProductionMicro,c.StoneworksLevel,"stone",productionDeadlineUtcTicks:productionDeadlineUtcTicks);
+            var food=EconomyProductionV2.Accrue(c.EconomyUtcTicks,until,c.FoodProductionMicro,c.GranaryLevel,"food",productionDeadlineUtcTicks:productionDeadlineUtcTicks);
             int nextWood=checked(state.Resources.Wood+wood.WholeUnits);
             int nextStone=checked(state.Resources.Stone+stone.WholeUnits);
             int nextFood=checked(state.Resources.Food+food.WholeUnits);
@@ -1108,12 +1108,16 @@ namespace Eldoria.Application
         {
             if(state.BastionLevel<3)return false;
             var c=state.ChapterThree;bool changed=false;
+            // One 48h entitlement for the entire offline period. A building upgrade
+            // must not restart the clock and silently credit another 48 hours.
+            long offlineDeadline = c.EconomyVersion >= 2 && c.EconomyUtcTicks > 0
+                ? EconomyProductionV2.OfflineWindowDeadline(c.EconomyUtcTicks) : long.MaxValue;
             changed|=AdvanceFrontierRespawns();
             if(state.ScoutDefeated&&!c.Inventory.Contains("iron-brace")){c.Inventory.Add("iron-brace");changed=true;}
             if(c.EconomyVersion<2&&c.EconomyUtcTicks>0&&clock.UtcTicks-c.EconomyUtcTicks>TimeSpan.FromHours(1).Ticks){c.EconomyUtcTicks=clock.UtcTicks-TimeSpan.FromHours(1).Ticks;changed=true;}
             if(c.InvestigationEndsUtcTicks>0&&c.InvestigationEndsUtcTicks<=clock.UtcTicks){c.FissureExplored=true;c.InvestigationEndsUtcTicks=0;changed=true;}
             if(state.BuildingTaskId.StartsWith("c3:",StringComparison.Ordinal)&&state.BuildingCompletesUtcTicks<=clock.UtcTicks&&state.BuildingCompletesUtcTicks>0) {
-                AccrueChapterThree(Math.Max(c.EconomyUtcTicks,state.BuildingCompletesUtcTicks));
+                AccrueChapterThree(Math.Max(c.EconomyUtcTicks,state.BuildingCompletesUtcTicks),offlineDeadline);
                 if(!state.CompletedTaskIds.Contains(state.BuildingTaskId)) {
                     state.CompletedTaskIds.Add(state.BuildingTaskId);string id=state.BuildingTaskId.Split(':')[1];
                     int oldLevel=c.PendingBuildingLevel-1;
@@ -1126,7 +1130,7 @@ namespace Eldoria.Application
                 }
                 c.PendingBuildingLevel=0;state.BuildingCompletesUtcTicks=0;state.BuildingTaskId="";changed=true;
             }
-            if(c.EconomyUtcTicks==0||clock.UtcTicks-c.EconomyUtcTicks>=TimeSpan.TicksPerSecond){AccrueChapterThree(clock.UtcTicks);changed=true;}
+            if(c.EconomyUtcTicks==0||clock.UtcTicks-c.EconomyUtcTicks>=TimeSpan.TicksPerSecond){AccrueChapterThree(clock.UtcTicks,offlineDeadline);changed=true;}
             if(c.EconomyVersion<2)
             {
                 // Legacy payout has completed under its original rules. Never replay it.
