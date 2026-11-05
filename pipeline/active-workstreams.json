@@ -6247,13 +6247,13 @@
     {
       "id": "eldoria-first-login-map-signage-respawn-20261105",
       "title": "Eldoria — bienvenida con nick, pictogramas, niveles del mapa y reposición de 5 min",
-      "owner": "chatgpt-eldoria-player-clarity-continuation-20261105",
+      "owner": "chatgpt-eldoria-first-entry-autonomous-20261105",
       "branch": "feature/player-clarity-first-login-map-signage-20261105",
       "status": "active",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 2,
-      "claimed_at": "2026-11-05T19:53:00Z",
+      "ownership_revision": 3,
+      "claimed_at": "2026-11-05T22:37:43.640Z",
       "base_main_sha": "32176b06afee2a507ea76ff9087832e6b0cec4c8",
       "scope": [
         "Unity/Assets/Eldoria/PlayerClarity/**",
@@ -6302,9 +6302,9 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs"
       ],
       "resources": [],
-      "phase": "CANONICAL_GATHER_COMBAT_NAMING_AND_NATIVE_QA",
+      "phase": "ICON_NULLREF_FIXED_NATIVE_RETEST_AWAITS_SAFE_WINDOWS_LEASE",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "Update canonical full PlayMode harness for first-entry naming before intro; no production behavior bypass. Run native exact PR162 after CI green.",
+      "next": "PR162 head b7357d54652333027489e100f60c58c2fbd85b5a; name and respawn domain PASS, native UI re-test blocked before checkout because construction holds Windows; transfer kept single PR, no interruption. On release claim Windows CAS and certify native exact head; inspect 390x844/844x390 and no merge without evidence.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6315,6 +6315,12 @@
           "revision": 1,
           "at": "2026-11-05",
           "reason": "Continued on user instruction, same PR162/workstream; no concurrent economy ownership change"
+        },
+        {
+          "owner": "chatgpt-eldoria-player-clarity-continuation-20261105",
+          "revision": 2,
+          "at": "2026-11-05T22:37:43.640Z",
+          "reason": "Owner directed autonomous continuation on canonical PR162; previously committed fix and tests retained; no native shared runner claimed"
         }
       ],
       "dependencies": {
