@@ -193,6 +193,7 @@ namespace Eldoria.Domain
         public string DevelopmentPriority = "";
         public bool AshStalkerDefeated;
         public long AshStalkerRespawnUtcTicks;
+        public int AshStalkerGeneration;
         public bool RankUnlocked, ExtractionOddity;
         public int MeatRemaining = 1100;
         public bool FissureExplored, LyraContacted, LyraRecruited, FissureClosed;
