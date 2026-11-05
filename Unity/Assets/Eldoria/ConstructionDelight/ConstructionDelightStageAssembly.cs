@@ -21,6 +21,9 @@ namespace Eldoria.ReferenceClean
             public Vector3 position, scale;
             public Quaternion rotation;
             public float height;
+            public float progress;
+            public Vector3 transitionPosition, transitionScale;
+            public bool wasVisible;
         }
         readonly List<Part> parts=new List<Part>(12);
         GameObject root;
@@ -58,19 +61,40 @@ namespace Eldoria.ReferenceClean
 
         public bool Complete(GameObject builtModel,float time)
         {
-            Clear();
-            if(!builtModel || !builtModel.activeInHierarchy ||
-               !CloneVisibleMeshComponents(builtModel))return false;
-            working=false;completing=true;visible=true;started=time;
-            // Hide the original renderers only while an identical visible
-            // mesh copy physically assembles. Restore flags on every exit.
-            foreach(var p in parts)
+            if(!builtModel || !builtModel.activeInHierarchy)return false;
+            // A level-0 work preview already contains the ACTUAL source meshes.
+            // Reuse their exact current position and progress; resetting them
+            // would make the partly built structure disappear at completion.
+            bool retain=working && Running;
+            if(retain)
             {
-                if(p.original)p.original.enabled=false;
+                foreach(var part in parts)
+                    if(!part.original ||
+                       !part.original.transform.IsChildOf(builtModel.transform))
+                    {retain=false;break;}
             }
-            // Leave the copies initially at their authentic final bounds so
-            // the existing URP architectural sweep can measure them precisely
-            // before the first animated frame moves/lowers any component.
+            if(!retain)
+            {
+                Clear();
+                if(!CloneVisibleMeshComponents(builtModel))return false;
+            }
+            working=false;completing=true;visible=true;started=time;
+            foreach(var part in parts)
+            {
+                if(!part.clone)continue;
+                // Keep the current 3D pose for the whole transition.
+                part.wasVisible=retain && part.clone.enabled;
+                part.transitionPosition=part.wasVisible
+                    ? part.transform.position
+                    : part.position+Vector3.up*Mathf.Lerp(.53f,.88f,part.height);
+                part.transitionScale=part.wasVisible
+                    ? part.transform.localScale : part.scale*.90f;
+                if(part.original)
+                {
+                    part.originalEnabled=part.original.enabled;
+                    part.original.enabled=false;
+                }
+            }
             return true;
         }
 
@@ -99,23 +123,13 @@ namespace Eldoria.ReferenceClean
                 float elapsed=Mathf.Max(0f,time-started);
                 if(elapsed>=FinishDuration){Clear();return;}
                 int count=parts.Count;
-                // Keep the finished foundations/posts from the true work
-                // preview, then land only the final roof and gable. Otherwise
-                // a completed task makes the entire building disappear and
-                // rebuild from scratch in the next frame.
-                int alreadyBuilt=Mathf.Clamp(Mathf.CeilToInt(count*.70f),
-                                             0,count-1);
-                int remaining=Mathf.Max(1,count-alreadyBuilt);
                 for(int i=0;i<count;i++)
                 {
-                    if(i<alreadyBuilt)
-                    {
-                        Place(parts[i],1f,false);
-                        continue;
-                    }
-                    float order=(i-alreadyBuilt)/(float)remaining;
+                    // Foundations settle first; the roof closes last.
+                    // Pieces already built never return to their starting pose.
+                    float order=count==1 ? 0f : i/(float)(count-1);
                     float phase=Mathf.Clamp01(
-                        (elapsed-.20f-order*.46f)/.62f);
+                        (elapsed-.06f-order*.58f)/.62f);
                     Place(parts[i],phase,true);
                 }
             }
@@ -125,18 +139,26 @@ namespace Eldoria.ReferenceClean
         {
             if(!p.transform||!p.clone)return;
             float ease=1f-Mathf.Pow(1f-progress,3f);
-            float offset=finishing ? Mathf.Lerp(.53f,.88f,p.height) :
-                                     Mathf.Lerp(.22f,.42f,p.height);
-            // While building, timbers rise from the scaffold. For the
-            // completion, masonry and roof modules settle DOWN into the
-            // authentic final positions: never make a roof emerge from soil.
-            Vector3 approach=finishing ? Vector3.up : Vector3.down;
-            float settle=finishing ? -Mathf.Sin(progress*Mathf.PI)*.025f : 0f;
-            p.transform.position=p.position+approach*(1f-ease)*offset+
-                                 Vector3.up*settle;
+            if(finishing)
+            {
+                // Direct interpolation from the REAL live work pose prevents
+                // popping, including for rushed builds and instant upgrades.
+                float settle=-Mathf.Sin(progress*Mathf.PI)*.025f;
+                p.transform.position=Vector3.Lerp(
+                    p.transitionPosition,p.position,ease)+Vector3.up*settle;
+                p.transform.localScale=Vector3.Lerp(
+                    p.transitionScale,p.scale,ease);
+                p.clone.enabled=visible && (p.wasVisible || progress>.008f);
+            }
+            else
+            {
+                float offset=Mathf.Lerp(.22f,.42f,p.height);
+                p.transform.position=p.position+Vector3.down*(1f-ease)*offset;
+                p.transform.localScale=p.scale*(.90f+.10f*ease);
+                p.clone.enabled=visible && progress>.008f;
+            }
+            p.progress=progress;
             p.transform.rotation=p.rotation;
-            p.transform.localScale=p.scale*(.90f+.10f*ease);
-            p.clone.enabled=visible && progress>.008f;
         }
 
         public void SetVisible(bool show)
