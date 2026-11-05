@@ -4,6 +4,7 @@
   "references": [
     "Eldoria.RoyalGold.UI",
     "Eldoria.RoyalGold.V2",
-    "Unity.ugui"
+    "Unity.ugui",
+    "Eldoria.Domain"
   ]
 }
