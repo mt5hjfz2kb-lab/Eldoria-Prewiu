@@ -129,7 +129,9 @@ namespace Eldoria.PlayerClarity
                 new Color(.76f, .68f, .53f, .85f));
             placeholder.alignment = TextAnchor.MiddleLeft;
             editor.placeholder = placeholder;
-            editor.onEndEdit.AddListener(OnEndEdit);
+            // A keyboard Done / loss of focus must not finalize an
+            // irreversible one-time nickname. Only the explicit confirmation
+            // button commits it to the canonical gateway.
 
             error = Label(panel, "Validation",
                 new Vector2(.08f, .175f), new Vector2(.92f, .29f), 15,
@@ -167,13 +169,6 @@ namespace Eldoria.PlayerClarity
             transform.SetAsLastSibling();
             gameObject.SetActive(true);
             editor.ActivateInputField();
-        }
-
-        private void OnEndEdit(string submitted)
-        {
-            // A physical Return/Done key should not steal focus from this
-            // single-line field unless it contains an acceptable nickname.
-            if (IsOpen && !string.IsNullOrWhiteSpace(submitted)) Confirm();
         }
 
         public void Confirm()
