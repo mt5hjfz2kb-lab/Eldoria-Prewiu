@@ -394,12 +394,18 @@ namespace Eldoria.ReferenceClean
                 // than using includeStagedParts=true (which could also include
                 // normally hidden alternate mesh variants).
                 if(staged)stagedBuilding.SetVisible(false);
-                architectureOnlyLustre.Begin(completed,Time.unscaledTime);
-                architectureOnlyReveal.Complete(completed,city.PlayerCamera,
-                    Time.unscaledTime);
-                architectureOnlyLustre.SetVisible(false);
-                architectureOnlyReveal.SetVisible(false,Time.unscaledTime);
-                if(staged)stagedBuilding.SetVisible(true);
+                try
+                {
+                    architectureOnlyLustre.Begin(completed,Time.unscaledTime);
+                    architectureOnlyReveal.Complete(completed,city.PlayerCamera,
+                        Time.unscaledTime);
+                }
+                finally
+                {
+                    architectureOnlyLustre.SetVisible(false);
+                    architectureOnlyReveal.SetVisible(false,Time.unscaledTime);
+                    if(staged)stagedBuilding.SetVisible(true);
+                }
             }
 #endif
             stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
