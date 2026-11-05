@@ -8,7 +8,7 @@ Fuentes: ELDORIA_V41_HANDOFF_LISTO_PARA_UNITY_20261031.zip y ELDORIA_V41_HOSPITA
 
 ## Decisión explícita del propietario
 
-El 5 noviembre confirma «Sí, mueren los excedentes»: también en PvE, los graves que no caben en un Hospital operativo mueren por `hospital_overflow`. Los leves no ocupan camas ni mueren por saturación. El combate PvE no causa muertes directas. Sin Hospital realmente operativo no se habilitan pérdidas permanentes. El edificio futuro de recuperación no se implementa.
+La decisión final preservada en #138 (comentario6550040823, 31 octubre) confirma que mueren los excedentes: también en PvE, los graves que no caben en un Hospital operativo mueren por `hospital_overflow`. Los leves no ocupan camas ni mueren por saturación. El combate PvE no causa muertes directas. Sin Hospital realmente operativo no se habilitan pérdidas permanentes. El edificio futuro de recuperación no se implementa.
 
 ## Puertas pendientes
 
@@ -75,3 +75,7 @@ Capturas reales de artifact13407025597 SHA2569d2236e65006253b1b0286befebece23844
 Revisión posterior de descubrimiento: las capturas del análisis mostraban nombres de familias no enviadas con valor cero. Se filtran las tres métricas por composición propia real; una familia presente sigue apareciendo incluso cuando causa cero daño, y los informes mixtos conservan todas sus familias. No se cambian ecuaciones, atributos ni resultados. Nuevos controles del gateway, NUnit y la escena real exigen que una marcha solo de Arqueros no anuncie Paladines/Brujos.141controles de gateway y62del adaptador PASS; la batería completa de paridad/profundidad/médica sigue pasando. Requiere nuevas capturas y certificado exacto antes de integrar.
 
 Revisión adicional de #138 durante la espera nativa: se corrige el título del correo de empate del Acechador y se conserva VersionedOutcome en LastBattleReport de marchas normales. Diez controles C# nuevos cubren ambas rutas, recarga, ausencia de recompensa/progresión y devolución íntegra:151 gateway +62 adaptador PASS. Se amplían las aserciones NUnit de los tres resultados y se añade empate de capítuloIII con JsonUtility; ejecución Unity pendiente del nuevo HEAD. Sin cambios en fórmulas ni catálogo.
+
+Revisión visual de870c1738 (Unity42035261640): los controles pasan, pero la captura844x390 revela texto excesivamente reducido por el escalador de900unidades. Se ajusta únicamente la escala local del destino Buzón en pantallas horizontales bajas: viewport lógico menor, texto medido y desplazamiento existentes. No altera otras pantallas ni datos. Nueva aserción nativa exige18píxeles físicos para el cuerpo del análisis y12para métricas/pie. Necesita nueva captura y certificado; el PASS técnico previo no equivale a legibilidad.
+
+Blender inicial obsoleto: captura auténtica13417313452 mostró pantalla de bienvenida con Cube/Camera/Light. Con autorización expresa del propietario, cierre normal confirmado en13418237265 (PID9852,exited=true,forced=false,savePromptDismissed=false). Se retiran del workflow las operaciones de recuperación puntuales una vez resuelto el bloqueo; se conserva el preflight de titularidad y procesos. Ningún trabajo ajeno cancelado ni reinicio realizado por este agente.

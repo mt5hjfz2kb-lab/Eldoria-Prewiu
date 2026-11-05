@@ -177,6 +177,25 @@ namespace Eldoria.Editor
                     Canvas.ForceUpdateCanvases();
                 }
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
+                if(name.StartsWith("mailbox-evolution-analysis-")&&width==844&&height==390)
+                {
+                    var canvas=host.Hud.GetComponent<Canvas>();
+                    var destination=host.Hud.GetComponentsInChildren<RectTransform>()
+                        .First(x=>x.name=="V41 / Buzón destination");
+                    foreach(var label in destination.GetComponentsInChildren<Text>()
+                        .Where(x=>!string.IsNullOrWhiteSpace(x.text)&&
+                            (x.name=="Contenido del mensaje"||
+                             x.name=="Mailbox / original record and receipt"||
+                             x.name.StartsWith("Mailbox / metric caption ")||
+                             x.name.StartsWith("Mailbox / genuine metric "))))
+                    {
+                        float physicalScale=canvas.scaleFactor;
+                        for(var parent=label.transform;parent&&parent!=canvas.transform;parent=parent.parent)
+                            physicalScale*=Mathf.Abs(parent.localScale.x);
+                        Need(label.fontSize*physicalScale>=(label.name=="Contenido del mensaje"?18f:12f),
+                            "Landscape report retains readable physical text size "+label.name);
+                    }
+                }
                 if(name.StartsWith("mailbox-evolution-analysis-"))
                     foreach(var metric in host.Hud.GetComponentsInChildren<Text>())
                         if(metric.name.StartsWith("Mailbox / genuine metric ")||

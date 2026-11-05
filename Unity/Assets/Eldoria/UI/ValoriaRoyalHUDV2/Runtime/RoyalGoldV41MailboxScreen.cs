@@ -82,6 +82,7 @@ namespace Eldoria.UI.RoyalGold.V2
         void BeforeCanvasRender()
         {
             if(!window||!hud)return;
+            FitCompactLandscape();
             if(Mathf.Abs(window.rect.width-lastWidth)>.5f||
                 Mathf.Abs(window.rect.height-lastHeight)>.5f)
             {
@@ -346,13 +347,40 @@ namespace Eldoria.UI.RoyalGold.V2
             edge.raycastTarget=false;
             return rect;
         }
+        void FitCompactLandscape()
+        {
+            if(!window||!hud)return;
+            var parent=window.parent as RectTransform;
+            if(!parent)return;
+            float canvasScale=hud.GetComponentInParent<Canvas>()?.scaleFactor??1f;
+            // The shared canvas targets desktop height. At 844x390 it shrinks
+            // report text to roughly ten pixels. Give only this destination a
+            // smaller logical viewport; existing measured text and scroll retain
+            // all content, while other HUD destinations keep their own scale.
+            float zoom=IsOpen&&parent.rect.width>parent.rect.height&&parent.rect.height*canvasScale<600f?
+                Mathf.Max(1f,.9f/Mathf.Max(.01f,canvasScale)):1f;
+            window.localScale=Vector3.one*zoom;
+            if(zoom>1f)
+            {
+                window.anchorMin=window.anchorMax=window.pivot=new Vector2(.5f,.5f);
+                window.anchoredPosition=Vector2.zero;
+                window.sizeDelta=parent.rect.size/zoom;
+            }
+            else
+            {
+                window.anchorMin=Vector2.zero;window.anchorMax=Vector2.one;
+                window.pivot=new Vector2(.5f,.5f);
+                window.offsetMin=window.offsetMax=Vector2.zero;
+            }
+        }
         void Layout()
         {
             if(window==null || gateway==null)return;
+            FitCompactLandscape();
             float w=window.rect.width,h=window.rect.height;
             if(w<=0f||h<=0f)return;
             lastWidth=w;lastHeight=h;
-            float scale=hud.GetComponentInParent<Canvas>()?.scaleFactor??1f;
+            float scale=(hud.GetComponentInParent<Canvas>()?.scaleFactor??1f)*window.localScale.x;
             Rect safe=Screen.safeArea;
             float left=Mathf.Max(12f,w*.026f+safe.xMin/Mathf.Max(.01f,scale));
             float right=Mathf.Max(12f,w*.026f+(Screen.width-safe.xMax)/Mathf.Max(.01f,scale));
