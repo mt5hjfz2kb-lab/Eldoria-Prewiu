@@ -77,21 +77,27 @@ jobs:
         with:
           script: |
             core.setOutput('reused','false');
-            const canonical='fix/player-feedback-context-ui-20261030';
+            const routes={136:'fix/player-feedback-context-ui-20261030',
+              134:'feature/eldoria-v41-contracts-20261030'};
             const pr=context.payload.pull_request;
-            const eligible=(context.eventName==='pull_request'&&pr?.number===136&&
-              pr.head.ref===canonical&&pr.head.repo.full_name===context.repo.owner+'/'+context.repo.repo)||
+            const eligible=(context.eventName==='pull_request'&&routes[pr?.number]&&
+              pr.head.ref===routes[pr.number]&&pr.head.repo.full_name===context.repo.owner+'/'+context.repo.repo)||
               (context.eventName==='push'&&context.ref==='refs/heads/main');
             if(!eligible)return;
             const source=pr?.head.sha||context.sha;
             if(!/^[a-f0-9]{40}$/.test(source))throw Error('Invalid exact source identity');
-            const runs=(await github.rest.actions.listWorkflowRuns({...context.repo,
-              workflow_id:'ui-progression-cert.yml',branch:canonical,status:'success',per_page:100})).data.workflow_runs;
-            const run=runs.find(r=>r.head_sha===source&&r.head_branch===canonical&&
-              (r.event==='push'||(r.event==='pull_request'&&
-                r.head_repository?.full_name===context.repo.owner+'/'+context.repo.repo&&
-                r.pull_requests?.some(p=>p.number===136&&p.head?.ref===canonical)))&&
-              r.status==='completed'&&r.conclusion==='success'&&r.path==='.github/workflows/ui-progression-cert.yml');
+            let run;
+            for(const number of (pr?[pr.number]:[136,134])){
+              const canonical=routes[number];
+              const runs=(await github.rest.actions.listWorkflowRuns({...context.repo,
+                workflow_id:'ui-progression-cert.yml',branch:canonical,status:'success',per_page:100})).data.workflow_runs;
+              run=runs.find(r=>r.head_sha===source&&r.head_branch===canonical&&
+                (r.event==='push'||(r.event==='pull_request'&&
+                  r.head_repository?.full_name===context.repo.owner+'/'+context.repo.repo&&
+                  r.pull_requests?.some(p=>p.number===number&&p.head?.ref===canonical)))&&
+                r.status==='completed'&&r.conclusion==='success'&&r.path==='.github/workflows/ui-progression-cert.yml');
+              if(run)break;
+            }
             if(!run)return;
             const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id,per_page:100})).data.jobs;
             const native=jobs.filter(j=>j.name==='certify');
@@ -652,7 +658,7 @@ jobs:
           Write-Host "ELDORIA_DIALOGUE_V4_AB_NATIVE_PASS images=$($imgs.Count)"
 
       - uses: actions/upload-artifact@v4
-        if: always() && (github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main')
+        if: always() && (github.event.pull_request.number == 134 || github.head_ref == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'fix/player-feedback-context-ui-20261030' || github.ref_name == 'main')
         with:
           name: eldoria-dialogue-v4-native-${{ github.run_id }}
           path: dialogue-v4-native-${{ github.run_id }}

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05",
+  "updated_at": "2026-11-05T10:50:32.132Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3581,7 +3581,7 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 14,
+      "ownership_revision": 15,
       "write_scope_released": false,
       "branch": "feature/eldoria-construction-delight-20261104",
       "status": "active",
@@ -3603,8 +3603,8 @@
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "NATIVE_A_B_26_CAPTURED_PASS_ARTISTIC_OWNER_REVIEW_PENDING",
-      "next": "Show owner authentic Construction Delight v3 A/B and motion. Await explicit art feedback; do NOT claim >=8.2 or merge. If user requests higher quality, improve roof architectural sheen rather than generic dust, reserve Windows with CAS, rerun real 26-frame Unity proof; preserve PR152 draft and original art.",
+      "phase": "V4_STAGED_ARCHITECTURE_SOURCE_CORRECTED__NATIVE_UNVERIFIED",
+      "next": "User rejected V3 artistic result. V4 authentic stage fixes preserve live part poses and material overrides, and gate roof highlight until roof is physically seated. Windows runner-heavy owned by eldoria-v41-combate-buzon-ui-20261030; no native action until released. On release claim via CAS, sync candidate registry, test exact Unity 6000.3.23f1 + A/B work and finish in 390x844/844x390, review vs previous V3 before ART_APPROVED. No main merge or publish.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Native unity 41872572157 (26 screenshots A/B, short motion), artifacts 13345725500, saved-state invariant; local contact sheets",
@@ -3672,7 +3672,13 @@
         "save_unchanged_after_reload": true,
         "actual_opaque_material_layers": 7,
         "finish_pixel_change_landscape_pct": 1.601,
-        "finish_pixel_change_portrait_pct": 7.448
+        "finish_pixel_change_portrait_pct": 7.448,
+        "v4_source_probe_run": 42013182372,
+        "v4_source_probe_result": "36 domain assertions PASS, five Roslyn syntax PASS and staged gateway handoff; prior to latest material fidelity changes",
+        "v4_exact_current_head_unity_tested": false,
+        "v4_art_approved": false,
+        "v4_pending_reason": "Native Windows runner leased to V41 combat; artwork not validated",
+        "v4_quality_target": "Visibly incremental authentic timber/roof assembly; no reset or flashes at gateway completion; convincing final landing; real mobile QA pending"
       },
       "candidate_branch": "feature/eldoria-construction-delight-20261104",
       "native_lease": null,
