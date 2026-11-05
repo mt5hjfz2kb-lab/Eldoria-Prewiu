@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T21:06:35.809Z",
+  "updated_at": "2026-11-05T21:08:10.300Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6263,12 +6263,17 @@
         "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/BastionIIIWorldPresentation.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarityGatewayIntegrationTests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/PlayerClaritySceneTests.cs"
+        "Unity/Assets/Eldoria/Tests/PlayMode/PlayerClaritySceneTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarityGatewayTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarityGatewayTests.cs.meta",
+        "Unity/Assets/Eldoria/Tests/PlayMode/PlayerClarityIntegratedTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/PlayerClarityIntegratedTests.cs.meta",
+        ".github/workflows/player-clarity-unity.yml"
       ],
       "resources": [],
-      "phase": "CANONICAL_INTEGRATION_AFTER_PR141_MERGE",
+      "phase": "CANONICAL_GATHER_COMBAT_NAMING_AND_NATIVE_QA",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "Implement player name in PlayerState/LocalGateway + first entry before narrative, 300s all recurring populations, tier capacity + deterministic safe placement. Run Unity native certifications after main integration runner idle, no publish until pass.",
+      "next": "Implement and verify saved nick before narrative, true node levels/capacity, UTC five-minute respawn and migration across all local renewable families, coherent map allocation with PlayMode tests; economy merged #141 preserving 48h cap.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
