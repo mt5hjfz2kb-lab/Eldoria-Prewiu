@@ -7,6 +7,8 @@
     "Eldoria.Infrastructure",
     "Eldoria.Presentation",
     "Eldoria.RoyalGold.V2",
+    "Eldoria.RoyalGold.Core",
+    "Eldoria.RoyalGold.Bindings",
     "Unity.ugui"
   ],
   "optionalUnityReferences": [

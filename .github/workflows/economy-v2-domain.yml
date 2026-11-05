@@ -1,0 +1,29 @@
+name: 'Eldoria Economy V2 real gateway domain tests'
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/EconomyProductionV2.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
+      - 'tools/economy-v2/**'
+      - '.github/workflows/economy-v2-domain.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  economy-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
+            tools/economy-v2
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Run real economy in LocalGateway including serialized saves and offline ascension
+        run: dotnet run --configuration Release --project tools/economy-v2/EconomyProbe.csproj

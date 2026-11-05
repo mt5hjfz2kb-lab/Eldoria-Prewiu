@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T19:03:44.661Z",
+  "updated_at": "2026-11-05T21:04:09.575Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,8 +20,8 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-economy-v2-20261105",
-      "branch": "feature/economy-offline-implementation-20261101",
+      "owner": null,
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-04",
       "base_main_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
@@ -157,8 +157,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "AREA_COMPLETE_READY_FOR_NEXT_CHAT",
-      "next": "Combat PR134 and narrative PR160 are merged and certified. Next authorized improvement may claim the canonical Valoria ID after checking live main and queue; preserve completed evidence and do not reopen these completed scopes without new work.",
+      "phase": "ECONOMY_V2_PR141_MERGED_NATIVE_TESTER_CERTIFIED",
+      "next": "Economía V2 integrada y certificada en main; balance de tasas todavía provisional (ECONOMY_BALANCE_APPROVED=false), Android físico y publicación no incluidos. No reabrir PR141 sin nuevos fallos.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1849,11 +1849,17 @@
           "ownership_revision": 145,
           "transferred_at": "2026-11-05T19:03:44.659Z",
           "reason": "Owner explicitly requested the integration of existing Economy V2 PR #141; reserve canonical gameplay files for safe economy handoff, no Windows resource claim."
+        },
+        {
+          "owner": "chatgpt-eldoria-economy-v2-20261105",
+          "ownership_revision": 146,
+          "transferred_at": "2026-11-05T21:04:09.575Z",
+          "reason": "PR #141 merged with exact Unity EditMode/PlayMode, Economy V2 gateway and complete closed tester QA PASS; release canonical Valoria source scope without any runner resource."
         }
       ],
-      "ownership_revision": 146,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 147,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-05T19:03:44.661Z",
       "delivery_definition": {
@@ -1995,7 +2001,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-11-05T17:18:16.458Z",
+      "released_at": "2026-11-05T21:04:09.575Z",
       "delivery_closeout": {
         "completed_at": "2026-10-29T21:34:16.588Z",
         "workstream_id": "valoria-master-plan-layered-construction-20261016",
@@ -2098,7 +2104,7 @@
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
       "owner_instruction": "2026-11-02: Hazlo tú! Eres un chat de trabajo! Reconstruct genuinely like approved March reference, remove mismatched elements and recover missing visual hierarchy.",
-      "release_reason": "PR160 merged and both native main runs completed; restore available canonical routing to main while retaining completed_branch and exact evidence.",
+      "release_reason": "Owner-authorized Economy V2 PR141 merged and verified, all exact-head CI gates passed, no Windows runner held.",
       "windows_resource_handoff_20261102": {
         "authorized_by": "owner current chat",
         "to_workstream": "eldoria-cli-windows-isolated-proof-20261102",
@@ -2261,6 +2267,23 @@
         "art_approved": false,
         "published": false,
         "report": "docs/NARRATIVE_TUTORIAL_COHERENCE_PLAN_20261105.md"
+      },
+      "economy_v2_closeout": {
+        "pr": 141,
+        "pr_head": "f8fc408028dba36e4816930c599545ed67233913",
+        "merge_commit": "0579b316eac5c9c278d7de83540b9f67d74b96a6",
+        "docs_commit": "580fc4cf87a4ac729a78c0c0b05039f159b1b6c6",
+        "native_unity_run": 42106100393,
+        "closed_tester_run": 42106100305,
+        "real_gateway_domain_run": 42106100063,
+        "max_offline_hours": 48,
+        "unity_editmode_pass": true,
+        "unity_playmode_pass": true,
+        "save_migration_pass": true,
+        "confirmed_merge": true,
+        "balance_approved": false,
+        "physical_mobile_tested": false,
+        "published": false
       }
     },
     {
@@ -6204,28 +6227,51 @@
     {
       "id": "eldoria-first-login-map-signage-respawn-20261105",
       "title": "Eldoria — bienvenida con nick, pictogramas, niveles del mapa y reposición de 5 min",
-      "owner": "chatgpt-eldoria-player-clarity-20261105",
+      "owner": "chatgpt-eldoria-player-clarity-continuation-20261105",
       "branch": "feature/player-clarity-first-login-map-signage-20261105",
       "status": "active",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "claimed_at": "2026-11-05T19:53:00Z",
       "base_main_sha": "32176b06afee2a507ea76ff9087832e6b0cec4c8",
       "scope": [
         "Unity/Assets/Eldoria/PlayerClarity/**",
         "docs/player-clarity/**",
         "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarity*",
-        "pipeline/art-production-requests/eldoria-first-login-map-signage-respawn-20261105.json"
+        "pipeline/art-production-requests/eldoria-first-login-map-signage-respawn-20261105.json",
+        "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
+        "Unity/Assets/Eldoria/PlayerClarityRuntime.cs.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs.meta",
+        ".github/workflows/eldoria-player-clarity-domain.yml",
+        "tools/player-clarity/**",
+        ".github/workflows/player-clarity-domain.yml",
+        "Unity/Assets/Eldoria/Scripts/Domain/ChapterThreeHuntDifficultyPolicy.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/ChapterThreeHuntDifficultyPolicy.cs.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs.meta",
+        "Unity/Assets/Eldoria/PlayerClarityStoryRenewal.cs",
+        "Unity/Assets/Eldoria/PlayerClarityStoryRenewal.cs.meta"
       ],
       "resources": [],
-      "phase": "ISOLATED_ICON_SOURCE_STAGED_UNITY_AND_ART_QA_PENDING",
+      "phase": "ISOLATED_WORLD_UI_AND_TESTS_PENDING_NATIVE_INTEGRATION",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "Source pictograms staged on draft PR162. Preserve economy PR141 ownership; integrate nickname, 5-min timers, map labels and spawn distribution only after safe reconciliation. Unity screenshots and gameplay QA pending.",
+      "next": "Integrate story hunt relocation with presentation-only physical site validation; wait for canonical Valoria gateway ownership release before changing 45m/30m/15m cooldown and player identity persistence.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
-      "art_production_request": "pipeline/art-production-requests/eldoria-first-login-map-signage-respawn-20261105.json"
+      "art_production_request": "pipeline/art-production-requests/eldoria-first-login-map-signage-respawn-20261105.json",
+      "ownership_history": [
+        {
+          "owner": "chatgpt-eldoria-player-clarity-20261105",
+          "revision": 1,
+          "at": "2026-11-05",
+          "reason": "Continued on user instruction, same PR162/workstream; no concurrent economy ownership change"
+        }
+      ]
     }
   ],
   "history": [

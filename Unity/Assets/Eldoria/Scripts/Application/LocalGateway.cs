@@ -697,6 +697,7 @@ namespace Eldoria.Application
         public bool Advance()
         {
             bool changed = AdvanceChapterThree();
+            bool newlyOpenedEconomy = false;
             changed |= EarlyRetentionRules.Synchronize(state,clock.UtcTicks);
             if (state.BastionUpgradeCompletesUtcTicks > 0 && state.BastionUpgradeCompletesUtcTicks <= clock.UtcTicks)
             {
@@ -710,7 +711,16 @@ namespace Eldoria.Application
                         state.BastionLevel=targetLevel;
                         // TotalPower already awards 600 per Bastion level.
                         state.MissionPower+=BastionProgressionCatalog.ForLevel(targetLevel).PowerReward-600;
-                        if(targetLevel==3)state.ChapterThree.EconomyUtcTicks=state.BastionUpgradeCompletesUtcTicks;
+                        if(targetLevel==3)
+                        {
+                            // Newly unlocked production starts at the actual offline completion deadline.
+                            state.ChapterThree.EconomyVersion=2;
+                            state.ChapterThree.EconomyUtcTicks=state.BastionUpgradeCompletesUtcTicks;
+                            state.ChapterThree.WoodProductionMicro=0;
+                            state.ChapterThree.StoneProductionMicro=0;
+                            state.ChapterThree.FoodProductionMicro=0;
+                            newlyOpenedEconomy=true;
+                        }
                     }
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                     state.ChapterProgress.BastionTwoReached = true;
@@ -720,6 +730,9 @@ namespace Eldoria.Application
                 state.BastionUpgradeTaskId = "";
                 changed = true;
             }
+            // Pay production accrued after the III unlock even on the FIRST offline load.
+            // AdvanceChapterThree at method entry ran while this was still Bastion II.
+            if(newlyOpenedEconomy)changed |= AdvanceChapterThree();
             if (state.BuildingCompletesUtcTicks > 0 && state.BuildingCompletesUtcTicks <= clock.UtcTicks)
             {
                 if (!state.CompletedTaskIds.Contains(state.BuildingTaskId))
@@ -1051,16 +1064,36 @@ namespace Eldoria.Application
             GrantWebMissionRewards();state.CompletedCommandIds.Add(command.Id);Commit();
             return new CommandResult(true,"Acción iniciada",state.Revision);
         }
-        void AccrueChapterThree(long until)
+        void AccrueChapterThree(long until, long productionDeadlineUtcTicks = long.MaxValue)
         {
             var c=state.ChapterThree;
             if(c.EconomyUtcTicks<=0){c.EconomyUtcTicks=until;return;}
-            long seconds=Math.Min(3600,Math.Max(0,(until-c.EconomyUtcTicks)/TimeSpan.TicksPerSecond));
-            state.Resources.Wood+=checked((int)seconds*state.SawmillLevel);
-            state.Resources.Food+=checked((int)seconds*c.GranaryLevel);
-            state.Resources.Stone+=checked((int)seconds*2*c.StoneworksLevel);
-            c.EconomyUtcTicks+=seconds*TimeSpan.TicksPerSecond;
-            if(until-c.EconomyUtcTicks>=TimeSpan.TicksPerSecond)c.EconomyUtcTicks=until;
+            if(until<=c.EconomyUtcTicks)return; // Clock rollback must not pay or rewind a settled ledger.
+            if(c.EconomyVersion<2)
+            {
+                // Pay the remaining legacy entitlement once, with the legacy 1h limit.
+                // A pending building completion is still split by AdvanceChapterThree.
+                long seconds=Math.Min(3600,Math.Max(0,(until-c.EconomyUtcTicks)/TimeSpan.TicksPerSecond));
+                state.Resources.Wood=checked(state.Resources.Wood+checked((int)seconds*state.SawmillLevel));
+                state.Resources.Food=checked(state.Resources.Food+checked((int)seconds*c.GranaryLevel));
+                state.Resources.Stone=checked(state.Resources.Stone+checked((int)seconds*2*c.StoneworksLevel));
+                c.EconomyUtcTicks+=seconds*TimeSpan.TicksPerSecond;
+                if(until-c.EconomyUtcTicks>=TimeSpan.TicksPerSecond)c.EconomyUtcTicks=until;
+                return;
+            }
+            // Calculate every wallet balance before writing any ledger fields.
+            // A failed checked overflow cannot partially credit resources.
+            var wood=EconomyProductionV2.Accrue(c.EconomyUtcTicks,until,c.WoodProductionMicro,state.SawmillLevel,"wood",productionDeadlineUtcTicks:productionDeadlineUtcTicks);
+            var stone=EconomyProductionV2.Accrue(c.EconomyUtcTicks,until,c.StoneProductionMicro,c.StoneworksLevel,"stone",productionDeadlineUtcTicks:productionDeadlineUtcTicks);
+            var food=EconomyProductionV2.Accrue(c.EconomyUtcTicks,until,c.FoodProductionMicro,c.GranaryLevel,"food",productionDeadlineUtcTicks:productionDeadlineUtcTicks);
+            int nextWood=checked(state.Resources.Wood+wood.WholeUnits);
+            int nextStone=checked(state.Resources.Stone+stone.WholeUnits);
+            int nextFood=checked(state.Resources.Food+food.WholeUnits);
+            state.Resources.Wood=nextWood;state.Resources.Stone=nextStone;state.Resources.Food=nextFood;
+            c.WoodProductionMicro=wood.FractionalMicrounits;
+            c.StoneProductionMicro=stone.FractionalMicrounits;
+            c.FoodProductionMicro=food.FractionalMicrounits;
+            c.EconomyUtcTicks=wood.SettledThroughUtcTicks;
         }
         bool AdvanceFrontierRespawns()
         {
@@ -1075,12 +1108,16 @@ namespace Eldoria.Application
         {
             if(state.BastionLevel<3)return false;
             var c=state.ChapterThree;bool changed=false;
+            // One 48h entitlement for the entire offline period. A building upgrade
+            // must not restart the clock and silently credit another 48 hours.
+            long offlineDeadline = c.EconomyVersion >= 2 && c.EconomyUtcTicks > 0
+                ? EconomyProductionV2.OfflineWindowDeadline(c.EconomyUtcTicks) : long.MaxValue;
             changed|=AdvanceFrontierRespawns();
             if(state.ScoutDefeated&&!c.Inventory.Contains("iron-brace")){c.Inventory.Add("iron-brace");changed=true;}
-            if(c.EconomyUtcTicks>0&&clock.UtcTicks-c.EconomyUtcTicks>TimeSpan.FromHours(1).Ticks){c.EconomyUtcTicks=clock.UtcTicks-TimeSpan.FromHours(1).Ticks;changed=true;}
+            if(c.EconomyVersion<2&&c.EconomyUtcTicks>0&&clock.UtcTicks-c.EconomyUtcTicks>TimeSpan.FromHours(1).Ticks){c.EconomyUtcTicks=clock.UtcTicks-TimeSpan.FromHours(1).Ticks;changed=true;}
             if(c.InvestigationEndsUtcTicks>0&&c.InvestigationEndsUtcTicks<=clock.UtcTicks){c.FissureExplored=true;c.InvestigationEndsUtcTicks=0;changed=true;}
             if(state.BuildingTaskId.StartsWith("c3:",StringComparison.Ordinal)&&state.BuildingCompletesUtcTicks<=clock.UtcTicks&&state.BuildingCompletesUtcTicks>0) {
-                AccrueChapterThree(Math.Max(c.EconomyUtcTicks,state.BuildingCompletesUtcTicks));
+                AccrueChapterThree(Math.Max(c.EconomyUtcTicks,state.BuildingCompletesUtcTicks),offlineDeadline);
                 if(!state.CompletedTaskIds.Contains(state.BuildingTaskId)) {
                     state.CompletedTaskIds.Add(state.BuildingTaskId);string id=state.BuildingTaskId.Split(':')[1];
                     int oldLevel=c.PendingBuildingLevel-1;
@@ -1093,7 +1130,15 @@ namespace Eldoria.Application
                 }
                 c.PendingBuildingLevel=0;state.BuildingCompletesUtcTicks=0;state.BuildingTaskId="";changed=true;
             }
-            if(c.EconomyUtcTicks==0||clock.UtcTicks-c.EconomyUtcTicks>=TimeSpan.TicksPerSecond){AccrueChapterThree(clock.UtcTicks);changed=true;}
+            if(c.EconomyUtcTicks==0||clock.UtcTicks-c.EconomyUtcTicks>=TimeSpan.TicksPerSecond){AccrueChapterThree(clock.UtcTicks,offlineDeadline);changed=true;}
+            if(c.EconomyVersion<2)
+            {
+                // Legacy payout has completed under its original rules. Never replay it.
+                c.EconomyVersion=2;
+                c.EconomyUtcTicks=Math.Max(c.EconomyUtcTicks,clock.UtcTicks);
+                c.WoodProductionMicro=0;c.StoneProductionMicro=0;c.FoodProductionMicro=0;
+                changed=true;
+            }
             return changed;
         }
         void RecordChapterThreeCombatMail(MarchState m,long due)

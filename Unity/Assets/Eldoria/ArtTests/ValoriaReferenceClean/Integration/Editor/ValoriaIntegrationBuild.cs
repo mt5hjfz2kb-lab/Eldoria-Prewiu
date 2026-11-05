@@ -350,7 +350,7 @@ namespace Eldoria.ReferenceClean.Editor {
    h.SetWorld(false);h.Select("bastion");yield return null;
    Check(()=>{Need(city.Gateway.Snapshot().JourneyComplete,"Chapter I incomplete");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().BastionUpgradeCompletesUtcTicks>city.Clock.UtcTicks,"Upgrade did not begin");Capture(h,"integration-bastion-upgrade.png",1600,900);},"Royal Bastion upgrade");
    yield return new WaitForSecondsRealtime(.4f);
-   Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(11);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().BastionLevel==2&&city.BastionTwo.activeSelf&&!city.BastionOne.activeSelf,"Bastion II visual/progression mismatch");},"Bastion II visual");
+   Check(()=>{int seconds=BastionProgressionCatalog.ForLevel(2).DurationSeconds;((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(seconds-1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().BastionLevel==1,"Bastion II completed before authored deadline");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().BastionLevel==2&&city.BastionTwo.activeSelf&&!city.BastionOne.activeSelf,"Bastion II visual/progression mismatch");},"Bastion II visual");
    h.Select("barracks");yield return null;
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"Barracks did not start");},"Royal barracks");
    yield return new WaitForSecondsRealtime(.4f);
