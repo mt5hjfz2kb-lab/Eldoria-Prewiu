@@ -525,17 +525,22 @@ jobs:
           if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
 
       - name: Compare reconciled runtime performance with the verified PR136 baseline
-        if: ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030' && github.event.pull_request.head.repo.full_name == github.repository))
+        if: ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && ((github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030') || (github.event.pull_request.number == 134 && github.event.pull_request.head.ref == 'feature/eldoria-v41-contracts-20261030')) && github.event.pull_request.head.repo.full_name == github.repository))
+        env:
+          ELDORIA_COMBAT_BENCHMARK: ${{ github.event.pull_request.number == 134 && '1' || '0' }}
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $baseline='c5051220294db3781c56878bab28eccaa798452d'
           $paths=@('Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs','Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3LayeredFinish.cs','Unity/Assets/Eldoria/Tests/EditMode/RoyalGoldV3LayeredFinishTests.cs')
+          $combatCandidate=$env:ELDORIA_COMBAT_BENCHMARK -eq '1'
+          if($combatCandidate){$paths=@();$baseline=$env:ALDRIC_REQUEST_SOURCE_SHA}
           $original=@{}; $expected=@{}
           foreach($path in $paths){$original[$path]=[IO.File]::ReadAllBytes((Join-Path $env:GITHUB_WORKSPACE $path));$expected[$path]=(& git hash-object $path).Trim()}
           $e=Join-Path $env:RUNNER_TEMP "eldoria-consolidation-performance-$env:GITHUB_RUN_ID"
           New-Item -ItemType Directory -Force $e | Out-Null
           function Measure-Runtime($variant){
+            $env:ELDORIA_BENCHMARK_LEGACY=if($combatCandidate -and $variant -eq 'verified-pr136-runtime'){'1'}else{'0'}
             $env:ELDORIA_BENCHMARK_VARIANT=$variant
             $env:ELDORIA_V41_EVIDENCE=Join-Path $e $variant
             New-Item -ItemType Directory -Force $env:ELDORIA_V41_EVIDENCE | Out-Null
@@ -550,8 +555,10 @@ jobs:
             # Only the two reconciled runtime files differ from the verified PR136.
             # The third path restores their matching test source for compilation.
             # Keep all approved assets, recovered metadata and identical benchmark instrumentation.
-            & git fetch --no-tags --depth=1 origin $baseline
-            if($LASTEXITCODE -ne 0){throw 'Cannot fetch immutable runtime baseline'}
+            if(-not $combatCandidate){
+              & git fetch --no-tags --depth=1 origin $baseline
+              if($LASTEXITCODE -ne 0){throw 'Cannot fetch immutable runtime baseline'}
+            }
             foreach($path in $paths){
               # Copy raw Git stdout, bypassing Windows PowerShell's text code page.
               $info=New-Object Diagnostics.ProcessStartInfo
@@ -580,9 +587,13 @@ jobs:
             if($now.p95_ms -gt ($before[0].p95_ms*1.25+5)){throw "Significant frame-time regression in $($now.screen)"}
             if($now.allocated_bytes -gt ($before[0].allocated_bytes*1.10+134217728)){throw "Significant allocated-memory regression in $($now.screen)"}
           }
+          if($combatCandidate){
+            if($new.combat_p95_ms -gt ($old.combat_p95_ms*1.25+5)){throw 'Significant combat latency regression'}
+            if($new.combat_retained_bytes -gt ($old.combat_retained_bytes+134217728)){throw 'Significant combat retained-memory regression'}
+          }
           [IO.File]::WriteAllText((Join-Path $e 'comparison.txt'),"PASS: identical native scenarios, 240 measured frames each after warmup. Baseline runtime $baseline; candidate $env:ALDRIC_REQUEST_SOURCE_SHA. Native Editor comparison, not physical mobile certification.")
       - uses: actions/upload-artifact@v4
-        if: always() && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030' && github.event.pull_request.head.repo.full_name == github.repository))
+        if: always() && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[pr136-consolidation]')) || (github.event_name == 'pull_request' && ((github.event.pull_request.number == 136 && github.event.pull_request.head.ref == 'fix/player-feedback-context-ui-20261030') || (github.event.pull_request.number == 134 && github.event.pull_request.head.ref == 'feature/eldoria-v41-contracts-20261030')) && github.event.pull_request.head.repo.full_name == github.repository))
         with:
           name: eldoria-pr136-performance-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/eldoria-consolidation-performance-${{ github.run_id }}/**

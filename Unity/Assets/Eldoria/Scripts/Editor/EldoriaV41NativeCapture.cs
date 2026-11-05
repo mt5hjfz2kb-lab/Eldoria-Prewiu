@@ -90,6 +90,7 @@ namespace Eldoria.Editor
             public string baseline_runtime_sha="c5051220294db3781c56878bab28eccaa798452d";
             public string comparison_scope="Two reconciled runtime files; identical approved assets, metadata and instrumentation";
             public BenchmarkSample[] samples;
+            public float combat_p95_ms; public long combat_retained_bytes;
         }
         static IEnumerator BenchmarkExercise(ValoriaIntegratedWorld host)
         {
@@ -134,6 +135,32 @@ namespace Eldoria.Editor
                 "Benchmark navigation preserves the disposable save byte for byte");
             var result=new BenchmarkResult{variant=Environment.GetEnvironmentVariable("ELDORIA_BENCHMARK_VARIANT"),
                 source_sha=Environment.GetEnvironmentVariable("ALDRIC_REQUEST_SOURCE_SHA"),samples=samples.ToArray()};
+            if(Environment.GetEnvironmentVariable("ELDORIA_COMBAT_BENCHMARK")=="1")
+            {
+                result.baseline_runtime_sha=result.source_sha;
+                result.comparison_scope="Same exact source, assets and scenario; explicit legacy versus evolution resolver in disposable QA";
+                bool legacy=Environment.GetEnvironmentVariable("ELDORIA_BENCHMARK_LEGACY")=="1";
+                var roster=new ArmyRoster{ArcherT1=100};
+                var force=EldoriaV41CombatEvolution.FromRoster(roster,"aldric");
+                var stats=SliceRules.Expedition(roster,"aldric");
+                float worst=0;long retained=0;
+                foreach(var target in new[]{SliceRules.CampaignEnemy("corrupt-scout"),EarlyRetentionRules.Stage(25).Enemy,new WorldCreatureStats(920,132,68,54,0,0)})
+                {
+                    for(int i=0;i<10;i++)
+                        if(legacy)SliceRules.FightCreature(stats,target);else EldoriaV41CombatEvolution.ResolveCreature(force,target);
+                    GC.Collect();long before=GC.GetTotalMemory(true);
+                    var elapsed=new float[100];
+                    for(int i=0;i<elapsed.Length;i++)
+                    {
+                        var watch=System.Diagnostics.Stopwatch.StartNew();
+                        if(legacy)SliceRules.FightCreature(stats,target);else EldoriaV41CombatEvolution.ResolveCreature(force,target);
+                        watch.Stop();elapsed[i]=(float)watch.Elapsed.TotalMilliseconds;
+                    }
+                    Array.Sort(elapsed);worst=Math.Max(worst,elapsed[95]);
+                    retained=Math.Max(retained,Math.Max(0,GC.GetTotalMemory(true)-before));
+                }
+                result.combat_p95_ms=worst;result.combat_retained_bytes=retained;
+            }
             File.WriteAllText(Path.Combine(Output,"benchmark.json"),JsonUtility.ToJson(result,true));
             Debug.Log("ELDORIA_CONSOLIDATION_BENCHMARK_RECORDED");EditorApplication.Exit(0);
         }
