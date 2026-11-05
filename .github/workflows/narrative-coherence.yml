@@ -11,6 +11,7 @@ on:
       - "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs"
       - "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs"
       - "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs"
+      - "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs"
       - ".github/workflows/narrative-coherence.yml"
   workflow_dispatch:
 
@@ -34,6 +35,7 @@ jobs:
             /Unity/Assets/Eldoria/Scripts/Domain/GameState.cs
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs
             /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs
+            /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs
       - uses: actions/setup-node@v4
         with:
           node-version: "22"

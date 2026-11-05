@@ -109,7 +109,13 @@ namespace Eldoria.UI.RoyalGold {
     d.MissionSteps=new[]{new RoyalMissionStep(L(en,"Granero construido","Granary built"),s.ChapterThree.GranaryLevel>0),
      new RoyalMissionStep(L(en,"500 comida reunida","500 food gathered"),p.GrantedRewards.Contains("c3-food")),
      new RoyalMissionStep(L(en,"Dos cacerías","Two hunts"),s.ChapterThree.Hunts>=2),
-     new RoyalMissionStep(L(en,"Fisura cerrada · Lyra reclutada","Fissure closed · Lyra recruited"),s.ChapterThree.FissureClosed),
+     new RoyalMissionStep(
+      s.ChapterThree.FissureClosed?
+       L(en,"Fisura cerrada · Lyra reclutada","Fissure closed · Lyra recruited"):
+      s.ChapterThree.LyraContacted?
+       L(en,"Cierra la fisura junto a Lyra","Close the fissure with Lyra"):
+       L(en,"Investiga la anomalía de la frontera","Investigate the frontier anomaly"),
+      s.ChapterThree.FissureClosed),
      new RoyalMissionStep(L(en,"Infraestructura a nivel 2","Infrastructure at level 2"),s.SawmillLevel>=2&&s.BarracksLevel>=2&&s.ChapterThree.GranaryLevel>=2)};
    }else{
     d.MissionSteps=new[]{

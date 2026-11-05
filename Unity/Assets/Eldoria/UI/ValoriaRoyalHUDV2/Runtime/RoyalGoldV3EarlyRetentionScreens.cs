@@ -1606,7 +1606,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 string xpSummary="EXP. "+xp+" XP · Máx. 8 h\n";
                 passive.Put(xpSummary+
                     "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+
-                    " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"));
+                    (s.ChapterThree!=null&&s.ChapterThree.LyraRecruited?
+                      " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"):""));
                 mainAction.interactable=EarlyRetentionRules.StageUnlocked(s,stage)&&
                     eligibleTroops&&hasMarchSlot;
                 // The action cannot promise a battle if the real Gateway will

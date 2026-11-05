@@ -8,6 +8,7 @@ const chapters=fs.readFileSync(new URL('../../v0220/js/chapters.js',import.meta.
 const domain=fs.readFileSync(new URL('../../Unity/Assets/Eldoria/Scripts/Domain/GameState.cs',import.meta.url),'utf8');
 const journey=fs.readFileSync(new URL('../../Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs',import.meta.url),'utf8');
 const binding=fs.readFileSync(new URL('../../Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs',import.meta.url),'utf8');
+const retention=fs.readFileSync(new URL('../../Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs',import.meta.url),'utf8');
 
 function part(start,end){
  const a=html.indexOf(start),b=html.indexOf(end,a+start.length);
@@ -178,6 +179,10 @@ test('Unity prevents pre-discovery spoilers and orders saved narrative milestone
  assert.match(binding,/case "b3.lyra":title=L\(en,"Investiga las huellas humanas"/);
  assert.match(html,/s.fissureExplored\?'ACERCARSE A LA ARQUERA'/);
  assert.match(binding,/knowledge==0\?/);
+ assert.match(binding,/s\.ChapterThree\.FissureClosed\?/);
+ assert.match(binding,/s\.ChapterThree\.LyraContacted\?/);
+ assert.match(retention,/s\.ChapterThree!=null&&s\.ChapterThree\.LyraRecruited\?/);
+ assert.match(html,/\{id:'char-orin',title:'Maestre Orin',seen:!!s\.orusMet/);
  assert.match(html,/maybeCodexTutorial\(\);tutorialBeat\(\)/);
  assert.match(html,/s.bastionLevel===9&&!s.trialWon/);
  assert.doesNotMatch(html,/Bastión IX es la prueba de autonomía/);
