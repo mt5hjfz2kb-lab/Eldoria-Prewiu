@@ -4,8 +4,8 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "55a934d8af428b14b99bf54dab664e77a1727c77",
   "ownership_revision": 19,
-  "mode": "V5_WORK_HAMMERS_DENSE_DUST_FINAL_EDITOR_AND_DOMAIN_QA",
-  "expected_images": 64,
+  "mode": "V5_HAMMER_IMPACT_AND_DENSE_DUST_72_FRAME_OFFLINE_SOURCE_QA",
+  "expected_images": 72,
   "formats": [
     "844x390",
     "390x844"
@@ -17,7 +17,8 @@
     "in-progress A/B",
     "true level-up completion A/B",
     "six time-resolved finishing frames",
-    "finished building and saved-state reload"
+    "finished building and saved-state reload",
+    "two actual hammer head strikes and dense dust 0.12 seconds later"
   ],
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
@@ -81,7 +82,7 @@
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 26,
+  "offline_validation_attempt": 27,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
@@ -131,7 +132,7 @@
     "images": 26,
     "save": true
   },
-  "targeted_fix": "Use tight visible scaffold bounds during build; use built mesh on upgrade, place dust upon foundation rather than foreground grass",
+  "targeted_fix": "Capture impact instant and dust expansion at two actual hammer events instead of relying on arbitrary visual frame sampling; original 64 A/B plus 8 native PNGs.",
   "previous_native_success": {
     "run": 41868962109,
     "sha": "c7963a62b6a5fa2aa684ee057091dc10643aeaed",
@@ -175,8 +176,8 @@
     "Construction roof glow obeys visible staged geometry",
     "Reload clears preview and restores original source renderers"
   ],
-  "images_expected_in_future_native_run": 64,
-  "native_capture_expected_images": 64,
+  "images_expected_in_future_native_run": 72,
+  "native_capture_expected_images": 72,
   "technique_comparison": {
     "A": "URP architectural shader sweep, Bloom, local light and artisan particles without 3D assembly",
     "B": "Exactly same camera/state/timing/shader/Bloom/particles with authentic 3D staged model assembly",
@@ -226,7 +227,7 @@
     "dust": "Two additional batched sprite fields, radial dense gray-tan impact plumes bound to real hammer contacts",
     "reward": "Preserve existing URP shader sweep and Bloom for completion without construction tools leaking into finish"
   },
-  "expected_native_capture_images": 64,
+  "expected_native_capture_images": 72,
   "quality_targets": [
     "Hammers visibly swing and iron heads contact real scaffold",
     ">=12 dense dust sprites around actual contact",
@@ -235,5 +236,5 @@
     "A/B architectural vs staged preserves same common effects"
   ],
   "visual_approval": false,
-  "native_expected_png": 64
+  "native_expected_png": 72
 }
