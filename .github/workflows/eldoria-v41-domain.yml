@@ -38,7 +38,8 @@ jobs:
             if(native?.status!=='in_progress' || waiting?.name!=='Check live native-editor lease before downloading the Unity project' || waiting.status!=='in_progress' || native.steps.some(x=>x.number>2 && x.started_at)) {
               core.info('Preserve run: checkout/editor/test may have started');return;
             }
-            await github.rest.actions.cancelWorkflowRun({...context.repo,run_id});
+            // Normal cancel returned202 at13:01 UTC but always() kept this read-only wait alive.
+            await github.request('POST /repos/{owner}/{repo}/actions/runs/{run_id}/force-cancel',{...context.repo,run_id});
             core.info('Cancelled only known superseded read-only waiting run42028053896; no editor or foreign job targeted');
   v41-domain:
     runs-on: ubuntu-latest
