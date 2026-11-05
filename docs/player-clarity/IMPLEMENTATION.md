@@ -83,3 +83,9 @@ no debe hacerse solo en el cliente si un día el mundo es compartido.
 Las comprobaciones de propiedad, arquitectura, metadata y gobierno del commit `b6babc7d181b512f0244791b957cf483903aeef9` devolvieron SUCCESS en GitHub; **no certifican C#, escenas ni calidad visual**. Tras integrar el resto se exigirán nuevos checks sobre el HEAD exacto. PR #162 permanece **DRAFT, sin merge, sin build/release y sin aprobación artística**.
 
 Nota de diseño: la prueba del usuario no debe ver cartelas superpuestas ni niveles falsos. Al agotarse una entidad no debe sustituirse la misma posición ni aparecer ningún duplicado, y al cumplirse el tiempo sin conexión debe reaparecer al sincronizar con el gateway.
+
+### Precisión del último bloque
+
+- `RoyalPlayerNameplate.cs` ya define la placa del nombre **junto al escudo existente**, recolocando ligeramente las dos líneas reales del encabezado y preservando «Valoria» y Poder. La placa no se muestra con un nombre ficticio: su `SetName` se invocará únicamente tras releer `PlayerState.PlayerName` cuando el guardado y comando estén integrados.
+- `RenewableRespawnRules.cs` contiene el contrato UTC y `Tests/RenewableRespawnRulesTests.cs` cubre 299s, 300s, 20 minutos sin abrir, y acortamiento de cooldowns anteriores. El adaptador usa la constante `RenewableRespawnRules.Delay`; la función de **migración** solo está preparada, no conectada a la escritura del gateway.
+- El adaptador del mundo amplía la legibilidad física de los carteles en móviles compensando `Canvas.scaleFactor`, bordes dorados discretos y evita iconos solapados en la misma celda de pantalla. Se necesitan capturas nativas para determinar si esta decisión es visualmente suficiente.
