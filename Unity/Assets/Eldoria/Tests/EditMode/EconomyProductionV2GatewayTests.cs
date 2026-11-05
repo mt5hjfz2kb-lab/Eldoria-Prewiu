@@ -139,6 +139,52 @@ namespace Eldoria.Tests.EditMode
             Assert.That(offline.Snapshot().Resources.Wood,Is.EqualTo(credited));
         }
         [Test]
+        public void FiveDaysAwayCreditsOnlyTwoDaysAndReopeningCannotPayAgain()
+        {
+            var clock = new TestClock();
+            var store = new JsonStore { Seed=Ready() };
+            var gateway = new LocalGateway(clock,store);
+            var before = gateway.Snapshot().Resources;
+            clock.Advance(5*24*3600);
+            gateway = new LocalGateway(clock,store);
+            var after = gateway.Snapshot().Resources;
+            Assert.That(after.Wood-before.Wood,Is.EqualTo(62208));
+            Assert.That(after.Stone-before.Stone,Is.EqualTo(13824));
+            Assert.That(after.Food-before.Food,Is.EqualTo(32832));
+            Assert.That(gateway.Snapshot().ChapterThree.EconomyUtcTicks,Is.EqualTo(clock.UtcTicks));
+            gateway = new LocalGateway(clock,store);
+            Assert.That(gateway.Snapshot().Resources.Wood,Is.EqualTo(after.Wood));
+            Assert.That(gateway.Snapshot().Resources.Stone,Is.EqualTo(after.Stone));
+            Assert.That(gateway.Snapshot().Resources.Food,Is.EqualTo(after.Food));
+        }
+
+        [Test]
+        public void UpgradeCompletingAfterFortyEightHoursGetsOldRateOnly()
+        {
+            var clock = new TestClock();
+            var seed=Ready();
+            seed.ChapterThree.GranaryLevel=1;
+            var store = new JsonStore { Seed=seed };
+            var gateway = new LocalGateway(clock,store);
+            var beforeFood=gateway.Snapshot().Resources.Food;
+            var state=gateway.Snapshot();
+            Assert.That(gateway.Execute(new GameCommand("economy-long-upgrade",
+                state.PlayerId,"UpgradeBuilding","granary",state.Revision)).Ok,Is.True);
+            // Simulate a save with a delayed construction completion and preserved original ledger.
+            // The 48-hour entitlement must remain based on the original timestamp.
+            // Do not grant five days at the new rate merely because construction completes.
+            clock.Advance(5*24*3600);
+            gateway=new LocalGateway(clock,store);
+            Assert.That(gateway.Snapshot().ChapterThree.GranaryLevel,Is.EqualTo(2));
+            Assert.That(gateway.Snapshot().Resources.Food-beforeFood,
+                Is.EqualTo(17281));
+            // First 10 seconds at 0.1/s, remaining 47h 59m 50s at 0.19/s.
+            gateway=new LocalGateway(clock,store);
+            Assert.That(gateway.Snapshot().Resources.Food-beforeFood,
+                Is.EqualTo(17281));
+        }
+
+        [Test]
         public void TimingsApplyOnlyToAuthoredBastionTwoThroughFive()
         {
             Assert.That(BastionProgressionCatalog.ForLevel(2).DurationSeconds,Is.EqualTo(120));
