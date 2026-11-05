@@ -1,0 +1,28 @@
+name: Narrative & tutorial coherence
+
+on:
+  pull_request:
+    paths:
+      - "v0220/index.html"
+      - "v0220/js/chapters.js"
+      - "tools/narrative/**"
+      - "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs"
+      - "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs"
+      - "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs"
+      - ".github/workflows/narrative-coherence.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  narrative-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test dialogue sequencing and tutorial acknowledgement
+        run: node --test tools/narrative/coherence.test.mjs
