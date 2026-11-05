@@ -264,7 +264,9 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 100
     steps:
-      - name: Preserve read-only editor origin before waiting
+      - name: Preserve editor evidence and gracefully close the owner-authorized obsolete startup session
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: powershell
         run: |
           $folder=Join-Path $env:RUNNER_TEMP ("eldoria-editor-origin-"+$env:GITHUB_RUN_ID)
@@ -307,6 +309,21 @@ jobs:
               $bitmap.Save((Join-Path $folder 'blender-window.png'),[Drawing.Imaging.ImageFormat]::Png)
               $graphics.Dispose();$bitmap.Dispose()
             }
+          }
+          # Owner explicitly authorized closing obsolete Blender. The authenticated
+          # origin artifact13417313452 visually shows the untouched welcome/default
+          # scene of this exact PID/start. Graceful close only: never discard a prompt.
+          $idle=Get-Process -Id 9852 -ErrorAction SilentlyContinue
+          if($idle -and $idle.ProcessName -eq 'blender' -and $idle.StartTime.ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ss') -eq '2026-11-05T11:52:42' -and $idle.MainWindowTitle -eq '(no guardado) - Blender 5.2.2 LTS' -and $idle.CPU -lt 15 -and -not (Get-Process Unity -ErrorAction SilentlyContinue)){
+            $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='Eldoria-obsolete-session-review'}
+            $raw=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+            $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw.content))|ConvertFrom-Json
+            $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+            if($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-v41-combate-buzon-ui-20261030' -or $claims[0].owner -ne 'codex-eldoria-pr136-consolidation-20261104'){throw 'Ownership changed; preserve editor'}
+            $requested=$idle.CloseMainWindow()
+            Start-Sleep -Seconds 5
+            $remaining=Get-Process -Id 9852 -ErrorAction SilentlyContinue
+            [ordered]@{authorizedByOwner=$true;basisArtifact=13417313452;pid=9852;gracefulCloseRequested=$requested;exited=($null -eq $remaining);forced=$false;savePromptDismissed=$false}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $folder 'obsolete-blender-close.json') -Encoding utf8
           }
           $os=Get-CimInstance Win32_OperatingSystem
           [ordered]@{checkedUtc=[DateTime]::UtcNow.ToString('o');source=$env:ALDRIC_REQUEST_SOURCE_SHA;lastBoot=$os.LastBootUpTime.ToUniversalTime().ToString('o');freeMemoryKiB=$os.FreePhysicalMemory;processes=$entries;readOnly=$true}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $folder 'origin.json') -Encoding utf8

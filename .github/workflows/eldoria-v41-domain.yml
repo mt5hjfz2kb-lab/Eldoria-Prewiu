@@ -23,7 +23,7 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            const run_id=42033882013, oldHead='1c3fd55c845a1aab09f31954edab0322368eb081';
+            const run_id=42034881082, oldHead='85b931e9cdafd7dfb5c32dc283e0f40784468fb8';
             const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id})).data;
             if(run.status!=='in_progress')return;
             if(run.head_sha!==oldHead || run.head_branch!=='feature/eldoria-v41-contracts-20261030' || run.path!=='.github/workflows/ui-progression-cert.yml')throw Error('Not the known obsolete own wait');
@@ -45,7 +45,7 @@ jobs:
             const hold=fresh?.steps?.find(x=>x.name===waiting.name);
             if(fresh?.status!=='in_progress' || hold?.status!=='in_progress' || fresh.steps.some(x=>x.number>hold.number && x.started_at))return;
             await github.request('POST /repos/{owner}/{repo}/actions/runs/{run_id}/force-cancel',{...context.repo,run_id});
-            core.info('Cancelled only known superseded read-only waiting run42033882013; no editor or foreign job targeted');
+            core.info('Cancelled only known superseded read-only waiting run42034881082; no editor or foreign job targeted');
   v41-domain:
     runs-on: ubuntu-latest
     timeout-minutes: 10
