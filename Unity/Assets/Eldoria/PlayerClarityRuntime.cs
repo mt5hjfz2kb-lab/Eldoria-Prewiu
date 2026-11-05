@@ -240,6 +240,28 @@ namespace Eldoria
                         "Nv. " + ChapterThreeHuntDifficultyPolicy.Level("hunt-boar"),
                         null, boar, camera, false, 0);
             }
+            // Unique campaign enemies are NOT part of the renewable
+            // population. Show a threat tier inferred directly from the
+            // combat catalog, without changing their respawn/story state.
+            if (!s.ScoutDefeated &&
+                TryHotspot("corrupt-scout", out var scout) &&
+                scout.gameObject.activeInHierarchy)
+                Place("corrupt-scout",
+                    "Nv. " + CampaignTier("corrupt-scout"), null,
+                    scout, camera, false, 0);
+            if (s.BastionLevel >= 2 && !s.EngendroDefeated &&
+                TryHotspot("engendro-valoria", out var engendro) &&
+                engendro.gameObject.activeInHierarchy)
+                Place("engendro-valoria",
+                    "Nv. " + CampaignTier("engendro-valoria"), null,
+                    engendro, camera, false, 0);
+            if (s.BastionLevel >= 5 && s.ChapterThree != null &&
+                s.ChapterThree.AshStalkerRespawnUtcTicks == 0 &&
+                TryHotspot("ash-stalker-valoria", out var stalker) &&
+                stalker.gameObject.activeInHierarchy)
+                Place("ash-stalker-valoria",
+                    "Nv. " + ChapterThreeHuntDifficultyPolicy.LevelForPower(3600),
+                    null, stalker, camera, false, 0);
             foreach (var creature in s.WorldCreatureLocations)
             {
                 if (!creature.Alive || creature.Level < 1 ||
@@ -248,6 +270,22 @@ namespace Eldoria
                 Place(creature.TargetId, "Nv. " + creature.Level, null,
                     hot, camera, false, 0);
             }
+        }
+
+        private static int CampaignTier(string targetId)
+        {
+            var real = SliceRules.CampaignEnemy(targetId);
+            int result = 1, lowest = int.MaxValue;
+            for (int i = 1; i <= 5; i++)
+            {
+                var known = WorldCreatureCatalog.For("spawnling", i);
+                int distance = Mathf.Abs(real.Health - known.Health) +
+                    3 * Mathf.Abs(real.Attack - known.Attack) +
+                    2 * Mathf.Abs(real.Defense - known.Defense) +
+                    3 * Mathf.Abs(real.Break - known.Break);
+                if (distance < lowest) { result = i; lowest = distance; }
+            }
+            return result;
         }
 
         private void RenderCity(PlayerState s)
