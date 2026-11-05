@@ -6301,10 +6301,12 @@
         ".github/workflows/early-retention-domain.yml",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs"
       ],
-      "resources": [],
-      "phase": "ICON_NULLREF_FIXED_NATIVE_RETEST_AWAITS_SAFE_WINDOWS_LEASE",
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "phase": "NATIVE_UNITY_RUNNING_PR162_RUN_42123550342",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "PR162 head b7357d54652333027489e100f60c58c2fbd85b5a; name and respawn domain PASS, native UI re-test blocked before checkout because construction holds Windows; transfer kept single PR, no interruption. On release claim Windows CAS and certify native exact head; inspect 390x844/844x390 and no merge without evidence.",
+      "next": "Complete Unity exact SHA f355c5e2182e959d8c2abcdc3666120215d2c883; inspect logs/PlayMode, correct if required, then release CAS windows lease after native completion; preserve construction and economy.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
