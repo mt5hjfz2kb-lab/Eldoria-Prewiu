@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
   "ownership_revision": 13,
-  "mode": "FINAL_V4_SOURCE_PROBE_STAGE_COMPLETION_FIDELITY_AND_ROOF_LIGHT",
+  "mode": "FINAL_V4_SOURCE_40_FRAME_GUARDS",
   "expected_images": 34,
   "formats": [
     "844x390",
@@ -59,7 +59,7 @@
     "tools/construction-delight/DomainProbe.csproj",
     "tools/construction-delight/SyntaxProbe.csproj"
   ],
-  "reason": "Collect weak A/B captures before failing and keep source C# syntax green",
+  "reason": "New first work placement and first two completion transition frames in both 844x390 and 390x844; no changes to real gateway timing",
   "source_project_repair": "d6e623ec824131d543c2543bf8358774e5ea1757",
   "native_unity_editor_not_called": true,
   "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c",
@@ -81,7 +81,7 @@
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 19,
+  "offline_validation_attempt": 20,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
@@ -174,5 +174,6 @@
     "No stage reset between actual work and roof landing",
     "Construction roof glow obeys visible staged geometry",
     "Reload clears preview and restores original source renderers"
-  ]
+  ],
+  "images_expected_in_future_native_run": 40
 }
