@@ -39,3 +39,5 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Compile the actual production source and run focused assertions
         run: dotnet run --project tools/player-clarity/Smoke.csproj --configuration Release
+      - name: Validate deterministic site ordering, actual node tiers and Chapter III combat labels
+        run: dotnet run --project tools/player-clarity/Probe.csproj --configuration Release
