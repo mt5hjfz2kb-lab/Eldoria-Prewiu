@@ -32,6 +32,12 @@ internal static class PlayerClarityAdvancedProbe
 
     private static void Tier()
     {
+        Check(ChapterThreeHuntDifficultyPolicy.RequiredPower("hunt-wolf")==1450 &&
+            ChapterThreeHuntDifficultyPolicy.Level("hunt-wolf")==2,
+            "wolf label reflects actual Chapter III combat requirement");
+        Check(ChapterThreeHuntDifficultyPolicy.RequiredPower("hunt-boar")==2050 &&
+            ChapterThreeHuntDifficultyPolicy.Level("hunt-boar")==3,
+            "boar label reflects actual Chapter III combat requirement");
         Check(ResourceNodeTierPolicy.Capacity("wood",1)==1250,"legacy wood capacity");
         Check(ResourceNodeTierPolicy.Capacity("stone",1)==5200,"legacy stone capacity");
         for(int level=2;level<=5;level++)
