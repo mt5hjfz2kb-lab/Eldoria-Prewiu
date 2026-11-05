@@ -3,7 +3,9 @@
   "rootNamespace": "Eldoria.PlayerClarity.Tests",
   "references": [
     "Eldoria.PlayerClarity",
-    "Unity.ugui"
+    "Unity.ugui",
+    "Eldoria.RoyalGold.UI",
+    "Eldoria.Domain"
   ],
   "optionalUnityReferences": [
     "TestAssemblies"
