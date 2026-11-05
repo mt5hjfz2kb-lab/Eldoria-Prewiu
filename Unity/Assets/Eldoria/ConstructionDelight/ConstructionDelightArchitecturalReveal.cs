@@ -37,6 +37,7 @@ namespace Eldoria.ReferenceClean
 
         public int MeshCount=>running ? builtCount:0;
         public bool Finishing=>running && finishing;
+        public bool HasBloomVolume=>bloomVolume && bloomProfile;
 
         public void BeginWork(GameObject scaffold,float time)
         {
