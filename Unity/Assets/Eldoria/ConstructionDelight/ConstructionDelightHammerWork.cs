@@ -44,6 +44,8 @@ namespace Eldoria.ReferenceClean
             }
         }
         public int TotalImpacts=>impacts;
+        public Vector3 PrimaryContact => hammers[0]!=null
+            ? hammers[0].contact : Vector3.zero;
         public bool Running=>root && visible;
         public Vector3 FirstImpact {get;private set;}
         public Vector3 SecondImpact {get;private set;}
