@@ -49,6 +49,20 @@ namespace Eldoria.Tests
             Assert.That(gateway.Snapshot().Resources.Wood,Is.EqualTo(wood));
             if(outcome=="draw")Assert.That(mail.Title,Does.Contain("Empate"));
         }
+        [Test] public void UnityLegacyEmptyMarchPlaceholderRetainsOriginalResolver()
+        {
+            var clock=new Clock();var store=new Store();
+            store.Save(new PlayerState{BastionLevel=2,Available=new ArmyRoster{ArcherT1=100}});
+            var game=new LocalGateway(clock,store);
+            Assert.That(Send(game,"legacy-launch","Fight","corrupt-scout").Ok,Is.True);
+            // Native serializer, including null nested class behavior.
+            game=new LocalGateway(clock,store);
+            Assert.That(game.Snapshot().March.VersionedBattle,Is.Null);
+            clock.UtcTicks+=TimeSpan.FromSeconds(30).Ticks;
+            game=new LocalGateway(clock,store);
+            Assert.That(game.Snapshot().March.Phase,Is.EqualTo("idle"));
+            Assert.That(game.Snapshot().Available.ArcherT1,Is.EqualTo(100));
+        }
         [Test] public void HistoricalReportsRetainOutcomeWithoutNewFields()
         {
             Assert.That(JsonUtility.FromJson<EldoriaV41CombatRecord>("{\"Won\":true}").EffectiveOutcome,Is.EqualTo("victory"));

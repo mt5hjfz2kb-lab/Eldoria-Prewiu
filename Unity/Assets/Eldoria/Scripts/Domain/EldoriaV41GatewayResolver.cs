@@ -8,6 +8,8 @@ namespace Eldoria.Domain
     public sealed class EldoriaV41GatewayResolver : IEldoriaVersionedBattleResolver
     {
         readonly Dictionary<string,EldoriaV41BattleInput> targets = new Dictionary<string,EldoriaV41BattleInput>(StringComparer.Ordinal);
+        public bool UsesCampaignCreatures { get; private set; }
+        public static EldoriaV41GatewayResolver Campaign() => new EldoriaV41GatewayResolver(Array.Empty<EldoriaV41BattleInput>()){UsesCampaignCreatures=true};
         public string RulesVersion => EldoriaV41CombatEvolution.RulesVersion;
         public EldoriaV41GatewayResolver(IEnumerable<EldoriaV41BattleInput> definitions)
         {
@@ -38,11 +40,27 @@ namespace Eldoria.Domain
             snapshot.OwnHeroes=new string[3];for(int i=0;i<3;i++)snapshot.OwnHeroes[i]=heroes[i];
             return snapshot;
         }
+        public EldoriaV41BattleInput PrepareCreature(ArmyRoster troops,IList<string> heroes,string targetId,WorldCreatureStats enemy)
+        {
+            Force(troops,heroes);
+            if(string.IsNullOrEmpty(targetId) || enemy.Health<=0 || enemy.Attack<0 || enemy.Defense<0 || enemy.Break<0)
+                throw new ArgumentException("Invalid creature definition");
+            var copy=new string[3];for(int h=0;h<3;h++)copy[h]=heroes[h];
+            return new EldoriaV41BattleInput{RulesVersion=RulesVersion,TargetId=targetId,OwnTroops=troops.Copy(),OwnHeroes=copy,
+                EnemyCreature=new EldoriaV41CreatureInput{Health=enemy.Health,Attack=enemy.Attack,Defense=enemy.Defense,Break=enemy.Break}};
+        }
         public EldoriaV41CombatRecord Resolve(EldoriaV41BattleInput input)
         {
             if(input==null || input.RulesVersion!=RulesVersion || string.IsNullOrEmpty(input.TargetId))
                 throw new ArgumentException("Unsupported battle rules");
-            var player=Force(input.OwnTroops,input.OwnHeroes);var enemy=Force(input.EnemyTroops,input.EnemyHeroes);
+            var player=Force(input.OwnTroops,input.OwnHeroes);
+            if(input.EnemyCreature!=null && (input.EnemyCreature.Health!=0 || input.EnemyCreature.Attack!=0 || input.EnemyCreature.Defense!=0 || input.EnemyCreature.Break!=0))
+            {
+                if((input.EnemyTroops!=null && input.EnemyTroops.Total!=0) || (input.EnemyHeroes!=null && !Array.TrueForAll(input.EnemyHeroes,string.IsNullOrEmpty)))throw new ArgumentException("Ambiguous enemy profile");
+                var actual=EldoriaV41CombatEvolution.ResolveCreature(player,input.EnemyCreature.Stats);
+                return EldoriaV41CombatEvolution.ToCreatureMailbox(actual,player,"uncommitted",input.TargetId,1).Battle;
+            }
+            var enemy=Force(input.EnemyTroops,input.EnemyHeroes);
             var result=EldoriaV41CombatEvolution.Resolve(player,enemy);
             // Only the public facts leave the resolver; gateway owns event/time/ledger.
             return EldoriaV41CombatEvolution.ToMailbox(result,player,enemy,"uncommitted",input.TargetId,1).Battle;

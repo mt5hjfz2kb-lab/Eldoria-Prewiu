@@ -13,6 +13,7 @@
 <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41CombatEvolution.cs"/>
 <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41GatewayResolver.cs"/>
 <Compile Include="GatewayEvolutionChecks.cs"/>
+<Compile Include="CreatureChecks.cs"/>
 <Compile Include="GatewaySmoke.cs"/>
 </ItemGroup>
 </Project>

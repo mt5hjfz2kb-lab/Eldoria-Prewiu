@@ -206,9 +206,12 @@ namespace Eldoria.Application
             if(state.ExtraMarches.Count>MarchCapacityRules.MaxConcurrentMarches-1 || state.ExtraMarches.Exists(x=>x==null))
                 throw new InvalidOperationException("Invalid persistent march slots");
             foreach(var existingMarch in MarchCapacityRules.WorldMarches(state))
+            {
+                if(existingMarch.VersionedBattle?.IsLegacyPlaceholder==true)existingMarch.VersionedBattle=null;
                 if(existingMarch.VersionedBattle!=null && existingMarch.Phase!="idle" &&
                     (battleResolver==null || existingMarch.VersionedBattle.RulesVersion!=battleResolver.RulesVersion))
                     throw new InvalidOperationException("The persisted march requires its original combat resolver");
+            }
             if(state.Retention==null)state.Retention=new EarlyRetentionState();
             if(state.Retention.Orders==null)state.Retention.Orders=new System.Collections.Generic.List<ScoutOrder>();
             if(state.Mailbox==null)state.Mailbox=new EldoriaV41Mailbox();
@@ -659,6 +662,13 @@ namespace Eldoria.Application
                 MarchCapacityRules.AutoSelect(state.Available,MarchCapacityRules.Capacity(state,hero));
             if(!MarchCapacityRules.Fits(troops,state.Available,MarchCapacityRules.Capacity(state,hero)))return false;
             var versioned=gathering||IsChapterThreeTarget(targetId)?null:battleResolver?.Prepare(troops.Copy(),new System.Collections.Generic.List<string>(party),targetId);
+            if(versioned==null && !gathering && !IsChapterThreeTarget(targetId) &&
+                battleResolver is EldoriaV41GatewayResolver campaign && campaign.UsesCampaignCreatures)
+            {
+                var creature=Creature(state,targetId);
+                var stats=creature!=null?WorldCreatureCatalog.For(creature.CreatureKind,creature.Level):SliceRules.CampaignEnemy(targetId);
+                versioned=campaign.PrepareCreature(troops,party,targetId,stats);
+            }
             if(versioned!=null && (versioned.RulesVersion!=battleResolver.RulesVersion || versioned.TargetId!=targetId))
                 throw new InvalidOperationException("Combat definition identity mismatch");
             if(versioned!=null)

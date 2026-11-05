@@ -84,6 +84,7 @@ namespace Eldoria.Domain
         sealed class Side
         {
             public string[] Heroes;
+            public bool Creature;
             public double[] Hp = new double[Families*Tiers], Initial = new double[Families*Tiers],
                 HpPer = new double[Families*Tiers], Atk = new double[Families*Tiers],
                 Def = new double[Families*Tiers], Rup = new double[Families*Tiers];
@@ -102,7 +103,7 @@ namespace Eldoria.Domain
                 throw new ArgumentException("Unavailable march leader");
             var used = new HashSet<string>(StringComparer.Ordinal);
             foreach (string h in f.HeroIds)
-                if (h != null && ((h != "aldric" && h != "lyra") || !used.Add(h)))
+                if (!string.IsNullOrEmpty(h) && ((h != "aldric" && h != "lyra") || !used.Add(h)))
                     throw new ArgumentException("Unknown or duplicated hero");
             foreach (int count in f.Troops) if (count < 0 || count > 1000000)
                 throw new ArgumentException("Invalid troop count");
@@ -155,11 +156,11 @@ namespace Eldoria.Domain
                 if(living<=Epsilon) continue;
                 double denom=0;
                 for(int j=0;j<size;j++)
-                    denom+=Math.Pow(CounterFactor(i/Tiers,j/Tiers),.6)*dst.Hp[j]/dst.HpPer[j];
+                    denom+=Math.Pow((src.Creature || dst.Creature ? 1.0 : CounterFactor(i/Tiers,j/Tiers)),.6)*dst.Hp[j]/dst.HpPer[j];
                 if(denom<=Epsilon)continue;
                 for (int j=0;j<size;j++)
                     damage[i,j]=living*src.Atk[i]*
-                        Math.Pow(CounterFactor(i/Tiers,j/Tiers),.6)*
+                        Math.Pow((src.Creature || dst.Creature ? 1.0 : CounterFactor(i/Tiers,j/Tiers)),.6)*
                         (dst.Hp[j]/dst.HpPer[j])/denom;
             }
             double paladinHp=0,desired=0;
@@ -178,7 +179,7 @@ namespace Eldoria.Domain
             {
                 double penetration=RuptureFraction(src.Rup[i]);
                 double mitigation=100.0/(100.0+4*dst.Def[j]*(1-penetration));
-                damage[i,j]*=CounterFactor(i/Tiers,j/Tiers)*tactical*mitigation;
+                damage[i,j]*=(src.Creature || dst.Creature ? 1.0 : CounterFactor(i/Tiers,j/Tiers))*tactical*mitigation;
             }
             return damage;
         }
@@ -235,8 +236,22 @@ namespace Eldoria.Domain
         public static Result Resolve(Force a,Force b,int maxRounds=120,bool heroSkills=true)
         {
             if(maxRounds<1 || maxRounds>1000)throw new ArgumentOutOfRangeException(nameof(maxRounds));
-            var x=Build(a);var y=Build(b);
-            double coherence=Coherence(a,b);
+            return ResolveSides(Build(a),Build(b),Coherence(a,b),maxRounds,heroSkills);
+        }
+        // Creatures retain their authored finite stats. They are not assigned a
+        // fictitious troop family, tier, hero, or counter advantage.
+        public static Result ResolveCreature(Force player, WorldCreatureStats creature, int maxRounds=120)
+        {
+            if(creature.Health<=0 || creature.Attack<0 || creature.Defense<0 || creature.Break<0 || maxRounds<1 || maxRounds>1000)
+                throw new ArgumentException("Invalid real creature profile");
+            var enemy=new Side{Heroes=Array.Empty<string>(),Creature=true};
+            for(int i=0;i<Families*Tiers;i++)enemy.HpPer[i]=1;
+            enemy.Hp[0]=enemy.Initial[0]=enemy.HpPer[0]=creature.Health;
+            enemy.Atk[0]=creature.Attack;enemy.Def[0]=creature.Defense;enemy.Rup[0]=creature.Break;
+            return ResolveSides(Build(player),enemy,0,maxRounds,true);
+        }
+        static Result ResolveSides(Side x,Side y,double coherence,int maxRounds,bool heroSkills)
+        {
             var turns=new List<Turn>();
             for(int round=1;round<=maxRounds && x.CurrentHp>Epsilon && y.CurrentHp>Epsilon;round++)
             {
@@ -312,10 +327,18 @@ namespace Eldoria.Domain
         public static EldoriaV41Message ToMailbox(Result r,Force player,Force opponent,
             string eventId,string targetId,long occurredUtcTicks,string committedRewardReceiptId="")
         {
-            if(r==null || player==null || opponent==null || string.IsNullOrEmpty(eventId) ||
+            if(opponent==null)throw new ArgumentNullException(nameof(opponent));
+            Validate(opponent);
+            return PublicReport(r,player,eventId,targetId,occurredUtcTicks,committedRewardReceiptId);
+        }
+        public static EldoriaV41Message ToCreatureMailbox(Result r,Force player,string eventId,string targetId,long occurredUtcTicks)
+            => PublicReport(r,player,eventId,targetId,occurredUtcTicks,"");
+        static EldoriaV41Message PublicReport(Result r,Force player,string eventId,string targetId,long occurredUtcTicks,string committedRewardReceiptId)
+        {
+            if(r==null || player==null || string.IsNullOrEmpty(eventId) ||
                 string.IsNullOrEmpty(targetId) || occurredUtcTicks<=0)
                 throw new ArgumentException("Authoritative battle identity is required");
-            Validate(player); Validate(opponent);
+            Validate(player);
             // PLAYER-VISIBLE information only: keep mathematical internals in Result.
             // Never expose opponent troop matrices, tactical coefficients, per-family
             // damage dealt, ability multipliers or raw turn traces in the mailbox.

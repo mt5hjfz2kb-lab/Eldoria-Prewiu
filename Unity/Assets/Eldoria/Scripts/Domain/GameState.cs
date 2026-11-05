@@ -600,18 +600,17 @@ namespace Eldoria.Domain
                 (int)Math.Round(hp, MidpointRounding.AwayFromZero),
                 (int)Math.Round(brk, MidpointRounding.AwayFromZero), pow);
         }
+        public static WorldCreatureStats CampaignEnemy(string enemyId)
+        {
+            if(enemyId=="engendro-valoria")return new WorldCreatureStats(760,84,72,32,0,0);
+            if(enemyId=="corrupt-scout")return new WorldCreatureStats(620,76,64,28,0,0);
+            throw new ArgumentException("Unknown campaign combat target");
+        }
         public static CombatReport Fight(CombatStats player) => Fight(player, "corrupt-scout");
         public static CombatReport Fight(CombatStats player, string enemyId)
         {
-            int enemyHp, enemyDefense, enemyAttack, enemyBreak;
-            if (enemyId == "engendro-valoria")
-            {
-                enemyHp = 760; enemyDefense = 72; enemyAttack = 84; enemyBreak = 32;
-            }
-            else
-            {
-                enemyHp = 620; enemyDefense = 64; enemyAttack = 76; enemyBreak = 28;
-            }
+            var profile=CampaignEnemy(enemyId=="engendro-valoria"?enemyId:"corrupt-scout");
+            int enemyHp=profile.Health,enemyDefense=profile.Defense,enemyAttack=profile.Attack,enemyBreak=profile.Break;
             int playerHp = player.Health, rounds = 0;
             while (rounds < 6 && enemyHp > 0 && playerHp > 0)
             {
