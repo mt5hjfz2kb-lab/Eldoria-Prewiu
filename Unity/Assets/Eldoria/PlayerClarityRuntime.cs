@@ -30,6 +30,7 @@ namespace Eldoria
             public RoyalResourcePictogram Icon;
             public string Id;
             public bool Touched;
+            public float LastSizeMultiplier;
         }
 
         private static readonly TimeSpan RenewableDelay = RenewableRespawnRules.Delay;
@@ -331,7 +332,25 @@ namespace Eldoria
                 marker.Icon.gameObject.SetActive(icon.HasValue);
                 if (icon.HasValue) marker.Icon.Kind = icon.Value;
             }
+            // The RoyalScaler targets a 900px-high reference canvas.
+            // Landscape mobile is commonly ~0.43x logical scale: an unscaled
+            // 15pt level marker would be illegible at ~6 device pixels.
+            // Keep pictograms ~22 physical px and levels >=15px in either
+            // orientation, without changing the camera or GUI safe area.
             var canvas = layer.GetComponentInParent<Canvas>();
+            float multiplier = Mathf.Max(1f, 1f / Mathf.Max(.25f, canvas ? canvas.scaleFactor : 1f));
+            if (Mathf.Abs(marker.LastSizeMultiplier - multiplier) > .02f)
+            {
+                marker.LastSizeMultiplier = multiplier;
+                marker.Rect.sizeDelta = marker.Icon
+                    ? new Vector2(28f * multiplier, 28f * multiplier)
+                    : new Vector2(73f * multiplier, 28f * multiplier);
+                if (marker.Icon)
+                    ((RectTransform)marker.Icon.transform).sizeDelta =
+                        new Vector2(22f * multiplier, 22f * multiplier);
+                if (marker.Text)
+                    marker.Text.fontSize = Mathf.RoundToInt(15f * multiplier);
+            }
             var uiCam = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 layer, point, uiCam, out var local))
