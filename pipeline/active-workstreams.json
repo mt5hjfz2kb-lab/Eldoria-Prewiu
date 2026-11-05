@@ -6301,10 +6301,12 @@
         ".github/workflows/early-retention-domain.yml",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs"
       ],
-      "resources": [],
-      "phase": "FIRST_NATIVE_EDITOR_REGRESSION_DIAGNOSED_PATCH_REQUIRED",
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "phase": "SECOND_NATIVE_PR162_RUN_42124710953",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "Native PR162 run 42123550342 exact f355c5: Unity compiled; Aldric and 3-march PASS. Full I-V capture FAIL at first Intro raycast same-frame after first-entry overlay (buttonGraphicDepth=-1, hits=[]); then uncompleted B2 makes Engendro absent. Add frame before narrative click in canonical native probe and retry exact candidate without weakening raycast test. Capture intro 1600x900 + 900x1600 already present; full PASS still absent.",
+      "next": "Strict raycast regression native rerun exact head 9d1871; validate first-entry UI + I-V, All PlayMode, 300s offline and 48h economics; release Windows after full completion.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
