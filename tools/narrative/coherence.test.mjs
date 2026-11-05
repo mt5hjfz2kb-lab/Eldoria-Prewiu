@@ -56,8 +56,23 @@ test('narrative queue serializes speakers, blocks modal overlap and calls comple
  assert.equal(completed,2);
 });
 
+test('intro cinematic must finish before first-use and world tutorials',()=>{
+ const state={introSeen:false,bastionLevel:1,sawmill:false,tutorialSeen:{},view:'world'};
+ const shown=[];
+ const ctx=context({s:state,guideDialogue:(who,copy,done)=>{shown.push({who,copy,done});return true}});
+ vm.runInContext(part('function tutorialBeat(){','function toastFeedback026('),ctx);
+ vm.runInContext(part('function worldIntro(){','function playWorldMarch0304('),ctx);
+ ctx.tutorialBeat();
+ state.sawmill=true;
+ ctx.worldIntro();
+ assert.equal(shown.length,0,'No teaching or narrator overlap while intro is unread');
+ state.introSeen=true;
+ ctx.tutorialBeat();
+ assert.equal(shown.length,1,'First-use teaching follows the completed introduction');
+});
+
 test('first-use beat only acknowledges after the player closes it, never in QA',()=>{
- const s={bastionLevel:1,sawmill:false,tutorialSeen:{}};
+ const s={introSeen:true,bastionLevel:1,sawmill:false,tutorialSeen:{}};
  let acknowledgement=null,saves=0;
  const ctx=context({s,save:()=>saves++,guideDialogue:(_speaker,_copy,done)=>{acknowledgement=done;return true}});
  vm.runInContext(part('function tutorialBeat(){','function toastFeedback026('),ctx);
@@ -76,7 +91,7 @@ test('first-use beat only acknowledges after the player closes it, never in QA',
 });
 
 test('first-world introduction has no Lyra/Fissure spoilers and acknowledges after reading',()=>{
- const s={sawmill:true,view:'world',tutorialSeen:{}};
+ const s={introSeen:true,sawmill:true,view:'world',tutorialSeen:{}};
  let entry=null;
  const ctx=context({s,guideDialogue:(who,text,done)=>{entry={who,text,done};return true}});
  vm.runInContext(part('function worldIntro(){','function playWorldMarch0304('),ctx);
