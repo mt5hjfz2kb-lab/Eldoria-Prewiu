@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T15:44:00.772Z",
+  "updated_at": "2026-11-05T15:50:53.522Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -152,12 +152,14 @@
         "tools/narrative-unity/NarrativeProbe.cs",
         "tools/narrative-unity/NarrativeProbe.csproj"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "NARRATIVE_TUTORIAL_RECONCILED_NATIVE_PENDING",
+      "phase": "NARRATIVE_TUTORIAL_NATIVE_VALIDATION",
       "next": "Finish PR160 in Unity after combat postmerge completes; preserve PR136 sources and uncommitted combat closeout.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
@@ -1839,7 +1841,7 @@
           "reason": "Owner explicitly directs this chat to finish the almost-complete combat work, then dialogues. Preserve all running jobs and existing PR134/PR160; recover uncommitted closeout."
         }
       ],
-      "ownership_revision": 143,
+      "ownership_revision": 144,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -3029,7 +3031,7 @@
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
       "owner": "codex-combat-dialogues-fc0ef62e-20261105",
       "ownership_state": "claimed",
-      "ownership_revision": 22,
+      "ownership_revision": 23,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
@@ -3063,13 +3065,11 @@
         "Unity/Assets/Eldoria/Scripts/Editor/EarlyRetentionEngagementNativeCapture.cs",
         "tools/early-retention/Program.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
-      "phase": "COMBAT_T1_T5_NATIVE_VALIDATION",
-      "next": "Certify legacy Unity save fix 4a15815f in run42004744269, then certify canonical host activation and observable-only Vigilant feedback. Retain exact final laboratory stats; chapter III special encounters and mastery migration remain pending.",
+      "phase": "COMBAT_MERGED_POSTMERGE_PASS_CLOSEOUT",
+      "next": "Commit recovered closeout and close issue138; gameplay certified d19df6fc by runs42052170803 and42052170653.",
       "art_production_routing_reason": "Mandatory tracking for exact source reuse and ArtTests code; no new artwork generation authorized.",
       "ownership_history": [
         {
@@ -3195,6 +3195,12 @@
         "implement_combat": true,
         "pve_hospital_overflow": "Owner explicitly chooses permanent loss of excess seriously wounded in PvE; light wounds unaffected",
         "production_balance_approved": false
+      },
+      "last_verified": {
+        "postmerge_native_run": 42052170803,
+        "postmerge_ui_run": 42052170653,
+        "source_sha": "d19df6fc1d521204926b735a05a06786c80f37a5",
+        "result": "SUCCESS"
       }
     },
     {

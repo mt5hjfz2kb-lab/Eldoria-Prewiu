@@ -178,7 +178,7 @@ namespace Eldoria.ReferenceClean.Editor {
    bool Check(Action action,string name){if(failure!=null)return false;try{action();checks.Add(name);return true;}catch(Exception e){failure=e.ToString();Debug.LogException(e);return false;}}
    Check(()=>{
     h.Guidance.PresentMilestone();
-    Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR"&&h.Hud.NarrativeSourceText.Contains("La Brecha apareció"),"Original introductory narrator missing");
+    Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR"&&h.Hud.NarrativeSourceText.Contains("La Brecha se abrió en la tierra junto a Valoria"),"Original introductory narrator missing");
     Need(h.Hud.NarrativeTurnCount==3,"Web narrator, Aldric and tutorial turns not preserved");
     // Native Editor startup may consume the typewriter's real-time budget before
     // this probe runs. Restart the SAME turn through the normal language API,
@@ -258,7 +258,12 @@ namespace Eldoria.ReferenceClean.Editor {
    // This must run after its real gateway deadline completes, not before the
    // building purchase. Checking Sir Aldric while Beat is still "start"
    // incorrectly reports a runtime regression for the legitimate narrator.
-   yield return new WaitForSecondsRealtime(.36f);
+   Check(()=>{
+    h.Guidance.PresentMilestone();
+    Need(!h.Hud.NarrativeOpen,"Automatic story must defer while the construction action is selected");
+    h.Hud.SelectBuilding("");
+   },"world introduction respects active construction context");
+   yield return new WaitForSecondsRealtime(1.6f);
    Check(()=>{
     if(!h.Hud.NarrativeOpen)h.Guidance.PresentMilestone();
     Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="Sir Aldric",
@@ -268,6 +273,7 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(city.Gateway.Snapshot().ChapterProgress.SeenNarrative.Contains("world"),
       "World-unlock narration was not persisted by its canonical callback");
    },"real World unlock narration after the built Aserradero");
+   h.Select("sawmill");yield return null;
    Check(()=>{
     // Native regression for a real fault found on Windows Chromium in
     // native189: the V2 context sheet obscured the only World button.
@@ -312,7 +318,7 @@ namespace Eldoria.ReferenceClean.Editor {
    // EventSystem raycast and do not substitute a direct onClick.Invoke.
    yield return null;yield return new WaitForSecondsRealtime(.16f);
    Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"Forest command disabled");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","World gathering did not start");h.SetWorld(false);((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().ChapterProgress.GatheredWood>0,"Shared world reward missing");var snapshot=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(snapshot==JsonUtility.ToJson(city.Gateway.Snapshot()),"Reload changed rewards");},"world gathering, city return, saved reward");
-   yield return new WaitForSecondsRealtime(.5f);
+   yield return new WaitForSecondsRealtime(1.6f);
    Check(()=>{
     h.Guidance.PresentMilestone();
     Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR"&&h.Hud.NarrativeSourceText.Contains("marca negra"),"Original gathering narrator missing");
@@ -552,7 +558,13 @@ namespace Eldoria.ReferenceClean.Editor {
   // injected resources, direct progression flags, or bypassed command buttons.
   IEnumerator ReadJourneyNarrative(ValoriaIntegratedWorld h){
    yield return new WaitForSecondsRealtime(.3f);
-   for(int turn=0;turn<40&&h.Hud.NarrativeOpen;turn++){
+   for(int turn=0;turn<40;turn++){
+    if(!h.Hud.NarrativeOpen){
+     if(h.Hud.Modal.gameObject.activeSelf||!string.IsNullOrEmpty(h.Selected))yield break;
+     yield return new WaitForSecondsRealtime(1.6f);
+     h.Guidance.PresentMilestone();
+     if(!h.Hud.NarrativeOpen)yield break;
+    }
     if(h.Hud.NarrativeSpeaker=="Lyra")Check(()=>{
      Capture(h,"integration-continuous-lyra-landscape.png",1600,900);
      Capture(h,"integration-continuous-lyra-portrait.png",900,1600);
@@ -568,6 +580,7 @@ namespace Eldoria.ReferenceClean.Editor {
    Check(()=>{
     ((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(1800);
     city.Gateway.Advance();city.Presenter.RefreshState();h.Hud.Refresh();
+    h.Hud.SelectBuilding("");
    },"continuous journey completes real deadlines");
    yield return new WaitForSecondsRealtime(.3f);
    yield return ReadJourneyNarrative(h);
@@ -914,3 +927,4 @@ namespace Eldoria.ReferenceClean.Editor {
  }
 }
 #endif
+

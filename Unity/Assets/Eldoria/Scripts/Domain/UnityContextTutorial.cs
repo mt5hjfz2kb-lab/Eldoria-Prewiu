@@ -55,8 +55,8 @@ namespace Eldoria.Domain
                     "Upgrade the Sawmill, Barracks and Granary to level 2 before ascending.":
                     "Mejora Aserradero, Cuartel y Granero a nivel 2 antes de ascender.";
                 case "b4.priority": return en?
-                    "Choose Production, Defence or Shelter. The choice does not lock the other paths.":
-                    "Elige Producción, Defensa o Refugio. Las otras opciones seguirán disponibles.";
+                    "Choose Production, Defence or Shelter. This priority does not lock improvements in other areas.":
+                    "Elige Producción, Defensa o Refugio. Esta prioridad no bloquea las mejoras de las otras áreas.";
                 case "b5.stoneworks": return en?
                     "Build Valoria's Stoneworks to start continuous stone production.":
                     "Construye la Cantera de Valoria para producir piedra de forma continua.";
@@ -74,3 +74,4 @@ namespace Eldoria.Domain
         }
     }
 }
+
