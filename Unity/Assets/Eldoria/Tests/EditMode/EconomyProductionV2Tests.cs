@@ -60,6 +60,23 @@ namespace Eldoria.Tests.EditMode
         }
 
         [Test]
+        public void ThirtyDaysOfflineAtHighestProductionLevelDoesNotOverflowTicks()
+        {
+            long start = new DateTime(2026, 11, 1, 0, 0, 0, DateTimeKind.Utc).Ticks;
+            long end = start + TimeSpan.FromDays(30).Ticks;
+            var wood = EconomyProductionV2.Accrue(start, end, 0, 5, "wood");
+            var stone = EconomyProductionV2.Accrue(start, end, 0, 5, "stone");
+            var food = EconomyProductionV2.Accrue(start, end, 0, 5, "food");
+            Assert.AreEqual(1944000, wood.WholeUnits);
+            Assert.AreEqual(1399680, stone.WholeUnits);
+            Assert.AreEqual(1658880, food.WholeUnits);
+            Assert.AreEqual(0, wood.FractionalMicrounits);
+            var repeat = EconomyProductionV2.Accrue(wood.SettledThroughUtcTicks,
+                end, wood.FractionalMicrounits, 5, "wood");
+            Assert.AreEqual(0, repeat.WholeUnits);
+        }
+
+        [Test]
         public void HighBastionTimingsAreDefinedButNotAutomaticallyUnlocked()
         {
             Assert.IsTrue(EconomyBastionTimingV2.TryGetSeconds(10, out int seconds));
