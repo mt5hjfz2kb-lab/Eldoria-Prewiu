@@ -13,5 +13,6 @@
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs" Link="ResourceNodeTierPolicy.cs"/>
     <Compile Include="../../Unity/Assets/Eldoria/PlayerClarity/PlayerNameRules.cs" Link="PlayerNameRules.cs"/>
     <Compile Include="../../Unity/Assets/Eldoria/PlayerClarity/RenewableRespawnRules.cs" Link="RenewableRespawnRules.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs" Link="RenewablePopulationPolicy.cs"/>
   </ItemGroup>
 </Project>
