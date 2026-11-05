@@ -60,8 +60,8 @@ namespace Eldoria.ReferenceClean
             box=CreateBox();
             wood=new Material(lit){name="Delight temporary dark oak hammer handles"};
             iron=new Material(lit){name="Delight temporary forged iron hammer heads"};
-            SetColor(wood,new Color(.30f,.18f,.105f));
-            SetColor(iron,new Color(.20f,.23f,.23f));
+            SetColor(wood,new Color(.38f,.23f,.13f));
+            SetColor(iron,new Color(.37f,.41f,.43f));
             if(iron.HasProperty("_Metallic"))iron.SetFloat("_Metallic",.35f);
             if(iron.HasProperty("_Smoothness"))iron.SetFloat("_Smoothness",.24f);
             root=new GameObject("Construction Delight - authentic artisan hammer strokes");
@@ -80,7 +80,7 @@ namespace Eldoria.ReferenceClean
             float front=Mathf.Abs(toward.x)*site.extents.x+
                         Mathf.Abs(toward.z)*site.extents.z;
             float width=Mathf.Clamp(Mathf.Max(site.size.x,site.size.z),1.6f,7f);
-            float size=Mathf.Clamp(width*.12f,.34f,.72f);
+            float size=Mathf.Clamp(width*.19f,.52f,1.05f);
             float baseline=site.min.y+Mathf.Clamp(site.size.y*.30f,.34f,1.10f);
 
             for(int i=0;i<HammerCount;i++)
@@ -99,9 +99,9 @@ namespace Eldoria.ReferenceClean
                 holder.transform.position=contact-
                     contactPose*(Vector3.up*(.63f*size));
                 var handle=MakePart("oak grip",holder.transform,wood,
-                    new Vector3(0f,.31f,0f),new Vector3(.14f,.62f,.17f));
+                    new Vector3(0f,.34f,0f),new Vector3(.13f,.68f,.14f));
                 var head=MakePart("forged iron head",holder.transform,iron,
-                    new Vector3(0f,.63f,0f),new Vector3(.64f,.26f,.31f));
+                    new Vector3(0f,.69f,0f),new Vector3(.73f,.25f,.32f));
                 hammers[i]=new Hammer{
                     pivot=holder.transform,baseRotation=holder.transform.localRotation,
                     handle=handle,head=head,
