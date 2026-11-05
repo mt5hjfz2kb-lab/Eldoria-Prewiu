@@ -83,7 +83,10 @@ namespace Eldoria.ReferenceClean
                 float real=Mathf.Clamp01(1f-remaining/totalSeconds);
                 float initial=.19f*Mathf.SmoothStep(0f,1f,
                     Mathf.Clamp01((time-started)/1.0f));
-                float reveal=Mathf.Min(.86f,Mathf.Max(real*.86f,initial));
+                // Leave a real, visible roof-assembly payoff for the last
+                // second. A near-complete visual building must never vanish
+                // and restart from its foundations at gateway completion.
+                float reveal=Mathf.Min(.69f,Mathf.Max(real*.69f,initial));
                 float count=Mathf.Max(1,parts.Count);
                 for(int i=0;i<parts.Count;i++)
                 {
@@ -96,10 +99,23 @@ namespace Eldoria.ReferenceClean
                 float elapsed=Mathf.Max(0f,time-started);
                 if(elapsed>=FinishDuration){Clear();return;}
                 int count=parts.Count;
+                // Keep the finished foundations/posts from the true work
+                // preview, then land only the final roof and gable. Otherwise
+                // a completed task makes the entire building disappear and
+                // rebuild from scratch in the next frame.
+                int alreadyBuilt=Mathf.Clamp(Mathf.CeilToInt(count*.70f),
+                                             0,count-1);
+                int remaining=Mathf.Max(1,count-alreadyBuilt);
                 for(int i=0;i<count;i++)
                 {
-                    float order=count==1?0f:i/(float)(count-1);
-                    float phase=Mathf.Clamp01((elapsed-.07f-order*.59f)/.48f);
+                    if(i<alreadyBuilt)
+                    {
+                        Place(parts[i],1f,false);
+                        continue;
+                    }
+                    float order=(i-alreadyBuilt)/(float)remaining;
+                    float phase=Mathf.Clamp01(
+                        (elapsed-.20f-order*.46f)/.62f);
                     Place(parts[i],phase,true);
                 }
             }
