@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "55a934d8af428b14b99bf54dab664e77a1727c77",
   "ownership_revision": 21,
-  "mode": "V6_LARGER_VISIBLE_HAMMER_IRREGULAR_DUST_ROSLYN_DOMAIN",
+  "mode": "V6_REAL_NATIVE_HAMMER_SCALE_DENSE_IRREGULAR_DUST_72_FRAMES",
   "expected_images": 72,
   "formats": [
     "844x390",
@@ -23,7 +23,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 20,
+  "attempt": 21,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "latest certified main & metadata merged into candidate",
@@ -66,7 +66,7 @@
   "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c",
   "source_domain_attempt": 2,
   "purpose": "Verify current authoritative completion receipt, no World4X bleed, URP real renderer and localized camera proof syntax",
-  "native_editor_invocation": false,
+  "native_editor_invocation": true,
   "window_runner_reservation": true,
   "real_visual_QA_pending": true,
   "license_evidence": {
@@ -244,7 +244,7 @@
     "24 technique A/B and 8 hammer-specific captures included in 72 original URP camera frames",
     "Keep artifact and log after failed art gate; no fake frames"
   ],
-  "previous_native_result": "NATIVE_PASS 72 real captures, real 6 hammer impacts and 58 visible dust sprites, but visual review rejected weak smoke and tiny dark hammers",
+  "previous_native_result": "72 real Unity frames verified. 6 hammer hits, but actual visual inspection found tiny hammers and transparent clouds; V6 improves art.",
   "v6_changes": [
     "Increase grounded artisan hammer physical scale 0.19 of site width, lighten wood/iron shading",
     "Use dedicated 64x64 irregular Perlin-feathered cloud alpha texture",
