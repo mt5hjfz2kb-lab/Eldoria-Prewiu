@@ -23,6 +23,10 @@ jobs:
           persist-credentials: false
           sparse-checkout: |
             tools/narrative-unity
+            tools/bastion-iii
+            tools/bastion-iv-v
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings
             Unity/Assets/Eldoria/Scripts/Domain
             Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs
       - uses: actions/setup-dotnet@v4
@@ -30,3 +34,7 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Execute real Unity game-state and gateway narrative assertions
         run: dotnet run --project tools/narrative-unity/NarrativeProbe.csproj --configuration Release
+      - name: Verify canonical 20-minute fissure and Lyra progression
+        run: dotnet run --project tools/bastion-iii/DomainProbe.csproj --configuration Release
+      - name: Verify Bastion IV-V Unity gateway and objective parity
+        run: dotnet run --project tools/bastion-iv-v/DomainProbe.csproj --configuration Release

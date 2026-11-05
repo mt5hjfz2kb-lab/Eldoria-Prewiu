@@ -86,6 +86,18 @@ public static class NarrativeProbe {
   firstS.Retention.TotalScoutReports=1;
   Check(EarlyRetentionFirstUseTutorial.Explorers(firstS)==FirstUseTutorialPhase.Learned,
         "Scouts stop repeating after an earned report");
+  var firstUseObjectives=new[]{
+   "b2.train-archers","b2.prepare-march","b2.raise-expedition-power",
+   "b3.food","b3.hunt","b3.investigate","b3.lyra","b3.fissure",
+   "b3.infrastructure","b4.priority","b5.stoneworks","b5.stone","b5.army","b5.rare"
+  };
+  foreach(var objective in firstUseObjectives) {
+   var spanish=UnityContextTutorial.ForObjective(objective,false);
+   var english=UnityContextTutorial.ForObjective(objective,true);
+   Check(!string.IsNullOrWhiteSpace(spanish)&&!string.IsNullOrWhiteSpace(english)
+     &&spanish.Length<=140&&english.Length<=140,
+      "Localized and concise tutorial for "+objective);
+  }
   Check(UnityContextTutorial.ForObjective("b2.train-archers",false).Contains("Cuartel"),
         "Training first action is explained");
   Check(UnityContextTutorial.ForObjective("b2.prepare-march",false).Contains("no envía"),
