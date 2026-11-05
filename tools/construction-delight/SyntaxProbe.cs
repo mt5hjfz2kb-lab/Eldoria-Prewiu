@@ -244,7 +244,9 @@ internal static class SyntaxProbe
             bool genuineGeometry=hammer.Contains("CreateBox()",StringComparison.Ordinal) &&
                 hammer.Contains("MeshFilter",StringComparison.Ordinal) &&
                 hammer.Contains("MeshRenderer",StringComparison.Ordinal) &&
-                hammer.Contains("h.baseRotation*Quaternion.Euler",StringComparison.Ordinal);
+                hammer.Contains("h.baseRotation*Quaternion.Euler",StringComparison.Ordinal) &&
+                hammer.Contains("contactPose*(Vector3.up*(.63f*size))",
+                    StringComparison.Ordinal);
             bool timedContact=hammer.Contains("cycle>=.405f && !h.hitSent",
                 StringComparison.Ordinal) &&
                 hammer.Contains("FirstImpact=h.contact",StringComparison.Ordinal);
