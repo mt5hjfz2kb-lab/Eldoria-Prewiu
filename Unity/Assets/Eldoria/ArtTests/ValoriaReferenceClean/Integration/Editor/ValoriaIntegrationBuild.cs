@@ -209,6 +209,16 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(h.Hud.Realm.Power&&h.Hud.Realm.Power.gameObject.activeInHierarchy,
       "Power cannot disappear when the nameplate is displayed");
    },"editable first-entry parchment, invalid nick validation, saved display and real screenshots");
+   // Native regression 42123550342: the parchment is removed and an
+   // offscreen ScreenSpaceCamera proof restores ScreenSpaceOverlay within
+   // one Editor frame. Without a real frame to re-register the visible
+   // GraphicRaycaster targets, the next legitimate narrator button has
+   // Graphic.depth=-1 and zero pointer hits (640x480). A player naturally
+   // receives this rendered frame between name confirmation and dialogue.
+   // Keep the strict real-raycast Click proof; NEVER invoke a hidden button.
+   yield return null;
+   yield return new WaitForSecondsRealtime(.12f);
+   Canvas.ForceUpdateCanvases();
    Check(()=>{
     h.Guidance.PresentMilestone();
     Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR"&&h.Hud.NarrativeSourceText.Contains("La Brecha se abrió en la tierra junto a Valoria"),"Original introductory narrator missing");
