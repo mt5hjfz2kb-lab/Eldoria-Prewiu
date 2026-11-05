@@ -258,7 +258,8 @@ namespace Eldoria
                     "Nv. " + CampaignTier("engendro-valoria"), null,
                     engendro, camera, false, 0);
             if (s.BastionLevel >= 5 && s.ChapterThree != null &&
-                s.ChapterThree.AshStalkerRespawnUtcTicks == 0 &&
+                (s.ChapterThree.AshStalkerRespawnUtcTicks == 0 ||
+                 host.City.Clock.UtcTicks >= s.ChapterThree.AshStalkerRespawnUtcTicks) &&
                 TryHotspot("ash-stalker-valoria", out var stalker) &&
                 stalker.gameObject.activeInHierarchy)
                 Place("ash-stalker-valoria",
