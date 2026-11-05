@@ -110,6 +110,54 @@ internal static class EconomyV2IntegratedProbe
         away=new LocalGateway(awayClock,awayStore);
         Check(away.Snapshot().Resources.Wood==paid.Resources.Wood,"offline ascension reload cannot repay production");
     }
+    static void FiveDayOfflineCap()
+    {
+        var clock=new Clock();var store=new Store{Seed=Ready()};
+        var game=new LocalGateway(clock,store);var before=game.Snapshot().Resources;
+        clock.Add(5*24*3600);game=new LocalGateway(clock,store);
+        var after=game.Snapshot();
+        Check(after.Resources.Wood-before.Wood==62208,"5d offline wood limited to 48h");
+        Check(after.Resources.Stone-before.Stone==13824,"5d offline stone limited to 48h");
+        Check(after.Resources.Food-before.Food==32832,"5d offline food limited to 48h");
+        Check(after.ChapterThree.EconomyUtcTicks==clock.UtcTicks,"5d absence skips excess time permanently");
+        game=new LocalGateway(clock,store);
+        Check(game.Snapshot().Resources.Wood==after.Resources.Wood&&
+              game.Snapshot().Resources.Stone==after.Resources.Stone&&
+              game.Snapshot().Resources.Food==after.Resources.Food,
+              "reopening after cap never duplicates accrued resources");
+        clock.Add(10);game.Advance();
+        Check(game.Snapshot().Resources.Wood==after.Resources.Wood+3&&
+              game.Snapshot().Resources.Stone==after.Resources.Stone&&
+              game.Snapshot().Resources.Food==after.Resources.Food+1,
+              "new active session resumes normal fractional production");
+    }
+    static void OfflineUpgradeSharesSameWindow()
+    {
+        var clock=new Clock();var seed=Ready();seed.ChapterThree.GranaryLevel=1;
+        var store=new Store{Seed=seed};var game=new LocalGateway(clock,store);
+        Check(Do(game,"UpgradeBuilding","granary").Ok,"start upgrade before long absence");
+        var before=game.Snapshot().Resources.Food;
+        clock.Add(5*24*3600);game=new LocalGateway(clock,store);
+        Check(game.Snapshot().ChapterThree.GranaryLevel==2,"upgrade completed during 5d absence");
+        Check(game.Snapshot().Resources.Food-before==32831,
+              "granary credited old rate for 10s plus new rate only up to 48h");
+        game=new LocalGateway(clock,store);
+        Check(game.Snapshot().Resources.Food-before==32831,"long upgrade reopen pays no duplicates");
+    }
+    static void LateAscensionCap()
+    {
+        var clock=new Clock();var store=new Store{Seed=ReadyToAscend()};
+        var game=new LocalGateway(clock,store);
+        Check(Do(game,"AdvanceBastion","bastion").Ok,"start ascension for 5d offline cap");
+        var afterStarting=game.Snapshot().Resources.Wood;
+        clock.Add(5*24*3600);game=new LocalGateway(clock,store);
+        Check(game.Snapshot().BastionLevel==3,"ascension finished before return");
+        Check(game.Snapshot().Resources.Wood==afterStarting+20736,
+              "offline ascension earns only 48h after Bastion III unlock");
+        var wallet=game.Snapshot().Resources.Wood;
+        game=new LocalGateway(clock,store);
+        Check(game.Snapshot().Resources.Wood==wallet,"ascension offline cap is idempotent");
+    }
     static void TimingsAndLock()
     {
         foreach(var (tier,seconds) in new[]{(2,120),(3,240),(4,420),(5,600)})
@@ -121,7 +169,7 @@ internal static class EconomyV2IntegratedProbe
     public static void Main()
     {
         SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
-        LongOfflineProduction();FractionAndRollback();OfflineUpgrade();LegacyMigration();AscensionWhileOffline();TimingsAndLock();
+        LongOfflineProduction();FiveDayOfflineCap();FractionAndRollback();OfflineUpgrade();OfflineUpgradeSharesSameWindow();LegacyMigration();AscensionWhileOffline();LateAscensionCap();TimingsAndLock();
         Console.WriteLine("ECONOMY_V2_GATEWAY_DOMAIN_PASS");
     }
 }
