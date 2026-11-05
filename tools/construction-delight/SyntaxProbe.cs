@@ -14,6 +14,7 @@ internal static class SyntaxProbe
             "Unity/Assets/Eldoria/ConstructionDelight/ValoriaConstructionDelightV1.cs",
             "Unity/Assets/Eldoria/ConstructionDelight/ConstructionDelightArchitecturalReveal.cs",
             "Unity/Assets/Eldoria/ConstructionDelight/ConstructionDelightStageAssembly.cs",
+            "Unity/Assets/Eldoria/ConstructionDelight/ConstructionDelightHammerWork.cs",
             "Unity/Assets/Eldoria/ConstructionDelight/Editor/ConstructionDelightNativeCapture.cs",
             "Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs"
         };
@@ -218,6 +219,68 @@ internal static class SyntaxProbe
             }
             else Console.WriteLine("CONSTRUCTION_DELIGHT_TECHNIQUE_AB_GUARD_PASS "+
                 "same Gateway and camera, synchronized URP reveal and 3D-only toggle");
+        }
+
+        // Static guard for real hammer/impact choreography. This is NOT an
+        // artistic approval or an Unity compile: it prevents accidental fake
+        // icons, gameplay writes and floating unanchored smoke reappearing.
+        var hammerPath="Unity/Assets/Eldoria/ConstructionDelight/"+
+                       "ConstructionDelightHammerWork.cs";
+        if(!File.Exists(hammerPath) || !File.Exists(hammerPath+".meta") ||
+           !File.Exists(ownerSource) || !File.Exists(qa))
+        {
+            Console.Error.WriteLine("CONSTRUCTION_DELIGHT_HAMMER_SOURCE_MISSING");
+            errors++;
+        }
+        else
+        {
+            var hammer=File.ReadAllText(hammerPath);
+            var owner=File.ReadAllText(ownerSource);
+            var capture=File.ReadAllText(qa);
+            bool originalWorksite=hammer.Contains("Begin(Bounds site,Camera camera,float now",
+                StringComparison.Ordinal) &&
+                hammer.Contains("camera.transform.right",StringComparison.Ordinal) &&
+                hammer.Contains("site.extents",StringComparison.Ordinal);
+            bool genuineGeometry=hammer.Contains("CreateBox()",StringComparison.Ordinal) &&
+                hammer.Contains("MeshFilter",StringComparison.Ordinal) &&
+                hammer.Contains("MeshRenderer",StringComparison.Ordinal) &&
+                hammer.Contains("h.baseRotation*Quaternion.Euler",StringComparison.Ordinal);
+            bool timedContact=hammer.Contains("cycle>=.405f && !h.hitSent",
+                StringComparison.Ordinal) &&
+                hammer.Contains("FirstImpact=h.contact",StringComparison.Ordinal);
+            bool reversible=hammer.Contains("public void Clear()",StringComparison.Ordinal) &&
+                hammer.Contains("if(root){root.SetActive(false);Object.Destroy(root);}",
+                    StringComparison.Ordinal) &&
+                owner.Contains("hammerTools.Clear()",StringComparison.Ordinal) &&
+                owner.Contains("hammerTools.SetVisible(visible)",StringComparison.Ordinal);
+            bool sceneBoundDust=owner.Contains("hammerTools.Tick(Time.unscaledTime)",
+                StringComparison.Ordinal) &&
+                owner.Contains("hammerImpactDust.EmitAtWorld(hammerTools.FirstImpact",
+                    StringComparison.Ordinal) &&
+                owner.Contains("denseWorkDust.EmitAtWorld(hammerTools.FirstImpact",
+                    StringComparison.Ordinal) &&
+                owner.Contains("holder.InverseTransformPoint(world)",StringComparison.Ordinal);
+            bool nativeValidated=capture.Contains("fx.ActiveHammerRenderers",
+                StringComparison.Ordinal) &&
+                capture.Contains("fx.TotalHammerImpacts",
+                    StringComparison.Ordinal) &&
+                capture.Contains("fx.ActiveDenseConstructionDust",
+                    StringComparison.Ordinal);
+            bool readOnly=!hammer.Contains("Gateway.Execute(",StringComparison.Ordinal) &&
+                !hammer.Contains("PlayerState.",StringComparison.Ordinal) &&
+                !hammer.Contains("Rigidbody",StringComparison.Ordinal) &&
+                !hammer.Contains("AddComponent<Collider",StringComparison.Ordinal);
+            if(!originalWorksite || !genuineGeometry || !timedContact ||
+               !reversible || !sceneBoundDust || !nativeValidated || !readOnly)
+            {
+                Console.Error.WriteLine("CONSTRUCTION_DELIGHT_HAMMER_WORK_GUARD_FAIL "+
+                    "authentic camera/site, lit geometry, timed hits, grounded dust, "+
+                    "reversible renderers and unchanged gameplay all required");
+                errors++;
+            }
+            else Console.WriteLine("CONSTRUCTION_DELIGHT_HAMMER_WORK_GUARD_PASS "+
+                "two 3D timber/iron hammers, actual site-bound impacts, "+
+                "dense batched puffs, cleanup and native visibility proof");
         }
 
         // A resource path referenced by the runtime must exist in the exact
