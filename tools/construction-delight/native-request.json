@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
   "ownership_revision": 13,
-  "mode": "OFFLINE_V4_CLONE_FIDELITY_STAGE_VISIBILITY_ROSLYN_AND_DOMAIN",
+  "mode": "V4_FINAL_SOURCE_DOMAIN_AND_ROSLYN_AFTER_PHYSICAL_LANDING_TIMING",
   "expected_images": 34,
   "formats": [
     "844x390",
@@ -49,13 +49,7 @@
       "status": "failed_compile_missing_particle_module"
     }
   ],
-  "validation": [
-    "Roslyn 5 files",
-    "36 domain tests",
-    "3D stage assembly source guard",
-    "original renderer flags restored",
-    "no asset/scene/save changed"
-  ],
+  "validation": "36 domain assertions, 5 Unity C# source files Roslyn syntax, authentic construction mesh staging, visible flag restoration, no second timer/World4X leak",
   "editor_launch": false,
   "windows_runner_requested": false,
   "test_project": "tools/construction-delight/DomainProbe.csproj",
@@ -87,7 +81,7 @@
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 14,
+  "offline_validation_attempt": 15,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
