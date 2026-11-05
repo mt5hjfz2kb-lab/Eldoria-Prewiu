@@ -80,6 +80,10 @@ namespace Eldoria.ReferenceClean
         public bool StagingContinuedAtCompletion => stagedBuilding.CompletionContinuedFromWork;
         public int ActiveStagedBuildingMeshes => stagedBuilding.MeshCount;
         public int ActiveStructuralRevealMeshes => structureReveal.MeshCount;
+#if UNITY_EDITOR
+        public bool BothTechniqueBloomProfilesReady =>
+            structureReveal.HasBloomVolume && architectureOnlyReveal.HasBloomVolume;
+#endif
         public int ActiveArchitecturalSurfaces => materialLustre.LayerCount;
         public string ActiveBuildingId => activeBuilding ?? "";
         public int ActiveConstructionSprites => (loopDust?.VisibleCount ?? 0) +
