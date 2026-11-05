@@ -182,7 +182,10 @@ internal static class SyntaxProbe
                                 runtime.Contains("stagedBuilding.SetVisible(false)",StringComparison.Ordinal) &&
                                 runtime.Contains("stagedBuilding.SetVisible(true)",StringComparison.Ordinal);
             bool matchingEffects=runtime.Contains("architectureOnlyReveal.Complete(completed,city.PlayerCamera,",StringComparison.Ordinal) &&
-                                 runtime.Contains("architectureOnlyLustre.Begin(completed,Time.unscaledTime,staged)",StringComparison.Ordinal);
+                                 runtime.Contains("architectureOnlyLustre.Begin(completed,Time.unscaledTime)",StringComparison.Ordinal) &&
+                                 runtime.Contains("if(staged)stagedBuilding.SetVisible(false)",StringComparison.Ordinal) &&
+                                 runtime.Contains("if(staged)stagedBuilding.SetVisible(true)",StringComparison.Ordinal) &&
+                                 runtime.Contains("if(city && city.Probe)",StringComparison.Ordinal);
             bool expectedCount=capture.Contains("\\\"images\\\": 64",StringComparison.Ordinal) ||
                                capture.Contains("images=64",StringComparison.Ordinal);
             if(!exactCaseNames || !bothStates || !sharedView ||
