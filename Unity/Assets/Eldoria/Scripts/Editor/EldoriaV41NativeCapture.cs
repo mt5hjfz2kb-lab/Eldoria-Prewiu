@@ -1062,6 +1062,10 @@ namespace Eldoria.Editor
             screen.Close();yield return null;
             var gateway=host.City.Gateway;var snap=gateway.Snapshot();
             Need(gateway.Execute(new Eldoria.Application.GameCommand("v41-native-battle",snap.PlayerId,"Fight","corrupt-scout",snap.Revision)).Ok,"Real battle departure");
+            var liveBattle=gateway.Snapshot().March.VersionedBattle;
+            Need(liveBattle!=null&&liveBattle.RulesVersion==EldoriaV41CombatEvolution.RulesVersion&&
+                liveBattle.EnemyCreature!=null&&liveBattle.EnemyCreature.Health==620,
+                "Canonical playable host actually dispatches the new immutable campaign resolver");
             ((ValoriaReferenceCleanGameplay.TestClock)host.City.Clock).Step(30);gateway.Advance();yield return null;
             Need(gateway.Snapshot().Mailbox.List("informes").Count==1,"Real result creates one report");
             var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();mailbox.Refresh();yield return null;
@@ -1232,6 +1236,8 @@ namespace Eldoria.Editor
             var metricValue=host.Hud.GetComponentsInChildren<Text>(true)
                 .FirstOrDefault(t=>t.name=="Mailbox / genuine metric 1");
             var realRecord=gateway.Snapshot().Mailbox.List("informes")[0].Battle;
+            Need(realRecord.Outcome=="victory"&&!string.IsNullOrEmpty(realRecord.OwnDamageByFamily),
+                "Canonical encounter actually resolves the new motor and persists its own analysis");
             var visibleComposition=host.Hud.GetComponentsInChildren<Text>(true)
                 .FirstOrDefault(t=>t.name=="Mailbox / own roster historical composition");
             Need(realRecord.OwnRoster!=null&&realRecord.OwnRoster.Total==realRecord.Troops &&
