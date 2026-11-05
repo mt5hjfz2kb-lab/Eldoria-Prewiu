@@ -73,6 +73,23 @@ namespace Eldoria.Tests
                 if (!host || !(bool)Member(host, "Ready")) continue;
                 var hud = Member(host, "Hud") as Component;
                 if (!hud) continue;
+                // Existing navigation/portrait tests must exercise the newly
+                // required first-entry flow rather than bypass its gate.
+                // Separate PlayerClarity tests assert rejected/one-time names.
+                if (Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE") == "1")
+                {
+                    var prompt=hud.GetComponentsInChildren<MonoBehaviour>(true)
+                        .FirstOrDefault(x=>x && x.GetType().Name=="RoyalPlayerNamePrompt");
+                    if (prompt && prompt.gameObject.activeInHierarchy)
+                    {
+                        var editor=prompt.GetComponentInChildren<InputField>(true);
+                        Assert.That(editor,Is.Not.Null,"Native first entry lacks actual InputField");
+                        editor.text="QA Valoria";
+                        Call(prompt,"Confirm");
+                        Assert.That(prompt.gameObject.activeSelf,Is.False,
+                            "Name prompt must commit through the saved gateway");
+                    }
+                }
                 ready(host, hud);
                 yield break;
             }
