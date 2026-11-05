@@ -95,7 +95,13 @@ namespace Eldoria
             var snapshot = host.City.Gateway.Snapshot();
             bool modal = hud.Modal && hud.Modal.gameObject.activeSelf;
             var management = hud.GetComponent<RoyalGoldV3ManagementScreens>();
-            bool obstructed = modal || (management && management.IsOpen);
+            var retention = hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();
+            var mailbox = hud.GetComponent<RoyalGoldV41MailboxScreen>();
+            var building = hud.GetComponent<RoyalGoldV3BuildingScreens>();
+            var heroes = hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+            bool obstructed = modal || (management && management.IsOpen) ||
+                (retention && retention.IsOpen) || (mailbox && mailbox.IsOpen) ||
+                (building && building.IsOpen) || (heroes && heroes.IsOpen);
             if (!obstructed)
             {
                 if (host.InWorld) RenderWorld(snapshot);
