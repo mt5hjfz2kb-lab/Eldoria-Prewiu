@@ -95,7 +95,11 @@ internal static class SyntaxProbe
             bool noFakeProgress=src.Contains("deadline-nowTicks",StringComparison.Ordinal) &&
                                 !src.Contains("Gateway.Execute(",StringComparison.Ordinal) &&
                                 !src.Contains("PlayerState.",StringComparison.Ordinal);
-            if(!realMeshes || !reversible || !noFakeProgress)
+            bool stageContinuity=src.Contains("alreadyBuilt",StringComparison.Ordinal) &&
+                                  src.Contains("if(i<alreadyBuilt)",StringComparison.Ordinal) &&
+                                  src.Contains("Place(parts[i],1f,false)",StringComparison.Ordinal) &&
+                                  src.Contains("Mathf.Min(.69f",StringComparison.Ordinal);
+            if(!realMeshes || !reversible || !noFakeProgress || !stageContinuity)
             {
                 Console.Error.WriteLine("CONSTRUCTION_DELIGHT_STAGE_GUARD_FAIL");
                 errors++;
