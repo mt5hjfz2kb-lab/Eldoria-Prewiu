@@ -1,0 +1,29 @@
+name: Unity Narrative Domain (Ubuntu, no Editor)
+on:
+  pull_request:
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs'
+      - 'tools/narrative-unity/**'
+      - '.github/workflows/narrative-unity-domain.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  narrative-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/narrative-unity
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Execute real Unity game-state and gateway narrative assertions
+        run: dotnet run --project tools/narrative-unity/NarrativeProbe.csproj --configuration Release

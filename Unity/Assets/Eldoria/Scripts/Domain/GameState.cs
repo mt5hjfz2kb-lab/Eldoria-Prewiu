@@ -387,10 +387,10 @@ namespace Eldoria.Domain
                 if(level==2&&!Seen(s,"barracks"))return "barracks";
                 if(level==2&&(s.EngendroDefeated||p?.EngendroDefeated==true)&&!Seen(s,"secured"))return "secured";
             }
-            if(level==3&&!Seen(s,"frontier-open"))return "frontier-open";
+            if(level==3&&c?.FissureClosed!=true&&!Seen(s,"frontier-open"))return "frontier-open";
             // The conclusion of Lyra's story must precede the next Bastion's
             // council even if a saved game advances several states offline.
-            if(level>=3&&level<=4&&c?.FissureClosed==true&&!Seen(s,"fissure-closed"))return "fissure-closed";
+            if(level>=3&&c?.FissureClosed==true&&!Seen(s,"fissure-closed"))return "fissure-closed";
             if(level==4&&!Seen(s,"consolidate-valoria"))return "consolidate-valoria";
             if(level>=5)
             {

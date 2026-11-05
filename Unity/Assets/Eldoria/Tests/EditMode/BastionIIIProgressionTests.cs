@@ -115,6 +115,19 @@ namespace Eldoria.Tests {
    s.ChapterProgress.SeenNarrative.Add("productive-valoria");
    Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("extraction-oddity"));
   }
+  [Test]public void ClosingFissureAtBastionThreeSkipsObsoleteFrontierIntro(){
+   var s=Ready(3).Value;s.ChapterThree.FissureClosed=true;
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("fissure-closed"));
+  }
+  [Test]public void UnreadLyraConclusionSurvivesTransitionToBastionFive(){
+   var s=Ready(5).Value;s.ChapterThree.FissureClosed=true;
+   s.ChapterThree.ExtractionOddity=true;
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("fissure-closed"));
+   s.ChapterProgress.SeenNarrative.Add("fissure-closed");
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("productive-valoria"));
+   s.ChapterProgress.SeenNarrative.Add("productive-valoria");
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("extraction-oddity"));
+  }
   [Test]public void IncompleteNarrativeIsNotRecordedAndAcknowledgementIsIdempotent(){
    var clock=new Clock();var store=Ready(3);var gateway=new LocalGateway(clock,store);
    Assert.That(NarrativeCoherenceRules.NextUnseenBeat(gateway.Snapshot()),Is.EqualTo("frontier-open"));
