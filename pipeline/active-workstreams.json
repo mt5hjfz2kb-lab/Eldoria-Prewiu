@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T23:30:56.243Z",
+  "updated_at": "2026-11-05T23:35:51.665Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6338,6 +6338,28 @@
         "economy_merged_sha": "0579b316eac5c9c278d7de83540b9f67d74b96a6",
         "integration_branch": "feature/player-clarity-first-login-map-signage-20261105"
       }
+    },
+    {
+      "id": "eldoria-slm-permanent-bootstrap-20261104",
+      "title": "Eldoria — instalar y validar SuperLocalMemory local de forma segura",
+      "owner": "chatgpt-eldoria-slm-bootstrap-20261104",
+      "branch": "pilot/slm-permanent-bootstrap-20261104",
+      "status": "active",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "claimed_at": "2026-11-05T23:35:51.665Z",
+      "base_main_sha": "ab6e36f82aa0878744e3de859dcc491785574ef9",
+      "scope": [
+        "pilot/slm-bootstrap/**",
+        ".github/workflows/eldoria-slm-windows-install.yml",
+        ".github/workflows/eldoria-slm-windows-preflight.yml"
+      ],
+      "resources": [],
+      "budget_eur": 0,
+      "art_production_routing": "not_applicable",
+      "phase": "BOOTSTRAP_READY_NATIVE_EDITOR_JOB_STILL_RUNNING",
+      "next": "Claim windows-runner-heavy only after real editor job completes; run guarded installer, validate persistence and MCP; never auto-login OAuth.",
+      "write_scope_released": false
     }
   ],
   "history": [
