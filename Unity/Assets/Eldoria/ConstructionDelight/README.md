@@ -173,3 +173,23 @@ QA A/B: ya registra y exige presencia de piezas 3D durante obra y finalización,
 **Pruebas realizadas:** [42013182372](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42013182372) — 36 assertions de dominio y cinco archivos C# sin errores de sintaxis; guardias del handoff de tarea y continuidad de obra superadas. **No equivale a compilar V4 en Unity.** El primer intento [42012756978](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42012756978) falló porque la antigua aserción exigía mantener un corte visual artificial de 70%; se sustituyó por una verificación más estricta de poses conservadas.
 
 **Gates pendientes:** compilar Unity 6000.3.23f1, generar A/B auténticos y secuencias temporales vertical/horizontal, verificar ausencia de saltos y pérdida de tejado, persistencia al recargar, inspeccionar materialidad y rendimiento móvil. El HEAD con la mejora final de cubierta/materiales requiere nuevo test. ART_APPROVED=false; sin merge ni APK. PR #152 mantiene intacta la versión jugable de main.
+
+
+## Experimento controlado A/B de técnica visual — 05/11/2026
+
+El usuario pidió comparar dos técnicas sin suposiciones sobre cuál queda mejor:
+
+- **A — Arquitectura**: efectos atmosféricos discretos, shader URP de barrido vertical sobre geometría auténtica, MaterialPropertyBlock que calienta piedra/madera, luz local y Bloom corto; **sin colocar mallas progresivamente**.
+- **B — Montaje 3D**: idénticas partículas, shader, pulso de materiales, luz y Bloom, más el ensamblaje progresivo de las mallas auténticas durante el plazo real y al completar.
+
+**Misma escena, cámara, resolución, tarea LocalGateway, progreso, semilla y momento exacto**. Se implementó `SetTechniqueForCapture(bool)` exclusivamente en Editor. Durante construcción A oculta solamente los duplicados de malla, conservando el barrido sobre el andamio. Al finalizar A restaura temporalmente las mallas originales y muestra una segunda instancia del mismo shader/Bloom iniciada en el mismo instante de completado; B devuelve el montaje de copias al mismo estado. El comparador restaura siempre B al terminar cada par. Sin duplicar partidas ni fingir capturas.
+
+La evidencia nativa requerida pasa de **40 a 64 PNG**: conserva las 40 capturas de V4 (incluida persistencia, primeras poses y secuencias) y añade 24 capturas comparativas de técnica A/B en vertical y horizontal durante obra, finalización y dos momentos adicionales de cada movimiento. Ambas utilizan exactamente el mismo método URP `RenderPipeline.StandardRequest`. El QA debe registrar diferencias en píxeles auténticos, presencia de ambas instancias de Bloom y continuidad de las mallas, y rechazar falta de muestras o materialización.
+
+**Alcance y seguridad:** la segunda instancia de realce arquitectónico solo se instancia en `city.Probe` y se excluye de las builds con `#if UNITY_EDITOR`. Al construir la referencia A se restauran temporalmente los `Renderer.enabled` reales; un `finally` garantiza volver al estado original. `StageAssembly` nunca modifica lógica, colisionadores, objetos persistidos ni materiales compartidos. Todas las capturas son estáticas del mismo marco de Unity y sin posprocesado externo.
+
+**Verificación hasta ahora:** prueba offline [42032899847](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42032899847) con 36 comprobaciones de dominio y cinco archivos C# sin errores de sintaxis; guardia especial del A/B satisfactoria. Los cambios posteriores de restauración y prueba de disponibilidad Bloom necesitan nueva pasada de fuentes.
+
+**Pendiente e imprescindible:** ejecución nativa de Unity 6000.3.23f1, obtención de los 64 PNG, revisión real de cada secuencia temporal, inspección de defectos/popping/materialidad, cálculo de coste en Android/WebGL y decisión artística. **No existe todavía un A/B auténtico de estas dos técnicas y no hay ART_APPROVED ni merge/publicación.**
+
+**Recurso Windows:** el workstream de combate T1-T5 `eldoria-v41-combate-buzon-ui-20261030` es su propietario en `main/pipeline/active-workstreams.json`. No reclamar ni iniciar Unity hasta su liberación formal; mantener esta PR como DRAFT y no modificar PR136/V41.
