@@ -97,13 +97,16 @@ namespace Eldoria
             // 12 annuli x 24 directions: more geographic variety than the
             // old near-city handful of scripted anchors, but still local
             // to Chapter III so missions remain accessible to new players.
-            const int radials = 12, angular = 24, count = radials * angular;
+            int count = ChapterThreeRenewableSitePolicy.SiteCount;
             var old = target.transform.position;
             for (int attempt=0;attempt<count;attempt++)
             {
-                int index = DistributedSiteOrder.Candidate(count,targetId,generation,attempt);
-                float radius=88f+(index/angular)*16f;
-                float angle=(index%angular)*15f*Mathf.Deg2Rad;
+                int index = ChapterThreeRenewableSitePolicy.CandidateIndex(
+                    targetId,generation,attempt);
+                float radius=ChapterThreeRenewableSitePolicy.RadiusAt(index);
+                float angle=ChapterThreeRenewableSitePolicy.BearingAt(index) *
+                    (360f / ChapterThreeRenewableSitePolicy.BearingsPerBand) *
+                    Mathf.Deg2Rad;
                 float dx=Mathf.Cos(angle)*radius, dz=Mathf.Sin(angle)*radius;
                 var p=host.WorldHome+new Vector3(dx,RegionOneBlenderLandscape.Height(dx,dz),dz);
                 // No occupied city, cloned model or opaque UI position.
