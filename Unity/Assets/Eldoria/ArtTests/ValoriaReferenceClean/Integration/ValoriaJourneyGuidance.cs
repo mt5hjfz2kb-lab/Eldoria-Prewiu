@@ -17,14 +17,8 @@ namespace Eldoria.ReferenceClean {
   string Beat {
    get {
     var s=city.Gateway.Snapshot();
-    if(s.BastionLevel>=5)return s.ChapterThree.ExtractionOddity&&!s.ChapterProgress.SeenNarrative.Contains("extraction-oddity")?"extraction-oddity":"productive-valoria";
-    if(s.BastionLevel==4)return "consolidate-valoria";
-    if(s.BastionLevel>=3)return s.ChapterThree.FissureClosed?"fissure-closed":"frontier-open";
-    if(s.EngendroDefeated)return "secured";
-    if(s.BastionLevel>=2)return "barracks";
-    if(s.ChapterProgress.GatheredWood>0)return "mark";
-    if(s.SawmillLevel>0)return "world";
-    return "start";
+    var pending=NarrativeCoherenceRules.NextUnseenBeat(s);
+    return string.IsNullOrEmpty(pending)?NarrativeCoherenceRules.RecapBeat(s):pending;
    }
   }
   static RoyalNarrativePresentation.Line L(string who,string es,string en)
@@ -35,10 +29,10 @@ namespace Eldoria.ReferenceClean {
     case "consolidate-valoria":return new[]{L("NARRADOR","El nivel IV consolida Valoria. Elige la prioridad del reino y reúne recursos para alcanzar el V y desbloquear la Cantera.","Level IV consolidates Valoria. Choose the realm's priority and gather resources to reach V and unlock the Stoneworks.")};
     case "productive-valoria":return new[]{L("NARRADOR","Bastión V permite construir la Cantera de Valoria para generar piedra de forma continua. Cada edificio crece mediante sus propias mejoras.","Bastion V unlocks Valoria's Stoneworks for continuous stone production. Each building grows through its own upgrades.")};
     case "frontier-open":return new[]{
-     L("Sir Aldric","La frontera se abre. Necesitamos un Granero y alimento para sostener las expediciones. Hay nuevas huellas cerca de la fisura: las investigaré.","The frontier opens. We need a Granary and food to sustain expeditions. There are new tracks near the fissure: I will investigate them.")};
+     L("Sir Aldric","La frontera se abre. El Granero nos dará alimento para explorarla. Hay una anomalía en la tierra, pero todavía no sabemos qué encontraremos allí.","The frontier opens. The Granary will feed our expeditions. There is an anomaly in the ground, but we do not yet know what awaits us.")};
     case "fissure-closed":return new[]{
      L("Lyra","Ese símbolo… pertenecía a mi hermano. No abandonaré su búsqueda. Lucharé junto a Valoria para seguir sus rutas.","That symbol… it belonged to my brother. I will not abandon the search. I will fight alongside Valoria to follow his trail."),
-     L("Sir Aldric","Entonces eres una de los nuestros. Guardaremos el manuscrito; aún no sabemos qué significa.","Then you are one of us. We will keep the manuscript; we do not yet know what it means."),
+     L("Sir Aldric","Entonces Valoria también será tu hogar. Guardaremos el manuscrito; aún no sabemos qué significa.","Then Valoria will be your home too. We will keep the manuscript; we do not yet know what it means."),
      L("NARRADOR","Lyra se incorpora a los héroes. El Manuscrito de la Fisura queda en el Arcón. La fisura local se ha cerrado; la Brecha principal permanece abierta.","Lyra joins the heroes. The Fissure Manuscript is kept in the Chest. The local fissure is closed; the main Breach remains open.")};
     case "start":return new[]{
      L("NARRADOR","La Brecha apareció sobre Valoria antes del amanecer. Cuando cesaron los temblores, las murallas seguían en pie. El reino, no.",
@@ -82,8 +76,8 @@ namespace Eldoria.ReferenceClean {
   }
   public void PresentMilestone(){
    if(!host||!host.Ready||host.Hud.NarrativeOpen||host.Hud.Modal.gameObject.activeSelf)return;
-   var s=city.Gateway.Snapshot();string beat=Beat;
-   if(s.ChapterProgress!=null&&s.ChapterProgress.SeenNarrative!=null&&s.ChapterProgress.SeenNarrative.Contains(beat))return;
+   var s=city.Gateway.Snapshot();string beat=NarrativeCoherenceRules.NextUnseenBeat(s);
+   if(string.IsNullOrEmpty(beat))return;
    // Honour the historical PlayerPrefs only for a loaded pre-migration save.
    // They must NEVER suppress a fresh game's first introduction.
    if(city.HadExistingSave&&PlayerPrefs.GetInt("valoria.journey.story."+beat,0)==1)return;

@@ -174,7 +174,12 @@ namespace Eldoria.UI.RoyalGold {
      if(c.FissureClosed){b.State=L(en,"Fisura cerrada","Fissure closed");return b;}
      kind=!c.FissureExplored?"InvestigateFissure":!c.LyraContacted?"ContactLyra":"Fight";
      label=L(en,kind=="InvestigateFissure"?"Investigar · 20 min":kind=="ContactLyra"?"Hablar con Lyra":"Asaltar con Lyra",kind=="InvestigateFissure"?"Investigate · 20 min":kind=="ContactLyra"?"Talk to Lyra":"Assault with Lyra");
-     b.Function=L(en,"Una fisura local. Lyra busca a su hermano; aún nadie conoce el origen de la Brecha.","A local fissure. Lyra seeks her brother; the Breach's origin remains unknown.");
+     int knowledge=NarrativeCoherenceRules.FissureKnowledgeStage(s);
+    b.Function=knowledge==0?
+     L(en,"Una fractura extraña cerca de Valoria. Aldric debe investigar antes de acercarse.","An unusual fracture near Valoria. Aldric must investigate before approaching."):
+     knowledge==1?
+     L(en,"La investigación ha encontrado huellas humanas. Acércate para descubrir quién las dejó.","The investigation found human tracks. Approach to discover who left them."):
+     L(en,"Lyra busca a su hermano desaparecido. Combatirá junto a Aldric; todavía no se ha unido al reino.","Lyra is searching for her missing brother. She will fight beside Aldric, but has not yet joined the realm.");
      deadline=c.InvestigationEndsUtcTicks;seconds=1200;
     }else if(id=="meat-valoria")b.Function=c.MeatRemaining+L(en," comida disponible"," food available");
     else if(id=="ash-stalker-valoria"){
