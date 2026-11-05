@@ -340,6 +340,9 @@ namespace Eldoria.Domain
                 string hero=s.ChapterThree!=null&&s.ChapterThree.LyraRecruited&&
                     (s.PreparedHeroId=="lyra"||s.PreparedHeroId=="aldric+lyra")
                     ?s.PreparedHeroId:"aldric";
+                if((hero!="lyra"&&!MarchCapacityRules.HeroAvailable(s,"aldric")) ||
+                    (hero!="aldric"&&!MarchCapacityRules.HeroAvailable(s,"lyra")))
+                {message="El héroe está en otra marcha";return false;}
                 var available=s.MarchConfigured&&s.PreparedTroops!=null&&s.PreparedTroops.Total>0?
                     s.PreparedTroops.Copy():
                     MarchCapacityRules.AutoSelect(s.Available,MarchCapacityRules.Capacity(s,hero));

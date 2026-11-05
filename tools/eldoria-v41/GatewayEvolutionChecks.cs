@@ -19,6 +19,7 @@ static class GatewayEvolutionChecks
         var clock=new Clock();var gateway=new LocalGateway(clock,store,resolver);
         Check(Send(gateway,"v41-prepare","ConfigureMarch","march-main:40:0:0:aldric::").Ok,"prepare real march");
         Check(Send(gateway,"v41-launch","Fight","corrupt-scout").Ok,"launch real command");
+        Check(!Send(gateway,"busy-guardian","VigilantBattle","1").Ok,"guardian cannot reuse hero already marching");
         Check(gateway.Snapshot().March.VersionedBattle.EnemyTroops.ArcherT1==1,"catalog copied before caller mutation");
         var copied=gateway.Snapshot();copied.March.VersionedBattle.EnemyTroops.ArcherT1=999;
         Check(gateway.Snapshot().March.VersionedBattle.EnemyTroops.ArcherT1==1,"save snapshot isolated");

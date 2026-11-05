@@ -1591,6 +1591,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     MarchCapacityRules.AutoSelect(s.Available,capacity);
                 bool eligibleTroops=MarchCapacityRules.Fits(selectedTroops,s.Available,capacity);
                 bool hasMarchSlot=MarchCapacityRules.CanStart(s,now());
+                bool heroReady=(selectedHero=="lyra"||MarchCapacityRules.HeroAvailable(s,"aldric"))&&
+                    (selectedHero=="aldric"||MarchCapacityRules.HeroAvailable(s,"lyra"));
                 var marchStats=eligibleTroops?
                     EarlyRetentionRules.ExpeditionWithMastery(s,selectedTroops,selectedHero):
                     default(CombatStats);
@@ -1608,11 +1610,11 @@ namespace Eldoria.UI.RoyalGold.V2
                     "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+
                     " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"));
                 mainAction.interactable=EarlyRetentionRules.StageUnlocked(s,stage)&&
-                    eligibleTroops&&hasMarchSlot;
+                    eligibleTroops&&hasMarchSlot&&heroReady;
                 // The action cannot promise a battle if the real Gateway will
                 // reject it for capacity, unavailable troops or three active slots.
                 mainActionLabel.Put(mainAction.interactable?"Combatir":
-                    !hasMarchSlot?"3 MARCHAS OCUPADAS":
+                    !hasMarchSlot?"3 MARCHAS OCUPADAS":!heroReady?"HÉROE EN MARCHA":
                     !eligibleTroops?"AJUSTA TU MARCHA":"AÚN NO DISPONIBLE");
                 claimXp.interactable=xp>0;
                 xpLabel.Put(xp>0?"RECOGER "+xp+" XP":"EXPERIENCIA EN PROGRESO");
