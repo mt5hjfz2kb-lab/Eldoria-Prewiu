@@ -663,7 +663,7 @@ namespace Eldoria.Application
             if(!MarchCapacityRules.Fits(troops,state.Available,MarchCapacityRules.Capacity(state,hero)))return false;
             var versioned=gathering||IsChapterThreeTarget(targetId)?null:battleResolver?.Prepare(troops.Copy(),new System.Collections.Generic.List<string>(party),targetId);
             if(versioned==null && !gathering && !IsChapterThreeTarget(targetId) &&
-                battleResolver is EldoriaV41GatewayResolver campaign && campaign.UsesCampaignCreatures)
+                battleResolver is IEldoriaCampaignBattleResolver campaign && campaign.UsesCampaignCreatures)
             {
                 var creature=Creature(state,targetId);
                 var stats=creature!=null?WorldCreatureCatalog.For(creature.CreatureKind,creature.Level):SliceRules.CampaignEnemy(targetId);

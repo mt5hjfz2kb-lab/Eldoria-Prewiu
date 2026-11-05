@@ -162,37 +162,27 @@ namespace Eldoria.Domain
         {
             switch(stage.Step)
             {
-                case 5:return "DEFENSA ALTA · USA RUPTURA";
-                case 10:return "ATAQUE ALTO · USA DEFENSA";
-                case 15:return "RUPTURA ALTA · USA VIDA";
-                case 20:return "VIDA ALTA · USA ATAQUE";
-                case 25:return "EQUILIBRIO · PREPARA TU MARCHA";
+                case 5:return "CORAZA REFORZADA";
+                case 10:return "GOLPES CONTUNDENTES";
+                case 15:return "GARRAS PENETRANTES";
+                case 20:return "RESISTENCIA TENAZ";
+                case 25:return "GUARDIÁN DEL JURAMENTO";
                 default:return "DESAFÍO DEL CAMINO";
             }
         }
-        // Short, truthful advice anchored in a DIFFERENT actual enemy stat.
-        // It never promises a win or grants an automatic counter-bonus.
+        // Compatibility name retained for callers. Only observable traits, never
+        // composition advice or hidden combat parameters (issues #138/#139).
         public static string CombatAdvice(VigilantStage stage)
-        {
-            switch(stage.Step)
-            {
-                case 5:return "Prioriza daño y ruptura frente a su coraza.";
-                case 10:return "Refuerza defensa y vida ante sus golpes.";
-                case 15:return "Su ruptura castiga la defensa: lleva resistencia.";
-                case 20:return "Su vida es elevada: necesitas daño sostenido.";
-                case 25:return "Equilibra daño, defensa y ruptura.";
-                default:return "Observa sus estadísticas y prepara tu marcha.";
-            }
-        }
+            => GuardianBadge(stage);
         public static string BattleReview(BattleReportState report,VigilantStage stage)
         {
             if(report==null||report.TargetId!="vigilant:"+stage.Absolute)return "";
             var hero=report.HeroId=="lyra"?"Lyra":
                 report.HeroId=="aldric+lyra"?"Aldric y Lyra":"Aldric";
             return report.Rounds+" rondas · "+report.Troops+" tropas · "+hero+
-                "\nPoder "+report.PlayerPower+" · Índice "+report.EnemyPower+
+                "\nPoder de marcha "+report.PlayerPower+
                 " · Vida "+report.RemainingHealth+
-                "\n"+CombatAdvice(stage);
+                "\n"+(report.Won?"Encuentro superado.":"La marcha no superó el encuentro.");
         }
         // Lore variants are deterministic from the saved order, so a reload
         // never rerolls the story, fakes a rare item or duplicates a reward.
@@ -364,7 +354,7 @@ namespace Eldoria.Domain
                     EnemyPower=enemy.Difficulty,Won=battle.Won,Rounds=battle.Rounds,
                     RemainingHealth=battle.RemainingHealth,
                     Reason=battle.Won?"Superaste la "+enemy.Trait.ToLowerInvariant()+".":
-                        "Prepara otra composición: "+CombatAdvice(enemy)};
+                        "La marcha no superó el encuentro."};
                 s.LastBattleReason=s.LastBattleReport.Reason;
                 if(!battle.Won){message="La etapa resistió. Mejora tu ejército.";return true;}
                 p.LastClearedStage=stage;

@@ -66,7 +66,7 @@ static class Program
             EnemyPower=g15.Difficulty,RemainingHealth=0};
         var review=EarlyRetentionRules.BattleReview(evidence,g15);
         Require(review.Contains("5 rondas")&&review.Contains("55 tropas")&&
-                review.Contains("Lyra")&&review.Contains("ruptura"),
+                review.Contains("Lyra")&&!review.Contains("Índice")&&!review.Contains("lleva resistencia"),
                 "Battle report uses authoritative stats and useful advice");
         // Regression guard for the REAL Bastion II sequence. Scout unlock
         // must share ConfigureMarch's save revision; it cannot invalidate

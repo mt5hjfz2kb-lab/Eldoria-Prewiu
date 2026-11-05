@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T08:48:10.456Z",
+  "updated_at": "2026-11-05",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3007,7 +3007,7 @@
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
       "owner": "codex-eldoria-pr136-consolidation-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 20,
+      "ownership_revision": 21,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
@@ -3037,7 +3037,9 @@
         ".github/workflows/ui-progression-cert.yml",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs",
         "pipeline/art-production-requests/eldoria-v41-combate-buzon-ui-20261030.json",
-        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs"
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/EarlyRetentionEngagementNativeCapture.cs",
+        "tools/early-retention/Program.cs"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -3045,7 +3047,7 @@
       "art_production_routing": "required",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
       "phase": "COMBAT_T1_T5_NATIVE_VALIDATION",
-      "next": "Certify recovered T1-T5 candidate on canonical PR134; preserve issue138/139 decisions. Close only resolved issues after complete integration.",
+      "next": "Certify legacy Unity save fix 4a15815f in run42004744269, then certify canonical host activation and observable-only Vigilant feedback. Retain exact final laboratory stats; chapter III special encounters and mastery migration remain pending.",
       "art_production_routing_reason": "Mandatory tracking for exact source reuse and ArtTests code; no new artwork generation authorized.",
       "ownership_history": [
         {

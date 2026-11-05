@@ -211,8 +211,8 @@ namespace Eldoria.ReferenceClean.Editor
             Shot(host,"vigilants-defeat-reopened-phone",390,844,()=>{
                 var persisted=FindText(hud,"Offline hero experience");
                 Need(persisted&&persisted.gameObject.activeInHierarchy&&persisted.text.Contains("DERROTA")&&
-                    persisted.text.Contains("ruptura")&&persisted.preferredHeight<=persisted.rectTransform.rect.height+1f,
-                    "Real phone manuscript preserves the readable defeat lesson after reload and banner expiry");
+                    persisted.text.Contains("GARRAS PENETRANTES")&&!persisted.text.Contains("lleva resistencia")&&persisted.preferredHeight<=persisted.rectTransform.rect.height+1f,
+                    "Real phone manuscript preserves the readable observed defeat after reload and banner expiry");
             });
             ui.Close();
             state=host.City.Gateway.Snapshot();

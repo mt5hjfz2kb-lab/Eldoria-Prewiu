@@ -5,7 +5,7 @@ namespace Eldoria.Domain
 {
     // Explicit catalog injection only. No invented campaign opponents or unlocks.
     // The immutable departure snapshot, not a later catalog revision, resolves returns.
-    public sealed class EldoriaV41GatewayResolver : IEldoriaVersionedBattleResolver
+    public sealed class EldoriaV41GatewayResolver : IEldoriaCampaignBattleResolver
     {
         readonly Dictionary<string,EldoriaV41BattleInput> targets = new Dictionary<string,EldoriaV41BattleInput>(StringComparer.Ordinal);
         public bool UsesCampaignCreatures { get; private set; }

@@ -176,6 +176,12 @@ namespace Eldoria.Domain
         EldoriaV41CombatRecord Resolve(EldoriaV41BattleInput input);
     }
 
+    public interface IEldoriaCampaignBattleResolver : IEldoriaVersionedBattleResolver
+    {
+        bool UsesCampaignCreatures { get; }
+        EldoriaV41BattleInput PrepareCreature(ArmyRoster troops,IList<string> heroes,string targetId,WorldCreatureStats enemy);
+    }
+
     [Serializable] public sealed class EldoriaV41CombatRecord
     {
         public string TargetId="",HeroId="",Reason="";

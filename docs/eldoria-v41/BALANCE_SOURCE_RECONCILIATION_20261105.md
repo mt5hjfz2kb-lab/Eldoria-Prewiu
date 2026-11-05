@@ -38,3 +38,11 @@ Reproducción desde raíz: `python tools/eldoria-v41/laboratory/generate_parity.
 ## Límite pendiente
 
 La coherencia matemática recuperada está comprobada. Quedan el catálogo real de enemigos de campaña (el piloto de 50 no era ese catálogo), progresión/desbloqueos y certificación Unity. No convertir HP perdido en muertos ni activar Hospital/PvP inexistentes. Las tasas médicas5%/25% y costes/duraciones siguen hipótesis explícitas, fuera de la tabla de atributos recuperada.
+
+## Revisión adicional de ramas e issues (5 noviembre)
+
+Inventario remoto revisado de nuevo: 290 ramas en tres páginas. PR134 es la candidata canónica; PR135 está fusionada y PR136 integrada. Issue131 conserva la preparación original y sus referencias; #138 contiene la migración y decisiones posteriores; #139 conserva el laboratorio de Vigilantes. Ninguna se cierra solo por encontrar el mismo tema en otra.
+
+Las ramas `feature/eldoria-retention-first-evolution-20261028` (a5d32b02) y `feature/retention-engagement-evolution-20261028` (7c7f1b8e) tienen historias divergentes. Sus guardianes, maestría, descubrimientos persistentes y controles de capacidad ya están presentes en el dominio vigente; sus consejos automáticos quedaron sustituidos por #138/#139. No fusionar sus árboles completos: restaurarían presentación anterior y consejos rechazados. Se corrige la fuga todavía presente en GuardianBadge, BattleReview y el manuscrito de derrota; los controles se actualizan para exigir resultados propios y ausencia de consejos, conservando la lectura tras recarga y los límites de texto.
+
+Candidata 4a15815f conserva el adaptador de criaturas y la normalización estricta de snapshots vacíos de Unity; certificación nativa42004744269 en ejecución al registrar este punto. No es una certificación final ni activa aún el motor en toda la campaña.

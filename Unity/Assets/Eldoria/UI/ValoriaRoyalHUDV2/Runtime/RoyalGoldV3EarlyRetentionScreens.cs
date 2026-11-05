@@ -1627,7 +1627,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 battleFeedback.Put(hasPrevious?
                     EarlyRetentionRules.BattleReview(previous,EarlyRetentionRules.Stage(
                         previous.TargetId=="vigilant:"+stage?stage:stage-1)):
-                    "ESTRATEGIA · "+EarlyRetentionRules.CombatAdvice(info));
+                    "RASGO OBSERVADO · "+EarlyRetentionRules.CombatAdvice(info));
                 footer.Put(hasPrevious?
                     "ÚLTIMA MARCHA · "+(previous.Won?"VICTORIA":"DERROTA")+
                         " · "+previous.Rounds+" rondas · Poder "+previous.PlayerPower:

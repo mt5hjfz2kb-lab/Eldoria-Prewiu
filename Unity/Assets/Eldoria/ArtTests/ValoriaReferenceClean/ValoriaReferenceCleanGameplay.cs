@@ -46,7 +46,7 @@ namespace Eldoria.ReferenceClean {
      var legacy=Path.Combine(UnityEngine.Application.persistentDataPath,"eldoria-unity-slice-v1.json");
      if(File.Exists(legacy)){var old=new FileStateStore(legacy).Load();if(old!=null)store.Save(old);}
     }
-    Gateway=new LocalGateway(Clock,store);
+    Gateway=new LocalGateway(Clock,store,EldoriaV41GatewayResolver.Campaign());
     if(Presenter==null)Presenter=GetComponent<SlicePresenter>();
     Presenter.SceneHost=this;Presenter.UtcNowTicks=()=>Clock.UtcTicks;Presenter.Initialize(Gateway);Ready=true;
    }catch(Exception e){LoadError="No se pudo abrir el guardado. Se conserva intacto.";Debug.LogError("VALORIA_SAVE_PRESERVED "+e);}
@@ -54,7 +54,7 @@ namespace Eldoria.ReferenceClean {
   void Start(){if(Ready)Presenter.OnSceneLoaded(SceneManager.GetActiveScene(),LoadSceneMode.Single);}
   void OnDestroy(){SliceContentProfiles.SetRuntimeProfileOverride(priorProfile);}
   void OnGUI(){if(!string.IsNullOrEmpty(LoadError))GUI.Box(new Rect(20,20,Mathf.Min(Screen.width-40,600),100),LoadError);}
-  public void ReloadForProbe(){if(!Probe)throw new InvalidOperationException("Probe-only reload");Gateway=new LocalGateway(Clock,new FileStateStore(SaveFile));Presenter.Initialize(Gateway);Presenter.RefreshState();}
+  public void ReloadForProbe(){if(!Probe)throw new InvalidOperationException("Probe-only reload");Gateway=new LocalGateway(Clock,new FileStateStore(SaveFile),EldoriaV41GatewayResolver.Campaign());Presenter.Initialize(Gateway);Presenter.RefreshState();}
   /// <summary>
   /// Deliberate family playtest reset, invoked ONLY after two taps inside Settings.
   /// Keep backups on disk and preserve the existing installation identity.
