@@ -92,14 +92,17 @@ namespace Eldoria.Tests {
   [Test]public void FullMeatReserveAndRespawnSurviveOneLongOfflineInterval(){var c=new Clock();var st=Ready();var g=new LocalGateway(c,st);int food=g.Snapshot().Resources.Food;Assert.That(Do(g,"Gather","meat-valoria").Ok);c.Add(60);g=new LocalGateway(c,st);Assert.That(g.Snapshot().March.Phase,Is.EqualTo("idle"));Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+1100));Assert.That(g.Snapshot().ChapterThree.MeatRemaining,Is.EqualTo(1100));Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));g=new LocalGateway(c,st);Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+1100));Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));}
   [Test]public void OfflineProductionCapsAtOneHourAcrossPendingUpgrade(){var c=new Clock();var st=Ready();st.Value.ChapterThree.GranaryLevel=1;var g=new LocalGateway(c,st);int food=g.Snapshot().Resources.Food;Assert.That(Do(g,"UpgradeBuilding","granary").Ok);c.Add(7200);g=new LocalGateway(c,st);Assert.That(g.Snapshot().ChapterThree.GranaryLevel,Is.EqualTo(2));Assert.That(g.Snapshot().Resources.Food-food,Is.EqualTo(7200));}
 
-  [Test]public void LegacyReadBeatDoesNotBlockLaterStoryAndNeverSuppressesFreshPrologue(){
-   var s=Ready(1).Value;s.SawmillLevel=1;s.ChapterProgress.GatheredWood=130;
-   Func<string,bool> old=beat=>beat=="start"||beat=="world";
-   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s,true,old),Is.EqualTo("mark"));
-   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s,false,old),Is.EqualTo("start"));
-   Assert.That(s.ChapterProgress.SeenNarrative,Is.Empty,"Selection must not acknowledge unread dialogue");
-   s.BastionLevel=5;s.ChapterThree.FissureClosed=true;
-   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s,true,beat=>beat=="fissure-closed"),Is.EqualTo("productive-valoria"));
+  [Test]public void ModernEmptyLedgerNeverImportsAnotherPlaythroughGlobalFlags(){
+   Assert.That(NarrativeCoherenceRules.LegacyAcknowledgements(null,beat=>true),Is.Empty);
+   Assert.That(NarrativeCoherenceRules.LegacyAcknowledgements("{\"ChapterProgress\":{\"SeenNarrative\":[]}}",beat=>true),Is.Empty);
+   var old=NarrativeCoherenceRules.LegacyAcknowledgements("{\"SchemaVersion\":1}",beat=>beat=="start"||beat=="world");
+   CollectionAssert.AreEqual(new[]{"start","world"},old);
+   var clock=new Clock();var store=Ready(1);store.Value.SawmillLevel=1;store.Value.ChapterProgress.GatheredWood=130;
+   var gateway=new LocalGateway(clock,store);
+   foreach(var beat in old)gateway.AcknowledgeNarrative(beat);
+   gateway=new LocalGateway(clock,store);
+   Assert.That(NarrativeCoherenceRules.NextUnseenBeat(gateway.Snapshot()),Is.EqualTo("mark"));
+   Assert.That(gateway.Snapshot().ChapterProgress.SeenNarrative.Count,Is.EqualTo(2));
   }
   [Test]public void FissureDescriptionNeverSpoilsLyraBeforeContact(){
    var s=Ready(3).Value;

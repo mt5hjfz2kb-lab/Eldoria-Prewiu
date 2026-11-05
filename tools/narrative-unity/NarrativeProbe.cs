@@ -40,12 +40,20 @@ public static class NarrativeProbe {
 
   var legacy=State(1);legacy.ChapterProgress.GatheredWood=130;
   Func<string,bool> legacyRead=beat=>beat=="start"||beat=="world";
-  Check(NarrativeCoherenceRules.NextUnseenBeat(legacy,true,legacyRead)=="mark",
-    "Legacy acknowledgements cannot starve the next unread narrative");
-  Check(NarrativeCoherenceRules.NextUnseenBeat(legacy,false,legacyRead)=="start",
-    "A new game ignores another game's historical preferences");
-  Check(legacy.ChapterProgress.SeenNarrative.Count==0,
-    "Selecting a story neither marks it read nor mutates the save");
+  foreach(var beat in NarrativeCoherenceRules.LegacyAcknowledgements("{\"SchemaVersion\":1}",legacyRead))
+   legacy.ChapterProgress.SeenNarrative.Add(beat);
+  Check(NarrativeCoherenceRules.NextUnseenBeat(legacy)=="mark",
+    "Imported legacy acknowledgements cannot starve the next unread narrative");
+  var freshUnseen=State(1);
+  Check(NarrativeCoherenceRules.NextUnseenBeat(freshUnseen)=="start"&&freshUnseen.ChapterProgress.SeenNarrative.Count==0,
+    "Selecting a new story neither acknowledges it nor mutates the save");
+  Check(NarrativeCoherenceRules.LegacyAcknowledgements(null,beat=>true).Length==0,
+    "Fresh game never imports global dialogue flags");
+  Check(NarrativeCoherenceRules.LegacyAcknowledgements("{\"ChapterProgress\":{\"SeenNarrative\":[]}}",beat=>true).Length==0,
+    "Reloading an unread modern save never imports another game's flags");
+  var legacyBeats=NarrativeCoherenceRules.LegacyAcknowledgements("{\"SchemaVersion\":1}",legacyRead);
+  Check(legacyBeats.Length==2&&legacyBeats[0]=="start"&&legacyBeats[1]=="world",
+    "Only actual read flags are imported for a pre-ledger save");
   var c3=State(3);
   Check(NarrativeCoherenceRules.NextUnseenBeat(c3)=="frontier-open","Bastion III announces unexplored frontier");
   Check(NarrativeCoherenceRules.FissureKnowledgeStage(c3)==0,"Undiscovered fissure does not reveal Lyra");

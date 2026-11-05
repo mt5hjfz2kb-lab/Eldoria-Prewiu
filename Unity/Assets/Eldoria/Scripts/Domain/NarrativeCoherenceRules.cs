@@ -20,39 +20,49 @@ namespace Eldoria.Domain
             return c.FissureExplored ? 1 : 0; // Human tracks found
         }
 
+        // Only saves predating the per-save ledger may import old global flags.
+        // An empty modern ledger means unread, even after restarting the app.
+        public static string[] LegacyAcknowledgements(string originalSave, Func<string,bool> wasRead)
+        {
+            if(string.IsNullOrEmpty(originalSave)||wasRead==null||
+               originalSave.IndexOf("\"SeenNarrative\"",StringComparison.Ordinal)>=0)return new string[0];
+            var read=new System.Collections.Generic.List<string>();
+            foreach(var beat in new[]{"start","world","mark","barracks","secured","frontier-open",
+                "fissure-closed","consolidate-valoria","productive-valoria","extraction-oddity"})
+                if(wasRead(beat))read.Add(beat);
+            return read.ToArray();
+        }
+
         // Automatic story must not interrupt the player's current real screen.
         // Only presenter state is passed; no gameplay or save data is mutated.
         public static bool CanPresent(bool narrativeOpen,bool modalOpen,
             bool managementOpen,bool retentionOpen,bool mailboxOpen,bool contextSelected=false)
             => !narrativeOpen&&!modalOpen&&!managementOpen&&!retentionOpen&&!mailboxOpen&&!contextSelected;
 
-        public static string NextUnseenBeat(PlayerState s, bool loadedExistingSave=false, Func<string,bool> legacyRead=null)
+        public static string NextUnseenBeat(PlayerState s)
         {
             if(s==null)return "";
-            // Skip legacy acknowledgements while selecting, not after selecting:
-            // otherwise the first old beat blocks every later unread scene forever.
-            Func<string,bool> seen=beat=>Seen(s,beat)||(loadedExistingSave&&legacyRead!=null&&legacyRead(beat));
             int level=s.BastionLevel;
             var p=s.ChapterProgress;
             var c=s.ChapterThree;
             // Never replay the entire opening in a mature legacy save.
-            if(level==1 && !seen("start"))return "start";
+            if(level==1 && !Seen(s,"start"))return "start";
             if(level<=2)
             {
-                if(s.SawmillLevel>0&&!seen("world"))return "world";
-                if((p?.GatheredWood??0)>0&&!seen("mark"))return "mark";
-                if(level==2&&!seen("barracks"))return "barracks";
-                if(level==2&&(s.EngendroDefeated||p?.EngendroDefeated==true)&&!seen("secured"))return "secured";
+                if(s.SawmillLevel>0&&!Seen(s,"world"))return "world";
+                if((p?.GatheredWood??0)>0&&!Seen(s,"mark"))return "mark";
+                if(level==2&&!Seen(s,"barracks"))return "barracks";
+                if(level==2&&(s.EngendroDefeated||p?.EngendroDefeated==true)&&!Seen(s,"secured"))return "secured";
             }
-            if(level==3&&c?.FissureClosed!=true&&!seen("frontier-open"))return "frontier-open";
+            if(level==3&&c?.FissureClosed!=true&&!Seen(s,"frontier-open"))return "frontier-open";
             // The conclusion of Lyra's story must precede the next Bastion's
             // council even if a saved game advances several states offline.
-            if(level>=3&&c?.FissureClosed==true&&!seen("fissure-closed"))return "fissure-closed";
-            if(level==4&&!seen("consolidate-valoria"))return "consolidate-valoria";
+            if(level>=3&&c?.FissureClosed==true&&!Seen(s,"fissure-closed"))return "fissure-closed";
+            if(level==4&&!Seen(s,"consolidate-valoria"))return "consolidate-valoria";
             if(level>=5)
             {
-                if(!seen("productive-valoria"))return "productive-valoria";
-                if(c?.ExtractionOddity==true&&!seen("extraction-oddity"))return "extraction-oddity";
+                if(!Seen(s,"productive-valoria"))return "productive-valoria";
+                if(c?.ExtractionOddity==true&&!Seen(s,"extraction-oddity"))return "extraction-oddity";
             }
             return "";
         }

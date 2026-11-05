@@ -35,9 +35,11 @@ La batería C# también recalcula los 39.204 duelos históricos de la variante e
 
 Reproducción desde raíz: `python tools/eldoria-v41/laboratory/generate_parity.py` (NumPy), luego `dotnet run --project tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj`. El fixture está versionado para que CI C# no dependa de Python. Las pruebas ejecutadas localmente usan Roslyn/.NET8 sobre los mismos CompileItems; en este contenedor el lanzador SDK falla leyendo información de procesos, por lo que se compila con csc y se ejecuta el DLL directamente. Esto no sustituye Unity.
 
-## Límite pendiente
+## Resultado de integración y límites
 
-La coherencia matemática recuperada está comprobada. Quedan el catálogo real de enemigos de campaña (el piloto de 50 no era ese catálogo), progresión/desbloqueos y certificación Unity. No convertir HP perdido en muertos ni activar Hospital/PvP inexistentes. Las tasas médicas5%/25% y costes/duraciones siguen hipótesis explícitas, fuera de la tabla de atributos recuperada.
+PR134 integrada en main d19df6fc1d521204926b735a05a06786c80f37a5. El catálogo real vigente,25 Vigilantes, patrullas y Acechador ya están conectados; se preservan progresión y desbloqueos existentes. Unity42044569900 PASS117/117 EditMode,73/73 PlayMode y Windows privado; postverificación de main en curso. Ver COMBAT_IMPLEMENTATION_20261105.md para el cierre vigente.
+
+El piloto de50 enemigos no es el catálogo de producción. No convertir HP perdido en muertos ni activar Hospital/PvP inexistentes. Las tasas médicas5%/25% y costes/duraciones siguen hipótesis explícitas, fuera de la tabla recuperada. Las notas de candidatas anteriores que siguen son históricas.
 
 ## Revisión adicional de ramas e issues (5 noviembre)
 

@@ -23,8 +23,7 @@ namespace Eldoria.ReferenceClean {
     return string.IsNullOrEmpty(pending)?NarrativeCoherenceRules.RecapBeat(s):pending;
    }
   }
-  string PendingBeat(PlayerState s)=>NarrativeCoherenceRules.NextUnseenBeat(s,city.HadExistingSave,
-   beat=>PlayerPrefs.GetInt("valoria.journey.story."+beat,0)==1);
+  string PendingBeat(PlayerState s)=>NarrativeCoherenceRules.NextUnseenBeat(s);
   static RoyalNarrativePresentation.Line L(string who,string es,string en)
    =>new RoyalNarrativePresentation.Line(who,es,en);
   RoyalNarrativePresentation.Line[] Lines(string beat){
