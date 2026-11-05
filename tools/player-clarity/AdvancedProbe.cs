@@ -82,6 +82,32 @@ internal static class PlayerClarityAdvancedProbe
         Check(different>=6,"successive generations should not lock to the same site");
     }
 
+    private static void ChapterThreeSites()
+    {
+        const int length = ChapterThreeRenewableSitePolicy.SiteCount;
+        Check(length == 168, "same historically routed Chapter III site footprint");
+        foreach (var id in new[] {"hunt-wolf","hunt-boar","meat-valoria"})
+        {
+            var indices = new HashSet<int>();
+            for (int i=0;i<length;i++)
+            {
+                Check(ChapterThreeRenewableSitePolicy.CandidateIndex(id,0,i)==i,
+                    "legacy Chapter III geography never teleports");
+                int next=ChapterThreeRenewableSitePolicy.CandidateIndex(id,1,i);
+                Check(next>=0 && next<length && indices.Add(next),
+                    "Chapter III generation visits every site exactly once");
+            }
+            Check(indices.Count==length,"all renewable Chapter III site candidates reachable");
+            Check(ChapterThreeRenewableSitePolicy.CanRelocate(id,0,1,false),
+                "new renewable generation is eligible to relocate");
+            Check(!ChapterThreeRenewableSitePolicy.CanRelocate(id,0,1,true),
+                "march in flight prevents node teleport");
+        }
+        Check(!ChapterThreeRenewableSitePolicy.CanRelocate("fissure-valoria",0,1,false) &&
+            !ChapterThreeRenewableSitePolicy.CanRelocate("ash-stalker-valoria",0,1,false),
+            "narrative boss and fissure remain authored in place");
+    }
+
     private static void Renew()
     {
         long t=new DateTime(2026,11,5,12,0,0,DateTimeKind.Utc).Ticks;
@@ -96,7 +122,7 @@ internal static class PlayerClarityAdvancedProbe
 
     public static void Main()
     {
-        Name();Tier();Sites();Renew();
+        Name();Tier();Sites();ChapterThreeSites();Renew();
         Console.WriteLine("PLAYER_CLARITY_ADVANCED_PASS checks="+checks);
     }
 }
