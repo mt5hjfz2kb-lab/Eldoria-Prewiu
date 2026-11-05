@@ -54,6 +54,7 @@ namespace Eldoria.ReferenceClean
         int previousStagedVisibleParts;
 
         SpriteField loopDust, loopMotes, openingDust, finishDust;
+        SpriteField denseWorkDust, hammerImpactDust;
         SpriteField finishEmbers, finishRing, finishHalo, roofGlints, roofGleam;
         // Actual facade details, relative to the real renderer bounds.
         readonly Vector3[] facadeAccents = new Vector3[4];
@@ -67,6 +68,8 @@ namespace Eldoria.ReferenceClean
             new ConstructionDelightArchitecturalReveal();
         readonly ConstructionDelightStageAssembly stagedBuilding =
             new ConstructionDelightStageAssembly();
+        readonly ConstructionDelightHammerWork hammerTools =
+            new ConstructionDelightHammerWork();
 #if UNITY_EDITOR
         // Editor-only control to compare exactly the same animated construction
         // with/without staged 3D, using equivalent shader/Bloom timelines.
@@ -76,6 +79,10 @@ namespace Eldoria.ReferenceClean
             new ArchitecturalCompletionLustre();
 #endif
 
+        public int ActiveHammerRenderers => hammerTools.VisibleRenderers;
+        public int TotalHammerImpacts => hammerTools.TotalImpacts;
+        public int ActiveDenseConstructionDust => (denseWorkDust?.VisibleCount ?? 0) +
+                                                   (hammerImpactDust?.VisibleCount ?? 0);
         public int ActiveStagedVisibleMeshes => stagedBuilding.VisibleMeshCount;
         public bool StagingContinuedAtCompletion => stagedBuilding.CompletionContinuedFromWork;
         public int ActiveStagedBuildingMeshes => stagedBuilding.MeshCount;
@@ -87,7 +94,9 @@ namespace Eldoria.ReferenceClean
         public int ActiveArchitecturalSurfaces => materialLustre.LayerCount;
         public string ActiveBuildingId => activeBuilding ?? "";
         public int ActiveConstructionSprites => (loopDust?.VisibleCount ?? 0) +
-                                                 (loopMotes?.VisibleCount ?? 0);
+                                                 (loopMotes?.VisibleCount ?? 0) +
+                                                 (denseWorkDust?.VisibleCount ?? 0) +
+                                                 (hammerImpactDust?.VisibleCount ?? 0);
         public int ActiveFinishSprites => (finishDust?.VisibleCount ?? 0) +
                                          (finishEmbers?.VisibleCount ?? 0) +
                                          (finishRing?.VisibleCount ?? 0) +
@@ -115,6 +124,7 @@ namespace Eldoria.ReferenceClean
                 materialLustre.Clear();
                 structureReveal.Clear();
                 stagedBuilding.Clear();
+                hammerTools.Clear();
 #if UNITY_EDITOR
                 architectureOnlyReveal.Clear();
                 architectureOnlyLustre.Clear();
@@ -146,6 +156,7 @@ namespace Eldoria.ReferenceClean
                 materialLustre.Clear();
                 structureReveal.Clear();
                 stagedBuilding.Clear();
+                hammerTools.Clear();
 #if UNITY_EDITOR
                 architectureOnlyReveal.Clear();
                 architectureOnlyLustre.Clear();
@@ -156,6 +167,10 @@ namespace Eldoria.ReferenceClean
             }
             if (activeBuilding != null)
             {
+                // On return from 4X the original Gateway task is still active.
+                // Recreate only the ephemeral artisan hammer animation.
+                if(!hammerTools.Running && FindSite(activeBuilding,false,out var worksite))
+                    hammerTools.Begin(worksite,city.PlayerCamera,Time.unscaledTime);
                 if(!stagedBuilding.Running && previous.IsValid &&
                    previous.LevelAtStart==0)
                     stagedBuilding.BeginWork(CompletedModel(previous.BuildingId),
@@ -177,12 +192,29 @@ namespace Eldoria.ReferenceClean
                     // not a continuous cartoon smoke plume.
                     openingDust.Tint = new Color(.83f,.76f,.62f,.34f);
                     openingDust.Emit(7);
+                    if(hammerTools.Running)
+                        denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,15,.85f);
                     nextWorkPulse = Time.unscaledTime + 1.70f;
                 }
             }
 
             var cam = city.PlayerCamera;
             float dt = Mathf.Min(.06f, Time.unscaledDeltaTime);
+            // Real iron-on-timber contact moments drive each short cloud:
+            // no magical blanket of golden dust and no second gameplay clock.
+            int hammerHits=hammerTools.Tick(Time.unscaledTime);
+            if(hammerHits>0)
+            {
+                hammerImpactDust.EmitAtWorld(hammerTools.FirstImpact,15,.40f);
+                denseWorkDust.EmitAtWorld(hammerTools.FirstImpact,19,.76f);
+                loopMotes.EmitAtWorld(hammerTools.FirstImpact,4,.22f);
+            }
+            if(hammerHits>1)
+            {
+                hammerImpactDust.EmitAtWorld(hammerTools.SecondImpact,13,.36f);
+                denseWorkDust.EmitAtWorld(hammerTools.SecondImpact,17,.67f);
+                loopMotes.EmitAtWorld(hammerTools.SecondImpact,3,.20f);
+            }
             foreach (var field in allFields) field.Tick(dt, cam);
             stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
             int currentParts=stagedBuilding.Working ? stagedBuilding.VisibleMeshCount : 0;
@@ -192,6 +224,10 @@ namespace Eldoria.ReferenceClean
                 // Wood or stone genuinely settled into the unfinished model.
                 // A short puff at the scaffold foot follows that placement.
                 openingDust.Emit(5);
+                // A new genuine timber/stone section has seated; it should
+                // release a visible, locally contained puff at the join.
+                if(hammerTools.Running)
+                    denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,16,.64f);
                 nextStageDustAt=Time.unscaledTime+.38f;
             }
             previousStagedVisibleParts=currentParts;
@@ -217,6 +253,7 @@ namespace Eldoria.ReferenceClean
         public void SetArchitecturalLustreVisibleForCapture(bool visible)
         {
             stagedBuilding.SetVisible(visible);
+            hammerTools.SetVisible(visible);
             if(city && city.Clock!=null)
                 stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
             materialLustre.SetVisible(visible);
@@ -315,6 +352,10 @@ namespace Eldoria.ReferenceClean
             if(task.LevelAtStart==0)
                 stagedBuilding.BeginWork(CompletedModel(id),task.DeadlineUtcTicks,
                     city.Clock.UtcTicks,WorkDuration(task),Time.unscaledTime);
+            if(FindSite(id,false,out var hammerSite))
+                hammerTools.Begin(hammerSite,city.PlayerCamera,Time.unscaledTime);
+            if(hammerTools.Running)
+                denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,24,.98f);
             previousStagedVisibleParts=stagedBuilding.VisibleMeshCount;
             nextStageDustAt=Time.unscaledTime+.38f;
             nextWorkPulse = Time.unscaledTime + 1.55f;
@@ -332,6 +373,9 @@ namespace Eldoria.ReferenceClean
             activeBuilding = null;
             if (loopDust != null) loopDust.Clear();
             if (loopMotes != null) loopMotes.Clear();
+            if (denseWorkDust != null) denseWorkDust.Clear();
+            if (hammerImpactDust != null) hammerImpactDust.Clear();
+            hammerTools.Clear();
             structureReveal.Clear();
             // A real gateway completion must keep the in-progress mesh poses:
             // clearing here would reset the roof/foundation choreography.
@@ -460,6 +504,8 @@ namespace Eldoria.ReferenceClean
             roofAccents[3]=lateral*(halfWidth*.50f)+Vector3.up*(b.extents.y*.10f);
             loopDust.Site(ground,footprint*.77f);
             loopMotes.Site(ground+Vector3.up*.24f,footprint*.69f);
+            denseWorkDust.Site(ground+Vector3.up*.10f,footprint*.61f);
+            hammerImpactDust.Site(ground+Vector3.up*.18f,footprint*.53f);
             openingDust.Site(ground,footprint*.84f);
             finishDust.Site(ground,footprint*.86f);
             finishEmbers.Site(facade,footprint*.85f);
@@ -638,13 +684,20 @@ namespace Eldoria.ReferenceClean
             loopDust=NewField("Work / fine masonry dust",dustMaterial,65,9.2f,.70f,1.34f,.49f,1.05f,.24f,false,19);
             loopMotes=NewField("Work / timber motes",dustMaterial,34,5.2f,.57f,1.03f,.23f,.45f,.44f,false,27);
             openingDust=NewField("Start / settling artisan dust",dustMaterial,34,0f,.42f,.95f,.60f,1.16f,.27f,false,39);
+            // Two additional BATCHED atmospheric fields, not hundreds of
+            // renderer GameObjects. High density near the true hammer contact,
+            // but softly feathered and short lived to keep wood and roof legible.
+            denseWorkDust=NewField("Work / dense scaffold dust",dustMaterial,115,0f,.82f,1.42f,.78f,1.52f,.18f,false,113);
+            hammerImpactDust=NewField("Work / hammer impact puffs",dustMaterial,90,0f,.53f,.93f,.38f,.84f,.32f,false,127);
+            denseWorkDust.Tint=new Color(.72f,.66f,.55f,.67f);
+            hammerImpactDust.Tint=new Color(.84f,.74f,.60f,.74f);
             finishDust=NewField("Finish / last settling dust",dustMaterial,45,0f,.55f,1.10f,.40f,.91f,.38f,false,43);
             finishEmbers=NewField("Finish / antique-gold glints",dustMaterial,70,0f,.58f,1.18f,.15f,.31f,.66f,false,57);
             finishRing=NewField("Finish / foundation settling wave",ringMaterial,2,0f,1.28f,1.28f,1f,1f,0f,true,79,true);
             finishHalo=NewField("Finish / warm timber reveal",dustMaterial,2,0f,1.12f,1.12f,1f,1f,0f,true,83);
             roofGlints=NewField("Finish / artisan roof accents",dustMaterial,30,0f,.73f,1.32f,.13f,.25f,.30f,false,97);
             roofGleam=NewField("Finish / soft rooflight reveal",dustMaterial,2,0f,1.28f,1.28f,1f,1f,0f,true,103);
-            allFields=new[]{loopDust,loopMotes,openingDust,finishDust,finishEmbers,finishRing,finishHalo,roofGlints,roofGleam};
+            allFields=new[]{loopDust,loopMotes,openingDust,finishDust,finishEmbers,finishRing,finishHalo,roofGlints,roofGleam,denseWorkDust,hammerImpactDust};
         }
 
         SpriteField NewField(string name,Material material,int cap,float rate,
@@ -697,6 +750,7 @@ namespace Eldoria.ReferenceClean
             structureReveal.Clear();
             materialLustre.Clear();
             stagedBuilding.Clear();
+            hammerTools.Clear();
 #if UNITY_EDITOR
             architectureOnlyReveal.Clear();
             architectureOnlyLustre.Clear();
