@@ -85,8 +85,8 @@ internal static class PlayerClarityAdvancedProbe
     private static void ChapterThreeSites()
     {
         const int length = ChapterThreeRenewableSitePolicy.SiteCount;
-        Check(length == 168, "same historically routed Chapter III site footprint");
-        foreach (var id in new[] {"hunt-wolf","hunt-boar","meat-valoria"})
+        Check(length == 288, "all 12 verified terrain bands are included in runtime policy");
+        foreach (var id in new[] {"hunt-wolf","hunt-boar","meat-valoria","ash-stalker-valoria"})
         {
             var indices = new HashSet<int>();
             for (int i=0;i<length;i++)
@@ -104,8 +104,8 @@ internal static class PlayerClarityAdvancedProbe
                 "march in flight prevents node teleport");
         }
         Check(!ChapterThreeRenewableSitePolicy.CanRelocate("fissure-valoria",0,1,false) &&
-            !ChapterThreeRenewableSitePolicy.CanRelocate("ash-stalker-valoria",0,1,false),
-            "narrative boss and fissure remain authored in place");
+            !ChapterThreeRenewableSitePolicy.CanRelocate("corrupt-scout",0,1,false),
+            "one-time campaign enemies and fissures remain authored in place");
     }
 
     private static void Renew()
