@@ -2,10 +2,10 @@
   "schema_version": 1,
   "request_id": "eldoria-construction-delight-native-ab-20261104",
   "workstream_id": "eldoria-construction-delight-v1-20261104",
-  "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
-  "ownership_revision": 13,
+  "source_head_before_request": "e19014ffcef00fda0ea77436d46fcc7bcc284110",
+  "ownership_revision": 17,
   "mode": "A_B_64_CAMERA_FINAL_SOURCE_WITH_NATIVE_PROVENANCE",
-  "expected_images": 34,
+  "expected_images": 64,
   "formats": [
     "844x390",
     "390x844"
@@ -22,7 +22,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 17,
+  "attempt": 18,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "latest certified main & metadata merged into candidate",
@@ -66,7 +66,7 @@
   "source_domain_attempt": 2,
   "purpose": "Verify current authoritative completion receipt, no World4X bleed, URP real renderer and localized camera proof syntax",
   "native_editor_invocation": false,
-  "window_runner_reservation": false,
+  "window_runner_reservation": true,
   "real_visual_QA_pending": true,
   "license_evidence": {
     "auth_run": 41807267627,
@@ -90,7 +90,7 @@
     "QA refreshes real Presenter state after direct command",
     "QA uses real city host camera focus"
   ],
-  "windows_runner_reserved_by": "eldoria-unity-metadata-integrity-20261104",
+  "windows_runner_reserved_by": "eldoria-construction-delight-v1-20261104",
   "source_qa_change": "Fixed VisibleBounds infinite recursion from previous scaffold fallback and added semantic Roslyn nonrecursive/visible-renderer guard",
   "native_qa_pending": true,
   "current_main_parent": "7ed30ed8a599c461e0b5f8b0883c60092822fd4e",
@@ -155,7 +155,7 @@
   "no_gameplay_changes": true,
   "source_domain_run": 41872333925,
   "source_domain_result": "passed",
-  "action": "Real Unity 6000.3.23f1, 26 screenshots, material pulse + roof glints, no source mockups",
+  "action": "Native Unity 6000.3.23f1 proof: exactly 64 real PNG, paired technique A/B (architectural URP and reversible physical mesh assembly), same Gateway completion, verify reload and renderer restoration",
   "new_redesign": "Actual mesh-cloned URP HDR vertical architectural sweep; conditional temporary Bloom; shadowless local warm practical light; real scaffold shimmer; cleanup tracked GameObjects; more work motion frames.",
   "last_approved_visual": "V3 rejected by owner as really bad; no artistic approval",
   "dispatched_reason": "Exact four-C# structural source validation after mesh cleanup, duty-cycled work shader, 0.87s roof reveal and 34-frame QA",
@@ -175,7 +175,7 @@
     "Construction roof glow obeys visible staged geometry",
     "Reload clears preview and restores original source renderers"
   ],
-  "images_expected_in_future_native_run": 40,
+  "images_expected_in_future_native_run": 64,
   "native_capture_expected_images": 64,
   "technique_comparison": {
     "A": "URP architectural shader sweep, Bloom, local light and artisan particles without 3D assembly",
@@ -204,5 +204,11 @@
     "technique_ab_images",
     "images",
     "art_approved"
-  ]
+  ],
+  "native_editor_launch_requested": true,
+  "native_editor_invocation_requested": true,
+  "native_request_at": "2026-11-05T17:31:27.544Z",
+  "main_claim_commit": "9d0f3feecd54507220ae9a77a1688372cbeed2d0",
+  "merged_main_commit": "9d0f3feecd54507220ae9a77a1688372cbeed2d0",
+  "branch_head_before_trigger": "e19014ffcef00fda0ea77436d46fcc7bcc284110"
 }
