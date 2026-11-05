@@ -126,6 +126,8 @@ public static class NarrativeProbe {
         "Vigilants and Scouts are uninterrupted");
   Check(!NarrativeCoherenceRules.CanPresent(false,false,false,false,true),
         "Reading mailbox reports is uninterrupted");
+  Check(!NarrativeCoherenceRules.CanPresent(false,false,false,false,false,true),
+        "A selected building's contextual action is not interrupted by automatic lore");
   var inbox=State(3);
   Check(!UnityContextTutorial.NeedsMailboxOpening(inbox),
         "Mailbox is not introduced before a genuine delivery");

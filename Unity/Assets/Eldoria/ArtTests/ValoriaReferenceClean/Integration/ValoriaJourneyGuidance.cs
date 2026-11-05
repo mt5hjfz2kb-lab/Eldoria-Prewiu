@@ -37,7 +37,7 @@ namespace Eldoria.ReferenceClean {
     case "fissure-closed":return new[]{
      L("Lyra","Ese símbolo… pertenecía a mi hermano. No abandonaré su búsqueda. Lucharé junto a Valoria para seguir sus rutas.","That symbol… it belonged to my brother. I will not abandon the search. I will fight alongside Valoria to follow his trail."),
      L("Sir Aldric","Entonces Valoria también será tu hogar. Guardaremos el manuscrito; aún no sabemos qué significa.","Then Valoria will be your home too. We will keep the manuscript; we do not yet know what it means."),
-     L("NARRADOR","Lyra se incorpora a los héroes. El Manuscrito de la Fisura queda en el Arcón. La fisura local se ha cerrado; la Brecha principal permanece abierta.","Lyra joins the heroes. The Fissure Manuscript is kept in the Chest. The local fissure is closed; the main Breach remains open.")};
+     L("NARRADOR","Lyra se incorpora al Salón de Héroes: allí podrás preparar sus habilidades para futuras marchas. El manuscrito queda en el Arcón. Hemos cerrado la fisura local, no la Brecha principal.","Lyra joins the Heroes Hall: prepare her abilities there for future marches. The manuscript is kept in the Chest. We have closed the local fissure, not the main Breach.")};
     case "start":return new[]{
      L("NARRADOR","La Brecha apareció sobre Valoria antes del amanecer. Cuando cesaron los temblores, las murallas seguían en pie. El reino, no.",
         "The Breach appeared above Valoria before dawn. When the tremors stopped, the walls were still standing. The kingdom was not."),
@@ -87,7 +87,8 @@ namespace Eldoria.ReferenceClean {
       hud.Modal&&hud.Modal.gameObject.activeSelf,
       hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false,
       hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false,
-      hud.GetComponent<RoyalGoldV41MailboxScreen>()?.IsOpen??false))return;
+      hud.GetComponent<RoyalGoldV41MailboxScreen>()?.IsOpen??false,
+       !string.IsNullOrEmpty(hud.SelectedBuildingId)))return;
    var s=city.Gateway.Snapshot();string beat=NarrativeCoherenceRules.NextUnseenBeat(s);
    if(string.IsNullOrEmpty(beat))return;
    // Honour the historical PlayerPrefs only for a loaded pre-migration save.

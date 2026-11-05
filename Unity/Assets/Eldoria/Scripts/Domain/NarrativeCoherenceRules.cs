@@ -23,8 +23,8 @@ namespace Eldoria.Domain
         // Automatic story must not interrupt the player's current real screen.
         // Only presenter state is passed; no gameplay or save data is mutated.
         public static bool CanPresent(bool narrativeOpen,bool modalOpen,
-            bool managementOpen,bool retentionOpen,bool mailboxOpen)
-            => !narrativeOpen&&!modalOpen&&!managementOpen&&!retentionOpen&&!mailboxOpen;
+            bool managementOpen,bool retentionOpen,bool mailboxOpen,bool contextSelected=false)
+            => !narrativeOpen&&!modalOpen&&!managementOpen&&!retentionOpen&&!mailboxOpen&&!contextSelected;
 
         public static string NextUnseenBeat(PlayerState s)
         {
