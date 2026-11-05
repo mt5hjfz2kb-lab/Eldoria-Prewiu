@@ -87,6 +87,23 @@ namespace Eldoria.Tests
                 Force(0,1,30).WithHeroes("aldric","lyra"),Force(1,1,30)).Rounds,
                 Is.GreaterThan(0));
         }
+        [Test] public void MailboxAnalysisNamesOnlyFamiliesActuallySent()
+        {
+            var labels=new[]{"Paladines","Arqueros","Brujos"};
+            for(int family=0;family<3;family++)
+            {
+                var player=Force(family,1,40);var enemy=Force(1,1,1);
+                var result=EldoriaV41CombatEvolution.Resolve(player,enemy);
+                var report=EldoriaV41CombatEvolution.ToMailbox(result,player,enemy,
+                    "own-family:"+family,"corrupt-scout",637000000000000000L).Battle;
+                foreach(var facts in new[]{report.OwnDamageByFamily,report.OwnReceivedByFamily,report.OwnRemainingByFamily})
+                {
+                    Assert.That(facts,Does.Contain(labels[family]));
+                    for(int absent=0;absent<3;absent++)if(absent!=family)
+                        Assert.That(facts,Does.Not.Contain(labels[absent]));
+                }
+            }
+        }
         [Test] public void MailboxPreservesV41SimpleAndAdvancedWithoutSpoilersOrPayment()
         {
             var a=new EldoriaV41CombatEvolution.Force().Add(0,3,40).Add(1,3,35).Add(2,3,25);

@@ -31,6 +31,9 @@ static class GatewayEvolutionChecks
         var result=gateway.Snapshot();var mail=result.Mailbox.List("informes").Single();
         Check(mail.Battle.Outcome=="victory" && mail.Battle.PlayerComposition.Contains("40"),"C# resolver used by real gateway");
         Check(mail.Battle.OwnDamageByFamily.Length>0,"advanced own facts persisted");
+        Check(new[]{mail.Battle.OwnDamageByFamily,mail.Battle.OwnReceivedByFamily,mail.Battle.OwnRemainingByFamily}
+            .All(x=>x.Contains("Arqueros")&&!x.Contains("Paladines")&&!x.Contains("Brujos")),
+            "archer-only report does not preview absent future troop families");
         Check(result.Available.ArcherT1==150 && result.March.Phase=="idle","pre-hospital all troops return once");
         Check(result.March.VersionedBattle==null,"completed snapshot released");
         var wood=result.Resources.Wood;

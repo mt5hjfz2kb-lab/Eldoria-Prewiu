@@ -320,29 +320,32 @@ namespace Eldoria.Domain
 
         // Only player-observable facts. These fields are for the optional
         // "Mi marcha" panel approved in V4.1, never shown in the mail list.
-        static string OwnFamilyDamage(double[] totals)
+        static bool OwnFamilyPresent(Force player,int family)
+        { return Enumerable.Range(0,Tiers).Any(t=>player.Troops[family,t]>0); }
+        static string OwnFamilyDamage(double[] totals,Force player)
         {
             if(totals==null || totals.Length!=Families)throw new ArgumentException("Bad own damage");
-            return string.Join(" | ",Enumerable.Range(0,Families).Select(f=>
+            return string.Join(" | ",Enumerable.Range(0,Families).Where(f=>OwnFamilyPresent(player,f)).Select(f=>
                 FamilyLabels[f]+": "+totals[f].ToString("F1",CultureInfo.InvariantCulture)).ToArray());
         }
-        static string OwnReceivedDamage(Result result)
+        static string OwnReceivedDamage(Result result,Force player)
         {
             var values=new double[Families];
             for(int f=0;f<Families;f++)for(int t=0;t<Tiers;t++)
                 values[f]+=result.DamagedHpA[f,t];
-            return OwnFamilyDamage(values);
+            return OwnFamilyDamage(values,player);
         }
         static string OwnFamilyRemaining(Result result,Force player)
         {
-            var values=new string[Families];
+            var values=new List<string>();
             for(int f=0;f<Families;f++)
             {
+                if(!OwnFamilyPresent(player,f))continue;
                 double initial=0,lost=0;
                 for(int t=0;t<Tiers;t++)
                 { initial+=result.InitialHpA==null?player.Troops[f,t]*Health[f]*Tier[t]:result.InitialHpA[f*Tiers+t];lost+=result.DamagedHpA[f,t]; }
-                values[f]=FamilyLabels[f]+": "+(initial>0?
-                    (100*Math.Max(0,initial-lost)/initial).ToString("F1",CultureInfo.InvariantCulture)+"%": "sin tropas");
+                values.Add(FamilyLabels[f]+": "+(initial>0?
+                    (100*Math.Max(0,initial-lost)/initial).ToString("F1",CultureInfo.InvariantCulture)+"%": "sin tropas"));
             }
             return string.Join(" | ",values);
         }
@@ -415,8 +418,8 @@ namespace Eldoria.Domain
                     ObservedTotalDamageDealt=r.DealtA.Sum().ToString("F0",CultureInfo.InvariantCulture),
                     ObservedTotalDamageReceived=r.DealtB.Sum().ToString("F0",CultureInfo.InvariantCulture),
                     // V4.1 original optional OWN-family analysis: never a counter recommendation.
-                    OwnDamageByFamily=OwnFamilyDamage(r.DealtA),
-                    OwnReceivedByFamily=OwnReceivedDamage(r),
+                    OwnDamageByFamily=OwnFamilyDamage(r.DealtA,player),
+                    OwnReceivedByFamily=OwnReceivedDamage(r,player),
                     OwnRemainingByFamily=OwnFamilyRemaining(r,player),
                     Reason=publicReason
                     // Reward amounts MUST be copied from authoritative ledger, not generated here.

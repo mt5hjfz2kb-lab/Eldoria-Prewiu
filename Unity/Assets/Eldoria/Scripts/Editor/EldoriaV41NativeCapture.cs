@@ -1325,6 +1325,8 @@ namespace Eldoria.Editor
                 Need(reportText.gameObject.activeSelf&&reportText.text.Contains(realRecord.OwnDamageByFamily)&&
                     reportText.text.Contains(realRecord.OwnReceivedByFamily),
                     "Expanded own analysis uses saved actual damage facts");
+                Need(!reportText.text.Contains("Paladines")&&!reportText.text.Contains("Brujos"),
+                    "Real archer-only report does not preview unshipped future families");
                 Shot(host,"mailbox-evolution-analysis-portrait",900,1600);
                 Shot(host,"mailbox-evolution-analysis-landscape",1600,900);
                 Shot(host,"mailbox-evolution-analysis-small-phone",390,844);
