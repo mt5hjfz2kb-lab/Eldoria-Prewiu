@@ -8,6 +8,8 @@ on:
       - 'Unity/Assets/Eldoria/PlayerClarity/**'
       - 'Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
   pull_request:
     branches: [main]
     paths:
@@ -16,6 +18,8 @@ on:
       - 'Unity/Assets/Eldoria/PlayerClarity/**'
       - 'Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
 permissions:
   contents: read
 concurrency:
@@ -31,8 +35,10 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             tools/player-clarity/
+            tools/economy-v2/
             Unity/Assets/Eldoria/PlayerClarity/
             Unity/Assets/Eldoria/Scripts/Domain/
+            Unity/Assets/Eldoria/Scripts/Application/
           sparse-checkout-cone-mode: true
       - uses: actions/setup-dotnet@v4
         with:
@@ -41,3 +47,7 @@ jobs:
         run: dotnet run --project tools/player-clarity/Smoke.csproj --configuration Release
       - name: Validate deterministic site ordering, actual node tiers and Chapter III combat labels
         run: dotnet run --project tools/player-clarity/Probe.csproj --configuration Release
+      - name: Verify actual state-store names, tiers, persisted UTC respawn migration
+        run: dotnet run --project tools/player-clarity/ExactGatewayProbe.csproj --configuration Release
+      - name: Confirm the 48-hour offline economy remains unchanged
+        run: dotnet run --project tools/economy-v2/EconomyProbe.csproj --configuration Release
