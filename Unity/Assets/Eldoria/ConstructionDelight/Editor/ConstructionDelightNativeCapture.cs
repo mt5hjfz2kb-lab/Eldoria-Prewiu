@@ -218,6 +218,12 @@ namespace Eldoria.ReferenceClean.Editor
             if(fx.ActiveStructuralRevealMeshes<=0)
                 VisualIssues.Add("No authentic built mesh surfaces available for "+
                                  "the structural HDR sweep and localized light");
+            Debug.Log("CONSTRUCTION_DELIGHT_TECHNIQUES_BLOOM_READY="+
+                      fx.BothTechniqueBloomProfilesReady);
+            if(!fx.BothTechniqueBloomProfilesReady)
+                VisualIssues.Add("URP Bloom not active in both architecturally "+
+                                 "equivalent techniques; must verify actual "+
+                                 "city camera postprocessing and volume mask");
             Comparison(host,renderers,"finish",844,390);
             Comparison(host,renderers,"finish",390,844);
             TechniqueComparison(host,fx,"finish",844,390,true);
