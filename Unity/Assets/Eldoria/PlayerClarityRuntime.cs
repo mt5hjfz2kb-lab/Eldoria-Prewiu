@@ -71,6 +71,17 @@ namespace Eldoria
             SceneManager.sceneLoaded -= SceneLoaded;
         }
 
+        // The real integrated Unity evidence pipeline changes targetTexture
+        // sizes during its two orientation captures. Recompute exactly the
+        // same live markers after camera/Canvas geometry is rebuilt, rather
+        // than asserting visibility from a screenshot with stale GameView UI.
+        public void RefreshForCapture()
+        {
+            if (!isActiveAndEnabled) return;
+            nextUpdate = 0f;
+            LateUpdate();
+        }
+
         private void LateUpdate()
         {
             if (Time.unscaledTime < nextUpdate) return;
@@ -360,8 +371,13 @@ namespace Eldoria
             if (!go) return;
             var point = camera.WorldToScreenPoint(TopOf(go, building));
             if (point.z <= camera.nearClipPlane || !camera.pixelRect.Contains(point)) return;
-            var norm = new Vector2(point.x / Mathf.Max(1, Screen.width),
-                point.y / Mathf.Max(1, Screen.height));
+            // The active Unity camera can target a dedicated RenderTexture
+            // during native portrait/landscape evidence captures. Its pixels
+            // differ from Screen.width/height in the editor, so use the real
+            // camera viewport and never incorrectly cull valid node icons.
+            var pixels = camera.pixelRect;
+            var norm = new Vector2((point.x - pixels.xMin) / Mathf.Max(1f, pixels.width),
+                (point.y - pixels.yMin) / Mathf.Max(1f, pixels.height));
             if (norm.x < visibleViewport.xMin + .005f ||
                 norm.x > visibleViewport.xMax - .005f ||
                 norm.y < visibleViewport.yMin + .005f ||
