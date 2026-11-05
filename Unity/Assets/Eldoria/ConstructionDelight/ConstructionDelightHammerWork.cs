@@ -13,6 +13,7 @@ namespace Eldoria.ReferenceClean
         sealed class Hammer
         {
             public Transform pivot;
+            public Quaternion baseRotation;
             public MeshRenderer handle, head;
             public Vector3 contact;
             public float period, offset;
@@ -95,7 +96,8 @@ namespace Eldoria.ReferenceClean
                 var head=MakePart("forged iron head",holder.transform,iron,
                     new Vector3(0f,.63f,0f),new Vector3(.64f,.26f,.31f));
                 hammers[i]=new Hammer{
-                    pivot=holder.transform,handle=handle,head=head,
+                    pivot=holder.transform,baseRotation=holder.transform.localRotation,
+                    handle=handle,head=head,
                     contact=contact,period=i==0?1.46f:1.79f,
                     offset=i==0?.04f:.63f,side=side,hitSent=false
                 };
@@ -143,7 +145,7 @@ namespace Eldoria.ReferenceClean
                 else if(cycle<.54f)
                     angle=Mathf.Lerp(-17f,10f,Mathf.SmoothStep(0f,1f,(cycle-.405f)/.135f));
                 else angle=10f;
-                h.pivot.localRotation=Quaternion.Euler(0f,0f,angle*h.side);
+                h.pivot.localRotation=h.baseRotation*Quaternion.Euler(0f,0f,angle*h.side);
                 if(cycle<.19f)h.hitSent=false;
                 if(cycle>=.405f && !h.hitSent)
                 {
@@ -187,8 +189,8 @@ namespace Eldoria.ReferenceClean
             // GameObject/Collider and no import dependency.
             Vector3[] n={Vector3.forward,Vector3.back,Vector3.left,
                          Vector3.right,Vector3.up,Vector3.down};
-            Vector3[] tangents={Vector3.right,Vector3.left,Vector3.back,
-                                Vector3.forward,Vector3.right,Vector3.right};
+            Vector3[] tangents={Vector3.right,Vector3.left,Vector3.forward,
+                                Vector3.back,Vector3.right,Vector3.right};
             Vector3[] ups={Vector3.up,Vector3.up,Vector3.up,
                            Vector3.up,Vector3.back,Vector3.forward};
             var vertices=new Vector3[24];
@@ -202,8 +204,8 @@ namespace Eldoria.ReferenceClean
                 vertices[p]=center-u-v;vertices[p+1]=center+u-v;
                 vertices[p+2]=center-u+v;vertices[p+3]=center+u+v;
                 for(int i=0;i<4;i++)normals[p+i]=n[face];
-                indices[k]=p;indices[k+1]=p+2;indices[k+2]=p+1;
-                indices[k+3]=p+1;indices[k+4]=p+2;indices[k+5]=p+3;
+                indices[k]=p;indices[k+1]=p+1;indices[k+2]=p+2;
+                indices[k+3]=p+1;indices[k+4]=p+3;indices[k+5]=p+2;
             }
             var mesh=new Mesh{name="Delight hammer box with lit face normals"};
             mesh.vertices=vertices;mesh.normals=normals;mesh.triangles=indices;
