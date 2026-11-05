@@ -102,6 +102,18 @@ public static class NarrativeProbe {
         "Governance choice never closes alternatives");
   Check(UnityContextTutorial.ForObjective("unknown",false)==null,
         "No fabricated lesson for an unknown action");
+  Check(NarrativeCoherenceRules.CanPresent(false,false,false,false,false),
+        "Narrative can start when no management or report surface is active");
+  Check(!NarrativeCoherenceRules.CanPresent(true,false,false,false,false),
+        "Existing narrative is never replaced by another");
+  Check(!NarrativeCoherenceRules.CanPresent(false,true,false,false,false),
+        "Ordinary modal prevents automatic story interruption");
+  Check(!NarrativeCoherenceRules.CanPresent(false,false,true,false,false),
+        "Training and march preparation are uninterrupted");
+  Check(!NarrativeCoherenceRules.CanPresent(false,false,false,true,false),
+        "Vigilants and Scouts are uninterrupted");
+  Check(!NarrativeCoherenceRules.CanPresent(false,false,false,false,true),
+        "Reading mailbox reports is uninterrupted");
   var store=new Store{Value=State(3)};
   var clock=new Clock();
   var gateway=new LocalGateway(clock,store);

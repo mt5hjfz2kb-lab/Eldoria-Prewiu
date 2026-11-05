@@ -5,6 +5,7 @@ using Eldoria.Application;
 using Eldoria.Presentation;
 using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
+using Eldoria.UI.RoyalGold.V2;
 using UnityEngine;
 
 namespace Eldoria.ReferenceClean {
@@ -13,6 +14,7 @@ namespace Eldoria.ReferenceClean {
   ValoriaIntegratedWorld host;ValoriaReferenceCleanGameplay city;
   readonly Dictionary<string,BuildingLabel> labels=new Dictionary<string,BuildingLabel>();
   float next;
+  float nextNarrativeAt;
   public string Help=>ContextHint();
   string Beat {
    get {
@@ -77,7 +79,15 @@ namespace Eldoria.ReferenceClean {
    }
   }
   public void PresentMilestone(){
-   if(!host||!host.Ready||host.Hud.NarrativeOpen||host.Hud.Modal.gameObject.activeSelf)return;
+   if(!host||!host.Ready||Time.unscaledTime<nextNarrativeAt)return;
+   var hud=host.Hud;
+   if(!hud)return;
+   if(!NarrativeCoherenceRules.CanPresent(
+      hud.NarrativeOpen,
+      hud.Modal&&hud.Modal.gameObject.activeSelf,
+      hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false,
+      hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false,
+      hud.GetComponent<RoyalGoldV41MailboxScreen>()?.IsOpen??false))return;
    var s=city.Gateway.Snapshot();string beat=NarrativeCoherenceRules.NextUnseenBeat(s);
    if(string.IsNullOrEmpty(beat))return;
    // Honour the historical PlayerPrefs only for a loaded pre-migration save.
@@ -86,6 +96,8 @@ namespace Eldoria.ReferenceClean {
    host.Hud.ShowNarrativeSequence(Lines(beat),()=>{
     // Completing text, unlike merely opening a modal, commits the milestone.
     city.Gateway.AcknowledgeNarrative(beat);
+    // A cluster of completed tasks must never spam uninterrupted popups.
+    nextNarrativeAt=Time.unscaledTime+1.5f;
     Refresh();
    });
   }

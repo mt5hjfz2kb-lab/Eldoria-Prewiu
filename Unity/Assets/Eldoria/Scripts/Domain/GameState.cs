@@ -372,6 +372,12 @@ namespace Eldoria.Domain
             return c.FissureExplored ? 1 : 0; // Human tracks found
         }
 
+        // Automatic story must not interrupt the player's current real screen.
+        // Only presenter state is passed; no gameplay or save data is mutated.
+        public static bool CanPresent(bool narrativeOpen,bool modalOpen,
+            bool managementOpen,bool retentionOpen,bool mailboxOpen)
+            => !narrativeOpen&&!modalOpen&&!managementOpen&&!retentionOpen&&!mailboxOpen;
+
         public static string NextUnseenBeat(PlayerState s)
         {
             if(s==null)return "";

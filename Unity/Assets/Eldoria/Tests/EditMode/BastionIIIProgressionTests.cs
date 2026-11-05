@@ -156,6 +156,14 @@ namespace Eldoria.Tests {
    Assert.That(UnityContextTutorial.ForObjective("b2.prepare-march",false),Does.Contain("no envía"));
    Assert.That(UnityContextTutorial.ForObjective("b2.raise-expedition-power",false),Does.Contain("no del Bastión"));
   }
+  [Test]public void AutomaticNarrativeNeverInterruptsAnotherGameSurface(){
+   Assert.That(NarrativeCoherenceRules.CanPresent(false,false,false,false,false),Is.True);
+   Assert.That(NarrativeCoherenceRules.CanPresent(true,false,false,false,false),Is.False);
+   Assert.That(NarrativeCoherenceRules.CanPresent(false,true,false,false,false),Is.False);
+   Assert.That(NarrativeCoherenceRules.CanPresent(false,false,true,false,false),Is.False);
+   Assert.That(NarrativeCoherenceRules.CanPresent(false,false,false,true,false),Is.False);
+   Assert.That(NarrativeCoherenceRules.CanPresent(false,false,false,false,true),Is.False);
+  }
   [Test]public void IncompleteNarrativeIsNotRecordedAndAcknowledgementIsIdempotent(){
    var clock=new Clock();var store=Ready(3);var gateway=new LocalGateway(clock,store);
    Assert.That(NarrativeCoherenceRules.NextUnseenBeat(gateway.Snapshot()),Is.EqualTo("frontier-open"));
