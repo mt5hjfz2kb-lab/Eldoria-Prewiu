@@ -386,13 +386,21 @@ namespace Eldoria.ReferenceClean
             materialLustre.Begin(visual,Time.unscaledTime,staged);
             structureReveal.Complete(visual,city.PlayerCamera,Time.unscaledTime,staged);
 #if UNITY_EDITOR
-            // Separate visual-only reference on the AUTHENTIC un-staged
-            // building; start both at the identical receipt time.
-            architectureOnlyLustre.Begin(completed,Time.unscaledTime,staged);
-            architectureOnlyReveal.Complete(completed,city.PlayerCamera,
-                Time.unscaledTime,staged);
-            architectureOnlyLustre.SetVisible(false);
-            architectureOnlyReveal.SetVisible(false,Time.unscaledTime);
+            if(city && city.Probe)
+            {
+                // During creation inspect only the original renderers that
+                // genuinely belong to the completed production building.
+                // Temporarily restore their original enabled flags, rather
+                // than using includeStagedParts=true (which could also include
+                // normally hidden alternate mesh variants).
+                if(staged)stagedBuilding.SetVisible(false);
+                architectureOnlyLustre.Begin(completed,Time.unscaledTime);
+                architectureOnlyReveal.Complete(completed,city.PlayerCamera,
+                    Time.unscaledTime);
+                architectureOnlyLustre.SetVisible(false);
+                architectureOnlyReveal.SetVisible(false,Time.unscaledTime);
+                if(staged)stagedBuilding.SetVisible(true);
+            }
 #endif
             stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
             structureReveal.Tick(Time.unscaledTime);
