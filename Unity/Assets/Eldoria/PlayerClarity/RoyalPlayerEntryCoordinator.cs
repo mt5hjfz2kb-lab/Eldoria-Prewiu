@@ -20,7 +20,7 @@ namespace Eldoria.PlayerClarity
         private Func<string,bool> persist;
         private Func<bool> english;
         private float next;
-        private string lastDisplayed;
+        private PlayerNameHeader headerView;
 
         public bool IsBlockingNarrative => prompt && prompt.IsOpen;
         public bool HasSavedName => savedName != null && !string.IsNullOrWhiteSpace(savedName());
@@ -37,6 +37,12 @@ namespace Eldoria.PlayerClarity
             persist=commitCanonicalName;
             english=readEnglish;
             if (!prompt) prompt=RoyalPlayerNamePrompt.Create((RectTransform)hud.transform);
+            if (hud.Realm)
+            {
+                headerView = hud.Realm.GetComponent<PlayerNameHeader>();
+                if (!headerView) headerView = hud.Realm.gameObject.AddComponent<PlayerNameHeader>();
+                headerView.Initialize(hud.Realm, savedName);
+            }
             Refresh();
         }
 
@@ -58,19 +64,10 @@ namespace Eldoria.PlayerClarity
                 return;
             }
             if (prompt && prompt.IsOpen) prompt.gameObject.SetActive(false);
-            if (name==lastDisplayed && hud.Realm && hud.Realm.Realm &&
-                hud.Realm.Realm.text==name) return;
-            lastDisplayed=name;
-            // Reuse the real crest header and its Power line. This replaces
-            // only the visible realm caption, not the kingdom ID or status.
-            if (hud.Realm && hud.Realm.Realm)
-            {
-                var label=hud.Realm.Realm;
-                label.resizeTextForBestFit=true;
-                label.resizeTextMinSize=13;
-                label.resizeTextMaxSize=Mathf.Max(17,label.fontSize);
-                label.Put(name);
-            }
+            // Keep Valoria as the kingdom and preserve genuine power.
+            // The unique real crest header owns the player name, never
+            // a duplicate floating HUD panel or a second Canvas.
+            if (headerView) headerView.Refresh();
         }
 
         private bool CommitAndReadBack(string normalized)
@@ -80,7 +77,7 @@ namespace Eldoria.PlayerClarity
             {
                 if (!persist(normalized)) return false;
                 if (!string.Equals(savedName(),normalized,StringComparison.Ordinal))return false;
-                lastDisplayed=null;
+                if (headerView) headerView.Refresh();
                 return true;
             }
             catch(Exception ex)
