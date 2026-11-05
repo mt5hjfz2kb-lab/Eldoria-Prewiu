@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T10:50:32.132Z",
+  "updated_at": "2026-11-05T13:18:44.310Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3581,7 +3581,7 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 15,
+      "ownership_revision": 16,
       "write_scope_released": false,
       "branch": "feature/eldoria-construction-delight-20261104",
       "status": "active",
@@ -3603,8 +3603,8 @@
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "V4_STAGED_ARCHITECTURE_SOURCE_CORRECTED__NATIVE_UNVERIFIED",
-      "next": "User rejected V3 artistic result. V4 authentic stage fixes preserve live part poses and material overrides, and gate roof highlight until roof is physically seated. Windows runner-heavy owned by eldoria-v41-combate-buzon-ui-20261030; no native action until released. On release claim via CAS, sync candidate registry, test exact Unity 6000.3.23f1 + A/B work and finish in 390x844/844x390, review vs previous V3 before ART_APPROVED. No main merge or publish.",
+      "phase": "CONTROLLED_TECHNIQUE_AB_64_FRAMES_SOURCE_PASS__UNITY_RESOURCE_OWNED_BY_COMBAT",
+      "next": "Native proof requested by owner: A=URP architectural sweep + real material warmth + transient Bloom/particles (no staged geometry); B=identical camera, LocalGateway task, shader, Bloom and particles, plus reversible 3D assembly. Source gates run 42033957308 green: 36 assertions, five C# files and Editor-preprocessor branches syntax, fixed technique AB. Wait for combat workstream to RELEASE windows-runner-heavy; never steal or start Unity concurrently. Then CAS claim rev17 in main; mirror registry to this PR branch and trigger [delight-native] native 6000.3.23f1 64 PNG, inspect both orientations, 6-point temporal A/B, check Bloom supported; release lease. ART_APPROVED remains false, no merge or APK.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Native unity 41872572157 (26 screenshots A/B, short motion), artifacts 13345725500, saved-state invariant; local contact sheets",
@@ -3702,6 +3702,13 @@
         "authorization": "Owner authorized Windows after current native run finishes; run 41811262373 completed failure, not interrupted.",
         "run_id": 41811262373,
         "run_conclusion": "failure"
+      },
+      "evidence": {
+        "latest_source_only_run": 42033957308,
+        "controlled_ab_capture_expected_images": 64,
+        "latest_source_head": "3d01b3115966da5fc73f4d059e26aa1f2a9d82fa",
+        "native_art_verified": false,
+        "art_approved": false
       }
     },
     {
