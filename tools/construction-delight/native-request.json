@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
   "ownership_revision": 13,
-  "mode": "COMPARATIVE_64_CAPTURE_FINAL_ROSLYN_WITH_EDITOR_PREPROCESSOR",
+  "mode": "A_B_64_CAMERA_FINAL_SOURCE_WITH_NATIVE_PROVENANCE",
   "expected_images": 34,
   "formats": [
     "844x390",
@@ -81,7 +81,7 @@
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 23,
+  "offline_validation_attempt": 24,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
@@ -193,5 +193,16 @@
   "editor_syntax_checks": [
     "ValoriaConstructionDelightV1 UNITY_EDITOR",
     "ConstructionDelightNativeCapture UNITY_EDITOR"
+  ],
+  "expected_techniques": 2,
+  "native_receipt_fields": [
+    "status",
+    "unity_version",
+    "source_sha",
+    "technique_A",
+    "technique_B",
+    "technique_ab_images",
+    "images",
+    "art_approved"
   ]
 }
