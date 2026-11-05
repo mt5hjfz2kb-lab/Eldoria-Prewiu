@@ -49,6 +49,9 @@ namespace Eldoria.ReferenceClean
         string pendingId;
         float pendingExpiresAt;
         float nextWorkPulse;
+        float nextStageDustAt,lateFinishBurstAt;
+        bool lateFinishBurstPending;
+        int previousStagedVisibleParts;
 
         SpriteField loopDust, loopMotes, openingDust, finishDust;
         SpriteField finishEmbers, finishRing, finishHalo, roofGlints, roofGleam;
@@ -99,6 +102,8 @@ namespace Eldoria.ReferenceClean
                 materialLustre.Clear();
                 structureReveal.Clear();
                 stagedBuilding.Clear();
+                lateFinishBurstPending=false;
+                previousStagedVisibleParts=0;
                 foreach (var field in allFields) field.Clear();
             }
 
@@ -124,6 +129,8 @@ namespace Eldoria.ReferenceClean
                 materialLustre.Clear();
                 structureReveal.Clear();
                 stagedBuilding.Clear();
+                lateFinishBurstPending=false;
+                previousStagedVisibleParts=0;
                 return;
             }
             if (activeBuilding != null)
@@ -157,6 +164,24 @@ namespace Eldoria.ReferenceClean
             float dt = Mathf.Min(.06f, Time.unscaledDeltaTime);
             foreach (var field in allFields) field.Tick(dt, cam);
             stagedBuilding.Tick(city.Clock.UtcTicks,Time.unscaledTime);
+            int currentParts=stagedBuilding.Working ? stagedBuilding.VisibleMeshCount : 0;
+            if(activeBuilding!=null && currentParts>previousStagedVisibleParts &&
+               Time.unscaledTime>=nextStageDustAt)
+            {
+                // Wood or stone genuinely settled into the unfinished model.
+                // A short puff at the scaffold foot follows that placement.
+                openingDust.Emit(5);
+                nextStageDustAt=Time.unscaledTime+.38f;
+            }
+            previousStagedVisibleParts=currentParts;
+            if(lateFinishBurstPending && Time.unscaledTime>=lateFinishBurstAt)
+            {
+                // The final roof/beam seating deserves the short glint, not
+                // an unrelated full-screen flare at the start of completion.
+                roofGlints.EmitAccents(roofAccents,.22f,.36f);
+                finishDust.Emit(7);
+                lateFinishBurstPending=false;
+            }
             materialLustre.Tick(Time.unscaledTime);
             structureReveal.Tick(Time.unscaledTime);
         }
@@ -232,6 +257,8 @@ namespace Eldoria.ReferenceClean
             if(task.LevelAtStart==0)
                 stagedBuilding.BeginWork(CompletedModel(id),task.DeadlineUtcTicks,
                     city.Clock.UtcTicks,WorkDuration(task),Time.unscaledTime);
+            previousStagedVisibleParts=stagedBuilding.VisibleMeshCount;
+            nextStageDustAt=Time.unscaledTime+.38f;
             nextWorkPulse = Time.unscaledTime + 1.55f;
             if (animateStart)
             {
@@ -249,6 +276,8 @@ namespace Eldoria.ReferenceClean
             if (loopMotes != null) loopMotes.Clear();
             structureReveal.Clear();
             stagedBuilding.Clear();
+            previousStagedVisibleParts=0;
+            lateFinishBurstPending=false;
         }
 
         static float WorkDuration(ConstructionDelightTask task)
@@ -289,6 +318,8 @@ namespace Eldoria.ReferenceClean
             // MaterialPropertyBlocks preserve all shared assets and are restored.
             var completed=CompletedModel(id);
             bool staged=stagedBuilding.Complete(completed,Time.unscaledTime);
+            lateFinishBurstPending=staged;
+            lateFinishBurstAt=Time.unscaledTime+.91f;
             var visual=staged ? stagedBuilding.VisualRoot : completed;
             materialLustre.Begin(visual,Time.unscaledTime);
             structureReveal.Complete(visual,city.PlayerCamera,Time.unscaledTime);
