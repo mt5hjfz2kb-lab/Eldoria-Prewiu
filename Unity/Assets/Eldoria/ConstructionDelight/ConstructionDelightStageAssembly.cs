@@ -204,6 +204,17 @@ namespace Eldoria.ReferenceClean
                 copyObject.GetComponent<MeshFilter>().sharedMesh=filter.sharedMesh;
                 var r=copyObject.GetComponent<MeshRenderer>();
                 r.sharedMaterials=src.sharedMaterials;
+                // Renderer-specific shader overrides are part of the real
+                // building's appearance. Preserve them on staged copies;
+                // otherwise a building can lose its authored color/texture
+                // when the original object is temporarily masked.
+                for(int materialSlot=0;materialSlot<src.sharedMaterials.Length;materialSlot++)
+                {
+                    var originalBlock=new MaterialPropertyBlock();
+                    src.GetPropertyBlock(originalBlock,materialSlot);
+                    if(!originalBlock.isEmpty)
+                        r.SetPropertyBlock(originalBlock,materialSlot);
+                }
                 r.receiveShadows=src.receiveShadows;
                 r.shadowCastingMode=src.shadowCastingMode;
                 r.lightmapIndex=src.lightmapIndex;
