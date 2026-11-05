@@ -264,6 +264,24 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 100
     steps:
+      - name: Preserve read-only editor origin before waiting
+        shell: powershell
+        run: |
+          $folder=Join-Path $env:RUNNER_TEMP ("eldoria-editor-origin-"+$env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Force -Path $folder | Out-Null
+          $entries=@(foreach($editor in @(Get-Process Unity,blender -ErrorAction SilentlyContinue)){
+            $origin=Get-CimInstance Win32_Process -Filter ("ProcessId = "+$editor.Id) -ErrorAction SilentlyContinue
+            $parent=Get-Process -Id $origin.ParentProcessId -ErrorAction SilentlyContinue
+            [pscustomobject]@{id=$editor.Id;name=$editor.ProcessName;startUtc=$editor.StartTime.ToUniversalTime().ToString('o');cpu=$editor.CPU;memory=$editor.WorkingSet64;responding=$editor.Responding;windowTitle=$editor.MainWindowTitle;parentId=$origin.ParentProcessId;parentName=$parent.ProcessName;background=[bool]($origin.CommandLine -match '(?:^|\s)(?:--background|-b)(?:\s|$)')}
+          })
+          $os=Get-CimInstance Win32_OperatingSystem
+          [ordered]@{checkedUtc=[DateTime]::UtcNow.ToString('o');source=$env:ALDRIC_REQUEST_SOURCE_SHA;lastBoot=$os.LastBootUpTime.ToUniversalTime().ToString('o');freeMemoryKiB=$os.FreePhysicalMemory;processes=$entries;readOnly=$true}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $folder 'origin.json') -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-editor-origin-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-editor-origin-${{ github.run_id }}/origin.json
+          retention-days: 7
+          if-no-files-found: error
       - name: Check live native-editor lease before downloading the Unity project
         shell: powershell
         env:
