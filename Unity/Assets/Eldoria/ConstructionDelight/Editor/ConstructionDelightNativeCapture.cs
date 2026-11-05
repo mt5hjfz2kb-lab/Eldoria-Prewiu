@@ -177,6 +177,35 @@ namespace Eldoria.ReferenceClean.Editor
                 }
             }
 
+            // The existing work-motion frames may miss the .405-cycle
+            // contact instant. Capture the ACTUAL head-strike events and
+            // the following dust expansion from the same Unity player camera.
+            // Two contacts * (instant+settling) * portrait/landscape = 8 PNG.
+            int priorHammerCount=fx.TotalHammerImpacts;
+            int hammerSamples=0;
+            for(int tick=0;tick<75 && hammerSamples<2;tick++)
+            {
+                yield return new WaitForSecondsRealtime(.06f);
+                if(fx.TotalHammerImpacts<=priorHammerCount)continue;
+                priorHammerCount=fx.TotalHammerImpacts;
+                Shot(host.PlayerCamera,"hammer-strike-"+hammerSamples+"-landscape",844,390);
+                Shot(host.PlayerCamera,"hammer-strike-"+hammerSamples+"-portrait",390,844);
+                yield return new WaitForSecondsRealtime(.12f);
+                Shot(host.PlayerCamera,"hammer-dust-"+hammerSamples+"-landscape",844,390);
+                Shot(host.PlayerCamera,"hammer-dust-"+hammerSamples+"-portrait",390,844);
+                Debug.Log("CONSTRUCTION_DELIGHT_TIMED_HAMMER_PROOF="+hammerSamples+
+                          " visible_tools="+fx.ActiveHammerRenderers+
+                          " dense_dust="+fx.ActiveDenseConstructionDust);
+                if(fx.ActiveDenseConstructionDust<8)
+                    VisualIssues.Add("Real struck timber did not yield visible "+
+                        "settling dust after impact "+hammerSamples);
+                hammerSamples++;
+            }
+            if(hammerSamples!=2)
+                VisualIssues.Add("Fewer than two reproducible iron hammer impacts "+
+                    "were captured in the genuine Unity worksite");
+            Debug.Log("CONSTRUCTION_DELIGHT_HAMMER_PROOF_IMAGES="+
+                      hammerSamples*4);
             Debug.Log("CONSTRUCTION_DELIGHT_REAL_HAMMER_IMPACTS="+
                       fx.TotalHammerImpacts);
             if(fx.TotalHammerImpacts<1)
@@ -304,10 +333,10 @@ namespace Eldoria.ReferenceClean.Editor
                 "  \"technique_A\": \"URP shader, Bloom, artisan particles\",\n"+
                 "  \"technique_B\": \"same plus authentic 3D staged assembly\",\n"+
                 "  \"technique_ab_images\": 24,\n"+
-                "  \"images\": 64,\n"+
+                "  \"images\": 72,\n"+
                 "  \"art_approved\": false\n"+
                 "}\n");
-            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=64 technique-variants=24 save-preserved=true");
+            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=72 technique-variants=24 hammered-work=8 save-preserved=true");
             EditorApplication.Exit(0);
         }
 
