@@ -11,5 +11,6 @@
     <Compile Include="../../Unity/Assets/Eldoria/PlayerClarity/DistributedSiteOrder.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/PlayerClarity/RenewableRespawnRules.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/PlayerClarity/PlayerNameRules.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs" />
   </ItemGroup>
 </Project>
