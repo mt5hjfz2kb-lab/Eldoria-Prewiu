@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T17:27:16.035Z",
+  "updated_at": "2026-11-05T17:43:45.732Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3474,7 +3474,7 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 17,
+      "ownership_revision": 19,
       "write_scope_released": false,
       "branch": "main",
       "status": "active",
@@ -3498,8 +3498,8 @@
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "CONTROLLED_AB_64_FRAME_NATIVE_LEASE_CLAIMED",
-      "next": "Mirror main registry snapshot in PR152 feature branch then commit native-request [delight-native]. Capture 64 authentic Unity screenshots technique A vs B, release Windows CAS on completion/failure, leave PR draft and ART_APPROVED=false",
+      "phase": "RECHECK_HLSL_ERROR_MATERIAL_FIXED_64_NATIVE",
+      "next": "Source QA run 42077227281 PASS, known Unity D3D11 Shader syntax error token '0h' corrected to '0.0h' and pink fallback gate added. Mirror registry into PR branch, commit native request [delight-native], inspect genuine 64 PNG and release CAS.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
         "evidence": "Native unity 41872572157 (26 screenshots A/B, short motion), artifacts 13345725500, saved-state invariant; local contact sheets",
@@ -3576,16 +3576,24 @@
         "v4_quality_target": "Visibly incremental authentic timber/roof assembly; no reset or flashes at gateway completion; convincing final landing; real mobile QA pending",
         "claim_revision": 17,
         "native_capture_expected": 64,
-        "native_art_verified": false
+        "native_art_verified": false,
+        "native_run_id": 42075455491,
+        "native_run_conclusion": "success",
+        "native_artifact_id": 13438197392,
+        "native_source_head": "15ab524a83e2499a7e6a078d0a9049cfcbc88930",
+        "pink_shader_native_issue_run": 42075455491,
+        "pink_shader_native_issue_artifact": 13438197392,
+        "source_qa_after_fix": 42077227281,
+        "previous_visual_review": "REJECTED_UNITY_ERROR_MAGENTA"
       },
       "candidate_branch": "feature/eldoria-construction-delight-20261104",
       "native_lease": {
         "resource": "windows-runner-heavy",
         "owner": "chatgpt-eldoria-construction-delight-20261104",
-        "ownership_revision": 17,
-        "claimed_at": "2026-11-05T17:27:16.035Z",
+        "ownership_revision": 19,
+        "claimed_at": "2026-11-05T17:43:45.732Z",
         "branch": "main",
-        "purpose": "Unity 6000.3.23f1, construction architectural A/B, 64 real PNGs; release CAS after run"
+        "purpose": "Re-run 64 genuine Unity A/B after shader syntax fix and pink-error gate"
       },
       "license_diagnostics": {
         "read_only_check_run": 41796258446,
