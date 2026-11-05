@@ -126,7 +126,11 @@ namespace Eldoria.ReferenceClean.Editor
             city.Presenter.RefreshState();
             host.Hud.Refresh();
 
-            yield return new WaitForSecondsRealtime(.42f);
+            // Capture the real first movement, not just the steady state.
+            yield return new WaitForSecondsRealtime(.12f);
+            Shot(host.PlayerCamera,"work-first-placement-landscape",844,390);
+            Shot(host.PlayerCamera,"work-first-placement-portrait",390,844);
+            yield return new WaitForSecondsRealtime(.30f);
             if(fx.ActiveStagedBuildingMeshes<=0)
                 VisualIssues.Add("No actual construction-stage 3D model parts during the real initial build");
             Debug.Log("CONSTRUCTION_DELIGHT_WORK_STAGED_MESHES="+fx.ActiveStagedBuildingMeshes+
@@ -171,7 +175,15 @@ namespace Eldoria.ReferenceClean.Editor
                     finishedState.CompletedTaskIds.Contains("sawmill:delight-sawmill-test"),
                 "Real completion lacks the persisted LocalGateway task receipt");
 
-            yield return new WaitForSecondsRealtime(.36f);
+            // Detect a first-frame full-building flash or geometry reset:
+            // two extra genuine views before the usual 0.36-second checkpoint.
+            yield return new WaitForSecondsRealtime(.08f);
+            Shot(host.PlayerCamera,"finish-first-frame-landscape",844,390);
+            Shot(host.PlayerCamera,"finish-first-frame-portrait",390,844);
+            yield return new WaitForSecondsRealtime(.10f);
+            Shot(host.PlayerCamera,"finish-second-frame-landscape",844,390);
+            Shot(host.PlayerCamera,"finish-second-frame-portrait",390,844);
+            yield return new WaitForSecondsRealtime(.18f);
             if(fx.ActiveStagedBuildingMeshes<=0)
                 VisualIssues.Add("No actual 3D timber/roof landing during completed construction");
             Debug.Log("CONSTRUCTION_DELIGHT_FINISH_STAGED_MESHES="+fx.ActiveStagedBuildingMeshes+
@@ -247,10 +259,10 @@ namespace Eldoria.ReferenceClean.Editor
                 "  \"save_unchanged_after_reload\": true,\n"+
                 "  \"construction_from\": \"LocalGateway.Execute(Build)\",\n"+
                 "  \"completion_from\": \"TestClock + LocalGateway.Advance\",\n"+
-                "  \"images\": 34,\n"+
+                "  \"images\": 40,\n"+
                 "  \"art_approved\": false\n"+
                 "}\n");
-            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=34 save-preserved=true");
+            Debug.Log("CONSTRUCTION_DELIGHT_NATIVE_PASS images=40 save-preserved=true");
             EditorApplication.Exit(0);
         }
 
