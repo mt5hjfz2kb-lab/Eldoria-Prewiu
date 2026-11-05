@@ -129,7 +129,10 @@ namespace Eldoria.ReferenceClean.Editor
             yield return new WaitForSecondsRealtime(.42f);
             if(fx.ActiveStagedBuildingMeshes<=0)
                 VisualIssues.Add("No actual construction-stage 3D model parts during the real initial build");
-            Debug.Log("CONSTRUCTION_DELIGHT_WORK_STAGED_MESHES="+fx.ActiveStagedBuildingMeshes);
+            Debug.Log("CONSTRUCTION_DELIGHT_WORK_STAGED_MESHES="+fx.ActiveStagedBuildingMeshes+
+                      " visible="+fx.ActiveStagedVisibleMeshes);
+            if(fx.ActiveStagedBuildingMeshes>0 && fx.ActiveStagedVisibleMeshes<=0)
+                VisualIssues.Add("Real stage meshes exist but none are visibly entering worksite");
             if(fx.ActiveConstructionSprites<=0)
                 VisualIssues.Add("No flowing construction sprites; task="+
                     city.Gateway.Snapshot().BuildingTaskId+
