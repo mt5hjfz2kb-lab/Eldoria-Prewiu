@@ -43,6 +43,12 @@ namespace Eldoria
             Move(host, state, routes, "hunt-boar", c.BoarGeneration, c.BoarRespawnUtcTicks);
             if (c.MeatRemaining > 0)
                 Move(host, state, routes, "meat-valoria", c.MeatGeneration, c.MeatRespawnUtcTicks);
+            // The Chapter V Ash Stalker is a recurring elite (not the
+            // one-time campaign scout/Engendro), so its saved generation
+            // also selects a new legally reachable spawn position.
+            if (state.BastionLevel >= 5)
+                Move(host, state, routes, "ash-stalker-valoria",
+                    c.AshStalkerGeneration, c.AshStalkerRespawnUtcTicks);
         }
 
         private void Move(ValoriaIntegratedWorld host, PlayerState state,
