@@ -77,7 +77,7 @@ Shader "Eldoria/ConstructionDelight/ArchitecturalReveal"
                 half3 toward=normalize((half3)(_WorldSpaceCameraPos-i.positionWS));
                 half rim=pow(saturate(1.0h-abs(dot(normal,toward))),2.0h);
                 half overhead=saturate(dot(normal,half3(.22h,.90h,.32h))*.5h+.5h);
-                half alpha=0h;
+                half alpha=0.0h;
                 if(_Mode<.5h)
                 {
                     // Subtle moving glints along genuine scaffold timbers
