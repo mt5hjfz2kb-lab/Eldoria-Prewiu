@@ -33,6 +33,7 @@ const url=process.env.ELDORIA_URL||'http://127.0.0.1:4173/v0220/';
    if(stage.missionIntroSeen&&stage.tutorialSeen?.start)break;
   }
   stage=await get();
+  console.log('NARRATIVE_PROBE',JSON.stringify({speakers,stage:{introSeen:stage.introSeen,missionIntroSeen:stage.missionIntroSeen,tutorialSeen:stage.tutorialSeen},problems}));
   assert.ok(stage.introSeen,'Aldric opening must be acknowledged');
   assert.ok(stage.missionIntroSeen,'Chapter panel must be taught after the real dialogue');
   assert.ok(stage.tutorialSeen?.start,'First construction action must be taught');
