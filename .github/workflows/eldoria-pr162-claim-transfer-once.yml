@@ -1,0 +1,88 @@
+name: PR162 one-time safe owner handoff (remove after success)
+on:
+  push:
+    branches:
+      - feature/player-clarity-first-login-map-signage-20261105
+    paths:
+      - .github/workflows/eldoria-pr162-claim-transfer-once.yml
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: eldoria-pr162-direct-claim-transfer-once
+  cancel-in-progress: false
+jobs:
+  claim-once:
+    if: github.repository == 'mt5hjfz2kb-lab/Eldoria-Prewiu'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify all safety conditions and CAS transfer registry owner
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node <<'JS'
+          const repo=process.env.GITHUB_REPOSITORY;
+          const oldOwner='chatgpt-eldoria-first-entry-autonomous-20261105';
+          const newOwner='chatgpt-eldoria-pr162-direct-20261106';
+          const workstream='eldoria-first-login-map-signage-respawn-20261105';
+          const branch='feature/player-clarity-first-login-map-signage-20261105';
+          const api='https://api.github.com/repos/'+repo;
+          const headers={'Authorization':'Bearer '+process.env.GH_TOKEN,
+            'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',
+            'User-Agent':'eldoria-pr162-owner-handoff'};
+          async function req(path,options={}){
+            const resp=await fetch(api+path,{...options,headers:{...headers,...options.headers}});
+            const body=await resp.json();
+            if(!resp.ok)throw Error('GitHub '+resp.status+' '+path+': '+JSON.stringify(body).slice(0,300));
+            return body;
+          }
+          if(repo!=='mt5hjfz2kb-lab/Eldoria-Prewiu'||
+            process.env.GITHUB_REF!=='refs/heads/'+branch)
+            throw Error('Unrecognized PR162 source');
+          const pr=await req('/pulls/162');
+          if(pr.state!=='open'||pr.head?.ref!==branch||pr.head?.sha!==process.env.GITHUB_SHA||
+            pr.head?.repo?.full_name!==repo)throw Error('Unexpected current PR162 HEAD');
+          const raw=await req('/contents/pipeline/active-workstreams.json?ref=main');
+          if(!raw.sha||raw.encoding!=='base64')throw Error('Canonical blob SHA missing');
+          const registry=JSON.parse(Buffer.from(raw.content.replace(/\s/g,''),'base64').toString('utf8'));
+          const w=registry.active?.find(x=>x.id===workstream);
+          if(!w||w.owner!==oldOwner||w.ownership_revision!==3||
+            w.ownership_state!=='claimed'||w.branch!==branch||
+            (w.resources||[]).length!==0)
+            throw Error('Stale or busy owner; abort instead of overwriting newer work');
+          if(registry.active.some(x=>(x.resources||[]).includes('windows-runner-heavy')))
+            throw Error('Windows reserved by another workstream');
+          const runs=await req('/actions/runs?branch='+encodeURIComponent(branch)+'&status=in_progress&per_page=100');
+          if(runs.workflow_runs.some(x=>x.id!==Number(process.env.GITHUB_RUN_ID)&&
+            /UI Progression Certification|Validate Closed Tester Build/.test(x.name)))
+            throw Error('Existing native PR162 certification still active; abort transfer');
+          const stamp=new Date().toISOString();
+          w.ownership_history=(w.ownership_history||[]);
+          w.ownership_history.push({owner:oldOwner,ownership_revision:3,transferred_at:stamp,
+            reason:'Direct owner instruction after previous automation completed; preserve PR162 and tests'});
+          w.previous_owner=oldOwner;
+          w.owner=newOwner;
+          w.ownership_revision=4;
+          w.phase='NATIVE_PLAYMODE_REMEDIATION_AND_VISUAL_ACCEPTANCE';
+          w.next='Fix three exact PlayMode failures from run42126226230 without bypassing real nickname entry or tier capacities. Fix overlapping name+Power HUD; repeat full genuine Unity I-V and EditMode/PlayMode tests on exact HEAD, then merge only after quality acceptance. APK/WebGL publication is separate post-merge.';
+          for(const path of [
+            'Unity/Assets/Eldoria/Tests/PlayMode/NarrativeCoherencePlayModeTests.cs',
+            'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs',
+            'Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3CinematicAcceptanceTests.cs'])
+            if(!w.scope.includes(path))w.scope.push(path);
+          registry.updated_at=stamp;
+          const put=await req('/contents/pipeline/active-workstreams.json',{
+            method:'PUT',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({message:'coordination(PR162): owner-authorized direct handoff with CAS; no concurrent Unity',
+              branch:'main',sha:raw.sha,
+              content:Buffer.from(JSON.stringify(registry,null,2)+'\n').toString('base64')})
+          });
+          const live=await req('/contents/pipeline/active-workstreams.json?ref=main');
+          const verified=JSON.parse(Buffer.from(live.content.replace(/\s/g,''),'base64').toString('utf8'))
+            .active.find(x=>x.id===workstream);
+          if(verified.owner!==newOwner||verified.ownership_revision!==4)
+            throw Error('CAS write was not observed after commit');
+          console.log('ELDORIA_PR162_OWNER_DIRECT_CAS_PASS commit='+put.commit.sha+
+            ' owner='+verified.owner+' revision='+verified.ownership_revision);
+          JS
