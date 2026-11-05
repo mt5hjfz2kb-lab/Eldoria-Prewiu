@@ -93,8 +93,10 @@ namespace Eldoria.Tests.EditMode
         {
             var clock = new ManualClock();
             var store=new JsonStore();
-            store.Json=JsonUtility.ToJson(new PlayerState()).Replace(
-                "\\"PlayerName\\":\\"\\",", "");
+            string quote=((char)34).ToString();
+            string field=quote+"PlayerName"+quote+":"+quote+quote;
+            store.Json=JsonUtility.ToJson(new PlayerState())
+                .Replace(field+",","").Replace(","+field,"");
             var gateway = new LocalGateway(clock,store);
             var initial = gateway.Snapshot();
             Assert.That(initial.SchemaVersion,Is.EqualTo(1));
