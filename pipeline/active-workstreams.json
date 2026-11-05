@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-04T23:36:46.647Z",
+  "updated_at": "2026-11-05T08:48:10.456Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -136,14 +136,12 @@
         "tools/eldoria-v41/**",
         "docs/evidence/pr136-consolidation-20261104/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR136_MERGED_POSTMERGE_VALIDATION",
+      "phase": "PR136_MERGED_POSTMERGE_VERIFIED",
       "next": "Finish runs41933936250 and41933936233; record consolidation closeout. Same owner starts existing V41 workstream without interrupting these jobs.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
@@ -1819,7 +1817,7 @@
           "reason": "Explicit owner authorization in current conversation to perform handoff and continue complete PR136 consolidation; previous exact-head run41889063433 completed successfully. No jobs cancelled."
         }
       ],
-      "ownership_revision": 140,
+      "ownership_revision": 141,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -2188,6 +2186,15 @@
         "reason": "Owner-authorized PR136 consolidation exact candidate native certification",
         "previous_native_run": 41889063433,
         "publish": false
+      },
+      "last_native_verification": {
+        "source_sha": "26db55c892572a0e4a9ea68feda028408757d535",
+        "postmerge_runs": [
+          41933936250,
+          41933936233
+        ],
+        "conclusion": "success",
+        "note": "Same owner continues combat; releases Windows after both native postmerge runs completed. Artistic acceptance remains provisional."
       }
     },
     {
@@ -3000,7 +3007,7 @@
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
       "owner": "codex-eldoria-pr136-consolidation-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 19,
+      "ownership_revision": 20,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
@@ -3032,11 +3039,13 @@
         "pipeline/art-production-requests/eldoria-v41-combate-buzon-ui-20261030.json",
         "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
-      "phase": "COMBAT_T1_T5_IMPLEMENTATION_OWNER_AUTHORIZED",
-      "next": "Reconcile existing PR134 with main, implement preserved combat candidate and save-safe adapter; native validation before production promotion. Parameters remain candidates. No publication or spending.",
+      "phase": "COMBAT_T1_T5_NATIVE_VALIDATION",
+      "next": "Certify recovered T1-T5 candidate on canonical PR134; preserve issue138/139 decisions. Close only resolved issues after complete integration.",
       "art_production_routing_reason": "Mandatory tracking for exact source reuse and ArtTests code; no new artwork generation authorized.",
       "ownership_history": [
         {
