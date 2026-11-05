@@ -314,8 +314,8 @@ namespace Eldoria
                 return;
             // Prefer the real resource/node identity but prevent overlapping
             // labels from turning the mobile world into a wall of text.
-            int cellX = Mathf.FloorToInt(point.x / 29f);
-            int cellY = Mathf.FloorToInt(point.y / 29f);
+            int cellX = Mathf.FloorToInt(point.x / 74f);
+            int cellY = Mathf.FloorToInt(point.y / 33f);
             long cell = ((long)cellX << 32) | (uint)cellY;
             if (!occupiedScreenCells.Add(cell)) return;
             if (!markers.TryGetValue(id, out var marker))
@@ -327,6 +327,8 @@ namespace Eldoria
             marker.Rect.gameObject.SetActive(true);
             // Keep the 21px icon/15px label legible on narrow phones even
             // when a 1200px reference Canvas is scaled down to 390px.
+            // Compensate the Canvas scale exactly once. Children and text
+            // retain their canonical 72x28/23px/14-15pt logical dimensions.
             var canvasScale = layer.GetComponentInParent<Canvas>();
             marker.Rect.localScale = Vector3.one /
                 Mathf.Max(.1f, canvasScale ? canvasScale.scaleFactor : 1f);
@@ -336,25 +338,19 @@ namespace Eldoria
                 marker.Icon.gameObject.SetActive(icon.HasValue);
                 if (icon.HasValue) marker.Icon.Kind = icon.Value;
             }
-            // The RoyalScaler targets a 900px-high reference canvas.
-            // Landscape mobile is commonly ~0.43x logical scale: an unscaled
-            // 15pt level marker would be illegible at ~6 device pixels.
-            // Keep pictograms ~22 physical px and levels >=15px in either
-            // orientation, without changing the camera or GUI safe area.
+            // The scale-adjusted parent now maps 1 logical unit to 1
+            // physical pixel regardless of mobile orientation. Scaling its
+            // dimensions or font as well would multiply the correction twice.
             var canvas = layer.GetComponentInParent<Canvas>();
-            float multiplier = Mathf.Max(1f, 1f / Mathf.Max(.25f, canvas ? canvas.scaleFactor : 1f));
-            if (Mathf.Abs(marker.LastSizeMultiplier - multiplier) > .02f)
+            if (marker.LastSizeMultiplier != 1f)
             {
-                marker.LastSizeMultiplier = multiplier;
+                marker.LastSizeMultiplier = 1f;
                 marker.Rect.sizeDelta = marker.Icon
-                    ? new Vector2(72f * multiplier, 28f * multiplier)
-                    : new Vector2(73f * multiplier, 28f * multiplier);
+                    ? new Vector2(72f, 28f) : new Vector2(73f, 28f);
                 if (marker.Icon)
-                    ((RectTransform)marker.Icon.transform).sizeDelta =
-                        new Vector2(23f * multiplier, 23f * multiplier);
+                    ((RectTransform)marker.Icon.transform).sizeDelta = new Vector2(23f, 23f);
                 if (marker.Text)
-                    marker.Text.fontSize = Mathf.RoundToInt(
-                        (marker.Icon ? 14f : 15f) * multiplier);
+                    marker.Text.fontSize = marker.Icon ? 14 : 15;
             }
             var uiCam = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
