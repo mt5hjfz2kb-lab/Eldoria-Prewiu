@@ -1322,6 +1322,8 @@ namespace Eldoria.UI.RoyalGold.V2
             var s=gateway.Snapshot();
             var p=s.Retention??new EarlyRetentionState();
             bool vig=OpenDestination==Destination.Vigilants;
+            var firstUse=vig?EarlyRetentionFirstUseTutorial.Vigilants(s):
+                EarlyRetentionFirstUseTutorial.Explorers(s);
             if(guardianBanner)guardianBanner.gameObject.SetActive(false);
             var boardBacking=infoCard.GetComponent<RoyalGoldV2FrameGraphic>();
             if(boardBacking)boardBacking.enabled=vig&&!encounterSkin;
@@ -1423,10 +1425,14 @@ namespace Eldoria.UI.RoyalGold.V2
             bool narrow=height>width && width<640f;
             heading.Put(vig?(narrow?"Vigilantes":"Camino de los Vigilantes"):
                 (narrow?"Exploradores":"Mesa de Exploradores"));
-            kicker.Put(vig?(narrow?"CAMINO DE LOS VIGILANTES · PvE":
-                "PRUEBAS DEL REINO · COMBATE AUTOMÁTICO"):
+            kicker.Put(firstUse==FirstUseTutorialPhase.FirstAction?
+                (vig?"NUEVO · PRIMER COMBATE AUTOMÁTICO":"NUEVO · TU PRIMER ENCARGO"):
+                firstUse==FirstUseTutorialPhase.AwaitingResult?
+                "EN CURSO · RECOGE EL INFORME AL VOLVER":
+                vig?(narrow?"CAMINO DE LOS VIGILANTES · PvE":
+                    "PRUEBAS DEL REINO · COMBATE AUTOMÁTICO"):
                 (narrow?"MESA DE EXPLORADORES · ENCARGOS":
-                "Envía a tus exploradores y descubre nuevas tierras"));
+                    "Envía a tus exploradores y descubre nuevas tierras"));
             introduction.gameObject.SetActive(false);
             scoutStrategyButton.gameObject.SetActive(true);
             if(vig)
@@ -1632,13 +1638,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 footer.Put(hasPrevious?
                     "ÚLTIMA MARCHA · "+(previous.Won?"VICTORIA":"DERROTA")+
                         " · "+previous.Rounds+" rondas · Poder "+previous.PlayerPower:
-                    "Cada victoria ilumina el siguiente tramo del camino.");
+                    firstUse==FirstUseTutorialPhase.FirstAction?
+                     "PRIMERA PRUEBA · Pulsa Combatir y revisa el resultado.":
+                     "Cada victoria ilumina el siguiente tramo del camino.");
             }
             else
             {
                 if(engendroPortrait)
                     engendroPortrait.transform.parent.gameObject.SetActive(false);
-                chapter.Put("ENCARGOS EN CURSO");
+                chapter.Put(firstUse==FirstUseTutorialPhase.FirstAction?
+                    "PRIMER ENCARGO":"ENCARGOS EN CURSO");
                 var list=p.Orders.Where(x=>x!=null&&!x.Claimed)
                     .OrderBy(x=>x.StartedUtcTicks>0?0:1)
                     .ThenBy(x=>x.Period).ThenBy(x=>x.Slot).Take(3).ToArray();
@@ -1724,7 +1733,11 @@ namespace Eldoria.UI.RoyalGold.V2
                         order.EndsUtcTicks<=now()?"Recoger":"En camino");
                 }
                 long due=EarlyRetentionRules.NextPeriodUtcTicks(now());
-                footer.Put("Nuevos encargos: "+
+                footer.Put(firstUse==FirstUseTutorialPhase.FirstAction?
+                    "PRIMER PASO · Elige un encargo y pulsa Enviar.":
+                    firstUse==FirstUseTutorialPhase.AwaitingResult?
+                    "EN CURSO · Al regresar la marcha, pulsa Recoger.":
+                    "Nuevos encargos: "+
                     TimeSpan.FromTicks(Math.Max(0,due-now())).ToString(@"hh\:mm\:ss")+
                     " · Máximo 6 pendientes");
             }

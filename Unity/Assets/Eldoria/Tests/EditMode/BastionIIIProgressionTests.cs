@@ -128,6 +128,24 @@ namespace Eldoria.Tests {
    s.ChapterProgress.SeenNarrative.Add("productive-valoria");
    Assert.That(NarrativeCoherenceRules.NextUnseenBeat(s),Is.EqualTo("extraction-oddity"));
   }
+  [Test]public void VigilantsFirstUseGuideEndsOnlyAfterRealVictory(){
+   var s=Ready(1).Value;s.SawmillLevel=0;
+   Assert.That(EarlyRetentionFirstUseTutorial.Vigilants(s),Is.EqualTo(FirstUseTutorialPhase.Locked));
+   s.SawmillLevel=1;
+   Assert.That(EarlyRetentionFirstUseTutorial.Vigilants(s),Is.EqualTo(FirstUseTutorialPhase.FirstAction));
+   s.Retention.LastClearedStage=1;
+   Assert.That(EarlyRetentionFirstUseTutorial.Vigilants(s),Is.EqualTo(FirstUseTutorialPhase.Learned));
+  }
+  [Test]public void ScoutsFirstUseGuideTracksRealOrdersAndReports(){
+   var s=Ready(2).Value;
+   Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.Locked));
+   s.ChapterProgress.MarchConfirmed=true;
+   Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.FirstAction));
+   s.Retention.Orders.Add(new ScoutOrder{Id="real-order",StartedUtcTicks=1,EndsUtcTicks=2});
+   Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.AwaitingResult));
+   s.Retention.TotalScoutReports=1;
+   Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.Learned));
+  }
   [Test]public void IncompleteNarrativeIsNotRecordedAndAcknowledgementIsIdempotent(){
    var clock=new Clock();var store=Ready(3);var gateway=new LocalGateway(clock,store);
    Assert.That(NarrativeCoherenceRules.NextUnseenBeat(gateway.Snapshot()),Is.EqualTo("frontier-open"));

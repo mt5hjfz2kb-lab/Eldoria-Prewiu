@@ -63,6 +63,29 @@ public static class NarrativeProbe {
   c3.ChapterProgress.SeenNarrative.Add("extraction-oddity");
   Check(NarrativeCoherenceRules.NextUnseenBeat(c3)=="","No repeated automatic lore after acknowledgment");
 
+  long clockTicks=new DateTime(2026,11,5,12,0,0,DateTimeKind.Utc).Ticks;
+  var firstV=State(1);firstV.SawmillLevel=0;
+  Check(EarlyRetentionFirstUseTutorial.Vigilants(firstV)==FirstUseTutorialPhase.Locked,
+        "Vigilants lesson is locked before sawmill");
+  firstV.SawmillLevel=1;
+  Check(EarlyRetentionFirstUseTutorial.Vigilants(firstV)==FirstUseTutorialPhase.FirstAction,
+        "Vigilants first battle remains visible before a win");
+  firstV.Retention.LastClearedStage=1;
+  Check(EarlyRetentionFirstUseTutorial.Vigilants(firstV)==FirstUseTutorialPhase.Learned,
+        "Vigilants guidance disappears after an earned stage");
+
+  var firstS=State(2);
+  Check(EarlyRetentionFirstUseTutorial.Explorers(firstS)==FirstUseTutorialPhase.Locked,
+        "Scouts are not introduced until the first March is confirmed");
+  firstS.ChapterProgress.MarchConfirmed=true;
+  Check(EarlyRetentionFirstUseTutorial.Explorers(firstS)==FirstUseTutorialPhase.FirstAction,
+        "Scouts teach how to send the first real order");
+  firstS.Retention.Orders.Add(new ScoutOrder{Id="first",StartedUtcTicks=clockTicks,EndsUtcTicks=clockTicks+TimeSpan.FromMinutes(3).Ticks});
+  Check(EarlyRetentionFirstUseTutorial.Explorers(firstS)==FirstUseTutorialPhase.AwaitingResult,
+        "Scouts change instruction while the first order is underway");
+  firstS.Retention.TotalScoutReports=1;
+  Check(EarlyRetentionFirstUseTutorial.Explorers(firstS)==FirstUseTutorialPhase.Learned,
+        "Scouts stop repeating after an earned report");
   var store=new Store{Value=State(3)};
   var clock=new Clock();
   var gateway=new LocalGateway(clock,store);
