@@ -159,7 +159,7 @@ namespace Eldoria.Tests.EditMode
         }
 
         [Test]
-        public void UpgradeCompletingAfterFortyEightHoursGetsOldRateOnly()
+        public void UpgradeCompletingDuringFiveDayAbsenceSharesSameFortyEightHourWindow()
         {
             var clock = new TestClock();
             var seed=Ready();
@@ -177,11 +177,11 @@ namespace Eldoria.Tests.EditMode
             gateway=new LocalGateway(clock,store);
             Assert.That(gateway.Snapshot().ChapterThree.GranaryLevel,Is.EqualTo(2));
             Assert.That(gateway.Snapshot().Resources.Food-beforeFood,
-                Is.EqualTo(17281));
+                Is.EqualTo(32831));
             // First 10 seconds at 0.1/s, remaining 47h 59m 50s at 0.19/s.
             gateway=new LocalGateway(clock,store);
             Assert.That(gateway.Snapshot().Resources.Food-beforeFood,
-                Is.EqualTo(17281));
+                Is.EqualTo(32831));
         }
 
         [Test]
