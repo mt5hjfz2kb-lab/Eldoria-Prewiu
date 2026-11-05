@@ -92,6 +92,9 @@ namespace Eldoria.ReferenceClean {
    if(city?.Gateway==null||string.IsNullOrWhiteSpace(city.Gateway.Snapshot().PlayerName))return;
    var hud=host.Hud;
    if(!hud)return;
+   // First-entry identity is an interactive chapter premise, not an
+   // optional banner. Never let Aldric's first dialogue preempt the name.
+   if(hud.GetComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>()?.IsBlockingNarrative==true)return;
    if(!NarrativeCoherenceRules.CanPresent(
       hud.NarrativeOpen,
       hud.Modal&&hud.Modal.gameObject.activeSelf,
@@ -255,6 +258,7 @@ namespace Eldoria.ReferenceClean {
    host.Select(id);Refresh();
   }
   public void ShowStory(){
+   if(host?.Hud?.GetComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>()?.IsBlockingNarrative==true)return;
    Refresh();if(host.Hud.Modal.gameObject.activeSelf)return;
    string beat=Beat;
    host.Hud.ShowNarrativeSequence(Lines(beat),()=>{
