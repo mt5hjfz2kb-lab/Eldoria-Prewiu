@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T19:03:44.661Z",
+  "updated_at": "2026-11-05T20:13:29.529Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6204,12 +6204,12 @@
     {
       "id": "eldoria-first-login-map-signage-respawn-20261105",
       "title": "Eldoria — bienvenida con nick, pictogramas, niveles del mapa y reposición de 5 min",
-      "owner": "chatgpt-eldoria-player-clarity-20261105",
+      "owner": "chatgpt-eldoria-player-clarity-continuation-20261105",
       "branch": "feature/player-clarity-first-login-map-signage-20261105",
       "status": "active",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "claimed_at": "2026-11-05T19:53:00Z",
       "base_main_sha": "32176b06afee2a507ea76ff9087832e6b0cec4c8",
       "scope": [
@@ -6219,13 +6219,21 @@
         "pipeline/art-production-requests/eldoria-first-login-map-signage-respawn-20261105.json"
       ],
       "resources": [],
-      "phase": "ISOLATED_ICON_SOURCE_STAGED_UNITY_AND_ART_QA_PENDING",
+      "phase": "CONTINUATION_ISOLATED_UNITY_SOURCE",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "Source pictograms staged on draft PR162. Preserve economy PR141 ownership; integrate nickname, 5-min timers, map labels and spawn distribution only after safe reconciliation. Unity screenshots and gameplay QA pending.",
+      "next": "Continue existing PR162 only; add nonconflicting world labels/geometry and tests. Reconcile economy PR141 before changing GameState/LocalGateway/RegionOne or canonical HUD.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
-      "art_production_request": "pipeline/art-production-requests/eldoria-first-login-map-signage-respawn-20261105.json"
+      "art_production_request": "pipeline/art-production-requests/eldoria-first-login-map-signage-respawn-20261105.json",
+      "ownership_history": [
+        {
+          "owner": "chatgpt-eldoria-player-clarity-20261105",
+          "revision": 1,
+          "at": "2026-11-05",
+          "reason": "Continued on user instruction, same PR162/workstream; no concurrent economy ownership change"
+        }
+      ]
     }
   ],
   "history": [
