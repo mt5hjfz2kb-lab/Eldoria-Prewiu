@@ -73,9 +73,20 @@ function applySpeedup(s,key,unit,api={}){normalizeState(s);let task=(s.tasks||[]
  if(!s.speedupIntroSeen){s.speedupIntroSeen=true;api.toast?.('ACELERADOR UNIVERSAL','Reduce tiempo real de construcción, mejora o entrenamiento. Esperar sigue siendo perfectamente válido.')}
  api.save?.();api.recover?.();sync(s,{marchPower:api.marchPower,totalPower:api.totalPower},api,true);api.render?.();return true;
 }
-function intro(s,api={}){normalizeState(s);if(!s.introSeen||s.missionIntroSeen||api.isQA?.())return;s.missionIntroSeen=true;api.save?.();setTimeout(()=>api.story?.([
- ['NARRADOR','Tus objetivos se guardan en el panel de Capítulos. Tócalo para abrirlo o cerrarlo; el progreso se actualiza mientras juegas.']
-],()=>{api.save?.();api.render?.()}),260)}
+let missionIntroQueued=false;
+function intro(s,api={}){
+ normalizeState(s);
+ if(!s.introSeen||s.missionIntroSeen||missionIntroQueued||api.isQA?.())return;
+ if(document.querySelector('.e22-overlay,.aldric-cinematic,[data-testid="relic-reveal"]'))return;
+ missionIntroQueued=true;
+ api.story?.([
+  ['NARRADOR','El panel de objetivos muestra lo que Valoria necesita ahora. Ábrelo para consultar tus próximos pasos; el progreso se actualiza mientras juegas.']
+ ],()=>{
+  missionIntroQueued=false;
+  s.missionIntroSeen=true;
+  api.save?.();api.render?.();
+ });
+}
 function count(s,path,amount=1){normalizeState(s);let parts=String(path).split('.'),o=s.chapterProgress.counters;for(let i=0;i<parts.length-1;i++)o=o[parts[i]]||(o[parts[i]]={});let k=parts.at(-1);o[k]=(Number(o[k])||0)+amount}
 function installStyle(){if(document.getElementById('chapters-v027'))return;let st=document.createElement('style');st.id='chapters-v027';st.textContent=`
 #eldoria-core-loop .chapterCompact0267{position:absolute;z-index:55;left:10px;top:58px;width:min(270px,62vw);min-height:48px;padding:7px 9px;border:1px solid #d5b86966;border-radius:8px;background:#0d1318ef;color:#eee;text-align:left;box-shadow:0 8px 20px #0008}
