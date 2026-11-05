@@ -8,7 +8,7 @@
       "id": "main-runtime",
       "kind": "rule",
       "source_path": "README.md",
-      "source_blob_sha": "c75ff6e819c56aac49369bd04866848b39463784",
+      "source_blob_sha": "0ae0915551320b35fdf685c01f860a5a922a3995",
       "text": "El proyecto jugable vigente de Eldoria está en Unity/; v0220 es un prototipo web histórico."
     },
     {
@@ -71,7 +71,7 @@
       "id": "owner-role",
       "kind": "rule",
       "source_path": "README.md",
-      "source_blob_sha": "c75ff6e819c56aac49369bd04866848b39463784",
+      "source_blob_sha": "0ae0915551320b35fdf685c01f860a5a922a3995",
       "text": "El propietario decide visión creativa y aprueba resultados; el agente debe investigar, ejecutar, probar, evaluar calidad y reconocer límites sin trasladar trabajo técnico al propietario."
     }
   ]
