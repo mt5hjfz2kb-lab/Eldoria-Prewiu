@@ -1,35 +1,36 @@
-# Eldoria — cierre de coherencia narrativa y tutorial (2026-11-05)
+# ELDORIA — Plan de corrección narrativa y tutorial en UNITY
+**Reorientación del alcance — 5 de noviembre de 2026**
 
-**Base:** main 6dca872164acc05d1bca217125829b7b671d99b8. **Branch:** fix/narrative-tutorial-coherence-20261105.
-**Scope:** timing and copy of narrative, tutorial acknowledgement, first-use teaching and static QA. No combat resolver, art assets, scenes, paid tools or publication.
+## Fuente y destino
+- **Destino exclusivo de implementación: Unity** (escena jugable canónica, guardado real, HUD y sistemas reales).
+- **Prototipo web: referencia de consulta**, exclusivamente para comparar lore, orden de acontecimientos y diseño de desbloqueos. No modificar sus archivos, UI, textos, lógica, efectos ni pruebas de la versión web.
+- Canon: `docs/BASTION_I_X_MASTER_TABLE.md` y `docs/BASTION_III_FISSURE_CANON_20261027.md`. Las decisiones recientes del propietario prevalecen sobre textos históricos.
+- Sin nuevas ilustraciones o modificaciones artísticas en esta fase. Ni gastos ni publicación.
+- Respetar los trabajos existentes: PR #134 (combate), PR #152 (construcción), titulares del área Valoria/UI. La PR #160 permanece DRAFT hasta reconciliar titularidades.
 
-## Gates
-1. **G0 preflight:** preserve the Bastion I-X and Fissure contracts; isolate branch from PR134 (combat) and PR152 (construction). No Windows runner claims.
-2. **G1 Unity I-V:** canonical story order derived from saved state; no Lyra spoilers before meeting; Fissure vs Breach terminology; once-only persisted acknowledgements; tests in existing EditMode suite.
-3. **G2 Web I-X:** do not mark story/tutorial seen until the user finishes; serialize dialogues and avoid concurrent intro windows; teach Relicario in stages, only mark completed after first choice; remove early spoilers.
-4. **G3 cross-runtime QA:** targeted Node guard + existing test suites; add checks for skip/reload, spoiler stages, once-only; review exact diff.
-5. **G4 Unity native:** complete EditMode/PlayMode on the exact candidate; mobile screen and real player journey I-V; full end-to-end I-X in the web reference. This requires a free runner and cannot be certified by source inspection.
-6. **G5 integrate:** only after independent checks and conflict-free comparison with latest main and the combat workstream. No publication without explicit authorization.
+## Diagnóstico e implementación en Unity
+1. **Bloque I — Historia I–V:** ordenar las escenas por estado autorizado del jugador y no por simple consulta de pantalla; evitar que se reintroduzcan escenas completadas. Revisar la persistencia tras volver a entrar.
+2. **Bloque II — Conocimiento del jugador:** revelar Lyra y los detalles de su hermano solo después de la investigación y el encuentro. Tras victoria, reclutarla y revelar el manuscrito. La fisura local es distinta de la Brecha principal.
+3. **Bloque III — Redacción y nomenclatura:** corregir encabezados del Bastión, diálogos del consejo IV, términos Fisura/Brecha y textos de misiones que podrían adelantar descubrimientos.
+4. **Bloque IV — Tutorial Unity:** introducir cada destino después de su desbloqueo: producción, expediciones, cuartel, marchas, Vigilantes, Exploradores, buzón, héroes, mejoras. La primera ayuda debe invitar a una acción real y quedar completada solo al realizarla.
+5. **Bloque V — Progresión hasta X:** el canon web describe el arco I–X, pero la implementación Unity actual solo llega a V. Diseñar y trasladar el tutorial VI–X a Unity cuando se implemente la progresión real. No fingir que existe en la build Unity.
+6. **Bloque VI — Combate:** reconciliar con el trabajo canónico de PR #134 antes de reemplazar cualquier regla o resultado. La resolución del combate y el tutorial deben reflejar victorias, heridos y recompensas reales, no inventadas.
 
-## Acceptance
-- No dialogue displays a character's undiscovered identity or claims an event before its state is earned.
-- Ordering survives multiple progress steps between render frames and reloading.
-- Read-state recorded only after final acknowledgement, not at scheduling time.
-- Bastion VII explains Códice/Relicario without dumping rarity/directions and requires an actual use/conserve decision.
-- Bastion IX/X narrative graduation must eventually be backed by a real valid combat challenge, not automatic victory.
-- Functional checks are not artistic/rhythm certification.
+## Qué se ha implementado en esta PR (solo Unity)
+- `NarrativeCoherenceRules` en `GameState.cs`: selección y orden de eventos, etapas de conocimiento de la fisura.
+- `ValoriaJourneyGuidance.cs`: elección de escena por progreso guardado y mejora textual del consejo IV.
+- `ExistingSliceBinding.cs`: descripción contextual de la fisura, nombres de acciones sin spoilers y etiquetas de Bastión, no capítulos falsos.
+- `ValoriaMarchPresentation.cs`: terminología de investigación coherente.
+- `RoyalGoldV3EarlyRetentionScreens.cs`: no mostrar la maestría de Lyra antes de desbloquearla.
+- `BastionIIIProgressionTests.cs`: pruebas EditMode de información conocida, orden de eventos y persistencia.
 
-## Known deferred cross-workstream work
-- PR134 activates the approved combat after independent reconciliation; only then can Bastion III/X combat outcomes be re-evaluated honestly.
-- Full native mobile A/B and normal-clock human playtest cannot be claimed from these source changes.
-- An early optional Herald appears at level V in the legacy web prototype. Resolve whether it is explicitly a lesser world boss before moving or renaming this live activity; do not silently remove player content.
+## Pruebas y criterios de cierre
+- Ejecutar EditMode/PlayMode de Unity sobre el **HEAD exacto** tras aprobar la titularidad de archivos y liberar el runner, sin desplazar otros trabajos.
+- Partida nueva real de Unity I–V, incluidos primer inicio, reconstrucción, salida al mundo, fisura de 20 minutos, contacto con Lyra, victoria, reclutamiento, recarga y Bastión IV–V.
+- Pantallas reales de Unity en orientación vertical/horizontal: cero bloqueos, recortes y escenas superpuestas. Compararlas con las referencias gráficas aprobadas de Unity, no con capturas experimentales del web.
+- Prueba de regreso offline y guardados históricos: cero revelaciones prematuras o recompensas repetidas.
+- La calidad de ritmo y redacción requiere revisión jugable; un test funcional PASS no equivale a aprobación artística.
+- **Pendiente de verificar**: CI completo de Unity, pruebas físicas móvil y compatibilidad final con PR #134. No fusionar ni publicar antes de resolver los requisitos de integración.
 
-## Hallazgos de validación y técnica reusable — 5/11/2026
-
-- **Falso PASS detectado**: el primer test visual solo comprobaba flags de progreso y un selector global `.aldric-cinematic .aldric-dialogue.done`. Podía hacer click sobre una escena distinta de la visible, acumulando 18 avances con el mismo narrador mientras los flags se completaban. No equivale a lectura visual correcta.
-- **Corrección del test**: esperar `.aldric-dialogue.done` dentro del diálogo visible, verificar la retirada del mismo elemento de DOM tras Continuar, exigir aparición real de Sir Aldric y guardar capturas con el texto totalmente revelado. Esta técnica evita confundir éxito de estado con éxito visual.
-- **Bug real descubierto por el test estricto**: `tutorialBeat()` se ejecutaba en el primer `render()`, antes de que `opening()` y `aldricIntro()` concluyeran; varias escenas podían quedar superpuestas. Los tutoriales iniciales del Aserradero y Mundo se condicionan ahora a `s.introSeen`. El ledger se escribe únicamente después de finalizar cada lectura.
-- **Evidencia estática y de dominio**: 9 tests nuevos Node aprobados, compilaciones Ubuntu de dominios existentes y guardas de arquitectura/workflows aprobados. 
-- **Evidencia de navegador**: primera partida normal pasa con control del diálogo visible en el HEAD `ab7f618168525f067ebb7ad638d8aa2252734596`; recorrido I–X del mismo HEAD en verificación al registrar esta nota. Un recorrido I–X anterior pasó en `a6e760e41abc848416c2dbf112a3ce0ef32a45b3`, con 17 checkpoints.
-- **Límite**: este control detecta orden y ausencia de fallos automáticos; no mide por sí solo ritmo subjetivo ni legibilidad certificada en un dispositivo físico. Ni equivale al Unity Editor PASS.
-- **Bloqueo de integración**: la PR #160 es draft; su comprobación de Workstream-ID falla por titularidades vigentes sobre GameState, RoyalHUDV1, ValoriaReferenceClean y el prototipo web de la fisura. Reconciliar con #134 y propietarios antes de promover nada. Ningún otro propietario ni main fue modificado.
+## Registro de corrección de alcance
+Una pasada anterior había añadido pruebas y cambios a `v0220/**` y `qa/**`. Se han revertido de esta rama sin alterar `main` ni el historial del proyecto. Las evidencias de navegador pertenecen a ese intento descartado y **no certifican Unity**.

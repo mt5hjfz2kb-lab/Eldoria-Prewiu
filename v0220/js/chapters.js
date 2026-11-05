@@ -46,15 +46,15 @@ function sync(s,h={},api={},ceremony=false){normalizeState(s);let changed=false,
  for(const m of ch.missions){let p=progress(s,m,h);if(p.done&&!s.chapterProgress.completedMissions[m.id]){s.chapterProgress.completedMissions[m.id]=Date.now();api.record?.('mission_completed',{chapter:ch.id,mission:m.id,title:m.title});if(!s.chapterProgress.missionRewards[m.id]){grant(s,m.reward,'mission:'+m.id,api);s.chapterProgress.missionRewards[m.id]=Date.now()}changed=true}}
  let all=ch.missions.every(m=>s.chapterProgress.completedMissions[m.id]);
  if(all&&!s.chapterProgress.claimedChapters[ch.id]){grant(s,ch.chapterReward,'chapter:'+ch.id,api);s.chapterProgress.claimedChapters[ch.id]=Date.now();api.record?.('chapter_completed',{chapter:ch.id,title:ch.title});api.record?.('chapter_reward_claimed',{chapter:ch.id,reward:ch.chapterReward});s.chapterProgress.current=Math.min(10,ch.id+1);changed=true;
-   if(!api.isQA?.()){if([3,7,10].includes(ch.id))setTimeout(()=>api.cinema?.('✦',ch.id===10?'CAPÍTULO I COMPLETADO':'ETAPA COMPLETADA','<b>'+ch.title+'</b><br><br>Valoria cruza un hito real de su desarrollo.','RECOMPENSA · '+rewardText(ch.chapterReward),'CONTINUAR',()=>{api.save?.();api.render?.()}),80);else api.toast?.('ETAPA COMPLETADA',ch.title+' · '+rewardText(ch.chapterReward));}
+   if(!api.isQA?.()){if([3,7,10].includes(ch.id))setTimeout(()=>api.cinema?.('✦','CAPÍTULO COMPLETADO','<b>'+ch.title+'</b><br><br>Valoria cruza un hito real de su desarrollo.','RECOMPENSA · '+rewardText(ch.chapterReward),'CONTINUAR',()=>{api.save?.();api.render?.()}),80);else api.toast?.('CAPÍTULO COMPLETADO',ch.title+' · '+rewardText(ch.chapterReward));}
  }
  if(changed)api.persist?.();return changed;
 }
 function panel(s,h={}){normalizeState(s);let ch=currentChapter(s),m=currentMission(s,h),done=ch.missions.filter(x=>s.chapterProgress.completedMissions[x.id]).length,mp=m?progress(s,m,h):null;
- let closed='<button class="chapterCompact0267 '+(!s.missionPanelHintSeen?'discoverable0301':'')+'" data-chapter-toggle data-testid="chapter-compact"><small>ETAPA '+ch.id+' · '+ch.title+'</small><span><b>'+done+'/'+ch.missions.length+'</b><em>'+(m?m.title:'Etapa completada')+'</em><strong class="chapterChevron0301">'+(s.missionPanelOpen?'▲ CERRAR':(!s.missionPanelHintSeen?'▼ ABRIR':'▼'))+'</strong></span>'+(mp&&!mp.done?'<i>'+Math.floor(mp.current)+' / '+mp.target+'</i>':'')+'</button>';
+ let closed='<button class="chapterCompact0267 '+(!s.missionPanelHintSeen?'discoverable0301':'')+'" data-chapter-toggle data-testid="chapter-compact"><small>CAPÍTULO '+ch.id+' · '+ch.title+'</small><span><b>'+done+'/'+ch.missions.length+'</b><em>'+(m?m.title:'Capítulo completado')+'</em><strong class="chapterChevron0301">'+(s.missionPanelOpen?'▲ CERRAR':(!s.missionPanelHintSeen?'▼ ABRIR':'▼'))+'</strong></span>'+(mp&&!mp.done?'<i>'+Math.floor(mp.current)+' / '+mp.target+'</i>':'')+'</button>';
  if(!s.missionPanelOpen)return closed;
  let rows=ch.missions.map(x=>{let p=progress(s,x,h),ok=!!s.chapterProgress.completedMissions[x.id];return '<article class="'+(ok?'done':x===m?'current':'')+'"><span>'+(ok?'✓':'◇')+'</span><div><b>'+x.title+'</b><small>'+Math.floor(p.current)+' / '+p.target+'</small><em>'+rewardText(x.reward)+'</em></div></article>'}).join('');
- return closed+'<aside class="chapterDrawer0267" data-testid="chapter-drawer"><button class="chapterClose0267" data-chapter-toggle aria-label="Cerrar">×</button><small>ETAPA '+ch.id+'</small><h2>'+ch.title+'</h2><p>'+ch.context+'</p><div class="missionList0267">'+rows+'</div>'+missionHelp(s,m,h)+(m?.target?'<button class="missionGo027" data-mission-go>IR AL OBJETIVO</button>':'')+'<div class="speedWallet0267"><small>ACELERADORES UNIVERSALES</small><span>1m ×'+s.speedups.m1+'</span><span>5m ×'+s.speedups.m5+'</span><span>15m ×'+s.speedups.m15+'</span></div><footer><small>RECOMPENSA DE ETAPA</small><b>'+rewardText(ch.chapterReward)+'</b></footer></aside>';
+ return closed+'<aside class="chapterDrawer0267" data-testid="chapter-drawer"><button class="chapterClose0267" data-chapter-toggle aria-label="Cerrar">×</button><small>CAPÍTULO '+ch.id+'</small><h2>'+ch.title+'</h2><p>'+ch.context+'</p><div class="missionList0267">'+rows+'</div>'+missionHelp(s,m,h)+(m?.target?'<button class="missionGo027" data-mission-go>IR AL OBJETIVO</button>':'')+'<div class="speedWallet0267"><small>ACELERADORES UNIVERSALES</small><span>1m ×'+s.speedups.m1+'</span><span>5m ×'+s.speedups.m5+'</span><span>15m ×'+s.speedups.m15+'</span></div><footer><small>RECOMPENSA DE CAPÍTULO</small><b>'+rewardText(ch.chapterReward)+'</b></footer></aside>';
 }
 function missionTarget(s,view,h={}){let m=currentMission(s,h);if(!m?.target)return null;
  let t=m.target;
@@ -73,20 +73,9 @@ function applySpeedup(s,key,unit,api={}){normalizeState(s);let task=(s.tasks||[]
  if(!s.speedupIntroSeen){s.speedupIntroSeen=true;api.toast?.('ACELERADOR UNIVERSAL','Reduce tiempo real de construcción, mejora o entrenamiento. Esperar sigue siendo perfectamente válido.')}
  api.save?.();api.recover?.();sync(s,{marchPower:api.marchPower,totalPower:api.totalPower},api,true);api.render?.();return true;
 }
-let missionIntroQueued=false;
-function intro(s,api={}){
- normalizeState(s);
- if(!s.introSeen||s.missionIntroSeen||missionIntroQueued||api.isQA?.())return;
- if(document.querySelector('.e22-overlay,.aldric-cinematic,[data-testid="relic-reveal"]'))return;
- missionIntroQueued=true;
- api.story?.([
-  ['NARRADOR','El panel de objetivos muestra lo que Valoria necesita ahora. Ábrelo para consultar tus próximos pasos; el progreso se actualiza mientras juegas.']
- ],()=>{
-  missionIntroQueued=false;
-  s.missionIntroSeen=true;
-  api.save?.();api.render?.();
- });
-}
+function intro(s,api={}){normalizeState(s);if(!s.introSeen||s.missionIntroSeen||api.isQA?.())return;s.missionIntroSeen=true;api.save?.();setTimeout(()=>api.story?.([
+ ['NARRADOR','Tus objetivos se guardan en el panel de Capítulos. Tócalo para abrirlo o cerrarlo; el progreso se actualiza mientras juegas.']
+],()=>{api.save?.();api.render?.()}),260)}
 function count(s,path,amount=1){normalizeState(s);let parts=String(path).split('.'),o=s.chapterProgress.counters;for(let i=0;i<parts.length-1;i++)o=o[parts[i]]||(o[parts[i]]={});let k=parts.at(-1);o[k]=(Number(o[k])||0)+amount}
 function installStyle(){if(document.getElementById('chapters-v027'))return;let st=document.createElement('style');st.id='chapters-v027';st.textContent=`
 #eldoria-core-loop .chapterCompact0267{position:absolute;z-index:55;left:10px;top:58px;width:min(270px,62vw);min-height:48px;padding:7px 9px;border:1px solid #d5b86966;border-radius:8px;background:#0d1318ef;color:#eee;text-align:left;box-shadow:0 8px 20px #0008}

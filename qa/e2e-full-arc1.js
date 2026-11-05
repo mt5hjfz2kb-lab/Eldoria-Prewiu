@@ -89,7 +89,7 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1';
   await p.evaluate(()=>{const q=window.ELDORIA_V023.state(),end=Date.now()+100;window.ELDORIA_V023.setQA({tasks:q.tasks.map(t=>t.key==='explore-fissure'?{...t,start:end-(t.end-t.start),end}:t)})});
   await waitState(()=>window.ELDORIA_V023.state().fissureExplored===true,5000);
   await p.reload({waitUntil:'domcontentloaded'});await closeAll();await view('world');await selectFissure();
-  if(!(await fissureAction.innerText()).includes('ACERCARSE A LA ARQUERA'))throw Error('Completed research must unlock contact without spoiling her name');
+  if(!(await fissureAction.innerText()).includes('HABLAR CON LYRA'))throw Error('Completed research must unlock contact');
   await fissureAction.evaluate(el=>el.click());
   for(const speaker of ['NARRADOR','Sir Aldric','Lyra','Sir Aldric','Lyra','Sir Aldric']){
     const d=p.locator('.aldric-cinematic[data-scene="story-dialogue"][data-speaker="'+speaker+'"]');
