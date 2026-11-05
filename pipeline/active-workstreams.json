@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T13:18:44.310Z",
+  "updated_at": "2026-11-05T15:42:54.852Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-eldoria-pr136-consolidation-20261104",
+      "owner": "codex-combat-dialogues-fc0ef62e-20261105",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-11-04",
@@ -1815,9 +1815,15 @@
           "ownership_revision": 138,
           "ended_at": "2026-11-04T19:23:34.381Z",
           "reason": "Explicit owner authorization in current conversation to perform handoff and continue complete PR136 consolidation; previous exact-head run41889063433 completed successfully. No jobs cancelled."
+        },
+        {
+          "owner": "codex-eldoria-pr136-consolidation-20261104",
+          "ownership_revision": 141,
+          "transferred_at": "2026-11-05T15:42:54.852Z",
+          "reason": "Owner explicitly directs this chat to finish the almost-complete combat work, then dialogues. Preserve all running jobs and existing PR134/PR160; recover uncommitted closeout."
         }
       ],
-      "ownership_revision": 141,
+      "ownership_revision": 142,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -3005,9 +3011,9 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": "codex-eldoria-pr136-consolidation-20261104",
+      "owner": "codex-combat-dialogues-fc0ef62e-20261105",
       "ownership_state": "claimed",
-      "ownership_revision": 21,
+      "ownership_revision": 22,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
@@ -3131,6 +3137,12 @@
           "ownership_revision": 15,
           "released_at": "2026-10-31T21:38:59.618Z",
           "reason": "Owner explicitly authorized BLOQUE 00 safe handoff from unstable Work to independent normal chats. Current phase ends read-only; preserve PR136 and existing source/evidence. Next BLOQUE 01 session must acquire this exact ID with a fresh CAS before any writes or Windows job."
+        },
+        {
+          "owner": "codex-eldoria-pr136-consolidation-20261104",
+          "ownership_revision": 21,
+          "transferred_at": "2026-11-05T15:42:54.852Z",
+          "reason": "Owner explicitly directs this chat to finish the almost-complete combat work, then dialogues. Preserve all running jobs and existing PR134/PR160; recover uncommitted closeout."
         }
       ],
       "delivery_definition": {
