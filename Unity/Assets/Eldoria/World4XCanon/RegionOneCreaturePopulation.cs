@@ -44,7 +44,7 @@ namespace Eldoria.World4XCanon
             service.prefabs["spawnling:far"]=spawnFar;
             if(host.City.Gateway is LocalGateway local&&local.Snapshot().WorldId=="world-local")
             {
-                local.ConfigureLocalCreatureRespawn(placement,TimeSpan.FromMinutes(15));
+                local.ConfigureLocalCreatureRespawn(placement,RenewablePopulationPolicy.Delay);
                 local.EnsureLocalCreaturePopulation(18,18);
             }
             service.RefreshNow();
@@ -66,7 +66,7 @@ namespace Eldoria.World4XCanon
                 {
                     // Reload replaces the gateway, including its runtime services.
                     // Reattach the same terrain authority before restoring population.
-                    local.ConfigureLocalCreatureRespawn(placement,TimeSpan.FromMinutes(15));
+                    local.ConfigureLocalCreatureRespawn(placement,RenewablePopulationPolicy.Delay);
                     local.EnsureLocalCreaturePopulation(18,18);
                 }
             }
