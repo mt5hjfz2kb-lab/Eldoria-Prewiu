@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T21:04:09.575Z",
+  "updated_at": "2026-11-05T21:06:35.809Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6254,12 +6254,21 @@
         "Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs.meta",
         "Unity/Assets/Eldoria/PlayerClarityStoryRenewal.cs",
-        "Unity/Assets/Eldoria/PlayerClarityStoryRenewal.cs.meta"
+        "Unity/Assets/Eldoria/PlayerClarityStoryRenewal.cs.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/BastionIIIWorldPresentation.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarityGatewayIntegrationTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/PlayerClaritySceneTests.cs"
       ],
       "resources": [],
-      "phase": "ISOLATED_WORLD_UI_AND_TESTS_PENDING_NATIVE_INTEGRATION",
+      "phase": "CANONICAL_INTEGRATION_AFTER_PR141_MERGE",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "Integrate story hunt relocation with presentation-only physical site validation; wait for canonical Valoria gateway ownership release before changing 45m/30m/15m cooldown and player identity persistence.",
+      "next": "Implement player name in PlayerState/LocalGateway + first entry before narrative, 300s all recurring populations, tier capacity + deterministic safe placement. Run Unity native certifications after main integration runner idle, no publish until pass.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6271,7 +6280,12 @@
           "at": "2026-11-05",
           "reason": "Continued on user instruction, same PR162/workstream; no concurrent economy ownership change"
         }
-      ]
+      ],
+      "dependencies": {
+        "economy_pr": 141,
+        "economy_merged_sha": "0579b316eac5c9c278d7de83540b9f67d74b96a6",
+        "integration_branch": "feature/player-clarity-first-login-map-signage-20261105"
+      }
     }
   ],
   "history": [
