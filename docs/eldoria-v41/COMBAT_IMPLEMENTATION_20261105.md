@@ -1,4 +1,49 @@
-# Combate T1–T5 — implementación autorizada, 5 noviembre 2026
+# Combate T1–T5 — integrado en main, 5 noviembre 2026
+
+**Estado vigente:** PR #134 integrada y cerrada por GitHub en `d19df6fc1d521204926b735a05a06786c80f37a5`, conservando la consolidación PR #136 (`26db55c892572a0e4a9ea68feda028408757d535`). La campaña real selecciona el resolver evolutivo. Certificación nativa previa completa PASS; postverificación de main completada SUCCESS en ambos flujos (42052170803 y 42052170653).
+
+## Qué se ha reconciliado
+
+- Último laboratorio de #138/#139: 15 perfiles (Paladines, Arqueros, Brujos × T1–T5), multiplicadores 1/1,55/2,40/3,72/5,77, contrarrestes 1,40, táctica 0,65, ruptura 0,64R/(R+45) y límite 120. Los coeficientes anteriores y vetos absolutos rechazados quedan históricos. La tabla y hashes completos están en [BALANCE_SOURCE_RECONCILIATION_20261105.md](BALANCE_SOURCE_RECONCILIATION_20261105.md).
+- Se preserva la UI posterior de #136 y los avances válidos de #135/#137; el parche antiguo de entrenamiento de #134 no sustituye esa presentación. Las dos ramas de retención ya aportaban guardianes/maestría/descubrimientos; no se reintroducen sus consejos de composición descartados.
+- El anfitrión jugable, criaturas reales, 25 Vigilantes, patrullas y Acechador usan el nuevo resolver. Maestría, botín, XP, respawn y condiciones narrativas se conservan; Fisura/cacerías sin perfil enemigo autorizado conservan sus condiciones autorales.
+- Quince campos aditivos en el ejército, snapshots inmutables al enviar y resolución antigua para viajes ya iniciados. No se conceden tropas, héroes, equipamiento ni desbloqueos nuevos. El C# recuperado se corrigió para compilar y se contrastó contra el Python original.
+- JsonUtility crea objetos vacíos al cargar antiguos campos nulos: solo se normalizan los totalmente vacíos. Los incompletos o de versión desconocida se rechazan. El resultado versionado sobrevive en LastBattleReport, correo y recarga; los empates no conceden premios y conservan título correcto.
+- Informes voluntarios sobre la marcha propia, sin instrucciones de composición ni datos enemigos inventados. Buzón horizontal compacto: fuentes a resolución nativa, títulos completos y viewport desplazable. Se descartó el escalado del Transform porque la captura real mostró borrosidad y recortes aunque las pruebas funcionales pasaran.
+
+## Política médica y alcance futuro
+
+Antes de un Hospital realmente operativo, regresan todas las tropas y no se habilitan graves ni muertes permanentes. El planificador puro conserva tropas y recibos por evento, ordena regresos UTC y admite graves según camas disponibles; el excedente muere también en PvE según la decisión final del propietario (#138, comentario6550040823, 31 octubre). PvE no causa muertes directas; los leves no consumen camas. Hospital/PvP, tasas 5%/25%, costes y duraciones experimentales no se activan.
+
+Esta decisión posterior sustituye la antigua frase general «PvE crea 0 muertes permanentes». `DESIGN_DECISIONS.md` sigue reservado por `eldoria-bastion-iii-fissure-parity-20261027`; no se sobrescribe ese archivo ajeno. La regla vigente y su procedencia quedan aquí explícitas para su próxima sincronización documental. El catálogo hipotético de 50 enemigos de #139 tampoco se convierte en producción.
+
+## Pruebas del commit integrado
+
+- [Unity 42044569900](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42044569900): todos los pasos requeridos SUCCESS; **117/117 EditMode y 73/73 PlayMode**, cero fallidos, ignorados o inconclusos. Controles nativos de entrenamiento, marcha, buzón/recompensas, guardados antiguos/nuevos, tres marchas, héroes, progresión, diálogos y retención.
+- [Dominio 42044570326](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42044570326): 109 comprobaciones evolutivas, 434 paridades C#/Python, 39.204 duelos, 26.907 invariantes médicas, 151 controles del gateway, 62 del adaptador. Recorridos continuos I–V legado/nuevo: 149 acciones y 119 recargas cada uno. 33 pruebas positivas/negativas del certificado exacto.
+- [Regresión web 42044569988](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42044569988): SUCCESS; no se presenta como sustituto de Unity.
+- Capturas auténticas revisadas a 1600×900, 900×1600, 390×844 y 844×390, incluida navegación/desplazamiento del análisis. Los controles de pantalla compacta exigen cuerpo ≥18 px, métricas/pie ≥12 px, viewport ≥140 px y dos títulos reales sin recorte.
+- Rendimiento Editor en mismo código/escenario y resolver legado frente al nuevo: combate p95 0,0003→0,109 ms; 8192 bytes retenidos adicionales tras GC. Ciudad p95 0,6731→0,6639 ms; Aldric 1,3014→1,2504; Lyra 1,3316→1,3139. Sin regresión relevante en esos escenarios. No son mediciones físicas Android/iOS.
+- Build Windows privada compilada; ningún APK/WebGL publicado. Veto de recursos: 550 dependencias, 0 modelos rechazados empaquetables y 0 loaders vetados.
+
+| Evidencia | Artefacto | SHA-256 |
+|---|---|---|
+| XML y controles nativos | 13426657774 | acc627706217f6decd737f4a28792f9017e4898be8194f3121308ace169f8f77 |
+| Capturas V4.1 | 13425606742 | 31f65d8b6c9e2ba8ca9d216bcc056002c19cea3fbccaf2eec29d6f68244fa730 |
+| Rendimiento | 13424144845 | dcdc5c6d25b9ea22e89bffadf427832c6d27fd9f8e928b51a291ae8cb6546368 |
+| Build Windows privada | 13426861693 | e24c7abebdc743e9249453f4970de6f841f6b7447b66962b8050928186df3efd |
+
+Primeras tres descargas verificadas localmente. El ZIP Windows supera el límite de descarga del conector: su digest procede de GitHub, sin afirmar verificación local del binario. Postverificación: [42052170803](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42052170803) y [42052170653](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42052170653), ambas completadas SUCCESS el 05/11. XML del flujo general descargados y verificados: 117/117 EditMode y 73/73 PlayMode; cero fallos u omisiones. Artefacto13428591139 SHA25648631ec0252e3c3363cd31faf50069684a1152d641bdf9a44ebb59dcf6d02537.
+
+## Conservación artística y recursos
+
+Salón, fichas, habilidades, talentos, equipamiento, marchas, entrenamiento, buzón, Vigilantes, Exploradores, informes, ciudad/HUD, cartelas y diálogos conservan el acabado aceptado provisionalmente. No se declara aprobación artística definitiva ni prueba física móvil. Los refinamientos de #131 y trabajos separados de narrativa/animación siguen sus propias PR.
+
+Blender PID9852 se inspeccionó con autorización expresa: bienvenida y escena inicial, sin trabajo Eldoria ni servicio BlenderMCP. Cierre normal acreditado por artifact13418237265 sobre captura13417313452; sin terminación forzada, descarte de aviso ni reinicio. No se cancelaron trabajos ajenos. La propuesta opcional de añadir otra captura del cuerpo quedó fuera del candidato y preservada como parche de QA; no cambia el juego ni invalida estas pruebas.
+
+## Registro histórico de implementación
+
+Las entradas inferiores describen etapas y fallos anteriores; sus estados «pendiente/no activo» quedan sustituidos por la cabecera vigente. Se preservan como evidencia, no como órdenes actuales.
 
 Estado: motor recuperado conectado al gateway con catálogo explícito y marchas versionadas; probado con encuentros controlados en .NET. NO activo por defecto en campaña ni certificado todavía en Unity. No publicado.
 
