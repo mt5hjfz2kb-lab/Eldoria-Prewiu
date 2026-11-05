@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "a6313bd6006b0128271481222735396f983594f2",
   "ownership_revision": 13,
-  "mode": "OFFLINE_5_CSHARP_STRUCTURAL_STAGE_PLUS_C3_PARCEL_BINDING",
+  "mode": "SOURCE_ONLY_V4_REAL_MESH_ASSEMBLY_AFTER_MAIN_RECONCILIATION",
   "expected_images": 34,
   "formats": [
     "844x390",
@@ -49,7 +49,11 @@
       "status": "failed_compile_missing_particle_module"
     }
   ],
-  "validation": "Exact SHA Unity compile and integrated authentic Valoria reference scene, 26 PNG genuine work/finish A/B in both orientations, task completion receipt, save invariant, per-pixel site delta, source Unity 6000.3.23f1.",
+  "validation": [
+    "36 authoritative domain tests",
+    "5 C# files Roslyn syntax and assembly safety guards",
+    "no runtime Unity proof claimed yet"
+  ],
   "editor_launch": false,
   "windows_runner_requested": false,
   "test_project": "tools/construction-delight/DomainProbe.csproj",
@@ -81,7 +85,7 @@
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 11,
+  "offline_validation_attempt": 12,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
@@ -160,5 +164,7 @@
   "last_approved_visual": "V3 rejected by owner as really bad; no artistic approval",
   "dispatched_reason": "Exact four-C# structural source validation after mesh cleanup, duty-cycled work shader, 0.87s roof reveal and 34-frame QA",
   "last_source_fix": "Production root finds genuine Granary/Stoneworks Built/Construction/Ground via Parcel.Bindings; staged and URP shader timing remains 1.68s",
-  "implementation": "Reversible genuine 3D building mesh staging and roof landing; actual Gateway task remains sole source of progress"
+  "implementation": "Reversible genuine 3D building mesh staging and roof landing; actual Gateway task remains sole source of progress",
+  "technique": "Stage existing sawmill/glb MeshRenderer parts from original saved building progress, physically land authentic roof at completion, preserve source material and renderer enable flags",
+  "target_main_sha": "194ab76fac23463ef60d686da9b81c32fd9e8a95"
 }
