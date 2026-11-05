@@ -26,8 +26,7 @@ const url=process.env.ELDORIA_URL||'http://127.0.0.1:4173/v0220/';
    if(captures<4){
     await page.screenshot({path:'narrative-first-use-'+String(++captures).padStart(2,'0')+'.png',fullPage:true});
    }
-   await page.waitForFunction(()=>Boolean(document.querySelector('.aldric-cinematic:visible .aldric-dialogue.done')) ||
-    Boolean(document.querySelector('.aldric-cinematic .aldric-dialogue.done')),null,{timeout:14000});
+   await page.waitForFunction(()=>Boolean(document.querySelector('.aldric-cinematic .aldric-dialogue.done')),null,{timeout:14000});
    await modal.locator('.aldric-continue').first().click({force:true});
    await page.waitForTimeout(240);
    stage=await get();
