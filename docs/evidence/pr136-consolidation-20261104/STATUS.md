@@ -1,3 +1,15 @@
+# PR136 — integrated and post-merge verified, 2026-11-05
+
+PR136 is merged and closed at `26db55c892572a0e4a9ea68feda028408757d535`. Exact pre-merge Unity certification: run41927893688, all95 EditMode and73 PlayMode tests, native flows/captures and unpublished Windows candidate passed. Post-merge runs41933936250 and41933936233 both completed successfully on the same exact commit; the independent Editor/PlayMode/player gate and the complete native UI gate are verified. No APK/WebGL publication or artistic final approval.
+
+The original PR136 history and valid PR135 contributions are preserved, plus the still-valid PR137 panel optimization. Conflicts were reconciled in live ownership and the rejected-Bastion archive/runtime veto. Approved models, GUIDs, saves and provisional art remain. The candidate fixes hero glyph sharpness, portrait attribute overlap, compact Vigilant XP overlap and the closed third-hero caption. Native evidence is Editor/Windows, not a physical phone certification.
+
+Evidence: pre-merge artifact13373121386 SHA256487466061ba68e3effee1578a8aeba925213be83282ecbdbc11289af65fe7308; independent post-merge artifact13373368362 SHA2560ace4697c99242cfe54d6c7efb344ab7447906849a742f439cc303ba70e651d4. The1.485GB private Windows artifact13373475219 has provider SHA25662cb9e12e8ca2723bddc9113f27e19be161099cb48bbbd904eaa28e9921df1b6; it exceeded the connector download limit, so no local ZIP digest verification is claimed.
+
+Subsequent combat implementation belongs to PR134 and issues138/139; it was deliberately not activated by PR136. The same owner transferred Windows to that existing workstream after both post-merge runs finished. Art refinements remain provisional and separate.
+
+## Historical preparation and diagnostics (superseded status, preserved evidence)
+
 # PR136 consolidation — candidate preparation, 2026-11-04
 
 Owner-authorized handoff: codex-eldoria-pr136-consolidation-20261104, same canonical workstream/PR. No publication, paid resources, new models or artistic approval.
