@@ -54,8 +54,15 @@ namespace Eldoria.Domain
 
         static long Integrate(long from, long to, long microPerSecond)
         {
-            // Preserve sub-second fractions using integer ticks.
-            return checked((to - from) * microPerSecond / TimeSpan.TicksPerSecond);
+            // Divide before multiplying: multiplying full .NET ticks by the rate
+            // overflows Int64 after ~14 days at the highest wood level, even
+            // when the resulting resource payout still fits in Int32.
+            long elapsedTicks = checked(to - from);
+            long fullSeconds = elapsedTicks / TimeSpan.TicksPerSecond;
+            long remainderTicks = elapsedTicks % TimeSpan.TicksPerSecond;
+            long wholeSecondsMicro = checked(fullSeconds * microPerSecond);
+            long remainderMicro = checked(remainderTicks * microPerSecond) / TimeSpan.TicksPerSecond;
+            return checked(wholeSecondsMicro + remainderMicro);
         }
     }
 
