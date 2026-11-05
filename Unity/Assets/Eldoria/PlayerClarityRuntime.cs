@@ -32,9 +32,10 @@ namespace Eldoria
             public bool Touched;
         }
 
-        private static readonly TimeSpan RenewableDelay = TimeSpan.FromSeconds(300);
+        private static readonly TimeSpan RenewableDelay = RenewableRespawnRules.Delay;
         private readonly Dictionary<string, Marker> markers = new Dictionary<string, Marker>();
         private readonly Dictionary<string, WorldHotspot> hotspots = new Dictionary<string, WorldHotspot>();
+        private readonly HashSet<long> occupiedScreenCells = new HashSet<long>();
         private ValoriaIntegratedWorld host;
         private RoyalHUD hud;
         private RectTransform layer;
@@ -55,7 +56,7 @@ namespace Eldoria
         {
             if (!scene.name.StartsWith("Valoria", StringComparison.OrdinalIgnoreCase))
                 return;
-            if (FindFirstObjectByType<PlayerClarityRuntime>() != null)
+            if (UnityEngine.Object.FindFirstObjectByType<PlayerClarityRuntime>() != null)
                 return;
             var go = new GameObject("Eldoria / player clarity (canonical scene adapter)");
             DontDestroyOnLoad(go);
@@ -71,7 +72,7 @@ namespace Eldoria
         {
             if (Time.unscaledTime < nextUpdate) return;
             nextUpdate = Time.unscaledTime + .20f;
-            var candidate = FindFirstObjectByType<ValoriaIntegratedWorld>();
+            var candidate = UnityEngine.Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
             if (!candidate || !candidate.Ready || !candidate.Hud || candidate.City?.Gateway == null)
             {
                 HideAll();
@@ -82,6 +83,7 @@ namespace Eldoria
             ConfigureRenewableDelay();
             if (!layer || !host.PlayerCamera) return;
             foreach (var marker in markers.Values) marker.Touched = false;
+            occupiedScreenCells.Clear();
 
             var snapshot = host.City.Gateway.Snapshot();
             bool modal = hud.Modal && hud.Modal.gameObject.activeSelf;
@@ -275,6 +277,12 @@ namespace Eldoria
                     norm.y < free.yMin + .005f || norm.y > free.yMax - .005f)
                     return;
             }
+            // Prefer the real resource/node identity but prevent overlapping
+            // labels from turning the mobile world into a wall of text.
+            int cellX = Mathf.FloorToInt(point.x / 29f);
+            int cellY = Mathf.FloorToInt(point.y / 29f);
+            long cell = ((long)cellX << 32) | (uint)cellY;
+            if (!occupiedScreenCells.Add(cell)) return;
             if (!markers.TryGetValue(id, out var marker))
             {
                 marker = CreateMarker(id, icon.HasValue, building);
@@ -282,6 +290,11 @@ namespace Eldoria
             }
             marker.Touched = true;
             marker.Rect.gameObject.SetActive(true);
+            // Keep the 21px icon/15px label legible on narrow phones even
+            // when a 1200px reference Canvas is scaled down to 390px.
+            var canvasScale = layer.GetComponentInParent<Canvas>();
+            marker.Rect.localScale = Vector3.one /
+                Mathf.Max(.1f, canvasScale ? canvasScale.scaleFactor : 1f);
             if (marker.Text && marker.Text.text != text) marker.Text.text = text;
             if (marker.Icon)
             {
@@ -303,8 +316,13 @@ namespace Eldoria
             rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(.5f, .5f);
             rect.sizeDelta = new Vector2(icon ? 26f : 67f, 25f);
             var background = root.GetComponent<Image>();
-            background.color = new Color(.09f, .105f, .10f, .80f);
+            background.color = new Color(.09f, .105f, .10f, .86f);
             background.raycastTarget = false;
+            var rim = root.AddComponent<Outline>();
+            rim.effectColor = building
+                ? new Color(.74f, .55f, .29f, .74f)
+                : new Color(.53f, .49f, .40f, .69f);
+            rim.effectDistance = new Vector2(1f, -1f);
             var marker = new Marker { Rect = rect, Id = id };
             if (icon)
             {
@@ -328,7 +346,9 @@ namespace Eldoria
                 t.anchorMax = Vector2.one;
                 t.offsetMin = t.offsetMax = Vector2.zero;
                 marker.Text = labelGo.GetComponent<Text>();
-                marker.Text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+                marker.Text.font = Resources.Load<Font>("EldoriaRetention/reference-serif");
+                if (!marker.Text.font)
+                    marker.Text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
                 marker.Text.fontSize = 15;
                 marker.Text.alignment = TextAnchor.MiddleCenter;
                 marker.Text.color = building
