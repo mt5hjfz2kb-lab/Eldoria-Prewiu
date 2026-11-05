@@ -6299,14 +6299,13 @@
         ".github/workflows/eldoria-v41-domain.yml",
         ".github/workflows/march-capacity-contract.yml",
         ".github/workflows/early-retention-domain.yml",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs"
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
-      "phase": "SECOND_NATIVE_PR162_RUN_42124710953",
+      "resources": [],
+      "phase": "FULL_NATIVE_I_V_PASS_EDITMODE_TEST_ADAPTATION_REQUIRED",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "Strict raycast regression native rerun exact head 9d1871; validate first-entry UI + I-V, All PlayMode, 300s offline and 48h economics; release Windows after full completion.",
+      "next": "Native PR162 42124710953 full real I-V integration PASS; 216 EditMode ran 212 pass/4 fail: 3 geometry tests ambiguous overload via reflection and old meat test asserts 45s recovery contradicting newly required 300s. Fix reflection to explicit VertexHelper signature, update meat boundary test to actual saved UTC deadline; then native again; do not weaken 300s or tests.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
