@@ -62,6 +62,27 @@ static class GatewayEvolutionChecks
         var high=low.Copy();high.OwnMasteryLevel=20;
         Check(campaign.Resolve(high).RemainingHealth>=campaign.Resolve(low).RemainingHealth,"earned mastery retains benefit");
         Check(high.OwnTroops.ArcherT1==36 && low.OwnMasteryLevel==0,"mastery does not invent troops or mutate snapshot");
+        foreach(var target in new[]{"corrupt-scout","ash-stalker-valoria"})
+        {
+            // Saved controlled mirror battle exercises both real gateway report routes.
+            // This fixture is never added to the production creature catalog.
+            var input=new EldoriaV41BattleInput{RulesVersion=resolver.RulesVersion,TargetId=target,
+                OwnTroops=new ArmyRoster{ArcherT1=40},EnemyTroops=new ArmyRoster{ArcherT1=40},
+                OwnHeroes=new[]{"aldric",null,null},EnemyHeroes=new[]{"aldric",null,null}};
+            var saved=new Store{State=new PlayerState{BastionLevel=3,Available=new ArmyRoster{ArcherT1=100},
+                March=new MarchState{TargetId=target,HeroId="aldric",Troops=new ArmyRoster{ArcherT1=40},
+                    Phase="outbound",PhaseEndsUtcTicks=clock.UtcTicks-TimeSpan.FromSeconds(30).Ticks,VersionedBattle=input}}};
+            var game=new LocalGateway(clock,saved,resolver);var after=game.Snapshot();
+            var drawn=after.Mailbox.List("informes").Single();
+            Check(drawn.Battle.Outcome=="draw" && drawn.Title.Contains("Empate"),"draw title matches outcome "+target);
+            Check(after.LastBattleReport.VersionedOutcome?.Outcome=="draw","last report preserves draw "+target);
+            Check(drawn.Battle.RewardWood==0 && drawn.Battle.RewardStone==0 && drawn.Battle.RewardFood==0 &&
+                !after.ChapterThree.AshStalkerDefeated,"draw never pays victory or clears encounter "+target);
+            Check(after.Available.ArcherT1==140 && after.March.Phase=="idle","draw returns all reserved troops "+target);
+            game=new LocalGateway(clock,saved,resolver);after=game.Snapshot();
+            Check(after.LastBattleReport.VersionedOutcome?.Outcome=="draw" && after.Mailbox.List("informes").Count==1 &&
+                after.Available.ArcherT1==140,"draw reload preserves outcome and idempotency "+target);
+        }
         Console.WriteLine("V41_VERSIONED_GATEWAY_PASS "+checks);
     }
 }

@@ -38,6 +38,8 @@ namespace Eldoria.Tests
             gateway=new LocalGateway(clock,store,new EldoriaV41GatewayResolver(Array.Empty<EldoriaV41BattleInput>()));
             var s=gateway.Snapshot();var mail=s.Mailbox.List("informes").Single();
             Assert.That(mail.Battle.EffectiveOutcome,Is.EqualTo(outcome));
+            Assert.That(s.LastBattleReport.VersionedOutcome.EffectiveOutcome,Is.EqualTo(outcome));
+            Assert.That(store.Load().LastBattleReport.VersionedOutcome.EffectiveOutcome,Is.EqualTo(outcome));
             Assert.That(mail.Battle.OwnRoster.ArcherT1,Is.EqualTo(40));
             Assert.That(s.Available.ArcherT1,Is.EqualTo(150));
             Assert.That(s.March.Phase,Is.EqualTo("idle"));
@@ -100,6 +102,27 @@ namespace Eldoria.Tests
             Assert.That(game.Snapshot().Resources.Wood,Is.EqualTo(before.Resources.Wood));
             Assert.That(game.Snapshot().Retention.AldricExperience,Is.EqualTo(before.Retention.AldricExperience));
             Assert.That(game.Snapshot().Available.ArcherT1,Is.EqualTo(200));
+        }
+        [Test] public void ChapterThreeDrawKeepsTitleOutcomeAndNoRewardAfterNativeReload()
+        {
+            var clock=new Clock();var store=new Store();
+            var input=new EldoriaV41BattleInput{RulesVersion=EldoriaV41CombatEvolution.RulesVersion,TargetId="ash-stalker-valoria",
+                OwnTroops=new ArmyRoster{ArcherT1=40},EnemyTroops=new ArmyRoster{ArcherT1=40},
+                OwnHeroes=new[]{"aldric",null,null},EnemyHeroes=new[]{"aldric",null,null}};
+            store.Save(new PlayerState{BastionLevel=3,Available=new ArmyRoster{ArcherT1=100},
+                March=new MarchState{TargetId=input.TargetId,HeroId="aldric",Troops=input.OwnTroops.Copy(),
+                    Phase="outbound",PhaseEndsUtcTicks=clock.UtcTicks-TimeSpan.FromSeconds(30).Ticks,VersionedBattle=input}});
+            var resolver=new EldoriaV41GatewayResolver(Array.Empty<EldoriaV41BattleInput>());
+            var game=new LocalGateway(clock,store,resolver);var after=game.Snapshot();
+            var mail=after.Mailbox.List("informes").Single();
+            Assert.That(mail.Battle.Outcome,Is.EqualTo("draw"));
+            Assert.That(mail.Title,Does.Contain("Empate"));
+            Assert.That(mail.Battle.RewardWood+mail.Battle.RewardStone+mail.Battle.RewardFood,Is.Zero);
+            Assert.That(after.ChapterThree.AshStalkerDefeated,Is.False);
+            game=new LocalGateway(clock,store,resolver);after=game.Snapshot();
+            Assert.That(after.LastBattleReport.VersionedOutcome.Outcome,Is.EqualTo("draw"));
+            Assert.That(after.Mailbox.List("informes").Count,Is.EqualTo(1));
+            Assert.That(after.Available.ArcherT1,Is.EqualTo(140));
         }
         [Test] public void HistoricalReportsRetainOutcomeWithoutNewFields()
         {

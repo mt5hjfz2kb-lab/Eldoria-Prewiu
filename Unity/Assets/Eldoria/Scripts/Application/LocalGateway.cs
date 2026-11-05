@@ -821,6 +821,7 @@ namespace Eldoria.Application
                         {
                             evolved.RewardWood=rewardWood;evolved.RewardStone=rewardStone;
                             evolved.OwnRoster=m.Troops.Copy();
+                            state.LastBattleReport.VersionedOutcome=evolved.Copy();
                         }
                         state.Mailbox.Receive(new EldoriaV41Message {
                             EventId="battle:"+m.MarchId+":"+m.TargetId+":"+due,
@@ -1102,7 +1103,7 @@ namespace Eldoria.Application
             string id="battle:"+m.MarchId+":"+m.TargetId+":"+due;
             state.Mailbox.Receive(new EldoriaV41Message {
                 EventId=id,Category="informes",Type="battle",
-                Title=report.Won?"Victoria en batalla":"Derrota en batalla",
+                Title=report.VersionedOutcome?.Outcome=="draw"?"Empate en batalla":report.Won?"Victoria en batalla":"Derrota en batalla",
                 Subtitle=report.Reason,ReportId=id,OccurredAtUtcTicks=due,
                 Battle=report.VersionedOutcome?.Copy()??new EldoriaV41CombatRecord {
                     TargetId=report.TargetId,HeroId=report.HeroId,Troops=report.Troops,
