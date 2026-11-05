@@ -4,7 +4,7 @@
   "workstream_id": "eldoria-construction-delight-v1-20261104",
   "source_head_before_request": "55a934d8af428b14b99bf54dab664e77a1727c77",
   "ownership_revision": 21,
-  "mode": "REAL_UNITY_6000_3_23F1_V5_HAMMERS_DENSE_DUST_72_SHOTS",
+  "mode": "V6_LARGER_VISIBLE_HAMMER_IRREGULAR_DUST_ROSLYN_DOMAIN",
   "expected_images": 72,
   "formats": [
     "844x390",
@@ -66,7 +66,7 @@
   "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c",
   "source_domain_attempt": 2,
   "purpose": "Verify current authoritative completion receipt, no World4X bleed, URP real renderer and localized camera proof syntax",
-  "native_editor_invocation": true,
+  "native_editor_invocation": false,
   "window_runner_reservation": true,
   "real_visual_QA_pending": true,
   "license_evidence": {
@@ -78,11 +78,11 @@
   "no_reboot": true,
   "no_interference": true,
   "root_cause_last_compile": "Compilation CS0234 Application.dataPath resolves to Eldoria.Application namespace. Fixed via UnityEngine.Application.dataPath.",
-  "previous_native_run": 41811262373,
+  "previous_native_run": 42121001211,
   "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
   "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
   "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
-  "offline_validation_attempt": 27,
+  "offline_validation_attempt": 28,
   "no_windows_resource_use": true,
   "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
   "recent_changes": [
@@ -243,5 +243,12 @@
     "No work dust/hammer leakage into completion or after save reload",
     "24 technique A/B and 8 hammer-specific captures included in 72 original URP camera frames",
     "Keep artifact and log after failed art gate; no fake frames"
+  ],
+  "previous_native_result": "NATIVE_PASS 72 real captures, real 6 hammer impacts and 58 visible dust sprites, but visual review rejected weak smoke and tiny dark hammers",
+  "v6_changes": [
+    "Increase grounded artisan hammer physical scale 0.19 of site width, lighten wood/iron shading",
+    "Use dedicated 64x64 irregular Perlin-feathered cloud alpha texture",
+    "Use 150+110 pooled mesh quads and denser bounded impact bursts",
+    "Keep exact Gateway timer, same URP camera/architecture shader/Bloom, clean final completion"
   ]
 }
