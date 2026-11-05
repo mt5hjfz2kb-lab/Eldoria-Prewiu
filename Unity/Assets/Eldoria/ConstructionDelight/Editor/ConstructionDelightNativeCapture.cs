@@ -133,6 +133,11 @@ namespace Eldoria.ReferenceClean.Editor
                       " visible="+fx.ActiveStagedVisibleMeshes);
             if(fx.ActiveStagedBuildingMeshes>0 && fx.ActiveStagedVisibleMeshes<=0)
                 VisualIssues.Add("Real stage meshes exist but none are visibly entering worksite");
+            int workVisibleMeshes=fx.ActiveStagedVisibleMeshes;
+            if(fx.ActiveStagedBuildingMeshes>1 &&
+               fx.ActiveStagedVisibleMeshes>=fx.ActiveStagedBuildingMeshes)
+                VisualIssues.Add("Construction already exposes every building mesh before "+
+                    "authoritative completion");
             if(fx.ActiveConstructionSprites<=0)
                 VisualIssues.Add("No flowing construction sprites; task="+
                     city.Gateway.Snapshot().BuildingTaskId+
@@ -173,6 +178,15 @@ namespace Eldoria.ReferenceClean.Editor
                       " visible="+fx.ActiveStagedVisibleMeshes);
             if(fx.ActiveStagedBuildingMeshes>0 && fx.ActiveStagedVisibleMeshes<=0)
                 VisualIssues.Add("Completion staged meshes exist but none are visibly landing");
+            Debug.Log("CONSTRUCTION_DELIGHT_CONTINUITY_FROM_REAL_WORK="+
+                fx.StagingContinuedAtCompletion+
+                " work_visible="+workVisibleMeshes+
+                " completion_visible="+fx.ActiveStagedVisibleMeshes);
+            if(workVisibleMeshes>0 && !fx.StagingContinuedAtCompletion)
+                VisualIssues.Add("Completion reset worksite meshes instead of preserving "+
+                    "the real partly assembled building");
+            if(fx.ActiveStagedVisibleMeshes<workVisibleMeshes)
+                VisualIssues.Add("Visible building sections disappeared at completion");
             if(fx.ActiveFinishSprites<=0)
                 VisualIssues.Add("No completion gilded sprites after real Gateway.Advance");
             Debug.Log("CONSTRUCTION_DELIGHT_ARCHITECTURAL_LUSTRE_LAYERS="+
@@ -208,6 +222,13 @@ namespace Eldoria.ReferenceClean.Editor
                 "False completion animation triggered on reload");
             Require(fx.ActiveStagedBuildingMeshes==0,
                 "Temporary staged 3D construction was not removed after reload");
+            var built=city.Parcels ? city.Parcels.LeftBuilt : null;
+            Require(built && built.activeInHierarchy,
+                "Authentic sawmill model was not restored after the real reload");
+            var visualMeshCount=built.GetComponentsInChildren<MeshRenderer>(true)
+                .Count(x=>x && x.enabled && x.gameObject.activeInHierarchy);
+            Require(visualMeshCount>0,
+                "All authentic built sawmill meshes remained hidden after the finish FX");
             Require(fx.ActiveStructuralRevealMeshes==0,
                 "Temporary building overlay remained active after real save reload");
 
