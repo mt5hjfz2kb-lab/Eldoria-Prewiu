@@ -1,0 +1,20 @@
+{
+  "request": "single_safe_local_install",
+  "workstream_id": "eldoria-slm-permanent-bootstrap-20261104",
+  "owner": "chatgpt-eldoria-slm-bootstrap-20261104",
+  "authorized_by": "owner_in_this_conversation",
+  "scope": "isolated Windows user profile only",
+  "package": "superlocalmemory==4.2.12",
+  "budget_eur": 0,
+  "constraints": [
+    "do-not-interrupt-running-unity",
+    "do-not-stop-ollama",
+    "no-reboot",
+    "no-web-access",
+    "no-OAuth",
+    "no-secrets",
+    "fail-closed-on-busy-process",
+    "do-not-change-main-or-game"
+  ],
+  "decision": "Run only after the runner can accept the queued job; verify lease in main and process/idle-model status again."
+}
