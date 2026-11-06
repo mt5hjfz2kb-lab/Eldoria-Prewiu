@@ -39,27 +39,32 @@
     {
       "path": "docs/ASSET_DEEP_UPLIFT_PASS_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Auditoría documental 2026-11-06: Diagnóstico de materiales con dos PBR candidatos aparcados; sin promoción en la composición vigente. Autoridad: pipeline/asset-vault/clean-production-shelf-v1.json."
     },
     {
       "path": "docs/ASSET_LIBRARY_CANONICALIZATION_PASS_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: Antiguo PASS llamó productivo a un Bastión vetado posteriormente; metadatos y archivo se corrigieron en PR153. Autoridad: AGENTS.md; docs/evidence/unity-metadata-20261104/RESULT.md."
     },
     {
       "path": "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: Promoción antigua del Hero Bastion explícitamente revocada: su TECH/VISUAL PASS no autoriza reutilizarlo. Autoridad: AGENTS.md."
     },
     {
       "path": "docs/ASSET_SHORTLIST_ZERO_EURO.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: Lista de descargas/precios de septiembre sin licencias/acreditación ni necesidad actuales. Autoridad: docs/UNITY_IMPORTED_ASSET_AUDIT.md."
     },
     {
       "path": "docs/ASSET_VISUAL_UPLIFT_PASS_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: Uplift visual antiguo incluye Hero Bastion vetado; PASS circunscrito a aquella composición. Autoridad: AGENTS.md."
     },
     {
       "path": "docs/BASTION_I_GLOBAL_ART_DIRECTION_20261014.md",
@@ -168,7 +173,8 @@
     {
       "path": "docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Auditoría documental 2026-11-06: Criterios de autoría y QA útiles, pero su secuencia aún propone Qwen/Ollama para arte, superado por la orden posterior. No invocarlo para dirección artística. Autoridad: docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md; AGENTS.md."
     },
     {
       "path": "docs/ELDORIA_CANONICAL_AUTOMATION_SANITATION_2026_10_06.md",
@@ -190,7 +196,8 @@
     {
       "path": "docs/ELDORIA_GRAPHICS_TOOLCHAIN_AUDIT_2026.md",
       "domain": "project",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: Auditoría ACTIVE 29/09: ruta Tripo primaria, precios y pilotos ya no son autoridad operativa. Autoridad: tools/plan-art-production.mjs; docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md."
     },
     {
       "path": "docs/ELDORIA_I_II_NARRATIVE_PARITY_20261018.md",
@@ -454,43 +461,51 @@
     },
     {
       "path": "docs/TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
+      "status": "historical",
+      "domain": "art",
+      "note": "Auditoría documental 2026-11-06: Briefs y tope de 40 créditos de dos piezas ya generadas; prohibido reutilizar como permiso para nuevas llamadas. Autoridad: docs/TRIPO_API_ENGENDRO_RESULTADO_20261021.md; docs/TRIPO_API_FOCO_RESULTADO_20261021.md."
     },
     {
       "path": "docs/TRIPO_API_ENGENDRO_RESULTADO_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
+      "status": "reference",
+      "domain": "art",
+      "note": "Auditoría documental 2026-11-06: Registro de generación/QA aislada; no certificar rig, animación, art approval ni estado jugable presente. Autoridad: docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md."
     },
     {
       "path": "docs/TRIPO_API_FOCO_RESULTADO_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
+      "status": "reference",
+      "domain": "art",
+      "note": "Auditoría documental 2026-11-06: Ensayo de fuente de corrupción, no hotspot ni misión aprobada; sólo valor técnico hasta validación visual. Autoridad: docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md."
     },
     {
       "path": "docs/TRIPO_API_JABALI_LECCIONES_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
+      "status": "reference",
+      "domain": "art",
+      "note": "Auditoría documental 2026-11-06: Lecciones de recuperación por SHA y texturas 2K; coste de 20 créditos fue histórico y no fija tarifa. Autoridad: docs/TRIPO_API_NORMA_PRODUCCION_V1.md."
     },
     {
       "path": "docs/TRIPO_API_NORMA_PRODUCCION_V1.md",
-      "status": "review_pending",
-      "domain": "art"
+      "status": "reference",
+      "domain": "art",
+      "note": "Auditoría documental 2026-11-06: Control de gasto/QA conservable; ensayo Engendro/Foco ya ejecutado, 20 créditos no es tarifa actual ni nueva autorización. Autoridad: docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md; AGENTS.md."
     },
     {
       "path": "docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
+      "status": "reference",
+      "domain": "art",
+      "note": "Auditoría documental 2026-11-06: Tres fuentes y 60 créditos históricos; las cifras de integración del 21/10 no representan el juego de hoy. Autoridad: pipeline/active-workstreams.json; AGENTS.md."
     },
     {
       "path": "docs/TRIPO_MOBILE_LOD_PROOF_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
+      "status": "reference",
+      "domain": "art",
+      "note": "Auditoría documental 2026-11-06: Prueba técnica LOD sin FPS móvil ni ART PASS. Ratios experimentales; mención a dirección Qwen superada por orden del propietario. Autoridad: docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md."
     },
     {
       "path": "docs/TRIPO_MODULE_PIPELINE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Auditoría documental 2026-11-06: Workflow modular especializado existe, pero no sustituye planificador, autorización de gasto, titularidad ni QA actuales. Autoridad: .github/workflows/tripo-module-pipeline.yml; tools/plan-art-production.mjs."
     },
     {
       "path": "docs/UI_REFERENCE_CONTRACT.md",
@@ -507,12 +522,14 @@
     {
       "path": "docs/UNITY_FREE_ASSET_SHORTLIST.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: Lista del 25/09 de importación inmediata: no autoriza adquisiciones ni acredita licencias y QA actuales. Autoridad: docs/UNITY_IMPORTED_ASSET_AUDIT.md; docs/VALORIA_FINAL_ASSET_DECISION.md."
     },
     {
       "path": "docs/UNITY_IMPORTED_ASSET_AUDIT.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Auditoría documental 2026-11-06: Ensayo técnico de cinco prefabs; recibos/versiones de paquetes incompletos, sin prueba de uso comercial o calidad móvil. Autoridad: docs/VALORIA_ART_ASSET_GATE.md; AGENTS.md."
     },
     {
       "path": "docs/UNITY_MIGRATION_ACCELERATION_PLAN.md",
@@ -543,7 +560,8 @@
     {
       "path": "docs/VALORIA_ART_SOURCE_CAPABILITY_BAKEOFF_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: Plan de source bake-off 06/10 rotulado ACTIVE con candidatos superados; no justificar gasto ni método de producción vigente. Autoridad: docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md."
     },
     {
       "path": "docs/VALORIA_BASTION_FAMILY_V1.md",
@@ -745,22 +763,26 @@
     {
       "path": "docs/VALORIA_IMAGE_TO_3D_ASSET_RECEIPT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: Recibo técnico de candidato previo al rechazo artístico del gate posterior. Autoridad: docs/VALORIA_IMAGE_TO_3D_UNITY_GATE.md."
     },
     {
       "path": "docs/VALORIA_IMAGE_TO_3D_PIPELINE_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: El propio índice declara cancelado el procedimiento de reentrada y reemplazada su ruta. Autoridad: docs/VALORIA_TRIPO_MODULE_UNITY_GATE.md."
     },
     {
       "path": "docs/VALORIA_IMAGE_TO_3D_REENTRY_CHECKLIST.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Auditoría documental 2026-11-06: Método aislado de UV, materiales, escala y collider; no reabrir la ruta Bastión fallida ni imponer cámara antigua. Autoridad: docs/VALORIA_IMAGE_TO_3D_UNITY_GATE.md."
     },
     {
       "path": "docs/VALORIA_IMAGE_TO_3D_UNITY_GATE.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: El Bastión fusionado falló artísticamente en tres zooms; mapas 4×4 y sin modularidad. No promover. Autoridad: docs/VALORIA_IMAGE_TO_3D_PIPELINE_GATE.md."
     },
     {
       "path": "docs/VALORIA_IN_CITY_SURFACE_PASS_V1_RESULT.md",
@@ -1061,12 +1083,14 @@
     {
       "path": "docs/VALORIA_TRIPO_MODULAR_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: Preflight anterior al gate 50K posterior; no reabrir su experimento como pendiente. Autoridad: docs/VALORIA_TRIPO_MODULE_UNITY_GATE.md."
     },
     {
       "path": "docs/VALORIA_TRIPO_MODULE_UNITY_GATE.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Auditoría documental 2026-11-06: Importación y resolución de dependencias glTFast demostradas, pero 50K/19-12-9 y fuente modular no son garantía final de producción. Autoridad: docs/TRIPO_MODULE_PIPELINE.md."
     },
     {
       "path": "docs/VALORIA_TRIPO_SELECTIVE_REPLACEMENT_PROOF_V1_PLAN.md",
@@ -1157,7 +1181,8 @@
     {
       "path": "docs/VALORIA_ZERO_EURO_ASSET_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Auditoría documental 2026-11-06: Combinación de paquetes rechazada artísticamente aunque pruebas Unity fueran verdes. Autoridad: docs/VALORIA_ART_ASSET_GATE.md."
     },
     {
       "path": "docs/VISUAL_BIBLE.md",

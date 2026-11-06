@@ -7,6 +7,14 @@ La entrada es el [README principal](../../README.md). Las reglas vigentes están
 [AGENTS](../../AGENTS.md), los responsables en el [registro vivo](../../pipeline/active-workstreams.json)
 y la documentación temática en el [índice central](../DOCUMENTATION_INDEX.md).
 
+## Revisión de importaciones, licencias y pruebas artísticas — 06/11/2026
+
+Nueva [matriz documentada de 25 expedientes](SEMANTIC_REVIEW_ART_IMPORT_LICENSES_20261106.md), con hash del archivo revisado, autoridad posterior, motivo y categoría. **13 pruebas/instrucciones antiguas pasan a `historical`; 12 informes de métodos y evidencia pasan a `reference`**. No se ha comprado, generado, importado ni eliminado ningún recurso.
+
+**Estado del catálogo tras este lote:** 228 documentos: **28 `current`, 51 `reference`, 126 `review_pending` y 23 `historical`**. Los recuentos de 151 y 171 pendientes de las secciones siguientes son hitos previos; los 175 pendientes de la tabla original pertenecen exclusivamente al inventario fijado al commit del 04/11.
+
+**Precauciones que prevalecen:** no reactivar el Bastión vetado por antiguos `VISUAL PASS`, no ejecutar Qwen como dirección artística por una guía anterior, no reutilizar presupuestos Tripo ya gastados, no importar paquetes sin demostrar origen/licencia, no confundir un `TECH PASS` aislado con calidad visual y FPS de un teléfono real.
+
 ## Lote de 20 documentos prioritarios — 06/11/2026
 
 **Catálogo semántico actualizado:** 228 documentos: **28 `current`, 39 `reference`, 151 `review_pending` y 10 `historical`**. La [revisión razonada de los 20 documentos con más riesgo operativo](SEMANTIC_PRIORITY_20_20261106.md) contrasta instrucciones antiguas con manifiestos vivos, scripts y PR fusionadas. Contiene **2 contratos vigentes**, **13 referencias con límites explícitos** y **5 registros históricos**. No se han modificado sus cuerpos, Unity ni los recursos.
