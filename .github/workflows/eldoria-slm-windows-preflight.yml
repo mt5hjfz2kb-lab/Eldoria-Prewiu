@@ -41,6 +41,17 @@ jobs:
             $has312=($LASTEXITCODE -eq 0 -and "$v" -match '^Python 3\.12\.')
           }
           $userOk=($env:USERNAME -ine 'SYSTEM' -and $env:USERPROFILE -notmatch 'systemprofile' -and $profile -notmatch '(?i)[\\/]_temp[\\/]')
+          # Ollama's Windows tray process persists while idle. Read its local status only; do not stop it.
+          $ollamaProcessCount=@($running | Where-Object { $_.ProcessName -ieq 'ollama' }).Count
+          $ollamaLoadedModels=-1
+          $ollamaProbeOk=$false
+          if($ollamaProcessCount -eq 0){$ollamaLoadedModels=0;$ollamaProbeOk=$true}
+          else {
+            try {
+              $m=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/ps' -Method Get -TimeoutSec 3
+              if($null -ne $m.models){$ollamaLoadedModels=@($m.models).Count;$ollamaProbeOk=$true}
+            } catch {}
+          }
           $report=[ordered]@{
             checked_at_utc=[DateTime]::UtcNow.ToString('o')
             machine_os=[Environment]::OSVersion.VersionString
@@ -49,6 +60,9 @@ jobs:
             running_native_processes=@($running | Select-Object -ExpandProperty ProcessName -Unique)
             free_ram_gb=$freeRam
             free_disk_gb=$diskGb
+            ollama_process_count=$ollamaProcessCount
+            ollama_local_probe_ok=$ollamaProbeOk
+            ollama_loaded_model_count=$ollamaLoadedModels
             python312=$has312
             stable_user=$userOk
             installation_ready=($holders.Count -eq 0 -and $running.Count -eq 0 -and $freeRam -ge 6 -and $diskGb -ge 10 -and $has312 -and $userOk)
@@ -56,4 +70,4 @@ jobs:
           $report|ConvertTo-Json -Compress -Depth 5|Write-Host
           if(-not $report.installation_ready){Write-Host 'READ_ONLY_PREFLIGHT_BLOCKED';exit 0}
           Write-Host 'READ_ONLY_PREFLIGHT_READY'
-# Read-only verification refresh 2026-11-06T06:55Z; read-only and lease-free; no reservation or installation.
+# Read-only verification and passive Ollama-idle diagnostic 2026-11-06T07:02Z; no reservation or installation.
