@@ -28,8 +28,18 @@ jobs:
           if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-slm-permanent-bootstrap-20261104' -or $holders[0].owner -ne 'chatgpt-eldoria-slm-bootstrap-20261104' -or $holders[0].ownership_state -ne 'claimed') {
             throw 'SLM_EXCLUSIVE_LEASE_NOT_CONFIRMED; no installation'
           }
-          if(@(Get-Process -Name Unity,blender,UnityShaderCompiler,UnityPackageManager,UnityCrashHandler64,ollama -ErrorAction SilentlyContinue).Count){
-            throw 'NATIVE_OR_LOCAL_AI_PROCESS_ACTIVE; no installation'
+          $native=@(Get-Process -Name Unity,blender,UnityShaderCompiler,UnityPackageManager,UnityCrashHandler64 -ErrorAction SilentlyContinue)
+          if($native.Count){throw 'NATIVE_PROCESS_ACTIVE; no installation'}
+          $ollama=@(Get-Process -Name 'ollama*' -ErrorAction SilentlyContinue)
+          if($ollama.Count){
+            foreach($attempt in 1..2){
+              try { $ps=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/ps' -TimeoutSec 4 }
+              catch {throw 'OLLAMA_STATE_UNKNOWN; no installation'}
+              if($null -eq $ps -or $null -eq $ps.models -or @($ps.models).Count -ne 0){
+                throw 'OLLAMA_MODEL_LOADED; no installation'
+              }
+              Start-Sleep -Milliseconds 650
+            }
           }
           Write-Host 'ELDORIA_SLM_GUARDED_PREFLIGHT_READY'
       - uses: actions/checkout@v4
