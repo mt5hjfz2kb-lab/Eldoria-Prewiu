@@ -648,7 +648,9 @@ async function main() {
     if (state.selected === 'sawmill' && state.sawmill === 0) return { kind: 'sawmill', expected_seconds: 6 };
     if (state.selected === 'barracks' && state.barracks === 0) return { kind: 'barracks', expected_seconds: 8 };
     if (state.selected === 'barracks' && state.objective === 'b2.train-archers') return { kind: 'training', expected_seconds: state.management?.trainingSeconds || 7 };
-    if (state.selected === 'bastion') return { kind: 'bastion', expected_seconds: 10 };
+    // EconomyBastionTimingV2 defines the actual I -> II timer as 120 seconds.
+    // Native299 telemetry confirms a 120-second saved start/deadline interval.
+    if (state.selected === 'bastion') return { kind: 'bastion', expected_seconds: 120 };
     if (state.selected === 'march-main') return { kind: 'configuration', expected_seconds: null };
     if (['forest-valoria', 'quarry-valoria'].includes(state.selected)) return { kind: 'gathering', expected_seconds: 9 };
     if (['corrupt-scout', 'engendro-valoria'].includes(state.selected)) return { kind: 'combat', expected_seconds: 4 };
@@ -740,10 +742,14 @@ async function main() {
       report.selection_framing.some(check => check.pass &&
         check.samples.some(sample => sample.kind === 'FULL_SCREEN_MANAGEMENT' && sample.destination === destination)));
     need(report.checks.management_destinations, 'Training and march must each pass real full-screen control framing');
-    report.checks.city_building_destinations = ['Building:sawmill', 'Building:bastion'].every(destination =>
-      report.selection_framing.some(check => check.pass &&
-        check.samples.some(sample => sample.kind === 'FULL_SCREEN_MANAGEMENT' && sample.destination === destination)));
-    need(report.checks.city_building_destinations, 'Sawmill and Bastion must each use their actual full-screen building controls');
+    // Buildings use the approved cartouche OVER the city; only training/march
+    // are independent management destinations. Require a real accepted action,
+    // fully contained building and stable camera, with no opaque management.
+    report.checks.city_building_destinations = ['sawmill', 'bastion'].every(selected =>
+      report.operations.some(operation => operation.selected === selected && operation.accepted && operation.completed &&
+        !operation.before.inWorld && !operation.before.management?.destination &&
+        report.selection_framing[operation.framing_check - 1]?.pass && framingObservation(operation.before).pass));
+    need(report.checks.city_building_destinations, 'Sawmill and Bastion must retain real city framing and actionable contextual controls');
     report.checks.complete_i_ii = latest.bastion === 2 && latest.sawmill > 0 && latest.barracks > 0 &&
       latest.trained >= 20 && latest.configured && latest.scout && latest.engendro && phase(latest) === 'idle' && !latest.busy;
     need(report.checks.complete_i_ii, 'Bastion II completion did not retain all required systems and the returned march');
