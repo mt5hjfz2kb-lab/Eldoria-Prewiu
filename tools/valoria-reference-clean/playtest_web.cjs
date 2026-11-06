@@ -15,7 +15,7 @@ const { performance } = require('node:perf_hooks');
 const { spawnSync } = require('node:child_process');
 
 const { createTelemetryReader } = require('./telemetry-frames.cjs');
-const VIEWS = { landscape: { width: 960, height: 540 }, portrait: { width: 540, height: 960 } };
+const VIEWS = { landscape: { width: 844, height: 390 }, portrait: { width: 390, height: 844 } };
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex');
 const round = value => Math.round(value * 1000) / 1000;
@@ -758,6 +758,30 @@ async function main() {
     need(report.checks.march_visual_outbound && report.checks.march_visual_returning,
       'Visible march displacement was not resolved for at least one outbound and one return with stable camera; see each visual_motion status and video. This is incomplete motion evidence, not a claim that animation is absent');
   }
+  async function completePlayerName(reload) {
+    const before = JSON.parse(latest.save);
+    const saved = before.PlayerName || '';
+    if (reload) {
+      need(saved === 'PruebaWeb_162', 'The chosen player name did not survive reload');
+      report.checks.player_name_reload = { pass: true, name: saved, player_id: before.PlayerId };
+      return;
+    }
+    need(!saved, 'Fresh browser context must start without a player name');
+    await capture('first-entry-name-parchment');
+    // Coordinates are the centres of the real RoyalPlayerNamePrompt rectangles:
+    // panel y=.20..80; input=.29..44 and confirm=.055..19 within that panel.
+    // Use genuine visible-canvas pointer and keyboard input, never engine setters.
+    await clickPoint({ x: latest.width * .5, y: latest.height * .419 }, 'player-name-input', 'mouse');
+    await page.keyboard.type('PruebaWeb_162', { delay: 80 });
+    await capture('first-entry-name-typed');
+    await clickPoint({ x: latest.width * .5, y: latest.height * .2735 }, 'confirm-player-name', 'mouse');
+    await waitState(state => JSON.parse(state.save).PlayerName === 'PruebaWeb_162', 'persisted player name', 10000);
+    const after = JSON.parse(latest.save);
+    need(after.PlayerId === before.PlayerId, 'Choosing a name replaced the player identity');
+    need(JSON.stringify(after.Resources) === JSON.stringify(before.Resources), 'Choosing a name changed the wallet');
+    report.checks.player_name = { pass: true, name: after.PlayerName, player_id: after.PlayerId, real_pointer_keyboard: true };
+    await capture('first-entry-name-saved');
+  }
   async function load(label, reload = false) {
     latest = null; previousFrame = null; lastTelemetryAt = 0;
     const start = performance.now(), requestStart = server.requests.length;
@@ -787,6 +811,7 @@ async function main() {
       server_response_body_bytes: requests.reduce((sum, request) => sum + request.bytes, 0),
       server_requests: requests.length, timing, initial_state: summary(latest) });
     need(latest.clock === 'SystemClock' && latest.timeScale === 1, 'The loaded artifact is not running the normal system clock');
+    await completePlayerName(reload);
   }
   async function stableSave() {
     const start = performance.now(); let candidate = latest.save, stableSince = start;
