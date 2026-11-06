@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T07:14:54.808Z",
+  "updated_at": "2026-11-06T07:24:50.365Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6312,12 +6312,13 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/NarrativeCoherencePlayModeTests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3CinematicAcceptanceTests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RealmHeader.cs"
       ],
       "resources": [],
       "phase": "PLAYMODE_FIRST_NICK_NAMEPLATE_AND_TIER_EXPECTATIONS",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "Correct verified portrait UI 1pt title/power overlap via V2 original layout, preserve resource wrap; retest 1600x900/900x1600. Diagnose intermittent spawnling actor visibility from real Unity probe before merge.",
+      "next": "Fix actual native PlayMode first-entry saved nickname display at canonical HUD.render race using one authoritative title override on original RealmHeader; regression test and rerun exact native suite, then review genuine screenshots.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
