@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T12:16:40.412Z",
+  "updated_at": "2026-11-06T13:55:28.616Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -42,7 +42,8 @@
         ".github/workflows/ui-progression-cert.yml",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanAndroidBuild.cs",
         ".github/workflows/eldoria-family-android-build.yml",
-        "tools/android-updates/**"
+        "tools/android-updates/**",
+        "tools/delivery/**"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -2011,7 +2012,7 @@
       "handoff_reason": "Owner directs completion of Mailbox A/B. Issue95 job 41603285296 completed/cancelled before Unity and no live Actions jobs; exclusive Windows lease transferred without altering Issue95 source/ownership.",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
-      "scope_extension_reason": "Owner-directed Marches UI recon: update obsolete PlayMode UI heading assertion to inspect real live metric, preserve gateway 7 troop and save assertions.",
+      "scope_extension_reason": "Owner-authorized completion of exact WebGL publication; existing delivery adapter needs lossless package optimization. No game source/art changes or native rebuild.",
       "android18_signed_candidate": {
         "build_run_id": 40798180869,
         "source": "0f150e6a719f93d312ebb18d1ceac5edd7435ba9",
@@ -2344,7 +2345,7 @@
         "physical_mobile_tested": false,
         "published": false
       },
-      "next_action": "Repair obsolete height-only portrait native fixture assertions against actual integrated width800 portrait scaler. Android build42212292004 compiled but497493588bytes exceeds450MiB installed updater; investigate exact packaging without degrading art or changing limit. WebGL42213699104 already passed live lease and building; preserve it.0EUR."
+      "next_action": "APK21 published verified. Exact browser42226584557 PASS; delivery42229089602 stopped before upload because QA archive exceeds500MB. Investigate lossless transport compression; preserve decoded Unity bytes and enforce actual final itch500MB budget."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
