@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "versionCode": 21,
   "versionName": "1.21",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Retry after build42212292004 compiled497493588bytes and correctly rejected installed450MiB limit. Apply only temporary Android full-resolution ASTC4x4/highest quality to large UI illustrations; preserve all source pixels and restore exact import metadata. Keep original package/certificate/save compatibility and450MiB gate. Export originals and packaging manifest; decoded APK image comparison and completed UI certification required before publication.0EUR."
+  "note": "Signed Android21 build42217404501/sourcee3d8347c5ea0aecf8c48f216d1599d2ca7704db9 SUCCESS including450MiB limit, original certificate and source restoration. Disable repeat build before channel promotion. Publication still requires decoded APK visual inspection and completed main UI certificate; physical phone not tested.0EUR."
 }
