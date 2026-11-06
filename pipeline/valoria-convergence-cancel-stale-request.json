@@ -1,14 +1,13 @@
 {
   "schema_version": 1,
-  "request_id": "valoria-convergence-cancel-stale",
-  "reason": "The pre-consolidation [R&D] Valoria SHARP Gaussian Unity Proof v1 was inadvertently triggered by the main integrated updater's PackageManager Android JNI dependency. This archived line is not authorized to spend the shared Unity Windows runner. Cancel only run 39210015637; preserve valid integrated family updater 39210015599 and current code/architecture guards. No cancel of other users' valid work.",
+  "request_id": "player-experience-retire-superseded-20261106",
+  "reason": "Cancel only this workstream's superseded candidate runs. c47 WebGL failed its lease before Unity and is uploading stale workspace evidence; c47 native and eb native/WebGL are queued/pending. Replacement includes the exact branch lease guard, corrected production assertion and final hero control fixes. Preserve every other workstream and ancient queues.",
   "runs": [
-    39210015637
+    42278054309,
+    42278064290,
+    42278827258,
+    42278837649
   ],
-  "keep_runs": [
-    39210015599,
-    39210015543,
-    39210015505
-  ],
-  "triggered_at": "2026-10-19T08:25:00+02:00"
+  "keep_runs": [],
+  "triggered_at": "2026-11-06T19:22:56.025Z"
 }
