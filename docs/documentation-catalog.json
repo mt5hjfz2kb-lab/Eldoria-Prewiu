@@ -21,8 +21,8 @@
     {
       "path": "docs/ALDRIC_DIALOGUE_BUST_INTEGRATION_20261027.md",
       "domain": "art",
-      "status": "review_pending",
-      "note": "Sir Aldric: cuatro retratos auténticos desde modelo 3D aprobado con capa azul, integración UI Royal Gold V3 en PR118; Unity nativo/QA visual pendiente."
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: PR118 fusionada y capturas nativas del busto verificadas. Los apartados iniciales que dicen 'PR draft'/'pendiente Unity' quedaron superados por la sección de certificación final; no repetir Tripo ni gasto. Evidencia/autoridad: PR #118 (merged 27/10); docs/ALDRIC_DIALOGUE_BUST_INTEGRATION_20261027.md."
     },
     {
       "path": "docs/ALDRIC_HERO_PREPRODUCCION_20261027.md",
@@ -33,7 +33,8 @@
     {
       "path": "docs/ANDROID_NATIVE_PLAYTEST.md",
       "domain": "quality",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06: Preparación Android del 10/10 ya superada: el manifiesto vivo publica APK familiar 1.21/code21. Las pruebas físicas allí descritas siguen siendo criterios, no prueba de dispositivo ya realizada. Evidencia/autoridad: updates/android/family.json; pipeline/playtest-delivery.json."
     },
     {
       "path": "docs/ASSET_DEEP_UPLIFT_PASS_V1_RESULT.md",
@@ -69,7 +70,8 @@
     {
       "path": "docs/BASTION_I_II_OWNER_PLAYTEST_CHECKLIST.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: Checklist de experiencia humana: UX, recompensas y persistencia siguen siendo criterios útiles; QA_FAST y 'Frontier' reflejan una fase histórica. No certifica por sí mismo la APK o WebGL actual. Evidencia/autoridad: PR #132; PR #162; updates/android/family.json."
     },
     {
       "path": "docs/BASTION_I_II_PLAYTEST_READINESS_PLAN.md",
@@ -257,7 +259,8 @@
     {
       "path": "docs/ELDORIA_PUBLISHED_PROBE_INTEGRITY_V1.md",
       "domain": "project",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06: Certifica corrección del verificador pero documenta un probe publicado fallido el 08/10; no describe la publicación actual native299 ni certifica el juego actual. Evidencia/autoridad: pipeline/playtest-delivery.json; PR #162."
     },
     {
       "path": "docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md",
@@ -267,8 +270,9 @@
     },
     {
       "path": "docs/ELDORIA_SHARED_RUNNER_CHECKOUT_COLLISION_20261020.md",
-      "status": "review_pending",
-      "domain": "infrastructure"
+      "status": "reference",
+      "domain": "infrastructure",
+      "note": "Revisión semántica 2026-11-06: Incidencia y mitigación puntual de checkout 20/10. Conservar como precedente de aislamiento de runners, no como descripción de la cola/reservas actuales. Evidencia/autoridad: AGENTS.md; docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md; pipeline/active-workstreams.json."
     },
     {
       "path": "docs/ELDORIA_STABILIZATION_HANDOFF_20261014.md",
@@ -284,12 +288,14 @@
     {
       "path": "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2_RESULT.md",
       "domain": "project",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: Evidencia técnica fechada 01/10 de LOD/bake/Unity, no garantía de calidad actual ni de que transformaciones avanzadas de Tripo estén automatizadas. Evidencia/autoridad: docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md."
     },
     {
       "path": "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
       "domain": "project",
-      "status": "review_pending"
+      "status": "current",
+      "note": "Revisión semántica 2026-11-06: Contrato vigente para clasificar necesidades, usar herramientas existentes y exigir autorización específica de créditos; la ruta está implementada en el planificador. Las pruebas de 01/10 son historia, no autorización artística nueva. Evidencia/autoridad: tools/plan-art-production.mjs; docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md."
     },
     {
       "path": "docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md",
@@ -321,7 +327,8 @@
     {
       "path": "docs/ELDORIA_VISUAL_FALLBACK_ORCHESTRATOR_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "current",
+      "note": "Revisión semántica 2026-11-06: Router acotado implementado para fallos clasificados, política read-only sin gasto. El 'no new R&D' se aplica SOLO a ese router; no impide investigar proactivamente fuera del router con autorización y pruebas. Evidencia/autoridad: tools/route-visual-fallback.mjs; pipeline/visual-fallback-policy.json; tools/plan-art-production.mjs."
     },
     {
       "path": "docs/ELDORIA_VISUAL_PRODUCTION_RULES.md",
@@ -332,8 +339,8 @@
     {
       "path": "docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md",
       "domain": "gameplay",
-      "status": "review_pending",
-      "note": "Correcciones en PR #132; todavía sin aceptación nativa ni conciliación de propiedad con PR #130."
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: Correcciones I–V, T2, aceleradores y cámaras realmente fusionadas en PR132. El documento conserva pruebas y decisiones de esa versión; menciones a PR131/no publicar son históricas, no el estado presente. Evidencia/autoridad: PR #132 (merged 30/10); PR #162 (merged 06/11); pipeline/playtest-delivery.json."
     },
     {
       "path": "docs/ELDORIA_WORK_VISUAL_INTEGRATION_BRIEF_V1.md",
@@ -354,12 +361,14 @@
     {
       "path": "docs/ELDORIA_WORLD_MAP_4X_FOUNDATIONAL_REQUIREMENTS.md",
       "domain": "world",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: Requisitos fundacionales aparcados el 05/10 y retomados por Region 1. Valen como intención futura del 4X, no como orden de abrir hoy una primera implementación inexistente. Evidencia/autoridad: docs/ELDORIA_WORLD_REGION_1_V1.md."
     },
     {
       "path": "docs/ELDORIA_WORLD_REGION_1_V1.md",
       "domain": "world",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: Informe de cierre y arquitectura de Region 1 v1 sobre main, no aprobación indefinida de su arte ni estado vivo de los workstreams/world actuales. Evidencia/autoridad: docs/ELDORIA_WORLD_REGION_1_V1.md; docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md."
     },
     {
       "path": "docs/ELDORIA_WORLD4X_GRAPHICS_BREAKTHROUGH_PLAYBOOK_20261024.md",
@@ -523,7 +532,8 @@
     {
       "path": "docs/VALORIA_ART_ASSET_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: Auditoría visual de septiembre contra geometría primitiva y packs inadecuados; principio TECH != VISUAL sigue útil. La orden 'reemplazo para next build' y paquetes candidatos no describen la ciudad actual. Evidencia/autoridad: docs/project-organization/SEMANTIC_REVIEW_BATCH3_20261104.md; PR #136."
     },
     {
       "path": "docs/VALORIA_ART_PRODUCTION_RESET_V1.md",
@@ -634,7 +644,8 @@
     {
       "path": "docs/VALORIA_FINAL_ASSET_DECISION.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06: Decisión sin compra del 26/09 y evaluación comercial con precios/licencias fechados. Prevaleció frente a VALORIA_PURCHASE_AUDIT, pero no es una cotización ni un veto eterno; gastar requiere nueva aprobación expresa. Evidencia/autoridad: AGENTS.md; docs/project-organization/SEMANTIC_REVIEW_BATCH3_20261104.md."
     },
     {
       "path": "docs/VALORIA_FINAL_LOOK_AND_CAMERA_AB_PLAN.md",
@@ -804,12 +815,14 @@
     {
       "path": "docs/VALORIA_MASTER_PLAN_AND_PROGRESSION_REQUIREMENTS.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: Requisitos de espacio y crecimiento hacia 25–35 niveles son planificación, no niveles implementados ni licencia para modificar topología/cámara de un titular ajeno. Evidencia/autoridad: docs/VALORIA_MASTER_PLAN_V1.md; docs/VALORIA_PROGRESSION_MAP_V1.md; docs/VALORIA_CAMERA_EXPANSION_PLAN_V1.md."
     },
     {
       "path": "docs/VALORIA_MASTER_PLAN_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: Plan espacial de Valoria en bandas hasta 25–35 niveles, condicionado a graybox y cámara. Es insumo de diseño, no prueba de topología/cámara final ni permiso para tocar Unity actualmente reservado. Evidencia/autoridad: docs/VALORIA_MASTER_PLAN_AND_PROGRESSION_REQUIREMENTS.md; docs/VALORIA_CAMERA_EXPANSION_PLAN_V1.md; pipeline/active-workstreams.json."
     },
     {
       "path": "docs/VALORIA_MICRO_CITY_INHABITED_DISTRICT_GATE.md",
@@ -945,7 +958,8 @@
     {
       "path": "docs/VALORIA_REAL_GAME_STATE_V1.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06: Trabajo SHARP/PLY del 06/10 explícitamente sin cierre Unity/visual. La evolución posterior de Valoria/PR136/PR162 lo convierte en evidencia de experimento, NO en tarea activa de regeneración SHARP. Evidencia/autoridad: PR #136; PR #162; pipeline/active-workstreams.json."
     },
     {
       "path": "docs/VALORIA_REFERENCE_CONVERGENCE_PASS_V2_RESULT.md",
@@ -1001,7 +1015,8 @@
     {
       "path": "docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06: GATE final FAIL: tarjetas semánticas/proyección con huecos y disoclusiones, método rechazado explícitamente. Conservar como evidencia negativa; no reactivar como pipeline aprobado. Evidencia/autoridad: docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md; docs/VALORIA_VISUAL_AUTHORITY_RESET_V1.md."
     },
     {
       "path": "docs/VALORIA_SHELL_V2_BLENDER_TRANSITION_RESULT.md",
@@ -1077,7 +1092,8 @@
     {
       "path": "docs/VALORIA_VISUAL_AUTHORITY_RESET_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: Prueba visual corregida del 06/10 y fuente aprobada de ese momento. Conservar hashes/capturas; no asumir que sus SHARP/cámara HOME describen el juego actual o que el 'STOP' antiguo bloquea producción autorizada posterior. Evidencia/autoridad: docs/DOCUMENTATION_INDEX.md; PR #136; PR #162."
     },
     {
       "path": "docs/VALORIA_VISUAL_AUTHORITY_ROUTING_GUARD_V1.md",
@@ -1158,7 +1174,8 @@
     {
       "path": "docs/WORLD_MAP_4X_FUNCTIONAL_LIBRARY_V1.md",
       "domain": "world",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: Taxonomía de nodos, PvE, ciudades y marchas reutilizable. El texto 'next production wedge' y el modelo Frontier/zoom antiguo no sustituyen al diseño Region 1 integrado. Evidencia/autoridad: docs/ELDORIA_WORLD_REGION_1_V1.md; PR #132."
     },
     {
       "path": "docs/WORLD_MAP_FOREST_RESOURCE_KIT_V1_RESULT.md",
@@ -1168,7 +1185,8 @@
     {
       "path": "docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md",
       "domain": "world",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06: Benchmark visual orientativo; NO aplicar tamaños ortográficos antiguos 18/14/10/7 como parámetros de la cámara actual: PR132 diferencia escala regional, cercana y panorámica según viewport. Evidencia/autoridad: PR #132; docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md."
     },
     {
       "path": "PROJECT_STATE.md",
