@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T09:41:47.266Z",
+  "updated_at": "2026-11-06T09:53:45.197Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6330,7 +6330,7 @@
       ],
       "phase": "PR162_EXACT_NATIVE_CERTIFICATION",
       "dependency": "Construction native42189025597 completed SUCCESS and its owner released Windows. PR162 now claims it for exact final source.",
-      "next": "Validate 1928dda native candidate: exact compile/marches/Aldric already passed on37ac; actual node QA exposed invalid offscreen Canvas viewport after camera pan (x0,y1,width0,height-.29). Synchronize real render before live labels, then retain all node/level/picking checks and full regression.",
+      "next": "Complete current PlayMode/build, inspect actual captures/XML from1928dda, then merge canonical PR162 and validate main. Keep Windows resource through completion.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6373,16 +6373,16 @@
         "handoff": "Same PR162 merged only after checks and visual evidence; report exact commit and remaining publication distinction."
       },
       "last_verified": {
-        "domain": "37ac domain/governance/economy/name/renewal PASS;1928 pending",
-        "native_compile": "37ac and10780 PASS",
-        "native_scenes": "three marches and Aldric PASS",
-        "native_pending": "node captures, full EditMode/PlayMode/I-V/player",
-        "diagnostic": "10780 run42196411279 confirmed live adapter/nonblocked screens and invalid pre-render Canvas viewport"
+        "source_sha": "1928dda29369b86bde67896a24f83ac816a2cbb2",
+        "native_run": 42196939050,
+        "native_job": 127822502060,
+        "completed": "Exact compile, three marches, Aldric, real integrated I-V visual probe including all node captures, EditMode PASS",
+        "pending": "PlayMode currently executing; native build, artifact review and merge pending"
       },
       "native_lease": {
         "owner": "codex-pr162-completion-23287cf1c126",
         "source_sha": "1928dda29369b86bde67896a24f83ac816a2cbb2",
-        "run_id": 42194499354,
+        "run_id": 42196939050,
         "reason": "Final exact PR162 Unity certification after verified release; no process termination or reboot."
       }
     },
