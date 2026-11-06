@@ -875,7 +875,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // All resource totals and Valoria identity are still V1 values.
             float w = safe.rect.width;
             bool showFood = Source.Resources && Source.Resources.FoodVisible;
-            float realmWidth = portrait ? Mathf.Min(160f, w * .39f) : 275f;
+            // The first-entry nickname uses the EXISTING crest title, not a third row.
+            // Leave enough width for real 3-18 character names on portrait
+            // without taking space from the saved Power line. Resources may
+            // safely wrap onto the existing second row when necessary.
+            float realmWidth = portrait ? Mathf.Min(232f, w * .55f) : 275f;
             float headerHeight = portrait ? 62f : 78f;
             float settingsSize = portrait ? 56f : 76f;
             if (headerPlate)
@@ -915,14 +919,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (Source.Realm.Realm)
                 {
                     Top(Source.Realm.Realm.rectTransform, titleX,
-                        5f, realmWidth - titleX - 2f, portrait ? 28f : 36f);
+                        5f, realmWidth - titleX - 2f, portrait ? 26f : 36f);
                     Source.Realm.Realm.fontSize = portrait ? 20 : 27;
                     if (ChronicleFont) Source.Realm.Realm.font = ChronicleFont;
                 }
                 if (Source.Realm.Power)
                 {
                     Top(Source.Realm.Power.rectTransform, titleX,
-                        portrait ? 32f : 46f, realmWidth - titleX - 2f, 23f);
+                        portrait ? 34f : 46f, realmWidth - titleX - 2f, 23f);
                     Source.Realm.Power.fontSize = portrait ? 15 : 19;
                     if (ChronicleFont) Source.Realm.Power.font = ChronicleFont;
                     Source.Realm.Power.horizontalOverflow = HorizontalWrapMode.Overflow;
