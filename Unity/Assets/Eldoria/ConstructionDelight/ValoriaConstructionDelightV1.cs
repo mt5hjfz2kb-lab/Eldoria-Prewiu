@@ -692,10 +692,10 @@ namespace Eldoria.ReferenceClean
             // Two additional BATCHED atmospheric fields, not hundreds of
             // renderer GameObjects. High density near the true hammer contact,
             // but softly feathered and short lived to keep wood and roof legible.
-            denseWorkDust=NewField("Work / dense scaffold dust",denseMaterial,150,0f,.58f,1.08f,.30f,.78f,.15f,false,113);
-            hammerImpactDust=NewField("Work / hammer impact puffs",denseMaterial,110,0f,.43f,.83f,.24f,.58f,.20f,false,127);
-            denseWorkDust.Tint=new Color(.75f,.68f,.57f,.54f);
-            hammerImpactDust.Tint=new Color(.81f,.73f,.62f,.61f);
+            denseWorkDust=NewField("Work / dense scaffold dust",denseMaterial,150,0f,.60f,1.08f,.50f,1.10f,.17f,false,113);
+            hammerImpactDust=NewField("Work / hammer impact puffs",denseMaterial,110,0f,.45f,.82f,.36f,.83f,.23f,false,127);
+            denseWorkDust.Tint=new Color(.78f,.71f,.60f,.77f);
+            hammerImpactDust.Tint=new Color(.83f,.75f,.63f,.79f);
             finishDust=NewField("Finish / last settling dust",dustMaterial,45,0f,.55f,1.10f,.40f,.91f,.38f,false,43);
             finishEmbers=NewField("Finish / antique-gold glints",dustMaterial,70,0f,.58f,1.18f,.15f,.31f,.66f,false,57);
             finishRing=NewField("Finish / foundation settling wave",ringMaterial,2,0f,1.28f,1.28f,1f,1f,0f,true,79,true);
@@ -769,8 +769,11 @@ namespace Eldoria.ReferenceClean
                     float elliptical=Mathf.Sqrt(px*px*.88f+py*py*1.12f);
                     float feather=Mathf.SmoothStep(0f,1f,
                         Mathf.Clamp01((outline-elliptical)/.33f));
-                    float opacity=feather*(.29f+.54f*grain)*
-                                  (.66f+.34f*clouds);
+                    // V7's tiny dark fragments disappeared at mobile distance.
+                    // Restore enough density to see real joinery dust without
+                    // the circular opaque disks from V6.
+                    float opacity=feather*(.44f+.46f*grain)*
+                                  (.76f+.24f*clouds);
                     colors[y*n+x]=new Color(1f,1f,1f,opacity);
                 }
             texture.SetPixels(colors);
