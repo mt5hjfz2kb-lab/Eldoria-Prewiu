@@ -149,6 +149,46 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator HuntingReportsNeverInventCombatRoundsOrZeroLoot()
+        {
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var guidance=Member(host,"Guidance") as Behaviour;
+            if(guidance)guidance.enabled=false;
+            var modal=Member(hud,"Modal") as Component;
+            if(modal)Call(modal,"Hide");
+            var mailbox=FindComponent(hud.gameObject,"RoyalGoldV41MailboxScreen");
+            var store=new ReadingStore();
+            store.State.Mailbox.Receive(new Eldoria.Domain.EldoriaV41Message{
+                EventId="hunt-report-regression",Category="informes",Type="battle",
+                Title="Victoria en batalla",
+                Battle=new Eldoria.Domain.EldoriaV41CombatRecord{
+                    TargetId="hunt-boar",HeroId="aldric",Won=true,
+                    Troops=54,Rounds=0,RemainingHealth=0,
+                    PlayerPower=2662,RewardFood=0
+                }});
+            var gateway=new Eldoria.Application.LocalGateway(new ReadingClock(),store);
+            Call(mailbox,"Initialize",hud,gateway);
+            Call(mailbox,"Open");
+            mailbox.GetType().GetMethod("SelectRow",BindingFlags.Instance|BindingFlags.NonPublic)
+                .Invoke(mailbox,new object[]{0});
+            yield return null;
+            Assert.That((int)mailbox.GetType().GetField("reportMetricCount",
+                BindingFlags.Instance|BindingFlags.NonPublic).GetValue(mailbox),Is.EqualTo(2),
+                "A hunting receipt is not a combat and must not show zero rounds or life");
+            var heading=mailbox.GetType().GetField("reportHeading",
+                BindingFlags.Instance|BindingFlags.NonPublic).GetValue(mailbox) as Text;
+            var footer=mailbox.GetType().GetField("reportFooter",
+                BindingFlags.Instance|BindingFlags.NonPublic).GetValue(mailbox) as Text;
+            Assert.That(heading,Is.Not.Null);
+            Assert.That(footer,Is.Not.Null);
+            StringAssert.Contains("Cacería completada",heading.text);
+            StringAssert.Contains("Recompensas",footer.text);
+            StringAssert.DoesNotContain("BOTÍN REGISTRADO · 0",footer.text);
+            Call(mailbox,"Close");
+        }
+
+        [UnityTest]
         public IEnumerator ChronicleRealKeepsNativeBuildingIllustrationWithCanonicalOffer()
         {
             Component host = null, hud = null;
