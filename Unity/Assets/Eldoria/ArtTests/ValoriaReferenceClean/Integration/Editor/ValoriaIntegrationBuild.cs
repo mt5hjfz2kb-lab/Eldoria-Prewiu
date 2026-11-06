@@ -1036,6 +1036,11 @@ namespace Eldoria.ReferenceClean.Editor {
     var playerHeader=h.Hud.Realm?.GetComponent<Eldoria.PlayerClarity.PlayerNameHeader>();
     if(playerHeader)playerHeader.Refresh();
     prepareView?.Invoke();
+    // ScreenSpaceCamera Canvas matrices follow the camera during render.
+    // After an offscreen pan, measuring them before that sync produced a
+    // zero-width/inverted free viewport and hid every otherwise live marker.
+    // Render the real camera once before measuring the same runtime overlay.
+    c.Render();Canvas.ForceUpdateCanvases();
     var clarity=Object.FindFirstObjectByType<Eldoria.PlayerClarityRuntime>();
     if(clarity)clarity.RefreshForCapture();
     Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
