@@ -5,5 +5,5 @@
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Owner-authorized post-PR162 signed candidate build. Keep original package, certificate and saves. Main merge e7e37d2 passed216 EditMode/75 PlayMode and Windows build; fixture-only repair c788c94 undergoing full visual certification. Build only: publication remains disabled until all native/browser QA and installed450MiB byte/signature checks pass.0EUR."
+  "note": "Retry after build42212292004 compiled497493588bytes and correctly rejected installed450MiB limit. Apply only temporary Android full-resolution ASTC4x4/highest quality to large UI illustrations; preserve all source pixels and restore exact import metadata. Keep original package/certificate/save compatibility and450MiB gate. Export originals and packaging manifest; decoded APK image comparison and completed UI certification required before publication.0EUR."
 }

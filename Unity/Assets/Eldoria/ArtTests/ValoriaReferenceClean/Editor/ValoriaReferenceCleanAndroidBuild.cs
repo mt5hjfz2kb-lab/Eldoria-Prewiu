@@ -17,7 +17,8 @@ public static class ValoriaReferenceCleanAndroidBuild {
  [Serializable]class Key{public string path,certificate_sha256;public bool matches_original;}
  [Serializable]class KeyReport{public Key[] keys;public string package;public int old_version_code;}
  [Serializable]class Request{public bool content_updates;public int revision,android_version_code;public string android_version_name;}
- [Serializable]class Result { public string source_sha,status,apk_sha256,package_id,graphics_apis,note,scene;public long apk_bytes;public int errors,warnings;public bool physical_device_tested; }
+ [Serializable]class TexturePackaging { public string path,format,source_sha256;public int width,height,max_size; }
+ [Serializable]class Result { public TexturePackaging[] android_textures;public bool source_texture_metadata_restored; public string source_sha,status,apk_sha256,package_id,graphics_apis,note,scene;public long apk_bytes;public int errors,warnings;public bool physical_device_tested; }
  const string Quarantine="Assets/EldoriaReleasePackagingQuarantine";
  static void MoveUnusedLegacyResources(HashSet<string> dependencies,Dictionary<string,string> moved,ref bool ownsQuarantine){
   if(AssetDatabase.IsValidFolder(Quarantine)||Directory.Exists(Quarantine))throw new Exception("Existing release quarantine requires recovery");
@@ -41,10 +42,42 @@ public static class ValoriaReferenceCleanAndroidBuild {
    if(!Resources.Load<GameObject>(path))throw new Exception("Required current runtime resource missing: "+path);
   File.WriteAllLines("../docs/evidence/valoria-reference-clean/android-excluded-legacy-resources.txt",moved.Keys.OrderBy(x=>x));
  }
+ static TexturePackaging[] ConfigureAndroidIllustrations(Dictionary<string,byte[]> metadata){
+  // Android-only, full-resolution ASTC4x4 at the highest encoder quality.
+  // No font, shader, model, source pixels, scene or non-Android import changes.
+  // Retain originals beside the build proof for decoded APK visual comparison.
+  var proof=new List<TexturePackaging>();
+  var roots=new[]{"Assets/Eldoria/Resources/EldoriaV41","Assets/Eldoria/Resources/EldoriaRetention"};
+  foreach(var path in roots.Where(AssetDatabase.IsValidFolder)
+   .SelectMany(root=>AssetDatabase.FindAssets("t:Texture2D",new[]{root}))
+   .Select(AssetDatabase.GUIDToAssetPath).Distinct().OrderBy(x=>x)){
+   var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+   var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+   if(!importer||!texture||Math.Max(texture.width,texture.height)<=512)continue;
+   var settings=importer.GetPlatformTextureSettings("Android");
+   int maxSize=settings.overridden?settings.maxTextureSize:importer.GetDefaultPlatformTextureSettings().maxTextureSize;
+   metadata.Add(path,File.ReadAllBytes(path+".meta"));
+   var item=new TexturePackaging{path=path,width=texture.width,height=texture.height,max_size=maxSize,format="ASTC_4x4"};
+   using(var sha=System.Security.Cryptography.SHA256.Create())
+    item.source_sha256=BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(path))).Replace("-","").ToLowerInvariant();
+   var original="../docs/evidence/valoria-reference-clean/android-texture-proof/"+path.Substring("Assets/".Length);
+   Directory.CreateDirectory(Path.GetDirectoryName(original));File.Copy(path,original,true);
+   settings.name="Android";settings.overridden=true;settings.maxTextureSize=maxSize;
+   settings.format=TextureImporterFormat.ASTC_4x4;
+   settings.textureCompression=TextureImporterCompression.CompressedHQ;
+   settings.compressionQuality=100;settings.crunchedCompression=false;
+   importer.SetPlatformTextureSettings(settings);importer.SaveAndReimport();
+   proof.Add(item);
+  }
+  if(proof.Count==0)throw new Exception("No Android illustrations were prepared; refuse an unmeasured packaging retry");
+  Debug.Log("ELDORIA_ANDROID_FULL_RESOLUTION_ASTC4X4 textures="+proof.Count);
+  return proof.ToArray();
+ }
  public static void Build(){
   var request=JsonUtility.FromJson<Request>(File.ReadAllText("../tools/valoria-reference-clean/request.json"));
   var result=new Result{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),package_id="com.eldoria.valoria.v5test",graphics_apis="Vulkan, OpenGLES3",scene=ScenePath,physical_device_tested=false,note="Owner update: same package and verified existing signing certificate, one current Valoria city/world/Royal Gold scene, source-only GLBs optimized. No forced data reset or uninstall. Physical Android install/performance has not been observed."};
   var libraries=new Dictionary<string,byte[]>();
+  var textureMetadata=new Dictionary<string,byte[]>();
   var movedResources=new Dictionary<string,string>();
   bool ownsQuarantine=false;
   int exit=1;string settings="ProjectSettings/ProjectSettings.asset";byte[] original=File.ReadAllBytes(settings);
@@ -90,6 +123,7 @@ public static class ValoriaReferenceCleanAndroidBuild {
    // Bounded release repair: reuse the integrated WebGL packager's proven exclusion of the unused
    // legacy source catalog. Scene dependencies are retained; source assets
    // and the catalog's exact bytes are restored in finally, even on failure.
+   result.android_textures=ConfigureAndroidIllustrations(textureMetadata);
    var dependencies=new HashSet<string>(AssetDatabase.GetDependencies(ScenePath,true));
    MoveUnusedLegacyResources(dependencies,movedResources,ref ownsQuarantine);
    foreach(var path in AssetDatabase.FindAssets("t:ValoriaExternalAssetLibrary").Select(AssetDatabase.GUIDToAssetPath)){
@@ -111,12 +145,17 @@ public static class ValoriaReferenceCleanAndroidBuild {
   }catch(Exception e){result.status="ANDROID_BUILD_FAILED";result.note=e.ToString();Debug.LogException(e);}
   finally{
    try{
+    // Restore every original metadata file before triggering any reimport.
+    foreach(var pair in textureMetadata)File.WriteAllBytes(pair.Key+".meta",pair.Value);
     foreach(var pair in libraries)File.WriteAllBytes(pair.Key,pair.Value);
     foreach(var pair in movedResources.Reverse()){
      var error=AssetDatabase.MoveAsset(pair.Value,pair.Key);if(!string.IsNullOrEmpty(error))throw new Exception("Restore original release resource: "+error);
     }
     if(ownsQuarantine&&AssetDatabase.IsValidFolder(Quarantine))AssetDatabase.DeleteAsset(Quarantine);
     AssetDatabase.Refresh();
+    foreach(var pair in textureMetadata)
+     if(!File.ReadAllBytes(pair.Key+".meta").SequenceEqual(pair.Value))throw new Exception("Texture importer metadata did not restore exactly: "+pair.Key);
+    result.source_texture_metadata_restored=true;
    }catch(Exception e){exit=1;result.status="SOURCE_RESTORATION_FAILED";result.note=e.ToString();Debug.LogException(e);}
    finally{File.WriteAllText(Evidence,JsonUtility.ToJson(result,true));File.WriteAllBytes(settings,original);}
   }

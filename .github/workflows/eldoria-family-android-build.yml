@@ -263,3 +263,13 @@ jobs:
           name: eldoria-family-updater-log-${{ github.run_id }}
           path: ${{ runner.temp }}/eldoria-family-android-${{ github.run_id }}.log
           if-no-files-found: warn
+      - name: Preserve exact Android texture packaging evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-family-packaging-proof-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/android-build.json
+            valoria-layered-source/docs/evidence/valoria-reference-clean/android-texture-proof/**
+            valoria-layered-source/docs/evidence/valoria-reference-clean/android-excluded-legacy-resources.txt
+          if-no-files-found: warn
