@@ -639,27 +639,32 @@
     {
       "path": "docs/VALORIA_BASTION_TO_CITY_FRAME_DESIGN_BRIEF_V1.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 2d5ab479ab383768b291eaa60a12992e8e0aa6a0: Brief de imagen objetivo de octubre que fijaba un marco basado en una referencia anterior. Sigue siendo evidencia de autoría, no mandato de reconstruir esa escena. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_BASTION_TO_CITY_TRIPO_SOURCE_PREP_V1.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 6621acd3bc872cc0f82966d2aa168ab3486c4e3a: Preparación de multivista con veredicto FAIL, sin imagen apta para Tripo, generación, pago ni integración. No autoriza reabrir esa tarea. Autoridad posterior: docs/VALORIA_BASTION_TO_CITY_EXACT_SOURCE_IMAGE_V1.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_BRIDGE_FAMILY_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git c7be5a46b073a606d3d3ff6b92ee1ecf9ebb203e: Fuente y familia Bridge con gate técnico/visual acotado aprobado en octubre; valiosa para trazabilidad, no aprobación automática con referencia del 20/10. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_BUILDING_PRODUCTION_INVENTORY_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git fbddb103698f888650b5a02f929b62cd914bd602: Inventario ACTIVE del 02/10 declara producción PASS de Hero Bastion antiguo posteriormente vetado; también contiene backlog ya modificado. No es mapa vivo. Autoridad posterior: AGENTS.md; pipeline/asset-vault/clean-production-shelf-v1.json. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_CABIN_SAWMILL_CAMP_PRODUCTION_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 40654386ff773e6c7914c46f7330927200c4740f: Plan de Sawmill/Camp marcado IN PROGRESS el 05/10 con Camp aún no abierto: no describe tareas o permisos del registro actual. Autoridad posterior: pipeline/active-workstreams.json; docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_CAMERA_EXPANSION_PLAN_V1.md",
@@ -670,7 +675,8 @@
     {
       "path": "docs/VALORIA_CAMERA_FIRST_FUNCTIONAL_SOURCE_V1_RESULT.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 74d497cfb69da9fddca11cf48fc03c22af043396: Prueba de Granero/Cuartel con TECH PASS pero fallos visuales y NOT PROMOTED. No iniciar otra iteración a partir de sus recomendaciones antiguas. Autoridad posterior: docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_CAMERA_FIRST_PROJECTION_SHELL_V1.md",
@@ -681,17 +687,20 @@
     {
       "path": "docs/VALORIA_COMPACT_FOOTPRINT_REFRAME_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 710020e27528c042ed336e30d41f0cb5fc185e99: A/B aceptó un núcleo compacto y espacio de crecimiento en su versión; principios espaciales reutilizables, no calidad final ni autorización sobre topología actual. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md; PR #136. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_COMPOSITION_FRAME_V2_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git d69269c476e7df37b51153720c9bc21873d4c199: Experimento de marco visual v2 sin promoción y veredicto C; la técnica alcanzó techo de calidad. Mantener errores como evidencia. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_ENVIRONMENT_ART_DIRECTION_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git cd99464a02abcd8e2265fb6112163aad8d84f89b: Declara expresamente que su dirección de entorno está SUPERSEDED por la biblia visual posterior; usar solo como investigación histórica. Autoridad posterior: docs/VALORIA_VISUAL_BIBLE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_FINAL_ASSET_DECISION.md",
@@ -708,17 +717,20 @@
     {
       "path": "docs/VALORIA_FIRST_PLAYABLE_CITY_SLICE_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git f42c6638b402e63b8da2dbf23542f736ab51dc9a: Slice SHARP visual de 06/10 PASS con imagen aprobada en esa fecha; esa autoridad visual fue sustituida el 20/10. No certifica referencia actual. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 53f066f2d0e6b2976d9fdfb9a7c52d76684939ac: Resultado de distrito con TECH PASS y VISUAL PARTIAL, promoción acotada; conservar como aprendizaje de autoría, no como cierre artístico global. Autoridad posterior: docs/VALORIA_VISUAL_BIBLE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_FIRST_PRODUCTION_DISTRICT_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git e67aa1638e4a84a3e605489db0eae3f5fce70e6a: Integración de primer distrito con PASS local de septiembre y conservación de PBR/hotspots; las capturas y la fórmula visual antigua no son autoridad actual. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_FULL_FRAME_CONVERGENCE_LOOP_V1.md",
@@ -735,12 +747,14 @@
     {
       "path": "docs/VALORIA_GATE_STREET_MV1_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 424e0dc73d35cae4df8a3c03f5f575e032b915a4: Gate MV1 pasó en una orientación correcta, pero los ensayos posteriores de interfaces mostraron fallos de circulación real. No certificar conexión modular completa. Autoridad posterior: docs/VALORIA_IF1_SHORT_CHAIN_DECISION.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_GATE_STREET_RISE_ROCK_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 629c493eabf075890aabd543777c9f7d25c9bf16: Primer GateStreet original no proporcionó corredor físico legible, rechazado antes de posteriores fuentes MV1. No rehacerlo como si faltara prueba. Autoridad posterior: docs/VALORIA_GATE_STREET_MV1_GATE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_GATE_STREET_V2_GATE.md",
