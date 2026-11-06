@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T18:20:56.437Z",
+  "updated_at": "2026-11-06T18:53:45.979Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,26 +20,36 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
-      "branch": "main",
+      "owner": "codex-player-experience-fixes-23287cf1c126",
+      "branch": "fix/player-experience-audit-20261106",
       "status": "active",
       "claimed_at": "2026-11-06T10:45:48.580Z",
       "base_main_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
       "scope": [
+        "Unity/Assets/Eldoria/Scripts/Application/**",
+        "Unity/Assets/Eldoria/Scripts/Domain/**",
+        "Unity/Assets/Eldoria/Scripts/Presentation/**",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/**",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/**",
+        "Unity/Assets/Eldoria/HeroesUI/**",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**",
+        "Unity/Assets/Eldoria/Tests/EditMode/**",
+        "Unity/Assets/Eldoria/Tests/PlayMode/**",
+        "tools/valoria-reference-clean/**",
+        "tools/ui-v3-domain-smoke/**",
+        "tools/narrative-unity/**",
+        ".github/workflows/narrative-unity-domain.yml",
         ".github/workflows/valoria-windows-chromium-qa.yml",
-        "tools/valoria-reference-clean/browser-qa-request.json",
-        "tools/valoria-reference-clean/interactive-play.cjs",
-        "tools/valoria-reference-clean/interactive-play.test.cjs",
-        "docs/evidence/player-audit-20261106/**",
-        "docs/ui-v3/PLAYER_AUDIT_20261106.md"
+        "docs/ui-v3/PLAYER_EXPERIENCE_FIXES_20261106.md",
+        "docs/evidence/player-experience-20261106/**"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PLAYER_AUDIT_COMPLETED_FINDINGS_DOCUMENTED",
-      "next": "Owner review of player audit and prioritization of observed defects. Existing PR162 publication remains unchanged.",
+      "phase": "PLAYER_AUDIT_REMEDIATION",
+      "next": "Diagnose observed failures; implement coherent corrections, certify exact candidate and replay.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1982,17 +1992,24 @@
           "to_revision": 152,
           "released_at": "2026-11-06T18:20:56.437Z",
           "reason": "Manual native299 player session completed; job finished, evidence verified; visual/gameplay findings documented, no runtime changes."
+        },
+        {
+          "previous_owner": null,
+          "from_revision": 152,
+          "to_revision": 153,
+          "claimed_at": "2026-11-06T18:53:45.979Z",
+          "reason": "Owner directs correction of all observed player-audit problems, prioritizing player experience."
         }
       ],
-      "ownership_revision": 152,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 153,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-05T19:03:44.661Z",
       "delivery_definition": {
-        "deliverable": "Personally directed fresh player session in exact native299 WebGL, with actual visible inputs and normal time, through available campaign and key systems.",
-        "evidence": "Sequential screenshots/video and input log; explicit observed versus inferred player-experience findings.",
-        "handoff": "Prioritized Spanish findings with completion scope, exact bytes/source and genuine limits; free Windows and claim."
+        "deliverable": "Correct all thirteen player-audit problem groups with player experience prioritized; preserve saves and approved automatic combat.",
+        "evidence": "Focused regression tests, exact Unity build and screenshots, repeat real WebGL player journey; each finding mapped to evidence.",
+        "handoff": "Integrated changes, exact SHA and test/build evidence, honest remaining limits, released resources."
       },
       "handoff_authority": "Owner explicitly confirms BLOQUE 00 closed; authorizes BLOQUE 01 takeover without a new approval; Windows reserved only for an actual Unity run.",
       "world_integration_handoff": {
@@ -2007,7 +2024,14 @@
         "authorization": "Owner full world replacement order followed by explicit 'Tienes mi autorización' on 2026-10-23. No merge, publication or expenditure.",
         "limits": "Only world visual replacement/population integration; preserve city, UI, saves, identifiers and I-II progression. No merge/publication."
       },
-      "scope_exclusions": [],
+      "scope_exclusions": [
+        "Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs.meta",
+        "Unity/Assets/Eldoria/Tests/EditMode/ConstructionDelightStateTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/ConstructionDelightStateTests.cs.meta",
+        "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs.meta"
+      ],
       "paused_on": "2026-10-24",
       "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
       "latest_owner_feedback": "Current owner: resources have levels, a single occupant per node, disputable and stronger player remains gathering. Incorporated into offline design/simulation; no live multiplayer implementation or APK publication authorized by this scope.",
@@ -15457,17 +15481,17 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-    "status": "available",
-    "owner": null,
+    "status": "active",
+    "owner": "codex-player-experience-fixes-23287cf1c126",
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
-    "branch": "main",
+    "branch": "fix/player-experience-audit-20261106",
     "restrictions": "Preserve native111 baseline; staged improvements with focused tests. No old independent branch production. No paid credits.",
     "previous_owner": "codex-player-audit-23287cf1c126",
     "ownership_source": "active[id=valoria-master-plan-layered-construction-20261016]; transferable owner-directed claim",
     "released_at": "2026-11-06T18:20:56.437Z",
     "release_evidence": "docs/ui-v3/PLAYER_AUDIT_20261106.md",
-    "ownership_revision": 152
+    "ownership_revision": 153
   }
 }
