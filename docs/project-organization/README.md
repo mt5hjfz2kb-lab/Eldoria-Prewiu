@@ -7,6 +7,12 @@ La entrada es el [README principal](../../README.md). Las reglas vigentes están
 [AGENTS](../../AGENTS.md), los responsables en el [registro vivo](../../pipeline/active-workstreams.json)
 y la documentación temática en el [índice central](../DOCUMENTATION_INDEX.md).
 
+## Protección preventiva de derechos — 06/11/2026
+
+Se ha preparado una [regularización no disruptiva y su plan de cierre](LICENSE_REGULARIZATION_EXECUTION_20261106.md): evitar nuevas incorporaciones públicas de ficheros originales de siete proveedores importados, Quaternius y vendedores desconocidos, sin borrar `Unity/Assets` ni modificar las publicaciones. Un control sobre PR revisa las rutas desde el código **de confianza de main**; el guard documental exige pruebas privadas antes de que un recurso quede marcado `license_certified:true`.
+
+**No implica que las 26 piezas del catálogo de producción estén legalmente certificadas** ni que el código ya publicado tenga permisos para redistribuir las fuentes en bruto. La APK familiar code21 utiliza un enlace GitHub Releases del repositorio público; pasar `main` a privado sin migrar primero esa descarga **pondría en riesgo las actualizaciones**. El acceso a los derechos de cada cuenta y la migración binaria deben verificarse como fases separadas.
+
 ## Auditoría de licencias y procedencia — 06/11/2026
 
 La [auditoría documentada de licencias](LICENSE_PROVENANCE_AUDIT_20261106.md) y su [registro verificable de 16 familias](LICENSE_PROVENANCE_EVIDENCE_20261106.json) han identificado **1 prioridad crítica, 10 altas y 5 medias**. Son **riesgos de documentación o redistribución por verificar**, no declaraciones de infracción. En particular, un aviso incluido en el pack de árboles restringe la redistribución de ciertas imágenes de Textures.com, y el repositorio de trabajo continúa siendo público.
