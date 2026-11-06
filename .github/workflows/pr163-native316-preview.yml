@@ -43,7 +43,7 @@ jobs:
             'sha256':hashlib.sha256(dest.read_bytes()).hexdigest()})
           reports=list(root.rglob('integration-result.json'))
           if reports:
-           report=json.loads(reports[0].read_text(encoding='utf8-sig'))
+           report=json.loads(reports[0].read_text(encoding='utf-8-sig'))
            manifest['native_result_status']=report.get('status')
            manifest['native_result_errors']=report.get('error')
           (out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
