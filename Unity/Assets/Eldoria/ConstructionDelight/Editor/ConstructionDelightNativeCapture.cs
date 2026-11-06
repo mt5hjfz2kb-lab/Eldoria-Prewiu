@@ -148,6 +148,8 @@ namespace Eldoria.ReferenceClean.Editor
             if(fx.ActiveHammerRenderers<4)
                 VisualIssues.Add("Real hammer heads and handles not visible at "+
                     "canonical sawmill worksite");
+            if(fx.VerifiedHammerContacts!=2)
+                VisualIssues.Add("Both hammer heads must anchor to genuine enabled worksite meshes");
             if(fx.ActiveDenseConstructionDust<12)
                 VisualIssues.Add("Dense impact dust absent or insufficient "+
                     "around actual building joinery");
