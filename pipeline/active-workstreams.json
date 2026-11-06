@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T10:03:32.199Z",
+  "updated_at": "2026-11-06T10:19:29.203Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6332,7 +6332,7 @@
       ],
       "phase": "PR162_EXACT_NATIVE_CERTIFICATION",
       "dependency": "Construction native42189025597 completed SUCCESS and its owner released Windows. PR162 now claims it for exact final source.",
-      "next": "Fix confirmed existing Aldric async import disposal race blocking full PR162 PlayMode; released Aldric/hero scopes inspected, no active competing owner. Preserve model/animations and add deterministic destroy-during-load regression to existing native case, then repeat complete suite.",
+      "next": "Finish exact native certification and merge PR162. User reiterated explicit APK+WebGL publication after integration on2026-11-06; then take released canonical main delivery scope, preserve original Android signing/package/save/versionCode>20 and existing restricted itch channel. Existing publication automation6aed0cc2f0308191b29a13b542c886aa must not duplicate active delivery.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6368,24 +6368,24 @@
         "economy_merged_sha": "0579b316eac5c9c278d7de83540b9f67d74b96a6",
         "integration_branch": "feature/player-clarity-first-login-map-signage-20261105"
       },
-      "source_sha": "1928dda29369b86bde67896a24f83ac816a2cbb2",
+      "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
       "delivery_definition": {
         "deliverable": "Integrate canonical PR162: persistent first-entry nickname, readable actual resource/node/building levels, distributed renewable nodes and five-minute UTC renewal.",
         "evidence": "Exact Unity compile/EditMode/PlayMode and continuous I-V journey, genuine four-size screenshots with real nodes and pointer picking, existing saves/economy regressions.",
         "handoff": "Same PR162 merged only after checks and visual evidence; report exact commit and remaining publication distinction."
       },
       "last_verified": {
-        "source_sha": "1928dda29369b86bde67896a24f83ac816a2cbb2",
-        "native_run": 42196939050,
-        "native_job": 127822502060,
-        "completed": "Exact compile, three marches, Aldric, real integrated I-V visual probe including all node captures, EditMode PASS",
-        "pending": "PlayMode currently executing; native build, artifact review and merge pending",
-        "playmode": "74/75 PASS, sole failure ReferenceUiArtPassTests due Aldric OnDestroy disposing ConvertMatricesJob while load pending;216/216 EditMode PASS"
+        "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
+        "native_run": 42200606212,
+        "native_job": 127834691766,
+        "completed": "Compile, three marches, Aldric including destroy-during-load cleanup, integrated225-check visual probe including icon renderer assertions, EditMode PASS",
+        "pending": "Full PlayMode executing; native Windows build, exact artifact visual inspection, merge/main validation",
+        "previous_native": "1928dda216 EditMode PASS;74/75 PlayMode, existing Aldric early-disposal race confirmed and now corrected; screenshots exposed missing icon renderer and blurred font raster, corrected"
       },
       "native_lease": {
         "owner": "codex-pr162-completion-23287cf1c126",
-        "source_sha": "1928dda29369b86bde67896a24f83ac816a2cbb2",
-        "run_id": 42196939050,
+        "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
+        "run_id": 42200606212,
         "reason": "Final exact PR162 Unity certification after verified release; no process termination or reboot."
       }
     },
