@@ -1,0 +1,63 @@
+name: "ELDORIA - SLM connect Codex (guarded one-shot)"
+on:
+  push:
+    branches: [pilot/slm-permanent-bootstrap-20261104]
+    paths:
+      - 'pilot/slm-bootstrap/codex-connect-trigger.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-slm-codex-connection
+  cancel-in-progress: false
+jobs:
+  codex:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 18
+    steps:
+      - name: Recheck exclusive Windows ownership, no Unity/Blender alive
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $u='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $r=Invoke-RestMethod -Uri $u -TimeoutSec 25
+          if(-not $r.content){throw 'No live registry'}
+          $d=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($r.content -replace '\s','')))|ConvertFrom-Json
+          $lease=@($d.active | Where-Object {@($_.resources) -contains 'windows-runner-heavy'})
+          if($lease.Count -ne 1 -or $lease[0].id -ne 'eldoria-slm-permanent-bootstrap-20261104' -or $lease[0].owner -ne 'chatgpt-eldoria-slm-bootstrap-20261104'){
+            throw 'Foreign reservation or no verified lease'
+          }
+          if(@(Get-Process Unity,blender,UnityShaderCompiler,UnityPackageManager,UnityCrashHandler64 -ErrorAction SilentlyContinue).Count){
+            throw 'Native game/editor activity detected; no changes'
+          }
+          Write-Host 'SLM_CODEX_NATIVE_LEASE_PASS'
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pilot/slm-bootstrap/Connect-SlmCodex.ps1
+            /pilot/slm-bootstrap/Connect-SlmCodex.py
+            /pilot/slm-bootstrap/Validate-SlmMcp.py
+            /pilot/slm-bootstrap/codex-connect-trigger.json
+      - name: Wire private Codex MCP and SLM-owned skills
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          & (Join-Path $pwd 'pilot\slm-bootstrap\Connect-SlmCodex.ps1') -Mode connect
+          if($LASTEXITCODE -ne 0){throw ('Codex integration exited '+$LASTEXITCODE)}
+      - name: Upload sanitized result only (no configs, token, memory database)
+        if: always()
+        shell: powershell
+        run: |
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-slm-codex-result'
+          New-Item -ItemType Directory -Path $out -Force|Out-Null
+          @{run_id='${{ github.run_id }}'; source_sha='${{ github.sha }}'; no_oauth=$true; no_unity=$true; no_restart=$true; no_public_config=$true; checked_utc=[DateTime]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content (Join-Path $out 'safety.json') -Encoding UTF8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-slm-codex-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-slm-codex-result/
+          retention-days: 14
+          if-no-files-found: warn
