@@ -393,11 +393,24 @@ namespace Eldoria.Tests
             gateway.Advance();var after=gateway.Snapshot();
             Assert.That(after.March.Phase,Is.EqualTo("idle"));
             Assert.That(after.ForestRemaining,Is.EqualTo(before.ForestRemaining),"The original node is not silently charged for another instance");
-            Assert.That(Eldoria.Application.LocalGateway.ResourceRemaining(after,id),Is.EqualTo(1250-Eldoria.Domain.SliceRules.ForestLoad));
+            var originalNode=before.WorldResourceLocations.Single(x=>x.TargetId==id);
+            var gatheredNode=after.WorldResourceLocations.Single(x=>x.TargetId==id);
+            Assert.That(originalNode.Level,Is.InRange(1,Eldoria.Domain.ResourceNodeTierPolicy.MaxLevel),
+                "A real node tier is part of the persistent gathering economy");
+            Assert.That(Eldoria.Application.LocalGateway.ResourceRemaining(before,id),
+                Is.EqualTo(originalNode.Capacity),"New nodes start at their actual tier capacity");
+            Assert.That(Eldoria.Application.LocalGateway.ResourceRemaining(after,id),
+                Is.EqualTo(originalNode.Capacity-Eldoria.Domain.SliceRules.ForestLoad),
+                "Gather exactly one normal load from the actual tiered node, not a fixed old L1 amount");
+            Assert.That(gatheredNode.Level,Is.EqualTo(originalNode.Level),
+                "A harvest does not secretly reroll the node tier");
+            Assert.That(gatheredNode.Capacity,Is.EqualTo(originalNode.Capacity));
             Assert.That(after.Resources.Wood,Is.GreaterThan(before.Resources.Wood));
             var restarted=new Eldoria.Application.LocalGateway(clock,store);restarted.ConfigureLocalResourceRespawn(placement,TimeSpan.FromMinutes(30));restarted.EnsureLocalRenewablePopulation(24,24);
             Assert.That(restarted.Snapshot().WorldResourceLocations.Count,Is.EqualTo(48));
             Assert.That(Eldoria.Application.LocalGateway.ResourceRemaining(restarted.Snapshot(),id),Is.EqualTo(Eldoria.Application.LocalGateway.ResourceRemaining(after,id)));
+            Assert.That(restarted.Snapshot().WorldResourceLocations.Single(x=>x.TargetId==id).Level,
+                Is.EqualTo(originalNode.Level),"Real resource tier must survive a save/reload");
         }
 
         [Test]

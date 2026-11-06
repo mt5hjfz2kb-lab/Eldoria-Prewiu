@@ -41,6 +41,8 @@ namespace Eldoria.AldricCity
         private Animation clips;
         private AnimationClip cityPoseCorrection;
         private GltfImport ownedImport;
+        private bool importInFlight;
+        private bool destroyRequested;
         private string importFailure;
         public string ImportedCompatibilitySha256 { get; private set; }
         private Renderer[] renderers;
@@ -445,6 +447,19 @@ namespace Eldoria.AldricCity
 
         private async System.Threading.Tasks.Task<bool> Import(byte[] verifiedBytes)
         {
+            importInFlight = true;
+            try { return await ImportCore(verifiedBytes); }
+            finally
+            {
+                importInFlight = false;
+                // The task survives destruction of its coroutine/MonoBehaviour.
+                // glTFast owns native jobs until awaited Load/Instantiate ends.
+                if (destroyRequested) DisposeImport();
+            }
+        }
+
+        private async System.Threading.Tasks.Task<bool> ImportCore(byte[] verifiedBytes)
+        {
             importFailure = null;
             ownedImport = new GltfImport(logger: new GLTFast.Logging.ConsoleLogger());
             var settings = new ImportSettings { AnimationMethod = AnimationMethod.Legacy };
@@ -643,6 +658,21 @@ namespace Eldoria.AldricCity
                 Quaternion.LookRotation(delta.normalized) * Quaternion.Euler(0f, ModelYawCorrection, 0f), Mathf.Clamp01(7f * Time.deltaTime));
         }
 
-        private void OnDestroy() { if (actor) Destroy(actor); if (cityPoseCorrection) Destroy(cityPoseCorrection); if (ownedImport != null) { ownedImport.Dispose(); ownedImport = null; } }
+        private void DisposeImport()
+        {
+            if (ownedImport == null) return;
+            ownedImport.Dispose();
+            ownedImport = null;
+        }
+
+        private void OnDestroy()
+        {
+            destroyRequested = true;
+            if (actor) Destroy(actor);
+            if (cityPoseCorrection) Destroy(cityPoseCorrection);
+            // Never deallocate ConvertMatricesJob buffers while Load is pending.
+            // Import's finally owns cleanup after the asynchronous work completes.
+            if (!importInFlight) DisposeImport();
+        }
     }
 }

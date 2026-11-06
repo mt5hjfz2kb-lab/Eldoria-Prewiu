@@ -1,0 +1,10 @@
+{
+  "name": "Eldoria.PlayerClarity",
+  "rootNamespace": "Eldoria.PlayerClarity",
+  "references": [
+    "Eldoria.RoyalGold.UI",
+    "Eldoria.RoyalGold.V2",
+    "Unity.ugui",
+    "Eldoria.Domain"
+  ]
+}

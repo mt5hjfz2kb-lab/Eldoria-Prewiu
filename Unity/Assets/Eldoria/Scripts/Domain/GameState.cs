@@ -11,6 +11,10 @@ namespace Eldoria.Domain
         public string ResourceKind;
         public int Remaining;
         public int Capacity;
+        // Level 0 marks an old schema-1 save that predates renewable node tiers.
+        // On first authoritative load the gateway infers L1 from the original
+        // capacity, without reducing harvested resources or changing tier schema.
+        public int Level;
         public float X, Y, Z;
         public int Generation;
         public long RespawnUtcTicks;
@@ -189,6 +193,7 @@ namespace Eldoria.Domain
         public string DevelopmentPriority = "";
         public bool AshStalkerDefeated;
         public long AshStalkerRespawnUtcTicks;
+        public int AshStalkerGeneration;
         public bool RankUnlocked, ExtractionOddity;
         public int MeatRemaining = 1100;
         public bool FissureExplored, LyraContacted, LyraRecruited, FissureClosed;
@@ -213,6 +218,9 @@ namespace Eldoria.Domain
         public int RulesVersion = 1;
         public long Revision;
         public string PlayerId = "player-local";
+        // Player-chosen first-entry display name; never replaces PlayerId
+        // and is persisted by the canonical FileStateStore with this save.
+        public string PlayerName = "";
         public string RealmId = "valoria-local";
         public string WorldId = "world-local";
         public ResourceWallet Resources = new ResourceWallet {

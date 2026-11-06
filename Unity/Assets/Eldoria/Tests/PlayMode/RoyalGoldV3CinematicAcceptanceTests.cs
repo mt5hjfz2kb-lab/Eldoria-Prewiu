@@ -66,9 +66,26 @@ namespace Eldoria.Tests
             if (guidance)
             {
                 guidance.enabled = false;
-                // Ready precedes the guidance LateUpdate in a freshly loaded
-                // scene. Start its real authored prologue explicitly, exactly
-                // as the existing native integration probe does.
+                // This suite validates the real authored dialogue AFTER the
+                // mandatory first-entry name is saved, using the actual
+                // production parchment and Continue button. Starting
+                // Aldric first would violate the new first-login contract.
+                var entry = hud.GetComponentsInChildren<InputField>(true)
+                    .FirstOrDefault(x => x.name == "Player's chosen name");
+                var confirm = hud.GetComponentsInChildren<Button>(true)
+                    .FirstOrDefault(x => x.name == "Confirm your name");
+                Assert.That(entry, Is.Not.Null, "The real initial nickname editor must exist");
+                Assert.That(confirm, Is.Not.Null, "The real first-entry button must exist");
+                Assert.That(confirm.gameObject.activeInHierarchy, Is.True);
+                Assert.That((bool)Read(hud, "NarrativeOpen"), Is.False,
+                    "The original cinematic cannot preempt first-entry naming");
+                entry.text = "Cronista Valoria";
+                confirm.onClick.Invoke();
+                yield return null;
+                var actualGateway = Read(Read(host, "City"), "Gateway") as Eldoria.Application.ICommandGateway;
+                Assert.That(actualGateway, Is.Not.Null);
+                Assert.That(actualGateway.Snapshot().PlayerName, Is.EqualTo("Cronista Valoria"),
+                    "Do not fake the author's prose with an unsaved nickname");
                 Call(guidance, "PresentMilestone");
             }
 

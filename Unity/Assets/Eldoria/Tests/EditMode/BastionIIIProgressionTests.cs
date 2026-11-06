@@ -89,7 +89,41 @@ namespace Eldoria.Tests {
    Assert.That(g.Snapshot().ChapterThree.GranaryLevel,Is.EqualTo(1));
   }
   [Test]public void SnapshotDoesNotExposeMutableInventory(){var c=new Clock();var st=Ready();st.Value.ChapterThree.Inventory.Add("treated-hide");var g=new LocalGateway(c,st);g.Snapshot().ChapterThree.Inventory.Clear();Assert.That(g.Snapshot().ChapterThree.Inventory,Does.Contain("treated-hide"));}
-  [Test]public void FullMeatReserveAndRespawnSurviveOneLongOfflineInterval(){var c=new Clock();var st=Ready();var g=new LocalGateway(c,st);int food=g.Snapshot().Resources.Food;Assert.That(Do(g,"Gather","meat-valoria").Ok);c.Add(60);g=new LocalGateway(c,st);Assert.That(g.Snapshot().March.Phase,Is.EqualTo("idle"));Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+1100));Assert.That(g.Snapshot().ChapterThree.MeatRemaining,Is.EqualTo(1100));Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));g=new LocalGateway(c,st);Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+1100));Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));}
+  [Test]
+  public void MeatReserveOnlyRespawnsAtActualFiveMinuteUtcDeadlineAcrossOfflineReloads()
+  {
+   var c=new Clock();var st=Ready();var g=new LocalGateway(c,st);
+   int originalFood=g.Snapshot().Resources.Food;
+   Assert.That(Do(g,"Gather","meat-valoria").Ok,Is.True);
+   // The march pays its ONE harvest reward. It must not also regenerate
+   // the physical food stock after the obsolete 45-second deadline.
+   c.Add(60);
+   g=new LocalGateway(c,st);
+   var afterHarvest=g.Snapshot();
+   Assert.That(afterHarvest.March.Phase,Is.EqualTo("idle"));
+   Assert.That(afterHarvest.Resources.Food,Is.EqualTo(originalFood+1100));
+   Assert.That(afterHarvest.ChapterThree.MeatRemaining,Is.Zero);
+   Assert.That(afterHarvest.ChapterThree.MeatGeneration,Is.Zero);
+   long deadline=afterHarvest.ChapterThree.MeatRespawnUtcTicks;
+   Assert.That(deadline,Is.GreaterThan(c.UtcTicks));
+   Assert.That(deadline-c.UtcTicks,Is.InRange(1L,RenewablePopulationPolicy.Delay.Ticks),
+    "Expiry must still be in the future but within the actual five-minute cooldown");
+   // Reopening the old schema-one save at t-1 may not prepay a harvest.
+   c.UtcTicks=deadline-1;
+   g=new LocalGateway(c,st);
+   Assert.That(g.Snapshot().ChapterThree.MeatRemaining,Is.Zero);
+   Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.Zero);
+   Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(originalFood+1100));
+   // Offline at t=300s: only the reserve returns, never a second reward.
+   c.UtcTicks=deadline;
+   g=new LocalGateway(c,st);
+   Assert.That(g.Snapshot().ChapterThree.MeatRemaining,Is.EqualTo(1100));
+   Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));
+   Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(originalFood+1100));
+   g=new LocalGateway(c,st);
+   Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));
+   Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(originalFood+1100));
+  }
   [Test]public void OfflineProductionPaysBothLevelsAcrossTwoHoursWithoutRepeat(){var c=new Clock();var st=Ready();st.Value.ChapterThree.GranaryLevel=1;var g=new LocalGateway(c,st);int food=g.Snapshot().Resources.Food;Assert.That(Do(g,"UpgradeBuilding","granary").Ok);c.Add(7200);g=new LocalGateway(c,st);Assert.That(g.Snapshot().ChapterThree.GranaryLevel,Is.EqualTo(2));Assert.That(g.Snapshot().Resources.Food-food,Is.EqualTo(1367));g=new LocalGateway(c,st);Assert.That(g.Snapshot().Resources.Food-food,Is.EqualTo(1367));}
 
   [Test]public void ModernEmptyLedgerNeverImportsAnotherPlaythroughGlobalFlags(){

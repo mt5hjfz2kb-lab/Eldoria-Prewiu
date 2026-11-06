@@ -57,6 +57,27 @@ namespace Eldoria.Tests
             var guidance=Read(host,"Guidance") as Behaviour;
             Assert.That(guidance,Is.Not.Null);
             guidance.enabled=false; // prevent any automatic second scene during assertions
+
+            // The player's FIRST real interaction is now their permanent
+            // nickname. The old narrative cannot open until the actual
+            // canvas InputField and Continue button have saved it.
+            Assert.That(before.PlayerName,Is.Empty);
+            Assert.That((bool)Read(hud,"NarrativeOpen"),Is.False,
+                "The narrator must wait for the actual first-entry prompt");
+            var nameField=hud.GetComponentsInChildren<InputField>(true)
+                .FirstOrDefault(x=>x.name=="Player's chosen name");
+            var continueName=hud.GetComponentsInChildren<Button>(true)
+                .FirstOrDefault(x=>x.name=="Confirm your name");
+            Assert.That(nameField,Is.Not.Null,"Use the production name editor, not a mock");
+            Assert.That(continueName,Is.Not.Null,"Use the production confirmation button");
+            Assert.That(continueName.gameObject.activeInHierarchy,Is.True);
+            nameField.text="Cronista Valoria";
+            continueName.onClick.Invoke();
+            yield return null;
+            Assert.That(gateway.Snapshot().PlayerName,Is.EqualTo("Cronista Valoria"),
+                "The canonical save must contain the chosen name before narration");
+            Assert.That(gateway.Snapshot().ChapterProgress.SeenNarrative,Does.Not.Contain("start"));
+
             if(!(bool)Read(hud,"NarrativeOpen"))
                 guidance.SendMessage("PresentMilestone",SendMessageOptions.RequireReceiver);
             Assert.That((bool)Read(hud,"NarrativeOpen"),Is.True,

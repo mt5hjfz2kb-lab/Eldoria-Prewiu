@@ -110,6 +110,15 @@ namespace Eldoria.Application
             bool changed=false;
             foreach(var record in state.WorldCreatureLocations)
             {
+                if (!record.Alive && record.DefeatedUtcTicks > 0 && record.RespawnUtcTicks > 0)
+                {
+                    // Saved 15-minute deadlines must become eligible five
+                    // minutes after the ORIGINAL defeat, including offline.
+                    long migrated=RenewablePopulationPolicy.MigrateExistingDue(
+                        record.DefeatedUtcTicks,record.RespawnUtcTicks);
+                    if (migrated != record.RespawnUtcTicks)
+                    { record.RespawnUtcTicks=migrated;changed=true; }
+                }
                 if(record.Alive||record.RespawnUtcTicks>clock.UtcTicks||MarchTargetActive(record.TargetId))continue;
                 if(!creaturePlacement.TryChoose(Snapshot(),record.TargetId,record.SiteId,record.Generation+1,out var chosen))continue;
                 if(chosen==null||chosen.TargetId!=record.TargetId||chosen.CreatureKind!=record.CreatureKind||
@@ -167,6 +176,15 @@ namespace Eldoria.Application
                     item.RespawnUtcTicks = checked((item.DepletedUtcTicks>0?item.DepletedUtcTicks:clock.UtcTicks) + resourceRespawnTicks);
                     changed = true;
                 }
+                else if (item.DepletedUtcTicks > 0)
+                {
+                    // Rebase a 30-minute legacy deadline to event+300s.
+                    // Do not fabricate an event timestamp for old saves.
+                    long migrated=RenewablePopulationPolicy.MigrateExistingDue(
+                        item.DepletedUtcTicks,item.RespawnUtcTicks);
+                    if(migrated!=item.RespawnUtcTicks)
+                    {item.RespawnUtcTicks=migrated;changed=true;}
+                }
                 // Keep the return leg anchored to its original destination.
                 if (item.RespawnUtcTicks > clock.UtcTicks || MarchTargetActive(id)) continue;
                 if (!resourcePlacement.TryChoose(Snapshot(), id, item.SiteId, item.Generation + 1, out var next)) continue;
@@ -175,8 +193,15 @@ namespace Eldoria.Application
                     float.IsNaN(next.Y) || float.IsInfinity(next.Y) || float.IsNaN(next.Z) || float.IsInfinity(next.Z))
                     throw new InvalidOperationException("Invalid authoritative resource placement");
                 item.SiteId = next.SiteId; item.X = next.X; item.Y = next.Y; item.Z = next.Z;
-                item.Generation++; item.RespawnUtcTicks = 0; item.DepletedUtcTicks=0;
-                SetResourceRemaining(id,IsWoodTarget(id)?1250:5200);
+                int nextGeneration=item.Generation+1;
+                string kind=IsWoodTarget(id)?"wood":"stone";
+                int nodeLevel=id.StartsWith("region1:",StringComparison.Ordinal)
+                    ?ResourceNodeTierPolicy.ForNewSite(id,next.SiteId,nextGeneration):1;
+                item.Level=nodeLevel;
+                item.Capacity=ResourceNodeTierPolicy.Capacity(kind,nodeLevel);
+                item.Generation=nextGeneration;
+                item.RespawnUtcTicks = 0; item.DepletedUtcTicks=0;
+                SetResourceRemaining(id,item.Capacity);
                 changed = true;
             }
             return changed;
@@ -186,6 +211,13 @@ namespace Eldoria.Application
             this.clock = clock; this.store = store; this.battleResolver=battleResolver;
             state = store.Load() ?? new PlayerState();
             if (state.SchemaVersion != 1) throw new InvalidOperationException("Unsupported Eldoria save schema");
+            // An absent nickname in schema-1 legacy saves is a normal first
+            // entry. Never replace the stable save owner/player ID with it.
+            if (state.PlayerName == null) state.PlayerName = "";
+            if (state.PlayerName.Length > 0 &&
+                (!PlayerIdentityPolicy.TryNormalize(state.PlayerName,out var savedName,out _) ||
+                 !string.Equals(savedName,state.PlayerName,StringComparison.Ordinal)))
+                throw new InvalidOperationException("Invalid persisted display name");
             if (state.WorldResourceLocations == null)
                 state.WorldResourceLocations = new System.Collections.Generic.List<WorldResourceLocation>();
             if (state.WorldCreatureLocations == null)
@@ -199,8 +231,19 @@ namespace Eldoria.Application
                     throw new InvalidOperationException("Duplicate or invalid persistent creature identity");
             var resourceIds = new System.Collections.Generic.HashSet<string>();
             foreach (var item in state.WorldResourceLocations)
+            {
                 if (item == null || string.IsNullOrEmpty(item.TargetId) || (item.TargetId != "forest-valoria" && item.TargetId != "quarry-valoria" && !(item.TargetId.StartsWith("region1:wood:",StringComparison.Ordinal)&&item.ResourceKind=="wood") && !(item.TargetId.StartsWith("region1:stone:",StringComparison.Ordinal)&&item.ResourceKind=="stone")) || !resourceIds.Add(item.TargetId))
                     throw new InvalidOperationException("Invalid or duplicate persisted resource identity");
+                // Preserve legacy partially mined stock and infer its tier from
+                // the original site capacity, never from the remaining amount.
+                if (item.TargetId.StartsWith("region1:",StringComparison.Ordinal))
+                {
+                    if (item.Level == 0 && item.Generation > 0)
+                        item.Level = ResourceNodeTierPolicy.ExistingSaveLevel(item.ResourceKind,item.Capacity);
+                    if (item.Level < 0 || item.Level > ResourceNodeTierPolicy.MaxLevel)
+                        throw new InvalidOperationException("Invalid persisted resource tier");
+                }
+            }
             if(state.March==null)state.March=new MarchState();
             if(state.ExtraMarches==null)state.ExtraMarches=new System.Collections.Generic.List<MarchState>();
             if(state.ExtraMarches.Count>MarchCapacityRules.MaxConcurrentMarches-1 || state.ExtraMarches.Exists(x=>x==null))
@@ -270,7 +313,7 @@ namespace Eldoria.Application
             var s = state;
             var c = new PlayerState {
                 SchemaVersion=s.SchemaVersion, RulesVersion=s.RulesVersion, Revision=s.Revision,
-                PlayerId=s.PlayerId, RealmId=s.RealmId, WorldId=s.WorldId,
+                PlayerId=s.PlayerId, PlayerName=s.PlayerName, RealmId=s.RealmId, WorldId=s.WorldId,
                 Resources=new ResourceWallet { Wood=s.Resources.Wood, Stone=s.Resources.Stone, Food=s.Resources.Food },
                 BastionLevel=s.BastionLevel, SawmillLevel=s.SawmillLevel, BarracksLevel=s.BarracksLevel,
                 MissionPower=s.MissionPower, ChapterThree=s.ChapterThree.Copy(),
@@ -346,6 +389,17 @@ namespace Eldoria.Application
             if (state.CompletedCommandIds.Contains(command.Id)) return new CommandResult(true, "Ya ejecutado", state.Revision);
             if (command.ActorId != state.PlayerId) return Fail("Propietario incorrecto");
             if (command.ExpectedRevision != observedRevision) return Fail("Estado desactualizado");
+            if (command.Kind == "ChoosePlayerName")
+            {
+                if (!string.IsNullOrWhiteSpace(state.PlayerName))
+                    return Fail("Ya has elegido tu nombre");
+                if (!PlayerIdentityPolicy.TryNormalize(command.TargetId,out var chosenName,out var nameError))
+                    return Fail(nameError);
+                state.PlayerName = chosenName;
+                state.CompletedCommandIds.Add(command.Id);
+                Commit();
+                return new CommandResult(true,"Nombre guardado",state.Revision);
+            }
             var early=EarlyRetentionRules.Apply(state,command.Kind,command.TargetId,
                 clock.UtcTicks,out string earlyMessage,battleResolver as IEldoriaCampaignBattleResolver);
             if(early.HasValue)
@@ -1102,6 +1156,7 @@ namespace Eldoria.Application
             if(c.MeatRespawnUtcTicks>0&&clock.UtcTicks>=c.MeatRespawnUtcTicks){c.MeatRemaining=1100;c.MeatRespawnUtcTicks=0;c.MeatGeneration++;changed=true;}
             if(c.WolfRespawnUtcTicks>0&&clock.UtcTicks>=c.WolfRespawnUtcTicks){c.WolfRespawnUtcTicks=0;c.WolfGeneration++;changed=true;}
             if(c.BoarRespawnUtcTicks>0&&clock.UtcTicks>=c.BoarRespawnUtcTicks){c.BoarRespawnUtcTicks=0;c.BoarGeneration++;changed=true;}
+            if(c.AshStalkerRespawnUtcTicks>0&&clock.UtcTicks>=c.AshStalkerRespawnUtcTicks){c.AshStalkerRespawnUtcTicks=0;c.AshStalkerGeneration++;changed=true;}
             return changed;
         }
         bool AdvanceChapterThree()
@@ -1168,7 +1223,7 @@ namespace Eldoria.Application
                 var evolved=m.VersionedBattle==null?null:battleResolver.Resolve(m.VersionedBattle.Copy());
                 var report=evolved==null?SliceRules.FightCreature(stats,new WorldCreatureStats(920,132,68,54,0,0),ambush:true):
                     new CombatReport(evolved.Won,evolved.RemainingHealth,evolved.Rounds,evolved.Reason);
-                if(report.Won){c.AshStalkerDefeated=true;c.AshStalkerRespawnUtcTicks=due+TimeSpan.FromSeconds(60).Ticks;m.PendingFood=120;m.PendingStone=110;}
+                if(report.Won){c.AshStalkerDefeated=true;c.AshStalkerRespawnUtcTicks=checked(due+RenewablePopulationPolicy.Delay.Ticks);m.PendingFood=120;m.PendingStone=110;}
                 if(evolved!=null){evolved.RewardFood=m.PendingFood;evolved.RewardStone=m.PendingStone;}
                 state.LastBattleReport=new BattleReportState{
                     TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,
@@ -1181,7 +1236,7 @@ namespace Eldoria.Application
                 RecordChapterThreeCombatMail(m,due);
                 return;
             }
-            if(m.TargetId=="meat-valoria") {m.PendingFood=c.MeatRemaining;c.MeatRemaining=0;c.MeatRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;return;}
+            if(m.TargetId=="meat-valoria") {m.PendingFood=c.MeatRemaining;c.MeatRemaining=0;c.MeatRespawnUtcTicks=checked(due+RenewablePopulationPolicy.Delay.Ticks);return;}
             var power=SliceRules.Expedition(m.Troops,m.HeroId).Power;
             // The web's ordinary hunts resolve against their explicit expedition-power requirement.
             bool win=m.TargetId=="fissure-valoria"?c.LyraContacted&&!c.FissureClosed:power>=(m.TargetId=="hunt-wolf"?1450:2050);
@@ -1190,7 +1245,7 @@ namespace Eldoria.Application
                 if(!c.Inventory.Contains("breach-manuscript"))c.Inventory.Add("breach-manuscript");m.PendingStone=300;
             } else if(win) {
                 c.Hunts++;bool wolf=m.TargetId=="hunt-wolf";m.PendingFood=wolf?140:190;
-                if(wolf)c.WolfRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;else c.BoarRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;
+                if(wolf)c.WolfRespawnUtcTicks=checked(due+RenewablePopulationPolicy.Delay.Ticks);else c.BoarRespawnUtcTicks=checked(due+RenewablePopulationPolicy.Delay.Ticks);
                 string item=wolf?"treated-hide":"stone-tusk";if(!c.Inventory.Contains(item))c.Inventory.Add(item);
             }
             state.LastBattleReport=new BattleReportState{TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,

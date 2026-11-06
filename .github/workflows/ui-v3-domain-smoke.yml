@@ -7,6 +7,9 @@ on:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs'
@@ -27,10 +30,16 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /Unity/Assets/Eldoria/Scripts/Domain/GameState.cs
+            /Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs
+            /Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs
+            /Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs
             /Unity/Assets/Eldoria/Scripts/Domain/EconomyProductionV2.cs
             /Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs
             /Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs
             /Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs
+            /Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs
+            /Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs
+            /Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs
             /Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs
             /tools/ui-v3-domain-smoke/Smoke.csproj
             /tools/ui-v3-domain-smoke/Program.cs

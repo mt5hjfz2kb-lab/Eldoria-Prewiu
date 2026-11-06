@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="AdvancedProbe.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/ChapterThreeHuntDifficultyPolicy.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/PlayerClarity/DistributedSiteOrder.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/PlayerClarity/ChapterThreeRenewableSitePolicy.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/PlayerClarity/RenewableRespawnRules.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/PlayerClarity/PlayerNameRules.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs" />
+  </ItemGroup>
+</Project>
