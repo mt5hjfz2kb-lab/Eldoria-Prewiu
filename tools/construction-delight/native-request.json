@@ -2,9 +2,9 @@
   "schema_version": 1,
   "request_id": "eldoria-construction-delight-native-ab-20261104",
   "workstream_id": "eldoria-construction-delight-v1-20261104",
-  "source_head_before_request": "55a934d8af428b14b99bf54dab664e77a1727c77",
+  "source_head_before_request": "0313c3f433e2c332a87b571a8c4daa501e22608e",
   "ownership_revision": 21,
-  "mode": "V6_REAL_NATIVE_HAMMER_SCALE_DENSE_IRREGULAR_DUST_72_FRAMES",
+  "mode": "V7_SOURCE_ONLY_RENDER_ANCHORED_HAMMERS_FRAGMENTED_DUST",
   "expected_images": 72,
   "formats": [
     "844x390",
@@ -23,7 +23,7 @@
   "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
   "budget_eur": 0,
   "art_approved": false,
-  "attempt": 21,
+  "attempt": 22,
   "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
   "corrections": [
     "latest certified main & metadata merged into candidate",
@@ -52,7 +52,7 @@
   ],
   "validation": "36 domain assertions, 5 Unity C# source files Roslyn syntax, authentic construction mesh staging, visible flag restoration, no second timer/World4X leak",
   "editor_launch": false,
-  "windows_runner_requested": true,
+  "windows_runner_requested": false,
   "test_project": "tools/construction-delight/DomainProbe.csproj",
   "asserts_production_source": "Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs",
   "last_source_qa": "DomainProbe.cs built against 8.0 SDK with exact Unity state source linked in",
@@ -125,7 +125,7 @@
   },
   "refinement_commit": "c7da536fd9f8af0548ce39f5f88ba1b8ef116a5a",
   "latest_source_qa": 41870075541,
-  "visual_goal": "medieval wood/stone reconstruction with visible rhythmic dust, no floating roof or dirt grass ring, warm facade glints, tasteful restrained finish",
+  "visual_goal": "Small real mesh surface strikes; noncircular fragmented contact dust; localized restrained warm URP finish in genuine Unity landscape/portrait",
   "current_source": "3737017cd1ae38268fade246b5d69494b3f00b49",
   "native_pass_evidence": {
     "run": 41870250590,
@@ -207,7 +207,7 @@
     "art_approved"
   ],
   "native_editor_launch_requested": true,
-  "native_editor_invocation_requested": true,
+  "native_editor_invocation_requested": false,
   "native_request_at": "2026-11-05T17:44:51.249Z",
   "main_claim_commit": "70fda65574b0d543eed4b556827836af5cb1e26f",
   "merged_main_commit": "9d0f3feecd54507220ae9a77a1688372cbeed2d0",
@@ -250,5 +250,12 @@
     "Use dedicated 64x64 irregular Perlin-feathered cloud alpha texture",
     "Use 150+110 pooled mesh quads and denser bounded impact bursts",
     "Keep exact Gateway timer, same URP camera/architecture shader/Bloom, clean final completion"
+  ],
+  "v7_refinement": [
+    "Hammer contacts use top surfaces of enabled authentic scaffold MeshRenderers (not front grass)",
+    "Decrease oak/iron hammer silhouette without losing renderer visibility",
+    "Fragment dust texture with angular lobes and cellular opacity; small localized puffs",
+    "Reduce white-hot architectural glow, Bloom and light; do not modify gameplay, timer or originals",
+    "Native QA requires exactly two true worksite mesh contacts and 72 authentic PNGs"
   ]
 }
