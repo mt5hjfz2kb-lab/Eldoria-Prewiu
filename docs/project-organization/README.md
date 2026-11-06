@@ -7,6 +7,14 @@ La entrada es el [README principal](../../README.md). Las reglas vigentes están
 [AGENTS](../../AGENTS.md), los responsables en el [registro vivo](../../pipeline/active-workstreams.json)
 y la documentación temática en el [índice central](../DOCUMENTATION_INDEX.md).
 
+## Conciliación documental y duplicados — 06/11/2026
+
+El catálogo de esta revisión tiene **228 entradas: 26 `current`, 26 `reference`, 171 `review_pending` y 5 `historical`**. Cuatro documentos ya estudiados se han pasado de pendientes a históricos porque sus instrucciones quedaron sustituidas; los originales y los avisos de vigencia permanecen. Detalle y autoridades en [la conciliación registrada](CATALOG_RECONCILIATION_STAGED_20261104.json).
+
+Se han [revisado 42 grupos de copias entre áreas](DUPLICATE_CROSSROOT_REVIEW_20261106.md) en el inventario **fijado al SHA de 04/11**. La decisión actual es conservar ambos destinos hasta demostrar sus consumidores, licencias y dependencias. No hay eliminación de archivos de Unity ni de referencias artísticas por esta auditoría.
+
+**Importante:** la tabla histórica de abajo conserva los 175 pendientes y 1.025 grupos de su instantánea inicial; no son el recuento semántico vivo después de la conciliación. Las otras 171 fichas pendientes no se han aprobado por el mero hecho de realizar la revisión estructural.
+
 ## Mapa completo de las carpetas
 
 | Ubicación | Función y criterio para guardar archivos |
