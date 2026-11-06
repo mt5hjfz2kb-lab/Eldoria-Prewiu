@@ -1,0 +1,483 @@
+using System;
+using System.Collections.Generic;
+using Eldoria.UI.RoyalGold;
+using Eldoria.UI.RoyalGold.V2;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
+
+namespace Eldoria.VisualKit
+{
+    /// <summary>
+    /// Reversible, EDITOR-PREVIEW skin for the ONE EXISTING RoyalHUD.
+    /// No Canvas, EventSystem, camera, SaveStore, gameplay Gateway or duplicate callbacks.
+    /// The actual game's existing UI renders every value and executes every action.
+    /// This class only changes decoration and color, never Button.interactable.
+    /// </summary>
+    [DisallowMultipleComponent]
+    [DefaultExecutionOrder(20000)]
+    public sealed class ForjaOscuraLiveHudSkin : MonoBehaviour
+    {
+        public bool NavigationSkinned { get; private set; }
+        public bool ObjectiveSkinned { get; private set; }
+        public bool BuildingSkinned { get; private set; }
+        public bool ContextSkinned { get; private set; }
+        public bool UsesExistingNavigation => hud && hud.Navigation;
+        public bool SourceIsLive => hud && hud.isActiveAndEnabled;
+        public bool UsesExistingBuildingAction => hud && hud.Building && hud.Building.Primary;
+
+        private RoyalHUD hud;
+        private RoyalGoldV2Hud v2;
+        private RoyalGoldV3ContextHud context;
+        private RoyalSection selected = RoyalSection.Bastion;
+        private RectTransform lastContextRect;
+        private struct OriginalButtonStyle { public Selectable.Transition Transition; public SpriteState SpriteState; public ColorBlock Colors; }
+        private readonly Dictionary<Button, OriginalButtonStyle> originalButtonStyles = new Dictionary<Button, OriginalButtonStyle>();
+        private float nextStyleRefresh;
+        private readonly Dictionary<Behaviour, bool> previousEnabled = new Dictionary<Behaviour, bool>();
+        private readonly Dictionary<Graphic, Color> previousColors = new Dictionary<Graphic, Color>();
+        private readonly Dictionary<RoyalButton, UnityAction> navigationListeners = new Dictionary<RoyalButton, UnityAction>();
+        private readonly Dictionary<Button, Graphic> previousTargets = new Dictionary<Button, Graphic>();
+        private readonly List<GameObject> created = new List<GameObject>();
+        private readonly Dictionary<string, Sprite> spriteCache = new Dictionary<string, Sprite>();
+
+        private static readonly Color LightInk = new Color(.94f, .91f, .86f, 1f);
+        private static readonly Color WarmGold = new Color(.98f, .75f, .42f, 1f);
+        private static readonly Color MutedText = new Color(.78f, .79f, .81f, 1f);
+        private static readonly Color Faded = new Color(.58f, .60f, .64f, 1f);
+
+        private void Awake()
+        {
+            hud = GetComponent<RoyalHUD>();
+            v2 = GetComponent<RoyalGoldV2Hud>();
+            context = GetComponent<RoyalGoldV3ContextHud>();
+            if (!hud)
+            {
+                Debug.LogWarning("[FORJA] Expected existing RoyalHUD component on this object. Skin disabled.");
+                enabled = false;
+            }
+        }
+
+        private void LateUpdate() => ApplyNow();
+
+        /// <summary>Synchronize the SAME runtime presentation immediately before an
+        /// offscreen native capture; no synthetic values or actions are created.</summary>
+        public void ApplyNow(bool forceLayoutRefresh = false)
+        {
+            if (!hud || !hud.gameObject.activeInHierarchy) return;
+            if (!v2) v2 = GetComponent<RoyalGoldV2Hud>();
+            if (!context) context = GetComponent<RoyalGoldV3ContextHud>();
+            if (!NavigationSkinned) TrySkinNavigation();
+            if (!ObjectiveSkinned || !BuildingSkinned) TrySkinV2();
+            if (!ContextSkinned || (context && context.ContextRect != lastContextRect))
+                TrySkinV3Context();
+            // Avoid scanning text hierarchy and touching Graphic values every frame.
+            if (forceLayoutRefresh || Time.unscaledTime >= nextStyleRefresh)
+            {
+                nextStyleRefresh = Time.unscaledTime + .05f;
+                RefreshExistingLabels();
+            }
+        }
+
+        private Sprite Sprite(string group, string name)
+        {
+            string key = "ForjaOscura/" + group + "/" + name;
+            if (!spriteCache.TryGetValue(key, out var result))
+            {
+                result = Resources.Load<Sprite>(key);
+                spriteCache.Add(key, result);
+            }
+            return result;
+        }
+
+        private static Transform ImmediateChild(Transform parent, string name)
+        {
+            if (!parent) return null;
+            foreach (Transform t in parent)
+                if (t.name == name) return t;
+            return null;
+        }
+
+        private static void Fill(RectTransform rect, float inset = 0)
+        {
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.pivot = new Vector2(.5f, .5f);
+            rect.offsetMin = new Vector2(inset, inset);
+            rect.offsetMax = new Vector2(-inset, -inset);
+        }
+
+        private Image ImageChild(Transform parent, string name, Sprite sprite, bool capturesPointer = false)
+        {
+            if (!parent || !sprite) return null;
+            var existing = ImmediateChild(parent, name);
+            if (existing)
+            {
+                var image = existing.GetComponent<Image>();
+                if (image) return image;
+            }
+            var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            go.transform.SetParent(parent, false);
+            go.layer = parent.gameObject.layer;
+            created.Add(go);
+            var graphic = go.GetComponent<Image>();
+            graphic.sprite = sprite;
+            graphic.type = sprite.border.sqrMagnitude > 0f ? Image.Type.Sliced : Image.Type.Simple;
+            graphic.raycastTarget = capturesPointer;
+            Fill(go.GetComponent<RectTransform>());
+            return graphic;
+        }
+
+        private void Hide(Behaviour graphic)
+        {
+            if (!graphic) return;
+            if (!previousEnabled.ContainsKey(graphic)) previousEnabled.Add(graphic, graphic.enabled);
+            graphic.enabled = false;
+        }
+
+        private void Tint(Graphic graphic, Color color)
+        {
+            if (!graphic) return;
+            if (!previousColors.ContainsKey(graphic)) previousColors.Add(graphic, graphic.color);
+            graphic.color = color;
+        }
+
+        private void ReplaceButtonSurface(Button button, Sprite sprite, string elementName)
+        {
+            if (!button || !sprite) return;
+            var skin = ImageChild(button.transform, elementName, sprite, true);
+            if (!skin) return;
+            skin.transform.SetAsFirstSibling();
+            if (!previousTargets.ContainsKey(button))
+            {
+                previousTargets.Add(button, button.targetGraphic);
+                // Keep original graphic enabled! V3 reads its depth to decide
+                // whether to re-register the uGUI hierarchy after rotation.
+                // Disabling it causes a repeated stale-depth rebind loop.
+            }
+            button.targetGraphic = skin;
+            if (!originalButtonStyles.ContainsKey(button))
+                originalButtonStyles.Add(button, new OriginalButtonStyle {
+                    Transition = button.transition,
+                    SpriteState = button.spriteState,
+                    Colors = button.colors
+                });
+            bool primary = elementName.Contains("action");
+            string prefix = primary ? "button_primary_" : "button_secondary_";
+            var states = new SpriteState {
+                highlightedSprite = Sprite("Surfaces", prefix + "hover"),
+                pressedSprite = Sprite("Surfaces", primary ? "button_primary_pressed" : "button_secondary_hover"),
+                selectedSprite = Sprite("Surfaces", prefix + "normal"),
+                disabledSprite = Sprite("Surfaces", prefix + "disabled")
+            };
+            // All referenced states are existing, imported PNGs. No new input
+            // handler: the original RoyalButton and its onClick delegates survive.
+            if (states.highlightedSprite && states.pressedSprite && states.disabledSprite)
+            {
+                button.transition = Selectable.Transition.SpriteSwap;
+                button.spriteState = states;
+            }
+            // Button continues to receive pointer events through its own image child.
+            // Existing onClick handlers remain unchanged and are never copied.
+        }
+
+        private void TrySkinNavigation()
+        {
+            if (!hud.Navigation || hud.Navigation.Items == null) return;
+            int decorated = 0;
+            foreach (var item in hud.Navigation.Items)
+            {
+                if (item == null || !item.Button) continue;
+                var name = NavName(item.Section);
+                if (string.IsNullOrEmpty(name)) continue; // Do not expose locked/non-canonical destinations.
+                var sprite = Sprite("Icons", name);
+                if (!sprite) continue;
+
+                // The V2 layout ASSUMES Button.child[0] = medallion and
+                // medallion.child[0] = glyph. Never insert at either level.
+                var button = item.Button;
+                if (button.transform.childCount == 0) continue;
+                var medallion = button.transform.GetChild(0) as RectTransform;
+                if (!medallion || medallion.childCount == 0) continue;
+                var glyph = medallion.GetChild(0) as RectTransform;
+                if (!glyph || !glyph.GetComponent<RoyalIconGraphic>()) continue;
+                var background = ImageChild(glyph, "Forja / navigation plate",
+                    Sprite("Surfaces", "nav_tile_normal"), true);
+                var icon = ImageChild(glyph, "Forja / navigation icon", sprite);
+                if (background) background.transform.SetAsFirstSibling();
+                if (icon) icon.transform.SetAsLastSibling();
+                Hide(glyph.GetComponent<RoyalIconGraphic>());
+
+                if (!navigationListeners.ContainsKey(button))
+                {
+                    RoyalSection choice = item.Section;
+                    UnityAction listener = () => selected = choice;
+                    button.onClick.AddListener(listener);
+                    navigationListeners.Add(button, listener);
+                }
+                decorated++;
+            }
+            NavigationSkinned = decorated == 5;
+            if (!NavigationSkinned) return;
+            Debug.Log("[FORJA] Five actual bottom-navigation buttons skinned; all original actions retained.");
+        }
+
+        private static string NavName(RoyalSection section)
+        {
+            switch (section)
+            {
+                case RoyalSection.Bastion: return "nav_reino";
+                case RoyalSection.Inventory: return "nav_construir";
+                case RoyalSection.Army: return "nav_unidades";
+                case RoyalSection.World: return "nav_mundo";
+                case RoyalSection.Missions: return "nav_cronicas";
+                default: return null;
+            }
+        }
+
+        private void TrySkinV2()
+        {
+            if (!v2) return;
+            if (!ObjectiveSkinned && v2.ChronicleObjectiveRect)
+            {
+                var obj = v2.ChronicleObjectiveRect;
+                var sprite = Sprite("Surfaces", "panel_quest");
+                var image = ImageChild(obj, "Forja / live objective surface", sprite);
+                if (image)
+                {
+                    image.transform.SetAsFirstSibling();
+                    // Suppress ONLY the specific source parchment/background; do not
+                    // change event handlers or original objective text objects.
+                    HideGraphicsByTypeName(obj, "RoyalGoldV3ObjectiveParchmentGraphic");
+                    ObjectiveSkinned = true;
+                    DecorateMedallion(obj, "Go to existing objective", "ui_exploradores");
+                    DecorateMedallion(obj, "Open current chapter", "ui_misiones");
+                }
+            }
+            if (!BuildingSkinned && v2.ChronicleBuildingRect)
+            {
+                var card = v2.ChronicleBuildingRect;
+                var image = ImageChild(card, "Forja / live building surface", Sprite("Surfaces", "panel_dark"));
+                if (image)
+                {
+                    image.transform.SetAsFirstSibling();
+                    HideGraphicsByTypeName(card, "RoyalGoldV3BuildingCartoucheFinish");
+                    // The real building miniature remains untouched: it contains
+                    // the original Unity model/RenderTexture owned by the game.
+                    var primary = ImmediateChild(card, "Execute existing authorised offer");
+                    if (primary)
+                        ReplaceButtonSurface(primary.GetComponent<RoyalButton>(),
+                            Sprite("Surfaces", "button_primary_normal"), "Forja / live action surface");
+                    BuildingSkinned = true;
+                }
+            }
+            var safe = v2.transform.GetComponentInChildren<RoyalHudLayout>(true);
+            var top = safe ? ImmediateChild(safe.transform, "V3 / continuous original royal header") : null;
+            if (top)
+            {
+                var image = ImageChild(top, "Forja / existing header skin", Sprite("Surfaces", "panel_dark"));
+                if (image)
+                {
+                    image.transform.SetAsLastSibling();
+                    HideGraphicsByTypeName(top, "RoyalGoldV2FrameGraphic");
+                }
+            }
+        }
+
+        private void TrySkinV3Context()
+        {
+            // In the actual canonical city the V3 contextual cartouche is
+            // often visible while the older V2 building panel stays hidden.
+            // Target the public V3 contract, never a guessed hierarchy.
+            if (!context || !context.IsConfigured || !context.ContextRect) return;
+            var card = context.ContextRect;
+            if (v2 && card == v2.ChronicleBuildingRect)
+            {
+                ContextSkinned = BuildingSkinned;
+                lastContextRect = ContextSkinned ? card : null;
+                return;
+            }
+            var bg = ImageChild(card, "Forja / V3 canonical contextual card",
+                Sprite("Surfaces", "panel_dark"));
+            if (!bg) return;
+            bg.transform.SetAsFirstSibling();
+            // Keep the card's own RoyalGoldV2FrameGraphic enabled as the
+            // original backdrop raycast blocker; overlay it visually only.
+            // The real button still invokes the authoritative V1 offer.
+            ReplaceButtonSurface(context.VisibleActionButton,
+                Sprite("Surfaces", "button_primary_normal"), "Forja / V3 real action");
+            ReplaceButtonSurface(context.VisibleCloseButton,
+                Sprite("Surfaces", "button_secondary_normal"), "Forja / V3 real close");
+            ContextSkinned = true;
+            lastContextRect = card;
+            Debug.Log("[FORJA] Actual V3 context card/offer skinned: retained real action, selection and close.");
+        }
+
+        private void DecorateMedallion(RectTransform panel, string buttonName, string iconName)
+        {
+            var target = ImmediateChild(panel, buttonName);
+            var button = target ? target.GetComponent<RoyalButton>() : null;
+            if (!button) return;
+            var medal = target.childCount > 0 ? target.GetChild(0) : target;
+            var ring = ImageChild(medal, "Forja / medallion surface", Sprite("Surfaces", "medallion_normal"), true);
+            if (ring) ring.transform.SetAsFirstSibling();
+            var icon = ImageChild(medal, "Forja / medallion symbol", Sprite("Icons", iconName));
+            if (icon)
+            {
+                var rt = (RectTransform)icon.transform;
+                rt.anchorMin = rt.anchorMax = new Vector2(.5f, .5f);
+                rt.sizeDelta = new Vector2(34f, 34f);
+                rt.anchoredPosition = Vector2.zero;
+                icon.transform.SetAsLastSibling();
+            }
+            // The ring remains enabled for its original Canvas depth/raycast;
+            // only the legacy pictogram is hidden (the new illustrated icon
+            // replaces it, without affecting Button or Graphic registration).
+            HideGraphicsByTypeName(medal, "RoyalIconGraphic");
+            if (ring && !previousTargets.ContainsKey(button))
+            {
+                previousTargets.Add(button, button.targetGraphic);
+                button.targetGraphic = ring;
+            }
+        }
+
+        private void HideGraphicsByTypeName(Transform root, string typeName)
+        {
+            if (!root) return;
+            foreach (var g in root.GetComponentsInChildren<Graphic>(true))
+                if (g && g.GetType().Name == typeName) Hide(g);
+        }
+
+        private void RefreshExistingLabels()
+        {
+            if (hud.Navigation && NavigationSkinned)
+            {
+                foreach (var item in hud.Navigation.Items)
+                {
+                    if (item == null || !item.Button) continue;
+                    var chosen = item.Section == selected;
+                    if (item.Label) Tint(item.Label, item.Button.interactable ? (chosen ? WarmGold : LightInk) : Faded);
+                    if (item.Button.transform.childCount == 0) continue;
+                    var medal = item.Button.transform.GetChild(0);
+                    if (medal.childCount == 0) continue;
+                    var glyph = medal.GetChild(0) as RectTransform;
+                    if (!glyph) continue;
+                    var back = ImmediateChild(glyph, "Forja / navigation plate");
+                    if (back)
+                    {
+                        var graphic = back.GetComponent<Image>();
+                        if (graphic)
+                        {
+                            var target = Sprite("Surfaces", chosen ? "nav_tile_selected" : "nav_tile_normal");
+                            if (target && graphic.sprite != target) graphic.sprite = target;
+                            graphic.color = item.Button.interactable ? Color.white : new Color(.55f,.55f,.55f,.85f);
+                            var r = (RectTransform)back;
+                            r.anchorMin = r.anchorMax = new Vector2(.5f,.5f);
+                            r.anchoredPosition = new Vector2(0, -6f);
+                            var b = (RectTransform)item.Button.transform;
+                            r.sizeDelta = new Vector2(Mathf.Max(54f, b.rect.width-5f), Mathf.Max(58f, b.rect.height-5f));
+                        }
+                    }
+                    var ic = ImmediateChild(glyph, "Forja / navigation icon");
+                    if (ic)
+                    {
+                        var rect=(RectTransform)ic;
+                        Fill(rect);
+                        rect.offsetMin = new Vector2(-2f,-2f);
+                        rect.offsetMax = new Vector2(2f,2f);
+                    }
+                }
+            }
+            if (hud.Resources)
+            {
+                Tint(hud.Resources.Wood, LightInk);
+                Tint(hud.Resources.Stone, LightInk);
+                if (hud.Resources.Food) Tint(hud.Resources.Food, LightInk);
+            }
+            if (ContextSkinned && context && context.ContextRect &&
+                (!v2 || context.ContextRect != v2.ChronicleBuildingRect))
+            {
+                var active = context.ContextRect;
+                foreach (var text in active.GetComponentsInChildren<RoyalText>(true))
+                    Tint(text, LightInk);
+                ColorizeDirect(active, "Building name", WarmGold);
+                ColorizeDirect(active, "Authoritative building status", MutedText);
+                ColorizeDirect(active, "Authoritative action cost", LightInk);
+                ColorizeDirect(active, "Authoritative prerequisites", WarmGold);
+            }
+            if (!v2) return;
+            if (ObjectiveSkinned)
+            {
+                var card = v2.ChronicleObjectiveRect;
+                ColorizeDirect(card, "Chapter", WarmGold);
+                ColorizeDirect(card, "Current real objective", LightInk);
+                ColorizeDirect(card, "Objective progress", LightInk);
+            }
+            if (BuildingSkinned)
+            {
+                var card = v2.ChronicleBuildingRect;
+                // Dark metal replaces the former pale parchment: every real
+                // interactive label (close, acceleration, council, details)
+                // must stay readable even when not explicitly named below.
+                foreach (var label in card.GetComponentsInChildren<RoyalText>(true))
+                    Tint(label, LightInk);
+                ColorizeDirect(card, "Selected building", LightInk);
+                ColorizeDirect(card, "Real level", WarmGold);
+                ColorizeDirect(card, "Building / genuine offer cost", LightInk);
+                ColorizeDirect(card, "Building / live state or countdown", WarmGold);
+                var scroll = ImmediateChild(card, "Scrollable real building details");
+                if (scroll)
+                {
+                    foreach (var text in scroll.GetComponentsInChildren<RoyalText>(true)) Tint(text, MutedText);
+                }
+                var primary=ImmediateChild(card, "Execute existing authorised offer");
+                if (primary)
+                    foreach (var text in primary.GetComponentsInChildren<RoyalText>(true)) Tint(text, LightInk);
+            }
+        }
+
+        private void ColorizeDirect(Transform card, string name, Color color)
+        {
+            var child = ImmediateChild(card, name);
+            if (child)
+            {
+                var graphic = child.GetComponent<Graphic>();
+                if (graphic) Tint(graphic, color);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var pair in navigationListeners)
+                if (pair.Key) pair.Key.onClick.RemoveListener(pair.Value);
+            foreach (var pair in originalButtonStyles)
+            {
+                if (!pair.Key) continue;
+                pair.Key.transition = pair.Value.Transition;
+                pair.Key.spriteState = pair.Value.SpriteState;
+                pair.Key.colors = pair.Value.Colors;
+            }
+            foreach (var pair in previousTargets)
+                if (pair.Key) pair.Key.targetGraphic = pair.Value;
+            foreach (var pair in previousEnabled)
+                if (pair.Key) pair.Key.enabled = pair.Value;
+            foreach (var pair in previousColors)
+                if (pair.Key) pair.Key.color = pair.Value;
+            // The native A/B proof restores the skin and captures another frame
+            // without advancing Unity's game loop. Destroy() would leave the
+            // transient Image children alive through that same frame, causing
+            // stale raycasts and a false "restored" result in the Editor.
+            // Only objects CREATED by this skin are removed synchronously.
+            foreach (var go in created)
+            {
+                if (!go) continue;
+#if UNITY_EDITOR
+                DestroyImmediate(go);
+#else
+                Destroy(go);
+#endif
+            }
+            created.Clear();
+        }
+    }
+}
