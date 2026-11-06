@@ -2,9 +2,9 @@
   "schema_version": 1,
   "request_id": "eldoria-construction-delight-native-ab-20261104",
   "workstream_id": "eldoria-construction-delight-v1-20261104",
-  "source_head_before_request": "2279183f098f672ec495e8983f51698c72f37e2c",
+  "source_head_before_request": "9f4706470bb016c36c1008b4cc3aa127895769e2",
   "ownership_revision": 23,
-  "mode": "V8_SOURCE_QA_VISIBLE_3D_HAMMERS_MEDIUM_DUST",
+  "mode": "V8_FINAL_SOURCE_QA_AFTER_LIGHTING_VISUAL_REFINEMENT",
   "expected_images": 72,
   "formats": [
     "844x390",
@@ -268,5 +268,6 @@
     ],
     "target": "human visual comparison to V6 and V7, portrait and landscape",
     "art_approved": false
-  }
+  },
+  "source_qa_note": "Source QA includes front mesh contact, real tiny hammer shadows, medium irregular impact dust and all authoring files; Unity native conditional skipped while another owner holds Windows."
 }
