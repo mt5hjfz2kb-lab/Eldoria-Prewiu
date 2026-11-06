@@ -56,4 +56,4 @@ jobs:
           $report|ConvertTo-Json -Compress -Depth 5|Write-Host
           if(-not $report.installation_ready){Write-Host 'READ_ONLY_PREFLIGHT_BLOCKED';exit 0}
           Write-Host 'READ_ONLY_PREFLIGHT_READY'
-# Read-only verification refresh 2026-11-06T04:30Z; no reservation or installation.
+# Read-only verification refresh 2026-11-06T06:55Z; read-only and lease-free; no reservation or installation.
