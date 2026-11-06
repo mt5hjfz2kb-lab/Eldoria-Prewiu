@@ -134,3 +134,12 @@
 - Revisar con inventario actual los duplicados entre fuentes, Unity y evidencias antes de cualquier movimiento/borrado. Ver [triaje de 42 grupos](DUPLICATE_CROSSROOT_REVIEW_20261106.md).
 - No mover ni borrar referencias artísticas aprobadas, fuentes editables ni pruebas necesarias para reproducibilidad.
 - Las decisiones visuales posteriores a esta auditoría deben actualizarse en las autoridades correspondientes y reflejarse en el catálogo, sin reactivar experimentos históricos automáticamente.
+
+## Cierre verificable de integración — 06/11/2026
+
+- [PR #168](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/168) **fusionada** con commit `dd22427b36e739436ae1fa642514ae436bf1b3fe`.
+- [Arquitectura y triaje documental 42295044740](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42295044740): `SUCCESS`, incluido catálogo/enlaces, gobernanza, detección de propietarios, pruebas de triaje con **cero pendientes** y conservación de aprendizaje artístico.
+- [Titularidad exclusiva 42295044436](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42295044436): `SUCCESS`, sin duplicación de workstream ni colisión de alcance.
+- [Dominio 42295044670](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42295044670): `SUCCESS`; [alcance tester 42295044775](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42295044775): preflight `SUCCESS`, regresión jugable correctamente omitida por cambio documental. World4X visual igualmente omitida por no tocar arte; **no afirmar nueva aprobación visual ni test móvil**.
+- Se comprobó de nuevo **`main` después de la fusión**: 228 entradas, 28 `current`, 108 `reference`, 92 `historical`, **0 `review_pending`**. 94 diferencias exactas de estado respecto al catálogo anterior, 94 blobs de origen documentados, y únicamente tres rutas de documentación en la PR.
+- El programa de *clasificación semántica del catálogo* está cerrado. Quedan **otros objetivos independientes**: verificar licencias reales de terceros, dependencias antes de eliminar copias, y calidad/experiencia jugable. No presentarlos como certificados por este informe.
