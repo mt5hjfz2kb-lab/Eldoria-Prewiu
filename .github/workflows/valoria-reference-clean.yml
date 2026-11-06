@@ -53,7 +53,11 @@ jobs:
             $request=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
             if($request.stage -ne 'web_playtest' -or $request.publish_content -or $request.content_updates -or $request.export_package){throw 'Candidate branch is restricted to an unpublished WebGL build'}
           }
-          node tools/workstream-lease/check.mjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-clean-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
+          if($env:GITHUB_REF -eq 'refs/heads/fix/player-experience-audit-20261106'){
+            node tools/valoria-reference-clean/check-player-experience-lease.cjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-clean-live-main/pipeline/active-workstreams.json"
+          }else{
+            node tools/workstream-lease/check.mjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-clean-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
+          }
           if($LASTEXITCODE){throw 'Live runner lease or queued ownership changed; refuse stale execution'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared native tools busy'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}

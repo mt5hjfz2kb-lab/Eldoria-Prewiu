@@ -11,7 +11,7 @@ namespace Eldoria.UI.RoyalGold {
   sealed class DisplayedOffer { public string Selection, Terms; public bool English; }
   readonly Dictionary<string,DisplayedOffer> displayed=new Dictionary<string,DisplayedOffer>();
   readonly Queue<string> displayedOrder=new Queue<string>();
-  static string Terms(RoyalBuilding b)=>b==null?"":b.Level+"|"+b.Costs+"|"+b.Time+"|"+b.Action?.Kind+"|"+b.Action?.Target;
+  static string Terms(RoyalBuilding b)=>b==null?"":b.Level+"|"+b.Costs+"|"+b.Time+"|"+b.Function+"|"+b.Result+"|"+b.Action?.Kind+"|"+b.Action?.Target;
   string observedRecruitment="";int observedRecruitCount,completedRecruitCount;long completionShownUntil;
   public ExistingSliceBinding(ICommandGateway gateway,IClock clock,bool test=false){this.gateway=gateway??throw new ArgumentNullException(nameof(gateway));this.clock=clock??throw new ArgumentNullException(nameof(clock));this.test=test;}
   public RoyalSnapshot Read(string selection,bool en){
