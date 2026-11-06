@@ -1,0 +1,57 @@
+name: '[QA] PR163 inspect real browser frames'
+on:
+  push:
+    branches: [qa/pr163-webgl-evidence-20261107]
+    paths: ['.github/workflows/pr163-preview-screens.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/pr163-preview-screens.yml
+            /docs/evidence/pr163-browser-20261107/
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42311510485
+          name: pr163-exact-browser-evidence-42311510485
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: real-browser-evidence
+      - name: Preserve only genuine sampled browser frames on isolated QA branch
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,shutil,pathlib,hashlib
+          src=pathlib.Path('real-browser-evidence')
+          shots=sorted(p for p in src.rglob('*.jpg') if p.is_file() and p.stat().st_size>1000)
+          if not shots: raise SystemExit('No real frame screenshots available in source artifact')
+          out=pathlib.Path('docs/evidence/pr163-browser-20261107')
+          out.mkdir(parents=True,exist_ok=True)
+          indexes=sorted(set([0, len(shots)//2, max(0,len(shots)-3),len(shots)-1]))
+          manifest=[]
+          for n,i in enumerate(indexes):
+            source=shots[i]
+            dest=out/('frame-'+str(n+1)+'.jpg')
+            shutil.copyfile(source,dest)
+            manifest.append({'file':dest.name,'source':source.name,'source_path':str(source),
+                'sha256':hashlib.sha256(dest.read_bytes()).hexdigest(),'bytes':dest.stat().st_size})
+          reports=list(src.rglob('report.json'))
+          result=json.loads(reports[0].read_text()) if reports else {}
+          info={'source_run_id':42311510485,'source_sha':'9212acf16abd112606c4b2c637896178f2485305',
+            'real_browser_status':result.get('status'),'failure':result.get('failures',[])[:2],
+            'frames':manifest,'quality_approved':False,'physical_mobile_tested':False}
+          (out/'manifest.json').write_text(json.dumps(info,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps(info,ensure_ascii=False)[:3000])
+          PY
+          git config user.name 'eldoria-qa-bot'
+          git config user.email 'qa-bot@users.noreply.github.com'
+          git add docs/evidence/pr163-browser-20261107
+          git diff --cached --quiet && exit 1
+          git commit -m 'docs(qa): preserve real isolated browser frames for visual diagnosis [skip ci]'
+          git push origin HEAD:qa/pr163-webgl-evidence-20261107
