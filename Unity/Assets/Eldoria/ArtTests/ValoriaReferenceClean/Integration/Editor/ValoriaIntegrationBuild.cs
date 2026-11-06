@@ -907,10 +907,10 @@ namespace Eldoria.ReferenceClean.Editor {
        var runtime=Object.FindFirstObjectByType<Eldoria.PlayerClarityRuntime>();
        var all=h.Hud.GetComponentsInChildren<RectTransform>(true);
        var field=typeof(Eldoria.PlayerClarityRuntime).GetField("visibleViewport",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
-       var top=target.GetComponent<Collider>().bounds;
+       var targetBounds=target.GetComponent<Collider>().bounds;
        Debug.Log("ELDORIA_CLARITY_MISSING runtime="+(runtime?runtime.isActiveAndEnabled.ToString():"absent")+
         " world="+h.InWorld+" camera="+h.WorldCamera.enabled+" zoom="+h.WorldCamera.orthographicSize+"/"+h.WorldNavigation.globalZoom+
-        " safe="+(runtime?field.GetValue(runtime).ToString():"none")+" target="+h.WorldCamera.WorldToScreenPoint(new Vector3(top.center.x,top.max.y+.7f,top.center.z))+
+        " safe="+(runtime?field.GetValue(runtime).ToString():"none")+" target="+h.WorldCamera.WorldToScreenPoint(new Vector3(targetBounds.center.x,targetBounds.max.y+.7f,targetBounds.center.z))+
         " markers="+string.Join(",",all.Where(x=>x.name.StartsWith("Clarity / ")).Select(x=>x.name+":"+x.gameObject.activeInHierarchy))+
         " screens="+string.Join(",",h.Hud.GetComponents<MonoBehaviour>().Where(x=>x&&x.GetType().GetProperty("IsOpen")!=null).Select(x=>x.GetType().Name+":"+x.GetType().GetProperty("IsOpen").GetValue(x)))+
         " naming="+h.Hud.GetComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>()?.IsBlockingNarrative);
