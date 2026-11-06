@@ -290,7 +290,7 @@ namespace Eldoria.HeroesUI
             var pages=new[]{Page.Resumen,Page.Habilidades,Page.Talentos,Page.Equipamiento};
             string[] captions={"RESUMEN","HABILIDADES","TALENTOS","EQUIPAMIENTO"};
             float tabWidth=portrait?(narrowPortrait?90f:132f):shortProfile?112f:123f;
-            float top=portrait?(narrowPortrait?182f:194f):shortProfile?96f:100f;
+            float top=portrait?(narrowPortrait?182f:194f):shortProfile?86f:100f;
             float startNav=portrait?(narrowPortrait?132f:170f):shortProfile?118f:190f;
             float navH=portrait?(narrowPortrait?46f:74f):
                 shortProfile?32f:Mathf.Clamp((h-startNav-132f)/5f,72f,94f);
@@ -342,7 +342,7 @@ namespace Eldoria.HeroesUI
             }
             float bodyX=tabWidth+(portrait?32f:36f),
                 bodyW=w-bodyX-20f;
-            float bodyH=h-top-92,modelW=portrait?bodyW:bodyW*(shortProfile?.47f:.58f),modelH=portrait?bodyH*.62f:bodyH;
+            float bodyH=h-top-(shortProfile?76f:92f),modelW=portrait?bodyW:bodyW*(shortProfile?.47f:.58f),modelH=portrait?bodyH*.62f:bodyH;
             // Reserve the four real attribute rows and role/footer before sizing
             // the portrait stage. Otherwise the 36-unit row minimum can overlap
             // the role divider at 900x1600.
@@ -358,8 +358,8 @@ namespace Eldoria.HeroesUI
                 float imageH=modelH-46,imageW=Mathf.Min(modelW-10,imageH*2f/3f);
                 Place(raw.rectTransform,(modelW-imageW)*.5f,5,imageW,imageH);
                 if(CurrentPage!=Page.Talentos){
-                    Button("Rotate hero left","‹",bodyX+7,top+modelH-78,32,32,()=>{preview.Rotate(-30);Rebuild();});
-                    Button("Rotate hero right","›",bodyX+modelW-39,top+modelH-78,32,32,()=>{preview.Rotate(30);Rebuild();});
+                    Button("Rotate hero left","<",bodyX+7,top+modelH-78,32,32,()=>{preview.Rotate(-30);Rebuild();});
+                    Button("Rotate hero right",">",bodyX+modelW-39,top+modelH-78,32,32,()=>{preview.Rotate(30);Rebuild();});
                 }
             }
             else{
@@ -403,8 +403,8 @@ namespace Eldoria.HeroesUI
             selector.GetComponent<Image>().raycastTarget=false;
             Surface("Profile / selector brass horizon",selector,6f,0f,w-48f,2f,
                 new Color(.83f,.63f,.32f,.78f)).GetComponent<Image>().raycastTarget=false;
-            Button("Previous available hero","‹",20,h-66,64,46,()=>CycleHero(-1));
-            Button("Next available hero","›",w-84,h-66,64,46,()=>CycleHero(1));
+            Button("Previous available hero","<",20,h-66,64,46,()=>CycleHero(-1));
+            Button("Next available hero",">",w-84,h-66,64,46,()=>CycleHero(1));
             // Hero identity is already prominent in the reference header.
             // Duplicating it next to the portrait strip obscured the first
             // actual hero portrait at 900x1600.

@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 301,
+  "revision": 302,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
