@@ -78,7 +78,21 @@ namespace Eldoria.ReferenceClean {
     if(city.Parcels&&id=="barracks")return city.Parcels.RightBuilt;
     if(id=="granary")return Resources.Load<GameObject>("BastionIII/Granary/Granary");
     if(id=="stoneworks")return Resources.Load<GameObject>("BastionIII/Granary/StoneWorkshop");
-    if(IsWorldTarget(id)){var target=FindTarget(id);if(target)return target.gameObject;}
+    if(IsWorldTarget(id)){
+     // Renewable nodes keep physics and rendered art in separate roots.
+     // Preview the real visual, not an empty hotspot that falls back to a house.
+     var resource=WorldRoot.GetComponentsInChildren<Transform>(true)
+      .FirstOrDefault(t=>t.name=="Production resource visual "+id);
+     if(resource)return resource.gameObject;
+     if(id=="engendro-valoria"){
+      var actor=WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
+      if(actor&&actor.ModelRoot)return actor.ModelRoot;
+     }
+     var authored=WorldRoot.GetComponentsInChildren<Transform>(true)
+      .FirstOrDefault(t=>t.name=="Zone1 authored "+id||t.name=="Zone1 hostile camp "+id);
+     if(authored)return authored.gameObject;
+     var target=FindTarget(id);if(target)return target.gameObject;
+    }
     return null;
    };
    if(!Hud.GetComponent<RoyalGoldV2Narrative>())Hud.gameObject.AddComponent<RoyalGoldV2Narrative>();

@@ -943,6 +943,9 @@ namespace Eldoria.ReferenceClean.Editor {
       h.WorldNavigation.localZoom=Eldoria.World4XCanon.RegionOneCanonicalLandscape.NearZoom(h.PlayerCamera.aspect);
       h.WorldNavigation.SetZoomLevel(2,true);
       h.WorldNavigation.PanTo(target.transform.position);
+      // Camera-space Canvas matrices must follow this actual pan before
+      // Focus reads its unobstructed viewport (runtime uses screen overlay).
+      h.PlayerCamera.Render();Canvas.ForceUpdateCanvases();
       var before=h.WorldNavigation.target;
       h.Focus(target.gameObject);
       var method=typeof(ValoriaIntegratedWorld).GetMethod("FocusPoints",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
@@ -1094,7 +1097,7 @@ namespace Eldoria.ReferenceClean.Editor {
     // include Unity's existing UI layer (5) only during this capture or a real
     // Lyra dialog can appear in the game but disappear from the evidence PNG.
     c.cullingMask|=1<<5;
-    if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();if(heroesOpen)heroes.Refresh();Canvas.ForceUpdateCanvases();if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);if(selectedTarget)h.Focus(selectedTarget.gameObject);}foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();
+    if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();if(heroesOpen)heroes.Refresh();Canvas.ForceUpdateCanvases();foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();
     // The normal game applies this after RoyalHUD.Refresh in LateUpdate.
     // Offscreen QA renders without advancing a frame, so use the SAME
     // existing title adapter after layout and before both real camera frames.
@@ -1108,6 +1111,11 @@ namespace Eldoria.ReferenceClean.Editor {
     // The target RenderTexture changes the camera-space Canvas matrices.
     // Apply the requested player focus only AFTER that first real render;
     // otherwise the free HUD viewport still belongs to the prior size.
+    if(prepareView==null&&!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){
+     var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);
+     if(selectedTarget)h.Focus(selectedTarget.gameObject);
+     c.Render();Canvas.ForceUpdateCanvases();
+    }
     if(prepareView!=null){
      Debug.Log("ELDORIA_CAPTURE_VIEW_READY "+name+" safe="+ui2.GetFreeSceneViewport());
      prepareView();c.Render();Canvas.ForceUpdateCanvases();
