@@ -657,10 +657,12 @@ namespace Eldoria.ReferenceClean.Editor {
      Check(()=>{
       Need(recruitment.CurrentHeroId=="lyra"&&h.City.Gateway.Snapshot().ChapterThree.LyraRecruited,
        "Recruitment presentation must show the actually recruited Lyra");
+      bool wasInWorld=h.InWorld;
       Capture(h,"integration-lyra-recruitment-landscape.png",844,390);
       Capture(h,"integration-lyra-recruitment-portrait.png",390,844);
       Click(GameObject.Find("Close heroes").GetComponent<Button>());
       Need(!recruitment.IsOpen,"Recruitment close did not return to the journey");
+      Need(h.InWorld==wasInWorld,"Recruitment close changed the player's underlying location");
      },"player reads and closes earned Lyra presentation");
      yield return new WaitForSecondsRealtime(.18f);
      if(Failed())yield break;
@@ -1108,7 +1110,14 @@ namespace Eldoria.ReferenceClean.Editor {
      bool blocking=background&&background.raycastTarget;
      bool full=destinationRoot.anchorMin==Vector2.zero&&destinationRoot.anchorMax==Vector2.one&&Mathf.Abs(destinationRoot.rect.width-canvasRect.rect.width)<1f&&Mathf.Abs(destinationRoot.rect.height-canvasRect.rect.height)<1f;
      int controls=destinationRoot.GetComponentsInChildren<Button>().Count(b=>b.isActiveAndEnabled&&b.interactable&&((RectTransform)b.transform).rect.width>=20&&((RectTransform)b.transform).rect.height>=20);
-     Need(opaque&&blocking&&full&&controls>0&&!h.InWorld,"Native management must be opaque, full-canvas and interactive: "+name);
+     // Recruitment is earned at the fissure and overlays that world context.
+     // Regular management still opens only in the city; all visual/input
+     // checks apply to both destinations without bypassing the overlay.
+     bool earnedWorldPresentation=heroesOpen&&heroes.IsRecruitmentPresentation&&
+      heroes.CurrentHeroId=="lyra"&&h.City.Gateway.Snapshot().ChapterThree.LyraRecruited;
+     Need(opaque&&blocking&&full&&controls>0&&(!h.InWorld||earnedWorldPresentation),
+      "Native management must be opaque, full-canvas and interactive: "+name+
+      " opaque="+opaque+" blocking="+blocking+" full="+full+" controls="+controls+" inWorld="+h.InWorld);
      if(buildingOpen&&!rankingOpen)Need(buildings.ReferenceTexture&&buildings.ReferenceTexture.width>100,"Native management reference not bound: "+name);
      managementChecks.Add(new ManagementCapture{capture=name,screen=heroesOpen?"heroes":rankingOpen?"rankings":buildingOpen?"building":"management",target=buildingOpen&&!rankingOpen?buildings.BuildingId:h.Selected,width=width,height=height,pass=true,opaque=opaque,touchBlocking=blocking,fullCanvas=full,activeControls=controls});
     }

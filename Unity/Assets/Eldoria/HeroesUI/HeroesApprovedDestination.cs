@@ -33,6 +33,7 @@ namespace Eldoria.HeroesUI
         public string CurrentHeroId { get; private set; }
         public bool IsOpen => root && root.gameObject.activeSelf;
         bool recruitmentPresentation;
+        public bool IsRecruitmentPresentation => IsOpen && recruitmentPresentation;
         public void PresentRecruitment(string id)
         {
             Open();
