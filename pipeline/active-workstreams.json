@@ -6325,10 +6325,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RealmHeader.cs",
         ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [],
-      "phase": "EXACT_HEAD_NATIVE_AND_VISUAL_VERIFICATION",
-      "dependency": "Construction Delight native42189025597 currently has Windows; do not interrupt. PR162 requires explicit native reservation after that run releases.",
-      "next": "Add canonical PR162 same-branch owner eligibility to both native lease guards, acquire vacant Windows lease by CAS after Construction Delight run completes, certify final source and inspect exact node captures.",
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "phase": "PR162_EXACT_NATIVE_CERTIFICATION",
+      "dependency": "Construction native42189025597 completed SUCCESS and its owner released Windows. PR162 now claims it for exact final source.",
+      "next": "Complete native42193119922 on be5010313b7c26cd5daa91c7d2ddbe1cf6eac46a; inspect real four-size A/B and XML failures, correct if needed, then merge and retain lease only for postmerge validation.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6364,7 +6366,7 @@
         "economy_merged_sha": "0579b316eac5c9c278d7de83540b9f67d74b96a6",
         "integration_branch": "feature/player-clarity-first-login-map-signage-20261105"
       },
-      "source_sha": "e698dd290f4d8cb2f68cf0b4a2b64653d5a4714e",
+      "source_sha": "be5010313b7c26cd5daa91c7d2ddbe1cf6eac46a",
       "delivery_definition": {
         "deliverable": "Integrate canonical PR162: persistent first-entry nickname, readable actual resource/node/building levels, distributed renewable nodes and five-minute UTC renewal.",
         "evidence": "Exact Unity compile/EditMode/PlayMode and continuous I-V journey, genuine four-size screenshots with real nodes and pointer picking, existing saves/economy regressions.",
@@ -6376,6 +6378,12 @@
         "running_source": "edec4b822b588634c1745cbfedbf9517b5e960f0",
         "pending_native": 42189830649,
         "pending_source": "e698dd290f4d8cb2f68cf0b4a2b64653d5a4714e"
+      },
+      "native_lease": {
+        "owner": "codex-pr162-completion-23287cf1c126",
+        "source_sha": "be5010313b7c26cd5daa91c7d2ddbe1cf6eac46a",
+        "run_id": 42193119922,
+        "reason": "Final exact PR162 Unity certification after verified release; no process termination or reboot."
       }
     },
     {
