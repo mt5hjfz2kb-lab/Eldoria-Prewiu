@@ -72,7 +72,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Recheck live ownership AND process exclusivity before Unity starts
-        shell: pwsh
+        shell: powershell
         env:
           LEASE_REVISION: ${{ needs.owner-preflight.outputs.revision }}
         run: |
@@ -87,12 +87,12 @@ jobs:
           $v=& $env:UNITY_EDITOR_PATH -version
           if($v -notmatch '6000\.3\.23f1'){throw "Unity version mismatch: $v"}
       - name: Reassemble exact 41 visual resources and 7 C-sharp inputs
-        shell: pwsh
+        shell: powershell
         run: |
           python forja-source/tools/forja-oscura/reconstruct.py --extract forja-source
           if($LASTEXITCODE){throw 'Forja production archive integrity failed'}
       - name: Capture genuine Unity player HUD before and after
-        shell: pwsh
+        shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $proj=Join-Path $env:GITHUB_WORKSPACE 'forja-source/Unity'
