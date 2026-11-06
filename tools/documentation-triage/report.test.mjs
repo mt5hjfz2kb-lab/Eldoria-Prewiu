@@ -14,9 +14,27 @@ test('real catalog produces an advisory-only, complete priority queue',()=>{
   assert.equal(report.total,report.by_status.current+report.by_status.reference+
     report.by_status.review_pending+report.by_status.historical);
   assert.equal(report.pending_count,report.priority_review_queue.length);
-  assert.ok(report.pending_count>100);
+  const pendingPaths=catalog.entries.filter(e=>e.status==='review_pending').map(e=>e.path).sort();
+  assert.equal(report.pending_count,pendingPaths.length);
+  assert.deepEqual(report.priority_review_queue.map(e=>e.path).sort(),pendingPaths);
+  assert.equal(new Set(report.priority_review_queue.map(e=>e.path)).size,report.pending_count);
   assert.match(markdown(report),/sin re-clasificarlos automáticamente/);
 });
+test('a fully classified catalog is valid, rather than failing an outdated minimum count',()=>{
+  const catalog={schema_version:1,entries:[
+    {path:'docs/current.md',domain:'quality',status:'current'},
+    {path:'docs/reference.md',domain:'art',status:'reference'},
+    {path:'docs/historical.md',domain:'history',status:'historical'}
+  ]};
+  const report=documentTriage(catalog);
+  assert.equal(report.read_only,true);
+  assert.equal(report.total,3);
+  assert.equal(report.pending_count,0);
+  assert.deepEqual(report.priority_review_queue,[]);
+  assert.match(markdown(report),/pendientes 0/);
+  assert.equal(catalog.entries[0].status,'current');
+});
+
 test('operational unknowns first, preserving historical sources and all pending entries',()=>{
   const c={schema_version:1,entries:[
     {path:'docs/art.md',domain:'art',status:'review_pending'},
