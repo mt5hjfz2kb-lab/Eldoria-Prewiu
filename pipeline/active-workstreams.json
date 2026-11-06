@@ -6322,12 +6322,13 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3CinematicAcceptanceTests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RealmHeader.cs"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RealmHeader.cs",
+        ".github/workflows/ui-progression-cert.yml"
       ],
       "resources": [],
       "phase": "EXACT_HEAD_NATIVE_AND_VISUAL_VERIFICATION",
-      "dependency": "Economy PR141 merged; SLM install run42181121389 completed successfully; reconcile runner reservation without interrupting processes.",
-      "next": "Let native42180967085 finish unchanged, then native42189830649 certifies corrected actual marker footprints and four-format close node capture. Inspect failures/captures and continue to merge; no ART approval yet.",
+      "dependency": "Construction Delight native42189025597 currently has Windows; do not interrupt. PR162 requires explicit native reservation after that run releases.",
+      "next": "Add canonical PR162 same-branch owner eligibility to both native lease guards, acquire vacant Windows lease by CAS after Construction Delight run completes, certify final source and inspect exact node captures.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
