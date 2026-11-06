@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T11:29:19.765Z",
+  "updated_at": "2026-11-06T11:31:43.944Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6291,141 +6291,6 @@
         "native_playmode_failed": 24,
         "native_playmode_skipped": 9
       }
-    },
-    {
-      "id": "eldoria-first-login-map-signage-respawn-20261105",
-      "title": "Eldoria — bienvenida con nick, pictogramas, niveles del mapa y reposición de 5 min",
-      "owner": null,
-      "branch": "feature/player-clarity-first-login-map-signage-20261105",
-      "status": "completed",
-      "ownership_state": "available",
-      "write_scope_released": true,
-      "ownership_revision": 5,
-      "claimed_at": "2026-11-05T22:37:43.640Z",
-      "base_main_sha": "32176b06afee2a507ea76ff9087832e6b0cec4c8",
-      "scope": [
-        "Unity/Assets/Eldoria/PlayerClarity/**",
-        "docs/player-clarity/**",
-        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarity*",
-        "pipeline/art-production-requests/eldoria-first-login-map-signage-respawn-20261105.json",
-        "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
-        "Unity/Assets/Eldoria/PlayerClarityRuntime.cs.meta",
-        "Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs",
-        "Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs.meta",
-        "Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs",
-        "Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs.meta",
-        ".github/workflows/eldoria-player-clarity-domain.yml",
-        "tools/player-clarity/**",
-        ".github/workflows/player-clarity-domain.yml",
-        "Unity/Assets/Eldoria/Scripts/Domain/ChapterThreeHuntDifficultyPolicy.cs",
-        "Unity/Assets/Eldoria/Scripts/Domain/ChapterThreeHuntDifficultyPolicy.cs.meta",
-        "Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs",
-        "Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs.meta",
-        "Unity/Assets/Eldoria/PlayerClarityStoryRenewal.cs",
-        "Unity/Assets/Eldoria/PlayerClarityStoryRenewal.cs.meta",
-        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
-        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
-        "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs",
-        "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/BastionIIIWorldPresentation.cs",
-        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarityGatewayIntegrationTests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/PlayerClaritySceneTests.cs",
-        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarityGatewayTests.cs",
-        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarityGatewayTests.cs.meta",
-        "Unity/Assets/Eldoria/Tests/PlayMode/PlayerClarityIntegratedTests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/PlayerClarityIntegratedTests.cs.meta",
-        ".github/workflows/player-clarity-unity.yml",
-        "tools/early-retention/Smoke.csproj",
-        "tools/eldoria-v41/GatewaySmoke.csproj",
-        "tools/march-capacity/Smoke.csproj",
-        "tools/ui-v3-domain-smoke/Smoke.csproj",
-        "tools/bastion-iii/DomainProbe.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
-        ".github/workflows/ui-v3-domain-smoke.yml",
-        ".github/workflows/eldoria-v41-domain.yml",
-        ".github/workflows/march-capacity-contract.yml",
-        ".github/workflows/early-retention-domain.yml",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
-        "Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/NarrativeCoherencePlayModeTests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3CinematicAcceptanceTests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RealmHeader.cs",
-        ".github/workflows/ui-progression-cert.yml",
-        "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs"
-      ],
-      "resources": [],
-      "phase": "PR162_MERGED_MAIN_NATIVE_PASS",
-      "dependency": "Construction native42189025597 completed SUCCESS and its owner released Windows. PR162 now claims it for exact final source.",
-      "next": "Canonical publication owner repairs legacy native fixtures and publishes APK/WebGL after full visual certification.",
-      "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
-      "art_production_routing": "required",
-      "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
-      "art_production_request": "pipeline/art-production-requests/eldoria-first-login-map-signage-respawn-20261105.json",
-      "ownership_history": [
-        {
-          "owner": "chatgpt-eldoria-player-clarity-20261105",
-          "revision": 1,
-          "at": "2026-11-05",
-          "reason": "Continued on user instruction, same PR162/workstream; no concurrent economy ownership change"
-        },
-        {
-          "owner": "chatgpt-eldoria-player-clarity-continuation-20261105",
-          "revision": 2,
-          "at": "2026-11-05T22:37:43.640Z",
-          "reason": "Owner directed autonomous continuation on canonical PR162; previously committed fix and tests retained; no native shared runner claimed"
-        },
-        {
-          "owner": "chatgpt-eldoria-first-entry-autonomous-20261105",
-          "revision": 3,
-          "at": "2026-11-06",
-          "reason": "User expressly requested direct completion PR162; prior named automation disabled; maintain same PR and exact scope"
-        },
-        {
-          "owner": "chatgpt-eldoria-pr162-direct-20261106",
-          "revision": 4,
-          "at": "2026-11-06",
-          "reason": "Owner explicitly directs current chat to finish and integrate PR162; preserve exact candidate and all evidence."
-        }
-      ],
-      "dependencies": {
-        "economy_pr": 141,
-        "economy_merged_sha": "0579b316eac5c9c278d7de83540b9f67d74b96a6",
-        "integration_branch": "feature/player-clarity-first-login-map-signage-20261105"
-      },
-      "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
-      "delivery_definition": {
-        "deliverable": "Integrate canonical PR162: persistent first-entry nickname, readable actual resource/node/building levels, distributed renewable nodes and five-minute UTC renewal.",
-        "evidence": "Exact Unity compile/EditMode/PlayMode and continuous I-V journey, genuine four-size screenshots with real nodes and pointer picking, existing saves/economy regressions.",
-        "handoff": "Same PR162 merged only after checks and visual evidence; report exact commit and remaining publication distinction."
-      },
-      "last_verified": {
-        "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
-        "native_run": 42200606212,
-        "result": "SUCCESS: 216/216 EditMode, 75/75 PlayMode, 225 integration checks; actual node/welcome captures reviewed at four resolutions; three marches and Aldric import destruction regression PASS",
-        "pending": "Follow-up in canonical main publication stream: older V41 capture fixture never completes new name prompt; screenshot confirms welcome overlay obscures council. Main216/75 tests and Windows build PASS. No publication yet.",
-        "physical_android_tested": false,
-        "merge_sha": "e7e37d236e982553e06168f0ec216e4de80b6b03",
-        "postmerge_runs": [
-          42204000554,
-          42204000444
-        ],
-        "postmerge_test_result": "216/216 EditMode and 75/75 PlayMode PASS,0 failed/ignored; XML and source identity downloaded and verified",
-        "postmerge_test_artifact": 13497542323
-      },
-      "native_lease": {
-        "owner": "codex-pr162-completion-23287cf1c126",
-        "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
-        "run_id": 42200606212,
-        "reason": "Final exact PR162 Unity certification after verified release; no process termination or reboot."
-      },
-      "publication_authorized": true,
-      "publication_owner": "codex-pr162-completion-23287cf1c126",
-      "released_at": "2026-11-06T11:29:19.765Z"
     },
     {
       "id": "eldoria-slm-permanent-bootstrap-20261104",
@@ -15186,6 +15051,142 @@
       },
       "completed_at": "2026-11-05T15:53:30.025Z",
       "source_sha": "d19df6fc1d521204926b735a05a06786c80f37a5"
+    },
+    {
+      "id": "eldoria-first-login-map-signage-respawn-20261105",
+      "title": "Eldoria — bienvenida con nick, pictogramas, niveles del mapa y reposición de 5 min",
+      "owner": null,
+      "branch": "feature/player-clarity-first-login-map-signage-20261105",
+      "status": "completed",
+      "ownership_state": "available",
+      "write_scope_released": true,
+      "ownership_revision": 5,
+      "claimed_at": "2026-11-05T22:37:43.640Z",
+      "base_main_sha": "32176b06afee2a507ea76ff9087832e6b0cec4c8",
+      "scope": [
+        "Unity/Assets/Eldoria/PlayerClarity/**",
+        "docs/player-clarity/**",
+        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarity*",
+        "pipeline/art-production-requests/eldoria-first-login-map-signage-respawn-20261105.json",
+        "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
+        "Unity/Assets/Eldoria/PlayerClarityRuntime.cs.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs.meta",
+        ".github/workflows/eldoria-player-clarity-domain.yml",
+        "tools/player-clarity/**",
+        ".github/workflows/player-clarity-domain.yml",
+        "Unity/Assets/Eldoria/Scripts/Domain/ChapterThreeHuntDifficultyPolicy.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/ChapterThreeHuntDifficultyPolicy.cs.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs.meta",
+        "Unity/Assets/Eldoria/PlayerClarityStoryRenewal.cs",
+        "Unity/Assets/Eldoria/PlayerClarityStoryRenewal.cs.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaJourneyGuidance.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/BastionIIIWorldPresentation.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarityGatewayIntegrationTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/PlayerClaritySceneTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarityGatewayTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/PlayerClarityGatewayTests.cs.meta",
+        "Unity/Assets/Eldoria/Tests/PlayMode/PlayerClarityIntegratedTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/PlayerClarityIntegratedTests.cs.meta",
+        ".github/workflows/player-clarity-unity.yml",
+        "tools/early-retention/Smoke.csproj",
+        "tools/eldoria-v41/GatewaySmoke.csproj",
+        "tools/march-capacity/Smoke.csproj",
+        "tools/ui-v3-domain-smoke/Smoke.csproj",
+        "tools/bastion-iii/DomainProbe.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
+        ".github/workflows/ui-v3-domain-smoke.yml",
+        ".github/workflows/eldoria-v41-domain.yml",
+        ".github/workflows/march-capacity-contract.yml",
+        ".github/workflows/early-retention-domain.yml",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/NarrativeCoherencePlayModeTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3CinematicAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RealmHeader.cs",
+        ".github/workflows/ui-progression-cert.yml",
+        "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs"
+      ],
+      "resources": [],
+      "phase": "PR162_MERGED_MAIN_NATIVE_PASS",
+      "dependency": "Construction native42189025597 completed SUCCESS and its owner released Windows. PR162 now claims it for exact final source.",
+      "next": "Canonical publication owner repairs legacy native fixtures and publishes APK/WebGL after full visual certification.",
+      "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-first-login-map-signage-respawn-20261105.json",
+      "ownership_history": [
+        {
+          "owner": "chatgpt-eldoria-player-clarity-20261105",
+          "revision": 1,
+          "at": "2026-11-05",
+          "reason": "Continued on user instruction, same PR162/workstream; no concurrent economy ownership change"
+        },
+        {
+          "owner": "chatgpt-eldoria-player-clarity-continuation-20261105",
+          "revision": 2,
+          "at": "2026-11-05T22:37:43.640Z",
+          "reason": "Owner directed autonomous continuation on canonical PR162; previously committed fix and tests retained; no native shared runner claimed"
+        },
+        {
+          "owner": "chatgpt-eldoria-first-entry-autonomous-20261105",
+          "revision": 3,
+          "at": "2026-11-06",
+          "reason": "User expressly requested direct completion PR162; prior named automation disabled; maintain same PR and exact scope"
+        },
+        {
+          "owner": "chatgpt-eldoria-pr162-direct-20261106",
+          "revision": 4,
+          "at": "2026-11-06",
+          "reason": "Owner explicitly directs current chat to finish and integrate PR162; preserve exact candidate and all evidence."
+        }
+      ],
+      "dependencies": {
+        "economy_pr": 141,
+        "economy_merged_sha": "0579b316eac5c9c278d7de83540b9f67d74b96a6",
+        "integration_branch": "feature/player-clarity-first-login-map-signage-20261105"
+      },
+      "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
+      "delivery_definition": {
+        "deliverable": "Integrate canonical PR162: persistent first-entry nickname, readable actual resource/node/building levels, distributed renewable nodes and five-minute UTC renewal.",
+        "evidence": "Exact Unity compile/EditMode/PlayMode and continuous I-V journey, genuine four-size screenshots with real nodes and pointer picking, existing saves/economy regressions.",
+        "handoff": "Same PR162 merged only after checks and visual evidence; report exact commit and remaining publication distinction."
+      },
+      "last_verified": {
+        "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
+        "native_run": 42200606212,
+        "result": "SUCCESS: 216/216 EditMode, 75/75 PlayMode, 225 integration checks; actual node/welcome captures reviewed at four resolutions; three marches and Aldric import destruction regression PASS",
+        "pending": "Follow-up in canonical main publication stream: older V41 capture fixture never completes new name prompt; screenshot confirms welcome overlay obscures council. Main216/75 tests and Windows build PASS. No publication yet.",
+        "physical_android_tested": false,
+        "merge_sha": "e7e37d236e982553e06168f0ec216e4de80b6b03",
+        "postmerge_runs": [
+          42204000554,
+          42204000444
+        ],
+        "postmerge_test_result": "216/216 EditMode and 75/75 PlayMode PASS,0 failed/ignored; XML and source identity downloaded and verified",
+        "postmerge_test_artifact": 13497542323
+      },
+      "native_lease": {
+        "owner": "codex-pr162-completion-23287cf1c126",
+        "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
+        "run_id": 42200606212,
+        "reason": "Final exact PR162 Unity certification after verified release; no process termination or reboot."
+      },
+      "publication_authorized": true,
+      "publication_owner": "codex-pr162-completion-23287cf1c126",
+      "released_at": "2026-11-06T11:29:19.765Z",
+      "completed_at": "2026-11-06T11:31:43.944Z"
     }
   ],
   "owner_specific_pauses": [
