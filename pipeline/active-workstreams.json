@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T19:14:24.679Z",
+  "updated_at": "2026-11-06T19:22:52.018Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -44,7 +44,8 @@
         "docs/evidence/player-experience-20261106/**",
         "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
         ".github/workflows/ui-progression-cert.yml",
-        ".github/workflows/valoria-reference-clean.yml"
+        ".github/workflows/valoria-reference-clean.yml",
+        "pipeline/valoria-convergence-cancel-stale-request.json"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -2006,7 +2007,7 @@
           "reason": "Owner directs correction of all observed player-audit problems, prioritizing player experience."
         }
       ],
-      "ownership_revision": 155,
+      "ownership_revision": 156,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
