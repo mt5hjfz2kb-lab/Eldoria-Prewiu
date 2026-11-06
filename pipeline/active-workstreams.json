@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T10:36:16.936Z",
+  "updated_at": "2026-11-06T10:42:47.337Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6378,15 +6378,22 @@
         "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
         "native_run": 42200606212,
         "result": "SUCCESS: 216/216 EditMode, 75/75 PlayMode, 225 integration checks; actual node/welcome captures reviewed at four resolutions; three marches and Aldric import destruction regression PASS",
-        "pending": "Merge, main validation, authorized APK and WebGL publication",
-        "physical_android_tested": false
+        "pending": "Main native runs executing/queued; then direct APK21/WebGL publication in current session. No other publisher should take the active Windows lease.",
+        "physical_android_tested": false,
+        "merge_sha": "e7e37d236e982553e06168f0ec216e4de80b6b03",
+        "postmerge_runs": [
+          42204000554,
+          42204000444
+        ]
       },
       "native_lease": {
         "owner": "codex-pr162-completion-23287cf1c126",
         "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
         "run_id": 42200606212,
         "reason": "Final exact PR162 Unity certification after verified release; no process termination or reboot."
-      }
+      },
+      "publication_authorized": true,
+      "publication_owner": "codex-pr162-completion-23287cf1c126"
     },
     {
       "id": "eldoria-slm-permanent-bootstrap-20261104",
