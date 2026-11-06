@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T09:53:45.197Z",
+  "updated_at": "2026-11-06T10:03:32.199Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6323,14 +6323,16 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RealmHeader.cs",
-        ".github/workflows/ui-progression-cert.yml"
+        ".github/workflows/ui-progression-cert.yml",
+        "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs"
       ],
       "resources": [
         "windows-runner-heavy"
       ],
       "phase": "PR162_EXACT_NATIVE_CERTIFICATION",
       "dependency": "Construction native42189025597 completed SUCCESS and its owner released Windows. PR162 now claims it for exact final source.",
-      "next": "Complete current PlayMode/build, inspect actual captures/XML from1928dda, then merge canonical PR162 and validate main. Keep Windows resource through completion.",
+      "next": "Fix confirmed existing Aldric async import disposal race blocking full PR162 PlayMode; released Aldric/hero scopes inspected, no active competing owner. Preserve model/animations and add deterministic destroy-during-load regression to existing native case, then repeat complete suite.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6377,7 +6379,8 @@
         "native_run": 42196939050,
         "native_job": 127822502060,
         "completed": "Exact compile, three marches, Aldric, real integrated I-V visual probe including all node captures, EditMode PASS",
-        "pending": "PlayMode currently executing; native build, artifact review and merge pending"
+        "pending": "PlayMode currently executing; native build, artifact review and merge pending",
+        "playmode": "74/75 PASS, sole failure ReferenceUiArtPassTests due Aldric OnDestroy disposing ConvertMatricesJob while load pending;216/216 EditMode PASS"
       },
       "native_lease": {
         "owner": "codex-pr162-completion-23287cf1c126",
