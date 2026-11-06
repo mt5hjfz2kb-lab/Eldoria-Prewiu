@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T23:40:17.028Z",
+  "updated_at": "2026-11-06T23:52:31.253Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6576,17 +6576,19 @@
         "tools/forja-oscura/**",
         ".github/workflows/forja-oscura-asset-integrity.yml",
         ".github/workflows/forja-oscura-native-capture.yml",
-        "docs/ui-v3/FORJA_OSCURA_*.md"
+        "docs/ui-v3/FORJA_OSCURA_*.md",
+        "Unity/Assets/Eldoria/VisualKit/**",
+        "Unity/Assets/Eldoria/VisualKit.meta"
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "write_scope_released": false,
       "phase": "ISOLATED_ART_PROOF_AND_NATIVE_CERT_PREP",
       "next": "Render reusable Forja visual kit against genuine RoyalHUD and certify mobile layouts and actions; borrow Windows runner only after canonical owner handoff.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. Do not claim windows-runner-heavy or edit legacy HUD without explicit handoff."
+      "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. Do not claim windows-runner-heavy or edit legacy HUD without explicit handoff. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched."
     }
   ],
   "history": [
