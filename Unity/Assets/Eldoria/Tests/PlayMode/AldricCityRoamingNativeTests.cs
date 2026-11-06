@@ -384,6 +384,38 @@ namespace Eldoria.Tests
             Assert.That(Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
                     .Count(x=>x && x.GetType().FullName=="Eldoria.AldricCity.AldricCityRoaming"),
                 Is.EqualTo(1), "Never instantiate a duplicate logical Aldric");
+
+            // Regression: closing the actual scene during async GLB loading
+            // must not dispose native ConvertMatricesJob buffers prematurely.
+            SceneManager.LoadScene("Valoria_City_World_UI");
+            Component loadingWalker = null;
+            FieldInfo inFlight = null;
+            for (var loadingDeadline=Time.realtimeSinceStartup+60f; Time.realtimeSinceStartup<loadingDeadline;)
+            {
+                yield return null;
+                loadingWalker=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                    .FirstOrDefault(x=>x && x.GetType().FullName=="Eldoria.AldricCity.AldricCityRoaming");
+                if (!loadingWalker) continue;
+                inFlight=loadingWalker.GetType().GetField("importInFlight",BindingFlags.Instance|BindingFlags.NonPublic);
+                Assert.That(inFlight, Is.Not.Null, "Native import ownership must be tracked");
+                if ((bool)inFlight.GetValue(loadingWalker)) break;
+            }
+            Assert.That(loadingWalker, Is.Not.Null, "Actual reloaded Aldric component required");
+            Assert.That((bool)inFlight.GetValue(loadingWalker), Is.True,
+                "Destroy while real async import is pending, not after completion");
+            object destroyedWalker=loadingWalker;
+            var importerField=loadingWalker.GetType().GetField("ownedImport",BindingFlags.Instance|BindingFlags.NonPublic);
+            Assert.That(importerField.GetValue(destroyedWalker), Is.Not.Null);
+            Object.DestroyImmediate(loadingWalker);
+            Assert.That(importerField.GetValue(destroyedWalker), Is.Not.Null,
+                "Pending native jobs retain their importer until completion");
+            for (var disposalDeadline=Time.realtimeSinceStartup+60f;
+                (bool)inFlight.GetValue(destroyedWalker) && Time.realtimeSinceStartup<disposalDeadline;)
+                yield return null;
+            Assert.That((bool)inFlight.GetValue(destroyedWalker), Is.False, "Pending load must finish after scene owner destruction");
+            Assert.That(importerField.GetValue(destroyedWalker), Is.Null, "Completed abandoned import must release its resources");
+            LogAssert.NoUnexpectedReceived();
+            Debug.Log("ALDRIC_DESTROY_DURING_IMPORT_DEFERRED_DISPOSAL_PASS");
         }
     }
 }

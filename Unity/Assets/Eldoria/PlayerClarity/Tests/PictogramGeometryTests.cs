@@ -21,6 +21,8 @@ namespace Eldoria.PlayerClarity.Tests
                 rect.sizeDelta = new Vector2(24f, 24f);
                 var graphic = go.AddComponent<RoyalResourcePictogram>();
                 graphic.Kind = kind;
+                Assert.That(graphic.GetComponent<CanvasRenderer>(), Is.Not.Null,
+                    "A generated world icon must have a renderer, not only valid geometry");
                 using (var helper = new VertexHelper())
                 {
                     // MaskableGraphic also exposes an OnPopulateMesh(Mesh) overload.

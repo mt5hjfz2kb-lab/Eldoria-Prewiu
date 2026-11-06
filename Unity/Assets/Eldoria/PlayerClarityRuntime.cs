@@ -409,32 +409,26 @@ namespace Eldoria
             }
             marker.Touched = true;
             marker.Rect.gameObject.SetActive(true);
-            // Keep the 21px icon/15px label legible on narrow phones even
-            // when a 1200px reference Canvas is scaled down to 390px.
-            // Compensate the Canvas scale exactly once. Children and text
-            // retain their canonical 72x28/23px/14-15pt logical dimensions.
-            var canvasScale = layer.GetComponentInParent<Canvas>();
-            marker.Rect.localScale = Vector3.one /
-                Mathf.Max(.1f, canvasScale ? canvasScale.scaleFactor : 1f);
+            // Compensate Canvas scale in logical dimensions, not Transform
+            // scale. Scaling a tiny dynamic-font raster back up blurred mobile
+            // labels even though their final RectTransform size was correct.
+            var canvas = layer.GetComponentInParent<Canvas>();
+            float multiplier = 1f / Mathf.Max(.1f, canvas ? canvas.scaleFactor : 1f);
+            marker.Rect.localScale = Vector3.one;
             if (marker.Text && marker.Text.text != text) marker.Text.text = text;
             if (marker.Icon)
             {
                 marker.Icon.gameObject.SetActive(icon.HasValue);
                 if (icon.HasValue) marker.Icon.Kind = icon.Value;
             }
-            // The scale-adjusted parent now maps 1 logical unit to 1
-            // physical pixel regardless of mobile orientation. Scaling its
-            // dimensions or font as well would multiply the correction twice.
-            var canvas = layer.GetComponentInParent<Canvas>();
-            if (marker.LastSizeMultiplier != 1f)
+            if (!Mathf.Approximately(marker.LastSizeMultiplier, multiplier))
             {
-                marker.LastSizeMultiplier = 1f;
-                marker.Rect.sizeDelta = marker.Icon
-                    ? new Vector2(72f, 28f) : new Vector2(73f, 28f);
+                marker.LastSizeMultiplier = multiplier;
+                marker.Rect.sizeDelta = new Vector2(marker.Icon ? 72f : 73f, 28f) * multiplier;
                 if (marker.Icon)
-                    ((RectTransform)marker.Icon.transform).sizeDelta = new Vector2(23f, 23f);
+                    ((RectTransform)marker.Icon.transform).sizeDelta = Vector2.one * 23f * multiplier;
                 if (marker.Text)
-                    marker.Text.fontSize = marker.Icon ? 14 : 15;
+                    marker.Text.fontSize = Mathf.RoundToInt((marker.Icon ? 14f : 15f) * multiplier);
             }
             var uiCam = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(

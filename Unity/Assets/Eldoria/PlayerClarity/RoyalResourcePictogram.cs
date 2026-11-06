@@ -11,6 +11,7 @@ namespace Eldoria.PlayerClarity
     /// </summary>
     public enum ResourcePictogramKind { Wood, Stone, Food }
 
+    [RequireComponent(typeof(CanvasRenderer))]
     public sealed class RoyalResourcePictogram : MaskableGraphic
     {
         [SerializeField] private ResourcePictogramKind kind;

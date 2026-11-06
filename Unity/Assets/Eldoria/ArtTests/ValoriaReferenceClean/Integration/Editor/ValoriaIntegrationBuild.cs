@@ -921,6 +921,11 @@ namespace Eldoria.ReferenceClean.Editor {
        state.WorldCreatureLocations.Single(x=>x.TargetId==id).Level;
       Need(text&&text.text.Replace(" ","")=="Nv."+level,"Displayed tier disagrees with saved node: "+id);
       Need(marker.GetComponentsInChildren<Graphic>().All(x=>!x.raycastTarget),"Map labels intercept pointer input");
+      if(resources.Any(x=>x.TargetId==id)){
+       var pictogram=marker.GetComponentInChildren<Eldoria.PlayerClarity.RoyalResourcePictogram>();
+       Need(pictogram&&pictogram.GetComponent<CanvasRenderer>()&&pictogram.canvasRenderer.materialCount>0,
+        "Resource pictogram has no actual rendering component/material: "+id);
+      }
       var collider=target.GetComponent<Collider>();
       Need(collider,"The resource must retain its actual clickable hotspot");
       var touch=h.PlayerCamera.WorldToScreenPoint(collider.bounds.center);
