@@ -48,6 +48,9 @@ jobs:
             /tools/workflow-recovery/
             /tools/work-status/
             /tools/documentation-triage/
+            /tools/license-compliance/
+            /docs/project-organization/LICENSE_PROVENANCE_EVIDENCE_20261106.json
+            /pipeline/asset-vault/clean-production-shelf-v1.json
             /tools/workstream-lease/
             /.github/workflows/valoria-reference-clean.yml
             /.github/workflows/valoria-windows-chromium-qa.yml
@@ -76,6 +79,10 @@ jobs:
         run: |
           node --test tools/documentation-triage/report.test.mjs
           node tools/documentation-triage/report.mjs --format markdown >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify license evidence integrity and fail-closed vendor import safeguards
+        run: |
+          node --test tools/license-compliance/public-source-gate.test.mjs
+          node tools/license-compliance/public-source-gate.mjs --verify-ledger
       - name: Test read-only closeout diagnostics (no Windows, no game build)
         run: node --test tools/closeout/closeout.test.mjs
       - name: Test recoverable native outputs and bounded read-only status
