@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T10:19:29.203Z",
+  "updated_at": "2026-11-06T10:36:16.936Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6330,9 +6330,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "phase": "PR162_EXACT_NATIVE_CERTIFICATION",
+      "phase": "PR162_POSTMERGE_VALIDATION",
       "dependency": "Construction native42189025597 completed SUCCESS and its owner released Windows. PR162 now claims it for exact final source.",
-      "next": "Finish exact native certification and merge PR162. User reiterated explicit APK+WebGL publication after integration on2026-11-06; then take released canonical main delivery scope, preserve original Android signing/package/save/versionCode>20 and existing restricted itch channel. Existing publication automation6aed0cc2f0308191b29a13b542c886aa must not duplicate active delivery.",
+      "next": "Merge exact certified head, verify main, then transfer own runner lease to canonical main publication workstream for APK and WebGL delivery.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6377,10 +6377,9 @@
       "last_verified": {
         "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
         "native_run": 42200606212,
-        "native_job": 127834691766,
-        "completed": "Compile, three marches, Aldric including destroy-during-load cleanup, integrated225-check visual probe including icon renderer assertions, EditMode PASS",
-        "pending": "Full PlayMode executing; native Windows build, exact artifact visual inspection, merge/main validation",
-        "previous_native": "1928dda216 EditMode PASS;74/75 PlayMode, existing Aldric early-disposal race confirmed and now corrected; screenshots exposed missing icon renderer and blurred font raster, corrected"
+        "result": "SUCCESS: 216/216 EditMode, 75/75 PlayMode, 225 integration checks; actual node/welcome captures reviewed at four resolutions; three marches and Aldric import destruction regression PASS",
+        "pending": "Merge, main validation, authorized APK and WebGL publication",
+        "physical_android_tested": false
       },
       "native_lease": {
         "owner": "codex-pr162-completion-23287cf1c126",
