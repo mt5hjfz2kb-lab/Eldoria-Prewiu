@@ -1180,7 +1180,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     var caption = item.Label.rectTransform;
                     caption.anchorMin = caption.anchorMax = caption.pivot =
                         new Vector2(.5f, .5f);
-                    SetWidthAndHeight(caption, cellWidth - 2f, 20f);
+                    SetWidthAndHeight(caption, cellWidth - 2f, 32f);
                     caption.anchoredPosition =
                         new Vector2(0f, -buttonHeight * .33f);
                     item.Label.fontSize = Mathf.RoundToInt(Mathf.Clamp(
@@ -1191,6 +1191,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     item.Label.color = item.Button.interactable ? Ivory : new Color(.54f, .55f, .56f);
                     item.Label.Put(item.Label.text.ToUpperInvariant());
                     item.Label.horizontalOverflow = HorizontalWrapMode.Overflow;
+                    item.Label.verticalOverflow = VerticalWrapMode.Overflow;
                     while (item.Label.fontSize > 11 && item.Label.preferredWidth > caption.rect.width - 2f)
                         item.Label.fontSize--;
                 }

@@ -588,6 +588,8 @@ namespace Eldoria.Tests
                 Assert.That(navigationCaption, Is.Not.Null);
                 Assert.That(navigationCaption.preferredWidth, Is.LessThanOrEqualTo(navigationCaption.rectTransform.rect.width + 1f),
                     "Complete approved navigation labels must fit without truncation");
+                Assert.That(navigationCaption.preferredHeight, Is.LessThanOrEqualTo(navigationCaption.rectTransform.rect.height + 1f),
+                    "Readable navigation type must have enough line height to render");
                 string section = Member(entry, "Section").ToString();
                 if (section == "Army" || section == "World") continue;
                 var button = Member(entry, "Button") as Button;
