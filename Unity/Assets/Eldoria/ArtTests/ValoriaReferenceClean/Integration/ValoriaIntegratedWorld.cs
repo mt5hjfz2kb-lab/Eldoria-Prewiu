@@ -351,6 +351,15 @@ namespace Eldoria.ReferenceClean {
    var safe=UIVisibleSceneViewport();
    if(!camera||safe.width<=.08f||safe.height<=.08f)return;
    var points=FocusPoints(target);
+   var hotspot=target.GetComponent<WorldHotspot>();
+   string focusId=hotspot?hotspot.Id:"";
+   bool withMarker=InWorld&&(focusId.StartsWith("region1:",StringComparison.Ordinal)||
+    focusId=="forest-valoria"||focusId=="quarry-valoria"||focusId=="meat-valoria"||
+    focusId.StartsWith("hunt-",StringComparison.Ordinal)||focusId=="corrupt-scout"||
+    focusId=="engendro-valoria"||focusId=="ash-stalker-valoria");
+   // Frame the same anchor used by the real resource/level marker, not only
+   // the smaller visible mesh. Reserve its physical footprint below the HUD.
+   if(withMarker)points.Add(Eldoria.PlayerClarityRuntime.LabelAnchor(target,false));
    if(!ProjectFocus(camera,points,out var projected)){
     // A selected world site can lie behind the current near-view camera.
     // Move to its real site before fitting; rejecting projection here made
@@ -368,8 +377,11 @@ namespace Eldoria.ReferenceClean {
    // boxes or after off-screen portrait/desktop camera recomposition.
    float bottomClearance=!InWorld&&Hud.GetComponent<RoyalGoldV2Hud>()?.
        ChronicleIllustratedBuildingVisible==true ? .036f : .012f;
-   var padded=Rect.MinMaxRect(safe.xMin+.012f,safe.yMin+bottomClearance,
-       safe.xMax-.012f,safe.yMax-.012f);
+   float padX=withMarker?Mathf.Max(.012f,40f/Mathf.Max(1f,camera.pixelRect.width)):.012f;
+   float padY=withMarker?Mathf.Max(.012f,18f/Mathf.Max(1f,camera.pixelRect.height)):.012f;
+   var padded=Rect.MinMaxRect(safe.xMin+padX,safe.yMin+Mathf.Max(bottomClearance,padY),
+       safe.xMax-padX,safe.yMax-padY);
+   if(padded.width<=.01f||padded.height<=.01f)return;
    for(int attempt=0;attempt<5;attempt++){
     if(!ProjectFocus(camera,points,out projected))break;
     if(projected.xMin>=padded.xMin&&projected.xMax<=padded.xMax&&projected.yMin>=padded.yMin&&projected.yMax<=padded.yMax){var context=Hud.GetComponent<RoyalGoldV3ContextHud>();if(context)context.SynchronizeNow();return;}
