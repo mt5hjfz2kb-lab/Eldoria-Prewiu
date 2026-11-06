@@ -1,0 +1,327 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-11-06",
+  "scope": "Read-only repo audit of Unity art, source files, Tripo and UPM packages; no owner-account receipts, downloaded APK build analysis or legal certification.",
+  "source_commit": "5cb3338267a823a26afdc7040189c43e2964674c",
+  "repo": "mt5hjfz2kb-lab/Eldoria-Prewiu",
+  "repo_visibility": "public",
+  "visibility_verified": "2026-11-06",
+  "method": "Repository tracked paths and internal audit manifests, official vendor EULA and source terms. Presence/identity is not proof of licensing or rights to redistribute. Risk is operational, not a legal finding.",
+  "definitions": {
+    "CRITICAL": "Evidence of a specific redistribution restriction plus public raw files or nested third-party rights; immediate human/owner action recommended",
+    "HIGH": "Raw public sources or game assets lacking license acquisition/derivation evidence",
+    "MEDIUM": "Notices or traceability requirements; no permission claim without per-artifact proof"
+  },
+  "risk_counts": {
+    "HIGH": 10,
+    "CRITICAL": 1,
+    "MEDIUM": 5
+  },
+  "families": [
+    {
+      "id": "assetstore-slavic",
+      "category": "Unity Asset Store art",
+      "publisher": "EmacEArt",
+      "repo_path": "Unity/Assets/EmaceArt/Slavic World Free",
+      "rights_classification": "STORE_STANDARD_EULA_LISTING_NO_ENTITLEMENT_PROOF",
+      "source_url": "https://assetstore.unity.com/packages/3d/environments/fantasy/slavic-medieval-village-free-modular-environment-kit-167010",
+      "rights_evidence": "Folder and publisher INFO exist; store listing standard EULA, but exact acquired SKU/version and account receipt not established. Seller README points to separate paid pack; do not confuse.",
+      "risk": "HIGH",
+      "proof_required": [
+        "Unity account My Assets acquisition/download record with matching SKU and licensed entity",
+        "Exact package version/original licence and no nonstandard restrictions",
+        "Public raw-source repository distribution permission or removal from public exposure",
+        "Unity BuildReport dependency mapping"
+      ]
+    },
+    {
+      "id": "assetstore-mega",
+      "category": "Unity Asset Store art",
+      "publisher": "karboosx",
+      "repo_path": "Unity/Assets/Mega Fantasy Props Pack",
+      "rights_classification": "STORE_STANDARD_EULA_LISTING_NO_ENTITLEMENT_PROOF",
+      "source_url": "https://assetstore.unity.com/packages/3d/environments/fantasy/mega-fantasy-props-pack-87811",
+      "rights_evidence": "Store listing Standard EULA; bundled README contains help/support instructions but no acquisition-specific licence receipt.",
+      "risk": "HIGH",
+      "proof_required": [
+        "My Assets account receipt/SKU and version for this content",
+        "Public raw-source permission separately from embedded game use",
+        "Unity BuildReport dependency mapping"
+      ]
+    },
+    {
+      "id": "assetstore-nature",
+      "category": "Unity Asset Store art",
+      "publisher": "Shapes",
+      "repo_path": "Unity/Assets/NatureStarterKit2",
+      "rights_classification": "STORE_STANDARD_EULA_LISTING_NO_ENTITLEMENT_PROOF",
+      "source_url": "https://assetstore.unity.com/packages/3d/environments/nature-starter-kit-2-52977",
+      "rights_evidence": "Bundled info.txt states content can be used in commercial products; does not grant unrestricted source-file redistribution. Original purchase/download licence not attached to reviewed asset files.",
+      "risk": "HIGH",
+      "proof_required": [
+        "My Assets receipt/version (Nature Starter Kit 2 v1.0 where matched)",
+        "Check restricted or publisher-specific terms, including embedded scripts",
+        "Separate permission for public source files if retained"
+      ]
+    },
+    {
+      "id": "assetstore-bublik",
+      "category": "Unity Asset Store art",
+      "publisher": "Bublik",
+      "repo_path": "Unity/Assets/Bublik/Simple Modular Castle Assets",
+      "rights_classification": "STORE_STANDARD_EULA_LISTING_NO_ENTITLEMENT_PROOF",
+      "source_url": "https://assetstore.unity.com/packages/3d/props/simple-modular-castle-assets-309297",
+      "rights_evidence": "Publisher and listing correspond to tracked folder; Standard EULA listing, but owner's specific entitlement not verified.",
+      "risk": "HIGH",
+      "proof_required": [
+        "Exact account acquisition and package version",
+        "Embedded use vs GitHub raw source clearance",
+        "Determine whether current build references these prefabs"
+      ]
+    },
+    {
+      "id": "assetstore-polyone",
+      "category": "Unity Asset Store art",
+      "publisher": "PolyOne",
+      "repo_path": "Unity/Assets/PolyOne/Free Modular Terrain",
+      "rights_classification": "LISTING_AND_ENTITLEMENT_UNVERIFIED",
+      "source_url": null,
+      "rights_evidence": "Tracked external supplier folder confirmed, but exact official SKU/version and end-user licensing record not established from reviewed files.",
+      "risk": "HIGH",
+      "proof_required": [
+        "Exact Unity store listing SKU, publisher and legal terms",
+        "Entitlement, original download/version",
+        "Build dependency check and public raw-source treatment"
+      ]
+    },
+    {
+      "id": "assetstore-holotna",
+      "category": "Unity Asset Store art",
+      "publisher": "Holotna",
+      "repo_path": "Unity/Assets/Holotna/Mountain",
+      "rights_classification": "STORE_STANDARD_EULA_LISTING_NO_ENTITLEMENT_PROOF",
+      "source_url": "https://assetstore.unity.com/packages/3d/environments/landscapes/mountain-stylized-fantasy-environment-307488",
+      "rights_evidence": "Official listing: Mountain - Stylized Fantasy Environment, Standard Asset Store EULA and Free at time of check; acquisition/version still unverified.",
+      "risk": "HIGH",
+      "proof_required": [
+        "My Assets SKU/version and licensed party",
+        "Public source redistribution permission or remove from public exposure",
+        "Actual Unity usage and dependency classification"
+      ]
+    },
+    {
+      "id": "assetstore-tree-pack",
+      "category": "Unity Asset Store art with third-party textures",
+      "publisher": "ALIyerEdon",
+      "repo_path": "Unity/Assets/Tree_Packs/URP_Tree_Pack",
+      "rights_classification": "THIRD_PARTY_TEXTURE_REDISTRIBUTION_WARNING",
+      "source_url": "https://assetstore.unity.com",
+      "rights_evidence": "Tracked Doc/1_Readme.txt mentions URP Tree Pack 11 (exact SKU requires cross-check). Doc/2_Notices.txt says some textures use Textures.com and are not redistributable by default. Terms distinguish embedded game from independent source distribution.",
+      "risk": "CRITICAL",
+      "proof_required": [
+        "Identify exact URP Tree Pack SKU/version/acquisition",
+        "Match Textures.com textures, third-party notices and any publisher sublicensing",
+        "Remove unlicensed public raw exposure by owner-approved coordinated workflow or obtain explicit rights",
+        "BuildReport game inclusion and required notices"
+      ]
+    },
+    {
+      "id": "quaternius",
+      "category": "Free/third-party model source",
+      "publisher": "Quaternius",
+      "repo_path": "Unity/Assets/WorldPackCompare/Quaternius/FBX",
+      "rights_classification": "SOURCE_LICENSE_VERSION_AMBIGUOUS",
+      "source_url": "https://quaternius.com/license.html",
+      "rights_evidence": "Three FBX models tracked. Current FAQ states CC0; newer QAL v1.0 dated 2026-08-28 permits commercial product use but prohibits distributing assets themselves. No pinned per-file acquisition/licence evidence supplied.",
+      "risk": "HIGH",
+      "proof_required": [
+        "Original download URL, exact pack and date",
+        "Saved licence at the time of download (CC0 grant versus QAL)",
+        "Do not assume raw GitHub publication is permitted under new QAL; reconcile FAQ conflict"
+      ]
+    },
+    {
+      "id": "valoria-prod-26",
+      "category": "Original/AI/third-party uncertain derived meshes",
+      "publisher": "Mixed Eldoria/Tripo/Blender origins",
+      "repo_path": "pipeline/asset-vault/clean-production-shelf-v1.json",
+      "rights_classification": "PRODUCTION_GRADE_NOT_RIGHTS_CERTIFIED",
+      "source_url": null,
+      "rights_evidence": "26 classified shelf items; all explicitly set license_certified:false (4 production + 20 conditional + 1 landmark + 1 blocked archive); these ratings cover visual/technical functions only.",
+      "risk": "HIGH",
+      "proof_required": [
+        "Identify creator and chain of title per final GLB + textures",
+        "Record original image/texture/reference licence and model derivation",
+        "Link provenance to active Unity prefab/Resources mapping",
+        "Separately clear public source and player embedding"
+      ]
+    },
+    {
+      "id": "tripo-spawnling",
+      "category": "AI-generated models",
+      "publisher": "Tripo API",
+      "repo_path": "ArtSource/World4X/Spawnling_v1",
+      "rights_classification": "GENERATED_PLAN_AT_TIME_UNKNOWN",
+      "source_url": "https://developers.tripo3d.ai/en/terms",
+      "rights_evidence": "Read-only catalog records task ID, 20 historical credits, raw/optimized/editable hashes; no paid/free account status and no license snapshot tied to generation was verified.",
+      "risk": "HIGH",
+      "proof_required": [
+        "Generation plan and API tier at task date; original invoice or credit record",
+        "Rights in source input image/prompt, AI provider's applicable terms/version",
+        "Per-model chain-of-title, published game vs standalone model use"
+      ]
+    },
+    {
+      "id": "tripo-boar",
+      "category": "AI-generated models",
+      "publisher": "Tripo API",
+      "repo_path": "ArtSource/World4X/RockBoar_v1",
+      "rights_classification": "GENERATED_PLAN_AT_TIME_UNKNOWN",
+      "source_url": "https://developers.tripo3d.ai/en/terms",
+      "rights_evidence": "Read-only catalog proves task/outputs and 20 credits but not fee entitlement/licensing tier at creation; technical QA != rights.",
+      "risk": "HIGH",
+      "proof_required": [
+        "Generation tier at task date; proof of paid-account rights if needed",
+        "Copyright clearance of generation inputs and edits",
+        "Record whether game includes this model"
+      ]
+    },
+    {
+      "id": "tripo-focus",
+      "category": "AI-generated models",
+      "publisher": "Tripo API",
+      "repo_path": "ArtSource/World4X/RiftFocus_v1",
+      "rights_classification": "GENERATED_PLAN_AT_TIME_UNKNOWN",
+      "source_url": "https://developers.tripo3d.ai/en/terms",
+      "rights_evidence": "Read-only catalog confirms task and 20 credits; art-only candidate, not approved gameplay object. No account-specific license proof.",
+      "risk": "MEDIUM",
+      "proof_required": [
+        "Generation plan and receipt of 20-credit task",
+        "Rights of referenced concept image and use in derived models",
+        "Retain sandbox/no gameplay promotion until separately cleared"
+      ]
+    },
+    {
+      "id": "upm-unitysplats",
+      "category": "Third-party source code dependency",
+      "publisher": "ARLOOPA and upstream MIT contributors",
+      "repo_path": "Unity/Packages/manifest.json:com.arloopa.unitysplats",
+      "rights_classification": "OPEN_SOURCE_TERMS_FOUND_NOTICES_PENDING",
+      "source_url": "https://github.com/arloopa/UnitySplats",
+      "rights_evidence": "Git dependency pinned in packages-lock to revision 6c0258189a2b124af1282fa9236fd9b6637f1a1a; upstream documents MIT and several MIT/other third-party notices. No full installed package notice-set reviewed in this audit.",
+      "risk": "MEDIUM",
+      "proof_required": [
+        "Bundle MIT copyright and required transitive notices appropriate to shipped Player",
+        "Review third-party native libraries included by pinned revision",
+        "Check whether code actually included in APK/WebGL"
+      ]
+    },
+    {
+      "id": "upm-gltfast",
+      "category": "Third-party source code dependency",
+      "publisher": "Unity Technologies",
+      "repo_path": "Unity/Packages/manifest.json:com.unity.cloud.gltfast",
+      "rights_classification": "OPEN_SOURCE_TERMS_FOUND_NOTICES_PENDING",
+      "source_url": "https://github.com/Unity-Technologies/com.unity.cloud.gltfast",
+      "rights_evidence": "UPM v6.14.1; upstream repository Apache-2.0. Exact package notices and runtime build inclusion remain to verify.",
+      "risk": "MEDIUM",
+      "proof_required": [
+        "Retain Apache-2.0 license/copyright/NOTICE where applicable",
+        "Verify package 6.14.1 content and ship-target binaries"
+      ]
+    },
+    {
+      "id": "upm-webp",
+      "category": "Transitive source/native code dependency",
+      "publisher": "netpyoung; libwebp/WebM",
+      "repo_path": "Unity/Packages/packages-lock.json:com.netpyoung.webp",
+      "rights_classification": "MULTIPLE_OPEN_SOURCE_NOTICES_PENDING",
+      "source_url": "https://github.com/netpyoung/unity.webp",
+      "rights_evidence": "Lock v0.3.22; upstream unity.webp MIT; bundled libwebp BSD and possible prior Apache components. Exact installed third-party notices not inspected.",
+      "risk": "MEDIUM",
+      "proof_required": [
+        "Inventory libwebp, WebGL plugin and transitive components for Android/WebGL",
+        "Carry each required MIT/BSD/other notice in release legal material"
+      ]
+    },
+    {
+      "id": "project-web-ui-assets",
+      "category": "Web prototype/UI authored and AI imagery",
+      "publisher": "Mixed/unknown",
+      "repo_path": "v0220/index.html, Unity/Assets/Eldoria/UI/**, ArtSource/Eldoria/HeroesHall",
+      "rights_classification": "SOURCE_RIGHTS_NOT_CROSS_REFERENCED",
+      "source_url": null,
+      "rights_evidence": "Earlier UNITY_ASSET_AUDIT.md marks a base64 Aldric portrait as provisional and says to trace provenance; it is not a source-rights clearance of every new UI image or font.",
+      "risk": "MEDIUM",
+      "proof_required": [
+        "Inventory actual UI images, source prompts and reference/photo rights",
+        "Audit used fonts/SFX and rights for player-facing exports",
+        "Confirm no Asset Store source used as model-training or unlicensed generation input"
+      ]
+    }
+  ],
+  "cross_cutting": {
+    "store_packs_tracked": 7,
+    "quaternius_tracked_fbx": 3,
+    "clean_production_shelf_items": 26,
+    "shelf_license_certified_true": 0,
+    "shelf_license_certified_false": 26,
+    "tripo_api_catalog_task_families": 3,
+    "unity_runtime_references": "Unity/Assets/Eldoria/Resources/Valoria/ExternalAssetLibrary.asset includes Slavic, Mega, Nature and other package GUID references. Unity Resources dependencies need native build confirmation.",
+    "sources": [
+      {
+        "repo": "Unity/Assets/Tree_Packs/URP_Tree_Pack/Doc/2_Notices.txt",
+        "blob_sha": "ed70cf3f0316876560240c33f9cf82d249292835"
+      },
+      {
+        "repo": "Unity/Assets/NatureStarterKit2/info.txt",
+        "blob_sha": "6ccbf6ce82c253a54df31138e590bb29c26355da"
+      },
+      {
+        "repo": "Unity/Assets/Mega Fantasy Props Pack/README.txt",
+        "blob_sha": "18ba32d8b7e1426e6f66ed3334bcf10bcf770ce6"
+      },
+      {
+        "repo": "Unity/Assets/EmaceArt/Slavic World Free/Thanks and checkout this/Info.txt",
+        "blob_sha": "8615291bbcd16148c0a11cbb9a16460fb61a511e"
+      },
+      {
+        "repo": "Unity/Assets/Eldoria/Resources/Valoria/ExternalAssetLibrary.asset",
+        "blob_sha": "1dd5b91f1fb41a62416b6e0a6b4dfdf3d63b5904"
+      },
+      {
+        "repo": "pipeline/asset-vault/clean-production-shelf-v1.json",
+        "blob_sha": "0af7e45e58b45fc705691dbd57f7eb175c0c7c5f"
+      },
+      {
+        "repo": "pipeline/tripo-art-brain/catalog.json",
+        "blob_sha": "d303ec970b967c7fc6552f9b0dc015180b259d96"
+      }
+    ]
+  },
+  "external_sources": [
+    "https://assetstore.unity.com/browse/eula-faq",
+    "https://unity.com/legal/as-terms",
+    "https://www.textures.com/faq-license",
+    "https://quaternius.com/faq.html",
+    "https://quaternius.com/license.html",
+    "https://developers.tripo3d.ai/en/terms",
+    "https://www.tripo3d.ai/help/privacy-policy/how-to-use-tripo-models-commercially",
+    "https://github.com/arloopa/UnitySplats",
+    "https://github.com/Unity-Technologies/com.unity.cloud.gltfast",
+    "https://github.com/netpyoung/unity.webp",
+    "https://docs.unity3d.com/es/current/ScriptReference/Resources.html"
+  ],
+  "unknowns": [
+    "Exact owner's Asset Store/My Assets acquisition licence and receipts are not accessible through project GitHub",
+    "Tripo API paid/free status and historical terms for task dates not documented in the checked source",
+    "Current APK/WebGL inclusion bill-of-materials and legal notices not inspected",
+    "Third-party source redistribution clearance for public Git history not demonstrated",
+    "Newer QAL vs Quaternius CC0 FAQ cannot be resolved without per-asset provenance"
+  ],
+  "non_actions": [
+    "No asset or licence was purchased",
+    "No assets, tools, game, repo visibility, Git history or delivery changed",
+    "No commercial legal clearance asserted"
+  ]
+}
