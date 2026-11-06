@@ -750,8 +750,11 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             var battle=selected.Battle;
             bool scouting=battle==null&&selected.Type=="exploration";
+            // Hunting records have no combat rounds/health. Showing 0 rounds
+            // and 0% life under a victory heading falsely implies a battle.
+            bool hunt=battle!=null&&(battle.TargetId=="hunt-wolf"||battle.TargetId=="hunt-boar");
             bool hasNarrative=scouting&&!string.IsNullOrEmpty(selected.DiscoveryText);
-            reportMetricCount=battle!=null?4:0;
+            reportMetricCount=battle!=null?(hunt?2:4):0;
             scoutFamily=hasNarrative?selected.DiscoveryKind:-1;
             if(scoutVignette!=null)
                 scoutVignette.gameObject.SetActive(hasNarrative&&scoutFamily>=0&&
@@ -768,12 +771,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 scouting?(compact?"HALLAZGO REGISTRADO":
                 "CUADERNO DEL CARTÓGRAFO · HALLAZGO REGISTRADO"):
                 compact?"ARCHIVO REAL":"ARCHIVO REAL · MENSAJE RECIBIDO");
-            reportHeading.Put(scouting&&!string.IsNullOrEmpty(selected.Subtitle)?
+            reportHeading.Put(hunt?(battle.Won?"Cacería completada":"Cacería sin éxito"):
+                scouting&&!string.IsNullOrEmpty(selected.Subtitle)?
                 selected.Subtitle:selected.Title);
             // Result and family are spelled out in the real title/kicker.
             // Let the raised wax seal remain a legible original engraving.
             reportSeal.Put("");
-            reportOrigin.Put(battle!=null?"ENCUENTRO · "+TargetName(battle.TargetId):
+            reportOrigin.Put(hunt?"CACERÍA · "+TargetName(battle.TargetId):
+                battle!=null?"ENCUENTRO · "+TargetName(battle.TargetId):
                 scouting&&hasNarrative?
                     "ORIGEN · "+(selected.DiscoveryKind==0?"FRONTERA":
                         selected.DiscoveryKind==1?"CAMINO":
@@ -800,7 +805,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     "COMPOSICIÓN PROPIA · desglose no archivado en este informe");
                 bool evolved=!string.IsNullOrEmpty(battle.Outcome);
                 reportSection.Put(evolved?"MI MARCHA · ANÁLISIS OPCIONAL":"OBSERVACIONES DEL ENCUENTRO");
-                detail.Put(ObservedReason(battle)+(evolved?
+                detail.Put((hunt?(battle.Won?"La cacería regresó con su botín.":"La cacería no tuvo éxito."):ObservedReason(battle))+(evolved&&!hunt?
                     "\n\nDESGASTE OBSERVADO · "+battle.ObservedAttrition+
                     "\n\nDAÑO PROPIO CAUSADO · "+battle.OwnDamageByFamily+
                     "\n\nDAÑO PROPIO RECIBIDO · "+battle.OwnReceivedByFamily+
