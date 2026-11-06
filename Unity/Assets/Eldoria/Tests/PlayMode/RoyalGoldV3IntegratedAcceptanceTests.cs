@@ -97,6 +97,21 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator RepeatedCityFocusPreservesCameraAltitude()
+        {
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var camera=Member(host,"PlayerCamera") as Camera;
+            Assert.That(camera,Is.Not.Null);
+            var target=Call(host,"FindTarget","bastion") as Component;
+            Assert.That(target,Is.Not.Null);
+            float altitude=camera.transform.position.y;
+            for(int i=0;i<12;i++)Call(host,"Focus",target.gameObject);
+            Assert.That(camera.transform.position.y,Is.EqualTo(altitude).Within(.01f),
+                "Repeated objective focus must not lower the camera into terrain");
+        }
+
+        [UnityTest]
         public IEnumerator ChronicleRealKeepsNativeBuildingIllustrationWithCanonicalOffer()
         {
             Component host = null, hud = null;
@@ -809,4 +824,5 @@ namespace Eldoria.Tests
 
     }
 }
+
 

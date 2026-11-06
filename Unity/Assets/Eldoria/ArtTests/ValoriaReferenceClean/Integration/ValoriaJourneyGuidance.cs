@@ -194,9 +194,9 @@ namespace Eldoria.ReferenceClean {
   string ContextHint(){
    var s=city.Gateway.Snapshot();bool en=host.English;
    if(s.March.Phase!="idle")return host.MarchStatus(s)+" · "+RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,city.Clock.UtcTicks,en)+"\n"+(s.March.Phase=="returning"?host.Reward(s.March.PendingWood,s.March.PendingStone)+(en?" on arrival":" al llegar"):(en?"The route marker follows your expedition.":"El estandarte señala a tu expedición."));
-   if(s.ChapterThree.InvestigationEndsUtcTicks>city.Clock.UtcTicks)return (en?"Aldric investigates the fissure · ":"Aldric investiga la fisura · ")+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,city.Clock.UtcTicks,en);
+   if(s.ChapterThree.InvestigationEndsUtcTicks>city.Clock.UtcTicks)return (en?"Aldric investigates · ":"Aldric investiga · ")+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,city.Clock.UtcTicks,en)+(en?"\nMeanwhile, upgrade the Sawmill, Barracks and Granary to II.":"\nMientras, mejora Aserradero, Cuartel y Granero a II.");
    if(s.BuildingCompletesUtcTicks>0)return (en?"Construction paid · ":"Obra pagada · ")+RoyalFormatting.Remaining(s.BuildingCompletesUtcTicks,city.Clock.UtcTicks,en);
-   if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+SliceRules.RecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en);
+   if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+s.PendingRecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en)+(en?"\nImprove your city or visit Vigilants with available troops.":"\nMejora la ciudad o visita Vigilantes con las tropas disponibles.");
    if(s.BastionUpgradeCompletesUtcTicks>0)return (en?"Bastion upgrade paid · ":"Mejora del Bastión pagada · ")+RoyalFormatting.Remaining(s.BastionUpgradeCompletesUtcTicks,city.Clock.UtcTicks,en);
    // Teach the real first delivery in the existing contextual hint.
    if(UnityContextTutorial.NeedsMailboxOpening(s))
@@ -269,4 +269,5 @@ namespace Eldoria.ReferenceClean {
   }
  }
 }
+
 

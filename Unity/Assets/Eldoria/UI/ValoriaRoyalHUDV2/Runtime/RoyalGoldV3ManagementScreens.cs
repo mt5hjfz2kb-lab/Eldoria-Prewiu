@@ -657,6 +657,8 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 trainingTierChoices[i].gameObject.SetActive(training);
                 bool unlocked=i==0||s.BarracksLevel>=4;
+                trainingTierLabels[i].Put(i==0?"ARQUEROS T1":
+                    unlocked?"ARQUEROS T2":"T2 · REQUIERE CUARTEL IV");
                 trainingTierChoices[i].interactable=training&&!trainingActive&&unlocked;
                 trainingTierPortraits[i].color=!unlocked?
                     new Color(.36f,.39f,.43f,.57f):
@@ -721,7 +723,8 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 heroSlotButtons[i].gameObject.SetActive(!training);
                 heroSlotLabels[i].Put(string.IsNullOrEmpty(heroSlots[i])?
-                    (i==2?"HÉROE 3\nCERRADO":"HÉROE "+(i+1)+" · +"):
+                    (i==2?"NO DISPONIBLE EN ESTA VERSIÓN":
+                    i==1&&!s.ChapterThree.LyraRecruited?"APOYO · RECLUTA A LYRA":"HÉROE "+(i+1)+" · +"):
                     (i==0?"LÍDER · ":"APOYO · ")+HeroName(heroSlots[i]));
                 heroSlotButtons[i].interactable=i<2 &&
                     (i==0||s.ChapterThree.LyraRecruited);
@@ -1718,3 +1721,4 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+

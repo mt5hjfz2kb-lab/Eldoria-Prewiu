@@ -392,13 +392,15 @@ namespace Eldoria.ReferenceClean {
       }
       if(!ProjectFocus(camera,points,out projected))break;
      }
-     // Translate parallel to the picture plane. Using an arbitrary horizontal
-     // ground-plane ray and immediately clamping to a full-terrain footprint
-     // previously caused the selected model to re-enter an occluded HUD area.
+     // Preserve the requested screen translation without changing camera
+     // altitude on every selection/rotation. Movement along the view axis
+     // has no effect on an orthographic projection.
      Vector2 desired=padded.center;
      float x=(projected.center.x-desired.x)*2f*camera.orthographicSize*camera.aspect;
      float y=(projected.center.y-desired.y)*2f*camera.orthographicSize;
      var shift=camera.transform.right*x+camera.transform.up*y;
+     if(camera.orthographic&&Mathf.Abs(camera.transform.forward.y)>.001f)
+      shift-=camera.transform.forward*(shift.y/camera.transform.forward.y);
      if(InWorld)WorldNavigation.PanTo(WorldNavigation.target+new Vector3(shift.x,0,shift.z));
      else camera.transform.position+=shift;
     }else break;
@@ -427,6 +429,13 @@ namespace Eldoria.ReferenceClean {
      AddFocusRenderers(left?p.LeftAvailable:p.RightAvailable,points);
     }
    }else{
+    // Chapter-III sites own their imported geometry. Searching only the
+    // original Zone1 names fell back to a tiny hotspot instead of the scene
+    // feature, so nearby quarry scenery dominated the objective focus.
+    if(LocalGateway.IsChapterThreeTarget(id)){
+     AddFocusRenderers(target,points);
+     if(points.Count>0)return points;
+    }
     // Production resource models follow their saved logical sites; older
     // authored scenery is no longer the selection's rendered geometry.
     if(id=="forest-valoria"||id=="quarry-valoria"||
@@ -571,4 +580,5 @@ namespace Eldoria.ReferenceClean {
   string L(string es,string en)=>englishInterface?en:es;
  }
 }
+
 

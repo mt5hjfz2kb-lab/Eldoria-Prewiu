@@ -370,6 +370,9 @@ namespace Eldoria
             var go = model ? model : hot ? hot.gameObject : null;
             if (!go) return;
             var point = camera.WorldToScreenPoint(TopOf(go, building));
+            // The operation timer occupies the space above the roof. Keep
+            // the level beside the upper facade, with a physical-pixel gap.
+            if(building)point.y-=32f;
             if (point.z <= camera.nearClipPlane || !camera.pixelRect.Contains(point)) return;
             // The active Unity camera can target a dedicated RenderTexture
             // during native portrait/landscape evidence captures. Its pixels
@@ -508,3 +511,4 @@ namespace Eldoria
         }
     }
 }
+

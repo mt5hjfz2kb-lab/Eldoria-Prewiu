@@ -673,7 +673,12 @@ namespace Eldoria.UI.RoyalGold.V2
             float footerH=Mathf.Max(48f,reportFooter.preferredHeight/layoutUnit+10f);
             Position(reportFooter.rectTransform,26f,footerTop,width-52f,footerH);
             float totalHeight=Mathf.Max(viewportHeight+4f,footerTop+footerH+32f);
+            // Refresh runs while the reader is scrolling. Preserve the reading
+            // position; SelectRow explicitly resets it for a different report.
+            float readingOffset=detailSheet.anchoredPosition.y;
             Position(detailSheet,0f,0f,width,totalHeight);
+            detailSheet.anchoredPosition=new Vector2(0f,
+                Mathf.Clamp(readingOffset,0f,Mathf.Max(0f,(totalHeight-viewportHeight)*layoutUnit)));
             reportArtwork.Configure(reportMotif,reportMetricCount,cols,metricTop,
                 cardH,storyTop,storyHeight,footerTop+footerH,artPicture,layoutUnit);
         }
@@ -707,6 +712,11 @@ namespace Eldoria.UI.RoyalGold.V2
         static string HeroName(string id)=>id=="aldric+lyra"?"Sir Aldric y Lyra":id=="lyra"?"Lyra":id=="aldric"?"Sir Aldric":"—";
         static string TargetName(string id)
         {
+            if((id??"").StartsWith("vigilant:",StringComparison.Ordinal)&&
+                int.TryParse(id.Substring(9),out int stage)&&stage>0){
+                var encounter=EarlyRetentionRules.Stage(stage);
+                return "Etapa "+stage+" · "+encounter.Name;
+            }
             switch(id){case "corrupt-scout":return "Acechador Corrupto";case "engendro-valoria":return "Engendro";
                 case "hunt-wolf":return "Lobo";case "hunt-boar":return "Jabalí";case "ash-stalker-valoria":return "Acechador de Ceniza";
                 case "fissure-valoria":return "Fisura";default:return (id??"").StartsWith("vigilant:")?"Vigilante":"el enemigo";}
@@ -767,7 +777,7 @@ namespace Eldoria.UI.RoyalGold.V2
                         selected.DiscoveryKind==1?"CAMINO":
                         selected.DiscoveryKind==2?"SUMINISTROS":
                         selected.DiscoveryKind==3?"BRECHA":"ENCARGO"):
-                scouting?"ORIGEN · ENCARGO ANTERIOR":"ORIGEN · CORREO EXISTENTE");
+                scouting?"INFORME DE EXPLORACIÓN":"ARCHIVO DE VALORIA");
             reportDate.Put(selected.OccurredAtUtcTicks>0?
                 new DateTime(selected.OccurredAtUtcTicks,DateTimeKind.Utc).ToString("dd/MM/yy HH:mm"):"");
             if(battle!=null)
@@ -868,7 +878,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     var msg=list[i];
                     messageLabels[i].color=msg.Read?
                         new Color(.26f,.22f,.18f):new Color(.11f,.08f,.045f);
-                    messageLabels[i].Put(msg.Title);
+                    messageLabels[i].Put(msg.Battle!=null?TargetName(msg.Battle.TargetId):msg.Title);
                     messageUnreadDots[i].gameObject.SetActive(!msg.Read);
                     messageSurfaces[i].color=msg.Read?
                         new Color(.84f,.84f,.83f,.92f):Color.white;
@@ -879,8 +889,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     messageDates[i].color=new Color(.38f,.31f,.24f);
                     string preview=msg.Battle==null?msg.Subtitle:
                         (msg.Battle.EffectiveOutcome=="draw"?"Empate ante ":msg.Battle.EffectiveOutcome=="victory"?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId);
-                    if(window.rect.width<520f && preview.Length>22)
-                        preview=preview.Substring(0,19)+"…";
+                    // Let the measured two-line row wrap; a fixed 22-character
+                    // cut hid the encounter/stage on every narrow phone.
                     messageSubtitles[i].Put(preview);
                     messageDates[i].Put(msg.OccurredAtUtcTicks>0?new DateTime(msg.OccurredAtUtcTicks,DateTimeKind.Utc).ToString("dd/MM HH:mm"):"");
                     string icon=msg.Category=="recompensas"?"mail-reward":msg.Category=="narrativa"?"mail-narrative":
@@ -962,3 +972,4 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+

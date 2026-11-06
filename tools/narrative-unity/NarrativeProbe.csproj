@@ -8,7 +8,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="NarrativeProbe.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core/RoyalContracts.cs"/>
+    <Compile Include="../../Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings/ExistingSliceBinding.cs"/>
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/*.cs"/>
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs"/>
   </ItemGroup>
 </Project>
+

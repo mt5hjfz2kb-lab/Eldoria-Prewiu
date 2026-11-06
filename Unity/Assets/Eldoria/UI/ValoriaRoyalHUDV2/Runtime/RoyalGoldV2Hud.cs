@@ -40,7 +40,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private float lastWidth = -1f, lastHeight = -1f;
         private string lastDetails = "";
         private readonly string[] councilKeys = {"production","defense","civil"};
-        private readonly string[] councilNames = {"PRODUCCIÓN","DEFENSA","VIDA CIVIL"};
+        private readonly string[] councilNames = {"PRODUCCIÓN\n+260 madera · +180 piedra","DEFENSA\n+220 piedra · +100 poder","VIDA CIVIL\n+180 madera · +280 comida"};
         private static Font chronicleFont;
         private static Font ChronicleFont => chronicleFont ? chronicleFont :
             (chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif"));
@@ -627,13 +627,13 @@ namespace Eldoria.UI.RoyalGold.V2
             for(int i=0;i<3;i++)
             {
                 Top((RectTransform)councilChoice[i].transform,councilLeft+i*(councilWidth+3f),
-                    cardHeight-(portrait?47f:52f),councilWidth-2f,41f);
+                    cardHeight-64f,councilWidth-2f,58f);
                 // The original generic button inset of 8 units removed
                 // sixteen pixels from a three-column mobile council choice.
                 // Give its native text the actual 4-unit optical inset, so
                 // PRODUCCIÓN and VIDA CIVIL fit as readable single lines.
                 Stretch(councilCaptions[i].rectTransform,4f);
-                councilCaptions[i].fontSize=portrait?15:17;
+                councilCaptions[i].fontSize=portrait?14:16;
             }
             // Use an optical inset for *labels*, not for action hit targets.
             // Keep the real full-height button and its existing callbacks.
@@ -1394,3 +1394,4 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+

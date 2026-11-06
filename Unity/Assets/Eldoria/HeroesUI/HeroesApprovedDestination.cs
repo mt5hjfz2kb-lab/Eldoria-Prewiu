@@ -1519,7 +1519,7 @@ namespace Eldoria.HeroesUI
                 });
             HallControlArt(navMarches.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navMarches,5,navCell,navHeight,false);
-            var navRelicary=Button("Hall / nav reliquary","RELICARIO",
+            var navRelicary=Button("Hall / nav reliquary","RELICARIO\nPRÓXIMAMENTE",
                 navLeft+(navCell+navGap)*3f,navY,navCell,navHeight,()=>{},false);
             HallControlArt(navRelicary.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navRelicary,7,navCell,navHeight,false);
@@ -1578,3 +1578,4 @@ namespace Eldoria.HeroesUI
         }
     }
 }
+
