@@ -81,3 +81,27 @@ jobs:
           PY
           git commit -m "feat(forja): unpack verified independent Unity sprites and skin sources"
           git push origin HEAD:refs/heads/feature/forja-oscura-native-proof-20261107
+
+  production-proof:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/forja-oscura
+            Unity/Assets/EldoriaVisualKit
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Validate every PNG CRC and Unity asmdef
+        run: python3 tools/forja-oscura/verify-production.py
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Parse real five C-sharp sources with Roslyn
+        run: dotnet run --project tools/forja-oscura/SyntaxAudit.csproj -c Release -- Unity/Assets/EldoriaVisualKit
+      - name: State exact scope of the result
+        run: echo 'FORJA_SYNTAX_AND_SPRITES_PASS; Unity engine compilation and native UI proof remain pending.'
