@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 314,
+  "revision": 315,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "PR163 exact post-hunt-report and landscape-cartouche QA. Build isolated branch WebGL native314; no publication, no clock/save edits. Native 216+77 and updated screenshots separately required.",
+  "checks": "PR163 exact truthful outbound context, post-hunt-report and landscape-cartouche QA. Build isolated branch WebGL native315; no publication, no clock/save edits. Full native tests and updated phone screenshots required.",
   "browser_backend": "windows"
 }

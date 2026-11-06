@@ -624,7 +624,16 @@ namespace Eldoria.ReferenceClean.Editor {
    Check(()=>{Capture(h,"integration-context-engendro-phone-landscape.png",844,390);
     Capture(h,"integration-context-engendro-phone-portrait.png",390,844);},
     "genuine selected Engendro context card in both mobile orientations");
-   Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Bastion II content boundary not reached");Need(h.Read("",false).MissionSteps.Length==5&&h.Read("",false).MissionSteps.All(step=>step.Done),"Completed Bastion II checklist does not reflect actual saved progression");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
+   Check(()=>{Click(h.Hud.Building.Primary.Button);
+    Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");
+    var outbound=h.Read("engendro-valoria",false).Building;
+    Need(outbound!=null&&outbound.OperationActive&&
+     outbound.Function.Contains("La marcha ya ha salido")&&
+     !outbound.Function.Contains("Confirma tu expedición antes de salir"),
+     "The Engendro card must not ask to send a march that is already outbound");
+    Capture(h,"integration-context-engendro-outbound-phone-landscape.png",844,390);
+    Capture(h,"integration-context-engendro-outbound-phone-portrait.png",390,844);
+    ((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Bastion II content boundary not reached");Need(h.Read("",false).MissionSteps.Length==5&&h.Read("",false).MissionSteps.All(step=>step.Done),"Completed Bastion II checklist does not reflect actual saved progression");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
    Check(()=>{foreach(string name in new[]{"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"})Need(SessionState.GetString(Flag+name,"")==FileHash(Path.Combine(UnityEngine.Application.persistentDataPath,name)),"Canonical save changed: "+name);},"canonical save byte hashes preserved");
    // Render the actual authored destinations through the same Royal UI and
    // production focus path that the player uses, after the progression probe.

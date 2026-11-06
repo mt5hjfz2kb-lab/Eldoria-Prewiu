@@ -583,7 +583,26 @@ namespace Eldoria.ReferenceClean {
     bool thisMarch=selectedMarch!=null;
     bool active=MarchCapacityRules.ActiveCount(s,city.Clock.UtcTicks)>=MarchCapacityRules.MaxConcurrentMarches;
     var b=new RoyalBuilding{Id=selected,Name=TargetName(selected),Function=DestinationSummary(selected,s),State=action.Label};
-    if(thisMarch){b.OperationActive=true;b.State=MarchStatus(selectedMarch);b.Time=RoyalFormatting.Remaining(selectedMarch.PhaseEndsUtcTicks,city.Clock.UtcTicks,english);b.Result=selectedMarch.Phase=="returning"?Reward(selectedMarch.PendingWood,selectedMarch.PendingStone)+L(" al llegar a Valoria"," on arrival at Valoria"):ExpectedReward(selected,s);b.Progress=(float)ZoneOneGatewayHost.TravelFraction(city.Clock.UtcTicks,selectedMarch.PhaseEndsUtcTicks,selectedMarch.Phase=="gathering"?SliceRules.GatherSeconds:SliceRules.TravelSeconds);}
+    if(thisMarch){
+     b.OperationActive=true;
+     b.State=MarchStatus(selectedMarch);
+     b.Time=RoyalFormatting.Remaining(selectedMarch.PhaseEndsUtcTicks,city.Clock.UtcTicks,english);
+     b.Result=selectedMarch.Phase=="returning"?
+      Reward(selectedMarch.PendingWood,selectedMarch.PendingStone)+L(" al llegar a Valoria"," on arrival at Valoria"):
+      ExpectedReward(selected,s);
+     b.Progress=(float)ZoneOneGatewayHost.TravelFraction(city.Clock.UtcTicks,selectedMarch.PhaseEndsUtcTicks,
+      selectedMarch.Phase=="gathering"?SliceRules.GatherSeconds:SliceRules.TravelSeconds);
+     // Never tell the player to send an expedition after their actual command
+     // has dispatched it. The canonical phase/timer remain the source of truth.
+     b.Function=selectedMarch.Phase=="outbound"?
+      L("La marcha ya ha salido. El resultado se determinará al llegar al objetivo; no necesitas volver a atacar.",
+        "The march has departed. The outcome will be decided on arrival; there is no need to attack again."):
+      selectedMarch.Phase=="gathering"?
+      L("La marcha está recogiendo recursos y volverá cuando termine.",
+        "The march is gathering resources and will return when finished."):
+      L("La marcha regresa a Valoria. Si obtuvo botín, se entregará cuando llegue.",
+        "The march is returning to Valoria. Any loot earned will be delivered on arrival.");
+    }
     else if(active)b.Requirements=L("Tres marchas activas. Espera a que regrese una.","Three active marches. Wait for one to return.");
     else if(selected=="engendro-valoria"&&!action.Enabled&&!s.EngendroDefeated)b.Requirements=L("Necesitas Bastión II, cuartel y una marcha confirmada.","Requires Bastion II, barracks and a confirmed march.");
     else if(!action.Enabled&&s.Available.Total<1)b.Requirements=L("No hay tropas disponibles para salir.","No troops are available to depart.");
