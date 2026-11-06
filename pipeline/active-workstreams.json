@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T11:52:33.654Z",
+  "updated_at": "2026-11-06T12:16:40.412Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -39,7 +39,10 @@
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs",
         "Unity/Assets/Eldoria/Scripts/Editor/EarlyRetentionEngagementNativeCapture.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Editor/AldricDialogueNativeCapture.cs",
-        ".github/workflows/ui-progression-cert.yml"
+        ".github/workflows/ui-progression-cert.yml",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanAndroidBuild.cs",
+        ".github/workflows/eldoria-family-android-build.yml",
+        "tools/android-updates/**"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -2341,7 +2344,7 @@
         "physical_mobile_tested": false,
         "published": false
       },
-      "next_action": "Android code21 build42212292004 continues untouched; repair legacy UI main lease routing and replace only pending WebGL299 request with the same Unity source plus workflow guard repair. Full native UI and exact browser QA remain required before publication."
+      "next_action": "Repair obsolete height-only portrait native fixture assertions against actual integrated width800 portrait scaler. Android build42212292004 compiled but497493588bytes exceeds450MiB installed updater; investigate exact packaging without degrading art or changing limit. WebGL42213699104 already passed live lease and building; preserve it.0EUR."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
