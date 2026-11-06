@@ -723,8 +723,8 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 heroSlotButtons[i].gameObject.SetActive(!training);
                 heroSlotLabels[i].Put(string.IsNullOrEmpty(heroSlots[i])?
-                    (i==2?"NO DISPONIBLE EN ESTA VERSIÓN":
-                    i==1&&!s.ChapterThree.LyraRecruited?"APOYO · RECLUTA A LYRA":"HÉROE "+(i+1)+" · +"):
+                    (i==2?"No disponible\nen esta versión":
+                    i==1&&!s.ChapterThree.LyraRecruited?"APOYO\nRecluta a Lyra":"HÉROE "+(i+1)+" · +"):
                     (i==0?"LÍDER · ":"APOYO · ")+HeroName(heroSlots[i]));
                 heroSlotButtons[i].interactable=i<2 &&
                     (i==0||s.ChapterThree.LyraRecruited);
@@ -1329,7 +1329,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
             // The owner's three vertical character cards own the top third;
             // they remain exactly three. The third stays narratively locked.
-            float heroTitleH=wide?39f:57f;
+            float heroTitleH=wide?56f:85f;
             Place(marchHeadingSurface,7f,2f,lw-14f,heroTitleH);
             Place(unitTitle.rectTransform,17f,5f,lw*.61f,heroTitleH-8f);
             unitTitle.fontSize=wide?23:30;
@@ -1364,7 +1364,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
                 else
                 {
-                    float nameH=Mathf.Clamp(cardHeight*.23f,37f,68f);
+                    float nameH=wide?Mathf.Clamp(cardHeight*.23f,54f,68f):
+                        Mathf.Min(104f,Mathf.Max(88f,cardHeight*.32f));
                     float apH=cardHeight-nameH-12f,apW=cardW-12f;
                     Place(heroPortraitViewports[i],6f,5f,apW,apH);
                     float imgW=Mathf.Min(apW-8f,apH*ratio);
