@@ -28,6 +28,9 @@ namespace Eldoria.ReferenceClean.Editor {
   static ValoriaIntegrationBuild(){EditorApplication.playModeStateChanged+=Entered;}
   static void Need(bool pass,string why){if(!pass)throw new InvalidOperationException(why);}
   // Advanced native fixtures still pass through the real first-entry UI.
+  // Keep this public entry point stable: the dialogue capture invokes it by
+  // reflection. Post-merge UI certification must run it before selecting any
+  // advanced screen, while the canonical main delivery lease is held.
   // The separate integration probe keeps its unnamed initial state and checks
   // invalid input, normalization, persistence and the first visible parchment.
   public static void CompleteProbePlayerName(ValoriaIntegratedWorld host){

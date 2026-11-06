@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Owner-authorized post-PR162 WebGL299 candidate. Same Unity source as Android21 build42212292004 (79dca31d72abeb57e71db59f08943713ffabfcc5); only canonical main UI lease workflow/registry and this request differ. Supersede pending request42212291925 without cancelling an executing native job. Full main native UI certificate plus actual844x390/390x844 Chromium input/save/reload QA required before Restricted itch publication. Preserve original assets,48h absent production and300s renewable nodes.0EUR.",
+  "checks": "Post-PR162 native299 release candidate: original Android21 gameplay79dca31d72abeb57e71db59f08943713ffabfcc5; only CI lease routing and native-fixture API documentation differ. Replace pending request with valid workflow governance (no workflow self-trigger). Require full native UI and real844x390/390x844 Chromium naming/progression/save-reload PASS before Restricted itch publication.0EUR.",
   "browser_backend": "windows"
 }

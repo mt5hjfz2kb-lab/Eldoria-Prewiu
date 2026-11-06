@@ -4,7 +4,6 @@ on:
   push:
     branches: [main, fix/player-feedback-context-ui-20261030]
     paths:
-      - '.github/workflows/ui-progression-cert.yml'
       # Certify exact V4 art code with a branch push even when the DRAFT PR
       # has unresolved main conflicts; no base change, merge or release.
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV4DialogueArt.cs'
