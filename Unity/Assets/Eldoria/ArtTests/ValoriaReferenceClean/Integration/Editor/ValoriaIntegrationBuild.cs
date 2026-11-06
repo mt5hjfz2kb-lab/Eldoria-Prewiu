@@ -903,6 +903,18 @@ namespace Eldoria.ReferenceClean.Editor {
      Capture(h,"integration-clarity-"+label+"-"+dimensions.x+"x"+dimensions.y+".png",dimensions.x,dimensions.y,()=>{
       Need(!h.Hud.Modal.gameObject.activeSelf&&!h.Hud.NarrativeOpen,"Node evidence cannot hide behind a modal");
       var marker=h.Hud.GetComponentsInChildren<RectTransform>().FirstOrDefault(x=>x.name=="Clarity / "+id);
+      if(!marker||!marker.gameObject.activeInHierarchy){
+       var runtime=Object.FindFirstObjectByType<Eldoria.PlayerClarityRuntime>();
+       var all=h.Hud.GetComponentsInChildren<RectTransform>(true);
+       var field=typeof(Eldoria.PlayerClarityRuntime).GetField("visibleViewport",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+       var top=target.GetComponent<Collider>().bounds;
+       Debug.Log("ELDORIA_CLARITY_MISSING runtime="+(runtime?runtime.isActiveAndEnabled.ToString():"absent")+
+        " world="+h.InWorld+" camera="+h.WorldCamera.enabled+" zoom="+h.WorldCamera.orthographicSize+"/"+h.WorldNavigation.globalZoom+
+        " safe="+(runtime?field.GetValue(runtime).ToString():"none")+" target="+h.WorldCamera.WorldToScreenPoint(new Vector3(top.center.x,top.max.y+.7f,top.center.z))+
+        " markers="+string.Join(",",all.Where(x=>x.name.StartsWith("Clarity / ")).Select(x=>x.name+":"+x.gameObject.activeInHierarchy))+
+        " screens="+string.Join(",",h.Hud.GetComponents<MonoBehaviour>().Where(x=>x&&x.GetType().GetProperty("IsOpen")!=null).Select(x=>x.GetType().Name+":"+x.GetType().GetProperty("IsOpen").GetValue(x)))+
+        " naming="+h.Hud.GetComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>()?.IsBlockingNarrative);
+      }
       Need(marker&&marker.gameObject.activeInHierarchy,"Actual projected marker missing: "+id);
       var text=marker.GetComponentInChildren<Text>();
       int level=resources.FirstOrDefault(x=>x.TargetId==id)?.Level ??
