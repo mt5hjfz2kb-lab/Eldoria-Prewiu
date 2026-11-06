@@ -40,7 +40,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private float lastWidth = -1f, lastHeight = -1f;
         private string lastDetails = "";
         private readonly string[] councilKeys = {"production","defense","civil"};
-        private readonly string[] councilNames = {"PRODUCCIÓN\n+260 madera · +180 piedra","DEFENSA\n+220 piedra · +100 poder","VIDA CIVIL\n+180 madera · +280 comida"};
+        private readonly string[] councilNames = {"PRODUCCIÓN\n+260 madera\n+180 piedra","DEFENSA\n+220 piedra\n+100 poder","VIDA CIVIL\n+180 madera\n+280 comida"};
         private static Font chronicleFont;
         private static Font ChronicleFont => chronicleFont ? chronicleFont :
             (chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif"));
@@ -566,7 +566,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Preserve more real city in both orientations. A council choice
             // is a modestly taller version of this SAME in-world card.
             bool council=GetComponent<RoyalGoldV3BuildingScreens>()?.InlineCouncilNeeded(Source.SelectedBuildingId)==true;
-            float cardHeight = council?(portrait?142f:169f):(portrait?218f:184f);
+            float cardHeight = council?(portrait?190f:193f):(portrait?218f:184f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -627,13 +627,13 @@ namespace Eldoria.UI.RoyalGold.V2
             for(int i=0;i<3;i++)
             {
                 Top((RectTransform)councilChoice[i].transform,councilLeft+i*(councilWidth+3f),
-                    cardHeight-64f,councilWidth-2f,58f);
+                    cardHeight-88f,councilWidth-2f,82f);
                 // The original generic button inset of 8 units removed
                 // sixteen pixels from a three-column mobile council choice.
                 // Give its native text the actual 4-unit optical inset, so
                 // PRODUCCIÓN and VIDA CIVIL fit as readable single lines.
                 Stretch(councilCaptions[i].rectTransform,4f);
-                councilCaptions[i].fontSize=portrait?14:16;
+                councilCaptions[i].fontSize=20;
             }
             // Use an optical inset for *labels*, not for action hit targets.
             // Keep the real full-height button and its existing callbacks.

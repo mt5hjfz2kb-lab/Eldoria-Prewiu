@@ -943,7 +943,18 @@ namespace Eldoria.ReferenceClean.Editor {
       h.WorldNavigation.localZoom=Eldoria.World4XCanon.RegionOneCanonicalLandscape.NearZoom(h.PlayerCamera.aspect);
       h.WorldNavigation.SetZoomLevel(2,true);
       h.WorldNavigation.PanTo(target.transform.position);
+      var before=h.WorldNavigation.target;
       h.Focus(target.gameObject);
+      var method=typeof(ValoriaIntegratedWorld).GetMethod("FocusPoints",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+      var focusPoints=(System.Collections.Generic.List<Vector3>)method.Invoke(h,new object[]{target.gameObject});
+      var projectedPoints=focusPoints.Select(p=>h.PlayerCamera.WorldToViewportPoint(p)).ToArray();
+      Debug.Log("ELDORIA_FOCUS_DIAGNOSTIC "+id+" ready="+h.Ready+" spot="+target.Id+
+       " targetBefore="+before+" targetAfter="+h.WorldNavigation.target+" limits="+h.WorldNavigation.minimum+"/"+h.WorldNavigation.maximum+
+       " points="+projectedPoints.Length+" x="+projectedPoints.Min(p=>p.x)+".."+projectedPoints.Max(p=>p.x)+
+       " y="+projectedPoints.Min(p=>p.y)+".."+projectedPoints.Max(p=>p.y)+
+       " depth="+projectedPoints.Min(p=>p.z)+".."+projectedPoints.Max(p=>p.z)+
+       " clip="+h.PlayerCamera.nearClipPlane+".."+h.PlayerCamera.farClipPlane+
+       " anchor="+h.PlayerCamera.WorldToViewportPoint(Eldoria.PlayerClarityRuntime.LabelAnchor(target.gameObject,false)));
      };
      CapturePrepared(h,"integration-clarity-"+label+"-"+dimensions.x+"x"+dimensions.y+".png",dimensions.x,dimensions.y,()=>{
       Need(!h.Hud.Modal.gameObject.activeSelf&&!h.Hud.NarrativeOpen,"Node evidence cannot hide behind a modal");
@@ -1109,6 +1120,12 @@ namespace Eldoria.ReferenceClean.Editor {
     Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
     // to participate after its first SRP layout/batch registration.
     c.Render();c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name),tex.EncodeToPNG());validateLayout?.Invoke();
+    foreach(var choice in h.Hud.GetComponentsInChildren<Button>().Where(b=>b.name.StartsWith("Building / council ",StringComparison.Ordinal)&&b.gameObject.activeInHierarchy)){
+     var caption=choice.GetComponentInChildren<Text>();
+     Need(caption&&caption.preferredHeight<=caption.rectTransform.rect.height+1f&&
+      caption.preferredWidth<=caption.rectTransform.rect.width+1f,
+      "Real council benefits must be fully readable before choosing: "+name+" / "+choice.name);
+    }
     if(destinationOpen){
      Need(destinationRoot&&destinationRoot.gameObject.activeInHierarchy,"Actual management root not visible: "+name);
      var background=destinationRoot.GetComponent<Image>();var canvasRect=heroesOpen?(RectTransform)destinationRoot.parent:(RectTransform)canvas.transform;
