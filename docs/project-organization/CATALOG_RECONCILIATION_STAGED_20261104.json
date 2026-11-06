@@ -2,7 +2,7 @@
   "schema_version": 1,
   "source_catalog_blob_sha": "b10dad0382bb9926f5eb9e65a33f8e7aa4c6654b",
   "source_catalog_review_pending": 175,
-  "status": "IMPLEMENTED_IN_CANDIDATE_BRANCH_PENDING_PR_CI",
+  "status": "MERGED_AND_VERIFIED_IN_MAIN_20261106",
   "owner_workstream": "valoria-master-plan-layered-construction-20261016",
   "owner_pr": 136,
   "authorization": "Propietario autoriza continuar la auditoría el 06/11/2026; PR136 está fusionada, el scope previo del catálogo estaba available y el mismo workstream de organización ha reclamado un alcance exclusivo en main, revisión 7.",
@@ -50,7 +50,8 @@
     "Existing workstream eldoria-project-entry-organization-20261101 claimed revision 7, main commit a28264c9d164ec1e1d2f683680571dff02d97e04",
     "Four exact paths were review_pending and still present; later authority docs inspected",
     "Four statuses historical on candidate SHA df57c2c91e70ac537bc42c7d3fe723ff5acc802d; originals untouched",
-    "CI and merge not yet certified; future reviewers must distinguish candidate vs main"
+    "PR #164 merged to main at 638300d491e7fc18879ff80d000933b3028271e1; architecture/documentation governance run 42280239512 passed; file-scope and ownership verified",
+    "Merged main catalog verified: 228 documents, 171 review_pending and 5 historical; no document bodies or Unity assets modified."
   ],
   "applied_from_live_catalog_blob_sha": "3eff2a2fa2e579214380b33ae9ddee9a9078e258",
   "applied_candidate_catalog_blob_sha": "df57c2c91e70ac537bc42c7d3fe723ff5acc802d",
@@ -64,5 +65,9 @@
       "review_pending": 171,
       "historical": 5
     }
-  }
+  },
+  "applied_pr": 164,
+  "merge_commit_sha": "638300d491e7fc18879ff80d000933b3028271e1",
+  "applied_main_catalog_blob_sha": "df57c2c91e70ac537bc42c7d3fe723ff5acc802d",
+  "merged_at": "2026-11-06T19:32:21Z"
 }
