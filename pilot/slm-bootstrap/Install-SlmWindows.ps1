@@ -13,7 +13,21 @@ try {
  if(-not $reg.active -or -not $reg.updated_at){throw 'Invalid registry'}
  $leases=@($reg.active | Where-Object { @($_.resources) -contains 'windows-runner-heavy' })
  $exclusive=($leases.Count -eq 1 -and $leases[0].id -eq 'eldoria-slm-permanent-bootstrap-20261104' -and $leases[0].owner -eq 'chatgpt-eldoria-slm-bootstrap-20261104' -and $leases[0].ownership_state -eq 'claimed')
- $busy=@(Get-Process -Name @('Unity','blender','UnityShaderCompiler','UnityPackageManager','UnityCrashHandler64','ollama') -ErrorAction SilentlyContinue)
+ $busy=@(Get-Process -Name @('Unity','blender','UnityShaderCompiler','UnityPackageManager','UnityCrashHandler64') -ErrorAction SilentlyContinue)
+ # Ollama can be installed and idle without running an inference job.
+ # Official localhost GET /api/ps lists models currently loaded, not whether the server process exists.
+ $ollamaProc=@(Get-Process -Name 'ollama*' -ErrorAction SilentlyContinue)
+ $ollamaIdle=($ollamaProc.Count -eq 0)
+ if($ollamaProc.Count -gt 0){
+  $ollamaIdle=$true
+  foreach($attempt in 1..2){
+   try {
+    $ps=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/ps' -TimeoutSec 4
+    if($null -eq $ps -or $null -eq $ps.models -or @($ps.models).Count -ne 0){$ollamaIdle=$false;break}
+   } catch {$ollamaIdle=$false;break}
+   Start-Sleep -Milliseconds 650
+  }
+ }
  $os=Get-CimInstance Win32_OperatingSystem
  $ram=[math]::Round(($os.FreePhysicalMemory*1KB)/1GB,2)
  $profile=$env:LOCALAPPDATA
@@ -26,8 +40,8 @@ try {
  $py=Get-Command py.exe -ErrorAction SilentlyContinue
  $hasPython=$false
  if($py){$v=& $py.Source -3.12 --version 2>&1;$hasPython=($LASTEXITCODE -eq 0 -and "$v" -match '^Python 3\.12\.')}
- $safe=$exclusive -and $busy.Count -eq 0 -and $ram -ge 6 -and $diskGB -ge 10 -and $userOK -and $hasPython
- [ordered]@{safe_to_install=$safe;exclusive_lease=$exclusive;busy_process_count=$busy.Count;free_ram_gb=$ram;free_disk_gb=$diskGB;python_312=$hasPython;stable_user=$userOK} | ConvertTo-Json -Compress | Write-Output
+ $safe=$exclusive -and $busy.Count -eq 0 -and $ollamaIdle -and $ram -ge 6 -and $diskGB -ge 10 -and $userOK -and $hasPython
+ [ordered]@{safe_to_install=$safe;exclusive_lease=$exclusive;busy_process_count=$busy.Count;ollama_daemon_present=($ollamaProc.Count -gt 0);ollama_inference_idle=$ollamaIdle;free_ram_gb=$ram;free_disk_gb=$diskGB;python_312=$hasPython;stable_user=$userOK} | ConvertTo-Json -Compress | Write-Output
  if(-not $safe){exit 3}
  if($Mode -eq 'check'){'PREFLIGHT_PASS no changes' | Write-Output;exit 0}
  $root=Join-Path $profile 'EldoriaSLM'
