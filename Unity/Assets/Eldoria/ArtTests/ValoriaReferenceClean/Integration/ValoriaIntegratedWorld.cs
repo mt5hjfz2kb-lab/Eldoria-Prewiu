@@ -349,7 +349,7 @@ namespace Eldoria.ReferenceClean {
    if(!target||!Ready||!Hud)return;
    var camera=PlayerCamera;
    var safe=UIVisibleSceneViewport();
-   bool diagnostic=Application.isEditor&&Application.isBatchMode&&target.GetComponent<WorldHotspot>()?.Id=="region1:wood:001";
+   bool diagnostic=UnityEngine.Application.isEditor&&UnityEngine.Application.isBatchMode&&target.GetComponent<WorldHotspot>()?.Id=="region1:wood:001";
    if(diagnostic)Debug.Log("ELDORIA_FOCUS_ENTRY safe="+safe+" ortho="+camera.orthographic+" pose="+camera.transform.position);
    if(!camera||safe.width<=.08f||safe.height<=.08f)return;
    var points=FocusPoints(target);
