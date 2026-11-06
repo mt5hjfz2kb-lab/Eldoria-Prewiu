@@ -873,27 +873,32 @@
     {
       "path": "docs/VALORIA_LOOKDEV_PRELIMINARY_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git f3d215333abe881cda842a32d5c81a53e043ecf7: Diagnóstico preliminar de perfiles de iluminación de septiembre, superado por pruebas de superficie y referencia visual posterior. No reutilizar sus valores como baseline. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md; docs/VALORIA_VISUAL_BIBLE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 3d2fb2f80d8aa58f3509a2c70b48b4419c3ae9ba: Reautoría de tres masas urbanas con TECH/VISUAL PASS acotado; aporta técnica de jerarquía y patios, no una aprobación de toda la ciudad de noviembre. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_LOWER_GATE_FAMILY_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 4813bf2c9c7fa38db39bfeb3be6526143dfcab8d: Familia Lower Gate con source/import y capturas reales de octubre; restricciones y cámara/imagen eran de ese bloque, no un permiso de autoría actual. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md; pipeline/asset-vault/clean-production-shelf-v1.json. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_MANUAL_3D_PIPELINE_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git e6ecd5c3abec4a8910e620b195af317cd3a73a3d: La advertencia contra geometría hero primitiva y la prueba a cámara real siguen útiles; el bloqueo de medios de septiembre no demuestra incapacidad actual. Autoridad posterior: docs/VALORIA_VISUAL_BIBLE.md; docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_MANUAL_HERO_FRAGMENT_BRIEF.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git cc92117041e23517219f110f5d5a0a80e00497f0: Encargo antiguo de fragmento manual condicionado a acceso DCC; no es el próximo paso de producción ni una nueva autorización de compra o Tripo. Autoridad posterior: docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md; pipeline/active-workstreams.json. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_MASTER_ENVELOPE_CAMERA_GATE_V1.md",
@@ -916,47 +921,56 @@
     {
       "path": "docs/VALORIA_MICRO_CITY_INHABITED_DISTRICT_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 6365d3e43a717b44c0c163b9b5af37f1ddb62859: Micro-Valoria con seis fuentes importadas falló interfaces y continuidad de carretera/montaña; no escalar esa composición. Autoridad posterior: docs/VALORIA_MODULE_INTERFACE_V1_GATE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_MICRO_CITY_THREE_FAMILY_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git e0774e2db2dff91038803ca21ea010b79184c2cb: PASS visual restringido a hipótesis con tres módulos aislados; el ensayo de distrito habitado posterior reveló interfaz y circulación no certificadas. Autoridad posterior: docs/VALORIA_MICRO_CITY_INHABITED_DISTRICT_GATE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_MICRO_CITY_TWO_FAMILY_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 8d6388327c5fe8b1f80678c32a5af9da94b87d13: Prueba precursora con dos familias, no solución completa de ciudad ni encargo vigente de nueva generación. Autoridad posterior: docs/VALORIA_MICRO_CITY_INHABITED_DISTRICT_GATE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_MID_TIER_ARCHITECTURE_KIT_V1_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git e5ff37fd881cd9f552404d6007bc9a4af9169cc0: Test de imagen/Tripo y selección individual de piezas con resultados mixtos, no certificación visual del kit completo ni nueva autorización de 55 créditos. Autoridad posterior: docs/VALORIA_MID_TIER_DISTRICT_V1_PRODUCTION_RESULT.md; AGENTS.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_MID_TIER_DISTRICT_V1_PRODUCTION_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 9e1c2c86868361794dc4c64b26397aa2a03c3a38: Integración sectorial de Mid-Tier con gate técnico/visual acotado; se advirtió no repetirla por toda Valoria. Conservar precedentes, no exportar aprobación actual. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_MOBILE_NAVIGABLE_CITY_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git a0a48b3ee7681e3e2d3536b2433d091585426f2c: Prueba de pan y zoom para ciudad móvil, con veredicto funcional acotado; no incluye rendimiento físico de dispositivos ni sustituye ajustes posteriores. Autoridad posterior: PR #132; docs/VALORIA_VISUAL_BIBLE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_MODULE_INTERFACE_STANDARD_v1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git ab01cfb80f940ef8a13bfde1f28d6fc6489637a5: Estándar medido en borrador con sockets, pero el propio autor reconoce cero interfaces certificadas; umbrales orientan un gate, no acreditan un paso jugable. Autoridad posterior: docs/VALORIA_MODULE_INTERFACE_V1_GATE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_MODULE_INTERFACE_V1_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 3e8e8c3e92b70a7b671853403d396fc026ea26b8: Auditoría de interfaces con fallos de corridor/sockets/rampas, válida como aprendizaje para futuros kits; no importar variantes _InterfaceV1 como producción. Autoridad posterior: docs/VALORIA_IF1_SHORT_CHAIN_DECISION.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_MODULE_KIT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 4f45bac3cc0c1ae3b950c1585886909fddabb434: Inventario de seis familias aisladas de septiembre; propio cierre niega que definan topología o circulación y el catálogo curado actual prevalece. Autoridad posterior: pipeline/asset-vault/clean-production-shelf-v1.json; docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_NATION1_RESET_COMPATIBILITY_AUDIT.md",
