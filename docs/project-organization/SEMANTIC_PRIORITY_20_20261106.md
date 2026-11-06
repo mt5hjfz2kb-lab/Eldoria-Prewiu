@@ -2,7 +2,7 @@
 
 **Fecha:** 6 de noviembre de 2026  
 **Workstream-ID:** `eldoria-project-entry-organization-20261101` (revisión 9)  
-**Estado:** 20 archivos leídos y confrontados con las instrucciones actuales, manifiestos vivos y PR fusionadas. Revisión del catálogo implementada en una rama de documentación; certificación CI y fusión se consignan aparte al finalizar. No se ha ejecutado Unity ni cambiado el juego.
+**Estado:** 20 archivos leídos y confrontados con las instrucciones actuales, manifiestos vivos y PR fusionadas. Revisión del catálogo fusionada y comprobada en `main` mediante PR #165 (commit `1100367813250562249bdbd44704f2e8422d041f`); arquitectura, gobernanza documental y pruebas de catálogo aprobadas. No se ha ejecutado Unity ni cambiado el juego. No se ha ejecutado Unity ni cambiado el juego.
 
 ## Qué significa cada estado
 
@@ -61,3 +61,12 @@
 **No verificado en esta revisión:** ejecución del juego, impresión de calidad visual, funcionamiento de APK en dispositivo físico, completitud del mundo 4X, licencias comerciales de terceros, eliminación segura de duplicados, 151 documentos restantes. Las páginas originales y evidencia se conservan.
 
 **Próxima pasada:** revisar por familias los 151 documentos restantes con el mismo criterio. Priorizar contratos de importación/licencias y seguridad de builds, después pruebas artísticas muy fragmentadas; evitar clasificar como `current` una prueba técnica o un diseño todavía no materializado.
+
+## Cierre de integración verificado — 06/11/2026
+
+- [PR #165](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/165) fusionada a `main`: `1100367813250562249bdbd44704f2e8422d041f`.
+- Workflow de arquitectura [42282999320](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42282999320): `SUCCESS`, incluidos *Validate documentation catalogue and local links*, *Test documentation governance* y el inventario seguro.
+- Validación del tester congelado [42282999123](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42282999123): clasificación de alcance `SUCCESS` y trabajo `tester-qa` correctamente omitido, porque no cambiaron sus entradas.
+- Workflow artístico World4X: omitido por no existir cambios de fuentes artísticas; no es un ART PASS.
+- Catálogo comprobado **después de la fusión**: 228 entradas, 28 `current`, 39 `reference`, 151 `review_pending` y 10 `historical`; cuerpo de los 20 documentos, código y recursos Unity sin cambios.
+- Únicamente estos tres archivos de documentación cambiaron en la PR: `docs/documentation-catalog.json`, `docs/project-organization/README.md` y este informe. No se ha publicado otra APK/WebGL.
