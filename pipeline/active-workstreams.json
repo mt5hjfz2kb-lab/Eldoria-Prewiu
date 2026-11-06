@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T06:59:06.214Z",
+  "updated_at": "2026-11-06T07:14:54.808Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3503,9 +3503,9 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 22,
+      "ownership_revision": 23,
       "write_scope_released": false,
-      "branch": "feature/eldoria-construction-delight-20261104",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-03T23:35:16.557Z",
       "base_main_sha": "d01bffc48f85d65b1061c2fc50ce78c49d9c3344",
@@ -3520,12 +3520,14 @@
         ".github/workflows/eldoria-construction-delight-native.yml",
         "tools/construction-delight/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "UNITY_V6_72_NATIVE_PASS_ART_VISUAL_REVIEW_PENDING",
+      "phase": "V7_SOURCE_QA_PASS_NATIVE_UNITY_AB_72_RESERVED",
       "next": "V6 native Unity 6000.3.23f1 PASS 72 genuine PNG run 42122481739, artifact 13458423128 commit 96bd7b02a612b2e924411617edbae3287bfe1fd8. Two small 3D hammer impacts now readable, dust clouds materially denser than V5 but still visually elementary in normal city scale. Owner should review A/B frames and decide whether art >=8.2; no ART_APPROVED or merge/publication; Android/WebGL FPS not tested.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
@@ -3668,6 +3670,12 @@
         "physical_android_fps_verified": false,
         "release_rev": 22,
         "visual_review": "Improved visibility relative to V5 but dust remains two somewhat round clouds and hammer geometry is basic; do not declare final art quality."
+      },
+      "latest_source_qa": {
+        "run": 42178955508,
+        "source_head": "e964e7ed78a104b6ed48474be63e5f9ffe1b2c06",
+        "result": "PASS",
+        "notes": "real renderer-bound hammers, fragmented dust and restrained URP finish; artistic result unverified"
       }
     },
     {
