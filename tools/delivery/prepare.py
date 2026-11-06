@@ -25,8 +25,10 @@ def prepare(archive, destination, config):
             names = z.namelist()
             if len(names) != len(set(names)):
                 raise ValueError('Duplicate archive paths')
-            if sum(f.file_size for f in z.infolist()) > 500_000_000:
-                raise ValueError('Package exceeds HTML5 size budget')
+            # Bound trusted QA input separately; enforce itch's 500MB limit on
+            # the ACTUAL final files after lossless CDN transport adaptation.
+            if sum(f.file_size for f in z.infolist()) > 1_000_000_000:
+                raise ValueError('QA archive exceeds safe input budget')
             for f in z.infolist():
                 p = pathlib.PurePosixPath(f.filename)
                 if p.is_absolute() or '..' in p.parts or '\\' in f.filename or stat.S_ISLNK(f.external_attr >> 16):
@@ -91,7 +93,7 @@ def prepare(archive, destination, config):
                         total += len(block)
                 manifest['decoded_sizes'][name] = total
                 if asset.stat().st_size > 200_000_000:
-                    # Separate COMPLETE gzip streams; never split a gzip header/body.
+                    # Separate complete Brotli streams; never split a compressed stream.
                     # The browser concatenates decoded streams, preserving Unity's
                     # exact input bytes with one final allocation in its own loader.
                     parts, source_hash, decoded_bytes = [], hashlib.sha256(), 0
@@ -99,17 +101,20 @@ def prepare(archive, destination, config):
                         while block := stream.read(64 * 1024 * 1024):
                             source_hash.update(block)
                             decoded_bytes += len(block)
-                            rel = 'payload-decoded/' + key + '-' + str(len(parts)) + '.gz'
+                            rel = 'payload-decoded/' + key + '-' + str(len(parts)) + '.bin.br'
                             part = dist / rel
                             part.parent.mkdir(parents=True, exist_ok=True)
-                            part.write_bytes(gzip.compress(block, compresslevel=6, mtime=0))
-                            assert gzip.decompress(part.read_bytes()) == block
-                            parts.append({'url':rel, 'decoded_bytes':len(block), 'decoded_sha256':hashlib.sha256(block).hexdigest()})
+                            # itch officially sets Content-Encoding:br for .br filenames.
+                            # Node's built-in codec avoids a new Python dependency.
+                            codec = "const fs=require('fs'),z=require('zlib'),assert=require('assert');const b=fs.readFileSync(0);const c=z.brotliCompressSync(b,{params:{[z.constants.BROTLI_PARAM_QUALITY]:6}});assert(z.brotliDecompressSync(c).equals(b));process.stdout.write(c);"
+                            encoded = subprocess.run(['node','-e',codec], input=block, stdout=subprocess.PIPE, check=True).stdout
+                            part.write_bytes(encoded)
+                            parts.append({'url':rel, 'encoding':'br', 'decoded_bytes':len(block), 'decoded_sha256':hashlib.sha256(block).hexdigest()})
                     assert decoded_bytes == total
                     manifest['decoded_parts'][name] = parts
                     reencoded.append({'file':name, 'decoded_bytes':total, 'decoded_sha256':source_hash.hexdigest(), 'parts':parts})
                     asset.unlink()
-        manifest['delivery_adapter'] = 'itch-decoded-stream-v3' if reencoded else 'itch-low-memory-v2'
+        manifest['delivery_adapter'] = 'itch-decoded-stream-br-v4' if reencoded else 'itch-low-memory-v2'
         (dist / 'build-manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
         # Show the actual startup error to make physical-device failures diagnosable.
         play = dist / 'play.js'
@@ -137,6 +142,10 @@ def prepare(archive, destination, config):
         play.write_text(revision+'\n'+diagnostic+'\n'+helper+'\n'+adapted)
 
         files = sorted(p for p in dist.rglob('*') if p.is_file())
+        final_bytes = sum(p.stat().st_size for p in files)
+        print('FINAL_ITCH_BYTES', final_bytes, flush=True)
+        if final_bytes > 500_000_000:
+            raise ValueError('Final playable content exceeds itch HTML5 500MB budget')
         if not (dist / 'index.html').is_file() or len(files) > 1000 or any(p.stat().st_size > 200_000_000 for p in files):
             raise ValueError('itch.io HTML5 layout or file size limit violated')
         output = destination / ('Eldoria-' + expected['revision'] + '-itch.zip')
@@ -153,7 +162,7 @@ def prepare(archive, destination, config):
             for f in identities:
                 data = z.read(f['file'])
                 assert len(data) == f['bytes'] and hashlib.sha256(data).hexdigest() == f['sha256']
-        report = {'status':'PACKAGE_READY_NOT_PUBLISHED', 'candidate':expected, 'original_unity_integrity':check, 'playable_files_unchanged':False, 'unity_bytes_unchanged':not reencoded, 'unity_decoded_bytes_unchanged':True, 'reencoded_transport':reencoded, 'transport_adapter':manifest['delivery_adapter'], 'reconstructed_files':transport, 'wrapper_changes':['build-manifest.json','play.js'], 'files':identities, 'zip_sha256':hashlib.file_digest(open(output,'rb'),'sha256').hexdigest(), 'hosted_verified':False}
+        report = {'status':'PACKAGE_READY_NOT_PUBLISHED', 'candidate':expected, 'original_unity_integrity':check, 'playable_files_unchanged':False, 'unity_bytes_unchanged':not reencoded, 'unity_decoded_bytes_unchanged':True, 'reencoded_transport':reencoded, 'transport_adapter':manifest['delivery_adapter'], 'reconstructed_files':transport, 'wrapper_changes':['build-manifest.json','play.js'], 'html5_extracted_bytes':final_bytes, 'files':identities, 'zip_sha256':hashlib.file_digest(open(output,'rb'),'sha256').hexdigest(), 'hosted_verified':False}
         (destination/'identity.json').write_text(json.dumps(report,indent=2)+'\n')
         shutil.copytree(dist, destination/'dist')
         print(json.dumps({'status':report['status'], 'files':len(files), 'zip_sha256':report['zip_sha256']}))
@@ -161,4 +170,5 @@ def prepare(archive, destination, config):
 
 if __name__ == '__main__':
     prepare(sys.argv[1], sys.argv[2], json.loads((ROOT/'pipeline/playtest-delivery.json').read_text()))
+
 

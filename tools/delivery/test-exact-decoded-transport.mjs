@@ -15,7 +15,7 @@ const server=http.createServer((req,res)=>{
  const file=root+name;
  if(!fs.existsSync(file)){res.writeHead(404);res.end();return;}
  const bytes=fs.statSync(file).size;
- res.writeHead(200,req.url.includes('raw=1')?{'Content-Length':bytes}:{'Content-Encoding':'gzip','Content-Length':bytes});
+ res.writeHead(200,req.url.includes('raw=1')?{'Content-Length':bytes}:{'Content-Encoding':name.endsWith('.br')?'br':'gzip','Content-Length':bytes});
  fs.createReadStream(file).pipe(res);
 });
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -40,7 +40,7 @@ try {
   const expectedHash=crypto.createHash('sha256');
   const parts=manifest.decoded_parts?.[manifest[key]];
   for(const file of parts?parts.map(p=>p.url):[manifest[key].split('?')[0]])
-   await new Promise((resolve,reject)=>fs.createReadStream(root+'/'+file).pipe(zlib.createGunzip()).on('data',b=>expectedHash.update(b)).on('end',resolve).on('error',reject));
+   await new Promise((resolve,reject)=>fs.createReadStream(root+'/'+file).pipe(file.endsWith('.br')?zlib.createBrotliDecompress():zlib.createGunzip()).on('data',b=>expectedHash.update(b)).on('end',resolve).on('error',reject));
   assert.equal(crypto.createHash('sha256').update(result.parsedBody).digest('hex'),expectedHash.digest('hex'));
   console.log(key+': exact decoded bytes, single allocation '+allocations[0]+' PASS');
  }
@@ -59,8 +59,15 @@ try {
  for(const key of ['bad-size','missing-part'])
   await assert.rejects(async()=>await (await scope.window.fetch(base+key)).arrayBuffer());
  console.log('Complete gzip without CDN header PASS; truncated/failed part rejected PASS');
+ const br=Object.values(manifest.decoded_parts||{}).flat().find(p=>p.encoding==='br');
+ if(br){
+  scope.installExactDecodedTransport({'missing-br-header':br.decoded_bytes},{'missing-br-header':[{...br,url:br.url+'?raw=1'}]});
+  await assert.rejects(async()=>await(await scope.window.fetch(base+'missing-br-header')).arrayBuffer(),/Brotli CDN header missing/);
+  console.log('Brotli without CDN decoding rejected PASS');
+ }
  const play=fs.readFileSync(root+'/play.js','utf8');
  assert(play.includes('cacheControl:()=>"no-store"'));
  console.log('Unity download-cache clone disabled; save code untouched PASS');
 } finally {server.close();}
+
 

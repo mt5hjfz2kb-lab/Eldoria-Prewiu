@@ -1,5 +1,5 @@
 "use strict";
-// Fetch already exposes decoded gzip bytes. Supply their verified size to Unity
+// Fetch already exposes decoded gzip/Brotli bytes. Supply their verified size to Unity
 // so its loader allocates once instead of estimating 1.6x and then slicing.
 function installExactDecodedTransport(sizes, parts={}) {
  const originalFetch=window.fetch.bind(window);
@@ -21,9 +21,13 @@ function installExactDecodedTransport(sizes, parts={}) {
         }
         const part=await originalFetch(new URL(list[index].url,location.href).href,init);
         if(!part.ok || !part.body)throw Error('Unity data part failed: '+part.status);
-        // itch supplies Content-Encoding:gzip. Permit a static server without it
-        // only by explicitly decoding its complete gzip stream.
-        const body=part.headers.get('Content-Encoding')?.toLowerCase()==='gzip'
+        // https://itch.io/docs/creators/html5#compression: .br files receive
+        // Content-Encoding:br. Fetch already decodes either HTTP encoding.
+        // Preserve complete-gzip fallback for older packages/static QA servers.
+        const encoding=part.headers.get('Content-Encoding')?.toLowerCase();
+        const expectedEncoding=list[index].encoding || 'gzip';
+        if(expectedEncoding==='br' && encoding!=='br')throw Error('Brotli CDN header missing');
+        const body=encoding==='gzip' || encoding==='br'
          ?part.body:part.body.pipeThrough(new DecompressionStream('gzip'));
         reader=body.getReader();received=0;
        }
@@ -45,7 +49,7 @@ function installExactDecodedTransport(sizes, parts={}) {
   }
   const response=await originalFetch(input,init);
   const size=lookup.get(address);
-  if(!size || response.status!==200 || !response.body || response.headers.get("Content-Encoding")?.toLowerCase()!=="gzip")return response;
+  if(!size || response.status!==200 || !response.body || !["gzip","br"].includes(response.headers.get("Content-Encoding")?.toLowerCase()))return response;
   const headers=new Headers(response.headers);
   headers.delete("Content-Encoding");
   headers.set("Content-Length",String(size));
@@ -54,4 +58,5 @@ function installExactDecodedTransport(sizes, parts={}) {
   return decoded;
  };
 }
+
 

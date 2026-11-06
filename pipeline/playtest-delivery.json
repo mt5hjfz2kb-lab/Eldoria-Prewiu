@@ -46,7 +46,7 @@
     "physical_mobile_evidence": "Current native299 has no physical-device test; earlier iPhone feedback remains historical.",
     "previous_physical_mobile_evidence": "Owner iPhone/Safari startup reload at 71%; no completed gameplay or device profiling."
   },
-  "instructions": "Owner-authorized post-PR162 publication. Upload exact QA-certified native299 once; after upload verify exact version/build active without reupload. Android1.21 already published42225704456. Keep existing Restricted privacy; no phone/hosted gameplay PASS claim.",
+  "instructions": "Publish exact browser-certified native299 once using verified lossless Brotli transport officially supported by itch .br Content-Encoding. Prior42229089602 did not upload. After accepted upload verify remote exact version/build active without reupload. Android21 already published.0EUR,Restricted preserved.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
   "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
   "credential_setup": {
@@ -57,22 +57,18 @@
   },
   "privacy_confirmation_basis": "Existing Restricted configuration retained; anonymous browser denied game page2026-10-29. Butler channel publication does not change privacy.",
   "promotion_request": {
-    "id": "post-pr162-native299-20261106",
+    "id": "post-pr162-native299-lossless-br-20261106",
     "target": "chrismad/eldoria-pruebas",
     "revision": "native299",
     "artifact_sha256": "dcb86cf74da2ab3ff6cd9d3218151f529f9247d77964740300282d92d5493b6d",
-    "authorization": "Owner explicitly requires PR162 integration and publication of new APK and WebGL. PR162 merged, full native certification42216689519 PASS216Edit/75Play and225checks; exact browser42226584557 PASS normal clock914seconds, true name entry, landscape844x390/portrait390x844, fullI-II,120secondBastion and600secondtraining, marches/rewards, byte-identical save reload,0runtime/network errors. Publish exact same-byte package ONCE to existing Restricted itch web channel;0EUR."
+    "authorization": "Owner explicitly requires PR162 integration and publication of new APK and WebGL. PR162 merged, full native certification42216689519 PASS216Edit/75Play and225checks; exact browser42226584557 PASS normal clock914seconds, true name entry, landscape844x390/portrait390x844, fullI-II,120secondBastion and600secondtraining, marches/rewards, byte-identical save reload,0runtime/network errors. Publish exact same-byte package ONCE to existing Restricted itch web channel;0EUR. Initial delivery42229089602 stopped BEFORE any upload at QA-input size guard. Lossless .br CDN streams reduce final playable content to490426092bytes,19files,largest58794121; unchanged decoded Unity data585372590bytes SHA256d153ac481b134970a5f29ba2d26edb0793dd77a4ab91c51cdfe19c8cebcb81f5. Actual Unity loader exact HTTP-decoded hashes/single allocation and error regressions PASS. Keep strict500MB final budget; no asset removal, texture degradation or native rebuild."
   },
   "last_attempt": {
-    "run_id": 40958364194,
-    "prepare": "success",
-    "transport_tests": "success",
-    "publish": "success",
-    "remote_build": 2247360,
-    "publish_job_conclusion": "success",
-    "remote_active_confirmed": true,
-    "hosted_verified": false,
-    "reason": "Single upload accepted and exact version/build active confirmed by Butler status; no repeated upload."
+    "run_id": 42229089602,
+    "prepare": "failed_pre_upload_size_guard",
+    "publish": "skipped",
+    "upload_accepted": false,
+    "reason": "QA input510055637bytes exceeded old500MB pre-adaptation budget. New final playable package490426092bytes validated with exact Unity reader; strict500MB final budget retained."
   },
   "uploaded": {
     "provider": "itch.io",
