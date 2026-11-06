@@ -94,7 +94,7 @@ namespace Eldoria.ReferenceClean
                 bloomProfile=ScriptableObject.CreateInstance<VolumeProfile>();
                 var bloom=bloomProfile.Add<Bloom>(true);
                 bloom.threshold.Override(1.13f);
-                bloom.intensity.Override(.32f);
+                bloom.intensity.Override(.24f);
                 bloom.scatter.Override(.48f);
                 bloom.tint.Override(new Color(1f,.89f,.74f));
                 bloom.highQualityFiltering.Override(false);
@@ -113,7 +113,7 @@ namespace Eldoria.ReferenceClean
                 return false;
             }
             glowMaterial=new Material(shader){name="Eldoria - authentic masonry and timber sweep"};
-            glowMaterial.SetColor(GlowColor,new Color(1.82f,1.07f,.56f,1f));
+            glowMaterial.SetColor(GlowColor,new Color(1.12f,.74f,.40f,1f));
             overlayRoot=new GameObject("Construction Delight - transient architectural sweep");
             overlayRoot.transform.SetParent(building.transform,false);
             overlayRoot.layer=building.layer;
@@ -192,17 +192,17 @@ namespace Eldoria.ReferenceClean
                 float envelope=rise*fade;
                 glowMaterial.SetFloat(Mode,1f);
                 glowMaterial.SetFloat(Sweep,sweep);
-                glowMaterial.SetFloat(Strength,envelope);
+                glowMaterial.SetFloat(Strength,envelope*.63f);
                 if(localLight)
                 {
                     float flash=Mathf.Sin(Mathf.PI*Mathf.Clamp01(t/1.35f));
-                    localLight.intensity=visible ? Mathf.Max(0f,flash)*.84f : 0f;
+                    localLight.intensity=visible ? Mathf.Max(0f,flash)*.62f : 0f;
                     localLight.enabled=visible && localLight.intensity>.01f;
                 }
                 if(bloomVolume)
                 {
                     bloomVolume.weight=visible ?
-                        Mathf.Clamp01(Mathf.Sin(Mathf.PI*Mathf.Clamp01(t/.94f)))*.33f:0f;
+                        Mathf.Clamp01(Mathf.Sin(Mathf.PI*Mathf.Clamp01(t/.94f)))*.24f:0f;
                     bloomVolume.enabled=visible && bloomVolume.weight>.001f;
                 }
             }
