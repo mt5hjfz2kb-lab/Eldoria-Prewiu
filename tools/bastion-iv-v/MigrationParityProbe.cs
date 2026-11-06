@@ -44,13 +44,13 @@ static class MigrationParityProbe {
   Check(Do(g,"Fight","ash-stalker-valoria","rare").Ok,"rare march departs");clock.Add(20);g=new LocalGateway(clock,store);
   Check(g.Snapshot().ChapterThree.AshStalkerDefeated,"rare victory survives offline return");
   Check(g.Snapshot().ChapterProgress.GrantedRewards.Contains("c5-rare"),"rare mission paid after real victory");
-  Check(g.Snapshot().Resources.Food==beforeRare.Resources.Food+420&&g.Snapshot().Resources.Stone==beforeRare.Resources.Stone+330,"rare exact120food110stone loot plus260food180stone mission and20s production");
+  Check(g.Snapshot().Resources.Food==beforeRare.Resources.Food+383&&g.Snapshot().Resources.Stone==beforeRare.Resources.Stone+291,"rare120food110stone loot plus260food180stone mission and exact V2 fractional production");
   Check(g.Snapshot().LastBattleReport.RewardFood==120&&g.Snapshot().LastBattleReport.RewardStone==110,"report persists base loot separately");
   saved=store.Json;Check(!Do(g,"Fight","ash-stalker-valoria").Ok,"rare cooldown prevents immediate repeat");g=new LocalGateway(clock,store);Check(store.Json==saved,"rare replay/reload does not mutate reward ledger");
   Check(g.Snapshot().LastBattleReport.Reason.Contains("Emboscada"),"actual battle report preserves ambush reason");
   long respawn=g.Snapshot().ChapterThree.AshStalkerRespawnUtcTicks;clock.UtcTicks=respawn-1;g=new LocalGateway(clock,store);Check(!Do(g,"Fight","ash-stalker-valoria").Ok,"rare cannot respawn early");
   clock.UtcTicks=respawn;g=new LocalGateway(clock,store);beforeRare=g.Snapshot();Check(Do(g,"Fight","ash-stalker-valoria").Ok,"rare respawns at canonical60second deadline");clock.Add(20);g=new LocalGateway(clock,store);
-  Check(g.Snapshot().Resources.Food==beforeRare.Resources.Food+160&&g.Snapshot().Resources.Stone==beforeRare.Resources.Stone+150&&g.Snapshot().ChapterProgress.GrantedRewards.FindAll(x=>x=="c5-rare").Count==1,"repeat victory grants base loot only, mission remains paid once");
+  Check(g.Snapshot().Resources.Food==beforeRare.Resources.Food+120+(int)((beforeRare.ChapterThree.FoodProductionMicro+20*EconomyProductionV2.Rate("food",beforeRare.ChapterThree.GranaryLevel))/EconomyProductionV2.Scale)&&g.Snapshot().Resources.Stone==beforeRare.Resources.Stone+110+(int)((beforeRare.ChapterThree.StoneProductionMicro+20*EconomyProductionV2.Rate("stone",beforeRare.ChapterThree.StoneworksLevel))/EconomyProductionV2.Scale)&&g.Snapshot().ChapterProgress.GrantedRewards.FindAll(x=>x=="c5-rare").Count==1,"repeat victory grants base loot only, mission remains paid once");
   var low=Ready(4);low.BarracksLevel=3;g=new LocalGateway(clock,new Store{Initial=low});s=g.Snapshot();
   Check(!Do(g,"Recruit","archer:t2:5").Ok&&g.Snapshot().Resources.Wood==s.Resources.Wood,"lockedT2 does not spend");
   store=new Store{Initial=Ready(4)};g=new LocalGateway(clock,store);s=g.Snapshot();

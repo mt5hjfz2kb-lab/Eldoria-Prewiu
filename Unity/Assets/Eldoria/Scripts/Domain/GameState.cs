@@ -193,6 +193,9 @@ namespace Eldoria.Domain
         public int MeatRemaining = 1100;
         public bool FissureExplored, LyraContacted, LyraRecruited, FissureClosed;
         public long InvestigationEndsUtcTicks, ClosingEndsUtcTicks, EconomyUtcTicks;
+        // Additive schema-1 ledger. Zero is a legacy save requiring one-time migration.
+        public int EconomyVersion;
+        public long WoodProductionMicro, StoneProductionMicro, FoodProductionMicro;
         public long WolfRespawnUtcTicks, BoarRespawnUtcTicks, MeatRespawnUtcTicks;
         public int WolfGeneration, BoarGeneration, MeatGeneration;
         public int PendingBuildingLevel;
@@ -420,11 +423,11 @@ namespace Eldoria.Domain
         {
             if(level==2) return new BastionProgressionDefinition(
                 2,1,SliceContentProfiles.Active.Bastion2WoodCost,SliceContentProfiles.Active.Bastion2StoneCost,
-                600,true,new[]{"barracks","chapter-ii","world-engendro","march-preparation"});
+                600,true,new[]{"barracks","chapter-ii","world-engendro","march-preparation"},0,EconomyBastionTimingV2.GetSeconds(2));
             if(level==3) return new BastionProgressionDefinition(
-                3,2,650,500,900,false,new[]{"granary","food","hunting","fissure","chapter-iii"},0,14);
-            if(level==4) return new BastionProgressionDefinition(4,3,850,700,1150,false,new[]{"development-priority","chapter-iv"},300,16);
-            if(level==5) return new BastionProgressionDefinition(5,4,1100,900,1500,false,new[]{"stoneworks","chapter-v"},500,18);
+                3,2,650,500,900,false,new[]{"granary","food","hunting","fissure","chapter-iii"},0,EconomyBastionTimingV2.GetSeconds(3));
+            if(level==4) return new BastionProgressionDefinition(4,3,850,700,1150,false,new[]{"development-priority","chapter-iv"},300,EconomyBastionTimingV2.GetSeconds(4));
+            if(level==5) return new BastionProgressionDefinition(5,4,1100,900,1500,false,new[]{"stoneworks","chapter-v"},500,EconomyBastionTimingV2.GetSeconds(5));
             throw new ArgumentOutOfRangeException(nameof(level),"Bastion level is not authored in the current progression catalog.");
         }
 

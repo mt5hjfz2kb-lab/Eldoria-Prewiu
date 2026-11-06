@@ -99,7 +99,12 @@ namespace Eldoria.Tests
             Command("AdvanceBastion","bastion");Invoke(presenter,"Refresh");
             Assert.That(visual.PresentedBastionLevel,Is.EqualTo(1));
             Assert.That(visual.RightTarget.enabled,Is.False);
-            clock.Step(SliceContentProfiles.WebContract.Bastion2UpgradeSeconds);gateway.Advance();Invoke(presenter,"Refresh");
+            // This is the real Unity gateway, not the frozen web contract.
+            // The authored Economy V2 Bastion II duration is now 120 seconds.
+            int authoredSeconds=BastionProgressionCatalog.ForLevel(2).DurationSeconds;
+            clock.Step(authoredSeconds-1);gateway.Advance();Invoke(presenter,"Refresh");
+            Assert.That(visual.PresentedBastionLevel,Is.EqualTo(1),"Bastion II must not finish before its deadline");
+            clock.Step(1);gateway.Advance();Invoke(presenter,"Refresh");
             Assert.That(visual.PresentedBastionLevel,Is.EqualTo(2));
             Assert.That(visual.BastionLevelTwoVisuals[0].activeSelf,Is.True);
             Assert.That(visual.BastionLevelTwoVisuals[1].activeSelf,Is.True);

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T22:37:29.751Z",
+  "updated_at": "2026-11-06T07:14:54.808Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -3503,9 +3503,9 @@
       "title": "Construction Delight v1: FX visuales auténticos sobre construcciones de Valoria",
       "owner": "chatgpt-eldoria-construction-delight-20261104",
       "ownership_state": "claimed",
-      "ownership_revision": 22,
+      "ownership_revision": 23,
       "write_scope_released": false,
-      "branch": "feature/eldoria-construction-delight-20261104",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-03T23:35:16.557Z",
       "base_main_sha": "d01bffc48f85d65b1061c2fc50ce78c49d9c3344",
@@ -3520,12 +3520,14 @@
         ".github/workflows/eldoria-construction-delight-native.yml",
         "tools/construction-delight/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_routing_reason": "Procedural particle-only visual layer, zero new 3D models, zero credits; needs in-game Unity A/B prior to artistic acceptance.",
       "dependency": "Valoria PR #136 currently owns cartouches/scene/HUD and Windows native QA. Independent auto-attaching presentation-only module; do not touch scene, Presenter, Gateway or PR136 files. Coordinate integration and visual QA when Windows available.",
-      "phase": "UNITY_V6_72_NATIVE_PASS_ART_VISUAL_REVIEW_PENDING",
+      "phase": "V7_SOURCE_QA_PASS_NATIVE_UNITY_AB_72_RESERVED",
       "next": "V6 native Unity 6000.3.23f1 PASS 72 genuine PNG run 42122481739, artifact 13458423128 commit 96bd7b02a612b2e924411617edbae3287bfe1fd8. Two small 3D hammer impacts now readable, dust clouds materially denser than V5 but still visually elementary in normal city scale. Owner should review A/B frames and decide whether art >=8.2; no ART_APPROVED or merge/publication; Android/WebGL FPS not tested.",
       "delivery_definition": {
         "deliverable": "Start/work/complete effects for sawmill, barracks, bastion and upgrades using the true Gateway state, read-only; no save/rules edits",
@@ -3668,6 +3670,12 @@
         "physical_android_fps_verified": false,
         "release_rev": 22,
         "visual_review": "Improved visibility relative to V5 but dust remains two somewhat round clouds and hammer geometry is basic; do not declare final art quality."
+      },
+      "latest_source_qa": {
+        "run": 42178955508,
+        "source_head": "e964e7ed78a104b6ed48474be63e5f9ffe1b2c06",
+        "result": "PASS",
+        "notes": "real renderer-bound hammers, fragmented dust and restrained URP finish; artistic result unverified"
       }
     },
     {
@@ -6247,13 +6255,13 @@
     {
       "id": "eldoria-first-login-map-signage-respawn-20261105",
       "title": "Eldoria — bienvenida con nick, pictogramas, niveles del mapa y reposición de 5 min",
-      "owner": "chatgpt-eldoria-player-clarity-continuation-20261105",
+      "owner": "chatgpt-eldoria-pr162-direct-20261106",
       "branch": "feature/player-clarity-first-login-map-signage-20261105",
       "status": "active",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 2,
-      "claimed_at": "2026-11-05T19:53:00Z",
+      "ownership_revision": 4,
+      "claimed_at": "2026-11-05T22:37:43.640Z",
       "base_main_sha": "32176b06afee2a507ea76ff9087832e6b0cec4c8",
       "scope": [
         "Unity/Assets/Eldoria/PlayerClarity/**",
@@ -6299,12 +6307,17 @@
         ".github/workflows/eldoria-v41-domain.yml",
         ".github/workflows/march-capacity-contract.yml",
         ".github/workflows/early-retention-domain.yml",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs"
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/NarrativeCoherencePlayModeTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3CinematicAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs"
       ],
       "resources": [],
-      "phase": "CANONICAL_GATHER_COMBAT_NAMING_AND_NATIVE_QA",
+      "phase": "PLAYMODE_FIRST_NICK_NAMEPLATE_AND_TIER_EXPECTATIONS",
       "dependency": "Owner of valoria-master-plan-layered-construction-20261016 currently owns GameState, LocalGateway, HUD and World4XCanon in economy PR141. Do not mutate or merge overlapping integration until explicit safe release; write only isolated sources.",
-      "next": "Update canonical full PlayMode harness for first-entry naming before intro; no production behavior bypass. Run native exact PR162 after CI green.",
+      "next": "Correct verified portrait UI 1pt title/power overlap via V2 original layout, preserve resource wrap; retest 1600x900/900x1600. Diagnose intermittent spawnling actor visibility from real Unity probe before merge.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6315,6 +6328,18 @@
           "revision": 1,
           "at": "2026-11-05",
           "reason": "Continued on user instruction, same PR162/workstream; no concurrent economy ownership change"
+        },
+        {
+          "owner": "chatgpt-eldoria-player-clarity-continuation-20261105",
+          "revision": 2,
+          "at": "2026-11-05T22:37:43.640Z",
+          "reason": "Owner directed autonomous continuation on canonical PR162; previously committed fix and tests retained; no native shared runner claimed"
+        },
+        {
+          "owner": "chatgpt-eldoria-first-entry-autonomous-20261105",
+          "revision": 3,
+          "at": "2026-11-06",
+          "reason": "User expressly requested direct completion PR162; prior named automation disabled; maintain same PR and exact scope"
         }
       ],
       "dependencies": {
@@ -6322,6 +6347,29 @@
         "economy_merged_sha": "0579b316eac5c9c278d7de83540b9f67d74b96a6",
         "integration_branch": "feature/player-clarity-first-login-map-signage-20261105"
       }
+    },
+    {
+      "id": "eldoria-slm-permanent-bootstrap-20261104",
+      "title": "Eldoria — instalar y validar SuperLocalMemory local de forma segura",
+      "owner": "chatgpt-eldoria-slm-bootstrap-20261104",
+      "branch": "pilot/slm-permanent-bootstrap-20261104",
+      "status": "active",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "claimed_at": "2026-11-05T23:35:51.665Z",
+      "base_main_sha": "ab6e36f82aa0878744e3de859dcc491785574ef9",
+      "scope": [
+        "pilot/slm-bootstrap/**",
+        ".github/workflows/eldoria-slm-windows-install.yml",
+        ".github/workflows/eldoria-slm-windows-preflight.yml"
+      ],
+      "resources": [],
+      "budget_eur": 0,
+      "art_production_routing": "not_applicable",
+      "phase": "BOOTSTRAP_READY_NATIVE_EDITOR_JOB_STILL_RUNNING",
+      "next": "Claim windows-runner-heavy only after real editor job completes; run guarded installer, validate persistence and MCP; never auto-login OAuth.",
+      "write_scope_released": false,
+      "art_production_routing_reason": "SLM Windows installation/preflight and tooling validation only; this workstream neither generates nor edits Eldoria game art or 3D assets."
     }
   ],
   "history": [

@@ -1,0 +1,132 @@
+using System;
+using Eldoria.Domain;
+using NUnit.Framework;
+
+namespace Eldoria.Tests.EditMode
+{
+    public class EconomyProductionV2Tests
+    {
+        [Test]
+        public void EightHoursOffline_AtSawmillThree()
+        {
+            long start = new DateTime(2026, 11, 1, 0, 0, 0, DateTimeKind.Utc).Ticks;
+            var result = EconomyProductionV2.Accrue(start, start + TimeSpan.FromHours(8).Ticks,
+                0, 3, "wood");
+            Assert.AreEqual(10368, result.WholeUnits);
+        }
+
+        [Test]
+        public void ReopeningAtSameTimestampCannotPayAgain()
+        {
+            long start = DateTime.UtcNow.Ticks;
+            var first = EconomyProductionV2.Accrue(start, start + TimeSpan.FromMinutes(1).Ticks,
+                0, 1, "wood");
+            var second = EconomyProductionV2.Accrue(first.SettledThroughUtcTicks,
+                first.SettledThroughUtcTicks, first.FractionalMicrounits, 1, "wood");
+            Assert.AreEqual(0, second.WholeUnits);
+        }
+
+        [Test]
+        public void UpgradeDuringAbsenceSplitsProductionAtCompletion()
+        {
+            long start = DateTime.UtcNow.Ticks;
+            long middle = start + TimeSpan.FromHours(1).Ticks;
+            var result = EconomyProductionV2.Accrue(start,
+                start + TimeSpan.FromHours(2).Ticks, 0, 2, "wood", middle, 1);
+            Assert.AreEqual(1224, result.WholeUnits);
+        }
+
+        [Test]
+        public void OneSecondIsFractionalAndTenSecondsPayOneUnit()
+        {
+            long start = DateTime.UtcNow.Ticks;
+            var first = EconomyProductionV2.Accrue(start, start + TimeSpan.FromSeconds(1).Ticks,
+                0, 1, "wood");
+            Assert.AreEqual(0, first.WholeUnits);
+            var second = EconomyProductionV2.Accrue(first.SettledThroughUtcTicks,
+                start + TimeSpan.FromSeconds(10).Ticks, first.FractionalMicrounits, 1, "wood");
+            Assert.AreEqual(1, second.WholeUnits);
+            Assert.AreEqual(200000, second.FractionalMicrounits);
+        }
+
+        [Test]
+        public void ClockRollbackDoesNotMintResources()
+        {
+            long now = DateTime.UtcNow.Ticks;
+            var result = EconomyProductionV2.Accrue(now, now - TimeSpan.FromHours(2).Ticks,
+                0, 2, "stone");
+            Assert.AreEqual(0, result.WholeUnits);
+            Assert.AreEqual(now, result.SettledThroughUtcTicks);
+        }
+
+        [Test]
+        public void ThirtyDaysOfflineAtHighestProductionLevelStopsAfterFortyEightHours()
+        {
+            long start = new DateTime(2026, 11, 1, 0, 0, 0, DateTimeKind.Utc).Ticks;
+            long end = start + TimeSpan.FromDays(30).Ticks;
+            var wood = EconomyProductionV2.Accrue(start, end, 0, 5, "wood");
+            var stone = EconomyProductionV2.Accrue(start, end, 0, 5, "stone");
+            var food = EconomyProductionV2.Accrue(start, end, 0, 5, "food");
+            Assert.AreEqual(129600, wood.WholeUnits);
+            Assert.AreEqual(93312, stone.WholeUnits);
+            Assert.AreEqual(110592, food.WholeUnits);
+            Assert.AreEqual(0, wood.FractionalMicrounits);
+            var repeat = EconomyProductionV2.Accrue(wood.SettledThroughUtcTicks,
+                end, wood.FractionalMicrounits, 5, "wood");
+            Assert.AreEqual(0, repeat.WholeUnits);
+        }
+
+        [Test]
+        public void FortyEightHourBoundaryAndLongerAbsencePayIdenticalResources()
+        {
+            long start = new DateTime(2026,11,5,0,0,0,DateTimeKind.Utc).Ticks;
+            long cutoff = start + TimeSpan.FromHours(48).Ticks;
+            var exact = EconomyProductionV2.Accrue(start, cutoff, 0, 1, "wood");
+            var longer = EconomyProductionV2.Accrue(start,
+                cutoff + TimeSpan.FromDays(90).Ticks, 0, 1, "wood");
+            Assert.AreEqual(20736, exact.WholeUnits);
+            Assert.AreEqual(exact.WholeUnits, longer.WholeUnits);
+            Assert.AreEqual(cutoff + TimeSpan.FromDays(90).Ticks, longer.SettledThroughUtcTicks);
+            var reopen = EconomyProductionV2.Accrue(longer.SettledThroughUtcTicks,
+                longer.SettledThroughUtcTicks, longer.FractionalMicrounits, 1, "wood");
+            Assert.AreEqual(0, reopen.WholeUnits);
+        }
+
+        [Test]
+        public void UpgradeAfterFortyEightHoursCannotBoostEarlierProduction()
+        {
+            long start = new DateTime(2026,11,5,0,0,0,DateTimeKind.Utc).Ticks;
+            var upgradedAfterCap = EconomyProductionV2.Accrue(start,
+                start + TimeSpan.FromDays(5).Ticks, 0, 5, "food",
+                start + TimeSpan.FromHours(60).Ticks, 1);
+            Assert.AreEqual(17280, upgradedAfterCap.WholeUnits);
+        }
+
+        [Test]
+        public void UpgradingDuringAbsenceCannotResetFortyEightHourBudget()
+        {
+            long start = new DateTime(2026,11,5,0,0,0,DateTimeKind.Utc).Ticks;
+            long upgradeTime = start + TimeSpan.FromHours(1).Ticks;
+            long cap = EconomyProductionV2.OfflineWindowDeadline(start);
+            long returned = start + TimeSpan.FromDays(5).Ticks;
+            var first = EconomyProductionV2.Accrue(start, upgradeTime, 0, 1,
+                "wood", productionDeadlineUtcTicks:cap);
+            var second = EconomyProductionV2.Accrue(first.SettledThroughUtcTicks, returned,
+                first.FractionalMicrounits, 2, "wood", productionDeadlineUtcTicks:cap);
+            Assert.AreEqual(432, first.WholeUnits);
+            Assert.AreEqual(37224, second.WholeUnits);
+            Assert.AreEqual(returned, second.SettledThroughUtcTicks);
+            var repeat = EconomyProductionV2.Accrue(returned, returned,
+                second.FractionalMicrounits, 2, "wood");
+            Assert.AreEqual(0, repeat.WholeUnits);
+        }
+
+        [Test]
+        public void HighBastionTimingsAreDefinedButNotAutomaticallyUnlocked()
+        {
+            Assert.IsTrue(EconomyBastionTimingV2.TryGetSeconds(10, out int seconds));
+            Assert.AreEqual(28800, seconds);
+            Assert.IsFalse(EconomyBastionTimingV2.TryGetSeconds(25, out _));
+        }
+    }
+}
