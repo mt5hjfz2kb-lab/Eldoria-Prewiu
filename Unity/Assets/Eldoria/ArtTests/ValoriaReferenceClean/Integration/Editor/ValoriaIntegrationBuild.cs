@@ -472,6 +472,8 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(!h.Read("barracks",false).Building.Requirements.Contains("Operación en curso"),"Duplicate training status remains");
     Capture(h,"integration-training.png",1600,900);
     Capture(h,"integration-training-portrait.png",900,1600);
+    Capture(h,"integration-training-phone-landscape.png",844,390);
+    Capture(h,"integration-training-phone-portrait.png",390,844);
    },"Royal recruitment via visible V3 primary button");
    yield return new WaitForSecondsRealtime(.4f);
    Check(()=>{
@@ -508,6 +510,8 @@ namespace Eldoria.ReferenceClean.Editor {
       "Native march preparation is not an independent management destination");
     Capture(h,"integration-march-landscape.png",1600,900);
     Capture(h,"integration-march-portrait.png",900,1600);
+    Capture(h,"integration-march-phone-landscape.png",844,390);
+    Capture(h,"integration-march-phone-portrait.png",390,844);
    },"Royal march management real independent landscape and portrait");
    Check(()=>{
     var prepare=GameObject.Find("Confirm military command")?.GetComponent<RoyalButton>();
@@ -1071,7 +1075,7 @@ namespace Eldoria.ReferenceClean.Editor {
    var c=h.PlayerCamera;var canvas=h.Hud.GetComponent<Canvas>();var oldMode=canvas.renderMode;var oldCam=canvas.worldCamera;var oldDistance=canvas.planeDistance;var oldAspect=c.aspect;var oldMask=c.cullingMask;var oldRt=c.targetTexture;var oldActive=RenderTexture.active;var position=c.transform.position;float size=c.orthographicSize;var worldTarget=h.WorldNavigation.target;
    var scaler=h.Hud.GetComponent<RoyalScaler>();bool scalerEnabled=scaler.enabled;float scale=canvas.scaleFactor,canvasPixels=canvas.referencePixelsPerUnit;var scalerMode=scaler.uiScaleMode;var scalerResolution=scaler.referenceResolution;var scalerMatchMode=scaler.screenMatchMode;float scalerMatch=scaler.matchWidthOrHeight,scalerPixels=scaler.referencePixelsPerUnit;var areas=h.Hud.GetComponentsInChildren<RoyalSafeArea>(true);var areaEnabled=areas.Select(a=>a.enabled).ToArray();
    var rt=new RenderTexture(width,height,24);var tex=new Texture2D(width,height,TextureFormat.RGB24,false);
-   try{scaler.enabled=false;foreach(var a in areas)a.enabled=false;canvas.scaleFactor=width<height?width/800f:height/900f;foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(width/canvas.scaleFactor,true);c.targetTexture=rt;c.aspect=width/(float)height;
+   try{scaler.enabled=false;foreach(var a in areas)a.enabled=false;bool phone=Mathf.Min(width,height)<600;canvas.scaleFactor=width<height?width/(phone?600f:800f):height/(phone?600f:900f);foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(width/canvas.scaleFactor,true);c.targetTexture=rt;c.aspect=width/(float)height;
     // The world camera uses a different culling profile from the city camera.
     // An off-screen proof capture moves ScreenSpaceOverlay to ScreenSpaceCamera:
     // include Unity's existing UI layer (5) only during this capture or a real

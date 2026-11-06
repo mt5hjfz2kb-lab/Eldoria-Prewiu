@@ -951,6 +951,17 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.native_stage.outputs.stage == 'web_playtest'
+        with:
+          name: valoria-web-build-diagnostics-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-reference-clean.log
+            valoria-layered-source/docs/evidence/valoria-reference-clean/web-integration-preflight.log
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-result.json
+          if-no-files-found: warn
+          retention-days: 30
+
       # Compact visual evidence for the REAL owner-facing uGUI V2. The legacy
       # review artifact carries nearly a gigabyte of old Blender/source files
       # and exceeds connector limits; retain it unchanged, add PNGs separately.
@@ -974,7 +985,7 @@ jobs:
           compression-level: 1
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != '' && !startsWith(steps.native_stage.outputs.stage, 'visual_consolidation_') && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
+        if: always() && steps.native_stage.outputs.stage != '' && steps.native_stage.outputs.stage != 'web_playtest' && !startsWith(steps.native_stage.outputs.stage, 'visual_consolidation_') && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
         with:
           name: valoria-review-small-${{ github.run_id }}
           path: |

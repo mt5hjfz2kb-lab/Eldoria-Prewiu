@@ -954,7 +954,7 @@ namespace Eldoria.UI.RoyalGold.V2
             heroesButton.gameObject.SetActive(HeroesRequested!=null);
             heroesButton.interactable=HeroesRequested!=null&&(CanOpenHeroes==null||CanOpenHeroes());
             var heroesCaption=heroesButton.GetComponentInChildren<RoyalText>();
-            if(heroesCaption){heroesCaption.Put(heroesButton.interactable?"HÉROES":"HÉROES\nRECLUTA A LYRA");heroesCaption.fontSize=heroesButton.interactable?18:14;}
+            if(heroesCaption){heroesCaption.Put(heroesButton.interactable?"HÉROES":"HÉROES\nRecluta a Lyra");heroesCaption.fontSize=heroesButton.interactable?18:14;}
             Place(heroesButton.transform as RectTransform,hw*.50f,landscape?7:9,hw*.19f,landscape?52:60);
             Place(heading.rectTransform,landscape?14:15,7,hw*.47f,landscape?40:37);
             Place(subheading.rectTransform,landscape?14:15,landscape?49:47,hw*.47f,26);
@@ -1179,7 +1179,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float archerH=Mathf.Min(artH, (wide?width*.51f:width*.65f)*1.5f);
             float archerW=archerH/1.5f;
             Place(approvedArcher.rectTransform,width*(wide?.10f:.04f),artH-archerH,archerW,archerH);
-            float rosterW=Mathf.Clamp(width*.15f,114f,156f);
+            float rosterW=wide?Mathf.Clamp(width*.15f,156f,180f):184f;
             float rosterH=wide?Mathf.Min(155f,artH*.30f):164f;
             float rosterTop=artH*.15f;
             for(int i=0;i<2;i++)
@@ -1191,7 +1191,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(trainingTierPortraits[i].rectTransform,
                     -7f,-9f,rosterW+14f,rosterH-24f);
                 Place(trainingTierLabels[i].rectTransform,
-                    5f,rosterH-68f,rosterW-10f,64f);
+                    5f,rosterH-(wide?68f:100f),rosterW-10f,wide?64f:96f);
                 trainingTierLabels[i].fontSize=wide?17:18;
             }
             // The label is a physically bounded parchment nameplate, not
