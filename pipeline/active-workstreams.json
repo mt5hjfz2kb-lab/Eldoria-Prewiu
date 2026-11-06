@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T18:53:45.979Z",
+  "updated_at": "2026-11-06T19:03:00.413Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -41,15 +41,19 @@
         ".github/workflows/narrative-unity-domain.yml",
         ".github/workflows/valoria-windows-chromium-qa.yml",
         "docs/ui-v3/PLAYER_EXPERIENCE_FIXES_20261106.md",
-        "docs/evidence/player-experience-20261106/**"
+        "docs/evidence/player-experience-20261106/**",
+        "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
+        ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PLAYER_AUDIT_REMEDIATION",
-      "next": "Diagnose observed failures; implement coherent corrections, certify exact candidate and replay.",
+      "phase": "PLAYER_AUDIT_REMEDIATION_NATIVE_VALIDATION",
+      "next": "Implement regression tests and certify audit remediation candidate before player replay.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -2001,7 +2005,7 @@
           "reason": "Owner directs correction of all observed player-audit problems, prioritizing player experience."
         }
       ],
-      "ownership_revision": 153,
+      "ownership_revision": 154,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
