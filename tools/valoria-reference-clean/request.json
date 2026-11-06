@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 315,
+  "revision": 316,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "PR163 exact truthful outbound context, post-hunt-report and landscape-cartouche QA. Build isolated branch WebGL native315; no publication, no clock/save edits. Full native tests and updated phone screenshots required.",
+  "checks": "PR163 native316: correct real active-march selected Engendro framing beside the top-left quest in landscape; include actual 844x390/390x844 before/after photos, re-check Unity and isolated WebGL. No publication or save/clock edits.",
   "browser_backend": "windows"
 }

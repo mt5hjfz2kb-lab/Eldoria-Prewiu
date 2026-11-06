@@ -53,7 +53,10 @@ namespace Eldoria.ReferenceClean {
   Rect UIVisibleSceneViewport(){
    if(!Hud)return default;
    var v2=Hud.GetComponent<RoyalGoldV2Hud>();
-   return v2?v2.GetFreeSceneViewport():Hud.GetVisibleSceneViewport();
+   // World targets are centered in the available RIGHT-hand scene. The top-left
+   // chapter parchment is not a full-width obstacle, but its real X footprint
+   // must remain excluded when a context cartouche occupies the lower edge.
+   return v2?v2.GetFreeSceneViewport(InWorld&&IsWorldTarget(Selected)):Hud.GetVisibleSceneViewport();
   }
   IEnumerator Start(){
    city=GetComponent<ValoriaReferenceCleanGameplay>();

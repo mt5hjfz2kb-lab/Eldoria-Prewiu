@@ -1346,7 +1346,7 @@ namespace Eldoria.UI.RoyalGold.V2
         /// A camera-framing helper for the eventual safe integration. The V1
         /// method does not know the new V2 cards. No camera is changed here.
         /// </summary>
-        public Rect GetFreeSceneViewport()
+        public Rect GetFreeSceneViewport(bool sideBySideWorldContext=false)
         {
             Rect free = Source ? Source.GetVisibleSceneViewport() : new Rect(.07f, .12f, .86f, .78f);
             if (!safe || !hasGeometry) return free;
@@ -1377,11 +1377,23 @@ namespace Eldoria.UI.RoyalGold.V2
                     float fromTop = -objectiveCard.anchoredPosition.y + objectiveCard.rect.height;
                     free.yMax = Mathf.Min(free.yMax, 1f - fromTop / height - padding);
                 }
+                else if (sideBySideWorldContext && buildingVisible && objectiveCard)
+                {
+                    // Real World targets focus to the right of the compact
+                    // top-left quest. Exclude only that quest's measured X
+                    // footprint; excluding its whole Y band together with
+                    // the bottom context card left ~3% scene height in the
+                    // active Engendro march on a landscape phone.
+                    // No control, save, clock, or world geometry is changed.
+                    float questRight=(objectiveCard.anchoredPosition.x+
+                        objectiveCard.rect.width)/width+padding;
+                    free.xMin=Mathf.Max(free.xMin,questRight);
+                }
                 else if (!(buildingVisible && Source.SelectedBuildingId=="bastion"))
                 {
-                    // The top-left quest occupies this band for objects that
-                    // could share its horizontal footprint. Preserve it for
-                    // other targets, including left-side buildings.
+                    // Genuine left-side city buildings still need the whole
+                    // upper quest band reserved. Bastion stays separately
+                    // centered outside the chapter's horizontal footprint.
                     float fromTop=-objectiveCard.anchoredPosition.y+
                         objectiveCard.rect.height;
                     free.yMax=Mathf.Min(free.yMax,1f-fromTop/height-padding);

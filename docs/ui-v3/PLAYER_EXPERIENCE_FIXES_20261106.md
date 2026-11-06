@@ -45,3 +45,7 @@ The candidate remains unmerged and unpublished. All domain/governance checks pas
 - Genuine native images of modified screens in both mobile orientations.
 - Exact candidate WebGL build and a player-directed repeat of the initial journey. No seeded states or accelerated timers may count as that player session.
 - Integration only after these checks; keep any remaining limitations explicit. Physical Android/touch/audio performance remain a separate device test.
+
+## Follow-up native315 visual framing (2026-11-07)
+
+Native315 run 42307493841 failed a genuine pre-WebGL framing assertion after the Engendro march departed. On 844×390, the target occupied x=.46–.54, y=.40–.56, but the free rectangle reserved a horizontal full-width band for a chapter objective shown only at the top LEFT, leaving y=.55–.58 between it and the bottom context cartouche. The source of the false full-width exclusion was `RoyalGoldV2Hud.GetFreeSceneViewport`. Native316 keeps the legible context card intact and reserves the measured **left-hand horizontal footprint** of that quest for real World targets, leaving the right-hand world visible; left-side city building protection remains unchanged. The already-present outgoing Engendro assertion and both phone captures must pass. The compact native artifact now explicitly contains `integration-context-engendro-*.png` so that a Unity PASS never substitutes for visual inspection. No game mechanics, saves, timers, camera altitude or rewards change. Native316, browser evidence and exact final UI certificate are NOT yet PASS.
