@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 313,
+  "revision": 314,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "PR163 player-experience remediation candidate. Build exact isolated branch source for visible-controls player replay; no publication, no edited saves or accelerated timers. Full native gate is separately required. Preserve original build-safe resources.",
+  "checks": "PR163 exact post-hunt-report and landscape-cartouche QA. Build isolated branch WebGL native314; no publication, no clock/save edits. Native 216+77 and updated screenshots separately required.",
   "browser_backend": "windows"
 }
