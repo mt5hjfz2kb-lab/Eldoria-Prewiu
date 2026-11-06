@@ -72,8 +72,19 @@
 
 **Implementado en esta rama:** 32 notas y estados del catálogo + este informe y un resumen actualizado en la guía. Los 32 documentos originales, historias y enlaces se conservan.
 
-**Comprobado por lectura y reconciliación:** 32 rutas y blobs de origen, pruebas reportadas en sus propios documentos, estados/autoridad posterior y sumas del catálogo. La ejecución del CI y la integración se registrarán al terminar.
+**Comprobado por lectura y reconciliación:** 32 rutas y blobs de origen, pruebas reportadas en sus propios documentos, estados/autoridad posterior y sumas del catálogo. La PR #167 está fusionada y los controles de catálogo, arquitectura y regresión web finalizaron con éxito; las evidencias exactas figuran abajo.
 
 **No comprobado aquí:** juego Unity en ejecución, calidad artística subjetiva, dispositivos físicos, licencias comerciales de terceros, economía multijugador, compatibilidad funcional de un recurso para borrarlo. La reclasificación documental no aprueba ninguno de esos ámbitos.
 
 **Pendientes del programa completo:** 94 documentos `review_pending` requieren otros lotes, y cualquier borrado de duplicados/activos necesita inventario vigente, consumidores y validación técnica antes de alterar rutas.
+
+## Cierre real de integración — 06/11/2026
+
+- [PR #167](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/167) fusionada en `main`: commit `9e9743ed8d9738cbbec997a35863812cea79890c`.
+- [Arquitectura + catálogo + triaje 42289571356](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42289571356): **SUCCESS**, incluidos `Validate documentation catalogue and local links`, `Test documentation governance`, `Report document lifecycle and test safe triage`, ownership y comprobaciones de arquitectura.
+- [Regresiones del tester cerrado 42289571604](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42289571604): **SUCCESS**, incluidas las regresiones completas de v0.32 y recorrido automático de partida nueva Arc I. Son pruebas del prototipo, **no** PlayMode Unity ni certificación de teléfono físico.
+- [Dominio táctico 42289572004](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42289572004): **SUCCESS**. El workflow artístico World4X estaba omitido porque no había fuentes artísticas modificadas.
+- **Corrección preventiva de una prueba defectuosa:** el primer run de arquitectura [42289221618](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42289221618) falló en `tools/documentation-triage/report.test.mjs` por `pending_count > 100`. La reducción real a 94 pendientes era válida; la condición fija penalizaba la mejora. Se reclamó expresamente ese único archivo de pruebas (revisión de titularidad 14) y se sustituyó por cotejo exhaustivo con el catálogo y un caso positivo de **cero** documentos pendientes. El código de producción `report.mjs` no cambia. La repetición CI pasó.
+- La PR modifica **4 archivos**: catálogo, guía, este informe y exactamente una prueba documental. Los 32 documentos originales, código Unity, prefabs, imágenes, modelos y publicaciones permanecen intactos.
+- El `main` resultante se leyó de nuevo: **228 entradas**, 28 `current`, 69 `reference`, 37 `historical`, 94 `review_pending`. La auditoría documental concreta está **terminada y verificada**, no la revisión semántica de los 94 restantes.
+
