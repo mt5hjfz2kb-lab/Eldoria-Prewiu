@@ -50,7 +50,12 @@ jobs:
       - name: Honor current Windows runner owner and no shared Unity/Blender process
         shell: powershell
         run: |
-          node tools/valoria-reference-clean/check-player-experience-lease.cjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-qa-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
+          $qaRequest=Get-Content tools/valoria-reference-clean/browser-qa-request.json -Raw|ConvertFrom-Json
+          if($qaRequest.interaction_mode -eq 'manual'){
+            node tools/valoria-reference-clean/check-player-experience-lease.cjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-qa-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
+          }else{
+            node tools/workstream-lease/check.mjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-qa-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
+          }
           if($LASTEXITCODE){throw 'Live runner lease or queued ownership changed; refuse stale execution'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'PC native editing resources occupied; refuse interference'}
       - name: Resolve exact current WebGL request and successful source run
