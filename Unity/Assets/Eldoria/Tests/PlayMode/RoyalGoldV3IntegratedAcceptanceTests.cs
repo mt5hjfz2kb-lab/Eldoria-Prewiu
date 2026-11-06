@@ -714,6 +714,17 @@ namespace Eldoria.Tests
             Assert.That(Member(v2, "VisibleBuildingButton"),
                 Is.SameAs(Member(v2, "ChronicleBuildingAction")),
                 "The illustrated city cartouche must own the only build command");
+            // The real landscape hunt/context cartouche previously exposed less than
+            // two lines of its description (Engendro, wolf and boar). Do not
+            // regress to a one-line clipped viewport after resizing.
+            if (Screen.width > Screen.height)
+            {
+                var detailsViewport = hud.GetComponentsInChildren<RectTransform>(true)
+                    .FirstOrDefault(x => x.name == "Clipped text viewport");
+                Assert.That(detailsViewport, Is.Not.Null);
+                Assert.That(detailsViewport.rect.height, Is.GreaterThanOrEqualTo(55f),
+                    "Landscape contextual descriptions must remain readable and scrollable");
+            }
             var floating = hud.GetComponentsInChildren<CanvasGroup>(true)
                 .First(x => x.name == "V3 / selected building contextual action");
             Assert.That(floating.blocksRaycasts, Is.False,
