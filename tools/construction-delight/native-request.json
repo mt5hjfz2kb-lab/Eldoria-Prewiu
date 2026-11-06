@@ -2,9 +2,9 @@
   "schema_version": 1,
   "request_id": "eldoria-construction-delight-native-ab-20261104",
   "workstream_id": "eldoria-construction-delight-v1-20261104",
-  "source_head_before_request": "9f4706470bb016c36c1008b4cc3aa127895769e2",
-  "ownership_revision": 23,
-  "mode": "V8_FINAL_SOURCE_QA_AFTER_LIGHTING_VISUAL_REFINEMENT",
+  "source_head_before_request": "a7ff46259d50fe5ad2adc0f2c1fae2f573e91107",
+  "ownership_revision": 25,
+  "mode": "V8_REAL_NATIVE_VISIBLE_HAMMERS_MEDIUM_LAYERED_DUST_72_FRAMES",
   "expected_images": 72,
   "formats": [
     "844x390",
@@ -51,8 +51,8 @@
     }
   ],
   "validation": "36 domain assertions, 5 Unity C# source files Roslyn syntax, authentic construction mesh staging, visible flag restoration, no second timer/World4X leak",
-  "editor_launch": false,
-  "windows_runner_requested": false,
+  "editor_launch": true,
+  "windows_runner_requested": true,
   "test_project": "tools/construction-delight/DomainProbe.csproj",
   "asserts_production_source": "Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs",
   "last_source_qa": "DomainProbe.cs built against 8.0 SDK with exact Unity state source linked in",
@@ -94,7 +94,7 @@
   "windows_runner_reserved_by": "eldoria-construction-delight-v1-20261104",
   "source_qa_change": "Fixed VisibleBounds infinite recursion from previous scaffold fallback and added semantic Roslyn nonrecursive/visible-renderer guard",
   "native_qa_pending": true,
-  "current_main_parent": "f3590c37357ed6c377215fb7d9bc32ebe884dd15",
+  "current_main_parent": "63376181bcdec64aef4433e23c7aecb1912cfbe1",
   "last_native_run": 41868962109,
   "last_native_artifact": 13343180739,
   "visual_rejection": {
@@ -206,9 +206,9 @@
     "images",
     "art_approved"
   ],
-  "native_editor_launch_requested": false,
-  "native_editor_invocation_requested": false,
-  "native_request_at": "2026-11-06T07:19:46.884Z",
+  "native_editor_launch_requested": true,
+  "native_editor_invocation_requested": true,
+  "native_request_at": "2026-11-06T08:37:25.994Z",
   "main_claim_commit": "70fda65574b0d543eed4b556827836af5cb1e26f",
   "merged_main_commit": "9d0f3feecd54507220ae9a77a1688372cbeed2d0",
   "branch_head_before_trigger": "e19014ffcef00fda0ea77436d46fcc7bcc284110",
@@ -269,5 +269,6 @@
     "target": "human visual comparison to V6 and V7, portrait and landscape",
     "art_approved": false
   },
-  "source_qa_note": "Source QA includes front mesh contact, real tiny hammer shadows, medium irregular impact dust and all authoring files; Unity native conditional skipped while another owner holds Windows."
+  "source_qa_note": "Source QA includes front mesh contact, real tiny hammer shadows, medium irregular impact dust and all authoring files; Unity native conditional skipped while another owner holds Windows.",
+  "v8_native_gate": "72 authentic camera PNGs exactly; two camera-front hammer mesh contacts and 4 visible renderers, 12+ local dust sprites, timed strike+0.12 sec dust, no magenta, stage continuity, true LocalGateway/save reload and zero FX leakage. Do not equate PASS with quality."
 }
