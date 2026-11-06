@@ -975,12 +975,14 @@
     {
       "path": "docs/VALORIA_NATION1_RESET_COMPATIBILITY_AUDIT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 7dffe60423bc3df0f0dfef406b0b451dac3befa1: Auditoría de lectura del workstream Nation1 del 04/10, sin relevo, y con paso siguiente condicionado a un cierre ya histórico. Autoridad posterior: pipeline/active-workstreams.json; docs/DOCUMENTATION_POLICY.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_ORIGINAL_HERO_ART_TEST.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 3c29d32345b090aced27d2da3573b93c93c8cad6: Estudio hero propio rechazado artísticamente pese a compilación; conservar como evidencia negativa, no proponer sustitución de arquitectura. Autoridad posterior: docs/VALORIA_VISUAL_BIBLE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md",
@@ -991,12 +993,14 @@
     {
       "path": "docs/VALORIA_PLAYABLE_DISTRICT_ART_PASS_1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 3384ac0155c61071410488107abea5655caf7435: Certificación técnica del esqueleto, parcelas y colliders de septiembre; criterios geométricos útiles pero no calidad visual final ni pose de cámara vigente. Autoridad posterior: docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md; PR #136. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_PLAYABLE_DISTRICT_ART_PASS_2_ARCHITECTURE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git a9205c1f916bd749af23154767816cda9062cfa6: Plan ART PASS 2 IN PROGRESS con Cuartel/Bastión pendientes en septiembre; el código y los resultados de producción evolucionaron después. Autoridad posterior: docs/VALORIA_BUILDING_PRODUCTION_INVENTORY_V1.md; PR #136. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md",
@@ -1007,32 +1011,38 @@
     {
       "path": "docs/VALORIA_PREMIUM_TARGET_GAP_REVIEW_VISUAL_UPLIFT_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 20d34040f7698e89e13eee79dbd67aa3fc450711: HERO TEST ZONE con repetidos VISUAL FAIL y método de microajustes agotado. No reiniciar una iteración antigua como tarea abierta. Autoridad posterior: docs/VALORIA_GOLDEN_LOOKDEV_SLICE_V1.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_PRODUCTION_ART_C_PHASE_VERDICT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git d1f8fda4bfeb794b625749ecbfca665f45607cc6: Ensayos Starter v1/v2 que terminaron TECH PASS/VISUAL FAIL sin promoción, anteriores al reset cerrado; no reutilizar candidatos descartados. Autoridad posterior: docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_PRODUCTION_ART_ROLLOUT_PLAN_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 5f9367714a43e64acb8553d221819f7189800716: Plan marcado BLOCKED ON STARTER FAMILY VISUAL PASS, previo a resultados y fases posteriores; no autoriza repetir el rollout ni producir edificios futuros. Autoridad posterior: docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_PRODUCTION_ART_STARTER_FAMILY_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 294515d1f2421319e824f6c96110fb42c1af9381: Brief SOURCE READY pero ejecución supeditada a recurso Nation1 de octubre; el Starter v1 final falló visualmente. Autoridad posterior: docs/VALORIA_PRODUCTION_ART_STARTER_V1_VERDICT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_PRODUCTION_ART_STARTER_V1_VERDICT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 94d55deaa00b95c2abaabed1fd0b6627b86d42ba: Gate Starter TECH PASS/VISUAL FAIL/NOT PROMOTED: conservar las causas y no mover a producción ese kit. Autoridad posterior: docs/VALORIA_PRODUCTION_ART_C_PHASE_VERDICT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_FOUNDATION_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 60c2b4c6df52e7a082ab5cb45cdd5277be8ee9ce: Cierre de preparación A/B ligado a la reserva Nation1 y a una secuencia posteriormente ejecutada; no reabrir preparación como fase pendiente. Autoridad posterior: docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
@@ -1043,12 +1053,14 @@
     {
       "path": "docs/VALORIA_PRODUCTION_ART_SYSTEM_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 59d97e790586cc0272610be8cdf58398947c0c6b: Contrato de calidad separado de autoría y CI, con criterios reutilizables; camera/brief de su época no sustituyen la referencia del propietario ni autorizan Tripo. Autoridad posterior: docs/VALORIA_VISUAL_BIBLE.md; docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_PRODUCTION_RECIPE_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 719eb600d55ba31655b96e820f2e89f1fafb3acd: Receta SHARP 589824 con imagen antigua SHA8ae6 y HOME fija presentada como LOCKED: la autoridad visual se corrigió el 20/10. No reactivar el modelo de beauty antiguo. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_PROGRESSION_MAP_V1.md",
@@ -1071,12 +1083,14 @@
     {
       "path": "docs/VALORIA_REFERENCE_CONVERGENCE_PASS_V2_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 5c432b3b46eb7d883175862c066acd83b79a9bbe: World Frame v1 promocionado con referencia histórica y experimentos posteriores rechazados; no es la composición canónica de noviembre. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_REFERENCE_IMAGE_NOTES.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 2a10de34629d402be302f6631dbbaa5a45616884: Principios útiles de composición y jerarquía, pero describe como imagen canónica la composición 1536x1024 anterior a la referencia exacta 1448x1086 del 20/10. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md; docs/VALORIA_VISUAL_BIBLE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_RESIDENTIAL_TERRACE_ROCK_GATE.md",
