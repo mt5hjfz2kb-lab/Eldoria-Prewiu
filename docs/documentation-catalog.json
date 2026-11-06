@@ -1191,7 +1191,8 @@
     {
       "path": "docs/VALORIA_SURFACE_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 07e91c0c186259920800312f4c1d385a4e4bd028: Diagnóstico de shaders/materiales glTFast y preservación PBR que aún sirven para revisar importaciones, pero sus valores de LookDev de septiembre no son un preset obligatorio actual. Autoridad posterior: docs/VALORIA_VISUAL_BIBLE.md; docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_TRIPO_MODULAR_GATE.md",
@@ -1208,7 +1209,8 @@
     {
       "path": "docs/VALORIA_TRIPO_SELECTIVE_REPLACEMENT_PROOF_V1_PLAN.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 4530e1d3eb4d06603bf7d43b82662883a3f19338: Tripo selectivo bloqueado antes de subida/generación por CDP, 0 créditos; no dejar que un plan antiguo haga reintentos autónomos o consuma saldo. Autoridad posterior: AGENTS.md; docs/TRIPO_API_NORMA_PRODUCCION_V1.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_TWO_WORKSTREAMS_OWNER_PAUSE_20261016.md",
@@ -1219,12 +1221,14 @@
     {
       "path": "docs/VALORIA_VEGETATION_WATER_SHORE_PRODUCTION_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git b71b41886da1d4821848335f0ab96cb83bfb4d5e: Iteración Water/Shore y vegetación con veredicto acotado PRODUCTION PASS de octubre, A/B real y sin cambiar gameplay; no es aprobación general para la referencia actual. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_VISIBLE_FRAME_COHESION_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 247e69b87b9a37ad3664f782742bf631801775d9: El A/B terminó TECH PASS pero VISUAL PARTIAL-FAIL / NOT PROMOTED; no continuar retocando franjas de suelo y caminos como si fuera un problema vigente. Autoridad posterior: docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_VISUAL_AUTHORITY_RESET_V1.md",
@@ -1241,7 +1245,8 @@
     {
       "path": "docs/VALORIA_VISUAL_BASELINE_DIAGNOSIS.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 73c94e19772419c3931dafcea5305f7e2e33d2d1: Capturas diagnósticas previas a Surface/LookDev: PBR y color fallaban entonces, pero el baseline no describe render del juego actual. Autoridad posterior: docs/VALORIA_SURFACE_V1.md; docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_VISUAL_BIBLE.md",
@@ -1276,22 +1281,26 @@
     {
       "path": "docs/VALORIA_VISUAL_RND_DECISION_REGISTER_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git dd6ea82ed105b6a3290fc117b07dff9be56aa5f3: Registro auditable de éxitos/rechazos y límites SHARP 300K/600K de octubre. La etiqueta LEADER era de esa investigación, no una orden actual de reinstalar un método. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md; AGENTS.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_VISUAL_SHELL_V2_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git a2796129fcf1827bfe8f35991dc4bd88f08ccdc6: Ensayos de Shell v2 y heightfields tuvieron TECH PASS pero VISUAL FAIL/categoría agotada; no promocionar su escena ni repetir ajustes menores. Autoridad posterior: docs/VALORIA_SHELL_V2_FUSED_TRANSITION_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_WALL_FAMILY_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git b1bb2423184a7714e7b3614ecc79a8602b0671e8: Walls Source03 probado en octubre con family PASS local; sirve para identidad/procedencia, no exime comprobar referencia actual y cambios posteriores. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md; pipeline/asset-vault/clean-production-shelf-v1.json. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_WEST_REBUILDERS_QUARTER_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 85ea66b998a19878bb1f95afed36b98ba3b7a8fe: Ampliación occidental con TECH/VISUAL PASS delimitado en septiembre. Conservar precedentes de crecimiento espacial, no la fórmula/escena antigua como modelo aprobado hoy. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md; docs/VALORIA_VISUAL_BIBLE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_ZERO_EURO_ASSET_GATE.md",
@@ -1320,7 +1329,8 @@
     {
       "path": "docs/WORLD_MAP_FOREST_RESOURCE_KIT_V1_RESULT.md",
       "domain": "world",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 5e81e21e3e7bacad882fa7e5f998053cf45924d9: Bosque de Slavic World Free fue REJECTED FOR PRODUCTION / VISUAL FAIL: una importación técnica correcta no lo convierte en vegetación final del mapa. Autoridad posterior: docs/ELDORIA_WORLD_REGION_1_V1.md; docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/WORLD_MAP_VISUAL_BENCHMARK_V1.md",
