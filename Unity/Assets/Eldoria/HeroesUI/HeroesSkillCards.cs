@@ -245,6 +245,10 @@ namespace Eldoria.HeroesUI
             label.horizontalOverflow=HorizontalWrapMode.Wrap;
             label.verticalOverflow=VerticalWrapMode.Overflow;
             float required=Mathf.Max(h,label.preferredHeight+12f);
+            bool needsScroll=required>h+1f;
+            // Keep the reading cue outside the text's clipped area.
+            if(needsScroll)
+                viewport.sizeDelta=new Vector2(w,Mathf.Max(1f,h-20f));
             body.sizeDelta=new Vector2(w,required);
             label.rectTransform.sizeDelta=new Vector2(w,required);
             scroll.viewport=viewport;
@@ -253,7 +257,7 @@ namespace Eldoria.HeroesUI
             scroll.vertical=true;
             scroll.movementType=ScrollRect.MovementType.Clamped;
             scroll.scrollSensitivity=25f;
-            if(required>h+1f)
+            if(needsScroll)
                 Label("Skills / reading hint",card,"DESLIZA PARA LEER",
                     x,y+h-14f,w,14f,11,TextAnchor.LowerRight,Gold);
         }

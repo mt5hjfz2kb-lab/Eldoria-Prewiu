@@ -658,7 +658,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 trainingTierChoices[i].gameObject.SetActive(training);
                 bool unlocked=i==0||s.BarracksLevel>=4;
                 trainingTierLabels[i].Put(i==0?"ARQUEROS T1":
-                    unlocked?"ARQUEROS T2":"T2 · REQUIERE CUARTEL IV");
+                    unlocked?"ARQUEROS T2":"T2\nREQUIERE\nCUARTEL IV");
                 trainingTierChoices[i].interactable=training&&!trainingActive&&unlocked;
                 trainingTierPortraits[i].color=!unlocked?
                     new Color(.36f,.39f,.43f,.57f):
@@ -1191,8 +1191,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(trainingTierPortraits[i].rectTransform,
                     -7f,-9f,rosterW+14f,rosterH-24f);
                 Place(trainingTierLabels[i].rectTransform,
-                    5f,rosterH-36f,rosterW-10f,32f);
-                trainingTierLabels[i].fontSize=wide?21:25;
+                    5f,rosterH-68f,rosterW-10f,64f);
+                trainingTierLabels[i].fontSize=wide?17:18;
             }
             // The label is a physically bounded parchment nameplate, not
             // dark letters placed on an unpredictable bright sky.

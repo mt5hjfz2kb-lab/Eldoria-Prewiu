@@ -10,7 +10,7 @@ The completed manual Neral I–V playtest is documented in `PLAYER_AUDIT_2026110
 
 ## Current state (not a completion certificate)
 
-Candidate `833e3b6970080de0cbf2aec29b51f8cb7fb0a088` is under native Unity validation, run 42276531574. Domain probe dependency corrected in `72ad6be0621fcc287c397d8098dea55a39cd43ca`. The subsequent domain run exposed missing Barracks wording in the shortened tutorial; corrected locally while retaining the existing test. Further changes below remain candidates until the exact final commit passes native and player validation.
+The candidate remains unmerged and unpublished. All domain/governance checks passed on `1b83c3c099896e0533c529ec9c00b1acfd1fc096`; its WebGL build is run 42279373482. Earlier native run 42276531574 compiled and captured the integrated journey, then exposed two outdated text assertions, now corrected. Run 42278064290 exposed an interaction the probe did not yet handle: the earned Lyra presentation correctly blocks the next world action until closed. The probe now captures that presentation in both phone orientations and clicks its real close control. Review of actual captures additionally found and corrected a clipped T2 requirement and a reading cue overlapping skill text. Native303 includes those corrections; final native tests and manual player replay are still required.
 
 | Observation | Candidate correction | Required verification |
 |---|---|---|

@@ -648,6 +648,19 @@ namespace Eldoria.ReferenceClean.Editor {
   IEnumerator ReadJourneyNarrative(ValoriaIntegratedWorld h){
    yield return new WaitForSecondsRealtime(.3f);
    for(int turn=0;turn<40;turn++){
+    var recruitment=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+    if(recruitment&&recruitment.IsOpen){
+     Check(()=>{
+      Need(recruitment.CurrentHeroId=="lyra"&&h.City.Gateway.Snapshot().ChapterThree.LyraRecruited,
+       "Recruitment presentation must show the actually recruited Lyra");
+      Capture(h,"integration-lyra-recruitment-landscape.png",844,390);
+      Capture(h,"integration-lyra-recruitment-portrait.png",390,844);
+      Click(GameObject.Find("Close heroes").GetComponent<Button>());
+      Need(!recruitment.IsOpen,"Recruitment close did not return to the journey");
+     },"player reads and closes earned Lyra presentation");
+     yield return new WaitForSecondsRealtime(.18f);
+     if(Failed())yield break;
+    }
     if(!h.Hud.NarrativeOpen){
      if(h.Hud.Modal.gameObject.activeSelf||!string.IsNullOrEmpty(h.Selected))yield break;
      yield return new WaitForSecondsRealtime(1.6f);
@@ -1114,4 +1127,5 @@ namespace Eldoria.ReferenceClean.Editor {
  }
 }
 #endif
+
 
