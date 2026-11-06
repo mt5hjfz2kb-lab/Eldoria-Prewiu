@@ -624,14 +624,24 @@ async function main() {
         before: beforeZoom.camera, after: latest.camera };
       }
     }
-    const retained = latest;
+    const panned = latest;
     await capture('world-before-city-return'); await toggleWorld(false); await capture('city-world-transition');
     await toggleWorld(true); await sleep(900);
-    const restored = cameraDifference(retained, latest);
-    report.checks.world_view_retained = { pass: !!restored && restored.distance <= 0.2 && Math.abs(restored.zoom) <= 0.05,
-      before: retained.camera, after: latest.camera, difference: restored };
-    await capture('world-restored');
-    need(report.checks.world_view_retained.pass, 'World position/zoom changed after a city/world round trip');
+    const firstReturn = latest;
+    // TrySetWorld deliberately starts EVERY visit at Valoria in near view.
+    // Match the native integration contract, not the superseded retained-pan rule.
+    // Repeat through real controls to verify a stable home pose without engine writes.
+    const nearZoom = orientation(firstReturn) === 'portrait' ? 64 : 36;
+    await capture('world-home-near-return');
+    await toggleWorld(false); await toggleWorld(true); await sleep(900);
+    const restored = cameraDifference(firstReturn, latest);
+    report.checks.world_home_near_return = {
+      pass: !!restored && restored.distance <= 0.2 && Math.abs(restored.zoom) <= 0.05 &&
+        Math.abs(firstReturn.camera.zoom - nearZoom) <= 0.05 && Math.abs(latest.camera.zoom - nearZoom) <= 0.05,
+      expected_near_zoom: nearZoom, panned: panned.camera,
+      first_return: firstReturn.camera, second_return: latest.camera, difference: restored };
+    await capture('world-home-near-repeat');
+    need(report.checks.world_home_near_return.pass, 'World re-entry did not restore the stable Valoria near view');
     report.checks.world_four_directions_both_orientations = report.navigation.length === 8 && report.navigation.every(item => item.pass);
   }
   function describeOperation(state) {
