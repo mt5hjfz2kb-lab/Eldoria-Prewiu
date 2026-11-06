@@ -170,7 +170,8 @@ namespace Eldoria.ReferenceClean
                 // On return from 4X the original Gateway task is still active.
                 // Recreate only the ephemeral artisan hammer animation.
                 if(!hammerTools.Running && FindSite(activeBuilding,false,out var worksite))
-                    hammerTools.Begin(worksite,city.PlayerCamera,Time.unscaledTime);
+                    hammerTools.Begin(worksite,city.PlayerCamera,Time.unscaledTime,
+                                      WorksiteModel(activeBuilding));
                 if(!stagedBuilding.Running && previous.IsValid &&
                    previous.LevelAtStart==0)
                     stagedBuilding.BeginWork(CompletedModel(previous.BuildingId),
@@ -193,7 +194,7 @@ namespace Eldoria.ReferenceClean
                     openingDust.Tint = new Color(.83f,.76f,.62f,.34f);
                     openingDust.Emit(7);
                     if(hammerTools.Running)
-                        denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,25,.88f);
+                        denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,28,.46f);
                     nextWorkPulse = Time.unscaledTime + 1.70f;
                 }
             }
@@ -205,14 +206,14 @@ namespace Eldoria.ReferenceClean
             int hammerHits=hammerTools.Tick(Time.unscaledTime);
             if(hammerHits>0)
             {
-                hammerImpactDust.EmitAtWorld(hammerTools.FirstImpact,24,.45f);
-                denseWorkDust.EmitAtWorld(hammerTools.FirstImpact,34,.86f);
+                hammerImpactDust.EmitAtWorld(hammerTools.FirstImpact,28,.28f);
+                denseWorkDust.EmitAtWorld(hammerTools.FirstImpact,38,.45f);
                 loopMotes.EmitAtWorld(hammerTools.FirstImpact,4,.22f);
             }
             if(hammerHits>1)
             {
-                hammerImpactDust.EmitAtWorld(hammerTools.SecondImpact,22,.44f);
-                denseWorkDust.EmitAtWorld(hammerTools.SecondImpact,30,.77f);
+                hammerImpactDust.EmitAtWorld(hammerTools.SecondImpact,27,.28f);
+                denseWorkDust.EmitAtWorld(hammerTools.SecondImpact,36,.45f);
                 loopMotes.EmitAtWorld(hammerTools.SecondImpact,3,.20f);
             }
             foreach (var field in allFields) field.Tick(dt, cam);
@@ -227,7 +228,7 @@ namespace Eldoria.ReferenceClean
                 // A new genuine timber/stone section has seated; it should
                 // release a visible, locally contained puff at the join.
                 if(hammerTools.Running)
-                    denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,26,.77f);
+                    denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,25,.42f);
                 nextStageDustAt=Time.unscaledTime+.38f;
             }
             previousStagedVisibleParts=currentParts;
@@ -353,9 +354,10 @@ namespace Eldoria.ReferenceClean
                 stagedBuilding.BeginWork(CompletedModel(id),task.DeadlineUtcTicks,
                     city.Clock.UtcTicks,WorkDuration(task),Time.unscaledTime);
             if(FindSite(id,false,out var hammerSite))
-                hammerTools.Begin(hammerSite,city.PlayerCamera,Time.unscaledTime);
+                hammerTools.Begin(hammerSite,city.PlayerCamera,Time.unscaledTime,
+                                  WorksiteModel(id));
             if(hammerTools.Running)
-                denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,38,.92f);
+                denseWorkDust.EmitAtWorld(hammerTools.PrimaryContact,35,.46f);
             previousStagedVisibleParts=stagedBuilding.VisibleMeshCount;
             nextStageDustAt=Time.unscaledTime+.38f;
             nextWorkPulse = Time.unscaledTime + 1.55f;
@@ -689,10 +691,10 @@ namespace Eldoria.ReferenceClean
             // Two additional BATCHED atmospheric fields, not hundreds of
             // renderer GameObjects. High density near the true hammer contact,
             // but softly feathered and short lived to keep wood and roof legible.
-            denseWorkDust=NewField("Work / dense scaffold dust",denseMaterial,150,0f,.97f,1.62f,.92f,1.98f,.20f,false,113);
-            hammerImpactDust=NewField("Work / hammer impact puffs",denseMaterial,110,0f,.67f,1.18f,.51f,1.17f,.31f,false,127);
-            denseWorkDust.Tint=new Color(.73f,.67f,.57f,.83f);
-            hammerImpactDust.Tint=new Color(.82f,.75f,.64f,.83f);
+            denseWorkDust=NewField("Work / dense scaffold dust",denseMaterial,150,0f,.58f,1.08f,.30f,.78f,.15f,false,113);
+            hammerImpactDust=NewField("Work / hammer impact puffs",denseMaterial,110,0f,.43f,.83f,.24f,.58f,.20f,false,127);
+            denseWorkDust.Tint=new Color(.75f,.68f,.57f,.54f);
+            hammerImpactDust.Tint=new Color(.81f,.73f,.62f,.61f);
             finishDust=NewField("Finish / last settling dust",dustMaterial,45,0f,.55f,1.10f,.40f,.91f,.38f,false,43);
             finishEmbers=NewField("Finish / antique-gold glints",dustMaterial,70,0f,.58f,1.18f,.15f,.31f,.66f,false,57);
             finishRing=NewField("Finish / foundation settling wave",ringMaterial,2,0f,1.28f,1.28f,1f,1f,0f,true,79,true);
@@ -757,10 +759,17 @@ namespace Eldoria.ReferenceClean
                     float radius=Mathf.Sqrt(px*px+py*py);
                     float clouds=Mathf.PerlinNoise(1.41f+u*3.4f,2.38f+v*3.4f);
                     float grain=Mathf.PerlinNoise(5.13f+u*8.2f,7.82f+v*8.2f);
-                    float soft=Mathf.Pow(Mathf.Clamp01(1f-radius),.68f);
-                    float irregular=Mathf.Clamp01((1.01f-radius+
-                                  (clouds-.5f)*.18f)/.22f);
-                    float opacity=soft*irregular*(.78f+.22f*grain);
+                    // Multi-lobed anisotropic silhouette plus cellular opacity. Large
+                    // overlapping circular alpha disks made V6 a single
+                    // beige blob; this fragments the edge AND the interior.
+                    float theta=Mathf.Atan2(py,px);
+                    float outline=.78f+.12f*Mathf.Sin(theta*3f+.7f)+
+                        .075f*Mathf.Sin(theta*5f-1.4f)+.17f*(clouds-.5f);
+                    float elliptical=Mathf.Sqrt(px*px*.88f+py*py*1.12f);
+                    float feather=Mathf.SmoothStep(0f,1f,
+                        Mathf.Clamp01((outline-elliptical)/.33f));
+                    float opacity=feather*(.29f+.54f*grain)*
+                                  (.66f+.34f*clouds);
                     colors[y*n+x]=new Color(1f,1f,1f,opacity);
                 }
             texture.SetPixels(colors);
@@ -1019,12 +1028,12 @@ namespace Eldoria.ReferenceClean
                     float distance=Mathf.Sqrt((float)Random01())*spread;
                     var at=local+new Vector3(
                         Mathf.Cos(angle)*distance,
-                        RandomBetween(-.13f,.22f),
+                        RandomBetween(-.035f,.10f),
                         Mathf.Sin(angle)*distance*.64f);
                     var drift=new Vector3(
-                        RandomBetween(-.20f,.20f),
+                        RandomBetween(-.12f,.12f),
                         RandomBetween(upward*.65f,upward*1.35f),
-                        RandomBetween(-.17f,.17f));
+                        RandomBetween(-.11f,.11f));
                     sprites[slot]=new Sprite{
                         live=true,offset=at,drift=drift,
                         age=0f,life=RandomBetween(minLife,maxLife),
@@ -1082,7 +1091,7 @@ namespace Eldoria.ReferenceClean
                     float fade=Mathf.Clamp01(t/.19f)*Mathf.Clamp01((1f-t)/.52f);
                     float scale=centered
                         ? Mathf.Lerp(.52f,1.18f,Mathf.SmoothStep(0f,1f,t))
-                        : 1f+t*.17f;
+                        : Mathf.Lerp(.86f,1.12f,Mathf.SmoothStep(0f,1f,t));
                     float radius=s.size*scale*.5f;
                     float roll=s.twist*.25f;
                     float co=Mathf.Cos(roll),si=Mathf.Sin(roll);
