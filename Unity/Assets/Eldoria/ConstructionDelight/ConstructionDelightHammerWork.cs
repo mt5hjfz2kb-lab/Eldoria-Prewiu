@@ -30,6 +30,7 @@ namespace Eldoria.ReferenceClean
         float startedAt;
         int impacts;
         public int AnchoredContactCount {get;private set;}
+        public float MinimumContactHeightFraction {get;private set;}
         public int VisibleRenderers
         {
             get
@@ -87,6 +88,8 @@ namespace Eldoria.ReferenceClean
             visible=true;
             impacts=0;
             AnchoredContactCount=2;
+            MinimumContactHeightFraction=Mathf.Min(left.y,rightContact.y)-site.min.y;
+            MinimumContactHeightFraction/=Mathf.Max(.01f,site.size.y);
 
             // Compromise between V6 oversized silhouettes and V7 invisible ones:
             // a small readable iron head at mobile zoom, with no floating yard tools.
@@ -131,7 +134,9 @@ namespace Eldoria.ReferenceClean
             float frontSite=Mathf.Abs(toward.x)*site.extents.x+
                             Mathf.Abs(toward.z)*site.extents.z;
             float target=side*lateralSite*.50f;
-            float preferredTop=site.min.y+site.size.y*.55f;
+            // Select joinery/masonry actually underway, not the decorative
+            // foundation logs. V8 rendered both hammer heads at grass height.
+            float preferredTop=site.min.y+site.size.y*.64f;
             float best=float.MaxValue;
             bool found=false;
             foreach(var renderer in worksite.GetComponentsInChildren<MeshRenderer>())
@@ -142,7 +147,7 @@ namespace Eldoria.ReferenceClean
                    !renderer.GetComponent<MeshFilter>().sharedMesh)continue;
                 Bounds surface=renderer.bounds;
                 if(surface.size.sqrMagnitude<.0001f ||
-                   surface.max.y<site.min.y+Mathf.Max(.10f,site.size.y*.17f))
+                   surface.max.y<site.min.y+Mathf.Max(.18f,site.size.y*.36f))
                     continue;
                 // Exclude broad ground planes even if included by the host.
                 if(surface.size.y<.14f &&
@@ -155,8 +160,8 @@ namespace Eldoria.ReferenceClean
                 float positioned=Mathf.Clamp(target,lateral-halfSpan*.68f,
                                                    lateral+halfSpan*.68f);
                 float score=Mathf.Abs(positioned-target)*1.65f+
-                            Mathf.Abs(surface.max.y-preferredTop)*.22f+
-                            Mathf.Abs(front-frontSite*.34f)*.57f;
+                            Mathf.Abs(surface.max.y-preferredTop)*1.18f+
+                            Mathf.Abs(front-frontSite*.34f)*.36f;
                 // Work with a foreground timber/stone top: the strike is outside
                 // the near face, not occluded behind its masonry as in V7.
                 if(front<0f)score+=Mathf.Abs(front)*.75f;
@@ -251,6 +256,7 @@ namespace Eldoria.ReferenceClean
             if(box)Object.Destroy(box);
             box=null;wood=null;iron=null;impacts=0;
             AnchoredContactCount=0;
+            MinimumContactHeightFraction=0f;
         }
 
         static Mesh CreateBox()
