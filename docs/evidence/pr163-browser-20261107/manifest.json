@@ -1,0 +1,40 @@
+{
+  "source_run_id": 42311510485,
+  "source_sha": "9212acf16abd112606c4b2c637896178f2485305",
+  "real_browser_status": "FAIL",
+  "failure": [
+    "Error: Objective locates an actionable destination: timed out after 10s; last state {\"width\":844,\"height\":390,\"inWorld\":true,\"selected\":\"\",\"objective\":\"b1.gather-wood\",\"narrative\":false,\"revision\":7,\"wood\":270,\"stone\":150,\"sawmill\":1,\"barracks\":0,\"bastion\":1,\"trained\":0,\"configured\":false,\"scout\":false,\"engendro\":false,\"busy\":false,\"march\":\"idle\",\"target\":\"\",\"camera\":{\"x\":1018,\"y\":93.67829895019531,\"z\":-74.04026794433594,\"zoom\":36},\"framing\":{\"pass\":false,\"projected\":[],\"visible\":[]},\"controls\":{\"primary\":{\"x\":422,\"y\":195,\"enabled\":false},\"close\":{\"x\":422,\"y\":195,\"enabled\":false}},\"management\":null,\"save_sha256\":\"7e6b499bb7e1dfc455c2472256ba56c0c1bce892a937cffcbaeceb8d2ffab0fb\"}\n    at waitState (/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/tools/valoria-reference-clean/playtest_web.cjs:319:11)\n    at async normalPlaythrough (/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/tools/valoria-reference-clean/playtest_web.cjs:710:7)\n    at async main (/home/runner/work/Eldoria-Prewiu/Eldoria-Prewiu/tools/valoria-reference-clean/playtest_web.cjs:916:5)"
+  ],
+  "frames": [
+    {
+      "file": "frame-1.jpg",
+      "source": "001-first-entry-name-parchment-landscape.jpg",
+      "source_path": "real-browser-evidence/screenshots/001-first-entry-name-parchment-landscape.jpg",
+      "sha256": "af37b0b11a9c0460c01d08a70a90a104c2192082f016352a221d3cd9ee75aa9c",
+      "bytes": 56682
+    },
+    {
+      "file": "frame-2.jpg",
+      "source": "014-world-pan-right-landscape.jpg",
+      "source_path": "real-browser-evidence/screenshots/014-world-pan-right-landscape.jpg",
+      "sha256": "238179b3ed79440a66f14ad30ec2363b567f587a5f334e1a687ac9011c87aa00",
+      "bytes": 85273
+    },
+    {
+      "file": "frame-3.jpg",
+      "source": "025-world-home-near-return-portrait.jpg",
+      "source_path": "real-browser-evidence/screenshots/025-world-home-near-return-portrait.jpg",
+      "sha256": "42d11c49656b555ee2d6369fcb8be25c0d12bedeb5e6e763dedd9db5cc3866ef",
+      "bytes": 60385
+    },
+    {
+      "file": "frame-4.jpg",
+      "source": "027-failure-landscape.jpg",
+      "source_path": "real-browser-evidence/screenshots/027-failure-landscape.jpg",
+      "sha256": "440cda2859752377dfb2cc9d815a36488d96573a291e5d9fcad3f02a30543ab4",
+      "bytes": 62220
+    }
+  ],
+  "quality_approved": false,
+  "physical_mobile_tested": false
+}
