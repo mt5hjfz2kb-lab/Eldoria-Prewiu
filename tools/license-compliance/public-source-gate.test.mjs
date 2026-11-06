@@ -50,6 +50,14 @@ test('blocks a previously unknown external Unity package in an unrecognized top-
   assert.match(r.blocking[0].reason, /NEW_UNKNOWN/);
 });
 
+test('unrecognized WorldPackCompare sibling and fonts in vendor packages cannot bypass the gate', () => {
+  const r = inspectPullRequestFiles([
+    change('Unity/Assets/WorldPackCompare/NewVendor/FBX/tower.fbx'),
+    change('Unity/Assets/EmaceArt/Slavic World Free/Fonts/Font.ttf'),
+  ]);
+  assert.equal(r.blocking.length, 2);
+});
+
 test('does not interrupt existing Eldoria game code/UI and gives advisory for new self-authored art', () => {
   const r = inspectPullRequestFiles([
     change('Unity/Assets/Eldoria/Scripts/Domain/Food.cs', 'modified'),
