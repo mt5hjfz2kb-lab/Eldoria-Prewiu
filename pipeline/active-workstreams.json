@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T14:08:25.436Z",
+  "updated_at": "2026-11-06T18:20:56.437Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-player-audit-23287cf1c126",
+      "owner": null,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-06T10:45:48.580Z",
@@ -33,15 +33,13 @@
         "docs/evidence/player-audit-20261106/**",
         "docs/ui-v3/PLAYER_AUDIT_20261106.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PLAYER_PERSPECTIVE_MANUAL_WEBGL_SESSION",
-      "next": "Prepare bounded visual-input session on existing Windows Edge with exact native299; complete player journey and report observed defects, without game or save changes.",
+      "phase": "PLAYER_AUDIT_COMPLETED_FINDINGS_DOCUMENTED",
+      "next": "Owner review of player audit and prioritization of observed defects. Existing PR162 publication remains unchanged.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -975,7 +973,7 @@
           "automation_disabled": "6aed0cc2f0308191b29a13b542c886aa"
         }
       },
-      "previous_owner": "codex-pr162-completion-23287cf1c126",
+      "previous_owner": "codex-player-audit-23287cf1c126",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1977,11 +1975,18 @@
           "to_revision": 151,
           "claimed_at": "2026-11-06T16:36:41.783Z",
           "reason": "Owner explicitly directs a complete real-player session and authorizes alternatives after cloud login and local software GPU failures. Reuse canonical workstream; QA controls/evidence only."
+        },
+        {
+          "owner": "codex-player-audit-23287cf1c126",
+          "from_revision": 151,
+          "to_revision": 152,
+          "released_at": "2026-11-06T18:20:56.437Z",
+          "reason": "Manual native299 player session completed; job finished, evidence verified; visual/gameplay findings documented, no runtime changes."
         }
       ],
-      "ownership_revision": 151,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 152,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-05T19:03:44.661Z",
       "delivery_definition": {
@@ -2123,7 +2128,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-11-06T14:08:25.436Z",
+      "released_at": "2026-11-06T18:20:56.437Z",
       "delivery_closeout": {
         "status": "COMPLETED_PR162_INTEGRATED_ANDROID_WEBGL_PUBLISHED",
         "completed_at": "2026-11-06T14:08:25.436Z",
@@ -2236,7 +2241,7 @@
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
       "owner_instruction": "2026-11-02: Hazlo tú! Eres un chat de trabajo! Reconstruct genuinely like approved March reference, remove mismatched elements and recover missing visual hierarchy.",
-      "release_reason": "Full native and browser QA PASS; Android21 public bytes/channel verified; WebGL299 exact remote build active. No Windows jobs remain for this owner.",
+      "release_reason": "Player session closed and Windows released. QA workflow restored; no new publication or pending native job.",
       "windows_resource_handoff_20261102": {
         "authorized_by": "owner current chat",
         "to_workstream": "eldoria-cli-windows-isolated-proof-20261102",
@@ -2417,7 +2422,7 @@
         "physical_mobile_tested": false,
         "published": false
       },
-      "next_action": "PR162 integrated and both authorized releases verified. No pending integration/publication work in this scope. Available for the next owner-authorized task.",
+      "next_action": "Player audit complete; findings in docs/ui-v3/PLAYER_AUDIT_20261106.md.",
       "pr162_closeout": {
         "status": "COMPLETED_PR162_INTEGRATED_ANDROID_WEBGL_PUBLISHED",
         "completed_at": "2026-11-06T14:08:25.436Z",
@@ -2482,6 +2487,29 @@
         "physical_mobile_tested": false,
         "report": "docs/ui-v3/POST_PR162_RELEASE_20261106.md",
         "automation_disabled": "6aed0cc2f0308191b29a13b542c886aa"
+      },
+      "player_audit_closeout": {
+        "status": "COMPLETED_PLAYER_REVIEW_FINDINGS_OPEN",
+        "completed_at": "2026-11-06T18:20:56.437Z",
+        "owner": "codex-player-audit-23287cf1c126",
+        "run": 42254421841,
+        "artifact": 13528935901,
+        "artifact_sha256": "2a0279d525290b20ed92ea70fe94db6fc55295b0cf7c9b9d8ace2e9c5ebb099c",
+        "source": "1db8585329fad788fa702dab3e8a7b76a916b4bc",
+        "actions": 308,
+        "screenshots": 309,
+        "completed": [
+          "Bastion I-V; V assured 4/4",
+          "Lyra joined and in march",
+          "3 scout contracts",
+          "25 Vigilants stages; chapter 1 complete",
+          "two normal reloads"
+        ],
+        "no_game_or_save_or_clock_edits": true,
+        "art_approved": false,
+        "physical_mobile_tested": false,
+        "hosted_itch_gameplay_tested": false,
+        "report": "docs/ui-v3/PLAYER_AUDIT_20261106.md"
       }
     },
     {
@@ -15429,17 +15457,17 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-    "status": "active",
-    "owner": "codex-player-audit-23287cf1c126",
+    "status": "available",
+    "owner": null,
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
     "branch": "main",
     "restrictions": "Preserve native111 baseline; staged improvements with focused tests. No old independent branch production. No paid credits.",
-    "previous_owner": "codex-pr162-completion-23287cf1c126",
+    "previous_owner": "codex-player-audit-23287cf1c126",
     "ownership_source": "active[id=valoria-master-plan-layered-construction-20261016]; transferable owner-directed claim",
-    "released_at": "2026-11-06T14:08:25.436Z",
-    "release_evidence": "docs/ui-v3/POST_PR162_RELEASE_20261106.md",
-    "ownership_revision": 151
+    "released_at": "2026-11-06T18:20:56.437Z",
+    "release_evidence": "docs/ui-v3/PLAYER_AUDIT_20261106.md",
+    "ownership_revision": 152
   }
 }

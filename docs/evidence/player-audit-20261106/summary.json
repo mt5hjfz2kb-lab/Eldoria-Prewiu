@@ -1,0 +1,23 @@
+{
+  "status": "COMPLETED_PLAYER_REVIEW_FINDINGS_OPEN",
+  "completed_at": "2026-11-06T18:20:56.437Z",
+  "owner": "codex-player-audit-23287cf1c126",
+  "run": 42254421841,
+  "artifact": 13528935901,
+  "artifact_sha256": "2a0279d525290b20ed92ea70fe94db6fc55295b0cf7c9b9d8ace2e9c5ebb099c",
+  "source": "1db8585329fad788fa702dab3e8a7b76a916b4bc",
+  "actions": 308,
+  "screenshots": 309,
+  "completed": [
+    "Bastion I-V; V assured 4/4",
+    "Lyra joined and in march",
+    "3 scout contracts",
+    "25 Vigilants stages; chapter 1 complete",
+    "two normal reloads"
+  ],
+  "no_game_or_save_or_clock_edits": true,
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "hosted_itch_gameplay_tested": false,
+  "report": "docs/ui-v3/PLAYER_AUDIT_20261106.md"
+}
