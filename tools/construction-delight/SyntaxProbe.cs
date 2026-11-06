@@ -237,15 +237,19 @@ internal static class SyntaxProbe
             var hammer=File.ReadAllText(hammerPath);
             var owner=File.ReadAllText(ownerSource);
             var capture=File.ReadAllText(qa);
-            bool originalWorksite=hammer.Contains("Begin(Bounds site,Camera camera,float now",
+            bool originalWorksite=hammer.Contains("Begin(Bounds site,Camera camera,float now,GameObject worksite)",
                 StringComparison.Ordinal) &&
-                hammer.Contains("camera.transform.right",StringComparison.Ordinal) &&
-                hammer.Contains("site.extents",StringComparison.Ordinal);
+                hammer.Contains("TryFindContact(worksite,site,right,toward,-1f",
+                                StringComparison.Ordinal) &&
+                hammer.Contains("worksite.GetComponentsInChildren<MeshRenderer>()",
+                                StringComparison.Ordinal) &&
+                hammer.Contains("surface.max.y",StringComparison.Ordinal) &&
+                hammer.Contains("AnchoredContactCount=2",StringComparison.Ordinal);
             bool genuineGeometry=hammer.Contains("CreateBox()",StringComparison.Ordinal) &&
                 hammer.Contains("MeshFilter",StringComparison.Ordinal) &&
                 hammer.Contains("MeshRenderer",StringComparison.Ordinal) &&
                 hammer.Contains("h.baseRotation*Quaternion.Euler",StringComparison.Ordinal) &&
-                hammer.Contains("contactPose*(Vector3.up*(.63f*size))",
+                hammer.Contains("contactPose*(Vector3.up*(.565f*size))",
                     StringComparison.Ordinal);
             bool timedContact=hammer.Contains("cycle>=.405f && !h.hitSent",
                 StringComparison.Ordinal) &&
@@ -271,6 +275,10 @@ internal static class SyntaxProbe
                 capture.Contains("fx.TotalHammerImpacts",
                     StringComparison.Ordinal) &&
                 capture.Contains("fx.ActiveDenseConstructionDust",
+                    StringComparison.Ordinal) &&
+                capture.Contains("fx.VerifiedHammerContacts!=2",
+                    StringComparison.Ordinal) &&
+                owner.Contains("VerifiedHammerContacts => hammerTools.AnchoredContactCount",
                     StringComparison.Ordinal);
             bool readOnly=!hammer.Contains("Gateway.Execute(",StringComparison.Ordinal) &&
                 !hammer.Contains("PlayerState.",StringComparison.Ordinal) &&
@@ -280,7 +288,7 @@ internal static class SyntaxProbe
                !reversible || !sceneBoundDust || !nativeValidated || !readOnly)
             {
                 Console.Error.WriteLine("CONSTRUCTION_DELIGHT_HAMMER_WORK_GUARD_FAIL "+
-                    "authentic camera/site, lit geometry, timed hits, grounded dust, "+
+                    "two render-surface anchors, lit geometry, timed hits, grounded dust, "+
                     "reversible renderers and unchanged gameplay all required");
                 errors++;
             }
