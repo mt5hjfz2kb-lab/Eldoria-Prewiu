@@ -1,0 +1,100 @@
+name: '[QA] PR163 exact isolated WebGL browser replay'
+on:
+  push:
+    branches: [qa/pr163-webgl-evidence-20261107]
+    paths:
+      - '.github/workflows/pr163-exact-webgl-qa.yml'
+      - 'tools/valoria-reference-clean/pr163-browser-qa-request.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: pr163-exact-browser-qa
+  cancel-in-progress: false
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/valoria-reference-clean/
+            /docs/evidence/valoria-reference-clean/environment-city-wide-banner-after.png
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require exact immutable built revision before browser actions
+        uses: actions/github-script@v7
+        id: exact
+        with:
+          script: |
+            const fs=require('fs');
+            const c=JSON.parse(fs.readFileSync('tools/valoria-reference-clean/pr163-browser-qa-request.json','utf8'));
+            if(!/^[a-f0-9]{40}$/.test(c.source_sha)||!Number.isSafeInteger(c.run_id)||c.run_id<=0||
+               !/^native[0-9]+$/.test(c.revision)||
+               c.artifact_name!=='valoria-integrated-web-playtest-'+c.run_id)
+              throw Error('Invalid pinned source/build/revision identity');
+            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:c.run_id})).data;
+            if(run.head_sha!==c.source_sha||run.status!=='completed'||run.conclusion!=='success'||
+               run.path!=='.github/workflows/valoria-reference-clean.yml')
+              throw Error('Exact claimed WebGL build has not succeeded');
+            const artifacts=(await github.rest.actions.listWorkflowRunArtifacts({...context.repo,run_id:c.run_id,per_page:100})).data.artifacts;
+            if(!artifacts.some(a=>a.name===c.artifact_name&&!a.expired&&a.size_in_bytes>0&&
+               a.workflow_run?.id===c.run_id))
+              throw Error('Pinned WebGL artifact is missing/expired');
+            core.setOutput('run',String(c.run_id));
+            core.setOutput('artifact',c.artifact_name);
+            core.setOutput('source',c.source_sha);
+            core.setOutput('revision',c.revision);
+            await core.summary.addRaw('Exact unpublished '+c.revision+' source '+c.source_sha+' run '+c.run_id+'. Browser input uses ordinary visible clicks, no save/time modification.').write();
+      - uses: actions/download-artifact@v4
+        with:
+          name: \${{ steps.exact.outputs.artifact }}
+          run-id: \${{ steps.exact.outputs.run }}
+          github-token: \${{ github.token }}
+          path: unity-raw
+      - name: Verify genuine unchanged WebGL packaging
+        env:
+          SOURCE: \${{ steps.exact.outputs.source }}
+          RUN: \${{ steps.exact.outputs.run }}
+          REVISION: \${{ steps.exact.outputs.revision }}
+        run: |
+          python3 tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site "$REVISION" "$SOURCE" "$RUN"
+          node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
+          node --check tools/valoria-reference-clean/playtest_web.cjs
+      - name: Install isolated browser driver and Chromium, no Unity/Windows
+        run: |
+          npm install --prefix "$RUNNER_TEMP/eldoria-pr163-qa" --no-save --ignore-scripts playwright@1.55.0
+          "$RUNNER_TEMP/eldoria-pr163-qa/node_modules/.bin/playwright" install --with-deps chromium
+          command -v ffmpeg || { sudo apt-get update -qq && sudo apt-get install -y ffmpeg; }
+      - name: Real browser WebGL input and mobile screenshots, no accelerated game clock
+        env:
+          VALORIA_WEB_ROOT: \${{ github.workspace }}/prepared-site/dist
+          VALORIA_PLAYTEST_OUT: \${{ github.workspace }}/pr163-browser-evidence
+          VALORIA_SOURCE_SHA: \${{ steps.exact.outputs.source }}
+          VALORIA_PLAYTEST_TIMEOUT_SECONDS: '1100'
+          VALORIA_WEB_LOAD_TIMEOUT_SECONDS: '180'
+        run: NODE_PATH="$RUNNER_TEMP/eldoria-pr163-qa/node_modules" node tools/valoria-reference-clean/playtest_web.cjs
+      - name: Preserve result status without inventing visual approval
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import pathlib,json
+          f=pathlib.Path('pr163-browser-evidence/report.json')
+          if f.exists():
+              r=json.loads(f.read_text())
+              print('REAL_BROWSER_STATUS',r.get('status'))
+              print('REAL_BROWSER_CHECKS',json.dumps(r.get('checks',{}),ensure_ascii=False)[:5000])
+          else:
+              print('NO_PLAYER_REPORT: browser setup or execution failed')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr163-exact-browser-evidence-\${{ github.run_id }}
+          path: pr163-browser-evidence/**
+          retention-days: 14
+          if-no-files-found: warn
