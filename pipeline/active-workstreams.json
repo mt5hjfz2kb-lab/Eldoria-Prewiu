@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T07:25:50.013Z",
+  "updated_at": "2026-11-06T07:27:52.497Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6362,7 +6362,7 @@
       "branch": "pilot/slm-permanent-bootstrap-20261104",
       "status": "active",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "claimed_at": "2026-11-05T23:35:51.665Z",
       "base_main_sha": "ab6e36f82aa0878744e3de859dcc491785574ef9",
       "scope": [
@@ -6370,11 +6370,13 @@
         ".github/workflows/eldoria-slm-windows-install.yml",
         ".github/workflows/eldoria-slm-windows-preflight.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
       "art_production_routing": "not_applicable",
-      "phase": "BOOTSTRAP_READY_NATIVE_EDITOR_JOB_STILL_RUNNING",
-      "next": "Claim windows-runner-heavy only after real editor job completes; run guarded installer, validate persistence and MCP; never auto-login OAuth.",
+      "phase": "RESERVED_FOR_NEXT_SAFE_IDLE_SLOT_NO_RUNNING_JOB_INTERRUPTION",
+      "next": "Queue one guarded single-run install. If any native process active or Ollama models loaded, refuse. Do not terminate Unity/Ollama or reboot Windows; after completion release reservation.",
       "write_scope_released": false,
       "art_production_routing_reason": "SLM Windows installation/preflight and tooling validation only; this workstream neither generates nor edits Eldoria game art or 3D assets."
     }
