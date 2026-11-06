@@ -189,8 +189,10 @@ namespace Eldoria.ReferenceClean
             obj.GetComponent<MeshFilter>().sharedMesh=box;
             var r=obj.GetComponent<MeshRenderer>();
             r.sharedMaterial=material;
-            r.receiveShadows=false;
-            r.shadowCastingMode=ShadowCastingMode.Off;
+            // A subtle real contact shadow on the authentic facade is what
+            // distinguishes the tiny tool from a hovering UI ornament.
+            r.receiveShadows=true;
+            r.shadowCastingMode=ShadowCastingMode.On;
             return r;
         }
 
