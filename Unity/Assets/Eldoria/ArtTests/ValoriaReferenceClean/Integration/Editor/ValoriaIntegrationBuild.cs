@@ -885,11 +885,21 @@ namespace Eldoria.ReferenceClean.Editor {
     .Concat(resources.Where(x=>x.ResourceKind=="stone").Take(2).Select(x=>x.TargetId))
     .Concat(state.WorldCreatureLocations.Where(x=>x.Alive&&x.Level>0).Take(1).Select(x=>x.TargetId)).ToArray();
    Need(ids.Length==5,"Clarity evidence requires two real wood nodes, two stone nodes and a live creature");
+   Debug.Log("ELDORIA_PLAYER_CLARITY_DENSITY wood="+resources.Count(x=>x.ResourceKind=="wood")+
+    " stone="+resources.Count(x=>x.ResourceKind=="stone")+" creatures="+state.WorldCreatureLocations.Count(x=>x.Alive)+
+    " resource_quadrants="+string.Join(",",resources.GroupBy(x=>(x.X<h.WorldHome.x?"W":"E")+(x.Z<h.WorldHome.z?"S":"N"))
+     .Select(group=>group.Key+":"+group.Count())));
    foreach(var id in ids){
     var target=h.FindTarget(id);
     Need(target&&target.gameObject.activeInHierarchy,"Live clarity target missing: "+id);
     foreach(var dimensions in new[]{new Vector2Int(844,390),new Vector2Int(390,844),new Vector2Int(1600,900),new Vector2Int(900,1600)}){
      string label=id.Replace(':','-').Replace('/','-');
+     Action focus=()=>{
+      h.WorldNavigation.localZoom=Eldoria.World4XCanon.RegionOneCanonicalLandscape.NearZoom(h.PlayerCamera.aspect);
+      h.WorldNavigation.SetZoomLevel(2,true);
+      h.WorldNavigation.PanTo(target.transform.position);
+      h.Focus(target.gameObject);
+     };
      Capture(h,"integration-clarity-"+label+"-"+dimensions.x+"x"+dimensions.y+".png",dimensions.x,dimensions.y,()=>{
       Need(!h.Hud.Modal.gameObject.activeSelf&&!h.Hud.NarrativeOpen,"Node evidence cannot hide behind a modal");
       var marker=h.Hud.GetComponentsInChildren<RectTransform>().FirstOrDefault(x=>x.name=="Clarity / "+id);
@@ -909,11 +919,17 @@ namespace Eldoria.ReferenceClean.Editor {
       Vector2 top=RectTransformUtility.WorldToScreenPoint(camera,corners[2]);
       Need(top.x-bottom.x>=65&&top.x-bottom.x<=80&&top.y-bottom.y>=24&&top.y-bottom.y<=32,
        "Projected label physical size invalid: "+id+" "+(top-bottom));
-     },()=>{
-      h.WorldNavigation.SetZoomLevel(2,true);
-      h.WorldNavigation.PanTo(target.transform.position);
-      h.Focus(target.gameObject);
-     });
+     },focus);
+     // Matched presentation A/B: same saved state, model, camera and zoom.
+     // Hide only this feature's non-interactive labels for the control image.
+     var labelLayer=h.Hud.GetComponentsInChildren<RectTransform>(true)
+      .FirstOrDefault(x=>x.name=="Player clarity / non-interactive projected labels");
+     Need(labelLayer,"Native label layer is required for its matched control");
+     try{
+      labelLayer.gameObject.SetActive(false);
+      Capture(h,"integration-clarity-"+label+"-"+dimensions.x+"x"+dimensions.y+"-without-labels.png",
+       dimensions.x,dimensions.y,null,focus);
+     }finally{labelLayer.gameObject.SetActive(true);}
     }
    }
    h.SetWorld(false);
