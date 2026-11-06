@@ -88,9 +88,9 @@ namespace Eldoria.ReferenceClean
             impacts=0;
             AnchoredContactCount=2;
 
-            // Reduced silhouettes: readable at phone scale without looking
-            // like giant decorative tools outside the build parcel.
-            float size=Mathf.Clamp(width*.115f,.32f,.68f);
+            // Compromise between V6 oversized silhouettes and V7 invisible ones:
+            // a small readable iron head at mobile zoom, with no floating yard tools.
+            float size=Mathf.Clamp(width*.155f,.45f,.82f);
             var baseRotation=Quaternion.LookRotation(-toward,Vector3.up);
             for(int i=0;i<HammerCount;i++)
             {
@@ -157,15 +157,15 @@ namespace Eldoria.ReferenceClean
                 float score=Mathf.Abs(positioned-target)*1.65f+
                             Mathf.Abs(surface.max.y-preferredTop)*.22f+
                             Mathf.Abs(front-frontSite*.34f)*.57f;
-                // The visible nearer wall and beam is preferable to a rear
-                // timber that would be hidden under the new construction.
+                // Work with a foreground timber/stone top: the strike is outside
+                // the near face, not occluded behind its masonry as in V7.
                 if(front<0f)score+=Mathf.Abs(front)*.75f;
                 if(score>=best)continue;
                 best=score;
                 float face=Mathf.Abs(toward.x)*surface.extents.x+
                            Mathf.Abs(toward.z)*surface.extents.z;
                 contact=surface.center+right*(positioned-lateral)+
-                        toward*(face*.16f);
+                        toward*(face*.95f+Mathf.Clamp(site.size.y*.012f,.018f,.055f));
                 contact.y=surface.max.y+Mathf.Clamp(site.size.y*.008f,.012f,.04f);
                 found=true;
             }
