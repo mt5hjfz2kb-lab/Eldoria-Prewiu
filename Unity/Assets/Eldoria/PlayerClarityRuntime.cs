@@ -36,7 +36,7 @@ namespace Eldoria
         private static readonly TimeSpan RenewableDelay = RenewableRespawnRules.Delay;
         private readonly Dictionary<string, Marker> markers = new Dictionary<string, Marker>();
         private readonly Dictionary<string, WorldHotspot> hotspots = new Dictionary<string, WorldHotspot>();
-        private readonly HashSet<long> occupiedScreenCells = new HashSet<long>();
+        private readonly List<Rect> occupiedScreenRects = new List<Rect>();
         private readonly PlayerClarityStoryRenewal storyRenewal = new PlayerClarityStoryRenewal();
         private ValoriaIntegratedWorld host;
         private RoyalHUD hud;
@@ -102,7 +102,7 @@ namespace Eldoria
             var v2 = hud.GetComponent<RoyalGoldV2Hud>();
             visibleViewport = v2 ? v2.GetFreeSceneViewport() : new Rect(0, 0, 1, 1);
             foreach (var marker in markers.Values) marker.Touched = false;
-            occupiedScreenCells.Clear();
+            occupiedScreenRects.Clear();
 
             var snapshot = host.City.Gateway.Snapshot();
             // Relocate an original Chapter III hunt hotspot only after the
@@ -385,10 +385,16 @@ namespace Eldoria
                 return;
             // Prefer the real resource/node identity but prevent overlapping
             // labels from turning the mobile world into a wall of text.
-            int cellX = Mathf.FloorToInt(point.x / 74f);
-            int cellY = Mathf.FloorToInt(point.y / 33f);
-            long cell = ((long)cellX << 32) | (uint)cellY;
-            if (!occupiedScreenCells.Add(cell)) return;
+            // Adjacent grid cells can still hold overlapping 72px labels.
+            // Compare their actual screen footprints, including a small gap.
+            var ownerCanvas = layer.GetComponentInParent<Canvas>();
+            float ownerScale = ownerCanvas ? ownerCanvas.scaleFactor : 1f;
+            Vector2 center = new Vector2(point.x, point.y) +
+                (building ? new Vector2(24f, -2f) * ownerScale : Vector2.zero);
+            var footprint = new Rect(center.x - 38.5f, center.y - 16f, 77f, 32f);
+            foreach (var occupied in occupiedScreenRects)
+                if (occupied.Overlaps(footprint)) return;
+            occupiedScreenRects.Add(footprint);
             if (!markers.TryGetValue(id, out var marker))
             {
                 marker = CreateMarker(id, icon.HasValue, building);

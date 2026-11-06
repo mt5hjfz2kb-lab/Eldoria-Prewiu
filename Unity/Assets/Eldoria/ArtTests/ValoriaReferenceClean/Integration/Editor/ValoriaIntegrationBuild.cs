@@ -187,6 +187,8 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(!h.Hud.NarrativeOpen,"The narrator must wait until the real name is saved");
     Capture(h,"integration-player-name-landscape.png",1600,900);
     Capture(h,"integration-player-name-portrait.png",900,1600);
+    Capture(h,"integration-player-name-phone-landscape.png",844,390);
+    Capture(h,"integration-player-name-phone-portrait.png",390,844);
     var editor=parchment.GetComponentInChildren<InputField>(true);
     var save=parchment.GetComponentInChildren<Button>(true);
     Need(editor&&save&&save.interactable&&save.targetGraphic&&save.targetGraphic.raycastTarget,
@@ -221,6 +223,8 @@ namespace Eldoria.ReferenceClean.Editor {
       "Nickname must end above original Power text");
     Capture(h,"integration-player-name-saved-landscape.png",1600,900);
     Capture(h,"integration-player-name-saved-portrait.png",900,1600);
+    Capture(h,"integration-player-name-saved-phone-landscape.png",844,390);
+    Capture(h,"integration-player-name-saved-phone-portrait.png",390,844);
    },"editable first-entry parchment, invalid nick validation, saved display and real screenshots");
    // Native regression 42123550342: the parchment is removed and an
    // offscreen ScreenSpaceCamera proof restores ScreenSpaceOverlay within
@@ -347,6 +351,7 @@ namespace Eldoria.ReferenceClean.Editor {
    },"World navigation is touchable even while a building sheet is open");
    var before=JsonUtility.ToJson(city.Gateway.Snapshot());
    Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var entryTarget=h.WorldNavigation.target;float entryZoom=h.WorldCamera.orthographicSize;var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);Debug.Log("ELDORIA_NATIVE_STRATEGIC_ENTRY size="+h.WorldCamera.orthographicSize+" aspect="+h.WorldCamera.aspect+" heading="+h.WorldNavigation.heading+" tilt="+h.WorldNavigation.tilt+" distance="+h.WorldNavigation.cameraDistance+" target="+h.WorldNavigation.target+" min="+h.WorldNavigation.minimum+" max="+h.WorldNavigation.maximum);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Debug.Log("ELDORIA_NATIVE_VERTICAL_PAN before="+start+" after="+h.WorldNavigation.target);Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(entryTarget,h.WorldNavigation.target)<.02f&&Mathf.Abs(entryZoom-h.WorldCamera.orthographicSize)<.02f,"Returning world must restore the canonical Valoria near entry");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(string.Equals(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text,"Ciudad",StringComparison.OrdinalIgnoreCase),"World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");h.WorldNavigation.SetZoomLevel(1,true);float oldRegional=h.WorldCamera.orthographicSize;Capture(h,"integration-issue95-world-before-regional.png",1600,900);Capture(h,"integration-issue95-world-before-portrait.png",900,1600);h.WorldNavigation.EnterStrategicView(h.WorldHome);Need(h.WorldCamera.orthographicSize>oldRegional*1.45f,"World still lacks a genuinely larger strategic entry footprint");Capture(h,"integration-issue95-world-after-strategic.png",1600,900);Capture(h,"integration-issue95-world-after-portrait.png",900,1600);Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return restores near framing without mutating save");
+   Check(()=>CapturePlayerClarityNodes(h),"real resource and creature labels in four sizes without a modal");
    h.SetWorld(true);h.Select("forest-valoria");yield return null;
    Check(()=>{
     var v2=h.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
@@ -868,6 +873,50 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return VerifyHeroDestinations(h);
   }
   }
+
+  static void CapturePlayerClarityNodes(ValoriaIntegratedWorld h){
+   h.SetWorld(true);
+   h.Hud.SelectBuilding("");h.Hud.Modal.Hide();
+   var state=h.City.Gateway.Snapshot();
+   var resources=state.WorldResourceLocations.Where(x=>x.Generation>=1&&x.Remaining>0).ToArray();
+   var ids=resources.Where(x=>x.ResourceKind=="wood").Take(2).Select(x=>x.TargetId)
+    .Concat(resources.Where(x=>x.ResourceKind=="stone").Take(2).Select(x=>x.TargetId))
+    .Concat(state.WorldCreatureLocations.Where(x=>x.Alive&&x.Level>0).Take(1).Select(x=>x.TargetId)).ToArray();
+   Need(ids.Length==5,"Clarity evidence requires two real wood nodes, two stone nodes and a live creature");
+   foreach(var id in ids){
+    var target=h.FindTarget(id);
+    Need(target&&target.gameObject.activeInHierarchy,"Live clarity target missing: "+id);
+    foreach(var dimensions in new[]{new Vector2Int(844,390),new Vector2Int(390,844),new Vector2Int(1600,900),new Vector2Int(900,1600)}){
+     string label=id.Replace(':','-').Replace('/','-');
+     Capture(h,"integration-clarity-"+label+"-"+dimensions.x+"x"+dimensions.y+".png",dimensions.x,dimensions.y,()=>{
+      Need(!h.Hud.Modal.gameObject.activeSelf&&!h.Hud.NarrativeOpen,"Node evidence cannot hide behind a modal");
+      var marker=h.Hud.GetComponentsInChildren<RectTransform>().FirstOrDefault(x=>x.name=="Clarity / "+id);
+      Need(marker&&marker.gameObject.activeInHierarchy,"Actual projected marker missing: "+id);
+      var text=marker.GetComponentInChildren<Text>();
+      int level=resources.FirstOrDefault(x=>x.TargetId==id)?.Level ??
+       state.WorldCreatureLocations.Single(x=>x.TargetId==id).Level;
+      Need(text&&text.text.Replace(" ","")=="Nv."+level,"Displayed tier disagrees with saved node: "+id);
+      Need(marker.GetComponentsInChildren<Graphic>().All(x=>!x.raycastTarget),"Map labels intercept pointer input");
+      var collider=target.GetComponent<Collider>();
+      Need(collider,"The resource must retain its actual clickable hotspot");
+      var touch=h.PlayerCamera.WorldToScreenPoint(collider.bounds.center);
+      Need(h.Pick(new Vector2(touch.x,touch.y))==target,"The real node is not selectable with its label visible: "+id);
+      var camera=h.PlayerCamera;
+      var corners=new Vector3[4];marker.GetWorldCorners(corners);
+      Vector2 bottom=RectTransformUtility.WorldToScreenPoint(camera,corners[0]);
+      Vector2 top=RectTransformUtility.WorldToScreenPoint(camera,corners[2]);
+      Need(top.x-bottom.x>=65&&top.x-bottom.x<=80&&top.y-bottom.y>=24&&top.y-bottom.y<=32,
+       "Projected label physical size invalid: "+id+" "+(top-bottom));
+     },()=>{
+      h.WorldNavigation.SetZoomLevel(2,true);
+      h.WorldNavigation.PanTo(target.transform.position);
+      h.Focus(target.gameObject);
+     });
+    }
+   }
+   h.SetWorld(false);
+  }
+
   public static string ComputeInputManifest(){
    var files=new HashSet<string>(AssetDatabase.GetDependencies(Scene,true).Where(File.Exists));
    foreach(var path in Directory.GetFiles("Assets/Eldoria","*.cs",SearchOption.AllDirectories))
@@ -919,7 +968,7 @@ namespace Eldoria.ReferenceClean.Editor {
    var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(data,hits);Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==button.gameObject,"Royal action raycast blocked: "+button.name+" point="+p+" screen="+Screen.width+"x"+Screen.height+" buttonGraphicDepth="+button.targetGraphic.depth+" buttonGraphicCull="+button.targetGraphic.canvasRenderer.cull+" graphicEnabled="+button.targetGraphic.isActiveAndEnabled+" graphicRaycast="+button.targetGraphic.raycastTarget+" buttonRect="+((RectTransform)button.transform).rect+" graphicCanvas="+(button.targetGraphic.canvas?button.targetGraphic.canvas.name:"NONE")+" buttonPosition="+button.transform.position+" corners="+corners[0]+" to "+corners[2]+" parent="+button.transform.parent.name+" parentActive="+button.transform.parent.gameObject.activeInHierarchy+" hits="+string.Join(",",hits.Select(x=>x.gameObject.name+":"+x.depth)));
    ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerDownHandler);ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerUpHandler);ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerClickHandler);
   }
-  public static void Capture(ValoriaIntegratedWorld h,string name,int width,int height,Action validateLayout=null){
+  public static void Capture(ValoriaIntegratedWorld h,string name,int width,int height,Action validateLayout=null,Action prepareView=null){
    h.RefreshNavigation();
    bool managementOpen=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen==true;
    if(managementOpen){
@@ -956,6 +1005,9 @@ namespace Eldoria.ReferenceClean.Editor {
     // existing title adapter after layout and before both real camera frames.
     var playerHeader=h.Hud.Realm?.GetComponent<Eldoria.PlayerClarity.PlayerNameHeader>();
     if(playerHeader)playerHeader.Refresh();
+    prepareView?.Invoke();
+    var clarity=Object.FindFirstObjectByType<Eldoria.PlayerClarityRuntime>();
+    if(clarity)clarity.RefreshForCapture();
     Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
     // to participate after its first SRP layout/batch registration.
     c.Render();c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name),tex.EncodeToPNG());validateLayout?.Invoke();
