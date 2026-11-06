@@ -81,17 +81,20 @@
     {
       "path": "docs/BASTION_I_II_PLAYTEST_READINESS_PLAN.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: El propio documento se define como plan histórico de septiembre. El recorrido y sus requisitos evolucionaron y ya existe contraste I–II publicado; no reabrir esa lista como puerta de release. Autoridad: docs/evidence/bastion-i-ii-web-parity-playthrough-v1/PARITY_REVIEW.md; pipeline/playtest-delivery.json."
     },
     {
       "path": "docs/BASTION_I_II_WEB_UNITY_PARITY_AUDIT.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: Brechas descritas como Current Unity y perfil OWNER inactivo corresponden a septiembre; la revisión posterior cerró parte de esas diferencias. Mantener la comparación, no sus pendientes como actuales. Autoridad: docs/evidence/bastion-i-ii-web-parity-playthrough-v1/PARITY_REVIEW.md."
     },
     {
       "path": "docs/BASTION_I_III_VISUAL_PROGRESSION_MATRIX.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Reglas de no mostrar edificios antes de desbloqueo conservan valor de QA, pero el mapa de implementación y pruebas fechados no sustituyen el sistema de progreso integrado ni su código actual. Autoridad: docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md; PR #162."
     },
     {
       "path": "docs/BASTION_I_X_MASTER_TABLE.md",
@@ -179,7 +182,8 @@
     {
       "path": "docs/ELDORIA_CANONICAL_AUTOMATION_SANITATION_2026_10_06.md",
       "domain": "project",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: Acta de cierre de la ruta Semantic 2.5D rechazada. Mantener las pruebas y prevención de triggers, sin recrear un nuevo trabajo de saneamiento a partir de este PASS. Autoridad: docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md."
     },
     {
       "path": "docs/ELDORIA_DEVELOPMENT_PIPELINE_V2.md",
@@ -214,12 +218,14 @@
     {
       "path": "docs/ELDORIA_MASTER_MAP_RESUME.md",
       "domain": "project",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: Lista de próxima sesión del 24/09 que mandaba cerrar diseño macro antes de Unity; el cierre conceptual posterior existe y Unity ya está en producción. No seguir la lista como tarea vigente. Autoridad: docs/ELDORIA_MASTER_MAP_V1_CLOSURE.md; PR #162."
     },
     {
       "path": "docs/ELDORIA_MASTER_MAP_V1_CLOSURE.md",
       "domain": "project",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Cierre conceptual de visión 4X y expansión futura. Su combate/heridos/hospital de septiembre no sustituyen las decisiones posteriores ni prueban sistemas aún no implementados. Autoridad: docs/DOCUMENTATION_POLICY.md; PR #136; PR #162."
     },
     {
       "path": "docs/ELDORIA_MASTER_MAP.md",
@@ -290,7 +296,8 @@
     {
       "path": "docs/ELDORIA_SURFACE_PIPELINE.md",
       "domain": "project",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Etapas S0–S3 para materiales son método útil; prioridad Aserradero/Cuartel y compra de texturizado son observaciones de septiembre, no orden actual ni permiso de gasto. Autoridad: docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md; AGENTS.md."
     },
     {
       "path": "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2_RESULT.md",
@@ -306,13 +313,15 @@
     },
     {
       "path": "docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
+      "status": "reference",
+      "domain": "art",
+      "note": "Revisión semántica 06/11/2026: Prueba de preflight de hashes y origen Tripo; la parte que preparaba un artista Qwen obligatorio no es operativa tras su retirada. No confundir puente técnico con inferencia o ART PASS. Autoridad: docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md; pipeline/active-workstreams.json."
     },
     {
       "path": "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
+      "status": "reference",
+      "domain": "art",
+      "note": "Revisión semántica 06/11/2026: Evidencia de ensayos fallidos/parciales de anatomía del Engendro y art-brain. El titular vivo gestiona los siguientes pasos, no la orden Qwen del 21/10 ni su reserva Windows histórica. Autoridad: AGENTS.md; pipeline/active-workstreams.json."
     },
     {
       "path": "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
@@ -329,7 +338,8 @@
     {
       "path": "docs/ELDORIA_VISUAL_CONVERGENCE_PIPELINE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Escalera V0–V3 y regla de no decorar antes de corregir superficies siguen útiles. La antigua cola de métodos y cámara debe someterse al visual canon y a la versión de Unity actual. Autoridad: docs/VALORIA_VISUAL_BIBLE.md; tools/plan-art-production.mjs."
     },
     {
       "path": "docs/ELDORIA_VISUAL_FALLBACK_ORCHESTRATOR_V1.md",
@@ -408,7 +418,8 @@
     {
       "path": "docs/MVP_ART_DIRECTION.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Dirección visual fundacional de fantasía medieval oscura y legibilidad 4X. Los objetivos de MVP no son contrato píxel a píxel ni sustituyen las referencias de propietario y decisiones más recientes. Autoridad: docs/VALORIA_VISUAL_BIBLE.md; docs/DOCUMENTATION_INDEX.md."
     },
     {
       "path": "docs/NARRATIVE_TUTORIAL_COHERENCE_PLAN_20261105.md",
@@ -419,7 +430,8 @@
     {
       "path": "docs/PLAYER_CITY_V1_UNIVERSAL_ICON.md",
       "domain": "project",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Decisión de diseño de un único icono ciudad para el primer mapa compartido; no significa que el multijugador ya esté desplegado ni que todo zoom 18/14/10/7 sea vigente. Autoridad: docs/ELDORIA_WORLD_REGION_1_V1.md; PR #132."
     },
     {
       "path": "docs/PROGRESSION_VISUAL_CONTRACT.md",
@@ -430,12 +442,14 @@
     {
       "path": "docs/QA_R7.md",
       "domain": "quality",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: El propio archivo aclara que es checklist de QA de r7 y no corresponde a versiones actuales. Conservar los escenarios para comparación, nunca como gate activo. Autoridad: QA_AND_DEPLOY.md; docs/DOCUMENTATION_INDEX.md."
     },
     {
       "path": "docs/R7_CONSOLIDATION.md",
       "domain": "project",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: Nota de consolidación de prototipo r7 marcada obsoleta en su propio texto, sin autoridad sobre la aplicación Unity o los releases actuales. Autoridad: AGENTS.md; docs/DOCUMENTATION_INDEX.md."
     },
     {
       "path": "docs/ROYAL_GOLD_V2_LIVE_DELIVERY_20261020.md",
@@ -534,12 +548,14 @@
     {
       "path": "docs/UNITY_MIGRATION_ACCELERATION_PLAN.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Metodología por rebanadas verticales y pruebas de persistencia reutilizable; su antigua secuencia de migración web y el estado del runner no pueden imponerse al código y las PR integradas. Autoridad: docs/DOCUMENTATION_POLICY.md; PR #136; PR #162."
     },
     {
       "path": "docs/UNITY_MIGRATION_SCOREBOARD.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: Marcaba I–X, APK móvil y misiones posteriores como REFERENCE_ONLY el 28/09; desde entonces existen builds APK y mejoras de progreso integradas. No usar como estado operativo vivo. Autoridad: updates/android/family.json; PR #132; PR #162."
     },
     {
       "path": "docs/VALORIA_ADAPTIVE_MOBILE_HOME_POSE_V1_RESULT.md",
@@ -571,22 +587,26 @@
     {
       "path": "docs/VALORIA_BASTION_I_II_PRESENTATION_PARITY_CORRECTION_V1.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Cierre certificado del 08/10 en el alcance de interacción/Paridad I–II. Sus URLs Pages y encuadres de entonces son evidencia, no estado de WebGL ni aceptación artística global actuales. Autoridad: docs/evidence/bastion-i-ii-web-parity-playthrough-v1/PARITY_REVIEW.md; pipeline/playtest-delivery.json."
     },
     {
       "path": "docs/VALORIA_BASTION_I_II_PROGRESSION_V1.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Cierre técnico I–II de una versión anterior. El playablePass temprano fue posteriormente sometido a comprobaciones más estrictas; no inferir que representa la experiencia I–V ni dispositivos reales. Autoridad: docs/ELDORIA_PUBLISHED_PROBE_INTEGRITY_V1.md; PR #132; PR #162."
     },
     {
       "path": "docs/VALORIA_BASTION_I_II_VERTICAL_SLICE_MIGRATION_V1.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Documento de migración y alcance acotado I–II; un PASS de Pages antiguo no significa que la versión actual siga publicada allí ni que sus pantallas sean las vigentes. Autoridad: pipeline/playtest-delivery.json; PR #136; PR #162."
     },
     {
       "path": "docs/VALORIA_BASTION_I_X_VISUAL_PRODUCTION_MATRIX_V1.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Matriz de planeamiento I–X útil para secuenciación visual, pero niveles futuros y art tiers no están implementados automáticamente por aparecer aquí; la lógica y decisiones posteriores prevalecen. Autoridad: docs/VALORIA_PROGRESSION_MAP_V1.md; PR #162."
     },
     {
       "path": "docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md",
@@ -631,7 +651,8 @@
     {
       "path": "docs/VALORIA_CAMERA_EXPANSION_PLAN_V1.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Plan de cámara fija/isométrica con pan limitado, pero su pose y tamaño 9–19 no se deben forzar en los controladores de ciudad/mundo actuales, reconciliados después. Autoridad: docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md; PR #132."
     },
     {
       "path": "docs/VALORIA_CAMERA_FIRST_FUNCTIONAL_SOURCE_V1_RESULT.md",
@@ -668,7 +689,8 @@
     {
       "path": "docs/VALORIA_FINAL_LOOK_AND_CAMERA_AB_PLAN.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: Plan de ensayo de Final Look y perspectiva del 04/10, previo a los resultados y métodos posteriores. No ejecutarlo como orden de cambiar la cámara o URP hoy. Autoridad: docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md; docs/VALORIA_VISUAL_BIBLE.md."
     },
     {
       "path": "docs/VALORIA_FIRST_PLAYABLE_CITY_SLICE_V1.md",
@@ -688,12 +710,14 @@
     {
       "path": "docs/VALORIA_FULL_FRAME_CONVERGENCE_LOOP_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Reglas de calidad integrada, A/B y TECH vs VISUAL vigentes como criterios. Su instrucción de publicar Pages y su cámara 19/12/9 pertenecen a una fase anterior; contrastar con canal real y referencia aprobada. Autoridad: AGENTS.md; docs/VALORIA_VISUAL_BIBLE.md; pipeline/playtest-delivery.json."
     },
     {
       "path": "docs/VALORIA_FUNCTIONAL_SCREEN_READABILITY_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: Ensayo de Granero/Cuartel terminó TECH PASS/VISUAL PARTIAL y NOT PROMOTED. No repetir microajustes de posición bajo la excusa de que la prueba estaba cerrada. Autoridad: docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md."
     },
     {
       "path": "docs/VALORIA_GATE_STREET_MV1_GATE.md",
@@ -748,7 +772,8 @@
     {
       "path": "docs/VALORIA_HERO_BASTION_V1_FINAL_GATE.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: Ensayo aislado TECH PASS/VISUAL PARTIAL, sin promoción. El modelo antiguo fue prohibido expresamente el 25/10 y archivado; sus 55 créditos consumidos no autorizan reutilización ni nueva generación. Autoridad: AGENTS.md; docs/evidence/unity-metadata-20261104/RESULT.md."
     },
     {
       "path": "docs/VALORIA_HOUDINI_GOLDEN_INTEGRATION_PILOT_V1.md",
@@ -832,7 +857,8 @@
     {
       "path": "docs/VALORIA_MASTER_ENVELOPE_CAMERA_GATE_V1.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Certificación structural/graybox de cámara y espacio de expansión, no dimensiones finales de Valoria ni garantía de UI/FPS en el móvil actual. Conservar su evidencia y límites. Autoridad: docs/VALORIA_MASTER_PLAN_V1.md; PR #132."
     },
     {
       "path": "docs/VALORIA_MASTER_PLAN_AND_PROGRESSION_REQUIREMENTS.md",
@@ -904,7 +930,8 @@
     {
       "path": "docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: Ensayo Granero+Cuartel TECH PASS pero VISUAL PARTIAL-FAIL y NOT PROMOTED. No reactivar ajustes de encuadre ni considerarlo calidad aprobada. Autoridad: docs/VALORIA_FUNCTIONAL_SCREEN_READABILITY_V1_RESULT.md; docs/VALORIA_VISUAL_BIBLE.md."
     },
     {
       "path": "docs/VALORIA_PLAYABLE_DISTRICT_ART_PASS_1.md",
@@ -919,7 +946,8 @@
     {
       "path": "docs/VALORIA_PLAYABLE_DISTRICT_SKELETON_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Prueba estructural de rutas/parcela/colliders con problemas de blockout reconocidos. Útil como genealogía del terreno, no como orden de recuperar la ciudad de septiembre. Autoridad: docs/VALORIA_MASTER_ENVELOPE_CAMERA_GATE_V1.md; PR #136."
     },
     {
       "path": "docs/VALORIA_PREMIUM_TARGET_GAP_REVIEW_VISUAL_UPLIFT_V1.md",
@@ -954,7 +982,8 @@
     {
       "path": "docs/VALORIA_PRODUCTION_ART_SYSTEM_RESET_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: Sistema de arte validado en octubre pero la composición parcial y Hero Bastion antiguo no son la situación del juego actual; el modelo anterior tiene veto expreso. Autoridad: AGENTS.md; docs/VALORIA_VISUAL_BIBLE.md."
     },
     {
       "path": "docs/VALORIA_PRODUCTION_ART_SYSTEM_V1.md",
@@ -969,7 +998,8 @@
     {
       "path": "docs/VALORIA_PROGRESSION_MAP_V1.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 06/11/2026: Mapa espacial hasta niveles 25–35 es intención de diseño, no balance implementado ni un mandato de modelar decenas de mallas. Mantener como planificación condicionada a cámara, terreno y progresión. Autoridad: docs/VALORIA_MASTER_PLAN_V1.md; docs/VALORIA_MASTER_ENVELOPE_CAMERA_GATE_V1.md."
     },
     {
       "path": "docs/VALORIA_PURCHASE_AUDIT.md",
@@ -1139,7 +1169,8 @@
     {
       "path": "docs/VALORIA_VISUAL_CONVERGENCE_EXECUTION_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: Cuaderno de gates SHARP/Lower Gate y bloque ACTIVE 06/10 con Gate5 cerrado; no es un workstream de hoy ni justifica reiniciar métodos rechazados. Autoridad: pipeline/active-workstreams.json; docs/DOCUMENTATION_INDEX.md."
     },
     {
       "path": "docs/VALORIA_VISUAL_FALLBACK_DECISION_PLAYBOOK_20261017.md",
@@ -1150,7 +1181,8 @@
     {
       "path": "docs/VALORIA_VISUAL_FORMULA_v1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 06/11/2026: El propio documento declara superficie validada históricamente pero dirección artística sustituida por la biblia posterior; los valores antiguos de iluminación/cámara no prevalecen. Autoridad: docs/VALORIA_VISUAL_BIBLE.md; AGENTS.md."
     },
     {
       "path": "docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md",
