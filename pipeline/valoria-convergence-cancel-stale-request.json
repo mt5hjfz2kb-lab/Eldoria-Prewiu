@@ -1,14 +1,12 @@
 {
   "schema_version": 1,
-  "request_id": "player-experience-retire-superseded-20261106",
-  "reason": "Preserve c47 native compilation, which started after the queue inventory; cancel only this workstream's other superseded requests.",
+  "request_id": "player-experience-retire-queued-native305-20261106",
+  "reason": "Native305 WebGL is queued behind active native304 certification and lacks the now-corrected earned-world-presentation assertion. Retire only this owned queued build; preserve the active Unity process and the native306 candidate.",
   "runs": [
-    42278054309,
-    42278827258,
-    42278837649
+    42281737929
   ],
   "keep_runs": [
-    42278064290
+    42280778113
   ],
-  "triggered_at": "2026-11-06T19:22:56.025Z"
+  "triggered_at": "2026-11-06T19:44:26.909Z"
 }
