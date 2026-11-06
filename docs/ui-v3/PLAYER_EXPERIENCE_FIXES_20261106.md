@@ -31,6 +31,14 @@ The candidate remains unmerged and unpublished. All domain/governance checks pas
 | Waiting and milestones | Parallel-activity guidance; Lyra's actual profile after acknowledged recruitment; chapter-completion banner and earned mastery change | No popup loop on reload; distinct chapter closure; real progression only |
 | Portrait inconsistency | Reuse approved Aldric dialogue bust; request the same Lyra model portrait for dialogue/cards | Same identity, no missing/cropped portrait |
 
+## Follow-up after real WebGL replay (native313)
+
+- The first native313 candidate passed 216 EditMode, 77 PlayMode and 222 integration checks. Its exact WebGL was built before the latest follow-up corrections.
+- An additional browser-directed regression session used the actual native313 WebGL, unmodified save and normal timers. It reached Bastion III, constructed the granary on the first click, hunted both animals, started the 20-minute fissure investigation, opened reports, and switched between 844×390 and 390×844. The independent first-play I–V audit is preserved separately; this follow-up did not complete a second I–V run.
+- The new replay found an **unresolved in native313** horizontal world target cartouche whose description and rewards were clipped. The PR now includes a larger landscape reading viewport and a PlayMode guard, but those changes require an updated capture.
+- The replay also found **hunt reports showing 0 rounds, 0% life and zero recorded loot** despite the reward being delivered. This was corrected by distinguishing hunting receipts from combat reports and directing the player to the genuine Recompensas entry. A new PlayMode regression covers that behavior.
+- The native313 replay and screenshots are historical evidence only; do not present them as proof of the post-native313 commits. Keep the PR draft and public releases unchanged until the exact latest head passes certification and visual checks.
+
 ## Evidence still required
 
 - Exact final domain regressions and Unity EditMode/PlayMode.
