@@ -65,10 +65,20 @@ namespace Eldoria.PlayerClarity.Tests
             Assert.That(go.transform.childCount, Is.EqualTo(children),
                 "A third Valoria/name line must never be inserted over the resource bar");
 
-            // Simulate the canonical RoyalHUD refresh, which renders "Valoria"
-            // at 0.25-second intervals; the nameplate must restore the nickname.
-            realm.Realm.Put("Valoria");
-            display.Refresh();
+            // The real RoyalHUD calls RealmHeader.Render every 0.25s.
+            // The saved title MUST be correct in that same synchronous
+            // Render call, not one frame later in another LateUpdate.
+            realm.Render(new RoyalSnapshot { Realm = "Valoria", Power = 123 }, false);
+            Assert.That(realm.Realm.text, Is.EqualTo("Sir Alvar"),
+                "RoyalHUD.Render must not overwrite a saved nickname even temporarily");
+            Assert.That(realm.Power.text, Does.Contain("123"));
+            Assert.That(realm.Realm.rectTransform.anchoredPosition, Is.EqualTo(realmPosition));
+            Assert.That(realm.Power.rectTransform.anchoredPosition, Is.EqualTo(powerPosition));
+            // The title is the name on the regional world as well, while
+            // the original kingdom remains the saved realm identity.
+            realm.Render(new RoyalSnapshot { Realm = "ZONA 1", Power = 123 }, false);
+            Assert.That(realm.Realm.text, Is.EqualTo("Sir Alvar"));
+            realm.Render(new RoyalSnapshot { Realm = "Valoria", Power = 123 }, false);
             Assert.That(realm.Realm.text, Is.EqualTo("Sir Alvar"));
 
             selected = "WWWWWWWWWWWWWWWWWW";
