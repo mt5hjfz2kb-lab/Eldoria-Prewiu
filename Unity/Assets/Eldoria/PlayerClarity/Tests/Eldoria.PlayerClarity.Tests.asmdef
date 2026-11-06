@@ -5,7 +5,8 @@
     "Eldoria.PlayerClarity",
     "Unity.ugui",
     "Eldoria.RoyalGold.UI",
-    "Eldoria.Domain"
+    "Eldoria.Domain",
+    "Eldoria.RoyalGold.Core"
   ],
   "optionalUnityReferences": [
     "TestAssemblies"
