@@ -1089,12 +1089,18 @@ namespace Eldoria.ReferenceClean.Editor {
     // existing title adapter after layout and before both real camera frames.
     var playerHeader=h.Hud.Realm?.GetComponent<Eldoria.PlayerClarity.PlayerNameHeader>();
     if(playerHeader)playerHeader.Refresh();
-    prepareView?.Invoke();
     // ScreenSpaceCamera Canvas matrices follow the camera during render.
     // After an offscreen pan, measuring them before that sync produced a
     // zero-width/inverted free viewport and hid every otherwise live marker.
     // Render the real camera once before measuring the same runtime overlay.
     c.Render();Canvas.ForceUpdateCanvases();
+    // The target RenderTexture changes the camera-space Canvas matrices.
+    // Apply the requested player focus only AFTER that first real render;
+    // otherwise the free HUD viewport still belongs to the prior size.
+    if(prepareView!=null){
+     Debug.Log("ELDORIA_CAPTURE_VIEW_READY "+name+" safe="+ui2.GetFreeSceneViewport());
+     prepareView();c.Render();Canvas.ForceUpdateCanvases();
+    }
     // Offscreen node evidence pans after the earlier label refresh. Reproject
     // existing guidance from that SAME final camera, never the previous shot.
     foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();
