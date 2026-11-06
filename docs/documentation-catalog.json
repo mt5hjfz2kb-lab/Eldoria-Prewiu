@@ -1095,27 +1095,32 @@
     {
       "path": "docs/VALORIA_RESIDENTIAL_TERRACE_ROCK_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 25371b7d4681332f08368d714a7e88a9836f4247: Ensayo aislado con geometría y raycast válidos para función residencial, no certificación de continuidad de distrito ni arte aprobado en la composición actual. Autoridad posterior: docs/VALORIA_MICRO_CITY_INHABITED_DISTRICT_GATE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_ROAD_FAMILY_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 39bcb034992919f5aaf296026c1c490a63813b10: Road Source de octubre con gate local y enlace al bridge; conserva fuente/hashes pero la cámara y referencia se sustituyeron después. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_ROCK_TERRAIN_BASTION_CONTACT_UPLIFT_V1.md",
       "domain": "gameplay",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git cd127188e3871b17fb4bfac653f85d6bf40e4ebb: Corrección acotada de 11 caras de contacto roca/Bastión con A/B, sin cambio geométrico. Prueba local útil, no calidad general. Autoridad posterior: docs/VALORIA_STRUCTURAL_QUALITY_BAR_REVIEW_V1.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_ROCK_TERRAIN_FAMILY_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 0c3f1e6d901697ecf9642507a93c2e93d3162510: Familia Source09 TECH/ART PASS y métricas de Unity de octubre; conservar como activo de investigación, sin extender PASS a la referencia posterior. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_ROCK_TERRAIN_SEAM_FILLER_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 38b0f9cacba9702bc75e9680ec4300a263719eec: Gate técnico y visual aislado de seam filler, sin demostrar que un conjunto de seis familias conecte físicamente las calles del juego. Autoridad posterior: docs/VALORIA_MODULE_INTERFACE_V1_GATE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_SCENE_METHOD_BREAKTHROUGH_BRIEF_20261016.md",
@@ -1126,12 +1131,14 @@
     {
       "path": "docs/VALORIA_SCREEN_SPACE_BREAKPOINT_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 433825cb8e150e3d55d0173c654b5b85335543d5: Experimentos A/B/C de tamaño aparente con resultados FAIL/PARTIAL y ninguno promovido; no volver a mover cámaras para resolverlos. Autoridad posterior: docs/VALORIA_ADAPTIVE_MOBILE_HOME_POSE_V1_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_SECONDARY_SUPPORT_FORM_REPLACEMENT_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git c2c2068c9f4898309de7b1e4dedad4d7f36c7020: Intento de soportes secundarios TECH PASS/VISUAL PARTIAL-FAIL, estado NOT PROMOTED. No reactivar microajustes de relleno. Autoridad posterior: docs/VALORIA_LOWER_CITY_URBAN_MASSING_REAUTHORING_V1_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md",
@@ -1142,37 +1149,44 @@
     {
       "path": "docs/VALORIA_SHELL_V2_BLENDER_TRANSITION_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 6265fe76e0970d840d26b5f3ebe57613fa1c9660: Prueba de terreno Blender importó en Unity pero falló imagen/continuidad, sin promoción y sin cambio de gameplay. Autoridad posterior: docs/VALORIA_VISUAL_SHELL_V2_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_SHELL_V2_FUSED_TRANSITION_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git b440040e05376e08f4d979ea7027b7a77cd7b7de: Visual Shell fused TECH PASS/VISUAL FAIL, sin integración. La propuesta de fotogrametría era hipótesis, no fuente aprobada. Autoridad posterior: docs/VALORIA_VISUAL_SHELL_V2_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_STAIR_FAMILY_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 8f965f8a2d592822080a9b1897a0e7e4e51381de: Stair Source de octubre con prueba de conexión Road→Stair y geometría real; solo gate y cámara propios, no aprobación global actual. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_STONE_ARCHITECTURE_INTEGRATION_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 4e66c8f322ba5440910d5852ce48b0d2ae6acfcd: Integración controlada de cinco piezas visual-only y raycasts preservados en octubre; la utilidad histórica no reautoriza Bastión ni módulos rechazados. Autoridad posterior: docs/STONE_ARCHITECTURE_KIT_V1_FINAL_GATE.md; AGENTS.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_STREET_LANDING_TRANSITION_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git ef4a0e3cc64624aa8b95971b275e0c2ad2095eaa: Gate aislado de transición/descanso con certificado local, pero otros ensayos prueban que no garantiza una cadena Gate→Street→Stair completa. Autoridad posterior: docs/VALORIA_IF1_SHORT_CHAIN_DECISION.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_STRUCTURAL_FRAME_URBAN_SUPPORT_INTEGRATION_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 9e7d6756fdb7063c82df411db824b419cccead55: El nuevo marco estructural fue TECH PASS pero VISUAL PARTIAL-FAIL y NO PROMOTED; no intentar variantes v2/v3 que el informe descartó. Autoridad posterior: docs/VALORIA_BASTION_TO_CITY_ARCHITECTURAL_FRAME_V1_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_STRUCTURAL_QUALITY_BAR_REVIEW_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 89770f0c7093207940b6add50dea1aa7c534a212: Revisión estructural de octubre con PASS limitado a su composición y recomendaciones de retoque; no certifica la referencia cambiada del 20/10. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md; docs/VALORIA_VISUAL_BIBLE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_SURFACE_V1.md",
