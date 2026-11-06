@@ -21,11 +21,11 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Exact native299 WebGL build42213699104 completed SUCCESS. Exercise real first-entry name keyboard/pointer, stored identity and wallet preservation, full normal-clock Bastion I-II controls, marches, landscape844x390/portrait390x844 and exact save/reload. No injected state, time acceleration or weakened visual containment checks. Source runtime is PR162 merged main; subsequent changes only native QA fixtures and Android packaging.0EUR.",
+  "reason": "Native299 first browser run verified real naming, no runtime/network errors and all 8 pans; rejected obsolete retained-pan expectation. Canonical TrySetWorld explicitly resets each visit to Valoria near view (portrait64/landscape36), also asserted by native integration. Verify same near-home pose on two real city/world returns, retaining all progression, gesture, framing, video and save checks. Exact same WebGL bytes; no rebuild.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 1,
+  "attempt": 2,
   "method_note": "Use the new exact artifact and current real-input naming script; retain every existing gameplay, stable framing, video and save/reload assertion.",
   "gameplay_source_unchanged": false,
   "revision": "native299"
