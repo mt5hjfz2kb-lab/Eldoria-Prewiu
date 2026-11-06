@@ -89,8 +89,12 @@ jobs:
       - name: Reassemble exact 41 visual resources and 7 C-sharp inputs
         shell: powershell
         run: |
-          python forja-source/tools/forja-oscura/reconstruct.py --extract forja-source
-          if($LASTEXITCODE){throw 'Forja production archive integrity failed'}
+          python forja-source/tools/forja-oscura/reconstruct.py
+          if($LASTEXITCODE){throw 'Forja original archived sources are corrupt'}
+          python forja-source/tools/forja-oscura/verify-production.py
+          if($LASTEXITCODE){throw 'First-party Unity visual assets invalid'}
+          if(Test-Path 'forja-source/Unity/Assets/EldoriaVisualKit'){throw 'Legacy duplicate kit path detected'}
+          if(-not(Test-Path 'forja-source/Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs')){throw 'Native A-B entry missing'}
       - name: Capture genuine Unity player HUD before and after
         shell: powershell
         run: |

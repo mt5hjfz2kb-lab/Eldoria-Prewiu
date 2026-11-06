@@ -105,3 +105,43 @@ jobs:
         run: dotnet run --project tools/forja-oscura/SyntaxAudit.csproj -c Release -- Unity/Assets/EldoriaVisualKit
       - name: State exact scope of the result
         run: echo 'FORJA_SYNTAX_AND_SPRITES_PASS; Unity engine compilation and native UI proof remain pending.'
+
+  relocate-and-meta:
+    needs: verify
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[forja-relocate]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/forja-oscura-native-proof-20261107
+          sparse-checkout: |
+            tools/forja-oscura
+            Unity/Assets/EldoriaVisualKit
+            Unity/Assets/Eldoria/VisualKit
+          sparse-checkout-cone-mode: false
+          fetch-depth: 1
+          persist-credentials: true
+      - name: Move only first-party UI assets and assign Unity metadata
+        run: |
+          set -euo pipefail
+          python3 tools/forja-oscura/relocate-assets.py
+          python3 tools/forja-oscura/verify-production.py
+      - name: Commit constrained first-party relocation
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --sparse -A Unity/Assets/EldoriaVisualKit Unity/Assets/Eldoria/VisualKit Unity/Assets/Eldoria/VisualKit.meta
+          python3 - <<'PY'
+          import subprocess
+          paths=subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines()
+          assert paths and all(p.startswith("Unity/Assets/EldoriaVisualKit/") or
+              p.startswith("Unity/Assets/Eldoria/VisualKit/") or
+              p=="Unity/Assets/Eldoria/VisualKit.meta" for p in paths),paths
+          print("FORJA_OWNED_PATHS_RECONCILED",len(paths))
+          PY
+          git commit -m "refactor(forja): move original sprites into Eldoria and preserve Unity metadata"
+          git push origin HEAD:refs/heads/feature/forja-oscura-native-proof-20261107

@@ -3,7 +3,8 @@
 from pathlib import Path
 import json, struct, zlib, hashlib, sys
 root=Path(__file__).resolve().parents[2]
-ui=root/"Unity/Assets/EldoriaVisualKit"
+ui=root/"Unity/Assets/Eldoria/VisualKit"
+if not ui.exists():ui=root/"Unity/Assets/EldoriaVisualKit"
 surfaces=sorted((ui/"Resources/ForjaOscura/Surfaces").glob("*.png"))
 icons=sorted((ui/"Resources/ForjaOscura/Icons").glob("*.png"))
 code=sorted(ui.rglob("*.cs")); asmdef=sorted(ui.rglob("*.asmdef"))
@@ -37,6 +38,13 @@ for p in surfaces+icons:
     w,h=verify_png(p)
     if p in icons: assert (w,h)==(256,256),(p,(w,h))
 names={json.loads(p.read_text())["name"]:json.loads(p.read_text()) for p in asmdef}
+if ui.name == "VisualKit":
+    metas=list(ui.rglob("*.meta"))
+    rootmeta=Path(str(ui)+".meta")
+    assert len(metas)==54 and rootmeta.is_file(), ("FORJA_META_MISSING",len(metas))
+    import re
+    guids=[re.search(r"(?m)^guid: ([0-9a-f]{32})$",m.read_text()).group(1) for m in metas+[rootmeta]]
+    assert len(set(guids))==55,"FORJA_META_DUPLICATE_GUID"
 assert "Eldoria.ForjaOscura.Runtime" in names and "Eldoria.ForjaOscura.Editor" in names
 assert names["Eldoria.ForjaOscura.Editor"]["includePlatforms"]==["Editor"]
 assert "Eldoria.RoyalGold.UI" in names["Eldoria.ForjaOscura.Runtime"]["references"]
