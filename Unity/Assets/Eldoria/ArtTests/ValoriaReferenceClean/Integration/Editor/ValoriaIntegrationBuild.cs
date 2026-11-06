@@ -202,12 +202,25 @@ namespace Eldoria.ReferenceClean.Editor {
     var header=h.Hud.Realm.GetComponent<Eldoria.PlayerClarity.PlayerNameHeader>();
     Need(header,"Original realm header lacks the player name adapter");
     header.Refresh();
-    var label=h.Hud.Realm.transform.Find("Character name");
-    Need(label&&label.gameObject.activeInHierarchy&&
-      label.GetComponent<Eldoria.UI.RoyalGold.RoyalText>().text=="Prueba Valoria",
-      "The saved name is not visible beside the original crest");
-    Need(h.Hud.Realm.Power&&h.Hud.Realm.Power.gameObject.activeInHierarchy,
+    // The original crest title is the persisted nickname; its original
+    // second line is Power. No third label may overlap the portrait HUD.
+    var nicknameLabel=h.Hud.Realm.Realm;
+    var powerLabel=h.Hud.Realm.Power;
+    Need(nicknameLabel&&nicknameLabel.gameObject.activeInHierarchy&&
+      nicknameLabel.text=="Prueba Valoria",
+      "The saved name must occupy the original crest title");
+    Need(powerLabel&&powerLabel.gameObject.activeInHierarchy,
       "Power cannot disappear when the nameplate is displayed");
+    Need(h.Hud.Realm.transform.Find("Character name")==null,
+      "No duplicate third nameplate may cover the two-line crest");
+    Canvas.ForceUpdateCanvases();
+    var titleCorners=new Vector3[4];var powerCorners=new Vector3[4];
+    nicknameLabel.rectTransform.GetWorldCorners(titleCorners);
+    powerLabel.rectTransform.GetWorldCorners(powerCorners);
+    Need(titleCorners[0].y>powerCorners[1].y+.4f,
+      "Nickname must end above original Power text");
+    Capture(h,"integration-player-name-saved-landscape.png",1600,900);
+    Capture(h,"integration-player-name-saved-portrait.png",900,1600);
    },"editable first-entry parchment, invalid nick validation, saved display and real screenshots");
    // Native regression 42123550342: the parchment is removed and an
    // offscreen ScreenSpaceCamera proof restores ScreenSpaceOverlay within
@@ -937,7 +950,13 @@ namespace Eldoria.ReferenceClean.Editor {
     // include Unity's existing UI layer (5) only during this capture or a real
     // Lyra dialog can appear in the game but disappear from the evidence PNG.
     c.cullingMask|=1<<5;
-    if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();if(heroesOpen)heroes.Refresh();Canvas.ForceUpdateCanvases();if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);if(selectedTarget)h.Focus(selectedTarget.gameObject);}foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
+    if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();if(heroesOpen)heroes.Refresh();Canvas.ForceUpdateCanvases();if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);if(selectedTarget)h.Focus(selectedTarget.gameObject);}foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();
+    // The normal game applies this after RoyalHUD.Refresh in LateUpdate.
+    // Offscreen QA renders without advancing a frame, so use the SAME
+    // existing title adapter after layout and before both real camera frames.
+    var playerHeader=h.Hud.Realm?.GetComponent<Eldoria.PlayerClarity.PlayerNameHeader>();
+    if(playerHeader)playerHeader.Refresh();
+    Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
     // to participate after its first SRP layout/batch registration.
     c.Render();c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name),tex.EncodeToPNG());validateLayout?.Invoke();
     if(destinationOpen){
