@@ -75,3 +75,12 @@ Tripo informa derechos comerciales para **usuarios de pago**, mientras que el te
 **No se ha inspeccionado:** cuenta del propietario en My Assets, facturas privadas, modalidad Tripo de octubre, licencias de todas las referencias de IA, listado binario de una APK/WebGL concreta, ni las condiciones comerciales específicas otorgadas al usuario por cada vendedor. Por tanto **no hay certificado jurídico de cumplimiento ni de incumplimiento** para un tercero individual.
 
 **No se ha modificado:** `Unity/`, assets, modelos, material, voces, repositorio público, historia Git, escenas, CI de publicación ni credenciales. Es una auditoría de procedencia y riesgo; decisiones de visibilidad o sustitución requieren ejecución coordinada y validación de consumidores.
+
+## Cierre de integración de la auditoría — 06/11/2026
+
+- [PR #169](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/169) fusionada a `main` en commit `afdba0696c80d3ef22ec0abef90968c88e0854b6`.
+- [Repository architecture guard 42299521395](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42299521395): **SUCCESS**, incluidas la validez de enlaces y de documentación.
+- [Dominio/gateway 42299521231](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42299521231): **SUCCESS**.
+- [Tester 42299521426](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42299521426): **SUCCESS**. Gate artístico World4X se omitió correctamente por ausencia de modificaciones artísticas; **no es ART PASS**.
+- Comparados tras fusión el informe y el JSON: 16 familias (1 crítico/10 alto/5 medio). La PR cambió **exclusivamente** los dos informes nuevos y la guía documental. No se emitió licencia, autorización de gasto o distribución, ni se revisó un nuevo `BuildReport`.
+- **Próximo trabajo distinto:** obtener recibos y licencias de origen de las cuentas del propietario, aislar la exposición de fuentes sujeta a condiciones y comprobar los contenidos efectivos de APK/WebGL antes de emitir cualquier declaración de cumplimiento comercial.
