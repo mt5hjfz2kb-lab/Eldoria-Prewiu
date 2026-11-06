@@ -566,7 +566,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Preserve more real city in both orientations. A council choice
             // is a modestly taller version of this SAME in-world card.
             bool council=GetComponent<RoyalGoldV3BuildingScreens>()?.InlineCouncilNeeded(Source.SelectedBuildingId)==true;
-            float cardHeight = council?(portrait?190f:193f):(portrait?218f:184f);
+            float cardHeight = council?(portrait?190f:193f):(portrait?218f:196f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -598,11 +598,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // screen when only three legitimate choices are available.
             Top(buildingWorkState.rectTransform,textLeft,
                 council?(portrait?68f:72f):(portrait?99f:99f),
-                middleWidth,council?(portrait?24f:29f):(portrait?47f:33f));
+                middleWidth,council?(portrait?24f:29f):(portrait?47f:25f));
             buildingWorkState.fontSize=portrait?16:17;
             buildingWorkState.verticalOverflow=VerticalWrapMode.Truncate;
             Top((RectTransform)buildingClose.transform,cardWidth-49f,5f,44f,44f);
-            float detailsY=portrait?136f:132f;
+            float detailsY=portrait?136f:121f;
             Top((RectTransform)buildingScroll.transform,textLeft,detailsY,
                 middleWidth,Mathf.Max(28f,cardHeight-detailsY-(portrait?55f:14f)));
             Stretch(scrollViewport,0);
@@ -610,7 +610,7 @@ namespace Eldoria.UI.RoyalGold.V2
             scrollContent.pivot=new Vector2(.5f,1);scrollContent.anchoredPosition=Vector2.zero;
             scrollContent.sizeDelta=new Vector2(0,Mathf.Max(85f,scrollViewport.rect.height));
             Top(buildingBody.rectTransform,0,0,middleWidth-5f,scrollContent.rect.height);
-            buildingBody.fontSize=20;
+            buildingBody.fontSize=portrait?18:16;
             if(portrait)
                 Top((RectTransform)buildingAction.transform,14f,cardHeight-51f,cardWidth-28f,40f);
             else
