@@ -100,7 +100,7 @@ jobs:
         run: python3 tools/forja-oscura/verify-production.py
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
       - name: Parse real five C-sharp sources with Roslyn
         run: dotnet run --project tools/forja-oscura/SyntaxAudit.csproj -c Release -- Unity/Assets/EldoriaVisualKit
       - name: State exact scope of the result
