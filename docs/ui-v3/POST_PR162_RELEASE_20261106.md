@@ -1,46 +1,80 @@
-# PR162 — integración y publicación (6 noviembre 2026)
+# PR162 — integración y entrega cerradas
 
-Estado: PR162 integrada; Android1.21 publicado y verificado; WebGL299 compilado, prueba completa de navegador en curso. No declarar cerrada la entrega hasta confirmar la publicación WebGL.
+Cierre: 6 de noviembre de 2026. PR #162 integrada en `main`; APK Android 1.21 publicada y canal de actualización verificado; WebGL native299 activo en el canal restringido existente de itch.io. Presupuesto adicional: 0 €.
 
-## Integración y evidencia
+## Resultado y procedencia
 
-- PR162 fusionada en main: e7e37d236e982553e06168f0ec216e4de80b6b03.
-- Nombre Unicode persistente, pictogramas y niveles de edificios/nodos/caza, regeneración UTC300segundos. Conservado límite48h de producción ausente.
-- Certificación ampliada42216689519/sourcecb8a20aaae20bc5c41e042ba34d781359019b737: SUCCESS.216EditMode y75PlayMode, cero fallos u omitidos. XML descargados y leídos.
--225 comprobaciones de integración;20encuadres y16destinos de gestión, todosPASS; progresión continuaI–V y partida recargada. V41, diálogos,3marchas, Vigilantes/Exploradores y AldricPASS. Capturas de bienvenida, niveles, cartelas y pantallas revisadas.
-- Evidencia principal13504299840 SHA25615aaae3f68bb146c34c994859cbc70d38073cc05413222696f72c083fc6cc185. V4113504257021,retención13505100179,diálogos13504746285,3marchas13503983916,Aldric13506270174.
-- Certificación general anterior42210784774:216/75PASS y compilaciónWindowsPASS.
+| Entrega | Fuente exacta | Ejecuciones |
+| --- | --- | --- |
+| PR162 | `e7e37d236e982553e06168f0ec216e4de80b6b03` (merge) | PR #162 fusionada |
+| Certificación ampliada | `cb8a20aaae20bc5c41e042ba34d781359019b737` | [42216689519](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42216689519) |
+| Android 1.21 / code21 | `e3d8347c5ea0aecf8c48f216d1599d2ca7704db9` | Build 42217404501; publicación 42225704456 |
+| WebGL native299 | `1db8585329fad788fa702dab3e8a7b76a916b4bc` | Build 42213699104; QA 42226584557 |
+| Transporte WebGL | `ba371eaed375fe7f5d4f3a15f28b1fb0cc859932` | Preparación/subida 42230106275; activación 42230848280 |
+
+Las fuentes Android y WebGL contienen el mismo código de juego. Sus diferencias son pruebas Editor, compresión específica de Android y metadatos de coordinación. La adaptación de transporte no modifica los datos descomprimidos de Unity.
+
+## Cambios integrados y pruebas
+
+Nombre de jugador Unicode persistente, pictogramas de recursos, niveles legibles de edificios/nodos/caza y regeneración UTC de 300 segundos. Se conserva el límite de 48 horas para producción ausente.
+
+- 216 pruebas EditMode y 75 PlayMode: todas aprobadas, sin fallos ni omisiones. XML descargados y comprobados.
+- 225 comprobaciones de integración, 20 encuadres y 16 destinos de gestión: PASS. Progresión continua I–V y recarga de la partida.
+- V4.1, diálogos, tres marchas simultáneas, Vigilantes/Exploradores y Aldric: PASS. Capturas reales de bienvenida, niveles y cartelas revisadas.
+- Prueba WebGL de 913,73 segundos: teclado/puntero real para el nombre, 844×390 y 390×844, navegación, combate, marchas, recompensas y guardado/recarga exactos. Cero errores de ejecución o red.
+- Mejora del Bastión observada durante 120,523 segundos y entrenamiento durante 600,233 segundos, sin acelerar el reloj.
+- 75 capturas y vídeo. El límite de capturas impidió cuatro imágenes adicionales; vídeo, telemetría y archivos de guardado permanecen disponibles.
+- SHA-256 idéntico antes/después de recargar: `44ed01f9f3089a2b5e3ff293024ec50cd89fe3b6af3504f6a52d64ec750e80c7`.
+
+Evidencia nativa principal: artifact 13504299840, SHA-256 `15aaae3f68bb146c34c994859cbc70d38073cc05413222696f72c083fc6cc185`. Evidencia del navegador: artifact 13506199633, SHA-256 `5a79b2fb45f89cfa762990a785a6d0fd743ea4c99f24ed88e18ac9364889c5c2`.
+
+La compilación Windows general pasó por separado en 42210784774. La certificación ampliada de main no ejecutó de nuevo los bloques exclusivos de rendimiento/compilación Windows de PR136.
 
 ## Android publicado
 
-- Versión1.21/code21. Compilación42217404501/sourcee3d8347c5ea0aecf8c48f216d1599d2ca7704db9.
-- Publicación42225704456/job127918525196: SUCCESS. Descarga pública comparada byte a byte, canal main actualizado y3pruebas de canalPASS.
-- APK470229532bytes, SHA256b90d72811e89bc3e00ff3b88806d8d550794a6e94f96261213228a30cedd7913.
-- Paquetecom.eldoria.valoria.v5test; certificado originalf479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8. Sin reset de datos.
-- URL:https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code21/Eldoria-Valoria-code21.apk
-- updates/android/family.json verificado code21. Solicitudes build y promoción desactivadas para evitar repetición.
-- ArtifactAPK13503044417; prueba de empaquetado13504605007.
-- Optimización exclusivaAndroid:32ilustraciones grandes ASTC4x4 calidad100. Dimensiones importadas conservadas, fuentes y metadatos originales restaurados/verificados. Verificador independiente tools/android-updates/verify-apk-textures.py (UnityPy1.25.4,Pillow,NumPy).
--32texturas reales decodificadas de APK y comparadas, SHAfuentes verificados; PSNRmínimo38.51dB, error medio máximo1.90/255. Seis recortes de mayor diferencia inspeccionados, sin corrupción/deterioro visible apreciable. Es compresión con pérdida, no identidad de píxeles.
-- scout-action-skin-v4 ya estaba importada a2048x725 desde2107x746; referenciaLanczos aproximada documentada, PSNR45.16dB. No se atribuye a este filtro identidad con el importadorUnity.
+[Descargar APK 1.21](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code21/Eldoria-Valoria-code21.apk).
 
-## WebGL candidato y prueba
+- Tamaño: 470.229.532 bytes.
+- SHA-256: `b90d72811e89bc3e00ff3b88806d8d550794a6e94f96261213228a30cedd7913`.
+- Paquete: `com.eldoria.valoria.v5test`.
+- Certificado original: `f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8`.
+- Descarga pública comparada byte a byte; canal `updates/android/family.json` verificado en code21. Tres pruebas del canal aprobadas.
+- Sin borrado de datos; solicitudes de compilación y promoción desactivadas tras la entrega.
 
-- Native299/build42213699104/source1db8585329fad788fa702dab3e8a7b76a916b4bc SUCCESS.
-- Artifact13501518766 SHA2564adb472e14e384fafd5c55ba007457d82c8fddd81414ebc2b979ffd3774025b6.
-- Comparación1db→e3d: solo dosfixturesEditor, builderAndroid, workflow, registro y solicitud; mismo código runtime y fuentesartísticas.
-- QA actual42226584557/sourcef57a21257db03dcda11bd4682c7d7f2d72208498. Mismos bytesUnity, controles reales, reloj normal,844x390/390x844, nombre por teclado/puntero, progresiónI–II, marchas, vídeo y guardado/recarga exactos. Pendiente de resultado.
-- Destino autorizado existente:https://chrismad.itch.io/eldoria-pruebas, canalwebRestricted,0EUR. Publicar una vez trasPASS y verificar versión remota activa.
+La primera candidata excedía 450 MiB. Se optimizaron únicamente 32 ilustraciones grandes con ASTC 4×4 de alta calidad, conservando sus dimensiones importadas y restaurando los metadatos originales. El verificador `tools/android-updates/verify-apk-textures.py` decodificó las texturas reales de la APK, verificó las fuentes y comparó los píxeles. PSNR mínimo: 38,51 dB; error medio máximo: 1,90/255. Se inspeccionaron los seis recortes con mayor diferencia sin observar corrupción o deterioro apreciable. La compresión tiene pérdida; no se afirma identidad de píxeles.
 
-## Causas corregidas y aprendizaje
+Una fuente ya se importaba a 2048×725 desde 2107×746: su comparación usa una referencia Lanczos aproximada, expresamente identificada. Artifact de prueba: 13504605007; APK firmada: 13503044417.
 
-1. Fixtures avanzados bloqueados por nueva bienvenida: completar formulario real solo en partidas de prueba; conservar prueba específica sin nombre. c788c942 conserva también firma pública de captura usada por reflexión y refresca etiquetas después del encuadre.
-2. Ruta de lease en certificación reconocía únicamente antiguos propietarios. Admitir responsable canónico de main para PR162 sin relajar exclusividad; eliminar disparador pesado por editar el propio workflow.
-3. Capturas verticales alteraban escala aheight/900 después de tomarPNG. Usar escala realwidth/800vertical yheight/900horizontal; conservar umbrales de geometría y legibilidad. cb8a20aa.
-4. PrimeraAPK497493588bytes excedía450MiB. No elevar límite: ZIP9 daba ahorro insuficiente y librerías ya comprimidas. Aplicar ASTC4x4 solo a ilustraciones y comprobar resultado real.
-5. Browser42218825091 esperaba conservar pan, pero TrySetWorld y contrato nativo vuelven aWorldHome+NearZoom en cada visita. QA exige dos retornos reales idénticos, zoom64vertical/36horizontal.
-6. Browser42222753516 abortaba Bastión a90s por expectativa antigua10s. EconomyBastionTimingV2 y fechas guardadas demuestran120s. QA exige120s completos y admite máximo180s. También exige cartela de edificio sobre ciudad; entrenamiento/marchas mantienen pantalla independiente. No manipular reloj/estado para aprobar.
+## WebGL publicado
 
-## Límites
+[Abrir Eldoria](https://chrismad.itch.io/eldoria-pruebas), canal `chrismad/eldoria-pruebas:web`, privacidad restringida conservada.
 
-No se ha probado instalación/rendimiento en teléfono físico ni jugabilidad del alojamientoRestricted. Los certificados funcionales y revisión de regresión no equivalen a una nueva aprobación artística global. Las capturas conservan las pantallas aprobadas provisionalmente; no se declara resuelto todo el trabajo artístico del proyecto.
+- Versión activa: `native299-0f7d6c8fb6d3`.
+- Build remoto: **2313504**.
+- Subida aceptada una sola vez a las 14:03:56 UTC.
+- Activación confirmada a las 14:05:43 UTC por Butler, run 42230848280 / job 127936023155.
+- ZIP publicado: SHA-256 `0f7d6c8fb6d34aa64de455eae2881820d5e930e1ebf285daf0bab6c093321d69`.
+- Paquete: 19 archivos, 490.426.238 bytes extraídos; se conserva el límite estricto de 500 MB.
+- Artifact de entrega: 13508660753, SHA-256 `ef1464c6cc2323d5f968fda374eabb04f6bbd11e9d2789ef8445b4d5dbd51d41`.
+
+La primera preparación se detuvo antes de subir por tamaño. Gzip 9 produjo 518.717.830 bytes y también fue rechazado. Se adoptaron streams Brotli completos, compatibles con la [regla oficial de itch.io para archivos .br](https://itch.io/docs/creators/html5#compression). Los hashes de los datos descomprimidos se conservan.
+
+El lector real de Unity pasó las pruebas HTTP de framework, código y datos con una única reserva de memoria por archivo. También se comprobaron gzip sin cabecera, errores HTTP, tamaños incorrectos y rechazo de Brotli sin cabecera CDN. Datos Unity: 585.372.590 bytes, SHA-256 `d153ac481b134970a5f29ba2d26edb0793dd77a4ab91c51cdfe19c8cebcb81f5`.
+
+La subida terminó correctamente; el job de publicación marcó fallo porque su espera corta venció durante el procesamiento de itch.io. La comprobación independiente posterior confirmó la activación exacta. No se repitió la subida.
+
+## Correcciones de validación y aprendizaje
+
+- Completar el formulario real de nombre en partidas de prueba avanzadas; mantener sin nombre la prueba específica de bienvenida.
+- Conservar la firma pública de captura utilizada mediante reflexión y reproyectar las etiquetas después de encuadrar.
+- Usar la escala real: ancho/800 en vertical y alto/900 en horizontal, sin modificarla después de capturar.
+- Ajustar la ruta de reserva al propietario canónico de main, conservando exclusividad y prohibición de iniciar trabajos pesados al editar su propio workflow.
+- Verificar el retorno diseñado a Valoria en vista cercana, no la expectativa obsoleta de conservar el pan.
+- Respetar los 120 segundos actuales del Bastión y la cartela de construcción sobre la ciudad; entrenamiento/marcha siguen siendo pantallas independientes.
+- Separar el límite de entrada del archivo QA del límite estricto del paquete final publicado.
+
+## Cierre y límites
+
+Solicitudes de publicación desactivadas y seguimiento `6aed0cc2f0308191b29a13b542c886aa` desactivado. Recursos Windows y titularidad canónica liberados tras terminar los trabajos propios.
+
+No se ha probado esta versión instalada en un teléfono físico ni se ha certificado una partida dentro del alojamiento restringido. La prueba completa se realizó sobre los bytes WebGL originales y la adaptación final pasó las comprobaciones del lector real de Unity. La integración/publicación queda cerrada; esto no concede una nueva aprobación artística global ni declara terminadas todas las mejoras visuales del proyecto.

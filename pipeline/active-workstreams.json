@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T13:55:28.616Z",
+  "updated_at": "2026-11-06T14:08:25.436Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-pr162-completion-23287cf1c126",
+      "owner": null,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-06T10:45:48.580Z",
@@ -45,15 +45,13 @@
         "tools/android-updates/**",
         "tools/delivery/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR162_VALIDATION_AND_RELEASE_BUILDS",
-      "next": "Own Windows jobs only: finish native42210784774 and UI42210784700; build Android21 run42212292004 and WebGL native299 run42212291925 from79dca31. Preserve sole lease, do not publish before all exact checks; current session continues directly.",
+      "phase": "PR162_DELIVERY_CLOSED_AVAILABLE",
+      "next": "PR162 integrated and both authorized releases verified. No pending integration/publication work in this scope. Available for the next owner-authorized task.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -67,7 +65,7 @@
         "genuine_gate_glb_types": 6,
         "first_bridge_native_run": 38974760523,
         "recovered_bridge_native_run": 38975101937,
-        "latest_native_success_run": 40403021567,
+        "latest_native_success_run": 42216689519,
         "best_technical_art_stage": "ABCD",
         "best_visual_art_status": "V12_LOCAL_SILHOUETTE_CHANGE_VISIBLE_ART_REVIEW_REQUIRED",
         "e1_bridgedeck_verdict": "VISUAL_REJECTED",
@@ -901,7 +899,8 @@
           "runtime_source": "c788c942b09c095e2ddf7fd636371301babbd357",
           "native_run": 42210784774,
           "ui_run": 42210784700,
-          "published": false
+          "published": true,
+          "superseded_by": "pr162_release"
         },
         "publication_builds": {
           "source_sha": "79dca31d72abeb57e71db59f08943713ffabfcc5",
@@ -910,7 +909,8 @@
           "web_run": 42212291925,
           "web_revision": 299,
           "android_preflight": "PASS",
-          "published": false
+          "published": true,
+          "superseded_by": "pr162_release"
         },
         "fixture_repair": {
           "source_sha": "c788c942b09c095e2ddf7fd636371301babbd357",
@@ -918,9 +918,74 @@
           "ui_run": 42210784700,
           "status": "EditMode and PlayMode PASS; desktop build finishing, full visual fixture QA queued",
           "changes": "Complete real nickname UI on disposable advanced fixtures, preserve reflection Capture API and reproject existing guidance from final camera"
+        },
+        "pr162_release": {
+          "status": "COMPLETED_PR162_INTEGRATED_ANDROID_WEBGL_PUBLISHED",
+          "completed_at": "2026-11-06T14:08:25.436Z",
+          "owner": "codex-pr162-completion-23287cf1c126",
+          "pr": 162,
+          "merge_sha": "e7e37d236e982553e06168f0ec216e4de80b6b03",
+          "native": {
+            "run": 42216689519,
+            "source_sha": "cb8a20aaae20bc5c41e042ba34d781359019b737",
+            "editmode": 216,
+            "playmode": 75,
+            "integration_checks": 225,
+            "failed": 0,
+            "skipped": 0
+          },
+          "android": {
+            "version": "1.21",
+            "version_code": 21,
+            "source_sha": "e3d8347c5ea0aecf8c48f216d1599d2ca7704db9",
+            "build_run": 42217404501,
+            "publish_run": 42225704456,
+            "bytes": 470229532,
+            "sha256": "b90d72811e89bc3e00ff3b88806d8d550794a6e94f96261213228a30cedd7913",
+            "original_signature_verified": true,
+            "public_download_hash_verified": true,
+            "user_data_reset": false,
+            "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code21/Eldoria-Valoria-code21.apk"
+          },
+          "webgl": {
+            "provider": "itch.io",
+            "target": "chrismad/eldoria-pruebas",
+            "channel": "web",
+            "revision": "native299",
+            "url": "https://chrismad.itch.io/eldoria-pruebas",
+            "remote_build": 2313504,
+            "version": "native299-0f7d6c8fb6d3",
+            "restricted": true,
+            "remote_active_confirmed": true,
+            "remote_status_evidence": {
+              "run_id": 42230848280,
+              "job_id": 127936023155,
+              "checked_at": "2026-11-06T14:05:43.317Z",
+              "result": "NATIVE299_ACTIVE",
+              "remote_build": 2313504,
+              "version": "native299-0f7d6c8fb6d3"
+            },
+            "source_sha": "1db8585329fad788fa702dab3e8a7b76a916b4bc",
+            "qa_run": 42226584557,
+            "delivery_run": 42230106275,
+            "hosted_gameplay_verified": false,
+            "physical_mobile_pass": false,
+            "qa_source_sha": "f57a21257db03dcda11bd4682c7d7f2d72208498",
+            "native_run": 42213699104,
+            "qa_artifact": 13506199633,
+            "save_sha256": "44ed01f9f3089a2b5e3ff293024ec50cd89fe3b6af3504f6a52d64ec750e80c7",
+            "decoded_transport_verified": true,
+            "delivery_zip_sha256": "0f7d6c8fb6d34aa64de455eae2881820d5e930e1ebf285daf0bab6c093321d69",
+            "html5_extracted_bytes": 490426238
+          },
+          "new_credits_used": 0,
+          "art_approved": false,
+          "physical_mobile_tested": false,
+          "report": "docs/ui-v3/POST_PR162_RELEASE_20261106.md",
+          "automation_disabled": "6aed0cc2f0308191b29a13b542c886aa"
         }
       },
-      "previous_owner": "codex-combat-dialogues-fc0ef62e-20261105",
+      "previous_owner": "codex-pr162-completion-23287cf1c126",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1917,9 +1982,9 @@
           ]
         }
       ],
-      "ownership_revision": 149,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 150,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-05T19:03:44.661Z",
       "delivery_definition": {
@@ -2061,61 +2126,71 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-11-05T21:04:09.575Z",
+      "released_at": "2026-11-06T14:08:25.436Z",
       "delivery_closeout": {
-        "completed_at": "2026-10-29T21:34:16.588Z",
-        "workstream_id": "valoria-master-plan-layered-construction-20261016",
-        "owner": "codex-release-continuation-ab04f62d0b26",
+        "status": "COMPLETED_PR162_INTEGRATED_ANDROID_WEBGL_PUBLISHED",
+        "completed_at": "2026-11-06T14:08:25.436Z",
+        "owner": "codex-pr162-completion-23287cf1c126",
+        "pr": 162,
+        "merge_sha": "e7e37d236e982553e06168f0ec216e4de80b6b03",
+        "native": {
+          "run": 42216689519,
+          "source_sha": "cb8a20aaae20bc5c41e042ba34d781359019b737",
+          "editmode": 216,
+          "playmode": 75,
+          "integration_checks": 225,
+          "failed": 0,
+          "skipped": 0
+        },
         "android": {
-          "version": "1.19",
-          "version_code": 19,
-          "source_sha": "b310d3b0496b10bab8f1a413f8a588ff5f9b8df3",
-          "build_run": 40946564387,
-          "publish_run": 40951703468,
-          "release_asset": 689858207,
-          "bytes": 468290348,
-          "sha256": "de08719293850ba5135fd022b578baaac8d8619eb2c8b1b9c00b328eaf90e16b",
-          "signature_verified": true,
+          "version": "1.21",
+          "version_code": 21,
+          "source_sha": "e3d8347c5ea0aecf8c48f216d1599d2ca7704db9",
+          "build_run": 42217404501,
+          "publish_run": 42225704456,
+          "bytes": 470229532,
+          "sha256": "b90d72811e89bc3e00ff3b88806d8d550794a6e94f96261213228a30cedd7913",
+          "original_signature_verified": true,
           "public_download_hash_verified": true,
-          "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code19/Eldoria-Valoria-code19.apk",
-          "physical_mobile_tested": false
+          "user_data_reset": false,
+          "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code21/Eldoria-Valoria-code21.apk"
         },
         "webgl": {
           "provider": "itch.io",
           "target": "chrismad/eldoria-pruebas",
           "channel": "web",
-          "revision": "native298",
+          "revision": "native299",
           "url": "https://chrismad.itch.io/eldoria-pruebas",
-          "remote_build": 2247360,
-          "version": "native298-15b79882a59b",
+          "remote_build": 2313504,
+          "version": "native299-0f7d6c8fb6d3",
           "restricted": true,
           "remote_active_confirmed": true,
           "remote_status_evidence": {
-            "run_id": 40958364194,
-            "job_id": 123744902862,
-            "checked_at": "2026-10-29T21:32:52Z",
-            "result": "NATIVE298_ACTIVE",
-            "remote_build": 2247360,
-            "version": "native298-15b79882a59b"
+            "run_id": 42230848280,
+            "job_id": 127936023155,
+            "checked_at": "2026-11-06T14:05:43.317Z",
+            "result": "NATIVE299_ACTIVE",
+            "remote_build": 2313504,
+            "version": "native299-0f7d6c8fb6d3"
           },
-          "source_sha": "c8580934201ae1e17543b8683749d40751fb1e12",
-          "qa_run": 40955956262,
-          "delivery_run": 40958364194,
+          "source_sha": "1db8585329fad788fa702dab3e8a7b76a916b4bc",
+          "qa_run": 42226584557,
+          "delivery_run": 42230106275,
           "hosted_gameplay_verified": false,
           "physical_mobile_pass": false,
-          "qa_source_sha": "3984eb4baabdbbac5399028377a49c4d02ae7a72",
-          "native_run": 40945723046,
-          "qa_artifact": 12933733708,
-          "save_sha256": "ff941e8c4c4e29c5e96b85820e8f8cfc8f5debdef98924cca397196a2265b58d",
-          "decoded_transport_verified": true
+          "qa_source_sha": "f57a21257db03dcda11bd4682c7d7f2d72208498",
+          "native_run": 42213699104,
+          "qa_artifact": 13506199633,
+          "save_sha256": "44ed01f9f3089a2b5e3ff293024ec50cd89fe3b6af3504f6a52d64ec750e80c7",
+          "decoded_transport_verified": true,
+          "delivery_zip_sha256": "0f7d6c8fb6d34aa64de455eae2881820d5e930e1ebf285daf0bab6c093321d69",
+          "html5_extracted_bytes": 490426238
         },
-        "pr132_merged": true,
         "new_credits_used": 0,
         "art_approved": false,
         "physical_mobile_tested": false,
-        "report": "docs/bastion-iv-v/RELEASE_20261029.md",
-        "pr132_merge_after_release": true,
-        "pr132_in_published_packages": false
+        "report": "docs/ui-v3/POST_PR162_RELEASE_20261106.md",
+        "automation_disabled": "6aed0cc2f0308191b29a13b542c886aa"
       },
       "parity132_closeout": {
         "completed_at": "2026-10-30T07:52:24.023Z",
@@ -2164,7 +2239,7 @@
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
       },
       "owner_instruction": "2026-11-02: Hazlo tú! Eres un chat de trabajo! Reconstruct genuinely like approved March reference, remove mismatched elements and recover missing visual hierarchy.",
-      "release_reason": "Owner-authorized Economy V2 PR141 merged and verified, all exact-head CI gates passed, no Windows runner held.",
+      "release_reason": "Full native and browser QA PASS; Android21 public bytes/channel verified; WebGL299 exact remote build active. No Windows jobs remain for this owner.",
       "windows_resource_handoff_20261102": {
         "authorized_by": "owner current chat",
         "to_workstream": "eldoria-cli-windows-isolated-proof-20261102",
@@ -2283,22 +2358,22 @@
       },
       "runner_reservation": {
         "owner": null,
-        "reason": "Completed combat and narrative native checks, main integration and private Windows build.",
+        "reason": "Post-PR162 Unity and normal-clock Chromium complete; no native work remains.",
         "previous_native_run": 41889063433,
         "publish": false,
         "previous_owner": "codex-eldoria-pr136-consolidation-20261104",
         "status": "released",
-        "released_at": "2026-11-05T17:18:16.458Z",
-        "released_after_run": 42065391163
+        "released_at": "2026-11-06T14:08:25.436Z",
+        "released_after_run": 42226584557
       },
       "last_native_verification": {
-        "source_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
-        "postmerge_runs": [
-          42065390835,
-          42065391163
-        ],
+        "source_sha": "cb8a20aaae20bc5c41e042ba34d781359019b737",
+        "run_id": 42216689519,
         "conclusion": "success",
-        "note": "Complete native gameplay, UI, save tests and private Windows build verified; owner/resources released after completion."
+        "editmode": 216,
+        "playmode": 75,
+        "integration_checks": 225,
+        "note": "Full native UI/controls/persistence checks and actual four-format captures; general Windows build separately passed42210784774."
       },
       "narrative_tutorial_closeout": {
         "completed_at": "2026-11-05T17:18:16.458Z",
@@ -2345,7 +2420,72 @@
         "physical_mobile_tested": false,
         "published": false
       },
-      "next_action": "APK21 published verified. Exact browser42226584557 PASS; delivery42229089602 stopped before upload because QA archive exceeds500MB. Investigate lossless transport compression; preserve decoded Unity bytes and enforce actual final itch500MB budget."
+      "next_action": "PR162 integrated and both authorized releases verified. No pending integration/publication work in this scope. Available for the next owner-authorized task.",
+      "pr162_closeout": {
+        "status": "COMPLETED_PR162_INTEGRATED_ANDROID_WEBGL_PUBLISHED",
+        "completed_at": "2026-11-06T14:08:25.436Z",
+        "owner": "codex-pr162-completion-23287cf1c126",
+        "pr": 162,
+        "merge_sha": "e7e37d236e982553e06168f0ec216e4de80b6b03",
+        "native": {
+          "run": 42216689519,
+          "source_sha": "cb8a20aaae20bc5c41e042ba34d781359019b737",
+          "editmode": 216,
+          "playmode": 75,
+          "integration_checks": 225,
+          "failed": 0,
+          "skipped": 0
+        },
+        "android": {
+          "version": "1.21",
+          "version_code": 21,
+          "source_sha": "e3d8347c5ea0aecf8c48f216d1599d2ca7704db9",
+          "build_run": 42217404501,
+          "publish_run": 42225704456,
+          "bytes": 470229532,
+          "sha256": "b90d72811e89bc3e00ff3b88806d8d550794a6e94f96261213228a30cedd7913",
+          "original_signature_verified": true,
+          "public_download_hash_verified": true,
+          "user_data_reset": false,
+          "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code21/Eldoria-Valoria-code21.apk"
+        },
+        "webgl": {
+          "provider": "itch.io",
+          "target": "chrismad/eldoria-pruebas",
+          "channel": "web",
+          "revision": "native299",
+          "url": "https://chrismad.itch.io/eldoria-pruebas",
+          "remote_build": 2313504,
+          "version": "native299-0f7d6c8fb6d3",
+          "restricted": true,
+          "remote_active_confirmed": true,
+          "remote_status_evidence": {
+            "run_id": 42230848280,
+            "job_id": 127936023155,
+            "checked_at": "2026-11-06T14:05:43.317Z",
+            "result": "NATIVE299_ACTIVE",
+            "remote_build": 2313504,
+            "version": "native299-0f7d6c8fb6d3"
+          },
+          "source_sha": "1db8585329fad788fa702dab3e8a7b76a916b4bc",
+          "qa_run": 42226584557,
+          "delivery_run": 42230106275,
+          "hosted_gameplay_verified": false,
+          "physical_mobile_pass": false,
+          "qa_source_sha": "f57a21257db03dcda11bd4682c7d7f2d72208498",
+          "native_run": 42213699104,
+          "qa_artifact": 13506199633,
+          "save_sha256": "44ed01f9f3089a2b5e3ff293024ec50cd89fe3b6af3504f6a52d64ec750e80c7",
+          "decoded_transport_verified": true,
+          "delivery_zip_sha256": "0f7d6c8fb6d34aa64de455eae2881820d5e930e1ebf285daf0bab6c093321d69",
+          "html5_extracted_bytes": 490426238
+        },
+        "new_credits_used": 0,
+        "art_approved": false,
+        "physical_mobile_tested": false,
+        "report": "docs/ui-v3/POST_PR162_RELEASE_20261106.md",
+        "automation_disabled": "6aed0cc2f0308191b29a13b542c886aa"
+      }
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -15292,17 +15432,17 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-    "status": "claimed",
-    "owner": "codex-pr162-completion-23287cf1c126",
+    "status": "available",
+    "owner": null,
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
     "branch": "main",
     "restrictions": "Preserve native111 baseline; staged improvements with focused tests. No old independent branch production. No paid credits.",
-    "previous_owner": "codex-eldoria-pr136-consolidation-20261104",
+    "previous_owner": "codex-pr162-completion-23287cf1c126",
     "ownership_source": "active[id=valoria-master-plan-layered-construction-20261016]; transferable owner-directed claim",
-    "released_at": "2026-11-05T17:18:16.458Z",
-    "release_evidence": "docs/NARRATIVE_TUTORIAL_COHERENCE_PLAN_20261105.md",
-    "ownership_revision": 149
+    "released_at": "2026-11-06T14:08:25.436Z",
+    "release_evidence": "docs/ui-v3/POST_PR162_RELEASE_20261106.md",
+    "ownership_revision": 150
   }
 }

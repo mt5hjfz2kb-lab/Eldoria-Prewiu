@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "NATIVE299_UPLOADED_AWAITING_REMOTE_ACTIVATION",
+  "state": "NATIVE299_PUBLISHED_REMOTE_ACTIVE",
   "publish_enabled": false,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -19,23 +19,23 @@
     "provider": "itch.io",
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
-    "revision": "native298",
+    "revision": "native299",
     "url": "https://chrismad.itch.io/eldoria-pruebas",
-    "remote_build": 2247360,
-    "version": "native298-15b79882a59b",
+    "remote_build": 2313504,
+    "version": "native299-0f7d6c8fb6d3",
     "restricted": true,
     "remote_active_confirmed": true,
     "remote_status_evidence": {
-      "run_id": 40958364194,
-      "job_id": 123744902862,
-      "checked_at": "2026-10-29T21:32:52Z",
-      "result": "NATIVE298_ACTIVE",
-      "remote_build": 2247360,
-      "version": "native298-15b79882a59b"
+      "run_id": 42230848280,
+      "job_id": 127936023155,
+      "checked_at": "2026-11-06T14:05:43.317Z",
+      "result": "NATIVE299_ACTIVE",
+      "remote_build": 2313504,
+      "version": "native299-0f7d6c8fb6d3"
     },
-    "source_sha": "c8580934201ae1e17543b8683749d40751fb1e12",
-    "qa_run": 40955956262,
-    "delivery_run": 40958364194,
+    "source_sha": "1db8585329fad788fa702dab3e8a7b76a916b4bc",
+    "qa_run": 42226584557,
+    "delivery_run": 42230106275,
     "hosted_gameplay_verified": false,
     "physical_mobile_pass": false
   },
@@ -46,7 +46,7 @@
     "physical_mobile_evidence": "Current native299 has no physical-device test; earlier iPhone feedback remains historical.",
     "previous_physical_mobile_evidence": "Owner iPhone/Safari startup reload at 71%; no completed gameplay or device profiling."
   },
-  "instructions": "Upload accepted ONCE. Publish disabled; promotion identity unchanged. Only read-only verification of remote build2313504/versionnative299-0f7d6c8fb6d3 pending. Never rerun publish job or upload again while processing.0EUR, existing Restricted channel.",
+  "instructions": "COMPLETED owner-authorized post-PR162 publication: Android1.21/code21 public and verified; native299 exact remote build2313504/versionnative299-0f7d6c8fb6d3 ACTIVE in existing Restricted itch web channel. Publish flag disabled, promotion identity retained, scheduled follow-up disabled. No duplicate upload. Physical mobile and hosted gameplay remain untested.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
   "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
   "credential_setup": {
@@ -71,9 +71,11 @@
     "remote_build": 2313504,
     "publish_job_conclusion": "failure_waiting_remote_activation",
     "upload_accepted": true,
-    "remote_active_confirmed": false,
+    "remote_active_confirmed": true,
     "hosted_verified": false,
-    "reason": "Butler upload accepted once at14:03:56; processing exceeded short30second post-upload check. Verify remote build without repeating upload."
+    "reason": "Upload accepted once. Short post-upload poll expired during processing; independent read-only Butler verification confirms exact build2313504/versionnative299-0f7d6c8fb6d3 ACTIVE.",
+    "activation_verification_run": 42230848280,
+    "activation_verification_job": 127936023155
   },
   "uploaded": {
     "provider": "itch.io",
@@ -86,12 +88,20 @@
     "upload_accepted": true,
     "upload_accepted_at": "2026-11-06T14:03:56.147Z",
     "hosted_verified": false,
-    "processing_status": "PROCESSING",
+    "processing_status": "ACTIVE",
     "transport_adapter": "itch-decoded-stream-br-v4",
     "physical_mobile_tested": false,
-    "remote_active_confirmed": false,
+    "remote_active_confirmed": true,
     "zip_sha256": "0f7d6c8fb6d34aa64de455eae2881820d5e930e1ebf285daf0bab6c093321d69",
-    "html5_extracted_bytes": 490426238
+    "html5_extracted_bytes": 490426238,
+    "latest_remote_check": {
+      "run_id": 42230848280,
+      "job_id": 127936023155,
+      "checked_at": "2026-11-06T14:05:43.317Z",
+      "result": "NATIVE299_ACTIVE",
+      "remote_build": 2313504,
+      "version": "native299-0f7d6c8fb6d3"
+    }
   },
   "manual_fallback": {
     "artifact_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39315488741/artifacts/12218335123",
@@ -204,7 +214,15 @@
     "physical_mobile_tested": false,
     "hosted_chrome_tested": false,
     "art_approved": false,
-    "native_certification_run": 42216689519
+    "native_certification_run": 42216689519,
+    "cold_load_seconds": 23.256,
+    "warm_reload_seconds": 20.138,
+    "transport_status": "EXACT_DECODED_UNITY_TRANSPORT_PASS",
+    "transport_reader_actual_unity_pass": true,
+    "unity_decoded_bytes_unchanged": true,
+    "delivery_artifact": 13508660753,
+    "transport_adapter": "itch-decoded-stream-br-v4",
+    "html5_extracted_bytes": 490426238
   },
   "published_history": [
     {
@@ -281,6 +299,30 @@
       "source_sha": "7ba5c901f968b35d596047537eff8b4892f2e799",
       "qa_run": 39683431955,
       "delivery_run": 39685413878,
+      "hosted_gameplay_verified": false,
+      "physical_mobile_pass": false
+    },
+    {
+      "provider": "itch.io",
+      "target": "chrismad/eldoria-pruebas",
+      "channel": "web",
+      "revision": "native298",
+      "url": "https://chrismad.itch.io/eldoria-pruebas",
+      "remote_build": 2247360,
+      "version": "native298-15b79882a59b",
+      "restricted": true,
+      "remote_active_confirmed": true,
+      "remote_status_evidence": {
+        "run_id": 40958364194,
+        "job_id": 123744902862,
+        "checked_at": "2026-10-29T21:32:52Z",
+        "result": "NATIVE298_ACTIVE",
+        "remote_build": 2247360,
+        "version": "native298-15b79882a59b"
+      },
+      "source_sha": "c8580934201ae1e17543b8683749d40751fb1e12",
+      "qa_run": 40955956262,
+      "delivery_run": 40958364194,
       "hosted_gameplay_verified": false,
       "physical_mobile_pass": false
     }
