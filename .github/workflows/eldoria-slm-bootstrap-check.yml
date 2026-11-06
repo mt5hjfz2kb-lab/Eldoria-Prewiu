@@ -23,11 +23,12 @@ jobs:
       - name: Parse Windows installer, without running it
         shell: pwsh
         run: |
-          $p='pilot/slm-bootstrap/Install-SlmWindows.ps1'
-          $tokens=$null; $errors=$null
-          [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $pwd $p),[ref]$tokens,[ref]$errors) | Out-Null
-          if($errors.Count){throw ($errors | Out-String)}
-          'POWERSHELL_PARSE_PASS'
+          foreach($p in @('pilot/slm-bootstrap/Install-SlmWindows.ps1','pilot/slm-bootstrap/Connect-SlmCodex.ps1')){
+            $tokens=$null; $errors=$null
+            [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $pwd $p),[ref]$tokens,[ref]$errors) | Out-Null
+            if($errors.Count){throw ($errors | Out-String)}
+          }
+          'POWERSHELL_PARSE_PASS_TWO_SCRIPTS'
       - name: Verify Codex MCP merge and rollback invariants
         shell: bash
         run: |
