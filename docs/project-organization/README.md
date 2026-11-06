@@ -7,6 +7,16 @@ La entrada es el [README principal](../../README.md). Las reglas vigentes están
 [AGENTS](../../AGENTS.md), los responsables en el [registro vivo](../../pipeline/active-workstreams.json)
 y la documentación temática en el [índice central](../DOCUMENTATION_INDEX.md).
 
+## Clasificación semántica del catálogo completada — 06/11/2026
+
+**Todas las 228 fichas del catálogo tienen clasificación contrastada:** **28 `current`, 108 `reference`, 92 `historical` y **0 `review_pending`**. Esta última pasada revisó [los 94 expedientes que quedaban](SEMANTIC_REVIEW_FINAL_94_20261106.md), preservando el SHA original, la justificación y la autoridad posterior de cada uno. Los recuentos 94, 126, 151, 171 y 175 que aparecen a continuación se mantienen solo como hitos anteriores de la auditoría; **no son pendientes actuales**.
+
+**Importante:** «cero pendientes» es exclusivamente una constatación **semántica del catálogo de documentación**. No significa que los 21.177 archivos inventariados del proyecto estén libres de duplicados, que las licencias comerciales de terceros estén acreditadas, que Unity funcione en todos los dispositivos, ni que todos los recursos tengan calidad artística aprobada.
+
+**No se han modificado** los 94 documentos fuente, las imágenes aprobadas, prefabs, GLB, escenas, código jugable ni materiales. Los `VISUAL PASS` históricos se conservan como evidencia de un alcance pasado, pero la [referencia del 20/10](../VALORIA_VISUAL_REFERENCE_CANON_20261020.md), el veto del Bastión antiguo y la retirada de Qwen para arte tienen precedencia.
+
+**Trabajo posterior independiente:** revisar recibos/licencias y dependencias de los duplicados antes de cualquier limpieza física o publicación. Ver el [triaje de 42 grupos interárea](DUPLICATE_CROSSROOT_REVIEW_20261106.md). En ese trabajo, conservar los originales hasta verificar que no existen consumidores y que la operación es reversible.
+
 ## Revisión de desarrollo, pruebas y producción visual — 06/11/2026
 
 En el [informe de 32 documentos](SEMANTIC_REVIEW_DEVELOPMENT_QA_VISUAL_20261106.md) se han identificado **14 instrucciones o gates históricos** y **18 referencias útiles de métodos o diseño**. Todos conservan SHA del blob original, clasificación, límite y fuente posterior de autoridad; sus textos originales permanecen intactos.
