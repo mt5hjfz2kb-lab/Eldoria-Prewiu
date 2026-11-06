@@ -38,8 +38,8 @@ jobs:
           node <<'JS'
           const fs=require('fs');
           const reg=JSON.parse(fs.readFileSync('canonical-main/pipeline/active-workstreams.json'));
-          const id='eldoria-forja-oscura-native-proof-20261107';
-          const own='chatgpt-forja-oscura-native-proof-20261107';
+          const id='eldoria-forja-oscura-visual-proof-20261107';
+          const own='chatgpt-forja-oscura-visual-proof-20261107';
           const branch='feature/forja-oscura-native-proof-20261107';
           const owners=reg.active.filter(x=>x.resources?.includes('windows-runner-heavy')&&x.ownership_state==='claimed');
           const w=reg.active.find(x=>x.id===id);
@@ -79,8 +79,8 @@ jobs:
           $ErrorActionPreference='Stop'
           $r=Get-Content 'forja-live-main/pipeline/active-workstreams.json' -Raw | ConvertFrom-Json
           $o=@($r.active | Where-Object { $_.resources -contains 'windows-runner-heavy' -and $_.ownership_state -eq 'claimed' })
-          if($o.Count -ne 1 -or $o[0].id -ne 'eldoria-forja-oscura-native-proof-20261107' -or
-             $o[0].owner -ne 'chatgpt-forja-oscura-native-proof-20261107' -or
+          if($o.Count -ne 1 -or $o[0].id -ne 'eldoria-forja-oscura-visual-proof-20261107' -or
+             $o[0].owner -ne 'chatgpt-forja-oscura-visual-proof-20261107' -or
              [string]$o[0].ownership_revision -ne $env:LEASE_REVISION){throw 'Forja exclusive lease changed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared native editor occupied'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed'}
