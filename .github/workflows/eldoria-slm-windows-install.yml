@@ -40,6 +40,7 @@ jobs:
           sparse-checkout: |
             /pilot/slm-bootstrap/Install-SlmWindows.ps1
             /pilot/slm-bootstrap/verified-facts.json
+            /pilot/slm-bootstrap/Validate-SlmMcp.py
             /pilot/slm-bootstrap/install-trigger.json
       - name: Install privately under the runner user; import only verified public Eldoria facts
         shell: powershell
@@ -63,7 +64,11 @@ jobs:
             if($LASTEXITCODE -ne 0 -or "$a" -notmatch 'Unity/'){throw 'Stored memory cannot be retrieved'}
             $b=& $slm recall 'Qwen Ollama art discontinued October 2026' --tag source-reviewed --limit 6
             if($LASTEXITCODE -ne 0 -or "$b" -notmatch 'Qwen'){throw 'Superseded art rule cannot be retrieved'}
-            Write-Host 'SLM_WIN_VERIFIED: true; two source-reviewed recall queries passed'
+            $py=Join-Path $root 'venv-4.2.12\Scripts\python.exe'
+            $probe=Join-Path $pwd 'pilot\slm-bootstrap\Validate-SlmMcp.py'
+            & $py $probe
+            if($LASTEXITCODE -ne 0){throw 'MCP loopback and persisted-recall verification failed'}
+            Write-Host 'SLM_WIN_VERIFIED: true; CLI persistence and MCP tools/call both passed'
           } finally {
             & $slm serve stop | Out-Null
             Write-Host 'SLM_DAEMON_STOPPED_SAFELY'
