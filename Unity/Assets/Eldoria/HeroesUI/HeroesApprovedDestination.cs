@@ -32,6 +32,13 @@ namespace Eldoria.HeroesUI
         public Page CurrentPage { get; private set; } = Page.Salon;
         public string CurrentHeroId { get; private set; }
         public bool IsOpen => root && root.gameObject.activeSelf;
+        bool recruitmentPresentation;
+        public void PresentRecruitment(string id)
+        {
+            Open();
+            recruitmentPresentation=true;
+            if(!OpenHero(id))recruitmentPresentation=false;
+        }
         public RectTransform VisibleRoot => IsOpen ? root : null;
         RectTransform root, content;
         HeroesModelSnapshot preview;
@@ -56,6 +63,7 @@ namespace Eldoria.HeroesUI
         }
         public void Open()
         {
+            recruitmentPresentation=false;
             if(!root)throw new InvalidOperationException("Initialize on the canonical HUD first");
             if(CanOpenDestination!=null&&!CanOpenDestination())return;
             CurrentPage=Page.Salon;CurrentHeroId=null;root.gameObject.SetActive(true);root.SetAsLastSibling();Rebuild();
@@ -74,7 +82,7 @@ namespace Eldoria.HeroesUI
             CurrentPage=page;Rebuild();
         }
         public void Suspend(){if(!root)return;root.gameObject.SetActive(false);preview.Release();}
-        public void Close(){if(!IsOpen)return;Suspend();Closed?.Invoke();}
+        public void Close(){if(!IsOpen)return;bool recruitment=recruitmentPresentation;recruitmentPresentation=false;Suspend();if(!recruitment)Closed?.Invoke();}
         public HeroState? CurrentAuthoritativeHero()
         {foreach(var h in ReadHeroes?.Invoke()??Array.Empty<HeroState>())if(h.Id==CurrentHeroId)return h;return null;}
         public void Refresh(){if(IsOpen)Rebuild();}
@@ -276,7 +284,7 @@ namespace Eldoria.HeroesUI
                 Mathf.Max(65f,w-titleX-82f),34,
                 narrowPortrait?21:shortProfile?24:32).color=ivory;
             Label("Hero role and real level",content,
-                hero.Role+"  ·  NIVEL "+hero.Level,titleX,47,
+                (recruitmentPresentation?"SE UNE A VALORIA · ":hero.Role+" · ")+"NIVEL "+hero.Level,titleX,47,
                 Mathf.Max(65f,w-titleX-82f),29,
                 narrowPortrait?13:shortProfile?15:20).color=ivory;
             var pages=new[]{Page.Resumen,Page.Habilidades,Page.Talentos,Page.Equipamiento};

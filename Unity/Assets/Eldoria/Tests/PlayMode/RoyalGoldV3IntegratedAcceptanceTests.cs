@@ -21,6 +21,12 @@ namespace Eldoria.Tests
     /// </summary>
     public sealed class RoyalGoldV3IntegratedAcceptanceTests
     {
+        sealed class ReadingClock:Eldoria.Application.IClock { public long UtcTicks=>new DateTime(2026,11,6,12,0,0,DateTimeKind.Utc).Ticks; }
+        sealed class ReadingStore:Eldoria.Application.IStateStore {
+            public Eldoria.Domain.PlayerState State=new Eldoria.Domain.PlayerState();
+            public Eldoria.Domain.PlayerState Load()=>State;
+            public void Save(Eldoria.Domain.PlayerState value){State=value;}
+        }
         private static object Member(object target, string name)
         {
             Assert.That(target, Is.Not.Null, "Target for " + name + " missing");
@@ -105,10 +111,41 @@ namespace Eldoria.Tests
             Assert.That(camera,Is.Not.Null);
             var target=Call(host,"FindTarget","bastion") as Component;
             Assert.That(target,Is.Not.Null);
+            var guidance=Member(host,"Guidance") as Behaviour;if(guidance)guidance.enabled=false;
+            var modal=Member(hud,"Modal") as Component;if(modal)Call(modal,"Hide");
+            Call(hud,"SelectBuilding","bastion");yield return null;yield return null;
             float altitude=camera.transform.position.y;
             for(int i=0;i<12;i++)Call(host,"Focus",target.gameObject);
             Assert.That(camera.transform.position.y,Is.EqualTo(altitude).Within(.01f),
                 "Repeated objective focus must not lower the camera into terrain");
+        }
+
+        [UnityTest]
+        public IEnumerator MailboxKeepsReadingPositionAcrossPeriodicRefresh()
+        {
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var guidance=Member(host,"Guidance") as Behaviour;if(guidance)guidance.enabled=false;
+            var modal=Member(hud,"Modal") as Component;if(modal)Call(modal,"Hide");
+            var mailbox=FindComponent(hud.gameObject,"RoyalGoldV41MailboxScreen");
+            var store=new ReadingStore();
+            store.State.Mailbox.Receive(new Eldoria.Domain.EldoriaV41Message{
+                EventId="reading-regression",Category="informes",Type="battle",Title="Etapa 25",
+                Battle=new Eldoria.Domain.EldoriaV41CombatRecord{TargetId="vigilant:25",HeroId="aldric",Won=true,
+                    Reason=string.Concat(Enumerable.Repeat("La expedición resistió el encuentro. ",80))}});
+            var gateway=new Eldoria.Application.LocalGateway(new ReadingClock(),store);
+            Call(mailbox,"Initialize",hud,gateway);Call(mailbox,"Open");
+            mailbox.GetType().GetMethod("SelectRow",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(mailbox,new object[]{0});
+            yield return null;Canvas.ForceUpdateCanvases();
+            var scroll=(ScrollRect)mailbox.GetType().GetField("detailScroll",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(mailbox);
+            Assert.That(scroll.content.rect.height,Is.GreaterThan(scroll.viewport.rect.height+20f));
+            scroll.verticalNormalizedPosition=.35f;
+            yield return null;
+            float position=scroll.verticalNormalizedPosition;
+            yield return new WaitForSecondsRealtime(1.4f);
+            Assert.That(scroll.verticalNormalizedPosition,Is.EqualTo(position).Within(.03f),
+                "Periodic mailbox updates must not pull the reader back to the heading");
+            Call(mailbox,"Close");
         }
 
         [UnityTest]

@@ -107,6 +107,8 @@ namespace Eldoria.ReferenceClean {
    host.Hud.ShowNarrativeSequence(Lines(beat),()=>{
     // Completing text, unlike merely opening a modal, commits the milestone.
     city.Gateway.AcknowledgeNarrative(beat);
+    if(beat=="fissure-closed"&&city.Gateway.Snapshot().ChapterThree.LyraRecruited)
+     hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>()?.PresentRecruitment("lyra");
     // A cluster of completed tasks must never spam uninterrupted popups.
     nextNarrativeAt=Time.unscaledTime+1.5f;
     Refresh();
@@ -168,7 +170,7 @@ namespace Eldoria.ReferenceClean {
      float zoom=host.WorldCamera?host.WorldCamera.orthographicSize:0;
      float overview=host.WorldNavigation?host.WorldNavigation.globalZoom:0;
      bool panorama=overview>0&&zoom>=overview*.85f;
-     visible&=!panorama&&(pair.Key==objective||pair.Key=="valoria-map-city"||zoom<=22f);
+     visible&=!panorama&&(pair.Key==objective||pair.Key=="valoria-map-city"||LocalGateway.IsChapterThreeTarget(pair.Key)||zoom<=22f);
     }
     pair.Value.gameObject.SetActive(visible);
     if(visible&&pair.Key=="engendro-valoria"){

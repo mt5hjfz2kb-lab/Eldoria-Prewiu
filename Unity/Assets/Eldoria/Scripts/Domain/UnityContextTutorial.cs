@@ -28,8 +28,8 @@ namespace Eldoria.Domain
             switch(key)
             {
                 case "b2.train-archers": return en?
-                    "Choose your archers and start training. Meanwhile, improve your city or play Vigilants with available troops.":
-                    "Elige los arqueros e inicia el entrenamiento. Mientras, mejora la ciudad o juega Vigilantes con las tropas disponibles.";
+                    "In the Barracks, choose your archers and start training. Meanwhile, improve the city or play Vigilants with available troops.":
+                    "En el Cuartel, elige arqueros e inicia el entrenamiento. Mientras, mejora la ciudad o juega Vigilantes con las tropas disponibles.";
                 case "b2.prepare-march": return en?
                     "Open March, assign Aldric and troops, then Confirm. Preparing does not send the army.":
                     "Abre Marcha, asigna a Aldric y sus tropas y confirma. Preparar no envía el ejército.";

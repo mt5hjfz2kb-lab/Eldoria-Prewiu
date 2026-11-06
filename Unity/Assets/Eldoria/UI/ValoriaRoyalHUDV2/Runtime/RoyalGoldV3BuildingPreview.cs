@@ -20,7 +20,7 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             var model = ModelFor != null ? ModelFor(id) : null;
             string key = id + ":" + level;
-            if (model == lastModel && key == lastKey) return HasModelPreview;
+            if (model == lastModel && key == lastKey && HasModelPreview) return true;
             lastModel = model; lastKey = key;
             image.enabled = false;
             if (!model) return false;
@@ -31,6 +31,7 @@ namespace Eldoria.UI.RoyalGold.V2
             stage.transform.position = new Vector3(0, -10000, 0);
             Bounds bounds = default;
             bool any = false;
+            var posedMeshes=new System.Collections.Generic.List<Mesh>();
             try
             {
                 foreach (var filter in model.GetComponentsInChildren<MeshFilter>(true))
@@ -53,6 +54,20 @@ namespace Eldoria.UI.RoyalGold.V2
                     renderer.shadowCastingMode = ShadowCastingMode.Off;
                     renderer.receiveShadows = false;
                     if (any) bounds.Encapsulate(renderer.bounds); else { bounds = renderer.bounds; any = true; }
+                }
+                foreach(var source in model.GetComponentsInChildren<SkinnedMeshRenderer>())
+                {
+                    if(!source.enabled||!source.sharedMesh)continue;
+                    var mesh=new Mesh();source.BakeMesh(mesh);posedMeshes.Add(mesh);
+                    var part=new GameObject("Preview posed encounter");part.layer=31;
+                    part.transform.SetParent(stage.transform,false);
+                    part.transform.localPosition=source.transform.position-model.transform.position;
+                    part.transform.rotation=source.transform.rotation;
+                    part.transform.localScale=source.transform.lossyScale;
+                    part.AddComponent<MeshFilter>().sharedMesh=mesh;
+                    var renderer=part.AddComponent<MeshRenderer>();renderer.sharedMaterials=source.sharedMaterials;
+                    renderer.shadowCastingMode=ShadowCastingMode.Off;renderer.receiveShadows=false;
+                    if(any)bounds.Encapsulate(renderer.bounds);else{bounds=renderer.bounds;any=true;}
                 }
                 if (!any) return false;
                 if (!texture)
@@ -100,7 +115,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Debug.LogWarning("BUILDING_PREVIEW_UNAVAILABLE " + id + " " + error.GetType().Name);
                 return false;
             }
-            finally { stage.SetActive(false); Destroy(stage); }
+            finally { stage.SetActive(false); Destroy(stage);foreach(var mesh in posedMeshes)Destroy(mesh); }
         }
         void OnDestroy()
         {
@@ -108,3 +123,4 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+

@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 299,
+  "revision": 300,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Post-PR162 native299 release candidate: original Android21 gameplay79dca31d72abeb57e71db59f08943713ffabfcc5; only CI lease routing and native-fixture API documentation differ. Replace pending request with valid workflow governance (no workflow self-trigger). Require full native UI and real844x390/390x844 Chromium naming/progression/save-reload PASS before Restricted itch publication.0EUR.",
+  "checks": "PR163 player-experience remediation candidate. Build exact isolated branch source for visible-controls player replay; no publication, no edited saves or accelerated timers. Full native gate is separately required. Preserve original build-safe resources.",
   "browser_backend": "windows"
 }

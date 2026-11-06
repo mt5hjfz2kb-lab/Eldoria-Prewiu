@@ -610,7 +610,7 @@ namespace Eldoria.UI.RoyalGold.V2
             scrollContent.pivot=new Vector2(.5f,1);scrollContent.anchoredPosition=Vector2.zero;
             scrollContent.sizeDelta=new Vector2(0,Mathf.Max(85f,scrollViewport.rect.height));
             Top(buildingBody.rectTransform,0,0,middleWidth-5f,scrollContent.rect.height);
-            buildingBody.fontSize=portrait?16:18;
+            buildingBody.fontSize=20;
             if(portrait)
                 Top((RectTransform)buildingAction.transform,14f,cardHeight-51f,cardWidth-28f,40f);
             else
@@ -640,7 +640,8 @@ namespace Eldoria.UI.RoyalGold.V2
             Stretch(primaryLabel.rectTransform,4f);
             Stretch(speedOneLabel.rectTransform,4f);
             Stretch(speedFiveLabel.rectTransform,4f);
-            primaryLabel.fontSize=portrait?18:21;
+            primaryLabel.fontSize=21;
+            primaryLabel.horizontalOverflow=HorizontalWrapMode.Wrap;
             speedOneLabel.fontSize=portrait?16:15;
             speedFiveLabel.fontSize=portrait?16:15;
             lastDetails = null; // Recompute scroll extent after rotation even when the offer text is unchanged.
@@ -668,10 +669,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // Match Option 1's 2:1 illuminated page: no full-height overlay.
             Top(chapterText.rectTransform, 65f, 10f, width - 78f, 23f);
             chapterText.fontSize = width < 300f ? 15 : 18;
-            Top(progressText.rectTransform, width - 66f, 10f, 52f, 22f);
-            progressText.fontSize = 13;
+            Top(progressText.rectTransform, width - 124f, 86f, 110f, 24f);
+            progressText.fontSize = 18;
             progressText.alignment = TextAnchor.MiddleRight;
-            Top(objectiveText.rectTransform, 65f, 36f, width - 79f, 64f);
+            Top(objectiveText.rectTransform, 65f, 36f, width - 79f, 48f);
             objectiveText.fontSize = width < 300f ? 17 : 20;
             // Real "go to objective" / "missions" actions, in two rings
             // to the RIGHT of the parchment like the selected reference.
@@ -1183,7 +1184,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     caption.anchoredPosition =
                         new Vector2(0f, -buttonHeight * .33f);
                     item.Label.fontSize = Mathf.RoundToInt(Mathf.Clamp(
-                        cellWidth * .19f, 13f, 17f));
+                        cellWidth * .19f, 18f, 20f));
                     if (ChronicleFont) item.Label.font = ChronicleFont;
                     item.Label.fontStyle = FontStyle.Normal;
                     item.Label.alignment = TextAnchor.MiddleCenter;

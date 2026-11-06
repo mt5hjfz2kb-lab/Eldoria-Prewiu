@@ -741,9 +741,16 @@ namespace Eldoria.UI.RoyalGold.V2
                     victoryTitle.Put(report.VersionedOutcome?.Outcome=="draw"?"EMPATE":report.Won?"VICTORIA":"DERROTA");
                     victoryTitle.color=report.Won?Gold:new Color(.93f,.51f,.41f,1f);
                     var challenge=EarlyRetentionRules.Stage(int.Parse(target));
-                    victoryDetail.Put(EarlyRetentionRules.BattleReview(report,challenge));
+                    bool chapterCompleted=report.Won&&challenge.Step==EarlyRetentionRules.StagesPerChapter;
+                    if(chapterCompleted)victoryTitle.Put("CAPÍTULO "+challenge.Chapter+" COMPLETADO");
+                    var after=gateway.Snapshot();
+                    int masteryBefore=EarlyRetentionRules.HeroMasteryLevel(s,"aldric");
+                    int masteryAfter=EarlyRetentionRules.HeroMasteryLevel(after,"aldric");
+                    string progress=masteryAfter>masteryBefore?"\nMaestría de Aldric: "+masteryBefore+" → "+masteryAfter:"";
+                    victoryDetail.Put((chapterCompleted?"25 etapas superadas. Se abre el siguiente capítulo.\n":"")+
+                        EarlyRetentionRules.BattleReview(report,challenge)+progress);
                     victoryStarted=Time.unscaledTime;
-                    victoryUntil=victoryStarted+3.2f;
+                    victoryUntil=victoryStarted+(chapterCompleted?7f:3.2f);
                     victoryGroup.alpha=1f;
                     victoryGroup.blocksRaycasts=false;
                 }

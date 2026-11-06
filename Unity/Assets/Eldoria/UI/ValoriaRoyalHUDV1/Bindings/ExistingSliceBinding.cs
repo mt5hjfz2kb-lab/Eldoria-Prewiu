@@ -227,6 +227,16 @@ namespace Eldoria.UI.RoyalGold {
    if(deadline>0){b.OperationActive=true;b.State=L(en,"En curso","In progress");b.Time=RoyalFormatting.Remaining(deadline,clock.UtcTicks,en);b.Progress=seconds>0?Math.Max(0,Math.Min(1,1-(float)((deadline-clock.UtcTicks)/(double)TimeSpan.TicksPerSecond)/seconds)):0;return b;}
    b.Costs=wood>0?ResourcesText(wood,stone,en)+(food>0?" · "+food+L(en," comida"," food"):""):"";b.Time=seconds>0?TimeSpan.FromSeconds(seconds).ToString(@"m\:ss"):"";
    if(s.Resources.Wood<wood||s.Resources.Stone<stone||s.Resources.Food<food)reason=L(en,"Faltan recursos.","Insufficient resources.");
+   if(kind=="Fight"&&deadline==0){
+    string hero=s.MarchConfigured?s.PreparedHeroId:
+     MarchCapacityRules.HeroAvailable(s,"aldric")?"aldric":c.LyraRecruited&&MarchCapacityRules.HeroAvailable(s,"lyra")?"lyra":"";
+    int capacity=MarchCapacityRules.Capacity(s,hero);
+    var troops=s.MarchConfigured?s.PreparedTroops:MarchCapacityRules.AutoSelect(s.Available,capacity);
+    bool fits=MarchCapacityRules.Fits(troops,s.Available,capacity);
+    b.Function+=fits?L(en,"\nTu marcha: ","\nYour march: ")+troops.Total+L(en," tropas · Poder "," troops · Power ")+SliceRules.Expedition(troops,hero).Power:
+     L(en,"\nTropas disponibles: ","\nAvailable troops: ")+s.Available.Total;
+    if(!fits&&s.MarchConfigured&&string.IsNullOrEmpty(reason)){kind="OpenMarch";label=L(en,"Ajustar marcha","Adjust march");}
+   }
    b.Requirements=reason;b.Action=new RoyalAction(kind,target,label,reason,s.Revision,string.IsNullOrEmpty(reason));return b;
   }
   RoyalBuilding Building(PlayerState s,string id,bool en){

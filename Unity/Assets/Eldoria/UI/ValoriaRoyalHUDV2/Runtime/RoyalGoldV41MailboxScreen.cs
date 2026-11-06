@@ -409,7 +409,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             var back=Find("Volver");
             Position((RectTransform)back.transform,left,top,Mathf.Max(48f,headerH*.72f),headerH);
-            back.GetComponentInChildren<RoyalText>().Put("‹");
+            back.GetComponentInChildren<RoyalText>().Put("<");
 
             float tabsY=top+headerH+Mathf.Clamp(h*.028f,9f,24f);
             float tabH=wide?Mathf.Clamp(h*.088f,45f,72f):
@@ -541,21 +541,23 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             if(detailSheet==null||width<100f)return;
             bool narrow=width<580f;
+            bool shortViewport=viewportHeight<230f;
             float inner=width-48f;
             reportKicker.fontSize=Pixels(narrow?15:19);
-            reportHeading.fontSize=Pixels(narrow?24:32);
+            reportHeading.fontSize=Pixels(shortViewport?24:narrow?24:32);
             reportHeading.color=new Color(.96f,.85f,.64f);
             reportKicker.color=new Color(.91f,.73f,.42f);
             reportOrigin.color=new Color(.94f,.86f,.72f);
             reportDate.color=new Color(.87f,.77f,.60f);
             reportSeal.color=new Color(.99f,.86f,.61f);
-            Position(reportKicker.rectTransform,24f,25f,Mathf.Max(75f,width-151f),26f);
-            Position(reportHeading.rectTransform,24f,58f,
+            Position(reportKicker.rectTransform,24f,shortViewport?10f:25f,Mathf.Max(75f,width-151f),26f);
+            float headingTop=shortViewport?37f:58f;
+            Position(reportHeading.rectTransform,24f,headingTop,
                 Mathf.Max(76f,width-153f),50f);
-            float headingH=Mathf.Max(55f,reportHeading.preferredHeight/layoutUnit+6f);
-            Position(reportHeading.rectTransform,24f,58f,
+            float headingH=Mathf.Max(shortViewport?32f:55f,reportHeading.preferredHeight/layoutUnit+6f);
+            Position(reportHeading.rectTransform,24f,headingTop,
                 Mathf.Max(76f,width-153f),headingH);
-            float headerH=Mathf.Max(150f,71f+headingH+43f);
+            float headerH=Mathf.Max(shortViewport?100f:150f,headingTop+headingH+(shortViewport?32f:56f));
             Position(reportSeal.rectTransform,width-99f,45f,69f,51f);
             reportSeal.fontSize=Pixels(narrow?12:15);
             Position(reportOrigin.rectTransform,24f,headerH-35f,
@@ -912,7 +914,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 return;
             }
             PresentReport(selected);
-            if(!detailVisible||visibleRowCount!=list.Count)
+            navLabel.Put("DESLIZA PARA LEER EL INFORME");
+            if(!detailVisible)
                 detailScroll.verticalNormalizedPosition=1f;
             Layout();
         }

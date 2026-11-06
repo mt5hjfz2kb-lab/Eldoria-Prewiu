@@ -2,7 +2,7 @@ name: '[VALORIA] Clean reference reconstruction / native Unity'
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, fix/player-experience-audit-20261106]
     paths: ['tools/valoria-reference-clean/request.json']
 permissions:
   contents: write
@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   native:
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[valoria-native]'))
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/player-experience-audit-20261106') && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[valoria-native]'))
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 75
     outputs:
@@ -49,6 +49,10 @@ jobs:
       - name: Check live exclusive lease and actual native tools
         shell: powershell
         run: |
+          if($env:GITHUB_REF -ne 'refs/heads/main'){
+            $request=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+            if($request.stage -ne 'web_playtest' -or $request.publish_content -or $request.content_updates -or $request.export_package){throw 'Candidate branch is restricted to an unpublished WebGL build'}
+          }
           node tools/workstream-lease/check.mjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-clean-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
           if($LASTEXITCODE){throw 'Live runner lease or queued ownership changed; refuse stale execution'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared native tools busy'}
@@ -1169,3 +1173,4 @@ jobs:
           name: valoria-verified-private-site-${{ github.run_id }}
           path: prepared-site/**
           if-no-files-found: error
+

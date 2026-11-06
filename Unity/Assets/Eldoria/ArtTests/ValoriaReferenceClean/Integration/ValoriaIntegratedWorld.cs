@@ -78,6 +78,7 @@ namespace Eldoria.ReferenceClean {
     if(city.Parcels&&id=="barracks")return city.Parcels.RightBuilt;
     if(id=="granary")return Resources.Load<GameObject>("BastionIII/Granary/Granary");
     if(id=="stoneworks")return Resources.Load<GameObject>("BastionIII/Granary/StoneWorkshop");
+    if(IsWorldTarget(id)){var target=FindTarget(id);if(target)return target.gameObject;}
     return null;
    };
    if(!Hud.GetComponent<RoyalGoldV2Narrative>())Hud.gameObject.AddComponent<RoyalGoldV2Narrative>();
@@ -181,7 +182,7 @@ namespace Eldoria.ReferenceClean {
    if(!lyra)lyra=Hud.gameObject.AddComponent<Eldoria.HeroesUI.HeroesLyraModel>();
    lyra.Loaded=()=>{if(heroes)heroes.Refresh();if(management)management.SynchronizeLayout();};
    RoyalGoldV41SourceArt.LyraPortraitProvider=()=>{
-    if(!lyra||!boundGateway.Snapshot().ChapterThree.LyraRecruited)return null;
+    if(!lyra)return null;
     lyra.Request();return lyra.Portrait;
    };
    heroes.ReadModelRoot=id=>{
@@ -233,7 +234,11 @@ namespace Eldoria.ReferenceClean {
    }
    if(layoutWidth!=Screen.width||layoutHeight!=Screen.height){
     layoutWidth=Screen.width;layoutHeight=Screen.height;var scaler=Hud.GetComponent<RoyalScaler>();
-    scaler.referenceResolution=new Vector2(layoutWidth<layoutHeight?800:1600,900);scaler.matchWidthOrHeight=layoutWidth<layoutHeight?0:1;
+    // Phone HUDs cannot use desktop's 900-unit height: 18-unit labels became
+    // eight-pixel text at 844x390. Keep desktop density, with a readable phone
+    // reference shared by every existing panel and the camera occlusion solver.
+    bool phone=Mathf.Min(layoutWidth,layoutHeight)<600;
+    scaler.referenceResolution=new Vector2(layoutWidth<layoutHeight?(phone?600:800):1600,phone?600:900);scaler.matchWidthOrHeight=layoutWidth<layoutHeight?0:1;
     SelectionChanged(Selected);
    }
   }
@@ -568,6 +573,12 @@ namespace Eldoria.ReferenceClean {
    return s.EngendroDefeated?L("El Engendro ha caído. Bastión II está asegurado.","The Spawn has fallen. Bastion II is secured."):L("El enemigo del capítulo II. Confirma tu expedición antes de salir. Botín si vence: +120 madera · +100 piedra.","Chapter II's enemy. Confirm your expedition before departing. Victory loot: +120 wood · +100 stone.");
   }
   public RoyalResult Submit(RoyalAction offer){
+   if(offer!=null&&offer.Enabled&&offer.Kind=="OpenMarch"){
+    var management=Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+    if(!management)return new RoyalResult(false,L("Preparación no disponible","Preparation unavailable"));
+    Hud.SelectBuilding("");management.Open(RoyalGoldV3ManagementScreens.Destination.March);
+    return new RoyalResult(true,"");
+   }
    if(offer!=null&&offer.Kind=="ContactLyra"){
     Hud.ShowNarrativeSequence(new[]{
      new RoyalNarrativePresentation.Line("Lyra","Soy Lyra. Busco a mi hermano. Su compañía desapareció la noche de la Brecha. Encontré su insignia junto a esta fisura; no sé qué significa.","I am Lyra. I seek my brother. His company vanished on the night of the Breach. I found his insignia beside this fissure; I do not know what it means."),

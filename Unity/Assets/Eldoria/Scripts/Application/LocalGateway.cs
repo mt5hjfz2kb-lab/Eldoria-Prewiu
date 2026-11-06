@@ -45,6 +45,15 @@ namespace Eldoria.Application
     }
     public sealed class LocalGateway : ICommandGateway
     {
+        string ReceiptOrigin(string id){
+            if(IsWoodTarget(id))return "la expedición de madera";
+            if(IsStoneTarget(id))return "la expedición de piedra";
+            switch(id){case "meat-valoria":return "la reserva de carne";
+                case "hunt-wolf":return "la caza de lobos";case "hunt-boar":return "la caza de jabalí";
+                case "ash-stalker-valoria":return "el Acechador de Ceniza";
+                case "fissure-valoria":return "la fisura";case "engendro-valoria":return "el Engendro";
+                case "corrupt-scout":return "la ruta corrupta";default:return "la expedición";}
+        }
         private readonly IClock clock;
         private readonly IStateStore store;
         private readonly IEldoriaVersionedBattleResolver battleResolver;
@@ -951,8 +960,8 @@ namespace Eldoria.Application
                         if(m.PendingFood>0 || m.PendingWood>0 || m.PendingStone>0)
                             state.Mailbox.Receive(new EldoriaV41Message {
                                 EventId=id,Category="recompensas",Type="march",
-                                Title="Marcha completada",
-                                Subtitle="Recursos regresados al reino",
+                                Title="Regreso de "+ReceiptOrigin(m.TargetId),
+                                Subtitle="Ya recibidos: "+m.PendingWood+" madera · "+m.PendingStone+" piedra · "+m.PendingFood+" comida",
                                 RewardReceiptId=id,OccurredAtUtcTicks=due
                             });
                         if (IsWoodTarget(m.TargetId) && m.PendingWood > 0)
@@ -1272,3 +1281,4 @@ namespace Eldoria.Application
         private CommandResult Fail(string reason) => new CommandResult(false, reason, state.Revision);
     }
 }
+
