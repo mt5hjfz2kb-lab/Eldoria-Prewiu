@@ -5,7 +5,7 @@ on:
     paths: ['tools/valoria-reference-clean/browser-qa-request.json']
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   actions: read
 concurrency:
   group: valoria-windows-chromium-qa
@@ -14,7 +14,7 @@ jobs:
   native-browser:
     if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[valoria-web-qa]'))
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 40
+    timeout-minutes: 200
     steps:
       - name: Recover existing GitHub Desktop Git
         shell: powershell
@@ -50,7 +50,7 @@ jobs:
       - name: Honor current Windows runner owner and no shared Unity/Blender process
         shell: powershell
         run: |
-          node tools/workstream-lease/check.mjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-qa-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
+          node tools/valoria-reference-clean/check-player-experience-lease.cjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-qa-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
           if($LASTEXITCODE){throw 'Live runner lease or queued ownership changed; refuse stale execution'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'PC native editing resources occupied; refuse interference'}
       - name: Resolve exact current WebGL request and successful source run
@@ -72,6 +72,8 @@ jobs:
             core.setOutput('artifact',cfg.artifact_name);
             core.setOutput('source',cfg.source_sha);
             core.setOutput('revision',cfg.revision);
+            if(cfg.interaction_mode && cfg.interaction_mode!=='manual')throw Error('Unknown interaction mode');
+            core.setOutput('manual',cfg.interaction_mode==='manual'?'true':'false');
       - uses: actions/download-artifact@v4
         with:
           name: ${{ steps.input.outputs.artifact }}
@@ -146,7 +148,22 @@ jobs:
           # No Unity build, credential access, release, or runner reallocation.
           node tools/closeout/closeout.mjs preflight-browser --prepared-site prepared-site --native-run ${{ steps.input.outputs.run }} --source-sha ${{ steps.input.outputs.source }} --validated-source-sha ${{ steps.input.outputs.source }} --script tools/valoria-reference-clean/playtest_web.cjs
           if($LASTEXITCODE){throw 'ELDORIA_CLOSEOUT_PREFLIGHT_BLOCKED: check prepared bytes/source/Playwright/Edge/FFmpeg before long QA'}
+      - name: Manually directed player session through bounded visible controls
+        if: steps.input.outputs.manual == 'true'
+        shell: powershell
+        timeout-minutes: 185
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
+          VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          VALORIA_SOURCE_SHA: ${{ steps.input.outputs.source }}
+        run: |
+          node tools/valoria-reference-clean/interactive-play.test.cjs
+          if($LASTEXITCODE){throw 'Bounded input validation failed'}
+          node tools/valoria-reference-clean/interactive-play.cjs
+          if($LASTEXITCODE){throw 'Manual player session interrupted; retain original evidence'}
       - name: Actually play Bastion I-II with native Windows Chromium GPU and SystemClock
+        if: steps.input.outputs.manual != 'true'
         shell: powershell
         timeout-minutes: 25
         env:
@@ -159,7 +176,7 @@ jobs:
           node tools/valoria-reference-clean/playtest_web.cjs
           if($LASTEXITCODE){throw "Normal-clock Windows Chromium playthrough failed; preserve report/video"}
       - name: Preserve independent failure classification without overriding gameplay gates
-        if: always()
+        if: always() && steps.input.outputs.manual != 'true'
         shell: powershell
         run: |
           $folder=Join-Path $env:GITHUB_WORKSPACE ("web-visible-controls-evidence-{0}-{1}" -f $env:GITHUB_RUN_ID,$env:GITHUB_RUN_ATTEMPT)
@@ -186,10 +203,12 @@ jobs:
         if: always()
         with:
           name: valoria-windows-chromium-evidence-${{ github.run_id }}
-          path: web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}/**
+          path: |
+            web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}/**
+            !web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}/isolated-player-profile/**
           if-no-files-found: warn
       - name: Authorize only genuinely passed same-byte private site package
-        if: success()
+        if: success() && steps.input.outputs.manual != 'true'
         shell: powershell
         run: |
           $report=Get-Content 'web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}/report.json' -Raw|ConvertFrom-Json
@@ -199,7 +218,7 @@ jobs:
           $verification.browser_runtime_qa=$true
           $verification|ConvertTo-Json -Depth 12|Set-Content prepared-site/unity-output-verification.json -Encoding utf8
       - uses: actions/upload-artifact@v4
-        if: success()
+        if: success() && steps.input.outputs.manual != 'true'
         with:
           name: valoria-verified-private-site-windows-${{ github.run_id }}
           path: prepared-site/**
