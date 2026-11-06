@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T09:12:51.248Z",
+  "updated_at": "2026-11-06T09:25:48.478Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6330,7 +6330,7 @@
       ],
       "phase": "PR162_EXACT_NATIVE_CERTIFICATION",
       "dependency": "Construction native42189025597 completed SUCCESS and its owner released Windows. PR162 now claims it for exact final source.",
-      "next": "Complete native42193119922 on be5010313b7c26cd5daa91c7d2ddbe1cf6eac46a; inspect real four-size A/B and XML failures, correct if needed, then merge and retain lease only for postmerge validation.",
+      "next": "Complete native42194499354 on 37ac3f1756099dbdd76084a972c9e0cf699680cd; inspect genuine four-size A/B and exact XML, fix failures, then merge and validate main. Previous attempt compile failure fixed by required RoyalGold.Core test assembly reference.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6366,23 +6366,22 @@
         "economy_merged_sha": "0579b316eac5c9c278d7de83540b9f67d74b96a6",
         "integration_branch": "feature/player-clarity-first-login-map-signage-20261105"
       },
-      "source_sha": "be5010313b7c26cd5daa91c7d2ddbe1cf6eac46a",
+      "source_sha": "37ac3f1756099dbdd76084a972c9e0cf699680cd",
       "delivery_definition": {
         "deliverable": "Integrate canonical PR162: persistent first-entry nickname, readable actual resource/node/building levels, distributed renewable nodes and five-minute UTC renewal.",
         "evidence": "Exact Unity compile/EditMode/PlayMode and continuous I-V journey, genuine four-size screenshots with real nodes and pointer picking, existing saves/economy regressions.",
         "handoff": "Same PR162 merged only after checks and visual evidence; report exact commit and remaining publication distinction."
       },
       "last_verified": {
-        "domain": "Current e698dd2 logic/governance checks PASS; native not yet certified",
-        "running_native": 42180967085,
-        "running_source": "edec4b822b588634c1745cbfedbf9517b5e960f0",
-        "pending_native": 42189830649,
-        "pending_source": "e698dd290f4d8cb2f68cf0b4a2b64653d5a4714e"
+        "domain": "37ac3f1 domain/governance/economy/name/renewal checks PASS",
+        "running_native": 42194499354,
+        "running_source": "37ac3f1756099dbdd76084a972c9e0cf699680cd",
+        "previous_failure": "42193119922 compile failed because player header tests missed RoyalGold.Core; fixed in 37ac3f1"
       },
       "native_lease": {
         "owner": "codex-pr162-completion-23287cf1c126",
-        "source_sha": "be5010313b7c26cd5daa91c7d2ddbe1cf6eac46a",
-        "run_id": 42193119922,
+        "source_sha": "37ac3f1756099dbdd76084a972c9e0cf699680cd",
+        "run_id": 42194499354,
         "reason": "Final exact PR162 Unity certification after verified release; no process termination or reboot."
       }
     },
