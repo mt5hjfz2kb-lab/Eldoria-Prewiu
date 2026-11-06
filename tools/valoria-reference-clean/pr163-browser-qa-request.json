@@ -1,8 +1,8 @@
 {
-  "source_sha": "9212acf16abd112606c4b2c637896178f2485305",
-  "run_id": 42304935549,
-  "revision": "native314",
-  "artifact_name": "valoria-integrated-web-playtest-42304935549",
-  "purpose": "PR163 isolated browser validation of real patched cartouche and hunt report; source 9212acf. No publication, no state/time editing.",
-  "reason": "Run exact immutable native314 via visible-input browser QA; keep existing PR source and public releases unchanged."
+  "source_sha": "934110ccda820a3683bd6e1bb28bc19bf7df838e",
+  "run_id": 42311997693,
+  "revision": "native316",
+  "artifact_name": "valoria-integrated-web-playtest-42311997693",
+  "purpose": "PR163 isolated browser regression of latest native316, source 934110c; examine objective click, UI framing, normal clock and saves",
+  "reason": "Run the exact native316 compiled WebGL in isolated Chromium with visible input; report failures transparently; no public deployment or changing player save/clock."
 }
