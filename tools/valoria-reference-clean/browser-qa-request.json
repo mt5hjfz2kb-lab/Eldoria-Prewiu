@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "scope": "POST_PR162_EXACT_NATIVE299_WEBGL_QA",
+  "scope": "OWNER_DIRECTED_PLAYER_EXPERIENCE_NATIVE299",
   "source_sha": "1db8585329fad788fa702dab3e8a7b76a916b4bc",
   "artifact_run": 42213699104,
   "artifact_name": "valoria-integrated-web-playtest-42213699104",
@@ -21,12 +21,15 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Exact unchanged native299. Attempt42222753516 confirms all navigation incl stable near-home return and zero runtime/network errors, but old10second Bastion timer aborted at90seconds. EconomyBastionTimingV2 and actual saved start/deadline both prove120seconds. Observe full120second normal cadence, reject premature completion and180second stall. Align building assertions to approved contextual city cartouche, retain full framing/real action checks and independent Training/March destinations. No game/source/save/time manipulation.",
+  "reason": "Owner requests complete personally directed player session. Reuse exact compiled native299 on existing Windows GPU after cloud login and Linux software rendering failed. No scripted journey, save changes, engine calls or clock acceleration.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 3,
-  "method_note": "Use the new exact artifact and current real-input naming script; retain every existing gameplay, stable framing, video and save/reload assertion.",
+  "attempt": 4,
+  "method_note": "Reviewer sees sequential actual screenshots and chooses every visible action; no automatic gameplay PASS or release authorization.",
   "gameplay_source_unchanged": false,
-  "revision": "native299"
+  "revision": "native299",
+  "interaction_mode": "manual",
+  "manual_session": "native299-player-20261106",
+  "controls_branch": "qa/player-audit-controls-20261106"
 }
