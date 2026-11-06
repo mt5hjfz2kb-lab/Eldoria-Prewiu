@@ -1,85 +1,46 @@
 #!/usr/bin/env python3
-"""Read-only, loopback-only MCP test after daemon restart; no secrets are logged."""
-import json
+"""MCP stdio smoke test in the Windows owner's isolated SLM installation.
+Does not contact public endpoints, mutate Eldoria or expose memory/credentials.
+Uses the tested official Python MCP client rather than hand-built HTTP sessions.
+"""
+import asyncio
+import os
+import pathlib
 import sys
-import urllib.error
-import urllib.request
 
-ENDPOINT = 'http://127.0.0.1:8765/mcp/'
-PROTOCOL = '2025-06-18'
+from mcp import Client, StdioServerParameters
 
 
-def unpack(raw, content_type, request_id):
-    data = raw.decode('utf-8-sig')
-    if 'text/event-stream' in content_type:
-        replies = [
-            json.loads(line[5:].strip())
-            for line in data.splitlines()
-            if line.startswith('data:') and line[5:].strip() not in ('', '[DONE]')
-        ]
-    else:
-        replies = [json.loads(data)]
-    for obj in replies:
-        if isinstance(obj, dict) and obj.get('id') == request_id:
-            if 'error' in obj or not isinstance(obj.get('result'), dict):
-                raise RuntimeError(f'MCP JSON-RPC error or missing result (id={request_id})')
-            return obj['result']
-    raise RuntimeError(f'MCP response missing (id={request_id})')
+async def verify():
+    base = pathlib.Path(os.environ.get("LOCALAPPDATA", ""))
+    slm = base / "EldoriaSLM" / "venv-4.2.12" / "Scripts" / "slm.exe"
+    if not slm.is_file():
+        raise RuntimeError("isolated slm executable not found")
+    required_home = base / "EldoriaSLM" / "data"
+    if os.environ.get("SLM_HOME", "").casefold() != str(required_home).casefold():
+        raise RuntimeError("unexpected memory home; refusing other profiles")
+    params = StdioServerParameters(command=str(slm), args=["mcp"], env=dict(os.environ))
+    async with Client(params) as client:
+        tools = await client.list_tools()
+        names = {t.name for t in tools.tools}
+        if "recall" not in names:
+            raise RuntimeError("MCP core profile has no recall tool")
+        for q, expected in [
+            ("Unity main runtime v0220 prototype", "Unity/"),
+            ("Qwen Ollama art discontinued October 2026", "Qwen"),
+        ]:
+            response = await client.call_tool("recall", {"query": q, "limit": 8})
+            if bool(response.is_error):
+                raise RuntimeError("recall tool returned error")
+            text = "\n".join(getattr(item, "text", "") for item in response.content)
+            if expected.casefold() not in text.casefold():
+                raise RuntimeError("persisted source-reviewed memory not found via MCP")
+    print("SLM_MCP_STDIO_PASS: isolated independent client and two persisted recalls")
 
 
-def rpc(method, request_id, params=None):
-    body = {'jsonrpc': '2.0', 'id': request_id, 'method': method}
-    if params is not None:
-        body['params'] = params
-    request = urllib.request.Request(
-        ENDPOINT,
-        data=json.dumps(body).encode('utf-8'),
-        headers={
-            'Content-Type': 'application/json',
-            'Accept': 'application/json, text/event-stream',
-            'MCP-Protocol-Version': PROTOCOL,
-        },
-        method='POST',
-    )
+if __name__ == "__main__":
     try:
-        with urllib.request.urlopen(request, timeout=40) as response:
-            return unpack(response.read(2_000_000), response.headers.get('Content-Type', ''), request_id)
-    except urllib.error.HTTPError as exc:
-        raise RuntimeError(f'MCP local HTTP error {exc.code}') from exc
-
-
-def recall_check(query, expected, request_id):
-    result = rpc('tools/call', request_id, {'name': 'recall', 'arguments': {'query': query, 'limit': 8}})
-    if result.get('isError'):
-        raise RuntimeError(f'MCP recall failed #{request_id}')
-    texts = [
-        part.get('text', '') for part in result.get('content', [])
-        if isinstance(part, dict) and part.get('type') == 'text'
-    ]
-    if not texts or expected.casefold() not in '\n'.join(texts).casefold():
-        raise RuntimeError(f'Persisted source-reviewed memory not found via MCP #{request_id}')
-
-
-def main():
-    init = rpc('initialize', 1, {
-        'protocolVersion': PROTOCOL,
-        'capabilities': {},
-        'clientInfo': {'name': 'eldoria-slm-readonly-validation', 'version': '1.0.0'},
-    })
-    if not init.get('serverInfo'):
-        raise RuntimeError('MCP initialize failed')
-    tools = rpc('tools/list', 2)
-    names = {t.get('name') for t in tools.get('tools', []) if isinstance(t, dict)}
-    if 'recall' not in names:
-        raise RuntimeError('recall tool not exposed in MCP core profile')
-    recall_check('Unity main runtime v0220 prototype', 'Unity/', 3)
-    recall_check('Qwen Ollama art discontinued October 2026', 'Qwen', 4)
-    print('SLM_MCP_LOOPBACK_PASS: tools/list and two persisted read-only tools/call recalls')
-
-
-if __name__ == '__main__':
-    try:
-        main()
-    except (ValueError, RuntimeError, OSError) as exc:
-        print('SLM_MCP_LOOPBACK_FAIL: ' + str(exc), file=sys.stderr)
+        asyncio.run(asyncio.wait_for(verify(), timeout=90))
+    except Exception as exc:
+        print("SLM_MCP_STDIO_FAIL: " + type(exc).__name__ + ": " + str(exc)[:350], file=sys.stderr)
         sys.exit(1)
