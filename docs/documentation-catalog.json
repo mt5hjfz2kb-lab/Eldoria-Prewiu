@@ -759,42 +759,50 @@
     {
       "path": "docs/VALORIA_GATE_STREET_V2_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 87d408f35908ac3b61e9667748e85c27082a6942: V2 superó comprobación técnica pero falló corredor visual/funcional: no quedó certificada como familia conectiva. Autoridad posterior: docs/VALORIA_GATE_STREET_MV1_GATE.md; docs/VALORIA_IF1_SHORT_CHAIN_DECISION.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_GATE_STREET_V3_GATE.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git ccaec9d7ddea1d6e54ce2ca5e9b490f1777f1929: V3 importó técnicamente pero falló lectura del acceso y subida real, sin promoción al kit. Autoridad posterior: docs/VALORIA_IF1_SHORT_CHAIN_DECISION.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_GOLDEN_GENERATOR_BAKEOFF_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 5b4b4f60c955b849ee20f929d19338a481d18eb6: Bake-off PREPARED solicitaba nueva aprobación de gasto/método y no acreditaba ejecución. No reabrir su paquete de generadores por el rótulo preparado. Autoridad posterior: AGENTS.md; pipeline/active-workstreams.json. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_GOLDEN_LOOKDEV_SLICE_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 36b8c8529ec6d14902fd195aef65cbe148ed83e4: LookDev ACTIVE de octubre terminó bloqueado por techo de calidad/human scope y sin integración; la referencia aprobada cambió después. Autoridad posterior: docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_GRANARY_PRODUCTION_BRIEF_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git d16ce5fcd41562952bac37b4e19f65902d2eff29: Recibo de granero con fuente, task e importación verdaderas; la orden de generación de su anexo ya se consumió. No autoriza nuevos 55 créditos. Autoridad posterior: AGENTS.md; docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_GRANARY_TRIPO_INPUT_SPEC_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 04cb02236dc77616f97066e4ffdeb511d813064b: Especificación marcaba imagen aún sin generar; el Granero posterior ya tiene source y generación autenticada, así que no es un trabajo pendiente de input. Autoridad posterior: docs/VALORIA_GRANARY_PRODUCTION_BRIEF_V1.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_GRANERO_CUARTEL_SOURCE_UPGRADE_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 53c2f04782ca894e2b09b07351bdb02f301574b8: Ambas fuentes tuvieron PASS aislado pero VISUAL PARTIAL en Unity y NOT PROMOTED. No confundir fuentes candidatas con edificios finales. Autoridad posterior: docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_GRANERO_RICH_CAMERA_FIRST_V1_RESULT.md",
       "domain": "engineering",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 9d49cb30945a0aaeb1b914941d9b36987972d77b: El intento Granero RCF logró source PASS pero su gate Unity quedó aplazado y el gate emparejado posterior falló. Recomendación de siguiente ensayo ya ejecutada. Autoridad posterior: docs/VALORIA_PAIRED_FUNCTIONAL_UNITY_GATE_V1_RESULT.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_HERO_BASTION_V1_FINAL_GATE.md",
@@ -805,12 +813,14 @@
     {
       "path": "docs/VALORIA_HOUDINI_GOLDEN_INTEGRATION_PILOT_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 93331d3234fb13bba933047df24cfca3db7347c2: Diseño de piloto Houdini declarado NOT EXECUTED, con criterio condicional; no hay prueba de adopción ni autorización de licencia. Autoridad posterior: docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md; AGENTS.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_IF1_SHORT_CHAIN_DECISION.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "reference",
+      "note": "Revisión semántica 2026-11-06, fuente Git 3c76c4d466b5e3dd9e72692d4c1b40ff6645ca17: Ensayo de interfaces Gate→Street→Stair concluyó INTERFACE/ VISUAL FAIL: medidas útiles del fallo de corredor, no aprobación de un kit conectivo. Autoridad posterior: docs/VALORIA_MODULE_INTERFACE_V1_GATE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_IMAGE_TO_3D_ASSET_RECEIPT.md",
@@ -839,22 +849,26 @@
     {
       "path": "docs/VALORIA_IN_CITY_SURFACE_PASS_V1_RESULT.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git e532f13af8120e6b5fa331f7b8587ae1ea6f3e28: Corrección de tintes tuvo TECH PASS y VISUAL PARTIAL/FAIL, no se promovió. No repetir recolores globales para ese mismo problema. Autoridad posterior: docs/VALORIA_VISUAL_BIBLE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_LAYERED_ART_TEST.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 2922d1c9296b8c0601194e8e19586a009b65ac10: Prueba de imagen por capas 2,5D compiló en Unity pero fue rechazada como pipeline de ciudad 4X. Preservar las capturas, no integrarla. Autoridad posterior: AGENTS.md; docs/VALORIA_SEMANTIC_2_5D_CAMERA_FIRST_FINAL_GATE.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_LEFT_RIGHT_PARCELS_NEXT_BLOCK_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git c34c9f2602c8373d19f08f063591cee549ca5573: Trabajo de parcelas PREPARED/NOT STARTED de fuente SHARP anterior, sin titular vigente; no iniciar su plan sobre topología o referencia actual. Autoridad posterior: pipeline/active-workstreams.json; docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_LIBRARY_PRODUCTION_PLAN_V1.md",
       "domain": "art",
-      "status": "review_pending"
+      "status": "historical",
+      "note": "Revisión semántica 2026-11-06, fuente Git 607b0523f1afa25a394c5b9b7f0606196a5ea158: Plan ACTIVE de septiembre culmina ordenando generar input Granero que ya fue producido; cifras y cola ya no son inventario de hoy. Autoridad posterior: docs/VALORIA_GRANARY_PRODUCTION_BRIEF_V1.md; pipeline/asset-vault/clean-production-shelf-v1.json. No supone ART_APPROVED, licencia confirmada ni autorización de gasto."
     },
     {
       "path": "docs/VALORIA_LOOKDEV_PRELIMINARY_RESULT.md",
