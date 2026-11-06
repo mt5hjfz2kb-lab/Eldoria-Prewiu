@@ -1,0 +1,26 @@
+name: Forja Oscura isolated asset integrity
+on:
+  push:
+    branches: [feature/forja-oscura-native-proof-20261107]
+    paths:
+      - "tools/forja-oscura/**"
+      - ".github/workflows/forja-oscura-asset-integrity.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify original production archive before Unity
+        run: python3 tools/forja-oscura/reconstruct.py
+      - name: Extract to disposable workspace and inspect exact files
+        run: |
+          mkdir -p "$RUNNER_TEMP/forja-pilot"
+          python3 tools/forja-oscura/reconstruct.py --extract "$RUNNER_TEMP/forja-pilot"
+          test -f "$RUNNER_TEMP/forja-pilot/Unity/Assets/EldoriaVisualKit/Runtime/ForjaOscuraLiveHudSkin.cs"
+          test -f "$RUNNER_TEMP/forja-pilot/Unity/Assets/EldoriaVisualKit/Editor/ForjaOscuraNativeEvidence.cs"
+          test -f "$RUNNER_TEMP/forja-pilot/Unity/Assets/EldoriaVisualKit/Resources/ForjaOscura/Icons/nav_reino.png"
+          echo "FORJA_ASSET_INTEGRITY_PASS; Unity and art reviews NOT yet executed."
