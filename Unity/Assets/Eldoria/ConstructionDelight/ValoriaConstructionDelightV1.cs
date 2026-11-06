@@ -81,6 +81,7 @@ namespace Eldoria.ReferenceClean
 
         public int ActiveHammerRenderers => hammerTools.VisibleRenderers;
         public int VerifiedHammerContacts => hammerTools.AnchoredContactCount;
+        public float HammerContactHeightFraction => hammerTools.MinimumContactHeightFraction;
         public int TotalHammerImpacts => hammerTools.TotalImpacts;
         public int ActiveDenseConstructionDust => (denseWorkDust?.VisibleCount ?? 0) +
                                                    (hammerImpactDust?.VisibleCount ?? 0);
