@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "NATIVE298_PUBLISHED_REMOTE_ACTIVE",
-  "publish_enabled": false,
+  "state": "NATIVE299_VERIFIED_PROMOTION_REQUESTED",
+  "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
   "candidate": {
-    "revision": "native298",
-    "source_sha": "c8580934201ae1e17543b8683749d40751fb1e12",
-    "native_run": 40945723046,
-    "qa_run": 40955956262,
-    "qa_source_sha": "3984eb4baabdbbac5399028377a49c4d02ae7a72",
-    "artifact_id": 12934337346,
-    "artifact_name": "valoria-verified-private-site-windows-40955956262",
-    "artifact_sha256": "06645df98aa632721062082f2a8f295631b55d9b612848fe1c78f26bf1db62fd"
+    "revision": "native299",
+    "source_sha": "1db8585329fad788fa702dab3e8a7b76a916b4bc",
+    "native_run": 42213699104,
+    "qa_run": 42226584557,
+    "qa_source_sha": "f57a21257db03dcda11bd4682c7d7f2d72208498",
+    "artifact_id": 13507022387,
+    "artifact_name": "valoria-verified-private-site-windows-42226584557",
+    "artifact_sha256": "dcb86cf74da2ab3ff6cd9d3218151f529f9247d77964740300282d92d5493b6d"
   },
   "published": {
     "provider": "itch.io",
@@ -43,10 +43,10 @@
     "physical_mobile_tested": false,
     "art_approved": false,
     "physical_mobile_pass": false,
-    "physical_mobile_evidence": "Current native298 has no physical-device test; earlier iPhone feedback remains historical.",
+    "physical_mobile_evidence": "Current native299 has no physical-device test; earlier iPhone feedback remains historical.",
     "previous_physical_mobile_evidence": "Owner iPhone/Safari startup reload at 71%; no completed gameplay or device profiling."
   },
-  "instructions": "Completed owner-authorized post-PR130 publication: native298 active in existing Restricted itch channel, Android1.19 separately active. Publish flag disabled; promotion identity retained to prevent duplicate upload. Future updates require a new exact QA-backed promotion. No hosted gameplay/phone PASS claimed.",
+  "instructions": "Owner-authorized post-PR162 publication. Upload exact QA-certified native299 once; after upload verify exact version/build active without reupload. Android1.21 already published42225704456. Keep existing Restricted privacy; no phone/hosted gameplay PASS claim.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
   "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
   "credential_setup": {
@@ -57,11 +57,11 @@
   },
   "privacy_confirmation_basis": "Existing Restricted configuration retained; anonymous browser denied game page2026-10-29. Butler channel publication does not change privacy.",
   "promotion_request": {
-    "id": "post-pr130-native298-20261029",
+    "id": "post-pr162-native299-20261106",
     "target": "chrismad/eldoria-pruebas",
-    "revision": "native298",
-    "artifact_sha256": "06645df98aa632721062082f2a8f295631b55d9b612848fe1c78f26bf1db62fd",
-    "authorization": "Owner explicitly asks this chat to continue frozen post-PR130 APK/WebGL publication to completion. Publish exact QA-certified native298 once to existing Restricted web channel;0EUR."
+    "revision": "native299",
+    "artifact_sha256": "dcb86cf74da2ab3ff6cd9d3218151f529f9247d77964740300282d92d5493b6d",
+    "authorization": "Owner explicitly requires PR162 integration and publication of new APK and WebGL. PR162 merged, full native certification42216689519 PASS216Edit/75Play and225checks; exact browser42226584557 PASS normal clock914seconds, true name entry, landscape844x390/portrait390x844, fullI-II,120secondBastion and600secondtraining, marches/rewards, byte-identical save reload,0runtime/network errors. Publish exact same-byte package ONCE to existing Restricted itch web channel;0EUR."
   },
   "last_attempt": {
     "run_id": 40958364194,
@@ -191,31 +191,26 @@
     "deployment": "appgdep_6ad63a0012448191b64d52721e4479a6"
   },
   "current_revision_qa": {
-    "revision": "native298",
+    "revision": "native299",
     "windows_gpu_webgl_pass": true,
-    "qa_run": 40955956262,
-    "qa_source_sha": "3984eb4baabdbbac5399028377a49c4d02ae7a72",
-    "evidence_artifact": 12933733708,
+    "qa_run": 42226584557,
+    "qa_source_sha": "f57a21257db03dcda11bd4682c7d7f2d72208498",
+    "evidence_artifact": 13506199633,
     "normal_clock": true,
     "full_bastion_i_ii": true,
     "fullscreen_training_march": true,
-    "city_building_destinations": true,
+    "city_building_destinations": "contextual cartouche over original city, framed real controls",
+    "player_name_persisted": true,
     "save_reload_exact": true,
-    "save_sha256": "ff941e8c4c4e29c5e96b85820e8f8cfc8f5debdef98924cca397196a2265b58d",
+    "save_sha256": "44ed01f9f3089a2b5e3ff293024ec50cd89fe3b6af3504f6a52d64ec750e80c7",
     "runtime_errors": 0,
     "network_failures": 0,
-    "no_legacy_touch_shadow_navigation": true,
     "screenshots": 75,
-    "cold_load_seconds": 23.25,
-    "warm_reload_seconds": 18.908,
+    "video_recorded": true,
+    "physical_mobile_tested": false,
     "hosted_chrome_tested": false,
-    "ios_safari_tested": false,
     "art_approved": false,
-    "transport_status": "EXACT_DECODED_UNITY_TRANSPORT_PASS",
-    "prior_pr130_native_certification_run": 40929047929,
-    "transport_reader_actual_unity_pass": true,
-    "unity_decoded_bytes_unchanged": true,
-    "delivery_artifact": 12933684729
+    "native_certification_run": 42216689519
   },
   "published_history": [
     {
