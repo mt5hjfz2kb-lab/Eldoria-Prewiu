@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T20:24:45.480Z",
+  "updated_at": "2026-11-06T20:34:25.647Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6571,11 +6571,12 @@
       "base_main_sha": "d7a6d78eb96b19f0350c890fc1dadc131a8f3032",
       "scope": [
         "docs/documentation-catalog.json",
-        "docs/project-organization/**"
+        "docs/project-organization/**",
+        "tools/documentation-triage/report.test.mjs"
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 13,
+      "ownership_revision": 14,
       "write_scope_released": false,
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Documentation navigation only; no Unity, artwork, builds or delivery mutation.",
@@ -6648,6 +6649,13 @@
           "to_revision": 13,
           "claimed_at": "2026-11-06T20:24:45.480Z",
           "reason": "Owner-directed continuation of canonical organization semantic audit, after PR166 merged."
+        },
+        {
+          "previous_owner": "chatgpt-eldoria-semantic-dev-qa-20261106",
+          "from_revision": 13,
+          "to_revision": 14,
+          "claimed_at": "2026-11-06T20:34:25.647Z",
+          "reason": "Architecture CI run 42289221618 failed because documentation-triage test asserted pending_count >100; 32 valid source-backed classifications reduce it to 94. Owner-authorized review now includes exactly the one test file needed to repair the regression, no production code."
         }
       ],
       "handoff_authorization": "Owner instruction 2026-11-04: continue with the next safe organization steps, no re-audit or duplicate PR",
@@ -6675,8 +6683,8 @@
         "global_tester_qa_run": 41897096478,
         "unity_files_modified": false
       },
-      "next": "Review remaining high-impact gameplay, Unity migration, publication QA and visual pipeline docs against main and later evidence. Classify only evidence-supported catalog records. Preserve original docs and owner-controlled code.",
-      "phase": "SEMANTIC_REVIEW_DEVELOPMENT_QA_VISUAL_TRANCHE",
+      "next": "Repair brittle hardcoded pending_count >100 assertion in documentation-triage/report.test.mjs, replacing it with source-derived invariant and zero-pending fixture; revalidate PR167 exact head and close after tests. Do not edit runtime triage implementation.",
+      "phase": "SEMANTIC_REVIEW_DEVELOPMENT_QA_FIX_DOCUMENT_TRIAGE_TEST",
       "closed_reason": "Inventory, navigation and safe structural organization merged. Semantic review of 175 documents and asset-dependency cleanup are separate pending work, not certified by this closeout.",
       "released_at": "2026-11-06T20:05:35.200Z",
       "merged_pr": 166,
