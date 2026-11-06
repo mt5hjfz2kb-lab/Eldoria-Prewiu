@@ -150,6 +150,8 @@ namespace Eldoria.ReferenceClean.Editor
                     "canonical sawmill worksite");
             if(fx.VerifiedHammerContacts!=2)
                 VisualIssues.Add("Both hammer heads must anchor to genuine enabled worksite meshes");
+            if(fx.HammerContactHeightFraction<.33f)
+                VisualIssues.Add("Hammers still strike grass-level logs instead of elevated authentic timber/stone joinery");
             if(fx.ActiveDenseConstructionDust<12)
                 VisualIssues.Add("Dense impact dust absent or insufficient "+
                     "around actual building joinery");
