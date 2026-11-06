@@ -28,6 +28,10 @@ jobs:
           [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $pwd $p),[ref]$tokens,[ref]$errors) | Out-Null
           if($errors.Count){throw ($errors | Out-String)}
           'POWERSHELL_PARSE_PASS'
+      - name: Verify Codex MCP merge and rollback invariants
+        shell: bash
+        run: |
+          python -m unittest discover -s pilot/slm-bootstrap -p 'test_codex_config.py' -v
       - name: Verify source Git SHAs and data format, no game or system writes
         shell: python
         run: |
