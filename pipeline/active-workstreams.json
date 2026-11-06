@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T08:36:12.716Z",
+  "updated_at": "2026-11-06T08:42:54.075Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6382,8 +6382,8 @@
       "resources": [],
       "budget_eur": 0,
       "art_production_routing": "not_applicable",
-      "phase": "RESERVED_FOR_NEXT_SAFE_IDLE_SLOT_NO_RUNNING_JOB_INTERRUPTION",
-      "next": "Queue one guarded single-run install. If any native process active or Ollama models loaded, refuse. Do not terminate Unity/Ollama or reboot Windows; after completion release reservation.",
+      "phase": "WINDOWS_MODE_A_INSTALLED_10_MEMORY_MCP_VERIFIED_CODEX_WIRING_PENDING",
+      "next": "After foreign native owner releases Windows, claim exclusive resource and execute guarded Codex MCP config/skills one-shot; OAuth ChatGPT owner action required.",
       "write_scope_released": false,
       "art_production_routing_reason": "SLM Windows installation/preflight and tooling validation only; this workstream neither generates nor edits Eldoria game art or 3D assets.",
       "runner_release_evidence": {
@@ -6392,6 +6392,19 @@
         "result": "completed/success; install and local status validation both success",
         "checked_at": "2026-11-06",
         "reason": "Completed one-shot guarded installation; no active or queued SLM runs found. Release only finished Windows reservation to resume owner-requested PR162; SLM owner, write scope, and follow-up work unchanged."
+      },
+      "last_verified": {
+        "run_id": 42181121389,
+        "job_id": 127770736821,
+        "sha": "18dbab75a9ce2f3501777f647b5adbcf41a0403d",
+        "status": "PASS",
+        "version": "4.2.12",
+        "mode": "A",
+        "memories_saved": 10,
+        "stdio_mcp": "PASS",
+        "daemon_autostart": false,
+        "owner_device_profile": "local_user",
+        "windows_resource_released": true
       }
     }
   ],
