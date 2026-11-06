@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T11:31:43.944Z",
+  "updated_at": "2026-11-06T11:42:40.848Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -47,8 +47,8 @@
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR162_POSTMERGE_CAPTURE_FIXTURE_REPAIR",
-      "next": "Complete real nickname UI on disposable advanced native probes; preserve five-argument reflection capture API; revalidate full main then publish.",
+      "phase": "PR162_VALIDATION_AND_RELEASE_BUILDS",
+      "next": "Finish native fixture certification and queued Android/WebGL builds; no promotion before all exact-source native, byte/signature/size and actual browser checks PASS.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -889,6 +889,14 @@
           "run": 42204000444,
           "artifact": 13497773235,
           "cause": "Legacy native fixture leaves new real first-entry name prompt open over council screenshot"
+        },
+        "candidate_requests": {
+          "android_version_code": 21,
+          "web_revision": 299,
+          "runtime_source": "c788c942b09c095e2ddf7fd636371301babbd357",
+          "native_run": 42210784774,
+          "ui_run": 42210784700,
+          "published": false
         }
       },
       "previous_owner": "codex-combat-dialogues-fc0ef62e-20261105",
