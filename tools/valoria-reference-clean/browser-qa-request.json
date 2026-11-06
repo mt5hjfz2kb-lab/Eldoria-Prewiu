@@ -21,11 +21,11 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Native299 first browser run verified real naming, no runtime/network errors and all 8 pans; rejected obsolete retained-pan expectation. Canonical TrySetWorld explicitly resets each visit to Valoria near view (portrait64/landscape36), also asserted by native integration. Verify same near-home pose on two real city/world returns, retaining all progression, gesture, framing, video and save checks. Exact same WebGL bytes; no rebuild.",
+  "reason": "Exact unchanged native299. Attempt42222753516 confirms all navigation incl stable near-home return and zero runtime/network errors, but old10second Bastion timer aborted at90seconds. EconomyBastionTimingV2 and actual saved start/deadline both prove120seconds. Observe full120second normal cadence, reject premature completion and180second stall. Align building assertions to approved contextual city cartouche, retain full framing/real action checks and independent Training/March destinations. No game/source/save/time manipulation.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 2,
+  "attempt": 3,
   "method_note": "Use the new exact artifact and current real-input naming script; retain every existing gameplay, stable framing, video and save/reload assertion.",
   "gameplay_source_unchanged": false,
   "revision": "native299"
