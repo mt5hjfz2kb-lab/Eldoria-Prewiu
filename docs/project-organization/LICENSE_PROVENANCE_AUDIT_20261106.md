@@ -70,7 +70,7 @@ Tripo informa derechos comerciales para **usuarios de pago**, mientras que el te
 
 ## Pruebas realizadas y límites de esta auditoría
 
-**Investigado y contrastado:** visibilidad y estructura del repositorio GitHub, seis fichas específicas de Asset Store más una familia de árboles cuya edición debe confirmarse, carpetas de tercero, textos de licencia/avisos incluidos, 26 indicadores del catálogo de producción, 3 tareas Tripo, dependencias UPM de `manifest.json`/`packages-lock.json`, referencias de `ExternalAssetLibrary.asset` y políticas oficiales de Unity/Textures.com/Tripo/Quaternius y proyectos open source.
+**Investigado y contrastado:** visibilidad y estructura del repositorio GitHub, cinco fichas específicas de Asset Store verificadas por nombre más dos familias cuya edición/SKU todavía no se ha podido relacionar inequívocamente, carpetas de tercero, textos de licencia/avisos incluidos, 26 indicadores del catálogo de producción, 3 tareas Tripo, dependencias UPM de `manifest.json`/`packages-lock.json`, referencias de `ExternalAssetLibrary.asset` y políticas oficiales de Unity/Textures.com/Tripo/Quaternius y proyectos open source.
 
 **No se ha inspeccionado:** cuenta del propietario en My Assets, facturas privadas, modalidad Tripo de octubre, licencias de todas las referencias de IA, listado binario de una APK/WebGL concreta, ni las condiciones comerciales específicas otorgadas al usuario por cada vendedor. Por tanto **no hay certificado jurídico de cumplimiento ni de incumplimiento** para un tercero individual.
 
