@@ -51,3 +51,14 @@
 **Pendiente de verificar:** la eficacia del workflow sobre la siguiente PR de importación real, el derecho del dueño de la cuenta a todos los paquetes, condiciones Tripo de octubre, contenido exacto de APK/WebGL, funcionamiento de la APK instalada después de migrar a un nuevo servidor y reducción efectiva de la exposición pública.
 
 **No realizado:** cambiar privacidad, subir/copiar APK, borrar archivos binarios, mover fuentes, renovar Tripo, cambiar el actualizador, cancelar workflows ajenos o certificar comercialmente el juego. La política deliberadamente favorece no dañar una compilación existente frente a un cierre prematuro de riesgos.
+
+## Cierre de integración comprobado — 06/11/2026
+
+- [PR #170](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/170) integrada en `main`: commit `b44c76b7bf185ecab80e57b966953360ab4131aa`. Archivo modificado: seis ficheros de controles/documentación, **cero** archivos de Unity.
+- [Arquitectura y licencia 42302803939](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42302803939): **SUCCESS**, ejecutó el nuevo paso `node --test tools/license-compliance/public-source-gate.test.mjs` y `--verify-ledger`, más la arquitectura y gobernanza documental.
+- [Gobernanza de workflows 42302803888](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42302803888): **SUCCESS**. [Quarantine guard 42302803998](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42302803998): **SUCCESS**.
+- [Regresiones de prototipo cerrado 42302803983](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42302803983): **SUCCESS**, incluidas `Current v0.32 full regression` y `Current v0.32 uninterrupted fresh-save Arc I`. [Dominio 42302803962](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42302803962): **SUCCESS**.
+- El gate artístico World4X se omitió al no modificar arte: no es aprobación de calidad artística.
+- **Comprobación posterior al merge:** blob SHA de `updates/android/family.json` sigue `f07a2687c7e8aa9a88ff4ee496ccafdd6fd939bf` (code21) y `pipeline/playtest-delivery.json` sigue `53a9c0caefc6089dd82e8626bb195515abc19f86` (native299). La publicación existente no se reconstruyó, actualizó ni canceló.
+- **Alcance real del resultado:** se ha probado el código guard y que la integración documental no altera manifiestos ni regresiones. El workflow nuevo se ejecutará sobre la siguiente PR que toque fuentes relevantes; **no se ha certificado todavía una prueba end-to-end sobre una importación real nueva**. Como `main` continúa sin rama protegida, direct pushes siguen pudiendo eludir un guard por PR.
+- **Estado jurídico al cierre: NO REGULARIZADO GLOBALMENTE.** Los justificantes de Asset Store, los derechos/plan Tripo de octubre, las texturas Textures.com y la publicación histórica de fuentes requieren todavía pruebas y decisiones coordinadas. No marcar `CLEARED` ni modificar el repositorio público por el mero éxito del test.
