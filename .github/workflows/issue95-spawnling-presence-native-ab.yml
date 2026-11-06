@@ -1,0 +1,183 @@
+name: "[EXPERIMENT] Issue95 Spawnling actual Unity A/B"
+
+on:
+  push:
+    branches:
+      - art/issue95-spawnling-presence-proof-20261103
+    paths:
+      - 'Unity/Assets/Eldoria/SpawnlingBastion2/SpawnlingEncounterVisual.cs'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: issue95-spawnling-presence-native-ab
+  cancel-in-progress: false
+
+jobs:
+  native_ab:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 27
+    steps:
+      - name: Exact partial sparse clone; avoid 26GB archive
+        shell: powershell
+        timeout-minutes: 12
+        run: |
+          $ErrorActionPreference='Stop'
+          # This self-hosted Windows service does not expose git.exe on PATH.
+          # actions/checkout falls back to the full 26GB GitHub archive.
+          # Use official portable MinGit (no installation/reboot), SHA-256 pinned.
+          $gitCommand=Get-Command git.exe -ErrorAction SilentlyContinue
+          if($gitCommand){$gitExe=$gitCommand.Source}
+          else{
+            [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
+            $gitHome=Join-Path $env:RUNNER_TEMP 'issue95-mingit-2.56.0.4'
+            $zip=Join-Path $env:RUNNER_TEMP 'issue95-MinGit-2.56.0.4-64-bit.zip'
+            $url='https://github.com/git-for-windows/git/releases/download/v2.56.0.windows.4/MinGit-2.56.0.4-64-bit.zip'
+            $expected='e3bf78351fe777fba47ddee5950082f8a98bb0f02604fdc7ba3ee2cb68ffa877'
+            if(-not(Test-Path (Join-Path $gitHome 'cmd/git.exe'))){
+              if(-not(Test-Path $zip)){Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $zip}
+              if((Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){
+                throw 'Official MinGit archive SHA-256 mismatch; abort'
+              }
+              Expand-Archive -LiteralPath $zip -DestinationPath $gitHome -Force
+            }
+            $gitExe=Join-Path $gitHome 'cmd/git.exe'
+            if(-not(Test-Path $gitExe)){throw 'Portable Git executable absent'}
+          }
+          $gitBin=Split-Path $gitExe -Parent
+          $env:PATH="$gitBin;$env:PATH"
+          Add-Content -Path $env:GITHUB_PATH -Value $gitBin
+          & $gitExe --version
+          if($LASTEXITCODE -ne 0){throw 'Git provisioning failed'}
+          $root=Join-Path $env:RUNNER_TEMP ("issue95-ab-"+$env:GITHUB_RUN_ID+"-"+$env:GITHUB_RUN_ATTEMPT)
+          if(Test-Path $root){throw "Refuse to overwrite existing A/B workspace: $root"}
+          & $gitExe -c protocol.version=2 clone --quiet --no-tags --depth=1 --filter=blob:none --sparse --branch art/issue95-spawnling-presence-proof-20261103 ("https://github.com/"+$env:GITHUB_REPOSITORY+".git") $root
+          if($LASTEXITCODE -ne 0){throw 'Partial sparse clone failed'}
+          $paths=@(
+            'Unity/Packages',
+            'Unity/ProjectSettings',
+            'Unity/Assets/Bublik',
+            'Unity/Assets/EmaceArt',
+            'Unity/Assets/Holotna',
+            'Unity/Assets/Mega Fantasy Props Pack',
+            'Unity/Assets/NatureStarterKit2',
+            'Unity/Assets/Plugins',
+            'Unity/Assets/PolyOne',
+            'Unity/Assets/StreamingAssets',
+            'Unity/Assets/Tree_Packs',
+            'Unity/Assets/WorldPackCompare',
+            'Unity/Assets/Eldoria/AldricCity',
+            'Unity/Assets/Eldoria/Content',
+            'Unity/Assets/Eldoria/Resources',
+            'Unity/Assets/Eldoria/Scenes',
+            'Unity/Assets/Eldoria/Scripts',
+            'Unity/Assets/Eldoria/Shaders',
+            'Unity/Assets/Eldoria/SpawnlingBastion2',
+            'Unity/Assets/Eldoria/Tests',
+            'Unity/Assets/Eldoria/UI',
+            'Unity/Assets/Eldoria/World4XCanon',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GameplayAssets',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean',
+            'Unity/Assets/Eldoria/ArtTests/World4XZone1/Models',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedD',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedE',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedBridgeV1',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedPlayableEntryV3'
+          )
+          & $gitExe -C $root sparse-checkout set --cone -- $paths
+          if($LASTEXITCODE -ne 0){throw 'Sparse Unity path checkout failed'}
+          $actual=(& $gitExe -C $root rev-parse HEAD).Trim()
+          if($actual -ne $env:GITHUB_SHA){throw 'SHA changed during clone; fail closed'}
+          if(-not(Test-Path (Join-Path $root 'Unity/Assets/Eldoria/SpawnlingBastion2/SpawnlingEncounterVisual.cs'))){throw 'Spawnling source missing'}
+          if(-not(Test-Path (Join-Path $root 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'))){throw 'World scene missing'}
+          Add-Content -Path $env:GITHUB_ENV -Value ("ISSUE95_ROOT="+$root)
+          Write-Host "ISSUE95_SPARSE_CLONE_PASS sha=$actual"
+      - name: Validate exact owner and Windows lease without editing another workstream
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $request="https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main"
+          $response=Invoke-RestMethod -UseBasicParsing -Headers $headers -Uri $request
+          $json=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($response.content -replace '\s','')))
+          $registry=$json|ConvertFrom-Json
+          $owner=@($registry.active|Where-Object{$_.id -eq 'eldoria-tripo-art-brain-phase2-20261021'})
+          if($owner.Count -ne 1){throw 'Unique Issue95 live owner missing'}
+          if($owner[0].owner -ne 'chatgpt-eldoria-spawnling-presence-proof-20261103' -or
+             $owner[0].ownership_revision -ne 22 -or
+             $owner[0].branch -ne 'art/issue95-spawnling-presence-proof-20261103' -or
+             -not($owner[0].resources -contains 'windows-runner-heavy')){
+            throw 'Issue95 live ownership/branch/Windows lease changed; fail closed'
+          }
+          $other=@($registry.active|Where-Object{
+            $_.id -ne 'eldoria-tripo-art-brain-phase2-20261021' -and
+            $_.resources -contains 'windows-runner-heavy'
+          })
+          if($other.Count){throw 'Another workstream owns Unity runner'}
+          $actual=(& git -C $env:ISSUE95_ROOT rev-parse HEAD).Trim()
+          if($actual -ne $env:GITHUB_SHA){throw 'Checkout drifted from requested candidate'}
+          Write-Host "ISSUE95_SOURCE_AND_LEASE_VALIDATED sha=$actual revision=22"
+      - name: Execute focused real Unity PlayMode A/B, retaining original player data
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $xml=Join-Path $env:RUNNER_TEMP 'issue95-spawnling-native-ab.xml'
+          $log=Join-Path $env:RUNNER_TEMP 'issue95-spawnling-native-ab.log'
+          $out=Join-Path $env:ISSUE95_ROOT 'docs/evidence/valoria-reference-clean'
+          foreach($view in @('close','regional','close-portrait')){
+            foreach($state in @('before','after')){
+              $file=Join-Path $out "integration-issue95-spawnling-$view-$state.png"
+              if(Test-Path $file){throw "Refuse to reuse old evidence $file"}
+            }
+          }
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor path unavailable'}
+          $args=@('-batchmode','-force-d3d11','-projectPath',(Join-Path $env:ISSUE95_ROOT 'Unity'),'-runTests',
+            '-testPlatform','PlayMode',
+            '-testFilter','Eldoria.Tests.SpawnlingAnimatedV4Tests.OriginalIntegratedWorldShows1_5xSpawnlingA_BFromSameCameraWithoutGameplayChange',
+            '-testResults',$xml,'-logFile',$log)
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ISSUE95_ROOT -PassThru
+          if(-not($p.WaitForExit(900000))){
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 110}
+            throw 'Focused Unity A/B timed out'
+          }
+          if($p.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 140}
+            throw "Focused real Unity A/B failed: $($p.ExitCode)"
+          }
+          if(-not(Test-Path $xml)){throw 'PlayMode test XML missing'}
+          [xml]$result=Get-Content $xml -Raw
+          $case=@($result.SelectNodes("//test-case[contains(@fullname,'OriginalIntegratedWorldShows1_5xSpawnlingA_BFromSameCameraWithoutGameplayChange')]"))
+          if($case.Count -ne 1 -or $case[0].result -ne 'Passed'){
+            Get-Content $log -Tail 100
+            throw 'Required real camera A/B test did not pass'
+          }
+          foreach($view in @('close','regional','close-portrait')){
+            foreach($state in @('before','after')){
+              $file=Join-Path $out "integration-issue95-spawnling-$view-$state.png"
+              if(-not(Test-Path $file) -or (Get-Item $file).Length -lt 15000){
+                throw "Missing genuine Unity screenshot $file"
+              }
+            }
+          }
+          $published=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-reference-clean'
+          New-Item -Path $published -ItemType Directory -Force|Out-Null
+          Copy-Item -Path (Join-Path $out 'integration-issue95-spawnling-*.png') -Destination $published -ErrorAction Stop
+          Write-Host "ISSUE95_NATIVE_UNITY_A_B_TECH_PASS sha=$env:GITHUB_SHA images=6 art_approved=false"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue95-spawnling-native-ab-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            docs/evidence/valoria-reference-clean/integration-issue95-spawnling-*.png
+            ${{ runner.temp }}/issue95-spawnling-native-ab.xml
+            ${{ runner.temp }}/issue95-spawnling-native-ab.log
+          if-no-files-found: warn
+          retention-days: 30
