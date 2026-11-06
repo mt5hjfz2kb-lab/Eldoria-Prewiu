@@ -1,8 +1,8 @@
 {
-  "enabled": true,
+  "enabled": false,
   "buildRunId": 42217404501,
   "versionCode": 21,
   "expectedSourceSha": "e3d8347c5ea0aecf8c48f216d1599d2ca7704db9",
   "budgetEur": 0,
-  "note": "Owner-authorized post-PR162 publication. PR162 merged e7e37d2. Expanded UI certification42216689519 SUCCESS:216EditMode/75PlayMode,225integration checks, V41/dialogues/three marches/retention/Aldric. Signed APK470229532bytes SHA256b90d72811e89bc3e00ff3b88806d8d550794a6e94f96261213228a30cedd7913; original package/certificate and no reset.32 actual APK ASTC4x4 illustrations independently decoded, source hashes and original imported dimensions checked; six worst comparisons visually reviewed. Publish once and verify public bytes before channel21. Physical phone not tested. WebGL promotion separately waits full browser QA."
+  "note": "Android1.21/code21 PUBLISHED SUCCESS42225704456; signed build42217404501/sourcee3d8347c5ea0aecf8c48f216d1599d2ca7704db9. Public470229532bytes SHA256b90d72811e89bc3e00ff3b88806d8d550794a6e94f96261213228a30cedd7913 matches exact candidate; channel21 verified on main. Original certificatef479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8; no data reset. Full UI216Edit/75Play +225integration checksPASS,32actualAPKtextures reviewed. Disable duplicate promotion. Physical phone not tested; WebGL publication separately pending complete browserQA."
 }
