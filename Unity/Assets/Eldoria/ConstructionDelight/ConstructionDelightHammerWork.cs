@@ -50,58 +50,63 @@ namespace Eldoria.ReferenceClean
         public Vector3 FirstImpact {get;private set;}
         public Vector3 SecondImpact {get;private set;}
 
-        public bool Begin(Bounds site,Camera camera,float now)
+        // A hammer is only created if both head positions can be bound to the
+        // top surfaces of AUTHENTIC enabled timber/stone MeshRenderers.
+        // This avoids hovering tools in the grass outside a broad parcel collider.
+        public bool Begin(Bounds site,Camera camera,float now,GameObject worksite)
         {
             Clear();
-            if(!camera || site.size.sqrMagnitude<.001f)return false;
-            var lit=Shader.Find("Universal Render Pipeline/Lit");
-            if(!lit)lit=Shader.Find("Universal Render Pipeline/Simple Lit");
-            if(!lit || !lit.isSupported)return false;
-            box=CreateBox();
-            wood=new Material(lit){name="Delight temporary dark oak hammer handles"};
-            iron=new Material(lit){name="Delight temporary forged iron hammer heads"};
-            SetColor(wood,new Color(.38f,.23f,.13f));
-            SetColor(iron,new Color(.37f,.41f,.43f));
-            if(iron.HasProperty("_Metallic"))iron.SetFloat("_Metallic",.35f);
-            if(iron.HasProperty("_Smoothness"))iron.SetFloat("_Smoothness",.24f);
-            root=new GameObject("Construction Delight - authentic artisan hammer strokes");
-            startedAt=now;
-            visible=true;
-            impacts=0;
-
-            // Horizontal camera-facing layout respects the actual scaffold's
-            // bounds. The tools remain much smaller than the building.
+            if(!camera || !worksite || !worksite.activeInHierarchy ||
+               site.size.sqrMagnitude<.001f)return false;
             Vector3 right=camera.transform.right;
             right.y=0f;
             right=right.sqrMagnitude>.01f?right.normalized:Vector3.right;
             Vector3 toward=camera.transform.position-site.center;
             toward.y=0f;
             toward=toward.sqrMagnitude>.01f?toward.normalized:Vector3.back;
-            float front=Mathf.Abs(toward.x)*site.extents.x+
-                        Mathf.Abs(toward.z)*site.extents.z;
+            if(!TryFindContact(worksite,site,right,toward,-1f,out var left) ||
+               !TryFindContact(worksite,site,right,toward,1f,out var rightContact))
+                return false;
             float width=Mathf.Clamp(Mathf.Max(site.size.x,site.size.z),1.6f,7f);
-            float size=Mathf.Clamp(width*.19f,.52f,1.05f);
-            float baseline=site.min.y+Mathf.Clamp(site.size.y*.30f,.34f,1.10f);
+            if(Vector3.Distance(left,rightContact)<Mathf.Max(.16f,width*.12f))
+                return false;
 
+            var lit=Shader.Find("Universal Render Pipeline/Lit");
+            if(!lit)lit=Shader.Find("Universal Render Pipeline/Simple Lit");
+            if(!lit || !lit.isSupported)return false;
+            box=CreateBox();
+            wood=new Material(lit){name="Delight temporary oak hammer grips"};
+            iron=new Material(lit){name="Delight temporary forged iron faces"};
+            SetColor(wood,new Color(.31f,.18f,.10f));
+            SetColor(iron,new Color(.30f,.35f,.37f));
+            if(iron.HasProperty("_Metallic"))iron.SetFloat("_Metallic",.28f);
+            if(iron.HasProperty("_Smoothness"))iron.SetFloat("_Smoothness",.18f);
+            root=new GameObject("Construction Delight - worksite-bound artisan hammers");
+            startedAt=now;
+            visible=true;
+            impacts=0;
+
+            // Reduced silhouettes: readable at phone scale without looking
+            // like giant decorative tools outside the build parcel.
+            float size=Mathf.Clamp(width*.115f,.32f,.68f);
+            var baseRotation=Quaternion.LookRotation(-toward,Vector3.up);
             for(int i=0;i<HammerCount;i++)
             {
                 float side=i==0?-1f:1f;
-                Vector3 contact=new Vector3(site.center.x,baseline,site.center.z)+
-                    right*(side*width*.20f)+toward*(front*.91f+.09f);
+                Vector3 contact=i==0?left:rightContact;
                 var holder=new GameObject("Hammer swing pivot "+i);
                 holder.transform.SetParent(root.transform,false);
-                var baseRotation=Quaternion.LookRotation(-toward,Vector3.up);
                 holder.transform.rotation=baseRotation;
                 holder.transform.localScale=Vector3.one*size;
-                // The iron head, not an invisible pivot, must actually reach
-                // the timber at the instant the dust/impact event is emitted.
+                // The underside of the real iron mesh is at local y=.565:
+                // at a strike that underside meets the selected real surface.
                 var contactPose=baseRotation*Quaternion.Euler(0f,0f,-17f*side);
                 holder.transform.position=contact-
-                    contactPose*(Vector3.up*(.63f*size));
+                    contactPose*(Vector3.up*(.565f*size));
                 var handle=MakePart("oak grip",holder.transform,wood,
-                    new Vector3(0f,.34f,0f),new Vector3(.13f,.68f,.14f));
+                    new Vector3(0f,.34f,0f),new Vector3(.12f,.68f,.13f));
                 var head=MakePart("forged iron head",holder.transform,iron,
-                    new Vector3(0f,.69f,0f),new Vector3(.73f,.25f,.32f));
+                    new Vector3(0f,.69f,0f),new Vector3(.64f,.25f,.28f));
                 hammers[i]=new Hammer{
                     pivot=holder.transform,baseRotation=holder.transform.localRotation,
                     handle=handle,head=head,
@@ -110,6 +115,59 @@ namespace Eldoria.ReferenceClean
                 };
             }
             return true;
+        }
+
+        // Use render geometry, never a guessed location, UI button hotspot,
+        // terrain plane or a hidden completed model. Both anchors remain on
+        // the same real worksite even if its scaffolding has many small stones.
+        static bool TryFindContact(GameObject worksite,Bounds site,Vector3 right,
+                                   Vector3 toward,float side,out Vector3 contact)
+        {
+            contact=Vector3.zero;
+            float lateralSite=Mathf.Abs(right.x)*site.extents.x+
+                              Mathf.Abs(right.z)*site.extents.z;
+            float frontSite=Mathf.Abs(toward.x)*site.extents.x+
+                            Mathf.Abs(toward.z)*site.extents.z;
+            float target=side*lateralSite*.50f;
+            float preferredTop=site.min.y+site.size.y*.55f;
+            float best=float.MaxValue;
+            bool found=false;
+            foreach(var renderer in worksite.GetComponentsInChildren<MeshRenderer>())
+            {
+                if(!renderer || !renderer.enabled ||
+                   !renderer.gameObject.activeInHierarchy ||
+                   !renderer.GetComponent<MeshFilter>() ||
+                   !renderer.GetComponent<MeshFilter>().sharedMesh)continue;
+                Bounds surface=renderer.bounds;
+                if(surface.size.sqrMagnitude<.0001f ||
+                   surface.max.y<site.min.y+Mathf.Max(.10f,site.size.y*.17f))
+                    continue;
+                // Exclude broad ground planes even if included by the host.
+                if(surface.size.y<.14f &&
+                   surface.size.x*surface.size.z>site.size.x*site.size.z*.56f)
+                    continue;
+                float lateral=Vector3.Dot(surface.center-site.center,right);
+                float front=Vector3.Dot(surface.center-site.center,toward);
+                float halfSpan=Mathf.Abs(right.x)*surface.extents.x+
+                               Mathf.Abs(right.z)*surface.extents.z;
+                float positioned=Mathf.Clamp(target,lateral-halfSpan*.68f,
+                                                   lateral+halfSpan*.68f);
+                float score=Mathf.Abs(positioned-target)*1.65f+
+                            Mathf.Abs(surface.max.y-preferredTop)*.22f+
+                            Mathf.Abs(front-frontSite*.34f)*.57f;
+                // The visible nearer wall and beam is preferable to a rear
+                // timber that would be hidden under the new construction.
+                if(front<0f)score+=Mathf.Abs(front)*.75f;
+                if(score>=best)continue;
+                best=score;
+                float face=Mathf.Abs(toward.x)*surface.extents.x+
+                           Mathf.Abs(toward.z)*surface.extents.z;
+                contact=surface.center+right*(positioned-lateral)+
+                        toward*(face*.16f);
+                contact.y=surface.max.y+Mathf.Clamp(site.size.y*.008f,.012f,.04f);
+                found=true;
+            }
+            return found;
         }
 
         static void SetColor(Material material,Color color)
