@@ -120,7 +120,9 @@ jobs:
           sparse-checkout: |
             tools/forja-oscura
             Unity/Assets/EldoriaVisualKit
+            Unity/Assets/EldoriaVisualKit.meta
             Unity/Assets/Eldoria/VisualKit
+            Unity/Assets/Eldoria/VisualKit.meta
           sparse-checkout-cone-mode: false
           fetch-depth: 1
           persist-credentials: true
@@ -134,11 +136,12 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add --sparse -A Unity/Assets/EldoriaVisualKit Unity/Assets/Eldoria/VisualKit Unity/Assets/Eldoria/VisualKit.meta
+          git add --sparse -A Unity/Assets/EldoriaVisualKit Unity/Assets/EldoriaVisualKit.meta Unity/Assets/Eldoria/VisualKit Unity/Assets/Eldoria/VisualKit.meta
           python3 - <<'PY'
           import subprocess
           paths=subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines()
           assert paths and all(p.startswith("Unity/Assets/EldoriaVisualKit/") or
+              p=="Unity/Assets/EldoriaVisualKit.meta" or
               p.startswith("Unity/Assets/Eldoria/VisualKit/") or
               p=="Unity/Assets/Eldoria/VisualKit.meta" for p in paths),paths
           print("FORJA_OWNED_PATHS_RECONCILED",len(paths))

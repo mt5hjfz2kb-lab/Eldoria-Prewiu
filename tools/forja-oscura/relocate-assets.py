@@ -1,100 +1,40 @@
 #!/usr/bin/env python3
-"""Move verified original UI kit into first-party Eldoria and generate stable Unity metadata."""
+"""Move first-party Forja UI kit into Eldoria without regenerating ANY Unity GUID.
+Existing Unity metadata is authoritative. Never edit another workstream's files.
+"""
 from pathlib import Path
-from hashlib import sha256
-import re, shutil
+import re,shutil
 root=Path(__file__).resolve().parents[2]
 old=root/"Unity/Assets/EldoriaVisualKit"
 dest=root/"Unity/Assets/Eldoria/VisualKit"
-if not old.is_dir() or dest.exists():
-    raise SystemExit("FORJA_RELOCATION_FAIL_CLOSED: expected old root only, new root absent")
+oldmeta=Path(str(old)+".meta")
+newmeta=Path(str(dest)+".meta")
+if not old.is_dir() or dest.exists() or not oldmeta.is_file() or newmeta.exists():
+    raise SystemExit("FORJA_RELOCATION_FAIL_CLOSED: old source and its folder meta expected, new root must be absent")
+source=[p for p in old.rglob("*") if p.is_file() and p.suffix in {".png",".cs",".asmdef"}]
+folders=[old]+[p for p in old.rglob("*") if p.is_dir()]
+expected=[Path(str(p)+".meta") for p in source+folders]
+if len(source)!=48 or len(expected)!=55 or not all(x.is_file() for x in expected):
+    raise SystemExit(f"FORJA_SOURCE_OR_METADATA_INCOMPLETE: files={len(source)} metas={sum(x.is_file() for x in expected)}/{len(expected)}")
+ids=[]
+for p in expected:
+    match=re.search(r"(?m)^guid: ([0-9a-fA-F]{32})$",p.read_text())
+    if not match:raise SystemExit("FORJA_INVALID_META_GUID: "+str(p))
+    ids.append(match.group(1).lower())
+if len(set(ids))!=55:raise SystemExit("FORJA_DUPLICATE_SOURCE_GUID")
 dest.parent.mkdir(parents=True,exist_ok=True)
 shutil.move(str(old),str(dest))
+shutil.move(str(oldmeta),str(newmeta))
 for cs in dest.rglob("*.cs"):
-    body=cs.read_text()
-    body=body.replace("Assets/EldoriaVisualKit/","Assets/Eldoria/VisualKit/")
-    cs.write_text(body)
-source=[p for p in dest.rglob("*") if p.is_file() and p.suffix in {".png",".cs",".asmdef"}]
-assert len(source)==48,("FORJA_INPUT_COUNT",len(source))
-def guid(p):return sha256(("eldoria-forja-first-party-v1:"+p.relative_to(root).as_posix()).encode()).hexdigest()[:32]
-def border(name):
-    if name.startswith(("button_primary_","button_secondary_")) or name in ("panel_dark","panel_light","panel_quest"):return 56
-    if name.startswith("nav_tile_"):return 48
-    if name in ("resource_chip","tab_normal","tab_selected"):return 36
-    if name=="badge_level":return 32
-    if name.startswith("progress_"):return 20
-    if name=="toast_background":return 40
-    return 0
-def meta(p):
-    header="fileFormatVersion: 2\nguid: "+guid(p)+"\n"
-    if p.is_dir():
-        return header+"""folderAsset: yes
-DefaultImporter:
-  externalObjects: {}
-  userData:
-  assetBundleName:
-  assetBundleVariant:
-"""
-    if p.suffix==".cs":
-        return header+"""MonoImporter:
-  externalObjects: {}
-  serializedVersion: 2
-  defaultReferences: []
-  executionOrder: 0
-  icon: {instanceID: 0}
-  userData:
-  assetBundleName:
-  assetBundleVariant:
-"""
-    if p.suffix==".asmdef":
-        return header+"""AssemblyDefinitionImporter:
-  externalObjects: {}
-  userData:
-  assetBundleName:
-  assetBundleVariant:
-"""
-    assert p.suffix==".png",p
-    b=border(p.stem) if "/Surfaces/" in p.as_posix() else 0
-    return header+f"""TextureImporter:
-  serializedVersion: 13
-  internalIDToNameTable: []
-  externalObjects: {{}}
-  mipmaps:
-    enableMipMap: 0
-    sRGBTexture: 1
-  isReadable: 0
-  textureFormat: 1
-  maxTextureSize: 2048
-  textureSettings:
-    serializedVersion: 2
-    filterMode: 1
-    aniso: 1
-    mipBias: 0
-    wrapU: 1
-    wrapV: 1
-    wrapW: 1
-  nPOTScale: 0
-  alphaIsTransparency: 1
-  alphaSource: 1
-  textureType: 8
-  textureShape: 1
-  spriteMode: 1
-  spriteMeshType: 1
-  spritePixelsToUnits: 100
-  spriteBorder: {{x: {b}, y: {b}, z: {b}, w: {b}}}
-  spriteGenerateFallbackPhysicsShape: 0
-  userData:
-  assetBundleName:
-  assetBundleVariant:
-"""
-folders=[dest]+sorted((p for p in dest.rglob("*") if p.is_dir()),key=lambda p:len(p.parts))
-created=[]
-for p in folders+source:
-    path=Path(str(p)+".meta")
-    assert not path.exists(),("METADATA_ALREADY_EXISTS",path)
-    path.write_text(meta(p))
-    created.append(path)
-ids=[re.search(r"(?m)^guid: ([0-9a-f]{32})$",p.read_text()).group(1) for p in created]
-assert len(created)==55 and len(set(ids))==55,("INVALID_META_GUIDS",len(created),len(set(ids)))
-assert not old.exists()
-print("FORJA_FIRST_PARTY_RELOCATION_PASS: 48 genuine source assets and 55 stable metadata")
+    text=cs.read_text()
+    text=text.replace("Assets/EldoriaVisualKit/","Assets/Eldoria/VisualKit/")
+    cs.write_text(text)
+relocated=[p for p in dest.rglob("*") if p.is_file() and p.suffix in {".png",".cs",".asmdef"}]
+metadata=[Path(str(p)+".meta") for p in relocated]+[newmeta]+[Path(str(p)+".meta") for p in dest.rglob("*") if p.is_dir()]
+if len(relocated)!=48 or len(metadata)!=55 or not all(x.exists() for x in metadata):
+    raise SystemExit("FORJA_MOVED_ASSETS_OR_METADATA_MISSING")
+after=[re.search(r"(?m)^guid: ([0-9a-fA-F]{32})$",p.read_text()).group(1).lower() for p in metadata]
+if set(after)!=set(ids) or len(set(after))!=55:
+    raise SystemExit("FORJA_GUID_IDENTITY_CHANGED")
+if old.exists() or oldmeta.exists():raise SystemExit("FORJA_OLD_ROOT_REMAINS")
+print("FORJA_FIRST_PARTY_RELOCATION_PASS: 48 assets + 55 original Unity .meta with EXACT GUIDs retained")
