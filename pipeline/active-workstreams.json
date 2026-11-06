@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T22:29:17.871Z",
+  "updated_at": "2026-11-06T23:40:17.028Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -12,9 +12,10 @@
       "valoria-master-plan-layered-construction-20261016",
       "eldoria-tripo-art-brain-phase2-20261021",
       "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
-      "eldoria-aldric-dialogue-bust-20261027"
+      "eldoria-aldric-dialogue-bust-20261027",
+      "eldoria-forja-oscura-visual-proof-20261107"
     ],
-    "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
+    "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight. | 2026-11-07: owner explicitly authorized separate Forja Oscura UI visual proof, isolated new paths, no edit to held legacy HUD."
   },
   "active": [
     {
@@ -6560,6 +6561,32 @@
         "owner_device_profile": "local_user",
         "windows_resource_released": true
       }
+    },
+    {
+      "id": "eldoria-forja-oscura-visual-proof-20261107",
+      "title": "Forja Oscura — sistema visual modular uGUI y prueba A/B real",
+      "owner": "chatgpt-forja-oscura-visual-proof-20261107",
+      "branch": "feature/forja-oscura-native-proof-20261107",
+      "status": "active",
+      "claimed_at": "2026-11-06T23:40:17.025Z",
+      "base_main_sha": "346b66296f191d9d8d76094a81b1972c80ffc53a",
+      "scope": [
+        "Unity/Assets/EldoriaVisualKit/**",
+        "Unity/Assets/EldoriaVisualKit.meta",
+        "tools/forja-oscura/**",
+        ".github/workflows/forja-oscura-asset-integrity.yml",
+        ".github/workflows/forja-oscura-native-capture.yml",
+        "docs/ui-v3/FORJA_OSCURA_*.md"
+      ],
+      "resources": [],
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "phase": "ISOLATED_ART_PROOF_AND_NATIVE_CERT_PREP",
+      "next": "Render reusable Forja visual kit against genuine RoyalHUD and certify mobile layouts and actions; borrow Windows runner only after canonical owner handoff.",
+      "art_approved": false,
+      "physical_mobile_tested": false,
+      "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. Do not claim windows-runner-heavy or edit legacy HUD without explicit handoff."
     }
   ],
   "history": [
