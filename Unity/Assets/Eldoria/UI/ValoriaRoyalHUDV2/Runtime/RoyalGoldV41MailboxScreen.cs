@@ -804,13 +804,16 @@ namespace Eldoria.UI.RoyalGold.V2
                     "  ·  T2: "+own.ArcherT2+"  ·  T3: "+own.ArcherT3:
                     "COMPOSICIÓN PROPIA · desglose no archivado en este informe");
                 bool evolved=!string.IsNullOrEmpty(battle.Outcome);
-                reportSection.Put(evolved?"MI MARCHA · ANÁLISIS OPCIONAL":"OBSERVACIONES DEL ENCUENTRO");
+                reportSection.Put(hunt?"RESULTADO DE LA CACERÍA":evolved?"MI MARCHA · ANÁLISIS OPCIONAL":"OBSERVACIONES DEL ENCUENTRO");
                 detail.Put((hunt?(battle.Won?"La cacería regresó con su botín.":"La cacería no tuvo éxito."):ObservedReason(battle))+(evolved&&!hunt?
                     "\n\nDESGASTE OBSERVADO · "+battle.ObservedAttrition+
                     "\n\nDAÑO PROPIO CAUSADO · "+battle.OwnDamageByFamily+
                     "\n\nDAÑO PROPIO RECIBIDO · "+battle.OwnReceivedByFamily+
                     "\n\nVIDA PROPIA RESTANTE · "+battle.OwnRemainingByFamily:""));
-                reportFooter.Put((evolved?"RESISTENCIA OBSERVADA DEL ENEMIGO · "+battle.EnemyObservedResistance:
+                reportFooter.Put(hunt?
+                    "PODER DE LA MARCHA · "+battle.PlayerPower+
+                    "\nEl botín de la cacería se entrega al regresar. Consulta Recompensas para ver las cantidades recibidas.":
+                    (evolved?"RESISTENCIA OBSERVADA DEL ENEMIGO · "+battle.EnemyObservedResistance:
                     "PODER PROPIO REGISTRADO · "+battle.PlayerPower)+
                     "\nBOTÍN REGISTRADO · "+battle.RewardWood+" madera · "+
                     battle.RewardStone+" piedra · "+battle.RewardFood+" comida"+
