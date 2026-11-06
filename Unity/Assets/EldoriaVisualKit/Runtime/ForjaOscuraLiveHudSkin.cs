@@ -206,6 +206,20 @@ namespace Eldoria.VisualKit
                 var icon = ImageChild(glyph, "Forja / navigation icon", sprite);
                 if (background) background.transform.SetAsFirstSibling();
                 if (icon) icon.transform.SetAsLastSibling();
+                if (background)
+                {
+                    // V2 normally points Button.targetGraphic at its old
+                    // icon. Hiding that icon without redirecting the
+                    // target leaves the genuine button with a disabled
+                    // transition/raycast graphic. Keep the original
+                    // Button and every onClick delegate, but make the
+                    // new illustrated hit surface its active target.
+                    if (!previousTargets.ContainsKey(button))
+                        previousTargets.Add(button, button.targetGraphic);
+                    button.targetGraphic = background;
+                    background.raycastTarget = true;
+                }
+                if (icon) icon.raycastTarget = false;
                 Hide(glyph.GetComponent<RoyalIconGraphic>());
 
                 if (!navigationListeners.ContainsKey(button))
@@ -368,6 +382,12 @@ namespace Eldoria.VisualKit
                         var graphic = back.GetComponent<Image>();
                         if (graphic)
                         {
+                            // RoyalGoldV2Hud.LayoutNavigation may rebind the
+                            // old RoyalIconGraphic during orientation changes.
+                            // Restore our actual live target AFTER V2 layout
+                            // (this skin has a later execution order).
+                            if (item.Button.targetGraphic != graphic)
+                                item.Button.targetGraphic = graphic;
                             var target = Sprite("Surfaces", chosen ? "nav_tile_selected" : "nav_tile_normal");
                             if (target && graphic.sprite != target) graphic.sprite = target;
                             graphic.color = item.Button.interactable ? Color.white : new Color(.55f,.55f,.55f,.85f);
