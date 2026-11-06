@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T11:15:55.758Z",
+  "updated_at": "2026-11-06T11:29:19.765Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -33,15 +33,22 @@
         "pipeline/android-updater-release-request.json",
         "pipeline/playtest-delivery.json",
         "updates/android/family.json",
-        "docs/ui-v3/POST_PR162_RELEASE_20261106.md"
+        "docs/ui-v3/POST_PR162_RELEASE_20261106.md",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/EarlyRetentionEngagementNativeCapture.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Editor/AldricDialogueNativeCapture.cs"
       ],
-      "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Publication requests and browser QA only; no Unity artwork or asset edits.",
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR162_PUBLICATION_PREPARATION",
-      "next": "Prepare genuine first-entry browser QA; wait for own PR162 main native validation, then transfer its runner lease and build/publish Android and WebGL.",
+      "phase": "PR162_POSTMERGE_CAPTURE_FIXTURE_REPAIR",
+      "next": "Complete real nickname UI on disposable advanced native probes; preserve five-argument reflection capture API; revalidate full main then publish.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -875,7 +882,14 @@
           "Marchas",
           "Entrenamiento",
           "Ciudad"
-        ]
+        ],
+        "pr162_merge": "e7e37d236e982553e06168f0ec216e4de80b6b03",
+        "postmerge_native_run": 42204000554,
+        "postmerge_ui_failure": {
+          "run": 42204000444,
+          "artifact": 13497773235,
+          "cause": "Legacy native fixture leaves new real first-entry name prompt open over council screenshot"
+        }
       },
       "previous_owner": "codex-combat-dialogues-fc0ef62e-20261105",
       "takeover_at": "2026-10-17",
@@ -1874,7 +1888,7 @@
           ]
         }
       ],
-      "ownership_revision": 148,
+      "ownership_revision": 149,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -6281,11 +6295,11 @@
     {
       "id": "eldoria-first-login-map-signage-respawn-20261105",
       "title": "Eldoria — bienvenida con nick, pictogramas, niveles del mapa y reposición de 5 min",
-      "owner": "codex-pr162-completion-23287cf1c126",
+      "owner": null,
       "branch": "feature/player-clarity-first-login-map-signage-20261105",
-      "status": "active",
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "status": "completed",
+      "ownership_state": "available",
+      "write_scope_released": true,
       "ownership_revision": 5,
       "claimed_at": "2026-11-05T22:37:43.640Z",
       "base_main_sha": "32176b06afee2a507ea76ff9087832e6b0cec4c8",
@@ -6344,12 +6358,10 @@
         "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
-      "phase": "PR162_POSTMERGE_VALIDATION",
+      "resources": [],
+      "phase": "PR162_MERGED_MAIN_NATIVE_PASS",
       "dependency": "Construction native42189025597 completed SUCCESS and its owner released Windows. PR162 now claims it for exact final source.",
-      "next": "Merge exact certified head, verify main, then transfer own runner lease to canonical main publication workstream for APK and WebGL delivery.",
+      "next": "Canonical publication owner repairs legacy native fixtures and publishes APK/WebGL after full visual certification.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6395,7 +6407,7 @@
         "source_sha": "1c89d5d2695dfa53bfcb07b74fbb7484644ef5cf",
         "native_run": 42200606212,
         "result": "SUCCESS: 216/216 EditMode, 75/75 PlayMode, 225 integration checks; actual node/welcome captures reviewed at four resolutions; three marches and Aldric import destruction regression PASS",
-        "pending": "Main desktop gate finishing, UI certificate queued. Canonical publication workstream claimed separately with no runner resource; exact browser nickname and 844x390/390x844 QA committed b875db70d3264cc183ef7a9825db73e259f2f38b. Transfer sole lease only once both main native jobs finish.",
+        "pending": "Follow-up in canonical main publication stream: older V41 capture fixture never completes new name prompt; screenshot confirms welcome overlay obscures council. Main216/75 tests and Windows build PASS. No publication yet.",
         "physical_android_tested": false,
         "merge_sha": "e7e37d236e982553e06168f0ec216e4de80b6b03",
         "postmerge_runs": [
@@ -6412,7 +6424,8 @@
         "reason": "Final exact PR162 Unity certification after verified release; no process termination or reboot."
       },
       "publication_authorized": true,
-      "publication_owner": "codex-pr162-completion-23287cf1c126"
+      "publication_owner": "codex-pr162-completion-23287cf1c126",
+      "released_at": "2026-11-06T11:29:19.765Z"
     },
     {
       "id": "eldoria-slm-permanent-bootstrap-20261104",
@@ -15259,6 +15272,6 @@
     "ownership_source": "active[id=valoria-master-plan-layered-construction-20261016]; transferable owner-directed claim",
     "released_at": "2026-11-05T17:18:16.458Z",
     "release_evidence": "docs/NARRATIVE_TUTORIAL_COHERENCE_PLAN_20261105.md",
-    "ownership_revision": 148
+    "ownership_revision": 149
   }
 }
