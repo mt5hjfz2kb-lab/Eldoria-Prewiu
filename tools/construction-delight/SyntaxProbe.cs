@@ -247,6 +247,10 @@ internal static class SyntaxProbe
                 hammer.Contains("AnchoredContactCount=2",StringComparison.Ordinal) &&
                 hammer.Contains("toward*(face*.95f+",StringComparison.Ordinal) &&
                 hammer.Contains("Mathf.Clamp(width*.155f,.45f,.82f)",
+                                StringComparison.Ordinal) &&
+                hammer.Contains("surface.max.y<site.min.y+Mathf.Max(.18f,site.size.y*.36f)",
+                                StringComparison.Ordinal) &&
+                hammer.Contains("Mathf.Abs(surface.max.y-preferredTop)*1.18f",
                                 StringComparison.Ordinal);
             bool genuineGeometry=hammer.Contains("CreateBox()",StringComparison.Ordinal) &&
                 hammer.Contains("MeshFilter",StringComparison.Ordinal) &&
@@ -285,7 +289,11 @@ internal static class SyntaxProbe
                     StringComparison.Ordinal) &&
                 capture.Contains("fx.VerifiedHammerContacts!=2",
                     StringComparison.Ordinal) &&
+                capture.Contains("fx.HammerContactHeightFraction<.33f",
+                    StringComparison.Ordinal) &&
                 owner.Contains("VerifiedHammerContacts => hammerTools.AnchoredContactCount",
+                    StringComparison.Ordinal) &&
+                owner.Contains("HammerContactHeightFraction => hammerTools.MinimumContactHeightFraction",
                     StringComparison.Ordinal);
             bool readOnly=!hammer.Contains("Gateway.Execute(",StringComparison.Ordinal) &&
                 !hammer.Contains("PlayerState.",StringComparison.Ordinal) &&
