@@ -62,8 +62,17 @@
 
 **Implementado en candidata:** 25 etiquetas y notas del catálogo; este informe de evidencias. La guía principal incorpora el nuevo recuento. No se edita ningún documento original, modelo, textura, escena, paquete de terceros, script productivo ni workflow.
 
-**Probado documentalmente:** listado exhaustivo de 25 rutas, los cambios `review_pending → historical/reference`, conteo de las 228 entradas y referencias de autoridad. La validación CI y fusión se consignarán con sus IDs al cerrar la PR.
+**Probado documentalmente:** listado exhaustivo de 25 rutas, los cambios `review_pending → historical/reference`, conteo de las 228 entradas y referencias de autoridad. La PR #166 se ha fusionado en `main` y se ha validado el catálogo resultante; los IDs del cierre aparecen más abajo.
 
 **Fuera de alcance y sin verificar:** recibos/licencias actuales de todas las dependencias, compatibilidad comercial de material externo, nivel artístico del juego, FPS y temperatura móvil, utilidad de los otros 126 documentos y seguridad para eliminar duplicados. Esas cuestiones necesitan sus respectivas pruebas y titulares; no convertir la incertidumbre en un PASS.
 
 **Siguiente paso tras este lote:** revisar documentos pendientes de implementación/entrega y arte visual, priorizando contradicciones que puedan iniciar gastos o modificar `main`. La limpieza física de duplicados continúa separada hasta comprobar consumidores y licencias.
+
+## Cierre real de integración — 06/11/2026
+
+- [PR #166](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/166) fusionada en `main`: commit `e8e4041f0b6ee4bb39930a9a6e6ab83459441264`.
+- [Arquitectura y documentación run 42285046582](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42285046582): `SUCCESS`, incluyendo controles de cobertura del catálogo, enlaces y pruebas de regresión documentales.
+- [Tester cerrado run 42285046516](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42285046516): preflight de scope `SUCCESS`; tester-qa correctamente omitido por no modificar las entradas del build.
+- World4X visual-art evidence omitido por cambio exclusivamente documental; no es certificación artística.
+- Confirmación independiente tras merge: catálogo de 228 entradas, 126 `review_pending`, 51 `reference`, 23 `historical`, 28 `current`. Cambios limitados a catálogo, guía y este informe.
+- No se editan fuentes documentales, modelos, workflows, Unity, licencias, publicación ni partida. La fase documental concreta está concluida; **126 documentos restantes no han sido revisados semánticamente**.
