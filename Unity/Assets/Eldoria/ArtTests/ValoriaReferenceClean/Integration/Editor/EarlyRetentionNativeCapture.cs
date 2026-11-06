@@ -100,13 +100,12 @@ namespace Eldoria.ReferenceClean.Editor
             // Path.Combine(Ev, name), which correctly preserves a rooted name.
             // This captures directly into the retention workflow artifact.
             ValoriaIntegrationBuild.Capture(h,path,w,he,()=>{
-                // Match the ACTUAL RoyalScaler: reference-height scaling, not
-                // the legacy shared screenshot helper's portrait-width preset.
+                // The integrated host overrides RoyalScaler's initial defaults:
+                // portrait matches width800, landscape matches height900.
+                // Validate the SAME scale used for the actual captured pixels.
                 var canvas=h.Hud.GetComponent<Canvas>();
-                var scaler=h.Hud.GetComponent<RoyalScaler>();
-                Need(Mathf.Approximately(scaler.matchWidthOrHeight,1f),
-                    "Native proof uses the configured production height-matched RoyalScaler");
-                canvas.scaleFactor=he/Mathf.Max(1f,scaler.referenceResolution.y);
+                Need(Mathf.Approximately(canvas.scaleFactor,w<he?w/800f:he/900f),
+                    "Native proof uses the integrated orientation-dependent scale");
                 Canvas.ForceUpdateCanvases();
                 foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))
                     layout.Apply(w/canvas.scaleFactor,true);
