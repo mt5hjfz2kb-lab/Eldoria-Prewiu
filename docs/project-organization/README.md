@@ -7,6 +7,14 @@ La entrada es el [README principal](../../README.md). Las reglas vigentes están
 [AGENTS](../../AGENTS.md), los responsables en el [registro vivo](../../pipeline/active-workstreams.json)
 y la documentación temática en el [índice central](../DOCUMENTATION_INDEX.md).
 
+## Revisión de desarrollo, pruebas y producción visual — 06/11/2026
+
+En el [informe de 32 documentos](SEMANTIC_REVIEW_DEVELOPMENT_QA_VISUAL_20261106.md) se han identificado **14 instrucciones o gates históricos** y **18 referencias útiles de métodos o diseño**. Todos conservan SHA del blob original, clasificación, límite y fuente posterior de autoridad; sus textos originales permanecen intactos.
+
+**Catálogo después de esta pasada:** 228 entradas; **28 `current`, 69 `reference`, 37 `historical` y 94 `review_pending`**. Los recuentos 126, 151, 171 y 175 de las secciones inferiores son fotografías de fases anteriores: el valor actual es 94.
+
+Alertas principales: no usar el `UNITY_MIGRATION_SCOREBOARD.md` de septiembre como mapa del estado actual ni dar por pendiente la APK; no imponer una cámara vieja; no reactivar el Hero Bastion vetado por un antiguo `TECH PASS`; no declarar aprobación artística de Granero/Cuartel por `VISUAL PARTIAL`; no convertir r7 ni el punto de reanudación del mapa maestro en tareas nuevas; no trasladar la obligatoriedad Qwen de los experimentos históricos al arte vigente.
+
 ## Revisión de importaciones, licencias y pruebas artísticas — 06/11/2026
 
 Nueva [matriz documentada de 25 expedientes](SEMANTIC_REVIEW_ART_IMPORT_LICENSES_20261106.md), con hash del archivo revisado, autoridad posterior, motivo y categoría. **13 pruebas/instrucciones antiguas pasan a `historical`; 12 informes de métodos y evidencia pasan a `reference`**. No se ha comprado, generado, importado ni eliminado ningún recurso.
