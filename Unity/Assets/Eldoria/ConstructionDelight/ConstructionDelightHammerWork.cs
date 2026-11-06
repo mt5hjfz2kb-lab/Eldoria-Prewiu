@@ -29,6 +29,7 @@ namespace Eldoria.ReferenceClean
         bool visible=true;
         float startedAt;
         int impacts;
+        public int AnchoredContactCount {get;private set;}
         public int VisibleRenderers
         {
             get
@@ -85,6 +86,7 @@ namespace Eldoria.ReferenceClean
             startedAt=now;
             visible=true;
             impacts=0;
+            AnchoredContactCount=2;
 
             // Reduced silhouettes: readable at phone scale without looking
             // like giant decorative tools outside the build parcel.
@@ -246,6 +248,7 @@ namespace Eldoria.ReferenceClean
             if(iron)Object.Destroy(iron);
             if(box)Object.Destroy(box);
             box=null;wood=null;iron=null;impacts=0;
+            AnchoredContactCount=0;
         }
 
         static Mesh CreateBox()
