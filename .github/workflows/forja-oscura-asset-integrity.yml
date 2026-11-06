@@ -8,6 +8,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: forja-oscura-asset-deploy-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -28,3 +31,53 @@ jobs:
           test -f "$RUNNER_TEMP/forja-pilot/Unity/Assets/EldoriaVisualKit/Editor/ForjaOscuraNativeEvidence.cs"
           test -f "$RUNNER_TEMP/forja-pilot/Unity/Assets/EldoriaVisualKit/Resources/ForjaOscura/Icons/nav_reino.png"
           echo "FORJA_ASSET_INTEGRITY_PASS; Unity and art reviews NOT yet executed."
+  publish-files:
+    needs: verify
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[forja-deploy]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/forja-oscura-native-proof-20261107
+          sparse-checkout: |
+            tools/forja-oscura
+            Unity/Assets/EldoriaVisualKit
+          sparse-checkout-cone-mode: false
+          fetch-depth: 1
+          persist-credentials: true
+      - name: Expand only verified original Unity resources
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF_NAME}" = "feature/forja-oscura-native-proof-20261107"
+          python3 tools/forja-oscura/reconstruct.py --extract .
+          python3 - <<'PY'
+          from pathlib import Path
+          base=Path('Unity/Assets/EldoriaVisualKit')
+          files=[p for p in base.rglob('*') if p.is_file()]
+          assert len(files)==48, ('unexpected package entry count',len(files))
+          assert len([p for p in files if p.suffix=='.png'])==41
+          assert len([p for p in files if p.suffix in {'.cs','.asmdef'}])==7
+          assert all(p.is_relative_to(base) for p in files)
+          print('FORJA_DEPLOY_EXACT_48_FILES')
+          PY
+      - name: Commit only owned Unity assets as ordinary files
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --sparse -A Unity/Assets/EldoriaVisualKit
+          git diff --cached --name-only | grep -E '^Unity/Assets/EldoriaVisualKit/'
+          if git diff --cached --quiet; then
+            echo "FORJA_SOURCE_ALREADY_TRACKED"; exit 0
+          fi
+          python3 - <<'PY'
+          import subprocess
+          paths=subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines()
+          assert paths and all(p.startswith('Unity/Assets/EldoriaVisualKit/') for p in paths),paths
+          print('FORJA_PRODUCTION_ASSETS_COMMIT_SCOPE_PASS:',len(paths))
+          PY
+          git commit -m "feat(forja): unpack verified independent Unity sprites and skin sources"
+          git push origin HEAD:refs/heads/feature/forja-oscura-native-proof-20261107
