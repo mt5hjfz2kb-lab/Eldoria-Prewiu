@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T08:42:54.075Z",
+  "updated_at": "2026-11-06T08:44:25.229Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6371,19 +6371,20 @@
       "branch": "pilot/slm-permanent-bootstrap-20261104",
       "status": "active",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "claimed_at": "2026-11-05T23:35:51.665Z",
       "base_main_sha": "ab6e36f82aa0878744e3de859dcc491785574ef9",
       "scope": [
         "pilot/slm-bootstrap/**",
         ".github/workflows/eldoria-slm-windows-install.yml",
-        ".github/workflows/eldoria-slm-windows-preflight.yml"
+        ".github/workflows/eldoria-slm-windows-preflight.yml",
+        ".github/workflows/eldoria-slm-codex-connect.yml"
       ],
       "resources": [],
       "budget_eur": 0,
       "art_production_routing": "not_applicable",
-      "phase": "WINDOWS_MODE_A_INSTALLED_10_MEMORY_MCP_VERIFIED_CODEX_WIRING_PENDING",
-      "next": "After foreign native owner releases Windows, claim exclusive resource and execute guarded Codex MCP config/skills one-shot; OAuth ChatGPT owner action required.",
+      "phase": "WINDOWS_INSTALLED_MCP_PASS_CODEX_WRAPPER_UNIT_TEST_PASS_WAITING_ON_NATIVE_RESOURCE",
+      "next": "When Windows released, run guarded Codex configure, verify local MCP; owner must approve ChatGPT OAuth personally. No automation.",
       "write_scope_released": false,
       "art_production_routing_reason": "SLM Windows installation/preflight and tooling validation only; this workstream neither generates nor edits Eldoria game art or 3D assets.",
       "runner_release_evidence": {
