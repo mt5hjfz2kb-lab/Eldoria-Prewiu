@@ -7,6 +7,14 @@ La entrada es el [README principal](../../README.md). Las reglas vigentes están
 [AGENTS](../../AGENTS.md), los responsables en el [registro vivo](../../pipeline/active-workstreams.json)
 y la documentación temática en el [índice central](../DOCUMENTATION_INDEX.md).
 
+## Auditoría de licencias y procedencia — 06/11/2026
+
+La [auditoría documentada de licencias](LICENSE_PROVENANCE_AUDIT_20261106.md) y su [registro verificable de 16 familias](LICENSE_PROVENANCE_EVIDENCE_20261106.json) han identificado **1 prioridad crítica, 10 altas y 5 medias**. Son **riesgos de documentación o redistribución por verificar**, no declaraciones de infracción. En particular, un aviso incluido en el pack de árboles restringe la redistribución de ciertas imágenes de Textures.com, y el repositorio de trabajo continúa siendo público.
+
+El catálogo de producción marca `license_certified:false` en **los 26 recursos curados**, incluyendo cuatro con función productiva existente. Esto significa **falta de acreditación en el catálogo**, no que el uso comercial sea necesariamente ilegal. El informe distingue fuente artística pública, licencia para la APK/WebGL y autoría de modelos generados; **no modifica** los paquetes, Unity, la visibilidad del repositorio ni la publicación.
+
+**Próximo paso antes de una distribución comercial:** reconciliar recibos/versión/licencia exacta de los paquetes externos y el plan Tripo usado en cada tarea, resolver la exposición de Textures.com y generar un BuildReport de APK/WebGL con avisos de terceros. La autorización y cualquier cambio de visibilidad o sustitución corresponden al propietario y al titular del trabajo afectado.
+
 ## Clasificación semántica del catálogo completada — 06/11/2026
 
 **Todas las 228 fichas del catálogo tienen clasificación contrastada:** **28 `current`, 108 `reference`, 92 `historical` y **0 `review_pending`**. Esta última pasada revisó [los 94 expedientes que quedaban](SEMANTIC_REVIEW_FINAL_94_20261106.md), preservando el SHA original, la justificación y la autoridad posterior de cada uno. Los recuentos 94, 126, 151, 171 y 175 que aparecen a continuación se mantienen solo como hitos anteriores de la auditoría; **no son pendientes actuales**.
