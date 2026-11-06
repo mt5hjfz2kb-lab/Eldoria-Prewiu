@@ -6,9 +6,9 @@
   "status": "ACTIVE",
   "asset_or_sector": "Valoria: activity while constructing and short antique-gold completion reveal on genuine building models",
   "profile": "environment_composition",
-  "visual_gate_state": "SOURCE_V4_REAL_MESH_ASSEMBLY_PENDING_UNITY_RENDER",
+  "visual_gate_state": "SOURCE_V8_PASS_NATIVE_REAL_CAMERA_72_PENDING",
   "ai_authorship_policy": "required",
-  "diagnosis": "V3 actual Unity A/B (41872572157) was technically correct but artistically underwhelming: no physical building motion, weak completion, dark roof. V4 adds reversible real model sections arranged foundation-to-roof, timed from original Gateway state, with synchronized modest stone dust, roof glints, and optional URP light.",
+  "diagnosis": "V6 native Unity (42122481739) shows hammer heads and dust but oversized circular puffs, detached tools. V7 Unity 42180150916 PASS with 72 real shots, but art REJECTED: dust virtually invisible and both hammers occluded behind foreground masonry in actual camera. V8 changes actual camera-facing mesh bounds to front 0.95 of face + small offset, size clamped .45-.82, real URP light/shadow and medium irregular contact clouds. Source-only QA 42188093951 PASS (before latest shadow tweak); no V8 Unity renders yet.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -22,16 +22,16 @@
     "real_mesh_reuse": true
   },
   "artist": {
-    "design": "Foundation timbers to roof panel assembly using genuine production meshes and existing materials; 1.68s roof-landing completion, warm facade/roof sweep, tiny synchronized dust. Strict preservation of camera, scene, save, scripts.",
-    "source": "Unity/Assets/Eldoria/ConstructionDelight/ConstructionDelightStageAssembly.cs + ValoriaConstructionDelightV1.cs",
+    "design": "Two readable but physically small oak and iron 3D swinging hammers with contact on actual camera-facing scaffold renderer bounds, short staggered impacts, irregular layered dust localized to each contact, real staged building assembly, restrained warm URP finish. Source gameplay/state untouched.",
+    "source": "Unity/Assets/Eldoria/ConstructionDelight/ConstructionDelightHammerWork.cs + ValoriaConstructionDelightV1.cs + ConstructionDelightStageAssembly.cs + ConstructionDelightArchitecturalReveal.cs",
     "reference": "Approved Valoria cinematic reference; user 2026-11-04"
   },
   "validation": {
-    "source_gate": "36 domain assertions, 5-file Roslyn parse, no self recursion, no second timer or Gateway writes, source MeshFilter/sharedMaterials borrowed and returned; full Unity compile still pending",
-    "final_gate": "Unity 6000.3.23f1 exact head, 34 genuine camera PNG A/B in 390x844 and 844x390 with work+finish time sequence; benchmark against V3, inspect roof/cornice, prefab fidelity, 4X isolation, reload, mobile + WebGL performance. Human art approval >=8.2 required."
+    "source_gate": "36 domain assertions, Roslyn 6 Unity C# sources + editor preprocessor, renderer-bound near-side surface guard and real contact dust, V8 source QA 42188093951 PASS; latest shadow modification still requires rerun",
+    "final_gate": "NEW exact V8 SHA on Unity 6000.3.23f1, 72 authentic camera PNGs (64 A/B/work/finish + 8 timed hammer/dust), two visible worksite contacts, >=12 local dust sprites, no shader magenta, true LocalGateway save/reload and no FX leakage, visual comparison portrait 390x844 / landscape 844x390 against V6/V7; owner visual approval before merge or release."
   },
   "art_approved": false,
   "physical_mobile_tested": false,
   "budget_eur": 0,
-  "notes": "No merge/publish. Current main Windows heavy runner still claimed by PR136 postmerge certification; source-only changes remain on separate draft PR152 until native QA possible."
+  "notes": "No merge, publish, ART_APPROVED or synthetic validation. V7 72 camera PNGs PASS but quality not approved. Another workstream eldoria-slm-permanent-bootstrap-20261104 held windows-runner-heavy during V8 source work on 2026-11-06; never usurp or interrupt. V8 true Unity evidence unverified."
 }
