@@ -8,7 +8,7 @@ internal static class ForjaOscuraSpriteAudit
     [MenuItem("Eldoria/Forja Oscura/Validar sprites importados")]
     public static void Validate()
     {
-        string root = "Assets/EldoriaVisualKit/Resources/ForjaOscura/";
+        string root = "Assets/Eldoria/VisualKit/Resources/ForjaOscura/";
         var guids = AssetDatabase.FindAssets("", new[] { root });
         int icons = 0, surfaces = 0, invalid = 0;
         foreach (string guid in guids)

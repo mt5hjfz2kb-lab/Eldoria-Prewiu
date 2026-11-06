@@ -3,11 +3,11 @@ using UnityEditor;
 using UnityEngine;
 
 // Asset-only importer. Does not touch scenes, gameplay, saves, Canvas or existing prefabs.
-// Import via Assets/EldoriaVisualKit/Sprites/* without overriding non-kit textures.
+// Import via Assets/Eldoria/VisualKit/Sprites/* without overriding non-kit textures.
 internal sealed class EldoriaVisualKitTextureImporter : AssetPostprocessor
 {
-    private const string Root = "Assets/EldoriaVisualKit/Sprites/";
-    private const string RuntimeRoot = "Assets/EldoriaVisualKit/Resources/ForjaOscura/";
+    private const string Root = "Assets/Eldoria/VisualKit/Sprites/";
+    private const string RuntimeRoot = "Assets/Eldoria/VisualKit/Resources/ForjaOscura/";
 
     private void OnPreprocessTexture()
     {
