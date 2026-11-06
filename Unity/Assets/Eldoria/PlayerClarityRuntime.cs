@@ -392,6 +392,13 @@ namespace Eldoria
             Vector2 center = new Vector2(point.x, point.y) +
                 (building ? new Vector2(24f, -2f) * ownerScale : Vector2.zero);
             var footprint = new Rect(center.x - 38.5f, center.y - 16f, 77f, 32f);
+            var safePixels = Rect.MinMaxRect(
+                pixels.xMin + visibleViewport.xMin * pixels.width,
+                pixels.yMin + visibleViewport.yMin * pixels.height,
+                pixels.xMin + visibleViewport.xMax * pixels.width,
+                pixels.yMin + visibleViewport.yMax * pixels.height);
+            if (!safePixels.Contains(footprint.min) || !safePixels.Contains(footprint.max))
+                return;
             foreach (var occupied in occupiedScreenRects)
                 if (occupied.Overlaps(footprint)) return;
             occupiedScreenRects.Add(footprint);
