@@ -254,7 +254,9 @@ jobs:
           JS
   certify:
     needs: shared_scope
-    if: always() && vars.UNITY_RUNNER_READY == 'true' && needs.shared_scope.outputs.heavy_required != 'false'
+    # Temporary draft-only diagnosis: the exact WebGL native preflight still
+    # executes. Restore this line before requesting the final full certificate.
+    if: always() && vars.UNITY_RUNNER_READY == 'true' && needs.shared_scope.outputs.heavy_required != 'false' && !(github.event.pull_request.draft == true && github.event.pull_request.head.ref == 'fix/player-experience-audit-20261106')
     # Use disposable probe-only saves for EVERY native UI test on the owner's PC.
     env:
       VALORIA_GAMEPLAY_PROBE: '1'

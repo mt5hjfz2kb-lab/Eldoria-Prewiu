@@ -349,6 +349,8 @@ namespace Eldoria.ReferenceClean {
    if(!target||!Ready||!Hud)return;
    var camera=PlayerCamera;
    var safe=UIVisibleSceneViewport();
+   bool diagnostic=Application.isEditor&&Application.isBatchMode&&target.GetComponent<WorldHotspot>()?.Id=="region1:wood:001";
+   if(diagnostic)Debug.Log("ELDORIA_FOCUS_ENTRY safe="+safe+" ortho="+camera.orthographic+" pose="+camera.transform.position);
    if(!camera||safe.width<=.08f||safe.height<=.08f)return;
    var points=FocusPoints(target);
    var hotspot=target.GetComponent<WorldHotspot>();
@@ -360,7 +362,9 @@ namespace Eldoria.ReferenceClean {
    // Frame the same anchor used by the real resource/level marker, not only
    // the smaller visible mesh. Reserve its physical footprint below the HUD.
    if(withMarker)points.Add(Eldoria.PlayerClarityRuntime.LabelAnchor(target,false));
-   if(!ProjectFocus(camera,points,out var projected)){
+   bool projectionReady=ProjectFocus(camera,points,out var projected);
+   if(diagnostic)Debug.Log("ELDORIA_FOCUS_PROJECTION valid="+projectionReady+" bounds="+projected+" marker="+withMarker);
+   if(!projectionReady){
     // A selected world site can lie behind the current near-view camera.
     // Move to its real site before fitting; rejecting projection here made
     // distant quarry/forest actions impossible to reveal from the objective.
@@ -384,6 +388,7 @@ namespace Eldoria.ReferenceClean {
    if(padded.width<=.01f||padded.height<=.01f)return;
    for(int attempt=0;attempt<5;attempt++){
     if(!ProjectFocus(camera,points,out projected))break;
+    if(diagnostic)Debug.Log("ELDORIA_FOCUS_STEP "+attempt+" bounds="+projected+" padded="+padded);
     if(projected.xMin>=padded.xMin&&projected.xMax<=padded.xMax&&projected.yMin>=padded.yMin&&projected.yMax<=padded.yMax){var context=Hud.GetComponent<RoyalGoldV3ContextHud>();if(context)context.SynchronizeNow();return;}
     if(camera.orthographic){
      float required=Mathf.Max(projected.width/padded.width,projected.height/padded.height);
@@ -420,6 +425,7 @@ namespace Eldoria.ReferenceClean {
       shift-=camera.transform.forward*(shift.y/camera.transform.forward.y);
      if(InWorld)WorldNavigation.PanTo(WorldNavigation.target+new Vector3(shift.x,0,shift.z));
      else camera.transform.position+=shift;
+     if(diagnostic)Debug.Log("ELDORIA_FOCUS_SHIFT shift="+shift+" target="+WorldNavigation.target);
     }else break;
    }
    // Reproject once after a native synchronous camera adjustment; the
