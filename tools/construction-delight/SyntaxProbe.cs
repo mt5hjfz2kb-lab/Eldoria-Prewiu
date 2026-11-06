@@ -244,7 +244,10 @@ internal static class SyntaxProbe
                 hammer.Contains("worksite.GetComponentsInChildren<MeshRenderer>()",
                                 StringComparison.Ordinal) &&
                 hammer.Contains("surface.max.y",StringComparison.Ordinal) &&
-                hammer.Contains("AnchoredContactCount=2",StringComparison.Ordinal);
+                hammer.Contains("AnchoredContactCount=2",StringComparison.Ordinal) &&
+                hammer.Contains("toward*(face*.95f+",StringComparison.Ordinal) &&
+                hammer.Contains("Mathf.Clamp(width*.155f,.45f,.82f)",
+                                StringComparison.Ordinal);
             bool genuineGeometry=hammer.Contains("CreateBox()",StringComparison.Ordinal) &&
                 hammer.Contains("MeshFilter",StringComparison.Ordinal) &&
                 hammer.Contains("MeshRenderer",StringComparison.Ordinal) &&
@@ -259,6 +262,10 @@ internal static class SyntaxProbe
                     StringComparison.Ordinal) &&
                 owner.Contains("hammerTools.Clear()",StringComparison.Ordinal) &&
                 owner.Contains("hammerTools.SetVisible(visible)",StringComparison.Ordinal);
+            bool visibleDust=owner.Contains("NewField(\"Work / dense scaffold dust\",denseMaterial,150,0f,.60f,1.08f,.50f,1.10f",
+                                    StringComparison.Ordinal) &&
+                owner.Contains("hammerImpactDust.Tint=new Color(.83f,.75f,.63f,.79f)",
+                               StringComparison.Ordinal);
             bool sceneBoundDust=owner.Contains("hammerTools.Tick(Time.unscaledTime)",
                 StringComparison.Ordinal) &&
                 owner.Contains("hammerImpactDust.EmitAtWorld(hammerTools.FirstImpact",
@@ -285,10 +292,11 @@ internal static class SyntaxProbe
                 !hammer.Contains("Rigidbody",StringComparison.Ordinal) &&
                 !hammer.Contains("AddComponent<Collider",StringComparison.Ordinal);
             if(!originalWorksite || !genuineGeometry || !timedContact ||
-               !reversible || !sceneBoundDust || !nativeValidated || !readOnly)
+               !reversible || !sceneBoundDust || !visibleDust ||
+               !nativeValidated || !readOnly)
             {
                 Console.Error.WriteLine("CONSTRUCTION_DELIGHT_HAMMER_WORK_GUARD_FAIL "+
-                    "two render-surface anchors, lit geometry, timed hits, grounded dust, "+
+                    "two front-facing renderer anchors, visible dense irregular dust, timed hits, "+
                     "reversible renderers and unchanged gameplay all required");
                 errors++;
             }
