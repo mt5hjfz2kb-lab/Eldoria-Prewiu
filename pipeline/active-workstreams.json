@@ -6327,7 +6327,7 @@
       "resources": [],
       "phase": "EXACT_HEAD_NATIVE_AND_VISUAL_VERIFICATION",
       "dependency": "Economy PR141 merged; SLM install run42181121389 completed successfully; reconcile runner reservation without interrupting processes.",
-      "next": "Certify edec4b8 after reconciling completed SLM runner reservation; inspect genuine captures, correct failures, merge only after required evidence.",
+      "next": "Let native42180967085 finish unchanged, then native42189830649 certifies corrected actual marker footprints and four-format close node capture. Inspect failures/captures and continue to merge; no ART approval yet.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6362,6 +6362,19 @@
         "economy_pr": 141,
         "economy_merged_sha": "0579b316eac5c9c278d7de83540b9f67d74b96a6",
         "integration_branch": "feature/player-clarity-first-login-map-signage-20261105"
+      },
+      "source_sha": "e698dd290f4d8cb2f68cf0b4a2b64653d5a4714e",
+      "delivery_definition": {
+        "deliverable": "Integrate canonical PR162: persistent first-entry nickname, readable actual resource/node/building levels, distributed renewable nodes and five-minute UTC renewal.",
+        "evidence": "Exact Unity compile/EditMode/PlayMode and continuous I-V journey, genuine four-size screenshots with real nodes and pointer picking, existing saves/economy regressions.",
+        "handoff": "Same PR162 merged only after checks and visual evidence; report exact commit and remaining publication distinction."
+      },
+      "last_verified": {
+        "domain": "Current e698dd2 logic/governance checks PASS; native not yet certified",
+        "running_native": 42180967085,
+        "running_source": "edec4b822b588634c1745cbfedbf9517b5e960f0",
+        "pending_native": 42189830649,
+        "pending_source": "e698dd290f4d8cb2f68cf0b4a2b64653d5a4714e"
       }
     },
     {
