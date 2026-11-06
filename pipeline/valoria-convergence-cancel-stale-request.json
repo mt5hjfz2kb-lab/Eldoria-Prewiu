@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "request_id": "player-experience-retire-queued-native305-20261106",
-  "reason": "Native305 WebGL is queued behind active native304 certification and lacks the now-corrected earned-world-presentation assertion. Retire only this owned queued build; preserve the active Unity process and the native306 candidate.",
+  "request_id": "player-experience-retire-queued-native308-20261106",
+  "reason": "Retire the owned queued build with the stale offscreen-viewport probe. Preserve active native307 Unity validation; native309 retains every marker/input assertion.",
   "runs": [
-    42281737929
+    42283947664
   ],
   "keep_runs": [
-    42280778113
+    42283158434
   ],
-  "triggered_at": "2026-11-06T19:44:26.909Z"
+  "triggered_at": "2026-11-06T19:58:34.459Z"
 }
