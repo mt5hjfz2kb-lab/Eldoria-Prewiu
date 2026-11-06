@@ -97,6 +97,7 @@ namespace Eldoria.Editor
             for(int i=0;i<300&&!host.Ready;i++)yield return null;
             Need(host.Ready&&host.City.Probe,"Benchmark uses disposable canonical scene");
             if(host.Guidance)host.Guidance.enabled=false;
+            ValoriaIntegrationBuild.CompleteProbePlayerName(host);
             for(int i=0;i<50&&host.Hud.NarrativeOpen;i++){host.Hud.Modal.Extra.onClick.Invoke();yield return null;}
             host.Hud.Modal.Hide();host.Hud.SelectBuilding("");
             var state=host.City.Gateway.Snapshot();state.BastionLevel=4;state.BarracksLevel=4;
@@ -1048,6 +1049,7 @@ namespace Eldoria.Editor
             var archer=Resources.Load<Texture2D>("EldoriaV41/training-archer");
             Need(archer!=null&&archer.width==184&&archer.height==476,"Original source aspect survives Unity texture import");
             if(host.Guidance)host.Guidance.enabled=false;
+            ValoriaIntegrationBuild.CompleteProbePlayerName(host);
             for(int i=0;i<50&&host.Hud.NarrativeOpen;i++){host.Hud.Modal.Extra.onClick.Invoke();yield return null;}
             if(host.Hud.Modal.gameObject.activeSelf)host.Hud.Modal.Hide();
             host.Hud.SelectBuilding("");

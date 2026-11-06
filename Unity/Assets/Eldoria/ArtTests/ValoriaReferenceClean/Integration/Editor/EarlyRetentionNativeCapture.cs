@@ -244,6 +244,7 @@ namespace Eldoria.ReferenceClean.Editor
             Need(hud!=null,"One real RoyalHUD instantiated");
             var guidance=h.Guidance;
             if(guidance)guidance.enabled=false;
+            ValoriaIntegrationBuild.CompleteProbePlayerName(h);
             for(int i=0;i<50&&hud.NarrativeOpen;i++){
                 hud.Modal.Extra.onClick.Invoke();
                 yield return null;

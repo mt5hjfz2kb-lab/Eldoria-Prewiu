@@ -108,6 +108,7 @@ namespace Eldoria.ReferenceClean.Editor
             for(int i=0;i<300&&!host.Ready;i++)yield return null;
             Need(host.Ready&&host.City.Probe,"Real game booted on throwaway save");
             if(host.Guidance)host.Guidance.enabled=false;
+            ValoriaIntegrationBuild.CompleteProbePlayerName(host);
             var hud=host.Hud;Need(hud!=null,"Single canonical HUD loaded");
             for(int i=0;i<50&&hud.NarrativeOpen;i++)
             {

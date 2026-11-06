@@ -18,7 +18,8 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
     /// <summary>
     /// Read-only Unity native acceptance for an exact, owner-approved Sir Aldric bust.
     /// Uses the existing real integrated scene and RoyalHUD. No new narrative state,
-    /// game save modification, Tripo calls, or runtime Unity prefab writes.
+    /// production-save modification, Tripo calls, or runtime Unity prefab writes.
+    /// The disposable fixture completes the required real nickname UI first.
     /// </summary>
     [InitializeOnLoad]
     public static class AldricDialogueNativeCapture
@@ -224,6 +225,12 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
             Assert(hud != null, "Canonical integrated RoyalHUD ready");
             var guidance=Read(host,"Guidance") as Behaviour;
             if(guidance)guidance.enabled=false;
+            var captureType=AppDomain.CurrentDomain.GetAssemblies()
+                .Select(x=>x.GetType("Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild",false))
+                .FirstOrDefault(x=>x!=null);
+            var completeIdentity=captureType?.GetMethod("CompleteProbePlayerName",BindingFlags.Public|BindingFlags.Static);
+            Assert(completeIdentity!=null,"Disposable dialogue fixture completes the real first-entry UI");
+            completeIdentity.Invoke(null,new object[]{host});
             var finish=hud.GetComponent<RoyalGoldV3CinematicFinish>();
             Assert(finish!=null, "ONE canonical V3 cinematic presenter active");
             var button=hud.Modal.Extra;

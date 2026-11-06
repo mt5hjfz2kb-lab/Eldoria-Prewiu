@@ -27,6 +27,29 @@ namespace Eldoria.ReferenceClean.Editor {
   static string Ev=>Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../../docs/evidence/valoria-reference-clean"));
   static ValoriaIntegrationBuild(){EditorApplication.playModeStateChanged+=Entered;}
   static void Need(bool pass,string why){if(!pass)throw new InvalidOperationException(why);}
+  // Advanced native fixtures still pass through the real first-entry UI.
+  // The separate integration probe keeps its unnamed initial state and checks
+  // invalid input, normalization, persistence and the first visible parchment.
+  public static void CompleteProbePlayerName(ValoriaIntegratedWorld host){
+   Need(host&&host.Ready&&host.City.Probe,"Only a disposable ready probe may complete fixture identity");
+   var coordinator=host.Hud.GetComponent<Eldoria.PlayerClarity.RoyalPlayerEntryCoordinator>();
+   Need(coordinator,"Native fixture requires the real first-entry coordinator");
+   coordinator.Refresh();
+   var before=host.City.Gateway.Snapshot();
+   if(!string.IsNullOrWhiteSpace(before.PlayerName))return;
+   var prompt=host.Hud.GetComponentInChildren<Eldoria.PlayerClarity.RoyalPlayerNamePrompt>(true);
+   Need(prompt&&prompt.IsOpen,"Unnamed native fixture must expose the real name prompt");
+   var input=prompt.GetComponentInChildren<InputField>(true);
+   Need(input,"The real nickname input is required");
+   input.text="Prueba Valoria";
+   prompt.Confirm();
+   coordinator.Refresh();
+   var after=host.City.Gateway.Snapshot();
+   Need(after.PlayerName=="Prueba Valoria"&&!coordinator.IsBlockingNarrative,
+    "Native fixture name must persist through the real UI before advanced captures");
+   Need(after.PlayerId==before.PlayerId&&JsonUtility.ToJson(after.Resources)==JsonUtility.ToJson(before.Resources),
+    "Completing fixture identity must preserve player identity and resources");
+  }
   public static async void Build(){try{
    Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
    var scene=EditorSceneManager.OpenScene("Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/SawmillCompleted/Valoria_SawmillCompleted.unity",OpenSceneMode.Single);
@@ -900,7 +923,7 @@ namespace Eldoria.ReferenceClean.Editor {
       h.WorldNavigation.PanTo(target.transform.position);
       h.Focus(target.gameObject);
      };
-     Capture(h,"integration-clarity-"+label+"-"+dimensions.x+"x"+dimensions.y+".png",dimensions.x,dimensions.y,()=>{
+     CapturePrepared(h,"integration-clarity-"+label+"-"+dimensions.x+"x"+dimensions.y+".png",dimensions.x,dimensions.y,()=>{
       Need(!h.Hud.Modal.gameObject.activeSelf&&!h.Hud.NarrativeOpen,"Node evidence cannot hide behind a modal");
       var marker=h.Hud.GetComponentsInChildren<RectTransform>().FirstOrDefault(x=>x.name=="Clarity / "+id);
       if(!marker||!marker.gameObject.activeInHierarchy){
@@ -944,7 +967,7 @@ namespace Eldoria.ReferenceClean.Editor {
      Need(labelLayer,"Native label layer is required for its matched control");
      try{
       labelLayer.gameObject.SetActive(false);
-      Capture(h,"integration-clarity-"+label+"-"+dimensions.x+"x"+dimensions.y+"-without-labels.png",
+      CapturePrepared(h,"integration-clarity-"+label+"-"+dimensions.x+"x"+dimensions.y+"-without-labels.png",
        dimensions.x,dimensions.y,null,focus);
      }finally{labelLayer.gameObject.SetActive(true);}
     }
@@ -1003,7 +1026,11 @@ namespace Eldoria.ReferenceClean.Editor {
    var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(data,hits);Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==button.gameObject,"Royal action raycast blocked: "+button.name+" point="+p+" screen="+Screen.width+"x"+Screen.height+" buttonGraphicDepth="+button.targetGraphic.depth+" buttonGraphicCull="+button.targetGraphic.canvasRenderer.cull+" graphicEnabled="+button.targetGraphic.isActiveAndEnabled+" graphicRaycast="+button.targetGraphic.raycastTarget+" buttonRect="+((RectTransform)button.transform).rect+" graphicCanvas="+(button.targetGraphic.canvas?button.targetGraphic.canvas.name:"NONE")+" buttonPosition="+button.transform.position+" corners="+corners[0]+" to "+corners[2]+" parent="+button.transform.parent.name+" parentActive="+button.transform.parent.gameObject.activeInHierarchy+" hits="+string.Join(",",hits.Select(x=>x.gameObject.name+":"+x.depth)));
    ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerDownHandler);ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerUpHandler);ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerClickHandler);
   }
-  public static void Capture(ValoriaIntegratedWorld h,string name,int width,int height,Action validateLayout=null,Action prepareView=null){
+  // Preserve the original five-argument reflection API used by dialogue QA.
+  public static void Capture(ValoriaIntegratedWorld h,string name,int width,int height,Action validateLayout=null){
+   CapturePrepared(h,name,width,height,validateLayout,null);
+  }
+  static void CapturePrepared(ValoriaIntegratedWorld h,string name,int width,int height,Action validateLayout,Action prepareView){
    h.RefreshNavigation();
    bool managementOpen=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen==true;
    if(managementOpen){
@@ -1046,6 +1073,9 @@ namespace Eldoria.ReferenceClean.Editor {
     // zero-width/inverted free viewport and hid every otherwise live marker.
     // Render the real camera once before measuring the same runtime overlay.
     c.Render();Canvas.ForceUpdateCanvases();
+    // Offscreen node evidence pans after the earlier label refresh. Reproject
+    // existing guidance from that SAME final camera, never the previous shot.
+    foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();
     var clarity=Object.FindFirstObjectByType<Eldoria.PlayerClarityRuntime>();
     if(clarity)clarity.RefreshForCapture();
     Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
