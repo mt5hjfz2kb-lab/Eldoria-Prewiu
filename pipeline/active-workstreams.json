@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T09:25:48.478Z",
+  "updated_at": "2026-11-06T09:41:47.266Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6330,7 +6330,7 @@
       ],
       "phase": "PR162_EXACT_NATIVE_CERTIFICATION",
       "dependency": "Construction native42189025597 completed SUCCESS and its owner released Windows. PR162 now claims it for exact final source.",
-      "next": "Complete native42194499354 on 37ac3f1756099dbdd76084a972c9e0cf699680cd; inspect genuine four-size A/B and exact XML, fix failures, then merge and validate main. Previous attempt compile failure fixed by required RoyalGold.Core test assembly reference.",
+      "next": "Validate 1928dda native candidate: exact compile/marches/Aldric already passed on37ac; actual node QA exposed invalid offscreen Canvas viewport after camera pan (x0,y1,width0,height-.29). Synchronize real render before live labels, then retain all node/level/picking checks and full regression.",
       "acceptance": "Real Unity scene HUD screenshots at 390x844 / 844x390 and native tests, persistence and 5-minute offline cooldown; art approval must be independent.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Nueva iconografía vectorial 2D de recursos para HUD y mundo, con autoría y pruebas visuales trazables; no se concede aprobación artística ni uso de herramientas de pago.",
@@ -6366,21 +6366,22 @@
         "economy_merged_sha": "0579b316eac5c9c278d7de83540b9f67d74b96a6",
         "integration_branch": "feature/player-clarity-first-login-map-signage-20261105"
       },
-      "source_sha": "37ac3f1756099dbdd76084a972c9e0cf699680cd",
+      "source_sha": "1928dda29369b86bde67896a24f83ac816a2cbb2",
       "delivery_definition": {
         "deliverable": "Integrate canonical PR162: persistent first-entry nickname, readable actual resource/node/building levels, distributed renewable nodes and five-minute UTC renewal.",
         "evidence": "Exact Unity compile/EditMode/PlayMode and continuous I-V journey, genuine four-size screenshots with real nodes and pointer picking, existing saves/economy regressions.",
         "handoff": "Same PR162 merged only after checks and visual evidence; report exact commit and remaining publication distinction."
       },
       "last_verified": {
-        "domain": "37ac3f1 domain/governance/economy/name/renewal checks PASS",
-        "running_native": 42194499354,
-        "running_source": "37ac3f1756099dbdd76084a972c9e0cf699680cd",
-        "previous_failure": "42193119922 compile failed because player header tests missed RoyalGold.Core; fixed in 37ac3f1"
+        "domain": "37ac domain/governance/economy/name/renewal PASS;1928 pending",
+        "native_compile": "37ac and10780 PASS",
+        "native_scenes": "three marches and Aldric PASS",
+        "native_pending": "node captures, full EditMode/PlayMode/I-V/player",
+        "diagnostic": "10780 run42196411279 confirmed live adapter/nonblocked screens and invalid pre-render Canvas viewport"
       },
       "native_lease": {
         "owner": "codex-pr162-completion-23287cf1c126",
-        "source_sha": "37ac3f1756099dbdd76084a972c9e0cf699680cd",
+        "source_sha": "1928dda29369b86bde67896a24f83ac816a2cbb2",
         "run_id": 42194499354,
         "reason": "Final exact PR162 Unity certification after verified release; no process termination or reboot."
       }
