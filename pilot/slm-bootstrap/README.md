@@ -1,54 +1,43 @@
-# Eldoria — SuperLocalMemory: instalación permanente y conexión
+# SuperLocalMemory para Eldoria — estado verificado
 
-**Estado verificado el 4/11/2026:** SuperLocalMemory 4.2.12 superó los pilotos técnicos en Linux y la recuperación entre dos máquinas virtuales distintas, pero **todavía NO está instalado permanentemente en el ordenador Windows ni conectado a los chats de ChatGPT o a una sesión autenticada de Codex**.
+**6/11/2026 · Rama de piloto (no integrada en `main`).**
 
-## Impedimento real
-La reserva `windows-runner-heavy` está actualmente asignada a `eldoria-unity-metadata-integrity-20261104` (owner `codex-eldoria-metadata-recovery-20261104`). La última ejecución puede finalizar sin liberar el derecho de uso. No instalar en Windows, no ejecutar otro editor, no finalizar tareas ni forzar la liberación. Comprobar siempre el registro **vivo** `main/pipeline/active-workstreams.json`, las ejecuciones y los procesos.
+## Instalación en Windows: CERTIFICADA
 
-## Implantación preparada
-- `verified-facts.json`: 10 recuerdos públicos, con ruta y SHA de cada archivo origen. No contiene claves, credenciales ni información privada. Se verifican de nuevo contra GitHub al importarlos.
-- Bundle local de instalación creado en el chat propietario: `eldoria_superlocalmemory_instalacion_preparada.zip`, SHA-256 `684c96956445c58cdc48e032547d51f5f4792e6ac52d33296487cbac63d5812b`; contiene un instalador PowerShell, preflight de reserva, importador y pruebas. **No se ha ejecutado en Windows**.
-- Piloto de SLM previo: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41814627320 ; piloto de dos entornos: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41816975898 .
-- La memoria será un índice de decisiones con fuente, nunca una autoridad sobre cambios, permisos, arte o reservas.
+SuperLocalMemory **4.2.12 está instalado en el perfil local privado del ejecutor Windows** (`%LOCALAPPDATA%\\EldoriaSLM`). Es un entorno Python 3.12 separado del juego; no modifica Unity ni requiere pagar llamadas a modelos externos.
 
-## Comprobaciones exigidas antes de instalar
-1. Relevo oficial de `windows-runner-heavy` al trabajo de instalación SLM, con propiedad, scope y recurso registrados mediante CAS en main; no bastan ausencia de jobs ni un mensaje de chat.
-2. Preflight lectura sola: propietario de reserva, cero procesos Unity/Blender/Ollama, suficiente RAM y disco, Python 3.12 y usuario de Windows estable. Ante error, **FAIL CLOSED**.
-3. Instalación en virtualenv separado y directorio privado del usuario, paquete fijado a `superlocalmemory==4.2.12`, Mode A, **sin servicios autoiniciados**, sin Web access, sin reinicios y sin gasto.
-4. Importar recuerdos revisados en memoria local y contrastar varios con fuentes de GitHub exactas; registrar evidencia y reversión. Si alguna fuente cambió, reexaminar antes de importar.
-5. Conexión MCP a Codex solo tras comprobar sesión/usuario adecuados. La conexión web de ChatGPT requiere aprobación OAuth personal y la app habilitada en la cuenta; empezar con permisos de solo lectura. No publicar códigos de dispositivo en GitHub.
+Evidencia exacta: [GitHub Actions #42181121389](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42181121389), job `127770736821`, todas las etapas **SUCCESS**. Los logs confirman:
 
-## Límites
-No es posible activar una memoria permanente en el servidor Windows ocupado con las garantías de no interferencia vigentes. El paquete y los datos están preparados; el resto sigue **pendiente de implementar y validar**. Las pruebas temporales NO demuestran conexión con chats reales.
+- `SLM_LOCAL_INSTALL_PASS memories_saved=10`: diez conocimientos revisados y con referencias Git verificadas.
+- `slm doctor --quick`: 33 comprobaciones superadas, 3 advertencias, 0 fallos.
+- Tras detener y reabrir el daemon, las consultas CLI y el cliente MCP stdio independiente recuperaron los conocimientos: `SLM_MCP_STDIO_PASS` y `SLM_WIN_VERIFIED`.
+- Sin servicio autoarrancado, sin exposición a internet, sin OAuth, sin reiniciar Windows, sin tocar el juego, sin añadir costes de API. La memoria **sí es persistente** aunque el daemon se detuviera al terminar.
 
+La instalación usa `Install-SlmWindows.ps1` y fuentes `verified-facts.json`. [Informe y pruebas detalladas](FINAL_HANDOFF_20261106.md).
 
-## Ejecución comprobada de la preparación (4/11/2026)
+## Conexión Codex: PREPARADA / TODAVÍA NO VALIDADA EN WINDOWS
 
-- Script de instalación segura y preflight: [`Install-SlmWindows.ps1`](Install-SlmWindows.ps1). Solo instala con `-Mode install`, y únicamente con una **reserva propia explícita en main** para el ID `eldoria-slm-permanent-bootstrap-20261104`, owner `chatgpt-eldoria-slm-bootstrap-20261104`.
-- Validación aislada hospedada (sin Windows): [GitHub Actions #41820422456](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/41820422456) **SUCCESS**. El parser PowerShell informó `POWERSHELL_PARSE_PASS` y el verificador online confirmó `VERIFIED_SOURCES_PASS 8`.
-- El script y sus dependencias **NO se han ejecutado en un Windows real**. Comprobar un parser y una fuente no equivale a probar una instalación.
-- **No utilizar `-Mode install`** mientras el registro mantenga la reserva ajena. Tampoco activar automáticamente Web access o servicios en segundo plano.
-- No se ha modificado `main`, el código del juego, las PR abiertas, las reservas ni el instalador de Unity.
+Se ha desarrollado una conexión segura con un `mcp_servers.superlocalmemory` privado, que apunta a la instalación local por ruta absoluta y preserva la configuración de otros servidores Codex. Se respalda la configuración previa y no se sustituyen archivos ajenos.
 
-### Orden de continuación
+Archivos:
 
-Releer el registro de reservas. Una vez liberada oficialmente la reserva, asignar en main el ID del piloto SLM bajo CAS, verificar usuario y RAM, ejecutar el script en modo `check`; si pasa, ejecutar `install` en ese mismo usuario sin reiniciar. Comprobar después que los recuerdos se mantienen tras cerrar y reabrir el proceso, que Codex puede consultar MCP, y por último solicitar al propietario la autorización OAuth específica de ChatGPT.
+- `Connect-SlmCodex.py`: edición aditiva, idempotente y con respaldo de `~/.codex/config.toml`.
+- `Connect-SlmCodex.ps1`: comprobaciones de usuario, reserva Windows, proceso Unity, instalación SLM, integraciones y consulta MCP.
+- `test_codex_config.py`: 7 ensayos reproducibles; [preflight CI #42189603865](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42189603865) **SUCCESS**.
+- [Workflow de conexión](../../.github/workflows/eldoria-slm-codex-connect.yml): preparado y dormido hasta crear `codex-connect-trigger.json` cuando el recurso Windows esté libre.
 
+No iniciar esta conexión si otro trabajo es titular válido de `windows-runner-heavy`, ni si Unity sigue ejecutándose. Tampoco intentar iniciar sesión en Codex ni filtrar claves OAuth por logs de un repositorio público. Conexión MCP registrable y uso auténtico de un modelo autenticado son dos pruebas distintas.
 
-## 6/11/2026 — relevo seguro para completar instalación
+## Conexión ChatGPT: REQUIERE ACCIÓN PRIVADA DEL PROPIETARIO
 
-- La operación fue retomada tras comprobar que GitHub vuelve a aceptar escrituras. Actualizada la huella SHA de `README.md` en `verified-facts.json` y la comprobación Ubuntu volvió a pasar: [run 42129498935](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42129498935).
-- Registrado en `main/pipeline/active-workstreams.json` el ID canónico `eldoria-slm-permanent-bootstrap-20261104`, titular `chatgpt-eldoria-slm-bootstrap-20261104`, en alcance aislado, **sin** reserva Windows inicialmente: commit `c8d7ab1d389b96c3d1b6442804500a122a6ee422`. Verificar siempre la versión viva; esta es evidencia histórica de la reclamación.
-- Windows **no** estaba realmente disponible para ejecutar nuevas tareas: había una certificación Unity nativa en curso, run [42129353689](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42129353689) en el paso PlayMode. No cancelar ni interferir. La ausencia de reserva formal en el registro no significa que no haya procesos Unity trabajando.
-- Creado preflight de hardware y procesos en **solo lectura**, [workflow](../../.github/workflows/eldoria-slm-windows-preflight.yml), ejecución [42129818778](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42129818778). Puede quedar en cola detrás de Unity. Comprobar resultado antes de decidir instalación.
-- Preparado el [workflow de instalación protegido](../../.github/workflows/eldoria-slm-windows-install.yml) en esta rama. No se ejecuta por su creación; únicamente se activa con un `install-trigger.json` nuevo/actualizado **después** de obtener la reserva exclusiva Windows registrada en main (CAS) y de verificar que no haya ningún proceso ajeno. Al ejecutarse vuelve a verificar ambas condiciones y el instalador repite el preflight.
-- El instalador no arranca servicios permanentes, no activa acceso web, no toca Unity ni modifica `main`. Cuando funcione hay que probar persistencia/MCP y decidir un servicio seguro sin contención de recursos; la conexión ChatGPT necesita autorización OAuth personal, que no puede hacerse a través de logs públicos ni por un agente sin el propietario.
+No está activada. SuperLocalMemory permite un servidor MCP web con OAuth, pero **la vinculación privada a ChatGPT requiere que el usuario configure y autorice el plugin en su cuenta**. La IA no puede aceptar la autorización por él ni publicar códigos de acceso. Inicialmente se recomiendan permisos de **solo lectura**, con consentimiento explícito para escritura más adelante.
 
-**Orden segura:** comprobar fin de run nativo + resultado del preflight → consultar `main` en vivo → reclamar exclusivamente `windows-runner-heavy` en el ID ya creado mediante su blob SHA → volver a comprobar procesos/claims → crear `pilot/slm-bootstrap/install-trigger.json` en la misma rama (el workflow se inicia por push) → seguir ejecución y reparar fallos repetibles → verificar memoria persistente en el usuario Windows adecuado → liberar Windows y documentar resultado. Si cualquier comprobación falla, no iniciar instalación ni apropiarse de trabajo ajeno.
+Guía oficial: https://github.com/qualixar/superlocalmemory/blob/main/docs/remote-access/hosts.md
 
+## Coordinación
 
-## 6/11/2026 — preflight refrescado y prueba MCP preparada (pendiente en Windows)
+El workstream es `eldoria-slm-permanent-bootstrap-20261104`, con titular `chatgpt-eldoria-slm-bootstrap-20261104` en `main/pipeline/active-workstreams.json`. La memoria es un **índice auxiliar** de conocimientos; las decisiones vigentes, código, permisos y evidencias siguen siendo los archivos y SHA de GitHub.
 
-- [Preflight real 42156878043](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42156878043): el ejecutor estaba sin reserva ajena y sin ejecuciones nativas activas; se midieron **9,69 GB RAM**, **285,16 GB disco**, Python 3.12 y usuario estable. No es luz verde: se detectó **`ollama`** y `installation_ready=false` (`READ_ONLY_PREFLIGHT_BLOCKED`). No se ha detenido Ollama, reclamado Windows ni disparado la instalación.
-- Añadido [`Validate-SlmMcp.py`](Validate-SlmMcp.py) a la rama piloto y conectado al workflow guardado: tras reiniciar el daemon provisional, exige `initialize`, `tools/list` y dos `tools/call` reales de `recall` vía MCP HTTP loopback, con referencias de las memorias guardadas. El parser Python se comprobó fuera de Windows con respuestas JSON y SSE simuladas. **Esto aún no equivale a una prueba MCP real ni demuestra que las 10 memorias estén importadas**.
-- La instalación permanece pendiente de preflight real PASS y reserva exclusiva mediante CAS en el ID canónico. Presupuesto adicional 0 €, sin OAuth ni servicio permanente ni interrupciones de Unity/Blender/Ollama.
+**No hay automatizaciones periódicas de seguimiento:** el usuario prohibió supervisiones; la automatización anteriormente creada se desactivó. Para conectar Codex se hará solo un workflow de ejecución puntual, con guarda de reserva y proceso.
+
+**No se debe afirmar que “todos los chats recuerdan Eldoria” hasta que una conexión real y autenticada de ChatGPT supere una prueba de recuperación.**
