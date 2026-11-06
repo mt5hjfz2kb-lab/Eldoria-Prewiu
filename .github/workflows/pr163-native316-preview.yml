@@ -1,0 +1,57 @@
+name: '[QA] PR163 native316 critical frames'
+on:
+  push:
+    branches: [qa/pr163-webgl-evidence-20261107]
+    paths: ['.github/workflows/pr163-native316-preview.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/pr163-native316-preview.yml
+            /docs/evidence/pr163-native316-20261107/
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42311997693
+          name: valoria-royal-gold-v2-review-42311997693
+          github-token: ${{ github.token }}
+          path: native316-source
+      - name: Copy only unchanged real native screenshots and evidence IDs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,shutil,hashlib
+          root=Path('native316-source')
+          files=sorted(root.rglob('integration-context-engendro-*.png'))
+          if len(files)<2: raise SystemExit('Genuine native316 Engendro phone images not found in artifact')
+          out=Path('docs/evidence/pr163-native316-20261107')
+          out.mkdir(parents=True,exist_ok=True)
+          manifest={'native_run':42311997693,'head_sha':'934110ccda820a3683bd6e1bb28bc19bf7df838e',
+          'artifact':'valoria-royal-gold-v2-review-42311997693',
+          'quality_approved':False,'screenshots':[]}
+          for p in files:
+           dest=out/p.name
+           shutil.copyfile(p,dest)
+           manifest['screenshots'].append({'name':p.name,'bytes':dest.stat().st_size,
+            'sha256':hashlib.sha256(dest.read_bytes()).hexdigest()})
+          reports=list(root.rglob('integration-result.json'))
+          if reports:
+           report=json.loads(reports[0].read_text(encoding='utf8-sig'))
+           manifest['native_result_status']=report.get('status')
+           manifest['native_result_errors']=report.get('error')
+          (out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps(manifest,ensure_ascii=False)[:3500])
+          PY
+          git config user.name 'eldoria-qa-bot'
+          git config user.email 'qa-bot@users.noreply.github.com'
+          git add docs/evidence/pr163-native316-20261107/
+          git diff --cached --quiet && exit 1
+          git commit -m 'docs(qa): preserve exact native316 real Engendro phone captures [skip ci]'
+          git push origin HEAD:qa/pr163-webgl-evidence-20261107
