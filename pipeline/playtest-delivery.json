@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "NATIVE299_VERIFIED_PROMOTION_REQUESTED",
-  "publish_enabled": true,
+  "state": "NATIVE299_UPLOADED_AWAITING_REMOTE_ACTIVATION",
+  "publish_enabled": false,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
   "candidate": {
@@ -46,7 +46,7 @@
     "physical_mobile_evidence": "Current native299 has no physical-device test; earlier iPhone feedback remains historical.",
     "previous_physical_mobile_evidence": "Owner iPhone/Safari startup reload at 71%; no completed gameplay or device profiling."
   },
-  "instructions": "Publish exact browser-certified native299 once using verified lossless Brotli transport officially supported by itch .br Content-Encoding. Prior42229089602 did not upload. After accepted upload verify remote exact version/build active without reupload. Android21 already published.0EUR,Restricted preserved.",
+  "instructions": "Upload accepted ONCE. Publish disabled; promotion identity unchanged. Only read-only verification of remote build2313504/versionnative299-0f7d6c8fb6d3 pending. Never rerun publish job or upload again while processing.0EUR, existing Restricted channel.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
   "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
   "credential_setup": {
@@ -64,36 +64,34 @@
     "authorization": "Owner explicitly requires PR162 integration and publication of new APK and WebGL. PR162 merged, full native certification42216689519 PASS216Edit/75Play and225checks; exact browser42226584557 PASS normal clock914seconds, true name entry, landscape844x390/portrait390x844, fullI-II,120secondBastion and600secondtraining, marches/rewards, byte-identical save reload,0runtime/network errors. Publish exact same-byte package ONCE to existing Restricted itch web channel;0EUR. Initial delivery42229089602 stopped BEFORE any upload at QA-input size guard. Lossless .br CDN streams reduce final playable content to490426092bytes,19files,largest58794121; unchanged decoded Unity data585372590bytes SHA256d153ac481b134970a5f29ba2d26edb0793dd77a4ab91c51cdfe19c8cebcb81f5. Actual Unity loader exact HTTP-decoded hashes/single allocation and error regressions PASS. Keep strict500MB final budget; no asset removal, texture degradation or native rebuild."
   },
   "last_attempt": {
-    "run_id": 42229089602,
-    "prepare": "failed_pre_upload_size_guard",
-    "publish": "skipped",
-    "upload_accepted": false,
-    "reason": "QA input510055637bytes exceeded old500MB pre-adaptation budget. New final playable package490426092bytes validated with exact Unity reader; strict500MB final budget retained."
+    "run_id": 42230106275,
+    "prepare": "success",
+    "transport_tests": "success",
+    "publish": "upload_accepted_processing",
+    "remote_build": 2313504,
+    "publish_job_conclusion": "failure_waiting_remote_activation",
+    "upload_accepted": true,
+    "remote_active_confirmed": false,
+    "hosted_verified": false,
+    "reason": "Butler upload accepted once at14:03:56; processing exceeded short30second post-upload check. Verify remote build without repeating upload."
   },
   "uploaded": {
     "provider": "itch.io",
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
-    "revision": "native298",
-    "run_id": 40958364194,
-    "remote_build": 2247360,
-    "version": "native298-15b79882a59b",
+    "revision": "native299",
+    "run_id": 42230106275,
+    "remote_build": 2313504,
+    "version": "native299-0f7d6c8fb6d3",
     "upload_accepted": true,
-    "upload_accepted_at": "2026-10-29T21:32:22Z",
+    "upload_accepted_at": "2026-11-06T14:03:56.147Z",
     "hosted_verified": false,
-    "processing_status": "ACTIVE",
-    "transport_adapter": "itch-decoded-stream-v3",
+    "processing_status": "PROCESSING",
+    "transport_adapter": "itch-decoded-stream-br-v4",
     "physical_mobile_tested": false,
-    "remote_active_confirmed": true,
-    "zip_sha256": "15b79882a59b30e1fcc63203eb9bfbda379937a889def21164d0dfd88c23ba89",
-    "latest_remote_check": {
-      "run_id": 40958364194,
-      "job_id": 123744902862,
-      "checked_at": "2026-10-29T21:32:52Z",
-      "result": "NATIVE298_ACTIVE",
-      "remote_build": 2247360,
-      "version": "native298-15b79882a59b"
-    }
+    "remote_active_confirmed": false,
+    "zip_sha256": "0f7d6c8fb6d34aa64de455eae2881820d5e930e1ebf285daf0bab6c093321d69",
+    "html5_extracted_bytes": 490426238
   },
   "manual_fallback": {
     "artifact_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39315488741/artifacts/12218335123",
@@ -361,6 +359,31 @@
         "checked_at": "2026-10-29T21:30:35Z",
         "result": "NATIVE281_ACTIVE_BEFORE_NATIVE298_UPLOAD"
       }
+    },
+    {
+      "provider": "itch.io",
+      "target": "chrismad/eldoria-pruebas",
+      "channel": "web",
+      "revision": "native298",
+      "run_id": 40958364194,
+      "remote_build": 2247360,
+      "version": "native298-15b79882a59b",
+      "upload_accepted": true,
+      "upload_accepted_at": "2026-10-29T21:32:22Z",
+      "hosted_verified": false,
+      "processing_status": "ACTIVE",
+      "transport_adapter": "itch-decoded-stream-v3",
+      "physical_mobile_tested": false,
+      "remote_active_confirmed": true,
+      "zip_sha256": "15b79882a59b30e1fcc63203eb9bfbda379937a889def21164d0dfd88c23ba89",
+      "latest_remote_check": {
+        "run_id": 40958364194,
+        "job_id": 123744902862,
+        "checked_at": "2026-10-29T21:32:52Z",
+        "result": "NATIVE298_ACTIVE",
+        "remote_build": 2247360,
+        "version": "native298-15b79882a59b"
+      }
     }
   ],
   "attempt_history": [
@@ -407,5 +430,12 @@
       "transport_status": "EXACT_DECODED_UNITY_TRANSPORT_PASS",
       "unity_decoded_bytes_unchanged": true
     }
-  ]
+  ],
+  "remote_verification_request": {
+    "id": "native299-readonly-active-check-20261106",
+    "target": "chrismad/eldoria-pruebas",
+    "upload_run": 42230106275,
+    "version": "native299-0f7d6c8fb6d3",
+    "build": 2313504
+  }
 }
