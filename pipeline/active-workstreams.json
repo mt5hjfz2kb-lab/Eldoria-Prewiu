@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T11:42:40.848Z",
+  "updated_at": "2026-11-06T11:44:54.027Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -48,7 +48,7 @@
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "PR162_VALIDATION_AND_RELEASE_BUILDS",
-      "next": "Finish native fixture certification and queued Android/WebGL builds; no promotion before all exact-source native, byte/signature/size and actual browser checks PASS.",
+      "next": "Own Windows jobs only: finish native42210784774 and UI42210784700; build Android21 run42212292004 and WebGL native299 run42212291925 from79dca31. Preserve sole lease, do not publish before all exact checks; current session continues directly.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -897,6 +897,22 @@
           "native_run": 42210784774,
           "ui_run": 42210784700,
           "published": false
+        },
+        "publication_builds": {
+          "source_sha": "79dca31d72abeb57e71db59f08943713ffabfcc5",
+          "android_run": 42212292004,
+          "android_version": 21,
+          "web_run": 42212291925,
+          "web_revision": 299,
+          "android_preflight": "PASS",
+          "published": false
+        },
+        "fixture_repair": {
+          "source_sha": "c788c942b09c095e2ddf7fd636371301babbd357",
+          "native_run": 42210784774,
+          "ui_run": 42210784700,
+          "status": "EditMode and PlayMode PASS; desktop build finishing, full visual fixture QA queued",
+          "changes": "Complete real nickname UI on disposable advanced fixtures, preserve reflection Capture API and reproject existing guidance from final camera"
         }
       },
       "previous_owner": "codex-combat-dialogues-fc0ef62e-20261105",
