@@ -20,7 +20,7 @@ const FIRST_PARTY_TOP_LEVEL = new Set([
 ]);
 const NON_ASSET_SUFFIX = /(?:\.meta|\.md|\.txt|\.license|\.notice|\.gitignore|\.gitattributes)$/i;
 const ART_SOURCE_EXT = /\.(?:png|jpe?g|webp|tga|psd|exr|hdr|fbx|obj|glb|gltf|blend|wav|ogg|mp3|mp4|unitypackage|ttf|otf|woff2?|sbsar)$/i;
-const POSSIBLE_EXTERNAL_ASSET_EXT = /\.(?:png|jpe?g|webp|tga|psd|exr|hdr|fbx|obj|glb|gltf|blend|prefab|asset|mat|unitypackage|shader|dll|so|aar|cs|wav|ogg|mp3|mp4)$/i;
+const POSSIBLE_EXTERNAL_ASSET_EXT = /\.(?:png|jpe?g|webp|tga|psd|exr|hdr|fbx|obj|glb|gltf|blend|prefab|asset|mat|unitypackage|shader|dll|so|aar|cs|wav|ogg|mp3|mp4|ttf|otf|woff2?|bin|bytes|a|lib)$/i;
 const ALLOWED_RISK = new Set(['CRITICAL', 'HIGH', 'MEDIUM']);
 
 export function inspectPullRequestFiles(files) {
@@ -46,7 +46,9 @@ export function inspectPullRequestFiles(files) {
     const top = /^Unity\/Assets\/([^/]+)(?:\/|$)/.exec(name)?.[1];
     const isUnknownTopLevel = top && !FIRST_PARTY_TOP_LEVEL.has(top)
       && !PROTECTED_IMPORTED_ROOTS.some(root => root.startsWith('Unity/Assets/' + top + '/'));
-    if (isUnknownTopLevel && status === 'added' && !NON_ASSET_SUFFIX.test(name)) {
+    const unknownWorldPack = name.startsWith('Unity/Assets/WorldPackCompare/')
+      && !name.startsWith('Unity/Assets/WorldPackCompare/Quaternius/');
+    if ((isUnknownTopLevel || unknownWorldPack) && status === 'added' && !NON_ASSET_SUFFIX.test(name)) {
       blocking.push({ file: name, status, reason: 'NEW_UNKNOWN_UNITY_ASSET_PACK_REQUIRES_ORIGIN_AND_LICENSE' });
       continue;
     }
