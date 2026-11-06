@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-05T23:35:51.665Z",
+  "updated_at": "2026-11-06T00:01:45.453Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6359,7 +6359,8 @@
       "art_production_routing": "not_applicable",
       "phase": "BOOTSTRAP_READY_NATIVE_EDITOR_JOB_STILL_RUNNING",
       "next": "Claim windows-runner-heavy only after real editor job completes; run guarded installer, validate persistence and MCP; never auto-login OAuth.",
-      "write_scope_released": false
+      "write_scope_released": false,
+      "art_production_routing_reason": "SLM Windows installation/preflight and tooling validation only; this workstream neither generates nor edits Eldoria game art or 3D assets."
     }
   ],
   "history": [
