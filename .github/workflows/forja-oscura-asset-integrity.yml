@@ -14,6 +14,10 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/forja-oscura
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
       - name: Verify original production archive before Unity
         run: python3 tools/forja-oscura/reconstruct.py
       - name: Extract to disposable workspace and inspect exact files
