@@ -7,6 +7,14 @@ La entrada es el [README principal](../../README.md). Las reglas vigentes están
 [AGENTS](../../AGENTS.md), los responsables en el [registro vivo](../../pipeline/active-workstreams.json)
 y la documentación temática en el [índice central](../DOCUMENTATION_INDEX.md).
 
+## Lote de 20 documentos prioritarios — 06/11/2026
+
+**Catálogo semántico actualizado:** 228 documentos: **28 `current`, 39 `reference`, 151 `review_pending` y 10 `historical`**. La [revisión razonada de los 20 documentos con más riesgo operativo](SEMANTIC_PRIORITY_20_20261106.md) contrasta instrucciones antiguas con manifiestos vivos, scripts y PR fusionadas. Contiene **2 contratos vigentes**, **13 referencias con límites explícitos** y **5 registros históricos**. No se han modificado sus cuerpos, Unity ni los recursos.
+
+Atención especial: el informe Android del 10/10 no describe la APK 1.21 del manifiesto actual; la cámara Frontier 18/14/10/7 es un benchmark histórico y no los parámetros vigentes de Region 1; un resultado artístico/técnico de octubre no implica aprobación actual. Una PR abierta sigue siendo candidata, no código integrado.
+
+La sección siguiente documenta **la fase anterior**, cuando había 171 pendientes; el recuento actual es 151. La tabla del inventario original corresponde al commit fijado del 04/11, no al HEAD de hoy.
+
 ## Conciliación documental y duplicados — 06/11/2026
 
 El catálogo de esta revisión tiene **228 entradas: 26 `current`, 26 `reference`, 171 `review_pending` y 5 `historical`**. Cuatro documentos ya estudiados se han pasado de pendientes a históricos porque sus instrucciones quedaron sustituidas; los originales y los avisos de vigencia permanecen. Detalle y autoridades en [la conciliación registrada](CATALOG_RECONCILIATION_STAGED_20261104.json).
