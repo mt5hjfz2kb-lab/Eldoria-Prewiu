@@ -376,6 +376,118 @@ namespace Eldoria.VisualKit.Editor
 
             }
         }
+        [Serializable] class NavigationRouteCheck
+        {
+            public string destination;
+            public string status;
+            public bool originalEventDelivered;
+            public bool destinationVisible;
+        }
+
+        /// <summary>
+        /// Exercise ACTUAL uGUI pointer down/up/click on the five existing
+        /// navigation buttons, only after A/B captures and only in a disposable
+        /// gameplay probe. Respect game-progression locks: locked actions are
+        /// reported as not exercised, never counted as five successful routes.
+        /// No synthetic RoyalHUD.Open or Button.onClick.Invoke shortcuts.
+        /// </summary>
+        static NavigationRouteCheck[] ExerciseNavigationInProbe(MonoBehaviour host,
+            RoyalHUD hud, Type integrationBuild, ForjaOscuraLiveHudSkin skin)
+        {
+            var city = host.GetType().GetProperty("City")?.GetValue(host);
+            Need(city != null && BoolProperty(city, "Probe"),
+                "Refuse navigation dispatch without a disposable game probe");
+            var click = integrationBuild.GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+                .FirstOrDefault(m => m.Name == "Click" && m.GetParameters().Length == 1 &&
+                    m.GetParameters()[0].ParameterType == typeof(Button));
+            Need(click != null, "Canonical real pointer-click helper missing");
+            var original = Snapshot(hud);
+            bool originalWorld = BoolProperty(host, "InWorld");
+            string selectedBefore = hud.SelectedBuildingId;
+            var result = new List<NavigationRouteCheck>();
+            int eventCount = 0;
+            RoyalSection? observed = null;
+            Action<RoyalSection> observer = value => { eventCount++; observed = value; };
+            hud.Navigation.Requested += observer;
+            try
+            {
+                // Check every live destination without inventing any unlock.
+                // World is last: its real action may switch the camera.
+                var sections = new[] {
+                    RoyalSection.Bastion, RoyalSection.Inventory,
+                    RoyalSection.Missions, RoyalSection.Army, RoyalSection.World
+                };
+                foreach (var section in sections)
+                {
+                    hud.Modal.Hide();
+                    hud.Refresh();
+                    var v2 = hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
+                    if (v2) v2.SynchronizeNow();
+                    skin.ApplyNow(true);
+                    Canvas.ForceUpdateCanvases();
+                    var item = hud.Navigation.Items.FirstOrDefault(i => i != null && i.Section == section);
+                    Need(item != null && item.Button && item.Button.gameObject.activeInHierarchy,
+                        "Real destination not visible: " + section);
+                    var check = new NavigationRouteCheck { destination = section.ToString() };
+                    if (!item.Button.interactable)
+                    {
+                        // Locked remains locked by the authoritative host.
+                        // Clicking a disabled destination would not be a valid
+                        // gameplay test; explicitly preserve the distinction.
+                        check.status = "LOCKED_NOT_EXERCISED";
+                        check.originalEventDelivered = false;
+                        check.destinationVisible = true;
+                        result.Add(check);
+                        continue;
+                    }
+                    int beforeCount = eventCount;
+                    try { click.Invoke(null, new object[] { item.Button }); }
+                    catch (TargetInvocationException e) { throw e.InnerException ?? e; }
+                    check.originalEventDelivered = eventCount == beforeCount + 1 &&
+                        observed.HasValue && observed.Value == section;
+                    Need(check.originalEventDelivered,
+                        "Live navigation event did not reach the original handler: " + section);
+                    if (section == RoyalSection.Bastion)
+                        check.destinationVisible = hud.SelectedBuildingId == "bastion";
+                    else if (section == RoyalSection.Inventory)
+                        check.destinationVisible = !string.IsNullOrWhiteSpace(hud.SelectedBuildingId);
+                    else if (section == RoyalSection.Missions || section == RoyalSection.Army)
+                        check.destinationVisible = hud.Modal && hud.Modal.gameObject.activeSelf;
+                    else if (section == RoyalSection.World)
+                        check.destinationVisible = BoolProperty(host, "InWorld") != originalWorld;
+                    Need(check.destinationVisible,
+                        "Original handler executed but requested destination was not shown: " + section);
+                    check.status = "NATIVE_POINTER_ROUTE_PASS";
+                    result.Add(check);
+                }
+            }
+            finally
+            {
+                hud.Navigation.Requested -= observer;
+                var changeWorld = host.GetType().GetMethod("SetWorld",
+                    BindingFlags.Public | BindingFlags.Instance, null,
+                    new[] { typeof(bool) }, null);
+                Need(changeWorld != null, "Canonical city/world return route missing");
+                if (BoolProperty(host, "InWorld") != originalWorld)
+                    changeWorld.Invoke(host, new object[] { originalWorld });
+                hud.Modal.Hide();
+                var select = host.GetType().GetMethod("Select",
+                    BindingFlags.Public | BindingFlags.Instance, null,
+                    new[] { typeof(string) }, null);
+                Need(select != null && (bool)select.Invoke(host, new object[] { selectedBefore }),
+                    "Could not restore genuine building selection after navigation QA");
+                hud.Refresh();
+                var context = hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV3ContextHud>();
+                if (context) context.SynchronizeNow();
+                skin.ApplyNow(true);
+                Canvas.ForceUpdateCanvases();
+            }
+            Need(result.Count == 5, "Five original navigation destinations not accounted for");
+            Need(original == Snapshot(hud),
+                "Disposable navigation smoke changed the initial HUD values after restore");
+            return result.ToArray();
+        }
+
         static void RunCapture(bool batch)
         {
             var host=FindHost();Need(host&&BoolProperty(host,"Ready"),"Canonical gameplay host must be ready");
@@ -475,6 +587,12 @@ namespace Eldoria.VisualKit.Editor
                         readabilityMetrics.Add(MeasureReadability(hud, wh.Item1, wh.Item2));
                     });
             Need(original==Snapshot(hud),"HUD gameplay data changed while applying presentation-only skin");
+            // These are additional live clicks, NOT inferred from graphics or
+            // button raycasts. A/B frames are already captured and immutable.
+            // Never dispatch them in a manual Editor session using real saves.
+            var navigationActions = batch
+                ? ExerciseNavigationInProbe(host, hud, t, skin)
+                : new NavigationRouteCheck[0];
             Object.DestroyImmediate(skin);Canvas.ForceUpdateCanvases();
             ValidateNavigation(hud);
             var originalAfter=Snapshot(hud);
@@ -531,6 +649,7 @@ namespace Eldoria.VisualKit.Editor
                 uiRegionDifferences=uiDifferences.ToArray(),
                 nativeTouchTargets=touchMetrics.ToArray(),
                 nativeReadability=readabilityMetrics.ToArray(),
+                navigationActions=navigationActions,
                 captureMethod="ValoriaIntegrationBuild.Capture: Unity RenderTexture/Canvas",
                 artifacts=files.Select(f=>new Artifact {name=Path.GetFileName(f),sha256=Hash(f)}).ToArray(),
                 gameplayAndSaveRulesChanged=false,physicalMobileTested=false,artApproved=false
@@ -552,6 +671,7 @@ namespace Eldoria.VisualKit.Editor
             public UiPixelDifference[] uiRegionDifferences;
             public UiTouchMetric[] nativeTouchTargets;
             public UiReadabilityMetric[] nativeReadability;
+            public NavigationRouteCheck[] navigationActions;
             public bool gameplayAndSaveRulesChanged,physicalMobileTested,artApproved;
             public Artifact[] artifacts;
         }
