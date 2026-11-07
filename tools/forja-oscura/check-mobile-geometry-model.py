@@ -21,7 +21,6 @@ source_contract = {
         "float availableWidth = Mathf.Max(150f, safe.rect.width - 12f);",
         "AlignBuildingCartoucheToNavigation();",
     ],
-    capture: ["canvas.scaleFactor=width<height?width/800f:height/900f;"],
     skin: [
         "mobileNavigationButtons[0].rect.width * canvas.scaleFactor < 100f;",
         "float requiredHeight = Mathf.CeilToInt(44.5f / canvas.scaleFactor);",
@@ -46,10 +45,27 @@ for body, markers in source_contract.items():
     for marker in markers:
         assert marker in body, f"Geometry source changed; inspect Unity behavior: {marker}"
 
+# The PR's strict CI runs on the *merge ref*, not just its feature branch.
+# Since the feature was opened, main acquired a phone-specific Canvas scale.
+# Both are actual source implementations, so model precisely whichever is
+# checked out. Never silently assume the old 800/900 factor if main changed.
+legacy_scaler = "canvas.scaleFactor=width<height?width/800f:height/900f;"
+phone_scaler = ("bool phone=Mathf.Min(width,height)<600;"
+                "canvas.scaleFactor=width<height?width/(phone?600f:800f):"
+                "height/(phone?600f:900f);")
+if legacy_scaler in capture:
+    phone_specific_scaler = False
+elif phone_scaler in capture:
+    phone_specific_scaler = True
+else:
+    raise AssertionError("Capture scale source changed; inspect Unity behavior")
+
 
 def geometry(width: int, height: int) -> dict:
     portrait = height > width
-    scale = width / 800.0 if portrait else height / 900.0
+    phone = min(width, height) < 600 and phone_specific_scaler
+    scale = width / (600.0 if phone else 800.0) if portrait else (
+        height / (600.0 if phone else 900.0))
     canvas_w = width / scale
     available = max(150.0, canvas_w - 12.0)
     gap = 4.0 if portrait else 9.0
@@ -108,4 +124,5 @@ assert proof[-1]["touch_width_px"] >= 100, proof[-1]
 assert proof[-1]["card_to_dock_margin_model_px"] > 0, proof[-1]
 for record in proof:
     print(f"FORJA_GEOMETRY_SOURCE_MODEL {record}")
+print(f"SOURCE_MODEL_SCALER={'PHONE_600_800_900' if phone_specific_scaler else 'LEGACY_800_900'}")
 print("SOURCE_MODEL_PASS — DOES NOT establish native render, font fit, raycast or artwork quality")
