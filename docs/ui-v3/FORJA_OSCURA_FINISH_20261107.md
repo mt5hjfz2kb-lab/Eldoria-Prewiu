@@ -1,3 +1,22 @@
+# Estado vigente: cinco iconos en una sola fila, acabado general pendiente
+
+Petición explícita del propietario: ningún acceso inferior apilado; retirar letras antes que usar dos filas.
+Candidato: `cb8c659ee78c8e40b0ecd8c6dc298db5b9f723f7`.
+Unity nativo [42417772857](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42417772857): SUCCESS.
+CI de fuentes 42417773032: SUCCESS; Unity hospedado omitido por licencia, validación real en Windows.
+Artefacto 13592062245: doce PNG descargados y SHA256 comprobados.
+
+- Cinco botones originales en una fila en 1600×900, 900×1600, 844×390 y 390×844. Sin solapamiento horizontal ni segunda fila.
+- Rótulos ocultos reversiblemente; iconos de aproximadamente 44 px, botones de 56 px de altura, funciones y orden conservados.
+- Prueba nativa exige cinco iconos contenidos en sus botones, rótulos ocultos y una sola fila.
+- Bastión, inventario y misiones mediante puntero, cierre, construcción y guardado aislado PASS. Ejército y Mundo bloqueados no ejercitados.
+- Datos originales restaurados después de retirar la skin. Sin prueba física móvil.
+- Inspección visual de Bastión 390×844 y pantalla 844×390 confirma una fila sin letras. Ficha y cabecera siguen por debajo de la riqueza visual buscada. NO ART_APPROVED, no merge ni publicación APK/WebGL.
+
+Siguiente trabajo artístico: mejorar composición de ficha y jerarquía de cabecera conservando esta navegación. Las secciones siguientes son evidencia histórica y no describen la navegación vigente.
+
+---
+
 # Estado vigente: recuperación certificada, acabado global pendiente
 
 Candidato nativo: `7f7e7acc5068ff5c66ab5c83dc69e99afaabc54c`.
