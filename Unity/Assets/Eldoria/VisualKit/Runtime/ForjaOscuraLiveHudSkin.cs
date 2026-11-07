@@ -39,6 +39,7 @@ namespace Eldoria.VisualKit
         private readonly Dictionary<Behaviour, bool> previousEnabled = new Dictionary<Behaviour, bool>();
         private readonly Dictionary<Graphic, Color> previousColors = new Dictionary<Graphic, Color>();
         private readonly Dictionary<RoyalText, int> originalFontSizes = new Dictionary<RoyalText, int>();
+        private readonly Dictionary<RectTransform, Vector2> originalCaptionSizes = new Dictionary<RectTransform, Vector2>();
         private readonly Dictionary<RoyalButton, UnityAction> navigationListeners = new Dictionary<RoyalButton, UnityAction>();
         private readonly Dictionary<Button, Graphic> previousTargets = new Dictionary<Button, Graphic>();
         private readonly List<GameObject> created = new List<GameObject>();
@@ -153,7 +154,7 @@ namespace Eldoria.VisualKit
         // The native capture's CanvasScaler can reduce 24pt text below
         // usable mobile pixel sizes. Touch ONLY existing RoyalText presentation.
         // Preserve original font sizes for a faithful reversible A/B test.
-        private void EnsureReadable(RoyalText label, float minimumPixels)
+        private void EnsureReadable(RoyalText label, float minimumPixels, bool navigationCaption = false)
         {
             if (!label || !label.isActiveAndEnabled) return;
             var canvas = hud.GetComponent<Canvas>();
@@ -161,6 +162,22 @@ namespace Eldoria.VisualKit
             var rect = label.rectTransform;
             if (!rect || rect.rect.width <= 8f || rect.rect.height <= 8f) return;
             float factor = Mathf.Max(.01f, canvas.scaleFactor);
+            // Source-proven mobile geometry defect: the canonical V2 caption
+            // is only 20 logical units high. On an 844x390 camera capture
+            // scaleFactor=390/900, that leaves 8.7 physical pixels, so a
+            // 12px label CANNOT fit even if its fontSize is increased.
+            // Only stretch the existing caption, never its hit target or dock,
+            // and restore the old rect on skin removal.
+            if (navigationCaption)
+            {
+                float desiredHeight = (minimumPixels + 4f) / factor;
+                if (rect.rect.height < desiredHeight)
+                {
+                    if (!originalCaptionSizes.ContainsKey(rect))
+                        originalCaptionSizes.Add(rect, rect.sizeDelta);
+                    rect.sizeDelta = new Vector2(rect.sizeDelta.x, desiredHeight);
+                }
+            }
             int needed = Mathf.CeilToInt(minimumPixels / factor);
             if (label.fontSize >= needed) return;
             int original = label.fontSize;
@@ -477,7 +494,7 @@ namespace Eldoria.VisualKit
                     var chosen = item.Section == selected;
                     if (item.Label)
                     {
-                        EnsureReadable(item.Label, 12f);
+                        EnsureReadable(item.Label, 12f, true);
                         Tint(item.Label, item.Button.interactable ? (chosen ? WarmGold : LightInk) : Faded);
                     }
                     if (item.Button.transform.childCount == 0) continue;
@@ -604,6 +621,8 @@ namespace Eldoria.VisualKit
                 if (pair.Key) pair.Key.color = pair.Value;
             foreach (var pair in originalFontSizes)
                 if (pair.Key) pair.Key.fontSize = pair.Value;
+            foreach (var pair in originalCaptionSizes)
+                if (pair.Key) pair.Key.sizeDelta = pair.Value;
             // The native A/B proof restores the skin and captures another frame
             // without advancing Unity's game loop. Destroy() would leave the
             // transient Image children alive through that same frame, causing
