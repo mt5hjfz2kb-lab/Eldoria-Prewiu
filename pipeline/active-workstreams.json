@@ -6756,7 +6756,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-beta-pages-20261107",
       "ownership_state": "claimed",
-      "ownership_revision": 4,
+      "ownership_revision": 5,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6768,16 +6768,17 @@
         ".github/workflows/eldoria-beta-pages.yml",
         ".github/workflows/eldoria-beta-mobile-candidate.yml",
         ".github/workflows/eldoria-beta-native-memory.yml",
-        "Unity/Assets/EldoriaBetaMemoryProbe/**"
+        "Unity/Assets/EldoriaBetaMemoryProbe/**",
+        ".github/workflows/eldoria-beta-entry-qa.yml"
       ],
       "resources": [],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "NATIVE_MEMORY_PROBE_COMPLETE_CPU_COPY_AB_IN_PROGRESS",
+      "phase": "MATERIAL_MEMORY_CANDIDATE3_RUNTIME_QA",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Native exact-source memory probe42420011329 succeeded and cleaned up its isolated Editor probe; Windows released. Original candidate1 physically fails iPhone after first frame. Compare pixel-identical readonly material texture candidate2 on Ubuntu, require sustained actual runtime and measured memory reduction before considering publication.",
+      "next": "Candidate2 runtime PASS but wasm capacity only 1.58->1.48 GB; not published. Candidate3 local object/quality validation PASS, independent encoding/runtime run42421746562 in progress. Add real UI nickname/save/reload QA on Ubuntu before publication. Physical iPhone defect remains open.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6829,13 +6830,7 @@
         }
       },
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
-      "resource_request": {
-        "resource": "windows-runner-heavy",
-        "purpose": "isolated mobile startup memory/profile and optimized texture candidate; preserve native325 source and current interface work",
-        "status": "requested_not_acquired",
-        "must_not_interrupt": "eldoria-forja-oscura-visual-proof-20261107"
-      }
+      "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta."
     }
   ],
   "history": [
