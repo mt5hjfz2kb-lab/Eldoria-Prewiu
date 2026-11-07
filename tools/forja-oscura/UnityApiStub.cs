@@ -130,6 +130,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
     public RectTransform ChronicleObjectiveRect,ChronicleBuildingRect;
     public bool ChronicleIllustratedBuildingVisible => false;
     public void SynchronizeNow(){}
+    public void InvalidatePresentationLayout(){}
   }
   public partial class RoyalGoldV3ContextHud:MonoBehaviour {
     public RectTransform ContextRect;

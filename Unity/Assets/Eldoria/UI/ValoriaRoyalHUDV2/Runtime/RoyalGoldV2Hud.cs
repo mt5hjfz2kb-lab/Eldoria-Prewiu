@@ -1260,6 +1260,11 @@ namespace Eldoria.UI.RoyalGold.V2
             label.SetAllDirty();
         }
 
+        // Presentation adapters can restore the original layout at the CURRENT
+        // resolution after removing a reversible skin. Cached rectangles from
+        // an earlier orientation must never become live pointer geometry.
+        public void InvalidatePresentationLayout() => hasGeometry = false;
+
         private void LateUpdate() => SynchronizeNow();
 
         /// <summary>Explicit native QA sync after temporary canvas resolution

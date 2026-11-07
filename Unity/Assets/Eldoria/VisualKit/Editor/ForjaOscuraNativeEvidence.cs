@@ -187,6 +187,7 @@ namespace Eldoria.VisualKit.Editor
             public float minGraphicHeightPx;
             public float buildingCardClearancePx;
             public bool buildingCardWasVisible;
+            public float contextMinTargetPx;
             public bool hasFiveVisibleActions;
         }
 
@@ -253,6 +254,7 @@ namespace Eldoria.VisualKit.Editor
             // or it physically obscures the user's live bottom destinations.
             float cardClearancePx = -1f;
             bool cardWasVisible = false;
+            float contextMinTargetPx = -1f;
             var v2 = hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
             if (v2 && v2.ChronicleIllustratedBuildingVisible &&
                 v2.ChronicleBuildingRect)
@@ -269,6 +271,21 @@ namespace Eldoria.VisualKit.Editor
                     nativeCamera, dockCorners[1]).y;
                 cardClearancePx = cardBottom - dockTop;
                 cardWasVisible = true;
+                contextMinTargetPx=float.PositiveInfinity;
+                var context=hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV3ContextHud>();
+                Need(context && context.VisibleCloseButton && context.VisibleActionButton,
+                    "Missing genuine contextual controls for native touch measurement");
+                foreach(var button in new[]{context.VisibleCloseButton,context.VisibleActionButton})
+                {
+                    var corners=new Vector3[4];
+                    (button.transform as RectTransform).GetWorldCorners(corners);
+                    var a=RectTransformUtility.WorldToScreenPoint(nativeCamera,corners[0]);
+                    var b=RectTransformUtility.WorldToScreenPoint(nativeCamera,corners[1]);
+                    var c=RectTransformUtility.WorldToScreenPoint(nativeCamera,corners[3]);
+                    contextMinTargetPx=Mathf.Min(contextMinTargetPx,
+                        Mathf.Min(Vector2.Distance(a,b),Vector2.Distance(a,c)));
+                }
+                Need(contextMinTargetPx>=43.99f,"Context close/build target under 44px at "+width+"x"+height);
                 Need(cardClearancePx >= 0.5f,
                     "Native illustrated contextual card overlaps reflowed navigation " +
                     "at " + width + "x" + height + ": clearance=" +
@@ -283,6 +300,7 @@ namespace Eldoria.VisualKit.Editor
                 minGraphicHeightPx = minGraphicH,
                 buildingCardClearancePx = cardClearancePx,
                 buildingCardWasVisible = cardWasVisible,
+                contextMinTargetPx = contextMinTargetPx,
                 hasFiveVisibleActions = seen == 5
             };
         }
@@ -711,6 +729,10 @@ namespace Eldoria.VisualKit.Editor
             try
             {
                 skin.ApplyNow(true);
+                Canvas.ForceUpdateCanvases();
+                var pointerCamera=host.GetType().GetProperty("PlayerCamera")?.GetValue(host) as Camera;
+                Need(pointerCamera,"Canonical player camera missing for rendered offer click");
+                pointerCamera.Render();
                 Canvas.ForceUpdateCanvases();
                 Need(skin.ContextSkinned,"Forja not applied to the real building action");
                 var action=context.VisibleActionButton;

@@ -89,6 +89,7 @@ namespace Eldoria.VisualKit
             EnsureMobileResourceIconReadability();
             ReflowLiveLabels();
             ReflowLandscapeContext();
+            ReflowPortraitContext();
             // Canonical RoyalGoldV2Hud.LayoutNavigation and header layout run
             // EVERY LateUpdate and reset caption sizes, colors and raycast
             // graphics. Restyle these eight small live controls EVERY frame:
@@ -648,6 +649,44 @@ namespace Eldoria.VisualKit
                 EnsureReadable(label, 12f);
         }
 
+        private void ReflowPortraitContext()
+        {
+            if (!BuildingSkinned || !v2 || !v2.ChronicleBuildingRect || !hud.Navigation) return;
+            var card=v2.ChronicleBuildingRect;
+            var safe=card.parent as RectTransform;
+            var canvas=hud.GetComponent<Canvas>();
+            if(!safe || !canvas || safe.rect.height<=safe.rect.width) return;
+            foreach(Transform child in card)
+                if(child.name.StartsWith("Building / council ") && child.gameObject.activeSelf) return;
+            float scale=Mathf.Max(.01f,canvas.scaleFactor);
+            RememberNavigationGeometry(card);
+            float height=Mathf.Max(card.rect.height,202f/scale);
+            card.sizeDelta=new Vector2(card.sizeDelta.x,height);
+            float width=card.rect.width,p=14f/scale,left=96f/scale;
+            SetTextSlot(card,"V3 / engraved real building miniature",p,14f/scale,70f/scale,70f/scale,0);
+            SetTextSlot(card,"Selected building",left,10f/scale,width-left-50f/scale,28f/scale,16f);
+            SetTextSlot(card,"Real level",left,38f/scale,width-left-p,20f/scale,12f);
+            SetTextSlot(card,"Building / genuine offer cost",left,58f/scale,width-left-p,24f/scale,12f);
+            SetTextSlot(card,"Building / live state or countdown",left,82f/scale,width-left-p,34f/scale,12f);
+            SetTextSlot(card,"Scrollable real building details",p,118f/scale,width-2*p,
+                Mathf.Max(24f/scale,height-178f/scale),0);
+            var scroll=ImmediateChild(card,"Scrollable real building details");
+            if(scroll)
+                foreach(var label in scroll.GetComponentsInChildren<RoyalText>(true))
+                {
+                    RememberNavigationGeometry(label.rectTransform);
+                    label.rectTransform.sizeDelta=new Vector2(width-2*p-5f,label.rectTransform.sizeDelta.y);
+                    EnsureReadable(label,12f);
+                }
+            SetTextSlot(card,"Close selected building",width-48f/scale,4f/scale,44f/scale,44f/scale,0);
+            SetTextSlot(card,"Execute existing authorised offer",p,height-56f/scale,width-2*p,44f/scale,0);
+            SetTextSlot(card,"Building / accelerate one minute",p,height-56f/scale,(width-3*p)*.5f,44f/scale,0);
+            SetTextSlot(card,"Building / accelerate five minutes",(width+p)*.5f,height-56f/scale,(width-3*p)*.5f,44f/scale,0);
+            var action=ImmediateChild(card,"Execute existing authorised offer");
+            if(action)
+                foreach(var label in action.GetComponentsInChildren<RoyalText>(true)) EnsureReadable(label,14f);
+        }
+
         private void ReflowLandscapeContext()
         {
             if (!BuildingSkinned || !v2 || !v2.ChronicleBuildingRect || !hud.Navigation) return;
@@ -1023,6 +1062,11 @@ namespace Eldoria.VisualKit
 #endif
             }
             created.Clear();
+            if (v2)
+            {
+                v2.InvalidatePresentationLayout();
+                v2.SynchronizeNow();
+            }
         }
     }
 }
