@@ -85,6 +85,7 @@ namespace Eldoria.VisualKit
             // as a raycast/transition target in the same frame, not 50ms later.
             EnsureNavigationTargets();
             EnsureMobileNavigationTouchTargets();
+            EnsureMobileResourceIconReadability();
             // Avoid scanning text hierarchy and touching Graphic values every frame.
             if (forceLayoutRefresh || Time.unscaledTime >= nextStyleRefresh)
             {
@@ -337,6 +338,75 @@ namespace Eldoria.VisualKit
                 done++;
             }
             ResourceSkinned = done == sourceNames.Length;
+        }
+
+        /// <summary>
+        /// The canonical header's real resource icons are only 25 logical
+        /// units in portrait and 36 in landscape. At native 390/800 or
+        /// 390/900 Canvas scale that is 12px/16px, too small to recognize
+        /// wood/stone/food illustrations. Grow the same LIVE resource slots
+        /// only when physically tiny. In portrait, where numeric chips have
+        /// spare horizontal room, shift the existing value text so no icon
+        /// can cover a genuine number. In landscape expand only the new,
+        /// non-raycasting illustrated child mostly towards the free left edge.
+        /// </summary>
+        private void EnsureMobileResourceIconReadability()
+        {
+            if (!ResourceSkinned || !hud || !hud.Resources) return;
+            var canvas = hud.GetComponent<Canvas>();
+            var canvasRect = canvas ? canvas.transform as RectTransform : null;
+            if (!canvas || !canvasRect || canvas.scaleFactor <= .01f) return;
+            bool portrait = canvasRect.rect.height > canvasRect.rect.width;
+            string[] labels = { "Madera", "Piedra", "Comida" };
+            string[] sprites = { "res_madera", "res_piedra", "res_comida" };
+            RoyalText[] values = { hud.Resources.Wood, hud.Resources.Stone, hud.Resources.Food };
+            for (int i = 0; i < labels.Length; i++)
+            {
+                if (!values[i] || !values[i].gameObject.activeInHierarchy) continue;
+                var source = ImmediateChild(hud.Resources.transform, labels[i] + " icon") as RectTransform;
+                var icon = source ? ImmediateChild(source, "Forja / live " + sprites[i]) as RectTransform : null;
+                if (!source || !icon) continue;
+                float physicalWidth = source.rect.width * canvas.scaleFactor;
+                if (physicalWidth >= 24f)
+                {
+                    icon.offsetMin = new Vector2(-3f, -3f);
+                    icon.offsetMax = new Vector2(3f, 3f);
+                    continue;
+                }
+                if (portrait)
+                {
+                    float required = Mathf.Min(50f, Mathf.CeilToInt(24f / canvas.scaleFactor));
+                    if (required <= source.rect.width) continue;
+                    float increase = required - source.rect.width;
+                    var value = values[i].rectTransform;
+                    NeedResourceWidth(value, increase);
+                    RememberNavigationGeometry(source);
+                    RememberNavigationGeometry(value);
+                    source.sizeDelta = new Vector2(required, required);
+                    source.anchoredPosition = new Vector2(source.anchoredPosition.x,
+                        -(60f - required) * .5f);
+                    value.anchoredPosition = new Vector2(
+                        value.anchoredPosition.x + increase, value.anchoredPosition.y);
+                    value.sizeDelta = new Vector2(value.sizeDelta.x - increase,
+                        value.sizeDelta.y);
+                    icon.offsetMin = new Vector2(-3f, -3f);
+                    icon.offsetMax = new Vector2(3f, 3f);
+                }
+                else
+                {
+                    // Existing values retain their exact geometry; all extra
+                    // sprite area is decorative and cannot intercept taps.
+                    icon.offsetMin = new Vector2(-19f, -10f);
+                    icon.offsetMax = new Vector2(2f, 10f);
+                }
+            }
+        }
+
+        private static void NeedResourceWidth(RectTransform value, float consumed)
+        {
+            if (!value || value.rect.width - consumed < 48f)
+                throw new InvalidOperationException(
+                    "[FORJA] Cannot enlarge illustrated resource without clipping actual value");
         }
 
         private void EnsureNavigationTargets()
