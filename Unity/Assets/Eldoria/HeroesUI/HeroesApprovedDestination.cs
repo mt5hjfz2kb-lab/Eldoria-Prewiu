@@ -1503,9 +1503,9 @@ namespace Eldoria.HeroesUI
             float navCell=(navWidth-navGap*3f)/4f;
             float navLeft=(w-navWidth)*.5f;
             float navHeight=phoneLandscape?44f:illustratedDesktop?58f:
-                portraitLayout&&w<600f?64f:47f;
+                portraitLayout&&w<600f?76f:47f;
             float navY=h-footerH+(phoneLandscape?9f:illustratedDesktop?15f:
-                portraitLayout&&w<600f?9f:12f);
+                portraitLayout&&w<600f?6f:12f);
             var navBack=Button("Hall / nav return","VOLVER",navLeft,navY,navCell,navHeight,Close);
             HallControlArt(navBack.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navBack,12,navCell,navHeight,false);
@@ -1528,7 +1528,7 @@ namespace Eldoria.HeroesUI
                 });
             HallControlArt(navMarches.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navMarches,5,navCell,navHeight,false);
-            var navRelicary=Button("Hall / nav reliquary","RELICARIO\nPRÓXIMAMENTE",
+            var navRelicary=Button("Hall / nav reliquary","RELICARIO\nPRÓXIMO",
                 navLeft+(navCell+navGap)*3f,navY,navCell,navHeight,()=>{},false);
             HallControlArt(navRelicary.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navRelicary,7,navCell,navHeight,false);

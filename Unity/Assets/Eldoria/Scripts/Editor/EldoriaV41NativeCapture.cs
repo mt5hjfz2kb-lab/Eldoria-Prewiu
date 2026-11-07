@@ -649,7 +649,10 @@ namespace Eldoria.Editor
                             foreach(var navButton in hallNav){
                                 var cap=navButton.GetComponentsInChildren<Text>()
                                     .FirstOrDefault(t=>t.name==navButton.name+" label");
-                                Need(cap&&cap.text.IndexOf('\n')<0&&
+                                Need(cap&&(cap.text.IndexOf('\n')<0||
+                                    navButton.name=="Hall / nav reliquary"&&cap.text=="RELICARIO\nPRÓXIMO")&&
+                                    cap.preferredHeight<=cap.rectTransform.rect.height+1f&&
+                                    cap.preferredWidth<=cap.rectTransform.rect.width+1f&&
                                     cap.rectTransform.rect.width>=64f&&
                                     !cap.resizeTextForBestFit&&cap.fontSize>=14&&
                                     -cap.rectTransform.anchoredPosition.y+
@@ -658,7 +661,7 @@ namespace Eldoria.Editor
                                     -navButton.GetComponent<RectTransform>().anchoredPosition.y+
                                         navButton.GetComponent<RectTransform>().rect.height<=
                                         heroes.VisibleRoot.rect.height-8f,
-                                    "Portrait Hall footer captions are one-line with usable pixel width "+name);
+                                    "Portrait Hall footer captions and locked-state notice fully fit usable pixel area "+name);
                             }
                         }
                         var navIcons=heroes.VisibleRoot
