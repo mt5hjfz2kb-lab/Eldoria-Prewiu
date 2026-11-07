@@ -201,7 +201,7 @@ jobs:
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed'}
           $v=& $env:UNITY_EDITOR_PATH -version
           if($v -notmatch '6000\.3\.23f1'){throw "Unity version mismatch: $v"}
-      - name: Reassemble exact 41 visual resources and 7 C-sharp inputs
+      - name: Reassemble exact 42 visual resources and 7 C-sharp inputs
         shell: powershell
         run: |
           python (Join-Path $env:FORJA_THIN_SOURCE 'tools/forja-oscura/reconstruct.py')
@@ -244,6 +244,7 @@ jobs:
           name: forja-oscura-native-${{ github.sha }}-${{ github.run_id }}
           path: |
             forja-thin-native-source-${{ github.run_id }}/Unity/ForjaNativeEvidence/
+            forja-thin-native-source-${{ github.run_id }}/docs/evidence/valoria-reference-clean/native-*.png
             ${{ runner.temp }}/forja-native.log
           if-no-files-found: warn
           retention-days: 21

@@ -8,7 +8,7 @@
   "profile": "environment_composition",
   "visual_gate_state": "NATIVE_UI_WIP",
   "ai_authorship_policy": "required",
-  "diagnosis": "User rejected flat simple HUD and baroque copies, approved dark premium reference conditionally. 21 original procedural panel sprites plus 20 originally AI-generated isolated icon illustrations require actual Unity scene A/B and a documented professional art cycle. Do not equate mockup with Unity runtime.",
+  "diagnosis": "User rejected flat simple HUD and baroque copies, approved dark premium reference conditionally. 21 original procedural panel sprites plus 20 originally AI-generated isolated icon illustrations require actual Unity scene A/B and a documented professional art cycle. Do not equate mockup with Unity runtime. Added the previously generated painted metal frame as one separate candidate; original 41 resources retained. Fixed corners 144px / PPU600; real Unity comparison remains required.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -28,11 +28,11 @@
     "reference": "Owner-picked Eldoria reference image, conversation 2026-11-06"
   },
   "validation": {
-    "source_gate": "41 PNG unbundled, 55 original Unity GUIDs verified, provenance statement, no third party paid UI kit, no edits to game rules or incumbent PR163 HUD files. Pixel-exact match NOT assumed.",
+    "source_gate": "42 PNG including the exact existing AI-painted source; 55 original Unity GUIDs retained plus one new unique GUID. Nine procedural PNGs retain exact generator parity; painted PNG has independent pinned SHA and exact source-byte parity.",
     "final_gate": "Exact-head genuine Unity four pairs A/B, compare reference against actual screenshot for quality, verify navigation and all original inputs, keep resources/progression/persistence, both orientations, Android/WebGL, no visual or gameplay regression. Artist review separated from technical gates."
   },
   "art_approved": false,
   "physical_mobile_tested": false,
   "budget_eur": 0,
-  "notes": "PR173 Draft. Preserve sole native Unity runner reservation held by PR163 until official release. AI-generated icon assets are not external asset-store materials. Production candidates have not passed mobile profile or approval."
+  "notes": "PR173 Draft; current canonical Forja owner holds Windows revision8. Original source, game rules and published APK/WebGL unchanged; candidate art not yet approved."
 }
