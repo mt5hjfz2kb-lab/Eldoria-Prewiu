@@ -2,7 +2,7 @@
   "schema": 1,
   "round": "eldoria-closed-beta-bastion-i-v-1",
   "release_tag": "eldoria-beta-native325-frozen-20261107",
-  "state": "FREEZE_PENDING",
+  "state": "ARCHIVED_PRIVATE_DRAFT_NOT_DEPLOYED",
   "distribution_enabled": false,
   "archive_publication": "draft_only",
   "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
@@ -28,5 +28,10 @@
   "physical_mobile_tested": false,
   "telemetry_unity_instrumented": false,
   "telemetry_backend_live": false,
-  "notes": "Checksum pins only. Does not certify hosted playback or that Unity emits telemetry. Freeze draft is not an invite or a usable beta URL."
+  "notes": "Checksum pins only. Does not certify hosted playback or that Unity emits telemetry. Freeze draft is not an invite or a usable beta URL.",
+  "draft_release_id": 437784073,
+  "draft_release_asset_id": 721666860,
+  "draft_release_asset_size": 490319610,
+  "draft_release_asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
+  "draft_release_verified_at_utc": "2026-11-07T19:34:00Z"
 }
