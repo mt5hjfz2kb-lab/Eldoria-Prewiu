@@ -981,6 +981,7 @@ jobs:
             valoria-layered-source/docs/evidence/valoria-reference-clean/integration-art-*.png
             # Preserve the actual selected Engendro before/after mobile proof.
             valoria-layered-source/docs/evidence/valoria-reference-clean/integration-context-engendro-*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-city-barracks-phone-*.png
             valoria-layered-source/docs/evidence/valoria-reference-clean/web-integration-preflight.log
           if-no-files-found: warn
           retention-days: 30

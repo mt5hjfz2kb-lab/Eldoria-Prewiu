@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 320,
+  "revision": 321,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "PR163 native320: validate city Barracks actual 844x390 framing with a transient 8s Feedback toast, measured stable header / right-side quest boundary, >25% open height, portrait 390x844, full I-V native integration and 78+ PlayMode tests. Preserve world/Bastion, saves, rewards, clock; compile isolated WebGL only, no publication.",
+  "checks": "PR163 native321 after authorized chat handoff: verify landscape city Barracks with live action feedback at 844x390 and portrait 390x844, >25% measured open viewport and full target geometry; complete Unity I-V and 78+ PlayMode tests, 216+ EditMode; exact isolated WebGL build. Unchanged world/Bastion, saves, economy, timers. No publication.",
   "browser_backend": "windows"
 }
