@@ -441,6 +441,19 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return new WaitForSecondsRealtime(.4f);
    Check(()=>{int seconds=BastionProgressionCatalog.ForLevel(2).DurationSeconds;((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(seconds-1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().BastionLevel==1,"Bastion II completed before authored deadline");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().BastionLevel==2&&city.BastionTwo.activeSelf&&!city.BastionOne.activeSelf,"Bastion II visual/progression mismatch");},"Bastion II visual");
    h.Select("barracks");yield return null;
+   // Real 844x390 browser input exposed Barracks hidden behind the bottom
+   // context sheet: the top-left quest left just 3% unobstructed scene height.
+   // Capture the actual unbuilt plot before its normal construction command.
+   // Capture itself checks full model framing against the genuine rendered HUD.
+   Check(()=>{
+    Capture(h,"integration-city-barracks-phone-landscape.png",844,390,()=>{
+     var plot=h.FindTarget("barracks");Rect projected,visible;
+     Need(plot&&h.IsTargetFramed(plot.gameObject,out projected,out visible)&&
+      visible.height>.15f,"Landscape Barracks must fit beside the quest, above the bottom sheet");
+    });
+    Capture(h,"integration-city-barracks-phone-portrait.png",390,844);
+   },"Barracks construction plot fully visible in both phone orientations");
+   yield return null;
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"Barracks did not start");},"Royal barracks");
    yield return new WaitForSecondsRealtime(.4f);
    Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.BarracksBuildSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Parcels.RightBuilt.activeSelf,"Barracks model missing");h.Select("barracks");},"Royal barracks construction completed with native state");

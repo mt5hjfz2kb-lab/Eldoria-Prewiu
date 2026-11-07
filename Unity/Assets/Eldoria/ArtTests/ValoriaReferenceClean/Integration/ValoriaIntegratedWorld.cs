@@ -53,10 +53,17 @@ namespace Eldoria.ReferenceClean {
   Rect UIVisibleSceneViewport(){
    if(!Hud)return default;
    var v2=Hud.GetComponent<RoyalGoldV2Hud>();
-   // World targets are centered in the available RIGHT-hand scene. The top-left
-   // chapter parchment is not a full-width obstacle, but its real X footprint
-   // must remain excluded when a context cartouche occupies the lower edge.
-   return v2?v2.GetFreeSceneViewport(InWorld&&IsWorldTarget(Selected)):Hud.GetVisibleSceneViewport();
+   // A landscape phone's top-left chapter and bottom context sheet can overlap
+   // in Y without overlapping in X. Reserving BOTH as full-width bands left
+   // only 3% free height for the real Barracks plot at 844x390 (browser QA).
+   // The right-hand open scene must be usable for landscape city parcels too,
+   // without changing centered Bastion framing or portrait layouts.
+   bool cityParcelBesideQuest=!InWorld&&PlayerCamera&&PlayerCamera.aspect>1f&&
+    (Selected=="sawmill"||Selected=="barracks"||Selected=="granary"||
+     Selected=="upgrade-barracks"||Selected=="stoneworks");
+   bool worldBesideQuest=InWorld&&IsWorldTarget(Selected);
+   return v2?v2.GetFreeSceneViewport(worldBesideQuest||cityParcelBesideQuest):
+    Hud.GetVisibleSceneViewport();
   }
   IEnumerator Start(){
    city=GetComponent<ValoriaReferenceCleanGameplay>();

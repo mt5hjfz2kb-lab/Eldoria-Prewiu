@@ -1354,8 +1354,10 @@ namespace Eldoria.UI.RoyalGold.V2
         // method; an optional bool still has one parameter in reflection.
         public Rect GetFreeSceneViewport() => GetFreeSceneViewport(false);
 
-        // The world-only spatial exclusion is explicit. City views and
-        // existing HUD consumers continue to use their original contract.
+        // Explicit context mode reserves the measured left quest footprint
+        // for landscape world targets and selected city parcels. Reserving its
+        // entire Y band together with the lower card hid Barracks in browser QA.
+        // The no-argument API stays unchanged for existing UI consumers.
         public Rect GetFreeSceneViewport(bool sideBySideWorldContext)
         {
             Rect free = Source ? Source.GetVisibleSceneViewport() : new Rect(.07f, .12f, .86f, .78f);
@@ -1392,12 +1394,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
                 else if (sideBySideWorldContext && buildingVisible && objectiveCard)
                 {
-                    // Real World targets focus to the right of the compact
-                    // top-left quest. Exclude only that quest's measured X
-                    // footprint; excluding its whole Y band together with
-                    // the bottom context card left ~3% scene height in the
-                    // active Engendro march on a landscape phone.
-                    // No control, save, clock, or world geometry is changed.
+                    // World targets AND selected city parcels focus to the
+                    // right of this compact left quest. Its measured X footprint
+                    // is the only obstruction; a full-width Y exclusion plus
+                    // the bottom cartouche leaves Barracks just 3% free height.
+                    // No controls, saves, clocks or geometry are changed.
                     float questRight=(objectiveCard.anchoredPosition.x+
                         objectiveCard.rect.width)/width+padding;
                     free.xMin=Mathf.Max(free.xMin,questRight);
