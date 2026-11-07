@@ -214,6 +214,8 @@ jobs:
           persist-credentials: false
       - name: Generate nine independent RGBA 9-slice textures from reproducible artwork code
         run: node tools/forja-oscura/build-premium-sprites.js "$RUNNER_TEMP/forja-premium-art"
+      - name: Verify every original metal engraving stays inside the fixed nine-slice corners
+        run: node tools/forja-oscura/check-premium-corner-safety.js
       - name: Confirm exact bit depth, alpha and PNG completeness
         run: |
           python3 - <<'PY'
