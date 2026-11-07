@@ -28,7 +28,22 @@ let startupProgressBucket=-1;''',
     for before,after in replacements.items():
         assert text.count(before)==1, f'unexpected bootstrap: {before}'
         text=text.replace(before,after)
+    text=text.replace('button.textContent = "Diagnóstico";','button.textContent = "Diagnóstico v3";')
+    text=text.replace('add("boot", typeOfNavigation());','add("boot", typeOfNavigation()); add("diagnostic", "v3");')
     play.write_text(text)
+    # Content-addressed script prevents reuse of a previous bootstrap in HTTP cache.
+    import hashlib
+    name='play-'+hashlib.sha256(text.encode()).hexdigest()[:16]+'.js'
+    (out/name).write_text(text)
+    index=out/'index.html'
+    html=index.read_text()
+    assert html.count('src="play.js"')==1
+    html=html.replace('src="play.js"','src="'+name+'"')
+    index.write_text(html)
+    # Fresh document URL also avoids an old cached HTML entry. Same directory/save scope.
+    (out/'diagnostico-v3.html').write_text(html)
+    assert (out/name).read_text()==play.read_text()
+
 
 if __name__=='__main__':
     import sys
