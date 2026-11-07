@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T22:17:32.169Z",
+  "updated_at": "2026-11-07T22:25:20.772Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6754,7 +6754,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-beta-pages-20261107",
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6768,16 +6768,14 @@
         ".github/workflows/eldoria-beta-native-memory.yml",
         "Unity/Assets/EldoriaBetaMemoryProbe/**"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "NATIVE_MEMORY_DIAGNOSIS_AFTER_PHYSICAL_CANDIDATE_FAILURE",
+      "phase": "NATIVE_MEMORY_PROBE_COMPLETE_CPU_COPY_AB_IN_PROGRESS",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Read-only isolated Editor memory probe of exact native325 source, temporary save scope, no build/publish/art modification. Measure startup terrain validation and runtime objects before selecting a macro fix.",
+      "next": "Native exact-source memory probe42420011329 succeeded and cleaned up its isolated Editor probe; Windows released. Original candidate1 physically fails iPhone after first frame. Compare pixel-identical readonly material texture candidate2 on Ubuntu, require sustained actual runtime and measured memory reduction before considering publication.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
