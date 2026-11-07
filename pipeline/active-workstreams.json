@@ -6754,9 +6754,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "IPHONE_DIAGNOSTIC_CACHE_DELIVERY_CORRECTION",
+      "phase": "IPHONE_90_PERCENT_FAILURE_PAYLOAD_AUDITED",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required.",
-      "next": "Verify v3 live script hash and fresh document; obtain first genuine startup checkpoint from iPhone. Do not claim iPhone crash fixed.",
+      "next": "Resolve exact build texture source mapping and prepare isolated mobile compression candidate; acquire legitimate native build reservation before compilation. Keep native325 original frozen; no more blind diagnostic replays.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6786,10 +6786,25 @@
           "run": 42416149076,
           "visible_label": "Diagnóstico v3",
           "note": "IMG5041 lacked startup markers; unversioned script cache risk corrected, iPhone crash unresolved"
+        },
+        "payload_audit": {
+          "texture_serialized_bytes": 1089250768,
+          "mesh_serialized_bytes": 231924472,
+          "bundle_uncompressed_bytes": 1354926684,
+          "live_decoded_chunk_hashes": "PASS",
+          "device_observation": "diagnosticv3 progress90 then involuntary boot1second later",
+          "root_cause": "memory pressure hypothesis, not iOS-profile-confirmed",
+          "fix_published": false
         }
       },
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta."
+      "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
+      "resource_request": {
+        "resource": "windows-runner-heavy",
+        "purpose": "isolated mobile startup memory/profile and optimized texture candidate; preserve native325 source and current interface work",
+        "status": "requested_not_acquired",
+        "must_not_interrupt": "eldoria-forja-oscura-visual-proof-20261107"
+      }
     }
   ],
   "history": [
