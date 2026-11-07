@@ -383,7 +383,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 local.y >= bounds.yMin - 36 && local.y <= bounds.yMax + 36;
         }
         private static Vector2 FitToSafe(Vector2 anchor, float width, float height,
-            RectTransform safe, float topExclusion, float bottomExclusion, bool above)
+            RectTransform safe, float topExclusion, float bottomExclusion, bool above,
+            Vector2? oppositeAnchor = null)
         {
             var bounds = safe.rect;
             float margin = 10f;
@@ -396,8 +397,12 @@ namespace Eldoria.UI.RoyalGold.V2
             // Prefer the vertical-slice relationship (action below, timer above).
             // Flip to the opposite side before clamping when that would
             // push a control over the navigation/heading safe zones.
-            float other = above ? anchor.y - height * .5f - 16f :
-                anchor.y + height * .5f + 14f;
+            // When the anchor is a projected silhouette edge, flipping must
+            // use the opposite edge. Reusing the roof edge placed a flipped
+            // timer directly over the building.
+            float oppositeY = oppositeAnchor.HasValue ? oppositeAnchor.Value.y : anchor.y;
+            float other = above ? oppositeY - height * .5f - 16f :
+                oppositeY + height * .5f + 14f;
             float minCenter = minBottom + height * .5f;
             float maxCenter = maxTop - height * .5f;
             if (maxCenter < minCenter) { minCenter = maxCenter = (minBottom + maxTop) * .5f; }
@@ -633,8 +638,11 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             float bottomMargin=Mathf.Max(88f,
                 Mathf.Clamp01(free.yMin)*safe.rect.height+10f);
+            Vector2 lowerEdge;
+            Vector2? oppositeEdge=CanProject(target,camera,safe,false,out lowerEdge)
+                ? lowerEdge : (Vector2?)null;
             var center=FitToSafe(screen,width,height,safe,
-                topMargin,bottomMargin,true);
+                topMargin,bottomMargin,true,oppositeEdge);
             timer.Root.anchorMin = timer.Root.anchorMax = timer.Root.pivot = new Vector2(.5f, .5f);
             timer.Root.anchoredPosition = center;
             Visible(timer.Visibility, true, false);

@@ -61,7 +61,20 @@ jobs:
             }
             core.setOutput('should_configure_pc',String(configurePC));
             core.setOutput('should_publish',String(requested));
+            // The new channel is promoted from an immutable, independently
+            // verified prepared package. Metadata closeout must not attempt
+            // the legacy main-only artifact protocol or upload a second copy.
+            if (cfg.delivery_controller === 'post-pr163-exact-package') {
+              if (requested || configurePC) throw Error('Use the exact-package controller for this channel; legacy promotion refused');
+              if (cfg.publish_enabled !== false || cfg.published?.revision !== 'native325' ||
+                  cfg.published?.remote_active_confirmed !== true)
+                throw Error('Invalid completed exact-package controller handoff');
+              core.setOutput('should_prepare','false');
+            } else {
+              core.setOutput('should_prepare','true');
+            }
       - name: Verify upstream QA and exact artifact, then download
+        if: steps.promotion.outputs.should_prepare == 'true'
         uses: actions/github-script@v7
         with:
           script: |
@@ -76,12 +89,15 @@ jobs:
             const bytes = await github.rest.actions.downloadArtifact({...context.repo,artifact_id:c.artifact_id,archive_format:'zip'});
             fs.writeFileSync('candidate.zip',Buffer.from(bytes.data));
       - name: Check original Unity hashes and adapt HTML5 transport
+        if: steps.promotion.outputs.should_prepare == 'true'
         run: python3 tools/delivery/prepare.py candidate.zip delivery-output
       - name: Verify decoded transport hashes and single-allocation Unity loading
+        if: steps.promotion.outputs.should_prepare == 'true'
         run: |
           node --check delivery-output/dist/play.js
           node tools/delivery/test-exact-decoded-transport.mjs delivery-output/dist
       - uses: actions/upload-artifact@v4
+        if: steps.promotion.outputs.should_prepare == 'true'
         with:
           name: eldoria-external-playtest-${{ github.run_id }}
           path: |
@@ -89,6 +105,7 @@ jobs:
             delivery-output/identity.json
           retention-days: 90
       - name: Report delivery boundary
+        if: steps.promotion.outputs.should_prepare == 'true'
         run: echo 'Package verified. This job does not certify publication or physical mobile play.' >> "$GITHUB_STEP_SUMMARY"
   publish:
     if: needs.prepare.outputs.should_publish == 'true'

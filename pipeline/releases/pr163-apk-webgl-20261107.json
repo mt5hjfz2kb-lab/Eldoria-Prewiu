@@ -5,18 +5,18 @@
   "budget_eur": 0,
   "purpose": "Actualizar el canal APK familiar y la WebGL existente con las correcciones aprobadas de PR163, sin incluir Forja Oscura en DRAFT ni alterar la partida.",
   "provenance": {
-    "revision": "native324",
-    "source_sha": "29f5e3a3686f80b77bced250c9bef67977a891e4",
+    "revision": "native325",
+    "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
     "merged_sha": "9efc0fefd447585f6867ab03ce2c41084b32adf2",
-    "unity_tree": "2903c64d0367821ce68c122541d0f6889f908059",
-    "native_run": 42367983297,
-    "native_artifact": "valoria-integrated-web-playtest-42367983297",
-    "native_digest": "sha256:b1ebe16cb7854e0203ef80650be907e4730af237ebfa78679d0e620973ef1f55",
-    "qa_run": 42373214530,
-    "qa_source_sha": "1d9c34a360544c817a0947f9d01bbf9820410288",
+    "unity_tree": "0fe12ba533b6aac5952d8c00654293ffe28147f4",
+    "native_run": 42391824345,
+    "native_artifact": "valoria-integrated-web-playtest-42391824345",
+    "native_digest": "sha256:0d3cd7384f413a817a2c26478b279594ac877c9d14532a58128eb49b676be078",
+    "qa_run": 42396852832,
+    "qa_source_sha": "a9550aaf5332a2ac3810880c37ab2d8dbdcf5adb",
     "qa_branch": "qa/pr163-webgl-evidence-20261107",
-    "qa_artifact": "pr163-real-windows-browser-42373214530",
-    "qa_digest": "sha256:95671a845229b5d3f087ede9f8e8ca66c8346465bff62567f370d8d958a916d5",
+    "qa_artifact": "pr163-real-windows-browser-42396852832",
+    "qa_digest": null,
     "qa_request_path": "tools/valoria-reference-clean/pr163-windows-browser-request.json",
     "qa_expected_complete": "I-II",
     "native_integrated_coverage": "I-V"
@@ -36,7 +36,9 @@
     "new_version_name": "1.22",
     "existing_source_sha": "e3d8347c5ea0aecf8c48f216d1599d2ca7704db9",
     "original_signing_certificate_sha256": "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
-    "publish_enabled": false
+    "publish_enabled": false,
+    "build_run": 42395466213,
+    "source_sha": "5b0769e4313d8f93b6dea1787e19a9ab3b87a95f"
   },
   "dependencies": {
     "require_pr177_merge_before_publish": true,
@@ -52,14 +54,12 @@
     "No Unity source build changes during packaging"
   ],
   "ownership_revision": 4,
-  "prepared_web": {
-    "run_id": 42383793241,
-    "source_sha": "1b80b8f9d15748e789726c5b51cbd42bf4fa2ca9",
-    "artifact_id": 13578463741,
-    "artifact_name": "eldoria-pr163-web-preview-42383793241",
-    "artifact_digest": "sha256:ef025d6c265e0c165b163cfec542ecbe5d4081c8b726f2d32ea598e4988f5eab",
-    "zip_sha256": "1484d43c4f3bfa23e4325add79be02826fbd989f3b3a46290a5dd3b4a24b3936"
-  },
-  "postmerge_ui_run": null,
-  "postmerge_ui_source": "7b07fc49ae507b3686ad2acb9564e9671435c595"
+  "prepared_web": null,
+  "postmerge_ui_run": 42389995761,
+  "postmerge_ui_source": "c3282a6e7a5dce04c0937dc149e09944120ab0ae",
+  "capture_fix": {
+    "source_sha": "acfdad16e4e38a86010e3f5a9977800c0b941be0",
+    "run_id": 42395390748,
+    "scope": "Exact Editor-only scale assertion; all player sources match native325. Full corrected native suite required."
+  }
 }

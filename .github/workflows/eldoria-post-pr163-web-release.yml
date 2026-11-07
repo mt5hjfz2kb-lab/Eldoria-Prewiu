@@ -20,6 +20,11 @@ jobs:
     timeout-minutes: 5
     outputs:
       publish: ${{ steps.gate.outputs.publish }}
+      source_sha: ${{ steps.gate.outputs.source_sha }}
+      native_run: ${{ steps.gate.outputs.native_run }}
+      revision: ${{ steps.gate.outputs.revision }}
+      prepared_run: ${{ steps.gate.outputs.prepared_run }}
+      prepared_artifact: ${{ steps.gate.outputs.prepared_artifact }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -59,20 +64,20 @@ jobs:
           python-version: '3.11'
       - name: Test release provenance gate and negative cases
         run: node --test tools/delivery/verified-merged-web-preflight.test.mjs
-      - name: Validate exact source, Chromium QA, current main and release owner
+      - name: Validate native source and release owner; gameplay QA required before publication
         env:
           GH_TOKEN: '${{ github.token }}'
         run: node tools/delivery/verified-merged-web-preflight.mjs
-      - name: Download original signed-off native324 WebGL without rebuilding
+      - name: Download original signed-off native325 WebGL without rebuilding
         uses: actions/download-artifact@v4
         with:
-          name: valoria-integrated-web-playtest-42367983297
-          run-id: 42367983297
+          name: valoria-integrated-web-playtest-${{ needs.preflight.outputs.native_run }}
+          run-id: ${{ needs.preflight.outputs.native_run }}
           github-token: '${{ github.token }}'
           path: native-raw
       - name: Rebuild the exact source-locked browser transport
         run: |
-          python3 tools/valoria-reference-clean/prepare_web.py native-raw prepared-site native324 29f5e3a3686f80b77bced250c9bef67977a891e4 42367983297
+          python3 tools/valoria-reference-clean/prepare_web.py native-raw prepared-site ${{ needs.preflight.outputs.revision }} ${{ needs.preflight.outputs.source_sha }} ${{ needs.preflight.outputs.native_run }}
           node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
       - name: Verify original hashes, adapt transport losslessly and enforce itch limits
         run: |
@@ -108,7 +113,7 @@ jobs:
           assert r['candidate']['native_run']==c['provenance']['native_run']
           assert r['original_unity_integrity'] and r['unity_decoded_bytes_unchanged']
           assert r['html5_extracted_bytes']<=c['web']['max_total_bytes']
-          p=Path('delivery-output/Eldoria-native324-itch.zip')
+          p=Path('delivery-output/Eldoria-native325-itch.zip')
           assert hashlib.file_digest(open(p,'rb'),'sha256').hexdigest()==r['zip_sha256']
           with zipfile.ZipFile(p) as z:
               names=z.namelist()
@@ -122,7 +127,7 @@ jobs:
         with:
           name: eldoria-pr163-web-preview-${{ github.run_id }}
           path: |
-            delivery-output/Eldoria-native324-itch.zip
+            delivery-output/Eldoria-native325-itch.zip
             delivery-output/identity.json
           if-no-files-found: error
           retention-days: 30
@@ -146,8 +151,8 @@ jobs:
           node-version: '22'
       - uses: actions/download-artifact@v4
         with:
-          name: eldoria-pr163-web-preview-42383793241
-          run-id: 42383793241
+          name: ${{ needs.preflight.outputs.prepared_artifact }}
+          run-id: ${{ needs.preflight.outputs.prepared_run }}
           github-token: '${{ github.token }}'
           path: package
       - name: Verify exact approved ZIP, contents, hashes and native transport
@@ -157,7 +162,7 @@ jobs:
           from pathlib import Path
           c=json.load(open('pipeline/releases/pr163-apk-webgl-20261107.json'))
           r=json.load(open('package/identity.json'))
-          p=Path('package/Eldoria-native324-itch.zip')
+          p=Path('package/Eldoria-native325-itch.zip')
           assert hashlib.file_digest(open(p,'rb'),'sha256').hexdigest()==r['zip_sha256']==c['prepared_web']['zip_sha256']
           assert r['unity_decoded_bytes_unchanged'] is True
           for k in ['source_sha','native_run','qa_run','qa_source_sha','revision']:
@@ -196,7 +201,7 @@ jobs:
           assert c['web']['target']=='chrismad/eldoria-pruebas' and c['web']['channel']=='web'
           assert os.environ.get('BUTLER_API_KEY'), 'Configured Butler credential unavailable'
           target=c['web']['target']+':web'
-          version='native324-'+c['prepared_web']['zip_sha256'][:12]
+          version='native325-'+c['prepared_web']['zip_sha256'][:12]
           receipt={'version':version,'target':target,'zip_sha256':c['prepared_web']['zip_sha256'],'upload_accepted':False,'remote_active':False,'physical_mobile_tested':False,'hosted_gameplay_verified':False}
           def save():Path('publish-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
           def status():
@@ -207,7 +212,7 @@ jobs:
           current=status()
           # An already uploaded or processing version is NEVER uploaded again.
           if version not in current:
-              subprocess.run(['butler-bin/butler','push','package/Eldoria-native324-itch.zip',target,'--userversion',version],check=True)
+              subprocess.run(['butler-bin/butler','push','package/Eldoria-native325-itch.zip',target,'--userversion',version],check=True)
               receipt['upload_accepted']=True;save()
           else:
               receipt['already_present']=True;save()

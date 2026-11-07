@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T15:23:15.124Z",
+  "updated_at": "2026-11-07T16:32:30.820Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -22,7 +22,7 @@
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "codex-release-a56bdf7714d0",
-      "branch": "fix/pr163-postmerge-v41-capture-scale-20261107",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-07T13:42:08.184Z",
       "base_main_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
@@ -47,7 +47,8 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/valoria-reference-clean.yml",
         "pipeline/valoria-convergence-cancel-stale-request.json",
-        "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs"
+        "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs",
+        ".github/workflows/pr163-windows-browser-qa.yml"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -57,7 +58,7 @@
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "PLAYER_AUDIT_POSTMERGE_UI_CERT_REPAIR",
-      "next": "Current release executor certifies existing PR177, merges exact repair, builds signed Android22; return Windows to Forja afterwards.",
+      "next": "Build native325 WebGL and signed APK22 from PR177 integrated source; repeat exact browser QA, publish verified bytes, restore Forja reservation.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1014,6 +1015,20 @@
           "main_unity_gate_run": 42374765769,
           "source_tree_equal_to_main_merge": true,
           "reviewed_at": "2026-11-07T13:18:05.901Z"
+        },
+        "post_pr163_release": {
+          "source_sha": "c3282a6e7a5dce04c0937dc149e09944120ab0ae",
+          "merge_sha": "b686b335072022cc1576b18256e4eab33703bf11",
+          "run_id": 42389995761,
+          "editmode": 216,
+          "playmode": 78,
+          "v41_captures": "PASS",
+          "three_marches": "PASS",
+          "v41_artifact": 13580809061,
+          "v41_digest": "sha256:57234133a256ff859a9698db796140db077c1b96c0c5d21a7edb466e1090acc5",
+          "physical_device_tested": false,
+          "art_approved": false,
+          "old_native324_release_discarded": true
         }
       },
       "previous_owner": "codex-player-audit-23287cf1c126",
@@ -2072,7 +2087,7 @@
           "reason": "Owner-authorized release prerequisite takeover and temporary Windows priority: certify existing PR177 without gameplay changes, then Android22."
         }
       ],
-      "ownership_revision": 160,
+      "ownership_revision": 161,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -6690,7 +6705,8 @@
         "docs/delivery/POST_PR163_RELEASE_20261107.md",
         "pipeline/android-updater-build-request.json",
         "pipeline/android-updater-release-request.json",
-        "pipeline/playtest-delivery.json"
+        "pipeline/playtest-delivery.json",
+        ".github/workflows/eldoria-itch-delivery.yml"
       ],
       "resources": [],
       "ownership_revision": 4,
@@ -6699,7 +6715,7 @@
       "phase": "WEB_PACKAGE_VERIFIED_NATIVE_CERTIFICATION_AND_SIGNED_ANDROID_PENDING",
       "authorization": "Explicit owner-directed takeover 2026-11-07: Asume tú ese trabajo y llévalo hasta su finalización. Continue PR178 until APK and WebGL delivered and verified.",
       "dependency": "PR177 native certificate remains absent. Forja PR173 Windows resource remains exclusively claimed rev4 even after runs42382877546 and42382921718 completed failure. Do not infer release from failed runs; no alternate signed Android builder exists on this Linux host. Need legitimate Windows handoff/owner prioritization to run PR177 then APK22.",
-      "next": "Resolve explicit resource priority/handoff without cancelling jobs or changing Forja code; PR178 exact package and promotion implementation are ready. Recheck live queue/registry, certify PR177, publish exact WebGL, build/sign/verify/publish Android22. User has already authorized both deliveries and this executor takeover.",
+      "next": "PR177 native987250a with actual V41 captures running42386532754; full216/78 on same Unity tree already passed42386206285 but skipped V41, so not release proof. Complete exact native run, merge, promote frozen WebGL, build/sign APK22. Prevent legacy controller duplicate processing on recorded new-channel state.",
       "ownership_history": [
         {
           "owner": "chatgpt-post-pr163-release-20261107",
@@ -6746,7 +6762,9 @@
         "current_guarded_preparation_run": 42384739308,
         "hosted_access": "Unauthenticated browser correctly denied by existing Restricted itch page; no hosted gameplay claim",
         "current_guarded_preparation_result": "SUCCESS42384739308; publish SKIPPED as explicitly disabled"
-      }
+      },
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Release packaging/signing of already integrated game, provenance checks and read-only CI. No authored/modified visual assets, scenes or runtime artwork."
     }
   ],
   "history": [

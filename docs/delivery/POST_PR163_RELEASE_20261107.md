@@ -6,7 +6,7 @@ Workstream-ID: eldoria-post-pr163-apk-webgl-release-20261107
 
 Actualizar la APK familiar y el canal WebGL existente con las mejoras integradas en main. Conservar guardados, firma Android original, acceso Restricted de itch.io y versiones anteriores. Presupuesto: 0 €. Forja Oscura PR173 no forma parte de esta entrega.
 
-Estado: compilación y comprobaciones en curso; publicación nueva todavía no verificada. La distribución y congelación específica para testers es un encargo separado.
+Estado: WebGL native325 compilada correctamente y225 comprobaciones de integración I–V PASS (tiempo acelerado); prueba Chromium42396852832 y APK42395466213 pendientes. Publicación nueva todavía no verificada. La distribución y congelación específica para testers es un encargo separado.
 
 ## Correcciones incorporadas y probadas
 
@@ -32,7 +32,7 @@ La validación general postmerge `42391771359` terminó SUCCESS, incluidos EditM
 
 El certificado main `42391771211` pasó V4.1, diálogos y tres marchas, pero falló en `EarlyRetentionNativeCapture`: esperaba todavía800/900 unidades en teléfonos, mientras el juego integrado usa600. Se corrigió únicamente la aserción dentro del callback de captura. No cambia arte, gameplay, escenas ni código de player.
 
-El gate de entrega admite exclusivamente ese cambio Editor con identidad exacta: blob `64a644923fbe7849043da2f2d997051ca4cbd1d9` → `2dcc4813b42a197dc093389285967ea15575d8c2`, ruta `Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs`. Rechaza cualquier otro cambio Unity. Además exige el certificado completo corregido de main `acfdad16e4e38a86010e3f5a9977800c0b941be0`, incluidas retención, diálogos, marchas y ambas suites; no basta con un run verde que omita esos pasos.
+El gate de entrega admite exclusivamente ese cambio Editor con identidad exacta: blob `64a644923fbe7849043da2f2d997051ca4cbd1d9` → `2dcc4813b42a197dc093389285967ea15575d8c2`, ruta `Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs`. Rechaza cualquier otro cambio Unity. Antes de publicar exige el certificado completo corregido de main `acfdad16e4e38a86010e3f5a9977800c0b941be0`, incluidas retención, diálogos, marchas y ambas suites; no basta con un run verde que omita esos pasos.
 
 La gobernanza rechazó un primer disparador del workflow sobre sí mismo. Se eliminó en `acfdad16`; el disparador legítimo es la solicitud nativa existente. Actions sustituyó automáticamente la solicitud Android pendiente42391824417 antes de iniciar ningún job; la petición code22 se repuso con fuente5b0769e. No se interrumpió ningún proceso nativo.
 
@@ -47,3 +47,5 @@ La gobernanza rechazó un primer disparador del workflow sobre sí mismo. Se eli
 El alojamiento Restricted no permite afirmar una partida en itch por acceso anónimo. La prueba Chromium sobre el paquete y la activación remota son evidencias distintas. No se ha realizado instalación física Android, rendimiento iPhone ni aprobación artística global.
 
 Medir geometría dentro del viewport sincronizado; comprobar que las capturas se ejecutan realmente; revisar expectativas históricas antes de cambiar producto; regenerar binarios tras cualquier arreglo runtime. Una excepción Editor exige ruta y blobs exactos, comprobación completa corregida y ninguna diferencia en código de player. Respetar la gobernanza de disparadores y la cola compartida entre builds.
+
+La preparación del ZIP no publica nada y puede solaparse con Windows QA. La promoción exige todos los certificados, el artefacto QA real y el ZIP exacto preparado. Diez pruebas locales verifican también que un recibo QA ausente permite únicamente preparación y siempre bloquea publicación.
