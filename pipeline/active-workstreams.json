@@ -6724,9 +6724,9 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-eldoria-private-beta-20261107",
+      "owner": "chatgpt-beta-pages-20261107",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6734,16 +6734,17 @@
         "tools/eldoria-private-beta/**",
         ".github/workflows/eldoria-private-beta-freeze.yml",
         "docs/eldoria-private-beta/**",
-        "pipeline/eldoria-private-beta/**"
+        "pipeline/eldoria-private-beta/**",
+        ".github/workflows/eldoria-beta-pages.yml"
       ],
       "resources": [],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "SAFE_FREEZE_DONE_EXACT_HASH_R2_ACCOUNT_CONNECTION_REQUIRED",
-      "note": "Solo distribución independiente; no modificar Unity ni APK/WebGL del canal de desarrollo. El usuario autorizó la preparación de beta privada; no publicar testers sin QA físico/hosted y sin acceso autorizado a Cloudflare.",
-      "next": "Owner connects Cloudflare account through secure browser or authorized integration. Then deploy private R2/Worker, real QA Worker→Supabase, full instrumented gameplay metrics and physical-device certification. Do not expose testers or alter game while blocked.",
+      "phase": "PUBLIC_PAGES_AUTHORIZED_PREPARATION",
+      "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required.",
+      "next": "Package exact native325 for headerless Pages, preserve current site, deploy and verify.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
