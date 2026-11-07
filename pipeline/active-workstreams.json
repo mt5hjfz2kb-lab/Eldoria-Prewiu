@@ -6762,7 +6762,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-beta-pages-20261107",
       "ownership_state": "claimed",
-      "ownership_revision": 5,
+      "ownership_revision": 6,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6775,16 +6775,19 @@
         ".github/workflows/eldoria-beta-mobile-candidate.yml",
         ".github/workflows/eldoria-beta-native-memory.yml",
         "Unity/Assets/EldoriaBetaMemoryProbe/**",
-        ".github/workflows/eldoria-beta-entry-qa.yml"
+        ".github/workflows/eldoria-beta-entry-qa.yml",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs"
       ],
       "resources": [],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "OWNER_DIAGNOSTIC3_LIVE_PHYSICAL_IPHONE_AND_RELOAD_PENDING",
+      "phase": "STRUCTURAL_STAGED_STARTUP_AFTER_PHYSICAL_CANDIDATE3_FAILURE",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Candidate3 published and live hash/landing checked, deployment42424439267. Await necessary owner physical iPhone startup result on mobile-v3.html; do not repeat candidate1. Initial entry60s observed at phone pixel ratio, but raw reload and Quit-then-reload timed out on SwiftShader, so save/reload remains blocked. External tester release remains false; native gameplay telemetry remains unconnected. No Windows resource held.",
+      "next": "Owner confirms candidate3 still returns after one second. Implement phased exact world initialization with readiness guard, release transient source-validation cache and eliminate redundant contact arrays. Require native compile/parity and actual WebGL memory tests before another owner retry.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6850,7 +6853,12 @@
         }
       },
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta."
+      "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
+      "resource_request": {
+        "resource": "windows-runner-heavy",
+        "status": "requested_not_acquired",
+        "purpose": "Exact staged-startup A/B native proof and WebGL build, after current owner releases; do not interrupt visual work"
+      }
     }
   ],
   "history": [
