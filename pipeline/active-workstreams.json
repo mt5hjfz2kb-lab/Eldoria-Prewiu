@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T00:18:00+01:00",
+  "updated_at": "2026-11-07T23:52:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6672,14 +6672,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
       "ownership_revision": 20,
       "write_scope_released": false,
-      "phase": "BREACHWATCH_INDEPENDENT_FIRST_NATIVE_CITY_SCREEN",
-      "next": "Build a new Unity Canvas hierarchy in BreachWatch/ and capture actual Valoria scene with Bastion selection, 4 resolutions, native data, real interactions; preserve historical Forja assets but do not reference or overlay their UI; no merge or publish.",
+      "phase": "BREACHWATCH_REAL_FIRST_SCREEN_TECH_PASS_ART_REJECTED",
+      "next": "Native first-screen proof completed. Do not expand or merge: replace the provisional flat procedural basalt/glpyhs with original detailed authored independent art components, correct mobile card composition, and repeat genuine Unity QA. Current QA evidence: docs/ui-v3/BREACH_WATCH_FIRST_SCREEN_20261108.md; original UI remains in product.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-07T18:54:22.588Z",
@@ -6750,23 +6748,22 @@
         ]
       },
       "last_verified": {
-        "source_sha": "cb8c659ee78c8e40b0ecd8c6dc298db5b9f723f7",
-        "native_run": 42417772857,
+        "source_sha": "1cea977b8ec67495bbbcbc7b31d38425e352c10c",
+        "native_run": 42427015492,
         "native_status": "SUCCESS",
-        "source_ci_run": 42417773032,
-        "screenshots": 12,
-        "artifact": 13592062245,
-        "navigation_rows": 1,
-        "visible_navigation_icons": 5,
-        "visible_navigation_labels": 0,
-        "three_unlocked_routes": true,
-        "context_close": true,
-        "build_and_isolated_save": true,
+        "screenshots": 8,
+        "artifact": 13596191419,
+        "independent_canvas": true,
+        "old_canvas_hidden": true,
+        "canonic_bastion_selected": true,
+        "new_navigation_real_pointer_clicks": 1,
+        "safe_preserved": true,
         "art_approved": false,
-        "platform_validated": false
+        "android_tested": false,
+        "webgl_tested": false
       },
-      "runner_released_at": "2026-11-07T21:54:54.500Z",
-      "runner_release_basis": "Native 42417772857 SUCCESS. No native work remaining for this navigation correction."
+      "runner_released_at": "2026-11-07T23:52:00Z",
+      "runner_release_basis": "Independent BreachWatch proof run 42427015492 completed successfully, exact source 1cea977b8ec67495bbbcbc7b31d38425e352c10c. Eight authentic Unity PNGs and one nav pointer passed; no art approval."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
