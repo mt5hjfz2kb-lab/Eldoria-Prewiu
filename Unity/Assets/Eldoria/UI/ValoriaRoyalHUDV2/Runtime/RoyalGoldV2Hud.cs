@@ -1367,6 +1367,38 @@ namespace Eldoria.UI.RoyalGold.V2
             // imaginary left rail that shifts the city/world away from centre.
             float width = Mathf.Max(1, safe.rect.width);
             float height = Mathf.Max(1, safe.rect.height);
+            // Transient RoyalHUD feedback stays non-empty for eight seconds.
+            // Its V1 viewport treats the toast's Y band as a permanent
+            // full-width obstacle, even while the player selects a city plot.
+            // On an 844x390 phone, this left just .16 of the screen between
+            // that toast and the real bottom cartouche; Barracks could not fit.
+            // Only landscape CITY parcel context may replace that transient
+            // cap with the actual stable full-width royal header boundary.
+            // The top-left quest is already excluded by its measured X span
+            // below. World, portrait, centered Bastion, and the legacy
+            // no-argument API continue to use their established contracts.
+            string selectedId=Source?Source.SelectedBuildingId:"";
+            bool cityParcelContext=sideBySideWorldContext&&!portrait&&buildingVisible&&
+                (selectedId=="sawmill"||selectedId=="barracks"||
+                 selectedId=="granary"||selectedId=="upgrade-barracks"||
+                 selectedId=="stoneworks");
+            if(cityParcelContext&&headerPlate&&Source&&!Source.NarrativeOpen)
+            {
+                var canvas=Source.GetComponent<Canvas>();
+                Camera camera=canvas&&canvas.renderMode!=RenderMode.ScreenSpaceOverlay?
+                    canvas.worldCamera:null;
+                Rect cameraPixels=camera?camera.pixelRect:
+                    new Rect(0,0,Screen.width,Screen.height);
+                if(cameraPixels.height>1f)
+                {
+                    var corners=new Vector3[4];
+                    headerPlate.GetWorldCorners(corners);
+                    float bottom=RectTransformUtility.WorldToScreenPoint(camera,corners[0]).y;
+                    float stableTop=Mathf.Clamp01(
+                        (bottom-cameraPixels.yMin)/cameraPixels.height-.012f);
+                    free.yMax=Mathf.Max(free.yMax,stableTop);
+                }
+            }
             // The measured 390x844 council now fits the full Bastion mesh
             // between the upper quest and physical lower ribbon. Keep a
             // positive 1.2% clearance instead of reserving an unnecessary

@@ -449,7 +449,7 @@ namespace Eldoria.ReferenceClean.Editor {
     Capture(h,"integration-city-barracks-phone-landscape.png",844,390,()=>{
      var plot=h.FindTarget("barracks");Rect projected=default,visible=default;
      bool framed=plot&&h.IsTargetFramed(plot.gameObject,out projected,out visible);
-     Need(framed&&visible.height>.15f,
+     Need(framed&&visible.height>.25f,
       "Landscape Barracks must fit beside the quest, above the bottom sheet"+
       " framed="+framed+" projected="+projected+" visible="+visible+
       " selected="+h.Selected+" aspect="+h.PlayerCamera.aspect+
