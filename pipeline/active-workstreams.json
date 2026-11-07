@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T14:50:55.887Z",
+  "updated_at": "2026-11-07T14:59:53.193Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6656,10 +6656,10 @@
     {
       "id": "eldoria-post-pr163-apk-webgl-release-20261107",
       "title": "Eldoria — entrega APK firmada y WebGL posterior a PR #163",
-      "owner": "chatgpt-post-pr163-release-20261107",
+      "owner": "codex-release-a56bdf7714d0",
       "branch": "release/post-pr163-apk-webgl-20261107",
       "status": "active",
-      "claimed_at": "2026-11-07T14:50:55.887Z",
+      "claimed_at": "2026-11-07T14:59:53.193Z",
       "scope": [
         "pipeline/releases/pr163-apk-webgl-20261107.json",
         ".github/workflows/eldoria-post-pr163-web-release.yml",
@@ -6671,11 +6671,11 @@
         "pipeline/playtest-delivery.json"
       ],
       "resources": [],
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "phase": "RELEASE_PROVENANCE_AND_SAFE_PACKAGE_PREPARATION",
-      "authorization": "El propietario solicita actualizar la APK instalada y la WebGL tras fusionar PR163 el 7/11/2026. Continuar sin introducir Forja Oscura PR173 en la distribución ni sustituir el guardado.",
+      "authorization": "Explicit owner-directed takeover 2026-11-07: Asume tú ese trabajo y llévalo hasta su finalización. Continue PR178 until APK and WebGL delivered and verified.",
       "dependency": "PR177 necesita certificación UI real; Windows ocupado con Forja Oscura PR173. No reclamar su recurso ni construir APK firmada antes de un relevo explícito; preparar paquete WebGL desde bytes nativos certificados, sin subirlo si cualquier gate de release falla.",
       "next": "Reuse exact native324 WebGL + Chromium QA for restricted HTML5 release; coordinate PR177 certified source and Forja Windows lease for signed Android code22; no Unity gameplay changes.",
       "ownership_history": [
@@ -6694,6 +6694,14 @@
           "to_revision": 3,
           "reason": "Safe coordinated return: the originally assigned release executor is still actively authoring release branch (latest HEAD e4d83a6adbdb625756d06dc14beb146b7645d1b4) and its Ubuntu WebGL verification is in progress. Avoid parallel writers and preserve that existing workflow; no Unity or release channels changed.",
           "transferred_at": "2026-11-07T14:50:55.887Z"
+        },
+        {
+          "previous_owner": "chatgpt-post-pr163-release-20261107",
+          "from_revision": 3,
+          "to_revision": 4,
+          "to_owner": "codex-release-a56bdf7714d0",
+          "transferred_at": "2026-11-07T14:59:53.193Z",
+          "reason": "Explicit owner instruction in current session: Asume tú ese trabajo y llévalo hasta su finalización. Preserve PR178 and existing runs; no duplicate release."
         }
       ]
     }
