@@ -1,0 +1,1 @@
+2026-11-07T10:30:00Z · Feature-branch-only publish of original nine-slice sprites; validates live Forja claim and never touches main or the Windows Unity runner.
