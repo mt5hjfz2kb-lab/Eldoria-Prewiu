@@ -23,8 +23,24 @@ def check_and_create(folder):
         raise ValueError("Unity report is not in the required native-captured state")
     if report.get("artApproved") is True:
         raise ValueError("This tool must not turn technical evidence into artistic approval")
-    if report.get("screenshotCount")!=8:
-        raise ValueError("Expected eight genuine screenshots in Unity evidence report")
+    if report.get("screenshotCount")!=8 or report.get("orientationsWithDifference")!=4:
+        raise ValueError("Expected eight screenshots and four native before/after changes")
+    if report.get("dataBefore") != report.get("dataAfter") or not report.get("dataBefore"):
+        raise ValueError("Actual player HUD values changed or were never sampled")
+    metrics={m.get("resolution"):m for m in report.get("nativeTouchTargets",[])}
+    regions={m.get("resolution"):m for m in report.get("uiRegionDifferences",[])}
+    if len(metrics)!=4 or len(regions)!=4:
+        raise ValueError("Unity evidence lacks four actual click-target and UI region measurements")
+    for w,h in RESOLUTIONS:
+        key=f"{w}x{h}"
+        measure=metrics.get(key, {})
+        diff=regions.get(key, {})
+        if not measure.get("hasFiveVisibleActions"):
+            raise ValueError(f"Unity failed to verify five working navigation hit targets at {key}")
+        if measure.get("minWidthPx",0)<44 or measure.get("minHeightPx",0)<44:
+            raise ValueError(f"Native touch area below 44px at {key}")
+        if diff.get("navigationChanged",0)<40 or diff.get("headerChanged",0)<40:
+            raise ValueError(f"Missing visible HUD change in a real native capture at {key}")
     artifacts={x["name"]:x.get("sha256") for x in report.get("artifacts",[])}
     if len(artifacts)!=8:
         raise ValueError("Missing native image hashes, cannot verify provenance")
@@ -109,7 +125,12 @@ def selftest():
                 (path/name).write_bytes(data)
                 artifacts.append({"name":name,"sha256":hashlib.sha256(data).hexdigest()})
         report={"status":"UNITY_NATIVE_CAPTURED_VISUAL_REVIEW_PENDING","screenshotCount":8,
-                "artApproved":False,"artifacts":artifacts}
+                "orientationsWithDifference":4,"dataBefore":"wood=500|stone=300",
+                "dataAfter":"wood=500|stone=300","artApproved":False,"artifacts":artifacts,
+                "nativeTouchTargets":[{"resolution":f"{w}x{h}","minWidthPx":50,
+                    "minHeightPx":48,"hasFiveVisibleActions":True} for w,h in RESOLUTIONS],
+                "uiRegionDifferences":[{"resolution":f"{w}x{h}",
+                    "navigationChanged":500,"headerChanged":450} for w,h in RESOLUTIONS]}
         (path/"ForjaNativeEvidence.json").write_text(json.dumps(report))
         page=check_and_create(path)
         assert page.is_file() and "__ROWS__" not in page.read_text()
@@ -117,7 +138,19 @@ def selftest():
         try:check_and_create(path)
         except ValueError:pass
         else:raise RuntimeError("Validator failed to reject corrupt source image")
-        print("FORJA_OFFLINE_VIEWER_SELFTEST_PASS; synthetic input discarded and NOT native evidence")
+        (path/artifacts[0]["name"]).write_bytes(tiny_png(RESOLUTIONS[0][0],RESOLUTIONS[0][1],(30,50,70)))
+        report["dataAfter"]="wood=999|stone=300"
+        (path/"ForjaNativeEvidence.json").write_text(json.dumps(report))
+        try:check_and_create(path)
+        except ValueError:pass
+        else:raise RuntimeError("Validator accepted gameplay data corruption")
+        report["dataAfter"]=report["dataBefore"]
+        report["nativeTouchTargets"][0]["minWidthPx"]=20
+        (path/"ForjaNativeEvidence.json").write_text(json.dumps(report))
+        try:check_and_create(path)
+        except ValueError:pass
+        else:raise RuntimeError("Validator accepted inaccessible tap target")
+        print("FORJA_OFFLINE_VIEWER_SELFTEST_PASS; rejects corrupt PNG, altered real data and small buttons; synthetic test data discarded")
 
 if __name__=="__main__":
     p=argparse.ArgumentParser()
