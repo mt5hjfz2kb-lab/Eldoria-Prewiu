@@ -523,12 +523,14 @@ namespace Eldoria.VisualKit
                 if (rect.childCount > 0 && rect.GetChild(0) is RectTransform medal)
                 {
                     RememberNavigationGeometry(medal);
-                    medal.sizeDelta = new Vector2(68f, 68f);
-                    medal.anchoredPosition = new Vector2(0f, 14f);
+                    // 60x60 fits the reflowed 92-unit touch cell without
+                    // covering the caption (both remain in the real cell).
+                    medal.sizeDelta = new Vector2(60f, 60f);
+                    medal.anchoredPosition = new Vector2(0f, 19f);
                     if (medal.childCount > 0 && medal.GetChild(0) is RectTransform glyph)
                     {
                         RememberNavigationGeometry(glyph);
-                        glyph.sizeDelta = new Vector2(52f, 52f);
+                        glyph.sizeDelta = new Vector2(48f, 48f);
                     }
                 }
                 if (item.Label)
