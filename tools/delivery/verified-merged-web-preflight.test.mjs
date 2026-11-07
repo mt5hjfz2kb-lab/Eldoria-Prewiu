@@ -68,3 +68,8 @@ test('unfinished QA permits unpublished preparation but never publication',()=>{
  assert.throws(()=>verifyRuns(pending,n,{...q,status:'queued',conclusion:null},a,b,req));
  assert.throws(()=>verifyRuns(pending,n,q,a,{...b,digest:null},req));
 });
+
+test('completed delivery must disable publication explicitly',()=>{
+ assert.throws(()=>verifyConfig({...c,web:{...c.web,delivery_complete:true,publish_enabled:true}}));
+ assert.doesNotThrow(()=>verifyConfig({...c,web:{...c.web,delivery_complete:true,publish_enabled:false}}));
+});
