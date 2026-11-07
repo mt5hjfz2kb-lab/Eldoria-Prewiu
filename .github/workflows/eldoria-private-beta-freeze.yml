@@ -79,10 +79,13 @@ jobs:
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             # An existing draft may be the successful result of a prior run.
             # Verify ALL asset metadata and refuse any conflicting bytes or public release.
-            gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" > "${{ runner.temp }}/existing-beta-release.json"
+            gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > "${{ runner.temp }}/existing-beta-releases.json"
             node --input-type=module -e '
               import fs from "node:fs";
-              const r=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+"/existing-beta-release.json","utf8"));
+              const all=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+"/existing-beta-releases.json","utf8"));
+              const matches=all.filter(x=>x.tag_name==="eldoria-beta-native325-frozen-20261107");
+              if(matches.length!==1)throw Error("Expected one exact draft release");
+              const r=matches[0];
               if(r.draft!==true || r.prerelease!==false ||
                  r.assets?.length!==1 ||
                  r.assets[0].name!=="Eldoria-Beta-1-native325-exact.zip" ||
