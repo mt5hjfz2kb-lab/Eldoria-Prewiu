@@ -2,7 +2,7 @@ const {chromium}=require('playwright');const fs=require('fs');
 (async()=>{
 fs.mkdirSync('qa-entry',{recursive:true});
 const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-dev-shm-usage']});
-const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:0.5});
+const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});
 const page=await context.newPage();const errors=[],logs=[];const report={physicalIphone:false,nickname:'Beta QA',errors,logs,stages:[]};
 page.on('pageerror',e=>errors.push(String(e)));page.on('crash',()=>errors.push('PAGE_CRASH'));page.on('console',m=>logs.push(m.text()));
 const shot=async(name)=>{const cdp=await context.newCDPSession(page);const s=await cdp.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false,fromSurface:true});fs.writeFileSync('qa-entry/'+name+'.png',Buffer.from(s.data,'base64'));await cdp.detach();};
