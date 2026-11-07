@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T20:06:00Z",
+  "updated_at": "2026-11-07T21:22:18.716Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6648,7 +6648,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Forja Oscura — sistema visual modular uGUI y prueba A/B real",
-      "owner": "codex-forja-498cad9fd409",
+      "owner": "codex-forja-171eb21ef5d3",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6671,10 +6671,10 @@
         "windows-runner-heavy"
       ],
       "ownership_state": "claimed",
-      "ownership_revision": 11,
+      "ownership_revision": 12,
       "write_scope_released": false,
-      "phase": "FORJA_NATIVE_PROOF_AND_CANONICAL_UI_REGRESSION",
-      "next": "Retain 12 native captures, verify canonical UI regression and prepare real visual review.",
+      "phase": "RECOVERED_FINISH_NATIVE_VALIDATION",
+      "next": "Validate recovered authored amber button and mobile navigation geometry in actual Unity, inspect comparable captures.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-07T18:54:22.588Z",
@@ -6707,6 +6707,12 @@
           "ownership_revision": 7,
           "transferred_at": "2026-11-07T19:48:13.200Z",
           "reason": "Explicit owner takeover in current session; preserve PR173 and failed native evidence, continue without repeating research."
+        },
+        {
+          "owner": "codex-forja-498cad9fd409",
+          "ownership_revision": 11,
+          "transferred_at": "2026-11-07T21:22:18.716Z",
+          "reason": "Owner requests takeover after interface chat froze; preserve PR173 and recover uncommitted painted button/layout fixes. No Forja run active."
         }
       ],
       "runner_priority_handoff": {
