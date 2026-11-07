@@ -143,6 +143,8 @@ namespace Eldoria.VisualKit.Editor
             public float minHeightPx;
             public float minGraphicWidthPx;
             public float minGraphicHeightPx;
+            public float buildingCardClearancePx;
+            public bool buildingCardWasVisible;
             public bool hasFiveVisibleActions;
         }
 
@@ -201,6 +203,35 @@ namespace Eldoria.VisualKit.Editor
                 seen++;
             }
             Need(seen == 5, "Native mobile pixel hit test could not find exactly five controls");
+
+            // Unlike a source-only geometry model, this compares FINAL native
+            // screen-space card/dock corners after actual Unity camera render.
+            // The V2 bottom card normally aligns to the original one-row dock;
+            // a wider two-row Forja layout must push it above the new dock
+            // or it physically obscures the user's live bottom destinations.
+            float cardClearancePx = -1f;
+            bool cardWasVisible = false;
+            var v2 = hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
+            if (v2 && v2.ChronicleIllustratedBuildingVisible &&
+                v2.ChronicleBuildingRect)
+            {
+                var dock = hud.Navigation.transform as RectTransform;
+                Need(dock != null, "Real bottom dock missing during context overlap proof");
+                var cardCorners = new Vector3[4];
+                var dockCorners = new Vector3[4];
+                v2.ChronicleBuildingRect.GetWorldCorners(cardCorners);
+                dock.GetWorldCorners(dockCorners);
+                float cardBottom = RectTransformUtility.WorldToScreenPoint(
+                    nativeCamera, cardCorners[0]).y;
+                float dockTop = RectTransformUtility.WorldToScreenPoint(
+                    nativeCamera, dockCorners[1]).y;
+                cardClearancePx = cardBottom - dockTop;
+                cardWasVisible = true;
+                Need(cardClearancePx >= 0.5f,
+                    "Native illustrated contextual card overlaps reflowed navigation " +
+                    "at " + width + "x" + height + ": clearance=" +
+                    cardClearancePx + "px");
+            }
             return new UiTouchMetric {
                 resolution = width + "x" + height,
                 smallestDestination = worst,
@@ -208,6 +239,8 @@ namespace Eldoria.VisualKit.Editor
                 minHeightPx = minH,
                 minGraphicWidthPx = minGraphicW,
                 minGraphicHeightPx = minGraphicH,
+                buildingCardClearancePx = cardClearancePx,
+                buildingCardWasVisible = cardWasVisible,
                 hasFiveVisibleActions = seen == 5
             };
         }
