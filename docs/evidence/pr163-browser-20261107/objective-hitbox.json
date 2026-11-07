@@ -1,0 +1,136 @@
+{
+  "source_run": 42311510485,
+  "source_sha": "9212acf16abd112606c4b2c637896178f2485305",
+  "click": {
+    "elapsed_s": 573.556,
+    "kind": "click",
+    "label": "objective",
+    "css": {
+      "x": 211.2500152587891,
+      "y": 69.54998779296878
+    },
+    "held_ms": 90,
+    "before": {
+      "width": 844,
+      "height": 390,
+      "inWorld": true,
+      "selected": "",
+      "objective": "b1.gather-wood",
+      "narrative": false,
+      "revision": 7,
+      "wood": 270,
+      "stone": 150,
+      "sawmill": 1,
+      "barracks": 0,
+      "bastion": 1,
+      "trained": 0,
+      "configured": false,
+      "scout": false,
+      "engendro": false,
+      "busy": false,
+      "march": "idle",
+      "target": "",
+      "camera": {
+        "x": 1018,
+        "y": 109.30070495605469,
+        "z": -86.84757232666016,
+        "zoom": 64
+      },
+      "framing": {
+        "pass": false,
+        "projected": [],
+        "visible": []
+      },
+      "controls": {
+        "primary": {
+          "x": 422,
+          "y": 195,
+          "enabled": false
+        },
+        "close": {
+          "x": 422,
+          "y": 195,
+          "enabled": false
+        }
+      },
+      "management": null,
+      "save_sha256": "7e6b499bb7e1dfc455c2472256ba56c0c1bce892a937cffcbaeceb8d2ffab0fb"
+    }
+  },
+  "frames": [
+    {
+      "t": 572.875,
+      "sequence": 279,
+      "objective": "b1.gather-wood",
+      "selected": "",
+      "width": 844,
+      "height": 390,
+      "controls": {
+        "objective": {
+          "x": 211.25001525878906,
+          "y": 320.45001220703125,
+          "enabled": true
+        },
+        "primary": {
+          "x": 422,
+          "y": 195,
+          "enabled": false
+        },
+        "continue": {
+          "x": 422,
+          "y": 78.65000915527344,
+          "enabled": false
+        },
+        "close": {
+          "x": 422,
+          "y": 195,
+          "enabled": false
+        },
+        "world": {
+          "x": 489.7559814453125,
+          "y": 36.07501220703125,
+          "enabled": true
+        }
+      },
+      "inWorld": true
+    },
+    {
+      "t": 576.76,
+      "sequence": 280,
+      "objective": "b1.gather-wood",
+      "selected": "",
+      "width": 844,
+      "height": 390,
+      "controls": {
+        "objective": {
+          "x": 312,
+          "y": 287.95001220703125,
+          "enabled": true
+        },
+        "primary": {
+          "x": 422,
+          "y": 195,
+          "enabled": false
+        },
+        "continue": {
+          "x": 422,
+          "y": 78.65000915527344,
+          "enabled": false
+        },
+        "close": {
+          "x": 422,
+          "y": 195,
+          "enabled": false
+        },
+        "world": {
+          "x": 572.1259765625,
+          "y": 36.40000915527344,
+          "enabled": true
+        }
+      },
+      "inWorld": true
+    }
+  ],
+  "conclusion": "UNVERIFIED",
+  "test_artifact_modified": false
+}
