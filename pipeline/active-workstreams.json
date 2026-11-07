@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T15:25:26.575Z",
+  "updated_at": "2026-11-07T15:46:50.636Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6690,7 +6690,8 @@
         "docs/delivery/POST_PR163_RELEASE_20261107.md",
         "pipeline/android-updater-build-request.json",
         "pipeline/android-updater-release-request.json",
-        "pipeline/playtest-delivery.json"
+        "pipeline/playtest-delivery.json",
+        ".github/workflows/eldoria-itch-delivery.yml"
       ],
       "resources": [],
       "ownership_revision": 4,
@@ -6699,7 +6700,7 @@
       "phase": "WEB_PACKAGE_VERIFIED_NATIVE_CERTIFICATION_AND_SIGNED_ANDROID_PENDING",
       "authorization": "Explicit owner-directed takeover 2026-11-07: Asume tú ese trabajo y llévalo hasta su finalización. Continue PR178 until APK and WebGL delivered and verified.",
       "dependency": "PR177 native certificate remains absent. Forja PR173 Windows resource remains exclusively claimed rev4 even after runs42382877546 and42382921718 completed failure. Do not infer release from failed runs; no alternate signed Android builder exists on this Linux host. Need legitimate Windows handoff/owner prioritization to run PR177 then APK22.",
-      "next": "Resolve explicit resource priority/handoff without cancelling jobs or changing Forja code; PR178 exact package and promotion implementation are ready. Recheck live queue/registry, certify PR177, publish exact WebGL, build/sign/verify/publish Android22. User has already authorized both deliveries and this executor takeover.",
+      "next": "PR177 native987250a with actual V41 captures running42386532754; full216/78 on same Unity tree already passed42386206285 but skipped V41, so not release proof. Complete exact native run, merge, promote frozen WebGL, build/sign APK22. Prevent legacy controller duplicate processing on recorded new-channel state.",
       "ownership_history": [
         {
           "owner": "chatgpt-post-pr163-release-20261107",
