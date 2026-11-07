@@ -200,12 +200,12 @@ jobs:
       - name: Reassemble exact 41 visual resources and 7 C-sharp inputs
         shell: powershell
         run: |
-          python $env:FORJA_THIN_SOURCE/tools/forja-oscura/reconstruct.py
+          python (Join-Path $env:FORJA_THIN_SOURCE 'tools/forja-oscura/reconstruct.py')
           if($LASTEXITCODE){throw 'Forja original archived sources are corrupt'}
-          python $env:FORJA_THIN_SOURCE/tools/forja-oscura/verify-production.py
+          python (Join-Path $env:FORJA_THIN_SOURCE 'tools/forja-oscura/verify-production.py')
           if($LASTEXITCODE){throw 'First-party Unity visual assets invalid'}
-          if(Test-Path '$env:FORJA_THIN_SOURCE/Unity/Assets/EldoriaVisualKit'){throw 'Legacy duplicate kit path detected'}
-          if(-not(Test-Path '$env:FORJA_THIN_SOURCE/Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs')){throw 'Native A-B entry missing'}
+          if(Test-Path (Join-Path $env:FORJA_THIN_SOURCE 'Unity/Assets/EldoriaVisualKit')){throw 'Legacy duplicate kit path detected'}
+          if(-not(Test-Path (Join-Path $env:FORJA_THIN_SOURCE 'Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs'))){throw 'Native A-B entry missing'}
       - name: Capture genuine Unity player HUD before and after
         shell: powershell
         run: |
@@ -231,7 +231,7 @@ jobs:
       - name: Build offline A-B viewer only from verified native screenshots
         shell: powershell
         run: |
-          python $env:FORJA_THIN_SOURCE/tools/forja-oscura/build-review.py $env:FORJA_THIN_SOURCE/Unity/ForjaNativeEvidence
+          python (Join-Path $env:FORJA_THIN_SOURCE 'tools/forja-oscura/build-review.py') (Join-Path $env:FORJA_THIN_SOURCE 'Unity/ForjaNativeEvidence')
           if($LASTEXITCODE){throw 'Native review page could not verify eight captured Unity PNG files'}
       - name: Preserve native log and eight images for independent visual review
         if: always()
