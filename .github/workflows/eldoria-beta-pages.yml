@@ -1,4 +1,4 @@
-name: Eldoria public beta mobile candidate Pages
+name: Eldoria owner diagnostic mobile candidate Pages
 on:
   push:
     branches: [main]
@@ -18,11 +18,11 @@ jobs:
     timeout-minutes: 30
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}beta-native325/mobile-v1.html
+      url: ${{ steps.deploy.outputs.page_url }}beta-native325/mobile-v3.html
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 966955bcd43fd5000bef9ef0aa3fffbbb56aaaaa
+          ref: a202f0d8516b336d2d027645b777245d8ad4ca00
           sparse-checkout: |
             tools/eldoria-private-beta
             tools/delivery
@@ -32,22 +32,33 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42418416629})).data;
-            if(r.conclusion!=='success'||r.head_sha!=='966955bcd43fd5000bef9ef0aa3fffbbb56aaaaa')throw Error('Candidate runtime QA not certified');
-            const a=(await github.rest.actions.listWorkflowRunArtifacts({...context.repo,run_id:42418416629})).data.artifacts.find(a=>a.name==='mobile-candidate-site');
-            if(a.id!==13592467764||a.digest!=='sha256:b34079f24eaa3a32c27280f30f498c7411a559e986d46e8e0bf2817cc7858552')throw Error('Candidate artifact identity mismatch');
+            const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42421746562})).data;
+            if(r.conclusion!=='success'||r.head_sha!=='a202f0d8516b336d2d027645b777245d8ad4ca00')throw Error('Candidate runtime QA not certified');
+            const a=(await github.rest.actions.listWorkflowRunArtifacts({...context.repo,run_id:42421746562})).data.artifacts.find(a=>a.name==='mobile-candidate-site');
+            if(a.id!==13594330882||a.digest!=='sha256:d5005a5fe4bc14349f45ac1dbbec2edb36d97f325afed6d5cdf84cfd77827939')throw Error('Candidate artifact identity mismatch');
+            const entry=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42423856431})).data;
+            if(entry.status!=='completed'||entry.conclusion!=='failure'||entry.head_sha!=='66ed601ce97b9e3f50e0377bb5716aca583cfe5f')throw Error('Unexpected diagnostic entry evidence');
+            const ea=(await github.rest.actions.listWorkflowRunArtifacts({...context.repo,run_id:42423856431})).data.artifacts.find(a=>a.name==='mobile-entry-evidence');
+            if(ea.id!==13595046430||ea.digest!=='sha256:3a1ef8037c0090555e2bf4b14b96f337803ad4e35f237ff82b10cc878c3c9551')throw Error('Entry evidence identity mismatch');
+            core.warning('DIAGNOSTIC ONLY: initial entry observed, reload failed; physical iPhone and external tester release NOT certified');
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42418416629
+          run-id: 42421746562
           name: mobile-candidate-site
           github-token: ${{ github.token }}
           path: site/beta-native325
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42418416629
+          run-id: 42421746562
           name: mobile-candidate-evidence
           github-token: ${{ github.token }}
           path: evidence
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42423856431
+          name: mobile-entry-evidence
+          github-token: ${{ github.token }}
+          path: entry-evidence
       - name: Validate candidate and preserve existing owner site
         run: |
           python -m pip install Brotli==1.2.1
@@ -57,12 +68,18 @@ jobs:
           report=json.loads(pathlib.Path('evidence/qa/report.json').read_text())
           assert {r['name'] for r in report}=={'original','mobile'}
           assert all(r['state']['ready'] and not r['failed'] and not r['errors'] for r in report)
+          entry=json.loads(pathlib.Path('entry-evidence/report.json').read_text())
+          assert entry['passed'] is False and not entry['errors']
+          assert any(stage['stage']=='after-name-60s' and stage['ready'] for stage in entry['stages'])
+          assert 'page.reload: Timeout' in entry['failure']
+          print('OWNER_DIAGNOSTIC_ONLY_RELOAD_UNVERIFIED',entry['failure'])
           identity=json.loads((p/'release-identity.json').read_text())
-          assert identity['revision']=='native325-mobile-candidate1'
-          assert identity['candidate_bundle_sha256']=='d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7'
+          assert identity['revision']=='native325-mobile-material3'
+          assert identity['candidate_bundle_sha256']=='60b43335bb263568dd366faca06ab0d648506dac31024342b1d4edefd8a7c315'
           assert identity['game_bytes_unchanged'] is False and identity['physical_mobile_tested'] is False
-          identity.update(runtime_verified=True,runtime_qa_run=42418416629,runtime_environment='Chromium SwiftShader 390x844 device scale 0.5; not a physical iPhone')
+          identity.update(runtime_verified=True,runtime_qa_run=42421746562,entry_observation_run=42423856431,entry_qa_passed=False,reload_verified=False,release_for_external_testers=False,release_purpose='owner diagnostic for physical iPhone startup failure',runtime_environment='Chromium SwiftShader 390x844 device scale 0.5; not a physical iPhone')
           (p/'release-identity.json').write_text(json.dumps(identity,indent=2))
+          (p/'mobile-v3.html').write_bytes((p/'index.html').read_bytes())
           (p/'mobile-v1.html').write_bytes((p/'index.html').read_bytes())
           spec=importlib.util.spec_from_file_location('prep','tools/eldoria-private-beta/prepare-pages.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
           previous=m.mirror_previous('site')
@@ -77,7 +94,7 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
-      - name: Publish owner-authorized mobile diagnostic candidate
+      - name: Publish owner diagnostic candidate - external tester release blocked
         id: deploy
         uses: actions/deploy-pages@v4
       - name: Verify live exact candidate
@@ -89,13 +106,13 @@ jobs:
           base=os.environ['SITE_URL'].rstrip('/')+'/beta-native325/'
           for n in range(12):
             try:
-              identity=json.load(urllib.request.urlopen(base+'release-identity.json?candidate1='+str(n),timeout=20))
-              assert identity['revision']=='native325-mobile-candidate1'
-              assert identity['candidate_bundle_sha256']=='d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7'
+              identity=json.load(urllib.request.urlopen(base+'release-identity.json?material3='+str(n),timeout=20))
+              assert identity['revision']=='native325-mobile-material3'
+              assert identity['candidate_bundle_sha256']=='60b43335bb263568dd366faca06ab0d648506dac31024342b1d4edefd8a7c315'
               assert identity['runtime_verified'] is True and identity['physical_mobile_tested'] is False
-              html=urllib.request.urlopen(base+'mobile-v1.html?check='+str(n),timeout=20).read()
+              html=urllib.request.urlopen(base+'mobile-v3.html?check='+str(n),timeout=20).read()
               assert b'Entrar en Valoria' in html
-              print('LIVE_MOBILE_CANDIDATE_IDENTITY_PASS',base+'mobile-v1.html');break
+              print('LIVE_MOBILE_CANDIDATE_IDENTITY_PASS',base+'mobile-v3.html');break
             except Exception:
               if n==11:raise
               time.sleep(5)
