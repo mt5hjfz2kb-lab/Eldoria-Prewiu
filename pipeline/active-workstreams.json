@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T19:02:18.646Z",
+  "updated_at": "2026-11-07T19:05:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6711,6 +6711,29 @@
           42395390748
         ]
       }
+    },
+    {
+      "id": "eldoria-private-beta-i-v-20261107",
+      "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
+      "owner": "chatgpt-eldoria-private-beta-20261107",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "status": "active",
+      "branch": "feature/eldoria-private-beta-i-v-20261107",
+      "scope": [
+        "tools/eldoria-private-beta/**",
+        ".github/workflows/eldoria-private-beta-freeze.yml",
+        "docs/eldoria-private-beta/**",
+        "pipeline/eldoria-private-beta/**"
+      ],
+      "resources": [],
+      "claimed_at": "2026-11-07T19:05:00Z",
+      "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
+      "budget_eur": 0,
+      "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
+      "phase": "SAFE_FREEZE_PREPARATION",
+      "note": "Solo distribución independiente; no modificar Unity ni APK/WebGL del canal de desarrollo. El usuario autorizó la preparación de beta privada; no publicar testers sin QA físico/hosted y sin acceso autorizado a Cloudflare."
     }
   ],
   "history": [
