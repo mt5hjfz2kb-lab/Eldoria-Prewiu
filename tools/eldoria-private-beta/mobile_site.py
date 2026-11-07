@@ -23,20 +23,21 @@ def pack_data(original,bundle,output):
     else:
      src.seek(offset);data=src.read(size);assert len(data)==size;out.write(data)
 
-def candidate(original_site,original_data,bundle,destination):
+def candidate(original_site,original_data,bundle,destination,revision='native325-mobile-candidate1'):
+ assert revision.replace('-','').isalnum()
  original_site=Path(original_site);out=Path(destination);out.mkdir(parents=True,exist_ok=True)
  # Shared engine/wrapper is copied byte-for-byte. Only the manifest and data differ.
  for p in original_site.rglob('*'):
   if not p.is_file() or 'payload-decoded' in p.parts:continue
   dest=out/p.relative_to(original_site);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
  raw=out/'candidate-data.bin';pack_data(original_data,bundle,raw)
- m=json.loads((out/'build-manifest.json').read_text());old=m['data'];m['data']='Build/ValoriaWebPlaytest.data.unityweb?candidate=astc-v1';m['decoded_sizes'].pop(old);m['decoded_parts'].pop(old)
+ m=json.loads((out/'build-manifest.json').read_text());old=m['data'];m['data']='Build/ValoriaWebPlaytest.data.unityweb?candidate='+revision;m['decoded_sizes'].pop(old);m['decoded_parts'].pop(old)
  m['decoded_sizes'][m['data']]=raw.stat().st_size;parts=[]
  with raw.open('rb') as f:
   while block:=f.read(16*1024*1024):
-   rel=f'payload-decoded/mobile-{len(parts)}.gz';p=out/rel;p.parent.mkdir(exist_ok=True);p.write_bytes(gzip.compress(block,compresslevel=6,mtime=0))
+   rel=f'payload-decoded/{revision}-{len(parts)}.gz';p=out/rel;p.parent.mkdir(exist_ok=True);p.write_bytes(gzip.compress(block,compresslevel=6,mtime=0))
    parts.append({'url':rel,'encoding':'gzip','decoded_bytes':len(block),'decoded_sha256':hashlib.sha256(block).hexdigest()})
- m['decoded_parts'][m['data']]=parts;m['delivery_adapter']='mobile-astc-candidate-v1';m['revision']='native325-mobile-candidate1'
+ m['decoded_parts'][m['data']]=parts;m['delivery_adapter']='mobile-astc-candidate-v1';m['revision']=revision
  raw.unlink();(out/'build-manifest.json').write_text(json.dumps(m,indent=2))
  identity=json.loads((out/'release-identity.json').read_text());identity.update(revision=m['revision'],game_bytes_unchanged=False,gameplay_code_unchanged=True,texture_payload_modified=True,physical_mobile_tested=False,runtime_verified=False,candidate=True)
  identity['decoded_files']=[{'path':p['url'],'decoded_sha256':p['decoded_sha256'],'decoded_bytes':p['decoded_bytes']} for parts in m['decoded_parts'].values() for p in parts]
