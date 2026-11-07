@@ -58,6 +58,7 @@ export function verifyConfig(c){
  assert(Number.isSafeInteger(p.qa_run)&&p.qa_run>0&&HEX.test(p.qa_source_sha)&&p.qa_branch==='qa/pr163-webgl-evidence-20261107'&&p.qa_artifact==='pr163-real-windows-browser-'+p.qa_run&&(DIGEST.test(p.qa_digest)||(!c.web?.publish_enabled&&p.qa_digest===null)),'invalid real QA source');
  assert(p.qa_request_path==='tools/valoria-reference-clean/pr163-windows-browser-request.json'&&p.qa_expected_complete==='I-II','incorrect QA protocol');
  assert(typeof w?.publish_enabled==='boolean','explicit publication flag required');
+ assert(w.delivery_complete!==true||w.publish_enabled===false,'completed delivery cannot publish again');
  assert(w?.provider==='itch.io'&&w.target==='chrismad/eldoria-pruebas'&&w.channel==='web'&&w.restricted===true&&w.max_total_bytes===500000000&&w.max_file_bytes===200000000,'invalid restricted HTML5 destination');
  assert(a?.existing_version_code===21&&a.new_version_code===22&&a.new_version_name==='1.22'&&HEX.test(a.existing_source_sha)&&DIGEST.test('sha256:'+a.original_signing_certificate_sha256),'unsigned or invalid version increment');
  assert(a.publish_enabled===false,'Android publishing must only use signed dedicated release pipeline');
@@ -90,6 +91,11 @@ const active=process.argv[1]===fileURLToPath(import.meta.url);
 if(active){
  const c=JSON.parse(fs.readFileSync(cfgPath,'utf8'));
  verifyConfig(c);
+ if(c.web.delivery_complete===true){
+  if(process.env.GITHUB_OUTPUT)fs.appendFileSync(process.env.GITHUB_OUTPUT,'publish=disabled\n');
+  console.log('ELDORIA_DELIVERY_COMPLETE_NO_BUILD_OR_PUBLICATION');
+  process.exit(0);
+ }
  const token=process.env.GH_TOKEN||process.env.GITHUB_TOKEN;
  assert(token,'GitHub action token unavailable');
  const headers={Authorization:'Bearer '+token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};

@@ -16,7 +16,7 @@
     "qa_source_sha": "a9550aaf5332a2ac3810880c37ab2d8dbdcf5adb",
     "qa_branch": "qa/pr163-webgl-evidence-20261107",
     "qa_artifact": "pr163-real-windows-browser-42396852832",
-    "qa_digest": null,
+    "qa_digest": "sha256:60395ec004feeffc1f4eb4a854a0f0e8efa40a524dd8f0d43112bab502cc3444",
     "qa_request_path": "tools/valoria-reference-clean/pr163-windows-browser-request.json",
     "qa_expected_complete": "I-II",
     "native_integrated_coverage": "I-V"
@@ -26,7 +26,7 @@
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
     "restricted": true,
-    "publish_enabled": false,
+    "publish_enabled": true,
     "max_total_bytes": 500000000,
     "max_file_bytes": 200000000
   },
@@ -54,7 +54,15 @@
     "No Unity source build changes during packaging"
   ],
   "ownership_revision": 4,
-  "prepared_web": null,
+  "prepared_web": {
+    "run_id": 42397405907,
+    "source_sha": "e4dbedaff72963203b72448cb29cdcbfcf82e9e1",
+    "artifact_id": 13583674142,
+    "artifact_name": "eldoria-pr163-web-preview-42397405907",
+    "artifact_digest": "sha256:2e1e34480eabd2f5134f09f2d17e57c98ca8d72a603cfe040549f218b789c80f",
+    "zip_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
+    "html5_extracted_bytes": 490317080
+  },
   "postmerge_ui_run": 42389995761,
   "postmerge_ui_source": "c3282a6e7a5dce04c0937dc149e09944120ab0ae",
   "capture_fix": {

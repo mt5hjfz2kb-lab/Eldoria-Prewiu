@@ -6,7 +6,7 @@ Workstream-ID: eldoria-post-pr163-apk-webgl-release-20261107
 
 Actualizar la APK familiar y el canal WebGL existente con las mejoras integradas en main. Conservar guardados, firma Android original, acceso Restricted de itch.io y versiones anteriores. Presupuesto: 0 €. Forja Oscura PR173 no forma parte de esta entrega.
 
-Estado: WebGL native325 compilada correctamente y225 comprobaciones de integración I–V PASS (tiempo acelerado); prueba Chromium42396852832 y APK42395466213 pendientes. Publicación nueva todavía no verificada. La distribución y congelación específica para testers es un encargo separado.
+Estado: WebGL native325 compilada correctamente y225 comprobaciones de integración I–V PASS (tiempo acelerado); APK42395466213 SUCCESS y verificada; prueba Chromium42396852832 SUCCESS; certificado completo42395390748 SUCCESS (216EditMode/78PlayMode,0fallos). Publicación nueva todavía no verificada. La distribución y congelación específica para testers es un encargo separado.
 
 ## Correcciones incorporadas y probadas
 
@@ -48,4 +48,18 @@ El alojamiento Restricted no permite afirmar una partida en itch por acceso anó
 
 Medir geometría dentro del viewport sincronizado; comprobar que las capturas se ejecutan realmente; revisar expectativas históricas antes de cambiar producto; regenerar binarios tras cualquier arreglo runtime. Una excepción Editor exige ruta y blobs exactos, comprobación completa corregida y ninguna diferencia en código de player. Respetar la gobernanza de disparadores y la cola compartida entre builds.
 
-La preparación del ZIP no publica nada y puede solaparse con Windows QA. La promoción exige todos los certificados, el artefacto QA real y el ZIP exacto preparado. Diez pruebas locales verifican también que un recibo QA ausente permite únicamente preparación y siempre bloquea publicación.
+La preparación del ZIP no publica nada y puede solaparse con Windows QA. La promoción exige todos los certificados, el artefacto QA real y el ZIP exacto preparado. Once pruebas locales verifican también que un recibo QA ausente permite únicamente preparación y siempre bloquea publicación.
+
+## Evidencia Android code22 descargada
+
+Build42395466213/source5b0769e4313d8f93b6dea1787e19a9ab3b87a95f SUCCESS. APK470244892bytes, SHA256f8fa1d3d0c9f8c6b170a31abcd8513d221e4ddb63586614322afa63b63a70e41; archivo de Actions13585415947 SHA256af2eadef1380b321a6c983dea60b77d0d922a7de3f32a56d4860464090ba5cba. Firma nativa y permiso de instalación verificados en build; descarga independiente con hash, CRC1120entradas y manifiesto de promoción PASS. Petición de build deshabilitada; todavía no publicada.
+
+Comprobación local del APK real con verify-apk-textures.py y UnityPy1.25.4:32texturas encontradas como ASTC4x4, dimensiones conservadas y hashes de las referencias coincidentes. Peor PSNR38.51dB/error medio1.90 sobre255 en scout-mission-vignettes-v4.png; su recorte central comparado visualmente sin deterioro aparente. Métricas de compresión, no aprobación artística ni prueba de teléfono.
+
+## WebGL Chromium normal-clock verificada
+
+Run42396852832 SUCCESS; artefacto13585239386 SHA25660395ec004feeffc1f4eb4a854a0f0e8efa40a524dd8f0d43112bab502cc3444 descargado, hash y CRC comprobados. Informe930.66segundos, Bastión I–II completo,10operaciones con duración normal, marchas/recompensas y movimiento visible, nombre introducido por teclado y guardado recargado idéntico SHA256d175b08141b7c8de781dcf4f34b7101106cd1723ccbaaae8654eeaab44c594a6.0errores runtime y0fallos de red.75capturas y vídeo continuo. Límite de75capturas alcanzado al final; la recarga queda en vídeo/telemetría. Capturas reales revisadas de construcción, entrenamiento y composición de marcha: controles visibles, pendientes artísticos existentes; no aprobación visual global. Carga local29.515s y recarga19.078s; no extrapolar a Internet ni teléfonos.
+
+Se inspeccionó además el último fotograma del vídeo: Bastión II, nombre y recursos1030madera/995piedra tras recarga. El WebM dura837.36s frente a930.66s de reloj de la prueba; sus timestamps no se equiparan a tiempo real. Las capturas directas del compositor son la referencia visual de cada evento. Persiste deuda estética de la interfaz existente (p. ej. rótulo Exploradores partido en portrait); no impide la progresión verificada y no se atribuye aprobación artística a esta entrega.
+
+Certificación corregida completa42395390748 finalizada SUCCESS:216EditMode y78PlayMode, retención, V4.1, diálogos, tres marchas, Aldric y escena I–II ejecutados. Windows devuelto al propietario de Forja tras cerrar todos los jobs nativos. Se habilita únicamente la promoción del ZIP native325 ya verificado; todavía se requiere recibo remoto ACTIVE antes de declarar publicación.
