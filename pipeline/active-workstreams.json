@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T19:05:00Z",
+  "updated_at": "2026-11-07T19:48:13.201Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6648,7 +6648,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Forja Oscura — sistema visual modular uGUI y prueba A/B real",
-      "owner": "codex-forja-completion-1b986b7673a3",
+      "owner": "codex-forja-498cad9fd409",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6668,7 +6668,7 @@
         "windows-runner-heavy"
       ],
       "ownership_state": "claimed",
-      "ownership_revision": 7,
+      "ownership_revision": 8,
       "write_scope_released": false,
       "phase": "NATIVE_UNITY_8_CAPTURE_AUTHORIZED_RUNNER_EXCLUSIVE",
       "next": "Resume exact PR173 native evidence, inspect real captures against approved reference and repair defects.",
@@ -6698,6 +6698,12 @@
           "ownership_revision": 6,
           "reason": "Owner explicitly requests this chat take over PR173 and finish existing interface, preserving research and evidence.",
           "transferred_at": "2026-11-07T19:07:57.373Z"
+        },
+        {
+          "owner": "codex-forja-completion-1b986b7673a3",
+          "ownership_revision": 7,
+          "transferred_at": "2026-11-07T19:48:13.200Z",
+          "reason": "Explicit owner takeover in current session; preserve PR173 and failed native evidence, continue without repeating research."
         }
       ],
       "runner_priority_handoff": {
