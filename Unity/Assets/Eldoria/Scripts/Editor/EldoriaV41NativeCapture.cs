@@ -243,6 +243,13 @@ namespace Eldoria.Editor
                 host.Hud.GetComponent<RoyalGoldV2Hud>()?.SynchronizeNow();
                 host.Hud.GetComponent<RoyalGoldV3ContextHud>()?.SynchronizeNow();
                 Canvas.ForceUpdateCanvases();
+                if(name=="building-council-desktop")
+                {
+                    var councilViewport=host.Hud.GetComponent<RoyalGoldV2Hud>().GetFreeSceneViewport();
+                    Need(councilViewport.height>.40f,
+                        "Centered royal Bastion retains enough vertical city camera space above the contextual council"+
+                        " capture="+name+" viewport="+councilViewport);
+                }
                 // A CanvasRenderer.depth/cull PASS is insufficient:
                 // oversized dynamic fonts can produce no rasterized glyphs.
                 // Check Unity's actual preferred layout height against the
@@ -903,9 +910,8 @@ namespace Eldoria.Editor
             // A centrally placed real Bastion must use the clear upper center
             // instead of treating the small top-LEFT quest as a full-width
             // obstruction. The lower council stays above the genuine dock.
-            var councilViewport=sheet.GetFreeSceneViewport();
-            Need(councilViewport.height>.40f,
-                "Centered royal Bastion retains enough vertical city camera space above the contextual council");
+            // Measure this contract in Shot's synchronized 1600x900 render,
+            // not in the batch editor's restored window after an 844x390 shot.
             Shot(host,"building-council-desktop",1600,900);
             // The native capture also verifies real castle silhouette
             // framing after its selection-only terrain-safe portrait fit.
