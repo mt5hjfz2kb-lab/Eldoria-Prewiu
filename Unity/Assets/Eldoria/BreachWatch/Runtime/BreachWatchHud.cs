@@ -210,8 +210,9 @@ namespace Eldoria.BreachWatch
             buildingState=Label(panel,"Real state and timer",13,TextAnchor.UpperLeft,Muted);
             var closeRect=BuildButton(panel,"Close selected building",BreachWatchGlyph.Sigil.Cross,()=>SelectBuilding(""));
             closeButton=closeRect.GetComponent<Button>();
-            actionButton=Button(Rect("Original gameplay action / new presentation",panel),SubmitSelectedBuilding);
-            actionPlate=Plate((RectTransform)actionButton.transform,BreachWatchPlate.PlateType.Action);
+            var actionRect=Rect("Original gameplay action / new presentation",panel);
+            actionPlate=Plate(actionRect,BreachWatchPlate.PlateType.Action);
+            actionButton=Button(actionRect,SubmitSelectedBuilding);
             actionPlate.raycastTarget=true;
             actionButton.targetGraphic=actionPlate;
             actionLabel=Label(actionButton.transform,"Real action title",17,TextAnchor.MiddleCenter,TextIvory,true);
