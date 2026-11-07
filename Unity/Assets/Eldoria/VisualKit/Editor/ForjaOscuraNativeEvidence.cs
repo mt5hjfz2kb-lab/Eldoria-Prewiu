@@ -251,6 +251,21 @@ namespace Eldoria.VisualKit.Editor
                     .FirstOrDefault(x=>x.Name=="CompleteProbePlayerName" && x.GetParameters().Length==1);
                 Need(nickname!=null,"Fixture name helper missing");
                 try{nickname.Invoke(null,new[]{(object)host});}catch(TargetInvocationException e){throw e.InnerException??e;}
+                // The first-entry flow can legitimately open a narrated
+                // tutorial after the name has been saved. Dismiss it ONLY
+                // via the existing visible RoyalButton and the canonical
+                // native raycast helper, never by changing a save flag or
+                // hiding an overlay for the sake of a screenshot.
+                var click=t.GetMethods(BindingFlags.NonPublic|BindingFlags.Static)
+                    .FirstOrDefault(x=>x.Name=="Click" && x.GetParameters().Length==1 &&
+                        x.GetParameters()[0].ParameterType==typeof(Button));
+                if (hud.NarrativeOpen) Need(click!=null,"Canonical real pointer click helper missing");
+                for (int page=0;page<24 && hud.NarrativeOpen;page++)
+                {
+                    try{click.Invoke(null,new object[]{hud.Modal.Extra});}
+                    catch(TargetInvocationException e){throw e.InnerException??e;}
+                }
+                Need(!hud.NarrativeOpen,"Genuine story must finish via real UI before Forja city A/B");
                 // Select a REAL resource-building parcel through the existing
                 // gameplay host, to make the contextual offer visible in BOTH
                 // native A and native B. Selection never executes the offer.
