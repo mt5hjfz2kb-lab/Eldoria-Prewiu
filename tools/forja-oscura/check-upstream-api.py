@@ -67,6 +67,9 @@ assert skin.is_file() and capture.is_file(),"FORJA_SOURCE_NOT_IN_PROJECT"
 assert "TrySkinV3Context" in skin.read_text() and "TrySkinResources" in skin.read_text()
 assert "CapturePrepared" in capture.read_text() and "VALORIA_GAMEPLAY_PROBE" in capture.read_text()
 assert "OnDestroy" in skin.read_text() and "originalButtonStyles" in skin.read_text()
+assert "EnsureReadable" in skin.read_text() and "originalFontSizes" in skin.read_text(), "MOBILE_FONT_FLOOR_OR_RESTORE_MISSING"
+assert "nativeReadability" in capture.read_text() and "minNavigationGlyphPx >= 12f" in capture.read_text(), "NATIVE_READABILITY_GATE_MISSING"
+assert "minResourceGlyphPx >= 13f" in capture.read_text() and "navigationLabelsFit" in capture.read_text(), "NATIVE_RESOURCE_OR_CLIPPING_GATE_MISSING"
 print(json.dumps({"status":"FORJA_UPSTREAM_CSHARP_API_CONTRACT_PASS",
  "assertions":checked+5,"sources":len(requirements),
  "unity_compiled":False,"unity_native_captured":False,"art_approved":False}))
