@@ -87,7 +87,7 @@ namespace UnityEngine.UI {
 namespace Eldoria.UI.RoyalGold {
   using UnityEngine;using UnityEngine.UI;
   public enum RoyalSection { Bastion,Inventory,Army,World,Missions }
-  public class RoyalText : Graphic { public string text {get;set;} }
+  public class RoyalText : Graphic { public string text {get;set;} public int fontSize {get;set;} public float preferredWidth=>0f; public float preferredHeight=>0f; public RectTransform rectTransform=>new RectTransform(); }
   public class RoyalIconGraphic:Graphic {}
   public class RoyalButton:Button {}
   public class RoyalHudLayout:Behaviour {}
