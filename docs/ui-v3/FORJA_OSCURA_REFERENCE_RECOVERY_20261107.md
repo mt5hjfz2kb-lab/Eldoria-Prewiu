@@ -20,3 +20,11 @@ Antes de promover el candidato: adaptar bordes de importación a sus esquinas re
 ## Continuidad
 
 Rama reconciliada con main eb1cc01725567a09ed49fb542a585885859067ad mediante 34a8b05f505be561a012461d6589b94937c06a68. Conserva las correcciones de temporizadores y entrenamiento de la publicación reciente. Sin merge de PR173 ni publicación de interfaz.
+
+## Continuación 498cad9fd409: candidato importable, sin aprobación
+
+Se conserva el raster exacto `31a073bc88213505795b37445983262b80b132d6b2249144abc26a385bef5447` como `Surfaces/panel_dark_painted.png`, sin resampling ni generación repetida. El original procedural permanece intacto. La skin de prueba selecciona la pieza pintada para cabecera, cartelas y base de navegación; el resto de controles y eventos conservan sus fuentes.
+
+Bordes fijos de 144 px y 600 PPU producen esquinas de 24 unidades de UI con Canvas reference PPU 100: dejan 24 unidades centrales incluso en el panel mínimo de 72. Esto evita estirar el metal de las esquinas. Se valida CRC, igualdad de bytes con el original, SHA-256 fijado, GUID único y acuerdo entre importador/meta. Las nueve superficies procedurales anteriores siguen pasando su comparación exacta sin excepciones. Estas pruebas NO demuestran el acabado en Unity: la revisión visual nativa sigue pendiente.
+
+La captura anterior omitía el enfoque canónico porque su callback `CapturePrepared` sustituye también la preparación de cámara. Se reproduce ahora `FindTarget → Focus → Render` del propio juego para ambas imágenes antes de sincronizar la skin. No se cambia cámara del producto ni se elimina la comprobación de solapamientos. La prueba del kit previo se conserva en run42408083695, source ef61b5082ddcc24e8dff4b3b35a21522ca7d78da.

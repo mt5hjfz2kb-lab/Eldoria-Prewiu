@@ -10,6 +10,7 @@ assets=root/"Unity/Assets/Eldoria/VisualKit"
 surfaces=assets/"Resources/ForjaOscura/Surfaces"
 code=(assets/"Editor/EldoriaVisualKitTextureImporter.cs").read_text()
 def expected(name):
+    if name=="panel_dark_painted": return (144,144,144,144,72)
     if name.startswith(("button_primary_","button_secondary_")): return (56,15,56,15,44)
     if name.startswith("nav_tile_"): return (48,22,48,22,65)
     if name in ("panel_dark","panel_light"): return (56,20,56,20,72)
@@ -23,7 +24,7 @@ def expected(name):
     raise AssertionError("Unknown Forja surface type: "+name)
 passed=0
 files=sorted(surfaces.glob("*.png"))
-assert len(files)==21, len(files)
+assert len(files)==22, len(files)
 for png in files:
     l,b,r,t,min_height=expected(png.stem)
     meta=png.with_name(png.name+".meta")
@@ -34,7 +35,9 @@ for png in files:
     actual=tuple(map(int,m.groups()))
     assert actual==(l,b,r,t), (png.name,actual,(l,b,r,t))
     assert "spriteMeshType: 0" in text,(png.name,"requires FullRect mesh")
-    if min_height: assert b+t<=int(min_height*.8), (png.name,"mobile center squeezed")
+    ppu=float(re.search(r"spritePixelsToUnits: ([0-9.]+)",text).group(1))
+    assert ppu==(600 if png.stem=="panel_dark_painted" else 100)
+    if min_height: assert (b+t)*100/ppu<=min_height*.8, (png.name,"mobile center squeezed")
     if l+b+r+t: assert f"new Vector4({l}, {b}, {r}, {t})" in code,(png.name,"importer stale")
     passed+=1
 print("FORJA_MOBILE_SLICED_SPRITE_IMPORT_PASS",passed)

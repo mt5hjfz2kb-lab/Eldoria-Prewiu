@@ -103,6 +103,9 @@ namespace Eldoria.VisualKit
 
         private Sprite Sprite(string group, string name)
         {
+            // The retained original plate stays in the kit for provenance.
+            // This authored raster keeps its corner metalwork inside fixed slices.
+            if (group == "Surfaces" && name == "panel_dark") name = "panel_dark_painted";
             string key = "ForjaOscura/" + group + "/" + name;
             if (!spriteCache.TryGetValue(key, out var result))
             {
