@@ -125,7 +125,7 @@ jobs:
         timeout-minutes: 28
         env:
           VALORIA_WEB_ROOT: ${{ github.workspace }}/qa-private-site/dist
-          VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/pr163-windows-browser-evidence
+          VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/pr163-windows-browser-evidence-${{ github.run_id }}-attempt-${{ github.run_attempt }}
           VALORIA_SOURCE_SHA: ${{ steps.source.outputs.source }}
           VALORIA_PLAYTEST_TIMEOUT_SECONDS: '1500'
           VALORIA_WEB_LOAD_TIMEOUT_SECONDS: '180'
@@ -136,6 +136,6 @@ jobs:
         if: always()
         with:
           name: pr163-real-windows-browser-${{ github.run_id }}
-          path: pr163-windows-browser-evidence/**
+          path: pr163-windows-browser-evidence-${{ github.run_id }}-attempt-${{ github.run_attempt }}/**
           if-no-files-found: warn
           retention-days: 14
