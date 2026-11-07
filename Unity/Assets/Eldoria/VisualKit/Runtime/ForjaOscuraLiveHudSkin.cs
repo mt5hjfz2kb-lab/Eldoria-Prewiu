@@ -38,6 +38,7 @@ namespace Eldoria.VisualKit
         private float nextStyleRefresh;
         private readonly Dictionary<Behaviour, bool> previousEnabled = new Dictionary<Behaviour, bool>();
         private readonly Dictionary<Graphic, Color> previousColors = new Dictionary<Graphic, Color>();
+        private readonly Dictionary<RoyalText, int> originalFontSizes = new Dictionary<RoyalText, int>();
         private readonly Dictionary<RoyalButton, UnityAction> navigationListeners = new Dictionary<RoyalButton, UnityAction>();
         private readonly Dictionary<Button, Graphic> previousTargets = new Dictionary<Button, Graphic>();
         private readonly List<GameObject> created = new List<GameObject>();
@@ -147,6 +148,31 @@ namespace Eldoria.VisualKit
             if (!graphic) return;
             if (!previousColors.ContainsKey(graphic)) previousColors.Add(graphic, graphic.color);
             graphic.color = color;
+        }
+
+        // The native capture's CanvasScaler can reduce 24pt text below
+        // usable mobile pixel sizes. Touch ONLY existing RoyalText presentation.
+        // Preserve original font sizes for a faithful reversible A/B test.
+        private void EnsureReadable(RoyalText label, float minimumPixels)
+        {
+            if (!label || !label.isActiveAndEnabled) return;
+            var canvas = hud.GetComponent<Canvas>();
+            if (!canvas) return;
+            var rect = label.rectTransform;
+            if (!rect || rect.rect.width <= 8f || rect.rect.height <= 8f) return;
+            float factor = Mathf.Max(.01f, canvas.scaleFactor);
+            int needed = Mathf.CeilToInt(minimumPixels / factor);
+            if (label.fontSize >= needed) return;
+            int original = label.fontSize;
+            if (!originalFontSizes.ContainsKey(label))
+                originalFontSizes.Add(label, original);
+            label.fontSize = needed;
+            // Do not trade microscopic text for clipping. If it does not fit,
+            // the native readability gate reports the unmet requirement.
+            while (label.fontSize > original &&
+                (label.preferredWidth > rect.rect.width - 4f ||
+                 label.preferredHeight > rect.rect.height - 2f))
+                label.fontSize--;
         }
 
         private void ReplaceButtonSurface(Button button, Sprite sprite, string elementName)
@@ -449,7 +475,11 @@ namespace Eldoria.VisualKit
                 {
                     if (item == null || !item.Button) continue;
                     var chosen = item.Section == selected;
-                    if (item.Label) Tint(item.Label, item.Button.interactable ? (chosen ? WarmGold : LightInk) : Faded);
+                    if (item.Label)
+                    {
+                        EnsureReadable(item.Label, 12f);
+                        Tint(item.Label, item.Button.interactable ? (chosen ? WarmGold : LightInk) : Faded);
+                    }
                     if (item.Button.transform.childCount == 0) continue;
                     var medal = item.Button.transform.GetChild(0);
                     if (medal.childCount == 0) continue;
@@ -489,9 +519,15 @@ namespace Eldoria.VisualKit
             }
             if (hud.Resources)
             {
+                EnsureReadable(hud.Resources.Wood, 13f);
                 Tint(hud.Resources.Wood, LightInk);
+                EnsureReadable(hud.Resources.Stone, 13f);
                 Tint(hud.Resources.Stone, LightInk);
-                if (hud.Resources.Food) Tint(hud.Resources.Food, LightInk);
+                if (hud.Resources.Food)
+                {
+                    EnsureReadable(hud.Resources.Food, 13f);
+                    Tint(hud.Resources.Food, LightInk);
+                }
             }
             if (ContextSkinned && context && context.ContextRect &&
                 (!v2 || context.ContextRect != v2.ChronicleBuildingRect))
@@ -508,6 +544,10 @@ namespace Eldoria.VisualKit
             if (ObjectiveSkinned)
             {
                 var card = v2.ChronicleObjectiveRect;
+                var chapter = ImmediateChild(card, "Chapter");
+                if (chapter) EnsureReadable(chapter.GetComponent<RoyalText>(), 13f);
+                var objective = ImmediateChild(card, "Current real objective");
+                if (objective) EnsureReadable(objective.GetComponent<RoyalText>(), 12f);
                 ColorizeDirect(card, "Chapter", WarmGold);
                 ColorizeDirect(card, "Current real objective", LightInk);
                 ColorizeDirect(card, "Objective progress", LightInk);
@@ -562,6 +602,8 @@ namespace Eldoria.VisualKit
                 if (pair.Key) pair.Key.enabled = pair.Value;
             foreach (var pair in previousColors)
                 if (pair.Key) pair.Key.color = pair.Value;
+            foreach (var pair in originalFontSizes)
+                if (pair.Key) pair.Key.fontSize = pair.Value;
             // The native A/B proof restores the skin and captures another frame
             // without advancing Unity's game loop. Destroy() would leave the
             // transient Image children alive through that same frame, causing
