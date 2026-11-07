@@ -1,0 +1,58 @@
+name: '[QA] PR163 actual Windows framed-world evidence'
+on:
+  push:
+    branches: [qa/pr163-webgl-evidence-20261107]
+    paths: ['.github/workflows/pr163-windows-failure-preview.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/pr163-windows-failure-preview.yml
+            /docs/evidence/pr163-windows-native317-20261107/
+      - uses: actions/download-artifact@v4
+        with:
+          name: pr163-real-windows-browser-42317742792
+          run-id: 42317742792
+          github-token: ${{ github.token }}
+          path: windows-report
+      - name: Extract only source-anchored actual screenshots and real UI telemetry
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,hashlib,shutil
+          root=Path('windows-report')
+          reports=list(root.rglob('report.json'))
+          if not reports:raise SystemExit('Exact real Windows browser report not preserved')
+          data=json.loads(reports[0].read_text(encoding='utf-8'))
+          imgs=sorted(p for p in root.rglob('*.jpg') if p.stat().st_size>2000)
+          selected=[p for p in imgs if any(tag in p.name for tag in ('framing-failure','barracks','selected','bastion'))]
+          selected=(selected[-5:]+imgs[-2:]) if selected else imgs[-5:]
+          seen=set()
+          out=Path('docs/evidence/pr163-windows-native317-20261107');out.mkdir(parents=True,exist_ok=True)
+          files=[]
+          for p in selected:
+           if str(p) in seen:continue
+           seen.add(str(p));t=out/('shot-'+str(len(files)+1)+'.jpg');shutil.copyfile(p,t)
+           files.append({'file':t.name,'source':p.name,'bytes':t.stat().st_size,'sha256':hashlib.sha256(t.read_bytes()).hexdigest()})
+          framings=data.get('selection_framing',[])
+          details={'source_sha':'4fdb95fdea71c05b28a6e2e28147fddcb0719c24',
+                   'browser_run_id':42317742792,'status':data.get('status'),
+                   'failures':data.get('failures',[])[:3],'checks':data.get('checks',{}),
+                   'selection_framing_last':framings[-4:] if isinstance(framings,list) else [],
+                   'actions_last':data.get('actions',[])[-6:],
+                   'images':files,'game_savedata_modified':False,'quality_approved':False}
+          (out/'diagnosis.json').write_text(json.dumps(details,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+          print(json.dumps({k:v for k,v in details.items() if k not in ('checks','selection_framing_last','actions_last')},ensure_ascii=False)[:2600])
+          PY
+          git config user.name 'eldoria-qa-bot'
+          git config user.email 'qa-bot@users.noreply.github.com'
+          git add docs/evidence/pr163-windows-native317-20261107/
+          git diff --cached --quiet || (git commit -m 'docs(qa): preserve actual Windows barracks framing failure images [skip ci]' && git push origin HEAD:qa/pr163-webgl-evidence-20261107)
