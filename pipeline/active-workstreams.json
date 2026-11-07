@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T22:04:46.714Z",
+  "updated_at": "2026-11-07T22:07:08.078Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6771,9 +6771,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "ISOLATED_ASTC_CANDIDATE_EXPERIMENT",
+      "phase": "MOBILE_CANDIDATE_LIVE_PHYSICAL_IPHONE_PENDING",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Pilot loss-controlled ASTC4x4 conversion of color textures in isolated copy, verify every untouched serialized object; run independent Ubuntu startup/render QA. No native Windows lease consumption or production binary overwrite.",
+      "next": "Owner physical iPhone startup validation on /beta-native325/mobile-v1.html; then normal gameplay/save/reload and explicit-consent browser/native telemetry. Do not invite testers yet. Candidate deployment42418899866 PASS, runtime42418416629 PASS; original frozen native325 preserved.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6812,6 +6812,16 @@
           "device_observation": "diagnosticv3 progress90 then involuntary boot1second later",
           "root_cause": "memory pressure hypothesis, not iOS-profile-confirmed",
           "fix_published": false
+        },
+        "mobile_candidate": {
+          "runtime_run": 42418416629,
+          "deploy_run": 42418899866,
+          "changed_textures": 58,
+          "objects_verified": 54338,
+          "serialized_texture_bytes_saved": 314268436,
+          "physical_iphone": false,
+          "qa_backend_real_insert": true,
+          "actual_unity_gameplay_events": 0
         }
       },
       "art_production_routing": "not_applicable",
