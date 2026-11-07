@@ -82,3 +82,21 @@ jobs:
         run: python3 tools/forja-oscura/check-upstream-api.py
       - name: Distinguish source compatibility from real Unity native proof
         run: echo "FORJA_SOURCE_API_PASS; does NOT imply Unity compile, screenshot, input or ART approval."
+
+  compile-runtime-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/forja-oscura
+            Unity/Assets/Eldoria/VisualKit
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: C-sharp semantic compile against a bounded UI API stub
+        run: dotnet build tools/forja-oscura/CompileContract.csproj --configuration Release --nologo
+      - name: Do not confuse stub types with Unity Editor binaries
+        run: echo 'FORJA_CSHARP_STUB_TYPECHECK_PASS. NOT Unity compile, real interaction or native screenshot.'
