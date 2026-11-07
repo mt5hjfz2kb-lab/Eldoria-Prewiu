@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 321,
+  "revision": 322,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "PR163 native321 after authorized chat handoff: verify landscape city Barracks with live action feedback at 844x390 and portrait 390x844, >25% measured open viewport and full target geometry; complete Unity I-V and 78+ PlayMode tests, 216+ EditMode; exact isolated WebGL build. Unchanged world/Bastion, saves, economy, timers. No publication.",
+  "checks": "PR163 exact native322 after safe ownership transfer: source candidate 64b6b6 + registered owner 157; retain 25%+ unobscured landscape city Barracks, portrait plot, genuine scene captures and unchanged world/Bastion. Full I-V, 216+ EditMode / 78+ PlayMode; isolated browser-ready WebGL only. Do not publish.",
   "browser_backend": "windows"
 }
