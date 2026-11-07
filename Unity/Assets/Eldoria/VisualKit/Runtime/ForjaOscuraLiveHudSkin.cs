@@ -34,6 +34,8 @@ namespace Eldoria.VisualKit
         private RoyalGoldV3ContextHud context;
         private RoyalSection selected = RoyalSection.Bastion;
         private RectTransform lastContextRect;
+        private RoyalGoldV3BuildingPreview nativePreview;
+        private Color originalPreviewBackdrop;
         private struct OriginalButtonStyle { public Selectable.Transition Transition; public SpriteState SpriteState; public ColorBlock Colors; }
         private readonly Dictionary<Button, OriginalButtonStyle> originalButtonStyles = new Dictionary<Button, OriginalButtonStyle>();
         private float nextStyleRefresh;
@@ -709,14 +711,14 @@ namespace Eldoria.VisualKit
             card.anchoredPosition = new Vector2((safe.rect.width-card.rect.width)*.5f-12f/scale,bottom);
             float width = card.rect.width, height = card.rect.height;
             float p = 14f/scale;
-            float pic = (heightPx < 300f ? 52f : 90f)/scale;
+            float pic = (heightPx < 300f ? 52f : 120f)/scale;
             SetTextSlot(card,"Selected building",p,12f/scale,width-62f/scale,30f/scale,18f);
             SetTextSlot(card,"Real level",p,42f/scale,width-2*p,20f/scale,12f);
             SetTextSlot(card,"V3 / engraved real building miniature",p,66f/scale,pic,pic,0);
             float textLeft = pic+26f/scale;
             SetTextSlot(card,"Building / genuine offer cost",textLeft,66f/scale,
                 width-textLeft-p,pic,14f);
-            float statusY = (heightPx < 300f ? 120f : 168f)/scale;
+            float statusY = (heightPx < 300f ? 120f : 202f)/scale;
             SetTextSlot(card,"Building / live state or countdown",p,statusY,width-2*p,34f/scale,13f);
             float bodyY = statusY+(heightPx < 300f ? 28f : 36f)/scale;
             SetTextSlot(card,"Scrollable real building details",p,bodyY,
@@ -785,8 +787,15 @@ namespace Eldoria.VisualKit
                     var oldRim = ImmediateChild(card, "Building / real nine-slice outline");
                     if (oldRim)
                         foreach (var g in oldRim.GetComponentsInChildren<Graphic>(true)) Hide(g);
-                    // The real building miniature remains untouched: it contains
-                    // the original Unity model/RenderTexture owned by the game.
+                    // Preserve genuine geometry and light; only the miniature's
+                    // old vellum backdrop adopts the dark panel material.
+                    nativePreview = card.GetComponentInChildren<RoyalGoldV3BuildingPreview>(true);
+                    if (nativePreview)
+                    {
+                        originalPreviewBackdrop = nativePreview.BackdropColor;
+                        nativePreview.SetBackdrop(new Color(.035f,.04f,.05f,1f));
+                        v2.SynchronizeNow();
+                    }
                     var primary = ImmediateChild(card, "Execute existing authorised offer");
                     if (primary)
                         ReplaceButtonSurface(primary.GetComponent<RoyalButton>(),
@@ -1062,6 +1071,7 @@ namespace Eldoria.VisualKit
 #endif
             }
             created.Clear();
+            if (nativePreview) nativePreview.SetBackdrop(originalPreviewBackdrop);
             if (v2)
             {
                 v2.InvalidatePresentationLayout();

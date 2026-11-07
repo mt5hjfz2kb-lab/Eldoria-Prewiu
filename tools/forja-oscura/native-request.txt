@@ -1,1 +1,1 @@
-PR173 44px contextual targets in portrait and landscape; canonical current-resolution restore; rendered genuine build pointer. Preserve diagnostic failures, no artistic certification from CI.
+PR173 art refinement after native PASS 42411196403: genuine thumbnail dark backdrop and larger desktop miniature. Same mesh/light/save; recapture exact candidate before review.

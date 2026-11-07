@@ -14,6 +14,13 @@ namespace Eldoria.UI.RoyalGold.V2
         RenderTexture texture;
         GameObject lastModel;
         string lastKey;
+        public Color BackdropColor { get; private set; } = new Color(.89f, .814f, .666f, 1);
+        public void SetBackdrop(Color color)
+        {
+            if (BackdropColor.Equals(color)) return;
+            BackdropColor = color;
+            lastKey = null; // Re-render the same cached canonical mesh once.
+        }
         public bool HasModelPreview => image && image.enabled && texture;
         public void Initialize(RawImage target) { image = target; image.raycastTarget = false; }
         public bool Show(string id, string level)
@@ -86,7 +93,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 camera.clearFlags = CameraClearFlags.SolidColor;
                 // Warm architect's vellum, sampled behind the genuine model. No
                 // composited photo or change to the canonical city mesh.
-                camera.backgroundColor = new Color(.89f, .814f, .666f, 1);
+                camera.backgroundColor = BackdropColor;
                 camera.allowHDR = false;
                 camera.allowMSAA = false;
                 camera.nearClipPlane = .01f;
