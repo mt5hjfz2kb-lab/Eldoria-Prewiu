@@ -149,7 +149,10 @@ namespace Eldoria.BreachWatch
         }
         Button Button(RectTransform rect,Action click)
         {
+            var graphic=rect.GetComponent<BreachWatchPlate>();
+            if(graphic)graphic.raycastTarget=true; // actual graphic participates in EventSystem raycasting
             var b=rect.gameObject.AddComponent<Button>();b.transition=Selectable.Transition.None;
+            if(graphic)b.targetGraphic=graphic;
             b.onClick.AddListener(()=>click());return b;
         }
         RectTransform BuildButton(Transform parent,string name,BreachWatchGlyph.Sigil icon,Action action,
