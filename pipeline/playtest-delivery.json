@@ -56,7 +56,7 @@
     "physical_mobile_evidence": "Current native325 has no physical-device test. Windows Chromium local normal-clock I-II passed; remote Butler ACTIVE verified; hosted gameplay not tested.",
     "previous_physical_mobile_evidence": "Owner iPhone/Safari startup reload at 71%; no completed gameplay or device profiling."
   },
-  "instructions": "WebGL native325 published once and remotely ACTIVE build2324364/versionnative325-fb1292b3d9ce. Exact package controller completed and disabled; retain Restricted. Signed APK22 promotion requested separately; no physical-device or hosted gameplay PASS.",
+  "instructions": "COMPLETED owner-authorized post-PR163 delivery. WebGLnative325 ACTIVE build2324364/versionnative325-fb1292b3d9ce and Android1.22/code22 public/channel22 verified. Publication requests disabled; old versions retained; Restricted preserved. Windows returned to Forja. Physical-device and hosted gameplay tests not claimed.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
   "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
   "credential_setup": {
@@ -598,5 +598,13 @@
     "version": "native325-fb1292b3d9ce",
     "build": 2324364
   },
-  "delivery_controller": "post-pr163-exact-package"
+  "delivery_controller": "post-pr163-exact-package",
+  "android_delivery": {
+    "version_code": 22,
+    "version_name": "1.22",
+    "publish_run": 42404008210,
+    "apk_sha256": "f8fa1d3d0c9f8c6b170a31abcd8513d221e4ddb63586614322afa63b63a70e41",
+    "public_bytes_verified": true,
+    "physical_phone_tested": false
+  }
 }

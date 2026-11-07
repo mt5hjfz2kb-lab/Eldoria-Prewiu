@@ -1,69 +1,39 @@
-# Eldoria — actualización APK y WebGL posterior a PR163
+# Eldoria — APK y WebGL actualizadas tras PR163
 
 Workstream-ID: eldoria-post-pr163-apk-webgl-release-20261107
 
-## Alcance y estado
+## Entrega completada — 7 noviembre 2026
 
-Actualizar la APK familiar y el canal WebGL existente con las mejoras integradas en main. Conservar guardados, firma Android original, acceso Restricted de itch.io y versiones anteriores. Presupuesto: 0 €. Forja Oscura PR173 no forma parte de esta entrega.
+- **WebGL native325** publicada en [itch.io](https://chrismad.itch.io/eldoria-pruebas), canal web Restricted conservado. Butler confirmó build2324364/versionnative325-fb1292b3d9ce ACTIVE a las18:57:35UTC. [Publicación42403626248](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42403626248) SUCCESS; una única subida.
+- **APK1.22/code22** publicada y canal familiar22 activado. [Descargar APK](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code22/Eldoria-Valoria-code22.apk). [Publicación42404008210](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42404008210) SUCCESS; descarga pública comparada byte por byte antes de actualizar el canal.
+- Peticiones de compilación/publicación deshabilitadas; WebGL delivery_complete impide repetir preparación o subida. Versiones anteriores conservadas. Reserva Windows devuelta a Forja (revisión6); trabajo de entrega archivado como completado. Presupuesto0€.
 
-Estado: WebGL native325 compilada correctamente y225 comprobaciones de integración I–V PASS (tiempo acelerado); APK42395466213 SUCCESS y verificada; prueba Chromium42396852832 SUCCESS; certificado completo42395390748 SUCCESS (216EditMode/78PlayMode,0fallos). Publicación nueva todavía no verificada. La distribución y congelación específica para testers es un encargo separado.
+## Alcance y fuentes
 
-## Correcciones incorporadas y probadas
+Incluye PR163 integrada en9efc0fefd447585f6867ab03ce2c41084b32adf2 y reparaciones PR177 integradas enb686b335072022cc1576b18256e4eab33703bf11. PR178 integra el mecanismo de entrega verificada. Forja Oscura PR173 permanece independiente y no se incluye.
 
-PR163 está integrada en `9efc0fefd447585f6867ab03ce2c41084b32adf2`. La revisión de entrega encontró defectos adicionales corregidos en PR177, integrada en `b686b335072022cc1576b18256e4eab33703bf11`:
+Reparaciones PR177: temporizador de construcción situado según el borde real del edificio; entrenamiento conserva composición horizontal en ventanas casi cuadradas; RELICARIO/PRÓXIMO cabe en Sala de Héroes. Se corrigieron las mediciones de capturas sincronizadas, la escala móvil600 y el consejo de tres líneas, sin sustituir arte.
 
-- El temporizador de construcción usa el borde inferior real del edificio cuando no cabe encima.
-- Entrenamiento conserva la composición horizontal en ventanas casi cuadradas.
-- Sala de Héroes muestra RELICARIO / PRÓXIMO completo, conservando icono y fuente mínima.
-- Las pruebas de captura miden el viewport sincronizado y respetan la referencia móvil de600 unidades y el consejo de tres líneas aprobado.
+WebGL: fuente948ffa9837168a0b68dab80be76b66350422b23a, build42391824345. Android: fuente5b0769e4313d8f93b6dea1787e19a9ab3b87a95f, build42395466213. La única diferencia Unity posterior a native325 es la aserción Editor EarlyRetentionNativeCapture: blob64a644923fbe7849043da2f2d997051ca4cbd1d9 →2dcc4813b42a197dc093389285967ea15575d8c2. El gate comprueba ruta y blobs exactos; todo el código de player coincide.
 
-Fuente PR177 `c3282a6e7a5dce04c0937dc149e09944120ab0ae`: certificado `42389995761` SUCCESS, 216 EditMode y78 PlayMode, controles V4.1, integración y tres marchas simultáneas. Artefacto V4.1 `13580809061`, SHA256 `57234133a256ff859a9698db796140db077c1b96c0c5d21a7edb466e1090acc5`:143 archivos descargados y cotejados. Se inspeccionaron las capturas reales de los tres arreglos. Functional PASS; no aprobación artística global ni prueba física.
+## Pruebas realizadas
 
-La validación general postmerge `42391771359` terminó SUCCESS, incluidos EditMode, PlayMode y compilación Windows.
+- Certificado completo corregido42395390748/sourceacfdad16e4e38a86010e3f5a9977800c0b941be0: **216EditMode y78PlayMode,0fallos**; controles V4.1, buzón persistente, diálogos, tres marchas, retención/descubrimientos, Aldric y escena I–II. No se atribuye compilación Windows a este run: ese paso se omitió según sus condiciones. La validación general postmerge42391771359 sí compiló Windows.
+- Integración native325:225checks I–V PASS con tiempo acelerado.
+- Chromium Windows42396852832: **I–II completo en930.66s con reloj normal**,10operaciones, marchas/recompensas, movimiento visible, nombre por teclado, guardado exactamente igual tras recarga;0errores runtime y0fallos de red.75capturas directas y vídeo revisado por muestras. SHA256 guardado d175b08141b7c8de781dcf4f34b7101106cd1723ccbaaae8654eeaab44c594a6.
+- Carga local29.515s; recarga19.078s. Son medidas locales, no de Internet ni teléfono. Se alcanzó el límite75capturas; recarga comprobada en vídeo y telemetría. WebM837.36s: su línea temporal no equivale al reloj real930.66s.
+- APK: apksigner/aapt en build, descarga independiente con hash y CRC1120entradas, manifiesto verificado,32texturas reales ASTC4x4 con dimensiones conservadas y hashes de referencia comprobados mediante UnityPy1.25.4. Peor PSNR38.51dB/error medio1.90sobre255; recorte comparado sin deterioro visible aparente.
+- Transporte WebGL: hashes originales y bytes Unity decodificados intactos, tests del lector Unity y de errores PASS.19archivos/490317080bytes extraídos; límites500MB total y200MB/archivo conservados.
+- Once tests del gate verifican rechazo de fuentes distintas, QA pendiente, excepción Editor incorrecta y publicación duplicada.
 
-## Candidatas actuales
+## Identidades verificables
 
-- WebGL native325: fuente `948ffa9837168a0b68dab80be76b66350422b23a`, run `42391824345`.
-- APK1.22/code22: firma y paquete originales; fuente solicitada `5b0769e4313d8f93b6dea1787e19a9ab3b87a95f`.
-- Prueba de navegador preparada en la rama canónica QA: fuente `a9550aaf5332a2ac3810880c37ab2d8dbdcf5adb`; debe ejecutarse contra los bytes de native325 tras completar la compilación.
-- `native324` y su ZIP `1484d43c4f3bfa23e4325add79be02826fbd989f3b3a46290a5dd3b4a24b3936` quedan descartados: preceden los arreglos runtime de PR177. Su transporte verificado no los convierte en una entrega válida.
+APK470244892bytes SHA256f8fa1d3d0c9f8c6b170a31abcd8513d221e4ddb63586614322afa63b63a70e41. Paquete com.eldoria.valoria.v5test; certificado original f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8. No borrado de datos.
 
-## Comprobación adicional de retención
+ZIPWebGL SHA256fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771; preparación42397405907/artefacto13583674142 SHA2562e1e34480eabd2f5134f09f2d17e57c98ca8d72a603cfe040549f218b789c80f. QA13585239386 SHA25660395ec004feeffc1f4eb4a854a0f0e8efa40a524dd8f0d43112bab502cc3444. Recibo13586298867 SHA25697780df94a9bf8860432ce8750463461175f8d8ea772ca24de491f100fa08577. Todos descargados y cotejados.
 
-El certificado main `42391771211` pasó V4.1, diálogos y tres marchas, pero falló en `EarlyRetentionNativeCapture`: esperaba todavía800/900 unidades en teléfonos, mientras el juego integrado usa600. Se corrigió únicamente la aserción dentro del callback de captura. No cambia arte, gameplay, escenas ni código de player.
+## Límites y aprendizaje
 
-El gate de entrega admite exclusivamente ese cambio Editor con identidad exacta: blob `64a644923fbe7849043da2f2d997051ca4cbd1d9` → `2dcc4813b42a197dc093389285967ea15575d8c2`, ruta `Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs`. Rechaza cualquier otro cambio Unity. Antes de publicar exige el certificado completo corregido de main `acfdad16e4e38a86010e3f5a9977800c0b941be0`, incluidas retención, diálogos, marchas y ambas suites; no basta con un run verde que omita esos pasos.
+No se ha instalado en teléfono físico ni jugado la versión alojada en itch; su activación remota y el acceso Restricted son distintos de una prueba alojada. No se otorga aprobación artística global: persiste deuda estética existente, como el rótulo Exploradores partido en portrait. La congelación de una versión para testers es otro encargo.
 
-La gobernanza rechazó un primer disparador del workflow sobre sí mismo. Se eliminó en `acfdad16`; el disparador legítimo es la solicitud nativa existente. Actions sustituyó automáticamente la solicitud Android pendiente42391824417 antes de iniciar ningún job; la petición code22 se repuso con fuente5b0769e. No se interrumpió ningún proceso nativo.
-
-## Condiciones de publicación
-
-1. WebGL: QA real en Chromium con controles visibles, reloj normal y recarga de guardado; archivo fuente y hashes exactos. Empaquetado con identidad Unity decodificada intacta, máximo500MB extraídos y200MB por archivo. Publicar una sola vez en `chrismad/eldoria-pruebas:web` y comprobar que la versión remota está activa.
-2. Android: comprobar paquete `com.eldoria.valoria.v5test`, certificado SHA256 `f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8`, integridad y tamaño≤450MiB. Crear release inmutable; cotejar los bytes descargados antes de avanzar `updates/android/family.json`.
-3. Deshabilitar peticiones completadas y devolver a Forja la reserva Windows tras terminar todos los jobs nativos.
-
-## Límites y aprendizajes
-
-El alojamiento Restricted no permite afirmar una partida en itch por acceso anónimo. La prueba Chromium sobre el paquete y la activación remota son evidencias distintas. No se ha realizado instalación física Android, rendimiento iPhone ni aprobación artística global.
-
-Medir geometría dentro del viewport sincronizado; comprobar que las capturas se ejecutan realmente; revisar expectativas históricas antes de cambiar producto; regenerar binarios tras cualquier arreglo runtime. Una excepción Editor exige ruta y blobs exactos, comprobación completa corregida y ninguna diferencia en código de player. Respetar la gobernanza de disparadores y la cola compartida entre builds.
-
-La preparación del ZIP no publica nada y puede solaparse con Windows QA. La promoción exige todos los certificados, el artefacto QA real y el ZIP exacto preparado. Once pruebas locales verifican también que un recibo QA ausente permite únicamente preparación y siempre bloquea publicación.
-
-## Evidencia Android code22 descargada
-
-Build42395466213/source5b0769e4313d8f93b6dea1787e19a9ab3b87a95f SUCCESS. APK470244892bytes, SHA256f8fa1d3d0c9f8c6b170a31abcd8513d221e4ddb63586614322afa63b63a70e41; archivo de Actions13585415947 SHA256af2eadef1380b321a6c983dea60b77d0d922a7de3f32a56d4860464090ba5cba. Firma nativa y permiso de instalación verificados en build; descarga independiente con hash, CRC1120entradas y manifiesto de promoción PASS. Petición de build deshabilitada; todavía no publicada.
-
-Comprobación local del APK real con verify-apk-textures.py y UnityPy1.25.4:32texturas encontradas como ASTC4x4, dimensiones conservadas y hashes de las referencias coincidentes. Peor PSNR38.51dB/error medio1.90 sobre255 en scout-mission-vignettes-v4.png; su recorte central comparado visualmente sin deterioro aparente. Métricas de compresión, no aprobación artística ni prueba de teléfono.
-
-## WebGL Chromium normal-clock verificada
-
-Run42396852832 SUCCESS; artefacto13585239386 SHA25660395ec004feeffc1f4eb4a854a0f0e8efa40a524dd8f0d43112bab502cc3444 descargado, hash y CRC comprobados. Informe930.66segundos, Bastión I–II completo,10operaciones con duración normal, marchas/recompensas y movimiento visible, nombre introducido por teclado y guardado recargado idéntico SHA256d175b08141b7c8de781dcf4f34b7101106cd1723ccbaaae8654eeaab44c594a6.0errores runtime y0fallos de red.75capturas y vídeo continuo. Límite de75capturas alcanzado al final; la recarga queda en vídeo/telemetría. Capturas reales revisadas de construcción, entrenamiento y composición de marcha: controles visibles, pendientes artísticos existentes; no aprobación visual global. Carga local29.515s y recarga19.078s; no extrapolar a Internet ni teléfonos.
-
-Se inspeccionó además el último fotograma del vídeo: Bastión II, nombre y recursos1030madera/995piedra tras recarga. El WebM dura837.36s frente a930.66s de reloj de la prueba; sus timestamps no se equiparan a tiempo real. Las capturas directas del compositor son la referencia visual de cada evento. Persiste deuda estética de la interfaz existente (p. ej. rótulo Exploradores partido en portrait); no impide la progresión verificada y no se atribuye aprobación artística a esta entrega.
-
-Certificación corregida completa42395390748 finalizada SUCCESS:216EditMode y78PlayMode, retención, V4.1, diálogos, tres marchas, Aldric y escena I–II ejecutados. Windows devuelto al propietario de Forja tras cerrar todos los jobs nativos. Se habilita únicamente la promoción del ZIP native325 ya verificado; todavía se requiere recibo remoto ACTIVE antes de declarar publicación.
-
-## WebGL publicada
-
-Run42403626248 SUCCESS. Butler confirmó ACTIVE el2026-11-07T18:57:35Z: build2324364/versionnative325-fb1292b3d9ce, canal web de chrismad/eldoria-pruebas. Una única subida; se conserva Restricted. Recibo13586298867 SHA25697780df94a9bf8860432ce8750463461175f8d8ea772ca24de491f100fa08577 descargado y verificado. Publicación deshabilitada y delivery_complete activado para impedir duplicados. Se solicita ahora promoción del APK22 previamente firmado y verificado.
+Medir geometría tras sincronizar viewport; exigir pasos nativos realmente ejecutados; no reconstruir paquetes verificados ni repetir una subida que esté procesándose. Las excepciones Editor requieren identidad exacta y certificado completo. Guardar el recibo remoto y deshabilitar peticiones al cerrar la entrega.
