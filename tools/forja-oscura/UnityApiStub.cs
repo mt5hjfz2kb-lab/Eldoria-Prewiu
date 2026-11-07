@@ -57,7 +57,7 @@ namespace UnityEngine {
   public class Canvas : Behaviour { public float scaleFactor {get;set;} = 1f; public static void ForceUpdateCanvases(){} }
   public static class Time { public static float unscaledTime=>0; }
   public static class Resources { public static T Load<T>(string path) where T:Object=>default; }
-  public static partial class Mathf { public static float Max(float x,float y)=>Math.Max(x,y); public static int CeilToInt(float x)=>(int)Math.Ceiling(x); }
+  public static partial class Mathf { public static float Max(float x,float y)=>Math.Max(x,y); public static float Min(float x,float y)=>Math.Min(x,y); public static int CeilToInt(float x)=>(int)Math.Ceiling(x); }
   public static partial class Debug { public static void Log(string s){} public static void LogWarning(string s){} }
   [AttributeUsage(AttributeTargets.Class)]public sealed class DisallowMultipleComponent:Attribute {}
   [AttributeUsage(AttributeTargets.Class)]public sealed class DefaultExecutionOrder:Attribute {public DefaultExecutionOrder(int n){} }
@@ -88,6 +88,20 @@ namespace UnityEngine.UI {
 namespace Eldoria.UI.RoyalGold {
   using UnityEngine;using UnityEngine.UI;
   public enum RoyalSection { Bastion,Inventory,Army,World,Missions }
+  // Mirrors ONLY the public static ordering contract in the real BottomNavigation.
+  // Runtime uses its original Unity implementation; this is a typecheck stub.
+  public static class BottomNavigation {
+    public static int ChronicleOrder(RoyalSection s) {
+      switch(s) {
+        case RoyalSection.Bastion: return 0;
+        case RoyalSection.Inventory: return 1;
+        case RoyalSection.Army: return 2;
+        case RoyalSection.World: return 3;
+        case RoyalSection.Missions: return 4;
+        default: return 99;
+      }
+    }
+  }
   public class RoyalText : Graphic { public string text {get;set;} public int fontSize {get;set;} public float preferredWidth=>0f; public float preferredHeight=>0f; public RectTransform rectTransform=>new RectTransform(); }
   public class RoyalIconGraphic:Graphic {}
   public class RoyalButton:Button {}
