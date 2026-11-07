@@ -19,6 +19,8 @@ namespace Eldoria.VisualKit
     public sealed class ForjaOscuraLiveHudSkin : MonoBehaviour
     {
         public bool NavigationSkinned { get; private set; }
+        public bool ResourceSkinned { get; private set; }
+        public bool HeaderSkinned { get; private set; }
         public bool ObjectiveSkinned { get; private set; }
         public bool BuildingSkinned { get; private set; }
         public bool ContextSkinned { get; private set; }
@@ -68,9 +70,14 @@ namespace Eldoria.VisualKit
             if (!v2) v2 = GetComponent<RoyalGoldV2Hud>();
             if (!context) context = GetComponent<RoyalGoldV3ContextHud>();
             if (!NavigationSkinned) TrySkinNavigation();
-            if (!ObjectiveSkinned || !BuildingSkinned) TrySkinV2();
+            if (!ResourceSkinned) TrySkinResources();
+            if (!ObjectiveSkinned || !BuildingSkinned || !HeaderSkinned) TrySkinV2();
             if (!ContextSkinned || (context && context.ContextRect != lastContextRect))
                 TrySkinV3Context();
+            // V2 navigation layout can reset targetGraphic even after the
+            // skin has been installed. Keep the illustrated real button
+            // as a raycast/transition target in the same frame, not 50ms later.
+            EnsureNavigationTargets();
             // Avoid scanning text hierarchy and touching Graphic values every frame.
             if (forceLayoutRefresh || Time.unscaledTime >= nextStyleRefresh)
             {
@@ -236,6 +243,49 @@ namespace Eldoria.VisualKit
             Debug.Log("[FORJA] Five actual bottom-navigation buttons skinned; all original actions retained.");
         }
 
+        private void TrySkinResources()
+        {
+            // Original prefab owns the numeric labels and their resource
+            // glyph RectTransforms. Only replace the icon drawings; never
+            // create synthetic resource values or extra data bindings.
+            if (!hud.Resources) return;
+            var parent = hud.Resources.transform;
+            string[] sourceNames = { "Madera icon", "Piedra icon", "Comida icon" };
+            string[] spriteNames = { "res_madera", "res_piedra", "res_comida" };
+            int done = 0;
+            for (int i = 0; i < sourceNames.Length; i++)
+            {
+                var target = ImmediateChild(parent, sourceNames[i]);
+                if (!target) continue;
+                var newIcon = ImageChild(target, "Forja / live " + spriteNames[i], Sprite("Icons", spriteNames[i]));
+                if (!newIcon) continue;
+                newIcon.raycastTarget = false;
+                newIcon.transform.SetAsLastSibling();
+                // LayoutOriginalResource continues to size/position the
+                // existing outer icon. The new child fills its rectangle.
+                var original = target.GetComponent<RoyalIconGraphic>();
+                if (original) Hide(original);
+                done++;
+            }
+            ResourceSkinned = done == sourceNames.Length;
+        }
+
+        private void EnsureNavigationTargets()
+        {
+            if (!NavigationSkinned || hud.Navigation == null || hud.Navigation.Items == null) return;
+            foreach (var item in hud.Navigation.Items)
+            {
+                if (item == null || !item.Button || item.Button.transform.childCount < 1) continue;
+                var medallion = item.Button.transform.GetChild(0);
+                if (medallion.childCount < 1) continue;
+                var glyph = medallion.GetChild(0);
+                var plate = ImmediateChild(glyph, "Forja / navigation plate");
+                var image = plate ? plate.GetComponent<Image>() : null;
+                if (image && item.Button.targetGraphic != image)
+                    item.Button.targetGraphic = image;
+            }
+        }
+
         private static string NavName(RoyalSection section)
         {
             switch (section)
@@ -285,15 +335,23 @@ namespace Eldoria.VisualKit
                     BuildingSkinned = true;
                 }
             }
-            var safe = v2.transform.GetComponentInChildren<RoyalHudLayout>(true);
-            var top = safe ? ImmediateChild(safe.transform, "V3 / continuous original royal header") : null;
-            if (top)
+            if (!HeaderSkinned)
             {
-                var image = ImageChild(top, "Forja / existing header skin", Sprite("Surfaces", "panel_dark"));
-                if (image)
+                var safe = v2.transform.GetComponentInChildren<RoyalHudLayout>(true);
+                var top = safe ? ImmediateChild(safe.transform, "V3 / continuous original royal header") : null;
+                if (top)
                 {
-                    image.transform.SetAsLastSibling();
-                    HideGraphicsByTypeName(top, "RoyalGoldV2FrameGraphic");
+                    var image = ImageChild(top, "Forja / existing header skin", Sprite("Surfaces", "panel_dark"));
+                    if (image)
+                    {
+                        // Never draw a full-frame opaque panel ABOVE the
+                        // resource text, crest or click targets. The original
+                        // V2 header itself is already the earliest safe-edge
+                        // sibling; the replacement is its rear-most child.
+                        image.transform.SetAsFirstSibling();
+                        HideGraphicsByTypeName(top, "RoyalGoldV2FrameGraphic");
+                        HeaderSkinned = true;
+                    }
                 }
             }
         }
