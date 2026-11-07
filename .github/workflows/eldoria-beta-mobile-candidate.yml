@@ -1,5 +1,5 @@
 name: Eldoria isolated mobile texture candidate
-# Candidate2: pixel-identical CPU-copy removal plus 45-second sustained scene/error observation; QA syntax checked.
+# Candidate3: bounded-error material ASTC compression, sustained runtime and visual comparison.
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -24,7 +24,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42418416629
+          run-id: 42420500174
           name: mobile-candidate-site
           github-token: ${{ github.token }}
           path: site/original
@@ -50,10 +50,10 @@ jobs:
             while left:
               data=f.read(min(left,1048576));assert data;out.write(data);left-=len(data)
           PY
-      - name: Optimize accepted color textures and verify every object
+      - name: Compress bounded-error material textures and verify every object
         run: |
-          python tools/eldoria-private-beta/readonly_materials.py original.unity3d candidate
-          python tools/eldoria-private-beta/mobile_site.py site/original original-data.bin candidate/data.unity3d site/mobile native325-mobile-memory2
+          python tools/eldoria-private-beta/compress_materials.py original.unity3d candidate
+          python tools/eldoria-private-beta/mobile_site.py site/original original-data.bin candidate/data.unity3d site/mobile native325-mobile-material3
           node tools/delivery/test-exact-decoded-transport.mjs site/mobile
       - name: Install real browser for independent runtime test
         run: npm install --no-save playwright@1.55.0 pngjs@7.0.0 && npx playwright install --with-deps chromium
@@ -72,7 +72,8 @@ jobs:
         with:
           name: mobile-candidate-evidence
           path: |
-            candidate/readonly-proof.json
+            candidate/integrity.json
+            candidate/texture-report.json
             qa/
           retention-days: 14
       - uses: actions/upload-artifact@v4
