@@ -9,7 +9,9 @@ permissions:
   actions: read
 concurrency:
   group: eldoria-forja-native-evidence
-  cancel-in-progress: false
+  # Only a deliberately marked recovery push can stop a stuck earlier
+  # Forja-only checkout; never cancels another PR or normal native evidence.
+  cancel-in-progress: ${{ contains(github.event.head_commit.message, '[forja-recover-stuck]') }}
 jobs:
   owner-preflight:
     runs-on: ubuntu-latest
@@ -56,14 +58,54 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 65
     steps:
-      # Reuse the existing validated native Unity checkout/cache.
-      # This avoids a costly fresh 15GB clone; the checkout still pins the
-      # exact Forja PR commit. No campaign save or main writes are permitted.
-      - uses: actions/checkout@v4
+      # This artifact was produced by a successful Ubuntu source/metadata
+      # gate at 64b7933; PR173 changes no Unity files outside VisualKit.
+      # Downloading 6.5MB avoids fetching the 15GB repo a second time.
+      - name: Restore exact 41 PNG and owned VisualKit code from CI artifact
+        uses: actions/download-artifact@v4
         with:
-          path: valoria-layered-source
-          clean: false
-          persist-credentials: false
+          name: forja-production-sprites-64b7933eda02fe41b4936a4fe23df08b08784541
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: 42382183072
+          github-token: ${{ github.token }}
+          path: forja-kit-source
+      - name: Reuse certified existing main Unity checkout and apply only Forja files
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $base=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
+          $pkg=Join-Path $env:GITHUB_WORKSPACE 'forja-kit-source'
+          if(-not(Test-Path (Join-Path $base '.git'))){throw 'Existing certified cached Unity checkout absent; refuse a speculative scene'}
+          $head=((& git -C $base rev-parse HEAD | Select-Object -First 1).Trim())
+          $allowed=@('9efc0fefd447585f6867ab03ce2c41084b32adf2',
+                     'd57aa48e7f37f30e20baf5908ff346e013410365')
+          if($head -notin $allowed){throw "Cached project source SHA differs: $head; no unverified base"}
+          $src=Join-Path $pkg 'Unity/Assets/Eldoria/VisualKit'
+          $dst=Join-Path $base 'Unity/Assets/Eldoria/VisualKit'
+          if(-not(Test-Path (Join-Path $src 'Editor/ForjaOscuraNativeEvidence.cs'))){throw 'Trusted Forja source not in CI package'}
+          if(-not(Test-Path (Join-Path $base 'Unity/ProjectSettings/ProjectVersion.txt'))){throw 'Cached Unity project incomplete'}
+          New-Item -ItemType Directory -Force -Path $dst | Out-Null
+          Get-ChildItem -Force $src | ForEach-Object {
+            Copy-Item -LiteralPath $_.FullName -Destination $dst -Recurse -Force
+          }
+          Copy-Item -LiteralPath (Join-Path $pkg 'Unity/Assets/Eldoria/VisualKit.meta') -Destination (Join-Path $base 'Unity/Assets/Eldoria/VisualKit.meta') -Force
+          $toolsDst=Join-Path $base 'tools/forja-oscura'
+          New-Item -ItemType Directory -Force -Path $toolsDst | Out-Null
+          Get-ChildItem -Force (Join-Path $pkg 'tools/forja-oscura') | ForEach-Object {
+            Copy-Item -LiteralPath $_.FullName -Destination $toolsDst -Recurse -Force
+          }
+          $blobs=@{
+            'Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs'='f35ad7b3d19b16b8642d539b647819590c8fb551'
+            'Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs'='8bfb9d4dbc0f0f60d9605f25eb07eeaf6087e196'
+            'Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/Surfaces/panel_dark.png'='4a68950420cc4d29f3350f33591f30a968e61ea6'
+          }
+          foreach($path in $blobs.Keys){
+            $full=Join-Path $base $path
+            $actual=((& git hash-object $full | Select-Object -First 1).Trim())
+            if($actual -ne $blobs[$path]){throw "Forja exact-file SHA mismatch: $path actual=$actual"}
+          }
+          Write-Host "FORJA_CACHED_MAIN_EXACT_SOURCE_AND_THREE_BLOB_IDS_PASS source=$head kit=64b7933"
+
       - uses: actions/checkout@v4
         with:
           ref: main
