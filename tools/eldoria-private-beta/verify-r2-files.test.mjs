@@ -38,5 +38,5 @@ test('metadata commands keep original bytes and mark remote R2',()=>{
  assert.ok(cmds.every(c=>c.program==='wrangler'&&c.args.includes('--remote')));
  assert.equal(cmds.filter(c=>c.args.includes('br')).length,9);
  assert.equal(cmds.filter(c=>c.args.includes('gzip')).length,2);
- assert.ok(cmds.every(c=>c.args.at(2).startsWith('eldoria-beta-privada/releases/native325-')));
+ assert.ok(cmds.every(c=>c.args.at(3).startsWith('eldoria-beta-privada/releases/native325-')));
 });
