@@ -1,47 +1,49 @@
-# Eldoria — actualización APK y WebGL posterior a PR #163
+# Eldoria — actualización APK y WebGL posterior a PR163
 
 Workstream-ID: eldoria-post-pr163-apk-webgl-release-20261107
 
-## Encargo y alcance
+## Alcance y estado
 
-El propietario autorizó actualizar el canal APK firmado familiar y la WebGL ya existente tras las mejoras de experiencia de PR #163. Esto **no es la distribución prevista para los futuros testers**. Se conservan guardados, certificado Android original, acceso Restricted de itch.io, costes cero y versiones previas inmutables.
+Actualizar la APK familiar y el canal WebGL existente con las mejoras integradas en main. Conservar guardados, firma Android original, acceso Restricted de itch.io y versiones anteriores. Presupuesto: 0 €. Forja Oscura PR173 no forma parte de esta entrega.
 
-## Evidencia disponible
+Estado: compilación y comprobaciones en curso; publicación nueva todavía no verificada. La distribución y congelación específica para testers es un encargo separado.
 
-- Código de PR163 incorporado en main: merge 9efc0fefd447585f6867ab03ce2c41084b32adf2.
-- Unity/WebGL native324: run 42367983297 completado con éxito y 225 verificaciones de integración del recorrido I–V (reloj acelerado para prueba).
-- Unity UI: run 42367986501, 216 EditMode y 78 PlayMode aprobados.
-- Chromium Windows normal-clock: run 42373214530, 62 acciones visibles, 10 operaciones, 5 marchas, guardado idéntico tras recarga y sin errores de ejecución o red. No supone prueba física Android/iPhone ni una segunda partida manual I–V.
-- El canal Android publicado sigue en 1.21/code21, firma SHA256 f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8; siguiente versión 1.22/code22.
-- El canal WebGL Restricted chrismad/eldoria-pruebas sigue en native299.
+## Correcciones incorporadas y probadas
 
-## Preparación sin sustituir la prueba real
+PR163 está integrada en `9efc0fefd447585f6867ab03ce2c41084b32adf2`. La revisión de entrega encontró defectos adicionales corregidos en PR177, integrada en `b686b335072022cc1576b18256e4eab33703bf11`:
 
-El flujo nuevo en Ubuntu comprueba la procedencia exacta del artefacto nativo, el resultado de Chromium, la configuración de la rama QA y el árbol Unity integrado en main. Reutiliza los mismos bytes originales WebGL y comprueba la identidad de los datos Unity tras adaptar el transporte a itch con Brotli. Aplica los límites de 500 MB totales y 200 MB por archivo; la prueba es negativa hasta que el propio workflow termine PASS. No accede a las credenciales de itch ni publica nada mientras publish_enabled=false.
+- El temporizador de construcción usa el borde inferior real del edificio cuando no cabe encima.
+- Entrenamiento conserva la composición horizontal en ventanas casi cuadradas.
+- Sala de Héroes muestra RELICARIO / PRÓXIMO completo, conservando icono y fuente mínima.
+- Las pruebas de captura miden el viewport sincronizado y respetan la referencia móvil de600 unidades y el consejo de tres líneas aprobado.
 
-## Condiciones previas a la publicación
+Fuente PR177 `c3282a6e7a5dce04c0937dc149e09944120ab0ae`: certificado `42389995761` SUCCESS, 216 EditMode y78 PlayMode, controles V4.1, integración y tres marchas simultáneas. Artefacto V4.1 `13580809061`, SHA256 `57234133a256ff859a9698db796140db077c1b96c0c5d21a7edb466e1090acc5`:143 archivos descargados y cotejados. Se inspeccionaron las capturas reales de los tres arreglos. Functional PASS; no aprobación artística global ni prueba física.
 
-1. PR177: la discrepancia en el test de capturas V4.1 debe quedar certificada en Unity; un fallo por recurso Windows ocupado no es un PASS.
-2. WebGL: paquete preparado, hashes y transporte comprobados; publicación Restricted al canal ya autorizado y verificación remota de la versión realmente activa. No dar por probado el alojamiento únicamente porque Butler acepte subir archivos.
-3. Android: compilar y firmar code22 usando la clave original del runner Windows después del relevo legítimo de PR173. Comprobar certificado, nombre de paquete, integridad, límite de tamaño y que el actualizador conserve la partida. Publicar APK inmutable y comprobar el archivo remoto antes de cambiar family.json.
-4. La prueba física de Android y el rendimiento en iPhone siguen siendo comprobaciones separadas. No afirmar que se han realizado.
+La validación general postmerge `42391771359` terminó SUCCESS, incluidos EditMode, PlayMode y compilación Windows.
 
-## Coordinación
+## Candidatas actuales
 
-Workstream canónico independiente: eldoria-post-pr163-apk-webgl-release-20261107. Scope de entrega y pipeline exclusivamente. PR177 mantiene la corrección nativa; PR173 Forja Oscura mantiene windows-runner-heavy; este encargo no cancela sus jobs, no cambia sus archivos y no consume el runner hasta un relevo autorizado.
+- WebGL native325: fuente `948ffa9837168a0b68dab80be76b66350422b23a`, run `42391824345`.
+- APK1.22/code22: firma y paquete originales; fuente solicitada `5b0769e4313d8f93b6dea1787e19a9ab3b87a95f`.
+- Prueba de navegador preparada en la rama canónica QA: fuente `a9550aaf5332a2ac3810880c37ab2d8dbdcf5adb`; debe ejecutarse contra los bytes de native325 tras completar la compilación.
+- `native324` y su ZIP `1484d43c4f3bfa23e4325add79be02826fbd989f3b3a46290a5dd3b4a24b3936` quedan descartados: preceden los arreglos runtime de PR177. Su transporte verificado no los convierte en una entrega válida.
 
-## Relevo y paquete comprobado por el ejecutor actual
+## Comprobación adicional de retención
 
-El propietario reasignó expresamente esta misma entrega a `codex-release-a56bdf7714d0`, revisión 4 del registro. PR178 continúa siendo la única PR de entrega.
+El certificado main `42391771211` pasó V4.1, diálogos y tres marchas, pero falló en `EarlyRetentionNativeCapture`: esperaba todavía800/900 unidades en teléfonos, mientras el juego integrado usa600. Se corrigió únicamente la aserción dentro del callback de captura. No cambia arte, gameplay, escenas ni código de player.
 
-Preparación `42383793241` SUCCESS, artefacto `13578463741`, SHA256 del archivo Actions `ef025d6c265e0c165b163cfec542ecbe5d4081c8b726f2d32ea598e4988f5eab`. Descargado y cotejado localmente; ZIP HTML5 `1484d43c4f3bfa23e4325add79be02826fbd989f3b3a46290a5dd3b4a24b3936`, 490378952 bytes extraídos.
+El gate de entrega admite exclusivamente ese cambio Editor con identidad exacta: blob `64a644923fbe7849043da2f2d997051ca4cbd1d9` → `2dcc4813b42a197dc093389285967ea15575d8c2`, ruta `Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs`. Rechaza cualquier otro cambio Unity. Además exige el certificado completo corregido de main `acfdad16e4e38a86010e3f5a9977800c0b941be0`, incluidas retención, diálogos, marchas y ambas suites; no basta con un run verde que omita esos pasos.
 
-El workflow ahora implementa una promoción explícita, deshabilitada hasta contar con el run nativo exacto y PR177 fusionada. Verifica todos los archivos, el transporte, dueño/revisión vivos y evita subir de nuevo una versión presente o en procesamiento. La única diferencia Unity tolerada respecto al paquete jugado es el blob exacto de la corrección de aserción Editor de PR177; cualquier cambio de juego, recurso o escena requiere una nueva candidata. Siete pruebas locales incluyen rechazo de cambio runtime, revisión obsoleta, certificado incompleto y artefacto incorrecto.
+La gobernanza rechazó un primer disparador del workflow sobre sí mismo. Se eliminó en `acfdad16`; el disparador legítimo es la solicitud nativa existente. Actions sustituyó automáticamente la solicitud Android pendiente42391824417 antes de iniciar ningún job; la petición code22 se repuso con fuente5b0769e. No se interrumpió ningún proceso nativo.
 
-**Pendiente:** certificación PR177, publicación remota WebGL y APK22 firmada. No se ha probado teléfono físico ni se ha publicado este paquete.
+## Condiciones de publicación
 
-## Prioridad temporal autorizada por el propietario
+1. WebGL: QA real en Chromium con controles visibles, reloj normal y recarga de guardado; archivo fuente y hashes exactos. Empaquetado con identidad Unity decodificada intacta, máximo500MB extraídos y200MB por archivo. Publicar una sola vez en `chrismad/eldoria-pruebas:web` y comprobar que la versión remota está activa.
+2. Android: comprobar paquete `com.eldoria.valoria.v5test`, certificado SHA256 `f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8`, integridad y tamaño≤450MiB. Crear release inmutable; cotejar los bytes descargados antes de avanzar `updates/android/family.json`.
+3. Deshabilitar peticiones completadas y devolver a Forja la reserva Windows tras terminar todos los jobs nativos.
 
-El propietario respondió «Sí autorizo» a la cesión temporal de Windows para terminar APK/WebGL sin cancelar procesos activos. Registro main actualizado: Forja conserva dueño/archivos/PR173, cede únicamente el recurso (revisión5); Valoria revisión160, ejecutor `codex-release-a56bdf7714d0`, certifica PR177. Todos los procesos nativos observados habían terminado antes de transferir. La reserva se devolverá a Forja tras la APK.
+## Límites y aprendizajes
 
-PR177 reconciliada con main; fuente `7b07fc49ae507b3686ad2acb9564e9671435c595`, misma reparación Editor y guardas adaptadas a la reserva vigente. La publicación exige certificado de esta fuente exacta. No se afirma éxito Unity antes de terminar el run.
+El alojamiento Restricted no permite afirmar una partida en itch por acceso anónimo. La prueba Chromium sobre el paquete y la activación remota son evidencias distintas. No se ha realizado instalación física Android, rendimiento iPhone ni aprobación artística global.
+
+Medir geometría dentro del viewport sincronizado; comprobar que las capturas se ejecutan realmente; revisar expectativas históricas antes de cambiar producto; regenerar binarios tras cualquier arreglo runtime. Una excepción Editor exige ruta y blobs exactos, comprobación completa corregida y ninguna diferencia en código de player. Respetar la gobernanza de disparadores y la cola compartida entre builds.
