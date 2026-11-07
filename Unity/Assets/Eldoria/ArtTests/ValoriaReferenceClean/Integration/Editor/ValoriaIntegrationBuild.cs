@@ -199,6 +199,11 @@ namespace Eldoria.ReferenceClean.Editor {
   }
   static IEnumerator Probe(ValoriaIntegratedWorld h){
    framingChecks.Clear();managementChecks.Clear();
+   // Runtime initialization now spans frame boundaries. Test the real readiness
+   // contract before issuing player actions; keep the existing journey assertions.
+   float startupDeadline=Time.realtimeSinceStartup+90f;
+   while(h&&!h.Ready&&Time.realtimeSinceStartup<startupDeadline)yield return null;
+   Need(h&&h.Ready,"Integrated world initialization did not finish before journey validation");
    yield return null;yield return new WaitForSecondsRealtime(1);
    string failure=null;var checks=new List<string>();var city=h.GetComponent<ValoriaReferenceCleanGameplay>();
    bool Check(Action action,string name){if(failure!=null)return false;try{action();checks.Add(name);return true;}catch(Exception e){failure=e.ToString();Debug.LogException(e);return false;}}
