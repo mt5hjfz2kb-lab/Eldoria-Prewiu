@@ -36,6 +36,7 @@ jobs:
         run: |
           node --test tools/eldoria-private-beta/verify-freeze.test.mjs
           node --test tools/eldoria-private-beta/verify-r2-files.test.mjs
+          node --test tools/eldoria-private-beta/verify-readiness.test.mjs
       - name: Verify signed-link and 67-event client contracts (no network)
         run: node --test tools/eldoria-private-beta/cloudflare/*.test.mjs
   freeze:
