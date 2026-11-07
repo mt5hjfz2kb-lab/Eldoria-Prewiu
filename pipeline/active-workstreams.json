@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T19:48:13.201Z",
+  "updated_at": "2026-11-07T20:06:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6738,8 +6738,25 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "SAFE_FREEZE_PREPARATION",
-      "note": "Solo distribución independiente; no modificar Unity ni APK/WebGL del canal de desarrollo. El usuario autorizó la preparación de beta privada; no publicar testers sin QA físico/hosted y sin acceso autorizado a Cloudflare."
+      "phase": "SAFE_FREEZE_DONE_EXACT_HASH_R2_ACCOUNT_CONNECTION_REQUIRED",
+      "note": "Solo distribución independiente; no modificar Unity ni APK/WebGL del canal de desarrollo. El usuario autorizó la preparación de beta privada; no publicar testers sin QA físico/hosted y sin acceso autorizado a Cloudflare.",
+      "next": "Owner connects Cloudflare account through secure browser or authorized integration. Then deploy private R2/Worker, real QA Worker→Supabase, full instrumented gameplay metrics and physical-device certification. Do not expose testers or alter game while blocked.",
+      "last_verified": {
+        "frozen_release_id": 437784073,
+        "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
+        "github_pr": 179,
+        "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
+        "ci_run": 42408744577,
+        "unit_tests_passed": 53,
+        "server_event_types_allowed": 67,
+        "actual_unity_gameplay_events_verified": 0,
+        "cloudflare_connected": false,
+        "real_hosted_pass": false,
+        "physical_mobile_tested": false,
+        "supabase_beta_event_rows": 0,
+        "distribution_enabled": false,
+        "budget_eur": 0
+      }
     }
   ],
   "history": [
