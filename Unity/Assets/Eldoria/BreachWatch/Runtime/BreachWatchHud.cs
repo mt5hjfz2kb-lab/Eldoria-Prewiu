@@ -1,0 +1,406 @@
+using System;
+using System.Collections.Generic;
+using Eldoria.ReferenceClean;
+using Eldoria.UI.RoyalGold;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Eldoria.BreachWatch
+{
+    // New, independent presentation object. The canonical game/session is reused,
+    // but none of the old HUD's UI hierarchy, graphic assets or layout is reused.
+    // Opt-in native proof only; it is NOT installed in the production scene/build.
+    [DisallowMultipleComponent]
+    public sealed class BreachWatchHud : MonoBehaviour
+    {
+        const string RootName = "VIGILIA / independent canvas";
+        static readonly Color TextIvory = new Color(.90f,.85f,.75f,1f);
+        static readonly Color Muted = new Color(.66f,.67f,.64f,1f);
+        static readonly Color Copper = new Color(.82f,.48f,.31f,1f);
+        static readonly Color Locked = new Color(.38f,.39f,.39f,1f);
+        ValoriaIntegratedWorld host;
+        Canvas canvas;
+        CanvasScaler scaler;
+        GraphicRaycaster raycaster;
+        Canvas legacyCanvas;
+        GraphicRaycaster legacyRaycaster;
+        CanvasGroup legacyGroup;
+        bool originalCanvas, originalRaycaster, originalBlocks, originalInteractable;
+        float originalAlpha;
+        Font font;
+        RectTransform uiRoot;
+        RectTransform identity, resourceRow, objective, panel, buttonRow, utilityRail, centerMark;
+        RectTransform[] resourceChips = new RectTransform[3];
+        Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
+        Text[] resourceAmounts = new Text[3];
+        Text buildingName, buildingLevel, buildingFunction, buildingCosts, buildingState, actionLabel, feedback;
+        Button actionButton, closeButton;
+        BreachWatchPlate actionPlate;
+        readonly Button[] navButtons = new Button[5];
+        readonly BreachWatchPlate[] navPlates = new BreachWatchPlate[5];
+        string selected="";
+        bool fullObjective;
+        bool lastPortrait;
+        int lastWidth=-1,lastHeight=-1;
+        float nextRefresh;
+        bool created;
+        RoyalSnapshot snapshot;
+        readonly string[] navLabels = {"REINO", "CONSTRUIR", "UNIDADES", "MUNDO", "CRÓNICAS"};
+        readonly BreachWatchGlyph.Sigil[] navIcons = {
+            BreachWatchGlyph.Sigil.Castle,BreachWatchGlyph.Sigil.Build,
+            BreachWatchGlyph.Sigil.Army,BreachWatchGlyph.Sigil.World,BreachWatchGlyph.Sigil.Chronicle
+        };
+
+        public bool IndependentCanvas => canvas && legacyCanvas && canvas!=legacyCanvas
+            && canvas.transform.parent != legacyCanvas.transform;
+        public bool LegacyPresentationHidden => legacyCanvas && !legacyCanvas.enabled
+            && legacyGroup && legacyGroup.alpha<.001f;
+        public string SelectedBuildingId => selected;
+        public RoyalSnapshot CurrentSnapshot => snapshot;
+        public bool HasRealSession => host && host.Read(selected,host.English)!=null;
+        public Canvas NativeCanvas => canvas;
+        public Button BuildingAction => actionButton;
+        public RectTransform BuildingPanel => panel;
+        public IReadOnlyList<Button> NavButtons => navButtons;
+
+        public static BreachWatchHud Install(ValoriaIntegratedWorld source)
+        {
+            if(!source || !source.Ready || !source.Hud)throw new InvalidOperationException("BreachWatch needs a ready canonical Valoria session");
+            var existing=FindFirstObjectByType<BreachWatchHud>();
+            if(existing) return existing;
+            var obj=new GameObject(RootName,typeof(RectTransform),typeof(Canvas),typeof(CanvasScaler),typeof(GraphicRaycaster));
+            obj.layer=5; // Unity's UI layer, included in the real camera's capture mask.
+            var hud=obj.AddComponent<BreachWatchHud>();
+            hud.Initialize(source);
+            return hud;
+        }
+
+        void Initialize(ValoriaIntegratedWorld source)
+        {
+            host=source;
+            canvas=GetComponent<Canvas>();scaler=GetComponent<CanvasScaler>();raycaster=GetComponent<GraphicRaycaster>();
+            canvas.renderMode=RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera=host.PlayerCamera;canvas.planeDistance=1f;canvas.overrideSorting=true;canvas.sortingOrder=5000;
+            scaler.uiScaleMode=CanvasScaler.ScaleMode.ConstantPixelSize;scaler.scaleFactor=1f;
+            raycaster.enabled=true;
+            // Old presentation is explicitly switched OFF. It is not a background
+            // component or a graphics donor; its live bridge remains available
+            // for world selection and gameplay while this proof is active.
+            legacyCanvas=host.Hud.GetComponent<Canvas>();
+            legacyRaycaster=host.Hud.GetComponent<GraphicRaycaster>();
+            legacyGroup=host.Hud.GetComponent<CanvasGroup>();
+            originalCanvas=legacyCanvas.enabled;
+            originalRaycaster=legacyRaycaster && legacyRaycaster.enabled;
+            originalAlpha=legacyGroup?legacyGroup.alpha:1;
+            originalBlocks=legacyGroup && legacyGroup.blocksRaycasts;
+            originalInteractable=legacyGroup && legacyGroup.interactable;
+            legacyCanvas.enabled=false;
+            if(legacyRaycaster)legacyRaycaster.enabled=false;
+            if(legacyGroup){legacyGroup.alpha=0;legacyGroup.blocksRaycasts=false;legacyGroup.interactable=false;}
+            font=Resources.Load<Font>("EldoriaRetention/reference-serif");
+            if(!font)font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            if(!font)font=Font.CreateDynamicFontFromOSFont(new[]{"Georgia","Arial"},20);
+            uiRoot=Rect("Safe composition",transform);
+            Stretch(uiRoot);
+            BuildIndependentComponents();
+            created=true;Reflow(Screen.width,Screen.height);RenderNow();
+        }
+
+        static RectTransform Rect(string name,Transform parent)
+        {
+            var obj=new GameObject(name,typeof(RectTransform));obj.layer=5;obj.transform.SetParent(parent,false);
+            return (RectTransform)obj.transform;
+        }
+        static void Stretch(RectTransform rect)
+        {
+            rect.anchorMin=Vector2.zero;rect.anchorMax=Vector2.one;rect.pivot=new Vector2(.5f,.5f);
+            rect.offsetMin=Vector2.zero;rect.offsetMax=Vector2.zero;
+        }
+        static void At(RectTransform rt,float x,float top,float width,float height)
+        {
+            rt.anchorMin=rt.anchorMax=new Vector2(0,1);
+            rt.pivot=new Vector2(0,1);
+            rt.anchoredPosition=new Vector2(x,-top);
+            rt.sizeDelta=new Vector2(Mathf.Max(1,width),Mathf.Max(1,height));
+        }
+        static void Fill(RectTransform rt,float margin=0)
+        {
+            Stretch(rt);rt.offsetMin=new Vector2(margin,margin);rt.offsetMax=new Vector2(-margin,-margin);
+        }
+        BreachWatchPlate Plate(RectTransform rect,BreachWatchPlate.PlateType type)
+        {
+            var p=rect.gameObject.AddComponent<BreachWatchPlate>();p.Type=type;p.raycastTarget=false;return p;
+        }
+        BreachWatchGlyph Glyph(Transform parent,string name,BreachWatchGlyph.Sigil symbol)
+        {
+            var rect=Rect(name,parent);var g=rect.gameObject.AddComponent<BreachWatchGlyph>();
+            g.Type=symbol;g.Ink=TextIvory;g.raycastTarget=false;return g;
+        }
+        Text Label(Transform parent,string name,int size,TextAnchor align,Color tint,bool bold=false)
+        {
+            var rect=Rect(name,parent);
+            var text=rect.gameObject.AddComponent<Text>();text.font=font;text.fontSize=size;text.alignment=align;
+            text.color=tint;text.fontStyle=bold?FontStyle.Bold:FontStyle.Normal;
+            text.horizontalOverflow=HorizontalWrapMode.Wrap;text.verticalOverflow=VerticalWrapMode.Truncate;
+            text.supportRichText=false;text.raycastTarget=false;
+            var shadow=rect.gameObject.AddComponent<Shadow>();shadow.effectColor=new Color(0,.01f,.01f,.65f);
+            shadow.effectDistance=new Vector2(0,-1);
+            return text;
+        }
+        Button Button(RectTransform rect,Action click)
+        {
+            var b=rect.gameObject.AddComponent<Button>();b.transition=Selectable.Transition.None;
+            b.onClick.AddListener(()=>click());return b;
+        }
+        RectTransform BuildButton(Transform parent,string name,BreachWatchGlyph.Sigil icon,Action action,
+            BreachWatchPlate.PlateType kind=BreachWatchPlate.PlateType.Basalt)
+        {
+            var rt=Rect(name,parent);Plate(rt,kind);
+            var b=Button(rt,action);
+            var glyph=Glyph(rt,"Carved sigil",icon);
+            Fill((RectTransform)glyph.transform,10);
+            return rt;
+        }
+        void BuildIndependentComponents()
+        {
+            // Asymmetrical stone architecture instead of a header/footer re-skin.
+            identity=Rect("Identity / basalt crest",uiRoot);Plate(identity,BreachWatchPlate.PlateType.Basalt);
+            var seal=Glyph(identity,"Breached crest",BreachWatchGlyph.Sigil.Breach);At((RectTransform)seal.transform,10,9,56,58);seal.Ink=Copper;
+            identityName=Label(identity,"Player name",22,TextAnchor.MiddleLeft,TextIvory,true);
+            identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Muted);
+            resourceRow=Rect("Separate resource stones",uiRoot);
+            for(int i=0;i<3;i++)
+            {
+                resourceChips[i]=Rect("Resource "+i,resourceRow);Plate(resourceChips[i],BreachWatchPlate.PlateType.Resource);
+                var g=Glyph(resourceChips[i],"Resource emblem",i==0?BreachWatchGlyph.Sigil.Wood:i==1?BreachWatchGlyph.Sigil.Stone:BreachWatchGlyph.Sigil.Food);
+                At((RectTransform)g.transform,7,5,35,35);
+                resourceAmounts[i]=Label(resourceChips[i],"Actual quantity",17,TextAnchor.MiddleLeft,TextIvory,true);
+                At(resourceAmounts[i].rectTransform,47,5,90,35);
+            }
+            centerMark=Rect("Breach witness sigil",uiRoot);Plate(centerMark,BreachWatchPlate.PlateType.Obsidian);
+            var central=Glyph(centerMark,"Stone fracture",BreachWatchGlyph.Sigil.Breach);
+            Fill((RectTransform)central.transform,4);central.Ink=Copper;
+            objective=Rect("Chapter side tablet",uiRoot);Plate(objective,BreachWatchPlate.PlateType.Basalt);
+            chapterName=Label(objective,"Actual chapter",13,TextAnchor.MiddleLeft,Copper,true);
+            chapterObjective=Label(objective,"Actual objective",17,TextAnchor.UpperLeft,TextIvory);
+            chapterProgress=Label(objective,"Objective progress",14,TextAnchor.MiddleLeft,Muted);
+            var questHit=Button(objective,()=>{fullObjective=!fullObjective;Reflow(lastWidth,lastHeight);});
+            questHit.interactable=true;
+            utilityRail=Rect("Freestanding secondary seals",uiRoot);
+            var bell=BuildButton(utilityRail,"Notices",BreachWatchGlyph.Sigil.Bell,()=>SetFeedback("Buzón: disponible en futuras pantallas"));
+            var settings=BuildButton(utilityRail,"Settings",BreachWatchGlyph.Sigil.Settings,()=>SetFeedback("Ajustes: pendiente de nueva pantalla"));
+            var world=BuildButton(utilityRail,"Fissure",BreachWatchGlyph.Sigil.Breach,()=>SetFeedback("La Brecha permanece bajo vigilancia"));
+            // These three remain preview-only informational; they never dispatch a game command.
+            panel=Rect("Independent selected-building cartouche",uiRoot);Plate(panel,BreachWatchPlate.PlateType.Basalt);
+            var buildingSeal=Glyph(panel,"Building crest",BreachWatchGlyph.Sigil.Castle);
+            At((RectTransform)buildingSeal.transform,14,10,53,53);
+            buildingName=Label(panel,"Real building name",22,TextAnchor.MiddleLeft,TextIvory,true);
+            buildingLevel=Label(panel,"Real building level",15,TextAnchor.MiddleLeft,Copper,true);
+            buildingFunction=Label(panel,"Real effects",14,TextAnchor.UpperLeft,Muted);
+            buildingCosts=Label(panel,"Real costs",15,TextAnchor.UpperLeft,TextIvory);
+            buildingState=Label(panel,"Real state and timer",13,TextAnchor.UpperLeft,Muted);
+            var closeRect=BuildButton(panel,"Close selected building",BreachWatchGlyph.Sigil.Cross,()=>SelectBuilding(""));
+            closeButton=closeRect.GetComponent<Button>();
+            actionButton=Button(Rect("Original gameplay action / new presentation",panel),SubmitSelectedBuilding);
+            actionPlate=Plate((RectTransform)actionButton.transform,BreachWatchPlate.PlateType.Action);
+            actionLabel=Label(actionButton.transform,"Real action title",17,TextAnchor.MiddleCenter,TextIvory,true);
+            Fill(actionLabel.rectTransform,6);
+            buttonRow=Rect("Five standalone stone navigation emblems",uiRoot);
+            for(int i=0;i<5;i++)
+            {
+                int index=i;var rt=BuildButton(buttonRow,navLabels[i],navIcons[i],()=>Navigate(index));
+                navButtons[i]=rt.GetComponent<Button>();navPlates[i]=rt.GetComponent<BreachWatchPlate>();
+                navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Basalt;
+            }
+            feedback=Label(uiRoot,"Action feedback / live or disabled",15,TextAnchor.MiddleCenter,Copper);
+            feedback.text="";
+        }
+        void SetFeedback(string value){if(feedback)feedback.text=value;}
+        public void SelectBuilding(string id)
+        {
+            if(!host)return;
+            selected=id??"";
+            // Reuse ONLY the existing real selection command and route, not UI.
+            host.Hud.SelectBuilding(selected);
+            RenderNow();
+        }
+        void SubmitSelectedBuilding()
+        {
+            if(!host||snapshot?.Building?.Action==null||!snapshot.Building.Action.Enabled)return;
+            var action=snapshot.Building.Action;
+            var result=host.Submit(action);SetFeedback(result.Message);
+            RenderNow();
+        }
+        void Navigate(int index)
+        {
+            if(!host)return;
+            switch(index)
+            {
+                case 0:SelectBuilding("bastion");break;
+                case 1:
+                    var s=host.Read("",host.English);
+                    SelectBuilding(s.BastionLevel<2?"sawmill":s.BastionLevel<3?"barracks":"bastion");break;
+                case 3:
+                    if(host.CanOpen(RoyalSection.World))
+                    {host.Open(RoyalSection.World);SelectBuilding("");}
+                    break;
+                case 4:fullObjective=!fullObjective;Reflow(lastWidth,lastHeight);RenderNow();break;
+                // Unidades is deliberately noninteractive in this first-screen proof:
+                // do not silently open an old UI panel or claim the route is ported.
+            }
+        }
+        void LateUpdate()
+        {
+            if(!created||!host)return;
+            if(lastWidth!=Screen.width||lastHeight!=Screen.height)Reflow(Screen.width,Screen.height);
+            if(Time.unscaledTime<nextRefresh)return;
+            nextRefresh=Time.unscaledTime+.25f;RenderNow();
+        }
+        public void Reflow(int pixelWidth,int pixelHeight)
+        {
+            if(!canvas||!created && !uiRoot)return;
+            pixelWidth=Mathf.Max(320,pixelWidth);pixelHeight=Mathf.Max(300,pixelHeight);
+            lastWidth=pixelWidth;lastHeight=pixelHeight;
+            bool portrait=pixelHeight>pixelWidth;
+            float scale=portrait?pixelWidth/430f:Mathf.Max(.70f,Mathf.Min(pixelWidth/1180f,pixelHeight/650f));
+            scaler.scaleFactor=scale;
+            float w=pixelWidth/scale,h=pixelHeight/scale;
+            float margin=portrait?13:17;
+            // Correct in the camera target (native offscreen captures included).
+            if(portrait)
+            {
+                At(identity,margin,10,w-margin*2,79);
+                At(identityName.rectTransform,71,13,w-154,29);
+                At(identityPower.rectTransform,71,45,w-154,23);
+                At(centerMark,w-margin*2-61,14,52,52);centerMark.SetParent(uiRoot,false);
+                centerMark.SetAsLastSibling();
+                At(resourceRow,margin,99,w-margin*2,49);
+                float chip=(w-2*margin-8)/3f;
+                for(int i=0;i<3;i++)
+                {
+                    At(resourceChips[i],i*(chip+4),0,chip,44);
+                    At(resourceAmounts[i].rectTransform,42,3,chip-45,38);
+                    resourceAmounts[i].fontSize=14;
+                }
+                At(objective,margin,159,w-margin*2,fullObjective?121:89);
+                At(chapterName.rectTransform,16,7,w-40,21);
+                At(chapterObjective.rectTransform,16,29,w-40,41);
+                At(chapterProgress.rectTransform,16,66,w-40,18);
+                At(utilityRail,margin,fullObjective?300:267,56,173);
+                for(int i=0;i<3;i++)
+                {
+                    var item=(RectTransform)utilityRail.GetChild(i);At(item,0,i*58,53,53);
+                }
+                float navHeight=69,navTop=h-navHeight-11f;
+                At(buttonRow,margin,navTop,w-2*margin,navHeight);
+                float bw=(w-margin*2-4*6)/5f;
+                for(int i=0;i<5;i++)
+                {
+                    At((RectTransform)navButtons[i].transform,i*(bw+6),1,bw,65);
+                    navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Basalt;
+                }
+                float panelHeight=Mathf.Min(226,Mathf.Max(178,h-495));
+                At(panel,margin,navTop-panelHeight-13,w-margin*2,panelHeight);
+                At(buildingName.rectTransform,70,8,w-132,32);
+                At(buildingLevel.rectTransform,70,37,w-132,19);
+                At(((RectTransform)closeButton.transform),w-margin*2-51,10,39,40);
+                At(buildingFunction.rectTransform,15,67,w-35,44);
+                At(buildingCosts.rectTransform,15,114,w-31,24);
+                At(buildingState.rectTransform,15,140,w-31,23);
+                At(((RectTransform)actionButton.transform),16,panelHeight-54,w-margin*2-32,43);
+                At(feedback.rectTransform,69,fullObjective?310:277,w-100,43);
+            }
+            else
+            {
+                At(identity,margin,12,Mathf.Min(338,w*.29f),76);
+                At(identityName.rectTransform,72,10,256,31);
+                At(identityPower.rectTransform,72,43,256,23);
+                At(centerMark,w*.49f-26,15,52,52);
+                float chipW=Mathf.Min(124, (w*.40f-14)/3f);
+                At(resourceRow,w-3*chipW-3*7-margin,17,3*chipW+2*7,46);
+                for(int i=0;i<3;i++)
+                {
+                    At(resourceChips[i],i*(chipW+7),0,chipW,43);
+                    At(resourceAmounts[i].rectTransform,43,3,chipW-46,38);resourceAmounts[i].fontSize=16;
+                }
+                At(objective,margin,111,Mathf.Min(280,w*.23f),fullObjective?134:109);
+                At(chapterName.rectTransform,15,9,258,20);
+                At(chapterObjective.rectTransform,15,34,250,46);
+                At(chapterProgress.rectTransform,15,85,240,20);
+                At(utilityRail,margin,fullObjective?266:238,59,183);
+                for(int i=0;i<3;i++)At((RectTransform)utilityRail.GetChild(i),0,i*62,56,56);
+                float pw=Mathf.Min(338,w*.285f),ph=Mathf.Min(335,h*.50f);
+                At(panel,w-pw-margin,115,pw,ph);
+                At(buildingName.rectTransform,72,11,pw-130,31);
+                At(buildingLevel.rectTransform,72,42,pw-130,22);
+                At((RectTransform)closeButton.transform,pw-52,10,40,40);
+                At(buildingFunction.rectTransform,18,75,pw-36,72);
+                At(buildingCosts.rectTransform,18,155,pw-34,60);
+                At(buildingState.rectTransform,18,218,pw-36,35);
+                At((RectTransform)actionButton.transform,17,ph-65,pw-34,51);
+                float count=5,bw=Mathf.Min(93,(w-190)/count),gap=13;
+                float navWidth=bw*count+gap*(count-1);
+                At(buttonRow,(w-navWidth)*.5f,h-89,navWidth,81);
+                for(int i=0;i<5;i++)At((RectTransform)navButtons[i].transform,i*(bw+gap),0,bw,77);
+                At(feedback.rectTransform,margin,h-135,w-margin*2,31);
+            }
+            lastPortrait=portrait;
+            Canvas.ForceUpdateCanvases();
+        }
+        public void RenderNow()
+        {
+            if(!created||!host)return;
+            try
+            {
+                snapshot=host.Read(selected,host.English);
+                var realName=host.City.Gateway.Snapshot().PlayerName;
+                identityName.text=string.IsNullOrWhiteSpace(realName)?"VALORIA":realName;
+                identityPower.text="PODER  "+RoyalFormatting.Amount(snapshot.Power);
+                chapterName.text=snapshot.Chapter+"    /    LA BRECHA";
+                chapterObjective.text=snapshot.Objective;
+                chapterProgress.text=snapshot.ObjectiveProgress;
+                resourceAmounts[0].text=RoyalFormatting.Amount(snapshot.Wood);
+                resourceAmounts[1].text=RoyalFormatting.Amount(snapshot.Stone);
+                resourceAmounts[2].text=snapshot.ShowFood?RoyalFormatting.Amount(snapshot.Food):"—";
+                var b=snapshot.Building;
+                bool show=b!=null&&!string.IsNullOrEmpty(selected);
+                panel.gameObject.SetActive(show);
+                if(show)
+                {
+                    buildingName.text=b.Name;
+                    buildingLevel.text="NIVEL "+b.Level;
+                    buildingFunction.text=b.Function??"";
+                    buildingCosts.text=string.IsNullOrWhiteSpace(b.Costs)?"Sin coste":b.Costs;
+                    buildingState.text=(b.State??"")+(string.IsNullOrWhiteSpace(b.Time)?"":"  ·  "+b.Time);
+                    bool can=b.Action!=null && b.Action.Enabled && !b.OperationActive;
+                    actionButton.interactable=can;
+                    actionPlate.Type=can?BreachWatchPlate.PlateType.Action:BreachWatchPlate.PlateType.Dangerous;
+                    actionPlate.SetVerticesDirty();
+                    actionLabel.text=b.Action==null?"SIN ACCIÓN":b.Action.Label;
+                    actionLabel.color=can?TextIvory:Locked;
+                }
+                // A screen slice is not allowed to lie about unsupported destinations.
+                // Reino, Construir, Mundo (when unlocked), and Crónicas are live;
+                // the future independent Unidades screen remains explicitly disabled.
+                for(int i=0;i<5;i++)
+                {
+                    bool allowed=i!=2&&(i!=3||host.CanOpen(RoyalSection.World));
+                    navButtons[i].interactable=allowed;
+                    var icon=navButtons[i].GetComponentInChildren<BreachWatchGlyph>();
+                    if(icon){icon.Ink=allowed?TextIvory:Locked;icon.SetVerticesDirty();}
+                }
+            }
+            catch(Exception e)
+            {
+                SetFeedback("Error en datos reales: "+e.GetType().Name);
+                Debug.LogException(e);throw;
+            }
+        }
+        void OnDestroy()
+        {
+            if(legacyCanvas)legacyCanvas.enabled=originalCanvas;
+            if(legacyRaycaster)legacyRaycaster.enabled=originalRaycaster;
+            if(legacyGroup){legacyGroup.alpha=originalAlpha;legacyGroup.blocksRaycasts=originalBlocks;legacyGroup.interactable=originalInteractable;}
+        }
+    }
+}
