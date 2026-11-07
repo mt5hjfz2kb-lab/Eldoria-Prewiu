@@ -106,7 +106,7 @@ namespace Eldoria.UI.RoyalGold {
   public class RoyalIconGraphic:Graphic {}
   public class RoyalButton:Button {}
   public class RoyalHudLayout:Behaviour {}
-  public class RoyalHeader:Behaviour { public RoyalText Realm; }
+  public class RoyalHeader:Behaviour { public RoyalText Realm,Power; }
   public class RoyalResourceBar:Behaviour { public RoyalText Wood,Stone,Food; }
   public class RoyalPrimary:Component {public RoyalButton Button;public RoyalText Label;}
   public class RoyalBuildingPanel:Behaviour { public RoyalPrimary Primary; public RoyalText Title; }
