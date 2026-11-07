@@ -1,5 +1,5 @@
 name: Eldoria isolated mobile texture candidate
-# Verify edited staged bytes plus all non-payload metadata after reopening.
+# Retry visual capture through compositor; both builds already reached actual Unity ready.
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -78,7 +78,7 @@ jobs:
             qa/
           retention-days: 14
       - uses: actions/upload-artifact@v4
-        if: success()
+        if: always()
         with:
           name: mobile-candidate-site
           path: site/mobile/
