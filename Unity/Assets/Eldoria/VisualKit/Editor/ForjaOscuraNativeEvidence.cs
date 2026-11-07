@@ -450,7 +450,16 @@ namespace Eldoria.VisualKit.Editor
                     if (section == RoyalSection.Bastion)
                         check.destinationVisible = hud.SelectedBuildingId == "bastion";
                     else if (section == RoyalSection.Inventory)
-                        check.destinationVisible = !string.IsNullOrWhiteSpace(hud.SelectedBuildingId);
+                    {
+                        // This native probe starts from an unadvanced, named
+                        // player. The existing RoyalHUD.Open(Inventory) route
+                        // must select the SAWMILL via its original live logic.
+                        // Previously "non-empty building" was a false-positive:
+                        // the preceding Bastion click already selected Bastion,
+                        // so a dead Construir route could pass without moving.
+                        // Do not fake a build, unlock anything or invoke Open.
+                        check.destinationVisible = hud.SelectedBuildingId == "sawmill";
+                    }
                     else if (section == RoyalSection.Missions || section == RoyalSection.Army)
                         check.destinationVisible = hud.Modal && hud.Modal.gameObject.activeSelf;
                     else if (section == RoyalSection.World)
