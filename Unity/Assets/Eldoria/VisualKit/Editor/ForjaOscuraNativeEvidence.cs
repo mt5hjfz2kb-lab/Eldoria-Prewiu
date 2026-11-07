@@ -654,11 +654,11 @@ namespace Eldoria.VisualKit.Editor
                     .FirstOrDefault(m=>m.Name=="Click" && m.GetParameters().Length==1 &&
                         m.GetParameters()[0].ParameterType==typeof(Button));
                 Need(click!=null,"Canonical uGUI pointer click helper not found");
-                var oldState=JsonUtility.ToJson(snapshot.Invoke(gateway,null));
+                var oldState=JsonUtility.ToJson(snapshot.Invoke(gateway,null),false);
                 var oldSave=File.Exists(save)?Hash(save):"MISSING";
                 try{click.Invoke(null,new object[]{action});}
                 catch(TargetInvocationException e){throw e.InnerException??e;}
-                var newState=JsonUtility.ToJson(snapshot.Invoke(gateway,null));
+                var newState=JsonUtility.ToJson(snapshot.Invoke(gateway,null),false);
                 var newSave=File.Exists(save)?Hash(save):"MISSING";
                 Need(!string.IsNullOrEmpty(oldState) && oldState!=newState,
                     "Original Forja building CTA did not change real gameplay state");
