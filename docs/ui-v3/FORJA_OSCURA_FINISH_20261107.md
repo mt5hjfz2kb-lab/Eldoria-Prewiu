@@ -1,3 +1,26 @@
+# Estado vigente: recuperación certificada, acabado global pendiente
+
+Candidato nativo: `7f7e7acc5068ff5c66ab5c83dc69e99afaabc54c`.
+Unity 6000.3.23f1: [42416965218](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42416965218), SUCCESS.
+CI de fuentes del mismo candidato: 42416965283, SUCCESS (la compilación Unity hospedada sin licencia se omite; la certificación real es Windows).
+[Doce PNG y reporte originales](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42416965218/artifacts/13592151290). Sus doce SHA256 fueron comprobados tras descargar.
+
+## Corregido y comprobado
+- El test buscaba un hijo llamado `Forja / navigation icon` usando Transform.Find, que interpreta la barra como ruta. Ahora compara nombres literales de hijos directos, sin eliminar la exigencia de icono ni separación del texto.
+- Navegación: margen de rótulos y encuadre de iconos en las cuatro orientaciones, no solo en móvil vertical. El test exige ausencia de solapamiento también en horizontal.
+- Miniatura real: encuadre ortográfico a partir de los límites proyectados del modelo, con 8% de margen. Conserva mallas, luz, ángulo y ciudad; la configuración anterior se restaura al quitar la skin, comprobado en Unity.
+- Caché Windows: se actualizó el SHA esperado solo después del inventario real. No se eliminó el guard ni se canceló Unity.
+- Ocho capturas A/B, cuatro del Bastión; tres rutas desbloqueadas mediante puntero, cierre, construcción y guardado desechable PASS. Ejército y Mundo bloqueados NO se contabilizan como ejercitados.
+- Controles de navegación de al menos 56,55 px en los tamaños probados; controles contextuales de 44 px con tolerancia flotante. Datos de juego idénticos al aplicar y retirar la skin.
+
+## Juicio visual y límites
+Se revisaron las cuatro resoluciones y los casos de Bastión móvil. Las miniaturas ganan presencia sin recorte visible y la navegación conserva sus etiquetas dentro de los botones. El resultado todavía no acredita la riqueza compositiva de la referencia original: ficha de edificio y jerarquía de cabecera necesitan revisión artística adicional.
+No ART_APPROVED, no merge, no APK/WebGL. Consejo/estados avanzados y plataformas siguen pendientes. La regresión general anterior de cc84c9be se conserva como evidencia anterior, no se atribuye al nuevo SHA.
+
+Siguiente paso: composición de ficha/cabecera sobre estas capturas, después estados avanzados y validación de plataforma. Preservar PR173 y estas pruebas, no repetir generación del kit.
+
+---
+
 # Forja Oscura: acabado sobre evidencia nativa
 
 La certificación general 42412604560 terminó correctamente en cc84c9be: progresión I–II, tres marchas, Aldric, EditMode y PlayMode. El paso de compilación Windows estaba omitido: no es prueba de un nuevo ejecutable. Las doce capturas anteriores pertenecen al runtime 10f63181, run 42412459100.
