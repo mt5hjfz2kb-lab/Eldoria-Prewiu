@@ -1,12 +1,1 @@
-Forja Oscura native visual proof — incremental cache recovery
-Date: 2026-11-07T14:38:00Z
-Workstream-ID: eldoria-forja-oscura-visual-proof-20261107
-The own prior native run 42380673233 has remained inside actions/checkout@v4 for over seven minutes; its previous full-clone predecessor 42376865738 failed after 65 minutes in checkout without running Unity. This is the same PR/workstream and no native scene or player save has started.
-Recovery: use the last certified main Unity worktree at 9efc0fefd447585f6867ab03ce2c41084b32adf2 and the 6MB exact Forja CI kit artifact 13578470254 (run 42382183072), with checked source blob IDs. No 15GB Git clone. Cancel ONLY the stale checkout run in the same Forja concurrency group.
-Retain exclusive runner rev4, verify real Unity process exclusivity, source hashes, complete eight image A/B, original pointer routes, context close, and real probe-only sawmill order and saved state. No main merge/APK/WebGL/art acceptance without authentic evidence.
-2026-11-07T14:42:00Z · Native recovery diagnostic: prior main job 128410011243 confirmed installed GitHub Desktop Git; the 15GB REST API archive fallback deleted cached valoria-layered-source when Git was missing from PATH. Inventory existing runner Unity directories and recover Git before any clone, without Unity while base is unverified.
-
-2026-11-07T14:44:00Z · Retry after actual native errors: REST archive checkout impossible in bounded time (Git was absent on PATH), validated production kit artifact exists, cached source .git proved absent, installed GitHub Desktop Git 2.53 verified. Native workflow now uses real Git sparse checkout and checks exact GitHub head plus live owner; PowerShell resolves git.exe Source/FullName correctly. Other workflows left untouched. No ART_APPROVED, no merge, no publish.
-2026-11-07T14:44:00Z · Third native recovery: installed Git 2.53.0 has been proven by actual Windows Actions run 42382749739; remove a redundant PowerShell path resolver that failed on ApplicationInfo.FullName, inventory actual workspace Unity projects and Git SHAs to an early independent artifact; only then attempt filtered Git checkout, never REST whole archive. No scene changes, no other PR resources.
-
-2026-11-07: Owner-authorized continuation; exclusive Windows returned after release. Resume latest corrected native checkout and preserve all evidence. No cancellation, no artistic approval, no publication.
+PR173: restore canonical selection focus in native preparation callback for baseline and candidate; keep full framing assertion. Owner codex-forja-498cad9fd409 revision 8.

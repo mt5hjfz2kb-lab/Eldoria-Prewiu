@@ -118,7 +118,29 @@ namespace Eldoria.VisualKit.Editor
                 m=all.FirstOrDefault(x=>x.Name=="CapturePrepared"&&x.GetParameters().Length==6);
                 if(m==null)throw new InvalidOperationException(
                     "Original native CapturePrepared pre-render callback missing; cannot prove responsive Forja UI");
-                args=new object[]{host,basename,width,height,validateRenderedView,synchronizeVisuals};
+                Action prepareView = () =>
+                {
+                    // CapturePrepared delegates normal selection framing to
+                    // its callback whenever one is supplied. Reproduce that
+                    // SAME runtime focus after the offscreen canvas render,
+                    // for both baseline and candidate, before skin layout.
+                    var hostType = host.GetType();
+                    var selected = hostType.GetProperty("Selected")?.GetValue(host) as string;
+                    if (!string.IsNullOrEmpty(selected))
+                    {
+                        var find = hostType.GetMethod("FindTarget", new[]{typeof(string)});
+                        var focus = hostType.GetMethod("Focus", new[]{typeof(GameObject)});
+                        var target = find?.Invoke(host, new object[]{selected == "march-main" ? "barracks" : selected}) as Component;
+                        Need(target && focus != null, "Canonical selected target/focus missing for native A/B");
+                        focus.Invoke(host, new object[]{target.gameObject});
+                        var camera = hostType.GetProperty("PlayerCamera")?.GetValue(host) as Camera;
+                        Need(camera, "Canonical camera missing after selection focus");
+                        camera.Render();
+                        Canvas.ForceUpdateCanvases();
+                    }
+                    synchronizeVisuals?.Invoke();
+                };
+                args=new object[]{host,basename,width,height,validateRenderedView,prepareView};
             }
             else
             {
