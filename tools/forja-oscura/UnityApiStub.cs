@@ -131,7 +131,7 @@ namespace Eldoria.UI.RoyalGold {
 }
 namespace Eldoria.UI.RoyalGold.V2 {
   using UnityEngine;using Eldoria.UI.RoyalGold;
-  public class RoyalGoldV3BuildingPreview:MonoBehaviour { public Color BackdropColor => default; public void SetBackdrop(Color color){} }
+  public class RoyalGoldV3BuildingPreview:MonoBehaviour { public Color BackdropColor => default; public bool TightFraming => false; public void SetTightFraming(bool enabled){} public void SetBackdrop(Color color){} }
   public class RoyalGoldV2Hud:MonoBehaviour {
     public RectTransform ChronicleObjectiveRect,ChronicleBuildingRect;
     public bool ChronicleIllustratedBuildingVisible => false;

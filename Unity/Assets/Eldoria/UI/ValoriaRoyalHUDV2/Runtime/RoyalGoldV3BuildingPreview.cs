@@ -21,6 +21,13 @@ namespace Eldoria.UI.RoyalGold.V2
             BackdropColor = color;
             lastKey = null; // Re-render the same cached canonical mesh once.
         }
+        public bool TightFraming { get; private set; }
+        public void SetTightFraming(bool enabled)
+        {
+            if (TightFraming == enabled) return;
+            TightFraming = enabled;
+            lastKey = null;
+        }
         public bool HasModelPreview => image && image.enabled && texture;
         public void Initialize(RawImage target) { image = target; image.raycastTarget = false; }
         public bool Show(string id, string level)
@@ -101,6 +108,18 @@ namespace Eldoria.UI.RoyalGold.V2
                 camera.farClipPlane = radius * 8;
                 camera.orthographicSize = radius * 1.08f;
                 camera.transform.rotation = Quaternion.Euler(25, -25, 0);
+                if (TightFraming)
+                {
+                    // Project the actual model bounds into this one-shot camera.
+                    // Fit all eight bounds corners with 8% padding; keep the
+                    // original meshes, pose, angle, lights and square aspect.
+                    var e = bounds.extents;
+                    var right = camera.transform.right;
+                    var up = camera.transform.up;
+                    float halfWidth = Mathf.Abs(right.x)*e.x + Mathf.Abs(right.y)*e.y + Mathf.Abs(right.z)*e.z;
+                    float halfHeight = Mathf.Abs(up.x)*e.x + Mathf.Abs(up.y)*e.y + Mathf.Abs(up.z)*e.z;
+                    camera.orthographicSize = Mathf.Max(.01f, Mathf.Max(halfWidth, halfHeight)*1.08f);
+                }
                 camera.transform.position = bounds.center - camera.transform.forward * radius * 3;
                 camera.targetTexture = texture;
                 var lightObject = new GameObject("Preview key light");

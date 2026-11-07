@@ -1,1 +1,1 @@
-Verify inset navigation captions in all four native viewports, literal child lookup, painted finish, and actual building interactions. Cache inspected at 5a6cee85.
+Native proof: real building thumbnail fitted to projected bounds with 8 percent padding; reversible presentation, unchanged city and model. Previous exact 4e0485d6 passed.

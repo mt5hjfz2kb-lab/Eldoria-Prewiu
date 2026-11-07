@@ -867,6 +867,9 @@ namespace Eldoria.VisualKit.Editor
             var prior=hud.GetComponent<ForjaOscuraLiveHudSkin>();
             if(prior)Object.DestroyImmediate(prior);
             var original=Snapshot(hud);
+            var preview = hud.GetComponentInChildren<Eldoria.UI.RoyalGold.V2.RoyalGoldV3BuildingPreview>(true);
+            Need(preview, "Genuine building thumbnail missing before Forja proof");
+            bool originalTightFraming = preview.TightFraming;
             var root=Path.GetFullPath(Path.Combine(Application.dataPath,"../ForjaNativeEvidence"));
             Directory.CreateDirectory(root);
             const string before="native-before",after="native-after";
@@ -878,6 +881,7 @@ namespace Eldoria.VisualKit.Editor
             var skin=hud.gameObject.AddComponent<ForjaOscuraLiveHudSkin>();
             Need(skin!=null,"Skin creation failed");
             skin.ApplyNow();Canvas.ForceUpdateCanvases();skin.ApplyNow();
+            Need(preview.TightFraming, "Forja building preview did not adopt projected-bounds framing");
             Need(skin.NavigationSkinned && skin.ResourceSkinned && skin.HeaderSkinned &&
                  skin.ObjectiveSkinned && skin.BuildingSkinned,
                  "Real nav, illustrated resource icons, header, mission or building did not receive Forja sprites");
@@ -961,6 +965,8 @@ namespace Eldoria.VisualKit.Editor
             hud.Refresh();
             if(context) context.SynchronizeNow();
             Object.DestroyImmediate(skin);Canvas.ForceUpdateCanvases();
+            Need(preview.TightFraming == originalTightFraming,
+                "Removing Forja failed to restore the original thumbnail framing");
             ValidateNavigation(hud);
             var originalAfter=Snapshot(hud);
             Need(original==originalAfter,"Restoring skin changed existing HUD data");

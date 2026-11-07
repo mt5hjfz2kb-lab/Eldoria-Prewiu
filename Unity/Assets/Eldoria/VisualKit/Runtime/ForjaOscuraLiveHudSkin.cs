@@ -36,6 +36,7 @@ namespace Eldoria.VisualKit
         private RectTransform lastContextRect;
         private RoyalGoldV3BuildingPreview nativePreview;
         private Color originalPreviewBackdrop;
+        private bool originalPreviewTightFraming;
         private struct OriginalButtonStyle { public Selectable.Transition Transition; public SpriteState SpriteState; public ColorBlock Colors; }
         private readonly Dictionary<Button, OriginalButtonStyle> originalButtonStyles = new Dictionary<Button, OriginalButtonStyle>();
         private float nextStyleRefresh;
@@ -866,6 +867,8 @@ namespace Eldoria.VisualKit
                     if (nativePreview)
                     {
                         originalPreviewBackdrop = nativePreview.BackdropColor;
+                        originalPreviewTightFraming = nativePreview.TightFraming;
+                        nativePreview.SetTightFraming(true);
                         nativePreview.SetBackdrop(new Color(.08f,.09f,.10f,1f));
                         v2.SynchronizeNow();
                     }
@@ -1190,7 +1193,11 @@ namespace Eldoria.VisualKit
 #endif
             }
             created.Clear();
-            if (nativePreview) nativePreview.SetBackdrop(originalPreviewBackdrop);
+            if (nativePreview)
+            {
+                nativePreview.SetBackdrop(originalPreviewBackdrop);
+                nativePreview.SetTightFraming(originalPreviewTightFraming);
+            }
             if (v2)
             {
                 v2.InvalidatePresentationLayout();
