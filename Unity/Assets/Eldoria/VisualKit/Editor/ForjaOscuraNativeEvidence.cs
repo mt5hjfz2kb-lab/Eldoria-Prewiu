@@ -176,7 +176,7 @@ namespace Eldoria.VisualKit.Editor
                 Need(target && target.isActiveAndEnabled && target.raycastTarget,
                     "Native navigation graphic is not an active raycast target: " + item.Section);
                 var graphicCorners = new Vector3[4];
-                target.rectTransform.GetWorldCorners(graphicCorners);
+                (target.transform as RectTransform).GetWorldCorners(graphicCorners);
                 var graphicLeft = RectTransformUtility.WorldToScreenPoint(nativeCamera, graphicCorners[0]);
                 var graphicTop = RectTransformUtility.WorldToScreenPoint(nativeCamera, graphicCorners[1]);
                 var graphicRight = RectTransformUtility.WorldToScreenPoint(nativeCamera, graphicCorners[3]);
