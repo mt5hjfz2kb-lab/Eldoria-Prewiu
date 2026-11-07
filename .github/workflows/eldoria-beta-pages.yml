@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: a323233aeda091076e8faf24f42fdf2569138ea0
+          ref: 08fb51bb492bb81f89e42c1e59de1ff1ada40287
           sparse-checkout: |
             tools/eldoria-private-beta
             tools/delivery
@@ -67,9 +67,15 @@ jobs:
           for n in range(12):
             try:
               r=json.load(urllib.request.urlopen(url+'?check='+str(n),timeout=20))
-              assert r['startup_diagnostic']=='stages-v2-opt-in'
+              assert r['startup_diagnostic']=='stages-v3-opt-in'
               assert r['original_zip_sha256']=='fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771'
-              print('LIVE_BETA_PAGES_IDENTITY_PASS',url);break
+              html=urllib.request.urlopen(os.environ['SITE_URL'].rstrip('/')+'/beta-native325/diagnostico-v3.html',timeout=20).read().decode()
+              import re,hashlib
+              name=re.search(r'src="(play-[a-f0-9]+\\.js)"',html)[1]
+              script=urllib.request.urlopen(os.environ['SITE_URL'].rstrip('/')+'/beta-native325/'+name,timeout=20).read()
+              assert hashlib.sha256(script).hexdigest()[:16] in name
+              assert 'Diagnóstico v3' in script.decode()
+              print('LIVE_BETA_PAGES_IDENTITY_AND_DIAGNOSTIC_V3_PASS',url);break
             except Exception:
               if n==11: raise
               time.sleep(5)
