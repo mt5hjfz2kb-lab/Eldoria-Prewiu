@@ -1,4 +1,4 @@
-name: Eldoria public beta native325 Pages
+name: Eldoria public beta mobile candidate Pages
 on:
   push:
     branches: [main]
@@ -18,65 +18,85 @@ jobs:
     timeout-minutes: 30
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}beta-native325/
+      url: ${{ steps.deploy.outputs.page_url }}beta-native325/mobile-v1.html
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 08fb51bb492bb81f89e42c1e59de1ff1ada40287
+          ref: 966955bcd43fd5000bef9ef0aa3fffbbb56aaaaa
           sparse-checkout: |
             tools/eldoria-private-beta
             tools/delivery
-            pipeline/eldoria-private-beta
           persist-credentials: false
       - uses: actions/configure-pages@v5
-      - name: Retrieve frozen native325, not development build
-        uses: actions/download-artifact@v4
+      - name: Require independently successful exact candidate QA
+        uses: actions/github-script@v7
         with:
-          run-id: 42397405907
-          name: eldoria-pr163-web-preview-42397405907
+          script: |
+            const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42418416629})).data;
+            if(r.conclusion!=='success'||r.head_sha!=='966955bcd43fd5000bef9ef0aa3fffbbb56aaaaa')throw Error('Candidate runtime QA not certified');
+            const a=(await github.rest.actions.listWorkflowRunArtifacts({...context.repo,run_id:42418416629})).data.artifacts.find(a=>a.name==='mobile-candidate-site');
+            if(a.id!==13592467764||a.digest!=='sha256:b34079f24eaa3a32c27280f30f498c7411a559e986d46e8e0bf2817cc7858552')throw Error('Candidate artifact identity mismatch');
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42418416629
+          name: mobile-candidate-site
           github-token: ${{ github.token }}
-          path: input
-      - name: Prepare byte-identical game for Pages and preserve existing live site
+          path: site/beta-native325
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42418416629
+          name: mobile-candidate-evidence
+          github-token: ${{ github.token }}
+          path: evidence
+      - name: Validate candidate and preserve existing owner site
         run: |
-          python -m pip install 'Brotli==1.1.0'
-          python tools/eldoria-private-beta/prepare-pages.py input/Eldoria-native325-itch.zip site > pages-proof.json
-          cat pages-proof.json
+          python -m pip install Brotli==1.2.1
+          python - <<'PY'
+          import importlib.util,pathlib,json
+          p=pathlib.Path('site/beta-native325')
+          report=json.loads(pathlib.Path('evidence/qa/report.json').read_text())
+          assert {r['name'] for r in report}=={'original','mobile'}
+          assert all(r['state']['ready'] and not r['failed'] and not r['errors'] for r in report)
+          identity=json.loads((p/'release-identity.json').read_text())
+          assert identity['revision']=='native325-mobile-candidate1'
+          assert identity['candidate_bundle_sha256']=='d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7'
+          assert identity['game_bytes_unchanged'] is False and identity['physical_mobile_tested'] is False
+          identity.update(runtime_verified=True,runtime_qa_run=42418416629,runtime_environment='Chromium SwiftShader 390x844 device scale 0.5; not a physical iPhone')
+          (p/'release-identity.json').write_text(json.dumps(identity,indent=2))
+          (p/'mobile-v1.html').write_bytes((p/'index.html').read_bytes())
+          spec=importlib.util.spec_from_file_location('prep','tools/eldoria-private-beta/prepare-pages.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+          previous=m.mirror_previous('site')
+          pathlib.Path('site/.nojekyll').touch()
+          size=sum(f.stat().st_size for f in pathlib.Path('site').rglob('*') if f.is_file())
+          assert size<1073741824,size
+          print('CANDIDATE_PAGES_READY',size,'legacy_files',len(previous))
+          PY
           node --check site/beta-native325/play.js
           node tools/eldoria-private-beta/test-startup.mjs site/beta-native325
           node tools/delivery/test-exact-decoded-transport.mjs site/beta-native325
-      - uses: actions/upload-artifact@v4
-        with:
-          name: beta-pages-transport-evidence
-          path: |
-            pages-proof.json
-            site/beta-native325/build-manifest.json
-            site/beta-native325/release-identity.json
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
-      - name: Publish owner-authorized public beta link
+      - name: Publish owner-authorized mobile diagnostic candidate
         id: deploy
         uses: actions/deploy-pages@v4
-      - name: Verify live frozen beta identity
+      - name: Verify live exact candidate
         env:
           SITE_URL: ${{ steps.deploy.outputs.page_url }}
         run: |
           python - <<'PY'
           import os,json,urllib.request,time
-          url=os.environ['SITE_URL'].rstrip('/')+'/beta-native325/release-identity.json'
+          base=os.environ['SITE_URL'].rstrip('/')+'/beta-native325/'
           for n in range(12):
             try:
-              r=json.load(urllib.request.urlopen(url+'?check='+str(n),timeout=20))
-              assert r['startup_diagnostic']=='stages-v3-opt-in'
-              assert r['original_zip_sha256']=='fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771'
-              html=urllib.request.urlopen(os.environ['SITE_URL'].rstrip('/')+'/beta-native325/diagnostico-v3.html',timeout=20).read().decode()
-              import re,hashlib
-              name=re.search(r'src="(play-[a-f0-9]+[.]js)"',html)[1]
-              script=urllib.request.urlopen(os.environ['SITE_URL'].rstrip('/')+'/beta-native325/'+name,timeout=20).read()
-              assert hashlib.sha256(script).hexdigest()[:16] in name
-              assert 'Diagnóstico v3' in script.decode()
-              print('LIVE_BETA_PAGES_IDENTITY_AND_DIAGNOSTIC_V3_PASS',url);break
+              identity=json.load(urllib.request.urlopen(base+'release-identity.json?candidate1='+str(n),timeout=20))
+              assert identity['revision']=='native325-mobile-candidate1'
+              assert identity['candidate_bundle_sha256']=='d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7'
+              assert identity['runtime_verified'] is True and identity['physical_mobile_tested'] is False
+              html=urllib.request.urlopen(base+'mobile-v1.html?check='+str(n),timeout=20).read()
+              assert b'Entrar en Valoria' in html
+              print('LIVE_MOBILE_CANDIDATE_IDENTITY_PASS',base+'mobile-v1.html');break
             except Exception:
-              if n==11: raise
+              if n==11:raise
               time.sleep(5)
           PY
