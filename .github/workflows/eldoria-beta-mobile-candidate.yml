@@ -1,4 +1,5 @@
 name: Eldoria isolated mobile texture candidate
+# Verify edited staged bytes plus all non-payload metadata after reopening.
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
