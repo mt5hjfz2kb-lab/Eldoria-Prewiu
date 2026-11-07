@@ -447,9 +447,14 @@ namespace Eldoria.ReferenceClean.Editor {
    // Capture itself checks full model framing against the genuine rendered HUD.
    Check(()=>{
     Capture(h,"integration-city-barracks-phone-landscape.png",844,390,()=>{
-     var plot=h.FindTarget("barracks");Rect projected,visible;
-     Need(plot&&h.IsTargetFramed(plot.gameObject,out projected,out visible)&&
-      visible.height>.15f,"Landscape Barracks must fit beside the quest, above the bottom sheet");
+     var plot=h.FindTarget("barracks");Rect projected=default,visible=default;
+     bool framed=plot&&h.IsTargetFramed(plot.gameObject,out projected,out visible);
+     Need(framed&&visible.height>.15f,
+      "Landscape Barracks must fit beside the quest, above the bottom sheet"+
+      " framed="+framed+" projected="+projected+" visible="+visible+
+      " selected="+h.Selected+" aspect="+h.PlayerCamera.aspect+
+      " zoom="+h.PlayerCamera.orthographicSize+
+      " camera="+h.PlayerCamera.transform.position);
     });
     Capture(h,"integration-city-barracks-phone-portrait.png",390,844);
    },"Barracks construction plot fully visible in both phone orientations");
