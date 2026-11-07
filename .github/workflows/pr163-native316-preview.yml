@@ -2,7 +2,7 @@ name: '[QA] PR163 native317 critical frames'
 on:
   push:
     branches: [qa/pr163-webgl-evidence-20261107]
-    paths: ['.github/workflows/pr163-native317-preview.yml']
+    paths: ['.github/workflows/pr163-native316-preview.yml']
 permissions:
   contents: write
   actions: read
