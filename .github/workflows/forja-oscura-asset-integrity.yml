@@ -56,3 +56,29 @@ jobs:
         run: dotnet run --project tools/forja-oscura/SyntaxAudit.csproj -c Release -- Unity/Assets/Eldoria/VisualKit
       - name: Report exact verification limits
         run: echo 'FORJA_CSHARP_SYNTAX_PASS; Unity API compile, native A-B captures and visual acceptance still untested.'
+
+  api-contract-proof:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/forja-oscura
+            Unity/Assets/Eldoria/VisualKit
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/BottomNavigation.cs
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ValoriaReferenceCleanGameplay.cs
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Compare skin API assumptions to actual RoyalHUD and Unity native capture
+        run: python3 tools/forja-oscura/check-upstream-api.py
+      - name: Distinguish source compatibility from real Unity native proof
+        run: echo "FORJA_SOURCE_API_PASS; does NOT imply Unity compile, screenshot, input or ART approval."
