@@ -1,0 +1,73 @@
+name: Eldoria public beta native325 Pages
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths: ['.github/workflows/eldoria-beta-pages.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+concurrency:
+  group: eldoria-pages-main
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}beta-native325/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/delivery
+            pipeline/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/configure-pages@v5
+      - name: Retrieve frozen native325, not development build
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42397405907
+          name: eldoria-pr163-web-preview-42397405907
+          github-token: ${{ github.token }}
+          path: input
+      - name: Prepare byte-identical game for Pages and preserve existing live site
+        run: |
+          python -m pip install 'Brotli==1.1.0'
+          python tools/eldoria-private-beta/prepare-pages.py input/Eldoria-native325-itch.zip site > pages-proof.json
+          cat pages-proof.json
+          node --check site/beta-native325/play.js
+          node tools/delivery/test-exact-decoded-transport.mjs site/beta-native325
+      - uses: actions/upload-artifact@v4
+        with:
+          name: beta-pages-transport-evidence
+          path: |
+            pages-proof.json
+            site/beta-native325/build-manifest.json
+            site/beta-native325/release-identity.json
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Publish owner-authorized public beta link
+        id: deploy
+        uses: actions/deploy-pages@v4
+      - name: Verify live frozen beta identity
+        env:
+          SITE_URL: ${{ steps.deploy.outputs.page_url }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request,time
+          url=os.environ['SITE_URL'].rstrip('/')+'/beta-native325/release-identity.json'
+          for n in range(12):
+            try:
+              r=json.load(urllib.request.urlopen(url+'?check='+str(n),timeout=20))
+              assert r['original_zip_sha256']=='fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771'
+              print('LIVE_BETA_PAGES_IDENTITY_PASS',url);break
+            except Exception:
+              if n==11: raise
+              time.sleep(5)
+          PY
