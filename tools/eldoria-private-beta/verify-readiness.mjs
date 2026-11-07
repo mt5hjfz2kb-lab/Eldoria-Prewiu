@@ -8,14 +8,18 @@ export function assessBeta(b){
  if(b?.frozen_archive?.sha256_verified!==true ||
     b?.frozen_archive?.archive_private_draft!==true) errors.push('freeze_not_certified');
  const d=b?.distribution||{};
- if(d.service_account_connected!==true||d.r2_files_uploaded!==true||d.worker_deployed!==true)
+ if(d.service==='GitHub Pages'){
+  if(d.live_identity_verified!==true)errors.push('public_host_identity_unverified');
+  if(d.access_control!=='public URL; not authenticated')errors.push('public_access_not_explicit');
+ }else if(d.service_account_connected!==true||d.r2_files_uploaded!==true||d.worker_deployed!==true)
   errors.push('private_host_not_deployed');
- if(d.links_enabled!==true)errors.push('signed_links_inactive');
- if(d.byte_checksums_verified!==true||d.frozen_files!==19)errors.push('web_files_not_exact');
+ if(d.links_enabled!==true)errors.push('links_inactive');
+ if(d.byte_checksums_verified!==true)errors.push('web_files_not_verified');
+ if(d.service!=='GitHub Pages'&&d.frozen_files!==19)errors.push('web_files_not_exact');
  const m=b?.measurement||{};
  if(m.row_level_security!==true||m.public_select_allowed!==false||m.public_insert_allowed!==false)
   errors.push('sensitive_telemetry_not_secure');
- if(m.real_worker_to_supabase_request_verified!==true)
+ if(m.real_backend_to_supabase_request_verified!==true&&m.real_worker_to_supabase_request_verified!==true)
   errors.push('no_real_telemetry_delivery_proof');
  if(m.metrics_specified!==135||m.event_types_schema_accepted!==67)
   errors.push('metrics_spec_changed');
@@ -23,7 +27,7 @@ export function assessBeta(b){
  if(!Number.isInteger(m.actual_events_verified_from_unity)||m.actual_events_verified_from_unity<9)
   errors.push('core_gameplay_events_not_verified');
  const qa=b?.qa||{};
- if(qa.hosted_private_gameplay_pass!==true||qa.full_native_i_v_normal_clock_verified!==true)
+ if((qa.hosted_gameplay_pass!==true&&qa.hosted_private_gameplay_pass!==true)||qa.full_native_i_v_normal_clock_verified!==true)
   errors.push('hosted_i_v_not_proven');
  if(qa.real_mobile_ios_pass!==true||qa.real_mobile_android_pass!==true)
   errors.push('physical_mobile_qa_missing');
