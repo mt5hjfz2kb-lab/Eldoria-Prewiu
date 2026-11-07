@@ -87,6 +87,31 @@ namespace Eldoria.Tests
                 Force(0,1,30).WithHeroes("aldric","lyra"),Force(1,1,30)).Rounds,
                 Is.GreaterThan(0));
         }
+        [Test] public void AddingLyraCannotEraseAldricsEarnedGuardian25Victory()
+        {
+            var state=new PlayerState();
+            state.Retention.AldricExperience=560;
+            state.Retention.LyraExperience=0;
+            state.ChapterThree.LyraRecruited=true;
+            int soloMastery=EarlyRetentionRules.HeroMasteryLevel(state,"aldric");
+            int pairedMastery=EarlyRetentionRules.HeroMasteryLevel(state,"aldric+lyra");
+            Assert.That(soloMastery,Is.EqualTo(7));
+            Assert.That(pairedMastery,Is.EqualTo(soloMastery));
+
+            var enemy=EarlyRetentionRules.Stage(25).Enemy;
+            var alone=EldoriaV41CombatEvolution.ResolveCreature(
+                Force(1,2,36),enemy,masteryLevel:soloMastery);
+            var withLyra=EldoriaV41CombatEvolution.ResolveCreature(
+                Force(1,2,36).WithHeroes("aldric","lyra"),enemy,
+                masteryLevel:pairedMastery);
+
+            Assert.That(alone.Winner,Is.EqualTo(1),"Aldric's existing earned victory is the control");
+            Assert.That(withLyra.Winner,Is.EqualTo(1),
+                "Adding an unlocked support hero must not invert the same Guardian 25 victory");
+            Assert.That(withLyra.RemainingA,Is.GreaterThanOrEqualTo(alone.RemainingA),
+                "Mastery multipliers must not shrink merely because Lyra joined");
+        }
+
         [Test] public void MailboxAnalysisNamesOnlyFamiliesActuallySent()
         {
             var labels=new[]{"Paladines","Arqueros","Brujos"};
