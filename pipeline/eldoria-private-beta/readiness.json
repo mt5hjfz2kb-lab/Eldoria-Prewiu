@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "MOBILE_CANDIDATE_LIVE_PHYSICAL_QA_PENDING",
+  "status": "BLOCKED_IPHONE_CANDIDATE1_RETURN_AFTER_FIRST_FRAME",
   "scope": "Closed playtest Bastion I–V",
   "source": "native325-mobile-candidate1",
   "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
@@ -53,7 +53,7 @@
     "no_new_tester_invites_before_validation": true
   },
   "blockers": [
-    "Original physical iPhone returned at startup90; newly published texture candidate needs physical confirmation and normal gameplay/save/reload",
+    "Candidate1 failed physical iPhone: first game frame visible briefly then returns to landing. Do not request more identical retries; investigate scene/runtime memory and load sequencing.",
     "Verify actual hosted save/reload and physical iOS/Android gameplay",
     "Connect opt-in consent UI and browser event delivery to verified QA backend; native gameplay metrics still not emitted",
     "Instrument and verify actual Unity gameplay events; 135 indicators remain specification, not measured",
@@ -79,7 +79,8 @@
       "original": 1675624448,
       "candidate": 1580924928
     },
-    "deploy_run": 42418899866
+    "deploy_run": 42418899866,
+    "physical_iphone_result": "OWNER_REPORTED_FAILURE: game visible about one second, then involuntary return to landing"
   },
   "updated_at": "2026-11-07"
 }
