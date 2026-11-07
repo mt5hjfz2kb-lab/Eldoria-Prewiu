@@ -21,6 +21,7 @@ namespace Eldoria.World4XCanon
   internal static readonly int[] ForestCorridorPairs=new int[0];
   ValoriaIntegratedWorld host; ZoneOneStrategicCamera navigation;Vector3 origin;
   bool built;
+  public bool IsReady=>built;
   RegionOneBlenderLandscape geography;RegionOneReferenceNodes nodes;
   RegionOneResourcePlacement placement;RegionOneResourceModels resourceModels;
   RegionOneCreaturePopulation creaturePopulation;RegionOneLookDevelopment lookDevelopment;
@@ -58,17 +59,22 @@ namespace Eldoria.World4XCanon
         IEnumerator Start()
         {
             if (!host) yield break;
-            while (host && !host.Ready) yield return null;
+            host.BindWorldPresentation(this);
+            while (host && !host.PresentationBindingsReady) yield return null;
             if (!host || !host.WorldRoot || !host.WorldNavigation || !host.WorldCamera) yield break;
             navigation = host.WorldNavigation;
             origin = host.WorldHome;
             if (host.WorldRoot.transform.Find("Region 1 canonical continuous geography"))
             {
                 Debug.LogWarning("REGION1_CANON_LAYER_ALREADY_PRESENT");
+                // A duplicate adapter is not authoritative. Never expose a partial world.
+                var existing=UnityEngine.Object.FindObjectsByType<RegionOneCanonicalLandscape>(FindObjectsSortMode.None)
+                    .FirstOrDefault(other=>other!=this&&other.host==host&&other.IsReady);
+                if(existing)host.BindWorldPresentation(existing);
                 yield break;
             }
             InstallCameraLimits();
-            Build(host.WorldRoot.transform);
+            yield return BuildStaged(host.WorldRoot.transform);
             foreach(var renderer in host.WorldRoot.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
             host.WorldRoot.layer=29;
             host.WorldCamera.cullingMask=1<<29;
@@ -129,7 +135,7 @@ namespace Eldoria.World4XCanon
    }
    return Mathf.Max(horizontal/Mathf.Max(.1f,aspect),vertical)*1.04f;
   }
-  void Build(Transform existingWorld)
+  IEnumerator BuildStaged(Transform existingWorld)
   {
    // Capture existing scene integration state ONCE, before creating the clean presentation.
    foreach(var r in existingWorld.GetComponentsInChildren<Renderer>(true))
@@ -146,14 +152,21 @@ namespace Eldoria.World4XCanon
     if(lod.GetComponentsInChildren<Renderer>(true).Any(background.Contains))
     {lods.Add(lod);lodStates.Add(lod.enabled);lod.enabled=false;}
    var root=new GameObject("Region 1 canonical continuous geography").transform;root.SetParent(existingWorld,true);
-   geography=RegionOneBlenderLandscape.Install(root,host);lookDevelopment=root.GetComponentInChildren<RegionOneLookDevelopment>();
+   yield return null;
+   yield return RegionOneBlenderLandscape.InstallStaged(root,host,value=>geography=value);
+   lookDevelopment=root.GetComponentInChildren<RegionOneLookDevelopment>();
+   yield return null;
    nodes=RegionOneReferenceNodes.Install(root,host);
+   yield return null;
    RegionOneResourcePlacement.Install(root,host,geography);
+   yield return null;
    RegionOneResourceModels.Install(root,host);
+   yield return null;
    placement=root.GetComponent<RegionOneResourcePlacement>();
    resourceModels=root.GetComponent<RegionOneResourceModels>();
    RegionOneCreaturePopulation.Install(root,host,placement);
    creaturePopulation=root.GetComponent<RegionOneCreaturePopulation>();
+   yield return null;
    originalTripoActor=existingWorld.GetComponentInChildren<Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual>(true);
   }
   void UpdateLevelOfDetail(bool force)
