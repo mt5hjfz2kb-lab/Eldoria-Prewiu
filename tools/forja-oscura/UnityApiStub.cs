@@ -126,6 +126,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
   using UnityEngine;using Eldoria.UI.RoyalGold;
   public class RoyalGoldV2Hud:MonoBehaviour {
     public RectTransform ChronicleObjectiveRect,ChronicleBuildingRect;
+    public bool ChronicleIllustratedBuildingVisible => false;
     public void SynchronizeNow(){}
   }
   public partial class RoyalGoldV3ContextHud:MonoBehaviour {
