@@ -1,0 +1,30 @@
+{
+  "native_run": 42315556449,
+  "head_sha": "4fdb95fdea71c05b28a6e2e28147fddcb0719c24",
+  "artifact": "valoria-royal-gold-v2-review-42315556449",
+  "quality_approved": false,
+  "screenshots": [
+    {
+      "name": "integration-context-engendro-outbound-phone-landscape.png",
+      "bytes": 274178,
+      "sha256": "635ebf5b956bf42cf649cfb396c9b2e1b79edee5d943f62766bc314c9dee07f8"
+    },
+    {
+      "name": "integration-context-engendro-outbound-phone-portrait.png",
+      "bytes": 454564,
+      "sha256": "cffd842de1e755b0874006bd7e478170bb5cea74c5963121ae5d9018e1d5b617"
+    },
+    {
+      "name": "integration-context-engendro-phone-landscape.png",
+      "bytes": 287982,
+      "sha256": "c0b4a357ab9207d1898da757f59b362290f7875f98e8c8a5b88e43f2ee6ce6a3"
+    },
+    {
+      "name": "integration-context-engendro-phone-portrait.png",
+      "bytes": 465724,
+      "sha256": "2f6ef617a2c6fa752ca378b839df2dbe82af8591f2ff8c2f73a29ab6e4ffa0c2"
+    }
+  ],
+  "native_result_status": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
+  "native_result_errors": ""
+}
