@@ -107,6 +107,10 @@ jobs:
           }
           $out=Join-Path $env:GITHUB_WORKSPACE 'forja-cache-inventory.json'
           $rows | ConvertTo-Json -Depth 3 | Set-Content -Path $out -Encoding UTF8
+          # Git probes for historical caches can leave LASTEXITCODE=1 even
+          # when caught. This inventory is non-authoritative; the real
+          # source-integrity checks run separately before opening Unity.
+          $global:LASTEXITCODE=0
       - name: Preserve cache inventory before attempting another Git checkout
         uses: actions/upload-artifact@v4
         with:
