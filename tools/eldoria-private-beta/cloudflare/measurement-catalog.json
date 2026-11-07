@@ -1,0 +1,1849 @@
+{
+  "schema": 3,
+  "project": "Eldoria Closed Beta — Unity Bastion I–V",
+  "source_revision": "main 2e8f1313f5d92e51d97f4337595df42113827ebb / 2026-11-07",
+  "scope": {
+    "bastion_min": 1,
+    "bastion_max": 5,
+    "excluded": [
+      "Codice",
+      "cartas jugables",
+      "Relicario/Duelo de Reliquias",
+      "equipamiento avanzado",
+      "Bastion VI-X",
+      "PvP",
+      "Hospital",
+      "alianzas",
+      "T3-T5 jugables"
+    ],
+    "notes": "Arcón y Manuscrito de la Fisura son recompensa narrativa única; no carta jugable. Vigilantes más allá de etapa25 solo elegible si el runtime realmente permite acceder."
+  },
+  "privacy": "opt-in pseudonymous gameplay codes only; no nick/email/IP/free text",
+  "event_count": 67,
+  "metric_count": 135,
+  "area_count": 17,
+  "events": [
+    {
+      "name": "session_start",
+      "priority": "P0",
+      "measurements": 1
+    },
+    {
+      "name": "game_ready",
+      "priority": "P0",
+      "measurements": 2
+    },
+    {
+      "name": "first_objective",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "session_heartbeat",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "session_finished",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "load_stage",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "visibility_state",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "save_state",
+      "priority": "P0",
+      "measurements": 2
+    },
+    {
+      "name": "tutorial_step",
+      "priority": "P1",
+      "measurements": 2
+    },
+    {
+      "name": "objective_state",
+      "priority": "P1",
+      "measurements": 2
+    },
+    {
+      "name": "help_opened",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "screen_viewed",
+      "priority": "P1",
+      "measurements": 4
+    },
+    {
+      "name": "ui_action",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "input_rejected",
+      "priority": "P1",
+      "measurements": 3
+    },
+    {
+      "name": "navigation_backtrack",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "player_name_set",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "gateway_command",
+      "priority": "P0",
+      "measurements": 4
+    },
+    {
+      "name": "gateway_advance",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "build_state",
+      "priority": "P1",
+      "measurements": 2
+    },
+    {
+      "name": "build_completed",
+      "priority": "P0",
+      "measurements": 6
+    },
+    {
+      "name": "production_state",
+      "priority": "P1",
+      "measurements": 3
+    },
+    {
+      "name": "training_state",
+      "priority": "P1",
+      "measurements": 2
+    },
+    {
+      "name": "resource_state",
+      "priority": "P1",
+      "measurements": 3
+    },
+    {
+      "name": "gather_state",
+      "priority": "P1",
+      "measurements": 3
+    },
+    {
+      "name": "world_opened",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "world_node",
+      "priority": "P1",
+      "measurements": 2
+    },
+    {
+      "name": "world_zoom",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "exploration_state",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "march_state",
+      "priority": "P1",
+      "measurements": 3
+    },
+    {
+      "name": "army_prepared",
+      "priority": "P1",
+      "measurements": 3
+    },
+    {
+      "name": "march_sent",
+      "priority": "P0",
+      "measurements": 2
+    },
+    {
+      "name": "battle_state",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "battle_resolved",
+      "priority": "P0",
+      "measurements": 3
+    },
+    {
+      "name": "hunt_state",
+      "priority": "P1",
+      "measurements": 2
+    },
+    {
+      "name": "battle_report_opened",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "report_state",
+      "priority": "P1",
+      "measurements": 2
+    },
+    {
+      "name": "mailbox_state",
+      "priority": "P1",
+      "measurements": 2
+    },
+    {
+      "name": "core_loop_complete",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "bastion_reached",
+      "priority": "P0",
+      "measurements": 5
+    },
+    {
+      "name": "power_changed",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "milestone_reached",
+      "priority": "P1",
+      "measurements": 2
+    },
+    {
+      "name": "hero_opened",
+      "priority": "P1",
+      "measurements": 2
+    },
+    {
+      "name": "hero_state",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "skill_viewed",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "dialogue_state",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "story_choice",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "breach_viewed",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "city_priority",
+      "priority": "P1",
+      "measurements": 3
+    },
+    {
+      "name": "fissure_state",
+      "priority": "P0",
+      "measurements": 5
+    },
+    {
+      "name": "lyra_state",
+      "priority": "P0",
+      "measurements": 2
+    },
+    {
+      "name": "ash_stalker_state",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "scout_order",
+      "priority": "P0",
+      "measurements": 5
+    },
+    {
+      "name": "scout_report",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "vigilant_attempt",
+      "priority": "P1",
+      "measurements": 3
+    },
+    {
+      "name": "vigilant_result",
+      "priority": "P0",
+      "measurements": 3
+    },
+    {
+      "name": "vigilant_xp_claim",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "timer_wait",
+      "priority": "P1",
+      "measurements": 3
+    },
+    {
+      "name": "speedup_used",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "orientation_state",
+      "priority": "P1",
+      "measurements": 1
+    },
+    {
+      "name": "end_of_slice",
+      "priority": "P0",
+      "measurements": 2
+    },
+    {
+      "name": "blocked",
+      "priority": "P1",
+      "measurements": 3
+    },
+    {
+      "name": "client_error",
+      "priority": "P0",
+      "measurements": 2
+    },
+    {
+      "name": "network_state",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "frame_summary",
+      "priority": "P0",
+      "measurements": 3
+    },
+    {
+      "name": "survey_completed",
+      "priority": "P1",
+      "measurements": 0
+    },
+    {
+      "name": "survey_answer",
+      "priority": "P0",
+      "measurements": 15
+    },
+    {
+      "name": "return_visit",
+      "priority": "P1",
+      "measurements": 2
+    }
+  ],
+  "metrics": [
+    {
+      "id": "B001",
+      "area": "Acceso, carga y continuidad",
+      "name": "Sesiones consentidas iniciadas",
+      "source_event": "session_start",
+      "definition": "Sesiones únicas tras consentimiento; separar QA y versiones",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "runtime",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B002",
+      "area": "Acceso, carga y continuidad",
+      "name": "Sesiones con mundo jugable cargado",
+      "source_event": "game_ready",
+      "definition": "De inicios consentidos a game_ready",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "runtime",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B003",
+      "area": "Acceso, carga y continuidad",
+      "name": "Carga inicial en milisegundos",
+      "source_event": "game_ready",
+      "definition": "Mediana de elapsed_ms hasta primer frame jugable",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "runtime",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B004",
+      "area": "Acceso, carga y continuidad",
+      "name": "Etapa de carga lenta",
+      "source_event": "load_stage",
+      "definition": "Duración por stage_code de descarga/arranque",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "runtime",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B005",
+      "area": "Acceso, carga y continuidad",
+      "name": "Fallos de arranque",
+      "source_event": "client_error",
+      "definition": "Errores error_code de arranque por dispositivo",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "runtime",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B006",
+      "area": "Acceso, carga y continuidad",
+      "name": "Recargas durante partida",
+      "source_event": "save_state",
+      "definition": "Eventos restored tras nuevo arranque, por sesión/invitación",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B007",
+      "area": "Acceso, carga y continuidad",
+      "name": "Fallos de guardar o restaurar",
+      "source_event": "save_state",
+      "definition": "state_code failed frente a attempted/restored",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "FileStateStore",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B008",
+      "area": "Acceso, carga y continuidad",
+      "name": "Regreso tras cerrar sesión",
+      "source_event": "return_visit",
+      "definition": "Dos sesiones diferentes de una invitación dentro de la ronda; no implica personas distintas",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "runtime",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B009",
+      "area": "Tutorial, comprensión y narrativa inicial",
+      "name": "Nombre configurado sin ayuda",
+      "source_event": "player_name_set",
+      "definition": "Ratio completed/attempted, sin recoger el nombre",
+      "priority": "P0",
+      "eligible_from": "I",
+      "evidence_source": "PlayerIdentityPolicy.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B010",
+      "area": "Tutorial, comprensión y narrativa inicial",
+      "name": "Tiempo hasta primera acción con objetivo",
+      "source_event": "first_objective",
+      "definition": "elapsed_ms desde carga; no se interpreta como comprensión subjetiva",
+      "priority": "P0",
+      "eligible_from": "I",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B011",
+      "area": "Tutorial, comprensión y narrativa inicial",
+      "name": "Ayudas de primer uso mostradas",
+      "source_event": "tutorial_step",
+      "definition": "step_code y estado visible por Bastión",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "UnityContextTutorial.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B012",
+      "area": "Tutorial, comprensión y narrativa inicial",
+      "name": "Ayudas repetidas",
+      "source_event": "tutorial_step",
+      "definition": "reopened por step_code y sesión",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "UnityContextTutorial.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B013",
+      "area": "Tutorial, comprensión y narrativa inicial",
+      "name": "Objetivos completados sin usar Ir al objetivo",
+      "source_event": "objective_state",
+      "definition": "completed sin help_opened/ui_action de guía en mismo objetivo",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B014",
+      "area": "Tutorial, comprensión y narrativa inicial",
+      "name": "Objetivos consultados repetidamente",
+      "source_event": "objective_state",
+      "definition": "Número de viewed por step_code antes de completar",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B015",
+      "area": "Tutorial, comprensión y narrativa inicial",
+      "name": "Bloqueos por no saber qué hacer",
+      "source_event": "blocked",
+      "definition": "reason_code no_se_que_hacer por Bastión",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "ui",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B016",
+      "area": "Tutorial, comprensión y narrativa inicial",
+      "name": "Claridad percibida del comienzo",
+      "source_event": "survey_answer",
+      "definition": "question_id first_minutes_clarity, 1–5 o no_llego",
+      "priority": "P0",
+      "eligible_from": "I",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B017",
+      "area": "Interfaz y navegación real",
+      "name": "Pantallas descubiertas",
+      "source_event": "screen_viewed",
+      "definition": "Número y lista codificada por sesión",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "SlicePresenter.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B018",
+      "area": "Interfaz y navegación real",
+      "name": "Última pantalla observada",
+      "source_event": "screen_viewed",
+      "definition": "Última pantalla antes de cierre/periodo sin datos; NO es prueba de abandono",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "SlicePresenter.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B019",
+      "area": "Interfaz y navegación real",
+      "name": "Botones rechazados",
+      "source_event": "input_rejected",
+      "definition": "action_code por pantalla y razón",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B020",
+      "area": "Interfaz y navegación real",
+      "name": "Rechazos por revisión obsoleta",
+      "source_event": "gateway_command",
+      "definition": "Recuento failed por reason_code estado_desactualizado",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B021",
+      "area": "Interfaz y navegación real",
+      "name": "Tasa de acciones aceptadas",
+      "source_event": "gateway_command",
+      "definition": "Completed sobre attempted por command_code; no contar solo clics",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B022",
+      "area": "Interfaz y navegación real",
+      "name": "Retrocesos y vueltas sin objetivo",
+      "source_event": "navigation_backtrack",
+      "definition": "Frecuencia por screen y bastion",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "SlicePresenter.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B023",
+      "area": "Interfaz y navegación real",
+      "name": "Dificultades por orientación",
+      "source_event": "orientation_state",
+      "definition": "Bloqueos y errores por portrait/landscape",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "SlicePresenter.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B024",
+      "area": "Interfaz y navegación real",
+      "name": "Localización de controles",
+      "source_event": "survey_answer",
+      "definition": "question_id ui_findability escala 1–5",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B025",
+      "area": "Ascensos, objetivos I–V y final",
+      "name": "Alcance de Bastión I, II, III, IV, V",
+      "source_event": "bastion_reached",
+      "definition": "Sesiones únicas por nivel, denominador población elegible",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B026",
+      "area": "Ascensos, objetivos I–V y final",
+      "name": "Tiempo I→II",
+      "source_event": "bastion_reached",
+      "definition": "Tiempo entre hitos 1 y 2",
+      "priority": "P0",
+      "eligible_from": "II",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B027",
+      "area": "Ascensos, objetivos I–V y final",
+      "name": "Tiempo II→III",
+      "source_event": "bastion_reached",
+      "definition": "Tiempo entre hitos 2 y 3",
+      "priority": "P0",
+      "eligible_from": "III",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B028",
+      "area": "Ascensos, objetivos I–V y final",
+      "name": "Tiempo III→IV",
+      "source_event": "bastion_reached",
+      "definition": "Tiempo entre hitos 3 y 4",
+      "priority": "P0",
+      "eligible_from": "IV",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B029",
+      "area": "Ascensos, objetivos I–V y final",
+      "name": "Tiempo IV→V",
+      "source_event": "bastion_reached",
+      "definition": "Tiempo entre hitos 4 y 5",
+      "priority": "P0",
+      "eligible_from": "V",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B030",
+      "area": "Ascensos, objetivos I–V y final",
+      "name": "Intentos de ascenso fallidos",
+      "source_event": "gateway_command",
+      "definition": "AdvanceBastion failed, con razón y recursos/situación",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B031",
+      "area": "Ascensos, objetivos I–V y final",
+      "name": "Hitos de misión por capítulo",
+      "source_event": "milestone_reached",
+      "definition": "milestone_code por Bastión, sin inferir disponibilidad no mostrada",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "ChapterProgressState",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B032",
+      "area": "Ascensos, objetivos I–V y final",
+      "name": "Objetivos de cierre V alcanzados",
+      "source_event": "end_of_slice",
+      "definition": "Punto V 4/4 estado completed, independiente del nivel V",
+      "priority": "P0",
+      "eligible_from": "V",
+      "evidence_source": "PLAYER_AUDIT_20261106.md",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B033",
+      "area": "Ascensos, objetivos I–V y final",
+      "name": "Intentos de continuar a VI",
+      "source_event": "input_rejected",
+      "definition": "reason_code fin_contenido y respuesta del jugador",
+      "priority": "P1",
+      "eligible_from": "V",
+      "evidence_source": "PLAYER_EXPERIENCE_FIXES_20261106.md",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B034",
+      "area": "Ciudad, edificios y mejoras",
+      "name": "Primer Aserradero creado",
+      "source_event": "build_completed",
+      "definition": "building_code sawmill / nivel 1",
+      "priority": "P0",
+      "eligible_from": "I",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B035",
+      "area": "Ciudad, edificios y mejoras",
+      "name": "Primer Cuartel creado",
+      "source_event": "build_completed",
+      "definition": "building_code barracks / nivel 1",
+      "priority": "P0",
+      "eligible_from": "II",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B036",
+      "area": "Ciudad, edificios y mejoras",
+      "name": "Primer Granero creado",
+      "source_event": "build_completed",
+      "definition": "building_code granary / nivel 1",
+      "priority": "P0",
+      "eligible_from": "III",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B037",
+      "area": "Ciudad, edificios y mejoras",
+      "name": "Primera Cantera creada",
+      "source_event": "build_completed",
+      "definition": "building_code stoneworks / nivel 1",
+      "priority": "P0",
+      "eligible_from": "V",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B038",
+      "area": "Ciudad, edificios y mejoras",
+      "name": "Mejoras por edificio y nivel",
+      "source_event": "build_completed",
+      "definition": "building_code, level; máximo el del Bastión",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B039",
+      "area": "Ciudad, edificios y mejoras",
+      "name": "Obras iniciadas y completadas",
+      "source_event": "build_state",
+      "definition": "Emparejar started/completed por building_code y tarea autorizada",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B040",
+      "area": "Ciudad, edificios y mejoras",
+      "name": "Obras rechazadas por recursos o simultaneidad",
+      "source_event": "build_state",
+      "definition": "failed por reason_code y building_code",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B041",
+      "area": "Ciudad, edificios y mejoras",
+      "name": "Tiempo de espera real de obra",
+      "source_event": "timer_wait",
+      "definition": "duration_ms esperado, tiempo transcurrido hasta completado",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B042",
+      "area": "Ciudad, edificios y mejoras",
+      "name": "Reconocimiento de mejora de producción",
+      "source_event": "survey_answer",
+      "definition": "question_id building_clarity, 1–5",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B043",
+      "area": "Recursos y producción pasiva",
+      "name": "Primer recurso del mundo recibido",
+      "source_event": "gather_state",
+      "definition": "state_code completed por resource_code",
+      "priority": "P0",
+      "eligible_from": "I",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B044",
+      "area": "Recursos y producción pasiva",
+      "name": "Cantidad madera/piedra/comida ganada",
+      "source_event": "resource_state",
+      "definition": "amount positiva por recurso y fuente codificada",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "ResourceWallet",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B045",
+      "area": "Recursos y producción pasiva",
+      "name": "Cantidad madera/piedra/comida gastada",
+      "source_event": "resource_state",
+      "definition": "amount por recurso, evento spent",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "ResourceWallet",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B046",
+      "area": "Recursos y producción pasiva",
+      "name": "Intentos con recursos insuficientes",
+      "source_event": "input_rejected",
+      "definition": "reason_code recurso_insuficiente por action_code",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B047",
+      "area": "Recursos y producción pasiva",
+      "name": "Producción pasiva por edificio",
+      "source_event": "production_state",
+      "definition": "Delta consolidado del gateway por edificio y ventana, no fingir botón recoger",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "EconomyProductionV2.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B048",
+      "area": "Recursos y producción pasiva",
+      "name": "Progreso sin conexión",
+      "source_event": "production_state",
+      "definition": "state_code accrued_offline y amount según reloj permitido",
+      "priority": "P1",
+      "eligible_from": "III-V",
+      "evidence_source": "EconomyProductionV2.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B049",
+      "area": "Recursos y producción pasiva",
+      "name": "Claridad de recursos y costes",
+      "source_event": "survey_answer",
+      "definition": "question_id economy_clarity 1–5",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B050",
+      "area": "Mundo, nodos, mapa y recogida",
+      "name": "Primera visita al mundo 4X",
+      "source_event": "world_opened",
+      "definition": "Tiempo desde game_ready",
+      "priority": "P0",
+      "eligible_from": "I",
+      "evidence_source": "WorldRegion1Runtime.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B051",
+      "area": "Mundo, nodos, mapa y recogida",
+      "name": "Tipos de nodos reconocidos/seleccionados",
+      "source_event": "world_node",
+      "definition": "type_code wood/stone/food/enemy, state selected",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "WorldResourceLocation",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B052",
+      "area": "Mundo, nodos, mapa y recogida",
+      "name": "Intentos sobre nodo agotado o inaccesible",
+      "source_event": "world_node",
+      "definition": "state_code failed con reason_code de nodo",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B053",
+      "area": "Mundo, nodos, mapa y recogida",
+      "name": "Rutas de recursos iniciadas",
+      "source_event": "gather_state",
+      "definition": "started por resource_code y nivel de nodo",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B054",
+      "area": "Mundo, nodos, mapa y recogida",
+      "name": "Regresos con recursos al reino",
+      "source_event": "gather_state",
+      "definition": "completed y amount; comparación con iniciadas",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "MarchState",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B055",
+      "area": "Mundo, nodos, mapa y recogida",
+      "name": "Zoom cerca/regional/panorámico usado",
+      "source_event": "world_zoom",
+      "definition": "Conteos de zoom_bucket, no capturar gestos brutos",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "WorldRegion1Runtime.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B056",
+      "area": "Mundo, nodos, mapa y recogida",
+      "name": "Problemas de encontrar objetivos",
+      "source_event": "blocked",
+      "definition": "reason_code no_encuentro_boton o sin_objetivo en mundo",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "PLAYER_AUDIT_20261106.md",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B057",
+      "area": "Mundo, nodos, mapa y recogida",
+      "name": "Curiosidad por explorar más",
+      "source_event": "survey_answer",
+      "definition": "question_id explore_interest 1–5",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B058",
+      "area": "Reclutamiento, tropas y marchas",
+      "name": "Reclutamientos iniciados",
+      "source_event": "training_state",
+      "definition": "started con quantity, tier permitido y UTC",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B059",
+      "area": "Reclutamiento, tropas y marchas",
+      "name": "Reclutamientos terminados",
+      "source_event": "training_state",
+      "definition": "completed con tropas disponibles",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B060",
+      "area": "Reclutamiento, tropas y marchas",
+      "name": "Primera preparación de marcha válida",
+      "source_event": "army_prepared",
+      "definition": "completed por héroe y número de tropas",
+      "priority": "P0",
+      "eligible_from": "II",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B061",
+      "area": "Reclutamiento, tropas y marchas",
+      "name": "Errores de composición",
+      "source_event": "march_state",
+      "definition": "failed con reason_code composicion_invalida o tropas_insuficientes",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B062",
+      "area": "Reclutamiento, tropas y marchas",
+      "name": "Tiempo hasta primera marcha",
+      "source_event": "march_sent",
+      "definition": "elapsed_ms desde inicio listo",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B063",
+      "area": "Reclutamiento, tropas y marchas",
+      "name": "Tipos de marcha por destino",
+      "source_event": "march_sent",
+      "definition": "target type_code recurso/enemigo, no coordenadas exactas",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "MarchState",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B064",
+      "area": "Reclutamiento, tropas y marchas",
+      "name": "Uso simultáneo de los tres huecos",
+      "source_event": "march_state",
+      "definition": "march_slots_used en momentos de envío; sin inventar 4.º",
+      "priority": "P1",
+      "eligible_from": "II-V",
+      "evidence_source": "MarchCapacityRules",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B065",
+      "area": "Reclutamiento, tropas y marchas",
+      "name": "Tropas comprometidas en otras actividades",
+      "source_event": "march_state",
+      "definition": "reserved_troops vs available al intento",
+      "priority": "P1",
+      "eligible_from": "II-V",
+      "evidence_source": "MarchCapacityRules",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B066",
+      "area": "Reclutamiento, tropas y marchas",
+      "name": "Uso de T1/T2 disponibles",
+      "source_event": "army_prepared",
+      "definition": "tier y quantity; no T3–T5 como desbloqueados",
+      "priority": "P1",
+      "eligible_from": "II-V",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B067",
+      "area": "Combate automático, caza y amenazas",
+      "name": "Primera batalla PvE finalizada",
+      "source_event": "battle_resolved",
+      "definition": "Tiempo desde primera marcha hasta resolución",
+      "priority": "P0",
+      "eligible_from": "II",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B068",
+      "area": "Combate automático, caza y amenazas",
+      "name": "Combate Engendro resuelto",
+      "source_event": "battle_resolved",
+      "definition": "enemy_code engendro, outcome_code",
+      "priority": "P0",
+      "eligible_from": "II",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B069",
+      "area": "Combate automático, caza y amenazas",
+      "name": "Batallas victoria/derrota",
+      "source_event": "battle_resolved",
+      "definition": "Por enemy_code y composición; sin inventar heridas PvP",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "EldoriaV41Combat.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B070",
+      "area": "Combate automático, caza y amenazas",
+      "name": "Cacerías lobo y jabalí",
+      "source_event": "hunt_state",
+      "definition": "started/completed, enemy_code wolf/boar",
+      "priority": "P0",
+      "eligible_from": "III",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B071",
+      "area": "Combate automático, caza y amenazas",
+      "name": "Resultados y recompensas de caza",
+      "source_event": "hunt_state",
+      "definition": "state_code completed y resource_code / amount si se acredita",
+      "priority": "P1",
+      "eligible_from": "III-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B072",
+      "area": "Combate automático, caza y amenazas",
+      "name": "Acechador de Ceniza derrotado",
+      "source_event": "ash_stalker_state",
+      "definition": "completed después de Bastión V",
+      "priority": "P0",
+      "eligible_from": "V",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B073",
+      "area": "Combate automático, caza y amenazas",
+      "name": "Reintentos de encuentros y fallos",
+      "source_event": "battle_state",
+      "definition": "failed por reason_code/ enemy_code",
+      "priority": "P1",
+      "eligible_from": "II-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B074",
+      "area": "Combate automático, caza y amenazas",
+      "name": "Comprensión del combate automático",
+      "source_event": "survey_answer",
+      "definition": "question_id combat_clarity, escala 1–5",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B075",
+      "area": "Fisura de Bastión III y Lyra",
+      "name": "Inicio de investigación de Fisura",
+      "source_event": "fissure_state",
+      "definition": "investigating, tras alcanzar III",
+      "priority": "P0",
+      "eligible_from": "III",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B076",
+      "area": "Fisura de Bastión III y Lyra",
+      "name": "Investigación concluida",
+      "source_event": "fissure_state",
+      "definition": "investigated y duración 1200s normal",
+      "priority": "P0",
+      "eligible_from": "III",
+      "evidence_source": "BastionThreeState",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B077",
+      "area": "Fisura de Bastión III y Lyra",
+      "name": "Bloqueos por Aldric ocupado o ruta",
+      "source_event": "fissure_state",
+      "definition": "failed con reason_code hero_unavailable/ruta_inaccesible",
+      "priority": "P1",
+      "eligible_from": "III",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B078",
+      "area": "Fisura de Bastión III y Lyra",
+      "name": "Primer contacto narrativo con Lyra",
+      "source_event": "lyra_state",
+      "definition": "contacted, no equivale a reclutada",
+      "priority": "P0",
+      "eligible_from": "III",
+      "evidence_source": "NarrativeCoherenceRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B079",
+      "area": "Fisura de Bastión III y Lyra",
+      "name": "Inicio de asalto a la Fisura",
+      "source_event": "fissure_state",
+      "definition": "assault_started, no antes de contacto",
+      "priority": "P0",
+      "eligible_from": "III",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B080",
+      "area": "Fisura de Bastión III y Lyra",
+      "name": "Asalto y cierre de Fisura",
+      "source_event": "fissure_state",
+      "definition": "closed con outcome_code victoria",
+      "priority": "P0",
+      "eligible_from": "III",
+      "evidence_source": "BastionThreeState",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B081",
+      "area": "Fisura de Bastión III y Lyra",
+      "name": "Reclutamiento real de Lyra",
+      "source_event": "lyra_state",
+      "definition": "recruited DESPUÉS del asalto ganado",
+      "priority": "P0",
+      "eligible_from": "III",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B082",
+      "area": "Fisura de Bastión III y Lyra",
+      "name": "Manuscrito único en Arcón",
+      "source_event": "milestone_reached",
+      "definition": "milestone_code fissure_manuscript_recibido; no es carta jugable",
+      "priority": "P1",
+      "eligible_from": "III",
+      "evidence_source": "BASTION_III_FISSURE_CANON_20261027.md",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B083",
+      "area": "Fisura de Bastión III y Lyra",
+      "name": "Interés por Lyra y misterio",
+      "source_event": "survey_answer",
+      "definition": "question_id lyra_fissure_interest 1–5",
+      "priority": "P1",
+      "eligible_from": "III-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B084",
+      "area": "Consejo IV, Cantera V y cierre",
+      "name": "Presentación de prioridades del consejo",
+      "source_event": "city_priority",
+      "definition": "viewed cuando Bastión IV ofrece decisión",
+      "priority": "P0",
+      "eligible_from": "IV",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B085",
+      "area": "Consejo IV, Cantera V y cierre",
+      "name": "Elección producción/defensa/civil",
+      "source_event": "city_priority",
+      "definition": "choice_code production/defense/civil committed",
+      "priority": "P0",
+      "eligible_from": "IV",
+      "evidence_source": "BastionThreeState",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B086",
+      "area": "Consejo IV, Cantera V y cierre",
+      "name": "Cambio de recursos por elección",
+      "source_event": "resource_state",
+      "definition": "delta ligada a choose_development",
+      "priority": "P1",
+      "eligible_from": "IV",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B087",
+      "area": "Consejo IV, Cantera V y cierre",
+      "name": "Dudas antes de elegir prioridad",
+      "source_event": "city_priority",
+      "definition": "viewed repetido o ayuda solicitada antes de completed",
+      "priority": "P1",
+      "eligible_from": "IV",
+      "evidence_source": "PLAYER_AUDIT_20261106.md",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B088",
+      "area": "Consejo IV, Cantera V y cierre",
+      "name": "Primer uso económico de Cantera V",
+      "source_event": "production_state",
+      "definition": "stoneworks nivel 1 produce piedra; no basta con crearla",
+      "priority": "P0",
+      "eligible_from": "V",
+      "evidence_source": "EconomyProductionV2.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B089",
+      "area": "Consejo IV, Cantera V y cierre",
+      "name": "Subidas independientes a nivel V",
+      "source_event": "build_completed",
+      "definition": "building_code y nivel; Bastión V no sube automáticamente edificios",
+      "priority": "P1",
+      "eligible_from": "V",
+      "evidence_source": "docs/bastion-iv-v/MIGRATION.md",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B090",
+      "area": "Consejo IV, Cantera V y cierre",
+      "name": "Desbloqueos reales V y 4/4",
+      "source_event": "end_of_slice",
+      "definition": "completed tras 4 objetivos de V, distinto de alcanzar V",
+      "priority": "P0",
+      "eligible_from": "V",
+      "evidence_source": "PLAYER_AUDIT_20261106.md",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B091",
+      "area": "Consejo IV, Cantera V y cierre",
+      "name": "Comprensión del fin disponible",
+      "source_event": "survey_answer",
+      "definition": "question_id slice_end_clarity o not_seen",
+      "priority": "P0",
+      "eligible_from": "V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B092",
+      "area": "Mesa de Exploradores",
+      "name": "Acceso real a Exploradores",
+      "source_event": "screen_viewed",
+      "definition": "screen scouts tras II, Cuartel y primera marcha",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B093",
+      "area": "Mesa de Exploradores",
+      "name": "Contratos disponibles descubiertos",
+      "source_event": "scout_order",
+      "definition": "viewed con order_code familia, no ID original",
+      "priority": "P1",
+      "eligible_from": "II-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B094",
+      "area": "Mesa de Exploradores",
+      "name": "Contratos enviados",
+      "source_event": "scout_order",
+      "definition": "sent por tipo de encargo",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B095",
+      "area": "Mesa de Exploradores",
+      "name": "Elección de estrategia",
+      "source_event": "scout_order",
+      "definition": "choice_code/strategy_code y tropas comprometidas",
+      "priority": "P1",
+      "eligible_from": "II-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B096",
+      "area": "Mesa de Exploradores",
+      "name": "Contratos finalizados",
+      "source_event": "scout_order",
+      "definition": "completed por orden y duración real",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "ScoutOrder",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B097",
+      "area": "Mesa de Exploradores",
+      "name": "Recompensas reclamadas una sola vez",
+      "source_event": "scout_report",
+      "definition": "claimed, evitar doble premio",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B098",
+      "area": "Mesa de Exploradores",
+      "name": "Errores de plazas o tropas reservadas",
+      "source_event": "scout_order",
+      "definition": "failed por reason_code y slots usados",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B099",
+      "area": "Camino de los Vigilantes",
+      "name": "Primera entrada al Camino",
+      "source_event": "screen_viewed",
+      "definition": "screen vigilants tras Aserradero I",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B100",
+      "area": "Camino de los Vigilantes",
+      "name": "Etapas intentadas",
+      "source_event": "vigilant_attempt",
+      "definition": "level real y tropas/héroe disponibles",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B101",
+      "area": "Camino de los Vigilantes",
+      "name": "Etapas superadas",
+      "source_event": "vigilant_result",
+      "definition": "win por level; no duplicar una victoria antigua",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B102",
+      "area": "Camino de los Vigilantes",
+      "name": "Dificultad por tramo de 5 etapas",
+      "source_event": "vigilant_result",
+      "definition": "Derrotas y vida restante en guardianes 5/10/15/20/25",
+      "priority": "P1",
+      "eligible_from": "II-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B103",
+      "area": "Camino de los Vigilantes",
+      "name": "Reintentos por derrota",
+      "source_event": "vigilant_attempt",
+      "definition": "Intentos por level y mismos recursos disponibles",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B104",
+      "area": "Camino de los Vigilantes",
+      "name": "Errores por tropas ocupadas",
+      "source_event": "vigilant_attempt",
+      "definition": "failed por falta de marchas/tropas",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B105",
+      "area": "Camino de los Vigilantes",
+      "name": "XP pasiva disponible/reclamada",
+      "source_event": "vigilant_xp_claim",
+      "definition": "amount y tiempo; acumulación límite 8h",
+      "priority": "P1",
+      "eligible_from": "II-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B106",
+      "area": "Camino de los Vigilantes",
+      "name": "Progresión máxima por Bastión",
+      "source_event": "vigilant_result",
+      "definition": "Máxima etapa completada por Bastión; 25 primer capítulo, más solo si alcanzables",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B107",
+      "area": "Héroes, maestría y Poder",
+      "name": "Ficha de Aldric consultada",
+      "source_event": "hero_opened",
+      "definition": "hero_code aldric",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B108",
+      "area": "Héroes, maestría y Poder",
+      "name": "Ficha de Lyra consultada tras reclutar",
+      "source_event": "hero_opened",
+      "definition": "hero_code lyra, elegible solo reclutada",
+      "priority": "P0",
+      "eligible_from": "III-V",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B109",
+      "area": "Héroes, maestría y Poder",
+      "name": "Uso de uno/dos héroes en marcha",
+      "source_event": "army_prepared",
+      "definition": "hero_code aldric/lyra/aldric_lyra y disponibilidad",
+      "priority": "P1",
+      "eligible_from": "III-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B110",
+      "area": "Héroes, maestría y Poder",
+      "name": "Niveles de maestría alcanzados",
+      "source_event": "hero_state",
+      "definition": "level por héroe, escalado específico PvE temprano",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "EarlyRetentionRules.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B111",
+      "area": "Héroes, maestría y Poder",
+      "name": "Incrementos reales de Poder",
+      "source_event": "power_changed",
+      "definition": "delta y source milestone_code, no indicadores ficticios",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "GameState.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B112",
+      "area": "Héroes, maestría y Poder",
+      "name": "Consulta del desglose de Poder",
+      "source_event": "ui_action",
+      "definition": "action_code power_breakdown cuando exista control real",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "UI",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B113",
+      "area": "Héroes, maestría y Poder",
+      "name": "Interés en evolucionar héroes",
+      "source_event": "survey_answer",
+      "definition": "question_id hero_interest 1–5",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B114",
+      "area": "Buzón, informes y recompensas",
+      "name": "Primer aviso de Buzón recibido",
+      "source_event": "mailbox_state",
+      "definition": "state_code acquired y report_code",
+      "priority": "P1",
+      "eligible_from": "II-V",
+      "evidence_source": "EldoriaV41Mailbox",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B115",
+      "area": "Buzón, informes y recompensas",
+      "name": "Buzón abierto tras aviso",
+      "source_event": "mailbox_state",
+      "definition": "opened después de acquired",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "UnityContextTutorial.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B116",
+      "area": "Buzón, informes y recompensas",
+      "name": "Informe de batalla abierto",
+      "source_event": "battle_report_opened",
+      "definition": "Por sesión y combate resuelto",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "EldoriaV41Mailbox",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B117",
+      "area": "Buzón, informes y recompensas",
+      "name": "Informes consultados en horizontal/vertical",
+      "source_event": "report_state",
+      "definition": "viewed con orientation sin grabar texto",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "PLAYER_AUDIT_20261106.md",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B118",
+      "area": "Buzón, informes y recompensas",
+      "name": "Recompensa visible y entendible",
+      "source_event": "report_state",
+      "definition": "state_code viewed por report_code + pregunta opcional",
+      "priority": "P1",
+      "eligible_from": "II-V",
+      "evidence_source": "EldoriaV41Mailbox",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B119",
+      "area": "Buzón, informes y recompensas",
+      "name": "Premios repetidos rechazados correctamente",
+      "source_event": "gateway_command",
+      "definition": "Intentos duplicados vs idempotencia, sin asumir que se pagó otra vez",
+      "priority": "P1",
+      "eligible_from": "II-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B120",
+      "area": "Rendimiento y tiempos de espera",
+      "name": "FPS mediano por plataforma",
+      "source_event": "frame_summary",
+      "definition": "fps_p50 resumido cada ~60s, no frame a frame",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "Unity WebGL",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B121",
+      "area": "Rendimiento y tiempos de espera",
+      "name": "Percentil bajo de FPS",
+      "source_event": "frame_summary",
+      "definition": "fps_p05 por dispositivo/pantalla",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "Unity WebGL",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B122",
+      "area": "Rendimiento y tiempos de espera",
+      "name": "Tirones por minuto",
+      "source_event": "frame_summary",
+      "definition": "stutter_count por ventana, solo con definición exacta",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "Unity WebGL",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B123",
+      "area": "Rendimiento y tiempos de espera",
+      "name": "Errores runtime por sesión",
+      "source_event": "client_error",
+      "definition": "Conteo por error_code sin mensajes crudos",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "Unity WebGL",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B124",
+      "area": "Rendimiento y tiempos de espera",
+      "name": "Cambios a segundo plano",
+      "source_event": "visibility_state",
+      "definition": "background y foreground; descontar de tiempo activo",
+      "priority": "P1",
+      "eligible_from": "I-V",
+      "evidence_source": "Unity WebGL",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B125",
+      "area": "Rendimiento y tiempos de espera",
+      "name": "Espera de entrenamiento inicial",
+      "source_event": "timer_wait",
+      "definition": "Tiempo activo durante 10min, retornos tras el plazo",
+      "priority": "P0",
+      "eligible_from": "II",
+      "evidence_source": "PLAYER_AUDIT_20261106.md",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B126",
+      "area": "Rendimiento y tiempos de espera",
+      "name": "Espera de investigación de Fisura",
+      "source_event": "timer_wait",
+      "definition": "20min normales y actividades paralelas realizadas",
+      "priority": "P0",
+      "eligible_from": "III",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B127",
+      "area": "Rendimiento y tiempos de espera",
+      "name": "Aceleradores utilizados",
+      "source_event": "speedup_used",
+      "definition": "type_code one_min/five_min y estado permitido",
+      "priority": "P1",
+      "eligible_from": "III-V",
+      "evidence_source": "LocalGateway.cs",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B128",
+      "area": "Opinión, fricción y continuidad",
+      "name": "Incidentes reportados voluntariamente",
+      "source_event": "blocked",
+      "definition": "Por reason_code, Bastión y pantalla",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "feedback",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B129",
+      "area": "Opinión, fricción y continuidad",
+      "name": "Diversión general",
+      "source_event": "survey_answer",
+      "definition": "question_id enjoyment escala 1–5",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B130",
+      "area": "Opinión, fricción y continuidad",
+      "name": "Impresión visual",
+      "source_event": "survey_answer",
+      "definition": "question_id visual_satisfaction 1–5",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B131",
+      "area": "Opinión, fricción y continuidad",
+      "name": "Comprensión de marchas",
+      "source_event": "survey_answer",
+      "definition": "question_id marches_clarity 1–5 o not_seen",
+      "priority": "P0",
+      "eligible_from": "II-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B132",
+      "area": "Opinión, fricción y continuidad",
+      "name": "Interés por la historia y la Brecha",
+      "source_event": "survey_answer",
+      "definition": "question_id story_continue 1–5",
+      "priority": "P0",
+      "eligible_from": "III-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B133",
+      "area": "Opinión, fricción y continuidad",
+      "name": "Motivación por seguir progresando",
+      "source_event": "survey_answer",
+      "definition": "question_id growth_satisfaction 1–5",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B134",
+      "area": "Opinión, fricción y continuidad",
+      "name": "Ganas declaradas de seguir jugando",
+      "source_event": "survey_answer",
+      "definition": "question_id keep_playing 1–5",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "encuesta",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    },
+    {
+      "id": "B135",
+      "area": "Opinión, fricción y continuidad",
+      "name": "Retorno real a Eldoria",
+      "source_event": "return_visit",
+      "definition": "Nueva sesión días después bajo misma invitación; no equivale a lealtad futura",
+      "priority": "P0",
+      "eligible_from": "I-V",
+      "evidence_source": "runtime",
+      "status": "PLANNED_NOT_INSTRUMENTED"
+    }
+  ]
+}
