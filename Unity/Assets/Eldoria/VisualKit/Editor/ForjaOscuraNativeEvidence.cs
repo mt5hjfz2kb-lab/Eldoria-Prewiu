@@ -505,6 +505,68 @@ namespace Eldoria.VisualKit.Editor
             return result.ToArray();
         }
 
+        [Serializable] class ContextCloseCheck
+        {
+            public string status;
+            public string selectedBefore;
+            public bool originalPointerDispatched;
+            public bool selectionCleared;
+            public bool originalDataRestored;
+        }
+
+        /// <summary>
+        /// Test the visible building CLOSE through the exact existing
+        /// pointer handler, after the eight A/B captures and only within the
+        /// disposable QA session. Never submit or fabricate an offer.
+        /// </summary>
+        static ContextCloseCheck ExerciseContextCloseInProbe(
+            MonoBehaviour host, RoyalHUD hud, Type integrationBuild,
+            ForjaOscuraLiveHudSkin skin)
+        {
+            var city=host.GetType().GetProperty("City")?.GetValue(host);
+            Need(city!=null && BoolProperty(city,"Probe"),
+                "Context close smoke cannot touch a player save");
+            var select=host.GetType().GetMethod("Select",BindingFlags.Public|BindingFlags.Instance,
+                null,new[]{typeof(string)},null);
+            Need(select!=null && (bool)select.Invoke(host,new object[]{"sawmill"}),
+                "Real selected sawmill required for context close test");
+            hud.Refresh();
+            var context=hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV3ContextHud>();
+            Need(context!=null && context.IsConfigured,
+                "Real V3 building context missing");
+            context.SynchronizeNow();
+            skin.ApplyNow(true);
+            Canvas.ForceUpdateCanvases();
+            var close=context.VisibleCloseButton;
+            Need(close && close.interactable && close.gameObject.activeInHierarchy,
+                "Forja building close is not a visible, interactable original RoyalButton");
+            var click=integrationBuild.GetMethods(BindingFlags.NonPublic|BindingFlags.Static)
+                .FirstOrDefault(m=>m.Name=="Click" && m.GetParameters().Length==1 &&
+                    m.GetParameters()[0].ParameterType==typeof(Button));
+            Need(click!=null, "Canonical real uGUI pointer click helper missing");
+            string before=Snapshot(hud);
+            var result=new ContextCloseCheck{selectedBefore=hud.SelectedBuildingId};
+            Need(result.selectedBefore=="sawmill","Wrong authentic building selected before close QA");
+            try{click.Invoke(null,new object[]{close});}
+            catch(TargetInvocationException e){throw e.InnerException??e;}
+            result.originalPointerDispatched=true;
+            result.selectionCleared=string.IsNullOrEmpty(hud.SelectedBuildingId);
+            Need(result.selectionCleared,
+                "Visible Forja close click failed to clear the genuine building selection");
+            // Restore from the canonical host, not by modifying a snapshot.
+            Need((bool)select.Invoke(host,new object[]{"sawmill"}),
+                "Could not restore genuine sawmill after context close click");
+            hud.Refresh();
+            context.SynchronizeNow();
+            skin.ApplyNow(true);
+            Canvas.ForceUpdateCanvases();
+            result.originalDataRestored=before==Snapshot(hud);
+            Need(result.originalDataRestored,
+                "Original snapshot differs after reversible context-close QA");
+            result.status="NATIVE_POINTER_CONTEXT_CLOSE_PASS";
+            return result;
+        }
+
         static void RunCapture(bool batch)
         {
             var host=FindHost();Need(host&&BoolProperty(host,"Ready"),"Canonical gameplay host must be ready");
@@ -610,6 +672,9 @@ namespace Eldoria.VisualKit.Editor
             var navigationActions = batch
                 ? ExerciseNavigationInProbe(host, hud, t, skin)
                 : new NavigationRouteCheck[0];
+            var contextClose = batch
+                ? ExerciseContextCloseInProbe(host,hud,t,skin)
+                : null;
             Object.DestroyImmediate(skin);Canvas.ForceUpdateCanvases();
             ValidateNavigation(hud);
             var originalAfter=Snapshot(hud);
@@ -667,6 +732,7 @@ namespace Eldoria.VisualKit.Editor
                 nativeTouchTargets=touchMetrics.ToArray(),
                 nativeReadability=readabilityMetrics.ToArray(),
                 navigationActions=navigationActions,
+                contextClose=contextClose,
                 captureMethod="ValoriaIntegrationBuild.Capture: Unity RenderTexture/Canvas",
                 artifacts=files.Select(f=>new Artifact {name=Path.GetFileName(f),sha256=Hash(f)}).ToArray(),
                 gameplayAndSaveRulesChanged=false,physicalMobileTested=false,artApproved=false
@@ -689,6 +755,7 @@ namespace Eldoria.VisualKit.Editor
             public UiTouchMetric[] nativeTouchTargets;
             public UiReadabilityMetric[] nativeReadability;
             public NavigationRouteCheck[] navigationActions;
+            public ContextCloseCheck contextClose;
             public bool gameplayAndSaveRulesChanged,physicalMobileTested,artApproved;
             public Artifact[] artifacts;
         }
