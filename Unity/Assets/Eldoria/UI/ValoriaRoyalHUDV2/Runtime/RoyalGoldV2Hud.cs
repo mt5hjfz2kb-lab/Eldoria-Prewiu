@@ -1349,7 +1349,14 @@ namespace Eldoria.UI.RoyalGold.V2
         /// A camera-framing helper for the eventual safe integration. The V1
         /// method does not know the new V2 cards. No camera is changed here.
         /// </summary>
-        public Rect GetFreeSceneViewport(bool sideBySideWorldContext=false)
+        // Keep the established public no-argument API intact. Existing
+        // Unity PlayMode reflection callers require an actual zero-parameter
+        // method; an optional bool still has one parameter in reflection.
+        public Rect GetFreeSceneViewport() => GetFreeSceneViewport(false);
+
+        // The world-only spatial exclusion is explicit. City views and
+        // existing HUD consumers continue to use their original contract.
+        public Rect GetFreeSceneViewport(bool sideBySideWorldContext)
         {
             Rect free = Source ? Source.GetVisibleSceneViewport() : new Rect(.07f, .12f, .86f, .78f);
             if (!safe || !hasGeometry) return free;
