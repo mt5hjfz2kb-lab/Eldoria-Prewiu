@@ -88,6 +88,7 @@ namespace Eldoria.VisualKit
             EnsureBuildingCartoucheClearsNavigation();
             EnsureMobileResourceIconReadability();
             ReflowLiveLabels();
+            ReflowLandscapeContext();
             // Canonical RoyalGoldV2Hud.LayoutNavigation and header layout run
             // EVERY LateUpdate and reset caption sizes, colors and raycast
             // graphics. Restyle these eight small live controls EVERY frame:
@@ -618,15 +619,14 @@ namespace Eldoria.VisualKit
                 SetTextSlot(card, "Current real objective", pad, 38f,
                     card.rect.width-2f*pad, 48f, 12f);
                 SetTextSlot(card, "Objective progress", card.rect.width-94f,
-                    83f, 78f, 25f, 11f);
+                    74f, 78f, 30f, 11f);
                 var crest = ImmediateChild(card, "V3 / original Valoria heraldic sigil");
                 if (crest)
                     foreach (var g in crest.GetComponentsInChildren<Graphic>(true)) Hide(g);
                 HideGraphicsByTypeName(card, "RoyalGoldV3HeraldicBannerGraphic");
                 var banner = card.GetComponentsInChildren<Graphic>(true);
                 foreach (var g in banner)
-                    if (g && g.transform.parent &&
-                        g.transform.parent.name == "V3 / genuine Valoria castle insignia") Hide(g);
+                    if (g && g.transform.name == "V3 / genuine Valoria castle insignia") Hide(g);
             }
             if (!BuildingSkinned || !v2.ChronicleBuildingRect) return;
             var building = v2.ChronicleBuildingRect;
@@ -646,6 +646,61 @@ namespace Eldoria.VisualKit
             }
             foreach (var label in action.GetComponentsInChildren<RoyalText>(true))
                 EnsureReadable(label, 12f);
+        }
+
+        private void ReflowLandscapeContext()
+        {
+            if (!BuildingSkinned || !v2 || !v2.ChronicleBuildingRect || !hud.Navigation) return;
+            var card = v2.ChronicleBuildingRect;
+            var safe = card.parent as RectTransform;
+            var canvas = hud.GetComponent<Canvas>();
+            var dock = hud.Navigation.transform as RectTransform;
+            if (!safe || !canvas || !dock || safe.rect.height >= safe.rect.width) return;
+            // A council contains three substantive choices; retain its full-width
+            // native decision ribbon rather than squeezing it into a sidebar.
+            foreach (Transform child in card)
+                if (child.name.StartsWith("Building / council ") && child.gameObject.activeSelf) return;
+            float scale = Mathf.Max(.01f, canvas.scaleFactor);
+            float widthPx = Mathf.Min(360f, safe.rect.width * scale * .36f);
+            float bottom = dock.anchoredPosition.y + dock.rect.height + 12f/scale;
+            float heightPx = Mathf.Min(380f, (safe.rect.height-bottom)*scale-70f);
+            if (widthPx < 245f || heightPx < 220f) return;
+            RememberNavigationGeometry(card);
+            card.sizeDelta = new Vector2(widthPx/scale, heightPx/scale);
+            card.anchoredPosition = new Vector2((safe.rect.width-card.rect.width)*.5f-12f/scale,bottom);
+            float width = card.rect.width, height = card.rect.height;
+            float p = 14f/scale;
+            float pic = (heightPx < 300f ? 62f : 90f)/scale;
+            SetTextSlot(card,"Selected building",p,12f/scale,width-62f/scale,30f/scale,18f);
+            SetTextSlot(card,"Real level",p,42f/scale,width-2*p,20f/scale,12f);
+            SetTextSlot(card,"V3 / engraved real building miniature",p,66f/scale,pic,pic,0);
+            float textLeft = pic+26f/scale;
+            SetTextSlot(card,"Building / genuine offer cost",textLeft,66f/scale,
+                width-textLeft-p,pic,14f);
+            float statusY = (heightPx < 300f ? 134f : 168f)/scale;
+            SetTextSlot(card,"Building / live state or countdown",p,statusY,width-2*p,34f/scale,13f);
+            float bodyY = statusY+36f/scale;
+            SetTextSlot(card,"Scrollable real building details",p,bodyY,
+                width-2*p,Mathf.Max(16f/scale,height-60f/scale-bodyY),0);
+            var scroll = ImmediateChild(card,"Scrollable real building details");
+            if (scroll)
+                foreach (var label in scroll.GetComponentsInChildren<RoyalText>(true))
+                {
+                    RememberNavigationGeometry(label.rectTransform);
+                    label.rectTransform.sizeDelta = new Vector2(width-2*p-5f,label.rectTransform.sizeDelta.y);
+                    EnsureReadable(label,12f);
+                }
+            SetTextSlot(card,"Close selected building",width-46f/scale,4f/scale,
+                44f/scale,44f/scale,0);
+            SetTextSlot(card,"Execute existing authorised offer",p,height-56f/scale,
+                width-2*p,44f/scale,0);
+            SetTextSlot(card,"Building / accelerate one minute",p,height-56f/scale,
+                (width-3*p)*.5f,44f/scale,0);
+            SetTextSlot(card,"Building / accelerate five minutes",(width+p)*.5f,height-56f/scale,
+                (width-3*p)*.5f,44f/scale,0);
+            var action=ImmediateChild(card,"Execute existing authorised offer");
+            if(action)
+                foreach(var label in action.GetComponentsInChildren<RoyalText>(true)) EnsureReadable(label,14f);
         }
 
         private static string NavName(RoyalSection section)

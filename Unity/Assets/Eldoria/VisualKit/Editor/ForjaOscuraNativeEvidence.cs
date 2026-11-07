@@ -124,6 +124,8 @@ namespace Eldoria.VisualKit.Editor
                     // its callback whenever one is supplied. Reproduce that
                     // SAME runtime focus after the offscreen canvas render,
                     // for both baseline and candidate, before skin layout.
+                    synchronizeVisuals?.Invoke();
+                    Canvas.ForceUpdateCanvases();
                     var hostType = host.GetType();
                     var selected = hostType.GetProperty("Selected")?.GetValue(host) as string;
                     if (!string.IsNullOrEmpty(selected))
@@ -852,6 +854,14 @@ namespace Eldoria.VisualKit.Editor
             var contextClose = batch
                 ? ExerciseContextCloseInProbe(host,hud,t,skin)
                 : null;
+            // Navigation/close probes intentionally select other buildings.
+            // Restore the fixture through the real selection API before testing
+            // that removing presentation leaves gameplay data unchanged.
+            var restoreSelection=host.GetType().GetMethod("Select",new[]{typeof(string)});
+            Need(restoreSelection!=null && (bool)restoreSelection.Invoke(host,new object[]{"sawmill"}),
+                "Could not restore tutorial selection after pointer probes");
+            hud.Refresh();
+            if(context) context.SynchronizeNow();
             Object.DestroyImmediate(skin);Canvas.ForceUpdateCanvases();
             ValidateNavigation(hud);
             var originalAfter=Snapshot(hud);
