@@ -23,7 +23,13 @@ namespace Eldoria.ReferenceClean {
   public Vector3 WorldHome=new Vector3(982,0,24);
   public RoyalHUD Hud {get;private set;}
   public bool InWorld {get;private set;}
-  public bool Ready {get;private set;}
+  bool presentationBindingsReady;
+  RegionOneCanonicalLandscape worldPresentation;
+  internal bool PresentationBindingsReady=>presentationBindingsReady;
+  internal void BindWorldPresentation(RegionOneCanonicalLandscape presentation){worldPresentation=presentation;}
+  // All existing navigation/selection callers keep one readiness contract:
+  // the map must be complete before any world camera or target can be exposed.
+  public bool Ready=>presentationBindingsReady&&(!worldPresentation||worldPresentation.IsReady);
   public bool English=>englishInterface;
   public string Selected=>Hud?Hud.SelectedBuildingId:"";
   public ValoriaReferenceCleanGameplay City=>city;
@@ -148,7 +154,7 @@ namespace Eldoria.ReferenceClean {
    // One modestly wider authored entry view (about 10%), without changing near limits or world scale.
    city.Controls.homeZoom=Mathf.Min(65f,city.PlayerCamera.orthographicSize*1.08f);
    city.Controls.ResetView();
-   Ready=true;Guidance=gameObject.AddComponent<ValoriaJourneyGuidance>();Guidance.Initialize(this,city);
+   presentationBindingsReady=true;Guidance=gameObject.AddComponent<ValoriaJourneyGuidance>();Guidance.Initialize(this,city);
    gameObject.AddComponent<ValoriaMarchPresentation>().Initialize(this);
    gameObject.AddComponent<ValoriaPlaytestTelemetry>().Initialize(this);
   }
