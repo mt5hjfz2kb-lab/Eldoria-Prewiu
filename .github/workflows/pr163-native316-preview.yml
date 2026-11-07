@@ -1,8 +1,8 @@
-name: '[QA] PR163 native316 critical frames'
+name: '[QA] PR163 native317 critical frames'
 on:
   push:
     branches: [qa/pr163-webgl-evidence-20261107]
-    paths: ['.github/workflows/pr163-native316-preview.yml']
+    paths: ['.github/workflows/pr163-native317-preview.yml']
 permissions:
   contents: write
   actions: read
@@ -15,26 +15,26 @@ jobs:
         with:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
-            /.github/workflows/pr163-native316-preview.yml
-            /docs/evidence/pr163-native316-20261107/
+            /.github/workflows/pr163-native317-preview.yml
+            /docs/evidence/pr163-native317-20261107/
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42311997693
-          name: valoria-royal-gold-v2-review-42311997693
+          run-id: 42315556449
+          name: valoria-royal-gold-v2-review-42315556449
           github-token: ${{ github.token }}
-          path: native316-source
+          path: native317-source
       - name: Copy only unchanged real native screenshots and evidence IDs
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import json,shutil,hashlib
-          root=Path('native316-source')
+          root=Path('native317-source')
           files=sorted(root.rglob('integration-context-engendro-*.png'))
-          if len(files)<2: raise SystemExit('Genuine native316 Engendro phone images not found in artifact')
-          out=Path('docs/evidence/pr163-native316-20261107')
+          if len(files)<2: raise SystemExit('Genuine native317 Engendro phone images not found in artifact')
+          out=Path('docs/evidence/pr163-native317-20261107')
           out.mkdir(parents=True,exist_ok=True)
-          manifest={'native_run':42311997693,'head_sha':'934110ccda820a3683bd6e1bb28bc19bf7df838e',
-          'artifact':'valoria-royal-gold-v2-review-42311997693',
+          manifest={'native_run':42315556449,'head_sha':'4fdb95fdea71c05b28a6e2e28147fddcb0719c24',
+          'artifact':'valoria-royal-gold-v2-review-42315556449',
           'quality_approved':False,'screenshots':[]}
           for p in files:
            dest=out/p.name
@@ -51,7 +51,7 @@ jobs:
           PY
           git config user.name 'eldoria-qa-bot'
           git config user.email 'qa-bot@users.noreply.github.com'
-          git add docs/evidence/pr163-native316-20261107/
+          git add docs/evidence/pr163-native317-20261107/
           git diff --cached --quiet && exit 1
-          git commit -m 'docs(qa): preserve exact native316 real Engendro phone captures [skip ci]'
+          git commit -m 'docs(qa): preserve exact native317 real Engendro phone captures [skip ci]'
           git push origin HEAD:qa/pr163-webgl-evidence-20261107
