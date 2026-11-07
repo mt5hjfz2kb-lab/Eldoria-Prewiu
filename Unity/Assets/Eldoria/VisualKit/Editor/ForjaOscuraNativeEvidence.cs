@@ -700,6 +700,10 @@ namespace Eldoria.VisualKit.Editor
             Need(select!=null && (bool)select.Invoke(host,new object[]{"sawmill"}),
                 "Real sawmill selection unavailable for authorized building QA");
             hud.Refresh();
+            // In batch mode no LateUpdate occurs between selecting the sawmill
+            // and clicking it. Bind the same V2 offer that a normal frame binds.
+            var liveV2 = hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
+            if (liveV2) liveV2.SynchronizeNow();
             var context=hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV3ContextHud>();
             Need(context!=null && context.IsConfigured,"Actual contextual offer surface missing");
             context.SynchronizeNow();

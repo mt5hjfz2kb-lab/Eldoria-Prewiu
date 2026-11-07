@@ -670,16 +670,16 @@ namespace Eldoria.VisualKit
             card.anchoredPosition = new Vector2((safe.rect.width-card.rect.width)*.5f-12f/scale,bottom);
             float width = card.rect.width, height = card.rect.height;
             float p = 14f/scale;
-            float pic = (heightPx < 300f ? 62f : 90f)/scale;
+            float pic = (heightPx < 300f ? 52f : 90f)/scale;
             SetTextSlot(card,"Selected building",p,12f/scale,width-62f/scale,30f/scale,18f);
             SetTextSlot(card,"Real level",p,42f/scale,width-2*p,20f/scale,12f);
             SetTextSlot(card,"V3 / engraved real building miniature",p,66f/scale,pic,pic,0);
             float textLeft = pic+26f/scale;
             SetTextSlot(card,"Building / genuine offer cost",textLeft,66f/scale,
                 width-textLeft-p,pic,14f);
-            float statusY = (heightPx < 300f ? 134f : 168f)/scale;
+            float statusY = (heightPx < 300f ? 120f : 168f)/scale;
             SetTextSlot(card,"Building / live state or countdown",p,statusY,width-2*p,34f/scale,13f);
-            float bodyY = statusY+36f/scale;
+            float bodyY = statusY+(heightPx < 300f ? 28f : 36f)/scale;
             SetTextSlot(card,"Scrollable real building details",p,bodyY,
                 width-2*p,Mathf.Max(16f/scale,height-60f/scale-bodyY),0);
             var scroll = ImmediateChild(card,"Scrollable real building details");
@@ -770,6 +770,20 @@ namespace Eldoria.VisualKit
                         // sibling; the replacement is its rear-most child.
                         image.transform.SetAsFirstSibling();
                         HideGraphicsByTypeName(top, "RoyalGoldV2FrameGraphic");
+                        // Use the same authored metal for the original identity
+                        // and resource blocks; their live labels and raycasts stay.
+                        if (hud.Realm)
+                        {
+                            var realmSurface = ImageChild(hud.Realm.transform,
+                                "Forja / identity plate", Sprite("Surfaces", "panel_dark"));
+                            if (realmSurface) realmSurface.transform.SetAsFirstSibling();
+                        }
+                        if (hud.Resources)
+                        {
+                            var resourceSurface = ImageChild(hud.Resources.transform,
+                                "Forja / resource plate", Sprite("Surfaces", "panel_dark"));
+                            if (resourceSurface) resourceSurface.transform.SetAsFirstSibling();
+                        }
                         HeaderSkinned = true;
                     }
                 }
@@ -870,7 +884,7 @@ namespace Eldoria.VisualKit
                             // (this skin has a later execution order).
                             if (item.Button.targetGraphic != graphic)
                                 item.Button.targetGraphic = graphic;
-                            var target = Sprite("Surfaces", chosen ? "nav_tile_selected" : "nav_tile_normal");
+                            var target = Sprite("Surfaces", chosen ? "nav_tile_selected" : "panel_dark");
                             if (target && graphic.sprite != target) graphic.sprite = target;
                             graphic.color = item.Button.interactable ? Color.white : new Color(.55f,.55f,.55f,.85f);
                             var r = (RectTransform)back;
