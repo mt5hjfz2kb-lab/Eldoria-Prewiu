@@ -85,6 +85,7 @@ namespace Eldoria.VisualKit
             // as a raycast/transition target in the same frame, not 50ms later.
             EnsureNavigationTargets();
             EnsureMobileNavigationTouchTargets();
+            EnsureBuildingCartoucheClearsNavigation();
             EnsureMobileResourceIconReadability();
             // Canonical RoyalGoldV2Hud.LayoutNavigation and header layout run
             // EVERY LateUpdate and reset caption sizes, colors and raycast
@@ -540,6 +541,47 @@ namespace Eldoria.VisualKit
                 }
                 index++;
             }
+        }
+
+        /// <summary>
+        /// RoyalGoldV2Hud.SynchronizeNow aligns the REAL building cartouche
+        /// to its original navigation dock before this opt-in skin expands
+        /// that dock to two readable portrait rows. Without this adjustment
+        /// the card's lower edge would cover the upper row of touch controls.
+        /// Move only the existing bottom-anchored card; never create a modal
+        /// or invoke a building command. The original position is restored.
+        /// </summary>
+        private void EnsureBuildingCartoucheClearsNavigation()
+        {
+            if (!NavigationSkinned || !v2 || !v2.ChronicleBuildingRect ||
+                !hud || !hud.Navigation) return;
+            var dock = hud.Navigation.transform as RectTransform;
+            if (!dock) return;
+            // This is exclusively the mobile two-row variant. Do not alter
+            // established landscape and wide-portrait placements.
+            float minY = float.PositiveInfinity, maxY = float.NegativeInfinity;
+            int active = 0;
+            foreach (var item in hud.Navigation.Items)
+            {
+                if (item == null || !item.Button ||
+                    !item.Button.gameObject.activeInHierarchy) continue;
+                var rect = item.Button.transform as RectTransform;
+                if (!rect) continue;
+                active++;
+                minY = Mathf.Min(minY, rect.anchoredPosition.y);
+                maxY = Mathf.Max(maxY, rect.anchoredPosition.y);
+            }
+            if (active != 5 || maxY - minY < 3f) return;
+            var card = v2.ChronicleBuildingRect;
+            // The V2 cartouche uses the SAME bottom anchor as this dock.
+            // Its y is the bottom edge, not the center or top.
+            if (card.anchorMin.y > .01f || card.anchorMax.y > .01f) return;
+            float requiredBottom = Mathf.Max(8f,
+                dock.anchoredPosition.y + dock.rect.height + 8f);
+            if (card.anchoredPosition.y >= requiredBottom - .5f) return;
+            RememberNavigationGeometry(card);
+            card.anchoredPosition = new Vector2(card.anchoredPosition.x,
+                requiredBottom);
         }
 
         private static string NavName(RoyalSection section)
