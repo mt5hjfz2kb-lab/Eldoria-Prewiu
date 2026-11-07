@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T10:24:54.640Z",
+  "updated_at": "2026-11-07T13:18:05.901Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -21,8 +21,8 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-pr163-continuation-20261107",
-      "branch": "fix/player-experience-audit-20261106",
+      "owner": null,
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-07T10:24:54.640Z",
       "base_main_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
@@ -48,15 +48,13 @@
         ".github/workflows/valoria-reference-clean.yml",
         "pipeline/valoria-convergence-cancel-stale-request.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PLAYER_AUDIT_REMEDIATION_NATIVE_VALIDATION",
-      "next": "Diagnosticar recorte de Cuartel landscape: native319 y certificacion roja; corregir reserva del mensaje obsoleto con evidencia, revalidar Unity/WebGL y browser sin alterar reloj ni saves.",
+      "phase": "PLAYER_AUDIT_REMEDIATION_MERGED_COMPLETED",
+      "next": "PR163 incorporada y certificada. Siguiente trabajo autónomo: pruebas con testers reales, aceptación física Android/audio/rendimiento y siguiente publicación sólo cuando se autorice por workstream separado. PR173 Forja puede reclamar Windows tras comprobar que no hay proceso Unity.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -988,6 +986,31 @@
           "physical_mobile_tested": false,
           "report": "docs/ui-v3/POST_PR162_RELEASE_20261106.md",
           "automation_disabled": "6aed0cc2f0308191b29a13b542c886aa"
+        },
+        "pr163_player_first_closeout": {
+          "source_commit": "29f5e3a3686f80b77bced250c9bef67977a891e4",
+          "merged_commit": "9efc0fefd447585f6867ab03ce2c41084b32adf2",
+          "native_unity_run": 42367983297,
+          "native_status": "SUCCESS_225_CHECKS_26_FRAMES",
+          "ui_cert_run": 42367986501,
+          "editmode_passed": 216,
+          "playmode_passed": 78,
+          "browser_run": 42373214530,
+          "browser_status": "PASS_REAL_CLOCK_I_II",
+          "visible_actions": 62,
+          "operations": 10,
+          "marches": 5,
+          "framing_checks": 20,
+          "save_reload_sha256": "a96fce8ec2884bfa57956bc94d990e2d7b9d1aecc34738f2993004c4464144a93",
+          "runtime_errors": 0,
+          "network_errors": 0,
+          "physical_mobile_tested": false,
+          "manual_player_i_v_current_source_tested": false,
+          "android_published": false,
+          "webgl_published": false,
+          "main_unity_gate_run": 42374765769,
+          "source_tree_equal_to_main_merge": true,
+          "reviewed_at": "2026-11-07T13:18:05.901Z"
         }
       },
       "previous_owner": "codex-player-audit-23287cf1c126",
@@ -2013,11 +2036,28 @@
           "to_revision": 157,
           "claimed_at": "2026-11-07T10:24:54.640Z",
           "reason": "El propietario solicita continuar la PR #163 en un chat nuevo porque el anterior quedó lleno. Relevo explícito del mismo ID, con native319 y sus fallos preservados, sin cancelar el tester QA en curso ni pisar otras PRs."
+        },
+        {
+          "owner": "chatgpt-pr163-continuation-20261107",
+          "revision": 157,
+          "from_revision": 157,
+          "to_revision": 158,
+          "released_at": "2026-11-07T13:18:05.901Z",
+          "reason": "PR #163 integrada en main sin forzar, código nativo y WebGL exactos certificados; se libera reserva Windows para otros workstreams, especialmente Forja Oscura PR173, sin cancelar CI ni publicar APK/WebGL.",
+          "evidence": {
+            "pr": 163,
+            "source_sha": "29f5e3a3686f80b77bced250c9bef67977a891e4",
+            "merge_sha": "9efc0fefd447585f6867ab03ce2c41084b32adf2",
+            "native_run": 42367983297,
+            "unity_ui_run": 42367986501,
+            "chromium_run": 42373214530,
+            "main_unity_gate_run": 42374765769
+          }
         }
       ],
-      "ownership_revision": 157,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 158,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-05T19:03:44.661Z",
       "delivery_definition": {
