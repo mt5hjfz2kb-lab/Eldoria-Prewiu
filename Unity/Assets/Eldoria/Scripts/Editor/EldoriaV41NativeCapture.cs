@@ -354,7 +354,12 @@ namespace Eldoria.Editor
                     var sheet=host.Hud.GetComponent<RoyalGoldV2Hud>()?.ChronicleBuildingRect;
                     var scroll=host.Hud.GetComponentsInChildren<RectTransform>(true)
                         .FirstOrDefault(x=>x.name=="Scrollable real building details");
-                    Need(sheet&&sheet.rect.height<=148f&&scroll&&
+                    // PR163 intentionally adds both resource benefits to each
+                    // choice (three lines), raising the authored ribbon from
+                    // 142 to 190 units. Keep the real city-space contract and
+                    // bound the integrated three-line ribbon, not its old
+                    // one-line predecessor. Capture also checks every caption.
+                    Need(sheet&&sheet.rect.height<=190f&&scroll&&
                         !scroll.gameObject.activeInHierarchy&&
                         host.Hud.GetComponent<RoyalGoldV2Hud>().GetFreeSceneViewport().height>.46f,
                         "390x844 council is a compact city-local three-choice ribbon, not another management sheet");
