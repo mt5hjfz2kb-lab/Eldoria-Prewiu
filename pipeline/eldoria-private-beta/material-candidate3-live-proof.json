@@ -1,0 +1,21 @@
+{
+  "revision": "native325-mobile-material3",
+  "deploy_run": 42424439267,
+  "candidate_bundle_sha256": "60b43335bb263568dd366faca06ab0d648506dac31024342b1d4edefd8a7c315",
+  "landing": true,
+  "chunks": [
+    {
+      "url": "payload-decoded/native325-mobile-material3-0.gz",
+      "bytes": 16777216,
+      "sha256": "daca6c7c53f51742d915db45f46c096b4a37a5c9a960538314b1accc36104ac9"
+    },
+    {
+      "url": "payload-decoded/native325-mobile-material3-25.gz",
+      "bytes": 1944976,
+      "sha256": "8c0926b3857ecb70aff390e81b38eb859cb14aae0a40da667fda9ede8b2866c5"
+    }
+  ],
+  "physical_mobile_verified": false,
+  "reload_verified": false,
+  "external_testers_ready": false
+}
