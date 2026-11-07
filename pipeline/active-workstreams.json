@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-06T22:29:17.871Z",
+  "updated_at": "2026-11-07T10:24:54.640Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -12,18 +12,19 @@
       "valoria-master-plan-layered-construction-20261016",
       "eldoria-tripo-art-brain-phase2-20261021",
       "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
-      "eldoria-aldric-dialogue-bust-20261027"
+      "eldoria-aldric-dialogue-bust-20261027",
+      "eldoria-forja-oscura-visual-proof-20261107"
     ],
-    "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
+    "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight. | 2026-11-07: owner explicitly authorized separate Forja Oscura UI visual proof, isolated new paths, no edit to held legacy HUD."
   },
   "active": [
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-player-experience-fixes-23287cf1c126",
+      "owner": "chatgpt-pr163-continuation-20261107",
       "branch": "fix/player-experience-audit-20261106",
       "status": "active",
-      "claimed_at": "2026-11-06T10:45:48.580Z",
+      "claimed_at": "2026-11-07T10:24:54.640Z",
       "base_main_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Application/**",
@@ -55,7 +56,7 @@
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "PLAYER_AUDIT_REMEDIATION_NATIVE_VALIDATION",
-      "next": "Native audit candidate certification, exact isolated branch WebGL build and complete player replay; no publication until verified.",
+      "next": "Diagnosticar recorte de Cuartel landscape: native319 y certificacion roja; corregir reserva del mensaje obsoleto con evidencia, revalidar Unity/WebGL y browser sin alterar reloj ni saves.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -2005,9 +2006,16 @@
           "to_revision": 153,
           "claimed_at": "2026-11-06T18:53:45.979Z",
           "reason": "Owner directs correction of all observed player-audit problems, prioritizing player experience."
+        },
+        {
+          "previous_owner": "codex-player-experience-fixes-23287cf1c126",
+          "from_revision": 156,
+          "to_revision": 157,
+          "claimed_at": "2026-11-07T10:24:54.640Z",
+          "reason": "El propietario solicita continuar la PR #163 en un chat nuevo porque el anterior quedó lleno. Relevo explícito del mismo ID, con native319 y sus fallos preservados, sin cancelar el tester QA en curso ni pisar otras PRs."
         }
       ],
-      "ownership_revision": 156,
+      "ownership_revision": 157,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -6560,6 +6568,38 @@
         "owner_device_profile": "local_user",
         "windows_resource_released": true
       }
+    },
+    {
+      "id": "eldoria-forja-oscura-visual-proof-20261107",
+      "title": "Forja Oscura — sistema visual modular uGUI y prueba A/B real",
+      "owner": "chatgpt-forja-oscura-visual-proof-20261107",
+      "branch": "feature/forja-oscura-native-proof-20261107",
+      "status": "active",
+      "claimed_at": "2026-11-06T23:40:17.025Z",
+      "base_main_sha": "346b66296f191d9d8d76094a81b1972c80ffc53a",
+      "scope": [
+        "Unity/Assets/EldoriaVisualKit/**",
+        "Unity/Assets/EldoriaVisualKit.meta",
+        "tools/forja-oscura/**",
+        ".github/workflows/forja-oscura-asset-integrity.yml",
+        ".github/workflows/forja-oscura-native-capture.yml",
+        "docs/ui-v3/FORJA_OSCURA_*.md",
+        "Unity/Assets/Eldoria/VisualKit/**",
+        "Unity/Assets/Eldoria/VisualKit.meta",
+        "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json"
+      ],
+      "resources": [],
+      "ownership_state": "claimed",
+      "ownership_revision": 3,
+      "write_scope_released": false,
+      "phase": "FIRST_PARTY_ASSETS_ADDED_METADATA_AND_RIGHTS_PROVENANCE_QA",
+      "next": "Render reusable Forja visual kit against genuine RoyalHUD and certify mobile layouts and actions; borrow Windows runner only after canonical owner handoff.",
+      "art_approved": false,
+      "physical_mobile_tested": false,
+      "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. Do not claim windows-runner-heavy or edit legacy HUD without explicit handoff. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched.",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json"
     }
   ],
   "history": [

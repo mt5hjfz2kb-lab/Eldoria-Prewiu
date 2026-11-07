@@ -409,7 +409,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             var back=Find("Volver");
             Position((RectTransform)back.transform,left,top,Mathf.Max(48f,headerH*.72f),headerH);
-            back.GetComponentInChildren<RoyalText>().Put("‹");
+            back.GetComponentInChildren<RoyalText>().Put("<");
 
             float tabsY=top+headerH+Mathf.Clamp(h*.028f,9f,24f);
             float tabH=wide?Mathf.Clamp(h*.088f,45f,72f):
@@ -541,21 +541,23 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             if(detailSheet==null||width<100f)return;
             bool narrow=width<580f;
+            bool shortViewport=viewportHeight<230f;
             float inner=width-48f;
             reportKicker.fontSize=Pixels(narrow?15:19);
-            reportHeading.fontSize=Pixels(narrow?24:32);
+            reportHeading.fontSize=Pixels(shortViewport?24:narrow?24:32);
             reportHeading.color=new Color(.96f,.85f,.64f);
             reportKicker.color=new Color(.91f,.73f,.42f);
             reportOrigin.color=new Color(.94f,.86f,.72f);
             reportDate.color=new Color(.87f,.77f,.60f);
             reportSeal.color=new Color(.99f,.86f,.61f);
-            Position(reportKicker.rectTransform,24f,25f,Mathf.Max(75f,width-151f),26f);
-            Position(reportHeading.rectTransform,24f,58f,
+            Position(reportKicker.rectTransform,24f,shortViewport?10f:25f,Mathf.Max(75f,width-151f),26f);
+            float headingTop=shortViewport?37f:58f;
+            Position(reportHeading.rectTransform,24f,headingTop,
                 Mathf.Max(76f,width-153f),50f);
-            float headingH=Mathf.Max(55f,reportHeading.preferredHeight/layoutUnit+6f);
-            Position(reportHeading.rectTransform,24f,58f,
+            float headingH=Mathf.Max(shortViewport?32f:55f,reportHeading.preferredHeight/layoutUnit+6f);
+            Position(reportHeading.rectTransform,24f,headingTop,
                 Mathf.Max(76f,width-153f),headingH);
-            float headerH=Mathf.Max(150f,71f+headingH+43f);
+            float headerH=Mathf.Max(shortViewport?100f:150f,headingTop+headingH+(shortViewport?32f:56f));
             Position(reportSeal.rectTransform,width-99f,45f,69f,51f);
             reportSeal.fontSize=Pixels(narrow?12:15);
             Position(reportOrigin.rectTransform,24f,headerH-35f,
@@ -673,7 +675,12 @@ namespace Eldoria.UI.RoyalGold.V2
             float footerH=Mathf.Max(48f,reportFooter.preferredHeight/layoutUnit+10f);
             Position(reportFooter.rectTransform,26f,footerTop,width-52f,footerH);
             float totalHeight=Mathf.Max(viewportHeight+4f,footerTop+footerH+32f);
+            // Refresh runs while the reader is scrolling. Preserve the reading
+            // position; SelectRow explicitly resets it for a different report.
+            float readingOffset=detailSheet.anchoredPosition.y;
             Position(detailSheet,0f,0f,width,totalHeight);
+            detailSheet.anchoredPosition=new Vector2(0f,
+                Mathf.Clamp(readingOffset,0f,Mathf.Max(0f,(totalHeight-viewportHeight)*layoutUnit)));
             reportArtwork.Configure(reportMotif,reportMetricCount,cols,metricTop,
                 cardH,storyTop,storyHeight,footerTop+footerH,artPicture,layoutUnit);
         }
@@ -707,6 +714,11 @@ namespace Eldoria.UI.RoyalGold.V2
         static string HeroName(string id)=>id=="aldric+lyra"?"Sir Aldric y Lyra":id=="lyra"?"Lyra":id=="aldric"?"Sir Aldric":"—";
         static string TargetName(string id)
         {
+            if((id??"").StartsWith("vigilant:",StringComparison.Ordinal)&&
+                int.TryParse(id.Substring(9),out int stage)&&stage>0){
+                var encounter=EarlyRetentionRules.Stage(stage);
+                return "Etapa "+stage+" · "+encounter.Name;
+            }
             switch(id){case "corrupt-scout":return "Acechador Corrupto";case "engendro-valoria":return "Engendro";
                 case "hunt-wolf":return "Lobo";case "hunt-boar":return "Jabalí";case "ash-stalker-valoria":return "Acechador de Ceniza";
                 case "fissure-valoria":return "Fisura";default:return (id??"").StartsWith("vigilant:")?"Vigilante":"el enemigo";}
@@ -738,8 +750,11 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             var battle=selected.Battle;
             bool scouting=battle==null&&selected.Type=="exploration";
+            // Hunting records have no combat rounds/health. Showing 0 rounds
+            // and 0% life under a victory heading falsely implies a battle.
+            bool hunt=battle!=null&&(battle.TargetId=="hunt-wolf"||battle.TargetId=="hunt-boar");
             bool hasNarrative=scouting&&!string.IsNullOrEmpty(selected.DiscoveryText);
-            reportMetricCount=battle!=null?4:0;
+            reportMetricCount=battle!=null?(hunt?2:4):0;
             scoutFamily=hasNarrative?selected.DiscoveryKind:-1;
             if(scoutVignette!=null)
                 scoutVignette.gameObject.SetActive(hasNarrative&&scoutFamily>=0&&
@@ -756,18 +771,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 scouting?(compact?"HALLAZGO REGISTRADO":
                 "CUADERNO DEL CARTÓGRAFO · HALLAZGO REGISTRADO"):
                 compact?"ARCHIVO REAL":"ARCHIVO REAL · MENSAJE RECIBIDO");
-            reportHeading.Put(scouting&&!string.IsNullOrEmpty(selected.Subtitle)?
+            reportHeading.Put(hunt?(battle.Won?"Cacería completada":"Cacería sin éxito"):
+                scouting&&!string.IsNullOrEmpty(selected.Subtitle)?
                 selected.Subtitle:selected.Title);
             // Result and family are spelled out in the real title/kicker.
             // Let the raised wax seal remain a legible original engraving.
             reportSeal.Put("");
-            reportOrigin.Put(battle!=null?"ENCUENTRO · "+TargetName(battle.TargetId):
+            reportOrigin.Put(hunt?"CACERÍA · "+TargetName(battle.TargetId):
+                battle!=null?"ENCUENTRO · "+TargetName(battle.TargetId):
                 scouting&&hasNarrative?
                     "ORIGEN · "+(selected.DiscoveryKind==0?"FRONTERA":
                         selected.DiscoveryKind==1?"CAMINO":
                         selected.DiscoveryKind==2?"SUMINISTROS":
                         selected.DiscoveryKind==3?"BRECHA":"ENCARGO"):
-                scouting?"ORIGEN · ENCARGO ANTERIOR":"ORIGEN · CORREO EXISTENTE");
+                scouting?"INFORME DE EXPLORACIÓN":"ARCHIVO DE VALORIA");
             reportDate.Put(selected.OccurredAtUtcTicks>0?
                 new DateTime(selected.OccurredAtUtcTicks,DateTimeKind.Utc).ToString("dd/MM/yy HH:mm"):"");
             if(battle!=null)
@@ -787,13 +804,16 @@ namespace Eldoria.UI.RoyalGold.V2
                     "  ·  T2: "+own.ArcherT2+"  ·  T3: "+own.ArcherT3:
                     "COMPOSICIÓN PROPIA · desglose no archivado en este informe");
                 bool evolved=!string.IsNullOrEmpty(battle.Outcome);
-                reportSection.Put(evolved?"MI MARCHA · ANÁLISIS OPCIONAL":"OBSERVACIONES DEL ENCUENTRO");
-                detail.Put(ObservedReason(battle)+(evolved?
+                reportSection.Put(hunt?"RESULTADO DE LA CACERÍA":evolved?"MI MARCHA · ANÁLISIS OPCIONAL":"OBSERVACIONES DEL ENCUENTRO");
+                detail.Put((hunt?(battle.Won?"La cacería regresó con su botín.":"La cacería no tuvo éxito."):ObservedReason(battle))+(evolved&&!hunt?
                     "\n\nDESGASTE OBSERVADO · "+battle.ObservedAttrition+
                     "\n\nDAÑO PROPIO CAUSADO · "+battle.OwnDamageByFamily+
                     "\n\nDAÑO PROPIO RECIBIDO · "+battle.OwnReceivedByFamily+
                     "\n\nVIDA PROPIA RESTANTE · "+battle.OwnRemainingByFamily:""));
-                reportFooter.Put((evolved?"RESISTENCIA OBSERVADA DEL ENEMIGO · "+battle.EnemyObservedResistance:
+                reportFooter.Put(hunt?
+                    "PODER DE LA MARCHA · "+battle.PlayerPower+
+                    "\nEl botín de la cacería se entrega al regresar. Consulta Recompensas para ver las cantidades recibidas.":
+                    (evolved?"RESISTENCIA OBSERVADA DEL ENEMIGO · "+battle.EnemyObservedResistance:
                     "PODER PROPIO REGISTRADO · "+battle.PlayerPower)+
                     "\nBOTÍN REGISTRADO · "+battle.RewardWood+" madera · "+
                     battle.RewardStone+" piedra · "+battle.RewardFood+" comida"+
@@ -868,7 +888,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     var msg=list[i];
                     messageLabels[i].color=msg.Read?
                         new Color(.26f,.22f,.18f):new Color(.11f,.08f,.045f);
-                    messageLabels[i].Put(msg.Title);
+                    messageLabels[i].Put(msg.Battle!=null?TargetName(msg.Battle.TargetId):msg.Title);
                     messageUnreadDots[i].gameObject.SetActive(!msg.Read);
                     messageSurfaces[i].color=msg.Read?
                         new Color(.84f,.84f,.83f,.92f):Color.white;
@@ -879,8 +899,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     messageDates[i].color=new Color(.38f,.31f,.24f);
                     string preview=msg.Battle==null?msg.Subtitle:
                         (msg.Battle.EffectiveOutcome=="draw"?"Empate ante ":msg.Battle.EffectiveOutcome=="victory"?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId);
-                    if(window.rect.width<520f && preview.Length>22)
-                        preview=preview.Substring(0,19)+"…";
+                    // Let the measured two-line row wrap; a fixed 22-character
+                    // cut hid the encounter/stage on every narrow phone.
                     messageSubtitles[i].Put(preview);
                     messageDates[i].Put(msg.OccurredAtUtcTicks>0?new DateTime(msg.OccurredAtUtcTicks,DateTimeKind.Utc).ToString("dd/MM HH:mm"):"");
                     string icon=msg.Category=="recompensas"?"mail-reward":msg.Category=="narrativa"?"mail-narrative":
@@ -902,7 +922,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 return;
             }
             PresentReport(selected);
-            if(!detailVisible||visibleRowCount!=list.Count)
+            navLabel.Put("DESLIZA PARA LEER EL INFORME");
+            if(!detailVisible)
                 detailScroll.verticalNormalizedPosition=1f;
             Layout();
         }
@@ -962,3 +983,4 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+

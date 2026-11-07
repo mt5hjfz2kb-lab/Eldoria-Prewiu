@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "request_id": "eldoria-forja-oscura-visual-proof-20261107",
+  "workstream_id": "eldoria-forja-oscura-visual-proof-20261107",
+  "asset_or_sector": "Forja Oscura: modular illustrated 2D uGUI HUD on real Eldoria city; independent 9-slice and glyph assets",
+  "profile": "environment_composition",
+  "visual_gate_state": "NATIVE_UI_WIP",
+  "ai_authorship_policy": "required",
+  "diagnosis": "User rejected flat simple HUD and baroque copies, approved dark premium reference conditionally. 21 original procedural panel sprites plus 20 originally AI-generated isolated icon illustrations require actual Unity scene A/B and a documented professional art cycle. Do not equate mockup with Unity runtime.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "unity_native_uGUI": true,
+    "existing_3d_assets_modified": false,
+    "modular_nine_slice_assets": true,
+    "original_AI_illustrated_icons": true
+  },
+  "artist": {
+    "design": "Dark, adult, cinema-inspired polished metal and amber, illustration-level richness without huge classical trim",
+    "source": "Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/",
+    "reference": "Owner-picked Eldoria reference image, conversation 2026-11-06"
+  },
+  "validation": {
+    "source_gate": "41 PNG unbundled, 55 original Unity GUIDs verified, provenance statement, no third party paid UI kit, no edits to game rules or incumbent PR163 HUD files. Pixel-exact match NOT assumed.",
+    "final_gate": "Exact-head genuine Unity four pairs A/B, compare reference against actual screenshot for quality, verify navigation and all original inputs, keep resources/progression/persistence, both orientations, Android/WebGL, no visual or gameplay regression. Artist review separated from technical gates."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0,
+  "notes": "PR173 Draft. Preserve sole native Unity runner reservation held by PR163 until official release. AI-generated icon assets are not external asset-store materials. Production candidates have not passed mobile profile or approval."
+}

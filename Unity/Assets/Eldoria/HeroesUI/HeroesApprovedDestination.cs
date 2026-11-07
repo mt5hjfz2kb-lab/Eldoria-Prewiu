@@ -32,6 +32,14 @@ namespace Eldoria.HeroesUI
         public Page CurrentPage { get; private set; } = Page.Salon;
         public string CurrentHeroId { get; private set; }
         public bool IsOpen => root && root.gameObject.activeSelf;
+        bool recruitmentPresentation;
+        public bool IsRecruitmentPresentation => IsOpen && recruitmentPresentation;
+        public void PresentRecruitment(string id)
+        {
+            Open();
+            recruitmentPresentation=true;
+            if(!OpenHero(id))recruitmentPresentation=false;
+        }
         public RectTransform VisibleRoot => IsOpen ? root : null;
         RectTransform root, content;
         HeroesModelSnapshot preview;
@@ -56,6 +64,7 @@ namespace Eldoria.HeroesUI
         }
         public void Open()
         {
+            recruitmentPresentation=false;
             if(!root)throw new InvalidOperationException("Initialize on the canonical HUD first");
             if(CanOpenDestination!=null&&!CanOpenDestination())return;
             CurrentPage=Page.Salon;CurrentHeroId=null;root.gameObject.SetActive(true);root.SetAsLastSibling();Rebuild();
@@ -74,7 +83,7 @@ namespace Eldoria.HeroesUI
             CurrentPage=page;Rebuild();
         }
         public void Suspend(){if(!root)return;root.gameObject.SetActive(false);preview.Release();}
-        public void Close(){if(!IsOpen)return;Suspend();Closed?.Invoke();}
+        public void Close(){if(!IsOpen)return;bool recruitment=recruitmentPresentation;recruitmentPresentation=false;Suspend();if(!recruitment)Closed?.Invoke();}
         public HeroState? CurrentAuthoritativeHero()
         {foreach(var h in ReadHeroes?.Invoke()??Array.Empty<HeroState>())if(h.Id==CurrentHeroId)return h;return null;}
         public void Refresh(){if(IsOpen)Rebuild();}
@@ -276,13 +285,13 @@ namespace Eldoria.HeroesUI
                 Mathf.Max(65f,w-titleX-82f),34,
                 narrowPortrait?21:shortProfile?24:32).color=ivory;
             Label("Hero role and real level",content,
-                hero.Role+"  ·  NIVEL "+hero.Level,titleX,47,
+                (recruitmentPresentation?"SE UNE A VALORIA · ":hero.Role+" · ")+"NIVEL "+hero.Level,titleX,47,
                 Mathf.Max(65f,w-titleX-82f),29,
                 narrowPortrait?13:shortProfile?15:20).color=ivory;
             var pages=new[]{Page.Resumen,Page.Habilidades,Page.Talentos,Page.Equipamiento};
             string[] captions={"RESUMEN","HABILIDADES","TALENTOS","EQUIPAMIENTO"};
             float tabWidth=portrait?(narrowPortrait?90f:132f):shortProfile?112f:123f;
-            float top=portrait?(narrowPortrait?182f:194f):shortProfile?96f:100f;
+            float top=portrait?(narrowPortrait?182f:194f):shortProfile?86f:100f;
             float startNav=portrait?(narrowPortrait?132f:170f):shortProfile?118f:190f;
             float navH=portrait?(narrowPortrait?46f:74f):
                 shortProfile?32f:Mathf.Clamp((h-startNav-132f)/5f,72f,94f);
@@ -334,7 +343,7 @@ namespace Eldoria.HeroesUI
             }
             float bodyX=tabWidth+(portrait?32f:36f),
                 bodyW=w-bodyX-20f;
-            float bodyH=h-top-92,modelW=portrait?bodyW:bodyW*(shortProfile?.47f:.58f),modelH=portrait?bodyH*.62f:bodyH;
+            float bodyH=h-top-(shortProfile?76f:92f),modelW=portrait?bodyW:bodyW*(shortProfile?.47f:.58f),modelH=portrait?bodyH*.62f:bodyH;
             // Reserve the four real attribute rows and role/footer before sizing
             // the portrait stage. Otherwise the 36-unit row minimum can overlap
             // the role divider at 900x1600.
@@ -350,8 +359,8 @@ namespace Eldoria.HeroesUI
                 float imageH=modelH-46,imageW=Mathf.Min(modelW-10,imageH*2f/3f);
                 Place(raw.rectTransform,(modelW-imageW)*.5f,5,imageW,imageH);
                 if(CurrentPage!=Page.Talentos){
-                    Button("Rotate hero left","‹",bodyX+7,top+modelH-78,32,32,()=>{preview.Rotate(-30);Rebuild();});
-                    Button("Rotate hero right","›",bodyX+modelW-39,top+modelH-78,32,32,()=>{preview.Rotate(30);Rebuild();});
+                    Button("Rotate hero left","<",bodyX+7,top+modelH-78,32,32,()=>{preview.Rotate(-30);Rebuild();});
+                    Button("Rotate hero right",">",bodyX+modelW-39,top+modelH-78,32,32,()=>{preview.Rotate(30);Rebuild();});
                 }
             }
             else{
@@ -395,8 +404,8 @@ namespace Eldoria.HeroesUI
             selector.GetComponent<Image>().raycastTarget=false;
             Surface("Profile / selector brass horizon",selector,6f,0f,w-48f,2f,
                 new Color(.83f,.63f,.32f,.78f)).GetComponent<Image>().raycastTarget=false;
-            Button("Previous available hero","‹",20,h-66,64,46,()=>CycleHero(-1));
-            Button("Next available hero","›",w-84,h-66,64,46,()=>CycleHero(1));
+            Button("Previous available hero","<",20,h-66,64,46,()=>CycleHero(-1));
+            Button("Next available hero",">",w-84,h-66,64,46,()=>CycleHero(1));
             // Hero identity is already prominent in the reference header.
             // Duplicating it next to the portrait strip obscured the first
             // actual hero portrait at 900x1600.
@@ -1519,7 +1528,7 @@ namespace Eldoria.HeroesUI
                 });
             HallControlArt(navMarches.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navMarches,5,navCell,navHeight,false);
-            var navRelicary=Button("Hall / nav reliquary","RELICARIO",
+            var navRelicary=Button("Hall / nav reliquary","RELICARIO\nPRÓXIMAMENTE",
                 navLeft+(navCell+navGap)*3f,navY,navCell,navHeight,()=>{},false);
             HallControlArt(navRelicary.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navRelicary,7,navCell,navHeight,false);
@@ -1578,3 +1587,4 @@ namespace Eldoria.HeroesUI
         }
     }
 }
+

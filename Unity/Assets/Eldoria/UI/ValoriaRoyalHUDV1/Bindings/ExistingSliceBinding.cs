@@ -8,6 +8,10 @@ namespace Eldoria.UI.RoyalGold {
  public sealed class ExistingSliceBinding:IRoyalSession {
   readonly ICommandGateway gateway; readonly IClock clock; readonly bool test;
   readonly HashSet<string> submitted=new HashSet<string>(); readonly Queue<string> recent=new Queue<string>(); bool submitting;
+  sealed class DisplayedOffer { public string Selection, Terms; public bool English; }
+  readonly Dictionary<string,DisplayedOffer> displayed=new Dictionary<string,DisplayedOffer>();
+  readonly Queue<string> displayedOrder=new Queue<string>();
+  static string Terms(RoyalBuilding b)=>b==null?"":b.Level+"|"+b.Costs+"|"+b.Time+"|"+b.Function+"|"+b.Result+"|"+b.Action?.Kind+"|"+b.Action?.Target;
   string observedRecruitment="";int observedRecruitCount,completedRecruitCount;long completionShownUntil;
   public ExistingSliceBinding(ICommandGateway gateway,IClock clock,bool test=false){this.gateway=gateway??throw new ArgumentNullException(nameof(gateway));this.clock=clock??throw new ArgumentNullException(nameof(clock));this.test=test;}
   public RoyalSnapshot Read(string selection,bool en){
@@ -18,14 +22,24 @@ namespace Eldoria.UI.RoyalGold {
     Chapter=L(en,"BASTIÓN ","BASTION ")+(s.BastionLevel<=1?"I":s.BastionLevel==2?"II":s.BastionLevel==3?"III":s.BastionLevel==4?"IV":"V"),March=MarchText(s,en)};
    if(s.ChapterThree.LyraRecruited)d.Hero="Sir Aldric · Lyra ("+s.ChapterThree.LyraXp+" XP)";
    d.ShowFood=s.BastionLevel>=3;
-   ObserveRecruitment(s);Mission(s,d,en); d.Building=Building(s,selection,en); return d;
+   ObserveRecruitment(s);Mission(s,d,en); d.Building=Building(s,selection,en);
+   if(d.Building?.Action!=null){var id=d.Building.Action.Id;displayed[id]=new DisplayedOffer{Selection=selection,English=en,Terms=Terms(d.Building)};displayedOrder.Enqueue(id);while(displayedOrder.Count>64)displayed.Remove(displayedOrder.Dequeue());}
+   return d;
   }
   public RoyalResult Submit(RoyalAction offer){
    if(offer==null||!offer.Enabled||string.IsNullOrEmpty(offer.Kind))return new RoyalResult(false,"Acción no disponible / Action unavailable");
    if(submitting||submitted.Contains(offer.Id))return new RoyalResult(false,"Solicitud ya enviada / Already submitted");
-   var current=gateway.Snapshot(); if(current.Revision!=offer.Revision)return new RoyalResult(false,"El estado cambió. Revisa los requisitos / State changed; review requirements");
+   var current=gateway.Snapshot();
+   if(current.Revision!=offer.Revision){
+    // Passive production may advance the revision while a player reads the
+    // card. Revalidate the displayed price/action, never silently buy a new tier.
+    if(!displayed.TryGetValue(offer.Id,out var shown))return new RoyalResult(false,"Actualiza la selección antes de continuar / Refresh the selection to continue");
+    var fresh=Building(current,shown.Selection,shown.English);
+    if(fresh?.Action==null||!fresh.Action.Enabled||Terms(fresh)!=shown.Terms)
+     return new RoyalResult(false,!string.IsNullOrEmpty(fresh?.Requirements)?fresh.Requirements:L(shown.English,"La acción ha cambiado. Revisa la selección.","The action has changed. Review the selection."));
+   }
    submitting=true; submitted.Add(offer.Id); recent.Enqueue(offer.Id); while(recent.Count>64)submitted.Remove(recent.Dequeue());
-   try{var r=gateway.Execute(new GameCommand("royal-ui:"+offer.Id,current.PlayerId,offer.Kind,offer.Target,offer.Revision));return new RoyalResult(r.Ok,r.Message);}finally{submitting=false;}
+   try{var r=gateway.Execute(new GameCommand("royal-ui:"+offer.Id,current.PlayerId,offer.Kind,offer.Target,current.Revision));return new RoyalResult(r.Ok,r.Message);}finally{submitting=false;}
   }
   static string L(bool en,string es,string eg)=>RoyalFormatting.L(en,es,eg);
   // Read the same V2 rates that LocalGateway actually credits; the previous
@@ -81,7 +95,7 @@ namespace Eldoria.UI.RoyalGold {
     case "b5.army":title=L(en,"Alcanza 60 arqueros","Reach 60 archers");done=s.Available.Total+s.Wounded.Total;foreach(var march in MarchCapacityRules.WorldMarches(s))if(march!=null&&march.Phase!="idle")done+=march.Troops.Total;total=60;break;
     case "b5.rare":title=L(en,"Derrota al Acechador de Ceniza","Defeat the Ash Stalker");done=s.ChapterThree.AshStalkerDefeated?1:0;break;
     case "b5.infrastructure":title=L(en,"Desarrolla los edificios a nivel V","Develop each building to level V");break;
-    case "b5.complete":title=L(en,"Bastión V asegurado · próximo hito Bastión VI","Bastion V secured · next milestone Bastion VI");done=1;break;
+    case "b5.complete":title=L(en,"Valoria asegurada · Recorrido completado","Valoria secured · Journey complete");done=1;break;
     default:title=L(en,"Sin objetivo disponible","No objective available");total=0;break;
    }
    d.Objective=title;d.MissionFraction=total>0?Math.Min(1f,Math.Max(0f,done/(float)total)):0;d.ObjectiveProgress=total>0?Math.Min(done,total)+" / "+total:"";
@@ -154,6 +168,9 @@ namespace Eldoria.UI.RoyalGold {
     b.Level=target=="stoneworks"?c.StoneworksLevel:target=="granary"?c.GranaryLevel:target=="sawmill"?s.SawmillLevel:s.BarracksLevel;
     b.Function=target=="barracks"?L(en,"Infraestructura militar. Recluta desde el Cuartel.","Military infrastructure. Recruit from the Barracks."):
      V2ProductionLabel(target=="stoneworks"?"stone":target=="granary"?"food":"wood",b.Level,en);
+    if(target!="barracks"&&b.Level<s.BastionLevel)
+     b.Function+=L(en," → Al mejorar: "," → After upgrade: ")+
+      V2ProductionLabel(target=="stoneworks"?"stone":target=="granary"?"food":"wood",b.Level+1,en);
     // Bastion III+ reuses the *original* Build gateway for a first Sawmill
     // or Barracks. It does NOT use the later chapter-three cost/duration
     // formula until the first building exists. Display exactly what the
@@ -194,7 +211,7 @@ namespace Eldoria.UI.RoyalGold {
      knowledge==1?
      L(en,"La investigación ha encontrado huellas humanas. Acércate para descubrir quién las dejó.","The investigation found human tracks. Approach to discover who left them."):
      L(en,"Lyra busca a su hermano desaparecido. Combatirá junto a Aldric; todavía no se ha unido al reino.","Lyra is searching for her missing brother. She will fight beside Aldric, but has not yet joined the realm.");
-     deadline=c.InvestigationEndsUtcTicks;seconds=1200;
+     deadline=c.InvestigationEndsUtcTicks;seconds=kind=="InvestigateFissure"?1200:0;
     }else if(id=="meat-valoria")b.Function=c.MeatRemaining+L(en," comida disponible"," food available");
     else if(id=="ash-stalker-valoria"){
      b.Function=L(en,"Enemigo raro del Bastión V. Su emboscada exige una marcha preparada.","Rare Bastion-V enemy. Its ambush requires a prepared expedition.");
@@ -208,8 +225,18 @@ namespace Eldoria.UI.RoyalGold {
     if(id=="hunt-wolf"&&c.WolfRespawnUtcTicks>clock.UtcTicks||id=="hunt-boar"&&c.BoarRespawnUtcTicks>clock.UtcTicks)reason=L(en,"La caza aún no ha regresado.","The hunt has not returned yet.");
    }
    if(deadline>0){b.OperationActive=true;b.State=L(en,"En curso","In progress");b.Time=RoyalFormatting.Remaining(deadline,clock.UtcTicks,en);b.Progress=seconds>0?Math.Max(0,Math.Min(1,1-(float)((deadline-clock.UtcTicks)/(double)TimeSpan.TicksPerSecond)/seconds)):0;return b;}
-   b.Costs=wood>0?ResourcesText(wood,stone,en)+(food>0?" · "+food+L(en," comida"," food"):""):"";b.Time=seconds>0?seconds+" s":"";
+   b.Costs=wood>0?ResourcesText(wood,stone,en)+(food>0?" · "+food+L(en," comida"," food"):""):"";b.Time=seconds>0?TimeSpan.FromSeconds(seconds).ToString(@"m\:ss"):"";
    if(s.Resources.Wood<wood||s.Resources.Stone<stone||s.Resources.Food<food)reason=L(en,"Faltan recursos.","Insufficient resources.");
+   if(kind=="Fight"&&deadline==0){
+    string hero=s.MarchConfigured?s.PreparedHeroId:
+     MarchCapacityRules.HeroAvailable(s,"aldric")?"aldric":c.LyraRecruited&&MarchCapacityRules.HeroAvailable(s,"lyra")?"lyra":"";
+    int capacity=MarchCapacityRules.Capacity(s,hero);
+    var troops=s.MarchConfigured?s.PreparedTroops:MarchCapacityRules.AutoSelect(s.Available,capacity);
+    bool fits=MarchCapacityRules.Fits(troops,s.Available,capacity);
+    b.Function+=fits?L(en,"\nTu marcha: ","\nYour march: ")+troops.Total+L(en," tropas · Poder "," troops · Power ")+SliceRules.Expedition(troops,hero).Power:
+     L(en,"\nTropas disponibles: ","\nAvailable troops: ")+s.Available.Total;
+    if(!fits&&s.MarchConfigured&&string.IsNullOrEmpty(reason)){kind="OpenMarch";label=L(en,"Ajustar marcha","Adjust march");}
+   }
    b.Requirements=reason;b.Action=new RoyalAction(kind,target,label,reason,s.Revision,string.IsNullOrEmpty(reason));return b;
   }
   RoyalBuilding Building(PlayerState s,string id,bool en){
@@ -285,3 +312,4 @@ namespace Eldoria.UI.RoyalGold {
   }
  }
 }
+

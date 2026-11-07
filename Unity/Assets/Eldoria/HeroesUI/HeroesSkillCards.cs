@@ -155,7 +155,7 @@ namespace Eldoria.HeroesUI
             // Four reference rows in ample landscape; three responsive rows
             // in tall portrait. The actual ability gets more vertical room than
             // decorative unavailable reserves, so its full real text scrolls.
-            int count=ShowReserves(width,height)?(height>=600f?4:3):1;
+            int count=ShowReserves(width,height)&&height>=600f?4:1;
             float activeH=count==1?available:
                 Mathf.Clamp(available*(count==4 ? .38f : .48f),150f,
                     available-(count-1)*(76f+gap));
@@ -219,7 +219,7 @@ namespace Eldoria.HeroesUI
                 Surface("Skills / manuscript separator",card,descX,
                     descY-4f,descW,1f,new Color(.79f,.62f,.40f,.48f));
                 Description(card,description??string.Empty,
-                    descX,descY,descW,descH,compact?24:21);
+                    descX,descY,descW,descH,compact?18:21);
                 Surface("Skills / character identity edge",card,7f,
                     18f,2f,Mathf.Max(10f,cardHeight-36f),
                     heroId=="lyra"?new Color(.45f,.69f,.62f,.78f):
@@ -245,6 +245,10 @@ namespace Eldoria.HeroesUI
             label.horizontalOverflow=HorizontalWrapMode.Wrap;
             label.verticalOverflow=VerticalWrapMode.Overflow;
             float required=Mathf.Max(h,label.preferredHeight+12f);
+            bool needsScroll=required>h+1f;
+            // Keep the reading cue outside the text's clipped area.
+            if(needsScroll)
+                viewport.sizeDelta=new Vector2(w,Mathf.Max(1f,h-20f));
             body.sizeDelta=new Vector2(w,required);
             label.rectTransform.sizeDelta=new Vector2(w,required);
             scroll.viewport=viewport;
@@ -253,6 +257,10 @@ namespace Eldoria.HeroesUI
             scroll.vertical=true;
             scroll.movementType=ScrollRect.MovementType.Clamped;
             scroll.scrollSensitivity=25f;
+            if(needsScroll)
+                Label("Skills / reading hint",card,"DESLIZA PARA LEER",
+                    x,y+h-14f,w,14f,11,TextAnchor.LowerRight,Gold);
         }
     }
 }
+

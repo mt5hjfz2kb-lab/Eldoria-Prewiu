@@ -28,8 +28,8 @@ namespace Eldoria.Domain
             switch(key)
             {
                 case "b2.train-archers": return en?
-                    "Open the Barracks, choose how many archers to train and start. Wait until they are ready.":
-                    "En el Cuartel elige cuántos arqueros entrenar e inicia la tarea. Espera a que terminen.";
+                    "In the Barracks, choose your archers and start training. Meanwhile, improve the city or play Vigilants with available troops.":
+                    "En el Cuartel, elige arqueros e inicia el entrenamiento. Mientras, mejora la ciudad o juega Vigilantes con las tropas disponibles.";
                 case "b2.prepare-march": return en?
                     "Open March, assign Aldric and troops, then Confirm. Preparing does not send the army.":
                     "Abre Marcha, asigna a Aldric y sus tropas y confirma. Preparar no envía el ejército.";
@@ -43,8 +43,8 @@ namespace Eldoria.Domain
                     "Choose a hunt in the World. Hunting yields food and materials, not kingdom Power.":
                     "Elige una cacería en el Mundo. Aporta comida y materiales, no Poder del reino.";
                 case "b3.investigate": return en?
-                    "Investigate the fissure for 20 minutes before taking further action.":
-                    "Investiga la fisura durante 20 minutos antes de intentar otra acción.";
+                    "Aldric investigates for 20 minutes. Meanwhile, improve the Sawmill, Barracks and Granary; review your heroes and reports.":
+                    "Aldric investiga durante 20 minutos. Mientras, mejora Aserradero, Cuartel y Granero; revisa héroes e informes.";
                 case "b3.lyra": return en?
                     "Human tracks were found near the fissure. Approach to discover who left them.":
                     "Aldric ha hallado huellas humanas junto a la fisura. Acércate y averigua quién está allí.";
@@ -69,9 +69,13 @@ namespace Eldoria.Domain
                 case "b5.rare": return en?
                     "The Ash Stalker is a combat threat, not a hunt. Prepare a March and review its report.":
                     "El Acechador es un enemigo, no una cacería. Prepara la Marcha y revisa el informe.";
+                case "b5.complete": return en?
+                    "You have completed the available journey. Bastion VI is not available yet. Continue with Vigilants, exploration, heroes and city upgrades.":
+                    "Has completado el recorrido disponible. Bastión VI aún no está disponible. Puedes continuar con Vigilantes, exploración, héroes y mejoras de la ciudad.";
                 default: return null;
             }
         }
     }
 }
+
 

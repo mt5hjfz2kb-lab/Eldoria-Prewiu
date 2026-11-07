@@ -741,9 +741,16 @@ namespace Eldoria.UI.RoyalGold.V2
                     victoryTitle.Put(report.VersionedOutcome?.Outcome=="draw"?"EMPATE":report.Won?"VICTORIA":"DERROTA");
                     victoryTitle.color=report.Won?Gold:new Color(.93f,.51f,.41f,1f);
                     var challenge=EarlyRetentionRules.Stage(int.Parse(target));
-                    victoryDetail.Put(EarlyRetentionRules.BattleReview(report,challenge));
+                    bool chapterCompleted=report.Won&&challenge.Step==EarlyRetentionRules.StagesPerChapter;
+                    if(chapterCompleted)victoryTitle.Put("CAPÍTULO "+challenge.Chapter+" COMPLETADO");
+                    var after=gateway.Snapshot();
+                    int masteryBefore=EarlyRetentionRules.HeroMasteryLevel(s,"aldric");
+                    int masteryAfter=EarlyRetentionRules.HeroMasteryLevel(after,"aldric");
+                    string progress=masteryAfter>masteryBefore?"\nMaestría de Aldric: "+masteryBefore+" → "+masteryAfter:"";
+                    victoryDetail.Put((chapterCompleted?"25 etapas superadas. Se abre el siguiente capítulo.\n":"")+
+                        EarlyRetentionRules.BattleReview(report,challenge)+progress);
                     victoryStarted=Time.unscaledTime;
-                    victoryUntil=victoryStarted+3.2f;
+                    victoryUntil=victoryStarted+(chapterCompleted?7f:3.2f);
                     victoryGroup.alpha=1f;
                     victoryGroup.blocksRaycasts=false;
                 }
@@ -775,6 +782,12 @@ namespace Eldoria.UI.RoyalGold.V2
             if(gateway==null)return;
             var s=gateway.Snapshot();
             int next=s.Retention==null?1:s.Retention.LastClearedStage+1;
+            string hero=s.ChapterThree!=null&&s.ChapterThree.LyraRecruited&&
+                (s.PreparedHeroId=="lyra"||s.PreparedHeroId=="aldric+lyra")?s.PreparedHeroId:"aldric";
+            int capacity=MarchCapacityRules.Capacity(s,hero);
+            if(s.MarchConfigured&&s.PreparedTroops!=null&&s.PreparedTroops.Total>0&&
+                !MarchCapacityRules.Fits(s.PreparedTroops,s.Available,capacity))
+            {TacticalAction();return;}
             if(EarlyRetentionRules.StageUnlocked(s,next))Submit("VigilantBattle",next.ToString());
         }
         void CollectXp() => Submit("ClaimVigilantXp","aldric");
@@ -924,7 +937,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 heading.fontSize=32;
                 TL(kicker.rectTransform,18f,104f,pw-36f,36f);
                 TL((RectTransform)back.transform,18f,14f,100f,88f);
-                backLabel.Put("←");
+                backLabel.Put("<");
                 backLabel.fontSize=64;
             }
             else
@@ -933,7 +946,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 heading.fontSize=compactLandscape?26:34;
                 TL(kicker.rectTransform,130f,61f,pw-260f,27f);
                 TL((RectTransform)back.transform,20f,compactLandscape?14f:23f,90f,compactLandscape?68f:46f);
-                backLabel.Put("←");
+                backLabel.Put("<");
                 backLabel.fontSize=compactLandscape?48:30;
             }
             TL((RectTransform)scoutStrategyButton.transform,
@@ -1605,7 +1618,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 string heroName=selectedHero=="lyra"?"Lyra":
                     selectedHero=="aldric+lyra"?"Aldric + Lyra":"Aldric";
                 formation.Put(heroName+" · "+selectedTroops.Total+"/"+capacity+
-                    " tropas\nPoder "+marchStats.Power);
+                    " tropas\n"+(eligibleTroops?"Poder "+marchStats.Power:
+                    "Disponibles: "+s.Available.Total+" · Ajusta la selección"));
                 reward.Put("Al vencer: "+(30+stage*2)+" madera · "+(10+stage)+
                     " piedra · "+(20+stage/5*3)+" XP");
                 int xp=EarlyRetentionRules.UnclaimedIdleXp(p,now());
@@ -1616,13 +1630,15 @@ namespace Eldoria.UI.RoyalGold.V2
                     "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+
                     (s.ChapterThree!=null&&s.ChapterThree.LyraRecruited?
                         " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"):""));
-                mainAction.interactable=EarlyRetentionRules.StageUnlocked(s,stage)&&
+                bool battleReady=EarlyRetentionRules.StageUnlocked(s,stage)&&
                     eligibleTroops&&hasMarchSlot&&heroReady;
+                mainAction.interactable=battleReady||
+                    (EarlyRetentionRules.StageUnlocked(s,stage)&&!eligibleTroops);
                 // The action cannot promise a battle if the real Gateway will
                 // reject it for capacity, unavailable troops or three active slots.
-                mainActionLabel.Put(mainAction.interactable?"Combatir":
-                    !hasMarchSlot?"3 MARCHAS OCUPADAS":!heroReady?"HÉROE EN MARCHA":
-                    !eligibleTroops?"AJUSTA TU MARCHA":"AÚN NO DISPONIBLE");
+                mainActionLabel.Put(battleReady?"Combatir":
+                    !eligibleTroops?"AJUSTA TU MARCHA":!hasMarchSlot?"3 MARCHAS OCUPADAS":
+                    !heroReady?"HÉROE EN MARCHA":"AÚN NO DISPONIBLE");
                 claimXp.interactable=xp>0;
                 xpLabel.Put(xp>0?"RECOGER "+xp+" XP":"EXPERIENCIA EN PROGRESO");
                 var previous=s.LastBattleReport;
@@ -1766,3 +1782,4 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+

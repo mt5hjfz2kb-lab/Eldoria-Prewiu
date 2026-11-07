@@ -14,7 +14,7 @@ namespace Eldoria.ReferenceClean {
   readonly List<(GameObject cue,string building,int level)> cues=new List<(GameObject,string,int)>();
   readonly Dictionary<string,GameObject> priorities=new Dictionary<string,GameObject>();
   readonly List<Mesh> terrainMeshes=new List<Mesh>();
-  static readonly string[] VisibleAuthoredEncounterIds={"hunt-wolf","fissure-valoria","ash-stalker-valoria"};
+  static readonly string[] VisibleAuthoredEncounterIds={"hunt-wolf","hunt-boar","meat-valoria","fissure-valoria","ash-stalker-valoria"};
   bool placed;float refresh;
   public void Initialize(ValoriaIntegratedWorld h){
    host=h;town=new GameObject("Bastion III city additions");town.transform.SetParent(transform,false);
@@ -147,7 +147,7 @@ namespace Eldoria.ReferenceClean {
     for(int radius=72;radius<=176&&!found;radius+=16)for(int step=0;step<24&&!found;step++){
      float angle=(step*15+ordinal*87)*Mathf.Deg2Rad;float x=Mathf.Cos(angle)*radius,z=Mathf.Sin(angle)*radius;
      var p=host.WorldHome+new Vector3(x,RegionOneBlenderLandscape.Height(x,z),z);
-     if(s.WorldCreatureLocations.Any(q=>q.Alive&&Vector3.Distance(new Vector3(q.X,q.Y,q.Z),p)<24)||used.Any(q=>Vector3.Distance(q,p)<30)||!routes.FootprintClear(p,8)||!routes.TryRouteTo(s,p,out var route))continue;
+     if(s.WorldResourceLocations.Any(q=>q.Remaining>0&&Vector3.Distance(new Vector3(q.X,q.Y,q.Z),p)<24)||s.WorldCreatureLocations.Any(q=>q.Alive&&Vector3.Distance(new Vector3(q.X,q.Y,q.Z),p)<24)||used.Any(q=>Vector3.Distance(q,p)<30)||!routes.FootprintClear(p,8)||!routes.TryRouteTo(s,p,out var route))continue;
      // Use the reachable endpoint; no fabricated march path or floating fauna.
      var end=route[route.Count-1];p=new Vector3(end.X,end.Y,end.Z);
      if(used.Any(q=>Vector3.Distance(q,p)<30))continue;
@@ -223,3 +223,4 @@ namespace Eldoria.ReferenceClean {
   }
  }
 }
+

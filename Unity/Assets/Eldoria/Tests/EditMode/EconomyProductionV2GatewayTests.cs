@@ -191,8 +191,8 @@ namespace Eldoria.Tests.EditMode
             var store = new JsonStore { Seed = Ready() };
             var binding = new Eldoria.UI.RoyalGold.ExistingSliceBinding(new LocalGateway(clock, store), clock);
             Assert.That(binding.Read("sawmill", false).Building.Function, Is.EqualTo("0,36 madera/s"));
-            Assert.That(binding.Read("granary", false).Building.Function, Is.EqualTo("0,19 comida/s"));
-            Assert.That(binding.Read("stoneworks", false).Building.Function, Is.EqualTo("0,08 piedra/s"));
+            Assert.That(binding.Read("granary", false).Building.Function, Is.EqualTo("0,19 comida/s → Al mejorar: 0,31 comida/s"));
+            Assert.That(binding.Read("stoneworks", false).Building.Function, Is.EqualTo("0,08 piedra/s → Al mejorar: 0,15 piedra/s"));
             Assert.That(binding.Read("sawmill", true).Building.Function, Is.EqualTo("0.36 wood/s"));
         }
 
@@ -209,3 +209,4 @@ namespace Eldoria.Tests.EditMode
         }
     }
 }
+

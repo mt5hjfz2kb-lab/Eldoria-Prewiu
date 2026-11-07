@@ -388,7 +388,8 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             else if(isLyra)
             {
-                if(!lyraSprite)lyraSprite=RoyalGoldV41SourceArt.HeroPortrait("lyra");
+                var canonicalLyra=RoyalGoldV41SourceArt.HeroPortrait("lyra");
+                if(canonicalLyra)lyraSprite=canonicalLyra;
                 if(!lyraSprite)
                 {
                     var source=Resources.Load<Texture2D>("EldoriaV41/HeroesApprovedMaster");

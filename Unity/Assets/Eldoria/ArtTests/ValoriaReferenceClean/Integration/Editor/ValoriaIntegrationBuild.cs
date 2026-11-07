@@ -441,6 +441,34 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return new WaitForSecondsRealtime(.4f);
    Check(()=>{int seconds=BastionProgressionCatalog.ForLevel(2).DurationSeconds;((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(seconds-1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().BastionLevel==1,"Bastion II completed before authored deadline");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().BastionLevel==2&&city.BastionTwo.activeSelf&&!city.BastionOne.activeSelf,"Bastion II visual/progression mismatch");},"Bastion II visual");
    h.Select("barracks");yield return null;
+   // Real 844x390 browser input exposed Barracks hidden behind the bottom
+   // context sheet: the top-left quest left just 3% unobstructed scene height.
+   // Capture the actual unbuilt plot before its normal construction command.
+   // Capture itself checks full model framing against the genuine rendered HUD.
+   Check(()=>{
+    Capture(h,"integration-city-barracks-phone-landscape.png",844,390,()=>{
+     var plot=h.FindTarget("barracks");Rect projected=default,visible=default;
+     bool framed=plot&&h.IsTargetFramed(plot.gameObject,out projected,out visible);
+     // The old available-plot renderers are intentionally hidden. In prior
+     // native322 the collider geometry could pass framing while the player
+     // saw no cue over the actual empty grass. Require the real existing
+     // world-anchored label to remain visible for the selected unbuilt plot.
+     var marker=h.Hud.GetComponentsInChildren<BuildingLabel>(true)
+       .FirstOrDefault(item=>item&&item.name=="Guidance barracks");
+     Need(marker&&marker.gameObject.activeInHierarchy&&
+      marker.Select&&marker.Select.gameObject.activeInHierarchy&&
+      marker.Label&&marker.Label.text.Contains("Cuartel"),
+      "Selected unbuilt Barracks site is visually unmarked");
+     Need(framed&&visible.height>.25f,
+      "Landscape Barracks must fit beside the quest, above the bottom sheet"+
+      " framed="+framed+" projected="+projected+" visible="+visible+
+      " selected="+h.Selected+" aspect="+h.PlayerCamera.aspect+
+      " zoom="+h.PlayerCamera.orthographicSize+
+      " camera="+h.PlayerCamera.transform.position);
+    });
+    Capture(h,"integration-city-barracks-phone-portrait.png",390,844);
+   },"Barracks construction plot fully visible in both phone orientations");
+   yield return null;
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"Barracks did not start");},"Royal barracks");
    yield return new WaitForSecondsRealtime(.4f);
    Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.BarracksBuildSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Parcels.RightBuilt.activeSelf,"Barracks model missing");h.Select("barracks");},"Royal barracks construction completed with native state");
@@ -472,6 +500,8 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(!h.Read("barracks",false).Building.Requirements.Contains("Operación en curso"),"Duplicate training status remains");
     Capture(h,"integration-training.png",1600,900);
     Capture(h,"integration-training-portrait.png",900,1600);
+    Capture(h,"integration-training-phone-landscape.png",844,390);
+    Capture(h,"integration-training-phone-portrait.png",390,844);
    },"Royal recruitment via visible V3 primary button");
    yield return new WaitForSecondsRealtime(.4f);
    Check(()=>{
@@ -508,6 +538,8 @@ namespace Eldoria.ReferenceClean.Editor {
       "Native march preparation is not an independent management destination");
     Capture(h,"integration-march-landscape.png",1600,900);
     Capture(h,"integration-march-portrait.png",900,1600);
+    Capture(h,"integration-march-phone-landscape.png",844,390);
+    Capture(h,"integration-march-phone-portrait.png",390,844);
    },"Royal march management real independent landscape and portrait");
    Check(()=>{
     var prepare=GameObject.Find("Confirm military command")?.GetComponent<RoyalButton>();
@@ -616,8 +648,39 @@ namespace Eldoria.ReferenceClean.Editor {
     VerifyFoot(localBefore,CreatureBounds(),"local");
     Capture(h,"integration-art-engendro-prebattle-close.png",1600,900);
    },"real B2 local enlarged silhouette AND exact grounded anchor");
+   // The native316 "prebattle context" image still showed a genuine
+   // pending Bastion-II dialogue. Advance it through the visible control,
+   // not by hiding the overlay or mutating narrative state.
+   for(int turn=0;turn<20&&h.Hud.NarrativeOpen;turn++){
+    Click(h.Hud.Modal.Extra);
+    yield return new WaitForSecondsRealtime(.35f);
+   }
+   Check(()=>Need(!h.Hud.NarrativeOpen&&!h.Hud.Modal.gameObject.activeSelf,
+    "Unacknowledged dialogue obscures the selected Engendro"),
+    "earned Bastion-II dialogue acknowledged with visible control");
    h.Select("engendro-valoria");yield return null;
-   Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Bastion II content boundary not reached");Need(h.Read("",false).MissionSteps.Length==5&&h.Read("",false).MissionSteps.All(step=>step.Done),"Completed Bastion II checklist does not reflect actual saved progression");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
+   Check(()=>{
+    Need(h.Selected=="engendro-valoria"&&!h.Hud.NarrativeOpen,
+     "Prebattle proof must show real Engendro context, not dialogue");
+    Capture(h,"integration-context-engendro-phone-landscape.png",844,390);
+    Capture(h,"integration-context-engendro-phone-portrait.png",390,844);
+   },
+    "genuine selected Engendro context card in both mobile orientations");
+   Check(()=>{Click(h.Hud.Building.Primary.Button);
+    Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");
+    var outbound=h.Read("engendro-valoria",false).Building;
+    Need(outbound!=null&&outbound.OperationActive&&
+     outbound.Function.Contains("La marcha ya ha salido")&&
+     !outbound.Function.Contains("Confirma tu expedición antes de salir"),
+     "The Engendro card must not ask to send a march that is already outbound");
+    Capture(h,"integration-context-engendro-outbound-phone-landscape.png",844,390);
+    Capture(h,"integration-context-engendro-outbound-phone-portrait.png",390,844,()=>{
+     var viewport=h.Hud.GetComponentsInChildren<RectTransform>(true)
+      .FirstOrDefault(x=>x.name=="Clipped text viewport");
+     Need(viewport&&viewport.rect.height>=60f,
+      "Portrait Engendro explanation must have a real multi-line scroll viewport");
+    });
+    ((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Bastion II content boundary not reached");Need(h.Read("",false).MissionSteps.Length==5&&h.Read("",false).MissionSteps.All(step=>step.Done),"Completed Bastion II checklist does not reflect actual saved progression");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
    Check(()=>{foreach(string name in new[]{"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"})Need(SessionState.GetString(Flag+name,"")==FileHash(Path.Combine(UnityEngine.Application.persistentDataPath,name)),"Canonical save changed: "+name);},"canonical save byte hashes preserved");
    // Render the actual authored destinations through the same Royal UI and
    // production focus path that the player uses, after the progression probe.
@@ -648,6 +711,21 @@ namespace Eldoria.ReferenceClean.Editor {
   IEnumerator ReadJourneyNarrative(ValoriaIntegratedWorld h){
    yield return new WaitForSecondsRealtime(.3f);
    for(int turn=0;turn<40;turn++){
+    var recruitment=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+    if(recruitment&&recruitment.IsOpen){
+     Check(()=>{
+      Need(recruitment.CurrentHeroId=="lyra"&&h.City.Gateway.Snapshot().ChapterThree.LyraRecruited,
+       "Recruitment presentation must show the actually recruited Lyra");
+      bool wasInWorld=h.InWorld;
+      Capture(h,"integration-lyra-recruitment-landscape.png",844,390);
+      Capture(h,"integration-lyra-recruitment-portrait.png",390,844);
+      Click(GameObject.Find("Close heroes").GetComponent<Button>());
+      Need(!recruitment.IsOpen,"Recruitment close did not return to the journey");
+      Need(h.InWorld==wasInWorld,"Recruitment close changed the player's underlying location");
+     },"player reads and closes earned Lyra presentation");
+     yield return new WaitForSecondsRealtime(.18f);
+     if(Failed())yield break;
+    }
     if(!h.Hud.NarrativeOpen){
      if(h.Hud.Modal.gameObject.activeSelf||!string.IsNullOrEmpty(h.Selected))yield break;
      yield return new WaitForSecondsRealtime(1.6f);
@@ -924,7 +1002,21 @@ namespace Eldoria.ReferenceClean.Editor {
       h.WorldNavigation.localZoom=Eldoria.World4XCanon.RegionOneCanonicalLandscape.NearZoom(h.PlayerCamera.aspect);
       h.WorldNavigation.SetZoomLevel(2,true);
       h.WorldNavigation.PanTo(target.transform.position);
+      // Camera-space Canvas matrices must follow this actual pan before
+      // Focus reads its unobstructed viewport (runtime uses screen overlay).
+      h.PlayerCamera.Render();Canvas.ForceUpdateCanvases();
+      var before=h.WorldNavigation.target;
       h.Focus(target.gameObject);
+      var method=typeof(ValoriaIntegratedWorld).GetMethod("FocusPoints",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
+      var focusPoints=(System.Collections.Generic.List<Vector3>)method.Invoke(h,new object[]{target.gameObject});
+      var projectedPoints=focusPoints.Select(p=>h.PlayerCamera.WorldToViewportPoint(p)).ToArray();
+      Debug.Log("ELDORIA_FOCUS_DIAGNOSTIC "+id+" ready="+h.Ready+" spot="+target.Id+
+       " targetBefore="+before+" targetAfter="+h.WorldNavigation.target+" limits="+h.WorldNavigation.minimum+"/"+h.WorldNavigation.maximum+
+       " points="+projectedPoints.Length+" x="+projectedPoints.Min(p=>p.x)+".."+projectedPoints.Max(p=>p.x)+
+       " y="+projectedPoints.Min(p=>p.y)+".."+projectedPoints.Max(p=>p.y)+
+       " depth="+projectedPoints.Min(p=>p.z)+".."+projectedPoints.Max(p=>p.z)+
+       " clip="+h.PlayerCamera.nearClipPlane+".."+h.PlayerCamera.farClipPlane+
+       " anchor="+h.PlayerCamera.WorldToViewportPoint(Eldoria.PlayerClarityRuntime.LabelAnchor(target.gameObject,false)));
      };
      CapturePrepared(h,"integration-clarity-"+label+"-"+dimensions.x+"x"+dimensions.y+".png",dimensions.x,dimensions.y,()=>{
       Need(!h.Hud.Modal.gameObject.activeSelf&&!h.Hud.NarrativeOpen,"Node evidence cannot hide behind a modal");
@@ -1058,24 +1150,35 @@ namespace Eldoria.ReferenceClean.Editor {
    var c=h.PlayerCamera;var canvas=h.Hud.GetComponent<Canvas>();var oldMode=canvas.renderMode;var oldCam=canvas.worldCamera;var oldDistance=canvas.planeDistance;var oldAspect=c.aspect;var oldMask=c.cullingMask;var oldRt=c.targetTexture;var oldActive=RenderTexture.active;var position=c.transform.position;float size=c.orthographicSize;var worldTarget=h.WorldNavigation.target;
    var scaler=h.Hud.GetComponent<RoyalScaler>();bool scalerEnabled=scaler.enabled;float scale=canvas.scaleFactor,canvasPixels=canvas.referencePixelsPerUnit;var scalerMode=scaler.uiScaleMode;var scalerResolution=scaler.referenceResolution;var scalerMatchMode=scaler.screenMatchMode;float scalerMatch=scaler.matchWidthOrHeight,scalerPixels=scaler.referencePixelsPerUnit;var areas=h.Hud.GetComponentsInChildren<RoyalSafeArea>(true);var areaEnabled=areas.Select(a=>a.enabled).ToArray();
    var rt=new RenderTexture(width,height,24);var tex=new Texture2D(width,height,TextureFormat.RGB24,false);
-   try{scaler.enabled=false;foreach(var a in areas)a.enabled=false;canvas.scaleFactor=width<height?width/800f:height/900f;foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(width/canvas.scaleFactor,true);c.targetTexture=rt;c.aspect=width/(float)height;
+   try{scaler.enabled=false;foreach(var a in areas)a.enabled=false;bool phone=Mathf.Min(width,height)<600;canvas.scaleFactor=width<height?width/(phone?600f:800f):height/(phone?600f:900f);foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(width/canvas.scaleFactor,true);c.targetTexture=rt;c.aspect=width/(float)height;
     // The world camera uses a different culling profile from the city camera.
     // An off-screen proof capture moves ScreenSpaceOverlay to ScreenSpaceCamera:
     // include Unity's existing UI layer (5) only during this capture or a real
     // Lyra dialog can appear in the game but disappear from the evidence PNG.
     c.cullingMask|=1<<5;
-    if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();if(heroesOpen)heroes.Refresh();Canvas.ForceUpdateCanvases();if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);if(selectedTarget)h.Focus(selectedTarget.gameObject);}foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();
+    if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();if(heroesOpen)heroes.Refresh();Canvas.ForceUpdateCanvases();foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();
     // The normal game applies this after RoyalHUD.Refresh in LateUpdate.
     // Offscreen QA renders without advancing a frame, so use the SAME
     // existing title adapter after layout and before both real camera frames.
     var playerHeader=h.Hud.Realm?.GetComponent<Eldoria.PlayerClarity.PlayerNameHeader>();
     if(playerHeader)playerHeader.Refresh();
-    prepareView?.Invoke();
     // ScreenSpaceCamera Canvas matrices follow the camera during render.
     // After an offscreen pan, measuring them before that sync produced a
     // zero-width/inverted free viewport and hid every otherwise live marker.
     // Render the real camera once before measuring the same runtime overlay.
     c.Render();Canvas.ForceUpdateCanvases();
+    // The target RenderTexture changes the camera-space Canvas matrices.
+    // Apply the requested player focus only AFTER that first real render;
+    // otherwise the free HUD viewport still belongs to the prior size.
+    if(prepareView==null&&!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){
+     var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);
+     if(selectedTarget)h.Focus(selectedTarget.gameObject);
+     c.Render();Canvas.ForceUpdateCanvases();
+    }
+    if(prepareView!=null){
+     Debug.Log("ELDORIA_CAPTURE_VIEW_READY "+name+" safe="+ui2.GetFreeSceneViewport());
+     prepareView();c.Render();Canvas.ForceUpdateCanvases();
+    }
     // Offscreen node evidence pans after the earlier label refresh. Reproject
     // existing guidance from that SAME final camera, never the previous shot.
     foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();
@@ -1084,6 +1187,12 @@ namespace Eldoria.ReferenceClean.Editor {
     Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
     // to participate after its first SRP layout/batch registration.
     c.Render();c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name),tex.EncodeToPNG());validateLayout?.Invoke();
+    foreach(var choice in h.Hud.GetComponentsInChildren<Button>().Where(b=>b.name.StartsWith("Building / council ",StringComparison.Ordinal)&&b.gameObject.activeInHierarchy)){
+     var caption=choice.GetComponentInChildren<Text>();
+     Need(caption&&caption.preferredHeight<=caption.rectTransform.rect.height+1f&&
+      caption.preferredWidth<=caption.rectTransform.rect.width+1f,
+      "Real council benefits must be fully readable before choosing: "+name+" / "+choice.name);
+    }
     if(destinationOpen){
      Need(destinationRoot&&destinationRoot.gameObject.activeInHierarchy,"Actual management root not visible: "+name);
      var background=destinationRoot.GetComponent<Image>();var canvasRect=heroesOpen?(RectTransform)destinationRoot.parent:(RectTransform)canvas.transform;
@@ -1091,7 +1200,14 @@ namespace Eldoria.ReferenceClean.Editor {
      bool blocking=background&&background.raycastTarget;
      bool full=destinationRoot.anchorMin==Vector2.zero&&destinationRoot.anchorMax==Vector2.one&&Mathf.Abs(destinationRoot.rect.width-canvasRect.rect.width)<1f&&Mathf.Abs(destinationRoot.rect.height-canvasRect.rect.height)<1f;
      int controls=destinationRoot.GetComponentsInChildren<Button>().Count(b=>b.isActiveAndEnabled&&b.interactable&&((RectTransform)b.transform).rect.width>=20&&((RectTransform)b.transform).rect.height>=20);
-     Need(opaque&&blocking&&full&&controls>0&&!h.InWorld,"Native management must be opaque, full-canvas and interactive: "+name);
+     // Recruitment is earned at the fissure and overlays that world context.
+     // Regular management still opens only in the city; all visual/input
+     // checks apply to both destinations without bypassing the overlay.
+     bool earnedWorldPresentation=heroesOpen&&heroes.IsRecruitmentPresentation&&
+      heroes.CurrentHeroId=="lyra"&&h.City.Gateway.Snapshot().ChapterThree.LyraRecruited;
+     Need(opaque&&blocking&&full&&controls>0&&(!h.InWorld||earnedWorldPresentation),
+      "Native management must be opaque, full-canvas and interactive: "+name+
+      " opaque="+opaque+" blocking="+blocking+" full="+full+" controls="+controls+" inWorld="+h.InWorld);
      if(buildingOpen&&!rankingOpen)Need(buildings.ReferenceTexture&&buildings.ReferenceTexture.width>100,"Native management reference not bound: "+name);
      managementChecks.Add(new ManagementCapture{capture=name,screen=heroesOpen?"heroes":rankingOpen?"rankings":buildingOpen?"building":"management",target=buildingOpen&&!rankingOpen?buildings.BuildingId:h.Selected,width=width,height=height,pass=true,opaque=opaque,touchBlocking=blocking,fullCanvas=full,activeControls=controls});
     }
@@ -1114,4 +1230,5 @@ namespace Eldoria.ReferenceClean.Editor {
  }
 }
 #endif
+
 

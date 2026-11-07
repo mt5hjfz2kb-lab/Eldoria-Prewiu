@@ -21,6 +21,12 @@ namespace Eldoria.Tests
     /// </summary>
     public sealed class RoyalGoldV3IntegratedAcceptanceTests
     {
+        sealed class ReadingClock:Eldoria.Application.IClock { public long UtcTicks=>new DateTime(2026,11,6,12,0,0,DateTimeKind.Utc).Ticks; }
+        sealed class ReadingStore:Eldoria.Application.IStateStore {
+            public Eldoria.Domain.PlayerState State=new Eldoria.Domain.PlayerState();
+            public Eldoria.Domain.PlayerState Load()=>State;
+            public void Save(Eldoria.Domain.PlayerState value){State=value;}
+        }
         private static object Member(object target, string name)
         {
             Assert.That(target, Is.Not.Null, "Target for " + name + " missing");
@@ -94,6 +100,92 @@ namespace Eldoria.Tests
                 yield break;
             }
             Assert.Fail("Consolidated Valoria scene did not create its one real HUD");
+        }
+
+        [UnityTest]
+        public IEnumerator RepeatedCityFocusPreservesCameraAltitude()
+        {
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var camera=Member(host,"PlayerCamera") as Camera;
+            Assert.That(camera,Is.Not.Null);
+            var target=Call(host,"FindTarget","bastion") as Component;
+            Assert.That(target,Is.Not.Null);
+            var guidance=Member(host,"Guidance") as Behaviour;if(guidance)guidance.enabled=false;
+            var modal=Member(hud,"Modal") as Component;if(modal)Call(modal,"Hide");
+            Call(hud,"SelectBuilding","bastion");yield return null;yield return null;
+            float altitude=camera.transform.position.y;
+            for(int i=0;i<12;i++)Call(host,"Focus",target.gameObject);
+            Assert.That(camera.transform.position.y,Is.EqualTo(altitude).Within(.01f),
+                "Repeated objective focus must not lower the camera into terrain");
+        }
+
+        [UnityTest]
+        public IEnumerator MailboxKeepsReadingPositionAcrossPeriodicRefresh()
+        {
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var guidance=Member(host,"Guidance") as Behaviour;if(guidance)guidance.enabled=false;
+            var modal=Member(hud,"Modal") as Component;if(modal)Call(modal,"Hide");
+            var mailbox=FindComponent(hud.gameObject,"RoyalGoldV41MailboxScreen");
+            var store=new ReadingStore();
+            store.State.Mailbox.Receive(new Eldoria.Domain.EldoriaV41Message{
+                EventId="reading-regression",Category="informes",Type="battle",Title="Etapa 25",
+                Battle=new Eldoria.Domain.EldoriaV41CombatRecord{TargetId="vigilant:25",HeroId="aldric",Won=true,
+                    Reason=string.Concat(Enumerable.Repeat("La expedición resistió el encuentro. ",80))}});
+            var gateway=new Eldoria.Application.LocalGateway(new ReadingClock(),store);
+            Call(mailbox,"Initialize",hud,gateway);Call(mailbox,"Open");
+            mailbox.GetType().GetMethod("SelectRow",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(mailbox,new object[]{0});
+            yield return null;Canvas.ForceUpdateCanvases();
+            var scroll=(ScrollRect)mailbox.GetType().GetField("detailScroll",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(mailbox);
+            Assert.That(scroll.content.rect.height,Is.GreaterThan(scroll.viewport.rect.height+20f));
+            scroll.verticalNormalizedPosition=.35f;
+            yield return null;
+            float position=scroll.verticalNormalizedPosition;
+            yield return new WaitForSecondsRealtime(1.4f);
+            Assert.That(scroll.verticalNormalizedPosition,Is.EqualTo(position).Within(.03f),
+                "Periodic mailbox updates must not pull the reader back to the heading");
+            Call(mailbox,"Close");
+        }
+
+        [UnityTest]
+        public IEnumerator HuntingReportsNeverInventCombatRoundsOrZeroLoot()
+        {
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var guidance=Member(host,"Guidance") as Behaviour;
+            if(guidance)guidance.enabled=false;
+            var modal=Member(hud,"Modal") as Component;
+            if(modal)Call(modal,"Hide");
+            var mailbox=FindComponent(hud.gameObject,"RoyalGoldV41MailboxScreen");
+            var store=new ReadingStore();
+            store.State.Mailbox.Receive(new Eldoria.Domain.EldoriaV41Message{
+                EventId="hunt-report-regression",Category="informes",Type="battle",
+                Title="Victoria en batalla",
+                Battle=new Eldoria.Domain.EldoriaV41CombatRecord{
+                    TargetId="hunt-boar",HeroId="aldric",Won=true,
+                    Troops=54,Rounds=0,RemainingHealth=0,
+                    PlayerPower=2662,RewardFood=0
+                }});
+            var gateway=new Eldoria.Application.LocalGateway(new ReadingClock(),store);
+            Call(mailbox,"Initialize",hud,gateway);
+            Call(mailbox,"Open");
+            mailbox.GetType().GetMethod("SelectRow",BindingFlags.Instance|BindingFlags.NonPublic)
+                .Invoke(mailbox,new object[]{0});
+            yield return null;
+            Assert.That((int)mailbox.GetType().GetField("reportMetricCount",
+                BindingFlags.Instance|BindingFlags.NonPublic).GetValue(mailbox),Is.EqualTo(2),
+                "A hunting receipt is not a combat and must not show zero rounds or life");
+            var heading=mailbox.GetType().GetField("reportHeading",
+                BindingFlags.Instance|BindingFlags.NonPublic).GetValue(mailbox) as Text;
+            var footer=mailbox.GetType().GetField("reportFooter",
+                BindingFlags.Instance|BindingFlags.NonPublic).GetValue(mailbox) as Text;
+            Assert.That(heading,Is.Not.Null);
+            Assert.That(footer,Is.Not.Null);
+            StringAssert.Contains("Cacería completada",heading.text);
+            StringAssert.Contains("Recompensas",footer.text);
+            StringAssert.DoesNotContain("BOTÍN REGISTRADO · 0",footer.text);
+            Call(mailbox,"Close");
         }
 
         [UnityTest]
@@ -536,6 +628,8 @@ namespace Eldoria.Tests
                 Assert.That(navigationCaption, Is.Not.Null);
                 Assert.That(navigationCaption.preferredWidth, Is.LessThanOrEqualTo(navigationCaption.rectTransform.rect.width + 1f),
                     "Complete approved navigation labels must fit without truncation");
+                Assert.That(navigationCaption.preferredHeight, Is.LessThanOrEqualTo(navigationCaption.rectTransform.rect.height + 1f),
+                    "Readable navigation type must have enough line height to render");
                 string section = Member(entry, "Section").ToString();
                 if (section == "Army" || section == "World") continue;
                 var button = Member(entry, "Button") as Button;
@@ -660,6 +754,17 @@ namespace Eldoria.Tests
             Assert.That(Member(v2, "VisibleBuildingButton"),
                 Is.SameAs(Member(v2, "ChronicleBuildingAction")),
                 "The illustrated city cartouche must own the only build command");
+            // The real landscape hunt/context cartouche previously exposed less than
+            // two lines of its description (Engendro, wolf and boar). Do not
+            // regress to a one-line clipped viewport after resizing.
+            if (Screen.width > Screen.height)
+            {
+                var detailsViewport = hud.GetComponentsInChildren<RectTransform>(true)
+                    .FirstOrDefault(x => x.name == "Clipped text viewport");
+                Assert.That(detailsViewport, Is.Not.Null);
+                Assert.That(detailsViewport.rect.height, Is.GreaterThanOrEqualTo(55f),
+                    "Landscape contextual descriptions must remain readable and scrollable");
+            }
             var floating = hud.GetComponentsInChildren<CanvasGroup>(true)
                 .First(x => x.name == "V3 / selected building contextual action");
             Assert.That(floating.blocksRaycasts, Is.False,
@@ -809,4 +914,5 @@ namespace Eldoria.Tests
 
     }
 }
+
 
