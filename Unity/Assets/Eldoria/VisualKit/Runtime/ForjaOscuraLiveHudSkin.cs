@@ -391,8 +391,14 @@ namespace Eldoria.VisualKit
                 }
             }
             if (mobileNavigationButtons.Count != 5) return;
-            bool twoRows = mobileNavigationButtons[0].anchoredPosition.y >
-                           mobileNavigationButtons[4].anchoredPosition.y + 1f;
+            float minY = mobileNavigationButtons[0].anchoredPosition.y;
+            float maxY = minY;
+            foreach (var rect in mobileNavigationButtons)
+            {
+                minY = Mathf.Min(minY, rect.anchoredPosition.y);
+                maxY = Mathf.Max(maxY, rect.anchoredPosition.y);
+            }
+            bool twoRows = maxY - minY > 3f;
             float requiredHeight = Mathf.CeilToInt(44.5f / canvas.scaleFactor);
             bool compactFiveColumns = !twoRows &&
                 mobileNavigationButtons[0].rect.width * canvas.scaleFactor < 100f;
@@ -418,9 +424,11 @@ namespace Eldoria.VisualKit
             RememberNavigationGeometry(dock);
             dock.sizeDelta = new Vector2(dock.sizeDelta.x, contentHeight + 6f);
             int index = 0;
-            foreach (var item in hud.Navigation.Items.OrderBy(
-                i => BottomNavigation.ChronicleOrder(i.Section)))
+            for (int order = 0; order < 5; order++)
+            foreach (var item in hud.Navigation.Items)
             {
+                if (item == null || BottomNavigation.ChronicleOrder(item.Section) != order)
+                    continue;
                 if (item == null || !item.Button || !item.Button.gameObject.activeInHierarchy)
                     continue;
                 int row = index / 3, column = index % 3;
@@ -438,11 +446,12 @@ namespace Eldoria.VisualKit
                 if (rect.childCount > 0 && rect.GetChild(0) is RectTransform medal)
                 {
                     RememberNavigationGeometry(medal);
-                    medal.sizeDelta = new Vector2(76f, 76f);
+                    medal.sizeDelta = new Vector2(68f, 68f);
+                    medal.anchoredPosition = new Vector2(0f, 14f);
                     if (medal.childCount > 0 && medal.GetChild(0) is RectTransform glyph)
                     {
                         RememberNavigationGeometry(glyph);
-                        glyph.sizeDelta = new Vector2(58f, 58f);
+                        glyph.sizeDelta = new Vector2(52f, 52f);
                     }
                 }
                 if (item.Label)
@@ -451,7 +460,7 @@ namespace Eldoria.VisualKit
                     RememberNavigationGeometry(caption);
                     caption.sizeDelta = new Vector2(cellWidth - 4f,
                         Mathf.Max(caption.rect.height, (12f + 4f) / canvas.scaleFactor));
-                    caption.anchoredPosition = new Vector2(0f, -buttonHeight * .3f);
+                    caption.anchoredPosition = new Vector2(0f, -buttonHeight * .32f);
                 }
                 index++;
             }
@@ -626,7 +635,10 @@ namespace Eldoria.VisualKit
                             graphic.color = item.Button.interactable ? Color.white : new Color(.55f,.55f,.55f,.85f);
                             var r = (RectTransform)back;
                             r.anchorMin = r.anchorMax = new Vector2(.5f,.5f);
-                            r.anchoredPosition = Vector2.zero;
+                            // Center the full-size touch surface on the real
+                            // button, not on its elevated illustration medallion.
+                            r.anchoredPosition = new Vector2(0f,
+                                -((RectTransform)medal).anchoredPosition.y);
                             var b = (RectTransform)item.Button.transform;
                             // The illustrated raycast graphic must cover the
                             // actual 44.5px target, not just the 36px medallion.
