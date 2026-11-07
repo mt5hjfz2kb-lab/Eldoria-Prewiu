@@ -1,9 +1,12 @@
-# Eldoria · Forja Oscura v0.4 — staging técnico aislado
-Este material todavía NO se ha compilado ni capturado en Unity. La rama no altera main, PR163, el ejecutor Windows ni las partidas.
-El ZIP original (3.489.120 bytes, SHA-256 7fc8ad748199375c2ab8e3b4a64e5b1d3e0bf027a33b31e83452f5b134f4d74f) está dividido en 15 fragmentos binarios y se reconstruye con **python tools/forja-oscura/reconstruct.py --extract .** desde la raíz de un checkout limpio.
-Incluye 41 sprites de producción, arte ilustrado para los 20 iconos y 7 fuentes C#/asmdef en Unity/Assets/EldoriaVisualKit/.
-**No ejecutar el capturador nativo hasta recuperar exclusivamente la reserva de Windows/Unity del propietario, certificar la compilación y proteger los cambios de PR163.**
-Código de captura: Eldoria.VisualKit.Editor.ForjaOscuraNativeEvidence.CaptureBatch (8 fotografías genuinas de Unity, misma sesión y cuatro resoluciones). No publicar, no integrar main sin validación.
+# Eldoria · Forja Oscura — prueba nativa y acabado
+
+La PR #173 contiene el HUD real adaptable y reversible. El kit conserva su procedencia y contiene **42 PNG** (20 iconos y 22 superficies), incluidos el marco pintado original y su paridad binaria verificada.
+
+**Unity nativo probado:** run 42411395904, candidato 807b25fdf46e2952d97803ae4fcae06661e1a033. Ocho capturas reales, cuatro resoluciones, controles ≥44 px, tres destinos desbloqueados, cierre y construcción con guardado temporal; dos destinos siguen bloqueados por progresión. Datos inalterados por el cambio de presentación. Fuente y contratos auxiliares correctos.
+
+Este resultado **no equivale a ART_APPROVED**, Android físico ni WebGL. La candidata continúa aislada y la PR en borrador. Consultar `docs/ui-v3/FORJA_OSCURA_NATIVE_FINDINGS_20261107.md` para defectos históricos, correcciones y pendientes. No repetir la investigación ni reconstruir los sprites ya preservados.
+
+Las notas siguientes conservan el historial técnico; sus estados pendientes describen el momento en que se escribieron y quedan actualizados por la evidencia anterior.
 
 ## Material premium: seguimiento de la referencia seleccionada (07/11/2026)
 

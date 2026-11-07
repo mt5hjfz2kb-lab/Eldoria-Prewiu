@@ -606,7 +606,18 @@ namespace Eldoria.VisualKit
             child.anchoredPosition = new Vector2(x, -y);
             child.sizeDelta = new Vector2(width, height);
             var label = child.GetComponent<RoyalText>();
-            if (label) EnsureReadable(label, minPixels);
+            if (label)
+            {
+                EnsureReadable(label, minPixels);
+                var canvas=hud.GetComponent<Canvas>();
+                int floor=Mathf.CeilToInt(minPixels/Mathf.Max(.01f,canvas?canvas.scaleFactor:1f));
+                if(!originalFontSizes.ContainsKey(label)) originalFontSizes.Add(label,label.fontSize);
+                // Existing desktop fonts can exceed a compact slot even when
+                // they already satisfy the minimum. Fit height without going
+                // below the actual pixel-size requirement.
+                while(label.fontSize>floor && label.preferredHeight>child.rect.height-2f)
+                    label.fontSize--;
+            }
         }
 
         private void ReflowLiveLabels()
@@ -667,7 +678,7 @@ namespace Eldoria.VisualKit
             float width=card.rect.width,p=14f/scale,left=96f/scale;
             SetTextSlot(card,"V3 / engraved real building miniature",p,14f/scale,70f/scale,70f/scale,0);
             SetTextSlot(card,"Selected building",left,10f/scale,width-left-50f/scale,28f/scale,16f);
-            SetTextSlot(card,"Real level",left,38f/scale,width-left-p,20f/scale,12f);
+            SetTextSlot(card,"Real level",left,38f/scale,width-left-p,24f/scale,12f);
             SetTextSlot(card,"Building / genuine offer cost",left,58f/scale,width-left-p,24f/scale,12f);
             SetTextSlot(card,"Building / live state or countdown",left,82f/scale,width-left-p,34f/scale,12f);
             SetTextSlot(card,"Scrollable real building details",p,118f/scale,width-2*p,
@@ -713,7 +724,7 @@ namespace Eldoria.VisualKit
             float p = 14f/scale;
             float pic = (heightPx < 300f ? 52f : 120f)/scale;
             SetTextSlot(card,"Selected building",p,12f/scale,width-62f/scale,30f/scale,18f);
-            SetTextSlot(card,"Real level",p,42f/scale,width-2*p,20f/scale,12f);
+            SetTextSlot(card,"Real level",p,42f/scale,width-2*p,24f/scale,12f);
             SetTextSlot(card,"V3 / engraved real building miniature",p,66f/scale,pic,pic,0);
             float textLeft = pic+26f/scale;
             SetTextSlot(card,"Building / genuine offer cost",textLeft,66f/scale,
@@ -793,7 +804,7 @@ namespace Eldoria.VisualKit
                     if (nativePreview)
                     {
                         originalPreviewBackdrop = nativePreview.BackdropColor;
-                        nativePreview.SetBackdrop(new Color(.035f,.04f,.05f,1f));
+                        nativePreview.SetBackdrop(new Color(.08f,.09f,.10f,1f));
                         v2.SynchronizeNow();
                     }
                     var primary = ImmediateChild(card, "Execute existing authorised offer");

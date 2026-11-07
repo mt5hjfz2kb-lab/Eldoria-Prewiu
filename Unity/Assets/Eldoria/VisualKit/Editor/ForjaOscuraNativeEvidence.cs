@@ -321,8 +321,27 @@ namespace Eldoria.VisualKit.Editor
             public string smallestResourceLabel;
         }
 
+        private static void ValidateContextText(RoyalHUD hud)
+        {
+            var v2=hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
+            if(!v2 || !v2.ChronicleIllustratedBuildingVisible) return;
+            float scale=hud.GetComponent<Canvas>().scaleFactor;
+            var names=new[]{"Selected building","Real level","Building / genuine offer cost",
+                "Building / live state or countdown"};
+            foreach(var label in v2.ChronicleBuildingRect.GetComponentsInChildren<RoyalText>(true))
+            {
+                if(!names.Contains(label.transform.name) || !label.isActiveAndEnabled ||
+                    string.IsNullOrWhiteSpace(label.text)) continue;
+                Need(label.fontSize*scale>=11.99f,"Context text below 12px: "+label.transform.name);
+                Need(label.preferredHeight<=label.rectTransform.rect.height+.5f,
+                    "Context text vertically clipped: "+label.transform.name+
+                    " required="+label.preferredHeight+" available="+label.rectTransform.rect.height);
+            }
+        }
+
         private static UiReadabilityMetric MeasureReadability(RoyalHUD hud, int width, int height)
         {
+            ValidateContextText(hud);
             var canvas = hud.GetComponent<Canvas>();
             Need(canvas != null, "Native text QA requires the actual HUD Canvas");
             var m = new UiReadabilityMetric {
@@ -886,7 +905,8 @@ namespace Eldoria.VisualKit.Editor
                 string name="native-context-bastion-"+wh.Item1+"x"+wh.Item2+".png";
                 Capture(t,host,name,wh.Item1,wh.Item2,root,
                     () => { if(stateV2) stateV2.SynchronizeNow(); if(context) context.SynchronizeNow();
-                        skin.ApplyNow(true); Canvas.ForceUpdateCanvases(); });
+                        skin.ApplyNow(true); Canvas.ForceUpdateCanvases(); },
+                    () => ValidateContextText(hud));
                 stateCaptures.Add(new Artifact{name=name,sha256=Hash(Path.Combine(root,name))});
             }
             Need((bool)stateSelect.Invoke(host,new object[]{"sawmill"}),"Could not restore tutorial A/B fixture");

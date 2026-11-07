@@ -1,1 +1,1 @@
-PR173 exact native proof plus four supplementary genuine Bastion framing regression captures. Preserve eight tutorial A/B frames and pointer/save checks.
+PR173 native context text gate: visible level, minimum 12px and no vertical truncation in tutorial/Bastion at four sizes. Neutral thumbnail backdrop.
