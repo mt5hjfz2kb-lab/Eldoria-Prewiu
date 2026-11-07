@@ -217,3 +217,35 @@ jobs:
         run: dotnet build tools/forja-oscura/EditorContract.csproj --configuration Release --nologo
       - name: Semantic compilation against STUBS only, NOT Unity certification
         run: echo 'FORJA_FIVE_SOURCE_TYPECHECK_PASS; Unity Editor and actual rendering remain untested.'
+
+  premium-art-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/forja-oscura
+          persist-credentials: false
+      - name: Generate nine independent RGBA 9-slice textures from reproducible artwork code
+        run: node tools/forja-oscura/build-premium-sprites.js "$RUNNER_TEMP/forja-premium-art"
+      - name: Confirm exact bit depth, alpha and PNG completeness
+        run: |
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          folder=Path(os.environ["RUNNER_TEMP"])/"forja-premium-art"
+          m=json.loads((folder/"manifest.json").read_text())
+          assert m["status"]=="ART_CANDIDATE_NON_NATIVE" and len(m["pieces"])==9
+          for piece in m["pieces"]:
+            png=(folder/piece["filename"]).read_bytes()
+            assert png[:8]==bytes([137,80,78,71,13,10,26,10])
+            assert png[24]==8 and png[25]==6, (piece["filename"],"not RGBA")
+          print("FORJA_PREMIUM_RGBA_PREVIEW_PASS (NOT Unity or ART_APPROVED)")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: forja-premium-nine-slice-review-${{ github.sha }}
+          path: ${{ runner.temp }}/forja-premium-art/
+          retention-days: 21
