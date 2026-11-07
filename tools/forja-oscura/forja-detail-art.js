@@ -39,7 +39,12 @@ function makeAsset(kind,w,h,seed=17,ornamentation=true){
     else if(d<10.8)k=black[0]+8;
     else if(d<minB)k=gold[0]+clamp(Math.round(12+diag*8+light*9),1,69);
     else {
-     let m=(kind==='selected'?dark:(kind==='button'||kind==='hover'||kind==='pressed'||kind==='disabled')?gold:dark);
+     // Reference: charcoal metal, bronze-selected navigation, ember-lit CTA.
+     // These palettes are native to the existing 8-bit first-party source.
+     const selected=kind==='selected';
+     const m=selected?gold:
+       (kind==='button'||kind==='hover'||kind==='pressed')?ember:
+       kind==='disabled'?silver:kind==='nav'?dark:gold;
      if(isPanel){
       let q=36+7*(.5-top)+9*(texture-.5)+6*(smooth(x/43,y/29)-.5)+5*(1-Math.min(y,150)/150);
       if(d<18)q+=7*(1-top);
@@ -47,13 +52,19 @@ function makeAsset(kind,w,h,seed=17,ornamentation=true){
       k=dark[0]+clamp(Math.round(q),3,84);
       if(N(x+11,y*.8)>.988&&y>20&&y<h-20)k=dark[0]+clamp(Math.round(q+11),3,84);
      }else{
-      let q=(kind==='nav'?27:29)+12*(texture-.5)+22*(.54-Math.abs(top-.46))+10*(smooth(x/63,y/37)-.5);
-      if(y<15)q+=12;
-      if(y>h*.84)q-=14;
-      if(kind==='hover')q+=16;
-      if(kind==='pressed')q-=16;
-      if(kind==='disabled')q=14;
+      let q=(kind==='nav'?27:selected?12:kind==='button'?17:kind==='hover'?20:kind==='pressed'?13:12)+
+        (kind==='nav'?12:8)*(texture-.5)+
+        (kind==='nav'?22:selected?7:6)*(.54-Math.abs(top-.46))+
+        6*(smooth(x/63,y/37)-.5);
+      if(y<15)q+=kind==='nav'?10:4;
+      if(y>h*.84)q-=kind==='nav'?12:4;
+      if(kind==='hover')q+=6;
+      if(kind==='pressed')q-=5;
+      if(kind==='disabled')q=12+4*(texture-.5);
       k=m[0]+clamp(Math.round(q),0,m[1]-m[0]);
+      // Small amber selection rim, no full-screen glow or fake gameplay state.
+      if(selected&&d<21)
+       k=ember[0]+clamp(Math.round(7+(21-d)*2.6+light*4),2,29);
      }
      if(kind==='button'&&Math.abs(y-h*.27)<1.3&&x>25&&x<w-25)k=gold[0]+55;
      if(kind==='hover'&&Math.abs(y-h*.27)<1.3&&x>25&&x<w-25)k=ivory[0]+13;
