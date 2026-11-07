@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T21:31:26.536Z",
+  "updated_at": "2026-11-07T21:44:01.416Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6667,14 +6667,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingPreview.cs",
         ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 13,
+      "ownership_revision": 14,
       "write_scope_released": false,
-      "phase": "RECOVERED_FINISH_NATIVE_VALIDATION",
-      "next": "Validate recovered authored amber button and mobile navigation geometry in actual Unity, inspect comparable captures.",
+      "phase": "RECOVERY_NATIVE_PASS_VISUAL_FINISH_PENDING",
+      "next": "Continue visual composition of genuine building card/header from certified 7f7e7acc native captures, then advanced states/platform QA. Reclaim Windows before further native runs. No art approval or publication.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-07T18:54:22.588Z",
@@ -6731,7 +6729,22 @@
           42396852832,
           42395390748
         ]
-      }
+      },
+      "last_verified": {
+        "source_sha": "7f7e7acc5068ff5c66ab5c83dc69e99afaabc54c",
+        "native_run": 42416965218,
+        "native_status": "SUCCESS",
+        "source_ci_run": 42416965283,
+        "screenshots": 12,
+        "artifact": 13592151290,
+        "three_unlocked_routes": true,
+        "context_close": true,
+        "build_and_isolated_save": true,
+        "art_approved": false,
+        "platform_validated": false
+      },
+      "runner_released_at": "2026-11-07T21:44:01.416Z",
+      "runner_release_basis": "Owned native 42416965218 completed SUCCESS; no queued Forja native run. Preserve writer/PR and documented remaining art scope; Windows free for other work."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
