@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "status": "BLOCKED_NOT_LIVE",
+  "scope": "Closed playtest Bastion I–V",
+  "source": "native325-fb1292b3d9ce",
+  "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
+  "frozen_archive": {
+    "location": "GitHub draft release (not public)",
+    "release_id": 437784073,
+    "asset_id": 721666860,
+    "bytes": 490319610,
+    "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
+    "sha256_verified": true,
+    "archive_private_draft": true
+  },
+  "distribution": {
+    "target": "one-click signed personal links (no account/email/password/itch.io/APK)",
+    "service": "Cloudflare Worker + private R2",
+    "service_account_connected": false,
+    "r2_files_uploaded": false,
+    "worker_deployed": false,
+    "links_enabled": false,
+    "frozen_files": 19,
+    "byte_checksums_verified": true,
+    "web_package_ready": true
+  },
+  "measurement": {
+    "supabase_project": "Eldoria Playtest Feedback",
+    "table": "public.eldoria_unity_beta_events",
+    "row_level_security": true,
+    "public_select_allowed": false,
+    "public_insert_allowed": false,
+    "row_count_last_checked": 0,
+    "metrics_specified": 135,
+    "event_types_schema_accepted": 67,
+    "browser_observer_implemented_types": 9,
+    "browser_observer_enabled": false,
+    "actual_events_verified_from_unity": 0,
+    "real_worker_to_supabase_request_verified": false,
+    "any_player_data_collected": false
+  },
+  "qa": {
+    "code_unit_tests": "34 passed on run 42408463845",
+    "original_webgl_unity_play_qa": "Windows local Chromium clock 1x I–II; Unity accelerated I–V",
+    "hosted_private_gameplay_pass": false,
+    "real_mobile_ios_pass": false,
+    "real_mobile_android_pass": false,
+    "full_native_i_v_normal_clock_verified": false,
+    "no_new_tester_invites_before_validation": true
+  },
+  "blockers": [
+    "Connect user-controlled Cloudflare account, activate R2 and Worker; no Cloudflare account currently signed in/connected",
+    "Upload and independently read back all 19 frozen WebGL objects to private R2, verify MIME/Content-Encoding",
+    "Configure protected Worker; verify signed invite, revoke, cookies and 403 anonymous in real HTTPS",
+    "Verify real Worker→Supabase insert for QA only, then clear or segment QA before real testers",
+    "Validate native325 gameplay and save/reload in actual private hosted desktop and physical mobile",
+    "Connect or explicitly mark not instrumented all gameplay metrics that Unity does not emit; do not claim 135 measured"
+  ],
+  "release_for_external_testers": false,
+  "owner_approval_to_invite": false,
+  "no_unity_source_mutations": true,
+  "no_release_replacement": true
+}
