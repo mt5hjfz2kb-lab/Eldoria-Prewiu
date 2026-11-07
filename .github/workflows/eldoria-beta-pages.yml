@@ -71,7 +71,7 @@ jobs:
               assert r['original_zip_sha256']=='fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771'
               html=urllib.request.urlopen(os.environ['SITE_URL'].rstrip('/')+'/beta-native325/diagnostico-v3.html',timeout=20).read().decode()
               import re,hashlib
-              name=re.search(r'src="(play-[a-f0-9]+\\.js)"',html)[1]
+              name=re.search(r'src="(play-[a-f0-9]+[.]js)"',html)[1]
               script=urllib.request.urlopen(os.environ['SITE_URL'].rstrip('/')+'/beta-native325/'+name,timeout=20).read()
               assert hashlib.sha256(script).hexdigest()[:16] in name
               assert 'Diagnóstico v3' in script.decode()
