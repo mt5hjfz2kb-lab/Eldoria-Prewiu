@@ -7,6 +7,62 @@ La entrada es el [README principal](../../README.md). Las reglas vigentes están
 [AGENTS](../../AGENTS.md), los responsables en el [registro vivo](../../pipeline/active-workstreams.json)
 y la documentación temática en el [índice central](../DOCUMENTATION_INDEX.md).
 
+## Protección preventiva de derechos — 06/11/2026
+
+Se ha preparado una [regularización no disruptiva y su plan de cierre](LICENSE_REGULARIZATION_EXECUTION_20261106.md): evitar nuevas incorporaciones públicas de ficheros originales de siete proveedores importados, Quaternius y vendedores desconocidos, sin borrar `Unity/Assets` ni modificar las publicaciones. Un control sobre PR revisa las rutas desde el código **de confianza de main**; el guard documental exige pruebas privadas antes de que un recurso quede marcado `license_certified:true`.
+
+**No implica que las 26 piezas del catálogo de producción estén legalmente certificadas** ni que el código ya publicado tenga permisos para redistribuir las fuentes en bruto. La APK familiar code21 utiliza un enlace GitHub Releases del repositorio público; pasar `main` a privado sin migrar primero esa descarga **pondría en riesgo las actualizaciones**. El acceso a los derechos de cada cuenta y la migración binaria deben verificarse como fases separadas.
+
+## Auditoría de licencias y procedencia — 06/11/2026
+
+La [auditoría documentada de licencias](LICENSE_PROVENANCE_AUDIT_20261106.md) y su [registro verificable de 16 familias](LICENSE_PROVENANCE_EVIDENCE_20261106.json) han identificado **1 prioridad crítica, 10 altas y 5 medias**. Son **riesgos de documentación o redistribución por verificar**, no declaraciones de infracción. En particular, un aviso incluido en el pack de árboles restringe la redistribución de ciertas imágenes de Textures.com, y el repositorio de trabajo continúa siendo público.
+
+El catálogo de producción marca `license_certified:false` en **los 26 recursos curados**, incluyendo cuatro con función productiva existente. Esto significa **falta de acreditación en el catálogo**, no que el uso comercial sea necesariamente ilegal. El informe distingue fuente artística pública, licencia para la APK/WebGL y autoría de modelos generados; **no modifica** los paquetes, Unity, la visibilidad del repositorio ni la publicación.
+
+**Próximo paso antes de una distribución comercial:** reconciliar recibos/versión/licencia exacta de los paquetes externos y el plan Tripo usado en cada tarea, resolver la exposición de Textures.com y generar un BuildReport de APK/WebGL con avisos de terceros. La autorización y cualquier cambio de visibilidad o sustitución corresponden al propietario y al titular del trabajo afectado.
+
+## Clasificación semántica del catálogo completada — 06/11/2026
+
+**Todas las 228 fichas del catálogo tienen clasificación contrastada:** **28 `current`, 108 `reference`, 92 `historical` y **0 `review_pending`**. Esta última pasada revisó [los 94 expedientes que quedaban](SEMANTIC_REVIEW_FINAL_94_20261106.md), preservando el SHA original, la justificación y la autoridad posterior de cada uno. Los recuentos 94, 126, 151, 171 y 175 que aparecen a continuación se mantienen solo como hitos anteriores de la auditoría; **no son pendientes actuales**.
+
+**Importante:** «cero pendientes» es exclusivamente una constatación **semántica del catálogo de documentación**. No significa que los 21.177 archivos inventariados del proyecto estén libres de duplicados, que las licencias comerciales de terceros estén acreditadas, que Unity funcione en todos los dispositivos, ni que todos los recursos tengan calidad artística aprobada.
+
+**No se han modificado** los 94 documentos fuente, las imágenes aprobadas, prefabs, GLB, escenas, código jugable ni materiales. Los `VISUAL PASS` históricos se conservan como evidencia de un alcance pasado, pero la [referencia del 20/10](../VALORIA_VISUAL_REFERENCE_CANON_20261020.md), el veto del Bastión antiguo y la retirada de Qwen para arte tienen precedencia.
+
+**Trabajo posterior independiente:** revisar recibos/licencias y dependencias de los duplicados antes de cualquier limpieza física o publicación. Ver el [triaje de 42 grupos interárea](DUPLICATE_CROSSROOT_REVIEW_20261106.md). En ese trabajo, conservar los originales hasta verificar que no existen consumidores y que la operación es reversible.
+
+## Revisión de desarrollo, pruebas y producción visual — 06/11/2026
+
+En el [informe de 32 documentos](SEMANTIC_REVIEW_DEVELOPMENT_QA_VISUAL_20261106.md) se han identificado **14 instrucciones o gates históricos** y **18 referencias útiles de métodos o diseño**. Todos conservan SHA del blob original, clasificación, límite y fuente posterior de autoridad; sus textos originales permanecen intactos.
+
+**Catálogo después de esta pasada:** 228 entradas; **28 `current`, 69 `reference`, 37 `historical` y 94 `review_pending`**. Los recuentos 126, 151, 171 y 175 de las secciones inferiores son fotografías de fases anteriores: el valor actual es 94.
+
+Alertas principales: no usar el `UNITY_MIGRATION_SCOREBOARD.md` de septiembre como mapa del estado actual ni dar por pendiente la APK; no imponer una cámara vieja; no reactivar el Hero Bastion vetado por un antiguo `TECH PASS`; no declarar aprobación artística de Granero/Cuartel por `VISUAL PARTIAL`; no convertir r7 ni el punto de reanudación del mapa maestro en tareas nuevas; no trasladar la obligatoriedad Qwen de los experimentos históricos al arte vigente.
+
+## Revisión de importaciones, licencias y pruebas artísticas — 06/11/2026
+
+Nueva [matriz documentada de 25 expedientes](SEMANTIC_REVIEW_ART_IMPORT_LICENSES_20261106.md), con hash del archivo revisado, autoridad posterior, motivo y categoría. **13 pruebas/instrucciones antiguas pasan a `historical`; 12 informes de métodos y evidencia pasan a `reference`**. No se ha comprado, generado, importado ni eliminado ningún recurso.
+
+**Estado del catálogo tras este lote:** 228 documentos: **28 `current`, 51 `reference`, 126 `review_pending` y 23 `historical`**. Los recuentos de 151 y 171 pendientes de las secciones siguientes son hitos previos; los 175 pendientes de la tabla original pertenecen exclusivamente al inventario fijado al commit del 04/11.
+
+**Precauciones que prevalecen:** no reactivar el Bastión vetado por antiguos `VISUAL PASS`, no ejecutar Qwen como dirección artística por una guía anterior, no reutilizar presupuestos Tripo ya gastados, no importar paquetes sin demostrar origen/licencia, no confundir un `TECH PASS` aislado con calidad visual y FPS de un teléfono real.
+
+## Lote de 20 documentos prioritarios — 06/11/2026
+
+**Catálogo semántico actualizado:** 228 documentos: **28 `current`, 39 `reference`, 151 `review_pending` y 10 `historical`**. La [revisión razonada de los 20 documentos con más riesgo operativo](SEMANTIC_PRIORITY_20_20261106.md) contrasta instrucciones antiguas con manifiestos vivos, scripts y PR fusionadas. Contiene **2 contratos vigentes**, **13 referencias con límites explícitos** y **5 registros históricos**. No se han modificado sus cuerpos, Unity ni los recursos.
+
+Atención especial: el informe Android del 10/10 no describe la APK 1.21 del manifiesto actual; la cámara Frontier 18/14/10/7 es un benchmark histórico y no los parámetros vigentes de Region 1; un resultado artístico/técnico de octubre no implica aprobación actual. Una PR abierta sigue siendo candidata, no código integrado.
+
+La sección siguiente documenta **la fase anterior**, cuando había 171 pendientes; el recuento actual es 151. La tabla del inventario original corresponde al commit fijado del 04/11, no al HEAD de hoy.
+
+## Conciliación documental y duplicados — 06/11/2026
+
+El catálogo de esta revisión tiene **228 entradas: 26 `current`, 26 `reference`, 171 `review_pending` y 5 `historical`**. Cuatro documentos ya estudiados se han pasado de pendientes a históricos porque sus instrucciones quedaron sustituidas; los originales y los avisos de vigencia permanecen. Detalle y autoridades en [la conciliación registrada](CATALOG_RECONCILIATION_STAGED_20261104.json).
+
+Se han [revisado 42 grupos de copias entre áreas](DUPLICATE_CROSSROOT_REVIEW_20261106.md) en el inventario **fijado al SHA de 04/11**. La decisión actual es conservar ambos destinos hasta demostrar sus consumidores, licencias y dependencias. No hay eliminación de archivos de Unity ni de referencias artísticas por esta auditoría.
+
+**Importante:** la tabla histórica de abajo conserva los 175 pendientes y 1.025 grupos de su instantánea inicial; no son el recuento semántico vivo después de la conciliación. Las otras 171 fichas pendientes no se han aprobado por el mero hecho de realizar la revisión estructural.
+
 ## Mapa completo de las carpetas
 
 | Ubicación | Función y criterio para guardar archivos |

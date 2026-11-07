@@ -4,8 +4,8 @@
 const fs=require('node:fs'),path=require('node:path');
 const {serveBuild}=require('./playtest_web.cjs');
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const ROOT='docs/evidence/player-audit-20261106';
-const OWNER='codex-player-audit-23287cf1c126';
+const ROOT='docs/evidence/player-experience-20261106';
+const OWNER='codex-player-experience-fixes-23287cf1c126';
 function validate(c,session,last,view){
  if(c.session!==session||!Number.isSafeInteger(c.seq)||c.seq<=last)throw Error('Stale/wrong session command');
  if(!Number.isFinite(Date.parse(c.at))||Math.abs(Date.now()-Date.parse(c.at))>900000)throw Error('Expired command');
@@ -22,12 +22,12 @@ function validate(c,session,last,view){
 async function main(){
  const cfg=JSON.parse(fs.readFileSync('tools/valoria-reference-clean/browser-qa-request.json','utf8'));
  const session=cfg.manual_session,branch=cfg.controls_branch;
- if(cfg.interaction_mode!=='manual'||session!=='native299-player-20261106'||branch!=='qa/player-audit-controls-20261106')throw Error('Manual session not explicitly configured');
+ if(cfg.interaction_mode!=='manual'||session!=='native313-player-20261106'||branch!=='qa/player-experience-controls-20261106')throw Error('Manual session not explicitly configured');
  const token=process.env.GITHUB_TOKEN,repo=process.env.GITHUB_REPOSITORY;
  if(!token||repo!=='mt5hjfz2kb-lab/Eldoria-Prewiu')throw Error('Repository session unavailable');
  const api=async(route,body)=>{const r=await fetch('https://api.github.com/repos/'+repo+route,{method:body?'PUT':'GET',headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(25000)});if(!r.ok)throw Error('Repository request failed '+r.status+' '+route.split('?')[0]);return r.json();};
  const read=async(p,ref)=>{const d=await api('/contents/'+p+'?ref='+encodeURIComponent(ref));return {sha:d.sha,value:JSON.parse(Buffer.from(d.content,'base64').toString('utf8'))};};
- const lease=async()=>{const {value:r}=await read('pipeline/active-workstreams.json','main');const w=r.active.find(x=>x.id==='valoria-master-plan-layered-construction-20261016');if(w?.owner!==OWNER||w.ownership_revision!==151||w.write_scope_released||!w.resources.includes('windows-runner-heavy'))throw Error('Manual session lease changed');};
+ const lease=async()=>{const {value:r}=await read('pipeline/active-workstreams.json','main');const w=r.active.find(x=>x.id==='valoria-master-plan-layered-construction-20261016');if(w?.owner!==OWNER||w.ownership_revision!==156||w.write_scope_released||!w.resources.includes('windows-runner-heavy'))throw Error('Manual session lease changed');};
  await lease();
  const out=path.resolve(process.env.VALORIA_PLAYTEST_OUT);fs.mkdirSync(out,{recursive:true});
  const site=await serveBuild(path.resolve(process.env.VALORIA_WEB_ROOT));

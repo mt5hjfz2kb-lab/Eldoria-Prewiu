@@ -1,0 +1,47 @@
+name: Third-party source rights gate (read-only)
+
+# This action only reads trusted main and the GitHub PR file list.
+# It NEVER checks out or executes untrusted PR content (pull_request_target safety).
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - 'Unity/Assets/**'
+      - 'ArtSource/**'
+      - 'art-source/**'
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Pull request number to inspect with trusted main source'
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: eldoria-licensed-source-pr-${{ github.event.pull_request.number || inputs.pr_number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  rights:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout ONLY the trusted checker from main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/license-compliance/
+      - name: Test fail-closed imports and non-destructive game exceptions
+        run: node --test tools/license-compliance/public-source-gate.test.mjs
+      - name: Inspect incoming paths without downloading or executing new art files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+        run: node tools/license-compliance/public-source-gate.mjs --pr "$PR_NUMBER"
