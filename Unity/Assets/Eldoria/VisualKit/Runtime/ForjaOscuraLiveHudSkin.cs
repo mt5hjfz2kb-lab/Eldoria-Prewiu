@@ -274,6 +274,14 @@ namespace Eldoria.VisualKit
                 if (!newIcon) continue;
                 newIcon.raycastTarget = false;
                 newIcon.transform.SetAsLastSibling();
+                // The original 256px icon sheet leaves safe alpha margins.
+                // A 14-25 logical-unit resource slot otherwise turns the
+                // illustrated wood/stone/food into a near-invisible speck.
+                // Grow only this non-raycasting child by 3 units per side;
+                // keep the real value and its layout unchanged.
+                var cropRect = (RectTransform)newIcon.transform;
+                cropRect.offsetMin = new Vector2(-3f, -3f);
+                cropRect.offsetMax = new Vector2(3f, 3f);
                 // LayoutOriginalResource continues to size/position the
                 // existing outer icon. The new child fills its rectangle.
                 var original = target.GetComponent<RoyalIconGraphic>();
