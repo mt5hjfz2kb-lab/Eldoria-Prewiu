@@ -230,7 +230,8 @@ namespace Eldoria.VisualKit.Editor
                 float px = label.fontSize * scale;
                 if (px < m.minResourceGlyphPx) {
                     m.minResourceGlyphPx = px;
-                    m.smallestResourceLabel = label.name;
+                    m.smallestResourceLabel = label == hud.Resources.Wood ? "wood" :
+                        label == hud.Resources.Stone ? "stone" : "food";
                 }
                 var rect = label.rectTransform.rect;
                 m.resourceValuesFit &= label.preferredWidth <= rect.width + 1f &&
