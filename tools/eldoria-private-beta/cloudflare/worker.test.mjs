@@ -13,7 +13,7 @@ const files={
 const bucket={
  async head(key){return this.get(key)},
  async get(key){
-  const f=files[key.slice('releases/'+RELEASE+'/'.length)];
+  const f=files[key.slice(('releases/'+RELEASE+'/').length)];
   if(!f)return null;
   return {body:new Response(f.content).body,size:f.content.length,httpEtag:'"test-etag"',
    writeHttpMetadata(h){h.set('Content-Type',f.type);if(f.encoding)h.set('Content-Encoding',f.encoding)}};
