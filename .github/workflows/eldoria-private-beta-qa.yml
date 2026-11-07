@@ -1,0 +1,55 @@
+name: Eldoria private beta verified WebGL packaging (Ubuntu only)
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths:
+      - 'tools/eldoria-private-beta/**'
+      - 'pipeline/eldoria-private-beta/**'
+      - '.github/workflows/eldoria-private-beta-qa.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/eldoria-private-beta/**'
+      - 'pipeline/eldoria-private-beta/**'
+      - '.github/workflows/eldoria-private-beta-qa.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-private-beta-qa-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            pipeline/eldoria-private-beta
+      - name: Node contract tests
+        run: node --test tools/eldoria-private-beta/*.test.mjs
+      - name: Fetch exact published-source archive
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42397405907
+          name: eldoria-pr163-web-preview-42397405907
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/eldoria-native325
+      - name: Byte-level audit of native325 source ZIP and all 19 WebGL assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/eldoria-private-beta/verify-freeze.mjs \
+            pipeline/eldoria-private-beta/native325-freeze.json \
+            "${{ runner.temp }}/eldoria-native325" > /tmp/freeze-verified.log
+          cat /tmp/freeze-verified.log
+          zip="$(find "${{ runner.temp }}/eldoria-native325" -type f -name '*.zip' | head -1)"
+          test -n "$zip"
+          mkdir -p "${{ runner.temp }}/eldoria-game"
+          unzip -q "$zip" -d "${{ runner.temp }}/eldoria-game"
+          node tools/eldoria-private-beta/verify-r2-files.mjs \
+            "${{ runner.temp }}/eldoria-game" \
+            pipeline/eldoria-private-beta/r2-upload-manifest.json
+          echo BETA_ORIGINAL_19_WEBGL_ASSETS_EXACT_SHA256_PASS
