@@ -1,5 +1,5 @@
 name: Eldoria beta real entry and reload QA
-# Device scale 3; production wrapper caps Unity rendering at 1.5; bounded captures and stage evidence.
+# Device scale 3; production wrapper caps Unity rendering at 1.5; bounded captures and visible restored nickname OCR.
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -41,7 +41,10 @@ jobs:
           github-token: ${{ github.token }}
           path: site/mobile
       - name: Install browser
-        run: npm install --no-save playwright@1.55.0 && npx playwright install --with-deps chromium
+        run: |
+          npm install --no-save playwright@1.55.0 && npx playwright install --with-deps chromium
+          sudo apt-get install -y tesseract-ocr
+          python -m pip install Pillow==13.0.0
       - name: Start exact candidate
         run: |
           python -m http.server 8765 --bind 127.0.0.1 --directory site > /tmp/entry-server.log 2>&1 &
@@ -52,7 +55,10 @@ jobs:
           exit 1
       - name: Enter nickname using real UI and verify persisted state after sustained play
         timeout-minutes: 10
-        run: node --check tools/eldoria-private-beta/qa_entry.cjs && node tools/eldoria-private-beta/qa_entry.cjs
+        run: |
+          node --check tools/eldoria-private-beta/qa_entry.cjs
+          node tools/eldoria-private-beta/qa_entry.cjs
+          python tools/eldoria-private-beta/verify_entry_name.py qa-entry/03-reloaded.png
       - uses: actions/upload-artifact@v4
         if: always()
         with:
