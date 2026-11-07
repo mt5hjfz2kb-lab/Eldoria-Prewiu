@@ -13,11 +13,13 @@ root = Path(__file__).resolve().parents[2]
 skin = (root / "Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs").read_text()
 v2 = (root / "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs").read_text()
 capture = (root / "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs").read_text()
+native = (root / "Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs").read_text()
 source_contract = {
     v2: [
         "float cellHeight = rows > 1 ? 74f : vertical ? 105f : 106f;",
         "float columnGap = vertical ? 4f : 9f;",
         "float availableWidth = Mathf.Max(150f, safe.rect.width - 12f);",
+        "AlignBuildingCartoucheToNavigation();",
     ],
     capture: ["canvas.scaleFactor=width<height?width/800f:height/900f;"],
     skin: [
@@ -32,6 +34,12 @@ source_contract = {
         "icon.offsetMin = new Vector2(-19f, -10f);",
         "icon.offsetMax = new Vector2(2f, 10f);",
         "RefreshFastNavigationAndResources();",
+        "EnsureBuildingCartoucheClearsNavigation();",
+        "dock.anchoredPosition.y + dock.rect.height + 8f",
+    ],
+    native: [
+        "Native illustrated contextual card overlaps reflowed navigation",
+        "buildingCardClearancePx",
     ],
 }
 for body, markers in source_contract.items():
@@ -83,6 +91,10 @@ def geometry(width: int, height: int) -> dict:
         "touch_width_px": round(physical_button_width, 2),
         "graphic_width_px": round(physical_graphic_width, 2),
         "resource_icon_px": round(icon_physical, 2),
+        # The existing bottom-anchored building panel must sit 8 source
+        # units above the RE-FLOWED dock. A source-model value, not a
+        # claimed measured native pixel gap.
+        "card_to_dock_margin_model_px": round(8 * scale, 2),
     }
 
 
@@ -93,6 +105,7 @@ assert all(v["graphic_width_px"] >= 44 for v in proof), proof
 assert all(v["resource_icon_px"] >= 24 for v in proof), proof
 assert proof[-1]["rows"] == 2 and proof[-1]["columns"] == 3, proof[-1]
 assert proof[-1]["touch_width_px"] >= 100, proof[-1]
+assert proof[-1]["card_to_dock_margin_model_px"] > 0, proof[-1]
 for record in proof:
     print(f"FORJA_GEOMETRY_SOURCE_MODEL {record}")
 print("SOURCE_MODEL_PASS — DOES NOT establish native render, font fit, raycast or artwork quality")
