@@ -37,6 +37,25 @@ jobs:
         run: node tools/forja-oscura/verify-current-premium-art.js
       - name: Verify responsive 9-slice mobile border ratios against real Unity metadata
         run: python3 tools/forja-oscura/check-mobile-nine-slice.py
+      - name: Reproduce and SHA-check all nine ACTUAL committed Unity PNGs against first-party art
+        shell: bash
+        run: |
+          node tools/forja-oscura/build-premium-sprites.js "$RUNNER_TEMP/forja-committed-parity" > /dev/null
+          python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          generated=Path(os.environ["RUNNER_TEMP"])/"forja-committed-parity"
+          pieces=json.loads((generated/"manifest.json").read_text())["pieces"]
+          dest=Path("Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/Surfaces")
+          assert len(pieces)==9
+          for piece in pieces:
+              expected=(generated/piece["filename"]).read_bytes()
+              actual=(dest/piece["filename"]).read_bytes()
+              assert hashlib.sha256(expected).hexdigest()==piece["sha256"]
+              assert actual==expected, "Published Unity PNG differs from generated source: "+piece["filename"]
+              assert (dest/(piece["filename"]+".meta")).is_file()
+          print("FORJA_NINE_COMMITTED_PNG_PARITY_PASS; metadata retained; Unity visual approval still pending")
+          PY
       - name: Confirm exact original kit without adding a duplicate Unity root
         run: |
           test -f Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs
