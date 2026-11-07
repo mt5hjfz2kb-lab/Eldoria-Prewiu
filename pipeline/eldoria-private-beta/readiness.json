@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "status": "BLOCKED_IPHONE_CANDIDATE1_RETURN_AFTER_FIRST_FRAME",
+  "status": "OWNER_DIAGNOSTIC3_LIVE_PHYSICAL_IPHONE_AND_RELOAD_BLOCKED",
   "scope": "Closed playtest Bastion I–V",
-  "source": "native325-mobile-candidate1",
+  "source": "native325-mobile-material3",
   "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
   "frozen_archive": {
     "location": "GitHub draft release (not public)",
@@ -16,13 +16,14 @@
   "distribution": {
     "target": "one-click public link (no account/email/password/itch.io/APK)",
     "service": "GitHub Pages",
-    "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/mobile-v1.html",
+    "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/mobile-v3.html",
     "links_enabled": true,
     "byte_checksums_verified": true,
     "web_package_ready": true,
     "diagnostics": "stages-v3-opt-in",
     "access_control": "public URL; not authenticated",
-    "live_identity_verified": true
+    "live_identity_verified": true,
+    "publication_purpose": "Owner diagnostic only; external tester release blocked"
   },
   "measurement": {
     "supabase_project": "Eldoria Playtest Feedback",
@@ -53,8 +54,8 @@
     "no_new_tester_invites_before_validation": true
   },
   "blockers": [
-    "Candidate1 failed physical iPhone: first game frame visible briefly then returns to landing. Do not request more identical retries; investigate scene/runtime memory and load sequencing.",
-    "Verify actual hosted save/reload and physical iOS/Android gameplay",
+    "Candidate1 physically failed iPhone after first frame. Lower-memory candidate3 is published for owner diagnosis; physical iPhone outcome pending. Memory pressure is a hypothesis, not proven OS jetsam.",
+    "Raw reload and documented Quit-then-reload timed out in Chromium SwiftShader. Initial entry60s verified; hosted save restoration and physical iOS/Android gameplay NOT certified.",
     "Connect opt-in consent UI and browser event delivery to verified QA backend; native gameplay metrics still not emitted",
     "Instrument and verify actual Unity gameplay events; 135 indicators remain specification, not measured",
     "Verify complete Bastion I-V gameplay with normal tutorial and clock"
@@ -64,23 +65,47 @@
   "no_unity_source_mutations": true,
   "no_release_replacement": true,
   "mobile_candidate": {
-    "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
-    "source_sha256": "6efe4b1f1eeedd33727ec8f24d4d25075b516478d3bb80ea61a6bdbb12528ca0",
-    "candidate_sha256": "d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7",
-    "changed_textures": 58,
+    "revision": "native325-mobile-material3",
+    "status": "DIAGNOSTIC_ONLY_STARTUP_AND_INITIAL_ENTRY_OBSERVED",
+    "candidate_sha256": "60b43335bb263568dd366faca06ab0d648506dac31024342b1d4edefd8a7c315",
     "all_objects_verified": 54338,
-    "saved_serialized_bytes": 314268436,
-    "candidate_bundle_bytes": 455610281,
-    "runtime_verified": true,
+    "additional_material_textures_compressed": 32,
+    "material_candidates_rejected_kept_original": 22,
+    "material_serialized_bytes_saved": 150994188,
+    "readonly_material_textures": 32,
+    "desktop_startup_run": 42421746562,
+    "desktop_entry_observation_run": 42423856431,
+    "desktop_entry_observed_seconds": 60,
+    "desktop_entry_ready": true,
+    "full_entry_reload_qa_passed": false,
+    "reload_verified": false,
     "physical_iphone_verified": false,
-    "ci_run": 42418416629,
+    "observed_wasm_capacity_bytes": 1394147328,
+    "previous_failed_iphone_candidate_wasm_capacity_bytes": 1580924928,
+    "deploy_run": 42424439267,
     "published": true,
-    "observed_wasm_heap_capacity_bytes": {
-      "original": 1675624448,
-      "candidate": 1580924928
-    },
-    "deploy_run": 42418899866,
-    "physical_iphone_result": "OWNER_REPORTED_FAILURE: game visible about one second, then involuntary return to landing"
+    "release_for_external_testers": false
   },
-  "updated_at": "2026-11-07"
+  "updated_at": "2026-11-07",
+  "mobile_candidate_history": [
+    {
+      "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
+      "source_sha256": "6efe4b1f1eeedd33727ec8f24d4d25075b516478d3bb80ea61a6bdbb12528ca0",
+      "candidate_sha256": "d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7",
+      "changed_textures": 58,
+      "all_objects_verified": 54338,
+      "saved_serialized_bytes": 314268436,
+      "candidate_bundle_bytes": 455610281,
+      "runtime_verified": true,
+      "physical_iphone_verified": false,
+      "ci_run": 42418416629,
+      "published": true,
+      "observed_wasm_heap_capacity_bytes": {
+        "original": 1675624448,
+        "candidate": 1580924928
+      },
+      "deploy_run": 42418899866,
+      "physical_iphone_result": "OWNER_REPORTED_FAILURE: game visible about one second, then involuntary return to landing"
+    }
+  ]
 }
