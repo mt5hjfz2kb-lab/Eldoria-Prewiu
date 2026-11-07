@@ -82,6 +82,8 @@ jobs:
           persist-credentials: false
       - name: Compare skin API assumptions to actual RoyalHUD and Unity native capture
         run: python3 tools/forja-oscura/check-upstream-api.py
+      - name: Model 44px touch and 24px illustrated resource bounds at all four sizes (source ONLY)
+        run: python3 tools/forja-oscura/check-mobile-geometry-model.py
       - name: Distinguish source compatibility from real Unity native proof
         run: echo "FORJA_SOURCE_API_PASS; does NOT imply Unity compile, screenshot, input or ART approval."
 
