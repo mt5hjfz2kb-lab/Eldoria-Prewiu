@@ -8,3 +8,5 @@ Retain exclusive runner rev4, verify real Unity process exclusivity, source hash
 
 2026-11-07T14:44:00Z · Retry after actual native errors: REST archive checkout impossible in bounded time (Git was absent on PATH), validated production kit artifact exists, cached source .git proved absent, installed GitHub Desktop Git 2.53 verified. Native workflow now uses real Git sparse checkout and checks exact GitHub head plus live owner; PowerShell resolves git.exe Source/FullName correctly. Other workflows left untouched. No ART_APPROVED, no merge, no publish.
 2026-11-07T14:44:00Z · Third native recovery: installed Git 2.53.0 has been proven by actual Windows Actions run 42382749739; remove a redundant PowerShell path resolver that failed on ApplicationInfo.FullName, inventory actual workspace Unity projects and Git SHAs to an early independent artifact; only then attempt filtered Git checkout, never REST whole archive. No scene changes, no other PR resources.
+
+2026-11-07: Owner-authorized continuation; exclusive Windows returned after release. Resume latest corrected native checkout and preserve all evidence. No cancellation, no artistic approval, no publication.
