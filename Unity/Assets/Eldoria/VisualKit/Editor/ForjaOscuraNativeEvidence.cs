@@ -276,7 +276,8 @@ namespace Eldoria.VisualKit.Editor
             Directory.CreateDirectory(root);
             const string before="native-before",after="native-after";
             foreach(var wh in new[]{(1600,900),(900,1600),(844,390),(390,844)})
-                Capture(t,host,before+"-"+wh.Item1+"x"+wh.Item2+".png",wh.Item1,wh.Item2,root);
+                Capture(t,host,before+"-"+wh.Item1+"x"+wh.Item2+".png",wh.Item1,wh.Item2,root,
+                    () => { if (context) context.SynchronizeNow(); Canvas.ForceUpdateCanvases(); });
             ValidateNavigation(hud);
             var skin=hud.gameObject.AddComponent<ForjaOscuraLiveHudSkin>();
             Need(skin!=null,"Skin creation failed");
@@ -294,7 +295,13 @@ namespace Eldoria.VisualKit.Editor
             ValidateNavigation(hud);
             foreach(var wh in new[]{(1600,900),(900,1600),(844,390),(390,844)})
                 Capture(t,host,after+"-"+wh.Item1+"x"+wh.Item2+".png",wh.Item1,wh.Item2,root,
-                    () => { skin.ApplyNow(true); Canvas.ForceUpdateCanvases(); });
+                    () => {
+                        // Refresh the same real contextual projection as the baseline.
+                        // Otherwise a rotated camera could masquerade as a UI improvement.
+                        if (context) context.SynchronizeNow();
+                        skin.ApplyNow(true);
+                        Canvas.ForceUpdateCanvases();
+                    });
             Need(original==Snapshot(hud),"HUD gameplay data changed while applying presentation-only skin");
             Object.DestroyImmediate(skin);Canvas.ForceUpdateCanvases();
             ValidateNavigation(hud);
