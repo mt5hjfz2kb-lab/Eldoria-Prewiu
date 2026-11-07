@@ -3,12 +3,13 @@
   "run_id": 42367983297,
   "revision": "native324",
   "artifact_name": "valoria-integrated-web-playtest-42367983297",
-  "purpose": "Final PR163 source-locked normal-clock real player I-II Chromium Windows QA incl. selected unbuilt Barracks 844x390 /390x844, visible marker, legal real controls, saves/reload and march visuals; preserve screenshots/video, no publication",
+  "purpose": "Exact native324 real Windows Chromium I–II normal-clock visible player path. Evidence isolation fix after self-hosted stale output path caused previous failure before any browser load; no gameplay rule or source changes.",
   "preconditions": [
     "Only after native324 run 42367983297 completed successfully and exact SHA matched",
     "No Unity/Blender process; Windows runner lease exclusive",
     "Current main owner chatgpt-pr163-continuation-20261107 revision157"
   ],
   "allow_release": false,
-  "allow_merge": false
+  "allow_merge": false,
+  "attempt": 2
 }
