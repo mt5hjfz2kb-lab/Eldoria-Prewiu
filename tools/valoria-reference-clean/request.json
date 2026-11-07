@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 316,
+  "revision": 317,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "PR163 native316: correct real active-march selected Engendro framing beside the top-left quest in landscape; include actual 844x390/390x844 before/after photos, re-check Unity and isolated WebGL. No publication or save/clock edits.",
+  "checks": "PR163 native317: prevent world-side double viewport padding; retain forest free scene, render multi-line portrait Engendro text, and capture real prebattle card after closing earned dialogue through visible button. Exact native and full UI certificate required; no publication, costs/timers/clock/saves unchanged.",
   "browser_backend": "windows"
 }

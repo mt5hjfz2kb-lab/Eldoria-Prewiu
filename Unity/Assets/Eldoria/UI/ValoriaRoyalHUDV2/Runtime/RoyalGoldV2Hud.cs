@@ -566,6 +566,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // Preserve more real city in both orientations. A council choice
             // is a modestly taller version of this SAME in-world card.
             bool council=GetComponent<RoyalGoldV3BuildingScreens>()?.InlineCouncilNeeded(Source.SelectedBuildingId)==true;
+            // The selected Engendro has no resource-cost row. On portrait
+            // phones reuse that empty row for status and visible body text.
+            bool portraitEncounter=portrait && Source.SelectedBuildingId=="engendro-valoria" && !council;
             float cardHeight = council?(portrait?190f:193f):(portrait?218f:196f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
@@ -597,12 +600,12 @@ namespace Eldoria.UI.RoyalGold.V2
             // Do not let a full management-window-sized card occupy the
             // screen when only three legitimate choices are available.
             Top(buildingWorkState.rectTransform,textLeft,
-                council?(portrait?68f:72f):(portrait?99f:99f),
-                middleWidth,council?(portrait?24f:29f):(portrait?47f:25f));
+                council?(portrait?68f:72f):(portraitEncounter?68f:99f),
+                middleWidth,council?(portrait?24f:29f):(portraitEncounter?24f:portrait?47f:25f));
             buildingWorkState.fontSize=portrait?16:17;
             buildingWorkState.verticalOverflow=VerticalWrapMode.Truncate;
             Top((RectTransform)buildingClose.transform,cardWidth-49f,5f,44f,44f);
-            float detailsY=portrait?136f:121f;
+            float detailsY=portrait?(portraitEncounter?94f:136f):121f;
             Top((RectTransform)buildingScroll.transform,textLeft,detailsY,
                 middleWidth,Mathf.Max(28f,cardHeight-detailsY-(portrait?55f:14f)));
             Stretch(scrollViewport,0);
@@ -1359,8 +1362,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // between the upper quest and physical lower ribbon. Keep a
             // positive 1.2% clearance instead of reserving an unnecessary
             // second 2.5% band that rejected this genuine, unobscured frame.
-            float padding = buildingVisible &&
-                Source.SelectedBuildingId=="bastion" ? .012f : .025f;
+            // The world-focus solver already adds 1.2% padding. Reserving
+            // another 2.5% on both quest-side and bottom-sheet edges caused
+            // the measured landscape forest world free area to shrink by 1.4pp.
+            float padding = sideBySideWorldContext && buildingVisible ? .008f :
+                buildingVisible && Source.SelectedBuildingId=="bastion" ? .012f : .025f;
             // Crónica Real's illustrated card is bottom-docked in BOTH
             // orientations. The former landscape right-sheet exclusion made
             // the free width negative on 4:3 displays, so automatic focus

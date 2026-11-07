@@ -620,9 +620,23 @@ namespace Eldoria.ReferenceClean.Editor {
     VerifyFoot(localBefore,CreatureBounds(),"local");
     Capture(h,"integration-art-engendro-prebattle-close.png",1600,900);
    },"real B2 local enlarged silhouette AND exact grounded anchor");
+   // The native316 "prebattle context" image still showed a genuine
+   // pending Bastion-II dialogue. Advance it through the visible control,
+   // not by hiding the overlay or mutating narrative state.
+   for(int turn=0;turn<20&&h.Hud.NarrativeOpen;turn++){
+    Click(h.Hud.Modal.Extra);
+    yield return new WaitForSecondsRealtime(.35f);
+   }
+   Check(()=>Need(!h.Hud.NarrativeOpen&&!h.Hud.Modal.gameObject.activeSelf,
+    "Unacknowledged dialogue obscures the selected Engendro"),
+    "earned Bastion-II dialogue acknowledged with visible control");
    h.Select("engendro-valoria");yield return null;
-   Check(()=>{Capture(h,"integration-context-engendro-phone-landscape.png",844,390);
-    Capture(h,"integration-context-engendro-phone-portrait.png",390,844);},
+   Check(()=>{
+    Need(h.Selected=="engendro-valoria"&&!h.Hud.NarrativeOpen,
+     "Prebattle proof must show real Engendro context, not dialogue");
+    Capture(h,"integration-context-engendro-phone-landscape.png",844,390);
+    Capture(h,"integration-context-engendro-phone-portrait.png",390,844);
+   },
     "genuine selected Engendro context card in both mobile orientations");
    Check(()=>{Click(h.Hud.Building.Primary.Button);
     Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");
@@ -632,7 +646,12 @@ namespace Eldoria.ReferenceClean.Editor {
      !outbound.Function.Contains("Confirma tu expedición antes de salir"),
      "The Engendro card must not ask to send a march that is already outbound");
     Capture(h,"integration-context-engendro-outbound-phone-landscape.png",844,390);
-    Capture(h,"integration-context-engendro-outbound-phone-portrait.png",390,844);
+    Capture(h,"integration-context-engendro-outbound-phone-portrait.png",390,844,()=>{
+     var viewport=h.Hud.GetComponentsInChildren<RectTransform>(true)
+      .FirstOrDefault(x=>x.name=="Clipped text viewport");
+     Need(viewport&&viewport.rect.height>=60f,
+      "Portrait Engendro explanation must have a real multi-line scroll viewport");
+    });
     ((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Bastion II content boundary not reached");Need(h.Read("",false).MissionSteps.Length==5&&h.Read("",false).MissionSteps.All(step=>step.Done),"Completed Bastion II checklist does not reflect actual saved progression");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
    Check(()=>{foreach(string name in new[]{"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"})Need(SessionState.GetString(Flag+name,"")==FileHash(Path.Combine(UnityEngine.Application.persistentDataPath,name)),"Canonical save changed: "+name);},"canonical save byte hashes preserved");
    // Render the actual authored destinations through the same Royal UI and
