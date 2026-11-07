@@ -87,6 +87,7 @@ namespace Eldoria.VisualKit
             // as a raycast/transition target in the same frame, not 50ms later.
             EnsureNavigationTargets();
             EnsureMobileNavigationTouchTargets();
+            ReflowNavigationContents();
             EnsureBuildingCartoucheClearsNavigation();
             EnsureMobileResourceIconReadability();
             ReflowLiveLabels();
@@ -462,6 +463,43 @@ namespace Eldoria.VisualKit
                 var image = plate ? plate.GetComponent<Image>() : null;
                 if (image && item.Button.targetGraphic != image)
                     item.Button.targetGraphic = image;
+            }
+        }
+
+        // Keep the real caption clear of the metal rim in EVERY orientation.
+        // V2 lays these children out every frame, so restore the inset after it.
+        private void ReflowNavigationContents()
+        {
+            if (!NavigationSkinned || !hud || !hud.Navigation) return;
+            var canvas = hud.GetComponent<Canvas>();
+            if (!canvas || canvas.scaleFactor <= .01f) return;
+            float scale = canvas.scaleFactor;
+            foreach (var item in hud.Navigation.Items)
+            {
+                if (item == null || !item.Button || !item.Label) continue;
+                var button = item.Button.transform as RectTransform;
+                if (!button || button.childCount == 0) continue;
+                var medal = button.GetChild(0) as RectTransform;
+                if (!medal || medal.childCount == 0) continue;
+                var glyph = medal.GetChild(0) as RectTransform;
+                if (!glyph) continue;
+                EnsureReadable(item.Label, 12f, true);
+                float heightPx = button.rect.height * scale;
+                float insetPx = heightPx < 65f ? 6f : 8f;
+                float iconPx = Mathf.Clamp(heightPx * .42f, 24f, 40f);
+                float captionPx = Mathf.Max(18f, item.Label.fontSize * scale * 1.3f);
+                RememberNavigationGeometry(medal);
+                RememberNavigationGeometry(glyph);
+                medal.sizeDelta = new Vector2((iconPx + 4f)/scale, (iconPx + 4f)/scale);
+                medal.anchoredPosition = new Vector2(0f,
+                    button.rect.height*.5f - (insetPx + iconPx*.5f)/scale);
+                // The image has a two-unit inset expansion on each side.
+                glyph.sizeDelta = new Vector2(iconPx/scale - 4f, iconPx/scale - 4f);
+                var caption = item.Label.rectTransform;
+                RememberNavigationGeometry(caption);
+                caption.sizeDelta = new Vector2(button.rect.width - 8f/scale, captionPx/scale);
+                caption.anchoredPosition = new Vector2(0f,
+                    -button.rect.height*.5f + (insetPx + captionPx*.5f)/scale);
             }
         }
 

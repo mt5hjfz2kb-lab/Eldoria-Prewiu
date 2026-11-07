@@ -214,7 +214,7 @@ namespace Eldoria.VisualKit.Editor
                 Vector2 bottomRight = RectTransformUtility.WorldToScreenPoint(nativeCamera, corners[3]);
                 float pixelW = Vector2.Distance(bottomLeft, bottomRight);
                 float pixelH = Vector2.Distance(bottomLeft, topLeft);
-                if (height > width && item.Label && rect.childCount > 0)
+                if (item.Label && rect.childCount > 0)
                 {
                     var medal = rect.GetChild(0) as RectTransform;
                     var glyph = medal && medal.childCount > 0 ? medal.GetChild(0) as RectTransform : null;
