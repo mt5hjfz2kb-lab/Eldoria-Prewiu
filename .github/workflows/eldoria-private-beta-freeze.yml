@@ -77,10 +77,21 @@ jobs:
           echo "Validating copy after transferring:"
           echo "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771  $ASSET" | sha256sum -c -
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            DRAFT="$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)"
-            test "$DRAFT" = "true" || { echo "Refusing non-draft existing release"; exit 1; }
-            printf 'Existing DRAFT found; will not replace or reupload without independent exact-asset check.\n'
-            exit 1
+            # An existing draft may be the successful result of a prior run.
+            # Verify ALL asset metadata and refuse any conflicting bytes or public release.
+            gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" > "${{ runner.temp }}/existing-beta-release.json"
+            node --input-type=module -e '
+              import fs from "node:fs";
+              const r=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+"/existing-beta-release.json","utf8"));
+              if(r.draft!==true || r.prerelease!==false ||
+                 r.assets?.length!==1 ||
+                 r.assets[0].name!=="Eldoria-Beta-1-native325-exact.zip" ||
+                 r.assets[0].size!==490319610 ||
+                 r.assets[0].digest!=="sha256:fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771")
+                throw Error("Existing release conflicts with immutable exact private beta copy");
+              console.log("BETA_EXISTING_DRAFT_EXACT_HASH_PASS",r.id,r.assets[0].digest);
+            '
+            exit 0
           fi
           {
             echo '## ELDORIA BETA 1 — ARCHIVO CONGELADO / SIN PUBLICACIÓN'
