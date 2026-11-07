@@ -364,10 +364,44 @@ async function main() {
     await waitState(() => true, `Fresh observation after ${label}`, 10000, deliveredSequence);
     return before;
   }
+  // Unity emits observations in LateUpdate. On software WebGL a viewport
+  // transition can visibly reflow the HUD AFTER the first same-size telemetry
+  // frame. An earlier real test clicked at (211,69) while the rendered
+  // objective circle was at (312,102), then falsely diagnosed a dead button.
+  // Require two consecutive genuinely new, matching hitbox observations
+  // before the physical pointer is sent; never invoke a Unity method.
+  async function settledVisibleControl(name) {
+    let last=null, stable=0, lastSequence=-1;
+    const started=performance.now();
+    while(performance.now()-started<20000){
+      health();
+      if(sequence!==lastSequence&&latest){
+        lastSequence=sequence;
+        const ctrl=latest.controls?.[name];
+        need(ctrl?.enabled, `Visible control '${name}' is unavailable (${latest.objective}, selected=${latest.selected})`);
+        const same=last && last.width===latest.width && last.height===latest.height &&
+          last.inWorld===latest.inWorld && last.narrative===latest.narrative &&
+          last.objective===latest.objective && last.selected===latest.selected &&
+          Math.abs(last.x-ctrl.x)<1 && Math.abs(last.y-ctrl.y)<1;
+        stable=same?stable+1:1;
+        last={x:ctrl.x,y:ctrl.y,width:latest.width,height:latest.height,
+          inWorld:latest.inWorld,narrative:latest.narrative,
+          objective:latest.objective,selected:latest.selected};
+        if(stable>=2){
+          report.diagnostics.push({kind:'native-control-hitbox-settled',name,
+            x:ctrl.x,y:ctrl.y,stable_frames:stable,at_s:elapsed(),
+            objective:latest.objective,selected:latest.selected});
+          return { ...ctrl };
+        }
+      }
+      await sleep(80);
+    }
+    throw Error('Native visible control hitbox did not settle in two fresh frames: '+name+
+      '; last='+JSON.stringify(last));
+  }
   async function clickControl(name) {
-    const control = latest?.controls?.[name];
-    need(control?.enabled, `Visible control '${name}' is unavailable (${latest?.objective}, selected=${latest?.selected})`);
-    return clickPoint(control, name);
+    const control=await settledVisibleControl(name);
+    return clickPoint(control,name);
   }
   async function capture(label, framingCheck = null) {
     if (captureNumber >= 75) { report.warnings.push('Screenshot cap reached; video and telemetry remain available'); return; }
