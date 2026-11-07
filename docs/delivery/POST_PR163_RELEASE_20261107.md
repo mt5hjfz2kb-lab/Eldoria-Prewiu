@@ -29,3 +29,13 @@ El flujo nuevo en Ubuntu comprueba la procedencia exacta del artefacto nativo, e
 ## Coordinación
 
 Workstream canónico independiente: eldoria-post-pr163-apk-webgl-release-20261107. Scope de entrega y pipeline exclusivamente. PR177 mantiene la corrección nativa; PR173 Forja Oscura mantiene windows-runner-heavy; este encargo no cancela sus jobs, no cambia sus archivos y no consume el runner hasta un relevo autorizado.
+
+## Relevo y paquete comprobado por el ejecutor actual
+
+El propietario reasignó expresamente esta misma entrega a `codex-release-a56bdf7714d0`, revisión 4 del registro. PR178 continúa siendo la única PR de entrega.
+
+Preparación `42383793241` SUCCESS, artefacto `13578463741`, SHA256 del archivo Actions `ef025d6c265e0c165b163cfec542ecbe5d4081c8b726f2d32ea598e4988f5eab`. Descargado y cotejado localmente; ZIP HTML5 `1484d43c4f3bfa23e4325add79be02826fbd989f3b3a46290a5dd3b4a24b3936`, 490378952 bytes extraídos.
+
+El workflow ahora implementa una promoción explícita, deshabilitada hasta contar con el run nativo exacto y PR177 fusionada. Verifica todos los archivos, el transporte, dueño/revisión vivos y evita subir de nuevo una versión presente o en procesamiento. La única diferencia Unity tolerada respecto al paquete jugado es el blob exacto de la corrección de aserción Editor de PR177; cualquier cambio de juego, recurso o escena requiere una nueva candidata. Siete pruebas locales incluyen rechazo de cambio runtime, revisión obsoleta, certificado incompleto y artefacto incorrecto.
+
+**Pendiente:** certificación PR177, publicación remota WebGL y APK22 firmada. No se ha probado teléfono físico ni se ha publicado este paquete.

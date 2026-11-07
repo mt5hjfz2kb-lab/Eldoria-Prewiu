@@ -1,4 +1,4 @@
-name: '[ELDORIA] PR163 exact WebGL lossless preparation (no publication)'
+name: '[ELDORIA] PR163 exact WebGL preparation and guarded promotion'
 on:
   push:
     branches: [release/post-pr163-apk-webgl-20261107]
@@ -15,7 +15,28 @@ concurrency:
   group: eldoria-pr163-web-preparation-${{ github.ref }}
   cancel-in-progress: false
 jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      publish: ${{ steps.gate.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/delivery
+            pipeline/releases
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tools/delivery/verified-merged-web-preflight.test.mjs
+      - id: gate
+        env:
+          GH_TOKEN: '${{ github.token }}'
+        run: node tools/delivery/verified-merged-web-preflight.mjs
   prepare:
+    needs: preflight
+    if: needs.preflight.outputs.publish == 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
@@ -107,3 +128,102 @@ jobs:
           retention-days: 30
       - name: Report scope
         run: echo 'Verified original Unity WebGL package. No upload, no account access or physical mobile QA.' >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    needs: preflight
+    if: needs.preflight.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    environment: eldoria-playtest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/delivery
+            pipeline/releases
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-pr163-web-preview-42383793241
+          run-id: 42383793241
+          github-token: '${{ github.token }}'
+          path: package
+      - name: Verify exact approved ZIP, contents, hashes and native transport
+        run: |
+          python3 - <<'PYVERIFY'
+          import json,hashlib,zipfile
+          from pathlib import Path
+          c=json.load(open('pipeline/releases/pr163-apk-webgl-20261107.json'))
+          r=json.load(open('package/identity.json'))
+          p=Path('package/Eldoria-native324-itch.zip')
+          assert hashlib.file_digest(open(p,'rb'),'sha256').hexdigest()==r['zip_sha256']==c['prepared_web']['zip_sha256']
+          assert r['unity_decoded_bytes_unchanged'] is True
+          for k in ['source_sha','native_run','qa_run','qa_source_sha','revision']:
+              assert r['candidate'][k]==c['provenance'][k]
+          with zipfile.ZipFile(p) as z:
+              entries=z.infolist()
+              assert len(entries)==len(set(z.namelist())) and 'index.html' in z.namelist()
+              assert sum(f.file_size for f in entries)==r['html5_extracted_bytes']<=500000000
+              assert all(f.file_size<=200000000 and not f.filename.startswith('/') and '..' not in Path(f.filename).parts for f in entries)
+              for f in r['files']:
+                  data=z.read(f['file'])
+                  assert len(data)==f['bytes'] and hashlib.sha256(data).hexdigest()==f['sha256']
+              assert set(z.namelist())=={f['file'] for f in r['files']}
+              z.extractall('verified-site')
+          PYVERIFY
+          node tools/delivery/test-exact-decoded-transport.mjs verified-site
+      - name: Install official stable Butler
+        run: |
+          curl --fail --location --retry 2 https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default -o butler.zip
+          unzip -q butler.zip -d butler-bin
+          chmod +x butler-bin/butler
+          butler-bin/butler version
+      - name: Recheck live ownership and native acceptance immediately before promotion
+        env:
+          GH_TOKEN: '${{ github.token }}'
+        run: node tools/delivery/verified-merged-web-preflight.mjs
+      - name: Publish once and verify exact active remote version
+        env:
+          BUTLER_API_KEY: '${{ secrets.BUTLER_API_KEY }}'
+        run: |
+          python3 - <<'PYPUBLISH'
+          import json,subprocess,os,time
+          from pathlib import Path
+          c=json.load(open('pipeline/releases/pr163-apk-webgl-20261107.json'))
+          assert c['web']['publish_enabled'] is True and c['web']['restricted'] is True
+          assert c['web']['target']=='chrismad/eldoria-pruebas' and c['web']['channel']=='web'
+          assert os.environ.get('BUTLER_API_KEY'), 'Configured Butler credential unavailable'
+          target=c['web']['target']+':web'
+          version='native324-'+c['prepared_web']['zip_sha256'][:12]
+          receipt={'version':version,'target':target,'zip_sha256':c['prepared_web']['zip_sha256'],'upload_accepted':False,'remote_active':False,'physical_mobile_tested':False,'hosted_gameplay_verified':False}
+          def save():Path('publish-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          def status():
+              r=subprocess.run(['butler-bin/butler','status',target],text=True,capture_output=True,check=True)
+              print(r.stdout,flush=True)
+              return r.stdout
+          save()
+          current=status()
+          # An already uploaded or processing version is NEVER uploaded again.
+          if version not in current:
+              subprocess.run(['butler-bin/butler','push','package/Eldoria-native324-itch.zip',target,'--userversion',version],check=True)
+              receipt['upload_accepted']=True;save()
+          else:
+              receipt['already_present']=True;save()
+          for attempt in range(40):
+              current=status();receipt['remote_status']=current;save()
+              if any(version in line and '✓' in line and '•' not in line for line in current.splitlines()):
+                  receipt['remote_active']=True;save()
+                  print('ELDORIA_PR163_REMOTE_ACTIVE '+version,flush=True)
+                  break
+              if attempt==39:raise RuntimeError('Accepted package not yet active; preserve receipt and inspect remotely, never blindly reupload')
+              time.sleep(30)
+          PYPUBLISH
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-pr163-publish-receipt-${{ github.run_id }}
+          path: publish-receipt.json
+          if-no-files-found: warn
+          retention-days: 90

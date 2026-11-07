@@ -6,10 +6,41 @@ const DIGEST=/^sha256:[a-f0-9]{64}$/;
 const REPO='mt5hjfz2kb-lab/Eldoria-Prewiu';
 export const cfgPath='pipeline/releases/pr163-apk-webgl-20261107.json';
 const assert=(condition,message)=>{if(!condition)throw Error('RELEASE_GATE: '+message);};
+const EDITOR_PATH='Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs';
+const EDITOR_BLOB='8e4918b2b7a6e72d31cd9f9c7105be9d124d2dce';
+
+// Compare Git trees, pruning identical subtrees. Only PR177's exact Editor-only
+// assertion repair may differ from the already played WebGL source.
+export async function verifyUnityTrees(original,current,getTree,prefix=''){
+ if(original===current)return;
+ const [a,b]=await Promise.all([getTree(original),getTree(current)]);
+ assert(!a.truncated&&!b.truncated,'incomplete Unity tree');
+ const left=new Map(a.tree.map(x=>[x.path,x]));
+ const right=new Map(b.tree.map(x=>[x.path,x]));
+ for(const name of new Set([...left.keys(),...right.keys()])){
+  const x=left.get(name),y=right.get(name),path=prefix+name;
+  assert(x&&y&&x.mode===y.mode&&x.type===y.type,'Unity path added/removed/type changed: '+path);
+  if(x.sha===y.sha)continue;
+  if(x.type==='tree')await verifyUnityTrees(x.sha,y.sha,getTree,path+'/');
+  else assert(path===EDITOR_PATH&&y.sha===EDITOR_BLOB,'uncertified Unity change: '+path);
+ }
+}
+
+export function verifyPromotion(c,fix,certificate,jobs,prepared,artifact){
+ const p=c.prepared_web;
+ assert(fix?.merged===true&&fix.head.sha==='d6ee2df3be70c4b0c9c7937f7a5be9709a0489f2','PR177 exact repair not merged');
+ assert(certificate?.status==='completed'&&certificate.conclusion==='success'&&certificate.path==='.github/workflows/ui-progression-cert.yml'&&certificate.head_sha===fix.head.sha,'exact PR177 native certificate missing');
+ const native=jobs?.jobs?.find(x=>x.name==='certify');
+ assert(native?.conclusion==='success','native certification job missing');
+ for(const name of ['V4.1 real controls, persistent mailbox and approved-source captures','EditMode','PlayMode — UI and progression contract'])
+  assert(native.steps?.some(x=>x.name===name&&x.conclusion==='success'),'native certification step not passed: '+name);
+ assert(prepared?.status==='completed'&&prepared.conclusion==='success'&&prepared.head_sha===p.source_sha&&prepared.path==='.github/workflows/eldoria-post-pr163-web-release.yml','prepared package run mismatch');
+ assert(artifact?.id===p.artifact_id&&artifact.name===p.artifact_name&&artifact.digest===p.artifact_digest&&artifact.workflow_run?.id===p.run_id&&!artifact.expired,'prepared artifact identity mismatch');
+}
 
 export function verifyConfig(c){
  assert(c?.schema_version===1 && c.workstream_id==='eldoria-post-pr163-apk-webgl-release-20261107','bad release workstream');
- assert(c.owner==='chatgpt-post-pr163-release-20261107' && c.budget_eur===0,'missing accountable zero-cost release');
+ assert(typeof c.owner==='string' && c.owner.length>0 && Number.isSafeInteger(c.ownership_revision) && c.ownership_revision>0 && c.budget_eur===0,'missing accountable zero-cost release');
  const p=c.provenance, w=c.web, a=c.android;
  assert(p?.revision==='native324' && HEX.test(p.source_sha) && HEX.test(p.merged_sha) && HEX.test(p.unity_tree),'invalid immutable Unity provenance');
  assert(Number.isSafeInteger(p.native_run)&&p.native_run>0&&p.native_artifact==='valoria-integrated-web-playtest-'+p.native_run&&DIGEST.test(p.native_digest),'invalid original native artifact');
@@ -25,7 +56,7 @@ export function verifyOwnership(registry,c){
  const claims=registry?.active?.filter(x=>x.id===c.workstream_id)||[];
  assert(claims.length===1,'release workstream missing or duplicated');
  const w=claims[0];
- assert(w.owner===c.owner&&w.branch==='release/post-pr163-apk-webgl-20261107'&&w.status==='active'&&w.ownership_state==='claimed'&&w.write_scope_released===false&&w.ownership_revision>=1,'release owner or scope changed');
+ assert(w.owner===c.owner&&w.branch==='release/post-pr163-apk-webgl-20261107'&&w.status==='active'&&w.ownership_state==='claimed'&&w.write_scope_released===false&&w.ownership_revision===c.ownership_revision,'release owner or scope changed');
  assert(!w.resources?.includes('windows-runner-heavy'),'package stage must never seize reserved Windows');
  return true;
 }
@@ -64,7 +95,8 @@ if(active){
  const sourceTree=await api('git/trees/'+source.tree.sha);
  const currentTree=await api('git/trees/'+current.tree.sha);
  const unity=t=>t.tree.find(x=>x.path==='Unity'&&x.type==='tree')?.sha;
- assert(unity(sourceTree)===c.provenance.unity_tree && unity(currentTree)===c.provenance.unity_tree,'Unity changed since the certified PR163 player build; request new native QA before release');
+ assert(unity(sourceTree)===c.provenance.unity_tree,'original certified Unity tree mismatch');
+ await verifyUnityTrees(c.provenance.unity_tree,unity(currentTree),sha=>api('git/trees/'+sha));
  const merged=await api('pulls/163');
  assert(merged.merged===true&&merged.merge_commit_sha===c.provenance.merged_sha,'PR163 not merged at pinned source');
  const compare=await api('compare/'+c.provenance.merged_sha+'...'+mainSha);
@@ -77,13 +109,16 @@ if(active){
  const qaRequest=JSON.parse(Buffer.from(qaReqResponse.content,'base64').toString('utf8'));
  verifyRuns(c,native,qa,na.artifacts.find(x=>x.name===c.provenance.native_artifact),qaArtifacts.artifacts.find(x=>x.name===c.provenance.qa_artifact),qaRequest);
  if(c.web.publish_enabled){
-  const fix=await api('pulls/177');
-  assert(fix.merged===true,'postmerge V4.1 gate must be merged before publishing');
+  assert(Number.isSafeInteger(c.postmerge_ui_run)&&c.postmerge_ui_run>0,'exact PR177 certificate run required');
+  const [fix,cert,jobs,prepared,artifact]=await Promise.all([
+   api('pulls/177'),api('actions/runs/'+c.postmerge_ui_run),api('actions/runs/'+c.postmerge_ui_run+'/jobs?per_page=100'),
+   api('actions/runs/'+c.prepared_web.run_id),api('actions/artifacts/'+c.prepared_web.artifact_id)
+  ]);
+  verifyPromotion(c,fix,cert,jobs,prepared,artifact);
   const live=await api('git/ref/heads/main');
   assert(live.object.sha===mainSha,'main changed during release preflight');
-  throw Error('RELEASE_GATE: publication not yet supported by this prepare-only workflow; do not upload without a separate verified promotion');
  }
  const output=process.env.GITHUB_OUTPUT;
- if(output)fs.appendFileSync(output,'source_sha='+c.provenance.source_sha+'\nnative_run='+c.provenance.native_run+'\nrevision='+c.provenance.revision+'\n');
- console.log('ELDORIA_MERGED_PR163_WEB_PROVENANCE_PASS '+JSON.stringify({main:mainSha,unity_tree:c.provenance.unity_tree,native_run:c.provenance.native_run,qa_run:c.provenance.qa_run,publish:false}));
+ if(output)fs.appendFileSync(output,'source_sha='+c.provenance.source_sha+'\nnative_run='+c.provenance.native_run+'\nrevision='+c.provenance.revision+'\npublish='+String(c.web.publish_enabled)+'\n');
+ console.log('ELDORIA_MERGED_PR163_WEB_PROVENANCE_PASS '+JSON.stringify({main:mainSha,unity_tree:c.provenance.unity_tree,native_run:c.provenance.native_run,qa_run:c.provenance.qa_run,publish:c.web.publish_enabled}));
 }

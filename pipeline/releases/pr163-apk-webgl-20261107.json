@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "workstream_id": "eldoria-post-pr163-apk-webgl-release-20261107",
-  "owner": "chatgpt-post-pr163-release-20261107",
+  "owner": "codex-release-a56bdf7714d0",
   "budget_eur": 0,
   "purpose": "Actualizar el canal APK familiar y la WebGL existente con las correcciones aprobadas de PR163, sin incluir Forja Oscura en DRAFT ni alterar la partida.",
   "provenance": {
@@ -50,5 +50,15 @@
     "Do not include DRAFT Forja Oscura visual sources",
     "No new Art assets, no paid services",
     "No Unity source build changes during packaging"
-  ]
+  ],
+  "ownership_revision": 4,
+  "prepared_web": {
+    "run_id": 42383793241,
+    "source_sha": "1b80b8f9d15748e789726c5b51cbd42bf4fa2ca9",
+    "artifact_id": 13578463741,
+    "artifact_name": "eldoria-pr163-web-preview-42383793241",
+    "artifact_digest": "sha256:ef025d6c265e0c165b163cfec542ecbe5d4081c8b726f2d32ea598e4988f5eab",
+    "zip_sha256": "1484d43c4f3bfa23e4325add79be02826fbd989f3b3a46290a5dd3b4a24b3936"
+  },
+  "postmerge_ui_run": null
 }
