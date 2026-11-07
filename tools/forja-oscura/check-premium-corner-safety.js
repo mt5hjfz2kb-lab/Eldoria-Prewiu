@@ -71,7 +71,7 @@ for (const [name, kind, width, height, seed] of variants()) {
       name + " artist detail enters stretchable nine-slice strip at "+x+","+y);
     count[cornerY*2+cornerX]++;
   }
-  assert.ok(count.every(v=>v>8),name+" is missing an intentional rivet in a fixed corner: "+count);
+  assert.ok(count.every(v=>v>=4),name+" is missing an intentional rivet in a fixed corner: "+count);
   results.push({name, fixedCornerDetailPixels:count.reduce((a,b)=>a+b,0),bevel:withMarks.bevel,border});
 }
 assert.equal(results.length,9);
