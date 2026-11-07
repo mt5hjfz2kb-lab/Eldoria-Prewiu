@@ -29,7 +29,7 @@ jobs:
             tools/eldoria-private-beta
             pipeline/eldoria-private-beta
       - name: Node contract tests
-        run: node --test tools/eldoria-private-beta/*.test.mjs
+        run: node --test tools/eldoria-private-beta/*.test.mjs tools/eldoria-private-beta/cloudflare/*.test.mjs
       - name: Fetch exact published-source archive
         uses: actions/download-artifact@v4
         with:
