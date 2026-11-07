@@ -1,0 +1,1 @@
+BreachWatch original Unity native capture. Selected owner's independent new uGUI system, not Forja skin. Capture live Valoria before/after in 1600x900, 900x1600, 844x390, 390x844. Do not merge or publish. Workstream-ID: eldoria-forja-oscura-visual-proof-20261107
