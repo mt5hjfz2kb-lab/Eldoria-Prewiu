@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T14:59:53.193Z",
+  "updated_at": "2026-11-07T15:09:03.992Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6674,10 +6674,10 @@
       "ownership_revision": 4,
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "phase": "RELEASE_PROVENANCE_AND_SAFE_PACKAGE_PREPARATION",
+      "phase": "WEB_PACKAGE_VERIFIED_NATIVE_CERTIFICATION_AND_SIGNED_ANDROID_PENDING",
       "authorization": "Explicit owner-directed takeover 2026-11-07: Asume tú ese trabajo y llévalo hasta su finalización. Continue PR178 until APK and WebGL delivered and verified.",
       "dependency": "PR177 necesita certificación UI real; Windows ocupado con Forja Oscura PR173. No reclamar su recurso ni construir APK firmada antes de un relevo explícito; preparar paquete WebGL desde bytes nativos certificados, sin subirlo si cualquier gate de release falla.",
-      "next": "Reuse exact native324 WebGL + Chromium QA for restricted HTML5 release; coordinate PR177 certified source and Forja Windows lease for signed Android code22; no Unity gameplay changes.",
+      "next": "Complete PR177 native UI certificate after legitimate Forja PR173 Windows handoff; consume merged repair and enable explicit exact-package promotion, then reserve Windows legitimately for signed main Android22. Never reset saves or publish Forja draft. Current owner actively executing, no second release writer.",
       "ownership_history": [
         {
           "owner": "chatgpt-post-pr163-release-20261107",
@@ -6703,7 +6703,27 @@
           "transferred_at": "2026-11-07T14:59:53.193Z",
           "reason": "Explicit owner instruction in current session: Asume tú ese trabajo y llévalo hasta su finalización. Preserve PR178 and existing runs; no duplicate release."
         }
-      ]
+      ],
+      "delivery_definition": {
+        "deliverable": "APK 1.22/code22 signed with original certificate and native324 WebGL activated in the existing itch channel, containing merged PR163; no Forja draft.",
+        "evidence": "Exact source native/Chromium QA, PR177 native certificate, HTML5 hashes and remote activation; Android signature/package/code, public APK byte match and family channel22.",
+        "handoff": "Verified APK URL and existing itch URL, precise remaining physical-device/hosted-access limitations."
+      },
+      "evidence": {
+        "release_pr": 178,
+        "release_head": "325868aa0ebb493dc58d551a9eb25f4096d75eea",
+        "prepared_run": 42383793241,
+        "prepared_artifact": 13578463741,
+        "archive_sha256": "ef025d6c265e0c165b163cfec542ecbe5d4081c8b726f2d32ea598e4988f5eab",
+        "html5_zip_sha256": "1484d43c4f3bfa23e4325add79be02826fbd989f3b3a46290a5dd3b4a24b3936",
+        "html5_bytes": 490378952,
+        "downloaded_and_hash_verified": true,
+        "local_transport_actual_unity": "PASS decoded framework/code/data single-allocation, failures rejected, saves untouched",
+        "android_policy_tests": "20/20 PASS",
+        "release_gate_tests": "7/7 PASS",
+        "current_guarded_preparation_run": 42384739308,
+        "hosted_access": "Unauthenticated browser correctly denied by existing Restricted itch page; no hosted gameplay claim"
+      }
     }
   ],
   "history": [
