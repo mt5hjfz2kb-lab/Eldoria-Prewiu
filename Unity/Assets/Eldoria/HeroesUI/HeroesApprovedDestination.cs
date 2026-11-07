@@ -1497,15 +1497,15 @@ namespace Eldoria.HeroesUI
             // grammar. VOLVER and MARCHAS are REAL, HEROES stays on this live
             // view, and RELICARIO is genuinely disabled by progression.
             // No fake clickable pixels, no additional scene or canvas.
-            float navGap=phoneLandscape?6f:10f;
-            float navWidth=Mathf.Min(w-22f,illustratedDesktop?
+            float navGap=portraitLayout&&w<600f?4f:phoneLandscape?6f:10f;
+            float navWidth=Mathf.Min(w-(portraitLayout&&w<600f?12f:22f),illustratedDesktop?
                 referenceStageWidth:portraitLayout?540f:820f);
             float navCell=(navWidth-navGap*3f)/4f;
             float navLeft=(w-navWidth)*.5f;
             float navHeight=phoneLandscape?44f:illustratedDesktop?58f:
-                portraitLayout&&w<600f?64f:47f;
+                portraitLayout&&w<600f?76f:47f;
             float navY=h-footerH+(phoneLandscape?9f:illustratedDesktop?15f:
-                portraitLayout&&w<600f?9f:12f);
+                portraitLayout&&w<600f?6f:12f);
             var navBack=Button("Hall / nav return","VOLVER",navLeft,navY,navCell,navHeight,Close);
             HallControlArt(navBack.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navBack,12,navCell,navHeight,false);
@@ -1528,7 +1528,7 @@ namespace Eldoria.HeroesUI
                 });
             HallControlArt(navMarches.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navMarches,5,navCell,navHeight,false);
-            var navRelicary=Button("Hall / nav reliquary","RELICARIO\nPRÓXIMAMENTE",
+            var navRelicary=Button("Hall / nav reliquary","RELICARIO\nPRÓXIMO",
                 navLeft+(navCell+navGap)*3f,navY,navCell,navHeight,()=>{},false);
             HallControlArt(navRelicary.transform,"tab-idle",navCell,navHeight,true);
             HallNavIcon(navRelicary,7,navCell,navHeight,false);

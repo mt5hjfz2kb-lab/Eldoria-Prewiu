@@ -908,7 +908,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // use the same 800-unit design and real physical text sizes.
             compactLandscape=landscape&&w/h>=1.5f&&
                 h*(Hud.GetComponentInParent<Canvas>()?.scaleFactor??1f)<650f;
-            float roomScale=landscape?(compactLandscape?h/600f:1f):Mathf.Min(1f,w/800f);
+            // Near-square windows still use the authored 900-unit landscape
+            // room. The global 600-unit phone scale otherwise narrows its
+            // heading to two clipped lines at 554x542. Compact wide phones
+            // retain their dedicated 600-unit layout.
+            float roomScale=landscape?(compactLandscape?h/600f:h/900f):Mathf.Min(1f,w/800f);
             w/=roomScale;h/=roomScale;
             layoutRoot.anchorMin=layoutRoot.anchorMax=layoutRoot.pivot=new Vector2(.5f,.5f);
             layoutRoot.anchoredPosition=Vector2.zero;

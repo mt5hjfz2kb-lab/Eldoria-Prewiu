@@ -170,13 +170,19 @@ namespace Eldoria.Editor
             var management=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
             var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
             ValoriaIntegrationBuild.Capture(host,Path.Combine(Output,name+".png"),width,height,()=>{
-                // ValoriaIntegratedWorld.LateUpdate matches portrait width to
-                // 800 units and landscape height to900. The shared capture
-                // already applies that production policy before rendering.
-                // Never resize AFTER the screenshot into a different layout.
-                Need(Mathf.Approximately(host.Hud.GetComponent<Canvas>().scaleFactor,
-                    width<height?width/800f:height/900f),
-                    "Native capture uses the integrated orientation-dependent scale "+name);
+                // Native V3 phone layouts use a 600-unit short side
+                // (390x844 and 844x390 both => 390/600), not the old
+                // portrait-800 / landscape-900 desktop reference. Mirror the
+                // REAL responsive policy in ValoriaIntegratedWorld.LateUpdate
+                // and ValoriaIntegrationBuild.CapturePrepared. This assertion
+                // stays strict: never resize an image after the capture.
+                bool phone=Mathf.Min(width,height)<600f;
+                float expectedScale=width<height?
+                    width/(phone?600f:800f):height/(phone?600f:900f);
+                float actualScale=host.Hud.GetComponent<Canvas>().scaleFactor;
+                Need(Mathf.Approximately(actualScale,expectedScale),
+                    "Native capture uses the integrated orientation-dependent scale "+name+
+                    " expected="+expectedScale+" actual="+actualScale);
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
                 if(name.StartsWith("mailbox-evolution-analysis-")&&width==844&&height==390)
                 {
@@ -237,6 +243,13 @@ namespace Eldoria.Editor
                 host.Hud.GetComponent<RoyalGoldV2Hud>()?.SynchronizeNow();
                 host.Hud.GetComponent<RoyalGoldV3ContextHud>()?.SynchronizeNow();
                 Canvas.ForceUpdateCanvases();
+                if(name=="building-council-desktop")
+                {
+                    var councilViewport=host.Hud.GetComponent<RoyalGoldV2Hud>().GetFreeSceneViewport();
+                    Need(councilViewport.height>.40f,
+                        "Centered royal Bastion retains enough vertical city camera space above the contextual council"+
+                        " capture="+name+" viewport="+councilViewport);
+                }
                 // A CanvasRenderer.depth/cull PASS is insufficient:
                 // oversized dynamic fonts can produce no rasterized glyphs.
                 // Check Unity's actual preferred layout height against the
@@ -341,7 +354,12 @@ namespace Eldoria.Editor
                     var sheet=host.Hud.GetComponent<RoyalGoldV2Hud>()?.ChronicleBuildingRect;
                     var scroll=host.Hud.GetComponentsInChildren<RectTransform>(true)
                         .FirstOrDefault(x=>x.name=="Scrollable real building details");
-                    Need(sheet&&sheet.rect.height<=148f&&scroll&&
+                    // PR163 intentionally adds both resource benefits to each
+                    // choice (three lines), raising the authored ribbon from
+                    // 142 to 190 units. Keep the real city-space contract and
+                    // bound the integrated three-line ribbon, not its old
+                    // one-line predecessor. Capture also checks every caption.
+                    Need(sheet&&sheet.rect.height<=190f&&scroll&&
                         !scroll.gameObject.activeInHierarchy&&
                         host.Hud.GetComponent<RoyalGoldV2Hud>().GetFreeSceneViewport().height>.46f,
                         "390x844 council is a compact city-local three-choice ribbon, not another management sheet");
@@ -631,7 +649,10 @@ namespace Eldoria.Editor
                             foreach(var navButton in hallNav){
                                 var cap=navButton.GetComponentsInChildren<Text>()
                                     .FirstOrDefault(t=>t.name==navButton.name+" label");
-                                Need(cap&&cap.text.IndexOf('\n')<0&&
+                                Need(cap&&(cap.text.IndexOf('\n')<0||
+                                    navButton.name=="Hall / nav reliquary"&&cap.text=="RELICARIO\nPRÓXIMO")&&
+                                    cap.preferredHeight<=cap.rectTransform.rect.height+1f&&
+                                    cap.preferredWidth<=cap.rectTransform.rect.width+1f&&
                                     cap.rectTransform.rect.width>=64f&&
                                     !cap.resizeTextForBestFit&&cap.fontSize>=14&&
                                     -cap.rectTransform.anchoredPosition.y+
@@ -640,7 +661,16 @@ namespace Eldoria.Editor
                                     -navButton.GetComponent<RectTransform>().anchoredPosition.y+
                                         navButton.GetComponent<RectTransform>().rect.height<=
                                         heroes.VisibleRoot.rect.height-8f,
-                                    "Portrait Hall footer captions are one-line with usable pixel width "+name);
+                                    "Portrait Hall footer captions and locked-state notice fully fit usable pixel area "+name+
+                                    " button="+navButton.name+" text="+(cap?cap.text:"missing")+
+                                    " preferred="+(cap?new Vector2(cap.preferredWidth,cap.preferredHeight).ToString():"missing")+
+                                    " rect="+(cap?cap.rectTransform.rect.ToString():"missing")+
+                                    " font="+(cap?cap.fontSize.ToString():"missing")+
+                                    " bestFit="+(cap&&cap.resizeTextForBestFit)+
+                                    " labelPos="+(cap?cap.rectTransform.anchoredPosition.ToString():"missing")+
+                                    " buttonRect="+navButton.GetComponent<RectTransform>().rect+
+                                    " buttonPos="+navButton.GetComponent<RectTransform>().anchoredPosition+
+                                    " root="+heroes.VisibleRoot.rect);
                             }
                         }
                         var navIcons=heroes.VisibleRoot
@@ -897,9 +927,8 @@ namespace Eldoria.Editor
             // A centrally placed real Bastion must use the clear upper center
             // instead of treating the small top-LEFT quest as a full-width
             // obstruction. The lower council stays above the genuine dock.
-            var councilViewport=sheet.GetFreeSceneViewport();
-            Need(councilViewport.height>.40f,
-                "Centered royal Bastion retains enough vertical city camera space above the contextual council");
+            // Measure this contract in Shot's synchronized 1600x900 render,
+            // not in the batch editor's restored window after an 844x390 shot.
             Shot(host,"building-council-desktop",1600,900);
             // The native capture also verifies real castle silhouette
             // framing after its selection-only terrain-safe portrait fit.
