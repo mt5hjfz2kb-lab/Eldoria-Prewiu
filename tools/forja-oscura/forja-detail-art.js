@@ -5,7 +5,7 @@
  * Nine-slice border values are managed by the existing Unity .meta importer.
  */
 'use strict';
-function makeAsset(kind,w,h,seed=17){
+function makeAsset(kind,w,h,seed=17,ornamentation=true){
  const pal=[[0,0,0,0]];
  const ramp=(n,a,b)=>{const s=pal.length;for(let i=0;i<n;i++){let t=i/(n-1);pal.push([...a.map((v,k)=>Math.round(v+(b[k]-v)*t)),255]);}return [s,s+n-1];};
  const dark=ramp(88,[10,16,23],[54,66,79]), gold=ramp(70,[48,35,27],[240,185,96]), black=ramp(19,[2,4,8],[32,38,46]), ember=ramp(30,[137,53,22],[255,162,79]), silver=ramp(22,[48,55,61],[134,144,150]), ivory=ramp(26,[160,134,94],[255,235,179]);
@@ -14,7 +14,14 @@ function makeAsset(kind,w,h,seed=17){
  function smooth(x,y){let ix=Math.floor(x),iy=Math.floor(y),dx=x-ix,dy=y-iy,sx=dx*dx*(3-2*dx),sy=dy*dy*(3-2*dy);return (N(ix,iy)*(1-sx)+N(ix+1,iy)*sx)*(1-sy)+(N(ix,iy+1)*(1-sx)+N(ix+1,iy+1)*sx)*sy;}
  function noise(x,y){return .52*smooth(x/17,y/12)+.28*smooth(x/5,y/3)+.2*N(x,y);}
  function segdist(x,y,xa,ya,xb,yb){let dx=xb-xa,dy=yb-ya,t=clamp(((x-xa)*dx+(y-ya)*dy)/(dx*dx+dy*dy),0,1);return Math.hypot(x-(xa+dx*t),y-(ya+dy*t));}
- const c=(kind==='panel'?26:kind==='quest'?19:17);
+ // Every visible corner and chamfer must fit entirely in the fixed
+ // 9-slice corners. Otherwise the mobile center strip crushes gold rivets
+ // and diagonal ornaments when the native uGUI rect becomes 44–80 units tall.
+ const slice=kind==='panel'?[56,20]:kind==='quest'?[56,22]:
+   kind==='chip'?[36,14]:(kind==='nav'||kind==='selected')?[48,22]:[56,15];
+ const cornerX=slice[0],cornerY=slice[1];
+ const c=kind==='panel'?18:kind==='quest'?19:kind==='chip'?12:
+   (kind==='nav'||kind==='selected')?17:14;
  const poly=[[c,0],[w-c,0],[w,c],[w,h-c],[w-c,h],[c,h],[0,h-c],[0,c]];
  const raw=new Uint8Array((w+1)*h), isPanel=(kind==='panel'||kind==='quest'||kind==='chip');
  let minB=kind==='chip'?9:12;
@@ -52,13 +59,20 @@ function makeAsset(kind,w,h,seed=17){
      if(kind==='hover'&&Math.abs(y-h*.27)<1.3&&x>25&&x<w-25)k=ivory[0]+13;
      if(kind==='selected'&&y>h-16&&x>w*.39&&x<w*.61)k=ember[0]+25;
      const nx=Math.min(x,w-1-x),ny=Math.min(y,h-1-y);
-     if(nx>18&&nx<62&&ny>17&&ny<52&&Math.abs((nx-16)*.43-(ny-17))<1.0)k=gold[0]+26;
-     if(nx>24&&nx<67&&ny>22&&ny<50&&Math.abs((nx-22)*.48-(ny-24))<.8)k=black[0]+4;
-     if(nx>=19&&nx<48&&ny>=19&&ny<48){
-      const radius=Math.hypot(nx-35,ny-34);
-      if(radius<5.5&&radius>4.1)k=black[0]+5;
-      if(radius<4.1)k=gold[0]+clamp(Math.round(30+(34-ny)*5),5,67);
-      if(radius<2.1)k=ivory[0]+12;
+     // Ornamental marks are baked ONLY into the fixed 9-slice corner.
+     // Stretchable bands retain brushed metal and continuous trim, never
+     // a circular rivet or diagonal fleur that could collapse in portrait.
+     if(ornamentation&&nx>12&&nx<cornerX-2&&ny>2&&ny<cornerY-2){
+      const ax=Math.max(c+2,cornerX-33),ay=cornerY-4;
+      const bx=cornerX-5,by=Math.max(3,cornerY-11);
+      const stroke=segdist(nx,ny,ax,ay,bx,by);
+      if(stroke<2.5)k=black[0]+4;
+      if(stroke<1.05)k=gold[0]+clamp(26+Math.round((cornerY-ny)*.7),5,67);
+      const rx=cornerX-17,ry=cornerY-7;
+      const radius=Math.hypot(nx-rx,ny-ry);
+      if(radius<4.7&&radius>3.0)k=black[0]+5;
+      if(radius<=3.0)k=gold[0]+clamp(Math.round(27+(ry-ny)*6),5,67);
+      if(radius<1.3)k=ivory[0]+12;
      }
     }
    }
@@ -81,7 +95,7 @@ function makeAsset(kind,w,h,seed=17){
  const png=cat([uint([137,80,78,71,13,10,26,10]),chunk('IHDR',uint([...be32(w),...be32(h),8,3,0,0,0])),chunk('PLTE',plt),chunk('tRNS',alpha),chunk('IDAT',cat(parts)),chunk('IEND',new Uint8Array())]);
  const alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
  let b64="";for(let i=0;i<png.length;i+=3){let d=(png[i]<<16)|((png[i+1]??0)<<8)|(png[i+2]??0);b64+=alphabet[(d>>>18)&63]+alphabet[(d>>>12)&63]+(i+1<png.length?alphabet[(d>>>6)&63]:'=')+(i+2<png.length?alphabet[d&63]:'=');}
- return {png,b64,kind,w,h,seed};
+ return {png,b64,kind,w,h,seed,bevel:c};
 }
 function variants(){return [
  ['panel_dark','panel',640,560,29],['panel_quest','quest',800,186,32],
