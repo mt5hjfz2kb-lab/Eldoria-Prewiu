@@ -1,0 +1,1 @@
+Forja source-only fallback: pin real canonical Unity scene from 9efc0fefd447585f6867ab03ce2c41084b32adf2 with its certified dependency manifest, no Unity launch, no Windows runner, no main or APK/WebGL changes. Requested after repeated 27GB checkout stalls; input reproducibility is verified against four real Git blob SHAs. 2026-11-07.
