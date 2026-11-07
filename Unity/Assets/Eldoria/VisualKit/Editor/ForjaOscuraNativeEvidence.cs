@@ -135,6 +135,64 @@ namespace Eldoria.VisualKit.Editor
                 throw new IOException("Native Unity camera capture missing or tiny: "+original);
             File.Copy(original,Path.Combine(outputDir,basename),true);
         }
+        [Serializable] class UiPixelDifference
+        {
+            public string resolution;
+            public int navigationChanged;
+            public int headerChanged;
+            public int bodyChanged;
+            public int navigationArea;
+            public int headerArea;
+        }
+
+        private static int CountChangedInRect(Color32[] original, Color32[] candidate,
+            int width, int height, float xmin, float xmax, float ymin, float ymax)
+        {
+            int left = Mathf.FloorToInt(width * xmin);
+            int right = Mathf.CeilToInt(width * xmax);
+            int bottom = Mathf.FloorToInt(height * ymin);
+            int top = Mathf.CeilToInt(height * ymax);
+            int result = 0;
+            for (int y = bottom; y < top; y++)
+                for (int x = left; x < right; x++)
+                {
+                    int i = y * width + x;
+                    var a = original[i]; var b = candidate[i];
+                    if (Math.Abs(a.r - b.r) + Math.Abs(a.g - b.g) +
+                        Math.Abs(a.b - b.b) >= 50) result++;
+                }
+            return result;
+        }
+
+        private static UiPixelDifference CompareNativeUiRegions(string before, string after,
+            int width, int height)
+        {
+            var a = new Texture2D(2, 2, TextureFormat.RGB24, false);
+            var b = new Texture2D(2, 2, TextureFormat.RGB24, false);
+            try
+            {
+                Need(a.LoadImage(File.ReadAllBytes(before), false), "Cannot decode real baseline PNG");
+                Need(b.LoadImage(File.ReadAllBytes(after), false), "Cannot decode real candidate PNG");
+                Need(a.width == width && a.height == height && b.width == width &&
+                     b.height == height, "Native image dimensions differ from requested GameView");
+                var p = a.GetPixels32();
+                var q = b.GetPixels32();
+                return new UiPixelDifference {
+                    resolution = width + "x" + height,
+                    navigationChanged = CountChangedInRect(p,q,width,height,0f,1f,0f,.20f),
+                    headerChanged = CountChangedInRect(p,q,width,height,0f,1f,.80f,1f),
+                    bodyChanged = CountChangedInRect(p,q,width,height,.27f,.73f,.31f,.68f),
+                    navigationArea = Mathf.CeilToInt(width * height * .20f),
+                    headerArea = Mathf.CeilToInt(width * height * .20f)
+                };
+            }
+            finally
+            {
+                Object.DestroyImmediate(a);
+                Object.DestroyImmediate(b);
+            }
+        }
+
         static string Hash(string file)
         {
             using(var sha=SHA256.Create())using(var fs=File.OpenRead(file))
@@ -247,17 +305,28 @@ namespace Eldoria.VisualKit.Editor
             Need(files.Length==8&&files.All(f=>File.Exists(f)&&new FileInfo(f).Length>4096),
                  "Missing or invalid native A/B PNGs; expected eight exact output names");
             int differences=0;
+            var uiDifferences = new List<UiPixelDifference>();
             foreach(var wh in new[]{(1600,900),(900,1600),(844,390),(390,844)})
             {
-                var a=Hash(Path.Combine(root,before+"-"+wh.Item1+"x"+wh.Item2+".png"));
-                var b=Hash(Path.Combine(root,after+"-"+wh.Item1+"x"+wh.Item2+".png"));
-                if(a!=b)differences++;
+                var pathA=Path.Combine(root,before+"-"+wh.Item1+"x"+wh.Item2+".png");
+                var pathB=Path.Combine(root,after+"-"+wh.Item1+"x"+wh.Item2+".png");
+                if(Hash(pathA)!=Hash(pathB))differences++;
+                var proof=CompareNativeUiRegions(pathA,pathB,wh.Item1,wh.Item2);
+                uiDifferences.Add(proof);
+                // Hash differences can result from a running world animation.
+                // Demand visible change specifically in bottom navigation AND
+                // top resource/identity UI for every target orientation.
+                Need(proof.navigationChanged >= Mathf.Max(40,proof.navigationArea/2500),
+                    "Native Forja navigation does not visibly change at "+proof.resolution);
+                Need(proof.headerChanged >= Mathf.Max(40,proof.headerArea/2500),
+                    "Native Forja header does not visibly change at "+proof.resolution);
             }
             Need(differences==4,"Native before/after frames have no detectable change in some orientations");
             var report=new EvidenceReport{
                 status="UNITY_NATIVE_CAPTURED_VISUAL_REVIEW_PENDING",sourceScene=Scene,
                 gameplayHost=host.GetType().FullName,dataBefore=original,dataAfter=originalAfter,
                 screenshotCount=files.Length,orientationsWithDifference=differences,
+                uiRegionDifferences=uiDifferences.ToArray(),
                 captureMethod="ValoriaIntegrationBuild.Capture: Unity RenderTexture/Canvas",
                 artifacts=files.Select(f=>new Artifact {name=Path.GetFileName(f),sha256=Hash(f)}).ToArray(),
                 gameplayAndSaveRulesChanged=false,physicalMobileTested=false,artApproved=false
@@ -276,6 +345,7 @@ namespace Eldoria.VisualKit.Editor
         {
             public string status,sourceScene,gameplayHost,dataBefore,dataAfter,captureMethod;
             public int screenshotCount,orientationsWithDifference;
+            public UiPixelDifference[] uiRegionDifferences;
             public bool gameplayAndSaveRulesChanged,physicalMobileTested,artApproved;
             public Artifact[] artifacts;
         }
