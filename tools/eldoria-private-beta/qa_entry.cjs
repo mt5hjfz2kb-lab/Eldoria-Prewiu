@@ -8,14 +8,32 @@ page.on('pageerror',e=>errors.push(String(e)));page.on('crash',()=>errors.push('
 const checkpoint=(step)=>{report.lastStep=step;fs.writeFileSync('qa-entry/report.json',JSON.stringify(report,null,2));console.log('ENTRY_QA',step)};
 const watchdog=setTimeout(()=>{report.failure='Entry QA exceeded 450-second deadline';report.passed=false;checkpoint('watchdog');process.exit(1)},450000);
 const bounded=(promise,ms,label)=>{let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error(label+' timeout')),ms)})]).finally(()=>clearTimeout(timer))};
-const shot=async(name)=>{checkpoint('capture '+name);const cdp=await context.newCDPSession(page);const s=await bounded(cdp.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false,fromSurface:true}),20000,'capture '+name);fs.writeFileSync('qa-entry/'+name+'.png',Buffer.from(s.data,'base64'));await cdp.detach();};
+const shot=async(name)=>{
+ checkpoint('capture '+name);
+ const data=await bounded(page.evaluate(()=>new Promise((resolve,reject)=>{
+  const original=window.requestAnimationFrame;let captured=false;
+  const restore=()=>{window.requestAnimationFrame=original;};
+  const timer=setTimeout(()=>{restore();reject(Error('No rendered frame for capture'))},15000);
+  window.requestAnimationFrame=function(callback){
+   return original.call(window,function(time){
+    callback(time);
+    if(!captured){captured=true;restore();clearTimeout(timer);
+     try{resolve(document.getElementById('unity-canvas').toDataURL('image/png'))}catch(e){reject(e);}
+    }
+   });
+  };
+ })),20000,'rendered-frame readback');
+ if(!data.startsWith('data:image/png;base64,'))throw Error('Invalid rendered frame');
+ fs.writeFileSync('qa-entry/'+name+'.png',Buffer.from(data.split(',')[1],'base64'));
+ report.captureMethod='Read actual Unity canvas synchronously after its animation-frame callback; original scheduler restored';
+};
 try{
  checkpoint('load');await page.goto('http://127.0.0.1:8765/mobile/?eldoria_diag=1');await page.locator('#play').click();
  await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:240000});await page.waitForTimeout(45000);
- await shot('01-welcome');
+ checkpoint('welcome-ready');
  // Coordinates verified against 390x844 capture and RoyalPlayerNamePrompt anchors.
  checkpoint('enter-name');await page.mouse.click(195,490,{delay:200});await page.keyboard.type(report.nickname,{delay:140});await page.mouse.click(195,614,{delay:200});checkpoint('name-clicked');
- await page.waitForTimeout(60000);await shot('02-after-name');
+ await page.waitForTimeout(60000);checkpoint('after-name-60s');
  report.stages.push(await page.evaluate(()=>({stage:'after-name-60s',ready:!!window.valoriaGame,heapBytes:window.valoriaGame?.Module?.HEAPU8?.byteLength})));
  report.persistenceVerification='Separate OCR gate verifies visible nickname after actual browser reload';
  checkpoint('reload');await page.reload();await page.locator('#play').click();await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:240000});await page.waitForTimeout(45000);
