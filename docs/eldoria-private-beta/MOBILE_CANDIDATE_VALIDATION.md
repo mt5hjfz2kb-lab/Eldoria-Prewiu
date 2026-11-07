@@ -1,5 +1,9 @@
 # Native325 mobile texture candidate
 
+Current status: published successfully by run42418899866 after independent runtime/visual run42418416629. Both versions reach Unity ready and show the normal nickname welcome. Physical iPhone and full campaign remain unverified. Public link: https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/mobile-v1.html
+
+The first run reached Unity ready but its Playwright screenshots timed out. Direct compositor capture at device scale0.5 resolved the capture failure; this lower-resolution evidence is not an art-quality certification. The current artifact regenerates decoded_files correctly, verified after publication. QA telemetry backend accepts one consented diagnostic event and rejects absent consent; the frontend and native events remain unconnected.
+
 The original frozen archive remains unchanged. This is a repackaged texture candidate, not a Unity rebuild or certified mobile fix.
 
 ## Verified locally
