@@ -23,11 +23,13 @@ namespace UnityEngine {
     public GameObject(string name, params Type[] components) {}
     public int layer {get;set;}
     public bool activeInHierarchy => true;
+    public bool activeSelf => true;
     public Transform transform {get;} = new Transform();
     public T GetComponent<T>() where T : Component => default;
     public T AddComponent<T>() where T : Component => default;
   }
   public partial class Transform : Component, IEnumerable<Transform> {
+    public Transform parent {get;set;}
     public string name {get;set;}
     public int childCount {get;set;}
     public Transform GetChild(int i) => default;

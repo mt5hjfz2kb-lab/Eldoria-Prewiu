@@ -12,7 +12,7 @@ namespace UnityEngine {
     public string name=>"";
     public T[] GetComponents<T>() where T:Component=>Array.Empty<T>();
   }
-  public partial class GameObject { public bool activeSelf=>true; }
+
   public partial struct Vector4 { public Vector4(float x,float y,float z,float w){} }
   public partial class RectTransform { public void GetWorldCorners(Vector3[] corners){} }
   public struct Vector3 {
