@@ -58,7 +58,7 @@ jobs:
         run: echo 'FORJA_CSHARP_SYNTAX_PASS; Unity API compile, native A-B captures and visual acceptance still untested.'
 
   api-contract-proof:
-    needs: verify
+    needs: verify-art-source
     runs-on: ubuntu-latest
     timeout-minutes: 8
     permissions:
