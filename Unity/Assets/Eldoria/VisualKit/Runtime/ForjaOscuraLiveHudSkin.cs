@@ -86,7 +86,13 @@ namespace Eldoria.VisualKit
             EnsureNavigationTargets();
             EnsureMobileNavigationTouchTargets();
             EnsureMobileResourceIconReadability();
-            // Avoid scanning text hierarchy and touching Graphic values every frame.
+            // Canonical RoyalGoldV2Hud.LayoutNavigation and header layout run
+            // EVERY LateUpdate and reset caption sizes, colors and raycast
+            // graphics. Restyle these eight small live controls EVERY frame:
+            // a 50ms throttle caused rotating-frame flicker and tiny labels.
+            // Keep the expensive deep panel hierarchy pass throttled.
+            RefreshFastNavigationAndResources();
+            // Avoid scanning full panel text hierarchy every frame.
             if (forceLayoutRefresh || Time.unscaledTime >= nextStyleRefresh)
             {
                 nextStyleRefresh = Time.unscaledTime + .05f;
@@ -670,7 +676,7 @@ namespace Eldoria.VisualKit
                 if (g && g.GetType().Name == typeName) Hide(g);
         }
 
-        private void RefreshExistingLabels()
+        private void RefreshFastNavigationAndResources()
         {
             if (hud.Navigation && NavigationSkinned)
             {
@@ -739,6 +745,10 @@ namespace Eldoria.VisualKit
                     Tint(hud.Resources.Food, LightInk);
                 }
             }
+        }
+
+        private void RefreshExistingLabels()
+        {
             if (ContextSkinned && context && context.ContextRect &&
                 (!v2 || context.ContextRect != v2.ChronicleBuildingRect))
             {
