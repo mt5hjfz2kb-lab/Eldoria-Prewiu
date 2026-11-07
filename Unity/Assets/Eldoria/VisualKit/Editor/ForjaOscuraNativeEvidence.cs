@@ -600,6 +600,84 @@ namespace Eldoria.VisualKit.Editor
             return result;
         }
 
+        [Serializable] class BuildingOfferCheck
+        {
+            public string status;
+            public string buildingId;
+            public bool pointerDispatched;
+            public bool gatewayStateChanged;
+            public bool isolatedSaveChanged;
+        }
+
+        /// <summary>
+        /// After the immutable eight A/B captures and their data-equality
+        /// assertions, submit ONE real authorized offer through its existing
+        /// V3/V2 pointer. Use only a fresh disposable VALORIA_GAMEPLAY_PROBE,
+        /// never a player save, fabricated RoyalSnapshot, or OnClick.Invoke.
+        /// </summary>
+        static BuildingOfferCheck ExerciseBuildingOfferInProbe(
+            MonoBehaviour host, RoyalHUD hud, Type integrationBuild)
+        {
+            var city=host.GetType().GetProperty("City")?.GetValue(host);
+            Need(city!=null && BoolProperty(city,"Probe"),
+                "Refuse any real campaign save in Forja build offer QA");
+            var save=city.GetType().GetProperty("SaveFile")?.GetValue(city) as string;
+            Need(!string.IsNullOrEmpty(save) &&
+                 Path.GetFullPath(save).StartsWith(Path.GetFullPath(Path.GetTempPath()),
+                     StringComparison.OrdinalIgnoreCase) &&
+                 Path.GetFileName(save).StartsWith("eldoria-valoria-gameplay-",
+                     StringComparison.OrdinalIgnoreCase),
+                "Expected exclusively isolated transient QA save path");
+            var gateway=city.GetType().GetProperty("Gateway")?.GetValue(city);
+            var snapshot=gateway?.GetType().GetMethod("Snapshot",BindingFlags.Public|BindingFlags.Instance);
+            Need(snapshot!=null,"Canonical real gameplay snapshot unavailable for building QA");
+            var select=host.GetType().GetMethod("Select",BindingFlags.Public|BindingFlags.Instance,
+                null,new[]{typeof(string)},null);
+            Need(select!=null && (bool)select.Invoke(host,new object[]{"sawmill"}),
+                "Real sawmill selection unavailable for authorized building QA");
+            hud.Refresh();
+            var context=hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV3ContextHud>();
+            Need(context!=null && context.IsConfigured,"Actual contextual offer surface missing");
+            context.SynchronizeNow();
+            var skin=hud.gameObject.AddComponent<ForjaOscuraLiveHudSkin>();
+            try
+            {
+                skin.ApplyNow(true);
+                Canvas.ForceUpdateCanvases();
+                Need(skin.ContextSkinned,"Forja not applied to the real building action");
+                var action=context.VisibleActionButton;
+                Need(hud.Building && hud.Building.Offer!=null,
+                    "Sawmill has no genuine authorized building offer in fresh probe");
+                Need(action && action.interactable && action.gameObject.activeInHierarchy,
+                    "Authentic Forja building action is locked or not visible");
+                var click=integrationBuild.GetMethods(BindingFlags.NonPublic|BindingFlags.Static)
+                    .FirstOrDefault(m=>m.Name=="Click" && m.GetParameters().Length==1 &&
+                        m.GetParameters()[0].ParameterType==typeof(Button));
+                Need(click!=null,"Canonical uGUI pointer click helper not found");
+                var oldState=JsonUtility.ToJson(snapshot.Invoke(gateway,null));
+                var oldSave=File.Exists(save)?Hash(save):"MISSING";
+                try{click.Invoke(null,new object[]{action});}
+                catch(TargetInvocationException e){throw e.InnerException??e;}
+                var newState=JsonUtility.ToJson(snapshot.Invoke(gateway,null));
+                var newSave=File.Exists(save)?Hash(save):"MISSING";
+                Need(!string.IsNullOrEmpty(oldState) && oldState!=newState,
+                    "Original Forja building CTA did not change real gameplay state");
+                Need(oldSave!=newSave,
+                    "Original Forja building CTA did not persist its real change to isolated QA save");
+                return new BuildingOfferCheck{
+                    status="NATIVE_POINTER_BUILD_AND_PROBE_SAVE_PASS",
+                    buildingId="sawmill",
+                    pointerDispatched=true,gatewayStateChanged=true,isolatedSaveChanged=true
+                };
+            }
+            finally
+            {
+                Object.DestroyImmediate(skin);
+                Canvas.ForceUpdateCanvases();
+                hud.Refresh();
+            }
+        }
+
         static void RunCapture(bool batch)
         {
             var host=FindHost();Need(host&&BoolProperty(host,"Ready"),"Canonical gameplay host must be ready");
@@ -757,6 +835,9 @@ namespace Eldoria.VisualKit.Editor
                     ": " + reading.smallestResourceLabel + " (" +
                     reading.minResourceGlyphPx + "px)");
             }
+            // The genuine build spends only the throwaway isolated save and
+            // deliberately runs after all visual equality and image checks.
+            var buildingOffer = batch ? ExerciseBuildingOfferInProbe(host,hud,t) : null;
             var report=new EvidenceReport{
                 status="UNITY_NATIVE_CAPTURED_VISUAL_REVIEW_PENDING",sourceScene=Scene,
                 gameplayHost=host.GetType().FullName,dataBefore=original,dataAfter=originalAfter,
@@ -766,6 +847,7 @@ namespace Eldoria.VisualKit.Editor
                 nativeReadability=readabilityMetrics.ToArray(),
                 navigationActions=navigationActions,
                 contextClose=contextClose,
+                buildingOffer=buildingOffer,
                 captureMethod="ValoriaIntegrationBuild.Capture: Unity RenderTexture/Canvas",
                 artifacts=files.Select(f=>new Artifact {name=Path.GetFileName(f),sha256=Hash(f)}).ToArray(),
                 gameplayAndSaveRulesChanged=false,physicalMobileTested=false,artApproved=false
@@ -789,6 +871,7 @@ namespace Eldoria.VisualKit.Editor
             public UiReadabilityMetric[] nativeReadability;
             public NavigationRouteCheck[] navigationActions;
             public ContextCloseCheck contextClose;
+            public BuildingOfferCheck buildingOffer;
             public bool gameplayAndSaveRulesChanged,physicalMobileTested,artApproved;
             public Artifact[] artifacts;
         }
