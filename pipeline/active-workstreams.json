@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T22:25:20.772Z",
+  "updated_at": "2026-11-07T22:29:07.737Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6650,7 +6650,7 @@
       "title": "Forja Oscura — sistema visual modular uGUI y prueba A/B real",
       "owner": "codex-forja-55add623b635",
       "branch": "feature/forja-oscura-native-proof-20261107",
-      "status": "paused",
+      "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
       "base_main_sha": "346b66296f191d9d8d76094a81b1972c80ffc53a",
       "scope": [
@@ -6667,12 +6667,14 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingPreview.cs",
         ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [],
-      "ownership_state": "released",
-      "ownership_revision": 17,
-      "write_scope_released": true,
-      "phase": "OWNER_REJECTED_ARCHIVED_PENDING_NEW_DIRECTION",
-      "next": "Owner discarded current UI implementation; PR173 closed unmerged. Preserve existing production UI. Present three different concepts; wait for selection before implementation. New presentation must own layout and be validated visually in native Unity before expanding.",
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "ownership_state": "claimed",
+      "ownership_revision": 18,
+      "write_scope_released": false,
+      "phase": "FORTALEZA_INDEPENDENT_PRESENTATION_FIRST_NATIVE_SCREEN",
+      "next": "Owner selected Fortaleza reference and authorizes isolated actual Unity image. Previous skin rejected; create independently laid out components using live data; no production scene or release modifications.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-07T18:54:22.588Z",
