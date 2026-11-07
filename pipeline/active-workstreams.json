@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T13:18:05.901Z",
+  "updated_at": "2026-11-07T13:23:37Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6628,15 +6628,17 @@
         "Unity/Assets/Eldoria/VisualKit.meta",
         "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json"
       ],
-      "resources": [],
+      "resources": ["windows-runner-heavy"],
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "write_scope_released": false,
-      "phase": "FIRST_PARTY_ASSETS_ADDED_METADATA_AND_RIGHTS_PROVENANCE_QA",
-      "next": "Render reusable Forja visual kit against genuine RoyalHUD and certify mobile layouts and actions; borrow Windows runner only after canonical owner handoff.",
+      "phase": "NATIVE_UNITY_8_CAPTURE_AUTHORIZED_RUNNER_EXCLUSIVE",
+      "next": "Unity 6000.3.23f1 genuine A/B 8 PNG, real HUD clicks/build isolated probe, inspect visual fidelity; no main/Android/WebGL until gates pass.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. Do not claim windows-runner-heavy or edit legacy HUD without explicit handoff. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched.",
+      "runner_claimed_at": "2026-11-07T13:23:37Z",
+      "runner_claim_basis": "PR163 merged at 2026-11-07T12:57:46Z; canonical Valoria workstream released at revision 158; previous main native jobs finished; Forja owner claim maintained.",
+      "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
       "art_production_request": "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json"
