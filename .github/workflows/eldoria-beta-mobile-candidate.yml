@@ -1,5 +1,5 @@
 name: Eldoria isolated mobile texture candidate
-# Retry visual capture through compositor; both builds already reached actual Unity ready.
+# Candidate2 removes verified redundant CPU copies without changing any pixel bytes.
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -24,10 +24,10 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42397405907
-          name: eldoria-pr163-web-preview-42397405907
+          run-id: 42418416629
+          name: mobile-candidate-site
           github-token: ${{ github.token }}
-          path: input
+          path: site/original
       - name: Install pinned asset codecs
         run: python -m pip install UnityPy==1.25.4 astc-encoder-py==0.1.12 numpy==2.3.5 Pillow==13.0.0 lz4==4.4.5 Brotli==1.2.1
       - name: Prepare exact baseline and extract verified bundle
@@ -35,8 +35,7 @@ jobs:
           python - <<'PY'
           import importlib.util,pathlib,json,gzip,hashlib,struct,shutil
           spec=importlib.util.spec_from_file_location('prep','tools/eldoria-private-beta/prepare-pages.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
-          m.prepare('input/Eldoria-native325-itch.zip','site')
-          pathlib.Path('site/beta-native325').rename('site/original')
+          assert pathlib.Path('site/original/release-identity.json').exists()
           b=json.loads(pathlib.Path('site/original/build-manifest.json').read_text())
           with open('original-data.bin','wb') as out:
             for part in b['decoded_parts'][b['data']]:
@@ -53,8 +52,8 @@ jobs:
           PY
       - name: Optimize accepted color textures and verify every object
         run: |
-          python tools/eldoria-private-beta/optimize_mobile.py original.unity3d candidate
-          python tools/eldoria-private-beta/mobile_site.py site/original original-data.bin candidate/data.unity3d site/mobile
+          python tools/eldoria-private-beta/readonly_materials.py original.unity3d candidate
+          python tools/eldoria-private-beta/mobile_site.py site/original original-data.bin candidate/data.unity3d site/mobile native325-mobile-memory2
           node tools/delivery/test-exact-decoded-transport.mjs site/mobile
       - name: Install real browser for independent runtime test
         run: npm install --no-save playwright@1.55.0 pngjs@7.0.0 && npx playwright install --with-deps chromium
@@ -73,8 +72,7 @@ jobs:
         with:
           name: mobile-candidate-evidence
           path: |
-            candidate/integrity.json
-            candidate/texture-report.json
+            candidate/readonly-proof.json
             qa/
           retention-days: 14
       - uses: actions/upload-artifact@v4
