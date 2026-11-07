@@ -7,13 +7,37 @@ on:
       - .github/workflows/eldoria-private-beta-freeze.yml
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
   actions: read
 concurrency:
   group: eldoria-beta-freeze-native325
   cancel-in-progress: false
 jobs:
+  validate:
+    name: Beta source/security tests (no Unity or 490MB download)
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            pipeline/eldoria-private-beta
+          persist-credentials: false
+      - name: Verify pinned artifact and R2 metadata contracts
+        run: |
+          node --test tools/eldoria-private-beta/verify-freeze.test.mjs
+          node --test tools/eldoria-private-beta/verify-r2-files.test.mjs
+      - name: Verify signed-link and 67-event client contracts (no network)
+        run: node --test tools/eldoria-private-beta/cloudflare/*.test.mjs
   freeze:
+    needs: validate
+    if: ${{ github.repository == 'mt5hjfz2kb-lab/Eldoria-Prewiu' && github.event_name != 'pull_request' }}
+    permissions:
+      contents: write
+      actions: read
     name: Verify exact web bytes and store only as draft
     if: ${{ github.repository == 'mt5hjfz2kb-lab/Eldoria-Prewiu' }}
     runs-on: ubuntu-latest
