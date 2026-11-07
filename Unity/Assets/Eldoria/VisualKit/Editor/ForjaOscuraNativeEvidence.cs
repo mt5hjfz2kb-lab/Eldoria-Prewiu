@@ -218,7 +218,19 @@ namespace Eldoria.VisualKit.Editor
                 {
                     var medal = rect.GetChild(0) as RectTransform;
                     var glyph = medal && medal.childCount > 0 ? medal.GetChild(0) as RectTransform : null;
-                    var illustration = glyph ? glyph.Find("Forja / navigation icon") as RectTransform : null;
+                    // Transform.Find interprets '/' as a hierarchy separator. The
+                    // skin deliberately uses this literal name for a direct child.
+                    RectTransform illustration = null;
+                    if (glyph)
+                        for (int child = 0; child < glyph.childCount; child++)
+                        {
+                            var candidate = glyph.GetChild(child);
+                            if (candidate.name == "Forja / navigation icon")
+                            {
+                                illustration = candidate as RectTransform;
+                                break;
+                            }
+                        }
                     Need(illustration, "Missing live navigation illustration");
                     var iconCorners = new Vector3[4];
                     var labelCorners = new Vector3[4];
