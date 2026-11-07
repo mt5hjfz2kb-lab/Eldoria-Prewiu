@@ -1,13 +1,13 @@
 {
-  "source_sha": "4fdb95fdea71c05b28a6e2e28147fddcb0719c24",
-  "run_id": 42315556449,
-  "revision": "native317",
-  "artifact_name": "valoria-integrated-web-playtest-42315556449",
-  "purpose": "Exact PR163 mobile real-player I-II WebGL regression in Windows Chromium D3D11 using visible clicks, same normal game clock and isolated browser save; no publication or edits to game",
+  "source_sha": "29f5e3a3686f80b77bced250c9bef67977a891e4",
+  "run_id": 42367983297,
+  "revision": "native324",
+  "artifact_name": "valoria-integrated-web-playtest-42367983297",
+  "purpose": "Final PR163 source-locked normal-clock real player I-II Chromium Windows QA incl. selected unbuilt Barracks 844x390 /390x844, visible marker, legal real controls, saves/reload and march visuals; preserve screenshots/video, no publication",
   "preconditions": [
-    "Exact native Unity success",
-    "No Unity/Blender process",
-    "Current main Valoria lease revision156 remains owned by existing owner"
+    "Only after native324 run 42367983297 completed successfully and exact SHA matched",
+    "No Unity/Blender process; Windows runner lease exclusive",
+    "Current main owner chatgpt-pr163-continuation-20261107 revision157"
   ],
   "allow_release": false,
   "allow_merge": false
