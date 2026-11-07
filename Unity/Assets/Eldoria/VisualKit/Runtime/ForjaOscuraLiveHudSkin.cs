@@ -397,7 +397,7 @@ namespace Eldoria.VisualKit
             float rowSpacing = upper[0].anchoredPosition.y - lower[0].anchoredPosition.y;
             float rowGap = rowSpacing - oldHeight;
             if (oldHeight < 1f || rowGap < -.5f || rowGap > 20f) return;
-            float requiredHeight = Mathf.Ceil(44.5f / canvas.scaleFactor);
+            float requiredHeight = Mathf.CeilToInt(44.5f / canvas.scaleFactor);
             if (oldHeight >= requiredHeight) return;
             float delta = requiredHeight - oldHeight;
             RememberNavigationGeometry(dock);
