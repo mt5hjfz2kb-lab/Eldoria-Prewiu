@@ -158,8 +158,12 @@ namespace Eldoria.BreachWatch
         RectTransform BuildButton(Transform parent,string name,BreachWatchGlyph.Sigil icon,Action action,
             BreachWatchPlate.PlateType kind=BreachWatchPlate.PlateType.Basalt)
         {
-            var rt=Rect(name,parent);Plate(rt,kind);
+            var rt=Rect(name,parent);var hitSurface=Plate(rt,kind);
+            // A visible Graphic must accept the pointer for Unity's GraphicRaycaster.
+            // The parent Button then receives the normal pointerClick event.
+            hitSurface.raycastTarget=true;
             var b=Button(rt,action);
+            b.targetGraphic=hitSurface;
             var glyph=Glyph(rt,"Carved sigil",icon);
             Fill((RectTransform)glyph.transform,10);
             return rt;
@@ -187,7 +191,9 @@ namespace Eldoria.BreachWatch
             chapterName=Label(objective,"Actual chapter",13,TextAnchor.MiddleLeft,Copper,true);
             chapterObjective=Label(objective,"Actual objective",17,TextAnchor.UpperLeft,TextIvory);
             chapterProgress=Label(objective,"Objective progress",14,TextAnchor.MiddleLeft,Muted);
+            var questPlate=objective.GetComponent<BreachWatchPlate>();questPlate.raycastTarget=true;
             var questHit=Button(objective,()=>{fullObjective=!fullObjective;Reflow(lastWidth,lastHeight);});
+            questHit.targetGraphic=questPlate;
             questHit.interactable=true;
             utilityRail=Rect("Freestanding secondary seals",uiRoot);
             var bell=BuildButton(utilityRail,"Notices",BreachWatchGlyph.Sigil.Bell,()=>SetFeedback("Buzón: disponible en futuras pantallas"));
@@ -206,6 +212,8 @@ namespace Eldoria.BreachWatch
             closeButton=closeRect.GetComponent<Button>();
             actionButton=Button(Rect("Original gameplay action / new presentation",panel),SubmitSelectedBuilding);
             actionPlate=Plate((RectTransform)actionButton.transform,BreachWatchPlate.PlateType.Action);
+            actionPlate.raycastTarget=true;
+            actionButton.targetGraphic=actionPlate;
             actionLabel=Label(actionButton.transform,"Real action title",17,TextAnchor.MiddleCenter,TextIvory,true);
             Fill(actionLabel.rectTransform,6);
             buttonRow=Rect("Five standalone stone navigation emblems",uiRoot);
