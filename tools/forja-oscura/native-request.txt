@@ -1,9 +1,6 @@
-Forja Oscura — genuine Unity 6000.3.23f1 A/B native capture REQUEST
-Date: 2026-11-07T13:25:00Z
+Forja Oscura native visual proof — incremental cache recovery
+Date: 2026-11-07T14:38:00Z
 Workstream-ID: eldoria-forja-oscura-visual-proof-20261107
-Runner: windows-runner-heavy, only Forja active/claimed (ownership revision 4) on main.
-After PR #163 merged and formally released its runner at revision 158, source PR173 was reconciled with main; no held legacy HUD paths are mutated.
-Run real same-session native A/B: 1600x900, 900x1600, 844x390, 390x844, before/after.
-Require real nav pointer actions, contextual close, permitted sawmill build with probe-only save, actual resources/chapter/cost unchanged while skin toggles, min readable icons/text, 44px targets, paired PNG SHA manifest.
-FAIL CLOSED on absent Unity, competing processes, missing art, stale ownership, error or unmet geometry/interaction. This dispatch does not publish or merge and does not mark ART_APPROVED.
-2026-11-07T14:16:00Z · Native retry requested with the pre-existing Valoria Windows checkout rather than an expensive separate 15GB clone. The original native run 42376865738 is left untouched; workflow concurrency enqueues this only after previous proof completes. Do not merge or mark artistic approval without eight native Unity PNGs and gameplay results.
+The own prior native run 42380673233 has remained inside actions/checkout@v4 for over seven minutes; its previous full-clone predecessor 42376865738 failed after 65 minutes in checkout without running Unity. This is the same PR/workstream and no native scene or player save has started.
+Recovery: use the last certified main Unity worktree at 9efc0fefd447585f6867ab03ce2c41084b32adf2 and the 6MB exact Forja CI kit artifact 13578470254 (run 42382183072), with checked source blob IDs. No 15GB Git clone. Cancel ONLY the stale checkout run in the same Forja concurrency group.
+Retain exclusive runner rev4, verify real Unity process exclusivity, source hashes, complete eight image A/B, original pointer routes, context close, and real probe-only sawmill order and saved state. No main merge/APK/WebGL/art acceptance without authentic evidence.
