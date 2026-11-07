@@ -26,4 +26,4 @@ TextureImporter:
   spritePixelsToUnits: 100
   spriteAlignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spriteBorder: {x: 48, y: 48, z: 48, w: 48}
+  spriteBorder: {x: 48, y: 22, z: 48, w: 22}
