@@ -281,8 +281,9 @@ namespace Eldoria.VisualKit.Editor
             var skin=hud.gameObject.AddComponent<ForjaOscuraLiveHudSkin>();
             Need(skin!=null,"Skin creation failed");
             skin.ApplyNow();Canvas.ForceUpdateCanvases();skin.ApplyNow();
-            Need(skin.NavigationSkinned && skin.ObjectiveSkinned && skin.BuildingSkinned,
-                 "Not all five existing nav/objective/building surfaces are skinned");
+            Need(skin.NavigationSkinned && skin.ResourceSkinned && skin.HeaderSkinned &&
+                 skin.ObjectiveSkinned && skin.BuildingSkinned,
+                 "Real nav, illustrated resource icons, header, mission or building did not receive Forja sprites");
             if (context) {
                 context.SynchronizeNow();
                 skin.ApplyNow();
