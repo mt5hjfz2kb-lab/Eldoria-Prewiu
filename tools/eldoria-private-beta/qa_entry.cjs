@@ -38,6 +38,8 @@ try{
  await page.waitForTimeout(60000);checkpoint('after-name-60s');
  report.stages.push(await page.evaluate(()=>({stage:'after-name-60s',ready:!!window.valoriaGame,heapBytes:window.valoriaGame?.Module?.HEAPU8?.byteLength})));
  report.persistenceVerification='Separate OCR gate verifies visible nickname after actual browser reload';
+ checkpoint('quit-runtime');await bounded(page.evaluate(()=>window.valoriaGame.Quit()),30000,'Unity Quit');
+ report.reopenMethod='Documented Unity Quit then actual page reload; raw reload timed out in separate SwiftShader run42423325534';
  checkpoint('reload');await page.reload();await page.locator('#play').click();await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:240000});await page.waitForTimeout(45000);
  await shot('03-reloaded');report.stages.push(await page.evaluate(()=>({stage:'reload-45s',ready:!!window.valoriaGame,heapBytes:window.valoriaGame?.Module?.HEAPU8?.byteLength})));
  errors.push(...logs.filter(s=>/not readable|Read.Write|Exception:|out of memory|Could not allocate|RuntimeError:/i.test(s)));
