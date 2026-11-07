@@ -128,7 +128,7 @@ namespace UnityEditor.SceneManagement {
 namespace Eldoria.UI.RoyalGold {
   using UnityEngine;
   public class RoyalMission:Component {public RoyalText Objective;}
-  public class RoyalModal:Component {public RoyalButton Extra;}
+  public class RoyalModal:Component {public RoyalButton Extra;public void Hide(){}}
   public partial class RoyalHUD {
     public string SelectedBuildingId=>"";public bool NarrativeOpen=>false;
     public RoyalMission Mission;public RoyalModal Modal;
