@@ -6648,7 +6648,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Forja Oscura — sistema visual modular uGUI y prueba A/B real",
-      "owner": "chatgpt-forja-oscura-visual-proof-20261107",
+      "owner": "codex-forja-completion-1b986b7673a3",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6668,10 +6668,10 @@
         "windows-runner-heavy"
       ],
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "write_scope_released": false,
       "phase": "NATIVE_UNITY_8_CAPTURE_AUTHORIZED_RUNNER_EXCLUSIVE",
-      "next": "Preserve Forja PR173 sources and work; Windows temporarily lent by explicit owner authorization to PR177/APK22 release. Do not reclaim until delivery executor restores reservation; no native jobs cancelled.",
+      "next": "Resume exact PR173 native evidence, inspect real captures against approved reference and repair defects.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-07T18:54:22.588Z",
@@ -6692,6 +6692,12 @@
           "ownership_revision": 5,
           "transferred_at": "2026-11-07T18:54:22.588Z",
           "reason": "Return Windows reservation after release native jobs completed; preserve Forja owner, branch and draft PR173."
+        },
+        {
+          "owner": "chatgpt-forja-oscura-visual-proof-20261107",
+          "ownership_revision": 6,
+          "reason": "Owner explicitly requests this chat take over PR173 and finish existing interface, preserving research and evidence.",
+          "transferred_at": "2026-11-07T19:07:57.373Z"
         }
       ],
       "runner_priority_handoff": {
