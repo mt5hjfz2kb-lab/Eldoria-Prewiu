@@ -199,3 +199,21 @@ jobs:
         run: dotnet build tools/forja-oscura/EditorContract.csproj --configuration Release --nologo
       - name: This checks type usage, NOT native Unity APIs or any rendered screenshot
         run: echo 'FORJA_CSHARP_EDITOR_STUB_TYPECHECK_PASS; Unity 6000.3 remains untested.'
+
+  all-editor-sources-typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/forja-oscura
+            Unity/Assets/Eldoria/VisualKit
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Type-check all five actual Forja C-sharp sources against strict bounded Editor stubs
+        run: dotnet build tools/forja-oscura/EditorContract.csproj --configuration Release --nologo
+      - name: Semantic compilation against STUBS only, NOT Unity certification
+        run: echo 'FORJA_FIVE_SOURCE_TYPECHECK_PASS; Unity Editor and actual rendering remain untested.'

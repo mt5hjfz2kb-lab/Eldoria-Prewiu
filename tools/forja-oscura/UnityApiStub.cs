@@ -51,7 +51,7 @@ namespace UnityEngine {
     public float x,y; public Vector2(float x,float y){this.x=x;this.y=y;}
     public static Vector2 zero=>new Vector2();public static Vector2 one=>new Vector2(1,1);
   }
-  public struct Vector4 { public float sqrMagnitude=>0f; }
+  public partial struct Vector4 { public float sqrMagnitude=>0f; }
   public class Sprite : Object { public Vector4 border; }
   public class CanvasRenderer : Component {}
   public static class Time { public static float unscaledTime=>0; }
@@ -93,7 +93,7 @@ namespace Eldoria.UI.RoyalGold {
   public class RoyalHudLayout:Behaviour {}
   public class RoyalHeader:Behaviour { public RoyalText Realm; }
   public class RoyalResourceBar:Behaviour { public RoyalText Wood,Stone,Food; }
-  public class RoyalBuildingPanel:Behaviour { public RoyalButton Primary; }
+  public class RoyalBuildingPanel:Behaviour { public RoyalPrimary Primary; public RoyalText Title; }
   public class RoyalNav:Behaviour {
     public class Item { public RoyalSection Section; public RoyalButton Button; public RoyalText Label; }
     public Item[] Items;

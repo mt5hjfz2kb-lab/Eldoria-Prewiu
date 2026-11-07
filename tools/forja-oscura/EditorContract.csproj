@@ -12,5 +12,8 @@
     <Compile Include="UnityEditorApiStubs.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs" Link="ForjaOscuraLiveHudSkin.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs" Link="ForjaOscuraNativeEvidence.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraPreviewEditor.cs" Link="ForjaOscuraPreviewEditor.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraSpriteAudit.cs" Link="ForjaOscuraSpriteAudit.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/VisualKit/Editor/EldoriaVisualKitTextureImporter.cs" Link="EldoriaVisualKitTextureImporter.cs" />
   </ItemGroup>
 </Project>
