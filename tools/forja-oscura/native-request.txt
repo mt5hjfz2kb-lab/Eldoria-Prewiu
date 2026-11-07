@@ -1,1 +1,1 @@
-PR173 native context text gate: visible level, minimum 12px and no vertical truncation in tutorial/Bastion at four sizes. Neutral thumbnail backdrop.
+PR173 visual consistency: approved illustrated crest/settings and painted objective surface. Native twelve-frame/text/pointer/save regression required.

@@ -118,6 +118,7 @@ namespace Eldoria.UI.RoyalGold {
     public event System.Action<RoyalSection> Requested;
   }
   public partial class RoyalHUD:MonoBehaviour {
+    public RoyalButton Settings;
     public RoyalHeader Realm;
     public RoyalResourceBar Resources;
     public RoyalNav Navigation;

@@ -774,7 +774,7 @@ namespace Eldoria.VisualKit
             if (!ObjectiveSkinned && v2.ChronicleObjectiveRect)
             {
                 var obj = v2.ChronicleObjectiveRect;
-                var sprite = Sprite("Surfaces", "panel_quest");
+                var sprite = Sprite("Surfaces", "panel_dark");
                 var image = ImageChild(obj, "Forja / live objective surface", sprite);
                 if (image)
                 {
@@ -836,12 +836,32 @@ namespace Eldoria.VisualKit
                             var realmSurface = ImageChild(hud.Realm.transform,
                                 "Forja / identity plate", Sprite("Surfaces", "panel_dark"));
                             if (realmSurface) realmSurface.transform.SetAsFirstSibling();
+                            var crest=ImmediateChild(hud.Realm.transform,"Valoria crest");
+                            if(crest)
+                            {
+                                // The approved kit's heraldic power crest replaces
+                                // only the old decorative blue drawing. Header Info
+                                // remains on its original parent button/target.
+                                foreach(var g in crest.GetComponentsInChildren<Graphic>(true)) Hide(g);
+                                ImageChild(crest,"Forja / illustrated power crest",Sprite("Icons","ui_poder"));
+                            }
                         }
                         if (hud.Resources)
                         {
                             var resourceSurface = ImageChild(hud.Resources.transform,
                                 "Forja / resource plate", Sprite("Surfaces", "panel_dark"));
                             if (resourceSurface) resourceSurface.transform.SetAsFirstSibling();
+                        }
+                        if(hud.Settings)
+                        {
+                            ReplaceButtonSurface(hud.Settings,Sprite("Surfaces","medallion_normal"),
+                                "Forja / settings medallion");
+                            var symbol=ImmediateChild(hud.Settings.transform,"Symbol");
+                            if(symbol)
+                            {
+                                HideGraphicsByTypeName(symbol,"RoyalIconGraphic");
+                                ImageChild(symbol,"Forja / illustrated settings",Sprite("Icons","ui_ajustes"));
+                            }
                         }
                         HeaderSkinned = true;
                     }

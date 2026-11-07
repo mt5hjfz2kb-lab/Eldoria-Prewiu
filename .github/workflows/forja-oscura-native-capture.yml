@@ -133,7 +133,7 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Editor occupied before owned-cache reuse'}
           if(-not(Test-Path (Join-Path $base '.git'))){throw 'Verified owned Forja cache missing'}
           $oldHead=((& git -C $base rev-parse HEAD).Trim())
-          if($oldHead -ne '5097f477dd41bc95d74cda44a7d0886892bdb8db'){throw 'Owned source changed; inspect before reusing'}
+          if($oldHead -ne '5e5211e0e15c027bc426580e71177220db6fe7d1'){throw 'Owned source changed; inspect before reusing'}
           $remote=((& git -C $base remote get-url origin).Trim())
           if($remote -ne 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'){throw 'Unexpected cache origin'}
           & git -C $base diff --binary | Set-Content (Join-Path $env:RUNNER_TEMP 'forja-prior-import-changes.patch')
