@@ -60,5 +60,6 @@
     "artifact_digest": "sha256:ef025d6c265e0c165b163cfec542ecbe5d4081c8b726f2d32ea598e4988f5eab",
     "zip_sha256": "1484d43c4f3bfa23e4325add79be02826fbd989f3b3a46290a5dd3b4a24b3936"
   },
-  "postmerge_ui_run": null
+  "postmerge_ui_run": null,
+  "postmerge_ui_source": "7b07fc49ae507b3686ad2acb9564e9671435c595"
 }

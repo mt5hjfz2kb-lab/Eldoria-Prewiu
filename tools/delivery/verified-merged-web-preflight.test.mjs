@@ -26,7 +26,7 @@ test('runtime changes are rejected; only the exact certified Editor assertion is
  await assert.rejects(verifyUnityTrees('a','b',async s=>s==='a'?original:{tree:[]},'Assets/Eldoria/Scripts/Editor/'));
 });
 test('promotion requires actual native capture plus EditMode and PlayMode, merged repair and exact package',()=>{
- const fix={merged:true,head:{sha:'d6ee2df3be70c4b0c9c7937f7a5be9709a0489f2'}};
+ const fix={merged:true,head:{sha:c.postmerge_ui_source}};
  const cert={status:'completed',conclusion:'success',path:'.github/workflows/ui-progression-cert.yml',head_sha:fix.head.sha};
  const jobs={jobs:[{name:'certify',conclusion:'success',steps:['V4.1 real controls, persistent mailbox and approved-source captures','EditMode','PlayMode — UI and progression contract'].map(name=>({name,conclusion:'success'}))}]};
  const prepared={status:'completed',conclusion:'success',head_sha:c.prepared_web.source_sha,path:'.github/workflows/eldoria-post-pr163-web-release.yml'};

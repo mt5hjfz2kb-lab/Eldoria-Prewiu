@@ -39,3 +39,9 @@ Preparación `42383793241` SUCCESS, artefacto `13578463741`, SHA256 del archivo 
 El workflow ahora implementa una promoción explícita, deshabilitada hasta contar con el run nativo exacto y PR177 fusionada. Verifica todos los archivos, el transporte, dueño/revisión vivos y evita subir de nuevo una versión presente o en procesamiento. La única diferencia Unity tolerada respecto al paquete jugado es el blob exacto de la corrección de aserción Editor de PR177; cualquier cambio de juego, recurso o escena requiere una nueva candidata. Siete pruebas locales incluyen rechazo de cambio runtime, revisión obsoleta, certificado incompleto y artefacto incorrecto.
 
 **Pendiente:** certificación PR177, publicación remota WebGL y APK22 firmada. No se ha probado teléfono físico ni se ha publicado este paquete.
+
+## Prioridad temporal autorizada por el propietario
+
+El propietario respondió «Sí autorizo» a la cesión temporal de Windows para terminar APK/WebGL sin cancelar procesos activos. Registro main actualizado: Forja conserva dueño/archivos/PR173, cede únicamente el recurso (revisión5); Valoria revisión160, ejecutor `codex-release-a56bdf7714d0`, certifica PR177. Todos los procesos nativos observados habían terminado antes de transferir. La reserva se devolverá a Forja tras la APK.
+
+PR177 reconciliada con main; fuente `7b07fc49ae507b3686ad2acb9564e9671435c595`, misma reparación Editor y guardas adaptadas a la reserva vigente. La publicación exige certificado de esta fuente exacta. No se afirma éxito Unity antes de terminar el run.

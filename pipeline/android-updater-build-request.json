@@ -1,9 +1,9 @@
 {
   "enabled": false,
-  "versionCode": 22,
-  "versionName": "1.22",
+  "versionCode": 21,
+  "versionName": "1.21",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "PR163 release preparation: Android family 1.22/code22 requested by owner on 2026-11-07. Disabled until PR177 native post-merge gate passes and Forja Oscura PR173 releases exclusive Windows runner. Signed build must use exact main, original SHA256 certificate f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8, unchanged saves and <=450MiB. No APK code22 has yet been built; do not enable without verified owner handoff and full QA. WebGL packaging tracked separately in PR178."
+  "note": "Signed Android21 build42217404501/sourcee3d8347c5ea0aecf8c48f216d1599d2ca7704db9 SUCCESS including450MiB limit, original certificate and source restoration. Disable repeat build before channel promotion. Publication still requires decoded APK visual inspection and completed main UI certificate; physical phone not tested.0EUR."
 }

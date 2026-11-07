@@ -28,7 +28,7 @@ export async function verifyUnityTrees(original,current,getTree,prefix=''){
 
 export function verifyPromotion(c,fix,certificate,jobs,prepared,artifact){
  const p=c.prepared_web;
- assert(fix?.merged===true&&fix.head.sha==='d6ee2df3be70c4b0c9c7937f7a5be9709a0489f2','PR177 exact repair not merged');
+ assert(fix?.merged===true&&HEX.test(c.postmerge_ui_source)&&fix.head.sha===c.postmerge_ui_source,'PR177 exact repair not merged');
  assert(certificate?.status==='completed'&&certificate.conclusion==='success'&&certificate.path==='.github/workflows/ui-progression-cert.yml'&&certificate.head_sha===fix.head.sha,'exact PR177 native certificate missing');
  const native=jobs?.jobs?.find(x=>x.name==='certify');
  assert(native?.conclusion==='success','native certification job missing');
