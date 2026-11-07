@@ -180,6 +180,67 @@ namespace Eldoria.VisualKit.Editor
             };
         }
 
+        // Native readability must be measured in final capture pixels;
+        // a larger logical font can still become tiny on a 390px Canvas.
+        [Serializable] class UiReadabilityMetric
+        {
+            public string resolution;
+            public float minNavigationGlyphPx;
+            public float minResourceGlyphPx;
+            public bool navigationLabelsFit;
+            public bool resourceValuesFit;
+            public string smallestNavigationLabel;
+            public string smallestResourceLabel;
+        }
+
+        private static UiReadabilityMetric MeasureReadability(RoyalHUD hud, int width, int height)
+        {
+            var canvas = hud.GetComponent<Canvas>();
+            Need(canvas != null, "Native text QA requires the actual HUD Canvas");
+            var m = new UiReadabilityMetric {
+                resolution = width + "x" + height,
+                minNavigationGlyphPx = float.PositiveInfinity,
+                minResourceGlyphPx = float.PositiveInfinity,
+                navigationLabelsFit = true,
+                resourceValuesFit = true
+            };
+            float scale = Mathf.Max(.01f, canvas.scaleFactor);
+            int n = 0;
+            foreach (var item in hud.Navigation.Items)
+            {
+                if (item == null || !item.Button || !item.Button.gameObject.activeInHierarchy ||
+                    !item.Label || !item.Label.gameObject.activeInHierarchy) continue;
+                var label = item.Label;
+                float px = label.fontSize * scale;
+                if (px < m.minNavigationGlyphPx) {
+                    m.minNavigationGlyphPx = px;
+                    m.smallestNavigationLabel = item.Section.ToString();
+                }
+                var rect = label.rectTransform.rect;
+                m.navigationLabelsFit &= label.preferredWidth <= rect.width + 1f &&
+                    label.preferredHeight <= rect.height + 1f;
+                n++;
+            }
+            Need(n == 5, "Native readability QA must inspect five live navigation labels");
+            int resources = 0;
+            foreach (var label in new[]{hud.Resources.Wood, hud.Resources.Stone, hud.Resources.Food})
+            {
+                if (!label || !label.gameObject.activeInHierarchy || !label.isActiveAndEnabled)
+                    continue;
+                float px = label.fontSize * scale;
+                if (px < m.minResourceGlyphPx) {
+                    m.minResourceGlyphPx = px;
+                    m.smallestResourceLabel = label.name;
+                }
+                var rect = label.rectTransform.rect;
+                m.resourceValuesFit &= label.preferredWidth <= rect.width + 1f &&
+                    label.preferredHeight <= rect.height + 1f;
+                resources++;
+            }
+            Need(resources >= 2, "Native readability QA missing actual resource values");
+            return m;
+        }
+
         [Serializable] class UiPixelDifference
         {
             public string resolution;
@@ -360,6 +421,7 @@ namespace Eldoria.VisualKit.Editor
                 ?.GetValue(host) as Camera;
             Need(playerCamera != null, "Canonical ValoriaIntegratedWorld.PlayerCamera unavailable");
             var touchMetrics = new List<UiTouchMetric>();
+            var readabilityMetrics = new List<UiReadabilityMetric>();
             foreach(var wh in new[]{(1600,900),(900,1600),(844,390),(390,844)})
                 Capture(t,host,after+"-"+wh.Item1+"x"+wh.Item2+".png",wh.Item1,wh.Item2,root,
                     () => {
@@ -373,6 +435,7 @@ namespace Eldoria.VisualKit.Editor
                         // alone are not an accessibility/hit-area guarantee.
                         touchMetrics.Add(MeasureNavigationPixels(hud,playerCamera,
                             wh.Item1,wh.Item2));
+                        readabilityMetrics.Add(MeasureReadability(hud, wh.Item1, wh.Item2));
                     });
             Need(original==Snapshot(hud),"HUD gameplay data changed while applying presentation-only skin");
             Object.DestroyImmediate(skin);Canvas.ForceUpdateCanvases();
@@ -409,12 +472,26 @@ namespace Eldoria.VisualKit.Editor
                     "Forja nav touch target below 44px at " + measurement.resolution +
                     " (smallest " + measurement.smallestDestination + ": " +
                     measurement.minWidthPx + "x" + measurement.minHeightPx + "px)");
+            Need(readabilityMetrics.Count == 4,
+                "Missing native text-readability evidence for a requested resolution");
+            foreach (var reading in readabilityMetrics)
+            {
+                Need(reading.minNavigationGlyphPx >= 12f && reading.navigationLabelsFit,
+                    "Nav text is too small or clipped at " + reading.resolution +
+                    ": " + reading.smallestNavigationLabel + " (" +
+                    reading.minNavigationGlyphPx + "px)");
+                Need(reading.minResourceGlyphPx >= 13f && reading.resourceValuesFit,
+                    "Resource values are too small or clipped at " + reading.resolution +
+                    ": " + reading.smallestResourceLabel + " (" +
+                    reading.minResourceGlyphPx + "px)");
+            }
             var report=new EvidenceReport{
                 status="UNITY_NATIVE_CAPTURED_VISUAL_REVIEW_PENDING",sourceScene=Scene,
                 gameplayHost=host.GetType().FullName,dataBefore=original,dataAfter=originalAfter,
                 screenshotCount=files.Length,orientationsWithDifference=differences,
                 uiRegionDifferences=uiDifferences.ToArray(),
                 nativeTouchTargets=touchMetrics.ToArray(),
+                nativeReadability=readabilityMetrics.ToArray(),
                 captureMethod="ValoriaIntegrationBuild.Capture: Unity RenderTexture/Canvas",
                 artifacts=files.Select(f=>new Artifact {name=Path.GetFileName(f),sha256=Hash(f)}).ToArray(),
                 gameplayAndSaveRulesChanged=false,physicalMobileTested=false,artApproved=false
@@ -435,6 +512,7 @@ namespace Eldoria.VisualKit.Editor
             public int screenshotCount,orientationsWithDifference;
             public UiPixelDifference[] uiRegionDifferences;
             public UiTouchMetric[] nativeTouchTargets;
+            public UiReadabilityMetric[] nativeReadability;
             public bool gameplayAndSaveRulesChanged,physicalMobileTested,artApproved;
             public Artifact[] artifacts;
         }
