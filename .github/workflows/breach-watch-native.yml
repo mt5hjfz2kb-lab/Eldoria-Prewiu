@@ -135,14 +135,14 @@ jobs:
           $reportFile=Join-Path $folder 'BreachWatchNativeEvidence.json'
           if(-not(Test-Path $reportFile)){throw 'Unity native report missing'}
           $report=Get-Content $reportFile -Raw|ConvertFrom-Json
-          if(@($report.shots).Count -ne 12){throw 'Expected 12 native screenshots'}
-          if($report.state -ne 'UNITY_NATIVE_SCREEN_CAPTURED_ART_REVIEW_PENDING' -or $report.artApproved){throw 'Evidence falsely claims artistic approval'}
+          if(@($report.shots).Count -ne 8 -or $report.screenshotCount -ne 8){throw 'Expected 8 native standalone city/Bastion screenshots'}
+          if($report.status -ne 'UNITY_NATIVE_INDEPENDENT_CAPTURED_ART_REVIEW_PENDING' -or $report.artworkApproved){throw 'Evidence falsely claims artistic approval'}
           foreach($s in $report.shots){
             $file=Join-Path $folder $s.file
             if(-not(Test-Path $file)){throw "Missing screenshot $($s.file)"}
             if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $s.sha256){throw "PNG digest mismatch $($s.file)"}
           }
-          Write-Host "BREACHWATCH_REAL_UNITY_12_CAPTURES_CERTIFIED_NO_ART_APPROVAL"
+          Write-Host "BREACHWATCH_REAL_UNITY_8_CAPTURES_CERTIFIED_NO_ART_APPROVAL"
       - name: Preserve real Unity screenshots and editor error logs
         if: always()
         uses: actions/upload-artifact@v4
