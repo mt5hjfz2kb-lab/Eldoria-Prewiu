@@ -108,7 +108,9 @@ namespace Eldoria.BreachWatch
 
         static RectTransform Rect(string name,Transform parent)
         {
-            var obj=new GameObject(name,typeof(RectTransform));obj.layer=5;obj.transform.SetParent(parent,false);
+            // Native Unity GraphicRaycaster requires an actual CanvasRenderer for every Graphic.
+            // Do not rely on the UI component being added after RectTransform.
+            var obj=new GameObject(name,typeof(RectTransform),typeof(CanvasRenderer));obj.layer=5;obj.transform.SetParent(parent,false);
             return (RectTransform)obj.transform;
         }
         static void Stretch(RectTransform rect)
