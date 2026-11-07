@@ -58,6 +58,21 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 65
     steps:
+      - name: Recover already installed GitHub Desktop Git before ANY Windows checkout
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $g){throw 'Installed Git is not discoverable in GitHub Desktop'}
+            $folder=Split-Path $g
+            $env:PATH="$folder;$env:PATH"
+            Add-Content $env:GITHUB_PATH $folder
+          }
+          Write-Host "FORJA_GIT_INSTALLED_PATH_PASS $(& git --version)"
       # This artifact was produced by a successful Ubuntu source/metadata
       # gate at 64b7933; PR173 changes no Unity files outside VisualKit.
       # Downloading 6.5MB avoids fetching the 15GB repo a second time.
@@ -75,7 +90,18 @@ jobs:
           $ErrorActionPreference='Stop'
           $base=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
           $pkg=Join-Path $env:GITHUB_WORKSPACE 'forja-kit-source'
-          if(-not(Test-Path (Join-Path $base '.git'))){throw 'Existing certified cached Unity checkout absent; refuse a speculative scene'}
+          Write-Host "FORJA_RUNNER_CACHE_INVENTORY_ROOT $env:GITHUB_WORKSPACE"
+          foreach($candidate in @(Get-ChildItem -Path $env:GITHUB_WORKSPACE -Directory -Force)){
+            $hasProject=Test-Path (Join-Path $candidate.FullName 'Unity/ProjectSettings/ProjectVersion.txt')
+            $hasGit=Test-Path (Join-Path $candidate.FullName '.git')
+            $candidateHead='none'
+            if($hasGit){
+              try { $candidateHead=((& git -C $candidate.FullName rev-parse HEAD 2>$null | Select-Object -First 1).Trim()) }
+              catch { $candidateHead='unreadable' }
+            }
+            Write-Host "FORJA_CACHE_DIR name=$($candidate.Name) unity=$hasProject git=$hasGit head=$candidateHead"
+          }
+          if(-not(Test-Path (Join-Path $base '.git'))){throw 'Existing certified cached Unity checkout absent; see FORJA_CACHE_DIR listing above'}
           $head=((& git -C $base rev-parse HEAD | Select-Object -First 1).Trim())
           $allowed=@('9efc0fefd447585f6867ab03ce2c41084b32adf2',
                      'd57aa48e7f37f30e20baf5908ff346e013410365')
