@@ -34,6 +34,11 @@ def prepare(package,site):
  (out/'build-manifest.json').write_text(json.dumps(m,indent=2)+'\n')
  identity={'revision':'native325','source_sha':'948ffa9837168a0b68dab80be76b66350422b23a','original_zip_sha256':'fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771','game_bytes_unchanged':True,'tutorial_unchanged':True,'clock_unchanged':True,'telemetry_gameplay_connected':False,'physical_mobile_tested':False,'decoded_files':proofs}
  (out/'release-identity.json').write_text(json.dumps(identity,indent=2)+'\n')
+ import importlib.util
+ spec=importlib.util.spec_from_file_location('startup_patch',Path(__file__).with_name('patch-startup.py'));mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
+ mod.patch_startup(out)
+ identity['startup_diagnostic']='stages-v2-opt-in'
+ (out/'release-identity.json').write_text(json.dumps(identity,indent=2)+'\n')
  return identity
 def mirror_previous(site):
  base='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/'
