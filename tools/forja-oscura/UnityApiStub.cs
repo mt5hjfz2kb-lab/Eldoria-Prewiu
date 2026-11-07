@@ -99,6 +99,7 @@ namespace Eldoria.UI.RoyalGold {
   public class RoyalNav:Behaviour {
     public class Item { public RoyalSection Section; public RoyalButton Button; public RoyalText Label; }
     public Item[] Items;
+    public event System.Action<RoyalSection> Requested;
   }
   public partial class RoyalHUD:MonoBehaviour {
     public RoyalHeader Realm;
@@ -111,6 +112,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
   using UnityEngine;using Eldoria.UI.RoyalGold;
   public class RoyalGoldV2Hud:MonoBehaviour {
     public RectTransform ChronicleObjectiveRect,ChronicleBuildingRect;
+    public void SynchronizeNow(){}
   }
   public partial class RoyalGoldV3ContextHud:MonoBehaviour {
     public RectTransform ContextRect;
