@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: b03376f16fb86df89c849122056d414b6740f50d
+          ref: a323233aeda091076e8faf24f42fdf2569138ea0
           sparse-checkout: |
             tools/eldoria-private-beta
             tools/delivery
@@ -42,6 +42,7 @@ jobs:
           python tools/eldoria-private-beta/prepare-pages.py input/Eldoria-native325-itch.zip site > pages-proof.json
           cat pages-proof.json
           node --check site/beta-native325/play.js
+          node tools/eldoria-private-beta/test-startup.mjs site/beta-native325
           node tools/delivery/test-exact-decoded-transport.mjs site/beta-native325
       - uses: actions/upload-artifact@v4
         with:
@@ -66,6 +67,7 @@ jobs:
           for n in range(12):
             try:
               r=json.load(urllib.request.urlopen(url+'?check='+str(n),timeout=20))
+              assert r['startup_diagnostic']=='stages-v2-opt-in'
               assert r['original_zip_sha256']=='fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771'
               print('LIVE_BETA_PAGES_IDENTITY_PASS',url);break
             except Exception:
