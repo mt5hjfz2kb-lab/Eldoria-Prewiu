@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T14:33:00Z",
+  "updated_at": "2026-11-07T14:46:42.722Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6656,10 +6656,10 @@
     {
       "id": "eldoria-post-pr163-apk-webgl-release-20261107",
       "title": "Eldoria — entrega APK firmada y WebGL posterior a PR #163",
-      "owner": "chatgpt-post-pr163-release-20261107",
+      "owner": "chatgpt-release-apk-webgl-continuation-20261107",
       "branch": "release/post-pr163-apk-webgl-20261107",
       "status": "active",
-      "claimed_at": "2026-11-07T14:33:00Z",
+      "claimed_at": "2026-11-07T14:46:42.722Z",
       "scope": [
         "pipeline/releases/pr163-apk-webgl-20261107.json",
         ".github/workflows/eldoria-post-pr163-web-release.yml",
@@ -6671,13 +6671,23 @@
         "pipeline/playtest-delivery.json"
       ],
       "resources": [],
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "phase": "RELEASE_PROVENANCE_AND_SAFE_PACKAGE_PREPARATION",
       "authorization": "El propietario solicita actualizar la APK instalada y la WebGL tras fusionar PR163 el 7/11/2026. Continuar sin introducir Forja Oscura PR173 en la distribución ni sustituir el guardado.",
       "dependency": "PR177 necesita certificación UI real; Windows ocupado con Forja Oscura PR173. No reclamar su recurso ni construir APK firmada antes de un relevo explícito; preparar paquete WebGL desde bytes nativos certificados, sin subirlo si cualquier gate de release falla.",
-      "next": "Verificar immutable PR163 native324 y Chromium PASS, preparar paquete WebGL lossless compatible con itch; resolver PR177 y claim Windows en la ventana libre; Android code22 certificado original; publicar ambos canales solo tras control de hash y QA."
+      "next": "Reuse exact native324 WebGL + Chromium QA for restricted HTML5 release; coordinate PR177 certified source and Forja Windows lease for signed Android code22; no Unity gameplay changes.",
+      "ownership_history": [
+        {
+          "owner": "chatgpt-post-pr163-release-20261107",
+          "revision": 1,
+          "from_revision": 1,
+          "to_revision": 2,
+          "claimed_at": "2026-11-07T14:46:42.721Z",
+          "reason": "Owner explicitly instructed this chat to continue until both the updated APK and WebGL are delivered; existing release claim has only registered intent and branch equals main, with no release commits, PR or runner jobs. Exact same workstream takeover, no duplicate."
+        }
+      ]
     }
   ],
   "history": [
