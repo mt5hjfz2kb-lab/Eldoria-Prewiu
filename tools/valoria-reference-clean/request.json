@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 318,
+  "revision": 319,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "PR163 native318: preserve reflection-visible zero-argument GetFreeSceneViewport API; keep explicit world-context overload; require entire 61+ PlayMode suite and Unity I-V integration plus genuine 4 mobile frames, isolated WebGL only. No publish, gameplay/save/clock changes.",
+  "checks": "PR163 native319: verify real landscape city Barracks framing beside quest and lower cartouche at 844x390 + 390x844, all Unity I-V integration and 61+ native PlayMode, unchanged world/portrait/Bastion camera and 216+ EditMode. Isolated WebGL evidence only; no publish, gameplay, save or clock change.",
   "browser_backend": "windows"
 }
