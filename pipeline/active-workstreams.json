@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T16:32:30.820Z",
+  "updated_at": "2026-11-07T18:54:22.588Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -21,7 +21,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-release-a56bdf7714d0",
+      "owner": null,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-07T13:42:08.184Z",
@@ -50,15 +50,13 @@
         "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs",
         ".github/workflows/pr163-windows-browser-qa.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PLAYER_AUDIT_POSTMERGE_UI_CERT_REPAIR",
-      "next": "Build native325 WebGL and signed APK22 from PR177 integrated source; repeat exact browser QA, publish verified bytes, restore Forja reservation.",
+      "phase": "POST_PR163_NATIVE_VALIDATION_COMPLETE_RELEASE_CONTINUES",
+      "next": "Native work finished: browser42396852832 and corrected UI42395390748 SUCCESS. Dedicated release workstream continues verified artifact publication without Windows.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1031,7 +1029,7 @@
           "old_native324_release_discarded": true
         }
       },
-      "previous_owner": "codex-player-audit-23287cf1c126",
+      "previous_owner": "codex-release-a56bdf7714d0",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -2085,11 +2083,17 @@
           "to_revision": 160,
           "at": "2026-11-07T15:23:15.124Z",
           "reason": "Owner-authorized release prerequisite takeover and temporary Windows priority: certify existing PR177 without gameplay changes, then Android22."
+        },
+        {
+          "owner": "codex-release-a56bdf7714d0",
+          "ownership_revision": 161,
+          "transferred_at": "2026-11-07T18:54:22.588Z",
+          "reason": "Native325, Android22 and complete corrected UI42395390748 finished successfully; return authorized temporary Windows priority to Forja."
         }
       ],
-      "ownership_revision": 161,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 162,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-05T19:03:44.661Z",
       "delivery_definition": {
@@ -2238,7 +2242,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-11-06T18:20:56.437Z",
+      "released_at": "2026-11-07T18:54:22.588Z",
       "delivery_closeout": {
         "status": "COMPLETED_PR162_INTEGRATED_ANDROID_WEBGL_PUBLISHED",
         "completed_at": "2026-11-06T14:08:25.436Z",
@@ -6660,15 +6664,17 @@
         "Unity/Assets/Eldoria/VisualKit.meta",
         "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 5,
+      "ownership_revision": 6,
       "write_scope_released": false,
       "phase": "NATIVE_UNITY_8_CAPTURE_AUTHORIZED_RUNNER_EXCLUSIVE",
       "next": "Preserve Forja PR173 sources and work; Windows temporarily lent by explicit owner authorization to PR177/APK22 release. Do not reclaim until delivery executor restores reservation; no native jobs cancelled.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-07T13:23:37Z",
+      "runner_claimed_at": "2026-11-07T18:54:22.588Z",
       "runner_claim_basis": "PR163 merged at 2026-11-07T12:57:46Z; canonical Valoria workstream released at revision 158; previous main native jobs finished; Forja owner claim maintained.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched.",
       "art_production_routing": "required",
@@ -6680,14 +6686,24 @@
           "to_revision": 5,
           "at": "2026-11-07T15:23:15.124Z",
           "reason": "Owner explicitly authorized temporary APK/WebGL priority in current release chat. All observed native Forja runs completed; preserve writer and source, lend Windows without cancelling any job."
+        },
+        {
+          "owner": "chatgpt-forja-oscura-visual-proof-20261107",
+          "ownership_revision": 5,
+          "transferred_at": "2026-11-07T18:54:22.588Z",
+          "reason": "Return Windows reservation after release native jobs completed; preserve Forja owner, branch and draft PR173."
         }
       ],
       "runner_priority_handoff": {
-        "status": "TEMPORARY_OWNER_AUTHORIZED_RELEASE_PRIORITY",
-        "to": "valoria-master-plan-layered-construction-20261016",
-        "restore_after": "PR177 certification and signed APK22 build",
-        "authorized_at": "2026-11-07T15:23:15.124Z",
-        "restore_owner": "chatgpt-forja-oscura-visual-proof-20261107"
+        "status": "RETURNED_AFTER_RELEASE_NATIVE_SUCCESS",
+        "returned_at": "2026-11-07T18:54:22.588Z",
+        "from": "valoria-master-plan-layered-construction-20261016",
+        "completed_runs": [
+          42391824345,
+          42395466213,
+          42396852832,
+          42395390748
+        ]
       }
     },
     {
