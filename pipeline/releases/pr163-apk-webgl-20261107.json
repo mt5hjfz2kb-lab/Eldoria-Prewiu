@@ -26,9 +26,15 @@
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
     "restricted": true,
-    "publish_enabled": true,
+    "publish_enabled": false,
     "max_total_bytes": 500000000,
-    "max_file_bytes": 200000000
+    "max_file_bytes": 200000000,
+    "delivery_complete": true,
+    "publish_run": 42403626248,
+    "remote_build": 2324364,
+    "remote_version": "native325-fb1292b3d9ce",
+    "remote_active": true,
+    "receipt_artifact": 13586298867
   },
   "android": {
     "existing_version_code": 21,
