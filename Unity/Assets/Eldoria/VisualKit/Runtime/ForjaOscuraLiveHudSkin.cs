@@ -238,9 +238,22 @@ namespace Eldoria.VisualKit
                 }
                 decorated++;
             }
-            NavigationSkinned = decorated == 5;
+            // The approved direction needs one coherent premium dock, not
+            // only five isolated icons. Draw a reusable nine-sliced backing
+            // behind every ORIGINAL navigation action and label.
+            var dock = hud.Navigation.transform as RectTransform;
+            var surface = dock ? ImageChild(dock, "Forja / continuous bottom dock",
+                Sprite("Surfaces", "panel_dark")) : null;
+            if (surface)
+            {
+                surface.raycastTarget = false;
+                surface.transform.SetAsFirstSibling();
+                var oldTrim = ImmediateChild(dock, "V3 / Chronicle bottom frame");
+                if (oldTrim) HideGraphicsByTypeName(oldTrim, "RoyalGoldV2FrameGraphic");
+            }
+            NavigationSkinned = decorated == 5 && surface;
             if (!NavigationSkinned) return;
-            Debug.Log("[FORJA] Five actual bottom-navigation buttons skinned; all original actions retained.");
+            Debug.Log("[FORJA] Five live navigation buttons and continuous dock skinned, original actions retained.");
         }
 
         private void TrySkinResources()
