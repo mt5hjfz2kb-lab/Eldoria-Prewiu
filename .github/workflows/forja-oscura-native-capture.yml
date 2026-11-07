@@ -118,8 +118,12 @@ jobs:
             Expand-Archive -LiteralPath $zip -DestinationPath $dir -Force
             $git=Get-Item (Join-Path $dir 'cmd\git.exe')
           }
-          $dir=Split-Path $git.FullName -Parent
-          & $git.FullName --version
+          # Get-Command returns ApplicationInfo (.Source), while Get-Item
+          # returns FileInfo (.FullName); both are valid Git paths.
+          $gitPath=if($git -is [System.IO.FileInfo]){$git.FullName}else{$git.Source}
+          if(-not $gitPath -or -not(Test-Path $gitPath)){throw 'Cannot resolve Git executable location'}
+          $dir=Split-Path $gitPath -Parent
+          & $gitPath --version
           if($LASTEXITCODE -ne 0){throw 'Git CLI unusable'}
           Add-Content -Path $env:GITHUB_PATH -Value $dir
           Write-Host 'FORJA_GIT_CLI_READY; real Git sparse checkout can now run'
