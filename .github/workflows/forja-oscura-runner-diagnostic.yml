@@ -33,10 +33,10 @@ jobs:
               $sdk=Join-Path $proj 'Packages/manifest.json'
               $git=Join-Path $base '.git'
               $hash=''
-              if(Test-Path $source) {$hash=((& git hash-object $source) -join '').Trim()}
+              if(Test-Path $source) {$hash=(Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant()}
               $entries+=@{candidate=$base;git=(Test-Path $git);projectVersion=(Test-Path $pv);
                 version=if(Test-Path $pv){(Get-Content $pv -First 1)}else{''};
-                scene=(Test-Path $scene);builder=(Test-Path $source);builderGitBlob=$hash;
+                scene=(Test-Path $scene);builder=(Test-Path $source);builderSha256=$hash;
                 packageManifest=(Test-Path $sdk)}
             }
           }
