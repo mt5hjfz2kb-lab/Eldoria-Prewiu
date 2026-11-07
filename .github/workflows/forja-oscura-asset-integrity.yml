@@ -291,3 +291,39 @@ jobs:
             tools/forja-oscura/
           if-no-files-found: error
           retention-days: 21
+
+  native-sparse-source-fallback:
+    # Stage an independent, limited set of source files while Windows tests
+    # proceed; it does NOT run Unity and it MUST NOT touch the native runner.
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[forja-source-bundle]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: tools/forja-oscura
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          ref: 9efc0fefd447585f6867ab03ce2c41084b32adf2
+          path: canonical-base
+          filter: blob:none
+          sparse-checkout: |
+            docs/evidence/valoria-reference-clean/integration-input-manifest.txt
+            Unity/ProjectSettings
+            Unity/Packages
+          persist-credentials: false
+      - name: Fetch only canonical native scene and verified dependencies
+        run: python3 tools/forja-oscura/prepare-native-source-sparse.py canonical-base
+      - name: Package Unity sources without creating scenes, fakes or player saves
+        uses: actions/upload-artifact@v4
+        with:
+          name: forja-pinned-canonical-source-${{ github.run_id }}
+          path: |
+            canonical-base/Unity/
+            canonical-base/native-source-sparse-report.json
+          if-no-files-found: error
+          compression-level: 6
+          retention-days: 7
