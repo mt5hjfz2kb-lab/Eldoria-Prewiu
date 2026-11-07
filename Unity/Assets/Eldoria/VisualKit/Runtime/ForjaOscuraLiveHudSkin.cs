@@ -42,6 +42,7 @@ namespace Eldoria.VisualKit
         private readonly Dictionary<RectTransform, Vector2> originalCaptionSizes = new Dictionary<RectTransform, Vector2>();
         private readonly Dictionary<RectTransform, Vector2> originalNavigationSizes = new Dictionary<RectTransform, Vector2>();
         private readonly Dictionary<RectTransform, Vector2> originalNavigationPositions = new Dictionary<RectTransform, Vector2>();
+        private readonly List<RectTransform> mobileNavigationButtons = new List<RectTransform>(5);
         private readonly Dictionary<RoyalButton, UnityAction> navigationListeners = new Dictionary<RoyalButton, UnityAction>();
         private readonly Dictionary<Button, Graphic> previousTargets = new Dictionary<Button, Graphic>();
         private readonly List<GameObject> created = new List<GameObject>();
@@ -363,57 +364,95 @@ namespace Eldoria.VisualKit
         }
 
         /// <summary>
-        /// The V2 HUD splits five buttons into 3+2 rows on a 390px portrait.
-        /// Its source cell height is 74 logical units; at the native Canvas
-        /// scale 390/800 this is just 36.1 screen pixels. Merely enlarging
-        /// the icon/graphic cannot make two 44px touch targets nonoverlapping.
-        /// Reflow only the EXISTING portrait two-row dock and its five
-        /// existing RoyalButtons. All original sizes and positions are
-        /// restored when this editor-preview skin is removed.
+        /// On the real 390px portrait, the native Canvas uses scale 390/800.
+        /// A five-column V2 dock can thus have logically wide buttons but only
+        /// about 66 physical pixels for the word CONSTRUIR/CRÓNICAS. This is
+        /// too narrow for >=12px text. Only when the measured physical width is
+        /// under 100px, reflow the ORIGINAL five controls into 3+2 rows,
+        /// preserving their live click handlers and a 44.5px touch height.
+        /// The existing V2 renderer still owns all other device layouts.
         /// </summary>
         private void EnsureMobileNavigationTouchTargets()
         {
             if (!NavigationSkinned || !hud || !hud.Navigation) return;
             var canvas = hud.GetComponent<Canvas>();
             var dock = hud.Navigation.transform as RectTransform;
-            if (!canvas || !dock || canvas.scaleFactor <= .01f) return;
-            var upper = new List<RectTransform>(3);
-            var lower = new List<RectTransform>(2);
-            int visible = 0;
+            var canvasRect = canvas ? canvas.transform as RectTransform : null;
+            if (!canvas || !dock || !canvasRect || canvas.scaleFactor <= .01f ||
+                canvasRect.rect.height <= canvasRect.rect.width) return;
+            mobileNavigationButtons.Clear();
             foreach (var item in hud.Navigation.Items)
+            {
+                if (item != null && item.Button && item.Button.gameObject.activeInHierarchy)
+                {
+                    var buttonRect = item.Button.transform as RectTransform;
+                    if (buttonRect) mobileNavigationButtons.Add(buttonRect);
+                }
+            }
+            if (mobileNavigationButtons.Count != 5) return;
+            bool twoRows = mobileNavigationButtons[0].anchoredPosition.y >
+                           mobileNavigationButtons[4].anchoredPosition.y + 1f;
+            float requiredHeight = Mathf.CeilToInt(44.5f / canvas.scaleFactor);
+            bool compactFiveColumns = !twoRows &&
+                mobileNavigationButtons[0].rect.width * canvas.scaleFactor < 100f;
+            if (!compactFiveColumns && !twoRows) return;
+
+            const float columnGap = 4f;
+            const float rowGap = 3f;
+            float originalHeight = mobileNavigationButtons[0].rect.height;
+            float buttonHeight = Mathf.Max(74f, requiredHeight);
+            // Source already chose two rows: only extend when its 74-logical
+            // unit buttons are too short on a low-density offscreen capture.
+            if (twoRows && originalHeight >= requiredHeight) return;
+            float cellWidth;
+            if (compactFiveColumns)
+            {
+                float contentWidth = Mathf.Max(150f, dock.rect.width - 12f);
+                cellWidth = Mathf.Max(60f, (contentWidth - 2f * columnGap) / 3f);
+            }
+            else
+                cellWidth = mobileNavigationButtons[0].rect.width;
+
+            float contentHeight = buttonHeight * 2f + rowGap;
+            RememberNavigationGeometry(dock);
+            dock.sizeDelta = new Vector2(dock.sizeDelta.x, contentHeight + 6f);
+            int index = 0;
+            foreach (var item in hud.Navigation.Items.OrderBy(
+                i => BottomNavigation.ChronicleOrder(i.Section)))
             {
                 if (item == null || !item.Button || !item.Button.gameObject.activeInHierarchy)
                     continue;
-                visible++;
+                int row = index / 3, column = index % 3;
+                int inRow = row == 0 ? 3 : 2;
+                float rowWidth = cellWidth * inRow + columnGap * (inRow - 1);
                 var rect = item.Button.transform as RectTransform;
-                if (!rect) return;
-                if (rect.anchoredPosition.y > 0f) upper.Add(rect);
-                else lower.Add(rect);
-            }
-            // Never change single-row landscape or future layouts; a native
-            // QA failure must expose an unfamiliar geometry instead.
-            if (visible != 5 || upper.Count != 3 || lower.Count != 2) return;
-            float oldHeight = upper[0].rect.height;
-            float rowSpacing = upper[0].anchoredPosition.y - lower[0].anchoredPosition.y;
-            float rowGap = rowSpacing - oldHeight;
-            if (oldHeight < 1f || rowGap < -.5f || rowGap > 20f) return;
-            float requiredHeight = Mathf.CeilToInt(44.5f / canvas.scaleFactor);
-            if (oldHeight >= requiredHeight) return;
-            float delta = requiredHeight - oldHeight;
-            RememberNavigationGeometry(dock);
-            dock.sizeDelta = new Vector2(dock.sizeDelta.x, dock.sizeDelta.y + 2f * delta);
-            float center = (requiredHeight + rowGap) * .5f;
-            foreach (var rowRect in upper)
-            {
-                RememberNavigationGeometry(rowRect);
-                rowRect.sizeDelta = new Vector2(rowRect.sizeDelta.x, requiredHeight);
-                rowRect.anchoredPosition = new Vector2(rowRect.anchoredPosition.x, center);
-            }
-            foreach (var rowRect in lower)
-            {
-                RememberNavigationGeometry(rowRect);
-                rowRect.sizeDelta = new Vector2(rowRect.sizeDelta.x, requiredHeight);
-                rowRect.anchoredPosition = new Vector2(rowRect.anchoredPosition.x, -center);
+                RememberNavigationGeometry(rect);
+                rect.sizeDelta = new Vector2(cellWidth, buttonHeight);
+                rect.anchoredPosition = new Vector2(
+                    -rowWidth * .5f + cellWidth * .5f + column * (cellWidth + columnGap),
+                    contentHeight * .5f - buttonHeight * .5f -
+                    row * (buttonHeight + rowGap));
+                // Keep illustrated icons as actual glyphs, not tiny dots.
+                // Each change is reversible, including the real caption.
+                if (rect.childCount > 0 && rect.GetChild(0) is RectTransform medal)
+                {
+                    RememberNavigationGeometry(medal);
+                    medal.sizeDelta = new Vector2(76f, 76f);
+                    if (medal.childCount > 0 && medal.GetChild(0) is RectTransform glyph)
+                    {
+                        RememberNavigationGeometry(glyph);
+                        glyph.sizeDelta = new Vector2(58f, 58f);
+                    }
+                }
+                if (item.Label)
+                {
+                    var caption = item.Label.rectTransform;
+                    RememberNavigationGeometry(caption);
+                    caption.sizeDelta = new Vector2(cellWidth - 4f,
+                        Mathf.Max(caption.rect.height, (12f + 4f) / canvas.scaleFactor));
+                    caption.anchoredPosition = new Vector2(0f, -buttonHeight * .3f);
+                }
+                index++;
             }
         }
 
