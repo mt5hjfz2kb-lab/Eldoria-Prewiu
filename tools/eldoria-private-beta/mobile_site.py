@@ -39,6 +39,8 @@ def candidate(original_site,original_data,bundle,destination):
  m['decoded_parts'][m['data']]=parts;m['delivery_adapter']='mobile-astc-candidate-v1';m['revision']='native325-mobile-candidate1'
  raw.unlink();(out/'build-manifest.json').write_text(json.dumps(m,indent=2))
  identity=json.loads((out/'release-identity.json').read_text());identity.update(revision=m['revision'],game_bytes_unchanged=False,gameplay_code_unchanged=True,texture_payload_modified=True,physical_mobile_tested=False,runtime_verified=False,candidate=True)
+ identity['decoded_files']=[{'path':p['url'],'decoded_sha256':p['decoded_sha256'],'decoded_bytes':p['decoded_bytes']} for parts in m['decoded_parts'].values() for p in parts]
+ identity['candidate_bundle_sha256']=hashlib.sha256(Path(bundle).read_bytes()).hexdigest()
  (out/'release-identity.json').write_text(json.dumps(identity,indent=2))
  print('MOBILE_SITE_READY',m['decoded_sizes'][m['data']],sum(p.stat().st_size for p in out.rglob('*') if p.is_file()),flush=True)
 if __name__=='__main__':candidate(*sys.argv[1:])
