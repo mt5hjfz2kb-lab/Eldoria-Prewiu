@@ -31,3 +31,12 @@ Candidate3 additionally encodes32 eligible material textures as ASTC4x4, preserv
 Independent run42421746562 rebuilds candidate3 from the exact successful candidate2 artifact, repeats object/quality checks and holds both scenes45s. A separate real-entry test uses production phone pixel ratio, enters a nickname through the existing UI, observes60s, verifies browser-backed saved nickname, reloads and observes45s. These tests remain desktop Chromium/SwiftShader, not physical iPhone certification and not a Bastion I–V playthrough.
 
 Publication remains gated on evidence. Do not mark tester readiness or physical iPhone success from these automated tests.
+
+## Entry QA limitations found
+
+- Candidate3 independent encoding produced the same bundle hash and passed startup45s. Wasm capacity1,394,147,328 bytes; no JS/Unity exception errors in that comparison.
+- Run42422065126 (cancelled after stalled extended validation) produced real production-pixel-ratio captures: nickname Beta QA visible in HUD, city and normal Las Cenizas de Valoria tutorial after60s. This partial evidence is not a passing complete test.
+- Runs42422779109 and42422948851 failed because the CDP compositor screenshot exceeded20s under SwiftShader. Do not repeat this capture method at high DPR as if it were a game crash.
+- Run42423325534 successfully entered the name and observed60s, heap1,394,147,328; raw page.reload() then exceeded30s, and browser cleanup also timed out. Raw reload remains NOT certified.
+- Synchronous canvas readback after the named Browser_mainLoop_runner callback is prepared as a capture alternative; it rejects blank/cleared frames, restores the original scheduler and does not change shipping code. Khronos explicitly permits synchronous drawing-buffer access following rendering: https://registry.khronos.org/webgl/specs/1.0/ .
+- Run42423856431 tests documented Unity instance.Quit() before reopening. Even if it passes, this certifies graceful reopen only, not raw reload or physical iPhone stability. Official API: https://docs.unity.com/en-us/engine/6000.0/manual/platform-specific/webgl/building-distribution/templates/web-templates-build-configuration .
