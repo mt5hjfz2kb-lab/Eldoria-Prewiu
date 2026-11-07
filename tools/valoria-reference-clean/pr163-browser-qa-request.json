@@ -4,5 +4,5 @@
   "revision": "native316",
   "artifact_name": "valoria-integrated-web-playtest-42311997693",
   "purpose": "PR163 isolated browser regression of latest native316, source 934110c; examine objective click, UI framing, normal clock and saves",
-  "reason": "Run the exact native316 compiled WebGL in isolated Chromium with visible input; report failures transparently; no public deployment or changing player save/clock."
+  "reason": "Independent QA A/B: native316 unchanged WebGL, normal clock/saves, stabilized two-frame Unity control hitbox before physical browser tap. Reject if UI never settles. Prior native314/native316 single-frame objective tap hit stale x211; next actual native frame x312."
 }
