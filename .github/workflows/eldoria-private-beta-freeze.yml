@@ -5,6 +5,12 @@ on:
       - feature/eldoria-private-beta-i-v-20261107
     paths:
       - .github/workflows/eldoria-private-beta-freeze.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-private-beta-freeze.yml'
+      - 'tools/eldoria-private-beta/**'
+      - 'pipeline/eldoria-private-beta/**'
   workflow_dispatch:
 permissions:
   contents: read
@@ -39,7 +45,6 @@ jobs:
       contents: write
       actions: read
     name: Verify exact web bytes and store only as draft
-    if: ${{ github.repository == 'mt5hjfz2kb-lab/Eldoria-Prewiu' }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
