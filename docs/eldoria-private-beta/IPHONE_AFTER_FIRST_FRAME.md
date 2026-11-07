@@ -21,3 +21,13 @@ The browser comparison holds both builds45s after Unity readiness, checks JavaSc
 The full terrain source validation is appropriate in build QA, not necessarily on every player's startup. Moving it to a source-hash-gated build step and splitting initialization across frames are alternatives requiring native compile, exact scene/query equivalence and save/gameplay tests before shipping. They are not implemented by the candidate2 texture experiment.
 
 Unity primary references: https://docs.unity.com/en-us/engine/6000.0/script-reference/unityengine/texture/isreadable and https://docs.unity.com/en-us/engine/6000.0/manual/platform-specific/webgl/develop/memory . Readable textures retain CPU data; Web managed GC can run only at frame boundaries. These facts support hypotheses but do not prove the cause of this specific Safari return.
+
+## Candidate2 result and candidate3
+
+Candidate2 run42420500174 passed 45-second welcome observation with unchanged visible scene and no unreadable-texture errors. Wasm capacity decreased from1,580,924,928 to1,481,834,496 bytes (6.3%). This is reserved Unity linear memory, NOT total process memory. Candidate2 was not published as a standalone fix.
+
+Candidate3 additionally encodes32 eligible material textures as ASTC4x4, preserving dimensions, mip chain, RGBA channels, color space and sampler metadata. Local validation reopened all54,338 objects; only accepted texture payload/format/length changed. Saved serialized bytes150,994,188. Bundle SHA25660b43335bb263568dd366faca06ab0d648506dac31024342b1d4edefd8a7c315. Twenty-two candidates failed quality limits and retain their original bytes. Six accepted normal maps satisfy p95 angular error <=1 degree for the first three mips (<=2 for tails) and p99 <=2/3 respectively. No normal-map channel swizzle is introduced.
+
+Independent run42421746562 rebuilds candidate3 from the exact successful candidate2 artifact, repeats object/quality checks and holds both scenes45s. A separate real-entry test uses production phone pixel ratio, enters a nickname through the existing UI, observes60s, verifies browser-backed saved nickname, reloads and observes45s. These tests remain desktop Chromium/SwiftShader, not physical iPhone certification and not a Bastion I–V playthrough.
+
+Publication remains gated on evidence. Do not mark tester readiness or physical iPhone success from these automated tests.
