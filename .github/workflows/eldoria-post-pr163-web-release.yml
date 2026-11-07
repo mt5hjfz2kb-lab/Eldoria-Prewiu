@@ -20,6 +20,16 @@ jobs:
     timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pipeline/playtest-delivery.json
+            /pipeline/releases/pr163-apk-webgl-20261107.json
+            /tools/delivery/
+            /tools/valoria-reference-clean/
+            /tools/closeout/
+            /docs/evidence/valoria-reference-clean/environment-city-wide-banner-after.png
+            /updates/android/family.json
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
