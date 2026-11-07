@@ -15,7 +15,7 @@ def run(source,destination):
      try:deny.add(key(tex.m_Texture.read().object_reader))
      except Exception:raise RuntimeError('unresolved data texture reference')
  ctx=a.ASTCContext(a.ASTCConfig(a.ASTCProfile.LDR_SRGB,4,4,1,quality=60,flags=a.ASTCConfigFlags.USE_DECODE_UNORM8))
- sw=a.ASTCSwizzle.from_str('RGBA');changed={};reports=[];savings=0
+ sw=a.ASTCSwizzle.from_str('RGBA');changed={};metadata={};reports=[];savings=0
  for o in sorted(env.objects,key=lambda o:o.byte_size,reverse=True):
   if o.type.name!='Texture2D' or o.byte_size<1000000 or key(o) in deny:continue
   t=o.read()
@@ -37,12 +37,11 @@ def run(source,destination):
   reports.append(record)
   if good:
    # Preserve every non-payload field, including dimensions, mip count, color space and sampler.
-   before=t.read_typetree() if hasattr(t,'read_typetree') else o.read_typetree()
+   before=o.read_typetree()
+   metadata[key(o)]={k:v for k,v in before.items() if k not in ('image data','m_TextureFormat','m_CompleteImageSize')}
    t.image_data=b''.join(chunks);t.m_TextureFormat=48;t.m_CompleteImageSize=len(t.image_data);t.save()
-   after=o.read_typetree()
-   for field in before:
-    if field not in ('image data','m_TextureFormat','m_CompleteImageSize'):assert before[field]==after[field],(key(o),field)
-   changed[key(o)]=digest(o.get_raw_data());savings+=len(raw)-len(t.image_data)
+   assert o.data is not None
+   changed[key(o)]=digest(o.data);savings+=len(raw)-len(t.image_data)
   print(json.dumps({k:record[k] for k in ['id','name','before','after','accepted']}),flush=True)
  (out/'texture-report.json').write_text(json.dumps({'changes':reports,'serialized_saved_bytes':savings,'changed_count':len(changed)},indent=2))
  assert changed,'no passing textures'
@@ -50,6 +49,10 @@ def run(source,destination):
  check=UnityPy.load(str(out/'data.unity3d'));found={key(o):digest(o.get_raw_data()) for o in check.objects}
  assert found.keys()==original.keys(),'object graph membership changed'
  for k,v in found.items():assert v==changed.get(k,original[k]),('unexpected object mutation',k)
+ for o in check.objects:
+  if key(o) in changed:
+   tree=o.read_typetree();assert tree['m_TextureFormat']==48
+   for k,v in metadata[key(o)].items():assert tree[k]==v,('texture metadata changed',key(o),k)
  proof={'source_sha256':digest(Path(source).read_bytes()),'candidate_sha256':digest(payload),'changed_textures':len(changed),'all_objects_verified':len(original),'saved_serialized_bytes':savings,'candidate_bundle_bytes':len(payload),'runtime_verified':False,'physical_iphone_verified':False}
  (out/'integrity.json').write_text(json.dumps(proof,indent=2));print('INTEGRITY_PASS',json.dumps(proof),flush=True)
 if __name__=='__main__':run(sys.argv[1],sys.argv[2])
