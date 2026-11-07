@@ -17,7 +17,9 @@ const shot=async(name)=>{
   window.requestAnimationFrame=function(callback){
    return original.call(window,function(time){
     callback(time);
-    if(!captured){captured=true;restore();clearTimeout(timer);
+    if(!captured && callback.name==='Browser_mainLoop_runner'){
+     const canvas=document.getElementById('unity-canvas');const probe=document.createElement('canvas');probe.width=probe.height=16;const ctx=probe.getContext('2d');ctx.drawImage(canvas,0,0,16,16);const pixels=ctx.getImageData(0,0,16,16).data;let low=255,high=0;for(let i=0;i<pixels.length;i+=4){low=Math.min(low,pixels[i],pixels[i+1],pixels[i+2]);high=Math.max(high,pixels[i],pixels[i+1],pixels[i+2]);}if(high-low<15)return;
+     captured=true;restore();clearTimeout(timer);
      try{resolve(document.getElementById('unity-canvas').toDataURL('image/png'))}catch(e){reject(e);}
     }
    });
