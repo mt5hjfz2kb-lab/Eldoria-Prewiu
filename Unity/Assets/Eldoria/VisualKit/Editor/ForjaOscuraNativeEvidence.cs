@@ -353,6 +353,12 @@ namespace Eldoria.VisualKit.Editor
             }
             Need(hud.GetComponents<Canvas>().Length==1, "New standalone Canvas introduced unexpectedly");
             ValidateNavigation(hud);
+            // ValoriaIntegratedWorld is located reflectively to avoid a
+            // second compile-time dependency on the canonical scene assembly.
+            var playerCamera = host.GetType()
+                .GetProperty("PlayerCamera", BindingFlags.Public | BindingFlags.Instance)
+                ?.GetValue(host) as Camera;
+            Need(playerCamera != null, "Canonical ValoriaIntegratedWorld.PlayerCamera unavailable");
             var touchMetrics = new List<UiTouchMetric>();
             foreach(var wh in new[]{(1600,900),(900,1600),(844,390),(390,844)})
                 Capture(t,host,after+"-"+wh.Item1+"x"+wh.Item2+".png",wh.Item1,wh.Item2,root,
@@ -365,7 +371,7 @@ namespace Eldoria.VisualKit.Editor
                         // Measure screen pixels AFTER Unity sets the actual
                         // offscreen camera resolution; RectTransform units
                         // alone are not an accessibility/hit-area guarantee.
-                        touchMetrics.Add(MeasureNavigationPixels(hud,host.PlayerCamera,
+                        touchMetrics.Add(MeasureNavigationPixels(hud,playerCamera,
                             wh.Item1,wh.Item2));
                     });
             Need(original==Snapshot(hud),"HUD gameplay data changed while applying presentation-only skin");

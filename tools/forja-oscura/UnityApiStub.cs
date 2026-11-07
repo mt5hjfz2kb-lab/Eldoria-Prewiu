@@ -25,6 +25,7 @@ namespace UnityEngine {
     public bool activeInHierarchy => true;
     public Transform transform {get;} = new Transform();
     public T GetComponent<T>() where T : Component => default;
+    public T AddComponent<T>() where T : Component => default;
   }
   public partial class Transform : Component, IEnumerable<Transform> {
     public string name {get;set;}
