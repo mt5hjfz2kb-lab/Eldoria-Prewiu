@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T21:47:37.261Z",
+  "updated_at": "2026-11-07T21:54:54.500Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6667,14 +6667,12 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingPreview.cs",
         ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 15,
+      "ownership_revision": 16,
       "write_scope_released": false,
-      "phase": "OWNER_SINGLE_ROW_ICON_NAVIGATION",
-      "next": "User rejects stacked bottom navigation. Reflow all five original buttons into one row, hide captions reversibly, native icon bounds and hit tests in four sizes.",
+      "phase": "SINGLE_ROW_ICON_NAVIGATION_NATIVE_VERIFIED_ART_PENDING",
+      "next": "Preserve five icon-only actions in one row. Improve building card composition and header hierarchy against approved reference; physical device and advanced states remain pending.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-07T18:54:22.588Z",
@@ -6733,20 +6731,23 @@
         ]
       },
       "last_verified": {
-        "source_sha": "7f7e7acc5068ff5c66ab5c83dc69e99afaabc54c",
-        "native_run": 42416965218,
+        "source_sha": "cb8c659ee78c8e40b0ecd8c6dc298db5b9f723f7",
+        "native_run": 42417772857,
         "native_status": "SUCCESS",
-        "source_ci_run": 42416965283,
+        "source_ci_run": 42417773032,
         "screenshots": 12,
-        "artifact": 13592151290,
+        "artifact": 13592062245,
+        "navigation_rows": 1,
+        "visible_navigation_icons": 5,
+        "visible_navigation_labels": 0,
         "three_unlocked_routes": true,
         "context_close": true,
         "build_and_isolated_save": true,
         "art_approved": false,
         "platform_validated": false
       },
-      "runner_released_at": "2026-11-07T21:44:01.416Z",
-      "runner_release_basis": "Owned native 42416965218 completed SUCCESS; no queued Forja native run. Preserve writer/PR and documented remaining art scope; Windows free for other work."
+      "runner_released_at": "2026-11-07T21:54:54.500Z",
+      "runner_release_basis": "Native 42417772857 SUCCESS. No native work remaining for this navigation correction."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
