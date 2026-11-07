@@ -58,6 +58,7 @@ function makeAsset(kind,w,h,seed=17,ornamentation=true){
      if(kind==='button'&&Math.abs(y-h*.27)<1.3&&x>25&&x<w-25)k=gold[0]+55;
      if(kind==='hover'&&Math.abs(y-h*.27)<1.3&&x>25&&x<w-25)k=ivory[0]+13;
      if(kind==='selected'&&y>h-16&&x>w*.39&&x<w*.61)k=ember[0]+25;
+    }
      const nx=Math.min(x,w-1-x),ny=Math.min(y,h-1-y);
      // Ornamental marks are baked ONLY into the fixed 9-slice corner.
      // Stretchable bands retain brushed metal and continuous trim, never
@@ -74,7 +75,6 @@ function makeAsset(kind,w,h,seed=17,ornamentation=true){
       if(radius<=3.0)k=gold[0]+clamp(Math.round(27+(ry-ny)*6),5,67);
       if(radius<1.3)k=ivory[0]+12;
      }
-    }
    }
    raw[y*(w+1)+x+1]=k;
   }
