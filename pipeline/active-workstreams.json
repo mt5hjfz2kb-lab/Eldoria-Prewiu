@@ -6742,9 +6742,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "PUBLIC_PAGES_AUTHORIZED_PREPARATION",
+      "phase": "PUBLIC_PAGES_DEPLOYED_GAMEPLAY_TELEMETRY_PENDING",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required.",
-      "next": "Package exact native325 for headerless Pages, preserve current site, deploy and verify.",
+      "next": "Verify real WebGL-capable desktop/mobile startup, then integrate and verify consent and Unity gameplay telemetry before measured tester sessions.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6758,8 +6758,14 @@
         "real_hosted_pass": false,
         "physical_mobile_tested": false,
         "supabase_beta_event_rows": 0,
-        "distribution_enabled": false,
-        "budget_eur": 0
+        "distribution_enabled": true,
+        "budget_eur": 0,
+        "pages_run": 42414743676,
+        "pages_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/",
+        "pages_deployed": true,
+        "exact_decoded_transport": "PASS framework 441773; code 44206834; data 585377820; hashes and single allocations",
+        "browser_landing": "PASS anonymous",
+        "browser_game_start": "BLOCKED remote browser reports Your browser does not support WebGL"
       },
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta."
