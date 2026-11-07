@@ -871,6 +871,30 @@ namespace Eldoria.VisualKit.Editor
                     });
             Need(captureFailures.Count==0,"Native layout/raycast assertions failed; diagnostic frames only: " + string.Join("; ",captureFailures));
             Need(original==Snapshot(hud),"HUD gameplay data changed while applying presentation-only skin");
+            // Regression for the actual large model that failed the old lower
+            // cartouche in 844x390. These are supplementary candidate captures,
+            // not an invented baseline pass; retain the old failed evidence.
+            var stateCaptures = new List<Artifact>();
+            var stateSelect=host.GetType().GetMethod("Select",new[]{typeof(string)});
+            Need(stateSelect!=null && (bool)stateSelect.Invoke(host,new object[]{"bastion"}),
+                "Genuine Bastion unavailable for contextual framing regression");
+            hud.Refresh();
+            var stateV2=hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
+            if(stateV2) stateV2.SynchronizeNow();
+            foreach(var wh in new[]{(1600,900),(900,1600),(844,390),(390,844)})
+            {
+                string name="native-context-bastion-"+wh.Item1+"x"+wh.Item2+".png";
+                Capture(t,host,name,wh.Item1,wh.Item2,root,
+                    () => { if(stateV2) stateV2.SynchronizeNow(); if(context) context.SynchronizeNow();
+                        skin.ApplyNow(true); Canvas.ForceUpdateCanvases(); });
+                stateCaptures.Add(new Artifact{name=name,sha256=Hash(Path.Combine(root,name))});
+            }
+            Need((bool)stateSelect.Invoke(host,new object[]{"sawmill"}),"Could not restore tutorial A/B fixture");
+            hud.Refresh();
+            if(stateV2) stateV2.SynchronizeNow();
+            if(context) context.SynchronizeNow();
+            skin.ApplyNow(true);
+            Need(original==Snapshot(hud),"Bastion framing regression changed original tutorial data");
             // These are additional live clicks, NOT inferred from graphics or
             // button raycasts. A/B frames are already captured and immutable.
             // Never dispatch them in a manual Editor session using real saves.
@@ -955,6 +979,7 @@ namespace Eldoria.VisualKit.Editor
                 nativeReadability=readabilityMetrics.ToArray(),
                 navigationActions=navigationActions,
                 contextClose=contextClose,
+                supplementaryStateCaptures=stateCaptures.ToArray(),
                 buildingOffer=buildingOffer,
                 captureMethod="ValoriaIntegrationBuild.Capture: Unity RenderTexture/Canvas",
                 artifacts=files.Select(f=>new Artifact {name=Path.GetFileName(f),sha256=Hash(f)}).ToArray(),
@@ -982,6 +1007,7 @@ namespace Eldoria.VisualKit.Editor
             public BuildingOfferCheck buildingOffer;
             public bool gameplayAndSaveRulesChanged,physicalMobileTested,artApproved;
             public Artifact[] artifacts;
+            public Artifact[] supplementaryStateCaptures;
         }
     }
 }

@@ -1,1 +1,1 @@
-PR173 art refinement after native PASS 42411196403: genuine thumbnail dark backdrop and larger desktop miniature. Same mesh/light/save; recapture exact candidate before review.
+PR173 exact native proof plus four supplementary genuine Bastion framing regression captures. Preserve eight tutorial A/B frames and pointer/save checks.
