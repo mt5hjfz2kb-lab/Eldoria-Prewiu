@@ -5,239 +5,273 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using Eldoria.ReferenceClean;
-using Eldoria.ReferenceClean.Editor;
 using Eldoria.UI.RoyalGold;
-using UnityEngine;
-using UnityEngine.UI;
+using Eldoria.BreachWatch;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine;
 using UnityEngine.EventSystems;
-using Object=UnityEngine.Object;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Eldoria.BreachWatch.Editor
 {
-    // A genuine Unity Editor/game scene capture, NOT a conceptual mockup.
-    // Source: canonical city + same state/session + new independent Canvas.
-    // No gameplay modifications, no scene saves, no publication.
+    // Genuine disposable-scene capture. Installs a new Canvas, not a skin.
+    // No scene, production prefab, gameplay, clock or player save is modified.
     [InitializeOnLoad]
     public static class BreachWatchNativeEvidence
     {
-        const string Flag="BreachWatch.Proof.Active";
-        const string Scene="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
-        static bool running;
-        static double deadline;
-        static string Dir => Path.GetFullPath(Path.Combine(Application.dataPath,"../BreachWatchNativeEvidence"));
-        [Serializable]
-        public sealed class Sample
+        const string Flag = "BreachWatch.IndependentNative.Run";
+        const string Scene = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
+        const string ArtifactDir = "BreachWatchNativeEvidence";
+        static double deadline, afterNaming;
+        static int phase, storyPages;
+        static bool busy;
+        static ValoriaIntegratedWorld host;
+
+        [Serializable] public sealed class Shot
         {
-            public string file,resolution,mode,sha256;
-            public int bytes,wood,stone,food,power,bastionLevel;
-            public bool independentCanvas,oldCanvasHidden,realBuildingAction,screenChanges;
+            public string file, sha256, selected, realBuilding, actualObjective;
+            public int width, height, buttons;
+            public bool oldCanvasOff, newCanvasIndependent, liveSession, fiveInOneRow;
         }
-        [Serializable]
-        public sealed class Report
+        [Serializable] public sealed class Report
         {
-            public string kind="ELDORIA_BREACHWATCH_REAL_UNITY",version="6000.3.23f1",
-                state="UNITY_NATIVE_SCREEN_CAPTURED_ART_REVIEW_PENDING",
-                sourceCommit="GITHUB_SHA_ENV",
-                scene=Scene;
-            public int screenshotCount;
-            public bool isolatedProbe=true,existingHudUnmodified=true,oldArtReused=false,
-                physicalAndroidTested=false,webglTested=false,artApproved=false;
-            public List<Sample> shots=new List<Sample>();
+            public string status, source, scene, note;
+            public int screenshotCount, functioningNewNavigationClicks, oldCanvasVisible;
+            public bool saveUnchanged, oldHudGraphicsReused, artworkApproved, androidTested;
+            public Shot[] shots;
         }
-        static BreachWatchNativeEvidence(){EditorApplication.update-=Poll;EditorApplication.update+=Poll;}
-        [MenuItem("Eldoria/Vigilia de la Brecha/Capturar primera pantalla nativa")]
+
+        static BreachWatchNativeEvidence()
+        {
+            EditorApplication.update -= Tick;
+            EditorApplication.update += Tick;
+        }
+        static void Need(bool ok, string message)
+        {
+            if (!ok) throw new InvalidOperationException(message);
+        }
+        [MenuItem("Eldoria/Vigilia de la Brecha/Captura Unity nativa independiente")]
         public static void CaptureBatch()
         {
-            if(EditorApplication.isPlaying)throw new InvalidOperationException("BreachWatch needs a clean Editor start");
-            Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
-            EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
-            Directory.CreateDirectory(Dir);
-            SessionState.SetBool(Flag,true);
-            deadline=EditorApplication.timeSinceStartup+300;
+            Need(!EditorApplication.isPlaying, "Must enter Play from fresh Editor session");
+            Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE", "1");
+            EditorSceneManager.OpenScene(Scene, OpenSceneMode.Single);
+            SessionState.SetBool(Flag, true);
+            deadline = EditorApplication.timeSinceStartup + 240;
+            phase = 0; storyPages = 0; busy = false;
             EditorApplication.EnterPlaymode();
         }
-        static void Poll()
+        static void Tick()
         {
-            if(!SessionState.GetBool(Flag,false)||running||!EditorApplication.isPlaying)return;
-            if(deadline==0)deadline=EditorApplication.timeSinceStartup+300;
-            if(EditorApplication.timeSinceStartup>deadline){Fail("Timed out waiting for real Valoria session");return;}
-            var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
-            if(!host||!host.Ready||!host.Hud||!host.City||!host.City.Probe)return;
-            running=true;SessionState.SetBool(Flag,false);
-            EditorApplication.delayCall+=()=>Run(host);
-        }
-        static void Assert(bool valid,string message)
-        {
-            if(!valid)throw new InvalidOperationException("BREACHWATCH_NATIVE_PROOF_FAIL: "+message);
-        }
-        static void Fail(string message)
-        {
-            Directory.CreateDirectory(Dir);
-            File.WriteAllText(Path.Combine(Dir,"failure.txt"),message);
-            Debug.LogError("BREACHWATCH_NATIVE_PROOF_FAIL "+message);
-            EditorApplication.Exit(1);
-        }
-        static string Sha(byte[] bytes)
-        {
-            using(var h=SHA256.Create())return BitConverter.ToString(h.ComputeHash(bytes)).Replace("-","").ToLowerInvariant();
-        }
-        static Color32[] CapturePixels(Camera camera,int width,int height,Action prepare)
-        {
-            var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
-            var tex=new Texture2D(width,height,TextureFormat.RGBA32,false);
-            var oldTexture=camera.targetTexture;
-            var oldAspect=camera.aspect;
-            var oldMask=camera.cullingMask;
-            var oldActive=RenderTexture.active;
+            if (!SessionState.GetBool(Flag, false) || busy || !EditorApplication.isPlaying) return;
             try
             {
-                camera.targetTexture=rt;
-                camera.aspect=width/(float)height;
-                camera.cullingMask|=(1<<5);
-                prepare?.Invoke();
+                if (deadline == 0) deadline = EditorApplication.timeSinceStartup + 240;
+                Need(EditorApplication.timeSinceStartup < deadline, "Valoria disposable scene initialization timeout");
+                if (!host) host = Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
+                if (!host || !host.Ready || !host.Hud || !host.City) return;
+                Need(host.City.Probe, "Refuse to capture or change an actual player save");
+                if (phase == 0)
+                {
+                    Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.CompleteProbePlayerName(host);
+                    afterNaming = EditorApplication.timeSinceStartup;
+                    phase = 1;
+                    return;
+                }
+                if (phase == 1)
+                {
+                    // Honor existing narrative and advance only through its real command.
+                    if (host.Hud.NarrativeOpen)
+                    {
+                        Need(storyPages++ < 30, "Cannot complete authentic first-entry narrative");
+                        host.Hud.Modal.Extra.onClick.Invoke();
+                        return;
+                    }
+                    if (EditorApplication.timeSinceStartup - afterNaming < .9) return;
+                    phase = 2;
+                }
+                if (phase == 2)
+                {
+                    busy = true;
+                    SessionState.SetBool(Flag, false);
+                    CaptureRealCity();
+                    Debug.Log("BREACH_WATCH_NATIVE_CAPTURE_PASS");
+                    EditorApplication.Exit(0);
+                }
+            }
+            catch (Exception e)
+            {
+                SessionState.SetBool(Flag, false);
+                Debug.LogException(e);
+                var dir = Path.Combine(UnityEngine.Application.dataPath, "../" + ArtifactDir);
+                Directory.CreateDirectory(dir);
+                File.WriteAllText(Path.Combine(dir, "error.txt"), e.ToString());
+                EditorApplication.Exit(1);
+            }
+        }
+        static string HexHash(string path)
+        {
+            using(var sha = SHA256.Create())
+            using(var stream = File.OpenRead(path))
+                return BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
+        }
+        static void CaptureRealCity()
+        {
+            var dir = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "../" + ArtifactDir));
+            Directory.CreateDirectory(dir);
+            Need(!host.Hud.NarrativeOpen, "Existing narrative still active at capture start");
+            var before = JsonUtility.ToJson(host.City.Gateway.Snapshot());
+            var ui = BreachWatchHud.Install(host);
+            Need(ui != null && ui.IndependentCanvas && ui.LegacyPresentationHidden,
+                "This must be a new Canvas; the entire old HUD presentation must be OFF");
+            Need(ui.HasRealSession, "New Canvas cannot access existing real game session");
+            Need(!ui.transform.IsChildOf(host.Hud.transform), "New Canvas must not be attached to legacy HUD");
+
+            var shots = new List<Shot>();
+            foreach (var selection in new [] {"", "bastion"})
+            {
+                ui.SelectBuilding(selection);
+                Need(ui.SelectedBuildingId == selection && host.Hud.SelectedBuildingId == selection,
+                    "New selection did not reach canonical game host");
+                foreach (var size in new [] {(1600,900),(900,1600),(844,390),(390,844)})
+                    shots.Add(RenderNative(ui, dir, selection, size.Item1, size.Item2));
+            }
+            // Exercise the REAL uGUI GraphicRaycaster and pointer sequence, not Button.onClick.Invoke.
+            ui.SelectBuilding("");
+            int pointerClicks = 0;
+            var target = ui.NavButtons[0];
+            var camera = host.PlayerCamera;
+            var temp = new RenderTexture(1600,900,24);
+            var prev = camera.targetTexture;
+            var prevAspect = camera.aspect;
+            int mask = camera.cullingMask;
+            try
+            {
+                camera.targetTexture = temp;
+                camera.aspect = 1600f/900f;
+                camera.cullingMask |= 1 << 5;
+                ui.Reflow(1600,900);
                 Canvas.ForceUpdateCanvases();
-                camera.Render();Canvas.ForceUpdateCanvases();
-                camera.Render();Canvas.ForceUpdateCanvases();
-                RenderTexture.active=rt;
-                tex.ReadPixels(new Rect(0,0,width,height),0,0,false);
-                tex.Apply(false,false);
-                return tex.GetPixels32();
+                camera.Render(); camera.Render();
+                var eventSystem = EventSystem.current;
+                Need(eventSystem, "Real Unity EventSystem missing");
+                Vector3[] corners = new Vector3[4];
+                ((RectTransform)target.transform).GetWorldCorners(corners);
+                var pos = RectTransformUtility.WorldToScreenPoint(camera,(corners[0]+corners[2])*.5f);
+                var e = new PointerEventData(eventSystem) { position = pos,
+                    pointerId = -1, button = PointerEventData.InputButton.Left };
+                var hits = new List<RaycastResult>();
+                ui.NativeCanvas.GetComponent<GraphicRaycaster>().Raycast(e,hits);
+                Need(hits.Count>0 && hits[0].gameObject.transform.IsChildOf(target.transform),
+                    "New native pointer hit-test failed: first raycast target is not REINO");
+                ExecuteEvents.Execute(target.gameObject,e,ExecuteEvents.pointerDownHandler);
+                ExecuteEvents.Execute(target.gameObject,e,ExecuteEvents.pointerUpHandler);
+                ExecuteEvents.Execute(target.gameObject,e,ExecuteEvents.pointerClickHandler);
+                Need(ui.SelectedBuildingId == "bastion", "REAL UI pointer could not select Bastion");
+                pointerClicks++;
             }
             finally
             {
-                camera.targetTexture=oldTexture;camera.aspect=oldAspect;camera.cullingMask=oldMask;
-                RenderTexture.active=oldActive;
-                rt.Release();Object.Destroy(rt);Object.Destroy(tex);
+                camera.targetTexture = prev;
+                camera.aspect = prevAspect;
+                camera.cullingMask = mask;
+                temp.Release(); Object.DestroyImmediate(temp);
             }
+            var after = JsonUtility.ToJson(host.City.Gateway.Snapshot());
+            Need(before == after, "New HUD preview modified gameplay/save data");
+            Need(shots.Count == 8 && shots.All(x=>x.liveSession && x.oldCanvasOff &&
+                x.newCanvasIndependent && x.fiveInOneRow && x.buttons == 5),
+                "An orientation failed native, independent HUD or five-destination proof");
+            var report = new Report {
+                status = "UNITY_NATIVE_INDEPENDENT_CAPTURED_ART_REVIEW_PENDING",
+                source = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? "local",
+                scene = Scene, note = "Genuine Unity play mode, authentic disposable Valoria session; only one new Canvas; old Canvas disabled; real Bastion selection. No Android/WebGL certification.",
+                screenshotCount = shots.Count, functioningNewNavigationClicks = pointerClicks,
+                oldCanvasVisible = 0, saveUnchanged = before == after,
+                oldHudGraphicsReused = false, artworkApproved = false, androidTested = false,
+                shots = shots.ToArray()
+            };
+            File.WriteAllText(Path.Combine(dir,"BreachWatchNativeEvidence.json"),JsonUtility.ToJson(report,true));
         }
-        static void Save(Report report,Color32[] pixels,int width,int height,string state,BreachWatchHud hud,ValoriaIntegratedWorld host)
+        static Shot RenderNative(BreachWatchHud ui,string root,string selection,int w,int h)
         {
-            var tex=new Texture2D(width,height,TextureFormat.RGBA32,false);
+            Camera camera = host.PlayerCamera;
+            Need(camera, "Canonical Valoria camera missing");
+            var lastRt = camera.targetTexture;
+            var lastMask = camera.cullingMask;
+            var lastAspect = camera.aspect;
+            var lastActive = RenderTexture.active;
+            var rt = new RenderTexture(w,h,24,RenderTextureFormat.ARGB32);
+            var image = new Texture2D(w,h,TextureFormat.RGB24,false);
+            string name = "real-unity-" + (selection.Length==0?"city":"bastion") + "-" + w + "x" + h + ".png";
+            string file = Path.Combine(root,name);
             try
             {
-                tex.SetPixels32(pixels);tex.Apply(false,false);
-                byte[] bytes=tex.EncodeToPNG();
-                Assert(bytes.Length>4096,"PNG is empty or implausibly small "+state);
-                string name="native-"+state+"-"+width+"x"+height+".png";
-                File.WriteAllBytes(Path.Combine(Dir,name),bytes);
-                var snapshot=host.Read(hud?.SelectedBuildingId??"",host.English);
-                var sample=new Sample{
-                    file=name,resolution=width+"x"+height,mode=state,sha256=Sha(bytes),
-                    bytes=bytes.Length,wood=snapshot.Wood,stone=snapshot.Stone,food=snapshot.Food,
-                    power=snapshot.Power,bastionLevel=snapshot.BastionLevel,
-                    independentCanvas=hud&&hud.IndependentCanvas,
-                    oldCanvasHidden=hud&&hud.LegacyPresentationHidden,
-                    realBuildingAction= snapshot.Building!=null && snapshot.Building.Action!=null};
-                report.shots.Add(sample);
-                Debug.Log("BREACHWATCH_REAL_UNITY_PNG "+name+" "+bytes.Length+" "+sample.sha256);
-            }
-            finally{Object.Destroy(tex);}
-        }
-        static bool Different(Color32[] a,Color32[] b,int width,int height)
-        {
-            int changed=0,total=0;
-            // Compare border-area pixels containing the UI, not moving city foliage.
-            for(int y=height-height/5;y<height-5;y+=3)
-            for(int x=5;x<width/3;x+=3)
-            {
-                int i=y*width+x;total++;
-                if(Math.Abs(a[i].r-b[i].r)+Math.Abs(a[i].g-b[i].g)+Math.Abs(a[i].b-b[i].b)>42)changed++;
-            }
-            return total>0 && changed>Math.Max(40,total/20);
-        }
-        static void ValidateRealSelection(BreachWatchHud hud,ValoriaIntegratedWorld host)
-        {
-            Assert(hud&&hud.IndependentCanvas,"The new HUD is not an independent Canvas");
-            Assert(hud.LegacyPresentationHidden,"Legacy visual HUD is not completely hidden");
-            Assert(hud.NativeCanvas.transform.parent==null,"New HUD is nested inside legacy hierarchy");
-            Assert(!hud.GetComponentsInChildren<Eldoria.UI.RoyalGold.RoyalHUD>(true).Any(),"Old HUD component in new presentation");
-            Assert(!hud.GetComponentsInChildren<MonoBehaviour>(true).Any(c=>c && c.GetType().Name=="ForjaOscuraLiveHudSkin"),"Legacy Forja skin in new presentation");
-            Assert(hud.SelectedBuildingId=="bastion","Requested Bastion selection was not retained");
-            var real=host.Read("bastion",host.English);
-            Assert(real!=null && real.Building!=null && real.Building.Id=="bastion","Canonical Bastion snapshot missing");
-            Assert(hud.CurrentSnapshot!=null && hud.CurrentSnapshot.Building!=null,"New presentation lacks real building binding");
-            Assert(hud.CurrentSnapshot.Building.Level==real.Building.Level,"Building level differs from the game");
-            Assert(hud.CurrentSnapshot.Wood==real.Wood && hud.CurrentSnapshot.Stone==real.Stone
-                && hud.CurrentSnapshot.Power==real.Power,"Wallet or power differs from canonical game");
-            Assert(hud.BuildingPanel&&hud.BuildingPanel.gameObject.activeInHierarchy,"New contextual panel not visible");
-            Assert(hud.BuildingAction&&hud.BuildingAction.GetComponent<Graphic>().raycastTarget,"New genuine action has no raycast graphic");
-            Assert(hud.NavButtons.Count==5 && hud.NavButtons.All(b=>b&&b.GetComponent<Graphic>()&&b.GetComponent<Graphic>().raycastTarget),
-                "Exactly five functional new navigation targets are required");
-            Assert(hud.NavButtons[2].interactable==false,"Unimplemented Army screen must not appear implemented");
-        }
-        static void Run(ValoriaIntegratedWorld host)
-        {
-            try
-            {
-                ValoriaIntegrationBuild.CompleteProbePlayerName(host);
-                Assert(host&&host.Ready&&host.City.Probe,"Only isolated real gameplay probe allowed");
-                if(host.Hud.Modal)host.Hud.Modal.Hide(); // visual proof starts after fixture naming, no save changes
-                var stateBefore=host.City.Gateway.Snapshot();
-                var report=new Report{sourceCommit=Environment.GetEnvironmentVariable("GITHUB_SHA")??"local-editor"};
-                var camera=host.PlayerCamera;
-                Assert(camera!=null,"Canonical world camera missing");
-                var originalCanvas=host.Hud.GetComponent<Canvas>();
-                var originalGroup=host.Hud.GetComponent<CanvasGroup>();
-                var originalRaycaster=host.Hud.GetComponent<GraphicRaycaster>();
-                var originalMode=originalCanvas.renderMode;
-                var originalCam=originalCanvas.worldCamera;
-                var originalDistance=originalCanvas.planeDistance;
-                Assert(originalCanvas&&originalGroup,"Canonical baseline UI missing");
-                // First native shot of the previous visual presentation, not a fake picture.
-                // Screenshots of the new system are from an ENTIRELY SEPARATE Canvas.
-                var sizes=new[]{new Vector2Int(1600,900),new Vector2Int(900,1600),
-                    new Vector2Int(844,390),new Vector2Int(390,844)};
-                foreach(var size in sizes)
+                camera.targetTexture = rt;
+                camera.aspect = w/(float)h;
+                camera.cullingMask |= 1 << 5;
+                ui.NativeCanvas.worldCamera = camera;
+                ui.Reflow(w,h);
+                ui.RenderNow();
+                Canvas.ForceUpdateCanvases();
+                camera.Render();
+                Canvas.ForceUpdateCanvases();
+                camera.Render();
+                RenderTexture.active = rt;
+                image.ReadPixels(new Rect(0,0,w,h),0,0);
+                image.Apply();
+                File.WriteAllBytes(file,image.EncodeToPNG());
+                Need(new FileInfo(file).Length > 16000, "Unity native PNG incomplete: "+name);
+                Need(ui.IndependentCanvas && ui.LegacyPresentationHidden && ui.HasRealSession,
+                    "Old presentation visible or disconnected UI in "+name);
+                var nav = ui.NavButtons;
+                Need(nav.Count==5 && nav.All(x=>x), "Exactly 5 original independent navigation buttons required");
+                float previousRight = -1;
+                bool oneRow = true;
+                float baselineY = float.NaN;
+                foreach (var button in nav)
                 {
-                    host.Hud.SelectBuilding("bastion");
-                    var baseline=CapturePixels(camera,size.x,size.y,()=>{
-                        originalCanvas.enabled=true;
-                        originalCanvas.renderMode=RenderMode.ScreenSpaceCamera;
-                        originalCanvas.worldCamera=camera;
-                        originalCanvas.planeDistance=1f;
-                        originalGroup.alpha=1;
-                        if(originalRaycaster)originalRaycaster.enabled=true;
-                    });
-                    Save(report,baseline,size.x,size.y,"legacy-bastion",null,host);
+                    var rect = (RectTransform)button.transform;
+                    Vector3[] corners = new Vector3[4];
+                    rect.GetWorldCorners(corners);
+                    var a = RectTransformUtility.WorldToScreenPoint(camera,corners[0]);
+                    var b = RectTransformUtility.WorldToScreenPoint(camera,corners[2]);
+                    Need(b.x-a.x>=43.5 && b.y-a.y>=43.5,
+                        "Navigation touch-target smaller than 44px: "+name+"/"+button.name);
+                    Need(a.x>=-2 && b.x<=w+2 && a.y>=-2 && b.y<=h+2,
+                        "Off-screen independent nav button: "+name+"/"+button.name);
+                    if (!float.IsNaN(baselineY) && Mathf.Abs(a.y-baselineY)>2) oneRow=false;
+                    baselineY = a.y;
+                    if (previousRight>=0 && a.x<previousRight+2) oneRow=false;
+                    previousRight=b.x;
                 }
-                originalCanvas.renderMode=originalMode;originalCanvas.worldCamera=originalCam;
-                originalCanvas.planeDistance=originalDistance;
-                // Build a truly independent object, then switch OFF the old canvas.
-                var hud=BreachWatchHud.Install(host);
-                Assert(hud.IndependentCanvas&&hud.LegacyPresentationHidden,"Old visual controller was not replaced in preview");
-                foreach(var size in sizes)
+                Need(oneRow,"Five independent navigation symbols overlap or stack in "+name);
+                if (selection=="bastion")
                 {
-                    hud.SelectBuilding("");
-                    var city=CapturePixels(camera,size.x,size.y,()=>{
-                        hud.Reflow(size.x,size.y);hud.RenderNow();
-                    });
-                    Save(report,city,size.x,size.y,"vigilia-city",hud,host);
-                    hud.SelectBuilding("bastion");
-                    var selected=CapturePixels(camera,size.x,size.y,()=>{
-                        hud.Reflow(size.x,size.y);hud.RenderNow();ValidateRealSelection(hud,host);
-                    });
-                    Assert(selected.Length==city.Length,"Nonmatching camera buffer dimensions");
-                    Save(report,selected,size.x,size.y,"vigilia-bastion",hud,host);
-                    report.shots[report.shots.Count-1].screenChanges=Different(city,selected,size.x,size.y);
+                    Need(ui.BuildingPanel.gameObject.activeInHierarchy &&
+                         ui.CurrentSnapshot?.Building != null &&
+                         ui.CurrentSnapshot.Building.Id=="bastion",
+                         "Real Bastion selection is missing contextual native card in "+name);
                 }
-                var stateAfter=host.City.Gateway.Snapshot();
-                Assert(stateBefore.PlayerId==stateAfter.PlayerId &&
-                    stateBefore.Resources.Wood==stateAfter.Resources.Wood &&
-                    stateBefore.Resources.Stone==stateAfter.Resources.Stone &&
-                    stateBefore.Resources.Food==stateAfter.Resources.Food &&
-                    stateBefore.Revision==stateAfter.Revision,
-                    "Preview changed the live gameplay economy or saved state");
-                Assert(report.shots.Count==12,"Expected 12 genuine Unity PNGs");
-                Assert(report.shots.Where(s=>s.mode=="vigilia-bastion").All(s=>s.independentCanvas&&s.oldCanvasHidden),
-                    "Proof uses legacy layers");
-                File.WriteAllText(Path.Combine(Dir,"BreachWatchNativeEvidence.json"),
-                    JsonUtility.ToJson(report,true));
-                Debug.Log("BREACHWATCH_NATIVE_12_REAL_CAPTURES_PASS_ART_PENDING source="+report.sourceCommit);
-                EditorApplication.Exit(0);
+                return new Shot {
+                    file=name,sha256=HexHash(file),width=w,height=h,
+                    selected=selection,realBuilding=ui.CurrentSnapshot?.Building?.Name ?? "",
+                    actualObjective=ui.CurrentSnapshot?.Objective ?? "",buttons=nav.Count,
+                    oldCanvasOff=ui.LegacyPresentationHidden,
+                    newCanvasIndependent=ui.IndependentCanvas,
+                    liveSession=ui.HasRealSession,fiveInOneRow=oneRow
+                };
             }
-            catch(Exception e){Debug.LogException(e);Fail(e.ToString());}
+            finally
+            {
+                camera.targetTexture = lastRt;
+                camera.cullingMask = lastMask;
+                camera.aspect = lastAspect;
+                RenderTexture.active = lastActive;
+                rt.Release(); Object.DestroyImmediate(rt); Object.DestroyImmediate(image);
+            }
         }
     }
 }
