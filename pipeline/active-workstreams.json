@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T15:13:00.887Z",
+  "updated_at": "2026-11-07T15:23:15.124Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -21,7 +21,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-pr163-postmerge-validation-20261107",
+      "owner": "codex-release-a56bdf7714d0",
       "branch": "fix/pr163-postmerge-v41-capture-scale-20261107",
       "status": "active",
       "claimed_at": "2026-11-07T13:42:08.184Z",
@@ -49,13 +49,15 @@
         "pipeline/valoria-convergence-cancel-stale-request.json",
         "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "PLAYER_AUDIT_POSTMERGE_UI_CERT_REPAIR",
-      "next": "Corregir validación nativa V41: escala real teléfono 600 puntos vs aserción heredada 800/900, demostrar preservación de capturas; validar en CI con runner cedido al propietario actual PR173 o en espera, no forzar recurso.",
+      "next": "Current release executor certifies existing PR177, merges exact repair, builds signed Android22; return Windows to Forja afterwards.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -2061,9 +2063,16 @@
           "to_revision": 159,
           "claimed_at": "2026-11-07T13:42:08.184Z",
           "reason": "El propietario solicita confirmar el cierre de PR163 y resolver los fallos genuinos pendientes; PR163 se fusionó, pero la certificación exacta posterior al merge descubrió una aserción de escala de pantalla obsoleta en captura V41. Reclamación estrecha solo de ese archivo y prueba, sin reserva Windows ni tocar Forja Oscura PR173."
+        },
+        {
+          "previous_owner": "chatgpt-pr163-postmerge-validation-20261107",
+          "from_revision": 159,
+          "to_revision": 160,
+          "at": "2026-11-07T15:23:15.124Z",
+          "reason": "Owner-authorized release prerequisite takeover and temporary Windows priority: certify existing PR177 without gameplay changes, then Android22."
         }
       ],
-      "ownership_revision": 159,
+      "ownership_revision": 160,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -6636,14 +6645,12 @@
         "Unity/Assets/Eldoria/VisualKit.meta",
         "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 4,
+      "ownership_revision": 5,
       "write_scope_released": false,
       "phase": "NATIVE_UNITY_8_CAPTURE_AUTHORIZED_RUNNER_EXCLUSIVE",
-      "next": "Unity 6000.3.23f1 genuine A/B 8 PNG, real HUD clicks/build isolated probe, inspect visual fidelity; no main/Android/WebGL until gates pass.",
+      "next": "Preserve Forja PR173 sources and work; Windows temporarily lent by explicit owner authorization to PR177/APK22 release. Do not reclaim until delivery executor restores reservation; no native jobs cancelled.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-07T13:23:37Z",
@@ -6651,7 +6658,22 @@
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
-      "art_production_request": "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json"
+      "art_production_request": "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json",
+      "ownership_history": [
+        {
+          "from_revision": 4,
+          "to_revision": 5,
+          "at": "2026-11-07T15:23:15.124Z",
+          "reason": "Owner explicitly authorized temporary APK/WebGL priority in current release chat. All observed native Forja runs completed; preserve writer and source, lend Windows without cancelling any job."
+        }
+      ],
+      "runner_priority_handoff": {
+        "status": "TEMPORARY_OWNER_AUTHORIZED_RELEASE_PRIORITY",
+        "to": "valoria-master-plan-layered-construction-20261016",
+        "restore_after": "PR177 certification and signed APK22 build",
+        "authorized_at": "2026-11-07T15:23:15.124Z",
+        "restore_owner": "chatgpt-forja-oscura-visual-proof-20261107"
+      }
     },
     {
       "id": "eldoria-post-pr163-apk-webgl-release-20261107",
