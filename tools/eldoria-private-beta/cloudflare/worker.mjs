@@ -5,6 +5,7 @@
  * Never expose SUPABASE_SECRET_KEY or LINK_SECRET to the browser.
  */
 import {EVENT_SET,DEVICES,FIELDS} from './events-catalog.mjs';
+import {OBSERVER_JS} from './observer-source.mjs';
 const RELEASE='native325-fb1292b3d9ce';
 const COOKIE='__Host-eldoria_beta';
 const SAFE={ 'X-Content-Type-Options':'nosniff', 'Referrer-Policy':'no-referrer',
@@ -112,6 +113,11 @@ export default {
    return ingest(req,env,invite);
   }
   if(path==='/beta/session')return answer(JSON.stringify({tester_id:invite.tester_id,release:RELEASE}),200,{'Content-Type':'application/json'});
+  // The invitation allowlist is checked above: observer is never public.
+  if(path==='/beta/observer.js'){
+   if(req.method!=='GET'&&req.method!=='HEAD')return answer('Metodo no permitido',405);
+   return answer(req.method==='HEAD'?null:OBSERVER_JS,200,{'Content-Type':'application/javascript; charset=utf-8'});
+  }
   if(req.method!=='GET'&&req.method!=='HEAD')return answer('Metodo no permitido',405);
   const rel=pathFromURL(req.url);if(!rel)return answer('Ruta incorrecta',400);
   const key='releases/'+RELEASE+'/'+rel;
@@ -124,6 +130,21 @@ export default {
   headers.set('Cache-Control',/^(index\.html|play\.js|build-manifest\.json)$/.test(rel)?
    'private, no-store':'private, max-age=86400, no-transform');
   headers.set('Accept-Ranges','bytes');
+  // The original 19 R2 objects remain byte-identical. In tester mode only
+  // the *HTTP response* for the 1.8 KB index contains a passive script tag.
+  // No Unity WASM, assets, game rules, tutorials or saved data are altered.
+  if(rel==='index.html'&&req.method==='GET'&&env.OBSERVER_ENABLED==='true'){
+   const html=await new Response(object.body).text();
+   if(!html.includes('</body>') || html.length>10000)
+     return answer('Index de beta invalido',500);
+   const modified=html.replace('</body>','<script defer src="/beta/observer.js"></script></body>');
+   headers.delete('ETag');
+   headers.delete('Content-Length');
+   headers.delete('Content-Encoding');
+   headers.set('Content-Type','text/html; charset=utf-8');
+   headers.set('Cache-Control','private, no-store');
+   return new Response(modified,{status:200,headers});
+  }
   const partial=!!(object.range&&opts);
   if(partial)headers.set('Content-Range','bytes '+object.range.offset+'-'+(object.range.offset+object.range.length-1)+'/'+object.size);
   return new Response(req.method==='HEAD'?null:object.body,{
