@@ -59,7 +59,7 @@ namespace UnityEngine {
   public class Canvas : Behaviour { public float scaleFactor {get;set;} = 1f; public static void ForceUpdateCanvases(){} }
   public static class Time { public static float unscaledTime=>0; }
   public static class Resources { public static T Load<T>(string path) where T:Object=>default; }
-  public static partial class Mathf { public static float Max(float x,float y)=>Math.Max(x,y); public static float Min(float x,float y)=>Math.Min(x,y); public static int CeilToInt(float x)=>(int)Math.Ceiling(x); }
+  public static partial class Mathf { public static float Clamp(float value,float min,float max)=>Math.Min(max,Math.Max(min,value)); public static float Max(float x,float y)=>Math.Max(x,y); public static float Min(float x,float y)=>Math.Min(x,y); public static int CeilToInt(float x)=>(int)Math.Ceiling(x); }
   public static partial class Debug { public static void Log(string s){} public static void LogWarning(string s){} }
   [AttributeUsage(AttributeTargets.Class)]public sealed class DisallowMultipleComponent:Attribute {}
   [AttributeUsage(AttributeTargets.Class)]public sealed class DefaultExecutionOrder:Attribute {public DefaultExecutionOrder(int n){} }
