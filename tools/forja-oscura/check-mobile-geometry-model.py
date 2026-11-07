@@ -22,13 +22,12 @@ source_contract = {
         "AlignBuildingCartoucheToNavigation();",
     ],
     skin: [
-        "mobileNavigationButtons[0].rect.width * canvas.scaleFactor < 100f;",
-        "float requiredHeight = Mathf.CeilToInt(56f / canvas.scaleFactor);",
-        "float buttonHeight = Mathf.Max(74f, requiredHeight);",
-        "float contentHeight = buttonHeight * 2f + rowGap;",
-        "float contentWidth = Mathf.Max(150f, dock.rect.width - 12f);",
-        "cellWidth = Mathf.Max(60f, (contentWidth - 2f * columnGap) / 3f);",
-        "Mathf.Max(58f, b.rect.height)",
+        "float dockWidth = Mathf.Min(safe.rect.width-24f/scale, 640f/scale);",
+        "float columnGap = 4f/scale;",
+        "float cellWidth = (dockWidth-12f/scale-4f*columnGap)/5f;",
+        "float buttonHeight = 56f/scale;",
+        "dock.sizeDelta = new Vector2(dockWidth, 64f/scale);",
+        "if (item.Label) Hide(item.Label);",
         "Mathf.Min(50f, Mathf.CeilToInt(24f / canvas.scaleFactor))",
         "icon.offsetMin = new Vector2(-19f, -10f);",
         "icon.offsetMax = new Vector2(2f, 10f);",
@@ -67,31 +66,15 @@ def geometry(width: int, height: int) -> dict:
     scale = width / (600.0 if phone else 800.0) if portrait else (
         height / (600.0 if phone else 900.0))
     canvas_w = width / scale
-    available = max(150.0, canvas_w - 12.0)
-    gap = 4.0 if portrait else 9.0
-    initial_columns = 3 if portrait and (available - 12 - gap * 4) / 5 < 72 else 5
-    rows = math.ceil(5 / initial_columns)
-    initial_width = ((available * .9 - 12 - gap * (initial_columns - 1)) / initial_columns
-                    if portrait else min(240, max(90, (available * .9 - 12 - gap * 4) / 5)))
-    baseline_height = 74 if rows > 1 else 105 if portrait else 106
-    if portrait and initial_columns == 5 and initial_width * scale < 100:
-        columns = 3
-        rows = 2
-        dock_width = min(available, max(initial_width * 5 + gap * 4 + 12, available * .9))
-        cell_width = max(60, (max(150, dock_width - 12) - 2 * 4) / 3)
-        cell_height = max(74, math.ceil(56 / scale))
-    elif portrait and rows > 1 and baseline_height * scale < 44.5:
-        columns = initial_columns
-        cell_width = initial_width
-        cell_height = max(74, math.ceil(56 / scale))
-    else:
-        columns = initial_columns
-        cell_width = initial_width
-        cell_height = baseline_height
+    columns, rows = 5, 1
+    dock_width = min(canvas_w-24/scale,640/scale)
+    gap = 4/scale
+    cell_width = (dock_width-12/scale-4*gap)/5
+    cell_height = 56/scale
     physical_button_width = cell_width * scale
     physical_button_height = cell_height * scale
     physical_graphic_width = max(54, cell_width - 2) * scale
-    physical_graphic_height = max(58, cell_height) * scale
+    physical_graphic_height = cell_height * scale
 
     icon_source = min(25, max(14, .27 * ((canvas_w - 232 - 56 - 17) / 2))) if portrait else 36
     icon_physical = icon_source * scale
@@ -119,8 +102,8 @@ assert all(v["touch_px"] >= 44 for v in proof), proof
 assert all(v["graphic_px"] >= 44 for v in proof), proof
 assert all(v["graphic_width_px"] >= 44 for v in proof), proof
 assert all(v["resource_icon_px"] >= 24 for v in proof), proof
-assert proof[-1]["rows"] == 2 and proof[-1]["columns"] == 3, proof[-1]
-assert proof[-1]["touch_width_px"] >= 100, proof[-1]
+assert all(v["rows"] == 1 and v["columns"] == 5 for v in proof), proof
+assert proof[-1]["touch_width_px"] >= 44, proof[-1]
 assert proof[-1]["card_to_dock_margin_model_px"] > 0, proof[-1]
 for record in proof:
     print(f"FORJA_GEOMETRY_SOURCE_MODEL {record}")

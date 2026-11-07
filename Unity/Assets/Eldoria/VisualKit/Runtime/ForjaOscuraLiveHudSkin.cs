@@ -46,7 +46,6 @@ namespace Eldoria.VisualKit
         private readonly Dictionary<RectTransform, Vector2> originalCaptionSizes = new Dictionary<RectTransform, Vector2>();
         private readonly Dictionary<RectTransform, Vector2> originalNavigationSizes = new Dictionary<RectTransform, Vector2>();
         private readonly Dictionary<RectTransform, Vector2> originalNavigationPositions = new Dictionary<RectTransform, Vector2>();
-        private readonly List<RectTransform> mobileNavigationButtons = new List<RectTransform>(5);
         private readonly Dictionary<RoyalButton, UnityAction> navigationListeners = new Dictionary<RoyalButton, UnityAction>();
         private readonly Dictionary<Button, Graphic> previousTargets = new Dictionary<Button, Graphic>();
         private readonly List<GameObject> created = new List<GameObject>();
@@ -467,8 +466,8 @@ namespace Eldoria.VisualKit
             }
         }
 
-        // Keep the real caption clear of the metal rim in EVERY orientation.
-        // V2 lays these children out every frame, so restore the inset after it.
+        // Owner direction: five recognizable icons, no visible captions.
+        // Retain the original labels and restore them when the preview is removed.
         private void ReflowNavigationContents()
         {
             if (!NavigationSkinned || !hud || !hud.Navigation) return;
@@ -477,30 +476,20 @@ namespace Eldoria.VisualKit
             float scale = canvas.scaleFactor;
             foreach (var item in hud.Navigation.Items)
             {
-                if (item == null || !item.Button || !item.Label) continue;
+                if (item == null || !item.Button) continue;
+                if (item.Label) Hide(item.Label);
                 var button = item.Button.transform as RectTransform;
                 if (!button || button.childCount == 0) continue;
                 var medal = button.GetChild(0) as RectTransform;
                 if (!medal || medal.childCount == 0) continue;
                 var glyph = medal.GetChild(0) as RectTransform;
                 if (!glyph) continue;
-                EnsureReadable(item.Label, 12f, true);
-                float heightPx = button.rect.height * scale;
-                float insetPx = heightPx < 65f ? 6f : 8f;
-                float iconPx = Mathf.Clamp(heightPx * .42f, 24f, 40f);
-                float captionPx = Mathf.Max(18f, item.Label.fontSize * scale * 1.3f);
+                float iconPx = Mathf.Clamp(Mathf.Min(button.rect.width, button.rect.height)*scale-12f, 32f, 48f);
                 RememberNavigationGeometry(medal);
                 RememberNavigationGeometry(glyph);
-                medal.sizeDelta = new Vector2((iconPx + 4f)/scale, (iconPx + 4f)/scale);
-                medal.anchoredPosition = new Vector2(0f,
-                    button.rect.height*.5f - (insetPx + iconPx*.5f)/scale);
-                // The image has a two-unit inset expansion on each side.
-                glyph.sizeDelta = new Vector2(iconPx/scale - 4f, iconPx/scale - 4f);
-                var caption = item.Label.rectTransform;
-                RememberNavigationGeometry(caption);
-                caption.sizeDelta = new Vector2(button.rect.width - 8f/scale, captionPx/scale);
-                caption.anchoredPosition = new Vector2(0f,
-                    -button.rect.height*.5f + (insetPx + captionPx*.5f)/scale);
+                medal.sizeDelta = new Vector2((iconPx+4f)/scale, (iconPx+4f)/scale);
+                medal.anchoredPosition = Vector2.zero;
+                glyph.sizeDelta = new Vector2(iconPx/scale-4f, iconPx/scale-4f);
             }
         }
 
@@ -513,149 +502,46 @@ namespace Eldoria.VisualKit
                 originalNavigationPositions.Add(rect, rect.anchoredPosition);
         }
 
-        /// <summary>
-        /// On the real 390px portrait, the native Canvas uses scale 390/800.
-        /// A five-column V2 dock can thus have logically wide buttons but only
-        /// about 66 physical pixels for the word CONSTRUIR/CRÓNICAS. This is
-        /// too narrow for >=12px text. Only when the measured physical width is
-        /// under 100px, reflow the ORIGINAL five controls into 3+2 rows,
-        /// preserving their live click handlers and a 44.5px touch height.
-        /// The existing V2 renderer still owns all other device layouts.
-        /// </summary>
+        /// <summary>One row in every orientation, including 390px phones.
+        /// Icon-only controls keep all five original handlers and order.</summary>
         private void EnsureMobileNavigationTouchTargets()
         {
             if (!NavigationSkinned || !hud || !hud.Navigation) return;
             var canvas = hud.GetComponent<Canvas>();
             var dock = hud.Navigation.transform as RectTransform;
-            var canvasRect = canvas ? canvas.transform as RectTransform : null;
-            if (!canvas || !dock || !canvasRect || canvas.scaleFactor <= .01f ||
-                canvasRect.rect.height <= canvasRect.rect.width) return;
-            mobileNavigationButtons.Clear();
-            foreach (var item in hud.Navigation.Items)
-            {
-                if (item != null && item.Button && item.Button.gameObject.activeInHierarchy)
-                {
-                    var buttonRect = item.Button.transform as RectTransform;
-                    if (buttonRect) mobileNavigationButtons.Add(buttonRect);
-                }
-            }
-            if (mobileNavigationButtons.Count != 5) return;
-            float minY = mobileNavigationButtons[0].anchoredPosition.y;
-            float maxY = minY;
-            foreach (var rect in mobileNavigationButtons)
-            {
-                minY = Mathf.Min(minY, rect.anchoredPosition.y);
-                maxY = Mathf.Max(maxY, rect.anchoredPosition.y);
-            }
-            bool twoRows = maxY - minY > 3f;
-            float requiredHeight = Mathf.CeilToInt(56f / canvas.scaleFactor);
-            bool compactFiveColumns = !twoRows &&
-                mobileNavigationButtons[0].rect.width * canvas.scaleFactor < 100f;
-            if (!compactFiveColumns && !twoRows) return;
-
-            const float columnGap = 4f;
-            const float rowGap = 3f;
-            float buttonHeight = Mathf.Max(74f, requiredHeight);
-            // Always reapply icon/caption slots: V2 rewrites them each frame,
-            // even when the original two-row buttons already meet touch size.
-            float cellWidth;
-            if (compactFiveColumns)
-            {
-                float contentWidth = Mathf.Max(150f, dock.rect.width - 12f);
-                cellWidth = Mathf.Max(60f, (contentWidth - 2f * columnGap) / 3f);
-            }
-            else
-                cellWidth = mobileNavigationButtons[0].rect.width;
-
-            float contentHeight = buttonHeight * 2f + rowGap;
+            var safe = dock ? dock.parent as RectTransform : null;
+            if (!canvas || !dock || !safe || canvas.scaleFactor <= .01f) return;
+            float scale = canvas.scaleFactor;
+            float dockWidth = Mathf.Min(safe.rect.width-24f/scale, 640f/scale);
+            float columnGap = 4f/scale;
+            float cellWidth = (dockWidth-12f/scale-4f*columnGap)/5f;
+            float buttonHeight = 56f/scale;
             RememberNavigationGeometry(dock);
-            dock.sizeDelta = new Vector2(dock.sizeDelta.x, contentHeight + 6f);
+            dock.sizeDelta = new Vector2(dockWidth, 64f/scale);
             int index = 0;
-            for (int order = 0; order < 5; order++)
-            foreach (var item in hud.Navigation.Items)
+            foreach (var item in hud.Navigation.Items.OrderBy(item => BottomNavigation.ChronicleOrder(item.Section)))
             {
-                if (item == null || BottomNavigation.ChronicleOrder(item.Section) != order)
-                    continue;
-                if (item == null || !item.Button || !item.Button.gameObject.activeInHierarchy)
-                    continue;
-                int row = index / 3, column = index % 3;
-                int inRow = row == 0 ? 3 : 2;
-                float rowWidth = cellWidth * inRow + columnGap * (inRow - 1);
+                if (item == null || !item.Button || !item.Button.gameObject.activeInHierarchy) continue;
                 var rect = item.Button.transform as RectTransform;
+                if (!rect) continue;
                 RememberNavigationGeometry(rect);
                 rect.sizeDelta = new Vector2(cellWidth, buttonHeight);
                 rect.anchoredPosition = new Vector2(
-                    -rowWidth * .5f + cellWidth * .5f + column * (cellWidth + columnGap),
-                    contentHeight * .5f - buttonHeight * .5f -
-                    row * (buttonHeight + rowGap));
-                // Keep illustrated icons as actual glyphs, not tiny dots.
-                // Each change is reversible, including the real caption.
-                if (rect.childCount > 0 && rect.GetChild(0) is RectTransform medal)
-                {
-                    RememberNavigationGeometry(medal);
-                    float medalSize = 28f / canvas.scaleFactor;
-                    medal.sizeDelta = new Vector2(medalSize, medalSize);
-                    medal.anchoredPosition = new Vector2(0f,
-                        buttonHeight * .5f - 19f / canvas.scaleFactor);
-                    if (medal.childCount > 0 && medal.GetChild(0) is RectTransform glyph)
-                    {
-                        RememberNavigationGeometry(glyph);
-                        float glyphSize = 24f / canvas.scaleFactor;
-                        glyph.sizeDelta = new Vector2(glyphSize, glyphSize);
-                    }
-                }
-                if (item.Label)
-                {
-                    var caption = item.Label.rectTransform;
-                    RememberNavigationGeometry(caption);
-                    caption.sizeDelta = new Vector2(cellWidth - 4f,
-                        18f / canvas.scaleFactor);
-                    caption.anchoredPosition = new Vector2(0f,
-                        -buttonHeight * .5f + 13f / canvas.scaleFactor);
-                }
+                    -(5f*cellWidth+4f*columnGap)*.5f+cellWidth*.5f+index*(cellWidth+columnGap), 0f);
                 index++;
             }
         }
 
-        /// <summary>
-        /// RoyalGoldV2Hud.SynchronizeNow aligns the REAL building cartouche
-        /// to its original navigation dock before this opt-in skin expands
-        /// that dock to two readable portrait rows. Without this adjustment
-        /// the card's lower edge would cover the upper row of touch controls.
-        /// Move only the existing bottom-anchored card; never create a modal
-        /// or invoke a building command. The original position is restored.
-        /// </summary>
+        // Reclaim the old second row's space for the genuine city and card.
         private void EnsureBuildingCartoucheClearsNavigation()
         {
-            if (!NavigationSkinned || !v2 || !v2.ChronicleBuildingRect ||
-                !hud || !hud.Navigation) return;
+            if (!NavigationSkinned || !v2 || !v2.ChronicleBuildingRect || !hud || !hud.Navigation) return;
             var dock = hud.Navigation.transform as RectTransform;
-            if (!dock) return;
-            // This is exclusively the mobile two-row variant. Do not alter
-            // established landscape and wide-portrait placements.
-            float minY = float.PositiveInfinity, maxY = float.NegativeInfinity;
-            int active = 0;
-            foreach (var item in hud.Navigation.Items)
-            {
-                if (item == null || !item.Button ||
-                    !item.Button.gameObject.activeInHierarchy) continue;
-                var rect = item.Button.transform as RectTransform;
-                if (!rect) continue;
-                active++;
-                minY = Mathf.Min(minY, rect.anchoredPosition.y);
-                maxY = Mathf.Max(maxY, rect.anchoredPosition.y);
-            }
-            if (active != 5 || maxY - minY < 3f) return;
             var card = v2.ChronicleBuildingRect;
-            // The V2 cartouche uses the SAME bottom anchor as this dock.
-            // Its y is the bottom edge, not the center or top.
-            if (card.anchorMin.y > .01f || card.anchorMax.y > .01f) return;
-            float requiredBottom = Mathf.Max(8f,
-                dock.anchoredPosition.y + dock.rect.height + 8f);
-            if (card.anchoredPosition.y >= requiredBottom - .5f) return;
+            if (!dock || card.anchorMin.y > .01f || card.anchorMax.y > .01f) return;
+            float requiredBottom = Mathf.Max(8f, dock.anchoredPosition.y + dock.rect.height + 8f);
             RememberNavigationGeometry(card);
-            card.anchoredPosition = new Vector2(card.anchoredPosition.x,
-                requiredBottom);
+            card.anchoredPosition = new Vector2(card.anchoredPosition.x, requiredBottom);
         }
 
         // Correct the actual text slots, not a screenshot overlay. V2 owns the
@@ -1044,7 +930,7 @@ namespace Eldoria.VisualKit
                             // actual 44.5px target, not just the 36px medallion.
                             // Keep it inside the resized live button rectangle.
                             r.sizeDelta = new Vector2(Mathf.Max(54f, b.rect.width - 2f),
-                                Mathf.Max(58f, b.rect.height));
+                                b.rect.height);
                         }
                     }
                     var ic = ImmediateChild(glyph, "Forja / navigation icon");

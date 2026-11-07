@@ -189,6 +189,7 @@ namespace Eldoria.VisualKit.Editor
             public bool buildingCardWasVisible;
             public float contextMinTargetPx;
             public bool hasFiveVisibleActions;
+            public int navigationRows;
         }
 
         private static UiTouchMetric MeasureNavigationPixels(RoyalHUD hud,
@@ -202,6 +203,8 @@ namespace Eldoria.VisualKit.Editor
             float minGraphicH = float.PositiveInfinity;
             string worst = "";
             int seen = 0;
+            float minRowY = float.PositiveInfinity, maxRowY = float.NegativeInfinity;
+            var horizontalSpans = new List<Vector2>();
             foreach (var item in nav.Items)
             {
                 if (item == null || !item.Button || !item.Button.gameObject.activeInHierarchy) continue;
@@ -214,6 +217,9 @@ namespace Eldoria.VisualKit.Editor
                 Vector2 bottomRight = RectTransformUtility.WorldToScreenPoint(nativeCamera, corners[3]);
                 float pixelW = Vector2.Distance(bottomLeft, bottomRight);
                 float pixelH = Vector2.Distance(bottomLeft, topLeft);
+                minRowY = Mathf.Min(minRowY, bottomLeft.y);
+                maxRowY = Mathf.Max(maxRowY, bottomLeft.y);
+                horizontalSpans.Add(new Vector2(bottomLeft.x, bottomRight.x));
                 if (item.Label && rect.childCount > 0)
                 {
                     var medal = rect.GetChild(0) as RectTransform;
@@ -232,15 +238,14 @@ namespace Eldoria.VisualKit.Editor
                             }
                         }
                     Need(illustration, "Missing live navigation illustration");
+                    Need(!item.Label.enabled, "Owner requires icon-only navigation: " + item.Section);
                     var iconCorners = new Vector3[4];
-                    var labelCorners = new Vector3[4];
                     illustration.GetWorldCorners(iconCorners);
-                    item.Label.rectTransform.GetWorldCorners(labelCorners);
-                    float iconBottom = RectTransformUtility.WorldToScreenPoint(nativeCamera, iconCorners[0]).y;
-                    float labelTop = RectTransformUtility.WorldToScreenPoint(nativeCamera, labelCorners[1]).y;
-                    Need(iconBottom >= labelTop, "Navigation illustration overlaps its caption: " + item.Section);
-                    Need(RectTransformUtility.WorldToScreenPoint(nativeCamera,labelCorners[0]).y >= bottomLeft.y,
-                        "Navigation caption escapes its live button: " + item.Section);
+                    var iconBottom = RectTransformUtility.WorldToScreenPoint(nativeCamera, iconCorners[0]);
+                    var iconTop = RectTransformUtility.WorldToScreenPoint(nativeCamera, iconCorners[2]);
+                    Need(iconBottom.x >= bottomLeft.x && iconBottom.y >= bottomLeft.y &&
+                         iconTop.x <= bottomRight.x && iconTop.y <= topLeft.y,
+                        "Navigation illustration escapes its live button: " + item.Section);
                 }
                 if (pixelW < minW || pixelH < minH) worst = item.Section.ToString();
                 minW = Mathf.Min(minW, pixelW);
@@ -274,6 +279,11 @@ namespace Eldoria.VisualKit.Editor
                 seen++;
             }
             Need(seen == 5, "Native mobile pixel hit test could not find exactly five controls");
+            Need(maxRowY-minRowY <= 1f, "Owner forbids stacked navigation rows");
+            horizontalSpans.Sort((a,b) => a.x.CompareTo(b.x));
+            for (int i=1;i<horizontalSpans.Count;i++)
+                Need(horizontalSpans[i].x >= horizontalSpans[i-1].y,
+                    "Single-row navigation controls overlap horizontally");
 
             // Unlike a source-only geometry model, this compares FINAL native
             // screen-space card/dock corners after actual Unity camera render.
@@ -329,7 +339,8 @@ namespace Eldoria.VisualKit.Editor
                 buildingCardClearancePx = cardClearancePx,
                 buildingCardWasVisible = cardWasVisible,
                 contextMinTargetPx = contextMinTargetPx,
-                hasFiveVisibleActions = seen == 5
+                hasFiveVisibleActions = seen == 5,
+                navigationRows = 1
             };
         }
 
@@ -339,6 +350,9 @@ namespace Eldoria.VisualKit.Editor
         {
             public string resolution;
             public float minNavigationGlyphPx;
+            public bool iconOnlyNavigation;
+            public int visibleNavigationIcons;
+            public float minNavigationIconPx;
             public float minResourceGlyphPx;
             public float minResourceIconWidthPx;
             public float minResourceIconHeightPx;
@@ -374,11 +388,13 @@ namespace Eldoria.VisualKit.Editor
             Need(canvas != null, "Native text QA requires the actual HUD Canvas");
             var m = new UiReadabilityMetric {
                 resolution = width + "x" + height,
-                minNavigationGlyphPx = float.PositiveInfinity,
+                minNavigationGlyphPx = 0f,
+                iconOnlyNavigation = true,
+                minNavigationIconPx = float.PositiveInfinity,
                 minResourceGlyphPx = float.PositiveInfinity,
                 minResourceIconWidthPx = float.PositiveInfinity,
                 minResourceIconHeightPx = float.PositiveInfinity,
-                navigationLabelsFit = true,
+                navigationLabelsFit = false,
                 resourceValuesFit = true
             };
             float scale = Mathf.Max(.01f, canvas.scaleFactor);
@@ -387,18 +403,18 @@ namespace Eldoria.VisualKit.Editor
             {
                 if (item == null || !item.Button || !item.Button.gameObject.activeInHierarchy ||
                     !item.Label || !item.Label.gameObject.activeInHierarchy) continue;
-                var label = item.Label;
-                float px = label.fontSize * scale;
-                if (px < m.minNavigationGlyphPx) {
-                    m.minNavigationGlyphPx = px;
-                    m.smallestNavigationLabel = item.Section.ToString();
-                }
-                var rect = label.rectTransform.rect;
-                m.navigationLabelsFit &= label.preferredWidth <= rect.width + 1f &&
-                    label.preferredHeight <= rect.height + 1f;
+                Need(!item.Label.enabled, "Visible caption in owner icon-only navigation");
+                var icon=item.Button.GetComponentsInChildren<Image>(true).FirstOrDefault(
+                    image => image && image.isActiveAndEnabled && image.name == "Forja / navigation icon");
+                Need(icon != null, "Missing active navigation icon: " + item.Section);
+                var rect=icon.transform as RectTransform;
+                m.minNavigationIconPx=Mathf.Min(m.minNavigationIconPx,
+                    Mathf.Min(rect.rect.width,rect.rect.height)*scale);
                 n++;
             }
-            Need(n == 5, "Native readability QA must inspect five live navigation labels");
+            m.visibleNavigationIcons=n;
+            Need(n == 5 && m.minNavigationIconPx>=32f,
+                "Five readable navigation icons are required in the single row");
             int resources = 0;
             foreach (var label in new[]{hud.Resources.Wood, hud.Resources.Stone, hud.Resources.Food})
             {
@@ -1006,8 +1022,8 @@ namespace Eldoria.VisualKit.Editor
                 "Missing native text-readability evidence for a requested resolution");
             foreach (var reading in readabilityMetrics)
             {
-                Need(reading.minNavigationGlyphPx >= 12f && reading.navigationLabelsFit,
-                    "Nav text is too small or clipped at " + reading.resolution +
+                Need(reading.iconOnlyNavigation && reading.visibleNavigationIcons == 5 && reading.minNavigationIconPx >= 32f,
+                    "Icon-only navigation is missing or too small at " + reading.resolution +
                     ": " + reading.smallestNavigationLabel + " (" +
                     reading.minNavigationGlyphPx + "px)");
                 Need(reading.minResourceGlyphPx >= 13f && reading.resourceValuesFit,

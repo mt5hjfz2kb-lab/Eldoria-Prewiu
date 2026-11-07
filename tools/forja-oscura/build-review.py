@@ -49,9 +49,14 @@ def check_and_create(folder):
         if diff.get("navigationChanged",0)<40 or diff.get("headerChanged",0)<40:
             raise ValueError(f"Missing visible HUD change in a real native capture at {key}")
         text=legibility.get(key,{})
-        if not text.get("navigationLabelsFit") or not text.get("resourceValuesFit"):
+        icon_only = text.get("iconOnlyNavigation",False)
+        if (not icon_only and not text.get("navigationLabelsFit")) or not text.get("resourceValuesFit"):
             raise ValueError(f"Mobile HUD has a clipped caption or numeric resource at {key}")
-        if text.get("minNavigationGlyphPx",0)<12 or text.get("minResourceGlyphPx",0)<13:
+        if icon_only and measure.get("navigationRows")!=1:
+            raise ValueError(f"Owner forbids stacked navigation at {key}")
+        if icon_only and (text.get("visibleNavigationIcons",0)!=5 or text.get("minNavigationIconPx",0)<32):
+            raise ValueError(f"Missing readable icon-only navigation at {key}")
+        if (not icon_only and text.get("minNavigationGlyphPx",0)<12) or text.get("minResourceGlyphPx",0)<13:
             raise ValueError(f"Mobile HUD text below native 12px/13px minimum at {key}")
         if text.get("minResourceIconWidthPx",0)<24 or text.get("minResourceIconHeightPx",0)<24:
             raise ValueError(f"Painted resource icon below native 24px minimum at {key}")
@@ -197,6 +202,23 @@ def selftest():
         try:check_and_create(path)
         except ValueError:pass
         else:raise RuntimeError("Validator accepted unreadable navigation text")
+        for reading in report["nativeReadability"]:
+            reading.update(iconOnlyNavigation=True,visibleNavigationIcons=5,
+                minNavigationIconPx=44,minNavigationGlyphPx=0,navigationLabelsFit=False)
+        for metric in report["nativeTouchTargets"]:metric["navigationRows"]=1
+        (path/"ForjaNativeEvidence.json").write_text(json.dumps(report))
+        check_and_create(path)
+        report["nativeTouchTargets"][0]["navigationRows"]=2
+        (path/"ForjaNativeEvidence.json").write_text(json.dumps(report))
+        try:check_and_create(path)
+        except ValueError:pass
+        else:raise RuntimeError("Validator accepted stacked icon navigation")
+        report["nativeTouchTargets"][0]["navigationRows"]=1
+        report["nativeReadability"][0]["minNavigationIconPx"]=20
+        (path/"ForjaNativeEvidence.json").write_text(json.dumps(report))
+        try:check_and_create(path)
+        except ValueError:pass
+        else:raise RuntimeError("Validator accepted unreadable navigation icons")
         print("FORJA_OFFLINE_VIEWER_SELFTEST_PASS; rejects corrupt PNG, changed data, small buttons and illegible native text; synthetic fixtures discarded")
 
 if __name__=="__main__":

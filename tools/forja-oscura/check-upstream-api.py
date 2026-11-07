@@ -72,8 +72,9 @@ assert "CapturePrepared" in capture.read_text() and "VALORIA_GAMEPLAY_PROBE" in 
 assert 'check.destinationVisible = hud.SelectedBuildingId == "sawmill";' in capture.read_text(), "NATIVE_BUILD_ROUTE_MUST_REQUIRE_EXPECTED_DESTINATION"
 assert "OnDestroy" in skin.read_text() and "originalButtonStyles" in skin.read_text()
 assert "EnsureReadable" in skin.read_text() and "originalFontSizes" in skin.read_text(), "MOBILE_FONT_FLOOR_OR_RESTORE_MISSING"
-assert "nativeReadability" in capture.read_text() and "minNavigationGlyphPx >= 12f" in capture.read_text(), "NATIVE_READABILITY_GATE_MISSING"
+assert "nativeReadability" in capture.read_text() and "minNavigationIconPx >= 32f" in capture.read_text(), "NATIVE_ICON_READABILITY_GATE_MISSING"
 assert "minResourceGlyphPx >= 13f" in capture.read_text() and "navigationLabelsFit" in capture.read_text(), "NATIVE_RESOURCE_OR_CLIPPING_GATE_MISSING"
+assert "Owner forbids stacked navigation rows" in capture.read_text(), "NATIVE_SINGLE_ROW_GATE_MISSING"
 print(json.dumps({"status":"FORJA_UPSTREAM_CSHARP_API_CONTRACT_PASS",
  "assertions":checked+5,"sources":len(requirements),
  "unity_compiled":False,"unity_native_captured":False,"art_approved":False}))
