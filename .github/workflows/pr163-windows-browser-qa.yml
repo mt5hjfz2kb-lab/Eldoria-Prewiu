@@ -1,0 +1,141 @@
+name: '[QA] PR163 exact Windows Chromium real player path'
+on:
+  push:
+    branches: [qa/pr163-webgl-evidence-20261107]
+    paths: [tools/valoria-reference-clean/pr163-windows-browser-request.json]
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: pr163-windows-chromium-real-controls
+  cancel-in-progress: false
+jobs:
+  native-browser:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 45
+    steps:
+      - name: Use existing installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $path=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' |
+              Sort-Object Name -Descending | ForEach-Object {
+                Join-Path $_.FullName 'resources/app/git/cmd/git.exe'
+              } | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $path){throw 'Existing Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $path)
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/valoria-reference-clean/
+            /pipeline/active-workstreams.json
+            /docs/evidence/valoria-reference-clean/environment-city-wide-banner-after.png
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: qa-live-main
+          sparse-checkout-cone-mode: false
+          sparse-checkout: pipeline/active-workstreams.json
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Honor actual owner and exclusive Windows reservation
+        shell: powershell
+        run: |
+          node tools/valoria-reference-clean/check-player-experience-lease.cjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/qa-live-main/pipeline/active-workstreams.json"
+          if($LASTEXITCODE){throw 'PR163 owner lease moved; refuse cross-chat interference'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Shared Unity/Blender process exists; do not interrupt ongoing work'
+          }
+      - name: Require the exact successful unpublished WebGL source
+        id: source
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');
+            const c=JSON.parse(fs.readFileSync('tools/valoria-reference-clean/pr163-windows-browser-request.json','utf8'));
+            if(!Number.isSafeInteger(c.run_id)||c.run_id<1||!/^[a-f0-9]{40}$/.test(c.source_sha)||
+               !/^native[0-9]+$/.test(c.revision)||c.artifact_name!=='valoria-integrated-web-playtest-'+c.run_id)
+               throw Error('Pinned source identity/revision malformed');
+            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:c.run_id})).data;
+            if(run.status!=='completed'||run.conclusion!=='success'||run.head_sha!==c.source_sha)
+              throw Error('Exact native build has not passed');
+            const artifacts=(await github.rest.actions.listWorkflowRunArtifacts({...context.repo,run_id:c.run_id,per_page:100})).data.artifacts;
+            if(!artifacts.some(a=>a.name===c.artifact_name&&!a.expired&&a.size_in_bytes>0))throw Error('Pinned compiled WebGL bytes missing');
+            core.setOutput('artifact',c.artifact_name);
+            core.setOutput('run',String(c.run_id));
+            core.setOutput('source',c.source_sha);
+            core.setOutput('revision',c.revision);
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.source.outputs.artifact }}
+          run-id: ${{ steps.source.outputs.run }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: unity-raw
+      - name: Prepare only exact native bytes for isolated local browser
+        shell: powershell
+        run: |
+          python tools/valoria-reference-clean/prepare_web.py unity-raw qa-private-site ${{ steps.source.outputs.revision }} ${{ steps.source.outputs.source }} ${{ steps.source.outputs.run }}
+          if($LASTEXITCODE){throw 'Verified WebGL package transport failed'}
+          node tools/valoria-reference-clean/check-web-transport.cjs qa-private-site/dist/play.js
+          if($LASTEXITCODE){throw 'WebGL source wrapper integrity failed'}
+          node --check tools/valoria-reference-clean/playtest_web.cjs
+          if($LASTEXITCODE){throw 'Real-input controller syntax invalid'}
+      - name: Reuse installed Chromium and free browser recorder
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $lib=Join-Path $env:RUNNER_TEMP 'pr163-playwright'
+          npm install --prefix $lib --no-save --ignore-scripts playwright@1.55.0
+          if($LASTEXITCODE){throw 'Playwright install failed'}
+          & (Join-Path $lib 'node_modules/.bin/playwright.cmd') install ffmpeg
+          if($LASTEXITCODE){throw 'Browser recording prerequisite failed'}
+          Add-Content $env:GITHUB_ENV "NODE_PATH=$(Join-Path $lib 'node_modules')"
+          $executables=@(
+            (Join-Path $env:ProgramFiles 'Google/Chrome/Application/chrome.exe'),
+            (Join-Path ([Environment]::GetFolderPath('ProgramFilesX86')) 'Microsoft/Edge/Application/msedge.exe'),
+            (Join-Path $env:LOCALAPPDATA 'Google/Chrome/Application/chrome.exe')
+          )
+          $browser=$executables|Where-Object {Test-Path $_}|Select-Object -First 1
+          if(-not $browser){
+            & (Join-Path $lib 'node_modules/.bin/playwright.cmd') install chromium
+            if($LASTEXITCODE){throw 'No installed or free Chromium available'}
+          }else{
+            Add-Content $env:GITHUB_ENV "VALORIA_CHROMIUM_EXECUTABLE=$browser"
+          }
+          if(-not(Get-Command ffmpeg.exe -ErrorAction SilentlyContinue)){
+            python -m pip install --quiet imageio-ffmpeg
+            if($LASTEXITCODE){throw 'FFmpeg available source install failed'}
+            $bin=(python -c 'import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())'|Select-Object -Last 1).Trim()
+            if(-not(Test-Path $bin)){throw 'Verified FFmpeg binary unavailable'}
+            $folder=Join-Path $env:RUNNER_TEMP 'pr163-ffmpeg'
+            New-Item $folder -ItemType Directory -Force|Out-Null
+            Copy-Item $bin (Join-Path $folder 'ffmpeg.exe')
+            Add-Content $env:GITHUB_PATH $folder
+          }
+      - name: Play exact candidate in real Windows Chromium using visible player input only
+        shell: powershell
+        timeout-minutes: 28
+        env:
+          VALORIA_WEB_ROOT: ${{ github.workspace }}/qa-private-site/dist
+          VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/pr163-windows-browser-evidence
+          VALORIA_SOURCE_SHA: ${{ steps.source.outputs.source }}
+          VALORIA_PLAYTEST_TIMEOUT_SECONDS: '1500'
+          VALORIA_WEB_LOAD_TIMEOUT_SECONDS: '180'
+        run: |
+          node tools/valoria-reference-clean/playtest_web.cjs
+          if($LASTEXITCODE){throw 'Actual player browser regression failed; preserve video/actions/telemetry'}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr163-real-windows-browser-${{ github.run_id }}
+          path: pr163-windows-browser-evidence/**
+          if-no-files-found: warn
+          retention-days: 14
