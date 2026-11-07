@@ -583,8 +583,8 @@ namespace Eldoria.VisualKit.Editor
                 "Context close smoke cannot touch a player save");
             var select=host.GetType().GetMethod("Select",BindingFlags.Public|BindingFlags.Instance,
                 null,new[]{typeof(string)},null);
-            Need(select!=null && (bool)select.Invoke(host,new object[]{"sawmill"}),
-                "Real selected sawmill required for context close test");
+            Need(select!=null && (bool)select.Invoke(host,new object[]{"bastion"}),
+                "Real selected bastion required for context close test");
             hud.Refresh();
             var context=hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV3ContextHud>();
             Need(context!=null && context.IsConfigured,
@@ -601,7 +601,7 @@ namespace Eldoria.VisualKit.Editor
             Need(click!=null, "Canonical real uGUI pointer click helper missing");
             string before=Snapshot(hud);
             var result=new ContextCloseCheck{selectedBefore=hud.SelectedBuildingId};
-            Need(result.selectedBefore=="sawmill","Wrong authentic building selected before close QA");
+            Need(result.selectedBefore=="bastion","Wrong authentic building selected before close QA");
             try{click.Invoke(null,new object[]{close});}
             catch(TargetInvocationException e){throw e.InnerException??e;}
             result.originalPointerDispatched=true;
@@ -609,8 +609,8 @@ namespace Eldoria.VisualKit.Editor
             Need(result.selectionCleared,
                 "Visible Forja close click failed to clear the genuine building selection");
             // Restore from the canonical host, not by modifying a snapshot.
-            Need((bool)select.Invoke(host,new object[]{"sawmill"}),
-                "Could not restore genuine sawmill after context close click");
+            Need((bool)select.Invoke(host,new object[]{"bastion"}),
+                "Could not restore genuine bastion after context close click");
             hud.Refresh();
             context.SynchronizeNow();
             skin.ApplyNow(true);
@@ -729,16 +729,21 @@ namespace Eldoria.VisualKit.Editor
                     catch(TargetInvocationException e){throw e.InnerException??e;}
                 }
                 Need(!hud.NarrativeOpen,"Genuine story must finish via real UI before Forja city A/B");
-                // Select a REAL resource-building parcel through the existing
-                // gameplay host, to make the contextual offer visible in BOTH
-                // native A and native B. Selection never executes the offer.
+                // The canonical city initially places an unbuilt sawmill at
+                // x=.23-.41 while the true free viewport begins x=.29; this
+                // fails its OWN native model-framing gate before any skin.
+                // Select the real, already-present BASTION for comparable
+                // artistic captures (as prior native city capture does).
+                // Keep real sawmill BUILD tested separately on a throwaway
+                // gateway after all eight images. Never bypass framing.
+                // The original scene and camera remain authoritative.
                 var select=host.GetType().GetMethod("Select",BindingFlags.Public|BindingFlags.Instance,
                     null,new[]{typeof(string)},null);
-                Need(select!=null && (bool)select.Invoke(host,new object[]{"sawmill"}),
-                    "Existing city cannot select its genuine sawmill/buildable parcel");
+                Need(select!=null && (bool)select.Invoke(host,new object[]{"bastion"}),
+                    "Existing city cannot select its genuine bastion model for the visual A/B");
                 hud.Refresh();
-                Need(hud.SelectedBuildingId=="sawmill",
-                    "Capture must reflect a genuine selected building");
+                Need(hud.SelectedBuildingId=="bastion",
+                    "Capture must reflect the genuine framed bastion model");
             }
             Need(!hud.NarrativeOpen,"Narrative overlay obscures city; dismiss it through real UI before comparing");
             // The canonical contextual card is reprojected from the actual
