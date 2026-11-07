@@ -29,14 +29,18 @@
     "row_level_security": true,
     "public_select_allowed": false,
     "public_insert_allowed": false,
-    "row_count_last_checked": 0,
+    "row_count_last_checked": 1,
     "metrics_specified": 135,
     "event_types_schema_accepted": 67,
     "browser_observer_implemented_types": 9,
     "browser_observer_enabled": false,
     "actual_events_verified_from_unity": 0,
     "real_worker_to_supabase_request_verified": false,
-    "any_player_data_collected": false
+    "any_player_data_collected": false,
+    "real_backend_to_supabase_request_verified": true,
+    "backend_qa_only": true,
+    "backend_function": "eldoria-beta-events-qa",
+    "frontend_connected": false
   },
   "qa": {
     "code_unit_tests": "34 passed on run 42408463845",
@@ -51,7 +55,7 @@
     "Physical iPhone returns to landing page at startup 90%; cause not yet established conclusively",
     "Isolated ASTC candidate integrity passed; independent Unity runtime startup and visual validation pending",
     "Verify actual hosted save/reload and physical iOS/Android gameplay",
-    "Connect consent-gated telemetry backend to public distribution and verify QA insert",
+    "Connect opt-in consent UI and browser event delivery to verified QA backend; native gameplay metrics still not emitted",
     "Instrument and verify actual Unity gameplay events; 135 indicators remain specification, not measured",
     "Verify complete Bastion I-V gameplay with normal tutorial and clock"
   ],
@@ -60,7 +64,7 @@
   "no_unity_source_mutations": true,
   "no_release_replacement": true,
   "mobile_candidate": {
-    "status": "integrity_pass_runtime_pending",
+    "status": "UNITY_STARTED_VISUAL_CAPTURE_RETRY",
     "source_sha256": "6efe4b1f1eeedd33727ec8f24d4d25075b516478d3bb80ea61a6bdbb12528ca0",
     "candidate_sha256": "d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7",
     "changed_textures": 58,
@@ -69,8 +73,12 @@
     "candidate_bundle_bytes": 455610281,
     "runtime_verified": false,
     "physical_iphone_verified": false,
-    "ci_run": 42417656424,
-    "published": false
+    "ci_run": 42418416629,
+    "published": false,
+    "observed_wasm_heap_capacity_bytes": {
+      "original": 1675624448,
+      "candidate": 1580924928
+    }
   },
   "updated_at": "2026-11-07"
 }
