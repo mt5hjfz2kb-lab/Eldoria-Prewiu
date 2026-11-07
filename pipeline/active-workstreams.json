@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T14:46:42.722Z",
+  "updated_at": "2026-11-07T14:50:55.887Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6656,10 +6656,10 @@
     {
       "id": "eldoria-post-pr163-apk-webgl-release-20261107",
       "title": "Eldoria — entrega APK firmada y WebGL posterior a PR #163",
-      "owner": "chatgpt-release-apk-webgl-continuation-20261107",
+      "owner": "chatgpt-post-pr163-release-20261107",
       "branch": "release/post-pr163-apk-webgl-20261107",
       "status": "active",
-      "claimed_at": "2026-11-07T14:46:42.722Z",
+      "claimed_at": "2026-11-07T14:50:55.887Z",
       "scope": [
         "pipeline/releases/pr163-apk-webgl-20261107.json",
         ".github/workflows/eldoria-post-pr163-web-release.yml",
@@ -6671,7 +6671,7 @@
         "pipeline/playtest-delivery.json"
       ],
       "resources": [],
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "phase": "RELEASE_PROVENANCE_AND_SAFE_PACKAGE_PREPARATION",
@@ -6686,6 +6686,14 @@
           "to_revision": 2,
           "claimed_at": "2026-11-07T14:46:42.721Z",
           "reason": "Owner explicitly instructed this chat to continue until both the updated APK and WebGL are delivered; existing release claim has only registered intent and branch equals main, with no release commits, PR or runner jobs. Exact same workstream takeover, no duplicate."
+        },
+        {
+          "owner": "chatgpt-release-apk-webgl-continuation-20261107",
+          "revision": 2,
+          "to_owner": "chatgpt-post-pr163-release-20261107",
+          "to_revision": 3,
+          "reason": "Safe coordinated return: the originally assigned release executor is still actively authoring release branch (latest HEAD e4d83a6adbdb625756d06dc14beb146b7645d1b4) and its Ubuntu WebGL verification is in progress. Avoid parallel writers and preserve that existing workflow; no Unity or release channels changed.",
+          "transferred_at": "2026-11-07T14:50:55.887Z"
         }
       ]
     }
