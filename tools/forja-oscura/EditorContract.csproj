@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <DefineConstants>UNITY_EDITOR</DefineConstants>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="UnityApiStub.cs" />
+    <Compile Include="UnityEditorApiStubs.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs" Link="ForjaOscuraLiveHudSkin.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs" Link="ForjaOscuraNativeEvidence.cs" />
+  </ItemGroup>
+</Project>

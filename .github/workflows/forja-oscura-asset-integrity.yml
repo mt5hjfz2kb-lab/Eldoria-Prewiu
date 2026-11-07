@@ -181,3 +181,21 @@ jobs:
           path: forja-editor-test-results
           if-no-files-found: warn
           retention-days: 14
+
+  compile-editor-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/forja-oscura
+            Unity/Assets/Eldoria/VisualKit
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Semantic compile of actual native evidence Editor C-sharp with bounded stubs
+        run: dotnet build tools/forja-oscura/EditorContract.csproj --configuration Release --nologo
+      - name: This checks type usage, NOT native Unity APIs or any rendered screenshot
+        run: echo 'FORJA_CSHARP_EDITOR_STUB_TYPECHECK_PASS; Unity 6000.3 remains untested.'

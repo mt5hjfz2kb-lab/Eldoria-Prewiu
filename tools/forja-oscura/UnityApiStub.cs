@@ -5,11 +5,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 namespace UnityEngine {
-  public class Object {
+  public partial class Object {
     public static implicit operator bool(Object o) => !ReferenceEquals(o,null);
     public static void Destroy(Object o) {}
   }
-  public class Component : Object {
+  public partial class Component : Object {
     public GameObject gameObject {get;} = new GameObject();
     public Transform transform {get;} = new Transform();
     public T GetComponent<T>() where T : Component => default;
@@ -18,7 +18,7 @@ namespace UnityEngine {
   }
   public class Behaviour : Component { public bool enabled {get;set;} = true; public bool isActiveAndEnabled => enabled; }
   public class MonoBehaviour : Behaviour { }
-  public class GameObject : Object {
+  public partial class GameObject : Object {
     public GameObject() {}
     public GameObject(string name, params Type[] components) {}
     public int layer {get;set;}
@@ -26,7 +26,7 @@ namespace UnityEngine {
     public Transform transform {get;} = new Transform();
     public T GetComponent<T>() where T : Component => default;
   }
-  public class Transform : Component, IEnumerable<Transform> {
+  public partial class Transform : Component, IEnumerable<Transform> {
     public string name {get;set;}
     public int childCount {get;set;}
     public Transform GetChild(int i) => default;
@@ -36,7 +36,7 @@ namespace UnityEngine {
     public IEnumerator<Transform> GetEnumerator() => ((IEnumerable<Transform>)Array.Empty<Transform>()).GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
   }
-  public class RectTransform : Transform {
+  public partial class RectTransform : Transform {
     public Vector2 anchorMin,anchorMax,pivot,offsetMin,offsetMax,anchoredPosition,sizeDelta;
     public Rect rect;
   }
@@ -46,7 +46,7 @@ namespace UnityEngine {
     public Color(float r,float g,float b,float a=1f){this.r=r;this.g=g;this.b=b;this.a=a;}
     public static Color white => new Color(1,1,1,1);
   }
-  public struct Vector2 {
+  public partial struct Vector2 {
     public float x,y; public Vector2(float x,float y){this.x=x;this.y=y;}
     public static Vector2 zero=>new Vector2();public static Vector2 one=>new Vector2(1,1);
   }
@@ -55,8 +55,8 @@ namespace UnityEngine {
   public class CanvasRenderer : Component {}
   public static class Time { public static float unscaledTime=>0; }
   public static class Resources { public static T Load<T>(string path) where T:Object=>default; }
-  public static class Mathf { public static float Max(float x,float y)=>Math.Max(x,y); }
-  public static class Debug { public static void Log(string s){} public static void LogWarning(string s){} }
+  public static partial class Mathf { public static float Max(float x,float y)=>Math.Max(x,y); }
+  public static partial class Debug { public static void Log(string s){} public static void LogWarning(string s){} }
   [AttributeUsage(AttributeTargets.Class)]public sealed class DisallowMultipleComponent:Attribute {}
   [AttributeUsage(AttributeTargets.Class)]public sealed class DefaultExecutionOrder:Attribute {public DefaultExecutionOrder(int n){} }
 }
@@ -97,7 +97,7 @@ namespace Eldoria.UI.RoyalGold {
     public class Item { public RoyalSection Section; public RoyalButton Button; public RoyalText Label; }
     public Item[] Items;
   }
-  public class RoyalHUD:MonoBehaviour {
+  public partial class RoyalHUD:MonoBehaviour {
     public RoyalHeader Realm;
     public RoyalResourceBar Resources;
     public RoyalNav Navigation;
@@ -109,7 +109,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
   public class RoyalGoldV2Hud:MonoBehaviour {
     public RectTransform ChronicleObjectiveRect,ChronicleBuildingRect;
   }
-  public class RoyalGoldV3ContextHud:MonoBehaviour {
+  public partial class RoyalGoldV3ContextHud:MonoBehaviour {
     public RectTransform ContextRect;
     public bool IsConfigured,ContextVisible;
     public RoyalButton VisibleActionButton,VisibleCloseButton;
