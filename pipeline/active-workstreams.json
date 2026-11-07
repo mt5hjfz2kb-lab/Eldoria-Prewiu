@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T15:23:15.124Z",
+  "updated_at": "2026-11-07T15:25:26.575Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6746,7 +6746,9 @@
         "current_guarded_preparation_run": 42384739308,
         "hosted_access": "Unauthenticated browser correctly denied by existing Restricted itch page; no hosted gameplay claim",
         "current_guarded_preparation_result": "SUCCESS42384739308; publish SKIPPED as explicitly disabled"
-      }
+      },
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Release packaging/signing of already integrated game, provenance checks and read-only CI. No authored/modified visual assets, scenes or runtime artwork."
     }
   ],
   "history": [
