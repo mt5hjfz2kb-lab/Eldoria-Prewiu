@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "workstream_id": "eldoria-post-pr163-apk-webgl-release-20261107",
+  "owner": "codex-release-a56bdf7714d0",
+  "budget_eur": 0,
+  "purpose": "Actualizar el canal APK familiar y la WebGL existente con las correcciones aprobadas de PR163, sin incluir Forja Oscura en DRAFT ni alterar la partida.",
+  "provenance": {
+    "revision": "native325",
+    "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
+    "merged_sha": "9efc0fefd447585f6867ab03ce2c41084b32adf2",
+    "unity_tree": "0fe12ba533b6aac5952d8c00654293ffe28147f4",
+    "native_run": 42391824345,
+    "native_artifact": "valoria-integrated-web-playtest-42391824345",
+    "native_digest": "sha256:0d3cd7384f413a817a2c26478b279594ac877c9d14532a58128eb49b676be078",
+    "qa_run": 42396852832,
+    "qa_source_sha": "a9550aaf5332a2ac3810880c37ab2d8dbdcf5adb",
+    "qa_branch": "qa/pr163-webgl-evidence-20261107",
+    "qa_artifact": "pr163-real-windows-browser-42396852832",
+    "qa_digest": null,
+    "qa_request_path": "tools/valoria-reference-clean/pr163-windows-browser-request.json",
+    "qa_expected_complete": "I-II",
+    "native_integrated_coverage": "I-V"
+  },
+  "web": {
+    "provider": "itch.io",
+    "target": "chrismad/eldoria-pruebas",
+    "channel": "web",
+    "restricted": true,
+    "publish_enabled": false,
+    "max_total_bytes": 500000000,
+    "max_file_bytes": 200000000
+  },
+  "android": {
+    "existing_version_code": 21,
+    "new_version_code": 22,
+    "new_version_name": "1.22",
+    "existing_source_sha": "e3d8347c5ea0aecf8c48f216d1599d2ca7704db9",
+    "original_signing_certificate_sha256": "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
+    "publish_enabled": false,
+    "build_run": 42395466213,
+    "source_sha": "5b0769e4313d8f93b6dea1787e19a9ab3b87a95f"
+  },
+  "dependencies": {
+    "require_pr177_merge_before_publish": true,
+    "pr177": 177,
+    "forja_pr": 173,
+    "require_no_competing_windows_lease": true
+  },
+  "constraints": [
+    "Do not overwrite prior signed APK or existing player saves",
+    "Never upload or switch access for testers to an unverified WebGL",
+    "Do not include DRAFT Forja Oscura visual sources",
+    "No new Art assets, no paid services",
+    "No Unity source build changes during packaging"
+  ],
+  "ownership_revision": 4,
+  "prepared_web": null,
+  "postmerge_ui_run": 42389995761,
+  "postmerge_ui_source": "c3282a6e7a5dce04c0937dc149e09944120ab0ae",
+  "capture_fix": {
+    "source_sha": "acfdad16e4e38a86010e3f5a9977800c0b941be0",
+    "run_id": 42395390748,
+    "scope": "Exact Editor-only scale assertion; all player sources match native325. Full corrected native suite required."
+  }
+}
