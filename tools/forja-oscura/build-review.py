@@ -42,6 +42,10 @@ def check_and_create(folder):
             raise ValueError(f"Unity failed to verify five working navigation hit targets at {key}")
         if measure.get("minWidthPx",0)<44 or measure.get("minHeightPx",0)<44:
             raise ValueError(f"Native touch area below 44px at {key}")
+        if measure.get("minGraphicWidthPx",0)<44 or measure.get("minGraphicHeightPx",0)<44:
+            raise ValueError(f"Actual raycast graphic below 44px at {key}")
+        if measure.get("buildingCardWasVisible") and measure.get("buildingCardClearancePx",-1)<0.5:
+            raise ValueError(f"Building cartouche overlaps the actual dock at {key}")
         if diff.get("navigationChanged",0)<40 or diff.get("headerChanged",0)<40:
             raise ValueError(f"Missing visible HUD change in a real native capture at {key}")
         text=legibility.get(key,{})
@@ -49,6 +53,22 @@ def check_and_create(folder):
             raise ValueError(f"Mobile HUD has a clipped caption or numeric resource at {key}")
         if text.get("minNavigationGlyphPx",0)<12 or text.get("minResourceGlyphPx",0)<13:
             raise ValueError(f"Mobile HUD text below native 12px/13px minimum at {key}")
+        if text.get("minResourceIconWidthPx",0)<24 or text.get("minResourceIconHeightPx",0)<24:
+            raise ValueError(f"Painted resource icon below native 24px minimum at {key}")
+    routes=report.get("navigationActions",[])
+    if len(routes)!=5 or len({r.get("destination") for r in routes})!=5:
+        raise ValueError("Actual pointer route evidence must cover five canonical destinations")
+    tested=[r for r in routes if r.get("status")=="NATIVE_POINTER_ROUTE_PASS"]
+    if len(tested)<3 or any(not r.get("originalEventDelivered") or not r.get("destinationVisible") for r in tested):
+        raise ValueError("Authentic unlocked navigation pointer routes did not reach destinations")
+    if any(r.get("status") not in ("NATIVE_POINTER_ROUTE_PASS","LOCKED_NOT_EXERCISED") for r in routes):
+        raise ValueError("Unrecognized/failed navigation route status")
+    close=report.get("contextClose") or {}
+    if close.get("status")!="NATIVE_POINTER_CONTEXT_CLOSE_PASS" or not close.get("selectionCleared") or not close.get("originalDataRestored"):
+        raise ValueError("Original visible contextual CLOSE has no native pointer + restoration evidence")
+    offer=report.get("buildingOffer") or {}
+    if offer.get("status")!="NATIVE_POINTER_BUILD_AND_PROBE_SAVE_PASS" or not offer.get("gatewayStateChanged") or not offer.get("isolatedSaveChanged"):
+        raise ValueError("Original visible BUILD has no authentic disposable gateway+save evidence")
     artifacts={x["name"]:x.get("sha256") for x in report.get("artifacts",[])}
     if len(artifacts)!=8:
         raise ValueError("Missing native image hashes, cannot verify provenance")
@@ -136,10 +156,20 @@ def selftest():
                 "orientationsWithDifference":4,"dataBefore":"wood=500|stone=300",
                 "dataAfter":"wood=500|stone=300","artApproved":False,"artifacts":artifacts,
                 "nativeTouchTargets":[{"resolution":f"{w}x{h}","minWidthPx":50,
-                    "minHeightPx":48,"hasFiveVisibleActions":True} for w,h in RESOLUTIONS],
+                    "minHeightPx":48,"minGraphicWidthPx":50,"minGraphicHeightPx":48,
+                    "buildingCardWasVisible":True,"buildingCardClearancePx":12,
+                    "hasFiveVisibleActions":True} for w,h in RESOLUTIONS],
                 "nativeReadability":[{"resolution":f"{w}x{h}",
                     "minNavigationGlyphPx":13.2,"minResourceGlyphPx":14.1,
+                    "minResourceIconWidthPx":26,"minResourceIconHeightPx":26,
                     "navigationLabelsFit":True,"resourceValuesFit":True} for w,h in RESOLUTIONS],
+                "navigationActions":[{"destination":n,"status":"NATIVE_POINTER_ROUTE_PASS",
+                    "originalEventDelivered":True,"destinationVisible":True}
+                    for n in ["Bastion","Inventory","Missions","Army","World"]],
+                "contextClose":{"status":"NATIVE_POINTER_CONTEXT_CLOSE_PASS",
+                    "selectionCleared":True,"originalDataRestored":True},
+                "buildingOffer":{"status":"NATIVE_POINTER_BUILD_AND_PROBE_SAVE_PASS",
+                    "gatewayStateChanged":True,"isolatedSaveChanged":True},
                 "uiRegionDifferences":[{"resolution":f"{w}x{h}",
                     "navigationChanged":500,"headerChanged":450} for w,h in RESOLUTIONS]}
         (path/"ForjaNativeEvidence.json").write_text(json.dumps(report))
