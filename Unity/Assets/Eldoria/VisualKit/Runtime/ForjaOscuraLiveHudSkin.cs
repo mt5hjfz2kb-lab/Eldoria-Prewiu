@@ -40,6 +40,8 @@ namespace Eldoria.VisualKit
         private readonly Dictionary<Graphic, Color> previousColors = new Dictionary<Graphic, Color>();
         private readonly Dictionary<RoyalText, int> originalFontSizes = new Dictionary<RoyalText, int>();
         private readonly Dictionary<RectTransform, Vector2> originalCaptionSizes = new Dictionary<RectTransform, Vector2>();
+        private readonly Dictionary<RectTransform, Vector2> originalNavigationSizes = new Dictionary<RectTransform, Vector2>();
+        private readonly Dictionary<RectTransform, Vector2> originalNavigationPositions = new Dictionary<RectTransform, Vector2>();
         private readonly Dictionary<RoyalButton, UnityAction> navigationListeners = new Dictionary<RoyalButton, UnityAction>();
         private readonly Dictionary<Button, Graphic> previousTargets = new Dictionary<Button, Graphic>();
         private readonly List<GameObject> created = new List<GameObject>();
@@ -80,6 +82,7 @@ namespace Eldoria.VisualKit
             // skin has been installed. Keep the illustrated real button
             // as a raycast/transition target in the same frame, not 50ms later.
             EnsureNavigationTargets();
+            EnsureMobileNavigationTouchTargets();
             // Avoid scanning text hierarchy and touching Graphic values every frame.
             if (forceLayoutRefresh || Time.unscaledTime >= nextStyleRefresh)
             {
@@ -350,6 +353,70 @@ namespace Eldoria.VisualKit
             }
         }
 
+        private void RememberNavigationGeometry(RectTransform rect)
+        {
+            if (!rect) return;
+            if (!originalNavigationSizes.ContainsKey(rect))
+                originalNavigationSizes.Add(rect, rect.sizeDelta);
+            if (!originalNavigationPositions.ContainsKey(rect))
+                originalNavigationPositions.Add(rect, rect.anchoredPosition);
+        }
+
+        /// <summary>
+        /// The V2 HUD splits five buttons into 3+2 rows on a 390px portrait.
+        /// Its source cell height is 74 logical units; at the native Canvas
+        /// scale 390/800 this is just 36.1 screen pixels. Merely enlarging
+        /// the icon/graphic cannot make two 44px touch targets nonoverlapping.
+        /// Reflow only the EXISTING portrait two-row dock and its five
+        /// existing RoyalButtons. All original sizes and positions are
+        /// restored when this editor-preview skin is removed.
+        /// </summary>
+        private void EnsureMobileNavigationTouchTargets()
+        {
+            if (!NavigationSkinned || !hud || !hud.Navigation) return;
+            var canvas = hud.GetComponent<Canvas>();
+            var dock = hud.Navigation.transform as RectTransform;
+            if (!canvas || !dock || canvas.scaleFactor <= .01f) return;
+            var upper = new List<RectTransform>(3);
+            var lower = new List<RectTransform>(2);
+            int visible = 0;
+            foreach (var item in hud.Navigation.Items)
+            {
+                if (item == null || !item.Button || !item.Button.gameObject.activeInHierarchy)
+                    continue;
+                visible++;
+                var rect = item.Button.transform as RectTransform;
+                if (!rect) return;
+                if (rect.anchoredPosition.y > 0f) upper.Add(rect);
+                else lower.Add(rect);
+            }
+            // Never change single-row landscape or future layouts; a native
+            // QA failure must expose an unfamiliar geometry instead.
+            if (visible != 5 || upper.Count != 3 || lower.Count != 2) return;
+            float oldHeight = upper[0].rect.height;
+            float rowSpacing = upper[0].anchoredPosition.y - lower[0].anchoredPosition.y;
+            float rowGap = rowSpacing - oldHeight;
+            if (oldHeight < 1f || rowGap < -.5f || rowGap > 20f) return;
+            float requiredHeight = Mathf.Ceil(44.5f / canvas.scaleFactor);
+            if (oldHeight >= requiredHeight) return;
+            float delta = requiredHeight - oldHeight;
+            RememberNavigationGeometry(dock);
+            dock.sizeDelta = new Vector2(dock.sizeDelta.x, dock.sizeDelta.y + 2f * delta);
+            float center = (requiredHeight + rowGap) * .5f;
+            foreach (var rowRect in upper)
+            {
+                RememberNavigationGeometry(rowRect);
+                rowRect.sizeDelta = new Vector2(rowRect.sizeDelta.x, requiredHeight);
+                rowRect.anchoredPosition = new Vector2(rowRect.anchoredPosition.x, center);
+            }
+            foreach (var rowRect in lower)
+            {
+                RememberNavigationGeometry(rowRect);
+                rowRect.sizeDelta = new Vector2(rowRect.sizeDelta.x, requiredHeight);
+                rowRect.anchoredPosition = new Vector2(rowRect.anchoredPosition.x, -center);
+            }
+        }
+
         private static string NavName(RoyalSection section)
         {
             switch (section)
@@ -519,9 +586,13 @@ namespace Eldoria.VisualKit
                             graphic.color = item.Button.interactable ? Color.white : new Color(.55f,.55f,.55f,.85f);
                             var r = (RectTransform)back;
                             r.anchorMin = r.anchorMax = new Vector2(.5f,.5f);
-                            r.anchoredPosition = new Vector2(0, -6f);
+                            r.anchoredPosition = Vector2.zero;
                             var b = (RectTransform)item.Button.transform;
-                            r.sizeDelta = new Vector2(Mathf.Max(54f, b.rect.width-5f), Mathf.Max(58f, b.rect.height-5f));
+                            // The illustrated raycast graphic must cover the
+                            // actual 44.5px target, not just the 36px medallion.
+                            // Keep it inside the resized live button rectangle.
+                            r.sizeDelta = new Vector2(Mathf.Max(54f, b.rect.width - 2f),
+                                Mathf.Max(58f, b.rect.height));
                         }
                     }
                     var ic = ImmediateChild(glyph, "Forja / navigation icon");
@@ -623,6 +694,10 @@ namespace Eldoria.VisualKit
                 if (pair.Key) pair.Key.fontSize = pair.Value;
             foreach (var pair in originalCaptionSizes)
                 if (pair.Key) pair.Key.sizeDelta = pair.Value;
+            foreach (var pair in originalNavigationSizes)
+                if (pair.Key) pair.Key.sizeDelta = pair.Value;
+            foreach (var pair in originalNavigationPositions)
+                if (pair.Key) pair.Key.anchoredPosition = pair.Value;
             // The native A/B proof restores the skin and captures another frame
             // without advancing Unity's game loop. Destroy() would leave the
             // transient Image children alive through that same frame, causing
