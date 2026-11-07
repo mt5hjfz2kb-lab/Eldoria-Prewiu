@@ -22,7 +22,7 @@ def run(source,destination):
    t=o.read()
    for ref in [t.m_RD.texture,t.m_RD.alphaTexture]:
     if ref.m_PathID:deny.add(key(ref.read().object_reader))
- contexts={cs:a.ASTCContext(a.ASTCConfig(profile,4,4,1,quality=98,flags=a.ASTCConfigFlags.USE_DECODE_UNORM8)) for cs,profile in [(0,a.ASTCProfile.LDR),(1,a.ASTCProfile.LDR_SRGB)]}
+ contexts={cs:a.ASTCContext(a.ASTCConfig(profile,4,4,1,quality=98,flags=a.ASTCConfigFlags.USE_DECODE_UNORM8),threads=4) for cs,profile in [(0,a.ASTCProfile.LDR),(1,a.ASTCProfile.LDR_SRGB)]}
  sw=a.ASTCSwizzle.from_str('RGBA');changed={};metadata={};reports=[];savings=0
  for o in sorted(env.objects,key=lambda o:o.byte_size,reverse=True):
   if o.type.name!='Texture2D' or o.byte_size<1000000 or key(o) in deny or key(o) not in materials:continue
