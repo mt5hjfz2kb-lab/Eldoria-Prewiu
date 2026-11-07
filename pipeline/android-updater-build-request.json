@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "versionCode": 22,
   "versionName": "1.22",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Owner-authorized original-signature APK22 from exact merged PR177 main. Native source certificate42389995761 passed216EditMode/78PlayMode,V41 captures and integration. Build only; publication requires successful exact-source build, certificate f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8, <=450MiB, completed main QA and immutable public-byte verification. No data reset. Exclusive Windows revision161; do not interrupt processes. WebGL native325 uses identical player sources at948ffa9837168a0b68dab80be76b66350422b23a; only the Editor retention screenshot assertion differs. Full corrected main certificate requested at acfdad16e4e38a86010e3f5a9977800c0b941be0. Original queued build42391824417 was automatically replaced by shared Actions concurrency before any job started; this request restores APK22 to the queue without cancelling any running process."
+  "note": "Signed APK22 build42395466213/source5b0769e4313d8f93b6dea1787e19a9ab3b87a95f completed SUCCESS. Original-signature gate passed; artifact13585415947 SHA256af2eadef1380b321a6c983dea60b77d0d922a7de3f32a56d4860464090ba5cba. Disable duplicate builds. Publication remains disabled until full native/UI and browser QA and exact APK checks complete; never reset saves or interrupt other native work."
 }
