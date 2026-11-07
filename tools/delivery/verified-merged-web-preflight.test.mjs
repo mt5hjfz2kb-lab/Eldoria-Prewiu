@@ -1,0 +1,15 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {verifyConfig,verifyOwnership,verifyRuns,cfgPath} from './verified-merged-web-preflight.mjs';
+const c=JSON.parse(fs.readFileSync(cfgPath,'utf8'));
+const reg={active:[{id:c.workstream_id,owner:c.owner,branch:'release/post-pr163-apk-webgl-20261107',status:'active',ownership_state:'claimed',write_scope_released:false,ownership_revision:1,resources:[]}]};
+const n={status:'completed',conclusion:'success',head_sha:c.provenance.source_sha,head_branch:'fix/player-experience-audit-20261106',path:'.github/workflows/valoria-reference-clean.yml'};
+const q={status:'completed',conclusion:'success',head_sha:c.provenance.qa_source_sha,head_branch:c.provenance.qa_branch,path:'.github/workflows/pr163-windows-browser-qa.yml'};
+const a={name:c.provenance.native_artifact,digest:c.provenance.native_digest,expired:false,size_in_bytes:504705781};
+const b={name:c.provenance.qa_artifact,digest:c.provenance.qa_digest,expired:false,size_in_bytes:50261434};
+const req={run_id:c.provenance.native_run,source_sha:c.provenance.source_sha,revision:c.provenance.revision,artifact_name:c.provenance.native_artifact,allow_release:false,allow_merge:false};
+test('verified baseline and owner',()=>{assert.equal(verifyConfig(c),true);assert.equal(verifyOwnership(reg,c),true);assert.equal(verifyRuns(c,n,q,a,b,req),true);});
+test('reject wrong source/run/receipt',()=>{assert.throws(()=>verifyRuns(c,{...n,head_sha:'bad'},q,a,b,req));assert.throws(()=>verifyRuns(c,n,q,{...a,digest:'bad'},b,req));assert.throws(()=>verifyRuns(c,n,q,a,b,{...req,source_sha:'bad'}));});
+test('reject stolen Windows lease, wrong owner and public destination',()=>{assert.throws(()=>verifyOwnership({active:reg.active.map(x=>({...x,resources:['windows-runner-heavy']}))},c));assert.throws(()=>verifyOwnership({active:reg.active.map(x=>({...x,owner:'another'}))},c));assert.throws(()=>verifyConfig({...c,web:{...c.web,restricted:false}}));});
+test('fail-closed publishing while PR177 and native Android not certified',()=>{assert.throws(()=>verifyConfig({...c,android:{...c.android,publish_enabled:true}}));});
