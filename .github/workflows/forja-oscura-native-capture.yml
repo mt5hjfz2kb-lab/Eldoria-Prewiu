@@ -157,7 +157,7 @@ jobs:
           $hdr=@{'Accept'='application/vnd.github+json';'User-Agent'='Eldoria-Forja-Native';'Authorization'="Bearer $env:GH_TOKEN"}
           $raw=Invoke-RestMethod -Uri $url -Headers $hdr
           if(-not $raw.content){throw 'Cannot read live canonical registry from main'}
-          $json=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw.content -replace '\\s','')))
+          $json=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw.content -replace '\s','')))
           $r=$json | ConvertFrom-Json
           $o=@($r.active | Where-Object { $_.resources -contains 'windows-runner-heavy' -and $_.ownership_state -eq 'claimed' })
           if($o.Count -ne 1 -or $o[0].id -ne 'eldoria-forja-oscura-visual-proof-20261107' -or
