@@ -100,12 +100,15 @@ namespace Eldoria.ReferenceClean.Editor
             // Path.Combine(Ev, name), which correctly preserves a rooted name.
             // This captures directly into the retention workflow artifact.
             ValoriaIntegrationBuild.Capture(h,path,w,he,()=>{
-                // The integrated host overrides RoyalScaler's initial defaults:
-                // portrait matches width800, landscape matches height900.
-                // Validate the SAME scale used for the actual captured pixels.
+                // Match the integrated host's phone reference (short side <600):
+                // 600 units on phones, width800/height900 on larger screens.
+                // Keep the assertion inside the actual synchronized capture.
                 var canvas=h.Hud.GetComponent<Canvas>();
-                Need(Mathf.Approximately(canvas.scaleFactor,w<he?w/800f:he/900f),
-                    "Native proof uses the integrated orientation-dependent scale");
+                bool phone=Mathf.Min(w,he)<600;
+                float expectedScale=w<he?w/(phone?600f:800f):he/(phone?600f:900f);
+                Need(Mathf.Approximately(canvas.scaleFactor,expectedScale),
+                    "Native proof uses the integrated orientation-dependent scale "+
+                    w+"x"+he+" actual="+canvas.scaleFactor+" expected="+expectedScale);
                 Canvas.ForceUpdateCanvases();
                 foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))
                     layout.Apply(w/canvas.scaleFactor,true);
