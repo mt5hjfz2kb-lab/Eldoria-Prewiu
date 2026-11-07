@@ -1,0 +1,10 @@
+export const EVENTS=Object.freeze(["session_start","game_ready","first_objective","session_heartbeat","session_finished","load_stage","visibility_state","save_state","tutorial_step","objective_state","help_opened","screen_viewed","ui_action","input_rejected","navigation_backtrack","player_name_set","gateway_command","gateway_advance","build_state","build_completed","production_state","training_state","resource_state","gather_state","world_opened","world_node","world_zoom","exploration_state","march_state","army_prepared","march_sent","battle_state","battle_resolved","hunt_state","battle_report_opened","report_state","mailbox_state","core_loop_complete","bastion_reached","power_changed","milestone_reached","hero_opened","hero_state","skill_viewed","dialogue_state","story_choice","breach_viewed","city_priority","fissure_state","lyra_state","ash_stalker_state","scout_order","scout_report","vigilant_attempt","vigilant_result","vigilant_xp_claim","timer_wait","speedup_used","orientation_state","end_of_slice","blocked","client_error","network_state","frame_summary","survey_completed","survey_answer","return_visit"]);
+export const EVENT_SET=new Set(EVENTS);
+export const DEVICES=new Set(['desktop_chrome','desktop_edge','desktop_firefox','ios_safari','android_chrome','other']);
+export const FIELDS=new Set(["bastion","screen","reason_code","error_code","fps_bucket","stage_code","step_code","state_code","action_code","building_code","resource_code","type_code","zoom_bucket","hero_code","skill_code","enemy_code","outcome_code","choice_code","milestone_code","dialogue_code","question_id","answer_code","level","tier","enemy_tier","quantity","count","amount","delta","duration_ms","fps_p50","fps_p05","stutter_count","power","orientation","active","order_code","command_code","task_code","report_code","strategy_code","stage_number","march_slots_used","reserved_troops","army_count","health_pct"]);
+
+// Compatibility exports for the separately validated metric catalog and client.
+export const EVENT_NAMES=EVENTS;
+export const EVENT_COUNT=EVENTS.length;
+export const ALLOWED_PAYLOAD_FIELDS=Object.freeze([...FIELDS]);
+export const ALLOWED_PAYLOAD_KEYS=FIELDS;
