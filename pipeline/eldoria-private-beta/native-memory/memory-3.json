@@ -1,0 +1,2352 @@
+{
+    "source": "948ffa9837168a0b68dab80be76b66350422b23a",
+    "environment": "Unity Editor Windows; NOT WebGL or iPhone",
+    "elapsed": 30,
+    "allocated": 1296896023,
+    "reserved": 1680302080,
+    "managed": 826597376,
+    "ready": true,
+    "groups": [
+        {
+            "type": "Texture2D",
+            "bytes": 1382901356,
+            "count": 346
+        },
+        {
+            "type": "Mesh",
+            "bytes": 464752696,
+            "count": 311
+        },
+        {
+            "type": "Shader",
+            "bytes": 32309812,
+            "count": 245
+        },
+        {
+            "type": "MeshRenderer",
+            "bytes": 16815584,
+            "count": 23505
+        },
+        {
+            "type": "Transform",
+            "bytes": 14362624,
+            "count": 30022
+        },
+        {
+            "type": "GameObject",
+            "bytes": 9677752,
+            "count": 30716
+        },
+        {
+            "type": "AnimationClip",
+            "bytes": 8309837,
+            "count": 18
+        },
+        {
+            "type": "SceneVisibilityState",
+            "bytes": 4722392,
+            "count": 1
+        },
+        {
+            "type": "TextAsset",
+            "bytes": 4472949,
+            "count": 6
+        },
+        {
+            "type": "Object",
+            "bytes": 4328530,
+            "count": 28
+        },
+        {
+            "type": "MonoScript",
+            "bytes": 3930991,
+            "count": 4863
+        },
+        {
+            "type": "AssetBundle",
+            "bytes": 3384313,
+            "count": 1
+        },
+        {
+            "type": "MeshFilter",
+            "bytes": 3008640,
+            "count": 23505
+        },
+        {
+            "type": "MonoManager",
+            "bytes": 2601161,
+            "count": 1
+        },
+        {
+            "type": "LODGroup",
+            "bytes": 2126304,
+            "count": 5680
+        },
+        {
+            "type": "ComputeShader",
+            "bytes": 1569573,
+            "count": 36
+        },
+        {
+            "type": "Material",
+            "bytes": 1440570,
+            "count": 328
+        },
+        {
+            "type": "RenderTexture",
+            "bytes": 1422321,
+            "count": 2
+        },
+        {
+            "type": "Cubemap",
+            "bytes": 1319928,
+            "count": 9
+        },
+        {
+            "type": "AudioManager",
+            "bytes": 1294126,
+            "count": 1
+        },
+        {
+            "type": "Font",
+            "bytes": 489371,
+            "count": 2
+        },
+        {
+            "type": "LightProbes",
+            "bytes": 302712,
+            "count": 1
+        },
+        {
+            "type": "RectTransform",
+            "bytes": 294688,
+            "count": 694
+        },
+        {
+            "type": "CanvasRenderer",
+            "bytes": 266532,
+            "count": 651
+        },
+        {
+            "type": "PluginImporter",
+            "bytes": 229242,
+            "count": 51
+        },
+        {
+            "type": "Canvas",
+            "bytes": 198040,
+            "count": 3
+        },
+        {
+            "type": "TerrainData",
+            "bytes": 137626,
+            "count": 1
+        },
+        {
+            "type": "RoyalText",
+            "bytes": 120780,
+            "count": 237
+        },
+        {
+            "type": "RayTracingShader",
+            "bytes": 106522,
+            "count": 3
+        },
+        {
+            "type": "Image",
+            "bytes": 73146,
+            "count": 146
+        },
+        {
+            "type": "PlayerSettings",
+            "bytes": 58108,
+            "count": 1
+        },
+        {
+            "type": "WorldHotspot",
+            "bytes": 51480,
+            "count": 99
+        },
+        {
+            "type": "RoyalButton",
+            "bytes": 33374,
+            "count": 66
+        },
+        {
+            "type": "RoyalGoldV2FrameGraphic",
+            "bytes": 32574,
+            "count": 61
+        },
+        {
+            "type": "SkinnedMeshRenderer",
+            "bytes": 31476,
+            "count": 29
+        },
+        {
+            "type": "BoxCollider",
+            "bytes": 29896,
+            "count": 101
+        },
+        {
+            "type": "ShaderVariantCollection",
+            "bytes": 28973,
+            "count": 2
+        },
+        {
+            "type": "Animation",
+            "bytes": 27948,
+            "count": 6
+        },
+        {
+            "type": "RoyalFrameGraphic",
+            "bytes": 27655,
+            "count": 55
+        },
+        {
+            "type": "LayoutElement",
+            "bytes": 22905,
+            "count": 45
+        },
+        {
+            "type": "VFXManager",
+            "bytes": 22440,
+            "count": 1
+        },
+        {
+            "type": "RoyalIconGraphic",
+            "bytes": 22096,
+            "count": 44
+        },
+        {
+            "type": "Light",
+            "bytes": 20400,
+            "count": 17
+        },
+        {
+            "type": "Sprite",
+            "bytes": 15178,
+            "count": 10
+        },
+        {
+            "type": "Text",
+            "bytes": 13500,
+            "count": 27
+        },
+        {
+            "type": "Button",
+            "bytes": 12048,
+            "count": 24
+        },
+        {
+            "type": "RoyalSolidGraphic",
+            "bytes": 9890,
+            "count": 20
+        },
+        {
+            "type": "InputManager",
+            "bytes": 9472,
+            "count": 1
+        },
+        {
+            "type": "Camera",
+            "bytes": 9072,
+            "count": 2
+        },
+        {
+            "type": "Outline",
+            "bytes": 8551,
+            "count": 17
+        },
+        {
+            "type": "BuildingLabel",
+            "bytes": 7237,
+            "count": 14
+        },
+        {
+            "type": "RoyalGoldV3ScoutPaperDepth",
+            "bytes": 6444,
+            "count": 12
+        },
+        {
+            "type": "RoyalGoldV3BuildingCartoucheFinish",
+            "bytes": 5995,
+            "count": 11
+        },
+        {
+            "type": "InputActionReference",
+            "bytes": 5280,
+            "count": 10
+        },
+        {
+            "type": "UniversalAdditionalLightData",
+            "bytes": 5094,
+            "count": 9
+        },
+        {
+            "type": "MeshCollider",
+            "bytes": 4864,
+            "count": 16
+        },
+        {
+            "type": "LightingDataAsset",
+            "bytes": 4278,
+            "count": 1
+        },
+        {
+            "type": "GraphicsSettings",
+            "bytes": 4236,
+            "count": 1
+        },
+        {
+            "type": "ServicesContainer",
+            "bytes": 4120,
+            "count": 1
+        },
+        {
+            "type": "EditorUserBuildSettings",
+            "bytes": 3864,
+            "count": 1
+        },
+        {
+            "type": "RawImage",
+            "bytes": 3528,
+            "count": 7
+        },
+        {
+            "type": "LightProbeGroup",
+            "bytes": 3376,
+            "count": 1
+        },
+        {
+            "type": "Texture3D",
+            "bytes": 3248,
+            "count": 4
+        },
+        {
+            "type": "CanvasGroup",
+            "bytes": 2720,
+            "count": 20
+        },
+        {
+            "type": "BuildProfile",
+            "bytes": 2600,
+            "count": 5
+        },
+        {
+            "type": "StyleSheet",
+            "bytes": 2575,
+            "count": 5
+        },
+        {
+            "type": "ShaderGraphImporter",
+            "bytes": 2197,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3RetentionActionGraphic",
+            "bytes": 2176,
+            "count": 4
+        },
+        {
+            "type": "QualitySettings",
+            "bytes": 2032,
+            "count": 1
+        },
+        {
+            "type": "Shadow",
+            "bytes": 2008,
+            "count": 4
+        },
+        {
+            "type": "RoyalSafeArea",
+            "bytes": 1970,
+            "count": 4
+        },
+        {
+            "type": "UnityConnectSettings",
+            "bytes": 1928,
+            "count": 1
+        },
+        {
+            "type": "TerrainLayer",
+            "bytes": 1680,
+            "count": 7
+        },
+        {
+            "type": "TagManager",
+            "bytes": 1640,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3ScoutContractGraphic",
+            "bytes": 1626,
+            "count": 3
+        },
+        {
+            "type": "ColorAdjustments",
+            "bytes": 1617,
+            "count": 3
+        },
+        {
+            "type": "RegistryInfoOriginalData",
+            "bytes": 1606,
+            "count": 1
+        },
+        {
+            "type": "Tonemapping",
+            "bytes": 1602,
+            "count": 3
+        },
+        {
+            "type": "RegistryInfoDraftData",
+            "bytes": 1600,
+            "count": 1
+        },
+        {
+            "type": "PlayModeDownloadState",
+            "bytes": 1600,
+            "count": 1
+        },
+        {
+            "type": "RoyalResourcePictogram",
+            "bytes": 1596,
+            "count": 3
+        },
+        {
+            "type": "EditorConnection",
+            "bytes": 1592,
+            "count": 1
+        },
+        {
+            "type": "ScenarioRunner",
+            "bytes": 1590,
+            "count": 1
+        },
+        {
+            "type": "ValoriaMarchRouteGraphic",
+            "bytes": 1587,
+            "count": 3
+        },
+        {
+            "type": "Bloom",
+            "bytes": 1584,
+            "count": 3
+        },
+        {
+            "type": "DiagnosticSwitchesConsoleMessage",
+            "bytes": 1582,
+            "count": 1
+        },
+        {
+            "type": "StageNavigationManager",
+            "bytes": 1580,
+            "count": 1
+        },
+        {
+            "type": "DomainReloadStateSingleton",
+            "bytes": 1562,
+            "count": 1
+        },
+        {
+            "type": "PlayModeManager",
+            "bytes": 1562,
+            "count": 1
+        },
+        {
+            "type": "MainStage",
+            "bytes": 1554,
+            "count": 1
+        },
+        {
+            "type": "HorizontalLayoutGroup",
+            "bytes": 1551,
+            "count": 3
+        },
+        {
+            "type": "BuildReportRestService",
+            "bytes": 1548,
+            "count": 1
+        },
+        {
+            "type": "VerticalLayoutGroup",
+            "bytes": 1545,
+            "count": 3
+        },
+        {
+            "type": "VolumeProfile",
+            "bytes": 1536,
+            "count": 3
+        },
+        {
+            "type": "RectMask2D",
+            "bytes": 1518,
+            "count": 3
+        },
+        {
+            "type": "GUISkin",
+            "bytes": 1466,
+            "count": 3
+        },
+        {
+            "type": "TimeManager",
+            "bytes": 1296,
+            "count": 1
+        },
+        {
+            "type": "EditorUserSettings",
+            "bytes": 1275,
+            "count": 1
+        },
+        {
+            "type": "ReflectionProbe",
+            "bytes": 1216,
+            "count": 4
+        },
+        {
+            "type": "UniversalRenderPipelineAsset",
+            "bytes": 1196,
+            "count": 2
+        },
+        {
+            "type": "UniversalRendererData",
+            "bytes": 1118,
+            "count": 2
+        },
+        {
+            "type": "RoyalGoldV3EncounterGrounding",
+            "bytes": 1080,
+            "count": 2
+        },
+        {
+            "type": "LightingSettings",
+            "bytes": 1080,
+            "count": 3
+        },
+        {
+            "type": "SubGraphAsset",
+            "bytes": 1056,
+            "count": 2
+        },
+        {
+            "type": "ShadowsMidtonesHighlights",
+            "bytes": 1027,
+            "count": 2
+        },
+        {
+            "type": "ScreenSpaceLensFlare",
+            "bytes": 1022,
+            "count": 2
+        },
+        {
+            "type": "ChromaticAberration",
+            "bytes": 1021,
+            "count": 2
+        },
+        {
+            "type": "PaniniProjection",
+            "bytes": 1018,
+            "count": 2
+        },
+        {
+            "type": "LensDistortion",
+            "bytes": 1016,
+            "count": 2
+        },
+        {
+            "type": "LiftGammaGain",
+            "bytes": 1015,
+            "count": 2
+        },
+        {
+            "type": "DepthOfField",
+            "bytes": 1014,
+            "count": 2
+        },
+        {
+            "type": "WhiteBalance",
+            "bytes": 1014,
+            "count": 2
+        },
+        {
+            "type": "ChannelMixer",
+            "bytes": 1014,
+            "count": 2
+        },
+        {
+            "type": "SplitToning",
+            "bytes": 1013,
+            "count": 2
+        },
+        {
+            "type": "ColorLookup",
+            "bytes": 1013,
+            "count": 2
+        },
+        {
+            "type": "ColorCurves",
+            "bytes": 1013,
+            "count": 2
+        },
+        {
+            "type": "ScrollRect",
+            "bytes": 1012,
+            "count": 2
+        },
+        {
+            "type": "MotionBlur",
+            "bytes": 1012,
+            "count": 2
+        },
+        {
+            "type": "FilmGrain",
+            "bytes": 1011,
+            "count": 2
+        },
+        {
+            "type": "Vignette",
+            "bytes": 1010,
+            "count": 2
+        },
+        {
+            "type": "ProbeVolumesOptions",
+            "bytes": 1006,
+            "count": 2
+        },
+        {
+            "type": "RoyalNarrativePresentation",
+            "bytes": 998,
+            "count": 2
+        },
+        {
+            "type": "BuildingDetailsPanel",
+            "bytes": 992,
+            "count": 2
+        },
+        {
+            "type": "Texture2DArray",
+            "bytes": 992,
+            "count": 2
+        },
+        {
+            "type": "PrimaryActionButton",
+            "bytes": 991,
+            "count": 2
+        },
+        {
+            "type": "BottomNavigation",
+            "bytes": 988,
+            "count": 2
+        },
+        {
+            "type": "RoyalHudLayout",
+            "bytes": 986,
+            "count": 2
+        },
+        {
+            "type": "RoyalRaycaster",
+            "bytes": 986,
+            "count": 2
+        },
+        {
+            "type": "MissionPanel",
+            "bytes": 984,
+            "count": 2
+        },
+        {
+            "type": "ModalWindow",
+            "bytes": 983,
+            "count": 2
+        },
+        {
+            "type": "ResourceBar",
+            "bytes": 983,
+            "count": 2
+        },
+        {
+            "type": "RealmHeader",
+            "bytes": 983,
+            "count": 2
+        },
+        {
+            "type": "RoyalScaler",
+            "bytes": 983,
+            "count": 2
+        },
+        {
+            "type": "RoyalHUD",
+            "bytes": 980,
+            "count": 2
+        },
+        {
+            "type": "EditorBuildSettings",
+            "bytes": 965,
+            "count": 1
+        },
+        {
+            "type": "CubemapArray",
+            "bytes": 960,
+            "count": 2
+        },
+        {
+            "type": "GsplatMaterial",
+            "bytes": 928,
+            "count": 2
+        },
+        {
+            "type": "LightmapSettings",
+            "bytes": 840,
+            "count": 1
+        },
+        {
+            "type": "Terrain",
+            "bytes": 624,
+            "count": 1
+        },
+        {
+            "type": "UniversalRenderPipelineGlobalSettings",
+            "bytes": 613,
+            "count": 1
+        },
+        {
+            "type": "MemorySettings",
+            "bytes": 584,
+            "count": 1
+        },
+        {
+            "type": "UniversalAdditionalCameraData",
+            "bytes": 567,
+            "count": 1
+        },
+        {
+            "type": "UniversalMetadata",
+            "bytes": 566,
+            "count": 1
+        },
+        {
+            "type": "ScreenSpaceAmbientOcclusion",
+            "bytes": 565,
+            "count": 1
+        },
+        {
+            "type": "UniversalProjectSettings",
+            "bytes": 561,
+            "count": 1
+        },
+        {
+            "type": "PerformanceTestRunSaver",
+            "bytes": 553,
+            "count": 1
+        },
+        {
+            "type": "PackageManagerProjectSettings",
+            "bytes": 550,
+            "count": 1
+        },
+        {
+            "type": "BuiltInMetadata",
+            "bytes": 548,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3VigilantsTerrainOcclusion",
+            "bytes": 547,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3ObjectiveParchmentGraphic",
+            "bytes": 547,
+            "count": 1
+        },
+        {
+            "type": "AdaptivePerformanceManagerSpawner",
+            "bytes": 547,
+            "count": 1
+        },
+        {
+            "type": "TestJobDataHolder",
+            "bytes": 547,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3VigilantsPortraitGraphic",
+            "bytes": 546,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3VigilantsLivingLandscape",
+            "bytes": 546,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3BuildingEngravingGraphic",
+            "bytes": 546,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3VigilantsRoadFoundation",
+            "bytes": 545,
+            "count": 1
+        },
+        {
+            "type": "RunData",
+            "bytes": 545,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3GuardianReliefGraphic",
+            "bytes": 543,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3EarlyRetentionArtwork",
+            "bytes": 543,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3EarlyRetentionScreens",
+            "bytes": 543,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3HeraldicBannerGraphic",
+            "bytes": 543,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3VigilantsWorldLight",
+            "bytes": 541,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3ScoutDiscoverySeals",
+            "bytes": 541,
+            "count": 1
+        },
+        {
+            "type": "RoyalResourcePictogramInstaller",
+            "bytes": 541,
+            "count": 1
+        },
+        {
+            "type": "CallbacksHolder",
+            "bytes": 541,
+            "count": 1
+        },
+        {
+            "type": "ShaderGraphProjectSettings",
+            "bytes": 541,
+            "count": 1
+        },
+        {
+            "type": "ValoriaReferenceCleanRenderSettings",
+            "bytes": 540,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3StageTrailGraphic",
+            "bytes": 539,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3VigilantsParallax",
+            "bytes": 539,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3ManagementScreens",
+            "bytes": 539,
+            "count": 1
+        },
+        {
+            "type": "TestRunnerApi",
+            "bytes": 539,
+            "count": 1
+        },
+        {
+            "type": "TestListCacheData",
+            "bytes": 539,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV41MailboxBackdrop",
+            "bytes": 538,
+            "count": 1
+        },
+        {
+            "type": "RoyalPlayerEntryCoordinator",
+            "bytes": 537,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3BuildingScreens",
+            "bytes": 537,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3CinematicFinish",
+            "bytes": 537,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3BuildingPreview",
+            "bytes": 537,
+            "count": 1
+        },
+        {
+            "type": "ValoriaProgressionVisualGuard",
+            "bytes": 537,
+            "count": 1
+        },
+        {
+            "type": "ValoriaReferenceCleanInteraction",
+            "bytes": 537,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV41ReportArtwork",
+            "bytes": 536,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV41MailboxScreen",
+            "bytes": 536,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3LayeredFinish",
+            "bytes": 535,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3RankingScreen",
+            "bytes": 535,
+            "count": 1
+        },
+        {
+            "type": "EldoriaV3VisualDirection",
+            "bytes": 535,
+            "count": 1
+        },
+        {
+            "type": "RemoteInputPlayerConnection",
+            "bytes": 535,
+            "count": 1
+        },
+        {
+            "type": "InputSystemUIInputModule",
+            "bytes": 535,
+            "count": 1
+        },
+        {
+            "type": "DebugUpdater",
+            "bytes": 535,
+            "count": 1
+        },
+        {
+            "type": "ValoriaReferenceCleanGameplay",
+            "bytes": 534,
+            "count": 1
+        },
+        {
+            "type": "ShaderGraphMetadata",
+            "bytes": 534,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV4DialogueArt",
+            "bytes": 533,
+            "count": 1
+        },
+        {
+            "type": "ValoriaParcelPresentation",
+            "bytes": 533,
+            "count": 1
+        },
+        {
+            "type": "BastionIVVWorldPresentation",
+            "bytes": 532,
+            "count": 1
+        },
+        {
+            "type": "BastionIIIWorldPresentation",
+            "bytes": 532,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV3ContextHud",
+            "bytes": 532,
+            "count": 1
+        },
+        {
+            "type": "SpawnlingEncounterVisual",
+            "bytes": 532,
+            "count": 1
+        },
+        {
+            "type": "RoyalPlayerNamePrompt",
+            "bytes": 531,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV2Narrative",
+            "bytes": 531,
+            "count": 1
+        },
+        {
+            "type": "RegionOneCreaturePopulation",
+            "bytes": 530,
+            "count": 1
+        },
+        {
+            "type": "RegionOneCanonicalLandscape",
+            "bytes": 530,
+            "count": 1
+        },
+        {
+            "type": "RegionOneResourcePlacement",
+            "bytes": 529,
+            "count": 1
+        },
+        {
+            "type": "ValoriaPlaytestTelemetry",
+            "bytes": 529,
+            "count": 1
+        },
+        {
+            "type": "ValoriaMarchPresentation",
+            "bytes": 529,
+            "count": 1
+        },
+        {
+            "type": "ZoneOneStrategicCamera",
+            "bytes": 529,
+            "count": 1
+        },
+        {
+            "type": "Volume",
+            "bytes": 529,
+            "count": 1
+        },
+        {
+            "type": "RegionOneBlenderLandscape",
+            "bytes": 528,
+            "count": 1
+        },
+        {
+            "type": "RegionOneLookDevelopment",
+            "bytes": 527,
+            "count": 1
+        },
+        {
+            "type": "ValoriaJourneyGuidance",
+            "bytes": 527,
+            "count": 1
+        },
+        {
+            "type": "BuildProfileContext",
+            "bytes": 527,
+            "count": 1
+        },
+        {
+            "type": "ValoriaIntegratedWorld",
+            "bytes": 527,
+            "count": 1
+        },
+        {
+            "type": "RegionOneResourceModels",
+            "bytes": 526,
+            "count": 1
+        },
+        {
+            "type": "RegionOneReferenceNodes",
+            "bytes": 526,
+            "count": 1
+        },
+        {
+            "type": "PlayerNameHeader",
+            "bytes": 526,
+            "count": 1
+        },
+        {
+            "type": "ReferenceUiArtPass",
+            "bytes": 526,
+            "count": 1
+        },
+        {
+            "type": "RoyalGoldV2Hud",
+            "bytes": 525,
+            "count": 1
+        },
+        {
+            "type": "InputSystemObject",
+            "bytes": 525,
+            "count": 1
+        },
+        {
+            "type": "HeroesApprovedDestination",
+            "bytes": 524,
+            "count": 1
+        },
+        {
+            "type": "InputActionAsset",
+            "bytes": 524,
+            "count": 1
+        },
+        {
+            "type": "RegionOneStoneBridge",
+            "bytes": 523,
+            "count": 1
+        },
+        {
+            "type": "SlicePresenter",
+            "bytes": 522,
+            "count": 1
+        },
+        {
+            "type": "InputSettings",
+            "bytes": 521,
+            "count": 1
+        },
+        {
+            "type": "HeroesModelSnapshot",
+            "bytes": 518,
+            "count": 1
+        },
+        {
+            "type": "AldricCityRoaming",
+            "bytes": 518,
+            "count": 1
+        },
+        {
+            "type": "EventSystem",
+            "bytes": 517,
+            "count": 1
+        },
+        {
+            "type": "BaseInput",
+            "bytes": 515,
+            "count": 1
+        },
+        {
+            "type": "HeroesLyraModel",
+            "bytes": 514,
+            "count": 1
+        },
+        {
+            "type": "GraphicRaycaster",
+            "bytes": 512,
+            "count": 1
+        },
+        {
+            "type": "TimeBudgetPerFrameDeferAgent",
+            "bytes": 510,
+            "count": 1
+        },
+        {
+            "type": "PlayerClarityRuntime",
+            "bytes": 510,
+            "count": 1
+        },
+        {
+            "type": "CanvasScaler",
+            "bytes": 508,
+            "count": 1
+        },
+        {
+            "type": "InputField",
+            "bytes": 506,
+            "count": 1
+        },
+        {
+            "type": "DefaultDeferAgent",
+            "bytes": 499,
+            "count": 1
+        },
+        {
+            "type": "RenderSettings",
+            "bytes": 480,
+            "count": 1
+        },
+        {
+            "type": "GsplatSettings",
+            "bytes": 464,
+            "count": 1
+        },
+        {
+            "type": "GsplatGlobalMaterial",
+            "bytes": 464,
+            "count": 1
+        },
+        {
+            "type": "EditorSettings",
+            "bytes": 451,
+            "count": 1
+        },
+        {
+            "type": "Physics2DSettings",
+            "bytes": 408,
+            "count": 1
+        },
+        {
+            "type": "LightmapParameters",
+            "bytes": 368,
+            "count": 2
+        },
+        {
+            "type": "TerrainCollider",
+            "bytes": 256,
+            "count": 1
+        },
+        {
+            "type": "VersionControlSettings",
+            "bytes": 168,
+            "count": 1
+        },
+        {
+            "type": "SceneAsset",
+            "bytes": 168,
+            "count": 1
+        },
+        {
+            "type": "PresetManager",
+            "bytes": 112,
+            "count": 1
+        }
+    ],
+    "largest": [
+        {
+            "name": "ContinuousLivingGeography",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "ARGB32",
+            "bytes": 100664176,
+            "width": 3072,
+            "height": 3072,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Bastion-1",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/RoofJunction226/Bastion-1.asset",
+            "format": "",
+            "bytes": 47377736,
+            "width": 0,
+            "height": 0,
+            "vertices": 388196,
+            "readable": true
+        },
+        {
+            "name": "Bastion_II_GI",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/BastionII/Bastion_II_GI.asset",
+            "format": "",
+            "bytes": 44989640,
+            "width": 0,
+            "height": 0,
+            "vertices": 366884,
+            "readable": true
+        },
+        {
+            "name": "NormalGL_28f57ff9-b978-468c-8c2a-6136e0a65ea1",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/RockBoarFar.glb",
+            "format": "ARGB32",
+            "bytes": 44740182,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "I_recovered_exact_retained_surface",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "ARGB32",
+            "bytes": 44740171,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "texture-19",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-19.asset",
+            "format": "RGBA32",
+            "bytes": 44740136,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "authored-texture-14",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-texture-14.asset",
+            "format": "RGBA32",
+            "bytes": 44740136,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "texture-21",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-21.asset",
+            "format": "RGBA32",
+            "bytes": 44740136,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "texture-23",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-23.asset",
+            "format": "RGBA32",
+            "bytes": 44740136,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "texture-5",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/WorldArt208/texture-5.asset",
+            "format": "ARGB32",
+            "bytes": 44740136,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "texture-15",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-15.asset",
+            "format": "RGBA32",
+            "bytes": 44740136,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "texture-17",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-17.asset",
+            "format": "RGBA32",
+            "bytes": 44740136,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "Authored low uplands with continuous rounded geological incision",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "",
+            "bytes": 44257624,
+            "width": 0,
+            "height": 0,
+            "vertices": 416506,
+            "readable": true
+        },
+        {
+            "name": "Bastion-0",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/RoofJunction226/Bastion-0.asset",
+            "format": "",
+            "bytes": 42088008,
+            "width": 0,
+            "height": 0,
+            "vertices": 345150,
+            "readable": true
+        },
+        {
+            "name": "Bastion_I",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/BastionReviewed/Bastion_I.asset",
+            "format": "",
+            "bytes": 39699464,
+            "width": 0,
+            "height": 0,
+            "vertices": 323834,
+            "readable": true
+        },
+        {
+            "name": "Color_28f57ff9-b978-468c-8c2a-6136e0a65ea1",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/RockBoarFar.glb",
+            "format": "RGB24",
+            "bytes": 39147774,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Region1Biomes",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/GeographyV1/Region1Biomes.asset",
+            "format": "RGB24",
+            "bytes": 39147731,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "mesh-2",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/TerrainBank197/mesh-2.asset",
+            "format": "",
+            "bytes": 36030576,
+            "width": 0,
+            "height": 0,
+            "vertices": 255791,
+            "readable": true
+        },
+        {
+            "name": "image_1",
+            "type": "Texture2D",
+            "path": "",
+            "format": "ARGB32",
+            "bytes": 33555328,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "image_0",
+            "type": "Texture2D",
+            "path": "",
+            "format": "ARGB32",
+            "bytes": 33555328,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Continuous neighbouring land pigment",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "ARGB32",
+            "bytes": 25166741,
+            "width": 1536,
+            "height": 1536,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "GizmoIconAtlas_pix32",
+            "type": "Texture2D",
+            "path": "",
+            "format": "RGBA32",
+            "bytes": 22370520,
+            "width": 2048,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "AF_broad_meadow_flows",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "ARGB32",
+            "bytes": 22370520,
+            "width": 2048,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "AI_meadow",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "ARGB32",
+            "bytes": 22370520,
+            "width": 2048,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "RegionOneReferenceNodes",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/RegionOneReferenceNodes.png",
+            "format": "RGBA32",
+            "bytes": 14912184,
+            "width": 2048,
+            "height": 683,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "RegionOnePaintedForest",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/RegionOnePaintedForest.png",
+            "format": "RGBA32",
+            "bytes": 14912184,
+            "width": 2048,
+            "height": 683,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "RegionOnePaintedMeadow",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/RegionOnePaintedMeadow.png",
+            "format": "RGB24",
+            "bytes": 14673022,
+            "width": 1254,
+            "height": 1254,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "encounter-panel-v3",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/Resources/EldoriaRetention/encounter-panel-v3.png",
+            "format": "RGBA32",
+            "bytes": 12589200,
+            "width": 1774,
+            "height": 887,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "guardian-banner-v4",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/Resources/EldoriaRetention/guardian-banner-v4.png",
+            "format": "RGBA32",
+            "bytes": 12589200,
+            "width": 887,
+            "height": 1774,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "engendro-reference-v3",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/Resources/EldoriaRetention/engendro-reference-v3.png",
+            "format": "RGBA32",
+            "bytes": 12581024,
+            "width": 1254,
+            "height": 1254,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Spawnling / retained PBR NormalGL_351d1034-25ec-4300-a2e0-d03a0",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingFar.glb",
+            "format": "ARGB32",
+            "bytes": 11185768,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Lightmap-0_comp_light",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-0_comp_light.exr",
+            "format": "BC6H",
+            "bytes": 11185760,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Lightmap-0_comp_dir",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-0_comp_dir.png",
+            "format": "BC7",
+            "bytes": 11185760,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Lightmap-1_comp_light",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-1_comp_light.exr",
+            "format": "BC6H",
+            "bytes": 11185760,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Lightmap-1_comp_dir",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean/Lightmap-1_comp_dir.png",
+            "format": "BC7",
+            "bytes": 11185760,
+            "width": 2048,
+            "height": 2048,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Spawnling / retained skin with dusk-violet grade",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingFar.glb",
+            "format": "ARGB32",
+            "bytes": 11185753,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "ORM_351d1034-25ec-4300-a2e0-d03a0e68175a",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingFar.glb",
+            "format": "ARGB32",
+            "bytes": 11185745,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "ORM_28f57ff9-b978-468c-8c2a-6136e0a65ea1",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/RockBoarFar.glb",
+            "format": "ARGB32",
+            "bytes": 11185745,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "world-zone-ground-identity-v10-0",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/WorldDestinations-39319603425/world-zone-ground-identity-v10-0.asset",
+            "format": "RGBA32",
+            "bytes": 11185737,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "O_painted_bank_-1",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "ARGB32",
+            "bytes": 11185720,
+            "width": 2048,
+            "height": 512,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "O_painted_bank_1",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "ARGB32",
+            "bytes": 11185720,
+            "width": 2048,
+            "height": 512,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "FracturedBasinPigment",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "ARGB32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "rock_3_diff_1k",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0067.asset",
+            "format": "ARGB32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "texture-16",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/texture-16.asset",
+            "format": "RGBA32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "tex-5",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/SpawnlingBastion2/Generated/Run-39578889927/tex-5.asset",
+            "format": "RGBA32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "authored-texture-3",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-texture-3.asset",
+            "format": "RGBA32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "Bark_NormalTree",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0047.asset",
+            "format": "ARGB32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "tex-4",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/SpawnlingBastion2/Generated/Run-39578889927/tex-4.asset",
+            "format": "RGBA32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "texture-2",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/WorldArt208/texture-2.asset",
+            "format": "ARGB32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Bark_NormalTree_Normal",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0048.asset",
+            "format": "ARGB32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Leaves_TwistedTree_C",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0073.asset",
+            "format": "ARGB32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "texture-0",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/FinalEnvironment212/texture-0.asset",
+            "format": "ARGB32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "texture-3",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/WorldArt208/texture-3.asset",
+            "format": "ARGB32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Valoria deep pine Leaf_Pine_C",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0050.asset",
+            "format": "ARGB32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "authored-texture-2",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Run-39156041822/authored-texture-2.asset",
+            "format": "RGBA32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "texture-4",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/WorldArt208/texture-4.asset",
+            "format": "ARGB32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "tex-3",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/SpawnlingBastion2/Generated/Run-39578889927/tex-3.asset",
+            "format": "RGBA32",
+            "bytes": 11185704,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "scout-mission-vignettes-v4",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/Resources/EldoriaRetention/scout-mission-vignettes-v4.png",
+            "format": "RGB24",
+            "bytes": 11008508,
+            "width": 1254,
+            "height": 1254,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "RegionOneExistingPathDistance",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/RegionOneExistingPathDistance.png",
+            "format": "RGB24",
+            "bytes": 9787603,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "texture-0",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/TerrainPolish218/texture-0.asset",
+            "format": "RGB24",
+            "bytes": 9787603,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "meadow-1",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/TerrainBank197/meadow-1.asset",
+            "format": "RGB24",
+            "bytes": 9787603,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "meadow-0",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/TerrainBank197/meadow-0.asset",
+            "format": "RGB24",
+            "bytes": 9787603,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "image_2",
+            "type": "Texture2D",
+            "path": "",
+            "format": "ARGB32",
+            "bytes": 8389504,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "WarmLoam",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion73/WarmLoam.asset",
+            "format": "RGBA32",
+            "bytes": 8389504,
+            "width": 1024,
+            "height": 1024,
+            "vertices": 0,
+            "readable": true
+        },
+        {
+            "name": "E_river_depth_and_current",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "ARGB32",
+            "bytes": 8389496,
+            "width": 2048,
+            "height": 384,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Bridge_Masonry_GI",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Bridge_Masonry_GI.asset",
+            "format": "",
+            "bytes": 8294104,
+            "width": 0,
+            "height": 0,
+            "vertices": 67696,
+            "readable": true
+        },
+        {
+            "name": "Bridge_Masonry",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0091.asset",
+            "format": "",
+            "bytes": 7924056,
+            "width": 0,
+            "height": 0,
+            "vertices": 64392,
+            "readable": true
+        },
+        {
+            "name": "meshes[0]",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-0.asset",
+            "format": "",
+            "bytes": 6499032,
+            "width": 0,
+            "height": 0,
+            "vertices": 55232,
+            "readable": true
+        },
+        {
+            "name": "Ruin_46_-1",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0114.asset",
+            "format": "",
+            "bytes": 5658264,
+            "width": 0,
+            "height": 0,
+            "vertices": 45984,
+            "readable": true
+        },
+        {
+            "name": "Authored weathered crossing planks",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "ARGB32",
+            "bytes": 5593339,
+            "width": 512,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Eastern shelf water pigment",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+            "format": "ARGB32",
+            "bytes": 5593304,
+            "width": 512,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Ruin_26_52",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0113.asset",
+            "format": "",
+            "bytes": 5587416,
+            "width": 0,
+            "height": 0,
+            "vertices": 45408,
+            "readable": true
+        },
+        {
+            "name": "Bridge_ArchSpandrel_DressedCourses.001_GI",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Bridge_ArchSpandrel_DressedCourses.001_GI.asset",
+            "format": "",
+            "bytes": 5397096,
+            "width": 0,
+            "height": 0,
+            "vertices": 43257,
+            "readable": true
+        },
+        {
+            "name": "Bridge_ArchSpandrel_DressedCourses_GI",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Bridge_ArchSpandrel_DressedCourses_GI.asset",
+            "format": "",
+            "bytes": 5375256,
+            "width": 0,
+            "height": 0,
+            "vertices": 43062,
+            "readable": true
+        },
+        {
+            "name": "Bastion_Environment72_GI",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion72/Bastion_Environment72_GI.asset",
+            "format": "",
+            "bytes": 5138024,
+            "width": 0,
+            "height": 0,
+            "vertices": 56905,
+            "readable": true
+        },
+        {
+            "name": "Outer_Road_GI",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Outer_Road_GI.asset",
+            "format": "",
+            "bytes": 4879032,
+            "width": 0,
+            "height": 0,
+            "vertices": 39660,
+            "readable": true
+        },
+        {
+            "name": "",
+            "type": "SceneVisibilityState",
+            "path": "",
+            "format": "",
+            "bytes": 4722392,
+            "width": 0,
+            "height": 0,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Axial_Paving_GI",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Axial_Paving_GI.asset",
+            "format": "",
+            "bytes": 4681976,
+            "width": 0,
+            "height": 0,
+            "vertices": 38108,
+            "readable": true
+        },
+        {
+            "name": "Bridge_ArchSpandrel_DressedCourses.001",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0090.asset",
+            "format": "",
+            "bytes": 4643448,
+            "width": 0,
+            "height": 0,
+            "vertices": 42616,
+            "readable": true
+        },
+        {
+            "name": "Bridge_ArchSpandrel_DressedCourses",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0089.asset",
+            "format": "",
+            "bytes": 4624056,
+            "width": 0,
+            "height": 0,
+            "vertices": 42414,
+            "readable": true
+        },
+        {
+            "name": "BastionI",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/ValoriaStrategic/BastionI.png",
+            "format": "RGBA32",
+            "bytes": 4563968,
+            "width": 816,
+            "height": 699,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "tripo_mesh_28f57ff9-b978-468c-8c2a-6136e0a65ea1",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/RockBoarNear.glb",
+            "format": "",
+            "bytes": 4472768,
+            "width": 0,
+            "height": 0,
+            "vertices": 34125,
+            "readable": true
+        },
+        {
+            "name": "mesh-4",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/TerrainBank197/mesh-4.asset",
+            "format": "",
+            "bytes": 4429560,
+            "width": 0,
+            "height": 0,
+            "vertices": 41400,
+            "readable": true
+        },
+        {
+            "name": "BastionII",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/ValoriaStrategic/BastionII.png",
+            "format": "RGBA32",
+            "bytes": 4410560,
+            "width": 772,
+            "height": 714,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Outer_Road",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0104.asset",
+            "format": "",
+            "bytes": 4234104,
+            "width": 0,
+            "height": 0,
+            "vertices": 39552,
+            "readable": true
+        },
+        {
+            "name": "image_3",
+            "type": "Texture2D",
+            "path": "",
+            "format": "ARGB32",
+            "bytes": 4195200,
+            "width": 512,
+            "height": 1024,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "",
+            "type": "Object",
+            "path": "",
+            "format": "",
+            "bytes": 4194608,
+            "width": 0,
+            "height": 0,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Approved cut end grain",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResources.glb",
+            "format": "ARGB32",
+            "bytes": 4188912,
+            "width": 627,
+            "height": 627,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Approved dark fissured bark",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResources.glb",
+            "format": "ARGB32",
+            "bytes": 4188912,
+            "width": 627,
+            "height": 627,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Approved pale quarry limestone",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResources.glb",
+            "format": "ARGB32",
+            "bytes": 4188912,
+            "width": 627,
+            "height": 627,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Approved worn honey timber",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResources.glb",
+            "format": "ARGB32",
+            "bytes": 4188912,
+            "width": 627,
+            "height": 627,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Axial_Paving",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0085.asset",
+            "format": "",
+            "bytes": 4008120,
+            "width": 0,
+            "height": 0,
+            "vertices": 37440,
+            "readable": true
+        },
+        {
+            "name": "RegionOneBlenderQueries",
+            "type": "TextAsset",
+            "path": "Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderQueries.bytes",
+            "format": "",
+            "bytes": 3965679,
+            "width": 0,
+            "height": 0,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Bridge_Paving_GI",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Bridge_Paving_GI.asset",
+            "format": "",
+            "bytes": 3816024,
+            "width": 0,
+            "height": 0,
+            "vertices": 31008,
+            "readable": true
+        },
+        {
+            "name": "Foundation_shrubs_and_groundcover_outside_ensemble",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/Bastion70/Foundation_shrubs_and_groundcover_outside_ensemble.asset",
+            "format": "",
+            "bytes": 3446328,
+            "width": 0,
+            "height": 0,
+            "vertices": 51120,
+            "readable": true
+        },
+        {
+            "name": "",
+            "type": "AssetBundle",
+            "path": "Library/unity editor resources",
+            "format": "",
+            "bytes": 3384313,
+            "width": 0,
+            "height": 0,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Bridge_Paving",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0092.asset",
+            "format": "",
+            "bytes": 3319896,
+            "width": 0,
+            "height": 0,
+            "vertices": 31008,
+            "readable": true
+        },
+        {
+            "name": "scout-parchment-v3",
+            "type": "Texture2D",
+            "path": "Assets/Eldoria/Resources/EldoriaRetention/scout-parchment-v3.png",
+            "format": "DXT5",
+            "bytes": 3146624,
+            "width": 1024,
+            "height": 1536,
+            "vertices": 0,
+            "readable": false
+        },
+        {
+            "name": "Ruin_-22_46",
+            "type": "Mesh",
+            "path": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedArt/Part_0115.asset",
+            "format": "",
+            "bytes": 3048696,
+            "width": 0,
+            "height": 0,
+            "vertices": 24768,
+            "readable": true
+        },
+        {
+            "name": "SirAldric_Tripo_Source_49800_VertexTopologyPreserved",
+            "type": "Mesh",
+            "path": "",
+            "format": "",
+            "bytes": 3035624,
+            "width": 0,
+            "height": 0,
+            "vertices": 30427,
+            "readable": true
+        }
+    ],
+    "terrainCaches": [
+        {
+            "name": "heights",
+            "count": 410856
+        },
+        {
+            "name": "masks",
+            "count": 1643424
+        },
+        {
+            "name": "sourceVertices",
+            "count": 331431
+        },
+        {
+            "name": "fittedPigments",
+            "count": 5
+        },
+        {
+            "name": "contactVertices",
+            "count": 416506
+        },
+        {
+            "name": "contactNormals",
+            "count": 416506
+        },
+        {
+            "name": "contactTriangles",
+            "count": 2199864
+        },
+        {
+            "name": "contactCells",
+            "count": 25764
+        }
+    ]
+}
