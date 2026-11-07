@@ -37,7 +37,8 @@ namespace UnityEngine {
   public struct Color32 {public byte r,g,b,a;}
   public enum TextureFormat { RGB24 }
   public static partial class Mathf {
-    public static float Min(float a,float b)=>Math.Min(a,b);
+    // Min/Max live in the shared UnityApiStub so both bounded compile
+    // targets resolve the same method without a duplicate signature.
     public static int FloorToInt(float x)=>(int)Math.Floor(x);
   }
   public static partial class Debug {
