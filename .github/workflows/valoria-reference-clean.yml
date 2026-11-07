@@ -2,7 +2,7 @@ name: '[VALORIA] Clean reference reconstruction / native Unity'
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, fix/player-experience-audit-20261106]
     paths: ['tools/valoria-reference-clean/request.json']
 permissions:
   contents: write
@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   native:
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[valoria-native]'))
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/player-experience-audit-20261106') && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[valoria-native]'))
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 75
     outputs:
@@ -49,7 +49,15 @@ jobs:
       - name: Check live exclusive lease and actual native tools
         shell: powershell
         run: |
-          node tools/workstream-lease/check.mjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-clean-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
+          if($env:GITHUB_REF -ne 'refs/heads/main'){
+            $request=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
+            if($request.stage -ne 'web_playtest' -or $request.publish_content -or $request.content_updates -or $request.export_package){throw 'Candidate branch is restricted to an unpublished WebGL build'}
+          }
+          if($env:GITHUB_REF -eq 'refs/heads/fix/player-experience-audit-20261106'){
+            node tools/valoria-reference-clean/check-player-experience-lease.cjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-clean-live-main/pipeline/active-workstreams.json"
+          }else{
+            node tools/workstream-lease/check.mjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-clean-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
+          }
           if($LASTEXITCODE){throw 'Live runner lease or queued ownership changed; refuse stale execution'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared native tools busy'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
@@ -943,6 +951,17 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.native_stage.outputs.stage == 'web_playtest'
+        with:
+          name: valoria-web-build-diagnostics-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/valoria-reference-clean.log
+            valoria-layered-source/docs/evidence/valoria-reference-clean/web-integration-preflight.log
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-result.json
+          if-no-files-found: warn
+          retention-days: 30
+
       # Compact visual evidence for the REAL owner-facing uGUI V2. The legacy
       # review artifact carries nearly a gigabyte of old Blender/source files
       # and exceeds connector limits; retain it unchanged, add PNGs separately.
@@ -960,13 +979,16 @@ jobs:
             valoria-layered-source/docs/evidence/valoria-reference-clean/integration-chapter2-complete.png
             valoria-layered-source/docs/evidence/valoria-reference-clean/integration-result.json
             valoria-layered-source/docs/evidence/valoria-reference-clean/integration-art-*.png
+            # Preserve the actual selected Engendro before/after mobile proof.
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-context-engendro-*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-city-barracks-phone-*.png
             valoria-layered-source/docs/evidence/valoria-reference-clean/web-integration-preflight.log
           if-no-files-found: warn
           retention-days: 30
           compression-level: 1
 
       - uses: actions/upload-artifact@v4
-        if: always() && !startsWith(steps.native_stage.outputs.stage, 'visual_consolidation_') && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
+        if: always() && steps.native_stage.outputs.stage != '' && steps.native_stage.outputs.stage != 'web_playtest' && !startsWith(steps.native_stage.outputs.stage, 'visual_consolidation_') && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
         with:
           name: valoria-review-small-${{ github.run_id }}
           path: |
@@ -1044,7 +1066,7 @@ jobs:
           if-no-files-found: warn
 
       - uses: actions/upload-artifact@v4
-        if: always() && !startsWith(steps.native_stage.outputs.stage, 'visual_consolidation_') && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
+        if: always() && steps.native_stage.outputs.stage != '' && !startsWith(steps.native_stage.outputs.stage, 'visual_consolidation_') && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |
@@ -1169,3 +1191,4 @@ jobs:
           name: valoria-verified-private-site-${{ github.run_id }}
           path: prepared-site/**
           if-no-files-found: error
+

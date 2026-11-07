@@ -53,7 +53,17 @@ namespace Eldoria.ReferenceClean {
   Rect UIVisibleSceneViewport(){
    if(!Hud)return default;
    var v2=Hud.GetComponent<RoyalGoldV2Hud>();
-   return v2?v2.GetFreeSceneViewport():Hud.GetVisibleSceneViewport();
+   // A landscape phone's top-left chapter and bottom context sheet can overlap
+   // in Y without overlapping in X. Reserving BOTH as full-width bands left
+   // only 3% free height for the real Barracks plot at 844x390 (browser QA).
+   // The right-hand open scene must be usable for landscape city parcels too,
+   // without changing centered Bastion framing or portrait layouts.
+   bool cityParcelBesideQuest=!InWorld&&PlayerCamera&&PlayerCamera.aspect>1f&&
+    (Selected=="sawmill"||Selected=="barracks"||Selected=="granary"||
+     Selected=="upgrade-barracks"||Selected=="stoneworks");
+   bool worldBesideQuest=InWorld&&IsWorldTarget(Selected);
+   return v2?v2.GetFreeSceneViewport(worldBesideQuest||cityParcelBesideQuest):
+    Hud.GetVisibleSceneViewport();
   }
   IEnumerator Start(){
    city=GetComponent<ValoriaReferenceCleanGameplay>();
@@ -78,6 +88,21 @@ namespace Eldoria.ReferenceClean {
     if(city.Parcels&&id=="barracks")return city.Parcels.RightBuilt;
     if(id=="granary")return Resources.Load<GameObject>("BastionIII/Granary/Granary");
     if(id=="stoneworks")return Resources.Load<GameObject>("BastionIII/Granary/StoneWorkshop");
+    if(IsWorldTarget(id)){
+     // Renewable nodes keep physics and rendered art in separate roots.
+     // Preview the real visual, not an empty hotspot that falls back to a house.
+     var resource=WorldRoot.GetComponentsInChildren<Transform>(true)
+      .FirstOrDefault(t=>t.name=="Production resource visual "+id);
+     if(resource)return resource.gameObject;
+     if(id=="engendro-valoria"){
+      var actor=WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
+      if(actor&&actor.ModelRoot)return actor.ModelRoot;
+     }
+     var authored=WorldRoot.GetComponentsInChildren<Transform>(true)
+      .FirstOrDefault(t=>t.name=="Zone1 authored "+id||t.name=="Zone1 hostile camp "+id);
+     if(authored)return authored.gameObject;
+     var target=FindTarget(id);if(target)return target.gameObject;
+    }
     return null;
    };
    if(!Hud.GetComponent<RoyalGoldV2Narrative>())Hud.gameObject.AddComponent<RoyalGoldV2Narrative>();
@@ -181,7 +206,7 @@ namespace Eldoria.ReferenceClean {
    if(!lyra)lyra=Hud.gameObject.AddComponent<Eldoria.HeroesUI.HeroesLyraModel>();
    lyra.Loaded=()=>{if(heroes)heroes.Refresh();if(management)management.SynchronizeLayout();};
    RoyalGoldV41SourceArt.LyraPortraitProvider=()=>{
-    if(!lyra||!boundGateway.Snapshot().ChapterThree.LyraRecruited)return null;
+    if(!lyra)return null;
     lyra.Request();return lyra.Portrait;
    };
    heroes.ReadModelRoot=id=>{
@@ -233,7 +258,11 @@ namespace Eldoria.ReferenceClean {
    }
    if(layoutWidth!=Screen.width||layoutHeight!=Screen.height){
     layoutWidth=Screen.width;layoutHeight=Screen.height;var scaler=Hud.GetComponent<RoyalScaler>();
-    scaler.referenceResolution=new Vector2(layoutWidth<layoutHeight?800:1600,900);scaler.matchWidthOrHeight=layoutWidth<layoutHeight?0:1;
+    // Phone HUDs cannot use desktop's 900-unit height: 18-unit labels became
+    // eight-pixel text at 844x390. Keep desktop density, with a readable phone
+    // reference shared by every existing panel and the camera occlusion solver.
+    bool phone=Mathf.Min(layoutWidth,layoutHeight)<600;
+    scaler.referenceResolution=new Vector2(layoutWidth<layoutHeight?(phone?600:800):1600,phone?600:900);scaler.matchWidthOrHeight=layoutWidth<layoutHeight?0:1;
     SelectionChanged(Selected);
    }
   }
@@ -344,9 +373,22 @@ namespace Eldoria.ReferenceClean {
    if(!target||!Ready||!Hud)return;
    var camera=PlayerCamera;
    var safe=UIVisibleSceneViewport();
+   bool diagnostic=UnityEngine.Application.isEditor&&UnityEngine.Application.isBatchMode&&target.GetComponent<WorldHotspot>()?.Id=="region1:wood:001";
+   if(diagnostic)Debug.Log("ELDORIA_FOCUS_ENTRY safe="+safe+" ortho="+camera.orthographic+" pose="+camera.transform.position);
    if(!camera||safe.width<=.08f||safe.height<=.08f)return;
    var points=FocusPoints(target);
-   if(!ProjectFocus(camera,points,out var projected)){
+   var hotspot=target.GetComponent<WorldHotspot>();
+   string focusId=hotspot?hotspot.Id:"";
+   bool withMarker=InWorld&&(focusId.StartsWith("region1:",StringComparison.Ordinal)||
+    focusId=="forest-valoria"||focusId=="quarry-valoria"||focusId=="meat-valoria"||
+    focusId.StartsWith("hunt-",StringComparison.Ordinal)||focusId=="corrupt-scout"||
+    focusId=="engendro-valoria"||focusId=="ash-stalker-valoria");
+   // Frame the same anchor used by the real resource/level marker, not only
+   // the smaller visible mesh. Reserve its physical footprint below the HUD.
+   if(withMarker)points.Add(Eldoria.PlayerClarityRuntime.LabelAnchor(target,false));
+   bool projectionReady=ProjectFocus(camera,points,out var projected);
+   if(diagnostic)Debug.Log("ELDORIA_FOCUS_PROJECTION valid="+projectionReady+" bounds="+projected+" marker="+withMarker);
+   if(!projectionReady){
     // A selected world site can lie behind the current near-view camera.
     // Move to its real site before fitting; rejecting projection here made
     // distant quarry/forest actions impossible to reveal from the objective.
@@ -363,10 +405,14 @@ namespace Eldoria.ReferenceClean {
    // boxes or after off-screen portrait/desktop camera recomposition.
    float bottomClearance=!InWorld&&Hud.GetComponent<RoyalGoldV2Hud>()?.
        ChronicleIllustratedBuildingVisible==true ? .036f : .012f;
-   var padded=Rect.MinMaxRect(safe.xMin+.012f,safe.yMin+bottomClearance,
-       safe.xMax-.012f,safe.yMax-.012f);
+   float padX=withMarker?Mathf.Max(.012f,40f/Mathf.Max(1f,camera.pixelRect.width)):.012f;
+   float padY=withMarker?Mathf.Max(.012f,18f/Mathf.Max(1f,camera.pixelRect.height)):.012f;
+   var padded=Rect.MinMaxRect(safe.xMin+padX,safe.yMin+Mathf.Max(bottomClearance,padY),
+       safe.xMax-padX,safe.yMax-padY);
+   if(padded.width<=.01f||padded.height<=.01f)return;
    for(int attempt=0;attempt<5;attempt++){
     if(!ProjectFocus(camera,points,out projected))break;
+    if(diagnostic)Debug.Log("ELDORIA_FOCUS_STEP "+attempt+" bounds="+projected+" padded="+padded);
     if(projected.xMin>=padded.xMin&&projected.xMax<=padded.xMax&&projected.yMin>=padded.yMin&&projected.yMax<=padded.yMax){var context=Hud.GetComponent<RoyalGoldV3ContextHud>();if(context)context.SynchronizeNow();return;}
     if(camera.orthographic){
      float required=Mathf.Max(projected.width/padded.width,projected.height/padded.height);
@@ -392,15 +438,18 @@ namespace Eldoria.ReferenceClean {
       }
       if(!ProjectFocus(camera,points,out projected))break;
      }
-     // Translate parallel to the picture plane. Using an arbitrary horizontal
-     // ground-plane ray and immediately clamping to a full-terrain footprint
-     // previously caused the selected model to re-enter an occluded HUD area.
+     // Preserve the requested screen translation without changing camera
+     // altitude on every selection/rotation. Movement along the view axis
+     // has no effect on an orthographic projection.
      Vector2 desired=padded.center;
      float x=(projected.center.x-desired.x)*2f*camera.orthographicSize*camera.aspect;
      float y=(projected.center.y-desired.y)*2f*camera.orthographicSize;
      var shift=camera.transform.right*x+camera.transform.up*y;
+     if(camera.orthographic&&Mathf.Abs(camera.transform.forward.y)>.001f)
+      shift-=camera.transform.forward*(shift.y/camera.transform.forward.y);
      if(InWorld)WorldNavigation.PanTo(WorldNavigation.target+new Vector3(shift.x,0,shift.z));
      else camera.transform.position+=shift;
+     if(diagnostic)Debug.Log("ELDORIA_FOCUS_SHIFT shift="+shift+" target="+WorldNavigation.target);
     }else break;
    }
    // Reproject once after a native synchronous camera adjustment; the
@@ -427,6 +476,13 @@ namespace Eldoria.ReferenceClean {
      AddFocusRenderers(left?p.LeftAvailable:p.RightAvailable,points);
     }
    }else{
+    // Chapter-III sites own their imported geometry. Searching only the
+    // original Zone1 names fell back to a tiny hotspot instead of the scene
+    // feature, so nearby quarry scenery dominated the objective focus.
+    if(LocalGateway.IsChapterThreeTarget(id)){
+     AddFocusRenderers(target,points);
+     if(points.Count>0)return points;
+    }
     // Production resource models follow their saved logical sites; older
     // authored scenery is no longer the selection's rendered geometry.
     if(id=="forest-valoria"||id=="quarry-valoria"||
@@ -537,7 +593,26 @@ namespace Eldoria.ReferenceClean {
     bool thisMarch=selectedMarch!=null;
     bool active=MarchCapacityRules.ActiveCount(s,city.Clock.UtcTicks)>=MarchCapacityRules.MaxConcurrentMarches;
     var b=new RoyalBuilding{Id=selected,Name=TargetName(selected),Function=DestinationSummary(selected,s),State=action.Label};
-    if(thisMarch){b.OperationActive=true;b.State=MarchStatus(selectedMarch);b.Time=RoyalFormatting.Remaining(selectedMarch.PhaseEndsUtcTicks,city.Clock.UtcTicks,english);b.Result=selectedMarch.Phase=="returning"?Reward(selectedMarch.PendingWood,selectedMarch.PendingStone)+L(" al llegar a Valoria"," on arrival at Valoria"):ExpectedReward(selected,s);b.Progress=(float)ZoneOneGatewayHost.TravelFraction(city.Clock.UtcTicks,selectedMarch.PhaseEndsUtcTicks,selectedMarch.Phase=="gathering"?SliceRules.GatherSeconds:SliceRules.TravelSeconds);}
+    if(thisMarch){
+     b.OperationActive=true;
+     b.State=MarchStatus(selectedMarch);
+     b.Time=RoyalFormatting.Remaining(selectedMarch.PhaseEndsUtcTicks,city.Clock.UtcTicks,english);
+     b.Result=selectedMarch.Phase=="returning"?
+      Reward(selectedMarch.PendingWood,selectedMarch.PendingStone)+L(" al llegar a Valoria"," on arrival at Valoria"):
+      ExpectedReward(selected,s);
+     b.Progress=(float)ZoneOneGatewayHost.TravelFraction(city.Clock.UtcTicks,selectedMarch.PhaseEndsUtcTicks,
+      selectedMarch.Phase=="gathering"?SliceRules.GatherSeconds:SliceRules.TravelSeconds);
+     // Never tell the player to send an expedition after their actual command
+     // has dispatched it. The canonical phase/timer remain the source of truth.
+     b.Function=selectedMarch.Phase=="outbound"?
+      L("La marcha ya ha salido. El resultado se determinará al llegar al objetivo; no necesitas volver a atacar.",
+        "The march has departed. The outcome will be decided on arrival; there is no need to attack again."):
+      selectedMarch.Phase=="gathering"?
+      L("La marcha está recogiendo recursos y volverá cuando termine.",
+        "The march is gathering resources and will return when finished."):
+      L("La marcha regresa a Valoria. Si obtuvo botín, se entregará cuando llegue.",
+        "The march is returning to Valoria. Any loot earned will be delivered on arrival.");
+    }
     else if(active)b.Requirements=L("Tres marchas activas. Espera a que regrese una.","Three active marches. Wait for one to return.");
     else if(selected=="engendro-valoria"&&!action.Enabled&&!s.EngendroDefeated)b.Requirements=L("Necesitas Bastión II, cuartel y una marcha confirmada.","Requires Bastion II, barracks and a confirmed march.");
     else if(!action.Enabled&&s.Available.Total<1)b.Requirements=L("No hay tropas disponibles para salir.","No troops are available to depart.");
@@ -559,6 +634,12 @@ namespace Eldoria.ReferenceClean {
    return s.EngendroDefeated?L("El Engendro ha caído. Bastión II está asegurado.","The Spawn has fallen. Bastion II is secured."):L("El enemigo del capítulo II. Confirma tu expedición antes de salir. Botín si vence: +120 madera · +100 piedra.","Chapter II's enemy. Confirm your expedition before departing. Victory loot: +120 wood · +100 stone.");
   }
   public RoyalResult Submit(RoyalAction offer){
+   if(offer!=null&&offer.Enabled&&offer.Kind=="OpenMarch"){
+    var management=Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+    if(!management)return new RoyalResult(false,L("Preparación no disponible","Preparation unavailable"));
+    Hud.SelectBuilding("");management.Open(RoyalGoldV3ManagementScreens.Destination.March);
+    return new RoyalResult(true,"");
+   }
    if(offer!=null&&offer.Kind=="ContactLyra"){
     Hud.ShowNarrativeSequence(new[]{
      new RoyalNarrativePresentation.Line("Lyra","Soy Lyra. Busco a mi hermano. Su compañía desapareció la noche de la Brecha. Encontré su insignia junto a esta fisura; no sé qué significa.","I am Lyra. I seek my brother. His company vanished on the night of the Breach. I found his insignia beside this fissure; I do not know what it means."),
@@ -571,4 +652,5 @@ namespace Eldoria.ReferenceClean {
   string L(string es,string en)=>englishInterface?en:es;
  }
 }
+
 

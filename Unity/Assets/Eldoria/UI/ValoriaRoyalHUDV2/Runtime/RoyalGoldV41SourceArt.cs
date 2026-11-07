@@ -12,7 +12,14 @@ namespace Eldoria.UI.RoyalGold.V2
         public static System.Func<Sprite> LyraPortraitProvider;
         public static Sprite HeroPortrait(string id)
         {
-            if(id=="aldric")return Get("aldric-face");
+            if(id=="aldric"){
+                const string aldricKey="canonical-aldric-dialogue-portrait";
+                if(sprites.TryGetValue(aldricKey,out var existing))return existing;
+                var face=Resources.Load<Texture2D>("UI/AldricDialogue/aldric_neutral");
+                if(!face)return Get("aldric-face");
+                var approved=Sprite.Create(face,new Rect(0,0,face.width,face.height),new Vector2(.5f,.5f),100);
+                sprites[aldricKey]=approved;return approved;
+            }
             if(id!="lyra")return null;
             if(LyraPortraitProvider!=null)return LyraPortraitProvider();
             const string key="approved-lyra-portrait";
@@ -50,3 +57,4 @@ namespace Eldoria.UI.RoyalGold.V2
             Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
     }
 }
+

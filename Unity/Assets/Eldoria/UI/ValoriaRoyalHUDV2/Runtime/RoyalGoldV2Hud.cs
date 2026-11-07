@@ -40,7 +40,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private float lastWidth = -1f, lastHeight = -1f;
         private string lastDetails = "";
         private readonly string[] councilKeys = {"production","defense","civil"};
-        private readonly string[] councilNames = {"PRODUCCIÓN","DEFENSA","VIDA CIVIL"};
+        private readonly string[] councilNames = {"PRODUCCIÓN\n+260 madera\n+180 piedra","DEFENSA\n+220 piedra\n+100 poder","VIDA CIVIL\n+180 madera\n+280 comida"};
         private static Font chronicleFont;
         private static Font ChronicleFont => chronicleFont ? chronicleFont :
             (chronicleFont = Resources.Load<Font>("EldoriaRetention/reference-serif"));
@@ -566,7 +566,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // Preserve more real city in both orientations. A council choice
             // is a modestly taller version of this SAME in-world card.
             bool council=GetComponent<RoyalGoldV3BuildingScreens>()?.InlineCouncilNeeded(Source.SelectedBuildingId)==true;
-            float cardHeight = council?(portrait?142f:169f):(portrait?218f:184f);
+            // The selected Engendro has no resource-cost row. On portrait
+            // phones reuse that empty row for status and visible body text.
+            bool portraitEncounter=portrait && Source.SelectedBuildingId=="engendro-valoria" && !council;
+            float cardHeight = council?(portrait?190f:193f):(portrait?218f:196f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -597,12 +600,12 @@ namespace Eldoria.UI.RoyalGold.V2
             // Do not let a full management-window-sized card occupy the
             // screen when only three legitimate choices are available.
             Top(buildingWorkState.rectTransform,textLeft,
-                council?(portrait?68f:72f):(portrait?99f:99f),
-                middleWidth,council?(portrait?24f:29f):(portrait?47f:33f));
+                council?(portrait?68f:72f):(portraitEncounter?68f:99f),
+                middleWidth,council?(portrait?24f:29f):(portraitEncounter?24f:portrait?47f:25f));
             buildingWorkState.fontSize=portrait?16:17;
             buildingWorkState.verticalOverflow=VerticalWrapMode.Truncate;
             Top((RectTransform)buildingClose.transform,cardWidth-49f,5f,44f,44f);
-            float detailsY=portrait?136f:132f;
+            float detailsY=portrait?(portraitEncounter?94f:136f):121f;
             Top((RectTransform)buildingScroll.transform,textLeft,detailsY,
                 middleWidth,Mathf.Max(28f,cardHeight-detailsY-(portrait?55f:14f)));
             Stretch(scrollViewport,0);
@@ -610,7 +613,7 @@ namespace Eldoria.UI.RoyalGold.V2
             scrollContent.pivot=new Vector2(.5f,1);scrollContent.anchoredPosition=Vector2.zero;
             scrollContent.sizeDelta=new Vector2(0,Mathf.Max(85f,scrollViewport.rect.height));
             Top(buildingBody.rectTransform,0,0,middleWidth-5f,scrollContent.rect.height);
-            buildingBody.fontSize=portrait?16:18;
+            buildingBody.fontSize=portrait?18:16;
             if(portrait)
                 Top((RectTransform)buildingAction.transform,14f,cardHeight-51f,cardWidth-28f,40f);
             else
@@ -627,20 +630,21 @@ namespace Eldoria.UI.RoyalGold.V2
             for(int i=0;i<3;i++)
             {
                 Top((RectTransform)councilChoice[i].transform,councilLeft+i*(councilWidth+3f),
-                    cardHeight-(portrait?47f:52f),councilWidth-2f,41f);
+                    cardHeight-88f,councilWidth-2f,82f);
                 // The original generic button inset of 8 units removed
                 // sixteen pixels from a three-column mobile council choice.
                 // Give its native text the actual 4-unit optical inset, so
                 // PRODUCCIÓN and VIDA CIVIL fit as readable single lines.
                 Stretch(councilCaptions[i].rectTransform,4f);
-                councilCaptions[i].fontSize=portrait?15:17;
+                councilCaptions[i].fontSize=20;
             }
             // Use an optical inset for *labels*, not for action hit targets.
             // Keep the real full-height button and its existing callbacks.
             Stretch(primaryLabel.rectTransform,4f);
             Stretch(speedOneLabel.rectTransform,4f);
             Stretch(speedFiveLabel.rectTransform,4f);
-            primaryLabel.fontSize=portrait?18:21;
+            primaryLabel.fontSize=21;
+            primaryLabel.horizontalOverflow=HorizontalWrapMode.Wrap;
             speedOneLabel.fontSize=portrait?16:15;
             speedFiveLabel.fontSize=portrait?16:15;
             lastDetails = null; // Recompute scroll extent after rotation even when the offer text is unchanged.
@@ -668,10 +672,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // Match Option 1's 2:1 illuminated page: no full-height overlay.
             Top(chapterText.rectTransform, 65f, 10f, width - 78f, 23f);
             chapterText.fontSize = width < 300f ? 15 : 18;
-            Top(progressText.rectTransform, width - 66f, 10f, 52f, 22f);
-            progressText.fontSize = 13;
+            Top(progressText.rectTransform, width - 124f, 86f, 110f, 24f);
+            progressText.fontSize = 18;
             progressText.alignment = TextAnchor.MiddleRight;
-            Top(objectiveText.rectTransform, 65f, 36f, width - 79f, 64f);
+            Top(objectiveText.rectTransform, 65f, 36f, width - 79f, 48f);
             objectiveText.fontSize = width < 300f ? 17 : 20;
             // Real "go to objective" / "missions" actions, in two rings
             // to the RIGHT of the parchment like the selected reference.
@@ -1179,17 +1183,18 @@ namespace Eldoria.UI.RoyalGold.V2
                     var caption = item.Label.rectTransform;
                     caption.anchorMin = caption.anchorMax = caption.pivot =
                         new Vector2(.5f, .5f);
-                    SetWidthAndHeight(caption, cellWidth - 2f, 20f);
+                    SetWidthAndHeight(caption, cellWidth - 2f, 32f);
                     caption.anchoredPosition =
                         new Vector2(0f, -buttonHeight * .33f);
                     item.Label.fontSize = Mathf.RoundToInt(Mathf.Clamp(
-                        cellWidth * .19f, 13f, 17f));
+                        cellWidth * .19f, 18f, 20f));
                     if (ChronicleFont) item.Label.font = ChronicleFont;
                     item.Label.fontStyle = FontStyle.Normal;
                     item.Label.alignment = TextAnchor.MiddleCenter;
                     item.Label.color = item.Button.interactable ? Ivory : new Color(.54f, .55f, .56f);
                     item.Label.Put(item.Label.text.ToUpperInvariant());
                     item.Label.horizontalOverflow = HorizontalWrapMode.Overflow;
+                    item.Label.verticalOverflow = VerticalWrapMode.Overflow;
                     while (item.Label.fontSize > 11 && item.Label.preferredWidth > caption.rect.width - 2f)
                         item.Label.fontSize--;
                 }
@@ -1344,7 +1349,16 @@ namespace Eldoria.UI.RoyalGold.V2
         /// A camera-framing helper for the eventual safe integration. The V1
         /// method does not know the new V2 cards. No camera is changed here.
         /// </summary>
-        public Rect GetFreeSceneViewport()
+        // Keep the established public no-argument API intact. Existing
+        // Unity PlayMode reflection callers require an actual zero-parameter
+        // method; an optional bool still has one parameter in reflection.
+        public Rect GetFreeSceneViewport() => GetFreeSceneViewport(false);
+
+        // Explicit context mode reserves the measured left quest footprint
+        // for landscape world targets and selected city parcels. Reserving its
+        // entire Y band together with the lower card hid Barracks in browser QA.
+        // The no-argument API stays unchanged for existing UI consumers.
+        public Rect GetFreeSceneViewport(bool sideBySideWorldContext)
         {
             Rect free = Source ? Source.GetVisibleSceneViewport() : new Rect(.07f, .12f, .86f, .78f);
             if (!safe || !hasGeometry) return free;
@@ -1353,12 +1367,47 @@ namespace Eldoria.UI.RoyalGold.V2
             // imaginary left rail that shifts the city/world away from centre.
             float width = Mathf.Max(1, safe.rect.width);
             float height = Mathf.Max(1, safe.rect.height);
+            // Transient RoyalHUD feedback stays non-empty for eight seconds.
+            // Its V1 viewport treats the toast's Y band as a permanent
+            // full-width obstacle, even while the player selects a city plot.
+            // On an 844x390 phone, this left just .16 of the screen between
+            // that toast and the real bottom cartouche; Barracks could not fit.
+            // Only landscape CITY parcel context may replace that transient
+            // cap with the actual stable full-width royal header boundary.
+            // The top-left quest is already excluded by its measured X span
+            // below. World, portrait, centered Bastion, and the legacy
+            // no-argument API continue to use their established contracts.
+            string selectedId=Source?Source.SelectedBuildingId:"";
+            bool cityParcelContext=sideBySideWorldContext&&!portrait&&buildingVisible&&
+                (selectedId=="sawmill"||selectedId=="barracks"||
+                 selectedId=="granary"||selectedId=="upgrade-barracks"||
+                 selectedId=="stoneworks");
+            if(cityParcelContext&&headerPlate&&Source&&!Source.NarrativeOpen)
+            {
+                var canvas=Source.GetComponent<Canvas>();
+                Camera camera=canvas&&canvas.renderMode!=RenderMode.ScreenSpaceOverlay?
+                    canvas.worldCamera:null;
+                Rect cameraPixels=camera?camera.pixelRect:
+                    new Rect(0,0,Screen.width,Screen.height);
+                if(cameraPixels.height>1f)
+                {
+                    var corners=new Vector3[4];
+                    headerPlate.GetWorldCorners(corners);
+                    float bottom=RectTransformUtility.WorldToScreenPoint(camera,corners[0]).y;
+                    float stableTop=Mathf.Clamp01(
+                        (bottom-cameraPixels.yMin)/cameraPixels.height-.012f);
+                    free.yMax=Mathf.Max(free.yMax,stableTop);
+                }
+            }
             // The measured 390x844 council now fits the full Bastion mesh
             // between the upper quest and physical lower ribbon. Keep a
             // positive 1.2% clearance instead of reserving an unnecessary
             // second 2.5% band that rejected this genuine, unobscured frame.
-            float padding = buildingVisible &&
-                Source.SelectedBuildingId=="bastion" ? .012f : .025f;
+            // The world-focus solver already adds 1.2% padding. Reserving
+            // another 2.5% on both quest-side and bottom-sheet edges caused
+            // the measured landscape forest world free area to shrink by 1.4pp.
+            float padding = sideBySideWorldContext && buildingVisible ? .008f :
+                buildingVisible && Source.SelectedBuildingId=="bastion" ? .012f : .025f;
             // Crónica Real's illustrated card is bottom-docked in BOTH
             // orientations. The former landscape right-sheet exclusion made
             // the free width negative on 4:3 displays, so automatic focus
@@ -1375,11 +1424,22 @@ namespace Eldoria.UI.RoyalGold.V2
                     float fromTop = -objectiveCard.anchoredPosition.y + objectiveCard.rect.height;
                     free.yMax = Mathf.Min(free.yMax, 1f - fromTop / height - padding);
                 }
+                else if (sideBySideWorldContext && buildingVisible && objectiveCard)
+                {
+                    // World targets AND selected city parcels focus to the
+                    // right of this compact left quest. Its measured X footprint
+                    // is the only obstruction; a full-width Y exclusion plus
+                    // the bottom cartouche leaves Barracks just 3% free height.
+                    // No controls, saves, clocks or geometry are changed.
+                    float questRight=(objectiveCard.anchoredPosition.x+
+                        objectiveCard.rect.width)/width+padding;
+                    free.xMin=Mathf.Max(free.xMin,questRight);
+                }
                 else if (!(buildingVisible && Source.SelectedBuildingId=="bastion"))
                 {
-                    // The top-left quest occupies this band for objects that
-                    // could share its horizontal footprint. Preserve it for
-                    // other targets, including left-side buildings.
+                    // Genuine left-side city buildings still need the whole
+                    // upper quest band reserved. Bastion stays separately
+                    // centered outside the chapter's horizontal footprint.
                     float fromTop=-objectiveCard.anchoredPosition.y+
                         objectiveCard.rect.height;
                     free.yMax=Mathf.Min(free.yMax,1f-fromTop/height-padding);
@@ -1394,3 +1454,4 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+

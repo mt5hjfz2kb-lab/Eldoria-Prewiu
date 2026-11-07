@@ -7,6 +7,7 @@ namespace Eldoria.UI.RoyalGold {
   public RealmHeader Realm;public ResourceBar Resources;public MissionPanel Mission;public BottomNavigation Navigation;public BuildingDetailsPanel Building;public ModalWindow Modal;public RoyalText Feedback,TestMark;public RoyalButton Settings;
   IRoyalSession session;IRoyalNavigation host;RoyalSnapshot current;string selected="";bool english,pending,narrative,resetArmed;
   float resetArmedUntil;
+  string observedFeedback="";float feedbackUntil;
   public Func<bool> ResetPlaytestProgress;
   RoyalNarrativePresentation cinematic;float next,submitAfter;RoyalSection shown;CanvasGroup group;int orientationKey=-1;
   RoyalHudLayout layout;Canvas canvas;readonly Vector3[] corners=new Vector3[4];
@@ -26,6 +27,11 @@ namespace Eldoria.UI.RoyalGold {
   void OnEnable(){Realm.Info.onClick.AddListener(OpenRealm);Mission.Open.onClick.AddListener(OpenMissions);Settings.onClick.AddListener(OpenSettings);Building.Close.onClick.AddListener(CloseBuilding);Building.Primary.Button.onClick.AddListener(Submit);Modal.Extra.onClick.AddListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.AddListener(SettingsOrMarch);Navigation.Requested+=Open;}
   void OnDisable(){Realm.Info.onClick.RemoveListener(OpenRealm);Mission.Open.onClick.RemoveListener(OpenMissions);Settings.onClick.RemoveListener(OpenSettings);Building.Close.onClick.RemoveListener(CloseBuilding);Building.Primary.Button.onClick.RemoveListener(Submit);Modal.Extra.onClick.RemoveListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.RemoveListener(SettingsOrMarch);Navigation.Requested-=Open;}
   void Update(){
+   if(Feedback){
+    string message=Feedback.text??"";
+    if(message!=observedFeedback){observedFeedback=message;feedbackUntil=Time.unscaledTime+8f;}
+    else if(message.Length>0&&Time.unscaledTime>=feedbackUntil){Feedback.Put("");observedFeedback="";}
+   }
    if(resetArmed && Time.unscaledTime>resetArmedUntil){
     resetArmed=false;resetArmedUntil=0f;
     if(Modal && Modal.gameObject.activeSelf && shown==RoyalSection.Settings)
@@ -157,3 +163,4 @@ namespace Eldoria.UI.RoyalGold {
   string L(string es,string en)=>english?en:es;
  }
 }
+

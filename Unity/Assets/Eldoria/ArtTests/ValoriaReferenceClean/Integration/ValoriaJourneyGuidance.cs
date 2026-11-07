@@ -107,6 +107,8 @@ namespace Eldoria.ReferenceClean {
    host.Hud.ShowNarrativeSequence(Lines(beat),()=>{
     // Completing text, unlike merely opening a modal, commits the milestone.
     city.Gateway.AcknowledgeNarrative(beat);
+    if(beat=="fissure-closed"&&city.Gateway.Snapshot().ChapterThree.LyraRecruited)
+     hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>()?.PresentRecruitment("lyra");
     // A cluster of completed tasks must never spam uninterrupted popups.
     nextNarrativeAt=Time.unscaledTime+1.5f;
     Refresh();
@@ -157,8 +159,13 @@ namespace Eldoria.ReferenceClean {
       (3f+Mathf.Clamp(host.WorldCamera.orthographicSize*.30f,4f,40f));
     }
     if(pair.Key=="corrupt-scout")visible&=!s.ScoutDefeated;
-    // Selection already has a named contextual panel. Labels identify only useful targets.
-    visible&=host.Selected!=pair.Key;
+    // The selected unbuilt city site has NO visible Plot_/Available slab in
+    // the integrated scene (deliberately hidden to avoid old floating tiles).
+    // Do not also hide its sole existing world-anchored label: otherwise the
+    // "Construir" action points at indistinguishable grass. The tiny native
+    // marker is a spatial cue only, not a new gameplay offer or world model.
+    bool selectedUnbuiltTown=town&&!built&&host.Selected==pair.Key&&visible;
+    visible&=host.Selected!=pair.Key||selectedUnbuiltTown;
     if(!town){
      // The panorama shows true continental geography only. Hide ordinary
      // objective/city/encounter captions at the SAME threshold that suppresses
@@ -168,7 +175,7 @@ namespace Eldoria.ReferenceClean {
      float zoom=host.WorldCamera?host.WorldCamera.orthographicSize:0;
      float overview=host.WorldNavigation?host.WorldNavigation.globalZoom:0;
      bool panorama=overview>0&&zoom>=overview*.85f;
-     visible&=!panorama&&(pair.Key==objective||pair.Key=="valoria-map-city"||zoom<=22f);
+     visible&=!panorama&&(pair.Key==objective||pair.Key=="valoria-map-city"||LocalGateway.IsChapterThreeTarget(pair.Key)||zoom<=22f);
     }
     pair.Value.gameObject.SetActive(visible);
     if(visible&&pair.Key=="engendro-valoria"){
@@ -187,16 +194,22 @@ namespace Eldoria.ReferenceClean {
     bool ownBuild=((s.BuildingTaskId??"").StartsWith(pair.Key+":",StringComparison.Ordinal)||(s.BuildingTaskId??"").StartsWith("c3:"+pair.Key+":",StringComparison.Ordinal))&&s.BuildingCompletesUtcTicks>0;
     if(pair.Key=="fissure-valoria"&&s.ChapterThree.InvestigationEndsUtcTicks>city.Clock.UtcTicks)title+=" · "+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,city.Clock.UtcTicks,host.English);
     if(town&&!built)title=ownBuild?(host.English?"Building: ":"En obras: ")+title:(host.English?"Build here: ":"Construir aquí: ")+title;
-    else if(pair.Key=="valoria-map-city")title=host.English?"Enter Valoria":"Entrar en Valoria";
+    if(selectedUnbuiltTown){
+     // Short, readable pointer at the actual authorized parcel. The bottom
+     // parchment still owns the only paid build action and its exact cost.
+     title=(ownBuild?(host.English?"BUILDING · ":"EN OBRAS · "):(host.English?"HERE · ":"AQUÍ · "))+Name(pair.Key,host.English);
+     pair.Value.Label.fontSize=20;
+    }else pair.Value.Label.fontSize=17;
+    if(pair.Key=="valoria-map-city")title=host.English?"Enter Valoria":"Entrar en Valoria";
     pair.Value.Label.Put(title);
    }
   }
   string ContextHint(){
    var s=city.Gateway.Snapshot();bool en=host.English;
    if(s.March.Phase!="idle")return host.MarchStatus(s)+" · "+RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,city.Clock.UtcTicks,en)+"\n"+(s.March.Phase=="returning"?host.Reward(s.March.PendingWood,s.March.PendingStone)+(en?" on arrival":" al llegar"):(en?"The route marker follows your expedition.":"El estandarte señala a tu expedición."));
-   if(s.ChapterThree.InvestigationEndsUtcTicks>city.Clock.UtcTicks)return (en?"Aldric investigates the fissure · ":"Aldric investiga la fisura · ")+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,city.Clock.UtcTicks,en);
+   if(s.ChapterThree.InvestigationEndsUtcTicks>city.Clock.UtcTicks)return (en?"Aldric investigates · ":"Aldric investiga · ")+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,city.Clock.UtcTicks,en)+(en?"\nMeanwhile, upgrade the Sawmill, Barracks and Granary to II.":"\nMientras, mejora Aserradero, Cuartel y Granero a II.");
    if(s.BuildingCompletesUtcTicks>0)return (en?"Construction paid · ":"Obra pagada · ")+RoyalFormatting.Remaining(s.BuildingCompletesUtcTicks,city.Clock.UtcTicks,en);
-   if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+SliceRules.RecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en);
+   if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+s.PendingRecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en)+(en?"\nImprove your city or visit Vigilants with available troops.":"\nMejora la ciudad o visita Vigilantes con las tropas disponibles.");
    if(s.BastionUpgradeCompletesUtcTicks>0)return (en?"Bastion upgrade paid · ":"Mejora del Bastión pagada · ")+RoyalFormatting.Remaining(s.BastionUpgradeCompletesUtcTicks,city.Clock.UtcTicks,en);
    // Teach the real first delivery in the existing contextual hint.
    if(UnityContextTutorial.NeedsMailboxOpening(s))
@@ -269,4 +282,5 @@ namespace Eldoria.ReferenceClean {
   }
  }
 }
+
 

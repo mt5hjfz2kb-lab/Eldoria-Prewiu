@@ -2,6 +2,7 @@ using System;
 using System.Text.Json;
 using Eldoria.Application;
 using Eldoria.Domain;
+using Eldoria.UI.RoyalGold;
 
 public static class NarrativeProbe {
  sealed class Clock : IClock {
@@ -171,7 +172,36 @@ public static class NarrativeProbe {
   gateway=new LocalGateway(clock,store);
   Check(gateway.Snapshot().ChapterProgress.SeenNarrative.FindAll(x=>x=="frontier-open").Count==1,
       "Dialogue ledger persists across real gateway reload");
+  var actionStore=new Store{Value=State(3)};
+  actionStore.Value.Resources.Food=5000;
+  var actionClock=new Clock();
+  var actions=new LocalGateway(actionClock,actionStore);
+  var binding=new ExistingSliceBinding(actions,actionClock);
+  var granary=binding.Read("granary",false).Building.Action;
+  Check(granary!=null&&granary.Enabled,"Player sees a valid Granary offer");
+  actionClock.UtcTicks+=TimeSpan.FromSeconds(60).Ticks;
+  actions.Advance();
+  Check(actions.Snapshot().Revision!=granary.Revision,"Passive progression really changes the displayed revision");
+  Check(binding.Submit(granary).Ok,"An unchanged Granary offer survives passive production");
+  var paid=actions.Snapshot().Resources.Wood;
+  Check(!binding.Submit(granary).Ok&&actions.Snapshot().Resources.Wood==paid,
+      "Double submission cannot charge the same building twice");
+  var staleStore=new Store{Value=State(3)};staleStore.Value.Resources.Food=5000;
+  var staleGateway=new LocalGateway(new Clock(),staleStore);
+  var staleBinding=new ExistingSliceBinding(staleGateway,new Clock());
+  var old=staleBinding.Read("granary",false).Building.Action;
+  var other=staleBinding.Read("granary",false).Building.Action;
+  Check(staleBinding.Submit(other).Ok,"A second view may start the originally offered building");
+  var afterPayment=staleGateway.Snapshot().Resources.Wood;
+  Check(!staleBinding.Submit(old).Ok&&staleGateway.Snapshot().Resources.Wood==afterPayment,
+      "Stale offer cannot start an already paid operation");
+  var fissureState=State(3);fissureState.ChapterThree.FissureExplored=true;
+  fissureState.ChapterThree.LyraContacted=true;
+  var fissureBinding=new ExistingSliceBinding(new LocalGateway(new Clock(),new Store{Value=fissureState}),new Clock());
+  Check(fissureBinding.Read("fissure-valoria",false).Building.Time=="",
+      "The Lyra assault does not advertise the finished investigation's twenty minutes");
   Console.WriteLine("UNITY_NARRATIVE_DOMAIN_PROBE_PASS");
  }
 }
+
 
