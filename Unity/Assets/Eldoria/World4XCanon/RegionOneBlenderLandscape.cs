@@ -104,7 +104,7 @@ namespace Eldoria.World4XCanon
    var instance=parent.gameObject.AddComponent<RegionOneBlenderLandscape>();
    var prefab=Resources.Load<GameObject>(AssetRoot+"RegionOneBlenderWorld");
    if(!prefab)throw new InvalidOperationException("Blender GLB must be imported as a prefab by the installed glTFast importer.");
-   EnsureData();
+   // Load query/verification data in the next phase, not alongside prefab import.
    instance.artwork=Instantiate(prefab,parent);instance.artwork.name="Blender authored geography";
    instance.artwork.transform.position=host.WorldHome;
    // glTF is right handed. Resolve the importer conversion using an authored asymmetrical anchor,
