@@ -6754,9 +6754,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "IPHONE_INVOLUNTARY_RESTART_DIAGNOSTIC_V2",
+      "phase": "IPHONE_DIAGNOSTIC_CACHE_DELIVERY_CORRECTION",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required.",
-      "next": "Verify diagnostic v2 live deployment; obtain last startup stage on affected iPhone. Diagnose native325 crash before any claim of mobile readiness. Full metrics still pending.",
+      "next": "Verify v3 live script hash and fresh document; obtain first genuine startup checkpoint from iPhone. Do not claim iPhone crash fixed.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6780,7 +6780,13 @@
         "browser_game_start": "BLOCKED remote browser reports Your browser does not support WebGL",
         "owner_confirmed_no_back_or_reload": true,
         "iphone_cause": "not identified; memory pressure hypothesis; no device exception in screenshot",
-        "startup_diagnostic_run": 42415743624
+        "startup_diagnostic_run": 42415743624,
+        "diagnostic_cache_fix": {
+          "source": "08fb51bb492bb81f89e42c1e59de1ff1ada40287",
+          "run": 42416149076,
+          "visible_label": "Diagnóstico v3",
+          "note": "IMG5041 lacked startup markers; unversioned script cache risk corrected, iPhone crash unresolved"
+        }
       },
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta."
