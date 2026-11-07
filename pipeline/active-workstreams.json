@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T21:54:54.500Z",
+  "updated_at": "2026-11-07T22:04:46.714Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6650,7 +6650,7 @@
       "title": "Forja Oscura — sistema visual modular uGUI y prueba A/B real",
       "owner": "codex-forja-55add623b635",
       "branch": "feature/forja-oscura-native-proof-20261107",
-      "status": "active",
+      "status": "paused",
       "claimed_at": "2026-11-06T23:40:17.025Z",
       "base_main_sha": "346b66296f191d9d8d76094a81b1972c80ffc53a",
       "scope": [
@@ -6668,11 +6668,11 @@
         ".github/workflows/ui-progression-cert.yml"
       ],
       "resources": [],
-      "ownership_state": "claimed",
-      "ownership_revision": 16,
-      "write_scope_released": false,
-      "phase": "SINGLE_ROW_ICON_NAVIGATION_NATIVE_VERIFIED_ART_PENDING",
-      "next": "Preserve five icon-only actions in one row. Improve building card composition and header hierarchy against approved reference; physical device and advanced states remain pending.",
+      "ownership_state": "released",
+      "ownership_revision": 17,
+      "write_scope_released": true,
+      "phase": "OWNER_REJECTED_ARCHIVED_PENDING_NEW_DIRECTION",
+      "next": "Owner discarded current UI implementation; PR173 closed unmerged. Preserve existing production UI. Present three different concepts; wait for selection before implementation. New presentation must own layout and be validated visually in native Unity before expanding.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-07T18:54:22.588Z",
