@@ -153,7 +153,7 @@ namespace Eldoria.BreachWatch.Editor
             Assert(hud.LegacyPresentationHidden,"Legacy visual HUD is not completely hidden");
             Assert(hud.NativeCanvas.transform.parent==null,"New HUD is nested inside legacy hierarchy");
             Assert(!hud.GetComponentsInChildren<Eldoria.UI.RoyalGold.RoyalHUD>(true).Any(),"Old HUD component in new presentation");
-            Assert(!hud.GetComponentsInChildren<Eldoria.VisualKit.ForjaOscuraLiveHudSkin>(true).Any(),"Legacy Forja skin in new presentation");
+            Assert(!hud.GetComponentsInChildren<MonoBehaviour>(true).Any(c=>c && c.GetType().Name=="ForjaOscuraLiveHudSkin"),"Legacy Forja skin in new presentation");
             Assert(hud.SelectedBuildingId=="bastion","Requested Bastion selection was not retained");
             var real=host.Read("bastion",host.English);
             Assert(real!=null && real.Building!=null && real.Building.Id=="bastion","Canonical Bastion snapshot missing");
@@ -181,6 +181,9 @@ namespace Eldoria.BreachWatch.Editor
                 var originalCanvas=host.Hud.GetComponent<Canvas>();
                 var originalGroup=host.Hud.GetComponent<CanvasGroup>();
                 var originalRaycaster=host.Hud.GetComponent<GraphicRaycaster>();
+                var originalMode=originalCanvas.renderMode;
+                var originalCam=originalCanvas.worldCamera;
+                var originalDistance=originalCanvas.planeDistance;
                 Assert(originalCanvas&&originalGroup,"Canonical baseline UI missing");
                 // First native shot of the previous visual presentation, not a fake picture.
                 // Screenshots of the new system are from an ENTIRELY SEPARATE Canvas.
@@ -191,11 +194,16 @@ namespace Eldoria.BreachWatch.Editor
                     host.Hud.SelectBuilding("bastion");
                     var baseline=CapturePixels(camera,size.x,size.y,()=>{
                         originalCanvas.enabled=true;
+                        originalCanvas.renderMode=RenderMode.ScreenSpaceCamera;
+                        originalCanvas.worldCamera=camera;
+                        originalCanvas.planeDistance=1f;
                         originalGroup.alpha=1;
                         if(originalRaycaster)originalRaycaster.enabled=true;
                     });
                     Save(report,baseline,size.x,size.y,"legacy-bastion",null,host);
                 }
+                originalCanvas.renderMode=originalMode;originalCanvas.worldCamera=originalCam;
+                originalCanvas.planeDistance=originalDistance;
                 // Build a truly independent object, then switch OFF the old canvas.
                 var hud=BreachWatchHud.Install(host);
                 Assert(hud.IndependentCanvas&&hud.LegacyPresentationHidden,"Old visual controller was not replaced in preview");
@@ -210,8 +218,7 @@ namespace Eldoria.BreachWatch.Editor
                     var selected=CapturePixels(camera,size.x,size.y,()=>{
                         hud.Reflow(size.x,size.y);hud.RenderNow();ValidateRealSelection(hud,host);
                     });
-                    Assert(Different(city,selected,size.x,size.y)==false || selected.Length==city.Length,
-                        "Nonmatching camera buffer dimensions");
+                    Assert(selected.Length==city.Length,"Nonmatching camera buffer dimensions");
                     Save(report,selected,size.x,size.y,"vigilia-bastion",hud,host);
                     report.shots[report.shots.Count-1].screenChanges=Different(city,selected,size.x,size.y);
                 }
