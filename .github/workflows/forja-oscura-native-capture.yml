@@ -128,11 +128,19 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
-          $base=Join-Path $env:GITHUB_WORKSPACE ('forja-thin-native-source-'+$env:GITHUB_RUN_ID)
-          if(Test-Path $base){throw 'Isolated Forja thin project path already exists; refuse overwrite'}
-          New-Item -ItemType Directory -Force -Path $base | Out-Null
-          & git init -q $base
-          if($LASTEXITCODE){throw 'Cannot initialize isolated Forja Git working tree'}
+          $base=Join-Path $env:GITHUB_WORKSPACE 'forja-thin-native-source-42408083695'
+          # Reuse only our completed disposable project, retaining imported Library.
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Editor occupied before owned-cache reuse'}
+          if(-not(Test-Path (Join-Path $base '.git'))){throw 'Verified owned Forja cache missing'}
+          $oldHead=((& git -C $base rev-parse HEAD | Select-Object -First 1).Trim())
+          if($oldHead -ne 'ef61b5082ddcc24e8dff4b3b35a21522ca7d78da'){throw 'Owned source changed; inspect before reusing'}
+          $remote=((& git -C $base remote get-url origin | Select-Object -First 1).Trim())
+          if($remote -ne 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'){throw 'Unexpected cache origin'}
+          & git -C $base diff --binary | Set-Content (Join-Path $env:RUNNER_TEMP 'forja-prior-import-changes.patch')
+          foreach($rel in @('Unity/ForjaNativeEvidence','docs/evidence/valoria-reference-clean')){
+            $old=Join-Path $base $rel
+            if(Test-Path $old){Move-Item $old ($old+'-before-'+$env:GITHUB_RUN_ID)}
+          }
           & git -C $base config core.sparseCheckout true
           & git -C $base config core.sparseCheckoutCone false
           $patterns=@('/Unity/**','/tools/forja-oscura/**')
@@ -152,7 +160,6 @@ jobs:
           $info=Join-Path $base '.git/info/sparse-checkout'
           [IO.File]::WriteAllLines($info,[string[]]$patterns,
              (New-Object System.Text.UTF8Encoding($false)))
-          & git -C $base remote add origin 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
           $auth=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
           & git -C $base -c ("http.extraheader=AUTHORIZATION: basic "+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
           if($LASTEXITCODE){throw 'Git partial fetch failed before Unity; no game modified'}
@@ -243,8 +250,9 @@ jobs:
         with:
           name: forja-oscura-native-${{ github.sha }}-${{ github.run_id }}
           path: |
-            forja-thin-native-source-${{ github.run_id }}/Unity/ForjaNativeEvidence/
-            forja-thin-native-source-${{ github.run_id }}/docs/evidence/valoria-reference-clean/native-*.png
+            ${{ env.FORJA_THIN_SOURCE }}/Unity/ForjaNativeEvidence/
+            ${{ env.FORJA_THIN_SOURCE }}/docs/evidence/valoria-reference-clean/native-*.png
             ${{ runner.temp }}/forja-native.log
+            ${{ runner.temp }}/forja-prior-import-changes.patch
           if-no-files-found: warn
           retention-days: 21

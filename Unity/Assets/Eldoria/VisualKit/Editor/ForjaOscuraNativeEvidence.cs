@@ -153,9 +153,27 @@ namespace Eldoria.VisualKit.Editor
                 "../../docs/evidence/valoria-reference-clean",basename));
             Directory.CreateDirectory(Path.GetDirectoryName(original));
             try{m.Invoke(null,args);}catch(TargetInvocationException e){throw e.InnerException??e;}
+            finally
+            {
+                // A failed layout assertion does not erase the genuine frame
+                // needed to diagnose it. It remains FAILED, never certified.
+                if(File.Exists(original)) File.Copy(original,Path.Combine(outputDir,basename),true);
+            }
             if(!File.Exists(original)||new FileInfo(original).Length<4096)
                 throw new IOException("Native Unity camera capture missing or tiny: "+original);
             File.Copy(original,Path.Combine(outputDir,basename),true);
+        }
+        static readonly List<string> captureFailures = new List<string>();
+        static void CaptureDiagnostic(Type captureType, object host, string basename,
+            int width, int height, string outputDir, Action prepare, Action validate = null)
+        {
+            try { Capture(captureType, host, basename, width, height, outputDir, prepare, validate); }
+            catch(Exception e)
+            {
+                captureFailures.Add(basename + ": " + e.Message);
+                File.WriteAllLines(Path.Combine(outputDir,"NATIVE_FAILED_ASSERTIONS.txt"),captureFailures);
+                Debug.LogError("[FORJA] DIAGNOSTIC_FRAME_NOT_CERTIFIED " + basename + ": " + e.Message);
+            }
         }
         [Serializable] class UiTouchMetric
         {
@@ -780,8 +798,9 @@ namespace Eldoria.VisualKit.Editor
             var root=Path.GetFullPath(Path.Combine(Application.dataPath,"../ForjaNativeEvidence"));
             Directory.CreateDirectory(root);
             const string before="native-before",after="native-after";
+            captureFailures.Clear();
             foreach(var wh in new[]{(1600,900),(900,1600),(844,390),(390,844)})
-                Capture(t,host,before+"-"+wh.Item1+"x"+wh.Item2+".png",wh.Item1,wh.Item2,root,
+                CaptureDiagnostic(t,host,before+"-"+wh.Item1+"x"+wh.Item2+".png",wh.Item1,wh.Item2,root,
                     () => { if (context) context.SynchronizeNow(); Canvas.ForceUpdateCanvases(); });
             ValidateNavigation(hud);
             var skin=hud.gameObject.AddComponent<ForjaOscuraLiveHudSkin>();
@@ -807,7 +826,7 @@ namespace Eldoria.VisualKit.Editor
             var touchMetrics = new List<UiTouchMetric>();
             var readabilityMetrics = new List<UiReadabilityMetric>();
             foreach(var wh in new[]{(1600,900),(900,1600),(844,390),(390,844)})
-                Capture(t,host,after+"-"+wh.Item1+"x"+wh.Item2+".png",wh.Item1,wh.Item2,root,
+                CaptureDiagnostic(t,host,after+"-"+wh.Item1+"x"+wh.Item2+".png",wh.Item1,wh.Item2,root,
                     () => {
                         // Refresh the same real contextual projection as the baseline.
                         // Otherwise a rotated camera could masquerade as a UI improvement.
@@ -825,6 +844,7 @@ namespace Eldoria.VisualKit.Editor
                             wh.Item1,wh.Item2));
                         readabilityMetrics.Add(MeasureReadability(hud, wh.Item1, wh.Item2));
                     });
+            Need(captureFailures.Count==0,"Native layout/raycast assertions failed; diagnostic frames only: " + string.Join("; ",captureFailures));
             Need(original==Snapshot(hud),"HUD gameplay data changed while applying presentation-only skin");
             // These are additional live clicks, NOT inferred from graphics or
             // button raycasts. A/B frames are already captured and immutable.

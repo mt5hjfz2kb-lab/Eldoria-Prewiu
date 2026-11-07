@@ -1,1 +1,1 @@
-PR173: restore canonical selection focus in native preparation callback for baseline and candidate; keep full framing assertion. Owner codex-forja-498cad9fd409 revision 8.
+Native eight-view diagnostic, painted candidate. Keep failed assertions and real frames. Reuse only completed Forja project42408083695 with exact previous SHA check.
