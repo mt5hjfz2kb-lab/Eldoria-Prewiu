@@ -1,5 +1,5 @@
 name: Eldoria beta real entry and reload QA
-# Device scale 3; production wrapper caps Unity rendering at 1.5.
+# Device scale 3; production wrapper caps Unity rendering at 1.5; bounded captures and stage evidence.
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -51,6 +51,7 @@ jobs:
           done
           exit 1
       - name: Enter nickname using real UI and verify persisted state after sustained play
+        timeout-minutes: 10
         run: node --check tools/eldoria-private-beta/qa_entry.cjs && node tools/eldoria-private-beta/qa_entry.cjs
       - uses: actions/upload-artifact@v4
         if: always()
