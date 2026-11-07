@@ -113,21 +113,60 @@ jobs:
           name: forja-cache-inventory-${{ github.run_id }}
           path: forja-cache-inventory.json
           retention-days: 7
-      - uses: actions/checkout@v4
-        with:
-          path: valoria-layered-source
-          clean: false
-          persist-credentials: false
-          filter: blob:none
-          sparse-checkout: |
-            Unity
-            tools/forja-oscura
-          sparse-checkout-cone-mode: true
+      # actions/checkout 'filter' OVERRIDES sparse-checkout: the previous
+      # workflow inadvertently requested all ~10GB of historical Unity art.
+      # Use Git partial fetch + explicit non-cone sparse patterns. The only
+      # excluded directories are retained, old historical render revisions.
+      # This is NOT a second Unity project; the exact PR commit is fetched.
+      - name: Fetch exact PR Unity source without historical candidate art
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $base=Join-Path $env:GITHUB_WORKSPACE ('forja-thin-native-source-'+$env:GITHUB_RUN_ID)
+          if(Test-Path $base){throw 'Isolated Forja thin project path already exists; refuse overwrite'}
+          New-Item -ItemType Directory -Force -Path $base | Out-Null
+          & git init -q $base
+          if($LASTEXITCODE){throw 'Cannot initialize isolated Forja Git working tree'}
+          & git -C $base config core.sparseCheckout true
+          & git -C $base config core.sparseCheckoutCone false
+          $patterns=@('/Unity/**','/tools/forja-oscura/**')
+          # GeneratedEntryV1–17 are historical 300MB+ art candidates.
+          for($i=1;$i -le 17;$i++){
+            $patterns+= ('!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV'+$i+'/**')
+          }
+          # Retain the latest authored integration asset revision 39138751241.
+          $patterns+= '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39131782550/**'
+          $patterns+= '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132144937/**'
+          $patterns+= '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132392803/**'
+          $patterns+= '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39132807199/**'
+          $patterns+= '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39133202399/**'
+          $patterns+= '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39136444844/**'
+          $patterns+= '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39137079921/**'
+          $patterns+= '!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138143327/**'
+          $info=Join-Path $base '.git/info/sparse-checkout'
+          [IO.File]::WriteAllLines($info,[string[]]$patterns,
+             (New-Object System.Text.UTF8Encoding($false)))
+          & git -C $base remote add origin 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
+          $auth=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
+          & git -C $base -c ("http.extraheader=AUTHORIZATION: basic "+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Git partial fetch failed before Unity; no game modified'}
+          & git -C $base -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --force FETCH_HEAD
+          if($LASTEXITCODE){throw 'Scoped partial checkout failed before Unity'}
+          $head=((& git -C $base rev-parse HEAD | Select-Object -First 1).Trim())
+          if($head -ne $env:GITHUB_SHA){throw "Thin source drift: $head expected=$env:GITHUB_SHA"}
+          $ver=Join-Path $base 'Unity/ProjectSettings/ProjectVersion.txt'
+          $scene=Join-Path $base 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'
+          if(-not(Test-Path $ver) -or -not(Test-Path $scene)){throw 'Canonical Unity version or city scene missing from thin checkout'}
+          Add-Content -Path $env:GITHUB_ENV -Value ("FORJA_THIN_SOURCE="+$base)
+          Write-Host "FORJA_THIN_EXACT_COMMIT_SOURCE_READY $head (historical generated copies excluded; no production asset edited)"
+
       - name: Confirm checkout is precisely the Forja workflow commit
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          $base=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
+          $base=$env:FORJA_THIN_SOURCE
           $head=((& git -C $base rev-parse HEAD | Select-Object -First 1).Trim())
           if($head -ne $env:GITHUB_SHA){throw "Forja source SHA mismatch: $head expected=$env:GITHUB_SHA"}
           if(-not(Test-Path (Join-Path $base 'Unity/ProjectSettings/ProjectVersion.txt'))){throw 'Real Unity project not present'}
@@ -161,17 +200,17 @@ jobs:
       - name: Reassemble exact 41 visual resources and 7 C-sharp inputs
         shell: powershell
         run: |
-          python valoria-layered-source/tools/forja-oscura/reconstruct.py
+          python $env:FORJA_THIN_SOURCE/tools/forja-oscura/reconstruct.py
           if($LASTEXITCODE){throw 'Forja original archived sources are corrupt'}
-          python valoria-layered-source/tools/forja-oscura/verify-production.py
+          python $env:FORJA_THIN_SOURCE/tools/forja-oscura/verify-production.py
           if($LASTEXITCODE){throw 'First-party Unity visual assets invalid'}
-          if(Test-Path 'valoria-layered-source/Unity/Assets/EldoriaVisualKit'){throw 'Legacy duplicate kit path detected'}
-          if(-not(Test-Path 'valoria-layered-source/Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs')){throw 'Native A-B entry missing'}
+          if(Test-Path '$env:FORJA_THIN_SOURCE/Unity/Assets/EldoriaVisualKit'){throw 'Legacy duplicate kit path detected'}
+          if(-not(Test-Path '$env:FORJA_THIN_SOURCE/Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs')){throw 'Native A-B entry missing'}
       - name: Capture genuine Unity player HUD before and after
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          $proj=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity'
+          $proj=Join-Path $env:FORJA_THIN_SOURCE 'Unity'
           $log=Join-Path $env:RUNNER_TEMP 'forja-native.log'
           $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$proj+'"'),
                   '-executeMethod','Eldoria.VisualKit.Editor.ForjaOscuraNativeEvidence.CaptureBatch',
@@ -192,7 +231,7 @@ jobs:
       - name: Build offline A-B viewer only from verified native screenshots
         shell: powershell
         run: |
-          python valoria-layered-source/tools/forja-oscura/build-review.py valoria-layered-source/Unity/ForjaNativeEvidence
+          python $env:FORJA_THIN_SOURCE/tools/forja-oscura/build-review.py $env:FORJA_THIN_SOURCE/Unity/ForjaNativeEvidence
           if($LASTEXITCODE){throw 'Native review page could not verify eight captured Unity PNG files'}
       - name: Preserve native log and eight images for independent visual review
         if: always()
@@ -200,7 +239,7 @@ jobs:
         with:
           name: forja-oscura-native-${{ github.sha }}-${{ github.run_id }}
           path: |
-            valoria-layered-source/Unity/ForjaNativeEvidence/
+            forja-thin-native-source-${{ github.run_id }}/Unity/ForjaNativeEvidence/
             ${{ runner.temp }}/forja-native.log
           if-no-files-found: warn
           retention-days: 21
