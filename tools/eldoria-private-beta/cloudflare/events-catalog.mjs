@@ -2,3 +2,9 @@ export const EVENTS=Object.freeze(["session_start","game_ready","first_objective
 export const EVENT_SET=new Set(EVENTS);
 export const DEVICES=new Set(['desktop_chrome','desktop_edge','desktop_firefox','ios_safari','android_chrome','other']);
 export const FIELDS=new Set(["bastion","screen","reason_code","error_code","fps_bucket","stage_code","step_code","state_code","action_code","building_code","resource_code","type_code","zoom_bucket","hero_code","skill_code","enemy_code","outcome_code","choice_code","milestone_code","dialogue_code","question_id","answer_code","level","tier","enemy_tier","quantity","count","amount","delta","duration_ms","fps_p50","fps_p05","stutter_count","power","orientation","active","order_code","command_code","task_code","report_code","strategy_code","stage_number","march_slots_used","reserved_troops","army_count","health_pct"]);
+
+// Compatibility exports for the separately validated metric catalog and client.
+export const EVENT_NAMES=EVENTS;
+export const EVENT_COUNT=EVENTS.length;
+export const ALLOWED_PAYLOAD_FIELDS=Object.freeze([...FIELDS]);
+export const ALLOWED_PAYLOAD_KEYS=FIELDS;
