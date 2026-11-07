@@ -1,1 +1,1 @@
-Native eight-view diagnostic, painted candidate. Keep failed assertions and real frames. Reuse only completed Forja project42408083695 with exact previous SHA check.
+Continue painted native diagnostics after verified cache checkout; avoid Select-Object early pipe closure causing a stale Git exit code. Exact prior cache fc77fab.

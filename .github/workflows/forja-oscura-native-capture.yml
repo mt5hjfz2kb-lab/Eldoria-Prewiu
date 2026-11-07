@@ -99,7 +99,7 @@ jobs:
             $g=Test-Path (Join-Path $path '.git')
             $sha='no-git'
             if($g){
-              try { $sha=((& git -C $path rev-parse HEAD 2>$null | Select-Object -First 1).Trim()) }
+              try { $sha=((& git -C $path rev-parse HEAD 2>$null).Trim()) }
               catch { $sha='unreadable' }
             }
             $rows+=@{directory=$candidate.Name;unityProject=$v;git=$g;sha=$sha}
@@ -132,9 +132,9 @@ jobs:
           # Reuse only our completed disposable project, retaining imported Library.
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Editor occupied before owned-cache reuse'}
           if(-not(Test-Path (Join-Path $base '.git'))){throw 'Verified owned Forja cache missing'}
-          $oldHead=((& git -C $base rev-parse HEAD | Select-Object -First 1).Trim())
-          if($oldHead -ne 'ef61b5082ddcc24e8dff4b3b35a21522ca7d78da'){throw 'Owned source changed; inspect before reusing'}
-          $remote=((& git -C $base remote get-url origin | Select-Object -First 1).Trim())
+          $oldHead=((& git -C $base rev-parse HEAD).Trim())
+          if($oldHead -ne 'fc77fab66ea403d3afec69137b3f5a4203c9faa4'){throw 'Owned source changed; inspect before reusing'}
+          $remote=((& git -C $base remote get-url origin).Trim())
           if($remote -ne 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'){throw 'Unexpected cache origin'}
           & git -C $base diff --binary | Set-Content (Join-Path $env:RUNNER_TEMP 'forja-prior-import-changes.patch')
           foreach($rel in @('Unity/ForjaNativeEvidence','docs/evidence/valoria-reference-clean')){
@@ -165,20 +165,21 @@ jobs:
           if($LASTEXITCODE){throw 'Git partial fetch failed before Unity; no game modified'}
           & git -C $base -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --force FETCH_HEAD
           if($LASTEXITCODE){throw 'Scoped partial checkout failed before Unity'}
-          $head=((& git -C $base rev-parse HEAD | Select-Object -First 1).Trim())
+          $head=((& git -C $base rev-parse HEAD).Trim())
           if($head -ne $env:GITHUB_SHA){throw "Thin source drift: $head expected=$env:GITHUB_SHA"}
           $ver=Join-Path $base 'Unity/ProjectSettings/ProjectVersion.txt'
           $scene=Join-Path $base 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'
           if(-not(Test-Path $ver) -or -not(Test-Path $scene)){throw 'Canonical Unity version or city scene missing from thin checkout'}
           Add-Content -Path $env:GITHUB_ENV -Value ("FORJA_THIN_SOURCE="+$base)
           Write-Host "FORJA_THIN_EXACT_COMMIT_SOURCE_READY $head (historical generated copies excluded; no production asset edited)"
+          $global:LASTEXITCODE=0
 
       - name: Confirm checkout is precisely the Forja workflow commit
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $base=$env:FORJA_THIN_SOURCE
-          $head=((& git -C $base rev-parse HEAD | Select-Object -First 1).Trim())
+          $head=((& git -C $base rev-parse HEAD).Trim())
           if($head -ne $env:GITHUB_SHA){throw "Forja source SHA mismatch: $head expected=$env:GITHUB_SHA"}
           if(-not(Test-Path (Join-Path $base 'Unity/ProjectSettings/ProjectVersion.txt'))){throw 'Real Unity project not present'}
           if(-not(Test-Path (Join-Path $base 'Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs'))){throw 'Forja native entry missing'}
