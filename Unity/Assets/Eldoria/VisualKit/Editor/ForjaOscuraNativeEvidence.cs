@@ -101,7 +101,7 @@ namespace Eldoria.VisualKit.Editor
                 .FirstOrDefault(t=>t!=null);
         }
         static void Capture(Type captureType, object host,string basename,int width,int height,string outputDir,
-            Action synchronizeVisuals = null)
+            Action synchronizeVisuals = null, Action validateRenderedView = null)
         {
             // The public five-argument routine is the canonically established
             // native capture. For the candidate we must additionally refresh
@@ -113,12 +113,12 @@ namespace Eldoria.VisualKit.Editor
             var all=captureType.GetMethods(BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Static);
             MethodInfo m;
             object[] args;
-            if (synchronizeVisuals != null)
+            if (synchronizeVisuals != null || validateRenderedView != null)
             {
                 m=all.FirstOrDefault(x=>x.Name=="CapturePrepared"&&x.GetParameters().Length==6);
                 if(m==null)throw new InvalidOperationException(
                     "Original native CapturePrepared pre-render callback missing; cannot prove responsive Forja UI");
-                args=new object[]{host,basename,width,height,null,synchronizeVisuals};
+                args=new object[]{host,basename,width,height,validateRenderedView,synchronizeVisuals};
             }
             else
             {
@@ -141,6 +141,8 @@ namespace Eldoria.VisualKit.Editor
             public string smallestDestination;
             public float minWidthPx;
             public float minHeightPx;
+            public float minGraphicWidthPx;
+            public float minGraphicHeightPx;
             public bool hasFiveVisibleActions;
         }
 
@@ -151,6 +153,8 @@ namespace Eldoria.VisualKit.Editor
             Need(nav && nav.Items != null, "Native pixel hit test requires the genuine navigation");
             float minW = float.PositiveInfinity;
             float minH = float.PositiveInfinity;
+            float minGraphicW = float.PositiveInfinity;
+            float minGraphicH = float.PositiveInfinity;
             string worst = "";
             int seen = 0;
             foreach (var item in nav.Items)
@@ -168,6 +172,32 @@ namespace Eldoria.VisualKit.Editor
                 if (pixelW < minW || pixelH < minH) worst = item.Section.ToString();
                 minW = Mathf.Min(minW, pixelW);
                 minH = Mathf.Min(minH, pixelH);
+                var target = item.Button.targetGraphic;
+                Need(target && target.isActiveAndEnabled && target.raycastTarget,
+                    "Native navigation graphic is not an active raycast target: " + item.Section);
+                var graphicCorners = new Vector3[4];
+                target.rectTransform.GetWorldCorners(graphicCorners);
+                var graphicLeft = RectTransformUtility.WorldToScreenPoint(nativeCamera, graphicCorners[0]);
+                var graphicTop = RectTransformUtility.WorldToScreenPoint(nativeCamera, graphicCorners[1]);
+                var graphicRight = RectTransformUtility.WorldToScreenPoint(nativeCamera, graphicCorners[3]);
+                minGraphicW = Mathf.Min(minGraphicW, Vector2.Distance(graphicLeft, graphicRight));
+                minGraphicH = Mathf.Min(minGraphicH, Vector2.Distance(graphicLeft, graphicTop));
+                // Run after the canonical camera render, not in the earlier
+                // prepareView callback. Camera/canvas matrices may still be
+                // stale before their first offscreen render.
+                Need(EventSystem.current != null, "Native UI EventSystem missing at " + width + "x" + height);
+                var center = (graphicCorners[0] + graphicCorners[2]) * .5f;
+                var pointer = new PointerEventData(EventSystem.current) {
+                    pointerId = -71,
+                    button = PointerEventData.InputButton.Left,
+                    position = RectTransformUtility.WorldToScreenPoint(nativeCamera, center)
+                };
+                var hits = new List<RaycastResult>();
+                EventSystem.current.RaycastAll(pointer, hits);
+                Need(hits.Count > 0 &&
+                    ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject) == item.Button.gameObject,
+                    "Native rendered navigation touch is intercepted: " + item.Section +
+                    " at " + width + "x" + height);
                 seen++;
             }
             Need(seen == 5, "Native mobile pixel hit test could not find exactly five controls");
@@ -176,6 +206,8 @@ namespace Eldoria.VisualKit.Editor
                 smallestDestination = worst,
                 minWidthPx = minW,
                 minHeightPx = minH,
+                minGraphicWidthPx = minGraphicW,
+                minGraphicHeightPx = minGraphicH,
                 hasFiveVisibleActions = seen == 5
             };
         }
@@ -434,6 +466,10 @@ namespace Eldoria.VisualKit.Editor
                         // Measure screen pixels AFTER Unity sets the actual
                         // offscreen camera resolution; RectTransform units
                         // alone are not an accessibility/hit-area guarantee.
+                    },
+                    () => {
+                        // The source capture invokes this only AFTER c.Render(),
+                        // Canvas matrices and all UI raycasts are final.
                         touchMetrics.Add(MeasureNavigationPixels(hud,playerCamera,
                             wh.Item1,wh.Item2));
                         readabilityMetrics.Add(MeasureReadability(hud, wh.Item1, wh.Item2));
@@ -469,10 +505,12 @@ namespace Eldoria.VisualKit.Editor
             Need(touchMetrics.Count==4,
                 "Native click-area pixel metrics must exist at every orientation");
             foreach (var measurement in touchMetrics)
-                Need(measurement.minWidthPx >= 44f && measurement.minHeightPx >= 44f,
+                Need(measurement.minWidthPx >= 44f && measurement.minHeightPx >= 44f &&
+                     measurement.minGraphicWidthPx >= 44f && measurement.minGraphicHeightPx >= 44f,
                     "Forja nav touch target below 44px at " + measurement.resolution +
                     " (smallest " + measurement.smallestDestination + ": " +
-                    measurement.minWidthPx + "x" + measurement.minHeightPx + "px)");
+                    measurement.minWidthPx + "x" + measurement.minHeightPx + "px; graphic " +
+                    measurement.minGraphicWidthPx + "x" + measurement.minGraphicHeightPx + "px)");
             Need(readabilityMetrics.Count == 4,
                 "Missing native text-readability evidence for a requested resolution");
             foreach (var reading in readabilityMetrics)
