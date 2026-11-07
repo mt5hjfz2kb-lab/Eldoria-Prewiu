@@ -37,7 +37,7 @@ def prepare(package,site):
  import importlib.util
  spec=importlib.util.spec_from_file_location('startup_patch',Path(__file__).with_name('patch-startup.py'));mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
  mod.patch_startup(out)
- identity['startup_diagnostic']='stages-v2-opt-in'
+ identity['startup_diagnostic']='stages-v3-opt-in'
  (out/'release-identity.json').write_text(json.dumps(identity,indent=2)+'\n')
  return identity
 def mirror_previous(site):
