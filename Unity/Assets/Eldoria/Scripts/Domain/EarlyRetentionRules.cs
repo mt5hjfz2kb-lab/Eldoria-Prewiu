@@ -304,8 +304,12 @@ namespace Eldoria.Domain
         {
             var p=s?.Retention;
             if(p==null)return 0;
+            // A paired march uses the best earned individual mastery. Averaging
+            // with a newly recruited hero at zero XP could turn a previous win
+            // into a loss, even though no troops or enemies had changed.
+            // Solo XP, earned XP payouts and the save format stay unchanged.
             int earned=heroId=="lyra"?p.LyraExperience:
-                heroId=="aldric+lyra"?(p.AldricExperience+p.LyraExperience)/2:
+                heroId=="aldric+lyra"?Math.Max(p.AldricExperience,p.LyraExperience):
                 p.AldricExperience;
             return Math.Max(0,Math.Min(20,earned/80));
         }
