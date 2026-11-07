@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -20,8 +21,12 @@ namespace Eldoria.World4XCanon
   readonly Dictionary<Vector2Int,List<int>> contactCells=new Dictionary<Vector2Int,List<int>>();
   void BuildContactSurface(Vector3 origin)
   {
-   contactVertices=WorldVertices.Select(p=>p-origin).ToArray();contactTriangles=terrain.sharedMesh.triangles;
-   contactNormals=terrain.sharedMesh.normals.Select(n=>terrain.transform.TransformDirection(n).normalized).ToArray();
+   // Mesh accessors return owned copies. Transform those copies in place;
+   // never allocate the former local -> world -> relative intermediate arrays.
+   contactVertices=terrain.sharedMesh.vertices;contactTriangles=terrain.sharedMesh.triangles;
+   for(int i=0;i<contactVertices.Length;i++)contactVertices[i]=terrain.transform.TransformPoint(contactVertices[i])-origin;
+   contactNormals=terrain.sharedMesh.normals;
+   for(int i=0;i<contactNormals.Length;i++)contactNormals[i]=terrain.transform.TransformDirection(contactNormals[i]).normalized;
    for(int i=0;i<contactTriangles.Length;i+=3){var a=contactVertices[contactTriangles[i]];var b=contactVertices[contactTriangles[i+1]];var c=contactVertices[contactTriangles[i+2]];
     int x0=Mathf.FloorToInt(Mathf.Min(a.x,Mathf.Min(b.x,c.x))/16),x1=Mathf.FloorToInt(Mathf.Max(a.x,Mathf.Max(b.x,c.x))/16);
     int z0=Mathf.FloorToInt(Mathf.Min(a.z,Mathf.Min(b.z,c.z))/16),z1=Mathf.FloorToInt(Mathf.Max(a.z,Mathf.Max(b.z,c.z))/16);
@@ -86,6 +91,16 @@ namespace Eldoria.World4XCanon
   }
   public static RegionOneBlenderLandscape Install(Transform parent,ValoriaIntegratedWorld host)
   {
+   RegionOneBlenderLandscape result=null;
+   var stages=InstallStaged(parent,host,value=>result=value);
+   try {while(stages.MoveNext()) {}} finally {(stages as IDisposable)?.Dispose();}
+   return result;
+  }
+  // Runtime yields frame boundaries so Web GC can reclaim each completed phase.
+  // Synchronous editor callers retain the exact same validated installation path.
+  public static IEnumerator InstallStaged(Transform parent,ValoriaIntegratedWorld host,Action<RegionOneBlenderLandscape> completed)
+  {
+   if(completed==null)throw new ArgumentNullException(nameof(completed));
    var instance=parent.gameObject.AddComponent<RegionOneBlenderLandscape>();
    var prefab=Resources.Load<GameObject>(AssetRoot+"RegionOneBlenderWorld");
    if(!prefab)throw new InvalidOperationException("Blender GLB must be imported as a prefab by the installed glTFast importer.");
@@ -111,13 +126,20 @@ namespace Eldoria.World4XCanon
    }
    if(instance.artwork.GetComponentsInChildren<Collider>(true).Length!=0)
     throw new InvalidOperationException("Art export must not add gameplay colliders.");
-   instance.ValidateImportedSurface(host.WorldHome);
+   yield return null;
+   // Verification stays mandatory, but its hundreds of thousands of buckets
+   // must not coexist with contact/routing construction or remain resident.
+   try {EnsureData(true);instance.ValidateImportedSurface(host.WorldHome);}
+   finally {sourceVertices=null;sourceVertexCount=0;}
+   yield return null;
    instance.BuildContactSurface(host.WorldHome);
+   yield return null;
    instance.FitImportedPigment(host.WorldHome);
+   yield return null;
    RegionOneProductionLod.Install(instance.artwork);
    RegionOneLookDevelopment.Install(instance.artwork,host.WorldCamera);
    Debug.Log("REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150");
-   return instance;
+   completed(instance);
   }
   void ValidateImportedSurface(Vector3 origin)
   {
@@ -141,9 +163,9 @@ namespace Eldoria.World4XCanon
 
   public void Refresh() {} // Phase A uses the same meshes at every zoom.
   public void SetBlockout(bool value) {} // This entire candidate IS the composition blockout.
-  static void EnsureData()
+  static void EnsureData(bool includeVerification=false)
   {
-   if(heights!=null)return;
+   if(heights!=null&&(!includeVerification||sourceVertices!=null))return;
    var asset=Resources.Load<TextAsset>(AssetRoot+"RegionOneBlenderQueries");
    if(!asset)throw new InvalidOperationException("Missing Blender terrain query export; no mathematical fallback.");
    using(var input=new MemoryStream(asset.bytes))using(var gzip=new GZipStream(input,CompressionMode.Decompress))using(var reader=new BinaryReader(gzip))
@@ -151,8 +173,9 @@ namespace Eldoria.World4XCanon
     if(reader.ReadInt32()!=0x31424c45)throw new InvalidDataException("Unknown Blender query format");
     nx=reader.ReadInt32();nz=reader.ReadInt32();width=reader.ReadSingle();depth=reader.ReadSingle();
     if(nx<2||nz<2||nx*nz>2000000||width!=1820||depth!=3600)throw new InvalidDataException("Unexpected Blender terrain dimensions");
-    var data=new float[nx*nz];for(int i=0;i<data.Length;i++)data[i]=reader.ReadSingle();
+    var data=heights??new float[nx*nz];for(int i=0;i<data.Length;i++)data[i]=reader.ReadSingle();
     masks=reader.ReadBytes(data.Length*4);if(masks.Length!=data.Length*4)throw new InvalidDataException("Truncated Blender masks");
+    if(!includeVerification){heights=data;return;}
     if(reader.ReadInt32()!=0x32564c45)throw new InvalidDataException("Exact Blender source vertices missing");
     int vertexCount=reader.ReadInt32();if(vertexCount<10000||vertexCount>1000000)throw new InvalidDataException("Unexpected source vertex count");
     sourceVertices=new Dictionary<Vector2Int,List<VerificationVertex>>();sourceVertexCount=vertexCount;
