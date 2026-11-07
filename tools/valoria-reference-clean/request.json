@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 324,
+  "revision": 325,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "PR163 native324 exact post-main-reconciliation candidate: preserve same selected Barracks label/true 844x390 and 390x844 site geometry, 225+ integrated I-V checks, verify all EditMode+PlayMode, source-locked isolated WebGL and real normal-clock Chromium. 0 EUR, no publish, balance/timer/saves unchanged; no main deployment.",
+  "checks": "Owner-authorized fresh WebGL after merged PR177 timer/canvas/Hall fixes. UI certificate42389995761 sourcec3282a6e7a5dce04c0937dc149e09944120ab0ae:216EditMode/78PlayMode,V41 and three marches PASS. Exact integrated main; regenerate all native bytes, then real normal-clock Chromium. No publication, no save/rule/art changes,0EUR.",
   "browser_backend": "windows"
 }
