@@ -117,6 +117,11 @@ jobs:
              $j.status -ne 'UNITY_NATIVE_CAPTURED_VISUAL_REVIEW_PENDING'){throw 'Native A-B proof incomplete'}
           Get-ChildItem $dir -Filter *.png | ForEach-Object { if($_.Length -lt 4096){throw "PNG too small: $($_.Name)"} }
           Write-Host 'FORJA_REAL_UNITY_8_PNG_CAPTURE_PASS; ART_APPROVED still false'
+      - name: Build offline A-B viewer only from verified native screenshots
+        shell: powershell
+        run: |
+          python forja-source/tools/forja-oscura/build-review.py forja-source/Unity/ForjaNativeEvidence
+          if($LASTEXITCODE){throw 'Native review page could not verify eight captured Unity PNG files'}
       - name: Preserve native log and eight images for independent visual review
         if: always()
         uses: actions/upload-artifact@v4

@@ -100,3 +100,16 @@ jobs:
         run: dotnet build tools/forja-oscura/CompileContract.csproj --configuration Release --nologo
       - name: Do not confuse stub types with Unity Editor binaries
         run: echo 'FORJA_CSHARP_STUB_TYPECHECK_PASS. NOT Unity compile, real interaction or native screenshot.'
+
+  review-html-selftest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/forja-oscura
+          persist-credentials: false
+      - name: Verify offline native-review HTML generator with TEMPORARY FAKE fixtures
+        run: python3 tools/forja-oscura/build-review.py --selftest
+      - name: Do not publish temporary fixture as native proof
+        run: echo 'FORJA_REVIEW_VIEWER_TEST_PASS; native screenshot remains pending.'
