@@ -1,0 +1,61 @@
+name: '[QA] PR163 objective hitbox diagnostic'
+on:
+  push:
+    branches: [qa/pr163-webgl-evidence-20261107]
+    paths: ['.github/workflows/pr163-objective-hitbox.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/pr163-objective-hitbox.yml
+            /docs/evidence/pr163-browser-20261107/
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42311510485
+          name: pr163-exact-browser-evidence-42311510485
+          github-token: ${{github.token}}
+          path: browser-data
+      - name: Inspect actual Unity telemetry around the failed objective click
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          root=pathlib.Path('browser-data')
+          telem=list(root.rglob('telemetry.ndjson'))
+          actions=list(root.rglob('actions.ndjson'))
+          if not telem or not actions: raise SystemExit('Expected original unmodified player traces')
+          def rows(p):
+           for line in p.read_text(encoding='utf-8').splitlines():
+            try: yield json.loads(line)
+            except json.JSONDecodeError: pass
+          items=list(rows(telem[0]))
+          actions=list(rows(actions[0]))
+          target=[x for x in actions if x.get('label')=='objective']
+          if not target: raise SystemExit('No actual objective click found')
+          last=target[-1]
+          at=last.get('elapsed_s')
+          context=[x for x in items if isinstance(x.get('elapsed_s'),(int,float)) and at-5<=x['elapsed_s']<=at+6]
+          result={'source_run':42311510485,'source_sha':'9212acf16abd112606c4b2c637896178f2485305',
+                  'click':last,'frames':[],'conclusion':'UNVERIFIED','test_artifact_modified':False}
+          for x in context[-25:]:
+           state=x.get('state') or x
+           result['frames'].append({'t':x.get('elapsed_s'),'sequence':x.get('sequence'),
+             'objective':state.get('objective'),'selected':state.get('selected'),
+             'width':state.get('width'),'height':state.get('height'),
+             'controls':state.get('controls'),'inWorld':state.get('inWorld')})
+          target=pathlib.Path('docs/evidence/pr163-browser-20261107/objective-hitbox.json')
+          target.parent.mkdir(parents=True,exist_ok=True)
+          target.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print('frames',len(result['frames']),'click',last.get('css'))
+          PY
+          git config user.name 'eldoria-qa-bot'
+          git config user.email 'qa-bot@users.noreply.github.com'
+          git add docs/evidence/pr163-browser-20261107/objective-hitbox.json
+          git diff --cached --quiet || (git commit -m 'docs(qa): preserve measured objective hitbox before rendering [skip ci]' && git push origin HEAD:qa/pr163-webgl-evidence-20261107)
