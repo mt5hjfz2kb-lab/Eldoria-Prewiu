@@ -258,3 +258,32 @@ jobs:
           name: forja-premium-nine-slice-review-${{ github.sha }}
           path: ${{ runner.temp }}/forja-premium-art/
           retention-days: 21
+  review-production-sprites:
+    needs: verify-art-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exactly the first-party Forja production PNGs
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Verify independent sprites and do not treat these as a Unity capture
+        shell: bash
+        run: |
+          set -euo pipefail
+          d=Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura
+          test "$(find "$d/Icons" -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 20
+          test "$(find "$d/Surfaces" -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 21
+          echo "FORJA_41_REAL_SPRITES_AVAILABLE_NOT_NATIVE_CAPTURE"
+      - name: Save production artwork for manual reference comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: forja-production-sprites-${{ github.sha }}
+          path: |
+            Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/Icons/*.png
+            Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/Surfaces/*.png
+          if-no-files-found: error
+          retention-days: 21
