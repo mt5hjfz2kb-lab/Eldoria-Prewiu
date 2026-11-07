@@ -1,15 +1,14 @@
 {
-  "source_sha": "29f5e3a3686f80b77bced250c9bef67977a891e4",
-  "run_id": 42367983297,
-  "revision": "native324",
-  "artifact_name": "valoria-integrated-web-playtest-42367983297",
-  "purpose": "Exact native324 real Windows Chromium I–II normal-clock visible player path. Evidence isolation fix after self-hosted stale output path caused previous failure before any browser load; no gameplay rule or source changes.",
+  "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
+  "run_id": 42391824345,
+  "revision": "native325",
+  "artifact_name": "valoria-integrated-web-playtest-42391824345",
+  "purpose": "Fresh exact main native325 after certified PR177 timer/training/Hall repairs. Real visible input, normal clock and exact save reload. No release or merge.",
   "preconditions": [
-    "Only after native324 run 42367983297 completed successfully and exact SHA matched",
-    "No Unity/Blender process; Windows runner lease exclusive",
-    "Current main owner chatgpt-pr163-continuation-20261107 revision157"
+    "Exact successful native325 source948ffa9837168a0b68dab80be76b66350422b23a",
+    "No Unity/Blender process; Windows exclusively owned by codex-release-a56bdf7714d0 revision161"
   ],
   "allow_release": false,
   "allow_merge": false,
-  "attempt": 2
+  "attempt": 1
 }

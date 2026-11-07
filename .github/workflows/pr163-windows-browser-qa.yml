@@ -31,6 +31,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/valoria-reference-clean/
+            /tools/workstream-lease/
             /pipeline/active-workstreams.json
             /docs/evidence/valoria-reference-clean/environment-city-wide-banner-after.png
       - uses: actions/checkout@v4
@@ -49,8 +50,8 @@ jobs:
       - name: Honor actual owner and exclusive Windows reservation
         shell: powershell
         run: |
-          node tools/valoria-reference-clean/check-player-experience-lease.cjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/qa-live-main/pipeline/active-workstreams.json"
-          if($LASTEXITCODE){throw 'PR163 owner lease moved; refuse cross-chat interference'}
+          node tools/workstream-lease/check.mjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/qa-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
+          if($LASTEXITCODE){throw 'Release owner lease moved; refuse stale execution'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
             throw 'Shared Unity/Blender process exists; do not interrupt ongoing work'
           }
