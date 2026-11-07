@@ -1,1 +1,2 @@
 07/11/2026 — inspect only Eldoria workspace candidates and installed Unity on Windows runner. PR173 alone owns windows-runner-heavy revision 4. Do not touch saves, launch Unity, alter main or personal directories. This request is independent from the larger native checkout.
+Second read-only workspace diagnostic: installed git not on PATH; use native PowerShell hash and check project-only paths.
