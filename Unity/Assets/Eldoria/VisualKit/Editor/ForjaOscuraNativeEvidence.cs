@@ -339,11 +339,19 @@ namespace Eldoria.VisualKit.Editor
         }
         static string Snapshot(RoyalHUD hud)
         {
+            // Compare every critical REAL HUD value on both sides of the visual
+            // swap, not only resource labels. No invented numbers or gateway writes.
             return (hud.Realm&&hud.Realm.Realm?hud.Realm.Realm.text:"") + "|" +
+                   (hud.Realm&&hud.Realm.Power?hud.Realm.Power.text:"") + "|" +
                    (hud.Resources&&hud.Resources.Wood?hud.Resources.Wood.text:"") + "|" +
                    (hud.Resources&&hud.Resources.Stone?hud.Resources.Stone.text:"") + "|" +
                    (hud.Resources&&hud.Resources.Food&&hud.Resources.Food.gameObject.activeSelf?hud.Resources.Food.text:"locked") + "|" +
-                   (hud.Mission&&hud.Mission.Objective?hud.Mission.Objective.text:"") + "|" + hud.SelectedBuildingId;
+                   (hud.Mission&&hud.Mission.Chapter?hud.Mission.Chapter.text:"") + "|" +
+                   (hud.Mission&&hud.Mission.Objective?hud.Mission.Objective.text:"") + "|" +
+                   (hud.Mission&&hud.Mission.ProgressText?hud.Mission.ProgressText.text:"") + "|" +
+                   (hud.Building&&hud.Building.Title?hud.Building.Title.text:"") + "|" +
+                   (hud.Building&&hud.Building.Primary&&hud.Building.Primary.Label?hud.Building.Primary.Label.text:"") +
+                   "|" + hud.SelectedBuildingId;
         }
         static void Need(bool yes,string message){if(!yes)throw new InvalidOperationException(message);}
         static void ValidateNavigation(RoyalHUD hud)
