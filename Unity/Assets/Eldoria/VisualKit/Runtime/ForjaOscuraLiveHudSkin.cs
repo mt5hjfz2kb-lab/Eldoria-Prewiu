@@ -386,7 +386,15 @@ namespace Eldoria.VisualKit
                     if (required <= source.rect.width) continue;
                     float increase = required - source.rect.width;
                     var value = values[i].rectTransform;
-                    NeedResourceWidth(value, increase);
+                    // Presentation can NEVER throw on an otherwise playable
+                    // 390px phone because a resource label is short. Retain at
+                    // least 48 logical units for the real numeric value. The
+                    // native icon-size QA fails closed if this compromise
+                    // cannot show a legible illustrated resource icon.
+                    increase = Mathf.Min(increase,
+                        Mathf.Max(0f, value.rect.width - 48f));
+                    if (increase < 1f) continue;
+                    required = source.rect.width + increase;
                     RememberNavigationGeometry(source);
                     RememberNavigationGeometry(value);
                     source.sizeDelta = new Vector2(required, required);
@@ -407,13 +415,6 @@ namespace Eldoria.VisualKit
                     icon.offsetMax = new Vector2(2f, 10f);
                 }
             }
-        }
-
-        private static void NeedResourceWidth(RectTransform value, float consumed)
-        {
-            if (!value || value.rect.width - consumed < 48f)
-                throw new InvalidOperationException(
-                    "[FORJA] Cannot enlarge illustrated resource without clipping actual value");
         }
 
         private void EnsureNavigationTargets()
