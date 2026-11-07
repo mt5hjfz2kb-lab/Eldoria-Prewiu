@@ -1,6 +1,6 @@
-Forja Oscura live native preflight request
-Target-commit: 7e51a7093429d63a89250194432ba9eed540c2d0
-Requested-gates: isolated original art integrity; canonical owner and runner availability
-Visual-approval: NOT_GRANTED
-Native-capability: Only if exclusive ownership is available; do not invade PR163
-Context: user asked for proof the new premium interface can be realized exactly; no assumptions from generated mockups.
+Forja Oscura — protected native A/B PRE-FLIGHT only
+Request phase: verify that the production test MUST skip Windows while PR163 owns windows-runner-heavy.
+Expected outcome: original art SHA verified, live workstream read from main, authorized=false, native job skipped.
+This request does NOT release, reassign, cancel, take over or interrupt the other workstream.
+Run the full native eight-capture proof ONLY after a proper exclusive claim is available.
+Reference: PR #173, current source head checked by the actual workflow at checkout.
