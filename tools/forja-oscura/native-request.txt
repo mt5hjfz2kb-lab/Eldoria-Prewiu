@@ -6,3 +6,4 @@ After PR #163 merged and formally released its runner at revision 158, source PR
 Run real same-session native A/B: 1600x900, 900x1600, 844x390, 390x844, before/after.
 Require real nav pointer actions, contextual close, permitted sawmill build with probe-only save, actual resources/chapter/cost unchanged while skin toggles, min readable icons/text, 44px targets, paired PNG SHA manifest.
 FAIL CLOSED on absent Unity, competing processes, missing art, stale ownership, error or unmet geometry/interaction. This dispatch does not publish or merge and does not mark ART_APPROVED.
+2026-11-07T14:16:00Z · Native retry requested with the pre-existing Valoria Windows checkout rather than an expensive separate 15GB clone. The original native run 42376865738 is left untouched; workflow concurrency enqueues this only after previous proof completes. Do not merge or mark artistic approval without eight native Unity PNGs and gameplay results.
