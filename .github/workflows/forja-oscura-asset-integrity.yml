@@ -263,11 +263,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Checkout exactly the first-party Forja production PNGs
+      - name: Checkout only owned first-party visual kit and QA sources
         uses: actions/checkout@v4
         with:
+          filter: blob:none
           sparse-checkout: |
-            /Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/
+            /Unity/Assets/Eldoria/VisualKit/
+            /Unity/Assets/Eldoria/VisualKit.meta
+            /tools/forja-oscura/
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Verify independent sprites and do not treat these as a Unity capture
@@ -278,12 +281,13 @@ jobs:
           test "$(find "$d/Icons" -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 20
           test "$(find "$d/Surfaces" -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 21
           echo "FORJA_41_REAL_SPRITES_AVAILABLE_NOT_NATIVE_CAPTURE"
-      - name: Save production artwork for manual reference comparison
+      - name: Package complete owned visual kit for emergency incremental Unity checkout
         uses: actions/upload-artifact@v4
         with:
           name: forja-production-sprites-${{ github.sha }}
           path: |
-            Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/Icons/*.png
-            Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/Surfaces/*.png
+            Unity/Assets/Eldoria/VisualKit/
+            Unity/Assets/Eldoria/VisualKit.meta
+            tools/forja-oscura/
           if-no-files-found: error
           retention-days: 21
