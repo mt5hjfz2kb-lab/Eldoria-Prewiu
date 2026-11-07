@@ -87,6 +87,7 @@ namespace Eldoria.VisualKit
             EnsureMobileNavigationTouchTargets();
             EnsureBuildingCartoucheClearsNavigation();
             EnsureMobileResourceIconReadability();
+            ReflowLiveLabels();
             // Canonical RoyalGoldV2Hud.LayoutNavigation and header layout run
             // EVERY LateUpdate and reset caption sizes, colors and raycast
             // graphics. Restyle these eight small live controls EVERY frame:
@@ -590,6 +591,63 @@ namespace Eldoria.VisualKit
                 requiredBottom);
         }
 
+        // Correct the actual text slots, not a screenshot overlay. V2 owns the
+        // same top-left anchors; every size/position/font is restored on removal.
+        private void SetTextSlot(Transform parent, string name, float x, float y,
+            float width, float height, float minPixels)
+        {
+            var child = ImmediateChild(parent, name) as RectTransform;
+            if (!child) return;
+            RememberNavigationGeometry(child);
+            child.anchoredPosition = new Vector2(x, -y);
+            child.sizeDelta = new Vector2(width, height);
+            var label = child.GetComponent<RoyalText>();
+            if (label) EnsureReadable(label, minPixels);
+        }
+
+        private void ReflowLiveLabels()
+        {
+            if (!v2) return;
+            var canvas = GetComponent<Canvas>();
+            float scale = canvas && canvas.scaleFactor > .01f ? canvas.scaleFactor : 1f;
+            if (ObjectiveSkinned && v2.ChronicleObjectiveRect)
+            {
+                var card = v2.ChronicleObjectiveRect;
+                float pad = 16f;
+                SetTextSlot(card, "Chapter", pad, 9f, card.rect.width-2f*pad, 27f, 13f);
+                SetTextSlot(card, "Current real objective", pad, 38f,
+                    card.rect.width-2f*pad, 48f, 12f);
+                SetTextSlot(card, "Objective progress", card.rect.width-94f,
+                    83f, 78f, 25f, 11f);
+                var crest = ImmediateChild(card, "V3 / original Valoria heraldic sigil");
+                if (crest)
+                    foreach (var g in crest.GetComponentsInChildren<Graphic>(true)) Hide(g);
+                HideGraphicsByTypeName(card, "RoyalGoldV3HeraldicBannerGraphic");
+                var banner = card.GetComponentsInChildren<Graphic>(true);
+                foreach (var g in banner)
+                    if (g && g.transform.parent &&
+                        g.transform.parent.name == "V3 / genuine Valoria castle insignia") Hide(g);
+            }
+            if (!BuildingSkinned || !v2.ChronicleBuildingRect) return;
+            var building = v2.ChronicleBuildingRect;
+            var action = ImmediateChild(building, "Execute existing authorised offer") as RectTransform;
+            if (!action) return;
+            // Landscape previously clipped 'Mejorar a Bastión II' after 'a'.
+            // Widen the existing CTA into unused lower-right card space.
+            var parent = building.parent as RectTransform;
+            bool portrait = parent && parent.rect.height > parent.rect.width;
+            if (!portrait)
+            {
+                RememberNavigationGeometry(action);
+                float w = Mathf.Min(building.rect.width*.38f, Mathf.Max(290f, 220f/scale));
+                action.sizeDelta = new Vector2(w, Mathf.Max(51f, 44f/scale));
+                action.anchoredPosition = new Vector2(building.rect.width-w-14f,
+                    -(building.rect.height-action.rect.height-14f));
+            }
+            foreach (var label in action.GetComponentsInChildren<RoyalText>(true))
+                EnsureReadable(label, 12f);
+        }
+
         private static string NavName(RoyalSection section)
         {
             switch (section)
@@ -630,6 +688,9 @@ namespace Eldoria.VisualKit
                 {
                     image.transform.SetAsFirstSibling();
                     HideGraphicsByTypeName(card, "RoyalGoldV3BuildingCartoucheFinish");
+                    var oldRim = ImmediateChild(card, "Building / real nine-slice outline");
+                    if (oldRim)
+                        foreach (var g in oldRim.GetComponentsInChildren<Graphic>(true)) Hide(g);
                     // The real building miniature remains untouched: it contains
                     // the original Unity model/RenderTexture owned by the game.
                     var primary = ImmediateChild(card, "Execute existing authorised offer");

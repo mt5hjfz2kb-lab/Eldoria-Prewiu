@@ -769,21 +769,18 @@ namespace Eldoria.VisualKit.Editor
                     catch(TargetInvocationException e){throw e.InnerException??e;}
                 }
                 Need(!hud.NarrativeOpen,"Genuine story must finish via real UI before Forja city A/B");
-                // The canonical city initially places an unbuilt sawmill at
-                // x=.23-.41 while the true free viewport begins x=.29; this
-                // fails its OWN native model-framing gate before any skin.
-                // Select the real, already-present BASTION for comparable
-                // artistic captures (as prior native city capture does).
-                // Keep real sawmill BUILD tested separately on a throwaway
-                // gateway after all eight images. Never bypass framing.
-                // The original scene and camera remain authoritative.
+                // Capture the tutorial's actual construction target. The earlier
+                // sawmill framing failure was caused by CapturePrepared skipping
+                // Focus when supplied a styling callback (now explicitly restored).
+                // Bastion 844x390 baseline/candidate failure remains recorded in
+                // run 42409713043; changing this fixture does not resolve that defect.
                 var select=host.GetType().GetMethod("Select",BindingFlags.Public|BindingFlags.Instance,
                     null,new[]{typeof(string)},null);
-                Need(select!=null && (bool)select.Invoke(host,new object[]{"bastion"}),
-                    "Existing city cannot select its genuine bastion model for the visual A/B");
+                Need(select!=null && (bool)select.Invoke(host,new object[]{"sawmill"}),
+                    "Existing city cannot select its genuine tutorial sawmill");
                 hud.Refresh();
-                Need(hud.SelectedBuildingId=="bastion",
-                    "Capture must reflect the genuine framed bastion model");
+                Need(hud.SelectedBuildingId=="sawmill",
+                    "Capture must reflect the genuine tutorial construction target");
             }
             Need(!hud.NarrativeOpen,"Narrative overlay obscures city; dismiss it through real UI before comparing");
             // The canonical contextual card is reprojected from the actual
