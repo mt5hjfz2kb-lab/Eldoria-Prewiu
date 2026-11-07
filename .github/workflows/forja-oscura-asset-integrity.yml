@@ -113,3 +113,71 @@ jobs:
         run: python3 tools/forja-oscura/build-review.py --selftest
       - name: Do not publish temporary fixture as native proof
         run: echo 'FORJA_REVIEW_VIEWER_TEST_PASS; native screenshot remains pending.'
+
+  hosted-unity-license-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - name: Detect whether a ZERO-EXTRA-COST hosted Unity test is already activated
+        id: check
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        shell: bash
+        run: |
+          if [[ -n "$UNITY_EMAIL" && -n "$UNITY_PASSWORD" && ( -n "$UNITY_LICENSE" || -n "$UNITY_SERIAL" ) ]]; then
+            echo 'enabled=true' >> "$GITHUB_OUTPUT"
+            echo 'FORJA_HOSTED_EDITOR_ACTIVATION_AVAILABLE; credentials are NOT printed.'
+          else
+            echo 'enabled=false' >> "$GITHUB_OUTPUT"
+            echo 'FORJA_HOSTED_EDITOR_NOT_ACTIVATED: no compatible Unity license credentials configured.'
+          fi
+
+  hosted-unity-compile:
+    needs: hosted-unity-license-preflight
+    if: needs.hosted-unity-license-preflight.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Unity/Packages/**
+            Unity/ProjectSettings/**
+            Unity/Assets/**/*.cs
+            Unity/Assets/**/*.cs.meta
+            Unity/Assets/**/*.asmdef
+            Unity/Assets/**/*.asmdef.meta
+            Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/**
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Check Unity project version and isolated visual kit
+        shell: bash
+        run: |
+          test -f Unity/ProjectSettings/ProjectVersion.txt
+          grep -q '6000.3.23f1' Unity/ProjectSettings/ProjectVersion.txt
+          test -f Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs
+          echo 'FORJA_HOSTED_EDITOR_SOURCE_READY'
+      - uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          projectPath: Unity
+          unityVersion: 6000.3.23f1
+          testMode: editmode
+          artifactsPath: forja-editor-test-results
+      - name: Preserve real hosted Editor results if available
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: forja-linux-editor-compilation-${{ github.sha }}-${{ github.run_id }}
+          path: forja-editor-test-results
+          if-no-files-found: warn
+          retention-days: 14
