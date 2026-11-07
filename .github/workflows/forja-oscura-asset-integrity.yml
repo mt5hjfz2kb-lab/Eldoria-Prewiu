@@ -33,6 +33,8 @@ jobs:
         run: python3 tools/forja-oscura/reconstruct.py
       - name: Inspect first-party PNGs, real C-sharp sources, asmdefs, and unique Unity GUIDs
         run: python3 tools/forja-oscura/verify-production.py
+      - name: Verify responsive 9-slice mobile border ratios against real Unity metadata
+        run: python3 tools/forja-oscura/check-mobile-nine-slice.py
       - name: Confirm exact original kit without adding a duplicate Unity root
         run: |
           test -f Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs

@@ -29,17 +29,28 @@ internal sealed class EldoriaVisualKitTextureImporter : AssetPostprocessor
         // Individual borders exactly match Source/manifest and are retained
         // regardless of landscape, portrait or content size.
         var name = System.IO.Path.GetFileNameWithoutExtension(assetPath);
-        int border = 0;
+        // Unity spriteBorder coordinates: left, bottom, right, top.
+        // Do not squeeze small navigation buttons until the 9-slice center
+        // collapses. Keep mobile min heights from QA table below.
+        Vector4 border = Vector4.zero;
         if (name.StartsWith("button_primary_", System.StringComparison.Ordinal) ||
-            name.StartsWith("button_secondary_", System.StringComparison.Ordinal) ||
-            name == "panel_dark" || name == "panel_light" || name == "panel_quest")
-            border = 56;
-        else if (name.StartsWith("nav_tile_", System.StringComparison.Ordinal)) border = 48;
-        else if (name == "resource_chip" || name.StartsWith("tab_", System.StringComparison.Ordinal)) border = 36;
-        else if (name == "badge_level") border = 32;
-        else if (name.StartsWith("progress_", System.StringComparison.Ordinal)) border = 20;
-        else if (name == "toast_background") border = 40;
-        ti.spriteBorder = new Vector4(border,border,border,border);
+            name.StartsWith("button_secondary_", System.StringComparison.Ordinal))
+            border = new Vector4(56, 15, 56, 15);
+        else if (name.StartsWith("nav_tile_", System.StringComparison.Ordinal))
+            border = new Vector4(48, 22, 48, 22);
+        else if (name == "panel_dark" || name == "panel_light")
+            border = new Vector4(56, 20, 56, 20);
+        else if (name == "panel_quest") border = new Vector4(56, 22, 56, 22);
+        else if (name == "resource_chip") border = new Vector4(36, 14, 36, 14);
+        else if (name.StartsWith("tab_", System.StringComparison.Ordinal))
+            border = new Vector4(36, 10, 36, 10);
+        else if (name == "badge_level") border = new Vector4(32, 8, 32, 8);
+        else if (name.StartsWith("progress_", System.StringComparison.Ordinal))
+            border = new Vector4(20, 3, 20, 3);
+        else if (name == "toast_background") border = new Vector4(40, 12, 40, 12);
+        // .meta spriteMeshType: 0 means FullRect in Unity 6000.3.
+        // This importer never changes GUID, mesh type or gameplay state.
+        ti.spriteBorder = border;
     }
 }
 #endif
