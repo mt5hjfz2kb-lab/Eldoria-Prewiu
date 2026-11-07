@@ -135,6 +135,51 @@ namespace Eldoria.VisualKit.Editor
                 throw new IOException("Native Unity camera capture missing or tiny: "+original);
             File.Copy(original,Path.Combine(outputDir,basename),true);
         }
+        [Serializable] class UiTouchMetric
+        {
+            public string resolution;
+            public string smallestDestination;
+            public float minWidthPx;
+            public float minHeightPx;
+            public bool hasFiveVisibleActions;
+        }
+
+        private static UiTouchMetric MeasureNavigationPixels(RoyalHUD hud,
+            Camera nativeCamera, int width, int height)
+        {
+            var nav = hud.Navigation;
+            Need(nav && nav.Items != null, "Native pixel hit test requires the genuine navigation");
+            float minW = float.PositiveInfinity;
+            float minH = float.PositiveInfinity;
+            string worst = "";
+            int seen = 0;
+            foreach (var item in nav.Items)
+            {
+                if (item == null || !item.Button || !item.Button.gameObject.activeInHierarchy) continue;
+                var rect = item.Button.transform as RectTransform;
+                if (!rect) continue;
+                var corners = new Vector3[4];
+                rect.GetWorldCorners(corners);
+                Vector2 bottomLeft = RectTransformUtility.WorldToScreenPoint(nativeCamera, corners[0]);
+                Vector2 topLeft = RectTransformUtility.WorldToScreenPoint(nativeCamera, corners[1]);
+                Vector2 bottomRight = RectTransformUtility.WorldToScreenPoint(nativeCamera, corners[3]);
+                float pixelW = Vector2.Distance(bottomLeft, bottomRight);
+                float pixelH = Vector2.Distance(bottomLeft, topLeft);
+                if (pixelW < minW || pixelH < minH) worst = item.Section.ToString();
+                minW = Mathf.Min(minW, pixelW);
+                minH = Mathf.Min(minH, pixelH);
+                seen++;
+            }
+            Need(seen == 5, "Native mobile pixel hit test could not find exactly five controls");
+            return new UiTouchMetric {
+                resolution = width + "x" + height,
+                smallestDestination = worst,
+                minWidthPx = minW,
+                minHeightPx = minH,
+                hasFiveVisibleActions = seen == 5
+            };
+        }
+
         [Serializable] class UiPixelDifference
         {
             public string resolution;
@@ -308,6 +353,7 @@ namespace Eldoria.VisualKit.Editor
             }
             Need(hud.GetComponents<Canvas>().Length==1, "New standalone Canvas introduced unexpectedly");
             ValidateNavigation(hud);
+            var touchMetrics = new List<UiTouchMetric>();
             foreach(var wh in new[]{(1600,900),(900,1600),(844,390),(390,844)})
                 Capture(t,host,after+"-"+wh.Item1+"x"+wh.Item2+".png",wh.Item1,wh.Item2,root,
                     () => {
@@ -316,6 +362,11 @@ namespace Eldoria.VisualKit.Editor
                         if (context) context.SynchronizeNow();
                         skin.ApplyNow(true);
                         Canvas.ForceUpdateCanvases();
+                        // Measure screen pixels AFTER Unity sets the actual
+                        // offscreen camera resolution; RectTransform units
+                        // alone are not an accessibility/hit-area guarantee.
+                        touchMetrics.Add(MeasureNavigationPixels(hud,host.PlayerCamera,
+                            wh.Item1,wh.Item2));
                     });
             Need(original==Snapshot(hud),"HUD gameplay data changed while applying presentation-only skin");
             Object.DestroyImmediate(skin);Canvas.ForceUpdateCanvases();
@@ -345,11 +396,19 @@ namespace Eldoria.VisualKit.Editor
                     "Native Forja header does not visibly change at "+proof.resolution);
             }
             Need(differences==4,"Native before/after frames have no detectable change in some orientations");
+            Need(touchMetrics.Count==4,
+                "Native click-area pixel metrics must exist at every orientation");
+            foreach (var measurement in touchMetrics)
+                Need(measurement.minWidthPx >= 44f && measurement.minHeightPx >= 44f,
+                    "Forja nav touch target below 44px at " + measurement.resolution +
+                    " (smallest " + measurement.smallestDestination + ": " +
+                    measurement.minWidthPx + "x" + measurement.minHeightPx + "px)");
             var report=new EvidenceReport{
                 status="UNITY_NATIVE_CAPTURED_VISUAL_REVIEW_PENDING",sourceScene=Scene,
                 gameplayHost=host.GetType().FullName,dataBefore=original,dataAfter=originalAfter,
                 screenshotCount=files.Length,orientationsWithDifference=differences,
                 uiRegionDifferences=uiDifferences.ToArray(),
+                nativeTouchTargets=touchMetrics.ToArray(),
                 captureMethod="ValoriaIntegrationBuild.Capture: Unity RenderTexture/Canvas",
                 artifacts=files.Select(f=>new Artifact {name=Path.GetFileName(f),sha256=Hash(f)}).ToArray(),
                 gameplayAndSaveRulesChanged=false,physicalMobileTested=false,artApproved=false
@@ -369,6 +428,7 @@ namespace Eldoria.VisualKit.Editor
             public string status,sourceScene,gameplayHost,dataBefore,dataAfter,captureMethod;
             public int screenshotCount,orientationsWithDifference;
             public UiPixelDifference[] uiRegionDifferences;
+            public UiTouchMetric[] nativeTouchTargets;
             public bool gameplayAndSaveRulesChanged,physicalMobileTested,artApproved;
             public Artifact[] artifacts;
         }
