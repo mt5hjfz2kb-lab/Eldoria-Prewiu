@@ -19,11 +19,19 @@
   "desktop_runtime_errors": [],
   "physical_iphone_verified": false,
   "actual_unity_gameplay_telemetry_verified": false,
-  "entry_reload_qa_run": 42422065126,
-  "entry_reload_qa_status": "pending",
+  "entry_reload_qa_run": 42423856431,
+  "entry_reload_qa_status": "FAIL_PAGE_RELOAD_TIMEOUT_AFTER_SUCCESSFUL_UNITY_QUIT",
   "limitations": [
     "Wasm capacity is not whole process or physical iPhone memory",
     "No complete Bastion I-V run certified",
-    "Physical first-frame return remains open until tested on owner device"
-  ]
+    "Physical first-frame return remains open until tested on owner device",
+    "Both raw reload and graceful Quit-then-reload timed out in SwiftShader; saved-state restoration NOT certified."
+  ],
+  "entry_observed_seconds": 60,
+  "entry_observed_ready": true,
+  "raw_reload_qa_run": 42423325534,
+  "raw_reload_verified": false,
+  "release_for_external_testers": false,
+  "publication_purpose": "Owner diagnostic to obtain necessary physical iPhone startup evidence; not a tester-ready release",
+  "publication_commit": "5304269a8a62ef02bc627cb437b11b0f099ca78a"
 }
