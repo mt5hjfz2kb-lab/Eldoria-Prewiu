@@ -1,0 +1,204 @@
+{
+  "source_bundle_sha256": "d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7",
+  "candidate_bundle_sha256": "299102dbc1835004a6d58a29ae33397f4836949c1eee8f7d321db8f05ea337e3",
+  "changed_count": 32,
+  "all_objects_verified": 54338,
+  "pixel_bytes_unchanged": true,
+  "nominal_cpu_copy_bytes": 191889452,
+  "textures": [
+    {
+      "id": "sharedassets0.assets:215",
+      "name": "texture-0",
+      "pixel_bytes": 349524,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:216",
+      "name": "texture-1",
+      "pixel_bytes": 349524,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:217",
+      "name": "texture-2",
+      "pixel_bytes": 349524,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:218",
+      "name": "hostile-canvas-texture-v11-0",
+      "pixel_bytes": 349524,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:219",
+      "name": "authored-texture-14",
+      "pixel_bytes": 22369620,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:220",
+      "name": "authored-texture-2",
+      "pixel_bytes": 5592404,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:221",
+      "name": "authored-texture-3",
+      "pixel_bytes": 5592404,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:222",
+      "name": "muted-slate-texture-0",
+      "pixel_bytes": 349524,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:223",
+      "name": "muted-slate-texture-2",
+      "pixel_bytes": 349524,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:224",
+      "name": "muted-slate-texture-4",
+      "pixel_bytes": 349524,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:225",
+      "name": "muted-slate-texture-6",
+      "pixel_bytes": 349524,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:226",
+      "name": "muted-slate-texture-8",
+      "pixel_bytes": 349524,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:227",
+      "name": "world-zone-ground-identity-v10-0",
+      "pixel_bytes": 5592404,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:228",
+      "name": "texture-0",
+      "pixel_bytes": 1398128,
+      "format": 48
+    },
+    {
+      "id": "sharedassets0.assets:229",
+      "name": "texture-15",
+      "pixel_bytes": 22369620,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:230",
+      "name": "texture-16",
+      "pixel_bytes": 5592404,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:231",
+      "name": "texture-17",
+      "pixel_bytes": 22369620,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:232",
+      "name": "texture-19",
+      "pixel_bytes": 22369620,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:233",
+      "name": "texture-21",
+      "pixel_bytes": 22369620,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:234",
+      "name": "texture-23",
+      "pixel_bytes": 22369620,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:235",
+      "name": "Region1Biomes",
+      "pixel_bytes": 5592432,
+      "format": 48
+    },
+    {
+      "id": "sharedassets0.assets:236",
+      "name": "texture-10",
+      "pixel_bytes": 1398100,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:237",
+      "name": "texture-20",
+      "pixel_bytes": 1398100,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:238",
+      "name": "texture-21",
+      "pixel_bytes": 1398100,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:239",
+      "name": "texture-22",
+      "pixel_bytes": 1398100,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:240",
+      "name": "texture-5",
+      "pixel_bytes": 349524,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:242",
+      "name": "meadow-1",
+      "pixel_bytes": 1398128,
+      "format": 48
+    },
+    {
+      "id": "sharedassets0.assets:245",
+      "name": "texture-0",
+      "pixel_bytes": 699052,
+      "format": 5
+    },
+    {
+      "id": "sharedassets0.assets:246",
+      "name": "texture-1",
+      "pixel_bytes": 349524,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:251",
+      "name": "tex-3",
+      "pixel_bytes": 5592404,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:252",
+      "name": "tex-4",
+      "pixel_bytes": 5592404,
+      "format": 4
+    },
+    {
+      "id": "sharedassets0.assets:253",
+      "name": "tex-5",
+      "pixel_bytes": 5592404,
+      "format": 4
+    }
+  ],
+  "runtime_verified": false,
+  "physical_iphone_verified": false
+}
