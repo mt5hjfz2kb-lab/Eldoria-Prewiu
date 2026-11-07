@@ -6773,7 +6773,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-beta-pages-20261107",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6789,7 +6789,8 @@
         ".github/workflows/eldoria-beta-entry-qa.yml",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs"
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs"
       ],
       "resources": [],
       "claimed_at": "2026-11-07T19:05:00Z",
