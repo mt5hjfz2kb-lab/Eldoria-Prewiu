@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T13:23:37Z",
+  "updated_at": "2026-11-07T13:42:08.184Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -21,10 +21,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
-      "branch": "main",
+      "owner": "chatgpt-pr163-postmerge-validation-20261107",
+      "branch": "fix/pr163-postmerge-v41-capture-scale-20261107",
       "status": "active",
-      "claimed_at": "2026-11-07T10:24:54.640Z",
+      "claimed_at": "2026-11-07T13:42:08.184Z",
       "base_main_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Application/**",
@@ -46,15 +46,16 @@
         "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/valoria-reference-clean.yml",
-        "pipeline/valoria-convergence-cancel-stale-request.json"
+        "pipeline/valoria-convergence-cancel-stale-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PLAYER_AUDIT_REMEDIATION_MERGED_COMPLETED",
-      "next": "PR163 incorporada y certificada. Siguiente trabajo autónomo: pruebas con testers reales, aceptación física Android/audio/rendimiento y siguiente publicación sólo cuando se autorice por workstream separado. PR173 Forja puede reclamar Windows tras comprobar que no hay proceso Unity.",
+      "phase": "PLAYER_AUDIT_POSTMERGE_UI_CERT_REPAIR",
+      "next": "Corregir validación nativa V41: escala real teléfono 600 puntos vs aserción heredada 800/900, demostrar preservación de capturas; validar en CI con runner cedido al propietario actual PR173 o en espera, no forzar recurso.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -2053,11 +2054,18 @@
             "chromium_run": 42373214530,
             "main_unity_gate_run": 42374765769
           }
+        },
+        {
+          "previous_owner": null,
+          "from_revision": 158,
+          "to_revision": 159,
+          "claimed_at": "2026-11-07T13:42:08.184Z",
+          "reason": "El propietario solicita confirmar el cierre de PR163 y resolver los fallos genuinos pendientes; PR163 se fusionó, pero la certificación exacta posterior al merge descubrió una aserción de escala de pantalla obsoleta en captura V41. Reclamación estrecha solo de ese archivo y prueba, sin reserva Windows ni tocar Forja Oscura PR173."
         }
       ],
-      "ownership_revision": 158,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 159,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-05T19:03:44.661Z",
       "delivery_definition": {
@@ -6628,7 +6636,9 @@
         "Unity/Assets/Eldoria/VisualKit.meta",
         "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json"
       ],
-      "resources": ["windows-runner-heavy"],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
       "ownership_revision": 4,
       "write_scope_released": false,
