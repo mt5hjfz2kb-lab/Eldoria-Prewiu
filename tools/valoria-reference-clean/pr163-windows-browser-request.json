@@ -1,0 +1,14 @@
+{
+  "source_sha": "4fdb95fdea71c05b28a6e2e28147fddcb0719c24",
+  "run_id": 42315556449,
+  "revision": "native317",
+  "artifact_name": "valoria-integrated-web-playtest-42315556449",
+  "purpose": "Exact PR163 mobile real-player I-II WebGL regression in Windows Chromium D3D11 using visible clicks, same normal game clock and isolated browser save; no publication or edits to game",
+  "preconditions": [
+    "Exact native Unity success",
+    "No Unity/Blender process",
+    "Current main Valoria lease revision156 remains owned by existing owner"
+  ],
+  "allow_release": false,
+  "allow_merge": false
+}
