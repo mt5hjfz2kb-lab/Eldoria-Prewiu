@@ -1,18 +1,60 @@
-name: Eldoria isolated native startup memory diagnosis
+name: Eldoria staged startup native parity and WebGL
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
-    paths: ['.github/workflows/eldoria-beta-native-memory.yml']
+    paths: ['.github/workflows/eldoria-beta-native-memory.yml', 'tools/eldoria-private-beta/native/run_structural.ps1']
   workflow_dispatch:
 permissions:
   contents: read
+  pull-requests: read
 concurrency:
   group: eldoria-beta-native-memory
   cancel-in-progress: false
+env:
+  EXPECTED_LEASE_REVISION: '8'
 jobs:
-  memory:
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      native_available: ${{ steps.lease.outputs.available }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: beta-tools
+          sparse-checkout: tools/eldoria-private-beta/native
+          persist-credentials: false
+      - name: Parse PowerShell without starting Unity
+        shell: pwsh
+        run: |
+          $tokens=$null;$errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("$pwd/beta-tools/tools/eldoria-private-beta/native/run_structural.ps1",[ref]$tokens,[ref]$errors)|Out-Null
+          if($errors.Count){$errors|Format-List;throw 'PowerShell parser errors'}
+      - name: Check current ownership without occupying Windows
+        id: lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" --jq .content | base64 -d > registry.json
+          gh api "repos/$GITHUB_REPOSITORY/pulls?state=open&per_page=100" > pulls.json
+          python - <<'PY'
+          import json,os
+          active=json.load(open('registry.json'))['active']
+          holders=[x for x in active if 'windows-runner-heavy' in x.get('resources',[])]
+          own=next(x for x in active if x['id']=='eldoria-private-beta-i-v-20261107')
+          prs=[x for x in json.load(open('pulls.json')) if 'Workstream-ID: eldoria-private-beta-i-v-20261107' in (x.get('body') or '')]
+          if len(prs)!=1 or prs[0]['number']!=179: raise RuntimeError('Canonical PR179 ownership mismatch')
+          valid=own['owner']=='chatgpt-beta-pages-20261107' and str(own['ownership_revision'])==os.environ['EXPECTED_LEASE_REVISION'] and len(holders)==1 and holders[0]['id']==own['id']
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('available='+str(valid).lower()+'\n')
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+            f.write('PowerShell syntax checked. Native Unity '+('authorized for this exact lease.' if valid else 'NOT RUN: resource lease is not available to this revision. No gameplay/build certification.')+'\n')
+          print({'native_available':valid,'holders':[x['id'] for x in holders]})
+          PY
+  native:
+    needs: preflight
+    if: needs.preflight.outputs.native_available == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 35
+    timeout-minutes: 170
     steps:
       - name: Recover installed Git
         shell: powershell
@@ -24,58 +66,53 @@ jobs:
           }
       - uses: actions/checkout@v4
         with:
-          path: beta-probe-tools
-          sparse-checkout: tools/eldoria-private-beta/native
+          path: beta-structural-tools
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/eldoria-private-beta/native/
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
           ref: main
-          path: beta-probe-live
+          path: beta-structural-live
           sparse-checkout: pipeline/active-workstreams.json
           persist-credentials: false
-      - name: Verify fresh exclusive lease and idle native tools
-        shell: powershell
-        run: |
-          $r=Get-Content beta-probe-live/pipeline/active-workstreams.json -Raw|ConvertFrom-Json
-          $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'chatgpt-beta-pages-20261107' -or $holders[0].ownership_revision -ne 3){throw 'Memory probe lease changed'}
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy; no interference'}
-          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
-      - uses: actions/checkout@v4
-        with:
-          ref: 948ffa9837168a0b68dab80be76b66350422b23a
-          path: valoria-layered-source
-          clean: false
-          persist-credentials: false
-      - name: Install isolated probe and sample original startup
+      - name: Recheck fresh lease and protect every existing project
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          $project=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity'
-          $probe=Join-Path $project 'Assets/EldoriaBetaMemoryProbe'
-          if(Test-Path $probe){throw 'Probe directory already exists; refuse overwrite'}
-          New-Item -ItemType Directory -Force (Join-Path $probe 'Editor')|Out-Null
-          Copy-Item beta-probe-tools/tools/eldoria-private-beta/native/MemoryProbe.cs (Join-Path $probe 'Editor/MemoryProbe.cs')
-          $env:ELDORIA_MEMORY_OUT=Join-Path $env:GITHUB_WORKSPACE 'beta-memory-evidence'
-          New-Item -ItemType Directory -Force $env:ELDORIA_MEMORY_OUT|Out-Null
-          $env:ELDORIA_MEMORY_SOURCE='948ffa9837168a0b68dab80be76b66350422b23a'
-          $env:VALORIA_GAMEPLAY_PROBE='1'
-          $log=Join-Path $env:ELDORIA_MEMORY_OUT 'unity.log'
-          try {
-            $args=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',('"'+$project+'"'),'-executeMethod','EldoriaBetaMemoryProbe.Run','-logFile',('"'+$log+'"'))
-            $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-            $p.WaitForExit()
-            if($p.ExitCode -ne 0){throw "Native memory probe failed $($p.ExitCode)"}
-            if(-not(Test-Path (Join-Path $env:ELDORIA_MEMORY_OUT 'complete.txt'))){throw 'Missing completion evidence'}
-          } finally {
-            if(-not(Get-Process Unity -ErrorAction SilentlyContinue)){
-              Remove-Item $probe -Recurse -Force
-              if(Test-Path ($probe+'.meta')){Remove-Item ($probe+'.meta') -Force}
-            }
-          }
+          $r=Get-Content beta-structural-live/pipeline/active-workstreams.json -Raw|ConvertFrom-Json
+          $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'chatgpt-beta-pages-20261107' -or $holders[0].ownership_revision -ne [int]$env:EXPECTED_LEASE_REVISION){throw 'Structural startup lease changed'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy; do not interrupt'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
+          $folder="beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          if(Test-Path $folder){throw 'Isolated project already exists; refuse replacement'}
+          $drive=Get-PSDrive -Name ([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE).Substring(0,1))
+          if($drive.Free -lt 25GB){throw 'Insufficient isolated import headroom; preserve other projects'}
+      - uses: actions/checkout@v4
+        with:
+          ref: 948ffa9837168a0b68dab80be76b66350422b23a
+          path: beta-structural-source-${{ github.run_id }}-${{ github.run_attempt }}
+          persist-credentials: false
+      - name: Original versus staged native startup, canonical journey, then WebGL
+        shell: powershell
+        run: |
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/run_structural.ps1 -Source "beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: beta-native-startup-memory
-          path: beta-memory-evidence/
+          name: beta-structural-native-evidence
+          path: beta-structural-evidence-${{ github.run_id }}-${{ github.run_attempt }}/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: beta-structural-webgl-unverified
+          path: beta-structural-source-${{ github.run_id }}-${{ github.run_attempt }}/Unity/Builds/ValoriaWebPlaytest/
+          compression-level: 0
           retention-days: 14
