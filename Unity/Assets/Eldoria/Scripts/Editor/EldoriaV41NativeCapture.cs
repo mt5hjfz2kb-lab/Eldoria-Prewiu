@@ -661,7 +661,16 @@ namespace Eldoria.Editor
                                     -navButton.GetComponent<RectTransform>().anchoredPosition.y+
                                         navButton.GetComponent<RectTransform>().rect.height<=
                                         heroes.VisibleRoot.rect.height-8f,
-                                    "Portrait Hall footer captions and locked-state notice fully fit usable pixel area "+name);
+                                    "Portrait Hall footer captions and locked-state notice fully fit usable pixel area "+name+
+                                    " button="+navButton.name+" text="+(cap?cap.text:"missing")+
+                                    " preferred="+(cap?new Vector2(cap.preferredWidth,cap.preferredHeight).ToString():"missing")+
+                                    " rect="+(cap?cap.rectTransform.rect.ToString():"missing")+
+                                    " font="+(cap?cap.fontSize.ToString():"missing")+
+                                    " bestFit="+(cap&&cap.resizeTextForBestFit)+
+                                    " labelPos="+(cap?cap.rectTransform.anchoredPosition.ToString():"missing")+
+                                    " buttonRect="+navButton.GetComponent<RectTransform>().rect+
+                                    " buttonPos="+navButton.GetComponent<RectTransform>().anchoredPosition+
+                                    " root="+heroes.VisibleRoot.rect);
                             }
                         }
                         var navIcons=heroes.VisibleRoot

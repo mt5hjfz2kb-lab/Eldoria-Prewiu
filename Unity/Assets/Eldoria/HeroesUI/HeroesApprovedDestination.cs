@@ -1497,8 +1497,8 @@ namespace Eldoria.HeroesUI
             // grammar. VOLVER and MARCHAS are REAL, HEROES stays on this live
             // view, and RELICARIO is genuinely disabled by progression.
             // No fake clickable pixels, no additional scene or canvas.
-            float navGap=phoneLandscape?6f:10f;
-            float navWidth=Mathf.Min(w-22f,illustratedDesktop?
+            float navGap=portraitLayout&&w<600f?4f:phoneLandscape?6f:10f;
+            float navWidth=Mathf.Min(w-(portraitLayout&&w<600f?12f:22f),illustratedDesktop?
                 referenceStageWidth:portraitLayout?540f:820f);
             float navCell=(navWidth-navGap*3f)/4f;
             float navLeft=(w-navWidth)*.5f;
