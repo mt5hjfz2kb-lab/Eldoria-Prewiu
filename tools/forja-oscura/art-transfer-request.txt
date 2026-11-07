@@ -1,0 +1,4 @@
+2026-11-07T10:31:00Z · Retry premium PNG commit using SPARSE checkout to avoid the 15GB Unity repository, same workstream claim and zero Windows runner usage.
+2026-11-07T12:45:00Z · Publish nine fixed-corner metal textures from vetted deterministic source; corner safety check passes in kit CI. Preserve sprite GUID/meta and all gameplay.
+2026-11-07T12:47:00Z · Rebuild exactly nine owned Unity PNGs after source correction 76c5e629 (fixed corner rivets now also visible on resource_chip); preserve .meta GUIDs, never touch main/gameplay.
+2026-11-07T13:10:00Z · Publish reference-aligned 9-slice material palette upgrade: true illuminated amber CTA, bronze selected tile, desaturated steel disabled. Keep every GUID; no gameplay, scene or runner edits.

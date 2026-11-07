@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <OutputType>Library</OutputType>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="UnityApiStub.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs" Link="ForjaOscuraLiveHudSkin.cs" />
+  </ItemGroup>
+</Project>

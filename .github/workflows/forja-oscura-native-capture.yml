@@ -1,0 +1,134 @@
+name: Forja Oscura Unity native A-B evidence
+on:
+  push:
+    branches: [feature/forja-oscura-native-proof-20261107]
+    paths: [tools/forja-oscura/native-request.txt]
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-forja-native-evidence
+  cancel-in-progress: false
+jobs:
+  owner-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      authorized: ${{ steps.lease.outputs.authorized }}
+      revision: ${{ steps.lease.outputs.revision }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/forja-oscura
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: canonical-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Verify isolated art ZIP
+        run: python3 tools/forja-oscura/reconstruct.py
+      - name: Refuse shared Windows without an exclusive live claim
+        id: lease
+        run: |
+          node <<'JS'
+          const fs=require('fs');
+          const reg=JSON.parse(fs.readFileSync('canonical-main/pipeline/active-workstreams.json'));
+          const id='eldoria-forja-oscura-visual-proof-20261107';
+          const own='chatgpt-forja-oscura-visual-proof-20261107';
+          const branch='feature/forja-oscura-native-proof-20261107';
+          const owners=reg.active.filter(x=>x.resources?.includes('windows-runner-heavy')&&x.ownership_state==='claimed');
+          const w=reg.active.find(x=>x.id===id);
+          const valid=w&&owners.length===1&&owners[0].id===id&&w.owner===own&&
+            w.branch===branch&&w.status==='active'&&w.ownership_state==='claimed';
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,
+            'authorized='+(valid?'true':'false')+'\nrevision='+(valid?w.ownership_revision:0)+'\n');
+          console.log(valid?'FORJA_EXCLUSIVE_CLAIM_PASS':
+            'FORJA_OWNER_NOT_RELEASED_OR_NOT_CLAIMED: skipping Windows. Never invade another PR.');
+          JS
+  native:
+    needs: owner-preflight
+    if: needs.owner-preflight.outputs.authorized == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: forja-source
+          clean: false
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: forja-live-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Recheck live ownership AND process exclusivity before Unity starts
+        shell: powershell
+        env:
+          LEASE_REVISION: ${{ needs.owner-preflight.outputs.revision }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $r=Get-Content 'forja-live-main/pipeline/active-workstreams.json' -Raw | ConvertFrom-Json
+          $o=@($r.active | Where-Object { $_.resources -contains 'windows-runner-heavy' -and $_.ownership_state -eq 'claimed' })
+          if($o.Count -ne 1 -or $o[0].id -ne 'eldoria-forja-oscura-visual-proof-20261107' -or
+             $o[0].owner -ne 'chatgpt-forja-oscura-visual-proof-20261107' -or
+             [string]$o[0].ownership_revision -ne $env:LEASE_REVISION){throw 'Forja exclusive lease changed'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared native editor occupied'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed'}
+          $v=& $env:UNITY_EDITOR_PATH -version
+          if($v -notmatch '6000\.3\.23f1'){throw "Unity version mismatch: $v"}
+      - name: Reassemble exact 41 visual resources and 7 C-sharp inputs
+        shell: powershell
+        run: |
+          python forja-source/tools/forja-oscura/reconstruct.py
+          if($LASTEXITCODE){throw 'Forja original archived sources are corrupt'}
+          python forja-source/tools/forja-oscura/verify-production.py
+          if($LASTEXITCODE){throw 'First-party Unity visual assets invalid'}
+          if(Test-Path 'forja-source/Unity/Assets/EldoriaVisualKit'){throw 'Legacy duplicate kit path detected'}
+          if(-not(Test-Path 'forja-source/Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs')){throw 'Native A-B entry missing'}
+      - name: Capture genuine Unity player HUD before and after
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $proj=Join-Path $env:GITHUB_WORKSPACE 'forja-source/Unity'
+          $log=Join-Path $env:RUNNER_TEMP 'forja-native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$proj+'"'),
+                  '-executeMethod','Eldoria.VisualKit.Editor.ForjaOscuraNativeEvidence.CaptureBatch',
+                  '-logFile',('"'+$log+'"'))
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          $end=(Get-Date).AddMinutes(42)
+          while(-not $p.HasExited -and (Get-Date) -lt $end){ Start-Sleep 4; $p.Refresh() }
+          if(-not $p.HasExited){ Stop-Process -Id $p.Id -Force; throw 'Own Forja Unity process timed out' }
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 120};throw "Unity failed exit $($p.ExitCode)"}
+          $dir=Join-Path $proj 'ForjaNativeEvidence'
+          $report=Join-Path $dir 'ForjaNativeEvidence.json'
+          if(-not(Test-Path $report)){throw 'Native A-B report missing'}
+          $j=Get-Content $report -Raw | ConvertFrom-Json
+          if($j.screenshotCount -ne 8 -or $j.orientationsWithDifference -ne 4 -or
+             $j.status -ne 'UNITY_NATIVE_CAPTURED_VISUAL_REVIEW_PENDING'){throw 'Native A-B proof incomplete'}
+          Get-ChildItem $dir -Filter *.png | ForEach-Object { if($_.Length -lt 4096){throw "PNG too small: $($_.Name)"} }
+          Write-Host 'FORJA_REAL_UNITY_8_PNG_CAPTURE_PASS; ART_APPROVED still false'
+      - name: Build offline A-B viewer only from verified native screenshots
+        shell: powershell
+        run: |
+          python forja-source/tools/forja-oscura/build-review.py forja-source/Unity/ForjaNativeEvidence
+          if($LASTEXITCODE){throw 'Native review page could not verify eight captured Unity PNG files'}
+      - name: Preserve native log and eight images for independent visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: forja-oscura-native-${{ github.sha }}-${{ github.run_id }}
+          path: |
+            forja-source/Unity/ForjaNativeEvidence/
+            ${{ runner.temp }}/forja-native.log
+          if-no-files-found: warn
+          retention-days: 21

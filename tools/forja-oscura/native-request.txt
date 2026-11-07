@@ -1,0 +1,8 @@
+Forja Oscura — genuine Unity 6000.3.23f1 A/B native capture REQUEST
+Date: 2026-11-07T13:25:00Z
+Workstream-ID: eldoria-forja-oscura-visual-proof-20261107
+Runner: windows-runner-heavy, only Forja active/claimed (ownership revision 4) on main.
+After PR #163 merged and formally released its runner at revision 158, source PR173 was reconciled with main; no held legacy HUD paths are mutated.
+Run real same-session native A/B: 1600x900, 900x1600, 844x390, 390x844, before/after.
+Require real nav pointer actions, contextual close, permitted sawmill build with probe-only save, actual resources/chapter/cost unchanged while skin toggles, min readable icons/text, 44px targets, paired PNG SHA manifest.
+FAIL CLOSED on absent Unity, competing processes, missing art, stale ownership, error or unmet geometry/interaction. This dispatch does not publish or merge and does not mark ART_APPROVED.
