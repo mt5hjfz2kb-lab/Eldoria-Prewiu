@@ -1,5 +1,5 @@
 name: Eldoria beta real entry and reload QA
-# Device scale 3; production wrapper caps Unity rendering at 1.5; Unity-render callback readback, blank-frame rejection and restored nickname OCR.
+# Phone pixel ratio; documented Unity Quit before reopen. Raw reload is NOT certified.
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
