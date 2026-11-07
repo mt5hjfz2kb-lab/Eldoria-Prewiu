@@ -1,150 +1,58 @@
-name: Forja Oscura isolated asset integrity
+name: Forja Oscura first-party kit CI
 on:
   push:
     branches: [feature/forja-oscura-native-proof-20261107]
     paths:
       - "tools/forja-oscura/**"
+      - "Unity/Assets/Eldoria/VisualKit/**"
+      - ".github/workflows/forja-oscura-asset-integrity.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "tools/forja-oscura/**"
+      - "Unity/Assets/Eldoria/VisualKit/**"
       - ".github/workflows/forja-oscura-asset-integrity.yml"
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: forja-oscura-asset-deploy-${{ github.ref }}
-  cancel-in-progress: false
+  group: forja-kit-checks-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  verify:
+  verify-art-source:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: tools/forja-oscura
-          sparse-checkout-cone-mode: false
-          persist-credentials: false
-      - name: Verify original production archive before Unity
-        run: python3 tools/forja-oscura/reconstruct.py
-      - name: Extract to disposable workspace and inspect exact files
-        run: |
-          mkdir -p "$RUNNER_TEMP/forja-pilot"
-          python3 tools/forja-oscura/reconstruct.py --extract "$RUNNER_TEMP/forja-pilot"
-          test -f "$RUNNER_TEMP/forja-pilot/Unity/Assets/EldoriaVisualKit/Runtime/ForjaOscuraLiveHudSkin.cs"
-          test -f "$RUNNER_TEMP/forja-pilot/Unity/Assets/EldoriaVisualKit/Editor/ForjaOscuraNativeEvidence.cs"
-          test -f "$RUNNER_TEMP/forja-pilot/Unity/Assets/EldoriaVisualKit/Resources/ForjaOscura/Icons/nav_reino.png"
-          echo "FORJA_ASSET_INTEGRITY_PASS; Unity and art reviews NOT yet executed."
-  publish-files:
-    needs: verify
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[forja-deploy]')
-    runs-on: ubuntu-latest
-    timeout-minutes: 12
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: feature/forja-oscura-native-proof-20261107
           sparse-checkout: |
             tools/forja-oscura
-            Unity/Assets/EldoriaVisualKit
-          sparse-checkout-cone-mode: false
-          fetch-depth: 1
-          persist-credentials: true
-      - name: Expand only verified original Unity resources
+            Unity/Assets/Eldoria/VisualKit
+          persist-credentials: false
+      - name: Preserve original kit integrity
+        run: python3 tools/forja-oscura/reconstruct.py
+      - name: Inspect first-party PNGs, real C-sharp sources, asmdefs, and unique Unity GUIDs
+        run: python3 tools/forja-oscura/verify-production.py
+      - name: Confirm exact original kit without adding a duplicate Unity root
         run: |
-          set -euo pipefail
-          test "${GITHUB_REF_NAME}" = "feature/forja-oscura-native-proof-20261107"
-          python3 tools/forja-oscura/reconstruct.py --extract .
-          python3 - <<'PY'
-          from pathlib import Path
-          base=Path('Unity/Assets/EldoriaVisualKit')
-          files=[p for p in base.rglob('*') if p.is_file()]
-          assert len(files)==48, ('unexpected package entry count',len(files))
-          assert len([p for p in files if p.suffix=='.png'])==41
-          assert len([p for p in files if p.suffix in {'.cs','.asmdef'}])==7
-          assert all(p.is_relative_to(base) for p in files)
-          print('FORJA_DEPLOY_EXACT_48_FILES')
-          PY
-      - name: Commit only owned Unity assets as ordinary files
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add --sparse -A Unity/Assets/EldoriaVisualKit
-          git diff --cached --name-only | grep -E '^Unity/Assets/EldoriaVisualKit/'
-          if git diff --cached --quiet; then
-            echo "FORJA_SOURCE_ALREADY_TRACKED"; exit 0
-          fi
-          python3 - <<'PY'
-          import subprocess
-          paths=subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines()
-          assert paths and all(p.startswith('Unity/Assets/EldoriaVisualKit/') for p in paths),paths
-          print('FORJA_PRODUCTION_ASSETS_COMMIT_SCOPE_PASS:',len(paths))
-          PY
-          git commit -m "feat(forja): unpack verified independent Unity sprites and skin sources"
-          git push origin HEAD:refs/heads/feature/forja-oscura-native-proof-20261107
-
-  production-proof:
-    needs: verify
+          test -f Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs
+          test -f Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/Icons/nav_reino.png
+          test ! -e Unity/Assets/EldoriaVisualKit
+          echo 'FORJA_KIT_INTEGRITY_PASS; not a Unity runtime or artistic approval.'
+  check-csharp-syntax:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
             tools/forja-oscura
-            Unity/Assets/EldoriaVisualKit
-          sparse-checkout-cone-mode: false
+            Unity/Assets/Eldoria/VisualKit
           persist-credentials: false
-      - name: Validate every PNG CRC and Unity asmdef
-        run: python3 tools/forja-oscura/verify-production.py
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-      - name: Parse real five C-sharp sources with Roslyn
-        run: dotnet run --project tools/forja-oscura/SyntaxAudit.csproj -c Release -- Unity/Assets/EldoriaVisualKit
-      - name: State exact scope of the result
-        run: echo 'FORJA_SYNTAX_AND_SPRITES_PASS; Unity engine compilation and native UI proof remain pending.'
-
-  relocate-and-meta:
-    needs: verify
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[forja-relocate]')
-    runs-on: ubuntu-latest
-    timeout-minutes: 12
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: feature/forja-oscura-native-proof-20261107
-          sparse-checkout: |
-            tools/forja-oscura
-            Unity/Assets/EldoriaVisualKit
-            Unity/Assets/EldoriaVisualKit.meta
-            Unity/Assets/Eldoria/VisualKit
-            Unity/Assets/Eldoria/VisualKit.meta
-          sparse-checkout-cone-mode: false
-          fetch-depth: 1
-          persist-credentials: true
-      - name: Move only first-party UI assets and assign Unity metadata
-        run: |
-          set -euo pipefail
-          python3 tools/forja-oscura/relocate-assets.py
-          python3 tools/forja-oscura/verify-production.py
-      - name: Commit constrained first-party relocation
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add --sparse -A Unity/Assets/EldoriaVisualKit Unity/Assets/EldoriaVisualKit.meta Unity/Assets/Eldoria/VisualKit Unity/Assets/Eldoria/VisualKit.meta
-          python3 - <<'PY'
-          import subprocess
-          paths=subprocess.check_output(["git","diff","--cached","--name-only"],text=True).splitlines()
-          assert paths and all(p.startswith("Unity/Assets/EldoriaVisualKit/") or
-              p=="Unity/Assets/EldoriaVisualKit.meta" or
-              p.startswith("Unity/Assets/Eldoria/VisualKit/") or
-              p=="Unity/Assets/Eldoria/VisualKit.meta" for p in paths),paths
-          print("FORJA_OWNED_PATHS_RECONCILED",len(paths))
-          PY
-          git commit -m "refactor(forja): move original sprites into Eldoria and preserve Unity metadata"
-          git push origin HEAD:refs/heads/feature/forja-oscura-native-proof-20261107
+      - name: Parse five actual Unity C-sharp sources with Roslyn
+        run: dotnet run --project tools/forja-oscura/SyntaxAudit.csproj -c Release -- Unity/Assets/Eldoria/VisualKit
+      - name: Report exact verification limits
+        run: echo 'FORJA_CSHARP_SYNTAX_PASS; Unity API compile, native A-B captures and visual acceptance still untested.'
