@@ -31,6 +31,9 @@ def check_and_create(folder):
     regions={m.get("resolution"):m for m in report.get("uiRegionDifferences",[])}
     if len(metrics)!=4 or len(regions)!=4:
         raise ValueError("Unity evidence lacks four actual click-target and UI region measurements")
+    legibility={m.get("resolution"):m for m in report.get("nativeReadability",[])}
+    if len(legibility)!=4:
+        raise ValueError("Unity evidence lacks font-pixel and clipping checks in four orientations")
     for w,h in RESOLUTIONS:
         key=f"{w}x{h}"
         measure=metrics.get(key, {})
@@ -41,6 +44,11 @@ def check_and_create(folder):
             raise ValueError(f"Native touch area below 44px at {key}")
         if diff.get("navigationChanged",0)<40 or diff.get("headerChanged",0)<40:
             raise ValueError(f"Missing visible HUD change in a real native capture at {key}")
+        text=legibility.get(key,{})
+        if not text.get("navigationLabelsFit") or not text.get("resourceValuesFit"):
+            raise ValueError(f"Mobile HUD has a clipped caption or numeric resource at {key}")
+        if text.get("minNavigationGlyphPx",0)<12 or text.get("minResourceGlyphPx",0)<13:
+            raise ValueError(f"Mobile HUD text below native 12px/13px minimum at {key}")
     artifacts={x["name"]:x.get("sha256") for x in report.get("artifacts",[])}
     if len(artifacts)!=8:
         raise ValueError("Missing native image hashes, cannot verify provenance")
@@ -129,6 +137,9 @@ def selftest():
                 "dataAfter":"wood=500|stone=300","artApproved":False,"artifacts":artifacts,
                 "nativeTouchTargets":[{"resolution":f"{w}x{h}","minWidthPx":50,
                     "minHeightPx":48,"hasFiveVisibleActions":True} for w,h in RESOLUTIONS],
+                "nativeReadability":[{"resolution":f"{w}x{h}",
+                    "minNavigationGlyphPx":13.2,"minResourceGlyphPx":14.1,
+                    "navigationLabelsFit":True,"resourceValuesFit":True} for w,h in RESOLUTIONS],
                 "uiRegionDifferences":[{"resolution":f"{w}x{h}",
                     "navigationChanged":500,"headerChanged":450} for w,h in RESOLUTIONS]}
         (path/"ForjaNativeEvidence.json").write_text(json.dumps(report))
@@ -150,7 +161,13 @@ def selftest():
         try:check_and_create(path)
         except ValueError:pass
         else:raise RuntimeError("Validator accepted inaccessible tap target")
-        print("FORJA_OFFLINE_VIEWER_SELFTEST_PASS; rejects corrupt PNG, altered real data and small buttons; synthetic test data discarded")
+        report["nativeTouchTargets"][0]["minWidthPx"]=52
+        report["nativeReadability"][0]["minNavigationGlyphPx"]=7.5
+        (path/"ForjaNativeEvidence.json").write_text(json.dumps(report))
+        try:check_and_create(path)
+        except ValueError:pass
+        else:raise RuntimeError("Validator accepted unreadable navigation text")
+        print("FORJA_OFFLINE_VIEWER_SELFTEST_PASS; rejects corrupt PNG, changed data, small buttons and illegible native text; synthetic fixtures discarded")
 
 if __name__=="__main__":
     p=argparse.ArgumentParser()
