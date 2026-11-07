@@ -56,7 +56,7 @@ jobs:
     needs: owner-preflight
     if: needs.owner-preflight.outputs.authorized == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 65
+    timeout-minutes: 150
     steps:
       - name: Recover already installed GitHub Desktop Git before ANY Windows checkout
         shell: powershell
@@ -84,61 +84,65 @@ jobs:
           run-id: 42382183072
           github-token: ${{ github.token }}
           path: forja-kit-source
-      - name: Reuse certified existing main Unity checkout and apply only Forja files
+      # Both earlier native runs failed before Unity: Git was not available
+      # on the Windows PATH. The first checkout used a 27GB REST archive;
+      # the next one removed the reusable folder and left no .git checkout.
+      # Use isolated, verified MinGit; never modify the runner global config.
+      - name: Prepare verified Git for Windows (no REST archive fallback)
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $paths=@(
+              'C:\Program Files\Git\cmd\git.exe',
+              'C:\Program Files (x86)\Git\cmd\git.exe',
+              'C:\Git\cmd\git.exe',
+              (Join-Path $env:LOCALAPPDATA 'Programs\Git\cmd\git.exe')
+            )
+            foreach($p in $paths){if(Test-Path $p){$git=Get-Item $p;break}}
+          }
+          if(-not $git){
+            $headers=@{'User-Agent'='Eldoria-Forja-Native';'Accept'='application/vnd.github+json'}
+            $url='https://api.github.com/repos/git-for-windows/git/releases/tags/v2.56.0.windows.4'
+            $rel=Invoke-RestMethod -Uri $url -Headers $headers
+            $asset=@($rel.assets | Where-Object { $_.name -eq 'MinGit-2.56.0.4-64-bit.zip' }) | Select-Object -First 1
+            if(-not $asset){throw 'Official pinned MinGit asset unavailable'}
+            if(([string]$asset.digest) -notmatch '^sha256:([0-9a-fA-F]{64})$'){throw 'Official release has no verifiable SHA256 digest'}
+            $expected=$Matches[1].ToLowerInvariant()
+            $zip=Join-Path $env:RUNNER_TEMP 'forja-mingit-2.56.0.4.zip'
+            $dir=Join-Path $env:RUNNER_TEMP 'forja-mingit-2.56.0.4'
+            Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $zip -UseBasicParsing
+            if((Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw 'MinGit ZIP SHA256 does not match official release digest'}
+            New-Item -ItemType Directory -Force $dir | Out-Null
+            Expand-Archive -LiteralPath $zip -DestinationPath $dir -Force
+            $git=Get-Item (Join-Path $dir 'cmd\git.exe')
+          }
+          $dir=Split-Path $git.FullName -Parent
+          & $git.FullName --version
+          if($LASTEXITCODE -ne 0){throw 'Git CLI unusable'}
+          Add-Content -Path $env:GITHUB_PATH -Value $dir
+          Write-Host 'FORJA_GIT_CLI_READY; real Git sparse checkout can now run'
+      - uses: actions/checkout@v4
+        with:
+          path: valoria-layered-source
+          clean: false
+          persist-credentials: false
+          sparse-checkout: |
+            Unity
+            tools/forja-oscura
+          sparse-checkout-cone-mode: true
+      - name: Confirm checkout is precisely the Forja workflow commit
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $base=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
-          $pkg=Join-Path $env:GITHUB_WORKSPACE 'forja-kit-source'
-          Write-Host "FORJA_RUNNER_CACHE_INVENTORY_ROOT $env:GITHUB_WORKSPACE"
-          foreach($candidate in @(Get-ChildItem -Path $env:GITHUB_WORKSPACE -Directory -Force)){
-            $hasProject=Test-Path (Join-Path $candidate.FullName 'Unity/ProjectSettings/ProjectVersion.txt')
-            $hasGit=Test-Path (Join-Path $candidate.FullName '.git')
-            $candidateHead='none'
-            if($hasGit){
-              try { $candidateHead=((& git -C $candidate.FullName rev-parse HEAD 2>$null | Select-Object -First 1).Trim()) }
-              catch { $candidateHead='unreadable' }
-            }
-            Write-Host "FORJA_CACHE_DIR name=$($candidate.Name) unity=$hasProject git=$hasGit head=$candidateHead"
-          }
-          if(-not(Test-Path (Join-Path $base '.git'))){throw 'Existing certified cached Unity checkout absent; see FORJA_CACHE_DIR listing above'}
           $head=((& git -C $base rev-parse HEAD | Select-Object -First 1).Trim())
-          $allowed=@('9efc0fefd447585f6867ab03ce2c41084b32adf2',
-                     'd57aa48e7f37f30e20baf5908ff346e013410365')
-          if($head -notin $allowed){throw "Cached project source SHA differs: $head; no unverified base"}
-          $src=Join-Path $pkg 'Unity/Assets/Eldoria/VisualKit'
-          $dst=Join-Path $base 'Unity/Assets/Eldoria/VisualKit'
-          if(-not(Test-Path (Join-Path $src 'Editor/ForjaOscuraNativeEvidence.cs'))){throw 'Trusted Forja source not in CI package'}
-          if(-not(Test-Path (Join-Path $base 'Unity/ProjectSettings/ProjectVersion.txt'))){throw 'Cached Unity project incomplete'}
-          New-Item -ItemType Directory -Force -Path $dst | Out-Null
-          Get-ChildItem -Force $src | ForEach-Object {
-            Copy-Item -LiteralPath $_.FullName -Destination $dst -Recurse -Force
-          }
-          Copy-Item -LiteralPath (Join-Path $pkg 'Unity/Assets/Eldoria/VisualKit.meta') -Destination (Join-Path $base 'Unity/Assets/Eldoria/VisualKit.meta') -Force
-          $toolsDst=Join-Path $base 'tools/forja-oscura'
-          New-Item -ItemType Directory -Force -Path $toolsDst | Out-Null
-          Get-ChildItem -Force (Join-Path $pkg 'tools/forja-oscura') | ForEach-Object {
-            Copy-Item -LiteralPath $_.FullName -Destination $toolsDst -Recurse -Force
-          }
-          $blobs=@{
-            'Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs'='f35ad7b3d19b16b8642d539b647819590c8fb551'
-            'Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs'='8bfb9d4dbc0f0f60d9605f25eb07eeaf6087e196'
-            'Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/Surfaces/panel_dark.png'='4a68950420cc4d29f3350f33591f30a968e61ea6'
-          }
-          foreach($path in $blobs.Keys){
-            $full=Join-Path $base $path
-            $actual=((& git hash-object $full | Select-Object -First 1).Trim())
-            if($actual -ne $blobs[$path]){throw "Forja exact-file SHA mismatch: $path actual=$actual"}
-          }
-          Write-Host "FORJA_CACHED_MAIN_EXACT_SOURCE_AND_THREE_BLOB_IDS_PASS source=$head kit=64b7933"
-
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-          path: forja-live-main
-          sparse-checkout: pipeline/active-workstreams.json
-          sparse-checkout-cone-mode: false
-          persist-credentials: false
+          if($head -ne $env:GITHUB_SHA){throw "Forja source SHA mismatch: $head expected=$env:GITHUB_SHA"}
+          if(-not(Test-Path (Join-Path $base 'Unity/ProjectSettings/ProjectVersion.txt'))){throw 'Real Unity project not present'}
+          if(-not(Test-Path (Join-Path $base 'Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs'))){throw 'Forja native entry missing'}
+          if(-not(Test-Path (Join-Path $env:GITHUB_WORKSPACE 'forja-kit-source/Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs'))){throw 'Verified art artifact missing'}
+          Write-Host "FORJA_EXACT_COMMIT_CHECKOUT_PASS head=$head"
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -146,9 +150,15 @@ jobs:
         shell: powershell
         env:
           LEASE_REVISION: ${{ needs.owner-preflight.outputs.revision }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
-          $r=Get-Content 'forja-live-main/pipeline/active-workstreams.json' -Raw | ConvertFrom-Json
+          $url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $hdr=@{'Accept'='application/vnd.github+json';'User-Agent'='Eldoria-Forja-Native';'Authorization'="Bearer $env:GH_TOKEN"}
+          $raw=Invoke-RestMethod -Uri $url -Headers $hdr
+          if(-not $raw.content){throw 'Cannot read live canonical registry from main'}
+          $json=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw.content -replace '\\s','')))
+          $r=$json | ConvertFrom-Json
           $o=@($r.active | Where-Object { $_.resources -contains 'windows-runner-heavy' -and $_.ownership_state -eq 'claimed' })
           if($o.Count -ne 1 -or $o[0].id -ne 'eldoria-forja-oscura-visual-proof-20261107' -or
              $o[0].owner -ne 'chatgpt-forja-oscura-visual-proof-20261107' -or
