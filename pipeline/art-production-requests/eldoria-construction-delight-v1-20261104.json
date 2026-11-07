@@ -6,9 +6,9 @@
   "status": "ACTIVE",
   "asset_or_sector": "Valoria: activity while constructing and short antique-gold completion reveal on genuine building models",
   "profile": "environment_composition",
-  "visual_gate_state": "SOURCE_CANDIDATE_UNVERIFIED",
+  "visual_gate_state": "SOURCE_V9_HIGH_JOINERY_NATIVE_CAPTURE_PENDING",
   "ai_authorship_policy": "required",
-  "diagnosis": "The current game already has persisted real building tasks and minimal flat ambient FX. Owner asks for premium-feeling movement and gratifying finish while preserving approved building cartouches. Add read-only world-space dust/chips/small gold halo with native Unity particles and no model deformation, no cheap flash, no fake progress, no extra HUD.",
+  "diagnosis": "V8 run 42189025597 PASS 72 authentic Unity PNGs, original saved state preserved; visual still inferior because the real MeshRenderer selection weighted foreground proximity far more than worksite elevation, so both hammer blows and dust remain grass-level next to decorative logs. V9 changes selection to upper/middle timber-stone joinery (>=36% of genuine worksite height) and native QA checks contact height >=33%; prevents this actual failure instead of blindly increasing smoke volume. No ART_APPROVED.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -17,20 +17,21 @@
   },
   "capabilities": {
     "existing_qualified_donor_assets": true,
-    "unity_native_particle_system": true,
-    "existing_3d_assets_modified": false
+    "unity_native_particle_system": false,
+    "existing_3d_assets_modified": false,
+    "real_mesh_reuse": true
   },
   "artist": {
-    "design": "Artist-directed warm stone/wood/antique gold; subtle persistent loop, 1.7s finish reveal, sparse particles and rings",
-    "source": "Unity/Assets/Eldoria/ConstructionDelight/ValoriaConstructionDelightV1.cs",
+    "design": "Camera-facing physical hammer heads strike actual elevated wood/stone joint (not dirt, not GUI); irregular contact dust follows that point; actual staged foundation-roof assembly and restrained URP glow remain. Native scene camera both orientations, no synthetic frames.",
+    "source": "Unity/Assets/Eldoria/ConstructionDelight/ConstructionDelightHammerWork.cs + ValoriaConstructionDelightV1.cs + ConstructionDelightStageAssembly.cs + ConstructionDelightArchitecturalReveal.cs",
     "reference": "Approved Valoria cinematic reference; user 2026-11-04"
   },
   "validation": {
-    "source_gate": "No spend, new meshes, gameplay timers or save fields. Preserve all original building/level authorities and release all GPU buffers on scene unload.",
-    "final_gate": "Exact-head real Unity, 390x844/844x390 moving A/B, sawmill/barracks/Bastion and c3 upgrade, reload, save identity, WebGL and Android/URP material and overdraw, no cartoon-looking overlay. Owner subjective art evaluation before ART_APPROVED."
+    "source_gate": "Run linked 36 state assertions and 6 Roslyn syntax files, plus V9 source checks ensuring impact height and actual renderer bounds; not a replacement for Unity semantic compile.",
+    "final_gate": "72 new exact V9 native Unity images at same camera, two strokes >=33% height and 12+ local dense dust, Save+Reload no FX, staged roof and non-magenta. Compare V8/V9 high-definition portrait and landscape and classify art separately from technical PASS."
   },
   "art_approved": false,
   "physical_mobile_tested": false,
   "budget_eur": 0,
-  "notes": "Independent PR #152 from active PR #136 building cartouche work; new isolated presentation-only folder and read-only state observer. Workstream claimed, no Windows runner reservation. A source commit is not a rendered Unity success."
+  "notes": "Do not consume Windows until active owner of other workstream releases CAS; existing V8 Windows lease released after run 42189025597. Never merge or publish without genuine visual approval."
 }

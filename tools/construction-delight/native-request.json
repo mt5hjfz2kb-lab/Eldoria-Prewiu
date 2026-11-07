@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "request_id": "eldoria-construction-delight-native-ab-20261104",
+  "workstream_id": "eldoria-construction-delight-v1-20261104",
+  "source_head_before_request": "cfcaabd0809fc53bc511f53d2e0ea3d1e47dc62b",
+  "ownership_revision": 25,
+  "mode": "V9_SOURCE_ONLY_HIGH_RENDERER_JOINERY_ANCHORS",
+  "expected_images": 72,
+  "formats": [
+    "844x390",
+    "390x844"
+  ],
+  "shots": [
+    "city overview",
+    "focused building idle",
+    "true sawmill construction",
+    "in-progress A/B",
+    "true level-up completion A/B",
+    "six time-resolved finishing frames",
+    "finished building and saved-state reload",
+    "two actual hammer head strikes and dense dust 0.12 seconds later"
+  ],
+  "profile": "VALORIA_GAMEPLAY_PROBE_ONLY",
+  "budget_eur": 0,
+  "art_approved": false,
+  "attempt": 23,
+  "expected_source_after_fix": "65c4baacfd27d5a7e593c502cb66fcf7dfa2c9f2",
+  "corrections": [
+    "latest certified main & metadata merged into candidate",
+    "fixed infinite recursion in VisibleBounds",
+    "sawmill true hotspot and scaffold bounds",
+    "native visual gate captures all 26 frames even when visually weak",
+    "Roslyn guard on scaffold bounds recursion"
+  ],
+  "previous_attempt": {
+    "run_id": 41746271850,
+    "source_sha": "9f7e46db29ad04138c2d3a071dbb6cc8ddf59f36",
+    "status": "running_on_old_revision",
+    "reason": "known deterministic QA Transform.Find slash path issue; leave running until safe completion"
+  },
+  "corrected_source_head": "1ed54ba1b94ea5af1d38df4bc29e0fde93caa5ac",
+  "pivot": "Missing Unity built-in com.unity.modules.particlesystem; render low-cost custom meshes with 7 batched sprite systems without modifying PR136-owned Packages/manifest.json",
+  "previous_runs": [
+    {
+      "run": 41746271850,
+      "status": "failed_compile_missing_particle_module"
+    },
+    {
+      "run": 41746717881,
+      "status": "failed_compile_missing_particle_module"
+    }
+  ],
+  "validation": "36 domain assertions, 5 Unity C# source files Roslyn syntax, authentic construction mesh staging, visible flag restoration, no second timer/World4X leak",
+  "editor_launch": false,
+  "windows_runner_requested": false,
+  "test_project": "tools/construction-delight/DomainProbe.csproj",
+  "asserts_production_source": "Unity/Assets/Eldoria/Scripts/Presentation/ConstructionDelightState.cs",
+  "last_source_qa": "DomainProbe.cs built against 8.0 SDK with exact Unity state source linked in",
+  "source_compilation": [
+    "tools/construction-delight/DomainProbe.csproj",
+    "tools/construction-delight/SyntaxProbe.csproj"
+  ],
+  "reason": "New first work placement and first two completion transition frames in both 844x390 and 390x844; no changes to real gateway timing",
+  "source_project_repair": "d6e623ec824131d543c2543bf8358774e5ea1757",
+  "native_unity_editor_not_called": true,
+  "roslyn_runtime_fix": "0026a2bd770da680715d6733bee1c87e5af50a0c",
+  "source_domain_attempt": 2,
+  "purpose": "Verify current authoritative completion receipt, no World4X bleed, URP real renderer and localized camera proof syntax",
+  "native_editor_invocation": true,
+  "window_runner_reservation": true,
+  "real_visual_QA_pending": true,
+  "license_evidence": {
+    "auth_run": 41807267627,
+    "unity_editor_compilation_run": 41804846844,
+    "local_named_user_license_valid_until": "2026-12-04T09:21:58Z"
+  },
+  "physical_mobile_tested": false,
+  "no_reboot": true,
+  "no_interference": true,
+  "root_cause_last_compile": "Compilation CS0234 Application.dataPath resolves to Eldoria.Application namespace. Fixed via UnityEngine.Application.dataPath.",
+  "previous_native_run": 42121001211,
+  "source_change_sha": "23c5b408846978dbb26b6d2f7a913a80c38e99ea",
+  "previous_error": "Full Unity source compiled and entered Valoria PlayMode, QA expected old particle root while runtime supplies ConstructionDelightOwnedSprites",
+  "fix_sha": "036fa018e65c60c5db67e9ae6bd5a41eab4add06",
+  "offline_validation_attempt": 28,
+  "no_windows_resource_use": true,
+  "scope": "ConstructionDelight mesh FX real-scene hotspot, active scaffolding, native A/B camera focus",
+  "recent_changes": [
+    "Integrated WorldHotspot fallback for site bounds",
+    "Fallback to active authentic construction scaffolds and parcel ground",
+    "QA refreshes real Presenter state after direct command",
+    "QA uses real city host camera focus"
+  ],
+  "windows_runner_reserved_by": "eldoria-construction-delight-v1-20261104",
+  "source_qa_change": "Fixed VisibleBounds infinite recursion from previous scaffold fallback and added semantic Roslyn nonrecursive/visible-renderer guard",
+  "native_qa_pending": true,
+  "current_main_parent": "63376181bcdec64aef4433e23c7aecb1912cfbe1",
+  "last_native_run": 41868962109,
+  "last_native_artifact": 13343180739,
+  "visual_rejection": {
+    "work_changes_landscape": 0,
+    "work_changes_portrait": 2,
+    "finish_changes_landscape": 2234,
+    "finish_changes_portrait": 10420,
+    "reason": "work invisible; roof hologram ring not tasteful"
+  },
+  "implementation_revision": "e351ecce148b4260b72f261caedf2bab1925b4fe",
+  "refinement": [
+    "work dust relocated to actual foundation-facing perimeter",
+    "motes expanded to legible mobile size",
+    "thin sand ripple lies flat on foundation instead of floating on roof",
+    "brief warm eave/post glints anchored to geometry",
+    "fade entirely after completion"
+  ],
+  "review_scope": "Compare true native Unity work, finish, six temporal frames; visual pass requires materially visible construction dust and tasteful foundation/warm facade reveal",
+  "confirmed_source_QA_run": 41868551397,
+  "last_native_result": {
+    "status": "NATIVE_PASS",
+    "images": 26,
+    "work_changed_landscape": 360,
+    "work_changed_portrait": 1644,
+    "finish_changed_landscape": 1485,
+    "finish_changed_portrait": 6818,
+    "save_unchanged": true
+  },
+  "refinement_commit": "c7da536fd9f8af0548ce39f5f88ba1b8ef116a5a",
+  "latest_source_qa": 41870075541,
+  "visual_goal": "Small real mesh surface strikes; noncircular fragmented contact dust; localized restrained warm URP finish in genuine Unity landscape/portrait",
+  "current_source": "3737017cd1ae38268fade246b5d69494b3f00b49",
+  "native_pass_evidence": {
+    "run": 41870250590,
+    "images": 26,
+    "save": true
+  },
+  "targeted_fix": "Capture impact instant and dust expansion at two actual hammer events instead of relying on arbitrary visual frame sampling; original 64 A/B plus 8 native PNGs.",
+  "previous_native_success": {
+    "run": 41868962109,
+    "sha": "c7963a62b6a5fa2aa684ee057091dc10643aeaed",
+    "images": 26,
+    "issue": "only 0.447% landscape change at finish; gold at ground, no roof highlight, visual 5.5/10"
+  },
+  "latest_feature": "Non-invasive temporary MaterialPropertyBlock base color warmth applied to built stone and timber renderers for 1.45 sec; A/B toggles this true material sheen, shader and renderers untouched",
+  "must_check": [
+    "real model material layers > 0",
+    "actual geometry building lit",
+    "A/B on real city camera",
+    "6 time-resolved finish frames",
+    "no change to local saved gateway"
+  ],
+  "latest_source_qa_run": 41871088213,
+  "root_correction": "Worksite anchored to real visible scaffold / existing model bounds; foundation dust moved to site footprint, no detached grass puffs",
+  "previous_pass_native_run": 41870250590,
+  "visual_state": "Second corrected work/finish candidate. Adds roofline glints/gleam, raises authentic stone/timber brief amber warmth; reject if visual ugly.",
+  "previous_art_candidate_run": 41871246928,
+  "previous_art_result": "PASS 26 true Unity images, 7 material layers but roof still too dark / gold concentrated in yard",
+  "no_gameplay_changes": true,
+  "source_domain_run": 41872333925,
+  "source_domain_result": "passed",
+  "action": "Re-run genuine Unity 6000.3.23f1 after HLSL half-literal fix and pink shader fallback camera QA gate; compare technique A vs B, 64 screenshots and real save",
+  "new_redesign": "Actual mesh-cloned URP HDR vertical architectural sweep; conditional temporary Bloom; shadowless local warm practical light; real scaffold shimmer; cleanup tracked GameObjects; more work motion frames.",
+  "last_approved_visual": "V3 rejected by owner as really bad; no artistic approval",
+  "dispatched_reason": "Exact four-C# structural source validation after mesh cleanup, duty-cycled work shader, 0.87s roof reveal and 34-frame QA",
+  "last_source_fix": "Production root finds genuine Granary/Stoneworks Built/Construction/Ground via Parcel.Bindings; staged and URP shader timing remains 1.68s",
+  "implementation": "Reversible genuine 3D building mesh staging and roof landing; actual Gateway task remains sole source of progress",
+  "technique": "Stage existing sawmill/glb MeshRenderer parts from original saved building progress, physically land authentic roof at completion, preserve source material and renderer enable flags",
+  "target_main_sha": "194ab76fac23463ef60d686da9b81c32fd9e8a95",
+  "source_qa_goal": "Latest PR152 C3 fallback and physical 3D stage, shader, 34 native A/B frame script: Roslyn 5 files and 36 linked domain assertions",
+  "known_issue_fixed": "Work limit .69; finish keeps alreadyBuilt foundation segments and only lands final roof/gable to avoid disappearing building at deadline",
+  "latest_changes": "Preserved real 3D work mesh poses across true Gateway completion, animated remaining roof pieces from last visible positions, guarded visible source restoration.",
+  "quality_gate": "Save canonical, original source meshes restored, no accidental full building reset, roof glow only on physically visible landing parts",
+  "source_qa_updated": "2026-11-05",
+  "source_guarantees": [
+    "Real-stage preview uses real source mesh/material/MPB; no game state writes",
+    "No real task completion implies no art completion",
+    "No stage reset between actual work and roof landing",
+    "Construction roof glow obeys visible staged geometry",
+    "Reload clears preview and restores original source renderers"
+  ],
+  "images_expected_in_future_native_run": 72,
+  "native_capture_expected_images": 72,
+  "technique_comparison": {
+    "A": "URP architectural shader sweep, Bloom, local light and artisan particles without 3D assembly",
+    "B": "Exactly same camera/state/timing/shader/Bloom/particles with authentic 3D staged model assembly",
+    "shared_script": "Unity/Assets/Eldoria/ConstructionDelight/Editor/ConstructionDelightNativeCapture.cs",
+    "capture_images": 24,
+    "baseline_images": 40,
+    "art_approved": false
+  },
+  "visual_variants": [
+    "Architecture sweep/Bloom/particles, no staged geometry",
+    "Same sweep/Bloom/particles, plus staged mesh geometry"
+  ],
+  "final_source_fix": "Editor only A/B proof keeps original renderer flags; synchronized Bloom twin, all observations from same real task",
+  "editor_syntax_checks": [
+    "ValoriaConstructionDelightV1 UNITY_EDITOR",
+    "ConstructionDelightNativeCapture UNITY_EDITOR"
+  ],
+  "expected_techniques": 2,
+  "native_receipt_fields": [
+    "status",
+    "unity_version",
+    "source_sha",
+    "technique_A",
+    "technique_B",
+    "technique_ab_images",
+    "images",
+    "art_approved"
+  ],
+  "native_editor_launch_requested": false,
+  "native_editor_invocation_requested": false,
+  "native_request_at": "2026-11-06T09:17:52.458Z",
+  "main_claim_commit": "70fda65574b0d543eed4b556827836af5cb1e26f",
+  "merged_main_commit": "9d0f3feecd54507220ae9a77a1688372cbeed2d0",
+  "branch_head_before_trigger": "e19014ffcef00fda0ea77436d46fcc7bcc284110",
+  "source_fix_shadermagenta": "HLSL 'half alpha=0h' invalid syntax unexpected token h on D3D11; use 0.0h",
+  "source_fix_visual_gate": "Detect pink Unity error material in genuine camera A/B; do not count shader-fallback pixels as authentic visual improvement",
+  "failed_art_pass_before_fix": {
+    "run": 42075455491,
+    "artifact": 13438197392,
+    "had_64_real_images": true,
+    "framework_status": "NATIVE_PASS",
+    "visual_status": "REJECTED_SHADER_FALLBACK_MAGENTA"
+  },
+  "domain_proof_requested_at": "2026-11-05T17:42:19.481Z",
+  "new_visuals": {
+    "tool": "Two small forged-iron and oak 3D hammers swinging near actual camera-facing scaffold",
+    "dust": "Two additional batched sprite fields, radial dense gray-tan impact plumes bound to real hammer contacts",
+    "reward": "Preserve existing URP shader sweep and Bloom for completion without construction tools leaking into finish"
+  },
+  "expected_native_capture_images": 72,
+  "quality_targets": [
+    "Hammers visibly swing and iron heads contact real scaffold",
+    ">=12 dense dust sprites around actual contact",
+    "At least one impact during work motion",
+    "No hammer/dust after completion or reload",
+    "A/B architectural vs staged preserves same common effects"
+  ],
+  "visual_approval": false,
+  "native_expected_png": 72,
+  "visual_requirements": [
+    "Two lit physical oak/iron hammers swing against actual sawmill scaffolding with at least two contact events",
+    "Dense local gray-tan impacts legible in portrait and landscape",
+    "No work dust/hammer leakage into completion or after save reload",
+    "24 technique A/B and 8 hammer-specific captures included in 72 original URP camera frames",
+    "Keep artifact and log after failed art gate; no fake frames"
+  ],
+  "previous_native_result": "72 real Unity frames verified. 6 hammer hits, but actual visual inspection found tiny hammers and transparent clouds; V6 improves art.",
+  "v6_changes": [
+    "Increase grounded artisan hammer physical scale 0.19 of site width, lighten wood/iron shading",
+    "Use dedicated 64x64 irregular Perlin-feathered cloud alpha texture",
+    "Use 150+110 pooled mesh quads and denser bounded impact bursts",
+    "Keep exact Gateway timer, same URP camera/architecture shader/Bloom, clean final completion"
+  ],
+  "v7_refinement": [
+    "Hammer contacts use top surfaces of enabled authentic scaffold MeshRenderers (not front grass)",
+    "Decrease oak/iron hammer silhouette without losing renderer visibility",
+    "Fragment dust texture with angular lobes and cellular opacity; small localized puffs",
+    "Reduce white-hot architectural glow, Bloom and light; do not modify gameplay, timer or originals",
+    "Native QA requires exactly two true worksite mesh contacts and 72 authentic PNGs"
+  ],
+  "v7_native_gate": "72 real camera PNGs; 4 hammer renderers; exactly 2 worksite-bound mesh anchors; >=12 dense dust sprites; 2 impact/dust time pairs; stages, source restored and LocalGateway save stable",
+  "v8_refinement": {
+    "changes": [
+      "2 hammer heads positioned on near camera-facing real MeshRenderer bounds (.95 projected front)",
+      "small but readable iron/oak hammer scale .155 of worksite width clamp .45-.82",
+      "medium irregular layered dust cap150+110, 0.50-1.10 with opacity .77 and true impact coordinates",
+      "existing restrained V7 warm URP final + genuine staged 3D unchanged"
+    ],
+    "target": "human visual comparison to V6 and V7, portrait and landscape",
+    "art_approved": false
+  },
+  "source_qa_note": "Source QA includes front mesh contact, real tiny hammer shadows, medium irregular impact dust and all authoring files; Unity native conditional skipped while another owner holds Windows.",
+  "v8_native_gate": "72 authentic camera PNGs exactly; two camera-front hammer mesh contacts and 4 visible renderers, 12+ local dust sprites, timed strike+0.12 sec dust, no magenta, stage continuity, true LocalGateway/save reload and zero FX leakage. Do not equate PASS with quality.",
+  "v9_root_cause": "Raise near-side hammer contacts from grass-level foreground logs to real >=36%-height scaffold/stone beams; verified impact sites >=33% height."
+}
