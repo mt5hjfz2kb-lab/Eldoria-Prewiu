@@ -1,1 +1,1 @@
-PR173 remove remaining old blue construction guidance using its existing BuildingLabel button, original callbacks and minimum 44px height. Exact twelve-frame proof.
+Forja: authored amber material and native portrait icon/caption separation. Preserve all prior proof; use owned cache at 10f63181.

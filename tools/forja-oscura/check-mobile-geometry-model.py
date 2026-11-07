@@ -23,7 +23,7 @@ source_contract = {
     ],
     skin: [
         "mobileNavigationButtons[0].rect.width * canvas.scaleFactor < 100f;",
-        "float requiredHeight = Mathf.CeilToInt(44.5f / canvas.scaleFactor);",
+        "float requiredHeight = Mathf.CeilToInt(56f / canvas.scaleFactor);",
         "float buttonHeight = Mathf.Max(74f, requiredHeight);",
         "float contentHeight = buttonHeight * 2f + rowGap;",
         "float contentWidth = Mathf.Max(150f, dock.rect.width - 12f);",
@@ -79,11 +79,11 @@ def geometry(width: int, height: int) -> dict:
         rows = 2
         dock_width = min(available, max(initial_width * 5 + gap * 4 + 12, available * .9))
         cell_width = max(60, (max(150, dock_width - 12) - 2 * 4) / 3)
-        cell_height = max(74, math.ceil(44.5 / scale))
+        cell_height = max(74, math.ceil(56 / scale))
     elif portrait and rows > 1 and baseline_height * scale < 44.5:
         columns = initial_columns
         cell_width = initial_width
-        cell_height = max(74, math.ceil(44.5 / scale))
+        cell_height = max(74, math.ceil(56 / scale))
     else:
         columns = initial_columns
         cell_width = initial_width

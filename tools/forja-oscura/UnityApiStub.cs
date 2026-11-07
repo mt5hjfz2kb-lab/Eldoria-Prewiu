@@ -79,7 +79,10 @@ namespace UnityEngine.UI {
     public enum Type { Simple, Sliced }
   }
   public struct SpriteState { public Sprite highlightedSprite,pressedSprite,selectedSprite,disabledSprite; }
-  public struct ColorBlock {}
+  public struct ColorBlock {
+    public Color normalColor,highlightedColor,pressedColor,selectedColor,disabledColor;
+    public static ColorBlock defaultColorBlock => new ColorBlock();
+  }
   public class Selectable : Behaviour {
     public enum Transition { None,ColorTint,SpriteSwap }
     public Transition transition; public ColorBlock colors; public SpriteState spriteState; public bool interactable;

@@ -279,8 +279,8 @@ jobs:
           set -euo pipefail
           d=Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura
           test "$(find "$d/Icons" -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 20
-          test "$(find "$d/Surfaces" -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 22
-          echo "FORJA_42_REAL_SPRITES_AVAILABLE_NOT_NATIVE_CAPTURE"
+          test "$(find "$d/Surfaces" -maxdepth 1 -type f -name '*.png' | wc -l)" -eq 23
+          echo "FORJA_43_REAL_SPRITES_AVAILABLE_NOT_NATIVE_CAPTURE"
       - name: Package complete owned visual kit for emergency incremental Unity checkout
         uses: actions/upload-artifact@v4
         with:

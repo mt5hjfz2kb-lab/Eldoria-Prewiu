@@ -95,6 +95,7 @@ namespace UnityEditor {
   public enum TextureImporterNPOTScale { None }
   public enum TextureImporterCompression { Uncompressed }
   public class TextureImporter:AssetImporter {
+    public int maxTextureSize;
     public TextureImporterType textureType;
     public SpriteImportMode spriteImportMode;
     public TextureImporterAlphaSource alphaSource;

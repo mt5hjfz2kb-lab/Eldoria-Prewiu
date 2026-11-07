@@ -112,6 +112,7 @@ namespace Eldoria.VisualKit
             // The retained original plate stays in the kit for provenance.
             // This authored raster keeps its corner metalwork inside fixed slices.
             if (group == "Surfaces" && name == "panel_dark") name = "panel_dark_painted";
+            if (group == "Surfaces" && name == "button_primary_normal") name = "button_amber_painted";
             string key = "ForjaOscura/" + group + "/" + name;
             if (!spriteCache.TryGetValue(key, out var result))
             {
@@ -242,12 +243,34 @@ namespace Eldoria.VisualKit
                 selectedSprite = Sprite("Surfaces", prefix + "normal"),
                 disabledSprite = Sprite("Surfaces", prefix + "disabled")
             };
+            if (elementName.Contains("medallion"))
+            {
+                // The settings button must remain circular on focus/press;
+                // rectangular secondary states visibly changed its silhouette.
+                states.highlightedSprite = Sprite("Surfaces", "medallion_selected");
+                states.pressedSprite = states.highlightedSprite;
+                states.selectedSprite = sprite;
+                states.disabledSprite = sprite;
+            }
             // All referenced states are existing, imported PNGs. No new input
             // handler: the original RoyalButton and its onClick delegates survive.
             if (states.highlightedSprite && states.pressedSprite && states.disabledSprite)
             {
                 button.transition = Selectable.Transition.SpriteSwap;
                 button.spriteState = states;
+            }
+            if (primary)
+            {
+                // Preserve the authored material in every state rather than
+                // swapping back to the obsolete flat orange panel on hover.
+                var colors = ColorBlock.defaultColorBlock;
+                colors.normalColor = Color.white;
+                colors.highlightedColor = new Color(1f, .96f, .85f, 1f);
+                colors.pressedColor = new Color(.72f, .65f, .54f, 1f);
+                colors.selectedColor = Color.white;
+                colors.disabledColor = new Color(.40f, .40f, .40f, .85f);
+                button.colors = colors;
+                button.transition = Selectable.Transition.ColorTint;
             }
             // Button continues to receive pointer events through its own image child.
             // Existing onClick handlers remain unchanged and are never copied.
@@ -486,18 +509,16 @@ namespace Eldoria.VisualKit
                 maxY = Mathf.Max(maxY, rect.anchoredPosition.y);
             }
             bool twoRows = maxY - minY > 3f;
-            float requiredHeight = Mathf.CeilToInt(44.5f / canvas.scaleFactor);
+            float requiredHeight = Mathf.CeilToInt(56f / canvas.scaleFactor);
             bool compactFiveColumns = !twoRows &&
                 mobileNavigationButtons[0].rect.width * canvas.scaleFactor < 100f;
             if (!compactFiveColumns && !twoRows) return;
 
             const float columnGap = 4f;
             const float rowGap = 3f;
-            float originalHeight = mobileNavigationButtons[0].rect.height;
             float buttonHeight = Mathf.Max(74f, requiredHeight);
-            // Source already chose two rows: only extend when its 74-logical
-            // unit buttons are too short on a low-density offscreen capture.
-            if (twoRows && originalHeight >= requiredHeight) return;
+            // Always reapply icon/caption slots: V2 rewrites them each frame,
+            // even when the original two-row buttons already meet touch size.
             float cellWidth;
             if (compactFiveColumns)
             {
@@ -533,14 +554,15 @@ namespace Eldoria.VisualKit
                 if (rect.childCount > 0 && rect.GetChild(0) is RectTransform medal)
                 {
                     RememberNavigationGeometry(medal);
-                    // 60x60 fits the reflowed 92-unit touch cell without
-                    // covering the caption (both remain in the real cell).
-                    medal.sizeDelta = new Vector2(60f, 60f);
-                    medal.anchoredPosition = new Vector2(0f, 19f);
+                    float medalSize = 28f / canvas.scaleFactor;
+                    medal.sizeDelta = new Vector2(medalSize, medalSize);
+                    medal.anchoredPosition = new Vector2(0f,
+                        buttonHeight * .5f - 19f / canvas.scaleFactor);
                     if (medal.childCount > 0 && medal.GetChild(0) is RectTransform glyph)
                     {
                         RememberNavigationGeometry(glyph);
-                        glyph.sizeDelta = new Vector2(48f, 48f);
+                        float glyphSize = 24f / canvas.scaleFactor;
+                        glyph.sizeDelta = new Vector2(glyphSize, glyphSize);
                     }
                 }
                 if (item.Label)
@@ -548,8 +570,9 @@ namespace Eldoria.VisualKit
                     var caption = item.Label.rectTransform;
                     RememberNavigationGeometry(caption);
                     caption.sizeDelta = new Vector2(cellWidth - 4f,
-                        Mathf.Max(caption.rect.height, (12f + 4f) / canvas.scaleFactor));
-                    caption.anchoredPosition = new Vector2(0f, -buttonHeight * .32f);
+                        18f / canvas.scaleFactor);
+                    caption.anchoredPosition = new Vector2(0f,
+                        -buttonHeight * .5f + 13f / canvas.scaleFactor);
                 }
                 index++;
             }
@@ -837,6 +860,8 @@ namespace Eldoria.VisualKit
                             var realmSurface = ImageChild(hud.Realm.transform,
                                 "Forja / identity plate", Sprite("Surfaces", "panel_dark"));
                             if (realmSurface) realmSurface.transform.SetAsFirstSibling();
+                            var livery = ImmediateChild(hud.Realm.transform, "V3 / subdued Valoria livery");
+                            if (livery) HideGraphicsByTypeName(livery, "RoyalGoldV2FrameGraphic");
                             var crest=ImmediateChild(hud.Realm.transform,"Valoria crest");
                             if(crest)
                             {
@@ -964,7 +989,7 @@ namespace Eldoria.VisualKit
                             // (this skin has a later execution order).
                             if (item.Button.targetGraphic != graphic)
                                 item.Button.targetGraphic = graphic;
-                            var target = Sprite("Surfaces", chosen ? "nav_tile_selected" : "panel_dark");
+                            var target = Sprite("Surfaces", chosen ? "button_amber_painted" : "panel_dark");
                             if (target && graphic.sprite != target) graphic.sprite = target;
                             graphic.color = item.Button.interactable ? Color.white : new Color(.55f,.55f,.55f,.85f);
                             var r = (RectTransform)back;

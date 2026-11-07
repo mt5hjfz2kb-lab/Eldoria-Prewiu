@@ -214,6 +214,22 @@ namespace Eldoria.VisualKit.Editor
                 Vector2 bottomRight = RectTransformUtility.WorldToScreenPoint(nativeCamera, corners[3]);
                 float pixelW = Vector2.Distance(bottomLeft, bottomRight);
                 float pixelH = Vector2.Distance(bottomLeft, topLeft);
+                if (height > width && item.Label && rect.childCount > 0)
+                {
+                    var medal = rect.GetChild(0) as RectTransform;
+                    var glyph = medal && medal.childCount > 0 ? medal.GetChild(0) as RectTransform : null;
+                    var illustration = glyph ? glyph.Find("Forja / navigation icon") as RectTransform : null;
+                    Need(illustration, "Missing live navigation illustration");
+                    var iconCorners = new Vector3[4];
+                    var labelCorners = new Vector3[4];
+                    illustration.GetWorldCorners(iconCorners);
+                    item.Label.rectTransform.GetWorldCorners(labelCorners);
+                    float iconBottom = RectTransformUtility.WorldToScreenPoint(nativeCamera, iconCorners[0]).y;
+                    float labelTop = RectTransformUtility.WorldToScreenPoint(nativeCamera, labelCorners[1]).y;
+                    Need(iconBottom >= labelTop, "Navigation illustration overlaps its caption: " + item.Section);
+                    Need(RectTransformUtility.WorldToScreenPoint(nativeCamera,labelCorners[0]).y >= bottomLeft.y,
+                        "Navigation caption escapes its live button: " + item.Section);
+                }
                 if (pixelW < minW || pixelH < minH) worst = item.Section.ToString();
                 minW = Mathf.Min(minW, pixelW);
                 minH = Mathf.Min(minH, pixelH);

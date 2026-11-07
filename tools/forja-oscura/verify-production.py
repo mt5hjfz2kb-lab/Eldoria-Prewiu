@@ -8,7 +8,7 @@ if not ui.exists():ui=root/"Unity/Assets/EldoriaVisualKit"
 surfaces=sorted((ui/"Resources/ForjaOscura/Surfaces").glob("*.png"))
 icons=sorted((ui/"Resources/ForjaOscura/Icons").glob("*.png"))
 code=sorted(ui.rglob("*.cs")); asmdef=sorted(ui.rglob("*.asmdef"))
-assert len(surfaces)==22, ("surfaces",len(surfaces))
+assert len(surfaces)==23, ("surfaces",len(surfaces))
 assert len(icons)==20, ("icons",len(icons))
 assert len(code)==5, ("csharp",len(code))
 assert len(asmdef)==2, ("asmdefs",len(asmdef))
@@ -41,10 +41,10 @@ names={json.loads(p.read_text())["name"]:json.loads(p.read_text()) for p in asmd
 if ui.name == "VisualKit":
     metas=list(ui.rglob("*.meta"))
     rootmeta=Path(str(ui)+".meta")
-    assert len(metas)==55 and rootmeta.is_file(), ("FORJA_META_MISSING",len(metas))
+    assert len(metas)==56 and rootmeta.is_file(), ("FORJA_META_MISSING",len(metas))
     import re
     guids=[re.search(r"(?m)^guid: ([0-9a-f]{32})$",m.read_text()).group(1) for m in metas+[rootmeta]]
-    assert len(set(guids))==56,"FORJA_META_DUPLICATE_GUID"
+    assert len(set(guids))==57,"FORJA_META_DUPLICATE_GUID"
 assert "Eldoria.ForjaOscura.Runtime" in names and "Eldoria.ForjaOscura.Editor" in names
 assert names["Eldoria.ForjaOscura.Editor"]["includePlatforms"]==["Editor"]
 assert "Eldoria.RoyalGold.UI" in names["Eldoria.ForjaOscura.Runtime"]["references"]
@@ -63,3 +63,5 @@ source=root/"tools/forja-oscura/art-source/panel-dark-painted-candidate.png"
 assert painted.read_bytes()==source.read_bytes(),"Painted production source drift"
 assert hashlib.sha256(painted.read_bytes()).hexdigest()=="31a073bc88213505795b37445983262b80b132d6b2249144abc26a385bef5447","Painted source hash drift"
 print("FORJA_PAINTED_SOURCE_EXACT_PARITY_PASS")
+
+assert hashlib.sha256((ui/"Resources/ForjaOscura/Surfaces/button_amber_painted.png").read_bytes()).hexdigest()=="b49c15d7ad54747f8f1fd9edd5542b0b0f08b572c73991f508b800f39a07dbe5", "Painted amber source drift"

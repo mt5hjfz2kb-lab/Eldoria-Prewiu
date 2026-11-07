@@ -41,7 +41,7 @@ jobs:
           const fs=require('fs');
           const reg=JSON.parse(fs.readFileSync('canonical-main/pipeline/active-workstreams.json'));
           const id='eldoria-forja-oscura-visual-proof-20261107';
-          const own='codex-forja-498cad9fd409';
+          const own='codex-forja-171eb21ef5d3';
           const branch='feature/forja-oscura-native-proof-20261107';
           const owners=reg.active.filter(x=>x.resources?.includes('windows-runner-heavy')&&x.ownership_state==='claimed');
           const w=reg.active.find(x=>x.id===id);
@@ -133,7 +133,7 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Editor occupied before owned-cache reuse'}
           if(-not(Test-Path (Join-Path $base '.git'))){throw 'Verified owned Forja cache missing'}
           $oldHead=((& git -C $base rev-parse HEAD).Trim())
-          if($oldHead -ne '65ef374711125cd93345cc0c58816dcbf8559017'){throw 'Owned source changed; inspect before reusing'}
+          if($oldHead -ne '10f63181f5a05af15a6841bced79524945f942c8'){throw 'Owned source changed; inspect before reusing'}
           $remote=((& git -C $base remote get-url origin).Trim())
           if($remote -ne 'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'){throw 'Unexpected cache origin'}
           & git -C $base diff --binary | Set-Content (Join-Path $env:RUNNER_TEMP 'forja-prior-import-changes.patch')
@@ -203,7 +203,7 @@ jobs:
           $r=$json | ConvertFrom-Json
           $o=@($r.active | Where-Object { $_.resources -contains 'windows-runner-heavy' -and $_.ownership_state -eq 'claimed' })
           if($o.Count -ne 1 -or $o[0].id -ne 'eldoria-forja-oscura-visual-proof-20261107' -or
-             $o[0].owner -ne 'codex-forja-498cad9fd409' -or
+             $o[0].owner -ne 'codex-forja-171eb21ef5d3' -or
              [string]$o[0].ownership_revision -ne $env:LEASE_REVISION){throw 'Forja exclusive lease changed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Shared native editor occupied'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed'}

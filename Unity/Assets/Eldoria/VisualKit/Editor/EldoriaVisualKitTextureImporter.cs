@@ -33,7 +33,13 @@ internal sealed class EldoriaVisualKitTextureImporter : AssetPostprocessor
         // Do not squeeze small navigation buttons until the 9-slice center
         // collapses. Keep mobile min heights from QA table below.
         Vector4 border = new Vector4(0, 0, 0, 0);
-        if (name == "panel_dark_painted")
+        if (name == "button_amber_painted")
+        {
+            ti.spritePixelsPerUnit = 1000;
+            ti.maxTextureSize = 4096;
+            border = new Vector4(240, 160, 240, 160);
+        }
+        else if (name == "panel_dark_painted")
         {
             ti.spritePixelsPerUnit = 600;
             border = new Vector4(144, 144, 144, 144);

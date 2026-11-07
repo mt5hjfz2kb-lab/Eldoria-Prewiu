@@ -27,10 +27,10 @@ internal static class ForjaOscuraSpriteAudit
                 Debug.LogError("[FORJA] Invalid import or border: " + path);
             }
         }
-        if (icons != 20 || surfaces != 22 || invalid > 0)
+        if (icons != 20 || surfaces != 23 || invalid > 0)
             throw new InvalidOperationException("[FORJA] Sprite audit FAIL: icons=" + icons +
-                ", surfaces=" + surfaces + ", invalid=" + invalid + ". Expected 20/22/0.");
-        Debug.Log("[FORJA] Asset import audit PASS: 20 illustrated icons + 22 surfaces (including the painted candidate). " +
+                ", surfaces=" + surfaces + ", invalid=" + invalid + ". Expected 20/23/0.");
+        Debug.Log("[FORJA] Asset import audit PASS: 20 illustrated icons + 23 surfaces (including the painted candidate). " +
             "This verifies technical imports, NOT native visual or player acceptance.");
     }
 }
