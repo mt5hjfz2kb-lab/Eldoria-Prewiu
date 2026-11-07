@@ -252,6 +252,9 @@ namespace Eldoria.VisualKit.Editor
             public string resolution;
             public float minNavigationGlyphPx;
             public float minResourceGlyphPx;
+            public float minResourceIconWidthPx;
+            public float minResourceIconHeightPx;
+            public string smallestResourceIcon;
             public bool navigationLabelsFit;
             public bool resourceValuesFit;
             public string smallestNavigationLabel;
@@ -266,6 +269,8 @@ namespace Eldoria.VisualKit.Editor
                 resolution = width + "x" + height,
                 minNavigationGlyphPx = float.PositiveInfinity,
                 minResourceGlyphPx = float.PositiveInfinity,
+                minResourceIconWidthPx = float.PositiveInfinity,
+                minResourceIconHeightPx = float.PositiveInfinity,
                 navigationLabelsFit = true,
                 resourceValuesFit = true
             };
@@ -301,6 +306,23 @@ namespace Eldoria.VisualKit.Editor
                 var rect = label.rectTransform.rect;
                 m.resourceValuesFit &= label.preferredWidth <= rect.width + 1f &&
                     label.preferredHeight <= rect.height + 1f;
+                string name = label == hud.Resources.Wood ? "res_madera" :
+                    label == hud.Resources.Stone ? "res_piedra" : "res_comida";
+                // Inspect the actual illustrated Image rect, not the often
+                // bigger and fully transparent legacy resource icon parent.
+                var art = hud.Resources.GetComponentsInChildren<Image>(true)
+                    .FirstOrDefault(i => i && i.isActiveAndEnabled &&
+                        i.name == "Forja / live " + name);
+                Need(art != null, "Illustrated real resource icon missing: " + name);
+                var imageRect = art.transform as RectTransform;
+                Need(imageRect != null, "Actual source icon RectTransform missing: " + name);
+                var widthPx = imageRect.rect.width * scale;
+                var heightPx = imageRect.rect.height * scale;
+                if (widthPx < m.minResourceIconWidthPx) {
+                    m.minResourceIconWidthPx = widthPx;
+                    m.smallestResourceIcon = name;
+                }
+                m.minResourceIconHeightPx = Mathf.Min(m.minResourceIconHeightPx,heightPx);
                 resources++;
             }
             Need(resources >= 2, "Native readability QA missing actual resource values");
@@ -834,6 +856,12 @@ namespace Eldoria.VisualKit.Editor
                     "Resource values are too small or clipped at " + reading.resolution +
                     ": " + reading.smallestResourceLabel + " (" +
                     reading.minResourceGlyphPx + "px)");
+                Need(reading.minResourceIconWidthPx >= 24f &&
+                     reading.minResourceIconHeightPx >= 24f,
+                    "Illustrated resource icon under 24 rendered pixels at " +
+                    reading.resolution + ": " + reading.smallestResourceIcon +
+                    " (" + reading.minResourceIconWidthPx + "x" +
+                    reading.minResourceIconHeightPx + "px)");
             }
             // The genuine build spends only the throwaway isolated save and
             // deliberately runs after all visual equality and image checks.
