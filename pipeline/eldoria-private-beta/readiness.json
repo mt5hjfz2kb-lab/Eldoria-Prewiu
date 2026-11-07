@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "status": "LIVE_BLOCKED_IPHONE_STARTUP",
+  "status": "MOBILE_CANDIDATE_LIVE_PHYSICAL_QA_PENDING",
   "scope": "Closed playtest Bastion I–V",
-  "source": "native325-fb1292b3d9ce",
+  "source": "native325-mobile-candidate1",
   "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
   "frozen_archive": {
     "location": "GitHub draft release (not public)",
@@ -16,12 +16,13 @@
   "distribution": {
     "target": "one-click public link (no account/email/password/itch.io/APK)",
     "service": "GitHub Pages",
-    "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/",
+    "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/mobile-v1.html",
     "links_enabled": true,
     "byte_checksums_verified": true,
     "web_package_ready": true,
     "diagnostics": "stages-v3-opt-in",
-    "access_control": "public URL; not authenticated"
+    "access_control": "public URL; not authenticated",
+    "live_identity_verified": true
   },
   "measurement": {
     "supabase_project": "Eldoria Playtest Feedback",
@@ -52,8 +53,7 @@
     "no_new_tester_invites_before_validation": true
   },
   "blockers": [
-    "Physical iPhone returns to landing page at startup 90%; cause not yet established conclusively",
-    "Isolated ASTC candidate integrity passed; independent Unity runtime startup and visual validation pending",
+    "Original physical iPhone returned at startup90; newly published texture candidate needs physical confirmation and normal gameplay/save/reload",
     "Verify actual hosted save/reload and physical iOS/Android gameplay",
     "Connect opt-in consent UI and browser event delivery to verified QA backend; native gameplay metrics still not emitted",
     "Instrument and verify actual Unity gameplay events; 135 indicators remain specification, not measured",
@@ -64,21 +64,22 @@
   "no_unity_source_mutations": true,
   "no_release_replacement": true,
   "mobile_candidate": {
-    "status": "UNITY_STARTED_VISUAL_CAPTURE_RETRY",
+    "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
     "source_sha256": "6efe4b1f1eeedd33727ec8f24d4d25075b516478d3bb80ea61a6bdbb12528ca0",
     "candidate_sha256": "d169fee32bca1b2e26aae3693a6bd53bab683d11a8a5c8103b4aedff28c7eeb7",
     "changed_textures": 58,
     "all_objects_verified": 54338,
     "saved_serialized_bytes": 314268436,
     "candidate_bundle_bytes": 455610281,
-    "runtime_verified": false,
+    "runtime_verified": true,
     "physical_iphone_verified": false,
     "ci_run": 42418416629,
-    "published": false,
+    "published": true,
     "observed_wasm_heap_capacity_bytes": {
       "original": 1675624448,
       "candidate": 1580924928
-    }
+    },
+    "deploy_run": 42418899866
   },
   "updated_at": "2026-11-07"
 }
