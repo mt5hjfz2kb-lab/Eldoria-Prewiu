@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 322,
+  "revision": 323,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "PR163 exact native322 after safe ownership transfer: source candidate 64b6b6 + registered owner 157; retain 25%+ unobscured landscape city Barracks, portrait plot, genuine scene captures and unchanged world/Bastion. Full I-V, 216+ EditMode / 78+ PlayMode; isolated browser-ready WebGL only. Do not publish.",
+  "checks": "PR163 native323 selected unbuilt plot player-clarity correction: real 844x390 and 390x844 marker at live Barracks site, >=25% full-model framing, no invisible build objective, direct visual PNG audit; full I-V native integration, 216+ EditMode/78+ PlayMode, source-locked isolated WebGL and normal-clock browser QA. Do not publish or alter saves/timers/balance.",
   "browser_backend": "windows"
 }

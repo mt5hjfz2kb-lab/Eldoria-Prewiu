@@ -449,6 +449,16 @@ namespace Eldoria.ReferenceClean.Editor {
     Capture(h,"integration-city-barracks-phone-landscape.png",844,390,()=>{
      var plot=h.FindTarget("barracks");Rect projected=default,visible=default;
      bool framed=plot&&h.IsTargetFramed(plot.gameObject,out projected,out visible);
+     // The old available-plot renderers are intentionally hidden. In prior
+     // native322 the collider geometry could pass framing while the player
+     // saw no cue over the actual empty grass. Require the real existing
+     // world-anchored label to remain visible for the selected unbuilt plot.
+     var marker=h.Hud.GetComponentsInChildren<BuildingLabel>(true)
+       .FirstOrDefault(item=>item&&item.name=="Guidance barracks");
+     Need(marker&&marker.gameObject.activeInHierarchy&&
+      marker.Select&&marker.Select.gameObject.activeInHierarchy&&
+      marker.Label&&marker.Label.text.Contains("Cuartel"),
+      "Selected unbuilt Barracks site is visually unmarked");
      Need(framed&&visible.height>.25f,
       "Landscape Barracks must fit beside the quest, above the bottom sheet"+
       " framed="+framed+" projected="+projected+" visible="+visible+

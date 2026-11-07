@@ -159,8 +159,13 @@ namespace Eldoria.ReferenceClean {
       (3f+Mathf.Clamp(host.WorldCamera.orthographicSize*.30f,4f,40f));
     }
     if(pair.Key=="corrupt-scout")visible&=!s.ScoutDefeated;
-    // Selection already has a named contextual panel. Labels identify only useful targets.
-    visible&=host.Selected!=pair.Key;
+    // The selected unbuilt city site has NO visible Plot_/Available slab in
+    // the integrated scene (deliberately hidden to avoid old floating tiles).
+    // Do not also hide its sole existing world-anchored label: otherwise the
+    // "Construir" action points at indistinguishable grass. The tiny native
+    // marker is a spatial cue only, not a new gameplay offer or world model.
+    bool selectedUnbuiltTown=town&&!built&&host.Selected==pair.Key&&visible;
+    visible&=host.Selected!=pair.Key||selectedUnbuiltTown;
     if(!town){
      // The panorama shows true continental geography only. Hide ordinary
      // objective/city/encounter captions at the SAME threshold that suppresses
@@ -189,7 +194,13 @@ namespace Eldoria.ReferenceClean {
     bool ownBuild=((s.BuildingTaskId??"").StartsWith(pair.Key+":",StringComparison.Ordinal)||(s.BuildingTaskId??"").StartsWith("c3:"+pair.Key+":",StringComparison.Ordinal))&&s.BuildingCompletesUtcTicks>0;
     if(pair.Key=="fissure-valoria"&&s.ChapterThree.InvestigationEndsUtcTicks>city.Clock.UtcTicks)title+=" · "+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,city.Clock.UtcTicks,host.English);
     if(town&&!built)title=ownBuild?(host.English?"Building: ":"En obras: ")+title:(host.English?"Build here: ":"Construir aquí: ")+title;
-    else if(pair.Key=="valoria-map-city")title=host.English?"Enter Valoria":"Entrar en Valoria";
+    if(selectedUnbuiltTown){
+     // Short, readable pointer at the actual authorized parcel. The bottom
+     // parchment still owns the only paid build action and its exact cost.
+     title=(ownBuild?(host.English?"BUILDING · ":"EN OBRAS · "):(host.English?"HERE · ":"AQUÍ · "))+Name(pair.Key,host.English);
+     pair.Value.Label.fontSize=20;
+    }else pair.Value.Label.fontSize=17;
+    if(pair.Key=="valoria-map-city")title=host.English?"Enter Valoria":"Entrar en Valoria";
     pair.Value.Label.Put(title);
    }
   }
