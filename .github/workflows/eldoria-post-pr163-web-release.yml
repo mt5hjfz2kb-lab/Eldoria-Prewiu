@@ -1,0 +1,99 @@
+name: '[ELDORIA] PR163 exact WebGL lossless preparation (no publication)'
+on:
+  push:
+    branches: [release/post-pr163-apk-webgl-20261107]
+    paths:
+      - 'pipeline/releases/pr163-apk-webgl-20261107.json'
+      - 'tools/delivery/verified-merged-web-preflight.mjs'
+      - 'tools/delivery/verified-merged-web-preflight.test.mjs'
+      - '.github/workflows/eldoria-post-pr163-web-release.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-pr163-web-preparation-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test release provenance gate and negative cases
+        run: node --test tools/delivery/verified-merged-web-preflight.test.mjs
+      - name: Validate exact source, Chromium QA, current main and release owner
+        env:
+          GH_TOKEN: '${{ github.token }}'
+        run: node tools/delivery/verified-merged-web-preflight.mjs
+      - name: Download original signed-off native324 WebGL without rebuilding
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-integrated-web-playtest-42367983297
+          run-id: 42367983297
+          github-token: '${{ github.token }}'
+          path: native-raw
+      - name: Rebuild the exact source-locked browser transport
+        run: |
+          python3 tools/valoria-reference-clean/prepare_web.py native-raw prepared-site native324 29f5e3a3686f80b77bced250c9bef67977a891e4 42367983297
+          node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
+      - name: Verify original hashes, adapt transport losslessly and enforce itch limits
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          folder=Path('prepared-site')
+          files=sorted(p for p in folder.rglob('*') if p.is_file())
+          assert any(p.name=='unity-output-verification.json' for p in files)
+          assert all(p.resolve().is_relative_to(folder.resolve()) for p in files)
+          with zipfile.ZipFile('candidate.zip','w',zipfile.ZIP_STORED) as z:
+              for p in files:z.write(p,p.relative_to(folder).as_posix())
+          digest=hashlib.file_digest(open('candidate.zip','rb'),'sha256').hexdigest()
+          c=json.load(open('pipeline/releases/pr163-apk-webgl-20261107.json'))
+          legacy=json.load(open('pipeline/playtest-delivery.json'))
+          p=c['provenance']
+          legacy['candidate']={'revision':p['revision'],'source_sha':p['source_sha'],
+            'native_run':p['native_run'],'qa_run':p['qa_run'],
+            'qa_source_sha':p['qa_source_sha'],'artifact_sha256':digest}
+          Path('pipeline/playtest-delivery.json').write_text(json.dumps(legacy,indent=2)+'\n')
+          print('ORIGINAL_BROWSER_PACKAGE_SHA256 '+digest)
+          PY
+          python3 tools/delivery/prepare.py candidate.zip delivery-output
+          node --check delivery-output/dist/play.js
+          node tools/delivery/test-exact-decoded-transport.mjs delivery-output/dist
+          python3 - <<'PY'
+          import json,hashlib,zipfile
+          from pathlib import Path
+          c=json.load(open('pipeline/releases/pr163-apk-webgl-20261107.json'))
+          r=json.load(open('delivery-output/identity.json'))
+          assert r['status']=='PACKAGE_READY_NOT_PUBLISHED'
+          assert r['candidate']['source_sha']==c['provenance']['source_sha']
+          assert r['candidate']['native_run']==c['provenance']['native_run']
+          assert r['original_unity_integrity'] and r['unity_decoded_bytes_unchanged']
+          assert r['html5_extracted_bytes']<=c['web']['max_total_bytes']
+          p=Path('delivery-output/Eldoria-native324-itch.zip')
+          assert hashlib.file_digest(open(p,'rb'),'sha256').hexdigest()==r['zip_sha256']
+          with zipfile.ZipFile(p) as z:
+              names=z.namelist()
+              assert 'index.html' in names and len(names)==len(set(names))
+              assert all(f.file_size<=c['web']['max_file_bytes'] for f in z.infolist())
+              assert z.testzip() is None
+          assert not c['web']['publish_enabled'] and not c['android']['publish_enabled']
+          print('WEBGL_PACKAGE_READY_NOT_PUBLISHED',r['zip_sha256'],r['html5_extracted_bytes'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-pr163-web-preview-${{ github.run_id }}
+          path: |
+            delivery-output/Eldoria-native324-itch.zip
+            delivery-output/identity.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Report scope
+        run: echo 'Verified original Unity WebGL package. No upload, no account access or physical mobile QA.' >> "$GITHUB_STEP_SUMMARY"
