@@ -1,0 +1,3258 @@
+{
+  "changes": [
+    {
+      "id": "resources.assets:112",
+      "name": "ContinuousLivingGeography",
+      "before": 50331640,
+      "after": 12582960,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 61.05040660875248,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 59.24524978811504,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 57.470974297868544,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 55.71509831091524,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 53.64847403695844,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 51.26393280102754,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 48.96066983226384,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 46.0607187055598,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 45.28963071936965,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 46.83641127302784,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 51.93291612933904,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:124",
+      "name": "Eldoria_PlayerCity_ProgressionSheet_v1_basecolor",
+      "before": 22369620,
+      "after": 5592432,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 47.917900147338386,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 46.226721271386985,
+          "alpha_mae": 1.9073486328125e-06
+        },
+        {
+          "mip": 2,
+          "psnr": 43.59663569049235,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 40.76405743321984,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 38.970909388380136,
+          "alpha_mae": 6.103515625e-05
+        },
+        {
+          "mip": 5,
+          "psnr": 39.0281352743144,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 41.171107125182864,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 45.124746881315815,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 48.42922425231622,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 50.75192290501522,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 50.6295783408451,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:118",
+      "name": "I_recovered_exact_retained_surface",
+      "before": 22369620,
+      "after": 5592432,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 52.39783079773966,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 52.35120923876542,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 52.06096300816223,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 51.11849881268506,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 50.08435961924532,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 49.36819095706256,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 48.62671765819166,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 47.88351035305354,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 48.164866095598214,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 54.15140352195873,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 57.16170347859854,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:250",
+      "name": "texture-5",
+      "before": 22369620,
+      "after": 5592432,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 89.76347777716265,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 79.87343162017729,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 72.09191911634085,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 66.15880594200416,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 62.450276759973605,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 60.50691962825581,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 59.66047821076454,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:129",
+      "name": "part-2",
+      "before": 22369620,
+      "after": 5592432,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 47.68710465454526,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 46.04545995597129,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 43.56726110177759,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 41.09719177234873,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 39.860868878088624,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 40.339979384857585,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 42.49233253356999,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 45.924207617591534,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 48.749673517291214,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 51.72102303509578,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 57.16170347859854,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:250",
+      "name": "Color_28f57ff9-b978-468c-8c2a-6136e0a65ea1",
+      "before": 16777215,
+      "after": 5592432,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 53.28074864795824,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 50.84908862054104,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 49.14720974941378,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 46.82904191730134,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 43.90646466831587,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 41.474931867816416,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 40.11219275620817,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 40.648468952704356,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 43.04866377629835,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 45.70042312181616,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 53.182303391878165,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:251",
+      "name": "Color_28f57ff9-b978-468c-8c2a-6136e0a65ea1",
+      "before": 16777215,
+      "after": 5592432,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 53.28074864795824,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 50.84908862054104,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 49.14720974941378,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 46.82904191730134,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 43.90646466831587,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 41.474931867816416,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 40.11219275620817,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 40.648468952704356,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 43.04866377629835,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 45.70042312181616,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 53.182303391878165,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:168",
+      "name": "RegionOneTerrainAtlas",
+      "before": 16777215,
+      "after": 5592432,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 57.24875803367528,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 54.53542325814052,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 52.82832117657154,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 51.39257604984999,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 50.28304489059471,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 48.40798177598546,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 47.6239933394171,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 46.39256963268052,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 44.534227101616686,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 42.19586613370759,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 46.55472507506242,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:235",
+      "name": "Region1Biomes",
+      "before": 16777215,
+      "after": 5592432,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 55.88728417896294,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 55.33416941676034,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 55.206191435981424,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 54.804104866772,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 53.531904112221696,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 52.23292695081605,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 50.252478202431085,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 48.07182963995284,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 46.48448723979279,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 46.4153672956295,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 52.390490931401914,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:119",
+      "name": "Color_c3a2423e-678d-4570-b82d-9f38dfe36caf",
+      "before": 12582912,
+      "after": 4194304,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 49.356070576747825,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:125",
+      "name": "Color_0cf8f7b1-b67b-4df8-9c6d-77ef5fa0fa1e",
+      "before": 12582912,
+      "after": 4194304,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 49.80511833822952,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:247",
+      "name": "Color_83984e3d-7c27-4ab2-afa8-b4e51b40c866",
+      "before": 12582912,
+      "after": 4194304,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 47.97569907708349,
+          "alpha_mae": 2.384185791015625e-07
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:254",
+      "name": "Color_843c9067-e088-4989-b559-e730d83b4ff4",
+      "before": 12582912,
+      "after": 4194304,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 49.864146290444666,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:261",
+      "name": "Color_2e71ac58-ff2a-40b7-a09a-259fb2185e3c",
+      "before": 12582912,
+      "after": 4194304,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 48.823183451900775,
+          "alpha_mae": 2.384185791015625e-07
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:116",
+      "name": "Continuous neighbouring land pigment",
+      "before": 12582904,
+      "after": 3145776,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 59.74998736749866,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 58.036872121451324,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 55.71835030812511,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 52.98957134305055,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 50.284858325016195,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 47.380897392776575,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 46.32612990601416,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 47.474280514810545,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 48.92261617269923,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 52.90201602644589,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:117",
+      "name": "AI_meadow",
+      "before": 11184812,
+      "after": 2796240,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 53.94997731785959,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 55.93849203623863,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 56.63254262191949,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 56.80267890079584,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 56.47651121400817,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 54.81945792929582,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 52.84304218714945,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 50.81441239778523,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 50.69031981796704,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 53.182303391878165,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:144",
+      "name": "RegionOnePaintedForest",
+      "before": 7455644,
+      "after": 1871440,
+      "accepted": false,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 44.76439233136774,
+          "alpha_mae": 0.175516739487648
+        },
+        {
+          "mip": 1,
+          "psnr": 43.10765842184403,
+          "alpha_mae": 0.26783299446105957
+        },
+        {
+          "mip": 2,
+          "psnr": 40.963802244511804,
+          "alpha_mae": 0.45838695764541626
+        },
+        {
+          "mip": 3,
+          "psnr": 37.552127982469145,
+          "alpha_mae": 0.8250918984413147
+        },
+        {
+          "mip": 4,
+          "psnr": 33.719294376502894,
+          "alpha_mae": 1.5444568395614624
+        },
+        {
+          "mip": 5,
+          "psnr": 31.272636843163202,
+          "alpha_mae": 2.436011791229248
+        },
+        {
+          "mip": 6,
+          "psnr": 30.48326461047647,
+          "alpha_mae": 3.734375
+        },
+        {
+          "mip": 7,
+          "psnr": 28.350282947817465,
+          "alpha_mae": 5.349999904632568
+        },
+        {
+          "mip": 8,
+          "psnr": 29.164852569507534,
+          "alpha_mae": 8.3125
+        },
+        {
+          "mip": 9,
+          "psnr": 39.13396622567878,
+          "alpha_mae": 2.5
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:152",
+      "name": "RegionOneReferenceNodes",
+      "before": 7455644,
+      "after": 1871440,
+      "accepted": false,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 42.49333923249958,
+          "alpha_mae": 0.4072265625
+        },
+        {
+          "mip": 1,
+          "psnr": 40.009327566344425,
+          "alpha_mae": 0.7112153172492981
+        },
+        {
+          "mip": 2,
+          "psnr": 36.98269190878568,
+          "alpha_mae": 1.1144760847091675
+        },
+        {
+          "mip": 3,
+          "psnr": 34.075100108581715,
+          "alpha_mae": 1.5920956134796143
+        },
+        {
+          "mip": 4,
+          "psnr": 30.547143859134096,
+          "alpha_mae": 2.6739211082458496
+        },
+        {
+          "mip": 5,
+          "psnr": 28.776276581638754,
+          "alpha_mae": 3.2113094329833984
+        },
+        {
+          "mip": 6,
+          "psnr": 26.45520741883658,
+          "alpha_mae": 5.837500095367432
+        },
+        {
+          "mip": 7,
+          "psnr": 26.74392899994778,
+          "alpha_mae": 7.587500095367432
+        },
+        {
+          "mip": 8,
+          "psnr": 27.957209011949384,
+          "alpha_mae": 9.625
+        },
+        {
+          "mip": 9,
+          "psnr": 44.37416746907025,
+          "alpha_mae": 1.5
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:155",
+      "name": "guardian-banner-v4",
+      "before": 6294152,
+      "after": 1577088,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 43.79166365933414,
+          "alpha_mae": 0.2692168951034546
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:205",
+      "name": "encounter-panel-v3",
+      "before": 6294152,
+      "after": 1577088,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 49.02142665107651,
+          "alpha_mae": 0.14343027770519257
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:189",
+      "name": "battle-action-skin-v4",
+      "before": 6290076,
+      "after": 1579264,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 50.07111863628389,
+          "alpha_mae": 0.16766346991062164
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:231",
+      "name": "engendro-reference-v3",
+      "before": 6290064,
+      "after": 1577536,
+      "accepted": false,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 39.21530836447717,
+          "alpha_mae": 0.8674283623695374
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:203",
+      "name": "scout-medallions-v5",
+      "before": 6290064,
+      "after": 1577536,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 40.523473036904065,
+          "alpha_mae": 0.5597424507141113
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:146",
+      "name": "RegionOnePaintedTerrain",
+      "before": 6288054,
+      "after": 2104704,
+      "accepted": false,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 45.97690255975306,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 42.97130858430123,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 40.256028858930755,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 38.211293143156865,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 37.35524616503043,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 36.48685454122703,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 35.53700267372234,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 33.72628036343883,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 32.3886817479477,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 49.3801909747621,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:171",
+      "name": "RegionOnePaintedMeadow",
+      "before": 6288054,
+      "after": 2104704,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 48.27535578915841,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 47.790485020550236,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 46.39896487174905,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 45.12472174745441,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 45.111322808689266,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 44.57075900836283,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 44.20100991523817,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 45.84844826572356,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 48.41109084468154,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 55.400790888041726,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:162",
+      "name": "scout-action-skin-v4",
+      "before": 5939200,
+      "after": 1490944,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 49.36594464041719,
+          "alpha_mae": 0.15694908797740936
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:120",
+      "name": "Spawnling / retained skin with dusk-violet grade",
+      "before": 5592404,
+      "after": 1398128,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 53.17646909476953,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 52.021898311327625,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 50.80544761433394,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 49.21317905224686,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 47.636985922473364,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 46.95385156460185,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 48.0426402706065,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 48.90906552830569,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 50.394767382349876,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 60.17200343523835,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:121",
+      "name": "Spawnling / retained skin with dusk-violet grade",
+      "before": 5592404,
+      "after": 1398128,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 53.17646909476953,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 52.021898311327625,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 50.80544761433394,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 49.21317905224686,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 47.636985922473364,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 46.95385156460185,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 48.0426402706065,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 48.90906552830569,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 50.394767382349876,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 60.17200343523835,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:202",
+      "name": "Valoria deep pine Leaf_Pine_C",
+      "before": 5592404,
+      "after": 1398128,
+      "accepted": false,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 65.65916196611533,
+          "alpha_mae": 0.011209487915039062
+        },
+        {
+          "mip": 1,
+          "psnr": 62.93751486255712,
+          "alpha_mae": 0.01993560791015625
+        },
+        {
+          "mip": 2,
+          "psnr": 59.83107550598672,
+          "alpha_mae": 0.039337158203125
+        },
+        {
+          "mip": 3,
+          "psnr": 55.79954678896637,
+          "alpha_mae": 0.088623046875
+        },
+        {
+          "mip": 4,
+          "psnr": 51.537148393454466,
+          "alpha_mae": 0.17578125
+        },
+        {
+          "mip": 5,
+          "psnr": 49.15163464418329,
+          "alpha_mae": 0.31640625
+        },
+        {
+          "mip": 6,
+          "psnr": 44.084069695369045,
+          "alpha_mae": 0.55859375
+        },
+        {
+          "mip": 7,
+          "psnr": 39.75560970212483,
+          "alpha_mae": 1.8125
+        },
+        {
+          "mip": 8,
+          "psnr": 39.92919967476755,
+          "alpha_mae": 1.625
+        },
+        {
+          "mip": 9,
+          "psnr": 54.15140352195873,
+          "alpha_mae": 0.25
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:252",
+      "name": "O_painted_bank_-1",
+      "before": 5592412,
+      "after": 1398160,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 57.405467548987694,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 55.72543547549402,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 54.338266432183985,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 52.75202108756288,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 50.73499132482077,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 48.879990254277374,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 45.44855352770705,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 44.18546600887784,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 53.182303391878165,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 54.15140352195873,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:249",
+      "name": "FracturedBasinPigment",
+      "before": 5592404,
+      "after": 1398128,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 56.41116305215868,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 55.013711118345825,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 54.38794515841999,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 52.77223385009655,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 50.56038895139061,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 48.15845899610465,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 45.057347742865645,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 40.88740478520023,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 40.653773082079226,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 51.141103565318915,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:260",
+      "name": "O_painted_bank_1",
+      "before": 5592412,
+      "after": 1398160,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 57.070140428854835,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 55.36824299434439,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 53.8626794478878,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 52.0925790631292,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 50.17921939369104,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 47.634384294457675,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 44.91346040480204,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 42.39954817101215,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 45.980710357818595,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 55.400790888041726,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 11,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:209",
+      "name": "Leaves_TwistedTree_C",
+      "before": 5592404,
+      "after": 1398128,
+      "accepted": false,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 61.05716314411648,
+          "alpha_mae": 0.04069995880126953
+        },
+        {
+          "mip": 1,
+          "psnr": 58.58791098134026,
+          "alpha_mae": 0.0675048828125
+        },
+        {
+          "mip": 2,
+          "psnr": 55.69268611932347,
+          "alpha_mae": 0.1243438720703125
+        },
+        {
+          "mip": 3,
+          "psnr": 52.09208409363651,
+          "alpha_mae": 0.25372314453125
+        },
+        {
+          "mip": 4,
+          "psnr": 47.30637748170974,
+          "alpha_mae": 0.517578125
+        },
+        {
+          "mip": 5,
+          "psnr": 43.76299845676719,
+          "alpha_mae": 1.0576171875
+        },
+        {
+          "mip": 6,
+          "psnr": 38.55879142784881,
+          "alpha_mae": 2.64453125
+        },
+        {
+          "mip": 7,
+          "psnr": 35.93954469587027,
+          "alpha_mae": 3.921875
+        },
+        {
+          "mip": 8,
+          "psnr": 42.31870508513068,
+          "alpha_mae": 1.4375
+        },
+        {
+          "mip": 9,
+          "psnr": 52.390490931401914,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:206",
+      "name": "rock_3_diff_1k",
+      "before": 5592404,
+      "after": 1398128,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 43.82640799573315,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 43.794441576153716,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 44.06037094408671,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 44.36616686880924,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 45.16258832857832,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 46.33539228826113,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 47.47468556024945,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 49.35763017171986,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 51.878965706928106,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 60.17200343523835,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:228",
+      "name": "texture-0",
+      "before": 5592404,
+      "after": 1398128,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 44.02723731286222,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 43.98270419937111,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 44.24670796854634,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 44.56668510434801,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 45.3882269796907,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 46.62986826472138,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 47.96030709732966,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 49.51807381961844,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 53.88811413473523,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 57.16170347859854,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:247",
+      "name": "texture-2",
+      "before": 5592404,
+      "after": 1398128,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 44.02723731286222,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 43.98270419937111,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 44.24670796854634,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 44.56668510434801,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 45.3882269796907,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 46.62986826472138,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 47.96030709732966,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 49.51807381961844,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 53.88811413473523,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 57.16170347859854,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:213",
+      "name": "scout-mission-vignettes-v4",
+      "before": 4717548,
+      "after": 1577536,
+      "accepted": false,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 39.479058792790255,
+          "alpha_mae": 1.271847168027307e-06
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:229",
+      "name": "RegionOnePaintedLandcover",
+      "before": 4194303,
+      "after": 1398128,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 48.94677614936083,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 46.868346946140804,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 45.34222661752225,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 44.1023254116689,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 43.15212661485212,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 41.77442506755564,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 41.60716907933684,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 44.60144513024028,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 47.619278384205295,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 60.17200343523835,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:211",
+      "name": "RegionOneMeadowDetail",
+      "before": 4194303,
+      "after": 1398128,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 47.63968065662805,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 46.09331119933958,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 44.951154196598004,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 43.91310895759773,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 42.74292719756838,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 41.30247192949825,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 41.087153246451855,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 44.841276834750225,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 50.6295783408451,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 53.182303391878165,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:244",
+      "name": "texture-0",
+      "before": 4194303,
+      "after": 1398128,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 52.966108263233885,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 52.799586215207825,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 53.09486740211951,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 53.804108714470914,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 54.78988043822611,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 55.7174209705951,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 55.60929227777293,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 56.19260334851798,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 56.19260334851798,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 60.17200343523835,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:241",
+      "name": "meadow-0",
+      "before": 4194303,
+      "after": 1398128,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 52.68061759757299,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 52.443362043034625,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 52.837799066607445,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 53.628818260270414,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 54.78742471589943,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 55.59744248919614,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 55.633089295226476,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 56.4153672956295,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 54.431690757961164,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 57.16170347859854,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:242",
+      "name": "meadow-1",
+      "before": 4194303,
+      "after": 1398128,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 55.1553342904474,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 54.90744639259904,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 55.35456179677779,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 55.82012858412974,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 56.125269521928296,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 56.281727680049684,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 56.53118602112765,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 58.41109084468154,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 59.20290330515779,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 60.17200343523835,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:241",
+      "name": "Authored weathered crossing planks",
+      "before": 2796204,
+      "after": 699088,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 57.541625802331495,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 55.42773495864985,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 55.23999016258439,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 54.41701291150646,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 54.63781960197969,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 56.09862560511417,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 59.31285714817242,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 66.19260334851798,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:240",
+      "name": "Eastern shelf water pigment",
+      "before": 2796204,
+      "after": 699088,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 66.62334177460357,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 61.34692898379666,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 59.128059340589125,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 57.324832882821894,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 56.32698523000936,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 55.754070511459155,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 54.431690757961164,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 56.4153672956295,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 10,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:153",
+      "name": "BastionI",
+      "before": 2281536,
+      "after": 571200,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 48.38281401130441,
+          "alpha_mae": 0.011220511049032211
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:145",
+      "name": "BastionII",
+      "before": 2204832,
+      "after": 552752,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 48.299848320163846,
+          "alpha_mae": 0.012224060483276844
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:259",
+      "name": "Approved pale quarry limestone",
+      "before": 2094008,
+      "after": 527168,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 43.025586793390076,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 42.221613928039055,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 41.99422927540483,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 42.79096633571945,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 43.09781343426431,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 42.3896888855948,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 42.629275343224364,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 42.28325227748418,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 48.71072307845597,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:109",
+      "name": "Approved worn honey timber",
+      "before": 2094008,
+      "after": 527168,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 44.02715037335359,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 42.57763663066923,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 42.23882823701519,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 43.006701697357244,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 43.442709832237924,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 43.0286595271361,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 42.38334786378283,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 43.33703025844024,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 51.141103565318915,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:246",
+      "name": "Approved dark fissured bark",
+      "before": 2094008,
+      "after": 527168,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 42.54494643923093,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 41.060389132059385,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 40.4347296631409,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 40.88201526670248,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 41.64588829528432,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 41.89244294393607,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 42.790856121773295,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 44.4899861945684,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 50.6295783408451,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:113",
+      "name": "Approved cut end grain",
+      "before": 2094008,
+      "after": 527168,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 43.351457717722596,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 42.416950484138745,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 42.524181956819106,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 44.14377242002254,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 44.80462667377676,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 44.7974755803681,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 43.58894445079537,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 42.09327211520503,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 48.1308036086791,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:182",
+      "name": "right_cliff",
+      "before": 2092584,
+      "after": 526752,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 40.70023811938703,
+          "alpha_mae": 0.22341755032539368
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:198",
+      "name": "right_cliff",
+      "before": 2092584,
+      "after": 526752,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 40.73439802771276,
+          "alpha_mae": 0.22089244425296783
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:196",
+      "name": "Valoria sandstone scan palette adapted",
+      "before": 1398100,
+      "after": 349552,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 53.09006396281574,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 53.04969205730683,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 53.000810531041196,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 52.82191240222819,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 53.32018623673449,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 54.00134443570914,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 53.95245523478933,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 52.76837654029591,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 57.16170347859854,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:205",
+      "name": "Valoria original cracked earth",
+      "before": 1398100,
+      "after": 349552,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 55.54232357328351,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 56.10735013487659,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 56.40243986501658,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 55.78948560962069,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 55.66302011541154,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 57.230097723901594,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 56.30255719153261,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 55.400790888041726,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:111",
+      "name": "Approved linen with painted fir",
+      "before": 1398100,
+      "after": 349552,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 57.456470101897814,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 59.899991020281476,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 66.6766481782376,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 60.703721024868344,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 58.939613917934295,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 54.16840137073767,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 50.25420673770526,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 51.56862336952841,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:203",
+      "name": "stone_grain_albedo",
+      "before": 1398100,
+      "after": 349552,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 59.597728702459214,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 58.8378307360185,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 58.72924183245761,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 58.94280843431153,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 58.67933106930026,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 57.859538195670986,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 57.29958632345487,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 55.778676496935724,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:173",
+      "name": "RegionOneBreachDecal",
+      "before": 1398100,
+      "after": 349552,
+      "accepted": false,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 42.19452513820915,
+          "alpha_mae": 0.5375823974609375
+        },
+        {
+          "mip": 1,
+          "psnr": 39.84378571948956,
+          "alpha_mae": 0.792633056640625
+        },
+        {
+          "mip": 2,
+          "psnr": 37.37469586333199,
+          "alpha_mae": 1.13055419921875
+        },
+        {
+          "mip": 3,
+          "psnr": 35.2741071967699,
+          "alpha_mae": 1.51904296875
+        },
+        {
+          "mip": 4,
+          "psnr": 34.297305448202515,
+          "alpha_mae": 1.7548828125
+        },
+        {
+          "mip": 5,
+          "psnr": 35.140056925910514,
+          "alpha_mae": 1.78125
+        },
+        {
+          "mip": 6,
+          "psnr": 37.09303356683633,
+          "alpha_mae": 1.8125
+        },
+        {
+          "mip": 7,
+          "psnr": 35.03982743455896,
+          "alpha_mae": 4.5625
+        },
+        {
+          "mip": 8,
+          "psnr": 48.71072307845597,
+          "alpha_mae": 1.25
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:179",
+      "name": "Camp87_0000 1",
+      "before": 1398100,
+      "after": 349552,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 58.718132486482084,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 57.776754204789036,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 57.64930566946097,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 57.924771406684236,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 56.962755191429146,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 56.74161204852342,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 57.16170347859854,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 55.400790888041726,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:182",
+      "name": "Gameplay_00018",
+      "before": 1398100,
+      "after": 349552,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 58.85345566677444,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 58.497654551969795,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 58.869922571254676,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 58.18521782887394,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 59.2851066076247,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 60.59952323944785,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 61.79927641021535,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 63.182303391878165,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:184",
+      "name": "Gameplay_00021",
+      "before": 1398100,
+      "after": 349552,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 58.37584708283536,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 56.42788557225365,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 56.40154973490094,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 56.86659750351316,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 56.35859596671259,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 56.74161204852342,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 55.223503218437415,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 56.650178254124725,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 57.16170347859854,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:186",
+      "name": "Gameplay_00024",
+      "before": 1398100,
+      "after": 349552,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 58.718132486482084,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 57.776754204789036,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 57.64930566946097,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 57.924771406684236,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 56.962755191429146,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 56.74161204852342,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 57.16170347859854,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 55.400790888041726,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:183",
+      "name": "near_cliff",
+      "before": 1387360,
+      "after": 349600,
+      "accepted": false,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 39.78871258411245,
+          "alpha_mae": 0.16141736507415771
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:199",
+      "name": "near_cliff",
+      "before": 1387360,
+      "after": 349600,
+      "accepted": false,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 39.82869632352928,
+          "alpha_mae": 0.15767788887023926
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:181",
+      "name": "left_rock",
+      "before": 1340032,
+      "after": 335616,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 40.053035990155585,
+          "alpha_mae": 0.31534770131111145
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:197",
+      "name": "left_rock",
+      "before": 1340032,
+      "after": 335616,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 40.13325820154071,
+          "alpha_mae": 0.3123328387737274
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:180",
+      "name": "right_castle",
+      "before": 1219556,
+      "after": 306000,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 40.473188276257375,
+          "alpha_mae": 0.35399767756462097
+        }
+      ]
+    },
+    {
+      "id": "resources.assets:196",
+      "name": "right_castle",
+      "before": 1219556,
+      "after": 306000,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 40.5148121264714,
+          "alpha_mae": 0.35004541277885437
+        }
+      ]
+    },
+    {
+      "id": "sharedassets0.assets:243",
+      "name": "meadow-2",
+      "before": 1048575,
+      "after": 349552,
+      "accepted": true,
+      "metrics": [
+        {
+          "mip": 0,
+          "psnr": 51.955945493694756,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 1,
+          "psnr": 52.767364563912516,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 2,
+          "psnr": 53.5431806093571,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 3,
+          "psnr": 54.15458555518377,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 4,
+          "psnr": 54.66876425613718,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 5,
+          "psnr": 55.11626456451968,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 6,
+          "psnr": 56.650178254124725,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 7,
+          "psnr": 58.41109084468154,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 8,
+          "psnr": 60.17200343523835,
+          "alpha_mae": 0.0
+        },
+        {
+          "mip": 9,
+          "psnr": 99,
+          "alpha_mae": 0.0
+        }
+      ]
+    }
+  ],
+  "serialized_saved_bytes": 314268436,
+  "changed_count": 58
+}
