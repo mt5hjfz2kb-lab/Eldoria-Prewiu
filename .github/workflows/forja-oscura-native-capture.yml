@@ -56,9 +56,12 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 65
     steps:
+      # Reuse the existing validated native Unity checkout/cache.
+      # This avoids a costly fresh 15GB clone; the checkout still pins the
+      # exact Forja PR commit. No campaign save or main writes are permitted.
       - uses: actions/checkout@v4
         with:
-          path: forja-source
+          path: valoria-layered-source
           clean: false
           persist-credentials: false
       - uses: actions/checkout@v4
@@ -89,17 +92,17 @@ jobs:
       - name: Reassemble exact 41 visual resources and 7 C-sharp inputs
         shell: powershell
         run: |
-          python forja-source/tools/forja-oscura/reconstruct.py
+          python valoria-layered-source/tools/forja-oscura/reconstruct.py
           if($LASTEXITCODE){throw 'Forja original archived sources are corrupt'}
-          python forja-source/tools/forja-oscura/verify-production.py
+          python valoria-layered-source/tools/forja-oscura/verify-production.py
           if($LASTEXITCODE){throw 'First-party Unity visual assets invalid'}
-          if(Test-Path 'forja-source/Unity/Assets/EldoriaVisualKit'){throw 'Legacy duplicate kit path detected'}
-          if(-not(Test-Path 'forja-source/Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs')){throw 'Native A-B entry missing'}
+          if(Test-Path 'valoria-layered-source/Unity/Assets/EldoriaVisualKit'){throw 'Legacy duplicate kit path detected'}
+          if(-not(Test-Path 'valoria-layered-source/Unity/Assets/Eldoria/VisualKit/Editor/ForjaOscuraNativeEvidence.cs')){throw 'Native A-B entry missing'}
       - name: Capture genuine Unity player HUD before and after
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          $proj=Join-Path $env:GITHUB_WORKSPACE 'forja-source/Unity'
+          $proj=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity'
           $log=Join-Path $env:RUNNER_TEMP 'forja-native.log'
           $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$proj+'"'),
                   '-executeMethod','Eldoria.VisualKit.Editor.ForjaOscuraNativeEvidence.CaptureBatch',
@@ -120,7 +123,7 @@ jobs:
       - name: Build offline A-B viewer only from verified native screenshots
         shell: powershell
         run: |
-          python forja-source/tools/forja-oscura/build-review.py forja-source/Unity/ForjaNativeEvidence
+          python valoria-layered-source/tools/forja-oscura/build-review.py valoria-layered-source/Unity/ForjaNativeEvidence
           if($LASTEXITCODE){throw 'Native review page could not verify eight captured Unity PNG files'}
       - name: Preserve native log and eight images for independent visual review
         if: always()
@@ -128,7 +131,7 @@ jobs:
         with:
           name: forja-oscura-native-${{ github.sha }}-${{ github.run_id }}
           path: |
-            forja-source/Unity/ForjaNativeEvidence/
+            valoria-layered-source/Unity/ForjaNativeEvidence/
             ${{ runner.temp }}/forja-native.log
           if-no-files-found: warn
           retention-days: 21
