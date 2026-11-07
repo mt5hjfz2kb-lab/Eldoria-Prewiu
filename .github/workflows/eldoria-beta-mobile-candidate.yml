@@ -1,5 +1,5 @@
 name: Eldoria isolated mobile texture candidate
-# Candidate2: pixel-identical CPU-copy removal plus 45-second sustained scene/error observation.
+# Candidate2: pixel-identical CPU-copy removal plus 45-second sustained scene/error observation; QA syntax checked.
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
