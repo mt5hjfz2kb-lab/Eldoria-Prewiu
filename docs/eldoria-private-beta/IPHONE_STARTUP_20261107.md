@@ -1,0 +1,9 @@
+# iPhone startup failure — 2026-11-07
+
+Owner reports involuntary return to welcome while native325 loads. Screenshot IMG_5040.jpeg shows boot navigate 22:21:32, boot back_forward 22:21:56, pageshow normal. Owner explicitly confirms no back/reload action. This proves an involuntary new page load, not an exception root cause. No JS/memory/WebGL error is present in the shown journal. Do not mark issue96 fixed.
+
+Read-only live checks: loader, nine data chunks, framework and wasm all HTTP200. Original transport tests verify exact decoded bytes. Unity header parsed: data.unity3d 577593703 bytes, global metadata 6142924, default resources1632004, other entries9059; complete .data585377820. The UnityFS bundle contains most startup data; lossless HTTP recompression does not shrink resident decoded data. Memory pressure is a hypothesis, not a device-profile finding.
+
+Patch: opt-in existing local lifecycle journal gains bounded numeric startup checkpoints (start, manifest, loader, part, progress deciles, pre-run/post-run, heap MiB when callback supplies module, ready, failure). No gameplay save reads/writes, network telemetry, raw exception content, engine binary or timing changes. Default remains dormant. Node VM verifies persistence across a new page, opt-out, bounds and privacy; syntax checked. This is diagnosis, NOT a crash fix or mobile certification.
+
+Preparation commit a323233aeda091076e8faf24f42fdf2569138ea0; deployment workflow commit74012bb7dffd46ed8b7dcc9d4066826afaf0a6a9, run42415743624. Check result before claiming publication. Device-only next evidence: last startup checkpoint after involuntary page restart. If resource load/engine initialization correlates, profile a rebuilt mobile candidate rather than arbitrarily increasing heap or removing content from frozen binary.
