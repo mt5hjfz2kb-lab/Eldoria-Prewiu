@@ -1,1 +1,1 @@
-PR173 visual consistency: approved illustrated crest/settings and painted objective surface. Native twelve-frame/text/pointer/save regression required.
+PR173 remove remaining old blue construction guidance using its existing BuildingLabel button, original callbacks and minimum 44px height. Exact twelve-frame proof.

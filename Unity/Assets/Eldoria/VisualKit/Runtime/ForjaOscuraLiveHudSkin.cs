@@ -103,6 +103,7 @@ namespace Eldoria.VisualKit
             {
                 nextStyleRefresh = Time.unscaledTime + .05f;
                 RefreshExistingLabels();
+                RestyleExistingGuidance();
             }
         }
 
@@ -1049,6 +1050,30 @@ namespace Eldoria.VisualKit
                 var primary=ImmediateChild(card, "Execute existing authorised offer");
                 if (primary)
                     foreach (var text in primary.GetComponentsInChildren<RoyalText>(true)) Tint(text, LightInk);
+            }
+        }
+
+        private void RestyleExistingGuidance()
+        {
+            var canvas=hud.GetComponent<Canvas>();
+            if(!canvas) return;
+            float scale=Mathf.Max(.01f,canvas.scaleFactor);
+            foreach(var label in hud.GetComponentsInChildren<BuildingLabel>(true))
+            {
+                if(!label || !label.Select) continue;
+                ReplaceButtonSurface(label.Select,Sprite("Surfaces","panel_dark"),
+                    "Forja / genuine construction guidance");
+                var rect=label.transform as RectTransform;
+                if(rect && rect.rect.height*scale<44f)
+                {
+                    RememberNavigationGeometry(rect);
+                    rect.sizeDelta=new Vector2(rect.sizeDelta.x,44f/scale);
+                }
+                if(label.Label)
+                {
+                    Tint(label.Label,LightInk);
+                    EnsureReadable(label.Label,12f);
+                }
             }
         }
 
