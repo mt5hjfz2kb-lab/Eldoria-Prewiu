@@ -93,6 +93,7 @@ namespace Eldoria.UI.RoyalGold {
   public class RoyalHudLayout:Behaviour {}
   public class RoyalHeader:Behaviour { public RoyalText Realm; }
   public class RoyalResourceBar:Behaviour { public RoyalText Wood,Stone,Food; }
+  public class RoyalPrimary:Component {public RoyalButton Button;public RoyalText Label;}
   public class RoyalBuildingPanel:Behaviour { public RoyalPrimary Primary; public RoyalText Title; }
   public class RoyalNav:Behaviour {
     public class Item { public RoyalSection Section; public RoyalButton Button; public RoyalText Label; }
