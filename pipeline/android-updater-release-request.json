@@ -1,8 +1,8 @@
 {
   "enabled": false,
-  "buildRunId": 42217404501,
-  "versionCode": 21,
-  "expectedSourceSha": "e3d8347c5ea0aecf8c48f216d1599d2ca7704db9",
+  "buildRunId": 42395466213,
+  "versionCode": 22,
+  "expectedSourceSha": "5b0769e4313d8f93b6dea1787e19a9ab3b87a95f",
   "budgetEur": 0,
-  "note": "Android1.21/code21 PUBLISHED SUCCESS42225704456; signed build42217404501/sourcee3d8347c5ea0aecf8c48f216d1599d2ca7704db9. Public470229532bytes SHA256b90d72811e89bc3e00ff3b88806d8d550794a6e94f96261213228a30cedd7913 matches exact candidate; channel21 verified on main. Original certificatef479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8; no data reset. Full UI216Edit/75Play +225integration checksPASS,32actualAPKtextures reviewed. Disable duplicate promotion. Physical phone not tested; WebGL publication separately pending complete browserQA."
+  "note": "COMPLETED: Android1.22/code22 published42404008210; public APK470244892bytes SHA256f8fa1d3d0c9f8c6b170a31abcd8513d221e4ddb63586614322afa63b63a70e41 verified byte-for-byte, original certificate/package retained. Family channel22 committed d577592b2a609a467e696d35125d0597b649fa41. WebGLnative325 ACTIVE build2324364/run42403626248. Disable duplicate promotion. Physical phone remains untested."
 }

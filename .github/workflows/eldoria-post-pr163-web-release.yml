@@ -1,0 +1,234 @@
+name: '[ELDORIA] PR163 exact WebGL preparation and guarded promotion'
+on:
+  push:
+    branches: [release/post-pr163-apk-webgl-20261107]
+    paths:
+      - 'pipeline/releases/pr163-apk-webgl-20261107.json'
+      - 'tools/delivery/verified-merged-web-preflight.mjs'
+      - 'tools/delivery/verified-merged-web-preflight.test.mjs'
+      - '.github/workflows/eldoria-post-pr163-web-release.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-pr163-web-preparation-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      publish: ${{ steps.gate.outputs.publish }}
+      source_sha: ${{ steps.gate.outputs.source_sha }}
+      native_run: ${{ steps.gate.outputs.native_run }}
+      revision: ${{ steps.gate.outputs.revision }}
+      prepared_run: ${{ steps.gate.outputs.prepared_run }}
+      prepared_artifact: ${{ steps.gate.outputs.prepared_artifact }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/delivery
+            pipeline/releases
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tools/delivery/verified-merged-web-preflight.test.mjs
+      - id: gate
+        env:
+          GH_TOKEN: '${{ github.token }}'
+        run: node tools/delivery/verified-merged-web-preflight.mjs
+  prepare:
+    needs: preflight
+    if: needs.preflight.outputs.publish == 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pipeline/playtest-delivery.json
+            /pipeline/releases/pr163-apk-webgl-20261107.json
+            /tools/delivery/
+            /tools/valoria-reference-clean/
+            /tools/closeout/
+            /docs/evidence/valoria-reference-clean/environment-city-wide-banner-after.png
+            /updates/android/family.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test release provenance gate and negative cases
+        run: node --test tools/delivery/verified-merged-web-preflight.test.mjs
+      - name: Validate native source and release owner; gameplay QA required before publication
+        env:
+          GH_TOKEN: '${{ github.token }}'
+        run: node tools/delivery/verified-merged-web-preflight.mjs
+      - name: Download original signed-off native325 WebGL without rebuilding
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-integrated-web-playtest-${{ needs.preflight.outputs.native_run }}
+          run-id: ${{ needs.preflight.outputs.native_run }}
+          github-token: '${{ github.token }}'
+          path: native-raw
+      - name: Rebuild the exact source-locked browser transport
+        run: |
+          python3 tools/valoria-reference-clean/prepare_web.py native-raw prepared-site ${{ needs.preflight.outputs.revision }} ${{ needs.preflight.outputs.source_sha }} ${{ needs.preflight.outputs.native_run }}
+          node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
+      - name: Verify original hashes, adapt transport losslessly and enforce itch limits
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json,zipfile
+          folder=Path('prepared-site')
+          files=sorted(p for p in folder.rglob('*') if p.is_file())
+          assert any(p.name=='unity-output-verification.json' for p in files)
+          assert all(p.resolve().is_relative_to(folder.resolve()) for p in files)
+          with zipfile.ZipFile('candidate.zip','w',zipfile.ZIP_STORED) as z:
+              for p in files:z.write(p,p.relative_to(folder).as_posix())
+          digest=hashlib.file_digest(open('candidate.zip','rb'),'sha256').hexdigest()
+          c=json.load(open('pipeline/releases/pr163-apk-webgl-20261107.json'))
+          legacy=json.load(open('pipeline/playtest-delivery.json'))
+          p=c['provenance']
+          legacy['candidate']={'revision':p['revision'],'source_sha':p['source_sha'],
+            'native_run':p['native_run'],'qa_run':p['qa_run'],
+            'qa_source_sha':p['qa_source_sha'],'artifact_sha256':digest}
+          Path('pipeline/playtest-delivery.json').write_text(json.dumps(legacy,indent=2)+'\n')
+          print('ORIGINAL_BROWSER_PACKAGE_SHA256 '+digest)
+          PY
+          python3 tools/delivery/prepare.py candidate.zip delivery-output
+          node --check delivery-output/dist/play.js
+          node tools/delivery/test-exact-decoded-transport.mjs delivery-output/dist
+          python3 - <<'PY'
+          import json,hashlib,zipfile
+          from pathlib import Path
+          c=json.load(open('pipeline/releases/pr163-apk-webgl-20261107.json'))
+          r=json.load(open('delivery-output/identity.json'))
+          assert r['status']=='PACKAGE_READY_NOT_PUBLISHED'
+          assert r['candidate']['source_sha']==c['provenance']['source_sha']
+          assert r['candidate']['native_run']==c['provenance']['native_run']
+          assert r['original_unity_integrity'] and r['unity_decoded_bytes_unchanged']
+          assert r['html5_extracted_bytes']<=c['web']['max_total_bytes']
+          p=Path('delivery-output/Eldoria-native325-itch.zip')
+          assert hashlib.file_digest(open(p,'rb'),'sha256').hexdigest()==r['zip_sha256']
+          with zipfile.ZipFile(p) as z:
+              names=z.namelist()
+              assert 'index.html' in names and len(names)==len(set(names))
+              assert all(f.file_size<=c['web']['max_file_bytes'] for f in z.infolist())
+              assert z.testzip() is None
+          assert not c['web']['publish_enabled'] and not c['android']['publish_enabled']
+          print('WEBGL_PACKAGE_READY_NOT_PUBLISHED',r['zip_sha256'],r['html5_extracted_bytes'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-pr163-web-preview-${{ github.run_id }}
+          path: |
+            delivery-output/Eldoria-native325-itch.zip
+            delivery-output/identity.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Report scope
+        run: echo 'Verified original Unity WebGL package. No upload, no account access or physical mobile QA.' >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    needs: preflight
+    if: needs.preflight.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    environment: eldoria-playtest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/delivery
+            pipeline/releases
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.preflight.outputs.prepared_artifact }}
+          run-id: ${{ needs.preflight.outputs.prepared_run }}
+          github-token: '${{ github.token }}'
+          path: package
+      - name: Verify exact approved ZIP, contents, hashes and native transport
+        run: |
+          python3 - <<'PYVERIFY'
+          import json,hashlib,zipfile
+          from pathlib import Path
+          c=json.load(open('pipeline/releases/pr163-apk-webgl-20261107.json'))
+          r=json.load(open('package/identity.json'))
+          p=Path('package/Eldoria-native325-itch.zip')
+          assert hashlib.file_digest(open(p,'rb'),'sha256').hexdigest()==r['zip_sha256']==c['prepared_web']['zip_sha256']
+          assert r['unity_decoded_bytes_unchanged'] is True
+          for k in ['source_sha','native_run','qa_run','qa_source_sha','revision']:
+              assert r['candidate'][k]==c['provenance'][k]
+          with zipfile.ZipFile(p) as z:
+              entries=z.infolist()
+              assert len(entries)==len(set(z.namelist())) and 'index.html' in z.namelist()
+              assert sum(f.file_size for f in entries)==r['html5_extracted_bytes']<=500000000
+              assert all(f.file_size<=200000000 and not f.filename.startswith('/') and '..' not in Path(f.filename).parts for f in entries)
+              for f in r['files']:
+                  data=z.read(f['file'])
+                  assert len(data)==f['bytes'] and hashlib.sha256(data).hexdigest()==f['sha256']
+              assert set(z.namelist())=={f['file'] for f in r['files']}
+              z.extractall('verified-site')
+          PYVERIFY
+          node tools/delivery/test-exact-decoded-transport.mjs verified-site
+      - name: Install official stable Butler
+        run: |
+          curl --fail --location --retry 2 https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default -o butler.zip
+          unzip -q butler.zip -d butler-bin
+          chmod +x butler-bin/butler
+          butler-bin/butler version
+      - name: Recheck live ownership and native acceptance immediately before promotion
+        env:
+          GH_TOKEN: '${{ github.token }}'
+        run: node tools/delivery/verified-merged-web-preflight.mjs
+      - name: Publish once and verify exact active remote version
+        env:
+          BUTLER_API_KEY: '${{ secrets.BUTLER_API_KEY }}'
+        run: |
+          python3 - <<'PYPUBLISH'
+          import json,subprocess,os,time
+          from pathlib import Path
+          c=json.load(open('pipeline/releases/pr163-apk-webgl-20261107.json'))
+          assert c['web']['publish_enabled'] is True and c['web']['restricted'] is True
+          assert c['web']['target']=='chrismad/eldoria-pruebas' and c['web']['channel']=='web'
+          assert os.environ.get('BUTLER_API_KEY'), 'Configured Butler credential unavailable'
+          target=c['web']['target']+':web'
+          version='native325-'+c['prepared_web']['zip_sha256'][:12]
+          receipt={'version':version,'target':target,'zip_sha256':c['prepared_web']['zip_sha256'],'upload_accepted':False,'remote_active':False,'physical_mobile_tested':False,'hosted_gameplay_verified':False}
+          def save():Path('publish-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          def status():
+              r=subprocess.run(['butler-bin/butler','status',target],text=True,capture_output=True,check=True)
+              print(r.stdout,flush=True)
+              return r.stdout
+          save()
+          current=status()
+          # An already uploaded or processing version is NEVER uploaded again.
+          if version not in current:
+              subprocess.run(['butler-bin/butler','push','package/Eldoria-native325-itch.zip',target,'--userversion',version],check=True)
+              receipt['upload_accepted']=True;save()
+          else:
+              receipt['already_present']=True;save()
+          for attempt in range(40):
+              current=status();receipt['remote_status']=current;save()
+              if any(version in line and '✓' in line and '•' not in line for line in current.splitlines()):
+                  receipt['remote_active']=True;save()
+                  print('ELDORIA_PR163_REMOTE_ACTIVE '+version,flush=True)
+                  break
+              if attempt==39:raise RuntimeError('Accepted package not yet active; preserve receipt and inspect remotely, never blindly reupload')
+              time.sleep(30)
+          PYPUBLISH
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-pr163-publish-receipt-${{ github.run_id }}
+          path: publish-receipt.json
+          if-no-files-found: warn
+          retention-days: 90

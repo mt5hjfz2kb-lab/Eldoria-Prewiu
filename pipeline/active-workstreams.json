@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T10:24:54.640Z",
+  "updated_at": "2026-11-07T19:05:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -21,10 +21,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-pr163-continuation-20261107",
-      "branch": "fix/player-experience-audit-20261106",
+      "owner": null,
+      "branch": "main",
       "status": "active",
-      "claimed_at": "2026-11-07T10:24:54.640Z",
+      "claimed_at": "2026-11-07T13:42:08.184Z",
       "base_main_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Application/**",
@@ -46,17 +46,17 @@
         "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/valoria-reference-clean.yml",
-        "pipeline/valoria-convergence-cancel-stale-request.json"
+        "pipeline/valoria-convergence-cancel-stale-request.json",
+        "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41NativeCapture.cs",
+        ".github/workflows/pr163-windows-browser-qa.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PLAYER_AUDIT_REMEDIATION_NATIVE_VALIDATION",
-      "next": "Diagnosticar recorte de Cuartel landscape: native319 y certificacion roja; corregir reserva del mensaje obsoleto con evidencia, revalidar Unity/WebGL y browser sin alterar reloj ni saves.",
+      "phase": "POST_PR163_NATIVE_VALIDATION_COMPLETE_RELEASE_CONTINUES",
+      "next": "Native work finished: browser42396852832 and corrected UI42395390748 SUCCESS. Dedicated release workstream continues verified artifact publication without Windows.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -988,9 +988,48 @@
           "physical_mobile_tested": false,
           "report": "docs/ui-v3/POST_PR162_RELEASE_20261106.md",
           "automation_disabled": "6aed0cc2f0308191b29a13b542c886aa"
+        },
+        "pr163_player_first_closeout": {
+          "source_commit": "29f5e3a3686f80b77bced250c9bef67977a891e4",
+          "merged_commit": "9efc0fefd447585f6867ab03ce2c41084b32adf2",
+          "native_unity_run": 42367983297,
+          "native_status": "SUCCESS_225_CHECKS_26_FRAMES",
+          "ui_cert_run": 42367986501,
+          "editmode_passed": 216,
+          "playmode_passed": 78,
+          "browser_run": 42373214530,
+          "browser_status": "PASS_REAL_CLOCK_I_II",
+          "visible_actions": 62,
+          "operations": 10,
+          "marches": 5,
+          "framing_checks": 20,
+          "save_reload_sha256": "a96fce8ec2884bfa57956bc94d990e2d7b9d1aecc34738f2993004c4464144a93",
+          "runtime_errors": 0,
+          "network_errors": 0,
+          "physical_mobile_tested": false,
+          "manual_player_i_v_current_source_tested": false,
+          "android_published": false,
+          "webgl_published": false,
+          "main_unity_gate_run": 42374765769,
+          "source_tree_equal_to_main_merge": true,
+          "reviewed_at": "2026-11-07T13:18:05.901Z"
+        },
+        "post_pr163_release": {
+          "source_sha": "c3282a6e7a5dce04c0937dc149e09944120ab0ae",
+          "merge_sha": "b686b335072022cc1576b18256e4eab33703bf11",
+          "run_id": 42389995761,
+          "editmode": 216,
+          "playmode": 78,
+          "v41_captures": "PASS",
+          "three_marches": "PASS",
+          "v41_artifact": 13580809061,
+          "v41_digest": "sha256:57234133a256ff859a9698db796140db077c1b96c0c5d21a7edb466e1090acc5",
+          "physical_device_tested": false,
+          "art_approved": false,
+          "old_native324_release_discarded": true
         }
       },
-      "previous_owner": "codex-player-audit-23287cf1c126",
+      "previous_owner": "codex-release-a56bdf7714d0",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Owner explicit takeover 2026-11-01, art-production process and pilot",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -2013,11 +2052,48 @@
           "to_revision": 157,
           "claimed_at": "2026-11-07T10:24:54.640Z",
           "reason": "El propietario solicita continuar la PR #163 en un chat nuevo porque el anterior quedó lleno. Relevo explícito del mismo ID, con native319 y sus fallos preservados, sin cancelar el tester QA en curso ni pisar otras PRs."
+        },
+        {
+          "owner": "chatgpt-pr163-continuation-20261107",
+          "revision": 157,
+          "from_revision": 157,
+          "to_revision": 158,
+          "released_at": "2026-11-07T13:18:05.901Z",
+          "reason": "PR #163 integrada en main sin forzar, código nativo y WebGL exactos certificados; se libera reserva Windows para otros workstreams, especialmente Forja Oscura PR173, sin cancelar CI ni publicar APK/WebGL.",
+          "evidence": {
+            "pr": 163,
+            "source_sha": "29f5e3a3686f80b77bced250c9bef67977a891e4",
+            "merge_sha": "9efc0fefd447585f6867ab03ce2c41084b32adf2",
+            "native_run": 42367983297,
+            "unity_ui_run": 42367986501,
+            "chromium_run": 42373214530,
+            "main_unity_gate_run": 42374765769
+          }
+        },
+        {
+          "previous_owner": null,
+          "from_revision": 158,
+          "to_revision": 159,
+          "claimed_at": "2026-11-07T13:42:08.184Z",
+          "reason": "El propietario solicita confirmar el cierre de PR163 y resolver los fallos genuinos pendientes; PR163 se fusionó, pero la certificación exacta posterior al merge descubrió una aserción de escala de pantalla obsoleta en captura V41. Reclamación estrecha solo de ese archivo y prueba, sin reserva Windows ni tocar Forja Oscura PR173."
+        },
+        {
+          "previous_owner": "chatgpt-pr163-postmerge-validation-20261107",
+          "from_revision": 159,
+          "to_revision": 160,
+          "at": "2026-11-07T15:23:15.124Z",
+          "reason": "Owner-authorized release prerequisite takeover and temporary Windows priority: certify existing PR177 without gameplay changes, then Android22."
+        },
+        {
+          "owner": "codex-release-a56bdf7714d0",
+          "ownership_revision": 161,
+          "transferred_at": "2026-11-07T18:54:22.588Z",
+          "reason": "Native325, Android22 and complete corrected UI42395390748 finished successfully; return authorized temporary Windows priority to Forja."
         }
       ],
-      "ownership_revision": 157,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 162,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-05T19:03:44.661Z",
       "delivery_definition": {
@@ -2166,7 +2242,7 @@
         "capture_diagnosis": "Both earlier delivered views were insufficient: normal uniform270 still oblique. PR130 individually aligns all five meshes and anchors the real door point. Actual native11 city/plan/near-world frames inspected; touch and persistence pass.",
         "corrected_capture": "city-V-complete-horizontal.png from40929047929"
       },
-      "released_at": "2026-11-06T18:20:56.437Z",
+      "released_at": "2026-11-07T18:54:22.588Z",
       "delivery_closeout": {
         "status": "COMPLETED_PR162_INTEGRATED_ANDROID_WEBGL_PUBLISHED",
         "completed_at": "2026-11-06T14:08:25.436Z",
@@ -6572,7 +6648,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Forja Oscura — sistema visual modular uGUI y prueba A/B real",
-      "owner": "chatgpt-forja-oscura-visual-proof-20261107",
+      "owner": "codex-forja-completion-1b986b7673a3",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6588,18 +6664,76 @@
         "Unity/Assets/Eldoria/VisualKit.meta",
         "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 7,
       "write_scope_released": false,
-      "phase": "FIRST_PARTY_ASSETS_ADDED_METADATA_AND_RIGHTS_PROVENANCE_QA",
-      "next": "Render reusable Forja visual kit against genuine RoyalHUD and certify mobile layouts and actions; borrow Windows runner only after canonical owner handoff.",
+      "phase": "NATIVE_UNITY_8_CAPTURE_AUTHORIZED_RUNNER_EXCLUSIVE",
+      "next": "Resume exact PR173 native evidence, inspect real captures against approved reference and repair defects.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. Do not claim windows-runner-heavy or edit legacy HUD without explicit handoff. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched.",
+      "runner_claimed_at": "2026-11-07T18:54:22.588Z",
+      "runner_claim_basis": "PR163 merged at 2026-11-07T12:57:46Z; canonical Valoria workstream released at revision 158; previous main native jobs finished; Forja owner claim maintained.",
+      "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
-      "art_production_request": "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json"
+      "art_production_request": "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json",
+      "ownership_history": [
+        {
+          "from_revision": 4,
+          "to_revision": 5,
+          "at": "2026-11-07T15:23:15.124Z",
+          "reason": "Owner explicitly authorized temporary APK/WebGL priority in current release chat. All observed native Forja runs completed; preserve writer and source, lend Windows without cancelling any job."
+        },
+        {
+          "owner": "chatgpt-forja-oscura-visual-proof-20261107",
+          "ownership_revision": 5,
+          "transferred_at": "2026-11-07T18:54:22.588Z",
+          "reason": "Return Windows reservation after release native jobs completed; preserve Forja owner, branch and draft PR173."
+        },
+        {
+          "owner": "chatgpt-forja-oscura-visual-proof-20261107",
+          "ownership_revision": 6,
+          "reason": "Owner explicitly requests this chat take over PR173 and finish existing interface, preserving research and evidence.",
+          "transferred_at": "2026-11-07T19:07:57.373Z"
+        }
+      ],
+      "runner_priority_handoff": {
+        "status": "RETURNED_AFTER_RELEASE_NATIVE_SUCCESS",
+        "returned_at": "2026-11-07T18:54:22.588Z",
+        "from": "valoria-master-plan-layered-construction-20261016",
+        "completed_runs": [
+          42391824345,
+          42395466213,
+          42396852832,
+          42395390748
+        ]
+      }
+    },
+    {
+      "id": "eldoria-private-beta-i-v-20261107",
+      "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
+      "owner": "chatgpt-eldoria-private-beta-20261107",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "status": "active",
+      "branch": "feature/eldoria-private-beta-i-v-20261107",
+      "scope": [
+        "tools/eldoria-private-beta/**",
+        ".github/workflows/eldoria-private-beta-freeze.yml",
+        "docs/eldoria-private-beta/**",
+        "pipeline/eldoria-private-beta/**"
+      ],
+      "resources": [],
+      "claimed_at": "2026-11-07T19:05:00Z",
+      "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
+      "budget_eur": 0,
+      "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
+      "phase": "SAFE_FREEZE_PREPARATION",
+      "note": "Solo distribución independiente; no modificar Unity ni APK/WebGL del canal de desarrollo. El usuario autorizó la preparación de beta privada; no publicar testers sin QA físico/hosted y sin acceso autorizado a Cloudflare."
     }
   ],
   "history": [
@@ -16522,6 +16656,88 @@
         "existing_public_raw_sources_remediated": false,
         "main_branch_protected": false
       }
+    },
+    {
+      "id": "eldoria-post-pr163-apk-webgl-release-20261107",
+      "title": "Eldoria — entrega APK firmada y WebGL posterior a PR #163",
+      "owner": null,
+      "branch": "release/post-pr163-apk-webgl-20261107",
+      "status": "completed",
+      "claimed_at": "2026-11-07T14:59:53.193Z",
+      "scope": [
+        "pipeline/releases/pr163-apk-webgl-20261107.json",
+        ".github/workflows/eldoria-post-pr163-web-release.yml",
+        "tools/delivery/verified-merged-web-preflight.mjs",
+        "tools/delivery/verified-merged-web-preflight.test.mjs",
+        "docs/delivery/POST_PR163_RELEASE_20261107.md",
+        "pipeline/android-updater-build-request.json",
+        "pipeline/android-updater-release-request.json",
+        "pipeline/playtest-delivery.json",
+        ".github/workflows/eldoria-itch-delivery.yml"
+      ],
+      "resources": [],
+      "ownership_revision": 5,
+      "ownership_state": "available",
+      "write_scope_released": true,
+      "phase": "APK22_WEBGL_NATIVE325_PUBLISHED_VERIFIED_COMPLETE",
+      "authorization": "Explicit owner-directed takeover 2026-11-07: Asume tú ese trabajo y llévalo hasta su finalización. Continue PR178 until APK and WebGL delivered and verified.",
+      "dependency": "PR177 native certificate remains absent. Forja PR173 Windows resource remains exclusively claimed rev4 even after runs42382877546 and42382921718 completed failure. Do not infer release from failed runs; no alternate signed Android builder exists on this Linux host. Need legitimate Windows handoff/owner prioritization to run PR177 then APK22.",
+      "next": "Delivery complete. Physical-device installation and real tester sessions are separate user tests.",
+      "ownership_history": [
+        {
+          "owner": "chatgpt-post-pr163-release-20261107",
+          "revision": 1,
+          "from_revision": 1,
+          "to_revision": 2,
+          "claimed_at": "2026-11-07T14:46:42.721Z",
+          "reason": "Owner explicitly instructed this chat to continue until both the updated APK and WebGL are delivered; existing release claim has only registered intent and branch equals main, with no release commits, PR or runner jobs. Exact same workstream takeover, no duplicate."
+        },
+        {
+          "owner": "chatgpt-release-apk-webgl-continuation-20261107",
+          "revision": 2,
+          "to_owner": "chatgpt-post-pr163-release-20261107",
+          "to_revision": 3,
+          "reason": "Safe coordinated return: the originally assigned release executor is still actively authoring release branch (latest HEAD e4d83a6adbdb625756d06dc14beb146b7645d1b4) and its Ubuntu WebGL verification is in progress. Avoid parallel writers and preserve that existing workflow; no Unity or release channels changed.",
+          "transferred_at": "2026-11-07T14:50:55.887Z"
+        },
+        {
+          "previous_owner": "chatgpt-post-pr163-release-20261107",
+          "from_revision": 3,
+          "to_revision": 4,
+          "to_owner": "codex-release-a56bdf7714d0",
+          "transferred_at": "2026-11-07T14:59:53.193Z",
+          "reason": "Explicit owner instruction in current session: Asume tú ese trabajo y llévalo hasta su finalización. Preserve PR178 and existing runs; no duplicate release."
+        },
+        {
+          "owner": "codex-release-a56bdf7714d0",
+          "ownership_revision": 4,
+          "released_at": "2026-11-07T19:02:18.646Z",
+          "reason": "Both requested deliveries published and verified; complete without remaining publication jobs."
+        }
+      ],
+      "delivery_definition": {
+        "deliverable": "APK 1.22/code22 signed with original certificate and native324 WebGL activated in the existing itch channel, containing merged PR163; no Forja draft.",
+        "evidence": "Exact source native/Chromium QA, PR177 native certificate, HTML5 hashes and remote activation; Android signature/package/code, public APK byte match and family channel22.",
+        "handoff": "Verified APK URL and existing itch URL, precise remaining physical-device/hosted-access limitations."
+      },
+      "evidence": {
+        "web_run": 42403626248,
+        "web_build": 2324364,
+        "web_version": "native325-fb1292b3d9ce",
+        "web_qa": 42396852832,
+        "complete_native_cert": 42395390748,
+        "android_build": 42395466213,
+        "android_publish": 42404008210,
+        "android_code": 22,
+        "android_sha256": "f8fa1d3d0c9f8c6b170a31abcd8513d221e4ddb63586614322afa63b63a70e41",
+        "physical_mobile_tested": false,
+        "art_approved": false
+      },
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Release packaging/signing of already integrated game, provenance checks and read-only CI. No authored/modified visual assets, scenes or runtime artwork.",
+      "previous_owner": "codex-release-a56bdf7714d0",
+      "closed_at": "2026-11-07T19:02:18.646Z",
+      "released_at": "2026-11-07T19:02:18.646Z"
     }
   ],
   "owner_specific_pauses": [

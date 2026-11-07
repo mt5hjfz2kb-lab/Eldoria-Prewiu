@@ -1,9 +1,9 @@
 {
   "enabled": false,
-  "versionCode": 21,
-  "versionName": "1.21",
+  "versionCode": 22,
+  "versionName": "1.22",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Signed Android21 build42217404501/sourcee3d8347c5ea0aecf8c48f216d1599d2ca7704db9 SUCCESS including450MiB limit, original certificate and source restoration. Disable repeat build before channel promotion. Publication still requires decoded APK visual inspection and completed main UI certificate; physical phone not tested.0EUR."
+  "note": "Signed APK22 build42395466213/source5b0769e4313d8f93b6dea1787e19a9ab3b87a95f completed SUCCESS. Original-signature gate passed; artifact13585415947 SHA256af2eadef1380b321a6c983dea60b77d0d922a7de3f32a56d4860464090ba5cba. Disable duplicate builds. Publication remains disabled until full native/UI and browser QA and exact APK checks complete; never reset saves or interrupt other native work."
 }
