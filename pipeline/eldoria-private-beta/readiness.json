@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "OWNER_DIAGNOSTIC3_LIVE_PHYSICAL_IPHONE_AND_RELOAD_BLOCKED",
+  "status": "BLOCKED_IPHONE_CANDIDATE3_RETURN_AFTER_FIRST_FRAME",
   "scope": "Closed playtest Bastion I–V",
   "source": "native325-mobile-material3",
   "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
@@ -54,7 +54,7 @@
     "no_new_tester_invites_before_validation": true
   },
   "blockers": [
-    "Candidate1 physically failed iPhone after first frame. Lower-memory candidate3 is published for owner diagnosis; physical iPhone outcome pending. Memory pressure is a hypothesis, not proven OS jetsam.",
+    "Owner physically retested candidate3: game appears for about one second and returns to landing, unchanged. Texture compression/CPU-copy reduction did not solve the defect. Stop similar candidate retries; investigate scene initialization, runtime memory and navigation with a structural alternative.",
     "Raw reload and documented Quit-then-reload timed out in Chromium SwiftShader. Initial entry60s verified; hosted save restoration and physical iOS/Android gameplay NOT certified.",
     "Connect opt-in consent UI and browser event delivery to verified QA backend; native gameplay metrics still not emitted",
     "Instrument and verify actual Unity gameplay events; 135 indicators remain specification, not measured",
@@ -66,7 +66,7 @@
   "no_release_replacement": true,
   "mobile_candidate": {
     "revision": "native325-mobile-material3",
-    "status": "DIAGNOSTIC_ONLY_STARTUP_AND_INITIAL_ENTRY_OBSERVED",
+    "status": "PHYSICAL_IPHONE_FAILED",
     "candidate_sha256": "60b43335bb263568dd366faca06ab0d648506dac31024342b1d4edefd8a7c315",
     "all_objects_verified": 54338,
     "additional_material_textures_compressed": 32,
@@ -84,9 +84,10 @@
     "previous_failed_iphone_candidate_wasm_capacity_bytes": 1580924928,
     "deploy_run": 42424439267,
     "published": true,
-    "release_for_external_testers": false
+    "release_for_external_testers": false,
+    "physical_iphone_result": "OWNER_REPORTED_FAILURE: still enters for one second and exits"
   },
-  "updated_at": "2026-11-07",
+  "updated_at": "2026-11-08",
   "mobile_candidate_history": [
     {
       "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
