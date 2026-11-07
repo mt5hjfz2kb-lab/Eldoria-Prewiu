@@ -1,0 +1,25 @@
+{
+  "function": "eldoria-beta-events-qa",
+  "project": "eavaxwpxxcrwibooiimb",
+  "function_version": 1,
+  "source_commit": "9e502ccdbcf9d50b7a56450ab49e5fa6188a7a7b",
+  "mode": "QA_ONLY",
+  "tests": {
+    "without_consent_http": 422,
+    "with_consent_http": 202,
+    "stored_row_independently_read_back": true,
+    "qa_row": true,
+    "rls_enabled": true,
+    "public_table_grants": [],
+    "public_table_policies": [],
+    "five_invalid_unit_paths_no_insert": true
+  },
+  "client_event_id": "d40106c9-c766-4d3d-81ee-057176cfe470",
+  "frontend_connected": false,
+  "actual_unity_gameplay_events_verified": 0,
+  "limitations": [
+    "public API key identifies the client application, not a trusted tester identity",
+    "rate limit is per-isolate, not durable distributed protection",
+    "native game event instrumentation and consent UI integration remain pending"
+  ]
+}
