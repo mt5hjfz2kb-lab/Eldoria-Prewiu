@@ -24,7 +24,7 @@ namespace UnityEngine {
     public static float Distance(Vector2 a,Vector2 b)=>0;
   }
   public class Camera:Component {}
-  public class Canvas:Behaviour { public static void ForceUpdateCanvases(){} }
+  public class Canvas:Behaviour { public float scaleFactor=>1f; public static void ForceUpdateCanvases(){} }
   public class Application {public static string dataPath=>"";}
   public static class ScreenCapture {public static void CaptureScreenshot(string path){} }
   public static class Screen {public static int width=>0;public static int height=>0;}
