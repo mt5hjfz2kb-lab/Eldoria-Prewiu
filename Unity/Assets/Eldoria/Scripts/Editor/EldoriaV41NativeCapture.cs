@@ -170,13 +170,19 @@ namespace Eldoria.Editor
             var management=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
             var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
             ValoriaIntegrationBuild.Capture(host,Path.Combine(Output,name+".png"),width,height,()=>{
-                // ValoriaIntegratedWorld.LateUpdate matches portrait width to
-                // 800 units and landscape height to900. The shared capture
-                // already applies that production policy before rendering.
-                // Never resize AFTER the screenshot into a different layout.
-                Need(Mathf.Approximately(host.Hud.GetComponent<Canvas>().scaleFactor,
-                    width<height?width/800f:height/900f),
-                    "Native capture uses the integrated orientation-dependent scale "+name);
+                // Native V3 phone layouts use a 600-unit short side
+                // (390x844 and 844x390 both => 390/600), not the old
+                // portrait-800 / landscape-900 desktop reference. Mirror the
+                // REAL responsive policy in ValoriaIntegratedWorld.LateUpdate
+                // and ValoriaIntegrationBuild.CapturePrepared. This assertion
+                // stays strict: never resize an image after the capture.
+                bool phone=Mathf.Min(width,height)<600f;
+                float expectedScale=width<height?
+                    width/(phone?600f:800f):height/(phone?600f:900f);
+                float actualScale=host.Hud.GetComponent<Canvas>().scaleFactor;
+                Need(Mathf.Approximately(actualScale,expectedScale),
+                    "Native capture uses the integrated orientation-dependent scale "+name+
+                    " expected="+expectedScale+" actual="+actualScale);
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
                 if(name.StartsWith("mailbox-evolution-analysis-")&&width==844&&height==390)
                 {
