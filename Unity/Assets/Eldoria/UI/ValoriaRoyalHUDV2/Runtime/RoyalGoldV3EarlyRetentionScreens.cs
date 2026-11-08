@@ -875,6 +875,14 @@ namespace Eldoria.UI.RoyalGold.V2
             if(Hud==null||gateway==null||now==null)return;
             EnsureView();
             if(!ready)return;
+            // Vigilia's experimental standalone Canvas can be unloaded while
+            // the canonical gameplay session continues. If the treasure UI
+            // was parented there, restore it through a new live component.
+            if(!dailyTreasures && safe)
+            {
+                dailyTreasures=DailyTreasurePanel.Install(safe);
+                dailyTreasures.Bind(gateway,now,refreshed);
+            }
             if(victoryGroup && victoryGroup.alpha>0f)
             {
                 float remaining=victoryUntil-Time.unscaledTime;
