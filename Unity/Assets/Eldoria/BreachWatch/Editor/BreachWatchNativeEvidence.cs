@@ -132,7 +132,8 @@ namespace Eldoria.BreachWatch.Editor
                 "All three resource icons must be real, recognizable licensed independent sprites");
             Need(!ui.transform.IsChildOf(host.Hud.transform), "New Canvas must not be attached to legacy HUD");
             Need(ui.UsesOriginalPaintedMedallions && ui.UsesApprovedReferenceMedallions &&
-                 ui.UsesOriginalForgedPortraitFrame && ui.UsesOriginalBurgundyStandard,
+                 ui.UsesOriginalForgedPortraitFrame && ui.UsesOriginalBurgundyStandard &&
+                 ui.UsesOwnerApprovedCarvedContext,
                 "Vigilia must render 5 distinct medallions extracted from OWNER'S approved concept, along with the independent forged panel and banner");
 
 
