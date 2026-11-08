@@ -29,7 +29,7 @@ El workflow `.github/workflows/daily-treasures-native.yml` **solo puede utilizar
 - Hash, tamaño, fuente, dimensiones y ausencia de duplicación de todos los PNG capturados.
 - Después de ese test de componente: revisión dentro de la ciudad completa con tutorial real y etapas hasta Bastión V, progresión offline, entorno móvil WebGL/Android/iOS, sonido/memoria/FPS y aprobación estética explícita. Una prueba de componente no se confunde con una partida real.
 
-**Resultado actual:** lógica, presentación y nueve recursos versionados; pruebas de fuente repetibles. La PR #181 sigue en borrador, **sin prueba Unity del arte final, sin integración jugable certificada, sin fusión ni publicación**. Referencia y condiciones: `ART_AND_NATIVE_ACCEPTANCE_20261108.md`.
+**Resultado actual:** lógica, presentación y nueve recursos versionados; pruebas de fuente repetibles. Se han añadido **cuatro direcciones de escena** para Lyra, exploración, Vigilantes y Bastión con composición independiente, escenarios originales existentes, recorte UV y parallax suave. El héroe real de Lyra prevalece sobre la ceremonia mientras su interfaz canónica esté abierta; no hay retrato artificial. El Bastión conserva la ciudad real en lugar de un edificio ilustrado que pudiera ser incorrecto. **El último test Unity sigue pendiente**: esta rama no acredita aún la percepción visual final ni el rendimiento móvil. La PR #181 sigue en borrador, **sin fusión ni publicación**. Referencia y condiciones: `ART_AND_NATIVE_ACCEPTANCE_20261108.md`.
 
 
 ## Evolución del requisito visual
