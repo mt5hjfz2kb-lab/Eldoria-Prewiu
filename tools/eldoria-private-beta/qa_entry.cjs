@@ -31,7 +31,7 @@ const shot=async(name)=>{
  report.captureMethod='Read actual Unity canvas synchronously after its animation-frame callback; original scheduler restored';
 };
 try{
- checkpoint('load');await page.goto('http://127.0.0.1:8765/mobile/?eldoria_diag=1');await page.locator('#play').click();
+ checkpoint('load');await page.goto(process.env.QA_URL||'http://127.0.0.1:8765/mobile/?eldoria_diag=1');await page.locator('#play').click();
  await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:240000});await page.waitForTimeout(45000);
  checkpoint('welcome-ready');
  // Coordinates verified against 390x844 capture and RoyalPlayerNamePrompt anchors.
