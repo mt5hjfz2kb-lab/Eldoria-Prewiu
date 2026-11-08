@@ -944,6 +944,11 @@ namespace Eldoria.DailyTreasures
             Place(entryCaption.rectTransform,.5f,0f,.5f,0f,
                 0f,3f,72f,18f);
             float panelW=Mathf.Min(w-24f,portrait?440f:740f);
+            bool eventStage=currentStage!=DailyTreasureStageKind.Daily &&
+                ceremony && ceremony.gameObject.activeSelf &&
+                prizeCount==0 && w>=275f && h>=300f;
+            var stage=eventStage?DailyTreasureStageDirection.Compose(
+                activeMilestoneId,w,h):default(DailyTreasureStageLayout);
             // Ordinary resources deserve the same illustrated materials but
             // not a giant EMPTY modal. An earned-item reveal uses a distinct,
             // compact luxury frame. The ceremonial coffer remains immersive.
@@ -952,10 +957,38 @@ namespace Eldoria.DailyTreasures
             float panelH=Mathf.Min(h-20f,portrait?
                 (focusedQuiet?460f:700f):(focusedQuiet?330f:370f));
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
-            Place(milestoneScenery.rectTransform,.5f,.5f,.5f,.5f,
-                0f,0f,panelW-25f,panelH-28f);
-            Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
-                0f,0f,panelW-24f,panelH-26f);
+            if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,
+                eventStage?stage.BackdropOpacity:.91f);
+            if(mainFrameSurface)
+            {
+                if(mainFrameSurface.sprite)
+                    mainFrameSurface.color=eventStage &&
+                        currentStage==DailyTreasureStageKind.Bastion?
+                            new Color(1f,1f,1f,.80f):Color.white;
+                else
+                    mainFrameSurface.color=Stone;
+            }
+            if(eventStage)
+            {
+                Place(milestoneScenery.rectTransform,.5f,.5f,.5f,.5f,
+                    stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
+                Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
+                    stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
+                milestoneScenery.color=new Color(.74f,.72f,.68f,
+                    stage.SceneryOpacity);
+                milestoneVignette.color=new Color(.024f,.023f,.026f,
+                    stage.SceneVeilOpacity);
+                Place(milestoneBanner,.5f,.5f,.5f,.5f,
+                    stage.SideBySide?stage.SceneX:0f,panelH*.405f,
+                    Mathf.Min(panelW*.52f,302f),38f);
+            }
+            else
+            {
+                Place(milestoneScenery.rectTransform,.5f,.5f,.5f,.5f,
+                    0f,0f,panelW-25f,panelH-28f);
+                Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
+                    0f,0f,panelW-24f,panelH-26f);
+            }
             UpdateSceneryCrop();
             Place(header.rectTransform,.5f,1f,.5f,1f,0,-8f,panelW-64f,40f);
             Place(subhead.rectTransform,.5f,1f,.5f,1f,0,-49f,panelW-44f,26f);
@@ -1026,21 +1059,30 @@ namespace Eldoria.DailyTreasures
                 (portrait?294f:282f);
             float artHeight=prizeCount>0?(portrait?246f:160f):
                 (portrait?265f:175f);
-            Place(glowRect,.5f,.5f,.5f,.5f,0,chestY,
+            float chestX=eventStage?stage.ChestX:0f;
+            if(eventStage)
+            {
+                chestY=stage.ChestY;
+                artWidth=stage.ChestW;
+                artHeight=stage.ChestH;
+            }
+            Place(glowRect,.5f,.5f,.5f,.5f,chestX,chestY,
                 portrait?320f:335f,portrait?320f:335f);
-            Place(ambientRect,.5f,.5f,.5f,.5f,0,chestY,
+            Place(ambientRect,.5f,.5f,.5f,.5f,chestX,chestY,
                 portrait?385f:390f,portrait?385f:390f);
-            Place(raysRect,.5f,.5f,.5f,.5f,0,chestY,
+            Place(raysRect,.5f,.5f,.5f,.5f,chestX,chestY,
                 portrait?330f:315f,portrait?330f:315f);
-            Place(chest.rectTransform,.5f,.5f,.5f,.5f,0,chestY,
-                prizeCount>0?artWidth*.88f:(portrait?195f:165f),
-                prizeCount>0?artHeight*.88f:(portrait?150f:125f));
+            Place(chest.rectTransform,.5f,.5f,.5f,.5f,chestX,chestY,
+                prizeCount>0?artWidth*.88f:
+                    eventStage?artWidth*.88f:(portrait?195f:165f),
+                prizeCount>0?artHeight*.88f:
+                    eventStage?artHeight*.88f:(portrait?150f:125f));
             // Full-cell transparent source sprites preserve the model's scale,
             // and do not stretch the illustrated ironwork on odd phone ratios.
             Place(illustratedClosed.rectTransform,.5f,.5f,.5f,.5f,
-                0f,chestY,artWidth,artHeight);
+                chestX,chestY,artWidth,artHeight);
             Place(illustratedOpen.rectTransform,.5f,.5f,.5f,.5f,
-                0f,chestY,artWidth,artHeight);
+                chestX,chestY,artWidth,artHeight);
             bool compactPrizePortrait=portrait && prizeCount>0 && panelH<680f;
             bool quietRewards=prizeCount>0 && !chestReward;
             if(prizeCount>0)
@@ -1057,9 +1099,15 @@ namespace Eldoria.DailyTreasures
             {
                 // Real chapter/hero/kingdom milestone: one large chest, then
                 // the confirmed story (no made-up crystals or reward cards).
-                resultText.fontSize=portrait?20:19;
-                Place(resultText.rectTransform,.5f,.5f,.5f,.5f,0,
-                    portrait?-148f:-71f,panelW-45f,portrait?141f:66f);
+                resultText.fontSize=eventStage?
+                    (portrait?19:17):(portrait?20:19);
+                if(eventStage)
+                    Place(resultText.rectTransform,.5f,.5f,.5f,.5f,
+                        stage.ReceiptX,stage.ReceiptY,
+                        stage.ReceiptW,stage.ReceiptH);
+                else
+                    Place(resultText.rectTransform,.5f,.5f,.5f,.5f,0,
+                        portrait?-148f:-71f,panelW-45f,portrait?141f:66f);
             }
 
             // Four day-seven rewards need at least 65px per item, even
@@ -1111,7 +1159,12 @@ namespace Eldoria.DailyTreasures
                 prizeNames[i].fontSize=tall?12:shortCard?10:11;
             }
             // Skip stays away from the receipt and is a genuine >=44px hit target.
-            Place((RectTransform)skipButton.transform,1f,1f,1f,1f,-10f,-60f,100f,45f);
+            if(eventStage && stage.SideBySide)
+                Place((RectTransform)skipButton.transform,
+                    .5f,1f,.5f,1f,stage.SceneX,-55f,100f,45f);
+            else
+                Place((RectTransform)skipButton.transform,
+                    1f,1f,1f,1f,-10f,-60f,100f,45f);
         }
         // PR173's approved Vigilia runs in a separate ScreenSpaceCamera
         // Canvas and deliberately disables the old Royal HUD's Canvas.
