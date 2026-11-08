@@ -45,6 +45,9 @@ namespace Eldoria.BreachWatch
         BreachWatchPlate actionPlate;
         readonly Button[] navButtons = new Button[5];
         readonly BreachWatchPlate[] navPlates = new BreachWatchPlate[5];
+        static readonly string[] ReferenceNavArt = {
+            "castle", "provisions", "swords", "raven", "helm"
+        };
         string selected="";
         int selectedTab;
         bool fullObjective;
@@ -91,7 +94,19 @@ namespace Eldoria.BreachWatch
         }
         public bool UsesOriginalPaintedMedallions =>
             navPlates[0] && navPlates[0].sprite &&
-            navPlates[0].sprite.name=="nav_sculpted_medallion";
+            navPlates[0].sprite.name=="castle";
+        public bool UsesApprovedReferenceMedallions
+        {
+            get
+            {
+                for(int i=0;i<navPlates.Length;i++)
+                    if(!navPlates[i] || !navPlates[i].UsesOwnerReference ||
+                       !navPlates[i].sprite ||
+                       navPlates[i].sprite.name!=ReferenceNavArt[i])
+                        return false;
+                return true;
+            }
+        }
         public bool UsesOriginalForgedPortraitFrame =>
             portraitFrame && portraitFrame.GetComponent<BreachWatchPlate>() &&
             portraitFrame.GetComponent<BreachWatchPlate>().sprite &&
@@ -306,6 +321,15 @@ namespace Eldoria.BreachWatch
                 int index=i;var rt=BuildButton(buttonRow,navLabels[i],navIcons[i],()=>Navigate(index),BreachWatchPlate.PlateType.Navigation);
                 navButtons[i]=rt.GetComponent<Button>();navPlates[i]=rt.GetComponent<BreachWatchPlate>();
                 navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Navigation;
+                var approved=Resources.Load<Sprite>("VigiliaArt/OwnerReference/"+ReferenceNavArt[i]);
+                if(approved)
+                {
+                    navPlates[i].ApplyIndependentArt(approved);
+                    // The reference image includes its own relief icon. Keep
+                    // the separate raycast and button, but avoid double icons.
+                    var oldPlaceholder=rt.GetComponentInChildren<BreachWatchGlyph>();
+                    if(oldPlaceholder)oldPlaceholder.enabled=false;
+                }
             }
             feedback=Label(uiRoot,"Action feedback / live or disabled",15,TextAnchor.MiddleCenter,Copper);
             feedback.text="";
@@ -592,7 +616,16 @@ namespace Eldoria.BreachWatch
                     bool allowed=i!=2&&(i!=3||host.CanOpen(RoyalSection.World));
                     navButtons[i].interactable=allowed;
                     var icon=navButtons[i].GetComponentInChildren<BreachWatchGlyph>();
-                    if(icon){icon.Ink=allowed?TextIvory:Locked;icon.SetVerticesDirty();}
+                    if(icon && icon.enabled)
+                    {
+                        icon.Ink=allowed?TextIvory:Locked;
+                        icon.SetVerticesDirty();
+                    }
+                    // Disabled destination is still visible, never presented as playable.
+                    var p=navPlates[i];
+                    if(p)p.color=allowed
+                        ? i==(host.InWorld?3:selectedTab)?new Color(1f,.86f,.77f):Color.white
+                        : new Color(.43f,.43f,.44f,.84f);
                 }
             }
             catch(Exception e)
