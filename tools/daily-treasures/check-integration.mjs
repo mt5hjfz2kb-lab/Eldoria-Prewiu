@@ -190,7 +190,7 @@ assert.match(native,/panel\.HasMilestoneScenery/);
 assert.match(native,/panel\.MilestoneSceneryKey==requiredScenery\[style\]/);
 assert.match(panel,/DailyTreasureStageDirection\.Compose\(/);
 assert.match(panel,/currentStage==DailyTreasureStageKind\.Bastion/);
-assert.match(panel,/milestoneScenery\.color=new Color\(\.74f,\.72f,\.68f,/);
+assert.match(panel,/milestoneScenery\.color=new Color\(\.70f,\.68f,\.65f,/);
 assert.match(panel,/milestoneBannerCaption\.text="UNA HEROÍNA SE UNE"/);
 assert.match(panel,/milestoneBannerCaption\.text="HORIZONTES DESCUBIERTOS"/);
 assert.match(panel,/milestoneBannerCaption\.text="VICTORIA DE LOS VIGILANTES"/);
