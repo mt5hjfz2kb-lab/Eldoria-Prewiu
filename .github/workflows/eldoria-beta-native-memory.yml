@@ -13,7 +13,7 @@ concurrency:
   group: eldoria-beta-native-warm-preserved
   cancel-in-progress: false
 env:
-  EXPECTED_LEASE_REVISION: '11'
+  EXPECTED_LEASE_REVISION: '12'
 jobs:
   preflight:
     runs-on: ubuntu-latest
