@@ -224,6 +224,17 @@ namespace Eldoria.DailyTreasures.Editor
                         "Day seven must show four ORIGINAL painted resource cards after real claim");
                     pictures.Add(Render(camera,rt,output,width,height,"opened",
                         "Same real claim: chest opened and exact items",true,true));
+                    if((width==390&&height==844)||(width==844&&height==390))
+                    {
+                        // Show the actual between-keyframes chest-to-inventory
+                        // item flight, never only the two static endpoints.
+                        panel.SamplePaidItemFlightForNativeEvidence(.23f);
+                        Canvas.ForceUpdateCanvases();
+                        pictures.Add(Render(camera,rt,output,width,height,
+                            "day7-prize-flight",
+                            "Real four-item day-seven chest-to-inventory arc",true,true));
+                        panel.SamplePaidItemFlightForNativeEvidence(2f);
+                    }
                     Need(gateway.Snapshot().Resources.Wood==after.Resources.Wood &&
                          gateway.Snapshot().Resources.Stone==after.Resources.Stone,
                          "Skipping ceremony must never pay rewards again");
@@ -291,6 +302,15 @@ namespace Eldoria.DailyTreasures.Editor
                         "special-day4-received",
                         "Actual day-four payment shown as two original illustrated resource cards",
                         true,true));
+                    if((width==390&&height==844)||(width==844&&height==390))
+                    {
+                        panel.SamplePaidItemFlightForNativeEvidence(.19f);
+                        Canvas.ForceUpdateCanvases();
+                        pictures.Add(Render(camera,rt,output,width,height,
+                            "special-day4-prize-flight",
+                            "Real two-item day-four chest-to-inventory arc",true,true));
+                        panel.SamplePaidItemFlightForNativeEvidence(2f);
+                    }
                     Need(specialGateway.Snapshot().Resources.Wood==
                          specialAfter.Resources.Wood &&
                          specialGateway.Snapshot().Resources.Stone==
@@ -417,7 +437,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Object.DestroyImmediate(rt);
                     Object.DestroyImmediate(go);
                 }
-                Need(pictures.Count==48 && inputChecks==56 &&
+                Need(pictures.Count==52 && inputChecks==56 &&
                      report.realGatewayClaims==8 &&
                      report.visualOnlyMilestoneCaptures==16,
                     "Real daily rewards and four artistic milestone styles not fully captured");
@@ -428,7 +448,7 @@ namespace Eldoria.DailyTreasures.Editor
                 report.images=pictures.Count;
                 report.shots=pictures.ToArray();
                 File.WriteAllText(Path.Combine(output,"report.json"),JsonUtility.ToJson(report,true));
-                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 44 PNG (28 real daily, 16 purely artistic style); NOT ART_APPROVED / NOT FULL GAMEPASS");
+                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 52 PNG (4 entry, 28 daily, 4 prize flights, 16 visual style); NOT ART_APPROVED / NOT FULL GAMEPASS");
                 EditorApplication.Exit(0);
             }
             catch(Exception e)
