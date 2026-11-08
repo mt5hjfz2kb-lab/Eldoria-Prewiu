@@ -81,12 +81,29 @@ namespace Eldoria.DailyTreasures
             image.raycastTarget=raycast;
             return image;
         }
+        static DailyTreasureReliefGraphic Relief(RectTransform parent,bool major=false,
+            bool primary=false)
+        {
+            var r=NewRect("Reversible forged bronze engraving / visual only",parent);
+            Stretch(r);
+            r.SetAsFirstSibling();
+            var graphic=r.gameObject.AddComponent<DailyTreasureReliefGraphic>();
+            graphic.Major=major;graphic.Primary=primary;
+            graphic.raycastTarget=false;graphic.color=Color.white;
+            return graphic;
+        }
         static Text Label(Transform parent,string name,string value,
             int fontSize,Color tint,TextAnchor align)
         {
             var r=NewRect(name,parent);
             var t=r.gameObject.AddComponent<Text>();
             t.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            if(name=="Reward heading" || name=="Day heading" || name=="Claim label" ||
+               name=="Confirmed received items")
+            {
+                var serif=Resources.Load<Font>("EldoriaRetention/reference-serif");
+                if(serif)t.font=serif;
+            }
             t.fontSize=fontSize;t.color=tint;t.alignment=align;
             t.horizontalOverflow=HorizontalWrapMode.Wrap;
             t.verticalOverflow=VerticalWrapMode.Truncate;
@@ -117,21 +134,26 @@ namespace Eldoria.DailyTreasures
             // No second EventSystem, Canvas, save or navigation router.
             entryRect=NewRect("Daily reward / optional medallion",root);
             entryButton=ActionButton(entryRect,Oak,Open);
+            Relief(entryRect,false,true);
             entryCaption=Label(entryRect,"Daily available label","COFRE",15,Gold,TextAnchor.MiddleCenter);
             Stretch(entryCaption.rectTransform);
-            var entryBorder=entryRect.gameObject.AddComponent<Outline>();
-            entryBorder.effectColor=Gold;entryBorder.effectDistance=new Vector2(2f,-2f);
+            var entryShadow=entryRect.gameObject.AddComponent<Shadow>();
+            entryShadow.effectColor=new Color(.02f,.012f,.012f,.8f);
+            entryShadow.effectDistance=new Vector2(2f,-3f);
 
             screen=NewRect("Tributo de los siete días / modal",root);
             Stretch(screen);
             Plate(screen,new Color(.018f,.020f,.026f,.91f));
             cardSurface=NewRect("Basalt and worn bronze reward parchment",screen);
             Plate(cardSurface,Stone);
-            var edge=cardSurface.gameObject.AddComponent<Outline>();
-            edge.effectColor=Gold;edge.effectDistance=new Vector2(2f,-2f);
+            Relief(cardSurface,true);
+            var edge=cardSurface.gameObject.AddComponent<Shadow>();
+            edge.effectColor=new Color(0f,0f,0f,.82f);
+            edge.effectDistance=new Vector2(4f,-6f);
             header=Label(cardSurface,"Reward heading","TESOROS DE VALORIA",27,Gold,TextAnchor.MiddleCenter);
             subhead=Label(cardSurface,"Consecutive visits","",16,Muted,TextAnchor.MiddleCenter);
             closeButton=ActionButton(NewRect("Close tributes",cardSurface),Oak,Close);
+            Relief((RectTransform)closeButton.transform,false,false);
             var closeLabel=Label(closeButton.transform,"Accessible close","X",24,Ivory,TextAnchor.MiddleCenter);
             Stretch(closeLabel.rectTransform);
             calendar=NewRect("Seven genuine rewards",cardSurface);
@@ -139,6 +161,7 @@ namespace Eldoria.DailyTreasures
             {
                 var day=NewRect("Day "+(i+1)+" / non-clickable informational card",calendar);
                 dayBack[i]=Plate(day,i==6?new Color(.27f,.20f,.11f,1f):Oak,false);
+                Relief(day);
                 dayHead[i]=Label(day,"Day heading","DÍA "+(i+1),17,Gold,TextAnchor.MiddleCenter);
                 dayBody[i]=Label(day,"Actual reward contents","",15,Ivory,TextAnchor.MiddleCenter);
                 Stretch(dayHead[i].rectTransform);
@@ -146,6 +169,7 @@ namespace Eldoria.DailyTreasures
                 Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,0,-6,150,26);
             }
             claimButton=ActionButton(NewRect("Claim exact daily reward",cardSurface),Oak,Claim);
+            Relief((RectTransform)claimButton.transform,false,true);
             claimCaption=Label(claimButton.transform,"Claim label","RECLAMAR TRIBUTO",19,Ivory,TextAnchor.MiddleCenter);
             Stretch(claimCaption.rectTransform);
 
@@ -167,6 +191,7 @@ namespace Eldoria.DailyTreasures
             }
             skipButton=ActionButton(NewRect("Skip animation / keep earned items",ceremony),
                 new Color(.23f,.19f,.17f,1f),ShowResult);
+            Relief((RectTransform)skipButton.transform,false,false);
             var skipText=Label(skipButton.transform,"Skip caption","SALTAR",15,Gold,TextAnchor.MiddleCenter);
             Stretch(skipText.rectTransform);
             ceremony.gameObject.SetActive(false);
