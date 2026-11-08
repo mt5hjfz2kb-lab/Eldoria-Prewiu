@@ -110,14 +110,14 @@
     }
   ],
   "structural_candidate": {
-    "status": "STARTUP_PARITY_PASSED_CANONICAL_JOURNEY_LAUNCH_REPAIRED_RETRYING",
+    "status": "WEBGL_BUILT_NATIVE_225_CHECKS_PASSED_EXPORT_RESTORATION_QUEUED",
     "source_baseline": "948ffa9837168a0b68dab80be76b66350422b23a",
     "overlay_commit": "91734045e8d32cc90cc4843b4b7e08e57b1a0458",
     "native_run": 42435095850,
     "native_job": 128592182140,
     "native_compilation_verified": true,
     "native_parity_verified": true,
-    "webgl_built": false,
+    "webgl_built": true,
     "published": false,
     "physical_iphone_verified": false,
     "source_scope": "Four claimed C# files; staged initialization, readiness gate, temporary validation cache release, canonical validator readiness wait",
@@ -136,9 +136,9 @@
     "input_audit": "tools/eldoria-private-beta/native/existing-input-audit.json",
     "source_composition": "Frozen code plus 147 reviewed existing generated/normalized inputs and four C# overlays",
     "last_native_failure": {
-      "run": 42431634641,
-      "cause": "Canonical journey callback scheduled through Editor delayCall did not start after observed SearchInit exception; external 40-minute deadline reached. A/B startup passed beforehand. New launcher uses Editor update with 300-second watchdog.",
-      "restore": "Verified recovery step succeeded in run42435095850 before new native execution"
+      "run": 42435095850,
+      "cause": "Native startup parity, canonical 225-check journey and fresh WebGL build passed. Subsequent restoration gate detected two Unity-modified URP configuration assets; all 174 preserved inputs restored and no existing-input conflicts.",
+      "restore": "Exact two-file preservation/restoration and build export queued in run42437285033; post-build diff still requires review."
     },
     "previous_startup_proof": {
       "run": 42431634641,
@@ -160,6 +160,13 @@
       ],
       "total_process_ram_reduction_proven": false,
       "physical_mobile": false
-    }
+    },
+    "canonical_journey_checks": 225,
+    "canonical_journey_verified": true,
+    "native_evidence_artifact": 13598859327,
+    "native_evidence_zip_sha256": "52a39d2be58704088348b944b3dfb31469e27171972c60d45c4d81f34040694a",
+    "export_run": 42437285033,
+    "export_source": "c54a6062bccafc67ecd83e35308953c20bcfb1d4",
+    "browser_verified": false
   }
 }
