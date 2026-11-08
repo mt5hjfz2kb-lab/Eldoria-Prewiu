@@ -187,6 +187,82 @@ internal static class GatewayChecks
             m.Type!="milestone-bastion"),
             "ordinary fresh game never receives a fake completed Bastion ceremony");
     }
+    static void RealMilestoneSessionQueue()
+    {
+        var q=new DailyTreasureMilestoneQueue();
+        var baseline=new PlayerState();
+        q.Reset(baseline);
+        Assert(q.PendingCount==0,"no initial ceremony on a fresh game");
+        var missingMail=new PlayerState();
+        missingMail.BastionLevel=2;
+        q.Observe(missingMail);
+        Assert(q.PendingCount==0,"Bastion level without verified mailbox cannot invent ceremony");
+
+        q.Reset(baseline);
+        var earned=new PlayerState();
+        earned.BastionLevel=2;
+        earned.Mailbox.Receive(new EldoriaV41Message {
+            EventId="milestone:bastion:2",Type="milestone-bastion",
+            Category="narrativa",Title="Bastión II completado",
+            Subtitle="El cuartel ya está a tu alcance"
+        });
+        q.Observe(earned);
+        Assert(q.PendingCount==1,"committed Bastion II becomes a queued in-session celebration");
+        Assert(q.TryPeek(out var first) && first.EventId=="milestone:bastion:2" &&
+            first.Detail.Contains("cuartel"),"queue uses only real mail title/description");
+        Assert(q.TryPeek(out var later) && later.EventId==first.EventId,
+            "unavailable UI does not consume deferred ceremony");
+        Assert(!q.ConfirmPresented("milestone:bastion:5"),
+            "wrong confirmation cannot consume a ceremony");
+        Assert(q.ConfirmPresented(first.EventId),"real displayed milestone is acknowledged");
+        Assert(q.PendingCount==0 && !q.TryPeek(out _),"no replays after confirmed display");
+
+        q.Observe(earned);
+        Assert(q.PendingCount==0,"re-observing same state cannot celebrate Bastion twice");
+
+        var recruited=new PlayerState();
+        recruited.BastionLevel=2;
+        recruited.ChapterThree.LyraRecruited=true;
+        recruited.Mailbox.Receive(new EldoriaV41Message {
+            EventId="milestone:hero:lyra",Type="hero-unlocked",
+            Category="narrativa",Title="Lyra se une a Valoria",
+            Subtitle="La exploradora puede participar en marchas"
+        });
+        q.Observe(recruited);
+        Assert(q.PendingCount==1 && q.TryPeek(out var hero) &&
+            hero.EventId=="milestone:hero:lyra","authentic Lyra recruitment is celebrated");
+        Assert(!q.ConfirmPresented("fake"),"hero announcement cannot disappear through wrong ack");
+        Assert(q.ConfirmPresented("milestone:hero:lyra"),
+            "recruited Lyra presentation consumed only once");
+        Assert(q.PendingCount==0,"hero announcement not replayed after acknowledgement");
+
+        var boot=new DailyTreasureMilestoneQueue();
+        boot.Reset(recruited);
+        boot.Observe(recruited);
+        Assert(boot.PendingCount==0,"offline Lyra arrives via mailbox without unwanted autoplay");
+        q.Reset(recruited);
+        Assert(q.PendingCount==0,"re-binding player resets only ephemeral screen queue");
+        var next=new PlayerState();
+        next.BastionLevel=5;
+        next.ChapterThree.LyraRecruited=true;
+        next.Mailbox.Receive(new EldoriaV41Message {
+            EventId="milestone:bastion:5",Type="milestone-bastion",
+            Category="narrativa",Title="Valoria se reconstruye",
+            Subtitle="Bastión V completado"
+        });
+        q.Observe(next);
+        Assert(q.PendingCount==1 && q.TryPeek(out var fifth) &&
+            fifth.EventId=="milestone:bastion:5",
+            "real late Bastion upgrade is queued correctly");
+
+        var anonymous=new PlayerState();
+        anonymous.BastionLevel=3;
+        anonymous.ChapterThree.LyraRecruited=true;
+        q.Reset(recruited);
+        q.Observe(anonymous);
+        Assert(q.PendingCount==0,"future unrecorded events do not create fictitious premium rewards");
+    }
+
     public static void Main()
     {
         var clock=new FakeClock{UtcTicks=At(8)};
@@ -243,6 +319,7 @@ internal static class GatewayChecks
         SevenDayRealGatewayJourney();
         RealMilestoneEligibility();
         RealBastionMailboxMilestones();
+        RealMilestoneSessionQueue();
         Console.WriteLine("PASS daily treasure real gateway: "+assertions+" assertions, store writes "+store.Writes);
     }
 }
