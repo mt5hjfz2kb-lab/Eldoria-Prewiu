@@ -26,6 +26,26 @@ function processes() {
     const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});
     await context.addInitScript(({variant})=>{
       window.__growth=[];
+      window.__preallocation=[];
+      // Diagnostic A/B: grow the exported heap before Emscripten receives it.
+      // No WASM byte, asset, gameplay or public deployment is changed.
+      if(variant==='preallocated-1024'){
+        for(const method of ['instantiate','instantiateStreaming']){
+          const instantiate=WebAssembly[method];if(!instantiate)continue;
+          WebAssembly[method]=async function(...args){
+            const result=await instantiate.apply(WebAssembly,args);
+            const instance=result instanceof WebAssembly.Instance?result:result.instance;
+            const memory=instance?.exports?.memory;
+            if(memory instanceof WebAssembly.Memory){
+              const before=memory.buffer.byteLength,target=1024*1024*1024;
+              if(before<target)memory.grow(Math.ceil((target-before)/65536));
+              const record={at:performance.now(),before,after:memory.buffer.byteLength};
+              window.__preallocation.push(record);console.log('ELDORIA_HEAP_PREALLOCATED '+JSON.stringify(record));
+            }
+            return result;
+          };
+        }
+      }
       window.__glCalls=[];
       const remember=(name,args)=>{
         const a=Array.from(args).map(v=>typeof v==='number'||typeof v==='boolean'||typeof v==='string'?v:(v?.byteLength!==undefined?{byteLength:v.byteLength}:String(v)));
@@ -89,7 +109,7 @@ function processes() {
       const s=await page.evaluate(()=>{
         const game=window.valoriaGame;
         let metrics=null;try{metrics=game?.GetMetricsInfo?.();}catch(e){metrics={error:String(e)};}
-        return {at:performance.now(),ready:!!game,metrics,growth:window.__growth,
+        return {at:performance.now(),ready:!!game,metrics,growth:window.__growth,preallocation:window.__preallocation,
           diagnostic:window.EldoriaLocalDiagnostic?.read?.(),
           visible:!document.getElementById('game').hidden,
           error:document.getElementById('error')?.textContent,
@@ -117,6 +137,7 @@ function processes() {
       const finalEvents=fs.readFileSync(out+'/events.jsonl','utf8');
       if(report.errors.length||/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(finalEvents))throw Error('Entry/reload runtime errors');
     }
+    if(variant==='preallocated-1024'&&!report.samples.some(s=>s.preallocation?.some(p=>p.after===1073741824)))throw Error('Preallocation intervention not observed');
     report.passed=true;
   }catch(e){report.failure=String(e);}
   finally{
