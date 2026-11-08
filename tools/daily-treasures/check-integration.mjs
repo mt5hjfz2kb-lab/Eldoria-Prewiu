@@ -72,8 +72,8 @@ assert.match(panel,/SampleForNativeEvidence\(float elapsed\)/);
 assert.match(panel,/PaintCeremonyFrame\(elapsed\)/);
 assert.match(native,/DailyTreasureRevealTimeline\.RevealPeakSeconds/);
 assert.match(native,/"opening"/);
-assert.match(native,/pictures\.Count==28/);
-assert.match(nativeWorkflow,/\$report\.images -ne 28/);
+assert.match(native,/pictures\.Count==44/);
+assert.match(nativeWorkflow,/\$report\.images -ne 44/);
 // PR173's canonical independently rendered Canvas hides the old Royal HUD.
 // Genuine daily UI must relocate to the native safe area or be invisible.
 assert.match(panel,/GameObject\.Find\("VIGILIA \/ independent canvas"\)/);
@@ -91,10 +91,10 @@ assert.match(native,/special-day4-calendar/);
 assert.match(native,/special-day4-opening/);
 assert.match(native,/special-day4-received/);
 assert.match(native,/specialAfter\.Resources\.Wood==specialBefore\.Resources\.Wood\+90/);
-assert.match(native,/pictures\.Count==28 && inputChecks==40 && report\.realGatewayClaims==8/);
-assert.match(nativeWorkflow,/\$report\.images -ne 28/);
+assert.match(native,/pictures\.Count==44 && inputChecks==56/);
+assert.match(nativeWorkflow,/\$report\.images -ne 44/);
 assert.match(nativeWorkflow,/\$report\.realGatewayClaims -ne 8/);
-assert.match(nativeWorkflow,/\$report\.graphicalPointerHits -ne 40/);
+assert.match(nativeWorkflow,/\$report\.graphicalPointerHits -ne 56/);
 assert.match(panel,/reward\.CycleDay==7\?DailyTreasureCeremonyTier\.Legendary/);
 assert.match(native,/panel\.ProbePresentationCanvasForNativeEvidence\(\)/);
 assert.match(native,/nativeCanvas\.enabled=false/);
@@ -107,7 +107,7 @@ assert.equal((nativeWorkflow.match(/- name: Preserve real Unity screenshots/g)||
     'Native artifact upload is unique');
 assert.doesNotMatch(nativeWorkflow,/^\)\s*$/m,
     'No orphan PowerShell expressions outside YAML blocks');
-assert.match(nativeWorkflow,/\$report\.graphicalPointerHits -ne 40/);
+assert.match(nativeWorkflow,/\$report\.graphicalPointerHits -ne 56/);
 const paidCardSource=fs.readFileSync(
   'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureRewardPresentation.cs','utf8');
 const originalRaySource=fs.readFileSync(
@@ -130,4 +130,10 @@ assert.match(originalRaySource,/public void SetIntensity\(float value\)/);
 // presentation code must remain incapable of issuing payouts.
 const paidCardExecutable=paidCardSource.replace(/\/\/[^\n]*/g,'');
 assert.doesNotMatch(paidCardExecutable,/LocalGateway|GameCommand|\.Execute\(|PlayerPrefs/);
+assert.match(native,/visualOnlyMilestoneCaptures==16/);
+assert.match(native,/styleIds=new\[\]\{/);
+assert.match(native,/coversReward=saved/);
+assert.match(nativeWorkflow,/visualOnlyMilestoneCaptures -ne 16/);
+assert.match(panel,/DailyTreasureCeremonyTheme\.ForEvent\(/);
+assert.match(panel,/ambient\.color=new Color\(activeTheme\.R/);
 console.log('PASS daily treasures gateway integration source invariants');
