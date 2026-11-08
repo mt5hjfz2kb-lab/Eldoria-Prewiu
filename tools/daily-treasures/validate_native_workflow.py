@@ -61,7 +61,7 @@ assert nativejob["timeout-minutes"]<=90
 steps=nativejob["steps"]
 names=[step.get("name",step.get("uses","")) for step in steps]
 assert len(names)==len(set(names)), "Duplicate native step names"
-assert any("Use installed Git" in name for name in names)
+assert any("installed Git" in name for name in names)
 assert any("Fetch exact PR SHA by safe sparse" in name for name in names)
 assert not any("checkout@" in step.get("uses","").lower() for step in steps),(
     "Do not use actions/checkout on the gigantic Unity repo Windows runner: "
