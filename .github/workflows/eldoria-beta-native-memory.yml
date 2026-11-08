@@ -1,4 +1,4 @@
-name: Eldoria exact texture duplicate reference audit
+name: Eldoria conservative exact texture candidate verification
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -10,8 +10,18 @@ permissions:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - name: Temporary serialization headroom
+        run: |
+          sudo fallocate -l 8G /tmp/eldoria-beta-dedup.swap
+          sudo chmod 600 /tmp/eldoria-beta-dedup.swap
+          sudo mkswap /tmp/eldoria-beta-dedup.swap
+          sudo swapon /tmp/eldoria-beta-dedup.swap
       - uses: actions/download-artifact@v4
         with:
           run-id: 42473140363
@@ -36,47 +46,19 @@ jobs:
           pathlib.Path('evidence').mkdir()
           pathlib.Path('evidence/data-entries.json').write_text(json.dumps(entries,indent=2))
           print('ENTRIES',json.dumps(entries),flush=True)
-          import UnityPy,hashlib,json,collections,pathlib,struct
-          from UnityPy.classes.PPtr import PPtr
-          env=UnityPy.load('bundle')
-          groups=collections.defaultdict(list)
-          for o in env.objects:
-           if o.type.name!='Texture2D':continue
-           t=o.read_typetree()
-           if t.get('m_IsReadable',True) or t.get('m_StreamData',{}).get('size',0):continue
-           raw=o.get_raw_data();groups[(o.assets_file.name,hashlib.sha256(raw).hexdigest())].append((o.path_id,len(raw),t['m_Name']))
-          groups={k:v for k,v in groups.items() if len(v)>1}
-          ids={p for v in groups.values() for p,_,_ in v}
-          unknown=[];refs=0;duplicate_refs=0
-          def walk(t):
-           if isinstance(t,dict):
-            if 'm_FileID' in t and 'm_PathID' in t:
-             yield t
-            else:
-             for v in t.values():yield from walk(v)
-           elif isinstance(t,(list,tuple)):
-            for v in t:yield from walk(v)
-          for o in env.objects:
-           try:
-            node=o._get_typetree_node()
-            if not any(n.m_Type.startswith('PPtr<') for n in node.traverse()):continue
-            t=o.read_typetree()
-           except Exception as e:
-            raw=o.get_raw_data();possible=[p for p in ids if struct.pack('<q',p) in raw]
-            unknown.append({'type':o.type.name,'id':o.path_id,'file':o.assets_file.name,'reason':str(e)[:180],'possible_duplicate_ids':possible});continue
-           for p in walk(t):
-            if not p['m_PathID']:continue
-            refs+=1
-            try:
-             target=PPtr(m_FileID=p['m_FileID'],m_PathID=p['m_PathID'],assetsfile=o.assets_file).deref()
-             if target.type.name=='Texture2D' and (target.assets_file.name,hashlib.sha256(target.get_raw_data()).hexdigest()) in groups:duplicate_refs+=1
-            except (FileNotFoundError,KeyError):pass
-          result={'groups':[{'file':k[0],'raw_sha256':k[1],'objects':v} for k,v in groups.items()],'duplicate_serialized_bytes':sum((len(v)-1)*v[0][1] for v in groups.values()),'removed_objects_if_all_safe':sum(len(v)-1 for v in groups.values()),'unknown':unknown,'references_scanned':refs,'duplicate_references':duplicate_refs}
-          pathlib.Path('evidence/duplicate-audit.json').write_text(json.dumps(result,indent=2))
-          print({k:v for k,v in result.items() if k not in ('groups','unknown')},'unknown',len(unknown),flush=True)
           PY
+      - name: Verify conservative exact architecture texture aliasing
+        run: |
+          python -u tools/eldoria-private-beta/deduplicate_exact_textures.py --source bundle --destination deduplicated --expected-sha256 ac6f3c50f236dc35e04b7ed3aafa1b4a8b40dd4238f63b700ab5440ae5fd2ce9
+          cp deduplicated/integrity.json evidence/dedup-integrity.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: preserved-webgl-payload-audit
           path: evidence/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: deduplicated-bundle-unverified
+          path: deduplicated/
+          compression-level: 0
