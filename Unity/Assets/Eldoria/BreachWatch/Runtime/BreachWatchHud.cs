@@ -285,15 +285,15 @@ namespace Eldoria.BreachWatch
         {
             var rect=Rect(name,parent);
             var text=rect.gameObject.AddComponent<Text>();
-            // The original display font has beautiful hairlines but is too
-            // fragile at 390 physical pixels. Preserve it on large headings;
-            // use screen-optimised Baskerville for actual gameplay information.
-            // The approved short chapter and objective inscriptions use
-            // original Cormorant stone-lettering, not the wider Baskerville
-            // reading face that made the compact tablet wrap and clip.
+            // Keep numerals and full gameplay requirements in legible
+            // Baskerville. Use genuine, slightly narrower OFL Cormorant for
+            // concise two-line inscriptions and the upgrade button: the
+            // latter now fits without truncation at phone width.
             bool display=name=="Player name" || name=="Real building name" ||
                 name=="Compact engraved cost heading" ||
-                name=="Actual chapter" || name=="Actual objective";
+                name=="Actual chapter" || name=="Actual objective" ||
+                name=="Real effects" || name=="Real action title" ||
+                name=="Real state and timer";
             Font regular=display?font:bodyFont;
             Font heavy=display?boldFont:bodyBoldFont;
             text.font=bold && heavy ? heavy : regular;
@@ -926,7 +926,11 @@ namespace Eldoria.BreachWatch
             if(actionLabel && actionButton)
             {
                 var plate=(RectTransform)actionButton.transform;
-                float leftInset=Mathf.Min(48f,plate.rect.width*.32f);
+                // The engraved hammer occupies only the first ~24 physical
+                // pixels at this size. A 48-unit inset made the readable
+                // title tiny; 30–40 units preserve the relief *and* allow
+                // Cormorant text to remain at native font size.
+                float leftInset=Mathf.Clamp(plate.rect.width*.22f,30f,40f);
                 At(actionLabel.rectTransform,leftInset,3f,
                     Mathf.Max(20f,plate.rect.width-leftInset-7f),
                     Mathf.Max(20f,plate.rect.height-6f));
