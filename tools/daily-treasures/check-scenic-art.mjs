@@ -43,7 +43,8 @@ assert.match(stage,/float backdropOpacity,float sceneryOpacity,float veilOpacity
 assert.match(stage,/if\(kind==DailyTreasureStageKind\.Bastion\)/);
 assert.match(panel,/PaintMilestoneAtmosphere\(elapsed,frame\)/);
 assert.match(panel,/SafePainterlyDrift\(/);
-assert.match(panel,/stage\.SideBySide\?stage\.SceneX:0f/);
+assert.match(panel,/stage\.SideBySide\?stage\.SceneX:-panelW\*\.10f/,
+  'Portrait event headline must not cover the actual Skip action');
 assert.match(panel,/return "EldoriaV41\/heroes-hall-illustrated-v2"/);
 assert.match(panel,/return "EldoriaRetention\/scouts-painterly-v2"/);
 assert.match(panel,/return "EldoriaRetention\/vigilants-painterly-v2"/);
