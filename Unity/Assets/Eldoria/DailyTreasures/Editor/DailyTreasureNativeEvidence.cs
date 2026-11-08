@@ -282,6 +282,55 @@ namespace Eldoria.DailyTreasures.Editor
                         FindButton(panel,"Close tributes"),width,height);
                     inputChecks++;
                     Need(!panel.IsOpen,"Day-four close must work");
+
+                    // Rehearse PR173's exact independent canvas identity and
+                    // safe-area naming without editing or relying on that
+                    // other workstream's assembly. The old Royal canvas is
+                    // explicitly switched off, just as Vigilia does in game.
+                    var nativeObj=new GameObject("VIGILIA / independent canvas",
+                        typeof(RectTransform),typeof(Canvas),
+                        typeof(CanvasScaler),typeof(GraphicRaycaster));
+                    nativeObj.layer=5;
+                    var nativeRoot=(RectTransform)nativeObj.transform;
+                    nativeRoot.sizeDelta=new Vector2(width,height);
+                    nativeRoot.localScale=Vector3.one*.01f;
+                    var nativeCanvas=nativeObj.GetComponent<Canvas>();
+                    nativeCanvas.renderMode=RenderMode.WorldSpace;
+                    nativeCanvas.worldCamera=camera;
+                    var safeObj=new GameObject("Safe composition",
+                        typeof(RectTransform));
+                    safeObj.layer=5;
+                    safeObj.transform.SetParent(nativeObj.transform,false);
+                    var safeRect=(RectTransform)safeObj.transform;
+                    safeRect.anchorMin=Vector2.zero;
+                    safeRect.anchorMax=Vector2.one;
+                    safeRect.offsetMin=Vector2.zero;
+                    safeRect.offsetMax=Vector2.zero;
+                    canvas.enabled=false;
+                    panel.ProbePresentationCanvasForNativeEvidence();
+                    Need(panel.UsesVigiliaCanvas &&
+                         panel.transform.parent==safeRect,
+                         "Daily treasure canvas remained invisible on Vigilia");
+                    Canvas.ForceUpdateCanvases();
+                    ClickAtNativeScreenPosition(nativeCanvas,eventSystem,camera,
+                        FindButton(panel,"Daily reward / optional medallion"),
+                        width,height);
+                    inputChecks++;
+                    Need(panel.IsOpen,
+                        "Independent Vigilia reward medallion cannot open");
+                    ClickAtNativeScreenPosition(nativeCanvas,eventSystem,camera,
+                        FindButton(panel,"Close tributes"),width,height);
+                    inputChecks++;
+                    Need(!panel.IsOpen,
+                        "Independent Vigilia reward modal cannot close");
+                    nativeCanvas.enabled=false;
+                    panel.ProbePresentationCanvasForNativeEvidence();
+                    Need(!panel.UsesVigiliaCanvas &&
+                         panel.transform.parent==rect,
+                         "Daily treasure UI cannot restore to original canvas");
+                    canvas.enabled=true;
+                    Object.DestroyImmediate(nativeObj);
+
                     Object.DestroyImmediate(eventObj);
                     Object.DestroyImmediate(canvasObj);
                     camera.targetTexture=null;
@@ -289,7 +338,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Object.DestroyImmediate(rt);
                     Object.DestroyImmediate(go);
                 }
-                Need(pictures.Count==24 && inputChecks==32 && report.realGatewayClaims==8,
+                Need(pictures.Count==24 && inputChecks==40 && report.realGatewayClaims==8,
                     "Day-four and day-seven native reward coverage incomplete");
                 report.status=report.authoredSpritesImported
                     ? "NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING"
