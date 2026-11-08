@@ -498,10 +498,10 @@ namespace Eldoria.BreachWatch
                 }
 
                 At(centerMark,w*.52f-17,84,34,34);
-                At(objective,margin,125,Mathf.Min(250,w*.62f),89);
+                At(objective,margin,125,Mathf.Min(250,w*.62f),fullObjective?118:89);
                 At(chapterName.rectTransform,37,6,Mathf.Min(205,w*.52f),21);
-                At(chapterObjective.rectTransform,14,30,Mathf.Min(221,w*.53f),40);
-                At(chapterProgress.rectTransform,14,69,Mathf.Min(221,w*.53f),15);
+                At(chapterObjective.rectTransform,14,30,Mathf.Min(221,w*.53f),fullObjective?67:37);
+                At(chapterProgress.rectTransform,14,fullObjective?101:69,Mathf.Min(221,w*.53f),15);
                 chapterName.fontSize=13;
                 chapterObjective.fontSize=16;
                 chapterProgress.fontSize=13;
@@ -531,9 +531,9 @@ namespace Eldoria.BreachWatch
                 At(buildingLevel.rectTransform,50,35,pw-89,19);
                 At(((RectTransform)closeButton.transform),pw-40,9,31,31);
                 At(portraitFrame,11,60,pw-22,91);
-                At(buildingFunction.rectTransform,13,156,pw-26,35);
-                At(buildingCosts.rectTransform,13,194,pw-26,33);
-                At(buildingState.rectTransform,13,232,pw-26,17);
+                At(buildingFunction.rectTransform,13,156,pw-26,32);
+                At(buildingCosts.rectTransform,13,191,pw-26,25);
+                At(buildingState.rectTransform,13,220,pw-26,18);
                 At(((RectTransform)actionButton.transform),12,ph-49,pw-24,44);
                 buildingName.fontSize=20;
                 buildingLevel.fontSize=14;
@@ -565,10 +565,10 @@ namespace Eldoria.BreachWatch
                     resourceAmounts[i].fontSize=16;
                 }
                 At(centerMark,w*.49f-17,11,34,34);
-                At(objective,margin,102,225,83);
+                At(objective,margin,102,225,fullObjective?110:83);
                 At(chapterName.rectTransform,37,8,178,20);
-                At(chapterObjective.rectTransform,14,32,197,34);
-                At(chapterProgress.rectTransform,14,65,190,14);
+                At(chapterObjective.rectTransform,14,32,197,fullObjective?60:31);
+                At(chapterProgress.rectTransform,14,fullObjective?90:65,190,14);
                 chapterName.fontSize=13;
                 chapterObjective.fontSize=16;
                 chapterProgress.fontSize=13;
