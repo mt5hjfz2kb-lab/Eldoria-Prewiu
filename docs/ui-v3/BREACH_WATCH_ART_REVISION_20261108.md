@@ -48,3 +48,20 @@ El recurso `windows-runner-heavy` de Unity Windows está actualmente reclamado e
 **Continuación autónoma segura preparada:** existe una comprobación condicional que reevalúa formalmente la liberación del runner. Cuando su titular lo entregue, se podrá reclamar con CAS y ejecutar el workflow nativo de PR173, inspeccionar los PNG originales, corregir y repetir hasta producir una evidencia real evaluable; no cambiar main, no integrar HUD, no publicar. Las herramientas alternativas Ubuntu fueron evaluadas: Unity 6 Personal exige activación mediante Unity Hub en una máquina nueva; no hay licencia/datos de activación verificados para un nuevo runner. No sustituir una prueba Unity por capturas inventadas, HTML, ni la aprobación de una imagen conceptual.
 
 **Gate pendiente imprescindible:** ocho PNG originales con SHA correspondientes al HEAD de la PR, informe nativo PASS, y evaluación visual humana del contraste, detalle del arte, lectura móvil, consistencia con la referencia y calidad global antes de pedir decisión al dueño.
+
+
+## Revisión de calidad compacta — 8 de noviembre, posterior a la referencia aprobada
+
+**Código implementado, capturas nativas de esta versión pendientes.** La imagen generada por IA es una referencia de dirección, no una prueba Unity. El diseño independiente contiene:
+
+- Sin estandarte rojo grande ni segundo título arriba; identidad compacta, cinco medallones independientes y ciudad despejada.
+- Costes procedentes del gateway real: madera y piedra ilustradas cuando existen ambas, sin ocultar la comida si una operación requiere tres recursos.
+- Componentes propios BreachWatchFrameEngraving, BreachWatchNavFiligree, BreachWatchBevelTrim y BreachWatchAtmosphere, con sus metadatos Unity estables. Ninguno usa controles del HUD visual anterior.
+- Retrato 3D del modelo auténtico y cámara URP aislada; botón de acción, botón de cierre y accesos con área táctil mínima equivalente a 44 px en las cuatro resoluciones.
+- Tipografía Cormorant Garamond Regular/SemiBold embebida y verificada por SHA, licencia SIL OFL 1.1. Arte de iconos licenciado CC0 con manifiestos de origen, hash, sprite y GUID.
+- Cuatro pruebas geométricas de código fuente (NO píxeles opacos de una captura): 1600×900 17,8%; 900×1600 29,1%; 844×390 29,3%; 390×844 33,1%. Comparación y metodología: BREACH_WATCH_HUD_OCCUPANCY_BENCHMARK_20261108.md.
+- Probada alternativa gratuita GitHub Ubuntu: no existen los tres datos necesarios de activación de Unity como secretos; salió VIGILIA_ALTERNATE_HOSTED_UNITY_NOT_CONFIGURED. No se inventan licencias.
+
+**Todavía no demostrado:** que la nueva revisión compile realmente en Unity 6000.3.23f1 ni que los materiales, UI y retrato logren la calidad visual premium o el rendimiento de teléfono. El resultado antiguo del run 42427015492 pertenece a un HEAD previo y NO certifica estos cambios. El job native se omite por la reserva exclusiva de windows-runner-heavy de la beta privada; un workflow con éxito de Roslyn no acredita ART_APPROVED.
+
+**Cierre exigido:** esperar liberación formal por el titular de beta y reclamar mediante CAS antes de ejecutar; obtener 8 PNG nativos para el HEAD exacto, revisar calidad, legibilidad y clics reales, corregir y repetir; mantener el juego publicado intacto y sin merge hasta la aceptación visual del propietario.
