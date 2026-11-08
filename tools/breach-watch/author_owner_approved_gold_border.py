@@ -60,6 +60,14 @@ def main():
     assert hashlib.sha256(data).hexdigest()==SOURCE_SHA
     img=Image.open(SOURCE).convert("RGBA")
     assert img.size==(256,427)
+    # Remove source-image separator ornament from the dynamic text/action
+    # zone. This is an EMPTY UI frame: all content must be real Unity text.
+    # Preserve only outer left/right bevels, top crest and bottom diamond.
+    px=img.load()
+    for y in range(53,415):
+        for x in range(43,213):
+            r,g,b,_=px[x,y]
+            px[x,y]=(r,g,b,0)
     a=img.getchannel("A")
     assert a.getpixel((0,0))==0, "Screenshot exterior must be transparent"
     assert a.getpixel((128,213))==0, "No baked price/letters/castle may cover game data"
