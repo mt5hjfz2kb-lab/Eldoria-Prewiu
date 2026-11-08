@@ -40,5 +40,7 @@ jobs:
         run: dotnet run --project tools/daily-treasures/Gateway.Tests.csproj --configuration Release
       - name: Parse original Unity UI, gameplay and chest C# syntax without Unity
         run: dotnet run --project tools/daily-treasures/SyntaxAudit.csproj --configuration Release
+      - name: Check actual calendar placement arithmetic on eight mobile and desktop geometries
+        run: node tools/daily-treasures/layout-smoke.mjs
       - name: Enforce authoritative save and non-paying mailbox wiring
         run: node tools/daily-treasures/check-integration.mjs
