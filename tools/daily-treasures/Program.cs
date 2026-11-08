@@ -189,10 +189,10 @@ internal static class Program
         True(grand[2].LoyaltyBonus,"real paid loyalty bonus has its own label");
         Eq(grand[3].Name,"ACELERADOR 5 MIN","grand chest earned timer is 5 min");
         Eq(grand[3].Quantity,"x 1","grand chest exactly one 5-min timer");
-        var special=DailyTreasureRewardPresentation.FromCommittedReward(
+        var dayFourItems=DailyTreasureRewardPresentation.FromCommittedReward(
             DailyTreasureRules.ForDay(4,4));
-        Eq(special.Length,2,"fourth-day special chest has only two items");
-        True(special[0].Quantity=="x 90" && special[1].Quantity=="x 60",
+        Eq(dayFourItems.Length,2,"fourth-day special chest has only two items");
+        True(dayFourItems[0].Quantity=="x 90" && dayFourItems[1].Quantity=="x 60",
             "fourth-day chest matches exact paid wood and stone");
         Eq(DailyTreasureRewardPresentation.FromCommittedReward(
             default(DailyTreasureReward)).Length,0,
