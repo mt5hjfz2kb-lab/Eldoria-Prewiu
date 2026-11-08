@@ -877,6 +877,20 @@ namespace Eldoria.BreachWatch
                 feedback.fontSize=14;
             }
 
+            // A real set of crossed hammers is engraved at the LEFT of the
+            // authored burgundy artwork. Keep the live Cormorant/Baskerville
+            // caption strictly to its right: earlier native screenshots showed
+            // the hammers cutting through "MEJORAR" despite a technically
+            // valid clickable Button.
+            if(actionLabel && actionButton)
+            {
+                var plate=(RectTransform)actionButton.transform;
+                float leftInset=Mathf.Min(48f,plate.rect.width*.32f);
+                At(actionLabel.rectTransform,leftInset,3f,
+                    Mathf.Max(20f,plate.rect.width-leftInset-7f),
+                    Mathf.Max(20f,plate.rect.height-6f));
+            }
+
             // Render only the original selected building in its native
             // illustration well. Reproject the physical camera texture without
             // stretching stone, gold trim or actual building geometry.
