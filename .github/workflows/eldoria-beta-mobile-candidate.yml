@@ -108,6 +108,15 @@ jobs:
               if path==b'data.unity3d':found.append(raw[offset:offset+size])
             assert len(found)==1;(root/(name+'.unity3d')).write_bytes(found[0])
           PY
+      - name: Record runner resources and provide temporary serialization headroom
+        run: |
+          free -h
+          df -h .
+          sudo fallocate -l 8G /tmp/eldoria-beta-serialization.swap
+          sudo chmod 600 /tmp/eldoria-beta-serialization.swap
+          sudo mkswap /tmp/eldoria-beta-serialization.swap
+          sudo swapon /tmp/eldoria-beta-serialization.swap
+          free -h
       - name: Reuse only byte-matched verified texture transformations in the fresh build
         run: |
           python tools/eldoria-private-beta/prepare_structural_site.py extract --build fresh-build --output extracted
