@@ -82,7 +82,7 @@ def main():
         if image.size!=(5120,2048):
             raise RuntimeError("Unexpected PSD composite dimensions")
     ART_ROOT.mkdir(parents=True,exist_ok=True)
-    (ART_ROOT.parent/"Resources.meta").write_text(
+    (ART_ROOT.parent.parent/"Resources.meta").write_text(
         "fileFormatVersion: 2\nguid: 9b96e204e7384b3a85762ad1b6f38965\nfolderAsset: yes\nDefaultImporter:\n  externalObjects: {}\n  userData:\n  assetBundleName:\n  assetBundleVariant:\n",encoding="utf-8")
     (ART_ROOT.parent/"VigiliaArt.meta").write_text(FOLDER_META,encoding="utf-8")
     items=[]
