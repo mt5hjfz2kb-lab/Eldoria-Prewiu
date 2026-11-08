@@ -4,11 +4,11 @@
   "status": "ACTIVE",
   "request_id": "eldoria-forja-oscura-visual-proof-20261107",
   "workstream_id": "eldoria-forja-oscura-visual-proof-20261107",
-  "asset_or_sector": "Forja Oscura: modular illustrated 2D uGUI HUD on real Eldoria city; independent 9-slice and glyph assets",
+  "asset_or_sector": "Vigilia de la Brecha: an entirely new independent uGUI Canvas; no RoyalHUD/Forja visual hierarchy, sprites, layouts or skinned controls",
   "profile": "environment_composition",
-  "visual_gate_state": "NATIVE_UI_WIP",
+  "visual_gate_state": "SOURCE_ART_AND_SYNTAX_PASS_NATIVE_NEW_ART_UNTESTED",
   "ai_authorship_policy": "required",
-  "diagnosis": "User rejected flat simple HUD and baroque copies, approved dark premium reference conditionally. 21 original procedural panel sprites plus 20 originally AI-generated isolated icon illustrations require actual Unity scene A/B and a documented professional art cycle. Do not equate mockup with Unity runtime. Added the previously generated painted metal frame as one separate candidate; original 41 resources retained. Fixed corners 144px / PPU600; real Unity comparison remains required.",
+  "diagnosis": "Owner rejected Forja and Fortaleza previous visual approaches. Native first-screen run 42427015492 certified a separate Canvas and preserved gameplay, but its primitive flat art was explicitly rejected. Current new source includes independently authored dark basalt/copper 9-slice, licensed CC0 sculptural medallions and resource icons, original burgundy banner, genuine isolated 3D building portrait and touch/camera/safe-area QA. The latest artist source has NOT yet been shown in Unity. Do not claim ART_APPROVED from Roslyn or file-hash tests.",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "credit_authorization": {
@@ -23,16 +23,16 @@
     "original_AI_illustrated_icons": true
   },
   "artist": {
-    "design": "Dark, adult, cinema-inspired polished metal and amber, illustration-level richness without huge classical trim",
-    "source": "Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura/",
-    "reference": "Owner-picked Eldoria reference image, conversation 2026-11-06"
+    "design": "Vigilia de la Brecha — adult, severe, dark medieval city interface: carved basalt, blackened iron, aged copper, sparse burgundy, independently illustrated physical materials and deep sculptural components; city remains central, no neon, no baroque gold, no fake 3D city",
+    "source": "Unity/Assets/Eldoria/BreachWatch/ (independent Canvas and Resources/VigiliaArt); first-party authored material code plus explicit CC0 source manifests and pinned byte hashes",
+    "reference": "User selected Vigilia de la Brecha from the three concept alternatives in this chat; illustration is an artistic target, never gameplay data or a screenshot"
   },
   "validation": {
-    "source_gate": "42 PNG including the exact existing AI-painted source; 55 original Unity GUIDs retained plus one new unique GUID. Nine procedural PNGs retain exact generator parity; painted PNG has independent pinned SHA and exact source-byte parity.",
-    "final_gate": "Exact-head genuine Unity four pairs A/B, compare reference against actual screenshot for quality, verify navigation and all original inputs, keep resources/progression/persistence, both orientations, Android/WebGL, no visual or gameplay regression. Artist review separated from technical gates."
+    "source_gate": "Latest owner PR branch: Roslyn syntax checks and exact SHA-256 of 7 independently imported art resources (4 UI pieces + 3 resource icons), unique Unity GUID/TextureImporter metadata, CC0 distributed license. Historical initial native Unity baseline run 42427015492 does NOT certify latest art.",
+    "final_gate": "On exclusive Windows Unity 6000.3.23f1 runner, obtain 8 genuine 1600x900/900x1600/844x390/390x844 PNGs from new independent Canvas (city and real Bastion). Real snapshot and pointer interactions, scenario city selection, no world tap-through, all five icon-only buttons one row, proper safe area and no cropped costs/actions, 3 illustrated resource icons, true isolated Bastion mesh pixels, verify SHA, inspect artistic parity and ease of reading before promotion. Mobile physical/WebGL afterward only if visually accepted."
   },
   "art_approved": false,
   "physical_mobile_tested": false,
   "budget_eur": 0,
-  "notes": "PR173 Draft; current canonical Forja owner holds Windows revision8. Original source, game rules and published APK/WebGL unchanged; candidate art not yet approved."
+  "notes": "PR173 remains DRAFT, no main merge, no APK/WebGL publication or old HUD skin. Art components included on branch and source verified; latest real Unity proof blocked by active windows-runner-heavy reservation held by beta PR179; next run requires formal release. One-screen proof before other destinations."
 }
