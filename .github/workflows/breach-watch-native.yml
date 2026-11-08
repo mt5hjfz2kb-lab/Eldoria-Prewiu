@@ -10,6 +10,25 @@ concurrency:
   group: eldoria-breachwatch-native-first-screen
   cancel-in-progress: false
 jobs:
+  alternative-unity-licensing-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check whether an alternative hosted Unity runner can be licensed legally
+        shell: bash
+        env:
+          UNITY_LICENSE_CANDIDATE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL_CANDIDATE: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD_CANDIDATE: ${{ secrets.UNITY_PASSWORD }}
+        run: |
+          if [ -n "$UNITY_LICENSE_CANDIDATE" ] &&
+             [ -n "$UNITY_EMAIL_CANDIDATE" ] &&
+             [ -n "$UNITY_PASSWORD_CANDIDATE" ]; then
+            echo 'VIGILIA_ALTERNATE_HOSTED_UNITY_LICENSE_INPUTS_AVAILABLE'
+          else
+            echo 'VIGILIA_ALTERNATE_HOSTED_UNITY_NOT_CONFIGURED'
+            echo 'No secret content or account identity is printed or retained.'
+          fi
   export-reference-for-design-qa:
     if: github.event_name == 'push' && contains(github.event.head_commit.message, '[vigilia-design-qa]')
     runs-on: ubuntu-latest
