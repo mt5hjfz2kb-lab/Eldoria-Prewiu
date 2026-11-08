@@ -71,6 +71,12 @@ namespace Eldoria.DailyTreasures
             }
         }
         Image glow,ambient;
+        Image screenShade,mainFrameSurface;
+        RectTransform milestoneBanner;
+        Text milestoneBannerCaption;
+        DailyTreasureStageKind currentStage=DailyTreasureStageKind.Daily;
+        string activeMilestoneId;
+        public DailyTreasureStageKind ActiveMilestoneStage => currentStage;
         RawImage milestoneScenery;
         Image milestoneVignette;
         string milestoneSceneryKey;
@@ -255,9 +261,9 @@ namespace Eldoria.DailyTreasures
 
             screen=NewRect("Tributo de los siete días / modal",root);
             Stretch(screen);
-            Plate(screen,new Color(.018f,.020f,.026f,.91f));
+            screenShade=Plate(screen,new Color(.018f,.020f,.026f,.91f));
             cardSurface=NewRect("Basalt and worn bronze reward parchment",screen);
-            Plate(cardSurface,Stone);
+            mainFrameSurface=Plate(cardSurface,Stone);
             if(!ApplyAuthoredFrame(cardSurface,"valoria_frame_main_512"))
                 Relief(cardSurface,true);
             var edge=cardSurface.gameObject.AddComponent<Shadow>();
@@ -322,6 +328,14 @@ namespace Eldoria.DailyTreasures
             var veilRect=NewRect("Dim painterly setting for the earned chest",ceremony);
             milestoneVignette=Plate(veilRect,new Color(.028f,.023f,.027f,.26f),false);
             milestoneVignette.gameObject.SetActive(false);
+            milestoneBanner=NewRect("Milestone heraldic event banner / visual only",ceremony);
+            Plate(milestoneBanner,new Color(.27f,.15f,.10f,.96f),false);
+            if(!ApplyAuthoredFrame(milestoneBanner,"valoria_frame_button_512x128"))
+                Relief(milestoneBanner,false,true);
+            milestoneBannerCaption=Label(milestoneBanner,
+                "Real milestone category","",15,Gold,TextAnchor.MiddleCenter);
+            Stretch(milestoneBannerCaption.rectTransform);
+            milestoneBanner.gameObject.SetActive(false);
             glowRect=NewRect("Warm radial light / visual only",ceremony);
             glow=Plate(glowRect,new Color(1f,.65f,.18f,0f),false);
             CreateGlow();
@@ -497,6 +511,11 @@ namespace Eldoria.DailyTreasures
         public void Close()
         {
             if(screen)screen.gameObject.SetActive(false);
+            currentStage=DailyTreasureStageKind.Daily;
+            activeMilestoneId=null;
+            if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,.91f);
+            if(mainFrameSurface)mainFrameSurface.color=Color.white;
+            if(milestoneBanner)milestoneBanner.gameObject.SetActive(false);
             // Release the ONLY references owned by this optional ceremony to
             // large original painterly illustrations. Mobile WebGL must not
             // keep a 3MB+ scene texture alive just because a chest was opened.
@@ -724,6 +743,28 @@ namespace Eldoria.DailyTreasures
             ceremonyTier=tier;
             activeTheme=DailyTreasureCeremonyTheme.ForEvent(
                 eventId,tier==DailyTreasureCeremonyTier.Legendary);
+            currentStage=DailyTreasureStageDirection.FromEvent(eventId);
+            activeMilestoneId=eventId;
+            if(milestoneBanner)
+            {
+                milestoneBanner.gameObject.SetActive(
+                    currentStage!=DailyTreasureStageKind.Daily);
+                switch(currentStage)
+                {
+                    case DailyTreasureStageKind.Lyra:
+                        milestoneBannerCaption.text="UNA HEROÍNA SE UNE";
+                        break;
+                    case DailyTreasureStageKind.Explorers:
+                        milestoneBannerCaption.text="HORIZONTES DESCUBIERTOS";
+                        break;
+                    case DailyTreasureStageKind.Vigilants:
+                        milestoneBannerCaption.text="VICTORIA DE LOS VIGILANTES";
+                        break;
+                    case DailyTreasureStageKind.Bastion:
+                        milestoneBannerCaption.text="EL REINO PROSPERA";
+                        break;
+                }
+            }
             ceremonialTitle=title;ceremonialReceipt=alreadyReceived;chestReward=showChest;
             // A focused cinematic view replaces the calendar's small header.
             // This gives the same illustrated chest room to shine even on
@@ -755,6 +796,9 @@ namespace Eldoria.DailyTreasures
             glow.color=new Color(1f,.75f,.36f,showChest?0f:.34f);
             ambient.color=Color.clear;
             SetMilestoneScenery(eventId,showChest);
+            // The original approved artwork now has category-specific stage
+            // composition, not merely a recolored copy of the daily calendar.
+            Layout();
             skipButton.gameObject.SetActive(showChest);
             if(!showChest)ShowResult(true);
         }
