@@ -168,6 +168,10 @@ namespace Eldoria.DailyTreasures.Editor
                     var eventObj=new GameObject("Disposable event system",typeof(EventSystem));
                     var eventSystem=eventObj.GetComponent<EventSystem>();
                     Canvas.ForceUpdateCanvases();
+                    pictures.Add(Render(camera,rt,output,width,height,
+                        "hud-entry",
+                        "Genuine unclaimed original chest medallion on live native canvas",
+                        true,false));
                     // The entry medallion itself must accept a true pointer
                     // sequence; invoking Open() would conceal hitbox failures.
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
@@ -413,7 +417,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Object.DestroyImmediate(rt);
                     Object.DestroyImmediate(go);
                 }
-                Need(pictures.Count==44 && inputChecks==56 &&
+                Need(pictures.Count==48 && inputChecks==56 &&
                      report.realGatewayClaims==8 &&
                      report.visualOnlyMilestoneCaptures==16,
                     "Real daily rewards and four artistic milestone styles not fully captured");
