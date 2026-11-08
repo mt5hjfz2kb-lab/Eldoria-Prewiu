@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Eldoria.ReferenceClean;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
@@ -38,7 +39,9 @@ namespace Eldoria.BreachWatch
         Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
         Text[] resourceAmounts = new Text[3];
         readonly Image[] resourceIllustrations = new Image[3];
-        Text buildingName, buildingLevel, buildingFunction, buildingCosts, buildingState, actionLabel, feedback;
+        Text buildingName, buildingLevel, buildingFunction, buildingCosts, buildingState, actionLabel, feedback, costHeader;
+        readonly Image[] costIcons = new Image[2];
+        readonly Text[] costQuantities = new Text[2];
         Button actionButton, closeButton;
         RawImage portraitView;
         BreachWatchBuildingPortrait buildingPortrait;
@@ -321,7 +324,22 @@ namespace Eldoria.BreachWatch
             buildingName=Label(panel,"Real building name",22,TextAnchor.MiddleLeft,TextIvory,true);
             buildingLevel=Label(panel,"Real building level",15,TextAnchor.MiddleLeft,Copper,true);
             buildingFunction=Label(panel,"Real effects",17,TextAnchor.UpperLeft,Muted);
+            costHeader=Label(panel,"Compact engraved cost heading",14,
+                TextAnchor.MiddleCenter,Copper,true);
+            costHeader.text="COSTE DE LA MEJORA";
             buildingCosts=Label(panel,"Real costs",15,TextAnchor.UpperLeft,TextIvory);
+            for(int i=0;i<2;i++)
+            {
+                var icon=Rect(i==0?"Real wood icon":"Real stone icon",panel);
+                var image=icon.gameObject.AddComponent<Image>();
+                image.sprite=Resources.Load<Sprite>("VigiliaArt/ResourceIcons/"+(i==0?"wood":"stone"));
+                image.type=Image.Type.Simple;
+                image.preserveAspect=true;
+                image.raycastTarget=false;
+                costIcons[i]=image;
+                costQuantities[i]=Label(panel,i==0?"Actual wood cost":"Actual stone cost",16,
+                    TextAnchor.MiddleLeft,TextIvory,true);
+            }
             buildingState=Label(panel,"Real state and timer",15,TextAnchor.UpperLeft,Muted);
             var closeRect=BuildButton(panel,"Close selected building",BreachWatchGlyph.Sigil.Cross,()=>SelectBuilding(""));
             closeButton=closeRect.GetComponent<Button>();
@@ -531,9 +549,14 @@ namespace Eldoria.BreachWatch
                 At(buildingLevel.rectTransform,50,35,pw-89,19);
                 At(((RectTransform)closeButton.transform),pw-40,9,31,31);
                 At(portraitFrame,11,60,pw-22,91);
-                At(buildingFunction.rectTransform,13,156,pw-26,32);
-                At(buildingCosts.rectTransform,13,191,pw-26,25);
-                At(buildingState.rectTransform,13,220,pw-26,18);
+                At(buildingFunction.rectTransform,13,152,pw-26,31);
+                At(costHeader.rectTransform,13,185,pw-26,15);
+                At(buildingCosts.rectTransform,13,204,pw-26,22);
+                At(costIcons[0].rectTransform,15,204,27,27);
+                At(costQuantities[0].rectTransform,46,203,51,28);
+                At(costIcons[1].rectTransform,105,204,27,27);
+                At(costQuantities[1].rectTransform,135,203,pw-146,28);
+                At(buildingState.rectTransform,13,228,pw-26,17);
                 At(((RectTransform)actionButton.transform),12,ph-49,pw-24,44);
                 buildingName.fontSize=20;
                 buildingLevel.fontSize=14;
@@ -604,8 +627,13 @@ namespace Eldoria.BreachWatch
                     // followed by an independent full-width action row.
                     At(portraitFrame,12,60,95,83);
                     At(buildingFunction.rectTransform,114,62,pw-124,76);
-                    At(buildingCosts.rectTransform,12,147,pw-24,29);
-                    At(buildingState.rectTransform,12,180,pw-24,19);
+                    At(costHeader.rectTransform,12,142,pw-24,15);
+                    At(buildingCosts.rectTransform,12,163,pw-24,25);
+                    At(costIcons[0].rectTransform,14,162,26,26);
+                    At(costQuantities[0].rectTransform,43,162,52,26);
+                    At(costIcons[1].rectTransform,112,162,26,26);
+                    At(costQuantities[1].rectTransform,140,162,pw-151,26);
+                    At(buildingState.rectTransform,12,196,pw-24,18);
                     At(((RectTransform)actionButton.transform),12,ph-51,pw-24,46);
                     buildingFunction.fontSize=14;
                     buildingCosts.fontSize=14;
@@ -615,9 +643,14 @@ namespace Eldoria.BreachWatch
                 else
                 {
                     At(portraitFrame,12,64,pw-24,107);
-                    At(buildingFunction.rectTransform,13,174,pw-26,37);
-                    At(buildingCosts.rectTransform,13,215,pw-26,33);
-                    At(buildingState.rectTransform,13,251,pw-26,20);
+                    At(buildingFunction.rectTransform,13,173,pw-26,32);
+                    At(costHeader.rectTransform,13,210,pw-26,17);
+                    At(buildingCosts.rectTransform,13,231,pw-26,27);
+                    At(costIcons[0].rectTransform,17,228,30,30);
+                    At(costQuantities[0].rectTransform,52,229,53,29);
+                    At(costIcons[1].rectTransform,121,228,30,30);
+                    At(costQuantities[1].rectTransform,153,229,pw-162,29);
+                    At(buildingState.rectTransform,13,263,pw-26,18);
                     At(((RectTransform)actionButton.transform),12,ph-55,pw-24,49);
                     buildingFunction.fontSize=15;
                     buildingCosts.fontSize=15;
@@ -682,6 +715,25 @@ namespace Eldoria.BreachWatch
                     buildingCosts.text=string.IsNullOrWhiteSpace(b.Costs)
                         ?(host.English?"No cost":"Sin coste")
                         :CompactRealCosts(b.Costs);
+                    // Real numbers from the canonical offer, with new isolated
+                    // illustrated resource icons. No mock costs are embedded.
+                    costHeader.gameObject.SetActive(!string.IsNullOrWhiteSpace(b.Costs));
+                    var wood=Regex.Match(b.Costs??"",
+                        @"(?:Madera|Wood)\s+([\d.,]+)",RegexOptions.IgnoreCase);
+                    var stone=Regex.Match(b.Costs??"",
+                        @"(?:Piedra|Stone)\s+([\d.,]+)",RegexOptions.IgnoreCase);
+                    bool realPair=wood.Success && stone.Success;
+                    buildingCosts.gameObject.SetActive(!realPair);
+                    for(int i=0;i<2;i++)
+                    {
+                        costIcons[i].gameObject.SetActive(realPair);
+                        costQuantities[i].gameObject.SetActive(realPair);
+                    }
+                    if(realPair)
+                    {
+                        costQuantities[0].text=wood.Groups[1].Value;
+                        costQuantities[1].text=stone.Groups[1].Value;
+                    }
                     buildingState.text=(b.State??"")+(string.IsNullOrWhiteSpace(b.Time)?"":"  ·  "+b.Time);
                     bool can=b.Action!=null && b.Action.Enabled && !b.OperationActive;
                     actionButton.interactable=can;
