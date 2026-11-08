@@ -59,7 +59,7 @@ namespace Eldoria.BreachWatch
         bool fullObjective;
         bool lastPortrait;
         int lastWidth=-1,lastHeight=-1;
-        Rect lastSafeArea=UnityEngine.Rect.zero;
+        UnityEngine.Rect lastSafeArea=UnityEngine.Rect.zero;
         bool lastWorldMode;
         float nextRefresh;
         float feedbackUntil;
