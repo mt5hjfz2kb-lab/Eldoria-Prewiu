@@ -386,9 +386,13 @@ namespace Eldoria.BreachWatch
             if(premiumStone)
             {
                 basalt.ApplyIndependentArt(premiumStone,true);
-                // A deep slate backing under real labels, without fake
-                // screenshot text or an old graphical hierarchy.
-                basalt.color=new Color(.72f,.72f,.71f,1f);
+                // The approved rich gold border must be the only clearly
+                // visible exterior. Mute the interim ornamental material.
+                basalt.color=new Color(.38f,.38f,.37f,1f);
+                var darkContent=Rect("Quiet slate backing for actual data",panel);
+                Fill(darkContent,8);
+                var readableInk=darkContent.gameObject.AddComponent<BreachWatchPanelInk>();
+                readableInk.raycastTarget=false;
             }
             else
             {
