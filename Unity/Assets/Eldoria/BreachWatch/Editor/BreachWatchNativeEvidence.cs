@@ -166,6 +166,9 @@ namespace Eldoria.BreachWatch.Editor
                 ui.NativeCanvas.GetComponent<GraphicRaycaster>().Raycast(e,hits);
                 Need(hits.Count>0 && hits[0].gameObject.transform.IsChildOf(target.transform),
                     "New native pointer hit-test failed: first raycast target is not REINO");
+                Need(host.City.Presenter.ExternalPointerBlocked!=null &&
+                     host.City.Presenter.ExternalPointerBlocked(pos),
+                     "New HUD pointer penetrates to the city camera/world behind a real button");
                 ExecuteEvents.Execute(target.gameObject,e,ExecuteEvents.pointerDownHandler);
                 ExecuteEvents.Execute(target.gameObject,e,ExecuteEvents.pointerUpHandler);
                 ExecuteEvents.Execute(target.gameObject,e,ExecuteEvents.pointerClickHandler);
@@ -249,6 +252,19 @@ namespace Eldoria.BreachWatch.Editor
                     previousRight=b.x;
                 }
                 Need(oneRow,"Five independent navigation symbols overlap or stack in "+name);
+                foreach(var label in ui.GetComponentsInChildren<Text>(true))
+                {
+                    if(!label || !label.gameObject.activeInHierarchy ||
+                       string.IsNullOrWhiteSpace(label.text))continue;
+                    float actual=label.fontSize*ui.NativeCanvas.scaleFactor;
+                    Need(actual>=11.75f,
+                        "Text too small in physical capture "+name+"/"+label.name+
+                        ": "+actual.ToString("F2")+"px");
+                    Need(label.preferredHeight<=label.rectTransform.rect.height+4.5f,
+                        "Text is vertically clipped in "+name+"/"+label.name+
+                        " wanted="+label.preferredHeight.ToString("F1")+
+                        " available="+label.rectTransform.rect.height.ToString("F1"));
+                }
                 if (selection=="bastion")
                 {
                     Need(ui.BuildingPanel.gameObject.activeInHierarchy &&
