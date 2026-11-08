@@ -46,6 +46,7 @@ namespace Eldoria.BreachWatch
         RawImage portraitView;
         BreachWatchBuildingPortrait buildingPortrait;
         BreachWatchPlate actionPlate;
+        Image exactOwnerGoldBorder;
         BreachWatchNavFiligree navFiligree;
         readonly Button[] navButtons = new Button[5];
         readonly BreachWatchPlate[] navPlates = new BreachWatchPlate[5];
@@ -132,6 +133,12 @@ namespace Eldoria.BreachWatch
             portraitFrame.GetComponent<BreachWatchPlate>().sprite &&
             portraitFrame.GetComponent<BreachWatchPlate>().sprite.name=="brass_portrait" &&
             portraitFrame.GetComponent<BreachWatchPlate>().type==Image.Type.Sliced;
+        public bool UsesExactOwnerApprovedGoldBorder =>
+            exactOwnerGoldBorder && exactOwnerGoldBorder.sprite &&
+            exactOwnerGoldBorder.sprite==
+                Resources.Load<Sprite>("VigiliaArt/ApprovedContour/owner_gold_border") &&
+            exactOwnerGoldBorder.type==Image.Type.Sliced &&
+            !exactOwnerGoldBorder.raycastTarget;
         public bool UsesPremiumCarvedContext
         {
             get
@@ -376,22 +383,41 @@ namespace Eldoria.BreachWatch
             panel=Rect("Independent selected-building cartouche",uiRoot);
             var basalt=Plate(panel,BreachWatchPlate.PlateType.Basalt);
             var premiumStone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/basalt_context");
-            if(premiumStone)basalt.ApplyIndependentArt(premiumStone,true);
+            if(premiumStone)
+            {
+                basalt.ApplyIndependentArt(premiumStone,true);
+                // A deep slate backing under real labels, without fake
+                // screenshot text or an old graphical hierarchy.
+                basalt.color=new Color(.72f,.72f,.71f,1f);
+            }
             else
             {
-                // Safe readable fallback only; native quality gate explicitly
-                // rejects missing premium surface artwork.
                 var opaqueWell=Rect("Fallback opaque slate ink",panel);
                 Fill(opaqueWell,12);
                 var ink=opaqueWell.gameObject.AddComponent<BreachWatchPanelInk>();
                 ink.raycastTarget=false;
             }
-            // Three-dimensional, resolution-independent fine gold metalwork
-            // is a separate original Graphic, never a skin over RoyalHUD.
-            var engravingRect=Rect("Original gilded Breach engraving",panel);
-            Fill(engravingRect);
-            var engraving=engravingRect.gameObject.AddComponent<BreachWatchFrameEngraving>();
-            engraving.raycastTarget=false;
+            // Most faithful finish: transparent embossed metal border
+            // extracted solely from the exact image the owner approved.
+            // Real building data and 3D meshes remain separate.
+            var outlined=Resources.Load<Sprite>("VigiliaArt/ApprovedContour/owner_gold_border");
+            if(outlined)
+            {
+                var ring=Rect("Exact owner-approved independent gold relief ring",panel);
+                Fill(ring);
+                exactOwnerGoldBorder=ring.gameObject.AddComponent<Image>();
+                exactOwnerGoldBorder.sprite=outlined;
+                exactOwnerGoldBorder.type=Image.Type.Sliced;
+                exactOwnerGoldBorder.raycastTarget=false;
+                exactOwnerGoldBorder.color=Color.white;
+            }
+            else
+            {
+                var engravingRect=Rect("Fallback original forged engraving",panel);
+                Fill(engravingRect);
+                var engraving=engravingRect.gameObject.AddComponent<BreachWatchFrameEngraving>();
+                engraving.raycastTarget=false;
+            }
             portraitFrame=Rect("Carved recess / live building illustration",panel);
             var brassFrame=Plate(portraitFrame,BreachWatchPlate.PlateType.Portrait);
             var premiumBrass=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/brass_portrait");
