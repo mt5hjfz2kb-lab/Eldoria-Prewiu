@@ -1,4 +1,4 @@
-name: Eldoria mobile6 published Apple GPU verification
+name: Eldoria compact terrain index parity and allocations
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -7,44 +7,43 @@ on:
 permissions:
   contents: read
   actions: read
-concurrency:
-  group: eldoria-beta-entry-qa
-  cancel-in-progress: false
 jobs:
-  webkit:
-    runs-on: macos-15
+  exact-index:
+    runs-on: ubuntu-latest
     timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        version: [1.55.0]
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: tools/eldoria-private-beta
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            Unity/Assets/Eldoria/World4XCanon
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/github-script@v7
         with:
-          node-version: '22'
-      - name: Install pinned WebKit
+          script: |
+            const a=(await github.rest.actions.getArtifact({...context.repo,artifact_id:13623230011})).data;
+            if(a.digest!=='sha256:417f15c01f3c65f81a61e7fd88b3bd52a91b7c07eba5bed37b7b9192294047ee'||a.workflow_run.id!==42493894120)throw Error('Parent artifact changed');
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42493894120
+          name: mobile6-candidate-site
+          github-token: ${{ github.token }}
+          path: parent-site
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Extract real terrain and exact production algorithm
         run: |
-          npm install --prefix "$RUNNER_TEMP/beta-browser-deps" --no-save playwright@${{ matrix.version }}
-          "$RUNNER_TEMP/beta-browser-deps/node_modules/.bin/playwright" install webkit
-      - name: Exercise candidate without extension overrides
-        env:
-          QA_ENGINE: webkit
-          QA_VARIANT: unchanged
-          QA_SKIP_PREFLIGHT: '1'
-          QA_ENTRY: '1'
-          QA_OUT: engine-evidence
-          QA_REVISION: native325-mobile6-cubemap
-          QA_URL: https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile6-cubemap
-        run: |
-          export NODE_PATH="$RUNNER_TEMP/beta-browser-deps/node_modules"
-          node tools/eldoria-private-beta/qa_webkit_residency.cjs
+          python -m pip install UnityPy==1.25.4 lz4==4.4.5
+          python tools/eldoria-private-beta/native/compact-index/prepare.py parent-site
+      - name: Verify every vertex and adversarial cases; measure allocations
+        working-directory: tools/eldoria-private-beta/native/compact-index
+        run: dotnet run --configuration Release --project CompactIndexTest.csproj -- queries.gz
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile6-public-webkit-${{ matrix.version }}
-          path: engine-evidence/
-          retention-days: 14
+          name: compact-terrain-index-evidence
+          path: |
+            tools/eldoria-private-beta/native/compact-index/compact-index-results.json
+            tools/eldoria-private-beta/native/compact-index/provenance.json
+          retention-days: 90
