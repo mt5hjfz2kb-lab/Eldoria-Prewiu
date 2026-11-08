@@ -77,6 +77,7 @@ try {
  # Probe is Editor-only, outside Assets/Eldoria, and is not shipped in the player.
  Invoke-Native 'Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.Build' (Join-Path $Evidence 'web-build.log') 'WebGL'
  $web=Get-Content (Join-Path $proof 'web-build.json') -Raw|ConvertFrom-Json
+ if($web.status -ne 'WEB_COMPILED_CURRENT_INTEGRATED_SCENE_NOT_PHYSICAL_IPHONE_TESTED'){throw 'WebGL build certificate failed'}
  Copy-Item (Join-Path $proof 'web-*') $Evidence
  if(-not(Test-Path (Join-Path $project 'Builds/ValoriaWebPlaytest/index.html'))){throw 'Built WebGL index absent'}
  [IO.File]::WriteAllText((Join-Path $Evidence 'complete.txt'),'Native parity and canonical journey passed; fresh WebGL built. Browser and physical iPhone are NOT certified.',$utf8)
