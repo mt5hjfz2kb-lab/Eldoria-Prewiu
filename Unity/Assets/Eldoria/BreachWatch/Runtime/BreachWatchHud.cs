@@ -436,180 +436,215 @@ namespace Eldoria.BreachWatch
             if(Time.unscaledTime<nextRefresh)return;
             nextRefresh=Time.unscaledTime+.25f;RenderNow();
         }
+        // Exact owner-approved compact composition, designed independently
+        // of RoyalHUD and optimised for preserving visible playable world.
+        // All geometry is uGUI: never paste a generated full-screen bitmap.
         public void Reflow(int pixelWidth,int pixelHeight)
         {
-            if(!canvas||!created && !uiRoot)return;
-            pixelWidth=Mathf.Max(320,pixelWidth);pixelHeight=Mathf.Max(300,pixelHeight);
-            lastWidth=pixelWidth;lastHeight=pixelHeight;
-            // Device safe area is part of the NEW Canvas' own layout contract.
-            // Offscreen evidence at synthetic resolutions uses its full target
-            // instead of accidentally inheriting the host monitor's cut-outs.
-            if(Screen.width==pixelWidth && Screen.height==pixelHeight)
+            if(!canvas || !uiRoot)return;
+            pixelWidth=Mathf.Max(320,pixelWidth);
+            pixelHeight=Mathf.Max(300,pixelHeight);
+            lastWidth=pixelWidth;
+            lastHeight=pixelHeight;
+
+            bool physicalDevice=(Screen.width==pixelWidth && Screen.height==pixelHeight);
+            if(physicalDevice)
             {
                 Rect safe=Screen.safeArea;
-                if(safe.width>0 && safe.height>0)
+                if(safe.width>0 && safe.height>0 &&
+                   safe.width<=Screen.width && safe.height<=Screen.height)
                 {
                     uiRoot.anchorMin=new Vector2(safe.xMin/Screen.width,safe.yMin/Screen.height);
                     uiRoot.anchorMax=new Vector2(safe.xMax/Screen.width,safe.yMax/Screen.height);
-                    uiRoot.offsetMin=Vector2.zero;uiRoot.offsetMax=Vector2.zero;
+                    uiRoot.offsetMin=Vector2.zero;
+                    uiRoot.offsetMax=Vector2.zero;
                     pixelWidth=Mathf.Max(320,Mathf.RoundToInt(safe.width));
                     pixelHeight=Mathf.Max(300,Mathf.RoundToInt(safe.height));
                 }
             }
             else Stretch(uiRoot);
+
             bool portrait=pixelHeight>pixelWidth;
-            float scale=portrait?pixelWidth/430f:Mathf.Max(.86f,Mathf.Min(pixelWidth/1180f,pixelHeight/650f));
+            float scale=portrait
+                ?Mathf.Clamp(pixelWidth/430f,.86f,1.75f)
+                :Mathf.Clamp(Mathf.Min(pixelWidth/1250f,pixelHeight/680f),.86f,1.30f);
             scaler.scaleFactor=scale;
             float w=pixelWidth/scale,h=pixelHeight/scale;
-            float margin=portrait?13:17;
-            // Correct in the camera target (native offscreen captures included).
+            float margin=portrait?13f:18f;
+
+            // The owner specifically rejected the thick burgundy header and
+            // the second huge title plate. A single small round realm crest,
+            // compact counters and a free-standing Breach mark remain.
             if(portrait)
             {
-                vigiliaTitlePlate.gameObject.SetActive(false);
-                buildingFunction.fontSize=17;
-                buildingCosts.fontSize=15;
-                buildingState.fontSize=15;
-                At(identity,margin,10,w-margin*2,79);
-                At(identityName.rectTransform,71,13,w-154,29);
-                At(identityPower.rectTransform,71,45,w-154,23);
-                At(centerMark,w-margin*2-61,14,52,52);centerMark.SetParent(uiRoot,false);
-                centerMark.SetAsLastSibling();
-                At(resourceRow,margin,99,w-margin*2,49);
-                float chip=(w-2*margin-8)/3f;
+                At(identity,margin,11,182,55);
+                At(identityCrest,-4,-4,62,62);
+                At(identityName.rectTransform,56,7,121,27);
+                At(identityPower.rectTransform,56,31,121,18);
+                identityName.fontSize=18;
+                identityPower.fontSize=14;
+
+                float rightSpace=w-(margin+182+9+margin);
+                float chip=Mathf.Max(58,(rightSpace-8f)/3f);
+                float resourcesWidth=3*chip+8f;
+                At(resourceRow,w-margin-resourcesWidth,18,resourcesWidth,39);
                 for(int i=0;i<3;i++)
                 {
-                    At(resourceChips[i],i*(chip+4),0,chip,44);
-                    At(resourceAmounts[i].rectTransform,42,3,chip-45,38);
+                    At(resourceChips[i],i*(chip+4f),0,chip,38);
+                    var image=resourceIllustrations[i].rectTransform;
+                    At(image,4,7,25,25);
+                    At(resourceAmounts[i].rectTransform,30,7,chip-31,26);
                     resourceAmounts[i].fontSize=14;
                 }
-                At(objective,margin,159,w-margin*2,fullObjective?121:89);
-                At(chapterName.rectTransform,39,7,w-64,21);
-                At(chapterObjective.rectTransform,16,29,w-40,41);
-                At(chapterProgress.rectTransform,16,66,w-40,18);
-                At(utilityRail,margin,fullObjective?300:267,56,173);
-                for(int i=0;i<3;i++)
-                {
-                    var item=(RectTransform)utilityRail.GetChild(i);At(item,0,i*58,53,53);
-                }
-                float navHeight=69,navTop=h-navHeight-11f;
-                At(buttonRow,margin,navTop,w-2*margin,navHeight);
-                float bw=(w-margin*2-4*6)/5f;
-                for(int i=0;i<5;i++)
-                {
-                    At((RectTransform)navButtons[i].transform,i*(bw+6)+(bw-Mathf.Min(bw,65))*.5f,1,Mathf.Min(bw,65),65);
-                    navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Navigation;
-                }
-                float panelHeight=Mathf.Min(260,Mathf.Max(232,h-485));
-                At(panel,margin,navTop-panelHeight-13,w-margin*2,panelHeight);
-                At(buildingName.rectTransform,70,8,w-132,32);
-                At(buildingLevel.rectTransform,70,37,w-132,19);
-                At(((RectTransform)closeButton.transform),w-margin*2-51,10,39,40);
-                float portraitHeight=panelHeight<250?62:84;
-                At(portraitFrame,15,63,139,portraitHeight);
-                At(buildingFunction.rectTransform,166,68,w-2*margin-183,portraitHeight-6);
-                float costTop=69+portraitHeight;
-                At(buildingCosts.rectTransform,16,costTop,w-2*margin-34,27);
-                At(buildingState.rectTransform,16,costTop+29,w-2*margin-34,18);
-                At(((RectTransform)actionButton.transform),16,panelHeight-49,w-margin*2-32,44);
-                // Portrait tablets and the side rail may share Y only when
-                // enough genuinely unobscured city area remains. 900x1600
-                // used to overlap the lower disabled seal with the building.
-                float railTop=fullObjective?300:267;
-                float clearRailSpace=navTop-panelHeight-13-railTop-12;
+
+                At(centerMark,w*.52f-17,84,34,34);
+                At(objective,margin,125,Mathf.Min(250,w*.62f),89);
+                At(chapterName.rectTransform,37,6,Mathf.Min(205,w*.52f),21);
+                At(chapterObjective.rectTransform,14,30,Mathf.Min(221,w*.53f),40);
+                At(chapterProgress.rectTransform,14,69,Mathf.Min(221,w*.53f),15);
+                chapterName.fontSize=13;
+                chapterObjective.fontSize=16;
+                chapterProgress.fontSize=13;
+
+                At(utilityRail,margin,h-338,54,160);
                 for(int i=0;i<utilityRail.childCount;i++)
-                    utilityRail.GetChild(i).gameObject.SetActive((i+1)*58<=clearRailSpace);
-                At(feedback.rectTransform,69,fullObjective?310:277,w-100,43);
+                {
+                    var utility=(RectTransform)utilityRail.GetChild(i);
+                    utility.gameObject.SetActive(i<3);
+                    At(utility,0,i*53f,49,49);
+                }
+
+                float navSize=56,navGap=11;
+                float navWidth=5*navSize+4*navGap;
+                float navTop=h-75f;
+                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,64);
+                for(int i=0;i<5;i++)
+                    At((RectTransform)navButtons[i].transform,
+                        i*(navSize+navGap),3,navSize,navSize);
+
+                float pw=Mathf.Min(210,w*.48f);
+                float ph=294f;
+                float left=w-margin-pw;
+                float top=navTop-ph-14;
+                At(panel,left,top,pw,ph);
+                At(buildingName.rectTransform,50,7,pw-89,29);
+                At(buildingLevel.rectTransform,50,35,pw-89,19);
+                At(((RectTransform)closeButton.transform),pw-40,9,31,31);
+                At(portraitFrame,11,60,pw-22,91);
+                At(buildingFunction.rectTransform,13,156,pw-26,35);
+                At(buildingCosts.rectTransform,13,194,pw-26,33);
+                At(buildingState.rectTransform,13,232,pw-26,17);
+                At(((RectTransform)actionButton.transform),12,ph-49,pw-24,44);
+                buildingName.fontSize=20;
+                buildingLevel.fontSize=14;
+                buildingFunction.fontSize=14;
+                buildingCosts.fontSize=14;
+                buildingState.fontSize=13;
+                actionLabel.fontSize=14;
+
+                At(feedback.rectTransform,margin,h-122,Mathf.Max(90,left-margin-15),34);
+                feedback.fontSize=13;
             }
             else
             {
-                vigiliaTitlePlate.gameObject.SetActive(true);
-                At(identity,margin,12,Mathf.Min(338,w*.29f),76);
-                At(identityName.rectTransform,72,10,256,31);
-                At(identityPower.rectTransform,72,43,256,23);
-                float chipW=Mathf.Min(124, (w*.40f-14)/3f);
-                float resourceLeft=w-3*chipW-3*7-margin;
-                At(resourceRow,resourceLeft,17,3*chipW+2*7,46);
-                float headerLeft=margin+Mathf.Min(338,w*.29f)+9f;
-                float headerWidth=resourceLeft-headerLeft-9f;
-                vigiliaTitlePlate.gameObject.SetActive(headerWidth>=210f);
-                if(headerWidth>=210f)
-                {
-                    At(vigiliaTitlePlate,headerLeft,12,headerWidth,70);
-                    At(centerMark,headerLeft+8,23,44,44);
-                    centerMark.SetAsLastSibling();
-                    At(vigiliaTitleText.rectTransform,52,9,headerWidth-62,32);
-                    At(vigiliaTitleChapter.rectTransform,52,40,headerWidth-62,20);
-                    vigiliaTitleText.fontSize=headerWidth<305f?18:20;
-                    vigiliaTitleChapter.fontSize=14;
-                }
-                else At(centerMark,w*.5f-23f,15,46,46);
+                At(identity,margin,11,234,58);
+                At(identityCrest,-3,-4,64,64);
+                At(identityName.rectTransform,59,6,166,31);
+                At(identityPower.rectTransform,59,35,165,18);
+                identityName.fontSize=20;
+                identityPower.fontSize=14;
+
+                float chip=Mathf.Min(112,Mathf.Max(82f,(w*.28f-12f)/3f));
+                float resourcesWidth=3*chip+14;
+                At(resourceRow,w-margin-resourcesWidth,16,resourcesWidth,43);
                 for(int i=0;i<3;i++)
                 {
-                    At(resourceChips[i],i*(chipW+7),0,chipW,43);
-                    At(resourceAmounts[i].rectTransform,43,3,chipW-46,38);resourceAmounts[i].fontSize=16;
+                    At(resourceChips[i],i*(chip+7),0,chip,41);
+                    At(resourceIllustrations[i].rectTransform,5,5,30,30);
+                    At(resourceAmounts[i].rectTransform,38,5,chip-41,30);
+                    resourceAmounts[i].fontSize=16;
                 }
-                At(objective,margin,111,Mathf.Min(280,w*.23f),fullObjective?134:109);
-                float questWidth=Mathf.Min(280,w*.23f)-30f;
-                At(chapterName.rectTransform,39,9,questWidth-24,20);
-                At(chapterObjective.rectTransform,15,34,questWidth,46);
-                At(chapterProgress.rectTransform,15,85,questWidth,20);
-                At(utilityRail,margin,fullObjective?266:238,59,183);
-                for(int i=0;i<3;i++)
+                At(centerMark,w*.49f-17,11,34,34);
+                At(objective,margin,102,225,83);
+                At(chapterName.rectTransform,37,8,178,20);
+                At(chapterObjective.rectTransform,14,32,197,34);
+                At(chapterProgress.rectTransform,14,65,190,14);
+                chapterName.fontSize=13;
+                chapterObjective.fontSize=16;
+                chapterProgress.fontSize=13;
+
+                At(utilityRail,margin,h-179,49,162);
+                for(int i=0;i<utilityRail.childCount;i++)
                 {
-                    utilityRail.GetChild(i).gameObject.SetActive(true);
-                    At((RectTransform)utilityRail.GetChild(i),0,i*62,56,56);
+                    var utility=(RectTransform)utilityRail.GetChild(i);
+                    utility.gameObject.SetActive(i<3);
+                    At(utility,0,i*48,43,43);
                 }
-                float pw=Mathf.Min(338,w*(h<500f?.32f:.285f)),ph=Mathf.Min(335,h*.50f);
-                At(panel,w-pw-margin,115,pw,ph);
-                At(buildingName.rectTransform,72,11,pw-130,31);
-                At(buildingLevel.rectTransform,72,42,pw-130,22);
-                At((RectTransform)closeButton.transform,pw-52,10,40,40);
-                if(ph<282f)
+
+                float navSize=55,navGap=15;
+                float navWidth=5*navSize+4*navGap;
+                float navTop=h-78;
+                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,69);
+                for(int i=0;i<5;i++)
+                    At((RectTransform)navButtons[i].transform,
+                        i*(navSize+navGap),3,navSize,navSize);
+
+                float pw=h<530f?210f:230f;
+                float ph=Mathf.Min(343,h-174f);
+                float top=h<530f?75f:118f;
+                At(panel,w-margin-pw,top,pw,ph);
+                At(buildingName.rectTransform,50,8,pw-88,31);
+                At(buildingLevel.rectTransform,50,37,pw-88,19);
+                At(((RectTransform)closeButton.transform),pw-40,9,31,31);
+                buildingName.fontSize=21;
+                buildingLevel.fontSize=15;
+                if(ph<305)
                 {
-                    // One-line genuine state below the columns; no clipping
-                    // or overlap even at the actual phone 844x390 viewport.
-                    At(portraitFrame,14,65,104,88);
-                    At(buildingFunction.rectTransform,124,65,pw-138,50);
-                    At(buildingCosts.rectTransform,124,117,pw-138,33);
-                    At(buildingState.rectTransform,17,153,pw-34,19);
-                    At((RectTransform)actionButton.transform,15,ph-51,pw-30,45);
-                    buildingFunction.fontSize=15;
+                    // Tight landscape phones: separate image and text columns
+                    // followed by an independent full-width action row.
+                    At(portraitFrame,12,60,95,83);
+                    At(buildingFunction.rectTransform,114,62,pw-124,76);
+                    At(buildingCosts.rectTransform,12,147,pw-24,29);
+                    At(buildingState.rectTransform,12,180,pw-24,19);
+                    At(((RectTransform)actionButton.transform),12,ph-51,pw-24,46);
+                    buildingFunction.fontSize=14;
                     buildingCosts.fontSize=14;
-                    buildingState.fontSize=14;
+                    buildingState.fontSize=13;
+                    actionLabel.fontSize=15;
                 }
                 else
                 {
-                    buildingFunction.fontSize=17;
+                    At(portraitFrame,12,64,pw-24,107);
+                    At(buildingFunction.rectTransform,13,174,pw-26,37);
+                    At(buildingCosts.rectTransform,13,215,pw-26,33);
+                    At(buildingState.rectTransform,13,251,pw-26,20);
+                    At(((RectTransform)actionButton.transform),12,ph-55,pw-24,49);
+                    buildingFunction.fontSize=15;
                     buildingCosts.fontSize=15;
-                    buildingState.fontSize=15;
-                    float portraitHeight=Mathf.Clamp(ph-232,44,102);
-                    At(portraitFrame,17,70,pw-34,portraitHeight);
-                    At(buildingFunction.rectTransform,18,77+portraitHeight,pw-36,35);
-                    At(buildingCosts.rectTransform,18,118+portraitHeight,pw-34,27);
-                    At(buildingState.rectTransform,18,150+portraitHeight,pw-36,20);
-                    At((RectTransform)actionButton.transform,17,ph-58,pw-34,49);
+                    buildingState.fontSize=14;
+                    actionLabel.fontSize=16;
                 }
-                float count=5,bw=Mathf.Min(93,(w-190)/count),gap=13;
-                float navWidth=bw*count+gap*(count-1);
-                At(buttonRow,(w-navWidth)*.5f,h-89,navWidth,81);
-                for(int i=0;i<5;i++)At((RectTransform)navButtons[i].transform,i*(bw+gap)+(bw-74)*.5f,2,74,74);
-                At(feedback.rectTransform,margin,h-135,w-margin*2,31);
+                At(feedback.rectTransform,margin,h-121,
+                    Mathf.Max(120,w-pw-3*margin),30);
+                feedback.fontSize=14;
             }
-            // Preserve the true 2:1 camera aspect when the illustrated well
-            // has a different physical aspect in portrait/landscape.
+
+            // Render only the original selected building in its native
+            // illustration well. Reproject the physical camera texture without
+            // stretching stone, gold trim or actual building geometry.
             if(portraitView && portraitFrame)
             {
-                float frameRatio=Mathf.Max(.1f,(portraitFrame.rect.width-16f) /
+                float ratio=Mathf.Max(.1f,(portraitFrame.rect.width-16f)/
                     Mathf.Max(1f,portraitFrame.rect.height-16f));
-                if(frameRatio<=2f)
+                if(ratio<=2f)
                 {
-                    float wUv=frameRatio*.5f;
-                    portraitView.uvRect=new Rect((1f-wUv)*.5f,0f,wUv,1f);
+                    float uvW=ratio*.5f;
+                    portraitView.uvRect=new Rect((1f-uvW)*.5f,0,uvW,1);
                 }
                 else
                 {
-                    float hUv=2f/frameRatio;
-                    portraitView.uvRect=new Rect(0f,(1f-hUv)*.5f,1f,hUv);
+                    float uvH=2f/ratio;
+                    portraitView.uvRect=new Rect(0,(1f-uvH)*.5f,1,uvH);
                 }
             }
             lastPortrait=portrait;
