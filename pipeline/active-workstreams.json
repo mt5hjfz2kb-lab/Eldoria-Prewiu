@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T15:56:41.837Z",
+  "updated_at": "2026-11-08T16:13:51.491Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6820,9 +6820,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "MOBILE6_PHYSICAL_FAILURE_DIAGNOSIS",
+      "phase": "COMPACT_TERRAIN_INDEX_PARITY_AND_NATIVE_PREPARATION",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Correlate actual beta6 phone diagnostics and inspect startup memory/asset residency; no repeated same-build certification.",
+      "next": "Finish exact C# real-terrain allocation A/B; obtain Windows handoff for existing guarded native parity/journey/build. Physical cause still unconfirmed.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6966,8 +6966,8 @@
       "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "not_required_for_current_fix",
-        "reason": "Reproduced compressed-texture GPU crash on hosted macOS; narrow cubemap candidate built and verified without Windows lease. No shared Unity resource needed for current publication."
+        "status": "requested",
+        "reason": "Need native phase allocation profile, compact terrain validation parity and fresh WebGL after mobile6 physical failure. Do not interrupt current Vigilia job or shared workspace."
       }
     },
     {
