@@ -23,10 +23,14 @@ Fecha: 8 de noviembre de 2026. Workstream: `eldoria-daily-treasures-20261108`. N
 El workflow `.github/workflows/daily-treasures-native.yml` **solo puede utilizar Windows cuando el registro canónico conceda la reserva exclusiva a PR181**. A fecha de corte, la beta PR179 mantiene esa reserva.
 
 - Requerir fuente original de los nueve PNG en el commit exacto, compilar con Unity 6000.3.23f1.
-- **24 imágenes nativas:** por cada una de cuatro resoluciones, calendario/cofre cerrado/medio abrir/abierto del día 7 + calendario y apertura especial del día 4.
-- **40 interacciones reales por puntero** en total: reclamar, saltar, cerrar y entrar; incluye simulación de la ubicación en el Canvas independiente de Vigilia y restauración al legado.
-- **8 reclamaciones verdaderas** con `LocalGateway` descartable y comprobación de recursos/buzón, sin tocar partidas reales.
+- **44 capturas Unity nativas**: 28 vinculadas a días 4/7 **realmente cobrados** y 16 vistas artísticas, **no recompensas**, para Lyra, Bastión, Vigilantes y Exploradores, en horizontal y vertical, apertura y resultado. Es obligatorio inspeccionar estas 16 por separado: compartir el mismo cofre ilustrado no garantiza que las cuatro composiciones tengan idéntica calidad.
+- **56 interacciones por puntero**: reclamar, saltar, cerrar y entrar, incluyendo ubicación y regreso desde el Canvas independiente de Vigilia y los cuatro estilos.
+- **8 reclamaciones verdaderas** con `LocalGateway` descartable y comprobación de recursos/buzón. Las 16 imágenes de acontecimientos son ensayos visuales etiquetados `coversReward=false`, no partidas que hayan conseguido esos hitos.
 - Hash, tamaño, fuente, dimensiones y ausencia de duplicación de todos los PNG capturados.
 - Después de ese test de componente: revisión dentro de la ciudad completa con tutorial real y etapas hasta Bastión V, progresión offline, entorno móvil WebGL/Android/iOS, sonido/memoria/FPS y aprobación estética explícita. Una prueba de componente no se confunde con una partida real.
 
 **Resultado actual:** lógica, presentación y nueve recursos versionados; pruebas de fuente repetibles. La PR #181 sigue en borrador, **sin prueba Unity del arte final, sin integración jugable certificada, sin fusión ni publicación**. Referencia y condiciones: `ART_AND_NATIVE_ACCEPTANCE_20261108.md`.
+
+
+## Evolución del requisito visual
+Se ha trabajado por técnica, no por retoques superficiales: la versión geométrica del cofre quedó relegada a fallback; los nueve sprites ilustrados se incorporaron realmente a Git; se prepararon composiciones y animaciones distintas para entregas normales, especiales y legendarias. La apertura con premio muestra exclusivamente iconos y cantidades que el gateway ya concedió. **Las ceremonias de Lyra, Bastión, Vigilantes y Exploradores comparten ese mismo arte premium, con ambientación por acontecimiento y sin nuevas recompensas inventadas.** La aprobación final exige revisar las 44 imágenes Unity, no solo un PASS automático.
