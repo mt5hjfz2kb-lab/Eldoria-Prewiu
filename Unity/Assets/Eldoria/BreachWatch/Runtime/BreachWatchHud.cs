@@ -46,7 +46,7 @@ namespace Eldoria.BreachWatch
         RawImage portraitView;
         BreachWatchBuildingPortrait buildingPortrait;
         BreachWatchPlate actionPlate;
-        Image exactOwnerGoldBorder;
+        Image exactOwnerGoldBorder, separateOwnerBottomFinial;
         BreachWatchNavFiligree navFiligree;
         readonly Button[] navButtons = new Button[5];
         readonly BreachWatchPlate[] navPlates = new BreachWatchPlate[5];
@@ -139,6 +139,10 @@ namespace Eldoria.BreachWatch
                 Resources.Load<Sprite>("VigiliaArt/ApprovedContour/owner_gold_border") &&
             exactOwnerGoldBorder.type==Image.Type.Sliced &&
             !exactOwnerGoldBorder.raycastTarget;
+        public bool UsesSeparatedOwnerGoldFinial =>
+            separateOwnerBottomFinial && separateOwnerBottomFinial.sprite &&
+            separateOwnerBottomFinial.sprite.name=="owner_bottom_finial" &&
+            !separateOwnerBottomFinial.raycastTarget;
         public bool UsesPremiumCarvedContext
         {
             get
@@ -419,6 +423,18 @@ namespace Eldoria.BreachWatch
                 exactOwnerGoldBorder.type=Image.Type.Sliced;
                 exactOwnerGoldBorder.raycastTarget=false;
                 exactOwnerGoldBorder.color=Color.white;
+                // The signed bottom diamond is a separate small visual,
+                // never a nine-slice decoration stretched through live text.
+                var diamondSprite=Resources.Load<Sprite>("VigiliaArt/ApprovedContour/owner_bottom_finial");
+                if(diamondSprite)
+                {
+                    var diamondRect=Rect("Owner-approved external lower gold finial",panel);
+                    separateOwnerBottomFinial=diamondRect.gameObject.AddComponent<Image>();
+                    separateOwnerBottomFinial.sprite=diamondSprite;
+                    separateOwnerBottomFinial.type=Image.Type.Simple;
+                    separateOwnerBottomFinial.preserveAspect=true;
+                    separateOwnerBottomFinial.raycastTarget=false;
+                }
             }
             else
             {
@@ -675,6 +691,9 @@ namespace Eldoria.BreachWatch
                 float left=w-margin-pw;
                 float top=navTop-ph-45;
                 At(panel,left,top,pw,ph);
+                if(separateOwnerBottomFinial)
+                    At((RectTransform)separateOwnerBottomFinial.transform,
+                        (pw-32f)*.5f,ph-2f,32f,24f);
                 At(buildingName.rectTransform,58,7,pw-115,29);
                 At(buildingLevel.rectTransform,58,35,pw-115,19);
                 At(((RectTransform)closeButton.transform),pw-57,3,52,52);
@@ -748,6 +767,13 @@ namespace Eldoria.BreachWatch
                 float ph=Mathf.Min(365,h-174f);
                 float top=h<530f?75f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
+                if(separateOwnerBottomFinial)
+                {
+                    bool tight=h<530f;
+                    float size=tight?26f:32f;
+                    At((RectTransform)separateOwnerBottomFinial.transform,
+                        (pw-size)*.5f,ph-2f,size,tight?17f:24f);
+                }
                 At(buildingName.rectTransform,58,8,pw-115,31);
                 At(buildingLevel.rectTransform,58,37,pw-115,19);
                 At(((RectTransform)closeButton.transform),pw-57,3,52,52);
