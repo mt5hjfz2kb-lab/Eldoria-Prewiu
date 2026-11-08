@@ -816,7 +816,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(ceremonyTitle!=null && dailyTreasures!=null)
                 dailyTreasures.PresentCommittedMilestone(
                     ceremonyTitle,ceremonyResult,
-                    legendary:kind=="VigilantBattle");
+                    legendary:kind=="VigilantBattle",
+                    eventId:kind=="VigilantBattle"?
+                        "vigilant:chapter:"+target:"scout:first:"+target);
         }
         void ExecuteStage()
         {
