@@ -57,6 +57,10 @@ def package(a):
     script=(out/"play.js").read_text()
     script,count=re.subn(r'window\.__eldoriaDiagnosticRevision="[^"]*";', "window.__eldoriaDiagnosticRevision="+json.dumps(a.revision)+";", script, count=1)
     assert count==1, "Expected existing local diagnostic revision marker"
+    label=re.search(r"mobile(\d+)",a.revision)
+    assert label, "Mobile candidate revision missing"
+    script,count=re.subn(r'button\.textContent\s*=\s*"Diagnóstico[^"]*";', 'button.textContent = "Diagnóstico · beta '+label.group(1)+'";',script,count=1)
+    assert count==1, "Expected one diagnostic version label"
     (out/"play.js").write_text(script)
     script_name="play-"+sha(script.encode())[:16]+".js"
     (out/script_name).write_text(script)

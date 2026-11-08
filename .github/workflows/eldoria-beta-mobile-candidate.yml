@@ -1,4 +1,4 @@
-name: Eldoria compact startup mobile profile and Apple GPU comparison
+name: Eldoria exact terrain queries mobile profile and same-host Apple GPU
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -11,11 +11,9 @@ concurrency:
   group: eldoria-beta-mobile-candidate
   cancel-in-progress: false
 env:
-  NATIVE_RUN: '42508059413'
-  NATIVE_EXPORT_RUN: '42511115716'
-  NATIVE_EXPORT_SOURCE: 8c375a223f5b3c542f3744d34d2e370db0b22731
-  NATIVE_SOURCE: 6cf82e7bfb07a8bca7085ea5c3518fbb3c0f8a80
-  CANDIDATE_REVISION: native325-mobile7-compact
+  NATIVE_RUN: '42513182378'
+  NATIVE_SOURCE: 2c5074233268927d90d1106c233d0bce86e317bf
+  CANDIDATE_REVISION: native325-mobile8-terrain
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -76,11 +74,11 @@ jobs:
         run: |
           python - <<'PY'
           import json,os,time,urllib.request
-          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['NATIVE_EXPORT_RUN']
+          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['NATIVE_RUN']
           for _ in range(360):
             req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
             with urllib.request.urlopen(req,timeout=30) as r:run=json.load(r)
-            assert run['head_sha']==os.environ['NATIVE_EXPORT_SOURCE'],'Native source mismatch'
+            assert run['head_sha']==os.environ['NATIVE_SOURCE'],'Native source mismatch'
             if run['status']=='completed':
               assert run['conclusion']=='success','Native gates failed; stop packaging'
               break
@@ -89,13 +87,13 @@ jobs:
           PY
       - uses: actions/download-artifact@v4
         with:
-          run-id: ${{ env.NATIVE_EXPORT_RUN }}
+          run-id: ${{ env.NATIVE_RUN }}
           name: beta-structural-webgl-unverified
           github-token: ${{ github.token }}
           path: fresh-build
       - uses: actions/download-artifact@v4
         with:
-          run-id: ${{ env.NATIVE_EXPORT_RUN }}
+          run-id: ${{ env.NATIVE_RUN }}
           name: beta-structural-native-evidence
           github-token: ${{ github.token }}
           path: native-evidence
@@ -108,14 +106,16 @@ jobs:
           python tools/eldoria-private-beta/reuse_mobile6_profile.py --parent reference-parent/data.unity3d --reference mobile6.unity3d --fresh deduplicated/data.unity3d --expected-fresh-sha256 "$HASH" --output transformed
           python - <<'PY'
           import json,pathlib,os,hashlib
-          recovered=json.load(open('native-evidence/recovered-output-inventory.json'))
-          assert recovered['origin_run']==os.environ['NATIVE_RUN'] and recovered['origin_source']==os.environ['NATIVE_SOURCE']
-          assert recovered['export_run']==os.environ['NATIVE_EXPORT_RUN'] and recovered['export_source']==os.environ['NATIVE_EXPORT_SOURCE']
-          assert recovered['status']=='COMPILED_AND_NATIVE_VERIFIED_OUTPUT_RECOVERED_WITHOUT_REBUILD' and recovered['source_modified_by_recovery'] is False
-          assert hashlib.sha256(pathlib.Path('native-evidence/post-build-urp.diff').read_bytes()).hexdigest()=='b2fd708762e1abf446adcd16d8f3fc91bab3f54502710d623ba417e434644ec4'
-          for f in recovered['files']:
-            p=pathlib.Path('fresh-build')/f['path']
-            assert p.stat().st_size==f['bytes'] and hashlib.sha256(p.read_bytes()).hexdigest()==f['sha256'].lower()
+          restored=json.load(open('native-evidence/warm-cache-restoration.json',encoding='utf-8-sig'))
+          assert restored['restored'] and not restored['conflicts'] and not restored['existing_input_changes']
+          parity=json.load(open('native-evidence/comparison.json',encoding='utf-8-sig'))
+          for row in parity['passes']:
+            assert row['parity'] and row['baseline']['topologyHash']==row['staged']['topologyHash']
+            assert row['staged']['terrainParityCheckedQueries']>10000
+          web=json.load(open('native-evidence/web-build.json',encoding='utf-8-sig'))
+          assert web['source_sha']==os.environ['NATIVE_SOURCE']
+          files=[p for p in pathlib.Path('fresh-build').rglob('*') if p.is_file()]
+          assert len(files)==len(web['files']) and sum(p.stat().st_size for p in files)==web['bytes']
           native=json.load(open('native-evidence/native-journey/integration-result.json',encoding='utf-8-sig'))
           assert native['source']==os.environ['NATIVE_SOURCE'] and native['status']=='INTEGRATION_PASS_ART_REVIEW_REQUIRED'
           assert len(native['checks'])==225
@@ -135,7 +135,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile7-packaging-evidence
+          name: mobile8-packaging-evidence
           path: |
             extracted/extraction.json
             deduplicated/integrity.json
@@ -146,7 +146,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: mobile7-candidate-site
+          name: mobile8-candidate-site
           path: site/
           compression-level: 0
           retention-days: 14
@@ -161,12 +161,18 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          name: mobile7-candidate-site
-          path: candidate
+          name: mobile8-candidate-site
+          path: qa-sites/candidate
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42493894120
+          name: mobile6-candidate-site
+          github-token: ${{ github.token }}
+          path: qa-sites/control
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Compare published control and new candidate on the same Apple GPU
+      - name: Compare control and candidate through the same host and Apple GPU
         env:
           QA_ENGINE: webkit
           QA_VARIANT: unchanged
@@ -176,17 +182,17 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/compact-qa" --no-save playwright@1.55.0
           "$RUNNER_TEMP/compact-qa/node_modules/.bin/playwright" install webkit
           export NODE_PATH="$RUNNER_TEMP/compact-qa/node_modules"
-          node tools/eldoria-private-beta/qa_static_server.cjs candidate 18765 >server.log 2>&1 &
+          node tools/eldoria-private-beta/qa_static_server.cjs qa-sites 18765 >server.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
           failed=0
-          QA_URL='https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile6-cubemap' QA_REVISION=native325-mobile6-cubemap QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
-          QA_URL='http://127.0.0.1:18765/?eldoria_diag=1&eldoria_profile=1' QA_REVISION="$CANDIDATE_REVISION" QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18765/control/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile6-cubemap QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18765/candidate/?eldoria_diag=1&eldoria_profile=1' QA_REVISION="$CANDIDATE_REVISION" QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
           exit "$failed"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile7-desktop-apple-gpu-not-iphone-certification
+          name: mobile8-desktop-apple-gpu-not-iphone-certification
           path: |
             evidence/
             server.log
