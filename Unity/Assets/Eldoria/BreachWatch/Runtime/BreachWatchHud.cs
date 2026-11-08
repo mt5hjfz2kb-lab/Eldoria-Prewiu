@@ -968,7 +968,7 @@ namespace Eldoria.BreachWatch
                 // pixels at this size. A 48-unit inset made the readable
                 // title tiny; a 26.5% inset clears the actual source hammer *and* allows
                 // Cormorant text to remain at native font size.
-                float leftInset=Mathf.Clamp(plate.rect.width*.265f,40f,54f);
+                float leftInset=Mathf.Clamp(plate.rect.width*.235f,34f,48f);
                 At(actionLabel.rectTransform,leftInset,3f,
                     Mathf.Max(20f,plate.rect.width-leftInset-7f),
                     Mathf.Max(20f,plate.rect.height-6f));
