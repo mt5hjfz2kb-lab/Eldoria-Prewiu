@@ -138,7 +138,7 @@ namespace Eldoria.BreachWatch.Editor
                  "Army and Heroes must remain visibly locked until native screens exist");
             Need(!ui.transform.IsChildOf(host.Hud.transform), "New Canvas must not be attached to legacy HUD");
             Need(ui.UsesOriginalPaintedMedallions && ui.UsesApprovedReferenceMedallions &&
-                 ui.UsesOriginalForgedPortraitFrame && ui.UsesOriginalBurgundyStandard &&
+                 ui.UsesOriginalForgedPortraitFrame && ui.UsesCompactRealmCrest &&
                  ui.UsesOwnerApprovedCarvedContext,
                 "Vigilia must render 5 distinct medallions extracted from OWNER'S approved concept, along with the independent forged panel and banner");
 
@@ -260,10 +260,11 @@ namespace Eldoria.BreachWatch.Editor
                 Need(atmosphericVeil && !atmosphericVeil.raycastTarget &&
                      atmosphericVeil.gameObject.activeInHierarchy,
                      "Independent unobtrusive atmospheric layer missing or stealing input: "+name);
-                var title=ui.GetComponentsInChildren<Text>(true)
-                    .FirstOrDefault(t=>t && t.name=="Vigilia de la Brecha");
-                Need(title && (title.gameObject.activeInHierarchy==(w>h)),
-                    "The new independent Vigilia title must only occupy wide landscape layouts: "+name);
+                Need(ui.UsesCompactRealmCrest,
+                    "Compact circular Valoria crest missing, or discarded red header returned: "+name);
+                Need(!ui.GetComponentsInChildren<Text>(true).Any(t=>
+                    t && t.gameObject.activeInHierarchy && t.name=="Vigilia de la Brecha"),
+                    "Large redundant central title must not cover the real city: "+name);
                 var nav = ui.NavButtons;
                 Need(nav.Count==5 && nav.All(x=>x), "Exactly 5 original independent navigation buttons required");
                 float previousRight = -1;
