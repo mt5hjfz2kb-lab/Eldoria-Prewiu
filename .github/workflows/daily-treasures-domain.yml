@@ -46,3 +46,25 @@ jobs:
         run: node tools/daily-treasures/layout-smoke.mjs
       - name: Enforce authoritative save and non-paying mailbox wiring
         run: node tools/daily-treasures/check-integration.mjs
+
+      - name: Validate artwork importer and immutable PNG manifest without transferring private assets
+        shell: bash
+        run: |
+          python - <<'PY'
+          import ast,json
+          from pathlib import Path
+          importer=Path('tools/daily-treasures/import_chest_art.py')
+          tree=ast.parse(importer.read_text(encoding='utf-8'))
+          assigned=next(n for n in tree.body if isinstance(n,ast.Assign)
+                        and any(isinstance(t,ast.Name) and t.id=='EXPECTED' for t in n.targets))
+          declared=ast.literal_eval(assigned.value)
+          manifest=json.loads(Path('Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt/source-manifest.json').read_text())
+          for asset in manifest['assets']:
+              name=asset['file']
+              assert name in declared, f'Missing source art: {name}'
+              assert declared[name][0]==asset['sha256'], f'Hash mismatch: {name}'
+              assert len(declared[name][1])==32, f'Invalid import GUID: {name}'
+          assert len(declared)==2
+          assert len({v[1] for v in declared.values()})==2
+          print('PASS authored asset importer, two immutable PNG hashes and independent GUIDs')
+          PY
