@@ -13,7 +13,10 @@ for(const [name,regex] of [
   ['skip hit target 100 by 45',/-10f,-60f,100f,45f/],
   ['close hit target 48 square',/-8f,-8f,48f,48f/],
   ['real 7-day reward data on cards',/DailyTreasureRules\.ForDay\(i\+1/],
-  ['short-portrait illustrated card grid',/compactPrizePortrait\?114f:portrait\?142f:64f/],
+  ['focused reward view',/header\.gameObject\.SetActive\(false\)/],
+  ['centralized ordinary rewards',/quietRewards\?\(portrait\?19f:26f\)/],
+  ['premium chest expanded on short landscape',/portrait\?246f:160f/],
+  ['readable day seven premium shelf',/portrait\?138f:64f/],
   ['real unaltered illustrated reward cards',/DailyTreasureRewardPresentation\.FromCommittedReward\(reward\)/],
   ['real command gateway rewards',/new GameCommand\(Guid\.NewGuid\(\)\.ToString\("N"\)/]
 ])assert.match(code,regex,name);
@@ -97,10 +100,10 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   for(const count of [1,2,4])
   {
     const compact=portrait&&ph<680;
-    const shelfH=compact?114:portrait?142:64;
-    const shelfY=compact?-126:portrait?-143:-69;
-    const resultY=compact?-217:portrait?-242:-15;
-    const resultH=compact?39:portrait?50:40;
+    const shelfH=portrait?138:64;
+    const shelfY=portrait?-115:-69;
+    const resultY=compact?-217:portrait?-232:-15;
+    const resultH=compact?39:portrait?50:29;
     const shelf=rect(0,shelfY,pw-34,shelfH);
     const result=rect(0,resultY,pw-45,resultH);
     const claim=rect(0,-ph/2+13+54/2,Math.min(pw-30,portrait?325:405),54);
@@ -114,7 +117,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
     const rows=Math.ceil(count/cols);
     const prizeGap=portrait?8:6;
     const cardW=Math.min(140,(pw-38-(cols-1)*prizeGap)/cols);
-    const cardH=rows===2?(compact?53:65):portrait?(compact?76:89):62;
+    const cardH=rows===2?65:portrait?(compact?76:89):62;
     const actual=[];
     for(let i=0;i<count;i++)
     {
@@ -146,6 +149,50 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
         `${w}x${h}: earned amount text clips beyond frame`);
     }
   }
+  // Normal resource-only days are intentionally NOT shown in a tiny
+  // empty chest position: 1–2 originally illustrated cards are centered,
+  // with a compact receipt and a genuinely reachable Continue action.
+  for(const count of [1,2])
+  {
+    const quietShelf=rect(0,portrait?19:26,pw-34,portrait?175:137);
+    const quietCaption=rect(0,portrait?-135:-99,pw-45,41);
+    const quietContinue=rect(0,portrait?-216:-152,
+      Math.min(pw-30,portrait?325:405),54);
+    assert.ok(noOverlap(quietShelf,quietCaption),
+      `${w}x${h}: the ordinary illustrated rewards obscure the actual receipt`);
+    assert.ok(noOverlap(quietCaption,quietContinue),
+      `${w}x${h}: Continue overlaps the normal reward's confirmation`);
+    assert.ok(noOverlap(quietShelf,quietContinue),
+      `${w}x${h}: normal resource items cover Continue`);
+    const cardW=Math.min(175,(pw-38-(count-1)*(portrait?8:6))/count);
+    const cardH=portrait?129:115;
+    assert.ok(cardW>=120&&cardH>=100,
+      `${w}x${h}: ordinary rewards are too small for premium illustrated art`);
+    const separation=portrait?8:6;
+    const left=-(count*cardW+(count-1)*separation)/2;
+    for(let i=0;i<count;i++)
+    {
+      const card=rect(left+cardW/2+i*(cardW+separation),0,cardW,cardH);
+      assert.ok(card.x0>=-quietShelf.x1 && card.x1<=quietShelf.x1 &&
+                card.y0>=-quietShelf.y1+quietShelf.y0 &&
+                card.y1<=quietShelf.y1-quietShelf.y0,
+        `${w}x${h}: normal illustrated reward is outside its frame`);
+    }
+  }
+
+  // Real non-paying milestones also use the same premium authored chest.
+  // Their short true-gameplay report line must remain clear of the Continue
+  // button, even on a 375px portrait or 390px landscape device.
+  const milestoneChest=rect(0,portrait?105:87,portrait?294:282,portrait?265:175);
+  const milestoneCaption=rect(0,portrait?-148:-71,pw-45,portrait?141:66);
+  const milestoneContinue=rect(0,-ph/2+13+54/2,Math.min(pw-30,portrait?325:405),54);
+  assert.ok(noOverlap(milestoneChest,milestoneCaption),
+    `${w}x${h}: hero or kingdom story overlays the premium chest`);
+  assert.ok(noOverlap(milestoneCaption,milestoneContinue),
+    `${w}x${h}: milestone report covers Continue action`);
+  assert.ok(milestoneChest.y1<=ph/2+eps,
+    `${w}x${h}: ceremonial chest exceeds top of frame`);
+
   checks.push({size:`${w}x${h}`,cards:cards.length,daySevenWidth:Math.round(cards[6].x1-cards[6].x0),touchTargets:true});
 }
 console.log('PASS daily treasures layout: '+checks.length+' aspect/size geometries, seven non-overlapping cards, real head/icon/body and >=44px controls');
