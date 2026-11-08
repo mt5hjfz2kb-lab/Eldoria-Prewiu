@@ -11,7 +11,9 @@ concurrency:
   group: eldoria-beta-mobile-candidate
   cancel-in-progress: true
 env:
-  NATIVE_RUN: '42435095850'
+  NATIVE_RUN: '42473140363'
+  NATIVE_EXPORT_SOURCE: d32508f9ce380eb8ea9bc10fecd4fb2dfc44a2f2
+  NATIVE_ORIGIN_RUN: '42435095850'
   NATIVE_SOURCE: 91734045e8d32cc90cc4843b4b7e08e57b1a0458
   CANDIDATE_REVISION: native325-staged4
 jobs:
@@ -29,7 +31,7 @@ jobs:
           for _ in range(240):
             req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
             with urllib.request.urlopen(req,timeout=30) as r:run=json.load(r)
-            assert run['head_sha']==os.environ['NATIVE_SOURCE'],'Native source mismatch'
+            assert run['head_sha']==os.environ['NATIVE_EXPORT_SOURCE'],'Native source mismatch'
             if run['status']=='completed':
               assert run['conclusion']=='success','Native verification failed; no candidate packaging authorized'
               break
@@ -71,9 +73,24 @@ jobs:
       - name: Verify native provenance and extract reference texture bundles
         run: |
           python - <<'PY'
-          import pathlib,json,importlib.util,gzip,hashlib,struct
+          import pathlib,json,importlib.util,gzip,hashlib,struct,os
           root=pathlib.Path('.')
-          assert json.load(open('native-evidence/warm-cache-restoration.json'))['restored']
+          export=json.load(open('native-evidence/preserved-web-inventory.json'))
+          assert export['origin_source']==os.environ['NATIVE_SOURCE']
+          assert export['origin_run']==os.environ['NATIVE_ORIGIN_RUN']
+          assert export['export_run']==os.environ['NATIVE_RUN']
+          assert export['export_source']==os.environ['NATIVE_EXPORT_SOURCE']
+          assert export['status']=='RECOVERED_UNVERIFIED_SOURCE_NOT_MODIFIED'
+          for f in export['files']:
+            fp=pathlib.Path('fresh-build')/f['path']
+            assert fp.stat().st_size==f['bytes']
+            assert hashlib.sha256(fp.read_bytes()).hexdigest()==f['sha256'].lower()
+          journey=json.load(open('native-evidence/native-journey/integration-result.json',encoding='utf-8-sig'))
+          assert journey['source']==os.environ['NATIVE_SOURCE']
+          assert journey['status']=='INTEGRATION_PASS_ART_REVIEW_REQUIRED'
+          assert len(journey['checks'])==225
+          inspection=json.load(open('native-evidence/recovery-inspection.json'))
+          assert inspection['source_modified_by_recovery'] is False
           spec=importlib.util.spec_from_file_location('prep','tools/eldoria-private-beta/prepare-pages.py')
           prep=importlib.util.module_from_spec(spec);spec.loader.exec_module(prep)
           z=list(root.glob('frozen-artifact/**/Eldoria-native325-itch.zip'));assert len(z)==1
@@ -96,7 +113,7 @@ jobs:
           python tools/eldoria-private-beta/prepare_structural_site.py extract --build fresh-build --output extracted
           HASH=$(python -c "import json;print(json.load(open('extracted/extraction.json'))['bundle_sha256'])")
           python tools/eldoria-private-beta/reuse_verified_texture_transforms.py --original original.unity3d --verified verified.unity3d --fresh extracted/data.unity3d --expected-fresh-sha256 "$HASH" --destination transformed
-          python tools/eldoria-private-beta/prepare_structural_site.py package --build fresh-build --wrapper previous-candidate --output site/mobile --data extracted/data.bin --bundle transformed/data.unity3d --texture-proof transformed/integrity.json --native-proof native-evidence/comparison.json --web-proof native-evidence/web-build.json --overlay-commit "$NATIVE_SOURCE" --revision "$CANDIDATE_REVISION" --native-run "$NATIVE_RUN"
+          python tools/eldoria-private-beta/prepare_structural_site.py package --build fresh-build --wrapper previous-candidate --output site/mobile --data extracted/data.bin --bundle transformed/data.unity3d --texture-proof transformed/integrity.json --native-proof native-evidence/comparison.json --web-proof native-evidence/web-build.json --overlay-commit "$NATIVE_SOURCE" --revision "$CANDIDATE_REVISION" --native-run "$NATIVE_ORIGIN_RUN"
           node tools/delivery/test-exact-decoded-transport.mjs site/mobile
       - uses: actions/upload-artifact@v4
         if: always()
@@ -105,6 +122,7 @@ jobs:
           path: |
             transformed/integrity.json
             extracted/extraction.json
+            native-evidence/
             site/mobile/release-identity.json
       - uses: actions/upload-artifact@v4
         with:
