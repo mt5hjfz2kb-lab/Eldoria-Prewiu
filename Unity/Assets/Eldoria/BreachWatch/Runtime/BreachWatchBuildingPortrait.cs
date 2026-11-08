@@ -227,8 +227,15 @@ namespace Eldoria.BreachWatch
                 }
                 float spanRight=(maxRight-minRight)*.5f;
                 float spanUp=(maxUp-minUp)*.5f;
+                // The geometrical AABBs include large *empty* corners
+                // between the real Bastion meshes, so a 1.12x margin made
+                // the approved building illustration look miniature (16%
+                // of pixels contained actual masonry). A closer 0.82x
+                // composition is validated against the REAL raster
+                // silhouette below. If any genuine parapet is cut off,
+                // the native quality gate rejects the capture.
                 portraitCamera.orthographicSize=Mathf.Max(.5f,
-                    Mathf.Max(spanUp,spanRight/portraitCamera.aspect)*1.12f);
+                    Mathf.Max(spanUp,spanRight/portraitCamera.aspect)*.82f);
                 portraitCamera.nearClipPlane=.1f;
                 portraitCamera.farClipPlane=1000;
                 Vector3 actualVisualCenter=copiedBounds.center +
