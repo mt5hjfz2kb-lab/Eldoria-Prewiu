@@ -50,5 +50,23 @@
       "sha256": "88b8122347cc98cb98522466be287c9b881ff03c763a4a0628928ea53c99ef64"
     }
   ],
-  "art_approved": false
+  "art_approved": false,
+  "context_frame": {
+    "name": "carved_context",
+    "sha256": "667e10d1270b30946f2c2252e05aa14519b9098a0f4e28b2bbf6b3741549bffb",
+    "source_sha256": "7a0d2377c969d75677e9493a776a9615f984eb72590f6a9d33d18fdca5120d49",
+    "guid": "b86646e246a44877b9d17f036b799cb6",
+    "dimensions": [
+      256,
+      398
+    ],
+    "border": {
+      "left": 39,
+      "bottom": 34,
+      "right": 34,
+      "top": 57
+    },
+    "source": "owner-approved assistant-generated original UI concept; inner labels/figures removed",
+    "not_native_screenshot": true
+  }
 }
