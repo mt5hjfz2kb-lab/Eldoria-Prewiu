@@ -591,12 +591,12 @@ namespace Eldoria.BreachWatch
                 At(portraitFrame,11,59,pw-22,81);
                 At(buildingFunction.rectTransform,13,143,pw-26,43);
                 At(costHeader.rectTransform,13,188,pw-26,14);
-                At(buildingCosts.rectTransform,13,207,pw-26,21);
-                At(costIcons[0].rectTransform,15,205,27,27);
-                At(costQuantities[0].rectTransform,46,204,51,29);
-                At(costIcons[1].rectTransform,105,205,27,27);
-                At(costQuantities[1].rectTransform,135,204,pw-146,29);
-                At(buildingState.rectTransform,13,230,pw-26,15);
+                At(buildingCosts.rectTransform,13,204,pw-26,24);
+                At(costIcons[0].rectTransform,15,204,24,24);
+                At(costQuantities[0].rectTransform,43,204,55,24);
+                At(costIcons[1].rectTransform,105,204,24,24);
+                At(costQuantities[1].rectTransform,133,204,pw-144,24);
+                At(buildingState.rectTransform,13,230,pw-26,14);
                 At(((RectTransform)actionButton.transform),12,ph-48,pw-24,43);
                 buildingName.fontSize=20;
                 buildingLevel.fontSize=14;
