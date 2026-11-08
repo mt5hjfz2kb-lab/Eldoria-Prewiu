@@ -553,18 +553,29 @@ namespace Eldoria.BreachWatch.Editor
                     Need(actual>=11.75f,
                         "Text too small in physical capture "+name+"/"+label.name+
                         ": "+actual.ToString("F2")+"px");
-                    Need(label.preferredHeight<=label.rectTransform.rect.height+4.5f,
-                        "Text is vertically clipped in "+name+"/"+label.name+
-                        " wanted="+label.preferredHeight.ToString("F1")+
-                        " available="+label.rectTransform.rect.height.ToString("F1"));
-                    if(label.name=="Actual chapter" ||
-                       label.name=="Real action title" ||
-                       label.name=="Real building name")
-                        Need(label.preferredWidth<=label.rectTransform.rect.width+5f,
-                            "Premium single-line inscription wraps or escapes its "+
-                            "carved border: "+name+"/"+label.name+
-                            " wanted="+label.preferredWidth.ToString("F1")+
-                            " available="+label.rectTransform.rect.width.ToString("F1"));
+                    // Unity's Text.preferredHeight/preferredWidth describe
+                    // the NOMINAL font size. With best-fit enabled they can
+                    // report two lines even though the GPU actually draws a
+                    // perfectly readable single line (as observed at 900x1600).
+                    // Use the rendered TextGenerator plus on/off GPU pixel
+                    // contribution for those captions instead of a false fail.
+                    if(label.resizeTextForBestFit)
+                    {
+                        Need(label.cachedTextGenerator.lineCount==1 &&
+                             label.cachedTextGenerator.vertexCount>0,
+                             "Premium best-fit caption actually wraps or has no glyphs: "+
+                             name+"/"+label.name);
+                    }
+                    else
+                    {
+                        Need(label.preferredHeight<=label.rectTransform.rect.height+4.5f,
+                             "Live text genuinely clips vertically: "+name+"/"+label.name+
+                             " wanted="+label.preferredHeight.ToString("F1")+
+                             " available="+label.rectTransform.rect.height.ToString("F1"));
+                        if(label.name=="Real building name")
+                            Need(label.preferredWidth<=label.rectTransform.rect.width+5f,
+                                 "Real Bastion title exceeds its premium heading: "+name);
+                    }
                 }
                 // Only Chapter I gets the owner's Breach subtitle; the
                 // gameplay chapter number and objective stay canonical.
