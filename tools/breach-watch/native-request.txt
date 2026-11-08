@@ -80,3 +80,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: Exact-head clean/fresh Unity capture rerun, CI now deletes old report/screenshots and rejects missing current-pass marker and wrong source SHA, after shortening true chapter label and authentic Bastion summary to avoid wrapped Libre Baskerville. No stale artwork acceptance.
 
 2026-11-08: Import user-approved gold-trim source exact SHA 79e2264961b3ea4462f9fc3dc65f513e2f4e76f59f4f6b2e3d27a5d06013a5a1 into a transparent independent nine-slice UI sprite. No baked screenshot, text, costs or castle; commit only the new frame asset. [vigilia-owner-gold-border]
+
+2026-11-08: Exact gold-trim source migrated and imported (original SHA 79e226...). New independent metal ring uses true transparent 9-slice, live text remains separate, Cormorant gold heading with legible Libre body, actual gameplay costs. Source/asset gate checks exact PNG, fonts and original medallions. Re-run FRESH Unity screenshot with evidence folder removed; capture four orientations and real Bastion selection, no merging to main.
