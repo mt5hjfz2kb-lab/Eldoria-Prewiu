@@ -1,170 +1,53 @@
-name: Eldoria preserved build read-only recovery
+name: Eldoria preserved WebGL payload audit
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
-    paths: ['.github/workflows/eldoria-beta-native-memory.yml', 'tools/eldoria-private-beta/native/run_structural.ps1']
+    paths: ['.github/workflows/eldoria-beta-native-memory.yml']
   workflow_dispatch:
 permissions:
   contents: read
-  pull-requests: read
-  actions: write
-  statuses: write
-concurrency:
-  group: eldoria-beta-native-warm-preserved
-  cancel-in-progress: false
-env:
-  EXPECTED_LEASE_REVISION: '8'
+  actions: read
 jobs:
-  preflight:
+  audit:
     runs-on: ubuntu-latest
-    outputs:
-      native_available: ${{ steps.lease.outputs.available }}
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
-          path: beta-tools
-          sparse-checkout: tools/eldoria-private-beta/native
-          persist-credentials: false
-      - name: Parse PowerShell without starting Unity
-        shell: pwsh
+          run-id: 42473140363
+          name: beta-structural-webgl-unverified
+          github-token: ${{ github.token }}
+          path: build
+      - run: python -m pip install UnityPy==1.25.4 lz4==4.4.5 Brotli==1.2.1
+      - name: Inventory data entries and serialized payload without editing
         run: |
-          $tokens=$null;$errors=$null
-          Get-ChildItem "$pwd/beta-tools/tools/eldoria-private-beta/native/*.ps1"|ForEach-Object {
-            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors)|Out-Null
-            if($errors.Count){$errors|Format-List;throw 'PowerShell parser errors'}
-          }
-      - name: Retire only the slow isolated checkout before native execution
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          python - <<'PY'
-          import json,os,time,urllib.request
-          root='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']
-          def api(path,method='GET'):
-            req=urllib.request.Request(root+path,method=method,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
-            with urllib.request.urlopen(req,timeout=30) as r:
-              b=r.read();return json.loads(b) if b else None
-          run=api('/actions/runs/42428875558')
-          if run['head_sha']!='92d68b3a84c34952522286e246e5c358d2a9e306':raise RuntimeError('Unexpected retiring source')
-          if run['status']!='completed':
-            jobs=api('/actions/runs/42428875558/jobs')['jobs']
-            native=next(j for j in jobs if j['name']=='native')
-            phase=next(s for s in native['steps'] if s['number']==7)
-            checkout=next(s for s in native['steps'] if s['number']==6)
-            if phase['status']!='pending' or checkout['status']!='in_progress':
-              raise RuntimeError('Original run progressed beyond checkout; leave it running, do not start another')
-            api('/actions/runs/42428875558/cancel','POST')
-            for _ in range(60):
-              if api('/actions/runs/42428875558')['status']=='completed':break
-              time.sleep(5)
-            else:raise RuntimeError('Original isolated checkout has not stopped')
-          print('Previous run stopped or completed; no concurrent native process authorized')
+          python -u - <<'PY'
+          import pathlib,gzip,struct,json,hashlib,collections
+          import UnityPy
+          p=pathlib.Path('build/Build/ValoriaWebPlaytest.data.unityweb')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='1397b7df824aa9b587a4283bd1c91d87db5fa33f32008b21726a457568fcf2dc'
+          raw=gzip.decompress(p.read_bytes());end=struct.unpack_from('<I',raw,16)[0];pos=20;entries=[]
+          while pos<end:
+            offset,size,n=struct.unpack_from('<III',raw,pos);pos+=12
+            name=raw[pos:pos+n].decode();pos+=n
+            entries.append({'name':name,'offset':offset,'bytes':size})
+            if name=='data.unity3d':pathlib.Path('bundle').write_bytes(raw[offset:offset+size])
+          del raw
+          pathlib.Path('evidence').mkdir()
+          pathlib.Path('evidence/data-entries.json').write_text(json.dumps(entries,indent=2))
+          print('ENTRIES',json.dumps(entries),flush=True)
+          env=UnityPy.load('bundle');totals=collections.Counter();largest=[];textures=[]
+          for obj in env.objects:
+            size=len(obj.get_raw_data());totals[obj.type.name]+=size
+            if size>1000000:largest.append({'type':obj.type.name,'id':obj.path_id,'file':obj.assets_file.name,'bytes':size})
+            if obj.type.name=='Texture2D':
+              t=obj.read_typetree()
+              textures.append({'name':t.get('m_Name'),'width':t.get('m_Width'),'height':t.get('m_Height'),'format':t.get('m_TextureFormat'),'bytes':size,'stream':t.get('m_StreamData'),'readable':t.get('m_IsReadable')})
+          pathlib.Path('evidence/bundle-audit.json').write_text(json.dumps({'types':dict(totals),'largest':sorted(largest,key=lambda x:-x['bytes'])[:80],'textures':textures},indent=2))
+          print('TYPES',dict(totals),flush=True)
           PY
-      - name: Check current ownership without occupying Windows
-        id: lease
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          gh api "repos/$GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" --jq .content | base64 -d > registry.json
-          gh api "repos/$GITHUB_REPOSITORY/pulls?state=open&per_page=100" > pulls.json
-          python - <<'PY'
-          import json,os
-          active=json.load(open('registry.json'))['active']
-          holders=[x for x in active if 'windows-runner-heavy' in x.get('resources',[])]
-          own=next(x for x in active if x['id']=='eldoria-private-beta-i-v-20261107')
-          prs=[x for x in json.load(open('pulls.json')) if 'Workstream-ID: eldoria-private-beta-i-v-20261107' in (x.get('body') or '')]
-          if len(prs)!=1 or prs[0]['number']!=179: raise RuntimeError('Canonical PR179 ownership mismatch')
-          valid=own['owner']=='chatgpt-beta-pages-20261107' and str(own['ownership_revision'])==os.environ['EXPECTED_LEASE_REVISION'] and len(holders)==1 and holders[0]['id']==own['id']
-          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('available='+str(valid).lower()+'\n')
-          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
-            f.write('PowerShell syntax checked. Native Unity '+('authorized for this exact lease.' if valid else 'NOT RUN: resource lease is not available to this revision. No gameplay/build certification.')+'\n')
-          print({'native_available':valid,'holders':[x['id'] for x in holders]})
-          PY
-  native:
-    needs: preflight
-    if: needs.preflight.outputs.native_available == 'true'
-    runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 35
-    steps:
-      - name: Recover installed Git
-        shell: powershell
-        run: |
-          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
-            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
-            if(-not $g){throw 'Installed Git unavailable'}
-            Add-Content $env:GITHUB_PATH (Split-Path $g)
-          }
-      - uses: actions/checkout@v4
-        with:
-          path: beta-structural-tools
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /tools/eldoria-private-beta/native/
-            /Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
-            /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
-            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
-            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs
-          persist-credentials: false
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-          path: beta-structural-live
-          sparse-checkout: pipeline/active-workstreams.json
-          sparse-checkout-cone-mode: false
-          persist-credentials: false
-      - name: Recheck fresh lease and protect every existing project
-        shell: powershell
-        run: |
-          $ErrorActionPreference='Stop'
-          $r=Get-Content beta-structural-live/pipeline/active-workstreams.json -Raw|ConvertFrom-Json
-          $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'chatgpt-beta-pages-20261107' -or $holders[0].ownership_revision -ne [int]$env:EXPECTED_LEASE_REVISION){throw 'Structural startup lease changed'}
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy; do not interrupt'}
-          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
-          $folder="beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
-          if(Test-Path $folder){throw 'Isolated project already exists; refuse replacement'}
-          $drive=Get-PSDrive -Name ([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE).Substring(0,1))
-          if($drive.Free -lt 512MB){throw 'Insufficient isolated import headroom; preserve other projects'}
-      - name: Inspect preserved build and export without changing shared source
-        shell: powershell
-        run: |
-          $ErrorActionPreference='Stop'
-          $out=Join-Path $env:GITHUB_WORKSPACE "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
-          New-Item -ItemType Directory $out|Out-Null
-          $old=Join-Path $env:GITHUB_WORKSPACE 'beta-structural-evidence-42435095850-1'
-          $web=Join-Path $env:GITHUB_WORKSPACE 'beta-structural-webgl-42435095850-1'
-          $source=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
-          $utf8=New-Object Text.UTF8Encoding($false)
-          $head=git -C $source rev-parse HEAD
-          $status=@(git -C $source status --porcelain -- Unity)
-          $paths=@('Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/BakedSceneURP.asset','Unity/Assets/UniversalRenderPipelineGlobalSettings.asset')
-          $diff=@(git -C $source diff -- $paths)
-          [IO.File]::WriteAllLines((Join-Path $out 'current-settings.diff'),[string[]]$diff,$utf8)
-          $inventory=@(Get-ChildItem $env:GITHUB_WORKSPACE -Directory -Filter 'beta-structural-*'|ForEach-Object {$_.Name})
-          [IO.File]::WriteAllText((Join-Path $out 'recovery-inspection.json'),(@{head=$head;status=$status;preserved_directories=$inventory;source_modified_by_recovery=$false}|ConvertTo-Json -Depth 8),$utf8)
-          if(-not(Test-Path (Join-Path $old 'complete.txt')) -or -not(Test-Path (Join-Path $web 'index.html'))){throw 'Preserved complete build absent; inspection retained'}
-          foreach($name in 'comparison.json','source-overlay.json','existing-input-audit.json','warm-cache-before.json','warm-cache-restoration.json','complete.txt','web-build.json','web-input-current-manifest.txt','web-input-current-signature.txt','web-authority-platform-normalization.txt'){
-            if(Test-Path (Join-Path $old $name)){Copy-Item (Join-Path $old $name) (Join-Path $out $name)}
-          }
-          New-Item -ItemType Directory (Join-Path $out 'native-journey')|Out-Null
-          foreach($name in 'integration-result.json','integration-input-manifest.txt','integration-input-signature.txt'){Copy-Item (Join-Path $old ('native-journey/'+$name)) (Join-Path $out ('native-journey/'+$name))}
-          $build=Get-Content (Join-Path $old 'web-build.json') -Raw|ConvertFrom-Json
-          if($build.source_sha -ne '91734045e8d32cc90cc4843b4b7e08e57b1a0458'){throw 'Unexpected build provenance'}
-          $files=@(Get-ChildItem $web -File -Recurse|ForEach-Object {@{path=$_.FullName.Substring($web.Length+1).Replace('\','/');bytes=$_.Length;sha256=(Get-FileHash $_.FullName -Algorithm SHA256).Hash}})
-          [IO.File]::WriteAllText((Join-Path $out 'preserved-web-inventory.json'),(@{files=$files;origin_run='42435095850';origin_source=$build.source_sha;export_run=$env:GITHUB_RUN_ID;export_source=$env:GITHUB_SHA;status='RECOVERED_UNVERIFIED_SOURCE_NOT_MODIFIED'}|ConvertTo-Json -Depth 8),$utf8)
-          Add-Content $env:GITHUB_ENV "BETA_CERTIFIED_WEB=$web"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: beta-structural-native-evidence
-          path: beta-structural-evidence-${{ github.run_id }}-${{ github.run_attempt }}/
-          retention-days: 14
-      - uses: actions/upload-artifact@v4
-        if: success()
-        with:
-          name: beta-structural-webgl-unverified
-          path: ${{ env.BETA_CERTIFIED_WEB }}/
-          compression-level: 0
-          retention-days: 14
+          name: preserved-webgl-payload-audit
+          path: evidence/
