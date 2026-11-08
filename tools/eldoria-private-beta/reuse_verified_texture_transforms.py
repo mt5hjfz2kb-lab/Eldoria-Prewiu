@@ -20,6 +20,13 @@ def file_hash(path):
 def key(obj):
     return obj.assets_file.name + ":" + str(obj.path_id)
 
+def semantic_key(tree):
+    # Names identify separate imported copies; readability is handled separately.
+    # Every pixel, mip and all remaining sampler/color/shape metadata must match.
+    metadata = {k:v for k,v in tree.items() if k not in {"m_Name", "m_IsReadable", "image data"}}
+    encoded = json.dumps(metadata,sort_keys=True,separators=(",",":"),default=lambda v:bytes(v).hex()).encode()
+    return digest(encoded+b"\0"+bytes(tree["image data"]))
+
 def catalog(original, verified):
     assert file_hash(original) == ORIGINAL, "Wrong original frozen bundle"
     assert file_hash(verified) == VERIFIED, "Wrong previously verified texture bundle"
@@ -27,6 +34,7 @@ def catalog(original, verified):
     candidates = UnityPy.load(str(verified))
     old = {key(o): o for o in source.objects if o.type.name == "Texture2D"}
     transforms = {}
+    semantic = {}
     for obj in candidates.objects:
         if obj.type.name != "Texture2D":
             continue
@@ -51,30 +59,57 @@ def catalog(original, verified):
         previous = transforms.get(digest(a))
         assert previous is None or previous["hash"] == record["hash"], "Ambiguous transform"
         transforms[digest(a)] = record
+        sk = semantic_key(ta)
+        patch = {k:tb[k] for k in ("m_TextureFormat","m_CompleteImageSize","image data")}
+        if sk in semantic:
+            assert semantic[sk]["patch"] == patch, "Ambiguous semantic texture transform"
+        semantic[sk] = {"patch":patch,"reference":digest(a),"record":record}
     assert transforms
     del source, candidates, old
     gc.collect()
-    return transforms
+    return transforms, semantic
 
 def apply(original, verified, fresh, expected_hash, destination):
     assert file_hash(fresh) == expected_hash, "Unexpected fresh source"
     destination = Path(destination)
     destination.mkdir(parents=True, exist_ok=False)
-    transforms = catalog(original, verified)
+    transforms, semantic = catalog(original, verified)
+    print('Verified texture catalog',len(transforms),'exact',len(semantic),'semantic',flush=True)
     env = UnityPy.load(str(fresh))
     before, changed, reports, used = {}, {}, [], set()
     for obj in env.objects:
         data = obj.get_raw_data()
         h = digest(data)
         before[key(obj)] = h
-        if obj.type.name != "Texture2D" or h not in transforms:
+        if obj.type.name != "Texture2D":
             continue
-        transform = transforms[h]
+        match = "exact"
+        tree = None
+        if h not in transforms:
+            tree = obj.read_typetree()
+            # Do not alter new CPU-readable usages through semantic matching.
+            candidate = semantic.get(semantic_key(tree)) if not tree.get("m_IsReadable",True) else None
+            if candidate is None:
+                continue
+            transform = candidate["record"]
+            reference = candidate["reference"]
+            match = "identical pixels and all metadata except name/readability"
+        else:
+            transform = transforms[h]
+            reference = h
         assert list(obj.version) == transform["version"], "Serialization version changed"
-        obj.set_raw_data(transform["raw"])
-        changed[key(obj)] = transform["hash"]
-        used.add(h)
-        reports.append({k: v for k, v in transform.items() if k != "raw"} | {"object": key(obj), "source_hash": h})
+        if tree is None:
+            obj.set_raw_data(transform["raw"])
+        else:
+            updated = dict(tree)
+            updated.update(candidate["patch"])
+            assert {k for k in tree if tree[k] != updated[k]} <= {"m_TextureFormat","m_CompleteImageSize","image data"}
+            obj.save_typetree(updated)
+            reopened = obj.read_typetree()
+            assert reopened == updated, "Texture metadata changed unexpectedly"
+        changed[key(obj)] = digest(obj.get_raw_data())
+        used.add(reference)
+        reports.append({k: v for k, v in transform.items() if k != "raw"} | {"object": key(obj), "source_hash": h, "matching":match, "reference_source_hash":reference})
     assert changed, "No byte-identical verified texture transformations found"
     output = destination / "data.unity3d"
     output.write_bytes(env.file.save(packer="lz4"))
