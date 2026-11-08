@@ -1,0 +1,115 @@
+{
+    "passes":  [
+                   {
+                       "managedPeakDelta":  -97009664,
+                       "pass":  0,
+                       "parity":  true,
+                       "allocatedPeakDelta":  -129758,
+                       "reservedPeakDelta":  -4960256,
+                       "staged":  {
+                                      "editorOnlyDiagnostics":  [
+                                                                    "ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index\nSystem.Collections.Generic.List`1[T].get_Item (System.Int32 index) (at \u003cd49d4cb128564ee1b54a84338c98d353\u003e:0)\nUnityEditor.Search.SearchDatabase+\u003cEnumerateAll\u003ed__81.MoveNext () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nSystem.Linq.Enumerable.TryGetFirst[TSource] (System.Collections.Generic.IEnumerable`1[T] source, System.Boolean\u0026 found) (at \u003ce1f614c5eede4689988594bcb9796955\u003e:0)\nSystem.Linq.Enumerable.First[TSource] (System.Collections.Generic.IEnumerable`1[T] source) (at \u003ce1f614c5eede4689988594bcb9796955\u003e:0)\nUnityEditor.Search.SearchDatabase.GetDefaultSearchDatabase () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nUnityEditor.Search.SearchInit.IndexationOnStartup () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nUnityEditor.EditorApplication.Internal_CallDelayFunctions () (at \u003ca1c4aa6b1d6f4d71b2e529a0fc32c2fd\u003e:0)\n"
+                                                                ],
+                                      "source":  "67c0d4393f5f27d6c540b988beecc23e3fc0ac8e",
+                                      "inputAudit":  "41A222C8BC9B1094C03C4A5CDBA58800290D49A52F97D762CA30F17240B83922",
+                                      "mode":  "staged",
+                                      "environment":  "Unity Editor Windows; NOT WebGL or physical iPhone",
+                                      "geometryHash":  "0F0396743530E6B5645845C32D6B954050322B29E745DE3A7CE1EB0DD4A317D7",
+                                      "queryHash":  "EB9D71CE56094697FBD1013AA1DB272CAB899FA630329696A2AF9F148B1280BF",
+                                      "pass":  0,
+                                      "guardedFrames":  10,
+                                      "retainedVerificationBuckets":  0,
+                                      "verifiedSites":  2142,
+                                      "validatedCities":  17,
+                                      "secondsToReady":  12.643854000000001,
+                                      "peakAllocated":  1297514740,
+                                      "peakReserved":  1658150912,
+                                      "peakManaged":  677687296,
+                                      "managedAfterFullGC":  564748288,
+                                      "ready":  true,
+                                      "worldComplete":  true,
+                                      "canonicalSavesUnchanged":  true
+                                  },
+                       "baseline":  {
+                                        "editorOnlyDiagnostics":  [
+                                                                      "ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index\nSystem.Collections.Generic.List`1[T].get_Item (System.Int32 index) (at \u003cd49d4cb128564ee1b54a84338c98d353\u003e:0)\nUnityEditor.Search.SearchDatabase+\u003cEnumerateAll\u003ed__81.MoveNext () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nSystem.Linq.Enumerable.TryGetFirst[TSource] (System.Collections.Generic.IEnumerable`1[T] source, System.Boolean\u0026 found) (at \u003ce1f614c5eede4689988594bcb9796955\u003e:0)\nSystem.Linq.Enumerable.First[TSource] (System.Collections.Generic.IEnumerable`1[T] source) (at \u003ce1f614c5eede4689988594bcb9796955\u003e:0)\nUnityEditor.Search.SearchDatabase.GetDefaultSearchDatabase () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nUnityEditor.Search.SearchInit.IndexationOnStartup () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nUnityEditor.EditorApplication.Internal_CallDelayFunctions () (at \u003ca1c4aa6b1d6f4d71b2e529a0fc32c2fd\u003e:0)\n"
+                                                                  ],
+                                        "source":  "948ffa9837168a0b68dab80be76b66350422b23a",
+                                        "inputAudit":  "41A222C8BC9B1094C03C4A5CDBA58800290D49A52F97D762CA30F17240B83922",
+                                        "mode":  "baseline",
+                                        "environment":  "Unity Editor Windows; NOT WebGL or physical iPhone",
+                                        "geometryHash":  "0F0396743530E6B5645845C32D6B954050322B29E745DE3A7CE1EB0DD4A317D7",
+                                        "queryHash":  "EB9D71CE56094697FBD1013AA1DB272CAB899FA630329696A2AF9F148B1280BF",
+                                        "pass":  0,
+                                        "guardedFrames":  0,
+                                        "retainedVerificationBuckets":  331431,
+                                        "verifiedSites":  2142,
+                                        "validatedCities":  17,
+                                        "secondsToReady":  12.600764599999998,
+                                        "peakAllocated":  1297644498,
+                                        "peakReserved":  1663111168,
+                                        "peakManaged":  774696960,
+                                        "managedAfterFullGC":  623869952,
+                                        "ready":  true,
+                                        "worldComplete":  true,
+                                        "canonicalSavesUnchanged":  true
+                                    }
+                   },
+                   {
+                       "managedPeakDelta":  -54599680,
+                       "pass":  1,
+                       "parity":  true,
+                       "allocatedPeakDelta":  12035798,
+                       "reservedPeakDelta":  15785984,
+                       "staged":  {
+                                      "editorOnlyDiagnostics":  [
+                                                                    "ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index\nSystem.Collections.Generic.List`1[T].get_Item (System.Int32 index) (at \u003cd49d4cb128564ee1b54a84338c98d353\u003e:0)\nUnityEditor.Search.SearchDatabase+\u003cEnumerateAll\u003ed__81.MoveNext () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nSystem.Linq.Enumerable.TryGetFirst[TSource] (System.Collections.Generic.IEnumerable`1[T] source, System.Boolean\u0026 found) (at \u003ce1f614c5eede4689988594bcb9796955\u003e:0)\nSystem.Linq.Enumerable.First[TSource] (System.Collections.Generic.IEnumerable`1[T] source) (at \u003ce1f614c5eede4689988594bcb9796955\u003e:0)\nUnityEditor.Search.SearchDatabase.GetDefaultSearchDatabase () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nUnityEditor.Search.SearchInit.IndexationOnStartup () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nUnityEditor.EditorApplication.Internal_CallDelayFunctions () (at \u003ca1c4aa6b1d6f4d71b2e529a0fc32c2fd\u003e:0)\n"
+                                                                ],
+                                      "source":  "67c0d4393f5f27d6c540b988beecc23e3fc0ac8e",
+                                      "inputAudit":  "41A222C8BC9B1094C03C4A5CDBA58800290D49A52F97D762CA30F17240B83922",
+                                      "mode":  "staged",
+                                      "environment":  "Unity Editor Windows; NOT WebGL or physical iPhone",
+                                      "geometryHash":  "0F0396743530E6B5645845C32D6B954050322B29E745DE3A7CE1EB0DD4A317D7",
+                                      "queryHash":  "EB9D71CE56094697FBD1013AA1DB272CAB899FA630329696A2AF9F148B1280BF",
+                                      "pass":  1,
+                                      "guardedFrames":  10,
+                                      "retainedVerificationBuckets":  0,
+                                      "verifiedSites":  2142,
+                                      "validatedCities":  17,
+                                      "secondsToReady":  11.955969199999999,
+                                      "peakAllocated":  1287263995,
+                                      "peakReserved":  1677025280,
+                                      "peakManaged":  756469760,
+                                      "managedAfterFullGC":  569118720,
+                                      "ready":  true,
+                                      "worldComplete":  true,
+                                      "canonicalSavesUnchanged":  true
+                                  },
+                       "baseline":  {
+                                        "editorOnlyDiagnostics":  [
+                                                                      "ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index\nSystem.Collections.Generic.List`1[T].get_Item (System.Int32 index) (at \u003cd49d4cb128564ee1b54a84338c98d353\u003e:0)\nUnityEditor.Search.SearchDatabase+\u003cEnumerateAll\u003ed__81.MoveNext () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nSystem.Linq.Enumerable.TryGetFirst[TSource] (System.Collections.Generic.IEnumerable`1[T] source, System.Boolean\u0026 found) (at \u003ce1f614c5eede4689988594bcb9796955\u003e:0)\nSystem.Linq.Enumerable.First[TSource] (System.Collections.Generic.IEnumerable`1[T] source) (at \u003ce1f614c5eede4689988594bcb9796955\u003e:0)\nUnityEditor.Search.SearchDatabase.GetDefaultSearchDatabase () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nUnityEditor.Search.SearchInit.IndexationOnStartup () (at \u003c05cfe4d3ac8d48a0ae226c6ad1e43a17\u003e:0)\nUnityEditor.EditorApplication.Internal_CallDelayFunctions () (at \u003ca1c4aa6b1d6f4d71b2e529a0fc32c2fd\u003e:0)\n"
+                                                                  ],
+                                        "source":  "948ffa9837168a0b68dab80be76b66350422b23a",
+                                        "inputAudit":  "41A222C8BC9B1094C03C4A5CDBA58800290D49A52F97D762CA30F17240B83922",
+                                        "mode":  "baseline",
+                                        "environment":  "Unity Editor Windows; NOT WebGL or physical iPhone",
+                                        "geometryHash":  "0F0396743530E6B5645845C32D6B954050322B29E745DE3A7CE1EB0DD4A317D7",
+                                        "queryHash":  "EB9D71CE56094697FBD1013AA1DB272CAB899FA630329696A2AF9F148B1280BF",
+                                        "pass":  1,
+                                        "guardedFrames":  0,
+                                        "retainedVerificationBuckets":  331431,
+                                        "verifiedSites":  2142,
+                                        "validatedCities":  17,
+                                        "secondsToReady":  11.720574599999999,
+                                        "peakAllocated":  1275228197,
+                                        "peakReserved":  1661239296,
+                                        "peakManaged":  811069440,
+                                        "managedAfterFullGC":  630079488,
+                                        "ready":  true,
+                                        "worldComplete":  true,
+                                        "canonicalSavesUnchanged":  true
+                                    }
+                   }
+               ],
+    "status":  "NATIVE_PARITY_PASS_NOT_MOBILE_CERTIFICATION"
+}
