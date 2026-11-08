@@ -11,8 +11,8 @@ concurrency:
   group: eldoria-beta-mobile-candidate
   cancel-in-progress: false
 env:
-  NATIVE_RUN: '42431634641'
-  NATIVE_SOURCE: 67c0d4393f5f27d6c540b988beecc23e3fc0ac8e
+  NATIVE_RUN: '42435095850'
+  NATIVE_SOURCE: 91734045e8d32cc90cc4843b4b7e08e57b1a0458
   CANDIDATE_REVISION: native325-staged4
 jobs:
   package:
