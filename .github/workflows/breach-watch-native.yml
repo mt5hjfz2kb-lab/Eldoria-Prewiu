@@ -49,7 +49,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
   commit-verified-cc0-art:
-    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]'))
+    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]'))
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
@@ -74,6 +74,9 @@ jobs:
       - name: Generate only exact SHA and CC0 verified real resource icons
         if: contains(github.event.head_commit.message, '[vigilia-import-resources]')
         run: python tools/breach-watch/import_resource_icons.py
+      - name: Extract five independently selectable medallions from the approved user concept
+        if: contains(github.event.head_commit.message, '[vigilia-owner-reference]')
+        run: python tools/breach-watch/import_reference_medallions.py
       - name: Protect canonical workstream ownership and source HEAD before push
         shell: bash
         env:
