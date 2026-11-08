@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T14:41:21.440Z",
+  "updated_at": "2026-11-08T15:28:44.632Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6820,9 +6820,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "MOBILE5_PHYSICAL_FAILURE_RESIDENCY_REDESIGN",
+      "phase": "MOBILE6_APPLE_GPU_FIX_PUBLISHED_PUBLIC_QA",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Audit startup data and world residency; prepare an isolated WebGL streaming build, measure actual memory and preserve normal city/world/tutorial behavior before another phone candidate.",
+      "next": "Finish published WebKit QA, then owner physical iPhone verification. Full normal-clock I–V and real gameplay telemetry still required before external testers.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6845,7 +6845,7 @@
         "browser_landing": "PASS anonymous",
         "browser_game_start": "BLOCKED remote browser reports Your browser does not support WebGL",
         "owner_confirmed_no_back_or_reload": true,
-        "iphone_cause": "not identified; memory pressure hypothesis; no device exception in screenshot",
+        "iphone_cause": "Unconfirmed on physical iPhone. Desktop Apple GPU WebKit GPU-process SIGSEGV in compressedTexSubImage2D reproduced; converting only five cubemaps resolves desktop failure.",
         "startup_diagnostic_run": 42415743624,
         "diagnostic_cache_fix": {
           "source": "08fb51bb492bb81f89e42c1e59de1ff1ada40287",
@@ -6939,14 +6939,32 @@
             "context_loss_observed": false,
             "cause_confirmed": false
           }
+        },
+        "mobile6": {
+          "revision": "native325-mobile6-cubemap",
+          "bundle_sha256": "e54d547487e0d915f5a8c3fbbd0354a79672041dd201b3e63672de5e740ea6c1",
+          "qa_run": 42493894120,
+          "webkit_versions": [
+            "26.0",
+            "27.2"
+          ],
+          "renderer": "Apple GPU",
+          "nickname_reload_visually_verified": true,
+          "pages_run": 42494677413,
+          "site_version": 5,
+          "site_deployment": "appgdep_6af094df6f9881918253a11bc83d7bb6",
+          "public_qa_run": 42494930537,
+          "public_qa_pass": false,
+          "physical_iphone_verified": false,
+          "release_for_external_testers": false
         }
       },
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "requested",
-        "reason": "Native WebGL residency redesign after mobile5 physical iPhone failure; respect current Vigilia lease. Independent static/binary audit continues."
+        "status": "not_required_for_current_fix",
+        "reason": "Reproduced compressed-texture GPU crash on hosted macOS; narrow cubemap candidate built and verified without Windows lease. No shared Unity resource needed for current publication."
       }
     },
     {
