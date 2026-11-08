@@ -98,3 +98,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: clean original premium nine-slice materials regenerated from source; old center stone/button diamonds completely removed, four-artifact manifest and QA corrected. Render live original gold owner border, concise truthful Bastion action, 8 true Unity PNGs at exact new head da9cd0a511d0879db77fea721bc759373474ec26, and visually reject misaligned/overlapping text.
 
 2026-11-08: gold border separate finial regeneration ONLY using Ubuntu/art-scoped workstream while private beta holds Windows: remove gold vertical tab from live CTA, create faithful standalone footer diamond. DO NOT launch Unity in this artwork-import run. [vigilia-owner-gold-border]
+
+2026-11-08: POST-ART exact-head verification of detached lower gold jewel: original approved 256x427 contour SVG-style sprite and separate 60x50 finial already imported, manifests and metadata pinned. Run SHA, licence, Roslyn, geometry Ubuntu proof only. Heavy Windows currently owned by private beta and MUST be skipped until formal handoff. Last head 079ebd98fc3798252c62793ae8d7e07df18f2543.
