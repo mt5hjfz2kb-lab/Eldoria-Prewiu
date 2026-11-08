@@ -374,6 +374,9 @@ namespace Eldoria.DailyTreasures
             Stretch(skipText.rectTransform);
             ceremony.gameObject.SetActive(false);
             screen.gameObject.SetActive(false);
+            // The entry medallion is the ONLY control visible before the
+            // calendar opens. It must have live geometry immediately.
+            Layout();
         }
         static Image CreateIllustratedChest(Transform parent,string name,Sprite art)
         {
@@ -1013,6 +1016,13 @@ namespace Eldoria.DailyTreasures
         {
             if(!root)return;
             SynchronizePresentationCanvas();
+            // A hidden calendar must NOT also hide the sole entry geometry.
+            // Layout is required on the very first frame, and again whenever
+            // Vigilia's independent safe area or the device orientation moves.
+            float currentWidth=root.rect.width,currentHeight=root.rect.height;
+            if(Mathf.Abs(currentWidth-lastWidth)>1f ||
+               Mathf.Abs(currentHeight-lastHeight)>1f)
+                Layout();
             if(gateway!=null && Time.unscaledTime>=nextMilestonePoll)
             {
                 nextMilestonePoll=Time.unscaledTime+.65f;
@@ -1048,8 +1058,6 @@ namespace Eldoria.DailyTreasures
                 }
                 return;
             }
-            float w=root.rect.width,h=root.rect.height;
-            if(Mathf.Abs(w-lastWidth)>1f || Mathf.Abs(h-lastHeight)>1f)Layout();
             if(!playing && calendar.gameObject.activeSelf && now!=null &&
                 Time.unscaledTime>=nextTick)
             {
