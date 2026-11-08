@@ -163,7 +163,8 @@ internal static class GatewayChecks
                 "Bastion announcement is not a payable receipt");
             Assert(notices[0].OccurredAtUtcTicks==At(9),
                 "Bastion announcement timestamp is the actual completion deadline");
-            var resources=result.Resources.Copy();
+            int woodAfter=result.Resources.Wood,stoneAfter=result.Resources.Stone,
+                foodAfter=result.Resources.Food;
             g=new LocalGateway(clock,store);
             Assert(g.Snapshot().Mailbox.Messages.FindAll(m=>m.EventId==eventId).Count==1,
                 "reloaded Bastion level "+level+" cannot duplicate announcement");
@@ -175,9 +176,9 @@ internal static class GatewayChecks
                 "deleted Bastion announcement stays deleted across reload");
             Assert(after.Mailbox.ReceivedEventIds.Contains(eventId),
                 "Bastion announcement tombstone remains after deletion");
-            Assert(after.Resources.Wood==resources.Wood &&
-                   after.Resources.Stone==resources.Stone &&
-                   after.Resources.Food==resources.Food,
+            Assert(after.Resources.Wood==woodAfter &&
+                   after.Resources.Stone==stoneAfter &&
+                   after.Resources.Food==foodAfter,
                 "reading/deleting Bastion announcements never mints resources");
         }
         var noUpgrade=new MemoryStore{Saved=new PlayerState()};
