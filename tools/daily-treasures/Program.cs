@@ -157,6 +157,46 @@ internal static class Program
             DailyTreasureCeremonyTier.Legendary);
         True(grandPeak.Glow>normalPeak.Glow,
             "real seventh-day grand coffer gets a distinct cinematic flash");
+        // The luxurious reward cards must show what the gateway actually
+        // credited, not a different visual-only loot table.
+        int[] expectedCards={1,1,1,2,1,2,4};
+        for(int day=1;day<=7;day++)
+        {
+            var received=DailyTreasureRules.ForDay(day,day);
+            var art=DailyTreasureRewardPresentation.FromCommittedReward(received);
+            Eq(art.Length,expectedCards[day-1],
+                "authored separate reveal cards for real paid day "+day);
+            True(art.Length<=DailyTreasureRewardPresentation.MaxSimultaneousItems,
+                "every paid reward fits mobile reveal layout "+day);
+            for(int i=0;i<art.Length;i++)
+            {
+                True(!string.IsNullOrWhiteSpace(art[i].Icon),
+                    "earned item has an original PNG identity "+day+"/"+i);
+                True(!string.IsNullOrWhiteSpace(art[i].Name) &&
+                     !string.IsNullOrWhiteSpace(art[i].Quantity),
+                    "earned item caption is understandable "+day+"/"+i);
+                True(art[i].Quantity.StartsWith("x "),
+                    "quantities are accurate numbers, not fake random loot "+day+"/"+i);
+            }
+        }
+        var grand=DailyTreasureRewardPresentation.FromCommittedReward(
+            DailyTreasureRules.ForDay(7,7));
+        Eq(grand[0].Name,"MADERA","grand chest wood card");
+        Eq(grand[0].Quantity,"x 180","grand chest exactly 180 actual wood");
+        Eq(grand[1].Quantity,"x 120","grand chest exactly 120 actual stone");
+        Eq(grand[2].Name,"COMIDA · RACHA","seventh-day streak is an explicit bonus");
+        Eq(grand[2].Quantity,"x 80","grand chest never invents more than eighty food");
+        True(grand[2].LoyaltyBonus,"real paid loyalty bonus has its own label");
+        Eq(grand[3].Name,"ACELERADOR 5 MIN","grand chest earned timer is 5 min");
+        Eq(grand[3].Quantity,"x 1","grand chest exactly one 5-min timer");
+        var special=DailyTreasureRewardPresentation.FromCommittedReward(
+            DailyTreasureRules.ForDay(4,4));
+        Eq(special.Length,2,"fourth-day special chest has only two items");
+        True(special[0].Quantity=="x 90" && special[1].Quantity=="x 60",
+            "fourth-day chest matches exact paid wood and stone");
+        Eq(DailyTreasureRewardPresentation.FromCommittedReward(
+            default(DailyTreasureReward)).Length,0,
+            "invalid reward cannot display fabricated cards");
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");
     }
 }
