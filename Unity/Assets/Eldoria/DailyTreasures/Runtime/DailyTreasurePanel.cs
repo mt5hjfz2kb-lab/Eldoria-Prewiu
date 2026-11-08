@@ -97,6 +97,22 @@ namespace Eldoria.DailyTreasures
             graphic.raycastTarget=false;graphic.color=Color.white;
             return graphic;
         }
+        // Original authored black-iron and worn-bronze frames, supplied as
+        // real Sprite textures (not a full-screen screenshot). Nine-slice keeps
+        // all carved corners sharp while modal/card/button sizes adapt.
+        static bool ApplyAuthoredFrame(RectTransform rect,string resource)
+        {
+            var sprite=Resources.Load<Sprite>("DailyTreasureArt/"+resource);
+            if(!sprite)return false;
+            var target=rect.GetComponent<Image>();
+            if(!target)return false;
+            target.sprite=sprite;
+            target.type=Image.Type.Sliced;
+            target.fillCenter=true;
+            target.color=Color.white;
+            // Preserve the underlying action Button or modal's raycast target.
+            return true;
+        }
         static Text Label(Transform parent,string name,string value,
             int fontSize,Color tint,TextAnchor align)
         {
@@ -139,7 +155,8 @@ namespace Eldoria.DailyTreasures
             // No second EventSystem, Canvas, save or navigation router.
             entryRect=NewRect("Daily reward / optional medallion",root);
             entryButton=ActionButton(entryRect,Oak,Open);
-            Relief(entryRect,false,true);
+            if(!ApplyAuthoredFrame(entryRect,"valoria_frame_button_512x128"))
+                Relief(entryRect,false,true);
             entryCaption=Label(entryRect,"Daily available label","COFRE",15,Gold,TextAnchor.MiddleCenter);
             Stretch(entryCaption.rectTransform);
             var entryShadow=entryRect.gameObject.AddComponent<Shadow>();
@@ -151,14 +168,17 @@ namespace Eldoria.DailyTreasures
             Plate(screen,new Color(.018f,.020f,.026f,.91f));
             cardSurface=NewRect("Basalt and worn bronze reward parchment",screen);
             Plate(cardSurface,Stone);
-            Relief(cardSurface,true);
+            if(!ApplyAuthoredFrame(cardSurface,"valoria_frame_main_512"))
+                Relief(cardSurface,true);
             var edge=cardSurface.gameObject.AddComponent<Shadow>();
             edge.effectColor=new Color(0f,0f,0f,.82f);
             edge.effectDistance=new Vector2(4f,-6f);
             header=Label(cardSurface,"Reward heading","TESOROS DE VALORIA",27,Gold,TextAnchor.MiddleCenter);
             subhead=Label(cardSurface,"Consecutive visits","",16,Muted,TextAnchor.MiddleCenter);
             closeButton=ActionButton(NewRect("Close tributes",cardSurface),Oak,Close);
-            Relief((RectTransform)closeButton.transform,false,false);
+            if(!ApplyAuthoredFrame((RectTransform)closeButton.transform,
+                "valoria_frame_card_256"))
+                Relief((RectTransform)closeButton.transform,false,false);
             var closeLabel=Label(closeButton.transform,"Accessible close","X",24,Ivory,TextAnchor.MiddleCenter);
             Stretch(closeLabel.rectTransform);
             calendar=NewRect("Seven genuine rewards",cardSurface);
@@ -166,7 +186,8 @@ namespace Eldoria.DailyTreasures
             {
                 var day=NewRect("Day "+(i+1)+" / non-clickable informational card",calendar);
                 dayBack[i]=Plate(day,i==6?new Color(.27f,.20f,.11f,1f):Oak,false);
-                Relief(day);
+                if(!ApplyAuthoredFrame(day,"valoria_frame_card_256"))
+                    Relief(day);
                 var emblem=NewRect("Recognizable actual reward icon",day);
                 dayGlyph[i]=emblem.gameObject.AddComponent<DailyTreasureRewardGlyph>();
                 dayGlyph[i].Kind=i==0||i==3?DailyTreasureGlyphKind.Wood:
@@ -181,7 +202,9 @@ namespace Eldoria.DailyTreasures
                 Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,0,-6,150,26);
             }
             claimButton=ActionButton(NewRect("Claim exact daily reward",cardSurface),Oak,Claim);
-            Relief((RectTransform)claimButton.transform,false,true);
+            if(!ApplyAuthoredFrame((RectTransform)claimButton.transform,
+                "valoria_frame_button_512x128"))
+                Relief((RectTransform)claimButton.transform,false,true);
             claimCaption=Label(claimButton.transform,"Claim label","RECLAMAR TRIBUTO",19,Ivory,TextAnchor.MiddleCenter);
             Stretch(claimCaption.rectTransform);
 
@@ -217,7 +240,9 @@ namespace Eldoria.DailyTreasures
             }
             skipButton=ActionButton(NewRect("Skip animation / keep earned items",ceremony),
                 new Color(.23f,.19f,.17f,1f),ShowResult);
-            Relief((RectTransform)skipButton.transform,false,false);
+            if(!ApplyAuthoredFrame((RectTransform)skipButton.transform,
+                "valoria_frame_button_512x128"))
+                Relief((RectTransform)skipButton.transform,false,false);
             var skipText=Label(skipButton.transform,"Skip caption","SALTAR",15,Gold,TextAnchor.MiddleCenter);
             Stretch(skipText.rectTransform);
             ceremony.gameObject.SetActive(false);
@@ -336,9 +361,14 @@ namespace Eldoria.DailyTreasures
                 bool collected=!newCycle && daily.CycleDay>0 && i+1<=daily.CycleDay;
                 dayHead[i].text="DÍA "+(i+1)+(collected?"  OK":next?"  HOY":"");
                 dayHead[i].color=next?Ivory:Gold;
-                dayBack[i].color=next?new Color(.42f,.29f,.16f,1f):
-                    collected?new Color(.15f,.18f,.15f,1f):
-                    i==6?new Color(.28f,.20f,.11f,1f):Oak;
+                if(dayBack[i].sprite)
+                    dayBack[i].color=next?Color.white:
+                        collected?new Color(.62f,.62f,.59f,1f):
+                        new Color(.83f,.80f,.75f,1f);
+                else
+                    dayBack[i].color=next?new Color(.42f,.29f,.16f,1f):
+                        collected?new Color(.15f,.18f,.15f,1f):
+                        i==6?new Color(.28f,.20f,.11f,1f):Oak;
                 dayBody[i].text=ShortReward(item);
                 dayBody[i].color=collected?Muted:Ivory;
             }
