@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "STAGED4_PUBLISHED_PUBLIC_DESKTOP_PASS_PHYSICAL_UNVERIFIED",
+  "status": "BLOCKED_STAGED4_PHYSICAL_IPHONE_FAILED",
   "scope": "Closed playtest Bastion I–V",
   "source": "native325-staged4",
   "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
@@ -54,7 +54,7 @@
     "no_new_tester_invites_before_validation": true
   },
   "blockers": [
-    "Candidate3 physical failure retained in history. Structural staged4 public desktop startup passed; no physical iPhone result yet.",
+    "Staged4 also fails on physical iPhone after first frame (IMG_5046). Desktop startup PASS is not iOS certification. Diagnose post-ready allocations and process termination before another release.",
     "Staged4 hardware Chromium graceful Quit-then-reload and nickname persistence passed run42482412101. Raw reload and physical mobile remain uncertified.",
     "Connect opt-in consent UI and browser event delivery to verified QA backend; native gameplay metrics still not emitted",
     "Instrument and verify actual Unity gameplay events; 135 indicators remain specification, not measured",
@@ -87,7 +87,7 @@
     "release_for_external_testers": false,
     "physical_iphone_result": "OWNER_REPORTED_FAILURE: still enters for one second and exits"
   },
-  "updated_at": "2026-11-08T13:30:58.050Z",
+  "updated_at": "2026-11-08T13:49:39.898Z",
   "mobile_candidate_history": [
     {
       "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
@@ -110,7 +110,7 @@
     }
   ],
   "structural_candidate": {
-    "status": "PUBLISHED_PUBLIC_DESKTOP_STARTUP_PASS",
+    "status": "PHYSICAL_IPHONE_FAILED",
     "source_baseline": "948ffa9837168a0b68dab80be76b66350422b23a",
     "overlay_commit": "91734045e8d32cc90cc4843b4b7e08e57b1a0458",
     "native_run": 42435095850,
@@ -244,6 +244,16 @@
       "runtime_errors": 0,
       "physical_iphone": false,
       "screenshot_reviewed": true
+    },
+    "physical_iphone_result": {
+      "result": "FAIL",
+      "evidence": "IMG_5046.jpeg",
+      "ready_local_time": "14:47:01",
+      "last_logged_heap_mib": 495,
+      "return_local_time": "14:47:05",
+      "navigation_type": "back_forward",
+      "owner_observation": "Se sale igual a los 2 segundos",
+      "cause_confirmed": false
     }
   }
 }
