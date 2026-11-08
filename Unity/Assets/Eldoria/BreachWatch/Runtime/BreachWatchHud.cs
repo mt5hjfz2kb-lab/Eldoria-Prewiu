@@ -215,6 +215,9 @@ namespace Eldoria.BreachWatch
         {
             // Asymmetrical stone architecture instead of a header/footer re-skin.
             identity=Rect("Identity / basalt crest",uiRoot);Plate(identity,BreachWatchPlate.PlateType.Basalt);
+            var banner=Rect("Burgundy command standard / independently authored",identity);
+            Plate(banner,BreachWatchPlate.PlateType.Banner);
+            At(banner,5,2,64,70);
             var seal=Glyph(identity,"Breached crest",BreachWatchGlyph.Sigil.Breach);At((RectTransform)seal.transform,10,9,56,58);seal.Ink=Copper;
             identityName=Label(identity,"Player name",22,TextAnchor.MiddleLeft,TextIvory,true);
             identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Muted);
@@ -237,6 +240,9 @@ namespace Eldoria.BreachWatch
             var central=Glyph(centerMark,"Stone fracture",BreachWatchGlyph.Sigil.Breach);
             Fill((RectTransform)central.transform,4);central.Ink=Copper;
             objective=Rect("Chapter side tablet",uiRoot);Plate(objective,BreachWatchPlate.PlateType.Basalt);
+            var objectiveSeal=Glyph(objective,"Chapter stone rune",BreachWatchGlyph.Sigil.Breach);
+            objectiveSeal.Ink=Copper;
+            At((RectTransform)objectiveSeal.transform,12,7,24,24);
             chapterName=Label(objective,"Actual chapter",15,TextAnchor.MiddleLeft,Copper,true);
             chapterObjective=Label(objective,"Actual objective",17,TextAnchor.UpperLeft,TextIvory);
             chapterProgress=Label(objective,"Objective progress",14,TextAnchor.MiddleLeft,Muted);
@@ -407,7 +413,7 @@ namespace Eldoria.BreachWatch
                     resourceAmounts[i].fontSize=14;
                 }
                 At(objective,margin,159,w-margin*2,fullObjective?121:89);
-                At(chapterName.rectTransform,16,7,w-40,21);
+                At(chapterName.rectTransform,39,7,w-64,21);
                 At(chapterObjective.rectTransform,16,29,w-40,41);
                 At(chapterProgress.rectTransform,16,66,w-40,18);
                 At(utilityRail,margin,fullObjective?300:267,56,173);
@@ -459,7 +465,7 @@ namespace Eldoria.BreachWatch
                 }
                 At(objective,margin,111,Mathf.Min(280,w*.23f),fullObjective?134:109);
                 float questWidth=Mathf.Min(280,w*.23f)-30f;
-                At(chapterName.rectTransform,15,9,questWidth,20);
+                At(chapterName.rectTransform,39,9,questWidth-24,20);
                 At(chapterObjective.rectTransform,15,34,questWidth,46);
                 At(chapterProgress.rectTransform,15,85,questWidth,20);
                 At(utilityRail,margin,fullObjective?266:238,59,183);
