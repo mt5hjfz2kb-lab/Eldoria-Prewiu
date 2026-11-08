@@ -13,6 +13,12 @@ Los dos PNG candidatos para integración tienen identidades:
 
 **No afirmar que estos PNG están versionados en GitHub:** el conector disponible ha permitido escribir C#/texto, pero no importar directamente los bytes binarios de las imágenes generadas. El paquete se conserva como artefacto del chat, no en una rama pública. Dejar el paso de importación pendiente; NO sustituirlo por datos inventados ni un screenshot.
 
+## Puente de importación binaria ya producido y probado
+- Se preparó el paquete de conversación `ELDORIA_181_ARTE_ORIGINAL_LISTO_PARA_UNITY.zip`, SHA-256 `031eb431fd5564d25e9bc368d08f2c9c169d5406fb0a48fcc874721d6e60dd8c`. Incluye los dos PNG de 512 originales y sus importadores .meta exclusivos, un manifiesto con SHA de cada arte, verificador y parche binario `eldoria_daily_treasures_art_binary.patch` (SHA-256 `3baaa71ef1d3e8d55bfd4f0142db15de75a468a074a88bcf1d67928a5c09c5d1`).
+- **Prueba local efectuada:** en una copia de directorio sin los PNG, `git apply --check`, `git apply --binary` y el verificador de SHA/transparencia/GUID han pasado. Esto valida que el paquete puede aplicarse técnicamente; **NO acredita** la importación en el repositorio ni renderiza Unity.
+- No se ha hecho push de los PNG porque el conector GitHub de esta sesión solo acepta archivos UTF-8 y no proporciona transferencia binaria desde el contenedor. En un entorno Git con acceso a este artefacto, aplicar desde la raíz de la rama PR181 y ejecutar las pruebas de CI y Unity. No convertir el ZIP en un nuevo repositorio ni tocar PR173 o la beta.
+- Se ha probado también una animación de laboratorio en navegador y cuatro resoluciones usando los PNG fuente, sin Unity. El cofre ilustrado es una mejora importante frente al fallback geométrico; la calidad integrada definitiva permanece pendiente.
+
 ## Preparación ya implementada en Unity
 `DailyTreasurePanel` está preparado para cargar dos sprites independientes:
 - `Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt/treasure_closed_512.png`
