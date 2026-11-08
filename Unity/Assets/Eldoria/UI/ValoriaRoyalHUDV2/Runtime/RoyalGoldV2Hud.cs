@@ -1260,11 +1260,6 @@ namespace Eldoria.UI.RoyalGold.V2
             label.SetAllDirty();
         }
 
-        // Presentation adapters can restore the original layout at the CURRENT
-        // resolution after removing a reversible skin. Cached rectangles from
-        // an earlier orientation must never become live pointer geometry.
-        public void InvalidatePresentationLayout() => hasGeometry = false;
-
         private void LateUpdate() => SynchronizeNow();
 
         /// <summary>Explicit native QA sync after temporary canvas resolution
@@ -1418,20 +1413,8 @@ namespace Eldoria.UI.RoyalGold.V2
             // the free width negative on 4:3 displays, so automatic focus
             // returned without ever moving to the selected world resource.
             if (buildingVisible)
-            {
-                // A presentation may arrange the SAME live card along the right
-                // edge. Reserve its measured horizontal footprint in that case;
-                // the legacy full-width bottom cartouche keeps its original rule.
-                // No camera settings or selection data are changed here.
-                bool rightContext = !portrait && buildingCard.rect.width < width*.45f &&
-                    buildingCard.anchoredPosition.x > width*.1f;
-                if (rightContext)
-                    free.xMax = Mathf.Min(free.xMax,
-                        .5f+(buildingCard.anchoredPosition.x-buildingCard.rect.width*.5f)/width-padding);
-                else
-                    free.yMin = Mathf.Max(free.yMin,
-                        (buildingCard.anchoredPosition.y + buildingCard.rect.height) / height + padding);
-            }
+                free.yMin = Mathf.Max(free.yMin,
+                    (buildingCard.anchoredPosition.y + buildingCard.rect.height) / height + padding);
             // The V3 selected control follows the object itself and does not
             // reduce a whole side of the playable camera rectangle.
             if (objectiveGroup && objectiveGroup.blocksRaycasts)
