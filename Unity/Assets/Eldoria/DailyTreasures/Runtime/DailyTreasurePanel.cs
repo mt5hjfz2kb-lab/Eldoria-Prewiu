@@ -48,6 +48,7 @@ namespace Eldoria.DailyTreasures
         string claimNotice="";
         string ceremonialReceipt,ceremonialTitle;
         bool chestReward,chimePlayed;
+        DailyTreasureCeremonyTier ceremonyTier=DailyTreasureCeremonyTier.Special;
         AudioSource originalSfx;
         AudioClip chestKnock,chestChime;
         readonly DailyTreasureMilestoneQueue milestoneQueue=
@@ -473,12 +474,16 @@ namespace Eldoria.DailyTreasures
             var reward=DailyTreasureRules.ForDay(current.CycleDay,current.ConsecutiveDays);
             refreshed?.Invoke();
             Present("TRIBUTO DEL DÍA "+reward.CycleDay,
-                DailyTreasureRules.Receipt(reward),reward.ShowChest);
+                DailyTreasureRules.Receipt(reward),reward.ShowChest,
+                !reward.ShowChest?DailyTreasureCeremonyTier.Quiet:
+                reward.CycleDay==7?DailyTreasureCeremonyTier.Legendary:
+                DailyTreasureCeremonyTier.Special);
         }
         // Called only after the game's authoritative reward/report has ALREADY
         // been committed by its existing command. Never calls Execute,
         // grants a bonus, opens the daily claim or invents a loot table.
-        public bool PresentCommittedMilestone(string title,string confirmedResult)
+        public bool PresentCommittedMilestone(string title,string confirmedResult,
+            bool legendary=true)
         {
             if(gateway==null || now==null || screen==null ||
                string.IsNullOrWhiteSpace(title))return false;
@@ -490,14 +495,23 @@ namespace Eldoria.DailyTreasures
             screen.SetAsLastSibling();
             lastWidth=lastHeight=-1f;
             Layout();
-            Present(title,confirmedResult,true);
+            Present(title,confirmedResult,true,legendary?
+                DailyTreasureCeremonyTier.Legendary:
+                DailyTreasureCeremonyTier.Special);
             return true;
         }
 
         // Safe to reuse for milestone ceremonies: NEVER mints rewards.
         public void Present(string title,string alreadyReceived,bool showChest)
+            =>Present(title,alreadyReceived,showChest,
+                showChest?DailyTreasureCeremonyTier.Special:
+                    DailyTreasureCeremonyTier.Quiet);
+
+        public void Present(string title,string alreadyReceived,bool showChest,
+            DailyTreasureCeremonyTier tier)
         {
             if(!IsOpen)return;
+            ceremonyTier=tier;
             ceremonialTitle=title;ceremonialReceipt=alreadyReceived;chestReward=showChest;
             calendar.gameObject.SetActive(false);
             claimButton.gameObject.SetActive(false);
@@ -731,7 +745,7 @@ namespace Eldoria.DailyTreasures
 
         DailyTreasureRevealFrame PaintCeremonyFrame(float elapsed)
         {
-            var frame=DailyTreasureRevealTimeline.Sample(elapsed);
+            var frame=DailyTreasureRevealTimeline.Sample(elapsed,ceremonyTier);
             chest.SetOpening(frame.Opened);
             if(hasAuthoredChestArt)
             {
