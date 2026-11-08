@@ -222,6 +222,65 @@ namespace Eldoria.DailyTreasures.Editor
                     inputChecks++;
                     Need(!panel.IsOpen,
                         "Real close button did not leave the reward UI");
+
+                    // Distinct day-four ceremonial proof on the SAME exact
+                    // Unity canvas and render target, with its OWN disposable
+                    // real player state, not changing a day-seven save to
+                    // fabricate an earlier reward after the fact.
+                    var specialStore=new TransientStore();
+                    var specialGateway=new LocalGateway(clock,specialStore);
+                    for(int day=1;day<=3;day++)
+                    {
+                        clock.UtcTicks=Day(day);
+                        var earned=specialGateway.Snapshot();
+                        var seed=new GameCommand("qa-special-seed-"+day,
+                            earned.PlayerId,"ClaimDailyTreasure","valoria",
+                            earned.Revision);
+                        Need(specialGateway.Execute(seed).Ok,
+                            "Day-four candidate seeding failed "+day);
+                    }
+                    clock.UtcTicks=Day(4);
+                    var specialBefore=specialGateway.Snapshot();
+                    panel.Bind(specialGateway,()=>clock.UtcTicks,()=>{});
+                    ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                        FindButton(panel,"Daily reward / optional medallion"),
+                        width,height);
+                    inputChecks++;
+                    Need(panel.IsOpen,"Special-day entry not interactive");
+                    Canvas.ForceUpdateCanvases();
+                    pictures.Add(Render(camera,rt,output,width,height,
+                        "special-day4-calendar",
+                        "Real day-four candidate before claim",true,true));
+                    ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                        FindButton(panel,"Claim exact daily reward"),
+                        width,height);
+                    inputChecks++;
+                    var specialAfter=specialGateway.Snapshot();
+                    Need(specialAfter.DailyTreasures.CycleDay==4 &&
+                         specialAfter.Resources.Wood==specialBefore.Resources.Wood+90 &&
+                         specialAfter.Resources.Stone==specialBefore.Resources.Stone+60 &&
+                         specialAfter.Mailbox.Messages.Count==specialBefore.Mailbox.Messages.Count+1,
+                        "Day-four chest must represent its exact earned resource contents");
+                    report.realGatewayClaims++;
+                    panel.SampleForNativeEvidence(
+                        DailyTreasureRevealTimeline.RevealPeakSeconds);
+                    Canvas.ForceUpdateCanvases();
+                    pictures.Add(Render(camera,rt,output,width,height,
+                        "special-day4-opening",
+                        "Real special chest opening at verified peak light",true,true));
+                    ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                        FindButton(panel,"Skip animation / keep earned items"),
+                        width,height);
+                    inputChecks++;
+                    Need(specialGateway.Snapshot().Resources.Wood==
+                         specialAfter.Resources.Wood &&
+                         specialGateway.Snapshot().Resources.Stone==
+                         specialAfter.Resources.Stone,
+                        "Skipping the special chest may not award extra resources");
+                    ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                        FindButton(panel,"Close tributes"),width,height);
+                    inputChecks++;
+                    Need(!panel.IsOpen,"Day-four close must work");
                     Object.DestroyImmediate(eventObj);
                     Object.DestroyImmediate(canvasObj);
                     camera.targetTexture=null;
@@ -229,8 +288,8 @@ namespace Eldoria.DailyTreasures.Editor
                     Object.DestroyImmediate(rt);
                     Object.DestroyImmediate(go);
                 }
-                Need(pictures.Count==16 && inputChecks==16 && report.realGatewayClaims==4,
-                    "Native reward component coverage incomplete");
+                Need(pictures.Count==24 && inputChecks==32 && report.realGatewayClaims==8,
+                    "Day-four and day-seven native reward coverage incomplete");
                 report.status=report.authoredSpritesImported
                     ? "NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING"
                     : "NATIVE_COMPONENT_RENDERED_FALLBACK_ONLY_ART_REJECTED";
@@ -238,7 +297,7 @@ namespace Eldoria.DailyTreasures.Editor
                 report.images=pictures.Count;
                 report.shots=pictures.ToArray();
                 File.WriteAllText(Path.Combine(output,"report.json"),JsonUtility.ToJson(report,true));
-                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 16 PNG; NOT ART_APPROVED / NOT FULL GAMEPASS");
+                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 24 PNG; day-four/day-seven; NOT ART_APPROVED / NOT FULL GAMEPASS");
                 EditorApplication.Exit(0);
             }
             catch(Exception e)
