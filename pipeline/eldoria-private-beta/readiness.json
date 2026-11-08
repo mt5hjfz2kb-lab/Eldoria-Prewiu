@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "BLOCKED_MOBILE6_OWNER_IPHONE_CONFIRMATION",
+  "status": "BLOCKED_MOBILE6_PHYSICAL_IPHONE_FAILED",
   "scope": "Closed playtest Bastion I–V",
   "source": "native325-mobile6-cubemap",
   "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
@@ -54,7 +54,7 @@
     "no_new_tester_invites_before_validation": true
   },
   "blockers": [
-    "Mobile6 physical iPhone not yet tested. Desktop Apple GPU WebKit compressed cubemap upload crash reproduced and fixed; do not equate desktop result with physical phone certification.",
+    "Mobile6 owner physical iPhone FAILED like mobile5. Desktop GPU fix does not establish the physical cause. Need phone-correlated failure evidence and startup memory/resource investigation.",
     "Connect opt-in consent UI and browser event delivery to verified QA backend; native gameplay metrics still not emitted",
     "Instrument and verify actual Unity gameplay events; 135 indicators remain specification, not measured",
     "Verify complete Bastion I-V gameplay with normal tutorial and clock"
@@ -86,7 +86,7 @@
     "release_for_external_testers": false,
     "physical_iphone_result": "OWNER_REPORTED_FAILURE: still enters for one second and exits"
   },
-  "updated_at": "2026-11-08T15:32:45.904Z",
+  "updated_at": "2026-11-08T15:55:36.286Z",
   "mobile_candidate_history": [
     {
       "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
@@ -320,10 +320,15 @@
     "decoded_faces_and_mips": 240,
     "added_serialized_bytes": 1965240,
     "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile6-cubemap",
-    "status": "PUBLISHED_APPLE_GPU_WEBKIT_PASSED_PHYSICAL_PENDING",
+    "status": "PHYSICAL_IPHONE_FAILED",
     "public_qa_artifact": 13623376058,
     "public_qa_zip_sha256": "0c9f7dad64554bb176d4b18c9c03096dd8a509eed33b692dc13810759003ccc7",
     "public_nickname_reopen_visually_verified": true,
-    "site_source_sha": "0a1549ff07cac486f56c554fc77b470c589db4fc"
+    "site_source_sha": "0a1549ff07cac486f56c554fc77b470c589db4fc",
+    "physical_iphone_result": {
+      "result": "FAIL",
+      "owner_observation": "Hace lo mismo que la 5",
+      "cause_confirmed": false
+    }
   }
 }
