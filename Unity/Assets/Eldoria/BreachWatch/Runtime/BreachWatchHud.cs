@@ -181,15 +181,13 @@ namespace Eldoria.BreachWatch
             separateOwnerBottomFinial && separateOwnerBottomFinial.sprite &&
             separateOwnerBottomFinial.sprite.name=="owner_bottom_finial" &&
             !separateOwnerBottomFinial.raycastTarget;
-        public bool UsesPremiumCarvedContext
-        {
-            get
-            {
-                var surface=panel?panel.GetComponent<BreachWatchPlate>():null;
-                return surface && surface.sprite && surface.sprite.name=="basalt_context" &&
-                    surface.type==Image.Type.Sliced;
-            }
-        }
+        // The authoritative context now has exactly one slate interior and
+        // one owner-approved external gold contour. The superseded basalt
+        // picture and extra interim dark overlays are NOT layered under it.
+        public bool UsesSinglePremiumContext =>
+            panel && panel.GetComponent<BreachWatchPanelInk>() &&
+            !panel.GetComponent<BreachWatchPlate>() &&
+            UsesExactOwnerApprovedGoldBorder;
         public bool UsesPremiumBurgundyAction =>
             actionPlate && actionPlate.sprite &&
             actionPlate.sprite.name=="burgundy_action" &&
@@ -459,27 +457,13 @@ namespace Eldoria.BreachWatch
                 if(glyph){glyph.Ink=Locked;glyph.SetVerticesDirty();}
             }
             panel=Rect("Independent selected-building cartouche",uiRoot);
-            var basalt=Plate(panel,BreachWatchPlate.PlateType.Basalt);
+            // ONE actual authored dark-stone surface owns this root canvas.
+            // Delete the obsolete intermediate nine-slice panel and its
+            // second dark child. The bright outer metal is a separate,
+            // transparent approved border; neither competes with the other.
+            var singleSlate=panel.gameObject.AddComponent<BreachWatchPanelInk>();
+            singleSlate.raycastTarget=false;
             AddContactShadow(panel,8f,.58f);
-            var premiumStone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/basalt_context");
-            if(premiumStone)
-            {
-                basalt.ApplyIndependentArt(premiumStone,true);
-                // The approved rich gold border must be the only clearly
-                // visible exterior. Mute the interim ornamental material.
-                basalt.color=new Color(.38f,.38f,.37f,1f);
-                var darkContent=Rect("Quiet slate backing for actual data",panel);
-                Fill(darkContent,8);
-                var readableInk=darkContent.gameObject.AddComponent<BreachWatchPanelInk>();
-                readableInk.raycastTarget=false;
-            }
-            else
-            {
-                var opaqueWell=Rect("Fallback opaque slate ink",panel);
-                Fill(opaqueWell,12);
-                var ink=opaqueWell.gameObject.AddComponent<BreachWatchPanelInk>();
-                ink.raycastTarget=false;
-            }
             // Most faithful finish: transparent embossed metal border
             // extracted solely from the exact image the owner approved.
             // Real building data and 3D meshes remain separate.
