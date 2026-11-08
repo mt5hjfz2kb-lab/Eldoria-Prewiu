@@ -650,8 +650,13 @@ namespace Eldoria.BreachWatch
             else Stretch(uiRoot);
 
             bool portrait=pixelHeight>pixelWidth;
+            // The original 1.75 clamp made the entire interface tiny on
+            // 1170/1440px Retina phone render targets, even though 900px
+            // portrait screenshots looked right. Keep the approved 900px
+            // design proportions across *physical* mobile resolutions.
+            // The .91 floor preserves tappable 44px nav on 390px captures.
             float scale=portrait
-                ?Mathf.Clamp(pixelWidth/430f,.86f,1.75f)
+                ?Mathf.Clamp(pixelWidth/514f,.91f,3.00f)
                 :Mathf.Clamp(Mathf.Min(pixelWidth/1250f,pixelHeight/680f),.86f,1.30f);
             scaler.scaleFactor=scale;
             float w=pixelWidth/scale,h=pixelHeight/scale;
