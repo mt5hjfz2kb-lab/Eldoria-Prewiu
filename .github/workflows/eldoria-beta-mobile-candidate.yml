@@ -12,6 +12,8 @@ concurrency:
   cancel-in-progress: false
 env:
   NATIVE_RUN: '42508059413'
+  NATIVE_EXPORT_RUN: '42511115716'
+  NATIVE_EXPORT_SOURCE: 8c375a223f5b3c542f3744d34d2e370db0b22731
   NATIVE_SOURCE: 6cf82e7bfb07a8bca7085ea5c3518fbb3c0f8a80
   CANDIDATE_REVISION: native325-mobile7-compact
 jobs:
@@ -74,11 +76,11 @@ jobs:
         run: |
           python - <<'PY'
           import json,os,time,urllib.request
-          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['NATIVE_RUN']
+          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['NATIVE_EXPORT_RUN']
           for _ in range(360):
             req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
             with urllib.request.urlopen(req,timeout=30) as r:run=json.load(r)
-            assert run['head_sha']==os.environ['NATIVE_SOURCE'],'Native source mismatch'
+            assert run['head_sha']==os.environ['NATIVE_EXPORT_SOURCE'],'Native source mismatch'
             if run['status']=='completed':
               assert run['conclusion']=='success','Native gates failed; stop packaging'
               break
@@ -87,13 +89,13 @@ jobs:
           PY
       - uses: actions/download-artifact@v4
         with:
-          run-id: ${{ env.NATIVE_RUN }}
+          run-id: ${{ env.NATIVE_EXPORT_RUN }}
           name: beta-structural-webgl-unverified
           github-token: ${{ github.token }}
           path: fresh-build
       - uses: actions/download-artifact@v4
         with:
-          run-id: ${{ env.NATIVE_RUN }}
+          run-id: ${{ env.NATIVE_EXPORT_RUN }}
           name: beta-structural-native-evidence
           github-token: ${{ github.token }}
           path: native-evidence
@@ -105,7 +107,15 @@ jobs:
           HASH=$(python -c "import json;print(json.load(open('deduplicated/integrity.json'))['candidate_sha256'])")
           python tools/eldoria-private-beta/reuse_mobile6_profile.py --parent reference-parent/data.unity3d --reference mobile6.unity3d --fresh deduplicated/data.unity3d --expected-fresh-sha256 "$HASH" --output transformed
           python - <<'PY'
-          import json,pathlib,os
+          import json,pathlib,os,hashlib
+          recovered=json.load(open('native-evidence/recovered-output-inventory.json'))
+          assert recovered['origin_run']==os.environ['NATIVE_RUN'] and recovered['origin_source']==os.environ['NATIVE_SOURCE']
+          assert recovered['export_run']==os.environ['NATIVE_EXPORT_RUN'] and recovered['export_source']==os.environ['NATIVE_EXPORT_SOURCE']
+          assert recovered['status']=='COMPILED_AND_NATIVE_VERIFIED_OUTPUT_RECOVERED_WITHOUT_REBUILD' and recovered['source_modified_by_recovery'] is False
+          assert hashlib.sha256(pathlib.Path('native-evidence/post-build-urp.diff').read_bytes()).hexdigest()=='b2fd708762e1abf446adcd16d8f3fc91bab3f54502710d623ba417e434644ec4'
+          for f in recovered['files']:
+            p=pathlib.Path('fresh-build')/f['path']
+            assert p.stat().st_size==f['bytes'] and hashlib.sha256(p.read_bytes()).hexdigest()==f['sha256'].lower()
           native=json.load(open('native-evidence/native-journey/integration-result.json',encoding='utf-8-sig'))
           assert native['source']==os.environ['NATIVE_SOURCE'] and native['status']=='INTEGRATION_PASS_ART_REVIEW_REQUIRED'
           assert len(native['checks'])==225
