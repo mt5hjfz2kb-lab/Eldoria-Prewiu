@@ -62,3 +62,28 @@ for item in frames:
     print(f"PASS nine-slice frame {name}: SHA256, alpha, border={border}, GUID={item['guid']}")
 assert len(seen)==5
 print("PASS FIVE EXACT VALORIA ART SPRITES, UNAPPROVED UNTIL NATIVE UNITY IMAGE REVIEW")
+
+# The visible reward symbols are original illustrated resources, never emoji,
+# unlicensed stock art or misleading representations of unavailable loot.
+icons=manifest["resource_icons"]
+assert len(icons)==4
+for item in icons:
+    name=item["file"]
+    png=target/name
+    meta=target/(name+".meta")
+    assert png.is_file() and meta.is_file(), f"Missing genuine reward illustration: {name}"
+    data=png.read_bytes()
+    assert data[:8]==bytes([137,80,78,71,13,10,26,10])
+    width,height=struct.unpack(">II",data[16:24])
+    assert (width,height)==(128,128), f"Wrong reward icon dimensions: {name}"
+    assert hashlib.sha256(data).hexdigest()==item["sha256"], f"Reward icon SHA256 mismatch: {name}"
+    assert data[25] in (3,6) and (data[25]!=3 or b"tRNS" in data)
+    text=meta.read_text(encoding="utf-8")
+    assert f"guid: {item['guid']}" in text.splitlines()
+    for required in ("textureType: 8", "spriteMode: 1", "alphaIsTransparency: 1"):
+        assert required in text, f"Reward icon lacks Unity sprite setup: {name} -> {required}"
+    assert item["guid"] not in seen
+    seen.add(item["guid"])
+    print(f"PASS painted {name} original art, alpha, SHA256 and Unity GUID")
+assert len(seen)==9
+print("PASS NINE ORIGINAL VALORIA 2D PNG ASSETS (native quality approval is separate)")
