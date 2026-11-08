@@ -1,1 +1,0 @@
-Owner correction: exactly five original navigation icons in one horizontal row, no captions, no stacking. Native icon containment and row/overlap proof required in four resolutions.
