@@ -19,6 +19,15 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Eldoria/Scripts/Domain/
+            /Unity/Assets/Eldoria/Scripts/Application/
+            /Unity/Assets/Eldoria/DailyTreasures/
+            /tools/daily-treasures/
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
