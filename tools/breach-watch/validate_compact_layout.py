@@ -40,7 +40,7 @@ def coverage(rects:list[R],w:float,h:float)->float:
 def check(size:tuple[int,int]):
     pw,ph=size
     portrait=ph>pw
-    scale=(max(.86,min(1.75,pw/430)) if portrait else
+    scale=(max(.91,min(3.00,pw/514)) if portrait else
         max(.86,min(1.30,min(pw/1250,ph/680))))
     w=pw/scale
     h=ph/scale
@@ -137,7 +137,7 @@ def check(size:tuple[int,int]):
 def main():
     source=SOURCE.read_text(encoding="utf-8")
     expected=[
-        'Mathf.Clamp(pixelWidth/430f,.86f,1.75f)',
+        'Mathf.Clamp(pixelWidth/514f,.91f,3.00f)',
         'At(identity,margin,11,182,55)',
         'float navSize=49,navGap=14',
         'float navTop=h-100f',
@@ -152,7 +152,7 @@ def main():
     ]
     for pattern in expected:
         assert pattern in source, f"Runtime contract changed: {pattern}"
-    for size in [(1600,900),(900,1600),(844,390),(390,844)]:
+    for size in [(1600,900),(900,1600),(844,390),(390,844),(1170,2532)]:
         check(size)
     print("BOUNDARY: source-level layout estimate, requires independent Unity render and actual pixels")
 
