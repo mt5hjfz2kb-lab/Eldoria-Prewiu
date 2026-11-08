@@ -50,3 +50,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: final native-ready compact visual language. Separate gold 3-layer context engraving, side-safe 5-medallion copper filigree, official OFL licensed real Garamond regular and semibold fonts; font and CC0 source SHA checks on Ubuntu. Build in independent BreachWatch Canvas only. Await formal resource release from private beta before native Unity run.
 
 2026-11-08: Export exact-head genuine separate Vigilia sprites, legally bundled typography and real city photo for source-level independent four-format visual review. No use of Windows runner. [vigilia-design-qa]
+
+2026-11-08: non-destructive premium finish of the five already approved separate original medallions (no new mockups or legacy overlays). Generate 192px sharp warm metal relief, stable Unity GUID, verified original/source SHA and manifest; commit into the existing PR only. [vigilia-premium-art]
