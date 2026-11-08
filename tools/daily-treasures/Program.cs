@@ -227,6 +227,51 @@ internal static class Program
              explorationMood.G>guardianMood.G &&
              cityMood.R>guardianMood.R,
              "hero, guardian, discovery and rebuilding remain visually distinct");
+        // Original painted loot emerging from the genuinely opened coffer.
+        // Use the exact Unity flight source for deterministic sequencing,
+        // bounded phone-scale motion and guaranteed settled end states.
+        for(int idx=0;idx<DailyTreasureRewardPresentation.MaxSimultaneousItems;idx++)
+        {
+            for(int mode=0;mode<2;mode++)
+            {
+                bool chestMode=mode==1;
+                float homeX=(idx-1.5f)*75f;
+                float homeY=idx<2?30f:-30f;
+                var beginning=DailyTreasurePrizeFlight.Sample(
+                    0f,idx,chestMode,0f,195f,homeX,homeY);
+                Eq(beginning.Opacity,0f,"loot begins hidden at count "+idx);
+                True(!beginning.Finished,"real reward animation does not finish before reveal");
+                float previousAlpha=0f;
+                for(int step=0;step<=140;step++)
+                {
+                    float elapsed=step*.011f;
+                    var frame=DailyTreasurePrizeFlight.Sample(
+                        elapsed,idx,chestMode,0f,195f,homeX,homeY);
+                    True(frame.Opacity>=previousAlpha-.00001f &&
+                         frame.Opacity>=0f && frame.Opacity<=1f,
+                         "earned-item opacity changes smoothly "+idx+"/"+mode+"/"+step);
+                    True(frame.Scale>=.51f && frame.Scale<=1.0001f,
+                         "reward scale never clips the premium panel "+idx+"/"+mode+"/"+step);
+                    True(Math.Abs(frame.Angle)<=9.0001f,
+                         "no frantic card rotation "+idx+"/"+mode+"/"+step);
+                    previousAlpha=frame.Opacity;
+                }
+                var finalCard=DailyTreasurePrizeFlight.Sample(
+                    2f,idx,chestMode,0f,195f,homeX,homeY);
+                True(finalCard.Finished && finalCard.X==homeX &&
+                     finalCard.Y==homeY && finalCard.Scale==1f &&
+                     finalCard.Opacity==1f && finalCard.Angle==0f,
+                     "all credit-backed art cards settle exactly at target "+idx+"/"+mode);
+            }
+        }
+        bool rejectedIndex=false;
+        try{DailyTreasurePrizeFlight.Sample(0f,5,true,0f,0f,10f,10f);}
+        catch(ArgumentOutOfRangeException){rejectedIndex=true;}
+        True(rejectedIndex,"oversized prize count cannot create unintended UI cards");
+        bool rejectedNan=false;
+        try{DailyTreasurePrizeFlight.Sample(float.NaN,0,true,0f,0f,10f,10f);}
+        catch(ArgumentOutOfRangeException){rejectedNan=true;}
+        True(rejectedNan,"invalid animation time cannot corrupt Unity transforms");
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");
     }
 }
