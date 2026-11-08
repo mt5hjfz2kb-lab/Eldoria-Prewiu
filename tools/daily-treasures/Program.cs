@@ -1,5 +1,6 @@
 using System;
 using Eldoria.Domain;
+using Eldoria.DailyTreasures;
 internal static class Program
 {
     static int checks;
@@ -79,6 +80,32 @@ internal static class Program
             "fully exhausted total-claims counter never offers a false button");
         Eq(DailyTreasureRules.Preview(exhausted,Date(9)).IsValid,false,
             "exhausted streak preview is invalid too");
+        var initial=DailyTreasureRevealTimeline.Sample(0f);
+        Eq(initial.Closed,1f,"chest starts fully closed");
+        Eq(initial.Opened,0f,"open image initially invisible");
+        for(int i=0;i<=500;i++)
+        {
+            float time=i*DailyTreasureRevealTimeline.DurationSeconds/500f;
+            var frame=DailyTreasureRevealTimeline.Sample(time);
+            True(frame.Closed>=0f && frame.Closed<=1f,"closed alpha bounded "+i);
+            True(frame.Opened>=0f && frame.Opened<=1f,"opened alpha bounded "+i);
+            True(Math.Abs(frame.Closed+frame.Opened-1f)<.0001f,
+                "two original images form a single opaque silhouette "+i);
+            True(frame.Glow>=0f && frame.Glow<=1f,"warm flash bounded "+i);
+            True(frame.Embers>=0f && frame.Embers<=1f,"ember alpha bounded "+i);
+            True(frame.Scale>=.95f && frame.Scale<=1.04f,"subtle premium scale "+i);
+            True(Math.Abs(frame.Shake)<=.007f,"controlled hinge shake "+i);
+            True(frame.Text>=0f && frame.Text<=1f,"caption visibility bounded "+i);
+        }
+        var peak=DailyTreasureRevealTimeline.Sample(
+            DailyTreasureRevealTimeline.RevealPeakSeconds);
+        True(peak.Glow>.35f,"flash genuinely disguises image pose transition");
+        True(peak.Closed>.1f && peak.Opened>.1f,
+            "pose transition takes place under peak flash");
+        var final=DailyTreasureRevealTimeline.Sample(
+            DailyTreasureRevealTimeline.DurationSeconds+.1f);
+        True(final.Finished && final.Opened==1f && final.Closed==0f,
+            "duration completed with one open asset");
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");
     }
 }
