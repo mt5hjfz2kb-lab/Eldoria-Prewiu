@@ -70,6 +70,8 @@ namespace Eldoria.BreachWatch
             stage.hideFlags = HideFlags.HideAndDontSave;
             stage.transform.position = new Vector3(0f,-10000f,0f);
             var bakedMeshes = new List<Mesh>();
+            var disposableTextures = new List<Texture2D>();
+            var disposableMaterials = new List<Material>();
             bool hasGeometry = false;
             Bounds naturalBounds = default;
             try
@@ -154,7 +156,9 @@ namespace Eldoria.BreachWatch
                 var light=keyLight.GetComponent<Light>();
                 light.type=LightType.Directional;
                 light.cullingMask=1<<PreviewLayer;
-                light.intensity=.93f;
+                // Do not burn out stone in the real Valoria materials: the
+                // scene's ambient contribution is already active.
+                light.intensity=.38f;
                 light.color=new Color(1f,.86f,.72f);
                 light.shadows=LightShadows.None;
                 keyLight.transform.rotation=Quaternion.Euler(50,-38,0);
@@ -232,6 +236,67 @@ namespace Eldoria.BreachWatch
                     Destroy(readback);
                 }
 #endif
+                // A warm, isolated fragment of Valoria earth grounds the
+                // ORIGINAL building geometry. This is a portrait-only
+                // presentation material, not a fake castle and not a change
+                // to the playable city's terrain.
+                var earth=new GameObject("Vigilia / isolated Valoria earth",typeof(MeshFilter),typeof(MeshRenderer));
+                earth.hideFlags=HideFlags.HideAndDontSave;
+                earth.layer=PreviewLayer;
+                earth.transform.SetParent(stage.transform,false);
+                earth.transform.position=new Vector3(copiedBounds.center.x,
+                    copiedBounds.min.y-.045f,copiedBounds.center.z);
+                float width=Mathf.Max(1f,copiedBounds.size.x*1.34f);
+                float depth=Mathf.Max(1f,copiedBounds.size.z*1.34f);
+                var soil=new Mesh { name="Vigilia / one-shot earth under real building" };
+                soil.vertices=new[]{
+                    new Vector3(-width*.5f,0,-depth*.5f),
+                    new Vector3(-width*.5f,0,depth*.5f),
+                    new Vector3(width*.5f,0,depth*.5f),
+                    new Vector3(width*.5f,0,-depth*.5f)
+                };
+                soil.triangles=new[]{0,1,2,0,2,3};
+                soil.normals=new[]{Vector3.up,Vector3.up,Vector3.up,Vector3.up};
+                soil.uv=new[]{new Vector2(0,0),new Vector2(0,1),
+                    new Vector2(1,1),new Vector2(1,0)};
+                bakedMeshes.Add(soil);
+                earth.GetComponent<MeshFilter>().sharedMesh=soil;
+                var earthTexture=new Texture2D(128,128,TextureFormat.RGBA32,false);
+                earthTexture.name="Vigilia / earth grain";
+                var earthColors=new Color32[128*128];
+                for(int ey=0;ey<128;ey++)for(int ex=0;ex<128;ex++)
+                {
+                    float n=Mathf.PerlinNoise(ex*.093f+2f,ey*.093f+4f);
+                    float g=Mathf.PerlinNoise(ex*.42f,ey*.42f);
+                    float cx=(ex-63.5f)/63.5f;
+                    float cy=(ey-63.5f)/63.5f;
+                    float contact=Mathf.Clamp01(1f-(cx*cx+cy*cy)*1.9f);
+                    int r=Mathf.RoundToInt(62f+26f*n+8f*g-27f*contact);
+                    int gr=Mathf.RoundToInt(69f+34f*n+5f*g-27f*contact);
+                    int bl=Mathf.RoundToInt(39f+16f*n+4f*g-15f*contact);
+                    earthColors[ey*128+ex]=new Color32((byte)r,(byte)gr,(byte)bl,255);
+                }
+                earthTexture.SetPixels32(earthColors);
+                earthTexture.Apply(false,true);
+                disposableTextures.Add(earthTexture);
+                var shader=Shader.Find("Universal Render Pipeline/Lit");
+                if(!shader)shader=Shader.Find("Universal Render Pipeline/Unlit");
+                if(shader)
+                {
+                    var soilMaterial=new Material(shader) { name="Vigilia / one-shot neutral earth" };
+                    if(soilMaterial.HasProperty("_BaseMap"))
+                        soilMaterial.SetTexture("_BaseMap",earthTexture);
+                    if(soilMaterial.HasProperty("_BaseColor"))
+                        soilMaterial.SetColor("_BaseColor",Color.white);
+                    soilMaterial.SetFloat("_Smoothness",0f);
+                    disposableMaterials.Add(soilMaterial);
+                    var earthRenderer=earth.GetComponent<MeshRenderer>();
+                    earthRenderer.sharedMaterial=soilMaterial;
+                    earthRenderer.shadowCastingMode=ShadowCastingMode.Off;
+                    earthRenderer.receiveShadows=false;
+                    earthRenderer.lightProbeUsage=LightProbeUsage.Off;
+                }
+                portraitCamera.Render();
                 portraitCamera.targetTexture=null;
                 image.texture=texture;
                 image.enabled=true;
@@ -245,6 +310,8 @@ namespace Eldoria.BreachWatch
                 stage.SetActive(false);
                 Destroy(stage);
                 foreach(var mesh in bakedMeshes)if(mesh)Destroy(mesh);
+                foreach(var texture in disposableTextures)if(texture)Destroy(texture);
+                foreach(var material in disposableMaterials)if(material)Destroy(material);
                 if(portraitCamera)portraitCamera.targetTexture=null;
             }
         }
