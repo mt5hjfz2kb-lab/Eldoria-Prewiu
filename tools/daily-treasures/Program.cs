@@ -15,6 +15,25 @@ internal static class Program
         => new DateTime(2026,11,day,hour,minute,0,DateTimeKind.Utc).Ticks;
     static void Main()
     {
+        // The player may live in Spain, where local midnight does NOT
+        // coincide with UTC midnight. Test the real relative reset instead
+        // of telling them their next tribute arrives at local 00:00.
+        Eq(DailyTreasureRules.MinutesUntilNextUtcDay(Date(8,0,0)),1440,
+            "UTC rollover at exact midnight is 24h away");
+        Eq(DailyTreasureRules.MinutesUntilNextUtcDay(Date(8,12,0)),720,
+            "UTC rollover at noon is 12 hours away");
+        Eq(DailyTreasureRules.MinutesUntilNextUtcDay(Date(8,23,59)),1,
+            "UTC reset at 23:59 is one minute away");
+        Eq(DailyTreasureRules.MinutesUntilNextUtcDay(
+            Date(8,23,59).AddSeconds(59)),1,
+            "never display zero minutes before the reset");
+        Eq(DailyTreasureRules.MinutesUntilNextUtcDay(Date(8,20,30)),210,
+            "hour/minute countdown uses authoritative UTC clock");
+        bool invalidUtc=false;
+        try{DailyTreasureRules.MinutesUntilNextUtcDay(-1);}
+        catch(ArgumentOutOfRangeException){invalidUtc=true;}
+        True(invalidUtc,"invalid negative UTC clock cannot create a fake countdown");
+
         var s=new DailyTreasureState();
         Eq(s.CycleDay,0,"new calendar");
         True(DailyTreasureRules.CanClaim(s,Date(8)),"first day available");
