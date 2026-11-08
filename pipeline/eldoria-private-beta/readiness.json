@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "status": "BLOCKED_STAGED4_PHYSICAL_IPHONE_FAILED",
+  "status": "MOBILE5_PUBLISHED_DESKTOP_AND_PUBLIC_PASS_PHYSICAL_UNVERIFIED",
   "scope": "Closed playtest Bastion I–V",
-  "source": "native325-staged4",
+  "source": "native325-mobile5",
   "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
   "frozen_archive": {
     "location": "GitHub draft release (not public)",
@@ -15,12 +15,12 @@
   },
   "distribution": {
     "target": "one-click public link (no account/email/password/itch.io/APK)",
-    "service": "Sites entry plus GitHub Pages immutable payload",
-    "url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1",
+    "service": "Sites entry and GitHub Pages payload",
+    "url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile5",
     "links_enabled": true,
     "byte_checksums_verified": true,
     "web_package_ready": true,
-    "diagnostics": "stages-v3-opt-in",
+    "diagnostics": "v4 opt-in local-only post-ready growth",
     "access_control": "public URL; not authenticated",
     "live_identity_verified": true,
     "publication_purpose": "New owner diagnostic candidate; physical iPhone not certified"
@@ -54,7 +54,7 @@
     "no_new_tester_invites_before_validation": true
   },
   "blockers": [
-    "Staged4 also fails on physical iPhone after first frame (IMG_5046). Desktop startup PASS is not iOS certification. Diagnose post-ready allocations and process termination before another release.",
+    "Staged4 physically failed. Mobile5 applies a lower mip material profile, reducing measured desktop WASM peak ~99MiB and download ~131MB. Public startup60sec and local name/reopen pass; physical iPhone result pending, closure not proven.",
     "Staged4 hardware Chromium graceful Quit-then-reload and nickname persistence passed run42482412101. Raw reload and physical mobile remain uncertified.",
     "Connect opt-in consent UI and browser event delivery to verified QA backend; native gameplay metrics still not emitted",
     "Instrument and verify actual Unity gameplay events; 135 indicators remain specification, not measured",
@@ -87,7 +87,7 @@
     "release_for_external_testers": false,
     "physical_iphone_result": "OWNER_REPORTED_FAILURE: still enters for one second and exits"
   },
-  "updated_at": "2026-11-08T13:49:39.898Z",
+  "updated_at": "2026-11-08T14:16:22.024Z",
   "mobile_candidate_history": [
     {
       "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
@@ -255,5 +255,32 @@
       "owner_observation": "Se sale igual a los 2 segundos",
       "cause_confirmed": false
     }
+  },
+  "mobile5_candidate": {
+    "status": "PUBLISHED_PUBLIC_RUNTIME_PASS_PHYSICAL_UNVERIFIED",
+    "revision": "native325-mobile5",
+    "bundle_sha256": "2c502a1d766aca83c2377347de290467d16d75efd8c6f5edad41766f4d3ce73a",
+    "changed_material_textures": 35,
+    "removed_serialized_texture_bytes": 298319872,
+    "all_objects_verified": 57375,
+    "site_bytes": 455991538,
+    "data_bytes": 500847489,
+    "qa_run": 42487738914,
+    "qa_source": "300b78e31a72bbdbd74c6681a75b04987d28bd31",
+    "pages_run": 42487975751,
+    "site_version": 4,
+    "site_deployment": "appgdep_6af083414b6481919608003893646797",
+    "public_qa_run": 42488719340,
+    "public_qa_pass": true,
+    "public_qa_artifact": 13620362562,
+    "public_qa_zip_sha256": "abf61e7c618212f100c6c15d8c0959f5e0962a3f409bf37ebffe5ce54cca333b",
+    "wasm_peak_capacity_bytes": 1064108032,
+    "previous_wasm_peak_capacity_bytes": 1168179200,
+    "process_rss_measured": false,
+    "graceful_quit_reload_nickname_pass": true,
+    "physical_iphone_verified": false,
+    "full_i_v_verified": false,
+    "visual_scope": "City entry and reloaded intro screenshots inspected; mobile lower detail texture profile, no full-world visual equivalence claim",
+    "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile5"
   }
 }
