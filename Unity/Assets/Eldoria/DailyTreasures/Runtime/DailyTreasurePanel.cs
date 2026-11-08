@@ -338,7 +338,23 @@ namespace Eldoria.DailyTreasures
             Present("TRIBUTO DEL DÍA "+reward.CycleDay,
                 DailyTreasureRules.Receipt(reward),reward.ShowChest);
         }
-        // Safe to reuse for future milestone ceremonies: NEVER mints rewards.
+        // Called only after the game's authoritative reward/report has ALREADY
+        // been committed by its existing command. Never calls Execute,
+        // grants a bonus, opens the daily claim or invents a loot table.
+        public bool PresentCommittedMilestone(string title,string confirmedResult)
+        {
+            if(gateway==null || now==null || screen==null ||
+               string.IsNullOrWhiteSpace(title))return false;
+            if(IsOpen)return false;
+            screen.gameObject.SetActive(true);
+            screen.SetAsLastSibling();
+            lastWidth=lastHeight=-1f;
+            Layout();
+            Present(title,confirmedResult,true);
+            return true;
+        }
+
+        // Safe to reuse for milestone ceremonies: NEVER mints rewards.
         public void Present(string title,string alreadyReceived,bool showChest)
         {
             if(!IsOpen)return;
