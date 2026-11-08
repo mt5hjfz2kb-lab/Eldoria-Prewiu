@@ -280,6 +280,29 @@ namespace Eldoria.Tests
             Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric"),Is.EqualTo(20));
         }
 
+        [Test] public void PairingLyraUsesEarnedBestMasteryWithoutReducingSoloLevels()
+        {
+            var state=Ready();
+            state.ChapterThree.LyraRecruited=true;
+            state.Retention.AldricExperience=560; // Aldric mastery 7
+            state.Retention.LyraExperience=0;      // newly recruited Lyra
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric"),Is.EqualTo(7));
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"lyra"),Is.Zero);
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric+lyra"),Is.EqualTo(7),
+                "A newly recruited support hero must not halve mastery already earned by the leader");
+
+            // A more experienced Lyra can contribute her earned mastery, but
+            // neither hero's individual experience or combat rules are rewritten.
+            state.Retention.LyraExperience=960;
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric+lyra"),Is.EqualTo(12));
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric"),Is.EqualTo(7));
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"lyra"),Is.EqualTo(12));
+            state.Retention.AldricExperience=int.MaxValue;
+            state.Retention.LyraExperience=int.MaxValue;
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric+lyra"),Is.EqualTo(20),
+                "Paired mastery must stay capped and never overflow saved XP");
+        }
+
         [Test] public void LegacyScoutClaimsKeepCountAndFamiliesAfterUtcCleanupAndReload()
         {
             var time=new Clock();var old=Ready();
