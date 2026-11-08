@@ -1,0 +1,74 @@
+param(
+ [Parameter(Mandatory=$true)][string]$Source,
+ [Parameter(Mandatory=$true)][string]$Tools,
+ [Parameter(Mandatory=$true)][string]$Evidence,
+ [Parameter(Mandatory=$true)][string]$WebOutput
+)
+$ErrorActionPreference='Stop'
+$Source=(Resolve-Path $Source).Path;$Tools=(Resolve-Path $Tools).Path
+$Evidence=[IO.Path]::GetFullPath($Evidence);$WebOutput=[IO.Path]::GetFullPath($WebOutput)
+$baseline='948ffa9837168a0b68dab80be76b66350422b23a'
+if((git -C $Source rev-parse HEAD).Trim() -ne $baseline){throw 'Warm project is not the exact frozen commit'}
+$pending=@(git -C $Source status --porcelain -- Unity)
+if($LASTEXITCODE -ne 0 -or $pending.Count){throw "Warm Unity tree has pending work; refuse mutation: $($pending -join ' | ')"}
+if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy'}
+if(Test-Path $WebOutput){throw 'Refuse replacing a previous WebGL output'}
+New-Item -ItemType Directory -Force $Evidence|Out-Null
+$utf8=New-Object Text.UTF8Encoding($false)
+$overlays=@(
+ 'Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs',
+ 'Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs',
+ 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs',
+ 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
+)
+$paths=@($overlays)
+$paths+=@(Get-ChildItem (Join-Path $Source 'Unity/ProjectSettings') -File -Recurse|ForEach-Object {$_.FullName.Substring($Source.Length+1).Replace('\','/')})
+$records=@()
+foreach($path in $paths){
+ $original=Join-Path $Source $path;$backup=Join-Path $Evidence ('source-backup/'+$path)
+ New-Item -ItemType Directory -Force (Split-Path $backup)|Out-Null
+ Copy-Item $original $backup
+ $records+=@{path=$path;backup=$backup;sha256=(Get-FileHash $original -Algorithm SHA256).Hash;overlay=($overlays -contains $path)}
+}
+[IO.File]::WriteAllText((Join-Path $Evidence 'warm-cache-before.json'),(@{base=$baseline;files=$records}|ConvertTo-Json -Depth 6),$utf8)
+$proof=Join-Path $Source 'docs/evidence/valoria-reference-clean'
+$build=Join-Path $Source 'Unity/Builds/ValoriaWebPlaytest'
+$suffix=".beta-preserved-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+$proofBackup=$proof+$suffix;$buildBackup=$build+$suffix
+if((Test-Path $proofBackup) -or (Test-Path $buildBackup)){throw 'A prior preserved output exists; do not replace it'}
+$proofMoved=$false;$buildMoved=$false
+try {
+ if(Test-Path $proof){Move-Item $proof $proofBackup;$proofMoved=$true}
+ if(Test-Path $build){Move-Item $build $buildBackup;$buildMoved=$true}
+ # Prior evidence is quarantined intact. The core test must check the complete
+ # Unity tree, not reject its own temporary relocation of historical docs.
+ $core=Get-Content (Join-Path $Tools 'tools/eldoria-private-beta/native/run_structural.ps1') -Raw
+ $needle='git -C $Source status --porcelain'
+ if(([regex]::Matches($core,[regex]::Escape($needle))).Count -ne 1){throw 'Core clean-source gate changed'}
+ $core=$core.Replace($needle,'git -C $Source status --porcelain -- Unity')
+ $corePath=Join-Path $Evidence 'executed-structural-core.ps1'
+ [IO.File]::WriteAllText($corePath,$core,$utf8)
+ & $corePath -Source $Source -Tools $Tools -Evidence $Evidence
+} finally {
+ if(@(Get-Process Unity -ErrorAction SilentlyContinue).Count){
+  throw 'Unity is still active: preserve backups and project; do not restore under a live Editor'
+ }
+ if(Test-Path $proof){Move-Item $proof (Join-Path $Evidence 'native-output-at-exit')}
+ if($proofMoved){Move-Item $proofBackup $proof}
+ if(Test-Path $build){Move-Item $build $WebOutput}
+ if($buildMoved){Move-Item $buildBackup $build}
+ $conflicts=@()
+ foreach($record in $records){
+  $file=Join-Path $Source $record.path
+  if(-not(Test-Path $file)){$conflicts+=$record.path;continue}
+  $current=(Get-FileHash $file -Algorithm SHA256).Hash
+  if($record.overlay){
+   $candidate=(Get-FileHash (Join-Path $Tools $record.path) -Algorithm SHA256).Hash
+   if($current -ne $candidate -and $current -ne $record.sha256){$conflicts+=$record.path;continue}
+  }
+  if($current -ne $record.sha256){Copy-Item $record.backup $file -Force}
+ }
+ $after=@(git -C $Source status --porcelain -- Unity)
+ [IO.File]::WriteAllText((Join-Path $Evidence 'warm-cache-restoration.json'),(@{conflicts=$conflicts;unity_status=$after;restored=($conflicts.Count -eq 0 -and $after.Count -eq 0)}|ConvertTo-Json -Depth 6),$utf8)
+ if($conflicts.Count -or $after.Count){throw 'Warm source has unexpected differences; evidence saved, no automatic overwrite'}
+}
