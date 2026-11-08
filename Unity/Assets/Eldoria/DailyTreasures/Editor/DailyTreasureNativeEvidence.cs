@@ -40,7 +40,7 @@ namespace Eldoria.DailyTreasures.Editor
         {
             public string status,source,note;
             public int images,realGatewayClaims,graphicalPointerHits;
-            public bool artApproved,fullSceneVerified,iosVerified;
+            public bool artApproved,fullSceneVerified,iosVerified,authoredSpritesImported;
             public Shot[] shots;
         }
         static void Need(bool ok,string reason)
@@ -159,6 +159,9 @@ namespace Eldoria.DailyTreasures.Editor
                     canvas.worldCamera=camera;
                     var panel=DailyTreasurePanel.Install(rect);
                     panel.Bind(gateway,()=>clock.UtcTicks,()=>{});
+                    if(!panel.HasAuthoredChestArt)
+                        Debug.LogWarning("DAILY_TREASURE_ART_NOT_IMPORTED: procedural fallback only; never call this art approval");
+                    report.authoredSpritesImported = report.authoredSpritesImported || panel.HasAuthoredChestArt;
                     var eventObj=new GameObject("Disposable event system",typeof(EventSystem));
                     var eventSystem=eventObj.GetComponent<EventSystem>();
                     Canvas.ForceUpdateCanvases();
@@ -209,7 +212,9 @@ namespace Eldoria.DailyTreasures.Editor
                 }
                 Need(pictures.Count==12 && inputChecks==4 && report.realGatewayClaims==4,
                     "Native reward component coverage incomplete");
-                report.status="NATIVE_COMPONENT_RENDERED_ART_AND_FULL_SCENE_PENDING";
+                report.status=report.authoredSpritesImported
+                    ? "NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING"
+                    : "NATIVE_COMPONENT_RENDERED_FALLBACK_ONLY_ART_REJECTED";
                 report.graphicalPointerHits=inputChecks;
                 report.images=pictures.Count;
                 report.shots=pictures.ToArray();
