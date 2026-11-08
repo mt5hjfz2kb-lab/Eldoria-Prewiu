@@ -373,13 +373,29 @@ namespace Eldoria.DailyTreasures
             for(int i=0;i<7;i++)
             {
                 int column=i%cols,row=i/cols;
-                float x=-panelW*.5f+left+column*(cellW+gap)+cellW*.5f;
+                // Day seven is the ceremonial grand chest and deliberately
+                // occupies the unused eighth slot: two columns, not tiny text.
+                int span=i==6?2:1;
+                float width=cellW*span+gap*(span-1);
+                float x=-panelW*.5f+left+column*(cellW+gap)+width*.5f;
                 float y=gridHeight*.5f-row*(cellH+gap)-cellH*.5f;
-                Place(dayBack[i].rectTransform,.5f,.5f,.5f,.5f,x,y,cellW,cellH);
-                Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,0f,-5f,cellW-6f,25f);
-                Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,0f,7f,51f,40f);
-                Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
-                    0f,-cellH*.5f+23f,cellW-10f,37f);
+                Place(dayBack[i].rectTransform,.5f,.5f,.5f,.5f,x,y,width,cellH);
+                Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,0f,-5f,width-6f,25f);
+                if(i==6)
+                {
+                    Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,
+                        -width*.5f+48f,-11f,73f,57f);
+                    Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
+                        38f,-12f,width-116f,Mathf.Max(52f,cellH-39f));
+                    dayBody[i].fontSize=15;
+                }
+                else
+                {
+                    Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,0f,7f,51f,40f);
+                    Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
+                        0f,-cellH*.5f+23f,cellW-10f,37f);
+                    dayBody[i].fontSize=14;
+                }
             }
             Place((RectTransform)claimButton.transform,.5f,0f,.5f,0f,
                 0f,13f,Mathf.Min(panelW-30f,portrait?325f:405f),54f);
