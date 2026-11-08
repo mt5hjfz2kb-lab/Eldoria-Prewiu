@@ -12,6 +12,7 @@ namespace Eldoria.BreachWatch
     {
         public enum PlateType { Basalt, Obsidian, Resource, Action, Selected, Dangerous, Navigation, Portrait, Banner }
         PlateType plateType = PlateType.Basalt;
+        Sprite approvedIndependentArt;
         public PlateType Type
         {
             get => plateType;
@@ -23,6 +24,14 @@ namespace Eldoria.BreachWatch
             }
         }
         public bool CopperEdge = true;
+        public bool UsesOwnerReference => approvedIndependentArt && sprite==approvedIndependentArt;
+        // These are five new sprites derived from the separately approved
+        // concept. They belong to this canvas, not the old game HUD.
+        public void ApplyIndependentArt(Sprite art)
+        {
+            approvedIndependentArt=art;
+            RefreshMaterial();
+        }
         protected override void Awake()
         {
             base.Awake();
@@ -31,13 +40,20 @@ namespace Eldoria.BreachWatch
         }
         public void RefreshMaterial()
         {
-            var next = BreachWatchMaterialLibrary.For(plateType);
+            var next = approvedIndependentArt
+                ? approvedIndependentArt
+                : BreachWatchMaterialLibrary.For(plateType);
             if(next != sprite) sprite = next;
-            bool isolatedMedallion = plateType==PlateType.Navigation || plateType==PlateType.Selected;
+            bool medallion = approvedIndependentArt ||
+                plateType==PlateType.Navigation || plateType==PlateType.Selected;
             bool isolatedBanner = plateType==PlateType.Banner;
-            type = isolatedMedallion || isolatedBanner ? Image.Type.Simple : Image.Type.Sliced;
-            preserveAspect = isolatedMedallion || isolatedBanner;
-            color = plateType==PlateType.Selected ? new Color(1f,.81f,.67f,1f) : Color.white;
+            type = medallion || isolatedBanner ? Image.Type.Simple : Image.Type.Sliced;
+            preserveAspect = medallion || isolatedBanner;
+            color = plateType==PlateType.Selected
+                ? new Color(1f,.86f,.77f,1f)
+                : plateType==PlateType.Dangerous
+                    ? new Color(.63f,.60f,.57f,1f)
+                    : Color.white;
         }
     }
 
