@@ -735,7 +735,13 @@ namespace Eldoria.DailyTreasures
                 onVigiliaCanvas?(portrait?102f:177f):(portrait?100f:83f),
                 76f,54f);
             float panelW=Mathf.Min(w-24f,portrait?440f:740f);
-            float panelH=Mathf.Min(h-20f,portrait?700f:370f);
+            // Ordinary resources deserve the same illustrated materials but
+            // not a giant EMPTY modal. An earned-item reveal uses a distinct,
+            // compact luxury frame. The ceremonial coffer remains immersive.
+            bool focusedQuiet=ceremony&&ceremony.gameObject.activeSelf &&
+                prizeCount>0 && !chestReward;
+            float panelH=Mathf.Min(h-20f,portrait?
+                (focusedQuiet?460f:700f):(focusedQuiet?330f:370f));
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
             Place(header.rectTransform,.5f,1f,.5f,1f,0,-8f,panelW-64f,40f);
             Place(subhead.rectTransform,.5f,1f,.5f,1f,0,-49f,panelW-44f,26f);
@@ -787,11 +793,9 @@ namespace Eldoria.DailyTreasures
                     dayBody[i].fontSize=tiny?13:14;
                 }
             }
-            bool focusedQuiet=ceremony&&ceremony.gameObject.activeSelf &&
-                prizeCount>0 && !chestReward;
             if(focusedQuiet)
                 Place((RectTransform)claimButton.transform,.5f,.5f,.5f,.5f,
-                    0f,portrait?-216f:-152f,
+                    0f,portrait?-175f:-127f,
                     Mathf.Min(panelW-30f,portrait?325f:405f),54f);
             else
                 Place((RectTransform)claimButton.transform,.5f,0f,.5f,0f,
@@ -799,7 +803,8 @@ namespace Eldoria.DailyTreasures
             Stretch(ceremony);
             // The ceremony now has its own top half; do not shrink the
             // original textured chest to a postage stamp on landscape phones.
-            float chestY=prizeCount>0?(portrait?116f:89f):
+            float chestY=focusedQuiet?(portrait?64f:35f):
+                prizeCount>0?(portrait?116f:89f):
                 (portrait?105f:87f);
             float artWidth=prizeCount>0?(portrait?284f:268f):
                 (portrait?294f:282f);
@@ -824,7 +829,7 @@ namespace Eldoria.DailyTreasures
             {
                 resultText.fontSize=quietRewards?(portrait?19:17):
                     compactPrizePortrait?16:portrait?18:16;
-                float captionY=quietRewards?(portrait?-135f:-99f):
+                float captionY=quietRewards?(portrait?-106f:-74f):
                     compactPrizePortrait?-217f:portrait?-232f:-15f;
                 Place(resultText.rectTransform,.5f,.5f,.5f,.5f,
                     0f,captionY,panelW-45f,
@@ -844,7 +849,7 @@ namespace Eldoria.DailyTreasures
             // than shrinking illustrated icons and text to unreadable sizes.
             float shelfHeight=quietRewards?(portrait?175f:137f):
                 portrait?138f:64f;
-            float shelfY=quietRewards?(portrait?19f:26f):
+            float shelfY=quietRewards?(portrait?64f:35f):
                 portrait?-115f:-69f;
             Place(prizeShelf,.5f,.5f,.5f,.5f,0f,shelfY,
                 panelW-34f,shelfHeight);
