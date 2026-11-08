@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T15:32:47.269Z",
+  "updated_at": "2026-11-08T15:55:37.530Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6820,9 +6820,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "MOBILE6_PUBLIC_WEBKIT_PASS_PHYSICAL_CONFIRMATION_PENDING",
+      "phase": "MOBILE6_PHYSICAL_FAILURE_DIAGNOSIS",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Owner tests beta 6 on physical iPhone. If stable, proceed normal tutorial/gameplay I–V and actual telemetry verification before external testers.",
+      "next": "Correlate actual beta6 phone diagnostics and inspect startup memory/asset residency; no repeated same-build certification.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6845,7 +6845,7 @@
         "browser_landing": "PASS anonymous",
         "browser_game_start": "BLOCKED remote browser reports Your browser does not support WebGL",
         "owner_confirmed_no_back_or_reload": true,
-        "iphone_cause": "Unconfirmed on physical iPhone. Desktop Apple GPU WebKit GPU-process SIGSEGV in compressedTexSubImage2D reproduced; converting only five cubemaps resolves desktop failure.",
+        "iphone_cause": "UNCONFIRMED: desktop compressed cubemap GPU fix did not resolve physical iPhone restart",
         "startup_diagnostic_run": 42415743624,
         "diagnostic_cache_fix": {
           "source": "08fb51bb492bb81f89e42c1e59de1ff1ada40287",
@@ -6958,7 +6958,8 @@
           "physical_iphone_verified": false,
           "release_for_external_testers": false,
           "public_qa_artifact": 13623376058,
-          "public_nickname_reload_visually_verified": true
+          "public_nickname_reload_visually_verified": true,
+          "physical_iphone_result": "FAIL: owner reports same as mobile5"
         }
       },
       "art_production_routing": "not_applicable",
