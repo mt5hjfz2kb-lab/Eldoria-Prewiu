@@ -374,8 +374,10 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Parse independent first-screen C-sharp sources with actual Roslyn
         run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch
+      - name: Independently verify compact UI geometry and physical touch targets
+        run: python3 tools/breach-watch/validate_compact_layout.py
       - name: Explain proof boundary
-        run: echo 'BREACHWATCH_SYNTAX_PASS; does not replace Unity Editor compilation or artistic acceptance.'
+        run: echo 'BREACHWATCH_SOURCE_GEOMETRY_PASS; neither source checks nor Roslyn replace Unity rendering/artistic approval.'
   owner-preflight:
     runs-on: ubuntu-latest
     timeout-minutes: 5
