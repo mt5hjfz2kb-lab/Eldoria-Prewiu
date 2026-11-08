@@ -6817,9 +6817,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "STAGED4_PUBLIC_STARTUP_DELIVERED",
+      "phase": "STAGED4_PHYSICAL_IPHONE_FAILED_DIAGNOSIS",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Continue remaining beta telemetry and full journey verification; incorporate any physical-device defect report without certifying iPhone from desktop evidence.",
+      "next": "Inspect post-ready scene growth and browser termination. Desktop PASS does not resolve physical defect; no repeated texture-only release.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6891,7 +6891,8 @@
           "public_runtime_pass": true,
           "local_reopen_run": 42482412101,
           "physical_iphone_verified": false,
-          "release_for_external_testers": false
+          "release_for_external_testers": false,
+          "physical_iphone_result": "OWNER_REPORTED_FAILURE 2026-11-08 IMG_5046: ready14:47:01 heap495MiB; boot back_forward14:47:05; game visible about2sec"
         }
       },
       "art_production_routing": "not_applicable",
