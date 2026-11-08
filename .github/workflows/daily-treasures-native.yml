@@ -130,7 +130,27 @@ jobs:
             foreach($setting in @('textureType: 8','spriteMode: 1','alphaIsTransparency: 1','enableMipMap: 0')){
               if(-not $info.Contains($setting)){throw "Wrong Sprite importer $setting for $name"}
             }
-            $guid=[regex]::Match($info,'(?m)^guid: ([0-9a-f]{32})\r?      - name: Compile Unity and render genuine calendar, closed and opened chest captures
+            $match=[regex]::Match($info,'(?m)^guid: ([0-9a-f]{32})\r?$')
+            if(-not $match.Success -or -not $guids.Add($match.Groups[1].Value)){
+              throw "Missing or duplicate Unity Sprite GUID: $name"
+            }
+            if($item.PSObject.Properties.Name -contains 'guid'){
+              if([string]$item.guid -ne $match.Groups[1].Value){
+                throw "Source GUID mismatch: $name"
+              }
+            }
+            if($item.PSObject.Properties.Name -contains 'nine_slice'){
+              $border=[int]$item.nine_slice
+              if(-not $info.Contains("spriteBorder: {x: $border, y: $border, z: $border, w: $border}")){
+                throw "Nine-slice art not configured: $name"
+              }
+            }
+          }
+          if($guids.Count -ne 9 -or $names.Count -ne 9){
+            throw 'Nine independent original PNG files and GUIDs are required'
+          }
+          Write-Host 'DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS: nine exact SHA256 files'
+      - name: Compile Unity and render genuine day-four/day-seven and Vigilia UI evidence
         shell: powershell
         working-directory: daily-source
         timeout-minutes: 50
@@ -153,7 +173,7 @@ jobs:
           if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or $report.authoredSpritesImported -ne $true){
             throw 'Illustrated chest sprites not imported in Unity or not used in the native render'
           }
-          if($report.images -ne 24 -or $report.realGatewayClaims -ne 8 -or $report.graphicalPointerHits -ne 32){
+          if($report.images -ne 24 -or $report.realGatewayClaims -ne 8 -or $report.graphicalPointerHits -ne 40){
             throw 'Actual Unity or player-interaction proof is incomplete'
           }
           if($report.source -ne $env:GITHUB_SHA){throw 'Native evidence was not rendered at the requested PR SHA'}
@@ -195,60 +215,6 @@ jobs:
           }
           if($seen.Count -ne 24 -or @(Get-ChildItem -Path $env:OUT -File -Filter '*.png').Count -ne 24){
             throw 'All 16 required Unity views plus 8 real day-four views must exist'
-          }
-          Write-Host 'PASS original native component captures, NOT FULL GAME / ART APPROVAL'
-      - name: Preserve real Unity screenshots and error log even when test fails
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: eldoria-daily-treasures-native-${{ github.sha }}
-          path: ${{ github.workspace }}\daily-treasures-native-${{ github.run_id }}\
-          retention-days: 30
-          if-no-files-found: warn
-)
-            if(-not $guid.Success -or -not $guids.Add($guid.Groups[1].Value)){
-              throw "Missing or duplicate Unity GUID in $name"
-            }
-            if($item.PSObject.Properties.Name -contains 'guid'){
-              if([string]$item.guid -ne $guid.Groups[1].Value){throw "Source GUID mismatch $name"}
-            }
-            if($item.PSObject.Properties.Name -contains 'nine_slice'){
-              $b=[int]$item.nine_slice
-              if(-not $info.Contains("spriteBorder: {x: $b, y: $b, z: $b, w: $b}")){
-                throw "Nine-slice original frame is unusable: $name"
-              }
-            }
-          }
-          if($guids.Count -ne 9 -or $names.Count -ne 9){throw 'Nine distinct source PNGs and GUIDs required'}
-          Write-Host 'DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS: nine exact SHA256 and nine import GUIDs'
-      - name: Compile Unity and render genuine calendar, closed and opened chest captures
-        shell: powershell
-        working-directory: daily-source
-        timeout-minutes: 50
-        run: |
-          $ErrorActionPreference='Stop'
-          New-Item -ItemType Directory -Force $env:OUT | Out-Null
-          $log=Join-Path $env:OUT 'unity-editor.log'
-          $project=Join-Path (Get-Location).Path 'Unity'
-          $unityArgs='-batchmode -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.DailyTreasures.Editor.DailyTreasureNativeEvidence.Capture -logFile "'+$log+'"'
-          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArgs -Wait -PassThru
-          $capture=Join-Path $project 'DailyTreasureNativeEvidence'
-          if(Test-Path $capture){Copy-Item (Join-Path $capture '*') $env:OUT -Force -Recurse}
-          if($process.ExitCode -ne 0){
-            if(Test-Path $log){Get-Content $log -Tail 100}
-            throw "Unity returned exit code $($process.ExitCode)"
-          }
-          $reportFile=Join-Path $env:OUT 'report.json'
-          if(-not(Test-Path $reportFile)){throw 'Missing actual Unity native report'}
-          $report=Get-Content $reportFile -Raw | ConvertFrom-Json
-          if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or $report.authoredSpritesImported -ne $true){
-            throw 'Illustrated chest sprites not imported in Unity or not used in the native render'
-          }
-          if($report.images -ne 24 -or $report.realGatewayClaims -ne 8 -or $report.graphicalPointerHits -ne 32){
-            throw 'Actual Unity or player-interaction proof is incomplete'
-          }
-          if(@(Get-ChildItem -Path $env:OUT -Filter '*.png').Count -ne 24){
-            throw 'Expected 16 exact-head screenshots generated by Unity (calendar, closed, peak opening, opened)'
           }
           Write-Host 'PASS original native component captures, NOT FULL GAME / ART APPROVAL'
       - name: Preserve real Unity screenshots and error log even when test fails
