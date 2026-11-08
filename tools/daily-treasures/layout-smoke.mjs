@@ -7,8 +7,8 @@ const code=fs.readFileSync(
   'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePanel.cs','utf8');
 for(const [name,regex] of [
   ['seventh day occupies two columns',/int span=i==6\?2:1/],
-  ['normal glyph height',/0f,3f,48f,28f/],
-  ['normal reward body height',/cellW-10f,33f/],
+  ['normal glyph height',/tiny\?24f:28f/],
+  ['normal reward body height',/tiny\?31f:33f/],
   ['large reward body grows with card',/Mathf\.Max\(52f,cellH-39f\)/],
   ['skip hit target 100 by 45',/-10f,-60f,100f,45f/],
   ['close hit target 48 square',/-8f,-8f,48f,48f/],
@@ -52,11 +52,13 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
     for(const other of cards)assert.ok(noOverlap(card,other),
       `${w}x${h}: day ${i+1} overlaps another reward`);
     cards.push(card);
-    const titleBottom=ch/2-5-25;
+    const tiny=ch<96;
+    const titleBottom=ch/2-5-(i<6&&tiny?24:25);
     if(i<6)
     {
-      const iconTop=3+28/2,iconBottom=3-28/2;
-      const bodyTop=-ch/2+18.5+33/2;
+      const iconTop=(tiny?2:3)+(tiny?24:28)/2;
+      const iconBottom=(tiny?2:3)-(tiny?24:28)/2;
+      const bodyTop=-ch/2+(tiny?17:18.5)+(tiny?31:33)/2;
       assert.ok(titleBottom>=iconTop+2,
         `${w}x${h}: day ${i+1} title overlaps glyph`);
       assert.ok(iconBottom>=bodyTop+2,
