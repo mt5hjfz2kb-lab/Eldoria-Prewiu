@@ -36,10 +36,10 @@ $build=Join-Path $Source 'Unity/Builds/ValoriaWebPlaytest'
 $suffix=".beta-preserved-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
 $proofBackup=$proof+$suffix;$buildBackup=$build+$suffix
 if((Test-Path $proofBackup) -or (Test-Path $buildBackup)){throw 'A prior preserved output exists; do not replace it'}
-$proofMoved=$false;$buildMoved=$false
+$proofMoved=$false;$buildMoved=$false;$proofSlotCleared=$false;$buildSlotCleared=$false
 try {
- if(Test-Path $proof){Move-Item $proof $proofBackup;$proofMoved=$true}
- if(Test-Path $build){Move-Item $build $buildBackup;$buildMoved=$true}
+ if(Test-Path $proof){Move-Item $proof $proofBackup;$proofMoved=$true};$proofSlotCleared=$true
+ if(Test-Path $build){Move-Item $build $buildBackup;$buildMoved=$true};$buildSlotCleared=$true
  # Prior evidence is quarantined intact. The core test must check the complete
  # Unity tree, not reject its own temporary relocation of historical docs.
  $core=Get-Content (Join-Path $Tools 'tools/eldoria-private-beta/native/run_structural.ps1') -Raw
@@ -53,9 +53,9 @@ try {
  if(@(Get-Process Unity -ErrorAction SilentlyContinue).Count){
   throw 'Unity is still active: preserve backups and project; do not restore under a live Editor'
  }
- if(Test-Path $proof){Move-Item $proof (Join-Path $Evidence 'native-output-at-exit')}
+ if($proofSlotCleared -and (Test-Path $proof)){Move-Item $proof (Join-Path $Evidence 'native-output-at-exit')}
  if($proofMoved){Move-Item $proofBackup $proof}
- if(Test-Path $build){Move-Item $build $WebOutput}
+ if($buildSlotCleared -and (Test-Path $build)){Move-Item $build $WebOutput}
  if($buildMoved){Move-Item $buildBackup $build}
  $conflicts=@()
  foreach($record in $records){
