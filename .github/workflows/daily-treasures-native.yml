@@ -85,7 +85,10 @@ jobs:
           $path=Join-Path $env:OUT 'report.json'
           if(-not(Test-Path $path)){throw 'Missing real native report'}
           $report=Get-Content $path -Raw|ConvertFrom-Json
-          if($report.status -ne 'NATIVE_COMPONENT_RENDERED_ART_AND_FULL_SCENE_PENDING' -or $report.images -ne 12 -or $report.realGatewayClaims -ne 4 -or $report.graphicalPointerHits -ne 4){throw 'Real Unity component proof incomplete'}
+          if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or
+             $report.authoredSpritesImported -ne $true){throw 'Illustrated chest sprites not imported in Unity. Fallback cannot count as premium art proof.'}
+          if($report.images -ne 12 -or $report.realGatewayClaims -ne 4 -or
+             $report.graphicalPointerHits -ne 4){throw 'Real Unity component/pointer proof incomplete'}
           if(@(Get-ChildItem $env:OUT -Filter '*.png').Count -ne 12){throw 'Missing original Unity PNGs'}
           Write-Host 'DAILY_NATIVE_COMPONENT_PASS; separate city/gameplay/art/device validation REQUIRED'
       - name: Preserve original Unity screenshots and error log
