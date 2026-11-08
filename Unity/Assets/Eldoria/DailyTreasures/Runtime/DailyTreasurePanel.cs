@@ -25,6 +25,9 @@ namespace Eldoria.DailyTreasures
         bool onVigiliaCanvas;
         public bool UsesVigiliaCanvas => onVigiliaCanvas;
         Button entryButton,claimButton,closeButton,skipButton;
+        Image entryArtwork,entryGlow,entryNotice;
+        Text entryNoticeNumber;
+        bool entryIsAvailable;
         Text header,subhead,claimCaption,resultText,entryCaption;
         readonly Text[] dayHead=new Text[7],dayBody=new Text[7];
         readonly Image[] dayBack=new Image[7],sparks=new Image[18];
@@ -214,8 +217,22 @@ namespace Eldoria.DailyTreasures
             entryButton=ActionButton(entryRect,Oak,Open);
             if(!ApplyAuthoredFrame(entryRect,"valoria_frame_button_512x128"))
                 Relief(entryRect,false,true);
-            entryCaption=Label(entryRect,"Daily available label","COFRE",15,Gold,TextAnchor.MiddleCenter);
-            Stretch(entryCaption.rectTransform);
+            // The owner-approved presentation identifies treasures by the
+            // genuine illustrated coffer, never a rectangular text-only CTA.
+            var halo=NewRect("Amber claimable glow / non-interactive",entryRect);
+            entryGlow=Plate(halo,Color.clear,false);
+            var miniature=NewRect("Actual Valoria chest medallion",entryRect);
+            entryArtwork=Plate(miniature,Color.white,false);
+            entryArtwork.sprite=Resources.Load<Sprite>(
+                "DailyTreasureArt/treasure_closed_512");
+            entryArtwork.preserveAspect=true;
+            var badge=NewRect("A genuine daily tribute awaits",entryRect);
+            entryNotice=Plate(badge,new Color(.49f,.18f,.12f,1f),false);
+            entryNoticeNumber=Label(badge,"Real daily count","1",14,Ivory,
+                TextAnchor.MiddleCenter);
+            Stretch(entryNoticeNumber.rectTransform);
+            entryCaption=Label(entryRect,"Daily available label",
+                "TESORO",12,Gold,TextAnchor.MiddleCenter);
             var entryShadow=entryRect.gameObject.AddComponent<Shadow>();
             entryShadow.effectColor=new Color(.02f,.012f,.012f,.8f);
             entryShadow.effectDistance=new Vector2(2f,-3f);
@@ -282,6 +299,8 @@ namespace Eldoria.DailyTreasures
             glowRect=NewRect("Warm radial light / visual only",ceremony);
             glow=Plate(glowRect,new Color(1f,.65f,.18f,0f),false);
             CreateGlow();
+            entryGlow.sprite=glowSprite;
+            entryGlow.color=new Color(1f,.69f,.25f,0f);
             ambientRect=NewRect("Subtle event-specific atmospheric halo / visual only",ceremony);
             ambient=Plate(ambientRect,Color.clear,false);
             ambient.sprite=glowSprite;
@@ -743,9 +762,21 @@ namespace Eldoria.DailyTreasures
             // Vigilia's landscape utility rail occupies the lower-left
             // 77–165 px band; use the verified free 175–230 px zone instead.
             // In portrait the tribute stays just above the five-medallion dock.
-            Place(entryRect,0f,0f,0f,0f,14f,
-                onVigiliaCanvas?(portrait?102f:177f):(portrait?100f:83f),
-                76f,54f);
+            // Vigilia's world objective and utility rail must remain readable.
+            // The treasury medallion lives just above the dock in portrait,
+            // and to the right of the objective in landscape.
+            float entryX=onVigiliaCanvas&&!portrait?256f:14f;
+            float entryY=onVigiliaCanvas?(portrait?103f:168f):
+                (portrait?100f:83f);
+            Place(entryRect,0f,0f,0f,0f,entryX,entryY,80f,72f);
+            Place(entryGlow.rectTransform,.5f,.5f,.5f,.5f,
+                0f,10f,83f,73f);
+            Place(entryArtwork.rectTransform,.5f,.5f,.5f,.5f,
+                0f,10f,68f,58f);
+            Place(entryNotice.rectTransform,1f,1f,.5f,.5f,
+                -1f,-2f,24f,24f);
+            Place(entryCaption.rectTransform,.5f,0f,.5f,0f,
+                0f,3f,72f,18f);
             float panelW=Mathf.Min(w-24f,portrait?440f:740f);
             // Ordinary resources deserve the same illustrated materials but
             // not a giant EMPTY modal. An earned-item reveal uses a distinct,
@@ -972,13 +1003,23 @@ namespace Eldoria.DailyTreasures
             if(!IsOpen)
             {
                 entryRect.gameObject.SetActive(!suppressed);
+                // A restrained, believable coffer glow, not cartoon bouncing.
+                float shimmer=entryIsAvailable?
+                    (.18f+.095f*Mathf.Sin(Time.unscaledTime*2.1f)):0f;
+                entryGlow.color=new Color(1f,.70f,.30f,shimmer);
+                entryRect.localScale=Vector3.one*
+                    (entryIsAvailable?
+                        1f+.008f*Mathf.Sin(Time.unscaledTime*2.1f):1f);
                 if(gateway!=null && now!=null && Time.unscaledTime>=nextTick)
                 {
                     nextTick=Time.unscaledTime+.8f;
-                    bool available=DailyTreasureRules.CanClaim(
+                    entryIsAvailable=DailyTreasureRules.CanClaim(
                         gateway.Snapshot().DailyTreasures,now());
-                    entryCaption.color=available?Gold:Muted;
-                    entryCaption.text=available?"TRIBUTO":"COFRE";
+                    entryCaption.color=entryIsAvailable?Gold:Muted;
+                    entryCaption.text=entryIsAvailable?"TESORO":"COFRE";
+                    entryArtwork.color=entryIsAvailable?Color.white:
+                        new Color(.62f,.62f,.59f,.72f);
+                    entryNotice.gameObject.SetActive(entryIsAvailable);
                 }
                 return;
             }
