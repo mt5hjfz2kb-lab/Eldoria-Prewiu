@@ -74,3 +74,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08 Native premium art candidate 3: compact clear labeled card increased to 324 design units for actual cost heading/state; original original authoring of black basalt nine-slice, warm brass portrait and deep burgundy action button (sha-pinned). All components remain independent and real game-bound. Re-run Unity 6000.3.23f1, obtain eight PNGs and inspect art and gameplay without replacing product HUD.
 
 2026-11-08: Exact native compiler failure CS1061 in new QA asserted rectTransform/fontSize on RectTransform. Changed to retrieve actual Text components from RectTransform, keeping mandatory cost-heading and state visibility tests. Re-run Unity with original premium three material sprites.
+
+2026-11-08: Fourth Unity-native visual pass, re-evaluate true screenshot after changing only typography: keep Cormorant headline and import correctly licensed readable Libre Baskerville for all real gameplay body text, labels, numbers, cost information and CTA. Same independent Canvas and compact four-resolution validation. No merge.
