@@ -731,6 +731,9 @@ namespace Eldoria.UI.RoyalGold.V2
         public void Close()
         {
             if(screen&&screen.activeSelf)screen.SetActive(false);
+            // Narratives must always outrank an optional reward ceremony.
+            if(Hud!=null && Hud.NarrativeOpen && dailyTreasures!=null)
+                dailyTreasures.Close();
         }
         void Submit(string kind,string target)
         {
@@ -739,6 +742,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var cmd=new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,kind,target,s.Revision);
             var result=gateway.Execute(cmd);
             notice=result.Message;
+            string completeChapterTitle=null,completeChapterResult=null;
             if(kind=="VigilantBattle" && result.Ok && IsOpen &&
                OpenDestination==Destination.Vigilants)
             {
@@ -754,8 +758,16 @@ namespace Eldoria.UI.RoyalGold.V2
                     int masteryBefore=EarlyRetentionRules.HeroMasteryLevel(s,"aldric");
                     int masteryAfter=EarlyRetentionRules.HeroMasteryLevel(after,"aldric");
                     string progress=masteryAfter>masteryBefore?"\nMaestría de Aldric: "+masteryBefore+" → "+masteryAfter:"";
+                    var battleSummary=EarlyRetentionRules.BattleReview(report,challenge);
                     victoryDetail.Put((chapterCompleted?"25 etapas superadas. Se abre el siguiente capítulo.\n":"")+
-                        EarlyRetentionRules.BattleReview(report,challenge)+progress);
+                        battleSummary+progress);
+                    if(chapterCompleted)
+                    {
+                        completeChapterTitle="CAPÍTULO "+challenge.Chapter+" COMPLETADO";
+                        // The existing battle/report already credited every real
+                        // amount. Do not add an invented victory chest reward.
+                        completeChapterResult=challenge.Name+"\n"+battleSummary+progress;
+                    }
                     victoryStarted=Time.unscaledTime;
                     victoryUntil=victoryStarted+(chapterCompleted?7f:3.2f);
                     victoryGroup.alpha=1f;
@@ -783,6 +795,12 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             refreshed?.Invoke();
             Render(true);
+            // On the real final Guardian of the chapter, reuse the exact daily
+            // chest's visual-only ceremony. Rewards and inbox were committed
+            // by the pre-existing VigilantBattle command above.
+            if(completeChapterTitle!=null && dailyTreasures!=null)
+                dailyTreasures.PresentCommittedMilestone(
+                    completeChapterTitle,completeChapterResult);
         }
         void ExecuteStage()
         {
