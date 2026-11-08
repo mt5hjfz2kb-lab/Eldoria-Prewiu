@@ -160,6 +160,24 @@ namespace Eldoria.DailyTreasures.Editor
             else if(expected.Kind==DailyTreasureStageKind.Bastion)
                 Need(!panel.HasMilestoneScenery,
                     "Do not disguise a Bastion level by painting a fake city");
+            var ink=FindRect(panel,"Bastion / real-city milestone caption ink");
+            var plate=FindRect(panel,
+                "Basalt and worn bronze reward parchment").GetComponent<Image>();
+            if(expected.Kind==DailyTreasureStageKind.Bastion)
+            {
+                Need(ink.gameObject.activeInHierarchy && plate &&
+                     Mathf.Abs(plate.color.a-
+                         DailyTreasureStageDirection.BastionPlateOpacity)<.015f,
+                     "Bastion real city is concealed by its own main frame");
+                Need((1f-backdrop.color.a)*(1f-plate.color.a)>.34f,
+                     "Less than 34% of the true built city remains visible");
+                Need(Mathf.Abs(ink.rect.width-expected.ReceiptW-16f)<1.1f &&
+                     Mathf.Abs(ink.rect.height-expected.ReceiptH-12f)<1.1f &&
+                     ink.GetComponent<Image>().color.a>.75f,
+                     "City visible but the committed Bastion story is illegible");
+            }
+            else Need(!ink.gameObject.activeInHierarchy,
+                "Non-city milestones must not gain a redundant dark panel");
             else
                 Need(panel.HasMilestoneScenery,
                     "Original real Eldoria artwork does not appear behind chest");

@@ -5,6 +5,14 @@ import assert from 'node:assert/strict';
 // Useful preflight, NOT a substitute for an actual Unity rendering.
 const code=fs.readFileSync(
   'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePanel.cs','utf8');
+const stageCode=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureStageDirection.cs','utf8');
+assert.match(code,/stage\.SideBySide\?stage\.SceneX:-panelW\*\.10f/,
+  'Portrait ceremony title must not collide with Skip');
+assert.match(code,/Bastion \/ real-city milestone caption ink/);
+assert.match(code,/DailyTreasureStageDirection\.BastionPlateOpacity/);
+assert.match(stageCode,/BastionPlateOpacity=\.36f/);
+assert.match(stageCode,/\.45f,0f,0f,false/);
 for(const [name,regex] of [
   ['seventh day occupies two columns',/int span=i==6\?2:1/],
   ['normal glyph height',/tiny\?24f:28f/],
@@ -184,6 +192,16 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
     }
   }
 
+  // Previously the heraldic title and Skip overlapped by 20+ pixels in
+  // narrow portrait; check both physical hit areas and text composition.
+  const banner=rect(portrait?-pw*.10:-.247*pw,
+    ph*.405,Math.min(pw*.52,302),38);
+  const skip=portrait?rect(pw/2-60,ph/2-82.5,100,45):
+    rect(-.247*pw,ph/2-77.5,100,45);
+  assert.ok(noOverlap(banner,skip),
+    `${w}x${h}: milestone title overlaps the Skip control`);
+  assert.ok((1-.45)*(1-.36)>.34,
+    `${w}x${h}: actual Bastion city hidden by stacked panels`);
   // Real non-paying milestones also use the same premium authored chest.
   // Their short true-gameplay report line must remain clear of the Continue
   // button, even on a 375px portrait or 390px landscape device.

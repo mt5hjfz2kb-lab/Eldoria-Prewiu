@@ -82,6 +82,7 @@ namespace Eldoria.DailyTreasures
         public DailyTreasureStageKind ActiveMilestoneStage => currentStage;
         RawImage milestoneScenery;
         Image milestoneVignette;
+        Image bastionStoryInk;
         string milestoneSceneryKey;
         Rect milestoneSceneryBaseUv;
         public string MilestoneSceneryKey => milestoneSceneryKey;
@@ -363,6 +364,12 @@ namespace Eldoria.DailyTreasures
             var veilRect=NewRect("Dim painterly setting for the earned chest",ceremony);
             milestoneVignette=Plate(veilRect,new Color(.028f,.023f,.027f,.26f),false);
             milestoneVignette.gameObject.SetActive(false);
+            // The real completed Bastion supplies the landscape. Only the
+            // genuine receipt receives a plain basalt legibility ink field;
+            // never add a false city, ornamental duplicate frame or hitbox.
+            var cityInk=NewRect("Bastion / real-city milestone caption ink",ceremony);
+            bastionStoryInk=Plate(cityInk,new Color(.045f,.049f,.052f,.82f),false);
+            cityInk.gameObject.SetActive(false);
             milestoneBanner=NewRect("Milestone heraldic event banner / visual only",ceremony);
             Plate(milestoneBanner,new Color(.27f,.15f,.10f,.96f),false);
             if(!ApplyAuthoredFrame(milestoneBanner,"valoria_frame_button_512x128"))
@@ -552,6 +559,7 @@ namespace Eldoria.DailyTreasures
             if(mainFrameSurface)
                 mainFrameSurface.color=mainFrameSurface.sprite?Color.white:Stone;
             if(milestoneBanner)milestoneBanner.gameObject.SetActive(false);
+            if(bastionStoryInk)bastionStoryInk.gameObject.SetActive(false);
             // Release the ONLY references owned by this optional ceremony to
             // large original painterly illustrations. Mobile WebGL must not
             // keep a 3MB+ scene texture alive just because a chest was opened.
@@ -1026,7 +1034,8 @@ namespace Eldoria.DailyTreasures
                 if(mainFrameSurface.sprite)
                     mainFrameSurface.color=eventStage &&
                         currentStage==DailyTreasureStageKind.Bastion?
-                            new Color(1f,1f,1f,.80f):Color.white;
+                            new Color(1f,1f,1f,
+                                 DailyTreasureStageDirection.BastionPlateOpacity):Color.white;
                 else
                     mainFrameSurface.color=Stone;
             }
@@ -1041,7 +1050,7 @@ namespace Eldoria.DailyTreasures
                 milestoneVignette.color=new Color(.024f,.023f,.026f,
                     stage.SceneVeilOpacity);
                 Place(milestoneBanner,.5f,.5f,.5f,.5f,
-                    stage.SideBySide?stage.SceneX:0f,panelH*.405f,
+                    stage.SideBySide?stage.SceneX:-panelW*.10f,panelH*.405f,
                     Mathf.Min(panelW*.52f,302f),38f);
             }
             else
@@ -1051,6 +1060,14 @@ namespace Eldoria.DailyTreasures
                 Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
                     0f,0f,panelW-24f,panelH-26f);
             }
+            // Preserve the Bastion scene, while protecting the actual
+            // recorded story with a discrete unframed shadowed ink area.
+            bool realCity=eventStage && currentStage==DailyTreasureStageKind.Bastion;
+            bastionStoryInk.gameObject.SetActive(realCity);
+            if(realCity)
+                Place(bastionStoryInk.rectTransform,.5f,.5f,.5f,.5f,
+                    stage.ReceiptX,stage.ReceiptY,
+                    stage.ReceiptW+16f,stage.ReceiptH+12f);
             UpdateSceneryCrop();
             Place(header.rectTransform,.5f,1f,.5f,1f,0,-8f,panelW-64f,40f);
             Place(subhead.rectTransform,.5f,1f,.5f,1f,0,-49f,panelW-44f,26f);

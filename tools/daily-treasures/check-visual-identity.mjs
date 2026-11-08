@@ -60,5 +60,11 @@ for(const path of [
   'EldoriaRetention/vigilants-painterly-v2'
 ]) assert.ok(panel.includes(path));
 assert.match(stage,/if\(kind==DailyTreasureStageKind\.Bastion\)/);
+// Real Bastion visible through a single forged bronze main plate; genuine
+// story supported by local ink, not a fictional city or another ornate frame.
+assert.match(stage,/BastionPlateOpacity=\.36f/);
+assert.match(stage,/\.45f,0f,0f,false/);
+assert.match(panel,/Bastion \/ real-city milestone caption ink/);
+assert.match(panel,/bastionStoryInk\.gameObject\.SetActive\(realCity\)/);
 assert.match(panel,/currentStage==DailyTreasureStageKind\.Bastion/);
 console.log('PASS Eldoria premium visual identity: matte charcoal, aged copper/gold, burgundy action, true source art, no mockup currency');
