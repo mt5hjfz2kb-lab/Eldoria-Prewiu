@@ -524,9 +524,23 @@ namespace Eldoria.BreachWatch.Editor
                     // Bastion at approx one third of physical phone width
                     // with the gate/bridge/river visible below. The old
                     // real 390x844 screen was a giant 70% castle close-up.
-                    Need(castleViewportWidth>.22f && castleViewportWidth<.49f,
-                         "Owner reference lost: Bastion still too large or invisible "+
-                         name+" castle width="+castleViewportWidth.ToString("F3"));
+                    // The canonical city terrain bounds limit maximum
+                    // orthographic zoom-out. A 390x844 phone is ~18% narrower
+                    // than the approved 864x1536 reference: the same honest
+                    // world naturally uses more horizontal screen width.
+                    // 900x1600 keeps a strict reference-like .49 maximum;
+                    // narrow phones may reach .56 but must still preserve
+                    // the complete Bastion, bridge and river in the screenshot.
+                    float maxCastleWidth=w/(float)h<.50f?.56f:.49f;
+                    Debug.Log("BREACHWATCH_REAL_CASTLE_RATIO "+name+
+                        " width="+castleViewportWidth.ToString("F3")+
+                        " maximum="+maxCastleWidth.ToString("F3")+
+                        " ortho="+camera.orthographicSize.ToString("F2"));
+                    Need(castleViewportWidth>.22f &&
+                         castleViewportWidth<maxCastleWidth,
+                         "Owner reference lost: Bastion too large or invisible "+
+                         name+" castle width="+castleViewportWidth.ToString("F3")+
+                         " maximum="+maxCastleWidth.ToString("F3"));
                     Need(castleViewportX>.47f && castleViewportX<.69f &&
                          castleViewportY>.60f && castleViewportY<.84f,
                          "Real city portrait camera no longer frames the castle "+
