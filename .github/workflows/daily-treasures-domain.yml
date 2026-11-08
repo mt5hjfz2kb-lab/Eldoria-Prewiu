@@ -31,7 +31,9 @@ jobs:
             /tools/daily-treasures/
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: |
+            8.0.x
+            10.0.x
       - name: Compile and test original C# reward rules (no Unity mocks)
         run: dotnet run --project tools/daily-treasures/Tests.csproj --configuration Release
       - name: Compile and test the real authoritative LocalGateway (no Unity)
