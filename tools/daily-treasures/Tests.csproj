@@ -10,6 +10,7 @@
   <ItemGroup>
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs" Link="DailyTreasureRules.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureRevealTimeline.cs" Link="DailyTreasureRevealTimeline.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureRewardPresentation.cs" Link="DailyTreasureRewardPresentation.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
 </Project>
