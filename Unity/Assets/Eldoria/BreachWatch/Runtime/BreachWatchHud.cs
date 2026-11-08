@@ -67,6 +67,13 @@ namespace Eldoria.BreachWatch
         public Button BuildingAction => actionButton;
         public RectTransform BuildingPanel => panel;
         public bool HasLiveBuildingPortrait => buildingPortrait && buildingPortrait.HasLiveBuilding;
+        public bool UsesOriginalPaintedMedallions =>
+            navPlates[0] && navPlates[0].sprite &&
+            navPlates[0].sprite.name=="nav_sculpted_medallion";
+        public bool UsesOriginalForgedPortraitFrame =>
+            portraitFrame && portraitFrame.GetComponent<BreachWatchPlate>() &&
+            portraitFrame.GetComponent<BreachWatchPlate>().sprite &&
+            portraitFrame.GetComponent<BreachWatchPlate>().sprite.name=="portrait_forged_iron";
         public IReadOnlyList<Button> NavButtons => navButtons;
 
         public static BreachWatchHud Install(ValoriaIntegratedWorld source)
@@ -225,7 +232,7 @@ namespace Eldoria.BreachWatch
             // These three remain preview-only informational; they never dispatch a game command.
             panel=Rect("Independent selected-building cartouche",uiRoot);Plate(panel,BreachWatchPlate.PlateType.Basalt);
             portraitFrame=Rect("Carved recess / live building illustration",panel);
-            Plate(portraitFrame,BreachWatchPlate.PlateType.Obsidian);
+            Plate(portraitFrame,BreachWatchPlate.PlateType.Portrait);
             var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
             Fill(liveView,8);
             portraitView=liveView.gameObject.AddComponent<RawImage>();
@@ -252,9 +259,9 @@ namespace Eldoria.BreachWatch
             buttonRow=Rect("Five standalone stone navigation emblems",uiRoot);
             for(int i=0;i<5;i++)
             {
-                int index=i;var rt=BuildButton(buttonRow,navLabels[i],navIcons[i],()=>Navigate(index));
+                int index=i;var rt=BuildButton(buttonRow,navLabels[i],navIcons[i],()=>Navigate(index),BreachWatchPlate.PlateType.Navigation);
                 navButtons[i]=rt.GetComponent<Button>();navPlates[i]=rt.GetComponent<BreachWatchPlate>();
-                navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Basalt;
+                navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Navigation;
             }
             feedback=Label(uiRoot,"Action feedback / live or disabled",15,TextAnchor.MiddleCenter,Copper);
             feedback.text="";
@@ -340,8 +347,8 @@ namespace Eldoria.BreachWatch
                 float bw=(w-margin*2-4*6)/5f;
                 for(int i=0;i<5;i++)
                 {
-                    At((RectTransform)navButtons[i].transform,i*(bw+6),1,bw,65);
-                    navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Basalt;
+                    At((RectTransform)navButtons[i].transform,i*(bw+6)+(bw-Mathf.Min(bw,65))*.5f,1,Mathf.Min(bw,65),65);
+                    navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Navigation;
                 }
                 float panelHeight=Mathf.Min(260,Mathf.Max(219,h-485));
                 At(panel,margin,navTop-panelHeight-13,w-margin*2,panelHeight);
@@ -388,7 +395,7 @@ namespace Eldoria.BreachWatch
                 float count=5,bw=Mathf.Min(93,(w-190)/count),gap=13;
                 float navWidth=bw*count+gap*(count-1);
                 At(buttonRow,(w-navWidth)*.5f,h-89,navWidth,81);
-                for(int i=0;i<5;i++)At((RectTransform)navButtons[i].transform,i*(bw+gap),0,bw,77);
+                for(int i=0;i<5;i++)At((RectTransform)navButtons[i].transform,i*(bw+gap)+(bw-74)*.5f,2,74,74);
                 At(feedback.rectTransform,margin,h-135,w-margin*2,31);
             }
             lastPortrait=portrait;
