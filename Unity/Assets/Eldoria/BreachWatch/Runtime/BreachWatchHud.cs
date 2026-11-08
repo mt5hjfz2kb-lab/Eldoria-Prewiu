@@ -310,6 +310,12 @@ namespace Eldoria.BreachWatch
             var basalt=Plate(panel,BreachWatchPlate.PlateType.Basalt);
             var approvedFrame=Resources.Load<Sprite>("VigiliaArt/OwnerReference/carved_context");
             if(approvedFrame)basalt.ApplyIndependentArt(approvedFrame,true);
+            // Three-dimensional, resolution-independent fine gold metalwork
+            // is a separate original Graphic, never a skin over RoyalHUD.
+            var engravingRect=Rect("Original gilded Breach engraving",panel);
+            Fill(engravingRect);
+            var engraving=engravingRect.gameObject.AddComponent<BreachWatchFrameEngraving>();
+            engraving.raycastTarget=false;
             portraitFrame=Rect("Carved recess / live building illustration",panel);
             Plate(portraitFrame,BreachWatchPlate.PlateType.Portrait);
             var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
