@@ -6,17 +6,17 @@
   "sources": [
     {
       "name": "burgundy_action",
-      "sha256": "5f65e58c20a56e8bf1125737bf88b2f5f0739e987021850576f0907c02942a0e",
+      "sha256": "82cedfb519a0bb32eb68b8127604675f9bd89b84151875a5aa4ea6af195ec6dd",
       "size": [
         512,
         148
       ],
       "guid": "a6f0f34c42fd494f92a72d201e0aaf9c",
       "border": [
-        35,
-        24,
-        35,
-        24
+        22,
+        14,
+        22,
+        14
       ]
     },
     {
