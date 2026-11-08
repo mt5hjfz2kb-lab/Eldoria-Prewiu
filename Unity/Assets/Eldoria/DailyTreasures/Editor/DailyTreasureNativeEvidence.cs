@@ -285,9 +285,24 @@ namespace Eldoria.DailyTreasures.Editor
                     canvas.worldCamera=camera;
                     var panel=DailyTreasurePanel.Install(rect);
                     panel.Bind(gateway,()=>clock.UtcTicks,()=>{});
-                    if(!panel.HasAuthoredChestArt)
-                        Debug.LogWarning("DAILY_TREASURE_ART_NOT_IMPORTED: procedural fallback only; never call this art approval");
-                    report.authoredSpritesImported = report.authoredSpritesImported || panel.HasAuthoredChestArt;
+                    // Imported assets alone are NOT evidence of their use.
+                    // Fail rather than reporting an authored-art PASS when the
+                    // component quietly falls back to procedural geometry.
+                    Need(panel.HasAuthoredChestArt,
+                        "Native panel lost the two commissioned chest poses");
+                    var exactClosed=FindRect(panel,
+                        "Authored chest / closed").GetComponent<Image>();
+                    var exactOpened=FindRect(panel,
+                        "Authored chest / opened").GetComponent<Image>();
+                    Need(exactClosed && exactOpened &&
+                         exactClosed.sprite==Resources.Load<Sprite>(
+                            "DailyTreasureArt/treasure_closed_512") &&
+                         exactOpened.sprite==Resources.Load<Sprite>(
+                            "DailyTreasureArt/treasure_opened_512") &&
+                         exactClosed.preserveAspect && exactOpened.preserveAspect,
+                         "Native UI does not display the two original imported chest sprites");
+                    report.authoredSpritesImported &=
+                        panel.HasAuthoredChestArt;
                     var eventObj=new GameObject("Disposable event system",typeof(EventSystem));
                     var eventSystem=eventObj.GetComponent<EventSystem>();
                     VerifyUiOwnership(1,eventSystem);

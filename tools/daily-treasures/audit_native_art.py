@@ -76,6 +76,23 @@ def compare(a,b):
     return {"avgRgbDifference":round(magnitude,2),
             "changedPixels":shifted}
 
+def scenery_window(image, width, height):
+    """Source-art aperture, away from chest, headline and buttons.
+
+    Portrait: the authentic painting occupies the upper third of the stage.
+    Landscape: the authentic painting is the left-hand storytelling theatre.
+    This is a PIXEL diagnostic, never owner art approval or a city test.
+    """
+    if (width, height) == (844, 390):
+        bounds = (.105, .20, .42, .73)
+    elif (width, height) == (390, 844):
+        bounds = (.23, .185, .77, .36)
+    else:
+        raise ValueError("Scenic aperture unsupported: %sx%s" % (width,height))
+    x0,y0,x1,y1 = bounds
+    return image.crop((round(x0*width),round(y0*height),
+                       round(x1*width),round(y1*height)))
+
 def read_report(folder, expected_sha):
     report_file=folder/"report.json"
     assert_quality(report_file.is_file(),"Unity did not produce report.json")
@@ -231,6 +248,37 @@ def analyze(folder,expected_sha,output):
             transitions.append({"resolution":f"{w}x{h}",
                                 "from":left,"to":right,**diff})
 
+    # Check the actual landscape pixels, not merely different bronze
+    # captions and palette tints. A completely hidden or flat-painted backdrop
+    # could pass the whole-frame comparison above; this detects that failure.
+    scenic_checks=[]
+    for w,h in [(844,390),(390,844)]:
+        crops={}
+        for style in ("lyra","scouts","vigilants"):
+            source=actual[("style-"+style+"-opening",w,h)][0]
+            cropped=scenery_window(source,w,h)
+            metrics=sample(cropped)
+            assert_quality(metrics["meanStdDev"]>4.0 and
+                           metrics["uniqueColorBins"]>=13,
+                "Original Eldoria scene is flattened, hidden or too dark in its own aperture: "+
+                f"{style} at {w}x{h}")
+            scenic_checks.append({
+                "stage":style,"resolution":f"{w}x{h}",
+                "sceneRoiStdDev":metrics["meanStdDev"],
+                "sceneRoiColorBins":metrics["uniqueColorBins"],
+            })
+            crops[style]=cropped
+        for left,right in (("lyra","scouts"),("lyra","vigilants"),
+                           ("scouts","vigilants")):
+            diff=compare(crops[left],crops[right])
+            assert_quality(diff["avgRgbDifference"]>.65 and
+                           diff["changedPixels"]>110,
+                "Paintings are indistinguishable INSIDE their scenery aperture; "+
+                f"UI tint cannot replace authentic {left}/{right} artwork at {w}x{h}")
+            transitions.append({"resolution":f"{w}x{h}",
+                                "from":"scenery:"+left,
+                                "to":"scenery:"+right,**diff})
+
     # Contact sheet: one row per phone/desktop viewport, seven paid scenes;
     # second contact sheet for special-event presentation in both orientations.
     def sheet(keys,filename,columns):
@@ -276,9 +324,11 @@ def analyze(folder,expected_sha,output):
             "noFlatOrBlankNativeCanvases":True,
             "ceremonialStagesVisiblyDifferent":True,
             "eventThemesNotIdentical":True,
+            "originalSceneryVisibleInItsOwnAperture":True,
             "allFourAspectRatiosPresent":True,
         },
         "transitions":transitions,
+        "originalSceneryApertureChecks":scenic_checks,
         "images":details,
         # Diagnostics are not aesthetic success or failure: compare contact
         # sheets against the actual PR173 charcoal/copper/burgundy design.
@@ -318,6 +368,21 @@ def selftest():
             "Bright fairy-purple image must be marked for manual style review")
         assert_quality(sample(correct)["neonVioletRatioForHumanReview"]<.02,
             "Owner's matte-charcoal UI must not trigger purple-drift warning")
+        # Explicit regression guard: a different bronze UI tint over a
+        # FLAT colour must not count as a genuine Eldoria landscape.
+        flat=Image.new("RGB",(844,390),(24,25,27))
+        painted=flat.copy()
+        paint=ImageDraw.Draw(painted)
+        for stripe in range(28):
+            paint.rectangle((90+stripe*10,80,99+stripe*10,281),
+                fill=(45+stripe*4,36+stripe*2,20+stripe))
+        assert_quality(sample(scenery_window(flat,844,390))["meanStdDev"]<1,
+            "Flat tinted art should fail scenic-aperture preflight")
+        assert_quality(sample(scenery_window(painted,844,390))["meanStdDev"]>4,
+            "True varied stage art should be measurable within its scenic aperture")
+        assert_quality(compare(scenery_window(flat,844,390),
+                               scenery_window(painted,844,390))["changedPixels"]>100,
+            "Scenic-aperture difference preflight did not detect real texture")
         a.save(Path(tmp)/"original.png")
         assert_quality((Path(tmp)/"original.png").is_file(),
             "PNG save smoke failed")
