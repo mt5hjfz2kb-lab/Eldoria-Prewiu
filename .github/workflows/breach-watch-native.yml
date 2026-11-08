@@ -49,7 +49,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
   commit-verified-cc0-art:
-    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]'))
+    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]'))
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
@@ -77,6 +77,9 @@ jobs:
       - name: Extract five independently selectable medallions from the approved user concept
         if: contains(github.event.head_commit.message, '[vigilia-owner-reference]')
         run: python tools/breach-watch/import_reference_medallions.py
+      - name: Extract owner-selected empty carved contextual art as a native nine-slice
+        if: contains(github.event.head_commit.message, '[vigilia-context-frame]')
+        run: python tools/breach-watch/import_reference_context.py
       - name: Protect canonical workstream ownership and source HEAD before push
         shell: bash
         env:
