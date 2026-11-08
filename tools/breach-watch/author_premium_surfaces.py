@@ -180,7 +180,7 @@ def main():
         })
     (OUT/"manifest.json").write_text(json.dumps({
         "origin":"Original script-authored Vigilia surface artwork, owner's approved image is visual direction only",
-        "independent":"All three nine-slice sprites are new and no old HUD graphics are reused",
+        "independent":"All four nine-slice sprites are new and no old HUD graphics are reused",
         "not_native_screenshot":True,
         "art_approved":False,
         "sources":manifest
