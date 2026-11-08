@@ -1128,6 +1128,15 @@ namespace Eldoria.DailyTreasures
                 // the confirmed story (no made-up crystals or reward cards).
                 resultText.fontSize=eventStage?
                     (portrait?19:17):(portrait?20:19);
+                resultText.resizeTextForBestFit=eventStage;
+                if(eventStage)
+                {
+                    // A rare long narrative must adapt within its actual
+                    // measured Unity box, not truncate the player's milestone
+                    // to preserve an arbitrary font size. Never below 14 px.
+                    resultText.resizeTextMinSize=portrait?16:14;
+                    resultText.resizeTextMaxSize=portrait?19:17;
+                }
                 if(eventStage)
                     Place(resultText.rectTransform,.5f,.5f,.5f,.5f,
                         stage.ReceiptX,stage.ReceiptY,
