@@ -1,20 +1,22 @@
-name: Tesoros de Valoria — native component proof (exclusive lease only)
+name: Tesoros de Valoria — Unity native verification (exclusive workstream)
 on:
   workflow_dispatch:
   push:
-    branches: [feature/eldoria-daily-treasures-20261108]
-    paths: [tools/daily-treasures/native-request.txt]
+    branches:
+      - feature/eldoria-daily-treasures-20261108
+    paths:
+      - tools/daily-treasures/native-request.txt
 permissions:
   contents: read
 concurrency:
   group: eldoria-daily-treasures-native
   cancel-in-progress: false
 jobs:
-  exclusive-lease:
+  verify-exclusive-lease:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 5
     steps:
-      - name: Refuse Windows execution while another workstream holds it
+      - name: Check canonical main registry before acquiring a Windows runner
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -22,55 +24,71 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import base64,json,os,urllib.request
-          headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','User-Agent':'Eldoria-daily-treasure-owner'}
-          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/contents/pipeline/active-workstreams.json?ref=main'
-          with urllib.request.urlopen(urllib.request.Request(url,headers=headers),timeout=20) as f: raw=json.load(f)
-          data=json.loads(base64.b64decode(raw['content']))
-          current=[x for x in data['active'] if 'windows-runner-heavy' in x.get('resources',[])]
-          assert len(current)==1 and current[0]['id']=='eldoria-daily-treasures-20261108', 'Native Unity reserved for a different Eldoria owner'
-          assert current[0].get('ownership_state')=='claimed' and current[0].get('owner')=='chatgpt-daily-treasures-20261108'
-          print('DAILY_EXCLUSIVE_NATIVE_LEASE_PASS',current[0].get('ownership_revision'))
+          repo=os.environ['GITHUB_REPOSITORY']
+          headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                   'Accept':'application/vnd.github+json',
+                   'User-Agent':'eldoria-daily-native-lease'}
+          url=f'https://api.github.com/repos/{repo}/contents/pipeline/active-workstreams.json?ref=main'
+          req=urllib.request.Request(url,headers=headers)
+          with urllib.request.urlopen(req,timeout=20) as response:
+              payload=json.load(response)
+          registry=json.loads(base64.b64decode(payload['content']))
+          holders=[x for x in registry['active']
+                   if 'windows-runner-heavy' in x.get('resources',[])]
+          required='eldoria-daily-treasures-20261108'
+          if len(holders)!=1 or holders[0].get('id')!=required:
+              raise SystemExit('Windows reserved by another Eldoria workstream; no Unity run')
+          if holders[0].get('owner')!='chatgpt-daily-treasures-20261108' or holders[0].get('ownership_state')!='claimed':
+              raise SystemExit('Daily treasures workstream lease not valid')
+          print('Exclusive canonical Windows lease verified; safe to request self-hosted runner')
           PY
-  native:
-    needs: exclusive-lease
-    if: vars.UNITY_RUNNER_READY == 'true'
+  native-ui:
+    needs: verify-exclusive-lease
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 65
     env:
-      OUT: ${{ github.workspace }}\daily-native-${{ github.run_id }}
+      OUT: ${{ github.workspace }}\daily-treasures-native-${{ github.run_id }}
     steps:
-      - name: Verify executable and no Unity or Blender process is occupied
+      - name: Assert Unity is available and another workstream is not running
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Unity or Blender already in use; do not interrupt'}
-          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Correct Unity editor not installed'}
-      - uses: actions/checkout@v4
+          if(-not $env:UNITY_EDITOR_PATH -or -not (Test-Path $env:UNITY_EDITOR_PATH)){
+            throw 'UNITY_EDITOR_PATH unavailable'
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Windows currently has an active native process; do not interrupt'
+          }
+      - name: Check out exact PR SHA (not main, beta, or Vigilia branch)
+        uses: actions/checkout@v4
         with:
           path: daily-source
-          clean: false
+          fetch-depth: 1
           lfs: false
           filter: blob:none
-          fetch-depth: 1
           sparse-checkout: |
             Unity
-      - name: Verify exact branch SHA and exclusive current ownership a second time
-        working-directory: daily-source
+      - name: Verify branch and lease again before Unity launch
         shell: powershell
+        working-directory: daily-source
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference='Stop'
-          if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Source SHA changed'}
-          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='Eldoria-daily-native'}
-          $blob=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main' -Headers $headers
-          $reg=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($blob.content)))|ConvertFrom-Json
-          $owners=@($reg.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($owners.Count -ne 1 -or $owners[0].id -ne 'eldoria-daily-treasures-20261108' -or $owners[0].owner -ne 'chatgpt-daily-treasures-20261108'){throw 'Unity resource ownership changed'}
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'A native process is already active'}
-      - name: Verify original authored chest PNGs and Unity import metadata before using the Editor
-        working-directory: daily-source
+          if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Checkout is not the requested branch SHA'}
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='eldoria-daily-native-lease'}
+          $file=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main' -Headers $headers
+          $registry=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($file.content)))|ConvertFrom-Json
+          $holders=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-daily-treasures-20261108' -or $holders[0].owner -ne 'chatgpt-daily-treasures-20261108'){
+            throw 'Windows lease lost; refusing Unity execution'
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Unity or Blender is active; do not interrupt it'
+          }
+      - name: Verify source illustrations, transparency importer, and unique GUIDs
         shell: powershell
+        working-directory: daily-source
         run: |
           $ErrorActionPreference='Stop'
           $dir='Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt'
@@ -79,110 +97,60 @@ jobs:
             'treasure_opened_512.png'='a75afb45b6183d0a8d7e2841c82ef13b812d08fb7620f90c849e679f24429ccb'
           }
           $guids=@()
-          foreach($entry in $expected.GetEnumerator()){
-            $png=Join-Path $dir $entry.Key
-            if(-not (Test-Path $png)){throw "Approved art PNG not imported: $png"}
+          foreach($item in $expected.GetEnumerator()){
+            $png=Join-Path $dir $item.Key
+            if(-not (Test-Path $png)){throw "Artwork not imported: $png"}
+            git ls-files --error-unmatch $png | Out-Null
+            if($LASTEXITCODE -ne 0){throw "Unversioned source art: $png"}
             $sha=(Get-FileHash $png -Algorithm SHA256).Hash.ToLowerInvariant()
-            if($sha -ne $entry.Value){throw "Artwork bytes differ from reviewed source: $png"}
+            if($sha -ne $item.Value){throw "Artwork differs from approved source hash: $png"}
             $meta=$png+'.meta'
-            if(-not (Test-Path $meta)){throw "Missing stable Unity sprite importer: $meta"}
+            if(-not (Test-Path $meta)){throw "Missing Sprite importer: $meta"}
             $info=Get-Content $meta -Raw
-            if(-not ($info -match 'textureType: 8') -or -not ($info -match 'spriteMode: 1')){
-              throw "Source image must be a single Unity Sprite: $meta"
+            if($info -notmatch 'textureType: 8' -or $info -notmatch 'spriteMode: 1' -or $info -notmatch 'alphaIsTransparency: 1'){
+              throw "Invalid transparent single-Sprite importer: $meta"
             }
-            if(-not ($info -match '(?m)^guid: ([0-9a-f]{32})
-        shell: powershell
-        timeout-minutes: 50
-        run: |
-          $ErrorActionPreference='Stop'
-          New-Item -ItemType Directory -Force $env:OUT|Out-Null
-          $log=Join-Path $env:OUT 'native.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',(Join-Path (Get-Location).Path 'Unity'),
-            '-executeMethod','Eldoria.DailyTreasures.Editor.DailyTreasureNativeEvidence.Capture','-logFile',$log)
-          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
-          $src=Join-Path (Get-Location).Path 'Unity/DailyTreasureNativeEvidence'
-          if(Test-Path $src){Copy-Item (Join-Path $src '*') $env:OUT -Force -Recurse}
-          if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw "Unity exit $($process.ExitCode)"}
-          $path=Join-Path $env:OUT 'report.json'
-          if(-not(Test-Path $path)){throw 'Missing real native report'}
-          $report=Get-Content $path -Raw|ConvertFrom-Json
-          if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or
-             $report.authoredSpritesImported -ne $true){throw 'Illustrated chest sprites not imported in Unity. Fallback cannot count as premium art proof.'}
-          if($report.images -ne 12 -or $report.realGatewayClaims -ne 4 -or
-             $report.graphicalPointerHits -ne 4){throw 'Real Unity component/pointer proof incomplete'}
-          if(@(Get-ChildItem $env:OUT -Filter '*.png').Count -ne 12){throw 'Missing original Unity PNGs'}
-          Write-Host 'DAILY_NATIVE_COMPONENT_PASS; separate city/gameplay/art/device validation REQUIRED'
-      - name: Preserve original Unity screenshots and error log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: daily-treasures-native-${{ github.sha }}
-          path: ${{ github.workspace }}\daily-native-${{ github.run_id }}\
-          retention-days: 30
-          if-no-files-found: warn
-)){throw "Invalid Unity GUID: $meta"}
-            $guids+=([regex]::Match($info,'(?m)^guid: ([0-9a-f]{32})
-        shell: powershell
-        timeout-minutes: 50
-        run: |
-          $ErrorActionPreference='Stop'
-          New-Item -ItemType Directory -Force $env:OUT|Out-Null
-          $log=Join-Path $env:OUT 'native.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',(Join-Path (Get-Location).Path 'Unity'),
-            '-executeMethod','Eldoria.DailyTreasures.Editor.DailyTreasureNativeEvidence.Capture','-logFile',$log)
-          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
-          $src=Join-Path (Get-Location).Path 'Unity/DailyTreasureNativeEvidence'
-          if(Test-Path $src){Copy-Item (Join-Path $src '*') $env:OUT -Force -Recurse}
-          if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw "Unity exit $($process.ExitCode)"}
-          $path=Join-Path $env:OUT 'report.json'
-          if(-not(Test-Path $path)){throw 'Missing real native report'}
-          $report=Get-Content $path -Raw|ConvertFrom-Json
-          if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or
-             $report.authoredSpritesImported -ne $true){throw 'Illustrated chest sprites not imported in Unity. Fallback cannot count as premium art proof.'}
-          if($report.images -ne 12 -or $report.realGatewayClaims -ne 4 -or
-             $report.graphicalPointerHits -ne 4){throw 'Real Unity component/pointer proof incomplete'}
-          if(@(Get-ChildItem $env:OUT -Filter '*.png').Count -ne 12){throw 'Missing original Unity PNGs'}
-          Write-Host 'DAILY_NATIVE_COMPONENT_PASS; separate city/gameplay/art/device validation REQUIRED'
-      - name: Preserve original Unity screenshots and error log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: daily-treasures-native-${{ github.sha }}
-          path: ${{ github.workspace }}\daily-native-${{ github.run_id }}\
-          retention-days: 30
-          if-no-files-found: warn
-).Groups[1].Value)
+            $match=[regex]::Match($info,'(?m)^guid: ([0-9a-f]{32})$')
+            if(-not $match.Success){throw "Missing stable Unity GUID: $meta"}
+            $guids+=$match.Groups[1].Value
           }
-          if($guids[0] -eq $guids[1]){throw 'Both art frames accidentally share a Unity GUID'}
-          Write-Host 'DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS'
-      - name: Capture calendar, closed chest and real paid opened chest at four sizes
-        working-directory: daily-source
+          if($guids[0] -eq $guids[1]){throw 'Duplicate Unity Sprite GUIDs'}
+          Write-Host 'PASS: original PNG files, exact SHA256 hashes, Sprite import settings, independent GUIDs'
+      - name: Compile Unity and render genuine calendar, closed and opened chest captures
         shell: powershell
+        working-directory: daily-source
         timeout-minutes: 50
         run: |
           $ErrorActionPreference='Stop'
-          New-Item -ItemType Directory -Force $env:OUT|Out-Null
-          $log=Join-Path $env:OUT 'native.log'
-          $args=@('-batchmode','-force-d3d11','-projectPath',(Join-Path (Get-Location).Path 'Unity'),
-            '-executeMethod','Eldoria.DailyTreasures.Editor.DailyTreasureNativeEvidence.Capture','-logFile',$log)
-          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
-          $src=Join-Path (Get-Location).Path 'Unity/DailyTreasureNativeEvidence'
-          if(Test-Path $src){Copy-Item (Join-Path $src '*') $env:OUT -Force -Recurse}
-          if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw "Unity exit $($process.ExitCode)"}
-          $path=Join-Path $env:OUT 'report.json'
-          if(-not(Test-Path $path)){throw 'Missing real native report'}
-          $report=Get-Content $path -Raw|ConvertFrom-Json
-          if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or
-             $report.authoredSpritesImported -ne $true){throw 'Illustrated chest sprites not imported in Unity. Fallback cannot count as premium art proof.'}
-          if($report.images -ne 12 -or $report.realGatewayClaims -ne 4 -or
-             $report.graphicalPointerHits -ne 4){throw 'Real Unity component/pointer proof incomplete'}
-          if(@(Get-ChildItem $env:OUT -Filter '*.png').Count -ne 12){throw 'Missing original Unity PNGs'}
-          Write-Host 'DAILY_NATIVE_COMPONENT_PASS; separate city/gameplay/art/device validation REQUIRED'
-      - name: Preserve original Unity screenshots and error log
+          New-Item -ItemType Directory -Force $env:OUT | Out-Null
+          $log=Join-Path $env:OUT 'unity-editor.log'
+          $project=Join-Path (Get-Location).Path 'Unity'
+          $unityArgs='-batchmode -force-d3d11 -projectPath "'+$project+'" -executeMethod Eldoria.DailyTreasures.Editor.DailyTreasureNativeEvidence.Capture -logFile "'+$log+'"'
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $unityArgs -Wait -PassThru
+          $capture=Join-Path $project 'DailyTreasureNativeEvidence'
+          if(Test-Path $capture){Copy-Item (Join-Path $capture '*') $env:OUT -Force -Recurse}
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw "Unity returned exit code $($process.ExitCode)"
+          }
+          $reportFile=Join-Path $env:OUT 'report.json'
+          if(-not(Test-Path $reportFile)){throw 'Missing actual Unity native report'}
+          $report=Get-Content $reportFile -Raw | ConvertFrom-Json
+          if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or $report.authoredSpritesImported -ne $true){
+            throw 'Illustrated Sprite sources were not used in real Unity render'
+          }
+          if($report.images -ne 12 -or $report.realGatewayClaims -ne 4 -or $report.graphicalPointerHits -ne 4){
+            throw 'Actual Unity or player-interaction proof is incomplete'
+          }
+          if(@(Get-ChildItem -Path $env:OUT -Filter '*.png').Count -ne 12){
+            throw 'Expected 12 exact-head screenshots generated by Unity'
+          }
+          Write-Host 'PASS original native component captures, NOT FULL GAME / ART APPROVAL'
+      - name: Preserve real Unity screenshots and error log even when test fails
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: daily-treasures-native-${{ github.sha }}
-          path: ${{ github.workspace }}\daily-native-${{ github.run_id }}\
+          name: eldoria-daily-treasures-native-${{ github.sha }}
+          path: ${{ github.workspace }}\daily-treasures-native-${{ github.run_id }}\
           retention-days: 30
           if-no-files-found: warn
