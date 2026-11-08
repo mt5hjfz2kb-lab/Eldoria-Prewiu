@@ -1,4 +1,4 @@
-name: Eldoria public beta native325 Pages
+name: Eldoria verified route-buffer owner candidate Pages
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -12,6 +12,14 @@ permissions:
 concurrency:
   group: eldoria-pages-main
   cancel-in-progress: false
+env:
+  PACKAGE_RUN: '42519214500'
+  PACKAGE_SOURCE: 4cee848cd0e47185780a31105c931e1cefaf51b4
+  QA_RUN: '42522623870'
+  QA_SOURCE: be28786a09fb319c68ccecd9ba44cae50f253cb3
+  NATIVE_RUN: '42518950317'
+  NATIVE_SOURCE: 5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa
+  CANDIDATE_REVISION: native325-mobile9-routes
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -25,49 +33,68 @@ jobs:
           sparse-checkout: |
             tools/eldoria-private-beta
             tools/delivery
-            pipeline/eldoria-private-beta
           persist-credentials: false
-      - uses: actions/configure-pages@v5
-      - name: Retrieve frozen native325, not development build
-        uses: actions/download-artifact@v4
-        with:
-          run-id: 42397405907
-          name: eldoria-pr163-web-preview-42397405907
-          github-token: ${{ github.token }}
-          path: input
-      - name: Prepare byte-identical game for Pages and preserve existing live site
+      - name: Require exact successful package and real Apple GPU comparison
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          python -m pip install 'Brotli==1.1.0'
-          python tools/eldoria-private-beta/prepare-pages.py input/Eldoria-native325-itch.zip site > pages-proof.json
-          cat pages-proof.json
-          node --check site/beta-native325/play.js
-          node tools/delivery/test-exact-decoded-transport.mjs site/beta-native325
+          python - <<'PY'
+          import os,json,urllib.request
+          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['PACKAGE_RUN']
+          req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          r=json.load(urllib.request.urlopen(req,timeout=30))
+          assert r['head_sha']==os.environ['PACKAGE_SOURCE'] and r['status']=='completed' and r['conclusion']=='success'
+          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['QA_RUN']
+          req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          r=json.load(urllib.request.urlopen(req,timeout=30))
+          assert r['head_sha']==os.environ['QA_SOURCE'] and r['status']=='completed' and r['conclusion']=='success'
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.PACKAGE_RUN }}
+          name: mobile9-candidate-site
+          github-token: ${{ github.token }}
+          path: site/beta-native325
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.QA_RUN }}
+          name: mobile9-reversed-order-heap640-not-physical-iphone
+          github-token: ${{ github.token }}
+          path: qa-evidence
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42519214500
+          name: mobile9-desktop-apple-gpu-not-iphone-certification
+          github-token: ${{ github.token }}
+          path: first-qa-evidence
+      - name: Preserve certified engine and native tape, verify reduced desktop peak
+        run: |
+          python -m pip install Brotli==1.2.1
+          cp -r qa-evidence/evidence evidence
+          python tools/eldoria-private-beta/prepare_compact_pages.py
       - uses: actions/upload-artifact@v4
         with:
-          name: beta-pages-transport-evidence
-          path: |
-            pages-proof.json
-            site/beta-native325/build-manifest.json
-            site/beta-native325/release-identity.json
+          name: mobile9-owner-site-shell
+          path: owner-shell/
+      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
-      - name: Publish owner-authorized public beta link
+      - name: Publish owner verification assets
         id: deploy
         uses: actions/deploy-pages@v4
-      - name: Verify live frozen beta identity
-        env:
-          SITE_URL: ${{ steps.deploy.outputs.page_url }}
+      - name: Verify live identity
         run: |
           python - <<'PY'
-          import os,json,urllib.request,time
-          url=os.environ['SITE_URL'].rstrip('/')+'/beta-native325/release-identity.json'
+          import json,os,urllib.request,time
           for n in range(12):
             try:
-              r=json.load(urllib.request.urlopen(url+'?check='+str(n),timeout=20))
-              assert r['original_zip_sha256']=='fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771'
-              print('LIVE_BETA_PAGES_IDENTITY_PASS',url);break
+              url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/release-identity.json?verify='+str(n)
+              r=json.load(urllib.request.urlopen(url,timeout=20))
+              assert r['revision']==os.environ['CANDIDATE_REVISION'] and r['source_sha']==os.environ['NATIVE_SOURCE']
+              assert r['terrain_query_runtime_cooking'] is False and not r['physical_iphone_verified']
+              print('LIVE_TERRAIN_TAPE_OWNER_CANDIDATE_PASS');break
             except Exception:
-              if n==11: raise
+              if n==11:raise
               time.sleep(5)
           PY
