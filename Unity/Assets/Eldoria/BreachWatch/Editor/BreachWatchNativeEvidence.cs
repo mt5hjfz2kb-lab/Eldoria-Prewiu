@@ -345,6 +345,35 @@ namespace Eldoria.BreachWatch.Editor
             return total<=0?0f:lit/(float)total;
         }
 
+        // Compare two actual Unity GPU renders in the SAME native frame,
+        // differing only by whether the selected Text component is enabled.
+        // Old "bright pixel" tests could pass on sunlit grass or golden trim
+        // even if the actual Spanish caption was invisible.
+        static int RealTextContribution(Color32[] withGlyph,Color32[] withoutGlyph,
+            int width,int height,Camera camera,Text label)
+        {
+            if(label==null || withGlyph==null || withoutGlyph==null)return 0;
+            var corners=new Vector3[4];
+            label.rectTransform.GetWorldCorners(corners);
+            var bottom=RectTransformUtility.WorldToScreenPoint(camera,corners[0]);
+            var top=RectTransformUtility.WorldToScreenPoint(camera,corners[2]);
+            int x0=Mathf.Clamp(Mathf.FloorToInt(bottom.x),0,width);
+            int x1=Mathf.Clamp(Mathf.CeilToInt(top.x),0,width);
+            int y0=Mathf.Clamp(Mathf.FloorToInt(bottom.y),0,height);
+            int y1=Mathf.Clamp(Mathf.CeilToInt(top.y),0,height);
+            int meaningful=0;
+            for(int y=y0;y<y1;y++)
+            for(int x=x0;x<x1;x++)
+            {
+                int i=y*width+x;
+                var a=withGlyph[i];var b=withoutGlyph[i];
+                int delta=Mathf.Abs(a.r-b.r)+Mathf.Abs(a.g-b.g)+
+                    Mathf.Abs(a.b-b.b);
+                if(delta>45)meaningful++;
+            }
+            return meaningful;
+        }
+
         static Shot RenderNative(BreachWatchHud ui,string root,string selection,int w,int h)
         {
             Camera camera = host.PlayerCamera;
@@ -373,20 +402,45 @@ namespace Eldoria.BreachWatch.Editor
                 image.ReadPixels(new Rect(0,0,w,h),0,0);
                 image.Apply();
                 var actualPixels=image.GetPixels32();
-                // The approved selected-building state must remain readable in
-                // its *real* raster output, not merely inside Unity hierarchy.
                 var allText=ui.GetComponentsInChildren<Text>(true);
                 string[] important=selection=="bastion"
-                    ? new[]{"Real building name","Compact engraved cost heading",
+                    ?new[]{"Real building name","Compact engraved cost heading",
                         "Real action title","Objective progress"}
                     :new[]{"Actual chapter","Objective progress"};
-                foreach(string labelName in important)
+                var scratch=new Texture2D(w,h,TextureFormat.RGB24,false);
+                var checkedLabels=new List<Text>();
+                try
                 {
-                    var label=allText.FirstOrDefault(t=>t && t.name==labelName);
-                    float visible=ActualBrightGlyphFraction(actualPixels,w,h,camera,label);
-                    Need(visible>=.003f,
-                        "Actual visible ivory/gold text contrast is missing: "+
-                        name+"/"+labelName+" fraction="+visible.ToString("F5"));
+                    foreach(var labelName in important)
+                    {
+                        var label=allText.FirstOrDefault(t=>t && t.name==labelName);
+                        Need(label && label.enabled && label.gameObject.activeInHierarchy,
+                            "Missing real visible UI text component "+name+"/"+labelName);
+                        checkedLabels.Add(label);
+                        label.enabled=false;
+                        Canvas.ForceUpdateCanvases();
+                        camera.Render();
+                        RenderTexture.active=rt;
+                        scratch.ReadPixels(new Rect(0,0,w,h),0,0);
+                        scratch.Apply(false);
+                        var without=scratch.GetPixels32();
+                        label.enabled=true;
+                        Canvas.ForceUpdateCanvases();
+                        int contribution=RealTextContribution(actualPixels,without,w,h,camera,label);
+                        Need(contribution>=6,
+                            "The authentic Spanish caption contributes no readable "+
+                            "pixels to the ACTUAL Unity GPU image: "+
+                            name+"/"+labelName+" changed="+contribution);
+                    }
+                }
+                finally
+                {
+                    foreach(var label in checkedLabels)
+                        if(label)label.enabled=true;
+                    Canvas.ForceUpdateCanvases();
+                    camera.Render();
+                    RenderTexture.active=rt;
+                    Object.DestroyImmediate(scratch);
                 }
                 File.WriteAllBytes(file,image.EncodeToPNG());
                 Need(new FileInfo(file).Length > 16000, "Unity native PNG incomplete: "+name);
