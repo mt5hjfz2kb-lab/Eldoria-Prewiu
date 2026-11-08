@@ -605,7 +605,7 @@ namespace Eldoria.BreachWatch
                     At((RectTransform)navButtons[i].transform,
                         i*(navSize+navGap),3,navSize,navSize);
 
-                float pw=Mathf.Min(210,w*.48f);
+                float pw=Mathf.Min(198,w*.46f);
                 float ph=324f;
                 float left=w-margin-pw;
                 float top=navTop-ph-45;
