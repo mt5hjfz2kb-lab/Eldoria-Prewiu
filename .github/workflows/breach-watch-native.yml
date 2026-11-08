@@ -87,7 +87,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
   commit-verified-cc0-art:
-    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]'))
+    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]'))
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
@@ -118,6 +118,9 @@ jobs:
       - name: Extract owner-selected empty carved contextual art as a native nine-slice
         if: contains(github.event.head_commit.message, '[vigilia-context-frame]')
         run: python tools/breach-watch/import_reference_context.py
+      - name: Create refined independent sculpted medallions from approved reference
+        if: contains(github.event.head_commit.message, '[vigilia-premium-art]')
+        run: python tools/breach-watch/polish_owner_medallions.py
       - name: Protect canonical workstream ownership and source HEAD before push
         shell: bash
         env:
@@ -299,6 +302,29 @@ jobs:
           assert 'guid: '+panel['guid'] in meta
           assert 'spriteBorder: {x: 39, y: 34, z: 34, w: 57}' in meta
           print('BREACHWATCH_OWNER_APPROVED_REFERENCE_SPRITES_AND_FRAME_PASS')
+          PY
+      - name: Verify five separately finished original medallions
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          root=Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt')
+          src=json.loads((root/'OwnerReference/source-manifest.json').read_text())
+          prem=json.loads((root/'PremiumMedallions/manifest.json').read_text())
+          assert len(prem['sprites'])==5
+          assert sorted(x['name'] for x in prem['sprites'])==['castle','helm','provisions','raven','swords']
+          assert (root/'PremiumMedallions.meta').exists()
+          for entry in prem['sprites']:
+              n=entry['name']
+              original=next(x for x in src['sprites'] if x['name']==n)
+              assert entry['original_sha256']==original['sha256']
+              p=root/'PremiumMedallions'/(n+'.png')
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==entry['result_sha256']
+              assert entry['result_sha256']!=entry['original_sha256']
+              meta=(root/'PremiumMedallions'/(n+'.png.meta')).read_text()
+              assert 'guid: '+entry['guid'] in meta
+          print('BREACHWATCH_PREMIUM_OWNER_APPROVED_METAL_ART_PASS')
           PY
       - name: Verify font copyright, original byte identity and independent importer
         shell: bash
