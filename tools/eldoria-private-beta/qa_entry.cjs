@@ -1,7 +1,8 @@
 const {chromium}=require('playwright');const fs=require('fs');
 (async()=>{
 fs.mkdirSync('qa-entry',{recursive:true});
-const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-dev-shm-usage']});
+const launchArgs=process.platform==='win32'?['--no-sandbox','--use-angle=d3d11','--ignore-gpu-blocklist','--enable-webgl']:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-dev-shm-usage'];
+const browser=await chromium.launch({headless:true,executablePath:process.env.VALORIA_CHROMIUM_EXECUTABLE||undefined,args:launchArgs});
 const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});
 const page=await context.newPage();const errors=[],logs=[];const report={physicalIphone:false,nickname:'Beta QA',errors,logs,stages:[]};
 page.on('pageerror',e=>errors.push(String(e)));page.on('crash',()=>errors.push('PAGE_CRASH'));page.on('console',m=>logs.push(m.text()));
