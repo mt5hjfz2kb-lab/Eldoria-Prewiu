@@ -1,4 +1,4 @@
-name: Eldoria exact terrain queries mobile profile and same-host Apple GPU
+name: Eldoria reused route buffers mobile profile and same-host Apple GPU
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -11,9 +11,9 @@ concurrency:
   group: eldoria-beta-mobile-candidate
   cancel-in-progress: false
 env:
-  NATIVE_RUN: '42514790566'
-  NATIVE_SOURCE: 35db7669ad1bfcbeeb563fa40ebb5e591efe0344
-  CANDIDATE_REVISION: native325-mobile8-tape
+  NATIVE_RUN: '42518950317'
+  NATIVE_SOURCE: 5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa
+  CANDIDATE_REVISION: native325-mobile9-routes
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -116,6 +116,9 @@ jobs:
           assert web['source_sha']==os.environ['NATIVE_SOURCE']
           files=[p for p in pathlib.Path('fresh-build').rglob('*') if p.is_file()]
           assert len(files)==len(web['files']) and sum(p.stat().st_size for p in files)==web['bytes']
+          routes=json.load(open('native-evidence/route-buffer-comparison.json',encoding='utf-8-sig'))
+          assert routes['status']=='EXACT_POPULATION_AND_ROUTE_PARITY'
+          assert len(routes['passes'])==2 and all(x['parity'] and x['before']['populationRouteHash']==x['after']['populationRouteHash'] for x in routes['passes'])
           cache=json.load(open('native-evidence/terrain-query-cache.json',encoding='utf-8-sig'))
           assert cache['source']==os.environ['NATIVE_SOURCE'] and cache['bytes']>100000
           expected_cache=pathlib.Path('native-evidence/terrain-query-cache.bytes').read_bytes()
@@ -145,6 +148,7 @@ jobs:
           python - <<'PY'
           import json,pathlib
           p=pathlib.Path('site/release-identity.json');r=json.loads(p.read_text());cache=json.load(open('native-evidence/terrain-query-cache.json',encoding='utf-8-sig'))
+          r['route_buffers_reused']=True;r['exact_population_and_routes_verified']=True
           r['terrain_query_cache_sha256']=cache['sha256'].lower();r['terrain_query_runtime_cooking']=False;r['terrain_query_source']='original PhysX responses, full native replay certified'
           p.write_text(json.dumps(r,indent=2))
           PY
@@ -157,7 +161,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile8-packaging-evidence
+          name: mobile9-packaging-evidence
           path: |
             extracted/extraction.json
             deduplicated/integrity.json
@@ -168,7 +172,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: mobile8-candidate-site
+          name: mobile9-candidate-site
           path: site/
           compression-level: 0
           retention-days: 14
@@ -183,7 +187,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          name: mobile8-candidate-site
+          name: mobile9-candidate-site
           path: qa-sites/candidate
       - uses: actions/download-artifact@v4
         with:
@@ -214,7 +218,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile8-desktop-apple-gpu-not-iphone-certification
+          name: mobile9-desktop-apple-gpu-not-iphone-certification
           path: |
             evidence/
             server.log

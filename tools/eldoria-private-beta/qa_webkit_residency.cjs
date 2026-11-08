@@ -126,12 +126,24 @@ function processes() {
     if(!events.includes('REGION1_CANON_WORLD_INSTALLED'))throw Error('World initialization incomplete');
     if(/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(events))throw Error('Unity runtime errors');
     await page.screenshot({path:out+'/game.png',timeout:15000});
+    async function observeEntry(seconds,phase){
+      if(!report.entrySamples)report.entrySamples=[];
+      const deadline=Date.now()+seconds*1000;
+      while(Date.now()<deadline){
+        const sample=await page.evaluate(()=>({at:performance.now(),ready:!!window.valoriaGame,
+          visible:!document.getElementById('game').hidden,
+          metrics:window.valoriaGame?.GetMetricsInfo?.(),wasmCapacityBytes:window.valoriaGame?.Module?.HEAPU8?.byteLength||0}));
+        sample.phase=phase;sample.processes=processes();report.entrySamples.push(sample);write();
+        if(report.errors.length||!sample.ready||!sample.visible)throw Error('Unity failed during '+phase);
+        await page.waitForTimeout(1000);
+      }
+    }
     if(process.env.QA_ENTRY==='1'){
       await page.mouse.click(195,490,{delay:200});await page.keyboard.type('Beta QA',{delay:140});await page.mouse.click(195,614,{delay:200});
-      await page.waitForTimeout(30000);await page.screenshot({path:out+'/after-name.png',timeout:15000});
+      await observeEntry(30,"after-name");await page.screenshot({path:out+'/after-name.png',timeout:15000});
       await page.evaluate(()=>window.valoriaGame.Quit());
       await page.reload({waitUntil:'domcontentloaded'});await page.locator('#play').click();
-      await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:120000});await page.waitForTimeout(45000);
+      await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:120000});await observeEntry(45,"reloaded");
       await page.screenshot({path:out+'/reloaded.png',timeout:15000});
       report.entry={nickname:'Beta QA',typed:true,reloaded:true,observationSeconds:45,visualNameVerification:'pending image inspection'};
       const finalEvents=fs.readFileSync(out+'/events.jsonl','utf8');
