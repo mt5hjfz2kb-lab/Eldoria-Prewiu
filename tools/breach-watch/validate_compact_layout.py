@@ -62,7 +62,7 @@ def check(size:tuple[int,int]):
         chip=min(70,max(58,(right-8)/3))
         for i in range(3):
             place("resource"+str(i),w-m-(3*chip+8)+i*(chip+4),18,chip,38)
-        place("mission",m,125,min(210,w*.54),89)
+        place("mission",m,125,min(182,w*.45),80)
         place("breach",w*.52-17,84,34,34)
         for i in range(3):
             place("disabled seal"+str(i),m,h-338+i*53,49,49)
@@ -72,16 +72,16 @@ def check(size:tuple[int,int]):
         for i in range(5):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
-        panelw=min(198,w*.46)
-        panely=navtop-324-45
-        context=place("context",w-m-panelw,panely,panelw,324)
-        touch("close",R(context.x+panelw-57,context.y+3,52,52))
-        touch("action",R(context.x+12,context.y+324-55,panelw-24,52))
-        info=R(13,149,panelw-26,44)
-        costlabel=R(13,196,panelw-26,21)
-        costdata=R(15,220,panelw-28,28)
-        state=R(13,249,panelw-26,19)
-        action=R(12,269,panelw-24,52)
+        panelw=min(178,w*.43)
+        panely=navtop-307-45
+        context=place("context",w-m-panelw,panely,panelw,307)
+        touch("close",R(context.x+panelw-55,context.y+3,50,50))
+        touch("action",R(context.x+12,context.y+307-53,panelw-24,50))
+        info=R(13,140,panelw-26,43)
+        costlabel=R(13,186,panelw-26,19)
+        costdata=R(14,209,panelw-28,26)
+        state=R(13,236,panelw-26,17)
+        action=R(12,254,panelw-24,50)
         assert not info.intersects(costlabel),size
         assert not costlabel.intersects(costdata),size
         assert not costdata.intersects(state),size
@@ -141,8 +141,8 @@ def main():
         'At(identity,margin,11,182,55)',
         'float navSize=49,navGap=14',
         'float navTop=h-100f',
-        'float ph=324f',
-        'At(((RectTransform)actionButton.transform),12,ph-55,pw-24,52)',
+        'float ph=307f',
+        'At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50)',
         'float navSize=55,navGap=15',
         'float navTop=h-78',
         'float pw=h<530f?210f:220f',
