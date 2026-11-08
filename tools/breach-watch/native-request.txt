@@ -10,3 +10,5 @@ Workstream-ID: eldoria-forja-oscura-visual-proof-20261107
 2026-11-08: required A/B art integrity and Roslyn exact-head source audit for fully independent UI; no Windows use unless beta's live exclusive claim is released and explicitly reassigned. The previous profile remains UNMERGED.
 
 2026-11-08 source-only gate: verify restored workflow syntax, exact SHA-256 of 4 CC0 artwork files, stable Unity GUIDs, full C# Roslyn parse; Windows native capture deferred until exclusive beta resource released. Branch remains isolated.
+
+2026-11-08 final isolated pre-native gate: updated responsive panel, panel-cost/state/button overlap rejection, CC0 import, clean workflow and code plus native 3D aspect-preserving framing; rerun complete Ubuntu source/art integrity at exact HEAD. No Windows when private beta owns lease.
