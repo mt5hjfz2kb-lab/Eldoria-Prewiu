@@ -128,6 +128,9 @@ namespace Eldoria.BreachWatch.Editor
                 "This must be a new Canvas; the entire old HUD presentation must be OFF");
             Need(ui.HasRealSession, "New Canvas cannot access existing real game session");
             Need(!ui.transform.IsChildOf(host.Hud.transform), "New Canvas must not be attached to legacy HUD");
+            Need(ui.UsesOriginalPaintedMedallions && ui.UsesOriginalForgedPortraitFrame,
+                "Vigilia must render the exact licensed original new art, not procedural fallback");
+
 
             var shots = new List<Shot>();
             foreach (var selection in new [] {"", "bastion"})
