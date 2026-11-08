@@ -142,7 +142,7 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui.UsesOriginalPaintedMedallions && ui.UsesApprovedReferenceMedallions &&
                  ui.UsesPremiumSculptedMedallions && ui.UsesPremiumForgedPortraitFrame &&
                  ui.UsesCompactRealmCrest && ui.UsesPremiumCarvedContext &&
-                 ui.UsesPremiumBurgundyAction,
+                 ui.UsesExactOwnerApprovedGoldBorder && ui.UsesPremiumBurgundyAction,
                 "Vigilia needs original 5 sculpted medallions, true 9-slice basalt, deep burgundy gameplay button and premium brass 3D portrait frame");
 
 
