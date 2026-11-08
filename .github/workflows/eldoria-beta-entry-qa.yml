@@ -1,4 +1,4 @@
-name: Eldoria published staged4 game verification
+name: Eldoria mobile material budget and gameplay verification
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -11,25 +11,12 @@ concurrency:
   group: eldoria-beta-entry-qa
   cancel-in-progress: false
 env:
-  CANDIDATE_REVISION: native325-staged4
+  CANDIDATE_REVISION: native325-mobile5
 jobs:
   package:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/github-script@v7
-        with:
-          script: |
-            for(let n=0;n<180;n++){
-              const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42484567812})).data;
-              if(r.head_sha!=='6a25c69592ef4bfdadae8e0b2923aa4a9a7ce41b')throw Error('Unexpected Pages source');
-              if(r.status==='completed'){
-                if(r.conclusion!=='success')throw Error('Pages publication not verified');
-                return;
-              }
-              await new Promise(resolve=>setTimeout(resolve,10000));
-            }
-            throw Error('Pages publication incomplete');
       - uses: actions/github-script@v7
         with:
           script: |
@@ -60,6 +47,52 @@ jobs:
           assert i['packaged_bytes']==587332175 and i['physical_mobile_tested'] is False
           print('EXACT_CANDIDATE_INTEGRITY_PASS_PAGES_SIZE_NOT_CERTIFIED')
           PY
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/delivery
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42481377084
+          name: mobile-candidate-site
+          github-token: ${{ github.token }}
+          path: previous-site
+      - name: Serialization dependencies and headroom
+        run: |
+          python -m pip install UnityPy==1.25.4 lz4==4.4.5 Brotli==1.2.1
+          sudo fallocate -l 8G /tmp/mobile-profile.swap
+          sudo chmod 600 /tmp/mobile-profile.swap
+          sudo mkswap /tmp/mobile-profile.swap
+          sudo swapon /tmp/mobile-profile.swap
+      - name: Preserve exact mip suffixes and prove all object hashes
+        run: |
+          python tools/eldoria-private-beta/package_mip_site.py extract previous-site extracted
+          python tools/eldoria-private-beta/mobile_mip_budget.py extracted/data.unity3d mip-candidate e5299e7293f4e2ed5a5bed30c9c87d3141a7594401d3cdb965761cba9a834faa
+          python tools/eldoria-private-beta/package_mip_site.py package previous-site extracted mip-candidate site/mobile
+          node tools/delivery/test-exact-decoded-transport.mjs site/mobile
+          python - <<'PY'
+          import json
+          p=json.load(open('mip-candidate/integrity.json'))
+          assert p['all_objects_verified']==57375 and p['changed_textures']==35
+          assert p['removed_texture_bytes']==298319872
+          assert p['candidate_sha256']=='2c502a1d766aca83c2377347de290467d16d75efd8c6f5edad41766f4d3ce73a'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobile5-candidate-site
+          path: site/mobile/
+          compression-level: 0
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile5-integrity
+          path: |
+            mip-candidate/integrity.json
+            mip-candidate/mip-report.json
+            site/mobile/release-identity.json
   browser:
     needs: package
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
@@ -87,9 +120,9 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42481377084
+          run-id: ${{ github.run_id }}
           github-token: ${{ github.token }}
-          name: mobile-candidate-site
+          name: mobile5-candidate-site
           path: beta-structural-browser-${{ github.run_id }}/site/mobile
       - name: Run actual browser with hardware renderer and verify entry persistence
         shell: powershell
@@ -97,7 +130,7 @@ jobs:
           $ErrorActionPreference='Stop'
           $r=Get-Content beta-structural-browser-live/pipeline/active-workstreams.json -Raw|ConvertFrom-Json
           $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].ownership_revision -ne 8){throw 'Native/browser lease changed'}
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].ownership_revision -ne 10){throw 'Native/browser lease changed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy'}
           $browser=@((Join-Path $env:ProgramFiles 'Google/Chrome/Application/chrome.exe'),(Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) 'Microsoft/Edge/Application/msedge.exe'),(Join-Path $env:LOCALAPPDATA 'Google/Chrome/Application/chrome.exe'))|Where-Object {Test-Path $_}|Select-Object -First 1
           if(-not $browser){throw 'Installed hardware browser unavailable'}
@@ -120,11 +153,14 @@ jobs:
               try {$null=Invoke-WebRequest $env:QA_URL -UseBasicParsing;$ok=$true;break}catch{Start-Sleep 1}
             }
             if(-not $ok){throw 'Local candidate server failed'}
-            $env:QA_URL='https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1'
             Push-Location $work
             try {
               node "$env:GITHUB_WORKSPACE/beta-structural-browser-tools/tools/eldoria-private-beta/qa_structural.cjs"
               if($LASTEXITCODE -ne 0){throw 'Sustained structural browser verification failed'}
+              $report=Get-Content (Join-Path $work 'qa-structural/report.json') -Raw|ConvertFrom-Json
+              if($report.peakWasmCapacityBytes -ge 1073741824){throw 'Material profile still exceeds 1GiB WASM capacity: inspect before publication'}
+              node "$env:GITHUB_WORKSPACE/beta-structural-browser-tools/tools/eldoria-private-beta/qa_entry.cjs"
+              if($LASTEXITCODE -ne 0){throw 'Real entry/reload verification failed'}
             } finally {Pop-Location}
           } finally {if(-not $server.HasExited){Stop-Process -Id $server.Id}}
       - uses: actions/upload-artifact@v4
@@ -136,3 +172,28 @@ jobs:
             beta-structural-browser-${{ github.run_id }}/qa-entry/
             beta-structural-browser-${{ github.run_id }}/http*.log
           retention-days: 14
+  visible-save:
+    needs: browser
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: mobile-candidate-evidence
+          path: evidence
+      - name: Verify player name survives actual reload on rendered game
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y tesseract-ocr
+          python -m pip install Pillow==13.0.0
+          python tools/eldoria-private-beta/verify_entry_name.py evidence/qa-entry/03-reloaded.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: structural-name-verification
+          path: evidence/qa-entry/
+
+# Identical-pixel texture reuse; keep earlier browser evidence running independently.
