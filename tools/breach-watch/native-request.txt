@@ -34,3 +34,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: source-author detailed owner-approved sculpted basalt contextual card, transparent outside and inner empty (no baked building/price/nickname), 256×398 fixed corners with nine-slice, exact pinned SHA. Standalone new Canvas; import art to separate Vigilia only; no Unity until runner formally released.
 
 2026-11-08: exact SHA new independent owner-medallions (five) and empty sculpted context frame, genuine 3D selected Bastion, new Canvas and true resource icons. Validate actual art PNG/meta, source C#, keep Windows native gated behind live exclusive claim; DO NOT mark artwork approved from source CI alone.
+
+2026-11-08: Independent read-only export of currently integrated approved Vigilia art for local visual fidelity evaluation. Windows Unity remains reserved by beta; do not start native stage. [vigilia-design-qa]
