@@ -64,3 +64,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: Verify alternative GitHub-hosted Linux Unity license readiness without exposing secrets; retain exclusive Windows beta reservation. New static compact four-orientation layout test, native hit targets, exact standalone art sources, safe command binders and honest food-cost fallback in PR173. No main merge or production deployment.
 
 2026-11-08: Verify independent compact premium metalwork across identity, objective and resource stones; genuine zero-input touch behaviour, portrait live building, typed C# runtime, corner inlay sprites, 44px close and main action. Keep Windows beta reservation intact; check legal hosted Unity license alternative previously returned NOT CONFIGURED.
+
+2026-11-08 EXACT-HEAD NATIVE UNITY TRIGGER: beta formally released Windows and canonical Vigilia workstream acquired exclusive rev21, source head 015946267f970ac828f7d70db21021d8725024a1. Run eight real 6000.3.23f1 captures, compare them visually with owner-approved 390x844 reference, correct and rerun if necessary. Do not merge or ship the old HUD.
