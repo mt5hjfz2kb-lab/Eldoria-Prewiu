@@ -34,7 +34,7 @@ namespace Eldoria.BreachWatch
         float originalAlpha;
         Font font, boldFont, bodyFont, bodyBoldFont;
         RectTransform uiRoot;
-        RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark;
+        RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark, selectionHalo;
         RectTransform[] resourceChips = new RectTransform[3];
         Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
         Text[] resourceAmounts = new Text[3];
@@ -500,6 +500,9 @@ namespace Eldoria.BreachWatch
             Fill(navLine);
             navFiligree=navLine.gameObject.AddComponent<BreachWatchNavFiligree>();
             navFiligree.raycastTarget=false;
+            selectionHalo=Rect("Selected medallion / warm engraved relief",buttonRow);
+            var halo=selectionHalo.gameObject.AddComponent<BreachWatchSelectionHalo>();
+            halo.raycastTarget=false;
             for(int i=0;i<5;i++)
             {
                 int index=i;var rt=BuildButton(buttonRow,navLabels[i],navIcons[i],()=>Navigate(index),BreachWatchPlate.PlateType.Navigation);
@@ -935,6 +938,14 @@ namespace Eldoria.BreachWatch
                 // Accurate labels, artwork and routes: realm/castle, resource/sack,
                 // army/swords, world/raven and heroes/helm. Only the genuine
                 // first-screen routes are enabled; we never dispatch old panels.
+                int activeTab=Mathf.Clamp(host.InWorld?3:selectedTab,0,navButtons.Length-1);
+                if(selectionHalo && navButtons[activeTab])
+                {
+                    var anchor=(RectTransform)navButtons[activeTab].transform;
+                    At(selectionHalo,anchor.anchoredPosition.x-9f,
+                        -anchor.anchoredPosition.y-9f,
+                        anchor.rect.width+18f,anchor.rect.height+18f);
+                }
                 for(int i=0;i<5;i++)
                 {
                     navPlates[i].Type=i==(host.InWorld?3:selectedTab)
