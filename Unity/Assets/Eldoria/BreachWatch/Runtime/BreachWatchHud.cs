@@ -45,6 +45,7 @@ namespace Eldoria.BreachWatch
         Button actionButton, closeButton;
         RawImage portraitView;
         BreachWatchBuildingPortrait buildingPortrait;
+        BreachWatchCityComposition cityComposition;
         BreachWatchPlate actionPlate;
         Image exactOwnerGoldBorder, separateOwnerBottomFinial;
         BreachWatchNavFiligree navFiligree;
@@ -81,6 +82,8 @@ namespace Eldoria.BreachWatch
         public Button BuildingClose => closeButton;
         public RectTransform BuildingPanel => panel;
         public bool HasLiveBuildingPortrait => buildingPortrait && buildingPortrait.HasLiveBuilding;
+        public bool PortraitCityFramed => cityComposition && cityComposition.PortraitFramed;
+        public float PortraitCityOrthographicSize => cityComposition?cityComposition.OrthographicSize:0f;
         public bool BuildingPortraitEdgeClipped =>
             buildingPortrait && buildingPortrait.PortraitGeometryClipped;
         public string LastFeedback => feedback?feedback.text:"";
@@ -197,6 +200,8 @@ namespace Eldoria.BreachWatch
         void Initialize(ValoriaIntegratedWorld source)
         {
             host=source;
+            cityComposition=gameObject.AddComponent<BreachWatchCityComposition>();
+            cityComposition.Initialize(source);
             canvas=GetComponent<Canvas>();scaler=GetComponent<CanvasScaler>();raycaster=GetComponent<GraphicRaycaster>();
             canvas.renderMode=RenderMode.ScreenSpaceCamera;
             canvas.planeDistance=1f;canvas.overrideSorting=true;canvas.sortingOrder=5000;
@@ -711,6 +716,11 @@ namespace Eldoria.BreachWatch
             else Stretch(uiRoot);
 
             bool portrait=pixelHeight>pixelWidth;
+            // The owner's selected city view deliberately shows the WHOLE
+            // road, bridge and Bastion instead of a giant castle closeup.
+            // This belongs to the new UI only and never changes gameplay
+            // presets, saves or the regional World camera.
+            if(cityComposition)cityComposition.Layout(pixelWidth,pixelHeight);
             // The original 1.75 clamp made the entire interface tiny on
             // 1170/1440px Retina phone render targets, even though 900px
             // portrait screenshots looked right. Keep the approved 900px
