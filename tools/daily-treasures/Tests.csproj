@@ -14,6 +14,7 @@
     <Compile Include="../../Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePrizeFlight.cs" Link="DailyTreasurePrizeFlight.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureCeremonyTheme.cs" Link="DailyTreasureCeremonyTheme.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureFoley.cs" Link="DailyTreasureFoley.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureStageDirection.cs" Link="DailyTreasureStageDirection.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
 </Project>
