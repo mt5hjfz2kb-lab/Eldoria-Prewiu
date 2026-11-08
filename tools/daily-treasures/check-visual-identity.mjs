@@ -1,0 +1,64 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+
+// Art direction contract from the actual Eldoria/Vigilia approved UI:
+// dark slate, forged copper and gold, restrained burgundy, parchment ivory,
+// actual 3D/painted kingdom imagery, realistic oak-and-bronze coffer.
+//
+// A beautiful but unrelated purple/fairyland/flower/coin/gem poster is a
+// REJECTED concept and must never be mistaken for the playable project UI.
+// This is a source-level guard. Native Unity and human art review are separate.
+
+const text=(path)=>fs.readFileSync(path,'utf8');
+const panel=text('Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePanel.cs');
+const theme=text('Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureCeremonyTheme.cs');
+const stage=text('Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureStageDirection.cs');
+const grants=text('Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs');
+const receipt=text('Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureRewardPresentation.cs');
+
+for (const [name,source] of [
+  ['Owner Vigilia charcoal scene',/new Color\(\.085f,\.090f,\.095f,1f\)/],
+  ['Owner Vigilia copper linework',/new Color\(\.92f,\.70f,\.40f,1f\)/],
+  ['Warm old-ivory, not bright-white text',/new Color\(\.98f,\.94f,\.84f,1f\)/],
+  ['Vigilia-sourced burgundy call-to-action',/VigiliaArt\/PremiumSurfaces\/burgundy_action/],
+  ['Vigilia-sourced solitary slate resource card',/VigiliaArt\/PremiumSurfaces\/slate_resource/],
+  ['Original illustrated main modal is never stretched',/case "valoria_frame_main_512":/],
+  ['Owner-consistent resource symbols',/LoadUnifiedResourceEmblem\(item\.Icon\)/],
+  ['Vigilia-specific resource pack when installed',/VigiliaArt\/ResourceIcons\//],
+  ['Fallback to original self-contained nine-slice',/DailyTreasureArt\/"\+resource/]
+]) assert.match(panel,source,name);
+
+for(const signature of [
+  'milestone:hero:lyra','milestone:bastion:',
+  'scout:','vigilant:'
+]) assert.ok(theme.includes(signature),
+  'Unknown or invented celebration category: '+signature);
+
+// The actual Breach may have a SMALL violet rift-glow; the entire UI cannot
+// become purple neon. Scene palettes remain low-intensity, warm/dark.
+assert.match(theme,/strength=legendary\?\.33f:\.22f/);
+assert.match(theme,/\.44f,\.39f,\.53f,strength,legendary/);
+assert.match(stage,/\.90f,\.73f,\.20f,false/);
+assert.match(stage,/\.88f,\.76f,\.22f,true/);
+
+// The real daily ledger has exactly real owned resources and accelerators.
+// Old fantasy mockups depicting gems, gold packs, potions and loot rarity are
+// NOT a valid input to this UI. Only the actual LocalGateway credits matter.
+for(const token of [
+  'resource_wood','resource_stone','resource_food','resource_hourglass'
+]) assert.ok(receipt.includes(token),'Required genuinely owned resource icon: '+token);
+assert.doesNotMatch(grants,/\b(PremiumGems|FrostStars|Diamonds|GoldCoins|LootCrate|Lootbox)\b/i);
+assert.doesNotMatch(receipt,/\b(PremiumGems|FrostStars|Diamonds|GoldCoins|LootCrate|Lootbox)\b/i);
+assert.match(panel,/milestoneScenery\.raycastTarget=false/);
+assert.match(panel,/milestoneVignette\.gameObject\.SetActive\(source!=null\)/);
+
+// Preserve game ownership, rather than painting an imaginary Bastion city.
+// Lyra/scout/Vigilant scenery is original project source, not a pasted fake HUD.
+for(const path of [
+  'EldoriaV41/heroes-hall-illustrated-v2',
+  'EldoriaRetention/scouts-painterly-v2',
+  'EldoriaRetention/vigilants-painterly-v2'
+]) assert.ok(panel.includes(path));
+assert.match(stage,/if\(kind==DailyTreasureStageKind\.Bastion\)/);
+assert.match(panel,/currentStage==DailyTreasureStageKind\.Bastion/);
+console.log('PASS Eldoria premium visual identity: matte charcoal, aged copper/gold, burgundy action, true source art, no mockup currency');
