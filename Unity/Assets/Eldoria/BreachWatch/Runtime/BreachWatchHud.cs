@@ -111,6 +111,16 @@ namespace Eldoria.BreachWatch
             portraitFrame && portraitFrame.GetComponent<BreachWatchPlate>() &&
             portraitFrame.GetComponent<BreachWatchPlate>().sprite &&
             portraitFrame.GetComponent<BreachWatchPlate>().sprite.name=="portrait_forged_iron";
+        public bool UsesOwnerApprovedCarvedContext
+        {
+            get
+            {
+                var surface=panel?panel.GetComponent<BreachWatchPlate>():null;
+                return surface && surface.UsesOwnerReference && surface.sprite &&
+                    surface.sprite.name=="carved_context" &&
+                    surface.type==Image.Type.Sliced;
+            }
+        }
         public IReadOnlyList<Button> NavButtons => navButtons;
 
         public static BreachWatchHud Install(ValoriaIntegratedWorld source)
@@ -289,7 +299,10 @@ namespace Eldoria.BreachWatch
                 var glyph=seal.GetComponentInChildren<BreachWatchGlyph>();
                 if(glyph){glyph.Ink=Locked;glyph.SetVerticesDirty();}
             }
-            panel=Rect("Independent selected-building cartouche",uiRoot);Plate(panel,BreachWatchPlate.PlateType.Basalt);
+            panel=Rect("Independent selected-building cartouche",uiRoot);
+            var basalt=Plate(panel,BreachWatchPlate.PlateType.Basalt);
+            var approvedFrame=Resources.Load<Sprite>("VigiliaArt/OwnerReference/carved_context");
+            if(approvedFrame)basalt.ApplyIndependentArt(approvedFrame,true);
             portraitFrame=Rect("Carved recess / live building illustration",panel);
             Plate(portraitFrame,BreachWatchPlate.PlateType.Portrait);
             var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
