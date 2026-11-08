@@ -56,7 +56,7 @@ public static class EldoriaBetaStructuralStartupProbe {
  }
  static object Field(object value,string name){return value.GetType().GetField(name,BindingFlags.NonPublic|BindingFlags.Instance).GetValue(value);}
  static bool Built(RegionOneCanonicalLandscape adapter)=>(bool)Field(adapter,"built");
- static int VerificationBuckets(){var value=typeof(RegionOneBlenderLandscape).GetField("sourceVertices",BindingFlags.NonPublic|BindingFlags.Static).GetValue(null);return value is ICollection c?c.Count:0;}
+ static int VerificationBuckets(){var value=typeof(RegionOneBlenderLandscape).GetField("sourceVertices",BindingFlags.NonPublic|BindingFlags.Static).GetValue(null);return value==null?0:value is ICollection c?c.Count:(int)value.GetType().GetProperty("Count").GetValue(value);}
  static void Tick(){
   if(!SessionState.GetBool(Flag,false)||!EditorApplication.isPlaying)return;
   try {
