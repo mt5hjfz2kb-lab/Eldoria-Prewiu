@@ -692,12 +692,15 @@ namespace Eldoria.BreachWatch
                 chapterObjective.fontSize=14;
                 chapterProgress.fontSize=14;
 
-                At(utilityRail,margin,h-338,54,160);
+                // Secondary seals are disabled on this first screen:
+                // keep their carved artwork discreet rather than occupying
+                // three large touch footprints over the playable terrain.
+                At(utilityRail,margin,h-306,42,138);
                 for(int i=0;i<utilityRail.childCount;i++)
                 {
                     var utility=(RectTransform)utilityRail.GetChild(i);
                     utility.gameObject.SetActive(i<3);
-                    At(utility,0,i*53f,49,49);
+                    At(utility,0,i*45f,37,37);
                 }
 
                 float navSize=49,navGap=14;
@@ -773,12 +776,12 @@ namespace Eldoria.BreachWatch
                 chapterObjective.fontSize=16;
                 chapterProgress.fontSize=15;
 
-                At(utilityRail,margin,h-179,49,162);
+                At(utilityRail,margin,h-165,44,145);
                 for(int i=0;i<utilityRail.childCount;i++)
                 {
                     var utility=(RectTransform)utilityRail.GetChild(i);
                     utility.gameObject.SetActive(i<3);
-                    At(utility,0,i*48,43,43);
+                    At(utility,0,i*44f,37,37);
                 }
 
                 float navSize=55,navGap=15;
