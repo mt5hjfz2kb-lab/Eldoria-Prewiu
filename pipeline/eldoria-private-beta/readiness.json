@@ -110,17 +110,27 @@
     }
   ],
   "structural_candidate": {
-    "status": "NATIVE_JOB_IN_PROGRESS_NOT_CERTIFIED",
+    "status": "SOURCE_MATERIALIZATION_IN_PROGRESS_NOT_CERTIFIED",
     "source_baseline": "948ffa9837168a0b68dab80be76b66350422b23a",
-    "overlay_commit": "9c33cc4cee5b029eb6b90c203b8603dc60609e4c",
-    "native_run": 42427811334,
-    "native_job": 128569831172,
+    "overlay_commit": "92d68b3a84c34952522286e246e5c358d2a9e306",
+    "native_run": 42428875558,
+    "native_job": 128573144429,
     "native_compilation_verified": false,
     "native_parity_verified": false,
     "webgl_built": false,
     "published": false,
     "physical_iphone_verified": false,
     "source_scope": "Four claimed C# files; staged initialization, readiness gate, temporary validation cache release, canonical validator readiness wait",
-    "isolated_project": true
+    "isolated_project": true,
+    "preparation_history": [
+      {
+        "run": 42427811334,
+        "result": "Retired before Unity during full source copy"
+      },
+      {
+        "run": 42428680863,
+        "result": "Failed before Unity: file-only sparse checkout cone mode; corrected"
+      }
+    ]
   }
 }
