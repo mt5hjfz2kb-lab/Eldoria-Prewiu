@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T14:17:45.095Z",
+  "updated_at": "2026-11-08T14:41:21.440Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6820,9 +6820,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "MOBILE5_CORRECTION_PUBLISHED_PUBLIC_QA_PASS",
+      "phase": "MOBILE5_PHYSICAL_FAILURE_RESIDENCY_REDESIGN",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Incorporate physical mobile5 result; continue telemetry and full-playtest readiness. Do not mark iPhone defect resolved from desktop evidence.",
+      "next": "Audit startup data and world residency; prepare an isolated WebGL streaming build, measure actual memory and preserve normal city/world/tutorial behavior before another phone candidate.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6898,7 +6898,7 @@
           "physical_iphone_result": "OWNER_REPORTED_FAILURE 2026-11-08 IMG_5046: ready14:47:01 heap495MiB; boot back_forward14:47:05; game visible about2sec"
         },
         "mobile5": {
-          "status": "PUBLISHED_PUBLIC_RUNTIME_PASS_PHYSICAL_UNVERIFIED",
+          "status": "PHYSICAL_IPHONE_FAILED",
           "revision": "native325-mobile5",
           "bundle_sha256": "2c502a1d766aca83c2377347de290467d16d75efd8c6f5edad41766f4d3ce73a",
           "changed_material_textures": 35,
@@ -6922,16 +6922,31 @@
           "physical_iphone_verified": false,
           "full_i_v_verified": false,
           "visual_scope": "City entry and reloaded intro screenshots inspected; mobile lower detail texture profile, no full-world visual equivalence claim",
-          "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile5"
+          "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile5",
+          "physical_iphone_result": {
+            "reported_at": "2026-11-08",
+            "startup_heap_mib": 412,
+            "successful_growth_mib": [
+              495,
+              594,
+              699
+            ],
+            "last_growth_time": "15:32:46",
+            "back_forward_time": "15:32:48",
+            "nickname_visible": true,
+            "astc_supported": true,
+            "allocation_failure_observed": false,
+            "context_loss_observed": false,
+            "cause_confirmed": false
+          }
         }
       },
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released",
-        "released_at": "2026-11-08T14:16:23.053Z",
-        "reason": "Mobile5 local runtime/save and public runtime jobs completed; no native job remains."
+        "status": "requested",
+        "reason": "Native WebGL residency redesign after mobile5 physical iPhone failure; respect current Vigilia lease. Independent static/binary audit continues."
       }
     },
     {
