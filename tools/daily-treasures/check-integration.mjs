@@ -11,5 +11,6 @@ assert.match(gateway,/EventId="daily-treasure:"\+state\.DailyTreasures\.LastClai
 assert.match(gateway,/RewardReceiptId=command\.Id/);
 assert.match(gateway,/state\.Mailbox\.Receive\(/);
 assert.match(gateway,/state\.CompletedCommandIds\.Add\(command\.Id\);/);
-assert.doesNotMatch(rules,/PlayerPrefs|UnityEngine|System\.Random/);
+const executableRules=rules.replace(/\/\/[^\n]*/g,''); // comments are documentation, not executable dependencies
+assert.doesNotMatch(executableRules,/\bPlayerPrefs\b|\bUnityEngine\b|\bSystem\.Random\b/);
 console.log('PASS daily treasures gateway integration source invariants');
