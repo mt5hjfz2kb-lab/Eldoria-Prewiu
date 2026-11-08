@@ -33,9 +33,9 @@ namespace Eldoria.BreachWatch
         float originalAlpha;
         Font font;
         RectTransform uiRoot;
-        RectTransform identity, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark, vigiliaTitlePlate;
+        RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark;
         RectTransform[] resourceChips = new RectTransform[3];
-        Text identityName, identityPower, chapterName, chapterObjective, chapterProgress, vigiliaTitleText, vigiliaTitleChapter;
+        Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
         Text[] resourceAmounts = new Text[3];
         readonly Image[] resourceIllustrations = new Image[3];
         Text buildingName, buildingLevel, buildingFunction, buildingCosts, buildingState, actionLabel, feedback;
@@ -82,16 +82,10 @@ namespace Eldoria.BreachWatch
             resourceIllustrations[1].sprite.name=="stone" &&
             resourceIllustrations[2] && resourceIllustrations[2].sprite &&
             resourceIllustrations[2].sprite.name=="food";
-        public bool UsesOriginalBurgundyStandard
-        {
-            get
-            {
-                if(!identity)return false;
-                var banner=identity.Find("Burgundy command standard / independently authored");
-                var surface=banner?banner.GetComponent<BreachWatchPlate>():null;
-                return surface && surface.sprite && surface.sprite.name=="valoria_burgundy_banner";
-            }
-        }
+        public bool UsesCompactRealmCrest =>
+            identityCrest && identityCrest.GetComponent<BreachWatchPlate>() &&
+            identityCrest.GetComponent<BreachWatchPlate>().sprite &&
+            identityCrest.GetComponent<BreachWatchPlate>().sprite.name=="castle";
         public bool UsesOriginalPaintedMedallions =>
             navPlates[0] && navPlates[0].sprite &&
             navPlates[0].sprite.name=="castle";
@@ -257,10 +251,14 @@ namespace Eldoria.BreachWatch
             veil.raycastTarget=false;
             // Asymmetrical stone architecture instead of a header/footer re-skin.
             identity=Rect("Identity / basalt crest",uiRoot);Plate(identity,BreachWatchPlate.PlateType.Basalt);
-            var banner=Rect("Burgundy command standard / independently authored",identity);
-            Plate(banner,BreachWatchPlate.PlateType.Banner);
-            At(banner,5,2,64,70);
-            var seal=Glyph(identity,"Breached crest",BreachWatchGlyph.Sigil.Breach);At((RectTransform)seal.transform,10,9,56,58);seal.Ink=Copper;
+            // The owner-approved compact reference has NO red top banner.
+            // Independent round carved crest replaces the obsolete banner.
+            identityCrest=Rect("Independent circular realm crest",identity);
+            Plate(identityCrest,BreachWatchPlate.PlateType.Navigation);
+            var crestImage=Resources.Load<Sprite>("VigiliaArt/OwnerReference/castle");
+            if(crestImage)identityCrest.GetComponent<BreachWatchPlate>()
+                .ApplyIndependentArt(crestImage);
+            At(identityCrest,-3,-4,62,62);
             identityName=Label(identity,"Player name",22,TextAnchor.MiddleLeft,TextIvory,true);
             identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Muted);
             resourceRow=Rect("Separate resource stones",uiRoot);
@@ -281,17 +279,6 @@ namespace Eldoria.BreachWatch
             centerMark=Rect("Breach witness sigil",uiRoot);Plate(centerMark,BreachWatchPlate.PlateType.Obsidian);
             var central=Glyph(centerMark,"Stone fracture",BreachWatchGlyph.Sigil.Breach);
             Fill((RectTransform)central.transform,4);central.Ink=Copper;
-            // A recognisable Vigilia identity, unique to this new Canvas.
-            // It replaces the long generic center-top banner seen in the rejected UI,
-            // while keeping all three resource counters and the player identity clear.
-            vigiliaTitlePlate=Rect("Vigilia / independent command title",uiRoot);
-            Plate(vigiliaTitlePlate,BreachWatchPlate.PlateType.Obsidian);
-            vigiliaTitleText=Label(vigiliaTitlePlate,"Vigilia de la Brecha",20,
-                TextAnchor.MiddleCenter,TextIvory,true);
-            vigiliaTitleText.text="VIGILIA DE LA BRECHA";
-            vigiliaTitleChapter=Label(vigiliaTitlePlate,"Las cenizas de Valoria",13,
-                TextAnchor.MiddleCenter,Copper);
-            vigiliaTitleChapter.text="LAS CENIZAS DE VALORIA";
             objective=Rect("Chapter side tablet",uiRoot);Plate(objective,BreachWatchPlate.PlateType.Basalt);
             var objectiveSeal=Glyph(objective,"Chapter stone rune",BreachWatchGlyph.Sigil.Breach);
             objectiveSeal.Ink=Copper;
