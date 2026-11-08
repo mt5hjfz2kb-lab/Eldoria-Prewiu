@@ -28,6 +28,7 @@ jobs:
             /Unity/Assets/Eldoria/Scripts/Domain/
             /Unity/Assets/Eldoria/Scripts/Application/
             /Unity/Assets/Eldoria/DailyTreasures/
+            /Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs
             /Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg
             /Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg.meta
             /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png
