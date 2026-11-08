@@ -19,7 +19,7 @@ namespace Eldoria.DailyTreasures
         ICommandGateway gateway;
         Func<long> now;
         Action refreshed;
-        RectTransform root,entryRect,screen,cardSurface,calendar,ceremony,glowRect;
+        RectTransform root,entryRect,screen,cardSurface,calendar,ceremony,glowRect,raysRect;
         RectTransform originalSafeArea;
         float nextCanvasProbe;
         bool onVigiliaCanvas;
@@ -265,7 +265,7 @@ namespace Eldoria.DailyTreasures
             glowRect=NewRect("Warm radial light / visual only",ceremony);
             glow=Plate(glowRect,new Color(1f,.65f,.18f,0f),false);
             CreateGlow();
-            var raysRect=NewRect("Gentle original amber volumetric rays / visual only",ceremony);
+            raysRect=NewRect("Gentle original amber volumetric rays / visual only",ceremony);
             rays=raysRect.gameObject.AddComponent<DailyTreasureRaysGraphic>();
             rays.raycastTarget=false;
             rays.SetIntensity(0f);
@@ -417,6 +417,7 @@ namespace Eldoria.DailyTreasures
             screen.SetAsLastSibling();
             ceremony.gameObject.SetActive(false);
             playing=false;
+            ClearPrizeCards();
             claimNotice="";
             noticeUntil=0f;
             lastPaintedUtcDay=-1;
@@ -615,6 +616,9 @@ namespace Eldoria.DailyTreasures
             ceremony.gameObject.SetActive(true);
             resultText.text=showChest?"EL COFRE DE LAS CENIZAS":"RECOMPENSA RECIBIDA";
             playing=showChest;
+            prizeAnimating=false;
+            prizeShelf.gameObject.SetActive(false);
+            rays.SetIntensity(0f);
             chimePlayed=false;
             if(Application.isPlaying && originalSfx && chestKnock && showChest)
                 originalSfx.PlayOneShot(chestKnock);
@@ -740,17 +744,69 @@ namespace Eldoria.DailyTreasures
             Place((RectTransform)claimButton.transform,.5f,0f,.5f,0f,
                 0f,13f,Mathf.Min(panelW-30f,portrait?325f:405f),54f);
             Stretch(ceremony);
-            Place(glowRect,.5f,.5f,.5f,.5f,0,10,portrait?290f:355f,portrait?290f:355f);
-            Place(chest.rectTransform,.5f,.5f,.5f,.5f,0,portrait?55f:30f,
-                portrait?195f:165f,portrait?150f:125f);
+            float chestY=prizeCount>0?(portrait?108f:64f):
+                (portrait?55f:30f);
+            float artWidth=prizeCount>0?(portrait?270f:205f):
+                (portrait?260f:235f);
+            float artHeight=prizeCount>0?(portrait?230f:118f):
+                (portrait?195f:170f);
+            Place(glowRect,.5f,.5f,.5f,.5f,0,chestY,
+                portrait?320f:335f,portrait?320f:335f);
+            Place(raysRect,.5f,.5f,.5f,.5f,0,chestY,
+                portrait?330f:315f,portrait?330f:315f);
+            Place(chest.rectTransform,.5f,.5f,.5f,.5f,0,chestY,
+                prizeCount>0?artWidth*.88f:(portrait?195f:165f),
+                prizeCount>0?artHeight*.88f:(portrait?150f:125f));
             // Full-cell transparent source sprites preserve the model's scale,
             // and do not stretch the illustrated ironwork on odd phone ratios.
             Place(illustratedClosed.rectTransform,.5f,.5f,.5f,.5f,
-                0f,portrait?55f:10f,portrait?260f:235f,portrait?195f:170f);
+                0f,chestY,artWidth,artHeight);
             Place(illustratedOpen.rectTransform,.5f,.5f,.5f,.5f,
-                0f,portrait?55f:10f,portrait?260f:235f,portrait?195f:170f);
-            Place(resultText.rectTransform,.5f,.5f,.5f,.5f,0,
-                portrait?-140f:-95f,panelW-45f,portrait?165f:118f);
+                0f,chestY,artWidth,artHeight);
+            if(prizeCount>0)
+            {
+                resultText.fontSize=portrait?18:16;
+                Place(resultText.rectTransform,.5f,.5f,.5f,.5f,
+                    0,portrait?-242f:-15f,panelW-45f,portrait?50f:40f);
+            }
+            else
+            {
+                resultText.fontSize=portrait?20:19;
+                Place(resultText.rectTransform,.5f,.5f,.5f,.5f,0,
+                    portrait?-140f:-95f,panelW-45f,portrait?165f:118f);
+            }
+            float shelfHeight=portrait?142f:64f;
+            Place(prizeShelf,.5f,.5f,.5f,.5f,0f,
+                portrait?-143f:-69f,panelW-34f,shelfHeight);
+            int prizeCols=portrait && prizeCount>=3?2:Mathf.Max(1,prizeCount);
+            int prizeRows=Mathf.Max(1,
+                Mathf.CeilToInt(prizeCount/(float)prizeCols));
+            float prizeGap=portrait?8f:6f;
+            float cardW=Mathf.Min(140f,
+                (panelW-38f-(prizeCols-1)*prizeGap)/prizeCols);
+            float cardH=prizeRows==2?65f:portrait?89f:62f;
+            for(int i=0;i<prizeRects.Length;i++)
+            {
+                int r=i/prizeCols,c=i%prizeCols;
+                int itemsInRow=Mathf.Min(prizeCols,
+                    Mathf.Max(0,prizeCount-r*prizeCols));
+                float rowW=itemsInRow*cardW+
+                    Mathf.Max(0,itemsInRow-1)*prizeGap;
+                float x=-rowW*.5f+c*(cardW+prizeGap)+cardW*.5f;
+                float y=prizeRows==1?0f:
+                    r==0?cardH*.5f+prizeGap*.5f:
+                         -cardH*.5f-prizeGap*.5f;
+                Place(prizeRects[i],.5f,.5f,.5f,.5f,x,y,cardW,cardH);
+                bool tall=cardH>=80f;
+                Place(prizeIcons[i].rectTransform,.5f,1f,.5f,1f,
+                    0f,tall?-6f:-3f,tall?49f:36f,tall?40f:25f);
+                Place(prizeNames[i].rectTransform,.5f,.5f,.5f,.5f,
+                    0f,tall?-14f:-8f,cardW-8f,12f);
+                Place(prizeAmounts[i].rectTransform,.5f,.5f,.5f,.5f,
+                    0f,tall?-31f:-23f,cardW-8f,tall?20f:17f);
+                prizeAmounts[i].fontSize=tall?20:17;
+                prizeNames[i].fontSize=tall?12:11;
+            }
             // Skip stays away from the receipt and is a genuine >=44px hit target.
             Place((RectTransform)skipButton.transform,1f,1f,1f,1f,-10f,-60f,100f,45f);
         }
@@ -842,6 +898,7 @@ namespace Eldoria.DailyTreasures
             }
             if(!playing)
             {
+                PaintEarnedCards();
                 if(!string.IsNullOrEmpty(claimNotice) &&
                     Time.unscaledTime>=noticeUntil)
                 {
@@ -888,13 +945,16 @@ namespace Eldoria.DailyTreasures
                     Vector3.one*(frame.Scale-frame.Shake);
             }
             glow.color=new Color(1f,.77f,.35f,frame.Glow*.86f);
+            rays.SetIntensity(frame.Glow*.79f);
             for(int i=0;i<sparks.Length;i++)
             {
                 float angle=i*Mathf.PI*2f/sparks.Length;
-                float distance=Mathf.Max(0f,elapsed-.66f)*(34f+(i%3)*13f);
+                float age=Mathf.Max(0f,elapsed-.66f);
+                float distance=age*(34f+(i%4)*13f);
+                float baseY=root.rect.height>root.rect.width?108f:64f;
                 sparks[i].rectTransform.anchoredPosition=new Vector2(
-                    Mathf.Cos(angle)*distance,
-                    Mathf.Sin(angle)*distance+18f);
+                    Mathf.Cos(angle)*distance+Mathf.Sin(age*3.4f+i)*4f,
+                    Mathf.Sin(angle)*distance+age*age*15f+baseY);
                 sparks[i].color=new Color(1f,.68f+.025f*i,.24f,
                     Mathf.Clamp01(frame.Embers*(1f-(i%3)*.08f)));
             }
