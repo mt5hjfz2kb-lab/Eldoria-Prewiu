@@ -435,6 +435,13 @@ namespace Eldoria.BreachWatch
                 At(buildingCosts.rectTransform,16,costTop,w-2*margin-34,27);
                 At(buildingState.rectTransform,16,costTop+29,w-2*margin-34,18);
                 At(((RectTransform)actionButton.transform),16,panelHeight-49,w-margin*2-32,44);
+                // Portrait tablets and the side rail may share Y only when
+                // enough genuinely unobscured city area remains. 900x1600
+                // used to overlap the lower disabled seal with the building.
+                float railTop=fullObjective?300:267;
+                float clearRailSpace=navTop-panelHeight-13-railTop-12;
+                for(int i=0;i<utilityRail.childCount;i++)
+                    utilityRail.GetChild(i).gameObject.SetActive((i+1)*58<=clearRailSpace);
                 At(feedback.rectTransform,69,fullObjective?310:277,w-100,43);
             }
             else
@@ -456,7 +463,11 @@ namespace Eldoria.BreachWatch
                 At(chapterObjective.rectTransform,15,34,questWidth,46);
                 At(chapterProgress.rectTransform,15,85,questWidth,20);
                 At(utilityRail,margin,fullObjective?266:238,59,183);
-                for(int i=0;i<3;i++)At((RectTransform)utilityRail.GetChild(i),0,i*62,56,56);
+                for(int i=0;i<3;i++)
+                {
+                    utilityRail.GetChild(i).gameObject.SetActive(true);
+                    At((RectTransform)utilityRail.GetChild(i),0,i*62,56,56);
+                }
                 float pw=Mathf.Min(338,w*(h<500f?.32f:.285f)),ph=Mathf.Min(335,h*.50f);
                 At(panel,w-pw-margin,115,pw,ph);
                 At(buildingName.rectTransform,72,11,pw-130,31);
