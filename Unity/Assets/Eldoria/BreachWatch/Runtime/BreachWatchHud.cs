@@ -79,6 +79,16 @@ namespace Eldoria.BreachWatch
             resourceIllustrations[1].sprite.name=="stone" &&
             resourceIllustrations[2] && resourceIllustrations[2].sprite &&
             resourceIllustrations[2].sprite.name=="food";
+        public bool UsesOriginalBurgundyStandard
+        {
+            get
+            {
+                if(!identity)return false;
+                var banner=identity.Find("Burgundy command standard / independently authored");
+                var surface=banner?banner.GetComponent<BreachWatchPlate>():null;
+                return surface && surface.sprite && surface.sprite.name=="valoria_burgundy_banner";
+            }
+        }
         public bool UsesOriginalPaintedMedallions =>
             navPlates[0] && navPlates[0].sprite &&
             navPlates[0].sprite.name=="nav_sculpted_medallion";
