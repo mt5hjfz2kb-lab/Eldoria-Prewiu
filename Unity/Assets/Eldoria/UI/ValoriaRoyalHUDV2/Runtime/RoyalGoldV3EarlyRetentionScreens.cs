@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Eldoria.Application;
+using Eldoria.DailyTreasures;
 using Eldoria.Domain;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
@@ -134,6 +135,7 @@ namespace Eldoria.UI.RoyalGold.V2
         static readonly Color Ink=new Color(.13f,.18f,.23f,1);
         static readonly Color Muted=new Color(.76f,.76f,.73f,1);
         bool ready;
+        DailyTreasurePanel dailyTreasures;
 
         public void Initialize(RoyalHUD canonicalHud,ICommandGateway commands,
             Func<long> utcTicks,Action onStateChanged)
@@ -147,6 +149,7 @@ namespace Eldoria.UI.RoyalGold.V2
             gateway=commands;
             now=utcTicks;
             refreshed=onStateChanged;
+            if(dailyTreasures)dailyTreasures.Bind(commands,utcTicks,onStateChanged);
             nextUpdate=0;
         }
         void OnDestroy()
@@ -697,6 +700,10 @@ namespace Eldoria.UI.RoyalGold.V2
             kicker.alignment=TextAnchor.MiddleCenter;
             chapter.alignment=TextAnchor.MiddleCenter;
             screen.SetActive(false);
+            // Optional daily entry shares the same safe area, player gateway and
+            // EventSystem; it never creates a second game or reward wallet.
+            dailyTreasures=DailyTreasurePanel.Install(safe);
+            dailyTreasures.Bind(gateway,now,refreshed);
             ready=true;
         }
         public void Open(Destination destination)
@@ -860,6 +867,7 @@ namespace Eldoria.UI.RoyalGold.V2
             nextUpdate=Time.unscaledTime+.3f;
             var s=gateway.Snapshot();
             bool overlay=Blocked || !string.IsNullOrEmpty(Hud.SelectedBuildingId);
+            if(dailyTreasures)dailyTreasures.Suppressed=overlay || IsOpen;
             bool allowV=EarlyRetentionRules.VigilantsUnlocked(s);
             bool allowS=EarlyRetentionRules.ScoutsUnlocked(s);
             if(vigilantShortcut.gameObject.activeSelf!=(!overlay&&allowV))
