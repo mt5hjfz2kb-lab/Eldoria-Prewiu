@@ -85,4 +85,14 @@ assert.match(retention,/if\(!dailyTreasures && safe\)/);
 assert.match(panel,/milestoneQueue\.Observe\(gateway\.Snapshot\(\)\)/);
 assert.match(panel,/milestoneQueue\.ConfirmPresented\(milestone\.EventId\)/);
 assert.doesNotMatch(panel,/new GameObject\([^\n]+typeof\(Canvas\)/);
+// Both real chest ceremony tiers must be exercised with real LocalGateway
+// payments, not a screenshot of unearned or hardcoded rewards.
+assert.match(native,/special-day4-calendar/);
+assert.match(native,/special-day4-opening/);
+assert.match(native,/specialAfter\.Resources\.Wood==specialBefore\.Resources\.Wood\+90/);
+assert.match(native,/pictures\.Count==24 && inputChecks==32 && report\.realGatewayClaims==8/);
+assert.match(nativeWorkflow,/\$report\.images -ne 24/);
+assert.match(nativeWorkflow,/\$report\.realGatewayClaims -ne 8/);
+assert.match(nativeWorkflow,/\$report\.graphicalPointerHits -ne 32/);
+assert.match(panel,/reward\.CycleDay==7\?DailyTreasureCeremonyTier\.Legendary/);
 console.log('PASS daily treasures gateway integration source invariants');
