@@ -10,6 +10,39 @@ concurrency:
   group: eldoria-breachwatch-native-first-screen
   cancel-in-progress: false
 jobs:
+  export-reference-for-design-qa:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[vigilia-design-qa]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Eldoria/BreachWatch/Resources/**
+          persist-credentials: false
+      - name: Validate actual approved separate medallions
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,pathlib
+          root=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference')
+          data=json.loads((root/'source-manifest.json').read_text())
+          assert len(data['sprites'])==5
+          for item in data['sprites']:
+              p=root/(item['name']+'.png')
+              assert p.exists() and hashlib.sha256(p.read_bytes()).hexdigest()==item['sha256']
+          context=data['context_frame']
+          assert hashlib.sha256((root/'carved_context.png').read_bytes()).hexdigest()==context['sha256']
+          print('VERIFIED_APPROVED_REFERENCE_SEPARATE_SPRITES',len(data['sprites'])+1)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vigilia-independent-visual-resources-${{ github.run_id }}
+          path: Unity/Assets/Eldoria/BreachWatch/Resources/**
+          if-no-files-found: error
+          retention-days: 7
   evaluate-cc0-resource-icons:
     if: github.event_name == 'push' && contains(github.event.head_commit.message, '[vigilia-resource-research]')
     runs-on: ubuntu-latest
