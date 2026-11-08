@@ -29,12 +29,14 @@ namespace Eldoria.BreachWatch
         float originalAlpha;
         Font font;
         RectTransform uiRoot;
-        RectTransform identity, resourceRow, objective, panel, buttonRow, utilityRail, centerMark;
+        RectTransform identity, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark;
         RectTransform[] resourceChips = new RectTransform[3];
         Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
         Text[] resourceAmounts = new Text[3];
         Text buildingName, buildingLevel, buildingFunction, buildingCosts, buildingState, actionLabel, feedback;
         Button actionButton, closeButton;
+        RawImage portraitView;
+        BreachWatchBuildingPortrait buildingPortrait;
         BreachWatchPlate actionPlate;
         readonly Button[] navButtons = new Button[5];
         readonly BreachWatchPlate[] navPlates = new BreachWatchPlate[5];
@@ -203,6 +205,15 @@ namespace Eldoria.BreachWatch
             var world=BuildButton(utilityRail,"Fissure",BreachWatchGlyph.Sigil.Breach,()=>SetFeedback("La Brecha permanece bajo vigilancia"));
             // These three remain preview-only informational; they never dispatch a game command.
             panel=Rect("Independent selected-building cartouche",uiRoot);Plate(panel,BreachWatchPlate.PlateType.Basalt);
+            portraitFrame=Rect("Carved recess / live building illustration",panel);
+            Plate(portraitFrame,BreachWatchPlate.PlateType.Obsidian);
+            var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
+            Fill(liveView,8);
+            portraitView=liveView.gameObject.AddComponent<RawImage>();
+            portraitView.color=Color.white;
+            portraitView.raycastTarget=false;
+            buildingPortrait=gameObject.AddComponent<BreachWatchBuildingPortrait>();
+            buildingPortrait.Initialize(portraitView);
             var buildingSeal=Glyph(panel,"Building crest",BreachWatchGlyph.Sigil.Castle);
             At((RectTransform)buildingSeal.transform,14,10,53,53);
             buildingName=Label(panel,"Real building name",22,TextAnchor.MiddleLeft,TextIvory,true);
@@ -318,10 +329,11 @@ namespace Eldoria.BreachWatch
                 At(buildingName.rectTransform,70,8,w-132,32);
                 At(buildingLevel.rectTransform,70,37,w-132,19);
                 At(((RectTransform)closeButton.transform),w-margin*2-51,10,39,40);
-                At(buildingFunction.rectTransform,15,67,w-35,44);
-                At(buildingCosts.rectTransform,15,114,w-31,24);
-                At(buildingState.rectTransform,15,140,w-31,23);
-                At(((RectTransform)actionButton.transform),16,panelHeight-54,w-margin*2-32,43);
+                At(portraitFrame,14,65,126,66);
+                At(buildingFunction.rectTransform,151,67,w-2*margin-168,58);
+                At(buildingCosts.rectTransform,16,135,w-2*margin-34,27);
+                At(buildingState.rectTransform,16,162,w-2*margin-34,18);
+                At(((RectTransform)actionButton.transform),16,panelHeight-48,w-margin*2-32,41);
                 At(feedback.rectTransform,69,fullObjective?310:277,w-100,43);
             }
             else
@@ -348,10 +360,12 @@ namespace Eldoria.BreachWatch
                 At(buildingName.rectTransform,72,11,pw-130,31);
                 At(buildingLevel.rectTransform,72,42,pw-130,22);
                 At((RectTransform)closeButton.transform,pw-52,10,40,40);
-                At(buildingFunction.rectTransform,18,75,pw-36,72);
-                At(buildingCosts.rectTransform,18,155,pw-34,60);
-                At(buildingState.rectTransform,18,218,pw-36,35);
-                At((RectTransform)actionButton.transform,17,ph-65,pw-34,51);
+                float portraitHeight=Mathf.Clamp(ph-232,44,102);
+                At(portraitFrame,17,70,pw-34,portraitHeight);
+                At(buildingFunction.rectTransform,18,77+portraitHeight,pw-36,35);
+                At(buildingCosts.rectTransform,18,118+portraitHeight,pw-34,27);
+                At(buildingState.rectTransform,18,150+portraitHeight,pw-36,20);
+                At((RectTransform)actionButton.transform,17,ph-58,pw-34,49);
                 float count=5,bw=Mathf.Min(93,(w-190)/count),gap=13;
                 float navWidth=bw*count+gap*(count-1);
                 At(buttonRow,(w-navWidth)*.5f,h-89,navWidth,81);
@@ -383,6 +397,9 @@ namespace Eldoria.BreachWatch
                 {
                     buildingName.text=b.Name;
                     buildingLevel.text="NIVEL "+b.Level;
+                    if(buildingPortrait)
+                        buildingPortrait.Show(ActualBuildingModel(b.Id),host.PlayerCamera,
+                            b.Id+"/"+b.Level);
                     buildingFunction.text=b.Function??"";
                     buildingCosts.text=string.IsNullOrWhiteSpace(b.Costs)?"Sin coste":b.Costs;
                     buildingState.text=(b.State??"")+(string.IsNullOrWhiteSpace(b.Time)?"":"  ·  "+b.Time);
@@ -410,6 +427,25 @@ namespace Eldoria.BreachWatch
                 Debug.LogException(e);throw;
             }
         }
+        // Models from the real playable city, never a mocked building artwork
+        // or a reused RoyalGold miniature/prefab.
+        GameObject ActualBuildingModel(string id)
+        {
+            if(!host || !host.City) return null;
+            if(id=="bastion")
+            {
+                var level=host.City.Gateway.Snapshot().BastionLevel;
+                if(level>=2 && host.City.BastionTwo &&
+                    host.City.BastionTwo.activeInHierarchy) return host.City.BastionTwo;
+                return host.City.BastionOne;
+            }
+            if(!host.City.Parcels) return null;
+            if(id=="sawmill") return host.City.Parcels.LeftBuilt;
+            if(id=="barracks" || id=="upgrade-barracks")
+                return host.City.Parcels.RightBuilt;
+            return null; // Never invent an illustration for other sites.
+        }
+
         void OnDestroy()
         {
             if(legacyCanvas)legacyCanvas.enabled=originalCanvas;
