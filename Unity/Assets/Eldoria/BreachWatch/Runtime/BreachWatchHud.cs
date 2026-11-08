@@ -253,7 +253,8 @@ namespace Eldoria.BreachWatch
             // The original display font has beautiful hairlines but is too
             // fragile at 390 physical pixels. Preserve it on large headings;
             // use screen-optimised Baskerville for actual gameplay information.
-            bool display=name=="Player name" || name=="Real building name";
+            bool display=name=="Player name" || name=="Real building name" ||
+                name=="Compact engraved cost heading";
             Font regular=display?font:bodyFont;
             Font heavy=display?boldFont:bodyBoldFont;
             text.font=bold && heavy ? heavy : regular;
