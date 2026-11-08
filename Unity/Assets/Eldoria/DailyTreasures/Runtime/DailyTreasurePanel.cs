@@ -914,8 +914,8 @@ namespace Eldoria.DailyTreasures
             float a=DailyTreasureStageDirection.Compose(
                 activeMilestoneId,root.rect.width,root.rect.height)
                 .SceneryOpacity;
-            milestoneScenery.color=new Color(.74f,.72f,.68f,
-                a*(.91f+.09f*frame.Glow));
+            milestoneScenery.color=new Color(.70f,.68f,.65f,
+                a*(.93f+.07f*frame.Glow));
         }
         static string ConfirmedMilestoneSummary(string committedText)
         {
@@ -1036,7 +1036,7 @@ namespace Eldoria.DailyTreasures
                     stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
                 Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
                     stage.SceneX,stage.SceneY,stage.SceneW,stage.SceneH);
-                milestoneScenery.color=new Color(.74f,.72f,.68f,
+                milestoneScenery.color=new Color(.70f,.68f,.65f,
                     stage.SceneryOpacity);
                 milestoneVignette.color=new Color(.024f,.023f,.026f,
                     stage.SceneVeilOpacity);
