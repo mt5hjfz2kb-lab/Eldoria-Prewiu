@@ -60,6 +60,7 @@ namespace Eldoria.BreachWatch
         bool lastPortrait;
         int lastWidth=-1,lastHeight=-1;
         Rect lastSafeArea=Rect.zero;
+        bool lastWorldMode;
         float nextRefresh;
         float feedbackUntil;
         bool created;
@@ -690,6 +691,12 @@ namespace Eldoria.BreachWatch
             if(!created||!host)return;
             if(feedbackUntil>0f && Time.unscaledTime>=feedbackUntil)
                 SetFeedback("");
+            // When the canonical world map returns to city it resets the
+            // city camera. Restore the approved playable Bastion/bridge
+            // composition exactly once, without stealing pan/zoom afterward.
+            if(lastWorldMode && !host.InWorld && cityComposition)
+                cityComposition.OnCityReentered(Screen.width,Screen.height);
+            lastWorldMode=host.InWorld;
             SyncLiveCamera();
             if(lastWidth!=Screen.width||lastHeight!=Screen.height||
                lastSafeArea!=Screen.safeArea)
