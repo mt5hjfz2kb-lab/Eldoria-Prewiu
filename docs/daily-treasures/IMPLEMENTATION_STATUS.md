@@ -12,18 +12,18 @@ Fecha: 8 de noviembre de 2026. Workstream: `eldoria-daily-treasures-20261108`. N
 7. **Integración de interfaz:** adaptación reversible al Canvas independiente de Vigilia de la Brecha (PR173), porque Vigilia apaga el Canvas legacy; la interfaz se reubica en su `Safe composition` sin Canvas/EventSystem duplicado, con restauración si ese Canvas se deshabilita. Todavía no comprobado conjuntamente en Unity.
 
 ## Pruebas realizadas con el código canónico
-- `DailyTreasureRules`, rachas y temporización visual: **más de 6.600 aserciones deterministas**, compilando C# original del repositorio (conteo exacto en el último job CI por SHA).
-- `LocalGateway` real: más de **180 aserciones**, incluidos siete días consecutivos, saldo/recibos, reintentos, reposición tras recarga, anuncios narrativos y cola de eventos reales.
+- `DailyTreasureRules`, rachas y temporización visual: **10.123 aserciones deterministas (comprobadas en CI del 08/11/2026, SHA de referencia)**, compilando C# original del repositorio (conteo exacto en el último job CI por SHA).
+- `LocalGateway` real: **183 aserciones**, incluidos siete días consecutivos, saldo/recibos, reintentos, reposición tras recarga, anuncios narrativos y cola de eventos reales.
 - Auditoría del perfil **OWNER_I_II**, aparte de QA_FAST: 7 días = 330 madera, 300 piedra, 230 comida y 8 minutos de aceleradores; 30 días consecutivos = 1.380 madera, 1.240 piedra, 945 comida y 32 minutos. Bastiones II–V suman 3.050 madera, 2.400 piedra y 800 comida. **Son candidatos sujetos a pruebas humanas, no valores económicos aprobados.**
 - Ocho geometrías aritméticas de composición y objetivos táctiles, 9 texturas importadas con SHA, GUID y bordes válidos; análisis de sintaxis Roslyn y contrato de integración C#.
 - Laboratorio visual de navegador con el cofre original en varias orientaciones. Es una comprobación independiente del acabado de referencia, **no es la interfaz final renderizada por Unity**.
 - Las pruebas deben repetirse para cada SHA final; un PASS histórico no certifica nuevas modificaciones.
 
 ## Verificación nativa preparada y pendiente
-El workflow `.github/workflows/daily-treasures-native.yml` **solo puede utilizar Windows cuando el registro canónico conceda la reserva exclusiva a PR181**. A fecha de corte, la beta PR179 mantiene esa reserva.
+El workflow `.github/workflows/daily-treasures-native.yml` **solo puede utilizar Windows cuando el registro canónico conceda la reserva exclusiva a PR181**. El propietario actual de esa reserva es el workstream Vigilia de la Brecha (PR173); no iniciar trabajos Windows mientras siga ocupado.
 
 - Requerir fuente original de los nueve PNG en el commit exacto, compilar con Unity 6000.3.23f1.
-- **44 capturas Unity nativas**: 28 vinculadas a días 4/7 **realmente cobrados** y 16 vistas artísticas, **no recompensas**, para Lyra, Bastión, Vigilantes y Exploradores, en horizontal y vertical, apertura y resultado. Es obligatorio inspeccionar estas 16 por separado: compartir el mismo cofre ilustrado no garantiza que las cuatro composiciones tengan idéntica calidad.
+- **52 capturas Unity nativas**: cuatro capturas del cofre de acceso antes de cobrar, 28 vinculadas a días 4/7 **realmente cobrados**, cuatro etapas intermedias de vuelo de los premios ilustrados y 16 vistas artísticas, **no recompensas**, para Lyra, Bastión, Vigilantes y Exploradores, en horizontal y vertical, apertura y resultado. Es obligatorio inspeccionar estas 16 por separado: compartir el mismo cofre ilustrado no garantiza que las cuatro composiciones tengan idéntica calidad.
 - **56 interacciones por puntero**: reclamar, saltar, cerrar y entrar, incluyendo ubicación y regreso desde el Canvas independiente de Vigilia y los cuatro estilos.
 - **8 reclamaciones verdaderas** con `LocalGateway` descartable y comprobación de recursos/buzón. Las 16 imágenes de acontecimientos son ensayos visuales etiquetados `coversReward=false`, no partidas que hayan conseguido esos hitos.
 - Hash, tamaño, fuente, dimensiones y ausencia de duplicación de todos los PNG capturados.
@@ -33,4 +33,10 @@ El workflow `.github/workflows/daily-treasures-native.yml` **solo puede utilizar
 
 
 ## Evolución del requisito visual
-Se ha trabajado por técnica, no por retoques superficiales: la versión geométrica del cofre quedó relegada a fallback; los nueve sprites ilustrados se incorporaron realmente a Git; se prepararon composiciones y animaciones distintas para entregas normales, especiales y legendarias. La apertura con premio muestra exclusivamente iconos y cantidades que el gateway ya concedió. **Las ceremonias de Lyra, Bastión, Vigilantes y Exploradores comparten ese mismo arte premium, con ambientación por acontecimiento y sin nuevas recompensas inventadas.** La aprobación final exige revisar las 44 imágenes Unity, no solo un PASS automático.
+Se ha trabajado por técnica, no por retoques superficiales: la versión geométrica del cofre quedó relegada a fallback; los nueve sprites ilustrados se incorporaron realmente a Git; se prepararon composiciones y animaciones distintas para entregas normales, especiales y legendarias. La apertura con premio muestra exclusivamente iconos y cantidades que el gateway ya concedió. **Las ceremonias de Lyra, Bastión, Vigilantes y Exploradores comparten ese mismo arte premium, con ambientación por acontecimiento y sin nuevas recompensas inventadas.** La aprobación final exige revisar las 52 imágenes Unity, no solo un PASS automático.
+
+## Mejora del efecto «guau» antes de Unity — 8/11/2026
+- El acceso diario se reconoce por **el cofre real ilustrado**, no por un botón de texto genérico: medallón metálico, halo ámbar cuando el premio está disponible y distintivo «1» solo cuando corresponde. Se corrigió además la geometría del primer fotograma para que el botón pueda recibir pulsaciones antes de abrir el calendario.
+- Las recompensas realmente obtenidas **emergen desde el cofre hacia tarjetas ilustradas individuales** con arco y entrada escalonada; el vuelo tiene su propio módulo matemático C# independiente, con pruebas de escalado, orientación, opacidad, tiempos y llegada exacta a la ficha de destino.
+- Una segunda puerta en GitHub analiza los **52 PNG originales** cuando Unity pueda generarlos, compara las fases visuales para rechazar capturas idénticas, verifica los hashes y prepara hojas de contacto de entrada, días cobrados, vuelo de premios y ceremonias. Es un filtro de errores **y no una aprobación artística automática**.
+- Continúa pendiente el juicio humano de calidad y la partida I–V ejecutada en Unity. La versión de testers y Vigilia no se han modificado desde esta PR.
