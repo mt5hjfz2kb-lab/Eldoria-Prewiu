@@ -360,9 +360,9 @@ namespace Eldoria.BreachWatch
                 resourceAmounts[i]=Label(resourceChips[i],"Actual quantity",17,TextAnchor.MiddleLeft,TextIvory,true);
                 At(resourceAmounts[i].rectTransform,47,5,90,35);
             }
-            centerMark=Rect("Breach witness sigil",uiRoot);Plate(centerMark,BreachWatchPlate.PlateType.Obsidian);
-            var central=Glyph(centerMark,"Stone fracture",BreachWatchGlyph.Sigil.Breach);
-            Fill((RectTransform)central.transform,4);central.Ink=Copper;
+            centerMark=Rect("Open-air Breach witness sigil / no opaque plaque",uiRoot);
+            var rift=centerMark.gameObject.AddComponent<BreachWatchRiftSeparator>();
+            rift.raycastTarget=false;
             objective=Rect("Chapter side tablet",uiRoot);
             Plate(objective,BreachWatchPlate.PlateType.Basalt);
             AddBevel(objective,true);
@@ -668,7 +668,7 @@ namespace Eldoria.BreachWatch
                     resourceAmounts[i].fontSize=14;
                 }
 
-                At(centerMark,w*.52f-17,84,34,34);
+                At(centerMark,w*.52f-56,84,112,30);
                 At(objective,margin,125,Mathf.Min(210,w*.54f),fullObjective?118:89);
                 At(chapterName.rectTransform,37,6,Mathf.Min(162,w*.42f),21);
                 At(chapterObjective.rectTransform,14,30,Mathf.Min(183,w*.47f),fullObjective?65:35);
@@ -745,7 +745,7 @@ namespace Eldoria.BreachWatch
                     At(resourceAmounts[i].rectTransform,38,5,chip-41,30);
                     resourceAmounts[i].fontSize=16;
                 }
-                At(centerMark,w*.49f-17,11,34,34);
+                At(centerMark,w*.49f-60,18,120,28);
                 At(objective,margin,102,225,fullObjective?110:83);
                 At(chapterName.rectTransform,37,8,178,20);
                 At(chapterObjective.rectTransform,14,32,197,fullObjective?57:29);
