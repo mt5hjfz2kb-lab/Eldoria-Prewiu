@@ -1,8 +1,8 @@
 {
   "schema": 1,
-  "status": "BLOCKED_MOBILE5_PHYSICAL_IPHONE_FAILED",
+  "status": "BLOCKED_MOBILE6_PHYSICAL_IPHONE_UNVERIFIED",
   "scope": "Closed playtest Bastion I–V",
-  "source": "native325-mobile5",
+  "source": "native325-mobile6-cubemap",
   "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
   "frozen_archive": {
     "location": "GitHub draft release (not public)",
@@ -16,13 +16,13 @@
   "distribution": {
     "target": "one-click public link (no account/email/password/itch.io/APK)",
     "service": "Sites entry and GitHub Pages payload",
-    "url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile5",
+    "url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile6-cubemap",
     "links_enabled": true,
     "byte_checksums_verified": true,
     "web_package_ready": true,
-    "diagnostics": "v4 opt-in local-only post-ready growth",
+    "diagnostics": "v4 local-only opt-in; visible beta 6 label",
     "access_control": "public URL; not authenticated",
-    "live_identity_verified": true,
+    "live_identity_verified": false,
     "publication_purpose": "New owner diagnostic candidate; physical iPhone not certified"
   },
   "measurement": {
@@ -54,8 +54,7 @@
     "no_new_tester_invites_before_validation": true
   },
   "blockers": [
-    "Mobile5 physical failure: ASTC supported, growth412→495→594→699MiB succeeds, then browser returns. Texture-only iterations insufficient; diagnose combined retained web asset data and scene runtime residency.",
-    "Staged4 hardware Chromium graceful Quit-then-reload and nickname persistence passed run42482412101. Raw reload and physical mobile remain uncertified.",
+    "Mobile6 physical iPhone not yet tested. Desktop Apple GPU WebKit compressed cubemap upload crash reproduced and fixed; do not equate desktop result with physical phone certification.",
     "Connect opt-in consent UI and browser event delivery to verified QA backend; native gameplay metrics still not emitted",
     "Instrument and verify actual Unity gameplay events; 135 indicators remain specification, not measured",
     "Verify complete Bastion I-V gameplay with normal tutorial and clock"
@@ -87,7 +86,7 @@
     "release_for_external_testers": false,
     "physical_iphone_result": "OWNER_REPORTED_FAILURE: still enters for one second and exits"
   },
-  "updated_at": "2026-11-08T14:36:17.284Z",
+  "updated_at": "2026-11-08T15:28:46.785Z",
   "mobile_candidate_history": [
     {
       "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
@@ -297,5 +296,29 @@
       "allocation_exception_observed": false,
       "owner_observation": "Nickname screen visible, then restarted"
     }
+  },
+  "mobile6_candidate": {
+    "revision": "native325-mobile6-cubemap",
+    "bundle_sha256": "e54d547487e0d915f5a8c3fbbd0354a79672041dd201b3e63672de5e740ea6c1",
+    "qa_run": 42493894120,
+    "webkit_versions": [
+      "26.0",
+      "27.2"
+    ],
+    "renderer": "Apple GPU",
+    "nickname_reload_visually_verified": true,
+    "pages_run": 42494677413,
+    "site_version": 5,
+    "site_deployment": "appgdep_6af094df6f9881918253a11bc83d7bb6",
+    "public_qa_run": 42494930537,
+    "public_qa_pass": null,
+    "physical_iphone_verified": false,
+    "release_for_external_testers": false,
+    "published": true,
+    "changed_cubemaps": 5,
+    "all_objects_verified": 57375,
+    "decoded_faces_and_mips": 240,
+    "added_serialized_bytes": 1965240,
+    "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile6-cubemap"
   }
 }
