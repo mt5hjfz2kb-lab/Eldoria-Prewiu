@@ -1,4 +1,4 @@
-name: Eldoria recovered candidate actual browser verification
+name: Eldoria exact candidate runtime independently of Pages quota
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -20,18 +20,33 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            for(let n=0;n<120;n++){
-              const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42474108636})).data;
-              if(r.head_sha!=='2376de0f56d7e9eef984170324176674f1552eb9')throw Error('Unexpected package source');
-              const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:42474108636})).data.jobs;
-              const p=jobs.find(j=>j.name==='package');
-              if(p?.status==='completed'){
-                if(p.conclusion!=='success')throw Error('Package provenance or size gate failed');
-                return;
-              }
-              await new Promise(resolve=>setTimeout(resolve,15000));
-            }
-            throw Error('Exact package incomplete');
+            const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42481377084})).data;
+            if(r.head_sha!=='3785761a07cf306a8359b7195bb6b140fc002929'||r.status!=='completed')throw Error('Unexpected candidate source');
+            const artifacts=(await github.rest.actions.listWorkflowRunArtifacts({...context.repo,run_id:42481377084})).data.artifacts;
+            const a=artifacts.find(x=>x.name==='mobile-candidate-site');
+            if(a.id!==13618096453||a.digest!=='sha256:44c18cfae54e77d702f0f9439c6345252ea8502c982b970e8be9f17e64aa8090')throw Error('Candidate artifact mismatch');
+            core.warning('Source run failed only at Pages size gate; independent runtime QA does not authorize publication.');
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42481377084
+          name: structural-packaging-evidence
+          github-token: ${{ github.token }}
+          path: proof
+      - name: Verify candidate transformation chain before browser
+        run: |
+          python - <<'PY'
+          import json
+          p=json.load(open('proof/transformed-final/composed-integrity.json'))
+          d=json.load(open('proof/deduplicated/integrity.json'))
+          i=json.load(open('proof/site/mobile/release-identity.json'))
+          assert p['source_sha256']=='ac6f3c50f236dc35e04b7ed3aafa1b4a8b40dd4238f63b700ab5440ae5fd2ce9'
+          assert p['candidate_sha256']=='e5299e7293f4e2ed5a5bed30c9c87d3141a7594401d3cdb965761cba9a834faa'
+          assert p['all_objects_verified']==57375 and d['removed_exact_texture_objects']==120
+          assert d['original_objects']==57495 and d['references_redirected']==456
+          assert i['native_parity_verified'] and i['native_journey_verified']
+          assert i['packaged_bytes']==587332175 and i['physical_mobile_tested'] is False
+          print('EXACT_CANDIDATE_INTEGRITY_PASS_PAGES_SIZE_NOT_CERTIFIED')
+          PY
   browser:
     needs: package
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
@@ -59,7 +74,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42474108636
+          run-id: 42481377084
           github-token: ${{ github.token }}
           name: mobile-candidate-site
           path: beta-structural-browser-${{ github.run_id }}/site/mobile
