@@ -515,6 +515,14 @@ namespace Eldoria.BreachWatch.Editor
                         "Text is vertically clipped in "+name+"/"+label.name+
                         " wanted="+label.preferredHeight.ToString("F1")+
                         " available="+label.rectTransform.rect.height.ToString("F1"));
+                    if(label.name=="Actual chapter" ||
+                       label.name=="Real action title" ||
+                       label.name=="Real building name")
+                        Need(label.preferredWidth<=label.rectTransform.rect.width+5f,
+                            "Premium single-line inscription wraps or escapes its "+
+                            "carved border: "+name+"/"+label.name+
+                            " wanted="+label.preferredWidth.ToString("F1")+
+                            " available="+label.rectTransform.rect.width.ToString("F1"));
                 }
                 // Only Chapter I gets the owner's Breach subtitle; the
                 // gameplay chapter number and objective stay canonical.
