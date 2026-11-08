@@ -53,6 +53,8 @@ jobs:
         run: dotnet run --project tools/daily-treasures/EconomyCandidate.csproj --configuration Release
       - name: Parse original Unity UI, gameplay and chest C# syntax without Unity
         run: dotnet run --project tools/daily-treasures/SyntaxAudit.csproj --configuration Release
+      - name: Enforce the exact dark forged-iron and burgundy visual language of Eldoria/Vigilia
+        run: node tools/daily-treasures/check-visual-identity.mjs
       - name: Check actual calendar placement arithmetic on eight mobile and desktop geometries
         run: node tools/daily-treasures/layout-smoke.mjs
       - name: Check category-specific illustrated milestones use real Eldoria scenic sources
