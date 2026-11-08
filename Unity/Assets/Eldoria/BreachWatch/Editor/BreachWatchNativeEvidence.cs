@@ -379,6 +379,18 @@ namespace Eldoria.BreachWatch.Editor
                         "Live status overlaps main action: "+name);
                     Need(Bottom(action)<=ui.BuildingPanel.rect.height+.5f,
                         "Main building action clipped by native card: "+name);
+                    foreach(var control in new []{ui.BuildingAction,ui.BuildingClose})
+                    {
+                        Need(control && control.gameObject.activeInHierarchy,
+                            "Native building control unavailable: "+name);
+                        Vector3[] touchCorners = new Vector3[4];
+                        ((RectTransform)control.transform).GetWorldCorners(touchCorners);
+                        var lower=RectTransformUtility.WorldToScreenPoint(camera,touchCorners[0]);
+                        var upper=RectTransformUtility.WorldToScreenPoint(camera,touchCorners[2]);
+                        Need(upper.x-lower.x>=43.5f && upper.y-lower.y>=43.5f,
+                            "Owner-approved phone action must have >=44px physical touch target: "+
+                            name+"/"+control.name);
+                    }
                 }
                 return new Shot {
                     file=name,sha256=HexHash(file),width=w,height=h,
