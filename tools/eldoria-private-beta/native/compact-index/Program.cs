@@ -42,6 +42,11 @@ static class Program {
   return new {label,vertices=points.Length,queries=queries.Length,covered,missing,buckets=b.Cells.Count,oldAllocation,newAllocation,bufferBytes=c.BufferBytes,oldMs,newMs=watch.Elapsed.TotalMilliseconds,passed=true};
  }
  public static void Main(string[] args){
+  Need(args.Length==2,"Exact Unity source required for syntax check");
+  var syntax=Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(File.ReadAllText(args[1]),new Microsoft.CodeAnalysis.CSharp.CSharpParseOptions(Microsoft.CodeAnalysis.CSharp.LanguageVersion.CSharp9));
+  var syntaxErrors=syntax.GetDiagnostics().Where(d=>d.Severity==Microsoft.CodeAnalysis.DiagnosticSeverity.Error).ToArray();
+  Need(syntaxErrors.Length==0,string.Join("\n",syntaxErrors.Select(d=>d.ToString())));
+  Console.WriteLine("FULL_UNITY_SOURCE_SYNTAX_PASS (not Unity assembly/API compilation)");
   var points=Read(args[0]);Need(points.Length==369163,"Exact known terrain vertex count");var results=new List<object>();
   results.Add(Check(points,points,"exact authored terrain"));
   var random=new Random(7341);var adversarial=new List<Point>();
