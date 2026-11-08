@@ -107,7 +107,7 @@ namespace Eldoria.DailyTreasures
                     0,portrait?103f:85f,portrait?302f:296f,
                     portrait?269f:176f,
                     0,portrait?-.31f*h:-.19f*h,w-48,
-                    portrait?.12f*h:.17f*h,
+                    portrait?.12f*h:.18f*h,
                     .62f,0f,0f,false);
 
             // Lyra, Scouts and Vigilants each have an actual original
@@ -128,7 +128,7 @@ namespace Eldoria.DailyTreasures
                 -.247f*w,.018f*h,.486f*w,h-42f,
                 .236f*w,.166f*h,Math.Min(.374f*w,282f),
                 Math.Min(.475f*h,175f),
-                .236f*w,-.202f*h,.452f*w,.155f*h,
+                .236f*w,-.198f*h,.452f*w,.195f*h,
                 .88f,.90f,.15f,true);
         }
     }
