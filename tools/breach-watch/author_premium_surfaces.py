@@ -14,8 +14,8 @@ DESIGNS={
                            border=(35,24,35,24),guid="a6f0f34c42fd494f92a72d201e0aaf9c"),
     "brass_portrait":dict(width=512,height=288,cut=20,seed=173019,kind="portrait",
                           border=(29,27,29,27),guid="9a20dba5e3aa4bff94654d1e8b0e9a32"),
-    "slate_resource":dict(width=512,height=148,cut=23,seed=173020,kind="resource",
-                          border=(24,22,24,22),guid="90ec0b5c9a2b463194f198a623e5e36c")
+    "slate_resource":dict(width=512,height=148,cut=13,seed=173020,kind="resource",
+                          border=(14,11,14,11),guid="90ec0b5c9a2b463194f198a623e5e36c")
 }
 FOLDER_META="""fileFormatVersion: 2
 guid: f8e9b67b7ee54fd4a22ef0c2e89a14dd
@@ -119,10 +119,20 @@ def surface(name,d):
                       fill=(125,40,28,30),width=1)
     # Three-stage sculptural frame. Different widths/shadow orientation mimic
     # hammered iron, warm bronze, and tight gilded inlay.
-    for inset,width,color in [
+    # Resource capsules are only 38 UI units tall. The original 22+22
+    # corner borders collapsed their entire nine-slice center and crushed
+    # actual resource numbers. The engraved edges must be thinner while
+    # retaining the same real brass material.
+    border_layers=([
+        (2,4,(4,5,7,255)),(4,2,(99,66,42,255)),
+        (7,1,(214,159,92,245)),(9,2,(17,13,12,255)),
+        (12,1,(145,99,59,225))
+    ] if kind=="resource" else [
         (2,7,(4,5,7,255)),(5,4,(101,68,44,255)),
         (9,2,(200,147,83,245)),(14,3,(19,15,15,255)),
-        (20,2,(130,86,51,255)),(23,1,(226,184,99,220))]:
+        (20,2,(130,86,51,255)),(23,1,(226,184,99,220))
+    ])
+    for inset,width,color in border_layers:
         pts=corners(w,h,cut,inset)
         draw.line(pts+[pts[0]],fill=color,width=width,joint="curve")
     # Painted light from upper left, black contact shadow below
@@ -147,16 +157,25 @@ def surface(name,d):
             draw.rounded_rectangle((yoff, yoff, w-1-yoff, h-1-yoff),
                         radius=7,outline=color,width=3)
     if kind=="burgundy":
-        # Small metallic cross-hammer emblem on left; the button label is
-        # rendered as real live Unity text, never baked into this artwork.
-        ox,oy=58,h//2
-        for sign in [-1,1]:
-            draw.line((ox-15,oy+16*sign,ox+15,oy-16*sign),
-                      fill=(11,8,7,255),width=11)
-            draw.line((ox-15,oy+16*sign,ox+15,oy-16*sign),
-                      fill=(186,121,62,255),width=6)
-        draw.ellipse((ox-5,oy-5,ox+5,oy+5),
-                     fill=(219,167,91,255),outline=(22,13,9,255),width=1)
+        # Actual miniature crossed *hammers*, not generic X lines.
+        # Their heads have short perpendicular forged-metal anvils.
+        # Text / upgrade amount remain entirely live Unity components.
+        ox,oy=61,h//2
+        for direction in (-1,1):
+            start=(ox-16*direction,oy+16)
+            end=(ox+16*direction,oy-16)
+            draw.line((start,end),fill=(9,7,7,255),width=12)
+            draw.line((start,end),fill=(164,105,56,255),width=7)
+            draw.line((start[0]-1,start[1]+1,end[0]-1,end[1]+1),
+                      fill=(229,171,87,235),width=2)
+            headFrom=(end[0]-9,end[1]-9*direction)
+            headTo=(end[0]+9,end[1]+9*direction)
+            draw.line((headFrom,headTo),fill=(9,7,6,255),width=15)
+            draw.line((headFrom,headTo),fill=(197,136,66,255),width=10)
+            draw.line((headFrom[0],headFrom[1]-2,headTo[0],headTo[1]-2),
+                      fill=(249,193,104,245),width=2)
+        draw.ellipse((ox-4,oy-4,ox+4,oy+4),
+                     fill=(232,168,87,255),outline=(24,16,10,255),width=1)
         draw.line((100,27,w-58,27),fill=(235,119,59,130),width=3)
         draw.line((100,h-27,w-58,h-27),fill=(52,11,13,180),width=3)
     return pix
