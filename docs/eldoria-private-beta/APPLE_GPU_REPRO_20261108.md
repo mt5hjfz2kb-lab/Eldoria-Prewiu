@@ -46,3 +46,6 @@ Desktop Chromium success cannot certify WebKit. Capture the GPU process report a
 
 ## Owner physical result — mobile6 FAILED
 Owner reports: «Hace lo mismo que la 5». Desktop compressed-cubemap fix is confirmed only in desktop WebKit; it did not resolve the physical iPhone restart. No new device exception or lifecycle log accompanies this result. Do not claim the phone root cause identified, and do not request another attempt at the same build as a fix.
+
+### Reinspection after physical mobile6 failure
+Published QA report42494930537: Unity usedWASMHeapSize rises from306012928bytes at ready to945430712bytes after world initialization; WASM capacity1052049408bytes. Desktop WebContent sampled peak RSS2119824KiB, GPU517632KiB; separate process peaks, not a simultaneous physical footprint or phone measurement. The data file is501036611 decodedbytes. High memory remains a concrete investigation target, not a proven iPhone termination cause. Existing serialized asset audit lists361295804bytes of Mesh objects, many readable. Do not disable readability blindly: inspect script access, collider and batching requirements and measure runtime A/B. Unity6000.3 Mesh.isReadable documentation confirms CPU copies may be retained in addition to GPU buffers. Preserve mobile6 desktop GPU fix; no new phone candidate published from this hypothesis alone.
