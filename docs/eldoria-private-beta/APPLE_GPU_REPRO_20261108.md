@@ -35,7 +35,8 @@ Exactly five Cubemap objects, sharedassets0.assets IDs 446-450, ReflectionProbe-
 - Candidate revision: native325-mobile6-cubemap.
 - Candidate build/QA run: 42493894120, source 5842448fe1ec024eff1d368d003d5da3fd70adc6.
 - Candidate ZIP artifact 13623230011, SHA256 417f15c01f3c65f81a61e7fd88b3bd52a91b7c07eba5bed37b7b9192294047ee.
-- Runtime verification was pending when this note was written. Consult actual run and readiness before promoting.
+- Runtime PASSED on both WebKit 26.0 and 27.2, native Apple GPU, no extension overrides. Artifacts 13622663288 and 13622517677. World initialization + 90 seconds, nickname entry + 30 seconds, graceful Unity Quit then actual page reload + 45 seconds; no runtime/context-loss errors. Both reloaded screenshots manually inspected: Beta QA persisted and normal chapter intro visible.
+- This is desktop Apple GPU evidence, not physical iPhone verification. Pages promotion run 42494677413 publishes the exact checked candidate. Public entry check still pending.
 - External testers remain blocked until physical stability, full gameplay and telemetry readiness are verified.
 
 ## Lesson
