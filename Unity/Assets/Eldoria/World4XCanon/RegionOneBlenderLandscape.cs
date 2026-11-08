@@ -13,8 +13,7 @@ namespace Eldoria.World4XCanon
  public sealed class RegionOneBlenderLandscape : MonoBehaviour
  {
   const string AssetRoot="World4X/Blender/";
-  static int nx,nz; static float width,depth; static float[] heights; static byte[] masks; static Dictionary<Vector2Int,System.Collections.Generic.List<VerificationVertex>> sourceVertices; static int sourceVertexCount;
-  struct VerificationVertex { public Vector3 position; public int index; }
+  static int nx,nz; static float width,depth; static float[] heights; static byte[] masks; static CompactTerrainVerification sourceVertices; static int sourceVertexCount;
   GameObject artwork; MeshFilter terrain; readonly List<Mesh> fittedPigments=new List<Mesh>();
   static RegionOneBlenderLandscape activeSurface;
   Vector3[] contactVertices,contactNormals;int[] contactTriangles;
@@ -146,19 +145,15 @@ namespace Eldoria.World4XCanon
    var positions=WorldVertices;
    if(positions.Length<10000)throw new InvalidOperationException("Incomplete Blender terrain import.");
    if(sourceVertices==null)throw new InvalidOperationException("Exact Blender vertex verification data missing.");
-   var matched=new HashSet<int>();
+   var matched=new bool[sourceVertexCount];int matchedCount=0;
    foreach(var p in positions)
    {
-    var local=p-origin;var key=new Vector2Int(Mathf.FloorToInt(local.x*4),Mathf.FloorToInt(local.z*4));
-    bool found=false;const float toleranceSquared=.002f*.002f;
-    for(int dz=-1;dz<=1;dz++)for(int dx=-1;dx<=1;dx++)
-     if(sourceVertices.TryGetValue(key+new Vector2Int(dx,dz),out var bucket))
-      foreach(var vertex in bucket)
-      {float distance=(vertex.position-local).sqrMagnitude;if(distance<toleranceSquared){found=true;matched.Add(vertex.index);}}
-    if(!found)throw new InvalidOperationException("Imported terrain vertex differs from Blender source at "+local);
+    var local=p-origin;int added=sourceVertices.MarkMatches(local.x,local.y,local.z,matched);
+    if(added<0)throw new InvalidOperationException("Imported terrain vertex differs from Blender source at "+local);
+    matchedCount+=added;
     // Import/world transforms may collapse sub-millimetre separations; cover every source position within the unchanged tolerance.
    }
-   if(matched.Count!=sourceVertexCount)throw new InvalidOperationException("Incomplete imported Blender surface.");
+   if(matchedCount!=sourceVertexCount)throw new InvalidOperationException("Incomplete imported Blender surface.");
   }
 
   public void Refresh() {} // Phase A uses the same meshes at every zoom.
@@ -178,13 +173,11 @@ namespace Eldoria.World4XCanon
     if(!includeVerification){heights=data;return;}
     if(reader.ReadInt32()!=0x32564c45)throw new InvalidDataException("Exact Blender source vertices missing");
     int vertexCount=reader.ReadInt32();if(vertexCount<10000||vertexCount>1000000)throw new InvalidDataException("Unexpected source vertex count");
-    sourceVertices=new Dictionary<Vector2Int,List<VerificationVertex>>();sourceVertexCount=vertexCount;
+    sourceVertices=new CompactTerrainVerification(vertexCount);sourceVertexCount=vertexCount;
     for(int i=0;i<vertexCount;i++)
     {
      float x=reader.ReadSingle(),y=reader.ReadSingle(),z=reader.ReadSingle();
-     var key=new Vector2Int(Mathf.FloorToInt(x*4),Mathf.FloorToInt(z*4));
-     if(!sourceVertices.TryGetValue(key,out var bucket)){bucket=new List<VerificationVertex>();sourceVertices[key]=bucket;}
-     bucket.Add(new VerificationVertex{position=new Vector3(x,y,z),index=i});
+     sourceVertices.Add(i,x,y,z);
     }
     heights=data;
    }
@@ -204,4 +197,57 @@ namespace Eldoria.World4XCanon
   public static float Forest(float x,float z)=>Sample(x,z,3);
   public static float RoadDistance(float x,float z)=>(1-Road(x,z))*3;
  }
+// COMPACT_TERRAIN_VERIFICATION_BEGIN
+// Fixed arrays replace one Dictionary entry and List allocation per occupied cell.
+// Original vertex indices, floor(x*4) cells and strict 2 mm predicate are preserved.
+internal sealed class CompactTerrainVerification
+{
+    struct Vertex { public float x, y, z; }
+    readonly Vertex[] vertices;
+    readonly int[] next, heads;
+    public int Count => vertices.Length;
+    public long BufferBytes => (long)vertices.Length * 16 + (long)heads.Length * 4;
+    public CompactTerrainVerification(int count)
+    {
+        if (count < 1 || count > 1000000) throw new System.ArgumentOutOfRangeException(nameof(count));
+        vertices = new Vertex[count]; next = new int[count];
+        int size = 1; while (size < count * 2) size <<= 1;
+        heads = new int[size]; for (int i = 0; i < size; i++) heads[i] = -1;
+    }
+    static int Cell(float value) => (int)System.Math.Floor(value * 4f);
+    int Bucket(int x, int z)
+    {
+        unchecked { return (int)(((uint)x * 73856093u ^ (uint)z * 19349663u) & (uint)(heads.Length - 1)); }
+    }
+    public void Add(int index, float x, float y, float z)
+    {
+        vertices[index] = new Vertex { x = x, y = y, z = z };
+        int bucket = Bucket(Cell(x), Cell(z)); next[index] = heads[bucket]; heads[bucket] = index;
+    }
+    // -1 means no geometric match; zero means matching vertices were already covered.
+    public int MarkMatches(float x, float y, float z, bool[] covered)
+    {
+        int cx = Cell(x), cz = Cell(z), added = 0; bool found = false;
+        const float toleranceSquared = .002f * .002f;
+        for (int dz = -1; dz <= 1; dz++) for (int dx = -1; dx <= 1; dx++)
+        {
+            int bx = cx + dx, bz = cz + dz;
+            for (int index = heads[Bucket(bx, bz)]; index >= 0; index = next[index])
+            {
+                var v = vertices[index];
+                // Hash collisions must not merge distinct spatial cells.
+                if (Cell(v.x) != bx || Cell(v.z) != bz) continue;
+                float vx = v.x - x, vy = v.y - y, vz = v.z - z;
+                if (vx * vx + vy * vy + vz * vz < toleranceSquared)
+                {
+                    found = true;
+                    if (!covered[index]) { covered[index] = true; added++; }
+                }
+            }
+        }
+        return found ? added : -1;
+    }
+}
+// COMPACT_TERRAIN_VERIFICATION_END
+
 }
