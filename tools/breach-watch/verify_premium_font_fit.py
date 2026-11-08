@@ -38,7 +38,7 @@ def verify():
         assert font.is_file(),f"Missing real packaged Unity font {font}"
 
     # Phone design-units are stable between 390x844 and Retina 900x1600.
-    panel_width=178
+    panel_width=171
     mission_width=200
     def fits(text,font,size,limit,control):
         value=width(font,size,text)
