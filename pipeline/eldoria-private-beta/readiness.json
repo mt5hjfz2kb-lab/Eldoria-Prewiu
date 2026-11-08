@@ -87,7 +87,7 @@
     "release_for_external_testers": false,
     "physical_iphone_result": "OWNER_REPORTED_FAILURE: still enters for one second and exits"
   },
-  "updated_at": "2026-11-08T11:45:59.131Z",
+  "updated_at": "2026-11-08T12:36:26.460Z",
   "mobile_candidate_history": [
     {
       "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
@@ -110,7 +110,7 @@
     }
   ],
   "structural_candidate": {
-    "status": "EXACT_TEXTURE_DEDUPLICATION_VERIFICATION_IN_PROGRESS",
+    "status": "EXACT_TEXTURE_ALIASING_PASSED_PACKAGING_RETRY_AFTER_CHECKOUT_ORDER_FIX",
     "source_baseline": "948ffa9837168a0b68dab80be76b66350422b23a",
     "overlay_commit": "91734045e8d32cc90cc4843b4b7e08e57b1a0458",
     "native_run": 42435095850,
@@ -173,8 +173,8 @@
     "recovered_webgl_artifact": 13614825021,
     "recovered_native_evidence_artifact": 13614536700,
     "recovery_changed_shared_source": false,
-    "package_run": 42477098780,
-    "package_source": "02eaf3f3292b1499b0945a0950dcd523002201a8",
+    "package_run": 42480748412,
+    "package_source": "e0c8e5a5144f41109c84b25c93bf3b98dc29299b",
     "payload_audit": {
       "run": 42473845228,
       "artifact": 13614682468,
@@ -192,20 +192,24 @@
     "dedup_verification": {
       "run": 42477019139,
       "source": "25c6b4c53c8e078a660cf29ef809e2309e3d7439",
-      "passed": false,
-      "pending": true,
+      "passed": true,
+      "pending": false,
       "audit_run": 42476471528,
       "duplicate_serialized_bytes": 1923809944,
       "duplicate_objects": 146,
       "process_ram_measured": false,
-      "opaque_objects_conservatively_protected": true
+      "opaque_objects_conservatively_protected": true,
+      "removed_objects": 82,
+      "serialized_bytes_removed": 1498776832,
+      "references_redirected": 318,
+      "all_remaining_objects_verified": 57413,
+      "candidate_sha256": "bf9fbf52933da6be926c3ad4493cf8b501e9917253bd0d982ac4c9c0f11699f5",
+      "runtime_verified": false
     },
     "last_package_failure": {
-      "run": 42475552834,
-      "object_integrity_pass": true,
-      "accepted_additional_compressed_textures": 123,
-      "packaged_bytes": 1017726761,
-      "reason": "Exceeds remaining Pages budget; no browser or publication"
+      "run": 42477098780,
+      "reason": "Checkout cleaned the deduplicated artifact downloaded before it; packaging failed before compression/browser. Corrected download order.",
+      "game_launched": false
     },
     "pages_remaining_bytes": 570229524
   }
