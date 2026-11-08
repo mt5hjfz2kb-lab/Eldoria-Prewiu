@@ -73,6 +73,11 @@ namespace Eldoria.DailyTreasures
         Image glow,ambient;
         RawImage milestoneScenery;
         Image milestoneVignette;
+        string milestoneSceneryKey;
+        public string MilestoneSceneryKey => milestoneSceneryKey;
+        public bool HasMilestoneScenery =>
+            milestoneScenery && milestoneScenery.texture &&
+            milestoneScenery.gameObject.activeInHierarchy;
         DailyTreasureCeremonyTheme activeTheme=
             DailyTreasureCeremonyTheme.ForEvent(null,false);
         Texture2D glowTexture;
@@ -763,6 +768,7 @@ namespace Eldoria.DailyTreasures
         {
             var path=showChest?MilestoneScenerySource(eventId):null;
             Texture2D source=path==null?null:Resources.Load<Texture2D>(path);
+            milestoneSceneryKey=source?path:null;
             milestoneScenery.texture=source;
             milestoneScenery.gameObject.SetActive(source!=null);
             milestoneVignette.gameObject.SetActive(source!=null);
