@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extract a genuine empty nine-slice gold border from the exact owner-approved
+"""Extract a genuine complete gold border from the exact owner-approved
 Vigilia vertical illustration, retaining only its original metal outer ring.
 
 No castle, words, prices, characters, old RoyalHUD or background screenshot is
@@ -15,7 +15,6 @@ SOURCE=Path("tools/breach-watch/source/owner_gold_reference.webp")
 DEST=Path("Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/ApprovedContour")
 SOURCE_SHA="79e2264961b3ea4462f9fc3dc65f513e2f4e76f59f4f6b2e3d27a5d06013a5a1"
 GUID="a4fb6c6c38eb4651a5d44acb8fe939da"
-FINIAL_GUID="8795dc9d3c1d4013ae844c8efa179d0a"
 FOLDER_META="""fileFormatVersion: 2
 guid: 13599ba9cfe049408d45be8fa339819e
 folderAsset: yes
@@ -61,9 +60,10 @@ def main():
     assert hashlib.sha256(data).hexdigest()==SOURCE_SHA
     img=Image.open(SOURCE).convert("RGBA")
     assert img.size==(256,427)
-    # Extract the small approved bottom finial as an independent sprite
-    # BEFORE removing it from the nine-slice frame. It will be anchored
-    # outside the live action button, exactly as in the owner's reference.
+    # The separate lower finial formerly duplicated/distorted the actual
+    # lower gem over the gold frame. Use it now only as a local intermediate:
+    # the final SINGLE image includes all ornamentation, and Unity does not
+    # paint an extra component on top.
     finial=img.crop((98,377,158,427))
     mask=Image.new("L",finial.size,0)
     ImageDraw.Draw(mask).ellipse((2,1,finial.width-2,finial.height-1),fill=255)
@@ -80,6 +80,9 @@ def main():
         for x in range(101,156):
             r,g,b,_=px[x,y]
             px[x,y]=(r,g,b,0)
+    # Restore only the feathered approved gem IN the same gold border file.
+    # This replaces the old layered second Image, rather than stacking it.
+    img.alpha_composite(finial,(98,377))
     a=img.getchannel("A")
     assert a.getpixel((0,0))==0, "Screenshot exterior must be transparent"
     assert a.getpixel((128,213))==0, "No baked price/letters/castle may cover game data"
@@ -91,24 +94,15 @@ def main():
     img.save(png,optimize=True)
     (DEST/"owner_gold_border.png.meta").write_text(
         SPRITE_META.format(guid=GUID),encoding="utf8")
-    finial_path=DEST/"owner_bottom_finial.png"
-    finial.save(finial_path,optimize=True)
-    finial_meta=SPRITE_META.format(guid=FINIAL_GUID).replace(
-        "spriteBorder: {x: 53, y: 61, z: 53, w: 60}",
-        "spriteBorder: {x: 0, y: 0, z: 0, w: 0}")
-    (DEST/"owner_bottom_finial.png.meta").write_text(finial_meta,encoding="utf8")
     manifest={
         "source_sha256":SOURCE_SHA,
         "origin":"Exact owner-approved 864x1536 vertical Vigilia concept border, user-provided in chat",
         "pixel_art_derived_only_from_user_approved_concept":True,
-        "new_independent_uGUI_nine_slice":True,
+        "new_independent_uGUI_one_piece_border":True,
         "no_baked_player_data_or_real_gameplay":True,
         "size":[256,427],
         "png_sha256":hashlib.sha256(png.read_bytes()).hexdigest(),
         "guid":GUID,
-        "bottom_finial_sha256":hashlib.sha256(finial_path.read_bytes()).hexdigest(),
-        "bottom_finial_guid":FINIAL_GUID,
-        "bottom_finial_size":[60,50],
         "art_approval":"pending real Unity exact-head screenshot review"
     }
     (DEST/"manifest.json").write_text(json.dumps(manifest,indent=2,ensure_ascii=False))
