@@ -20,3 +20,5 @@ Workstream-ID: eldoria-forja-oscura-visual-proof-20261107
 2026-11-08: Native first-screen candidate now has real illustrated CC0 wood/stone/food, newly isolated-only actual 3D building mesh portrait, camera-mode bridge, canonical selection notifications, phone safe-area and responsive overlap checks. Run exact-code Roslyn and seven-sprite SHA/GUID proof; defer Windows until beta release.
 
 Source-only verification after real sprite import, live city selection/camera binding, isolated Bastion preview, safe-area and no-overlap patches: exact-head C# Roslyn and 7 original sprite SHA/GUID checks. Defer Windows while beta retains its exclusive lease. No merge/deploy.
+
+Exact-head source QA: independently illustrated resources, canonical selection event bridging, responsive device safe-area, true-only render layer 30 model preview with sampled URP background, live event raycast, no fake secondary action, compact authoritative costs. Check artifacts and syntax; no Unity on Windows until exclusive live beta lease released.
