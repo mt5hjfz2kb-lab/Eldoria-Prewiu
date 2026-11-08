@@ -33,7 +33,8 @@ namespace Eldoria.DailyTreasures
         Texture2D glowTexture;
         Sprite glowSprite;
         bool suppressed,playing;
-        float startTime,nextTick,lastWidth=-1,lastHeight=-1;
+        float startTime,nextTick,lastWidth=-1,lastHeight=-1,noticeUntil;
+        string claimNotice="";
         string ceremonialReceipt,ceremonialTitle;
         bool chestReward,chimePlayed;
         AudioSource originalSfx;
@@ -302,6 +303,8 @@ namespace Eldoria.DailyTreasures
             screen.SetAsLastSibling();
             ceremony.gameObject.SetActive(false);
             playing=false;
+            claimNotice="";
+            noticeUntil=0f;
             calendar.gameObject.SetActive(true);
             claimButton.gameObject.SetActive(true);
             lastWidth=lastHeight=-1;
@@ -320,7 +323,11 @@ namespace Eldoria.DailyTreasures
             var daily=state.DailyTreasures??new DailyTreasureState();
             var reward=DailyTreasureRules.Preview(daily,now());
             int upcoming=DailyTreasureRules.NextDay(daily);
-            subhead.text="RACHA: "+daily.ConsecutiveDays+" DÍAS  ·  7 TRIBUTOS POR CICLO";
+            bool showNotice=!string.IsNullOrEmpty(claimNotice) &&
+                Time.unscaledTime<noticeUntil;
+            subhead.text=showNotice?claimNotice:
+                "RACHA: "+daily.ConsecutiveDays+" DÍAS  ·  7 TRIBUTOS POR CICLO";
+            subhead.color=showNotice?new Color(1f,.68f,.48f,1f):Muted;
             for(int i=0;i<7;i++)
             {
                 bool next=i+1==upcoming && reward.IsValid;
@@ -357,7 +364,18 @@ namespace Eldoria.DailyTreasures
             var command=new GameCommand(Guid.NewGuid().ToString("N"),
                 before.PlayerId,"ClaimDailyTreasure","valoria",before.Revision);
             var result=gateway.Execute(command);
-            if(!result.Ok){Refresh();return;}
+            if(!result.Ok)
+            {
+                // A full wallet or obsolete command must not look like a dead
+                // button. The server/gateway is authoritative; no rewards are
+                // granted by this view or its animation.
+                claimNotice=string.IsNullOrWhiteSpace(result.Message)
+                    ? "No se ha podido recoger el tributo":result.Message;
+                noticeUntil=Time.unscaledTime+4.5f;
+                Refresh();
+                return;
+            }
+            claimNotice="";noticeUntil=0f;
             var after=gateway.Snapshot();
             var current=after.DailyTreasures;
             var reward=DailyTreasureRules.ForDay(current.CycleDay,current.ConsecutiveDays);
@@ -401,6 +419,8 @@ namespace Eldoria.DailyTreasures
             illustratedOpen.gameObject.SetActive(showChest && hasAuthoredChestArt);
             illustratedClosed.color=Color.white;
             illustratedOpen.color=new Color(1f,1f,1f,0f);
+            illustratedClosed.rectTransform.localScale=Vector3.one;
+            illustratedOpen.rectTransform.localScale=Vector3.one;
             glow.color=new Color(1f,.75f,.36f,showChest?0f:.34f);
             skipButton.gameObject.SetActive(showChest);
             if(!showChest)ShowResult();
@@ -413,6 +433,8 @@ namespace Eldoria.DailyTreasures
             {
                 illustratedClosed.color=new Color(1f,1f,1f,0f);
                 illustratedOpen.color=Color.white;
+                illustratedClosed.rectTransform.localScale=Vector3.one;
+                illustratedOpen.rectTransform.localScale=Vector3.one;
             }
             resultText.text=ceremonialTitle+"\n\n"+ceremonialReceipt+
                 "\n\nGuardado · justificante en el buzón";
@@ -512,7 +534,16 @@ namespace Eldoria.DailyTreasures
             }
             float w=root.rect.width,h=root.rect.height;
             if(Mathf.Abs(w-lastWidth)>1f || Mathf.Abs(h-lastHeight)>1f)Layout();
-            if(!playing)return;
+            if(!playing)
+            {
+                if(!string.IsNullOrEmpty(claimNotice) &&
+                    Time.unscaledTime>=noticeUntil)
+                {
+                    claimNotice="";
+                    Refresh();
+                }
+                return;
+            }
             float elapsed=Time.unscaledTime-startTime;
             if(elapsed>=DailyTreasureRevealTimeline.RevealPeakSeconds && !chimePlayed)
             {
