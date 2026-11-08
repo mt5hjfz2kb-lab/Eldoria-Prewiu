@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T22:13:47.894Z",
+  "updated_at": "2026-11-08T23:53:51.680Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6822,9 +6822,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "MOBILE9_OWNER_CONFIRMED_PLAYABLE_LONG_SESSION_REOPEN_PENDING",
+      "phase": "OWNER_PRETEST_UX_CORRECTIONS_IN_PROGRESS",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Owner confirms beta9 now allows play. Preserve this published candidate. Pending physical sustained-session and close/reopen confirmation; do not infer full I–V/device coverage or enable tester distribution from entry report alone.",
+      "next": "Implement owner 2026-11-09 pretester list against frozen beta9, with source-pinned overlays under tools/eldoria-private-beta only; preserve published beta9 until native and browser UX/regression checks pass.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7034,9 +7034,8 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "granted_by_owner",
-        "at": "2026-11-08T16:53:20.268Z",
-        "return_to": "eldoria-forja-oscura-visual-proof-20261107"
+        "status": "waiting_for_safe_turn",
+        "reason": "Focused frozen beta pretester UX verification after implementation; preserve current Forja and Treasures alternating work, no cancellation"
       },
       "ownership_history": [
         {
@@ -7046,7 +7045,26 @@
           "to_owner": "codex-pr179-stability-2ea88ced1c46",
           "reason": "User explicitly requests continuing PR179 stability repair in this session. Preserve running native run42503628688; no cancellation or duplicate Unity launch."
         }
-      ]
+      ],
+      "frozen_beta_ux_scope": {
+        "requested_by": "owner in current PR179 conversation 2026-11-09",
+        "baseline_runtime": "5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa",
+        "surface": "Existing published frozen beta, not PR173 replacement HUD or PR181 treasures production sources",
+        "source_policy": "Keep isolated, exact-base checked patch overlays under owned beta tools. Do not edit other owners canonical source files, scenes, or running native projects. Reconciliation into current development remains explicit.",
+        "items": [
+          "Hide unavailable/unintroduced navigation",
+          "Explain and delay Vigilants/Scouts",
+          "Stop Vigilants backdrop drift",
+          "Direct HUD mailbox",
+          "Stable world-anchored level labels",
+          "Training only relevant controls",
+          "Barracks choice Upgrade/Train",
+          "One World/City toggle; remove Units",
+          "Clear mission expansion and close icon",
+          "Compact stationary operation panels",
+          "Building upgrades up to Bastion level"
+        ]
+      }
     },
     {
       "id": "eldoria-daily-treasures-20261108",
