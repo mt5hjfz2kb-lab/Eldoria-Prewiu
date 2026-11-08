@@ -825,7 +825,7 @@ namespace Eldoria.DailyTreasures
                 resultText.fontSize=quietRewards?(portrait?19:17):
                     compactPrizePortrait?16:portrait?18:16;
                 float captionY=quietRewards?(portrait?-135f:-99f):
-                    compactPrizePortrait?-217f:portrait?-242f:-15f;
+                    compactPrizePortrait?-217f:portrait?-232f:-15f;
                 Place(resultText.rectTransform,.5f,.5f,.5f,.5f,
                     0f,captionY,panelW-45f,
                     quietRewards?41f:compactPrizePortrait?39f:portrait?50f:29f);
@@ -839,10 +839,13 @@ namespace Eldoria.DailyTreasures
                     portrait?-148f:-71f,panelW-45f,portrait?141f:66f);
             }
 
+            // Four day-seven rewards need at least 65px per item, even
+            // on small portrait screens. Raise the two-row shelf rather
+            // than shrinking illustrated icons and text to unreadable sizes.
             float shelfHeight=quietRewards?(portrait?175f:137f):
-                compactPrizePortrait?114f:portrait?142f:64f;
+                portrait?138f:64f;
             float shelfY=quietRewards?(portrait?19f:26f):
-                compactPrizePortrait?-126f:portrait?-143f:-69f;
+                portrait?-115f:-69f;
             Place(prizeShelf,.5f,.5f,.5f,.5f,0f,shelfY,
                 panelW-34f,shelfHeight);
             int prizeCols=portrait && prizeCount>=3?2:Mathf.Max(1,prizeCount);
@@ -852,7 +855,7 @@ namespace Eldoria.DailyTreasures
             float cardW=Mathf.Min(quietRewards?175f:140f,
                 (panelW-38f-(prizeCols-1)*prizeGap)/prizeCols);
             float cardH=quietRewards?(portrait?129f:115f):
-                prizeRows==2?(compactPrizePortrait?53f:65f):
+                prizeRows==2?65f:
                 portrait?(compactPrizePortrait?76f:89f):62f;
             for(int i=0;i<prizeRects.Length;i++)
             {
