@@ -28,3 +28,23 @@ El recurso `windows-runner-heavy` de Unity Windows está actualmente reclamado e
 
 **Siguiente acción segura:** releer registro de main y GitHub Actions. Tras la liberación formal de Windows, reservarlo exclusivamente en el trabajo canónico `eldoria-forja-oscura-visual-proof-20261107`, lanzar el flujo exact-head modificando solo `tools/breach-watch/native-request.txt`, descargar PNG/report, inspeccionarlos al 100%, corregir cualquier falta de calidad/funcionalidad y repetir. El gate final es decisión visual independiente del TECH_PASS. Android/WebGL no están probados; no fusionar ni publicar.
 
+
+
+## Revisión ejecutada el 8 de noviembre (continuación hasta gate nativo)
+
+**Implementado después del prototipo HTML, NO CERTIFICADO EN UNITY AÚN:**
+
+- Corrección semántica de los cinco medallones aprobados: REINO/castillo, RECURSOS/provisiones, EJÉRCITO/espadas (inactivo), EXPLORAR/cuervo (gated), HÉROES/casco (inactivo). Antes Construir usaba falsamente una bolsa de provisiones y Crónicas usaba un casco; se han eliminado rutas engañosas.
+- Navegación ciudad/mundo idempotente con las APIs reales `TrySetWorld(bool)`: REINO y RECURSOS regresan a la ciudad antes de seleccionar Bastión o Aserradero; EXPLORAR no alterna accidentalmente a ciudad al repetir toque.
+- Clase original `BreachWatchAtmosphere` integrada detrás de los controles propios del nuevo Canvas; gradiente de borde muy discreto, no intercepta raycasts, no altera cámara/materiales del mundo. Su mesh usa winding correcto.
+- Cartela de marca `VIGILIA DE LA BRECHA / LAS CENIZAS DE VALORIA` adaptativa en zona superior libre SOLO horizontal; se oculta en móvil vertical sin robar la zona jugable. No procede de ningún HUD legado.
+- `BreachWatchBuildingPortrait`: cámara URP Base explícita y autónoma; sin postprocesado ni XR, máscara exclusiva para mallas auténticas de edificio con luz aislada. Se reduce riesgo de miniatura vacía por Camera.AddComponent sin datos URP.
+- Script de certificación exige medallones con nombres/acciones correctos, destinos sin pantallas nuevas deshabilitados, cabecera según orientación, malla atmosférica sin capturar toques, Bastión real y PNGs en cuatro resoluciones.
+- Ejecución del flujo GitHub Actions **42476791045**: integridad de arte = PASS, sintaxis Roslyn = PASS, owner-preflight = PASS. El job Unity = SKIPPED **por reserva viva exclusiva del workstream beta**, no es TECH_PASS ni ART_APPROVED de esta revisión.
+- PR 173 sigue sin merge. El único resultado realmente nativo antiguo válido continúa en **42427015492** (otra versión anterior artísticamente rechazada). Las maquetas HTML posteriores nunca se consideran capturas de Unity.
+
+**Bloqueo concreto vivo:** `pipeline/active-workstreams.json` (main, revisado al terminar) sigue asignando `windows-runner-heavy` en exclusivo a `eldoria-private-beta-i-v-20261107`, revisión 8. La cola vacía no es liberación formal. Se solicitó coordinación en PR179 sin invadir su trabajo. No se permite ejecutar Unity en ese runner, forzar un cambio de dueño ni declarar calidad visual aprobada por Roslyn.
+
+**Continuación autónoma segura preparada:** existe una comprobación condicional que reevalúa formalmente la liberación del runner. Cuando su titular lo entregue, se podrá reclamar con CAS y ejecutar el workflow nativo de PR173, inspeccionar los PNG originales, corregir y repetir hasta producir una evidencia real evaluable; no cambiar main, no integrar HUD, no publicar. Las herramientas alternativas Ubuntu fueron evaluadas: Unity 6 Personal exige activación mediante Unity Hub en una máquina nueva; no hay licencia/datos de activación verificados para un nuevo runner. No sustituir una prueba Unity por capturas inventadas, HTML, ni la aprobación de una imagen conceptual.
+
+**Gate pendiente imprescindible:** ocho PNG originales con SHA correspondientes al HEAD de la PR, informe nativo PASS, y evaluación visual humana del contraste, detalle del arte, lectura móvil, consistencia con la referencia y calidad global antes de pedir decisión al dueño.
