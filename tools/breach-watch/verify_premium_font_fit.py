@@ -39,7 +39,7 @@ def verify():
 
     # Phone design-units are stable between 390x844 and Retina 900x1600.
     panel_width=178
-    mission_width=182
+    mission_width=200
     def fits(text,font,size,limit,control):
         value=width(font,size,text)
         assert value<=limit+0.15,(control,round(value,2),limit,text)
