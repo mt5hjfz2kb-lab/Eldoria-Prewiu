@@ -200,6 +200,14 @@ namespace Eldoria.DailyTreasures.Editor
                     Canvas.ForceUpdateCanvases();
                     pictures.Add(Render(camera,rt,output,width,height,"closed",
                         "Same real claim: closed chest",true,true));
+                    // Capture the exact authored runtime frame at its peak:
+                    // this distinguishes a convincing transition from two
+                    // attractive static endpoints and detects ghosting.
+                    panel.SampleForNativeEvidence(
+                        DailyTreasureRevealTimeline.RevealPeakSeconds);
+                    Canvas.ForceUpdateCanvases();
+                    pictures.Add(Render(camera,rt,output,width,height,"opening",
+                        "Same real paid claim: illustrated opening at peak light",true,true));
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
                         FindButton(panel,"Skip animation / keep earned items"),width,height);
                     inputChecks++;
@@ -221,7 +229,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Object.DestroyImmediate(rt);
                     Object.DestroyImmediate(go);
                 }
-                Need(pictures.Count==12 && inputChecks==16 && report.realGatewayClaims==4,
+                Need(pictures.Count==16 && inputChecks==16 && report.realGatewayClaims==4,
                     "Native reward component coverage incomplete");
                 report.status=report.authoredSpritesImported
                     ? "NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING"
@@ -230,7 +238,7 @@ namespace Eldoria.DailyTreasures.Editor
                 report.images=pictures.Count;
                 report.shots=pictures.ToArray();
                 File.WriteAllText(Path.Combine(output,"report.json"),JsonUtility.ToJson(report,true));
-                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 12 PNG; NOT ART_APPROVED / NOT FULL GAMEPASS");
+                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 16 PNG; NOT ART_APPROVED / NOT FULL GAMEPASS");
                 EditorApplication.Exit(0);
             }
             catch(Exception e)
