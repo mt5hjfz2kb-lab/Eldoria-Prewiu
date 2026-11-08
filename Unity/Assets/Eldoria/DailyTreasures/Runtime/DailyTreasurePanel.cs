@@ -627,8 +627,16 @@ namespace Eldoria.DailyTreasures
                 rareDayAvailable?.26f:.045f);
             claimButton.interactable=reward.IsValid;
             claimCaption.text=reward.IsValid?"RECLAMAR DÍA "+reward.CycleDay:
-                "TRIBUTO YA RECOGIDO · REGRESA MAÑANA";
+                daily.TotalClaims==int.MaxValue?"TRIBUTO NO DISPONIBLE":
+                    NextRewardCountdown(now());
         }
+        static string NextRewardCountdown(long utcTicks)
+        {
+            int minutes=DailyTreasureRules.MinutesUntilNextUtcDay(utcTicks);
+            return "SIGUIENTE EN "+(minutes/60).ToString("00")+":"+
+                (minutes%60).ToString("00");
+        }
+
         static string ShortReward(DailyTreasureReward reward)
         {
             string text="";
@@ -1364,8 +1372,12 @@ namespace Eldoria.DailyTreasures
                 Time.unscaledTime>=nextTick)
             {
                 nextTick=Time.unscaledTime+1.25f;
-                if(DailyTreasureRules.UtcDay(now())!=lastPaintedUtcDay)
+                long currentUtc=now();
+                if(DailyTreasureRules.UtcDay(currentUtc)!=lastPaintedUtcDay)
                     Refresh();
+                else if(!claimButton.interactable &&
+                    gateway.Snapshot().DailyTreasures.TotalClaims<int.MaxValue)
+                    claimCaption.text=NextRewardCountdown(currentUtc);
             }
             if(!playing)
             {
