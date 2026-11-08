@@ -241,12 +241,20 @@ namespace Eldoria.DailyTreasures
             glowSprite=Sprite.Create(glowTexture,new Rect(0,0,size,size),new Vector2(.5f,.5f),100f);
             glow.sprite=glowSprite;
         }
+        static void DestroyOwned(UnityEngine.Object asset)
+        {
+            if(!asset)return;
+            // Native evidence creates a disposable editor scene. Destruction
+            // must work there as well as in the real runtime without errors.
+            if(Application.isPlaying)UnityEngine.Object.Destroy(asset);
+            else UnityEngine.Object.DestroyImmediate(asset);
+        }
         void OnDestroy()
         {
-            if(glowSprite)Destroy(glowSprite);
-            if(glowTexture)Destroy(glowTexture);
-            if(chestKnock)Destroy(chestKnock);
-            if(chestChime)Destroy(chestChime);
+            DestroyOwned(glowSprite);
+            DestroyOwned(glowTexture);
+            DestroyOwned(chestKnock);
+            DestroyOwned(chestChime);
         }
         public void Open()
         {
