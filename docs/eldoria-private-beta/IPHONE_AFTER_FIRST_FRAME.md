@@ -132,3 +132,11 @@ Run 42435095850, source 91734045e8d32cc90cc4843b4b7e08e57b1a0458, job12859218214
 - The paired packaging/browser workflow source is 281c619331c8babafbf68d676b16bfd90c1fb338. It requires this exact native run to succeed before packaging, then requires D3D11 browser startup, actual entry/reload and visible nickname OCR. No public deployment has occurred.
 
 Still blocked for external testers. Public mobile-v3 remains the physically failed candidate3.
+
+### Packaging checkpoint 01:55 UTC
+
+Current packaging/browser run: 42436120984, source 9b5cb13bfdeb28b97f240319d26a18406b909e61. Previous 42435148867/source281c619 was cancelled only while its Ubuntu package job was waiting for the native result; it had not started packaging or Windows browser tests. Native run42435095850/source917340 remains independent and is executing the WebGL build.
+
+Corrected a real packaging defect before that step: the actual published index references play-c5232b4372dab399.js, not play.js. Both current script files were downloaded and proved byte-identical (SHA256 c5232b4372dab39994790f431da61b1beaf8ae7e26fa353cb1d891e91cb30696). The new packager writes a new content-hashed script and updates the real wrapper reference; a synthetic data/engine fixture using the actual published HTML verified that its new script exists and contains the correct diagnostic revision. This is a packaging check, not runtime certification.
+
+Next: inspect successful native artifacts including restoration, then require all candidate/browser/name gates from run42436120984. Deployment remains unperformed. The local prepared Pages template must be filled with the actual successful package source/run, artifact ID/ZIP digest and transformed bundle SHA; never publish placeholders or failed QA.
