@@ -10,6 +10,25 @@ concurrency:
   group: eldoria-breachwatch-native-first-screen
   cancel-in-progress: false
 jobs:
+  source-syntax:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/breach-watch/**
+            /Unity/Assets/Eldoria/BreachWatch/**
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Parse independent first-screen C-sharp sources with actual Roslyn
+        run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch
+      - name: Explain proof boundary
+        run: echo 'BREACHWATCH_SYNTAX_PASS; does not replace Unity Editor compilation or artistic acceptance.'
   owner-preflight:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -38,7 +57,7 @@ jobs:
           console.log(ok?'BREACHWATCH_EXCLUSIVE_OWNER_PASS':'BREACHWATCH_NO_OWNER_WINDOWS_SKIPPED');
           JS
   native:
-    needs: owner-preflight
+    needs: [owner-preflight, source-syntax]
     if: needs.owner-preflight.outputs.authorized == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 120
