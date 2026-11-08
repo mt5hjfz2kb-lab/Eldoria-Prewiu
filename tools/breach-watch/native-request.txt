@@ -32,3 +32,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: extract 5 true independent illustrated navigation emblems from the exact owner-approved Vigilia concept, hash/alpha metadata pinned. Only import into new BreachWatch, no original HUD overlay, no game changes, native runner needs its own released lease.
 
 2026-11-08: source-author detailed owner-approved sculpted basalt contextual card, transparent outside and inner empty (no baked building/price/nickname), 256×398 fixed corners with nine-slice, exact pinned SHA. Standalone new Canvas; import art to separate Vigilia only; no Unity until runner formally released.
+
+2026-11-08: exact SHA new independent owner-medallions (five) and empty sculpted context frame, genuine 3D selected Bastion, new Canvas and true resource icons. Validate actual art PNG/meta, source C#, keep Windows native gated behind live exclusive claim; DO NOT mark artwork approved from source CI alone.
