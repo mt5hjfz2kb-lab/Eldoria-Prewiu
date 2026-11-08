@@ -137,7 +137,7 @@ jobs:
           if(-not(Test-Path $reportFile)){throw 'Missing actual Unity native report'}
           $report=Get-Content $reportFile -Raw | ConvertFrom-Json
           if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or $report.authoredSpritesImported -ne $true){
-            throw 'Illustrated Sprite sources were not used in real Unity render'
+            throw 'Illustrated chest sprites not imported in Unity or not used in the native render'
           }
           if($report.images -ne 12 -or $report.realGatewayClaims -ne 4 -or $report.graphicalPointerHits -ne 4){
             throw 'Actual Unity or player-interaction proof is incomplete'
