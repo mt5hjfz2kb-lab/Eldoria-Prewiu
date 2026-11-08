@@ -159,7 +159,7 @@ internal static class Program
             "real seventh-day grand coffer gets a distinct cinematic flash");
         // The luxurious reward cards must show what the gateway actually
         // credited, not a different visual-only loot table.
-        int[] expectedCards={1,1,1,2,1,2,4};
+        int[] expectedCards={1,1,2,2,1,2,4};
         for(int day=1;day<=7;day++)
         {
             var received=DailyTreasureRules.ForDay(day,day);
