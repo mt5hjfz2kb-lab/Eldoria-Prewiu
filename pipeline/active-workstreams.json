@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T18:23:34.306Z",
+  "updated_at": "2026-11-08T20:13:48.398Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6762,9 +6762,12 @@
       ],
       "runner_priority_handoff": {
         "status": "TEMPORARILY_LENT_TO_BETA_OWNER_AUTHORIZED",
-        "at": "2026-11-08T16:53:20.268Z",
+        "at": "2026-11-08T20:10:53.050Z",
         "to": "eldoria-private-beta-i-v-20261107",
-        "reason": "Owner explicitly authorized priority transfer in this session to diagnose and fix physical iPhone beta failure. Preserve UI owner, source and PR173. No jobs or processes cancelled."
+        "reason": "Owner explicitly renews urgent PR179 continuation until testable stability solution. No native jobs active in live Actions inventory; preserve Forja owner and return Windows after native validation/build.",
+        "returned_at": "2026-11-08T19:52:48.053Z",
+        "native_run": 42514790566,
+        "restoration_verified": true
       },
       "last_verified": {
         "source_sha": "1cea977b8ec67495bbbcbc7b31d38425e352c10c",
@@ -6806,7 +6809,11 @@
         "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs"
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs",
+        "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes",
+        "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes.meta"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -6815,9 +6822,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "COMPACT_TERRAIN_NATIVE_PARITY_OWNER_PRIORITY",
+      "phase": "REACHABILITY_BUFFER_ALLOCATION_CAUSAL_COMPARISON",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Native42508059413 source6cf82e7 passed baseline/staged parity and canonical journey, currently compiling WebGL; await actual artifacts/restoration. Packaging42508475411 source239ae92 independently verified exact mobile6 texture/cubemap profile and waits for native success, then same-machine Apple GPU control/candidate entry/reload/memory comparison. No publication or physical iPhone PASS yet.",
+      "next": "Measure original vs reused route dictionary buffers with exact world population and route parity, then fresh WebGL only if native checks pass. Mobile8 rejected for peak memory; no publication yet.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6955,10 +6962,21 @@
           "public_qa_artifact": 13623376058,
           "public_nickname_reload_visually_verified": true,
           "physical_iphone_result": "FAIL: owner reports same as mobile5"
+        },
+        "terrain_tape_native": {
+          "run": 42514790566,
+          "source": "35db7669ad1bfcbeeb563fa40ebb5e591efe0344",
+          "queries_per_pass": 119870,
+          "passes": 2,
+          "sites": 2142,
+          "cities": 17,
+          "cache_sha256": "013ebf8194be6974dbcadf27e3cf2ae43db7c7638e0e6cb22cfe838e037ed986",
+          "restored": true,
+          "physical_iphone_verified": false
         }
       },
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
+      "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
         "status": "granted_by_owner",
@@ -6980,7 +6998,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 7,
+      "ownership_revision": 8,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7005,34 +7023,28 @@
       ],
       "resources": [],
       "budget_eur": 0,
-      "phase": "COMPLETE_NON_NATIVE_SCOPE_SOURCE_GREEN_WAIT_UNITY_EXCLUSIVE_HANDOFF",
+      "phase": "PREMIUM_SPRITES_AND_LOOT_FLIGHT_SOURCE_VERIFIED_WAIT_NATIVE_ART_PROOF",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.",
-      "next": "PR181 source and nine original Unity-ready sprites already versioned. Verified HEAD 0cf82af1791965395a77013c05abb3af73c92a54: 4127 domain, 183 real gateway, 38 owner economy, 8 layout, 12 C# syntax, global march smoke, all nine hashes, governance green. Remaining genuine resource: windows-runner-heavy is held by PR179. On formal release, lease by CAS then execute 16 genuine native shots / 16 pointer interactions / 4 real claims; inspect visuals, sound, UX I-V, scene integration with PR173 and real mobile. Do not merge/publish until visual >= approved preview and game/device quality gates pass.",
+      "next": "Actual premium entry chest medallion, radial glow, seven-day calendar, real prize cards flying from open chest, quiet/special/legendary palette and milestone ceremony are in isolated PR181. Ubuntu source and 9 PNG asset gates passed. Explicit next: wait until exclusive windows-runner-heavy is formally released by PR179/PR173, claim lease, run Unity 6000.3.23f1 native workflow, inspect all 52 real PNGs + independent contact sheets, pointer/Save/close UX and mobile. Do not merge/publish until human-approved artistic wow benchmark and I–V player proof.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
       "last_verified": {
         "source": "feature/eldoria-daily-treasures-20261108",
-        "commit": "0cf82af1791965395a77013c05abb3af73c92a54",
-        "run_id": 42509530630,
-        "result": "PASS_SOURCE_DOMAIN_ASSET_INTEGRITY_ONLY",
-        "rule_assertions": 4127,
-        "real_gateway_assertions": 183,
-        "owner_economy_guards": 38,
-        "layout_viewports": 8,
-        "source_files_roslyn": 12,
-        "art_assets": 9,
-        "source_sprites_imported": true,
-        "first_scout_discovery_ceremony": true,
-        "important_bastion_and_lyra_mail": true,
-        "live_milestone_queue": true,
-        "midnight_streak_hint": true,
-        "native_screen_captures_required": 16,
-        "native_pointer_interactions_required": 16,
-        "unity_native_pass": false,
-        "art_approved": false,
-        "full_game_playtested": false,
-        "webgl_release": false
+        "commit": "05166dc4eb2791e429d3dbf7f909164b35abb773",
+        "run_id": 42518915077,
+        "result": "SOURCE_AND_ORIGINAL_9_ART_ASSETS_SUCCESS_NOT_UNITY",
+        "native_original_pngs_required": 52,
+        "native_pointer_interactions_required": 56,
+        "native_real_claims_required": 8,
+        "unpaid_milestone_style_frames_required": 16,
+        "illustrated_entry_medallion": true,
+        "original_chest_animated_prize_flight": true,
+        "automated_pixel_audit_and_contact_sheets_prepared": true,
+        "artApproved": false,
+        "nativeUnityPassed": false,
+        "merged": false,
+        "published": false
       }
     }
   ],
