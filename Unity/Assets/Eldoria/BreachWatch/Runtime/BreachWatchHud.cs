@@ -663,11 +663,11 @@ namespace Eldoria.BreachWatch
                 At(centerMark,w*.52f-17,84,34,34);
                 At(objective,margin,125,Mathf.Min(210,w*.54f),fullObjective?118:89);
                 At(chapterName.rectTransform,37,6,Mathf.Min(162,w*.42f),21);
-                At(chapterObjective.rectTransform,14,30,Mathf.Min(183,w*.47f),fullObjective?67:42);
-                At(chapterProgress.rectTransform,14,fullObjective?101:73,Mathf.Min(183,w*.47f),15);
+                At(chapterObjective.rectTransform,14,30,Mathf.Min(183,w*.47f),fullObjective?65:35);
+                At(chapterProgress.rectTransform,14,fullObjective?99:65,Mathf.Min(183,w*.47f),19);
                 chapterName.fontSize=13;
                 chapterObjective.fontSize=16;
-                chapterProgress.fontSize=13;
+                chapterProgress.fontSize=15;
 
                 At(utilityRail,margin,h-338,54,160);
                 for(int i=0;i<utilityRail.childCount;i++)
@@ -740,11 +740,11 @@ namespace Eldoria.BreachWatch
                 At(centerMark,w*.49f-17,11,34,34);
                 At(objective,margin,102,225,fullObjective?110:83);
                 At(chapterName.rectTransform,37,8,178,20);
-                At(chapterObjective.rectTransform,14,32,197,fullObjective?60:31);
-                At(chapterProgress.rectTransform,14,fullObjective?90:65,190,14);
+                At(chapterObjective.rectTransform,14,32,197,fullObjective?57:29);
+                At(chapterProgress.rectTransform,14,fullObjective?87:61,190,19);
                 chapterName.fontSize=14;
                 chapterObjective.fontSize=16;
-                chapterProgress.fontSize=14;
+                chapterProgress.fontSize=15;
 
                 At(utilityRail,margin,h-179,49,162);
                 for(int i=0;i<utilityRail.childCount;i++)
