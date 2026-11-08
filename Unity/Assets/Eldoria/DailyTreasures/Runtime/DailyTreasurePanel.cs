@@ -582,26 +582,19 @@ namespace Eldoria.DailyTreasures
             bool finished=true;
             for(int i=0;i<prizeCount;i++)
             {
-                // Real daily loot rises from the actual opened chest and
-                // settles onto original gilt item plaques. Ordinary bonuses
-                // only slide subtly into place; they never fake a big chest.
-                float duration=chestReward?.64f:.34f;
-                float t=Mathf.Clamp01((Time.unscaledTime-prizeRevealStarted-
-                    i*.13f)/duration);
-                float ease=t*t*(3f-2f*t);
-                prizeGroups[i].alpha=Mathf.Clamp01(t*2.3f);
-                var start=chestReward?prizeFlightOrigin:
-                    prizeHomes[i]+new Vector2(i%2==0?-20f:20f,18f);
-                var xy=Vector2.Lerp(start,prizeHomes[i],ease);
-                xy.y+=Mathf.Sin(Mathf.PI*ease)*(chestReward?18f:4f);
-                prizeRects[i].anchoredPosition=xy;
-                float scale=chestReward?
-                    Mathf.Lerp(.52f,1f,ease):
-                    Mathf.Lerp(.91f,1f,ease);
-                prizeRects[i].localScale=Vector3.one*scale;
-                prizeRects[i].localRotation=Quaternion.Euler(0f,0f,
-                    Mathf.Lerp(chestReward?(i%2==0?-9f:9f):0f,0f,ease));
-                if(t<1f)finished=false;
+                // Exactly the same deterministic flight is evaluated by
+                // Ubuntu tests and rendered by Unity: the gold-framed REAL
+                // items emerge from the original illustrated chest without
+                // generating any rewards in the presentation layer.
+                var frame=DailyTreasurePrizeFlight.Sample(
+                    Time.unscaledTime-prizeRevealStarted,i,chestReward,
+                    prizeFlightOrigin.x,prizeFlightOrigin.y,
+                    prizeHomes[i].x,prizeHomes[i].y);
+                prizeGroups[i].alpha=frame.Opacity;
+                prizeRects[i].anchoredPosition=new Vector2(frame.X,frame.Y);
+                prizeRects[i].localScale=Vector3.one*frame.Scale;
+                prizeRects[i].localRotation=Quaternion.Euler(0f,0f,frame.Angle);
+                if(!frame.Finished)finished=false;
             }
             if(finished)
             {
