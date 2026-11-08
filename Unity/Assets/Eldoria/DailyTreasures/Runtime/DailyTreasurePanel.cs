@@ -26,6 +26,9 @@ namespace Eldoria.DailyTreasures
         readonly Image[] dayBack=new Image[7],sparks=new Image[12];
         readonly DailyTreasureRewardGlyph[] dayGlyph=new DailyTreasureRewardGlyph[7];
         DailyTreasureChestGraphic chest;
+        Image illustratedClosed,illustratedOpen;
+        bool hasAuthoredChestArt;
+        public bool HasAuthoredChestArt => hasAuthoredChestArt;
         Image glow;
         Texture2D glowTexture;
         Sprite glowSprite;
@@ -190,6 +193,20 @@ namespace Eldoria.DailyTreasures
             chest=chestRect.gameObject.AddComponent<DailyTreasureChestGraphic>();
             chest.raycastTarget=false;
             chest.color=Color.white;
+            // Independent original illustrated sprites are optional until their
+            // art-package files are actually imported and approved in Unity.
+            // Keep an honest procedural fallback, never a fake flat screenshot.
+            var closedSource=Resources.Load<Sprite>(
+                "DailyTreasureArt/treasure_closed_512");
+            var openSource=Resources.Load<Sprite>(
+                "DailyTreasureArt/treasure_opened_512");
+            hasAuthoredChestArt=closedSource && openSource;
+            illustratedClosed=CreateIllustratedChest(ceremony,
+                "Authored chest / closed",closedSource);
+            illustratedOpen=CreateIllustratedChest(ceremony,
+                "Authored chest / opened",openSource);
+            illustratedClosed.gameObject.SetActive(false);
+            illustratedOpen.gameObject.SetActive(false);
             resultText=Label(ceremony,"Confirmed received items","",21,Ivory,TextAnchor.MiddleCenter);
             for(int i=0;i<sparks.Length;i++)
             {
@@ -204,6 +221,16 @@ namespace Eldoria.DailyTreasures
             Stretch(skipText.rectTransform);
             ceremony.gameObject.SetActive(false);
             screen.gameObject.SetActive(false);
+        }
+        static Image CreateIllustratedChest(Transform parent,string name,Sprite art)
+        {
+            var rect=NewRect(name,parent);
+            var visual=rect.gameObject.AddComponent<Image>();
+            visual.sprite=art;
+            visual.preserveAspect=true;
+            visual.raycastTarget=false;
+            visual.color=Color.white;
+            return visual;
         }
         static AudioClip MakeOriginalSound(string name,float frequency,float duration)
         {
@@ -368,8 +395,12 @@ namespace Eldoria.DailyTreasures
             if(Application.isPlaying && originalSfx && chestKnock && showChest)
                 originalSfx.PlayOneShot(chestKnock);
             startTime=Time.unscaledTime;
-            chest.gameObject.SetActive(showChest);
+            chest.gameObject.SetActive(showChest && !hasAuthoredChestArt);
             chest.SetOpening(0f);
+            illustratedClosed.gameObject.SetActive(showChest && hasAuthoredChestArt);
+            illustratedOpen.gameObject.SetActive(showChest && hasAuthoredChestArt);
+            illustratedClosed.color=Color.white;
+            illustratedOpen.color=new Color(1f,1f,1f,0f);
             glow.color=new Color(1f,.75f,.36f,showChest?0f:.34f);
             skipButton.gameObject.SetActive(showChest);
             if(!showChest)ShowResult();
@@ -378,6 +409,11 @@ namespace Eldoria.DailyTreasures
         {
             playing=false;
             chest.SetOpening(1f);
+            if(hasAuthoredChestArt)
+            {
+                illustratedClosed.color=new Color(1f,1f,1f,0f);
+                illustratedOpen.color=Color.white;
+            }
             resultText.text=ceremonialTitle+"\n\n"+ceremonialReceipt+
                 "\n\nGuardado · justificante en el buzón";
             skipButton.gameObject.SetActive(false);
@@ -447,6 +483,12 @@ namespace Eldoria.DailyTreasures
             Place(glowRect,.5f,.5f,.5f,.5f,0,10,portrait?290f:355f,portrait?290f:355f);
             Place(chest.rectTransform,.5f,.5f,.5f,.5f,0,portrait?55f:30f,
                 portrait?195f:165f,portrait?150f:125f);
+            // Full-cell transparent source sprites preserve the model's scale,
+            // and do not stretch the illustrated ironwork on odd phone ratios.
+            Place(illustratedClosed.rectTransform,.5f,.5f,.5f,.5f,
+                0f,portrait?55f:10f,portrait?260f:235f,portrait?195f:170f);
+            Place(illustratedOpen.rectTransform,.5f,.5f,.5f,.5f,
+                0f,portrait?55f:10f,portrait?260f:235f,portrait?195f:170f);
             Place(resultText.rectTransform,.5f,.5f,.5f,.5f,0,
                 portrait?-140f:-95f,panelW-45f,portrait?165f:118f);
             // Skip stays away from the receipt and is a genuine >=44px hit target.
@@ -480,6 +522,11 @@ namespace Eldoria.DailyTreasures
             }
             float opening=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((elapsed-.50f)/.72f));
             chest.SetOpening(opening);
+            if(hasAuthoredChestArt)
+            {
+                illustratedClosed.color=new Color(1f,1f,1f,1f-opening);
+                illustratedOpen.color=new Color(1f,1f,1f,opening);
+            }
             float alpha=Mathf.Sin(Mathf.Clamp01((elapsed-.30f)/2.1f)*Mathf.PI);
             glow.color=new Color(1f,.77f,.35f,alpha*.72f);
             for(int i=0;i<sparks.Length;i++)
