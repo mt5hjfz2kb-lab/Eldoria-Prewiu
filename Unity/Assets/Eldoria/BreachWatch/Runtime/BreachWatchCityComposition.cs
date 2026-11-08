@@ -98,7 +98,7 @@ namespace Eldoria.BreachWatch
             // camera. Narrower phones need a little more separation so the
             // Bastion does not regain its giant 70%-screen footprint.
             float ratio=.5625f/aspect;
-            float factor=Mathf.Clamp(1.78f*ratio,1.67f,2.15f);
+            float factor=Mathf.Clamp(1.78f*ratio,1.67f,2.65f);
             cityCamera.orthographicSize=Mathf.Clamp(originalZoom*factor,45f,105f);
             host.City.Controls.FitToTerrain();
 
@@ -108,6 +108,37 @@ namespace Eldoria.BreachWatch
                     ?host.City.BastionTwo:host.City.BastionOne;
             if(TryBounds(bastion,out var bounds))
             {
+                // Size the REAL model, not a hard-coded guess about a 16:9
+                // camera. On 390x844 phones the previous aspect-only clamp
+                // left the Bastion at 54% of the viewport despite its
+                // accepted ~40% composition on 900x1600. This secondary
+                // bounded projection fit is determined from the true model.
+                float minX=float.PositiveInfinity,maxX=float.NegativeInfinity;
+                var min=bounds.min;var max=bounds.max;
+                for(int corner=0;corner<8;corner++)
+                {
+                    var point=new Vector3(
+                        (corner&1)!=0?max.x:min.x,
+                        (corner&2)!=0?max.y:min.y,
+                        (corner&4)!=0?max.z:min.z);
+                    var projected=cityCamera.WorldToViewportPoint(point);
+                    if(projected.z<=0f)continue;
+                    minX=Mathf.Min(minX,projected.x);
+                    maxX=Mathf.Max(maxX,projected.x);
+                }
+                if(minX<float.PositiveInfinity)
+                {
+                    float currentWidth=maxX-minX;
+                    float goalWidth=aspect<.50f?.43f:.40f;
+                    if(currentWidth>goalWidth*1.035f && currentWidth<1.5f)
+                    {
+                        float nextZoom=cityCamera.orthographicSize*
+                            (currentWidth/goalWidth);
+                        cityCamera.orthographicSize=Mathf.Clamp(
+                            nextZoom,cityCamera.orthographicSize,105f);
+                        host.City.Controls.FitToTerrain();
+                    }
+                }
                 // Position the EXISTING model at the upper central portion
                 // of the phone and expose road, gate, river and resource sites.
                 // Camera offset is strictly in the ground plane: avoid
