@@ -634,10 +634,11 @@ namespace Eldoria.BreachWatch
                 At(buildingState.rectTransform,13,249,pw-26,19);
                 At(((RectTransform)actionButton.transform),12,ph-55,pw-24,52);
                 buildingName.fontSize=20;
-                buildingLevel.fontSize=14;
-                buildingFunction.fontSize=14;
-                buildingCosts.fontSize=14;
-                buildingState.fontSize=13;
+                buildingLevel.fontSize=15;
+                buildingFunction.fontSize=16;
+                buildingCosts.fontSize=15;
+                buildingState.fontSize=14;
+                costHeader.fontSize=15;
                 actionLabel.fontSize=16;
 
                 At(feedback.rectTransform,margin,h-122,Mathf.Max(90,left-margin-15),34);
