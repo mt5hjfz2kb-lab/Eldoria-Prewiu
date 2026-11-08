@@ -140,7 +140,7 @@ jobs:
           $head=git -C $source rev-parse HEAD
           $status=@(git -C $source status --porcelain -- Unity)
           $paths=@('Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/BakedSceneURP.asset','Unity/Assets/UniversalRenderPipelineGlobalSettings.asset')
-          $diff=git -C $source diff -- $paths
+          $diff=@(git -C $source diff -- $paths)
           [IO.File]::WriteAllLines((Join-Path $out 'current-settings.diff'),[string[]]$diff,$utf8)
           $inventory=@(Get-ChildItem $env:GITHUB_WORKSPACE -Directory -Filter 'beta-structural-*'|ForEach-Object {$_.Name})
           [IO.File]::WriteAllText((Join-Path $out 'recovery-inspection.json'),(@{head=$head;status=$status;preserved_directories=$inventory;source_modified_by_recovery=$false}|ConvertTo-Json -Depth 8),$utf8)
