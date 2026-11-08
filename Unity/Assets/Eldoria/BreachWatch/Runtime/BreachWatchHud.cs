@@ -63,6 +63,7 @@ namespace Eldoria.BreachWatch
         public Canvas NativeCanvas => canvas;
         public Button BuildingAction => actionButton;
         public RectTransform BuildingPanel => panel;
+        public bool HasLiveBuildingPortrait => buildingPortrait && buildingPortrait.HasLiveBuilding;
         public IReadOnlyList<Button> NavButtons => navButtons;
 
         public static BreachWatchHud Install(ValoriaIntegratedWorld source)
