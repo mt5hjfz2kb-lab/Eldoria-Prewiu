@@ -280,6 +280,10 @@ namespace Eldoria.DailyTreasures.Editor
                     Need(panel.EarnedItemCardCount==2 &&
                          panel.HasRevealedIllustratedEarnedItems,
                         "Day four must show two painted, real paid wood and stone cards");
+                    pictures.Add(Render(camera,rt,output,width,height,
+                        "special-day4-received",
+                        "Actual day-four payment shown as two original illustrated resource cards",
+                        true,true));
                     Need(specialGateway.Snapshot().Resources.Wood==
                          specialAfter.Resources.Wood &&
                          specialGateway.Snapshot().Resources.Stone==
@@ -345,7 +349,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Object.DestroyImmediate(rt);
                     Object.DestroyImmediate(go);
                 }
-                Need(pictures.Count==24 && inputChecks==40 && report.realGatewayClaims==8,
+                Need(pictures.Count==28 && inputChecks==40 && report.realGatewayClaims==8,
                     "Day-four and day-seven native reward coverage incomplete");
                 report.status=report.authoredSpritesImported
                     ? "NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING"
@@ -354,7 +358,7 @@ namespace Eldoria.DailyTreasures.Editor
                 report.images=pictures.Count;
                 report.shots=pictures.ToArray();
                 File.WriteAllText(Path.Combine(output,"report.json"),JsonUtility.ToJson(report,true));
-                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 24 PNG; day-four/day-seven; NOT ART_APPROVED / NOT FULL GAMEPASS");
+                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 28 PNG; day-four/day-seven; NOT ART_APPROVED / NOT FULL GAMEPASS");
                 EditorApplication.Exit(0);
             }
             catch(Exception e)
