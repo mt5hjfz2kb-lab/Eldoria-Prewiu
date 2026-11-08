@@ -33,6 +33,55 @@ internal static class GatewayChecks
             if(mail.Type=="daily-treasure")n++;
         return n;
     }
+    static void SevenDayRealGatewayJourney()
+    {
+        var clock=new FakeClock{UtcTicks=At(8)};
+        var store=new MemoryStore();
+        var gateway=new LocalGateway(clock,store);
+        var first=gateway.Snapshot();
+        int wood=first.Resources.Wood,stone=first.Resources.Stone,
+            food=first.Resources.Food,one=first.SpeedupOneMinute,
+            five=first.SpeedupFiveMinutes;
+        for(int day=1;day<=7;day++)
+        {
+            clock.UtcTicks=At(7+day);
+            var current=gateway.Snapshot();
+            var predicted=DailyTreasureRules.Preview(current.DailyTreasures,clock.UtcTicks);
+            Assert(predicted.CycleDay==day,"real 7-day candidate order "+day);
+            var receipt="week-"+day;
+            Assert(Submit(gateway,receipt,"ClaimDailyTreasure").Ok,
+                "real gateway daily payout "+day);
+            wood+=predicted.Wood;
+            stone+=predicted.Stone;
+            food+=predicted.Food;
+            one+=predicted.SpeedupOneMinute;
+            five+=predicted.SpeedupFiveMinutes;
+            var actual=gateway.Snapshot();
+            Assert(actual.Resources.Wood==wood && actual.Resources.Stone==stone &&
+                actual.Resources.Food==food,"7-day exact resource ledger "+day);
+            Assert(actual.SpeedupOneMinute==one &&
+                actual.SpeedupFiveMinutes==five,"7-day exact speedup ledger "+day);
+            Assert(MailCount(actual)==day,"one receipt per real paid day "+day);
+            Assert(!Submit(gateway,"repeat-"+day,"ClaimDailyTreasure").Ok,
+                "repeated day does not pay twice "+day);
+            gateway=new LocalGateway(clock,store);
+            Assert(!Submit(gateway,"reloaded-"+day,"ClaimDailyTreasure").Ok,
+                "reloaded day cannot pay twice "+day);
+        }
+        Assert(wood-first.Resources.Wood==330,"week total wood balanced baseline");
+        Assert(stone-first.Resources.Stone==300,"week total stone balanced baseline");
+        Assert(food-first.Resources.Food==230,"week total food includes only real streak bonuses");
+        Assert(one-first.SpeedupOneMinute==3 && five-first.SpeedupFiveMinutes==1,
+            "week accelerators exact");
+        clock.UtcTicks=At(15);
+        Assert(Submit(gateway,"week-eight","ClaimDailyTreasure").Ok,
+            "calendar cycles without losing consecutive streak");
+        var eighth=gateway.Snapshot();
+        Assert(eighth.DailyTreasures.CycleDay==1 &&
+            eighth.DailyTreasures.ConsecutiveDays==8 &&
+            eighth.DailyTreasures.TotalClaims==8,
+            "cycle resets after seven while consecutive streak continues");
+    }
     public static void Main()
     {
         var clock=new FakeClock{UtcTicks=At(8)};
@@ -86,6 +135,7 @@ internal static class GatewayChecks
         clock.UtcTicks=At(10);
         Assert(!Submit(gateway,"rollback","ClaimDailyTreasure").Ok,
             "wall-clock rollback cannot claim again");
+        SevenDayRealGatewayJourney();
         Console.WriteLine("PASS daily treasure real gateway: "+assertions+" assertions, store writes "+store.Writes);
     }
 }
