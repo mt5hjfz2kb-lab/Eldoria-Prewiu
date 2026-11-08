@@ -272,6 +272,54 @@ internal static class Program
         try{DailyTreasurePrizeFlight.Sample(float.NaN,0,true,0f,0f,10f,10f);}
         catch(ArgumentOutOfRangeException){rejectedNan=true;}
         True(rejectedNan,"invalid animation time cannot corrupt Unity transforms");
+        // The original physical audio cues must sound different from a
+        // single click or an indefinitely sustained sine tone; the source
+        // renderer is compiled and run here without any Unity mocks.
+        float[] lastAudio=null;
+        foreach(var cue in new[]{
+            DailyTreasureFoleyCue.Latch,
+            DailyTreasureFoleyCue.Discovery,
+            DailyTreasureFoleyCue.GrandDiscovery})
+        {
+            var samples=DailyTreasureFoley.Render(cue);
+            var repeat=DailyTreasureFoley.Render(cue);
+            Eq(samples.Length,repeat.Length,"original Foley is reproducible");
+            True(samples.Length>=9000 && samples.Length<=36000,
+                "short authored Foley is mobile-memory bounded");
+            double sum=0,sumSq=0,peak=0;
+            for(int j=0;j<samples.Length;j++)
+            {
+                True(!float.IsNaN(samples[j]) && !float.IsInfinity(samples[j]),
+                    "procedural audio produces finite samples");
+                True(Math.Abs(samples[j])<=.75001,
+                    "wood/bronze audio will not digitally clip");
+                sum+=samples[j];
+                sumSq+=samples[j]*samples[j];
+                peak=Math.Max(peak,Math.Abs(samples[j]));
+                if(j%197==0)
+                    Eq(samples[j],repeat[j],
+                        "same sound does not change across sessions");
+            }
+            double rms=Math.Sqrt(sumSq/samples.Length);
+            True(peak>.04 && rms>.012,
+                "original audible cue has useful but controlled body");
+            True(Math.Abs(sum/samples.Length)<.004,
+                "Foley has near-zero DC component");
+            True(Math.Abs(samples[samples.Length-1])<.04,
+                "sound fades instead of stopping with a harsh pop");
+            if(lastAudio!=null)
+                True(lastAudio.Length!=samples.Length,
+                    "different ceremonies have distinct sound durations");
+            lastAudio=samples;
+        }
+        Eq(DailyTreasureFoley.SampleRate,22050,
+            "sound buffers use a low-memory mobile sample rate");
+        Eq(DailyTreasureFoley.Duration(DailyTreasureFoleyCue.GrandDiscovery),
+            1.48f,"grand chest chime duration");
+        bool badSoundRate=false;
+        try{DailyTreasureFoley.Render(DailyTreasureFoleyCue.Latch,1000);}
+        catch(ArgumentOutOfRangeException){badSoundRate=true;}
+        True(badSoundRate,"invalid audio sampling is rejected");
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");
     }
 }
