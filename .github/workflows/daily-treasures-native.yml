@@ -173,18 +173,18 @@ jobs:
           if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or $report.authoredSpritesImported -ne $true){
             throw 'Illustrated chest sprites not imported in Unity or not used in the native render'
           }
-          if($report.images -ne 24 -or $report.realGatewayClaims -ne 8 -or $report.graphicalPointerHits -ne 40){
+          if($report.images -ne 28 -or $report.realGatewayClaims -ne 8 -or $report.graphicalPointerHits -ne 40){
             throw 'Actual Unity or player-interaction proof is incomplete'
           }
           if($report.source -ne $env:GITHUB_SHA){throw 'Native evidence was not rendered at the requested PR SHA'}
           if($report.artApproved -ne $false -or $report.fullSceneVerified -ne $false -or $report.iosVerified -ne $false){
             throw 'Component test may not claim artistic, gameplay or physical-device approval'
           }
-          if(@($report.shots).Count -ne 24){throw 'Native evidence missing screenshot hashes'}
+          if(@($report.shots).Count -ne 28){throw 'Native evidence missing screenshot hashes'}
           $seen=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
           foreach($size in @(@(1600,900),@(900,1600),@(844,390),@(390,844))){
             $width=[int]$size[0];$height=[int]$size[1]
-            foreach($variant in @('calendar','closed','opening','opened','special-day4-calendar','special-day4-opening')){
+            foreach($variant in @('calendar','closed','opening','opened','special-day4-calendar','special-day4-opening','special-day4-received')){
               $name="real-unity-daily-$variant-${width}x$height.png"
               $matches=@($report.shots | Where-Object {$_.file -ceq $name})
               if($matches.Count -ne 1 -or -not $seen.Add($name)){
@@ -213,8 +213,8 @@ jobs:
               if($digest -ne [string]$item.sha256){throw "Native screenshot hash mismatch: $name"}
             }
           }
-          if($seen.Count -ne 24 -or @(Get-ChildItem -Path $env:OUT -File -Filter '*.png').Count -ne 24){
-            throw 'All 16 required Unity views plus 8 real day-four views must exist'
+          if($seen.Count -ne 28 -or @(Get-ChildItem -Path $env:OUT -File -Filter '*.png').Count -ne 28){
+            throw 'All 16 day-seven views plus 12 genuine day-four views must exist'
           }
           Write-Host 'PASS original native component captures, NOT FULL GAME / ART APPROVAL'
       - name: Preserve real Unity screenshots and error log even when test fails
