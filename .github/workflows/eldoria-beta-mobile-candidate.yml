@@ -9,7 +9,7 @@ permissions:
   actions: read
 concurrency:
   group: eldoria-beta-mobile-candidate
-  cancel-in-progress: true
+  cancel-in-progress: false
 env:
   NATIVE_RUN: '42473140363'
   NATIVE_EXPORT_SOURCE: d32508f9ce380eb8ea9bc10fecd4fb2dfc44a2f2
@@ -115,6 +115,14 @@ jobs:
           python tools/eldoria-private-beta/reuse_verified_texture_transforms.py --original original.unity3d --verified verified.unity3d --fresh extracted/data.unity3d --expected-fresh-sha256 "$HASH" --destination transformed
           python tools/eldoria-private-beta/prepare_structural_site.py package --build fresh-build --wrapper previous-candidate --output site/mobile --data extracted/data.bin --bundle transformed/data.unity3d --texture-proof transformed/integrity.json --native-proof native-evidence/comparison.json --web-proof native-evidence/web-build.json --overlay-commit "$NATIVE_SOURCE" --revision "$CANDIDATE_REVISION" --native-run "$NATIVE_ORIGIN_RUN"
           node tools/delivery/test-exact-decoded-transport.mjs site/mobile
+          python - <<'PY'
+          import pathlib,json
+          p=pathlib.Path('site/mobile');size=sum(f.stat().st_size for f in p.rglob('*') if f.is_file())
+          d=json.loads((p/'release-identity.json').read_text());d['packaged_bytes']=size
+          (p/'release-identity.json').write_text(json.dumps(d,indent=2))
+          print('CANDIDATE_PACKAGED_BYTES',size)
+          assert size<900000000,'Candidate too large for existing Pages distribution; do not run another oversized browser retry'
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -228,4 +236,4 @@ jobs:
           name: structural-name-verification
           path: evidence/qa-entry/
 
-# Supersedes only the observed Linux package wait; native run 42435095850 continues independently.
+# Identical-pixel texture reuse; keep earlier browser evidence running independently.
