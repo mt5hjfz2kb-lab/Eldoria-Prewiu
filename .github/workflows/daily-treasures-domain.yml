@@ -8,6 +8,7 @@ on:
       - "Unity/Assets/Eldoria/DailyTreasures/**"
       - "tools/daily-treasures/**"
       - ".github/workflows/daily-treasures-domain.yml"
+      - ".github/workflows/daily-treasures-native.yml"
   push:
     branches:
       - feature/eldoria-daily-treasures-20261108
@@ -29,6 +30,7 @@ jobs:
             /Unity/Assets/Eldoria/DailyTreasures/
             /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs
             /tools/daily-treasures/
+            /.github/workflows/daily-treasures-native.yml
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: |
