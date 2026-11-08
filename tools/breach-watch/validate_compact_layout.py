@@ -59,14 +59,14 @@ def check(size:tuple[int,int]):
     if portrait:
         place("identity",m,11,182,55)
         right=w-(m+182+9+m)
-        chip=max(58,(right-8)/3)
+        chip=min(70,max(58,(right-8)/3))
         for i in range(3):
             place("resource"+str(i),w-m-(3*chip+8)+i*(chip+4),18,chip,38)
-        place("mission",m,125,min(250,w*.62),89)
+        place("mission",m,125,min(210,w*.54),89)
         place("breach",w*.52-17,84,34,34)
         for i in range(3):
             place("disabled seal"+str(i),m,h-338+i*53,49,49)
-        navsize,gap=56,11
+        navsize,gap=49,14
         navw=5*navsize+4*gap
         navtop=h-100
         for i in range(5):
@@ -139,7 +139,7 @@ def main():
     expected=[
         'Mathf.Clamp(pixelWidth/430f,.86f,1.75f)',
         'At(identity,margin,11,182,55)',
-        'float navSize=56,navGap=11',
+        'float navSize=49,navGap=14',
         'float navTop=h-100f',
         'float ph=324f',
         'At(((RectTransform)actionButton.transform),12,ph-55,pw-24,52)',
