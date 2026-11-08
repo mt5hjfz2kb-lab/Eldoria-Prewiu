@@ -59,10 +59,27 @@ namespace Eldoria.DailyTreasures
             return DailyTreasureStageKind.Daily;
         }
 
+        // Gentle depth motion through already-cropped real artwork.
+        // Never exceed a small part of the available source-image margin:
+        // no UV repetition, black bars, jump cuts or invented scene content.
+        public static float SafePainterlyDrift(float seconds,float availableUv,
+            bool vertical)
+        {
+            if(float.IsNaN(seconds)||float.IsInfinity(seconds)||
+               float.IsNaN(availableUv)||float.IsInfinity(availableUv)||
+               availableUv<0f||availableUv>1f)
+                throw new ArgumentOutOfRangeException(nameof(availableUv));
+            if(availableUv<.0001f)return 0f;
+            float phase=vertical?1.2f:.5f;
+            return (float)Math.Sin(seconds*(vertical?.38f:.53f)+phase)*
+                availableUv*.13f;
+        }
+
         public static DailyTreasureStageLayout Compose(string eventId,
             float width,float height)
         {
             if(float.IsNaN(width)||float.IsNaN(height)||
+               float.IsInfinity(width)||float.IsInfinity(height)||
                width<275f||height<300f)
                 throw new ArgumentOutOfRangeException(nameof(width),
                     "Need a real portrait/landscape canonical screen size");
