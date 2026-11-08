@@ -823,30 +823,34 @@ namespace Eldoria.BreachWatch
                 // roughly one third of the screen rather than nearly half.
                 // Separate, fully readable live text fits in the compact
                 // vertical stack; it is never flattened into one bitmap.
-                float pw=Mathf.Min(178f,w*.43f);
-                float ph=307f;
+                // Match the approved 864×1536 premium reference: the card
+                // occupies roughly one third of width and leaves more
+                // unblocked river and city. Internal live text is rearranged
+                // instead of baking it into an image.
+                float pw=Mathf.Min(171f,w*.42f);
+                float ph=293f;
                 float left=w-margin-pw;
                 float top=navTop-ph-45;
                 At(panel,left,top,pw,ph);
                 At(buildingName.rectTransform,51,7,pw-106,28);
                 At(buildingLevel.rectTransform,51,34,pw-106,19);
                 At(((RectTransform)closeButton.transform),pw-55,3,50,50);
-                At(portraitFrame,11,56,pw-22,81);
-                At(buildingFunction.rectTransform,13,140,pw-26,43);
-                At(costHeader.rectTransform,13,186,pw-26,19);
-                At(buildingCosts.rectTransform,13,209,pw-26,26);
-                At(costIcons[0].rectTransform,14,210,24,24);
-                At(costQuantities[0].rectTransform,42,209,42,27);
-                At(costIcons[1].rectTransform,91,210,24,24);
-                At(costQuantities[1].rectTransform,118,209,pw-131,27);
-                At(buildingState.rectTransform,13,236,pw-26,17);
+                At(portraitFrame,11,55,pw-22,76);
+                At(buildingFunction.rectTransform,13,133,pw-26,39);
+                At(costHeader.rectTransform,13,174,pw-26,18);
+                At(buildingCosts.rectTransform,13,195,pw-26,24);
+                At(costIcons[0].rectTransform,14,195,23,23);
+                At(costQuantities[0].rectTransform,41,195,43,24);
+                At(costIcons[1].rectTransform,90,195,23,23);
+                At(costQuantities[1].rectTransform,116,195,pw-129,24);
+                At(buildingState.rectTransform,13,220,pw-26,17);
                 At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50);
                 buildingName.fontSize=19;
                 buildingLevel.fontSize=14;
                 buildingFunction.fontSize=15;
                 buildingCosts.fontSize=14;
                 buildingState.fontSize=14;
-                costHeader.fontSize=15;
+                costHeader.fontSize=13;
                 actionLabel.fontSize=16;
 
                 At(feedbackPlate,margin,h-160,Mathf.Max(120,left-margin-15),36);
