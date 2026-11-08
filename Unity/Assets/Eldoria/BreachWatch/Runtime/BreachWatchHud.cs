@@ -97,7 +97,7 @@ namespace Eldoria.BreachWatch
         public bool UsesCompactRealmCrest =>
             identityCrest && identityCrest.GetComponent<BreachWatchPlate>() &&
             identityCrest.GetComponent<BreachWatchPlate>().sprite &&
-            identityCrest.GetComponent<BreachWatchPlate>().sprite.name=="castle";
+            identityCrest.GetComponent<BreachWatchPlate>().sprite.name=="lion_crest";
         public bool UsesOriginalPaintedMedallions =>
             navPlates[0] && navPlates[0].sprite &&
             navPlates[0].sprite.name=="castle";
@@ -111,7 +111,9 @@ namespace Eldoria.BreachWatch
                     if(!requested || !navPlates[i] || navPlates[i].sprite!=requested)
                         return false;
                 }
-                var crest=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/castle");
+                // Navigation uses five sculpted medallions, while profile
+                // identity is the separately approved golden-lion crest.
+                var crest=Resources.Load<Sprite>("VigiliaArt/OwnerReference/lion_crest");
                 return crest && identityCrest &&
                     identityCrest.GetComponent<BreachWatchPlate>().sprite==crest;
             }
@@ -331,8 +333,11 @@ namespace Eldoria.BreachWatch
             // Independent round carved crest replaces the obsolete banner.
             identityCrest=Rect("Independent circular realm crest",identity);
             Plate(identityCrest,BreachWatchPlate.PlateType.Navigation);
-            var crestImage=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/castle");
-            if(!crestImage)crestImage=Resources.Load<Sprite>("VigiliaArt/OwnerReference/castle");
+            // The actual owner-approved design uses a *lion* personal crest,
+            // not another castle. Keep it a standalone 56px sprite; never
+            // place the approved full screenshot under gameplay controls.
+            var crestImage=Resources.Load<Sprite>("VigiliaArt/OwnerReference/lion_crest");
+            if(!crestImage)crestImage=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/castle");
             if(crestImage)identityCrest.GetComponent<BreachWatchPlate>()
                 .ApplyIndependentArt(crestImage);
             At(identityCrest,-3,-4,62,62);
