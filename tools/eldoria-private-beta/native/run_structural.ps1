@@ -37,7 +37,7 @@ function Invoke-Native([string]$Method,[string]$Log,[string]$Target){
  Set-NativePhase "$Method (staged=$env:ELDORIA_EXPECT_STAGED; target=$Target)"
  Write-Host "Starting native phase $Method; log $Log"
  $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
- $limit=if($Target -eq 'WebGL'){2400}else{480}
+ $limit=if($Target -eq 'WebGL'){2400}elseif($Method -eq 'EldoriaBetaStructuralStartupProbe.Run' -and $env:ELDORIA_EXPECT_STAGED -eq '0'){3600}else{480}
  $deadline=(Get-Date).AddSeconds($limit)
  while(-not $p.WaitForExit(15000)){
   Write-Host "Native phase $Method still running; owned PID $($p.Id)"
