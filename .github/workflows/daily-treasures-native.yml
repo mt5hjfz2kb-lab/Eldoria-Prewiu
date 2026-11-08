@@ -1,6 +1,9 @@
 name: Tesoros de Valoria — native component proof (exclusive lease only)
 on:
   workflow_dispatch:
+  push:
+    branches: [feature/eldoria-daily-treasures-20261108]
+    paths: [tools/daily-treasures/native-request.txt]
 permissions:
   contents: read
 concurrency:
