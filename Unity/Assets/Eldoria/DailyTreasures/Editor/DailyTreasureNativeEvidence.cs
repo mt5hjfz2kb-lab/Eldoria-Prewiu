@@ -227,6 +227,7 @@ namespace Eldoria.DailyTreasures.Editor
                     // Unity canvas and render target, with its OWN disposable
                     // real player state, not changing a day-seven save to
                     // fabricate an earlier reward after the fact.
+                    clock.UtcTicks=Day(1);
                     var specialStore=new TransientStore();
                     var specialGateway=new LocalGateway(clock,specialStore);
                     for(int day=1;day<=3;day++)
