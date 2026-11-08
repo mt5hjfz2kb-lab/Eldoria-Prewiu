@@ -42,3 +42,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: native-first-screen semantic correction only: the five owner-reference medallions now label truthful destinations (realm, resources, army disabled, exploration gated, heroes disabled). The real resource command selects the sawmill, not barracks. Source and art integrity recheck on Ubuntu; Windows native remains strictly gated behind beta holder release.
 
 2026-11-08 final source-only revalidation: independent volcanic edge veil, faithful five-slot destinations, real city/world camera state, separate URP portrait camera and safe asset metadata. Owner required no interim approval. Native runner must only activate after verified release by beta's canonical Windows owner.
+
+2026-11-08: QA of independent landscape-specific Vigilia title and noninteractive atmospheric mesh, URP base building portrait, true resource/city/world/disabled routes, no HUD skin. Export Roslyn+art checks, native proof only if canonical heavy Windows claim becomes available after safe handoff.
