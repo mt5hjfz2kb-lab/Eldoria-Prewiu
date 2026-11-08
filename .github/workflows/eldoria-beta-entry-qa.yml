@@ -38,7 +38,9 @@ jobs:
           python tools/eldoria-private-beta/native/compact-index/prepare.py parent-site
       - name: Verify every vertex and adversarial cases; measure allocations
         working-directory: tools/eldoria-private-beta/native/compact-index
-        run: dotnet run --configuration Release --project CompactIndexTest.csproj -- queries.gz "$GITHUB_WORKSPACE/Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs"
+        run: |
+          dotnet --version
+          dotnet run --configuration Release --project CompactIndexTest.csproj -- queries.gz "$GITHUB_WORKSPACE/Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
