@@ -263,6 +263,66 @@ internal static class GatewayChecks
         Assert(q.PendingCount==0,"future unrecorded events do not create fictitious premium rewards");
     }
 
+    static void RealReportSessionQueue()
+    {
+        var queue=new DailyTreasureMilestoneQueue();
+        queue.Reset(new PlayerState());
+        var realBattle=new PlayerState();
+        realBattle.Mailbox.Receive(new EldoriaV41Message{
+            EventId="vigilant:completed-command",Type="battle",
+            Category="informes",Title="Victoria en los Vigilantes",
+            Subtitle="Capítulo cerrado"
+        });
+        Assert(!queue.AddConfirmedReport(realBattle,
+                "vigilant:invented","battle","vigilant:chapter:25",
+                "Capítulo 1 completado","Resultado",true),
+            "unpersisted battle cannot invent a premium ceremony");
+        Assert(!queue.AddConfirmedReport(realBattle,
+                "vigilant:completed-command","exploration","scout:first:order",
+                "Capítulo 1 completado","Resultado",true),
+            "exploration style cannot hijack a battle report");
+        Assert(queue.AddConfirmedReport(realBattle,
+                "vigilant:completed-command","battle","vigilant:chapter:25",
+                "Capítulo 1 completado","Resultado confirmado",true),
+            "an actually recorded chapter battle defers its ceremony");
+        Assert(!queue.AddConfirmedReport(realBattle,
+                "vigilant:completed-command","battle","vigilant:chapter:25",
+                "Capítulo 1 completado","Resultado confirmado",true),
+            "repeated command report cannot enqueue a duplicate ceremony");
+        Assert(queue.TryPeek(out var battle) &&
+               battle.Legendary && battle.EventId=="vigilant:chapter:25",
+            "chapter queue retains the genuine victory visual tier");
+        Assert(queue.TryPeek(out _) && queue.PendingCount==1,
+            "unavailable or open narrative room cannot consume a queued battle");
+        Assert(!queue.ConfirmPresented("scout:first:order"),
+            "unrelated UI may not acknowledge a chapter battle");
+        Assert(queue.ConfirmPresented(battle.EventId) &&
+               queue.PendingCount==0,"chapter is consumed only after presentation");
+
+        var discovery=new PlayerState();
+        discovery.Mailbox.Receive(new EldoriaV41Message{
+            EventId="exploration:actual-order-claim",Type="exploration",
+            Category="informes",Title="Informe de exploración",
+            Subtitle="Nuevo hallazgo auténtico"
+        });
+        Assert(!queue.AddConfirmedReport(discovery,
+                "exploration:unknown-claim","exploration","scout:first:order42",
+                "Primer descubrimiento","Informe",false),
+            "unpaid or missing scout report cannot create a celebration");
+        Assert(queue.AddConfirmedReport(discovery,
+                "exploration:actual-order-claim","exploration","scout:first:order42",
+                "Primer descubrimiento","Informe confirmado",false),
+            "first family discovery is queued after its real mailbox report");
+        Assert(queue.TryPeek(out var scout) && !scout.Legendary &&
+               scout.EventId=="scout:first:order42",
+            "explorer keeps the special tier rather than false legendary loot");
+        Assert(queue.ConfirmPresented(scout.EventId) &&
+               queue.PendingCount==0,"first discovery ceremony displays once");
+        queue.Reset(discovery);
+        Assert(queue.PendingCount==0,
+            "relaunch does not force an older offline discovery ceremony");
+    }
+
     static void RealRewardEconomyEnvelope()
     {
         // A deterministic reference estimate, not a human retention result.
@@ -376,6 +436,7 @@ internal static class GatewayChecks
         RealMilestoneEligibility();
         RealBastionMailboxMilestones();
         RealMilestoneSessionQueue();
+        RealReportSessionQueue();
         RealRewardEconomyEnvelope();
         Console.WriteLine("PASS daily treasure real gateway: "+assertions+" assertions, store writes "+store.Writes);
     }

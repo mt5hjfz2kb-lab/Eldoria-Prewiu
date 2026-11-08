@@ -810,12 +810,14 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             refreshed?.Invoke();
             Render(true);
-            // Premium ceremony only for a real chapter guardian OR the first
-            // new kind of scout discovery. All resulting rewards and reports
-            // were committed by their existing gateway commands beforehand.
+            // Only the REAL already-persisted command report can enqueue a
+            // ceremony. Never overlay the currently visible victory or scouting
+            // narrative: the optional chest appears after that room closes.
             if(ceremonyTitle!=null && dailyTreasures!=null)
-                dailyTreasures.PresentCommittedMilestone(
+                dailyTreasures.QueueCommittedMilestone(
                     ceremonyTitle,ceremonyResult,
+                    kind=="VigilantBattle"?"vigilant:"+cmd.Id:"exploration:"+cmd.Id,
+                    kind=="VigilantBattle"?"battle":"exploration",
                     legendary:kind=="VigilantBattle",
                     eventId:kind=="VigilantBattle"?
                         "vigilant:chapter:"+target:"scout:first:"+target);

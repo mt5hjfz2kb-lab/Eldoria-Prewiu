@@ -656,6 +656,17 @@ namespace Eldoria.DailyTreasures
                 reward.CycleDay==7?DailyTreasureCeremonyTier.Legendary:
                 DailyTreasureCeremonyTier.Special);
         }
+        // Chapter battles and first-family discoveries happen while their own
+        // room remains open. Queue the ceremony until the room/tutorial closes.
+        // Verify the gateway's existing report first; queueing cannot pay.
+        public bool QueueCommittedMilestone(string title,string confirmedResult,
+            string receiptId,string receiptType,bool legendary,string eventId)
+        {
+            if(gateway==null || now==null)return false;
+            return milestoneQueue.AddConfirmedReport(gateway.Snapshot(),
+                receiptId,receiptType,eventId,title,confirmedResult,legendary);
+        }
+
         // Called only after the game's authoritative reward/report has ALREADY
         // been committed by its existing command. Never calls Execute,
         // grants a bonus, opens the daily claim or invents a loot table.
@@ -1047,7 +1058,7 @@ namespace Eldoria.DailyTreasures
                 if(!suppressed && !IsOpen &&
                     milestoneQueue.TryPeek(out var milestone) &&
                     PresentCommittedMilestone(milestone.Title,milestone.Detail,
-                        legendary:true,eventId:milestone.EventId))
+                        legendary:milestone.Legendary,eventId:milestone.EventId))
                     milestoneQueue.ConfirmPresented(milestone.EventId);
             }
             if(!IsOpen)

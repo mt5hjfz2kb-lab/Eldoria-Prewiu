@@ -21,7 +21,12 @@ assert.match(gateway,/state\.Mailbox\.Receive\(/);
 assert.match(gateway,/state\.CompletedCommandIds\.Add\(command\.Id\);/);
 const executableRules=rules.replace(/\/\/[^\n]*/g,''); // comments are documentation, not executable dependencies
 assert.doesNotMatch(executableRules,/\bPlayerPrefs\b|\bUnityEngine\b|\bSystem\.Random\b/);
-assert.match(retention,/dailyTreasures\.PresentCommittedMilestone\(/);
+assert.match(retention,/dailyTreasures\.QueueCommittedMilestone\(/);
+assert.doesNotMatch(retention,/dailyTreasures\.PresentCommittedMilestone\(/);
+assert.match(retention,/"vigilant:"\+cmd\.Id/);
+assert.match(retention,/"exploration:"\+cmd\.Id/);
+assert.match(panel,/milestoneQueue\.AddConfirmedReport\(/);
+assert.match(panel,/legendary:milestone\.Legendary/);
 assert.match(retention,/if\(chapterCompleted\)/);
 assert.match(panel,/public bool PresentCommittedMilestone\(/);
 // The ceremony must not construct a separate payout command. The actual

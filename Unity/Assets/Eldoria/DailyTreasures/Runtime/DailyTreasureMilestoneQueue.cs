@@ -14,10 +14,12 @@ namespace Eldoria.DailyTreasures
         public readonly string EventId;
         public readonly string Title;
         public readonly string Detail;
+        public readonly bool Legendary;
 
-        public DailyTreasureMilestoneNotice(string eventId,string title,string detail)
+        public DailyTreasureMilestoneNotice(string eventId,string title,
+            string detail,bool legendary=true)
         {
-            EventId=eventId;Title=title;Detail=detail;
+            EventId=eventId;Title=title;Detail=detail;Legendary=legendary;
         }
     }
 
@@ -56,6 +58,33 @@ namespace Eldoria.DailyTreasures
             pending.Enqueue(new DailyTreasureMilestoneNotice(
                 id,mail.Title,mail.Subtitle??""));
             seen.Add(id);
+        }
+
+        // The UI may only queue a chapter victory or first family discovery
+        // when the SAME gateway command has already written its real mail.
+        // This retains the ceremony during a room/tutorial, without issuing
+        // another reward command or inventing a persisted presentation state.
+        public bool AddConfirmedReport(PlayerState state,string receiptId,
+            string receiptType,string appearanceId,string title,string detail,
+            bool legendary)
+        {
+            bool valid=(receiptType=="battle" &&
+                    receiptId!=null &&
+                    receiptId.StartsWith("vigilant:",StringComparison.Ordinal) &&
+                    appearanceId!=null &&
+                    appearanceId.StartsWith("vigilant:chapter:",StringComparison.Ordinal)) ||
+                (receiptType=="exploration" &&
+                    receiptId!=null &&
+                    receiptId.StartsWith("exploration:",StringComparison.Ordinal) &&
+                    appearanceId!=null &&
+                    appearanceId.StartsWith("scout:first:",StringComparison.Ordinal));
+            if(!valid || string.IsNullOrWhiteSpace(title) ||
+               seen.Contains(receiptId) ||
+               FindCommittedNotice(state,receiptId,receiptType)==null)return false;
+            pending.Enqueue(new DailyTreasureMilestoneNotice(
+                appearanceId,title,detail??"",legendary));
+            seen.Add(receiptId);
+            return true;
         }
 
         public void Observe(PlayerState now)
