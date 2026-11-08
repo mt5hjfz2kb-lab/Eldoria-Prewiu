@@ -376,9 +376,10 @@ namespace Eldoria.BreachWatch
                     At(resourceAmounts[i].rectTransform,43,3,chipW-46,38);resourceAmounts[i].fontSize=16;
                 }
                 At(objective,margin,111,Mathf.Min(280,w*.23f),fullObjective?134:109);
-                At(chapterName.rectTransform,15,9,258,20);
-                At(chapterObjective.rectTransform,15,34,250,46);
-                At(chapterProgress.rectTransform,15,85,240,20);
+                float questWidth=Mathf.Min(280,w*.23f)-30f;
+                At(chapterName.rectTransform,15,9,questWidth,20);
+                At(chapterObjective.rectTransform,15,34,questWidth,46);
+                At(chapterProgress.rectTransform,15,85,questWidth,20);
                 At(utilityRail,margin,fullObjective?266:238,59,183);
                 for(int i=0;i<3;i++)At((RectTransform)utilityRail.GetChild(i),0,i*62,56,56);
                 float pw=Mathf.Min(338,w*.285f),ph=Mathf.Min(335,h*.50f);
@@ -386,17 +387,47 @@ namespace Eldoria.BreachWatch
                 At(buildingName.rectTransform,72,11,pw-130,31);
                 At(buildingLevel.rectTransform,72,42,pw-130,22);
                 At((RectTransform)closeButton.transform,pw-52,10,40,40);
-                float portraitHeight=Mathf.Clamp(ph-232,44,102);
-                At(portraitFrame,17,70,pw-34,portraitHeight);
-                At(buildingFunction.rectTransform,18,77+portraitHeight,pw-36,35);
-                At(buildingCosts.rectTransform,18,118+portraitHeight,pw-34,27);
-                At(buildingState.rectTransform,18,150+portraitHeight,pw-36,20);
-                At((RectTransform)actionButton.transform,17,ph-58,pw-34,49);
+                if(ph<282f)
+                {
+                    // Phone landscape: two columns and a dedicated action row,
+                    // never stack price, status and the actual button together.
+                    At(portraitFrame,14,66,95,91);
+                    At(buildingFunction.rectTransform,115,68,pw-130,44);
+                    At(buildingCosts.rectTransform,115,116,pw-130,35);
+                    At(buildingState.rectTransform,115,154,pw-130,17);
+                    At((RectTransform)actionButton.transform,15,ph-51,pw-30,45);
+                }
+                else
+                {
+                    float portraitHeight=Mathf.Clamp(ph-232,44,102);
+                    At(portraitFrame,17,70,pw-34,portraitHeight);
+                    At(buildingFunction.rectTransform,18,77+portraitHeight,pw-36,35);
+                    At(buildingCosts.rectTransform,18,118+portraitHeight,pw-34,27);
+                    At(buildingState.rectTransform,18,150+portraitHeight,pw-36,20);
+                    At((RectTransform)actionButton.transform,17,ph-58,pw-34,49);
+                }
                 float count=5,bw=Mathf.Min(93,(w-190)/count),gap=13;
                 float navWidth=bw*count+gap*(count-1);
                 At(buttonRow,(w-navWidth)*.5f,h-89,navWidth,81);
                 for(int i=0;i<5;i++)At((RectTransform)navButtons[i].transform,i*(bw+gap)+(bw-74)*.5f,2,74,74);
                 At(feedback.rectTransform,margin,h-135,w-margin*2,31);
+            }
+            // Preserve the true 2:1 camera aspect when the illustrated well
+            // has a different physical aspect in portrait/landscape.
+            if(portraitView && portraitFrame)
+            {
+                float frameRatio=Mathf.Max(.1f,(portraitFrame.rect.width-16f) /
+                    Mathf.Max(1f,portraitFrame.rect.height-16f));
+                if(frameRatio<=2f)
+                {
+                    float wUv=frameRatio*.5f;
+                    portraitView.uvRect=new Rect((1f-wUv)*.5f,0f,wUv,1f);
+                }
+                else
+                {
+                    float hUv=2f/frameRatio;
+                    portraitView.uvRect=new Rect(0f,(1f-hUv)*.5f,1f,hUv);
+                }
             }
             lastPortrait=portrait;
             Canvas.ForceUpdateCanvases();
