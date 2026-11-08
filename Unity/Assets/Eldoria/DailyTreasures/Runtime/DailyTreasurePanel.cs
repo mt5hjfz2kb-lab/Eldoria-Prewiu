@@ -19,7 +19,7 @@ namespace Eldoria.DailyTreasures
         ICommandGateway gateway;
         Func<long> now;
         Action refreshed;
-        RectTransform root,entryRect,screen,cardSurface,calendar,ceremony,glowRect,raysRect;
+        RectTransform root,entryRect,screen,cardSurface,calendar,ceremony,glowRect,raysRect,ambientRect;
         RectTransform originalSafeArea;
         float nextCanvasProbe;
         bool onVigiliaCanvas;
@@ -63,7 +63,9 @@ namespace Eldoria.DailyTreasures
                 return true;
             }
         }
-        Image glow;
+        Image glow,ambient;
+        DailyTreasureCeremonyTheme activeTheme=
+            DailyTreasureCeremonyTheme.ForEvent(null,false);
         Texture2D glowTexture;
         Sprite glowSprite;
         bool suppressed,playing;
@@ -280,6 +282,11 @@ namespace Eldoria.DailyTreasures
             glowRect=NewRect("Warm radial light / visual only",ceremony);
             glow=Plate(glowRect,new Color(1f,.65f,.18f,0f),false);
             CreateGlow();
+            ambientRect=NewRect("Subtle event-specific atmospheric halo / visual only",ceremony);
+            ambient=Plate(ambientRect,Color.clear,false);
+            ambient.sprite=glowSprite;
+            ambient.preserveAspect=true;
+            ambientRect.SetAsFirstSibling();
             raysRect=NewRect("Gentle original amber volumetric rays / visual only",ceremony);
             rays=raysRect.gameObject.AddComponent<DailyTreasureRaysGraphic>();
             rays.raycastTarget=false;
@@ -599,7 +606,7 @@ namespace Eldoria.DailyTreasures
         // been committed by its existing command. Never calls Execute,
         // grants a bonus, opens the daily claim or invents a loot table.
         public bool PresentCommittedMilestone(string title,string confirmedResult,
-            bool legendary=true)
+            bool legendary=true,string eventId=null)
         {
             if(gateway==null || now==null || screen==null ||
                string.IsNullOrWhiteSpace(title))return false;
@@ -614,7 +621,7 @@ namespace Eldoria.DailyTreasures
             Layout();
             Present(title,confirmedResult,true,legendary?
                 DailyTreasureCeremonyTier.Legendary:
-                DailyTreasureCeremonyTier.Special);
+                DailyTreasureCeremonyTier.Special,eventId);
             return true;
         }
 
@@ -625,10 +632,12 @@ namespace Eldoria.DailyTreasures
                     DailyTreasureCeremonyTier.Quiet);
 
         public void Present(string title,string alreadyReceived,bool showChest,
-            DailyTreasureCeremonyTier tier)
+            DailyTreasureCeremonyTier tier,string eventId=null)
         {
             if(!IsOpen)return;
             ceremonyTier=tier;
+            activeTheme=DailyTreasureCeremonyTheme.ForEvent(
+                eventId,tier==DailyTreasureCeremonyTier.Legendary);
             ceremonialTitle=title;ceremonialReceipt=alreadyReceived;chestReward=showChest;
             // A focused cinematic view replaces the calendar's small header.
             // This gives the same illustrated chest room to shine even on
@@ -658,6 +667,7 @@ namespace Eldoria.DailyTreasures
             illustratedClosed.rectTransform.localScale=Vector3.one;
             illustratedOpen.rectTransform.localScale=Vector3.one;
             glow.color=new Color(1f,.75f,.36f,showChest?0f:.34f);
+            ambient.color=Color.clear;
             skipButton.gameObject.SetActive(showChest);
             if(!showChest)ShowResult(true);
         }
@@ -681,6 +691,8 @@ namespace Eldoria.DailyTreasures
             playing=false;
             chest.SetOpening(1f);
             rays.SetIntensity(prizeCount>0 && !chestReward?.24f:.12f);
+            ambient.color=new Color(activeTheme.R,activeTheme.G,
+                activeTheme.B,activeTheme.Strength*.28f);
             if(hasAuthoredChestArt)
             {
                 illustratedClosed.color=new Color(1f,1f,1f,0f);
@@ -812,6 +824,8 @@ namespace Eldoria.DailyTreasures
                 (portrait?265f:175f);
             Place(glowRect,.5f,.5f,.5f,.5f,0,chestY,
                 portrait?320f:335f,portrait?320f:335f);
+            Place(ambientRect,.5f,.5f,.5f,.5f,0,chestY,
+                portrait?385f:390f,portrait?385f:390f);
             Place(raysRect,.5f,.5f,.5f,.5f,0,chestY,
                 portrait?330f:315f,portrait?330f:315f);
             Place(chest.rectTransform,.5f,.5f,.5f,.5f,0,chestY,
@@ -951,7 +965,8 @@ namespace Eldoria.DailyTreasures
                 // reveal or another room. Defer genuine new milestones.
                 if(!suppressed && !IsOpen &&
                     milestoneQueue.TryPeek(out var milestone) &&
-                    PresentCommittedMilestone(milestone.Title,milestone.Detail))
+                    PresentCommittedMilestone(milestone.Title,milestone.Detail,
+                        legendary:true,eventId:milestone.EventId))
                     milestoneQueue.ConfirmPresented(milestone.EventId);
             }
             if(!IsOpen)
@@ -1025,6 +1040,8 @@ namespace Eldoria.DailyTreasures
                     Vector3.one*(frame.Scale-frame.Shake);
             }
             glow.color=new Color(1f,.77f,.35f,frame.Glow*.86f);
+            ambient.color=new Color(activeTheme.R,activeTheme.G,
+                activeTheme.B,frame.Glow*activeTheme.Strength);
             rays.SetIntensity(frame.Glow*.79f);
             for(int i=0;i<sparks.Length;i++)
             {
