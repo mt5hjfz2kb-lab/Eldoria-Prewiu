@@ -488,6 +488,8 @@ jobs:
         run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch
       - name: Independently verify compact UI geometry and physical touch targets
         run: python3 tools/breach-watch/validate_compact_layout.py
+      - name: Check user-approved Bastion/bridge camera framing and reversibility
+        run: python3 tools/breach-watch/verify_city_framing.py
       - name: Validate real original premium font outlines versus phone geometry
         shell: bash
         run: |
