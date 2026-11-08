@@ -1,4 +1,4 @@
-name: Eldoria preserved WebGL payload audit
+name: Eldoria exact texture duplicate reference audit
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -36,16 +36,45 @@ jobs:
           pathlib.Path('evidence').mkdir()
           pathlib.Path('evidence/data-entries.json').write_text(json.dumps(entries,indent=2))
           print('ENTRIES',json.dumps(entries),flush=True)
-          env=UnityPy.load('bundle');totals=collections.Counter();largest=[];textures=[]
-          for obj in env.objects:
-            size=len(obj.get_raw_data());totals[obj.type.name]+=size
-            if size>1000000:largest.append({'type':obj.type.name,'id':obj.path_id,'file':obj.assets_file.name,'bytes':size})
-            if obj.type.name=='Texture2D':
-              t=obj.read_typetree()
-              textures.append({'name':t.get('m_Name'),'width':t.get('m_Width'),'height':t.get('m_Height'),'format':t.get('m_TextureFormat'),'bytes':size,'stream':t.get('m_StreamData'),'readable':t.get('m_IsReadable')})
-          pathlib.Path('evidence/bundle-audit.json').write_text(json.dumps({'types':dict(totals),'largest':sorted(largest,key=lambda x:-x['bytes'])[:80],'textures':textures},indent=2))
-          print('TYPES',dict(totals),flush=True)
-          PY
+          import UnityPy,hashlib,json,collections,pathlib,struct
+          from UnityPy.classes.PPtr import PPtr
+          env=UnityPy.load('bundle')
+          groups=collections.defaultdict(list)
+          for o in env.objects:
+           if o.type.name!='Texture2D':continue
+           t=o.read_typetree()
+           if t.get('m_IsReadable',True) or t.get('m_StreamData',{}).get('size',0):continue
+           raw=o.get_raw_data();groups[(o.assets_file.name,hashlib.sha256(raw).hexdigest())].append((o.path_id,len(raw),t['m_Name']))
+          groups={k:v for k,v in groups.items() if len(v)>1}
+          ids={p for v in groups.values() for p,_,_ in v}
+          unknown=[];refs=0;duplicate_refs=0
+          def walk(t):
+           if isinstance(t,dict):
+            if 'm_FileID' in t and 'm_PathID' in t:
+             yield t
+            else:
+             for v in t.values():yield from walk(v)
+           elif isinstance(t,(list,tuple)):
+            for v in t:yield from walk(v)
+          for o in env.objects:
+           try:
+            node=o._get_typetree_node()
+            if not any(n.m_Type.startswith('PPtr<') for n in node.traverse()):continue
+            t=o.read_typetree()
+           except Exception as e:
+            raw=o.get_raw_data();possible=[p for p in ids if struct.pack('<q',p) in raw]
+            unknown.append({'type':o.type.name,'id':o.path_id,'file':o.assets_file.name,'reason':str(e)[:180],'possible_duplicate_ids':possible});continue
+           for p in walk(t):
+            if not p['m_PathID']:continue
+            refs+=1
+            try:
+             target=PPtr(m_FileID=p['m_FileID'],m_PathID=p['m_PathID'],assetsfile=o.assets_file).deref()
+             if target.type.name=='Texture2D' and (target.assets_file.name,hashlib.sha256(target.get_raw_data()).hexdigest()) in groups:duplicate_refs+=1
+            except (FileNotFoundError,KeyError):pass
+          result={'groups':[{'file':k[0],'raw_sha256':k[1],'objects':v} for k,v in groups.items()],'duplicate_serialized_bytes':sum((len(v)-1)*v[0][1] for v in groups.values()),'removed_objects_if_all_safe':sum(len(v)-1 for v in groups.values()),'unknown':unknown,'references_scanned':refs,'duplicate_references':duplicate_refs}
+          pathlib.Path('evidence/duplicate-audit.json').write_text(json.dumps(result,indent=2))
+          print({k:v for k,v in result.items() if k not in ('groups','unknown')},'unknown',len(unknown),flush=True)
+                    PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
