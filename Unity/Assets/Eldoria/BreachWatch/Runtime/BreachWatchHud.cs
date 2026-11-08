@@ -97,6 +97,16 @@ namespace Eldoria.BreachWatch
             boldFont==Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-SemiBold") &&
             bodyFont==Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Regular") &&
             bodyBoldFont==Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Bold");
+        public bool HasPremiumCarvedQuest
+        {
+            get
+            {
+                var tablet=objective?objective.GetComponent<BreachWatchPlate>():null;
+                return tablet && tablet.sprite &&
+                    tablet.sprite.name=="chiseled_quest" &&
+                    tablet.type==Image.Type.Sliced;
+            }
+        }
         public bool HasPremiumResourceSurfaces
         {
             get
@@ -402,8 +412,11 @@ namespace Eldoria.BreachWatch
             var rift=centerMark.gameObject.AddComponent<BreachWatchRiftSeparator>();
             rift.raycastTarget=false;
             objective=Rect("Chapter side tablet",uiRoot);
-            Plate(objective,BreachWatchPlate.PlateType.Basalt);
-            AddBevel(objective,true);
+            var chapterStone=Plate(objective,BreachWatchPlate.PlateType.Basalt);
+            var angledPlate=Resources.Load<Sprite>(
+                "VigiliaArt/PremiumSurfaces/chiseled_quest");
+            if(angledPlate)chapterStone.ApplyIndependentArt(angledPlate,true);
+            else AddBevel(objective,true);
             // The chapter's approval reference has a tiny tower crest
             // attached to the tablet. The open-air Breach sigil is separate.
             var objectiveSeal=Glyph(objective,"Chapter stone rune",BreachWatchGlyph.Sigil.Castle);
