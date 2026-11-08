@@ -49,7 +49,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
   commit-verified-cc0-art:
-    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[breach-art-import]')
+    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]'))
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
@@ -68,8 +68,12 @@ jobs:
           python-version: '3.13'
       - name: Install bounded raster PSD reader
         run: python -m pip install --disable-pip-version-check --quiet Pillow==12.3.0
-      - name: Generate only verified licence-bearing candidate sprites
+      - name: Generate only verified CC0 painted components
+        if: contains(github.event.head_commit.message, '[breach-art-import]')
         run: python tools/breach-watch/import_cc0_donor.py
+      - name: Generate only exact SHA and CC0 verified real resource icons
+        if: contains(github.event.head_commit.message, '[vigilia-import-resources]')
+        run: python tools/breach-watch/import_resource_icons.py
       - name: Protect canonical workstream ownership and source HEAD before push
         shell: bash
         env:
@@ -103,7 +107,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "BREACHWATCH_ART_ALREADY_AT_EXACT_SOURCE"
           else
-            git commit -m 'art(breach-watch): introduce licensed independent dark fantasy medallions and plates'
+            git commit -m 'art(breach-watch): integrate licence-pinned original independent UI illustrations'
             git push origin HEAD:"$GITHUB_REF"
           fi
       - name: Preserve independent original art asset candidate for inspection
