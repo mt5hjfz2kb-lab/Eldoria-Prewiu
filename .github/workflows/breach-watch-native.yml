@@ -542,6 +542,13 @@ jobs:
           $ErrorActionPreference='Stop'
           $project=Join-Path $env:BW_SOURCE 'Unity'
           $log=Join-Path $env:RUNNER_TEMP 'breachwatch-native.log'
+          # Previous CI mistakenly accepted an old report when Unity failed
+          # during runtime. Delete ONLY our isolated evidence folder before
+          # capture, and require exact-sha fresh outputs plus a Unity PASS log.
+          $folder=Join-Path $project 'BreachWatchNativeEvidence'
+          if(Test-Path $folder){Remove-Item -LiteralPath $folder -Recurse -Force}
+          if(Test-Path $log){Remove-Item -LiteralPath $log -Force}
+          $captureStart=[DateTime]::UtcNow
           $params=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
              '-executeMethod','Eldoria.BreachWatch.Editor.BreachWatchNativeEvidence.CaptureBatch',
              '-logFile',('"'+$log+'"'))
@@ -553,15 +560,26 @@ jobs:
             if(Test-Path $log){Get-Content $log -Tail 130}
             throw "Unity native failed: exit=$($process.ExitCode)"
           }
-          $folder=Join-Path $project 'BreachWatchNativeEvidence'
           $reportFile=Join-Path $folder 'BreachWatchNativeEvidence.json'
           if(-not(Test-Path $reportFile)){throw 'Unity native report missing'}
           $report=Get-Content $reportFile -Raw|ConvertFrom-Json
+          if($report.source -ne $env:GITHUB_SHA){
+            throw "Stale native report expected=$env:GITHUB_SHA actual=$($report.source)"
+          }
+          if((Get-Item $reportFile).LastWriteTimeUtc -lt $captureStart.AddSeconds(-3)){
+            throw "Old pre-existing native report was reused"
+          }
+          if(-not(Test-Path $log) -or -not(Select-String -Path $log -Pattern 'BREACH_WATCH_NATIVE_CAPTURE_PASS' -SimpleMatch -Quiet)){
+            throw "Unity did not emit a genuine native capture PASS; stale artifacts or runtime errors cannot count as success"
+          }
           if(@($report.shots).Count -ne 8 -or $report.screenshotCount -ne 8){throw 'Expected 8 native standalone city/Bastion screenshots'}
           if($report.status -ne 'UNITY_NATIVE_INDEPENDENT_CAPTURED_ART_REVIEW_PENDING' -or $report.artworkApproved){throw 'Evidence falsely claims artistic approval'}
           foreach($s in $report.shots){
             $file=Join-Path $folder $s.file
             if(-not(Test-Path $file)){throw "Missing screenshot $($s.file)"}
+            if((Get-Item $file).LastWriteTimeUtc -lt $captureStart.AddSeconds(-3)){
+              throw "Stale output image not from current Unity process: $($s.file)"
+            }
             if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $s.sha256){throw "PNG digest mismatch $($s.file)"}
           }
           Write-Host "BREACHWATCH_REAL_UNITY_8_CAPTURES_CERTIFIED_NO_ART_APPROVAL"
