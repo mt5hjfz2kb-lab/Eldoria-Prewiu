@@ -87,7 +87,7 @@
     "release_for_external_testers": false,
     "physical_iphone_result": "OWNER_REPORTED_FAILURE: still enters for one second and exits"
   },
-  "updated_at": "2026-11-08T12:36:26.460Z",
+  "updated_at": "2026-11-08T13:26:00.660Z",
   "mobile_candidate_history": [
     {
       "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
@@ -110,7 +110,7 @@
     }
   ],
   "structural_candidate": {
-    "status": "EXACT_TEXTURE_ALIASING_PASSED_PACKAGING_RETRY_AFTER_CHECKOUT_ORDER_FIX",
+    "status": "PUBLISHED_STAGED4_PUBLIC_DELIVERY_QA_IN_PROGRESS",
     "source_baseline": "948ffa9837168a0b68dab80be76b66350422b23a",
     "overlay_commit": "91734045e8d32cc90cc4843b4b7e08e57b1a0458",
     "native_run": 42435095850,
@@ -118,7 +118,7 @@
     "native_compilation_verified": true,
     "native_parity_verified": true,
     "webgl_built": true,
-    "published": false,
+    "published": true,
     "physical_iphone_verified": false,
     "source_scope": "Four claimed C# files; staged initialization, readiness gate, temporary validation cache release, canonical validator readiness wait",
     "isolated_project": false,
@@ -167,14 +167,14 @@
     "native_evidence_zip_sha256": "52a39d2be58704088348b944b3dfb31469e27171972c60d45c4d81f34040694a",
     "export_run": 42437285033,
     "export_source": "c54a6062bccafc67ecd83e35308953c20bcfb1d4",
-    "browser_verified": false,
+    "browser_verified": true,
     "recovery_run": 42473140363,
     "recovery_source": "d32508f9ce380eb8ea9bc10fecd4fb2dfc44a2f2",
     "recovered_webgl_artifact": 13614825021,
     "recovered_native_evidence_artifact": 13614536700,
     "recovery_changed_shared_source": false,
-    "package_run": 42480748412,
-    "package_source": "e0c8e5a5144f41109c84b25c93bf3b98dc29299b",
+    "package_run": 42481377084,
+    "package_source": "3785761a07cf306a8359b7195bb6b140fc002929",
     "payload_audit": {
       "run": 42473845228,
       "artifact": 13614682468,
@@ -190,8 +190,8 @@
       "cause": "Windows python.exe is uninstalled Microsoft Store alias; local HTTP server failed before Chromium. Replaced by Node static server; actual HTTP test passed."
     },
     "dedup_verification": {
-      "run": 42477019139,
-      "source": "25c6b4c53c8e078a660cf29ef809e2309e3d7439",
+      "run": 42481331350,
+      "source": "c3a975b4d1c542ad7f22cf5fc8f1e9b23394e4e2",
       "passed": true,
       "pending": false,
       "audit_run": 42476471528,
@@ -199,10 +199,10 @@
       "duplicate_objects": 146,
       "process_ram_measured": false,
       "opaque_objects_conservatively_protected": true,
-      "removed_objects": 82,
-      "serialized_bytes_removed": 1498776832,
-      "references_redirected": 318,
-      "all_remaining_objects_verified": 57413,
+      "removed_objects": 120,
+      "serialized_bytes_removed": 1739256072,
+      "references_redirected": 456,
+      "all_remaining_objects_verified": 57375,
       "candidate_sha256": "bf9fbf52933da6be926c3ad4493cf8b501e9917253bd0d982ac4c9c0f11699f5",
       "runtime_verified": false
     },
@@ -211,6 +211,29 @@
       "reason": "Checkout cleaned the deduplicated artifact downloaded before it; packaging failed before compression/browser. Corrected download order.",
       "game_launched": false
     },
-    "pages_remaining_bytes": 570229524
+    "pages_remaining_bytes": 570229524,
+    "browser_run": 42482412101,
+    "graceful_reopen_verified": true,
+    "raw_reload_verified": false,
+    "pages_run": 42484567812,
+    "public_delivery_qa_run": 42484725949,
+    "public_delivery_verified": false,
+    "candidate_bundle_sha256": "e5299e7293f4e2ed5a5bed30c9c87d3141a7594401d3cdb965761cba9a834faa",
+    "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1",
+    "hosting": {
+      "site_project_id": "appgprj_6af0714ffbfc819187cc2b27651f3c08",
+      "site_version": 2,
+      "site_deployment": "appgdep_6af07753d960819198a06d16c6f019ca",
+      "audience": "public",
+      "distribution": "Entry and two exact gzip pieces on Sites; remaining content-addressed engine/data on existing Pages; existing unity-owner preserved",
+      "compiled_game_bytes_identical_to_browser_qa": true
+    },
+    "runtime_evidence": {
+      "hardware": "NVIDIA GeForce RTX 3060 D3D11",
+      "sustained_visible_seconds": 60,
+      "graceful_reopen_nickname_verified": true,
+      "peak_wasm_capacity_bytes": 1178337280,
+      "process_ram_measured": false
+    }
   }
 }
