@@ -68,6 +68,93 @@ jobs:
           $owners=@($reg.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
           if($owners.Count -ne 1 -or $owners[0].id -ne 'eldoria-daily-treasures-20261108' -or $owners[0].owner -ne 'chatgpt-daily-treasures-20261108'){throw 'Unity resource ownership changed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'A native process is already active'}
+      - name: Verify original authored chest PNGs and Unity import metadata before using the Editor
+        working-directory: daily-source
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $dir='Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt'
+          $expected=@{
+            'treasure_closed_512.png'='313c17d35dcb6f44129a143fabc0448e5a20bc3fb7d00f700394bb73b2d0a0dd'
+            'treasure_opened_512.png'='a75afb45b6183d0a8d7e2841c82ef13b812d08fb7620f90c849e679f24429ccb'
+          }
+          $guids=@()
+          foreach($entry in $expected.GetEnumerator()){
+            $png=Join-Path $dir $entry.Key
+            if(-not (Test-Path $png)){throw "Approved art PNG not imported: $png"}
+            $sha=(Get-FileHash $png -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($sha -ne $entry.Value){throw "Artwork bytes differ from reviewed source: $png"}
+            $meta=$png+'.meta'
+            if(-not (Test-Path $meta)){throw "Missing stable Unity sprite importer: $meta"}
+            $info=Get-Content $meta -Raw
+            if(-not ($info -match 'textureType: 8') -or -not ($info -match 'spriteMode: 1')){
+              throw "Source image must be a single Unity Sprite: $meta"
+            }
+            if(-not ($info -match '(?m)^guid: ([0-9a-f]{32})
+        shell: powershell
+        timeout-minutes: 50
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force $env:OUT|Out-Null
+          $log=Join-Path $env:OUT 'native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',(Join-Path (Get-Location).Path 'Unity'),
+            '-executeMethod','Eldoria.DailyTreasures.Editor.DailyTreasureNativeEvidence.Capture','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          $src=Join-Path (Get-Location).Path 'Unity/DailyTreasureNativeEvidence'
+          if(Test-Path $src){Copy-Item (Join-Path $src '*') $env:OUT -Force -Recurse}
+          if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw "Unity exit $($process.ExitCode)"}
+          $path=Join-Path $env:OUT 'report.json'
+          if(-not(Test-Path $path)){throw 'Missing real native report'}
+          $report=Get-Content $path -Raw|ConvertFrom-Json
+          if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or
+             $report.authoredSpritesImported -ne $true){throw 'Illustrated chest sprites not imported in Unity. Fallback cannot count as premium art proof.'}
+          if($report.images -ne 12 -or $report.realGatewayClaims -ne 4 -or
+             $report.graphicalPointerHits -ne 4){throw 'Real Unity component/pointer proof incomplete'}
+          if(@(Get-ChildItem $env:OUT -Filter '*.png').Count -ne 12){throw 'Missing original Unity PNGs'}
+          Write-Host 'DAILY_NATIVE_COMPONENT_PASS; separate city/gameplay/art/device validation REQUIRED'
+      - name: Preserve original Unity screenshots and error log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-treasures-native-${{ github.sha }}
+          path: ${{ github.workspace }}\daily-native-${{ github.run_id }}\
+          retention-days: 30
+          if-no-files-found: warn
+)){throw "Invalid Unity GUID: $meta"}
+            $guids+=([regex]::Match($info,'(?m)^guid: ([0-9a-f]{32})
+        shell: powershell
+        timeout-minutes: 50
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force $env:OUT|Out-Null
+          $log=Join-Path $env:OUT 'native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',(Join-Path (Get-Location).Path 'Unity'),
+            '-executeMethod','Eldoria.DailyTreasures.Editor.DailyTreasureNativeEvidence.Capture','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          $src=Join-Path (Get-Location).Path 'Unity/DailyTreasureNativeEvidence'
+          if(Test-Path $src){Copy-Item (Join-Path $src '*') $env:OUT -Force -Recurse}
+          if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw "Unity exit $($process.ExitCode)"}
+          $path=Join-Path $env:OUT 'report.json'
+          if(-not(Test-Path $path)){throw 'Missing real native report'}
+          $report=Get-Content $path -Raw|ConvertFrom-Json
+          if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or
+             $report.authoredSpritesImported -ne $true){throw 'Illustrated chest sprites not imported in Unity. Fallback cannot count as premium art proof.'}
+          if($report.images -ne 12 -or $report.realGatewayClaims -ne 4 -or
+             $report.graphicalPointerHits -ne 4){throw 'Real Unity component/pointer proof incomplete'}
+          if(@(Get-ChildItem $env:OUT -Filter '*.png').Count -ne 12){throw 'Missing original Unity PNGs'}
+          Write-Host 'DAILY_NATIVE_COMPONENT_PASS; separate city/gameplay/art/device validation REQUIRED'
+      - name: Preserve original Unity screenshots and error log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-treasures-native-${{ github.sha }}
+          path: ${{ github.workspace }}\daily-native-${{ github.run_id }}\
+          retention-days: 30
+          if-no-files-found: warn
+).Groups[1].Value)
+          }
+          if($guids[0] -eq $guids[1]){throw 'Both art frames accidentally share a Unity GUID'}
+          Write-Host 'DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS'
       - name: Capture calendar, closed chest and real paid opened chest at four sizes
         working-directory: daily-source
         shell: powershell
