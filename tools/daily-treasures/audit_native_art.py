@@ -189,17 +189,28 @@ def analyze(folder,expected_sha,output):
                 f"{flight} on {w}x{h}")
             transitions.append({"resolution":f"{w}x{h}",
                                 "from":flight,"to":settled,**diff})
+    # Different milestones require DIFFERENT real Eldoria compositions.
+    # A tinted copy of the same chest on a flat background is NOT sufficient.
+    # This protects the hero hall, living explorer parchment and Vigilants
+    # landscape against a regression to duplicated or invisible backgrounds.
     for w,h in [(844,390),(390,844)]:
-        # Color-theme probes must not all be visually identical:
-        # an important guardian must feel different from a first discovery.
-        c=actual[("style-scouts-opening",w,h)][0]
-        v=actual[("style-vigilants-opening",w,h)][0]
-        diff=compare(c,v)
-        assert_quality(diff["avgRgbDifference"]>.22 and
-            diff["changedPixels"]>35,
-            "All rare milestone themes render identically at "+f"{w}x{h}")
-        transitions.append({"resolution":f"{w}x{h}",
-                            "from":"scouts","to":"vigilants",**diff})
+        for left,right in (
+            ("lyra","scouts"),
+            ("lyra","vigilants"),
+            ("scouts","vigilants"),
+            ("bastion","lyra"),
+            ("bastion","scouts"),
+            ("bastion","vigilants"),
+        ):
+            a=actual[("style-"+left+"-opening",w,h)][0]
+            b=actual[("style-"+right+"-opening",w,h)][0]
+            diff=compare(a,b)
+            assert_quality(diff["avgRgbDifference"]>.45 and
+                diff["changedPixels"]>95,
+                "Milestone stages still look like duplicated recolored chests: "+
+                f"{left} / {right} at {w}x{h}")
+            transitions.append({"resolution":f"{w}x{h}",
+                                "from":left,"to":right,**diff})
 
     # Contact sheet: one row per phone/desktop viewport, seven paid scenes;
     # second contact sheet for special-event presentation in both orientations.
