@@ -138,6 +138,54 @@ internal static class GatewayChecks
         Assert(!DailyTreasureMilestoneRules.NewlyRecruitedLyra(one,two),
             "existing Lyra not announced repeatedly");
     }
+    static void RealBastionMailboxMilestones()
+    {
+        foreach(var level in new[]{2,5})
+        {
+            var clock=new FakeClock{UtcTicks=At(10)};
+            var pending=new PlayerState();
+            pending.BastionLevel=level-1;
+            pending.BastionUpgradeStartedUtcTicks=At(8);
+            pending.BastionUpgradeCompletesUtcTicks=At(9);
+            pending.BastionUpgradeTaskId="bastion"+level+":infrastructure-test";
+            var store=new MemoryStore{Saved=pending};
+            var g=new LocalGateway(clock,store);
+            var result=g.Snapshot();
+            Assert(result.BastionLevel==level,
+                "actual Bastion "+level+" upgrade resolved when deadline elapsed");
+            var eventId="milestone:bastion:"+level;
+            var notices=result.Mailbox.Messages.FindAll(m=>
+                m.EventId==eventId && m.Type=="milestone-bastion" &&
+                m.Category=="narrativa");
+            Assert(notices.Count==1,
+                "exactly one real Bastion "+level+" announcement");
+            Assert(notices[0].RewardReceiptId=="",
+                "Bastion announcement is not a payable receipt");
+            Assert(notices[0].OccurredAtUtcTicks==At(9),
+                "Bastion announcement timestamp is the actual completion deadline");
+            var resources=result.Resources.Copy();
+            g=new LocalGateway(clock,store);
+            Assert(g.Snapshot().Mailbox.Messages.FindAll(m=>m.EventId==eventId).Count==1,
+                "reloaded Bastion level "+level+" cannot duplicate announcement");
+            Assert(Submit(g,"delete-bastion-"+level,"MailDelete",eventId).Ok,
+                "Bastion announcement is removable");
+            g=new LocalGateway(clock,store);
+            var after=g.Snapshot();
+            Assert(after.Mailbox.Messages.FindAll(m=>m.EventId==eventId).Count==0,
+                "deleted Bastion announcement stays deleted across reload");
+            Assert(after.Mailbox.ReceivedEventIds.Contains(eventId),
+                "Bastion announcement tombstone remains after deletion");
+            Assert(after.Resources.Wood==resources.Wood &&
+                   after.Resources.Stone==resources.Stone &&
+                   after.Resources.Food==resources.Food,
+                "reading/deleting Bastion announcements never mints resources");
+        }
+        var noUpgrade=new MemoryStore{Saved=new PlayerState()};
+        var neutral=new LocalGateway(new FakeClock{UtcTicks=At(10)},noUpgrade);
+        Assert(neutral.Snapshot().Mailbox.Messages.TrueForAll(m=>
+            m.Type!="milestone-bastion"),
+            "ordinary fresh game never receives a fake completed Bastion ceremony");
+    }
     public static void Main()
     {
         var clock=new FakeClock{UtcTicks=At(8)};
@@ -193,6 +241,7 @@ internal static class GatewayChecks
             "wall-clock rollback cannot claim again");
         SevenDayRealGatewayJourney();
         RealMilestoneEligibility();
+        RealBastionMailboxMilestones();
         Console.WriteLine("PASS daily treasure real gateway: "+assertions+" assertions, store writes "+store.Writes);
     }
 }
