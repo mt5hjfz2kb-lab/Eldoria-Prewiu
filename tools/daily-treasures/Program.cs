@@ -431,9 +431,9 @@ internal static class Program
             "scout:first:family","vigilant:chapter:25"
         })
         {
-            foreach(bool grand in new[]{false,true})
+            foreach(bool grandAccent in new[]{false,true})
             {
-                var style=DailyTreasureCeremonyTheme.ForEvent(eventKey,grand);
+                var style=DailyTreasureCeremonyTheme.ForEvent(eventKey,grandAccent);
                 True(style.R>=0f && style.R<=1f &&
                      style.G>=0f && style.G<=1f &&
                      style.B>=0f && style.B<=1f,
