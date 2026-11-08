@@ -22,3 +22,5 @@ Workstream-ID: eldoria-forja-oscura-visual-proof-20261107
 Source-only verification after real sprite import, live city selection/camera binding, isolated Bastion preview, safe-area and no-overlap patches: exact-head C# Roslyn and 7 original sprite SHA/GUID checks. Defer Windows while beta retains its exclusive lease. No merge/deploy.
 
 Exact-head source QA: independently illustrated resources, canonical selection event bridging, responsive device safe-area, true-only render layer 30 model preview with sampled URP background, live event raycast, no fake secondary action, compact authoritative costs. Check artifacts and syntax; no Unity on Windows until exclusive live beta lease released.
+
+Latest isolated art+source proof: 7 SHA-pinned independent sprites, real city selection broadcast, screen-space camera switch, actual isolated 3D model pixel readback using true URP clear color, variable portrait rail/no overlap and compact real cost text. Run source-only gates; no Windows while beta PR179 controls it.
