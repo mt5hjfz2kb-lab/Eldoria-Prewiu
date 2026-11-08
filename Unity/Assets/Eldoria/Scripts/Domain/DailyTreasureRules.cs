@@ -46,7 +46,8 @@ namespace Eldoria.Domain
         public static bool CanClaim(DailyTreasureState state,long utcTicks)
         {
             if(state==null)return false;
-            return UtcDay(utcTicks)>state.LastClaimUtcDay;
+            return state.TotalClaims<int.MaxValue &&
+                UtcDay(utcTicks)>state.LastClaimUtcDay;
         }
 
         public static int NextDay(DailyTreasureState state)
