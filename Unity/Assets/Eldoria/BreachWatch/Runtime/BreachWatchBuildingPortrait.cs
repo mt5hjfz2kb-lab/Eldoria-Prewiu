@@ -229,7 +229,7 @@ namespace Eldoria.BreachWatch
                     var background=pixels[8*texture.width+8];
                     int nonBackground=0;
                     int minX=texture.width,minY=texture.height;
-                    int maxX=-1,maxY=-1;
+                    int drawMaxX=-1,drawMaxY=-1;
                     for(int py=0;py<texture.height;py++)
                     for(int px=0;px<texture.width;px++)
                     {
@@ -239,8 +239,8 @@ namespace Eldoria.BreachWatch
                            Mathf.Abs(p.b-background.b)<=42)
                             continue;
                         nonBackground++;
-                        minX=Mathf.Min(minX,px);maxX=Mathf.Max(maxX,px);
-                        minY=Mathf.Min(minY,py);maxY=Mathf.Max(maxY,py);
+                        minX=Mathf.Min(minX,px);drawMaxX=Mathf.Max(drawMaxX,px);
+                        minY=Mathf.Min(minY,py);drawMaxY=Mathf.Max(drawMaxY,py);
                     }
                     NonBackgroundPixelFraction=nonBackground/(float)pixels.Length;
                     // With six physical pixel margins, the clipped geometry
@@ -248,7 +248,7 @@ namespace Eldoria.BreachWatch
                     // picture frame. Reject it instead of presenting it.
                     PortraitGeometryClipped=nonBackground>0 &&
                         (minX<6||minY<6||
-                         maxX>=texture.width-6||maxY>=texture.height-6);
+                         drawMaxX>=texture.width-6||drawMaxY>=texture.height-6);
                 }
                 finally
                 {
