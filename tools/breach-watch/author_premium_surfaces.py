@@ -8,8 +8,8 @@ from pathlib import Path
 from PIL import Image,ImageDraw,ImageFilter
 OUT=Path("Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces")
 DESIGNS={
-    "burgundy_action":dict(width=512,height=148,cut=25,seed=173018,kind="burgundy",
-                           border=(35,24,35,24),guid="a6f0f34c42fd494f92a72d201e0aaf9c"),
+    "burgundy_action":dict(width=512,height=148,cut=16,seed=173018,kind="burgundy",
+                           border=(22,14,22,14),guid="a6f0f34c42fd494f92a72d201e0aaf9c"),
     "brass_portrait":dict(width=512,height=288,cut=20,seed=173019,kind="portrait",
                           border=(29,27,29,27),guid="9a20dba5e3aa4bff94654d1e8b0e9a32"),
     "slate_resource":dict(width=512,height=148,cut=13,seed=173020,kind="resource",
@@ -140,6 +140,13 @@ def surface(name,d):
         (7,1,(214,159,92,245)),(9,2,(17,13,12,255)),
         (12,1,(145,99,59,225))
     ] if kind=="resource" else [
+        # Only 14 stable pixels at the top/bottom are nine-sliced on this
+        # 49px-tall CTA. Outer accents must live inside those 14 pixels,
+        # otherwise they collapse into bright '=' lines THROUGH the caption.
+        (2,5,(7,4,7,255)),(4,3,(101,55,40,255)),
+        (8,2,(235,165,84,255)),(11,2,(17,12,12,255)),
+        (13,1,(194,124,61,245))
+    ] if kind=="burgundy" else [
         (2,7,(4,5,7,255)),(5,4,(101,68,44,255)),
         (9,2,(200,147,83,245)),(14,3,(19,15,15,255)),
         (20,2,(130,86,51,255)),(23,1,(226,184,99,220))
@@ -180,27 +187,14 @@ def surface(name,d):
             draw.rounded_rectangle((yoff, yoff, w-1-yoff, h-1-yoff),
                         radius=7,outline=color,width=3)
     if kind=="burgundy":
-        # Actual miniature crossed *hammers*, not generic X lines.
-        # Their heads have short perpendicular forged-metal anvils.
-        # Text / upgrade amount remain entirely live Unity components.
-        ox,oy=61,h//2
-        for direction in (-1,1):
-            start=(ox-16*direction,oy+16)
-            end=(ox+16*direction,oy-16)
-            draw.line((start,end),fill=(9,7,7,255),width=12)
-            draw.line((start,end),fill=(164,105,56,255),width=7)
-            draw.line((start[0]-1,start[1]+1,end[0]-1,end[1]+1),
-                      fill=(229,171,87,235),width=2)
-            headFrom=(end[0]-9,end[1]-9*direction)
-            headTo=(end[0]+9,end[1]+9*direction)
-            draw.line((headFrom,headTo),fill=(9,7,6,255),width=15)
-            draw.line((headFrom,headTo),fill=(197,136,66,255),width=10)
-            draw.line((headFrom[0],headFrom[1]-2,headTo[0],headTo[1]-2),
-                      fill=(249,193,104,245),width=2)
-        draw.ellipse((ox-4,oy-4,ox+4,oy+4),
-                     fill=(232,168,87,255),outline=(24,16,10,255),width=1)
-        draw.line((100,27,w-58,27),fill=(235,119,59,130),width=3)
-        draw.line((100,h-27,w-58,h-27),fill=(52,11,13,180),width=3)
+        # This is ONLY the carved red leather/brass underlay. Fixed-size
+        # crossed forged hammers are their own native transparent uGUI
+        # component, so the nine-slice can NEVER crush them into an '=' or
+        # draw lines through the live (localized) upgrade caption.
+        # Four tiny corner glints remain safely inside fixed border pixels.
+        for x in (24,w-25):
+            for y in (12,h-13):
+                draw.ellipse((x-2,y-2,x+2,y+2),fill=(244,181,93,178))
     return pix
 
 def main():
