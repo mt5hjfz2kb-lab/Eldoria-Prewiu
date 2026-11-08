@@ -71,6 +71,7 @@ namespace Eldoria.BreachWatch
         public RectTransform BuildingPanel => panel;
         public bool HasLiveBuildingPortrait => buildingPortrait && buildingPortrait.HasLiveBuilding;
         public bool BuildingPortraitExclusive => buildingPortrait && buildingPortrait.RenderedFromIsolatedRealMeshes;
+        public float BuildingPortraitDrawnFraction => buildingPortrait ? buildingPortrait.NonBackgroundPixelFraction : 0f;
         public bool HasTrueResourceIllustrations =>
             resourceIllustrations[0] && resourceIllustrations[0].sprite &&
             resourceIllustrations[0].sprite.name=="wood" &&
