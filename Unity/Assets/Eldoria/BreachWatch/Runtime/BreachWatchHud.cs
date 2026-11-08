@@ -911,10 +911,20 @@ namespace Eldoria.BreachWatch
                     // the gilded corners. Display a truthful short action
                     // name in this ONE compact context; the actual command,
                     // target, affordability and confirmation are unchanged.
-                    actionLabel.text=b.Action==null?"SIN ACCIÓN":
-                        lastPortrait && b.Id=="bastion" && b.Level==1 &&
-                        b.Action.Kind=="AdvanceBastion"
-                            ?"MEJORAR A II":b.Action.Label;
+                    // Real Unity review: the full long-action label ran beyond
+                    // the carved CTA on a 1600x900 capture. The command and
+                    // confirmation remain IDENTICAL; only its compact visual
+                    // caption adapts to the physical available width.
+                    string actionCaption=b.Action==null?"SIN ACCIÓN":b.Action.Label;
+                    if(b.Action!=null && b.Id=="bastion" && b.Level==1 &&
+                       b.Action.Kind=="AdvanceBastion")
+                        actionCaption=lastWidth<1000?"MEJORAR A II":"MEJORAR BASTIÓN II";
+                    actionLabel.text=actionCaption;
+                    actionLabel.resizeTextForBestFit=true;
+                    actionLabel.resizeTextMinSize=11;
+                    actionLabel.resizeTextMaxSize=lastWidth<1000?16:17;
+                    actionLabel.horizontalOverflow=HorizontalWrapMode.Wrap;
+                    actionLabel.verticalOverflow=VerticalWrapMode.Truncate;
                     actionLabel.color=can?TextIvory:new Color(.91f,.85f,.72f,1f);
                 }
                 // Accurate labels, artwork and routes: realm/castle, resource/sack,
