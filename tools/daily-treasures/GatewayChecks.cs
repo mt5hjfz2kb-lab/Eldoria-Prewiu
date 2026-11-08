@@ -263,6 +263,62 @@ internal static class GatewayChecks
         Assert(q.PendingCount==0,"future unrecorded events do not create fictitious premium rewards");
     }
 
+    static void RealRewardEconomyEnvelope()
+    {
+        // A deterministic reference estimate, not a human retention result.
+        // We use actual authored Bastion owner-profile values, never QA_FAST's
+        // zero-cost developer shortcut. Revisit amounts after genuine testers.
+        var total=new DailyTreasureState();
+        int wood=0,stone=0,food=0,one=0,five=0;
+        for(int d=1;d<=30;d++)
+        {
+            long ticks=new DateTime(2026,11,1,12,0,0,DateTimeKind.Utc)
+                .AddDays(d-1).Ticks;
+            Assert(DailyTreasureRules.TryClaim(total,ticks,out var reward),
+                "daily economic simulation claim "+d);
+            wood+=reward.Wood;
+            stone+=reward.Stone;
+            food+=reward.Food;
+            one+=reward.SpeedupOneMinute;
+            five+=reward.SpeedupFiveMinutes;
+            if(d==7)
+            {
+                Assert(wood==330 && stone==300 && food==230 &&
+                       one==3 && five==1,
+                       "week one amounts and loyalty bonus exact");
+                var level2=BastionProgressionCatalog.ForLevel(2);
+                Assert(wood<SliceContentProfiles.OwnerIiiCandidate.Bastion2WoodCost &&
+                       stone<=SliceContentProfiles.OwnerIiiCandidate.Bastion2StoneCost,
+                       "first 7-day reward alone cannot finance Bastion II wood/stone");
+                Assert(level2.PowerReward>0 &&
+                       SliceContentProfiles.OwnerIiiCandidate.Bastion2WoodCost==450,
+                       "balance review is tied to the real owner Bastion II cost");
+            }
+        }
+        Assert(wood==1380 && stone==1240 && food==945 &&
+               one==12 && five==4,
+               "30-day generosity remains measurable and capped");
+        int totalUpgradeWood=SliceContentProfiles.OwnerIiiCandidate.Bastion2WoodCost;
+        int totalUpgradeStone=SliceContentProfiles.OwnerIiiCandidate.Bastion2StoneCost;
+        int totalUpgradeFood=0;
+        for(int level=3;level<=5;level++)
+        {
+            var cost=BastionProgressionCatalog.ForLevel(level);
+            totalUpgradeWood+=cost.WoodCost;
+            totalUpgradeStone+=cost.StoneCost;
+            totalUpgradeFood+=cost.FoodCost;
+        }
+        Assert(totalUpgradeWood==3050 && totalUpgradeStone==2400 &&
+               totalUpgradeFood==800,
+               "real Bastion I-V authored cost envelope unchanged");
+        Assert(wood*100/totalUpgradeWood<50 &&
+               stone*100/totalUpgradeStone<55,
+               "30-day resource entitlements below half of full major ascension cost");
+        Console.WriteLine("DAILY_TREASURE_OWNER_BALANCE_7D: 330 madera / 300 piedra / 230 comida / 3x1min / 1x5min");
+        Console.WriteLine("DAILY_TREASURE_OWNER_BALANCE_30D: 1380 madera / 1240 piedra / 945 comida / 12x1min / 4x5min");
+        Console.WriteLine("DAILY_TREASURE_BASTION_II_V_COSTS: 3050 madera / 2400 piedra / 800 comida; balance candidate, not validated with people");
+    }
+
     public static void Main()
     {
         var clock=new FakeClock{UtcTicks=At(8)};
@@ -320,6 +376,7 @@ internal static class GatewayChecks
         RealMilestoneEligibility();
         RealBastionMailboxMilestones();
         RealMilestoneSessionQueue();
+        RealRewardEconomyEnvelope();
         Console.WriteLine("PASS daily treasure real gateway: "+assertions+" assertions, store writes "+store.Writes);
     }
 }
