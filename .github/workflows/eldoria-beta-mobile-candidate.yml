@@ -184,8 +184,9 @@ jobs:
           $env:NODE_PATH=Join-Path $dependencies 'node_modules'
           $work=Join-Path $env:GITHUB_WORKSPACE "beta-structural-browser-$env:GITHUB_RUN_ID"
           if(Get-NetTCPConnection -LocalPort 18765 -State Listen -ErrorAction SilentlyContinue){throw 'Chosen local server port already in use'}
-          $python=(Get-Command python.exe).Source
-          $server=Start-Process $python -ArgumentList @('-m','http.server','18765','--bind','127.0.0.1','--directory',('"'+(Join-Path $work 'site')+'"')) -PassThru -RedirectStandardOutput (Join-Path $work 'http.log') -RedirectStandardError (Join-Path $work 'http-error.log')
+          $node=(Get-Command node.exe).Source
+          $serverScript=Join-Path $env:GITHUB_WORKSPACE 'beta-structural-browser-tools/tools/eldoria-private-beta/qa_static_server.cjs'
+          $server=Start-Process $node -ArgumentList @(('"'+$serverScript+'"'),('"'+(Join-Path $work 'site')+'"'),'18765') -PassThru -RedirectStandardOutput (Join-Path $work 'http.log') -RedirectStandardError (Join-Path $work 'http-error.log')
           try {
             $env:QA_URL='http://127.0.0.1:18765/mobile/?eldoria_diag=1'
             $env:QA_REVISION=$env:CANDIDATE_REVISION
