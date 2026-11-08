@@ -411,7 +411,7 @@ jobs:
               assert 'spriteBorder: {x: '+str(entry['border'][0]) in meta
               guids.add(entry['guid'])
           csharp=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
-          for name in ['basalt_context','brass_portrait','burgundy_action']:
+          for name in ['basalt_context','brass_portrait','burgundy_action','slate_resource']:
               assert 'VigiliaArt/PremiumSurfaces/'+name in csharp,name
           print('BREACHWATCH_INDEPENDENT_PREMIUM_3_SLICED_MATERIALS_CERTIFIED',len(guids))
           PY
