@@ -40,6 +40,7 @@ namespace Eldoria.DailyTreasures
         Sprite glowSprite;
         bool suppressed,playing;
         float startTime,nextTick,lastWidth=-1,lastHeight=-1,noticeUntil;
+        long lastPaintedUtcDay=-1;
         string claimNotice="";
         string ceremonialReceipt,ceremonialTitle;
         bool chestReward,chimePlayed;
@@ -188,7 +189,7 @@ namespace Eldoria.DailyTreasures
             edge.effectColor=new Color(0f,0f,0f,.82f);
             edge.effectDistance=new Vector2(4f,-6f);
             header=Label(cardSurface,"Reward heading","TESOROS DE VALORIA",27,Gold,TextAnchor.MiddleCenter);
-            subhead=Label(cardSurface,"Consecutive visits","",16,Muted,TextAnchor.MiddleCenter);
+            subhead=Label(cardSurface,"Consecutive visits","",14,Muted,TextAnchor.MiddleCenter);
             closeButton=ActionButton(NewRect("Close tributes",cardSurface),Oak,Close);
             if(!ApplyAuthoredFrame((RectTransform)closeButton.transform,
                 "valoria_frame_card_256"))
@@ -356,6 +357,7 @@ namespace Eldoria.DailyTreasures
             playing=false;
             claimNotice="";
             noticeUntil=0f;
+            lastPaintedUtcDay=-1;
             calendar.gameObject.SetActive(true);
             claimButton.gameObject.SetActive(true);
             lastWidth=lastHeight=-1;
@@ -372,12 +374,23 @@ namespace Eldoria.DailyTreasures
             if(gateway==null||now==null||!IsOpen)return;
             var state=gateway.Snapshot();
             var daily=state.DailyTreasures??new DailyTreasureState();
+            long today=DailyTreasureRules.UtcDay(now());
+            lastPaintedUtcDay=today;
             var reward=DailyTreasureRules.Preview(daily,now());
             int upcoming=DailyTreasureRules.NextDay(daily);
+            // If the user missed a local UTC day, show the actual broken
+            // consecutive streak immediately without altering earned prizes.
+            int consecutive=daily.LastClaimUtcDay>=0 &&
+                today-daily.LastClaimUtcDay>1?0:
+                Math.Max(0,daily.ConsecutiveDays);
             bool showNotice=!string.IsNullOrEmpty(claimNotice) &&
                 Time.unscaledTime<noticeUntil;
-            subhead.text=showNotice?claimNotice:
-                "RACHA: "+daily.ConsecutiveDays+" DÍAS  ·  7 TRIBUTOS POR CICLO";
+            string streakInfo=reward.IsValid && reward.BonusFood>0
+                ? "RACHA "+reward.Streak+" · +"+reward.BonusFood+" COMIDA HOY"
+                : "RACHA "+consecutive+" · EXTRA EN "+
+                    (DailyTreasureRules.NextConsecutiveBonusDay(consecutive)-
+                     consecutive)+" DÍA(S)";
+            subhead.text=showNotice?claimNotice:streakInfo;
             subhead.color=showNotice?new Color(1f,.68f,.48f,1f):Muted;
             for(int i=0;i<7;i++)
             {
@@ -598,6 +611,13 @@ namespace Eldoria.DailyTreasures
             }
             float w=root.rect.width,h=root.rect.height;
             if(Mathf.Abs(w-lastWidth)>1f || Mathf.Abs(h-lastHeight)>1f)Layout();
+            if(!playing && calendar.gameObject.activeSelf && now!=null &&
+                Time.unscaledTime>=nextTick)
+            {
+                nextTick=Time.unscaledTime+1.25f;
+                if(DailyTreasureRules.UtcDay(now())!=lastPaintedUtcDay)
+                    Refresh();
+            }
             if(!playing)
             {
                 if(!string.IsNullOrEmpty(claimNotice) &&
