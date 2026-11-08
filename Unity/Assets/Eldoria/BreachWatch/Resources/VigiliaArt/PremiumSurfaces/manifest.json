@@ -1,0 +1,53 @@
+{
+  "origin": "Original script-authored Vigilia surface artwork, owner's approved image is visual direction only",
+  "independent": "All three nine-slice sprites are new and no old HUD graphics are reused",
+  "not_native_screenshot": true,
+  "art_approved": false,
+  "sources": [
+    {
+      "name": "basalt_context",
+      "sha256": "e739428e50c8d02076ec93cbed554248788e61d374b3cb946f205eef604c6860",
+      "size": [
+        512,
+        736
+      ],
+      "guid": "74b0ad4795bd4ef1a98d624325997f55",
+      "border": [
+        34,
+        38,
+        34,
+        38
+      ]
+    },
+    {
+      "name": "burgundy_action",
+      "sha256": "3eab19e3ed0cc1f257b09aa432c7a5d6a20db0a233f93392a63a85ae1266a297",
+      "size": [
+        512,
+        148
+      ],
+      "guid": "a6f0f34c42fd494f92a72d201e0aaf9c",
+      "border": [
+        35,
+        24,
+        35,
+        24
+      ]
+    },
+    {
+      "name": "brass_portrait",
+      "sha256": "513fe75d451810190250f7e90384c39f50293190bb866c5a574e34c8dc7a294c",
+      "size": [
+        512,
+        288
+      ],
+      "guid": "9a20dba5e3aa4bff94654d1e8b0e9a32",
+      "border": [
+        29,
+        27,
+        29,
+        27
+      ]
+    }
+  ]
+}
