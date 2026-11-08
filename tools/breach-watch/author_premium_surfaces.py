@@ -8,8 +8,6 @@ from pathlib import Path
 from PIL import Image,ImageDraw,ImageFilter
 OUT=Path("Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces")
 DESIGNS={
-    "basalt_context":dict(width=512,height=736,cut=28,seed=173017,kind="stone",
-                          border=(34,38,34,38),guid="74b0ad4795bd4ef1a98d624325997f55"),
     "burgundy_action":dict(width=512,height=148,cut=25,seed=173018,kind="burgundy",
                            border=(35,24,35,24),guid="a6f0f34c42fd494f92a72d201e0aaf9c"),
     "brass_portrait":dict(width=512,height=288,cut=20,seed=173019,kind="portrait",
@@ -224,7 +222,7 @@ def main():
         })
     (OUT/"manifest.json").write_text(json.dumps({
         "origin":"Original script-authored Vigilia surface artwork, owner's approved image is visual direction only",
-        "independent":"All six nine-slice sprites are new and no old HUD graphics are reused",
+        "independent":"All five nine-slice sprites are new and no old HUD graphics are reused",
         "not_native_screenshot":True,
         "art_approved":False,
         "sources":manifest
