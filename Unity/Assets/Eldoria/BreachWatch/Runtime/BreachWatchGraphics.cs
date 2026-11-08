@@ -25,6 +25,35 @@ namespace Eldoria.BreachWatch
             }
         }
         public bool CopperEdge = true;
+        float visualScale=1f;
+        // Shrink only PAINTED vertices while retaining an accessible native
+        // hit target. The approved medallions are small floating metalwork,
+        // not five oversized round UI buttons swallowing the scene.
+        public float VisualScale
+        {
+            get => visualScale;
+            set
+            {
+                float next=Mathf.Clamp(value,.50f,1f);
+                if(Mathf.Abs(next-visualScale)<.001f)return;
+                visualScale=next;
+                SetVerticesDirty();
+            }
+        }
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            base.OnPopulateMesh(vh);
+            if(visualScale>.999f)return;
+            var center=GetPixelAdjustedRect().center;
+            Vector3 pivot=new Vector3(center.x,center.y,0f);
+            UIVertex v=default;
+            for(int i=0;i<vh.currentVertCount;i++)
+            {
+                vh.PopulateUIVertex(ref v,i);
+                v.position=pivot+(v.position-pivot)*visualScale;
+                vh.SetUIVertex(v,i);
+            }
+        }
         public bool UsesOwnerReference => approvedIndependentArt && sprite==approvedIndependentArt;
         // These are five new sprites derived from the separately approved
         // concept. They belong to this canvas, not the old game HUD.
