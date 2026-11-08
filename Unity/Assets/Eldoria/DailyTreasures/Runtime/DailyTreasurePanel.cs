@@ -778,11 +778,13 @@ namespace Eldoria.DailyTreasures
                 0f,chestY,artWidth,artHeight);
             Place(illustratedOpen.rectTransform,.5f,.5f,.5f,.5f,
                 0f,chestY,artWidth,artHeight);
+            bool compactPrizePortrait=portrait && prizeCount>0 && panelH<680f;
             if(prizeCount>0)
             {
-                resultText.fontSize=portrait?18:16;
+                resultText.fontSize=compactPrizePortrait?16:portrait?18:16;
                 Place(resultText.rectTransform,.5f,.5f,.5f,.5f,
-                    0,portrait?-242f:-15f,panelW-45f,portrait?50f:40f);
+                    0,compactPrizePortrait?-217f:portrait?-242f:-15f,
+                    panelW-45f,compactPrizePortrait?39f:portrait?50f:40f);
             }
             else
             {
@@ -790,16 +792,18 @@ namespace Eldoria.DailyTreasures
                 Place(resultText.rectTransform,.5f,.5f,.5f,.5f,0,
                     portrait?-140f:-95f,panelW-45f,portrait?165f:118f);
             }
-            float shelfHeight=portrait?142f:64f;
+            float shelfHeight=compactPrizePortrait?114f:portrait?142f:64f;
             Place(prizeShelf,.5f,.5f,.5f,.5f,0f,
-                portrait?-143f:-69f,panelW-34f,shelfHeight);
+                compactPrizePortrait?-126f:portrait?-143f:-69f,
+                panelW-34f,shelfHeight);
             int prizeCols=portrait && prizeCount>=3?2:Mathf.Max(1,prizeCount);
             int prizeRows=Mathf.Max(1,
                 Mathf.CeilToInt(prizeCount/(float)prizeCols));
             float prizeGap=portrait?8f:6f;
             float cardW=Mathf.Min(140f,
                 (panelW-38f-(prizeCols-1)*prizeGap)/prizeCols);
-            float cardH=prizeRows==2?65f:portrait?89f:62f;
+            float cardH=prizeRows==2?(compactPrizePortrait?53f:65f):
+                portrait?(compactPrizePortrait?76f:89f):62f;
             for(int i=0;i<prizeRects.Length;i++)
             {
                 int r=i/prizeCols,c=i%prizeCols;
@@ -812,15 +816,18 @@ namespace Eldoria.DailyTreasures
                     r==0?cardH*.5f+prizeGap*.5f:
                          -cardH*.5f-prizeGap*.5f;
                 Place(prizeRects[i],.5f,.5f,.5f,.5f,x,y,cardW,cardH);
-                bool tall=cardH>=80f;
+                bool tall=cardH>=80f,shortCard=cardH<60f;
                 Place(prizeIcons[i].rectTransform,.5f,1f,.5f,1f,
-                    0f,tall?-6f:-3f,tall?49f:36f,tall?40f:25f);
+                    0f,tall?-6f:-3f,tall?49f:shortCard?31f:36f,
+                    tall?40f:shortCard?22f:25f);
                 Place(prizeNames[i].rectTransform,.5f,.5f,.5f,.5f,
-                    0f,tall?-14f:-8f,cardW-8f,12f);
+                    0f,tall?-14f:shortCard?-6f:-8f,
+                    cardW-8f,shortCard?10f:12f);
                 Place(prizeAmounts[i].rectTransform,.5f,.5f,.5f,.5f,
-                    0f,tall?-31f:-23f,cardW-8f,tall?20f:17f);
-                prizeAmounts[i].fontSize=tall?20:17;
-                prizeNames[i].fontSize=tall?12:11;
+                    0f,tall?-31f:shortCard?-19f:-23f,
+                    cardW-8f,tall?20f:shortCard?14f:17f);
+                prizeAmounts[i].fontSize=tall?20:shortCard?14:17;
+                prizeNames[i].fontSize=tall?12:shortCard?10:11;
             }
             // Skip stays away from the receipt and is a genuine >=44px hit target.
             Place((RectTransform)skipButton.transform,1f,1f,1f,1f,-10f,-60f,100f,45f);
