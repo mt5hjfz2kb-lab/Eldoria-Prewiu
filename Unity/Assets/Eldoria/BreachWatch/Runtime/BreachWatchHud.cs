@@ -113,7 +113,7 @@ namespace Eldoria.BreachWatch
             identity.GetComponent<BreachWatchPlate>().sprite &&
             identity.GetComponent<BreachWatchPlate>().sprite.name=="profile_plate" &&
             identity.GetComponent<BreachWatchPlate>().type==Image.Type.Sliced &&
-            identity.GetComponentsInChildren<Shadow>(true).Length==1 &&
+            identity.GetComponent<Shadow>() &&
             identity.GetComponentsInChildren<Graphic>(true).Length==4;
 
         public bool HasPremiumResourceSurfaces
