@@ -197,7 +197,7 @@ namespace Eldoria.BreachWatch
                     maxY=Mathf.Max(maxY,Mathf.Abs(Vector3.Dot(local,up)));
                 }
                 portraitCamera.orthographicSize=Mathf.Max(.5f,
-                    Mathf.Max(maxY,maxX/portraitCamera.aspect)*.83f);
+                    Mathf.Max(maxY,maxX/portraitCamera.aspect)*.77f);
                 portraitCamera.nearClipPlane=.1f;
                 portraitCamera.farClipPlane=1000;
                 portraitCamera.transform.position=copiedBounds.center -
@@ -246,8 +246,15 @@ namespace Eldoria.BreachWatch
                 earth.transform.SetParent(stage.transform,false);
                 earth.transform.position=new Vector3(copiedBounds.center.x,
                     copiedBounds.min.y-.045f,copiedBounds.center.z);
-                float width=Mathf.Max(1f,copiedBounds.size.x*1.34f);
-                float depth=Mathf.Max(1f,copiedBounds.size.z*1.34f);
+                // The former portrait placed an obviously rectangular green
+                // square behind the Bastion. Extend this private ground beyond
+                // the entire orthographic viewport so that NO square edge can
+                // appear in the thumbnail, matching the owner's reference.
+                // The playable world's meshes/camera remain unchanged.
+                float width=Mathf.Max(copiedBounds.size.x*2.5f,
+                    portraitCamera.orthographicSize*portraitCamera.aspect*6.5f);
+                float depth=Mathf.Max(copiedBounds.size.z*2.5f,
+                    portraitCamera.orthographicSize*6.5f);
                 var soil=new Mesh { name="Vigilia / one-shot earth under real building" };
                 soil.vertices=new[]{
                     new Vector3(-width*.5f,0,-depth*.5f),
@@ -257,12 +264,17 @@ namespace Eldoria.BreachWatch
                 };
                 soil.triangles=new[]{0,1,2,0,2,3};
                 soil.normals=new[]{Vector3.up,Vector3.up,Vector3.up,Vector3.up};
-                soil.uv=new[]{new Vector2(0,0),new Vector2(0,1),
-                    new Vector2(1,1),new Vector2(1,0)};
+                // A tiled small soil source retains its mineral grain even
+                // with a larger art-only photo stage. Sharp tile borders live
+                // outside the camera, never under gameplay.
+                soil.uv=new[]{new Vector2(0,0),new Vector2(0,4),
+                    new Vector2(4,4),new Vector2(4,0)};
                 bakedMeshes.Add(soil);
                 earth.GetComponent<MeshFilter>().sharedMesh=soil;
                 var earthTexture=new Texture2D(128,128,TextureFormat.RGBA32,false);
                 earthTexture.name="Vigilia / earth grain";
+                earthTexture.wrapMode=TextureWrapMode.Repeat;
+                earthTexture.filterMode=FilterMode.Bilinear;
                 var earthColors=new Color32[128*128];
                 for(int ey=0;ey<128;ey++)for(int ex=0;ex<128;ex++)
                 {
