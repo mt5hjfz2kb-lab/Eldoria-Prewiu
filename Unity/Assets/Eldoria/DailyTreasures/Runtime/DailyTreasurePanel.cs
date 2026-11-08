@@ -129,8 +129,8 @@ namespace Eldoria.DailyTreasures
         {
             originalSfx=gameObject.AddComponent<AudioSource>();
             originalSfx.playOnAwake=false;originalSfx.spatialBlend=0f;originalSfx.volume=.27f;
-            chestKnock=MakeOriginalSound("Valoria / wooden lock",176f,.12f);
-            chestChime=MakeOriginalSound("Valoria / discovery chime",540f,.23f);
+            chestKnock=MakeOriginalSound("Valoria / wooden lock",176f,.17f);
+            chestChime=MakeOriginalSound("Valoria / discovery chime",540f,.62f);
             root=(RectTransform)transform;
             // No second EventSystem, Canvas, save or navigation router.
             entryRect=NewRect("Daily reward / optional medallion",root);
@@ -207,16 +207,28 @@ namespace Eldoria.DailyTreasures
         }
         static AudioClip MakeOriginalSound(string name,float frequency,float duration)
         {
+            // Low-memory original procedural foley, not a single arcade beep:
+            // brief wood/iron latch impulse followed by soft detuned bronze tones.
+            // Generated only once when the panel is instantiated.
             const int rate=22050;
             int count=Mathf.CeilToInt(rate*duration);
+            bool impact=frequency<300f;
             var data=new float[count];
             for(int i=0;i<count;i++)
             {
                 float t=i/(float)rate;
-                float fade=1f-i/(float)count;
-                float vibration=Mathf.Sin(t*frequency*Mathf.PI*2f)+
-                    .23f*Mathf.Sin(t*frequency*1.5f*Mathf.PI*2f);
-                data[i]=vibration*fade*fade*.22f;
+                float attack=Mathf.Min(1f,t*750f);
+                float seed=Mathf.Sin((i+9)*78.233f)*43758.5453f;
+                float noise=Mathf.Repeat(seed,1f)*2f-1f;
+                float tone=impact
+                    ? Mathf.Sin(t*frequency*2f*Mathf.PI)*Mathf.Exp(-t*23f)+
+                      .32f*Mathf.Sin(t*frequency*.52f*2f*Mathf.PI)*Mathf.Exp(-t*16f)+
+                      noise*.20f*Mathf.Exp(-t*62f)
+                    : (Mathf.Sin(t*frequency*2f*Mathf.PI)+
+                       .36f*Mathf.Sin(t*frequency*1.51f*2f*Mathf.PI)+
+                       .15f*Mathf.Sin(t*frequency*2.07f*2f*Mathf.PI))*
+                       Mathf.Exp(-t*5.3f);
+                data[i]=Mathf.Clamp(tone*attack*(impact?.24f:.18f),-.80f,.80f);
             }
             var clip=AudioClip.Create(name,count,1,rate,false);
             clip.SetData(data,0);
@@ -337,7 +349,8 @@ namespace Eldoria.DailyTreasures
             resultText.text=showChest?"EL COFRE DE LAS CENIZAS":"RECOMPENSA RECIBIDA";
             playing=showChest;
             chimePlayed=false;
-            if(originalSfx && chestKnock && showChest)originalSfx.PlayOneShot(chestKnock);
+            if(Application.isPlaying && originalSfx && chestKnock && showChest)
+                originalSfx.PlayOneShot(chestKnock);
             startTime=Time.unscaledTime;
             chest.gameObject.SetActive(showChest);
             chest.SetOpening(0f);
@@ -446,7 +459,8 @@ namespace Eldoria.DailyTreasures
             if(elapsed>=.82f && !chimePlayed)
             {
                 chimePlayed=true;
-                if(originalSfx && chestChime)originalSfx.PlayOneShot(chestChime);
+                if(Application.isPlaying && originalSfx && chestChime)
+                    originalSfx.PlayOneShot(chestChime);
             }
             float opening=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((elapsed-.50f)/.72f));
             chest.SetOpening(opening);
