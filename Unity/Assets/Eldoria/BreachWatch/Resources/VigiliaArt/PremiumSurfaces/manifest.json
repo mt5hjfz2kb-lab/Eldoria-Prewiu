@@ -1,6 +1,6 @@
 {
   "origin": "Original script-authored Vigilia surface artwork, owner's approved image is visual direction only",
-  "independent": "All four nine-slice sprites are new and no old HUD graphics are reused",
+  "independent": "All five nine-slice sprites are new and no old HUD graphics are reused",
   "not_native_screenshot": true,
   "art_approved": false,
   "sources": [
@@ -62,6 +62,21 @@
         11,
         14,
         11
+      ]
+    },
+    {
+      "name": "chiseled_quest",
+      "sha256": "4d17c468db941e9c1fda1b8d1de53296543f698a1b3b40bd7f6ea3890783fdbd",
+      "size": [
+        512,
+        220
+      ],
+      "guid": "1138e4a0b67b480a89ce751bd2fb370c",
+      "border": [
+        48,
+        32,
+        66,
+        32
       ]
     }
   ]
