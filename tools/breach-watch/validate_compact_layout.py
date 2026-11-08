@@ -72,16 +72,16 @@ def check(size:tuple[int,int]):
         for i in range(5):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
-        panelw=min(178,w*.43)
-        panely=navtop-307-45
-        context=place("context",w-m-panelw,panely,panelw,307)
+        panelw=min(171,w*.42)
+        panely=navtop-293-45
+        context=place("context",w-m-panelw,panely,panelw,293)
         touch("close",R(context.x+panelw-55,context.y+3,50,50))
-        touch("action",R(context.x+12,context.y+307-53,panelw-24,50))
-        info=R(13,140,panelw-26,43)
-        costlabel=R(13,186,panelw-26,19)
-        costdata=R(14,209,panelw-28,26)
-        state=R(13,236,panelw-26,17)
-        action=R(12,254,panelw-24,50)
+        touch("action",R(context.x+12,context.y+293-53,panelw-24,50))
+        info=R(13,133,panelw-26,39)
+        costlabel=R(13,174,panelw-26,18)
+        costdata=R(13,195,panelw-26,24)
+        state=R(13,220,panelw-26,17)
+        action=R(12,240,panelw-24,50)
         assert not info.intersects(costlabel),size
         assert not costlabel.intersects(costdata),size
         assert not costdata.intersects(state),size
