@@ -480,6 +480,8 @@ namespace Eldoria.BreachWatch.Editor
                          "Real Bastion selection is missing contextual native card in "+name);
                     Need(ui.HasLiveBuildingPortrait && ui.BuildingPortraitExclusive,
                          "Real isolated Bastion mesh portrait did not render in "+name);
+                    Need(!ui.BuildingPortraitEdgeClipped,
+                         "Real Bastion geometry is cropped at the miniature frame boundary: "+name);
                     Need(ui.BuildingPortraitDrawnFraction>.0125f,
                         "Genuine isolated Bastion camera produced a mostly empty image in "+name+
                         " pixels="+ui.BuildingPortraitDrawnFraction);
