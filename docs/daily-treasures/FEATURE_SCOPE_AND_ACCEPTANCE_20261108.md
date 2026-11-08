@@ -18,7 +18,7 @@
 | Primer héroe importante | Mensaje único «Lyra se une a Valoria» y ceremonia visual en cola, después del reclutamiento real | No generar copias del héroe, botín adicional ni fingir que la obtiene antes de terminar su misión |
 | Recompensas para cartas legendarias y Duelo de Reliquias | **Excluido deliberadamente del corte Bastión I–V**: su adjudicación todavía no forma parte del recorrido de testers | Solo conectar cuando existan contratos de juego y arte reales |
 | Economía equilibrada | Simulación de presupuesto provisional 7/14 días en perfil OWNER_I_II | Importes sujetos a datos de testers; no confundir QA_FAST con economía de jugadores |
-| Rendimiento y experiencia móvil | QA responsiva no-Unity; herramienta de capturas nativas preparada | 16 capturas (4 × calendario, cofre cerrado, apertura central, cofre abierto), 16 clics auténticos, pruebas iOS/Android/WebGL |
+| Rendimiento y experiencia móvil | QA responsiva no-Unity; herramienta de capturas nativas preparada | 52 capturas originales (cuatro tamaños, dos días de premios reales y cuatro acontecimientos), 56 clics auténticos, 8 premios vía gateway, pruebas iOS/Android/WebGL |
 | Integración con Vigilia de la Brecha | Integración en RoyalGold v3 bajo PR #181, separación intencional de PR #173 | Conectar a HUD final sin duplicar pantallas ni introducir imágenes de pantalla completa pegadas |
 
 ## Últimas coberturas incorporadas para evitar olvidar parte del encargo
@@ -27,7 +27,7 @@
 - **Bastión:** al completar realmente II o V, `LocalGateway.Advance` registra una carta narrativa única y la cola visual detecta el cambio de nivel si ocurrió durante la sesión. Si ocurrió sin la aplicación abierta, no reproduce una animación fuera de contexto: el mensaje permanece en el buzón.
 - **Lyra:** la primera incorporación real en la misión de la fisura crea un mensaje narrativo único. La cola de hitos distingue reclutamiento nuevo de héroe ya existente y no emite otro premio.
 - **Racha:** el calendario muestra ahora el próximo bonus y su cuenta atrás; después de un día perdido refleja que la racha terminó, pero no elimina los siete premios ya acumulados. Si el calendario sigue abierto durante un cambio de fecha UTC, actualiza el estado sin tener que cerrar la pantalla.
-- **Comprobación visual nativa:** se añadió un cuarto fotograma obligatorio del cofre **abriéndose** bajo el resplandor. Son **16 PNG reales** (cuatro momentos por cuatro formatos), además de 16 eventos táctiles reales; no basta con comprobar solo los estados cerrado/abierto.
+- **Comprobación visual nativa:** prueba preparada para **52 PNG originales de Unity** (medallón, días 4/7, vuelos de premios y 16 fotogramas de cuatro estilos artísticos), **56 eventos táctiles reales** y **8 concesiones auténticas** con gateway aislado. Son requisitos pendientes; no son capturas ya tomadas.
 - **Regresión transversal:** `tools/march-capacity/Smoke.csproj` y el workflow de recompensas compilan juntos el estado guardado añadido, evitando que la incorporación del tributo rompa la capacidad de tres marchas.
 - **Balance provisional:** prueba automática del perfil OWNER_I_II, no QA_FAST. Los primeros 7 días seguidos dan 330 madera, 300 piedra, 230 comida y 8 minutos de aceleradores; las recompensas no están aprobadas económicamente hasta medir su impacto en las pruebas reales.
 
@@ -42,9 +42,20 @@
 
 ## Cómo se comprueba antes de entrar en main
 - **Código:** ejecutar `daily-treasures-domain.yml`, incluyendo calendario, gateway real, cola de hitos, economía OWNER_I_II, regresión de capacidad de marchas, metadatos y geometrías.
-- **Unity:** usar `daily-treasures-native.yml` solo tras liberación/cambio de propietario del recurso Windows, exigencia de SHA idéntica, 16 vistas PNG y 16 eventos de puntero (entrada, reclamación, salto, cierre). Captura de componente ≠ validación de ciudad completa.
+- **Unity:** usar `daily-treasures-native.yml` solo tras liberación/cambio de propietario del recurso Windows, exigencia de SHA idéntica, 52 vistas PNG y 56 eventos de puntero (entrada, reclamación, salto, cierre y eventos visuales, incluido Canvas independiente). Captura de componente ≠ validación de ciudad completa.
 - **Juego real:** sesiones Bastión I–V con tutorial normal, construcción, marcha, 3 marchas, exploración, Vigilantes, héroes, guardado/reinicio, buzón; comparar con la beta antes de publicar.
 - **Arte:** revisión humana de relieve, contraste, lectura, ritmo, sonido y coherencia con Vigilia. Si el cofre ilustrado no se ve tan bien como la referencia fuera de Unity, rehacer la solución, no maquillar defectos.
 - **Medición posterior y voluntaria:** oportunidades reales de reclamar, reclamaciones válidas/duplicadas, tiempo hasta comprensión de premio, tasa de salto de ceremonia, finalización de capítulo, descubrimientos distintos, retención D1/D3/D7 (con consentimiento y sin datos sensibles). Ninguna retención está demostrada todavía.
 
 **Estado en esta rama:** trabajo técnico y recursos artísticos implementados, dominio y pruebas fuente verificables; pendiente validación nativa y ajuste del balance antes de fusionar/publicar.
+
+## Escenas de categoría visualmente independientes — ampliación premium
+
+La solución original de «mismo cofre y distinto tinte» ha sido sustituida por una composición de escenario **por acontecimiento**, calculada en `DailyTreasureStageDirection` y conectada al panel:
+
+- **Lyra:** hall pictórico auténtico (sin retrato inventado de Lyra), categoría heráldica propia. Si la interfaz canónica de héroes está mostrando su modelo 3D autorizado, la cola aplaza el cofre hasta que termine esa presentación, para no tapar ni suplantar el personaje real.
+- **Exploradores:** paisaje/cartografía original de Eldoria y composición independiente; en horizontal la escena domina la mitad izquierda, y el cofre y su mensaje ocupan la derecha.
+- **Vigilantes:** panorama original, luz de capítulo distinta y mismo principio de escenografía real sin alterar el premio de combate.
+- **Bastión II/V:** escenografía real de la ciudad, visible a través del marco y fondo semitransparente; no sustituye el Bastión construido por una ilustración ficticia de otro nivel.
+
+En vertical, pintura de escenario y cofre se superponen con jerarquía de profundidad; en horizontal se separan para aprovechar el formato apaisado. Las rutas originales se verifican por API de Unity en la futura prueba nativa y su movimiento parallax usa recorte UV acotado, sin repetir texturas. La legibilidad de los textos narrativos se ajusta en un rango limitado, y la geometría se comprueba con pruebas de C# puro en ocho dispositivos. **No declarar «acabado premium logrado» hasta ver las imágenes reales de Unity y aprobarlas artísticamente.**
