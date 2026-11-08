@@ -47,11 +47,20 @@ def sample(image):
     colorbins = len({
         (r//24,g//24,b//24) for r,g,b in rgb.getdata()
     })
+    # The owner explicitly rejected a neon/fairy-purple scene as off-style.
+    # Log strongly saturated pink-violet coverage for *human* art direction:
+    # a Guardian's actual violet Breach can be legitimate, so NEVER turn
+    # this subjective heuristic into an automatic art APPROVED/REJECTED flag.
+    neon_violet = sum(1 for r,g,b in rgb.getdata()
+        if r>130 and b>150 and g<min(r,b)*.60 and r+b-2*g>135)
+    neon_violet_ratio=round(neon_violet/(196*126),4)
     return {
         "luminance":round(luminance, 2),
         "meanStdDev":round(sum(std)/3, 2),
         "warmPixels":warm,
         "uniqueColorBins":colorbins,
+        "neonVioletPixels":neon_violet,
+        "neonVioletRatioForHumanReview":neon_violet_ratio,
         "thumb":rgb,
     }
 
@@ -104,6 +113,7 @@ def analyze(folder,expected_sha,output):
     wanted=set(expected)
     actual={}
     details=[]
+    visual_language_warnings=[]
     for i,record in enumerate(shots):
         filename=record.get("file","")
         pattern=re.fullmatch(
@@ -154,11 +164,20 @@ def analyze(folder,expected_sha,output):
                 record.get("coversReward") is True,
                 "Only a genuine reward gateway state may be labelled paid: "+filename)
         actual[key]=(thumb,metrics)
+        if metrics["neonVioletRatioForHumanReview"]>.16 and (
+            "vigilants" not in variant):
+            visual_language_warnings.append({
+                "file":filename,
+                "ratio":metrics["neonVioletRatioForHumanReview"],
+                "note":"Human check: unusually saturated purple area; owner rejected fairy/neon identity."
+            })
         details.append({
             "file":filename,"view":record.get("view"),"size":[w,h],
             "luminance":metrics["luminance"],
             "stddev":metrics["meanStdDev"],"warmPixels":metrics["warmPixels"],
             "colorBins":metrics["uniqueColorBins"],
+            "neonVioletRatioForHumanReview":
+                metrics["neonVioletRatioForHumanReview"],
         })
     assert_quality(set(actual)==wanted,"Missing variant or device size")
 
@@ -260,13 +279,19 @@ def analyze(folder,expected_sha,output):
             "allFourAspectRatiosPresent":True,
         },
         "transitions":transitions,
-        "images":details
+        "images":details,
+        # Diagnostics are not aesthetic success or failure: compare contact
+        # sheets against the actual PR173 charcoal/copper/burgundy design.
+        "ownerVisualLanguageWarnings":visual_language_warnings,
+        "ownerRejectionOfNeonFantasyConceptRecorded":True
     }
     (output/"native_art_audit.json").write_text(
         json.dumps(result,indent=2,ensure_ascii=False),encoding="utf-8")
     print("PASS NATIVE SCREENSHOT PIXEL AUDIT:",len(actual),
           "original Unity PNGs; illustration/theme transitions visible.")
     print("REVIEW REQUIRED: owner aesthetic comparison and full game/mobile proof.")
+    print("REJECTED STYLE WATCH: high-neon-violet snapshots needing human check:",
+          len(visual_language_warnings))
     return result
 
 def selftest():
