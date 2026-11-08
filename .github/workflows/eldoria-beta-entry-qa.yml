@@ -17,6 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         engine: [webkit]
+        variant: [unchanged, astc-disabled]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,6 +33,7 @@ jobs:
       - name: Measure unchanged published candidate
         env:
           QA_ENGINE: ${{ matrix.engine }}
+          QA_VARIANT: ${{ matrix.variant }}
           QA_OUT: engine-evidence
           QA_SKIP_PREFLIGHT: '1'
         run: |
@@ -41,7 +43,8 @@ jobs:
         if: always()
         run: |
           mkdir -p engine-evidence/os
-          /usr/bin/log show --last 10m --style compact --predicate 'process CONTAINS "WebKit" AND (eventMessage CONTAINS "memory" OR eventMessage CONTAINS "GPU" OR eventMessage CONTAINS "terminate")' > engine-evidence/os/webkit-system.log 2>&1 || true
+          sleep 10
+          /usr/bin/log show --last 10m --style compact --predicate '(process CONTAINS "WebKit" OR process CONTAINS "MiniBrowser" OR eventMessage CONTAINS "GPUProcess" OR eventMessage CONTAINS "invalid message" OR eventMessage CONTAINS "memorystatus")' > engine-evidence/os/webkit-system.log 2>&1 || true
           python3 - <<'PY'
           import pathlib, shutil
           out=pathlib.Path('engine-evidence/os')
@@ -54,6 +57,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile5-macos-${{ matrix.engine }}
+          name: mobile5-macos-${{ matrix.engine }}-${{ matrix.variant }}
           path: engine-evidence/
           retention-days: 14
