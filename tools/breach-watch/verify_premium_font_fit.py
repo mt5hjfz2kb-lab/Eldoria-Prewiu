@@ -64,7 +64,7 @@ def verify():
     fits("Operativo · 2:00",REGULAR,14,panel_width-26,
          "real status/timer")
     action_width=panel_width-24
-    engraving_inset=max(30,min(40,action_width*.22))
+    engraving_inset=max(40,min(54,action_width*.265))
     fits("MEJORAR A II",SEMIBOLD,16,action_width-engraving_inset-7,
          "true compact phone upgrade")
     # Physical pixels: compact first-screen body glyphs and five nav areas
