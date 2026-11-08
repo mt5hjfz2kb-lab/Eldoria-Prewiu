@@ -99,8 +99,8 @@ namespace Eldoria.World4XCanon
   // Synchronous editor callers retain the exact same validated installation path.
   static void TraceStartupMemory(string phase)
   {
-   bool enabled=Application.platform==RuntimePlatform.WebGLPlayer
-    ?Application.absoluteURL.Contains("eldoria_profile=1")
+   bool enabled=UnityEngine.Application.platform==RuntimePlatform.WebGLPlayer
+    ?UnityEngine.Application.absoluteURL.Contains("eldoria_profile=1")
     :Environment.GetEnvironmentVariable("ELDORIA_MEMORY_PHASES")=="1";
    if(!enabled)return;
    Debug.Log("ELDORIA_MEMORY_PHASE phase="+phase+
