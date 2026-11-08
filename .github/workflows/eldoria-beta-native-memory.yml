@@ -1,4 +1,4 @@
-name: Eldoria certified structural WebGL recovery and export
+name: Eldoria preserved build read-only recovery
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -127,10 +127,34 @@ jobs:
           if(Test-Path $folder){throw 'Isolated project already exists; refuse replacement'}
           $drive=Get-PSDrive -Name ([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE).Substring(0,1))
           if($drive.Free -lt 512MB){throw 'Insufficient isolated import headroom; preserve other projects'}
-      - name: Preserve build settings, restore baseline source and export certified WebGL
+      - name: Inspect preserved build and export without changing shared source
         shell: powershell
         run: |
-          & ./beta-structural-tools/tools/eldoria-private-beta/native/export_certified_native.ps1
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:GITHUB_WORKSPACE "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          New-Item -ItemType Directory $out|Out-Null
+          $old=Join-Path $env:GITHUB_WORKSPACE 'beta-structural-evidence-42435095850-1'
+          $web=Join-Path $env:GITHUB_WORKSPACE 'beta-structural-webgl-42435095850-1'
+          $source=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
+          $utf8=New-Object Text.UTF8Encoding($false)
+          $head=git -C $source rev-parse HEAD
+          $status=@(git -C $source status --porcelain -- Unity)
+          $paths=@('Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/BakedSceneURP.asset','Unity/Assets/UniversalRenderPipelineGlobalSettings.asset')
+          $diff=git -C $source diff -- $paths
+          [IO.File]::WriteAllLines((Join-Path $out 'current-settings.diff'),[string[]]$diff,$utf8)
+          $inventory=@(Get-ChildItem $env:GITHUB_WORKSPACE -Directory -Filter 'beta-structural-*'|ForEach-Object {$_.Name})
+          [IO.File]::WriteAllText((Join-Path $out 'recovery-inspection.json'),(@{head=$head;status=$status;preserved_directories=$inventory;source_modified_by_recovery=$false}|ConvertTo-Json -Depth 8),$utf8)
+          if(-not(Test-Path (Join-Path $old 'complete.txt')) -or -not(Test-Path (Join-Path $web 'index.html'))){throw 'Preserved complete build absent; inspection retained'}
+          foreach($name in 'comparison.json','source-overlay.json','existing-input-audit.json','warm-cache-before.json','warm-cache-restoration.json','complete.txt','web-build.json','web-input-current-manifest.txt','web-input-current-signature.txt','web-authority-platform-normalization.txt'){
+            if(Test-Path (Join-Path $old $name)){Copy-Item (Join-Path $old $name) (Join-Path $out $name)}
+          }
+          New-Item -ItemType Directory (Join-Path $out 'native-journey')|Out-Null
+          foreach($name in 'integration-result.json','integration-input-manifest.txt','integration-input-signature.txt'){Copy-Item (Join-Path $old ('native-journey/'+$name)) (Join-Path $out ('native-journey/'+$name))}
+          $build=Get-Content (Join-Path $old 'web-build.json') -Raw|ConvertFrom-Json
+          if($build.source_sha -ne '91734045e8d32cc90cc4843b4b7e08e57b1a0458'){throw 'Unexpected build provenance'}
+          $files=@(Get-ChildItem $web -File -Recurse|ForEach-Object {@{path=$_.FullName.Substring($web.Length+1).Replace('\','/');bytes=$_.Length;sha256=(Get-FileHash $_.FullName -Algorithm SHA256).Hash}})
+          [IO.File]::WriteAllText((Join-Path $out 'preserved-web-inventory.json'),(@{files=$files;origin_run='42435095850';origin_source=$build.source_sha;export_run=$env:GITHUB_RUN_ID;export_source=$env:GITHUB_SHA;status='RECOVERED_UNVERIFIED_SOURCE_NOT_MODIFIED'}|ConvertTo-Json -Depth 8),$utf8)
+          Add-Content $env:GITHUB_ENV "BETA_CERTIFIED_WEB=$web"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
