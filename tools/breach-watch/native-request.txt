@@ -44,3 +44,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08 final source-only revalidation: independent volcanic edge veil, faithful five-slot destinations, real city/world camera state, separate URP portrait camera and safe asset metadata. Owner required no interim approval. Native runner must only activate after verified release by beta's canonical Windows owner.
 
 2026-11-08: QA of independent landscape-specific Vigilia title and noninteractive atmospheric mesh, URP base building portrait, true resource/city/world/disabled routes, no HUD skin. Export Roslyn+art checks, native proof only if canonical heavy Windows claim becomes available after safe handoff.
+
+2026-11-08: Compact UI exact owner target rebuild. Removed red profile strip and central title, scaled contextual card down, 5 icon row, actual wood/stone offer amounts; added conservative real native footprint test with limits 24% desktop, 32% landscape phone, 36% portrait. Check C# Roslyn and source art; no Windows while beta owner holds reservation.
