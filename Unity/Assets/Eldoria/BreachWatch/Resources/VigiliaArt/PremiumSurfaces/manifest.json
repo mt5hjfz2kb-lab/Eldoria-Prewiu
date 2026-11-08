@@ -21,7 +21,7 @@
     },
     {
       "name": "burgundy_action",
-      "sha256": "16298d36240336567c970fa9d82d58f94ca77ce71a817d3f5fb7652093a00a6a",
+      "sha256": "5f65e58c20a56e8bf1125737bf88b2f5f0739e987021850576f0907c02942a0e",
       "size": [
         512,
         148
@@ -51,17 +51,17 @@
     },
     {
       "name": "slate_resource",
-      "sha256": "a150b07652cecc3b008144fae7244e5de226d10510e67112df3855135a9fbde5",
+      "sha256": "7569144b1001118def633265a7e59bde7f691f42328990f110bae00fd127a9ba",
       "size": [
         512,
         148
       ],
       "guid": "90ec0b5c9a2b463194f198a623e5e36c",
       "border": [
-        24,
-        22,
-        24,
-        22
+        14,
+        11,
+        14,
+        11
       ]
     }
   ]
