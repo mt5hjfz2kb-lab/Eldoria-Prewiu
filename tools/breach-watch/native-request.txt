@@ -2,3 +2,5 @@ VIGILIA DE LA BRECHA — independent first-screen second artistic candidate.
 2026-11-08: original authoring of layered basalt/copper material, dimensional independent carved glyphs, and genuine 3D selected-building portrait, with revised portrait and 844x390 typography.
 Run Roslyn on exact branch sources now. Do not run Windows Unity unless main's live registry grants exclusive windows-runner-heavy to this canonical workstream; currently private beta has the reservation. Once legally claimed, run exact-head native Unity city and Bastion in 4 resolutions. No main merge, game publish, or art approval without visual proof.
 Workstream-ID: eldoria-forja-oscura-visual-proof-20261107
+
+2026-11-08: additional bounded donor art research under CC0: download isolated AnnoMotion source ZIP, SHA/inventory only, NO Unity integration or release. Keep native Windows gate closed until exclusive registry lease.
