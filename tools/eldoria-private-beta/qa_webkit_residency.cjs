@@ -33,13 +33,14 @@ function processes() {
         if(window.__glCalls.length>50)window.__glCalls.shift();
       };
       const proto=WebGL2RenderingContext.prototype;
-      if(variant==='astc-disabled'){
+      if(['astc-disabled','s3tc-disabled'].includes(variant)){
+        const denied=variant==='astc-disabled'?/compressed_texture_astc/i:/compressed_texture_s3tc/i;
         const ext=proto.getExtension;
-        proto.getExtension=function(name){return /compressed_texture_astc/i.test(name)?null:ext.call(this,name);};
+        proto.getExtension=function(name){return denied.test(name)?null:ext.call(this,name);};
         const supported=proto.getSupportedExtensions;
-        proto.getSupportedExtensions=function(){return supported.call(this)?.filter(x=>!/compressed_texture_astc/i.test(x));};
+        proto.getSupportedExtensions=function(){return supported.call(this)?.filter(x=>!denied.test(x));};
       }
-      for(const name of ['compressedTexImage2D','texImage2D','texStorage2D','bufferData','compileShader','linkProgram','drawElements','drawArrays']){
+      for(const name of ['compressedTexImage2D','compressedTexSubImage2D','texImage2D','texStorage2D','bufferData','compileShader','linkProgram','drawElements','drawArrays']){
         const original=proto[name];
         proto[name]=function(...args){remember(name,args);return original.apply(this,args);};
       }
