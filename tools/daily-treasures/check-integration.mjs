@@ -80,7 +80,7 @@ assert.match(panel,/GameObject\.Find\("VIGILIA \/ independent canvas"\)/);
 assert.match(panel,/vigilia\.transform\.Find\("Safe composition"\)/);
 assert.match(panel,/root\.SetParent\(safe,false\)/);
 assert.match(panel,/root\.SetParent\(originalSafeArea,false\)/);
-assert.match(panel,/onVigiliaCanvas\?\(portrait\?102f:177f\)/);
+assert.match(panel,/float entryX=onVigiliaCanvas&&!portrait\?256f:14f/);
 assert.match(retention,/if\(!dailyTreasures && safe\)/);
 assert.match(panel,/milestoneQueue\.Observe\(gateway\.Snapshot\(\)\)/);
 assert.match(panel,/milestoneQueue\.ConfirmPresented\(milestone\.EventId\)/);
