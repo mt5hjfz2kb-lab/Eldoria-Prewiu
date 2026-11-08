@@ -351,6 +351,22 @@ namespace Eldoria.BreachWatch
             if(!canvas||!created && !uiRoot)return;
             pixelWidth=Mathf.Max(320,pixelWidth);pixelHeight=Mathf.Max(300,pixelHeight);
             lastWidth=pixelWidth;lastHeight=pixelHeight;
+            // Device safe area is part of the NEW Canvas' own layout contract.
+            // Offscreen evidence at synthetic resolutions uses its full target
+            // instead of accidentally inheriting the host monitor's cut-outs.
+            if(Screen.width==pixelWidth && Screen.height==pixelHeight)
+            {
+                Rect safe=Screen.safeArea;
+                if(safe.width>0 && safe.height>0)
+                {
+                    uiRoot.anchorMin=new Vector2(safe.xMin/Screen.width,safe.yMin/Screen.height);
+                    uiRoot.anchorMax=new Vector2(safe.xMax/Screen.width,safe.yMax/Screen.height);
+                    uiRoot.offsetMin=Vector2.zero;uiRoot.offsetMax=Vector2.zero;
+                    pixelWidth=Mathf.Max(320,Mathf.RoundToInt(safe.width));
+                    pixelHeight=Mathf.Max(300,Mathf.RoundToInt(safe.height));
+                }
+            }
+            else Stretch(uiRoot);
             bool portrait=pixelHeight>pixelWidth;
             float scale=portrait?pixelWidth/430f:Mathf.Max(.86f,Mathf.Min(pixelWidth/1180f,pixelHeight/650f));
             scaler.scaleFactor=scale;
@@ -392,16 +408,18 @@ namespace Eldoria.BreachWatch
                     At((RectTransform)navButtons[i].transform,i*(bw+6)+(bw-Mathf.Min(bw,65))*.5f,1,Mathf.Min(bw,65),65);
                     navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Navigation;
                 }
-                float panelHeight=Mathf.Min(260,Mathf.Max(219,h-485));
+                float panelHeight=Mathf.Min(260,Mathf.Max(232,h-485));
                 At(panel,margin,navTop-panelHeight-13,w-margin*2,panelHeight);
                 At(buildingName.rectTransform,70,8,w-132,32);
                 At(buildingLevel.rectTransform,70,37,w-132,19);
                 At(((RectTransform)closeButton.transform),w-margin*2-51,10,39,40);
-                At(portraitFrame,15,63,139,84);
-                At(buildingFunction.rectTransform,166,68,w-2*margin-183,72);
-                At(buildingCosts.rectTransform,16,151,w-2*margin-34,34);
-                At(buildingState.rectTransform,16,187,w-2*margin-34,18);
-                At(((RectTransform)actionButton.transform),16,panelHeight-52,w-margin*2-32,45);
+                float portraitHeight=panelHeight<250?62:84;
+                At(portraitFrame,15,63,139,portraitHeight);
+                At(buildingFunction.rectTransform,166,68,w-2*margin-183,portraitHeight-6);
+                float costTop=69+portraitHeight;
+                At(buildingCosts.rectTransform,16,costTop,w-2*margin-34,27);
+                At(buildingState.rectTransform,16,costTop+29,w-2*margin-34,18);
+                At(((RectTransform)actionButton.transform),16,panelHeight-49,w-margin*2-32,44);
                 At(feedback.rectTransform,69,fullObjective?310:277,w-100,43);
             }
             else
