@@ -164,4 +164,10 @@ assert.match(native,/"special-day4-prize-flight"/);
 assert.match(nativeWorkflow,/day7-prize-flight/);
 assert.match(nativeWorkflow,/special-day4-prize-flight/);
 assert.match(native,/pictures\.Count==52 && inputChecks==56/);
+// Highlight the actual earned seventh-day chest without making the weekly
+// reward calendar constantly flash or accidentally advertise an unearned prize.
+assert.match(panel,/rareDayAvailable=reward\.IsValid && upcoming==7/);
+assert.match(panel,/rareDayGlow\.sprite=glowSprite/);
+assert.match(panel,/rareDayGlow\.color=new Color\(1f,\.78f,\.32f,gentle\)/);
+assert.match(panel,/rareHalo\.SetAsFirstSibling\(\)/);
 console.log('PASS daily treasures gateway integration source invariants');
