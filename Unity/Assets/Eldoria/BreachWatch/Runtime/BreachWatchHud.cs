@@ -499,7 +499,7 @@ namespace Eldoria.BreachWatch
                 At(identityCrest,-4,-4,62,62);
                 At(identityName.rectTransform,56,7,121,27);
                 At(identityPower.rectTransform,56,31,121,18);
-                identityName.fontSize=18;
+                identityName.fontSize=16;
                 identityPower.fontSize=14;
 
                 float rightSpace=w-(margin+182+9+margin);
@@ -592,9 +592,9 @@ namespace Eldoria.BreachWatch
                 At(chapterName.rectTransform,37,8,178,20);
                 At(chapterObjective.rectTransform,14,32,197,fullObjective?60:31);
                 At(chapterProgress.rectTransform,14,fullObjective?90:65,190,14);
-                chapterName.fontSize=13;
+                chapterName.fontSize=14;
                 chapterObjective.fontSize=16;
-                chapterProgress.fontSize=13;
+                chapterProgress.fontSize=14;
 
                 At(utilityRail,margin,h-179,49,162);
                 for(int i=0;i<utilityRail.childCount;i++)
@@ -637,7 +637,7 @@ namespace Eldoria.BreachWatch
                     At(((RectTransform)actionButton.transform),12,ph-51,pw-24,46);
                     buildingFunction.fontSize=14;
                     buildingCosts.fontSize=14;
-                    buildingState.fontSize=13;
+                    buildingState.fontSize=14;
                     actionLabel.fontSize=15;
                 }
                 else
@@ -778,9 +778,9 @@ namespace Eldoria.BreachWatch
             // a second row of real costs.
             if(string.IsNullOrEmpty(source))return source;
             if(source.StartsWith("Coste de la acción\n",StringComparison.Ordinal))
-                return "Coste · "+source.Substring("Coste de la acción\n".Length);
+                return source.Substring("Coste de la acción\n".Length);
             if(source.StartsWith("Action cost\n",StringComparison.Ordinal))
-                return "Cost · "+source.Substring("Action cost\n".Length);
+                return source.Substring("Action cost\n".Length);
             if(source.StartsWith("Coste pagado\n",StringComparison.Ordinal))
                 return "Pagado · "+source.Substring("Coste pagado\n".Length);
             if(source.StartsWith("Cost paid\n",StringComparison.Ordinal))
