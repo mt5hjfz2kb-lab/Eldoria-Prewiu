@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T20:13:48.398Z",
+  "updated_at": "2026-11-08T20:47:29.184Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6696,7 +6696,9 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
       "ownership_revision": 22,
       "write_scope_released": false,
@@ -6761,12 +6763,12 @@
         }
       ],
       "runner_priority_handoff": {
-        "status": "TEMPORARILY_LENT_TO_BETA_OWNER_AUTHORIZED",
+        "status": "RETURNED_AFTER_BETA_NATIVE_SUCCESS",
         "at": "2026-11-08T20:10:53.050Z",
         "to": "eldoria-private-beta-i-v-20261107",
         "reason": "Owner explicitly renews urgent PR179 continuation until testable stability solution. No native jobs active in live Actions inventory; preserve Forja owner and return Windows after native validation/build.",
-        "returned_at": "2026-11-08T19:52:48.053Z",
-        "native_run": 42514790566,
+        "returned_at": "2026-11-08T20:40:49.895Z",
+        "native_run": 42518950317,
         "restoration_verified": true
       },
       "last_verified": {
@@ -6815,16 +6817,14 @@
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes",
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "REACHABILITY_BUFFER_ALLOCATION_CAUSAL_COMPARISON",
+      "phase": "REUSED_ROUTE_BUFFERS_NATIVE_PARITY_PASS_WEBKIT_PENDING",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Measure original vs reused route dictionary buffers with exact world population and route parity, then fresh WebGL only if native checks pass. Mobile8 rejected for peak memory; no publication yet.",
+      "next": "Native42518950317 exact populations/routes parity twice,225 journey checks and WebGL build PASS; original inputs restored. Windows returned to Forja. Compare memory/package42519214500; no new owner publication yet.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6973,6 +6973,15 @@
           "cache_sha256": "013ebf8194be6974dbcadf27e3cf2ae43db7c7638e0e6cb22cfe838e037ed986",
           "restored": true,
           "physical_iphone_verified": false
+        },
+        "route_buffer_native": {
+          "run": 42518950317,
+          "source": "5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa",
+          "population_route_hash": "F0C7EA241931ECB6ECCF632205D227975C3050DA799794EFEDB80C40C767A73D",
+          "passes": 2,
+          "checks": 225,
+          "restored": true,
+          "physical_iphone_verified": false
         }
       },
       "art_production_routing": "not_applicable",
@@ -6998,7 +7007,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 8,
+      "ownership_revision": 9,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7023,26 +7032,28 @@
       ],
       "resources": [],
       "budget_eur": 0,
-      "phase": "PREMIUM_SPRITES_AND_LOOT_FLIGHT_SOURCE_VERIFIED_WAIT_NATIVE_ART_PROOF",
+      "phase": "NINE_PREMIUM_SPRITES_AND_MILESTONE_SCENIC_FOLEY_SOURCE_GREEN_NATIVE_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.",
-      "next": "Actual premium entry chest medallion, radial glow, seven-day calendar, real prize cards flying from open chest, quiet/special/legendary palette and milestone ceremony are in isolated PR181. Ubuntu source and 9 PNG asset gates passed. Explicit next: wait until exclusive windows-runner-heavy is formally released by PR179/PR173, claim lease, run Unity 6000.3.23f1 native workflow, inspect all 52 real PNGs + independent contact sheets, pointer/Save/close UX and mobile. Do not merge/publish until human-approved artistic wow benchmark and I–V player proof.",
+      "next": "PR181 exact-head 721c07d3048b4ec269b4d956e47e30044a94e9ad: original 9 Sprite PNGs, 3 existing painterly milestone backdrops (Lyra, Scouts, Vigilants), sound Foley Latch/Discovery/GrandDiscovery, real gateway, ceremony and source tests CI run 42521777540 success. Source work can continue if justified. windows-runner-heavy currently belongs to Vigilia PR173; do not take or interrupt until formal CAS release. Then run native at exact head, inspect original 52 PNG/56 true pointer/8 paid claims, inspect artistic consistency and sound, full-city and mobile before ART approval or merge.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
       "last_verified": {
         "source": "feature/eldoria-daily-treasures-20261108",
-        "commit": "05166dc4eb2791e429d3dbf7f909164b35abb773",
-        "run_id": 42518915077,
-        "result": "SOURCE_AND_ORIGINAL_9_ART_ASSETS_SUCCESS_NOT_UNITY",
-        "native_original_pngs_required": 52,
-        "native_pointer_interactions_required": 56,
-        "native_real_claims_required": 8,
-        "unpaid_milestone_style_frames_required": 16,
-        "illustrated_entry_medallion": true,
-        "original_chest_animated_prize_flight": true,
-        "automated_pixel_audit_and_contact_sheets_prepared": true,
-        "artApproved": false,
-        "nativeUnityPassed": false,
+        "commit": "721c07d3048b4ec269b4d956e47e30044a94e9ad",
+        "run_id": 42521777540,
+        "result": "SUCCESS_SOURCE_CSHARP_GATEWAY_ART_AUDIO_SCENERY_NOT_UNITY",
+        "rule_assertions": 149856,
+        "real_gateway_assertions": 196,
+        "layout_viewports": 8,
+        "original_png_assets": 9,
+        "reused_painterly_scenery": 3,
+        "original_foley_cues": 3,
+        "unity_native_pass": false,
+        "native_expected_pngs": 52,
+        "native_expected_pointer_events": 56,
+        "native_expected_real_claims": 8,
+        "art_approved": false,
         "merged": false,
         "published": false
       }
