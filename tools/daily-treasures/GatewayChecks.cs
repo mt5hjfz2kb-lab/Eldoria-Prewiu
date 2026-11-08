@@ -1,6 +1,7 @@
 using System;
 using Eldoria.Application;
 using Eldoria.Domain;
+using Eldoria.DailyTreasures;
 internal static class GatewayChecks
 {
     sealed class FakeClock : IClock
@@ -82,6 +83,61 @@ internal static class GatewayChecks
             eighth.DailyTreasures.TotalClaims==8,
             "cycle resets after seven while consecutive streak continues");
     }
+    static void RealMilestoneEligibility()
+    {
+        for(int kind=0;kind<4;kind++)
+        {
+            var before=new PlayerState();
+            var after=new PlayerState();
+            var id="test-scout-"+kind;
+            before.Retention.Orders.Add(new ScoutOrder{Id=id,Kind=kind,Claimed=false});
+            after.Retention.Orders.Add(new ScoutOrder{Id=id,Kind=kind,Claimed=true});
+            after.Retention.ScoutDiscoveryMask=1<<kind;
+            Assert(DailyTreasureMilestoneRules.FirstScoutFamily(before,after,id),
+                "first discovery family earns one ceremony "+kind);
+            Assert(!DailyTreasureMilestoneRules.FirstScoutFamily(before,after,"other"),
+                "wrong scout is never celebrated "+kind);
+            before.Retention.ScoutDiscoveryMask=1<<kind;
+            Assert(!DailyTreasureMilestoneRules.FirstScoutFamily(before,after,id),
+                "seen discovery family is never celebrated twice "+kind);
+            before.Retention.ScoutDiscoveryMask=0;
+            before.Retention.Orders[0].Claimed=true;
+            Assert(!DailyTreasureMilestoneRules.FirstScoutFamily(before,after,id),
+                "repeated report already claimed, no ceremony "+kind);
+            before.Retention.Orders[0].Claimed=false;
+            after.Retention.ScoutDiscoveryMask=0;
+            Assert(!DailyTreasureMilestoneRules.FirstScoutFamily(before,after,id),
+                "unearned discovery family has no ceremony "+kind);
+        }
+        var one=new PlayerState();
+        var two=new PlayerState();
+        Assert(!DailyTreasureMilestoneRules.NewlyCompletedBastion(one,two,out _),
+            "existing Bastion must not play a fake upgrade");
+        two.BastionLevel=2;
+        Assert(DailyTreasureMilestoneRules.NewlyCompletedBastion(one,two,out var upgraded)
+            && upgraded==2,"actual Bastion II transition qualifies");
+        two.BastionUpgradeCompletesUtcTicks=At(9);
+        Assert(!DailyTreasureMilestoneRules.NewlyCompletedBastion(one,two,out _),
+            "pending Bastion timer is not a completed milestone");
+        two.BastionUpgradeCompletesUtcTicks=0;
+        one.BastionLevel=2;
+        Assert(!DailyTreasureMilestoneRules.NewlyCompletedBastion(one,two,out _),
+            "equal Bastion levels cannot be celebrated");
+        two.BastionLevel=5;
+        Assert(DailyTreasureMilestoneRules.NewlyCompletedBastion(one,two,out upgraded)
+            && upgraded==5,"real Bastion V progress qualifies");
+        two.BastionLevel=6;
+        Assert(!DailyTreasureMilestoneRules.NewlyCompletedBastion(one,two,out _),
+            "future Bastion VI not authored");
+        Assert(!DailyTreasureMilestoneRules.NewlyRecruitedLyra(one,two),
+            "hero not recruited must not get presentation");
+        two.ChapterThree.LyraRecruited=true;
+        Assert(DailyTreasureMilestoneRules.NewlyRecruitedLyra(one,two),
+            "first authentic Lyra acquisition detected");
+        one.ChapterThree.LyraRecruited=true;
+        Assert(!DailyTreasureMilestoneRules.NewlyRecruitedLyra(one,two),
+            "existing Lyra not announced repeatedly");
+    }
     public static void Main()
     {
         var clock=new FakeClock{UtcTicks=At(8)};
@@ -136,6 +192,7 @@ internal static class GatewayChecks
         Assert(!Submit(gateway,"rollback","ClaimDailyTreasure").Ok,
             "wall-clock rollback cannot claim again");
         SevenDayRealGatewayJourney();
+        RealMilestoneEligibility();
         Console.WriteLine("PASS daily treasure real gateway: "+assertions+" assertions, store writes "+store.Writes);
     }
 }
