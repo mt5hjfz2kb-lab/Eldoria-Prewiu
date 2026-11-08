@@ -13,6 +13,7 @@ namespace Eldoria.BreachWatch
         public enum PlateType { Basalt, Obsidian, Resource, Action, Selected, Dangerous, Navigation, Portrait, Banner }
         PlateType plateType = PlateType.Basalt;
         Sprite approvedIndependentArt;
+        bool useIndependentNineSlice;
         public PlateType Type
         {
             get => plateType;
@@ -27,9 +28,10 @@ namespace Eldoria.BreachWatch
         public bool UsesOwnerReference => approvedIndependentArt && sprite==approvedIndependentArt;
         // These are five new sprites derived from the separately approved
         // concept. They belong to this canvas, not the old game HUD.
-        public void ApplyIndependentArt(Sprite art)
+        public void ApplyIndependentArt(Sprite art,bool nineSlice=false)
         {
             approvedIndependentArt=art;
+            useIndependentNineSlice=nineSlice;
             RefreshMaterial();
         }
         protected override void Awake()
@@ -47,8 +49,9 @@ namespace Eldoria.BreachWatch
             bool medallion = approvedIndependentArt ||
                 plateType==PlateType.Navigation || plateType==PlateType.Selected;
             bool isolatedBanner = plateType==PlateType.Banner;
-            type = medallion || isolatedBanner ? Image.Type.Simple : Image.Type.Sliced;
-            preserveAspect = medallion || isolatedBanner;
+            type = useIndependentNineSlice ? Image.Type.Sliced :
+                medallion || isolatedBanner ? Image.Type.Simple : Image.Type.Sliced;
+            preserveAspect = !useIndependentNineSlice && (medallion || isolatedBanner);
             color = plateType==PlateType.Selected
                 ? new Color(1f,.86f,.77f,1f)
                 : plateType==PlateType.Dangerous
