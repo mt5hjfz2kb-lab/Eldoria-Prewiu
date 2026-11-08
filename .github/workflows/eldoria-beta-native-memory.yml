@@ -149,6 +149,7 @@ jobs:
           [IO.File]::WriteAllText((Join-Path $out 'existing-input-audit.json'),(@{base=$head;status=$pending;files=$inventory}|ConvertTo-Json -Depth 8),$utf8)
           $diff=git -C $cache diff -- Unity
           [IO.File]::WriteAllLines((Join-Path $out 'existing-tracked-metadata.diff'),[string[]]$diff,$utf8)
+          # Native attempt 2: retain observed Editor Search diagnostics separately from player errors.
           # The following wrapper verifies every existing input against the committed audit before any mutation.
           Write-Host 'Recorded current inputs; strict reviewed hash inventory gate follows in wrapper.'
 
