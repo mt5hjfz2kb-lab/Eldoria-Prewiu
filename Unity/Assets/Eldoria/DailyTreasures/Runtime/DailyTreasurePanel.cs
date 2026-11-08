@@ -46,6 +46,9 @@ namespace Eldoria.DailyTreasures
         bool chestReward,chimePlayed;
         AudioSource originalSfx;
         AudioClip chestKnock,chestChime;
+        readonly DailyTreasureMilestoneQueue milestoneQueue=
+            new DailyTreasureMilestoneQueue();
+        float nextMilestonePoll;
 
         public bool Suppressed
         {
@@ -64,6 +67,13 @@ namespace Eldoria.DailyTreasures
         }
         public void Bind(ICommandGateway commands,Func<long> utcNow,Action onRefresh)
         {
+            if(!ReferenceEquals(gateway,commands))
+            {
+                // Session baseline prevents playing a ceremony for offline
+                // progress already recorded in the mailbox on startup.
+                milestoneQueue.Reset(commands?.Snapshot());
+                nextMilestonePoll=0f;
+            }
             gateway=commands;now=utcNow;refreshed=onRefresh;nextTick=0;
         }
         static RectTransform NewRect(string name,Transform parent)
@@ -604,6 +614,17 @@ namespace Eldoria.DailyTreasures
         void Update()
         {
             if(!root)return;
+            if(gateway!=null && Time.unscaledTime>=nextMilestonePoll)
+            {
+                nextMilestonePoll=Time.unscaledTime+.65f;
+                milestoneQueue.Observe(gateway.Snapshot());
+                // Never interrupt a tutorial, building selection, paid chest
+                // reveal or another room. Defer genuine new milestones.
+                if(!suppressed && !IsOpen &&
+                    milestoneQueue.TryPeek(out var milestone) &&
+                    PresentCommittedMilestone(milestone.Title,milestone.Detail))
+                    milestoneQueue.ConfirmPresented(milestone.EventId);
+            }
             if(!IsOpen)
             {
                 entryRect.gameObject.SetActive(!suppressed);
