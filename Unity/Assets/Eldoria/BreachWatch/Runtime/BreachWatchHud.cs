@@ -382,6 +382,7 @@ namespace Eldoria.BreachWatch
             if(!crestImage)crestImage=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/castle");
             if(crestImage)identityCrest.GetComponent<BreachWatchPlate>()
                 .ApplyIndependentArt(crestImage);
+            identityCrest.GetComponent<BreachWatchPlate>().VisualScale=.86f;
             At(identityCrest,-3,-4,62,62);
             identityName=Label(identity,"Player name",22,TextAnchor.MiddleLeft,TextIvory,true);
             identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Muted);
@@ -565,6 +566,7 @@ namespace Eldoria.BreachWatch
             {
                 int index=i;var rt=BuildButton(buttonRow,navLabels[i],navIcons[i],()=>Navigate(index),BreachWatchPlate.PlateType.Navigation);
                 navButtons[i]=rt.GetComponent<Button>();navPlates[i]=rt.GetComponent<BreachWatchPlate>();
+                navPlates[i].VisualScale=.80f;
                 navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Navigation;
                 var approved=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/"+ReferenceNavArt[i]);
                 if(!approved)approved=Resources.Load<Sprite>("VigiliaArt/OwnerReference/"+ReferenceNavArt[i]);
@@ -1088,9 +1090,10 @@ namespace Eldoria.BreachWatch
                 if(selectionHalo && navButtons[activeTab])
                 {
                     var anchor=(RectTransform)navButtons[activeTab].transform;
-                    At(selectionHalo,anchor.anchoredPosition.x-9f,
-                        -anchor.anchoredPosition.y-9f,
-                        anchor.rect.width+18f,anchor.rect.height+18f);
+                    float glowSize=anchor.rect.width*.80f+12f;
+                    At(selectionHalo,anchor.anchoredPosition.x+(anchor.rect.width-glowSize)*.5f,
+                        -anchor.anchoredPosition.y+(anchor.rect.height-glowSize)*.5f,
+                        glowSize,glowSize);
                 }
                 for(int i=0;i<5;i++)
                 {
