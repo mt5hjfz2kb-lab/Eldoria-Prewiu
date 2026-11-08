@@ -13,7 +13,9 @@ DESIGNS={
     "burgundy_action":dict(width=512,height=148,cut=25,seed=173018,kind="burgundy",
                            border=(35,24,35,24),guid="a6f0f34c42fd494f92a72d201e0aaf9c"),
     "brass_portrait":dict(width=512,height=288,cut=20,seed=173019,kind="portrait",
-                          border=(29,27,29,27),guid="9a20dba5e3aa4bff94654d1e8b0e9a32")
+                          border=(29,27,29,27),guid="9a20dba5e3aa4bff94654d1e8b0e9a32"),
+    "slate_resource":dict(width=512,height=148,cut=23,seed=173020,kind="resource",
+                          border=(24,22,24,22),guid="90ec0b5c9a2b463194f198a623e5e36c")
 }
 FOLDER_META="""fileFormatVersion: 2
 guid: f8e9b67b7ee54fd4a22ef0c2e89a14dd
@@ -135,17 +137,18 @@ def surface(name,d):
                      outline=(200,150,83,245),width=2)
         draw.ellipse((x-2,y-2,x+1,y+1),fill=(255,215,146,230))
         draw.line((x+1,y+1,x+4,y+4),fill=(2,4,6,180),width=2)
-    for yy in [15,h-16]:
+    # Center diamonds inside stretched UI panels obstruct real live labels.
+    # The approved style has a discrete seal BELOW the building panel, not
+    # a massive jewel through the title or the tappable action text.
+    for yy in ([h-16] if kind=="stone" else []):
         center=w//2
         pts=[(center,yy-12),(center+10,yy),(center,yy+12),(center-10,yy)]
         draw.polygon(pts,fill=(143,86,49,255))
         draw.line(pts+[pts[0]],fill=(253,187,90,255),width=2)
         draw.line((center-4,yy,center+4,yy),fill=(252,225,151,220),width=2)
     if kind=="portrait":
-        # Gilded recess framing the actual RenderTexture. Empty interior
-        # remains neutral; the real castle image is an independent RawImage.
-        for yoff,color in [(32,(30,21,17,255)),(35,(212,148,71,255)),
-                           (39,(9,13,16,255))]:
+        # A single restrained gold inner lip, not triple geometric borders.
+        for yoff,color in [(33,(34,25,20,255)),(37,(212,148,71,255))]:
             draw.rounded_rectangle((yoff, yoff, w-1-yoff, h-1-yoff),
                         radius=7,outline=color,width=3)
     if kind=="burgundy":
