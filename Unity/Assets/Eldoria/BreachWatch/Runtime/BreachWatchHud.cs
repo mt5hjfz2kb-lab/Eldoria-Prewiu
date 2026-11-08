@@ -58,6 +58,7 @@ namespace Eldoria.BreachWatch
         bool fullObjective;
         bool lastPortrait;
         int lastWidth=-1,lastHeight=-1;
+        Rect lastSafeArea=Rect.zero;
         float nextRefresh;
         bool created;
         RoyalSnapshot snapshot;
@@ -79,6 +80,8 @@ namespace Eldoria.BreachWatch
         public Button BuildingClose => closeButton;
         public RectTransform BuildingPanel => panel;
         public bool HasLiveBuildingPortrait => buildingPortrait && buildingPortrait.HasLiveBuilding;
+        public bool BuildingPortraitEdgeClipped =>
+            buildingPortrait && buildingPortrait.PortraitGeometryClipped;
         public bool BuildingPortraitExclusive => buildingPortrait && buildingPortrait.RenderedFromIsolatedRealMeshes;
         public float BuildingPortraitDrawnFraction => buildingPortrait ? buildingPortrait.NonBackgroundPixelFraction : 0f;
         public bool HasNativePremiumTypography =>
@@ -603,7 +606,9 @@ namespace Eldoria.BreachWatch
         {
             if(!created||!host)return;
             SyncLiveCamera();
-            if(lastWidth!=Screen.width||lastHeight!=Screen.height)Reflow(Screen.width,Screen.height);
+            if(lastWidth!=Screen.width||lastHeight!=Screen.height||
+               lastSafeArea!=Screen.safeArea)
+                Reflow(Screen.width,Screen.height);
             if(Time.unscaledTime<nextRefresh)return;
             nextRefresh=Time.unscaledTime+.25f;RenderNow();
         }
@@ -617,6 +622,9 @@ namespace Eldoria.BreachWatch
             pixelHeight=Mathf.Max(300,pixelHeight);
             lastWidth=pixelWidth;
             lastHeight=pixelHeight;
+            // On real phones, notches, system gestures and immersive mode
+            // can change the safe area without a size/orientation change.
+            lastSafeArea=Screen.safeArea;
 
             bool physicalDevice=(Screen.width==pixelWidth && Screen.height==pixelHeight);
             if(physicalDevice)
