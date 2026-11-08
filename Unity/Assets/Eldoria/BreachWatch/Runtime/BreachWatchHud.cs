@@ -75,6 +75,7 @@ namespace Eldoria.BreachWatch
         public bool HasRealSession => host && host.Read(selected,host.English)!=null;
         public Canvas NativeCanvas => canvas;
         public Button BuildingAction => actionButton;
+        public Button BuildingClose => closeButton;
         public RectTransform BuildingPanel => panel;
         public bool HasLiveBuildingPortrait => buildingPortrait && buildingPortrait.HasLiveBuilding;
         public bool BuildingPortraitExclusive => buildingPortrait && buildingPortrait.RenderedFromIsolatedRealMeshes;
