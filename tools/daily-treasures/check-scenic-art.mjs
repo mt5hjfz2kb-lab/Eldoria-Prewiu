@@ -47,4 +47,11 @@ assert.match(panel,/stage\.SideBySide\?stage\.SceneX:0f/);
 assert.match(panel,/return "EldoriaV41\/heroes-hall-illustrated-v2"/);
 assert.match(panel,/return "EldoriaRetention\/scouts-painterly-v2"/);
 assert.match(panel,/return "EldoriaRetention\/vigilants-painterly-v2"/);
+// Lyra already owns a genuinely approved 3D presentation in the existing
+// Heroes UI. Never invent a new portrait or open the chest over her face.
+const heroUi=fs.readFileSync(
+  'Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs','utf8');
+assert.match(heroUi,/public void PresentRecruitment\(string id\)/);
+assert.match(heroUi,/Rect\("Heroes \/ canonical destination",safeArea\)/);
+assert.match(panel,/GameObject\.Find\("Heroes \/ canonical destination"\)/);
 console.log('PASS three authentic reused painterly milestone scenes, original metadata, UV crop and non-blocking overlay');
