@@ -135,7 +135,22 @@ jobs:
           $head=(git -C $cache rev-parse HEAD).Trim()
           if($head -ne '948ffa9837168a0b68dab80be76b66350422b23a'){throw "Warm source is a different commit: $head"}
           $pending=@(git -C $cache status --porcelain -- Unity)
-          if($LASTEXITCODE -ne 0 -or $pending.Count){throw "Warm Unity contains pending work; do not overwrite: $($pending -join ' | ')"}
+          if($LASTEXITCODE -ne 0){throw 'Cannot inspect warm source'}
+          $out=Join-Path $env:GITHUB_WORKSPACE "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          New-Item -ItemType Directory -Force $out|Out-Null
+          $files=@(git -C $cache ls-files --modified --others --exclude-standard -- Unity)
+          if($LASTEXITCODE -ne 0){throw 'Cannot inventory existing pending inputs'}
+          $inventory=@()
+          foreach($file in $files){
+            $full=Join-Path $cache $file
+            if(Test-Path $full -PathType Leaf){$inventory+=@{path=$file;bytes=(Get-Item $full).Length;sha256=(Get-FileHash $full -Algorithm SHA256).Hash}}
+          }
+          $utf8=New-Object Text.UTF8Encoding($false)
+          [IO.File]::WriteAllText((Join-Path $out 'existing-input-audit.json'),(@{base=$head;status=$pending;files=$inventory}|ConvertTo-Json -Depth 8),$utf8)
+          $diff=git -C $cache diff -- Unity
+          [IO.File]::WriteAllLines((Join-Path $out 'existing-tracked-metadata.diff'),[string[]]$diff,$utf8)
+          if($pending.Count){throw 'Existing source input audit saved; no Unity or source mutation performed'}
+
           if(Test-Path (Join-Path $cache 'Unity/Assets/EldoriaBetaMemoryProbe')){throw 'An existing probe must be preserved'}
           Add-Content $env:GITHUB_ENV "BETA_SOURCE=$cache"
       - name: Original versus staged native startup, canonical journey, then WebGL
