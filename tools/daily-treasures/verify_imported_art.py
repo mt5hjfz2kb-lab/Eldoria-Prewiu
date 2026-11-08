@@ -32,3 +32,33 @@ for name, (digest, guid) in mod.EXPECTED.items():
     print(f"PASS {name} SHA256={digest} alpha+Unity Sprite config OK")
 assert len(seen)==2
 print("PASS TWO EXACT UNALTERED VALORIA ART SPRITES (not native Unity approval)")
+
+# All three visual frames are real copyrighted-project-origin binary art,
+# not mere references to files that do not exist on the branch.
+import json
+import struct
+manifest=json.loads((target/"source-manifest.json").read_text(encoding="utf-8"))
+assert manifest["status"]=="IMPORTED_ORIGINAL_ART_NOT_YET_NATIVE_UNITY_APPROVED"
+frames=manifest["ui_frames"]
+assert len(frames)==3
+for item in frames:
+    name=item["file"]
+    png=target/name
+    meta=target/(name+".meta")
+    assert png.is_file() and meta.is_file(), f"Missing real nine-slice frame: {name}"
+    data=png.read_bytes()
+    assert data.startswith(b"\\x89PNG\\r\\n\\x1a\\n")
+    width,height=struct.unpack(">II",data[16:24])
+    assert (width,height)==(item["width"],item["height"]), f"Bad 9-slice image dimensions: {name}"
+    assert hashlib.sha256(data).hexdigest()==item["sha256"], f"Artwork SHA mismatch: {name}"
+    assert data[25] in (3,6) and (data[25]!=3 or b"tRNS" in data)
+    text=meta.read_text(encoding="utf-8")
+    assert f"guid: {item['guid']}\\n" in text
+    border=item["nine_slice"]
+    assert f"spriteBorder: {{x: {border}, y: {border}, z: {border}, w: {border}}}" in text
+    assert "spriteMode: 1" in text and "textureType: 8" in text
+    assert item["guid"] not in seen
+    seen.add(item["guid"])
+    print(f"PASS nine-slice frame {name}: SHA256, alpha, border={border}, GUID={item['guid']}")
+assert len(seen)==5
+print("PASS FIVE EXACT VALORIA ART SPRITES, UNAPPROVED UNTIL NATIVE UNITY IMAGE REVIEW")
