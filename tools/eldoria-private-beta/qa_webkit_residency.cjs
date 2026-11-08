@@ -1,4 +1,4 @@
-// Diagnostic only: unchanged public mobile5, genuine desktop browsers, no mobile certification.
+// Diagnostic only: identity-pinned candidate, genuine desktop browsers, no mobile certification.
 const fs = require('fs');
 const {execFileSync} = require('child_process');
 const {webkit, chromium} = require('playwright');
@@ -7,7 +7,7 @@ const variant = process.env.QA_VARIANT || 'unchanged';
 const out = process.env.QA_OUT || 'webkit-residency';
 fs.mkdirSync(out, {recursive:true});
 const report = {engine, variant, platform:process.platform, arch:process.arch, passed:false,
-  scope:'Published mobile5; desktop engine comparison, NOT physical iPhone', samples:[], errors:[], navigations:[]};
+  scope:'Identity-pinned candidate; desktop engine comparison, NOT physical iPhone', samples:[], errors:[], navigations:[]};
 const write = () => fs.writeFileSync(out+'/report.json', JSON.stringify(report,null,2));
 const log = event => fs.appendFileSync(out+'/events.jsonl', JSON.stringify({at:new Date().toISOString(),...event})+'\n');
 function processes() {
