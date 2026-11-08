@@ -216,6 +216,14 @@ jobs:
               guids.extend(guid)
           print('BREACHWATCH_CC0_SOURCE_HASH_METADATA_PASS '+str(len(guids))+' ORIGINAL UI SPRITES')
           PY
+      - name: Reject inherited visual presentation or removed Forja assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e Unity/Assets/Eldoria/VisualKit/Runtime/ForjaOscuraLiveHudSkin.cs
+          test ! -e Unity/Assets/Eldoria/VisualKit/Resources/ForjaOscura
+          ! grep -RE 'ForjaOscuraLiveHudSkin|RoyalGoldV2Hud|RoyalGoldV3ContextHud|Unity/Assets/Eldoria/VisualKit' Unity/Assets/Eldoria/BreachWatch/Runtime/*.cs
+          echo "BREACHWATCH_INDEPENDENT_NO_VISUAL_OVERLAY_PASS"
   source-syntax:
     runs-on: ubuntu-latest
     timeout-minutes: 8
