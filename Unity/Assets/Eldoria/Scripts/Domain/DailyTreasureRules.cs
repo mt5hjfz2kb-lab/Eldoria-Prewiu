@@ -82,8 +82,10 @@ namespace Eldoria.Domain
         {
             if(!CanClaim(state,utcTicks))return default(DailyTreasureReward);
             long day=UtcDay(utcTicks);
+            // Cap BEFORE adding; int.MaxValue in an old or corrupted save
+            // must never overflow back to a negative bonus counter.
             int streak=state.LastClaimUtcDay>=0 && day-state.LastClaimUtcDay==1
-                ? Math.Min(1000000,Math.Max(0,state.ConsecutiveDays)+1):1;
+                ? Math.Min(999999,Math.Max(0,state.ConsecutiveDays))+1:1;
             return ForDay(NextDay(state),streak);
         }
 
