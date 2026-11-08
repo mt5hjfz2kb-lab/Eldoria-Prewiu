@@ -802,6 +802,19 @@ namespace Eldoria.Application
                     if(prefix.StartsWith("bastion",StringComparison.Ordinal)&&int.TryParse(prefix.Substring(7),out var parsed)&&parsed>=2&&parsed<=5)targetLevel=parsed;
                     if(targetLevel>state.BastionLevel){
                         state.BastionLevel=targetLevel;
+                        // Only two meaningful reconstruction milestones deserve
+                        // an extra narrative letter. These DO NOT pay a reward:
+                        // the normal upgrade already settled all real effects.
+                        if(targetLevel==2 || targetLevel==5)
+                            state.Mailbox.Receive(new EldoriaV41Message {
+                                EventId="milestone:bastion:"+targetLevel,
+                                Category="narrativa",Type="milestone-bastion",
+                                Title="El Bastión alcanza el nivel "+targetLevel,
+                                Subtitle=targetLevel==2
+                                    ? "Valoria se fortalece. El Cuartel y el siguiente capítulo quedan a tu alcance."
+                                    : "La reconstrucción alcanza una nueva etapa. Valoria extiende sus fronteras.",
+                                OccurredAtUtcTicks=state.BastionUpgradeCompletesUtcTicks
+                            });
                         // TotalPower already awards 600 per Bastion level.
                         state.MissionPower+=BastionProgressionCatalog.ForLevel(targetLevel).PowerReward-600;
                         if(targetLevel==3)
@@ -1282,6 +1295,15 @@ namespace Eldoria.Application
             if(win&&m.TargetId=="fissure-valoria") {
                 c.FissureClosed=true;c.LyraRecruited=true;c.LyraXp+=80;state.MissionPower+=430;c.ClosingEndsUtcTicks=due+TimeSpan.FromMilliseconds(6500).Ticks;
                 if(!c.Inventory.Contains("breach-manuscript"))c.Inventory.Add("breach-manuscript");m.PendingStone=300;
+                // Distinct one-time narrative welcome for a genuine recruit.
+                // All combat loot and Lyra's acquisition stay in the existing
+                // battle contract; the mailbox letter never pays again.
+                state.Mailbox.Receive(new EldoriaV41Message {
+                    EventId="milestone:hero:lyra",Category="narrativa",
+                    Type="hero-unlocked",Title="Lyra se une a Valoria",
+                    Subtitle="La exploradora ha llegado tras el cierre de la fisura. Puede participar en nuevas marchas.",
+                    OccurredAtUtcTicks=due
+                });
             } else if(win) {
                 c.Hunts++;bool wolf=m.TargetId=="hunt-wolf";m.PendingFood=wolf?140:190;
                 if(wolf)c.WolfRespawnUtcTicks=checked(due+RenewablePopulationPolicy.Delay.Ticks);else c.BoarRespawnUtcTicks=checked(due+RenewablePopulationPolicy.Delay.Ticks);
