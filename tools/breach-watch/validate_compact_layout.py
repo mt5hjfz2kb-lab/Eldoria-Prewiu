@@ -87,7 +87,7 @@ def check(size:tuple[int,int]):
         assert not costdata.intersects(state),size
         assert not state.intersects(action),size
         assert not boxes["mission"].intersects(context),size
-        limit=36
+        limit=34
     else:
         place("identity",m,11,234,58)
         chip=min(100,max(82,(w*.28-12)/3))
