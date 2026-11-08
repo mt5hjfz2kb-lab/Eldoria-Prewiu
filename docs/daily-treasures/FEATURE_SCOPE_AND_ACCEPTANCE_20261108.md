@@ -21,6 +21,16 @@
 | Rendimiento y experiencia móvil | QA responsiva no-Unity; herramienta de capturas nativas preparada | 16 capturas (4 × calendario, cofre cerrado, apertura central, cofre abierto), 16 clics auténticos, pruebas iOS/Android/WebGL |
 | Integración con Vigilia de la Brecha | Integración en RoyalGold v3 bajo PR #181, separación intencional de PR #173 | Conectar a HUD final sin duplicar pantallas ni introducir imágenes de pantalla completa pegadas |
 
+## Últimas coberturas incorporadas para evitar olvidar parte del encargo
+
+- **Exploradores:** el primer informe de cada una de las cuatro familias originales puede activar la ceremonia especial. Los informes repetidos conservan su presentación breve; no se recalcula ni repaga un botín.
+- **Bastión:** al completar realmente II o V, `LocalGateway.Advance` registra una carta narrativa única y la cola visual detecta el cambio de nivel si ocurrió durante la sesión. Si ocurrió sin la aplicación abierta, no reproduce una animación fuera de contexto: el mensaje permanece en el buzón.
+- **Lyra:** la primera incorporación real en la misión de la fisura crea un mensaje narrativo único. La cola de hitos distingue reclutamiento nuevo de héroe ya existente y no emite otro premio.
+- **Racha:** el calendario muestra ahora el próximo bonus y su cuenta atrás; después de un día perdido refleja que la racha terminó, pero no elimina los siete premios ya acumulados. Si el calendario sigue abierto durante un cambio de fecha UTC, actualiza el estado sin tener que cerrar la pantalla.
+- **Comprobación visual nativa:** se añadió un cuarto fotograma obligatorio del cofre **abriéndose** bajo el resplandor. Son **16 PNG reales** (cuatro momentos por cuatro formatos), además de 16 eventos táctiles reales; no basta con comprobar solo los estados cerrado/abierto.
+- **Regresión transversal:** `tools/march-capacity/Smoke.csproj` y el workflow de recompensas compilan juntos el estado guardado añadido, evitando que la incorporación del tributo rompa la capacidad de tres marchas.
+- **Balance provisional:** prueba automática del perfil OWNER_I_II, no QA_FAST. Los primeros 7 días seguidos dan 330 madera, 300 piedra, 230 comida y 8 minutos de aceleradores; las recompensas no están aprobadas económicamente hasta medir su impacto en las pruebas reales.
+
 ## Reglas de negocio que no se negocian
 1. No obligar al jugador a entrar todos los días; los siete premios acumulados continúan donde se quedaron aunque se pierda la racha.
 2. El cierre de día se calcula en UTC y se documenta; el reloj es local hasta disponer de una hora de servidor fiable.
