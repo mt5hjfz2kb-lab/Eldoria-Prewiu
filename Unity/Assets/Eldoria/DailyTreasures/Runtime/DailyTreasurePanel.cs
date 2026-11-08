@@ -1096,6 +1096,21 @@ namespace Eldoria.DailyTreasures
                 throw new InvalidOperationException("No live ceremony to sample");
             PaintCeremonyFrame(elapsed);
         }
+
+        // Original artwork's staggered chest-to-inventory flight should be
+        // captured too. This test modifies only presentation transforms;
+        // it NEVER issues an award or recreates the underlying player state.
+        public void SamplePaidItemFlightForNativeEvidence(float elapsed)
+        {
+            if(!IsOpen || playing || prizeCount==0 ||
+               !prizeShelf.gameObject.activeSelf)
+                throw new InvalidOperationException(
+                    "No real paid illustrated item cards available to sample");
+            if(elapsed<0f)throw new ArgumentOutOfRangeException(nameof(elapsed));
+            prizeAnimating=true;
+            prizeRevealStarted=Time.unscaledTime-elapsed;
+            PaintEarnedCards();
+        }
 #endif
 
         DailyTreasureRevealFrame PaintCeremonyFrame(float elapsed)
