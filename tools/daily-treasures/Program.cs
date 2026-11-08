@@ -286,7 +286,7 @@ internal static class Program
             Eq(samples.Length,repeat.Length,"original Foley is reproducible");
             True(samples.Length>=9000 && samples.Length<=36000,
                 "short authored Foley is mobile-memory bounded");
-            double sum=0,sumSq=0,peak=0;
+            double sum=0,sumSq=0,audioPeak=0;
             for(int j=0;j<samples.Length;j++)
             {
                 True(!float.IsNaN(samples[j]) && !float.IsInfinity(samples[j]),
@@ -295,13 +295,13 @@ internal static class Program
                     "wood/bronze audio will not digitally clip");
                 sum+=samples[j];
                 sumSq+=samples[j]*samples[j];
-                peak=Math.Max(peak,Math.Abs(samples[j]));
+                audioPeak=Math.Max(audioPeak,Math.Abs(samples[j]));
                 if(j%197==0)
                     Eq(samples[j],repeat[j],
                         "same sound does not change across sessions");
             }
             double rms=Math.Sqrt(sumSq/samples.Length);
-            True(peak>.04 && rms>.012,
+            True(audioPeak>.04 && rms>.012,
                 "original audible cue has useful but controlled body");
             True(Math.Abs(sum/samples.Length)<.004,
                 "Foley has near-zero DC component");
