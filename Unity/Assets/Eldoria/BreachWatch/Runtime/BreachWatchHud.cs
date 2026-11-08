@@ -1068,11 +1068,11 @@ namespace Eldoria.BreachWatch
                     // Real Unity review: the full long-action label ran beyond
                     // the carved CTA on a 1600x900 capture. The command and
                     // confirmation remain IDENTICAL; only its compact visual
-                    // caption adapts to the physical available width.
+                    // caption is compact enough for an honest single line at every viewport.
                     string actionCaption=b.Action==null?"SIN ACCIÓN":b.Action.Label;
                     if(b.Action!=null && b.Id=="bastion" && b.Level==1 &&
                        b.Action.Kind=="AdvanceBastion")
-                        actionCaption=lastWidth<1000?"MEJORAR A II":"MEJORAR BASTIÓN II";
+                        actionCaption="MEJORAR A II";
                     actionLabel.text=actionCaption;
                     actionLabel.resizeTextForBestFit=true;
                     actionLabel.resizeTextMinSize=11;
