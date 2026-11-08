@@ -10,6 +10,14 @@ namespace Eldoria.BreachWatch
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class BreachWatchNavFiligree : MaskableGraphic
     {
+        float medallionStep=70f;
+        float medallionSize=55f;
+        public void Configure(float step,float diameter)
+        {
+            medallionStep=Mathf.Max(20f,step);
+            medallionSize=Mathf.Max(15f,diameter);
+            SetVerticesDirty();
+        }
         protected override void Awake()
         {
             base.Awake();
@@ -22,8 +30,8 @@ namespace Eldoria.BreachWatch
             Rect r=GetPixelAdjustedRect();
             if(r.width<220||r.height<30)return;
             float y=r.center.y;
-            float first=r.xMin+(r.width-5*55f-4*15f)*.5f+27.5f;
-            float step=70f;
+            float step=medallionStep;
+            float first=r.xMin+medallionSize*.5f;
             float last=first+4*step;
             var shadow=new Color(.04f,.025f,.02f,.83f);
             var copper=new Color(.60f,.36f,.18f,.86f);
