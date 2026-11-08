@@ -1,0 +1,13 @@
+{
+  "source": "Cropped from the exact 864x1536 Vigilia concept image supplied by the game owner in the conversation; approved as visual design reference only, not a Unity screenshot",
+  "sourceType": "User-provided original image",
+  "asset": "lion_crest.png",
+  "size": [
+    56,
+    56
+  ],
+  "sha256": "af98f88860e61fa95acc9146dff80c6b7b01de47c8280b3189119befb55a4954",
+  "unity_guid": "3e11862f73084a1d9ac63a833a95510b",
+  "usage": "Only the small independent player crest, never full HUD background or gameplay state",
+  "currentArtApproval": "pending native Unity visual evaluation"
+}
