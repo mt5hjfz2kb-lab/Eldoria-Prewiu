@@ -285,6 +285,15 @@ namespace Eldoria.BreachWatch
                     PortraitGeometryClipped=nonBackground>0 &&
                         (minX<6||minY<6||
                          drawMaxX>=texture.width-6||drawMaxY>=texture.height-6);
+                    Debug.Log("VIGILIA_REAL_PORTRAIT_GPU_BOUNDS "+
+                        (model?model.name:"none")+
+                        " orthographic="+portraitCamera.orthographicSize.ToString("F3")+
+                        " nonBackground="+NonBackgroundPixelFraction.ToString("F4")+
+                        " cropX="+minX+".."+drawMaxX+
+                        " cropY="+minY+".."+drawMaxY+
+                        " background="+background.r+","+
+                        background.g+","+background.b+
+                        " cropped="+PortraitGeometryClipped);
                 }
                 finally
                 {
