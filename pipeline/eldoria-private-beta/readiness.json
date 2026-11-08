@@ -110,18 +110,18 @@
     }
   ],
   "structural_candidate": {
-    "status": "SOURCE_MATERIALIZATION_IN_PROGRESS_NOT_CERTIFIED",
+    "status": "NATIVE_AB_EXECUTING_NOT_CERTIFIED",
     "source_baseline": "948ffa9837168a0b68dab80be76b66350422b23a",
-    "overlay_commit": "92d68b3a84c34952522286e246e5c358d2a9e306",
-    "native_run": 42428875558,
-    "native_job": 128573144429,
+    "overlay_commit": "67c0d4393f5f27d6c540b988beecc23e3fc0ac8e",
+    "native_run": 42431634641,
+    "native_job": 128581668209,
     "native_compilation_verified": false,
     "native_parity_verified": false,
     "webgl_built": false,
     "published": false,
     "physical_iphone_verified": false,
     "source_scope": "Four claimed C# files; staged initialization, readiness gate, temporary validation cache release, canonical validator readiness wait",
-    "isolated_project": true,
+    "isolated_project": false,
     "preparation_history": [
       {
         "run": 42427811334,
@@ -131,6 +131,15 @@
         "run": 42428680863,
         "result": "Failed before Unity: file-only sparse checkout cone mode; corrected"
       }
-    ]
+    ],
+    "execution_isolation": "Existing imported source under exclusive native lease; preexisting input hash pinning and reversible byte-verified preservation",
+    "input_audit": "tools/eldoria-private-beta/native/existing-input-audit.json",
+    "source_composition": "Frozen code plus 147 reviewed existing generated/normalized inputs and four C# overlays",
+    "last_native_failure": {
+      "run": 42431391139,
+      "artifact": 13598050201,
+      "cause": "Editor Search database initialization exception during baseline; exact observed editor stack now recorded separately",
+      "source_restored": true
+    }
   }
 }
