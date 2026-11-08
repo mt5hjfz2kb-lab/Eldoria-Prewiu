@@ -74,7 +74,7 @@ def read_report(folder, expected_sha):
     assert_quality(r.get("status")==
         "NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING",
         "Unity failed to render verified illustration; procedural backup is NOT art approval")
-    assert_quality(r.get("images")==44 and r.get("realGatewayClaims")==8
+    assert_quality(r.get("images")==48 and r.get("realGatewayClaims")==8
          and r.get("graphicalPointerHits")==56
          and r.get("visualOnlyMilestoneCaptures")==16,
          "Incomplete real claims, native interactions or style preview coverage")
@@ -91,13 +91,14 @@ def analyze(folder,expected_sha,output):
     output.mkdir(parents=True,exist_ok=True)
     r=read_report(folder,expected_sha)
     shots=r.get("shots") or []
-    assert_quality(len(shots)==44,"Not exactly 44 original screenshot records")
+    assert_quality(len(shots)==48,"Not exactly 48 original screenshot records")
     expected=[]
     for w,h in REQUIRED_SIZES:
+        expected.append(("hud-entry",w,h))
         expected.extend((variant,w,h) for variant in DAILY)
         if (w,h) in {(844,390),(390,844)}:
             expected.extend((variant,w,h) for variant in MILESTONE)
-    assert_quality(len(expected)==44,"Internal evidence manifest arithmetic changed")
+    assert_quality(len(expected)==48,"Internal evidence manifest arithmetic changed")
     wanted=set(expected)
     actual={}
     details=[]
@@ -132,14 +133,24 @@ def analyze(folder,expected_sha,output):
                 "Unity did not export an RGB/RGBA screenshot "+filename)
             thumb=im.convert("RGB").copy()
         metrics=sample(thumb)
-        assert_quality(metrics["meanStdDev"]>8.0 and
-            metrics["uniqueColorBins"]>=25,
-            "Blank or flat native canvas; texture/image likely not rendered: "+filename)
-        assert_quality(metrics["warmPixels"]>4,
-            "Missing gilded accents/chest lighting: "+filename)
-        if variant.startswith("style-"):
-            assert_quality(record.get("preserved") is False,
-                "Visual-only style probe may never masquerade as actually paid loot: "+filename)
+        is_entry=variant=="hud-entry"
+        assert_quality(metrics["meanStdDev"]>(2.0 if is_entry else 8.0) and
+            metrics["uniqueColorBins"]>=(8 if is_entry else 25),
+            "Blank or flat native canvas; original painted artwork not rendered: "+filename)
+        assert_quality(metrics["warmPixels"]>(1 if is_entry else 4),
+            "Missing gilded accents, chest medallion or warm light: "+filename)
+        if is_entry:
+            assert_quality(record.get("preserved") is False and
+                record.get("coversReward") is False,
+                "A claimable HUD signal is not an already-paid reward: "+filename)
+        elif variant.startswith("style-"):
+            assert_quality(record.get("preserved") is False and
+                record.get("coversReward") is False,
+                "Visual-only style probe may never masquerade as paid loot: "+filename)
+        else:
+            assert_quality(record.get("preserved") is True and
+                record.get("coversReward") is True,
+                "Only a genuine reward gateway state may be labelled paid: "+filename)
         actual[key]=(thumb,metrics)
         details.append({
             "file":filename,"view":record.get("view"),"size":[w,h],
@@ -196,6 +207,8 @@ def analyze(folder,expected_sha,output):
 
     paid=[(variant,w,h) for w,h in REQUIRED_SIZES for variant in DAILY]
     sheet(paid,"paid_reward_contact_sheet.png",7)
+    entry=[("hud-entry",w,h) for w,h in REQUIRED_SIZES]
+    sheet(entry,"authored_chest_entry_medallion_contact_sheet.png",4)
     style=[k for k in expected if k[0] in MILESTONE]
     sheet(style,"milestone_visual_styles_contact_sheet.png",4)
 
