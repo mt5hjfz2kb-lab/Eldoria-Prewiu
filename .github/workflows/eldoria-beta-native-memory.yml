@@ -9,7 +9,7 @@ permissions:
   pull-requests: read
   actions: write
 concurrency:
-  group: eldoria-beta-native-cached-recovery
+  group: eldoria-beta-native-warm-preserved
   cancel-in-progress: false
 env:
   EXPECTED_LEASE_REVISION: '8'
@@ -28,8 +28,10 @@ jobs:
         shell: pwsh
         run: |
           $tokens=$null;$errors=$null
-          [System.Management.Automation.Language.Parser]::ParseFile("$pwd/beta-tools/tools/eldoria-private-beta/native/run_structural.ps1",[ref]$tokens,[ref]$errors)|Out-Null
-          if($errors.Count){$errors|Format-List;throw 'PowerShell parser errors'}
+          Get-ChildItem "$pwd/beta-tools/tools/eldoria-private-beta/native/*.ps1"|ForEach-Object {
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors)|Out-Null
+            if($errors.Count){$errors|Format-List;throw 'PowerShell parser errors'}
+          }
       - name: Retire only the slow isolated checkout before native execution
         env:
           GH_TOKEN: ${{ github.token }}
@@ -42,18 +44,18 @@ jobs:
             req=urllib.request.Request(root+path,method=method,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
             with urllib.request.urlopen(req,timeout=30) as r:
               b=r.read();return json.loads(b) if b else None
-          run=api('/actions/runs/42427811334')
-          if run['head_sha']!='9c33cc4cee5b029eb6b90c203b8603dc60609e4c':raise RuntimeError('Unexpected retiring source')
+          run=api('/actions/runs/42428875558')
+          if run['head_sha']!='92d68b3a84c34952522286e246e5c358d2a9e306':raise RuntimeError('Unexpected retiring source')
           if run['status']!='completed':
-            jobs=api('/actions/runs/42427811334/jobs')['jobs']
+            jobs=api('/actions/runs/42428875558/jobs')['jobs']
             native=next(j for j in jobs if j['name']=='native')
             phase=next(s for s in native['steps'] if s['number']==7)
             checkout=next(s for s in native['steps'] if s['number']==6)
             if phase['status']!='pending' or checkout['status']!='in_progress':
               raise RuntimeError('Original run progressed beyond checkout; leave it running, do not start another')
-            api('/actions/runs/42427811334/cancel','POST')
+            api('/actions/runs/42428875558/cancel','POST')
             for _ in range(60):
-              if api('/actions/runs/42427811334')['status']=='completed':break
+              if api('/actions/runs/42428875558')['status']=='completed':break
               time.sleep(5)
             else:raise RuntimeError('Original isolated checkout has not stopped')
           print('Previous run stopped or completed; no concurrent native process authorized')
@@ -123,30 +125,23 @@ jobs:
           $folder="beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
           if(Test-Path $folder){throw 'Isolated project already exists; refuse replacement'}
           $drive=Get-PSDrive -Name ([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE).Substring(0,1))
-          if($drive.Free -lt 25GB){throw 'Insufficient isolated import headroom; preserve other projects'}
-      - name: Materialize isolated committed source from existing local Git objects
+          if($drive.Free -lt 8GB){throw 'Insufficient isolated import headroom; preserve other projects'}
+      - name: Verify exact already-imported source without checkout or reset
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $cache=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
-          if(-not(Test-Path (Join-Path $cache '.git'))){throw 'Existing source cache unavailable; do not replace another project'}
-          $base='948ffa9837168a0b68dab80be76b66350422b23a'
-          git -C $cache cat-file -e "$base^{commit}"
-          if($LASTEXITCODE -ne 0){throw 'Frozen source absent from local cache'}
-          $isolated=Join-Path $env:GITHUB_WORKSPACE "beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
-          # A separate repository borrows only committed objects; the cache's files,
-          # index, worktree configuration and Unity Library are never changed.
-          git clone --shared --no-checkout $cache $isolated
-          if($LASTEXITCODE -ne 0){throw 'Isolated local clone failed'}
-          git -C $isolated config core.sparseCheckout true
-          git -C $isolated config core.sparseCheckoutCone false
-          [IO.File]::WriteAllLines((Join-Path $isolated '.git/info/sparse-checkout'),[string[]]@('/Unity/**','/.gitignore','/.gitattributes'),(New-Object Text.UTF8Encoding($false)))
-          git -C $isolated checkout --detach $base
-          if($LASTEXITCODE -ne 0){throw 'Isolated Unity source materialization failed'}
+          if(-not(Test-Path (Join-Path $cache '.git'))){throw 'Warm source cache unavailable'}
+          $head=(git -C $cache rev-parse HEAD).Trim()
+          if($head -ne '948ffa9837168a0b68dab80be76b66350422b23a'){throw "Warm source is a different commit: $head"}
+          $pending=@(git -C $cache status --porcelain -- Unity)
+          if($LASTEXITCODE -ne 0 -or $pending.Count){throw "Warm Unity contains pending work; do not overwrite: $($pending -join ' | ')"}
+          if(Test-Path (Join-Path $cache 'Unity/Assets/EldoriaBetaMemoryProbe')){throw 'An existing probe must be preserved'}
+          Add-Content $env:GITHUB_ENV "BETA_SOURCE=$cache"
       - name: Original versus staged native startup, canonical journey, then WebGL
         shell: powershell
         run: |
-          & ./beta-structural-tools/tools/eldoria-private-beta/native/run_structural.ps1 -Source "beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/run_warm_structural.ps1 -Source "$env:BETA_SOURCE" -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -WebOutput "beta-structural-webgl-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -157,6 +152,6 @@ jobs:
         if: success()
         with:
           name: beta-structural-webgl-unverified
-          path: beta-structural-source-${{ github.run_id }}-${{ github.run_attempt }}/Unity/Builds/ValoriaWebPlaytest/
+          path: beta-structural-webgl-${{ github.run_id }}-${{ github.run_attempt }}/
           compression-level: 0
           retention-days: 14
