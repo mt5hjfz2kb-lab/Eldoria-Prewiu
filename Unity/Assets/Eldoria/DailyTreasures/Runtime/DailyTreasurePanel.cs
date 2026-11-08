@@ -25,6 +25,12 @@ namespace Eldoria.DailyTreasures
         readonly Text[] dayHead=new Text[7],dayBody=new Text[7];
         readonly Image[] dayBack=new Image[7],sparks=new Image[12];
         readonly DailyTreasureRewardGlyph[] dayGlyph=new DailyTreasureRewardGlyph[7];
+        readonly Image[] dayArtwork=new Image[7];
+        static readonly string[] DayIllustrations={
+            "resource_wood","resource_stone","resource_hourglass",
+            "treasure_closed_512","resource_hourglass","resource_food",
+            "treasure_closed_512"
+        };
         DailyTreasureChestGraphic chest;
         Image illustratedClosed,illustratedOpen;
         bool hasAuthoredChestArt;
@@ -195,6 +201,18 @@ namespace Eldoria.DailyTreasures
                     i==5?DailyTreasureGlyphKind.Food:
                     i==6?DailyTreasureGlyphKind.Chest:DailyTreasureGlyphKind.Time;
                 dayGlyph[i].raycastTarget=false;
+                var iconSprite=Resources.Load<Sprite>(
+                    "DailyTreasureArt/"+DayIllustrations[i]);
+                if(iconSprite)
+                {
+                    var painted=NewRect("Premium illustrated reward / no rays",day);
+                    var icon=painted.gameObject.AddComponent<Image>();
+                    icon.sprite=iconSprite;
+                    icon.preserveAspect=true;
+                    icon.raycastTarget=false;
+                    dayArtwork[i]=icon;
+                    dayGlyph[i].gameObject.SetActive(false);
+                }
                 dayHead[i]=Label(day,"Day heading","DÍA "+(i+1),17,Gold,TextAnchor.MiddleCenter);
                 dayBody[i]=Label(day,"Actual reward contents","",15,Ivory,TextAnchor.MiddleCenter);
                 Stretch(dayHead[i].rectTransform);
@@ -371,6 +389,9 @@ namespace Eldoria.DailyTreasures
                         i==6?new Color(.28f,.20f,.11f,1f):Oak;
                 dayBody[i].text=ShortReward(item);
                 dayBody[i].color=collected?Muted:Ivory;
+                if(dayArtwork[i])
+                    dayArtwork[i].color=collected?
+                        new Color(.71f,.69f,.64f,.79f):Color.white;
             }
             claimButton.interactable=reward.IsValid;
             claimCaption.text=reward.IsValid?"RECLAMAR DÍA "+reward.CycleDay:
@@ -510,6 +531,8 @@ namespace Eldoria.DailyTreasures
                 {
                     Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,
                         -width*.5f+48f,-11f,73f,57f);
+                    if(dayArtwork[i])Place(dayArtwork[i].rectTransform,
+                        .5f,.5f,.5f,.5f,-width*.5f+48f,-11f,85f,65f);
                     Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
                         38f,-12f,width-116f,Mathf.Max(52f,cellH-39f));
                     dayBody[i].fontSize=15;
@@ -524,6 +547,9 @@ namespace Eldoria.DailyTreasures
                         0f,-5f,cellW-6f,24f);
                     Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,
                         0f,tiny?2f:3f,48f,tiny?24f:28f);
+                    if(dayArtwork[i])Place(dayArtwork[i].rectTransform,
+                        .5f,.5f,.5f,.5f,0f,tiny?2f:3f,
+                        tiny?51f:58f,tiny?31f:42f);
                     Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
                         0f,-cellH*.5f+(tiny?17f:18.5f),cellW-10f,tiny?31f:33f);
                     dayBody[i].fontSize=tiny?13:14;
