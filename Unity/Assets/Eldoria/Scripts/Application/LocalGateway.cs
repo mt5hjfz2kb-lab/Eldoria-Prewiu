@@ -264,6 +264,7 @@ namespace Eldoria.Application
                     (battleResolver==null || existingMarch.VersionedBattle.RulesVersion!=battleResolver.RulesVersion))
                     throw new InvalidOperationException("The persisted march requires its original combat resolver");
             }
+            if(state.DailyTreasures==null)state.DailyTreasures=new DailyTreasureState();
             if(state.Retention==null)state.Retention=new EarlyRetentionState();
             if(state.Retention.Orders==null)state.Retention.Orders=new System.Collections.Generic.List<ScoutOrder>();
             if(state.Mailbox==null)state.Mailbox=new EldoriaV41Mailbox();
@@ -327,6 +328,7 @@ namespace Eldoria.Application
                 BastionLevel=s.BastionLevel, SawmillLevel=s.SawmillLevel, BarracksLevel=s.BarracksLevel,
                 MissionPower=s.MissionPower, ChapterThree=s.ChapterThree.Copy(),
                 Retention=s.Retention?.Copy()??new EarlyRetentionState(),
+                DailyTreasures=s.DailyTreasures?.Copy()??new DailyTreasureState(),
                 CorruptionDiscovered=s.CorruptionDiscovered, ScoutDefeated=s.ScoutDefeated,
                 JourneyComplete=s.JourneyComplete, EngendroDefeated=s.EngendroDefeated,
                 Available=s.Available.Copy(), Wounded=s.Wounded.Copy(),
@@ -466,6 +468,34 @@ namespace Eldoria.Application
             if(chapterThreeResult!=null)return chapterThreeResult;
             switch (command.Kind)
             {
+                case "ClaimDailyTreasure":
+                    {
+                        // Award first, then persist an informational mailbox receipt in
+                        // the SAME gateway commit. Mail read/delete NEVER awards again.
+                        var preview=DailyTreasureRules.Preview(state.DailyTreasures,clock.UtcTicks);
+                        if(!preview.IsValid)return Fail("El tributo de hoy ya fue reclamado");
+                        if(state.Resources.Wood>int.MaxValue-preview.Wood ||
+                           state.Resources.Stone>int.MaxValue-preview.Stone ||
+                           state.Resources.Food>int.MaxValue-preview.Food ||
+                           state.SpeedupOneMinute>int.MaxValue-preview.SpeedupOneMinute ||
+                           state.SpeedupFiveMinutes>int.MaxValue-preview.SpeedupFiveMinutes)
+                            return Fail("No hay capacidad para recibir el tributo");
+                        if(!DailyTreasureRules.TryClaim(state.DailyTreasures,clock.UtcTicks,
+                            out var received))return Fail("El tributo ya no está disponible");
+                        state.Resources.Wood+=received.Wood;
+                        state.Resources.Stone+=received.Stone;
+                        state.Resources.Food+=received.Food;
+                        state.SpeedupOneMinute+=received.SpeedupOneMinute;
+                        state.SpeedupFiveMinutes+=received.SpeedupFiveMinutes;
+                        state.Mailbox.Receive(new EldoriaV41Message {
+                            EventId="daily-treasure:"+state.DailyTreasures.LastClaimUtcDay,
+                            Category="recompensas",Type="daily-treasure",
+                            Title="Tributo de Valoria · día "+received.CycleDay,
+                            Subtitle=DailyTreasureRules.Receipt(received),
+                            RewardReceiptId=command.Id,OccurredAtUtcTicks=clock.UtcTicks
+                        });
+                        break;
+                    }
                 case "MailRead":
                     if(state.Mailbox.Messages==null ||
                        !state.Mailbox.Messages.Exists(m=>m!=null&&m.EventId==command.TargetId))
@@ -688,7 +718,7 @@ namespace Eldoria.Application
             EarlyRetentionRules.Synchronize(state,clock.UtcTicks);
             state.CompletedCommandIds.Add(command.Id);
             Commit();
-            return new CommandResult(true, "Acción iniciada", state.Revision);
+            return new CommandResult(true, command.Kind=="ClaimDailyTreasure" ? "Tributo recibido" : "Acción iniciada", state.Revision);
         }
         private bool MarchTargetActive(string targetId)
         {
