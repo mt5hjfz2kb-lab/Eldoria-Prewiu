@@ -122,14 +122,14 @@ namespace Eldoria.DailyTreasures
                     0,.005f*h,Math.Min(w*.64f,272f),
                     Math.Min(h*.33f,223f),
                     0,-.32f*h,w-48,.12f*h,
-                    .90f,.79f,.13f,false);
+                    .90f,.73f,.20f,false);
             }
             return new DailyTreasureStageLayout(kind,
                 -.247f*w,.018f*h,.486f*w,h-42f,
                 .236f*w,.166f*h,Math.Min(.374f*w,282f),
                 Math.Min(.475f*h,175f),
                 .236f*w,-.19f*h,.452f*w,.19f*h,
-                .88f,.90f,.15f,true);
+                .88f,.76f,.22f,true);
         }
     }
 }
