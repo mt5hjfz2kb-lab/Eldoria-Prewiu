@@ -50,6 +50,58 @@ namespace Eldoria.DailyTreasures.Editor
         {
             if(!ok)throw new InvalidOperationException(reason);
         }
+        // Source integrity checks run on Ubuntu. This second gate validates
+        // what Unity actually imported, not merely the nine .meta texts.
+        // Native art is still UNAPPROVED until the resulting images are seen.
+        static void RequireNineImportedSprites()
+        {
+            var expected=new[]{
+                (name:"treasure_closed_512",width:512,height:512,border:0),
+                (name:"treasure_opened_512",width:512,height:512,border:0),
+                (name:"valoria_frame_main_512",width:512,height:512,border:46),
+                (name:"valoria_frame_card_256",width:256,height:256,border:31),
+                (name:"valoria_frame_button_512x128",width:512,height:128,border:24),
+                (name:"resource_wood",width:128,height:128,border:0),
+                (name:"resource_stone",width:128,height:128,border:0),
+                (name:"resource_hourglass",width:128,height:128,border:0),
+                (name:"resource_food",width:128,height:128,border:0)
+            };
+            foreach(var item in expected)
+            {
+                var sprite=Resources.Load<Sprite>("DailyTreasureArt/"+item.name);
+                Need(sprite!=null,"Unity did not import the authored Sprite: "+item.name);
+                Need(Mathf.Abs(sprite.rect.width-item.width)<.01f &&
+                     Mathf.Abs(sprite.rect.height-item.height)<.01f,
+                     "Unity imported wrong Sprite dimensions: "+item.name);
+                var importer=AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(sprite))
+                    as TextureImporter;
+                Need(importer!=null &&
+                     importer.textureType==TextureImporterType.Sprite &&
+                     importer.spriteImportMode==SpriteImportMode.Single &&
+                     importer.alphaIsTransparency && !importer.mipmapEnabled,
+                     "Actual Unity Sprite import settings invalid: "+item.name);
+                var border=sprite.border;
+                Need(Mathf.Abs(border.x-item.border)<.01f &&
+                     Mathf.Abs(border.y-item.border)<.01f &&
+                     Mathf.Abs(border.z-item.border)<.01f &&
+                     Mathf.Abs(border.w-item.border)<.01f,
+                     "Actual Unity Sprite nine-slice borders invalid: "+item.name);
+            }
+        }
+
+        // The rehearsal deliberately has legacy + Vigilia canvases while
+        // migrating, but must never leave two enabled or add an EventSystem.
+        static void VerifyUiOwnership(int canvasCount,EventSystem eventSystem)
+        {
+            var canvases=Object.FindObjectsByType<Canvas>(
+                FindObjectsInactive.Include,FindObjectsSortMode.None);
+            var events=Object.FindObjectsByType<EventSystem>(
+                FindObjectsInactive.Include,FindObjectsSortMode.None);
+            Need(canvases.Length==canvasCount &&
+                 canvases.Count(c=>c.isActiveAndEnabled)==1 &&
+                 events.Length==1 && events[0]==eventSystem,
+                 "Duplicate enabled Canvas or EventSystem in treasury native proof");
+        }
         static string Sha(string file)
         {
             using(var hash=SHA256.Create())
@@ -109,6 +161,8 @@ namespace Eldoria.DailyTreasures.Editor
             try
             {
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+                RequireNineImportedSprites();
+                report.authoredSpritesImported=true;
                 foreach(var resolution in new []{(1600,900),(900,1600),(844,390),(390,844)})
                 {
                     int width=resolution.Item1,height=resolution.Item2;
@@ -167,6 +221,7 @@ namespace Eldoria.DailyTreasures.Editor
                     report.authoredSpritesImported = report.authoredSpritesImported || panel.HasAuthoredChestArt;
                     var eventObj=new GameObject("Disposable event system",typeof(EventSystem));
                     var eventSystem=eventObj.GetComponent<EventSystem>();
+                    VerifyUiOwnership(1,eventSystem);
                     Canvas.ForceUpdateCanvases();
                     pictures.Add(Render(camera,rt,output,width,height,
                         "hud-entry",
@@ -349,6 +404,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Need(panel.UsesVigiliaCanvas &&
                          panel.transform.parent==safeRect,
                          "Daily treasure canvas remained invisible on Vigilia");
+                    VerifyUiOwnership(2,eventSystem);
                     Canvas.ForceUpdateCanvases();
                     ClickAtNativeScreenPosition(nativeCanvas,eventSystem,camera,
                         FindButton(panel,"Daily reward / optional medallion"),
@@ -368,6 +424,7 @@ namespace Eldoria.DailyTreasures.Editor
                          "Daily treasure UI cannot restore to original canvas");
                     canvas.enabled=true;
                     Object.DestroyImmediate(nativeObj);
+                    VerifyUiOwnership(1,eventSystem);
 
                     // Four DIFFERENT real-world milestone categories share
                     // one premium authored chest and ornate frame. Test each

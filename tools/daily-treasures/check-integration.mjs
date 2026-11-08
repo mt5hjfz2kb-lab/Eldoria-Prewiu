@@ -34,6 +34,14 @@ assert.match(panel,/showChest && !hasAuthoredChestArt/);
 assert.match(panel,/DailyTreasureArt\/treasure_opened_512/);
 assert.match(native,/NATIVE_COMPONENT_RENDERED_FALLBACK_ONLY_ART_REJECTED/);
 assert.match(native,/authoredSpritesImported/);
+// The nine PNG sources alone cannot certify that Unity imported all nine
+// Sprites, applied 9-slice borders or avoided a duplicate active Canvas.
+assert.match(native,/RequireNineImportedSprites\(\)/);
+assert.match(native,/Resources\.Load<Sprite>\("DailyTreasureArt\/"\+item\.name\)/);
+assert.match(native,/importer\.spriteImportMode==SpriteImportMode\.Single/);
+assert.match(native,/var border=sprite\.border/);
+assert.match(native,/VerifyUiOwnership\(1,eventSystem\)/);
+assert.match(native,/VerifyUiOwnership\(2,eventSystem\)/);
 assert.match(nativeWorkflow,/DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS/);
 assert.match(nativeWorkflow,/treasure_closed_512\.png/);
 assert.match(nativeWorkflow,/treasure_opened_512\.png/);
