@@ -40,6 +40,9 @@ namespace Eldoria.DailyTreasures.Editor
         {
             public string status,source,note;
             public int images,realGatewayClaims,graphicalPointerHits;
+            // These are artistic style probes only; they do not imply an
+            // actual earned milestone, a claim or any gateway battle.
+            public int visualOnlyMilestoneCaptures;
             public bool artApproved,fullSceneVerified,iosVerified,authoredSpritesImported;
             public Shot[] shots;
         }
@@ -342,6 +345,67 @@ namespace Eldoria.DailyTreasures.Editor
                     canvas.enabled=true;
                     Object.DestroyImmediate(nativeObj);
 
+                    // Four DIFFERENT real-world milestone categories share
+                    // one premium authored chest and ornate frame. Test each
+                    // category's ambient palette in portrait and landscape.
+                    // These are VISUAL-ONLY style probes (no battle, no hero
+                    // unlock, no resources, no second reward, no fake receipt).
+                    if((width==390&&height==844)||(width==844&&height==390))
+                    {
+                        var styleIds=new[]{
+                            "milestone:hero:lyra","milestone:bastion:5",
+                            "vigilant:chapter:25","scout:first:exploration"};
+                        var styleLabels=new[]{
+                            "Lyra se une a Valoria",
+                            "El Bastión alcanza el nivel 5",
+                            "Capítulo de los Vigilantes completado",
+                            "Descubrimiento de los exploradores"};
+                        var styleDetails=new[]{
+                            "La exploradora puede participar en nuevas marchas.",
+                            "Valoria extiende sus fronteras.",
+                            "El combate y su resultado constan en el buzón.",
+                            "Nuevo informe de exploración registrado."};
+                        var styleSuffixes=new[]{"lyra","bastion","vigilants","scouts"};
+                        for(int style=0;style<styleIds.Length;style++)
+                        {
+                            var wallet=specialGateway.Snapshot();
+                            Need(panel.PresentCommittedMilestone(
+                                    styleLabels[style],styleDetails[style],
+                                    legendary:style!=3,eventId:styleIds[style]),
+                                "Premium milestone style presentation unavailable: "+
+                                styleIds[style]);
+                            panel.SampleForNativeEvidence(
+                                DailyTreasureRevealTimeline.RevealPeakSeconds);
+                            Canvas.ForceUpdateCanvases();
+                            pictures.Add(Render(camera,rt,output,width,height,
+                                "style-"+styleSuffixes[style]+"-opening",
+                                "Visual style preview ONLY, not an earned milestone: "+
+                                    styleIds[style],true,false));
+                            ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                                FindButton(panel,"Skip animation / keep earned items"),
+                                width,height);
+                            inputChecks++;
+                            Canvas.ForceUpdateCanvases();
+                            pictures.Add(Render(camera,rt,output,width,height,
+                                "style-"+styleSuffixes[style]+"-result",
+                                "Visual result layout ONLY, with no milestone command executed: "+
+                                    styleIds[style],true,false));
+                            ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                                FindButton(panel,"Close tributes"),width,height);
+                            inputChecks++;
+                            Need(!panel.IsOpen,
+                                "Premium milestone style refuses to close: "+styleIds[style]);
+                            var afterStyle=specialGateway.Snapshot();
+                            Need(wallet.Resources.Wood==afterStyle.Resources.Wood &&
+                                 wallet.Resources.Stone==afterStyle.Resources.Stone &&
+                                 wallet.Resources.Food==afterStyle.Resources.Food &&
+                                 wallet.Mailbox.Messages.Count==afterStyle.Mailbox.Messages.Count,
+                                 "Visual-only style probe granted resources or mail: "+
+                                 styleIds[style]);
+                            report.visualOnlyMilestoneCaptures+=2;
+                        }
+                    }
+
                     Object.DestroyImmediate(eventObj);
                     Object.DestroyImmediate(canvasObj);
                     camera.targetTexture=null;
@@ -349,8 +413,10 @@ namespace Eldoria.DailyTreasures.Editor
                     Object.DestroyImmediate(rt);
                     Object.DestroyImmediate(go);
                 }
-                Need(pictures.Count==28 && inputChecks==40 && report.realGatewayClaims==8,
-                    "Day-four and day-seven native reward coverage incomplete");
+                Need(pictures.Count==44 && inputChecks==56 &&
+                     report.realGatewayClaims==8 &&
+                     report.visualOnlyMilestoneCaptures==16,
+                    "Real daily rewards and four artistic milestone styles not fully captured");
                 report.status=report.authoredSpritesImported
                     ? "NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING"
                     : "NATIVE_COMPONENT_RENDERED_FALLBACK_ONLY_ART_REJECTED";
@@ -358,7 +424,7 @@ namespace Eldoria.DailyTreasures.Editor
                 report.images=pictures.Count;
                 report.shots=pictures.ToArray();
                 File.WriteAllText(Path.Combine(output,"report.json"),JsonUtility.ToJson(report,true));
-                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 28 PNG; day-four/day-seven; NOT ART_APPROVED / NOT FULL GAMEPASS");
+                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 44 PNG (28 real daily, 16 purely artistic style); NOT ART_APPROVED / NOT FULL GAMEPASS");
                 EditorApplication.Exit(0);
             }
             catch(Exception e)
@@ -389,7 +455,7 @@ namespace Eldoria.DailyTreasures.Editor
                 Need(bytes>7000,"Suspiciously empty native capture: "+path);
                 return new Shot{file=name,sha256=Sha(path),view=description,
                     width=width,height=height,bytes=(int)bytes,
-                    nativeCanvas=native,coversReward=true,
+                    nativeCanvas=native,coversReward=saved,
                     readyToClaim=variant=="calendar",preserved=saved};
             }
             finally
