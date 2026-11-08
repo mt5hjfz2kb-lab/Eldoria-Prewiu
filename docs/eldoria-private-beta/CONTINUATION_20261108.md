@@ -29,3 +29,11 @@ Previous public desktop report artifact13623376058 confirms resident memory exce
 ## Next
 Retrieve both runs, inspect exact native phase reports and WebKit A/B before choosing another change. If native generated valid build but final restoration fails, preserve and inspect output before rebuilding; isolated imports may create metadata and must not be confused with shared-project corruption. No PASS from another source, no arbitrary memory/readability tweaks.
 Canonical owner in main: codex-pr179-stability-2ea88ced1c46 revision13, same original workstream/PR179. Other projects/resources remain intact.
+
+## Completed heap A/B — do not promote preallocation
+Run42506071704 completed SUCCESS; artifact13627134593 ZIP SHA256 de289d0e47be726b45142d101a867bebc77252e132ce5d4281af75447bdec1be, downloaded and checked.
+Both variants completed world initialization and90-second observation on WebKit26/Apple GPU with no captured runtime errors. Screenshots inspected: same name-entry screen and city composition; minor cursor/animation differences. This test did not perform nickname/reload and is not physical-device certification.
+- Unchanged:21 growth calls, peak WASM1154023424B; peak sampled individual WebContentRSS2264832KiB (2211.75MiB).
+- Preallocated1024:one early growth call, peak WASM1073741824B; peak WebContentRSS2420512KiB (2363.78125MiB).
+The lower final resident size does not offset the higher startup peak for the current stability objective. Reject early1024MiB allocation as a demonstrated memory-peak improvement; no production change or additional phone retry requested. A single desktop A/B cannot identify the phone termination cause.
+Native42505611257 progressed beyond exact-source checkout and clean audit into the baseline Unity probe (phase status observed). Await its actual results; do not report that as completed.
