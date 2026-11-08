@@ -70,6 +70,7 @@ namespace Eldoria.BreachWatch
         public Button BuildingAction => actionButton;
         public RectTransform BuildingPanel => panel;
         public bool HasLiveBuildingPortrait => buildingPortrait && buildingPortrait.HasLiveBuilding;
+        public bool BuildingPortraitExclusive => buildingPortrait && buildingPortrait.RenderedFromIsolatedRealMeshes;
         public bool HasTrueResourceIllustrations =>
             resourceIllustrations[0] && resourceIllustrations[0].sprite &&
             resourceIllustrations[0].sprite.name=="wood" &&
