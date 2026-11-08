@@ -190,26 +190,51 @@ namespace Eldoria.BreachWatch
 
                 Vector3 right=portraitCamera.transform.right;
                 Vector3 up=portraitCamera.transform.up;
-                float maxX=0f,maxY=0f;
-                var min=copiedBounds.min;
-                var max=copiedBounds.max;
-                for(int i=0;i<8;i++)
+                float minRight=float.PositiveInfinity,maxRight=float.NegativeInfinity;
+                float minUp=float.PositiveInfinity,maxUp=float.NegativeInfinity;
+                // Before: one WORLD axis-aligned union bound for the entire
+                // Bastion. Its empty diagonal corners forced Unity to shrink
+                // the live thumbnail into a tiny object. Now measure each
+                // visible mesh's LOCAL bounds transformed into the exact
+                // portrait camera plane; still conservatively covers every
+                // genuine mesh without a GPU readback or synthetic castle.
+                foreach(var part in stage.GetComponentsInChildren<MeshFilter>(true))
                 {
-                    var corner=new Vector3((i&1)!=0?max.x:min.x,
-                        (i&2)!=0?max.y:min.y,(i&4)!=0?max.z:min.z);
-                    var local=corner-copiedBounds.center;
-                    maxX=Mathf.Max(maxX,Mathf.Abs(Vector3.Dot(local,right)));
-                    maxY=Mathf.Max(maxY,Mathf.Abs(Vector3.Dot(local,up)));
+                    if(!part || !part.sharedMesh)continue;
+                    var localBounds=part.sharedMesh.bounds;
+                    var boxMin=localBounds.min;
+                    var boxMax=localBounds.max;
+                    for(int cornerIndex=0;cornerIndex<8;cornerIndex++)
+                    {
+                        var localCorner=new Vector3(
+                            (cornerIndex&1)!=0?boxMax.x:boxMin.x,
+                            (cornerIndex&2)!=0?boxMax.y:boxMin.y,
+                            (cornerIndex&4)!=0?boxMax.z:boxMin.z);
+                        Vector3 worldCorner=part.transform.TransformPoint(localCorner);
+                        Vector3 offset=worldCorner-copiedBounds.center;
+                        float projRight=Vector3.Dot(offset,right);
+                        float projUp=Vector3.Dot(offset,up);
+                        minRight=Mathf.Min(minRight,projRight);
+                        maxRight=Mathf.Max(maxRight,projRight);
+                        minUp=Mathf.Min(minUp,projUp);
+                        maxUp=Mathf.Max(maxUp,projUp);
+                    }
                 }
+                if(float.IsInfinity(minRight) || float.IsInfinity(minUp))
+                {
+                    image.enabled=false;lastModel=null;lastKey=null;
+                    return;
+                }
+                float spanRight=(maxRight-minRight)*.5f;
+                float spanUp=(maxUp-minUp)*.5f;
                 portraitCamera.orthographicSize=Mathf.Max(.5f,
-                    // Actual Unity GPU evidence showed real parapet meshes touched
-                    // the edge at .77x. Fit every projected corner with a
-                    // measured 8% safety margin; no cropped model and no
-                    // synthetic image content.
-                    Mathf.Max(maxY,maxX/portraitCamera.aspect)*1.08f);
+                    Mathf.Max(spanUp,spanRight/portraitCamera.aspect)*1.12f);
                 portraitCamera.nearClipPlane=.1f;
                 portraitCamera.farClipPlane=1000;
-                portraitCamera.transform.position=copiedBounds.center -
+                Vector3 actualVisualCenter=copiedBounds.center +
+                    right*((minRight+maxRight)*.5f)+
+                    up*((minUp+maxUp)*.5f);
+                portraitCamera.transform.position=actualVisualCenter -
                     portraitCamera.transform.forward*120f;
 
                 // Actual separately rendered meshes must be inside the current
