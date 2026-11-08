@@ -110,7 +110,7 @@
     }
   ],
   "structural_candidate": {
-    "status": "WEBGL_BUILT_NATIVE_225_CHECKS_PASSED_EXPORT_RESTORATION_QUEUED",
+    "status": "RECOVERED_BUILD_VERIFIED_PACKAGING_IDENTICAL_TEXTURE_COPIES",
     "source_baseline": "948ffa9837168a0b68dab80be76b66350422b23a",
     "overlay_commit": "91734045e8d32cc90cc4843b4b7e08e57b1a0458",
     "native_run": 42435095850,
@@ -167,6 +167,27 @@
     "native_evidence_zip_sha256": "52a39d2be58704088348b944b3dfb31469e27171972c60d45c4d81f34040694a",
     "export_run": 42437285033,
     "export_source": "c54a6062bccafc67ecd83e35308953c20bcfb1d4",
-    "browser_verified": false
+    "browser_verified": false,
+    "recovery_run": 42473140363,
+    "recovery_source": "d32508f9ce380eb8ea9bc10fecd4fb2dfc44a2f2",
+    "recovered_webgl_artifact": 13614825021,
+    "recovered_native_evidence_artifact": 13614536700,
+    "recovery_changed_shared_source": false,
+    "package_run": 42474779454,
+    "package_source": "a6e679e5a9b2a2d2378cb0dab75f5e93cdf84acd",
+    "payload_audit": {
+      "run": 42473845228,
+      "artifact": 13614682468,
+      "textures": 449,
+      "unique_texture_names": 290,
+      "serialized_texture_bytes": 3291285980,
+      "first_packaged_bytes": 1387757813,
+      "first_package_publishable": false
+    },
+    "last_browser_failure": {
+      "run": 42473231989,
+      "launched_game": false,
+      "cause": "Windows python.exe is uninstalled Microsoft Store alias; local HTTP server failed before Chromium. Replaced by Node static server; actual HTTP test passed."
+    }
   }
 }
