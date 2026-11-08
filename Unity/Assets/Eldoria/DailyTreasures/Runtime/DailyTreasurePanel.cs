@@ -497,6 +497,18 @@ namespace Eldoria.DailyTreasures
         public void Close()
         {
             if(screen)screen.gameObject.SetActive(false);
+            // Release the ONLY references owned by this optional ceremony to
+            // large original painterly illustrations. Mobile WebGL must not
+            // keep a 3MB+ scene texture alive just because a chest was opened.
+            // The original shared Resources assets themselves are not deleted.
+            if(milestoneScenery)
+            {
+                milestoneScenery.texture=null;
+                milestoneScenery.gameObject.SetActive(false);
+                milestoneSceneryKey=null;
+            }
+            if(milestoneVignette)
+                milestoneVignette.gameObject.SetActive(false);
             if(header)header.gameObject.SetActive(true);
             if(subhead)subhead.gameObject.SetActive(true);
             ClearPrizeCards();
