@@ -62,7 +62,7 @@
   ],
   "release_for_external_testers": false,
   "owner_approval_to_invite": false,
-  "no_unity_source_mutations": true,
+  "no_unity_source_mutations": false,
   "no_release_replacement": true,
   "mobile_candidate": {
     "revision": "native325-mobile-material3",
@@ -108,5 +108,19 @@
       "deploy_run": 42418899866,
       "physical_iphone_result": "OWNER_REPORTED_FAILURE: game visible about one second, then involuntary return to landing"
     }
-  ]
+  ],
+  "structural_candidate": {
+    "status": "NATIVE_JOB_IN_PROGRESS_NOT_CERTIFIED",
+    "source_baseline": "948ffa9837168a0b68dab80be76b66350422b23a",
+    "overlay_commit": "9c33cc4cee5b029eb6b90c203b8603dc60609e4c",
+    "native_run": 42427811334,
+    "native_job": 128569831172,
+    "native_compilation_verified": false,
+    "native_parity_verified": false,
+    "webgl_built": false,
+    "published": false,
+    "physical_iphone_verified": false,
+    "source_scope": "Four claimed C# files; staged initialization, readiness gate, temporary validation cache release, canonical validator readiness wait",
+    "isolated_project": true
+  }
 }
