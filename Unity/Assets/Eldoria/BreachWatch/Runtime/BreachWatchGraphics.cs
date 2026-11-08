@@ -14,7 +14,7 @@ namespace Eldoria.BreachWatch
         PlateType plateType = PlateType.Basalt;
         Sprite approvedIndependentArt;
         bool useIndependentNineSlice;
-        public PlateType Type
+        public new PlateType Type
         {
             get => plateType;
             set
