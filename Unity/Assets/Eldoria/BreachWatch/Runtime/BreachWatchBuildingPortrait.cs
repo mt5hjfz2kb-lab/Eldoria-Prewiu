@@ -23,6 +23,7 @@ namespace Eldoria.BreachWatch
         string lastKey;
 
         public bool HasLiveBuilding => image && image.enabled && image.texture == texture && lastModel;
+        public bool RenderedFromIsolatedRealMeshes { get; private set; }
         public void Initialize(RawImage target)
         {
             image = target;
@@ -44,6 +45,7 @@ namespace Eldoria.BreachWatch
                 return;
             }
             if(model == lastModel && lastKey == key && HasLiveBuilding)return;
+            RenderedFromIsolatedRealMeshes=false;
             if(!texture)
             {
                 texture = new RenderTexture(512,256,24,RenderTextureFormat.ARGB32);
@@ -193,6 +195,8 @@ namespace Eldoria.BreachWatch
                 image.enabled=true;
                 lastModel=model;
                 lastKey=key;
+                RenderedFromIsolatedRealMeshes=rendered>0 &&
+                    portraitCamera.cullingMask==(1<<PreviewLayer);
             }
             finally
             {
