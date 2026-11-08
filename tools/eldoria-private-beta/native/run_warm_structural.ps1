@@ -10,7 +10,18 @@ $Evidence=[IO.Path]::GetFullPath($Evidence);$WebOutput=[IO.Path]::GetFullPath($W
 $baseline='948ffa9837168a0b68dab80be76b66350422b23a'
 if((git -C $Source rev-parse HEAD).Trim() -ne $baseline){throw 'Warm project is not the exact frozen commit'}
 $pending=@(git -C $Source status --porcelain -- Unity)
-if($LASTEXITCODE -ne 0 -or $pending.Count){throw "Warm Unity tree has pending work; refuse mutation: $($pending -join ' | ')"}
+if($LASTEXITCODE -ne 0){throw 'Cannot inspect warm source'}
+$auditPath=Join-Path $Tools 'tools/eldoria-private-beta/native/existing-input-audit.json'
+$audit=Get-Content $auditPath -Raw|ConvertFrom-Json
+if($audit.base -ne $baseline){throw 'Audited base differs'}
+if(@(Compare-Object @($audit.status) $pending).Count){throw 'Pending source differs from reviewed inventory'}
+$actualPaths=@(git -C $Source ls-files --modified --others --exclude-standard -- Unity)
+if($LASTEXITCODE -ne 0 -or @(Compare-Object @($audit.files|ForEach-Object {$_.path}) $actualPaths).Count){throw 'Pending input membership changed'}
+foreach($item in $audit.files){
+ $file=Join-Path $Source $item.path
+ if(-not(Test-Path $file -PathType Leaf) -or (Get-FileHash $file -Algorithm SHA256).Hash -ne $item.sha256){throw "Reviewed existing input changed: $($item.path)"}
+}
+$env:ELDORIA_BASELINE_INPUT_AUDIT=(Get-FileHash $auditPath -Algorithm SHA256).Hash
 if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy'}
 if(Test-Path $WebOutput){throw 'Refuse replacing a previous WebGL output'}
 New-Item -ItemType Directory -Force $Evidence|Out-Null
@@ -21,16 +32,20 @@ $overlays=@(
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs',
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
 )
-$paths=@($overlays)
+$paths=@($overlays)+@($audit.files|ForEach-Object {$_.path})
 $paths+=@(Get-ChildItem (Join-Path $Source 'Unity/ProjectSettings') -File -Recurse|ForEach-Object {$_.FullName.Substring($Source.Length+1).Replace('\','/')})
+$paths=@($paths|Sort-Object -Unique)
+$backupRoot=Join-Path $env:GITHUB_WORKSPACE "beta-structural-preserved-inputs-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+if(Test-Path $backupRoot){throw 'Preserved input backup already exists'}
+Copy-Item $auditPath (Join-Path $Evidence 'existing-input-audit.json')
 $records=@()
 foreach($path in $paths){
- $original=Join-Path $Source $path;$backup=Join-Path $Evidence ('source-backup/'+$path)
+ $original=Join-Path $Source $path;$backup=Join-Path $backupRoot $path
  New-Item -ItemType Directory -Force (Split-Path $backup)|Out-Null
  Copy-Item $original $backup
  $records+=@{path=$path;backup=$backup;sha256=(Get-FileHash $original -Algorithm SHA256).Hash;overlay=($overlays -contains $path)}
 }
-[IO.File]::WriteAllText((Join-Path $Evidence 'warm-cache-before.json'),(@{base=$baseline;files=$records}|ConvertTo-Json -Depth 6),$utf8)
+[IO.File]::WriteAllText((Join-Path $Evidence 'warm-cache-before.json'),(@{base=$baseline;input_audit_sha256=$env:ELDORIA_BASELINE_INPUT_AUDIT;source_kind="frozen code plus reviewed existing generated assets and normalized metadata";files=$records}|ConvertTo-Json -Depth 6),$utf8)
 $proof=Join-Path $Source 'docs/evidence/valoria-reference-clean'
 $build=Join-Path $Source 'Unity/Builds/ValoriaWebPlaytest'
 $suffix=".beta-preserved-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
@@ -40,12 +55,13 @@ $proofMoved=$false;$buildMoved=$false;$proofSlotCleared=$false;$buildSlotCleared
 try {
  if(Test-Path $proof){Move-Item $proof $proofBackup;$proofMoved=$true};$proofSlotCleared=$true
  if(Test-Path $build){Move-Item $build $buildBackup;$buildMoved=$true};$buildSlotCleared=$true
- # Prior evidence is quarantined intact. The core test must check the complete
- # Unity tree, not reject its own temporary relocation of historical docs.
+ # All pending inputs have been reviewed and hash-pinned above, and are preserved.
+ # The core additionally verifies that its four owned source files match HEAD
+ # before applying the candidate; quarantined historical evidence is not an input.
  $core=Get-Content (Join-Path $Tools 'tools/eldoria-private-beta/native/run_structural.ps1') -Raw
  $needle='git -C $Source status --porcelain'
  if(([regex]::Matches($core,[regex]::Escape($needle))).Count -ne 1){throw 'Core clean-source gate changed'}
- $core=$core.Replace($needle,'git -C $Source status --porcelain -- Unity')
+ $core=$core.Replace($needle,('git -C $Source diff --name-only -- '+($overlays -join ' ')))
  $corePath=Join-Path $Evidence 'executed-structural-core.ps1'
  [IO.File]::WriteAllText($corePath,$core,$utf8)
  & $corePath -Source $Source -Tools $Tools -Evidence $Evidence
@@ -69,6 +85,13 @@ try {
   if($current -ne $record.sha256){Copy-Item $record.backup $file -Force}
  }
  $after=@(git -C $Source status --porcelain -- Unity)
- [IO.File]::WriteAllText((Join-Path $Evidence 'warm-cache-restoration.json'),(@{conflicts=$conflicts;unity_status=$after;restored=($conflicts.Count -eq 0 -and $after.Count -eq 0)}|ConvertTo-Json -Depth 6),$utf8)
- if($conflicts.Count -or $after.Count){throw 'Warm source has unexpected differences; evidence saved, no automatic overwrite'}
+ $statusChanges=@(Compare-Object @($audit.status) $after)
+ $inputChanges=@()
+ foreach($item in $audit.files){
+  $file=Join-Path $Source $item.path
+  if(-not(Test-Path $file) -or (Get-FileHash $file -Algorithm SHA256).Hash -ne $item.sha256){$inputChanges+=$item.path}
+ }
+ $restored=$conflicts.Count -eq 0 -and $statusChanges.Count -eq 0 -and $inputChanges.Count -eq 0
+ [IO.File]::WriteAllText((Join-Path $Evidence 'warm-cache-restoration.json'),(@{conflicts=$conflicts;unity_status=$after;status_changes=$statusChanges;existing_input_changes=$inputChanges;restored=$restored}|ConvertTo-Json -Depth 6),$utf8)
+ if(-not $restored){throw 'Warm source has unexpected differences; evidence saved, no automatic overwrite'}
 }
