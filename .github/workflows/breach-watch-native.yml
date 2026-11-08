@@ -21,6 +21,8 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /Unity/Assets/Eldoria/BreachWatch/Resources/**
+            /docs/evidence/valoria-reference-clean/chapter2-city-built.png
+            /docs/evidence/valoria-reference-clean/integration-city-art.png
           persist-credentials: false
       - name: Validate actual approved separate medallions
         shell: bash
@@ -40,7 +42,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: vigilia-independent-visual-resources-${{ github.run_id }}
-          path: Unity/Assets/Eldoria/BreachWatch/Resources/**
+          path: |
+            Unity/Assets/Eldoria/BreachWatch/Resources/**
+            docs/evidence/valoria-reference-clean/chapter2-city-built.png
+            docs/evidence/valoria-reference-clean/integration-city-art.png
           if-no-files-found: error
           retention-days: 7
   evaluate-cc0-resource-icons:
