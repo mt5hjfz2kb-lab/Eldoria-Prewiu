@@ -102,7 +102,7 @@ function processes() {
     write();
     if(!report.capabilities.webgl2)throw Error('ENVIRONMENT_NO_WEBGL2');
     await page.locator('#play').click();
-    let readyAt=0;
+    let readyAt=0,earlyEntry=false;
     const started=Date.now();
     while(Date.now()-started<330000){
       if(report.errors.length)throw Error('Browser failure');
@@ -118,6 +118,11 @@ function processes() {
       s.processes=processes();report.samples.push(s);write();
       if(s.ready&&!readyAt){readyAt=Date.now();log({type:'unity-ready'});}
       if(readyAt&&(!s.ready||!s.visible))throw Error('Unity exited after ready');
+      if(process.env.QA_EARLY_ENTRY==='1'&&readyAt&&!earlyEntry&&Date.now()-readyAt>2000){
+        await page.screenshot({path:out+'/early-entry-before.png',timeout:15000});
+        await page.mouse.click(195,490,{delay:200});await page.keyboard.type('Beta QA',{delay:140});await page.mouse.click(195,614,{delay:200});
+        earlyEntry=true;report.earlyEntry={attempted:true,secondsAfterReady:(Date.now()-readyAt)/1000};write();
+      }
       if(readyAt&&Date.now()-readyAt>90000)break;
       await page.waitForTimeout(1000);
     }
@@ -139,7 +144,7 @@ function processes() {
       }
     }
     if(process.env.QA_ENTRY==='1'){
-      await page.mouse.click(195,490,{delay:200});await page.keyboard.type('Beta QA',{delay:140});await page.mouse.click(195,614,{delay:200});
+      if(!earlyEntry){await page.mouse.click(195,490,{delay:200});await page.keyboard.type('Beta QA',{delay:140});await page.mouse.click(195,614,{delay:200});}
       await observeEntry(30,"after-name");await page.screenshot({path:out+'/after-name.png',timeout:15000});
       await page.evaluate(()=>window.valoriaGame.Quit());
       await page.reload({waitUntil:'domcontentloaded'});await page.locator('#play').click();

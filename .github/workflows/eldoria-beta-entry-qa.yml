@@ -1,4 +1,4 @@
-name: Eldoria identical-host Apple GPU control versus reused routes and controlled heap experiment
+name: Eldoria live terrain tape owner entry and reload WebKit
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -6,54 +6,46 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-  actions: read
 jobs:
-  same-host-memory:
+  live-owner-entry:
     runs-on: macos-15
-    timeout-minutes: 25
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 42493894120
-          name: mobile6-candidate-site
-          github-token: ${{ github.token }}
-          path: qa-sites/control
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 42519214500
-          name: mobile9-candidate-site
-          github-token: ${{ github.token }}
-          path: qa-sites/candidate
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Run both builds through the same host and transport
+      - name: Verify publicly served exact source and exercise entry persistence
         env:
           QA_ENGINE: webkit
           QA_VARIANT: unchanged
           QA_ENTRY: '1'
+          QA_EARLY_ENTRY: '1'
           QA_SKIP_PREFLIGHT: '1'
+          QA_URL: https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&eldoria_profile=1&build=native325-mobile9-routes
+          QA_REVISION: native325-mobile9-routes
+          QA_OUT: evidence/live
         run: |
-          npm install --prefix "$RUNNER_TEMP/same-host-qa" --no-save playwright@1.55.0
-          "$RUNNER_TEMP/same-host-qa/node_modules/.bin/playwright" install webkit
-          export NODE_PATH="$RUNNER_TEMP/same-host-qa/node_modules"
-          node tools/eldoria-private-beta/qa_static_server.cjs qa-sites 18765 >server.log 2>&1 &
-          server_pid=$!
-          trap 'kill "$server_pid"' EXIT
-          failed=0
-          QA_URL='http://127.0.0.1:18765/candidate/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile9-routes QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
-          QA_URL='http://127.0.0.1:18765/candidate/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile9-routes QA_VARIANT=preallocated-640 QA_OUT=evidence/heap640 node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
-          QA_URL='http://127.0.0.1:18765/control/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile6-cubemap QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
-          exit "$failed"
+          npm install --prefix "$RUNNER_TEMP/live-qa" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/live-qa/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/live-qa/node_modules"
+          node tools/eldoria-private-beta/qa_webkit_residency.cjs
+          python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('evidence/live');r=json.loads((p/'report.json').read_text());i=r['identity'];e=(p/'events.jsonl').read_text()
+          assert r['passed'] and i['source_sha']=='5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa'
+          assert i['terrain_query_cache_sha256'].lower()=='013ebf8194be6974dbcadf27e3cf2ae43db7c7638e0e6cb22cfe838e037ed986'
+          assert 'ELDORIA_TERRAIN_QUERY_TAPE' in e and 'Source mesh has over 2,097,152 triangles' not in e
+          assert e.count('REGION1_CANON_WORLD_INSTALLED')>=2
+          assert i['physical_iphone_verified'] is False and not i['release_for_external_testers']
+          print('LIVE_OWNER_WEBKIT_ENTRY_RELOAD_PASS_NOT_PHYSICAL_IPHONE')
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile9-reversed-order-heap640-not-physical-iphone
-          path: |
-            evidence/
-            server.log
+          name: mobile9-live-owner-webkit-not-physical-iphone
+          path: evidence/
           retention-days: 14
