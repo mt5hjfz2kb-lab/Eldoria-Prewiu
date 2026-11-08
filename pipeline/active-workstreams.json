@@ -6787,9 +6787,9 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-beta-pages-20261107",
+      "owner": "codex-pr179-stability-2ea88ced1c46",
       "ownership_state": "claimed",
-      "ownership_revision": 12,
+      "ownership_revision": 13,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6817,7 +6817,7 @@
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
       "phase": "COMPACT_TERRAIN_NATIVE_PARITY_OWNER_PRIORITY",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Execute guarded native parity, phase allocation profile and WebGL rebuild; preserve all existing source. Physical iPhone closure still unconfirmed.",
+      "next": "Preserve run42503628688. Fix discovered mismatch: clean isolated clone is checked against warm dirty-input audit. Validate clean audit separately; then native parity, WebGL and memory diagnosis.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6964,7 +6964,16 @@
         "status": "granted_by_owner",
         "at": "2026-11-08T16:53:20.268Z",
         "return_to": "eldoria-forja-oscura-visual-proof-20261107"
-      }
+      },
+      "ownership_history": [
+        {
+          "previous_owner": "chatgpt-beta-pages-20261107",
+          "from_revision": 12,
+          "to_revision": 13,
+          "to_owner": "codex-pr179-stability-2ea88ced1c46",
+          "reason": "User explicitly requests continuing PR179 stability repair in this session. Preserve running native run42503628688; no cancellation or duplicate Unity launch."
+        }
+      ]
     },
     {
       "id": "eldoria-daily-treasures-20261108",
