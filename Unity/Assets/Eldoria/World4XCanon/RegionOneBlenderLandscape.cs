@@ -97,15 +97,29 @@ namespace Eldoria.World4XCanon
   }
   // Runtime yields frame boundaries so Web GC can reclaim each completed phase.
   // Synchronous editor callers retain the exact same validated installation path.
+  static void TraceStartupMemory(string phase)
+  {
+   bool enabled=Application.platform==RuntimePlatform.WebGLPlayer
+    ?Application.absoluteURL.Contains("eldoria_profile=1")
+    :Environment.GetEnvironmentVariable("ELDORIA_MEMORY_PHASES")=="1";
+   if(!enabled)return;
+   Debug.Log("ELDORIA_MEMORY_PHASE phase="+phase+
+    " allocated="+UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong()+
+    " reserved="+UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong()+
+    " managed="+GC.GetTotalMemory(false));
+  }
   public static IEnumerator InstallStaged(Transform parent,ValoriaIntegratedWorld host,Action<RegionOneBlenderLandscape> completed)
   {
    if(completed==null)throw new ArgumentNullException(nameof(completed));
    var instance=parent.gameObject.AddComponent<RegionOneBlenderLandscape>();
+   TraceStartupMemory("prefab-before");
    var prefab=Resources.Load<GameObject>(AssetRoot+"RegionOneBlenderWorld");
+   TraceStartupMemory("prefab-loaded");
    if(!prefab)throw new InvalidOperationException("Blender GLB must be imported as a prefab by the installed glTFast importer.");
    // Load query/verification data in the next phase, not alongside prefab import.
    instance.artwork=Instantiate(prefab,parent);instance.artwork.name="Blender authored geography";
    instance.artwork.transform.position=host.WorldHome;
+   TraceStartupMemory("prefab-instantiated");
    // glTF is right handed. Resolve the importer conversion using an authored asymmetrical anchor,
    // never by changing vertices or reconstructing any geographic feature.
    var floor=instance.artwork.GetComponentsInChildren<MeshRenderer>(true).Single(x=>x.name=="BLD_BreachFloor");
@@ -128,12 +142,16 @@ namespace Eldoria.World4XCanon
    yield return null;
    // Verification stays mandatory, but its hundreds of thousands of buckets
    // must not coexist with contact/routing construction or remain resident.
-   try {EnsureData(true);instance.ValidateImportedSurface(host.WorldHome);}
+   TraceStartupMemory("verify-before");
+   try {EnsureData(true);TraceStartupMemory("verify-index");instance.ValidateImportedSurface(host.WorldHome);}
    finally {sourceVertices=null;sourceVertexCount=0;}
+   TraceStartupMemory("verify-released");
    yield return null;
    instance.BuildContactSurface(host.WorldHome);
+   TraceStartupMemory("contact-ready");
    yield return null;
    instance.FitImportedPigment(host.WorldHome);
+   TraceStartupMemory("pigment-ready");
    yield return null;
    RegionOneProductionLod.Install(instance.artwork);
    RegionOneLookDevelopment.Install(instance.artwork,host.WorldCamera);
