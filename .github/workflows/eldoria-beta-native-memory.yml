@@ -13,7 +13,7 @@ concurrency:
   group: eldoria-beta-native-warm-preserved
   cancel-in-progress: false
 env:
-  EXPECTED_LEASE_REVISION: '12'
+  EXPECTED_LEASE_REVISION: '13'
 jobs:
   preflight:
     runs-on: ubuntu-latest
@@ -33,6 +33,9 @@ jobs:
             [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors)|Out-Null
             if($errors.Count){$errors|Format-List;throw 'PowerShell parser errors'}
           }
+      - name: Test isolated and reviewed input validation
+        shell: pwsh
+        run: ./beta-tools/tools/eldoria-private-beta/native/test_input_audit.ps1
       - name: Check current ownership without occupying Windows
         id: lease
         env:
@@ -48,7 +51,7 @@ jobs:
           own=next(x for x in active if x['id']=='eldoria-private-beta-i-v-20261107')
           prs=[x for x in json.load(open('pulls.json')) if 'Workstream-ID: eldoria-private-beta-i-v-20261107' in (x.get('body') or '')]
           if len(prs)!=1 or prs[0]['number']!=179: raise RuntimeError('Canonical PR179 ownership mismatch')
-          valid=own['owner']=='chatgpt-beta-pages-20261107' and str(own['ownership_revision'])==os.environ['EXPECTED_LEASE_REVISION'] and len(holders)==1 and holders[0]['id']==own['id']
+          valid=own['owner']=='codex-pr179-stability-2ea88ced1c46' and str(own['ownership_revision'])==os.environ['EXPECTED_LEASE_REVISION'] and len(holders)==1 and holders[0]['id']==own['id']
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('available='+str(valid).lower()+'\n')
           with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
             f.write('PowerShell syntax checked. Native Unity '+('authorized for this exact lease.' if valid else 'NOT RUN: resource lease is not available to this revision. No gameplay/build certification.')+'\n')
@@ -92,29 +95,28 @@ jobs:
           $ErrorActionPreference='Stop'
           $r=Get-Content beta-structural-live/pipeline/active-workstreams.json -Raw|ConvertFrom-Json
           $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'chatgpt-beta-pages-20261107' -or $holders[0].ownership_revision -ne [int]$env:EXPECTED_LEASE_REVISION){throw 'Structural startup lease changed'}
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'codex-pr179-stability-2ea88ced1c46' -or $holders[0].ownership_revision -ne [int]$env:EXPECTED_LEASE_REVISION){throw 'Structural startup lease changed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy; do not interrupt'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
           $folder="beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
           if(Test-Path $folder){throw 'Isolated project already exists; refuse replacement'}
           $drive=Get-PSDrive -Name ([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE).Substring(0,1))
           if($drive.Free -lt 8GB){throw 'Insufficient isolated import headroom; preserve other projects'}
-      - name: Build a clean, isolated exact-source clone without touching warm project
+      - name: Fetch exact frozen source independently of the mutable warm cache
+        uses: actions/checkout@v4
+        with:
+          ref: 948ffa9837168a0b68dab80be76b66350422b23a
+          path: beta-structural-source-${{ github.run_id }}-${{ github.run_attempt }}
+          sparse-checkout: |
+            Unity
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Verify isolated frozen source and record its exact input audit
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
-          $cache=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
           $frozen='948ffa9837168a0b68dab80be76b66350422b23a'
-          if(-not(Test-Path (Join-Path $cache '.git'))){throw 'Warm repository absent; no source touched'}
           $source=Join-Path $env:GITHUB_WORKSPACE "beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
-          if(Test-Path $source){throw 'Isolated destination already exists; no replacement'}
-          # --shared references Git objects but NEVER checks out or resets the warm working tree.
-          & git clone --shared --no-checkout --quiet $cache $source
-          if($LASTEXITCODE -ne 0){throw 'Cannot create isolated source clone'}
-          & git -C $source cat-file -e "$frozen^{commit}"
-          if($LASTEXITCODE -ne 0){throw 'Frozen source object missing in cache; refusing to use a different commit'}
-          & git -C $source -c core.longpaths=true checkout --detach --quiet $frozen
-          if($LASTEXITCODE -ne 0){throw 'Frozen source checkout failed'}
           $head=(git -C $source rev-parse HEAD).Trim()
           if($head -ne $frozen){throw 'Frozen source identity mismatch'}
           $pending=@(git -C $source status --porcelain -- Unity)
@@ -124,16 +126,18 @@ jobs:
           $out=Join-Path $env:GITHUB_WORKSPACE "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
           New-Item -ItemType Directory -Force $out|Out-Null
           $utf8=New-Object Text.UTF8Encoding($false)
-          $audit=@{base=$head;status=@();files=@();source_kind='clean isolated exact frozen commit';warm_head=(git -C $cache rev-parse HEAD).Trim()}
-          [IO.File]::WriteAllText((Join-Path $out 'existing-input-audit.json'),($audit|ConvertTo-Json -Depth 6),$utf8)
-          Write-Host "BETA_ISOLATED_SOURCE_PASS pinned=$head warm=$($audit.warm_head)"
+          $audit=@{base=$head;status=@();files=@();source_kind='clean isolated exact frozen commit'}
+          $auditPath=Join-Path $out 'existing-input-audit.json'
+          [IO.File]::WriteAllText($auditPath,($audit|ConvertTo-Json -Depth 6),$utf8)
+          Write-Host "BETA_ISOLATED_SOURCE_PASS pinned=$head"
           Add-Content $env:GITHUB_ENV "BETA_SOURCE=$source"
+          Add-Content $env:GITHUB_ENV "BETA_INPUT_AUDIT=$auditPath"
       - name: Original versus staged native startup, canonical journey, then WebGL
         env:
           GH_TOKEN: ${{ github.token }}
         shell: powershell
         run: |
-          & ./beta-structural-tools/tools/eldoria-private-beta/native/run_warm_structural.ps1 -Source "$env:BETA_SOURCE" -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -WebOutput "beta-structural-webgl-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/run_warm_structural.ps1 -Source "$env:BETA_SOURCE" -InputAuditPath "$env:BETA_INPUT_AUDIT" -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -WebOutput "beta-structural-webgl-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
