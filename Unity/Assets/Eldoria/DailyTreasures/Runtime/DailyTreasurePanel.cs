@@ -391,9 +391,11 @@ namespace Eldoria.DailyTreasures
                 }
                 else
                 {
-                    Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,0f,7f,51f,40f);
+                    // Header / emblem / two-line reward must never overlap at
+                    // the minimum supported 844x390 phone landscape height.
+                    Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,0f,3f,48f,28f);
                     Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
-                        0f,-cellH*.5f+23f,cellW-10f,37f);
+                        0f,-cellH*.5f+18.5f,cellW-10f,33f);
                     dayBody[i].fontSize=14;
                 }
             }
