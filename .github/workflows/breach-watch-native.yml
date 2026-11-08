@@ -114,6 +114,209 @@ jobs:
           path: ${{ runner.temp }}/breachwatch-cc0-donor/**
           if-no-files-found: error
           retention-days: 7
+  approved-art-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Eldoria/BreachWatch/**
+          persist-credentials: false
+      - name: Verify every separately imported CC0 sprite and its stable Unity importer
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,re,struct
+          root=pathlib.Path('Unity/Assets/Eldoria/BreachWatch')
+          folder=root/'Resources/VigiliaArt'
+          source=json.loads((folder/'source-manifest.json').read_text())
+          assert source['license']=='CC0 1.0 in archive'
+          assert source['archive_sha256']=='f089903c2a515c1737344772c538e2bc2d8a153e219096d9118f74db5bf47d76'
+          assert 'CC0 1.0' in (folder/'LICENSE_CC0_SOURCE.txt').read_text()
+          assert len(source['sprites'])==4
+          assert (root/'Resources.meta').exists() and (root/'Resources/VigiliaArt.meta').exists()
+          guids=set()
+          for art in source['sprites']:
+              name=art['name']
+              p=folder/(name+'.png')
+              assert p.exists() and hashlib.sha256(p.read_bytes()).hexdigest()==art['sha256'],name
+              b=p.read_bytes()
+              assert b[:8]==b'\x89PNG\r\n\x1a\n' and b[25]==6,name
+              w,h=struct.unpack('>II',b[16:24])
+              assert (w,h)==tuple(art['size']),name
+              meta=(folder/(name+'.png.meta')).read_text()
+              assert 'textureType: 8' in meta and 'spriteMode: 1' in meta,name
+              g=re.search(r'^guid: ([0-9a-f]{32})    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/breach-watch/**
+            /Unity/Assets/Eldoria/BreachWatch/**
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Parse independent first-screen C-sharp sources with actual Roslyn
+        run: dotnet run --project tools/breach-watch/SyntaxAudit.csproj --configuration Release -- Unity/Assets/Eldoria/BreachWatch
+      - name: Explain proof boundary
+        run: echo 'BREACHWATCH_SYNTAX_PASS; does not replace Unity Editor compilation or artistic acceptance.'
+  owner-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      authorized: ${{ steps.check.outputs.authorized }}
+      revision: ${{ steps.check.outputs.revision }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: live-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Verify exact claim without consuming Windows
+        id: check
+        shell: bash
+        run: |
+          node <<'JS'
+          const fs=require('fs');
+          const d=JSON.parse(fs.readFileSync('live-main/pipeline/active-workstreams.json','utf8'));
+          const w=d.active.find(x=>x.id==='eldoria-forja-oscura-visual-proof-20261107');
+          const holders=d.active.filter(x=>x.ownership_state==='claimed'&&(x.resources||[]).includes('windows-runner-heavy'));
+          const ok=!!w&&holders.length===1&&holders[0]===w&&w.owner==='chatgpt-vigilia-20261108'&&w.ownership_revision>=21&&w.ownership_state==='claimed'&&w.branch==='feature/forja-oscura-native-proof-20261107';
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'authorized='+(ok?'true':'false')+'\nrevision='+(w?.ownership_revision??0)+'\n');
+          console.log(ok?'BREACHWATCH_EXCLUSIVE_OWNER_PASS':'BREACHWATCH_NO_OWNER_WINDOWS_SKIPPED');
+          JS
+  native:
+    needs: [owner-preflight, source-syntax, approved-art-integrity]
+    if: needs.owner-preflight.outputs.authorized == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 120
+    steps:
+      - name: Use installed Git without machine mutation
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'Installed Git is unavailable'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH";Add-Content $env:GITHUB_PATH $dir
+          }
+          git --version
+      - name: Check live claim and exclusive editor access
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LEASE_REVISION: ${{ needs.owner-preflight.outputs.revision }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Accept='application/vnd.github+json';Authorization="Bearer $env:GH_TOKEN";'User-Agent'='Eldoria-BreachWatch'}
+          $raw=Invoke-RestMethod -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main' -Headers $headers
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String(($raw.content -replace '\s',''))) | ConvertFrom-Json
+          $holders=@($registry.active | Where-Object {$_.ownership_state -eq 'claimed' -and @($_.resources) -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].owner -ne 'chatgpt-vigilia-20261108' -or
+             $holders[0].id -ne 'eldoria-forja-oscura-visual-proof-20261107' -or
+             [string]$holders[0].ownership_revision -ne $env:LEASE_REVISION){throw 'Native lease moved; fail closed'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied; do not interfere'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not found'}
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity Editor $version"}
+          Write-Host "BREACHWATCH_NATIVE_EDITOR_READY $version"
+      - name: Fetch exact PR source safely with sparse Unity checkout
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:GITHUB_WORKSPACE 'forja-thin-native-source-42408083695'
+          $url='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
+          if(-not(Test-Path (Join-Path $root '.git'))){
+            $root=Join-Path $env:GITHUB_WORKSPACE ("breachwatch-native-source-"+$env:GITHUB_RUN_ID)
+            New-Item -ItemType Directory -Path $root -Force | Out-Null
+            & git -C $root init
+            if($LASTEXITCODE){throw 'Git init failed'}
+            & git -C $root remote add origin $url
+          }
+          if(((& git -C $root remote get-url origin).Trim()) -ne $url){throw 'Unverified checkout origin'}
+          & git -C $root config core.sparseCheckout true
+          & git -C $root config core.sparseCheckoutCone false
+          $patterns=@('/Unity/**','/tools/breach-watch/**')
+          for($i=1;$i -le 17;$i++){$patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV'+$i+'/**')}
+          foreach($n in @('39131782550','39132144937','39132392803','39132807199','39133202399','39136444844','39137079921','39138143327')){
+            $patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-'+$n+'/**')
+          }
+          [IO.File]::WriteAllLines((Join-Path $root '.git/info/sparse-checkout'),[string[]]$patterns,(New-Object Text.UTF8Encoding($false)))
+          $auth=[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Git source fetch failed'}
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --force FETCH_HEAD
+          if($LASTEXITCODE){throw 'Git source checkout failed'}
+          if(((& git -C $root rev-parse HEAD).Trim()) -ne $env:GITHUB_SHA){throw 'Source commit mismatch'}
+          foreach($required in @(
+            'Unity/ProjectSettings/ProjectVersion.txt',
+            'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchGraphics.cs',
+            'Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs',
+            'Unity/Assets/Eldoria/BreachWatch/Editor/BreachWatchNativeEvidence.cs',
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity')){
+            if(-not(Test-Path (Join-Path $root $required))){throw "Missing exact proof input: $required"}
+          }
+          Add-Content $env:GITHUB_ENV "BW_SOURCE=$root"
+          Write-Host "BREACHWATCH_EXACT_BRANCH_SOURCE_READY $env:GITHUB_SHA"
+      - name: Run real Unity city and independent UI capture
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:BW_SOURCE 'Unity'
+          $log=Join-Path $env:RUNNER_TEMP 'breachwatch-native.log'
+          $params=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+             '-executeMethod','Eldoria.BreachWatch.Editor.BreachWatchNativeEvidence.CaptureBatch',
+             '-logFile',('"'+$log+'"'))
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $params -PassThru
+          $limit=(Get-Date).AddMinutes(66)
+          while(-not $process.HasExited -and (Get-Date) -lt $limit){Start-Sleep 5;$process.Refresh()}
+          if(-not $process.HasExited){Stop-Process -Id $process.Id -Force;throw 'Own Unity process exceeded hard bound'}
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 130}
+            throw "Unity native failed: exit=$($process.ExitCode)"
+          }
+          $folder=Join-Path $project 'BreachWatchNativeEvidence'
+          $reportFile=Join-Path $folder 'BreachWatchNativeEvidence.json'
+          if(-not(Test-Path $reportFile)){throw 'Unity native report missing'}
+          $report=Get-Content $reportFile -Raw|ConvertFrom-Json
+          if(@($report.shots).Count -ne 8 -or $report.screenshotCount -ne 8){throw 'Expected 8 native standalone city/Bastion screenshots'}
+          if($report.status -ne 'UNITY_NATIVE_INDEPENDENT_CAPTURED_ART_REVIEW_PENDING' -or $report.artworkApproved){throw 'Evidence falsely claims artistic approval'}
+          foreach($s in $report.shots){
+            $file=Join-Path $folder $s.file
+            if(-not(Test-Path $file)){throw "Missing screenshot $($s.file)"}
+            if((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant() -ne $s.sha256){throw "PNG digest mismatch $($s.file)"}
+          }
+          Write-Host "BREACHWATCH_REAL_UNITY_8_CAPTURES_CERTIFIED_NO_ART_APPROVAL"
+      - name: Preserve real Unity screenshots and editor error logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: breachwatch-first-native-${{ github.sha }}-${{ github.run_id }}
+          path: |
+            ${{ env.BW_SOURCE }}/Unity/BreachWatchNativeEvidence/**
+            ${{ runner.temp }}/breachwatch-native.log
+          if-no-files-found: warn
+          retention-days: 21
+,meta,re.M)
+              assert g and g.group(1) not in guids,name
+              guids.add(g.group(1))
+          print('BREACHWATCH_ACTUAL_CC0_UNITY_ART_SHA_AND_GUID_PASS',len(guids))
+          PY
   source-syntax:
     runs-on: ubuntu-latest
     timeout-minutes: 8
