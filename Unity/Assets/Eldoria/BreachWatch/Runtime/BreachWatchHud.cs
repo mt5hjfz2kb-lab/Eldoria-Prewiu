@@ -29,6 +29,7 @@ namespace Eldoria.BreachWatch
         bool originalCanvas, originalRaycaster, originalBlocks, originalInteractable;
         Func<Vector2,bool> priorPointerBlocker;
         readonly List<RaycastResult> pointerHits = new List<RaycastResult>();
+        readonly Dictionary<Camera,int> originalCameraMasks = new Dictionary<Camera,int>();
         float originalAlpha;
         Font font;
         RectTransform uiRoot;
@@ -44,6 +45,7 @@ namespace Eldoria.BreachWatch
         readonly Button[] navButtons = new Button[5];
         readonly BreachWatchPlate[] navPlates = new BreachWatchPlate[5];
         string selected="";
+        int selectedTab;
         bool fullObjective;
         bool lastPortrait;
         int lastWidth=-1,lastHeight=-1;
@@ -93,7 +95,8 @@ namespace Eldoria.BreachWatch
             host=source;
             canvas=GetComponent<Canvas>();scaler=GetComponent<CanvasScaler>();raycaster=GetComponent<GraphicRaycaster>();
             canvas.renderMode=RenderMode.ScreenSpaceCamera;
-            canvas.worldCamera=host.PlayerCamera;canvas.planeDistance=1f;canvas.overrideSorting=true;canvas.sortingOrder=5000;
+            canvas.planeDistance=1f;canvas.overrideSorting=true;canvas.sortingOrder=5000;
+            SyncLiveCamera();
             scaler.uiScaleMode=CanvasScaler.ScaleMode.ConstantPixelSize;scaler.scaleFactor=1f;
             raycaster.enabled=true;
             // The old RoyalInputGate detects only descendants of RoyalHUD.
@@ -109,6 +112,7 @@ namespace Eldoria.BreachWatch
             legacyCanvas=host.Hud.GetComponent<Canvas>();
             legacyRaycaster=host.Hud.GetComponent<GraphicRaycaster>();
             legacyGroup=host.Hud.GetComponent<CanvasGroup>();
+            host.Hud.SelectionChanged+=OnCanonicalSelection;
             originalCanvas=legacyCanvas.enabled;
             originalRaycaster=legacyRaycaster && legacyRaycaster.enabled;
             originalAlpha=legacyGroup?legacyGroup.alpha:1;
@@ -226,10 +230,18 @@ namespace Eldoria.BreachWatch
             questHit.targetGraphic=questPlate;
             questHit.interactable=true;
             utilityRail=Rect("Freestanding secondary seals",uiRoot);
-            var bell=BuildButton(utilityRail,"Notices",BreachWatchGlyph.Sigil.Bell,()=>SetFeedback("Buzón: disponible en futuras pantallas"));
-            var settings=BuildButton(utilityRail,"Settings",BreachWatchGlyph.Sigil.Settings,()=>SetFeedback("Ajustes: pendiente de nueva pantalla"));
-            var world=BuildButton(utilityRail,"Fissure",BreachWatchGlyph.Sigil.Breach,()=>SetFeedback("La Brecha permanece bajo vigilancia"));
-            // These three remain preview-only informational; they never dispatch a game command.
+            // No fake buttons: these destinations are not part of the first
+            // proof. Keep their artistic seals, but make disabled state explicit.
+            foreach(var design in new [] {
+                (name:"Notices",icon:BreachWatchGlyph.Sigil.Bell),
+                (name:"Settings",icon:BreachWatchGlyph.Sigil.Settings),
+                (name:"Fissure",icon:BreachWatchGlyph.Sigil.Breach) })
+            {
+                var seal=BuildButton(utilityRail,design.name,design.icon,()=>{});
+                seal.GetComponent<Button>().interactable=false;
+                var glyph=seal.GetComponentInChildren<BreachWatchGlyph>();
+                if(glyph){glyph.Ink=Locked;glyph.SetVerticesDirty();}
+            }
             panel=Rect("Independent selected-building cartouche",uiRoot);Plate(panel,BreachWatchPlate.PlateType.Basalt);
             portraitFrame=Rect("Carved recess / live building illustration",panel);
             Plate(portraitFrame,BreachWatchPlate.PlateType.Portrait);
@@ -267,6 +279,31 @@ namespace Eldoria.BreachWatch
             feedback.text="";
         }
         void SetFeedback(string value){if(feedback)feedback.text=value;}
+        void OnCanonicalSelection(string id)
+        {
+            selected=id??"";
+            if(host && host.InWorld)selectedTab=3;
+            else if(selected=="sawmill" || selected=="barracks" ||
+                    selected=="upgrade-barracks" || selected=="granary" ||
+                    selected=="stoneworks")selectedTab=1;
+            else if(selected=="bastion")selectedTab=0;
+            if(created)RenderNow();
+        }
+
+        // The actual scene mode changes which Unity camera is enabled.
+        // Both cameras must render our NEW UI layer, including on real devices,
+        // not only when a native capture temporarily modifies cullingMask.
+        void SyncLiveCamera()
+        {
+            if(!host||!canvas)return;
+            var active=host.PlayerCamera;
+            if(!active)return;
+            if(!originalCameraMasks.ContainsKey(active))
+                originalCameraMasks.Add(active,active.cullingMask);
+            active.cullingMask|=1<<5;
+            if(canvas.worldCamera!=active)canvas.worldCamera=active;
+        }
+
         public void SelectBuilding(string id)
         {
             if(!host)return;
@@ -287,15 +324,16 @@ namespace Eldoria.BreachWatch
             if(!host)return;
             switch(index)
             {
-                case 0:SelectBuilding("bastion");break;
+                case 0:selectedTab=0;SelectBuilding("bastion");break;
                 case 1:
+                    selectedTab=1;
                     var s=host.Read("",host.English);
                     SelectBuilding(s.BastionLevel<2?"sawmill":s.BastionLevel<3?"barracks":"bastion");break;
                 case 3:
                     if(host.CanOpen(RoyalSection.World))
-                    {host.Open(RoyalSection.World);SelectBuilding("");}
+                    {selectedTab=3;host.Open(RoyalSection.World);SelectBuilding("");SyncLiveCamera();}
                     break;
-                case 4:fullObjective=!fullObjective;Reflow(lastWidth,lastHeight);RenderNow();break;
+                case 4:selectedTab=4;fullObjective=!fullObjective;Reflow(lastWidth,lastHeight);RenderNow();break;
                 // Unidades is deliberately noninteractive in this first-screen proof:
                 // do not silently open an old UI panel or claim the route is ported.
             }
@@ -303,6 +341,7 @@ namespace Eldoria.BreachWatch
         void LateUpdate()
         {
             if(!created||!host)return;
+            SyncLiveCamera();
             if(lastWidth!=Screen.width||lastHeight!=Screen.height)Reflow(Screen.width,Screen.height);
             if(Time.unscaledTime<nextRefresh)return;
             nextRefresh=Time.unscaledTime+.25f;RenderNow();
@@ -481,6 +520,9 @@ namespace Eldoria.BreachWatch
                 // the future independent Unidades screen remains explicitly disabled.
                 for(int i=0;i<5;i++)
                 {
+                    navPlates[i].Type=i==(host.InWorld?3:selectedTab)
+                        ?BreachWatchPlate.PlateType.Selected
+                        :BreachWatchPlate.PlateType.Navigation;
                     bool allowed=i!=2&&(i!=3||host.CanOpen(RoyalSection.World));
                     navButtons[i].interactable=allowed;
                     var icon=navButtons[i].GetComponentInChildren<BreachWatchGlyph>();
@@ -528,6 +570,10 @@ namespace Eldoria.BreachWatch
 
         void OnDestroy()
         {
+            if(host && host.Hud)host.Hud.SelectionChanged-=OnCanonicalSelection;
+            foreach(var entry in originalCameraMasks)
+                if(entry.Key && (entry.Value & (1<<5))==0)
+                    entry.Key.cullingMask &= ~(1<<5);
             if(host && host.City && host.City.Presenter)
                 host.City.Presenter.ExternalPointerBlocked=priorPointerBlocker;
             if(legacyCanvas)legacyCanvas.enabled=originalCanvas;
