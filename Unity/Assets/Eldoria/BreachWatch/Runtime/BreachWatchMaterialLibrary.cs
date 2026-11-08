@@ -95,7 +95,7 @@ namespace Eldoria.BreachWatch
 
         static Sprite Author(BreachWatchPlate.PlateType kind)
         {
-            bool emblem=kind==BreachWatchPlate.PlateType.Selected;
+            bool emblem=kind==BreachWatchPlate.PlateType.Selected || kind==BreachWatchPlate.PlateType.Navigation;
             bool resource=kind==BreachWatchPlate.PlateType.Resource;
             bool action=kind==BreachWatchPlate.PlateType.Action;
             bool inactive=kind==BreachWatchPlate.PlateType.Dangerous;
@@ -241,6 +241,19 @@ namespace Eldoria.BreachWatch
         public static Sprite For(BreachWatchPlate.PlateType type)
         {
             if(Cache.TryGetValue(type,out var sprite) && sprite) return sprite;
+            // Original independently sourced art; no RoyalHUD/Forja textures.
+            // Always fall back to the first-party mineral material if one
+            // optional research asset is absent during a source-only build.
+            string sourceName = type==BreachWatchPlate.PlateType.Navigation ||
+                type==BreachWatchPlate.PlateType.Selected ? "nav_sculpted_medallion" :
+                type==BreachWatchPlate.PlateType.Portrait ? "portrait_forged_iron" :
+                type==BreachWatchPlate.PlateType.Banner ? "valoria_burgundy_banner" :
+                type==BreachWatchPlate.PlateType.Action ? "action_antique_bronze" : null;
+            if(!string.IsNullOrEmpty(sourceName))
+            {
+                sprite=Resources.Load<Sprite>("VigiliaArt/"+sourceName);
+                if(sprite){Cache[type]=sprite;return sprite;}
+            }
             sprite=Author(type);Cache[type]=sprite;return sprite;
         }
     }
