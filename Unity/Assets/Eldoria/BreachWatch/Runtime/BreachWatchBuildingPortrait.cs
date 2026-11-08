@@ -154,7 +154,7 @@ namespace Eldoria.BreachWatch
                 var light=keyLight.GetComponent<Light>();
                 light.type=LightType.Directional;
                 light.cullingMask=1<<PreviewLayer;
-                light.intensity=1.25f;
+                light.intensity=.93f;
                 light.color=new Color(1f,.86f,.72f);
                 light.shadows=LightShadows.None;
                 keyLight.transform.rotation=Quaternion.Euler(50,-38,0);
@@ -171,7 +171,7 @@ namespace Eldoria.BreachWatch
                 portraitCamera.useOcclusionCulling=false;
                 portraitCamera.enabled=false;
                 portraitCamera.clearFlags=CameraClearFlags.SolidColor;
-                portraitCamera.backgroundColor=new Color(.07f,.078f,.084f,1);
+                portraitCamera.backgroundColor=new Color(.14f,.135f,.115f,1);
                 portraitCamera.cullingMask=1<<PreviewLayer;
                 portraitCamera.allowHDR=false;
                 portraitCamera.aspect=texture.width/(float)texture.height;
@@ -193,7 +193,7 @@ namespace Eldoria.BreachWatch
                     maxY=Mathf.Max(maxY,Mathf.Abs(Vector3.Dot(local,up)));
                 }
                 portraitCamera.orthographicSize=Mathf.Max(.5f,
-                    Mathf.Max(maxY,maxX/portraitCamera.aspect)*1.20f);
+                    Mathf.Max(maxY,maxX/portraitCamera.aspect)*.83f);
                 portraitCamera.nearClipPlane=.1f;
                 portraitCamera.farClipPlane=1000;
                 portraitCamera.transform.position=copiedBounds.center -
