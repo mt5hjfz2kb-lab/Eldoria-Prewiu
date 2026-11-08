@@ -113,6 +113,57 @@ namespace Eldoria.DailyTreasures.Editor
         static Button FindButton(Component component,string name)
             =>component.GetComponentsInChildren<Button>(true)
                 .Single(x=>x.name==name);
+        static RectTransform FindRect(Component component,string name)
+            =>component.GetComponentsInChildren<RectTransform>(true)
+                .Single(x=>x.name==name);
+
+        static void VerifyGenuineSceneComposition(
+            DailyTreasurePanel panel,string eventId,int width,int height)
+        {
+            var expected=DailyTreasureStageDirection.Compose(eventId,width,height);
+            Need(panel.ActiveMilestoneStage==expected.Kind,
+                "Real event is presented with the wrong category art/layout");
+            var painted=FindRect(panel,
+                "Genuine Eldoria milestone scenery / visual only");
+            var chest=FindRect(panel,"Authored chest / opened");
+            var receipt=FindRect(panel,"Confirmed received items");
+            var banner=FindRect(panel,
+                "Milestone heraldic event banner / visual only");
+            Need(banner.gameObject.activeInHierarchy,
+                "Original event-specific heraldic banner is hidden");
+            Need(Mathf.Abs(painted.anchoredPosition.x-expected.SceneX)<1.1f &&
+                 Mathf.Abs(painted.anchoredPosition.y-expected.SceneY)<1.1f &&
+                 Mathf.Abs(painted.rect.width-expected.SceneW)<1.1f &&
+                 Mathf.Abs(painted.rect.height-expected.SceneH)<1.1f,
+                 "Wrong native painterly scene size/position for "+
+                 expected.Kind);
+            Need(Mathf.Abs(chest.anchoredPosition.x-expected.ChestX)<1.1f &&
+                 Mathf.Abs(chest.anchoredPosition.y-expected.ChestY)<1.1f &&
+                 Mathf.Abs(chest.rect.width-expected.ChestW)<1.1f &&
+                 Mathf.Abs(chest.rect.height-expected.ChestH)<1.1f,
+                 "Original premium coffer lost event-specific composition for "+
+                 expected.Kind);
+            Need(Mathf.Abs(receipt.anchoredPosition.x-expected.ReceiptX)<1.1f &&
+                 Mathf.Abs(receipt.anchoredPosition.y-expected.ReceiptY)<1.1f &&
+                 Mathf.Abs(receipt.rect.width-expected.ReceiptW)<1.1f &&
+                 Mathf.Abs(receipt.rect.height-expected.ReceiptH)<1.1f,
+                 "Actual event report is not placed legibly below chest");
+            var screen=FindRect(panel,"Tributo de los siete días / modal");
+            var backdrop=screen.GetComponent<Image>();
+            Need(backdrop &&
+                 Mathf.Abs(backdrop.color.a-expected.BackdropOpacity)<.03f,
+                "The Bastion city / event stage is too opaque or too faint");
+            if(expected.SideBySide)
+                Need(painted.anchoredPosition.x+painted.rect.width*.5f+7f<=
+                     chest.anchoredPosition.x-chest.rect.width*.5f,
+                     "Real native landscape art is obscured by the reward chest");
+            else if(expected.Kind==DailyTreasureStageKind.Bastion)
+                Need(!panel.HasMilestoneScenery,
+                    "Do not disguise a Bastion level by painting a fake city");
+            else
+                Need(panel.HasMilestoneScenery,
+                    "Original real Eldoria artwork does not appear behind chest");
+        }
         static void ClickAtNativeScreenPosition(Canvas canvas,EventSystem events,
             Camera camera,Button button,int width,int height)
         {
@@ -471,6 +522,9 @@ namespace Eldoria.DailyTreasures.Editor
                                   panel.MilestoneSceneryKey==requiredScenery[style]),
                                 "Wrong or absent original painterly milestone scenery: "+
                                 styleIds[style]);
+                            Canvas.ForceUpdateCanvases();
+                            VerifyGenuineSceneComposition(
+                                panel,styleIds[style],width,height);
                             panel.SampleForNativeEvidence(
                                 DailyTreasureRevealTimeline.RevealPeakSeconds);
                             Canvas.ForceUpdateCanvases();
