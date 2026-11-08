@@ -1258,8 +1258,12 @@ namespace Eldoria.DailyTreasures
                 nextMilestonePoll=Time.unscaledTime+.65f;
                 milestoneQueue.Observe(gateway.Snapshot());
                 // Never interrupt a tutorial, building selection, paid chest
-                // reveal or another room. Defer genuine new milestones.
-                if(!suppressed && !IsOpen &&
+                // reveal or another room. In particular, Lyra's native
+                // HeroesApprovedDestination introduction owns her genuine
+                // character geometry; our reward coffer must NOT cover it.
+                bool heroIntroductionActive=
+                    GameObject.Find("Heroes / canonical destination")!=null;
+                if(!suppressed && !IsOpen && !heroIntroductionActive &&
                     milestoneQueue.TryPeek(out var milestone) &&
                     PresentCommittedMilestone(milestone.Title,milestone.Detail,
                         legendary:milestone.Legendary,eventId:milestone.EventId))
