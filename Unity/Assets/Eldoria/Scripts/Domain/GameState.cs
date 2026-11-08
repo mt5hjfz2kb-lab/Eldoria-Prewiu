@@ -231,6 +231,8 @@ namespace Eldoria.Domain
         public BastionThreeState ChapterThree = new BastionThreeState();
         // Additive optional progress: old schema-one saves initialize on load.
         public EarlyRetentionState Retention = new EarlyRetentionState();
+        // Opt-in daily rewards, stored in the existing authoritative save.
+        public DailyTreasureState DailyTreasures = new DailyTreasureState();
         public int BastionLevel = 1;
         public int MissionPower;
         public int SawmillLevel;
