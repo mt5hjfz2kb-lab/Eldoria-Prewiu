@@ -46,9 +46,6 @@ def run():
               f"{width}x{height}",f"zoom_factor={zoom_factor:.3f}",
               f"predicted_relative_castle_width={predicted:.3f}")
     assert "PortraitCityFramed" in hud
-    assert "CityComposition" not in Path(
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs"
-    ).name or True
     print("Requires real Unity render: terrain clamps, castle screen bounds and user-visible art")
 
 if __name__=="__main__":
