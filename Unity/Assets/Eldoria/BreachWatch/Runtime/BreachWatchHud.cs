@@ -125,20 +125,24 @@ namespace Eldoria.BreachWatch
                 return true;
             }
         }
-        public bool UsesOriginalForgedPortraitFrame =>
+        public bool UsesPremiumForgedPortraitFrame =>
             portraitFrame && portraitFrame.GetComponent<BreachWatchPlate>() &&
             portraitFrame.GetComponent<BreachWatchPlate>().sprite &&
-            portraitFrame.GetComponent<BreachWatchPlate>().sprite.name=="portrait_forged_iron";
-        public bool UsesOwnerApprovedCarvedContext
+            portraitFrame.GetComponent<BreachWatchPlate>().sprite.name=="brass_portrait" &&
+            portraitFrame.GetComponent<BreachWatchPlate>().type==Image.Type.Sliced;
+        public bool UsesPremiumCarvedContext
         {
             get
             {
                 var surface=panel?panel.GetComponent<BreachWatchPlate>():null;
-                return surface && surface.UsesOwnerReference && surface.sprite &&
-                    surface.sprite.name=="carved_context" &&
+                return surface && surface.sprite && surface.sprite.name=="basalt_context" &&
                     surface.type==Image.Type.Sliced;
             }
         }
+        public bool UsesPremiumBurgundyAction =>
+            actionPlate && actionPlate.sprite &&
+            actionPlate.sprite.name=="burgundy_action" &&
+            actionPlate.type==Image.Type.Sliced;
         public IReadOnlyList<Button> NavButtons => navButtons;
 
         public static BreachWatchHud Install(ValoriaIntegratedWorld source)
@@ -351,15 +355,17 @@ namespace Eldoria.BreachWatch
             }
             panel=Rect("Independent selected-building cartouche",uiRoot);
             var basalt=Plate(panel,BreachWatchPlate.PlateType.Basalt);
-            var approvedFrame=Resources.Load<Sprite>("VigiliaArt/OwnerReference/carved_context");
-            if(approvedFrame)basalt.ApplyIndependentArt(approvedFrame,true);
-            // The original artwork contains an irregular see-through center.
-            // Make live text entirely readable on a separate dark mineral
-            // surface, while preserving the approved carved outer border.
-            var opaqueWell=Rect("Dense original slate ink / readable live data",panel);
-            Fill(opaqueWell,12);
-            var ink=opaqueWell.gameObject.AddComponent<BreachWatchPanelInk>();
-            ink.raycastTarget=false;
+            var premiumStone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/basalt_context");
+            if(premiumStone)basalt.ApplyIndependentArt(premiumStone,true);
+            else
+            {
+                // Safe readable fallback only; native quality gate explicitly
+                // rejects missing premium surface artwork.
+                var opaqueWell=Rect("Fallback opaque slate ink",panel);
+                Fill(opaqueWell,12);
+                var ink=opaqueWell.gameObject.AddComponent<BreachWatchPanelInk>();
+                ink.raycastTarget=false;
+            }
             // Three-dimensional, resolution-independent fine gold metalwork
             // is a separate original Graphic, never a skin over RoyalHUD.
             var engravingRect=Rect("Original gilded Breach engraving",panel);
@@ -367,9 +373,11 @@ namespace Eldoria.BreachWatch
             var engraving=engravingRect.gameObject.AddComponent<BreachWatchFrameEngraving>();
             engraving.raycastTarget=false;
             portraitFrame=Rect("Carved recess / live building illustration",panel);
-            Plate(portraitFrame,BreachWatchPlate.PlateType.Portrait);
+            var brassFrame=Plate(portraitFrame,BreachWatchPlate.PlateType.Portrait);
+            var premiumBrass=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/brass_portrait");
+            if(premiumBrass)brassFrame.ApplyIndependentArt(premiumBrass,true);
             var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
-            Fill(liveView,8);
+            Fill(liveView,12);
             portraitView=liveView.gameObject.AddComponent<RawImage>();
             portraitView.color=Color.white;
             portraitView.raycastTarget=false;
@@ -401,6 +409,8 @@ namespace Eldoria.BreachWatch
             closeButton=closeRect.GetComponent<Button>();
             var actionRect=Rect("Original gameplay action / new presentation",panel);
             actionPlate=Plate(actionRect,BreachWatchPlate.PlateType.Action);
+            var premiumButton=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/burgundy_action");
+            if(premiumButton)actionPlate.ApplyIndependentArt(premiumButton,true);
             actionButton=Button(actionRect,SubmitSelectedBuilding);
             var actionPalette=actionButton.colors;
             actionPalette.disabledColor=new Color(.83f,.77f,.69f,1f);
