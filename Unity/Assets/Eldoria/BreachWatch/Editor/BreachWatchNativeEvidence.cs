@@ -187,23 +187,59 @@ namespace Eldoria.BreachWatch.Editor
                 camera.Render(); camera.Render();
                 var eventSystem = EventSystem.current;
                 Need(eventSystem, "Real Unity EventSystem missing");
-                Vector3[] corners = new Vector3[4];
-                ((RectTransform)target.transform).GetWorldCorners(corners);
-                var pos = RectTransformUtility.WorldToScreenPoint(camera,(corners[0]+corners[2])*.5f);
-                var e = new PointerEventData(eventSystem) { position = pos,
-                    pointerId = -1, button = PointerEventData.InputButton.Left };
-                var hits = new List<RaycastResult>();
-                ui.NativeCanvas.GetComponent<GraphicRaycaster>().Raycast(e,hits);
-                Need(hits.Count>0 && hits[0].gameObject.transform.IsChildOf(target.transform),
-                    "New native pointer hit-test failed: first raycast target is not REINO");
-                Need(host.City.Presenter.ExternalPointerBlocked!=null &&
-                     host.City.Presenter.ExternalPointerBlocked(pos),
-                     "New HUD pointer penetrates to the city camera/world behind a real button");
-                ExecuteEvents.Execute(target.gameObject,e,ExecuteEvents.pointerDownHandler);
-                ExecuteEvents.Execute(target.gameObject,e,ExecuteEvents.pointerUpHandler);
-                ExecuteEvents.Execute(target.gameObject,e,ExecuteEvents.pointerClickHandler);
-                Need(ui.SelectedBuildingId == "bastion", "REAL UI pointer could not select Bastion");
-                pointerClicks++;
+                // Test actual Unity raycast, pointer down/up/click and world
+                // gesture interception for each supported gameplay destination.
+                // Button.onClick.Invoke alone cannot prove touch functionality.
+                void ClickAsPlayer(Button button,string label)
+                {
+                    Need(button && button.gameObject.activeInHierarchy &&
+                         button.interactable,"Missing active native destination "+label);
+                    Canvas.ForceUpdateCanvases();
+                    var corners=new Vector3[4];
+                    ((RectTransform)button.transform).GetWorldCorners(corners);
+                    var pos=RectTransformUtility.WorldToScreenPoint(camera,
+                        (corners[0]+corners[2])*.5f);
+                    var e=new PointerEventData(eventSystem) {
+                        position=pos,pointerId=-1,
+                        button=PointerEventData.InputButton.Left
+                    };
+                    var hits=new List<RaycastResult>();
+                    ui.NativeCanvas.GetComponent<GraphicRaycaster>().Raycast(e,hits);
+                    Need(hits.Count>0 &&
+                         hits[0].gameObject.transform.IsChildOf(button.transform),
+                         "Player cannot touch native "+label+" at its visible center");
+                    Need(host.City.Presenter.ExternalPointerBlocked!=null &&
+                         host.City.Presenter.ExternalPointerBlocked(pos),
+                         "Native "+label+" taps penetrate the city behind the UI");
+                    ExecuteEvents.Execute(button.gameObject,e,ExecuteEvents.pointerDownHandler);
+                    ExecuteEvents.Execute(button.gameObject,e,ExecuteEvents.pointerUpHandler);
+                    ExecuteEvents.Execute(button.gameObject,e,ExecuteEvents.pointerClickHandler);
+                    pointerClicks++;
+                }
+
+                ClickAsPlayer(target,"REINO");
+                Need(ui.SelectedBuildingId=="bastion",
+                    "REAL pointer to Reino could not open Bastion");
+                ClickAsPlayer(ui.BuildingClose,"CERRAR BASTIÓN");
+                Need(ui.SelectedBuildingId=="" &&
+                     !ui.BuildingPanel.gameObject.activeInHierarchy,
+                     "Real native close touch did not dismiss the live Bastion card");
+                ClickAsPlayer(ui.NavButtons[1],"RECURSOS");
+                Need(ui.SelectedBuildingId=="sawmill" &&
+                     ui.CurrentSnapshot?.Building?.Id=="sawmill",
+                     "RECURSOS medallion failed to select the live sawmill");
+                ui.SelectBuilding("");
+                var objectiveButton=ui.GetComponentsInChildren<Button>(true)
+                    .FirstOrDefault(q=>q && q.name=="Chapter side tablet");
+                Need(objectiveButton,"Native objective tablet is not a real Button");
+                var objectiveRect=(RectTransform)objectiveButton.transform;
+                float collapsedHeight=objectiveRect.rect.height;
+                ClickAsPlayer(objectiveButton,"OBJETIVO");
+                Need(objectiveRect.rect.height>collapsedHeight+10f,
+                    "Player could not expand the real chapter objective");
+                ClickAsPlayer(objectiveButton,"CERRAR OBJETIVO");
+                Need(objectiveRect.rect.height<collapsedHeight+2f,
+                    "Expanded chapter objective did not return to compact HUD");
             }
             finally
             {
