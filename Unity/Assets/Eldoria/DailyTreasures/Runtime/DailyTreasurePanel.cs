@@ -83,7 +83,7 @@ namespace Eldoria.DailyTreasures
         bool chestReward,chimePlayed;
         DailyTreasureCeremonyTier ceremonyTier=DailyTreasureCeremonyTier.Special;
         AudioSource originalSfx;
-        AudioClip chestKnock,chestChime;
+        AudioClip chestKnock,chestChime,chestGrandChime;
         readonly DailyTreasureMilestoneQueue milestoneQueue=
             new DailyTreasureMilestoneQueue();
         float nextMilestonePoll;
@@ -211,9 +211,14 @@ namespace Eldoria.DailyTreasures
         void Build()
         {
             originalSfx=gameObject.AddComponent<AudioSource>();
-            originalSfx.playOnAwake=false;originalSfx.spatialBlend=0f;originalSfx.volume=.27f;
-            chestKnock=MakeOriginalSound("Valoria / wooden lock",176f,.17f);
-            chestChime=MakeOriginalSound("Valoria / discovery chime",540f,.62f);
+            originalSfx.playOnAwake=false;originalSfx.spatialBlend=0f;
+            originalSfx.volume=.34f;
+            chestKnock=CreateFoleyClip("Valoria / iron and oak latch",
+                DailyTreasureFoleyCue.Latch);
+            chestChime=CreateFoleyClip("Valoria / bronze discovery",
+                DailyTreasureFoleyCue.Discovery);
+            chestGrandChime=CreateFoleyClip("Valoria / grand bronze ceremony",
+                DailyTreasureFoleyCue.GrandDiscovery);
             root=(RectTransform)transform;
             originalSafeArea=root.parent as RectTransform;
             // No second EventSystem, Canvas, save or navigation router.
@@ -398,33 +403,19 @@ namespace Eldoria.DailyTreasures
             visual.color=Color.white;
             return visual;
         }
-        static AudioClip MakeOriginalSound(string name,float frequency,float duration)
+        static AudioClip CreateFoleyClip(string name,DailyTreasureFoleyCue cue)
         {
-            // Low-memory original procedural foley, not a single arcade beep:
-            // brief wood/iron latch impulse followed by soft detuned bronze tones.
-            // Generated only once when the panel is instantiated.
-            const int rate=22050;
-            int count=Mathf.CeilToInt(rate*duration);
-            bool impact=frequency<300f;
-            var data=new float[count];
-            for(int i=0;i<count;i++)
+            // Original authored one-shot SFX, never music or externally copied
+            // sound. Pre-render once per panel; no DSP or buffer allocations
+            // in the animation frame loop.
+            const int rate=DailyTreasureFoley.SampleRate;
+            var data=DailyTreasureFoley.Render(cue,rate);
+            var clip=AudioClip.Create(name,data.Length,1,rate,false);
+            if(!clip.SetData(data,0))
             {
-                float t=i/(float)rate;
-                float attack=Mathf.Min(1f,t*750f);
-                float seed=Mathf.Sin((i+9)*78.233f)*43758.5453f;
-                float noise=Mathf.Repeat(seed,1f)*2f-1f;
-                float tone=impact
-                    ? Mathf.Sin(t*frequency*2f*Mathf.PI)*Mathf.Exp(-t*23f)+
-                      .32f*Mathf.Sin(t*frequency*.52f*2f*Mathf.PI)*Mathf.Exp(-t*16f)+
-                      noise*.20f*Mathf.Exp(-t*62f)
-                    : (Mathf.Sin(t*frequency*2f*Mathf.PI)+
-                       .36f*Mathf.Sin(t*frequency*1.51f*2f*Mathf.PI)+
-                       .15f*Mathf.Sin(t*frequency*2.07f*2f*Mathf.PI))*
-                       Mathf.Exp(-t*5.3f);
-                data[i]=Mathf.Clamp(tone*attack*(impact?.24f:.18f),-.80f,.80f);
+                DestroyOwned(clip);
+                return null;
             }
-            var clip=AudioClip.Create(name,count,1,rate,false);
-            clip.SetData(data,0);
             return clip;
         }
         void CreateGlow()
@@ -460,6 +451,7 @@ namespace Eldoria.DailyTreasures
             DestroyOwned(glowTexture);
             DestroyOwned(chestKnock);
             DestroyOwned(chestChime);
+            DestroyOwned(chestGrandChime);
         }
         public void Open()
         {
@@ -1113,8 +1105,12 @@ namespace Eldoria.DailyTreasures
             if(elapsed>=DailyTreasureRevealTimeline.RevealPeakSeconds && !chimePlayed)
             {
                 chimePlayed=true;
-                if(Application.isPlaying && originalSfx && chestChime)
-                    originalSfx.PlayOneShot(chestChime);
+                if(Application.isPlaying && originalSfx)
+                {
+                    var cue=ceremonyTier==DailyTreasureCeremonyTier.Legendary?
+                        chestGrandChime:chestChime;
+                    if(cue)originalSfx.PlayOneShot(cue);
+                }
             }
             var frame=PaintCeremonyFrame(elapsed);
             if(frame.Finished)ShowResult();
