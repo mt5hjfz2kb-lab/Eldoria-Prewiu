@@ -60,6 +60,7 @@ namespace Eldoria.BreachWatch
         int lastWidth=-1,lastHeight=-1;
         Rect lastSafeArea=Rect.zero;
         float nextRefresh;
+        float feedbackUntil;
         bool created;
         RoyalSnapshot snapshot;
         readonly string[] navLabels = {"REINO", "RECURSOS", "EJÉRCITO", "EXPLORAR", "HÉROES"};
@@ -82,6 +83,7 @@ namespace Eldoria.BreachWatch
         public bool HasLiveBuildingPortrait => buildingPortrait && buildingPortrait.HasLiveBuilding;
         public bool BuildingPortraitEdgeClipped =>
             buildingPortrait && buildingPortrait.PortraitGeometryClipped;
+        public string LastFeedback => feedback?feedback.text:"";
         public bool BuildingPortraitExclusive => buildingPortrait && buildingPortrait.RenderedFromIsolatedRealMeshes;
         public float BuildingPortraitDrawnFraction => buildingPortrait ? buildingPortrait.NonBackgroundPixelFraction : 0f;
         public bool HasNativePremiumTypography =>
@@ -519,6 +521,10 @@ namespace Eldoria.BreachWatch
             var premiumButton=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/burgundy_action");
             if(premiumButton)actionPlate.ApplyIndependentArt(premiumButton,true);
             actionButton=Button(actionRect,SubmitSelectedBuilding);
+            // A blocked button retains native pointer raycasts so players
+            // can read the REAL requirement from RoyalAction.Reason.
+            var explanation=actionRect.gameObject.AddComponent<BreachWatchUnavailableActionHint>();
+            explanation.Initialize(this,actionButton);
             var actionPalette=actionButton.colors;
             actionPalette.disabledColor=new Color(.83f,.77f,.69f,1f);
             actionButton.colors=actionPalette;
@@ -553,10 +559,28 @@ namespace Eldoria.BreachWatch
             feedback=Label(uiRoot,"Action feedback / live or disabled",15,TextAnchor.MiddleCenter,Copper);
             feedback.text="";
         }
-        void SetFeedback(string value){if(feedback)feedback.text=value;}
+        void SetFeedback(string value)
+        {
+            if(feedback)feedback.text=value??"";
+            feedbackUntil=string.IsNullOrWhiteSpace(value)?0f:Time.unscaledTime+4.0f;
+        }
+        public void ExplainUnavailableAction()
+        {
+            var b=snapshot?.Building;
+            if(b==null || actionButton.interactable)return;
+            string reason=b.Action?.Reason??"";
+            if(string.IsNullOrWhiteSpace(reason))
+                reason=b.OperationActive
+                    ? (host.English?"Operation in progress":"Operación en curso")
+                    : (host.English?"Action unavailable":"Acción no disponible");
+            // Remove formatting breaks only, never invent different
+            // mechanics, costs or requirements.
+            SetFeedback(reason.Replace("\r"," ").Replace("\n"," "));
+        }
         void OnCanonicalSelection(string id)
         {
             selected=id??"";
+            SetFeedback("");
             if(host && host.InWorld)selectedTab=3;
             else if(selected=="sawmill" || selected=="barracks" ||
                     selected=="upgrade-barracks" || selected=="granary" ||
@@ -583,6 +607,7 @@ namespace Eldoria.BreachWatch
         {
             if(!host)return;
             selected=id??"";
+            SetFeedback("");
             // Reuse ONLY the existing real selection command and route, not UI.
             host.Hud.SelectBuilding(selected);
             RenderNow();
@@ -633,6 +658,8 @@ namespace Eldoria.BreachWatch
         void LateUpdate()
         {
             if(!created||!host)return;
+            if(feedbackUntil>0f && Time.unscaledTime>=feedbackUntil)
+                SetFeedback("");
             SyncLiveCamera();
             if(lastWidth!=Screen.width||lastHeight!=Screen.height||
                lastSafeArea!=Screen.safeArea)
