@@ -173,7 +173,7 @@ jobs:
           if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or $report.authoredSpritesImported -ne $true){
             throw 'Illustrated chest sprites not imported in Unity or not used in the native render'
           }
-          if($report.images -ne 44 -or $report.realGatewayClaims -ne 8 -or
+          if($report.images -ne 48 -or $report.realGatewayClaims -ne 8 -or
              $report.graphicalPointerHits -ne 56 -or
              $report.visualOnlyMilestoneCaptures -ne 16){
             throw 'Actual Unity or player-interaction proof is incomplete'
@@ -182,20 +182,24 @@ jobs:
           if($report.artApproved -ne $false -or $report.fullSceneVerified -ne $false -or $report.iosVerified -ne $false){
             throw 'Component test may not claim artistic, gameplay or physical-device approval'
           }
-          if(@($report.shots).Count -ne 44){throw 'Native evidence missing 28 paid rewards plus 16 visual-only style hashes'}
+          if(@($report.shots).Count -ne 48){throw 'Native evidence missing four genuine HUD entries, 28 paid-day views and 16 visual-only styles'}
           $seen=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
           foreach($size in @(@(1600,900),@(900,1600),@(844,390),@(390,844))){
             $width=[int]$size[0];$height=[int]$size[1]
-            foreach($variant in @('calendar','closed','opening','opened','special-day4-calendar','special-day4-opening','special-day4-received')){
+            foreach($variant in @('hud-entry','calendar','closed','opening','opened','special-day4-calendar','special-day4-opening','special-day4-received')){
               $name="real-unity-daily-$variant-${width}x$height.png"
               $matches=@($report.shots | Where-Object {$_.file -ceq $name})
               if($matches.Count -ne 1 -or -not $seen.Add($name)){
                 throw "Missing/duplicate screenshot in native report: $name"
               }
               $item=$matches[0]
+              $entryOnly=($variant -eq 'hud-entry')
               if($item.width -ne $width -or $item.height -ne $height -or
-                 $item.nativeCanvas -ne $true -or $item.coversReward -ne $true -or
-                 $item.preserved -ne $true){throw "Incorrect native capture metadata: $name"}
+                 $item.nativeCanvas -ne $true -or
+                 $item.coversReward -ne (!$entryOnly) -or
+                 $item.preserved -ne (!$entryOnly)){
+                 throw "Incorrect native HUD or paid reward screenshot metadata: $name"
+              }
               $path=Join-Path $env:OUT $name
               if(-not(Test-Path $path)){throw "Missing Unity PNG $name"}
               $data=[IO.File]::ReadAllBytes($path)
@@ -254,8 +258,8 @@ jobs:
               }
             }
           }
-          if($seen.Count -ne 44 -or @(Get-ChildItem -Path $env:OUT -File -Filter '*.png').Count -ne 44){
-            throw 'Required 28 genuine paid-day + 16 visual-only milestone PNG captures'
+          if($seen.Count -ne 48 -or @(Get-ChildItem -Path $env:OUT -File -Filter '*.png').Count -ne 48){
+            throw 'Required four unclaimed HUD + 28 actual paid-day + 16 visual-only milestone PNG captures'
           }
           Write-Host 'PASS original native component captures, NOT FULL GAME / ART APPROVAL'
       - name: Preserve real Unity screenshots and error log even when test fails
