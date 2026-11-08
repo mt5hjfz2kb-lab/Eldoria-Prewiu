@@ -682,9 +682,9 @@ namespace Eldoria.BreachWatch
                     resourceAmounts[i].fontSize=14;
                 }
 
-                At(centerMark,w*.52f-56,84,112,30);
+                At(centerMark,w*.52f-56,74,112,30);
                 float missionWidth=Mathf.Min(182f,w*.45f);
-                At(objective,margin,125,missionWidth,fullObjective?108f:80f);
+                At(objective,margin,95,missionWidth,fullObjective?108f:80f);
                 At(chapterName.rectTransform,31,5,missionWidth-35,20);
                 At(chapterObjective.rectTransform,13,24,missionWidth-22,fullObjective?59:31);
                 At(chapterProgress.rectTransform,13,fullObjective?83:55,missionWidth-22,18);
