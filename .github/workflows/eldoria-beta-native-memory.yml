@@ -1,4 +1,5 @@
 name: Eldoria compact terrain native parity and WebGL
+# Resume verified isolated inputs after Unity Application namespace correction.
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
