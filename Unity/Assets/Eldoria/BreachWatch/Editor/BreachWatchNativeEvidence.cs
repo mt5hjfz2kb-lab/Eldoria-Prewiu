@@ -491,11 +491,11 @@ namespace Eldoria.BreachWatch.Editor
                     // Bastion at approx one third of physical phone width
                     // with the gate/bridge/river visible below. The old
                     // real 390x844 screen was a giant 70% castle close-up.
-                    Need(castleViewportWidth>.17f && castleViewportWidth<.62f,
+                    Need(castleViewportWidth>.22f && castleViewportWidth<.49f,
                          "Owner reference lost: Bastion still too large or invisible "+
                          name+" castle width="+castleViewportWidth.ToString("F3"));
-                    Need(castleViewportX>.32f && castleViewportX<.80f &&
-                         castleViewportY>.48f && castleViewportY<.88f,
+                    Need(castleViewportX>.47f && castleViewportX<.69f &&
+                         castleViewportY>.60f && castleViewportY<.84f,
                          "Real city portrait camera no longer frames the castle "+
                          name+" center="+center);
                     Debug.Log("BREACHWATCH_APPROVED_CITY_COMPOSITION "+name+
