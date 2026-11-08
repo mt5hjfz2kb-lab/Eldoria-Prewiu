@@ -351,6 +351,23 @@ namespace Eldoria.BreachWatch.Editor
                         " wanted="+label.preferredHeight.ToString("F1")+
                         " available="+label.rectTransform.rect.height.ToString("F1"));
                 }
+                // Verify that the authentic chapter progress is visible
+                // inside its carved tablet, not hidden behind the lower edge.
+                var realProgress=ui.GetComponentsInChildren<Text>(true)
+                    .FirstOrDefault(x=>x && x.name=="Objective progress");
+                Need(realProgress && realProgress.gameObject.activeInHierarchy &&
+                     realProgress.text==ui.CurrentSnapshot?.ObjectiveProgress &&
+                     !string.IsNullOrWhiteSpace(realProgress.text),
+                     "Real chapter completion fraction hidden or not bound: "+name);
+                var tablet=(RectTransform)realProgress.transform.parent;
+                var tabletCorners=new Vector3[4];
+                var progressCorners=new Vector3[4];
+                tablet.GetWorldCorners(tabletCorners);
+                realProgress.rectTransform.GetWorldCorners(progressCorners);
+                var tabletBottom=RectTransformUtility.WorldToScreenPoint(camera,tabletCorners[0]);
+                var progressBottom=RectTransformUtility.WorldToScreenPoint(camera,progressCorners[0]);
+                Need(progressBottom.y>=tabletBottom.y+3,
+                     "Real objective fraction is hidden by carved quest lower bevel: "+name);
                 if (selection=="bastion")
                 {
                     Need(ui.BuildingPanel.gameObject.activeInHierarchy &&
