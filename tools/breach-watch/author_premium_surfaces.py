@@ -145,15 +145,17 @@ def surface(name,d):
         (20,2,(130,86,51,255)),(23,1,(226,184,99,220))
     ])
     for inset,width,color in border_layers:
-        pts=corners(w,h,cut,inset)
+        pts=outline(inset)
         draw.line(pts+[pts[0]],fill=color,width=width,joint="curve")
     # Painted light from upper left, black contact shadow below
-    pts=corners(w,h,cut,9)
+    pts=outline(9)
     draw.line(pts[:3],fill=(255,217,131,225),width=2)
     draw.line(pts[3:7],fill=(23,12,8,255),width=3)
     # Copper corner pins and diamond signatures, fixed inside border
-    locations=[(cut+18,cut+14),(w-cut-18,cut+14),
-               (cut+18,h-cut-14),(w-cut-18,h-cut-14)]
+    locations=([(34,29),(w-79,29),(34,h-30),(w-79,h-30)]
+        if kind=="quest" else
+        [(cut+18,cut+14),(w-cut-18,cut+14),
+         (cut+18,h-cut-14),(w-cut-18,h-cut-14)])
     for i,(x,y) in enumerate(locations):
         draw.ellipse((x-6,y-6,x+6,y+6),fill=(17,13,12,255),
                      outline=(200,150,83,245),width=2)
@@ -211,7 +213,7 @@ def main():
         })
     (OUT/"manifest.json").write_text(json.dumps({
         "origin":"Original script-authored Vigilia surface artwork, owner's approved image is visual direction only",
-        "independent":"All four nine-slice sprites are new and no old HUD graphics are reused",
+        "independent":"All five nine-slice sprites are new and no old HUD graphics are reused",
         "not_native_screenshot":True,
         "art_approved":False,
         "sources":manifest
