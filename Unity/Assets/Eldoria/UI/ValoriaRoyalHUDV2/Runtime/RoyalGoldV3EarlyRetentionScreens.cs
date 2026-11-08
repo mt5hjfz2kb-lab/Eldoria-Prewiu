@@ -815,7 +815,8 @@ namespace Eldoria.UI.RoyalGold.V2
             // were committed by their existing gateway commands beforehand.
             if(ceremonyTitle!=null && dailyTreasures!=null)
                 dailyTreasures.PresentCommittedMilestone(
-                    ceremonyTitle,ceremonyResult);
+                    ceremonyTitle,ceremonyResult,
+                    legendary:kind=="VigilantBattle");
         }
         void ExecuteStage()
         {
