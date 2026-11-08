@@ -90,3 +90,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08 EXACT-HEAD native visual gate for new independent owner-approved gold contour and quiet slate compositing; require fresh 1600x900, 900x1600, 844x390, 390x844 PNG captures after commit b49518b57aa399bcee1465b3b1bde55e5b4d612c. Never substitute previous capture or HTML concept as current Unity evidence.
 
 2026-11-08 Actual native quality correction: approved gold finials are placed OUTSIDE live content, phone CTA shortened to truthful 'MEJORAR A II' only for Bastión 1 without changing backend command; original user-facing full label retained in other modes. Capture eight new images at SHA 7c0bf0d2d9872afbb7f7fa9f82aed7997ae283c9, evaluate title and primary button overlap, typography and gold finish.
+
+2026-11-08: Repair stale original premium nine-slice atlas that still includes the central diamond over live game buttons. Regenerate and commit the true no-center-ornament 4 sprites from tools/breach-watch/author_premium_surfaces.py, with manifest SHA and Unity meta. This is asset-authoring only; do not waste native Windows on pre-asset head. [vigilia-premium-surfaces]
