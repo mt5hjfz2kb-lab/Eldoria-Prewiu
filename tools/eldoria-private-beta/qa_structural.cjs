@@ -8,6 +8,16 @@ const fs=require('fs');
  const scale=Number(process.env.QA_DPR||3);
  const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-dev-shm-usage']});
  const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:scale});
+ await context.addInitScript(()=>{
+  window.__betaMemoryGrowth=[];
+  const original=WebAssembly.Memory.prototype.grow;
+  WebAssembly.Memory.prototype.grow=function(pages){
+   const entry={at:performance.now(),beforeBytes:this.buffer.byteLength,pages};
+   try {const result=original.call(this,pages);entry.afterBytes=this.buffer.byteLength;return result;}
+   catch(e){entry.error=String(e);throw e;}
+   finally{entry.durationMs=performance.now()-entry.at;if(window.__betaMemoryGrowth.length<128)window.__betaMemoryGrowth.push(entry);}
+  };
+ });
  const page=await context.newPage();
  const report={url,revision,deviceScaleFactor:scale,environment:'Chromium SwiftShader; NOT physical iPhone',passed:false,errors:[],logs:[],samples:[]};
  const write=stage=>{report.stage=stage;fs.writeFileSync(out+'/report.json',JSON.stringify(report,null,2));console.log(stage)};
@@ -45,6 +55,7 @@ const fs=require('fs');
   }
   report.runtimeErrors=report.logs.filter(s=>/not readable|Read.Write|Exception:|out of memory|Could not allocate|RuntimeError:/i.test(s));
   if(report.runtimeErrors.length)throw Error('Unity runtime errors');
+  report.memoryGrowth=await page.evaluate(()=>window.__betaMemoryGrowth);
   report.peakWasmCapacityBytes=Math.max(...report.samples.map(s=>s.wasmCapacityBytes));
   // Genuine rendered output remains a required gate; a working JS object is insufficient.
   await page.screenshot({path:out+'/welcome.png',timeout:20000});
