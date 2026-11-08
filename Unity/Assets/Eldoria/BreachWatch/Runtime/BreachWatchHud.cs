@@ -46,6 +46,7 @@ namespace Eldoria.BreachWatch
         RawImage portraitView;
         BreachWatchBuildingPortrait buildingPortrait;
         BreachWatchPlate actionPlate;
+        BreachWatchNavFiligree navFiligree;
         readonly Button[] navButtons = new Button[5];
         readonly BreachWatchPlate[] navPlates = new BreachWatchPlate[5];
         static readonly string[] ReferenceNavArt = {
@@ -386,8 +387,8 @@ namespace Eldoria.BreachWatch
             buttonRow=Rect("Five standalone stone navigation emblems",uiRoot);
             var navLine=Rect("Subtle sculpted copper linkwork / no bottom HUD bar",buttonRow);
             Fill(navLine);
-            var line=navLine.gameObject.AddComponent<BreachWatchNavFiligree>();
-            line.raycastTarget=false;
+            navFiligree=navLine.gameObject.AddComponent<BreachWatchNavFiligree>();
+            navFiligree.raycastTarget=false;
             for(int i=0;i<5;i++)
             {
                 int index=i;var rt=BuildButton(buttonRow,navLabels[i],navIcons[i],()=>Navigate(index),BreachWatchPlate.PlateType.Navigation);
@@ -574,6 +575,7 @@ namespace Eldoria.BreachWatch
                 float navWidth=5*navSize+4*navGap;
                 float navTop=h-100f;
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,64);
+                navFiligree.Configure(navSize+navGap,navSize);
                 for(int i=0;i<5;i++)
                     At((RectTransform)navButtons[i].transform,
                         i*(navSize+navGap),3,navSize,navSize);
@@ -646,6 +648,7 @@ namespace Eldoria.BreachWatch
                 float navWidth=5*navSize+4*navGap;
                 float navTop=h-78;
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,69);
+                navFiligree.Configure(navSize+navGap,navSize);
                 for(int i=0;i<5;i++)
                     At((RectTransform)navButtons[i].transform,
                         i*(navSize+navGap),3,navSize,navSize);
