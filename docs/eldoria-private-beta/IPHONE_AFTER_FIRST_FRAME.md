@@ -103,3 +103,12 @@ Independent preparation already checked:
 
 The public candidate3 link is unchanged. No new tester invitations, no false
 mobile PASS, no gameplay analytics collection, and no new owner retry yet.
+
+## Native input provenance and first execution, 2026-11-08 00:52 UTC
+
+The public candidate3 remains physically failing; no new mobile success is claimed.
+The already imported native project has frozen Git code 948ffa9837168a0b68dab80be76b66350422b23a plus 147 existing generated/normalized inputs (111158344 bytes), now path/hash pinned in tools/eldoria-private-beta/native/existing-input-audit.json. Generated Bastion III-V prefabs are required by the actual scene and absent from the frozen Git tree. Do not discard them or call this a clean Git-only source. The reversible native wrapper preserves these inputs, four source overlays, ProjectSettings and prior outputs; verifies hashes before execution and restoration afterwards.
+
+Actual Unity run 42431391139, source d5509a9cabd84fe13a6a9ed2b827bb1e92ec519d, executed the baseline, but the broad exception gate rejected an Editor Search indexing ArgumentOutOfRangeException. Its stack is UnityEditor.Search.SearchDatabase / SearchInit.IndexationOnStartup, not player code. Artifact 13598050201 (ZIP SHA256 86b1edd53ab213e968bae0e0e6e2e93adfb08624446a0dcd58f4c53490aa44e1) records failure and warm-cache-restoration.restored=true. No candidate compilation/build was certified. The exact Editor-only exception is now preserved separately in probe results; all other exceptions remain fatal. Repeat run 42431634641 uses source 67c0d4393f5f27d6c540b988beecc23e3fc0ac8e. Its result is pending.
+
+The parser also reports preexisting DepthB10/layer_index.json.meta malformed YAML during asset import. This is outside the startup overlay and must not be silently presented as a clean import. Native canonical and WebGL gates remain required.
