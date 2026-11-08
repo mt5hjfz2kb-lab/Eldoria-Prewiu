@@ -20,32 +20,34 @@ namespace Eldoria.DailyTreasures
         public static DailyTreasureCeremonyTheme ForEvent(string eventId,
             bool legendary)
         {
-            float strength=legendary?.43f:.29f;
+            // Bronze/charcoal is always the dominant identity. Environmental
+            // hints are subtle tints, never neon fairytale glows.
+            float strength=legendary?.33f:.22f;
             if(!string.IsNullOrEmpty(eventId))
             {
                 if(eventId.StartsWith("milestone:hero:lyra",
                     StringComparison.Ordinal))
                     return new DailyTreasureCeremonyTheme(
-                        .75f,.45f,.29f,strength,legendary);
+                        .73f,.47f,.33f,strength,legendary);
                 if(eventId.StartsWith("milestone:bastion:",
                     StringComparison.Ordinal))
                     return new DailyTreasureCeremonyTheme(
-                        .93f,.63f,.25f,strength,legendary);
+                        .84f,.63f,.35f,strength,legendary);
                 if(eventId.StartsWith("scout:",
                     StringComparison.Ordinal) ||
                    eventId.StartsWith("exploration:",
                     StringComparison.Ordinal))
                     return new DailyTreasureCeremonyTheme(
-                        .29f,.63f,.51f,strength,legendary);
+                        .45f,.56f,.43f,strength,legendary);
                 if(eventId.StartsWith("vigilant:",
                     StringComparison.Ordinal))
                     return new DailyTreasureCeremonyTheme(
-                        .53f,.39f,.78f,strength,legendary);
+                        .44f,.39f,.53f,strength,legendary);
             }
             // Daily chest and any unrecognized future event use the same
             // original bronze-and-amber reference, not an unknown color.
             return new DailyTreasureCeremonyTheme(
-                .99f,.71f,.32f,strength,legendary);
+                .92f,.70f,.40f,strength,legendary);
         }
     }
 }
