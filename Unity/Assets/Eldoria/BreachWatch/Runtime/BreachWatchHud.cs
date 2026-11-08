@@ -16,9 +16,9 @@ namespace Eldoria.BreachWatch
     public sealed class BreachWatchHud : MonoBehaviour
     {
         const string RootName = "VIGILIA / independent canvas";
-        static readonly Color TextIvory = new Color(.90f,.85f,.75f,1f);
-        static readonly Color Muted = new Color(.66f,.67f,.64f,1f);
-        static readonly Color Copper = new Color(.82f,.48f,.31f,1f);
+        static readonly Color TextIvory = new Color(.98f,.94f,.84f,1f);
+        static readonly Color Muted = new Color(.83f,.81f,.76f,1f);
+        static readonly Color Copper = new Color(.92f,.70f,.40f,1f);
         static readonly Color Locked = new Color(.38f,.39f,.39f,1f);
         ValoriaIntegratedWorld host;
         Canvas canvas;
@@ -261,7 +261,7 @@ namespace Eldoria.BreachWatch
             tint.normalColor=Color.white;
             tint.highlightedColor=new Color(1f,.94f,.85f,1f);
             tint.pressedColor=new Color(.73f,.69f,.65f,1f);
-            tint.disabledColor=new Color(.48f,.48f,.48f,1f);
+            tint.disabledColor=new Color(.84f,.79f,.71f,1f);
             tint.fadeDuration=.08f;
             b.colors=tint;
             if(graphic)b.targetGraphic=graphic;
@@ -353,6 +353,13 @@ namespace Eldoria.BreachWatch
             var basalt=Plate(panel,BreachWatchPlate.PlateType.Basalt);
             var approvedFrame=Resources.Load<Sprite>("VigiliaArt/OwnerReference/carved_context");
             if(approvedFrame)basalt.ApplyIndependentArt(approvedFrame,true);
+            // The original artwork contains an irregular see-through center.
+            // Make live text entirely readable on a separate dark mineral
+            // surface, while preserving the approved carved outer border.
+            var opaqueWell=Rect("Dense original slate ink / readable live data",panel);
+            Fill(opaqueWell,12);
+            var ink=opaqueWell.gameObject.AddComponent<BreachWatchPanelInk>();
+            ink.raycastTarget=false;
             // Three-dimensional, resolution-independent fine gold metalwork
             // is a separate original Graphic, never a skin over RoyalHUD.
             var engravingRect=Rect("Original gilded Breach engraving",panel);
@@ -369,10 +376,10 @@ namespace Eldoria.BreachWatch
             buildingPortrait=gameObject.AddComponent<BreachWatchBuildingPortrait>();
             buildingPortrait.Initialize(portraitView);
             var buildingSeal=Glyph(panel,"Building crest",BreachWatchGlyph.Sigil.Castle);
-            At((RectTransform)buildingSeal.transform,14,10,53,53);
+            At((RectTransform)buildingSeal.transform,14,14,36,36);
             buildingName=Label(panel,"Real building name",22,TextAnchor.MiddleLeft,TextIvory,true);
             buildingLevel=Label(panel,"Real building level",15,TextAnchor.MiddleLeft,Copper,true);
-            buildingFunction=Label(panel,"Real effects",17,TextAnchor.UpperLeft,Muted);
+            buildingFunction=Label(panel,"Real effects",17,TextAnchor.UpperLeft,TextIvory);
             costHeader=Label(panel,"Compact engraved cost heading",14,
                 TextAnchor.MiddleCenter,Copper,true);
             costHeader.text="COSTE DE LA MEJORA";
@@ -395,6 +402,9 @@ namespace Eldoria.BreachWatch
             var actionRect=Rect("Original gameplay action / new presentation",panel);
             actionPlate=Plate(actionRect,BreachWatchPlate.PlateType.Action);
             actionButton=Button(actionRect,SubmitSelectedBuilding);
+            var actionPalette=actionButton.colors;
+            actionPalette.disabledColor=new Color(.83f,.77f,.69f,1f);
+            actionButton.colors=actionPalette;
             actionPlate.raycastTarget=true;
             actionButton.targetGraphic=actionPlate;
             actionLabel=Label(actionButton.transform,"Real action title",17,TextAnchor.MiddleCenter,TextIvory,true);
@@ -600,8 +610,8 @@ namespace Eldoria.BreachWatch
                 float left=w-margin-pw;
                 float top=navTop-ph-45;
                 At(panel,left,top,pw,ph);
-                At(buildingName.rectTransform,50,7,pw-116,29);
-                At(buildingLevel.rectTransform,50,35,pw-116,19);
+                At(buildingName.rectTransform,58,7,pw-115,29);
+                At(buildingLevel.rectTransform,58,35,pw-115,19);
                 At(((RectTransform)closeButton.transform),pw-57,3,52,52);
                 At(portraitFrame,11,59,pw-22,81);
                 At(buildingFunction.rectTransform,13,143,pw-26,43);
@@ -672,8 +682,8 @@ namespace Eldoria.BreachWatch
                 float ph=Mathf.Min(365,h-174f);
                 float top=h<530f?75f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
-                At(buildingName.rectTransform,50,8,pw-117,31);
-                At(buildingLevel.rectTransform,50,37,pw-117,19);
+                At(buildingName.rectTransform,58,8,pw-115,31);
+                At(buildingLevel.rectTransform,58,37,pw-115,19);
                 At(((RectTransform)closeButton.transform),pw-57,3,52,52);
                 buildingName.fontSize=21;
                 buildingLevel.fontSize=15;
@@ -795,10 +805,12 @@ namespace Eldoria.BreachWatch
                     buildingState.text=CompactRealState(b.State,b.Time);
                     bool can=b.Action!=null && b.Action.Enabled && !b.OperationActive;
                     actionButton.interactable=can;
-                    actionPlate.Type=can?BreachWatchPlate.PlateType.Action:BreachWatchPlate.PlateType.Dangerous;
+                    // Preserve the premium copper CTA even when gameplay
+                    // legitimately blocks it; state/action binder stays honest.
+                    actionPlate.Type=BreachWatchPlate.PlateType.Action;
                     actionPlate.SetVerticesDirty();
                     actionLabel.text=b.Action==null?"SIN ACCIÓN":b.Action.Label;
-                    actionLabel.color=can?TextIvory:Locked;
+                    actionLabel.color=can?TextIvory:new Color(.91f,.85f,.72f,1f);
                 }
                 // Accurate labels, artwork and routes: realm/castle, resource/sack,
                 // army/swords, world/raven and heroes/helm. Only the genuine
@@ -820,7 +832,7 @@ namespace Eldoria.BreachWatch
                     var p=navPlates[i];
                     if(p)p.color=allowed
                         ? i==(host.InWorld?3:selectedTab)?new Color(1f,.86f,.77f):Color.white
-                        : new Color(.43f,.43f,.44f,.84f);
+                        : new Color(.86f,.83f,.77f,.97f);
                 }
             }
             catch(Exception e)
