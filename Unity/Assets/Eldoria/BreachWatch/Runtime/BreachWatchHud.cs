@@ -861,7 +861,15 @@ namespace Eldoria.BreachWatch
                 // The ornate objective tablet already bears the Breach seal.
                 // A 20-character subtitle broke into two lines on real
                 // 390px phones with Libre Baskerville; use true chapter only.
-                chapterName.text=snapshot.Chapter;
+                // Chapter I's story identity is the Breach. Display its
+                // compact subtitle without falsely altering the real chapter
+                // number, objective or progress supplied by the game gateway.
+                // Later bastions retain their real chapter string unchanged.
+                var realChapter=snapshot.Chapter??"";
+                bool chapterOne=host.City.Gateway.Snapshot().BastionLevel==1;
+                chapterName.text=chapterOne && realChapter.Length>0
+                    ? realChapter+(host.English?" / THE BREACH":" / LA BRECHA")
+                    : realChapter;
                 chapterObjective.text=snapshot.Objective;
                 chapterProgress.text=snapshot.ObjectiveProgress;
                 resourceAmounts[0].text=RoyalFormatting.Amount(snapshot.Wood);
