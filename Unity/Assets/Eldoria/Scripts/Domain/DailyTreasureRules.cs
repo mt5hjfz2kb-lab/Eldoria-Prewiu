@@ -43,6 +43,19 @@ namespace Eldoria.Domain
             return utcTicks/TimeSpan.TicksPerDay;
         }
 
+        // Player-facing reset countdown, independent of the device timezone.
+        // It displays the actual UTC claim rollover instead of inaccurately
+        // promising that rewards return at the player's local midnight.
+        // 1..1440 minutes, rounded upward so we never show 00:00 while locked.
+        public static int MinutesUntilNextUtcDay(long utcTicks)
+        {
+            if(utcTicks<0)throw new ArgumentOutOfRangeException(nameof(utcTicks));
+            long remaining=TimeSpan.TicksPerDay-
+                utcTicks%TimeSpan.TicksPerDay;
+            return (int)((remaining+TimeSpan.TicksPerMinute-1)/
+                TimeSpan.TicksPerMinute);
+        }
+
         public static bool CanClaim(DailyTreasureState state,long utcTicks)
         {
             if(state==null)return false;
