@@ -15,7 +15,9 @@ DESIGNS={
     "brass_portrait":dict(width=512,height=288,cut=20,seed=173019,kind="portrait",
                           border=(29,27,29,27),guid="9a20dba5e3aa4bff94654d1e8b0e9a32"),
     "slate_resource":dict(width=512,height=148,cut=13,seed=173020,kind="resource",
-                          border=(14,11,14,11),guid="90ec0b5c9a2b463194f198a623e5e36c")
+                          border=(14,11,14,11),guid="90ec0b5c9a2b463194f198a623e5e36c"),
+    "chiseled_quest":dict(width=512,height=220,cut=20,seed=173021,kind="quest",
+                          border=(48,32,66,32),guid="1138e4a0b67b480a89ce751bd2fb370c")
 }
 FOLDER_META="""fileFormatVersion: 2
 guid: f8e9b67b7ee54fd4a22ef0c2e89a14dd
