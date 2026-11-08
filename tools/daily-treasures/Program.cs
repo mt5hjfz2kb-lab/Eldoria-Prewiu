@@ -197,6 +197,36 @@ internal static class Program
         Eq(DailyTreasureRewardPresentation.FromCommittedReward(
             default(DailyTreasureReward)).Length,0,
             "invalid reward cannot display fabricated cards");
+        foreach(var label in new[]{
+            "milestone:hero:lyra","milestone:bastion:2",
+            "scout:first:order42","vigilant:chapter:25",
+            null})
+        {
+            var profile=DailyTreasureCeremonyTheme.ForEvent(label,true);
+            True(profile.R>=0f && profile.R<=1f &&
+                 profile.G>=0f && profile.G<=1f &&
+                 profile.B>=0f && profile.B<=1f &&
+                 profile.Strength>0f && profile.Strength<.6f,
+                 "all original premium ceremony color accents remain bounded "+label);
+            var weaker=DailyTreasureCeremonyTheme.ForEvent(label,false);
+            True(profile.Strength>weaker.Strength,
+                 "legendary ceremonies are subtly stronger in light "+label);
+            True(profile.R==weaker.R && profile.G==weaker.G &&
+                 profile.B==weaker.B,
+                 "visual tier never replaces the event's true art identity "+label);
+        }
+        var heroMood=DailyTreasureCeremonyTheme.ForEvent(
+            "milestone:hero:lyra",true);
+        var guardianMood=DailyTreasureCeremonyTheme.ForEvent(
+            "vigilant:chapter:25",true);
+        var explorationMood=DailyTreasureCeremonyTheme.ForEvent(
+            "scout:first:order42",false);
+        var cityMood=DailyTreasureCeremonyTheme.ForEvent(
+            "milestone:bastion:5",true);
+        True(heroMood.B<guardianMood.B &&
+             explorationMood.G>guardianMood.G &&
+             cityMood.R>guardianMood.R,
+             "hero, guardian, discovery and rebuilding remain visually distinct");
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");
     }
 }
