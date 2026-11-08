@@ -10,6 +10,44 @@ concurrency:
   group: eldoria-breachwatch-native-first-screen
   cancel-in-progress: false
 jobs:
+  discover-cc0-donor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Download and inventory isolated CC0 dark fantasy panel candidate
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,io,json,os,pathlib,urllib.request,zipfile
+          u='https://annomotion.studio/public/packs/dark-fantasy-ui-hud-kit/download'
+          out=pathlib.Path(os.environ['RUNNER_TEMP'])/'breachwatch-cc0-donor'
+          out.mkdir(exist_ok=True)
+          req=urllib.request.Request(u,headers={'User-Agent':'Eldoria-art-research/1.0'})
+          with urllib.request.urlopen(req,timeout=40) as response:
+              assert response.headers.get('Content-Type','').split(';')[0] in ('application/zip','application/octet-stream')
+              data=response.read(20*1024*1024+1)
+          assert 10000<len(data)<20*1024*1024, 'Donor download size invalid'
+          (out/'source.zip').write_bytes(data)
+          with zipfile.ZipFile(io.BytesIO(data)) as z:
+              entries=z.infolist()
+              assert 1<=len(entries)<=600
+              assert sum(i.file_size for i in entries)<180*1024*1024
+              for i in entries:
+                  n=pathlib.PurePosixPath(i.filename.replace('\\','/'))
+                  assert not n.is_absolute() and '..' not in n.parts, 'unsafe archive name'
+              listing=[{'path':i.filename,'bytes':i.file_size} for i in entries]
+          manifest={'source_url':u,'source_license_claim':'CC0 1.0 on publisher page; verify license inside archive before promotion',
+             'source_sha256':hashlib.sha256(data).hexdigest(),'entries':listing,
+             'not_used_in_game':True,'art_approved':False}
+          (out/'inventory.json').write_text(json.dumps(manifest,indent=2))
+          print('BREACHWATCH_CC0_ART_RESEARCH_ONLY '+manifest['source_sha256']+' entries='+str(len(listing)))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: breachwatch-cc0-donor-research-${{ github.run_id }}
+          path: ${{ runner.temp }}/breachwatch-cc0-donor/**
+          if-no-files-found: error
+          retention-days: 7
   source-syntax:
     runs-on: ubuntu-latest
     timeout-minutes: 8
