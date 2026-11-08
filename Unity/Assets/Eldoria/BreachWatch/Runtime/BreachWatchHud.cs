@@ -34,7 +34,7 @@ namespace Eldoria.BreachWatch
         float originalAlpha;
         Font font, boldFont, bodyFont, bodyBoldFont;
         RectTransform uiRoot;
-        RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark, selectionHalo;
+        RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark, selectionHalo, feedbackPlate;
         RectTransform[] resourceChips = new RectTransform[3];
         Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
         Text[] resourceAmounts = new Text[3];
@@ -84,6 +84,8 @@ namespace Eldoria.BreachWatch
         public bool BuildingPortraitEdgeClipped =>
             buildingPortrait && buildingPortrait.PortraitGeometryClipped;
         public string LastFeedback => feedback?feedback.text:"";
+        public bool HasVisibleFeedbackPlate =>
+            feedbackPlate && feedbackPlate.gameObject.activeInHierarchy;
         public bool BuildingPortraitExclusive => buildingPortrait && buildingPortrait.RenderedFromIsolatedRealMeshes;
         public float BuildingPortraitDrawnFraction => buildingPortrait ? buildingPortrait.NonBackgroundPixelFraction : 0f;
         public bool HasNativePremiumTypography =>
@@ -556,13 +558,23 @@ namespace Eldoria.BreachWatch
                     if(oldPlaceholder)oldPlaceholder.enabled=false;
                 }
             }
-            feedback=Label(uiRoot,"Action feedback / live or disabled",15,TextAnchor.MiddleCenter,Copper);
+            feedbackPlate=Rect("Temporary real action requirement tablet",uiRoot);
+            var feedbackStone=Plate(feedbackPlate,BreachWatchPlate.PlateType.Resource);
+            var authoredStone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/slate_resource");
+            if(authoredStone)feedbackStone.ApplyIndependentArt(authoredStone,true);
+            feedbackStone.raycastTarget=false;
+            feedback=Label(feedbackPlate,"Action feedback / live or disabled",
+                15,TextAnchor.MiddleCenter,TextIvory);
+            Fill(feedback.rectTransform,5);
+            feedbackPlate.gameObject.SetActive(false);
             feedback.text="";
         }
         void SetFeedback(string value)
         {
             if(feedback)feedback.text=value??"";
-            feedbackUntil=string.IsNullOrWhiteSpace(value)?0f:Time.unscaledTime+4.0f;
+            bool show=!string.IsNullOrWhiteSpace(value);
+            if(feedbackPlate)feedbackPlate.gameObject.SetActive(show);
+            feedbackUntil=show?Time.unscaledTime+4.0f:0f;
         }
         public void ExplainUnavailableAction()
         {
@@ -799,7 +811,8 @@ namespace Eldoria.BreachWatch
                 costHeader.fontSize=15;
                 actionLabel.fontSize=16;
 
-                At(feedback.rectTransform,margin,h-122,Mathf.Max(90,left-margin-15),34);
+                At(feedbackPlate,margin,h-160,Mathf.Max(120,left-margin-15),36);
+                Fill(feedback.rectTransform,6);
                 feedback.fontSize=13;
             }
             else
@@ -899,8 +912,9 @@ namespace Eldoria.BreachWatch
                     buildingState.fontSize=14;
                     actionLabel.fontSize=16;
                 }
-                At(feedback.rectTransform,margin,h-121,
-                    Mathf.Max(120,w-pw-3*margin),30);
+                At(feedbackPlate,margin,h-124,
+                    Mathf.Max(120,w-pw-3*margin),35);
+                Fill(feedback.rectTransform,6);
                 feedback.fontSize=14;
             }
 
