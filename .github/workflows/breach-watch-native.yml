@@ -373,17 +373,15 @@ jobs:
           assert 'guid: '+manifest['guid'] in meta
           assert 'spriteBorder: {x: 53, y: 61, z: 53, w: 60}' in meta
           assert 'spritePixelsToUnits: 200' in meta and 'textureType: 8' in meta
-          # The approved lower gold jewel is intentionally separated
-          # from the nine-sliced frame and cannot cross real CTA text.
-          finial=folder/'owner_bottom_finial.png'
-          raw=finial.read_bytes()
-          assert hashlib.sha256(raw).hexdigest()==manifest['bottom_finial_sha256']
-          assert raw[:8]==bytes([137,80,78,71,13,10,26,10]) and raw[25]==6
-          assert struct.unpack('>II',raw[16:24])==tuple(manifest['bottom_finial_size'])==(60,50)
-          gem_meta=(folder/'owner_bottom_finial.png.meta').read_text()
-          assert 'guid: '+manifest['bottom_finial_guid'] in gem_meta
-          assert 'spriteBorder: {x: 0, y: 0, z: 0, w: 0}' in gem_meta
-          print('BREACHWATCH_OWNER_EXACT_APPROVED_GOLD_TRIM_AND_SEPARATE_FINIAL_PASS')
+          # One genuine user-approved source image owns both metal contour
+          # and its bottom gem. No obsolete second overlay may survive.
+          assert manifest['new_independent_uGUI_one_piece_border'] is True
+          assert 'bottom_finial_sha256' not in manifest
+          assert not (folder/'owner_bottom_finial.png').exists()
+          assert not (folder/'owner_bottom_finial.png.meta').exists()
+          hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          assert 'owner_bottom_finial' not in hud and 'separateOwnerBottomFinial' not in hud
+          print('BREACHWATCH_OWNER_EXACT_APPROVED_ONE_PIECE_GOLD_TRIM_PASS')
           PY
       - name: Verify newly authored fully independent nine-slice basalt, brass and burgundy
         shell: bash
