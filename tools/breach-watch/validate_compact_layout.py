@@ -141,7 +141,7 @@ def main():
         'At(identity,margin,11,182,55)',
         'float navSize=49,navGap=14',
         'float navTop=h-100f',
-        'float ph=307f',
+        'float ph=293f',
         'At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50)',
         'float navSize=55,navGap=15',
         'float navTop=h-78',
