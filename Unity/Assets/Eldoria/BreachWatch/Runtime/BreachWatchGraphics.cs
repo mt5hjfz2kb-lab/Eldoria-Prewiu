@@ -61,25 +61,68 @@ namespace Eldoria.BreachWatch
             void Stroke(float x,float y,float xx,float yy,float w=1)
             {
                 var p=center+new Vector2(x,y)*size;var q=center+new Vector2(xx,yy)*size;
-                Edge(vh,p+new Vector2(1,-1),q+new Vector2(1,-1),thick*w,new Color(.02f,.035f,.04f,.83f));
-                Edge(vh,p,q,thick*w,Ink);
+                // Three-tier carved stroke: engraved shadow, reflected edge
+                // and aged-metal face. Not a flat, single-color pictogram.
+                Edge(vh,p+new Vector2(1.5f,-1.4f),q+new Vector2(1.5f,-1.4f),
+                    thick*w*1.34f,new Color(.01f,.025f,.03f,.95f));
+                Edge(vh,p+new Vector2(-.75f,1),q+new Vector2(-.75f,1),
+                    thick*w*.74f,new Color(Ink.r*.8f+.18f,Ink.g*.75f+.14f,Ink.b*.62f+.09f,Ink.a*.9f));
+                Edge(vh,p,q,thick*w*.70f,Ink);
             }
             void Path(params Vector2[] pts){for(int i=0;i<pts.Length-1;i++)Stroke(pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y);}
+            void Relief(Color upper,Color lower,params Vector2[] vertices)
+            {
+                if(vertices.Length<3)return;
+                Vector2 avg=Vector2.zero;
+                foreach(var v in vertices)avg+=v;
+                avg/=vertices.Length;
+                int first=vh.currentVertCount;
+                vh.AddVert(new UIVertex{position=center+avg*size,
+                    color=Color.Lerp(upper,lower,.55f),uv0=Vector2.zero});
+                foreach(var v in vertices)vh.AddVert(new UIVertex{
+                    position=center+v*size,color=Color.Lerp(lower,upper,Mathf.Clamp01((v.y+1f)*.5f)),
+                    uv0=Vector2.zero});
+                for(int n=0;n<vertices.Length;n++)
+                    vh.AddTriangle(first,first+1+n,first+1+(n+1)%vertices.Length);
+            }
+            Color copper=new Color(.34f,.29f,.23f,Ink.a);
+            Color highlight=new Color(.72f,.65f,.52f,Ink.a);
             switch(Type)
             {
                 case Sigil.Realm:case Sigil.Castle:
+                    Relief(highlight,copper,new Vector2(-.78f,-.72f),new Vector2(-.78f,.44f),
+                        new Vector2(.80f,.44f),new Vector2(.80f,-.72f));
+                    Relief(highlight,copper,new Vector2(-.5f,.42f),new Vector2(-.5f,.72f),
+                        new Vector2(-.19f,.72f),new Vector2(-.19f,.42f));
+                    Relief(highlight,copper,new Vector2(.20f,.42f),new Vector2(.20f,.72f),
+                        new Vector2(.54f,.72f),new Vector2(.54f,.42f));
                     Path(new Vector2(-.8f,-.75f),new Vector2(-.8f,.45f),new Vector2(-.5f,.45f),new Vector2(-.5f,.75f),new Vector2(-.2f,.75f),new Vector2(-.2f,.45f),new Vector2(.2f,.45f),new Vector2(.2f,.75f),new Vector2(.55f,.75f),new Vector2(.55f,.45f),new Vector2(.82f,.45f),new Vector2(.82f,-.75f),new Vector2(-.8f,-.75f));
                     Stroke(-.2f,-.75f,-.2f,-.12f);Stroke(.23f,-.75f,.23f,-.12f);Stroke(-.2f,-.12f,.23f,-.12f);break;
                 case Sigil.Build:case Sigil.Hammer:
+                    Relief(highlight,copper,new Vector2(-.76f,-.57f),new Vector2(-.63f,-.73f),
+                        new Vector2(.51f,.50f),new Vector2(.34f,.65f));
+                    Relief(highlight,copper,new Vector2(.03f,.72f),new Vector2(.60f,.17f),
+                        new Vector2(.79f,.30f),new Vector2(.20f,.90f));
                     Stroke(-.7f,-.68f,.44f,.56f,1.5f);Stroke(.06f,.68f,.75f,.08f,1.8f);Stroke(-.24f,.40f,.36f,.92f,1.3f);break;
                 case Sigil.Army:
+                    Relief(highlight,copper,new Vector2(-.86f,.81f),new Vector2(-.71f,.89f),
+                        new Vector2(.77f,-.62f),new Vector2(.61f,-.77f));
+                    Relief(highlight,copper,new Vector2(.87f,.81f),new Vector2(.69f,.88f),
+                        new Vector2(-.77f,-.64f),new Vector2(-.62f,-.78f));
                     Stroke(-.8f,.8f,.7f,-.68f,1.2f);Stroke(.8f,.8f,-.7f,-.68f,1.2f);
                     Stroke(-.75f,-.48f,-.38f,-.85f);Stroke(.75f,-.48f,.38f,-.85f);
                     Stroke(-.87f,-.66f,-.42f,-.23f);Stroke(.87f,-.66f,.42f,-.23f);break;
                 case Sigil.World:
+                    Relief(highlight,copper,new Vector2(0,.94f),new Vector2(.26f,.22f),
+                        new Vector2(.94f,0),new Vector2(.26f,-.22f),new Vector2(0,-.94f),
+                        new Vector2(-.26f,-.22f),new Vector2(-.94f,0),new Vector2(-.26f,.22f));
                     Path(new Vector2(0,1),new Vector2(.27f,.28f),new Vector2(1,0),new Vector2(.27f,-.28f),new Vector2(0,-1),new Vector2(-.27f,-.28f),new Vector2(-1,0),new Vector2(-.27f,.28f),new Vector2(0,1));
                     Stroke(0,.58f,0,-.58f);Stroke(-.58f,0,.58f,0);break;
                 case Sigil.Chronicle:
+                    Relief(highlight,copper,new Vector2(-.70f,.73f),new Vector2(-.05f,.76f),
+                        new Vector2(-.03f,-.42f),new Vector2(-.70f,-.68f));
+                    Relief(highlight,copper,new Vector2(.05f,.76f),new Vector2(.70f,.73f),
+                        new Vector2(.70f,-.68f),new Vector2(.03f,-.42f));
                     Path(new Vector2(-.72f,.76f),new Vector2(-.72f,-.72f),new Vector2(0,-.46f),new Vector2(0,.82f),new Vector2(-.72f,.76f));
                     Path(new Vector2(0,.82f),new Vector2(.72f,.76f),new Vector2(.72f,-.72f),new Vector2(0,-.46f));
                     Stroke(-.52f,.38f,-.22f,.34f,.6f);Stroke(.2f,.34f,.52f,.38f,.6f);break;
@@ -87,6 +130,10 @@ namespace Eldoria.BreachWatch
                     for(int i=-1;i<=1;i++){float y=i*.38f;Stroke(-.8f,y-.05f,.75f,y+.18f,.92f);Stroke(-.63f,y+.15f,.7f,y+.38f,.65f);}
                     break;
                 case Sigil.Stone:
+                    Relief(new Color(.66f,.69f,.68f,Ink.a),new Color(.22f,.29f,.32f,Ink.a),
+                        new Vector2(-.78f,-.37f),new Vector2(-.35f,.49f),
+                        new Vector2(.39f,.70f),new Vector2(.83f,-.15f),
+                        new Vector2(.43f,-.70f),new Vector2(-.55f,-.70f));
                     Path(new Vector2(-.82f,-.4f),new Vector2(-.35f,.5f),new Vector2(.4f,.73f),new Vector2(.87f,-.18f),new Vector2(.45f,-.73f),new Vector2(-.56f,-.73f),new Vector2(-.82f,-.4f));
                     Stroke(-.35f,.5f,-.08f,-.24f);Stroke(-.08f,-.24f,.45f,-.73f);Stroke(-.08f,-.24f,.87f,-.18f);break;
                 case Sigil.Food:
