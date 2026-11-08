@@ -25,6 +25,17 @@ function processes() {
     const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});
     await context.addInitScript(()=>{
       window.__growth=[];
+      const getContext=HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext=function(type,...args){
+        const gl=getContext.call(this,type,...args);
+        if(this.id==='unity-canvas'&&gl&&type==='webgl2'&&!this.__observed){
+          this.__observed=true;
+          const ext=gl.getExtension('WEBGL_debug_renderer_info');
+          console.log('ELDORIA_ACTUAL_GL '+JSON.stringify({at:performance.now(),astc:!!gl.getExtension('WEBGL_compressed_texture_astc'),renderer:gl.getParameter(ext?ext.UNMASKED_RENDERER_WEBGL:gl.RENDERER),uniformBindings:gl.getParameter(gl.MAX_UNIFORM_BUFFER_BINDINGS),attributes:gl.getContextAttributes()}));
+          this.addEventListener('webglcontextlost',e=>console.error('ELDORIA_CONTEXT_LOST '+JSON.stringify({at:performance.now(),statusMessage:e.statusMessage})),{once:true});
+        }
+        return gl;
+      };
       const original=WebAssembly.Memory.prototype.grow;
       WebAssembly.Memory.prototype.grow=function(pages){
         const x={at:performance.now(),before:this.buffer.byteLength,pages};
@@ -42,7 +53,7 @@ function processes() {
     await page.goto('https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile5',{waitUntil:'domcontentloaded',timeout:30000});
     report.identity=await page.evaluate(()=>fetch('release-identity.json',{cache:'no-store'}).then(r=>r.json()));
     if(report.identity.revision!=='native325-mobile5')throw Error('Public candidate changed');
-    report.capabilities=await page.evaluate(()=>{
+    report.capabilities=process.env.QA_SKIP_PREFLIGHT==='1'?{webgl2:'not-probed',note:'Observe actual Unity context only'}:await page.evaluate(()=>{
       const c=document.createElement('canvas'),g=c.getContext('webgl2');
       if(!g)return {webgl2:false,userAgent:navigator.userAgent};
       const d=g.getExtension('WEBGL_debug_renderer_info');
