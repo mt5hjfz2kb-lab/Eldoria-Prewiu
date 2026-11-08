@@ -34,7 +34,7 @@ namespace Eldoria.BreachWatch.Editor
             public string file, sha256, selected, realBuilding, actualObjective;
             public int width, height, buttons;
             public bool oldCanvasOff, newCanvasIndependent, liveSession, fiveInOneRow, liveBuildingPortrait;
-            public float portraitPixels;
+            public float portraitPixels,uiFootprintPercent;
         }
         [Serializable] public sealed class Report
         {
@@ -225,6 +225,42 @@ namespace Eldoria.BreachWatch.Editor
             };
             File.WriteAllText(Path.Combine(dir,"BreachWatchNativeEvidence.json"),JsonUtility.ToJson(report,true));
         }
+        // Conservative union of visible actual native plate bounds. This is
+        // an upper estimate (rounded silhouettes have transparent corners),
+        // not a fabricated per-pixel screenshot segmentation result.
+        // The old art mock covered about 30%; the approved 1672x941 concept
+        // occupies about 14-17% by the same hand-traced mask methodology.
+        static float ConservativeUIFootprint(BreachWatchHud ui,Camera camera,int w,int h)
+        {
+            const int columns=240,rows=135;
+            var pixels=new bool[columns*rows];
+            int marked=0;
+            var corners=new Vector3[4];
+            foreach(var surface in ui.GetComponentsInChildren<BreachWatchPlate>(true))
+            {
+                if(!surface || !surface.gameObject.activeInHierarchy ||
+                   surface.color.a<.08f)continue;
+                surface.rectTransform.GetWorldCorners(corners);
+                float minX=float.PositiveInfinity,minY=float.PositiveInfinity;
+                float maxX=float.NegativeInfinity,maxY=float.NegativeInfinity;
+                foreach(var corner in corners)
+                {
+                    var point=RectTransformUtility.WorldToScreenPoint(camera,corner);
+                    minX=Mathf.Min(minX,point.x);maxX=Mathf.Max(maxX,point.x);
+                    minY=Mathf.Min(minY,point.y);maxY=Mathf.Max(maxY,point.y);
+                }
+                int x0=Mathf.Clamp(Mathf.FloorToInt(minX/w*columns),0,columns);
+                int x1=Mathf.Clamp(Mathf.CeilToInt(maxX/w*columns),0,columns);
+                int y0=Mathf.Clamp(Mathf.FloorToInt(minY/h*rows),0,rows);
+                int y1=Mathf.Clamp(Mathf.CeilToInt(maxY/h*rows),0,rows);
+                for(int y=y0;y<y1;y++)for(int x=x0;x<x1;x++)
+                {
+                    int i=y*columns+x;
+                    if(!pixels[i]){pixels[i]=true;marked++;}
+                }
+            }
+            return marked*100f/pixels.Length;
+        }
         static Shot RenderNative(BreachWatchHud ui,string root,string selection,int w,int h)
         {
             Camera camera = host.PlayerCamera;
@@ -287,6 +323,14 @@ namespace Eldoria.BreachWatch.Editor
                     previousRight=b.x;
                 }
                 Need(oneRow,"Five independent navigation symbols overlap or stack in "+name);
+                float footprint=ConservativeUIFootprint(ui,camera,w,h);
+                float maxFootprint=w<h?36f:h<500?32f:24f;
+                Need(footprint<=maxFootprint,
+                     "Owner-approved compact UI footprint exceeded in "+name+
+                     ": "+footprint.ToString("F2")+"% / maximum "+
+                     maxFootprint.ToString("F1")+"%");
+                Debug.Log("BREACHWATCH_COMPACT_UI_FOOTPRINT "+
+                    name+" "+footprint.ToString("F2")+"%");
                 foreach(var label in ui.GetComponentsInChildren<Text>(true))
                 {
                     if(!label || !label.gameObject.activeInHierarchy ||
@@ -341,7 +385,8 @@ namespace Eldoria.BreachWatch.Editor
                     newCanvasIndependent=ui.IndependentCanvas,
                     liveSession=ui.HasRealSession,fiveInOneRow=oneRow,
                     liveBuildingPortrait=ui.HasLiveBuildingPortrait,
-                    portraitPixels=ui.BuildingPortraitDrawnFraction
+                    portraitPixels=ui.BuildingPortraitDrawnFraction,
+                    uiFootprintPercent=footprint
                 };
             }
             finally
