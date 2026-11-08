@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 namespace Eldoria.BreachWatch
@@ -159,6 +160,15 @@ namespace Eldoria.BreachWatch
                 keyLight.transform.rotation=Quaternion.Euler(50,-38,0);
 
                 portraitCamera.CopyFrom(source);
+                // URP 17 requires its own camera data on a camera created
+                // at runtime. CopyFrom copies Camera settings, not URP data.
+                var cameraData=portraitCamera.GetUniversalAdditionalCameraData();
+                cameraData.renderType=CameraRenderType.Base;
+                cameraData.renderPostProcessing=false;
+                cameraData.renderShadows=false;
+                cameraData.allowXRRendering=false;
+                if(cameraData.cameraStack!=null)cameraData.cameraStack.Clear();
+                portraitCamera.useOcclusionCulling=false;
                 portraitCamera.enabled=false;
                 portraitCamera.clearFlags=CameraClearFlags.SolidColor;
                 portraitCamera.backgroundColor=new Color(.07f,.078f,.084f,1);
