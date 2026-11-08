@@ -64,7 +64,7 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
             throw 'Windows currently has an active native process; do not interrupt'
           }
-      - name: Reuse installed Git without changing the Windows machine
+      - name: Use installed Git without changing the Windows machine
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
