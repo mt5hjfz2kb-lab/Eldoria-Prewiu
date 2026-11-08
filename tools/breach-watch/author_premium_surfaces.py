@@ -137,15 +137,10 @@ def surface(name,d):
                      outline=(200,150,83,245),width=2)
         draw.ellipse((x-2,y-2,x+1,y+1),fill=(255,215,146,230))
         draw.line((x+1,y+1,x+4,y+4),fill=(2,4,6,180),width=2)
-    # Center diamonds inside stretched UI panels obstruct real live labels.
-    # The approved style has a discrete seal BELOW the building panel, not
-    # a massive jewel through the title or the tappable action text.
-    for yy in ([h-16] if kind=="stone" else []):
-        center=w//2
-        pts=[(center,yy-12),(center+10,yy),(center,yy+12),(center-10,yy)]
-        draw.polygon(pts,fill=(143,86,49,255))
-        draw.line(pts+[pts[0]],fill=(253,187,90,255),width=2)
-        draw.line((center-4,yy,center+4,yy),fill=(252,225,151,220),width=2)
+    # The real 9-slice artwork must never include center-line gems.
+    # The owner-approved independent gold ring handles top/bottom ornament
+    # OUTSIDE the content. Only fixed corner pins live in this sprite.
+    # This removes the stale diamond which previously crossed the live CTA.
     if kind=="portrait":
         # A single restrained gold inner lip, not triple geometric borders.
         for yoff,color in [(33,(34,25,20,255)),(37,(212,148,71,255))]:
