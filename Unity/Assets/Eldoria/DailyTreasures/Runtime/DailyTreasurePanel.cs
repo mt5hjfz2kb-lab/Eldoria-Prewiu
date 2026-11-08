@@ -180,7 +180,10 @@ namespace Eldoria.DailyTreasures
             switch(fallback)
             {
                 case "valoria_frame_main_512":
-                    return "VigiliaArt/PremiumSurfaces/profile_plate";
+                    // Vigilia profile_plate is a wide 4:1 identity cartouche.
+                    // Stretching it into a tall 440x700 calendar distorts
+                    // metal ornament; keep our real square nine-slice modal.
+                    return null;
                 case "valoria_frame_card_256":
                     return "VigiliaArt/PremiumSurfaces/slate_resource";
                 case "valoria_frame_button_512x128":
