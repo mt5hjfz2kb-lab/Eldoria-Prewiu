@@ -28,6 +28,8 @@ def run():
     ]:
         assert mandatory in code,f"City composition safety contract removed: {mandatory}"
     assert "BreachWatchCityComposition" in hud and "cityComposition.Layout(pixelWidth,pixelHeight)" in hud
+    assert "void OnCityReentered(" in code and "lastWorldMode && !host.InWorld" in hud
+    assert "cityComposition.OnCityReentered(Screen.width,Screen.height)" in hud
     assert "castleViewportWidth" in evidence and "Approved panoramic portrait city view" in evidence
     assert ".homeZoom=" not in code and ".WorldNavigation" not in code,(
         "Standalone layout must never modify gameplay controller presets or World camera")
