@@ -188,6 +188,16 @@ namespace Eldoria.DailyTreasures
                 default:return null;
             }
         }
+        static Sprite LoadUnifiedResourceEmblem(string fallback)
+        {
+            string owner=(fallback=="resource_wood"?"wood":
+                fallback=="resource_stone"?"stone":
+                fallback=="resource_food"?"food":null);
+            var icon=owner==null?null:
+                Resources.Load<Sprite>("VigiliaArt/ResourceIcons/"+owner);
+            return icon?icon:Resources.Load<Sprite>(
+                "DailyTreasureArt/"+fallback);
+        }
         static bool ApplyAuthoredFrame(RectTransform rect,string resource)
         {
             var shared=MatchingVigiliaSurface(resource);
@@ -314,16 +324,7 @@ namespace Eldoria.DailyTreasures
                     i==5?DailyTreasureGlyphKind.Food:
                     i==6?DailyTreasureGlyphKind.Chest:DailyTreasureGlyphKind.Time;
                 dayGlyph[i].raycastTarget=false;
-                // The resource emblems must be the same as Vigilia's
-                // owner-approved player HUD, when those actual sprites exist.
-                // Hourglass and chest remain original Valoria-only art.
-                string ownerIcon=(DayIllustrations[i]=="resource_wood"?"wood":
-                    DayIllustrations[i]=="resource_stone"?"stone":
-                    DayIllustrations[i]=="resource_food"?"food":null);
-                var iconSprite=ownerIcon==null?null:Resources.Load<Sprite>(
-                    "VigiliaArt/ResourceIcons/"+ownerIcon);
-                if(!iconSprite)iconSprite=Resources.Load<Sprite>(
-                    "DailyTreasureArt/"+DayIllustrations[i]);
+                var iconSprite=LoadUnifiedResourceEmblem(DayIllustrations[i]);
                 if(iconSprite)
                 {
                     var painted=NewRect("Premium illustrated reward / no rays",day);
@@ -651,7 +652,7 @@ namespace Eldoria.DailyTreasures
             for(int i=0;i<prizeCount;i++)
             {
                 var item=items[i];
-                var sprite=Resources.Load<Sprite>("DailyTreasureArt/"+item.Icon);
+                var sprite=LoadUnifiedResourceEmblem(item.Icon);
                 // Never substitute an incorrect resource icon silently.
                 prizeIcons[i].sprite=sprite;
                 prizeIcons[i].color=sprite?Color.white:new Color(.6f,.6f,.6f,1f);
