@@ -77,6 +77,7 @@ def apply(original, verified, fresh, expected_hash, destination):
     print('Verified texture catalog',len(transforms),'exact',len(semantic),'semantic',flush=True)
     env = UnityPy.load(str(fresh))
     before, changed, reports, used = {}, {}, [], set()
+    semantic_expected = {}
     for obj in env.objects:
         data = obj.get_raw_data()
         h = digest(data)
@@ -105,9 +106,10 @@ def apply(original, verified, fresh, expected_hash, destination):
             updated.update(candidate["patch"])
             assert {k for k in tree if tree[k] != updated[k]} <= {"m_TextureFormat","m_CompleteImageSize","image data"}
             obj.save_typetree(updated)
-            reopened = obj.read_typetree()
-            assert reopened == updated, "Texture metadata changed unexpectedly"
-        changed[key(obj)] = digest(obj.get_raw_data())
+            # UnityPy 1.25.4 read_typetree/get_raw_data still read the original
+            # backing stream until the bundle is saved and reopened.
+            semantic_expected[key(obj)] = ({k:v for k,v in updated.items() if k != "image data"},digest(bytes(updated["image data"])))
+        changed[key(obj)] = digest(obj.data)
         used.add(reference)
         reports.append({k: v for k, v in transform.items() if k != "raw"} | {"object": key(obj), "source_hash": h, "matching":match, "reference_source_hash":reference})
     assert changed, "No byte-identical verified texture transformations found"
@@ -120,6 +122,12 @@ def apply(original, verified, fresh, expected_hash, destination):
     assert before.keys() == after.keys(), "Object graph membership changed"
     for k, h in after.items():
         assert h == changed.get(k, before[k]), ("Unexpected object mutation", k)
+    for obj in check.objects:
+        if key(obj) in semantic_expected:
+            expected_meta, expected_pixels = semantic_expected[key(obj)]
+            tree = obj.read_typetree()
+            assert {k:v for k,v in tree.items() if k != "image data"} == expected_meta, ("Saved texture metadata mismatch",key(obj))
+            assert digest(bytes(tree["image data"])) == expected_pixels, ("Saved texture payload mismatch",key(obj))
     proof = {
         "source_sha256": expected_hash, "candidate_sha256": file_hash(output),
         "reference_source_sha256": ORIGINAL, "reference_candidate_sha256": VERIFIED,
