@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "project": "Eldoria Tesoros de Valoria",
+  "status": "AWAITING_IMPORT_NOT_GAME_ART_APPROVED",
+  "provenance": "Original user-directed generated concept in ChatGPT task, not downloaded stock art",
+  "assets": [
+    {
+      "file": "treasure_closed_512.png",
+      "width": 512,
+      "height": 512,
+      "sha256": "313c17d35dcb6f44129a143fabc0448e5a20bc3fb7d00f700394bb73b2d0a0dd"
+    },
+    {
+      "file": "treasure_opened_512.png",
+      "width": 512,
+      "height": 512,
+      "sha256": "a75afb45b6183d0a8d7e2841c82ef13b812d08fb7620f90c849e679f24429ccb"
+    }
+  ],
+  "note": "Both PNGs must be versioned as actual bytes with unique Unity sprite GUIDs. This manifest is not the asset, a texture importer nor art approval. Last known files reside in the source art package attached to the owner conversation.",
+  "quality_gate": "Genuine Unity, 4 resolutions, no visual or touch clashes, cinematic quality >= owner-approved reference and explicit approval before merge."
+}
