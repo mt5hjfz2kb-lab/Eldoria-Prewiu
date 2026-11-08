@@ -130,6 +130,12 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui.HasRealSession, "New Canvas cannot access existing real game session");
             Need(ui.HasTrueResourceIllustrations,
                 "All three resource icons must be real, recognizable licensed independent sprites");
+            var expectedDestinations=new []{"REINO","RECURSOS","EJÉRCITO","EXPLORAR","HÉROES"};
+            Need(ui.NavButtons.Count==5 &&
+                 ui.NavButtons.Select(x=>x.name).SequenceEqual(expectedDestinations),
+                 "The five sculpted medallions have misleading destination labels");
+            Need(!ui.NavButtons[2].interactable && !ui.NavButtons[4].interactable,
+                 "Army and Heroes must remain visibly locked until native screens exist");
             Need(!ui.transform.IsChildOf(host.Hud.transform), "New Canvas must not be attached to legacy HUD");
             Need(ui.UsesOriginalPaintedMedallions && ui.UsesApprovedReferenceMedallions &&
                  ui.UsesOriginalForgedPortraitFrame && ui.UsesOriginalBurgundyStandard &&
@@ -152,7 +158,13 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui.SelectedBuildingId=="sawmill" &&
                  ui.CurrentSnapshot?.Building?.Id=="sawmill",
                  "Real city selection did not reach the independent Vigilia panel");
-            // Exercise the REAL uGUI GraphicRaycaster and pointer sequence, not Button.onClick.Invoke.
+            // Second real destination uses the provisions medallion. It must
+            // select a resource building, not the barracks or an old HUD panel.
+            ui.NavButtons[1].onClick.Invoke();
+            Need(ui.SelectedBuildingId=="sawmill" &&
+                 ui.CurrentSnapshot?.Building?.Id=="sawmill",
+                 "Provisions/RECURSOS did not select the live sawmill");
+            // Exercise the REAL uGUI GraphicRaycaster and pointer sequence.
             ui.SelectBuilding("");
             int pointerClicks = 0;
             var target = ui.NavButtons[0];
