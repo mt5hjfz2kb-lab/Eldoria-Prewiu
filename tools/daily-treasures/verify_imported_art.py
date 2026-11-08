@@ -47,13 +47,13 @@ for item in frames:
     meta=target/(name+".meta")
     assert png.is_file() and meta.is_file(), f"Missing real nine-slice frame: {name}"
     data=png.read_bytes()
-    assert data.startswith(b"\\x89PNG\\r\\n\\x1a\\n")
+    assert data.startswith(b"\x89PNG\r\n\x1a\n")
     width,height=struct.unpack(">II",data[16:24])
     assert (width,height)==(item["width"],item["height"]), f"Bad 9-slice image dimensions: {name}"
     assert hashlib.sha256(data).hexdigest()==item["sha256"], f"Artwork SHA mismatch: {name}"
     assert data[25] in (3,6) and (data[25]!=3 or b"tRNS" in data)
     text=meta.read_text(encoding="utf-8")
-    assert f"guid: {item['guid']}\\n" in text
+    assert f"guid: {item['guid']}\n" in text
     border=item["nine_slice"]
     assert f"spriteBorder: {{x: {border}, y: {border}, z: {border}, w: {border}}}" in text
     assert "spriteMode: 1" in text and "textureType: 8" in text
