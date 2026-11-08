@@ -588,16 +588,16 @@ namespace Eldoria.BreachWatch
                 At(buildingName.rectTransform,50,7,pw-89,29);
                 At(buildingLevel.rectTransform,50,35,pw-89,19);
                 At(((RectTransform)closeButton.transform),pw-40,9,31,31);
-                At(portraitFrame,11,60,pw-22,91);
-                At(buildingFunction.rectTransform,13,152,pw-26,31);
-                At(costHeader.rectTransform,13,185,pw-26,15);
-                At(buildingCosts.rectTransform,13,204,pw-26,22);
-                At(costIcons[0].rectTransform,15,204,27,27);
-                At(costQuantities[0].rectTransform,46,203,51,28);
-                At(costIcons[1].rectTransform,105,204,27,27);
-                At(costQuantities[1].rectTransform,135,203,pw-146,28);
-                At(buildingState.rectTransform,13,228,pw-26,17);
-                At(((RectTransform)actionButton.transform),12,ph-49,pw-24,44);
+                At(portraitFrame,11,59,pw-22,81);
+                At(buildingFunction.rectTransform,13,143,pw-26,43);
+                At(costHeader.rectTransform,13,188,pw-26,14);
+                At(buildingCosts.rectTransform,13,207,pw-26,21);
+                At(costIcons[0].rectTransform,15,205,27,27);
+                At(costQuantities[0].rectTransform,46,204,51,29);
+                At(costIcons[1].rectTransform,105,205,27,27);
+                At(costQuantities[1].rectTransform,135,204,pw-146,29);
+                At(buildingState.rectTransform,13,230,pw-26,15);
+                At(((RectTransform)actionButton.transform),12,ph-48,pw-24,43);
                 buildingName.fontSize=20;
                 buildingLevel.fontSize=14;
                 buildingFunction.fontSize=14;
@@ -683,15 +683,15 @@ namespace Eldoria.BreachWatch
                 }
                 else
                 {
-                    At(portraitFrame,12,64,pw-24,107);
-                    At(buildingFunction.rectTransform,13,173,pw-26,32);
-                    At(costHeader.rectTransform,13,210,pw-26,17);
-                    At(buildingCosts.rectTransform,13,231,pw-26,27);
+                    At(portraitFrame,12,61,pw-24,99);
+                    At(buildingFunction.rectTransform,13,163,pw-26,46);
+                    At(costHeader.rectTransform,13,211,pw-26,16);
+                    At(buildingCosts.rectTransform,13,231,pw-26,26);
                     At(costIcons[0].rectTransform,17,228,30,30);
                     At(costQuantities[0].rectTransform,52,229,53,29);
                     At(costIcons[1].rectTransform,121,228,30,30);
                     At(costQuantities[1].rectTransform,153,229,pw-162,29);
-                    At(buildingState.rectTransform,13,263,pw-26,18);
+                    At(buildingState.rectTransform,13,262,pw-26,18);
                     At(((RectTransform)actionButton.transform),12,ph-55,pw-24,49);
                     buildingFunction.fontSize=15;
                     buildingCosts.fontSize=15;
@@ -763,7 +763,9 @@ namespace Eldoria.BreachWatch
                         @"(?:Madera|Wood)\s+([\d.,]+)",RegexOptions.IgnoreCase);
                     var stone=Regex.Match(b.Costs??"",
                         @"(?:Piedra|Stone)\s+([\d.,]+)",RegexOptions.IgnoreCase);
-                    bool realPair=wood.Success && stone.Success;
+                    bool realPair=wood.Success && stone.Success &&
+                        !Regex.IsMatch(b.Costs??"",
+                            @"(?:Comida|Food)\s+[\d.,]+",RegexOptions.IgnoreCase);
                     buildingCosts.gameObject.SetActive(!realPair);
                     for(int i=0;i<2;i++)
                     {
@@ -775,7 +777,7 @@ namespace Eldoria.BreachWatch
                         costQuantities[0].text=wood.Groups[1].Value;
                         costQuantities[1].text=stone.Groups[1].Value;
                     }
-                    buildingState.text=(b.State??"")+(string.IsNullOrWhiteSpace(b.Time)?"":"  ·  "+b.Time);
+                    buildingState.text=CompactRealState(b.State,b.Time);
                     bool can=b.Action!=null && b.Action.Enabled && !b.OperationActive;
                     actionButton.interactable=can;
                     actionPlate.Type=can?BreachWatchPlate.PlateType.Action:BreachWatchPlate.PlateType.Dangerous;
@@ -811,6 +813,18 @@ namespace Eldoria.BreachWatch
                 SetFeedback("Error en datos reales: "+e.GetType().Name);
                 Debug.LogException(e);throw;
             }
+        }
+        static string CompactRealState(string state,string time)
+        {
+            // Preserve the real operation and timer; strip only duplicated
+            // prose, not amounts or progress. This is essential on phone HUDs.
+            state=state??"";
+            time=time??"";
+            foreach(var prefix in new[]{"Duración · ","Duration · ","Tiempo restante · ",
+                "Time remaining · ","Duración: ","Duration: "})
+                if(time.StartsWith(prefix,StringComparison.OrdinalIgnoreCase))
+                {time=time.Substring(prefix.Length);break;}
+            return time.Length==0?state:state+" · "+time;
         }
         static string CompactRealCosts(string source)
         {
