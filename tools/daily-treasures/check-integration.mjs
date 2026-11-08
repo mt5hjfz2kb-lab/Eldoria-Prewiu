@@ -7,6 +7,8 @@ const retention=fs.readFileSync(
   'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs','utf8');
 const panel=fs.readFileSync(
   'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePanel.cs','utf8');
+const native=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Editor/DailyTreasureNativeEvidence.cs','utf8');
 assert.match(domain,/DailyTreasureState DailyTreasures/);
 assert.match(gateway,/DailyTreasures=s\.DailyTreasures\?\.Copy\(\)/);
 assert.match(gateway,/case "ClaimDailyTreasure":/);
@@ -25,4 +27,11 @@ assert.match(panel,/public bool PresentCommittedMilestone\(/);
 const milestone=panel.split('public bool PresentCommittedMilestone(')[1]
   .split('// Safe to reuse for milestone ceremonies')[0];
 assert.doesNotMatch(milestone,/gateway\.Execute|new GameCommand|\.Resources\./);
+assert.match(panel,/hasAuthoredChestArt=closedSource && openSource/);
+assert.match(panel,/showChest && !hasAuthoredChestArt/);
+assert.match(panel,/DailyTreasureArt\/treasure_opened_512/);
+assert.match(native,/NATIVE_COMPONENT_RENDERED_FALLBACK_ONLY_ART_REJECTED/);
+assert.match(native,/authoredSpritesImported/);
+// Art must never be declared approved by a source or syntax check.
+assert.doesNotMatch(native,/artApproved=true/);
 console.log('PASS daily treasures gateway integration source invariants');
