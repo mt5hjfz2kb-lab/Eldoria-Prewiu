@@ -64,15 +64,79 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
             throw 'Windows currently has an active native process; do not interrupt'
           }
-      - name: Check out exact PR SHA (not main, beta, or Vigilia branch)
-        uses: actions/checkout@v4
-        with:
-          path: daily-source
-          fetch-depth: 1
-          lfs: false
-          filter: blob:none
-          sparse-checkout: |
-            Unity
+      - name: Reuse installed Git without changing the Windows machine
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not (Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources/app/git/cmd/git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $git){throw 'No installed Git found; refuse a 26GB archive fallback'}
+            $dir=Split-Path $git
+            $env:PATH="$dir;$env:PATH"
+            Add-Content $env:GITHUB_PATH $dir
+          }
+          git --version
+      - name: Fetch exact PR SHA by safe sparse blob-less Git, never a full Unity archive
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:GITHUB_WORKSPACE 'daily-source'
+          $url='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu.git'
+          if(-not (Test-Path (Join-Path $root '.git'))){
+            New-Item -ItemType Directory -Path $root -Force | Out-Null
+            & git -C $root init
+            if($LASTEXITCODE){throw 'Git init failed'}
+            & git -C $root remote add origin $url
+            if($LASTEXITCODE){throw 'Git remote setup failed'}
+          }
+          if(((& git -C $root remote get-url origin).Trim()) -ne $url){
+            throw 'Untrusted remote; refuse source checkout'
+          }
+          & git -C $root config core.sparseCheckout true
+          & git -C $root config core.sparseCheckoutCone false
+          $patterns=@('/Unity/**')
+          # Same source-preserving exclusions as Vigilia's existing proven
+          # Windows checkout, preventing huge historical/generated review art
+          # from eclipsing actual gameplay/Resources/Editor compilation.
+          for($i=1;$i -le 17;$i++){
+            $patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/GeneratedEntryV'+$i+'/**')
+          }
+          foreach($n in @('39131782550','39132144937','39132392803',
+              '39132807199','39133202399','39136444844',
+              '39137079921','39138143327')){
+            $patterns+=('!/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-'+$n+'/**')
+          }
+          [IO.File]::WriteAllLines(
+            (Join-Path $root '.git/info/sparse-checkout'),
+            [string[]]$patterns,(New-Object Text.UTF8Encoding($false)))
+          $auth=[Convert]::ToBase64String(
+            [Text.Encoding]::ASCII.GetBytes('x-access-token:'+$env:GH_TOKEN))
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) fetch --no-tags --depth=1 --filter=blob:none origin $env:GITHUB_SHA
+          if($LASTEXITCODE){throw 'Sparse source fetch failed'}
+          & git -C $root -c ("http.extraheader=AUTHORIZATION: basic "+$auth) checkout --force FETCH_HEAD
+          if($LASTEXITCODE){throw 'Exact PR source checkout failed'}
+          if(((& git -C $root rev-parse HEAD).Trim()) -ne $env:GITHUB_SHA){
+            throw 'Source commit mismatch; never test outdated art'
+          }
+          foreach($required in @(
+            'Unity/ProjectSettings/ProjectVersion.txt',
+            'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePanel.cs',
+            'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureStageDirection.cs',
+            'Unity/Assets/Eldoria/DailyTreasures/Editor/DailyTreasureNativeEvidence.cs',
+            'Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt/treasure_opened_512.png',
+            'Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg',
+            'Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png',
+            'Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png')){
+            if(-not (Test-Path (Join-Path $root $required))){
+              throw "Canonical original source asset missing: $required"
+            }
+          }
+          Write-Host "DAILY_TREASURE_EXACT_HEAD_SPARSE_GAME_SOURCE_READY $env:GITHUB_SHA"
       - name: Verify branch and lease again before Unity launch
         shell: powershell
         working-directory: daily-source
