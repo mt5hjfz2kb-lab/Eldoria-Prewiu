@@ -12,8 +12,8 @@ namespace Eldoria.BreachWatch
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class BreachWatchPanelInk : MaskableGraphic
     {
-        const int Columns = 10;
-        const int Rows = 18;
+        const int Columns = 28;
+        const int Rows = 42;
         protected override void Awake()
         {
             base.Awake();
@@ -40,8 +40,28 @@ namespace Eldoria.BreachWatch
                     float red=.068f+tint-edge*.016f+v*.008f;
                     float green=.071f+tint-edge*.015f+v*.006f;
                     float blue=.075f+tint-edge*.016f+v*.002f;
-                    float alpha=.985f;
-                    if(x==0||x==Columns||y==0||y==Rows)alpha=.975f;
+                    // The original OwnerReference gold border has clipped
+                    // shoulders and a tapered lower tip. A rectangular black
+                    // underlying panel showed up OUTSIDE that border in the
+                    // last genuine Unity image. Carve the *actual* ink mesh
+                    // into a matching transparent silhouette. In particular,
+                    // make its top and bottom corners disappear instead of
+                    // displaying a cheap black box behind the approved trim.
+                    float distTop=(1f-v)*bounds.height;
+                    float distBottom=v*bounds.height;
+                    float sideInset=9f;
+                    if(distTop<30f)
+                        sideInset+=Mathf.Pow(1f-distTop/30f,1.45f)*28f;
+                    if(distBottom<33f)
+                        sideInset+=Mathf.Pow(1f-distBottom/33f,1.35f)*23f;
+                    float sideDist=Mathf.Min(u,1f-u)*bounds.width;
+                    float sideFade=Mathf.SmoothStep(0f,1f,
+                        Mathf.Clamp01((sideDist-sideInset)/3.4f));
+                    float topFade=Mathf.SmoothStep(0f,1f,
+                        Mathf.Clamp01((distTop-2.8f)/5.5f));
+                    float bottomFade=Mathf.SmoothStep(0f,1f,
+                        Mathf.Clamp01((distBottom-5.3f)/8.0f));
+                    float alpha=.997f*sideFade*topFade*bottomFade;
                     var node=UIVertex.simpleVert;
                     node.position=new Vector3(bounds.xMin+u*bounds.width,
                         bounds.yMin+v*bounds.height,0);
