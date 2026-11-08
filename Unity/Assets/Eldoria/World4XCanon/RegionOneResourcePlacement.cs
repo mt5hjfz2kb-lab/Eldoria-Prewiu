@@ -53,12 +53,34 @@ namespace Eldoria.World4XCanon
             }
             var layout=Resources.Load<TextAsset>("World4X/Blender/production-region");
             if(layout){var data=JsonUtility.FromJson<RegionLayout>(layout.text);cities=data.cities??Array.Empty<CityReserve>();faults=data.faults??Array.Empty<FaultSegment>();}
+            RegionOneBlenderLandscape.SurfaceRaycast surface=landscape.RaycastDown;
+#if UNITY_EDITOR
+            // Native validation compares every real placement/route query against
+            // the previous collider. The Web player never creates/cooks this mesh.
+            GameObject query=null;int checkedQueries=0;float maxHeightError=0,maxNormalError=0;
+            if(Environment.GetEnvironmentVariable("ELDORIA_VALIDATE_TERRAIN_RAYCAST")=="1")
+            {
             var floor=landscape.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="BLD_Terrain");
-            var query=new GameObject("Temporary exact resource surface validation");
+            query=new GameObject("Temporary exact resource surface validation");
             query.layer=2; query.transform.SetPositionAndRotation(floor.transform.position,floor.transform.rotation);
             query.transform.localScale=floor.transform.lossyScale;
             var collider=query.AddComponent<MeshCollider>();collider.sharedMesh=floor.sharedMesh;
             Physics.SyncTransforms();
+                surface=(Ray ray,out RaycastHit hit,float distance)=>{
+                    bool actual=landscape.RaycastDown(ray,out hit,distance);
+                    bool expected=collider.Raycast(ray,out var reference,distance);
+                    checkedQueries++;
+                    if(actual!=expected)throw new InvalidOperationException("Terrain query hit mismatch at "+ray.origin);
+                    if(actual){
+                        float height=Mathf.Abs(hit.point.y-reference.point.y),normal=Vector3.Distance(hit.normal,reference.normal);
+                        maxHeightError=Mathf.Max(maxHeightError,height);maxNormalError=Mathf.Max(maxNormalError,normal);
+                        if(height>.002f||normal>.002f||(hit.normal.y>=.94f)!=(reference.normal.y>=.94f)||(hit.normal.y>=.9f)!=(reference.normal.y>=.9f))
+                            throw new InvalidOperationException("Terrain query parity mismatch at "+ray.origin+" height="+height+" normal="+normal);
+                    }
+                    return actual;
+                };
+            }
+#endif
             try
             {
                 foreach(var city in cities)
@@ -66,7 +88,7 @@ namespace Eldoria.World4XCanon
                     float low=float.MaxValue,high=float.MinValue;bool valid=!FaultExcluded(faults,city.x,city.z,city.radius);
                     for(int i=0;i<=16;i++){
                         float a=i*Mathf.PI/8;float x=city.x+(i==16?0:Mathf.Cos(a)*city.radius),z=city.z+(i==16?0:Mathf.Sin(a)*city.radius);
-                        if(!collider.Raycast(new Ray(host.WorldHome+new Vector3(x,250,z),Vector3.down),out var hit,500)){valid=false;break;}
+                        if(!surface(new Ray(host.WorldHome+new Vector3(x,250,z),Vector3.down),out var hit,500)){valid=false;break;}
                         low=Mathf.Min(low,hit.point.y);high=Mathf.Max(high,hit.point.y);
                     }
                     if(valid&&high-low<.5f){city.Validated=true;ValidatedCityCount++;}
@@ -80,7 +102,7 @@ namespace Eldoria.World4XCanon
                         float a=i*Mathf.PI/4;float xx=x+(i==8?0:Mathf.Cos(a)*8),zz=z+(i==8?0:Mathf.Sin(a)*8);
                         if(RegionOneBlenderLandscape.Shore(xx,zz)<12||RegionOneBlenderLandscape.Water(xx,zz)>.01f||RegionOneBlenderLandscape.Road(xx,zz)>.05f){safe=false;break;}
                         var ray=new Ray(host.WorldHome+new Vector3(xx,250,zz),Vector3.down);
-                        if(!collider.Raycast(ray,out var hit,500)||Vector3.Dot(hit.normal,Vector3.up)<.94f){safe=false;break;}
+                        if(!surface(ray,out var hit,500)||Vector3.Dot(hit.normal,Vector3.up)<.94f){safe=false;break;}
                         low=Mathf.Min(low,hit.point.y);high=Mathf.Max(high,hit.point.y);if(i==8)centre=hit.point;
                     }
                     if(!safe||high-low>1.6f)continue;
@@ -89,7 +111,14 @@ namespace Eldoria.World4XCanon
                     sites.Add(new Site{Id="region1:"+x+":"+z,Point=centre,Wood=wood});
                 }
             }
-            finally {if(routes==null)routes=new RegionOneTerrainRoutes(host,collider,faults);DestroyImmediate(query);}
+            finally {
+                try {if(routes==null)routes=new RegionOneTerrainRoutes(host,surface,faults);}
+                finally {
+#if UNITY_EDITOR
+                    if(query){DestroyImmediate(query);Debug.Log("ELDORIA_TERRAIN_QUERY_PARITY count="+checkedQueries+" max_height_error="+maxHeightError+" max_normal_error="+maxNormalError);}
+#endif
+                }
+            }
             var snapshot=host.City.Gateway.Snapshot();
             foreach(var city in cities)if(city.Validated&&routes.TryRouteTo(snapshot,host.WorldHome+new Vector3(city.x,0,city.z),out var route))AccessibleCityCount++;
         }

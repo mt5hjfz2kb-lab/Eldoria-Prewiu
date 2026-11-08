@@ -20,7 +20,8 @@ namespace Eldoria.World4XCanon
         readonly RegionOneResourcePlacement.FaultSegment[] faults;
         static readonly Vector2Int[] directions={Vector2Int.left,Vector2Int.right,Vector2Int.up,Vector2Int.down};
         public int WalkableCells=>cells.Count;
-        public RegionOneTerrainRoutes(ValoriaIntegratedWorld host,MeshCollider terrain,RegionOneResourcePlacement.FaultSegment[] faults)
+        public RegionOneTerrainRoutes(ValoriaIntegratedWorld host,MeshCollider terrain,RegionOneResourcePlacement.FaultSegment[] faults) : this(host,terrain.Raycast,faults) {}
+        public RegionOneTerrainRoutes(ValoriaIntegratedWorld host,RegionOneBlenderLandscape.SurfaceRaycast terrain,RegionOneResourcePlacement.FaultSegment[] faults)
         {
             this.host=host;this.faults=faults;
             var obstacles=host.WorldRoot.GetComponentsInChildren<Renderer>(true)
@@ -40,7 +41,7 @@ namespace Eldoria.World4XCanon
                 float xx=x*8,zz=z*8;
                 if(RegionOneResourcePlacement.FaultExcluded(faults,xx,zz,2)||RegionOneBlenderLandscape.Shore(xx,zz)<4||RegionOneBlenderLandscape.Water(xx,zz)>.08f)continue;
                 var ray=new Ray(host.WorldHome+new Vector3(xx,250,zz),Vector3.down);
-                if(!terrain.Raycast(ray,out var hit,500)||Vector3.Dot(hit.normal,Vector3.up)<.9f)continue;
+                if(!terrain(ray,out var hit,500)||Vector3.Dot(hit.normal,Vector3.up)<.9f)continue;
                 bool blocked=false;
                 if(obstacleCells.TryGetValue(new Vector2Int(x,z),out var nearby))foreach(var bounds in nearby)
                     if(hit.point.x>bounds.min.x-1&&hit.point.x<bounds.max.x+1&&hit.point.z>bounds.min.z-1&&hit.point.z<bounds.max.z+1){blocked=true;break;}

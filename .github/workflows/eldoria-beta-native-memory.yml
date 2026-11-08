@@ -1,5 +1,5 @@
-name: Eldoria restore reviewed compact build inputs
-# Resume verified isolated inputs after Unity Application namespace correction.
+name: Eldoria exact terrain queries native parity and WebGL
+# Eliminate runtime temporary terrain cooking only after exact query/topology parity.
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -80,6 +80,8 @@ jobs:
             /tools/eldoria-private-beta/native/
             /Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
             /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
             /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs
           persist-credentials: false
@@ -99,13 +101,27 @@ jobs:
           if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'codex-pr179-stability-2ea88ced1c46' -or $holders[0].ownership_revision -ne [int]$env:EXPECTED_LEASE_REVISION){throw 'Structural startup lease changed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy; do not interrupt'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
-      - name: Restore reviewed post-build URP inputs without changing the compiled output
+      - name: Recover imported isolated project and verify existing production artwork
         shell: powershell
         run: |
-          & ./beta-structural-tools/tools/eldoria-private-beta/native/restore_exported_inputs.ps1 -Evidence "beta-input-restoration-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/recover_isolated.ps1 -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+      - name: Original versus staged native startup, canonical journey, then WebGL
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: |
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/run_warm_structural.ps1 -Source "$env:BETA_SOURCE" -InputAuditPath "$env:BETA_INPUT_AUDIT" -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -WebOutput "beta-structural-webgl-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: compact-build-input-restoration
-          path: beta-input-restoration-${{ github.run_id }}-${{ github.run_attempt }}/
+          name: beta-structural-native-evidence
+          path: beta-structural-evidence-${{ github.run_id }}-${{ github.run_attempt }}/
           retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: beta-structural-webgl-unverified
+          path: beta-structural-webgl-${{ github.run_id }}-${{ github.run_attempt }}/
+          compression-level: 0
+          retention-days: 14
+

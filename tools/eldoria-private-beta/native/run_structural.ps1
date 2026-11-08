@@ -14,6 +14,8 @@ $baseline='948ffa9837168a0b68dab80be76b66350422b23a'
 $overlays=@(
  'Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs',
  'Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs',
+ 'Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs',
+ 'Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs',
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs',
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
 )
@@ -51,6 +53,7 @@ function Invoke-Native([string]$Method,[string]$Log,[string]$Target){
  if($p.ExitCode -ne 0){throw "Unity phase $Method failed: $($p.ExitCode)"}
 }
 function Run-Probe([string]$Mode){
+ $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST=if($Mode -eq 'staged'){'1'}else{'0'}
  $env:ELDORIA_EXPECT_STAGED=if($Mode -eq 'staged'){'1'}else{'0'}
  $env:ELDORIA_MEMORY_SOURCE=if($Mode -eq 'staged'){$env:GITHUB_SHA}else{$baseline}
  $env:ELDORIA_MEMORY_OUT=Join-Path $Evidence $Mode
@@ -76,7 +79,7 @@ try {
  foreach($pass in 0,1){
   $b=Get-Content (Join-Path $Evidence "baseline/startup-$pass.json") -Raw|ConvertFrom-Json
   $s=Get-Content (Join-Path $Evidence "staged/startup-$pass.json") -Raw|ConvertFrom-Json
-  foreach($key in 'geometryHash','queryHash','verifiedSites','validatedCities'){
+  foreach($key in 'geometryHash','queryHash','topologyHash','verifiedSites','validatedCities'){
    if($b.$key -ne $s.$key){throw "Parity mismatch pass=$pass field=$key"}
   }
   if(-not $s.ready -or -not $s.worldComplete -or -not $s.canonicalSavesUnchanged -or $s.retainedVerificationBuckets -ne 0 -or $s.guardedFrames -lt 2){throw "Staged contract failed pass=$pass"}
@@ -88,6 +91,7 @@ try {
  foreach($name in 'integration-result.json','integration-input-signature.txt','integration-input-manifest.txt','integration-failure.txt','web-build.json'){
   $file=Join-Path $proof $name;if(Test-Path $file){Remove-Item $file}
  }
+ $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST='0'
  Invoke-Native 'Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent' (Join-Path $Evidence 'journey.log') 'Win64'
  $native=Get-Content (Join-Path $proof 'integration-result.json') -Raw|ConvertFrom-Json
  if($native.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){throw 'Exact-source journey certification failed'}

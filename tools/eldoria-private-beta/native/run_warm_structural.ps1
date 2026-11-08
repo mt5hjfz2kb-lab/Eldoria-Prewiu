@@ -31,6 +31,8 @@ $utf8=New-Object Text.UTF8Encoding($false)
 $overlays=@(
  'Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs',
  'Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs',
+ 'Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs',
+ 'Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs',
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs',
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
 )

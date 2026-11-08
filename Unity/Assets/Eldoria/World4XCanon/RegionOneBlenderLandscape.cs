@@ -16,12 +16,14 @@ namespace Eldoria.World4XCanon
   static int nx,nz; static float width,depth; static float[] heights; static byte[] masks; static CompactTerrainVerification sourceVertices; static int sourceVertexCount;
   GameObject artwork; MeshFilter terrain; readonly List<Mesh> fittedPigments=new List<Mesh>();
   static RegionOneBlenderLandscape activeSurface;
+  Vector3 contactOrigin;
   Vector3[] contactVertices,contactNormals;int[] contactTriangles;
   readonly Dictionary<Vector2Int,List<int>> contactCells=new Dictionary<Vector2Int,List<int>>();
   void BuildContactSurface(Vector3 origin)
   {
    // Mesh accessors return owned copies. Transform those copies in place;
    // never allocate the former local -> world -> relative intermediate arrays.
+   contactOrigin=origin;
    contactVertices=terrain.sharedMesh.vertices;contactTriangles=terrain.sharedMesh.triangles;
    for(int i=0;i<contactVertices.Length;i++)contactVertices[i]=terrain.transform.TransformPoint(contactVertices[i])-origin;
    contactNormals=terrain.sharedMesh.normals;
@@ -32,6 +34,34 @@ namespace Eldoria.World4XCanon
     for(int z=z0;z<=z1;z++)for(int x=x0;x<=x1;x++){var k=new Vector2Int(x,z);if(!contactCells.TryGetValue(k,out var list)){list=new List<int>();contactCells[k]=list;}list.Add(i);}
    }
    activeSurface=this;
+  }
+  public delegate bool SurfaceRaycast(Ray ray,out RaycastHit hit,float distance);
+  // Reuse the exact imported-triangle index already required by visual grounding.
+  // Only downward vertical rays are supported; never approximate the authored mesh.
+  public bool RaycastDown(Ray ray,out RaycastHit hit,float distance)
+  {
+   hit=default;
+   if(ray.direction!=Vector3.down||distance<0)throw new ArgumentException("Exact terrain query requires a downward vertical ray");
+   var origin=ray.origin-contactOrigin;
+   if(!contactCells.TryGetValue(new Vector2Int(Mathf.FloorToInt(origin.x/16),Mathf.FloorToInt(origin.z/16)),out var list))return false;
+   double top=double.NegativeInfinity;Vector3 normal=default;
+   foreach(int i in list)
+   {
+    var a=contactVertices[contactTriangles[i]];var b=contactVertices[contactTriangles[i+1]];var c=contactVertices[contactTriangles[i+2]];
+    // PhysX single-sided raycasts use face normals, not interpolated vertex normals.
+    var face=Vector3.Cross(b-a,c-a);if(face.y<=0)continue;
+    double den=((double)b.z-c.z)*((double)a.x-c.x)+((double)c.x-b.x)*((double)a.z-c.z);
+    if(den==0)continue;
+    double u=(((double)b.z-c.z)*((double)origin.x-c.x)+((double)c.x-b.x)*((double)origin.z-c.z))/den;
+    double v=(((double)c.z-a.z)*((double)origin.x-c.x)+((double)a.x-c.x)*((double)origin.z-c.z))/den;
+    if(u<0||v<0||u+v>1)continue;
+    double y=u*a.y+v*b.y+(1-u-v)*c.y;
+    if(y>origin.y||origin.y-y>distance||y<=top)continue;
+    top=y;normal=face.normalized;
+   }
+   if(double.IsNegativeInfinity(top))return false;
+   hit.point=new Vector3(ray.origin.x,contactOrigin.y+(float)top,ray.origin.z);
+   hit.normal=normal;hit.distance=ray.origin.y-hit.point.y;return true;
   }
   bool ContactHeight(float x,float z,out float height)
   {

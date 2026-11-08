@@ -20,6 +20,7 @@ public static class EldoriaBetaStructuralStartupProbe {
  const string Flag="Eldoria.BetaStructuralStartup.Active";
  const string ScenePath="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
  static double start=-1,readyAt=-1;static int pass,guardedFrames;
+ static int terrainParityQueries;
  static long peakAllocated,peakReserved,peakManaged;
  static string firstGeometry,firstQueries;
  static readonly string[] Saves={"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"};
@@ -28,7 +29,8 @@ public static class EldoriaBetaStructuralStartupProbe {
  static readonly List<string> editorDiagnostics=new List<string>();
  [Serializable] public class Result {
   public string[] editorOnlyDiagnostics;
-  public string source,inputAudit,mode,environment="Unity Editor Windows; NOT WebGL or physical iPhone",geometryHash,queryHash;
+  public string source,inputAudit,mode,environment="Unity Editor Windows; NOT WebGL or physical iPhone",geometryHash,queryHash,topologyHash;
+  public int terrainParityCheckedQueries;
   public int pass,guardedFrames,retainedVerificationBuckets,verifiedSites,validatedCities;
   public double secondsToReady;
   public long peakAllocated,peakReserved,peakManaged,managedAfterFullGC;
@@ -38,6 +40,9 @@ public static class EldoriaBetaStructuralStartupProbe {
  static bool Staged=>Environment.GetEnvironmentVariable("ELDORIA_EXPECT_STAGED")=="1";
  static EldoriaBetaStructuralStartupProbe(){EditorApplication.update+=Tick;Application.logMessageReceived+=Log;}
  static void Log(string message,string stack,LogType type){
+  if(SessionState.GetBool(Flag,false)&&message.StartsWith("ELDORIA_TERRAIN_QUERY_PARITY count=")){
+   string value=message.Substring("ELDORIA_TERRAIN_QUERY_PARITY count=".Length).Split(' ')[0];terrainParityQueries+=int.Parse(value);
+  }
   if(!SessionState.GetBool(Flag,false)||(type!=LogType.Error&&type!=LogType.Exception))return;
   // This observed Editor Search database initialization exception is not player code.
   // Preserve it explicitly; all other exceptions remain fatal to the test.
@@ -77,23 +82,31 @@ public static class EldoriaBetaStructuralStartupProbe {
    if(readyAt<0)readyAt=now;
    if(now-readyAt<5)return;
    Need(errors.Count==0,"Unity errors: "+string.Join(" | ",errors));
-   if(Staged){Need(guardedFrames>=2,"Staged startup did not yield protected frame boundaries");Need(VerificationBuckets()==0,"Verification cache remains resident");}
+   if(Staged){Need(terrainParityQueries>10000,"Per-query collider parity missing");Need(guardedFrames>=2,"Staged startup did not yield protected frame boundaries");Need(VerificationBuckets()==0,"Verification cache remains resident");}
    var surface=Object.FindFirstObjectByType<RegionOneBlenderLandscape>(FindObjectsInactive.Include);Need(surface,"Missing exact terrain");
    var placement=Object.FindFirstObjectByType<RegionOneResourcePlacement>(FindObjectsInactive.Include);Need(placement&&placement.VerifiedSiteCount>0,"Missing resource placement");
    string geometry=Geometry(surface),queries=Queries();
    if(pass==0){firstGeometry=geometry;firstQueries=queries;}else{Need(firstGeometry==geometry,"Geometry changed after real scene reload");Need(firstQueries==queries,"Terrain queries changed after real scene reload");}
    foreach(var file in Saves)Need(SessionState.GetString(Flag+file,"")==HashFile(Path.Combine(Application.persistentDataPath,file)),"Canonical save changed: "+file);
-   var result=new Result{editorOnlyDiagnostics=editorDiagnostics.ToArray(),source=Environment.GetEnvironmentVariable("ELDORIA_MEMORY_SOURCE"),inputAudit=Environment.GetEnvironmentVariable("ELDORIA_BASELINE_INPUT_AUDIT"),mode=Staged?"staged":"baseline",pass=pass,guardedFrames=guardedFrames,retainedVerificationBuckets=VerificationBuckets(),verifiedSites=placement.VerifiedSiteCount,validatedCities=placement.ValidatedCityCount,secondsToReady=readyAt-start,peakAllocated=peakAllocated,peakReserved=peakReserved,peakManaged=peakManaged,geometryHash=geometry,queryHash=queries,ready=true,worldComplete=true,canonicalSavesUnchanged=true};
+   var result=new Result{topologyHash=Topology(placement),terrainParityCheckedQueries=terrainParityQueries,editorOnlyDiagnostics=editorDiagnostics.ToArray(),source=Environment.GetEnvironmentVariable("ELDORIA_MEMORY_SOURCE"),inputAudit=Environment.GetEnvironmentVariable("ELDORIA_BASELINE_INPUT_AUDIT"),mode=Staged?"staged":"baseline",pass=pass,guardedFrames=guardedFrames,retainedVerificationBuckets=VerificationBuckets(),verifiedSites=placement.VerifiedSiteCount,validatedCities=placement.ValidatedCityCount,secondsToReady=readyAt-start,peakAllocated=peakAllocated,peakReserved=peakReserved,peakManaged=peakManaged,geometryHash=geometry,queryHash=queries,ready=true,worldComplete=true,canonicalSavesUnchanged=true};
    result.managedAfterFullGC=GC.GetTotalMemory(true);
    File.WriteAllText(Path.Combine(Out,"startup-"+pass+".json"),JsonUtility.ToJson(result,true));
    if(pass==0){
-    pass=1;start=readyAt=-1;guardedFrames=0;peakAllocated=peakReserved=peakManaged=0;
+    pass=1;start=readyAt=-1;guardedFrames=0;terrainParityQueries=0;peakAllocated=peakReserved=peakManaged=0;
     EditorSceneManager.LoadSceneInPlayMode(ScenePath,new LoadSceneParameters(LoadSceneMode.Single));return;
    }
    File.WriteAllText(Path.Combine(Out,"complete.txt"),"STRUCTURAL_STARTUP_PASS; exact terrain validated twice; scene reload parity; canonical saves unchanged; no physical-device certification");
    SessionState.SetBool(Flag,false);EditorApplication.Exit(0);
   }catch(Exception e){Fail(e);}
  }
+ static string Topology(RegionOneResourcePlacement placement)=>Digest(writer=>{
+  var sites=(IEnumerable)Field(placement,"sites");
+  var names=new List<string>();foreach(var site in sites){var t=site.GetType();names.Add(t.GetField("Id").GetValue(site)+"|"+t.GetField("Wood").GetValue(site));}
+  foreach(string value in names.OrderBy(x=>x,StringComparer.Ordinal))writer.Write(value);
+  var routes=Field(placement,"routes");var cells=(IDictionary)Field(routes,"cells");
+  var keys=new List<string>();foreach(DictionaryEntry cell in cells)keys.Add(cell.Key.ToString());
+  foreach(string key in keys.OrderBy(x=>x,StringComparer.Ordinal))writer.Write(key);
+ });
  static string Digest(Action<BinaryWriter> write){using(var stream=new MemoryStream()){using(var writer=new BinaryWriter(stream,System.Text.Encoding.UTF8,true))write(writer);stream.Position=0;using(var hash=SHA256.Create())return BitConverter.ToString(hash.ComputeHash(stream)).Replace("-","");}}
  static string Geometry(RegionOneBlenderLandscape surface){
   var artwork=(GameObject)Field(surface,"artwork");var filters=artwork.GetComponentsInChildren<MeshFilter>(true);
