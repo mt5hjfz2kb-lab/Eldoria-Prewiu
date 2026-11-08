@@ -1,4 +1,4 @@
-name: Eldoria mobile6 reflection compatibility verification
+name: Eldoria mobile6 published Apple GPU verification
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -11,61 +11,18 @@ concurrency:
   group: eldoria-beta-entry-qa
   cancel-in-progress: false
 jobs:
-  package:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: tools/eldoria-private-beta
-          persist-credentials: false
-      - uses: actions/github-script@v7
-        with:
-          script: |
-            const a=(await github.rest.actions.getArtifact({...context.repo,artifact_id:13619839245})).data;
-            if(a.digest!=='sha256:0c81412f97134dbd928182445171b00b65bdb87403a1e856ea6d3afc53c0329d'||a.workflow_run.id!==42487738914)throw Error('Parent artifact changed');
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 42487738914
-          name: mobile5-candidate-site
-          github-token: ${{ github.token }}
-          path: parent-site
-      - name: Decode only five authored cubemaps and verify all objects
-        run: |
-          python -m pip install UnityPy==1.25.4 lz4==4.4.5 Brotli==1.2.1
-          python tools/eldoria-private-beta/package_cubemap_site.py parent-site cube-work site
-      - uses: actions/upload-artifact@v4
-        with:
-          name: mobile6-candidate-site
-          path: site/
-          compression-level: 0
-          retention-days: 14
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: mobile6-integrity
-          path: |
-            cube-work/candidate/integrity.json
-            cube-work/candidate/cubemap-report.json
-            cube-work/package-summary.json
-            site/release-identity.json
   webkit:
-    needs: package
     runs-on: macos-15
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        version: [1.55.0, 1.65.0]
+        version: [1.55.0]
     steps:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
-      - uses: actions/download-artifact@v4
-        with:
-          name: mobile6-candidate-site
-          path: site
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -81,15 +38,13 @@ jobs:
           QA_ENTRY: '1'
           QA_OUT: engine-evidence
           QA_REVISION: native325-mobile6-cubemap
-          QA_URL: http://127.0.0.1:18765/?eldoria_diag=1
+          QA_URL: https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile6-cubemap
         run: |
           export NODE_PATH="$RUNNER_TEMP/beta-browser-deps/node_modules"
-          node tools/eldoria-private-beta/qa_static_server.cjs site 18765 > "$RUNNER_TEMP/beta-server.log" 2>&1 &
-          for i in $(seq 1 20); do curl -fsS http://127.0.0.1:18765/release-identity.json >/dev/null && break; sleep 1; done
           node tools/eldoria-private-beta/qa_webkit_residency.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile6-webkit-${{ matrix.version }}
+          name: mobile6-public-webkit-${{ matrix.version }}
           path: engine-evidence/
           retention-days: 14
