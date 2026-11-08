@@ -24,6 +24,7 @@ if(Test-Path $probe){throw 'Refuse to replace an existing probe'}
 if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools already running'}
 if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
 $env:VALORIA_GAMEPLAY_PROBE='1'
+$env:ELDORIA_MEMORY_PHASES='1'
 $proof=Join-Path $Source 'docs/evidence/valoria-reference-clean'
 function Set-NativePhase([string]$Description,[string]$State='pending'){
  if(-not $env:GH_TOKEN){return}
