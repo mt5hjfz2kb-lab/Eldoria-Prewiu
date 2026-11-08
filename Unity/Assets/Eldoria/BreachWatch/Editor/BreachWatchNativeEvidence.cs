@@ -342,6 +342,10 @@ namespace Eldoria.BreachWatch.Editor
                 Need(atmosphericVeil && !atmosphericVeil.raycastTarget &&
                      atmosphericVeil.gameObject.activeInHierarchy,
                      "Independent unobtrusive atmospheric layer missing or stealing input: "+name);
+                var rift=ui.GetComponentInChildren<BreachWatchRiftSeparator>(true);
+                Need(rift && rift.gameObject.activeInHierarchy && !rift.raycastTarget &&
+                     !rift.GetComponent<BreachWatchPlate>(),
+                     "Floating Breach emblem must be transparent open-air artwork, not an opaque gameplay button: "+name);
                 var trims=ui.GetComponentsInChildren<BreachWatchBevelTrim>(true);
                 Need(trims.Length>=5 && trims.All(t=>t && !t.raycastTarget),
                     "Premium carved identity, quest and three resource inlays are absent or intercept world gestures");
