@@ -62,7 +62,7 @@ def check(size:tuple[int,int]):
         chip=min(70,max(58,(right-8)/3))
         for i in range(3):
             place("resource"+str(i),w-m-(3*chip+8)+i*(chip+4),18,chip,38)
-        place("mission",m,95,min(182,w*.45),80)
+        place("mission",m,95,min(200,w*.49),80)
         place("breach",w*.52-56,74,112,30)
         for i in range(3):
             place("disabled seal"+str(i),m,h-306+i*45,37,37)
