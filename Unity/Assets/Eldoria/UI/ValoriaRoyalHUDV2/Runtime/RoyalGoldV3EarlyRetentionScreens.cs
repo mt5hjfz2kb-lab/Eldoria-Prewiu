@@ -742,7 +742,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var cmd=new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,kind,target,s.Revision);
             var result=gateway.Execute(cmd);
             notice=result.Message;
-            string completeChapterTitle=null,completeChapterResult=null;
+            string ceremonyTitle=null,ceremonyResult=null;
             if(kind=="VigilantBattle" && result.Ok && IsOpen &&
                OpenDestination==Destination.Vigilants)
             {
@@ -763,10 +763,10 @@ namespace Eldoria.UI.RoyalGold.V2
                         battleSummary+progress);
                     if(chapterCompleted)
                     {
-                        completeChapterTitle="CAPÍTULO "+challenge.Chapter+" COMPLETADO";
+                        ceremonyTitle="CAPÍTULO "+challenge.Chapter+" COMPLETADO";
                         // The existing battle/report already credited every real
                         // amount. Do not add an invented victory chest reward.
-                        completeChapterResult=challenge.Name+"\n"+battleSummary+progress;
+                        ceremonyResult=challenge.Name+"\n"+battleSummary+progress;
                     }
                     victoryStarted=Time.unscaledTime;
                     victoryUntil=victoryStarted+(chapterCompleted?7f:3.2f);
@@ -782,6 +782,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 var updated=gateway.Snapshot();
                 var order=updated.Retention?.Orders?.FirstOrDefault(x=>x.Id==target);
                 bool discovered=kind=="ScoutClaim" && order!=null&&order.Claimed;
+                if(discovered && DailyTreasureMilestoneRules.FirstScoutFamily(s,updated,target))
+                {
+                    // Rare only: one ceremony per FIRST discovery family, not
+                    // for every claim or periodically repeating scout report.
+                    // The authoritative ScoutClaim has already paid and added
+                    // its own exploration mail before this presentation.
+                    ceremonyTitle=EarlyRetentionRules.ScoutDiscoveryTitle(order);
+                    ceremonyResult=EarlyRetentionRules.ScoutDiscoveryText(order)+"\n"+
+                        EarlyRetentionRules.ScoutRewardText(order.Kind);
+                }
                 victoryTitle.Put(discovered?"HALLAZGO REGISTRADO":
                     "EXPLORADORES EN CAMINO");
                 victoryTitle.color=Gold;
@@ -795,12 +805,12 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             refreshed?.Invoke();
             Render(true);
-            // On the real final Guardian of the chapter, reuse the exact daily
-            // chest's visual-only ceremony. Rewards and inbox were committed
-            // by the pre-existing VigilantBattle command above.
-            if(completeChapterTitle!=null && dailyTreasures!=null)
+            // Premium ceremony only for a real chapter guardian OR the first
+            // new kind of scout discovery. All resulting rewards and reports
+            // were committed by their existing gateway commands beforehand.
+            if(ceremonyTitle!=null && dailyTreasures!=null)
                 dailyTreasures.PresentCommittedMilestone(
-                    completeChapterTitle,completeChapterResult);
+                    ceremonyTitle,ceremonyResult);
         }
         void ExecuteStage()
         {
