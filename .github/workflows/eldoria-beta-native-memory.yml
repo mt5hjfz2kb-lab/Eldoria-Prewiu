@@ -1,4 +1,4 @@
-name: Eldoria staged startup native parity and WebGL
+name: Eldoria certified structural WebGL recovery and export
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -86,7 +86,7 @@ jobs:
     needs: preflight
     if: needs.preflight.outputs.native_available == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 170
+    timeout-minutes: 35
     steps:
       - name: Recover installed Git
         shell: powershell
@@ -126,46 +126,11 @@ jobs:
           $folder="beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
           if(Test-Path $folder){throw 'Isolated project already exists; refuse replacement'}
           $drive=Get-PSDrive -Name ([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE).Substring(0,1))
-          if($drive.Free -lt 8GB){throw 'Insufficient isolated import headroom; preserve other projects'}
-      - name: Recover exact owned interrupted run after its process cleanup
+          if($drive.Free -lt 512MB){throw 'Insufficient isolated import headroom; preserve other projects'}
+      - name: Preserve build settings, restore baseline source and export certified WebGL
         shell: powershell
         run: |
-          & ./beta-structural-tools/tools/eldoria-private-beta/native/recover_owned_native.ps1 -Tools beta-structural-tools
-      - name: Verify exact already-imported source without checkout or reset
-        shell: powershell
-        run: |
-          $ErrorActionPreference='Stop'
-          $cache=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
-          if(-not(Test-Path (Join-Path $cache '.git'))){throw 'Warm source cache unavailable'}
-          $head=(git -C $cache rev-parse HEAD).Trim()
-          if($head -ne '948ffa9837168a0b68dab80be76b66350422b23a'){throw "Warm source is a different commit: $head"}
-          $pending=@(git -C $cache status --porcelain -- Unity)
-          if($LASTEXITCODE -ne 0){throw 'Cannot inspect warm source'}
-          $out=Join-Path $env:GITHUB_WORKSPACE "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
-          New-Item -ItemType Directory -Force $out|Out-Null
-          $files=@(git -C $cache ls-files --modified --others --exclude-standard -- Unity)
-          if($LASTEXITCODE -ne 0){throw 'Cannot inventory existing pending inputs'}
-          $inventory=@()
-          foreach($file in $files){
-            $full=Join-Path $cache $file
-            if(Test-Path $full -PathType Leaf){$inventory+=@{path=$file;bytes=(Get-Item $full).Length;sha256=(Get-FileHash $full -Algorithm SHA256).Hash}}
-          }
-          $utf8=New-Object Text.UTF8Encoding($false)
-          [IO.File]::WriteAllText((Join-Path $out 'existing-input-audit.json'),(@{base=$head;status=$pending;files=$inventory}|ConvertTo-Json -Depth 8),$utf8)
-          $diff=git -C $cache diff -- Unity
-          [IO.File]::WriteAllLines((Join-Path $out 'existing-tracked-metadata.diff'),[string[]]$diff,$utf8)
-          # Native attempt 2: retain observed Editor Search diagnostics separately from player errors.
-          # The following wrapper verifies every existing input against the committed audit before any mutation.
-          Write-Host 'Recorded current inputs; strict reviewed hash inventory gate follows in wrapper.'
-
-          if(Test-Path (Join-Path $cache 'Unity/Assets/EldoriaBetaMemoryProbe')){throw 'An existing probe must be preserved'}
-          Add-Content $env:GITHUB_ENV "BETA_SOURCE=$cache"
-      - name: Original versus staged native startup, canonical journey, then WebGL
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: powershell
-        run: |
-          & ./beta-structural-tools/tools/eldoria-private-beta/native/run_warm_structural.ps1 -Source "$env:BETA_SOURCE" -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -WebOutput "beta-structural-webgl-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/export_certified_native.ps1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -176,6 +141,6 @@ jobs:
         if: success()
         with:
           name: beta-structural-webgl-unverified
-          path: beta-structural-webgl-${{ github.run_id }}-${{ github.run_attempt }}/
+          path: ${{ env.BETA_CERTIFIED_WEB }}/
           compression-level: 0
           retention-days: 14
