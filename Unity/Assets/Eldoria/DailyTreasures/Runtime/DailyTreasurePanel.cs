@@ -20,6 +20,10 @@ namespace Eldoria.DailyTreasures
         Func<long> now;
         Action refreshed;
         RectTransform root,entryRect,screen,cardSurface,calendar,ceremony,glowRect;
+        RectTransform originalSafeArea;
+        float nextCanvasProbe;
+        bool onVigiliaCanvas;
+        public bool UsesVigiliaCanvas => onVigiliaCanvas;
         Button entryButton,claimButton,closeButton,skipButton;
         Text header,subhead,claimCaption,resultText,entryCaption;
         readonly Text[] dayHead=new Text[7],dayBody=new Text[7];
@@ -177,6 +181,7 @@ namespace Eldoria.DailyTreasures
             chestKnock=MakeOriginalSound("Valoria / wooden lock",176f,.17f);
             chestChime=MakeOriginalSound("Valoria / discovery chime",540f,.62f);
             root=(RectTransform)transform;
+            originalSafeArea=root.parent as RectTransform;
             // No second EventSystem, Canvas, save or navigation router.
             entryRect=NewRect("Daily reward / optional medallion",root);
             entryButton=ActionButton(entryRect,Oak,Open);
@@ -540,7 +545,12 @@ namespace Eldoria.DailyTreasures
             if(w<200||h<180)return;
             lastWidth=w;lastHeight=h;
             bool portrait=h>w;
-            Place(entryRect,0f,0f,0f,0f,14f,portrait?100f:83f,76f,54f);
+            // Vigilia's landscape utility rail occupies the lower-left
+            // 77–165 px band; use the verified free 175–230 px zone instead.
+            // In portrait the tribute stays just above the five-medallion dock.
+            Place(entryRect,0f,0f,0f,0f,14f,
+                onVigiliaCanvas?(portrait?102f:177f):(portrait?100f:83f),
+                76f,54f);
             float panelW=Mathf.Min(w-24f,portrait?440f:740f);
             float panelH=Mathf.Min(h-20f,portrait?700f:370f);
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
@@ -611,9 +621,49 @@ namespace Eldoria.DailyTreasures
             // Skip stays away from the receipt and is a genuine >=44px hit target.
             Place((RectTransform)skipButton.transform,1f,1f,1f,1f,-10f,-60f,100f,45f);
         }
+        // PR173's approved Vigilia runs in a separate ScreenSpaceCamera
+        // Canvas and deliberately disables the old Royal HUD's Canvas.
+        // The treasure panel must therefore MOVE to its real safe-area
+        // composition instead of remaining invisibly attached to legacy.
+        // No direct PR173 assembly dependency, no second Canvas/GraphicRaycaster,
+        // no duplicate gameplay gateway and no changes to PR173 itself.
+        void SynchronizePresentationCanvas()
+        {
+            if(Time.unscaledTime<nextCanvasProbe)return;
+            nextCanvasProbe=Time.unscaledTime+1f;
+
+            var vigilia=GameObject.Find("VIGILIA / independent canvas");
+            var canvas=vigilia?vigilia.GetComponent<Canvas>():null;
+            var safe=canvas&&canvas.enabled?
+                vigilia.transform.Find("Safe composition") as RectTransform:null;
+            if(safe)
+            {
+                if(root.parent!=safe)
+                {
+                    root.SetParent(safe,false);
+                    Stretch(root);
+                    root.SetAsLastSibling();
+                    onVigiliaCanvas=true;
+                    lastWidth=lastHeight=-1f;
+                }
+                return;
+            }
+            // The proof canvas can be disabled without destroying the scene.
+            // Restore our original parent instead of leaving controls hidden.
+            if(onVigiliaCanvas && originalSafeArea)
+            {
+                root.SetParent(originalSafeArea,false);
+                Stretch(root);
+                root.SetAsLastSibling();
+                onVigiliaCanvas=false;
+                lastWidth=lastHeight=-1f;
+            }
+        }
+
         void Update()
         {
             if(!root)return;
+            SynchronizePresentationCanvas();
             if(gateway!=null && Time.unscaledTime>=nextMilestonePoll)
             {
                 nextMilestonePoll=Time.unscaledTime+.65f;
