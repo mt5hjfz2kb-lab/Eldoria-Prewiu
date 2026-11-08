@@ -26,6 +26,10 @@ namespace Eldoria.BreachWatch
         public bool HasLiveBuilding => image && image.enabled && image.texture == texture && lastModel;
         public bool RenderedFromIsolatedRealMeshes { get; private set; }
         public float NonBackgroundPixelFraction { get; private set; }
+        // Actual GPU-readback silhouette margins, not just mesh counts.
+        // This flag is evaluated in Editor evidence; normal mobile play
+        // never performs a synchronous texture readback.
+        public bool PortraitGeometryClipped { get; private set; }
         public void Initialize(RawImage target)
         {
             image = target;
@@ -49,6 +53,7 @@ namespace Eldoria.BreachWatch
             if(model == lastModel && lastKey == key && HasLiveBuilding)return;
             RenderedFromIsolatedRealMeshes=false;
             NonBackgroundPixelFraction=0f;
+            PortraitGeometryClipped=false;
             if(!texture)
             {
                 texture = new RenderTexture(512,256,24,RenderTextureFormat.ARGB32);
@@ -223,12 +228,27 @@ namespace Eldoria.BreachWatch
                     // linear(.07) clear colour into much brighter pixel bytes.
                     var background=pixels[8*texture.width+8];
                     int nonBackground=0;
-                    foreach(var p in pixels)
+                    int minX=texture.width,minY=texture.height;
+                    int maxX=-1,maxY=-1;
+                    for(int py=0;py<texture.height;py++)
+                    for(int px=0;px<texture.width;px++)
+                    {
+                        var p=pixels[py*texture.width+px];
                         if(Mathf.Abs(p.r-background.r)+
                            Mathf.Abs(p.g-background.g)+
-                           Mathf.Abs(p.b-background.b)>42)
-                            nonBackground++;
+                           Mathf.Abs(p.b-background.b)<=42)
+                            continue;
+                        nonBackground++;
+                        minX=Mathf.Min(minX,px);maxX=Mathf.Max(maxX,px);
+                        minY=Mathf.Min(minY,py);maxY=Mathf.Max(maxY,py);
+                    }
                     NonBackgroundPixelFraction=nonBackground/(float)pixels.Length;
+                    // With six physical pixel margins, the clipped geometry
+                    // would look damaged inside the owner's ornate gold
+                    // picture frame. Reject it instead of presenting it.
+                    PortraitGeometryClipped=nonBackground>0 &&
+                        (minX<6||minY<6||
+                         maxX>=texture.width-6||maxY>=texture.height-6);
                 }
                 finally
                 {
@@ -300,7 +320,8 @@ namespace Eldoria.BreachWatch
                         soilMaterial.SetTexture("_BaseMap",earthTexture);
                     if(soilMaterial.HasProperty("_BaseColor"))
                         soilMaterial.SetColor("_BaseColor",Color.white);
-                    soilMaterial.SetFloat("_Smoothness",0f);
+                    if(soilMaterial.HasProperty("_Smoothness"))
+                        soilMaterial.SetFloat("_Smoothness",0f);
                     disposableMaterials.Add(soilMaterial);
                     var earthRenderer=earth.GetComponent<MeshRenderer>();
                     earthRenderer.sharedMaterial=soilMaterial;
