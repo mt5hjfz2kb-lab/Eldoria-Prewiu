@@ -212,6 +212,9 @@ namespace Eldoria.DailyTreasures.Editor
                         FindButton(panel,"Skip animation / keep earned items"),width,height);
                     inputChecks++;
                     Canvas.ForceUpdateCanvases();
+                    Need(panel.EarnedItemCardCount==4 &&
+                         panel.HasRevealedIllustratedEarnedItems,
+                        "Day seven must show four ORIGINAL painted resource cards after real claim");
                     pictures.Add(Render(camera,rt,output,width,height,"opened",
                         "Same real claim: chest opened and exact items",true,true));
                     Need(gateway.Snapshot().Resources.Wood==after.Resources.Wood &&
@@ -273,6 +276,10 @@ namespace Eldoria.DailyTreasures.Editor
                         FindButton(panel,"Skip animation / keep earned items"),
                         width,height);
                     inputChecks++;
+                    Canvas.ForceUpdateCanvases();
+                    Need(panel.EarnedItemCardCount==2 &&
+                         panel.HasRevealedIllustratedEarnedItems,
+                        "Day four must show two painted, real paid wood and stone cards");
                     Need(specialGateway.Snapshot().Resources.Wood==
                          specialAfter.Resources.Wood &&
                          specialGateway.Snapshot().Resources.Stone==
