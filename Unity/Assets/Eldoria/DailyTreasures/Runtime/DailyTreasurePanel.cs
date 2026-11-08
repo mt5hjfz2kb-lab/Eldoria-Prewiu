@@ -351,6 +351,11 @@ namespace Eldoria.DailyTreasures
         public void Open()
         {
             if(suppressed || gateway==null || now==null)return;
+            // The chest modal must outrank the RoyalGold screens which are
+            // siblings of this independent UI host inside the same safe area.
+            // Reordering only the inner screen previously left it invisible
+            // behind whichever kingdom room was last opened.
+            root.SetAsLastSibling();
             screen.gameObject.SetActive(true);
             screen.SetAsLastSibling();
             ceremony.gameObject.SetActive(false);
@@ -463,6 +468,9 @@ namespace Eldoria.DailyTreasures
             if(gateway==null || now==null || screen==null ||
                string.IsNullOrWhiteSpace(title))return false;
             if(IsOpen)return false;
+            // Important victories are presented above the room whose real
+            // gateway command just finished, without creating a second Canvas.
+            root.SetAsLastSibling();
             screen.gameObject.SetActive(true);
             screen.SetAsLastSibling();
             lastWidth=lastHeight=-1f;
