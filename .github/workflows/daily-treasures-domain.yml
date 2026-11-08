@@ -24,5 +24,7 @@ jobs:
           dotnet-version: "8.0.x"
       - name: Compile and test original C# reward rules (no Unity mocks)
         run: dotnet run --project tools/daily-treasures/Tests.csproj --configuration Release
+      - name: Compile and test the real authoritative LocalGateway (no Unity)
+        run: dotnet run --project tools/daily-treasures/Gateway.Tests.csproj --configuration Release
       - name: Enforce authoritative save and non-paying mailbox wiring
         run: node tools/daily-treasures/check-integration.mjs
