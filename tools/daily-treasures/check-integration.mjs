@@ -97,4 +97,14 @@ assert.match(nativeWorkflow,/\$report\.graphicalPointerHits -ne 40/);
 assert.match(panel,/reward\.CycleDay==7\?DailyTreasureCeremonyTier\.Legendary/);
 assert.match(native,/panel\.ProbePresentationCanvasForNativeEvidence\(\)/);
 assert.match(native,/nativeCanvas\.enabled=false/);
+// The native workflow was previously damaged by a duplicated YAML block.
+// Keep this quality gate executable: one render step, one artifact upload
+// and no orphaned PowerShell fragments outside their job.
+assert.equal((nativeWorkflow.match(/- name: Compile Unity and render genuine calendar/g)||[]).length,1,
+    'One native Unity render job only');
+assert.equal((nativeWorkflow.match(/- name: Preserve real Unity screenshots/g)||[]).length,1,
+    'Native artifact upload is unique');
+assert.doesNotMatch(nativeWorkflow,/^\)\s*$/m,
+    'No orphan PowerShell expressions outside YAML blocks');
+assert.match(nativeWorkflow,/\$report\.graphicalPointerHits -ne 40/);
 console.log('PASS daily treasures gateway integration source invariants');
