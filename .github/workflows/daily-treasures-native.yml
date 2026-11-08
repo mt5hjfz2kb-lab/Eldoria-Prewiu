@@ -115,7 +115,7 @@ jobs:
             $guids+=$match.Groups[1].Value
           }
           if($guids[0] -eq $guids[1]){throw 'Duplicate Unity Sprite GUIDs'}
-          Write-Host 'PASS: original PNG files, exact SHA256 hashes, Sprite import settings, independent GUIDs'
+          Write-Host 'DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS: source hashes, alpha, GUIDs'
       - name: Compile Unity and render genuine calendar, closed and opened chest captures
         shell: powershell
         working-directory: daily-source
