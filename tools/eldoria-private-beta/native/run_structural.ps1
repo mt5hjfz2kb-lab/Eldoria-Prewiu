@@ -55,7 +55,7 @@ function Invoke-Native([string]$Method,[string]$Log,[string]$Target){
  if($p.ExitCode -ne 0){throw "Unity phase $Method failed: $($p.ExitCode)"}
 }
 function Run-Probe([string]$Mode){
- $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST=if($Mode -eq 'staged'){'1'}else{'0'}
+ $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST=if($Mode -eq 'staged' -or $Mode -eq 'route-baseline'){'1'}else{'0'}
  $env:ELDORIA_BAKE_TERRAIN_QUERIES=if($Mode -eq 'bake'){'1'}else{'0'}
  $env:ELDORIA_EXPECT_STAGED=if($Mode -ne 'baseline'){'1'}else{'0'}
  $env:ELDORIA_MEMORY_SOURCE=if($Mode -ne 'baseline'){$env:GITHUB_SHA}else{$baseline}
@@ -93,7 +93,23 @@ try {
  [IO.File]::WriteAllText((Join-Path $Evidence 'source-overlay.json'),(@{base=$baseline;overlay_commit=$env:GITHUB_SHA;files=$hashes}|ConvertTo-Json -Depth 8),$utf8)
  Run-Probe 'bake'
  $queryHash=(Get-FileHash $queryAsset -Algorithm SHA256).Hash
+ # A/B the exact same tape, collider validation, imported assets and saves.
+ # Only the route-buffer implementation differs; no art/profile changes.
+ $routePath='Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs'
+ Copy-Item (Join-Path $Tools 'tools/eldoria-private-beta/native/TerrainRoutesBeforeBufferReuse.cs.txt') (Join-Path $Source $routePath) -Force
+ Run-Probe 'route-baseline'
+ Copy-Item (Join-Path $Tools $routePath) (Join-Path $Source $routePath) -Force
  Run-Probe 'staged'
+ $routeComparison=@()
+ foreach($pass in 0,1){
+  $old=Get-Content (Join-Path $Evidence "route-baseline/startup-$pass.json") -Raw|ConvertFrom-Json
+  $new=Get-Content (Join-Path $Evidence "staged/startup-$pass.json") -Raw|ConvertFrom-Json
+  foreach($key in 'geometryHash','queryHash','topologyHash','populationRouteHash','verifiedSites','validatedCities'){
+   if(-not $new.$key -or $new.$key -ne $old.$key){throw "Route-buffer behavior mismatch: $key"}
+  }
+  $routeComparison+=@{pass=$pass;parity=$true;before=$old;after=$new;managedPeakDelta=[long]$new.peakManaged-[long]$old.peakManaged}
+ }
+ [IO.File]::WriteAllText((Join-Path $Evidence 'route-buffer-comparison.json'),(@{status='EXACT_POPULATION_AND_ROUTE_PARITY';passes=$routeComparison}|ConvertTo-Json -Depth 12),$utf8)
  if((Get-FileHash $queryAsset -Algorithm SHA256).Hash -ne $queryHash){throw 'Terrain tape changed after validation'}
  $comparison=@()
  foreach($pass in 0,1){

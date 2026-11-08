@@ -29,7 +29,7 @@ public static class EldoriaBetaStructuralStartupProbe {
  static readonly List<string> editorDiagnostics=new List<string>();
  [Serializable] public class Result {
   public string[] editorOnlyDiagnostics;
-  public string source,inputAudit,mode,environment="Unity Editor Windows; NOT WebGL or physical iPhone",geometryHash,queryHash,topologyHash;
+  public string source,inputAudit,mode,environment="Unity Editor Windows; NOT WebGL or physical iPhone",geometryHash,queryHash,topologyHash,populationRouteHash;
   public int terrainParityCheckedQueries;
   public int pass,guardedFrames,retainedVerificationBuckets,verifiedSites,validatedCities;
   public double secondsToReady;
@@ -89,7 +89,7 @@ public static class EldoriaBetaStructuralStartupProbe {
    string geometry=Geometry(surface),queries=Queries();
    if(pass==0){firstGeometry=geometry;firstQueries=queries;}else{Need(firstGeometry==geometry,"Geometry changed after real scene reload");Need(firstQueries==queries,"Terrain queries changed after real scene reload");}
    foreach(var file in Saves)Need(SessionState.GetString(Flag+file,"")==HashFile(Path.Combine(Application.persistentDataPath,file)),"Canonical save changed: "+file);
-   var result=new Result{topologyHash=Topology(placement),terrainParityCheckedQueries=terrainParityQueries,editorOnlyDiagnostics=editorDiagnostics.ToArray(),source=Environment.GetEnvironmentVariable("ELDORIA_MEMORY_SOURCE"),inputAudit=Environment.GetEnvironmentVariable("ELDORIA_BASELINE_INPUT_AUDIT"),mode=Staged?"staged":"baseline",pass=pass,guardedFrames=guardedFrames,retainedVerificationBuckets=VerificationBuckets(),verifiedSites=placement.VerifiedSiteCount,validatedCities=placement.ValidatedCityCount,secondsToReady=readyAt-start,peakAllocated=peakAllocated,peakReserved=peakReserved,peakManaged=peakManaged,geometryHash=geometry,queryHash=queries,ready=true,worldComplete=true,canonicalSavesUnchanged=true};
+   var result=new Result{populationRouteHash=PopulationRoutes(host,placement),topologyHash=Topology(placement),terrainParityCheckedQueries=terrainParityQueries,editorOnlyDiagnostics=editorDiagnostics.ToArray(),source=Environment.GetEnvironmentVariable("ELDORIA_MEMORY_SOURCE"),inputAudit=Environment.GetEnvironmentVariable("ELDORIA_BASELINE_INPUT_AUDIT"),mode=Staged?"staged":"baseline",pass=pass,guardedFrames=guardedFrames,retainedVerificationBuckets=VerificationBuckets(),verifiedSites=placement.VerifiedSiteCount,validatedCities=placement.ValidatedCityCount,secondsToReady=readyAt-start,peakAllocated=peakAllocated,peakReserved=peakReserved,peakManaged=peakManaged,geometryHash=geometry,queryHash=queries,ready=true,worldComplete=true,canonicalSavesUnchanged=true};
    result.managedAfterFullGC=GC.GetTotalMemory(true);
    File.WriteAllText(Path.Combine(Out,"startup-"+pass+".json"),JsonUtility.ToJson(result,true));
    if(pass==0){
@@ -107,6 +107,24 @@ public static class EldoriaBetaStructuralStartupProbe {
    SessionState.SetBool(Flag,false);EditorApplication.Exit(0);
   }catch(Exception e){Fail(e);}
  }
+ static string PopulationRoutes(ValoriaIntegratedWorld host,RegionOneResourcePlacement placement)=>Digest(writer=>{
+  var state=host.City.Gateway.Snapshot();
+  foreach(var item in state.WorldResourceLocations.OrderBy(x=>x.TargetId,StringComparer.Ordinal)){
+   writer.Write(item.TargetId??"");writer.Write(item.SiteId??"");writer.Write(item.Generation);writer.Write(item.Level);writer.Write(item.Capacity);
+   writer.Write(item.X);writer.Write(item.Y);writer.Write(item.Z);
+  }
+  foreach(var item in state.WorldCreatureLocations.OrderBy(x=>x.TargetId,StringComparer.Ordinal)){
+   writer.Write(item.TargetId??"");writer.Write(item.SiteId??"");writer.Write(item.CreatureKind??"");writer.Write(item.Generation);writer.Write(item.Level);
+   writer.Write(item.X);writer.Write(item.Y);writer.Write(item.Z);writer.Write(item.Alive);
+  }
+  var routes=(RegionOneTerrainRoutes)Field(placement,"routes");
+  var goals=state.WorldResourceLocations.Where(x=>x.Generation>0).Select(x=>new Vector3(x.X,x.Y,x.Z))
+   .Concat(state.WorldCreatureLocations.Where(x=>x.Alive).Select(x=>new Vector3(x.X,x.Y,x.Z))).ToArray();
+  foreach(var goal in goals){
+   bool found=routes.TryRouteTo(state,goal,out var route);writer.Write(found);
+   if(found){writer.Write(route.Count);foreach(var point in route){writer.Write(point.X);writer.Write(point.Y);writer.Write(point.Z);}}
+  }
+ });
  static string Topology(RegionOneResourcePlacement placement)=>Digest(writer=>{
   var sites=(IEnumerable)Field(placement,"sites");
   var names=new List<string>();foreach(var site in sites){var t=site.GetType();names.Add(t.GetField("Id").GetValue(site)+"|"+t.GetField("Wood").GetValue(site));}

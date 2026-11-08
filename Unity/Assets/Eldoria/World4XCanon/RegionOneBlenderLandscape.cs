@@ -98,7 +98,7 @@ namespace Eldoria.World4XCanon
   }
   // Runtime yields frame boundaries so Web GC can reclaim each completed phase.
   // Synchronous editor callers retain the exact same validated installation path.
-  static void TraceStartupMemory(string phase)
+  internal static void TraceStartupMemory(string phase)
   {
    bool enabled=UnityEngine.Application.platform==RuntimePlatform.WebGLPlayer
     ?UnityEngine.Application.absoluteURL.Contains("eldoria_profile=1")

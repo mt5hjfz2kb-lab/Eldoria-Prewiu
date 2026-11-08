@@ -17,6 +17,7 @@ namespace Eldoria.World4XCanon
         HashSet<Vector2Int> cachedOccupied;
         Vector2Int cachedStart;
         Dictionary<Vector2Int,Vector2Int> reachable;
+        readonly Queue<Vector2Int> searchQueue=new Queue<Vector2Int>();
         readonly RegionOneResourcePlacement.FaultSegment[] faults;
         static readonly Vector2Int[] directions={Vector2Int.left,Vector2Int.right,Vector2Int.up,Vector2Int.down};
         public int WalkableCells=>cells.Count;
@@ -94,7 +95,12 @@ namespace Eldoria.World4XCanon
             // 24 m approach limit are exactly the same as before; no diagonal shortcuts.
             if(reachable==null||cachedStart!=start||!cachedOccupied.SetEquals(occupied))
             {
-                var queue=new Queue<Vector2Int>();reachable=new Dictionary<Vector2Int,Vector2Int>();queue.Enqueue(start);reachable[start]=start;
+                // Each newly populated resource changes occupancy. Rebuild the exact
+                // search, but retain its large storage instead of abandoning a
+                // dictionary for every resource in the same WebGL frame.
+                if(reachable==null)reachable=new Dictionary<Vector2Int,Vector2Int>();
+                else reachable.Clear();
+                var queue=searchQueue;queue.Clear();queue.Enqueue(start);reachable[start]=start;
                 while(queue.Count>0)
                 {
                     var a=queue.Dequeue();
