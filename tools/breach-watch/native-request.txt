@@ -38,3 +38,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: Independent read-only export of currently integrated approved Vigilia art for local visual fidelity evaluation. Windows Unity remains reserved by beta; do not start native stage. [vigilia-design-qa]
 
 2026-11-08: compare approved independent BreachWatch sprites with archived real Valoria city captures; no publication, do not seize Windows beta runner.
+
+2026-11-08: native-first-screen semantic correction only: the five owner-reference medallions now label truthful destinations (realm, resources, army disabled, exploration gated, heroes disabled). The real resource command selects the sawmill, not barracks. Source and art integrity recheck on Ubuntu; Windows native remains strictly gated behind beta holder release.
