@@ -310,6 +310,18 @@ namespace Eldoria.BreachWatch.Editor
                     "Large redundant central title must not cover the real city: "+name);
                 var nav = ui.NavButtons;
                 Need(nav.Count==5 && nav.All(x=>x), "Exactly 5 original independent navigation buttons required");
+                var activeHalo=ui.GetComponentInChildren<BreachWatchSelectionHalo>(true);
+                Need(activeHalo && activeHalo.gameObject.activeInHierarchy && !activeHalo.raycastTarget,
+                    "Warm selected medallion ring absent or intercepting the player's pointer: "+name);
+                Vector3[] haloCorners=new Vector3[4], firstNavCorners=new Vector3[4];
+                activeHalo.rectTransform.GetWorldCorners(haloCorners);
+                ((RectTransform)nav[0].transform).GetWorldCorners(firstNavCorners);
+                var haloCenter=RectTransformUtility.WorldToScreenPoint(camera,
+                    (haloCorners[0]+haloCorners[2])*.5f);
+                var selectedCenter=RectTransformUtility.WorldToScreenPoint(camera,
+                    (firstNavCorners[0]+firstNavCorners[2])*.5f);
+                Need(Vector2.Distance(haloCenter,selectedCenter)<=3.5f,
+                    "Independent warm selection halo is not centered over active Reino emblem: "+name);
                 float previousRight = -1;
                 bool oneRow = true;
                 float baselineY = float.NaN;
