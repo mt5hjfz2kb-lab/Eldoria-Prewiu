@@ -98,7 +98,7 @@ def package(a):
     packed.unlink();m["decoded_parts"][m["data"]]=parts
     (out/"build-manifest.json").write_text(json.dumps(m,indent=2))
     identity={"revision":a.revision,"source_sha":a.overlay_commit,"frozen_base_sha":"948ffa9837168a0b68dab80be76b66350422b23a",
-              "source_composition":"frozen code plus hash-pinned existing generated assets and normalized metadata plus four staged-startup C# overlays",
+              "source_composition":"frozen code plus hash-pinned existing generated assets and normalized metadata plus six startup/query C# overlays and the natively certified original terrain response tape",
               "existing_input_audit_sha256":next(iter(audits)),
               "game_bytes_unchanged":False,"gameplay_code_unchanged":False,"tutorial_unchanged":True,"clock_unchanged":True,
               "native_parity_verified":True,"native_journey_verified":True,"native_run":a.native_run,

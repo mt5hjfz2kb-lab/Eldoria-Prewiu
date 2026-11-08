@@ -11,9 +11,9 @@ concurrency:
   group: eldoria-beta-mobile-candidate
   cancel-in-progress: false
 env:
-  NATIVE_RUN: '42513182378'
-  NATIVE_SOURCE: 2c5074233268927d90d1106c233d0bce86e317bf
-  CANDIDATE_REVISION: native325-mobile8-terrain
+  NATIVE_RUN: '42514790566'
+  NATIVE_SOURCE: 35db7669ad1bfcbeeb563fa40ebb5e591efe0344
+  CANDIDATE_REVISION: native325-mobile8-tape
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -116,6 +116,22 @@ jobs:
           assert web['source_sha']==os.environ['NATIVE_SOURCE']
           files=[p for p in pathlib.Path('fresh-build').rglob('*') if p.is_file()]
           assert len(files)==len(web['files']) and sum(p.stat().st_size for p in files)==web['bytes']
+          cache=json.load(open('native-evidence/terrain-query-cache.json',encoding='utf-8-sig'))
+          assert cache['source']==os.environ['NATIVE_SOURCE'] and cache['bytes']>100000
+          expected_cache=pathlib.Path('native-evidence/terrain-query-cache.bytes').read_bytes()
+          assert hashlib.sha256(expected_cache).hexdigest()==cache['sha256'].lower()
+          import UnityPy
+          bundle=UnityPy.load('transformed/data.unity3d')
+          matches=[]
+          for obj in bundle.objects:
+            if obj.type.name=='TextAsset':
+              tree=obj.read_typetree()
+              if tree['m_Name']=='RuntimeTerrainQueries':
+                value=tree['m_Script']
+                if isinstance(value,str):value=value.encode('utf-8','surrogateescape')
+                matches.append(bytes(value))
+          assert matches==[expected_cache],'Certified tape missing or modified in fresh player data'
+          del bundle,matches,expected_cache
           native=json.load(open('native-evidence/native-journey/integration-result.json',encoding='utf-8-sig'))
           assert native['source']==os.environ['NATIVE_SOURCE'] and native['status']=='INTEGRATION_PASS_ART_REVIEW_REQUIRED'
           assert len(native['checks'])==225
@@ -126,6 +142,12 @@ jobs:
           pathlib.Path('transformed/composed-integrity.json').write_text(json.dumps(profile,indent=2))
           PY
           python tools/eldoria-private-beta/prepare_structural_site.py package --build fresh-build --wrapper reference-site --output site --data extracted/data.bin --bundle transformed/data.unity3d --texture-proof transformed/composed-integrity.json --native-proof native-evidence/comparison.json --web-proof native-evidence/web-build.json --overlay-commit "$NATIVE_SOURCE" --revision "$CANDIDATE_REVISION" --native-run "$NATIVE_RUN"
+          python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('site/release-identity.json');r=json.loads(p.read_text());cache=json.load(open('native-evidence/terrain-query-cache.json',encoding='utf-8-sig'))
+          r['terrain_query_cache_sha256']=cache['sha256'].lower();r['terrain_query_runtime_cooking']=False;r['terrain_query_source']='original PhysX responses, full native replay certified'
+          p.write_text(json.dumps(r,indent=2))
+          PY
           node tools/delivery/test-exact-decoded-transport.mjs site
           python - <<'PY'
           import pathlib
