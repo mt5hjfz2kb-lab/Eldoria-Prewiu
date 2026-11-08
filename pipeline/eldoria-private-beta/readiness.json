@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "status": "BLOCKED_MOBILE6_PHYSICAL_IPHONE_UNVERIFIED",
+  "status": "BLOCKED_MOBILE6_OWNER_IPHONE_CONFIRMATION",
   "scope": "Closed playtest Bastion I–V",
   "source": "native325-mobile6-cubemap",
   "source_sha": "948ffa9837168a0b68dab80be76b66350422b23a",
@@ -22,8 +22,8 @@
     "web_package_ready": true,
     "diagnostics": "v4 local-only opt-in; visible beta 6 label",
     "access_control": "public URL; not authenticated",
-    "live_identity_verified": false,
-    "publication_purpose": "New owner diagnostic candidate; physical iPhone not certified"
+    "live_identity_verified": true,
+    "publication_purpose": "Published owner candidate; Apple GPU public WebKit passed, physical iPhone pending"
   },
   "measurement": {
     "supabase_project": "Eldoria Playtest Feedback",
@@ -86,7 +86,7 @@
     "release_for_external_testers": false,
     "physical_iphone_result": "OWNER_REPORTED_FAILURE: still enters for one second and exits"
   },
-  "updated_at": "2026-11-08T15:28:46.785Z",
+  "updated_at": "2026-11-08T15:32:45.904Z",
   "mobile_candidate_history": [
     {
       "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
@@ -311,7 +311,7 @@
     "site_version": 5,
     "site_deployment": "appgdep_6af094df6f9881918253a11bc83d7bb6",
     "public_qa_run": 42494930537,
-    "public_qa_pass": null,
+    "public_qa_pass": true,
     "physical_iphone_verified": false,
     "release_for_external_testers": false,
     "published": true,
@@ -319,6 +319,11 @@
     "all_objects_verified": 57375,
     "decoded_faces_and_mips": 240,
     "added_serialized_bytes": 1965240,
-    "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile6-cubemap"
+    "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile6-cubemap",
+    "status": "PUBLISHED_APPLE_GPU_WEBKIT_PASSED_PHYSICAL_PENDING",
+    "public_qa_artifact": 13623376058,
+    "public_qa_zip_sha256": "0c9f7dad64554bb176d4b18c9c03096dd8a509eed33b692dc13810759003ccc7",
+    "public_nickname_reopen_visually_verified": true,
+    "site_source_sha": "0a1549ff07cac486f56c554fc77b470c589db4fc"
   }
 }
