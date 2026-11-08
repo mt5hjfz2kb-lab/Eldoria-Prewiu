@@ -58,6 +58,12 @@ def package(a):
     script,count=re.subn(r'window\.__eldoriaDiagnosticRevision="[^"]*";', "window.__eldoriaDiagnosticRevision="+json.dumps(a.revision)+";", script, count=1)
     assert count==1, "Expected existing local diagnostic revision marker"
     (out/"play.js").write_text(script)
+    script_name="play-"+sha(script.encode())[:16]+".js"
+    (out/script_name).write_text(script)
+    html=(out/"index.html").read_text()
+    html,count=re.subn(r'src="play(?:-[a-f0-9]+)?\.js(?:\?[^"]*)?"', 'src="'+script_name+'"',html)
+    assert count==1, "Expected one beta startup script in real wrapper"
+    (out/"index.html").write_text(html)
     for directory in ("StreamingAssets","TemplateData"):
         if (build/directory).is_dir():shutil.copytree(build/directory,out/directory)
     # Preserve only a shell icon absent from the native minimal template.
