@@ -8,3 +8,5 @@ Workstream-ID: eldoria-forja-oscura-visual-proof-20261107
 2026-11-08: review-approved isolated CC0 material candidate import into new BreachWatch Resources ONLY (4 selected assets); verify exact archive SHA256, distributed CC0 licence, matching source HEAD, author claim, and PNG metadata; no old UI and no release.
 
 2026-11-08: required A/B art integrity and Roslyn exact-head source audit for fully independent UI; no Windows use unless beta's live exclusive claim is released and explicitly reassigned. The previous profile remains UNMERGED.
+
+2026-11-08 source-only gate: verify restored workflow syntax, exact SHA-256 of 4 CC0 artwork files, stable Unity GUIDs, full C# Roslyn parse; Windows native capture deferred until exclusive beta resource released. Branch remains isolated.
