@@ -232,6 +232,8 @@ namespace Eldoria.BreachWatch.Editor
                          (canonical.Length==0 ||
                           feedback==canonical.Replace("\r"," ").Replace("\n"," ")),
                          "Tapping a blocked action did not explain the real game requirement");
+                    Need(ui.HasVisibleFeedbackPlate,
+                         "Blocked upgrade reason is not protected by a readable compact slate toast");
                     Need(ui.SelectedBuildingId=="bastion",
                          "A disabled upgrade tap accidentally changed building selection");
                 }
