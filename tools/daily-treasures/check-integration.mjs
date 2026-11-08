@@ -65,4 +65,13 @@ assert.match(gateway,/EventId="milestone:hero:lyra"/);
 // receipts. Neither new mail type may award a duplicate reward.
 assert.match(gateway,/Type="hero-unlocked"/);
 assert.match(gateway,/Type="milestone-bastion"/);
+assert.match(panel,/root\.SetAsLastSibling\(\)/);
+assert.match(panel,/DailyTreasureRules\.NextConsecutiveBonusDay\(/);
+assert.match(panel,/lastPaintedUtcDay/);
+assert.match(panel,/SampleForNativeEvidence\(float elapsed\)/);
+assert.match(panel,/PaintCeremonyFrame\(elapsed\)/);
+assert.match(native,/DailyTreasureRevealTimeline\.RevealPeakSeconds/);
+assert.match(native,/"opening"/);
+assert.match(native,/pictures\.Count==16/);
+assert.match(nativeWorkflow,/\$report\.images -ne 16/);
 console.log('PASS daily treasures gateway integration source invariants');
