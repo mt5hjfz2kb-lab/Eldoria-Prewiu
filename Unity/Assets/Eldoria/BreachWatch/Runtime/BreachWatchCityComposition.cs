@@ -54,6 +54,20 @@ namespace Eldoria.BreachWatch
             return found;
         }
 
+        public void OnCityReentered(int pixelWidth,int pixelHeight)
+        {
+            if(!captured || !host || !host.City || host.InWorld || !cityCamera)return;
+            // Canonical World -> City transition calls Controls.ResetView().
+            // Our former portrait flag still says "already framed"; reset
+            // that only at this actual mode transition, never on an ordinary
+            // user pan or pinch. We then reapply the approved view exactly
+            // once, preserving normal gesture ownership thereafter.
+            portraitFramed=false;
+            originalZoom=cityCamera.orthographicSize;
+            originalPosition=cityCamera.transform.position;
+            Layout(pixelWidth,pixelHeight);
+        }
+
         public void Layout(int pixelWidth,int pixelHeight)
         {
             if(!captured || !cityCamera || !host || !host.City || host.InWorld)return;
