@@ -1,4 +1,4 @@
-name: Eldoria structural candidate browser verification
+name: Eldoria deduplicated structural candidate verification
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -11,6 +11,8 @@ concurrency:
   group: eldoria-beta-mobile-candidate
   cancel-in-progress: false
 env:
+  DEDUP_RUN: '42477019139'
+  DEDUP_SOURCE: 25c6b4c53c8e078a660cf29ef809e2309e3d7439
   NATIVE_RUN: '42473140363'
   NATIVE_EXPORT_SOURCE: d32508f9ce380eb8ea9bc10fecd4fb2dfc44a2f2
   NATIVE_ORIGIN_RUN: '42435095850'
@@ -38,6 +40,29 @@ jobs:
             time.sleep(10)
           else:raise RuntimeError('Native run still incomplete; no candidate certification')
           PYWAIT
+      - name: Require exact deduplication verification
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json,os,time,urllib.request
+          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['DEDUP_RUN']
+          for _ in range(240):
+            req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+            with urllib.request.urlopen(req,timeout=30) as r:run=json.load(r)
+            assert run['head_sha']==os.environ['DEDUP_SOURCE']
+            if run['status']=='completed':
+              assert run['conclusion']=='success','Deduplication verification failed'
+              break
+            time.sleep(10)
+          else:raise RuntimeError('Deduplication verification incomplete')
+          PY
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.DEDUP_RUN }}
+          name: deduplicated-bundle-unverified
+          github-token: ${{ github.token }}
+          path: deduplicated
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
@@ -120,35 +145,44 @@ jobs:
       - name: Reuse only byte-matched verified texture transformations in the fresh build
         run: |
           python tools/eldoria-private-beta/prepare_structural_site.py extract --build fresh-build --output extracted
-          HASH=$(python -c "import json;print(json.load(open('extracted/extraction.json'))['bundle_sha256'])")
-          python tools/eldoria-private-beta/reuse_verified_texture_transforms.py --original original.unity3d --verified verified.unity3d --fresh extracted/data.unity3d --expected-fresh-sha256 "$HASH" --destination transformed
+          HASH=$(python -c "import json;print(json.load(open('deduplicated/integrity.json'))['candidate_sha256'])")
+          python tools/eldoria-private-beta/reuse_verified_texture_transforms.py --original original.unity3d --verified verified.unity3d --fresh deduplicated/data.unity3d --expected-fresh-sha256 "$HASH" --destination transformed
           PARENT_HASH=$(python -c "import json;print(json.load(open('transformed/integrity.json'))['candidate_sha256'])")
           python -u tools/eldoria-private-beta/compress_remaining_materials.py transformed/data.unity3d transformed-final "$PARENT_HASH"
           python - <<'PY'
           import json,pathlib
           first=json.load(open('transformed/integrity.json'));second=json.load(open('transformed-final/integrity.json'))
           assert second['source_sha256']==first['candidate_sha256']
-          assert second['all_objects_verified']==first['all_objects_verified']==57495
+          dedup=json.load(open('deduplicated/integrity.json'))
+          extraction=json.load(open('extracted/extraction.json'))
+          assert dedup['source_sha256']==extraction['bundle_sha256']
+          assert first['source_sha256']==dedup['candidate_sha256']
+          assert dedup['original_objects']==57495
+          assert dedup['all_objects_verified']+dedup['removed_exact_texture_objects']==dedup['original_objects']
+          assert second['all_objects_verified']==first['all_objects_verified']==dedup['all_objects_verified']
           reports=json.load(open('transformed-final/texture-report.json'))['changes']
           changed={t['object'] for t in first['texture_changes']}|{t['id'] for t in reports if t['accepted']}
-          composed=dict(second);composed.update(source_sha256=first['source_sha256'],changed_textures=len(changed),verification_chain=[first['candidate_sha256'],second['candidate_sha256']],reference_reuse_verified=True)
+          composed=dict(second);composed.update(source_sha256=dedup['source_sha256'],changed_textures=len(changed),verification_chain=[dedup['candidate_sha256'],first['candidate_sha256'],second['candidate_sha256']],exact_texture_aliasing_verified=True,removed_exact_texture_objects=dedup['removed_exact_texture_objects'],original_objects=dedup['original_objects'],reference_reuse_verified=True)
           pathlib.Path('transformed-final/composed-integrity.json').write_text(json.dumps(composed,indent=2))
           PY
           python tools/eldoria-private-beta/prepare_structural_site.py package --build fresh-build --wrapper previous-candidate --output site/mobile --data extracted/data.bin --bundle transformed-final/data.unity3d --texture-proof transformed-final/composed-integrity.json --native-proof native-evidence/comparison.json --web-proof native-evidence/web-build.json --overlay-commit "$NATIVE_SOURCE" --revision "$CANDIDATE_REVISION" --native-run "$NATIVE_ORIGIN_RUN"
           node tools/delivery/test-exact-decoded-transport.mjs site/mobile
           python - <<'PY'
-          import pathlib,json
+          import pathlib,json,os
           p=pathlib.Path('site/mobile');size=sum(f.stat().st_size for f in p.rglob('*') if f.is_file())
           d=json.loads((p/'release-identity.json').read_text());d['packaged_bytes']=size
+          d['exact_texture_aliasing_verified']=True
+          d['dedup_verification_run']=os.environ['DEDUP_RUN']
           (p/'release-identity.json').write_text(json.dumps(d,indent=2))
           print('CANDIDATE_PACKAGED_BYTES',size)
-          assert size<900000000,'Candidate too large for existing Pages distribution; do not run another oversized browser retry'
+          assert size<565000000,'Candidate too large for existing Pages distribution; do not run another oversized browser retry'
           PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: structural-packaging-evidence
           path: |
+            deduplicated/integrity.json
             transformed/integrity.json
             transformed-final/texture-report.json
             transformed-final/integrity.json
