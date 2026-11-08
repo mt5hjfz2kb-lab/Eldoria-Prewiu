@@ -276,6 +276,27 @@ namespace Eldoria.BreachWatch.Editor
                          "Real Bastion selection is missing contextual native card in "+name);
                     Need(ui.HasLiveBuildingPortrait,
                          "Authentic world-building portrait did not render in "+name);
+                    // Each panel child shares the same top-left anchored
+                    // coordinate space; verify costs/status/action are ordered
+                    // without occupying the same pixels on narrow phones.
+                    RectTransform Part(string childName)
+                    {
+                        var text=ui.BuildingPanel.GetComponentsInChildren<Text>(true)
+                            .FirstOrDefault(t=>t && t.name==childName);
+                        Need(text!=null,"Missing native live text "+childName);
+                        return text.rectTransform;
+                    }
+                    var costs=Part("Real costs");
+                    var state=Part("Real state and timer");
+                    var action=(RectTransform)ui.BuildingAction.transform;
+                    float Bottom(RectTransform r) => -r.anchoredPosition.y+r.rect.height;
+                    float Top(RectTransform r) => -r.anchoredPosition.y;
+                    Need(Bottom(costs)<=Top(state)+.5f,
+                        "Building costs overlap live state: "+name);
+                    Need(Bottom(state)<=Top(action)+.5f,
+                        "Live status overlaps main action: "+name);
+                    Need(Bottom(action)<=ui.BuildingPanel.rect.height+.5f,
+                        "Main building action clipped by native card: "+name);
                 }
                 return new Shot {
                     file=name,sha256=HexHash(file),width=w,height=h,
