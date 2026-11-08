@@ -32,6 +32,8 @@ namespace Eldoria.DailyTreasures
         readonly Text[] dayHead=new Text[7],dayBody=new Text[7];
         readonly Image[] dayBack=new Image[7],sparks=new Image[18];
         readonly RectTransform[] prizeRects=new RectTransform[4];
+        readonly Vector2[] prizeHomes=new Vector2[4];
+        Vector2 prizeFlightOrigin;
         readonly Image[] prizeIcons=new Image[4];
         readonly Text[] prizeNames=new Text[4],prizeAmounts=new Text[4];
         readonly CanvasGroup[] prizeGroups=new CanvasGroup[4];
@@ -580,14 +582,38 @@ namespace Eldoria.DailyTreasures
             bool finished=true;
             for(int i=0;i<prizeCount;i++)
             {
+                // Real daily loot rises from the actual opened chest and
+                // settles onto original gilt item plaques. Ordinary bonuses
+                // only slide subtly into place; they never fake a big chest.
+                float duration=chestReward?.64f:.34f;
                 float t=Mathf.Clamp01((Time.unscaledTime-prizeRevealStarted-
-                    i*.11f)/.34f);
+                    i*.13f)/duration);
                 float ease=t*t*(3f-2f*t);
-                prizeGroups[i].alpha=ease;
-                prizeRects[i].localScale=Vector3.one*(.90f+.10f*ease);
+                prizeGroups[i].alpha=Mathf.Clamp01(t*2.3f);
+                var start=chestReward?prizeFlightOrigin:
+                    prizeHomes[i]+new Vector2(i%2==0?-20f:20f,18f);
+                var xy=Vector2.Lerp(start,prizeHomes[i],ease);
+                xy.y+=Mathf.Sin(Mathf.PI*ease)*(chestReward?18f:4f);
+                prizeRects[i].anchoredPosition=xy;
+                float scale=chestReward?
+                    Mathf.Lerp(.52f,1f,ease):
+                    Mathf.Lerp(.91f,1f,ease);
+                prizeRects[i].localScale=Vector3.one*scale;
+                prizeRects[i].localRotation=Quaternion.Euler(0f,0f,
+                    Mathf.Lerp(chestReward?(i%2==0?-9f:9f):0f,0f,ease));
                 if(t<1f)finished=false;
             }
-            if(finished)prizeAnimating=false;
+            if(finished)
+            {
+                prizeAnimating=false;
+                for(int i=0;i<prizeCount;i++)
+                {
+                    prizeRects[i].anchoredPosition=prizeHomes[i];
+                    prizeRects[i].localScale=Vector3.one;
+                    prizeRects[i].localRotation=Quaternion.identity;
+                    prizeGroups[i].alpha=1f;
+                }
+            }
         }
 
         void Claim()
@@ -730,7 +756,8 @@ namespace Eldoria.DailyTreasures
                 for(int i=0;i<prizeCount;i++)
                 {
                     prizeGroups[i].alpha=immediate?1f:0f;
-                    prizeRects[i].localScale=Vector3.one*(immediate?1f:.90f);
+                    prizeRects[i].localScale=Vector3.one*(immediate?1f:.52f);
+                    prizeRects[i].localRotation=Quaternion.identity;
                 }
             }
             else
@@ -907,6 +934,10 @@ namespace Eldoria.DailyTreasures
             float cardH=quietRewards?(portrait?129f:115f):
                 prizeRows==2?65f:
                 portrait?(compactPrizePortrait?76f:89f):62f;
+            // Source of the animated cards is the visual chest opening; this
+            // position is in shelf-local coordinates and follows layout size.
+            prizeFlightOrigin=new Vector2(0f,
+                chestY-shelfY-artHeight*.10f);
             for(int i=0;i<prizeRects.Length;i++)
             {
                 int r=i/prizeCols,c=i%prizeCols;
@@ -919,6 +950,7 @@ namespace Eldoria.DailyTreasures
                     r==0?cardH*.5f+prizeGap*.5f:
                          -cardH*.5f-prizeGap*.5f;
                 Place(prizeRects[i],.5f,.5f,.5f,.5f,x,y,cardW,cardH);
+                prizeHomes[i]=new Vector2(x,y);
                 bool tall=cardH>=80f,shortCard=cardH<60f;
                 Place(prizeIcons[i].rectTransform,.5f,1f,.5f,1f,
                     0f,tall?-6f:-3f,tall?49f:shortCard?31f:36f,
