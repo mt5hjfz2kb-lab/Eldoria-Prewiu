@@ -125,11 +125,19 @@ namespace Eldoria.DailyTreasures
             var r=NewRect(name,parent);
             var t=r.gameObject.AddComponent<Text>();
             t.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            if(name=="Reward heading" || name=="Day heading" || name=="Claim label" ||
-               name=="Confirmed received items")
+            // PR173 owns these licensed OFL typefaces. Reuse them only when
+            // Vigilia is present; do not copy font binaries into PR181 or
+            // introduce a second font package with conflicting licenses.
+            bool display=name=="Reward heading" || name=="Day heading" ||
+                name=="Claim label" || name=="Confirmed received items";
+            var referenceFont=Resources.Load<Font>(display
+                ? "VigiliaArt/Fonts/CormorantGaramond-SemiBold"
+                : "VigiliaArt/Fonts/LibreBaskerville-Regular");
+            if(referenceFont)t.font=referenceFont;
+            else if(display)
             {
-                var serif=Resources.Load<Font>("EldoriaRetention/reference-serif");
-                if(serif)t.font=serif;
+                var fallback=Resources.Load<Font>("EldoriaRetention/reference-serif");
+                if(fallback)t.font=fallback;
             }
             t.fontSize=fontSize;t.color=tint;t.alignment=align;
             t.horizontalOverflow=HorizontalWrapMode.Wrap;
