@@ -173,7 +173,7 @@ jobs:
           if($report.status -ne 'NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING' -or $report.authoredSpritesImported -ne $true){
             throw 'Illustrated chest sprites not imported in Unity or not used in the native render'
           }
-          if($report.images -ne 48 -or $report.realGatewayClaims -ne 8 -or
+          if($report.images -ne 52 -or $report.realGatewayClaims -ne 8 -or
              $report.graphicalPointerHits -ne 56 -or
              $report.visualOnlyMilestoneCaptures -ne 16){
             throw 'Actual Unity or player-interaction proof is incomplete'
@@ -182,11 +182,17 @@ jobs:
           if($report.artApproved -ne $false -or $report.fullSceneVerified -ne $false -or $report.iosVerified -ne $false){
             throw 'Component test may not claim artistic, gameplay or physical-device approval'
           }
-          if(@($report.shots).Count -ne 48){throw 'Native evidence missing four genuine HUD entries, 28 paid-day views and 16 visual-only styles'}
+          if(@($report.shots).Count -ne 52){throw 'Native evidence missing four genuine HUD entries, 28 paid days, four loot flights and 16 visual-only styles'}
           $seen=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
           foreach($size in @(@(1600,900),@(900,1600),@(844,390),@(390,844))){
             $width=[int]$size[0];$height=[int]$size[1]
-            foreach($variant in @('hud-entry','calendar','closed','opening','opened','special-day4-calendar','special-day4-opening','special-day4-received')){
+            $variants=@('hud-entry','calendar','closed','opening','opened',
+              'special-day4-calendar','special-day4-opening','special-day4-received')
+            if(($width -eq 844 -and $height -eq 390) -or
+               ($width -eq 390 -and $height -eq 844)){
+              $variants+=@('day7-prize-flight','special-day4-prize-flight')
+            }
+            foreach($variant in $variants){
               $name="real-unity-daily-$variant-${width}x$height.png"
               $matches=@($report.shots | Where-Object {$_.file -ceq $name})
               if($matches.Count -ne 1 -or -not $seen.Add($name)){
@@ -258,8 +264,8 @@ jobs:
               }
             }
           }
-          if($seen.Count -ne 48 -or @(Get-ChildItem -Path $env:OUT -File -Filter '*.png').Count -ne 48){
-            throw 'Required four unclaimed HUD + 28 actual paid-day + 16 visual-only milestone PNG captures'
+          if($seen.Count -ne 52 -or @(Get-ChildItem -Path $env:OUT -File -Filter '*.png').Count -ne 52){
+            throw 'Required four unclaimed HUD + 28 paid-day + 4 actual loot flights + 16 visual-only milestone PNGs'
           }
           Write-Host 'PASS original native component captures, NOT FULL GAME / ART APPROVAL'
       - name: Preserve real Unity screenshots and error log even when test fails
