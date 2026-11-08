@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T15:55:37.530Z",
+  "updated_at": "2026-11-08T15:56:41.837Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6975,7 +6975,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -6993,16 +6993,31 @@
         "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs.meta",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/Eldoria.RoyalGold.V2.asmdef",
-        "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json"
+        "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
+        ".github/workflows/daily-treasures-native.yml",
+        "Unity/Assets/Eldoria/DailyTreasures/Editor/**"
       ],
       "resources": [],
       "budget_eur": 0,
-      "phase": "CALENDAR_CHEST_CODED_NATIVE_ART_GATE_PENDING",
+      "phase": "DOMAIN_VERIFIED_NATIVE_ART_IMPORT_AND_UNITY_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.",
-      "next": "C# domain tests on Ubuntu; genuine Unity native capture/interaction gate after Windows lease release. Keep PR173, beta native325 and production unmodified.",
+      "next": "105 calendar tests + 82 real gateway tests + 8 layouts PASS. Import the two already-generated owner-directed 512px PNG resources with exact SHA256, obtain separate Vigilia workstream Windows handoff, render 12 real Unity captures and complete full scene/device/art review. Keep PR181 DRAFT, no merge/release.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
-      "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json"
+      "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
+      "last_verified": {
+        "source": "feature/eldoria-daily-treasures-20261108",
+        "run_id": 42497233697,
+        "result": "SUCCESS_CSHARP_DOMAIN_AND_SOURCE_ONLY",
+        "rule_assertions": 105,
+        "real_gateway_assertions": 82,
+        "layout_viewports": 8,
+        "art_source_exported_outside_git": true,
+        "art_source_imported_in_repo": false,
+        "unity_native_pass": false,
+        "art_approved": false,
+        "webgl_release": false
+      }
     }
   ],
   "history": [
