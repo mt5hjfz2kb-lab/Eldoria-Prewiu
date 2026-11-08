@@ -124,6 +124,39 @@ internal static class Program
             "seventh-day extra food");
         Eq(DailyTreasureRules.BonusFoodForStreak(14),80,
             "next week loyalty stays limited");
+        for(int i=0;i<=500;i++)
+        {
+            float t=i*DailyTreasureRevealTimeline.DurationSeconds/500f;
+            var quiet=DailyTreasureRevealTimeline.Sample(
+                t,DailyTreasureCeremonyTier.Quiet);
+            var special=DailyTreasureRevealTimeline.Sample(
+                t,DailyTreasureCeremonyTier.Special);
+            var legendary=DailyTreasureRevealTimeline.Sample(
+                t,DailyTreasureCeremonyTier.Legendary);
+            True(quiet.Glow<=special.Glow+0.0001f &&
+                 special.Glow<=legendary.Glow+0.0001f,
+                 "legendary lighting must never be weaker "+i);
+            True(quiet.Embers<=special.Embers+0.0001f &&
+                 special.Embers<=legendary.Embers+0.0001f,
+                 "legendary embers must never be weaker "+i);
+            True(legendary.Scale>=special.Scale &&
+                 legendary.Scale<=1.05f,
+                 "rare ceremony stays within premium mobile scale "+i);
+            True(legendary.Closed==special.Closed &&
+                 legendary.Opened==special.Opened,
+                 "different tiers must not make inconsistent lid poses "+i);
+            True(legendary.Finished==special.Finished &&
+                 quiet.Finished==special.Finished,
+                 "all reward ceremonies must finish at the same duration "+i);
+        }
+        var normalPeak=DailyTreasureRevealTimeline.Sample(
+            DailyTreasureRevealTimeline.RevealPeakSeconds,
+            DailyTreasureCeremonyTier.Special);
+        var grandPeak=DailyTreasureRevealTimeline.Sample(
+            DailyTreasureRevealTimeline.RevealPeakSeconds,
+            DailyTreasureCeremonyTier.Legendary);
+        True(grandPeak.Glow>normalPeak.Glow,
+            "real seventh-day grand coffer gets a distinct cinematic flash");
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");
     }
 }
