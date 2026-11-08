@@ -399,15 +399,31 @@ namespace Eldoria.BreachWatch
             if(!host)return;
             switch(index)
             {
-                case 0:selectedTab=0;SelectBuilding("bastion");break;
+                case 0:
+                    // City/Realm is a destination, not a tab label on the world.
+                    // Return the canonical city camera before selecting Bastion.
+                    if(host.InWorld && !host.TrySetWorld(false))return;
+                    selectedTab=0;
+                    SelectBuilding("bastion");
+                    SyncLiveCamera();
+                    break;
                 case 1:
+                    // Provisions belongs to the REAL city's resource building.
+                    // Never show an inaccessible city card above the world.
+                    if(host.InWorld && !host.TrySetWorld(false))return;
                     selectedTab=1;
-                    // An illustrated provisions sigil must open an actual resource
-                    // building, never a barracks or a misleading mock screen.
-                    SelectBuilding("sawmill");break;
+                    SelectBuilding("sawmill");
+                    SyncLiveCamera();
+                    break;
                 case 3:
-                    if(host.CanOpen(RoyalSection.World))
-                    {selectedTab=3;host.Open(RoyalSection.World);SelectBuilding("");SyncLiveCamera();}
+                    // Explore is idempotent. A second tap cannot accidentally
+                    // return the player to the city; Reino handles that.
+                    if(host.CanOpen(RoyalSection.World) && host.TrySetWorld(true))
+                    {
+                        selectedTab=3;
+                        SelectBuilding("");
+                        SyncLiveCamera();
+                    }
                     break;
                 // Ejército and Héroes deliberately stay disabled until their
                 // future independent screens exist; chapter progress is opened
