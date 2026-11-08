@@ -25,7 +25,8 @@ namespace Eldoria.ReferenceClean.Editor {
   const string Scene=Root+"/Valoria_City_World_UI.unity";
   const string Flag="Valoria.IntegrationProbe";
   static string Ev=>Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../../docs/evidence/valoria-reference-clean"));
-  static ValoriaIntegrationBuild(){EditorApplication.playModeStateChanged+=Entered;}
+  static bool probeQueued;static double probeDeadline=-1;
+  static ValoriaIntegrationBuild(){EditorApplication.playModeStateChanged+=Entered;EditorApplication.update+=StartQueuedProbe;}
   static void Need(bool pass,string why){if(!pass)throw new InvalidOperationException(why);}
   // Advanced native fixtures still pass through the real first-entry UI.
   // Keep this public entry point stable: the dialogue capture invokes it by
@@ -181,7 +182,28 @@ namespace Eldoria.ReferenceClean.Editor {
    try{Graphics.Blit(source,rt);RenderTexture.active=rt;var copy=new Texture2D(source.width,source.height,TextureFormat.RGBA32,true,linear){name=source.name,wrapMode=source.wrapMode,filterMode=source.filterMode,anisoLevel=source.anisoLevel};copy.ReadPixels(new Rect(0,0,source.width,source.height),0,0);copy.Apply(true,false);return copy;}
    finally{RenderTexture.active=active;RenderTexture.ReleaseTemporary(rt);}
   }
-  static void Entered(PlayModeStateChange state){if(state!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(Flag,false))return;SessionState.SetBool(Flag,false);EditorApplication.delayCall+=()=>{var h=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();if(h==null){EditorApplication.Exit(1);return;}h.StartCoroutine(GuardedProbe(h));};}
+  static void Entered(PlayModeStateChange state){
+   if(state!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(Flag,false))return;
+   SessionState.SetBool(Flag,false);probeQueued=true;probeDeadline=EditorApplication.timeSinceStartup+300;
+  }
+  // Editor Search can throw in delayCall before later callbacks execute. Use the
+  // independent update path verified by the structural startup probe instead.
+  static void StartQueuedProbe(){
+   if(probeDeadline<0||!EditorApplication.isPlaying)return;
+   try{
+    Need(EditorApplication.timeSinceStartup<probeDeadline,"Canonical journey exceeded 300-second runtime deadline");
+    if(!probeQueued)return;
+    probeQueued=false;
+    var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
+    Need(host,"Canonical journey host missing");
+    Debug.Log("VALORIA_INTEGRATION_PROBE_STARTED");
+    host.StartCoroutine(GuardedProbe(host));
+   }catch(Exception e){
+    probeDeadline=-1;Debug.LogException(e);
+    File.WriteAllText(Path.Combine(Ev,"integration-failure.txt"),e.ToString());
+    EditorApplication.Exit(1);
+   }
+  }
   static IEnumerator GuardedProbe(ValoriaIntegratedWorld h){
    var probe=Probe(h);
    while(true){
@@ -206,7 +228,7 @@ namespace Eldoria.ReferenceClean.Editor {
    Need(h&&h.Ready,"Integrated world initialization did not finish before journey validation");
    yield return null;yield return new WaitForSecondsRealtime(1);
    string failure=null;var checks=new List<string>();var city=h.GetComponent<ValoriaReferenceCleanGameplay>();
-   bool Check(Action action,string name){if(failure!=null)return false;try{action();checks.Add(name);return true;}catch(Exception e){failure=e.ToString();Debug.LogException(e);return false;}}
+   bool Check(Action action,string name){if(failure!=null)return false;try{action();checks.Add(name);Debug.Log("VALORIA_INTEGRATION_CHECK_PASS "+name);return true;}catch(Exception e){failure=e.ToString();Debug.LogException(e);return false;}}
    Check(()=>{
     // Real first-entry on the original RoyalHUD, before the narrator.
     // Capture both orientations at the very first visible interaction.
@@ -705,7 +727,7 @@ namespace Eldoria.ReferenceClean.Editor {
     File.WriteAllText(Path.Combine(Ev,"integration-input-signature.txt"),ComputeInputSignature());
    }
    File.WriteAllText(Path.Combine(Ev,"integration-result.json"),JsonUtility.ToJson(report,true));
-   if(failure==null)Debug.Log("VALORIA_REFERENCE_CLEAN_INTEGRATION_COMPLETE");EditorApplication.Exit(failure==null?0:1);
+   probeDeadline=-1;if(failure==null)Debug.Log("VALORIA_REFERENCE_CLEAN_INTEGRATION_COMPLETE");EditorApplication.Exit(failure==null?0:1);
   }
   sealed class JourneyContext {
    readonly Func<Action,string,bool> Check;

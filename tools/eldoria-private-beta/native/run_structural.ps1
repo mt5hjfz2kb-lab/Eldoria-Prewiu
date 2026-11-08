@@ -25,11 +25,28 @@ if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Nati
 if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
 $env:VALORIA_GAMEPLAY_PROBE='1'
 $proof=Join-Path $Source 'docs/evidence/valoria-reference-clean'
+function Set-NativePhase([string]$Description,[string]$State='pending'){
+ if(-not $env:GH_TOKEN){return}
+ $body=@{state=$State;context='beta/native-phase';description=$Description.Substring(0,[Math]::Min(140,$Description.Length));target_url="https://github.com/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"}|ConvertTo-Json
+ try {$null=Invoke-RestMethod -Method Post -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/statuses/$env:GITHUB_SHA" -Headers @{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'} -ContentType 'application/json' -Body $body}catch{Write-Warning 'Native phase status publication unavailable'}
+}
 function Invoke-Native([string]$Method,[string]$Log,[string]$Target){
  if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy before phase'}
  $args=@('-batchmode','-force-d3d11','-buildTarget',$Target,'-projectPath',('"'+$project+'"'),'-executeMethod',$Method,'-logFile',('"'+$Log+'"'))
+ Set-NativePhase "$Method (staged=$env:ELDORIA_EXPECT_STAGED; target=$Target)"
+ Write-Host "Starting native phase $Method; log $Log"
  $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
- if(-not $p.WaitForExit(2400000)){throw "Owned Unity process $($p.Id) exceeded phase deadline; leave isolated project intact"}
+ $limit=if($Target -eq 'WebGL'){2400}else{480}
+ $deadline=(Get-Date).AddSeconds($limit)
+ while(-not $p.WaitForExit(15000)){
+  Write-Host "Native phase $Method still running; owned PID $($p.Id)"
+  if(Test-Path $Log){Get-Content $Log -Tail 2|Write-Host}
+  if((Get-Date) -gt $deadline){
+   & taskkill.exe /PID $p.Id /T /F|Out-Null
+   $null=$p.WaitForExit(15000)
+   throw "Owned Unity phase $Method exceeded $limit seconds; its process tree stopped for preservation"
+  }
+ }
  if($p.ExitCode -ne 0){throw "Unity phase $Method failed: $($p.ExitCode)"}
 }
 function Run-Probe([string]$Mode){
@@ -81,6 +98,10 @@ try {
  Copy-Item (Join-Path $proof 'web-*') $Evidence
  if(-not(Test-Path (Join-Path $project 'Builds/ValoriaWebPlaytest/index.html'))){throw 'Built WebGL index absent'}
  [IO.File]::WriteAllText((Join-Path $Evidence 'complete.txt'),'Native parity and canonical journey passed; fresh WebGL built. Browser and physical iPhone are NOT certified.',$utf8)
+ Set-NativePhase 'Native parity, journey and WebGL completed; mobile unverified' 'success'
+} catch {
+ Set-NativePhase 'Native phase failed; inspect evidence; no mobile certification' 'failure'
+ throw
 } finally {
  # Only our disposable checkout is touched. Preserve files if an Editor is still using them.
  if(-not(Get-Process Unity -ErrorAction SilentlyContinue)){

@@ -8,6 +8,7 @@ permissions:
   contents: read
   pull-requests: read
   actions: write
+  statuses: write
 concurrency:
   group: eldoria-beta-native-warm-preserved
   cancel-in-progress: false
@@ -126,6 +127,10 @@ jobs:
           if(Test-Path $folder){throw 'Isolated project already exists; refuse replacement'}
           $drive=Get-PSDrive -Name ([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE).Substring(0,1))
           if($drive.Free -lt 8GB){throw 'Insufficient isolated import headroom; preserve other projects'}
+      - name: Recover exact owned interrupted run after its process cleanup
+        shell: powershell
+        run: |
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/recover_owned_native.ps1 -Tools beta-structural-tools
       - name: Verify exact already-imported source without checkout or reset
         shell: powershell
         run: |
@@ -156,6 +161,8 @@ jobs:
           if(Test-Path (Join-Path $cache 'Unity/Assets/EldoriaBetaMemoryProbe')){throw 'An existing probe must be preserved'}
           Add-Content $env:GITHUB_ENV "BETA_SOURCE=$cache"
       - name: Original versus staged native startup, canonical journey, then WebGL
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: powershell
         run: |
           & ./beta-structural-tools/tools/eldoria-private-beta/native/run_warm_structural.ps1 -Source "$env:BETA_SOURCE" -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -WebOutput "beta-structural-webgl-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
