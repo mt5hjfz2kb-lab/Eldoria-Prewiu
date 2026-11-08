@@ -7,8 +7,9 @@ on:
 permissions:
   contents: read
   pull-requests: read
+  actions: write
 concurrency:
-  group: eldoria-beta-native-memory
+  group: eldoria-beta-native-cached-recovery
   cancel-in-progress: false
 env:
   EXPECTED_LEASE_REVISION: '8'
@@ -29,6 +30,34 @@ jobs:
           $tokens=$null;$errors=$null
           [System.Management.Automation.Language.Parser]::ParseFile("$pwd/beta-tools/tools/eldoria-private-beta/native/run_structural.ps1",[ref]$tokens,[ref]$errors)|Out-Null
           if($errors.Count){$errors|Format-List;throw 'PowerShell parser errors'}
+      - name: Retire only the slow isolated checkout before native execution
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,os,time,urllib.request
+          root='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']
+          def api(path,method='GET'):
+            req=urllib.request.Request(root+path,method=method,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+            with urllib.request.urlopen(req,timeout=30) as r:
+              b=r.read();return json.loads(b) if b else None
+          run=api('/actions/runs/42427811334')
+          if run['head_sha']!='9c33cc4cee5b029eb6b90c203b8603dc60609e4c':raise RuntimeError('Unexpected retiring source')
+          if run['status']!='completed':
+            jobs=api('/actions/runs/42427811334/jobs')['jobs']
+            native=next(j for j in jobs if j['name']=='native')
+            phase=next(s for s in native['steps'] if s['number']==7)
+            checkout=next(s for s in native['steps'] if s['number']==6)
+            if phase['status']!='pending' or checkout['status']!='in_progress':
+              raise RuntimeError('Original run progressed beyond checkout; leave it running, do not start another')
+            api('/actions/runs/42427811334/cancel','POST')
+            for _ in range(60):
+              if api('/actions/runs/42427811334')['status']=='completed':break
+              time.sleep(5)
+            else:raise RuntimeError('Original isolated checkout has not stopped')
+          print('Previous run stopped or completed; no concurrent native process authorized')
+          PY
       - name: Check current ownership without occupying Windows
         id: lease
         env:
@@ -94,11 +123,19 @@ jobs:
           if(Test-Path $folder){throw 'Isolated project already exists; refuse replacement'}
           $drive=Get-PSDrive -Name ([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE).Substring(0,1))
           if($drive.Free -lt 25GB){throw 'Insufficient isolated import headroom; preserve other projects'}
-      - uses: actions/checkout@v4
-        with:
-          ref: 948ffa9837168a0b68dab80be76b66350422b23a
-          path: beta-structural-source-${{ github.run_id }}-${{ github.run_attempt }}
-          persist-credentials: false
+      - name: Materialize isolated committed source from existing local Git objects
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $cache=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
+          if(-not(Test-Path (Join-Path $cache '.git'))){throw 'Existing source cache unavailable; do not replace another project'}
+          $base='948ffa9837168a0b68dab80be76b66350422b23a'
+          git -C $cache cat-file -e "$base^{commit}"
+          if($LASTEXITCODE -ne 0){throw 'Frozen source absent from local cache'}
+          $isolated=Join-Path $env:GITHUB_WORKSPACE "beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          # Worktree reads committed objects, never copies or resets the other working tree.
+          git -C $cache worktree add --detach $isolated $base
+          if($LASTEXITCODE -ne 0){throw 'Isolated worktree creation failed'}
       - name: Original versus staged native startup, canonical journey, then WebGL
         shell: powershell
         run: |
