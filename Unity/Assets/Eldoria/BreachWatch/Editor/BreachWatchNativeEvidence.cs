@@ -190,10 +190,11 @@ namespace Eldoria.BreachWatch.Editor
                 // Test actual Unity raycast, pointer down/up/click and world
                 // gesture interception for each supported gameplay destination.
                 // Button.onClick.Invoke alone cannot prove touch functionality.
-                void ClickAsPlayer(Button button,string label)
+                void ClickAsPlayer(Button button,string label,bool allowDisabled=false)
                 {
                     Need(button && button.gameObject.activeInHierarchy &&
-                         button.interactable,"Missing active native destination "+label);
+                         (allowDisabled||button.interactable),
+                         "Missing real native destination "+label);
                     Canvas.ForceUpdateCanvases();
                     var corners=new Vector3[4];
                     ((RectTransform)button.transform).GetWorldCorners(corners);
@@ -220,6 +221,20 @@ namespace Eldoria.BreachWatch.Editor
                 ClickAsPlayer(target,"REINO");
                 Need(ui.SelectedBuildingId=="bastion",
                     "REAL pointer to Reino could not open Bastion");
+                // A visually disabled B1 upgrade still explains the real
+                // canonical reason on touch; it must NEVER consume resources.
+                if(!ui.BuildingAction.interactable)
+                {
+                    string canonical=ui.CurrentSnapshot?.Building?.Action?.Reason??"";
+                    ClickAsPlayer(ui.BuildingAction,"MEJORA BLOQUEADA",true);
+                    string feedback=ui.LastFeedback??"";
+                    Need(!string.IsNullOrWhiteSpace(feedback) &&
+                         (canonical.Length==0 ||
+                          feedback==canonical.Replace("\r"," ").Replace("\n"," ")),
+                         "Tapping a blocked action did not explain the real game requirement");
+                    Need(ui.SelectedBuildingId=="bastion",
+                         "A disabled upgrade tap accidentally changed building selection");
+                }
                 ClickAsPlayer(ui.BuildingClose,"CERRAR BASTIÓN");
                 Need(ui.SelectedBuildingId=="" &&
                      !ui.BuildingPanel.gameObject.activeInHierarchy,
