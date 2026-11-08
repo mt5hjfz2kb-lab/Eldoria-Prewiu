@@ -56,7 +56,7 @@ namespace Eldoria.BreachWatch
         float nextRefresh;
         bool created;
         RoyalSnapshot snapshot;
-        readonly string[] navLabels = {"REINO", "CONSTRUIR", "UNIDADES", "MUNDO", "CRÓNICAS"};
+        readonly string[] navLabels = {"REINO", "RECURSOS", "EJÉRCITO", "EXPLORAR", "HÉROES"};
         readonly BreachWatchGlyph.Sigil[] navIcons = {
             BreachWatchGlyph.Sigil.Castle,BreachWatchGlyph.Sigil.Build,
             BreachWatchGlyph.Sigil.Army,BreachWatchGlyph.Sigil.World,BreachWatchGlyph.Sigil.Chronicle
@@ -396,15 +396,16 @@ namespace Eldoria.BreachWatch
                 case 0:selectedTab=0;SelectBuilding("bastion");break;
                 case 1:
                     selectedTab=1;
-                    var s=host.Read("",host.English);
-                    SelectBuilding(s.BastionLevel<2?"sawmill":s.BastionLevel<3?"barracks":"bastion");break;
+                    // An illustrated provisions sigil must open an actual resource
+                    // building, never a barracks or a misleading mock screen.
+                    SelectBuilding("sawmill");break;
                 case 3:
                     if(host.CanOpen(RoyalSection.World))
                     {selectedTab=3;host.Open(RoyalSection.World);SelectBuilding("");SyncLiveCamera();}
                     break;
-                case 4:selectedTab=4;fullObjective=!fullObjective;Reflow(lastWidth,lastHeight);RenderNow();break;
-                // Unidades is deliberately noninteractive in this first-screen proof:
-                // do not silently open an old UI panel or claim the route is ported.
+                // Ejército and Héroes deliberately stay disabled until their
+                // future independent screens exist; chapter progress is opened
+                // using the actual objective tablet, not a falsely named route.
             }
         }
         void LateUpdate()
@@ -618,15 +619,15 @@ namespace Eldoria.BreachWatch
                     actionLabel.text=b.Action==null?"SIN ACCIÓN":b.Action.Label;
                     actionLabel.color=can?TextIvory:Locked;
                 }
-                // A screen slice is not allowed to lie about unsupported destinations.
-                // Reino, Construir, Mundo (when unlocked), and Crónicas are live;
-                // the future independent Unidades screen remains explicitly disabled.
+                // Accurate labels, artwork and routes: realm/castle, resource/sack,
+                // army/swords, world/raven and heroes/helm. Only the genuine
+                // first-screen routes are enabled; we never dispatch old panels.
                 for(int i=0;i<5;i++)
                 {
                     navPlates[i].Type=i==(host.InWorld?3:selectedTab)
                         ?BreachWatchPlate.PlateType.Selected
                         :BreachWatchPlate.PlateType.Navigation;
-                    bool allowed=i!=2&&(i!=3||host.CanOpen(RoyalSection.World));
+                    bool allowed=(i==0||i==1||(i==3&&host.CanOpen(RoyalSection.World)));
                     navButtons[i].interactable=allowed;
                     var icon=navButtons[i].GetComponentInChildren<BreachWatchGlyph>();
                     if(icon && icon.enabled)
