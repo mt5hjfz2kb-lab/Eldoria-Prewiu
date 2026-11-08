@@ -1,4 +1,4 @@
-name: Eldoria mobile5 public delivery verification
+name: Eldoria mobile5 Apple engine diagnosis
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -6,71 +6,39 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
-  actions: read
 concurrency:
   group: eldoria-beta-entry-qa
   cancel-in-progress: false
 jobs:
-  provenance:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/github-script@v7
-        with:
-          script: |
-            for(const [id,sha] of [[42487738914,'300b78e31a72bbdbd74c6681a75b04987d28bd31'],[42487975751,'dacba45b0e686e11b512493bfc0b3f74888d3c18']]){
-              const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:id})).data;
-              if(r.conclusion!=='success'||r.head_sha!==sha)throw Error('Unverified candidate or publication');
-            }
-  browser:
-    needs: provenance
-    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+  apple-engine:
+    runs-on: macos-14
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [webkit, chromium]
     steps:
-      - name: Recover installed Git
-        shell: powershell
-        run: |
-          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
-            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
-            if(-not $g){throw 'Installed Git unavailable'}
-            Add-Content $env:GITHUB_PATH (Split-Path $g)
-          }
       - uses: actions/checkout@v4
         with:
-          path: beta-public-tools
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
-      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          ref: main
-          path: beta-public-live
-          sparse-checkout: pipeline/active-workstreams.json
-          sparse-checkout-cone-mode: false
-          persist-credentials: false
-      - name: Verify actual anonymous mobile5 URL
-        shell: powershell
+          node-version: '22'
+      - name: Install pinned browser
         run: |
-          $ErrorActionPreference='Stop'
-          $r=Get-Content beta-public-live/pipeline/active-workstreams.json -Raw|ConvertFrom-Json
-          $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].ownership_revision -ne 10){throw 'Browser lease changed'}
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy'}
-          $browser=@((Join-Path $env:ProgramFiles 'Google/Chrome/Application/chrome.exe'),(Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) 'Microsoft/Edge/Application/msedge.exe'),(Join-Path $env:LOCALAPPDATA 'Google/Chrome/Application/chrome.exe'))|Where-Object {Test-Path $_}|Select-Object -First 1
-          if(-not $browser){throw 'Installed hardware browser unavailable'}
-          $env:VALORIA_CHROMIUM_EXECUTABLE=$browser
-          $dependencies=Join-Path $env:RUNNER_TEMP "beta-public-deps-$env:GITHUB_RUN_ID"
-          npm install --prefix $dependencies --no-save playwright@1.55.0
-          if($LASTEXITCODE -ne 0){throw 'Dependencies failed'}
-          $env:NODE_PATH=Join-Path $dependencies 'node_modules'
-          $env:QA_URL='https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile5'
-          $env:QA_REVISION='native325-mobile5'
-          $env:QA_OUT=Join-Path $env:GITHUB_WORKSPACE "mobile5-public-$env:GITHUB_RUN_ID"
-          node "$env:GITHUB_WORKSPACE/beta-public-tools/tools/eldoria-private-beta/qa_structural.cjs"
-          if($LASTEXITCODE -ne 0){throw 'Public runtime failed'}
-          $report=Get-Content (Join-Path $env:QA_OUT 'report.json') -Raw|ConvertFrom-Json
-          if($report.peakWasmCapacityBytes -ge 1073741824){throw 'Memory budget exceeded'}
+          npm install --prefix "$RUNNER_TEMP/beta-browser-deps" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/beta-browser-deps/node_modules/.bin/playwright" install ${{ matrix.engine }}
+      - name: Measure unchanged published candidate
+        env:
+          QA_ENGINE: ${{ matrix.engine }}
+          QA_OUT: engine-evidence
+        run: |
+          export NODE_PATH="$RUNNER_TEMP/beta-browser-deps/node_modules"
+          node tools/eldoria-private-beta/qa_webkit_residency.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile5-public-runtime
-          path: mobile5-public-${{ github.run_id }}/
+          name: mobile5-macos-${{ matrix.engine }}
+          path: engine-evidence/
           retention-days: 14
