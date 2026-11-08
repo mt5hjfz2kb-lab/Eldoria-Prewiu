@@ -492,6 +492,10 @@ namespace Eldoria.DailyTreasures.Editor
                             inputChecks++;
                             Need(!panel.IsOpen,
                                 "Premium milestone style refuses to close: "+styleIds[style]);
+                            Need(!panel.HasMilestoneScenery &&
+                                 panel.MilestoneSceneryKey==null,
+                                "Optional painterly texture still pinned after ceremony close: "+
+                                styleIds[style]);
                             var afterStyle=specialGateway.Snapshot();
                             Need(wallet.Resources.Wood==afterStyle.Resources.Wood &&
                                  wallet.Resources.Stone==afterStyle.Resources.Stone &&
