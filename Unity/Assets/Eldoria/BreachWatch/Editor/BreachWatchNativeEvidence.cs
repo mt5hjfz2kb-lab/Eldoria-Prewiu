@@ -33,7 +33,7 @@ namespace Eldoria.BreachWatch.Editor
         {
             public string file, sha256, selected, realBuilding, actualObjective;
             public int width, height, buttons;
-            public bool oldCanvasOff, newCanvasIndependent, liveSession, fiveInOneRow;
+            public bool oldCanvasOff, newCanvasIndependent, liveSession, fiveInOneRow, liveBuildingPortrait;
         }
         [Serializable] public sealed class Report
         {
@@ -182,7 +182,8 @@ namespace Eldoria.BreachWatch.Editor
             var after = JsonUtility.ToJson(host.City.Gateway.Snapshot());
             Need(before == after, "New HUD preview modified gameplay/save data");
             Need(shots.Count == 8 && shots.All(x=>x.liveSession && x.oldCanvasOff &&
-                x.newCanvasIndependent && x.fiveInOneRow && x.buttons == 5),
+                x.newCanvasIndependent && x.fiveInOneRow && x.buttons == 5 &&
+                (x.selected != "bastion" || x.liveBuildingPortrait)),
                 "An orientation failed native, independent HUD or five-destination proof");
             var report = new Report {
                 status = "UNITY_NATIVE_INDEPENDENT_CAPTURED_ART_REVIEW_PENDING",
@@ -254,6 +255,8 @@ namespace Eldoria.BreachWatch.Editor
                          ui.CurrentSnapshot?.Building != null &&
                          ui.CurrentSnapshot.Building.Id=="bastion",
                          "Real Bastion selection is missing contextual native card in "+name);
+                    Need(ui.HasLiveBuildingPortrait,
+                         "Authentic world-building portrait did not render in "+name);
                 }
                 return new Shot {
                     file=name,sha256=HexHash(file),width=w,height=h,
@@ -261,7 +264,8 @@ namespace Eldoria.BreachWatch.Editor
                     actualObjective=ui.CurrentSnapshot?.Objective ?? "",buttons=nav.Count,
                     oldCanvasOff=ui.LegacyPresentationHidden,
                     newCanvasIndependent=ui.IndependentCanvas,
-                    liveSession=ui.HasRealSession,fiveInOneRow=oneRow
+                    liveSession=ui.HasRealSession,fiveInOneRow=oneRow,
+                    liveBuildingPortrait=ui.HasLiveBuildingPortrait
                 };
             }
             finally
