@@ -26,7 +26,7 @@ namespace Eldoria.DailyTreasures
             for(int i=0;i<Count;i++)
             {
                 float angle=(i+0.15f)*Mathf.PI*2f/Count;
-                float width=(i%3==0?.070f:.044f);
+                float width=i%3==0?0.070f:0.044f;
                 float len=radius*(.72f+(i%4)*.065f);
                 var start=center+new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))
                     *(radius*.09f);
@@ -36,7 +36,7 @@ namespace Eldoria.DailyTreasures
                     Mathf.Sin(angle+width))*len;
                 int n=vh.currentVertCount;
                 var origin=new Color(Core.r,Core.g,Core.b,
-                    (i%2==0?.46f:.33f)*Intensity);
+                    (i%2==0?0.46f:0.33f)*Intensity);
                 vh.AddVert(new Vector3(start.x,start.y),origin,Vector2.zero);
                 vh.AddVert(new Vector3(left.x,left.y),Fade,Vector2.zero);
                 vh.AddVert(new Vector3(right.x,right.y),Fade,Vector2.zero);
