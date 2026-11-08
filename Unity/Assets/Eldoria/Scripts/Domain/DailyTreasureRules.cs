@@ -57,6 +57,20 @@ namespace Eldoria.Domain
                 ? 1 : state.CycleDay+1;
         }
 
+        // UI hint only. This remains independent of a device's session
+        // duration and never replaces authoritative PlayerState persistence.
+        public static int NextConsecutiveBonusDay(int consecutiveDays)
+        {
+            int baseDay=Math.Min(1000000,Math.Max(0,consecutiveDays));
+            for(int n=baseDay+1;n<=baseDay+7;n++)
+                if(n%3==0 || n%7==0)return n;
+            throw new InvalidOperationException("No loyalty bonus in the next seven days");
+        }
+
+        public static int BonusFoodForStreak(int streak)
+            => streak>=7 && streak%7==0?80:
+                streak>=3 && streak%3==0?25:0;
+
         public static DailyTreasureReward ForDay(int day,int streak)
         {
             if(day<1 || day>CycleLength)throw new ArgumentOutOfRangeException(nameof(day));
@@ -73,8 +87,7 @@ namespace Eldoria.Domain
             }
             // A modest bonus for consecutive visits, without punishing skipped
             // days by resetting the seven-day reward calendar.
-            int bonus=streak>=7 && streak%7==0?80:
-                streak>=3 && streak%3==0?25:0;
+            int bonus=BonusFoodForStreak(streak);
             return new DailyTreasureReward(day,streak,wood,stone,
                 food+bonus,bonus,one,five,day==4 || day==7);
         }
