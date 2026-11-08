@@ -40,4 +40,10 @@ assert.match(nativeWorkflow,/treasure_opened_512\.png/);
 assert.match(nativeWorkflow,/Illustrated chest sprites not imported in Unity/);
 // Art must never be declared approved by a source or syntax check.
 assert.doesNotMatch(native,/artApproved=true/);
+// The presentation must make a failed collect visible and not rely on
+// old transform scale when a ceremonial reward is skipped/reopened.
+assert.match(panel,/claimNotice=string\.IsNullOrWhiteSpace\(result\.Message\)/);
+assert.match(panel,/noticeUntil=Time\.unscaledTime\+4\.5f/);
+assert.match(panel,/illustratedClosed\.rectTransform\.localScale=Vector3\.one/);
+assert.match(panel,/illustratedOpen\.rectTransform\.localScale=Vector3\.one/);
 console.log('PASS daily treasures gateway integration source invariants');
