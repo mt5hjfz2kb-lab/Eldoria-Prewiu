@@ -43,3 +43,6 @@ Exactly five Cubemap objects, sharedassets0.assets IDs 446-450, ReflectionProbe-
 
 ## Lesson
 Desktop Chromium success cannot certify WebKit. Capture the GPU process report and distinguish the triggering operation from secondary JavaScript errors. Use exact same-payload A/B before changing unrelated assets or assuming OOM.
+
+## Owner physical result — mobile6 FAILED
+Owner reports: «Hace lo mismo que la 5». Desktop compressed-cubemap fix is confirmed only in desktop WebKit; it did not resolve the physical iPhone restart. No new device exception or lifecycle log accompanies this result. Do not claim the phone root cause identified, and do not request another attempt at the same build as a fix.
