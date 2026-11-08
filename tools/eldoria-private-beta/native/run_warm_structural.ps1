@@ -2,7 +2,8 @@ param(
  [Parameter(Mandatory=$true)][string]$Source,
  [Parameter(Mandatory=$true)][string]$Tools,
  [Parameter(Mandatory=$true)][string]$Evidence,
- [Parameter(Mandatory=$true)][string]$WebOutput
+ [Parameter(Mandatory=$true)][string]$WebOutput,
+ [string]$InputAuditPath
 )
 $ErrorActionPreference='Stop'
 $Source=(Resolve-Path $Source).Path;$Tools=(Resolve-Path $Tools).Path
@@ -11,12 +12,13 @@ $baseline='948ffa9837168a0b68dab80be76b66350422b23a'
 if((git -C $Source rev-parse HEAD).Trim() -ne $baseline){throw 'Warm project is not the exact frozen commit'}
 $pending=@(git -C $Source status --porcelain -- Unity)
 if($LASTEXITCODE -ne 0){throw 'Cannot inspect warm source'}
-$auditPath=Join-Path $Tools 'tools/eldoria-private-beta/native/existing-input-audit.json'
+$auditPath=if($InputAuditPath){(Resolve-Path $InputAuditPath).Path}else{Join-Path $Tools 'tools/eldoria-private-beta/native/existing-input-audit.json'}
 $audit=Get-Content $auditPath -Raw|ConvertFrom-Json
 if($audit.base -ne $baseline){throw 'Audited base differs'}
-if(@(Compare-Object @($audit.status) $pending).Count){throw 'Pending source differs from reviewed inventory'}
+if(@($audit.status).Count -ne $pending.Count -or ($pending.Count -gt 0 -and @(Compare-Object @($audit.status) $pending).Count)){throw 'Pending source differs from reviewed inventory'}
 $actualPaths=@(git -C $Source ls-files --modified --others --exclude-standard -- Unity)
-if($LASTEXITCODE -ne 0 -or @(Compare-Object @($audit.files|ForEach-Object {$_.path}) $actualPaths).Count){throw 'Pending input membership changed'}
+$expectedPaths=@($audit.files|ForEach-Object {$_.path})
+if($LASTEXITCODE -ne 0 -or $expectedPaths.Count -ne $actualPaths.Count -or ($actualPaths.Count -gt 0 -and @(Compare-Object $expectedPaths $actualPaths).Count)){throw 'Pending input membership changed'}
 foreach($item in $audit.files){
  $file=Join-Path $Source $item.path
  if(-not(Test-Path $file -PathType Leaf) -or (Get-FileHash $file -Algorithm SHA256).Hash -ne $item.sha256){throw "Reviewed existing input changed: $($item.path)"}
@@ -37,7 +39,8 @@ $paths+=@(Get-ChildItem (Join-Path $Source 'Unity/ProjectSettings') -File -Recur
 $paths=@($paths|Sort-Object -Unique)
 $backupRoot=Join-Path $env:GITHUB_WORKSPACE "beta-structural-preserved-inputs-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
 if(Test-Path $backupRoot){throw 'Preserved input backup already exists'}
-Copy-Item $auditPath (Join-Path $Evidence 'existing-input-audit.json')
+$savedAudit=Join-Path $Evidence 'existing-input-audit.json'
+if([IO.Path]::GetFullPath($auditPath) -ne [IO.Path]::GetFullPath($savedAudit)){Copy-Item $auditPath $savedAudit}
 $records=@()
 foreach($path in $paths){
  $original=Join-Path $Source $path;$backup=Join-Path $backupRoot $path
@@ -85,7 +88,10 @@ try {
   if($current -ne $record.sha256){Copy-Item $record.backup $file -Force}
  }
  $after=@(git -C $Source status --porcelain -- Unity)
- $statusChanges=@(Compare-Object @($audit.status) $after)
+ $statusChanges=@()
+ if(@($audit.status).Count -eq 0){$statusChanges=@($after)}
+ elseif($after.Count -eq 0){$statusChanges=@($audit.status)}
+ else{$statusChanges=@(Compare-Object @($audit.status) $after)}
  $inputChanges=@()
  foreach($item in $audit.files){
   $file=Join-Path $Source $item.path
