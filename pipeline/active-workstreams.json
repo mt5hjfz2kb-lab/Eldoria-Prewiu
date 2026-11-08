@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T23:52:00Z",
+  "updated_at": "2026-11-08T00:00:47.872Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6770,7 +6770,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-beta-pages-20261107",
       "ownership_state": "claimed",
-      "ownership_revision": 7,
+      "ownership_revision": 8,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6789,14 +6789,16 @@
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "STRUCTURAL_STAGED_STARTUP_AFTER_PHYSICAL_CANDIDATE3_FAILURE",
+      "phase": "STRUCTURAL_STARTUP_NATIVE_AB_AND_WEBGL",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Owner confirms candidate3 still returns after one second. Implement phased exact world initialization with readiness guard, release transient source-validation cache and eliminate redundant contact arrays. Require native compile/parity and actual WebGL memory tests before another owner retry.",
+      "next": "Run prepared isolated structural native comparison and canonical WebGL build; inspect actual results before browser or owner retry.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6865,8 +6867,8 @@
       "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "requested_not_acquired",
-        "purpose": "Exact staged-startup A/B native proof and WebGL build, after current owner releases; do not interrupt visual work"
+        "status": "acquired_after_explicit_release",
+        "purpose": "Exact frozen source versus four-file staged-startup overlay, native parity, canonical journey, fresh WebGL; isolated project only"
       }
     }
   ],
