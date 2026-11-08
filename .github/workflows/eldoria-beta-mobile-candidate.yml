@@ -11,8 +11,8 @@ concurrency:
   group: eldoria-beta-mobile-candidate
   cancel-in-progress: false
 env:
-  DEDUP_RUN: '42477019139'
-  DEDUP_SOURCE: 25c6b4c53c8e078a660cf29ef809e2309e3d7439
+  DEDUP_RUN: '42481331350'
+  DEDUP_SOURCE: c3a975b4d1c542ad7f22cf5fc8f1e9b23394e4e2
   NATIVE_RUN: '42473140363'
   NATIVE_EXPORT_SOURCE: d32508f9ce380eb8ea9bc10fecd4fb2dfc44a2f2
   NATIVE_ORIGIN_RUN: '42435095850'
@@ -191,11 +191,22 @@ jobs:
             native-evidence/
             site/mobile/release-identity.json
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: mobile-candidate-site
           path: site/mobile/
           compression-level: 0
           retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validated-transform-bundles-unverified-runtime
+          path: |
+            transformed-final/data.unity3d
+            transformed-final/integrity.json
+            transformed-final/composed-integrity.json
+          compression-level: 0
+          retention-days: 7
   browser:
     needs: package
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
