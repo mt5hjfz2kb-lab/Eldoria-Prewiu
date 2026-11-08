@@ -329,6 +329,29 @@ jobs:
           assert 'spriteBorder: {x: 39, y: 34, z: 34, w: 57}' in meta
           print('BREACHWATCH_OWNER_APPROVED_REFERENCE_SPRITES_AND_FRAME_PASS')
           PY
+      - name: Certify owner's separately extracted golden-lion identity crest
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct
+          from pathlib import Path
+          root=Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference')
+          p=root/'lion_crest.png'
+          provenance=json.loads((root/'lion_crest-provenance.json').read_text())
+          raw=p.read_bytes()
+          assert provenance['sourceType']=='User-provided original image'
+          assert provenance['usage'].startswith('Only the small independent player crest')
+          assert provenance['currentArtApproval']=='pending native Unity visual evaluation'
+          assert raw[:8]==bytes([137,80,78,71,13,10,26,10])
+          assert struct.unpack('>II',raw[16:24])==(56,56)
+          assert hashlib.sha256(raw).hexdigest()==provenance['sha256']
+          meta=(root/'lion_crest.png.meta').read_text()
+          assert 'guid: '+provenance['unity_guid'] in meta
+          assert 'textureType: 8' in meta and 'spriteMode: 1' in meta
+          src=Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          assert 'VigiliaArt/OwnerReference/lion_crest' in src
+          print('BREACHWATCH_OWNER_APPROVED_SMALL_LION_CRESTRUN_IMAGE_PASS')
+          PY
       - name: Verify genuine approved gold trim source, exact SHA, PNG and true Unity nine-slice
         shell: bash
         run: |
