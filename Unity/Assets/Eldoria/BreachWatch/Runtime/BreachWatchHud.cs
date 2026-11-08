@@ -380,6 +380,9 @@ namespace Eldoria.BreachWatch
             var identitySurface=Plate(identity,BreachWatchPlate.PlateType.Basalt);
             var finalProfile=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/profile_plate");
             if(finalProfile)identitySurface.ApplyIndependentArt(finalProfile,true);
+            // The entire visible account plate must prevent accidental
+            // click-through to the city, without pretending to navigate.
+            identitySurface.raycastTarget=true;
             AddContactShadow(identity,3.5f,.40f);
             // The owner-approved compact reference has NO red top banner.
             // Independent round carved crest replaces the obsolete banner.
@@ -409,6 +412,7 @@ namespace Eldoria.BreachWatch
                 if(originalResourceStone)
                     resourceSurface.ApplyIndependentArt(originalResourceStone,true);
 
+                resourceSurface.raycastTarget=true;
                 var picture=Rect("True illustrated resource",resourceChips[i]);
                 resourceIllustrations[i]=picture.gameObject.AddComponent<Image>();
                 resourceIllustrations[i].sprite=Resources.Load<Sprite>(
@@ -461,7 +465,9 @@ namespace Eldoria.BreachWatch
             // second dark child. The bright outer metal is a separate,
             // transparent approved border; neither competes with the other.
             var singleSlate=panel.gameObject.AddComponent<BreachWatchPanelInk>();
-            singleSlate.raycastTarget=false;
+            // Unlike the decorative owner border, this single opaque card
+            // is a passive shield against city taps between live controls.
+            singleSlate.raycastTarget=true;
             AddContactShadow(panel,8f,.58f);
             // Most faithful finish: transparent embossed metal border
             // extracted solely from the exact image the owner approved.
