@@ -514,33 +514,37 @@ namespace Eldoria.DailyTreasures
             if(Mathf.Abs(w-lastWidth)>1f || Mathf.Abs(h-lastHeight)>1f)Layout();
             if(!playing)return;
             float elapsed=Time.unscaledTime-startTime;
-            if(elapsed>=.82f && !chimePlayed)
+            if(elapsed>=DailyTreasureRevealTimeline.RevealPeakSeconds && !chimePlayed)
             {
                 chimePlayed=true;
                 if(Application.isPlaying && originalSfx && chestChime)
                     originalSfx.PlayOneShot(chestChime);
             }
-            float opening=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((elapsed-.50f)/.72f));
-            chest.SetOpening(opening);
+            var frame=DailyTreasureRevealTimeline.Sample(elapsed);
+            chest.SetOpening(frame.Opened);
             if(hasAuthoredChestArt)
             {
-                illustratedClosed.color=new Color(1f,1f,1f,1f-opening);
-                illustratedOpen.color=new Color(1f,1f,1f,opening);
+                illustratedClosed.color=new Color(1f,1f,1f,frame.Closed);
+                illustratedOpen.color=new Color(1f,1f,1f,frame.Opened);
+                // Less physical motion than a bouncing chest: anticipation,
+                // momentary shake and a 3.5% warm-release settle.
+                illustratedClosed.rectTransform.localScale=
+                    Vector3.one*(frame.Scale+frame.Shake);
+                illustratedOpen.rectTransform.localScale=
+                    Vector3.one*(frame.Scale-frame.Shake);
             }
-            float alpha=Mathf.Sin(Mathf.Clamp01((elapsed-.30f)/2.1f)*Mathf.PI);
-            glow.color=new Color(1f,.77f,.35f,alpha*.72f);
+            glow.color=new Color(1f,.77f,.35f,frame.Glow*.86f);
             for(int i=0;i<sparks.Length;i++)
             {
                 float angle=i*Mathf.PI*2f/sparks.Length;
-                float distance=Mathf.Max(0f,elapsed-.68f)*(35f+(i%3)*15f);
-                var r=sparks[i].rectTransform;
-                r.anchoredPosition=new Vector2(
+                float distance=Mathf.Max(0f,elapsed-.66f)*(34f+(i%3)*13f);
+                sparks[i].rectTransform.anchoredPosition=new Vector2(
                     Mathf.Cos(angle)*distance,
-                    Mathf.Sin(angle)*distance+(chestReward?16f:0f));
+                    Mathf.Sin(angle)*distance+18f);
                 sparks[i].color=new Color(1f,.68f+.025f*i,.24f,
-                    Mathf.Clamp01(1f-Mathf.Abs(elapsed-1.18f)*1.2f));
+                    Mathf.Clamp01(frame.Embers*(1f-(i%3)*.08f)));
             }
-            if(elapsed>=2.25f)ShowResult();
+            if(frame.Finished)ShowResult();
         }
     }
 }
