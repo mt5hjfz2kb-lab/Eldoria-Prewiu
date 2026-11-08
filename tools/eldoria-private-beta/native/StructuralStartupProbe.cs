@@ -25,7 +25,9 @@ public static class EldoriaBetaStructuralStartupProbe {
  static readonly string[] Saves={"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"};
  static readonly string[] MeshNames={"BLD_Terrain","BLD_BreachFloor","BLD_BreachOutlyingFractures","BLD_BreachBrokenBasaltPlates","BLD_BreachTerracedStrata","BLD_BreachWeatheredRockfall"};
  static readonly List<string> errors=new List<string>();
+ static readonly List<string> editorDiagnostics=new List<string>();
  [Serializable] public class Result {
+  public string[] editorOnlyDiagnostics;
   public string source,inputAudit,mode,environment="Unity Editor Windows; NOT WebGL or physical iPhone",geometryHash,queryHash;
   public int pass,guardedFrames,retainedVerificationBuckets,verifiedSites,validatedCities;
   public double secondsToReady;
@@ -35,7 +37,13 @@ public static class EldoriaBetaStructuralStartupProbe {
  static string Out=>Environment.GetEnvironmentVariable("ELDORIA_MEMORY_OUT");
  static bool Staged=>Environment.GetEnvironmentVariable("ELDORIA_EXPECT_STAGED")=="1";
  static EldoriaBetaStructuralStartupProbe(){EditorApplication.update+=Tick;Application.logMessageReceived+=Log;}
- static void Log(string message,string stack,LogType type){if(SessionState.GetBool(Flag,false)&&(type==LogType.Error||type==LogType.Exception))errors.Add(message);}
+ static void Log(string message,string stack,LogType type){
+  if(!SessionState.GetBool(Flag,false)||(type!=LogType.Error&&type!=LogType.Exception))return;
+  // This observed Editor Search database initialization exception is not player code.
+  // Preserve it explicitly; all other exceptions remain fatal to the test.
+  if(message.StartsWith("ArgumentOutOfRangeException:")&&stack.Contains("UnityEditor.Search.SearchDatabase")&&stack.Contains("UnityEditor.Search.SearchInit.IndexationOnStartup")&&!stack.Contains("Eldoria.")){editorDiagnostics.Add(message+"\n"+stack);return;}
+  errors.Add(message+"\n"+stack);
+ }
  static void Need(bool value,string message){if(!value)throw new InvalidOperationException(message);}
  static string HashFile(string file){if(!File.Exists(file))return "absent";using(var f=File.OpenRead(file))using(var h=SHA256.Create())return BitConverter.ToString(h.ComputeHash(f)).Replace("-","");}
  public static void Run(){
@@ -75,7 +83,7 @@ public static class EldoriaBetaStructuralStartupProbe {
    string geometry=Geometry(surface),queries=Queries();
    if(pass==0){firstGeometry=geometry;firstQueries=queries;}else{Need(firstGeometry==geometry,"Geometry changed after real scene reload");Need(firstQueries==queries,"Terrain queries changed after real scene reload");}
    foreach(var file in Saves)Need(SessionState.GetString(Flag+file,"")==HashFile(Path.Combine(Application.persistentDataPath,file)),"Canonical save changed: "+file);
-   var result=new Result{source=Environment.GetEnvironmentVariable("ELDORIA_MEMORY_SOURCE"),inputAudit=Environment.GetEnvironmentVariable("ELDORIA_BASELINE_INPUT_AUDIT"),mode=Staged?"staged":"baseline",pass=pass,guardedFrames=guardedFrames,retainedVerificationBuckets=VerificationBuckets(),verifiedSites=placement.VerifiedSiteCount,validatedCities=placement.ValidatedCityCount,secondsToReady=readyAt-start,peakAllocated=peakAllocated,peakReserved=peakReserved,peakManaged=peakManaged,geometryHash=geometry,queryHash=queries,ready=true,worldComplete=true,canonicalSavesUnchanged=true};
+   var result=new Result{editorOnlyDiagnostics=editorDiagnostics.ToArray(),source=Environment.GetEnvironmentVariable("ELDORIA_MEMORY_SOURCE"),inputAudit=Environment.GetEnvironmentVariable("ELDORIA_BASELINE_INPUT_AUDIT"),mode=Staged?"staged":"baseline",pass=pass,guardedFrames=guardedFrames,retainedVerificationBuckets=VerificationBuckets(),verifiedSites=placement.VerifiedSiteCount,validatedCities=placement.ValidatedCityCount,secondsToReady=readyAt-start,peakAllocated=peakAllocated,peakReserved=peakReserved,peakManaged=peakManaged,geometryHash=geometry,queryHash=queries,ready=true,worldComplete=true,canonicalSavesUnchanged=true};
    result.managedAfterFullGC=GC.GetTotalMemory(true);
    File.WriteAllText(Path.Combine(Out,"startup-"+pass+".json"),JsonUtility.ToJson(result,true));
    if(pass==0){
