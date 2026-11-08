@@ -48,6 +48,21 @@ namespace Eldoria.DailyTreasures
         Image illustratedClosed,illustratedOpen;
         bool hasAuthoredChestArt;
         public bool HasAuthoredChestArt => hasAuthoredChestArt;
+        public int EarnedItemCardCount => prizeCount;
+        public bool HasRevealedIllustratedEarnedItems
+        {
+            get
+            {
+                if(prizeCount<=0 || !prizeShelf ||
+                   !prizeShelf.gameObject.activeInHierarchy)return false;
+                for(int i=0;i<prizeCount;i++)
+                    if(!prizeRects[i] || !prizeRects[i].gameObject.activeInHierarchy ||
+                       !prizeIcons[i] || !prizeIcons[i].sprite ||
+                       !prizeGroups[i] || prizeGroups[i].alpha<.98f)
+                        return false;
+                return true;
+            }
+        }
         Image glow;
         Texture2D glowTexture;
         Sprite glowSprite;
