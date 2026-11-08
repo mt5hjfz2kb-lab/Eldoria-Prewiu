@@ -570,7 +570,9 @@ namespace Eldoria.BreachWatch
                         buildingPortrait.Show(ActualBuildingModel(b.Id),host.PlayerCamera,
                             b.Id+"/"+b.Level);
                     buildingFunction.text=b.Function??"";
-                    buildingCosts.text=string.IsNullOrWhiteSpace(b.Costs)?"Sin coste":b.Costs;
+                    buildingCosts.text=string.IsNullOrWhiteSpace(b.Costs)
+                        ?(host.English?"No cost":"Sin coste")
+                        :CompactRealCosts(b.Costs);
                     buildingState.text=(b.State??"")+(string.IsNullOrWhiteSpace(b.Time)?"":"  ·  "+b.Time);
                     bool can=b.Action!=null && b.Action.Enabled && !b.OperationActive;
                     actionButton.interactable=can;
@@ -599,6 +601,23 @@ namespace Eldoria.BreachWatch
                 Debug.LogException(e);throw;
             }
         }
+        static string CompactRealCosts(string source)
+        {
+            // Keep exact authoritative amounts and names. Remove only the
+            // redundant newline header so a phone panel cannot silently crop
+            // a second row of real costs.
+            if(string.IsNullOrEmpty(source))return source;
+            if(source.StartsWith("Coste de la acción\n",StringComparison.Ordinal))
+                return "Coste · "+source.Substring("Coste de la acción\n".Length);
+            if(source.StartsWith("Action cost\n",StringComparison.Ordinal))
+                return "Cost · "+source.Substring("Action cost\n".Length);
+            if(source.StartsWith("Coste pagado\n",StringComparison.Ordinal))
+                return "Pagado · "+source.Substring("Coste pagado\n".Length);
+            if(source.StartsWith("Cost paid\n",StringComparison.Ordinal))
+                return "Paid · "+source.Substring("Cost paid\n".Length);
+            return source;
+        }
+
         // Models from the real playable city, never a mocked building artwork
         // or a reused RoyalGold miniature/prefab.
         bool BlocksNativePointer(Vector2 position)
