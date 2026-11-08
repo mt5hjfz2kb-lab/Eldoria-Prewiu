@@ -14,7 +14,7 @@ for(const [name,regex] of [
   ['close hit target 48 square',/-8f,-8f,48f,48f/],
   ['real 7-day reward data on cards',/DailyTreasureRules\.ForDay\(i\+1/],
   ['focused reward view',/header\.gameObject\.SetActive\(false\)/],
-  ['centralized ordinary rewards',/quietRewards\?\(portrait\?19f:26f\)/],
+  ['centralized ordinary rewards',/quietRewards\?\(portrait\?64f:35f\)/],
   ['premium chest expanded on short landscape',/portrait\?246f:160f/],
   ['readable day seven premium shelf',/portrait\?138f:64f/],
   ['real unaltered illustrated reward cards',/DailyTreasureRewardPresentation\.FromCommittedReward\(reward\)/],
@@ -154,12 +154,16 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   // with a compact receipt and a genuinely reachable Continue action.
   for(const count of [1,2])
   {
-    const quietShelf=rect(0,portrait?19:26,pw-34,portrait?175:137);
-    const quietCaption=rect(0,portrait?-135:-99,pw-45,41);
-    const quietContinue=rect(0,portrait?-216:-152,
+    const quietPanelH=Math.min(h-20,portrait?460:330);
+    const quietShelf=rect(0,portrait?64:35,pw-34,portrait?175:137);
+    const quietCaption=rect(0,portrait?-106:-74,pw-45,41);
+    const quietContinue=rect(0,portrait?-175:-127,
       Math.min(pw-30,portrait?325:405),54);
     assert.ok(noOverlap(quietShelf,quietCaption),
       `${w}x${h}: the ordinary illustrated rewards obscure the actual receipt`);
+    assert.ok(quietShelf.y1<=quietPanelH/2-8 &&
+              quietContinue.y0>=-quietPanelH/2+8,
+      `${w}x${h}: compact premium window clips the artwork or Continue`);
     assert.ok(noOverlap(quietCaption,quietContinue),
       `${w}x${h}: Continue overlaps the normal reward's confirmation`);
     assert.ok(noOverlap(quietShelf,quietContinue),
@@ -172,10 +176,10 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
     const left=-(count*cardW+(count-1)*separation)/2;
     for(let i=0;i<count;i++)
     {
-      const card=rect(left+cardW/2+i*(cardW+separation),0,cardW,cardH);
-      assert.ok(card.x0>=-quietShelf.x1 && card.x1<=quietShelf.x1 &&
-                card.y0>=-quietShelf.y1+quietShelf.y0 &&
-                card.y1<=quietShelf.y1-quietShelf.y0,
+      const card=rect(left+cardW/2+i*(cardW+separation),
+        portrait?64:35,cardW,cardH);
+      assert.ok(card.x0>=quietShelf.x0 && card.x1<=quietShelf.x1 &&
+                card.y0>=quietShelf.y0 && card.y1<=quietShelf.y1,
         `${w}x${h}: normal illustrated reward is outside its frame`);
     }
   }
