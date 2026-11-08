@@ -8,6 +8,7 @@ var files=new[]{
   "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
   "Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureChestGraphic.cs",
   "Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePanel.cs",
+  "Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureMilestoneRules.cs",
   "Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureRevealTimeline.cs",
   "Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureReliefGraphic.cs",
   "Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureRewardGlyph.cs",
