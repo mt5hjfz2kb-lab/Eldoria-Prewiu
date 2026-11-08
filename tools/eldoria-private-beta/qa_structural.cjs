@@ -6,7 +6,8 @@ const fs=require('fs');
  const url=process.env.QA_URL, revision=process.env.QA_REVISION;
  if(!url||!revision)throw Error('Explicit candidate URL and revision required');
  const scale=Number(process.env.QA_DPR||3);
- const browser=await chromium.launch({args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-dev-shm-usage']});
+ const launchArgs=process.platform==='win32'?['--no-sandbox','--use-angle=d3d11','--ignore-gpu-blocklist','--enable-webgl']:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-dev-shm-usage'];
+const browser=await chromium.launch({headless:true,executablePath:process.env.VALORIA_CHROMIUM_EXECUTABLE||undefined,args:launchArgs});
  const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:scale});
  await context.addInitScript(()=>{
   window.__betaMemoryGrowth=[];
@@ -19,7 +20,7 @@ const fs=require('fs');
   };
  });
  const page=await context.newPage();
- const report={url,revision,deviceScaleFactor:scale,environment:'Chromium SwiftShader; NOT physical iPhone',passed:false,errors:[],logs:[],samples:[]};
+ const report={url,revision,deviceScaleFactor:scale,environment:process.platform==='win32'?'Windows Chromium D3D11 requested; NOT physical iPhone':'Chromium SwiftShader; NOT physical iPhone',passed:false,errors:[],logs:[],samples:[]};
  const write=stage=>{report.stage=stage;fs.writeFileSync(out+'/report.json',JSON.stringify(report,null,2));console.log(stage)};
  const timer=setTimeout(()=>{report.errors.push('Global 360-second deadline');write('watchdog');process.exit(1)},360000);
  page.on('pageerror',e=>report.errors.push(String(e)));
@@ -55,6 +56,13 @@ const fs=require('fs');
   }
   report.runtimeErrors=report.logs.filter(s=>/not readable|Read.Write|Exception:|out of memory|Could not allocate|RuntimeError:/i.test(s));
   if(report.runtimeErrors.length)throw Error('Unity runtime errors');
+  report.graphics=await page.evaluate(()=>{
+   const canvas=document.getElementById('unity-canvas');
+   const gl=canvas.getContext('webgl2')||canvas.getContext('webgl');
+   if(!gl)return {renderer:'unknown'};
+   const ext=gl.getExtension('WEBGL_debug_renderer_info');
+   return {renderer:gl.getParameter(ext?ext.UNMASKED_RENDERER_WEBGL:gl.RENDERER),vendor:gl.getParameter(ext?ext.UNMASKED_VENDOR_WEBGL:gl.VENDOR)};
+  });
   report.memoryGrowth=await page.evaluate(()=>window.__betaMemoryGrowth);
   report.peakWasmCapacityBytes=Math.max(...report.samples.map(s=>s.wasmCapacityBytes));
   // Genuine rendered output remains a required gate; a working JS object is insufficient.
