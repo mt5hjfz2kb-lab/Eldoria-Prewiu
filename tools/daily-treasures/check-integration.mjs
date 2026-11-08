@@ -53,4 +53,16 @@ assert.match(panel,/DayIllustrations=\{/);
 assert.ok(panel.includes('"DailyTreasureArt/"+DayIllustrations[i]'));
 assert.match(panel,/dayGlyph\[i\]\.gameObject\.SetActive\(false\)/);
 assert.match(panel,/icon\.raycastTarget=false/);
+const scoutPolicy=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureMilestoneRules.cs','utf8');
+assert.match(retention,/DailyTreasureMilestoneRules\.FirstScoutFamily\(s,updated,target\)/);
+assert.match(retention,/EarlyRetentionRules\.ScoutDiscoveryText\(order\)/);
+assert.match(scoutPolicy,/if\(\(before\.Retention\.ScoutDiscoveryMask & mask\)!=0\)return false;/);
+assert.match(scoutPolicy,/if\(\(after\.Retention\.ScoutDiscoveryMask & mask\)==0\)return false;/);
+assert.match(gateway,/EventId="milestone:bastion:"\+targetLevel/);
+assert.match(gateway,/EventId="milestone:hero:lyra"/);
+// Story-only milestone emails are distinct from authoritative payout
+// receipts. Neither new mail type may award a duplicate reward.
+assert.match(gateway,/Type="hero-unlocked"/);
+assert.match(gateway,/Type="milestone-bastion"/);
 console.log('PASS daily treasures gateway integration source invariants');
