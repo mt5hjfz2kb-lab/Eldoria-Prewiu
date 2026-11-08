@@ -39,6 +39,8 @@ def package(a):
     assert web["status"]=="WEB_COMPILED_CURRENT_INTEGRATED_SCENE_NOT_PHYSICAL_IPHONE_TESTED"
     assert web["source_sha"]==a.overlay_commit
     assert texture["candidate_sha256"]==sha(Path(a.bundle).read_bytes())
+    audits={row[mode]["inputAudit"] for row in native["passes"] for mode in ("baseline","staged")}
+    assert len(audits)==1 and re.fullmatch(r"[A-Fa-f0-9]{64}",next(iter(audits))), "Audited native input provenance missing"
     # Bind the transformed input to the actual freshly built data bundle.
     data=Path(a.data).read_bytes()
     assert data==decoded(only(build,"*.data.unityweb")), "Data/engine build mismatch"
@@ -86,7 +88,8 @@ def package(a):
     packed.unlink();m["decoded_parts"][m["data"]]=parts
     (out/"build-manifest.json").write_text(json.dumps(m,indent=2))
     identity={"revision":a.revision,"source_sha":a.overlay_commit,"frozen_base_sha":"948ffa9837168a0b68dab80be76b66350422b23a",
-              "source_composition":"frozen base plus four staged-startup C# overlays recorded by native proof",
+              "source_composition":"frozen code plus hash-pinned existing generated assets and normalized metadata plus four staged-startup C# overlays",
+              "existing_input_audit_sha256":next(iter(audits)),
               "game_bytes_unchanged":False,"gameplay_code_unchanged":False,"tutorial_unchanged":True,"clock_unchanged":True,
               "native_parity_verified":True,"native_journey_verified":True,"native_run":a.native_run,
               "texture_payload_modified":True,"candidate_bundle_sha256":texture["candidate_sha256"],
