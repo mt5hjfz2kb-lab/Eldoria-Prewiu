@@ -545,7 +545,8 @@ namespace Eldoria.DailyTreasures
             currentStage=DailyTreasureStageKind.Daily;
             activeMilestoneId=null;
             if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,.91f);
-            if(mainFrameSurface)mainFrameSurface.color=Color.white;
+            if(mainFrameSurface)
+                mainFrameSurface.color=mainFrameSurface.sprite?Color.white:Stone;
             if(milestoneBanner)milestoneBanner.gameObject.SetActive(false);
             // Release the ONLY references owned by this optional ceremony to
             // large original painterly illustrations. Mobile WebGL must not
