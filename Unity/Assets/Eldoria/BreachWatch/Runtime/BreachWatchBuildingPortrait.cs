@@ -202,7 +202,11 @@ namespace Eldoria.BreachWatch
                     maxY=Mathf.Max(maxY,Mathf.Abs(Vector3.Dot(local,up)));
                 }
                 portraitCamera.orthographicSize=Mathf.Max(.5f,
-                    Mathf.Max(maxY,maxX/portraitCamera.aspect)*.77f);
+                    // Actual Unity GPU evidence showed real parapet meshes touched
+                    // the edge at .77x. Fit every projected corner with a
+                    // measured 8% safety margin; no cropped model and no
+                    // synthetic image content.
+                    Mathf.Max(maxY,maxX/portraitCamera.aspect)*1.08f);
                 portraitCamera.nearClipPlane=.1f;
                 portraitCamera.farClipPlane=1000;
                 portraitCamera.transform.position=copiedBounds.center -
