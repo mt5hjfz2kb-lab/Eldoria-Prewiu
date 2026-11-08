@@ -72,8 +72,8 @@ assert.match(panel,/SampleForNativeEvidence\(float elapsed\)/);
 assert.match(panel,/PaintCeremonyFrame\(elapsed\)/);
 assert.match(native,/DailyTreasureRevealTimeline\.RevealPeakSeconds/);
 assert.match(native,/"opening"/);
-assert.match(native,/pictures\.Count==16/);
-assert.match(nativeWorkflow,/\$report\.images -ne 16/);
+assert.match(native,/pictures\.Count==24/);
+assert.match(nativeWorkflow,/\$report\.images -ne 24/);
 // PR173's canonical independently rendered Canvas hides the old Royal HUD.
 // Genuine daily UI must relocate to the native safe area or be invisible.
 assert.match(panel,/GameObject\.Find\("VIGILIA \/ independent canvas"\)/);
