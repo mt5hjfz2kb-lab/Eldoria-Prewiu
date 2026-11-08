@@ -1,5 +1,4 @@
-name: Eldoria isolated mobile texture candidate
-# Candidate3: bounded-error material ASTC compression, sustained runtime and visual comparison.
+name: Eldoria structural candidate browser verification
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -10,12 +9,33 @@ permissions:
   actions: read
 concurrency:
   group: eldoria-beta-mobile-candidate
-  cancel-in-progress: true
+  cancel-in-progress: false
+env:
+  NATIVE_RUN: '42431634641'
+  NATIVE_SOURCE: 67c0d4393f5f27d6c540b988beecc23e3fc0ac8e
+  CANDIDATE_REVISION: native325-staged4
 jobs:
-  candidate:
+  package:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 60
     steps:
+      - name: Wait for exact native run and require every native gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PYWAIT'
+          import json,os,time,urllib.request
+          url='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/'+os.environ['NATIVE_RUN']
+          for _ in range(240):
+            req=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+            with urllib.request.urlopen(req,timeout=30) as r:run=json.load(r)
+            assert run['head_sha']==os.environ['NATIVE_SOURCE'],'Native source mismatch'
+            if run['status']=='completed':
+              assert run['conclusion']=='success','Native verification failed; no candidate packaging authorized'
+              break
+            time.sleep(10)
+          else:raise RuntimeError('Native run still incomplete; no candidate certification')
+          PYWAIT
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
@@ -24,62 +44,168 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42420500174
+          run-id: ${{ env.NATIVE_RUN }}
+          name: beta-structural-webgl-unverified
+          github-token: ${{ github.token }}
+          path: fresh-build
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.NATIVE_RUN }}
+          name: beta-structural-native-evidence
+          github-token: ${{ github.token }}
+          path: native-evidence
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42397405907
+          name: eldoria-pr163-web-preview-42397405907
+          github-token: ${{ github.token }}
+          path: frozen-artifact
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42421746562
           name: mobile-candidate-site
           github-token: ${{ github.token }}
-          path: site/original
-      - name: Install pinned asset codecs
-        run: python -m pip install UnityPy==1.25.4 astc-encoder-py==0.1.12 numpy==2.3.5 Pillow==13.0.0 lz4==4.4.5 Brotli==1.2.1
-      - name: Prepare exact baseline and extract verified bundle
+          path: previous-candidate
+      - name: Install pinned serialization dependencies
+        run: python -m pip install UnityPy==1.25.4 lz4==4.4.5 Brotli==1.2.1
+      - name: Verify native provenance and extract reference texture bundles
         run: |
           python - <<'PY'
-          import importlib.util,pathlib,json,gzip,hashlib,struct,shutil
-          spec=importlib.util.spec_from_file_location('prep','tools/eldoria-private-beta/prepare-pages.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
-          assert pathlib.Path('site/original/release-identity.json').exists()
-          b=json.loads(pathlib.Path('site/original/build-manifest.json').read_text())
-          with open('original-data.bin','wb') as out:
-            for part in b['decoded_parts'][b['data']]:
-              raw=gzip.decompress((pathlib.Path('site/original')/part['url']).read_bytes())
-              assert hashlib.sha256(raw).hexdigest()==part['decoded_sha256']
-              out.write(raw)
-          with open('original-data.bin','rb') as f,open('original.unity3d','wb') as out:
-            assert f.read(16)==b'UnityWebData1.0\0'
-            end=struct.unpack('<I',f.read(4))[0];header=f.read(end-20);off,size,n=struct.unpack_from('<III',header)
-            assert header[12:12+n]==b'data.unity3d'
-            f.seek(off);left=size
-            while left:
-              data=f.read(min(left,1048576));assert data;out.write(data);left-=len(data)
+          import pathlib,json,importlib.util,gzip,hashlib,struct
+          root=pathlib.Path('.')
+          assert json.load(open('native-evidence/warm-cache-restoration.json'))['restored']
+          spec=importlib.util.spec_from_file_location('prep','tools/eldoria-private-beta/prepare-pages.py')
+          prep=importlib.util.module_from_spec(spec);spec.loader.exec_module(prep)
+          z=list(root.glob('frozen-artifact/**/Eldoria-native325-itch.zip'));assert len(z)==1
+          prep.prepare(z[0],'original-site')
+          for site,name in [(root/'original-site/beta-native325','original'),(root/'previous-candidate','verified')]:
+            m=json.loads((site/'build-manifest.json').read_text());raw=bytearray()
+            for part in m['decoded_parts'][m['data']]:
+              b=gzip.decompress((site/part['url']).read_bytes())
+              assert hashlib.sha256(b).hexdigest()==part['decoded_sha256'];raw.extend(b)
+            assert raw[:16]==b'UnityWebData1.0\0'
+            end=struct.unpack_from('<I',raw,16)[0];pos=20;found=[]
+            while pos<end:
+              offset,size,n=struct.unpack_from('<III',raw,pos);pos+=12
+              path=raw[pos:pos+n];pos+=n
+              if path==b'data.unity3d':found.append(raw[offset:offset+size])
+            assert len(found)==1;(root/(name+'.unity3d')).write_bytes(found[0])
           PY
-      - name: Compress bounded-error material textures and verify every object
+      - name: Reuse only byte-matched verified texture transformations in the fresh build
         run: |
-          python tools/eldoria-private-beta/compress_materials.py original.unity3d candidate
-          python tools/eldoria-private-beta/mobile_site.py site/original original-data.bin candidate/data.unity3d site/mobile native325-mobile-material3
+          python tools/eldoria-private-beta/prepare_structural_site.py extract --build fresh-build --output extracted
+          HASH=$(python -c "import json;print(json.load(open('extracted/extraction.json'))['bundle_sha256'])")
+          python tools/eldoria-private-beta/reuse_verified_texture_transforms.py --original original.unity3d --verified verified.unity3d --fresh extracted/data.unity3d --expected-fresh-sha256 "$HASH" --destination transformed
+          python tools/eldoria-private-beta/prepare_structural_site.py package --build fresh-build --wrapper previous-candidate --output site/mobile --data extracted/data.bin --bundle transformed/data.unity3d --texture-proof transformed/integrity.json --native-proof native-evidence/comparison.json --web-proof native-evidence/web-build.json --overlay-commit "$NATIVE_SOURCE" --revision "$CANDIDATE_REVISION" --native-run "$NATIVE_RUN"
           node tools/delivery/test-exact-decoded-transport.mjs site/mobile
-      - name: Install real browser for independent runtime test
-        run: npm install --no-save playwright@1.55.0 pngjs@7.0.0 && npx playwright install --with-deps chromium
-      - name: Start both exact candidate and baseline locally
-        run: |
-          python -m http.server 8765 --bind 127.0.0.1 --directory site > /tmp/beta-server.log 2>&1 &
-          for n in $(seq 1 15); do
-            if curl -fsS http://127.0.0.1:8765/mobile/ >/dev/null; then exit 0; fi
-            sleep 1
-          done
-          exit 1
-      - name: Compare baseline and candidate actual Unity startup
-        run: node tools/eldoria-private-beta/qa_mobile.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile-candidate-evidence
+          name: structural-packaging-evidence
           path: |
-            candidate/integrity.json
-            candidate/texture-report.json
-            qa/
-          retention-days: 14
+            transformed/integrity.json
+            extracted/extraction.json
+            site/mobile/release-identity.json
       - uses: actions/upload-artifact@v4
-        if: always()
         with:
           name: mobile-candidate-site
           path: site/mobile/
           compression-level: 0
           retention-days: 14
+  browser:
+    needs: package
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - name: Recover installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Installed Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: beta-structural-browser-tools
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: beta-structural-browser-live
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: mobile-candidate-site
+          path: beta-structural-browser-${{ github.run_id }}/site/mobile
+      - name: Run actual browser with hardware renderer and verify entry persistence
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $r=Get-Content beta-structural-browser-live/pipeline/active-workstreams.json -Raw|ConvertFrom-Json
+          $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].ownership_revision -ne 8){throw 'Native/browser lease changed'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy'}
+          $browser=@((Join-Path $env:ProgramFiles 'Google/Chrome/Application/chrome.exe'),(Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) 'Microsoft/Edge/Application/msedge.exe'),(Join-Path $env:LOCALAPPDATA 'Google/Chrome/Application/chrome.exe'))|Where-Object {Test-Path $_}|Select-Object -First 1
+          if(-not $browser){throw 'Installed hardware browser unavailable'}
+          $env:VALORIA_CHROMIUM_EXECUTABLE=$browser
+          $dependencies=Join-Path $env:RUNNER_TEMP "beta-browser-deps-$env:GITHUB_RUN_ID"
+          npm install --prefix $dependencies --no-save playwright@1.55.0 pngjs@7.0.0
+          if($LASTEXITCODE -ne 0){throw 'Browser dependencies failed'}
+          $env:NODE_PATH=Join-Path $dependencies 'node_modules'
+          $work=Join-Path $env:GITHUB_WORKSPACE "beta-structural-browser-$env:GITHUB_RUN_ID"
+          if(Get-NetTCPConnection -LocalPort 18765 -State Listen -ErrorAction SilentlyContinue){throw 'Chosen local server port already in use'}
+          $python=(Get-Command python.exe).Source
+          $server=Start-Process $python -ArgumentList @('-m','http.server','18765','--bind','127.0.0.1','--directory',('"'+(Join-Path $work 'site')+'"')) -PassThru -RedirectStandardOutput (Join-Path $work 'http.log') -RedirectStandardError (Join-Path $work 'http-error.log')
+          try {
+            $env:QA_URL='http://127.0.0.1:18765/mobile/?eldoria_diag=1'
+            $env:QA_REVISION=$env:CANDIDATE_REVISION
+            $env:QA_OUT=Join-Path $work 'qa-structural'
+            $ok=$false
+            for($i=0;$i -lt 20;$i++){
+              try {$null=Invoke-WebRequest $env:QA_URL -UseBasicParsing;$ok=$true;break}catch{Start-Sleep 1}
+            }
+            if(-not $ok){throw 'Local candidate server failed'}
+            Push-Location $work
+            try {
+              node "$env:GITHUB_WORKSPACE/beta-structural-browser-tools/tools/eldoria-private-beta/qa_structural.cjs"
+              if($LASTEXITCODE -ne 0){throw 'Sustained structural browser verification failed'}
+              node "$env:GITHUB_WORKSPACE/beta-structural-browser-tools/tools/eldoria-private-beta/qa_entry.cjs"
+              if($LASTEXITCODE -ne 0){throw 'Real entry/reload verification failed'}
+            } finally {Pop-Location}
+          } finally {if(-not $server.HasExited){Stop-Process -Id $server.Id}}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-candidate-evidence
+          path: |
+            beta-structural-browser-${{ github.run_id }}/qa-structural/
+            beta-structural-browser-${{ github.run_id }}/qa-entry/
+            beta-structural-browser-${{ github.run_id }}/http*.log
+          retention-days: 14
+  visible-save:
+    needs: browser
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: mobile-candidate-evidence
+          path: evidence
+      - name: Verify player name survives actual reload on rendered game
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y tesseract-ocr
+          python -m pip install Pillow==13.0.0
+          python tools/eldoria-private-beta/verify_entry_name.py evidence/qa-entry/03-reloaded.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: structural-name-verification
+          path: evidence/qa-entry/
