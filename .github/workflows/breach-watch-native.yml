@@ -394,10 +394,10 @@ jobs:
           folder=root/'PremiumSurfaces'
           assert (root/'PremiumSurfaces.meta').exists()
           data=json.loads((folder/'manifest.json').read_text())
-          assert data['independent'].startswith('All four nine-slice')
-          assert len(data['sources'])==4
+          assert data['independent'].startswith('All five nine-slice')
+          assert len(data['sources'])==5
           assert sorted(x['name'] for x in data['sources'])==[
-              'basalt_context','brass_portrait','burgundy_action','slate_resource']
+              'basalt_context','brass_portrait','burgundy_action','chiseled_quest','slate_resource']
           guids=set()
           for entry in data['sources']:
               p=folder/(entry['name']+'.png')
@@ -411,7 +411,7 @@ jobs:
               assert 'spriteBorder: {x: '+str(entry['border'][0]) in meta
               guids.add(entry['guid'])
           csharp=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
-          for name in ['basalt_context','brass_portrait','burgundy_action','slate_resource']:
+          for name in ['basalt_context','brass_portrait','burgundy_action','chiseled_quest','slate_resource']:
               assert 'VigiliaArt/PremiumSurfaces/'+name in csharp,name
           print('BREACHWATCH_INDEPENDENT_PREMIUM_3_SLICED_MATERIALS_CERTIFIED',len(guids))
           PY
