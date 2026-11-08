@@ -1,0 +1,118 @@
+using System;
+
+namespace Eldoria.DailyTreasures
+{
+    /// <summary>
+    /// Four authored milestone compositions, each using authentic Eldoria
+    /// imagery. No imagined hero portrait, fake future Bastion architecture,
+    /// currencies, or static full-screen screenshot-as-UI.
+    /// Geometry is pure data so all phone/tablet layouts can be verified
+    /// WITHOUT claiming a native Unity render has occurred.
+    /// </summary>
+    public enum DailyTreasureStageKind
+    {
+        Daily, Lyra, Explorers, Vigilants, Bastion
+    }
+
+    public readonly struct DailyTreasureStageLayout
+    {
+        public readonly DailyTreasureStageKind Kind;
+        public readonly float SceneX,SceneY,SceneW,SceneH;
+        public readonly float ChestX,ChestY,ChestW,ChestH;
+        public readonly float ReceiptX,ReceiptY,ReceiptW,ReceiptH;
+        public readonly float BackdropOpacity,SceneryOpacity,SceneVeilOpacity;
+        public readonly bool SideBySide;
+
+        public DailyTreasureStageLayout(DailyTreasureStageKind kind,
+            float sceneX,float sceneY,float sceneW,float sceneH,
+            float chestX,float chestY,float chestW,float chestH,
+            float receiptX,float receiptY,float receiptW,float receiptH,
+            float backdropOpacity,float sceneryOpacity,float veilOpacity,
+            bool sideBySide)
+        {
+            Kind=kind;SceneX=sceneX;SceneY=sceneY;
+            SceneW=sceneW;SceneH=sceneH;
+            ChestX=chestX;ChestY=chestY;ChestW=chestW;ChestH=chestH;
+            ReceiptX=receiptX;ReceiptY=receiptY;
+            ReceiptW=receiptW;ReceiptH=receiptH;
+            BackdropOpacity=backdropOpacity;
+            SceneryOpacity=sceneryOpacity;SceneVeilOpacity=veilOpacity;
+            SideBySide=sideBySide;
+        }
+    }
+
+    public static class DailyTreasureStageDirection
+    {
+        public static DailyTreasureStageKind FromEvent(string eventId)
+        {
+            if(string.IsNullOrWhiteSpace(eventId))
+                return DailyTreasureStageKind.Daily;
+            if(eventId.StartsWith("milestone:hero:lyra",StringComparison.Ordinal))
+                return DailyTreasureStageKind.Lyra;
+            if(eventId.StartsWith("scout:",StringComparison.Ordinal) ||
+                eventId.StartsWith("exploration:",StringComparison.Ordinal))
+                return DailyTreasureStageKind.Explorers;
+            if(eventId.StartsWith("vigilant:",StringComparison.Ordinal))
+                return DailyTreasureStageKind.Vigilants;
+            if(eventId.StartsWith("milestone:bastion:",StringComparison.Ordinal))
+                return DailyTreasureStageKind.Bastion;
+            return DailyTreasureStageKind.Daily;
+        }
+
+        public static DailyTreasureStageLayout Compose(string eventId,
+            float width,float height)
+        {
+            if(float.IsNaN(width)||float.IsNaN(height)||
+               width<275f||height<300f)
+                throw new ArgumentOutOfRangeException(nameof(width),
+                    "Need a real portrait/landscape canonical screen size");
+            var kind=FromEvent(eventId);
+            bool portrait=height>width;
+            // Panel itself is bounded to 440x700 portrait / 740x370
+            // landscape, as in the existing uGUI component.
+            float w=Math.Min(width-24f,portrait?440f:740f);
+            float h=Math.Min(height-20f,portrait?700f:370f);
+
+            if(kind==DailyTreasureStageKind.Daily)
+                return new DailyTreasureStageLayout(kind,
+                    0,0,w-24,h-26,
+                    0,portrait?105f:87f,portrait?294f:282f,
+                    portrait?265f:175f,
+                    0,portrait?-148f:-71f,w-45,
+                    portrait?141f:66f,
+                    .91f,0,.0f,false);
+
+            // A completed Bastion is shown against the TRUE city view.
+            // An invented painted city would risk depicting an incorrect level.
+            if(kind==DailyTreasureStageKind.Bastion)
+                return new DailyTreasureStageLayout(kind,
+                    0,0,w-25,h-28,
+                    0,portrait?103f:85f,portrait?302f:296f,
+                    portrait?269f:176f,
+                    0,portrait?-.31f*h:-.19f*h,w-48,
+                    portrait?.12f*h:.17f*h,
+                    .62f,0f,0f,false);
+
+            // Lyra, Scouts and Vigilants each have an actual original
+            // painterly artwork resource. In landscape that painting
+            // dominates the LEFT while the premium coffer forms a distinct
+            // RIGHT-hand vignette. In portrait they become a richly layered
+            // theatre: painterly backdrop high, coffer in the foreground.
+            if(portrait)
+            {
+                return new DailyTreasureStageLayout(kind,
+                    0,.15f*h,w-24,.56f*h,
+                    0,.005f*h,Math.Min(w*.64f,272f),
+                    Math.Min(h*.33f,223f),
+                    0,-.32f*h,w-48,.12f*h,
+                    .90f,.79f,.13f,false);
+            }
+            return new DailyTreasureStageLayout(kind,
+                -.247f*w,.018f*h,.486f*w,h-42f,
+                .236f*w,.166f*h,Math.Min(.374f*w,282f),
+                Math.Min(.475f*h,175f),
+                .236f*w,-.202f*h,.452f*w,.155f*h,
+                .88f,.90f,.15f,true);
+        }
+    }
+}
