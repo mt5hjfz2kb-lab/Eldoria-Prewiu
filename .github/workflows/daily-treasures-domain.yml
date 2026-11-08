@@ -68,3 +68,6 @@ jobs:
           assert len({v[1] for v in declared.values()})==2
           print('PASS authored asset importer, two immutable PNG hashes and independent GUIDs')
           PY
+
+      - name: Verify the actual original chest PNGs committed to the PR
+        run: python tools/daily-treasures/verify_imported_art.py
