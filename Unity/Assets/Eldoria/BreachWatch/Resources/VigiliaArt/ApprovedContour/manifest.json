@@ -2,19 +2,13 @@
   "source_sha256": "79e2264961b3ea4462f9fc3dc65f513e2f4e76f59f4f6b2e3d27a5d06013a5a1",
   "origin": "Exact owner-approved 864x1536 vertical Vigilia concept border, user-provided in chat",
   "pixel_art_derived_only_from_user_approved_concept": true,
-  "new_independent_uGUI_nine_slice": true,
+  "new_independent_uGUI_one_piece_border": true,
   "no_baked_player_data_or_real_gameplay": true,
   "size": [
     256,
     427
   ],
-  "png_sha256": "4b325e4a3961d78f4260e33ad8cdc267da929cd35982d4b3897e52b418a2b5f0",
+  "png_sha256": "a60d14e6e45a262b9ecd27bfa60a21a71440f182ea4dbc9d829739a8991701b9",
   "guid": "a4fb6c6c38eb4651a5d44acb8fe939da",
-  "bottom_finial_sha256": "0d808806ae40d7366af7862a3da4a98d32bbcc74ddaa39c7537f4788d10e1d0d",
-  "bottom_finial_guid": "8795dc9d3c1d4013ae844c8efa179d0a",
-  "bottom_finial_size": [
-    60,
-    50
-  ],
   "art_approval": "pending real Unity exact-head screenshot review"
 }

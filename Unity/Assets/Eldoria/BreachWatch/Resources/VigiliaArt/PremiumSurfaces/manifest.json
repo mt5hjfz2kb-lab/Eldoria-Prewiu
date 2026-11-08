@@ -5,21 +5,6 @@
   "art_approved": false,
   "sources": [
     {
-      "name": "basalt_context",
-      "sha256": "3f2123e47fc68a0fbba04c50ded3d73f642eeb294d78e6c4e735e63630231472",
-      "size": [
-        512,
-        736
-      ],
-      "guid": "74b0ad4795bd4ef1a98d624325997f55",
-      "border": [
-        34,
-        38,
-        34,
-        38
-      ]
-    },
-    {
       "name": "burgundy_action",
       "sha256": "5f65e58c20a56e8bf1125737bf88b2f5f0739e987021850576f0907c02942a0e",
       "size": [
@@ -77,6 +62,21 @@
         32,
         66,
         32
+      ]
+    },
+    {
+      "name": "profile_plate",
+      "sha256": "3f4f36bfe34766dbe1454ba6cff41390e9a71f79fc39dd15a5c03e1c45360b9c",
+      "size": [
+        512,
+        148
+      ],
+      "guid": "3f29a67de3ee436a83ba9a64e1b98242",
+      "border": [
+        22,
+        16,
+        22,
+        16
       ]
     }
   ]
