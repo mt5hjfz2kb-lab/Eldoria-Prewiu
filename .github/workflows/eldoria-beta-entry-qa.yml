@@ -1,4 +1,4 @@
-name: Eldoria identical-host Apple GPU control versus compact startup
+name: Eldoria identical-host Apple GPU control versus reused routes and controlled heap experiment
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -8,30 +8,7 @@ permissions:
   contents: read
   actions: read
 jobs:
-  require-package:
-    runs-on: ubuntu-latest
-    timeout-minutes: 80
-    steps:
-      - name: Require successful exact package job without waiting for unrelated browser work
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python - <<'PY'
-          import json,os,time,urllib.request
-          root='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/42511382831'
-          def get(url):
-            with urllib.request.urlopen(urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}),timeout=30) as r:return json.load(r)
-          assert get(root)['head_sha']=='04a3479ea465c4a5ef245abc25125f4fc25260ae'
-          for _ in range(420):
-            jobs=get(root+'/jobs')['jobs'];package=next((j for j in jobs if j['name']=='package'),None)
-            if package and package['status']=='completed':
-              assert package['conclusion']=='success','Exact native packaging failed'
-              break
-            time.sleep(10)
-          else:raise RuntimeError('Package incomplete')
-          PY
   same-host-memory:
-    needs: require-package
     runs-on: macos-15
     timeout-minutes: 25
     steps:
@@ -47,8 +24,8 @@ jobs:
           path: qa-sites/control
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42511382831
-          name: mobile7-candidate-site
+          run-id: 42519214500
+          name: mobile9-candidate-site
           github-token: ${{ github.token }}
           path: qa-sites/candidate
       - uses: actions/setup-node@v4
@@ -68,13 +45,14 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
           failed=0
+          QA_URL='http://127.0.0.1:18765/candidate/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile9-routes QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18765/candidate/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile9-routes QA_VARIANT=preallocated-640 QA_OUT=evidence/heap640 node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
           QA_URL='http://127.0.0.1:18765/control/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile6-cubemap QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
-          QA_URL='http://127.0.0.1:18765/candidate/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile7-compact QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
           exit "$failed"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: same-host-mobile6-versus-mobile7-not-physical-iphone
+          name: mobile9-reversed-order-heap640-not-physical-iphone
           path: |
             evidence/
             server.log

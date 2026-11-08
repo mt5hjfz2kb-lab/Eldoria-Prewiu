@@ -29,7 +29,7 @@ function processes() {
       window.__preallocation=[];
       // Diagnostic A/B: grow the exported heap before Emscripten receives it.
       // No WASM byte, asset, gameplay or public deployment is changed.
-      if(variant==='preallocated-1024'){
+      if(/^preallocated-(640|1024)$/.test(variant)){
         for(const method of ['instantiate','instantiateStreaming']){
           const instantiate=WebAssembly[method];if(!instantiate)continue;
           WebAssembly[method]=async function(...args){
@@ -37,7 +37,7 @@ function processes() {
             const instance=result instanceof WebAssembly.Instance?result:result.instance;
             const memory=instance?.exports?.memory;
             if(memory instanceof WebAssembly.Memory){
-              const before=memory.buffer.byteLength,target=1024*1024*1024;
+              const before=memory.buffer.byteLength,target=Number(variant.split('-')[1])*1024*1024;
               if(before<target)memory.grow(Math.ceil((target-before)/65536));
               const record={at:performance.now(),before,after:memory.buffer.byteLength};
               window.__preallocation.push(record);console.log('ELDORIA_HEAP_PREALLOCATED '+JSON.stringify(record));
@@ -149,7 +149,7 @@ function processes() {
       const finalEvents=fs.readFileSync(out+'/events.jsonl','utf8');
       if(report.errors.length||/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(finalEvents))throw Error('Entry/reload runtime errors');
     }
-    if(variant==='preallocated-1024'&&!report.samples.some(s=>s.preallocation?.some(p=>p.after===1073741824)))throw Error('Preallocation intervention not observed');
+    if(/^preallocated-(640|1024)$/.test(variant)&&!report.samples.some(s=>s.preallocation?.some(p=>p.after===Number(variant.split('-')[1])*1024*1024)))throw Error('Preallocation intervention not observed');
     report.passed=true;
   }catch(e){report.failure=String(e);}
   finally{
