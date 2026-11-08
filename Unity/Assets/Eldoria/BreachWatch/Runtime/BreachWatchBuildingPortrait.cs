@@ -229,13 +229,13 @@ namespace Eldoria.BreachWatch
                 float spanUp=(maxUp-minUp)*.5f;
                 // The geometrical AABBs include large *empty* corners
                 // between the real Bastion meshes, so a 1.12x margin made
-                // the approved building illustration look miniature (16%
-                // of pixels contained actual masonry). A closer 0.82x
-                // composition is validated against the REAL raster
-                // silhouette below. If any genuine parapet is cut off,
-                // the native quality gate rejects the capture.
+                // the approved illustration look miniature (~16% masonry).
+                // The first tighter .82x crop touched genuine geometry at
+                // the image boundary in the Unity GPU test. Use .90x for a
+                // narrower safety margin while keeping the castle legible;
+                // the native visual/bounds gate will still reject clipping.
                 portraitCamera.orthographicSize=Mathf.Max(.5f,
-                    Mathf.Max(spanUp,spanRight/portraitCamera.aspect)*.82f);
+                    Mathf.Max(spanUp,spanRight/portraitCamera.aspect)*.90f);
                 portraitCamera.nearClipPlane=.1f;
                 portraitCamera.farClipPlane=1000;
                 Vector3 actualVisualCenter=copiedBounds.center +
