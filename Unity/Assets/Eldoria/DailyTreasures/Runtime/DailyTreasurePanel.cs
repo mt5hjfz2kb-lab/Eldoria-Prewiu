@@ -80,6 +80,7 @@ namespace Eldoria.DailyTreasures
         RawImage milestoneScenery;
         Image milestoneVignette;
         string milestoneSceneryKey;
+        Rect milestoneSceneryBaseUv;
         public string MilestoneSceneryKey => milestoneSceneryKey;
         public bool HasMilestoneScenery =>
             milestoneScenery && milestoneScenery.texture &&
@@ -854,6 +855,31 @@ namespace Eldoria.DailyTreasures
                 float height=source/target;
                 milestoneScenery.uvRect=new Rect(0f,(1f-height)*.5f,1f,height);
             }
+            milestoneSceneryBaseUv=milestoneScenery.uvRect;
+        }
+        void PaintMilestoneAtmosphere(float elapsed,DailyTreasureRevealFrame frame)
+        {
+            if(!milestoneScenery || !milestoneScenery.texture ||
+               !milestoneScenery.gameObject.activeInHierarchy)
+                return;
+            // Crop and drift the ACTUAL original image with guaranteed UV
+            // bounds. Painterly depth has no texture seams or procedural
+            // imitation of the approved hero and world art.
+            var crop=milestoneSceneryBaseUv;
+            float freeX=Mathf.Max(0f,1f-crop.width);
+            float freeY=Mathf.Max(0f,1f-crop.height);
+            crop.x=Mathf.Clamp(crop.x+
+                DailyTreasureStageDirection.SafePainterlyDrift(
+                    elapsed,freeX,false),0f,freeX);
+            crop.y=Mathf.Clamp(crop.y+
+                DailyTreasureStageDirection.SafePainterlyDrift(
+                    elapsed,freeY,true),0f,freeY);
+            milestoneScenery.uvRect=crop;
+            float a=DailyTreasureStageDirection.Compose(
+                activeMilestoneId,root.rect.width,root.rect.height)
+                .SceneryOpacity;
+            milestoneScenery.color=new Color(.74f,.72f,.68f,
+                a*(.91f+.09f*frame.Glow));
         }
         static string ConfirmedMilestoneSummary(string committedText)
         {
@@ -1343,6 +1369,7 @@ namespace Eldoria.DailyTreasures
                     Vector3.one*(frame.Scale-frame.Shake);
             }
             glow.color=new Color(1f,.77f,.35f,frame.Glow*.86f);
+            PaintMilestoneAtmosphere(elapsed,frame);
             ambient.color=new Color(activeTheme.R,activeTheme.G,
                 activeTheme.B,frame.Glow*activeTheme.Strength);
             rays.SetIntensity(frame.Glow*.79f);
