@@ -425,7 +425,7 @@ namespace Eldoria.BreachWatch.Editor
                 }
                 Need(oneRow,"Five independent navigation symbols overlap or stack in "+name);
                 float footprint=ConservativeUIFootprint(ui,camera,w,h);
-                float maxFootprint=w<h?36f:h<500?32f:24f;
+                float maxFootprint=w<h?34f:h<500?32f:22f;
                 Need(footprint<=maxFootprint,
                      "Owner-approved compact UI footprint exceeded in "+name+
                      ": "+footprint.ToString("F2")+"% / maximum "+
