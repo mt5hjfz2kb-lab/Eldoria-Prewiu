@@ -643,6 +643,23 @@ namespace Eldoria.DailyTreasures
                 if(Application.isPlaying && originalSfx && chestChime)
                     originalSfx.PlayOneShot(chestChime);
             }
+            var frame=PaintCeremonyFrame(elapsed);
+            if(frame.Finished)ShowResult();
+        }
+
+#if UNITY_EDITOR
+        // Editor evidence uses the EXACT runtime animation formula, not a
+        // mock GIF; this never invokes a reward/command or advances gameplay.
+        public void SampleForNativeEvidence(float elapsed)
+        {
+            if(!IsOpen || !playing)
+                throw new InvalidOperationException("No live ceremony to sample");
+            PaintCeremonyFrame(elapsed);
+        }
+#endif
+
+        DailyTreasureRevealFrame PaintCeremonyFrame(float elapsed)
+        {
             var frame=DailyTreasureRevealTimeline.Sample(elapsed);
             chest.SetOpening(frame.Opened);
             if(hasAuthoredChestArt)
@@ -667,7 +684,7 @@ namespace Eldoria.DailyTreasures
                 sparks[i].color=new Color(1f,.68f+.025f*i,.24f,
                     Mathf.Clamp01(frame.Embers*(1f-(i%3)*.08f)));
             }
-            if(frame.Finished)ShowResult();
+            return frame;
         }
     }
 }
