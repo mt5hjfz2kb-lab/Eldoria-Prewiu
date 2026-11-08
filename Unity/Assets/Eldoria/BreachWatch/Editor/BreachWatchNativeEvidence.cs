@@ -127,6 +127,8 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui != null && ui.IndependentCanvas && ui.LegacyPresentationHidden,
                 "This must be a new Canvas; the entire old HUD presentation must be OFF");
             Need(ui.HasRealSession, "New Canvas cannot access existing real game session");
+            Need(ui.HasTrueResourceIllustrations,
+                "All three resource icons must be real, recognizable licensed independent sprites");
             Need(!ui.transform.IsChildOf(host.Hud.transform), "New Canvas must not be attached to legacy HUD");
             Need(ui.UsesOriginalPaintedMedallions && ui.UsesOriginalForgedPortraitFrame,
                 "Vigilia must render the exact licensed original new art, not procedural fallback");
@@ -274,8 +276,8 @@ namespace Eldoria.BreachWatch.Editor
                          ui.CurrentSnapshot?.Building != null &&
                          ui.CurrentSnapshot.Building.Id=="bastion",
                          "Real Bastion selection is missing contextual native card in "+name);
-                    Need(ui.HasLiveBuildingPortrait,
-                         "Authentic world-building portrait did not render in "+name);
+                    Need(ui.HasLiveBuildingPortrait && ui.BuildingPortraitExclusive,
+                         "Real isolated Bastion mesh portrait did not render in "+name);
                     // Each panel child shares the same top-left anchored
                     // coordinate space; verify costs/status/action are ordered
                     // without occupying the same pixels on narrow phones.
