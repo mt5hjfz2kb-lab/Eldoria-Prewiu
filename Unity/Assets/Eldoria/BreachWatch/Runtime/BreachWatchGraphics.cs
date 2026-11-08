@@ -10,7 +10,7 @@ namespace Eldoria.BreachWatch
     // Uses Unity's real nine-slice renderer and independent raycast surfaces.
     public sealed class BreachWatchPlate : Image
     {
-        public enum PlateType { Basalt, Obsidian, Resource, Action, Selected, Dangerous }
+        public enum PlateType { Basalt, Obsidian, Resource, Action, Selected, Dangerous, Navigation, Portrait, Banner }
         PlateType plateType = PlateType.Basalt;
         public PlateType Type
         {
@@ -33,9 +33,11 @@ namespace Eldoria.BreachWatch
         {
             var next = BreachWatchMaterialLibrary.For(plateType);
             if(next != sprite) sprite = next;
-            type = Image.Type.Sliced;
-            preserveAspect = false;
-            color = Color.white;
+            bool isolatedMedallion = plateType==PlateType.Navigation || plateType==PlateType.Selected;
+            bool isolatedBanner = plateType==PlateType.Banner;
+            type = isolatedMedallion || isolatedBanner ? Image.Type.Simple : Image.Type.Sliced;
+            preserveAspect = isolatedMedallion;
+            color = plateType==PlateType.Selected ? new Color(1f,.81f,.67f,1f) : Color.white;
         }
     }
 
