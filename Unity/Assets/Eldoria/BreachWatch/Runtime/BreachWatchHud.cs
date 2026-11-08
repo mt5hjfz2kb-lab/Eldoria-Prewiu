@@ -37,6 +37,7 @@ namespace Eldoria.BreachWatch
         RectTransform[] resourceChips = new RectTransform[3];
         Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
         Text[] resourceAmounts = new Text[3];
+        readonly Image[] resourceIllustrations = new Image[3];
         Text buildingName, buildingLevel, buildingFunction, buildingCosts, buildingState, actionLabel, feedback;
         Button actionButton, closeButton;
         RawImage portraitView;
@@ -69,6 +70,13 @@ namespace Eldoria.BreachWatch
         public Button BuildingAction => actionButton;
         public RectTransform BuildingPanel => panel;
         public bool HasLiveBuildingPortrait => buildingPortrait && buildingPortrait.HasLiveBuilding;
+        public bool HasTrueResourceIllustrations =>
+            resourceIllustrations[0] && resourceIllustrations[0].sprite &&
+            resourceIllustrations[0].sprite.name=="wood" &&
+            resourceIllustrations[1] && resourceIllustrations[1].sprite &&
+            resourceIllustrations[1].sprite.name=="stone" &&
+            resourceIllustrations[2] && resourceIllustrations[2].sprite &&
+            resourceIllustrations[2].sprite.name=="food";
         public bool UsesOriginalPaintedMedallions =>
             navPlates[0] && navPlates[0].sprite &&
             navPlates[0].sprite.name=="nav_sculpted_medallion";
@@ -213,8 +221,14 @@ namespace Eldoria.BreachWatch
             for(int i=0;i<3;i++)
             {
                 resourceChips[i]=Rect("Resource "+i,resourceRow);Plate(resourceChips[i],BreachWatchPlate.PlateType.Resource);
-                var g=Glyph(resourceChips[i],"Resource emblem",i==0?BreachWatchGlyph.Sigil.Wood:i==1?BreachWatchGlyph.Sigil.Stone:BreachWatchGlyph.Sigil.Food);
-                At((RectTransform)g.transform,7,5,35,35);
+                var picture=Rect("True illustrated resource",resourceChips[i]);
+                resourceIllustrations[i]=picture.gameObject.AddComponent<Image>();
+                resourceIllustrations[i].sprite=Resources.Load<Sprite>(
+                    "VigiliaArt/ResourceIcons/"+(i==0?"wood":i==1?"stone":"food"));
+                resourceIllustrations[i].type=Image.Type.Simple;
+                resourceIllustrations[i].preserveAspect=true;
+                resourceIllustrations[i].raycastTarget=false;
+                At(picture,7,5,36,35);
                 resourceAmounts[i]=Label(resourceChips[i],"Actual quantity",17,TextAnchor.MiddleLeft,TextIvory,true);
                 At(resourceAmounts[i].rectTransform,47,5,90,35);
             }
@@ -513,6 +527,9 @@ namespace Eldoria.BreachWatch
                 resourceAmounts[0].text=RoyalFormatting.Amount(snapshot.Wood);
                 resourceAmounts[1].text=RoyalFormatting.Amount(snapshot.Stone);
                 resourceAmounts[2].text=snapshot.ShowFood?RoyalFormatting.Amount(snapshot.Food):"—";
+                if(resourceIllustrations[2])
+                    resourceIllustrations[2].color=snapshot.ShowFood
+                        ?Color.white:new Color(.5f,.48f,.45f,.70f);
                 var b=snapshot.Building;
                 bool show=b!=null&&!string.IsNullOrEmpty(selected);
                 panel.gameObject.SetActive(show);
