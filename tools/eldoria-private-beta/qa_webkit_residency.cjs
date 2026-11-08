@@ -69,9 +69,9 @@ function processes() {
     page.on('crash',()=>{report.errors.push('PAGE_CRASH');log({type:'crash'});write();});
     page.on('requestfailed',r=>log({type:'requestfailed',url:r.url(),error:r.failure()}));
     page.on('framenavigated',f=>{if(f===page.mainFrame()){report.navigations.push({at:Date.now(),url:f.url()});write();}});
-    await page.goto('https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile5',{waitUntil:'domcontentloaded',timeout:30000});
+    await page.goto(process.env.QA_URL||'https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile5',{waitUntil:'domcontentloaded',timeout:30000});
     report.identity=await page.evaluate(()=>fetch('release-identity.json',{cache:'no-store'}).then(r=>r.json()));
-    if(report.identity.revision!=='native325-mobile5')throw Error('Public candidate changed');
+    if(report.identity.revision!==(process.env.QA_REVISION||'native325-mobile5'))throw Error('Candidate identity changed');
     report.capabilities=process.env.QA_SKIP_PREFLIGHT==='1'?{webgl2:'not-probed',note:'Observe actual Unity context only'}:await page.evaluate(()=>{
       const c=document.createElement('canvas'),g=c.getContext('webgl2');
       if(!g)return {webgl2:false,userAgent:navigator.userAgent};
@@ -104,8 +104,19 @@ function processes() {
     if(!readyAt||Date.now()-readyAt<90000)throw Error('Did not survive 90s after ready');
     const events=fs.readFileSync(out+'/events.jsonl','utf8');
     if(!events.includes('REGION1_CANON_WORLD_INSTALLED'))throw Error('World initialization incomplete');
-    if(/not readable|Could not allocate|out of memory|RuntimeError:|Exception:/i.test(events))throw Error('Unity runtime errors');
+    if(/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(events))throw Error('Unity runtime errors');
     await page.screenshot({path:out+'/game.png',timeout:15000});
+    if(process.env.QA_ENTRY==='1'){
+      await page.mouse.click(195,490,{delay:200});await page.keyboard.type('Beta QA',{delay:140});await page.mouse.click(195,614,{delay:200});
+      await page.waitForTimeout(30000);await page.screenshot({path:out+'/after-name.png',timeout:15000});
+      await page.evaluate(()=>window.valoriaGame.Quit());
+      await page.reload({waitUntil:'domcontentloaded'});await page.locator('#play').click();
+      await page.waitForFunction(()=>!!window.valoriaGame,null,{timeout:120000});await page.waitForTimeout(45000);
+      await page.screenshot({path:out+'/reloaded.png',timeout:15000});
+      report.entry={nickname:'Beta QA',typed:true,reloaded:true,observationSeconds:45,visualNameVerification:'pending image inspection'};
+      const finalEvents=fs.readFileSync(out+'/events.jsonl','utf8');
+      if(report.errors.length||/not readable|Could not allocate|out of memory|RuntimeError:|Exception:|ELDORIA_CONTEXT_LOST|GL.End requires/i.test(finalEvents))throw Error('Entry/reload runtime errors');
+    }
     report.passed=true;
   }catch(e){report.failure=String(e);}
   finally{
