@@ -81,8 +81,8 @@ namespace Eldoria.BreachWatch
         public float BuildingPortraitDrawnFraction => buildingPortrait ? buildingPortrait.NonBackgroundPixelFraction : 0f;
         public bool HasNativePremiumTypography =>
             font && boldFont &&
-            font.name.StartsWith("CormorantGaramond-",StringComparison.Ordinal) &&
-            boldFont.name.StartsWith("CormorantGaramond-",StringComparison.Ordinal);
+            font==Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-Regular") &&
+            boldFont==Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-SemiBold");
         public bool HasTrueResourceIllustrations =>
             resourceIllustrations[0] && resourceIllustrations[0].sprite &&
             resourceIllustrations[0].sprite.name=="wood" &&
