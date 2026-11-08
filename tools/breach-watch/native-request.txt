@@ -28,3 +28,5 @@ Latest isolated art+source proof: 7 SHA-pinned independent sprites, real city se
 2026-11-08: Cleaned PR173 of 159 rejected Forja files/old workflows/docs; restored canonical RoyalGold code and exact live main ownership registry, retaining only independent BreachWatch assets, current PR process and QA. Run exact-head Roslyn+7 CC0 SHA/GUID preflight; keep shared Unity runner gated until formal beta release. No synthetic screenshot acceptance.
 
 Independent Unity Editor Play preview menu added to enable/restore new Canvas without saving production scene. PR has removed 159 rejected Forja source/assets, 3 main-owned legacy files restored, seven SHA-verified CC0 art assets retained. Run exact-head new source/asset/no-old-overlay CI; defer native Windows until main live exclusive claim passes.
+
+2026-11-08: extract 5 true independent illustrated navigation emblems from the exact owner-approved Vigilia concept, hash/alpha metadata pinned. Only import into new BreachWatch, no original HUD overlay, no game changes, native runner needs its own released lease.
