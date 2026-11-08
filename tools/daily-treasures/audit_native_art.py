@@ -194,8 +194,8 @@ def analyze(folder,expected_sha,output):
                       name,fill=(230,193,131))
         out.save(output/filename,optimize=True)
 
-    sheet(expected[:7]+expected[15:22]+expected[22:29]+expected[36:43],
-          "paid_reward_contact_sheet.png",7)
+    paid=[(variant,w,h) for w,h in REQUIRED_SIZES for variant in DAILY]
+    sheet(paid,"paid_reward_contact_sheet.png",7)
     style=[k for k in expected if k[0] in MILESTONE]
     sheet(style,"milestone_visual_styles_contact_sheet.png",4)
 
