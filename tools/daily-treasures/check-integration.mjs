@@ -125,5 +125,8 @@ assert.match(native,/panel\.EarnedItemCardCount==2/);
 assert.match(native,/panel\.HasRevealedIllustratedEarnedItems/);
 assert.match(paidCardSource,/MaxSimultaneousItems=4/);
 assert.match(originalRaySource,/public void SetIntensity\(float value\)/);
-assert.doesNotMatch(paidCardSource,/LocalGateway|GameCommand|\.Execute\(|PlayerPrefs/);
+// Comments can explain the authoritative gateway; only executable
+// presentation code must remain incapable of issuing payouts.
+const paidCardExecutable=paidCardSource.replace(/\/\/[^\n]*/g,'');
+assert.doesNotMatch(paidCardExecutable,/LocalGateway|GameCommand|\.Execute\(|PlayerPrefs/);
 console.log('PASS daily treasures gateway integration source invariants');
