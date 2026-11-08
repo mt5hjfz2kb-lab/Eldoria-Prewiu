@@ -84,3 +84,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: Exact gold-trim source migrated and imported (original SHA 79e226...). New independent metal ring uses true transparent 9-slice, live text remains separate, Cormorant gold heading with legible Libre body, actual gameplay costs. Source/asset gate checks exact PNG, fonts and original medallions. Re-run FRESH Unity screenshot with evidence folder removed; capture four orientations and real Bastion selection, no merging to main.
 
 2026-11-08: CI sparse-art checkout corrected to include authenticated exact owner-approved original gold WebP source; reverify source SHA and transparent nine-slice imported PNG, then Unity fresh capture. Native-only workstream lease remains exclusive.
+
+2026-11-08: Re-author exact approved gold border with all source screenshot horizontal dividers/ghosts removed from live content zone. Keep gold outer bevel/top and bottom diamonds; dark readable slate now covers provisional multiple panel ornaments. [vigilia-owner-gold-border]
