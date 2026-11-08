@@ -17,7 +17,9 @@ DESIGNS={
     "slate_resource":dict(width=512,height=148,cut=13,seed=173020,kind="resource",
                           border=(14,11,14,11),guid="90ec0b5c9a2b463194f198a623e5e36c"),
     "chiseled_quest":dict(width=512,height=220,cut=20,seed=173021,kind="quest",
-                          border=(48,32,66,32),guid="1138e4a0b67b480a89ce751bd2fb370c")
+                          border=(48,32,66,32),guid="1138e4a0b67b480a89ce751bd2fb370c"),
+    "profile_plate":dict(width=512,height=148,cut=16,seed=173022,kind="profile",
+                          border=(22,16,22,16),guid="3f29a67de3ee436a83ba9a64e1b98242")
 }
 FOLDER_META="""fileFormatVersion: 2
 guid: f8e9b67b7ee54fd4a22ef0c2e89a14dd
@@ -222,7 +224,7 @@ def main():
         })
     (OUT/"manifest.json").write_text(json.dumps({
         "origin":"Original script-authored Vigilia surface artwork, owner's approved image is visual direction only",
-        "independent":"All five nine-slice sprites are new and no old HUD graphics are reused",
+        "independent":"All six nine-slice sprites are new and no old HUD graphics are reused",
         "not_native_screenshot":True,
         "art_approved":False,
         "sources":manifest
