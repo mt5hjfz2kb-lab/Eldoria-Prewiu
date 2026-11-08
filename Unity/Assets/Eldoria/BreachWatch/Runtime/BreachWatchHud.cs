@@ -577,7 +577,7 @@ namespace Eldoria.BreachWatch
                 identityName.fontSize=20;
                 identityPower.fontSize=14;
 
-                float chip=Mathf.Min(112,Mathf.Max(82f,(w*.28f-12f)/3f));
+                float chip=Mathf.Min(100,Mathf.Max(82f,(w*.28f-12f)/3f));
                 float resourcesWidth=3*chip+14;
                 At(resourceRow,w-margin-resourcesWidth,16,resourcesWidth,43);
                 for(int i=0;i<3;i++)
@@ -612,8 +612,8 @@ namespace Eldoria.BreachWatch
                     At((RectTransform)navButtons[i].transform,
                         i*(navSize+navGap),3,navSize,navSize);
 
-                float pw=h<530f?210f:230f;
-                float ph=Mathf.Min(343,h-174f);
+                float pw=h<530f?210f:220f;
+                float ph=Mathf.Min(365,h-174f);
                 float top=h<530f?75f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
                 At(buildingName.rectTransform,50,8,pw-88,31);
