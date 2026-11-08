@@ -106,7 +106,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
   commit-verified-cc0-art:
-    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]'))
+    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]') || contains(github.event.head_commit.message, '[vigilia-premium-surfaces]'))
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
@@ -140,6 +140,9 @@ jobs:
       - name: Create refined independent sculpted medallions from approved reference
         if: contains(github.event.head_commit.message, '[vigilia-premium-art]')
         run: python tools/breach-watch/polish_owner_medallions.py
+      - name: Author original dark basalt, burgundy metal and gilded portrait surfaces
+        if: contains(github.event.head_commit.message, '[vigilia-premium-surfaces]')
+        run: python tools/breach-watch/author_premium_surfaces.py
       - name: Protect canonical workstream ownership and source HEAD before push
         shell: bash
         env:
