@@ -1,4 +1,4 @@
-name: Eldoria owner diagnostic mobile candidate Pages
+name: Eldoria owner verified cubemap compatibility Pages
 on:
   push:
     branches: [main]
@@ -18,132 +18,51 @@ jobs:
     timeout-minutes: 30
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}beta-native325/mobile-v4.html
+      url: ${{ steps.deploy.outputs.page_url }}beta-native325/mobile-v6.html
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 300b78e31a72bbdbd74c6681a75b04987d28bd31
+          ref: 9207630779de31c242de69dafcb22ee65e1d5c2c
           sparse-checkout: |
             tools/eldoria-private-beta
             tools/delivery
           persist-credentials: false
       - uses: actions/configure-pages@v5
-      - name: Require independently successful exact candidate QA
+      - name: Require exact completed Apple GPU candidate checks
         uses: actions/github-script@v7
         with:
           script: |
-            for(let n=0;n<120;n++){
-              const pending=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42487738914})).data;
-              if(pending.head_sha!=='300b78e31a72bbdbd74c6681a75b04987d28bd31')throw Error('Wrong candidate source');
-              if(pending.status==='completed')break;
-              await new Promise(resolve=>setTimeout(resolve,10000));
-            }
-            const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42487738914})).data;
-            if(r.conclusion!=='success'||r.head_sha!=='300b78e31a72bbdbd74c6681a75b04987d28bd31')throw Error('Exact candidate browser and persistence checks not passed');
-            const a=(await github.rest.actions.listWorkflowRunArtifacts({...context.repo,run_id:42487738914})).data.artifacts.find(a=>a.name==='mobile5-candidate-site');
-            if(a.id!==13619839245||a.digest!=='sha256:0c81412f97134dbd928182445171b00b65bdb87403a1e856ea6d3afc53c0329d')throw Error('Candidate artifact identity mismatch');
+            const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42493894120})).data;
+            if(r.conclusion!=='success'||r.head_sha!=='5842448fe1ec024eff1d368d003d5da3fd70adc6')throw Error('Exact candidate QA not passed');
+            const a=(await github.rest.actions.getArtifact({...context.repo,artifact_id:13623230011})).data;
+            if(a.digest!=='sha256:417f15c01f3c65f81a61e7fd88b3bd52a91b7c07eba5bed37b7b9192294047ee'||a.workflow_run.id!==r.id)throw Error('Candidate artifact changed');
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42487738914
-          name: mobile5-candidate-site
+          run-id: 42493894120
+          name: mobile6-candidate-site
           github-token: ${{ github.token }}
           path: site/beta-native325
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42487738914
-          name: mobile-candidate-evidence
+          run-id: 42493894120
+          name: mobile6-webkit-1.55.0
           github-token: ${{ github.token }}
-          path: evidence
+          path: evidence-1.55.0
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42487738914
-          name: structural-name-verification
+          run-id: 42493894120
+          name: mobile6-webkit-1.65.0
           github-token: ${{ github.token }}
-          path: entry-evidence
-      - name: Validate candidate and preserve existing owner site
+          path: evidence-1.65.0
+      - name: Validate exact candidate and preserve existing owner site
         run: |
           python -m pip install Brotli==1.2.1
-          python - <<'PY'
-          import importlib.util,pathlib,json,hashlib,subprocess
-          p=pathlib.Path('site/beta-native325')
-          report=json.loads(pathlib.Path('evidence/qa-structural/report.json').read_text())
-          entry=json.loads(pathlib.Path('evidence/qa-entry/report.json').read_text())
-          name=json.loads(pathlib.Path('entry-evidence/name-result.json').read_text())
-          assert report['passed'] and not report['errors'] and not report['runtimeErrors']
-          assert report['peakWasmCapacityBytes']<1073741824
-          assert entry['passed'] and not entry['errors']
-          assert name['matched']
-          renderer=report['graphics']['renderer']
-          assert renderer and 'swiftshader' not in renderer.lower() and renderer.lower()!='unknown'
-          identity=json.loads((p/'release-identity.json').read_text())
-          assert identity['revision']=='native325-mobile5'
-          assert identity['candidate_bundle_sha256']=='2c502a1d766aca83c2377347de290467d16d75efd8c6f5edad41766f4d3ce73a'
-          assert identity['native_parity_verified'] and identity['native_journey_verified']
-          assert identity['exact_texture_aliasing_verified']
-          assert identity['physical_mobile_tested'] is False
-          manifest=json.loads((p/'build-manifest.json').read_text())
-          identity['decoded_files']=[x for x in identity['decoded_files'] if not x.get('url','').startswith('payload-decoded/')]+manifest['decoded_parts'][manifest['data']]
-          renamed={}
-          for key in ('loader','framework','code'):
-            old=manifest[key];oldpath=old.split('?')[0];src=p/oldpath
-            digest=hashlib.sha256(src.read_bytes()).hexdigest()
-            newpath='Build/'+digest[:20]+'-'+src.name
-            src.rename(p/newpath)
-            assert hashlib.sha256((p/newpath).read_bytes()).hexdigest()==digest
-            renamed[oldpath]=newpath;manifest[key]=newpath
-            for field in ('decoded_sizes','decoded_parts'):
-              if old in manifest.get(field,{}):manifest[field][newpath]=manifest[field].pop(old)
-          for parts in manifest['decoded_parts'].values():
-            for part in parts:
-              if part['url'] in renamed:part['url']=renamed[part['url']]
-          for item in identity['decoded_files']:
-            for field in ('url','path'):
-              if item.get(field) in renamed:item[field]=renamed[item[field]]
-          (p/'build-manifest.json').write_text(json.dumps(manifest,indent=2))
-          identity['engine_cache_addressed']=True
-          subprocess.run(['node','tools/delivery/test-exact-decoded-transport.mjs',str(p)],check=True)
-          external_base='https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/'
-          external={}
-          identity['game_entry_url']=external_base+'?eldoria_diag=1'
-          identity['external_parts_sha256']=external
-          identity.update(runtime_verified=True,runtime_qa_run=42487738914,entry_qa_passed=True,graceful_reopen_verified=True,raw_reload_verified=False,release_for_external_testers=False,release_purpose='owner physical iPhone verification; external tester release blocked',runtime_environment=report['environment'],actual_renderer=renderer,peak_wasm_capacity_bytes=report['peakWasmCapacityBytes'])
-          (p/'release-identity.json').write_text(json.dumps(identity,indent=2))
-          entry_url=external_base+'?eldoria_diag=1'
-          redirect='<!doctype html><html lang="es"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta http-equiv="refresh" content="0;url='+entry_url+'"><title>Eldoria</title><a href="'+entry_url+'">Entrar en Valoria</a></html>'
-          for alias in ('index.html','mobile-v4.html','mobile-v3.html','mobile-v1.html'):
-            (p/alias).write_text(redirect)
-          spec=importlib.util.spec_from_file_location('prep','tools/eldoria-private-beta/prepare-pages.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
-          previous=m.mirror_previous('site')
-          pathlib.Path('site/.nojekyll').touch()
-          size=sum(f.stat().st_size for f in pathlib.Path('site').rglob('*') if f.is_file())
-          assert size<1073741824,size
-          print('CANDIDATE_PAGES_READY',size,'legacy_files',len(previous))
-          PY
+          python tools/eldoria-private-beta/prepare_cubemap_pages.py
           node --check site/beta-native325/play.js
           node tools/eldoria-private-beta/test-startup.mjs site/beta-native325
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
-      - name: Publish owner diagnostic candidate - external tester release blocked
+      - name: Publish owner candidate; physical iPhone still pending
         id: deploy
         uses: actions/deploy-pages@v4
-      - name: Verify live exact candidate
-        env:
-          SITE_URL: ${{ steps.deploy.outputs.page_url }}
-        run: |
-          python - <<'PY'
-          import os,json,urllib.request,time
-          base=os.environ['SITE_URL'].rstrip('/')+'/beta-native325/'
-          for n in range(12):
-            try:
-              identity=json.load(urllib.request.urlopen(base+'release-identity.json?staged4='+str(n),timeout=20))
-              assert identity['revision']=='native325-mobile5'
-              assert identity['candidate_bundle_sha256']=='2c502a1d766aca83c2377347de290467d16d75efd8c6f5edad41766f4d3ce73a'
-              assert identity['runtime_verified'] is True and identity['physical_mobile_tested'] is False
-              html=urllib.request.urlopen(base+'mobile-v4.html?check='+str(n),timeout=20).read()
-              assert b'Entrar en Valoria' in html
-              print('LIVE_MOBILE_CANDIDATE_IDENTITY_PASS',base+'mobile-v4.html');break
-            except Exception:
-              if n==11:raise
-              time.sleep(5)
-          PY
