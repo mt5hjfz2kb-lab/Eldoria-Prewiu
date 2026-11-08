@@ -106,6 +106,24 @@ internal static class Program
             DailyTreasureRevealTimeline.DurationSeconds+.1f);
         True(final.Finished && final.Opened==1f && final.Closed==0f,
             "duration completed with one open asset");
+        Eq(DailyTreasureRules.NextConsecutiveBonusDay(0),3,
+            "new account sees first three-day loyalty target");
+        Eq(DailyTreasureRules.NextConsecutiveBonusDay(2),3,
+            "two-day streak previews bonus tomorrow");
+        Eq(DailyTreasureRules.NextConsecutiveBonusDay(3),6,
+            "after first bonus the next is day six");
+        Eq(DailyTreasureRules.NextConsecutiveBonusDay(6),7,
+            "seventh consecutive day gets the special loyalty reward");
+        Eq(DailyTreasureRules.NextConsecutiveBonusDay(7),9,
+            "loyalty milestones continue across reward cycles");
+        Eq(DailyTreasureRules.NextConsecutiveBonusDay(13),14,
+            "fourteen-day consecutive milestone remains special");
+        Eq(DailyTreasureRules.BonusFoodForStreak(3),25,
+            "three-day extra food");
+        Eq(DailyTreasureRules.BonusFoodForStreak(7),80,
+            "seventh-day extra food");
+        Eq(DailyTreasureRules.BonusFoodForStreak(14),80,
+            "next week loyalty stays limited");
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");
     }
 }
