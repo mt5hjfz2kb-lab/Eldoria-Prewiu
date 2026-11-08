@@ -24,6 +24,7 @@ namespace Eldoria.BreachWatch
 
         public bool HasLiveBuilding => image && image.enabled && image.texture == texture && lastModel;
         public bool RenderedFromIsolatedRealMeshes { get; private set; }
+        public float NonBackgroundPixelFraction { get; private set; }
         public void Initialize(RawImage target)
         {
             image = target;
@@ -46,6 +47,7 @@ namespace Eldoria.BreachWatch
             }
             if(model == lastModel && lastKey == key && HasLiveBuilding)return;
             RenderedFromIsolatedRealMeshes=false;
+            NonBackgroundPixelFraction=0f;
             if(!texture)
             {
                 texture = new RenderTexture(512,256,24,RenderTextureFormat.ARGB32);
@@ -190,6 +192,30 @@ namespace Eldoria.BreachWatch
                 // Actual separately rendered meshes must be inside the current
                 // portrait frame. No synthetic values and no image generation.
                 portraitCamera.Render();
+#if UNITY_EDITOR
+                // A source mesh count does NOT prove the image looks like a
+                // building. Count genuinely rendered pixels after the camera.
+                var previousActive=RenderTexture.active;
+                var readback=new Texture2D(texture.width,texture.height,
+                    TextureFormat.RGB24,false);
+                try
+                {
+                    RenderTexture.active=texture;
+                    readback.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);
+                    readback.Apply();
+                    var pixels=readback.GetPixels32();
+                    int nonBackground=0;
+                    foreach(var p in pixels)
+                        if(Mathf.Abs(p.r-18)+Mathf.Abs(p.g-20)+Mathf.Abs(p.b-21)>40)
+                            nonBackground++;
+                    NonBackgroundPixelFraction=nonBackground/(float)pixels.Length;
+                }
+                finally
+                {
+                    RenderTexture.active=previousActive;
+                    Destroy(readback);
+                }
+#endif
                 portraitCamera.targetTexture=null;
                 image.texture=texture;
                 image.enabled=true;
