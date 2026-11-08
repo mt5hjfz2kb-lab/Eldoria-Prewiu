@@ -33,9 +33,9 @@ namespace Eldoria.BreachWatch
         float originalAlpha;
         Font font;
         RectTransform uiRoot;
-        RectTransform identity, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark;
+        RectTransform identity, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark, vigiliaTitlePlate;
         RectTransform[] resourceChips = new RectTransform[3];
-        Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
+        Text identityName, identityPower, chapterName, chapterObjective, chapterProgress, vigiliaTitleText, vigiliaTitleChapter;
         Text[] resourceAmounts = new Text[3];
         readonly Image[] resourceIllustrations = new Image[3];
         Text buildingName, buildingLevel, buildingFunction, buildingCosts, buildingState, actionLabel, feedback;
@@ -281,6 +281,17 @@ namespace Eldoria.BreachWatch
             centerMark=Rect("Breach witness sigil",uiRoot);Plate(centerMark,BreachWatchPlate.PlateType.Obsidian);
             var central=Glyph(centerMark,"Stone fracture",BreachWatchGlyph.Sigil.Breach);
             Fill((RectTransform)central.transform,4);central.Ink=Copper;
+            // A recognisable Vigilia identity, unique to this new Canvas.
+            // It replaces the long generic center-top banner seen in the rejected UI,
+            // while keeping all three resource counters and the player identity clear.
+            vigiliaTitlePlate=Rect("Vigilia / independent command title",uiRoot);
+            Plate(vigiliaTitlePlate,BreachWatchPlate.PlateType.Obsidian);
+            vigiliaTitleText=Label(vigiliaTitlePlate,"Vigilia de la Brecha",20,
+                TextAnchor.MiddleCenter,TextIvory,true);
+            vigiliaTitleText.text="VIGILIA DE LA BRECHA";
+            vigiliaTitleChapter=Label(vigiliaTitlePlate,"Las cenizas de Valoria",13,
+                TextAnchor.MiddleCenter,Copper);
+            vigiliaTitleChapter.text="LAS CENIZAS DE VALORIA";
             objective=Rect("Chapter side tablet",uiRoot);Plate(objective,BreachWatchPlate.PlateType.Basalt);
             var objectiveSeal=Glyph(objective,"Chapter stone rune",BreachWatchGlyph.Sigil.Breach);
             objectiveSeal.Ink=Copper;
@@ -467,6 +478,7 @@ namespace Eldoria.BreachWatch
             // Correct in the camera target (native offscreen captures included).
             if(portrait)
             {
+                vigiliaTitlePlate.gameObject.SetActive(false);
                 buildingFunction.fontSize=17;
                 buildingCosts.fontSize=15;
                 buildingState.fontSize=15;
@@ -523,12 +535,27 @@ namespace Eldoria.BreachWatch
             }
             else
             {
+                vigiliaTitlePlate.gameObject.SetActive(true);
                 At(identity,margin,12,Mathf.Min(338,w*.29f),76);
                 At(identityName.rectTransform,72,10,256,31);
                 At(identityPower.rectTransform,72,43,256,23);
-                At(centerMark,w*.49f-26,15,52,52);
                 float chipW=Mathf.Min(124, (w*.40f-14)/3f);
-                At(resourceRow,w-3*chipW-3*7-margin,17,3*chipW+2*7,46);
+                float resourceLeft=w-3*chipW-3*7-margin;
+                At(resourceRow,resourceLeft,17,3*chipW+2*7,46);
+                float headerLeft=margin+Mathf.Min(338,w*.29f)+9f;
+                float headerWidth=resourceLeft-headerLeft-9f;
+                vigiliaTitlePlate.gameObject.SetActive(headerWidth>=210f);
+                if(headerWidth>=210f)
+                {
+                    At(vigiliaTitlePlate,headerLeft,12,headerWidth,70);
+                    At(centerMark,headerLeft+8,23,44,44);
+                    centerMark.SetAsLastSibling();
+                    At(vigiliaTitleText.rectTransform,52,9,headerWidth-62,32);
+                    At(vigiliaTitleChapter.rectTransform,52,40,headerWidth-62,20);
+                    vigiliaTitleText.fontSize=headerWidth<305f?18:20;
+                    vigiliaTitleChapter.fontSize=14;
+                }
+                else At(centerMark,w*.5f-23f,15,46,46);
                 for(int i=0;i<3;i++)
                 {
                     At(resourceChips[i],i*(chipW+7),0,chipW,43);
