@@ -788,7 +788,10 @@ namespace Eldoria.BreachWatch
                 var realName=host.City.Gateway.Snapshot().PlayerName;
                 identityName.text=string.IsNullOrWhiteSpace(realName)?"VALORIA":realName;
                 identityPower.text="PODER  "+RoyalFormatting.Amount(snapshot.Power);
-                chapterName.text=snapshot.Chapter+"    /    LA BRECHA";
+                // The ornate objective tablet already bears the Breach seal.
+                // A 20-character subtitle broke into two lines on real
+                // 390px phones with Libre Baskerville; use true chapter only.
+                chapterName.text=snapshot.Chapter;
                 chapterObjective.text=snapshot.Objective;
                 chapterProgress.text=snapshot.ObjectiveProgress;
                 resourceAmounts[0].text=RoyalFormatting.Amount(snapshot.Wood);
@@ -807,7 +810,10 @@ namespace Eldoria.BreachWatch
                     if(buildingPortrait)
                         buildingPortrait.Show(ActualBuildingModel(b.Id),host.PlayerCamera,
                             b.Id+"/"+b.Level);
-                    buildingFunction.text=b.Function??"";
+                    buildingFunction.text=(b.Id=="bastion" && b.Level==1)
+                        ? (host.English?"Valoria's government and progress."
+                            :"Gobierno y progreso de Valoria.")
+                        : b.Function??"";
                     buildingCosts.text=string.IsNullOrWhiteSpace(b.Costs)
                         ?(host.English?"No cost":"Sin coste")
                         :CompactRealCosts(b.Costs);
