@@ -648,7 +648,7 @@ namespace Eldoria.BreachWatch
                 identityPower.fontSize=14;
 
                 float rightSpace=w-(margin+182+9+margin);
-                float chip=Mathf.Max(58,(rightSpace-8f)/3f);
+                float chip=Mathf.Min(70f,Mathf.Max(58f,(rightSpace-8f)/3f));
                 float resourcesWidth=3*chip+8f;
                 At(resourceRow,w-margin-resourcesWidth,18,resourcesWidth,39);
                 for(int i=0;i<3;i++)
@@ -661,10 +661,10 @@ namespace Eldoria.BreachWatch
                 }
 
                 At(centerMark,w*.52f-17,84,34,34);
-                At(objective,margin,125,Mathf.Min(250,w*.62f),fullObjective?118:89);
-                At(chapterName.rectTransform,37,6,Mathf.Min(205,w*.52f),21);
-                At(chapterObjective.rectTransform,14,30,Mathf.Min(221,w*.53f),fullObjective?67:37);
-                At(chapterProgress.rectTransform,14,fullObjective?101:69,Mathf.Min(221,w*.53f),15);
+                At(objective,margin,125,Mathf.Min(210,w*.54f),fullObjective?118:89);
+                At(chapterName.rectTransform,37,6,Mathf.Min(162,w*.42f),21);
+                At(chapterObjective.rectTransform,14,30,Mathf.Min(183,w*.47f),fullObjective?67:42);
+                At(chapterProgress.rectTransform,14,fullObjective?101:73,Mathf.Min(183,w*.47f),15);
                 chapterName.fontSize=13;
                 chapterObjective.fontSize=16;
                 chapterProgress.fontSize=13;
@@ -677,7 +677,7 @@ namespace Eldoria.BreachWatch
                     At(utility,0,i*53f,49,49);
                 }
 
-                float navSize=56,navGap=11;
+                float navSize=49,navGap=14;
                 float navWidth=5*navSize+4*navGap;
                 float navTop=h-100f;
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,64);
