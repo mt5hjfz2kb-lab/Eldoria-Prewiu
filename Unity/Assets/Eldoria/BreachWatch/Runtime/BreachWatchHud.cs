@@ -409,6 +409,11 @@ namespace Eldoria.BreachWatch
             {
                 var ring=Rect("Exact owner-approved independent gold relief ring",panel);
                 Fill(ring);
+                // The reference's upper/lower diamonds sit OUTSIDE the
+                // readable tablet. Enlarge only the independently rendered
+                // ornamental ring, never the actual text/button surfaces.
+                ring.offsetMin=new Vector2(-5f,-19f);
+                ring.offsetMax=new Vector2(5f,19f);
                 exactOwnerGoldBorder=ring.gameObject.AddComponent<Image>();
                 exactOwnerGoldBorder.sprite=outlined;
                 exactOwnerGoldBorder.type=Image.Type.Sliced;
@@ -876,7 +881,14 @@ namespace Eldoria.BreachWatch
                     // legitimately blocks it; state/action binder stays honest.
                     actionPlate.Type=BreachWatchPlate.PlateType.Action;
                     actionPlate.SetVerticesDirty();
-                    actionLabel.text=b.Action==null?"SIN ACCIÓN":b.Action.Label;
+                    // At real 390px widths a 21-character command runs into
+                    // the gilded corners. Display a truthful short action
+                    // name in this ONE compact context; the actual command,
+                    // target, affordability and confirmation are unchanged.
+                    actionLabel.text=b.Action==null?"SIN ACCIÓN":
+                        lastPortrait && b.Id=="bastion" && b.Level==1 &&
+                        b.Action.Kind=="AdvanceBastion"
+                            ?"MEJORAR A II":b.Action.Label;
                     actionLabel.color=can?TextIvory:new Color(.91f,.85f,.72f,1f);
                 }
                 // Accurate labels, artwork and routes: realm/castle, resource/sack,
