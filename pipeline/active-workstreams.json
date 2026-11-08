@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T20:47:29.184Z",
+  "updated_at": "2026-11-08T21:17:59.224Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6822,9 +6822,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "REUSED_ROUTE_BUFFERS_NATIVE_PARITY_PASS_WEBKIT_PENDING",
+      "phase": "MOBILE9_PUBLISHED_LIVE_WEBKIT_PASS_OWNER_IPHONE_PENDING",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Native42518950317 exact populations/routes parity twice,225 journey checks and WebGL build PASS; original inputs restored. Windows returned to Forja. Compare memory/package42519214500; no new owner publication yet.",
+      "next": "Owner physical iPhone test of published beta9; desktop WebKit entry/reload and measured route memory reduction verified. Do not merge/release to testers without physical result. Windows remains returned to Forja.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6982,6 +6982,44 @@
           "checks": 225,
           "restored": true,
           "physical_iphone_verified": false
+        },
+        "mobile9": {
+          "revision": "native325-mobile9-routes",
+          "source": "5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa",
+          "native_run": 42518950317,
+          "comparison_runs": [
+            42519214500,
+            42522623870
+          ],
+          "control_used_peak_bytes": [
+            945492096,
+            946154440
+          ],
+          "candidate_used_peak_bytes": [
+            579473936,
+            580234304
+          ],
+          "control_webcontent_peak_kib": [
+            2319232,
+            2545344
+          ],
+          "candidate_webcontent_peak_kib": [
+            2475392,
+            2109024
+          ],
+          "mean_desktop_resident_reduction_percent": 5.759186412135409,
+          "pages_run": 42523819193,
+          "site_version": 6,
+          "site_deployment": "appgdep_6af0e5942d7c8191a7c60dcabb3c87a3",
+          "public_qa_run": 42524041553,
+          "public_qa_artifact": 13634213235,
+          "public_qa_zip_sha256": "56b0c32734b515aa416f75a67276f683a37832e5c1ff20bca5a18ebc5a7e3939",
+          "public_runtime_pass": true,
+          "public_nickname_reload_visually_verified": true,
+          "physical_iphone_verified": false,
+          "release_for_external_testers": false,
+          "preallocation_640_rejected": true,
+          "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=native325-mobile9-routes"
         }
       },
       "art_production_routing": "not_applicable",
