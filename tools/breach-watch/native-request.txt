@@ -106,3 +106,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: source QA for the owner-approved lion crest (exact independent user image), coherent live chapter-progress placement, compact B1 upgrade action label in both orientations. No changes to gameplay or published HUD. Full Unity capture still strictly gated by canonical Windows owner.
 
 2026-11-08: exact-head static certification of owner-supplied distinct golden lion personal crest (verified SHA+Unity GUID), authentic quest 0/1 fractional text positioned above lower bevel, compact responsive upgrade caption and genuine selected-ember halo. No legacy HUD artwork; CI source+rights audits may execute without Windows. Native Unity remains protected by canonical live beta lease.
+
+2026-11-08: source QA for approved small golden lion crest, native selected-ember halo, authentic objective progress above bottom stone trim, compact non-overflow Bastion upgrade caption, plus TRUE screenshot pixel-contrast checks for gold/ivory gameplay text. Art approval is never inferred from source-only CI. Windows lease still belongs to beta until formal handoff.
