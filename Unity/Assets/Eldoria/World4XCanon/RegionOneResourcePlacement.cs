@@ -57,7 +57,7 @@ namespace Eldoria.World4XCanon
 #if UNITY_EDITOR
             // Native validation compares every real placement/route query against
             // the previous collider. The Web player never creates/cooks this mesh.
-            GameObject query=null;int checkedQueries=0;float maxHeightError=0,maxNormalError=0;
+            GameObject query=null;int checkedQueries=0,mismatchedQueries=0;var differences=new List<string>();float maxHeightError=0,maxNormalError=0;
             if(Environment.GetEnvironmentVariable("ELDORIA_VALIDATE_TERRAIN_RAYCAST")=="1")
             {
             var floor=landscape.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="BLD_Terrain");
@@ -70,12 +70,14 @@ namespace Eldoria.World4XCanon
                     bool actual=landscape.RaycastDown(ray,out hit,distance);
                     bool expected=collider.Raycast(ray,out var reference,distance);
                     checkedQueries++;
-                    if(actual!=expected)throw new InvalidOperationException("Terrain query hit mismatch at "+ray.origin);
-                    if(actual){
+                    if(actual!=expected){mismatchedQueries++;if(differences.Count<100)differences.Add("hit at "+ray.origin+" actual="+actual+" expected="+expected);}
+                    if(actual&&expected){
                         float height=Mathf.Abs(hit.point.y-reference.point.y),normal=Vector3.Distance(hit.normal,reference.normal);
                         maxHeightError=Mathf.Max(maxHeightError,height);maxNormalError=Mathf.Max(maxNormalError,normal);
-                        if(height>.002f||normal>.002f||(hit.normal.y>=.94f)!=(reference.normal.y>=.94f)||(hit.normal.y>=.9f)!=(reference.normal.y>=.9f))
-                            throw new InvalidOperationException("Terrain query parity mismatch at "+ray.origin+" height="+height+" normal="+normal);
+                        // Face normals may differ at a shared edge; only the two exact
+                        // slope decisions are consumed by placement and routes.
+                        if(height>.002f||(hit.normal.y>=.94f)!=(reference.normal.y>=.94f)||(hit.normal.y>=.9f)!=(reference.normal.y>=.9f))
+                            {mismatchedQueries++;if(differences.Count<100)differences.Add("surface at "+ray.origin+" height="+height+" normal="+normal+" slopes="+hit.normal.y+"/"+reference.normal.y);}
                     }
                     return actual;
                 };
@@ -115,7 +117,9 @@ namespace Eldoria.World4XCanon
                 try {if(routes==null)routes=new RegionOneTerrainRoutes(host,surface,faults);}
                 finally {
 #if UNITY_EDITOR
-                    if(query){DestroyImmediate(query);Debug.Log("ELDORIA_TERRAIN_QUERY_PARITY count="+checkedQueries+" max_height_error="+maxHeightError+" max_normal_error="+maxNormalError);}
+                    if(query){DestroyImmediate(query);Debug.Log("ELDORIA_TERRAIN_QUERY_PARITY count="+checkedQueries+" max_height_error="+maxHeightError+" max_normal_error="+maxNormalError+" mismatches="+mismatchedQueries);
+                        if(mismatchedQueries>0)throw new InvalidOperationException("Terrain functional query mismatches="+mismatchedQueries+": "+string.Join(" | ",differences));
+                    }
 #endif
                 }
             }

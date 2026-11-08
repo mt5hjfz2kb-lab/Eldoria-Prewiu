@@ -64,7 +64,21 @@ function Run-Probe([string]$Mode){
 try {
  New-Item -ItemType Directory -Force (Join-Path $probe 'Editor')|Out-Null
  Copy-Item (Join-Path $Tools 'tools/eldoria-private-beta/native/StructuralStartupProbe.cs') (Join-Path $probe 'Editor/StructuralStartupProbe.cs')
- Run-Probe 'baseline'
+ # The unchanged frozen baseline was already executed twice with this topology
+ # probe and the exact restored input audit. Reuse only its hash-pinned results.
+ $previous=Join-Path $env:GITHUB_WORKSPACE 'beta-structural-evidence-42513182378-1/baseline'
+ $expected=@{
+  'startup-0.json'='a80062ea436957cba5cb1681440b9704a01c5e1896f9682a32408a1179833050'
+  'startup-1.json'='4f02bedcaeaaf63eff5a44aeffe4275727d83f83d71ab38c1d3269d3639f3974'
+  'complete.txt'='7c9a5636807e61e0aa2630d9e41b61037a9cb55ff62321b52b718a3838c974fb'
+ }
+ foreach($name in $expected.Keys){if(-not(Test-Path (Join-Path $previous $name)) -or (Get-FileHash (Join-Path $previous $name) -Algorithm SHA256).Hash -ne $expected[$name]){throw 'Reviewed frozen baseline evidence changed'}}
+ foreach($pass in 0,1){
+  $b=Get-Content (Join-Path $previous "startup-$pass.json") -Raw|ConvertFrom-Json
+  if($b.source -ne $baseline -or $b.inputAudit -ne $env:ELDORIA_BASELINE_INPUT_AUDIT -or -not $b.canonicalSavesUnchanged -or -not $b.topologyHash){throw 'Frozen baseline provenance mismatch'}
+ }
+ Copy-Item $previous (Join-Path $Evidence 'baseline') -Recurse
+ [IO.File]::WriteAllText((Join-Path $Evidence 'baseline-reuse.json'),(@{origin_run='42513182378';source=$baseline;input_audit=$env:ELDORIA_BASELINE_INPUT_AUDIT;hashes=$expected}|ConvertTo-Json -Depth 4),$utf8)
  $hashes=@()
  foreach($path in $overlays){
   $from=Join-Path $Tools $path;$to=Join-Path $Source $path

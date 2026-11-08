@@ -65,6 +65,7 @@ public static class EldoriaBetaStructuralStartupProbe {
  static void Tick(){
   if(!SessionState.GetBool(Flag,false)||!EditorApplication.isPlaying)return;
   try {
+   Need(errors.Count==0,"Unity errors: "+string.Join(" | ",errors));
    if(start<0)start=EditorApplication.timeSinceStartup;
    double now=EditorApplication.timeSinceStartup;
    Need(now-start<150,"World initialization/reload deadline exceeded");
