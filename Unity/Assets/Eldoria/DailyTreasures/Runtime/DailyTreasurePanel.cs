@@ -27,7 +27,16 @@ namespace Eldoria.DailyTreasures
         Button entryButton,claimButton,closeButton,skipButton;
         Text header,subhead,claimCaption,resultText,entryCaption;
         readonly Text[] dayHead=new Text[7],dayBody=new Text[7];
-        readonly Image[] dayBack=new Image[7],sparks=new Image[12];
+        readonly Image[] dayBack=new Image[7],sparks=new Image[18];
+        readonly RectTransform[] prizeRects=new RectTransform[4];
+        readonly Image[] prizeIcons=new Image[4];
+        readonly Text[] prizeNames=new Text[4],prizeAmounts=new Text[4];
+        readonly CanvasGroup[] prizeGroups=new CanvasGroup[4];
+        RectTransform prizeShelf;
+        int prizeCount;
+        float prizeRevealStarted;
+        bool prizeAnimating;
+        DailyTreasureRaysGraphic rays;
         readonly DailyTreasureRewardGlyph[] dayGlyph=new DailyTreasureRewardGlyph[7];
         readonly Image[] dayArtwork=new Image[7];
         static readonly string[] DayIllustrations={
@@ -244,7 +253,7 @@ namespace Eldoria.DailyTreasures
                 Stretch(dayBody[i].rectTransform);
                 Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,0,-6,150,26);
             }
-            claimButton=ActionButton(NewRect("Claim exact daily reward",cardSurface),Oak,Claim);
+            claimButton=ActionButton(NewRect("Claim exact daily reward",cardSurface),Oak,OnPrimaryPressed);
             if(!ApplyAuthoredFrame((RectTransform)claimButton.transform,
                 "valoria_frame_button_512x128"))
                 Relief((RectTransform)claimButton.transform,false,true);
@@ -256,6 +265,10 @@ namespace Eldoria.DailyTreasures
             glowRect=NewRect("Warm radial light / visual only",ceremony);
             glow=Plate(glowRect,new Color(1f,.65f,.18f,0f),false);
             CreateGlow();
+            var raysRect=NewRect("Gentle original amber volumetric rays / visual only",ceremony);
+            rays=raysRect.gameObject.AddComponent<DailyTreasureRaysGraphic>();
+            rays.raycastTarget=false;
+            rays.SetIntensity(0f);
             var chestRect=NewRect("Real animated chest / two-layer bronze oak graphic",ceremony);
             chest=chestRect.gameObject.AddComponent<DailyTreasureChestGraphic>();
             chest.raycastTarget=false;
@@ -275,14 +288,42 @@ namespace Eldoria.DailyTreasures
             illustratedClosed.gameObject.SetActive(false);
             illustratedOpen.gameObject.SetActive(false);
             resultText=Label(ceremony,"Confirmed received items","",21,Ivory,TextAnchor.MiddleCenter);
+
+            // Real, individually illustrated resource cards. They are shown
+            // only AFTER the LocalGateway has irrevocably credited the goods.
+            // The same source icons appear in the daily calendar, and each
+            // card uses the original premium nine-slice frame.
+            prizeShelf=NewRect("Actually earned inventory reveal / no payout",ceremony);
+            for(int i=0;i<prizeRects.Length;i++)
+            {
+                var card=NewRect("Earned item "+(i+1),prizeShelf);
+                Plate(card,new Color(.18f,.14f,.13f,.95f),false);
+                if(!ApplyAuthoredFrame(card,"valoria_frame_card_256"))
+                    Relief(card);
+                prizeRects[i]=card;
+                prizeGroups[i]=card.gameObject.AddComponent<CanvasGroup>();
+                prizeGroups[i].alpha=0f;
+                prizeGroups[i].blocksRaycasts=false;
+                prizeGroups[i].interactable=false;
+                var iconRect=NewRect("Real award icon",card);
+                prizeIcons[i]=Plate(iconRect,Color.white,false);
+                prizeIcons[i].preserveAspect=true;
+                prizeNames[i]=Label(card,"Reward name","",12,Gold,TextAnchor.MiddleCenter);
+                prizeAmounts[i]=Label(card,"Actual paid count","",18,Ivory,TextAnchor.MiddleCenter);
+                card.gameObject.SetActive(false);
+            }
+            prizeShelf.gameObject.SetActive(false);
             for(int i=0;i<sparks.Length;i++)
             {
                 var spark=NewRect("Ember "+(i+1),ceremony);
                 sparks[i]=Plate(spark,new Color(1f,.75f,.30f,0f),false);
-                Place(spark,.5f,.5f,.5f,.5f,0,0,5,5);
+                sparks[i].sprite=glowSprite;
+                sparks[i].preserveAspect=true;
+                Place(spark,.5f,.5f,.5f,.5f,0,0,
+                    i%4==0?11f:6f,i%4==0?11f:6f);
             }
             skipButton=ActionButton(NewRect("Skip animation / keep earned items",ceremony),
-                new Color(.23f,.19f,.17f,1f),ShowResult);
+                new Color(.23f,.19f,.17f,1f),SkipReveal);
             if(!ApplyAuthoredFrame((RectTransform)skipButton.transform,
                 "valoria_frame_button_512x128"))
                 Relief((RectTransform)skipButton.transform,false,false);
@@ -449,6 +490,59 @@ namespace Eldoria.DailyTreasures
             if(reward.SpeedupFiveMinutes>0)text+="5 min x"+reward.SpeedupFiveMinutes+"\n";
             return text.Trim();
         }
+        void OnPrimaryPressed()
+        {
+            if(ceremony && ceremony.gameObject.activeSelf){Close();return;}
+            Claim();
+        }
+
+        void ClearPrizeCards()
+        {
+            prizeCount=0;prizeAnimating=false;
+            if(prizeShelf)prizeShelf.gameObject.SetActive(false);
+            for(int i=0;i<prizeRects.Length;i++)
+            {
+                if(prizeRects[i])prizeRects[i].gameObject.SetActive(false);
+                if(prizeGroups[i])prizeGroups[i].alpha=0f;
+            }
+        }
+        void ConfigurePrizeCards(DailyTreasureReward reward)
+        {
+            ClearPrizeCards();
+            var items=DailyTreasureRewardPresentation.FromCommittedReward(reward);
+            prizeCount=items.Length;
+            for(int i=0;i<prizeCount;i++)
+            {
+                var item=items[i];
+                var sprite=Resources.Load<Sprite>("DailyTreasureArt/"+item.Icon);
+                // Never substitute an incorrect resource icon silently.
+                prizeIcons[i].sprite=sprite;
+                prizeIcons[i].color=sprite?Color.white:new Color(.6f,.6f,.6f,1f);
+                prizeNames[i].text=item.Name;
+                prizeNames[i].color=item.LoyaltyBonus?new Color(.98f,.70f,.34f,1f):Gold;
+                prizeAmounts[i].text=item.Quantity;
+                prizeRects[i].gameObject.SetActive(true);
+                prizeGroups[i].alpha=0f;
+            }
+            if(prizeCount>0)Layout();
+        }
+        void SkipReveal() => ShowResult(true);
+        void PaintEarnedCards()
+        {
+            if(!prizeAnimating)return;
+            bool finished=true;
+            for(int i=0;i<prizeCount;i++)
+            {
+                float t=Mathf.Clamp01((Time.unscaledTime-prizeRevealStarted-
+                    i*.11f)/.34f);
+                float ease=t*t*(3f-2f*t);
+                prizeGroups[i].alpha=ease;
+                prizeRects[i].localScale=Vector3.one*(.90f+.10f*ease);
+                if(t<1f)finished=false;
+            }
+            if(finished)prizeAnimating=false;
+        }
+
         void Claim()
         {
             if(gateway==null||now==null || playing)return;
@@ -473,6 +567,7 @@ namespace Eldoria.DailyTreasures
             var current=after.DailyTreasures;
             var reward=DailyTreasureRules.ForDay(current.CycleDay,current.ConsecutiveDays);
             refreshed?.Invoke();
+            ConfigurePrizeCards(reward);
             Present("TRIBUTO DEL DÍA "+reward.CycleDay,
                 DailyTreasureRules.Receipt(reward),reward.ShowChest,
                 !reward.ShowChest?DailyTreasureCeremonyTier.Quiet:
@@ -488,6 +583,7 @@ namespace Eldoria.DailyTreasures
             if(gateway==null || now==null || screen==null ||
                string.IsNullOrWhiteSpace(title))return false;
             if(IsOpen)return false;
+            ClearPrizeCards();
             // Important victories are presented above the room whose real
             // gateway command just finished, without creating a second Canvas.
             root.SetAsLastSibling();
@@ -515,6 +611,7 @@ namespace Eldoria.DailyTreasures
             ceremonialTitle=title;ceremonialReceipt=alreadyReceived;chestReward=showChest;
             calendar.gameObject.SetActive(false);
             claimButton.gameObject.SetActive(false);
+            prizeShelf.gameObject.SetActive(false);
             ceremony.gameObject.SetActive(true);
             resultText.text=showChest?"EL COFRE DE LAS CENIZAS":"RECOMPENSA RECIBIDA";
             playing=showChest;
@@ -532,12 +629,13 @@ namespace Eldoria.DailyTreasures
             illustratedOpen.rectTransform.localScale=Vector3.one;
             glow.color=new Color(1f,.75f,.36f,showChest?0f:.34f);
             skipButton.gameObject.SetActive(showChest);
-            if(!showChest)ShowResult();
+            if(!showChest)ShowResult(true);
         }
-        void ShowResult()
+        void ShowResult(bool immediate=false)
         {
             playing=false;
             chest.SetOpening(1f);
+            rays.SetIntensity(.12f);
             if(hasAuthoredChestArt)
             {
                 illustratedClosed.color=new Color(1f,1f,1f,0f);
@@ -545,8 +643,29 @@ namespace Eldoria.DailyTreasures
                 illustratedClosed.rectTransform.localScale=Vector3.one;
                 illustratedOpen.rectTransform.localScale=Vector3.one;
             }
-            resultText.text=ceremonialTitle+"\n\n"+ceremonialReceipt+
-                "\n\nGuardado · justificante en el buzón";
+            if(prizeCount>0)
+            {
+                // The illustrated cards ARE the reward reveal; avoid putting
+                // a wall of small text beneath an otherwise cinematic chest.
+                resultText.text=ceremonialTitle+"\nGuardado en tu inventario y buzón";
+                prizeShelf.gameObject.SetActive(true);
+                prizeAnimating=!immediate;
+                prizeRevealStarted=Time.unscaledTime;
+                for(int i=0;i<prizeCount;i++)
+                {
+                    prizeGroups[i].alpha=immediate?1f:0f;
+                    prizeRects[i].localScale=Vector3.one*(immediate?1f:.90f);
+                }
+            }
+            else
+            {
+                resultText.text=ceremonialTitle+"\n\n"+ceremonialReceipt+
+                    "\n\nRegistrado en el buzón";
+                prizeAnimating=false;
+            }
+            claimButton.gameObject.SetActive(true);
+            claimButton.interactable=true;
+            claimCaption.text="CONTINUAR";
             skipButton.gameObject.SetActive(false);
             glow.color=new Color(1f,.74f,.34f,.27f);
             for(int i=0;i<sparks.Length;i++)
