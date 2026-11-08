@@ -83,7 +83,7 @@ public static class EldoriaBetaStructuralStartupProbe {
    if(readyAt<0)readyAt=now;
    if(now-readyAt<5)return;
    Need(errors.Count==0,"Unity errors: "+string.Join(" | ",errors));
-   if(Staged){Need(terrainParityQueries>10000,"Per-query collider parity missing");Need(guardedFrames>=2,"Staged startup did not yield protected frame boundaries");Need(VerificationBuckets()==0,"Verification cache remains resident");}
+   if(Staged){Need(Environment.GetEnvironmentVariable("ELDORIA_BAKE_TERRAIN_QUERIES")=="1"||terrainParityQueries>10000,"Per-query collider parity missing");Need(guardedFrames>=2,"Staged startup did not yield protected frame boundaries");Need(VerificationBuckets()==0,"Verification cache remains resident");}
    var surface=Object.FindFirstObjectByType<RegionOneBlenderLandscape>(FindObjectsInactive.Include);Need(surface,"Missing exact terrain");
    var placement=Object.FindFirstObjectByType<RegionOneResourcePlacement>(FindObjectsInactive.Include);Need(placement&&placement.VerifiedSiteCount>0,"Missing resource placement");
    string geometry=Geometry(surface),queries=Queries();
@@ -95,6 +95,13 @@ public static class EldoriaBetaStructuralStartupProbe {
    if(pass==0){
     pass=1;start=readyAt=-1;guardedFrames=0;terrainParityQueries=0;peakAllocated=peakReserved=peakManaged=0;
     EditorSceneManager.LoadSceneInPlayMode(ScenePath,new LoadSceneParameters(LoadSceneMode.Single));return;
+   }
+   if(Environment.GetEnvironmentVariable("ELDORIA_BAKE_TERRAIN_QUERIES")=="1"){
+    var property=typeof(RegionOneResourcePlacement).GetProperty("CapturedTerrainQueries",BindingFlags.Public|BindingFlags.Static);
+    var data=(byte[])property.GetValue(null);Need(data!=null&&data.Length>100000,"Missing complete terrain tape");
+    var asset=Path.Combine(Application.dataPath,"Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes");
+    Need(Directory.Exists(Path.GetDirectoryName(asset))&&!File.Exists(asset),"Terrain tape output already exists or folder missing");
+    File.WriteAllBytes(asset,data);File.WriteAllBytes(Path.Combine(Out,"terrain-query-cache.bytes"),data);
    }
    File.WriteAllText(Path.Combine(Out,"complete.txt"),"STRUCTURAL_STARTUP_PASS; exact terrain validated twice; scene reload parity; canonical saves unchanged; no physical-device certification");
    SessionState.SetBool(Flag,false);EditorApplication.Exit(0);

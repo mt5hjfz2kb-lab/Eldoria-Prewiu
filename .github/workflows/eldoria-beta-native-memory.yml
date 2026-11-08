@@ -1,5 +1,5 @@
-name: Eldoria exact terrain queries native parity and WebGL
-# Eliminate runtime temporary terrain cooking only after exact query/topology parity.
+name: Eldoria baked original terrain queries native parity and WebGL
+# Bake original collider responses, replay with exact parity, then build without runtime cooking.
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]

@@ -10,6 +10,7 @@ $Evidence=[IO.Path]::GetFullPath($Evidence)
 $project=Join-Path $Source 'Unity'
 $probe=Join-Path $project 'Assets/EldoriaBetaMemoryProbe'
 $utf8=New-Object Text.UTF8Encoding($false)
+$queryAsset=Join-Path $project 'Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes'
 $baseline='948ffa9837168a0b68dab80be76b66350422b23a'
 $overlays=@(
  'Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs',
@@ -23,6 +24,7 @@ New-Item -ItemType Directory -Force $Evidence|Out-Null
 if((git -C $Source rev-parse HEAD).Trim() -ne $baseline){throw 'Wrong frozen source'}
 if(@(git -C $Source status --porcelain).Count){throw 'Isolated source is not clean'}
 if(Test-Path $probe){throw 'Refuse to replace an existing probe'}
+if((Test-Path $queryAsset) -or (Test-Path ($queryAsset+'.meta'))){throw 'Refuse replacing an existing terrain query tape'}
 if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools already running'}
 if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
 $env:VALORIA_GAMEPLAY_PROBE='1'
@@ -54,8 +56,9 @@ function Invoke-Native([string]$Method,[string]$Log,[string]$Target){
 }
 function Run-Probe([string]$Mode){
  $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST=if($Mode -eq 'staged'){'1'}else{'0'}
- $env:ELDORIA_EXPECT_STAGED=if($Mode -eq 'staged'){'1'}else{'0'}
- $env:ELDORIA_MEMORY_SOURCE=if($Mode -eq 'staged'){$env:GITHUB_SHA}else{$baseline}
+ $env:ELDORIA_BAKE_TERRAIN_QUERIES=if($Mode -eq 'bake'){'1'}else{'0'}
+ $env:ELDORIA_EXPECT_STAGED=if($Mode -ne 'baseline'){'1'}else{'0'}
+ $env:ELDORIA_MEMORY_SOURCE=if($Mode -ne 'baseline'){$env:GITHUB_SHA}else{$baseline}
  $env:ELDORIA_MEMORY_OUT=Join-Path $Evidence $Mode
  New-Item -ItemType Directory -Force $env:ELDORIA_MEMORY_OUT|Out-Null
  Invoke-Native 'EldoriaBetaStructuralStartupProbe.Run' (Join-Path $env:ELDORIA_MEMORY_OUT 'unity.log') 'Win64'
@@ -88,7 +91,10 @@ try {
   $hashes+=@{path=$path;baseline=$before;candidate=(Get-FileHash $to -Algorithm SHA256).Hash}
  }
  [IO.File]::WriteAllText((Join-Path $Evidence 'source-overlay.json'),(@{base=$baseline;overlay_commit=$env:GITHUB_SHA;files=$hashes}|ConvertTo-Json -Depth 8),$utf8)
+ Run-Probe 'bake'
+ $queryHash=(Get-FileHash $queryAsset -Algorithm SHA256).Hash
  Run-Probe 'staged'
+ if((Get-FileHash $queryAsset -Algorithm SHA256).Hash -ne $queryHash){throw 'Terrain tape changed after validation'}
  $comparison=@()
  foreach($pass in 0,1){
   $b=Get-Content (Join-Path $Evidence "baseline/startup-$pass.json") -Raw|ConvertFrom-Json
@@ -106,11 +112,13 @@ try {
   $file=Join-Path $proof $name;if(Test-Path $file){Remove-Item $file}
  }
  $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST='0'
+ $env:ELDORIA_BAKE_TERRAIN_QUERIES='0'
  Invoke-Native 'Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent' (Join-Path $Evidence 'journey.log') 'Win64'
  $native=Get-Content (Join-Path $proof 'integration-result.json') -Raw|ConvertFrom-Json
  if($native.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){throw 'Exact-source journey certification failed'}
  Copy-Item $proof (Join-Path $Evidence 'native-journey') -Recurse
  # Probe is Editor-only, outside Assets/Eldoria, and is not shipped in the player.
+ if((Get-FileHash $queryAsset -Algorithm SHA256).Hash -ne $queryHash){throw 'Terrain tape changed after journey'}
  Invoke-Native 'Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.Build' (Join-Path $Evidence 'web-build.log') 'WebGL'
  $web=Get-Content (Join-Path $proof 'web-build.json') -Raw|ConvertFrom-Json
  if($web.status -ne 'WEB_COMPILED_CURRENT_INTEGRATED_SCENE_NOT_PHYSICAL_IPHONE_TESTED'){throw 'WebGL build certificate failed'}
@@ -124,6 +132,14 @@ try {
 } finally {
  # Only our disposable checkout is touched. Preserve files if an Editor is still using them.
  if(-not(Get-Process Unity -ErrorAction SilentlyContinue)){
+  if(Test-Path $queryAsset){
+   $hash=(Get-FileHash $queryAsset -Algorithm SHA256).Hash
+   if($queryHash -and $queryHash -ne $hash){throw 'Unexpected terrain tape mutation; preserve project'}
+   Copy-Item $queryAsset (Join-Path $Evidence 'terrain-query-cache.bytes')
+   [IO.File]::WriteAllText((Join-Path $Evidence 'terrain-query-cache.json'),(@{source=$env:GITHUB_SHA;sha256=$hash;bytes=(Get-Item $queryAsset).Length;resource='World4X/Blender/RuntimeTerrainQueries';input_audit=$env:ELDORIA_BASELINE_INPUT_AUDIT}|ConvertTo-Json),$utf8)
+   Remove-Item $queryAsset -Force
+  }
+  if(Test-Path ($queryAsset+'.meta')){Remove-Item ($queryAsset+'.meta') -Force}
   if(Test-Path $probe){Remove-Item $probe -Recurse -Force}
   if(Test-Path ($probe+'.meta')){Remove-Item ($probe+'.meta') -Force}
  }
