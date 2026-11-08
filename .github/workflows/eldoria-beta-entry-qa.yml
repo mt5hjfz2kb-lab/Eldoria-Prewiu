@@ -1,4 +1,4 @@
-name: Eldoria compact terrain index parity and allocations
+name: Eldoria identical-host Apple GPU control versus compact startup
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -8,79 +8,74 @@ permissions:
   contents: read
   actions: read
 jobs:
-  exact-index:
+  require-package:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 80
     steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            tools/eldoria-private-beta
-            Unity/Assets/Eldoria/World4XCanon
-          persist-credentials: false
-      - uses: actions/github-script@v7
-        with:
-          script: |
-            const a=(await github.rest.actions.getArtifact({...context.repo,artifact_id:13623230011})).data;
-            if(a.digest!=='sha256:417f15c01f3c65f81a61e7fd88b3bd52a91b7c07eba5bed37b7b9192294047ee'||a.workflow_run.id!==42493894120)throw Error('Parent artifact changed');
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 42493894120
-          name: mobile6-candidate-site
-          github-token: ${{ github.token }}
-          path: parent-site
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-      - name: Extract real terrain and exact production algorithm
+      - name: Require successful exact package job without waiting for unrelated browser work
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          python -m pip install UnityPy==1.25.4 lz4==4.4.5
-          python tools/eldoria-private-beta/native/compact-index/prepare.py parent-site
-      - name: Verify every vertex and adversarial cases; measure allocations
-        working-directory: tools/eldoria-private-beta/native/compact-index
-        run: |
-          dotnet --version
-          dotnet run --configuration Release --project CompactIndexTest.csproj -- queries.gz "$GITHUB_WORKSPACE/Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs"
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: compact-terrain-index-evidence
-          path: |
-            tools/eldoria-private-beta/native/compact-index/compact-index-results.json
-            tools/eldoria-private-beta/native/compact-index/provenance.json
-          retention-days: 90
-
-  heap-allocation-comparison:
+          python - <<'PY'
+          import json,os,time,urllib.request
+          root='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+'/actions/runs/42508475411'
+          def get(url):
+            with urllib.request.urlopen(urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}),timeout=30) as r:return json.load(r)
+          assert get(root)['head_sha']=='239ae92da5aa3fe9fab04fbe3c18030d9a39c7bd'
+          for _ in range(420):
+            jobs=get(root+'/jobs')['jobs'];package=next((j for j in jobs if j['name']=='package'),None)
+            if package and package['status']=='completed':
+              assert package['conclusion']=='success','Exact native packaging failed'
+              break
+            time.sleep(10)
+          else:raise RuntimeError('Package incomplete')
+          PY
+  same-host-memory:
+    needs: require-package
     runs-on: macos-15
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42493894120
+          name: mobile6-candidate-site
+          github-token: ${{ github.token }}
+          path: qa-sites/control
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42508475411
+          name: mobile7-candidate-site
+          github-token: ${{ github.token }}
+          path: qa-sites/candidate
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Install same WebKit as verified Apple GPU control
-        run: |
-          npm install --prefix "$RUNNER_TEMP/heap-qa-deps" --no-save playwright@1.55.0
-          "$RUNNER_TEMP/heap-qa-deps/node_modules/.bin/playwright" install webkit
-      - name: Compare unchanged bytes with early heap allocation on the same machine
+      - name: Run both builds through the same host and transport
         env:
-          QA_URL: https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile6-cubemap
-          QA_REVISION: native325-mobile6-cubemap
-          QA_SKIP_PREFLIGHT: '1'
           QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_SKIP_PREFLIGHT: '1'
         run: |
-          export NODE_PATH="$RUNNER_TEMP/heap-qa-deps/node_modules"
+          npm install --prefix "$RUNNER_TEMP/same-host-qa" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/same-host-qa/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/same-host-qa/node_modules"
+          node tools/eldoria-private-beta/qa_static_server.cjs qa-sites 18765 >server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
           failed=0
-          for variant in unchanged preallocated-1024; do
-            QA_VARIANT="$variant" QA_OUT="heap-evidence/$variant" node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
-          done
+          QA_URL='http://127.0.0.1:18765/control/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile6-cubemap QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18765/candidate/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile7-compact QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
           exit "$failed"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: desktop-heap-allocation-comparison-not-mobile-certification
-          path: heap-evidence/
+          name: same-host-mobile6-versus-mobile7-not-physical-iphone
+          path: |
+            evidence/
+            server.log
           retention-days: 14
