@@ -423,6 +423,33 @@ internal static class Program
         catch(ArgumentOutOfRangeException){invalidPainterlySize=true;}
         True(invalidPainterlySize,
             "invalid or infinite native viewport cannot corrupt hero stage");
+        // Protect the owner's actual charcoal/copper/burgundy language.
+        // Hero and kingdom milestones may have a mineral accent but NEVER
+        // become saturated purple, floral or a fake gem/coin loot scene.
+        foreach(var eventKey in new[]{
+            (string)null,"milestone:hero:lyra","milestone:bastion:5",
+            "scout:first:family","vigilant:chapter:25"
+        })
+        {
+            foreach(bool grand in new[]{false,true})
+            {
+                var style=DailyTreasureCeremonyTheme.ForEvent(eventKey,grand);
+                True(style.R>=0f && style.R<=1f &&
+                     style.G>=0f && style.G<=1f &&
+                     style.B>=0f && style.B<=1f,
+                    "event palette component stays in an actual display gamut");
+                float low=Math.Min(style.R,Math.Min(style.G,style.B));
+                float high=Math.Max(style.R,Math.Max(style.G,style.B));
+                True(high-low<=.55f,
+                    "premium mineral event tint must not become high-chroma neon");
+                True(style.Strength>=.15f && style.Strength<=.34f,
+                    "events stay atmospheric, not an overwhelming colored screen wash");
+                if(eventKey!=null && eventKey.StartsWith("vigilant:"))
+                    True(style.B<=.54f &&
+                         style.G>=.37f,
+                        "violet of the Breach remains stone-like, never electric purple");
+            }
+        }
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");
     }
 }
