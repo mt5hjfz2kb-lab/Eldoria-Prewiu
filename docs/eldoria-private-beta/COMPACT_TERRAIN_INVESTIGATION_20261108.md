@@ -8,7 +8,7 @@ Source audit found mandatory terrain validation allocates331431 Dictionary/List 
 
 RegionOneBlenderLandscape now uses a fixed-array spatial hash with collision checks. It preserves the floor(x*4) cell mapping, nine-cell neighborhood, strict squared2mm threshold, every original source index and full-coverage rejection. A boolean coverage array replaces HashSet allocation. The index is still released in finally. No geometry, art, tutorial, rules or validation requirement is removed.
 
-The shipped source has opt-in ELDORIA_MEMORY_PHASE checkpoints before/after prefab loading/instantiation, verification index creation/release, contact construction and pigment fitting. On WebGL enabled only with eldoria_profile=1; native comparison uses ELDORIA_MEMORY_PHASES=1. No player data collection or gameplay mutation.
+The unpublished candidate source has opt-in ELDORIA_MEMORY_PHASE checkpoints before/after prefab loading/instantiation, verification index creation/release, contact construction and pigment fitting. On WebGL enabled only with eldoria_profile=1; native comparison uses ELDORIA_MEMORY_PHASES=1. No player data collection or gameplay mutation.
 
 ## Verified
 Run42498715432, source d3959c29d2647ed8e1f9605d0fe3b11926b4855e; artifact13624567646, ZIP SHA256 db71a73aa7c8ea12220e95e50a82ddddd8ce8184097bd58e6452b4e959f936ac.
@@ -29,4 +29,4 @@ Alternate hosted Unity licensing is unconfigured according to read-only prefligh
 Request for Windows is recorded on the beta workstream. Once legitimately released: claim the same resource using fresh main SHA; synchronize expected lease/snapshot; run the guarded native workflow; inspect phase allocations, geometry/query parity and native journey; rebuild and reapply verified packaging changes by exact identity; test on Apple WebKit; publish only a verified candidate. Do not republish old mobile6 as a fix.
 
 ## Test runner correction
-The optional full-source Roslyn syntax check initially selected an installed .NET10 SDK despite net8.0 target, producing CS1705. Added global.json selecting installed .NET8 feature band. This was a test-toolchain mismatch, not a Unity game exception. Latest run42499272127 must be consulted for full source syntax result.
+The optional full-source Roslyn syntax check initially selected an installed .NET10 SDK despite net8.0 target, producing CS1705. Added global.json selecting installed .NET8 feature band. This was a test-toolchain mismatch, not a Unity game exception. Run42499272127 PASSED: full instrumented source parsed as C#9, exact production helper compiled and all real-terrain/adversarial parity and allocation checks repeated successfully. This does not replace Unity API compilation or runtime validation.
