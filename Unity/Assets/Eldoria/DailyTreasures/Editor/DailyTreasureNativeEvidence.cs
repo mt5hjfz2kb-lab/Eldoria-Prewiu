@@ -135,6 +135,17 @@ namespace Eldoria.DailyTreasures.Editor
                     camera.nearClipPlane=.1f;camera.farClipPlane=100f;
                     camera.aspect=width/(float)height;
                     camera.cullingMask=1<<5;
+                    // The project uses URP. A hand-created Camera without its
+                    // pipeline metadata may silently render an empty frame.
+                    var pipeline=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline;
+                    if(pipeline!=null)
+                    {
+                        var additional=System.Type.GetType(
+                            "UnityEngine.Rendering.Universal.UniversalAdditionalCameraData, Unity.RenderPipelines.Universal.Runtime");
+                        Need(additional!=null,
+                            "Active URP requires UniversalAdditionalCameraData on the disposable QA camera");
+                        go.AddComponent(additional);
+                    }
                     var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
                     camera.targetTexture=rt;
                     var canvasObj=new GameObject("Disposable native uGUI component",
