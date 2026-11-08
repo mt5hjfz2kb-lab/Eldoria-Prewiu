@@ -35,6 +35,7 @@ namespace Eldoria.BreachWatch.Editor
             public int width, height, buttons;
             public bool oldCanvasOff, newCanvasIndependent, liveSession, fiveInOneRow, liveBuildingPortrait;
             public float portraitPixels,uiFootprintPercent;
+            public float cityCameraOrtho,castleViewportWidth,castleViewportX,castleViewportY;
         }
         [Serializable] public sealed class Report
         {
@@ -443,6 +444,55 @@ namespace Eldoria.BreachWatch.Editor
                     previousRight=b.x;
                 }
                 Need(oneRow,"Five independent navigation symbols overlap or stack in "+name);
+                float castleViewportWidth=0f,castleViewportX=0f,castleViewportY=0f;
+                if(w<h)
+                {
+                    Need(ui.PortraitCityFramed,
+                         "Approved panoramic portrait city view not applied: "+name);
+                    var cityBuilding=host.City.BastionOne;
+                    Need(cityBuilding && cityBuilding.activeInHierarchy,
+                         "Real Bastion I model missing from playable city");
+                    bool found=false;
+                    Bounds bounds=default;
+                    foreach(var renderer in cityBuilding.GetComponentsInChildren<Renderer>(true))
+                    {
+                        if(!renderer || !renderer.enabled ||
+                           !renderer.gameObject.activeInHierarchy ||
+                           renderer.bounds.size.sqrMagnitude<.001f)continue;
+                        if(!found){bounds=renderer.bounds;found=true;}
+                        else bounds.Encapsulate(renderer.bounds);
+                    }
+                    Need(found,"No actual first Bastion mesh to measure camera coverage");
+                    float minX=float.PositiveInfinity,maxX=float.NegativeInfinity;
+                    var a=bounds.min;var z=bounds.max;
+                    for(int corner=0;corner<8;corner++)
+                    {
+                        var world=new Vector3((corner&1)!=0?z.x:a.x,
+                            (corner&2)!=0?z.y:a.y,(corner&4)!=0?z.z:a.z);
+                        var viewport=camera.WorldToViewportPoint(world);
+                        minX=Mathf.Min(minX,viewport.x);
+                        maxX=Mathf.Max(maxX,viewport.x);
+                    }
+                    castleViewportWidth=maxX-minX;
+                    var center=camera.WorldToViewportPoint(bounds.center);
+                    castleViewportX=center.x;castleViewportY=center.y;
+                    // The approved 864x1536 portrait places the genuine
+                    // Bastion at approx one third of physical phone width
+                    // with the gate/bridge/river visible below. The old
+                    // real 390x844 screen was a giant 70% castle close-up.
+                    Need(castleViewportWidth>.17f && castleViewportWidth<.62f,
+                         "Owner reference lost: Bastion still too large or invisible "+
+                         name+" castle width="+castleViewportWidth.ToString("F3"));
+                    Need(castleViewportX>.32f && castleViewportX<.80f &&
+                         castleViewportY>.48f && castleViewportY<.88f,
+                         "Real city portrait camera no longer frames the castle "+
+                         name+" center="+center);
+                    Debug.Log("BREACHWATCH_APPROVED_CITY_COMPOSITION "+name+
+                        " zoom="+camera.orthographicSize.ToString("F2")+
+                        " width="+castleViewportWidth.ToString("F3")+
+                        " center="+center.x.ToString("F3")+","+
+                        center.y.ToString("F3"));
+                }
                 float footprint=ConservativeUIFootprint(ui,camera,w,h);
                 float maxFootprint=w<h?34f:h<500?32f:22f;
                 Need(footprint<=maxFootprint,
@@ -565,7 +615,11 @@ namespace Eldoria.BreachWatch.Editor
                     liveSession=ui.HasRealSession,fiveInOneRow=oneRow,
                     liveBuildingPortrait=ui.HasLiveBuildingPortrait,
                     portraitPixels=ui.BuildingPortraitDrawnFraction,
-                    uiFootprintPercent=footprint
+                    uiFootprintPercent=footprint,
+                    cityCameraOrtho=camera.orthographicSize,
+                    castleViewportWidth=castleViewportWidth,
+                    castleViewportX=castleViewportX,
+                    castleViewportY=castleViewportY
                 };
             }
             finally
