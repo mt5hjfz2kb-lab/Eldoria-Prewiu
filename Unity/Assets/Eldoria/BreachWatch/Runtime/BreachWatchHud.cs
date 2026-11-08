@@ -108,6 +108,13 @@ namespace Eldoria.BreachWatch
                     tablet.type==Image.Type.Sliced;
             }
         }
+        public bool HasSinglePremiumIdentity =>
+            identity && identity.GetComponent<BreachWatchPlate>() &&
+            identity.GetComponent<BreachWatchPlate>().sprite &&
+            identity.GetComponent<BreachWatchPlate>().sprite.name=="profile_plate" &&
+            identity.GetComponent<BreachWatchPlate>().type==Image.Type.Sliced &&
+            identity.GetComponentsInChildren<Shadow>(true).Length==1;
+
         public bool HasPremiumResourceSurfaces
         {
             get
@@ -294,14 +301,6 @@ namespace Eldoria.BreachWatch
             shadow.useGraphicAlpha=true;
         }
 
-        void AddBevel(RectTransform parent,bool accent=false)
-        {
-            var carved=Rect("Independent forged copper surface trim",parent);
-            Fill(carved);
-            var trim=carved.gameObject.AddComponent<BreachWatchBevelTrim>();
-            trim.Highlight=accent;
-            trim.raycastTarget=false;
-        }
         BreachWatchGlyph Glyph(Transform parent,string name,BreachWatchGlyph.Sigil symbol)
         {
             var rect=Rect(name,parent);var g=rect.gameObject.AddComponent<BreachWatchGlyph>();
@@ -379,9 +378,12 @@ namespace Eldoria.BreachWatch
             veil.raycastTarget=false;
             // Asymmetrical stone architecture instead of a header/footer re-skin.
             identity=Rect("Identity / basalt crest",uiRoot);
-            Plate(identity,BreachWatchPlate.PlateType.Basalt);
+            // REPLACEMENT, not a bevel pasted over another panel: one
+            // authoritative forged-metal plate from the approved art kit.
+            var identitySurface=Plate(identity,BreachWatchPlate.PlateType.Basalt);
+            var finalProfile=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/profile_plate");
+            if(finalProfile)identitySurface.ApplyIndependentArt(finalProfile,true);
             AddContactShadow(identity,3.5f,.40f);
-            AddBevel(identity,true);
             // The owner-approved compact reference has NO red top banner.
             // Independent round carved crest replaces the obsolete banner.
             identityCrest=Rect("Independent circular realm crest",identity);
@@ -409,7 +411,7 @@ namespace Eldoria.BreachWatch
                 // cross/X behind the actual resource amount in Unity.
                 if(originalResourceStone)
                     resourceSurface.ApplyIndependentArt(originalResourceStone,true);
-                else AddBevel(resourceChips[i]);
+
                 var picture=Rect("True illustrated resource",resourceChips[i]);
                 resourceIllustrations[i]=picture.gameObject.AddComponent<Image>();
                 resourceIllustrations[i].sprite=Resources.Load<Sprite>(
@@ -429,7 +431,7 @@ namespace Eldoria.BreachWatch
             var angledPlate=Resources.Load<Sprite>(
                 "VigiliaArt/PremiumSurfaces/chiseled_quest");
             if(angledPlate)chapterStone.ApplyIndependentArt(angledPlate,true);
-            else AddBevel(objective,true);
+
             AddContactShadow(objective,5f,.45f);
             // The chapter's approval reference has a tiny tower crest
             // attached to the tablet. The open-air Breach sigil is separate.
