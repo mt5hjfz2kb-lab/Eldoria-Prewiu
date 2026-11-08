@@ -88,7 +88,7 @@ namespace Eldoria.BreachWatch
             cityCamera.orthographicSize=Mathf.Clamp(originalZoom*factor,45f,105f);
             host.City.Controls.FitToTerrain();
 
-            var state=host.City.Gateway?host.City.Gateway.Snapshot():null;
+            var state=host.City.Gateway!=null?host.City.Gateway.Snapshot():null;
             var bastion=state!=null && state.BastionLevel>=2 && host.City.BastionTwo
                 && host.City.BastionTwo.activeInHierarchy
                     ?host.City.BastionTwo:host.City.BastionOne;
