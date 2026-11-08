@@ -299,6 +299,9 @@ namespace Eldoria.BreachWatch.Editor
                 Need(atmosphericVeil && !atmosphericVeil.raycastTarget &&
                      atmosphericVeil.gameObject.activeInHierarchy,
                      "Independent unobtrusive atmospheric layer missing or stealing input: "+name);
+                var trims=ui.GetComponentsInChildren<BreachWatchBevelTrim>(true);
+                Need(trims.Length>=5 && trims.All(t=>t && !t.raycastTarget),
+                    "Premium carved identity, quest and three resource inlays are absent or intercept world gestures");
                 Need(ui.UsesCompactRealmCrest,
                     "Compact circular Valoria crest missing, or discarded red header returned: "+name);
                 Need(!ui.GetComponentsInChildren<Text>(true).Any(t=>
