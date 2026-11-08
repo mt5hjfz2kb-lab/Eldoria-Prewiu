@@ -32,7 +32,7 @@ namespace Eldoria.BreachWatch
         readonly List<RaycastResult> pointerHits = new List<RaycastResult>();
         readonly Dictionary<Camera,int> originalCameraMasks = new Dictionary<Camera,int>();
         float originalAlpha;
-        Font font;
+        Font font, boldFont;
         RectTransform uiRoot;
         RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark;
         RectTransform[] resourceChips = new RectTransform[3];
@@ -163,7 +163,10 @@ namespace Eldoria.BreachWatch
             legacyCanvas.enabled=false;
             if(legacyRaycaster)legacyRaycaster.enabled=false;
             if(legacyGroup){legacyGroup.alpha=0;legacyGroup.blocksRaycasts=false;legacyGroup.interactable=false;}
-            font=Resources.Load<Font>("EldoriaRetention/reference-serif");
+            // Original, redistributable OFL type belongs to Vigilia alone.
+            // Avoid device-dependent Georgia/Arial substitutions on Android.
+            font=Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-Regular");
+            boldFont=Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-SemiBold");
             if(!font)font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             if(!font)font=Font.CreateDynamicFontFromOSFont(new[]{"Georgia","Arial"},20);
             uiRoot=Rect("Safe composition",transform);
@@ -207,8 +210,12 @@ namespace Eldoria.BreachWatch
         Text Label(Transform parent,string name,int size,TextAnchor align,Color tint,bool bold=false)
         {
             var rect=Rect(name,parent);
-            var text=rect.gameObject.AddComponent<Text>();text.font=font;text.fontSize=size;text.alignment=align;
-            text.color=tint;text.fontStyle=bold?FontStyle.Bold:FontStyle.Normal;
+            var text=rect.gameObject.AddComponent<Text>();
+            text.font=bold && boldFont ? boldFont : font;
+            text.fontSize=size;
+            text.alignment=align;
+            text.color=tint;
+            text.fontStyle=bold && !boldFont ? FontStyle.Bold : FontStyle.Normal;
             text.horizontalOverflow=HorizontalWrapMode.Wrap;text.verticalOverflow=VerticalWrapMode.Truncate;
             text.supportRichText=false;text.raycastTarget=false;
             var shadow=rect.gameObject.AddComponent<Shadow>();shadow.effectColor=new Color(0,.01f,.01f,.65f);
