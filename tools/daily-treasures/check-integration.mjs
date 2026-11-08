@@ -200,4 +200,10 @@ assert.match(panel,/milestoneBannerCaption\.text="EL REINO PROSPERA"/);
 assert.match(native,/VerifyGenuineSceneComposition\(/);
 assert.match(native,/panel\.ActiveMilestoneStage==expected\.Kind/);
 assert.match(native,/backdrop\.color\.a-expected\.BackdropOpacity/);
+// Countdown is never a second clock or a new claim rule: it translates the
+// same authoritative UTC-day rollover into useful mobile-facing time.
+assert.match(rules,/public static int MinutesUntilNextUtcDay\(long utcTicks\)/);
+assert.match(panel,/private static string NextRewardCountdown\(long utcTicks\)|static string NextRewardCountdown\(long utcTicks\)/);
+assert.match(panel,/DailyTreasureRules\.MinutesUntilNextUtcDay\(utcTicks\)/);
+assert.match(panel,/claimCaption\.text=NextRewardCountdown\(currentUtc\)/);
 console.log('PASS daily treasures gateway integration source invariants');
