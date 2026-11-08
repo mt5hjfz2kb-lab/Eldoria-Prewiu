@@ -17,7 +17,7 @@
       "sha256": "a75afb45b6183d0a8d7e2841c82ef13b812d08fb7620f90c849e679f24429ccb"
     }
   ],
-  "note": "Two actual 512px illustrated chest sprites plus three original nine-slice bronze textures are now versioned as binary Git blobs on PR181 with unique stable Unity .meta GUIDs. Rendered artwork, responsive interactions, and devices remain to verify in native Unity before release.",
+  "note": "Nine original source-authored transparent PNG textures are now versioned as binary Git blobs on PR181 (2 chest poses, 3 nine-slice frames, 4 resource illustrations), with stable distinct Unity .meta GUIDs. Native Unity visuals, animations, sound and devices still require certification.",
   "quality_gate": "Binary PNG exact hashes and Unity sprite import configuration are source-verified. Still mandatory before approval: Unity 6000.3.23f1 native compile, rendered 4 resolutions, realistic animation and sound, safe-area and raycast test, quality review against Vigilia de la Brecha, full city and I–V gameplay, real devices.",
   "ui_frames": [
     {
@@ -43,6 +43,36 @@
       "sha256": "d80eedac1b6979a85f8b9dc303681bd1b8aaddcfad7a22f62d5a8eb8011ed09e",
       "guid": "fa361e4253fb4ec692a0094f65c2d13e",
       "nine_slice": 24
+    }
+  ],
+  "resource_icons": [
+    {
+      "file": "resource_wood.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "2c2742910bc060fa92aca70320a6065057a20203860c9a6746af0a719925ae49",
+      "guid": "901173673deb4bec81e8ed823ee0a008"
+    },
+    {
+      "file": "resource_stone.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "b54e47ac45d0f19a2498f2ca18a2181d9aac70af35b0aa96bd838b2c234c2c13",
+      "guid": "e2d7bf5d5b424fc4af43b1f59348fb82"
+    },
+    {
+      "file": "resource_hourglass.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "bac16f011734aaabd148159ae91f23d115451e09c62cbd3127b4d60f1769e322",
+      "guid": "812ad675096e416ab0619337ce87198a"
+    },
+    {
+      "file": "resource_food.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "2800b834e8372813e7a634146fcea00f3591d858ca2d0db4c7d2c8e99d8783cb",
+      "guid": "d759e07c439f4ad3af8d9bdc9b0d3f0d"
     }
   ]
 }
