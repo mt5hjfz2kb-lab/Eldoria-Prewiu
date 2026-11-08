@@ -195,7 +195,26 @@ jobs:
               guid=[line[6:] for line in meta.splitlines() if line.startswith('guid: ')]
               assert len(guid)==1 and len(guid[0])==32 and guid[0] not in guids,name
               guids.extend(guid)
-          print('BREACHWATCH_CC0_SOURCE_HASH_METADATA_PASS')
+          resourceFolder=folder/'ResourceIcons'
+          resources=json.loads((resourceFolder/'manifest.json').read_text())
+          assert resources['license']=='CC0 1.0'
+          assert resources['source_sha256']=='20f324feb652b2a5959c634a95c694512d21193d346d2204bddd0e0d350bbe75'
+          assert 'CC0 1.0' in (resourceFolder/'LICENSE_CC0_RESOURCE_SOURCE.txt').read_text()
+          assert (folder/'ResourceIcons.meta').is_file()
+          assert sorted(r['name'] for r in resources['sources'])==['food','stone','wood']
+          for item in resources['sources']:
+              name=item['name']
+              png=resourceFolder/(name+'.png')
+              raw=png.read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==item['sha256'],name
+              assert raw[:8]==bytes([137,80,78,71,13,10,26,10]) and raw[25]==6,name
+              assert struct.unpack('>II',raw[16:24])==(256,256),name
+              meta=(resourceFolder/(name+'.png.meta')).read_text()
+              assert 'textureType: 8' in meta and 'spriteMode: 1' in meta,name
+              guid=[line[6:] for line in meta.splitlines() if line.startswith('guid: ')]
+              assert guid==[item['guid']] and guid[0] not in guids,name
+              guids.extend(guid)
+          print('BREACHWATCH_CC0_SOURCE_HASH_METADATA_PASS '+str(len(guids))+' ORIGINAL UI SPRITES')
           PY
   source-syntax:
     runs-on: ubuntu-latest
