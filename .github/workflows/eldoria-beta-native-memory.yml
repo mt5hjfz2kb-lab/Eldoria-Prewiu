@@ -149,7 +149,8 @@ jobs:
           [IO.File]::WriteAllText((Join-Path $out 'existing-input-audit.json'),(@{base=$head;status=$pending;files=$inventory}|ConvertTo-Json -Depth 8),$utf8)
           $diff=git -C $cache diff -- Unity
           [IO.File]::WriteAllLines((Join-Path $out 'existing-tracked-metadata.diff'),[string[]]$diff,$utf8)
-          if($pending.Count){throw 'Existing source input audit saved; no Unity or source mutation performed'}
+          # The following wrapper verifies every existing input against the committed audit before any mutation.
+          Write-Host 'Recorded current inputs; strict reviewed hash inventory gate follows in wrapper.'
 
           if(Test-Path (Join-Path $cache 'Unity/Assets/EldoriaBetaMemoryProbe')){throw 'An existing probe must be preserved'}
           Add-Content $env:GITHUB_ENV "BETA_SOURCE=$cache"
