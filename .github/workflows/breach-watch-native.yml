@@ -300,6 +300,29 @@ jobs:
           assert 'spriteBorder: {x: 39, y: 34, z: 34, w: 57}' in meta
           print('BREACHWATCH_OWNER_APPROVED_REFERENCE_SPRITES_AND_FRAME_PASS')
           PY
+      - name: Verify font copyright, original byte identity and independent importer
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          root=Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/Fonts')
+          assert root.parent.joinpath('Fonts.meta').is_file()
+          lic=(root/'OFL.txt').read_text()
+          assert 'SIL Open Font License, Version 1.1' in lic and 'Cormorant Project Authors' in lic
+          expected={
+            'CormorantGaramond-Regular.ttf':'2909868bd6279028d400a7e4dbb874b563667b0e',
+            'CormorantGaramond-SemiBold.ttf':'c30cb04d87c0abdb7bb86db19272d6790ed46758'
+          }
+          for filename,sha in expected.items():
+              raw=(root/filename).read_bytes()
+              actual=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\x00'+raw).hexdigest()
+              assert actual==sha,filename
+              assert raw[:4]==bytes([0,1,0,0]),filename
+              meta=(root/(filename+'.meta')).read_text()
+              assert 'TrueTypeFontImporter:' in meta and 'includeFontData: 1' in meta
+          print('BREACHWATCH_PREMIUM_OFL_FONTS_HASH_AND_IMPORTER_PASS')
+          PY
       - name: Reject inherited visual presentation or removed Forja assets
         shell: bash
         run: |
