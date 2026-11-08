@@ -25,7 +25,7 @@ internal static class Program
         Eq(DailyTreasureRules.MinutesUntilNextUtcDay(Date(8,23,59)),1,
             "UTC reset at 23:59 is one minute away");
         Eq(DailyTreasureRules.MinutesUntilNextUtcDay(
-            Date(8,23,59).AddSeconds(59)),1,
+            Date(8,23,59)+59*TimeSpan.TicksPerSecond),1,
             "never display zero minutes before the reset");
         Eq(DailyTreasureRules.MinutesUntilNextUtcDay(Date(8,20,30)),210,
             "hour/minute countdown uses authoritative UTC clock");
