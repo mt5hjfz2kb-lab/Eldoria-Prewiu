@@ -637,7 +637,7 @@ namespace Eldoria.BreachWatch.Editor
                          "Real isolated Bastion mesh portrait did not render in "+name);
                     Need(!ui.BuildingPortraitEdgeClipped,
                          "Real Bastion geometry is cropped at the miniature frame boundary: "+name);
-                    Need(ui.BuildingPortraitDrawnFraction>.0125f,
+                    Need(ui.BuildingPortraitDrawnFraction>.23f,
                         "Genuine isolated Bastion camera produced a mostly empty image in "+name+
                         " pixels="+ui.BuildingPortraitDrawnFraction);
                     // Each panel child shares the same top-left anchored
