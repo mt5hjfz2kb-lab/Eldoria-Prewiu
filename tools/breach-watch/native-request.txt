@@ -86,3 +86,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: CI sparse-art checkout corrected to include authenticated exact owner-approved original gold WebP source; reverify source SHA and transparent nine-slice imported PNG, then Unity fresh capture. Native-only workstream lease remains exclusive.
 
 2026-11-08: Re-author exact approved gold border with all source screenshot horizontal dividers/ghosts removed from live content zone. Keep gold outer bevel/top and bottom diamonds; dark readable slate now covers provisional multiple panel ornaments. [vigilia-owner-gold-border]
+
+2026-11-08 EXACT-HEAD native visual gate for new independent owner-approved gold contour and quiet slate compositing; require fresh 1600x900, 900x1600, 844x390, 390x844 PNG captures after commit b49518b57aa399bcee1465b3b1bde55e5b4d612c. Never substitute previous capture or HTML concept as current Unity evidence.
