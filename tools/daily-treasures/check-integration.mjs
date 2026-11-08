@@ -100,7 +100,7 @@ assert.match(native,/nativeCanvas\.enabled=false/);
 // The native workflow was previously damaged by a duplicated YAML block.
 // Keep this quality gate executable: one render step, one artifact upload
 // and no orphaned PowerShell fragments outside their job.
-assert.equal((nativeWorkflow.match(/- name: Compile Unity and render genuine calendar/g)||[]).length,1,
+assert.equal((nativeWorkflow.match(/- name: Compile Unity and render genuine /g)||[]).length,1,
     'One native Unity render job only');
 assert.equal((nativeWorkflow.match(/- name: Preserve real Unity screenshots/g)||[]).length,1,
     'Native artifact upload is unique');
