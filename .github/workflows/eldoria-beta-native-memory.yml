@@ -74,7 +74,7 @@ jobs:
           result={'groups':[{'file':k[0],'raw_sha256':k[1],'objects':v} for k,v in groups.items()],'duplicate_serialized_bytes':sum((len(v)-1)*v[0][1] for v in groups.values()),'removed_objects_if_all_safe':sum(len(v)-1 for v in groups.values()),'unknown':unknown,'references_scanned':refs,'duplicate_references':duplicate_refs}
           pathlib.Path('evidence/duplicate-audit.json').write_text(json.dumps(result,indent=2))
           print({k:v for k,v in result.items() if k not in ('groups','unknown')},'unknown',len(unknown),flush=True)
-                    PY
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
