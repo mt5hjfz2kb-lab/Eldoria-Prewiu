@@ -42,7 +42,14 @@ Los acontecimientos no pagan premios nuevos al reproducir su ceremonia. **No** s
 
 ## 4. Arte y calidad mínima
 
-Todo lo anterior utiliza la misma colección de **nueve sprites ilustrados originales** versionados en la rama: cofre cerrado/abierto, tres marcos/texturas nine-slice y cuatro iconos. Reutilizar esos recursos mantiene coherencia; las variaciones de color, humo ligero y luz están controladas por `DailyTreasureCeremonyTheme` y `DailyTreasureRevealTimeline`. Las recompensas individuales salen hacia tarjetas ilustradas tras el pago.
+Todo lo anterior utiliza la misma colección de **nueve sprites ilustrados originales** versionados en la rama: cofre cerrado/abierto, tres marcos/texturas nine-slice y cuatro iconos. Es el idioma común (hierro forjado, bronce, madera negra y luz ámbar), pero **cada gran acontecimiento tiene una puesta en escena distinta**, no una copia del cofre con otro color:
+
+- Lyra: el hall pictórico ya existente en Eldoria. Se prioriza su presentación nativa aprobada si la pantalla canónica de héroes está abierta; la ceremonia de cofre se difiere hasta cerrarla y no inventa un retrato nuevo.
+- Exploradores: el mapa pintado existente, visible como escena protagonista junto al cofre en horizontal.
+- Vigilantes: el panorama auténtico de Eldoria, con composición de capítulo y luz violeta contenida.
+- Bastión: **la ciudad real**, visible tras el marco semitransparente; no se pinta un Bastión ajeno a su nivel real.
+
+`DailyTreasureStageDirection` coloca paisaje, cofre, encabezado y texto de logro en formato vertical/apaisado. `DailyTreasureCeremonyTheme` y `DailyTreasureRevealTimeline` aportan luces y movimiento; `SafePainterlyDrift` mueve suavemente la pintura con recorte UV seguro. Las recompensas individuales salen hacia tarjetas ilustradas **después del pago**. La composición nativa sigue **pendiente** de revisión artística en Unity.
 
 El **acabado mínimo** es el de la previsualización artística que aprobó el propietario, no una sustitución por rectángulos ni un conjunto de efectos luminosos que dificulten ver los premios.
 
