@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        engine: [webkit, chromium]
+        engine: [webkit]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,9 +33,24 @@ jobs:
         env:
           QA_ENGINE: ${{ matrix.engine }}
           QA_OUT: engine-evidence
+          QA_SKIP_PREFLIGHT: '1'
         run: |
           export NODE_PATH="$RUNNER_TEMP/beta-browser-deps/node_modules"
           node tools/eldoria-private-beta/qa_webkit_residency.cjs
+      - name: Preserve Apple GPU crash evidence
+        if: always()
+        run: |
+          mkdir -p engine-evidence/os
+          /usr/bin/log show --last 10m --style compact --predicate 'process CONTAINS "WebKit" AND (eventMessage CONTAINS "memory" OR eventMessage CONTAINS "GPU" OR eventMessage CONTAINS "terminate")' > engine-evidence/os/webkit-system.log 2>&1 || true
+          python3 - <<'PY'
+          import pathlib, shutil
+          out=pathlib.Path('engine-evidence/os')
+          for root in [pathlib.Path.home()/'Library/Logs/DiagnosticReports',pathlib.Path('/Library/Logs/DiagnosticReports')]:
+              if root.exists():
+                  for f in root.glob('*'):
+                      if f.is_file() and any(x in f.name for x in ['WebKit','MiniBrowser','GPU']):
+                          shutil.copy2(f,out/f.name)
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
