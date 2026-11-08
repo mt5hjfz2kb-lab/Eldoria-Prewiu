@@ -76,3 +76,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-08: Exact native compiler failure CS1061 in new QA asserted rectTransform/fontSize on RectTransform. Changed to retrieve actual Text components from RectTransform, keeping mandatory cost-heading and state visibility tests. Re-run Unity with original premium three material sprites.
 
 2026-11-08: Fourth Unity-native visual pass, re-evaluate true screenshot after changing only typography: keep Cormorant headline and import correctly licensed readable Libre Baskerville for all real gameplay body text, labels, numbers, cost information and CTA. Same independent Canvas and compact four-resolution validation. No merge.
+
+2026-11-08: Exact-head clean/fresh Unity capture rerun, CI now deletes old report/screenshots and rejects missing current-pass marker and wrong source SHA, after shortening true chapter label and authentic Bastion summary to avoid wrapped Libre Baskerville. No stale artwork acceptance.
