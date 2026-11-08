@@ -128,7 +128,7 @@ namespace Eldoria.DailyTreasures
                 -.247f*w,.018f*h,.486f*w,h-42f,
                 .236f*w,.166f*h,Math.Min(.374f*w,282f),
                 Math.Min(.475f*h,175f),
-                .236f*w,-.198f*h,.452f*w,.195f*h,
+                .236f*w,-.19f*h,.452f*w,.19f*h,
                 .88f,.90f,.15f,true);
         }
     }
