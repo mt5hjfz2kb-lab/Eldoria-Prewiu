@@ -105,7 +105,8 @@ namespace Eldoria.BreachWatch
                 var tablet=objective?objective.GetComponent<BreachWatchPlate>():null;
                 return tablet && tablet.sprite &&
                     tablet.sprite.name=="chiseled_quest" &&
-                    tablet.type==Image.Type.Sliced;
+                    tablet.type==Image.Type.Simple &&
+                    !tablet.preserveAspect;
             }
         }
         public bool HasSinglePremiumIdentity =>
@@ -431,7 +432,16 @@ namespace Eldoria.BreachWatch
             var chapterStone=Plate(objective,BreachWatchPlate.PlateType.Basalt);
             var angledPlate=Resources.Load<Sprite>(
                 "VigiliaArt/PremiumSurfaces/chiseled_quest");
-            if(angledPlate)chapterStone.ApplyIndependentArt(angledPlate,true);
+            if(angledPlate)
+            {
+                // The source is a complete tapered cartouche. Nine-slicing
+                // its asymmetric pointed nose fractured the gold edges and
+                // drew a diagonal through the chapter title on real Unity.
+                // REPLACE the sliced intermediate with one intact source
+                // sprite; the panel aspect differs from the original by <9%.
+                chapterStone.ApplyIndependentArt(angledPlate,false);
+                chapterStone.preserveAspect=false;
+            }
 
             AddContactShadow(objective,5f,.45f);
             // The chapter's approval reference has a tiny tower crest
@@ -777,7 +787,8 @@ namespace Eldoria.BreachWatch
                 At(centerMark,w*.52f-56,74,112,30);
                 float missionWidth=Mathf.Min(200f,w*.49f);
                 At(objective,margin,95,missionWidth,fullObjective?108f:80f);
-                At(chapterName.rectTransform,31,5,missionWidth-35,20);
+                // Reserve the pointed border's true right-side clear zone.
+                At(chapterName.rectTransform,31,5,missionWidth-55,20);
                 At(chapterObjective.rectTransform,13,24,missionWidth-22,fullObjective?59:31);
                 At(chapterProgress.rectTransform,13,fullObjective?83:55,missionWidth-22,18);
                 chapterName.fontSize=13;
