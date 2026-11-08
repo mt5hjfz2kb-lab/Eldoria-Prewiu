@@ -661,6 +661,21 @@ namespace Eldoria.DailyTreasures
             skipButton.gameObject.SetActive(showChest);
             if(!showChest)ShowResult(true);
         }
+        static string ConfirmedMilestoneSummary(string committedText)
+        {
+            if(string.IsNullOrWhiteSpace(committedText))
+                return "Acontecimiento registrado";
+            // One strong line, not a microscopic battle log in a ceremonial
+            // frame. The complete existing report remains accessible in
+            // the standard game mailbox, with no synthetic loot.
+            string first=committedText.Replace("\r","")
+                .Split('\n')[0].Trim();
+            if(first.Length<=56)return first;
+            int stop=first.LastIndexOf(' ',55);
+            if(stop<29)stop=55;
+            return first.Substring(0,stop).TrimEnd()+"…";
+        }
+
         void ShowResult(bool immediate=false)
         {
             playing=false;
@@ -689,8 +704,9 @@ namespace Eldoria.DailyTreasures
             }
             else
             {
-                resultText.text=ceremonialTitle+"\n\n"+ceremonialReceipt+
-                    "\n\nRegistrado en el buzón";
+                resultText.text=ceremonialTitle+"\n"+
+                    ConfirmedMilestoneSummary(ceremonialReceipt)+
+                    "\nRegistrado en el buzón";
                 prizeAnimating=false;
             }
             claimButton.gameObject.SetActive(true);
@@ -809,10 +825,10 @@ namespace Eldoria.DailyTreasures
                 resultText.fontSize=quietRewards?(portrait?19:17):
                     compactPrizePortrait?16:portrait?18:16;
                 float captionY=quietRewards?(portrait?-135f:-99f):
-                    compactPrizePortrait?-217f:portrait?-242f:-18f;
+                    compactPrizePortrait?-217f:portrait?-242f:-15f;
                 Place(resultText.rectTransform,.5f,.5f,.5f,.5f,
                     0f,captionY,panelW-45f,
-                    quietRewards?41f:compactPrizePortrait?39f:portrait?50f:35f);
+                    quietRewards?41f:compactPrizePortrait?39f:portrait?50f:29f);
             }
             else
             {
@@ -820,7 +836,7 @@ namespace Eldoria.DailyTreasures
                 // the confirmed story (no made-up crystals or reward cards).
                 resultText.fontSize=portrait?20:19;
                 Place(resultText.rectTransform,.5f,.5f,.5f,.5f,0,
-                    portrait?-148f:-99f,panelW-45f,portrait?141f:112f);
+                    portrait?-148f:-71f,panelW-45f,portrait?141f:66f);
             }
 
             float shelfHeight=quietRewards?(portrait?175f:137f):
