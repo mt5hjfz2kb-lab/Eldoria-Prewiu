@@ -374,11 +374,13 @@ namespace Eldoria.BreachWatch.Editor
                     var costs=Part("Real costs");
                     var state=Part("Real state and timer");
                     var header=Part("Compact engraved cost heading");
-                    Need(header.gameObject.activeInHierarchy &&
-                         header.rectTransform.rect.height>=header.fontSize*1.15f,
+                    var headingLabel=header.GetComponent<Text>();
+                    var stateLabel=state.GetComponent<Text>();
+                    Need(headingLabel && header.gameObject.activeInHierarchy &&
+                         header.rect.height>=headingLabel.fontSize*1.15f,
                          "Actual premium cost heading is invisible or vertically cropped in "+name);
-                    Need(state.gameObject.activeInHierarchy &&
-                         state.rectTransform.rect.height>=state.fontSize*1.15f,
+                    Need(stateLabel && state.gameObject.activeInHierarchy &&
+                         state.rect.height>=stateLabel.fontSize*1.15f,
                          "Actual operation status must render in "+name);
                     var action=(RectTransform)ui.BuildingAction.transform;
                     float Bottom(RectTransform r) => -r.anchoredPosition.y+r.rect.height;
