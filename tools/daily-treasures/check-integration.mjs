@@ -9,6 +9,8 @@ const panel=fs.readFileSync(
   'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePanel.cs','utf8');
 const native=fs.readFileSync(
   'Unity/Assets/Eldoria/DailyTreasures/Editor/DailyTreasureNativeEvidence.cs','utf8');
+const nativeWorkflow=fs.readFileSync(
+  '.github/workflows/daily-treasures-native.yml','utf8');
 assert.match(domain,/DailyTreasureState DailyTreasures/);
 assert.match(gateway,/DailyTreasures=s\.DailyTreasures\?\.Copy\(\)/);
 assert.match(gateway,/case "ClaimDailyTreasure":/);
@@ -32,6 +34,10 @@ assert.match(panel,/showChest && !hasAuthoredChestArt/);
 assert.match(panel,/DailyTreasureArt\/treasure_opened_512/);
 assert.match(native,/NATIVE_COMPONENT_RENDERED_FALLBACK_ONLY_ART_REJECTED/);
 assert.match(native,/authoredSpritesImported/);
+assert.match(nativeWorkflow,/DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS/);
+assert.match(nativeWorkflow,/treasure_closed_512\.png/);
+assert.match(nativeWorkflow,/treasure_opened_512\.png/);
+assert.match(nativeWorkflow,/Illustrated chest sprites not imported in Unity/);
 // Art must never be declared approved by a source or syntax check.
 assert.doesNotMatch(native,/artApproved=true/);
 console.log('PASS daily treasures gateway integration source invariants');
