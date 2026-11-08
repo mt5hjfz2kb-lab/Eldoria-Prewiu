@@ -405,6 +405,15 @@ namespace Eldoria.BreachWatch.Editor
                     "Independent carved account inlay missing or intercepts city gestures");
                 Need(ui.HasPremiumCarvedQuest,
                     "Chapter objective must be the new angled carved nine-slice tablet, not an old rectangular overlay");
+                var depthLayers=ui.GetComponentsInChildren<Shadow>(true)
+                    .Where(q=>q && (q.name=="Identity / basalt crest" ||
+                        q.name=="Chapter side tablet" ||
+                        q.name=="Independent selected-building cartouche"))
+                    .ToArray();
+                Need(depthLayers.Length==3 &&
+                     depthLayers.All(q=>q.effectColor.a>.33f),
+                     "Owner-approved premium metalwork must retain real contact depth "+
+                     "without a large flat HUD footer: "+name);
                 Need(ui.HasPremiumResourceSurfaces,
                     "All three live resources must use real independent clean slate nine-slice capsules, not overlapping procedural frames");
                 Need(ui.UsesCompactRealmCrest,
