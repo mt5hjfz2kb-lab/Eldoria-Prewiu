@@ -134,10 +134,10 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
       const tall=cardH>=80,shortCard=cardH<60;
       const iconH=tall?40:shortCard?22:25;
       const iconBottom=cardH/2+(tall?-6:-3)-iconH;
-      const nameY=tall?-14:shortCard?-6:-8;
-      const nameH=shortCard?10:12;
-      const amountY=tall?-31:shortCard?-19:-23;
-      const amountH=tall?20:shortCard?14:17;
+      const nameY=tall?-14:shortCard?-6:-7.5;
+      const nameH=tall?12:shortCard?10:11;
+      const amountY=tall?-31:shortCard?-19:-22;
+      const amountH=tall?20:shortCard?14:16;
       assert.ok(iconBottom>=nameY+nameH/2+0.3,
         `${w}x${h}: paid resource icon overlaps name`);
       assert.ok(nameY-nameH/2>=amountY+amountH/2+0.3,
