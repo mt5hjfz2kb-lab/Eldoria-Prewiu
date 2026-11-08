@@ -6,7 +6,7 @@
   "sources": [
     {
       "name": "basalt_context",
-      "sha256": "e739428e50c8d02076ec93cbed554248788e61d374b3cb946f205eef604c6860",
+      "sha256": "3f2123e47fc68a0fbba04c50ded3d73f642eeb294d78e6c4e735e63630231472",
       "size": [
         512,
         736
@@ -21,7 +21,7 @@
     },
     {
       "name": "burgundy_action",
-      "sha256": "3eab19e3ed0cc1f257b09aa432c7a5d6a20db0a233f93392a63a85ae1266a297",
+      "sha256": "16298d36240336567c970fa9d82d58f94ca77ce71a817d3f5fb7652093a00a6a",
       "size": [
         512,
         148
@@ -36,7 +36,7 @@
     },
     {
       "name": "brass_portrait",
-      "sha256": "513fe75d451810190250f7e90384c39f50293190bb866c5a574e34c8dc7a294c",
+      "sha256": "3d36214bd96742a320db52525a5f6cd51c26382d3ed7cd6baf80497710242569",
       "size": [
         512,
         288
@@ -47,6 +47,21 @@
         27,
         29,
         27
+      ]
+    },
+    {
+      "name": "slate_resource",
+      "sha256": "a150b07652cecc3b008144fae7244e5de226d10510e67112df3855135a9fbde5",
+      "size": [
+        512,
+        148
+      ],
+      "guid": "90ec0b5c9a2b463194f198a623e5e36c",
+      "border": [
+        24,
+        22,
+        24,
+        22
       ]
     }
   ]
