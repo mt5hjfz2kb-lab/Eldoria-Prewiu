@@ -397,7 +397,7 @@ jobs:
           assert data['independent'].startswith('All five nine-slice')
           assert len(data['sources'])==5
           assert sorted(x['name'] for x in data['sources'])==[
-              'basalt_context','brass_portrait','burgundy_action','chiseled_quest','slate_resource']
+              'brass_portrait','burgundy_action','chiseled_quest','profile_plate','slate_resource']
           guids=set()
           for entry in data['sources']:
               p=folder/(entry['name']+'.png')
@@ -411,8 +411,12 @@ jobs:
               assert 'spriteBorder: {x: '+str(entry['border'][0]) in meta
               guids.add(entry['guid'])
           csharp=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
-          for name in ['basalt_context','brass_portrait','burgundy_action','chiseled_quest','slate_resource']:
+          for name in ['brass_portrait','burgundy_action','chiseled_quest','profile_plate','slate_resource']:
               assert 'VigiliaArt/PremiumSurfaces/'+name in csharp,name
+          assert 'VigiliaArt/PremiumSurfaces/basalt_context' not in csharp
+          assert 'BreachWatchBevelTrim' not in csharp
+          assert not (folder/'basalt_context.png').exists()
+          assert not (folder/'basalt_context.png.meta').exists()
           print('BREACHWATCH_INDEPENDENT_PREMIUM_3_SLICED_MATERIALS_CERTIFIED',len(guids))
           PY
       - name: Verify five separately finished original medallions
