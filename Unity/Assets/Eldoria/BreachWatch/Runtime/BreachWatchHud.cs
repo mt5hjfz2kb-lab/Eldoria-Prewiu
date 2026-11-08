@@ -4,6 +4,7 @@ using Eldoria.ReferenceClean;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace Eldoria.BreachWatch
 {
@@ -26,6 +27,8 @@ namespace Eldoria.BreachWatch
         GraphicRaycaster legacyRaycaster;
         CanvasGroup legacyGroup;
         bool originalCanvas, originalRaycaster, originalBlocks, originalInteractable;
+        Func<Vector2,bool> priorPointerBlocker;
+        readonly List<RaycastResult> pointerHits = new List<RaycastResult>();
         float originalAlpha;
         Font font;
         RectTransform uiRoot;
@@ -86,6 +89,13 @@ namespace Eldoria.BreachWatch
             canvas.worldCamera=host.PlayerCamera;canvas.planeDistance=1f;canvas.overrideSorting=true;canvas.sortingOrder=5000;
             scaler.uiScaleMode=CanvasScaler.ScaleMode.ConstantPixelSize;scaler.scaleFactor=1f;
             raycaster.enabled=true;
+            // The old RoyalInputGate detects only descendants of RoyalHUD.
+            // A new standalone Canvas must block world gestures itself.
+            if(host.City && host.City.Presenter)
+            {
+                priorPointerBlocker=host.City.Presenter.ExternalPointerBlocked;
+                host.City.Presenter.ExternalPointerBlocked=BlocksNativePointer;
+            }
             // Old presentation is explicitly switched OFF. It is not a background
             // component or a graphics donor; its live bridge remains available
             // for world selection and gameplay while this proof is active.
@@ -156,7 +166,15 @@ namespace Eldoria.BreachWatch
         {
             var graphic=rect.GetComponent<BreachWatchPlate>();
             if(graphic)graphic.raycastTarget=true; // actual graphic participates in EventSystem raycasting
-            var b=rect.gameObject.AddComponent<Button>();b.transition=Selectable.Transition.None;
+            var b=rect.gameObject.AddComponent<Button>();
+            b.transition=Selectable.Transition.ColorTint;
+            var tint=b.colors;
+            tint.normalColor=Color.white;
+            tint.highlightedColor=new Color(1f,.94f,.85f,1f);
+            tint.pressedColor=new Color(.73f,.69f,.65f,1f);
+            tint.disabledColor=new Color(.48f,.48f,.48f,1f);
+            tint.fadeDuration=.08f;
+            b.colors=tint;
             if(graphic)b.targetGraphic=graphic;
             b.onClick.AddListener(()=>click());return b;
         }
@@ -325,16 +343,16 @@ namespace Eldoria.BreachWatch
                     At((RectTransform)navButtons[i].transform,i*(bw+6),1,bw,65);
                     navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Basalt;
                 }
-                float panelHeight=Mathf.Min(226,Mathf.Max(178,h-495));
+                float panelHeight=Mathf.Min(260,Mathf.Max(219,h-485));
                 At(panel,margin,navTop-panelHeight-13,w-margin*2,panelHeight);
                 At(buildingName.rectTransform,70,8,w-132,32);
                 At(buildingLevel.rectTransform,70,37,w-132,19);
                 At(((RectTransform)closeButton.transform),w-margin*2-51,10,39,40);
-                At(portraitFrame,14,65,126,66);
-                At(buildingFunction.rectTransform,151,67,w-2*margin-168,58);
-                At(buildingCosts.rectTransform,16,135,w-2*margin-34,27);
-                At(buildingState.rectTransform,16,162,w-2*margin-34,18);
-                At(((RectTransform)actionButton.transform),16,panelHeight-48,w-margin*2-32,41);
+                At(portraitFrame,15,63,139,84);
+                At(buildingFunction.rectTransform,166,68,w-2*margin-183,72);
+                At(buildingCosts.rectTransform,16,151,w-2*margin-34,34);
+                At(buildingState.rectTransform,16,187,w-2*margin-34,18);
+                At(((RectTransform)actionButton.transform),16,panelHeight-52,w-margin*2-32,45);
                 At(feedback.rectTransform,69,fullObjective?310:277,w-100,43);
             }
             else
@@ -430,6 +448,20 @@ namespace Eldoria.BreachWatch
         }
         // Models from the real playable city, never a mocked building artwork
         // or a reused RoyalGold miniature/prefab.
+        bool BlocksNativePointer(Vector2 position)
+        {
+            var eventSystem=EventSystem.current;
+            if(eventSystem && raycaster && raycaster.enabled && canvas && canvas.enabled)
+            {
+                pointerHits.Clear();
+                raycaster.Raycast(new PointerEventData(eventSystem) { position=position },pointerHits);
+                bool blocked=pointerHits.Count>0;
+                pointerHits.Clear();
+                if(blocked)return true;
+            }
+            return priorPointerBlocker!=null && priorPointerBlocker(position);
+        }
+
         GameObject ActualBuildingModel(string id)
         {
             if(!host || !host.City) return null;
@@ -449,6 +481,8 @@ namespace Eldoria.BreachWatch
 
         void OnDestroy()
         {
+            if(host && host.City && host.City.Presenter)
+                host.City.Presenter.ExternalPointerBlocked=priorPointerBlocker;
             if(legacyCanvas)legacyCanvas.enabled=originalCanvas;
             if(legacyRaycaster)legacyRaycaster.enabled=originalRaycaster;
             if(legacyGroup){legacyGroup.alpha=originalAlpha;legacyGroup.blocksRaycasts=originalBlocks;legacyGroup.interactable=originalInteractable;}
