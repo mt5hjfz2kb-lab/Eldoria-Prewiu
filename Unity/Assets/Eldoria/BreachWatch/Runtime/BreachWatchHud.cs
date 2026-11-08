@@ -96,6 +96,21 @@ namespace Eldoria.BreachWatch
         public bool UsesOriginalPaintedMedallions =>
             navPlates[0] && navPlates[0].sprite &&
             navPlates[0].sprite.name=="castle";
+        public bool UsesPremiumSculptedMedallions
+        {
+            get
+            {
+                for(int i=0;i<navPlates.Length;i++)
+                {
+                    var requested=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/"+ReferenceNavArt[i]);
+                    if(!requested || !navPlates[i] || navPlates[i].sprite!=requested)
+                        return false;
+                }
+                var crest=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/castle");
+                return crest && identityCrest &&
+                    identityCrest.GetComponent<BreachWatchPlate>().sprite==crest;
+            }
+        }
         public bool UsesApprovedReferenceMedallions
         {
             get
@@ -269,7 +284,8 @@ namespace Eldoria.BreachWatch
             // Independent round carved crest replaces the obsolete banner.
             identityCrest=Rect("Independent circular realm crest",identity);
             Plate(identityCrest,BreachWatchPlate.PlateType.Navigation);
-            var crestImage=Resources.Load<Sprite>("VigiliaArt/OwnerReference/castle");
+            var crestImage=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/castle");
+            if(!crestImage)crestImage=Resources.Load<Sprite>("VigiliaArt/OwnerReference/castle");
             if(crestImage)identityCrest.GetComponent<BreachWatchPlate>()
                 .ApplyIndependentArt(crestImage);
             At(identityCrest,-3,-4,62,62);
@@ -377,7 +393,8 @@ namespace Eldoria.BreachWatch
                 int index=i;var rt=BuildButton(buttonRow,navLabels[i],navIcons[i],()=>Navigate(index),BreachWatchPlate.PlateType.Navigation);
                 navButtons[i]=rt.GetComponent<Button>();navPlates[i]=rt.GetComponent<BreachWatchPlate>();
                 navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Navigation;
-                var approved=Resources.Load<Sprite>("VigiliaArt/OwnerReference/"+ReferenceNavArt[i]);
+                var approved=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/"+ReferenceNavArt[i]);
+                if(!approved)approved=Resources.Load<Sprite>("VigiliaArt/OwnerReference/"+ReferenceNavArt[i]);
                 if(approved)
                 {
                     navPlates[i].ApplyIndependentArt(approved);
