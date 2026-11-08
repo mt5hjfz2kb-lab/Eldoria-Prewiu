@@ -320,6 +320,9 @@ namespace Eldoria.BreachWatch
             // Correct in the camera target (native offscreen captures included).
             if(portrait)
             {
+                buildingFunction.fontSize=17;
+                buildingCosts.fontSize=15;
+                buildingState.fontSize=15;
                 At(identity,margin,10,w-margin*2,79);
                 At(identityName.rectTransform,71,13,w-154,29);
                 At(identityPower.rectTransform,71,45,w-154,23);
@@ -382,23 +385,29 @@ namespace Eldoria.BreachWatch
                 At(chapterProgress.rectTransform,15,85,questWidth,20);
                 At(utilityRail,margin,fullObjective?266:238,59,183);
                 for(int i=0;i<3;i++)At((RectTransform)utilityRail.GetChild(i),0,i*62,56,56);
-                float pw=Mathf.Min(338,w*.285f),ph=Mathf.Min(335,h*.50f);
+                float pw=Mathf.Min(338,w*(h<500f?.32f:.285f)),ph=Mathf.Min(335,h*.50f);
                 At(panel,w-pw-margin,115,pw,ph);
                 At(buildingName.rectTransform,72,11,pw-130,31);
                 At(buildingLevel.rectTransform,72,42,pw-130,22);
                 At((RectTransform)closeButton.transform,pw-52,10,40,40);
                 if(ph<282f)
                 {
-                    // Phone landscape: two columns and a dedicated action row,
-                    // never stack price, status and the actual button together.
-                    At(portraitFrame,14,66,95,91);
-                    At(buildingFunction.rectTransform,115,68,pw-130,44);
-                    At(buildingCosts.rectTransform,115,116,pw-130,35);
-                    At(buildingState.rectTransform,115,154,pw-130,17);
+                    // One-line genuine state below the columns; no clipping
+                    // or overlap even at the actual phone 844x390 viewport.
+                    At(portraitFrame,14,65,104,88);
+                    At(buildingFunction.rectTransform,124,65,pw-138,50);
+                    At(buildingCosts.rectTransform,124,117,pw-138,33);
+                    At(buildingState.rectTransform,17,153,pw-34,19);
                     At((RectTransform)actionButton.transform,15,ph-51,pw-30,45);
+                    buildingFunction.fontSize=15;
+                    buildingCosts.fontSize=14;
+                    buildingState.fontSize=14;
                 }
                 else
                 {
+                    buildingFunction.fontSize=17;
+                    buildingCosts.fontSize=15;
+                    buildingState.fontSize=15;
                     float portraitHeight=Mathf.Clamp(ph-232,44,102);
                     At(portraitFrame,17,70,pw-34,portraitHeight);
                     At(buildingFunction.rectTransform,18,77+portraitHeight,pw-36,35);
