@@ -23,8 +23,10 @@ def apply(source,destination,expected):
  for k,o in objects.items():
   if o.type.name!='Texture2D':continue
   t=o.read_typetree();raw=o.get_raw_data()
-  # Only static architecture/terrain artwork, not font atlases, hero portraits or UI.
-  if not t.get('m_Name','').startswith(('Valoria_','Eldoria_StoneArchitectureKit_','Eldoria_MultiPiece_StoneKit_','TerrainTerraceKit_')):continue
+  # Static imported material maps only; excludes dynamic font/UI/portrait textures.
+  # Frozen runtime mutation audit found setters on generated Texture2D/RenderTexture
+  # instances, not on these immutable non-readable imported material maps.
+  if not t.get('m_Name','').startswith(('Valoria_','Eldoria_StoneArchitectureKit_','Eldoria_MultiPiece_StoneKit_','TerrainTerraceKit_','Eldoria Stone · Hero Prototype_','Eldoria Rock · Hero Prototype_','NormalGL_28f57ff9-','Color_28f57ff9-','ORM_28f57ff9-','ORM_351d1034-','Spawnling / retained skin','Spawnling / retained PBR')):continue
   if t.get('m_IsReadable',True) or t.get('m_StreamData',{}).get('size',0) or len(raw)<1000000:continue
   groups[(k[0],sha(raw))].append(k)
  groups={g:ks for g,ks in groups.items() if len(ks)>1}
