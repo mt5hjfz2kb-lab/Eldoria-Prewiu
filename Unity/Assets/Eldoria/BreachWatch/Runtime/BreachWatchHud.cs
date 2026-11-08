@@ -585,9 +585,9 @@ namespace Eldoria.BreachWatch
                 float left=w-margin-pw;
                 float top=navTop-ph-45;
                 At(panel,left,top,pw,ph);
-                At(buildingName.rectTransform,50,7,pw-89,29);
-                At(buildingLevel.rectTransform,50,35,pw-89,19);
-                At(((RectTransform)closeButton.transform),pw-40,9,31,31);
+                At(buildingName.rectTransform,50,7,pw-116,29);
+                At(buildingLevel.rectTransform,50,35,pw-116,19);
+                At(((RectTransform)closeButton.transform),pw-57,3,52,52);
                 At(portraitFrame,11,59,pw-22,81);
                 At(buildingFunction.rectTransform,13,143,pw-26,43);
                 At(costHeader.rectTransform,13,188,pw-26,14);
@@ -597,7 +597,7 @@ namespace Eldoria.BreachWatch
                 At(costIcons[1].rectTransform,105,204,24,24);
                 At(costQuantities[1].rectTransform,133,204,pw-144,24);
                 At(buildingState.rectTransform,13,230,pw-26,14);
-                At(((RectTransform)actionButton.transform),12,ph-48,pw-24,43);
+                At(((RectTransform)actionButton.transform),12,ph-50,pw-24,49);
                 buildingName.fontSize=20;
                 buildingLevel.fontSize=14;
                 buildingFunction.fontSize=14;
@@ -657,9 +657,9 @@ namespace Eldoria.BreachWatch
                 float ph=Mathf.Min(365,h-174f);
                 float top=h<530f?75f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
-                At(buildingName.rectTransform,50,8,pw-88,31);
-                At(buildingLevel.rectTransform,50,37,pw-88,19);
-                At(((RectTransform)closeButton.transform),pw-40,9,31,31);
+                At(buildingName.rectTransform,50,8,pw-117,31);
+                At(buildingLevel.rectTransform,50,37,pw-117,19);
+                At(((RectTransform)closeButton.transform),pw-57,3,52,52);
                 buildingName.fontSize=21;
                 buildingLevel.fontSize=15;
                 if(ph<305)
@@ -675,7 +675,7 @@ namespace Eldoria.BreachWatch
                     At(costIcons[1].rectTransform,112,162,26,26);
                     At(costQuantities[1].rectTransform,140,162,pw-151,26);
                     At(buildingState.rectTransform,12,196,pw-24,18);
-                    At(((RectTransform)actionButton.transform),12,ph-51,pw-24,46);
+                    At(((RectTransform)actionButton.transform),12,ph-56,pw-24,53);
                     buildingFunction.fontSize=14;
                     buildingCosts.fontSize=14;
                     buildingState.fontSize=14;
