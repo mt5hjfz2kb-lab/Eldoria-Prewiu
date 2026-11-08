@@ -446,8 +446,9 @@ namespace Eldoria.BreachWatch.Editor
                 Need(ui.HasPremiumResourceSurfaces,
                     "All three live resources must use real independent clean slate nine-slice capsules, not overlapping procedural frames");
                 Need(ui.BuildingPanel.GetComponentsInChildren<BreachWatchPanelInk>(true).Length==1 &&
-                     !ui.BuildingPanel.GetComponent<BreachWatchPlate>(),
-                     "Obsolete basalt or duplicate dark card stacked beneath the approved premium border: "+name);
+                     !ui.BuildingPanel.GetComponent<BreachWatchPlate>() &&
+                     ui.BuildingPanel.GetComponent<BreachWatchPanelInk>().raycastTarget,
+                     "Superseded stacked card or pass-through background remains beneath the final gold frame: "+name);
                 Need(ui.UsesCompactRealmCrest,
                     "Compact circular Valoria crest missing, or discarded red header returned: "+name);
                 Need(!ui.GetComponentsInChildren<Text>(true).Any(t=>
@@ -598,6 +599,15 @@ namespace Eldoria.BreachWatch.Editor
                          ui.CurrentSnapshot?.Building != null &&
                          ui.CurrentSnapshot.Building.Id=="bastion",
                          "Real Bastion selection is missing contextual native card in "+name);
+                    // Real inactive areas of this carved card must not
+                    // accidentally select a building behind the menu.
+                    var panelCorners=new Vector3[4];
+                    ui.BuildingPanel.GetWorldCorners(panelCorners);
+                    var panelPoint=RectTransformUtility.WorldToScreenPoint(camera,
+                        (panelCorners[0]+panelCorners[2])*.5f);
+                    Need(host.City.Presenter.ExternalPointerBlocked!=null &&
+                         host.City.Presenter.ExternalPointerBlocked(panelPoint),
+                         "Premium Bastion panel allows city clicks through a blank slate area: "+name);
                     Need(ui.HasLiveBuildingPortrait && ui.BuildingPortraitExclusive,
                          "Real isolated Bastion mesh portrait did not render in "+name);
                     Need(!ui.BuildingPortraitEdgeClipped,
