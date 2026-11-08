@@ -869,10 +869,13 @@ namespace Eldoria.BreachWatch
                     resourceAmounts[i].fontSize=16;
                 }
                 At(centerMark,w*.49f-60,18,120,28);
-                At(objective,margin,102,225,fullObjective?110:83);
+                // On the real 844x390 Unity capture, the previous 61+19
+                // progress position left only 2.6 physical pixels above
+                // the bottom bevel. Keep true text visibly inside the stone.
+                At(objective,margin,102,225,fullObjective?118:83);
                 At(chapterName.rectTransform,37,8,178,20);
-                At(chapterObjective.rectTransform,14,32,197,fullObjective?57:29);
-                At(chapterProgress.rectTransform,14,fullObjective?87:61,190,19);
+                At(chapterObjective.rectTransform,14,31,197,fullObjective?57:24);
+                At(chapterProgress.rectTransform,14,fullObjective?92:57,190,19);
                 chapterName.fontSize=14;
                 chapterObjective.fontSize=16;
                 chapterProgress.fontSize=15;
