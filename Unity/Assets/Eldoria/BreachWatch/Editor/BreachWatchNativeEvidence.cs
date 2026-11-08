@@ -142,7 +142,7 @@ namespace Eldoria.BreachWatch.Editor
             Need(!ui.transform.IsChildOf(host.Hud.transform), "New Canvas must not be attached to legacy HUD");
             Need(ui.UsesOriginalPaintedMedallions && ui.UsesApprovedReferenceMedallions &&
                  ui.UsesPremiumSculptedMedallions && ui.UsesPremiumForgedPortraitFrame &&
-                 ui.UsesCompactRealmCrest && ui.UsesPremiumCarvedContext &&
+                 ui.UsesCompactRealmCrest && ui.UsesSinglePremiumContext &&
                  ui.UsesExactOwnerApprovedGoldBorder &&
                  ui.UsesSeparatedOwnerGoldFinial && ui.UsesPremiumBurgundyAction,
                 "Vigilia needs original 5 sculpted medallions, true 9-slice basalt, deep burgundy gameplay button and premium brass 3D portrait frame");
@@ -444,6 +444,9 @@ namespace Eldoria.BreachWatch.Editor
                      "without a large flat HUD footer: "+name);
                 Need(ui.HasPremiumResourceSurfaces,
                     "All three live resources must use real independent clean slate nine-slice capsules, not overlapping procedural frames");
+                Need(ui.BuildingPanel.GetComponentsInChildren<BreachWatchPanelInk>(true).Length==1 &&
+                     !ui.BuildingPanel.GetComponent<BreachWatchPlate>(),
+                     "Obsolete basalt or duplicate dark card stacked beneath the approved premium border: "+name);
                 Need(ui.UsesCompactRealmCrest,
                     "Compact circular Valoria crest missing, or discarded red header returned: "+name);
                 Need(!ui.GetComponentsInChildren<Text>(true).Any(t=>
