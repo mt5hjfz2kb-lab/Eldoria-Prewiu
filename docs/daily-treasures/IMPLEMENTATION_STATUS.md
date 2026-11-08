@@ -22,7 +22,7 @@ La evidencia CI correspondiente a cada SHA debe consultarse en Actions; no utili
 
 ## Trabajo no terminado — no aprobado aún
 - [ ] Formalizar la liberación del runner Windows por PR179 antes de usarlo para PR181.
-- [ ] Compilar Unity 6000.3.23f1 y generar 12 capturas **nativas** (cuatro tamaños × calendario/cofre cerrado/abierto), 16 eventos de puntero y 4 pagos auténticos en estado descartable, con hashes.
+- [ ] Compilar Unity 6000.3.23f1 y generar 16 capturas **nativas obligatorias** (cuatro tamaños × calendario/cofre cerrado/apertura central/abierto), más 8 capturas del cofre especial del día 4; en total 24 PNG con sus SHA256 reales, 40 eventos de puntero y 8 concesiones auténticas sobre estados descartables. Ninguno de estos controles por sí solo equivale a calidad artística o partida completa.
 - [ ] Confirmar que la apariencia alcanza al menos la calidad de la previsualización del cofre ya aprobada. Si no, cambiar el enfoque artístico, no apilar pequeños parches.
 - [ ] Integrar en la ciudad real, evitar duplicar HUD cuando Vigilia de la Brecha esté lista, comprobar tutorial, Vigilantes y buzón, sin alterar Bastión I–V.
 - [ ] Validar render, sonido, memorias, pantallas reales iOS/Android/WebGL y equilibrio económico.
