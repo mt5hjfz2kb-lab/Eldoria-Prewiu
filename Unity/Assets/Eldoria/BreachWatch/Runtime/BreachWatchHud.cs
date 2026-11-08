@@ -556,6 +556,10 @@ namespace Eldoria.BreachWatch
             actionButton.colors=actionPalette;
             actionPlate.raycastTarget=true;
             actionButton.targetGraphic=actionPlate;
+            var actionHammers=Rect("Two separately drawn forged hammers",actionButton.transform);
+            At(actionHammers,8f,7f,34f,34f);
+            var metalSymbol=actionHammers.gameObject.AddComponent<BreachWatchCrossedHammers>();
+            metalSymbol.raycastTarget=false;
             actionLabel=Label(actionButton.transform,"Real action title",17,TextAnchor.MiddleCenter,TextIvory,true);
             Fill(actionLabel.rectTransform,6);
             buttonRow=Rect("Five standalone stone navigation emblems",uiRoot);
