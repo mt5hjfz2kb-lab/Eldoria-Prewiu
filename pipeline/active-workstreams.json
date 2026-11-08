@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T19:52:48.053Z",
+  "updated_at": "2026-11-08T20:10:53.050Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6696,9 +6696,7 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
       "ownership_revision": 22,
       "write_scope_released": false,
@@ -6763,10 +6761,10 @@
         }
       ],
       "runner_priority_handoff": {
-        "status": "RETURNED_AFTER_BETA_NATIVE_SUCCESS",
-        "at": "2026-11-08T16:53:20.268Z",
+        "status": "TEMPORARILY_LENT_TO_BETA_OWNER_AUTHORIZED",
+        "at": "2026-11-08T20:10:53.050Z",
         "to": "eldoria-private-beta-i-v-20261107",
-        "reason": "Owner explicitly authorized priority transfer in this session to diagnose and fix physical iPhone beta failure. Preserve UI owner, source and PR173. No jobs or processes cancelled.",
+        "reason": "Owner explicitly renews urgent PR179 continuation until testable stability solution. No native jobs active in live Actions inventory; preserve Forja owner and return Windows after native validation/build.",
         "returned_at": "2026-11-08T19:52:48.053Z",
         "native_run": 42514790566,
         "restoration_verified": true
@@ -6817,14 +6815,16 @@
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes",
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "TERRAIN_TAPE_NATIVE_PASS_WEBKIT_MEMORY_COMPARISON",
+      "phase": "REACHABILITY_BUFFER_ALLOCATION_CAUSAL_COMPARISON",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Native 42514790566 and exact input restoration PASS; package and Apple GPU comparison 42515223607 running. Physical iPhone remains unverified; no tester release.",
+      "next": "Measure original vs reused route dictionary buffers with exact world population and route parity, then fresh WebGL only if native checks pass. Mobile8 rejected for peak memory; no publication yet.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
