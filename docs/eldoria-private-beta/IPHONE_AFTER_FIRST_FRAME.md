@@ -40,3 +40,66 @@ Publication remains gated on evidence. Do not mark tester readiness or physical 
 - Run42423325534 successfully entered the name and observed60s, heap1,394,147,328; raw page.reload() then exceeded30s, and browser cleanup also timed out. Raw reload remains NOT certified.
 - Synchronous canvas readback after the named Browser_mainLoop_runner callback is prepared as a capture alternative; it rejects blank/cleared frames, restores the original scheduler and does not change shipping code. Khronos explicitly permits synchronous drawing-buffer access following rendering: https://registry.khronos.org/webgl/specs/1.0/ .
 - Run42423856431 tests documented Unity instance.Quit() before reopening. Even if it passes, this certifies graceful reopen only, not raw reload or physical iPhone stability. Official API: https://docs.unity.com/en-us/engine/6000.0/manual/platform-specific/webgl/building-distribution/templates/web-templates-build-configuration .
+
+
+## Physical failure and structural pivot — 2026-11-08
+
+The owner physically retested candidate3: the game remains visible for about one
+second and returns to the landing. Candidate3 is FAILED on that iPhone. Reducing
+reserved Wasm capacity from 1.58 GB to 1.39 GB did not resolve the symptom.
+Memory pressure is still a hypothesis; there is no iOS process-kill log proving it.
+Run42423856431 also failed: documented Quit completed, but reload timed out.
+
+The beta branch now contains four narrowly claimed C# changes: staged exact world
+initialization, host readiness withheld until the map is complete, release of the
+temporary Blender verification dictionary after mandatory validation, transformation
+of owned mesh-accessor copies in place, and a readiness wait in the existing native
+journey validator. Geometry, terrain data, game rules and the normal tutorial are not
+intentionally replaced. C# syntax passed; this is NOT native compilation or gameplay
+evidence.
+
+Native run42428875558, source92d68b3a84c34952522286e246e5c358d2a9e306,
+is the current attempted comparison/build. At this checkpoint it is still
+materializing the isolated Unity source; NO native PASS or fresh WebGL exists yet.
+Its baseline is948ffa9837168a0b68dab80be76b66350422b23a plus exactly the four
+overlays recorded by run_structural.ps1. The probe exercises two actual scene
+loads, hashes terrain meshes and query samples, checks navigation stays closed
+during staging, and preserves canonical saves. Editor-update memory sampling is
+not an intra-frame peak measurement and is not an iPhone memory measurement.
+After parity, the unweakened canonical journey validator and canonical WebGL
+builder must pass on this exact input.
+
+Preparation lessons:
+- Run42427811334 was retired ONLY while copying source, before Unity started.
+  The frozen tree contains25.59 GiB, including14.24 GiB under docs.
+- Run42428680863 failed before Unity because a file-only sparse checkout used
+  cone mode. Corrected to non-cone mode.
+- Current preparation borrows committed local Git objects into its own repository,
+  includes all Unity source but not historical documentation captures, and does not
+  reset another working tree or share its Unity Library. This still involves a
+  large materialization/import. Do not launch redundant native jobs or another
+  full repository download while it runs.
+- The live main registry grants this beta workstream Windows revision8. Re-read
+  live ownership before any dispatch; never infer availability from job state.
+
+Independent preparation already checked:
+- reuse_verified_texture_transforms.py reproduces candidate3 BYTE FOR BYTE from
+  the frozen original: all54,338 objects checked,106 changed texture objects
+  using102 unique verified transforms. No new quality/compression decisions.
+  This lets a fresh engine retain previous savings only where texture input bytes
+  match exactly. It does not make the failed old candidate a working one.
+- prepare_structural_site.py keeps engine files from the fresh build, verifies the
+  transformed data belongs to that build, and requires native parity/WebGL
+  certificates. Synthetic extraction/packaging and mixed-data rejection passed;
+  actual fresh-build packaging remains pending.
+- qa_structural.cjs requires the real REGION1_CANON_WORLD_INSTALLED marker, a
+  visible runtime for60s, a genuine capture and no runtime errors. It traces
+  WebAssembly memory growth in the isolated QA browser.
+- The canonical tools/valoria-reference-clean/playtest_web.cjs documents that
+  Linux SwiftShader rendered fewer than5 frames in35s. Beta QA now follows its
+  Windows D3D11 route using installed Chromium and records the actual renderer.
+  This avoids equating the earlier software-renderer stall with the iPhone defect.
+  Browser QA, visible saved-name restoration, and physical iPhone remain unverified.
+
+The public candidate3 link is unchanged. No new tester invitations, no false
+mobile PASS, no gameplay analytics collection, and no new owner retry yet.
