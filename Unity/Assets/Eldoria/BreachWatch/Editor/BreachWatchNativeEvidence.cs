@@ -428,9 +428,10 @@ namespace Eldoria.BreachWatch.Editor
                 Need(rift && rift.gameObject.activeInHierarchy && !rift.raycastTarget &&
                      !rift.GetComponent<BreachWatchPlate>(),
                      "Floating Breach emblem must be transparent open-air artwork, not an opaque gameplay button: "+name);
-                var trims=ui.GetComponentsInChildren<BreachWatchBevelTrim>(true);
-                Need(trims.Length>=1 && trims.All(t=>t && !t.raycastTarget),
-                    "Independent carved account inlay missing or intercepts city gestures");
+                Need(ui.HasSinglePremiumIdentity,
+                    "Superseded player plate or second bevel stacked over the one definitive premium profile");
+                Need(ui.GetComponentsInChildren<BreachWatchBevelTrim>(true).Length==0,
+                    "New premium Vigilia must DELETE obsolete stacked bevel effects, not overlay them");
                 Need(ui.HasPremiumCarvedQuest,
                     "Chapter objective must be the new angled carved nine-slice tablet, not an old rectangular overlay");
                 var depthLayers=ui.GetComponentsInChildren<Shadow>(true)
