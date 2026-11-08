@@ -517,6 +517,15 @@ namespace Eldoria.BreachWatch.Editor
                         "Live status overlaps main action: "+name);
                     Need(Bottom(action)<=ui.BuildingPanel.rect.height+.5f,
                         "Main building action clipped by native card: "+name);
+                    var actionText=ui.BuildingAction.GetComponentsInChildren<Text>(true)
+                        .FirstOrDefault(q=>q && q.name=="Real action title");
+                    Need(actionText && actionText.gameObject.activeInHierarchy &&
+                         actionText.rectTransform.anchoredPosition.x>=
+                            action.rect.width*.25f,
+                         "Real premium upgrade text overlaps engraved crossed hammers: "+name);
+                    Need(actionText.rectTransform.anchoredPosition.x+
+                         actionText.rectTransform.rect.width<=action.rect.width-2f,
+                         "Real upgrade caption escapes the right copper frame: "+name);
                     foreach(var control in new []{ui.BuildingAction,ui.BuildingClose})
                     {
                         Need(control && control.gameObject.activeInHierarchy,
