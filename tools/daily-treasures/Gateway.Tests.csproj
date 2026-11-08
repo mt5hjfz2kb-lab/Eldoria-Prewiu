@@ -18,6 +18,7 @@
 <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs" Link="ResourceNodeTierPolicy.cs" />
 <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs" Link="RenewablePopulationPolicy.cs" />
 <Compile Include="../../Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs" Link="LocalGateway.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureMilestoneRules.cs" Link="DailyTreasureMilestoneRules.cs" />
     <Compile Include="GatewayChecks.cs" />
   </ItemGroup>
 </Project>
