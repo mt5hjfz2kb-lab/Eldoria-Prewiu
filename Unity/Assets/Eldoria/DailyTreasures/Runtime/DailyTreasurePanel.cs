@@ -11,11 +11,14 @@ namespace Eldoria.DailyTreasures
     [DisallowMultipleComponent]
     public sealed class DailyTreasurePanel : MonoBehaviour
     {
-        static readonly Color Gold=new Color(.91f,.72f,.38f,1f);
-        static readonly Color Ivory=new Color(.97f,.92f,.82f,1f);
-        static readonly Color Muted=new Color(.72f,.70f,.66f,1f);
-        static readonly Color Stone=new Color(.115f,.115f,.13f,1f);
-        static readonly Color Oak=new Color(.27f,.15f,.11f,1f);
+        // Source art direction: the actual PR173 Vigilia is charcoal stone,
+        // restrained forged copper, parchment ivory and burgundy action.
+        // NOT floral/purple-neon/fairy crystals or fake collectible currencies.
+        static readonly Color Gold=new Color(.92f,.70f,.40f,1f);
+        static readonly Color Ivory=new Color(.98f,.94f,.84f,1f);
+        static readonly Color Muted=new Color(.83f,.81f,.76f,1f);
+        static readonly Color Stone=new Color(.085f,.090f,.095f,1f);
+        static readonly Color Oak=new Color(.28f,.12f,.10f,1f);
         ICommandGateway gateway;
         Func<long> now;
         Action refreshed;
@@ -166,12 +169,31 @@ namespace Eldoria.DailyTreasures
             graphic.raycastTarget=false;graphic.color=Color.white;
             return graphic;
         }
-        // Original authored black-iron and worn-bronze frames, supplied as
-        // real Sprite textures (not a full-screen screenshot). Nine-slice keeps
-        // all carved corners sharp while modal/card/button sizes adapt.
+        // Reuse the EXACT standalone materials of Vigilia when PR173's
+        // assets are installed: one basalt plate, one thin bronze-edged
+        // resource card and one burgundy action. PR181 remains buildable and
+        // visually complete with its own original nine-slice fallbacks.
+        // Do not copy PR173 files, paste a whole HUD screenshot or layer
+        // multiple ornate frames over one another.
+        static string MatchingVigiliaSurface(string fallback)
+        {
+            switch(fallback)
+            {
+                case "valoria_frame_main_512":
+                    return "VigiliaArt/PremiumSurfaces/profile_plate";
+                case "valoria_frame_card_256":
+                    return "VigiliaArt/PremiumSurfaces/slate_resource";
+                case "valoria_frame_button_512x128":
+                    return "VigiliaArt/PremiumSurfaces/burgundy_action";
+                default:return null;
+            }
+        }
         static bool ApplyAuthoredFrame(RectTransform rect,string resource)
         {
-            var sprite=Resources.Load<Sprite>("DailyTreasureArt/"+resource);
+            var shared=MatchingVigiliaSurface(resource);
+            var sprite=shared==null?null:Resources.Load<Sprite>(shared);
+            if(!sprite)
+                sprite=Resources.Load<Sprite>("DailyTreasureArt/"+resource);
             if(!sprite)return false;
             var target=rect.GetComponent<Image>();
             if(!target)return false;
@@ -292,7 +314,15 @@ namespace Eldoria.DailyTreasures
                     i==5?DailyTreasureGlyphKind.Food:
                     i==6?DailyTreasureGlyphKind.Chest:DailyTreasureGlyphKind.Time;
                 dayGlyph[i].raycastTarget=false;
-                var iconSprite=Resources.Load<Sprite>(
+                // The resource emblems must be the same as Vigilia's
+                // owner-approved player HUD, when those actual sprites exist.
+                // Hourglass and chest remain original Valoria-only art.
+                string ownerIcon=(DayIllustrations[i]=="resource_wood"?"wood":
+                    DayIllustrations[i]=="resource_stone"?"stone":
+                    DayIllustrations[i]=="resource_food"?"food":null);
+                var iconSprite=ownerIcon==null?null:Resources.Load<Sprite>(
+                    "VigiliaArt/ResourceIcons/"+ownerIcon);
+                if(!iconSprite)iconSprite=Resources.Load<Sprite>(
                     "DailyTreasureArt/"+DayIllustrations[i]);
                 if(iconSprite)
                 {
