@@ -74,4 +74,15 @@ assert.match(native,/DailyTreasureRevealTimeline\.RevealPeakSeconds/);
 assert.match(native,/"opening"/);
 assert.match(native,/pictures\.Count==16/);
 assert.match(nativeWorkflow,/\$report\.images -ne 16/);
+// PR173's canonical independently rendered Canvas hides the old Royal HUD.
+// Genuine daily UI must relocate to the native safe area or be invisible.
+assert.match(panel,/GameObject\.Find\("VIGILIA \/ independent canvas"\)/);
+assert.match(panel,/vigilia\.transform\.Find\("Safe composition"\)/);
+assert.match(panel,/root\.SetParent\(safe,false\)/);
+assert.match(panel,/root\.SetParent\(originalSafeArea,false\)/);
+assert.match(panel,/onVigiliaCanvas\?\(portrait\?102f:177f\)/);
+assert.match(retention,/if\(!dailyTreasures && safe\)/);
+assert.match(panel,/milestoneQueue\.Observe\(gateway\.Snapshot\(\)\)/);
+assert.match(panel,/milestoneQueue\.ConfirmPresented\(milestone\.EventId\)/);
+assert.doesNotMatch(panel,/new GameObject\([^\n]+typeof\(Canvas\)/);
 console.log('PASS daily treasures gateway integration source invariants');
