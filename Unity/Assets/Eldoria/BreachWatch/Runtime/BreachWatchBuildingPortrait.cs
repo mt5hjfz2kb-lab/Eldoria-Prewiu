@@ -204,9 +204,15 @@ namespace Eldoria.BreachWatch
                     readback.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);
                     readback.Apply();
                     var pixels=readback.GetPixels32();
+                    // Compare against the ACTUAL rendered corner, never against
+                    // assumed RGB constants: sRGB conversion in URP can turn
+                    // linear(.07) clear colour into much brighter pixel bytes.
+                    var background=pixels[8*texture.width+8];
                     int nonBackground=0;
                     foreach(var p in pixels)
-                        if(Mathf.Abs(p.r-18)+Mathf.Abs(p.g-20)+Mathf.Abs(p.b-21)>40)
+                        if(Mathf.Abs(p.r-background.r)+
+                           Mathf.Abs(p.g-background.g)+
+                           Mathf.Abs(p.b-background.b)>42)
                             nonBackground++;
                     NonBackgroundPixelFraction=nonBackground/(float)pixels.Length;
                 }
