@@ -30,4 +30,21 @@ assert.match(panel,/milestoneScenery\.raycastTarget=false/);
 assert.match(panel,/UpdateSceneryCrop\(\)/);
 assert.match(panel,/if\(target<source\)/);
 assert.match(panel,/return null;\s*}\s*void SetMilestoneScenery/);
+// Four distinct event compositions use real source art and the live city,
+// not a static montage of invented characters and future Bastion levels.
+const stage=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureStageDirection.cs',
+  'utf8');
+assert.match(stage,/DailyTreasureStageKind\.Lyra/);
+assert.match(stage,/DailyTreasureStageKind\.Explorers/);
+assert.match(stage,/DailyTreasureStageKind\.Vigilants/);
+assert.match(stage,/DailyTreasureStageKind\.Bastion/);
+assert.match(stage,/float backdropOpacity,float sceneryOpacity,float veilOpacity/);
+assert.match(stage,/if\(kind==DailyTreasureStageKind\.Bastion\)/);
+assert.match(panel,/PaintMilestoneAtmosphere\(elapsed,frame\)/);
+assert.match(panel,/SafePainterlyDrift\(/);
+assert.match(panel,/stage\.SideBySide\?stage\.SceneX:0f/);
+assert.match(panel,/return "EldoriaV41\/heroes-hall-illustrated-v2"/);
+assert.match(panel,/return "EldoriaRetention\/scouts-painterly-v2"/);
+assert.match(panel,/return "EldoriaRetention\/vigilants-painterly-v2"/);
 console.log('PASS three authentic reused painterly milestone scenes, original metadata, UV crop and non-blocking overlay');
