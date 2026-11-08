@@ -71,6 +71,8 @@ namespace Eldoria.DailyTreasures
             }
         }
         Image glow,ambient;
+        RawImage milestoneScenery;
+        Image milestoneVignette;
         DailyTreasureCeremonyTheme activeTheme=
             DailyTreasureCeremonyTheme.ForEvent(null,false);
         Texture2D glowTexture;
@@ -304,7 +306,17 @@ namespace Eldoria.DailyTreasures
             Stretch(claimCaption.rectTransform);
 
             ceremony=NewRect("Saved reward / optional animated reveal",cardSurface);
-            // This block has no reward-awarding logic.
+            // This block has no reward-awarding logic. Existing painterly
+            // Eldoria illustrations differentiate HEROs, Scouts and Vigilants,
+            // while the newly authored premium chest remains the focal object.
+            var sceneryRect=NewRect("Genuine Eldoria milestone scenery / visual only",ceremony);
+            milestoneScenery=sceneryRect.gameObject.AddComponent<RawImage>();
+            milestoneScenery.raycastTarget=false;
+            milestoneScenery.color=new Color(.58f,.53f,.48f,.26f);
+            milestoneScenery.gameObject.SetActive(false);
+            var veilRect=NewRect("Dim painterly setting for the earned chest",ceremony);
+            milestoneVignette=Plate(veilRect,new Color(.028f,.023f,.027f,.26f),false);
+            milestoneVignette.gameObject.SetActive(false);
             glowRect=NewRect("Warm radial light / visual only",ceremony);
             glow=Plate(glowRect,new Color(1f,.65f,.18f,0f),false);
             CreateGlow();
@@ -725,8 +737,61 @@ namespace Eldoria.DailyTreasures
             illustratedOpen.rectTransform.localScale=Vector3.one;
             glow.color=new Color(1f,.75f,.36f,showChest?0f:.34f);
             ambient.color=Color.clear;
+            SetMilestoneScenery(eventId,showChest);
             skipButton.gameObject.SetActive(showChest);
             if(!showChest)ShowResult(true);
+        }
+        static string MilestoneScenerySource(string eventId)
+        {
+            // Reuse ONLY actual existing production art (not synthetic
+            // characters, fake rewards or images rendered from an old UI).
+            if(string.IsNullOrEmpty(eventId))return null;
+            if(eventId.StartsWith("milestone:hero:lyra",
+                StringComparison.Ordinal))
+                return "EldoriaV41/heroes-hall-illustrated-v2";
+            if(eventId.StartsWith("scout:",StringComparison.Ordinal) ||
+               eventId.StartsWith("exploration:",StringComparison.Ordinal))
+                return "EldoriaRetention/scouts-painterly-v2";
+            if(eventId.StartsWith("vigilant:",StringComparison.Ordinal))
+                return "EldoriaRetention/vigilants-painterly-v2";
+            // For Bastion, the ACTUAL CITY must remain visible behind the
+            // temporary modal: never replace the player's city with a
+            // misleading artwork of a different building level.
+            return null;
+        }
+        void SetMilestoneScenery(string eventId,bool showChest)
+        {
+            var path=showChest?MilestoneScenerySource(eventId):null;
+            Texture2D source=path==null?null:Resources.Load<Texture2D>(path);
+            milestoneScenery.texture=source;
+            milestoneScenery.gameObject.SetActive(source!=null);
+            milestoneVignette.gameObject.SetActive(source!=null);
+            if(source)
+            {
+                // Source textures are color-graded and darkened; they are not
+                // stretched into poster-like panels or higher than the chest.
+                milestoneScenery.color=new Color(.65f,.61f,.56f,.43f);
+                UpdateSceneryCrop();
+            }
+        }
+        void UpdateSceneryCrop()
+        {
+            if(!milestoneScenery || !milestoneScenery.texture)return;
+            var rect=milestoneScenery.rectTransform.rect;
+            if(rect.width<10f || rect.height<10f)return;
+            float source=(float)milestoneScenery.texture.width/
+                milestoneScenery.texture.height;
+            float target=rect.width/rect.height;
+            if(target<source)
+            {
+                float width=target/source;
+                milestoneScenery.uvRect=new Rect((1f-width)*.5f,0f,width,1f);
+            }
+            else
+            {
+                float height=source/target;
+                milestoneScenery.uvRect=new Rect(0f,(1f-height)*.5f,1f,height);
+            }
         }
         static string ConfirmedMilestoneSummary(string committedText)
         {
@@ -825,6 +890,11 @@ namespace Eldoria.DailyTreasures
             float panelH=Mathf.Min(h-20f,portrait?
                 (focusedQuiet?460f:700f):(focusedQuiet?330f:370f));
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
+            Place(milestoneScenery.rectTransform,.5f,.5f,.5f,.5f,
+                0f,0f,panelW-25f,panelH-28f);
+            Place(milestoneVignette.rectTransform,.5f,.5f,.5f,.5f,
+                0f,0f,panelW-24f,panelH-26f);
+            UpdateSceneryCrop();
             Place(header.rectTransform,.5f,1f,.5f,1f,0,-8f,panelW-64f,40f);
             Place(subhead.rectTransform,.5f,1f,.5f,1f,0,-49f,panelW-44f,26f);
             Place((RectTransform)closeButton.transform,1f,1f,1f,1f,-8f,-8f,48f,48f);
