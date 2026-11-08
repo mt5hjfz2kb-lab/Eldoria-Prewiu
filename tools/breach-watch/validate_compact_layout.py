@@ -65,7 +65,7 @@ def check(size:tuple[int,int]):
         place("mission",m,125,min(182,w*.45),80)
         place("breach",w*.52-17,84,34,34)
         for i in range(3):
-            place("disabled seal"+str(i),m,h-338+i*53,49,49)
+            place("disabled seal"+str(i),m,h-306+i*45,37,37)
         navsize,gap=49,14
         navw=5*navsize+4*gap
         navtop=h-100
@@ -97,7 +97,7 @@ def check(size:tuple[int,int]):
         place("mission",m,102,225,83)
         place("breach",w*.49-17,11,34,34)
         for i in range(3):
-            place("disabled seal"+str(i),m,h-179+i*48,43,43)
+            place("disabled seal"+str(i),m,h-165+i*44,37,37)
         navsize,gap=55,15
         navw=5*navsize+4*gap
         navtop=h-78
