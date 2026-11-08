@@ -714,6 +714,11 @@ namespace Eldoria.UI.RoyalGold.V2
             var s=gateway.Snapshot();
             if(destination==Destination.Vigilants&&!EarlyRetentionRules.VigilantsUnlocked(s))return;
             if(destination==Destination.Scouts&&!EarlyRetentionRules.ScoutsUnlocked(s))return;
+            // Only one full-screen interaction at a time. Any earned
+            // reward stays saved if an incoming kingdom room closes its
+            // optional ceremony.
+            if(dailyTreasures!=null && dailyTreasures.IsOpen)
+                dailyTreasures.Close();
             OpenDestination=destination;
             scenicDepth?.SetScene(destination==Destination.Scouts?
                 RoyalGoldV3LayeredFinish.Scene.Scouts:
