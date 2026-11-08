@@ -3,9 +3,10 @@ const fs = require('fs');
 const {execFileSync} = require('child_process');
 const {webkit, chromium} = require('playwright');
 const engine = process.env.QA_ENGINE || 'webkit';
+const variant = process.env.QA_VARIANT || 'unchanged';
 const out = process.env.QA_OUT || 'webkit-residency';
 fs.mkdirSync(out, {recursive:true});
-const report = {engine, platform:process.platform, arch:process.arch, passed:false,
+const report = {engine, variant, platform:process.platform, arch:process.arch, passed:false,
   scope:'Published mobile5; desktop engine comparison, NOT physical iPhone', samples:[], errors:[], navigations:[]};
 const write = () => fs.writeFileSync(out+'/report.json', JSON.stringify(report,null,2));
 const log = event => fs.appendFileSync(out+'/events.jsonl', JSON.stringify({at:new Date().toISOString(),...event})+'\n');
@@ -23,8 +24,25 @@ function processes() {
     browser=await ({webkit,chromium}[engine]).launch({headless:true});
     report.version=browser.version();
     const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});
-    await context.addInitScript(()=>{
+    await context.addInitScript(({variant})=>{
       window.__growth=[];
+      window.__glCalls=[];
+      const remember=(name,args)=>{
+        const a=Array.from(args).map(v=>typeof v==='number'||typeof v==='boolean'||typeof v==='string'?v:(v?.byteLength!==undefined?{byteLength:v.byteLength}:String(v)));
+        window.__glCalls.push({at:performance.now(),name,args:a});
+        if(window.__glCalls.length>50)window.__glCalls.shift();
+      };
+      const proto=WebGL2RenderingContext.prototype;
+      if(variant==='astc-disabled'){
+        const ext=proto.getExtension;
+        proto.getExtension=function(name){return /compressed_texture_astc/i.test(name)?null:ext.call(this,name);};
+        const supported=proto.getSupportedExtensions;
+        proto.getSupportedExtensions=function(){return supported.call(this)?.filter(x=>!/compressed_texture_astc/i.test(x));};
+      }
+      for(const name of ['compressedTexImage2D','texImage2D','texStorage2D','bufferData','compileShader','linkProgram','drawElements','drawArrays']){
+        const original=proto[name];
+        proto[name]=function(...args){remember(name,args);return original.apply(this,args);};
+      }
       const getContext=HTMLCanvasElement.prototype.getContext;
       HTMLCanvasElement.prototype.getContext=function(type,...args){
         const gl=getContext.call(this,type,...args);
@@ -32,7 +50,7 @@ function processes() {
           this.__observed=true;
           const ext=gl.getExtension('WEBGL_debug_renderer_info');
           console.log('ELDORIA_ACTUAL_GL '+JSON.stringify({at:performance.now(),astc:!!gl.getExtension('WEBGL_compressed_texture_astc'),renderer:gl.getParameter(ext?ext.UNMASKED_RENDERER_WEBGL:gl.RENDERER),uniformBindings:gl.getParameter(gl.MAX_UNIFORM_BUFFER_BINDINGS),attributes:gl.getContextAttributes()}));
-          this.addEventListener('webglcontextlost',e=>console.error('ELDORIA_CONTEXT_LOST '+JSON.stringify({at:performance.now(),statusMessage:e.statusMessage})),{once:true});
+          this.addEventListener('webglcontextlost',e=>console.error('ELDORIA_CONTEXT_LOST '+JSON.stringify({at:performance.now(),statusMessage:e.statusMessage,lastCalls:window.__glCalls})),{once:true});
         }
         return gl;
       };
@@ -43,7 +61,7 @@ function processes() {
         try {const ret=original.call(this,pages);x.after=this.buffer.byteLength;return ret;}
         catch(e){x.error=String(e);throw e;}
       };
-    });
+    },{variant});
     page=await context.newPage();
     page.on('console',m=>log({type:'console',level:m.type(),text:m.text()}));
     page.on('pageerror',e=>{report.errors.push(String(e));log({type:'pageerror',text:String(e)});write();});
