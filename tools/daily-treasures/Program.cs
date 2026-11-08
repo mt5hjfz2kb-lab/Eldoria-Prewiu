@@ -397,6 +397,32 @@ internal static class Program
                 }
             }
         }
+        foreach(float unusedUv in new[]{0f,.08f,.22f,.65f,1f})
+        {
+            for(int frame=0;frame<=100;frame++)
+            {
+                float seconds=frame*.047f;
+                foreach(bool vertical in new[]{false,true})
+                {
+                    float delta=DailyTreasureStageDirection.SafePainterlyDrift(
+                        seconds,unusedUv,vertical);
+                    True(!float.IsNaN(delta)&&!float.IsInfinity(delta),
+                        "actual painted scenery motion must be finite");
+                    True(Math.Abs(delta)<=unusedUv*.13001f+.000001f,
+                        "scenery remains within authored image UV margin");
+                    float originalCenter=unusedUv*.5f;
+                    True(originalCenter+delta>=-.00001f &&
+                         originalCenter+delta<=unusedUv+.00001f,
+                         "never sample repeated/empty outside of actual illustrated landmark");
+                }
+            }
+        }
+        bool invalidPainterlySize=false;
+        try{DailyTreasureStageDirection.Compose("milestone:hero:lyra",
+            float.PositiveInfinity,840f);}
+        catch(ArgumentOutOfRangeException){invalidPainterlySize=true;}
+        True(invalidPainterlySize,
+            "invalid or infinite native viewport cannot corrupt hero stage");
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");
     }
 }
