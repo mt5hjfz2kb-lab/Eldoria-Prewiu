@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T15:56:41.837Z",
+  "updated_at": "2026-11-08T17:32:18.392Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6696,11 +6696,9 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 21,
+      "ownership_revision": 22,
       "write_scope_released": false,
       "phase": "BREACHWATCH_NATIVE_EXACT_HEAD_PREMIUM_FIRST_SCREEN_CAPTURE",
       "next": "Run Unity 6000.3.23f1 on exact PR173 head, inspect eight true PNGs and correct visual/functional flaws; avoid merge and published release until approval.",
@@ -6763,15 +6761,10 @@
         }
       ],
       "runner_priority_handoff": {
-        "status": "RETURNED_AFTER_RELEASE_NATIVE_SUCCESS",
-        "returned_at": "2026-11-07T18:54:22.588Z",
-        "from": "valoria-master-plan-layered-construction-20261016",
-        "completed_runs": [
-          42391824345,
-          42395466213,
-          42396852832,
-          42395390748
-        ]
+        "status": "TEMPORARILY_LENT_TO_BETA_OWNER_AUTHORIZED",
+        "at": "2026-11-08T16:53:20.268Z",
+        "to": "eldoria-private-beta-i-v-20261107",
+        "reason": "Owner explicitly authorized priority transfer in this session to diagnose and fix physical iPhone beta failure. Preserve UI owner, source and PR173. No jobs or processes cancelled."
       },
       "last_verified": {
         "source_sha": "1cea977b8ec67495bbbcbc7b31d38425e352c10c",
@@ -6794,9 +6787,9 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-beta-pages-20261107",
+      "owner": "codex-pr179-stability-2ea88ced1c46",
       "ownership_state": "claimed",
-      "ownership_revision": 11,
+      "ownership_revision": 13,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6815,14 +6808,16 @@
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "MOBILE6_PHYSICAL_FAILURE_DIAGNOSIS",
+      "phase": "COMPACT_TERRAIN_NATIVE_PARITY_OWNER_PRIORITY",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Correlate actual beta6 phone diagnostics and inspect startup memory/asset residency; no repeated same-build certification.",
+      "next": "Preserve run42503628688. Fix discovered mismatch: clean isolated clone is checked against warm dirty-input audit. Validate clean audit separately; then native parity, WebGL and memory diagnosis.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6966,16 +6961,26 @@
       "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "not_required_for_current_fix",
-        "reason": "Reproduced compressed-texture GPU crash on hosted macOS; narrow cubemap candidate built and verified without Windows lease. No shared Unity resource needed for current publication."
-      }
+        "status": "granted_by_owner",
+        "at": "2026-11-08T16:53:20.268Z",
+        "return_to": "eldoria-forja-oscura-visual-proof-20261107"
+      },
+      "ownership_history": [
+        {
+          "previous_owner": "chatgpt-beta-pages-20261107",
+          "from_revision": 12,
+          "to_revision": 13,
+          "to_owner": "codex-pr179-stability-2ea88ced1c46",
+          "reason": "User explicitly requests continuing PR179 stability repair in this session. Preserve running native run42503628688; no cancellation or duplicate Unity launch."
+        }
+      ]
     },
     {
       "id": "eldoria-daily-treasures-20261108",
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 4,
+      "ownership_revision": 5,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -6999,23 +7004,28 @@
       ],
       "resources": [],
       "budget_eur": 0,
-      "phase": "DOMAIN_VERIFIED_NATIVE_ART_IMPORT_AND_UNITY_PENDING",
+      "phase": "NINE_ORIGINAL_SPRITES_IMPORTED_SOURCE_CI_GREEN_NATIVE_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.",
-      "next": "105 calendar tests + 82 real gateway tests + 8 layouts PASS. Import the two already-generated owner-directed 512px PNG resources with exact SHA256, obtain separate Vigilia workstream Windows handoff, render 12 real Unity captures and complete full scene/device/art review. Keep PR181 DRAFT, no merge/release.",
+      "next": "Nine original premium PNG assets now versioned on PR181 (closed/open chest, main/card/button 9-sliced textured frames, wood/stone/food/hourglass), exact SHA+Unity GUID validated by Ubuntu tests. Windows still exclusively held by the beta PR179; do not interrupt. Once released and formally claimed: request real Unity native run, inspect 12 screenshots/16 pointer events/4 verified awards plus game-scene and physical devices. Gate on reference-level visuals; no merge/release without approval.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
       "last_verified": {
         "source": "feature/eldoria-daily-treasures-20261108",
-        "run_id": 42497233697,
-        "result": "SUCCESS_CSHARP_DOMAIN_AND_SOURCE_ONLY",
-        "rule_assertions": 105,
+        "commit": "56dd97fe1a0df15d9c0c877d38c9c260a17f429c",
+        "run_id": 42505290366,
+        "result": "SUCCESS_RULES_GATEWAY_SOURCE_AND_NINE_ART_ASSETS",
+        "rule_assertions": 4118,
         "real_gateway_assertions": 82,
         "layout_viewports": 8,
-        "art_source_exported_outside_git": true,
-        "art_source_imported_in_repo": false,
+        "art_source_imported_in_repo": true,
+        "art_assets": 9,
+        "native_component_proof_prepared": true,
+        "native_pointer_interactions_required": 16,
+        "native_screen_captures_required": 12,
         "unity_native_pass": false,
         "art_approved": false,
+        "full_game_playtested": false,
         "webgl_release": false
       }
     }
