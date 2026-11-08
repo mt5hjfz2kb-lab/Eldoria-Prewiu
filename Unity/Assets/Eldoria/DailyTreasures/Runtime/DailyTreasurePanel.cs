@@ -1249,7 +1249,7 @@ namespace Eldoria.DailyTreasures
             // Skip stays away from the receipt and is a genuine >=44px hit target.
             if(eventStage && stage.SideBySide)
                 Place((RectTransform)skipButton.transform,
-                    .5f,1f,.5f,1f,stage.SceneX,-55f,100f,45f);
+                    .5f,1f,.5f,1f,stage.SceneX,-66f,100f,45f);
             else
                 Place((RectTransform)skipButton.transform,
                     1f,1f,1f,1f,-10f,-60f,100f,45f);

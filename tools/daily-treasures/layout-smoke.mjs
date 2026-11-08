@@ -197,7 +197,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   const banner=rect(portrait?-pw*.10:-.247*pw,
     ph*.405,Math.min(pw*.52,302),38);
   const skip=portrait?rect(pw/2-60,ph/2-82.5,100,45):
-    rect(-.247*pw,ph/2-77.5,100,45);
+    rect(-.247*pw,ph/2-88.5,100,45);
   assert.ok(noOverlap(banner,skip),
     `${w}x${h}: milestone title overlaps the Skip control`);
   assert.ok((1-.45)*(1-.36)>.34,
