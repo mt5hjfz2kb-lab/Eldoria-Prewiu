@@ -357,6 +357,10 @@ namespace Eldoria.BreachWatch
             actionLabel=Label(actionButton.transform,"Real action title",17,TextAnchor.MiddleCenter,TextIvory,true);
             Fill(actionLabel.rectTransform,6);
             buttonRow=Rect("Five standalone stone navigation emblems",uiRoot);
+            var navLine=Rect("Subtle sculpted copper linkwork / no bottom HUD bar",buttonRow);
+            Fill(navLine);
+            var line=navLine.gameObject.AddComponent<BreachWatchNavFiligree>();
+            line.raycastTarget=false;
             for(int i=0;i<5;i++)
             {
                 int index=i;var rt=BuildButton(buttonRow,navLabels[i],navIcons[i],()=>Navigate(index),BreachWatchPlate.PlateType.Navigation);
