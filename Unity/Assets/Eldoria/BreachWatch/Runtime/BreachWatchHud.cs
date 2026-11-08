@@ -223,6 +223,14 @@ namespace Eldoria.BreachWatch
         {
             var p=rect.gameObject.AddComponent<BreachWatchPlate>();p.Type=type;p.raycastTarget=false;return p;
         }
+        void AddBevel(RectTransform parent,bool accent=false)
+        {
+            var carved=Rect("Independent forged copper surface trim",parent);
+            Fill(carved);
+            var trim=carved.gameObject.AddComponent<BreachWatchBevelTrim>();
+            trim.Highlight=accent;
+            trim.raycastTarget=false;
+        }
         BreachWatchGlyph Glyph(Transform parent,string name,BreachWatchGlyph.Sigil symbol)
         {
             var rect=Rect(name,parent);var g=rect.gameObject.AddComponent<BreachWatchGlyph>();
@@ -281,7 +289,9 @@ namespace Eldoria.BreachWatch
             var veil=atmosphere.gameObject.AddComponent<BreachWatchAtmosphere>();
             veil.raycastTarget=false;
             // Asymmetrical stone architecture instead of a header/footer re-skin.
-            identity=Rect("Identity / basalt crest",uiRoot);Plate(identity,BreachWatchPlate.PlateType.Basalt);
+            identity=Rect("Identity / basalt crest",uiRoot);
+            Plate(identity,BreachWatchPlate.PlateType.Basalt);
+            AddBevel(identity,true);
             // The owner-approved compact reference has NO red top banner.
             // Independent round carved crest replaces the obsolete banner.
             identityCrest=Rect("Independent circular realm crest",identity);
@@ -296,7 +306,9 @@ namespace Eldoria.BreachWatch
             resourceRow=Rect("Separate resource stones",uiRoot);
             for(int i=0;i<3;i++)
             {
-                resourceChips[i]=Rect("Resource "+i,resourceRow);Plate(resourceChips[i],BreachWatchPlate.PlateType.Resource);
+                resourceChips[i]=Rect("Resource "+i,resourceRow);
+                Plate(resourceChips[i],BreachWatchPlate.PlateType.Resource);
+                AddBevel(resourceChips[i]);
                 var picture=Rect("True illustrated resource",resourceChips[i]);
                 resourceIllustrations[i]=picture.gameObject.AddComponent<Image>();
                 resourceIllustrations[i].sprite=Resources.Load<Sprite>(
@@ -311,7 +323,9 @@ namespace Eldoria.BreachWatch
             centerMark=Rect("Breach witness sigil",uiRoot);Plate(centerMark,BreachWatchPlate.PlateType.Obsidian);
             var central=Glyph(centerMark,"Stone fracture",BreachWatchGlyph.Sigil.Breach);
             Fill((RectTransform)central.transform,4);central.Ink=Copper;
-            objective=Rect("Chapter side tablet",uiRoot);Plate(objective,BreachWatchPlate.PlateType.Basalt);
+            objective=Rect("Chapter side tablet",uiRoot);
+            Plate(objective,BreachWatchPlate.PlateType.Basalt);
+            AddBevel(objective,true);
             var objectiveSeal=Glyph(objective,"Chapter stone rune",BreachWatchGlyph.Sigil.Breach);
             objectiveSeal.Ink=Copper;
             At((RectTransform)objectiveSeal.transform,12,7,24,24);
