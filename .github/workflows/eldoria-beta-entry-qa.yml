@@ -1,5 +1,4 @@
-name: Eldoria beta real entry and reload QA
-# Phone pixel ratio; documented Unity Quit before reopen. Raw reload is NOT certified.
+name: Eldoria recovered candidate actual browser verification
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -10,58 +9,128 @@ permissions:
   actions: read
 concurrency:
   group: eldoria-beta-entry-qa
-  cancel-in-progress: true
+  cancel-in-progress: false
+env:
+  CANDIDATE_REVISION: native325-staged4
 jobs:
-  entry:
+  package:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            for(let n=0;n<120;n++){
+              const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42474108636})).data;
+              if(r.head_sha!=='2376de0f56d7e9eef984170324176674f1552eb9')throw Error('Unexpected package source');
+              const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:42474108636})).data.jobs;
+              const p=jobs.find(j=>j.name==='package');
+              if(p?.status==='completed'){
+                if(p.conclusion!=='success')throw Error('Package provenance or size gate failed');
+                return;
+              }
+              await new Promise(resolve=>setTimeout(resolve,15000));
+            }
+            throw Error('Exact package incomplete');
+  browser:
+    needs: package
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - name: Recover installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Installed Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: beta-structural-browser-tools
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: beta-structural-browser-live
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42474108636
+          github-token: ${{ github.token }}
+          name: mobile-candidate-site
+          path: beta-structural-browser-${{ github.run_id }}/site/mobile
+      - name: Run actual browser with hardware renderer and verify entry persistence
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $r=Get-Content beta-structural-browser-live/pipeline/active-workstreams.json -Raw|ConvertFrom-Json
+          $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].ownership_revision -ne 8){throw 'Native/browser lease changed'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy'}
+          $browser=@((Join-Path $env:ProgramFiles 'Google/Chrome/Application/chrome.exe'),(Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) 'Microsoft/Edge/Application/msedge.exe'),(Join-Path $env:LOCALAPPDATA 'Google/Chrome/Application/chrome.exe'))|Where-Object {Test-Path $_}|Select-Object -First 1
+          if(-not $browser){throw 'Installed hardware browser unavailable'}
+          $env:VALORIA_CHROMIUM_EXECUTABLE=$browser
+          $dependencies=Join-Path $env:RUNNER_TEMP "beta-browser-deps-$env:GITHUB_RUN_ID"
+          npm install --prefix $dependencies --no-save playwright@1.55.0 pngjs@7.0.0
+          if($LASTEXITCODE -ne 0){throw 'Browser dependencies failed'}
+          $env:NODE_PATH=Join-Path $dependencies 'node_modules'
+          $work=Join-Path $env:GITHUB_WORKSPACE "beta-structural-browser-$env:GITHUB_RUN_ID"
+          if(Get-NetTCPConnection -LocalPort 18765 -State Listen -ErrorAction SilentlyContinue){throw 'Chosen local server port already in use'}
+          $node=(Get-Command node.exe).Source
+          $serverScript=Join-Path $env:GITHUB_WORKSPACE 'beta-structural-browser-tools/tools/eldoria-private-beta/qa_static_server.cjs'
+          $server=Start-Process $node -ArgumentList @(('"'+$serverScript+'"'),('"'+(Join-Path $work 'site')+'"'),'18765') -PassThru -RedirectStandardOutput (Join-Path $work 'http.log') -RedirectStandardError (Join-Path $work 'http-error.log')
+          try {
+            $env:QA_URL='http://127.0.0.1:18765/mobile/?eldoria_diag=1'
+            $env:QA_REVISION=$env:CANDIDATE_REVISION
+            $env:QA_OUT=Join-Path $work 'qa-structural'
+            $ok=$false
+            for($i=0;$i -lt 20;$i++){
+              try {$null=Invoke-WebRequest $env:QA_URL -UseBasicParsing;$ok=$true;break}catch{Start-Sleep 1}
+            }
+            if(-not $ok){throw 'Local candidate server failed'}
+            Push-Location $work
+            try {
+              node "$env:GITHUB_WORKSPACE/beta-structural-browser-tools/tools/eldoria-private-beta/qa_structural.cjs"
+              if($LASTEXITCODE -ne 0){throw 'Sustained structural browser verification failed'}
+              node "$env:GITHUB_WORKSPACE/beta-structural-browser-tools/tools/eldoria-private-beta/qa_entry.cjs"
+              if($LASTEXITCODE -ne 0){throw 'Real entry/reload verification failed'}
+            } finally {Pop-Location}
+          } finally {if(-not $server.HasExited){Stop-Process -Id $server.Id}}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-candidate-evidence
+          path: |
+            beta-structural-browser-${{ github.run_id }}/qa-structural/
+            beta-structural-browser-${{ github.run_id }}/qa-entry/
+            beta-structural-browser-${{ github.run_id }}/http*.log
+          retention-days: 14
+  visible-save:
+    needs: browser
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
-      - name: Wait for exact independently validated candidate
-        uses: actions/github-script@v7
-        with:
-          script: |
-            for(let n=0;n<120;n++){
-              const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42421746562})).data;
-              if(r.head_sha!=='a202f0d8516b336d2d027645b777245d8ad4ca00')throw Error('Unexpected source');
-              if(r.status==='completed'){
-                if(r.conclusion!=='success')throw Error('Candidate baseline QA did not pass');
-                return;
-              }
-              await new Promise(resolve=>setTimeout(resolve,15000));
-            }
-            throw Error('Candidate completion timeout');
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42421746562
-          name: mobile-candidate-site
-          github-token: ${{ github.token }}
-          path: site/mobile
-      - name: Install browser
+          name: mobile-candidate-evidence
+          path: evidence
+      - name: Verify player name survives actual reload on rendered game
         run: |
-          npm install --no-save playwright@1.55.0 && npx playwright install --with-deps chromium
+          sudo apt-get update -qq
           sudo apt-get install -y tesseract-ocr
           python -m pip install Pillow==13.0.0
-      - name: Start exact candidate
-        run: |
-          python -m http.server 8765 --bind 127.0.0.1 --directory site > /tmp/entry-server.log 2>&1 &
-          for n in $(seq 1 15); do
-            if curl -fsS http://127.0.0.1:8765/mobile/ >/dev/null; then exit 0; fi
-            sleep 1
-          done
-          exit 1
-      - name: Enter nickname using real UI and verify persisted state after sustained play
-        timeout-minutes: 10
-        run: |
-          node --check tools/eldoria-private-beta/qa_entry.cjs
-          node tools/eldoria-private-beta/qa_entry.cjs
-          python tools/eldoria-private-beta/verify_entry_name.py qa-entry/03-reloaded.png
+          python tools/eldoria-private-beta/verify_entry_name.py evidence/qa-entry/03-reloaded.png
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile-entry-evidence
-          path: qa-entry/
-          retention-days: 14
+          name: structural-name-verification
+          path: evidence/qa-entry/
+
+# Identical-pixel texture reuse; keep earlier browser evidence running independently.
