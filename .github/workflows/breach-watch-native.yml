@@ -15,6 +15,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       authorized: ${{ steps.check.outputs.authorized }}
+      revision: ${{ steps.check.outputs.revision }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,8 +33,8 @@ jobs:
           const d=JSON.parse(fs.readFileSync('live-main/pipeline/active-workstreams.json','utf8'));
           const w=d.active.find(x=>x.id==='eldoria-forja-oscura-visual-proof-20261107');
           const holders=d.active.filter(x=>x.ownership_state==='claimed'&&(x.resources||[]).includes('windows-runner-heavy'));
-          const ok=!!w&&holders.length===1&&holders[0]===w&&w.owner==='chatgpt-vigilia-20261108'&&w.ownership_revision===20&&w.ownership_state==='claimed'&&w.branch==='feature/forja-oscura-native-proof-20261107';
-          fs.appendFileSync(process.env.GITHUB_OUTPUT,'authorized='+(ok?'true':'false')+'\n');
+          const ok=!!w&&holders.length===1&&holders[0]===w&&w.owner==='chatgpt-vigilia-20261108'&&w.ownership_revision>=21&&w.ownership_state==='claimed'&&w.branch==='feature/forja-oscura-native-proof-20261107';
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'authorized='+(ok?'true':'false')+'\nrevision='+(w?.ownership_revision??0)+'\n');
           console.log(ok?'BREACHWATCH_EXCLUSIVE_OWNER_PASS':'BREACHWATCH_NO_OWNER_WINDOWS_SKIPPED');
           JS
   native:
@@ -60,6 +61,7 @@ jobs:
         shell: powershell
         env:
           GH_TOKEN: ${{ github.token }}
+          LEASE_REVISION: ${{ needs.owner-preflight.outputs.revision }}
         run: |
           $ErrorActionPreference='Stop'
           $headers=@{Accept='application/vnd.github+json';Authorization="Bearer $env:GH_TOKEN";'User-Agent'='Eldoria-BreachWatch'}
@@ -68,7 +70,7 @@ jobs:
           $holders=@($registry.active | Where-Object {$_.ownership_state -eq 'claimed' -and @($_.resources) -contains 'windows-runner-heavy'})
           if($holders.Count -ne 1 -or $holders[0].owner -ne 'chatgpt-vigilia-20261108' -or
              $holders[0].id -ne 'eldoria-forja-oscura-visual-proof-20261107' -or
-             $holders[0].ownership_revision -ne 20){throw 'Native lease moved; fail closed'}
+             [string]$holders[0].ownership_revision -ne $env:LEASE_REVISION){throw 'Native lease moved; fail closed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied; do not interfere'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not found'}
           $version=& $env:UNITY_EDITOR_PATH -version
