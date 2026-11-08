@@ -36,7 +36,7 @@ namespace Eldoria.BreachWatch
             bool isolatedMedallion = plateType==PlateType.Navigation || plateType==PlateType.Selected;
             bool isolatedBanner = plateType==PlateType.Banner;
             type = isolatedMedallion || isolatedBanner ? Image.Type.Simple : Image.Type.Sliced;
-            preserveAspect = isolatedMedallion;
+            preserveAspect = isolatedMedallion || isolatedBanner;
             color = plateType==PlateType.Selected ? new Color(1f,.81f,.67f,1f) : Color.white;
         }
     }
