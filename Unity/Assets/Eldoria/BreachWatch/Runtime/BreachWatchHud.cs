@@ -32,7 +32,7 @@ namespace Eldoria.BreachWatch
         readonly List<RaycastResult> pointerHits = new List<RaycastResult>();
         readonly Dictionary<Camera,int> originalCameraMasks = new Dictionary<Camera,int>();
         float originalAlpha;
-        Font font, boldFont;
+        Font font, boldFont, bodyFont, bodyBoldFont;
         RectTransform uiRoot;
         RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark;
         RectTransform[] resourceChips = new RectTransform[3];
@@ -81,9 +81,11 @@ namespace Eldoria.BreachWatch
         public bool BuildingPortraitExclusive => buildingPortrait && buildingPortrait.RenderedFromIsolatedRealMeshes;
         public float BuildingPortraitDrawnFraction => buildingPortrait ? buildingPortrait.NonBackgroundPixelFraction : 0f;
         public bool HasNativePremiumTypography =>
-            font && boldFont &&
+            font && boldFont && bodyFont && bodyBoldFont &&
             font==Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-Regular") &&
-            boldFont==Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-SemiBold");
+            boldFont==Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-SemiBold") &&
+            bodyFont==Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Regular") &&
+            bodyBoldFont==Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Bold");
         public bool HasTrueResourceIllustrations =>
             resourceIllustrations[0] && resourceIllustrations[0].sprite &&
             resourceIllustrations[0].sprite.name=="wood" &&
@@ -192,7 +194,11 @@ namespace Eldoria.BreachWatch
             // Avoid device-dependent Georgia/Arial substitutions on Android.
             font=Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-Regular");
             boldFont=Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-SemiBold");
+            bodyFont=Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Regular");
+            bodyBoldFont=Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Bold");
             if(!font)font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            if(!bodyFont)bodyFont=font;
+            if(!bodyBoldFont)bodyBoldFont=boldFont;
             if(!font)font=Font.CreateDynamicFontFromOSFont(new[]{"Georgia","Arial"},20);
             uiRoot=Rect("Safe composition",transform);
             Stretch(uiRoot);
@@ -244,11 +250,24 @@ namespace Eldoria.BreachWatch
         {
             var rect=Rect(name,parent);
             var text=rect.gameObject.AddComponent<Text>();
-            text.font=bold && boldFont ? boldFont : font;
+            // The original display font has beautiful hairlines but is too
+            // fragile at 390 physical pixels. Preserve it on large headings;
+            // use screen-optimised Baskerville for actual gameplay information.
+            bool display=name=="Player name" || name=="Real building name";
+            Font regular=display?font:bodyFont;
+            Font heavy=display?boldFont:bodyBoldFont;
+            text.font=bold && heavy ? heavy : regular;
             text.fontSize=size;
             text.alignment=align;
             text.color=tint;
-            text.fontStyle=bold && !boldFont ? FontStyle.Bold : FontStyle.Normal;
+            text.fontStyle=bold && !heavy ? FontStyle.Bold : FontStyle.Normal;
+            if(name=="Compact engraved cost heading" ||
+               name=="Actual chapter" || name=="Real action title")
+            {
+                text.resizeTextForBestFit=true;
+                text.resizeTextMinSize=12;
+                text.resizeTextMaxSize=size;
+            }
             text.horizontalOverflow=HorizontalWrapMode.Wrap;text.verticalOverflow=VerticalWrapMode.Truncate;
             text.supportRichText=false;text.raycastTarget=false;
             var shadow=rect.gameObject.AddComponent<Shadow>();shadow.effectColor=new Color(0,.01f,.01f,.65f);
