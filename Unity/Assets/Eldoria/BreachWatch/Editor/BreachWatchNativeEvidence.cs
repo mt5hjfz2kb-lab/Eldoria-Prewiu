@@ -265,6 +265,32 @@ namespace Eldoria.BreachWatch.Editor
             }
             return marked*100f/pixels.Length;
         }
+        // Pixel-level native visibility test, from the REAL Unity render
+        // output. A RectTransform being active is not proof that its lettering
+        // actually reaches the player's screen.
+        static float ActualBrightGlyphFraction(Color32[] pixels,int width,int height,
+            Camera camera,Text label)
+        {
+            if(!label || !label.gameObject.activeInHierarchy)return 0f;
+            var corners=new Vector3[4];
+            label.rectTransform.GetWorldCorners(corners);
+            Vector2 low=RectTransformUtility.WorldToScreenPoint(camera,corners[0]);
+            Vector2 high=RectTransformUtility.WorldToScreenPoint(camera,corners[2]);
+            int left=Mathf.Clamp(Mathf.FloorToInt(low.x),0,width);
+            int right=Mathf.Clamp(Mathf.CeilToInt(high.x),0,width);
+            int bottom=Mathf.Clamp(Mathf.FloorToInt(low.y),0,height);
+            int top=Mathf.Clamp(Mathf.CeilToInt(high.y),0,height);
+            int total=0,lit=0;
+            for(int y=bottom;y<top;y++)
+            for(int x=left;x<right;x++)
+            {
+                var p=pixels[y*width+x];total++;
+                // Real bright ivory or copper glyphs, not transparent UI.
+                if(p.r>110 && p.g>95 && p.b>65)lit++;
+            }
+            return total<=0?0f:lit/(float)total;
+        }
+
         static Shot RenderNative(BreachWatchHud ui,string root,string selection,int w,int h)
         {
             Camera camera = host.PlayerCamera;
@@ -292,6 +318,22 @@ namespace Eldoria.BreachWatch.Editor
                 RenderTexture.active = rt;
                 image.ReadPixels(new Rect(0,0,w,h),0,0);
                 image.Apply();
+                var actualPixels=image.GetPixels32();
+                // The approved selected-building state must remain readable in
+                // its *real* raster output, not merely inside Unity hierarchy.
+                var allText=ui.GetComponentsInChildren<Text>(true);
+                string[] important=selection=="bastion"
+                    ? new[]{"Real building name","Compact engraved cost heading",
+                        "Real action title","Objective progress"}
+                    :new[]{"Actual chapter","Objective progress"};
+                foreach(string labelName in important)
+                {
+                    var label=allText.FirstOrDefault(t=>t && t.name==labelName);
+                    float visible=ActualBrightGlyphFraction(actualPixels,w,h,camera,label);
+                    Need(visible>=.003f,
+                        "Actual visible ivory/gold text contrast is missing: "+
+                        name+"/"+labelName+" fraction="+visible.ToString("F5"));
+                }
                 File.WriteAllBytes(file,image.EncodeToPNG());
                 Need(new FileInfo(file).Length > 16000, "Unity native PNG incomplete: "+name);
                 Need(ui.IndependentCanvas && ui.LegacyPresentationHidden && ui.HasRealSession,
