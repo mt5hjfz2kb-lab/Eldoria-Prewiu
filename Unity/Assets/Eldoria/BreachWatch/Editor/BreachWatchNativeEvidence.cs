@@ -319,32 +319,6 @@ namespace Eldoria.BreachWatch.Editor
             }
             return marked*100f/pixels.Length;
         }
-        // Pixel-level native visibility test, from the REAL Unity render
-        // output. A RectTransform being active is not proof that its lettering
-        // actually reaches the player's screen.
-        static float ActualBrightGlyphFraction(Color32[] pixels,int width,int height,
-            Camera camera,Text label)
-        {
-            if(!label || !label.gameObject.activeInHierarchy)return 0f;
-            var corners=new Vector3[4];
-            label.rectTransform.GetWorldCorners(corners);
-            Vector2 low=RectTransformUtility.WorldToScreenPoint(camera,corners[0]);
-            Vector2 high=RectTransformUtility.WorldToScreenPoint(camera,corners[2]);
-            int left=Mathf.Clamp(Mathf.FloorToInt(low.x),0,width);
-            int right=Mathf.Clamp(Mathf.CeilToInt(high.x),0,width);
-            int bottom=Mathf.Clamp(Mathf.FloorToInt(low.y),0,height);
-            int top=Mathf.Clamp(Mathf.CeilToInt(high.y),0,height);
-            int total=0,lit=0;
-            for(int y=bottom;y<top;y++)
-            for(int x=left;x<right;x++)
-            {
-                var p=pixels[y*width+x];total++;
-                // Real bright ivory or copper glyphs, not transparent UI.
-                if(p.r>110 && p.g>95 && p.b>65)lit++;
-            }
-            return total<=0?0f:lit/(float)total;
-        }
-
         // Compare two actual Unity GPU renders in the SAME native frame,
         // differing only by whether the selected Text component is enabled.
         // Old "bright pixel" tests could pass on sunlit grass or golden trim
