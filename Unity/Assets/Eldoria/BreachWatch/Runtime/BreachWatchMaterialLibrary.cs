@@ -248,7 +248,9 @@ namespace Eldoria.BreachWatch
                 type==BreachWatchPlate.PlateType.Selected ? "nav_sculpted_medallion" :
                 type==BreachWatchPlate.PlateType.Portrait ? "portrait_forged_iron" :
                 type==BreachWatchPlate.PlateType.Banner ? "valoria_burgundy_banner" :
-                type==BreachWatchPlate.PlateType.Action ? "action_antique_bronze" : null;
+                (type==BreachWatchPlate.PlateType.Action ||
+                 type==BreachWatchPlate.PlateType.Dangerous)
+                    ? "action_antique_bronze" : null;
             if(!string.IsNullOrEmpty(sourceName))
             {
                 sprite=Resources.Load<Sprite>("VigiliaArt/"+sourceName);
