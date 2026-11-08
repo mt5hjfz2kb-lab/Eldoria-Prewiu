@@ -77,6 +77,8 @@ jobs:
           retention-days: 30
           if-no-files-found: error
   discover-cc0-donor:
+    # Original source audited and pinned; do not download the 8MB pack on every proof.
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[breach-donor-review]')
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
