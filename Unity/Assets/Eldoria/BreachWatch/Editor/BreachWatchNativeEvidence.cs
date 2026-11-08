@@ -445,6 +445,16 @@ namespace Eldoria.BreachWatch.Editor
                         " wanted="+label.preferredHeight.ToString("F1")+
                         " available="+label.rectTransform.rect.height.ToString("F1"));
                 }
+                // Only Chapter I gets the owner's Breach subtitle; the
+                // gameplay chapter number and objective stay canonical.
+                var chapterLabel=ui.GetComponentsInChildren<Text>(true)
+                    .FirstOrDefault(q=>q && q.name=="Actual chapter");
+                if(host.City.Gateway.Snapshot().BastionLevel==1)
+                    Need(chapterLabel && chapterLabel.gameObject.activeInHierarchy &&
+                         (host.English
+                            ?chapterLabel.text.Contains("THE BREACH")
+                            :chapterLabel.text.Contains("LA BRECHA")),
+                         "Owner-approved Chapter I / La Brecha identity not readable: "+name);
                 // Verify that the authentic chapter progress is visible
                 // inside its carved tablet, not hidden behind the lower edge.
                 var realProgress=ui.GetComponentsInChildren<Text>(true)
