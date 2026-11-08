@@ -130,6 +130,8 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui.HasRealSession, "New Canvas cannot access existing real game session");
             Need(ui.HasTrueResourceIllustrations,
                 "All three resource icons must be real, recognizable licensed independent sprites");
+            Need(ui.HasNativePremiumTypography,
+                "Vigilia must use its own legally bundled Garamond text on all devices");
             var expectedDestinations=new []{"REINO","RECURSOS","EJÉRCITO","EXPLORAR","HÉROES"};
             Need(ui.NavButtons.Count==5 &&
                  ui.NavButtons.Select(x=>x.name).SequenceEqual(expectedDestinations),
