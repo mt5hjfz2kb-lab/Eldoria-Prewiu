@@ -8,7 +8,13 @@
     256,
     427
   ],
-  "png_sha256": "8a8586893f9ad5677be02fcbdeede87669190f3699fdf583416a7d3a9d710776",
+  "png_sha256": "4b325e4a3961d78f4260e33ad8cdc267da929cd35982d4b3897e52b418a2b5f0",
   "guid": "a4fb6c6c38eb4651a5d44acb8fe939da",
+  "bottom_finial_sha256": "0d808806ae40d7366af7862a3da4a98d32bbcc74ddaa39c7537f4788d10e1d0d",
+  "bottom_finial_guid": "8795dc9d3c1d4013ae844c8efa179d0a",
+  "bottom_finial_size": [
+    60,
+    50
+  ],
   "art_approval": "pending real Unity exact-head screenshot review"
 }
