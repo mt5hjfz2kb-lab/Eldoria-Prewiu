@@ -78,3 +78,12 @@ Se abandonó el pitido sencillo y ahora hay tres sonidos originales producidos d
 
 ## Regla de aceptación para cada escena
 No basta con un tintado de color. El test de componente deberá comprobar `HasMilestoneScenery`/nombre de la textura para Lyra, Exploradores y Vigilantes, así como la ausencia deliberada de paisaje falso para Bastión. El revisor humano deberá comparar las capturas en vertical/horizontal, legibilidad, cofre y entorno pintado, contraste y animación. Las 52 capturas actuales del plan son **objetivo de test, no imágenes ya obtenidas**.
+
+## Corrección preventiva de una causa real de fallo nativo — ensamblados Editor / Player
+La PR tenía `Eldoria.DailyTreasures.UI.asmdef` en la carpeta madre, con `Editor/DailyTreasureNativeEvidence.cs` debajo. Según la documentación oficial Unity 6000, al crear un `.asmdef` superior la carpeta especial `Editor` **deja de aislar automáticamente** sus scripts de la DLL de producción. Sin un ensamblado Editor propio, una referencia a `UnityEditor` puede contaminar la DLL de Android/WebGL, causar errores de compilación o impedir una captura nativa.
+
+**Implementado:** `Editor/Eldoria.DailyTreasures.Editor.asmdef` con `includePlatforms: ["Editor"]`, dependencias explícitas a `Eldoria.DailyTreasures.UI`, `Eldoria.Domain`, `Eldoria.Application` y `Unity.ugui`, y GUID estable. La comprobación `tools/daily-treasures/check-assembly-isolation.mjs` confirma la separación sin lanzar Unity. El flujo Ubuntu pasa, pero **no equivale a una compilación real del proyecto Unity**.
+
+Referencia técnica: https://docs.unity.com/en-us/engine/6000.0/manual/programming-environment/script-compilation/assembly-definition-files/assembly-definitions-creating
+
+También se sustituyó el checkout Windows de `actions/checkout@v4` (podía caer en descarga completa del repositorio de muchos GB si el runner carecía de Git) por la técnica segura ya utilizada por Vigilia: Git instalado existente, `git fetch --filter=blob:none --depth=1`, checkout sparse exact SHA y exclusión de arte histórico voluminoso. `validate_native_workflow.py` analiza el YAML real y rechaza regresiones de esta protección, además de comprobar las 52 capturas, 56 eventos de puntero y ocho reclamaciones realmente exigidos por el workflow. Pruebas de fuente superadas; todavía falta ejecución nativa por la reserva de Windows.
