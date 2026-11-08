@@ -1,0 +1,6 @@
+{
+  "name": "Eldoria.DailyTreasures.UI",
+  "rootNamespace": "Eldoria.DailyTreasures",
+  "references": ["Eldoria.Domain","Eldoria.Application","Unity.ugui"],
+  "autoReferenced": true
+}
