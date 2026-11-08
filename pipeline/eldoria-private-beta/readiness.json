@@ -86,7 +86,7 @@
     "release_for_external_testers": false,
     "physical_iphone_result": "OWNER_REPORTED_FAILURE: still enters for one second and exits"
   },
-  "updated_at": "2026-11-08T15:55:36.286Z",
+  "updated_at": "2026-11-08T15:59:03.429Z",
   "mobile_candidate_history": [
     {
       "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
@@ -328,7 +328,17 @@
     "physical_iphone_result": {
       "result": "FAIL",
       "owner_observation": "Hace lo mismo que la 5",
-      "cause_confirmed": false
+      "cause_confirmed": false,
+      "evidence": "IMG_5052.jpeg",
+      "visible_build_label": "Diagnóstico · beta 6",
+      "startup_ready_local_time": "16:57:53",
+      "last_visible_event_local_time": "16:57:55",
+      "startup_heap_capacity_mib": 412,
+      "last_visible_event": "grow-request-mib 495",
+      "alive_seconds_visible": 2,
+      "grow_completion_visible": false,
+      "allocation_exception_visible": false,
+      "navigation_event_visible": false
     }
   }
 }
