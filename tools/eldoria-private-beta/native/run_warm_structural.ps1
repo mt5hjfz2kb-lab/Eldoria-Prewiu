@@ -35,6 +35,13 @@ $overlays=@(
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
 )
 $paths=@($overlays)+@($audit.files|ForEach-Object {$_.path})
+# Unity populates URP runtime resource lists during WebGL compilation. Preserve
+# these tracked inputs before any phase, just like ProjectSettings; do not
+# mistake the post-build metadata for an authored runtime-source change.
+$paths+=@(
+ 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/BakedSceneURP.asset',
+ 'Unity/Assets/UniversalRenderPipelineGlobalSettings.asset'
+)
 $paths+=@(Get-ChildItem (Join-Path $Source 'Unity/ProjectSettings') -File -Recurse|ForEach-Object {$_.FullName.Substring($Source.Length+1).Replace('\','/')})
 $paths=@($paths|Sort-Object -Unique)
 $backupRoot=Join-Path $env:GITHUB_WORKSPACE "beta-structural-preserved-inputs-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
