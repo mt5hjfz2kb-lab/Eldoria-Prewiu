@@ -62,6 +62,23 @@ internal static class Program
         True(DailyTreasureRules.Receipt(DailyTreasureRules.ForDay(7,7)).Contains("5 min"),
             "accurate acceleration receipt");
         True(!DailyTreasureRules.TryClaim(null,Date(8),out _),"null save safe");
+        var extreme=new DailyTreasureState{
+            CycleDay=3,LastClaimUtcDay=DailyTreasureRules.UtcDay(Date(8)),
+            ConsecutiveDays=int.MaxValue,TotalClaims=1000
+        };
+        var extremePreview=DailyTreasureRules.Preview(extreme,Date(9));
+        Eq(extremePreview.Streak,1000000,"extreme streak saturates safely");
+        True(DailyTreasureRules.TryClaim(extreme,Date(9),out _),
+            "old invalid high streak must not wrap to negative");
+        Eq(extreme.ConsecutiveDays,1000000,"saturated consecutive days are saved");
+        var exhausted=new DailyTreasureState{
+            CycleDay=6,ConsecutiveDays=6,TotalClaims=int.MaxValue,
+            LastClaimUtcDay=DailyTreasureRules.UtcDay(Date(8))
+        };
+        True(!DailyTreasureRules.CanClaim(exhausted,Date(9)),
+            "fully exhausted total-claims counter never offers a false button");
+        Eq(DailyTreasureRules.Preview(exhausted,Date(9)).IsValid,false,
+            "exhausted streak preview is invalid too");
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");
     }
 }
