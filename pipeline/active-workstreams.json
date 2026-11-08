@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T01:51:24.066Z",
+  "updated_at": "2026-11-08T14:02:27.791Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -13,7 +13,8 @@
       "eldoria-tripo-art-brain-phase2-20261021",
       "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
       "eldoria-aldric-dialogue-bust-20261027",
-      "eldoria-forja-oscura-visual-proof-20261107"
+      "eldoria-forja-oscura-visual-proof-20261107",
+      "eldoria-daily-treasures-20261108"
     ],
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight. | 2026-11-07: owner explicitly authorized separate Forja Oscura UI visual proof, isolated new paths, no edit to held legacy HUD."
   },
@@ -6904,6 +6905,33 @@
         "status": "acquired",
         "purpose": "Read-only browser proof of packaged mobile profile; no Unity source reset"
       }
+    },
+    {
+      "id": "eldoria-daily-treasures-20261108",
+      "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
+      "owner": "chatgpt-daily-treasures-20261108",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "status": "active",
+      "branch": "feature/eldoria-daily-treasures-20261108",
+      "claimed_at": "2026-11-08T14:02:27.791Z",
+      "base_main_sha": "abeddb14dcd8bb7220c89d8bcac1a769e6b69f90",
+      "scope": [
+        "Unity/Assets/Eldoria/DailyTreasures/**",
+        "Unity/Assets/Eldoria/DailyTreasures.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs",
+        "tools/daily-treasures/**",
+        ".github/workflows/daily-treasures-domain.yml",
+        "docs/daily-treasures/**"
+      ],
+      "resources": [],
+      "budget_eur": 0,
+      "phase": "DOMAIN_AND_VISUAL_PILOT",
+      "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.",
+      "next": "Implement pure reward rules and authoritative LocalGateway claim, add reversible presentation and tests in isolated PR. No release or merge until Unity native QA and art approval."
     }
   ],
   "history": [
