@@ -270,7 +270,7 @@ namespace Eldoria.BreachWatch
                     // produced by the genuine URP camera, before the
                     // authored display-only earth background is added.
                     // Never exported in mobile builds.
-                    var proofDir=Path.GetFullPath(Path.Combine(Application.dataPath,
+                    var proofDir=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,
                         "../BreachWatchNativeEvidence"));
                     Directory.CreateDirectory(proofDir);
                     File.WriteAllBytes(Path.Combine(proofDir,
