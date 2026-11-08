@@ -350,7 +350,17 @@ jobs:
           assert 'guid: '+manifest['guid'] in meta
           assert 'spriteBorder: {x: 53, y: 61, z: 53, w: 60}' in meta
           assert 'spritePixelsToUnits: 200' in meta and 'textureType: 8' in meta
-          print('BREACHWATCH_OWNER_EXACT_APPROVED_GOLD_TRIM_ASSET_PASS')
+          # The approved lower gold jewel is intentionally separated
+          # from the nine-sliced frame and cannot cross real CTA text.
+          finial=folder/'owner_bottom_finial.png'
+          raw=finial.read_bytes()
+          assert hashlib.sha256(raw).hexdigest()==manifest['bottom_finial_sha256']
+          assert raw[:8]==bytes([137,80,78,71,13,10,26,10]) and raw[25]==6
+          assert struct.unpack('>II',raw[16:24])==tuple(manifest['bottom_finial_size'])==(60,50)
+          gem_meta=(folder/'owner_bottom_finial.png.meta').read_text()
+          assert 'guid: '+manifest['bottom_finial_guid'] in gem_meta
+          assert 'spriteBorder: {x: 0, y: 0, z: 0, w: 0}' in gem_meta
+          print('BREACHWATCH_OWNER_EXACT_APPROVED_GOLD_TRIM_AND_SEPARATE_FINIAL_PASS')
           PY
       - name: Verify newly authored fully independent nine-slice basalt, brass and burgundy
         shell: bash
@@ -486,7 +496,7 @@ jobs:
           JS
   native:
     needs: [owner-preflight, source-syntax, approved-art-integrity]
-    if: needs.owner-preflight.outputs.authorized == 'true' && !contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]')
+    if: needs.owner-preflight.outputs.authorized == 'true' && !contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') && !contains(github.event.head_commit.message, '[vigilia-owner-gold-border]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 120
     steps:
