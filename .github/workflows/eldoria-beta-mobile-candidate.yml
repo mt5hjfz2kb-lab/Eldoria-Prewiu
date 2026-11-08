@@ -57,18 +57,18 @@ jobs:
             time.sleep(10)
           else:raise RuntimeError('Deduplication verification incomplete')
           PY
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: ${{ env.DEDUP_RUN }}
-          name: deduplicated-bundle-unverified
-          github-token: ${{ github.token }}
-          path: deduplicated
       - uses: actions/checkout@v4
         with:
           sparse-checkout: |
             tools/eldoria-private-beta
             tools/delivery
           persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ env.DEDUP_RUN }}
+          name: deduplicated-bundle-unverified
+          github-token: ${{ github.token }}
+          path: deduplicated
       - uses: actions/download-artifact@v4
         with:
           run-id: ${{ env.NATIVE_RUN }}
