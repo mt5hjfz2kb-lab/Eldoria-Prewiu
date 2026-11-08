@@ -249,6 +249,12 @@ namespace Eldoria.BreachWatch
         }
         void BuildIndependentComponents()
         {
+            // A truly independent world-safe material wash, only 26% dark at
+            // extreme edges and nearly transparent over the playable center.
+            var atmosphere=Rect("Soft volcanic atmosphere / no world replacement",uiRoot);
+            Fill(atmosphere);
+            var veil=atmosphere.gameObject.AddComponent<BreachWatchAtmosphere>();
+            veil.raycastTarget=false;
             // Asymmetrical stone architecture instead of a header/footer re-skin.
             identity=Rect("Identity / basalt crest",uiRoot);Plate(identity,BreachWatchPlate.PlateType.Basalt);
             var banner=Rect("Burgundy command standard / independently authored",identity);
