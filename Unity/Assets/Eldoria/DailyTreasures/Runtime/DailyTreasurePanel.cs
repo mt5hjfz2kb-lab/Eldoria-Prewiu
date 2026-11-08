@@ -821,11 +821,11 @@ namespace Eldoria.DailyTreasures
                     0f,tall?-6f:-3f,tall?49f:shortCard?31f:36f,
                     tall?40f:shortCard?22f:25f);
                 Place(prizeNames[i].rectTransform,.5f,.5f,.5f,.5f,
-                    0f,tall?-14f:shortCard?-6f:-8f,
-                    cardW-8f,shortCard?10f:12f);
+                    0f,tall?-14f:shortCard?-6f:-7.5f,
+                    cardW-8f,tall?12f:shortCard?10f:11f);
                 Place(prizeAmounts[i].rectTransform,.5f,.5f,.5f,.5f,
-                    0f,tall?-31f:shortCard?-19f:-23f,
-                    cardW-8f,tall?20f:shortCard?14f:17f);
+                    0f,tall?-31f:shortCard?-19f:-22f,
+                    cardW-8f,tall?20f:shortCard?14f:16f);
                 prizeAmounts[i].fontSize=tall?20:shortCard?14:17;
                 prizeNames[i].fontSize=tall?12:shortCard?10:11;
             }
