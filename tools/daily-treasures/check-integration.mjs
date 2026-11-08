@@ -72,8 +72,8 @@ assert.match(panel,/SampleForNativeEvidence\(float elapsed\)/);
 assert.match(panel,/PaintCeremonyFrame\(elapsed\)/);
 assert.match(native,/DailyTreasureRevealTimeline\.RevealPeakSeconds/);
 assert.match(native,/"opening"/);
-assert.match(native,/pictures\.Count==24/);
-assert.match(nativeWorkflow,/\$report\.images -ne 24/);
+assert.match(native,/pictures\.Count==28/);
+assert.match(nativeWorkflow,/\$report\.images -ne 28/);
 // PR173's canonical independently rendered Canvas hides the old Royal HUD.
 // Genuine daily UI must relocate to the native safe area or be invisible.
 assert.match(panel,/GameObject\.Find\("VIGILIA \/ independent canvas"\)/);
@@ -89,9 +89,10 @@ assert.doesNotMatch(panel,/new GameObject\([^\n]+typeof\(Canvas\)/);
 // payments, not a screenshot of unearned or hardcoded rewards.
 assert.match(native,/special-day4-calendar/);
 assert.match(native,/special-day4-opening/);
+assert.match(native,/special-day4-received/);
 assert.match(native,/specialAfter\.Resources\.Wood==specialBefore\.Resources\.Wood\+90/);
-assert.match(native,/pictures\.Count==24 && inputChecks==40 && report\.realGatewayClaims==8/);
-assert.match(nativeWorkflow,/\$report\.images -ne 24/);
+assert.match(native,/pictures\.Count==28 && inputChecks==40 && report\.realGatewayClaims==8/);
+assert.match(nativeWorkflow,/\$report\.images -ne 28/);
 assert.match(nativeWorkflow,/\$report\.realGatewayClaims -ne 8/);
 assert.match(nativeWorkflow,/\$report\.graphicalPointerHits -ne 40/);
 assert.match(panel,/reward\.CycleDay==7\?DailyTreasureCeremonyTier\.Legendary/);
