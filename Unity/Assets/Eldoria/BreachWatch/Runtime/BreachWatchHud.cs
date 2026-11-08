@@ -958,9 +958,9 @@ namespace Eldoria.BreachWatch
                 var plate=(RectTransform)actionButton.transform;
                 // The engraved hammer occupies only the first ~24 physical
                 // pixels at this size. A 48-unit inset made the readable
-                // title tiny; 30–40 units preserve the relief *and* allow
+                // title tiny; a 26.5% inset clears the actual source hammer *and* allows
                 // Cormorant text to remain at native font size.
-                float leftInset=Mathf.Clamp(plate.rect.width*.22f,30f,40f);
+                float leftInset=Mathf.Clamp(plate.rect.width*.265f,40f,54f);
                 At(actionLabel.rectTransform,leftInset,3f,
                     Mathf.Max(20f,plate.rect.width-leftInset-7f),
                     Mathf.Max(20f,plate.rect.height-6f));
