@@ -72,16 +72,16 @@ def check(size:tuple[int,int]):
         for i in range(5):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
-        panelw=min(210,w*.48)
-        panely=navtop-294-45
-        context=place("context",w-m-panelw,panely,panelw,294)
+        panelw=min(198,w*.46)
+        panely=navtop-324-45
+        context=place("context",w-m-panelw,panely,panelw,324)
         touch("close",R(context.x+panelw-57,context.y+3,52,52))
-        touch("action",R(context.x+12,context.y+294-50,panelw-24,49))
-        info=R(13,143,panelw-26,43)
-        costlabel=R(13,188,panelw-26,14)
-        costdata=R(15,204,118,24)
-        state=R(13,230,panelw-26,14)
-        action=R(12,244,panelw-24,49)
+        touch("action",R(context.x+12,context.y+324-55,panelw-24,52))
+        info=R(13,149,panelw-26,44)
+        costlabel=R(13,196,panelw-26,21)
+        costdata=R(15,220,panelw-28,28)
+        state=R(13,249,panelw-26,19)
+        action=R(12,269,panelw-24,52)
         assert not info.intersects(costlabel),size
         assert not costlabel.intersects(costdata),size
         assert not costdata.intersects(state),size
@@ -111,16 +111,16 @@ def check(size:tuple[int,int]):
         touch("close",R(context.x+contextw-57,context.y+3,52,52))
         if contexth<305:
             action=R(12,contexth-56,contextw-24,53)
-            costs=R(12,163,contextw-24,25)
-            state=R(12,196,contextw-24,18)
+            costs=R(12,166,contextw-24,24)
+            state=R(12,197,contextw-24,20)
             func=R(114,62,contextw-124,76)
-            heading=R(12,142,contextw-24,15)
+            heading=R(12,141,contextw-24,20)
         else:
             action=R(12,contexth-55,contextw-24,49)
-            costs=R(13,231,contextw-26,27)
-            state=R(13,262,contextw-26,18)
+            costs=R(13,239,contextw-26,30)
+            state=R(13,272,contextw-26,23)
             func=R(13,163,contextw-26,46)
-            heading=R(13,211,contextw-26,16)
+            heading=R(13,212,contextw-26,22)
         touch("action",action)
         assert not func.intersects(heading),size
         assert not heading.intersects(costs),size
@@ -141,8 +141,8 @@ def main():
         'At(identity,margin,11,182,55)',
         'float navSize=56,navGap=11',
         'float navTop=h-100f',
-        'float ph=294f',
-        'At(((RectTransform)actionButton.transform),12,ph-50,pw-24,49)',
+        'float ph=324f',
+        'At(((RectTransform)actionButton.transform),12,ph-55,pw-24,52)',
         'float navSize=55,navGap=15',
         'float navTop=h-78',
         'float pw=h<530f?210f:220f',
