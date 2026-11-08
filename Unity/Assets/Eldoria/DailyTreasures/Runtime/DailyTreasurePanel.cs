@@ -31,6 +31,8 @@ namespace Eldoria.DailyTreasures
         Text header,subhead,claimCaption,resultText,entryCaption;
         readonly Text[] dayHead=new Text[7],dayBody=new Text[7];
         readonly Image[] dayBack=new Image[7],sparks=new Image[18];
+        Image rareDayGlow;
+        bool rareDayAvailable;
         readonly RectTransform[] prizeRects=new RectTransform[4];
         readonly Vector2[] prizeHomes=new Vector2[4];
         Vector2 prizeFlightOrigin;
@@ -303,6 +305,14 @@ namespace Eldoria.DailyTreasures
             CreateGlow();
             entryGlow.sprite=glowSprite;
             entryGlow.color=new Color(1f,.69f,.25f,0f);
+            // The actual seventh-day chest has an understated amber
+            // anticipation effect without an extra downloaded texture.
+            var rareHalo=NewRect("Seventh-day illustrated chest aura / no rays",
+                dayBack[6].transform);
+            rareHalo.SetAsFirstSibling();
+            rareDayGlow=Plate(rareHalo,new Color(1f,.76f,.31f,0f),false);
+            rareDayGlow.sprite=glowSprite;
+            rareDayGlow.preserveAspect=true;
             ambientRect=NewRect("Subtle event-specific atmospheric halo / visual only",ceremony);
             ambient=Plate(ambientRect,Color.clear,false);
             ambient.sprite=glowSprite;
@@ -528,6 +538,9 @@ namespace Eldoria.DailyTreasures
                     dayArtwork[i].color=collected?
                         new Color(.71f,.69f,.64f,.79f):Color.white;
             }
+            rareDayAvailable=reward.IsValid && upcoming==7;
+            if(rareDayGlow)rareDayGlow.color=new Color(1f,.78f,.32f,
+                rareDayAvailable?.26f:.045f);
             claimButton.interactable=reward.IsValid;
             claimCaption.text=reward.IsValid?"RECLAMAR DÍA "+reward.CycleDay:
                 "TRIBUTO YA RECOGIDO · REGRESA MAÑANA";
@@ -837,6 +850,8 @@ namespace Eldoria.DailyTreasures
                         -width*.5f+48f,-11f,73f,57f);
                     if(dayArtwork[i])Place(dayArtwork[i].rectTransform,
                         .5f,.5f,.5f,.5f,-width*.5f+48f,-11f,85f,65f);
+                    if(rareDayGlow)Place(rareDayGlow.rectTransform,
+                        .5f,.5f,.5f,.5f,-width*.5f+48f,-11f,122f,96f);
                     Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
                         38f,-12f,width-116f,Mathf.Max(52f,cellH-39f));
                     dayBody[i].fontSize=15;
@@ -1057,6 +1072,13 @@ namespace Eldoria.DailyTreasures
                     entryNotice.gameObject.SetActive(entryIsAvailable);
                 }
                 return;
+            }
+            if(calendar.gameObject.activeSelf && rareDayGlow)
+            {
+                float gentle=rareDayAvailable?
+                    .22f+.085f*Mathf.Sin(Time.unscaledTime*1.72f):
+                    .045f;
+                rareDayGlow.color=new Color(1f,.78f,.32f,gentle);
             }
             if(!playing && calendar.gameObject.activeSelf && now!=null &&
                 Time.unscaledTime>=nextTick)
