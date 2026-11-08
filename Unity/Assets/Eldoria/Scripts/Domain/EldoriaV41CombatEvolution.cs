@@ -255,7 +255,10 @@ namespace Eldoria.Domain
             {
                 // Preserve the existing progression's proportional stat benefit.
                 // Soldier profiles remain immutable; no new XP curve or coefficients.
-                var hero=Has(own,"aldric")&&Has(own,"lyra")?"aldric+lyra":player.HeroIds[0];
+                // Scale earned mastery from Aldric's original solo baseline
+                // when he fights alongside Lyra. Using both heroes' combined
+                // baseline would dilute the same mastery levels upon pairing.
+                var hero=Has(own,"aldric")?"aldric":player.HeroIds[0];
                 var baseline=SliceRules.Expedition(ToRoster(player),hero);
                 double attack=(baseline.Attack+masteryLevel*4.0)/baseline.Attack;
                 double defense=(baseline.Defense+masteryLevel*3.0)/baseline.Defense;
