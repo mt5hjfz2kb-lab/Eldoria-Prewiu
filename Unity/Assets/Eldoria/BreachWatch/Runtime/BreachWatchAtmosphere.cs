@@ -57,8 +57,8 @@ namespace Eldoria.BreachWatch
             for(int col=0;col<Columns;col++)
             {
                 int first=row*(Columns+1)+col;
-                vh.AddTriangle(first,first+Columns+1,first+1);
-                vh.AddTriangle(first+1,first+Columns+1,first+Columns+2);
+                vh.AddTriangle(first,first+1,first+Columns+1);
+                vh.AddTriangle(first+1,first+Columns+2,first+Columns+1);
             }
         }
     }
