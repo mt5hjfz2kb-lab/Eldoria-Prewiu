@@ -931,6 +931,10 @@ namespace Eldoria.BreachWatch
                     buildingFunction.fontSize=14;
                     buildingCosts.fontSize=14;
                     buildingState.fontSize=14;
+                    // Native 844x390 screenshot exposed an 11.18px
+                    // COSTE DE LA MEJORA caption at 13*.86. Keep readable
+                    // type in the *real* small-landscape viewport.
+                    costHeader.fontSize=14;
                     actionLabel.fontSize=15;
                 }
                 else
