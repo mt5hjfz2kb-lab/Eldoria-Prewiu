@@ -30,6 +30,7 @@ jobs:
             /Unity/Assets/Eldoria/DailyTreasures/
             /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs
             /tools/daily-treasures/
+            /tools/march-capacity/
             /.github/workflows/daily-treasures-native.yml
       - uses: actions/setup-dotnet@v4
         with:
@@ -40,6 +41,8 @@ jobs:
         run: dotnet run --project tools/daily-treasures/Tests.csproj --configuration Release
       - name: Compile and test the real authoritative LocalGateway (no Unity)
         run: dotnet run --project tools/daily-treasures/Gateway.Tests.csproj --configuration Release
+      - name: Recompile global three-march capacity smoke using authoritative DailyTreasureState
+        run: dotnet run --project tools/march-capacity/Smoke.csproj --configuration Release
       - name: Check actual OWNER_I_II economic impact of seven-day and fourteen-day rewards
         run: dotnet run --project tools/daily-treasures/EconomyCandidate.csproj --configuration Release
       - name: Parse original Unity UI, gameplay and chest C# syntax without Unity
