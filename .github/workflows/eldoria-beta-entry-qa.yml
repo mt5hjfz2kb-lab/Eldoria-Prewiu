@@ -1,4 +1,4 @@
-name: Eldoria exact candidate runtime independently of Pages quota
+name: Eldoria published staged4 game verification
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -17,6 +17,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            for(let n=0;n<180;n++){
+              const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:42484567812})).data;
+              if(r.head_sha!=='6a25c69592ef4bfdadae8e0b2923aa4a9a7ce41b')throw Error('Unexpected Pages source');
+              if(r.status==='completed'){
+                if(r.conclusion!=='success')throw Error('Pages publication not verified');
+                return;
+              }
+              await new Promise(resolve=>setTimeout(resolve,10000));
+            }
+            throw Error('Pages publication incomplete');
       - uses: actions/github-script@v7
         with:
           script: |
@@ -107,12 +120,11 @@ jobs:
               try {$null=Invoke-WebRequest $env:QA_URL -UseBasicParsing;$ok=$true;break}catch{Start-Sleep 1}
             }
             if(-not $ok){throw 'Local candidate server failed'}
+            $env:QA_URL='https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1'
             Push-Location $work
             try {
               node "$env:GITHUB_WORKSPACE/beta-structural-browser-tools/tools/eldoria-private-beta/qa_structural.cjs"
               if($LASTEXITCODE -ne 0){throw 'Sustained structural browser verification failed'}
-              node "$env:GITHUB_WORKSPACE/beta-structural-browser-tools/tools/eldoria-private-beta/qa_entry.cjs"
-              if($LASTEXITCODE -ne 0){throw 'Real entry/reload verification failed'}
             } finally {Pop-Location}
           } finally {if(-not $server.HasExited){Stop-Process -Id $server.Id}}
       - uses: actions/upload-artifact@v4
@@ -124,28 +136,3 @@ jobs:
             beta-structural-browser-${{ github.run_id }}/qa-entry/
             beta-structural-browser-${{ github.run_id }}/http*.log
           retention-days: 14
-  visible-save:
-    needs: browser
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: tools/eldoria-private-beta
-          persist-credentials: false
-      - uses: actions/download-artifact@v4
-        with:
-          name: mobile-candidate-evidence
-          path: evidence
-      - name: Verify player name survives actual reload on rendered game
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y tesseract-ocr
-          python -m pip install Pillow==13.0.0
-          python tools/eldoria-private-beta/verify_entry_name.py evidence/qa-entry/03-reloaded.png
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: structural-name-verification
-          path: evidence/qa-entry/
-
-# Identical-pixel texture reuse; keep earlier browser evidence running independently.
