@@ -12,3 +12,5 @@ Workstream-ID: eldoria-forja-oscura-visual-proof-20261107
 2026-11-08 source-only gate: verify restored workflow syntax, exact SHA-256 of 4 CC0 artwork files, stable Unity GUIDs, full C# Roslyn parse; Windows native capture deferred until exclusive beta resource released. Branch remains isolated.
 
 2026-11-08 final isolated pre-native gate: updated responsive panel, panel-cost/state/button overlap rejection, CC0 import, clean workflow and code plus native 3D aspect-preserving framing; rerun complete Ubuntu source/art integrity at exact HEAD. No Windows when private beta owns lease.
+
+2026-11-08: Free CC0 item art inventory, isolated Ubuntu only, zero spend; no game asset promotion until visual/compatibility review. Windows heavy resource remains with PR179.
