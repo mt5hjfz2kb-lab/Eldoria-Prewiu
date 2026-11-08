@@ -269,8 +269,12 @@ namespace Eldoria.BreachWatch
             // The original display font has beautiful hairlines but is too
             // fragile at 390 physical pixels. Preserve it on large headings;
             // use screen-optimised Baskerville for actual gameplay information.
+            // The approved short chapter and objective inscriptions use
+            // original Cormorant stone-lettering, not the wider Baskerville
+            // reading face that made the compact tablet wrap and clip.
             bool display=name=="Player name" || name=="Real building name" ||
-                name=="Compact engraved cost heading";
+                name=="Compact engraved cost heading" ||
+                name=="Actual chapter" || name=="Actual objective";
             Font regular=display?font:bodyFont;
             Font heavy=display?boldFont:bodyBoldFont;
             text.font=bold && heavy ? heavy : regular;
@@ -369,9 +373,11 @@ namespace Eldoria.BreachWatch
             objective=Rect("Chapter side tablet",uiRoot);
             Plate(objective,BreachWatchPlate.PlateType.Basalt);
             AddBevel(objective,true);
-            var objectiveSeal=Glyph(objective,"Chapter stone rune",BreachWatchGlyph.Sigil.Breach);
+            // The chapter's approval reference has a tiny tower crest
+            // attached to the tablet. The open-air Breach sigil is separate.
+            var objectiveSeal=Glyph(objective,"Chapter stone rune",BreachWatchGlyph.Sigil.Castle);
             objectiveSeal.Ink=Copper;
-            At((RectTransform)objectiveSeal.transform,12,7,24,24);
+            At((RectTransform)objectiveSeal.transform,9,9,20,20);
             chapterName=Label(objective,"Actual chapter",15,TextAnchor.MiddleLeft,Copper,true);
             chapterObjective=Label(objective,"Actual objective",17,TextAnchor.UpperLeft,TextIvory);
             chapterProgress=Label(objective,"Objective progress",14,TextAnchor.MiddleLeft,Muted);
@@ -679,7 +685,7 @@ namespace Eldoria.BreachWatch
                 At(centerMark,w*.52f-56,84,112,30);
                 float missionWidth=Mathf.Min(182f,w*.45f);
                 At(objective,margin,125,missionWidth,fullObjective?108f:80f);
-                At(chapterName.rectTransform,35,5,missionWidth-41,20);
+                At(chapterName.rectTransform,31,5,missionWidth-35,20);
                 At(chapterObjective.rectTransform,13,24,missionWidth-22,fullObjective?59:31);
                 At(chapterProgress.rectTransform,13,fullObjective?83:55,missionWidth-22,18);
                 chapterName.fontSize=13;
