@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-07T20:06:00Z",
+  "updated_at": "2026-11-08T01:45:13.196Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -21,10 +21,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
-      "branch": "main",
+      "owner": "chatgpt-vigilants-hero-mastery-integration-20261108",
+      "branch": "fix/vigilants-hero-mastery-integration-20261108",
       "status": "active",
-      "claimed_at": "2026-11-07T13:42:08.184Z",
+      "claimed_at": "2026-11-08T01:45:13.196Z",
       "base_main_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Application/**",
@@ -55,7 +55,7 @@
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "POST_PR163_NATIVE_VALIDATION_COMPLETE_RELEASE_CONTINUES",
+      "phase": "VIGILANTS_HERO_MASTERY_INTEGRATION_20261108",
       "next": "Native work finished: browser42396852832 and corrected UI42395390748 SUCCESS. Dedicated release workstream continues verified artifact publication without Windows.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
@@ -2090,10 +2090,12 @@
           "transferred_at": "2026-11-07T18:54:22.588Z",
           "reason": "Native325, Android22 and complete corrected UI42395390748 finished successfully; return authorized temporary Windows priority to Forja."
         }
+      ,
+        {"owner":"chatgpt-vigilants-hero-mastery-integration-20261108","previous_owner":null,"from_revision":162,"to_revision":163,"claimed_at":"2026-11-08T01:45:13.196Z","reason":"Propietario 08/11/2026 ordena integrar corrección probada de maestría Aldric/Lyra; workstream canónico disponible, se reutiliza trabajo aislado, sin ocupar runner Windows."}
       ],
-      "ownership_revision": 162,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 163,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-05T19:03:44.661Z",
       "delivery_definition": {
@@ -6647,8 +6649,8 @@
     },
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
-      "title": "Forja Oscura — sistema visual modular uGUI y prueba A/B real",
-      "owner": "codex-forja-498cad9fd409",
+      "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
+      "owner": "chatgpt-vigilia-20261108",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6665,21 +6667,24 @@
         "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3BuildingPreview.cs",
-        ".github/workflows/ui-progression-cert.yml"
+        ".github/workflows/ui-progression-cert.yml",
+        "Unity/Assets/Eldoria/BreachWatch/**",
+        "Unity/Assets/Eldoria/BreachWatch.meta",
+        "tools/breach-watch/**",
+        ".github/workflows/breach-watch-native.yml",
+        "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 11,
+      "ownership_revision": 20,
       "write_scope_released": false,
-      "phase": "FORJA_NATIVE_PROOF_AND_CANONICAL_UI_REGRESSION",
-      "next": "Retain 12 native captures, verify canonical UI regression and prepare real visual review.",
+      "phase": "BREACHWATCH_REAL_FIRST_SCREEN_TECH_PASS_ART_REJECTED",
+      "next": "Native first-screen proof completed. Do not expand or merge: replace the provisional flat procedural basalt/glpyhs with original detailed authored independent art components, correct mobile card composition, and repeat genuine Unity QA. Current QA evidence: docs/ui-v3/BREACH_WATCH_FIRST_SCREEN_20261108.md; original UI remains in product.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-07T18:54:22.588Z",
-      "runner_claim_basis": "PR163 merged at 2026-11-07T12:57:46Z; canonical Valoria workstream released at revision 158; previous main native jobs finished; Forja owner claim maintained.",
-      "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained.",
+      "runner_claim_basis": "Owner-directed takeover of the same PR173/workstream; native resource remains exclusively claimed pending fresh Unity proof; no other windows-runner-heavy claimant.",
+      "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
       "art_production_request": "pipeline/art-production-requests/eldoria-forja-oscura-visual-proof-20261107.json",
@@ -6707,6 +6712,30 @@
           "ownership_revision": 7,
           "transferred_at": "2026-11-07T19:48:13.200Z",
           "reason": "Explicit owner takeover in current session; preserve PR173 and failed native evidence, continue without repeating research."
+        },
+        {
+          "owner": "codex-forja-498cad9fd409",
+          "ownership_revision": 11,
+          "transferred_at": "2026-11-07T21:22:18.716Z",
+          "reason": "Owner requests takeover after interface chat froze; preserve PR173 and recover uncommitted painted button/layout fixes. No Forja run active."
+        },
+        {
+          "owner": "codex-forja-171eb21ef5d3",
+          "ownership_revision": 12,
+          "transferred_at": "2026-11-07T21:31:26.535Z",
+          "reason": "Explicit owner-directed continuation after second frozen chat. Preserve PR173, recovered local edits and failed candidate evidence."
+        },
+        {
+          "owner": "codex-forja-55add623b635",
+          "ownership_revision": 18,
+          "transferred_at": "2026-11-07T22:48:19.793Z",
+          "reason": "Owner explicitly requests recovering screenshot chat and continuing Fortaleza; preserve uncommitted source from 55add623b635."
+        },
+        {
+          "owner": "codex-fortaleza-0717a31ed728",
+          "ownership_revision": 19,
+          "transferred_at": "2026-11-08T00:18:00+01:00",
+          "reason": "Owner rejects Fortaleza and explicitly selects Vigilia de la Brecha as a complete independent UI from scratch; take over the same PR173, preserve rejected evidence and build only a native first-screen proof."
         }
       ],
       "runner_priority_handoff": {
@@ -6719,14 +6748,31 @@
           42396852832,
           42395390748
         ]
-      }
+      },
+      "last_verified": {
+        "source_sha": "1cea977b8ec67495bbbcbc7b31d38425e352c10c",
+        "native_run": 42427015492,
+        "native_status": "SUCCESS",
+        "screenshots": 8,
+        "artifact": 13596191419,
+        "independent_canvas": true,
+        "old_canvas_hidden": true,
+        "canonic_bastion_selected": true,
+        "new_navigation_real_pointer_clicks": 1,
+        "safe_preserved": true,
+        "art_approved": false,
+        "android_tested": false,
+        "webgl_tested": false
+      },
+      "runner_released_at": "2026-11-07T23:52:00Z",
+      "runner_release_basis": "Independent BreachWatch proof run 42427015492 completed successfully, exact source 1cea977b8ec67495bbbcbc7b31d38425e352c10c. Eight authentic Unity PNGs and one nav pointer passed; no art approval."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-eldoria-private-beta-20261107",
+      "owner": "chatgpt-beta-pages-20261107",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 8,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6734,16 +6780,27 @@
         "tools/eldoria-private-beta/**",
         ".github/workflows/eldoria-private-beta-freeze.yml",
         "docs/eldoria-private-beta/**",
-        "pipeline/eldoria-private-beta/**"
+        "pipeline/eldoria-private-beta/**",
+        ".github/workflows/eldoria-beta-pages.yml",
+        ".github/workflows/eldoria-beta-mobile-candidate.yml",
+        ".github/workflows/eldoria-beta-native-memory.yml",
+        "Unity/Assets/EldoriaBetaMemoryProbe/**",
+        ".github/workflows/eldoria-beta-entry-qa.yml",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "SAFE_FREEZE_DONE_EXACT_HASH_R2_ACCOUNT_CONNECTION_REQUIRED",
-      "note": "Solo distribución independiente; no modificar Unity ni APK/WebGL del canal de desarrollo. El usuario autorizó la preparación de beta privada; no publicar testers sin QA físico/hosted y sin acceso autorizado a Cloudflare.",
-      "next": "Owner connects Cloudflare account through secure browser or authorized integration. Then deploy private R2/Worker, real QA Worker→Supabase, full instrumented gameplay metrics and physical-device certification. Do not expose testers or alter game while blocked.",
+      "phase": "STRUCTURAL_STARTUP_NATIVE_AB_AND_WEBGL",
+      "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
+      "next": "Run prepared isolated structural native comparison and canonical WebGL build; inspect actual results before browser or owner retry.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6755,13 +6812,66 @@
         "actual_unity_gameplay_events_verified": 0,
         "cloudflare_connected": false,
         "real_hosted_pass": false,
-        "physical_mobile_tested": false,
+        "physical_mobile_tested": "owner reports iPhone/iPad returns to welcome during load; not passed",
         "supabase_beta_event_rows": 0,
-        "distribution_enabled": false,
-        "budget_eur": 0
+        "distribution_enabled": true,
+        "budget_eur": 0,
+        "pages_run": 42414743676,
+        "pages_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/",
+        "pages_deployed": true,
+        "exact_decoded_transport": "PASS framework 441773; code 44206834; data 585377820; hashes and single allocations",
+        "browser_landing": "PASS anonymous",
+        "browser_game_start": "BLOCKED remote browser reports Your browser does not support WebGL",
+        "owner_confirmed_no_back_or_reload": true,
+        "iphone_cause": "not identified; memory pressure hypothesis; no device exception in screenshot",
+        "startup_diagnostic_run": 42415743624,
+        "diagnostic_cache_fix": {
+          "source": "08fb51bb492bb81f89e42c1e59de1ff1ada40287",
+          "run": 42416149076,
+          "visible_label": "Diagnóstico v3",
+          "note": "IMG5041 lacked startup markers; unversioned script cache risk corrected, iPhone crash unresolved"
+        },
+        "payload_audit": {
+          "texture_serialized_bytes": 1089250768,
+          "mesh_serialized_bytes": 231924472,
+          "bundle_uncompressed_bytes": 1354926684,
+          "live_decoded_chunk_hashes": "PASS",
+          "device_observation": "diagnosticv3 progress90 then involuntary boot1second later",
+          "root_cause": "memory pressure hypothesis, not iOS-profile-confirmed",
+          "fix_published": false
+        },
+        "mobile_candidate": {
+          "runtime_run": 42418416629,
+          "deploy_run": 42418899866,
+          "changed_textures": 58,
+          "objects_verified": 54338,
+          "serialized_texture_bytes_saved": 314268436,
+          "physical_iphone": false,
+          "qa_backend_real_insert": true,
+          "actual_unity_gameplay_events": 0
+        },
+        "mobile_candidate3": {
+          "revision": "native325-mobile-material3",
+          "bundle_sha256": "60b43335bb263568dd366faca06ab0d648506dac31024342b1d4edefd8a7c315",
+          "runtime_run": 42421746562,
+          "entry_observation_run": 42423856431,
+          "entry_observed_seconds": 60,
+          "entry_reload_qa_passed": false,
+          "wasm_capacity_bytes": 1394147328,
+          "deploy_run": 42424439267,
+          "live_identity_and_boundary_chunk_hashes": "PASS",
+          "physical_iphone": false,
+          "release_for_external_testers": false,
+          "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/mobile-v3.html"
+        }
       },
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta."
+      "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
+      "resource_request": {
+        "resource": "windows-runner-heavy",
+        "status": "acquired_after_explicit_release",
+        "purpose": "Exact frozen source versus four-file staged-startup overlay, native parity, canonical journey, fresh WebGL; isolated project only"
+      }
     }
   ],
   "history": [
