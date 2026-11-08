@@ -284,6 +284,18 @@ namespace Eldoria.BreachWatch
         {
             var p=rect.gameObject.AddComponent<BreachWatchPlate>();p.Type=type;p.raycastTarget=false;return p;
         }
+        void AddContactShadow(RectTransform surface,float depth,float opacity)
+        {
+            // The carved metal is a physical, raised tablet. Give the actual
+            // UI surface a restrained contact shadow that follows its true
+            // outline, never a huge opaque rectangle covering the city.
+            var shadow=surface.gameObject.AddComponent<Shadow>();
+            shadow.effectColor=new Color(.01f,.008f,.006f,
+                Mathf.Clamp01(opacity));
+            shadow.effectDistance=new Vector2(1f,-depth);
+            shadow.useGraphicAlpha=true;
+        }
+
         void AddBevel(RectTransform parent,bool accent=false)
         {
             var carved=Rect("Independent forged copper surface trim",parent);
@@ -370,6 +382,7 @@ namespace Eldoria.BreachWatch
             // Asymmetrical stone architecture instead of a header/footer re-skin.
             identity=Rect("Identity / basalt crest",uiRoot);
             Plate(identity,BreachWatchPlate.PlateType.Basalt);
+            AddContactShadow(identity,3.5f,.40f);
             AddBevel(identity,true);
             // The owner-approved compact reference has NO red top banner.
             // Independent round carved crest replaces the obsolete banner.
@@ -419,6 +432,7 @@ namespace Eldoria.BreachWatch
                 "VigiliaArt/PremiumSurfaces/chiseled_quest");
             if(angledPlate)chapterStone.ApplyIndependentArt(angledPlate,true);
             else AddBevel(objective,true);
+            AddContactShadow(objective,5f,.45f);
             // The chapter's approval reference has a tiny tower crest
             // attached to the tablet. The open-air Breach sigil is separate.
             var objectiveSeal=Glyph(objective,"Chapter stone rune",BreachWatchGlyph.Sigil.Castle);
@@ -446,6 +460,7 @@ namespace Eldoria.BreachWatch
             }
             panel=Rect("Independent selected-building cartouche",uiRoot);
             var basalt=Plate(panel,BreachWatchPlate.PlateType.Basalt);
+            AddContactShadow(panel,8f,.58f);
             var premiumStone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/basalt_context");
             if(premiumStone)
             {
