@@ -1,4 +1,4 @@
-name: Eldoria compact terrain native parity and WebGL
+name: Eldoria export verified compact build without rebuilding
 # Resume verified isolated inputs after Unity Application namespace correction.
 on:
   push:
@@ -99,27 +99,20 @@ jobs:
           if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'codex-pr179-stability-2ea88ced1c46' -or $holders[0].ownership_revision -ne [int]$env:EXPECTED_LEASE_REVISION){throw 'Structural startup lease changed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy; do not interrupt'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
-      - name: Recover imported isolated project and verify existing production artwork
+      - name: Export completed native output without starting Unity
         shell: powershell
         run: |
-          & ./beta-structural-tools/tools/eldoria-private-beta/native/recover_isolated.ps1 -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
-      - name: Original versus staged native startup, canonical journey, then WebGL
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: powershell
-        run: |
-          & ./beta-structural-tools/tools/eldoria-private-beta/native/run_warm_structural.ps1 -Source "$env:BETA_SOURCE" -InputAuditPath "$env:BETA_INPUT_AUDIT" -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT" -WebOutput "beta-structural-webgl-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/export_compiled.ps1 -Evidence "beta-structural-export-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: beta-structural-native-evidence
-          path: beta-structural-evidence-${{ github.run_id }}-${{ github.run_attempt }}/
+          path: beta-structural-export-${{ github.run_id }}-${{ github.run_attempt }}/
           retention-days: 14
       - uses: actions/upload-artifact@v4
         if: success()
         with:
           name: beta-structural-webgl-unverified
-          path: beta-structural-webgl-${{ github.run_id }}-${{ github.run_attempt }}/
+          path: ${{ env.RECOVERED_WEB }}/
           compression-level: 0
           retention-days: 14
-
