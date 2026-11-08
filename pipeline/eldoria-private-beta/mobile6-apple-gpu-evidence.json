@@ -1,0 +1,46 @@
+{
+  "candidate": "native325-mobile6-cubemap",
+  "bundle_sha256": "e54d547487e0d915f5a8c3fbbd0354a79672041dd201b3e63672de5e740ea6c1",
+  "run": 42493894120,
+  "physical_iphone_verified": false,
+  "results": [
+    {
+      "version": "26.0",
+      "passed": true,
+      "errors": [],
+      "artifact": 13622663288,
+      "actual_gl": [
+        "ELDORIA_ACTUAL_GL {\"at\":8872,\"astc\":true,\"renderer\":\"Apple GPU\",\"uniformBindings\":24,\"attributes\":{\"alpha\":true,\"antialias\":false,\"depth\":true,\"failIfMajorPerformanceCaveat\":false,\"powerPreference\":\"high-performance\",\"premultipliedAlpha\":false,\"preserveDrawingBuffer\":false,\"stencil\":true}}",
+        "ELDORIA_ACTUAL_GL {\"at\":10494,\"astc\":true,\"renderer\":\"Apple GPU\",\"uniformBindings\":24,\"attributes\":{\"alpha\":true,\"antialias\":false,\"depth\":true,\"failIfMajorPerformanceCaveat\":false,\"powerPreference\":\"high-performance\",\"premultipliedAlpha\":false,\"preserveDrawingBuffer\":false,\"stencil\":true}}"
+      ],
+      "nickname_reloaded_screenshot_review": "Beta QA visible; normal chapter introduction",
+      "peak_wasm_capacity_bytes": 1052049408,
+      "entry": {
+        "nickname": "Beta QA",
+        "typed": true,
+        "reloaded": true,
+        "observationSeconds": 45,
+        "visualNameVerification": "manually reviewed: Beta QA visible after reload"
+      }
+    },
+    {
+      "version": "27.2",
+      "passed": true,
+      "errors": [],
+      "artifact": 13622517677,
+      "actual_gl": [
+        "ELDORIA_ACTUAL_GL {\"at\":4233,\"astc\":true,\"renderer\":\"Apple GPU\",\"uniformBindings\":32,\"attributes\":{\"alpha\":true,\"antialias\":false,\"depth\":true,\"failIfMajorPerformanceCaveat\":false,\"powerPreference\":\"high-performance\",\"premultipliedAlpha\":false,\"preserveDrawingBuffer\":false,\"stencil\":true}}",
+        "ELDORIA_ACTUAL_GL {\"at\":3912,\"astc\":true,\"renderer\":\"Apple GPU\",\"uniformBindings\":32,\"attributes\":{\"alpha\":true,\"antialias\":false,\"depth\":true,\"failIfMajorPerformanceCaveat\":false,\"powerPreference\":\"high-performance\",\"premultipliedAlpha\":false,\"preserveDrawingBuffer\":false,\"stencil\":true}}"
+      ],
+      "nickname_reloaded_screenshot_review": "Beta QA visible; normal chapter introduction",
+      "peak_wasm_capacity_bytes": 1052114944,
+      "entry": {
+        "nickname": "Beta QA",
+        "typed": true,
+        "reloaded": true,
+        "observationSeconds": 45,
+        "visualNameVerification": "manually reviewed: Beta QA visible after reload"
+      }
+    }
+  ]
+}
