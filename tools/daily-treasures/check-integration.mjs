@@ -107,4 +107,23 @@ assert.equal((nativeWorkflow.match(/- name: Preserve real Unity screenshots/g)||
 assert.doesNotMatch(nativeWorkflow,/^\)\s*$/m,
     'No orphan PowerShell expressions outside YAML blocks');
 assert.match(nativeWorkflow,/\$report\.graphicalPointerHits -ne 40/);
+const paidCardSource=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureRewardPresentation.cs','utf8');
+const originalRaySource=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasureRaysGraphic.cs','utf8');
+// Prestige is the visual legibility of actual credited items, not a generic
+// "recompensas añadidas" text below a decorative animation.
+assert.match(panel,/ConfigurePrizeCards\(reward\)/);
+assert.match(panel,/DailyTreasureRewardPresentation\.FromCommittedReward\(reward\)/);
+assert.match(panel,/prizeGroups\[i\]\.alpha=immediate\?1f:0f/);
+assert.match(panel,/prizeShelf\.gameObject\.SetActive\(true\)/);
+assert.match(panel,/claimCaption\.text="CONTINUAR"/);
+assert.match(panel,/rays\.SetIntensity\(frame\.Glow\*\.79f\)/);
+assert.match(panel,/HasRevealedIllustratedEarnedItems/);
+assert.match(native,/panel\.EarnedItemCardCount==4/);
+assert.match(native,/panel\.EarnedItemCardCount==2/);
+assert.match(native,/panel\.HasRevealedIllustratedEarnedItems/);
+assert.match(paidCardSource,/MaxSimultaneousItems=4/);
+assert.match(originalRaySource,/public void SetIntensity\(float value\)/);
+assert.doesNotMatch(paidCardSource,/LocalGateway|GameCommand|\.Execute\(|PlayerPrefs/);
 console.log('PASS daily treasures gateway integration source invariants');
