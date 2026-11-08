@@ -16,8 +16,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        engine: [webkit]
-        variant: [unchanged, astc-disabled]
+        include:
+          - engine: webkit
+            variant: s3tc-disabled
+            version: 1.55.0
+          - engine: webkit
+            variant: unchanged
+            version: 1.65.0
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,7 +33,7 @@ jobs:
           node-version: '22'
       - name: Install pinned browser
         run: |
-          npm install --prefix "$RUNNER_TEMP/beta-browser-deps" --no-save playwright@1.55.0
+          npm install --prefix "$RUNNER_TEMP/beta-browser-deps" --no-save playwright@${{ matrix.version }}
           "$RUNNER_TEMP/beta-browser-deps/node_modules/.bin/playwright" install ${{ matrix.engine }}
       - name: Measure unchanged published candidate
         env:
@@ -57,6 +62,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile5-macos-${{ matrix.engine }}-${{ matrix.variant }}
+          name: mobile5-macos-${{ matrix.engine }}-${{ matrix.variant }}-${{ matrix.version }}
           path: engine-evidence/
           retention-days: 14
