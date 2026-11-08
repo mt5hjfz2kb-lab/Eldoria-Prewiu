@@ -219,6 +219,31 @@ jobs:
               guids.extend(guid)
           print('BREACHWATCH_CC0_SOURCE_HASH_METADATA_PASS '+str(len(guids))+' ORIGINAL UI SPRITES')
           PY
+      - name: Verify five distinct new medallions are actual captures from approved concept
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,hashlib,struct,pathlib
+          folder=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference')
+          m=json.loads((folder/'source-manifest.json').read_text())
+          assert m['sha256']=='dff461d5e4c7d3de7ec6ccb641f7e372aee4f324310ca0b25ea630dfcb157437'
+          assert not m['art_approved'] and len(m['sprites'])==5
+          assert sorted(v['name'] for v in m['sprites'])==['castle','helm','provisions','raven','swords']
+          assert (folder.parent/'OwnerReference.meta').exists()
+          seen=set()
+          for art in m['sprites']:
+              name=art['name']
+              p=folder/(name+'.png')
+              raw=p.read_bytes()
+              assert raw[:8]==bytes([137,80,78,71,13,10,26,10]) and raw[25]==6,name
+              assert struct.unpack('>II',raw[16:24])==(160,160)
+              assert hashlib.sha256(raw).hexdigest()==art['sha256'],name
+              meta=(folder/(name+'.png.meta')).read_text()
+              assert 'textureType: 8' in meta and 'spriteMode: 1' in meta
+              assert 'guid: '+art['guid'] in meta and art['guid'] not in seen
+              seen.add(art['guid'])
+          print('BREACHWATCH_FIVE_USER_APPROVED_ORIGINAL_EMBLEM_ASSETS_PASS')
+          PY
       - name: Reject inherited visual presentation or removed Forja assets
         shell: bash
         run: |
