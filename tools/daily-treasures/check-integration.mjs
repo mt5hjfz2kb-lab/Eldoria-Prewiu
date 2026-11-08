@@ -63,7 +63,9 @@ assert.match(panel,/ApplyAuthoredFrame\(cardSurface,"valoria_frame_main_512"\)/)
 assert.match(panel,/ApplyAuthoredFrame\(day,"valoria_frame_card_256"\)/);
 assert.match(panel,/ApplyAuthoredFrame\(\(RectTransform\)claimButton\.transform,/);
 assert.match(panel,/DayIllustrations=\{/);
-assert.ok(panel.includes('"DailyTreasureArt/"+DayIllustrations[i]'));
+assert.match(panel,/LoadUnifiedResourceEmblem\(DayIllustrations\[i\]\)/);
+assert.match(panel,/Resources\.Load<Sprite>\("VigiliaArt\/ResourceIcons\/"\+owner\)/);
+assert.match(panel,/Resources\.Load<Sprite>\(\s*"DailyTreasureArt\/"\+fallback\)/);
 assert.match(panel,/dayGlyph\[i\]\.gameObject\.SetActive\(false\)/);
 assert.match(panel,/icon\.raycastTarget=false/);
 const scoutPolicy=fs.readFileSync(
