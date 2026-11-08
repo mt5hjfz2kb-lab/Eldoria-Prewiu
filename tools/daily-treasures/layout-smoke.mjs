@@ -13,6 +13,8 @@ for(const [name,regex] of [
   ['skip hit target 100 by 45',/-10f,-60f,100f,45f/],
   ['close hit target 48 square',/-8f,-8f,48f,48f/],
   ['real 7-day reward data on cards',/DailyTreasureRules\.ForDay\(i\+1/],
+  ['short-portrait illustrated card grid',/compactPrizePortrait\?114f:portrait\?142f:64f/],
+  ['real unaltered illustrated reward cards',/DailyTreasureRewardPresentation\.FromCommittedReward\(reward\)/],
   ['real command gateway rewards',/new GameCommand\(Guid\.NewGuid\(\)\.ToString\("N"\)/]
 ])assert.match(code,regex,name);
 
@@ -89,6 +91,61 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   const receiptTop=(portrait?-140:-95)+(portrait?165:118)/2;
   assert.ok(skipBottom>receiptTop+10,
     `${w}x${h}: skip button touches the paid receipt`);
+  // The actual paid-items reveal is independent from the seven-day calendar.
+  // Distinct layouts for 1, 2 and 4 real icon cards must not collide with
+  // each other, the resource count labels, the chest or the Continue button.
+  for(const count of [1,2,4])
+  {
+    const compact=portrait&&ph<680;
+    const shelfH=compact?114:portrait?142:64;
+    const shelfY=compact?-126:portrait?-143:-69;
+    const resultY=compact?-217:portrait?-242:-15;
+    const resultH=compact?39:portrait?50:40;
+    const shelf=rect(0,shelfY,pw-34,shelfH);
+    const result=rect(0,resultY,pw-45,resultH);
+    const claim=rect(0,-ph/2+13+54/2,Math.min(pw-30,portrait?325:405),54);
+    assert.ok(noOverlap(shelf,result),
+      `${w}x${h}: ${count} illustrated item cards cover the receipt title`);
+    assert.ok(noOverlap(result,claim),
+      `${w}x${h}: ${count} illustrated item receipt covers Continue`);
+    assert.ok(noOverlap(shelf,claim),
+      `${w}x${h}: ${count} original artwork frames cover Continue`);
+    const cols=portrait&&count>=3?2:count;
+    const rows=Math.ceil(count/cols);
+    const prizeGap=portrait?8:6;
+    const cardW=Math.min(140,(pw-38-(cols-1)*prizeGap)/cols);
+    const cardH=rows===2?(compact?53:65):portrait?(compact?76:89):62;
+    const actual=[];
+    for(let i=0;i<count;i++)
+    {
+      const row=Math.floor(i/cols),column=i%cols;
+      const inRow=Math.min(cols,Math.max(0,count-row*cols));
+      const rowWidth=inRow*cardW+Math.max(0,inRow-1)*prizeGap;
+      const x=-rowWidth/2+column*(cardW+prizeGap)+cardW/2;
+      const y=rows===1?0:row===0?cardH/2+prizeGap/2:-cardH/2-prizeGap/2;
+      const card=rect(x,y,cardW,cardH);
+      assert.ok(card.x0>=-(pw-34)/2-0.1 && card.x1<=(pw-34)/2+0.1 &&
+                card.y0>=-shelfH/2-0.1 && card.y1<=shelfH/2+0.1,
+        `${w}x${h}: earned artwork slot ${i+1} escapes shelf`);
+      for(const other of actual)assert.ok(noOverlap(card,other),
+        `${w}x${h}: reward item art overlaps another paid item`);
+      actual.push(card);
+
+      const tall=cardH>=80,shortCard=cardH<60;
+      const iconH=tall?40:shortCard?22:25;
+      const iconBottom=cardH/2+(tall?-6:-3)-iconH;
+      const nameY=tall?-14:shortCard?-6:-8;
+      const nameH=shortCard?10:12;
+      const amountY=tall?-31:shortCard?-19:-23;
+      const amountH=tall?20:shortCard?14:17;
+      assert.ok(iconBottom>=nameY+nameH/2+0.3,
+        `${w}x${h}: paid resource icon overlaps name`);
+      assert.ok(nameY-nameH/2>=amountY+amountH/2+0.3,
+        `${w}x${h}: paid resource name overlaps quantity`);
+      assert.ok(amountY-amountH/2>=-cardH/2-0.1,
+        `${w}x${h}: earned amount text clips beyond frame`);
+    }
+  }
   checks.push({size:`${w}x${h}`,cards:cards.length,daySevenWidth:Math.round(cards[6].x1-cards[6].x0),touchTargets:true});
 }
 console.log('PASS daily treasures layout: '+checks.length+' aspect/size geometries, seven non-overlapping cards, real head/icon/body and >=44px controls');
