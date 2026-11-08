@@ -131,8 +131,9 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui.HasTrueResourceIllustrations,
                 "All three resource icons must be real, recognizable licensed independent sprites");
             Need(!ui.transform.IsChildOf(host.Hud.transform), "New Canvas must not be attached to legacy HUD");
-            Need(ui.UsesOriginalPaintedMedallions && ui.UsesOriginalForgedPortraitFrame,
-                "Vigilia must render the exact licensed original new art, not procedural fallback");
+            Need(ui.UsesOriginalPaintedMedallions &&
+                 ui.UsesOriginalForgedPortraitFrame && ui.UsesOriginalBurgundyStandard,
+                "Vigilia must use the exact independent original painted metal, medallions and banner");
 
 
             var shots = new List<Shot>();
@@ -144,6 +145,12 @@ namespace Eldoria.BreachWatch.Editor
                 foreach (var size in new [] {(1600,900),(900,1600),(844,390),(390,844)})
                     shots.Add(RenderNative(ui, dir, selection, size.Item1, size.Item2));
             }
+            // The canonical city selection must reach the independent interface
+            // through the genuine event, not only through our own navigation.
+            Need(host.Select("sawmill"),"Existing city cannot select real Sawmill");
+            Need(ui.SelectedBuildingId=="sawmill" &&
+                 ui.CurrentSnapshot?.Building?.Id=="sawmill",
+                 "Real city selection did not reach the independent Vigilia panel");
             // Exercise the REAL uGUI GraphicRaycaster and pointer sequence, not Button.onClick.Invoke.
             ui.SelectBuilding("");
             int pointerClicks = 0;
