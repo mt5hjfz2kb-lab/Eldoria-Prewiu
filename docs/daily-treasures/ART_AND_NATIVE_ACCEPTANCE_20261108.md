@@ -62,3 +62,19 @@ En `DailyTreasurePanel`, una reclamación sucede y se guarda primero en el `Loca
 
 ### Resultado alcanzado frente al objetivo
 **Investigado e implementado en PR181:** recursos originales premium, accesos, interfaces, cofres y tarjetas animadas, pruebas de integridad y comparador visual. **Probado sin Unity:** reglas, entregas reales, geometría, compilaciones de dominio y transparencia/hashes de arte. **Pendiente de probar:** compilación y renderizado auténtico de Unity, continuidad en la ciudad, interacción real física y evaluación artística frente a la referencia aprobada. No confundir este avance técnico con un aprobado visual.
+
+
+## Dirección artística ampliada: otras escenas al nivel del cofre
+El panel ahora utiliza los materiales originales del cofre también para las ceremonias de capítulos, exploración, incorporación de Lyra y reconstrucción, pero las diferencia por **contexto pictórico real**:
+- **Lyra:** `EldoriaV41/heroes-hall-illustrated-v2`, sala de héroes ya existente en el juego, sutilmente integrada detrás del cofre; no se ha inventado un retrato nuevo del personaje.
+- **Exploradores:** `EldoriaRetention/scouts-painterly-v2`, el mapa pintado del proyecto, con un tratamiento tenue de material/presentación y encuadre sin deformar.
+- **Vigilantes:** `EldoriaRetention/vigilants-painterly-v2`, escena panorámica ya presente en Eldoria, con una luz ceremonial distintiva.
+- **Bastión:** conserva la ciudad auténtica bajo el modal; no reemplaza su edificio real por una ilustración de nivel incorrecto.
+
+Las tres fuentes se cargan como `Texture2D`/RawImage (sus Unity importadores existentes son tipo 0, no Sprites), se recortan al formato del panel respetando proporciones y **nunca interceptan clics**. Se eliminan las referencias del `RawImage` al cerrar la ceremonia para que el panel opcional no mantenga innecesariamente recursos pesados en WebGL. Las comprobaciones de integridad y rutas de source art pasan por `check-scenic-art.mjs`; el flujo nativo deberá demostrar por separado que cada paisaje realmente se ve y que desaparece al cerrar.
+
+## Sonido original mejorado, sin muestras de terceros
+Se abandonó el pitido sencillo y ahora hay tres sonidos originales producidos de forma determinista por `DailyTreasureFoley.cs`: pestillo de roble/hierro, apertura cálida de bronce y variante grandiosa con resonancia más profunda para hitos legendarios. Incluyen golpe corto, ruido filtrado, parciales metálicos inarmónicos y una cola breve. Los buffers PCM se generan **una vez por panel**, a 22.050 Hz, sin distribuir música, grabaciones ni dependencias pagadas. Se validan numéricamente longitud, amplitud, silencio de salida, ausencia de DC/clipping y repetibilidad con C# puro. La mezcla exacta **todavía exige escucha en la compilación nativa**: no confundir forma de onda correcta con experiencia auditiva aprobada.
+
+## Regla de aceptación para cada escena
+No basta con un tintado de color. El test de componente deberá comprobar `HasMilestoneScenery`/nombre de la textura para Lyra, Exploradores y Vigilantes, así como la ausencia deliberada de paisaje falso para Bastión. El revisor humano deberá comparar las capturas en vertical/horizontal, legibilidad, cofre y entorno pintado, contraste y animación. Las 52 capturas actuales del plan son **objetivo de test, no imágenes ya obtenidas**.
