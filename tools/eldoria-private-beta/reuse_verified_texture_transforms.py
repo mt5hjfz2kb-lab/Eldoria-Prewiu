@@ -113,6 +113,8 @@ def apply(original, verified, fresh, expected_hash, destination):
         used.add(reference)
         reports.append({k: v for k, v in transform.items() if k != "raw"} | {"object": key(obj), "source_hash": h, "matching":match, "reference_source_hash":reference})
     assert changed, "No byte-identical verified texture transformations found"
+    print("TRANSFORMS_STAGED",len(changed),"semantic",len(semantic_expected),
+          "reference_payload_savings",sum(r["before_bytes"]-r["after_bytes"] for r in reports),flush=True)
     output = destination / "data.unity3d"
     output.write_bytes(env.file.save(packer="lz4"))
     del env
