@@ -26,7 +26,7 @@ public static class EldoriaBetaStructuralStartupProbe {
  static readonly string[] MeshNames={"BLD_Terrain","BLD_BreachFloor","BLD_BreachOutlyingFractures","BLD_BreachBrokenBasaltPlates","BLD_BreachTerracedStrata","BLD_BreachWeatheredRockfall"};
  static readonly List<string> errors=new List<string>();
  [Serializable] public class Result {
-  public string source,mode,environment="Unity Editor Windows; NOT WebGL or physical iPhone",geometryHash,queryHash;
+  public string source,inputAudit,mode,environment="Unity Editor Windows; NOT WebGL or physical iPhone",geometryHash,queryHash;
   public int pass,guardedFrames,retainedVerificationBuckets,verifiedSites,validatedCities;
   public double secondsToReady;
   public long peakAllocated,peakReserved,peakManaged,managedAfterFullGC;
@@ -75,7 +75,7 @@ public static class EldoriaBetaStructuralStartupProbe {
    string geometry=Geometry(surface),queries=Queries();
    if(pass==0){firstGeometry=geometry;firstQueries=queries;}else{Need(firstGeometry==geometry,"Geometry changed after real scene reload");Need(firstQueries==queries,"Terrain queries changed after real scene reload");}
    foreach(var file in Saves)Need(SessionState.GetString(Flag+file,"")==HashFile(Path.Combine(Application.persistentDataPath,file)),"Canonical save changed: "+file);
-   var result=new Result{source=Environment.GetEnvironmentVariable("ELDORIA_MEMORY_SOURCE"),mode=Staged?"staged":"baseline",pass=pass,guardedFrames=guardedFrames,retainedVerificationBuckets=VerificationBuckets(),verifiedSites=placement.VerifiedSiteCount,validatedCities=placement.ValidatedCityCount,secondsToReady=readyAt-start,peakAllocated=peakAllocated,peakReserved=peakReserved,peakManaged=peakManaged,geometryHash=geometry,queryHash=queries,ready=true,worldComplete=true,canonicalSavesUnchanged=true};
+   var result=new Result{source=Environment.GetEnvironmentVariable("ELDORIA_MEMORY_SOURCE"),inputAudit=Environment.GetEnvironmentVariable("ELDORIA_BASELINE_INPUT_AUDIT"),mode=Staged?"staged":"baseline",pass=pass,guardedFrames=guardedFrames,retainedVerificationBuckets=VerificationBuckets(),verifiedSites=placement.VerifiedSiteCount,validatedCities=placement.ValidatedCityCount,secondsToReady=readyAt-start,peakAllocated=peakAllocated,peakReserved=peakReserved,peakManaged=peakManaged,geometryHash=geometry,queryHash=queries,ready=true,worldComplete=true,canonicalSavesUnchanged=true};
    result.managedAfterFullGC=GC.GetTotalMemory(true);
    File.WriteAllText(Path.Combine(Out,"startup-"+pass+".json"),JsonUtility.ToJson(result,true));
    if(pass==0){
