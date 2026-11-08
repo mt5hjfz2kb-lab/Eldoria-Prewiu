@@ -34,6 +34,7 @@ namespace Eldoria.BreachWatch.Editor
             public string file, sha256, selected, realBuilding, actualObjective;
             public int width, height, buttons;
             public bool oldCanvasOff, newCanvasIndependent, liveSession, fiveInOneRow, liveBuildingPortrait;
+            public float portraitPixels;
         }
         [Serializable] public sealed class Report
         {
@@ -278,6 +279,9 @@ namespace Eldoria.BreachWatch.Editor
                          "Real Bastion selection is missing contextual native card in "+name);
                     Need(ui.HasLiveBuildingPortrait && ui.BuildingPortraitExclusive,
                          "Real isolated Bastion mesh portrait did not render in "+name);
+                    Need(ui.BuildingPortraitDrawnFraction>.0125f,
+                        "Genuine isolated Bastion camera produced a mostly empty image in "+name+
+                        " pixels="+ui.BuildingPortraitDrawnFraction);
                     // Each panel child shares the same top-left anchored
                     // coordinate space; verify costs/status/action are ordered
                     // without occupying the same pixels on narrow phones.
@@ -307,7 +311,8 @@ namespace Eldoria.BreachWatch.Editor
                     oldCanvasOff=ui.LegacyPresentationHidden,
                     newCanvasIndependent=ui.IndependentCanvas,
                     liveSession=ui.HasRealSession,fiveInOneRow=oneRow,
-                    liveBuildingPortrait=ui.HasLiveBuildingPortrait
+                    liveBuildingPortrait=ui.HasLiveBuildingPortrait,
+                    portraitPixels=ui.BuildingPortraitDrawnFraction
                 };
             }
             finally
