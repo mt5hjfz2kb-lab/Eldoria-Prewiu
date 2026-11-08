@@ -165,7 +165,13 @@ namespace Eldoria.DailyTreasures.Editor
                     var eventObj=new GameObject("Disposable event system",typeof(EventSystem));
                     var eventSystem=eventObj.GetComponent<EventSystem>();
                     Canvas.ForceUpdateCanvases();
-                    panel.Open();
+                    // The entry medallion itself must accept a true pointer
+                    // sequence; invoking Open() would conceal hitbox failures.
+                    ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                        FindButton(panel,"Daily reward / optional medallion"),
+                        width,height);
+                    inputChecks++;
+                    Need(panel.IsOpen,"Real entry medallion did not open calendar");
                     Canvas.ForceUpdateCanvases();
                     var button=FindButton(panel,"Claim exact daily reward");
                     Need(button.interactable,"Correct day seven must be claimable");
@@ -196,13 +202,18 @@ namespace Eldoria.DailyTreasures.Editor
                         "Same real claim: closed chest",true,true));
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
                         FindButton(panel,"Skip animation / keep earned items"),width,height);
+                    inputChecks++;
                     Canvas.ForceUpdateCanvases();
                     pictures.Add(Render(camera,rt,output,width,height,"opened",
                         "Same real claim: chest opened and exact items",true,true));
                     Need(gateway.Snapshot().Resources.Wood==after.Resources.Wood &&
                          gateway.Snapshot().Resources.Stone==after.Resources.Stone,
                          "Skipping ceremony must never pay rewards again");
-                    panel.Close();
+                    ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                        FindButton(panel,"Close tributes"),width,height);
+                    inputChecks++;
+                    Need(!panel.IsOpen,
+                        "Real close button did not leave the reward UI");
                     Object.DestroyImmediate(eventObj);
                     Object.DestroyImmediate(canvasObj);
                     camera.targetTexture=null;
@@ -210,7 +221,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Object.DestroyImmediate(rt);
                     Object.DestroyImmediate(go);
                 }
-                Need(pictures.Count==12 && inputChecks==4 && report.realGatewayClaims==4,
+                Need(pictures.Count==12 && inputChecks==16 && report.realGatewayClaims==4,
                     "Native reward component coverage incomplete");
                 report.status=report.authoredSpritesImported
                     ? "NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING"
