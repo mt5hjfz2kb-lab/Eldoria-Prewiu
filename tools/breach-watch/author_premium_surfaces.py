@@ -64,11 +64,21 @@ def corners(w,h,cut,inset=0):
     return [(left+c,top),(right-c,top),(right,top+c),
             (right,bottom-c),(right-c,bottom),(left+c,bottom),
             (left,bottom-c),(left,top+c)]
+def quest_outline(w,h,inset):
+    # Unique asymmetrical carved tablet: a compact left tower and tapered
+    # right point. Border remains an independently nine-sliced UI component.
+    left=inset;right=w-1-inset;top=inset;bottom=h-1-inset
+    return [(left+17,top),(right-56,top),(right,h*.5),
+            (right-56,bottom),(left+17,bottom),
+            (left,bottom-20),(left,top+20)]
+
 def surface(name,d):
     w,h,cut=d["width"],d["height"],d["cut"]
     kind=d["kind"];rng=random.Random(d["seed"])
     shape=Image.new("L",(w,h),0)
-    ImageDraw.Draw(shape).polygon(corners(w,h,cut),fill=255)
+    outline=(lambda inset:quest_outline(w,h,inset)) if kind=="quest" else (
+        lambda inset:corners(w,h,cut,inset))
+    ImageDraw.Draw(shape).polygon(outline(0),fill=255)
     # Original mineral grain with large and fine strata. Pixel colors are
     # intentionally understated so light Cormorant text is legible in Unity.
     coarse=Image.new("L",(max(2,w//19),max(2,h//19)))
