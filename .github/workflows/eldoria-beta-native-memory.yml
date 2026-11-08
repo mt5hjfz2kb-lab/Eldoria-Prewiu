@@ -98,40 +98,10 @@ jobs:
           if($holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or $holders[0].owner -ne 'codex-pr179-stability-2ea88ced1c46' -or $holders[0].ownership_revision -ne [int]$env:EXPECTED_LEASE_REVISION){throw 'Structural startup lease changed'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy; do not interrupt'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
-          $folder="beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
-          if(Test-Path $folder){throw 'Isolated project already exists; refuse replacement'}
-          $drive=Get-PSDrive -Name ([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE).Substring(0,1))
-          if($drive.Free -lt 8GB){throw 'Insufficient isolated import headroom; preserve other projects'}
-      - name: Fetch exact frozen source independently of the mutable warm cache
-        uses: actions/checkout@v4
-        with:
-          ref: 948ffa9837168a0b68dab80be76b66350422b23a
-          path: beta-structural-source-${{ github.run_id }}-${{ github.run_attempt }}
-          sparse-checkout: |
-            Unity
-          fetch-depth: 1
-          persist-credentials: false
-      - name: Verify isolated frozen source and record its exact input audit
+      - name: Recover imported isolated project and verify existing production artwork
         shell: powershell
         run: |
-          $ErrorActionPreference='Stop'
-          $frozen='948ffa9837168a0b68dab80be76b66350422b23a'
-          $source=Join-Path $env:GITHUB_WORKSPACE "beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
-          $head=(git -C $source rev-parse HEAD).Trim()
-          if($head -ne $frozen){throw 'Frozen source identity mismatch'}
-          $pending=@(git -C $source status --porcelain -- Unity)
-          if($LASTEXITCODE -ne 0 -or $pending.Count -ne 0){throw 'Isolated source is not clean'}
-          if(-not(Test-Path (Join-Path $source 'Unity/ProjectSettings/ProjectVersion.txt'))){throw 'Unity project missing'}
-          if(-not(Test-Path (Join-Path $source 'Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs'))){throw 'World source missing'}
-          $out=Join-Path $env:GITHUB_WORKSPACE "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
-          New-Item -ItemType Directory -Force $out|Out-Null
-          $utf8=New-Object Text.UTF8Encoding($false)
-          $audit=@{base=$head;status=@();files=@();source_kind='clean isolated exact frozen commit'}
-          $auditPath=Join-Path $out 'existing-input-audit.json'
-          [IO.File]::WriteAllText($auditPath,($audit|ConvertTo-Json -Depth 6),$utf8)
-          Write-Host "BETA_ISOLATED_SOURCE_PASS pinned=$head"
-          Add-Content $env:GITHUB_ENV "BETA_SOURCE=$source"
-          Add-Content $env:GITHUB_ENV "BETA_INPUT_AUDIT=$auditPath"
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/recover_isolated.ps1 -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
       - name: Original versus staged native startup, canonical journey, then WebGL
         env:
           GH_TOKEN: ${{ github.token }}
@@ -151,3 +121,4 @@ jobs:
           path: beta-structural-webgl-${{ github.run_id }}-${{ github.run_attempt }}/
           compression-level: 0
           retention-days: 14
+
