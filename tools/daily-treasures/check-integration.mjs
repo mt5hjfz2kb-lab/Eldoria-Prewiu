@@ -144,4 +144,14 @@ assert.match(panel,/entryNotice\.gameObject\.SetActive\(entryIsAvailable\)/);
 assert.match(panel,/entryGlow\.sprite=glowSprite/);
 assert.match(panel,/float entryX=onVigiliaCanvas&&!portrait\?256f:14f/);
 assert.match(panel,/entryIsAvailable=DailyTreasureRules\.CanClaim\(/);
+// The large original chest visually emits actual paid item cards.
+// Motion is pure artwork, tested without a Unity backend or any reward award.
+const flight=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePrizeFlight.cs','utf8');
+assert.match(panel,/DailyTreasurePrizeFlight\.Sample\(/);
+assert.match(panel,/prizeFlightOrigin/);
+assert.match(flight,/public static DailyTreasurePrizeFlightFrame Sample\(/);
+assert.match(flight,/public const float ChestDuration=\.64f/);
+assert.match(flight,/public const float DelayBetweenCards=\.13f/);
+assert.doesNotMatch(flight,/GameCommand|LocalGateway|\.Execute\(|PlayerPrefs/);
 console.log('PASS daily treasures gateway integration source invariants');
