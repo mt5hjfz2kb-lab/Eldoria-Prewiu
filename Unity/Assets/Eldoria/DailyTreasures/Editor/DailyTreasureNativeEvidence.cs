@@ -58,6 +58,37 @@ namespace Eldoria.DailyTreasures.Editor
         static Button FindButton(Component component,string name)
             =>component.GetComponentsInChildren<Button>(true)
                 .Single(x=>x.name==name);
+        static void ClickAtNativeScreenPosition(Canvas canvas,EventSystem events,
+            Camera camera,Button button,int width,int height)
+        {
+            Need(button && button.gameObject.activeInHierarchy && button.interactable,
+                "Button not active or interactable: "+(button ? button.name : "null"));
+            var corners=new Vector3[4];
+            ((RectTransform)button.transform).GetWorldCorners(corners);
+            var bottomLeft=RectTransformUtility.WorldToScreenPoint(camera,corners[0]);
+            var topRight=RectTransformUtility.WorldToScreenPoint(camera,corners[2]);
+            Need(topRight.x-bottomLeft.x>=43.5f &&
+                 topRight.y-bottomLeft.y>=43.5f,
+                "Touch area below 44 physical pixels: "+button.name);
+            Need(bottomLeft.x>=-2f && bottomLeft.y>=-2f &&
+                 topRight.x<=width+2f && topRight.y<=height+2f,
+                "Real touch control offscreen: "+button.name);
+            var pos=(bottomLeft+topRight)*.5f;
+            var data=new PointerEventData(events){
+                position=pos,pointerId=-1,button=PointerEventData.InputButton.Left
+            };
+            var hits=new List<RaycastResult>();
+            canvas.GetComponent<GraphicRaycaster>().Raycast(data,hits);
+            Need(hits.Count>0 &&
+                 (hits[0].gameObject==button.gameObject ||
+                  hits[0].gameObject.transform.IsChildOf(button.transform)),
+                 "Another graphic steals native click: "+button.name);
+            // Invoke the exact Unity event handlers used by real players.
+            // NEVER bypass the pointer by directly invoking onClick.
+            ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerDownHandler);
+            ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerUpHandler);
+            ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerClickHandler);
+        }
 
         [MenuItem("Eldoria/Tesoros de Valoria/Captura Unity nativa de componente")]
         public static void Capture()
@@ -124,34 +155,33 @@ namespace Eldoria.DailyTreasures.Editor
                     Canvas.ForceUpdateCanvases();
                     var button=FindButton(panel,"Claim exact daily reward");
                     Need(button.interactable,"Correct day seven must be claimable");
-                    // Genuine GraphicRaycaster pointer target (no invented click
-                    // coordinates or direct geometry assertion as a substitute).
-                    var corners=new Vector3[4];
-                    ((RectTransform)button.transform).GetWorldCorners(corners);
-                    var pos=RectTransformUtility.WorldToScreenPoint(camera,(corners[0]+corners[2])*.5f);
-                    var hits=new List<RaycastResult>();
-                    canvasObj.GetComponent<GraphicRaycaster>().Raycast(
-                        new PointerEventData(eventSystem){position=pos},hits);
-                    Need(hits.Any(h=>h.gameObject==button.gameObject ||
-                        h.gameObject.transform.IsChildOf(button.transform)),
-                        "Day-seven button has no native raycast target");
-                    inputChecks++;
+                    // Capture BEFORE interacting, then tap through Unity's actual
+                    // raycaster and selectable pointer sequence.
                     pictures.Add(Render(camera,rt,output,width,height,"calendar",
                         "Available calendar before claim",true,true));
-                    button.onClick.Invoke();
+                    ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                        button,width,height);
+                    inputChecks++;
                     var after=gateway.Snapshot();
                     Need(after.DailyTreasures.CycleDay==7 &&
                         after.SpeedupFiveMinutes==before.SpeedupFiveMinutes+1,
                         "Native button failed to pay actual day-seven reward");
                     Need(after.Mailbox.Messages.Count==before.Mailbox.Messages.Count+1,
                         "Day-seven native button did not write the mailbox receipt");
-                    Need(!button.interactable || !DailyTreasureRules.CanClaim(after.DailyTreasures,clock.UtcTicks),
+                    Need(!DailyTreasureRules.CanClaim(after.DailyTreasures,clock.UtcTicks),
                         "Duplicate seven-day claim still available");
+                    var beforeReplay=after.Resources.Wood;
+                    var repeat=new GameCommand("qa-repeat-native-"+width+"x"+height,
+                        after.PlayerId,"ClaimDailyTreasure","valoria",after.Revision);
+                    Need(!gateway.Execute(repeat).Ok &&
+                         gateway.Snapshot().Resources.Wood==beforeReplay,
+                        "A second native reward command paid twice");
                     report.realGatewayClaims++;
                     Canvas.ForceUpdateCanvases();
                     pictures.Add(Render(camera,rt,output,width,height,"closed",
                         "Same real claim: closed chest",true,true));
-                    FindButton(panel,"Skip animation / keep earned items").onClick.Invoke();
+                    ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                        FindButton(panel,"Skip animation / keep earned items"),width,height);
                     Canvas.ForceUpdateCanvases();
                     pictures.Add(Render(camera,rt,output,width,height,"opened",
                         "Same real claim: chest opened and exact items",true,true));
