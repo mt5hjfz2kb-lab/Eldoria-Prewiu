@@ -2089,11 +2089,30 @@
           "ownership_revision": 161,
           "transferred_at": "2026-11-07T18:54:22.588Z",
           "reason": "Native325, Android22 and complete corrected UI42395390748 finished successfully; return authorized temporary Windows priority to Forja."
+        },
+        {
+          "owner": "chatgpt-vigilants-hero-mastery-integration-20261108",
+          "previous_owner": null,
+          "from_revision": 162,
+          "to_revision": 163,
+          "claimed_at": "2026-11-08T01:45:13.196Z",
+          "reason": "Propietario 08/11/2026 ordena integrar corrección probada de maestría Aldric/Lyra; workstream canónico disponible, se reutiliza trabajo aislado, sin ocupar runner Windows."
+        },
+        {
+          "owner": "chatgpt-vigilants-hero-mastery-integration-20261108",
+          "from_revision": 163,
+          "to_revision": 164,
+          "released_at": "2026-11-08T01:51:24.066Z",
+          "reason": "PR180 merged, exact five blobs verified in main, domain V4.1 and retention/march tests PASS, Unity Editor follow-up remains queued behind authorized beta owner. No runner or production publication taken.",
+          "evidence": {
+            "pr": 180,
+            "merge_sha": "5fcefd0060bc84bb72f8a2861e50b2da729fb594",
+            "domain_run": 42435703964,
+            "retention_run": 42435703987,
+            "march_run": 42435703932,
+            "native_queued_run": 42435949433
+          }
         }
-      ,
-        {"owner":"chatgpt-vigilants-hero-mastery-integration-20261108","previous_owner":null,"from_revision":162,"to_revision":163,"claimed_at":"2026-11-08T01:45:13.196Z","reason":"Propietario 08/11/2026 ordena integrar corrección probada de maestría Aldric/Lyra; workstream canónico disponible, se reutiliza trabajo aislado, sin ocupar runner Windows."}
-      ,
-        {"owner":"chatgpt-vigilants-hero-mastery-integration-20261108","from_revision":163,"to_revision":164,"released_at":"2026-11-08T01:51:24.066Z","reason":"PR180 merged, exact five blobs verified in main, domain V4.1 and retention/march tests PASS, Unity Editor follow-up remains queued behind authorized beta owner. No runner or production publication taken.","evidence":{"pr":180,"merge_sha":"5fcefd0060bc84bb72f8a2861e50b2da729fb594","domain_run":42435703964,"retention_run":42435703987,"march_run":42435703932,"native_queued_run":42435949433}}
       ],
       "ownership_revision": 164,
       "ownership_state": "available",
@@ -6774,7 +6793,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-beta-pages-20261107",
       "ownership_state": "claimed",
-      "ownership_revision": 8,
+      "ownership_revision": 9,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6793,16 +6812,14 @@
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "STRUCTURAL_STARTUP_NATIVE_AB_AND_WEBGL",
+      "phase": "STAGED4_PUBLIC_STARTUP_DELIVERED",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Run prepared isolated structural native comparison and canonical WebGL build; inspect actual results before browser or owner retry.",
+      "next": "Continue remaining beta telemetry and full journey verification; incorporate any physical-device defect report without certifying iPhone from desktop evidence.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6865,14 +6882,25 @@
           "physical_iphone": false,
           "release_for_external_testers": false,
           "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/mobile-v3.html"
+        },
+        "structural_candidate": {
+          "revision": "native325-staged4",
+          "public_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1",
+          "public_runtime_run": 42484725949,
+          "public_runtime_artifact": 13619076890,
+          "public_runtime_pass": true,
+          "local_reopen_run": 42482412101,
+          "physical_iphone_verified": false,
+          "release_for_external_testers": false
         }
       },
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "acquired_after_explicit_release",
-        "purpose": "Exact frozen source versus four-file staged-startup overlay, native parity, canonical journey, fresh WebGL; isolated project only"
+        "status": "released",
+        "released_at": "2026-11-08T13:31:10.262Z",
+        "reason": "Native build, local hardware runtime/save QA and actual public delivery QA completed. No heavy job remains for this delivered candidate."
       }
     }
   ],
