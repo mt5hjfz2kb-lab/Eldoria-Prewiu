@@ -361,7 +361,7 @@ namespace Eldoria.DailyTreasures
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
             Place(header.rectTransform,.5f,1f,.5f,1f,0,-8f,panelW-64f,40f);
             Place(subhead.rectTransform,.5f,1f,.5f,1f,0,-49f,panelW-44f,26f);
-            Place((RectTransform)closeButton.transform,1f,1f,1f,1f,-8f,-8f,42f,42f);
+            Place((RectTransform)closeButton.transform,1f,1f,1f,1f,-8f,-8f,48f,48f);
             int cols=portrait?2:4,rows=portrait?4:2;
             float left=15f,gap=7f;
             float gridTop=82f,gridBottom=83f;
@@ -405,7 +405,8 @@ namespace Eldoria.DailyTreasures
                 portrait?195f:165f,portrait?150f:125f);
             Place(resultText.rectTransform,.5f,.5f,.5f,.5f,0,
                 portrait?-140f:-95f,panelW-45f,portrait?165f:118f);
-            Place((RectTransform)skipButton.transform,1f,0f,1f,0f,-10f,10f,90f,35f);
+            // Skip stays away from the receipt and is a genuine >=44px hit target.
+            Place((RectTransform)skipButton.transform,1f,1f,1f,1f,-10f,-60f,100f,45f);
         }
         void Update()
         {
