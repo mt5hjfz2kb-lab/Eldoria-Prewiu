@@ -5,69 +5,37 @@ namespace Eldoria.BreachWatch
 {
     // Entirely new vector geometry. No RoyalHUD/Forja sprites, plates or layout.
     // Independent UI meshes remain crisp at any physical resolution.
-    public sealed class BreachWatchPlate : MaskableGraphic
+    // Own original raster mineral materials generated once, not the flat
+    // geometric surfaces used by the rejected native concept.
+    // Uses Unity's real nine-slice renderer and independent raycast surfaces.
+    public sealed class BreachWatchPlate : Image
     {
         public enum PlateType { Basalt, Obsidian, Resource, Action, Selected, Dangerous }
-        public PlateType Type = PlateType.Basalt;
+        PlateType plateType = PlateType.Basalt;
+        public PlateType Type
+        {
+            get => plateType;
+            set
+            {
+                if(plateType == value && sprite) return;
+                plateType = value;
+                RefreshMaterial();
+            }
+        }
         public bool CopperEdge = true;
-        protected override void Awake() { base.Awake(); raycastTarget = false; }
-        static Color C(byte r, byte g, byte b, byte a=255) => new Color32(r,g,b,a);
-        static Rect Shrink(Rect r, float d) => new Rect(r.xMin+d, r.yMin+d, Mathf.Max(1,r.width-2*d), Mathf.Max(1,r.height-2*d));
-        static void Poly(VertexHelper mesh, Rect rect, float chamfer, Color top, Color bottom)
+        protected override void Awake()
         {
-            var r=rect; float cut=Mathf.Min(chamfer,Mathf.Min(r.width,r.height)*.22f);
-            Vector2[] points = {
-                new Vector2(r.xMin+cut,r.yMax),new Vector2(r.xMax-cut,r.yMax),
-                new Vector2(r.xMax,r.yMax-cut),new Vector2(r.xMax,r.yMin+cut),
-                new Vector2(r.xMax-cut,r.yMin),new Vector2(r.xMin+cut,r.yMin),
-                new Vector2(r.xMin,r.yMin+cut),new Vector2(r.xMin,r.yMax-cut)};
-            int start=mesh.currentVertCount;
-            var center=new Vector2(r.center.x,r.center.y);
-            mesh.AddVert(new UIVertex{position=center,color=Color.Lerp(top,bottom,.5f),uv0=Vector2.zero});
-            foreach(var pt in points)mesh.AddVert(new UIVertex{position=pt,color=Color.Lerp(top,bottom,Mathf.InverseLerp(r.yMax,r.yMin,pt.y)),uv0=Vector2.zero});
-            for(int i=0;i<8;i++)mesh.AddTriangle(start,start+i+1,start+(i+1)%8+1);
+            base.Awake();
+            raycastTarget = false;
+            RefreshMaterial();
         }
-        static void Line(VertexHelper mesh, Vector2 a,Vector2 b,float width,Color color)
+        public void RefreshMaterial()
         {
-            Vector2 d=b-a;if(d.sqrMagnitude<.0001f)return;
-            Vector2 n=new Vector2(-d.y,d.x).normalized*(width*.5f);
-            int start=mesh.currentVertCount;
-            mesh.AddVert(new UIVertex{position=a+n,color=color});mesh.AddVert(new UIVertex{position=a-n,color=color});
-            mesh.AddVert(new UIVertex{position=b-n,color=color});mesh.AddVert(new UIVertex{position=b+n,color=color});
-            mesh.AddTriangle(start,start+1,start+2);mesh.AddTriangle(start,start+2,start+3);
-        }
-        protected override void OnPopulateMesh(VertexHelper vh)
-        {
-            vh.Clear();Rect r=GetPixelAdjustedRect();if(r.width<2||r.height<2)return;
-            bool glow=Type==PlateType.Selected||Type==PlateType.Action;
-            Color rim=glow?C(160,93,63):C(77,67,61);
-            Color mainTop=Type==PlateType.Resource?C(40,43,44):Type==PlateType.Obsidian?C(23,28,32):C(34,39,42);
-            Color mainBottom=Type==PlateType.Resource?C(17,21,24):C(14,19,23);
-            Poly(vh,new Rect(r.xMin+1,r.yMin-2,r.width,r.height),12,C(3,5,6,230),C(3,4,5,220));
-            Poly(vh,r,12,C(9,12,15),C(7,9,11));
-            Poly(vh,Shrink(r,1.8f),11,rim,C(40,39,38));
-            Poly(vh,Shrink(r,4.1f),9,C(13,18,21),C(16,19,20));
-            Poly(vh,Shrink(r,5.8f),7,mainTop,mainBottom);
-            // Patinated bevel, scored basalt and restrained light at edges.
-            Line(vh,new Vector2(r.xMin+14,r.yMax-6),new Vector2(r.xMax-14,r.yMax-6),1.1f,C(133,108,88,130));
-            Line(vh,new Vector2(r.xMin+12,r.yMin+6),new Vector2(r.xMax-12,r.yMin+6),1f,C(2,6,8,230));
-            Line(vh,new Vector2(r.xMin+8,r.yMax-15),new Vector2(r.xMin+8,r.yMin+18),.8f,C(87,92,91,85));
-            if(CopperEdge) Line(vh,new Vector2(r.xMin+14,r.yMax-2),new Vector2(r.xMin+Mathf.Min(r.width*.48f,120),r.yMax-2),2f,glow?C(212,121,73):C(119,69,53,185));
-            // The fissure is a quiet carved stone scar, never a neon effect.
-            if(r.width>100&&r.height>46)
-            {
-                float x=r.xMax-20,y=r.yMax-10;
-                Line(vh,new Vector2(x-13,y),new Vector2(x-7,y-7),.9f,C(143,91,70,85));
-                Line(vh,new Vector2(x-7,y-7),new Vector2(x-11,y-15),.9f,C(143,91,70,85));
-                Line(vh,new Vector2(x-11,y-15),new Vector2(x-4,y-20),.75f,C(143,91,70,72));
-            }
-            // Deliberate matte-grain rather than a flat app-style rectangle.
-            for(int i=0;i<Mathf.Min(24,(int)(r.width*r.height/1300f));i++)
-            {
-                float u=((i*37)%97)/97f,v=((i*53+19)%89)/89f;
-                float x=Mathf.Lerp(r.xMin+18,r.xMax-18,u),y=Mathf.Lerp(r.yMin+12,r.yMax-12,v);
-                Line(vh,new Vector2(x,y),new Vector2(x+2.5f,y-.35f),.5f,C(124,114,108,22));
-            }
+            var next = BreachWatchMaterialLibrary.For(plateType);
+            if(next != sprite) sprite = next;
+            type = Image.Type.Sliced;
+            preserveAspect = false;
+            color = Color.white;
         }
     }
 
