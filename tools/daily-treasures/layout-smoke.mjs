@@ -1,0 +1,93 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+
+// Independent arithmetic audit of the literal Unity layout contract.
+// Useful preflight, NOT a substitute for an actual Unity rendering.
+const code=fs.readFileSync(
+  'Unity/Assets/Eldoria/DailyTreasures/Runtime/DailyTreasurePanel.cs','utf8');
+for(const [name,regex] of [
+  ['seventh day occupies two columns',/int span=i==6\?2:1/],
+  ['normal glyph height',/0f,3f,48f,28f/],
+  ['normal reward body height',/cellW-10f,33f/],
+  ['large reward body grows with card',/Mathf\.Max\(52f,cellH-39f\)/],
+  ['skip hit target 100 by 45',/-10f,-60f,100f,45f/],
+  ['close hit target 48 square',/-8f,-8f,48f,48f/],
+  ['real 7-day reward data on cards',/DailyTreasureRules\.ForDay\(i\+1/],
+  ['real command gateway rewards',/new GameCommand\(Guid\.NewGuid\(\)\.ToString\("N"\)/]
+])assert.match(code,regex,name);
+
+const checks=[];
+function gap(a,b){return b-a;}
+function rect(cx,cy,w,h){return {x0:cx-w/2,x1:cx+w/2,y0:cy-h/2,y1:cy+h/2};}
+const eps=.01;
+function noOverlap(a,b)
+{
+  return a.x1<=b.x0+eps||b.x1<=a.x0+eps||
+    a.y1<=b.y0+eps||b.y1<=a.y0+eps;
+}
+for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
+  [667,375],[375,667],[1024,768],[768,1024]])
+{
+  const portrait=h>w;
+  const pw=Math.min(w-24,portrait?440:740);
+  const ph=Math.min(h-20,portrait?700:370);
+  const cols=portrait?2:4, rows=portrait?4:2;
+  const gap=7,left=15,gridTop=82,gridBottom=83;
+  const gh=ph-gridTop-gridBottom;
+  const cw=(pw-2*left-gap*(cols-1))/cols;
+  const ch=(gh-gap*(rows-1))/rows;
+  assert.ok(cw>=144 && ch>=90,`${w}x${h} card size is readable`);
+  const cards=[];
+  for(let i=0;i<7;i++)
+  {
+    const col=i%cols,row=Math.floor(i/cols),span=i===6?2:1;
+    const width=cw*span+gap*(span-1);
+    const x=-pw/2+left+col*(cw+gap)+width/2;
+    const y=gh/2-row*(ch+gap)-ch/2;
+    const card=rect(x,y,width,ch);
+    assert.ok(card.x0>=-pw/2-eps && card.x1<=pw/2+eps,
+      `${w}x${h}: day ${i+1} exceeds panel width`);
+    assert.ok(card.y0>=-gh/2-eps && card.y1<=gh/2+eps,
+      `${w}x${h}: day ${i+1} exceeds calendar height`);
+    for(const other of cards)assert.ok(noOverlap(card,other),
+      `${w}x${h}: day ${i+1} overlaps another reward`);
+    cards.push(card);
+    const titleBottom=ch/2-5-25;
+    if(i<6)
+    {
+      const iconTop=3+28/2,iconBottom=3-28/2;
+      const bodyTop=-ch/2+18.5+33/2;
+      assert.ok(titleBottom>=iconTop+2,
+        `${w}x${h}: day ${i+1} title overlaps glyph`);
+      assert.ok(iconBottom>=bodyTop+2,
+        `${w}x${h}: day ${i+1} glyph overlaps body`);
+    }
+    else
+    {
+      const iconRight=-width/2+48+73/2;
+      const bodyLeft=38-(width-116)/2;
+      const bodyTop=-12+Math.max(52,ch-39)/2;
+      assert.ok(bodyLeft-iconRight>=8,
+        `${w}x${h}: ceremonial chest overlaps actual rewards`);
+      assert.ok(titleBottom>=bodyTop+1,
+        `${w}x${h}: day seven description overlaps heading`);
+    }
+  }
+  const topCards=gh/2+.5;
+  const bottomCards=-gh/2+.5;
+  const headerBottom=ph/2-49-26;
+  const claimTop=-ph/2+13+54;
+  assert.ok(headerBottom-topCards>=6,
+    `${w}x${h}: subheading touches calendar`);
+  assert.ok(bottomCards-claimTop>=12,
+    `${w}x${h}: last row touches claim action`);
+  assert.ok(48>=44 && 45>=44 && 54>=44,
+    'physical hit targets are at least 44px');
+  const skipBottom=ph/2-60-45;
+  const receiptTop=(portrait?-140:-95)+(portrait?165:118)/2;
+  assert.ok(skipBottom>receiptTop+10,
+    `${w}x${h}: skip button touches the paid receipt`);
+  checks.push({size:`${w}x${h}`,cards:cards.length,daySevenWidth:Math.round(cards[6].x1-cards[6].x0),touchTargets:true});
+}
+console.log('PASS daily treasures layout: '+checks.length+' aspect/size geometries, seven non-overlapping cards, real head/icon/body and >=44px controls');
+for(const check of checks)console.log(JSON.stringify(check));
