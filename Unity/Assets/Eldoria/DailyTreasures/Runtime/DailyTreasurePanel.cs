@@ -24,6 +24,7 @@ namespace Eldoria.DailyTreasures
         Text header,subhead,claimCaption,resultText,entryCaption;
         readonly Text[] dayHead=new Text[7],dayBody=new Text[7];
         readonly Image[] dayBack=new Image[7],sparks=new Image[12];
+        readonly DailyTreasureRewardGlyph[] dayGlyph=new DailyTreasureRewardGlyph[7];
         DailyTreasureChestGraphic chest;
         Image glow;
         Texture2D glowTexture;
@@ -162,6 +163,13 @@ namespace Eldoria.DailyTreasures
                 var day=NewRect("Day "+(i+1)+" / non-clickable informational card",calendar);
                 dayBack[i]=Plate(day,i==6?new Color(.27f,.20f,.11f,1f):Oak,false);
                 Relief(day);
+                var emblem=NewRect("Recognizable actual reward icon",day);
+                dayGlyph[i]=emblem.gameObject.AddComponent<DailyTreasureRewardGlyph>();
+                dayGlyph[i].Kind=i==0||i==3?DailyTreasureGlyphKind.Wood:
+                    i==1?DailyTreasureGlyphKind.Stone:
+                    i==5?DailyTreasureGlyphKind.Food:
+                    i==6?DailyTreasureGlyphKind.Chest:DailyTreasureGlyphKind.Time;
+                dayGlyph[i].raycastTarget=false;
                 dayHead[i]=Label(day,"Day heading","DÍA "+(i+1),17,Gold,TextAnchor.MiddleCenter);
                 dayBody[i]=Label(day,"Actual reward contents","",15,Ivory,TextAnchor.MiddleCenter);
                 Stretch(dayHead[i].rectTransform);
@@ -272,7 +280,7 @@ namespace Eldoria.DailyTreasures
                 var item=DailyTreasureRules.ForDay(i+1,next?reward.Streak:0);
                 bool newCycle=daily.CycleDay==7 && upcoming==1 && reward.IsValid;
                 bool collected=!newCycle && daily.CycleDay>0 && i+1<=daily.CycleDay;
-                dayHead[i].text="DÍA "+(i+1)+(collected?"  ✓":next?"  ●":"");
+                dayHead[i].text="DÍA "+(i+1)+(collected?"  OK":next?"  HOY":"");
                 dayHead[i].color=next?Ivory:Gold;
                 dayBack[i].color=next?new Color(.42f,.29f,.16f,1f):
                     collected?new Color(.15f,.18f,.15f,1f):
@@ -287,11 +295,11 @@ namespace Eldoria.DailyTreasures
         static string ShortReward(DailyTreasureReward reward)
         {
             string text="";
-            if(reward.Wood>0)text+="Madera "+reward.Wood+"  ";
-            if(reward.Stone>0)text+="Piedra "+reward.Stone+"  ";
-            if(reward.Food>0)text+="Comida "+reward.Food+"  ";
-            if(reward.SpeedupOneMinute>0)text+="Acel. 1 min ×"+reward.SpeedupOneMinute+"  ";
-            if(reward.SpeedupFiveMinutes>0)text+="Acel. 5 min ×"+reward.SpeedupFiveMinutes;
+            if(reward.Wood>0)text+="Madera "+reward.Wood+"\n";
+            if(reward.Stone>0)text+="Piedra "+reward.Stone+"\n";
+            if(reward.Food>0)text+="Comida "+reward.Food+"\n";
+            if(reward.SpeedupOneMinute>0)text+="1 min x"+reward.SpeedupOneMinute+"\n";
+            if(reward.SpeedupFiveMinutes>0)text+="5 min x"+reward.SpeedupFiveMinutes+"\n";
             return text.Trim();
         }
         void Claim()
@@ -369,7 +377,9 @@ namespace Eldoria.DailyTreasures
                 float y=gridHeight*.5f-row*(cellH+gap)-cellH*.5f;
                 Place(dayBack[i].rectTransform,.5f,.5f,.5f,.5f,x,y,cellW,cellH);
                 Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,0f,-5f,cellW-6f,25f);
-                Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,0f,-11f,cellW-10f,cellH-34f);
+                Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,0f,7f,51f,40f);
+                Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
+                    0f,-cellH*.5f+23f,cellW-10f,37f);
             }
             Place((RectTransform)claimButton.transform,.5f,0f,.5f,0f,
                 0f,13f,Mathf.Min(panelW-30f,portrait?325f:405f),54f);
