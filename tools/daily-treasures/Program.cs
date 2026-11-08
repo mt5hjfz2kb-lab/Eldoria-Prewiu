@@ -320,6 +320,83 @@ internal static class Program
         try{DailyTreasureFoley.Render(DailyTreasureFoleyCue.Latch,1000);}
         catch(ArgumentOutOfRangeException){badSoundRate=true;}
         True(badSoundRate,"invalid audio sampling is rejected");
+        // Premium live-game milestone stages are DIFFERENT SCENES, not the
+        // same daily coffer with a tint. Verify stage boundaries and title/
+        // Skip/Continue touch space at every supported portrait/landscape.
+        var stageTypes=new[]{
+            ("milestone:hero:lyra",DailyTreasureStageKind.Lyra),
+            ("scout:first:family",DailyTreasureStageKind.Explorers),
+            ("vigilant:chapter:25",DailyTreasureStageKind.Vigilants),
+            ("milestone:bastion:5",DailyTreasureStageKind.Bastion)};
+        for(int n=0;n<stageTypes.Length;n++)
+            Eq(DailyTreasureStageDirection.FromEvent(stageTypes[n].Item1),
+                stageTypes[n].Item2,"true milestone stage type "+n);
+        Eq(DailyTreasureStageDirection.FromEvent(null),
+            DailyTreasureStageKind.Daily,"daily loot never fabricates a milestone");
+        Eq(DailyTreasureStageDirection.FromEvent("future:unknown"),
+            DailyTreasureStageKind.Daily,"future event only uses safe baseline art");
+        foreach(var device in new[]{
+            (390f,844f),(844f,390f),(900f,1600f),(1600f,900f),
+            (375f,667f),(667f,375f),(1024f,768f),(768f,1024f)})
+        {
+            bool portrait=device.Item2>device.Item1;
+            float width=Math.Min(device.Item1-24f,portrait?440f:740f);
+            float height=Math.Min(device.Item2-20f,portrait?700f:370f);
+            foreach(var target in stageTypes)
+            {
+                var stage=DailyTreasureStageDirection.Compose(
+                    target.Item1,device.Item1,device.Item2);
+                True(stage.Kind==target.Item2,"unique painted event stage");
+                True(stage.ChestW>180f && stage.ChestH>150f &&
+                     stage.ChestX-stage.ChestW/2>=-width/2 &&
+                     stage.ChestX+stage.ChestW/2<=width/2 &&
+                     stage.ChestY-stage.ChestH/2>=-height/2 &&
+                     stage.ChestY+stage.ChestH/2<=height/2,
+                     "premium chest remains fully within real safe area");
+                True(stage.ReceiptW>180f && stage.ReceiptH>50f &&
+                     stage.ReceiptX-stage.ReceiptW/2>=-width/2 &&
+                     stage.ReceiptX+stage.ReceiptW/2<=width/2,
+                     "readable real-earned explanation is visible");
+                // Continue is the same canonical 54px action at the base.
+                float continueTop=-height/2+67f;
+                True(stage.ReceiptY-stage.ReceiptH/2>=continueTop+8f,
+                    "earned event description cannot cover Continue");
+                True(stage.ReceiptY+stage.ReceiptH/2<=
+                    stage.ChestY-stage.ChestH/2-7f,
+                    "explanation stays below dimensional illustrated chest");
+                if(target.Item2==DailyTreasureStageKind.Bastion)
+                {
+                    True(stage.SceneryOpacity==0f &&
+                         stage.BackdropOpacity<.70f,
+                         "completed Bastion preserves actual city behind translucent bronze");
+                    True(!stage.SideBySide,
+                         "actual-city Bastion must not imitate unrelated landmark artwork");
+                }
+                else
+                {
+                    True(stage.SceneryOpacity>=.70f &&
+                         stage.SceneW>=300f && stage.SceneH>190f,
+                         "real painterly event scene is large and legible");
+                    True(stage.SceneX-stage.SceneW/2>=-width/2-1 &&
+                         stage.SceneX+stage.SceneW/2<=width/2+1 &&
+                         stage.SceneY-stage.SceneH/2>=-height/2 &&
+                         stage.SceneY+stage.SceneH/2<=height/2,
+                         "real original painting stays within decorated event frame");
+                    Eq(stage.SideBySide,!portrait,
+                         "true painterly scene and coffer use horizontal storytelling on landscape");
+                    if(stage.SideBySide)
+                        True(stage.SceneX+stage.SceneW/2+8f<=
+                             stage.ChestX-stage.ChestW/2,
+                            "large original painterly scenery and coffer do not obscure each other");
+                    else
+                        True(stage.SceneY-stage.SceneH/2<
+                             stage.ChestY+stage.ChestH/2 &&
+                             stage.SceneY+stage.SceneH/2>
+                             stage.ChestY-stage.ChestH/2,
+                            "portrait imagery layers behind the actual chest, not as an unrelated thumbnail");
+                }
+            }
+        }
         Console.WriteLine("PASS daily treasures domain: "+checks+" assertions");
     }
 }
