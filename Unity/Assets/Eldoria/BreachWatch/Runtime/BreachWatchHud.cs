@@ -90,6 +90,21 @@ namespace Eldoria.BreachWatch
             boldFont==Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-SemiBold") &&
             bodyFont==Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Regular") &&
             bodyBoldFont==Resources.Load<Font>("VigiliaArt/Fonts/LibreBaskerville-Bold");
+        public bool HasPremiumResourceSurfaces
+        {
+            get
+            {
+                for(int i=0;i<resourceChips.Length;i++)
+                {
+                    if(!resourceChips[i])return false;
+                    var surface=resourceChips[i].GetComponent<BreachWatchPlate>();
+                    if(!surface || !surface.sprite ||
+                       surface.sprite.name!="slate_resource" ||
+                       surface.type!=Image.Type.Sliced)return false;
+                }
+                return true;
+            }
+        }
         public bool HasTrueResourceIllustrations =>
             resourceIllustrations[0] && resourceIllustrations[0].sprite &&
             resourceIllustrations[0].sprite.name=="wood" &&
@@ -351,11 +366,18 @@ namespace Eldoria.BreachWatch
             identityName=Label(identity,"Player name",22,TextAnchor.MiddleLeft,TextIvory,true);
             identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Muted);
             resourceRow=Rect("Separate resource stones",uiRoot);
+            var originalResourceStone=Resources.Load<Sprite>(
+                "VigiliaArt/PremiumSurfaces/slate_resource");
             for(int i=0;i<3;i++)
             {
                 resourceChips[i]=Rect("Resource "+i,resourceRow);
-                Plate(resourceChips[i],BreachWatchPlate.PlateType.Resource);
-                AddBevel(resourceChips[i]);
+                var resourceSurface=Plate(resourceChips[i],BreachWatchPlate.PlateType.Resource);
+                // Single premium brass-edged 9-slice capsule. The earlier
+                // procedural tile PLUS a second border produced an ugly
+                // cross/X behind the actual resource amount in Unity.
+                if(originalResourceStone)
+                    resourceSurface.ApplyIndependentArt(originalResourceStone,true);
+                else AddBevel(resourceChips[i]);
                 var picture=Rect("True illustrated resource",resourceChips[i]);
                 resourceIllustrations[i]=picture.gameObject.AddComponent<Image>();
                 resourceIllustrations[i].sprite=Resources.Load<Sprite>(
