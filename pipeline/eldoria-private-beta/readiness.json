@@ -86,7 +86,7 @@
     "release_for_external_testers": false,
     "physical_iphone_result": "OWNER_REPORTED_FAILURE: still enters for one second and exits"
   },
-  "updated_at": "2026-11-08T15:59:03.429Z",
+  "updated_at": "2026-11-08T16:20:51.592Z",
   "mobile_candidate_history": [
     {
       "status": "DESKTOP_STARTUP_AND_WELCOME_VERIFIED_LIVE",
@@ -340,5 +340,20 @@
       "allocation_exception_visible": false,
       "navigation_event_visible": false
     }
+  },
+  "compact_terrain_candidate": {
+    "status": "SOURCE_AND_EXACT_INDEX_TESTED_NATIVE_RESOURCE_BLOCKED",
+    "published": false,
+    "phone_fix_confirmed": false,
+    "vertices": 369163,
+    "previous_buckets": 331431,
+    "old_index_allocated_bytes": 76354672,
+    "new_index_allocated_bytes": 10101032,
+    "allocation_test_run": 42498715432,
+    "full_source_syntax_and_parity_run": 42499272127,
+    "native_preflight_run": 42499212153,
+    "native_executed": false,
+    "blocker": "windows-runner-heavy held by Vigilia owner revision21; alternate hosted Unity licensing unconfigured",
+    "next": "Obtain legitimate native resource handoff, run prepared exact-source parity/journey/WebGL, inspect phase allocations before publishing"
   }
 }
