@@ -112,3 +112,23 @@ The already imported native project has frozen Git code 948ffa9837168a0b68dab80b
 Actual Unity run 42431391139, source d5509a9cabd84fe13a6a9ed2b827bb1e92ec519d, executed the baseline, but the broad exception gate rejected an Editor Search indexing ArgumentOutOfRangeException. Its stack is UnityEditor.Search.SearchDatabase / SearchInit.IndexationOnStartup, not player code. Artifact 13598050201 (ZIP SHA256 86b1edd53ab213e968bae0e0e6e2e93adfb08624446a0dcd58f4c53490aa44e1) records failure and warm-cache-restoration.restored=true. No candidate compilation/build was certified. The exact Editor-only exception is now preserved separately in probe results; all other exceptions remain fatal. Repeat run 42431634641 uses source 67c0d4393f5f27d6c540b988beecc23e3fc0ac8e. Its result is pending.
 
 The parser also reports preexisting DepthB10/layer_index.json.meta malformed YAML during asset import. This is outside the startup overlay and must not be silently presented as a clean import. Native canonical and WebGL gates remain required.
+
+## Verified progress, 2026-11-08 01:48 UTC
+
+Run 42431634641 compiled the staged source and passed both actual startup/scene reload comparisons. Artifact 13599540736, ZIP SHA256 9132a3123293833c78287986241a296497993a4fafaf89acec1a01b1475c88db. Permanent comparison: pipeline/eldoria-private-beta/native-startup-parity-42431634641.json.
+- Terrain geometry/query hashes identical across both variants and reloads; 2142 verified sites and 17 cities.
+- Verification dictionary retained buckets: 331431 original, 0 staged.
+- Sampled Editor managed peaks decreased 97009664 and 54599680 bytes; managed memory after explicit full GC decreased about 59–61 MB.
+- Total native allocation/reservation peaks did not show a consistent reduction. These results are NOT a total-process-RAM claim or physical iPhone certification.
+
+The following canonical journey process did not finish and reached the 40-minute external deadline. Its launch used Editor delayCall, which is vulnerable to the observed Editor Search callback exception; this explanation was an inference, not a mobile crash diagnosis. The owned process was stopped by Actions cleanup, and its preserved source/outputs were recovered and hash-verified before the next run.
+
+Run 42435095850, source 91734045e8d32cc90cc4843b4b7e08e57b1a0458, job128592182140:
+- Recovery step succeeded.
+- Baseline and staged startup comparisons passed again.
+- Canonical I–V journey certificate passed: the pipeline advanced to ValoriaIntegratedWebBuild.Build at 01:46:15 UTC. Full artifact/restoration/browser evidence still pending.
+- The launcher now uses Editor update, records checks, and has a 300-second runtime watchdog; native subprocess limit is 480 seconds, WebGL build limit 2400 seconds. Timeout stops only the owned process tree before restoring preserved inputs.
+- Live phase is published in the beta/native-phase commit status; use the full /commits/<sha>/status response to read its description.
+- The paired packaging/browser workflow source is 281c619331c8babafbf68d676b16bfd90c1fb338. It requires this exact native run to succeed before packaging, then requires D3D11 browser startup, actual entry/reload and visible nickname OCR. No public deployment has occurred.
+
+Still blocked for external testers. Public mobile-v3 remains the physically failed candidate3.
