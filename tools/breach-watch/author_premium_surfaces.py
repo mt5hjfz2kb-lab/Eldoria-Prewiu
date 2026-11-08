@@ -165,6 +165,15 @@ def surface(name,d):
     # The owner-approved independent gold ring handles top/bottom ornament
     # OUTSIDE the content. Only fixed corner pins live in this sprite.
     # This removes the stale diamond which previously crossed the live CTA.
+    if kind=="quest":
+        # Chiselled open hairline and faint right bronze taper; no text or
+        # progress is baked in. Live Unity Text/Buttons remain editable.
+        lip=outline(17)
+        draw.line(lip+[lip[0]],fill=(128,81,48,162),width=2)
+        for yy in (72,108,145):
+            draw.line((23,yy,29,yy+8),fill=(210,146,78,78),width=1)
+        draw.line((w-91,21,w-38,h//2),fill=(208,145,72,165),width=2)
+        draw.line((w-38,h//2,w-91,h-21),fill=(209,136,67,165),width=2)
     if kind=="portrait":
         # A single restrained gold inner lip, not triple geometric borders.
         for yoff,color in [(33,(34,25,20,255)),(37,(212,148,71,255))]:
