@@ -2,6 +2,11 @@ using System;
 
 namespace Eldoria.DailyTreasures
 {
+    // Same premium artwork/animation grammar, with measured intensity for
+    // ordinary special chests versus rare chapter/hero/weekly ceremonies.
+    // No separate gameplay payout, loot rarity, or pay-to-win multiplier.
+    public enum DailyTreasureCeremonyTier { Quiet, Special, Legendary }
+
     /// <summary>
     /// Purely visual cinematic timings for the actual saved reward. Works with
     /// two aligned illustrated assets and masks their pose change with a warm
@@ -49,6 +54,22 @@ namespace Eldoria.DailyTreasures
             return new DailyTreasureRevealFrame(
                 1f-reveal,reveal,C(glow*.50f+amberSpike*.40f),
                 C(embers),scale,tremor,C(caption),t>=DurationSeconds);
+        }
+
+        public static DailyTreasureRevealFrame Sample(float elapsed,
+            DailyTreasureCeremonyTier tier)
+        {
+            var baseFrame=Sample(elapsed);
+            float energy=tier==DailyTreasureCeremonyTier.Legendary?1.26f:
+                tier==DailyTreasureCeremonyTier.Special?1f:.55f;
+            float scale=baseFrame.Scale+
+                (tier==DailyTreasureCeremonyTier.Legendary?
+                    Math.Min(.008f,baseFrame.Glow*.008f):0f);
+            return new DailyTreasureRevealFrame(
+                baseFrame.Closed,baseFrame.Opened,
+                C(baseFrame.Glow*energy),
+                C(baseFrame.Embers*energy),
+                scale,baseFrame.Shake,baseFrame.Text,baseFrame.Finished);
         }
     }
 }
