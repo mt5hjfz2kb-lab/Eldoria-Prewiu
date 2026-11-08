@@ -447,6 +447,15 @@ namespace Eldoria.DailyTreasures.Editor
                             "El combate y su resultado constan en el buzón.",
                             "Nuevo informe de exploración registrado."};
                         var styleSuffixes=new[]{"lyra","bastion","vigilants","scouts"};
+                        // The hero-hall, exploratory map and Vigilants
+                        // landmark use real painterly source textures from
+                        // Eldoria, not just a different color behind a chest.
+                        var requiredScenery=new[]{
+                            "EldoriaV41/heroes-hall-illustrated-v2",
+                            (string)null,
+                            "EldoriaRetention/vigilants-painterly-v2",
+                            "EldoriaRetention/scouts-painterly-v2"
+                        };
                         for(int style=0;style<styleIds.Length;style++)
                         {
                             var wallet=specialGateway.Snapshot();
@@ -454,6 +463,13 @@ namespace Eldoria.DailyTreasures.Editor
                                     styleLabels[style],styleDetails[style],
                                     legendary:style!=3,eventId:styleIds[style]),
                                 "Premium milestone style presentation unavailable: "+
+                                styleIds[style]);
+                            Need((requiredScenery[style]==null &&
+                                  !panel.HasMilestoneScenery) ||
+                                 (requiredScenery[style]!=null &&
+                                  panel.HasMilestoneScenery &&
+                                  panel.MilestoneSceneryKey==requiredScenery[style]),
+                                "Wrong or absent original painterly milestone scenery: "+
                                 styleIds[style]);
                             panel.SampleForNativeEvidence(
                                 DailyTreasureRevealTimeline.RevealPeakSeconds);
