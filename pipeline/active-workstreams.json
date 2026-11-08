@@ -6816,8 +6816,8 @@
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
       "phase": "COMPACT_TERRAIN_NATIVE_PARITY_OWNER_PRIORITY",
-      "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Preserve run42503628688. Fix discovered mismatch: clean isolated clone is checked against warm dirty-input audit. Validate clean audit separately; then native parity, WebGL and memory diagnosis.",
+      "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
+      "next": "Native42508059413 source6cf82e7 passed baseline/staged parity and canonical journey, currently compiling WebGL; await actual artifacts/restoration. Packaging42508475411 source239ae92 independently verified exact mobile6 texture/cubemap profile and waits for native success, then same-machine Apple GPU control/candidate entry/reload/memory comparison. No publication or physical iPhone PASS yet.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
