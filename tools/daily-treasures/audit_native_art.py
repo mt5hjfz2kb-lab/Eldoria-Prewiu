@@ -1,0 +1,265 @@
+#!/usr/bin/env python3
+"""Real Unity screenshot audit for PR181. Automatic prefilter, NOT artistic approval.
+
+Reads original PNGs and report.json from the same Unity commit; rejects missing/
+blank/identical reward stages, corrupted images, altered bytes, absent milestone
+art or false source labels. Produces a compact contact sheet for HUMAN comparison
+with the owner-approved visual reference, and machine-readable evidence.
+
+Requires Pillow>=11 (only in Ubuntu evidence-analysis job, not game runtime).
+"""
+import argparse
+import hashlib
+import json
+import math
+from pathlib import Path
+import re
+from PIL import Image, ImageDraw, ImageFont, ImageStat, ImageChops
+
+REQUIRED_SIZES = [(1600, 900), (900, 1600), (844, 390), (390, 844)]
+DAILY = (
+    "calendar", "closed", "opening", "opened",
+    "special-day4-calendar", "special-day4-opening", "special-day4-received",
+)
+MILESTONE = (
+    "style-lyra-opening", "style-lyra-result",
+    "style-bastion-opening", "style-bastion-result",
+    "style-vigilants-opening", "style-vigilants-result",
+    "style-scouts-opening", "style-scouts-result",
+)
+
+def assert_quality(condition, message):
+    if not condition:
+        raise ValueError("VISUAL_QUALITY_GATE: " + message)
+
+def sample(image):
+    # Normalized image samples make thresholds resolution-independent and
+    # avoid using an external OCR engine or changing the real PNG file.
+    rgb = image.convert("RGB").resize((196, 126), Image.Resampling.BOX)
+    stat = ImageStat.Stat(rgb)
+    means = stat.mean
+    std = stat.stddev
+    luminance = (means[0] * .2126 + means[1] * .7152 + means[2] * .0722)
+    warm = sum(
+        1 for r,g,b in rgb.getdata()
+        if r > 65 and r > g*1.09 and g > b*1.05
+    )
+    colorbins = len({
+        (r//24,g//24,b//24) for r,g,b in rgb.getdata()
+    })
+    return {
+        "luminance":round(luminance, 2),
+        "meanStdDev":round(sum(std)/3, 2),
+        "warmPixels":warm,
+        "uniqueColorBins":colorbins,
+        "thumb":rgb,
+    }
+
+def compare(a,b):
+    # A change in gold glow, chest lid AND prize-card composition should
+    # move more pixels than simple lossless PNG encoder noise.
+    aa=a.convert("RGB").resize((196,126), Image.Resampling.BOX)
+    bb=b.convert("RGB").resize((196,126), Image.Resampling.BOX)
+    delta=ImageChops.difference(aa,bb)
+    magnitude=sum(ImageStat.Stat(delta).mean)/3
+    shifted=sum(1 for r,g,bl in delta.getdata()
+                if (r+g+bl) > 48)
+    return {"avgRgbDifference":round(magnitude,2),
+            "changedPixels":shifted}
+
+def read_report(folder, expected_sha):
+    report_file=folder/"report.json"
+    assert_quality(report_file.is_file(),"Unity did not produce report.json")
+    r=json.loads(report_file.read_text(encoding="utf-8-sig"))
+    assert_quality(r.get("status")==
+        "NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING",
+        "Unity failed to render verified illustration; procedural backup is NOT art approval")
+    assert_quality(r.get("images")==44 and r.get("realGatewayClaims")==8
+         and r.get("graphicalPointerHits")==56
+         and r.get("visualOnlyMilestoneCaptures")==16,
+         "Incomplete real claims, native interactions or style preview coverage")
+    assert_quality(r.get("authoredSpritesImported") is True and
+        r.get("artApproved") is False and r.get("fullSceneVerified") is False,
+        "Source component must not claim final artistic/full-game certification")
+    assert_quality(r.get("source")==expected_sha,
+        "Captured source commit does not match the head SHA of the PR build")
+    return r
+
+def analyze(folder,expected_sha,output):
+    folder=folder.resolve()
+    output=output.resolve()
+    output.mkdir(parents=True,exist_ok=True)
+    r=read_report(folder,expected_sha)
+    shots=r.get("shots") or []
+    assert_quality(len(shots)==44,"Not exactly 44 original screenshot records")
+    expected=[]
+    for w,h in REQUIRED_SIZES:
+        expected.extend((variant,w,h) for variant in DAILY)
+        if (w,h) in {(844,390),(390,844)}:
+            expected.extend((variant,w,h) for variant in MILESTONE)
+    assert_quality(len(expected)==44,"Internal evidence manifest arithmetic changed")
+    wanted=set(expected)
+    actual={}
+    details=[]
+    for i,record in enumerate(shots):
+        filename=record.get("file","")
+        pattern=re.fullmatch(
+            r"real-unity-daily-(.+)-([0-9]+)x([0-9]+)\.png",filename)
+        assert_quality(pattern is not None,
+            "Suspicious original Unity PNG file name: "+filename)
+        variant=pattern.group(1)
+        w,h=int(pattern.group(2)),int(pattern.group(3))
+        key=(variant,w,h)
+        assert_quality(key in wanted, "Unexpected screenshot "+filename)
+        assert_quality(key not in actual, "Duplicated screenshot "+filename)
+        assert_quality((record.get("width"),record.get("height"))==(w,h),
+            "Manifest pixel dimensions mismatched "+filename)
+        assert_quality(record.get("nativeCanvas") is True,
+            "Non-native screenshot declared as Unity "+filename)
+        file=folder/filename
+        assert_quality(file.is_file(), "Missing screenshot "+filename)
+        data=file.read_bytes()
+        assert_quality(len(data)>7000 and len(data)==record.get("bytes"),
+            "Empty/partial screenshot "+filename)
+        assert_quality(hashlib.sha256(data).hexdigest()==record.get("sha256"),
+            "Screenshot was modified after the original Unity render: "+filename)
+        assert_quality(data.startswith(b"\x89PNG\r\n\x1a\n"),
+            "Invalid PNG container "+filename)
+        with Image.open(file) as im:
+            assert_quality(im.format=="PNG" and im.size==(w,h),
+                "Actual screenshot resolution mismatch "+filename)
+            assert_quality(im.mode in ("RGB","RGBA"),
+                "Unity did not export an RGB/RGBA screenshot "+filename)
+            thumb=im.convert("RGB").copy()
+        metrics=sample(thumb)
+        assert_quality(metrics["meanStdDev"]>8.0 and
+            metrics["uniqueColorBins"]>=25,
+            "Blank or flat native canvas; texture/image likely not rendered: "+filename)
+        assert_quality(metrics["warmPixels"]>4,
+            "Missing gilded accents/chest lighting: "+filename)
+        if variant.startswith("style-"):
+            assert_quality(record.get("preserved") is False,
+                "Visual-only style probe may never masquerade as actually paid loot: "+filename)
+        actual[key]=(thumb,metrics)
+        details.append({
+            "file":filename,"view":record.get("view"),"size":[w,h],
+            "luminance":metrics["luminance"],
+            "stddev":metrics["meanStdDev"],"warmPixels":metrics["warmPixels"],
+            "colorBins":metrics["uniqueColorBins"],
+        })
+    assert_quality(set(actual)==wanted,"Missing variant or device size")
+
+    transitions=[]
+    for w,h in REQUIRED_SIZES:
+        for a,b in [("closed","opening"),("closed","opened"),
+                    ("special-day4-opening","special-day4-received")]:
+            diff=compare(actual[(a,w,h)][0],actual[(b,w,h)][0])
+            # Deliberately low threshold: catches identical outputs while
+            # respecting a small chest on a wide, world-oriented phone.
+            assert_quality(diff["changedPixels"]>50 and
+                diff["avgRgbDifference"]>.30,
+                "Chest animation or reward result never changed the actual pixels: "+
+                f"{a} -> {b} on {w}x{h}")
+            transitions.append({"resolution":f"{w}x{h}",
+                                "from":a,"to":b,**diff})
+    for w,h in [(844,390),(390,844)]:
+        # Color-theme probes must not all be visually identical:
+        # an important guardian must feel different from a first discovery.
+        c=actual[("style-scouts-opening",w,h)][0]
+        v=actual[("style-vigilants-opening",w,h)][0]
+        diff=compare(c,v)
+        assert_quality(diff["avgRgbDifference"]>.22 and
+            diff["changedPixels"]>35,
+            "All rare milestone themes render identically at "+f"{w}x{h}")
+        transitions.append({"resolution":f"{w}x{h}",
+                            "from":"scouts","to":"vigilants",**diff})
+
+    # Contact sheet: one row per phone/desktop viewport, seven paid scenes;
+    # second contact sheet for special-event presentation in both orientations.
+    def sheet(keys,filename,columns):
+        fw,fh=260,200
+        rows=math.ceil(len(keys)/columns)
+        out=Image.new("RGB",(columns*fw,rows*fh),(18,16,15))
+        draw=ImageDraw.Draw(out)
+        for i,key in enumerate(keys):
+            variant,w,h=key
+            source=actual[key][0]
+            image=source.copy()
+            image.thumbnail((fw-16,fh-37),Image.Resampling.LANCZOS)
+            ix=(i%columns)*fw + (fw-image.width)//2
+            iy=(i//columns)*fh + 27+(fh-37-image.height)//2
+            out.paste(image,(ix,iy))
+            name=f"{variant} / {w}x{h}"
+            draw.text(((i%columns)*fw+6,(i//columns)*fh+5),
+                      name,fill=(230,193,131))
+        out.save(output/filename,optimize=True)
+
+    sheet(expected[:7]+expected[15:22]+expected[22:29]+expected[36:43],
+          "paid_reward_contact_sheet.png",7)
+    style=[k for k in expected if k[0] in MILESTONE]
+    sheet(style,"milestone_visual_styles_contact_sheet.png",4)
+
+    result={
+        "status":"AUTOMATED_NATIVE_PREFLIGHT_PASSED_ART_REVIEW_REQUIRED",
+        "sourceSha":expected_sha,
+        "screenshotsChecked":len(actual),
+        "verifiedActualGatewayClaims":8,
+        "verifiedNativePointerInteractions":56,
+        "verifiedVisualOnlyMilestoneFrames":16,
+        "artApproved":False,
+        "fullGameVerified":False,
+        "humanReviewStillRequired":True,
+        "checks":{
+            "imageHashesMatchUnityReport":True,
+            "noFlatOrBlankNativeCanvases":True,
+            "ceremonialStagesVisiblyDifferent":True,
+            "eventThemesNotIdentical":True,
+            "allFourAspectRatiosPresent":True,
+        },
+        "transitions":transitions,
+        "images":details
+    }
+    (output/"native_art_audit.json").write_text(
+        json.dumps(result,indent=2,ensure_ascii=False),encoding="utf-8")
+    print("PASS NATIVE SCREENSHOT PIXEL AUDIT:",len(actual),
+          "original Unity PNGs; illustration/theme transitions visible.")
+    print("REVIEW REQUIRED: owner aesthetic comparison and full game/mobile proof.")
+    return result
+
+def selftest():
+    from tempfile import TemporaryDirectory
+    with TemporaryDirectory() as tmp:
+        # Two original image buffers at small size: verifies perceptual
+        # comparison, pixel histogram and shape handling without a Unity run.
+        a=Image.new("RGB",(240,160),(13,12,12))
+        b=a.copy()
+        dr=ImageDraw.Draw(a);dr.rectangle((55,35,170,130),fill=(89,53,25))
+        dr=ImageDraw.Draw(b);dr.rectangle((55,35,170,130),fill=(220,151,61))
+        source=sample(a)
+        target=sample(b)
+        assert_quality(source["meanStdDev"]>8,"Synthetic chest detail missing")
+        assert_quality(target["warmPixels"]>100,"Warm colors not detected")
+        d=compare(a,b)
+        assert_quality(d["changedPixels"]>200,
+            "Opened chest cannot be distinguished from closed")
+        a.save(Path(tmp)/"original.png")
+        assert_quality((Path(tmp)/"original.png").is_file(),
+            "PNG save smoke failed")
+    print("PASS native art audit selftest: honest pixel comparison and no Unity claims")
+
+def main():
+    ap=argparse.ArgumentParser()
+    ap.add_argument("--selftest",action="store_true")
+    ap.add_argument("--input",type=Path)
+    ap.add_argument("--source-sha",type=str)
+    ap.add_argument("--output",type=Path)
+    args=ap.parse_args()
+    if args.selftest:
+        selftest()
+    else:
+        if not args.input or not args.source_sha or not args.output:
+            ap.error("Native artifact, source SHA and audit output are all required")
+        analyze(args.input,args.source_sha,args.output)
+
+if __name__=="__main__":
+    main()
