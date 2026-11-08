@@ -109,6 +109,7 @@ jobs:
           ref: main
           path: beta-structural-live
           sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Recheck fresh lease and protect every existing project
         shell: powershell
@@ -133,9 +134,15 @@ jobs:
           git -C $cache cat-file -e "$base^{commit}"
           if($LASTEXITCODE -ne 0){throw 'Frozen source absent from local cache'}
           $isolated=Join-Path $env:GITHUB_WORKSPACE "beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
-          # Worktree reads committed objects, never copies or resets the other working tree.
-          git -C $cache worktree add --detach $isolated $base
-          if($LASTEXITCODE -ne 0){throw 'Isolated worktree creation failed'}
+          # A separate repository borrows only committed objects; the cache's files,
+          # index, worktree configuration and Unity Library are never changed.
+          git clone --shared --no-checkout $cache $isolated
+          if($LASTEXITCODE -ne 0){throw 'Isolated local clone failed'}
+          git -C $isolated config core.sparseCheckout true
+          git -C $isolated config core.sparseCheckoutCone false
+          [IO.File]::WriteAllLines((Join-Path $isolated '.git/info/sparse-checkout'),[string[]]@('/Unity/**','/.gitignore','/.gitattributes'),(New-Object Text.UTF8Encoding($false)))
+          git -C $isolated checkout --detach $base
+          if($LASTEXITCODE -ne 0){throw 'Isolated Unity source materialization failed'}
       - name: Original versus staged native startup, canonical journey, then WebGL
         shell: powershell
         run: |
