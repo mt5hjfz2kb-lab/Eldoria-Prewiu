@@ -1,0 +1,781 @@
+{
+  "status": [
+    " M Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/aserradero-v.jpeg.meta",
+    " M Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/bastion-v.jpeg.meta",
+    " M Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/cantera-v.jpeg.meta",
+    " M Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/cuartel-v.jpeg.meta",
+    " M Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/granero-v.jpeg.meta",
+    " M Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-crest.png.meta",
+    " M Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-compass.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0ae5cda562b231f7d8ef7675cefc845f0379a0e3.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0c0df987935c1d1544a9e52da33325edb19f5f98.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0f317cfd9dae387cf6b154ed623b9c700762edd0.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/371ea4cbee26ce47c0f6d086edccae097a74e921.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5b052e69fc6c091f74e1815a64e2c92f243997ca.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5e7ef7c03cb0f9c10c2df31cb690ec9950f2195c.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5fbc98ff6a7e71858eb407a77cc5c94fcc4717e3.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/6043301ad238ef62b417d2baeefed8ac84738571.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/69e84cc6421486a43699ec47282e7a6272dd2d83.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/74a843ad16e3deb30b6035d168fe4ef5570c0d24.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/75eceae72c3fbd48e2ba51d93a91885b2080b860.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/7b6848358871a30918c4842349c301c9fc0b722c.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/9f99c1930e3952d23a516e70e0867aa424031840.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/a4599f4ad6d5e2ec45e961b5fa6d4872b9b776f8.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5a7a2191c98f3ded4fd02d5839a352b7d316612.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5ab68274bb848b27a08c26e9751b94b656bfe22.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/de2514e4480e1c590de14765da4854cfac3c5157.png.meta",
+    " M Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/f87f5ed5f4c059864855106ee339d761b913f0b1.png.meta",
+    " M Unity/ProjectSettings/ShaderGraphSettings.asset",
+    "?? Unity/.utmp/",
+    "?? Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary.meta",
+    "?? Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/",
+    "?? Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/PrivateFissure.glb",
+    "?? Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/PrivateFissure.glb.meta",
+    "?? Unity/Assets/Eldoria/Resources/WorldInventory/Materials.meta",
+    "?? Unity/Assets/Eldoria/Resources/WorldInventory/Materials/",
+    "?? Unity/Assets/Gsplat.meta",
+    "?? Unity/Assets/Gsplat/",
+    "?? Unity/Assets/NatureStarterKit2/Scene/DemoSettings.lighting",
+    "?? Unity/Assets/NatureStarterKit2/Scene/DemoSettings.lighting.meta"
+  ],
+  "files": [
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/reply/cache-v2-fc259eb2a326d83eff66.json",
+      "sha256": "8A5B0DA5927CF9E7C4FA48C6E8147981A27DAC5F42A3A9499C0AC0FB97402960",
+      "bytes": 33393
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/reply/cmakeFiles-v1-ce88df67638a3debd59b.json",
+      "sha256": "497D378B86C1FDEEFE15FC47924026873F3818075043CC7F07F151E53E089EAD",
+      "bytes": 38749
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/reply/codemodel-v2-ab161cc0255c84e4c1fb.json",
+      "sha256": "5107C9CA7FE51F5AA66286E6E0C3E966A34CB23179EACA8767EEB66F04076B5D",
+      "bytes": 2500
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/reply/directory-.-RelWithDebInfo-d0094a50bb2071803777.json",
+      "sha256": "7934B0EBD3C2643B221B784BF8C5AD209D92CDE7491E640A65FFE2138A34E8F2",
+      "bytes": 168
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/reply/directory-FramePacing-RelWithDebInfo-7f9c8865fd027a154c90.json",
+      "sha256": "F86047A699D671386C6C16F512F01BA61A0656A54268E7961D4B3F131D89343B",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/reply/directory-GameActivity-RelWithDebInfo-3edf2ef9e25ca0503118.json",
+      "sha256": "15D5F395DA03F00994BC1D2086CB70F840196CC10F7FEA6059B9BCF72BB83A4C",
+      "bytes": 190
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/reply/index-2026-11-07T18-06-35-0117.json",
+      "sha256": "442E9361D6E0015BBFC6BE837E72B5760D7B767EA15BF149451B271A0638B81E",
+      "bytes": 1951
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/reply/target-game-RelWithDebInfo-b5c30bede9f072df611a.json",
+      "sha256": "280D2A796E9609A87CAD6BB61B2586A313E0284CF985C0F9410A79F986887379",
+      "bytes": 6921
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.cmake/api/v1/reply/target-swappywrapper-RelWithDebInfo-0f0fde760244278a25d7.json",
+      "sha256": "AD3EE7EF62CE12FA9C4A6FF6203218B85571FED51A33049B289C233751F84D8E",
+      "bytes": 4065
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.ninja_deps",
+      "sha256": "6BE46AB623C7D500EB3B7CED945A9CB0CD03A985EF50786ABEF1C9049D3A5EC7",
+      "bytes": 214212
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/.ninja_log",
+      "sha256": "4C71BCDADDC038929798F054C8E6BEE7E0FF0B2C16445E892A1BEAA5E66BA595",
+      "bytes": 1407
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeCache.txt",
+      "sha256": "E25773728DA3DE80CD3F4AFD3EE6A906D167C9C7B2509D90132FD5F8FD204267",
+      "bytes": 20634
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake",
+      "sha256": "94AABB95ADADF4EE423DBF0A5E48351DCA22A848D8875680E5A80539965C4402",
+      "bytes": 4235
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake",
+      "sha256": "DE010541E3B709C0ACF4CF3687CA06E529FB3D20B784719A4F952C73C70E8F0B",
+      "bytes": 7309
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_C.bin",
+      "sha256": "499519A16C4067AC00924F1D95D19F42EFEC30DFCC0BF3B42EE5EB82B15261E7",
+      "bytes": 8256
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_CXX.bin",
+      "sha256": "307DADE2B25144882C757ED72B9C6BDA10AEFD190849692E0F8862E2F881BB96",
+      "bytes": 8384
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake",
+      "sha256": "9EA5B7D47973D0B886FDAED6CB69DA4259DF4C08BFA37DA213E63F7A4F5E0E6F",
+      "bytes": 516
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.c",
+      "sha256": "A5BC5D659352BB93E28CE0EC49B3B97490ECC65AFCE5456F43D04795D0AD627F",
+      "bytes": 25656
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o",
+      "sha256": "498AA663501936DEBC2092EEA5338D3C631FE00D786EB05DD0458DCA583C4B06",
+      "bytes": 6048
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.cpp",
+      "sha256": "6EE4286C9B42405EE114CCF00A8AE3093B7C2FF079CAE1A946AF11D96A5898AB",
+      "bytes": 25388
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.o",
+      "sha256": "C7C98A14D1099C044229449BBA0BFDC3963A247C76BFC7797AC3617849332BF0",
+      "bytes": 6064
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/TargetDirectories.txt",
+      "sha256": "6C88CC2FAE84FF5D1B652EC459E4A9AB164540527720CB5AF4BF26C84B850C79",
+      "bytes": 1345
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/cmake.check_cache",
+      "sha256": "95079B44BCEF481D601432C2FD3C654D7FE85B9C8386C355F2874502B47441D7",
+      "bytes": 86
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/CMakeFiles/rules.ninja",
+      "sha256": "A513AC61B25BCE59BDA9E30B5C2411992349498DD6CD5756E4A44326B122E101",
+      "bytes": 4571
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o",
+      "sha256": "4C4DD04E03E8D2344B276DC80BFD286CEF3C09572DC72EF1A8E3AEED8EEEEAA6",
+      "bytes": 23536
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/FramePacing/cmake_install.cmake",
+      "sha256": "5FBBF327AD03B78935E47B107353CCB3912438762E6AD42099521759FF62677D",
+      "bytes": 1591
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o",
+      "sha256": "9BEEB858D14AC2D419BBD6E6A6FA1779EA79EA82FCBDB6650324D43055132E8B",
+      "bytes": 557472
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o",
+      "sha256": "35B08C3FE295302AFC5F5279474DC5DA4858E7D39E9FDF516565E0F1174A82D0",
+      "bytes": 130344
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o",
+      "sha256": "31D6307D076706235268E69D91815BF32AAAC077F3EE286B0FCDB8BB89ADE3C8",
+      "bytes": 207352
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o",
+      "sha256": "46E2E8E53884FF3E90B5DC141E7AAE7F0E14C4FE48C655E1AC48F7FE53174D2A",
+      "bytes": 50752
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o",
+      "sha256": "A7EFD50DA4AA726479E0A496174F08B15EBF7589D3AE588A6A26E8301F8A6316",
+      "bytes": 389136
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o",
+      "sha256": "5F2F168BFDFFE6B9A6112007652499303EFC07B1A3424AFC46D811D62C6BA40C",
+      "bytes": 48704
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o",
+      "sha256": "02C10EA3AFDF3A9880B537461317EDC879185F98E6E9B325C7C527055BF96419",
+      "bytes": 101904
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o",
+      "sha256": "BFB337DB5C2CCEF60B3792491EBB809E90F9E3CD1638AF204266267DB646B916",
+      "bytes": 184352
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/GameActivity/cmake_install.cmake",
+      "sha256": "4A6EF2818A0C59375B0071CD124575E707AB63E5FC31769D8CC5A98983917734",
+      "bytes": 1592
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/additional_project_files.txt",
+      "sha256": "673FB6759D93D478D0C433C8AD47E74C9C7E4A389C7D6059B0EC2A34B2525FEF",
+      "bytes": 3368
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/android_gradle_build.json",
+      "sha256": "0688F9A36631FF326B2ED4E9D961C7237B70B384E9FD7FD8288007260BEBD6EE",
+      "bytes": 2748
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/android_gradle_build_mini.json",
+      "sha256": "A8F7FFEC83F9BB08F51CF0031C2FE9CFAB297492DB548AE4D413EE389CDACC0C",
+      "bytes": 2180
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/build.ninja",
+      "sha256": "9DC0D7A57B210B774BE73C7DD9E878D2AB44B5DB3C69EA42D4730C6A6414E562",
+      "bytes": 65224
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/build_file_index.txt",
+      "sha256": "4C4484DA09434F57CAA87997934D5C521B097B0F29CA03D1B43CF2951F28AF08",
+      "bytes": 536
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/cmake_install.cmake",
+      "sha256": "6F88334205CE9BD01C0D9F85C2AF5FE996C5778E06F508AE103E2BDC79DAAE65",
+      "bytes": 2532
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/compile_commands.json",
+      "sha256": "384FE041F53D8E66028ACE190C80CE4BA5B14FB942F587A76A698AD4EC7030E7",
+      "bytes": 14797
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/compile_commands.json.bin",
+      "sha256": "1E567CDBCA7418A2F7E69D5F2817F21C0ADCC85085BD8E7F7586F5E1CAF9657E",
+      "bytes": 4237
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/configure_fingerprint.bin",
+      "sha256": "0A40934011215EB749FEADE96A7493EB5E6D660958956CF4721160C55F14FC69",
+      "bytes": 2354
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/metadata_generation_command.txt",
+      "sha256": "C486749D0B45CEC7938C1EA8D246F9993A763F9A9771A022240839969059BA48",
+      "bytes": 1832
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/prefab_config.json",
+      "sha256": "8E64216F2DFE945DEF070F1D8D1A7B4CB2639A1F0B02F2108DD070C0F1D2A723",
+      "bytes": 526
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/arm64-v8a/symbol_folder_index.txt",
+      "sha256": "D539AC48283609838A2CC7A47AFE71039695C3EF6E83C94CB221E157B888C6AD",
+      "bytes": 203
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/hash_key.txt",
+      "sha256": "8B5E299F475CC2FE0BE1CE8EC911EB8C51E2CD77D220647D1AD6D2303F5C54F9",
+      "bytes": 1450
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/game-activity/game-activityConfig.cmake",
+      "sha256": "31BD1CE457A741B79F92B19FD1BC583303BB1D4483FABD0158511B210E95B93E",
+      "bytes": 1320
+    },
+    {
+      "path": "Unity/.utmp/RelWithDebInfo/1yf4s03r/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/games-frame-pacing/games-frame-pacingConfig.cmake",
+      "sha256": "4AE957AA74E2171553DA2AFCB6EB344B6AA94963D6AC5993881EFDAEC772D0E2",
+      "bytes": 1283
+    },
+    {
+      "path": "Unity/.utmp/tools/release/arm64-v8a/compile_commands.json",
+      "sha256": "384FE041F53D8E66028ACE190C80CE4BA5B14FB942F587A76A698AD4EC7030E7",
+      "bytes": 14797
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary.meta",
+      "sha256": "C012C26C19AB62638D1EC0D59730DB53271462BEF2318624CAD8C8638264140A",
+      "bytes": 172
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/Granary.prefab",
+      "sha256": "83CC5E3DC0EB01A39AE5CB41BBFDA548ACAC160E5C5A2D5F3A009AFEC8998DEF",
+      "bytes": 2633
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/Granary.prefab.meta",
+      "sha256": "FC252005727BA5A07023DD44A5C92AF3362182B55332AD76919DC3381A013AD7",
+      "bytes": 154
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/StockBarrel.prefab",
+      "sha256": "9249087D6F76954C409A861FB308109DA21514FE8317DBC4EFB8C90FF131F6B8",
+      "bytes": 10689
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/StockBarrel.prefab.meta",
+      "sha256": "2CB7BBA52BD44458827D1A0A40AD8FE41EA6AE9195788CCA447E29298AADF696",
+      "bytes": 154
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/StockCrate.prefab",
+      "sha256": "1371476AA542D45A8A823CE04751C5120AFD5FFBCF56F61FCCEA35712A9ED215",
+      "bytes": 10676
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/StockCrate.prefab.meta",
+      "sha256": "C3BDE8FF49F57E0A5F25BE9E5C35AFA03B55DA505DEA03535FCCA6F955330BF4",
+      "bytes": 154
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/StockSack.prefab",
+      "sha256": "1E7BCA7CB93CE14462DB35F8EB03A337F6255322C7E9E0901ED0871B466525B7",
+      "bytes": 10652
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/StockSack.prefab.meta",
+      "sha256": "DC6A751CB3FB6F79521A909C78E0B0E71AC39171B1687D5276C52CF6A62DD6B1",
+      "bytes": 154
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/StoneWorkshop.prefab",
+      "sha256": "B9B29E93AA932D02F40AFF0A57BB3A99F8264D84DF7E282DC87B63B6EDD16DDA",
+      "bytes": 11621
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/StoneWorkshop.prefab.meta",
+      "sha256": "ED4AB6ACAFFFF6D62EBB073DF707F5EFA53F9889EA4B389D680BDCAAEC08FCA9",
+      "bytes": 154
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-0.asset",
+      "sha256": "E672D7495C88B5ED659696E1393CAAED3B6D377345577FB7F5FF4CBB4F16595C",
+      "bytes": 6501007
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-0.asset.meta",
+      "sha256": "10C5246A7F1F818BD937E2D0CC10B8AE0AFD68BEB195D8A808FFAC14EA84E50F",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-1.asset",
+      "sha256": "5CD7813BCFBB79455D2661CF4E955AAD03A47C44CD6574BEE9EB89C19B997E52",
+      "bytes": 3527
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-1.asset.meta",
+      "sha256": "DC011A58B51AEDCE22FE9D091A37F3397FDC52B17771042212E11E418C74736E",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-10.asset",
+      "sha256": "824B91F2AEA8BD406BBDE24D64E8E4F7E48B72DF32A2708FAA709080B189D1A7",
+      "bytes": 40313
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-10.asset.meta",
+      "sha256": "2CB84975D9431AD5FC8686816AB5CD7F6244923DFD4150B15CE8A03FDD1135A6",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-11.asset",
+      "sha256": "D05A2BFEA8E68AD5F0A92EE1D613C87B70DDDFCC8AA9F05290E040E93733EBE7",
+      "bytes": 27039
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-11.asset.meta",
+      "sha256": "CC6CCF178B3EDE291DE2582C079CD1CC6757F778B6071FD567A73EE7392080A8",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-12.asset",
+      "sha256": "A1FBD22917824BF0273FE2D3F16193993190EC53D394B87E99778D8BB49BC2F9",
+      "bytes": 15732
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-12.asset.meta",
+      "sha256": "763AAB54768C4C789FCB7E1B687004A5EBA336FA751B82FBEB4884F9831B6125",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-13.asset",
+      "sha256": "7EF72E3889D0FFEA2AE21BD7B535D366EB0DA1E8EBD22EFD0F21BE27A059A67B",
+      "bytes": 74206
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-13.asset.meta",
+      "sha256": "381663A10A4891D8AFDF7F3BD23BEB407C30EA459E44E980488306BC0789C53C",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-14.asset",
+      "sha256": "568A716825BF5E779A7750E4B6FF39B0D469B956D3310016F09DD807AE0F422B",
+      "bytes": 58776
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-14.asset.meta",
+      "sha256": "685B7C1F3595BD6FEF804EFF8AA98AA26DD2AC1AA97834B34DB39003ADE73A7B",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-15.asset",
+      "sha256": "2900FB69A775E3C94B7F3A8E8690B4189B789853E1EED5F784E188CC347BF1CC",
+      "bytes": 40607
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-15.asset.meta",
+      "sha256": "9F383D1A586491DFE2393FB080BB2416CE055BD603B5D4BCEC86398246FE59A2",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-16.asset",
+      "sha256": "F7F768A88897EE02F89EA28CFC34941F2CB64041EB51DF5FCBE1CFB213B6AEDF",
+      "bytes": 507405
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-16.asset.meta",
+      "sha256": "59D9813A46A6841C48DADB398106BE9C9A755420DE0074C643324CBA62098D56",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-17.asset",
+      "sha256": "3228A9D724D24EC8F94E979958F1AF79FC20AA220B6108CC02FBB694C93561BD",
+      "bytes": 378983
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-17.asset.meta",
+      "sha256": "9CC2FD850E8D77924556B78FC6BBFBDE4A4E3EF081E050610EDEA7DB603025B5",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-18.asset",
+      "sha256": "21446A7147E678AC3191136CDC3A34ECD2321CF6616F6F9A5C11FDFE439D14DF",
+      "bytes": 252223
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-18.asset.meta",
+      "sha256": "F8DDDBB14CFD5855FCF6CFB05DC47A6871DBCDFD7611BB2CC86FC8349980D78C",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-2.asset",
+      "sha256": "13C81070687A0A2B3FBEBB7440CCE22595F84AEED0A2389A4BC83E606F9E3DFC",
+      "bytes": 44740301
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-2.asset.meta",
+      "sha256": "A749A0637FFD8CF804591FB16519B500443B49411FE631CA03C5CAEDDB84B712",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-3.asset",
+      "sha256": "F7B1F4F06933D851C49C9C0F613EF5BF4832548F8B50266A9E78FE0F43F14789",
+      "bytes": 11185860
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-3.asset.meta",
+      "sha256": "A41D1EFC9F060EDCF7E86E01899EA8ACE13EEC2ABF37125D7F96BC7680CEF69F",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-4.asset",
+      "sha256": "2E5459420F18F973F2B9F7627FECE60475C926CAE1604BA00FC4766A3B257392",
+      "bytes": 44740298
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-4.asset.meta",
+      "sha256": "45EE36E6F570C403386473CC5AF72973A065D3782D8CA854E91C005C40395743",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-5.asset",
+      "sha256": "0891BF6EBFA9157C3134E32EFDD970C44D1A7B8F18E820FC8711FEABE20B9DF9",
+      "bytes": 57559
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-5.asset.meta",
+      "sha256": "5F83015DF837D14B62F3C5F4EB21E009991E2397D7280741D19A1BF805361810",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-6.asset",
+      "sha256": "FC94705AB24249D81D5C70BB6EAD673F865AE57245D9C816299A39E0D84F53B6",
+      "bytes": 47902
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-6.asset.meta",
+      "sha256": "A8E6525645B080EB38C8AC52468CA9D682C8054EAEBFF2F0B948E946E3478782",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-7.asset",
+      "sha256": "2D795095EE89AEFE53943A7C438F42C8674BB901397DB76CCC8B2F551AB50E54",
+      "bytes": 34093
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-7.asset.meta",
+      "sha256": "5472318BE7CC6B7B11FFDA6D464F7F16FF3E6A45EBF8CCC4B9B9B4DBB73B3B14",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-8.asset",
+      "sha256": "141491CFE1E8A92F05D39211EEAAADD6E999CF45C7EDBE6BC1A0BB803626CCB6",
+      "bytes": 3612
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-8.asset.meta",
+      "sha256": "A7F82E93F5C1F3AF95BA9E49D73201F9987A11E88FF5998F95E8C3218336C71A",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-9.asset",
+      "sha256": "868496260AE6A88C1659375CB1EDA83A7CB1CF5128E773ECE881245FD250E7CD",
+      "bytes": 2423
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/part-9.asset.meta",
+      "sha256": "B96CF26D9CB10E3AF5AF4FD673E7F8B39BCBB647CDD6BDEEFBA26354811CE9E0",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/PrivateFissure.glb",
+      "sha256": "A284FC3C3B26EBF223A82A468C4BF178D259998D596514D52CC0767028DA555F",
+      "bytes": 25272
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/PrivateFissure.glb.meta",
+      "sha256": "4367EED71815C0778C23ED8E190C2D48E5F75820792DF76C2DA4A728789FCB71",
+      "bytes": 720
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/WorldInventory/Materials.meta",
+      "sha256": "5F03F8065F664D76052C00ED38AA3230698F3A6730E970860F967392F35AA157",
+      "bytes": 172
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/WorldInventory/Materials/cobblestone_wall_1_fixed_d.mat",
+      "sha256": "679AAB64B51956E3297AD9A69D63E1E72C8B6D2C87577B6F5AC919594BBC9ED6",
+      "bytes": 3809
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/WorldInventory/Materials/cobblestone_wall_1_fixed_d.mat.meta",
+      "sha256": "328D0BD75B7ACAABAD1B964D6EE3F1F22883ECE2335AF9E9FCF31DE6411EB8AD",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/WorldInventory/Materials/granite_1_d.mat",
+      "sha256": "8B04292E4F747B3BCB43301E8429007080265F5D540ECE00D4F93D426099DB97",
+      "bytes": 3796
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/WorldInventory/Materials/granite_1_d.mat.meta",
+      "sha256": "585194F4807AAE3B89952670664FB46D8C6E140AE9C8F067F8036BEBDA03AA70",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/WorldInventory/Materials/stone_wall_3_d.mat",
+      "sha256": "D82EA0DE7B3FCF2CDB814A647FB470BBA8680047E69ED9A603B2F65B9B3611A9",
+      "bytes": 3798
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/WorldInventory/Materials/stone_wall_3_d.mat.meta",
+      "sha256": "22F68BAFB612F49D7DE70A2B1AED45FB270464236A1E43616E191F2381FF478B",
+      "bytes": 188
+    },
+    {
+      "path": "Unity/Assets/Gsplat.meta",
+      "sha256": "A3BA7CB6088CEB2FE7486EB03843498445FCEBEA01BA932D15AA84719670BCA6",
+      "bytes": 172
+    },
+    {
+      "path": "Unity/Assets/Gsplat/Settings.meta",
+      "sha256": "5BEB1732FA28B4BF882D3FC975D61236347C74E3266B5208236628EF75E54206",
+      "bytes": 172
+    },
+    {
+      "path": "Unity/Assets/Gsplat/Settings/Resources.meta",
+      "sha256": "F6E91591D1B6884DF11046B6F7959A3612BA5179EFD995992E46AB1B58601BFF",
+      "bytes": 172
+    },
+    {
+      "path": "Unity/Assets/Gsplat/Settings/Resources/GsplatSettings.asset",
+      "sha256": "05CF9BF321C9EEE15E7C4F72E6558A9CBEC76578D3193C1EC76B40C7665C0E1B",
+      "bytes": 995
+    },
+    {
+      "path": "Unity/Assets/Gsplat/Settings/Resources/GsplatSettings.asset.meta",
+      "sha256": "B7204DCCE7B45E82FA9E1F8191FA9391D97D95F745378B95FB6E59771A4D16BF",
+      "bytes": 189
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Scene/DemoSettings.lighting",
+      "sha256": "2719A4131128A9443F1785FD54AAD95647BC6E168B70BCD53972134F50529F87",
+      "bytes": 1973
+    },
+    {
+      "path": "Unity/Assets/NatureStarterKit2/Scene/DemoSettings.lighting.meta",
+      "sha256": "6D1F7511735B1AF51E0925136A549CCE6AFCB09AFD1515DA6E35377806FA6E64",
+      "bytes": 200
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/aserradero-v.jpeg.meta",
+      "sha256": "4C056D1E4AE9BF72B5B1854F810530B0C6E21F5A96372C19E286E4EEEC023852",
+      "bytes": 3717
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/bastion-v.jpeg.meta",
+      "sha256": "E083C8471DCC3D24B47FE8B7333449122F30F7FCF7332514464CF4E34F2C2CC0",
+      "bytes": 3717
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/cantera-v.jpeg.meta",
+      "sha256": "A45C1895168CCCEDEBB79284039AA18B2257109729A8B09B3CF1C77562687A88",
+      "bytes": 3717
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/cuartel-v.jpeg.meta",
+      "sha256": "5082F33005249C8627FD810680F42DCC5E01F2729FA34C9712AE3FFFAA04983A",
+      "bytes": 3717
+    },
+    {
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Portraits/granero-v.jpeg.meta",
+      "sha256": "5E8F3AF3B701E2D6CACEA2CDE9B64E489C405731F62660B47AFA8D76015D43F7",
+      "bytes": 3717
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-crest.png.meta",
+      "sha256": "B0E29F6828D14BFB821F1A59B1E8261DF5CE3F4039C88C95D72372D87B4A5557",
+      "bytes": 4315
+    },
+    {
+      "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-compass.png.meta",
+      "sha256": "CAFC2C681B3CC4E4731C11A4B2D3E93A7B215D17106B28DAA3436531BE1AD3B7",
+      "bytes": 4329
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0ae5cda562b231f7d8ef7675cefc845f0379a0e3.png.meta",
+      "sha256": "EB082CD1D64E26DB28839BD1E86D4706A59CB1C123D39811F2CA7E903E5ED80B",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0c0df987935c1d1544a9e52da33325edb19f5f98.png.meta",
+      "sha256": "F0AF3B6FAE1FBDB8D6AEEAA7E347733C25D99F836C3DC76B4F6C5214BA6D50EA",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0f317cfd9dae387cf6b154ed623b9c700762edd0.png.meta",
+      "sha256": "7C79EC4FECA6FDB5F576FB63A64E7628D0970474E3527C8B55492CD572ACEDA7",
+      "bytes": 4375
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/371ea4cbee26ce47c0f6d086edccae097a74e921.png.meta",
+      "sha256": "9E61574823C93E01BFAF85CDC96BA38BF296DC960CC00486F211C9185AF4F030",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png.meta",
+      "sha256": "0C769D461F87FF27639DAFF1DA97A82EEF100000BCEC387942377405A27BA771",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png.meta",
+      "sha256": "97A63A4038A1405D32EAC4FC48E2C3B15E98DE29B14F2EA3E50A601AEE1D781A",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5b052e69fc6c091f74e1815a64e2c92f243997ca.png.meta",
+      "sha256": "45E3DE4C6CFD6E5D4F7C0E0DBA3978AC0A8626F44EC9F8EA89EB43258201F028",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5e7ef7c03cb0f9c10c2df31cb690ec9950f2195c.png.meta",
+      "sha256": "7DCC8442BFCF8F94DE4B5B7DA86746424E2E046D59683D96D3071CB82EAE40A2",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5fbc98ff6a7e71858eb407a77cc5c94fcc4717e3.png.meta",
+      "sha256": "E3A71A2ABFA2665A2856C62CC5088D9C3C745F1F920A70414235CDC39ABAED9D",
+      "bytes": 4375
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/6043301ad238ef62b417d2baeefed8ac84738571.png.meta",
+      "sha256": "17AE934365FC9B1EF2202E94FBB0913D5ECFD5A540190169265C20E4D55D4450",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/69e84cc6421486a43699ec47282e7a6272dd2d83.png.meta",
+      "sha256": "44AC8D3AC966574C58E7E330859181ADA2AF9D5468D684EE60FB3DD85AA4EE0F",
+      "bytes": 4375
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/74a843ad16e3deb30b6035d168fe4ef5570c0d24.png.meta",
+      "sha256": "50D3B0486B23C827BBA2C2964A98677B4353A0C2A07DAF292E4FD9E47C3D8CF7",
+      "bytes": 4374
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/75eceae72c3fbd48e2ba51d93a91885b2080b860.png.meta",
+      "sha256": "A38A087528933F9462CE8EFCA93FBE714F051AD2B3654744ED7304786256D833",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/7b6848358871a30918c4842349c301c9fc0b722c.png.meta",
+      "sha256": "2AAD6ACC654DCE2F82A1EA15DEF8ECBF77ADBF253B20F8ACD7F679D38848F93E",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/9f99c1930e3952d23a516e70e0867aa424031840.png.meta",
+      "sha256": "D02DBD6AE87F7AFA56C61D6AF357FC97421B401D8F67A11D2EA2C4227E92D088",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/a4599f4ad6d5e2ec45e961b5fa6d4872b9b776f8.png.meta",
+      "sha256": "E8605336F395FED61B62D9CB8E0A6E30076CC681ACA461A1F24390199319C331",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5a7a2191c98f3ded4fd02d5839a352b7d316612.png.meta",
+      "sha256": "DA1C79912C23F3D19D6FD62B33A8A5916EB92D6C610AD164A3F2D71082641D38",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5ab68274bb848b27a08c26e9751b94b656bfe22.png.meta",
+      "sha256": "5D459505D845FA3FB2C91B6EAD91157274450A1738F7B9199E533FA1D97939AE",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/de2514e4480e1c590de14765da4854cfac3c5157.png.meta",
+      "sha256": "EBA5D5C656D082C272E5712C1D5FF96BFE0ECDEB6213E1510AABCE59C6874B62",
+      "bytes": 4373
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/f87f5ed5f4c059864855106ee339d761b913f0b1.png.meta",
+      "sha256": "98BB3240A9FC555F8398CD08324CB389C82FEE02995DA2EC4D10FAA8A13AA71E",
+      "bytes": 4375
+    },
+    {
+      "path": "Unity/ProjectSettings/ShaderGraphSettings.asset",
+      "sha256": "6FEAD5A816C4EED70F224D5472340ECF1EA0B4DE4F87D5926BB17FA10FFB3DC9",
+      "bytes": 633
+    }
+  ],
+  "base": "948ffa9837168a0b68dab80be76b66350422b23a"
+}
