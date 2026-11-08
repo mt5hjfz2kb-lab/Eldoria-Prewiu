@@ -555,7 +555,7 @@ namespace Eldoria.BreachWatch
 
                 float navSize=56,navGap=11;
                 float navWidth=5*navSize+4*navGap;
-                float navTop=h-75f;
+                float navTop=h-100f;
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,64);
                 for(int i=0;i<5;i++)
                     At((RectTransform)navButtons[i].transform,
@@ -564,7 +564,7 @@ namespace Eldoria.BreachWatch
                 float pw=Mathf.Min(210,w*.48f);
                 float ph=294f;
                 float left=w-margin-pw;
-                float top=navTop-ph-14;
+                float top=navTop-ph-45;
                 At(panel,left,top,pw,ph);
                 At(buildingName.rectTransform,50,7,pw-89,29);
                 At(buildingLevel.rectTransform,50,35,pw-89,19);
