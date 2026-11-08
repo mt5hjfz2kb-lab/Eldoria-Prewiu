@@ -28,6 +28,12 @@ jobs:
             /Unity/Assets/Eldoria/Scripts/Domain/
             /Unity/Assets/Eldoria/Scripts/Application/
             /Unity/Assets/Eldoria/DailyTreasures/
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg
+            /Unity/Assets/Eldoria/Resources/EldoriaV41/heroes-hall-illustrated-v2.jpg.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png.meta
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png
+            /Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly-v2.png.meta
             /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs
             /tools/daily-treasures/
             /tools/march-capacity/
@@ -49,6 +55,8 @@ jobs:
         run: dotnet run --project tools/daily-treasures/SyntaxAudit.csproj --configuration Release
       - name: Check actual calendar placement arithmetic on eight mobile and desktop geometries
         run: node tools/daily-treasures/layout-smoke.mjs
+      - name: Check category-specific illustrated milestones use real Eldoria scenic sources
+        run: node tools/daily-treasures/check-scenic-art.mjs
       - name: Enforce authoritative save and non-paying mailbox wiring
         run: node tools/daily-treasures/check-integration.mjs
 
