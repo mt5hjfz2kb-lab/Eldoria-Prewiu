@@ -674,6 +674,16 @@ namespace Eldoria.DailyTreasures
             }
         }
 
+#if UNITY_EDITOR
+        // Editor-only proof of the actual reversible presentation migration.
+        // This is not the production Vigilia canvas or a Unity visual approval.
+        public void ProbePresentationCanvasForNativeEvidence()
+        {
+            nextCanvasProbe=0f;
+            SynchronizePresentationCanvas();
+        }
+#endif
+
         void Update()
         {
             if(!root)return;
