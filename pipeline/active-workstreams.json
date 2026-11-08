@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T01:45:13.196Z",
+  "updated_at": "2026-11-08T01:51:24.066Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -21,8 +21,8 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-vigilants-hero-mastery-integration-20261108",
-      "branch": "fix/vigilants-hero-mastery-integration-20261108",
+      "owner": null,
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-08T01:45:13.196Z",
       "base_main_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
@@ -55,8 +55,8 @@
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VIGILANTS_HERO_MASTERY_INTEGRATION_20261108",
-      "next": "Native work finished: browser42396852832 and corrected UI42395390748 SUCCESS. Dedicated release workstream continues verified artifact publication without Windows.",
+      "phase": "VIGILANTS_HERO_MASTERY_MERGED_CI_DOMAIN_PASS_UNITY_QUEUED",
+      "next": "PR180 integró el bugfix Aldric/Lyra a main commit 5fcefd0060bc84bb72f8a2861e50b2da729fb594. CI V4.1, retención y marchas PASS; certificación nativa Unity 42435949433 aún queued por beta Windows. No declarar un nuevo WebGL/APK probado ni actualizado. Workstream liberado sin ocupar Windows.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -2092,10 +2092,12 @@
         }
       ,
         {"owner":"chatgpt-vigilants-hero-mastery-integration-20261108","previous_owner":null,"from_revision":162,"to_revision":163,"claimed_at":"2026-11-08T01:45:13.196Z","reason":"Propietario 08/11/2026 ordena integrar corrección probada de maestría Aldric/Lyra; workstream canónico disponible, se reutiliza trabajo aislado, sin ocupar runner Windows."}
+      ,
+        {"owner":"chatgpt-vigilants-hero-mastery-integration-20261108","from_revision":163,"to_revision":164,"released_at":"2026-11-08T01:51:24.066Z","reason":"PR180 merged, exact five blobs verified in main, domain V4.1 and retention/march tests PASS, Unity Editor follow-up remains queued behind authorized beta owner. No runner or production publication taken.","evidence":{"pr":180,"merge_sha":"5fcefd0060bc84bb72f8a2861e50b2da729fb594","domain_run":42435703964,"retention_run":42435703987,"march_run":42435703932,"native_queued_run":42435949433}}
       ],
-      "ownership_revision": 163,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 164,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-05T19:03:44.661Z",
       "delivery_definition": {
