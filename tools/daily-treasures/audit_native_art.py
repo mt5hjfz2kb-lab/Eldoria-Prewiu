@@ -310,6 +310,14 @@ def selftest():
         d=compare(a,b)
         assert_quality(d["changedPixels"]>200,
             "Opened chest cannot be distinguished from closed")
+        # This diagnostic catches the PARTICULAR rejected mockup aesthetic
+        # while not interpreting a violet hint of the Breach as an art approval.
+        wrong=Image.new("RGB",(240,160),(225,40,245))
+        correct=Image.new("RGB",(240,160),(21,24,27))
+        assert_quality(sample(wrong)["neonVioletRatioForHumanReview"]>.90,
+            "Bright fairy-purple image must be marked for manual style review")
+        assert_quality(sample(correct)["neonVioletRatioForHumanReview"]<.02,
+            "Owner's matte-charcoal UI must not trigger purple-drift warning")
         a.save(Path(tmp)/"original.png")
         assert_quality((Path(tmp)/"original.png").is_file(),
             "PNG save smoke failed")
