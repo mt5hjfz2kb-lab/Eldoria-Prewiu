@@ -45,7 +45,7 @@ def verify():
         assert value<=limit+0.15,(control,round(value,2),limit,text)
         print("TYPOGRAPHY_FIT",control,round(value,1),"<=",limit)
 
-    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,13,mission_width-35,
+    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,13,mission_width-55,
          "chapter-title")
     fits("Construye el aserradero",REGULAR,14,mission_width-22,
          "chapter-objective")
