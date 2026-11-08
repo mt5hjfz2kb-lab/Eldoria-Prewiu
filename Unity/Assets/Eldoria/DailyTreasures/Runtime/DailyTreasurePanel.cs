@@ -431,6 +431,8 @@ namespace Eldoria.DailyTreasures
             screen.gameObject.SetActive(true);
             screen.SetAsLastSibling();
             ceremony.gameObject.SetActive(false);
+            header.gameObject.SetActive(true);
+            subhead.gameObject.SetActive(true);
             playing=false;
             ClearPrizeCards();
             claimNotice="";
@@ -445,6 +447,9 @@ namespace Eldoria.DailyTreasures
         public void Close()
         {
             if(screen)screen.gameObject.SetActive(false);
+            if(header)header.gameObject.SetActive(true);
+            if(subhead)subhead.gameObject.SetActive(true);
+            ClearPrizeCards();
             playing=false;
         }
         void Refresh()
@@ -625,11 +630,17 @@ namespace Eldoria.DailyTreasures
             if(!IsOpen)return;
             ceremonyTier=tier;
             ceremonialTitle=title;ceremonialReceipt=alreadyReceived;chestReward=showChest;
+            // A focused cinematic view replaces the calendar's small header.
+            // This gives the same illustrated chest room to shine even on
+            // compact phones rather than squeezing it below an extra title.
+            header.gameObject.SetActive(false);
+            subhead.gameObject.SetActive(false);
+            Layout();
             calendar.gameObject.SetActive(false);
             claimButton.gameObject.SetActive(false);
             prizeShelf.gameObject.SetActive(false);
             ceremony.gameObject.SetActive(true);
-            resultText.text=showChest?"EL COFRE DE LAS CENIZAS":"RECOMPENSA RECIBIDA";
+            resultText.text=showChest?ceremonialTitle:"TRIBUTO DE VALORIA";
             playing=showChest;
             prizeAnimating=false;
             prizeShelf.gameObject.SetActive(false);
@@ -654,7 +665,7 @@ namespace Eldoria.DailyTreasures
         {
             playing=false;
             chest.SetOpening(1f);
-            rays.SetIntensity(.12f);
+            rays.SetIntensity(prizeCount>0 && !chestReward?.24f:.12f);
             if(hasAuthoredChestArt)
             {
                 illustratedClosed.color=new Color(1f,1f,1f,0f);
@@ -685,6 +696,10 @@ namespace Eldoria.DailyTreasures
             claimButton.gameObject.SetActive(true);
             claimButton.interactable=true;
             claimCaption.text="CONTINUAR";
+            // Once the cinematic result is visible, recompute only its
+            // current composition; ordinary prizes have their own centered
+            // illustrated-card layout rather than an empty chest slot.
+            Layout();
             skipButton.gameObject.SetActive(false);
             glow.color=new Color(1f,.74f,.34f,.27f);
             for(int i=0;i<sparks.Length;i++)
@@ -756,15 +771,24 @@ namespace Eldoria.DailyTreasures
                     dayBody[i].fontSize=tiny?13:14;
                 }
             }
-            Place((RectTransform)claimButton.transform,.5f,0f,.5f,0f,
-                0f,13f,Mathf.Min(panelW-30f,portrait?325f:405f),54f);
+            bool focusedQuiet=ceremony&&ceremony.gameObject.activeSelf &&
+                prizeCount>0 && !chestReward;
+            if(focusedQuiet)
+                Place((RectTransform)claimButton.transform,.5f,.5f,.5f,.5f,
+                    0f,portrait?-216f:-152f,
+                    Mathf.Min(panelW-30f,portrait?325f:405f),54f);
+            else
+                Place((RectTransform)claimButton.transform,.5f,0f,.5f,0f,
+                    0f,13f,Mathf.Min(panelW-30f,portrait?325f:405f),54f);
             Stretch(ceremony);
-            float chestY=prizeCount>0?(portrait?108f:64f):
-                (portrait?55f:30f);
-            float artWidth=prizeCount>0?(portrait?270f:205f):
-                (portrait?260f:235f);
-            float artHeight=prizeCount>0?(portrait?230f:118f):
-                (portrait?195f:170f);
+            // The ceremony now has its own top half; do not shrink the
+            // original textured chest to a postage stamp on landscape phones.
+            float chestY=prizeCount>0?(portrait?116f:89f):
+                (portrait?105f:87f);
+            float artWidth=prizeCount>0?(portrait?284f:268f):
+                (portrait?294f:282f);
+            float artHeight=prizeCount>0?(portrait?246f:160f):
+                (portrait?265f:175f);
             Place(glowRect,.5f,.5f,.5f,.5f,0,chestY,
                 portrait?320f:335f,portrait?320f:335f);
             Place(raysRect,.5f,.5f,.5f,.5f,0,chestY,
@@ -779,30 +803,40 @@ namespace Eldoria.DailyTreasures
             Place(illustratedOpen.rectTransform,.5f,.5f,.5f,.5f,
                 0f,chestY,artWidth,artHeight);
             bool compactPrizePortrait=portrait && prizeCount>0 && panelH<680f;
+            bool quietRewards=prizeCount>0 && !chestReward;
             if(prizeCount>0)
             {
-                resultText.fontSize=compactPrizePortrait?16:portrait?18:16;
+                resultText.fontSize=quietRewards?(portrait?19:17):
+                    compactPrizePortrait?16:portrait?18:16;
+                float captionY=quietRewards?(portrait?-135f:-99f):
+                    compactPrizePortrait?-217f:portrait?-242f:-18f;
                 Place(resultText.rectTransform,.5f,.5f,.5f,.5f,
-                    0,compactPrizePortrait?-217f:portrait?-242f:-15f,
-                    panelW-45f,compactPrizePortrait?39f:portrait?50f:40f);
+                    0f,captionY,panelW-45f,
+                    quietRewards?41f:compactPrizePortrait?39f:portrait?50f:35f);
             }
             else
             {
+                // Real chapter/hero/kingdom milestone: one large chest, then
+                // the confirmed story (no made-up crystals or reward cards).
                 resultText.fontSize=portrait?20:19;
                 Place(resultText.rectTransform,.5f,.5f,.5f,.5f,0,
-                    portrait?-140f:-95f,panelW-45f,portrait?165f:118f);
+                    portrait?-148f:-99f,panelW-45f,portrait?141f:112f);
             }
-            float shelfHeight=compactPrizePortrait?114f:portrait?142f:64f;
-            Place(prizeShelf,.5f,.5f,.5f,.5f,0f,
-                compactPrizePortrait?-126f:portrait?-143f:-69f,
+
+            float shelfHeight=quietRewards?(portrait?175f:137f):
+                compactPrizePortrait?114f:portrait?142f:64f;
+            float shelfY=quietRewards?(portrait?19f:26f):
+                compactPrizePortrait?-126f:portrait?-143f:-69f;
+            Place(prizeShelf,.5f,.5f,.5f,.5f,0f,shelfY,
                 panelW-34f,shelfHeight);
             int prizeCols=portrait && prizeCount>=3?2:Mathf.Max(1,prizeCount);
             int prizeRows=Mathf.Max(1,
                 Mathf.CeilToInt(prizeCount/(float)prizeCols));
             float prizeGap=portrait?8f:6f;
-            float cardW=Mathf.Min(140f,
+            float cardW=Mathf.Min(quietRewards?175f:140f,
                 (panelW-38f-(prizeCols-1)*prizeGap)/prizeCols);
-            float cardH=prizeRows==2?(compactPrizePortrait?53f:65f):
+            float cardH=quietRewards?(portrait?129f:115f):
+                prizeRows==2?(compactPrizePortrait?53f:65f):
                 portrait?(compactPrizePortrait?76f:89f):62f;
             for(int i=0;i<prizeRects.Length;i++)
             {
