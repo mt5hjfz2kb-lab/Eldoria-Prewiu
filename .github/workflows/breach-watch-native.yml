@@ -361,10 +361,10 @@ jobs:
           folder=root/'PremiumSurfaces'
           assert (root/'PremiumSurfaces.meta').exists()
           data=json.loads((folder/'manifest.json').read_text())
-          assert data['independent'].startswith('All three nine-slice')
-          assert len(data['sources'])==3
+          assert data['independent'].startswith('All four nine-slice')
+          assert len(data['sources'])==4
           assert sorted(x['name'] for x in data['sources'])==[
-              'basalt_context','brass_portrait','burgundy_action']
+              'basalt_context','brass_portrait','burgundy_action','slate_resource']
           guids=set()
           for entry in data['sources']:
               p=folder/(entry['name']+'.png')
