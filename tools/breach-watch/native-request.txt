@@ -16,3 +16,5 @@ Workstream-ID: eldoria-forja-oscura-visual-proof-20261107
 2026-11-08: Free CC0 item art inventory, isolated Ubuntu only, zero spend; no game asset promotion until visual/compatibility review. Windows heavy resource remains with PR179.
 
 2026-11-08: Import independently illustrated food, stone and wood from actual checked AnnoMotion CC0 package. Verify archive SHA256 20f324feb652b2a5959c634a95c694512d21193d346d2204bddd0e0d350bbe75 and source cell byte hashes, commit only new resource icon sprites to PR173; no Forja or product HUD changed.
+
+2026-11-08: Native first-screen candidate now has real illustrated CC0 wood/stone/food, newly isolated-only actual 3D building mesh portrait, camera-mode bridge, canonical selection notifications, phone safe-area and responsive overlap checks. Run exact-code Roslyn and seven-sprite SHA/GUID proof; defer Windows until beta release.
