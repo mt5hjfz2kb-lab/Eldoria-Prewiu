@@ -50,7 +50,7 @@ assert.match(panel,/ApplyAuthoredFrame\(cardSurface,"valoria_frame_main_512"\)/)
 assert.match(panel,/ApplyAuthoredFrame\(day,"valoria_frame_card_256"\)/);
 assert.match(panel,/ApplyAuthoredFrame\(\(RectTransform\)claimButton\.transform,/);
 assert.match(panel,/DayIllustrations=\{/);
-assert.match(panel,/DailyTreasureArt\/\+" + "DayIllustrations\[i\]/);
+assert.ok(panel.includes('"DailyTreasureArt/"+DayIllustrations[i]'));
 assert.match(panel,/dayGlyph\[i\]\.gameObject\.SetActive\(false\)/);
-assert.match(panel,/dayArtwork\[i\]\.raycastTarget=false/);
+assert.match(panel,/icon\.raycastTarget=false/);
 console.log('PASS daily treasures gateway integration source invariants');
