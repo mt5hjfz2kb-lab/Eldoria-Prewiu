@@ -401,8 +401,10 @@ namespace Eldoria.BreachWatch.Editor
                      !rift.GetComponent<BreachWatchPlate>(),
                      "Floating Breach emblem must be transparent open-air artwork, not an opaque gameplay button: "+name);
                 var trims=ui.GetComponentsInChildren<BreachWatchBevelTrim>(true);
-                Need(trims.Length>=2 && trims.All(t=>t && !t.raycastTarget),
-                    "Premium carved identity/quest inlays are missing or intercept city gestures");
+                Need(trims.Length>=1 && trims.All(t=>t && !t.raycastTarget),
+                    "Independent carved account inlay missing or intercepts city gestures");
+                Need(ui.HasPremiumCarvedQuest,
+                    "Chapter objective must be the new angled carved nine-slice tablet, not an old rectangular overlay");
                 Need(ui.HasPremiumResourceSurfaces,
                     "All three live resources must use real independent clean slate nine-slice capsules, not overlapping procedural frames");
                 Need(ui.UsesCompactRealmCrest,
