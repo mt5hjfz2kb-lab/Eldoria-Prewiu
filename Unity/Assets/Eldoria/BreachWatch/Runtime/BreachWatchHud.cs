@@ -677,13 +677,14 @@ namespace Eldoria.BreachWatch
                 }
 
                 At(centerMark,w*.52f-56,84,112,30);
-                At(objective,margin,125,Mathf.Min(210,w*.54f),fullObjective?118:89);
-                At(chapterName.rectTransform,37,6,Mathf.Min(162,w*.42f),21);
-                At(chapterObjective.rectTransform,14,30,Mathf.Min(183,w*.47f),fullObjective?65:35);
-                At(chapterProgress.rectTransform,14,fullObjective?99:65,Mathf.Min(183,w*.47f),19);
+                float missionWidth=Mathf.Min(182f,w*.45f);
+                At(objective,margin,125,missionWidth,fullObjective?103f:75f);
+                At(chapterName.rectTransform,35,5,missionWidth-41,20);
+                At(chapterObjective.rectTransform,13,24,missionWidth-22,fullObjective?59:31);
+                At(chapterProgress.rectTransform,13,fullObjective?83:55,missionWidth-22,18);
                 chapterName.fontSize=13;
-                chapterObjective.fontSize=16;
-                chapterProgress.fontSize=15;
+                chapterObjective.fontSize=14;
+                chapterProgress.fontSize=14;
 
                 At(utilityRail,margin,h-338,54,160);
                 for(int i=0;i<utilityRail.childCount;i++)
@@ -702,31 +703,35 @@ namespace Eldoria.BreachWatch
                     At((RectTransform)navButtons[i].transform,
                         i*(navSize+navGap),3,navSize,navSize);
 
-                float pw=Mathf.Min(198,w*.46f);
-                float ph=324f;
+                // Approved portrait reference places the card across
+                // roughly one third of the screen rather than nearly half.
+                // Separate, fully readable live text fits in the compact
+                // vertical stack; it is never flattened into one bitmap.
+                float pw=Mathf.Min(178f,w*.43f);
+                float ph=307f;
                 float left=w-margin-pw;
                 float top=navTop-ph-45;
                 At(panel,left,top,pw,ph);
                 if(separateOwnerBottomFinial)
                     At((RectTransform)separateOwnerBottomFinial.transform,
                         (pw-32f)*.5f,ph-2f,32f,24f);
-                At(buildingName.rectTransform,58,7,pw-115,29);
-                At(buildingLevel.rectTransform,58,35,pw-115,19);
-                At(((RectTransform)closeButton.transform),pw-57,3,52,52);
-                At(portraitFrame,11,56,pw-22,89);
-                At(buildingFunction.rectTransform,13,149,pw-26,44);
-                At(costHeader.rectTransform,13,196,pw-26,21);
-                At(buildingCosts.rectTransform,13,218,pw-26,29);
-                At(costIcons[0].rectTransform,15,220,27,27);
-                At(costQuantities[0].rectTransform,46,220,51,28);
-                At(costIcons[1].rectTransform,105,220,27,27);
-                At(costQuantities[1].rectTransform,135,220,pw-146,28);
-                At(buildingState.rectTransform,13,249,pw-26,19);
-                At(((RectTransform)actionButton.transform),12,ph-55,pw-24,52);
-                buildingName.fontSize=20;
-                buildingLevel.fontSize=15;
-                buildingFunction.fontSize=16;
-                buildingCosts.fontSize=15;
+                At(buildingName.rectTransform,51,7,pw-106,28);
+                At(buildingLevel.rectTransform,51,34,pw-106,19);
+                At(((RectTransform)closeButton.transform),pw-55,3,50,50);
+                At(portraitFrame,11,56,pw-22,81);
+                At(buildingFunction.rectTransform,13,140,pw-26,43);
+                At(costHeader.rectTransform,13,186,pw-26,19);
+                At(buildingCosts.rectTransform,13,209,pw-26,26);
+                At(costIcons[0].rectTransform,14,210,24,24);
+                At(costQuantities[0].rectTransform,42,209,42,27);
+                At(costIcons[1].rectTransform,91,210,24,24);
+                At(costQuantities[1].rectTransform,118,209,pw-131,27);
+                At(buildingState.rectTransform,13,236,pw-26,17);
+                At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50);
+                buildingName.fontSize=19;
+                buildingLevel.fontSize=14;
+                buildingFunction.fontSize=15;
+                buildingCosts.fontSize=14;
                 buildingState.fontSize=14;
                 costHeader.fontSize=15;
                 actionLabel.fontSize=16;
