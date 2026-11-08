@@ -1,0 +1,2 @@
+# Native runner belongs to PR173: this file MUST NOT trigger an execution until it is formally released.
+state=WAIT_FOR_EXCLUSIVE_UNITY_LEASE
