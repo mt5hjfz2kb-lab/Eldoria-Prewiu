@@ -860,7 +860,8 @@ namespace Eldoria.DailyTreasures
         void PaintMilestoneAtmosphere(float elapsed,DailyTreasureRevealFrame frame)
         {
             if(!milestoneScenery || !milestoneScenery.texture ||
-               !milestoneScenery.gameObject.activeInHierarchy)
+               !milestoneScenery.gameObject.activeInHierarchy ||
+               root.rect.width<275f || root.rect.height<300f)
                 return;
             // Crop and drift the ACTUAL original image with guaranteed UV
             // bounds. Painterly depth has no texture seams or procedural
