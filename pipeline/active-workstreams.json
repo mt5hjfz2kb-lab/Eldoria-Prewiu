@@ -6793,7 +6793,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-beta-pages-20261107",
       "ownership_state": "claimed",
-      "ownership_revision": 9,
+      "ownership_revision": 10,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6812,14 +6812,16 @@
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "STAGED4_PHYSICAL_IPHONE_FAILED_DIAGNOSIS",
+      "phase": "MOBILE_MATERIAL_BUDGET_IMPLEMENTATION",
       "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Inspect post-ready scene growth and browser termination. Desktop PASS does not resolve physical defect; no repeated texture-only release.",
+      "next": "Verify authored lower mip profile retains object graph and normal gameplay; hardware browser memory/visual/reopen gates before publication. Physical closure remains unproven.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6899,9 +6901,8 @@
       "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released",
-        "released_at": "2026-11-08T13:31:10.262Z",
-        "reason": "Native build, local hardware runtime/save QA and actual public delivery QA completed. No heavy job remains for this delivered candidate."
+        "status": "acquired",
+        "purpose": "Read-only browser proof of packaged mobile profile; no Unity source reset"
       }
     }
   ],
