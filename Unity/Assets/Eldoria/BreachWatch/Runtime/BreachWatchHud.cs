@@ -211,7 +211,7 @@ namespace Eldoria.BreachWatch
             var central=Glyph(centerMark,"Stone fracture",BreachWatchGlyph.Sigil.Breach);
             Fill((RectTransform)central.transform,4);central.Ink=Copper;
             objective=Rect("Chapter side tablet",uiRoot);Plate(objective,BreachWatchPlate.PlateType.Basalt);
-            chapterName=Label(objective,"Actual chapter",13,TextAnchor.MiddleLeft,Copper,true);
+            chapterName=Label(objective,"Actual chapter",15,TextAnchor.MiddleLeft,Copper,true);
             chapterObjective=Label(objective,"Actual objective",17,TextAnchor.UpperLeft,TextIvory);
             chapterProgress=Label(objective,"Objective progress",14,TextAnchor.MiddleLeft,Muted);
             var questPlate=objective.GetComponent<BreachWatchPlate>();questPlate.raycastTarget=true;
@@ -237,9 +237,9 @@ namespace Eldoria.BreachWatch
             At((RectTransform)buildingSeal.transform,14,10,53,53);
             buildingName=Label(panel,"Real building name",22,TextAnchor.MiddleLeft,TextIvory,true);
             buildingLevel=Label(panel,"Real building level",15,TextAnchor.MiddleLeft,Copper,true);
-            buildingFunction=Label(panel,"Real effects",14,TextAnchor.UpperLeft,Muted);
+            buildingFunction=Label(panel,"Real effects",17,TextAnchor.UpperLeft,Muted);
             buildingCosts=Label(panel,"Real costs",15,TextAnchor.UpperLeft,TextIvory);
-            buildingState=Label(panel,"Real state and timer",13,TextAnchor.UpperLeft,Muted);
+            buildingState=Label(panel,"Real state and timer",15,TextAnchor.UpperLeft,Muted);
             var closeRect=BuildButton(panel,"Close selected building",BreachWatchGlyph.Sigil.Cross,()=>SelectBuilding(""));
             closeButton=closeRect.GetComponent<Button>();
             var actionRect=Rect("Original gameplay action / new presentation",panel);
@@ -306,7 +306,7 @@ namespace Eldoria.BreachWatch
             pixelWidth=Mathf.Max(320,pixelWidth);pixelHeight=Mathf.Max(300,pixelHeight);
             lastWidth=pixelWidth;lastHeight=pixelHeight;
             bool portrait=pixelHeight>pixelWidth;
-            float scale=portrait?pixelWidth/430f:Mathf.Max(.70f,Mathf.Min(pixelWidth/1180f,pixelHeight/650f));
+            float scale=portrait?pixelWidth/430f:Mathf.Max(.86f,Mathf.Min(pixelWidth/1180f,pixelHeight/650f));
             scaler.scaleFactor=scale;
             float w=pixelWidth/scale,h=pixelHeight/scale;
             float margin=portrait?13:17;
