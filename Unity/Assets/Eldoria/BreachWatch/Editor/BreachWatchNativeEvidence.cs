@@ -670,6 +670,12 @@ namespace Eldoria.BreachWatch.Editor
                         "Live status overlaps main action: "+name);
                     Need(Bottom(action)<=ui.BuildingPanel.rect.height+.5f,
                         "Main building action clipped by native card: "+name);
+                    var hammers=ui.BuildingAction.GetComponentInChildren<BreachWatchCrossedHammers>(true);
+                    Need(hammers && hammers.gameObject.activeInHierarchy &&
+                         !hammers.raycastTarget &&
+                         hammers.transform.IsChildOf(ui.BuildingAction.transform),
+                         "Original forged upgrade hammers must remain separate undistorted "+
+                         "geometry, not nine-sliced bars or a tappable overlay: "+name);
                     var actionText=ui.BuildingAction.GetComponentsInChildren<Text>(true)
                         .FirstOrDefault(q=>q && q.name=="Real action title");
                     Need(actionText && actionText.gameObject.activeInHierarchy &&
