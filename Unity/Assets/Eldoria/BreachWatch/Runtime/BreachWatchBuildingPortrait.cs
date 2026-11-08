@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -241,8 +242,14 @@ namespace Eldoria.BreachWatch
                 Vector3 actualVisualCenter=copiedBounds.center +
                     right*((minRight+maxRight)*.5f)+
                     up*((minUp+maxUp)*.5f);
+                // Real GPU diagnostic at ortho 12.059, 512x256 showed the
+                // Bastion at x=141..375, y=0..199: a full 56px of wasted sky
+                // but masonry cropped below pixel 0. Re-center in the REAL
+                // image plane before rendering instead of making it smaller.
+                // The -up shift moves actual geometry UP inside the picture.
                 portraitCamera.transform.position=actualVisualCenter -
-                    portraitCamera.transform.forward*120f;
+                    portraitCamera.transform.forward*120f -
+                    up*(portraitCamera.orthographicSize*.19f);
 
                 // Actual separately rendered meshes must be inside the current
                 // portrait frame. No synthetic values and no image generation.
@@ -259,6 +266,15 @@ namespace Eldoria.BreachWatch
                     readback.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);
                     readback.Apply();
                     var pixels=readback.GetPixels32();
+                    // Native visual QA can inspect the exact 512x256 image
+                    // produced by the genuine URP camera, before the
+                    // authored display-only earth background is added.
+                    // Never exported in mobile builds.
+                    var proofDir=Path.GetFullPath(Path.Combine(Application.dataPath,
+                        "../BreachWatchNativeEvidence"));
+                    Directory.CreateDirectory(proofDir);
+                    File.WriteAllBytes(Path.Combine(proofDir,
+                        "VigiliaPortraitRealMeshRaw.png"),readback.EncodeToPNG());
                     // Compare against the ACTUAL rendered corner, never against
                     // assumed RGB constants: sRGB conversion in URP can turn
                     // linear(.07) clear colour into much brighter pixel bytes.
