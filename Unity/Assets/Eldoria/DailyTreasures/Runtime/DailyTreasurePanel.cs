@@ -31,7 +31,9 @@ namespace Eldoria.DailyTreasures
         bool suppressed,playing;
         float startTime,nextTick,lastWidth=-1,lastHeight=-1;
         string ceremonialReceipt,ceremonialTitle;
-        bool chestReward;
+        bool chestReward,chimePlayed;
+        AudioSource originalSfx;
+        AudioClip chestKnock,chestChime;
 
         public bool Suppressed
         {
@@ -107,6 +109,10 @@ namespace Eldoria.DailyTreasures
         }
         void Build()
         {
+            originalSfx=gameObject.AddComponent<AudioSource>();
+            originalSfx.playOnAwake=false;originalSfx.spatialBlend=0f;originalSfx.volume=.27f;
+            chestKnock=MakeOriginalSound("Valoria / wooden lock",176f,.12f);
+            chestChime=MakeOriginalSound("Valoria / discovery chime",540f,.23f);
             root=(RectTransform)transform;
             // No second EventSystem, Canvas, save or navigation router.
             entryRect=NewRect("Daily reward / optional medallion",root);
@@ -166,6 +172,23 @@ namespace Eldoria.DailyTreasures
             ceremony.gameObject.SetActive(false);
             screen.gameObject.SetActive(false);
         }
+        static AudioClip MakeOriginalSound(string name,float frequency,float duration)
+        {
+            const int rate=22050;
+            int count=Mathf.CeilToInt(rate*duration);
+            var data=new float[count];
+            for(int i=0;i<count;i++)
+            {
+                float t=i/(float)rate;
+                float fade=1f-i/(float)count;
+                float vibration=Mathf.Sin(t*frequency*Mathf.PI*2f)+
+                    .23f*Mathf.Sin(t*frequency*1.5f*Mathf.PI*2f);
+                data[i]=vibration*fade*fade*.22f;
+            }
+            var clip=AudioClip.Create(name,count,1,rate,false);
+            clip.SetData(data,0);
+            return clip;
+        }
         void CreateGlow()
         {
             const int size=64;
@@ -189,6 +212,8 @@ namespace Eldoria.DailyTreasures
         {
             if(glowSprite)Destroy(glowSprite);
             if(glowTexture)Destroy(glowTexture);
+            if(chestKnock)Destroy(chestKnock);
+            if(chestChime)Destroy(chestChime);
         }
         public void Open()
         {
@@ -218,9 +243,10 @@ namespace Eldoria.DailyTreasures
             subhead.text="RACHA: "+daily.ConsecutiveDays+" DÍAS  ·  7 TRIBUTOS POR CICLO";
             for(int i=0;i<7;i++)
             {
-                var item=DailyTreasureRules.ForDay(i+1,0);
-                bool collected=daily.CycleDay>0 && daily.CycleDay<7 && i+1<=daily.CycleDay;
                 bool next=i+1==upcoming && reward.IsValid;
+                var item=DailyTreasureRules.ForDay(i+1,next?reward.Streak:0);
+                bool newCycle=daily.CycleDay==7 && upcoming==1 && reward.IsValid;
+                bool collected=!newCycle && daily.CycleDay>0 && i+1<=daily.CycleDay;
                 dayHead[i].text="DÍA "+(i+1)+(collected?"  ✓":next?"  ●":"");
                 dayHead[i].color=next?Ivory:Gold;
                 dayBack[i].color=next?new Color(.42f,.29f,.16f,1f):
@@ -269,6 +295,8 @@ namespace Eldoria.DailyTreasures
             ceremony.gameObject.SetActive(true);
             resultText.text=showChest?"EL COFRE DE LAS CENIZAS":"RECOMPENSA RECIBIDA";
             playing=showChest;
+            chimePlayed=false;
+            if(originalSfx && chestKnock && showChest)originalSfx.PlayOneShot(chestKnock);
             startTime=Time.unscaledTime;
             chest.gameObject.SetActive(showChest);
             chest.SetOpening(0f);
@@ -348,6 +376,11 @@ namespace Eldoria.DailyTreasures
             if(Mathf.Abs(w-lastWidth)>1f || Mathf.Abs(h-lastHeight)>1f)Layout();
             if(!playing)return;
             float elapsed=Time.unscaledTime-startTime;
+            if(elapsed>=.82f && !chimePlayed)
+            {
+                chimePlayed=true;
+                if(originalSfx && chestChime)originalSfx.PlayOneShot(chestChime);
+            }
             float opening=Mathf.SmoothStep(0f,1f,Mathf.Clamp01((elapsed-.50f)/.72f));
             chest.SetOpening(opening);
             float alpha=Mathf.Sin(Mathf.Clamp01((elapsed-.30f)/2.1f)*Mathf.PI);
