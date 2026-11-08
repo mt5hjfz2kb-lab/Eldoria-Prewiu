@@ -27,6 +27,7 @@ jobs:
             /Unity/Assets/Eldoria/Scripts/Domain/
             /Unity/Assets/Eldoria/Scripts/Application/
             /Unity/Assets/Eldoria/DailyTreasures/
+            /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs
             /tools/daily-treasures/
       - uses: actions/setup-dotnet@v4
         with:
@@ -35,5 +36,7 @@ jobs:
         run: dotnet run --project tools/daily-treasures/Tests.csproj --configuration Release
       - name: Compile and test the real authoritative LocalGateway (no Unity)
         run: dotnet run --project tools/daily-treasures/Gateway.Tests.csproj --configuration Release
+      - name: Parse original Unity UI, gameplay and chest C# syntax without Unity
+        run: dotnet run --project tools/daily-treasures/SyntaxAudit.csproj --configuration Release
       - name: Enforce authoritative save and non-paying mailbox wiring
         run: node tools/daily-treasures/check-integration.mjs

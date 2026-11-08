@@ -867,7 +867,13 @@ namespace Eldoria.UI.RoyalGold.V2
             nextUpdate=Time.unscaledTime+.3f;
             var s=gateway.Snapshot();
             bool overlay=Blocked || !string.IsNullOrEmpty(Hud.SelectedBuildingId);
-            if(dailyTreasures)dailyTreasures.Suppressed=overlay || IsOpen;
+            if(dailyTreasures)
+            {
+                // Narrative and building selections take precedence over optional ceremonies.
+                // Closing an already-paid ceremony never reverses a reward.
+                if(overlay && dailyTreasures.IsOpen)dailyTreasures.Close();
+                dailyTreasures.Suppressed=overlay || IsOpen;
+            }
             bool allowV=EarlyRetentionRules.VigilantsUnlocked(s);
             bool allowS=EarlyRetentionRules.ScoutsUnlocked(s);
             if(vigilantShortcut.gameObject.activeSelf!=(!overlay&&allowV))
