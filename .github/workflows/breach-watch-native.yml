@@ -10,6 +10,72 @@ concurrency:
   group: eldoria-breachwatch-native-first-screen
   cancel-in-progress: false
 jobs:
+  commit-verified-cc0-art:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[breach-art-import]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/breach-watch/**
+            /Unity/Assets/Eldoria/BreachWatch/**
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install bounded raster PSD reader
+        run: python -m pip install --disable-pip-version-check --quiet Pillow==12.3.0
+      - name: Generate only verified licence-bearing candidate sprites
+        run: python tools/breach-watch/import_cc0_donor.py
+      - name: Protect canonical workstream ownership and source HEAD before push
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json,os,urllib.request
+          url='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          request=urllib.request.Request(url,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+          import base64
+          with urllib.request.urlopen(request,timeout=20) as response:
+              raw=json.load(response)
+          reg=json.loads(base64.b64decode(raw['content']))
+          item=next((x for x in reg['active'] if x.get('id')=='eldoria-forja-oscura-visual-proof-20261107'),None)
+          assert item and item['owner']=='chatgpt-vigilia-20261108' and item['ownership_state']=='claimed'
+          assert any('BreachWatch/**' in x for x in item.get('scope',[]))
+          print('BREACHWATCH_ART_CLAIM_PASS',item['ownership_revision'])
+          PY
+          remote=$(git ls-remote origin "$GITHUB_REF" | cut -f1)
+          if [ "$remote" != "$GITHUB_SHA" ]; then
+            echo "BREACHWATCH_ART_IMPORT_HEAD_CHANGED: refusing stale push"
+            exit 1
+          fi
+      - name: Commit standalone licence-checked artwork only to the existing PR
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Eldoria Artwork CI"
+          git config user.email "artwork-ci@users.noreply.github.com"
+          git add Unity/Assets/Eldoria/BreachWatch/Resources Unity/Assets/Eldoria/BreachWatch/Resources.meta
+          if git diff --cached --quiet; then
+            echo "BREACHWATCH_ART_ALREADY_AT_EXACT_SOURCE"
+          else
+            git commit -m 'art(breach-watch): introduce licensed independent dark fantasy medallions and plates'
+            git push origin HEAD:"$GITHUB_REF"
+          fi
+      - name: Preserve independent original art asset candidate for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: breachwatch-art-sprites-${{ github.run_id }}
+          path: |
+            Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/**
+          retention-days: 30
+          if-no-files-found: error
   discover-cc0-donor:
     runs-on: ubuntu-latest
     timeout-minutes: 8
