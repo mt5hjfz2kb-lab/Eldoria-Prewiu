@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T14:11:46.444Z",
+  "updated_at": "2026-11-08T14:14:06.350Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6911,7 +6911,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -6928,13 +6928,17 @@
         "docs/daily-treasures/**",
         "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs.meta",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/Eldoria.RoyalGold.V2.asmdef"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/Eldoria.RoyalGold.V2.asmdef",
+        "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json"
       ],
       "resources": [],
       "budget_eur": 0,
-      "phase": "CALENDAR_AND_CHEST_CODED_PENDING_NATIVE",
+      "phase": "CALENDAR_CHEST_CODED_NATIVE_ART_GATE_PENDING",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.",
-      "next": "C# domain tests on Ubuntu; genuine Unity native capture/interaction gate after Windows lease release. Keep PR173, beta native325 and production unmodified."
+      "next": "C# domain tests on Ubuntu; genuine Unity native capture/interaction gate after Windows lease release. Keep PR173, beta native325 and production unmodified.",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json"
     }
   ],
   "history": [
