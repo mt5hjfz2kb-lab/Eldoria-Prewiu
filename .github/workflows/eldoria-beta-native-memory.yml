@@ -99,35 +99,35 @@ jobs:
           if(Test-Path $folder){throw 'Isolated project already exists; refuse replacement'}
           $drive=Get-PSDrive -Name ([IO.Path]::GetPathRoot($env:GITHUB_WORKSPACE).Substring(0,1))
           if($drive.Free -lt 8GB){throw 'Insufficient isolated import headroom; preserve other projects'}
-      - name: Verify exact already-imported source without checkout or reset
+      - name: Build a clean, isolated exact-source clone without touching warm project
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $cache=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
-          if(-not(Test-Path (Join-Path $cache '.git'))){throw 'Warm source cache unavailable'}
-          $head=(git -C $cache rev-parse HEAD).Trim()
-          if($head -ne '948ffa9837168a0b68dab80be76b66350422b23a'){throw "Warm source is a different commit: $head"}
-          $pending=@(git -C $cache status --porcelain -- Unity)
-          if($LASTEXITCODE -ne 0){throw 'Cannot inspect warm source'}
+          $frozen='948ffa9837168a0b68dab80be76b66350422b23a'
+          if(-not(Test-Path (Join-Path $cache '.git'))){throw 'Warm repository absent; no source touched'}
+          $source=Join-Path $env:GITHUB_WORKSPACE "beta-structural-source-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          if(Test-Path $source){throw 'Isolated destination already exists; no replacement'}
+          # --shared references Git objects but NEVER checks out or resets the warm working tree.
+          & git clone --shared --no-checkout --quiet $cache $source
+          if($LASTEXITCODE -ne 0){throw 'Cannot create isolated source clone'}
+          & git -C $source cat-file -e "$frozen^{commit}"
+          if($LASTEXITCODE -ne 0){throw 'Frozen source object missing in cache; refusing to use a different commit'}
+          & git -C $source -c core.longpaths=true checkout --detach --quiet $frozen
+          if($LASTEXITCODE -ne 0){throw 'Frozen source checkout failed'}
+          $head=(git -C $source rev-parse HEAD).Trim()
+          if($head -ne $frozen){throw 'Frozen source identity mismatch'}
+          $pending=@(git -C $source status --porcelain -- Unity)
+          if($LASTEXITCODE -ne 0 -or $pending.Count -ne 0){throw 'Isolated source is not clean'}
+          if(-not(Test-Path (Join-Path $source 'Unity/ProjectSettings/ProjectVersion.txt'))){throw 'Unity project missing'}
+          if(-not(Test-Path (Join-Path $source 'Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs'))){throw 'World source missing'}
           $out=Join-Path $env:GITHUB_WORKSPACE "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
           New-Item -ItemType Directory -Force $out|Out-Null
-          $files=@(git -C $cache ls-files --modified --others --exclude-standard -- Unity)
-          if($LASTEXITCODE -ne 0){throw 'Cannot inventory existing pending inputs'}
-          $inventory=@()
-          foreach($file in $files){
-            $full=Join-Path $cache $file
-            if(Test-Path $full -PathType Leaf){$inventory+=@{path=$file;bytes=(Get-Item $full).Length;sha256=(Get-FileHash $full -Algorithm SHA256).Hash}}
-          }
           $utf8=New-Object Text.UTF8Encoding($false)
-          [IO.File]::WriteAllText((Join-Path $out 'existing-input-audit.json'),(@{base=$head;status=$pending;files=$inventory}|ConvertTo-Json -Depth 8),$utf8)
-          $diff=git -C $cache diff -- Unity
-          [IO.File]::WriteAllLines((Join-Path $out 'existing-tracked-metadata.diff'),[string[]]$diff,$utf8)
-          # Native attempt 2: retain observed Editor Search diagnostics separately from player errors.
-          # The following wrapper verifies every existing input against the committed audit before any mutation.
-          Write-Host 'Recorded current inputs; strict reviewed hash inventory gate follows in wrapper.'
-
-          if(Test-Path (Join-Path $cache 'Unity/Assets/EldoriaBetaMemoryProbe')){throw 'An existing probe must be preserved'}
-          Add-Content $env:GITHUB_ENV "BETA_SOURCE=$cache"
+          $audit=@{base=$head;status=@();files=@();source_kind='clean isolated exact frozen commit';warm_head=(git -C $cache rev-parse HEAD).Trim()}
+          [IO.File]::WriteAllText((Join-Path $out 'existing-input-audit.json'),($audit|ConvertTo-Json -Depth 6),$utf8)
+          Write-Host "BETA_ISOLATED_SOURCE_PASS pinned=$head warm=$($audit.warm_head)"
+          Add-Content $env:GITHUB_ENV "BETA_SOURCE=$source"
       - name: Original versus staged native startup, canonical journey, then WebGL
         env:
           GH_TOKEN: ${{ github.token }}
