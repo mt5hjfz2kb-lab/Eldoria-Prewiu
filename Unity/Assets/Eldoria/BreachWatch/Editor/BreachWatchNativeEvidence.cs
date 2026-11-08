@@ -256,6 +256,14 @@ namespace Eldoria.BreachWatch.Editor
                 Need(new FileInfo(file).Length > 16000, "Unity native PNG incomplete: "+name);
                 Need(ui.IndependentCanvas && ui.LegacyPresentationHidden && ui.HasRealSession,
                     "Old presentation visible or disconnected UI in "+name);
+                var atmosphericVeil=ui.GetComponentInChildren<BreachWatchAtmosphere>(true);
+                Need(atmosphericVeil && !atmosphericVeil.raycastTarget &&
+                     atmosphericVeil.gameObject.activeInHierarchy,
+                     "Independent unobtrusive atmospheric layer missing or stealing input: "+name);
+                var title=ui.GetComponentsInChildren<Text>(true)
+                    .FirstOrDefault(t=>t && t.name=="Vigilia de la Brecha");
+                Need(title && (title.gameObject.activeInHierarchy==(w>h)),
+                    "The new independent Vigilia title must only occupy wide landscape layouts: "+name);
                 var nav = ui.NavButtons;
                 Need(nav.Count==5 && nav.All(x=>x), "Exactly 5 original independent navigation buttons required");
                 float previousRight = -1;
