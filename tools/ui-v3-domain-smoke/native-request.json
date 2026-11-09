@@ -3,9 +3,10 @@
   "pr": 183,
   "workstream_id": "eldoria-ui-v3-management-completion-20261021",
   "owner": "chatgpt-v3-building-timer-anchor-20261109",
-  "revision": 30,
+  "revision": 31,
   "expected_timer_source_blob": "caa48b2bfa70edde209055f53296ddfc5e3a0baf",
   "reason": "Owner-reported construction timer must follow its 3D building on camera pan and hide when offscreen.",
-  "request_type": "one-shot_native_gate; safe skip if Windows leased to another workstream",
-  "last_requested": "2026-11-09"
+  "request_type": "one-shot_native_qa_on_exclusive_lease",
+  "last_requested": "2026-11-09",
+  "requested_for": "2026-11-09T15:11:00+01:00"
 }
