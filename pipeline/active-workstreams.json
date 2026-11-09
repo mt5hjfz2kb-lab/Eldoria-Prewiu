@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T19:52:20.365Z",
+  "updated_at": "2026-11-09T19:55:29.999Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6808,9 +6808,9 @@
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "TEMPORARY_BETA10_ROLLBACK_LIVE_P0_IPHONE_PHYSICAL_RETEST_PENDING",
+      "phase": "BETA10_IMMUTABLE_P0_RECOVERY_LIVE_IPHONE_PHYSICAL_RETEST_REQUIRED",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Owner previously entered and played beta10. Exact beta10 restored on GitHub Pages, run42686613921 SUCCESS; independently confirmed mobile10 SHA live. Obtain owner iPhone confirmation of entry+30min stability without deleting saves. Do NOT promote a new beta11 Pages build, change namespace, or send external testers before P0 iPhone physical pass. After test, isolate beta11 timer difference and publish a new corrected build on an immutable side path; retain original snapshots. Unity telemetry experiment remains separate; preserve shared Windows lease until native job finishes and release it via CAS. No Cloudflare.",
+      "next": "Exact owner-playable beta10 prior version restored on GitHub Pages (run42687093695 PASS; independent HTTP identity and root/unity-owner aliases PASS), while new PR179 native candidate must NOT automatically replace rollback. Wait owner physical iPhone 30min test on /beta-native325/index.html and record whether restart persists before approving any newer binary. Existing beta native candidate source must be profiled/compared without publishing. Keep testers disabled and no data deletion. Original full owner route snapshot preserved GitHub artifact 13692621676.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7212,7 +7212,7 @@
         "intent": "Temporary exact beta10 rollback for owner-playable iPhone P0; preserve saves and existing /unity-owner; not tester release",
         "method": "GitHub Pages restore archived immutable run 42600463889 artifact github-pages, source be49d62e3daf490f41dba0bf8123a8e2eee64480",
         "target_workflow": ".github/workflows/eldoria-beta10-recovery.yml",
-        "state": "BETA10_ARCHIVED_ASSETS_RESTORED_PAGES_LIVE_IPHONE_NOT_YET_VERIFIED",
+        "state": "EXACT_BETA10_WEBGL_RESTORED_VERIFIED",
         "authority": "User explicitly requests fix and reports previously playable beta10; rollback is reversible, no Unity engine changes",
         "live_run": 42686613921,
         "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
@@ -7221,7 +7221,20 @@
         "previously_playable_owner_reported": true,
         "iphone_stability_verified": false,
         "verified_at": "2026-11-09T19:52:20.361Z",
-        "note": "SUCCESS job includes original archived bundle hash/31 streamed data hash checks, Pages deployment and live old WASM/data identity. Full older unity-owner game from prior archive replaced by reversible redirect to beta10 to fit GitHub Pages size/deployment limits; original full snapshot preserved 13692621676. Exact beta10 does NOT yet prove iPhone stable for 30 min; timer may appear laterally anchored."
+        "note": "Original beta10 UI still has screen-docked construction timer; temporary owner rollback preserving saved-game schema, not an iPhone root-cause fix",
+        "full_restore_run": 42684417820,
+        "full_restore_run_result": "FAIL_GITHUB_PAGES_10MIN_SYNC_962MB",
+        "compact_deploy_run": 42687093695,
+        "compact_deploy_run_result": "SUCCESS",
+        "compact_alias_fix_run": "42687093695",
+        "original_run": 42600463889,
+        "original_artifact": 13665746986,
+        "full_parallel_owner_snapshot": 13692621676,
+        "target_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/index.html",
+        "independent_http_identity": "VERIFIED",
+        "live_root_and_owner_alias": "VERIFIED",
+        "old_WASM_sha256_and_31_data_parts": "PASS",
+        "iphone_stability": "UNTESTED_AFTER_ROLLBACK"
       }
     },
     {
