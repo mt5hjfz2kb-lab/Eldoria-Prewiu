@@ -44,18 +44,27 @@ const sourceRequirements=[
   [/legacyCanvas\.enabled\s*=\s*false/,'legacy canvas is disabled but game object survives'],
   [/legacyGroup\.alpha\s*=\s*0/,'legacy UI is hidden'],
   [/host\.Hud\.SelectionChanged\s*\+=/,'canonical session owner is reused'],
-  // Vigilia's current OwnerControls replace the older profile_plate and
-  // burgundy_action RUNTIME references. PR173 now paints its
-  // construction action from UnifiedButtons/action_gold rather than loading
-  // OwnerControls/upgrade_button. Confirm the exact CURRENT rendering path,
-  // while continuing to forbid either hammer-painted construction action
-  // on the daily-reward buttons. Keep the separate clean nine-slice fallback.
+  // Verified against exact PR173 head 94541b8f1cfd (2026-11-09):
+  // the genuine one-piece upgrade CTA is OwnerControls/upgrade_button.
+  // It is painted once through ApplyIndependentArt, at natural aspect,
+  // with a separate transparent raycast target. The earlier strict check
+  // for UnifiedButtons/action_gold is obsolete and would fail BEFORE
+  // native testing even though PR173's current UI is valid. Do not reuse
+  // either construction-hammer graphic as a daily reward action.
   [/Resources\.Load<Sprite>\("VigiliaArt\/OwnerControls\/profile_bar"\)/,
     'Current Vigilia identity bar'],
   [/Resources\.Load<Sprite>\([\s\S]{0,55}"VigiliaArt\/OwnerControls\/resource_capsule"\)/,
     'Current Vigilia resource treatment'],
-  [/Resources\.Load<Sprite>\("VigiliaArt\/UnifiedButtons\/action_gold"\)/,
-    'Current Vigilia actual authored action (not reused for the treasury)'],
+  [/Resources\.Load<Sprite>\("VigiliaArt\/OwnerControls\/upgrade_button"\)/,
+    'Owner-approved independent upgrade art; NOT a treasury claim button'],
+  [/actionPlate\.ApplyIndependentArt\(originalArt\)/,
+    'Native one-piece painted CTA instead of stretched nine-slice'],
+  [/actionPlate\.preserveAspect\s*=\s*true/,
+    'Painted action retains original proportions'],
+  [/actionPlate\.raycastTarget\s*=\s*false/,
+    'Painted overlay cannot steal pointer input'],
+  [/actionHit\.raycastTarget\s*=\s*true/,
+    'Full-size transparent native action hit target'],
   [/VigiliaArt\/ResourceIcons\//,'canonical resource icon source']
 ];
 for(const [expression,meaning] of sourceRequirements)
