@@ -21,37 +21,37 @@
     },
     {
       "name": "brass_portrait",
-      "sha256": "6103a2d3518b785f12f204cb0c3c7617341b16ab52e3dc022b0a5b86ab4da623",
+      "sha256": "fcda5e3f9b93da2ffd1f71477c0ddd66b2b990e2c7e485c9db0b902962c6668a",
       "size": [
         512,
         288
       ],
       "guid": "9a20dba5e3aa4bff94654d1e8b0e9a32",
       "border": [
-        29,
-        27,
-        29,
-        27
+        17,
+        15,
+        17,
+        15
       ]
     },
     {
       "name": "slate_resource",
-      "sha256": "58ed6d44ebe7f377551a8cdebd992f24a48b5bfa59486a1e2da7cd7ac83dc365",
+      "sha256": "f788f2a65dc838943df3ffd6a97c14ad616f780a03ce6f24eb6e6a4d2030bb82",
       "size": [
         512,
         148
       ],
       "guid": "90ec0b5c9a2b463194f198a623e5e36c",
       "border": [
-        14,
-        11,
-        14,
-        11
+        12,
+        8,
+        12,
+        8
       ]
     },
     {
       "name": "chiseled_quest",
-      "sha256": "2e1bad3800d62404fa2abc7d6a03677b1af10f4e044a7788911b495037fb17a4",
+      "sha256": "92062bbc20c14a12b74bc4875e6f66b19cc96f0115dd68dbb5065df809755ab1",
       "size": [
         512,
         220
@@ -66,17 +66,17 @@
     },
     {
       "name": "profile_plate",
-      "sha256": "a5bd81bf289a074fadf319d5ae71aca0ea01e18a518ae4a4d4ad5d2494c3b455",
+      "sha256": "1be0991675f9b88e482e4984014c4ae56439dbd6894de33affbd18633b3f3836",
       "size": [
         512,
         148
       ],
       "guid": "3f29a67de3ee436a83ba9a64e1b98242",
       "border": [
-        22,
         16,
-        22,
-        16
+        11,
+        16,
+        11
       ]
     }
   ]
