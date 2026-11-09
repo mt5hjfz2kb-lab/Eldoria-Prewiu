@@ -1166,18 +1166,28 @@ namespace Eldoria.BreachWatch
                 // hammered ornament. Leave its width entirely clear for
                 // the dynamic upgrade label, no procedural icon overlay.
                 var illustration=(RectTransform)actionPlate.transform;
-                float paintedHeight=Mathf.Min(33f,plate.rect.height-8f);
+                // Original painted action is 246x60. At 36 units high it
+                // occupies 147.6 units wide without any sprite distortion,
+                // fitting the narrow portrait well; in landscape it naturally
+                // leaves extra space either side inside the invisible hitbox.
+                float paintedHeight=Mathf.Min(36f,plate.rect.height-8f);
                 At(illustration,0f,(plate.rect.height-paintedHeight)*.5f,
                     plate.rect.width,paintedHeight);
-                // Match the *physical* width of the painted hammer at each layout.
-                // The former hard 38-unit ceiling made 196-unit landscape
-                // buttons place the text over the authored icon even though
-                // mobile happened to pass. 25% must remain reserved in all
-                // four native viewports, capped only for very wide layouts.
-                float leftInset=Mathf.Clamp(plate.rect.width*.25f,31f,60f);
-                At(actionLabel.rectTransform,leftInset,
+                // Source of truth is the VISUALLY DRAWN image, not the larger
+                // transparent Button target. Former code tested against the
+                // hitbox, so the caption passed geometry while spilling past
+                // the genuine burgundy painting on both landscape devices.
+                float artAspect=actionPlate.sprite
+                    ?actionPlate.sprite.rect.width/actionPlate.sprite.rect.height
+                    :4.1f;
+                float visibleArtWidth=Mathf.Min(plate.rect.width,
+                    paintedHeight*artAspect);
+                float visualLeft=(plate.rect.width-visibleArtWidth)*.5f;
+                float captionLeft=visualLeft+visibleArtWidth*.26f;
+                float captionRight=visualLeft+visibleArtWidth-6f;
+                At(actionLabel.rectTransform,captionLeft,
                     (plate.rect.height-paintedHeight)*.5f+3f,
-                    Mathf.Max(20f,plate.rect.width-leftInset-7f),
+                    Mathf.Max(20f,captionRight-captionLeft),
                     Mathf.Max(18f,paintedHeight-6f));
             }
 
@@ -1369,9 +1379,16 @@ namespace Eldoria.BreachWatch
                         :b.Action.Label;
                     if(b.Action!=null && b.Id=="bastion" && b.Level==1 &&
                        b.Action.Kind=="AdvanceBastion")
+                    {
+                        // Full title only where the ORIGINAL 246x60 picture
+                        // has enough real horizontal room. Narrow landscape
+                        // retains the authentic destination but avoids tiny
+                        // text beyond the painted gilded edge.
+                        bool fullUpgradeCaption=lastHeight>lastWidth && lastWidth>=800;
                         actionCaption=host.English
-                            ?(lastWidth>=800?"Upgrade to Bastion II":"Upgrade II")
-                            :(lastWidth>=800?"Mejorar a Bastión II":"Mejorar a II");
+                            ?(fullUpgradeCaption?"Upgrade to Bastion II":"Upgrade II")
+                            :(fullUpgradeCaption?"Mejorar a Bastión II":"Mejorar a II");
+                    }
                     actionLabel.text=actionCaption;
                     actionLabel.resizeTextForBestFit=true;
                     actionLabel.resizeTextMinSize=11;
