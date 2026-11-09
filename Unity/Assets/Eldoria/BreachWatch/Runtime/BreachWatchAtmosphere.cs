@@ -43,12 +43,19 @@ namespace Eldoria.BreachWatch
                     // rectangular panel over the game view.
                     float elliptical=Mathf.Sqrt(dx*dx*.76f+dy*dy*1.24f);
                     float ring=Mathf.Clamp01((elliptical-.20f)/1.18f);
-                    float alpha=.008f+.070f*ring*ring+
-                        .019f*Mathf.Pow(dy,3f);
+                    // A/B of material compatibility: the production
+                    // city is brighter/greener than the owner's approved
+                    // twilight concept. A single continuously blended
+                    // ink-blue dusk film sits BEHIND all real UI controls,
+                    // instead of inventing a second scene, backdrop cards
+                    // or additional shadow layers. Small central tint keeps
+                    // the real Bastion, road and resources readable.
+                    float alpha=.080f+.155f*ring*ring+
+                        .040f*Mathf.Pow(dy,3f);
                     baseVertex.position = new Vector3(rect.xMin+width*fx,
                         rect.yMin+height*fy,0f);
-                    baseVertex.color = new Color(.025f,.025f,.027f,
-                        Mathf.Clamp(alpha,0f,.105f));
+                    baseVertex.color = new Color(.055f,.078f,.115f,
+                        Mathf.Clamp(alpha,0f,.280f));
                     baseVertex.uv0 = Vector2.zero;
                     vh.AddVert(baseVertex);
                 }
