@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T12:36:18.720Z",
+  "updated_at": "2026-11-09T12:38:23.008Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7130,11 +7130,11 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 16,
+      "ownership_revision": 17,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
-      "claimed_at": "2026-11-08T14:02:27.791Z",
+      "claimed_at": "2026-11-09T12:38:23.008Z",
       "base_main_sha": "abeddb14dcd8bb7220c89d8bcac1a769e6b69f90",
       "scope": [
         "Unity/Assets/Eldoria/DailyTreasures/**",
@@ -7154,11 +7154,13 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "budget_eur": 0,
-      "phase": "NATIVE_POINTER_OCCLUSION_AND_PAID_CARD_READABILITY_FIXED_SOURCE_ONLY",
+      "phase": "NATIVE_72_IMAGE_EXACT_HEAD_QUEUED",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Unity run 42609669589/321faff compiled and captured only 8 genuine 1600x900 PNG, then failed at Vigilia pointer reparent. Fixed immediate migration layout and found real reward card text clipping, added native legibility checks and diagnostics. Exact current PR181 HEAD e66c80edd has domain CI 42612268799 PASS only. Native 52 PNG/56 pointers/8 grants/16 visual previews remains unproved. Windows exclusive held by PR173 at time of analysis; wait formal release and new CAS reservation, then rerun same PR181 only. No merge, no release or art approval.",
+      "next": "Exclusive Windows lease for PR181 acquired only after main registry was empty and native CI passed on cbab43356. Trigger exact-head Unity 6000.3.23f1 certification: 52 contract PNG + 20 genuine quiet receipts, 116 pointer events, 28 real saved awards, 16 non-paying styles. Preserve beta and Vigilia branches; no merge, release or art approval without visual/game/device review.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
