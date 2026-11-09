@@ -52,12 +52,17 @@ namespace Eldoria.Branding
             var logoRect = MakeRect("EONSCAR logotype", backdrop,
                 new Vector2(.5f, .56f), new Vector2(.5f, .56f),
                 new Vector2(0f, 75f), new Vector2(1120f, 760f));
+            bool portrait = Screen.height > Screen.width;
+            Vector2 maxLogo = portrait ? new Vector2(820f, 650f)
+                                      : new Vector2(1120f, 760f);
             var texture = Resources.Load<Texture2D>(LogoResource);
             if (texture != null)
             {
-                var fit = logoRect.gameObject.AddComponent<AspectRatioFitter>();
-                fit.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
-                fit.aspectRatio = (float)texture.width / texture.height;
+                // Explicit fit against the desired logo box. AspectRatioFitter.FitInParent
+                // would expand against the *whole screen* and overlap the entry button.
+                float ratio = (float)texture.width / texture.height;
+                float height = Mathf.Min(maxLogo.y, maxLogo.x / ratio);
+                logoRect.sizeDelta = new Vector2(height * ratio, height);
                 var logo = logoRect.gameObject.AddComponent<RawImage>();
                 logo.texture = texture;
                 logo.raycastTarget = false;
@@ -77,6 +82,8 @@ namespace Eldoria.Branding
             var enter = MakeRect("Enter existing gameplay", backdrop,
                 new Vector2(.5f, .105f), new Vector2(.5f, .105f),
                 Vector2.zero, new Vector2(440f, 98f));
+            enter.sizeDelta = Screen.height > Screen.width ? new Vector2(660f, 128f)
+                                                      : new Vector2(500f, 112f);
             var buttonImage = enter.gameObject.AddComponent<Image>();
             buttonImage.color = new Color(.34f, .19f, .39f, 1f);
             var button = enter.gameObject.AddComponent<Button>();
