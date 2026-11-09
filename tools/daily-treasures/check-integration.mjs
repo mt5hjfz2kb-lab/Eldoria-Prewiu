@@ -214,10 +214,24 @@ assert.match(native,/panel\.MilestoneSceneryKey==requiredScenery\[style\]/);
 assert.match(panel,/DailyTreasureStageDirection\.Compose\(/);
 assert.match(panel,/currentStage==DailyTreasureStageKind\.Bastion/);
 assert.match(panel,/milestoneScenery\.color=new Color\(\.70f,\.68f,\.65f,/);
-assert.match(panel,/milestoneBannerCaption\.text="UNA HEROÍNA SE UNE"/);
-assert.match(panel,/milestoneBannerCaption\.text="HORIZONTES DESCUBIERTOS"/);
-assert.match(panel,/milestoneBannerCaption\.text="VICTORIA DE LOS VIGILANTES"/);
-assert.match(panel,/milestoneBannerCaption\.text="EL REINO PROSPERA"/);
+// Real story event scenes cannot look like four copies of a clickable
+// superimposed button. Their headings are short enough for phone portrait,
+// and one low-opacity ink band maintains the Vigilia material grammar.
+assert.match(panel,/milestoneBannerCaption\.text="LYRA · NUEVA ALIADA"/);
+assert.match(panel,/milestoneBannerCaption\.text="PRIMER HALLAZGO"/);
+assert.match(panel,/milestoneBannerCaption\.text="CAPÍTULO SUPERADO"/);
+assert.match(panel,/milestoneBannerCaption\.text="EL REINO CRECE"/);
+assert.match(panel,/new Color\(\.050f,\.048f,\.046f,\.58f\)/);
+assert.match(panel,/milestoneRule=Plate\(ruleRect/);
+assert.match(panel,/Place\(milestoneRule\.rectTransform/);
+assert.match(panel,/float headingY=portrait\?panelH\*\.29f:panelH\*\.405f/);
+assert.match(panel,/milestoneBannerCaption\.fontSize=portrait\?18:19/);
+const milestoneBannerSource=panel.split('milestoneBanner=NewRect(')[1]
+  .split('milestoneBanner.gameObject.SetActive(false);')[0];
+assert.doesNotMatch(milestoneBannerSource,/ApplyAuthoredFrame\(|Relief\(/,
+  'A story heading may not disguise itself as a second ornate action button');
+assert.match(native,/Original milestone text overlaps the real Skip finger target/);
+assert.match(native,/RectTransformUtility\.CalculateRelativeRectTransformBounds\(/);
 assert.match(native,/VerifyGenuineSceneComposition\(/);
 assert.match(native,/panel\.ActiveMilestoneStage==expected\.Kind/);
 assert.match(native,/backdrop\.color\.a-expected\.BackdropOpacity/);
