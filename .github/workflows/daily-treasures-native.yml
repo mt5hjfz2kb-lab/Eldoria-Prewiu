@@ -349,7 +349,56 @@ jobs:
           if($seen.Count -ne 52 -or @(Get-ChildItem -Path $env:OUT -File -Filter '*.png').Count -ne 52){
             throw 'Required four unclaimed HUD + eight unpaid calendars + 20 paid reward + four loot flights + 16 visual-only milestone PNGs'
           }
-          Write-Host 'PASS original native component captures, NOT FULL GAME / ART APPROVAL'
+          # The original 52 render contract omitted the five ordinary days.
+          # Every quiet-day image below comes from one genuine, persisted
+          # LocalGateway claim; stage-only visuals are not credited.
+          if($report.quietGatewayClaims -ne 20 -or
+             $report.quietPointerHits -ne 60 -or
+             $report.quietImages -ne 20 -or
+             @($report.quietShots).Count -ne 20){
+            throw 'Missing genuine ordinary-day reward or native touch proof'
+          }
+          $quietDir=Join-Path $env:OUT 'quiet'
+          if(-not(Test-Path $quietDir)){throw 'Native ordinary reward directory missing'}
+          $quietNames=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+          foreach($size in @(@(1600,900),@(900,1600),@(844,390),@(390,844))){
+            $width=[int]$size[0];$height=[int]$size[1]
+            foreach($day in @(1,2,3,5,6)){
+              $name="real-unity-daily-quiet-day${day}-received-${width}x$height.png"
+              $items=@($report.quietShots | Where-Object {$_.file -ceq $name})
+              if($items.Count -ne 1 -or -not $quietNames.Add($name)){
+                throw "Missing or duplicate real ordinary reward: $name"
+              }
+              $item=$items[0]
+              if($item.width -ne $width -or $item.height -ne $height -or
+                 $item.nativeCanvas -ne $true -or $item.coversReward -ne $true -or
+                 $item.preserved -ne $true -or $item.readyToClaim -ne $false){
+                throw "Ordinary reward not verified as actually paid: $name"
+              }
+              $file=Join-Path $quietDir $name
+              if(-not(Test-Path $file)){throw "No Unity quiet screenshot: $name"}
+              $data=[IO.File]::ReadAllBytes($file)
+              if($data.Length -le 7000 -or $item.bytes -ne $data.Length){
+                throw "Truncated ordinary native screenshot: $name"
+              }
+              $sig=[byte[]](137,80,78,71,13,10,26,10)
+              for($i=0;$i -lt $sig.Length;$i++){
+                if($sig[$i] -ne $data[$i]){throw "Not a PNG: $name"}
+              }
+              $imageWidth=[Net.IPAddress]::NetworkToHostOrder([BitConverter]::ToInt32($data,16))
+              $imageHeight=[Net.IPAddress]::NetworkToHostOrder([BitConverter]::ToInt32($data,20))
+              if($imageWidth -ne $width -or $imageHeight -ne $height){
+                throw "Ordinary reward viewport mismatch: $name"
+              }
+              $digest=(Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant()
+              if($digest -ne [string]$item.sha256){throw "Quiet screenshot hash mismatch: $name"}
+            }
+          }
+          if($quietNames.Count -ne 20 -or
+             @(Get-ChildItem -Path $quietDir -File -Filter '*.png').Count -ne 20){
+            throw 'Expected 20 independently paid quiet-day Unity originals'
+          }
+          Write-Host 'PASS 52 contracted PNG + 20 independent paid quiet-day PNG; ART REVIEW PENDING'
       - name: Preserve real Unity screenshots and error log even when test fails
         if: always()
         uses: actions/upload-artifact@v4
