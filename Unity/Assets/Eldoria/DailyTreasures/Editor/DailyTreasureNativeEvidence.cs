@@ -1241,6 +1241,16 @@ namespace Eldoria.DailyTreasures.Editor
                         var beforeQuiet=quietGateway.Snapshot();
                         var expectedQuiet=DailyTreasureRules.ForDay(quietDay,quietDay);
                         panel.Bind(quietGateway,()=>clock.UtcTicks,()=>{});
+                        // Binding a fresh disposable player save updates the
+                        // entry graphics. In editor batchmode there is no
+                        // automatic player frame between consecutive saves;
+                        // render the actual Canvas before a raycast. This is
+                        // the same rendered-frame requirement as real input,
+                        // not a synthetic Button.onClick or prize grant.
+                        Canvas.ForceUpdateCanvases();
+                        camera.Render();
+                        camera.Render();
+                        Canvas.ForceUpdateCanvases();
                         ClickAtNativeScreenPosition(canvas,eventSystem,camera,
                             FindButton(panel,"Daily reward / optional medallion"),
                             width,height);
@@ -1269,6 +1279,17 @@ namespace Eldoria.DailyTreasures.Editor
                                 "Third-day loyalty bonus text overlaps the "+
                                 "forged bronze card border: "+clear);
                         }
+                        // Opening the calendar activates the claim button,
+                        // initially depth=-1 until Unity draws the new uGUI
+                        // graphics. The previous exact-head native run failed
+                        // at this real pointer (run 42712277475, line 1272),
+                        // AFTER its entry button had correctly worked. Give
+                        // the freshly activated button an actual rendered
+                        // frame, then still require GraphicRaycaster hits.
+                        Canvas.ForceUpdateCanvases();
+                        camera.Render();
+                        camera.Render();
+                        Canvas.ForceUpdateCanvases();
                         ClickAtNativeScreenPosition(canvas,eventSystem,camera,
                             FindButton(panel,"Claim exact daily reward"),
                             width,height);
