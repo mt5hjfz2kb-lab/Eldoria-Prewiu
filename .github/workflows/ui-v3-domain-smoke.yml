@@ -46,6 +46,8 @@ jobs:
             /Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs
             /tools/ui-v3-domain-smoke/Smoke.csproj
             /tools/ui-v3-domain-smoke/Program.cs
+      - name: Check real building-timer source geometry contract without Unity
+        run: node tools/ui-v3-domain-smoke/verify-construction-anchor.mjs
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
