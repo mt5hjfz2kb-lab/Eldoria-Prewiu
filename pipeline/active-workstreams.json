@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T13:16:09.717Z",
+  "updated_at": "2026-11-09T13:20:14.284Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7238,7 +7238,8 @@
         "Unity/Assets/Eldoria/Branding/EonscarTrial/**",
         "Unity/Assets/Eldoria/Branding/EonscarTrial.meta",
         "docs/branding/eonscar-trial/**",
-        "tools/eonscar-branding-trial/**"
+        "tools/eonscar-branding-trial/**",
+        ".github/workflows/eonscar-branding-trial-check.yml"
       ],
       "resources": [],
       "budget_eur": 0,
@@ -7246,7 +7247,7 @@
       "base_main_sha": null,
       "phase": "ISOLATED_TRIAL_CODE_AND_BROWSER_LAYOUT_PROOF",
       "next": "Prepare complete isolated Unity trial, validate editor screenshots and no gameplay/save regressions before optional beta integration. No Windows runner while held by PR181.",
-      "note": "Owner approved EONSCAR brand direction. No production rename, no publication, no modifications in other workstreams. Production art and legal vetting pending.",
+      "note": "Reversible branding proof. Browser QA PASS. Native Unity NOT RUN, original PNG not yet in branch; temporary Windows runner stays with PR181. Existing unrelated early-retention domain job fails CS0103 NarrativeCoherenceRules.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "art_production_routing": "not_applicable",
