@@ -543,7 +543,8 @@ namespace Eldoria.DailyTreasures
 
         void OpenEntryOrDeferredMilestone()
         {
-            if(suppressed || gateway==null || now==null)return;
+            if(suppressed || gateway==null || now==null ||
+               HasVisibleCanonicalHeroRoom())return;
             // Daily-claim access always wins: do not hide a real reward behind
             // an unrelated celebration. Once claimed, the same embossed
             // medallion offers the next committed milestone on player request.
@@ -557,7 +558,8 @@ namespace Eldoria.DailyTreasures
 
         public void Open()
         {
-            if(suppressed || gateway==null || now==null)return;
+            if(suppressed || gateway==null || now==null ||
+               HasVisibleCanonicalHeroRoom())return;
             // The chest modal must outrank the RoyalGold screens which are
             // siblings of this independent UI host inside the same safe area.
             // Reordering only the inner screen previously left it invisible
