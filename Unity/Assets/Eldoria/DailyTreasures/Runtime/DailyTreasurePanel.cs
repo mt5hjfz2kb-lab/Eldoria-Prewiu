@@ -1271,7 +1271,7 @@ namespace Eldoria.DailyTreasures
                     if(dayArtwork[i])Place(dayArtwork[i].rectTransform,
                         .5f,.5f,.5f,.5f,0f,iconY,
                         roomy?65f:compactDouble?48f:tiny?51f:58f,
-                        roomy?40f:compactDouble?23f:tiny?31f:42f);
+                        roomy?40f:compactDouble?23f:tiny?24f:28f);
                     float labelBottom=compactDouble?20f:
                         twoResources?27f:tiny?17f:18.5f;
                     float labelHeight=compactDouble?30f:
