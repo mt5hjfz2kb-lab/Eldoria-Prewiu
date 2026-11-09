@@ -1,7 +1,7 @@
-name: Eldoria verified route-buffer owner candidate Pages
+name: Eldoria verified pretester UX owner candidate Pages
 on:
   push:
-    branches: [feature/eldoria-private-beta-i-v-20261107]
+    branches: [main]
     paths: ['.github/workflows/eldoria-beta-pages.yml']
   workflow_dispatch:
 permissions:
@@ -13,13 +13,13 @@ concurrency:
   group: eldoria-pages-main
   cancel-in-progress: false
 env:
-  PACKAGE_RUN: '42519214500'
-  PACKAGE_SOURCE: 4cee848cd0e47185780a31105c931e1cefaf51b4
-  QA_RUN: '42522623870'
-  QA_SOURCE: be28786a09fb319c68ccecd9ba44cae50f253cb3
-  NATIVE_RUN: '42518950317'
-  NATIVE_SOURCE: 5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa
-  CANDIDATE_REVISION: native325-mobile9-routes
+  PACKAGE_RUN: '42596176998'
+  PACKAGE_SOURCE: 54bc70c80716770e4c2dc0c1f7ff5849bf6103c9
+  QA_RUN: '42596176998'
+  QA_SOURCE: 54bc70c80716770e4c2dc0c1f7ff5849bf6103c9
+  NATIVE_RUN: '42595057735'
+  NATIVE_SOURCE: be49d62e3daf490f41dba0bf8123a8e2eee64480
+  CANDIDATE_REVISION: native325-mobile10-pretest-ux
 jobs:
   publish:
     if: github.event_name == 'workflow_dispatch'
@@ -31,6 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: 54bc70c80716770e4c2dc0c1f7ff5849bf6103c9
           sparse-checkout: |
             tools/eldoria-private-beta
             tools/delivery
@@ -53,29 +54,23 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           run-id: ${{ env.PACKAGE_RUN }}
-          name: mobile9-candidate-site
+          name: mobile10-candidate-site
           github-token: ${{ github.token }}
           path: site/beta-native325
       - uses: actions/download-artifact@v4
         with:
           run-id: ${{ env.QA_RUN }}
-          name: mobile9-reversed-order-heap640-not-physical-iphone
+          name: mobile10-desktop-apple-gpu-not-iphone-certification
           github-token: ${{ github.token }}
           path: qa-evidence
-      - uses: actions/download-artifact@v4
-        with:
-          run-id: 42519214500
-          name: mobile9-desktop-apple-gpu-not-iphone-certification
-          github-token: ${{ github.token }}
-          path: first-qa-evidence
-      - name: Preserve certified engine and native tape, verify reduced desktop peak
+      - name: Preserve native UX and verify stable-beta memory bounds
         run: |
           python -m pip install Brotli==1.2.1
           cp -r qa-evidence/evidence evidence
-          python tools/eldoria-private-beta/prepare_compact_pages.py
+          python tools/eldoria-private-beta/prepare_pretest_pages.py
       - uses: actions/upload-artifact@v4
         with:
-          name: mobile9-owner-site-shell
+          name: mobile10-owner-site-shell
           path: owner-shell/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
@@ -99,7 +94,6 @@ jobs:
               if n==11:raise
               time.sleep(5)
           PY
-
   publish-mobile11-world-anchored:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -117,6 +111,7 @@ jobs:
       - name: Checkout exact beta packaging verification tools
         uses: actions/checkout@v4
         with:
+          ref: 52b22519323b212cb17e32a73b724b603ba04812
           sparse-checkout: |
             tools/eldoria-private-beta
             tools/delivery
@@ -236,6 +231,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: 52b22519323b212cb17e32a73b724b603ba04812
           sparse-checkout: tools/eldoria-private-beta
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -272,3 +268,4 @@ jobs:
           name: mobile11-public-pages-webkit-reopen-${{ github.run_id }}
           path: evidence/
           retention-days: 14
+
