@@ -1690,11 +1690,17 @@ namespace Eldoria.DailyTreasures
             float artW=Mathf.Lerp(330f,portrait?284f:300f,t);
             float artH=Mathf.Lerp(portrait?265f:194f,
                 portrait?246f:170f,t);
-            foreach(var art in new[]{illustratedClosed,illustratedOpen})
+            // Explicit owned references rather than new Image[] or
+            // RectTransform[] allocations on every animation frame.
+            if(illustratedClosed)
             {
-                if(!art)continue;
-                art.rectTransform.anchoredPosition=new Vector2(0f,y);
-                art.rectTransform.sizeDelta=new Vector2(artW,artH);
+                illustratedClosed.rectTransform.anchoredPosition=new Vector2(0f,y);
+                illustratedClosed.rectTransform.sizeDelta=new Vector2(artW,artH);
+            }
+            if(illustratedOpen)
+            {
+                illustratedOpen.rectTransform.anchoredPosition=new Vector2(0f,y);
+                illustratedOpen.rectTransform.sizeDelta=new Vector2(artW,artH);
             }
             if(chest)
             {
@@ -1702,8 +1708,9 @@ namespace Eldoria.DailyTreasures
                 chest.rectTransform.sizeDelta=new Vector2(artW*.88f,
                     artH*.88f);
             }
-            foreach(var effect in new[]{glowRect,ambientRect,raysRect})
-                if(effect)effect.anchoredPosition=new Vector2(0f,y);
+            if(glowRect)glowRect.anchoredPosition=new Vector2(0f,y);
+            if(ambientRect)ambientRect.anchoredPosition=new Vector2(0f,y);
+            if(raysRect)raysRect.anchoredPosition=new Vector2(0f,y);
             float resultY=Mathf.Lerp(portrait?-132f:-100f,
                 portrait?(paidH<680f?-217f:-232f):-15f,t);
             resultText.rectTransform.anchoredPosition=new Vector2(0f,resultY);
