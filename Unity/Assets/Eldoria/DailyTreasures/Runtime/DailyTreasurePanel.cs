@@ -543,7 +543,7 @@ namespace Eldoria.DailyTreasures
             if(!asset)return;
             // Native evidence creates a disposable editor scene. Destruction
             // must work there as well as in the real runtime without errors.
-            if(Application.isPlaying)UnityEngine.Object.Destroy(asset);
+            if(UnityEngine.Application.isPlaying)UnityEngine.Object.Destroy(asset);
             else UnityEngine.Object.DestroyImmediate(asset);
         }
         void OnDestroy()
@@ -901,7 +901,7 @@ namespace Eldoria.DailyTreasures
             prizeShelf.gameObject.SetActive(false);
             rays.SetIntensity(0f);
             chimePlayed=false;
-            if(Application.isPlaying && originalSfx && chestKnock && showChest)
+            if(UnityEngine.Application.isPlaying && originalSfx && chestKnock && showChest)
             {
                 if(originalSfx.isPlaying)originalSfx.Stop();
                 originalSfx.PlayOneShot(chestKnock);
@@ -1533,7 +1533,7 @@ namespace Eldoria.DailyTreasures
             if(elapsed>=DailyTreasureRevealTimeline.RevealPeakSeconds && !chimePlayed)
             {
                 chimePlayed=true;
-                if(Application.isPlaying && originalSfx)
+                if(UnityEngine.Application.isPlaying && originalSfx)
                 {
                     var cue=ceremonyTier==DailyTreasureCeremonyTier.Legendary?
                         chestGrandChime:chestChime;
