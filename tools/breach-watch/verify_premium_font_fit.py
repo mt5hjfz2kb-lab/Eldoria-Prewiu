@@ -82,8 +82,7 @@ def verify():
         fits("Mejorar a Bastión II",SEMIBOLD,16,
              action_width-inset-7,label+" authentic hammered CTA")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "Mathf.Clamp(plate.rect.width*.25f,31f,60f)" in hud,
-           "Landscape upgrade hammer clearance was regressed"
+    assert "Mathf.Clamp(plate.rect.width*.25f,31f,60f)" in hud, "Landscape upgrade hammer clearance regressed"
 
     # Physical pixels: compact first-screen body glyphs and five nav areas
     # cannot be reduced to sub-12-pixel unreadable text.
