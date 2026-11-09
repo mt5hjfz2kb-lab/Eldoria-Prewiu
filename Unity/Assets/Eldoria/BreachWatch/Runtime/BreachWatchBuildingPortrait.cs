@@ -27,6 +27,9 @@ namespace Eldoria.BreachWatch
         public bool HasLiveBuilding => image && image.enabled && image.texture == texture && lastModel;
         public bool RenderedFromIsolatedRealMeshes { get; private set; }
         public float NonBackgroundPixelFraction { get; private set; }
+        // Exact RGBA GPU evidence, Editor-only; not a mobile readback.
+        public float TransparentBackdropFraction { get; private set; }
+        public float OpaqueMasonryFraction { get; private set; }
         // Actual GPU-readback silhouette margins, not just mesh counts.
         // This flag is evaluated in Editor evidence; normal mobile play
         // never performs a synchronous texture readback.
@@ -55,6 +58,8 @@ namespace Eldoria.BreachWatch
             if(model == lastModel && lastKey == key && HasLiveBuilding)return;
             RenderedFromIsolatedRealMeshes=false;
             NonBackgroundPixelFraction=0f;
+            TransparentBackdropFraction=0f;
+            OpaqueMasonryFraction=0f;
             PortraitGeometryClipped=false;
             LastGeometryUvBounds=Rect.zero;
             if(!texture)
@@ -183,7 +188,11 @@ namespace Eldoria.BreachWatch
                 portraitCamera.useOcclusionCulling=false;
                 portraitCamera.enabled=false;
                 portraitCamera.clearFlags=CameraClearFlags.SolidColor;
-                portraitCamera.backgroundColor=new Color(.14f,.135f,.115f,1);
+                // Clear only the BACKGROUND alpha, retaining the same
+                // real URP masonry meshes and lighting. UI RawImage blends
+                // these meshes directly into the carved mineral cartouche,
+                // not into a second opaque black photographic rectangle.
+                portraitCamera.backgroundColor=new Color(.14f,.135f,.115f,0f);
                 portraitCamera.cullingMask=1<<PreviewLayer;
                 portraitCamera.allowHDR=false;
                 portraitCamera.aspect=texture.width/(float)texture.height;
@@ -287,7 +296,7 @@ namespace Eldoria.BreachWatch
                 // building. Count genuinely rendered pixels after the camera.
                 var previousActive=RenderTexture.active;
                 var readback=new Texture2D(texture.width,texture.height,
-                    TextureFormat.RGB24,false);
+                    TextureFormat.RGBA32,false);
                 try
                 {
                     RenderTexture.active=texture;
@@ -308,21 +317,27 @@ namespace Eldoria.BreachWatch
                     // linear(.07) clear colour into much brighter pixel bytes.
                     var background=pixels[8*texture.width+8];
                     int nonBackground=0;
+                    int transparentBackground=0;
+                    int opaqueMasonry=0;
                     int minX=texture.width,minY=texture.height;
                     int drawMaxX=-1,drawMaxY=-1;
                     for(int py=0;py<texture.height;py++)
                     for(int px=0;px<texture.width;px++)
                     {
                         var p=pixels[py*texture.width+px];
+                        if(p.a<=12)transparentBackground++;
                         if(Mathf.Abs(p.r-background.r)+
                            Mathf.Abs(p.g-background.g)+
                            Mathf.Abs(p.b-background.b)<=42)
                             continue;
                         nonBackground++;
+                        if(p.a>=200)opaqueMasonry++;
                         minX=Mathf.Min(minX,px);drawMaxX=Mathf.Max(drawMaxX,px);
                         minY=Mathf.Min(minY,py);drawMaxY=Mathf.Max(drawMaxY,py);
                     }
                     NonBackgroundPixelFraction=nonBackground/(float)pixels.Length;
+                    TransparentBackdropFraction=transparentBackground/(float)pixels.Length;
+                    OpaqueMasonryFraction=opaqueMasonry/(float)pixels.Length;
                     if(nonBackground>0)
                         LastGeometryUvBounds=new Rect(
                             minX/(float)texture.width,
@@ -343,7 +358,9 @@ namespace Eldoria.BreachWatch
                         " cropY="+minY+".."+drawMaxY+
                         " background="+background.r+","+
                         background.g+","+background.b+
-                        " cropped="+PortraitGeometryClipped);
+                        " cropped="+PortraitGeometryClipped+
+                        " alphaClear="+TransparentBackdropFraction.ToString("F4")+
+                        " alphaMasonry="+OpaqueMasonryFraction.ToString("F4"));
                 }
                 finally
                 {
