@@ -471,7 +471,8 @@ namespace Eldoria.BreachWatch.Editor
                 // no secondary button background, glyph or extra ring.
                 // A transparent hit-only Image on the Button is permitted,
                 // because it does not paint a duplicate frame or symbol.
-                Need(ui.GetComponentInChildren<BreachWatchSelectionHalo>(true)==null,
+                Need(!ui.GetComponentsInChildren<Graphic>(true).Any(g=>g &&
+                         g.name=="Selected medallion / warm engraved relief"),
                      "Old duplicated selection halo remains in native scene: "+name);
                 var expectedMedallions=new[]{"castle","provisions","swords","raven","helm"};
                 for(int index=0;index<nav.Count;index++)
