@@ -163,8 +163,9 @@ static class Program
                 migrated.Snapshot().Retention.ScoutDiscoveryMask==10,
                 "Migration itself is idempotent on reload");
         var backlogClock=new Clock();
-        var backlogStore=new Store{State=new PlayerState{BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
-            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},Available=new ArmyRoster{ArcherT1=180}}};
+        var backlogStore=new Store{State=new PlayerState{BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true,
+                SeenNarrative=new System.Collections.Generic.List<string>{"scouts-introduction"}},Available=new ArmyRoster{ArcherT1=180}}};
         var backlog=new LocalGateway(backlogClock,backlogStore);
         backlogClock.Add(12*3600);backlog.Advance();
         Require(backlog.Snapshot().Retention.Orders.Count(x=>!x.Claimed)==6,"Actual two-period backlog reaches six orders");
@@ -191,8 +192,9 @@ static class Program
                 "Strategy must reserve actual distinct detachment sizes");
         var strategyClock=new Clock();
         var strategyStore=new Store{State=new PlayerState{
-            BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
-            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
+            BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true,
+                SeenNarrative=new System.Collections.Generic.List<string>{"scouts-introduction"}},
             Available=new ArmyRoster{ArcherT1=80}}};
         var strategyGateway=new LocalGateway(strategyClock,strategyStore);
         var scoutTarget=strategyGateway.Snapshot().Retention.Orders
@@ -227,8 +229,9 @@ static class Program
             "A second claim never duplicates scouting rewards");
         var fastClock=new Clock();
         var fastStore=new Store{State=new PlayerState{
-            BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
-            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
+            BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true,
+                SeenNarrative=new System.Collections.Generic.List<string>{"scouts-introduction"}},
             Available=new ArmyRoster{ArcherT1=80}}};
         var fastGateway=new LocalGateway(fastClock,fastStore);
         var fastTarget=fastGateway.Snapshot().Retention.Orders.First(o=>o.Kind!=0).Id;
