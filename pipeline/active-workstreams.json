@@ -6641,7 +6641,7 @@
     {
       "id": "eldoria-forja-oscura-visual-proof-20261107",
       "title": "Vigilia de la Brecha — nuevo HUD independiente desde cero",
-      "owner": "chatgpt-vigilia-20261108",
+      "owner": "chatgpt-vigilia-reference-fidelity-20261109",
       "branch": "feature/forja-oscura-native-proof-20261107",
       "status": "active",
       "claimed_at": "2026-11-06T23:40:17.025Z",
@@ -6667,10 +6667,10 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 28,
+      "ownership_revision": 29,
       "write_scope_released": false,
-      "phase": "VIGILIA_PREMIUM_BUTTON_FAMILY_EIGHT_NATIVE_PASS_OWNER_ART_REVIEW",
-      "next": "Candidate proven in Unity first-screen; show owner genuine 8 PNG + before/after against chosen V4 buttons; keep PR173 DRAFT unmerged and production unchanged until explicit art approval. Source SHA cdcb604a49fa39f7ec7fb5ac558b6f2387e3a768, run 42679974131. Resolve shared registry merge drift on a fresh main snapshot before any future merge.",
+      "phase": "REFERENCE_ART_FIDELITY_IMPLEMENTATION_NO_UNITY_LEASE",
+      "next": "Modificar únicamente BreachWatch HUD/arte aprobado en la PR173 reutilizando activos reales, demostrar geometría/sprites de misión y panel con pruebas de fuente; obtener lease Windows solo al liberarse por PR179 y capturar 8 PNG exact-head; no merge/publish hasta evidencia Unity y fidelidad del propietario.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-09T16:43:00Z",
@@ -6727,6 +6727,12 @@
           "ownership_revision": 19,
           "transferred_at": "2026-11-08T00:18:00+01:00",
           "reason": "Owner rejects Fortaleza and explicitly selects Vigilia de la Brecha as a complete independent UI from scratch; take over the same PR173, preserve rejected evidence and build only a native first-screen proof."
+        },
+        {
+          "owner": "chatgpt-vigilia-20261108",
+          "ownership_revision": 28,
+          "transferred_at": "2026-11-09T19:42:13.250Z",
+          "reason": "El propietario ordena expresamente en este chat implementar la fidelidad visual de la referencia aprobada en la PR 173. Relevo seguro, sin cancelar jobs ni ocupar Windows reservado por PR179."
         }
       ],
       "runner_priority_handoff": {
