@@ -2,8 +2,8 @@
   "schema": 1,
   "workstream_id": "eldoria-private-beta-i-v-20261107",
   "owner": "chatgpt-eldoria-pilot-telemetry-20261109",
-  "ownership_revision": 23,
-  "state": "WAIT_FOR_EXCLUSIVE_WINDOWS_LEASE",
+  "ownership_revision": 24,
+  "state": "CLAIMED_FOR_NATIVE",
   "variant": "beta10-minimal-anchor",
   "replay_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "minimal_source_commit": "e445a712b16f0bfc8196bdcb734492e780ef082c",
@@ -21,5 +21,6 @@
   "change_scope": "RoyalGoldV3ContextHud only; preserve original beta10 public Pages and save data",
   "external_testers_enabled": false,
   "owner_ios_stability_proven": false,
-  "note": "This file is NOT a native test result. Change state to CLAIMED_FOR_NATIVE only after formal CAS workstream lease handoff and zero Unity/Blender process."
+  "note": "This file is NOT a native test result. Change state to CLAIMED_FOR_NATIVE only after formal CAS workstream lease handoff and zero Unity/Blender process.",
+  "activated_at_utc": "2026-11-09T22:43:17.116Z"
 }
