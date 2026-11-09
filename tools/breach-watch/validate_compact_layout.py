@@ -104,7 +104,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
-        contextw=210 if h<530 else 220
+        contextw=234 if h<530 else 220
         contexth=min(330,h-174)
         contexty=75 if h<530 else 118
         context=place("context",w-m-contextw,contexty,contextw,contexth)
@@ -146,7 +146,7 @@ def main():
         'At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50)',
         'float navSize=55,navGap=15',
         'float navTop=h-78',
-        'float pw=h<530f?210f:220f',
+        'float pw=h<530f?234f:220f',
         'float ph=Mathf.Min(330,h-174f)',
         'At(((RectTransform)actionButton.transform),12,ph-56,pw-24,53)',
         'At(((RectTransform)closeButton.transform),pw-57,3,52,52)',
