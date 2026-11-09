@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T17:11:20.832Z",
+  "updated_at": "2026-11-09T17:38:15.366Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6788,16 +6788,17 @@
         "tools/tester-readiness/**",
         "pipeline/tester-readiness/**",
         "docs/eldoria-private-beta/tester-pilot/**",
-        ".github/workflows/eldoria-private-beta-qa.yml"
+        ".github/workflows/eldoria-private-beta-qa.yml",
+        ".github/workflows/eldoria-pages-telemetry-tests.yml"
       ],
       "resources": [],
       "claimed_at": "2026-11-09T17:11:20.832Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BASTION_I_V_TESTER_PRIVATE_GATEWAY_AND_TELEMETRY_IMPLEMENTATION",
+      "phase": "PAGES_SUPABASE_QA_COLLECTOR_CODE_AND_TESTS",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Re-use PR179 existing Cloudflare R2 signed links and Supabase event catalog/observer; implement Unity Bastion I–V milestones with anonymized payload, QA/no-consent and offline controls, test browser/worker/SQL integration, stage exact WebGL artifact only. Leave current public owner beta and its rollback intact. No Windows lease until Vigilia releases it.",
+      "next": "Owner correction: GitHub Pages selected, Cloudflare rejected. Pages QA Edge collector and source tests now staged in PR179. Validate no-secret test suite in new Ubuntu workflow, deploy QA-only Edge function, connect opt-in Pages script and verify real QA receipt, then only gate real tester distribution by current readiness.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
