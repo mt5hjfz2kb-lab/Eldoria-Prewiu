@@ -155,6 +155,10 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   const captionH=portrait?(paidH<680?39:50):29;
   const caption=rect(0,captionY,paidW-45,captionH);
   const shelf=rect(0,portrait?-115:-69,paidW-34,portrait?158:76);
+  // Earned cards are children of prizeShelf and their anchored positions are
+  // SHELF-LOCAL. Preserve global bounds for caption/Continue comparisons,
+  // but never compare local card positions with global shelf coordinates.
+  const localShelf=rect(0,0,paidW-34,portrait?158:76);
   const claim=rect(0,-paidH/2+13+54/2,
     Math.min(paidW-30,portrait?325:405),54);
   assert.ok(chest.y1<=paidH/2+eps && chest.y0>=caption.y1+1,
@@ -181,8 +185,8 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
       const y=rows===1?0:row===0?cardH/2+prizeGap/2:
                                            -cardH/2-prizeGap/2;
       const frame=rect(x,y,cardW,cardH);
-      assert.ok(frame.x0>=shelf.x0+1 && frame.x1<=shelf.x1-1 &&
-                frame.y0>=shelf.y0+1 && frame.y1<=shelf.y1-1,
+      assert.ok(frame.x0>=localShelf.x0+1 && frame.x1<=localShelf.x1-1 &&
+                frame.y0>=localShelf.y0+1 && frame.y1<=localShelf.y1-1,
         `${w}x${h}: real paid card ${i+1} exceeds compact shelf`);
       for(const other of cards)assert.ok(noOverlap(frame,other),
         `${w}x${h}: real paid cards overlap one another`);
