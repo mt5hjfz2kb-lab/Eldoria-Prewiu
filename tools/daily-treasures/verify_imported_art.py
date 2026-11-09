@@ -87,3 +87,25 @@ for item in icons:
     print(f"PASS painted {name} original art, alpha, SHA256 and Unity GUID")
 assert len(seen)==9
 print("PASS NINE ORIGINAL VALORIA 2D PNG ASSETS (native quality approval is separate)")
+
+# Four new source-independent icons remove baked text, clipped screenshots,
+# low resolution and circular HUD backgrounds in the old 128px fallbacks.
+clean=manifest["clean_resource_icons"]
+assert len(clean)==4
+for item in clean:
+    name=item["file"]
+    data=(target/name).read_bytes()
+    info=(target/(name+".meta")).read_text(encoding="utf-8")
+    assert data[:8]==bytes([137,80,78,71,13,10,26,10])
+    assert struct.unpack(">II",data[16:24])==(256,256), name
+    assert hashlib.sha256(data).hexdigest()==item["sha256"], name
+    assert data[25] in (3,6) and (data[25]!=3 or b"tRNS" in data)
+    assert f"guid: {item['guid']}" in info.splitlines()
+    assert "textureType: 8" in info and "spriteMode: 1" in info
+    assert "alphaIsTransparency: 1" in info and "enableMipMap: 0" in info
+    assert "spritePixelsToUnits: 256" in info
+    assert item["guid"] not in seen
+    seen.add(item["guid"])
+    print(f"PASS 256px premium candidate {name}: original PNG, SHA256 and Unity importer")
+assert len(seen)==13
+print("PASS 13 actual Valoria 2D PNG files; clean iconic art STILL NEEDS native artistic review")
