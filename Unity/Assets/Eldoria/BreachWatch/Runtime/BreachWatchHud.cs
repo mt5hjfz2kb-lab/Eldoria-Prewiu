@@ -1475,14 +1475,14 @@ namespace Eldoria.BreachWatch
                     if(b.Action!=null && b.Id=="bastion" && b.Level==1 &&
                        b.Action.Kind=="AdvanceBastion")
                     {
-                        // Full title only where the ORIGINAL 246x60 picture
-                        // has enough real horizontal room. Narrow landscape
-                        // retains the authentic destination but avoids tiny
-                        // text beyond the painted gilded edge.
-                        bool fullUpgradeCaption=lastWidth>=800;
-                        actionCaption=host.English
-                            ?(fullUpgradeCaption?"Upgrade to Bastion II":"Upgrade II")
-                            :(fullUpgradeCaption?"Mejorar a Bastión II":"Mejorar a II");
+                        // The selected card ALREADY names the Bastion and
+                        // shows its current level. A 21-character destination
+                        // wrapped into two lines on genuine 900x1600 Unity
+                        // despite best-fit, visibly breaking the ONE gold CTA.
+                        // Keep a short, accurate chapter destination on ALL
+                        // sizes. This changes only live text, never the actual
+                        // command or target building in the canonical host.
+                        actionCaption=host.English?"Upgrade to II":"Mejorar a II";
                     }
                     actionLabel.text=actionCaption;
                     actionLabel.resizeTextForBestFit=true;
