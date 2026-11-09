@@ -375,3 +375,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-09: Re-run exact source after owner-reference full HUD reconstruction and updated source-level geometry validator. Physical screenshot is the truth; compare quest silhouette and per-component typography, brass single frame, true owner medallions, reduced Bastion card. No production publish and no art approval from CI alone.
 
 2026-11-09: Recheck new entire HUD redesign after source geometry certified 3-unit Bastion title/level gap. Unity Roslyn, 20 source viewport combos, genuine eight native camera screenshots with live original game progress, click tests and independent canvas. Do not publish or approve unless actual owner visual reference is matched. 
+
+2026-11-09: True UI A/B after typography and geometry SOURCE validators updated for actual approved screenshot. Native must capture and inspect all eight screenshots, text collision and source medallion identity. Source SHA pinned; do not publish / merge.
