@@ -97,6 +97,26 @@ namespace Eldoria.BreachWatch
                         " slot="+slot+" material="+source.name);
                     var material=new Material(source);
                     material.name="Vigilia A/B royal-blue genuine slate "+slot;
+                    // The real URP Lit source has its actual preserved tile
+                    // textures only in legacy _MainTex, while URP samples
+                    // _BaseMap. The previous tint changed ZERO roof pixels:
+                    // resolve the missing texture binding, not another HUD.
+                    var legacy=source.HasProperty("_MainTex")
+                        ?source.GetTexture("_MainTex"):null;
+                    var albedo=source.HasProperty("_BaseMap")
+                        ?source.GetTexture("_BaseMap"):null;
+                    if(legacy && !albedo && material.HasProperty("_BaseMap"))
+                    {
+                        material.SetTexture("_BaseMap",legacy);
+                        material.SetTextureScale("_BaseMap",
+                            source.GetTextureScale("_MainTex"));
+                        material.SetTextureOffset("_BaseMap",
+                            source.GetTextureOffset("_MainTex"));
+                    }
+                    Debug.Log("VIGILIA_ROOF_ALBEDO_LINK slot="+slot+
+                        " legacy="+(legacy?legacy.name:"none")+
+                        " urpBound="+(material.HasProperty("_BaseMap")&&
+                            material.GetTexture("_BaseMap")!=null));
                     // Bright, saturated lapis with visible tile grain.
                     // This is a material tint, not a 2D screenshot or model swap.
                     var blue=slot==8
