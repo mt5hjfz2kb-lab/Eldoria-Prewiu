@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T21:56:51.597Z",
+  "updated_at": "2026-11-09T09:58:14.896Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6696,9 +6696,7 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
       "ownership_revision": 22,
       "write_scope_released": false,
@@ -6763,13 +6761,11 @@
         }
       ],
       "runner_priority_handoff": {
-        "status": "RETURNED_AFTER_BETA_NATIVE_SUCCESS",
-        "at": "2026-11-08T20:10:53.050Z",
+        "status": "OWNER_CONFIRMED_RELEASE_TO_BETA_UX",
+        "at": "2026-11-09T08:26:10.917Z",
         "to": "eldoria-private-beta-i-v-20261107",
-        "reason": "Owner explicitly renews urgent PR179 continuation until testable stability solution. No native jobs active in live Actions inventory; preserve Forja owner and return Windows after native validation/build.",
-        "returned_at": "2026-11-08T20:40:49.895Z",
-        "native_run": 42518950317,
-        "restoration_verified": true
+        "reason": "Current user: Sigue con el trabajo el chat de la interfaz ya liberó el PC",
+        "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
         "source_sha": "1cea977b8ec67495bbbcbc7b31d38425e352c10c",
@@ -6786,8 +6782,8 @@
         "android_tested": false,
         "webgl_tested": false
       },
-      "runner_released_at": "2026-11-07T23:52:00Z",
-      "runner_release_basis": "Independent BreachWatch proof run 42427015492 completed successfully, exact source 1cea977b8ec67495bbbcbc7b31d38425e352c10c. Eight authentic Unity PNGs and one nav pointer passed; no art approval."
+      "runner_released_at": "2026-11-09T08:26:10.917Z",
+      "runner_release_basis": "Owner explicitly reports interface chat released PC and instructs PR179 to continue; latest observed interface native run42582751853 completed SUCCESS. Preserve interface writer, branch and all artifacts."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
@@ -6817,14 +6813,16 @@
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes",
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "MOBILE9_PUBLISHED_LIVE_WEBKIT_PASS_OWNER_IPHONE_PENDING",
+      "phase": "OWNER_PRETEST_UX_NATIVE_VALIDATION",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Owner physical iPhone test of published beta9; desktop WebKit entry/reload and measured route memory reduction verified. Do not merge/release to testers without physical result. Windows remains returned to Forja.",
+      "next": "Run exact candidate native compile, full journey and UX pointer/capture probe; fix failures and verify before publishing. Preserve canonical source and saves; no job cancellation.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6836,7 +6834,7 @@
         "actual_unity_gameplay_events_verified": 0,
         "cloudflare_connected": false,
         "real_hosted_pass": false,
-        "physical_mobile_tested": "owner reports iPhone/iPad returns to welcome during load; not passed",
+        "physical_mobile_tested": "Beta9: owner confirms entry/play; long session and physical reopen not yet reported. Earlier failures retained per revision.",
         "supabase_beta_event_rows": 0,
         "distribution_enabled": true,
         "budget_eur": 0,
@@ -7019,16 +7017,25 @@
           "physical_iphone_verified": false,
           "release_for_external_testers": false,
           "preallocation_640_rejected": true,
-          "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=native325-mobile9-routes"
+          "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=native325-mobile9-routes",
+          "owner_physical_result": {
+            "reported_date": "2026-11-08",
+            "owner_quote": "Ahora si me deja jugar",
+            "entry_and_play_owner_confirmed": true,
+            "sustained_session_verified": false,
+            "physical_close_reopen_verified": false,
+            "scope": "Owner-reported success following beta9 handoff; session duration and browser not specified."
+          }
         }
       },
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "granted_by_owner",
-        "at": "2026-11-08T16:53:20.268Z",
-        "return_to": "eldoria-forja-oscura-visual-proof-20261107"
+        "status": "claimed_after_owner_confirmed_release",
+        "reason": "Focused frozen beta pretester UX verification after implementation; preserve current Forja and Treasures alternating work, no cancellation",
+        "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
+        "next_test": "Run existing native workflow with lease13 on candidate eeb06ce1191424f2af3c82d5256e120885e5867b; preserve frozen warm inputs, validate I–V journey and focused UX pointer/capture probe, then restore every input and return Windows."
       },
       "ownership_history": [
         {
@@ -7038,14 +7045,36 @@
           "to_owner": "codex-pr179-stability-2ea88ced1c46",
           "reason": "User explicitly requests continuing PR179 stability repair in this session. Preserve running native run42503628688; no cancellation or duplicate Unity launch."
         }
-      ]
+      ],
+      "frozen_beta_ux_scope": {
+        "requested_by": "owner in current PR179 conversation 2026-11-09",
+        "baseline_runtime": "5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa",
+        "surface": "Existing published frozen beta, not PR173 replacement HUD or PR181 treasures production sources",
+        "source_policy": "Keep isolated, exact-base checked patch overlays under owned beta tools. Do not edit other owners canonical source files, scenes, or running native projects. Reconciliation into current development remains explicit.",
+        "items": [
+          "Hide unavailable/unintroduced navigation",
+          "Explain and delay Vigilants/Scouts",
+          "Stop Vigilants backdrop drift",
+          "Direct HUD mailbox",
+          "Stable world-anchored level labels",
+          "Training only relevant controls",
+          "Barracks choice Upgrade/Train",
+          "One World/City toggle; remove Units",
+          "Clear mission expansion and close icon",
+          "Compact stationary operation panels",
+          "Building upgrades up to Bastion level"
+        ],
+        "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
+        "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
+      },
+      "runner_claimed_at": "2026-11-09T08:26:10.917Z"
     },
     {
       "id": "eldoria-daily-treasures-20261108",
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 11,
+      "ownership_revision": 13,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7070,26 +7099,32 @@
       ],
       "resources": [],
       "budget_eur": 0,
-      "phase": "FOUR_DISTINCT_PREMIUM_STAGES_CI_GREEN_EDITOR_ASMDEF_PROTECTED_NATIVE_PENDING",
+      "phase": "PRE_PC_PAINTERLY_ART_REAL_MOBILE_QA_AND_NATIVE_TYPOGRAPHY_READY",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.",
-      "next": "PR181 exact head ba0b19227b98bc1f38ece9caa5d6434459ab418a source QA success 42527542249. Full premium stage layouts implemented for Lyra/Scouts/Vigilants using existing authentic painterly sources; Bastion shows true city via translucent backdrop. No fake Lyra portrait; actual approved Heroes UI takes precedence. Original authored chest & nine texture assets and real gateway retained. Fixed ROOT-CAUSE Unity assembly boundary: Editor screenshot source now has nested Editor-only asmdef, never leaks UnityEditor to Android/WebGL; Ubuntu checks run. Fixed unsafe huge Windows full archive checkout using proven blob:none exact-SHA sparse Git; PyYAML workflow check green. Windows still held by Vigilia PR173; wait for formal owner release, CAS-claim then run native Unity 6000.3.23f1 52 original shots, 56 pointers, 8 true claims, art audit and full city/device/audio. NO art approval, merge or release before native and owner.",
+      "next": "PR181 original painterly replacement: 4 real 256px cleaned photo-like icons replace flat crops; exact actual PNG SHA256 repaired in source-manifest after Git blobs changed, 13 texture integrity checks, mobile contact at 32/48/64 in Actions 42597168674 (artifact 13664102624), source and compatibility CI exact SHA b9f3331cd9a39df7ea56f0042c5abab4edd31f23 success. New native Editor probes for real Unity Text.preferredHeight and paid day-7 orientation swap/restoration; fixed clipping of two-line receipt in landscape. PR173 live current OwnerControls and reward-safe premium reusable surfaces checked; avoid using upgrade_button with baked hammer. Windows runner held by PR179 beta per canonical lease: never interrupt/claim without CAS release. Only after formal lease and exact HEAD native: 52 actual Unity captures, 56 pointer interactions, 8 authentic awards, native font/rotation/art review, full city/mobile/audio, then ask owner approval. No merge/release yet.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
       "last_verified": {
         "source": "feature/eldoria-daily-treasures-20261108",
-        "commit": "ba0b19227b98bc1f38ece9caa5d6434459ab418a",
-        "run_id": 42527542249,
-        "result": "SUCCESS_SOURCE_QA_ONLY_EDITOR_ASMDEF_YAML_ORIGINAL_ART_STAGES",
-        "original_png_assets": 9,
-        "authored_foley_cues": 3,
-        "authentic_painterly_stage_backdrops": 3,
-        "milestone_stage_compositions": 4,
-        "editor_asmdef_isolated": true,
-        "sparse_safe_windows_checkout_validated": true,
-        "requested_native_art_frames": 52,
-        "requested_native_pointer_events": 56,
-        "requested_real_gateway_claims": 8,
+        "commit": "b9f3331cd9a39df7ea56f0042c5abab4edd31f23",
+        "run_id": 42597168674,
+        "result": "SUCCESS_SOURCE_QA_ONLY_NATIVE_UNITY_NOT_EXECUTED",
+        "original_imported_png_assets": 13,
+        "painterly_clean_mobile_resources": 4,
+        "source_icon_size_tests": [
+          32,
+          48,
+          64
+        ],
+        "art_contact_artifact_id": 13664102624,
+        "real_paid_gateway_checks": 196,
+        "unity_native_font_fit_test_prepared": true,
+        "unity_native_orientation_test_prepared": true,
+        "live_vigilia_head_compatibility_verified": true,
+        "native_expected_pngs": 52,
+        "native_expected_pointer_events": 56,
+        "native_expected_real_gateway_claims": 8,
         "unity_native_pass": false,
         "art_approved": false,
         "merged": false,
