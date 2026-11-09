@@ -80,6 +80,13 @@ for contract in (
 assert "http.extraheader" in fetch and "GH_TOKEN" in fetch
 assert "http://" not in fetch, "Source must not use plaintext HTTP"
 assert "release" not in names, "This is not an APK/WebGL release workflow"
+# A real Unity 6000 compiler attempt previously failed because project Audio
+# was disabled; never spend another Windows reservation on that same mistake.
+assert "com.unity.modules.audio" in code
+assert "DAILY_TREASURE_AUDIO_MODULE_ENABLED" in code
+assert "manifest.clean_resource_icons" in code
+assert "Required thirteen original source PNGs" in code
+assert "thirteen exact SHA256 files" in code
 
 native_render=next(step for step in steps
     if "render genuine day-four/day-seven" in step.get("name",""))
