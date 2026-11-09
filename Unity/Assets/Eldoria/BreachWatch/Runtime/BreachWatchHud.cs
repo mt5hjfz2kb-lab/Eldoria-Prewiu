@@ -1169,7 +1169,12 @@ namespace Eldoria.BreachWatch
                 float paintedHeight=Mathf.Min(33f,plate.rect.height-8f);
                 At(illustration,0f,(plate.rect.height-paintedHeight)*.5f,
                     plate.rect.width,paintedHeight);
-                float leftInset=Mathf.Clamp(plate.rect.width*.25f,31f,38f);
+                // Match the *physical* width of the painted hammer at each layout.
+                // The former hard 38-unit ceiling made 196-unit landscape
+                // buttons place the text over the authored icon even though
+                // mobile happened to pass. 25% must remain reserved in all
+                // four native viewports, capped only for very wide layouts.
+                float leftInset=Mathf.Clamp(plate.rect.width*.25f,31f,60f);
                 At(actionLabel.rectTransform,leftInset,
                     (plate.rect.height-paintedHeight)*.5f+3f,
                     Mathf.Max(20f,plate.rect.width-leftInset-7f),
