@@ -64,3 +64,9 @@ python tools/eldoria-private-beta/native/ux/test_overlay.py
 
 - Focused-probe gesture correction: RoyalButton intentionally accepts clicks only after a matching pointer down/up sequence. The focused helper initially sent only click; it now uses the same real raycast plus down/up/click sequence already validated by the canonical journey. No direct `onClick.Invoke` bypass is used for controls under test.
 - Focused UX now runs before the five-minute journey; after it passes its Editor-only source is removed before the journey certificate. Each native run creates its own GUID-named disposable save, so UX fixtures cannot seed the canonical journey. All terrain, UX, journey and WebGL gates remain mandatory.
+
+## Candidate browser preparation
+
+Run 42595057735 (be49d62e3daf490f41dba0bf8123a8e2eee64480) has passed the focused UX gate and advanced to the full journey. Its screenshots still require review; no WebGL delivery is certified at this checkpoint. The mobile10 packaging workflow pins that exact native run and refuses packaging if it fails. It checks the focused completion/source plus the installed overlay manifest, original input restoration, 227 journey checks, native world parity and WebGL build hashes.
+
+The Apple GPU comparison uses stable mobile9 as control. Owner publication preparation requires both browser runs to pass entry/reload, no larger WASM capacity, used-heap growth no greater than 5%, and no resident-peak rise over 15% without further investigation/reversed-order measurement. These are desktop regression bounds, not physical-iPhone certification. The release identity explicitly records changed tutorial/UX and leaves tester distribution and physical-device certification false.

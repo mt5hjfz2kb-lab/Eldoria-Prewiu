@@ -1,4 +1,4 @@
-name: Eldoria reused route buffers mobile profile and same-host Apple GPU
+name: Eldoria pretester UX mobile candidate and stable-beta Apple GPU regression
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -11,9 +11,9 @@ concurrency:
   group: eldoria-beta-mobile-candidate
   cancel-in-progress: false
 env:
-  NATIVE_RUN: '42518950317'
-  NATIVE_SOURCE: 5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa
-  CANDIDATE_REVISION: native325-mobile9-routes
+  NATIVE_RUN: '42595057735'
+  NATIVE_SOURCE: be49d62e3daf490f41dba0bf8123a8e2eee64480
+  CANDIDATE_REVISION: native325-mobile10-pretest-ux
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -137,7 +137,14 @@ jobs:
           del bundle,matches,expected_cache
           native=json.load(open('native-evidence/native-journey/integration-result.json',encoding='utf-8-sig'))
           assert native['source']==os.environ['NATIVE_SOURCE'] and native['status']=='INTEGRATION_PASS_ART_REVIEW_REQUIRED'
-          assert len(native['checks'])==225
+          assert len(native['checks'])==227
+          ux=pathlib.Path('native-evidence/pretest-ux')
+          assert (ux/'complete.txt').read_text().strip()=='PRETEST_UX_NATIVE_PASS_REQUIRES_VISUAL_REVIEW'
+          assert (ux/'source.txt').read_text().strip()==os.environ['NATIVE_SOURCE']
+          assert not (ux/'failure.txt').exists()
+          expected=json.load(open('tools/eldoria-private-beta/native/ux/manifest.json'))
+          installed=json.load(open('native-evidence/ux-source-overlay.json',encoding='utf-8-sig'))
+          assert installed==expected,'Native UX payload differs from packaging source'
           dedup=json.load(open('deduplicated/integrity.json'));profile=json.load(open('transformed/integrity.json'));extract=json.load(open('extracted/extraction.json'))
           assert dedup['source_sha256']==extract['bundle_sha256'] and profile['source_sha256']==dedup['candidate_sha256']
           assert profile['all_objects_verified']==dedup['all_objects_verified']
@@ -149,6 +156,11 @@ jobs:
           import json,pathlib
           p=pathlib.Path('site/release-identity.json');r=json.loads(p.read_text());cache=json.load(open('native-evidence/terrain-query-cache.json',encoding='utf-8-sig'))
           r['route_buffers_reused']=True;r['exact_population_and_routes_verified']=True
+          r['tutorial_unchanged']=False
+          r['source_composition']='Frozen beta with six certified stability overlays, manifest-pinned pretester UX overlays and the certified original terrain response tape'
+          r['pretest_ux_native_verified']=True
+          r['pretest_ux_overlay_count']=len(__import__('json').load(open('native-evidence/ux-source-overlay.json',encoding='utf-8-sig'))['files'])
+          r['pretest_ux_overlay_sha256']=__import__('hashlib').sha256(pathlib.Path('native-evidence/ux-source-overlay.json').read_bytes()).hexdigest()
           r['terrain_query_cache_sha256']=cache['sha256'].lower();r['terrain_query_runtime_cooking']=False;r['terrain_query_source']='original PhysX responses, full native replay certified'
           p.write_text(json.dumps(r,indent=2))
           PY
@@ -161,7 +173,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile9-packaging-evidence
+          name: mobile10-packaging-evidence
           path: |
             extracted/extraction.json
             deduplicated/integrity.json
@@ -172,7 +184,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: mobile9-candidate-site
+          name: mobile10-candidate-site
           path: site/
           compression-level: 0
           retention-days: 14
@@ -187,12 +199,12 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          name: mobile9-candidate-site
+          name: mobile10-candidate-site
           path: qa-sites/candidate
       - uses: actions/download-artifact@v4
         with:
-          run-id: 42493894120
-          name: mobile6-candidate-site
+          run-id: 42519214500
+          name: mobile9-candidate-site
           github-token: ${{ github.token }}
           path: qa-sites/control
       - uses: actions/setup-node@v4
@@ -212,14 +224,15 @@ jobs:
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
           failed=0
-          QA_URL='http://127.0.0.1:18765/control/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile6-cubemap QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
+          QA_URL='http://127.0.0.1:18765/control/?eldoria_diag=1&eldoria_profile=1' QA_REVISION=native325-mobile9-routes QA_OUT=evidence/control node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
           QA_URL='http://127.0.0.1:18765/candidate/?eldoria_diag=1&eldoria_profile=1' QA_REVISION="$CANDIDATE_REVISION" QA_OUT=evidence/candidate node tools/eldoria-private-beta/qa_webkit_residency.cjs || failed=1
           exit "$failed"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile9-desktop-apple-gpu-not-iphone-certification
+          name: mobile10-desktop-apple-gpu-not-iphone-certification
           path: |
             evidence/
             server.log
           retention-days: 14
+
