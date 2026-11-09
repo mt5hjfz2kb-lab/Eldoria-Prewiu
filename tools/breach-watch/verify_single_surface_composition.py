@@ -29,9 +29,10 @@ for relative in (
 # The one piece of imported brass_portrait already has an opaque middle.
 # It must not be blended as a second 3D picture card under transparent URP
 # actual building geometry.
-assert "brassFrame.enabled=false;" in HUD
+assert "brassFrame.enabled=true;" in HUD
+assert "brassFrame.fillCenter=false;" in HUD
 assert "brassFrame.raycastTarget=false;" in HUD
-assert "!brassWells[0].enabled" in QA
+assert "brassWells[0].enabled && !brassWells[0].fillCenter" in QA
 
 # Every main surface owns its own original metal shading. Extra Unity
 # shadows added to those same Graphics duplicate their silhouettes.
