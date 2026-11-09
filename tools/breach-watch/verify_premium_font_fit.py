@@ -84,11 +84,11 @@ def verify():
     # Unlike the rejected burgundy sprite, it can change width without
     # stretching its bevels or letterboxing its text.
     for hit_width,label,caption,size in [
-        (147,"900 portrait","Mejorar a Bastión II",13),
+        (147,"900 portrait","Mejorar a II",16),
         (147,"390 portrait","Mejorar a II",16),
-        (196,"1600 landscape","Mejorar a Bastión II",16),
-        (186,"844 historical tight-landscape safety","Mejorar a Bastión II",15),
-        (210,"844 actual widened-landscape","Mejorar a Bastión II",15),
+        (196,"1600 landscape","Mejorar a II",16),
+        (186,"844 historical tight-landscape safety","Mejorar a II",15),
+        (210,"844 actual widened-landscape","Mejorar a II",15),
     ]:
         free_width=hit_width*(1-.24)-8
         fits(caption,SEMIBOLD,size,free_width,label+" within single gold face")
