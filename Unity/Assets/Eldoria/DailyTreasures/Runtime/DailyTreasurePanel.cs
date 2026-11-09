@@ -821,7 +821,8 @@ namespace Eldoria.DailyTreasures
             bool legendary=true,string eventId=null)
         {
             if(gateway==null || now==null || screen==null ||
-               string.IsNullOrWhiteSpace(title))return false;
+               string.IsNullOrWhiteSpace(title) || suppressed ||
+               HasVisibleCanonicalHeroRoom())return false;
             if(IsOpen)return false;
             ClearPrizeCards();
             // Important victories are presented above the room whose real
