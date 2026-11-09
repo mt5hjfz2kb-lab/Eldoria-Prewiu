@@ -1118,7 +1118,19 @@ namespace Eldoria.DailyTreasures
                 -1f,-2f,24f,24f);
             Place(entryCaption.rectTransform,.5f,0f,.5f,0f,
                 0f,3f,72f,18f);
-            float panelW=Mathf.Min(w-24f,portrait?440f:740f);
+            // The approved authored chest looked small inside a 740x370
+            // rectangle. Use a purposeful, responsive theatrical composition
+            // while the chest opens, then a slightly wider compact receipt
+            // that spends its area on REAL paid items instead of dead space.
+            // Non-daily event stages retain their independent authored layout.
+            bool openingChest=ceremony && ceremony.gameObject.activeSelf &&
+                playing && chestReward && prizeCount>0 &&
+                currentStage==DailyTreasureStageKind.Daily;
+            bool paidChest=ceremony && ceremony.gameObject.activeSelf &&
+                !playing && chestReward && prizeCount>0 &&
+                currentStage==DailyTreasureStageKind.Daily;
+            float panelW=Mathf.Min(w-24f,portrait?440f:
+                openingChest||paidChest?650f:740f);
             bool eventStage=currentStage!=DailyTreasureStageKind.Daily &&
                 ceremony && ceremony.gameObject.activeSelf &&
                 prizeCount==0 && w>=275f && h>=300f;
@@ -1138,7 +1150,8 @@ namespace Eldoria.DailyTreasures
                     ceremonialTitle+"\nGuardado en tu inventario y buzón":
                     ceremonialTitle+" · GUARDADO";
             float panelH=Mathf.Min(h-20f,portrait?
-                (focusedQuiet?460f:700f):(focusedQuiet?330f:370f));
+                (focusedQuiet?460f:openingChest?450f:700f):
+                (focusedQuiet?330f:openingChest?300f:370f));
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
             if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,
                 eventStage?stage.BackdropOpacity:.91f);
@@ -1265,12 +1278,19 @@ namespace Eldoria.DailyTreasures
             Stretch(ceremony);
             // The ceremony now has its own top half; do not shrink the
             // original textured chest to a postage stamp on landscape phones.
-            float chestY=focusedQuiet?(portrait?64f:35f):
+            // The opening is a distinct, intimate theatre: a visibly larger
+            // chest, a caption beneath it and no giant empty lower panel.
+            // On completion the chest returns to the upper focal position
+            // while the *actual paid* cards fill the newly available space.
+            float chestY=openingChest?(portrait?64f:42f):
+                focusedQuiet?(portrait?64f:35f):
                 prizeCount>0?(portrait?116f:89f):
                 (portrait?105f:87f);
-            float artWidth=prizeCount>0?(portrait?284f:268f):
+            float artWidth=openingChest?(portrait?330f:330f):
+                prizeCount>0?(portrait?284f:300f):
                 (portrait?294f:282f);
-            float artHeight=prizeCount>0?(portrait?246f:160f):
+            float artHeight=openingChest?(portrait?265f:194f):
+                prizeCount>0?(portrait?246f:170f):
                 (portrait?265f:175f);
             float chestX=eventStage?stage.ChestX:0f;
             if(eventStage)
@@ -1300,12 +1320,15 @@ namespace Eldoria.DailyTreasures
             bool quietRewards=prizeCount>0 && !chestReward;
             if(prizeCount>0)
             {
-                resultText.fontSize=quietRewards?(portrait?19:17):
+                resultText.fontSize=openingChest?(portrait?20:18):
+                    quietRewards?(portrait?19:17):
                     compactPrizePortrait?16:portrait?18:16;
-                float captionY=quietRewards?(portrait?-106f:-74f):
+                float captionY=openingChest?(portrait?-132f:-100f):
+                    quietRewards?(portrait?-106f:-74f):
                     compactPrizePortrait?-217f:portrait?-232f:-15f;
                 Place(resultText.rectTransform,.5f,.5f,.5f,.5f,
                     0f,captionY,panelW-45f,
+                    openingChest?(portrait?45f:32f):
                     quietRewards?41f:compactPrizePortrait?39f:portrait?50f:29f);
             }
             else
@@ -1336,7 +1359,7 @@ namespace Eldoria.DailyTreasures
             // on small portrait screens. Raise the two-row shelf rather
             // than shrinking illustrated icons and text to unreadable sizes.
             float shelfHeight=quietRewards?(portrait?175f:137f):
-                portrait?138f:64f;
+                portrait?158f:76f;
             float shelfY=quietRewards?(portrait?64f:35f):
                 portrait?-115f:-69f;
             Place(prizeShelf,.5f,.5f,.5f,.5f,0f,shelfY,
@@ -1345,11 +1368,15 @@ namespace Eldoria.DailyTreasures
             int prizeRows=Mathf.Max(1,
                 Mathf.CeilToInt(prizeCount/(float)prizeCols));
             float prizeGap=portrait?8f:6f;
-            float cardW=Mathf.Min(quietRewards?175f:140f,
+            // Larger real receipts: two rewards can use spacious 190px
+            // cards; four rewards use a balanced 2x2 portrait or nearly
+            // full-width landscape row. Labels have room to render at >10px.
+            float maxPaidCardW=prizeCount<=2?190f:portrait?170f:146f;
+            float cardW=Mathf.Min(quietRewards?175f:maxPaidCardW,
                 (panelW-38f-(prizeCols-1)*prizeGap)/prizeCols);
             float cardH=quietRewards?(portrait?129f:115f):
-                prizeRows==2?65f:
-                portrait?(compactPrizePortrait?76f:89f):62f;
+                prizeRows==2?72f:
+                portrait?(compactPrizePortrait?82f:92f):72f;
             // Source of the animated cards is the visual chest opening; this
             // position is in shelf-local coordinates and follows layout size.
             prizeFlightOrigin=new Vector2(0f,
@@ -1397,8 +1424,8 @@ namespace Eldoria.DailyTreasures
                         labelX,12f,labelWidth,27f);
                     Place(prizeAmounts[i].rectTransform,.5f,.5f,.5f,.5f,
                         labelX,-15f,labelWidth,23f);
-                    prizeNames[i].fontSize=10;
-                    prizeAmounts[i].fontSize=16;
+                    prizeNames[i].fontSize=cardW>=170f?12:11;
+                    prizeAmounts[i].fontSize=18;
                 }
             }
             // Skip stays away from the receipt and is a genuine >=44px hit target.
