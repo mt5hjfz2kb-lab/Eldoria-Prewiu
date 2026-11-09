@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T14:41:32.467Z",
+  "updated_at": "2026-11-09T19:06:55Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2859,14 +2859,14 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-v3-building-timer-anchor-20261109",
-      "ownership_state": "claimed",
-      "ownership_revision": 31,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 32,
+      "write_scope_released": true,
       "status": "active",
       "claimed_at": "2026-11-09T12:36:18.720Z",
       "base_main_sha": "0a9e1039436bf396e0cfbd6ebaad3df0967e4051",
-      "branch": "fix/eldoria-construction-timer-anchor-20261109",
+      "branch": "main",
       "pr": 183,
       "owner_instruction": "2026-11-09 owner requests restoring construction timer attachment to its world building on camera pan; preserve compact readable timer and no duplicate selected action, do not touch frozen PR179 or PR173/181 sources.",
       "scope": [
@@ -2882,9 +2882,7 @@
         ".github/workflows/eldoria-construction-timer-native.yml",
         "tools/ui-v3-domain-smoke/native-request.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "dependencies": [
         {
           "workstream": "valoria-master-plan-layered-construction-20261016",
@@ -2892,47 +2890,13 @@
         }
       ],
       "last_verified": {
-        "domain_smoke": {
-          "run_id": 39641171771,
-          "result": "success",
-          "checks": 29
-        },
-        "latest_native_run": {
-          "id": 39651216087,
-          "sha": "6a380fdc704dbf0852ba0e9cc30daeb817fc0882",
-          "status": "FAILED_PLAYMODE",
-          "failed": [
-            "OwnerFreshSaveCompletesIAndIIThroughGuidedHud",
-            "RoyalV3ManagementIntegrationTests.FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave"
-          ]
-        },
-        "native_certification": {
-          "run": 39653618057,
-          "editmode_passed": 26,
-          "playmode_passed": 38,
-          "artifact": 12370981749,
-          "images_independently_reviewed": true
-        },
-        "reconciled_native": {
-          "run": 39654505571,
-          "status": "SUCCESS",
-          "artifact": 12370039251
-        },
-        "main_merge": "284ef398e078021f4eeef42f852730714c0bd48b",
-        "main_ui_gate": {
-          "run": 39655724788,
-          "status": "SUCCESS"
-        },
-        "mobile_pr111": {
-          "head": "108a6346d5b242474c20b2d26c2945559cc9cdcc",
-          "merge": "1631e167df4ad9bbb0bb380311225da295757060",
-          "ui_gate": 40372404380,
-          "editmode": "26/26",
-          "playmode": "63/63",
-          "status": "SOURCE_PASS"
-        }
+        "source_sha": "43f6c83fbe4908f26d31cf2ace90d5c4a1bdd203",
+        "merge_sha": "c04438152ef3bda94d34e69b6d674d5f702a8781",
+        "native_run_id": 42643281298,
+        "unity_playmode": "PASS",
+        "source_blob": "0d9cb29fa9198d8a87011cc554b6247bb63a9e30"
       },
-      "next": "Native Unity lease acquired for PR183. Update native-request.json revision31, launch existing fail-closed timer workflow; inspect exact real PlayMode XML. Restore/release Windows after actual native gate. Then PR179 beta native via fresh lease and deploy.",
+      "next": "Main integrated and native certified. PR179 beta builds/playability are independently pending; no Windows reservation retained.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -3041,10 +3005,16 @@
           "revision": 29,
           "transferred_at": "2026-11-09T12:36:18.720Z",
           "reason": "Owner reports construction timer displaced into side HUD in actual beta; correction is distinct small canonical V3 projection fix, with PR179 beta overlay owned by another workstream."
+        },
+        {
+          "owner": "chatgpt-v3-building-timer-anchor-20261109",
+          "revision": 31,
+          "released_at": "2026-11-09T15:31:48.668Z",
+          "reason": "PR183 real Unity 6000.3.23f1 exact run42643281298 PASS, source c0443815... merged main; transfer exclusive Windows to existing owner PR179 for beta game verification."
         }
       ],
       "runner_lease_note": "Main UI40681527347 success. General main40681527358 is serial on existing runner; keep intact while subsequent PR120 jobs queue.",
-      "phase": "CONSTRUCTION_TIMER_NATIVE_TEST_EXCLUSIVE_LEASE",
+      "phase": "CONSTRUCTION_TIMER_MAIN_MERGED_NATIVE_PASS",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
@@ -6697,14 +6667,14 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 26,
+      "ownership_revision": 28,
       "write_scope_released": false,
-      "phase": "VIGILIA_ALPHA18_FIRST_SCREEN_NATIVE_PASS_VISUAL_FIDELITY_REWORK_PENDING",
-      "next": "Current exact PR173 native run 42630398578 passed eight screenshots and gameplay; source artwork uses transparent true Bastion preview with 18%-opacity brass frame. The visual gain is limited (~0.35–0.72% pixels vs previous photo); commission a larger authorial SINGLE-SURFACE UI change rather than more decorative microtweaks. Keep draft; do not merge/publish until visual approval.",
+      "phase": "VIGILIA_PREMIUM_BUTTON_FAMILY_EIGHT_NATIVE_PASS_OWNER_ART_REVIEW",
+      "next": "Candidate proven in Unity first-screen; show owner genuine 8 PNG + before/after against chosen V4 buttons; keep PR173 DRAFT unmerged and production unchanged until explicit art approval. Source SHA cdcb604a49fa39f7ec7fb5ac558b6f2387e3a768, run 42679974131. Resolve shared registry merge drift on a fresh main snapshot before any future merge.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-09T13:46:31.554Z",
-      "runner_claim_basis": "Formal lease release by PR181 at 2026-11-09T13:41:12.992Z; active claim zero at CAS; user explicitly requests PR173 visual A/B continuation without background schedule. Unity workflow has independent live process + lease checks.",
+      "runner_claimed_at": "2026-11-09T16:43:00Z",
+      "runner_claim_basis": "PR181 formally released after failed isolated native run42655206846 at 2026-11-09T16:41:53.809Z. PR173 user-directed completion requires exact-head Unity eight view + Canvas audit; all holders zero CAS. No other workstream touched.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
@@ -6767,11 +6737,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "36f05a596e243c0eb52b20907187a925a9dab87d",
-        "native_run": 42630398578,
+        "source_sha": "cdcb604a49fa39f7ec7fb5ac558b6f2387e3a768",
+        "native_run": 42679974131,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13680344022,
+        "artifact": 13701364339,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6781,17 +6751,22 @@
         "android_tested": false,
         "webgl_tested": false,
         "portrait_transparent_bg_fraction": 0.7279,
-        "portrait_opaque_masonry_fraction": 0.2688
+        "portrait_opaque_masonry_fraction": 0.2688,
+        "active_foreign_screen_space_canvases": 0,
+        "save_unchanged": true,
+        "original_icon_medallions_removed": true,
+        "coherent_dock_integrated": true,
+        "gold_action_one_line": true
       },
-      "runner_released_at": "2026-11-09T14:03:19Z",
-      "runner_release_basis": "Exact PR173 Unity 6000.3.23f1 run 42630398578 completed SUCCESS: eight genuine screenshots, six real clicks, alpha clear 72.8%/opaque real masonry 26.9%, game/save unchanged, only photo rectangle changed. Released Windows; ART_APPROVED remains FALSE."
+      "runner_released_at": "2026-11-09T19:06:55Z",
+      "runner_release_basis": "Unity native run 42679974131 success on exact PR173 HEAD cdcb604a49fa39f7ec7fb5ac558b6f2387e3a768; all eight PNG SHA verified against JSON, six actual navigation clicks, no legacy HUD, actual player save unchanged. No ART_APPROVED and no release. Windows resource given back."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-beta-timer-reconciliation-20261109",
+      "owner": "chatgpt-eldoria-pilot-telemetry-20261109",
       "ownership_state": "claimed",
-      "ownership_revision": 17,
+      "ownership_revision": 21,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6812,16 +6787,21 @@
         "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs",
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes",
-        "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes.meta"
+        "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes.meta",
+        "tools/tester-readiness/**",
+        "pipeline/tester-readiness/**",
+        "docs/eldoria-private-beta/tester-pilot/**",
+        ".github/workflows/eldoria-private-beta-qa.yml",
+        ".github/workflows/eldoria-pages-telemetry-tests.yml"
       ],
       "resources": [],
-      "claimed_at": "2026-11-09T13:11:04.123Z",
-      "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
+      "claimed_at": "2026-11-09T17:11:20.832Z",
+      "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA_CONSTRUCTION_TIMER_ANCHOR_RECONCILIATION",
+      "phase": "IPHONE_RESTART_PHYSICAL_P0_DIAGNOSIS_REQUIRED",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Port PR183 exact source to frozen PR179 overlay, update SHA256 manifest and native camera-pan probe, certify Unity on rightful Windows handoff, package/regression and update existing owner beta, preserving rollback. Main merge only after exact gate.",
+      "next": "Owner physically reproduced unexpected restart at entry in current mobile11 GitHub Pages engine 8dc875430241a49b4d417782dfeab2d4c7a4f315, 2026-11-09; no iPhone certified fix. PRIORITIZE P0 issue #96, comment 6748351050 and PR179 comment 6748356056. Mac WebKit candidate 42645753309 WebContent RSS peak 2669 MiB, GPU 613 MiB (macOS, not iPhone); memory pressure a hypothesis. Isolate navigation/graphics loss/jetsam using existing local opt-in eldoria_diag=1 or physical Web Inspector if available; build a measured structural asset-load/memory variant (don't repeat already rejected 640/1024MiB prealloc or blanket readonly). Native Unity resource reserved by Vigilia, respect lease. Keep GitHub Pages mobile11 as owner diagnostic only, DO NOT RELEASE to testers or delete saves until 30-minute physical iPhone PASS and then Android. Milestone telemetry candidate still needs native rebuild after stability.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7088,6 +7068,18 @@
           "phase": "MAIN_UNITY_POSTPROMOTION_COMPILER_REPAIR",
           "transferred_at": "2026-11-09T13:11:04.123Z",
           "reason": "Owner explicitly requests the same scene-attached construction timer fix to reach both canonical main (PR183) and the published beta; lawful takeover of the existing PR179, while retaining all prior beta work. No running PR179 job and no Windows reservation held by PR179 at handoff."
+        },
+        {
+          "owner": "chatgpt-beta-timer-reconciliation-20261109",
+          "revision": 19,
+          "transferred_at": "2026-11-09T16:47:57.634Z",
+          "reason": "Owner-requested construction countdown delivered and native-certified in main PR183 and beta mobile11 owner Pages; release workstream ownership without merging all frozen PR179."
+        },
+        {
+          "owner": null,
+          "revision": 20,
+          "transferred_at": "2026-11-09T17:11:20.832Z",
+          "reason": "Owner explicitly requires completing previously prepared closed beta, telemetry and Supabase tooling for Bastion I–V; canonical PR179 is available and no other tester pipeline writer claimed."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -7150,14 +7142,59 @@
         "failure_run": 42610908699,
         "failure": "ValoriaIntegratedWorld.Ready uses RegionOneCanonicalLandscape.IsReady, absent from older canonical world implementation"
       },
-      "owner_instruction": "2026-11-09 owner: continue correcting scene-attached construction countdown until main and the current playable beta contain verified fix. Use existing PR179 and its branch, preserve beta10 mechanics and pinned-hash overlays; no PR173/181 changes, no tester release without verification."
+      "owner_instruction": "User explicitly requests completion of existing tester preparation via existing Supabase connector, preserving native325 mobile11 beta and Bastion I–V journey; no external invites before secure/private gateway, real telemetry verification, license/mobile gates and user approval.",
+      "beta_timer_native": {
+        "run_id": 42645633286,
+        "source_sha": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
+        "status": "success",
+        "lease_released_at": "2026-11-09T16:26:16.638Z"
+      },
+      "beta_mobile11_publication": {
+        "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/",
+        "revision": "native325-mobile11-building-anchor",
+        "native_run": 42645633286,
+        "packaging_webkit_run": 42645753309,
+        "pages_public_webkit_run": 42656897252,
+        "public_webkit_artifact_id": 13692442926,
+        "verified_at": "2026-11-09T16:47:57.634Z",
+        "physical_iphone_verified": false,
+        "external_testers_approved": false
+      },
+      "pr": 179,
+      "remaining_artifacts": [
+        "GitHub Pages opt-in pilot QA route with true live consent and backend receipt",
+        "Native Unity rebuilt I-V source milestone marker and WebGL exact-source QA",
+        "Physical iPhone Safari / Android stability and final license/release gate"
+      ],
+      "pilot_qa": {
+        "github_pages_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/pilot.html?eldoriaBetaTelemetry=1",
+        "published_run": 42674820886,
+        "source_sha": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
+        "overlay_telemetry_candidate": "231328bbfd271726c8527ad06b274f29ebf0c941",
+        "stage": "OWNER_QA_ONLY",
+        "external_invites_enabled": false,
+        "consent_required": true,
+        "supabase_qa_receipts": 10,
+        "supabase_real_receipts": 0,
+        "unity_marker_qa": "NOT BUILT",
+        "live_webkit": "PASS",
+        "final_workflow_conclusion": "success"
+      },
+      "iphone_recurrence": {
+        "date": "2026-11-09",
+        "reported_status": "OWNER_REPORTED_FAIL",
+        "source_sha": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
+        "root_cause": "unconfirmed",
+        "issue": 96,
+        "release_allowed": false
+      }
     },
     {
       "id": "eldoria-daily-treasures-20261108",
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 17,
+      "ownership_revision": 19,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7183,9 +7220,9 @@
       ],
       "resources": [],
       "budget_eur": 0,
-      "phase": "NATIVE_VIGILIA_MODAL_CLOSE_RAYCAST_FAILURE_WINDOWS_RELEASED",
+      "phase": "UNITY_NATIVE_FAILED_PR173_SCREENSPACE_CANVAS_CONTRACT_RELEASED",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Correct native UI GraphicRaycaster/Canvas migrated-modal depth=-1 and zero raycasts, pass exact-HEAD certified 72 screenshots, 116 clicks, 28 real claims. Reacquire Windows only via formal CAS after no competing job; ownership guard overlap with UI V3 remains.",
+      "next": "Diagnose actual Unity Canvas ScreenSpaceCamera / camera / overrideSorting / sortingOrder values against PR173; amend only PR181 evidence fixture after cause confirmed. Rerun after separate exclusive Windows CAS lease; review 52+20 real PNG and preserve ART_APPROVED=false; no release.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7234,8 +7271,9 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-09T13:41:12.992Z",
-      "runner_release_basis": "Native exact-HEAD 64bce6cd0737588539631306f331335d3a02de38 run 42622935466 completed failure, job 129179417321: Vigilia modal close registered but graphic depth=-1, zero raycasts after Canvas migration. Preserve PR181 source ownership and correction work; release exclusive Windows to other workstreams."
+      "runner_released_at": "2026-11-09T16:41:53.809Z",
+      "runner_release_basis": "Exclusive Unity 6 run 42655206846 at exact PR181 SHA 6af0d46e completed failure, native Windows job 129291819625; first 8 genuine 1600x900 PNG captured, failed editor assertion at DailyTreasureNativeEvidence.cs:929: 'Native Vigilia rehearsal diverged from PR173 Canvas'. Preserve PR181 source ownership and native artifact 13691174759; no artistic approval.",
+      "runner_lease_note": "Lease acquired after verifying zero Windows owners in main registry and no queued/in-progress Windows Unity Actions; owner chatgpt-daily-treasures-20261108; exact-HEAD fail-closed native workflow. Do not compete with beta/Vigilia."
     },
     {
       "id": "eldoria-eonscar-branding-trial-20261109",
