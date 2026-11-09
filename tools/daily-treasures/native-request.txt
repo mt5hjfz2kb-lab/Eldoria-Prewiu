@@ -1,22 +1,18 @@
-# Immutable source contract: native QA of seven daily grants and Vigilia compatibility.
-# 52 native contracted PNG + 20 genuine quiet-day PNG = 72 real Unity frames.
-# 56 contracted pointer events + 60 quiet-day clicks = 116 genuine pointer events.
-# 8 day4/day7 claims + 20 ordinary grants = 28 real disposable gateway claims.
-# Independent visual-only 16 milestone stages never mint loot.
-state=REQUEST_NATIVE_EXACT_HEAD
+# Exact PR181 Unity 6000.3.23f1 candidate. Actual claim, click and art proof.
+# Trigger-only file; workflow compares its GITHUB_SHA to current branch and main lease.
+state=REQUEST_EXCLUSIVE_NATIVE_CERTIFICATION
 workstream=eldoria-daily-treasures-20261108
-source_before_request=43a13431dac70ecd6eca84eee92127f8516b9726
-runner_lease_revision=17
-claimed_registry_main_sha=6639f5f1b53ba746a609836422239f610debe1ea
-source_ci_preflight=42618948192
-scope=52_contract_png_plus_20_quiet_png_116_real_pointer_28_gateway_claims_16_nonpaying_styles
+source_before_request=59a89ff0b053fb3ebff1fce232b5e6194e076d2f
+source_code_green_run=42647192297
+source_rights_green_run=42647197230
+source_owner_green_run=42647197233
+claimed_registry_main_sha=4c7f6f2912f5527cd46bd9531066d69c12767ac1
+runner_lease_revision=18
+evidence=52_contract_png+20_paid_quiet_png+116_real_pointer_events+28_real_gateway_claims
+scenes=Lyra+Scouts+Vigilants+Bastion
+vigilia=ScreenSpaceCamera_at_sort_order_5000
+native_failure_regression=close_button_zero_raycast_after_real_canvas_migration
 art_approved=false
 full_game_verified=false
 merge_or_publish=false
-
-# Next native proof: verify corrected migration after actual render + registry and geometry diagnostics.
-source_before_request=504cb845b68f6b0a06f542b339a08185ccf5276c
-source_ci_run=42622749790
-native_previous_failed_run=42619230653
-native_failure=zero_raycast_hits_after_vigilia_reparent
-native_proof=real_camera_render_before_actual_pointer
+requested_at=2026-11-09T16:28:22Z
