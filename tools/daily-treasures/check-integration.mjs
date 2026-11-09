@@ -264,8 +264,9 @@ assert.match(panel,/if\(!claimAvailable && milestoneQueue\.PendingCount>0/);
 for(const entryMethod of ['void OpenEntryOrDeferredMilestone()',
                            'public void Open()']){
   const body=panel.split(entryMethod)[1]?.split('{')[1]?.slice(0,240);
-  assert.ok(body && body.includes('HasVisibleCanonicalHeroRoom()'),
-    'Canonical Lyra room must block every path into optional treasury: '+
+  assert.ok(body && body.includes('HasVisibleCanonicalHeroRoom()') &&
+       body.includes('HasVisibleVigiliaBuildingPanel()'),
+    'Canonical Lyra or real Vigilia selected-building panel must block treasury: '+
     entryMethod);
 }
 // Narratives can start after opening a daily calendar or a premium reveal.
@@ -279,7 +280,13 @@ assert.match(native,/beforeInterrupt\.Resources\.Wood==afterInterrupt\.Resources
 // The public present API is not a bypass around tutorial/hero priority.
 // Queue and report remain accessible, but forced visual presentation is
 // refused while a canonical narrative room owns the screen.
-assert.match(panel,/string\.IsNullOrWhiteSpace\(title\) \|\| suppressed \|\|\s*HasVisibleCanonicalHeroRoom\(\)\)return false/);
+assert.match(panel,/string\.IsNullOrWhiteSpace\(title\) \|\| suppressed \|\|\s*HasVisibleCanonicalHeroRoom\(\) \|\|\s*HasVisibleVigiliaBuildingPanel\(\)\)return false/);
+assert.match(panel,/root\.parent\.Find\(\s*"Independent selected-building cartouche"\)/);
+assert.match(panel,/if\(vigiliaBuilding && IsOpen\)Close\(\)/);
+assert.match(panel,/entryRect\.gameObject\.SetActive\(!suppressed && !vigiliaBuilding\)/);
+assert.match(native,/panel\.ProbeVigiliaBuildingForNativeEvidence\(\)/);
+assert.match(native,/buildingProbe\.SetActive\(true\)/);
+assert.match(native,/Selected-building priority mutated real earned items/);
 assert.match(native,/Direct ceremony API improperly covered canonical hero room/);
 assert.match(native,/Direct ceremony API bypassed narrative\/tutorial priority/);
 // Avoid falling back to screenshot-extracted 128px icons with baked values.
