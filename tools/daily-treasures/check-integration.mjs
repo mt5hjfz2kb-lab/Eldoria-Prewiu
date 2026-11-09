@@ -252,4 +252,10 @@ assert.match(panel,/if\(originalSfx && originalSfx\.isPlaying\)originalSfx\.Stop
 assert.match(native,/panel\.Suppressed=true/);
 assert.match(native,/Tutorial overlay did not interrupt the premium coffer/);
 assert.match(native,/beforeInterrupt\.Resources\.Wood==afterInterrupt\.Resources\.Wood/);
+// The public present API is not a bypass around tutorial/hero priority.
+// Queue and report remain accessible, but forced visual presentation is
+// refused while a canonical narrative room owns the screen.
+assert.match(panel,/string\.IsNullOrWhiteSpace\(title\) \|\| suppressed \|\|\s*HasVisibleCanonicalHeroRoom\(\)\)return false/);
+assert.match(native,/Direct ceremony API improperly covered canonical hero room/);
+assert.match(native,/Direct ceremony API bypassed narrative\/tutorial priority/);
 console.log('PASS daily treasures gateway integration source invariants');
