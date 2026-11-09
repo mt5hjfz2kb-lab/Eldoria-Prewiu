@@ -535,7 +535,12 @@ namespace Eldoria.BreachWatch
             chapterName=Label(objective,"Actual chapter",15,TextAnchor.UpperLeft,Copper,true);
             chapterName.lineSpacing=.93f;
             chapterObjective=Label(objective,"Actual objective",17,TextAnchor.UpperLeft,TextIvory);
-            chapterProgress=Label(objective,"Objective progress",14,TextAnchor.MiddleLeft,Muted);
+            chapterProgress=Label(objective,"Objective progress",14,TextAnchor.UpperLeft,Muted);
+            // Legacy uGUI Text with VerticalWrapMode.Truncate draws ZERO
+            // glyphs when its internal line-height exceeds the short source-
+            // art row. Allow only this real dynamic fraction to paint its
+            // measured glyphs, with bounds verified by native GPU readback.
+            chapterProgress.verticalOverflow=VerticalWrapMode.Overflow;
             var questPlate=objective.GetComponent<BreachWatchPlate>();questPlate.raycastTarget=true;
             var questHit=Button(objective,()=>{fullObjective=!fullObjective;Reflow(lastWidth,lastHeight);});
             questHit.targetGraphic=questPlate;
@@ -1037,11 +1042,11 @@ namespace Eldoria.BreachWatch
                 // engraved plate. The former 15u progress row ended 1u
                 // above the plate bottom on 900x1600, failing real GPU QA.
                 At(chapterObjective.rectTransform,smallPhone?59f:48f,
-                    smallPhone?26f:22f,missionWidth-(smallPhone?70f:57f),
+                    smallPhone?26f:20f,missionWidth-(smallPhone?70f:57f),
                     fullObjective?51f:(smallPhone?18f:15f));
                 At(chapterProgress.rectTransform,smallPhone?59f:48f,
-                    fullObjective?87f:(smallPhone?47f:39f),
-                    missionWidth-(smallPhone?70f:57f),smallPhone?17f:13f);
+                    fullObjective?87f:(smallPhone?45f:36f),
+                    missionWidth-(smallPhone?70f:57f),smallPhone?18f:16f);
                 chapterName.fontSize=smallPhone?13:11;
                 chapterName.resizeTextForBestFit=true;
                 chapterName.resizeTextMinSize=smallPhone?13:11;
