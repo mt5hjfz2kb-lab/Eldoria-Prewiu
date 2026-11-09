@@ -57,5 +57,7 @@ assert 'c.renderMode=="ScreenSpaceCamera"' in evidence
 assert "canvasDiagnostics=canvasDiagnostics" in evidence
 assert "oldCanvasVisible = canvasDiagnostics.Count" in evidence
 assert "oldHudGraphicsReused = canvasDiagnostics.Any" in evidence
+assert "foreignScreenSpaceCanvasPaths=foreignScreenSpace.Select(c=>c.path).ToArray()" in evidence
+assert "Math.Max(shots.Max(x=>x.activeForeignScreenSpaceCanvases)" in evidence
 
 print("VIGILIA_SINGLE_SURFACE_SOURCE_PASS (Unity external canvas census pending native, not ART_APPROVED)")
