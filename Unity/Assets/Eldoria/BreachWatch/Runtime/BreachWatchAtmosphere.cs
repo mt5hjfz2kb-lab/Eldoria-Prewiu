@@ -50,12 +50,18 @@ namespace Eldoria.BreachWatch
                     // instead of inventing a second scene, backdrop cards
                     // or additional shadow layers. Small central tint keeps
                     // the real Bastion, road and resources readable.
-                    float alpha=.080f+.155f*ring*ring+
-                        .040f*Mathf.Pow(dy,3f);
+                    // Second and STRONGER authored twilight trial. The
+                    // previous .08-.275 wash barely changed the harmony of
+                    // the bright yellow-green field with ink-black metal.
+                    // This is still one non-interactive world-only vertex
+                    // film, with no second HUD/card, world-light mutation,
+                    // shader allocation or gameplay/save modification.
+                    float alpha=.175f+.205f*ring*ring+
+                        .055f*Mathf.Pow(dy,3f);
                     baseVertex.position = new Vector3(rect.xMin+width*fx,
                         rect.yMin+height*fy,0f);
-                    baseVertex.color = new Color(.055f,.078f,.115f,
-                        Mathf.Clamp(alpha,0f,.280f));
+                    baseVertex.color = new Color(.045f,.065f,.110f,
+                        Mathf.Clamp(alpha,0f,.445f));
                     baseVertex.uv0 = Vector2.zero;
                     vh.AddVert(baseVertex);
                 }
