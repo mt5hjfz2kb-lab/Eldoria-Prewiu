@@ -787,8 +787,12 @@ namespace Eldoria.BreachWatch.Editor
                          actionText.rectTransform.rect.width<=
                            artDrawnLeft+artDrawnWidth-3f,
                          "Real upgrade caption escapes the PAINTED burgundy sprite: "+name);
-                    Need(actionText.text==(w>=800&&h>w?"Mejorar a Bastión II":"Mejorar a II"),
-                         "Native button caption is not appropriate for this portrait/landscape format: "+name);
+                    bool fullCaption=(w>=800 && h>w);
+                    string expectedCaption=host.English
+                        ?(fullCaption?"Upgrade to Bastion II":"Upgrade II")
+                        :(fullCaption?"Mejorar a Bastión II":"Mejorar a II");
+                    Need(actionText.text==expectedCaption,
+                         "Native button caption is not appropriate for language/orientation: "+name);
                     // The approved reference's circular gold X is one
                     // painted image, never a generic octagonal Backing +
                     // painted vector X. Hidden root image owns the hit only.
