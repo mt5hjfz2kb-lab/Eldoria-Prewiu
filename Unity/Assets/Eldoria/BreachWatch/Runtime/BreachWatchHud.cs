@@ -1398,6 +1398,12 @@ namespace Eldoria.BreachWatch
                 chapterName.text=chapterOne && realChapter.Length>0
                     ? realChapter.ToUpperInvariant()+" / "+(host.English?"THE BREACH":"LA BRECHA")
                     : realChapter;
+                // The approved first-chapter lettering fits the authored
+                // bronze well at its fixed source-measured size. Unity 6000.3
+                // BestFit silently painted font 12 in 844x390 despite nominal
+                // size 14 and min/max 14. Do not use BestFit on Chapter I;
+                // later variable chapter names may still fit dynamically.
+                chapterName.resizeTextForBestFit=!chapterOne;
                 chapterObjective.text=snapshot.Objective;
                 chapterProgress.text=snapshot.ObjectiveProgress;
                 resourceAmounts[0].text=RoyalFormatting.Amount(snapshot.Wood);
