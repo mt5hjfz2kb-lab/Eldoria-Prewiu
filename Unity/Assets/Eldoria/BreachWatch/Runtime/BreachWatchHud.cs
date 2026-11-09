@@ -1044,18 +1044,24 @@ namespace Eldoria.BreachWatch
                     At(utility,0,i*45f,37,37);
                 }
 
-                float navSize=49,navGap=14;
-                float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
-                float navTop=h-100f;
-                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,64);
-                navFiligree.Configure(navSize+navGap,navSize,visibleNav);
+                float navGap=3f;
+                float navSize=Mathf.Min(122f,
+                    (w-2f*margin-22f-(visibleNav-1)*navGap)/visibleNav);
+                float navWidth=22f+visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
+                float navTop=h-102f;
+                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,90f);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
                 {
                     bool visible=(navigationMask & (1<<i))!=0;
                     navButtons[i].gameObject.SetActive(visible);
-                    if(visible)At((RectTransform)navButtons[i].transform,
-                        navColumn++*(navSize+navGap),3,navSize,navSize);
+                    if(visible)
+                    {
+                        At((RectTransform)navButtons[i].transform,
+                            11f+navColumn++*(navSize+navGap),5,navSize,80f);
+                        At(navCaptions[i].rectTransform,5f,57f,navSize-10f,19f);
+                        navCaptions[i].fontSize=14;
+                    }
                 }
 
                 // Approved portrait reference places the card across
@@ -1146,18 +1152,22 @@ namespace Eldoria.BreachWatch
                     At(utility,0,i*44f,37,37);
                 }
 
-                float navSize=55,navGap=15;
-                float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
-                float navTop=h-78;
-                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,69);
-                navFiligree.Configure(navSize+navGap,navSize,visibleNav);
+                float navGap=4f,navSize=130f;
+                float navWidth=22f+visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
+                float navTop=h-97f;
+                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,90f);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
                 {
                     bool visible=(navigationMask & (1<<i))!=0;
                     navButtons[i].gameObject.SetActive(visible);
-                    if(visible)At((RectTransform)navButtons[i].transform,
-                        navColumn++*(navSize+navGap),3,navSize,navSize);
+                    if(visible)
+                    {
+                        At((RectTransform)navButtons[i].transform,
+                            11f+navColumn++*(navSize+navGap),5,navSize,80f);
+                        At(navCaptions[i].rectTransform,5f,57f,navSize-10f,19f);
+                        navCaptions[i].fontSize=14;
+                    }
                 }
 
                 // Short landscape currently compresses the genuine 3-line
@@ -1245,19 +1255,18 @@ namespace Eldoria.BreachWatch
                 // PAINTED red geometry even when all touch and text-Rect
                 // bounds technically passed. Source-image proportions are
                 // never distorted, and no second hammer layer is introduced.
-                float artAspect=actionPlate.sprite
-                    ?actionPlate.sprite.rect.width/
-                        Mathf.Max(1f,actionPlate.sprite.rect.height)
-                    :246f/60f;
-                float paintedHeight=plate.rect.width/Mathf.Max(1f,artAspect);
-                float paintedTop=(plate.rect.height-paintedHeight)*.5f;
+                // Nine-sliced gold plaque: one continuous forged shape fills
+                // the real action area, preserving engraved corners as it
+                // adapts to the 147..210px available context width.
+                float paintedTop=2f;
+                float paintedHeight=Mathf.Max(30f,plate.rect.height-4f);
                 At(illustration,0f,paintedTop,plate.rect.width,paintedHeight);
                 // The hammered engraving lives inside the first quarter of
                 // the ORIGINAL painting, not the invisible wider hit target.
                 // 25% left and 7u right clearances keep the full genuine
                 // Spanish chapter action visible on every orientation.
-                float captionLeft=plate.rect.width*.25f;
-                float captionRight=plate.rect.width-7f;
+                float captionLeft=plate.rect.width*.22f;
+                float captionRight=plate.rect.width-8f;
                 At(actionLabel.rectTransform,captionLeft,
                     paintedTop+3f,
                     Mathf.Max(20f,captionRight-captionLeft),
@@ -1468,7 +1477,8 @@ namespace Eldoria.BreachWatch
                     actionLabel.resizeTextMaxSize=lastWidth<1000?16:17;
                     actionLabel.horizontalOverflow=HorizontalWrapMode.Wrap;
                     actionLabel.verticalOverflow=VerticalWrapMode.Truncate;
-                    actionLabel.color=can?TextIvory:new Color(.91f,.85f,.72f,1f);
+                    actionLabel.color=can?new Color(.20f,.12f,.05f,1f):
+                        new Color(.31f,.24f,.17f,1f);
                 }
                 // Accurate labels, artwork and routes: realm/castle, resource/sack,
                 // army/swords, world/raven and heroes/helm. Only the genuine
@@ -1476,19 +1486,28 @@ namespace Eldoria.BreachWatch
                 int activeTab=Mathf.Clamp(host.InWorld?3:selectedTab,0,navButtons.Length-1);
                 for(int i=0;i<5;i++)
                 {
-                    navPlates[i].Type=i==(host.InWorld?3:selectedTab)
-                        ?BreachWatchPlate.PlateType.Selected
-                        :BreachWatchPlate.PlateType.Navigation;
+                    bool isSelected=i==(host.InWorld?3:selectedTab);
+                    var navArt=Resources.Load<Sprite>(
+                        "VigiliaArt/UnifiedButtons/nav_"+ReferenceNavArt[i]+
+                        (isSelected?"_active":""));
+                    if(!navArt)throw new InvalidOperationException(
+                        "Missing integrated navigation art state: "+ReferenceNavArt[i]);
+                    if(navPlates[i].sprite!=navArt)
+                        navPlates[i].ApplyIndependentArt(navArt);
+                    navPlates[i].Type=BreachWatchPlate.PlateType.Navigation;
+                    navCaptions[i].text=host.English
+                        ?new[]{"REALM","SUPPLIES","ARMY","EXPLORE","HEROES"}[i]
+                        :navLabels[i];
+                    navCaptions[i].color=isSelected
+                        ?new Color(.97f,.90f,.69f,1f):TextIvory;
                     bool allowed=(NavigationMask() & (1<<i))!=0;
                     navButtons[i].interactable=allowed;
                     // The single painted medallion is already the whole icon.
                     // An unavailable destination is absent, not a tappable or
                     // faded promise of a screen that does not yet exist.
                     var p=navPlates[i];
-                    if(p)p.color=allowed
-                        ? i==(host.InWorld?3:selectedTab)
-                            ?new Color(1f,.97f,.87f,1f):Color.white
-                        :new Color(.70f,.68f,.65f,.88f);
+                    if(p)p.color=allowed?Color.white:
+                        new Color(.67f,.69f,.67f,.9f);
                 }
             }
             catch(Exception e)
