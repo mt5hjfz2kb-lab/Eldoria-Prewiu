@@ -91,8 +91,13 @@ assert.match(native,/pictures\.Count==52/);
 assert.match(nativeWorkflow,/\$report\.images -ne 52/);
 // PR173's canonical independently rendered Canvas hides the old Royal HUD.
 // Genuine daily UI must relocate to the native safe area or be invisible.
-assert.match(panel,/GameObject\.Find\("VIGILIA \/ independent canvas"\)/);
-assert.match(panel,/vigilia\.transform\.Find\("Safe composition"\)/);
+assert.match(panel,/FindLiteralVigiliaCanvas\(\)/);
+assert.match(panel,/candidate\.gameObject\.name=="VIGILIA \/ independent canvas"/);
+assert.match(panel,/HasVisibleCanonicalHeroRoom\(\)/);
+assert.match(panel,/cachedCanonicalHeroRoom\.gameObject\.activeInHierarchy/);
+assert.doesNotMatch(panel,/GameObject\.Find\("VIGILIA \/ independent canvas"\)/);
+assert.doesNotMatch(panel,/GameObject\.Find\("Heroes \/ canonical destination"\)/);
+assert.match(panel,/canvas\.transform\.Find\("Safe composition"\)/);
 assert.match(panel,/root\.SetParent\(safe,false\)/);
 assert.match(panel,/root\.SetParent\(originalSafeArea,false\)/);
 assert.match(panel,/float entryX=onVigiliaCanvas&&!portrait\?256f:14f/);
