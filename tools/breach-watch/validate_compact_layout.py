@@ -65,7 +65,13 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         resw=resources*chip+4*(resources-1)
         for i in range(resources):
             place("resource"+str(i),w-m-resw+i*(chip+4),18 if pw<600 else 17,chip,38 if pw<600 else 28)
-        place("mission",m,96 if pw<600 else 82,min(185,w*.46),78)
+        missionw=min(185,w*.46)
+        place("mission",m,96 if pw<600 else 82,missionw,78)
+        # Gold chapter icon is x=9..29 inside the single authored mission
+        # tablet; the actual chapter text must NEVER paint through its rim.
+        chapter_glyph=R(9,9,20,20)
+        chapter_text=R(31,5,missionw-45,20)
+        assert chapter_text.x>=chapter_glyph.x+chapter_glyph.w+1.5,size
         place("breach",w*.52-56,74,112,30)
         # Future utility buttons do not draw or intercept pointer events.
         navsize,gap=49,14
@@ -78,6 +84,10 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         panely=navtop-303-45
         context=place("context",w-m-panelw,panely,panelw,303)
         touch("close",R(context.x+panelw-55,context.y+3,50,50))
+        header=R(51,7,panelw-110,28)
+        level=R(51,34,panelw-110,19)
+        assert header.x+header.w<=panelw-55-3.5,size
+        assert level.x+level.w<=panelw-55-3.5,size
         touch("action",R(context.x+12,context.y+303-53,panelw-24,50))
         info=R(13,140,panelw-26,42)
         costlabel=R(13,191,panelw-26,15)
@@ -97,6 +107,9 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         for i in range(resources):
             place("resource"+str(i),w-m-resw+i*(chip+7),16,chip,41)
         place("mission",m,102,225,83)
+        chapter_glyph=R(9,9,20,20)
+        chapter_text=R(37,8,178,20)
+        assert chapter_text.x>=chapter_glyph.x+chapter_glyph.w+1.5,size
         place("breach",w*.49-17,11,34,34)
         navsize,gap=55,15
         navw=nav_count*navsize+(nav_count-1)*gap
@@ -109,6 +122,10 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         contexty=75 if h<530 else 118
         context=place("context",w-m-contextw,contexty,contextw,contexth)
         touch("close",R(context.x+contextw-57,context.y+3,52,52))
+        header=R(58,8,contextw-119,31)
+        level=R(58,37,contextw-119,19)
+        assert header.x+header.w<=contextw-57-3.5,size
+        assert level.x+level.w<=contextw-57-3.5,size
         if contexth<305:
             action=R(12,contexth-56,contextw-24,53)
             costs=R(12,166,contextw-24,24)
@@ -154,7 +171,10 @@ def main():
         'navButtons[i].gameObject.SetActive(visible);',
         'resourceChips[i].gameObject.SetActive(i<visibleResources);',
         'utility.gameObject.SetActive(false);',
-        'lastNavigationMask=navigationMask;'
+        'lastNavigationMask=navigationMask;',
+        'At(chapterName.rectTransform,31f,5f,missionWidth-45f,20f);',
+        'At(buildingName.rectTransform,51,7,pw-110,28);',
+        'At(buildingName.rectTransform,58,8,pw-119,31);'
     ]
     for pattern in expected:
         assert pattern in source, f"Runtime contract changed: {pattern}"
