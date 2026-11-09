@@ -106,7 +106,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
   commit-verified-cc0-art:
-    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]') || contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') || contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') || contains(github.event.head_commit.message, '[vigilia-owner-utilities]') || contains(github.event.head_commit.message, '[vigilia-owner-controls]'))
+    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]') || contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') || contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') || contains(github.event.head_commit.message, '[vigilia-owner-utilities]'))
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
@@ -152,9 +152,6 @@ jobs:
       - name: Paint source-faithful single dark material from approved empty panel
         if: contains(github.event.head_commit.message, '[vigilia-premium-surfaces]')
         run: python tools/breach-watch/author_material_from_owner_reference.py
-      - name: Cut genuine user-approved close and Bastion tower as individual controls
-        if: contains(github.event.head_commit.message, '[vigilia-owner-controls]')
-        run: python tools/breach-watch/author_owner_panel_controls.py
       - name: Protect canonical workstream ownership and source HEAD before push
         shell: bash
         env:
