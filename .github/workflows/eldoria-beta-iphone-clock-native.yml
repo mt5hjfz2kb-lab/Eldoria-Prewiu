@@ -166,24 +166,59 @@ jobs:
             $current.files.Count -ne 19 -or $selected.files.Count -ne 19){
              throw 'A/B source provenance differs from 19-overlays verified control'
           }
+          # The beta branch has subsequently gained opt-in telemetry and other
+          # experiments. Comparing its CURRENT 18 non-clock files to the archived
+          # beta10 snapshot would fail or inadvertently mix different builds.
+          # Instead use ALL 19 immutable overlay bytes from the exact beta10
+          # control snapshot, plus ONLY the reviewed minimal construction clock.
+          $controlPath=Join-Path (Resolve-Path 'ab-source').Path 'beta10-control'
+          $control=Get-Content (Join-Path $controlPath 'manifest.json') -Raw|ConvertFrom-Json
+          if($control.files.Count -ne 19){throw 'Frozen beta10 source control incomplete'}
+          $controls=@{}
+          foreach($e in $control.files){$controls[$e.overlay]=$e}
+          $changed=@()
           foreach($entry in $selected.files){
-            $actual=(Get-FileHash (Join-Path $variant $entry.overlay) -Algorithm SHA256).Hash.ToLowerInvariant()
-            if($actual -ne $entry.candidate_sha256){throw "Candidate bytes differ: $($entry.overlay)"}
-            if($entry.overlay -ne 'RoyalGoldV3ContextHud.cs.txt'){
-              $original=(Get-FileHash (Join-Path $ux $entry.overlay) -Algorithm SHA256).Hash.ToLowerInvariant()
-              if($original -ne $actual){throw "Non-clock UX overlay changed: $($entry.overlay)"}
+            if(-not $controls.ContainsKey($entry.overlay)){throw "Unrecognized beta10 overlay: $($entry.overlay)"}
+            $selectedFile=Join-Path $variant $entry.overlay
+            $baselineFile=Join-Path $controlPath $entry.overlay
+            $currentFile=Join-Path $ux $entry.overlay
+            if(-not(Test-Path $selectedFile -PathType Leaf) -or
+               -not(Test-Path $baselineFile -PathType Leaf) -or
+               -not(Test-Path $currentFile -PathType Leaf)){
+              throw "Missing frozen or current source: $($entry.overlay)"
             }
+            $selectedHash=(Get-FileHash $selectedFile -Algorithm SHA256).Hash.ToLowerInvariant()
+            $baseHash=(Get-FileHash $baselineFile -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($selectedHash -ne $entry.candidate_sha256 -or
+               $baseHash -ne $controls[$entry.overlay].candidate_sha256){
+              throw "A/B file does not match immutable manifest: $($entry.overlay)"
+            }
+            if($selectedHash -ne $baseHash){$changed+=@($entry.overlay)}
+          }
+          if($changed.Count -ne 1 -or $changed[0] -ne 'RoyalGoldV3ContextHud.cs.txt'){
+            throw "A/B must alter only the construction timer, got: $($changed -join ',')"
           }
           $backup=Join-Path $env:RUNNER_TEMP "beta10-minimal-tools-backup-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
           if(Test-Path $backup){throw 'Pre-existing hotfix backup; refuse mutation'}
           New-Item -ItemType Directory -Force $backup|Out-Null
+          $originals=@()
+          foreach($entry in $selected.files){
+            $item=Join-Path $ux $entry.overlay
+            $dest=Join-Path $backup $entry.overlay
+            Copy-Item $item $dest -ErrorAction Stop
+            $originals+=@{file=$item;backup=$dest;sha256=(Get-FileHash $item -Algorithm SHA256).Hash}
+          }
           Copy-Item $manifest (Join-Path $backup 'manifest.json')
-          Copy-Item $clock (Join-Path $backup 'clock.txt')
           $beforeManifest=(Get-FileHash $manifest -Algorithm SHA256).Hash
-          $beforeClock=(Get-FileHash $clock -Algorithm SHA256).Hash
           try {
-            Copy-Item $proposedClock $clock -Force
-            Copy-Item $proposal $manifest -Force
+            foreach($entry in $selected.files){
+              $item=Join-Path $ux $entry.overlay
+              Copy-Item (Join-Path $variant $entry.overlay) $item -Force -ErrorAction Stop
+              if((Get-FileHash $item -Algorithm SHA256).Hash.ToLowerInvariant() -ne $entry.candidate_sha256){
+                throw "Failed staging immutable beta10 variant: $($entry.overlay)"
+              }
+            }
+            Copy-Item $proposal $manifest -Force -ErrorAction Stop
             if((Get-FileHash $clock -Algorithm SHA256).Hash.ToLowerInvariant() -ne $proof.minimal_timer_sha256){
               throw 'Unreviewed minimal construction clock copied into tools'
             }
@@ -202,11 +237,17 @@ jobs:
             if(-not(Test-Path (Join-Path $web 'index.html'))){throw 'Fresh minimal WebGL output missing'}
             Write-Host 'BETA10_MINIMAL_CLOCK_NATIVE_I_V_AND_WEBGL_PASS_OWNER_IPHONE_UNTESTED'
           } finally {
-            Copy-Item (Join-Path $backup 'manifest.json') $manifest -Force
-            Copy-Item (Join-Path $backup 'clock.txt') $clock -Force
+            Copy-Item (Join-Path $backup 'manifest.json') $manifest -Force -ErrorAction Stop
+            $restoreFailures=@()
+            foreach($entry in $originals){
+              Copy-Item $entry.backup $entry.file -Force -ErrorAction Stop
+              if((Get-FileHash $entry.file -Algorithm SHA256).Hash -ne $entry.sha256){
+                $restoreFailures+=@($entry.file)
+              }
+            }
             if((Get-FileHash $manifest -Algorithm SHA256).Hash -ne $beforeManifest -or
-               (Get-FileHash $clock -Algorithm SHA256).Hash -ne $beforeClock){
-              throw 'Failed restoring isolated tools; do not trust replay'
+               $restoreFailures.Count -gt 0){
+              throw "Failed restoring exact original 19 isolated tools: $($restoreFailures -join ',')"
             }
             Remove-Item $backup -Recurse -Force
           }
