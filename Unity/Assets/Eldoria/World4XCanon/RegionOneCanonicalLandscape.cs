@@ -21,6 +21,7 @@ namespace Eldoria.World4XCanon
   internal static readonly int[] ForestCorridorPairs=new int[0];
   ValoriaIntegratedWorld host; ZoneOneStrategicCamera navigation;Vector3 origin;
   bool built;
+  public bool IsReady=>built;
   RegionOneBlenderLandscape geography;RegionOneReferenceNodes nodes;
   RegionOneResourcePlacement placement;RegionOneResourceModels resourceModels;
   RegionOneCreaturePopulation creaturePopulation;RegionOneLookDevelopment lookDevelopment;
@@ -58,13 +59,18 @@ namespace Eldoria.World4XCanon
         IEnumerator Start()
         {
             if (!host) yield break;
-            while (host && !host.Ready) yield return null;
+            host.BindWorldPresentation(this);
+            while (host && !host.PresentationBindingsReady) yield return null;
             if (!host || !host.WorldRoot || !host.WorldNavigation || !host.WorldCamera) yield break;
             navigation = host.WorldNavigation;
             origin = host.WorldHome;
             if (host.WorldRoot.transform.Find("Region 1 canonical continuous geography"))
             {
                 Debug.LogWarning("REGION1_CANON_LAYER_ALREADY_PRESENT");
+                // Keep the original ready adapter as the authority if bootstrap duplicated it.
+                var existing=UnityEngine.Object.FindObjectsByType<RegionOneCanonicalLandscape>(FindObjectsSortMode.None)
+                    .FirstOrDefault(other=>other!=this&&other.host==host&&other.IsReady);
+                if(existing)host.BindWorldPresentation(existing);
                 yield break;
             }
             InstallCameraLimits();
