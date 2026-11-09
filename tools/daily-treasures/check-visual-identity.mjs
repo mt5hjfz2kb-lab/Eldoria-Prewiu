@@ -62,8 +62,11 @@ for(const path of [
 assert.match(stage,/if\(kind==DailyTreasureStageKind\.Bastion\)/);
 // Real Bastion visible through a single forged bronze main plate; genuine
 // story supported by local ink, not a fictional city or another ornate frame.
-assert.match(stage,/BastionPlateOpacity=\.36f/);
-assert.match(stage,/\.45f,0f,0f,false/);
+// The real Bastion scene must remain visible through BOTH layers. Earlier
+// approximately 35% light transmission was a barely readable city; the
+// latest .38 backdrop + .34 genuine framed plate leaves over 40% visibility.
+assert.match(stage,/BastionPlateOpacity=\.34f/);
+assert.match(stage,/\.38f,0f,0f,false/);
 assert.match(panel,/Bastion \/ real-city milestone caption ink/);
 assert.match(panel,/bastionStoryInk\.gameObject\.SetActive\(realCity\)/);
 assert.match(panel,/currentStage==DailyTreasureStageKind\.Bastion/);
