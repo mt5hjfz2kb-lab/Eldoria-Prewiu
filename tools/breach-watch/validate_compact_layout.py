@@ -70,12 +70,12 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             place("resource"+str(i),w-m-resw+i*(chip+4),18 if pw<600 else 17,chip,38 if pw<600 else 28)
             symbolsize=25 if pw<600 else 19
             assert 4+symbolsize+1.5<=symbolsize+8,size
-        missionw=min(185,w*.46)
-        place("mission",m,96 if pw<600 else 82,missionw,86)
-        # Without a redundant vector tower, the real chapter inscription
-        # keeps its own uninterrupted margin inside the authored stone.
-        chapter_text=R(17,5,missionw-29,32)
-        assert chapter_text.x>=16 and chapter_text.x+chapter_text.w<=missionw-11,size
+        missionw=min(211 if pw<600 else 200,w*(.49 if pw<600 else .44))
+        place("mission",m,87 if pw<600 else 82,missionw,82 if pw<600 else 78)
+        # The approved castle badge is part of the single real PNG; live
+        # information starts after its unscaled nine-slice left border.
+        chapter_text=R(59,8,missionw-70,20)
+        assert chapter_text.x>=59 and chapter_text.x+chapter_text.w<=missionw-11,size
         place("breach",w*.52-56,74,112,30)
         # Future utility buttons do not draw or intercept pointer events.
         navsize,gap=49,14
@@ -115,9 +115,9 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         for i in range(resources):
             place("resource"+str(i),w-m-resw+i*(chip+7),16,chip,41)
             assert 5+30+1.5<=38,size
-        place("mission",m,102,225,90)
-        chapter_text=R(17,8,193,32)
-        assert chapter_text.x>=16 and chapter_text.x+chapter_text.w<=214,size
+        place("mission",m,100,256,92)
+        chapter_text=R(66,7,174,24)
+        assert chapter_text.x>=65 and chapter_text.x+chapter_text.w<=240,size
         place("breach",w*.49-17,11,34,34)
         navsize,gap=55,15
         navw=nav_count*navsize+(nav_count-1)*gap
@@ -181,7 +181,7 @@ def main():
         'resourceChips[i].gameObject.SetActive(i<visibleResources);',
         'utility.gameObject.SetActive(false);',
         'lastNavigationMask=navigationMask;',
-        'At(chapterName.rectTransform,17f,5f,missionWidth-29f,32f);',
+        'At(chapterName.rectTransform,59f,8f,missionWidth-70f,20f);',
         'At(buildingName.rectTransform,18,7,pw-80,28);',
         'At(buildingName.rectTransform,18,8,pw-80,31);',
         'At(identityPower.rectTransform,59,38,165,17);',

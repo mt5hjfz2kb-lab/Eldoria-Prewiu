@@ -39,22 +39,19 @@ def verify():
 
     # Phone design-units are stable between 390x844 and Retina 900x1600.
     panel_width=171
-    mission_width=185
+    mission_width=200
     def fits(text,font,size,limit,control):
         value=width(font,size,text)
         assert value<=limit+0.15,(control,round(value,2),limit,text)
         print("TYPOGRAPHY_FIT",control,round(value,1),"<=",limit)
 
-    # The story title starts in clean carved stone. No duplicated vector
-    # crest should steal the title's paint width or make an overlay.
-    fits("BASTIÓN I",SEMIBOLD,14,mission_width-29,
-         "first line engraved chapter")
-    fits("LA BRECHA",SEMIBOLD,14,mission_width-29,
-         "second line engraved Breach")
+    # The reference's single carved title is dynamic, not baked into PNG.
+    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,11,mission_width-70,
+         "approved single-line chapter and Breach inscription")
+    fits("Construye el aserradero",REGULAR,13,mission_width-70,
+         "true objective alongside painted castle badge")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "At(chapterName.rectTransform,17f,5f,missionWidth-29f,32f);" in hud
-    fits("Construye el aserradero",REGULAR,14,mission_width-22,
-         "chapter-objective")
+    assert "At(chapterName.rectTransform,59f,8f,missionWidth-70f,20f);" in hud
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
     fits("Bastión",SEMIBOLD,19,panel_width-80,
          "selected building title")

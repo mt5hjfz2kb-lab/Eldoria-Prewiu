@@ -130,8 +130,8 @@ namespace Eldoria.BreachWatch
             {
                 var tablet=objective?objective.GetComponent<BreachWatchPlate>():null;
                 return tablet && tablet.sprite &&
-                    tablet.sprite.name=="chiseled_quest" &&
-                    tablet.type==Image.Type.Simple &&
+                    tablet.sprite.name=="mission_plate" &&
+                    tablet.type==Image.Type.Sliced &&
                     !tablet.preserveAspect;
             }
         }
@@ -516,12 +516,12 @@ namespace Eldoria.BreachWatch
             objective=Rect("Chapter side tablet",uiRoot);
             var chapterStone=Plate(objective,BreachWatchPlate.PlateType.Basalt);
             var angledPlate=Resources.Load<Sprite>(
-                "VigiliaArt/PremiumSurfaces/chiseled_quest");
+                "VigiliaArt/OwnerControls/mission_plate");
             if(!angledPlate)throw new InvalidOperationException(
                 "Missing Vigilia's approved integral chapter tablet");
             // The actual tapered ornament is a single authored silhouette:
             // never silently fall back to a generic procedural dark panel.
-            chapterStone.ApplyIndependentArt(angledPlate,false);
+            chapterStone.ApplyIndependentArt(angledPlate,true);
             chapterStone.color=new Color(.97f,.95f,.90f,1f);
             chapterStone.preserveAspect=false;
 
@@ -1003,22 +1003,29 @@ namespace Eldoria.BreachWatch
                 }
 
                 At(centerMark,w*.52f-56,74,112,30);
-                float missionWidth=Mathf.Min(185f,w*.46f);
-                float missionTop=smallPhone?96f:82f;
+                // Single carved plate taken from the owner's approved 864x1536
+                // original: the castle insignia is PAINTED IN that one plate.
+                // Keep live chapter, objective and progress editable on top.
+                float missionWidth=Mathf.Min(smallPhone?211f:200f,
+                    w*(smallPhone?.49f:.44f));
+                float missionTop=smallPhone?87f:82f;
+                float missionHeight=smallPhone?82f:78f;
                 At(objective,margin,missionTop,missionWidth,
-                    fullObjective?132f:86f);
-                // Do not crush a long Chapter I / Breach inscription
-                // against the engraved tapered corner. Two short genuine
-                // live lines make the title and lore legible without a
-                // second vector tower, icon plate or fake background.
-                At(chapterName.rectTransform,17f,5f,missionWidth-29f,32f);
-                At(chapterObjective.rectTransform,13f,40f,missionWidth-22f,
-                    fullObjective?64f:20f);
-                At(chapterProgress.rectTransform,13f,
-                    fullObjective?110f:62f,missionWidth-22f,18f);
-                chapterName.fontSize=smallPhone?13:14;
-                chapterObjective.fontSize=smallPhone?15:14;
-                chapterProgress.fontSize=smallPhone?14:13;
+                    fullObjective?112f:missionHeight);
+                At(chapterName.rectTransform,59f,8f,missionWidth-70f,20f);
+                At(chapterObjective.rectTransform,59f,32f,
+                    missionWidth-70f,fullObjective?52f:28f);
+                At(chapterProgress.rectTransform,59f,
+                    fullObjective?90f:62f,missionWidth-70f,15f);
+                chapterName.fontSize=12;
+                chapterName.resizeTextForBestFit=true;
+                chapterName.resizeTextMinSize=11;
+                chapterName.resizeTextMaxSize=12;
+                chapterObjective.fontSize=smallPhone?14:13;
+                chapterObjective.resizeTextForBestFit=true;
+                chapterObjective.resizeTextMinSize=12;
+                chapterObjective.resizeTextMaxSize=14;
+                chapterProgress.fontSize=smallPhone?13:12;
 
                 // Secondary seals are disabled on this first screen:
                 // keep their carved artwork discreet rather than occupying
@@ -1117,13 +1124,13 @@ namespace Eldoria.BreachWatch
                 // On the real 844x390 Unity capture, the previous 61+19
                 // progress position left only 2.6 physical pixels above
                 // the bottom bevel. Keep true text visibly inside the stone.
-                At(objective,margin,102,225,fullObjective?130:90);
-                At(chapterName.rectTransform,17,8,193,32);
-                At(chapterObjective.rectTransform,14,40,197,fullObjective?59:22);
-                At(chapterProgress.rectTransform,14,fullObjective?106:66,190,19);
+                At(objective,margin,100,256,fullObjective?122:92);
+                At(chapterName.rectTransform,66,7,174,24);
+                At(chapterObjective.rectTransform,66,36,176,fullObjective?58:34);
+                At(chapterProgress.rectTransform,66,fullObjective?99:71,176,18);
                 chapterName.fontSize=14;
-                chapterObjective.fontSize=16;
-                chapterProgress.fontSize=15;
+                chapterObjective.fontSize=15;
+                chapterProgress.fontSize=14;
 
                 At(utilityRail,margin,h-165,44,145);
                 for(int i=0;i<utilityRail.childCount;i++)
@@ -1368,7 +1375,7 @@ namespace Eldoria.BreachWatch
                 var realChapter=snapshot.Chapter??"";
                 bool chapterOne=host.City.Gateway.Snapshot().BastionLevel==1;
                 chapterName.text=chapterOne && realChapter.Length>0
-                    ? realChapter+"\n"+(host.English?"THE BREACH":"LA BRECHA")
+                    ? realChapter.ToUpperInvariant()+" / "+(host.English?"THE BREACH":"LA BRECHA")
                     : realChapter;
                 chapterObjective.text=snapshot.Objective;
                 chapterProgress.text=snapshot.ObjectiveProgress;
