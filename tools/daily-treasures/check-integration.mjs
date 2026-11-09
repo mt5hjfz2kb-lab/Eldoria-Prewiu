@@ -337,4 +337,16 @@ assert.match(panel,/"5 min x"\+reward\.SpeedupFiveMinutes/);
 assert.match(native,/VerifySeventhDayPreviewTruth\(panel,"calendar day seven"\)/);
 assert.match(native,/label\.preferredWidth<=rect\.width\+3f/);
 assert.match(native,/label\.preferredHeight<=rect\.height\+3f/);
+// UX priority is checked on EVERY frame, rather than a 300ms throttled
+// progression refresh: no new menu/tribute flash over tutorial or an active
+// building, and no extra expensive Snapshot() calls in fast frames.
+const retentionUpdate=retention.split('        void Update()')[1];
+assert.ok(retentionUpdate,'RoyalGold retention Update must remain present');
+const suppressedAt=retentionUpdate.indexOf('dailyTreasures.Suppressed=overlay || IsOpen;');
+const throttledAt=retentionUpdate.indexOf('if(Time.unscaledTime<nextUpdate)return;');
+const snapshotAt=retentionUpdate.indexOf('var s=gateway.Snapshot();');
+assert.ok(suppressedAt>=0 && throttledAt>suppressedAt &&
+          snapshotAt>throttledAt,
+    'Story/building screen suppression must precede throttled state polling');
+assert.match(retentionUpdate,/if\(overlay && dailyTreasures\.IsOpen\)dailyTreasures\.Close\(\)/);
 console.log('PASS daily treasures gateway integration source invariants');
