@@ -1132,8 +1132,11 @@ namespace Eldoria.BreachWatch
                 // Shift live ink INSIDE the same authentic complete illustration.
                 At(objective,margin,100,256,fullObjective?122:92);
                 At(chapterName.rectTransform,66,14,180,20);
-                At(chapterObjective.rectTransform,66,40,176,fullObjective?55:23);
-                At(chapterProgress.rectTransform,66,fullObjective?99:71,176,18);
+                // Native 844x390 measured only 2.6px between the real
+                // progress ink and the lower gold contour. Reserve at least
+                // 9px; no second panel, no hidden fake fraction or font shrink.
+                At(chapterObjective.rectTransform,66,40,176,fullObjective?50:23);
+                At(chapterProgress.rectTransform,66,fullObjective?93:63,176,18);
                 // 844x390 actual native pixels: 13 at scale .86 gives only
                 // 11.18px. Enlarge the live caption rather than weaken QA.
                 chapterName.fontSize=14;
