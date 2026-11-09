@@ -12,7 +12,16 @@ function Install-UxOverlay {
  foreach($entry in $uxFiles){
   $from=Join-Path $uxRoot $entry.overlay;$to=Join-Path $Source $entry.path
   if(-not(Test-Path $to) -or (Get-FileHash $to -Algorithm SHA256).Hash -ne $entry.baseline_sha256){throw "UX base differs: $($entry.path)"}
-  if((Get-FileHash $from -Algorithm SHA256).Hash -ne $entry.candidate_sha256){throw "UX candidate differs: $($entry.path)"}
+  if((Get-FileHash $from -Algorithm SHA256).Hash -ne $entry.candidate_sha256){
+   # A reused Windows checkout can retain CRLF after new LF attributes arrive.
+   # Accept ONLY the exact manifest-pinned LF bytes; no changed source is tolerated.
+   $normalized=[Text.Encoding]::UTF8.GetBytes([IO.File]::ReadAllText($from).Replace("`r`n","`n"))
+   $sha=[Security.Cryptography.SHA256]::Create()
+   try{$normalizedHash=[BitConverter]::ToString($sha.ComputeHash($normalized)).Replace('-','')}finally{$sha.Dispose()}
+   if($normalizedHash -ne $entry.candidate_sha256){throw "UX candidate differs: $($entry.path)"}
+   [IO.File]::WriteAllBytes($from,$normalized)
+   Write-Host "Restored exact LF payload bytes: $($entry.path)"
+  }
  }
  foreach($entry in $uxFiles){Copy-Item (Join-Path $uxRoot $entry.overlay) (Join-Path $Source $entry.path) -Force}
  Copy-Item (Join-Path $uxRoot 'manifest.json') (Join-Path $Evidence 'ux-source-overlay.json')
