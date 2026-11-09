@@ -613,6 +613,45 @@ namespace Eldoria.DailyTreasures.Editor
                         }
                     }
 
+                    // Narrative priority can arrive after a daily modal
+                    // was ALREADY opened, not just before the initial tap.
+                    // This must preempt the overlay and stop its Foley, while
+                    // the real Day 4 claim and mailbox receipt remain saved.
+                    var beforeInterrupt=specialGateway.Snapshot();
+                    panel.Open();
+                    Need(panel.IsOpen,"Previously paid calendar cannot be reopened");
+                    panel.Suppressed=true;
+                    Need(!panel.IsOpen &&
+                         !FindButton(panel,"Daily reward / optional medallion")
+                            .gameObject.activeInHierarchy,
+                        "Narrative failed to preempt an open daily calendar");
+                    panel.Suppressed=false;
+                    Need(FindButton(panel,"Daily reward / optional medallion")
+                            .gameObject.activeInHierarchy,
+                        "Reward access did not recover after story dismissal");
+
+                    // Apply the same interruption while a premium animation
+                    // is genuinely playing. This is an event-style UI probe
+                    // ONLY, with no new hero or combat reward command.
+                    Need(panel.PresentCommittedMilestone(
+                            "Hito previo a un tutorial",
+                            "La información permanece en el buzón",
+                            legendary:true,eventId:"vigilant:chapter:25"),
+                        "Could not open an optional ceremonial overlay");
+                    Need(panel.IsOpen,
+                        "Premium ceremony was not visible before interruption");
+                    panel.Suppressed=true;
+                    Need(!panel.IsOpen,
+                        "Tutorial overlay did not interrupt the premium coffer");
+                    panel.Suppressed=false;
+                    var afterInterrupt=specialGateway.Snapshot();
+                    Need(beforeInterrupt.Resources.Wood==afterInterrupt.Resources.Wood &&
+                         beforeInterrupt.Resources.Stone==afterInterrupt.Resources.Stone &&
+                         beforeInterrupt.Resources.Food==afterInterrupt.Resources.Food &&
+                         beforeInterrupt.Mailbox.Messages.Count==
+                            afterInterrupt.Mailbox.Messages.Count,
+                        "Interrupting a premium ceremony corrupted an already-paid reward");
+
                     Object.DestroyImmediate(eventObj);
                     Object.DestroyImmediate(canvasObj);
                     camera.targetTexture=null;
