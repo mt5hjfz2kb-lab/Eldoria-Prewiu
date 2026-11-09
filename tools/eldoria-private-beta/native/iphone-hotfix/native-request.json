@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "workstream_id": "eldoria-private-beta-i-v-20261107",
+  "owner": "chatgpt-eldoria-pilot-telemetry-20261109",
+  "ownership_revision": 23,
+  "state": "WAIT_FOR_EXCLUSIVE_WINDOWS_LEASE",
+  "variant": "beta10-minimal-anchor",
+  "replay_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+  "minimal_source_commit": "e445a712b16f0bfc8196bdcb734492e780ef082c",
+  "minimal_source_blob": "144b1d6becec3055aac6a69cce07007cad1849a6",
+  "qa_artifact_run": 42692715252,
+  "qa_artifact_id": 13708151225,
+  "qa_artifact_name": "beta10-iphone-timer-ab-source-only",
+  "stages": [
+    "immutable 19-overlay audit",
+    "isolated Unity Bastion I-V native QA",
+    "fresh WebGL candidate",
+    "offline owner iPhone A/B",
+    "physical 30min proof before promotion"
+  ],
+  "change_scope": "RoyalGoldV3ContextHud only; preserve original beta10 public Pages and save data",
+  "external_testers_enabled": false,
+  "owner_ios_stability_proven": false,
+  "note": "This file is NOT a native test result. Change state to CLAIMED_FOR_NATIVE only after formal CAS workstream lease handoff and zero Unity/Blender process."
+}
