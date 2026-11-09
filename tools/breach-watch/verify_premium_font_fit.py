@@ -90,11 +90,13 @@ def verify():
         (186,"844 historical tight-landscape safety","Mejorar a Bastión II",15),
         (210,"844 actual widened-landscape","Mejorar a Bastión II",15),
     ]:
-        free_width=hit_width*(1-.22)-8
+        free_width=hit_width*(1-.24)-8
         fits(caption,SEMIBOLD,size,free_width,label+" within single gold face")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
     assert "VigiliaArt/UnifiedButtons/action_gold" in hud
     assert "actionPlate.type=Image.Type.Sliced;" in hud
+    assert "float captionLeft=plate.rect.width*.24f;" in hud
+    assert "actionLabel.color=can?new Color(.99f,.95f,.82f,1f):" in hud
     assert "float paintedHeight=Mathf.Max(30f,plate.rect.height-4f);" in hud
     assert "bool fullUpgradeCaption=lastWidth>=800;" in hud
     # Dynamic nav captions are live Cormorant, inside the same 80u source
