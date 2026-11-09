@@ -1019,7 +1019,7 @@ namespace Eldoria.BreachWatch
                 float missionWidth=Mathf.Min(smallPhone?211f:184f,
                     w*(smallPhone?.49f:.41f));
                 float missionTop=smallPhone?87f:82f;
-                float missionHeight=smallPhone?82f:55f;
+                float missionHeight=smallPhone?69f:55f;
                 At(objective,margin,missionTop,missionWidth,
                     fullObjective?112f:missionHeight);
                 // A genuine 390x844 phone showed 12*.91=10.92px, below
@@ -1031,17 +1031,17 @@ namespace Eldoria.BreachWatch
                 // Shift ink 5u right of the same badge contour; 136u
                 // now fits ONE true source-faithful line at both phone sizes.
                 At(chapterName.rectTransform,smallPhone?54f:48f,
-                    smallPhone?8f:6f,missionWidth-(smallPhone?64f:57f),
-                    smallPhone?20f:15f);
+                    smallPhone?6f:6f,missionWidth-(smallPhone?64f:57f),
+                    smallPhone?17f:15f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
                 // above the plate bottom on 900x1600, failing real GPU QA.
                 At(chapterObjective.rectTransform,smallPhone?59f:48f,
-                    smallPhone?32f:22f,missionWidth-(smallPhone?70f:57f),
-                    fullObjective?51f:(smallPhone?20f:15f));
+                    smallPhone?26f:22f,missionWidth-(smallPhone?70f:57f),
+                    fullObjective?51f:(smallPhone?18f:15f));
                 At(chapterProgress.rectTransform,smallPhone?59f:48f,
-                    fullObjective?87f:(smallPhone?55f:39f),
-                    missionWidth-(smallPhone?70f:57f),smallPhone?20f:13f);
+                    fullObjective?87f:(smallPhone?47f:39f),
+                    missionWidth-(smallPhone?70f:57f),smallPhone?17f:13f);
                 chapterName.fontSize=smallPhone?13:11;
                 chapterName.resizeTextForBestFit=true;
                 chapterName.resizeTextMinSize=smallPhone?13:11;
