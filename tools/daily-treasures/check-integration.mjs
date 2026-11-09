@@ -286,4 +286,10 @@ assert.match(native,/rect\.sizeDelta=new Vector2\(height,width\)/);
 assert.match(native,/VerifyCriticalTypography\(panel,"paid chest after orientation change"\)/);
 assert.match(native,/VerifyCriticalTypography\(panel,"paid chest after rotation restored"\)/);
 assert.match(native,/Paid cards disappeared when device orientation changed/);
+// A REAL native Unity 6000 compiler caught the namespace shadowing bug:
+// within Eldoria.DailyTreasures, unqualified Application.isPlaying resolves
+// to Eldoria.Application (the gateway namespace), not UnityEngine.Application.
+// Pure Roslyn syntax parsing cannot detect this semantic type error.
+assert.equal((panel.match(/UnityEngine\.Application\.isPlaying/g)||[]).length,3);
+assert.doesNotMatch(panel,/(?<!UnityEngine\.)Application\.isPlaying/);
 console.log('PASS daily treasures gateway integration source invariants');
