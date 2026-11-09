@@ -387,6 +387,39 @@ namespace Eldoria.DailyTreasures.Editor
                 "Milestone heraldic event banner / visual only");
             Need(banner.gameObject.activeInHierarchy,
                 "Original event-specific heraldic banner is hidden");
+            // Actual player-facing scene identity must be a readable,
+            // unobstructed literary heading on genuine painterly art, not
+            // another clickable bronze button pasted above a nested panel.
+            var title=banner.GetComponentsInChildren<Text>(true)
+                .Single(t=>t.name=="Real milestone category");
+            var plate=banner.GetComponent<Image>();
+            var ink=FindRect(panel,
+                "Event-specific forged-ink underline / visual only");
+            var line=ink.GetComponent<Image>();
+            Need(plate && !plate.sprite && !plate.raycastTarget &&
+                 plate.color.a<=.66f && title.font &&
+                 title.fontSize>=18 &&
+                 title.preferredHeight<=title.rectTransform.rect.height+2f &&
+                 title.preferredWidth<=title.rectTransform.rect.width+2f &&
+                 ink.rect.height>=1.9f && ink.rect.height<=2.1f &&
+                 line && !line.raycastTarget && line.color.a<=.75f,
+                "A real milestone title is cropped, disguised as a button "
+                +"or styled with a heavy opaque overlay");
+            // The original banner/Skip overlap on portrait made the upper
+            // story title appear literally pasted over another control.
+            // Compare the two actual Unity RectTransforms in their SHARED
+            // parent coordinates, not separate anchoredPosition origins.
+            var skip=FindRect(panel,"Skip animation / keep earned items");
+            var titleBounds=RectTransformUtility.CalculateRelativeRectTransformBounds(
+                banner.parent,banner);
+            var skipBounds=RectTransformUtility.CalculateRelativeRectTransformBounds(
+                banner.parent,skip);
+            bool xOverlap=Mathf.Abs(titleBounds.center.x-skipBounds.center.x)<
+                (titleBounds.size.x+skipBounds.size.x)*.5f;
+            bool yOverlap=Mathf.Abs(titleBounds.center.y-skipBounds.center.y)<
+                (titleBounds.size.y+skipBounds.size.y)*.5f;
+            Need(!(xOverlap&&yOverlap),
+                "Original milestone text overlaps the real Skip finger target");
             Need(Mathf.Abs(painted.anchoredPosition.x-expected.SceneX)<1.1f &&
                  Mathf.Abs(painted.anchoredPosition.y-expected.SceneY)<1.1f &&
                  Mathf.Abs(painted.rect.width-expected.SceneW)<1.1f &&
