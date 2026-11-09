@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
       "ownership_revision": 30,
       "write_scope_released": false,
-      "phase": "UNITY_NATIVE_PROOF_APPROVED_MISSION_PLATE_REDESIGN",
-      "next": "Exact SHA native Unity 8 screenshots for PR173; if compile/art fails correct and rerun. Save untouched. Release Windows and preserve accepted source; no production merge until art fidelity and gameplay confirmed.",
+      "phase": "OWNER_REFERENCE_HUD_NATIVE_8_PASS_ART_REVIEW_PENDING",
+      "next": "Revisar visualmente los ocho PNG reales de Unity de la PR173 SHA c40ca7d2; no declarar 7/10 ni aprobar ni integrar en main sin fidelidad al arte aprobado. El propietario conserva el workstream y Windows queda libre para la beta y PR179.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-09T19:58:24.782Z",
@@ -6745,11 +6743,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "cdcb604a49fa39f7ec7fb5ac558b6f2387e3a768",
-        "native_run": 42679974131,
+        "source_sha": "c40ca7d2b3342e547d77859d17d11e7147aeb5d1",
+        "native_run": 42710392713,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13701364339,
+        "artifact": 13714449890,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6764,7 +6762,12 @@
         "save_unchanged": true,
         "original_icon_medallions_removed": true,
         "coherent_dock_integrated": true,
-        "gold_action_one_line": true
+        "gold_action_one_line": true,
+        "quest_progress_real_gpu_visible": true,
+        "bastion_header_and_timer_real_gpu_visible": true,
+        "uses_original_owner_reference_nav": true,
+        "owner_quest_and_resources_aligned": true,
+        "owner_context_compact": true
       },
       "runner_released_at": "2026-11-09T19:06:55Z",
       "runner_release_basis": "Unity native run 42679974131 success on exact PR173 HEAD cdcb604a49fa39f7ec7fb5ac558b6f2387e3a768; all eight PNG SHA verified against JSON, six actual navigation clicks, no legacy HUD, actual player save unchanged. No ART_APPROVED and no release. Windows resource given back."
