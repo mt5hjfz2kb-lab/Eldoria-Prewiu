@@ -1423,7 +1423,7 @@ namespace Eldoria.DailyTreasures
                     Place(prizeNames[i].rectTransform,.5f,.5f,.5f,.5f,
                         labelX,12f,labelWidth,27f);
                     Place(prizeAmounts[i].rectTransform,.5f,.5f,.5f,.5f,
-                        labelX,-15f,labelWidth,23f);
+                        labelX,-16f,labelWidth,26f);
                     prizeNames[i].fontSize=cardW>=170f?12:11;
                     prizeAmounts[i].fontSize=18;
                 }
