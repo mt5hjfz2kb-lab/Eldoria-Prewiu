@@ -118,7 +118,7 @@ jobs:
           $ErrorActionPreference='Stop'
           if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Stale checkout'}
           $target='Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs'
-          if((git rev-parse "HEAD:$target").Trim() -ne 'caa48b2bfa70edde209055f53296ddfc5e3a0baf'){
+          if((git rev-parse "HEAD:$target").Trim() -ne '0d9cb29fa9198d8a87011cc554b6247bb63a9e30'){
             throw 'Unexpected timer C# blob; update native contract when the source changes'
           }
           $tracked=@(git ls-tree -r --name-only HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings)
@@ -131,7 +131,7 @@ jobs:
           $remaining=@($tracked|Where-Object {-not(Test-Path -LiteralPath $_)})
           if($remaining.Count){throw "Missing $($remaining.Count) exact Unity inputs"}
           New-Item -ItemType Directory -Force $env:ELDORIA_TIMER_NATIVE_OUT|Out-Null
-          @{source_sha=$env:GITHUB_SHA;timer_blob='caa48b2bfa70edde209055f53296ddfc5e3a0baf';art_approved=$false;iphone_physical_certified=$false} |
+          @{source_sha=$env:GITHUB_SHA;timer_blob='0d9cb29fa9198d8a87011cc554b6247bb63a9e30';art_approved=$false;iphone_physical_certified=$false} |
             ConvertTo-Json | Set-Content (Join-Path $env:ELDORIA_TIMER_NATIVE_OUT 'provenance.json') -Encoding UTF8
       - name: Preserve Unity Search index transactionally
         shell: powershell
