@@ -421,7 +421,9 @@ namespace Eldoria.BreachWatch
             // authoritative forged-metal plate from the approved art kit.
             var identitySurface=Plate(identity,BreachWatchPlate.PlateType.Basalt);
             var finalProfile=Resources.Load<Sprite>("VigiliaArt/OwnerControls/profile_bar");
-            if(finalProfile)identitySurface.ApplyIndependentArt(finalProfile,true);
+            if(!finalProfile)throw new InvalidOperationException(
+                "Missing Vigilia's approved player profile art");
+            identitySurface.ApplyIndependentArt(finalProfile,true);
             // The entire visible account plate must prevent accidental
             // click-through to the city, without pretending to navigate.
             identitySurface.raycastTarget=true;
@@ -444,6 +446,8 @@ namespace Eldoria.BreachWatch
             resourceRow=Rect("Separate resource stones",uiRoot);
             var originalResourceStone=Resources.Load<Sprite>(
                 "VigiliaArt/OwnerControls/resource_capsule");
+            if(!originalResourceStone)throw new InvalidOperationException(
+                "Missing Vigilia's approved resource capsule art");
             for(int i=0;i<3;i++)
             {
                 resourceChips[i]=Rect("Resource "+i,resourceRow);
@@ -451,8 +455,7 @@ namespace Eldoria.BreachWatch
                 // Single premium brass-edged 9-slice capsule. The earlier
                 // procedural tile PLUS a second border produced an ugly
                 // cross/X behind the actual resource amount in Unity.
-                if(originalResourceStone)
-                    resourceSurface.ApplyIndependentArt(originalResourceStone,true);
+                resourceSurface.ApplyIndependentArt(originalResourceStone,true);
 
                 resourceSurface.raycastTarget=true;
                 var picture=Rect("True illustrated resource",resourceChips[i]);
@@ -485,16 +488,12 @@ namespace Eldoria.BreachWatch
             var chapterStone=Plate(objective,BreachWatchPlate.PlateType.Basalt);
             var angledPlate=Resources.Load<Sprite>(
                 "VigiliaArt/PremiumSurfaces/chiseled_quest");
-            if(angledPlate)
-            {
-                // The source is a complete tapered cartouche. Nine-slicing
-                // its asymmetric pointed nose fractured the gold edges and
-                // drew a diagonal through the chapter title on real Unity.
-                // REPLACE the sliced intermediate with one intact source
-                // sprite; the panel aspect differs from the original by <9%.
-                chapterStone.ApplyIndependentArt(angledPlate,false);
-                chapterStone.preserveAspect=false;
-            }
+            if(!angledPlate)throw new InvalidOperationException(
+                "Missing Vigilia's approved integral chapter tablet");
+            // The actual tapered ornament is a single authored silhouette:
+            // never silently fall back to a generic procedural dark panel.
+            chapterStone.ApplyIndependentArt(angledPlate,false);
+            chapterStone.preserveAspect=false;
 
             AddContactShadow(objective,1.8f,.20f);
             // The chapter's approval reference has a tiny tower crest
@@ -592,17 +591,14 @@ namespace Eldoria.BreachWatch
                 exactOwnerGoldBorder.raycastTarget=false;
                 exactOwnerGoldBorder.color=new Color(.96f,.93f,.87f,.88f);
             }
-            else
-            {
-                var engravingRect=Rect("Fallback original forged engraving",panel);
-                Fill(engravingRect);
-                var engraving=engravingRect.gameObject.AddComponent<BreachWatchFrameEngraving>();
-                engraving.raycastTarget=false;
-            }
+            else throw new InvalidOperationException(
+                "Missing Vigilia's single approved sculpted-gold contour");
             portraitFrame=Rect("Carved recess / live building illustration",panel);
             var brassFrame=Plate(portraitFrame,BreachWatchPlate.PlateType.Portrait);
             var premiumBrass=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/brass_portrait");
-            if(premiumBrass)brassFrame.ApplyIndependentArt(premiumBrass,true);
+            if(!premiumBrass)throw new InvalidOperationException(
+                "Missing Vigilia's genuine brass picture recess");
+            brassFrame.ApplyIndependentArt(premiumBrass,true);
             // The portrait must be a subtle recess of the SAME mineral
             // cartouche, not a second thick black/bronze plate perched on it.
             // Keep the original 9-slice ornament and a single live 3D image,
