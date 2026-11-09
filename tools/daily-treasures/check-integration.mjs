@@ -130,7 +130,7 @@ assert.match(panel,/reward\.CycleDay==7\?DailyTreasureCeremonyTier\.Legendary/);
 assert.match(native,/panel\.ProbePresentationCanvasForNativeEvidence\(\)/);
 assert.match(native,/panel\.ProbeHeroRoomVisibilityForNativeEvidence\(\)/);
 assert.match(native,/"Heroes \/ canonical destination",typeof\(RectTransform\)/);
-assert.match(native,/Closed Heroes room incorrectly blocks daily reward/);
+assert.match(native,/Closing Lyra room did not restore the optional treasury medallion/);
 assert.match(native,/nativeCanvas\.enabled=false/);
 // PR173's actual new HUD is ScreenSpaceCamera with fixed pixel scale and
 // priority 5000. A WorldSpace mock cannot certify its real raycast behavior.
