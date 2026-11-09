@@ -13,6 +13,14 @@ assert.match(code,/Bastion \/ real-city milestone caption ink/);
 assert.match(code,/DailyTreasureStageDirection\.BastionPlateOpacity/);
 assert.match(stageCode,/BastionPlateOpacity=\.36f/);
 assert.match(stageCode,/\.45f,0f,0f,false/);
+assert.match(code,/void AnimateDailyCeremonyReflow\(float progress\)/,
+  'The premium coffer-to-inventory layout must move smoothly');
+assert.match(code,/AnimateDailyCeremonyReflow\(frame\.Text\)/,
+  'Light settle also drives the actual frame transition');
+const reflowBody=code.split('void AnimateDailyCeremonyReflow(float progress)')[1]
+  .split('DailyTreasureRevealFrame PaintCeremonyFrame')[0];
+assert.doesNotMatch(reflowBody,/new\[\]/,
+  'No per-frame heap arrays during mobile chest animation');
 for(const [name,regex] of [
   ['seventh day occupies two columns',/int span=i==6\?2:1/],
   ['normal glyph height',/compactDouble\?23f:tiny\?24f:28f/],
@@ -144,6 +152,26 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
     `${w}x${h}: cinematic chest, caption and lower border are cramped`);
   assert.ok(openH<(portrait?700:370),
     `${w}x${h}: old oversized empty opening panel returned`);
+
+  // Reveal choreography must ease from the opening to the REAL inventory
+  // layout without a sudden cut, offscreen artwork or overlapping caption.
+  // Its progress is the already-tested RevealTimeline.Text smoothstep.
+  for(const t of [0,.25,.5,.75,1])
+  {
+    const lerp=(a,b)=>a+(b-a)*t;
+    const tweenH=lerp(openH,Math.min(h-20,portrait?700:370));
+    const artY=lerp(portrait?64:42,portrait?116:89);
+    const artH=lerp(portrait?265:194,portrait?246:170);
+    const captionY=lerp(portrait?-132:-100,
+      portrait?(Math.min(h-20,700)<680?-217:-232):-15);
+    const captionH=portrait?45:32;
+    const artTop=artY+artH/2,artBottom=artY-artH/2;
+    const titleTop=captionY+captionH/2;
+    const titleBottom=captionY-captionH/2;
+    assert.ok(artTop<=tweenH/2-7 && artBottom>=titleTop+1 &&
+              titleBottom>=-tweenH/2+14,
+      `${w}x${h}: cinematic transition fraction ${t} clips artwork/title`);
+  }
 
   // A *real* claim reveals the original chest and receipt cards on a denser
   // landscape stage. Day four (two rewards) receives larger individual
