@@ -117,6 +117,9 @@ assert.match(nativeWorkflow,/\$report\.realGatewayClaims -ne 8/);
 assert.match(nativeWorkflow,/\$report\.graphicalPointerHits -ne 56/);
 assert.match(panel,/reward\.CycleDay==7\?DailyTreasureCeremonyTier\.Legendary/);
 assert.match(native,/panel\.ProbePresentationCanvasForNativeEvidence\(\)/);
+assert.match(native,/panel\.ProbeHeroRoomVisibilityForNativeEvidence\(\)/);
+assert.match(native,/"Heroes \/ canonical destination",typeof\(RectTransform\)/);
+assert.match(native,/Closed Heroes room incorrectly blocks daily reward/);
 assert.match(native,/nativeCanvas\.enabled=false/);
 // The native workflow was previously damaged by a duplicated YAML block.
 // Keep this quality gate executable: one render step, one artifact upload
