@@ -1,0 +1,35 @@
+name: Eldoria Pages + Supabase tester telemetry QA (zero Unity)
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths:
+      - 'tools/eldoria-private-beta/pages/**'
+      - '.github/workflows/eldoria-pages-telemetry-tests.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/eldoria-private-beta/pages/**'
+      - '.github/workflows/eldoria-pages-telemetry-tests.yml'
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-pages-supabase-qa-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  qa:
+    name: Validate opt-in event contract, CORS, source binding and privacy
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta/pages
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate exact GitHub Pages QA Edge source without Unity or paid services
+        run: |
+          node --check tools/eldoria-private-beta/pages/edge-function.mjs
+          node --test tools/eldoria-private-beta/pages/*.test.mjs
