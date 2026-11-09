@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T13:46:31.554Z",
+  "updated_at": "2026-11-09T14:03:19Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6686,14 +6686,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 25,
+      "ownership_revision": 26,
       "write_scope_released": false,
-      "phase": "VIGILIA_SINGLE_SURFACE_EXACT_HEAD_UNITY_AB",
-      "next": "Run real Unity 6000.3.23f1 in PR173 at exact head, compare 8 PNGs to 42617442201, review visual layering and release Windows after capture. Do not merge/publish without ART_APPROVED.",
+      "phase": "VIGILIA_ALPHA18_FIRST_SCREEN_NATIVE_PASS_VISUAL_FIDELITY_REWORK_PENDING",
+      "next": "Current exact PR173 native run 42630398578 passed eight screenshots and gameplay; source artwork uses transparent true Bastion preview with 18%-opacity brass frame. The visual gain is limited (~0.35–0.72% pixels vs previous photo); commission a larger authorial SINGLE-SURFACE UI change rather than more decorative microtweaks. Keep draft; do not merge/publish until visual approval.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-09T13:46:31.554Z",
@@ -6760,11 +6758,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "a5e8fa22759733bc04ab8040e8f58cf079740d1e",
-        "native_run": 42617442201,
+        "source_sha": "36f05a596e243c0eb52b20907187a925a9dab87d",
+        "native_run": 42630398578,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13673516185,
+        "artifact": 13680344022,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6772,10 +6770,12 @@
         "safe_preserved": true,
         "art_approved": false,
         "android_tested": false,
-        "webgl_tested": false
+        "webgl_tested": false,
+        "portrait_transparent_bg_fraction": 0.7279,
+        "portrait_opaque_masonry_fraction": 0.2688
       },
-      "runner_released_at": "2026-11-09T12:30:44Z",
-      "runner_release_basis": "Owner PR173 native 8/8 exact-head Unity 6000.3.23f1 success run 42617442201; 6 live pointer clicks, save unchanged, real city/panel screenshots inspected. Released Windows without ART_APPROVED or merge."
+      "runner_released_at": "2026-11-09T14:03:19Z",
+      "runner_release_basis": "Exact PR173 Unity 6000.3.23f1 run 42630398578 completed SUCCESS: eight genuine screenshots, six real clicks, alpha clear 72.8%/opaque real masonry 26.9%, game/save unchanged, only photo rectangle changed. Released Windows; ART_APPROVED remains FALSE."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
