@@ -1208,15 +1208,28 @@ namespace Eldoria.DailyTreasures
                 // but the top-right 100x45 SKIP control owns the upper band.
                 // Put the story heading BELOW that hitbox rather than layering
                 // another ornate button on the same location.
-                float headingWidth=portrait?
-                    Mathf.Min(panelW-36f,280f):Mathf.Min(panelW*.52f,302f);
-                float headingY=portrait?panelH*.29f:panelH*.405f;
+                // Bastion celebrates the ACTUAL built city with a chest in
+                // the center. Its title must stay in the clear LEFT margin:
+                // the old wide gold-framed header literally covered the
+                // coffer's lid (also in portrait). Other authentic scenic
+                // events keep their broad literary top title.
+                bool cityStage=currentStage==DailyTreasureStageKind.Bastion;
+                float headingWidth=cityStage?
+                    (portrait?Mathf.Min(panelW*.52f,192f):
+                     Mathf.Min(210f,panelW*.5f-stage.ChestW*.5f-14f)):
+                    portrait?Mathf.Min(panelW-36f,280f):
+                    Mathf.Min(panelW*.52f,302f);
+                float headingX=cityStage?
+                    -panelW*.5f+10f+headingWidth*.5f:
+                    portrait?0f:stage.SideBySide?stage.SceneX:-panelW*.10f;
+                float headingY=cityStage?panelH*.405f:
+                    portrait?panelH*.29f:panelH*.405f;
                 Place(milestoneBanner,.5f,.5f,.5f,.5f,
-                    portrait?0f:stage.SideBySide?stage.SceneX:-panelW*.10f,
-                    headingY,headingWidth,40f);
+                    headingX,headingY,headingWidth,40f);
                 Place(milestoneRule.rectTransform,.5f,0f,.5f,0f,
                     0f,2f,headingWidth-30f,2f);
-                milestoneBannerCaption.fontSize=portrait?18:19;
+                milestoneBannerCaption.fontSize=cityStage?
+                    (portrait?17:16):portrait?18:19;
             }
             else
             {
