@@ -297,4 +297,13 @@ assert.doesNotMatch(panel,/(?<!UnityEngine\.)Application\.isPlaying/);
 // namespace it resolves to Eldoria.Application rather than UnityEngine.
 assert.match(native,/UnityEngine\.Application\.dataPath/);
 assert.doesNotMatch(native,/(?<!UnityEngine\.)\bApplication\.dataPath/);
+// Real Unity screenshots exposed another independent art/UX defect:
+// the lower resource line on Days 4 and 6 overlapped the bronze border.
+// Assert the responsive fix and its genuine native RectTransform gate.
+assert.match(panel,/bool twoResources=i==3 \|\| i==5/);
+assert.match(panel,/bool compactDouble=twoResources && cellH<=103f/);
+assert.match(panel,/float labelBottom=compactDouble\?20f/);
+assert.match(native,/VerifyCalendarMultipleResourceMargins\(DailyTreasurePanel panel,/);
+assert.match(native,/margin>=4\.5f/);
+assert.match(native,/Actual reward contents/);
 console.log('PASS daily treasures gateway integration source invariants');
