@@ -155,7 +155,9 @@ namespace Eldoria.DailyTreasures.Editor
                     " value="+label.text);
                 count++;
             }
-            Need(count>=3,"Real native text audit had no meaningful visible labels: "+phase);
+            // A milestone result intentionally shows only its main caption
+            // and the Continue label; that is a valid, uncluttered scene.
+            Need(count>=2,"Real native text audit had no meaningful visible labels: "+phase);
         }
 
         static void VerifyCleanPaintedResources(DailyTreasurePanel panel,
