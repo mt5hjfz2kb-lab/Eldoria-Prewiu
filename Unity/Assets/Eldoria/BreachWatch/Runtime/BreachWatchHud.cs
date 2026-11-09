@@ -398,6 +398,25 @@ namespace Eldoria.BreachWatch
             if(graphic)b.targetGraphic=graphic;
             b.onClick.AddListener(()=>click());return b;
         }
+        // The painted sprite is also the visible input state. The invisible
+        // full-size Image remains ONLY the 44px+ raycast surface; it never
+        // displays a separate pressed plate, ring or hover graphic.
+        static void UseSourceArtInteraction(Button button,Graphic paint)
+        {
+            if(!button || !paint)return;
+            var colors=button.colors;
+            colors.normalColor=Color.white;
+            colors.highlightedColor=new Color(1f,.975f,.91f,1f);
+            colors.selectedColor=new Color(1f,.975f,.91f,1f);
+            colors.pressedColor=new Color(.78f,.73f,.67f,1f);
+            // Keep source art fully readable while an authentic action
+            // is blocked; explanation is handled by the input-only hint.
+            colors.disabledColor=Color.white;
+            colors.fadeDuration=.09f;
+            button.colors=colors;
+            button.targetGraphic=paint;
+            button.transition=Selectable.Transition.ColorTint;
+        }
         RectTransform BuildButton(Transform parent,string name,BreachWatchGlyph.Sigil icon,Action action,
             BreachWatchPlate.PlateType kind=BreachWatchPlate.PlateType.Basalt)
         {
@@ -681,6 +700,7 @@ namespace Eldoria.BreachWatch
             closeIcon.sprite=goldenClose;
             closeIcon.preserveAspect=true;
             closeIcon.raycastTarget=false;
+            UseSourceArtInteraction(closeButton,closeIcon);
             // Actual owner-approved burgundy CTA is a COMPLETE 246x60
             // painted motif (including its hammers). Nine-slicing a narrow
             // 147-unit button with 78px left border exaggerated the hammer
@@ -704,6 +724,7 @@ namespace Eldoria.BreachWatch
             actionPlate.type=Image.Type.Simple;
             actionPlate.preserveAspect=true;
             actionPlate.raycastTarget=false;
+            UseSourceArtInteraction(actionButton,actionPlate);
             // A blocked native button retains pointer click feedback but no
             // fake upgrade command. Dynamic label is the ONLY overlay allowed.
             var explanation=actionRect.gameObject.AddComponent<BreachWatchUnavailableActionHint>();
@@ -743,6 +764,7 @@ namespace Eldoria.BreachWatch
                 surface.color=new Color(.97f,.95f,.90f,1f);
                 surface.VisualScale=1f;
                 surface.raycastTarget=false;
+                UseSourceArtInteraction(button,surface);
                 navButtons[i]=button;
                 navPlates[i]=surface;
             }
