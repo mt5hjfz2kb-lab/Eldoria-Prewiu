@@ -15,6 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # This repository is large; the brand source contract needs only these paths.
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Branding.meta
+            Unity/Assets/Eldoria/Branding/
+            tools/eonscar-branding-trial/
+          sparse-checkout-cone-mode: false
+          lfs: false
+          fetch-depth: 1
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
