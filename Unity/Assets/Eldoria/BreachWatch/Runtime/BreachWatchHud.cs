@@ -370,6 +370,7 @@ namespace Eldoria.BreachWatch
             bool display=name=="Player name" || name=="Real building name" ||
                 name=="Compact engraved cost heading" ||
                 name=="Actual chapter" || name=="Actual objective" ||
+                name=="Real navigation caption" ||
                 name=="Real effects" || name=="Real action title" ||
                 name=="Real state and timer";
             Font regular=display?font:bodyFont;
