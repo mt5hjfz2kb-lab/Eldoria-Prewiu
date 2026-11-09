@@ -116,6 +116,43 @@ namespace Eldoria.DailyTreasures.Editor
         static RectTransform FindRect(Component component,string name)
             =>component.GetComponentsInChildren<RectTransform>(true)
                 .Single(x=>x.name==name);
+        static void VerifyCleanPaintedResources(DailyTreasurePanel panel,
+            int earnedCount=0)
+        {
+            var day=panel.GetComponentsInChildren<Image>(true)
+                .Where(x=>x.name=="Premium illustrated reward / no rays")
+                .ToArray();
+            string[] names={
+                "resource_wood_clean_256","resource_stone_clean_256",
+                "resource_hourglass_clean_256","treasure_closed_512",
+                "resource_hourglass_clean_256","resource_food_clean_256",
+                "treasure_closed_512"
+            };
+            Need(day.Length==names.Length,
+                "Missing premium calendar illustration on one or more days");
+            for(int i=0;i<names.Length;i++)
+                Need(day[i].sprite==Resources.Load<Sprite>(
+                         "DailyTreasureArt/"+names[i]) &&
+                     day[i].preserveAspect,
+                    "Calendar fallback displayed a screenshot-derived or clipped "+
+                    "resource icon on day "+(i+1));
+
+            if(earnedCount>0)
+            {
+                var rewards=panel.GetComponentsInChildren<Image>(true)
+                    .Where(x=>x.name=="Real award icon").ToArray();
+                Need(rewards.Length==4,"Original four-card premium tray missing");
+                string[] paidIcons=earnedCount==4?
+                    new[]{"resource_wood_clean_256","resource_stone_clean_256",
+                          "resource_food_clean_256","resource_hourglass_clean_256"}:
+                    new[]{"resource_wood_clean_256","resource_stone_clean_256"};
+                for(int i=0;i<earnedCount;i++)
+                    Need(rewards[i].sprite==Resources.Load<Sprite>(
+                             "DailyTreasureArt/"+paidIcons[i]) &&
+                         rewards[i].preserveAspect,
+                        "Paid reward card used wrong/screenshot-derived icon "+i);
+            }
+        }
 
         static void VerifyGenuineSceneComposition(
             DailyTreasurePanel panel,string eventId,int width,int height)
@@ -290,6 +327,7 @@ namespace Eldoria.DailyTreasures.Editor
                     // component quietly falls back to procedural geometry.
                     Need(panel.HasAuthoredChestArt,
                         "Native panel lost the two commissioned chest poses");
+                    VerifyCleanPaintedResources(panel);
                     var exactClosed=FindRect(panel,
                         "Authored chest / closed").GetComponent<Image>();
                     var exactOpened=FindRect(panel,
@@ -381,6 +419,7 @@ namespace Eldoria.DailyTreasures.Editor
                         FindButton(panel,"Skip animation / keep earned items"),width,height);
                     inputChecks++;
                     Canvas.ForceUpdateCanvases();
+                    VerifyCleanPaintedResources(panel,4);
                     Need(panel.EarnedItemCardCount==4 &&
                          panel.HasRevealedIllustratedEarnedItems,
                         "Day seven must show four ORIGINAL painted resource cards after real claim");
@@ -457,6 +496,7 @@ namespace Eldoria.DailyTreasures.Editor
                         width,height);
                     inputChecks++;
                     Canvas.ForceUpdateCanvases();
+                    VerifyCleanPaintedResources(panel,2);
                     Need(panel.EarnedItemCardCount==2 &&
                          panel.HasRevealedIllustratedEarnedItems,
                         "Day four must show two painted, real paid wood and stone cards");
