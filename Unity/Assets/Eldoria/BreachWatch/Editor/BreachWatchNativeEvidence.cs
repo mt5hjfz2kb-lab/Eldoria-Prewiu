@@ -767,6 +767,15 @@ namespace Eldoria.BreachWatch.Editor
                 // gameplay chapter number and objective stay canonical.
                 var chapterLabel=ui.GetComponentsInChildren<Text>(true)
                     .FirstOrDefault(q=>q && q.name=="Actual chapter");
+                var chapterSigil=ui.GetComponentsInChildren<BreachWatchGlyph>(true)
+                    .FirstOrDefault(q=>q && q.name=="Chapter stone rune");
+                Need(chapterLabel && chapterSigil &&
+                     chapterLabel.gameObject.activeInHierarchy &&
+                     chapterLabel.rectTransform.anchoredPosition.x>=
+                         ((RectTransform)chapterSigil.transform).anchoredPosition.x+
+                         ((RectTransform)chapterSigil.transform).rect.width+1.5f,
+                     "Engraved chapter sigil physically overlaps chapter title in "+
+                     name);
                 if(host.City.Gateway.Snapshot().BastionLevel==1)
                     Need(chapterLabel && chapterLabel.gameObject.activeInHierarchy &&
                          (host.English
