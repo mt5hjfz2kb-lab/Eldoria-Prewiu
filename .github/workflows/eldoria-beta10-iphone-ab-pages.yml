@@ -67,7 +67,8 @@ jobs:
       - name: Checkout the exact reviewed isolated A/B assembler
         uses: actions/checkout@v4
         with:
-          ref: 004d3ef9c26e9070762e9e38ce84d69d525efd4f
+          # Exact frozen transport stage; Unity candidate remains native SHA 004d.
+          ref: f5281e4630de6bdaad70e264bd1549aaf8ee0c6d
           sparse-checkout: tools/eldoria-private-beta/iphone_ab
           sparse-checkout-cone-mode: false
           persist-credentials: false
@@ -100,7 +101,7 @@ jobs:
           assert count>35, 'Original Pages snapshot incomplete'
           print('P0_FROZEN_OLD_BETA10_ROUTES_RESTORED',count)
           PY
-      - name: Run seven preservation tests and fail-closed A/B staging
+      - name: Run ten preservation/streamed-data tests and fail-closed A/B staging
         run: |
           python3 -m unittest discover -s source-tools/tools/eldoria-private-beta/iphone_ab -p 'test_stage_isolated_iphone_preview.py' -v
           python3 - <<'PY'
