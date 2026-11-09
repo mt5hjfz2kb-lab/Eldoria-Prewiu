@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 const root = "Unity/Assets/Eldoria/Branding/EonscarTrial/";
 const runtime = fs.readFileSync(root + "Runtime/EonscarBrandingTrialOverlay.cs", "utf8");
 const editor = fs.readFileSync(root + "Editor/EonscarBrandingTrialEditor.cs", "utf8");
+const worldInput = fs.readFileSync("Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs", "utf8");
 const requireText = (content, value) =>
   assert(content.includes(value), "Required source contract missing: " + value);
 for(const v of [
@@ -19,6 +20,8 @@ for(const forbidden of [
  "BuildPipeline", "PlayerSettings", "Time.timeScale",
  "DestroyAll", "Application.Quit"
 ]) assert(!runtime.includes(forbidden), "Disallowed in opt-in proof: "+forbidden);
+requireText(worldInput,"GetComponentInParent<Selectable>()!=null");
+requireText(worldInput,"IsPointerOverInteractiveUi(point)");
 requireText(editor,'[MenuItem("Eldoria/EONSCAR/Mostrar prueba sobre la partida")]');
 requireText(editor,"if (!EditorApplication.isPlaying)");
 requireText(editor,"EonscarBrandingTrialOverlay.Show()");
