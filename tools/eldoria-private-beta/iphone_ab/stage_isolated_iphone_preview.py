@@ -74,6 +74,16 @@ def check_binary_site(site, expected_rev, expected_source, expected_bundle, requ
                'Candidate must pass exact Unity I-V PlayMode and WebGL tests')
         ensure(identity.get('physical_mobile_tested') is False,
                'This preview does not certify a physical phone')
+        # A beta10 page that redirects to the mutable main route would only
+        # appear to show the candidate. A/B must execute its own binary files.
+        html=(site/'index.html').read_text(encoding='utf-8')
+        script=(site/'play.js').read_text(encoding='utf-8')
+        ensure('http-equiv="refresh"' not in html.lower() and
+               "http-equiv='refresh'" not in html.lower(),
+               'Candidate entry redirects instead of starting the independent player')
+        old_data_root='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/'
+        ensure(old_data_root not in html and old_data_root not in script,
+               'Candidate shell still targets the old stable beta10 binary route')
     manifest=load_json(site/'build-manifest.json')
     for name in ('loader','framework','code','data'):
         file=site/safe_rel(manifest[name])
