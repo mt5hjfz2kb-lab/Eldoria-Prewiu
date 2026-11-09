@@ -1153,10 +1153,16 @@ namespace Eldoria.BreachWatch
                     At(utility,0,i*44f,37,37);
                 }
 
-                float navGap=4f,navSize=130f;
+                // In 844x390 the entire dock must leave real room for
+                // the live Bastion card and continue to show the city.
+                // Preserve 44px+ individual buttons, but reduce only the
+                // SHORT landscape bar, not the premium portrait variant.
+                float navGap=4f,navSize=h<530f?105f:130f;
+                float navHeight=h<530f?72f:80f;
+                float dockHeight=h<530f?81f:90f;
                 float navWidth=22f+visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
-                float navTop=h-97f;
-                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,90f);
+                float navTop=h-dockHeight-7f;
+                At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,dockHeight);
                 int navColumn=0;
                 for(int i=0;i<5;i++)
                 {
@@ -1165,8 +1171,9 @@ namespace Eldoria.BreachWatch
                     if(visible)
                     {
                         At((RectTransform)navButtons[i].transform,
-                            11f+navColumn++*(navSize+navGap),5,navSize,80f);
-                        At(navCaptions[i].rectTransform,5f,57f,navSize-10f,19f);
+                            11f+navColumn++*(navSize+navGap),5,navSize,navHeight);
+                        At(navCaptions[i].rectTransform,5f,
+                            navHeight-24f,navSize-10f,18f);
                         navCaptions[i].fontSize=14;
                     }
                 }
