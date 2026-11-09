@@ -1,0 +1,22 @@
+name: EONSCAR branding trial — isolated source sanity
+on:
+  pull_request:
+    paths:
+      - 'Unity/Assets/Eldoria/Branding/EonscarTrial/**'
+      - 'Unity/Assets/Eldoria/Branding/EonscarTrial.meta'
+      - 'Unity/Assets/Eldoria/Branding.meta'
+      - 'tools/eonscar-branding-trial/**'
+      - '.github/workflows/eonscar-branding-trial-check.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-sanity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify opt-in scope, Unity metadata and no gameplay mutation
+        run: node tools/eonscar-branding-trial/verify.mjs
