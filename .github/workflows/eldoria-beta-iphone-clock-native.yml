@@ -52,7 +52,7 @@ jobs:
         with:
           run-id: 42692715252
           name: beta10-iphone-timer-ab-source-only
-          github-token: \${{ github.token }}
+          github-token: ${{ github.token }}
           path: ab-source-preflight
       - name: Audit all 19 immutable beta10 overlays before Windows can be claimed
         shell: bash
