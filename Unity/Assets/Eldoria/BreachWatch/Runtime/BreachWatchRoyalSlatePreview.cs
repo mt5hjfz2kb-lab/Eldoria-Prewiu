@@ -33,6 +33,55 @@ namespace Eldoria.BreachWatch
             {
                 if(!renderer || renderer.name!="Bastion_I")continue;
                 var materials=renderer.sharedMaterials;
+#if UNITY_EDITOR
+                // Actual mesh and shader survey, not inferred slot numbers from
+                // an obsolete integration script. The first A/B changed three
+                // materials but did not change any roof pixel, so capture
+                // individual submesh positions and material properties.
+                var filter=renderer.GetComponent<MeshFilter>();
+                var mesh=filter?filter.sharedMesh:null;
+                var vertices=mesh && mesh.isReadable?mesh.vertices:null;
+                Debug.Log("VIGILIA_BASTION_SURVEY mesh="+
+                    (mesh?mesh.name:"null")+" slots="+materials.Length+
+                    " submeshes="+(mesh?mesh.subMeshCount:0));
+                for(int idx=0;idx<materials.Length;idx++)
+                {
+                    var material=materials[idx];
+                    if(!material)continue;
+                    string col=material.HasProperty("_BaseColor")
+                        ?material.GetColor("_BaseColor").ToString()
+                        :material.HasProperty("baseColorFactor")
+                            ?material.GetColor("baseColorFactor").ToString()
+                            :material.HasProperty("_Color")
+                                ?material.GetColor("_Color").ToString()
+                                :"unknown";
+                    string tex="";
+                    foreach(var name in material.GetTexturePropertyNames())
+                    {
+                        var texture=material.GetTexture(name);
+                        if(texture){tex=name+":"+texture.name;break;}
+                    }
+                    var bounds=UnityEngine.Bounds.zero;
+                    int triangles=0;
+                    if(vertices!=null && idx<mesh.subMeshCount)
+                    {
+                        var indices=mesh.GetIndices(idx);
+                        triangles=indices.Length/3;
+                        if(indices.Length>0)
+                        {
+                            bounds=new Bounds(vertices[indices[0]],Vector3.zero);
+                            foreach(var n in indices)bounds.Encapsulate(vertices[n]);
+                        }
+                    }
+                    Debug.Log("VIGILIA_MATERIAL_SURVEY slot="+idx+
+                        " shader="+material.shader.name+
+                        " material="+material.name+" color="+col+
+                        " tex="+tex+" triangles="+triangles+
+                        " localY="+bounds.min.y.ToString("F2")+".."+
+                        bounds.max.y.ToString("F2")+
+                        " bounds="+bounds.size.ToString("F2"));
+                }
+#endif
                 if(materials.Length<=10)continue;
                 var next=(Material[])materials.Clone();
                 int altered=0;
