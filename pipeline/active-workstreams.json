@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T16:43:00Z",
+  "updated_at": "2026-11-09T16:47:57.634Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6761,10 +6761,10 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-beta-timer-reconciliation-20261109",
-      "ownership_state": "claimed",
-      "ownership_revision": 19,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 20,
+      "write_scope_released": true,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
       "scope": [
@@ -6791,9 +6791,9 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA_TIMER_NATIVE_PASS_WEBGL_APPLE_GPU_AND_PAGES_IN_PROGRESS",
+      "phase": "MOBILE11_TIMER_WORLD_ANCHORED_DELIVERED_PAGES_WEBKIT_PASS",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Native exact SHA 8dc875430241a49b4d417782dfeab2d4c7a4f315 run 42645633286 SUCCESS, WebGL and evidence uploaded. Exclusive Windows formally released to let other workstreams advance. Continue Ubuntu mobile11 package 42645753309, Apple GPU then protected main Pages 42649427853/42651228320 with legacy unity-owner preservation; verify live release and Safari/WebKit. No claimed owner iPhone device test.",
+      "next": "The owner requested construction countdown fix is implemented in main (PR183 squash c04438152) and published on current owner beta11 Pages. Native PR179 42645633286 PASS; packaging/Apple GPU WebKit 42645753309 PASS; public Pages + live WebKit 42656897252 PASS, identity source 8dc87543. Previous unity-owner route preserved. Physical iPhone certification and PR179's other unrelated changes remain separate; no tester invitation. New beta work may claim this available workstream via CAS.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7060,6 +7060,12 @@
           "phase": "MAIN_UNITY_POSTPROMOTION_COMPILER_REPAIR",
           "transferred_at": "2026-11-09T13:11:04.123Z",
           "reason": "Owner explicitly requests the same scene-attached construction timer fix to reach both canonical main (PR183) and the published beta; lawful takeover of the existing PR179, while retaining all prior beta work. No running PR179 job and no Windows reservation held by PR179 at handoff."
+        },
+        {
+          "owner": "chatgpt-beta-timer-reconciliation-20261109",
+          "revision": 19,
+          "transferred_at": "2026-11-09T16:47:57.634Z",
+          "reason": "Owner-requested construction countdown delivered and native-certified in main PR183 and beta mobile11 owner Pages; release workstream ownership without merging all frozen PR179."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -7128,6 +7134,17 @@
         "source_sha": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
         "status": "success",
         "lease_released_at": "2026-11-09T16:26:16.638Z"
+      },
+      "beta_mobile11_publication": {
+        "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/",
+        "revision": "native325-mobile11-building-anchor",
+        "native_run": 42645633286,
+        "packaging_webkit_run": 42645753309,
+        "pages_public_webkit_run": 42656897252,
+        "public_webkit_artifact_id": 13692442926,
+        "verified_at": "2026-11-09T16:47:57.634Z",
+        "physical_iphone_verified": false,
+        "external_testers_approved": false
       }
     },
     {
