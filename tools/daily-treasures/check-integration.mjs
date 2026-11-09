@@ -382,4 +382,13 @@ assert.match(panel,/labelX,-16f,labelWidth,26f/);
 assert.match(native,/VerifyPremiumDailyComposition\(panel,width,height,true\)/);
 assert.match(native,/VerifyPremiumDailyComposition\(panel,width,height,false\)/);
 assert.match(native,/Original chest overlaps its real-reward title or frame/);
+// A one-wood / two-material ordinary payment must not inherit the huge
+// 740px theatrical frame. Keep the smaller authored inventory receipt in
+// production and require the same geometry in real native screenshots.
+assert.match(panel,/float quietWidth=portrait\?/);
+assert.match(panel,/prizeCount<=1\?336f:410f/);
+assert.match(panel,/prizeCount<=1\?340f:448f/);
+assert.match(panel,/focusedQuiet\?430f:openingChest\?450f:700f/);
+assert.match(native,/VerifyContentSizedQuietReward\(panel,/);
+assert.match(native,/Ordinary paid item occupies giant mostly empty artwork/);
 console.log('PASS daily treasures gateway integration source invariants');
