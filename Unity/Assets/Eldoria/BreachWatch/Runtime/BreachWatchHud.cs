@@ -425,7 +425,7 @@ namespace Eldoria.BreachWatch
             // The entire visible account plate must prevent accidental
             // click-through to the city, without pretending to navigate.
             identitySurface.raycastTarget=true;
-            AddContactShadow(identity,3.5f,.40f);
+            AddContactShadow(identity,1.4f,.18f);
             // The owner-approved compact reference has NO red top banner.
             // Independent round carved crest replaces the obsolete banner.
             identityCrest=Rect("Independent circular realm crest",identity);
@@ -496,7 +496,7 @@ namespace Eldoria.BreachWatch
                 chapterStone.preserveAspect=false;
             }
 
-            AddContactShadow(objective,5f,.45f);
+            AddContactShadow(objective,1.8f,.20f);
             // The chapter's approval reference has a tiny tower crest
             // attached to the tablet. The open-air Breach sigil is separate.
             var objectiveSeal=Glyph(objective,"Chapter stone rune",BreachWatchGlyph.Sigil.Castle);
@@ -570,7 +570,7 @@ namespace Eldoria.BreachWatch
             singleSlate.preserveAspect=false;
             // Passive native input shield prevents clicks leaking through.
             singleSlate.raycastTarget=true;
-            AddContactShadow(panel,8f,.58f);
+            AddContactShadow(panel,2.2f,.21f);
             // Most faithful finish: transparent embossed metal border
             // extracted solely from the exact image the owner approved.
             // Real building data and 3D meshes remain separate.
@@ -582,15 +582,15 @@ namespace Eldoria.BreachWatch
                 // The reference's upper/lower diamonds sit OUTSIDE the
                 // readable tablet. Enlarge only the independently rendered
                 // ornamental ring, never the actual text/button surfaces.
-                ring.offsetMin=new Vector2(-5f,-19f);
-                ring.offsetMax=new Vector2(5f,19f);
+                ring.offsetMin=new Vector2(-1.5f,-5f);
+                ring.offsetMax=new Vector2(1.5f,5f);
                 exactOwnerGoldBorder=ring.gameObject.AddComponent<Image>();
                 exactOwnerGoldBorder.sprite=outlined;
                 // One complete owner-approved border, including top and bottom
                 // diamonds. No second bottom finial overlaid on the old one.
                 exactOwnerGoldBorder.type=Image.Type.Simple;
                 exactOwnerGoldBorder.raycastTarget=false;
-                exactOwnerGoldBorder.color=Color.white;
+                exactOwnerGoldBorder.color=new Color(.96f,.93f,.87f,.88f);
             }
             else
             {
@@ -603,6 +603,11 @@ namespace Eldoria.BreachWatch
             var brassFrame=Plate(portraitFrame,BreachWatchPlate.PlateType.Portrait);
             var premiumBrass=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/brass_portrait");
             if(premiumBrass)brassFrame.ApplyIndependentArt(premiumBrass,true);
+            // The portrait must be a subtle recess of the SAME mineral
+            // cartouche, not a second thick black/bronze plate perched on it.
+            // Keep the original 9-slice ornament and a single live 3D image,
+            // but let the shared mineral body read through the heavy center.
+            brassFrame.color=new Color(.94f,.88f,.79f,.55f);
             var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
             Fill(liveView,5);
             portraitView=liveView.gameObject.AddComponent<RawImage>();
