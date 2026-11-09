@@ -349,4 +349,17 @@ assert.ok(suppressedAt>=0 && throttledAt>suppressedAt &&
           snapshotAt>throttledAt,
     'Story/building screen suppression must precede throttled state polling');
 assert.match(retentionUpdate,/if\(overlay && dailyTreasures\.IsOpen\)dailyTreasures\.Close\(\)/);
+// Native art gates must inspect the actual authored coffer and genuinely
+// credited item frames. A passing geometric smoke test is not ART_APPROVAL.
+assert.match(panel,/bool openingChest=ceremony && ceremony\.gameObject\.activeSelf/);
+assert.match(panel,/bool paidChest=ceremony && ceremony\.gameObject\.activeSelf/);
+assert.match(panel,/openingChest\|\|paidChest\?650f:740f/);
+assert.match(panel,/focusedQuiet\?330f:openingChest\?300f:370f/);
+assert.match(panel,/artHeight=openingChest\?\(portrait\?265f:194f\)/);
+assert.match(panel,/maxPaidCardW=prizeCount<=2\?190f:portrait\?170f:146f/);
+assert.match(panel,/prizeRows==2\?72f:/);
+assert.match(panel,/labelX,-16f,labelWidth,26f/);
+assert.match(native,/VerifyPremiumDailyComposition\(panel,width,height,true\)/);
+assert.match(native,/VerifyPremiumDailyComposition\(panel,width,height,false\)/);
+assert.match(native,/Original chest overlaps its real-reward title or frame/);
 console.log('PASS daily treasures gateway integration source invariants');
