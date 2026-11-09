@@ -50,6 +50,14 @@ def run():
               f"{width}x{height}",f"initial_magnification={zoom_factor:.3f}",
               f"true_model_goal_width={target_width:.2f}")
     assert "PortraitCityFramed" in hud
+    portrait=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchBuildingPortrait.cs").read_text()
+    assert portrait.count("portraitCamera.Render();")==1, (
+        "Premium building diorama must not redraw a fake ground image over genuine 3D meshes")
+    assert "Vigilia / one-shot earth under real building" not in portrait, (
+        "No rectangular synthetic grass stage may reappear behind the real castle")
+    assert "portraitCamera.clearFlags=CameraClearFlags.SolidColor;" in portrait
+    assert "PortraitGeometryClipped" in portrait and "LastGeometryUvBounds" in portrait
+    print("VIGILIA_TRUE_3D_NEUTRAL_DIORAMA_SOURCE_PASS no fake earth, single URP render")
     print("Requires real Unity render: terrain clamps, castle screen bounds and user-visible art")
 
 if __name__=="__main__":
