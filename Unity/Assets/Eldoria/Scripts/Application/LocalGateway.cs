@@ -264,7 +264,9 @@ namespace Eldoria.Application
                     (battleResolver==null || existingMarch.VersionedBattle.RulesVersion!=battleResolver.RulesVersion))
                     throw new InvalidOperationException("The persisted march requires its original combat resolver");
             }
+#if UNITY_6000_0_OR_NEWER || DAILY_TREASURE_FEATURE
             if(state.DailyTreasures==null)state.DailyTreasures=new DailyTreasureState();
+#endif
             if(state.Retention==null)state.Retention=new EarlyRetentionState();
             if(state.Retention.Orders==null)state.Retention.Orders=new System.Collections.Generic.List<ScoutOrder>();
             if(state.Mailbox==null)state.Mailbox=new EldoriaV41Mailbox();
@@ -328,7 +330,9 @@ namespace Eldoria.Application
                 BastionLevel=s.BastionLevel, SawmillLevel=s.SawmillLevel, BarracksLevel=s.BarracksLevel,
                 MissionPower=s.MissionPower, ChapterThree=s.ChapterThree.Copy(),
                 Retention=s.Retention?.Copy()??new EarlyRetentionState(),
+#if UNITY_6000_0_OR_NEWER || DAILY_TREASURE_FEATURE
                 DailyTreasures=s.DailyTreasures?.Copy()??new DailyTreasureState(),
+#endif
                 CorruptionDiscovered=s.CorruptionDiscovered, ScoutDefeated=s.ScoutDefeated,
                 JourneyComplete=s.JourneyComplete, EngendroDefeated=s.EngendroDefeated,
                 Available=s.Available.Copy(), Wounded=s.Wounded.Copy(),
@@ -468,6 +472,7 @@ namespace Eldoria.Application
             if(chapterThreeResult!=null)return chapterThreeResult;
             switch (command.Kind)
             {
+#if UNITY_6000_0_OR_NEWER || DAILY_TREASURE_FEATURE
                 case "ClaimDailyTreasure":
                     {
                         // Award first, then persist an informational mailbox receipt in
@@ -496,6 +501,7 @@ namespace Eldoria.Application
                         });
                         break;
                     }
+#endif
                 case "MailRead":
                     if(state.Mailbox.Messages==null ||
                        !state.Mailbox.Messages.Exists(m=>m!=null&&m.EventId==command.TargetId))
@@ -718,7 +724,12 @@ namespace Eldoria.Application
             EarlyRetentionRules.Synchronize(state,clock.UtcTicks);
             state.CompletedCommandIds.Add(command.Id);
             Commit();
-            return new CommandResult(true, command.Kind=="ClaimDailyTreasure" ? "Tributo recibido" : "Acción iniciada", state.Revision);
+#if UNITY_6000_0_OR_NEWER || DAILY_TREASURE_FEATURE
+            return new CommandResult(true, command.Kind=="ClaimDailyTreasure" ?
+                "Tributo recibido" : "Acción iniciada", state.Revision);
+#else
+            return new CommandResult(true,"Acción iniciada",state.Revision);
+#endif
         }
         private bool MarchTargetActive(string targetId)
         {
