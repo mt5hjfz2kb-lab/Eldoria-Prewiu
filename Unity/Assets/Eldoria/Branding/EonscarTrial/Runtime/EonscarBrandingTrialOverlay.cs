@@ -48,6 +48,14 @@ namespace Eldoria.Branding
             var tint = backdrop.gameObject.AddComponent<Image>();
             tint.color = new Color(.035f, .028f, .075f, .94f);
             tint.raycastTarget = true;
+            // The player's SlicePresenter treats a UI raycast hit as blocking
+            // world selection only when an ancestor is Selectable. A plain
+            // Image is NOT sufficient. This silent button consumes backdrop
+            // taps and drags without executing commands or altering game state.
+            var inputSink = backdrop.gameObject.AddComponent<Button>();
+            inputSink.targetGraphic = tint;
+            inputSink.transition = Selectable.Transition.None;
+            inputSink.navigation = new Navigation { mode = Navigation.Mode.None };
 
             // Keep artwork and CTA within the device safe area, but preserve
             // full-screen input blocking on the background (notch/home gesture).
