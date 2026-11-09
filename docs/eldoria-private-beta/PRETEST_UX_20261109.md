@@ -46,7 +46,13 @@ python tools/eldoria-private-beta/native/ux/test_overlay.py
 
 ## Pending delivery
 
-1. Safe Windows turn: current registry reserves Windows for Forja/Vigilia. PR179 request is already recorded; do not cancel another owner's job or claim the resource merely because the queue is idle.
+1. Owner explicitly confirmed Windows release on 2026-11-09. The registry handoff to PR179 revision 13 is recorded; native validation is running on the isolated beta checkout.
 2. Native compile, complete journey and focused UX probe; inspect screenshots and correct any failures.
 3. New WebGL package, paired browser/memory regression against stable beta9, then owner candidate publication only after passing checks.
 4. User's real-device confirmation. No tester distribution is authorized by this correction request.
+
+## Native investigation, 2026-11-09
+
+- Run 42586848479 compiled the candidate in Unity and passed terrain/topology/route parity. The journey reached the new barracks choices, recruitment and march introduction. It failed when the test clicked the newly activated narrative in the same frame (graphic depth -1); the probe now yields before performing the real raycast. This is not a completed journey certificate.
+- Original source and generated inputs were restored (`restored: true`, no conflicts or input changes).
+- Reviewing the actual level overlay found a separate cause from guidance labels: `PlayerClarityRuntime` throttled projection together with expensive state scans to 0.20 seconds. The candidate now caches target/anchor/camera and reprojects on every frame and final Canvas render, preserving the 5 Hz state scan. Native assertions measure actual city and world label positions across consecutive camera pans. This additional fix is pending native verification.

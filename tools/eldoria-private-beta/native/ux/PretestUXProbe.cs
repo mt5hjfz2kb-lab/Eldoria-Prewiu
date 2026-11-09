@@ -68,6 +68,23 @@ public static class EldoriaPretestUXProbe
   File.WriteAllText(h.City.SaveFile,JsonUtility.ToJson(s));h.City.ReloadForProbe();
  }
  static void Capture(ValoriaIntegratedWorld host,string key){ValoriaIntegrationBuild.Capture(host,"pretest-"+key+"-portrait.png",390,844);ValoriaIntegrationBuild.Capture(host,"pretest-"+key+"-landscape.png",844,390);}
+ static void CheckClarityProjection(ValoriaIntegratedWorld h,bool buildings){
+  var runtime=Object.FindFirstObjectByType<Eldoria.PlayerClarityRuntime>();Need(runtime,"actual level-label runtime exists");
+  var field=typeof(Eldoria.PlayerClarityRuntime).GetField("markers",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance);
+  var markers=(IDictionary)field.GetValue(runtime);int count=0;
+  foreach(DictionaryEntry item in markers){
+   var marker=item.Value;var type=marker.GetType();
+   var rect=(RectTransform)type.GetField("Rect").GetValue(marker);
+   if(!rect||!rect.gameObject.activeInHierarchy||(bool)type.GetField("Building").GetValue(marker)!=buildings)continue;
+   var target=(Transform)type.GetField("Target").GetValue(marker);var camera=(Camera)type.GetField("Camera").GetValue(marker);
+   var expected=camera.WorldToScreenPoint(target.position+(Vector3)type.GetField("AnchorOffset").GetValue(marker));
+   var canvas=rect.GetComponentInParent<Canvas>();
+   if(buildings){expected.y-=32f;expected+=(Vector3)(new Vector2(24,-2)*canvas.scaleFactor);}
+   var actual=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,rect.position);
+   Need(Vector2.Distance(expected,actual)<2f,"level label follows current camera frame: "+item.Key);count++;
+  }
+  Need(count>0,"measured real "+(buildings?"building":"world")+" level labels");
+ }
  static IEnumerator Verify(ValoriaIntegratedWorld h){
   float deadline=Time.realtimeSinceStartup+120;
   while(!h.Ready&&Time.realtimeSinceStartup<deadline)yield return null;
@@ -83,8 +100,16 @@ public static class EldoriaPretestUXProbe
   Seed(h,Fixture(2));yield return new WaitForSecondsRealtime(.7f);h.Hud.Refresh();yield return null;
   var world=nav.Items.Single(i=>i.Section==RoyalSection.World);Click(world.Button);yield return new WaitForSecondsRealtime(.4f);h.Hud.Refresh();
   Need(h.InWorld&&world.Label.text.IndexOf("CIUDAD",StringComparison.OrdinalIgnoreCase)>=0,"same world control becomes city");
+  for(int frame=0;frame<3;frame++){
+   h.WorldNavigation.PanTo(h.WorldNavigation.target+new Vector3(.4f,0,.2f));
+   yield return null;yield return new WaitForEndOfFrame();CheckClarityProjection(h,false);
+  }
   Click(world.Button);yield return new WaitForSecondsRealtime(.4f);h.Hud.Refresh();
   Need(!h.InWorld&&world.Label.text.IndexOf("MUNDO",StringComparison.OrdinalIgnoreCase)>=0,"same city control becomes world");
+  for(int frame=0;frame<3;frame++){
+   h.City.PlayerCamera.transform.position+=new Vector3(.1f,0,.1f);
+   yield return null;yield return new WaitForEndOfFrame();CheckClarityProjection(h,true);
+  }
   h.Select("barracks");yield return new WaitForSecondsRealtime(.5f);
   var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
   Need(h.Selected=="upgrade-barracks"&&!management.IsOpen,"barracks selection offers choice");Capture(h,"barracks-choice");yield return null;

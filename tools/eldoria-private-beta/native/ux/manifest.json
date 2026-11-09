@@ -23,6 +23,12 @@
       "candidate_sha256": "1aefda4b1392fa51ba1eab29e661ae85afca10572cb107fe24181a8f6afce08e"
     },
     {
+      "path": "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
+      "overlay": "PlayerClarityRuntime.cs.txt",
+      "baseline_sha256": "91ee10fbe9b9eff6573ec43c89c9878ea105dfc9300ef53d41ea96611fdc5a27",
+      "candidate_sha256": "19ec2c3cb46563bcb51a23a12000d97f1a66d5fdc9d538f35356d9af14c328ec"
+    },
+    {
       "path": "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
       "overlay": "LocalGateway.cs.txt",
       "baseline_sha256": "3f405f25d87caf770fc39ca566eb5abcd13f5e5496974fa2aef6dfebda7800f0",
