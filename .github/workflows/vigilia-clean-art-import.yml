@@ -1,0 +1,31 @@
+name: Vigilia clean high-resolution art source review
+on:
+  push:
+    branches: [feature/forja-oscura-native-proof-20261107]
+    paths:
+      - 'tools/breach-watch/fresh-art-sources.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            tools/breach-watch
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install --quiet Pillow==12.3.0
+      - name: Validate and inspect brand-new assets without modifying the project
+        run: python tools/breach-watch/inspect_fresh_atlases.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vigilia-clean-atlas-research-${{ github.sha }}
+          path: tools/breach-watch/fresh-art-inbox/**
+          if-no-files-found: error
+          retention-days: 14
