@@ -211,6 +211,17 @@ namespace Eldoria.DailyTreasures
         }
         static Sprite LoadUnifiedResourceEmblem(string fallback)
         {
+            // Cropped historical 128px icons include HUD backdrops and
+            // remnants of numeric labels. Prefer genuine standalone 256px
+            // originals with clean transparent borders in both calendar and
+            // committed-reward cards. Keep all existing images as fallbacks.
+            string clean=(fallback=="resource_wood"?"resource_wood_clean_256":
+                fallback=="resource_stone"?"resource_stone_clean_256":
+                fallback=="resource_food"?"resource_food_clean_256":
+                fallback=="resource_hourglass"?"resource_hourglass_clean_256":null);
+            var painted=clean==null?null:
+                Resources.Load<Sprite>("DailyTreasureArt/"+clean);
+            if(painted)return painted;
             string owner=(fallback=="resource_wood"?"wood":
                 fallback=="resource_stone"?"stone":
                 fallback=="resource_food"?"food":null);
