@@ -843,7 +843,9 @@ namespace Eldoria.BreachWatch.Editor
                 var tabletBottom=RectTransformUtility.WorldToScreenPoint(camera,tabletCorners[0]);
                 var progressBottom=RectTransformUtility.WorldToScreenPoint(camera,progressCorners[0]);
                 Need(progressBottom.y>=tabletBottom.y+3,
-                     "Real objective fraction is hidden by carved quest lower bevel: "+name);
+                     "Real objective fraction is hidden by carved quest lower bevel: "+name+
+                     " progressBottom="+progressBottom.y.ToString("F1")+
+                     " tabletBottom="+tabletBottom.y.ToString("F1"));
                 if (selection=="bastion")
                 {
                     Need(ui.BuildingPanel.gameObject.activeInHierarchy &&

@@ -76,6 +76,13 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         # information starts after its unscaled nine-slice left border.
         chapter_text=R(59,8,missionw-70,20)
         assert chapter_text.x>=59 and chapter_text.x+chapter_text.w<=missionw-11,size
+        # The genuine native 900x1600 view failed with only ~1 pixel of
+        # breathing room underneath '0/1'. Keep ink away from the lower bevel.
+        short_objective=R(59,32,missionw-70,20)
+        progress=R(59,55,missionw-70,20)
+        assert short_objective.y+short_objective.h+2<=progress.y,size
+        assert progress.y+progress.h<= (82 if pw<600 else 78)-3,size
+        assert 87+20<=112-3,size
         place("breach",w*.52-56,74,112,30)
         # Future utility buttons do not draw or intercept pointer events.
         navsize,gap=49,14

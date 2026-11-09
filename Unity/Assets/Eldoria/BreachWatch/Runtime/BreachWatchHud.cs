@@ -1013,10 +1013,13 @@ namespace Eldoria.BreachWatch
                 At(objective,margin,missionTop,missionWidth,
                     fullObjective?112f:missionHeight);
                 At(chapterName.rectTransform,59f,8f,missionWidth-70f,20f);
+                // Preserve three independent readable rows INSIDE the real
+                // engraved plate. The former 15u progress row ended 1u
+                // above the plate bottom on 900x1600, failing real GPU QA.
                 At(chapterObjective.rectTransform,59f,32f,
-                    missionWidth-70f,fullObjective?52f:28f);
+                    missionWidth-70f,fullObjective?51f:20f);
                 At(chapterProgress.rectTransform,59f,
-                    fullObjective?90f:62f,missionWidth-70f,15f);
+                    fullObjective?87f:55f,missionWidth-70f,20f);
                 chapterName.fontSize=12;
                 chapterName.resizeTextForBestFit=true;
                 chapterName.resizeTextMinSize=11;
