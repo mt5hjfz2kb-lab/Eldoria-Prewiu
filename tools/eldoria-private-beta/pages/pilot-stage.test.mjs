@@ -22,6 +22,7 @@ test('Stages only optional pilot, does not alter original Unity HTML',async()=>{
   const pilot=await readFile(join(a.site,'pilot.html'),'utf8');
   assert.ok(pilot.includes('<main>UNITY_CANVAS</main>'));
   assert.ok(pilot.includes('pilot-bootstrap.mjs'));
+  assert.match(pilot,/pilot-bootstrap\.mjs\?v=[a-f0-9]{16}/,'Boot script must bypass stale iOS HTML caches');
   assert.ok(pilot.includes('noindex,nofollow'));
   assert.equal(m.source_sha,SHA);
   assert.equal(m.external_testers_enabled,false);
