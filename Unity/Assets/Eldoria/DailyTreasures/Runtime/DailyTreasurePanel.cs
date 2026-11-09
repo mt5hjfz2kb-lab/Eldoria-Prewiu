@@ -1211,13 +1211,13 @@ namespace Eldoria.DailyTreasures
                     bool compactDouble=twoResources && cellH<=103f;
                     if(tiny)Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,
                         0f,-5f,cellW-6f,24f);
-                    float iconY=compactDouble?3f:tiny?2f:3f;
+                    float iconY=compactDouble?3f:twoResources?4f:tiny?2f:3f;
                     Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,
-                        0f,iconY,48f,compactDouble?28f:tiny?24f:28f);
+                        0f,iconY,48f,compactDouble?23f:tiny?24f:28f);
                     if(dayArtwork[i])Place(dayArtwork[i].rectTransform,
                         .5f,.5f,.5f,.5f,0f,iconY,
                         compactDouble?48f:tiny?51f:58f,
-                        compactDouble?28f:tiny?31f:42f);
+                        compactDouble?23f:tiny?31f:42f);
                     float labelBottom=compactDouble?20f:
                         twoResources?27f:tiny?17f:18.5f;
                     float labelHeight=compactDouble?30f:
@@ -1352,9 +1352,9 @@ namespace Eldoria.DailyTreasures
                 if(tall)
                 {
                     Place(prizeIcons[i].rectTransform,.5f,.5f,.5f,.5f,
-                        0f,cardH*.225f,53f,48f);
+                        0f,cardH*.26f,53f,48f);
                     Place(prizeNames[i].rectTransform,.5f,.5f,.5f,.5f,
-                        0f,-cardH*.12f,cardW-15f,27f);
+                        0f,-cardH*.08f,cardW-15f,24f);
                     Place(prizeAmounts[i].rectTransform,.5f,.5f,.5f,.5f,
                         0f,-cardH*.35f,cardW-15f,28f);
                     prizeNames[i].fontSize=12;
