@@ -1288,7 +1288,7 @@ namespace Eldoria.DailyTreasures
             bool shortPaidLandscape=!portrait && h-20f<365f;
             float chestY=openingChest?(portrait?64f:42f):
                 focusedQuiet?(portrait?64f:35f):
-                prizeCount>0?(portrait?116f:shortPaidLandscape?83f:89f):
+                prizeCount>0?(portrait?116f:shortPaidLandscape?84f:89f):
                 (portrait?105f:87f);
             float artWidth=openingChest?(portrait?330f:330f):
                 prizeCount>0?(portrait?284f:shortPaidLandscape?290f:300f):
@@ -1700,7 +1700,7 @@ namespace Eldoria.DailyTreasures
             }
             bool compactLandscape=!portrait && paidH<365f;
             float y=Mathf.Lerp(portrait?64f:42f,
-                portrait?116f:compactLandscape?83f:89f,t);
+                portrait?116f:compactLandscape?84f:89f,t);
             float artW=Mathf.Lerp(330f,
                 portrait?284f:compactLandscape?290f:300f,t);
             float artH=Mathf.Lerp(portrait?265f:194f,
