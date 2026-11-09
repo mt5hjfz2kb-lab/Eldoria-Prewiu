@@ -593,18 +593,23 @@ namespace Eldoria.UI.RoyalGold.V2
             // The timer must have a live world target. Never fall back to a
             // screen-edge HUD dock when the building leaves the camera.
             var target = FindAnchor(id == "upgrade-barracks" ? "barracks" : id);
-            if (!CanProject(target, camera, safe, true, out projectedRoof))
-                return false;
+            // A building can be partially onscreen even when its roof
+            // projects outside the safe area. Keep the lower silhouette as
+            // a genuine world anchor instead of hiding a visible build site.
+            bool roofVisible = CanProject(target, camera, safe, true, out projectedRoof);
+            bool footVisible = CanProject(target, camera, safe, false, out var bottomEdge);
+            if (!roofVisible && !footVisible) return false;
+            var projectedAnchor = roofVisible ? projectedRoof : bottomEdge;
 
             var bounds = safe.rect;
             float inset = 8f;
             float minX = bounds.xMin + width * .5f + inset;
             float maxX = bounds.xMax - width * .5f - inset;
             if (maxX < minX) return false;
-            float x = Mathf.Clamp(projectedRoof.x, minX, maxX);
+            float x = Mathf.Clamp(projectedAnchor.x, minX, maxX);
             // A small edge adjustment is fine; a detached timer at the side
             // of the display is not. Hide when its building is too far away.
-            if (Mathf.Abs(x - projectedRoof.x) > Mathf.Min(32f, width * .18f))
+            if (Mathf.Abs(x - projectedAnchor.x) > Mathf.Min(32f, width * .18f))
                 return false;
 
             var chronicle = Chronicle;
@@ -640,13 +645,13 @@ namespace Eldoria.UI.RoyalGold.V2
             // roof if free, otherwise directly below the building silhouette.
             // Do not clamp Y onto a HUD edge; that was the observed defect.
             float aboveY = projectedRoof.y + height * .5f + 12f;
-            if (aboveY - height * .5f >= lowerLimit &&
+            if (roofVisible && aboveY - height * .5f >= lowerLimit &&
                 aboveY + height * .5f <= upperLimit)
             {
                 center = new Vector2(x, aboveY);
                 return true;
             }
-            if (CanProject(target, camera, safe, false, out var bottomEdge))
+            if (footVisible)
             {
                 float belowY = bottomEdge.y - height * .5f - 12f;
                 if (belowY - height * .5f >= lowerLimit &&
