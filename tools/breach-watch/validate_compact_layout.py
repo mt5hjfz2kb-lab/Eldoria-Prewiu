@@ -180,7 +180,7 @@ def main():
         'float navTop=h-102f',
         'float ph=303f',
         'At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50)',
-        'float navGap=4f,navSize=h<530f?100f:130f;',
+        'float navGap=4f,navSize=h<530f?98f:130f;',
         'float navTop=h-dockHeight-7f',
         'float pw=h<530f?234f:220f',
         'float ph=Mathf.Min(330,h-174f)',
