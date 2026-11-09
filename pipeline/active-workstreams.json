@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T14:41:32.467Z",
+  "updated_at": "2026-11-09T15:31:48.668Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2859,14 +2859,14 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-v3-building-timer-anchor-20261109",
-      "ownership_state": "claimed",
-      "ownership_revision": 31,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 32,
+      "write_scope_released": true,
       "status": "active",
       "claimed_at": "2026-11-09T12:36:18.720Z",
       "base_main_sha": "0a9e1039436bf396e0cfbd6ebaad3df0967e4051",
-      "branch": "fix/eldoria-construction-timer-anchor-20261109",
+      "branch": "main",
       "pr": 183,
       "owner_instruction": "2026-11-09 owner requests restoring construction timer attachment to its world building on camera pan; preserve compact readable timer and no duplicate selected action, do not touch frozen PR179 or PR173/181 sources.",
       "scope": [
@@ -2882,9 +2882,7 @@
         ".github/workflows/eldoria-construction-timer-native.yml",
         "tools/ui-v3-domain-smoke/native-request.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "dependencies": [
         {
           "workstream": "valoria-master-plan-layered-construction-20261016",
@@ -2892,47 +2890,13 @@
         }
       ],
       "last_verified": {
-        "domain_smoke": {
-          "run_id": 39641171771,
-          "result": "success",
-          "checks": 29
-        },
-        "latest_native_run": {
-          "id": 39651216087,
-          "sha": "6a380fdc704dbf0852ba0e9cc30daeb817fc0882",
-          "status": "FAILED_PLAYMODE",
-          "failed": [
-            "OwnerFreshSaveCompletesIAndIIThroughGuidedHud",
-            "RoyalV3ManagementIntegrationTests.FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave"
-          ]
-        },
-        "native_certification": {
-          "run": 39653618057,
-          "editmode_passed": 26,
-          "playmode_passed": 38,
-          "artifact": 12370981749,
-          "images_independently_reviewed": true
-        },
-        "reconciled_native": {
-          "run": 39654505571,
-          "status": "SUCCESS",
-          "artifact": 12370039251
-        },
-        "main_merge": "284ef398e078021f4eeef42f852730714c0bd48b",
-        "main_ui_gate": {
-          "run": 39655724788,
-          "status": "SUCCESS"
-        },
-        "mobile_pr111": {
-          "head": "108a6346d5b242474c20b2d26c2945559cc9cdcc",
-          "merge": "1631e167df4ad9bbb0bb380311225da295757060",
-          "ui_gate": 40372404380,
-          "editmode": "26/26",
-          "playmode": "63/63",
-          "status": "SOURCE_PASS"
-        }
+        "source_sha": "43f6c83fbe4908f26d31cf2ace90d5c4a1bdd203",
+        "merge_sha": "c04438152ef3bda94d34e69b6d674d5f702a8781",
+        "native_run_id": 42643281298,
+        "unity_playmode": "PASS",
+        "source_blob": "0d9cb29fa9198d8a87011cc554b6247bb63a9e30"
       },
-      "next": "Native Unity lease acquired for PR183. Update native-request.json revision31, launch existing fail-closed timer workflow; inspect exact real PlayMode XML. Restore/release Windows after actual native gate. Then PR179 beta native via fresh lease and deploy.",
+      "next": "Main integrated and native certified. PR179 beta builds/playability are independently pending; no Windows reservation retained.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -3041,10 +3005,16 @@
           "revision": 29,
           "transferred_at": "2026-11-09T12:36:18.720Z",
           "reason": "Owner reports construction timer displaced into side HUD in actual beta; correction is distinct small canonical V3 projection fix, with PR179 beta overlay owned by another workstream."
+        },
+        {
+          "owner": "chatgpt-v3-building-timer-anchor-20261109",
+          "revision": 31,
+          "released_at": "2026-11-09T15:31:48.668Z",
+          "reason": "PR183 real Unity 6000.3.23f1 exact run42643281298 PASS, source c0443815... merged main; transfer exclusive Windows to existing owner PR179 for beta game verification."
         }
       ],
       "runner_lease_note": "Main UI40681527347 success. General main40681527358 is serial on existing runner; keep intact while subsequent PR120 jobs queue.",
-      "phase": "CONSTRUCTION_TIMER_NATIVE_TEST_EXCLUSIVE_LEASE",
+      "phase": "CONSTRUCTION_TIMER_MAIN_MERGED_NATIVE_PASS",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
@@ -6791,7 +6761,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-beta-timer-reconciliation-20261109",
       "ownership_state": "claimed",
-      "ownership_revision": 17,
+      "ownership_revision": 18,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6814,14 +6784,16 @@
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes",
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes.meta"
       ],
-      "resources": [],
-      "claimed_at": "2026-11-09T13:11:04.123Z",
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "claimed_at": "2026-11-09T15:31:48.668Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA_CONSTRUCTION_TIMER_ANCHOR_RECONCILIATION",
+      "phase": "BETA_TIMER_NATIVE_CERTIFICATION_EXCLUSIVE_LEASE",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Port PR183 exact source to frozen PR179 overlay, update SHA256 manifest and native camera-pan probe, certify Unity on rightful Windows handoff, package/regression and update existing owner beta, preserving rollback. Main merge only after exact gate.",
+      "next": "Exact PR179 overlay with same main timer blob; update native UX workflow owner revision18, run focused probe+I-V, WebGL, Apple GPU and Pages publication. Preserve owner beta rollback.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
