@@ -1007,12 +1007,16 @@ namespace Eldoria.BreachWatch.Editor
                          "Gilded nine-slice art does not cover actual action width: "+name);
                     Need(actionText && actionText.gameObject.activeInHierarchy &&
                          actionText.rectTransform.anchoredPosition.x>=
-                           artDrawnLeft+artDrawnWidth*.22f,
+                           artDrawnLeft+artDrawnWidth*.235f,
                          "Real upgrade text intersects the painted source hammers: "+name);
                     Need(actionText.rectTransform.anchoredPosition.x+
                          actionText.rectTransform.rect.width<=
                            artDrawnLeft+artDrawnWidth-3f,
                          "Real upgrade caption escapes the PAINTED burgundy sprite: "+name);
+                    Need(actionText.color.r>=.90f &&
+                         (ui.BuildingAction.interactable || actionArt.color.r<.75f),
+                         "Real nine-slice upgrade CTA has dark illegible text "+
+                         "or a falsely active gold state: "+name);
                     bool fullCaption=w>=800;
                     string expectedCaption=host.English
                         ?(fullCaption?"Upgrade to Bastion II":"Upgrade II")
