@@ -31,6 +31,7 @@ namespace Eldoria.BreachWatch
         // This flag is evaluated in Editor evidence; normal mobile play
         // never performs a synchronous texture readback.
         public bool PortraitGeometryClipped { get; private set; }
+        public Rect LastGeometryUvBounds { get; private set; }
         public void Initialize(RawImage target)
         {
             image = target;
@@ -55,6 +56,7 @@ namespace Eldoria.BreachWatch
             RenderedFromIsolatedRealMeshes=false;
             NonBackgroundPixelFraction=0f;
             PortraitGeometryClipped=false;
+            LastGeometryUvBounds=Rect.zero;
             if(!texture)
             {
                 texture = new RenderTexture(512,320,24,RenderTextureFormat.ARGB32);
@@ -295,6 +297,12 @@ namespace Eldoria.BreachWatch
                         minY=Mathf.Min(minY,py);drawMaxY=Mathf.Max(drawMaxY,py);
                     }
                     NonBackgroundPixelFraction=nonBackground/(float)pixels.Length;
+                    if(nonBackground>0)
+                        LastGeometryUvBounds=new Rect(
+                            minX/(float)texture.width,
+                            minY/(float)texture.height,
+                            (drawMaxX-minX+1)/(float)texture.width,
+                            (drawMaxY-minY+1)/(float)texture.height);
                     // With six physical pixel margins, the clipped geometry
                     // would look damaged inside the owner's ornate gold
                     // picture frame. Reject it instead of presenting it.
