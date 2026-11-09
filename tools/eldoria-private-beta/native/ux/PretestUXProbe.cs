@@ -42,7 +42,7 @@ public static class EldoriaPretestUXProbe
   var run=Verify(host);
   while(true){object current;try{if(!run.MoveNext())break;current=run.Current;}catch(Exception e){File.WriteAllText(Path.Combine(Out,"failure.txt"),e.ToString());SessionState.SetBool(Flag,false);EditorApplication.Exit(1);yield break;}yield return current;}
   try{
-   foreach(var save in Saves)Need(Hash(Path.Combine(Application.persistentDataPath,save))==SessionState.GetString(Flag+save),"canonical save unchanged: "+save);
+   foreach(var save in Saves)Need(Hash(Path.Combine(Application.persistentDataPath,save))==SessionState.GetString(Flag+save,"missing-hash"),"canonical save unchanged: "+save);
    File.WriteAllText(Path.Combine(Out,"checks.txt"),string.Join("\n",checks));
    File.WriteAllText(Path.Combine(Out,"source.txt"),Environment.GetEnvironmentVariable("GITHUB_SHA"));
    File.WriteAllText(Path.Combine(Out,"complete.txt"),"PRETEST_UX_NATIVE_PASS_REQUIRES_VISUAL_REVIEW");
@@ -142,14 +142,14 @@ public static class EldoriaPretestUXProbe
   mature.ChapterProgress.SeenNarrative.AddRange(new[]{"march-preparation","vigilants-introduction","scouts-introduction"});
   Seed(h,mature);yield return new WaitForSecondsRealtime(.7f);
   var retention=h.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();retention.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);yield return new WaitForSecondsRealtime(.7f);
-  Need(retention.IsOpen,"introduced Vigilants opens");Capture(h,"vigilants-static");
+  Need(retention.IsOpen,"introduced Vigilants opens");Capture(h,"vigilants-static");yield return null;Canvas.ForceUpdateCanvases();
   var parallax=Object.FindFirstObjectByType<RoyalGoldV3VigilantsParallax>();Need(parallax,"Vigilants artwork exists");
   var planes=parallax.GetComponentsInChildren<RectTransform>();var positions=planes.Select(p=>p.anchoredPosition).ToArray();
   var scenic=retention.GetComponentsInChildren<MaskableGraphic>().Where(g=>g is RoyalGoldV3LayeredFinish||g is RoyalGoldV3VigilantsParallax).ToArray();
   var meshes=new List<Vector3[]>();
-  foreach(var graphic in scenic){var mesh=new Mesh();graphic.canvasRenderer.GetMesh(mesh);meshes.Add(mesh.vertices);Object.Destroy(mesh);}
+  foreach(var graphic in scenic){var mesh=graphic.canvasRenderer.GetMesh();Need(mesh,"rendered scenic mesh exists");meshes.Add(mesh.vertices);}
   yield return new WaitForSecondsRealtime(2);
-  for(int i=0;i<scenic.Length;i++){var mesh=new Mesh();scenic[i].canvasRenderer.GetMesh(mesh);Need(mesh.vertices.SequenceEqual(meshes[i]),"Vigilants scenic mesh stationary: "+scenic[i].name);Object.Destroy(mesh);}
+  for(int i=0;i<scenic.Length;i++){var mesh=scenic[i].canvasRenderer.GetMesh();Need(mesh&&mesh.vertices.SequenceEqual(meshes[i]),"Vigilants scenic mesh stationary: "+scenic[i].name);}
   for(int i=0;i<planes.Length;i++)Need(Vector2.Distance(positions[i],planes[i].anchoredPosition)<.01f,"Vigilants artwork stationary: "+planes[i].name);
   Need(errors.Count==0,"no Unity errors: "+string.Join(" | ",errors));
  }

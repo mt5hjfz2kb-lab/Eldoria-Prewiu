@@ -68,6 +68,8 @@ function Run-Probe([string]$Mode){
 try {
  New-Item -ItemType Directory -Force (Join-Path $probe 'Editor')|Out-Null
  Copy-Item (Join-Path $Tools 'tools/eldoria-private-beta/native/StructuralStartupProbe.cs') (Join-Path $probe 'Editor/StructuralStartupProbe.cs')
+ # Compile all verification code at the first native phase, not after the long journey.
+ Copy-Item (Join-Path $Tools 'tools/eldoria-private-beta/native/ux/PretestUXProbe.cs') (Join-Path $probe 'Editor/PretestUXProbe.cs')
  # The unchanged frozen baseline was already executed twice with this topology
  # probe and the exact restored input audit. Reuse only its hash-pinned results.
  $previous=Join-Path $env:GITHUB_WORKSPACE 'beta-structural-evidence-42513182378-1/baseline'
@@ -131,6 +133,10 @@ try {
  }
  $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST='0'
  $env:ELDORIA_BAKE_TERRAIN_QUERIES='0'
+ # Keep the canonical journey's editor-input footprint identical to prior proofs.
+ foreach($name in 'PretestUXProbe.cs','PretestUXProbe.cs.meta'){
+  $file=Join-Path $probe ('Editor/'+$name);if(Test-Path $file){Remove-Item $file}
+ }
  Invoke-Native 'Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent' (Join-Path $Evidence 'journey.log') 'Win64'
  $native=Get-Content (Join-Path $proof 'integration-result.json') -Raw|ConvertFrom-Json
  if($native.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){throw 'Exact-source journey certification failed'}
