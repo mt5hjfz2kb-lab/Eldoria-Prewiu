@@ -63,8 +63,10 @@ namespace Eldoria.Branding.Editor
                 Require(importer != null && importer.alphaIsTransparency,
                     "Transparent PNG import settings invalid");
                 string pngSha;
+                string diskPath = Path.GetFullPath(Path.Combine(
+                    UnityEngine.Application.dataPath, "..", assetPath));
                 using (var sha = SHA256.Create())
-                    pngSha = BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(assetPath)))
+                    pngSha = BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(diskPath)))
                         .Replace("-", "").ToLowerInvariant();
                 Require(pngSha == ExpectedSha256, "QA PNG content differs from selected art");
 
