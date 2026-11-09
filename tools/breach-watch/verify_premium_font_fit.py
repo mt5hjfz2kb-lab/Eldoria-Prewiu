@@ -98,7 +98,7 @@ def verify():
     assert "float captionLeft=plate.rect.width*.24f;" in hud
     assert "actionLabel.color=can?new Color(.99f,.95f,.82f,1f):" in hud
     assert "float paintedHeight=Mathf.Max(30f,plate.rect.height-4f);" in hud
-    assert "bool fullUpgradeCaption=lastWidth>=800;" in hud
+    assert 'actionCaption=host.English?"Upgrade to II":"Mejorar a II";' in hud
     # Dynamic nav captions are live Cormorant, inside the same 80u source
     # tile, rather than an extra small medallion and detached text label.
     for text in ("REINO","RECURSOS","EXPLORAR"):
