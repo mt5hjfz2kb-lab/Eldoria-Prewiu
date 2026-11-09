@@ -367,6 +367,29 @@ jobs:
           assert 'VigiliaArt/OwnerReference/lion_crest' in src
           print('BREACHWATCH_OWNER_APPROVED_SMALL_LION_CRESTRUN_IMAGE_PASS')
           PY
+      - name: Verify authentic owner orange/gold Breach source and absence of generic X glyph
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,struct,base64
+          root=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls')
+          proof=json.loads((root/'breach_signal_provenance.json').read_text())
+          source=pathlib.Path('tools/breach-watch/source/owner-rift-separator.webp.b64')
+          assert hashlib.sha256(base64.b64decode(source.read_text().strip(),validate=True)).hexdigest()==proof['source_sha256']
+          assert proof['size']==[198,50] and proof['source_is_not_gameplay']
+          p=root/'breach_signal.png'
+          data=p.read_bytes()
+          assert data[:8]==bytes([137,80,78,71,13,10,26,10])
+          assert struct.unpack('>II',data[16:24])==(198,50)
+          assert hashlib.sha256(data).hexdigest()==proof['png_sha256']
+          meta=(root/'breach_signal.png.meta').read_text()
+          assert 'guid: '+proof['guid'] in meta and 'spriteMode: 1' in meta
+          hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          assert 'VigiliaArt/OwnerControls/breach_signal' in hud
+          assert 'BreachWatchRiftSeparator' not in hud
+          assert not pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchRiftSeparator.cs').exists()
+          print('VIGILIA_SINGLE_AUTHENTIC_OWNER_RIFT_PASS')
+          PY
       - name: Verify exactly one owner-derived gold X and no extra close decorations
         shell: bash
         run: |
