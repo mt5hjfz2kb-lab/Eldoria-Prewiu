@@ -104,3 +104,12 @@ jobs:
           python -m pip install --disable-pip-version-check Pillow==11.3.0
           python tools/daily-treasures/audit_native_art.py --selftest
           python tools/daily-treasures/check_clean_icon_quality.py
+      - name: Render source-only 32-48-64px art contact and verify legibility
+        run: python tools/daily-treasures/mobile_visual_preflight.py
+      - name: Preserve independently inspectable source visual contact
+        uses: actions/upload-artifact@v4
+        with:
+          name: valoria-mobile-source-art-${{ github.sha }}
+          path: tools/daily-treasures/mobile-source-art-contact.jpg
+          retention-days: 14
+          if-no-files-found: error
