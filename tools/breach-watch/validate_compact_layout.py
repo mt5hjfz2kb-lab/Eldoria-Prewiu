@@ -124,7 +124,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert chapter_text.x>=16 and chapter_text.x+chapter_text.w<=214,size
         place("breach",w*.49-17,11,34,34)
         gap=4
-        navsize=100 if h<530 else 130
+        navsize=98 if h<530 else 130
         navheight=72 if h<530 else 80
         dockheight=77 if h<530 else 90
         navw=22+nav_count*navsize+(nav_count-1)*gap
