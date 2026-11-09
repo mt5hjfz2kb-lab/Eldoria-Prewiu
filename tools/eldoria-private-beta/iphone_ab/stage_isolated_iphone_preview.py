@@ -85,15 +85,57 @@ def check_binary_site(site, expected_rev, expected_source, expected_bundle, requ
         ensure(old_data_root not in html and old_data_root not in script,
                'Candidate shell still targets the old stable beta10 binary route')
     manifest=load_json(site/'build-manifest.json')
+    decoded=manifest.get('decoded_parts',{})
+    data_url=manifest['data']
+    data_parts=decoded.get(data_url)
+    # The real beta10/mobile12 Unity WebGL transport NEVER materializes a
+    # 503 MiB .data.unityweb monolith. Its loader assembles 31 separately
+    # gzip-compressed chunks recorded under the exact manifest data URL.
+    # Requiring that nonexistent file rejected a correctly archived game.
     for name in ('loader','framework','code','data'):
         file=site/safe_rel(manifest[name])
-        ensure(file.is_file() and file.stat().st_size>0, 'Missing WebGL '+name+' '+str(file))
-    for _asset, parts in manifest.get('decoded_parts',{}).items():
+        if name=='data' and not file.is_file():
+            ensure(isinstance(data_parts,list) and len(data_parts)>=2,
+                   'Missing WebGL data requires a complete streamed chunk manifest')
+        else:
+            ensure(file.is_file() and file.stat().st_size>0,
+                   'Missing WebGL '+name+' '+str(file))
+    for asset, parts in decoded.items():
+        ensure(isinstance(parts,list) and len(parts)>0,
+               'Empty decoded binary parts: '+asset)
+        total=0
         for item in parts:
             path=site/safe_rel(item['url'])
-            ensure(path.is_file() and path.stat().st_size>0, 'Missing binary part '+str(path))
+            ensure(path.is_file() and path.stat().st_size>0,
+                   'Missing binary part '+str(path))
             if 'sha256' in item:
-                ensure(sha256_file(path)==item['sha256'], 'Corrupt asset '+str(path))
+                ensure(sha256_file(path)==item['sha256'],
+                       'Corrupt compressed asset '+str(path))
+            if 'decoded_sha256' in item:
+                ensure(item.get('encoding')=='gzip',
+                       'Decoded SHA requires a verifiable gzip stream')
+                checksum=hashlib.sha256()
+                size=0
+                with gzip.open(path,'rb') as stream:
+                    for block in iter(lambda:stream.read(1024*1024),b''):
+                        checksum.update(block)
+                        size+=len(block)
+                ensure(size==item['decoded_bytes'] and
+                       checksum.hexdigest()==item['decoded_sha256'],
+                       'Corrupt decoded WebGL binary: '+str(path))
+                total+=size
+            elif 'decoded_bytes' in item:
+                ensure(False,'Decoded bytes without decoded SHA: '+str(path))
+        expected_size=manifest.get('decoded_sizes',{}).get(asset)
+        if expected_size is not None:
+            ensure(total==expected_size,
+                   'Streamed WebGL byte-count mismatch: '+asset)
+    if not (site/safe_rel(data_url)).is_file():
+        ensure(data_parts is not None and
+               all('decoded_sha256' in part for part in data_parts),
+               'No monolithic data: every streamed chunk needs decoded SHA256')
+        ensure(data_url in manifest.get('decoded_sizes',{}),
+               'No monolithic data: decoded total bytes must be recorded')
     return identity
 
 
