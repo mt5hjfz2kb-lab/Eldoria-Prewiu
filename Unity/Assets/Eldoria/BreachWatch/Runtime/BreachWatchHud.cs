@@ -49,7 +49,8 @@ namespace Eldoria.BreachWatch
         BreachWatchCityComposition cityComposition;
         BreachWatchPlate actionPlate;
         Image exactOwnerGoldBorder;
-        BreachWatchNavFiligree navFiligree;
+        Image unifiedDock;
+        readonly Text[] navCaptions=new Text[5];
         readonly BreachWatchPlate[] approvedUtilitySeals = new BreachWatchPlate[3];
         readonly Button[] navButtons = new Button[5];
         readonly BreachWatchPlate[] navPlates = new BreachWatchPlate[5];
@@ -172,17 +173,23 @@ namespace Eldoria.BreachWatch
             identityCrest && identityCrest.GetComponent<BreachWatchPlate>() &&
             identityCrest.GetComponent<BreachWatchPlate>().sprite &&
             identityCrest.GetComponent<BreachWatchPlate>().sprite.name=="lion_crest";
-        public bool UsesOriginalPaintedMedallions =>
+        public bool UsesUnifiedNavigation =>
+            unifiedDock && unifiedDock.sprite &&
+            unifiedDock.sprite.name=="nav_dock" &&
+            unifiedDock.type==Image.Type.Sliced &&
+            !unifiedDock.raycastTarget &&
             navPlates[0] && navPlates[0].sprite &&
-            navPlates[0].sprite.name=="castle";
+            navPlates[0].sprite.name.StartsWith("nav_castle");
         public bool UsesPremiumSculptedMedallions
         {
             get
             {
                 for(int i=0;i<navPlates.Length;i++)
                 {
-                    var requested=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/"+ReferenceNavArt[i]);
-                    if(!requested || !navPlates[i] || navPlates[i].sprite!=requested)
+                    var normal=Resources.Load<Sprite>("VigiliaArt/UnifiedButtons/nav_"+ReferenceNavArt[i]);
+                    var selected=Resources.Load<Sprite>("VigiliaArt/UnifiedButtons/nav_"+ReferenceNavArt[i]+"_active");
+                    if(!normal || !selected || !navPlates[i] ||
+                       (navPlates[i].sprite!=normal && navPlates[i].sprite!=selected))
                         return false;
                 }
                 // Navigation uses five sculpted medallions, while profile
@@ -199,7 +206,8 @@ namespace Eldoria.BreachWatch
                 for(int i=0;i<navPlates.Length;i++)
                     if(!navPlates[i] || !navPlates[i].UsesOwnerReference ||
                        !navPlates[i].sprite ||
-                       navPlates[i].sprite.name!=ReferenceNavArt[i])
+                       !navPlates[i].sprite.name.StartsWith("nav_"+ReferenceNavArt[i]) ||
+                       !navCaptions[i] || navCaptions[i].raycastTarget)
                         return false;
                 return true;
             }
@@ -226,11 +234,10 @@ namespace Eldoria.BreachWatch
             !panel.GetComponent<BreachWatchPanelInk>() &&
             !panel.GetComponent<BreachWatchPlate>() &&
             UsesExactOwnerApprovedGoldBorder;
-        public bool UsesPremiumBurgundyAction =>
+        public bool UsesIntegratedGoldAction =>
             actionPlate && actionPlate.sprite &&
-            actionPlate.sprite.name=="upgrade_button" &&
-            actionPlate.type==Image.Type.Simple &&
-            actionPlate.preserveAspect &&
+            actionPlate.sprite.name=="action_gold" &&
+            actionPlate.type==Image.Type.Sliced &&
             !actionPlate.raycastTarget &&
             actionPlate.transform.parent==actionButton.transform;
         public IReadOnlyList<Button> NavButtons => navButtons;
@@ -714,15 +721,15 @@ namespace Eldoria.BreachWatch
             actionButton=Button(actionRect,SubmitSelectedBuilding);
             actionButton.targetGraphic=actionHit;
             actionButton.transition=Selectable.Transition.None;
-            var originalArt=Resources.Load<Sprite>("VigiliaArt/OwnerControls/upgrade_button");
+            var originalArt=Resources.Load<Sprite>("VigiliaArt/UnifiedButtons/action_gold");
             if(!originalArt)
                 throw new InvalidOperationException(
-                    "Vigilia requires the owner's standalone upgrade image");
-            var actionVisual=Rect("One owner-approved real hammered burgundy image",actionRect);
+                    "Vigilia requires the complete gold upgrade action");
+            var actionVisual=Rect("Unified forged-gold action face",actionRect);
             actionPlate=Plate(actionVisual,BreachWatchPlate.PlateType.Action);
-            actionPlate.ApplyIndependentArt(originalArt);
-            actionPlate.type=Image.Type.Simple;
-            actionPlate.preserveAspect=true;
+            actionPlate.ApplyIndependentArt(originalArt,true);
+            actionPlate.type=Image.Type.Sliced;
+            actionPlate.preserveAspect=false;
             actionPlate.raycastTarget=false;
             UseSourceArtInteraction(actionButton,actionPlate);
             // A blocked native button retains pointer click feedback but no
@@ -732,11 +739,13 @@ namespace Eldoria.BreachWatch
             actionLabel=Label(actionButton.transform,"Real action title",17,
                 TextAnchor.MiddleCenter,TextIvory,true);
             Fill(actionLabel.rectTransform,6);
-            buttonRow=Rect("Five standalone stone navigation emblems",uiRoot);
-            var navLine=Rect("Subtle sculpted copper linkwork / no bottom HUD bar",buttonRow);
-            Fill(navLine);
-            navFiligree=navLine.gameObject.AddComponent<BreachWatchNavFiligree>();
-            navFiligree.raycastTarget=false;
+            buttonRow=Rect("Unified premium bottom navigation dock",uiRoot);
+            unifiedDock=buttonRow.gameObject.AddComponent<Image>();
+            unifiedDock.sprite=Resources.Load<Sprite>("VigiliaArt/UnifiedButtons/nav_dock");
+            if(!unifiedDock.sprite)throw new InvalidOperationException(
+                "Missing complete gold-blue Vigilia navigation dock");
+            unifiedDock.type=Image.Type.Sliced;
+            unifiedDock.raycastTarget=false;
             // Five single-image native controls. Every symbol is drawn
             // exactly once, with an invisible full-size touch surface; the
             // icon's 6-unit transparent inset replaces stacked rings and
@@ -746,7 +755,7 @@ namespace Eldoria.BreachWatch
                 int index=i;
                 string symbol=ReferenceNavArt[i];
                 var painted=Resources.Load<Sprite>(
-                    "VigiliaArt/PremiumMedallions/"+symbol);
+                    "VigiliaArt/UnifiedButtons/nav_"+symbol);
                 if(!painted)
                     throw new InvalidOperationException(
                         "Vigilia requires the approved navigation sprite: "+symbol);
@@ -757,14 +766,18 @@ namespace Eldoria.BreachWatch
                 var button=Button(root,()=>Navigate(index));
                 button.targetGraphic=touch;
                 button.transition=Selectable.Transition.None;
-                var art=Rect("Single owner-approved "+symbol+" relief",root);
-                Fill(art,6f);
+                var art=Rect("Single engraved "+symbol+" button face",root);
+                Fill(art,2f);
                 var surface=Plate(art,BreachWatchPlate.PlateType.Navigation);
                 surface.ApplyIndependentArt(painted);
                 surface.color=new Color(.97f,.95f,.90f,1f);
                 surface.VisualScale=1f;
                 surface.raycastTarget=false;
                 UseSourceArtInteraction(button,surface);
+                var caption=Label(root,"Real navigation caption",14,
+                    TextAnchor.MiddleCenter,TextIvory,true);
+                caption.raycastTarget=false;
+                navCaptions[i]=caption;
                 navButtons[i]=button;
                 navPlates[i]=surface;
             }
