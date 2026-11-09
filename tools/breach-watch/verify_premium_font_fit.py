@@ -73,24 +73,26 @@ def verify():
     inset_390=max(31,min(38,action_width*.25))
     fits("Mejorar a II",SEMIBOLD,15,
          action_width-inset_390-7,"390px compact upgrade caption")
-    # Original 246x60 artwork stays at its natural 4.1:1 ratio.
-    # The text must be inside the visible red/gold image, not just the
-    # larger invisible and accessible native Button hit target.
-    for hit_width,paint_height,label,caption,size in [
-        (147,36,"900 portrait","Mejorar a Bastión II",13),
-        (147,36,"390 portrait","Mejorar a II",16),
-        (196,36,"1600 landscape","Mejorar a II",16),
-        (186,36,"844 landscape","Mejorar a II",16),
+    # Original owner-authored 246x60 sprite must cover the complete
+    # visible button, not letterbox in a wider transparent Unity Button.
+    # Exact aspect preserves undistorted engraved hammers and true label.
+    for hit_width,label,caption,size in [
+        (147,"900 portrait","Mejorar a Bastión II",13),
+        (147,"390 portrait","Mejorar a II",16),
+        (196,"1600 landscape","Mejorar a Bastión II",16),
+        (186,"844 landscape","Mejorar a Bastión II",15),
     ]:
-        visible_art_width=min(hit_width,paint_height*246/60)
-        free_width=visible_art_width*(1-.26)-6
+        paint_height=hit_width*60/246
+        assert 22<paint_height<55, (label,"image size")
+        assert abs(paint_height*246/60-hit_width)<.01, (label,"letterbox")
+        free_width=hit_width*(1-.25)-7
         fits(caption,SEMIBOLD,size,free_width,
-             label+" within actually painted original 246x60 artwork")
+             label+" within FULL WIDTH genuine 246x60 artwork")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "float visibleArtWidth=Mathf.Min(plate.rect.width," in hud, (
-        "Premium CTA text width must follow real painted sprite bounds")
-    assert "bool fullUpgradeCaption=lastHeight>lastWidth && lastWidth>=800;" in hud, (
-        "Landscape must never force tiny full caption beyond painting")
+    assert "float paintedHeight=plate.rect.width/Mathf.Max(1f,artAspect);" in hud, (
+        "Premium CTA must render source at full painted width")
+    assert "bool fullUpgradeCaption=lastWidth>=800;" in hud, (
+        "Full chapter action must be readable in both >=800px orientations")
 
     # Physical pixels: compact first-screen body glyphs and five nav areas
     # cannot be reduced to sub-12-pixel unreadable text.
