@@ -78,6 +78,8 @@ namespace Eldoria.Tests
             a.BastionLevel=2;a.BarracksLevel=1;
             Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.False);
             a.ChapterProgress.MarchConfirmed=true;
+            Assert.That(EarlyRetentionRules.StageUnlocked(a,26),Is.False,
+                "Bastion II cannot access the second chapter");
             Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.False,
                 "A march alone cannot unlock Scouts before Bastion III");
             a.BastionLevel=3;
@@ -86,7 +88,8 @@ namespace Eldoria.Tests
             a.ChapterProgress.SeenNarrative.Add("scouts-introduction");
             Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.True);
             Assert.That(EarlyRetentionRules.StageUnlocked(a,2),Is.True);
-            Assert.That(EarlyRetentionRules.StageUnlocked(a,26),Is.False);
+            Assert.That(EarlyRetentionRules.StageUnlocked(a,26),Is.True,
+                "Bastion III opens the next chapter after the player learns the system");
         }
         [Test] public void TwentyFiveStagesPerChapterHaveAuthoredDistinctScenesAndBoss()
         {
