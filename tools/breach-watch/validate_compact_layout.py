@@ -70,45 +70,48 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             place("resource"+str(i),w-m-resw+i*(chip+4),18 if pw<600 else 17,chip,38 if pw<600 else 28)
             symbolsize=25 if pw<600 else 19
             assert 4+symbolsize+1.5<=symbolsize+8,size
-        missionw=min(211 if pw<600 else 200,w*(.49 if pw<600 else .44))
-        place("mission",m,87 if pw<600 else 82,missionw,82 if pw<600 else 78)
+        missionw=min(211 if pw<600 else 184,w*(.49 if pw<600 else .41))
+        place("mission",m,87 if pw<600 else 82,missionw,69 if pw<600 else 55)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
-        chapter_text=R(54,8,missionw-64,20)
-        assert chapter_text.x>=54 and chapter_text.x+chapter_text.w<=missionw-10,size
-        assert chapter_text.w >= (144.7 if pw<600 else 133.5),size
+        chapter_text=R(54 if pw<600 else 48,6,missionw-(64 if pw<600 else 57),17 if pw<600 else 15)
+        assert chapter_text.x>=48 and chapter_text.x+chapter_text.w<=missionw-8,size
+        assert chapter_text.w >= (144.7 if pw<600 else 122),size
         if pw<600:
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
-        short_objective=R(59,32,missionw-70,20)
-        progress=R(59,55,missionw-70,20)
+        short_objective=R(59 if pw<600 else 48,26 if pw<600 else 22,missionw-(70 if pw<600 else 57),18 if pw<600 else 15)
+        progress=R(59 if pw<600 else 48,47 if pw<600 else 39,missionw-(70 if pw<600 else 57),17 if pw<600 else 13)
         assert short_objective.y+short_objective.h+2<=progress.y,size
-        assert progress.y+progress.h<= (82 if pw<600 else 78)-3,size
+        assert progress.y+progress.h<= (69 if pw<600 else 55)-3,size
         assert 87+20<=112-3,size
+        # Compact source plaque keeps native text within both real bevels.
+        assert missionw/(69 if pw<600 else 55)>=3.0,size
+        assert short_objective.y+short_objective.h<progress.y,size
         place("breach",w*.52-56,74,112,30)
         # Future utility buttons do not draw or intercept pointer events.
-        navsize,gap=49,14
+        navsize,gap=52,16
         navw=nav_count*navsize+(nav_count-1)*gap
-        navtop=h-100
+        navtop=h-111
         for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
         panelw=min(171,w*.42)
-        panely=navtop-303-45
-        context=place("context",w-m-panelw,panely,panelw,303)
+        panely=navtop-280-34
+        context=place("context",w-m-panelw,panely,panelw,280)
         touch("close",R(context.x+panelw-55,context.y+3,50,50))
-        header=R(18,7,panelw-80,28)
-        level=R(18,36,panelw-80,17)
+        header=R(18,7,panelw-80,26)
+        level=R(18,31,panelw-80,17)
         assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=panelw-55-3.5,size
         assert level.x+level.w<=panelw-55-3.5,size
-        touch("action",R(context.x+12,context.y+303-53,panelw-24,50))
-        info=R(13,140,panelw-26,42)
-        costlabel=R(13,191,panelw-26,15)
-        costdata=R(13,208,panelw-26,24)
-        state=R(13,232,panelw-26,18)
-        action=R(12,250,panelw-24,50)
+        touch("action",R(context.x+12,context.y+280-53,panelw-24,50))
+        info=R(13,125,panelw-26,35)
+        costlabel=R(13,170,panelw-26,16)
+        costdata=R(13,187,panelw-26,23)
+        state=R(13,211,panelw-26,14)
+        action=R(12,227,panelw-24,50)
         assert not info.intersects(costlabel),size
         assert not costlabel.intersects(costdata),size
         assert not costdata.intersects(state),size
@@ -176,9 +179,9 @@ def main():
     expected=[
         'Mathf.Clamp(pixelWidth/514f,.91f,3.00f)',
         'At(identity,margin,smallPhone?11f:14f,182,identityHeight)',
-        'float navSize=49,navGap=14',
-        'float navTop=h-100f',
-        'float ph=303f',
+        'float navSize=52,navGap=16',
+        'float navTop=h-111f',
+        'float ph=280f',
         'At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50)',
         'float navSize=55,navGap=15',
         'float navTop=h-78',
@@ -191,14 +194,14 @@ def main():
         'resourceChips[i].gameObject.SetActive(i<visibleResources);',
         'utility.gameObject.SetActive(false);',
         'lastNavigationMask=navigationMask;',
-        'At(chapterName.rectTransform,54f,8f,',
-        'chapterName.fontSize=smallPhone?13:12;',
+        'At(chapterName.rectTransform,smallPhone?54f:48f,',
+        'chapterName.fontSize=smallPhone?13:11;',
         'chapterName.resizeTextMinSize=smallPhone?13:11;',
         'chapterName.fontSize=14;',
-        'At(buildingName.rectTransform,18,7,pw-80,28);',
+        'At(buildingName.rectTransform,18,7,pw-80,26);',
         'At(buildingName.rectTransform,18,8,pw-80,31);',
         'At(identityPower.rectTransform,59,38,165,17);',
-        'At(buildingLevel.rectTransform,18,36,pw-80,17);',
+        'At(buildingLevel.rectTransform,18,31,pw-80,17);',
         'At(buildingLevel.rectTransform,18,40,pw-80,17);'
     ]
     for pattern in expected:
