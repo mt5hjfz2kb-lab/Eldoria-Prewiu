@@ -887,24 +887,29 @@ namespace Eldoria.BreachWatch
                 // unblocked river and city. Internal live text is rearranged
                 // instead of baking it into an image.
                 float pw=Mathf.Min(171f,w*.42f);
-                float ph=293f;
+                float ph=303f;
                 float left=w-margin-pw;
                 float top=navTop-ph-45;
                 At(panel,left,top,pw,ph);
                 At(buildingName.rectTransform,51,7,pw-106,28);
                 At(buildingLevel.rectTransform,51,34,pw-106,19);
                 At(((RectTransform)closeButton.transform),pw-55,3,50,50);
-                At(portraitFrame,11,55,pw-22,76);
-                At(buildingFunction.rectTransform,13,133,pw-26,39);
+                // This 90-unit live portrait well is at ~1.9:1 aspect
+                // rather than the prior 2.4:1 slit. Together with the
+                // separately rendered 1.6:1 texture, its center crop fits
+                // all original Bastion parapets and gate without stretching
+                // the real 3D mesh or enlarging the panel's width.
+                At(portraitFrame,11,55,pw-22,90);
+                At(buildingFunction.rectTransform,13,147,pw-26,34);
                 descriptionDivider.gameObject.SetActive(true);
-                At(descriptionDivider,14,170,pw-28,8);
-                At(costHeader.rectTransform,13,177,pw-26,16);
-                At(buildingCosts.rectTransform,13,195,pw-26,24);
-                At(costIcons[0].rectTransform,14,195,23,23);
-                At(costQuantities[0].rectTransform,41,195,43,24);
-                At(costIcons[1].rectTransform,90,195,23,23);
-                At(costQuantities[1].rectTransform,116,195,pw-129,24);
-                At(buildingState.rectTransform,13,220,pw-26,17);
+                At(descriptionDivider,14,183,pw-28,8);
+                At(costHeader.rectTransform,13,191,pw-26,15);
+                At(buildingCosts.rectTransform,13,208,pw-26,24);
+                At(costIcons[0].rectTransform,14,208,23,23);
+                At(costQuantities[0].rectTransform,41,208,43,24);
+                At(costIcons[1].rectTransform,90,208,23,23);
+                At(costQuantities[1].rectTransform,116,208,pw-129,24);
+                At(buildingState.rectTransform,13,233,pw-26,16);
                 At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50);
                 buildingName.fontSize=19;
                 buildingLevel.fontSize=14;
