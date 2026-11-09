@@ -4,7 +4,7 @@ import {randomUUID,createHmac} from 'node:crypto';
 import {Script} from 'node:vm';
 import worker from './worker.mjs';
 import {OBSERVER_JS} from './observer-source.mjs';
-const RELEASE='native325-fb1292b3d9ce';
+const RELEASE='native325-mobile11-building-anchor';
 const id=randomUUID();
 const secret='ONLY_FOR_TESTS_123456789012345678901234567890';
 const bytes=Buffer.from('v1:'+id+':'+(Math.floor(Date.now()/1000)+3600));
