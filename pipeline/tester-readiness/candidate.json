@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "Owner physically confirmed recovered beta10 can play on iPhone. Minimal and optimized world-anchored timer source A/B pass static QA, but native Unity and iPhone physical proof are pending. Live beta10 remains unchanged with lateral clock; tester rollout NO-GO until corrected candidate and stability/licensing gates.",
+  "reason": "Owner has expressly asked to begin Bastion I–V player testing once the anchored clock and physical-device P0 are resolved. Beta10 is currently playable on owner's iPhone but lacks attached timer and >=30min stability proof; isolated minimal-clock candidate remains source-tested only while Windows Unity lease belongs to Tesoros. Keep NO-GO until actual native/WebGL/iOS/Android QA, rights and consent complete.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -74,8 +74,7 @@
     "P0 issue #96: physical iPhone 30-minute session on restored beta10 or corrected immutable side candidate; root cause of mobile11 unexpected restart not proven",
     "UNPUBLISHED native-markers WebGL candidate must pass hosted browser tests with opt-in/opt-out and actual in-game signal receipt before promotion",
     "Physical Android Chrome 30-minute session and persistence test",
-    "Third-party asset license distribution review (#171)",
-    "Explicit owner GO decision for external tester invitations"
+    "Third-party asset license distribution review (#171)"
   ],
   "telemetry": {
     "project": "Eldoria Playtest Feedback",
@@ -89,7 +88,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-09T20:42:19.723Z",
+  "updated_at": "2026-11-09T22:39:43.071Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -283,5 +282,14 @@
     "physical_iphone_30min_pass": false,
     "tester_invitations_allowed": false,
     "note": "Minimal only changes clock rendering versus immutable beta10, other 18 overlays identical. Source/model tests pass; PlayMode and iPhone physical quality unverified. Existing beta10 is frozen."
+  },
+  "tester_owner_intent": {
+    "explicitly_requested": true,
+    "quoted_request": "Quiero arreglar lo del cronómetro y empezar con los test de jugadores de una vez por todas",
+    "followup_authorization": "Puedes seguir hasta tenerlo por favor!?",
+    "phase": "Bastion I–V",
+    "scale": "Start 2–3 pilot participants, then 15–20 once technical/physical and licence gates pass",
+    "authorization_is_not_a_quality_or_licence_certificate": true,
+    "no_need_to_reask_whether_user_wants_testers": true
   }
 }
