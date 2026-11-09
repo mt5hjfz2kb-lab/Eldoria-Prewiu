@@ -56,6 +56,9 @@ def verify():
          "844px approved single-line chapter readable at 14pt")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
     assert "At(chapterName.rectTransform,smallPhone?54f:59f,8f," in hud
+    # This exact accepted Chapter I inscription is measured to fit at 13/14,
+    # so it must NOT be silently shrunk by Unity legacy BestFit on small RT.
+    assert "chapterName.resizeTextForBestFit=!chapterOne;" in hud
     assert "chapterName.resizeTextMinSize=smallPhone?13:11;" in hud
     assert "chapterName.resizeTextMaxSize=smallPhone?13:12;" in hud
     assert 13*.91>=11.75, "390px title must meet real physical font minimum"
