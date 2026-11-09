@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T18:46:49.970Z",
+  "updated_at": "2026-11-09T19:06:55Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,14 +6665,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 27,
+      "ownership_revision": 28,
       "write_scope_released": false,
-      "phase": "VIGILIA_NATIVE_EXACT_HEAD_BREACHWATCH_UNIFIED_ART_QA",
-      "next": "Execute Unity 6000.3.23f1 existing .github/workflows/breach-watch-native.yml on exact current PR173 HEAD; download genuine 8 PNG and report, inspect live overlay canvas census, compare vs source reference, fix art defects, repeat, then release Windows; no merge or publishing until actual art/game QA.",
+      "phase": "VIGILIA_PREMIUM_BUTTON_FAMILY_EIGHT_NATIVE_PASS_OWNER_ART_REVIEW",
+      "next": "Candidate proven in Unity first-screen; show owner genuine 8 PNG + before/after against chosen V4 buttons; keep PR173 DRAFT unmerged and production unchanged until explicit art approval. Source SHA cdcb604a49fa39f7ec7fb5ac558b6f2387e3a768, run 42679974131. Resolve shared registry merge drift on a fresh main snapshot before any future merge.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-09T16:43:00Z",
@@ -6739,11 +6737,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "36f05a596e243c0eb52b20907187a925a9dab87d",
-        "native_run": 42630398578,
+        "source_sha": "cdcb604a49fa39f7ec7fb5ac558b6f2387e3a768",
+        "native_run": 42679974131,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13680344022,
+        "artifact": 13701364339,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6753,10 +6751,15 @@
         "android_tested": false,
         "webgl_tested": false,
         "portrait_transparent_bg_fraction": 0.7279,
-        "portrait_opaque_masonry_fraction": 0.2688
+        "portrait_opaque_masonry_fraction": 0.2688,
+        "active_foreign_screen_space_canvases": 0,
+        "save_unchanged": true,
+        "original_icon_medallions_removed": true,
+        "coherent_dock_integrated": true,
+        "gold_action_one_line": true
       },
-      "runner_released_at": "2026-11-09T14:03:19Z",
-      "runner_release_basis": "Exact PR173 Unity 6000.3.23f1 run 42630398578 completed SUCCESS: eight genuine screenshots, six real clicks, alpha clear 72.8%/opaque real masonry 26.9%, game/save unchanged, only photo rectangle changed. Released Windows; ART_APPROVED remains FALSE."
+      "runner_released_at": "2026-11-09T19:06:55Z",
+      "runner_release_basis": "Unity native run 42679974131 success on exact PR173 HEAD cdcb604a49fa39f7ec7fb5ac558b6f2387e3a768; all eight PNG SHA verified against JSON, six actual navigation clicks, no legacy HUD, actual player save unchanged. No ART_APPROVED and no release. Windows resource given back."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
