@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "Owner physically confirms recovered beta10 can enter and play. The previous beta11 caused unexpected document reboot; underlying regression is not fixed. Remain BLOCKED for external testers until >=30-minute iPhone session, corrected-world-timer A/B, Android QA, and other release gates.",
+  "reason": "Owner physically confirmed recovered beta10 can play on iPhone. Minimal and optimized world-anchored timer source A/B pass static QA, but native Unity and iPhone physical proof are pending. Live beta10 remains unchanged with lateral clock; tester rollout NO-GO until corrected candidate and stability/licensing gates.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -89,7 +89,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-09T20:05:46.653Z",
+  "updated_at": "2026-11-09T20:42:19.723Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -257,5 +257,31 @@
     "mac_browser_tested": false,
     "physical_iphone_30min_verified": false,
     "physical_android_30min_verified": false
+  },
+  "clock_hotfix": {
+    "state": "SOURCE_AND_HARNESS_READY_NO_NATIVE_OR_IPHONE_CANDIDATE_PROOF",
+    "baseline": "native325-mobile10-pretest-ux",
+    "baseline_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+    "baseline_owner_iphone_entry_play_confirmed": true,
+    "variants": [
+      "beta10-control",
+      "beta10-minimal-anchor",
+      "anchored-gc0"
+    ],
+    "minimal_source_commit": "e445a712b16f0bfc8196bdcb734492e780ef082c",
+    "minimal_source_blob": "144b1d6becec3055aac6a69cce07007cad1849a6",
+    "optimized_source_blob": "031595af0f1ca5f44dc18d58183b3143e8c53676",
+    "source_test_run": 42694705258,
+    "source_test_result": "PASS",
+    "prior_ab_artifact_run": 42692715252,
+    "prior_ab_artifact_id": 13708151225,
+    "native_workflow": ".github/workflows/eldoria-beta-iphone-clock-native.yml",
+    "native_preflight_run": 42694209982,
+    "native_preflight_result": "PASS_WITH_WINDOWS_SKIPPED_BY_LEASE",
+    "native_unity_pass": false,
+    "candidate_webgl_published": false,
+    "physical_iphone_30min_pass": false,
+    "tester_invitations_allowed": false,
+    "note": "Minimal only changes clock rendering versus immutable beta10, other 18 overlays identical. Source/model tests pass; PlayMode and iPhone physical quality unverified. Existing beta10 is frozen."
   }
 }
