@@ -73,15 +73,15 @@ def check(size:tuple[int,int]):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
         panelw=min(171,w*.42)
-        panely=navtop-293-45
-        context=place("context",w-m-panelw,panely,panelw,293)
+        panely=navtop-303-45
+        context=place("context",w-m-panelw,panely,panelw,303)
         touch("close",R(context.x+panelw-55,context.y+3,50,50))
-        touch("action",R(context.x+12,context.y+293-53,panelw-24,50))
-        info=R(13,133,panelw-26,39)
-        costlabel=R(13,174,panelw-26,18)
-        costdata=R(13,195,panelw-26,24)
-        state=R(13,220,panelw-26,17)
-        action=R(12,240,panelw-24,50)
+        touch("action",R(context.x+12,context.y+303-53,panelw-24,50))
+        info=R(13,147,panelw-26,34)
+        costlabel=R(13,191,panelw-26,15)
+        costdata=R(13,208,panelw-26,24)
+        state=R(13,233,panelw-26,16)
+        action=R(12,250,panelw-24,50)
         assert not info.intersects(costlabel),size
         assert not costlabel.intersects(costdata),size
         assert not costdata.intersects(state),size
@@ -141,7 +141,7 @@ def main():
         'At(identity,margin,11,182,55)',
         'float navSize=49,navGap=14',
         'float navTop=h-100f',
-        'float ph=293f',
+        'float ph=303f',
         'At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50)',
         'float navSize=55,navGap=15',
         'float navTop=h-78',
