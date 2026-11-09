@@ -36,6 +36,9 @@ $overlays=@(
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs',
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
 )
+ . (Join-Path $Tools 'tools/eldoria-private-beta/native/ux/overlay.ps1')
+$overlays=@($overlays)+@($uxFiles|ForEach-Object {$_.path})
+$overlays=@($overlays|Sort-Object -Unique)
 $paths=@($overlays)+@($audit.files|ForEach-Object {$_.path})
 # Unity populates URP runtime resource lists during WebGL compilation. Preserve
 # these tracked inputs before any phase, just like ProjectSettings; do not
@@ -91,7 +94,7 @@ try {
   if(-not(Test-Path $file)){$conflicts+=$record.path;continue}
   $current=(Get-FileHash $file -Algorithm SHA256).Hash
   if($record.overlay){
-   $candidate=(Get-FileHash (Join-Path $Tools $record.path) -Algorithm SHA256).Hash
+   $candidate=(Get-FileHash (Get-UxCandidate $record.path) -Algorithm SHA256).Hash
    if($current -ne $candidate -and $current -ne $record.sha256){$conflicts+=$record.path;continue}
   }
   if($current -ne $record.sha256){Copy-Item $record.backup $file -Force}

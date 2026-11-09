@@ -24,7 +24,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: beta-tools
-          sparse-checkout: tools/eldoria-private-beta/native
+          sparse-checkout: |
+            tools/eldoria-private-beta/native
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings
           persist-credentials: false
       - name: Parse PowerShell without starting Unity
         shell: pwsh
@@ -37,6 +42,12 @@ jobs:
       - name: Test isolated and reviewed input validation
         shell: pwsh
         run: ./beta-tools/tools/eldoria-private-beta/native/test_input_audit.ps1
+      - name: Verify frozen UX source transaction and domain behaviour
+        shell: bash
+        run: |
+          python beta-tools/tools/eldoria-private-beta/native/ux/test_overlay.py
+          python beta-tools/tools/eldoria-private-beta/native/ux/apply_overlay.py --source beta-tools --existing-only
+          pwsh -NoProfile -File beta-tools/tools/eldoria-private-beta/native/ux/test_domain.ps1 -Source beta-tools
       - name: Check current ownership without occupying Windows
         id: lease
         env:

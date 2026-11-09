@@ -20,6 +20,7 @@ $overlays=@(
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs',
  'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
 )
+. (Join-Path $Tools 'tools/eldoria-private-beta/native/ux/overlay.ps1')
 New-Item -ItemType Directory -Force $Evidence|Out-Null
 if((git -C $Source rev-parse HEAD).Trim() -ne $baseline){throw 'Wrong frozen source'}
 if(@(git -C $Source status --porcelain).Count){throw 'Isolated source is not clean'}
@@ -90,6 +91,7 @@ try {
   Copy-Item $from $to -Force
   $hashes+=@{path=$path;baseline=$before;candidate=(Get-FileHash $to -Algorithm SHA256).Hash}
  }
+ Install-UxOverlay
  [IO.File]::WriteAllText((Join-Path $Evidence 'source-overlay.json'),(@{base=$baseline;overlay_commit=$env:GITHUB_SHA;files=$hashes}|ConvertTo-Json -Depth 8),$utf8)
  Run-Probe 'bake'
  $queryHash=(Get-FileHash $queryAsset -Algorithm SHA256).Hash
@@ -132,6 +134,10 @@ try {
  Invoke-Native 'Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent' (Join-Path $Evidence 'journey.log') 'Win64'
  $native=Get-Content (Join-Path $proof 'integration-result.json') -Raw|ConvertFrom-Json
  if($native.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){throw 'Exact-source journey certification failed'}
+ Copy-Item (Join-Path $Tools 'tools/eldoria-private-beta/native/ux/PretestUXProbe.cs') (Join-Path $probe 'Editor/PretestUXProbe.cs')
+ $env:ELDORIA_UX_OUT=Join-Path $Evidence 'pretest-ux'
+ Invoke-Native 'EldoriaPretestUXProbe.Run' (Join-Path $Evidence 'pretest-ux.log') 'Win64'
+ if(-not(Test-Path (Join-Path $env:ELDORIA_UX_OUT 'complete.txt'))){throw 'Pretester UX native proof incomplete'}
  Copy-Item $proof (Join-Path $Evidence 'native-journey') -Recurse
  # Probe is Editor-only, outside Assets/Eldoria, and is not shipped in the player.
  if((Get-FileHash $queryAsset -Algorithm SHA256).Hash -ne $queryHash){throw 'Terrain tape changed after journey'}

@@ -1,0 +1,125 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using Eldoria.Domain;
+using Eldoria.ReferenceClean;
+using Eldoria.ReferenceClean.Editor;
+using Eldoria.UI.RoyalGold;
+using Eldoria.UI.RoyalGold.V2;
+using Object=UnityEngine.Object;
+
+[InitializeOnLoad]
+public static class EldoriaPretestUXProbe
+{
+ const string Flag="Eldoria.PretestUX.Active";
+ static bool started;
+ static readonly List<string> checks=new List<string>();
+ static readonly List<string> errors=new List<string>();
+ static string Out=>Environment.GetEnvironmentVariable("ELDORIA_UX_OUT");
+ static readonly string[] Saves={"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"};
+ static EldoriaPretestUXProbe(){EditorApplication.update+=Tick;Application.logMessageReceived+=Log;}
+ static void Log(string message,string stack,LogType type){if(SessionState.GetBool(Flag,false)&&(type==LogType.Exception||type==LogType.Error))errors.Add(message+"\n"+stack);}
+ static string Hash(string path){if(!File.Exists(path))return "absent";using(var stream=File.OpenRead(path))using(var sha=SHA256.Create())return BitConverter.ToString(sha.ComputeHash(stream));}
+ static void Need(bool yes,string message){if(!yes)throw new InvalidOperationException(message);checks.Add(message);}
+ public static void Run(){
+  Directory.CreateDirectory(Out);
+  foreach(var save in Saves)SessionState.SetString(Flag+save,Hash(Path.Combine(Application.persistentDataPath,save)));
+  Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
+  EditorSceneManager.OpenScene("Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",OpenSceneMode.Single);
+  SessionState.SetBool(Flag,true);EditorApplication.EnterPlaymode();
+ }
+ static void Tick(){if(!SessionState.GetBool(Flag,false)||!EditorApplication.isPlaying||started)return;var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();if(!host)return;started=true;host.StartCoroutine(Guard(host));}
+ static IEnumerator Guard(ValoriaIntegratedWorld host){
+  var run=Verify(host);
+  while(true){object current;try{if(!run.MoveNext())break;current=run.Current;}catch(Exception e){File.WriteAllText(Path.Combine(Out,"failure.txt"),e.ToString());SessionState.SetBool(Flag,false);EditorApplication.Exit(1);yield break;}yield return current;}
+  foreach(var save in Saves)Need(Hash(Path.Combine(Application.persistentDataPath,save))==SessionState.GetString(Flag+save),"canonical save unchanged: "+save);
+  File.WriteAllText(Path.Combine(Out,"checks.txt"),string.Join("\n",checks));
+  File.WriteAllText(Path.Combine(Out,"source.txt"),Environment.GetEnvironmentVariable("GITHUB_SHA"));
+  File.WriteAllText(Path.Combine(Out,"complete.txt"),"PRETEST_UX_NATIVE_PASS_REQUIRES_VISUAL_REVIEW");
+  SessionState.SetBool(Flag,false);EditorApplication.Exit(0);
+ }
+ static void Click(Button button){
+  Need(button&&button.gameObject.activeInHierarchy&&button.IsInteractable(),"visible enabled button: "+(button?button.name:"absent"));
+  var rt=(RectTransform)button.transform;var canvas=button.GetComponentInParent<Canvas>();
+  var camera=canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera;
+  var point=RectTransformUtility.WorldToScreenPoint(camera,rt.TransformPoint(rt.rect.center));
+  var pointer=new PointerEventData(EventSystem.current){position=point};var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(pointer,hits);
+  Need(hits.Count>0&&hits[0].gameObject.GetComponentInParent<Button>()==button,"button is actual top raycast: "+button.name);
+  ExecuteEvents.Execute(button.gameObject,pointer,ExecuteEvents.pointerClickHandler);
+ }
+ static PlayerState Fixture(int level){
+  var s=new PlayerState{PlayerName="Prueba Valoria",BastionLevel=level,SawmillLevel=level>1?1:0,BarracksLevel=level>1?1:0};
+  s.Resources.Wood=5000;s.Resources.Stone=5000;s.Resources.Food=5000;
+  s.ChapterProgress.SeenNarrative.AddRange(new[]{"start","world","mark","barracks","secured","frontier-open","fissure-closed","consolidate-valoria","productive-valoria","extraction-oddity"});return s;
+ }
+ static void Seed(ValoriaIntegratedWorld h,PlayerState s){
+  Need(h.City.Probe&&Path.GetFullPath(h.City.SaveFile).StartsWith(Path.GetFullPath(Path.GetTempPath()),StringComparison.OrdinalIgnoreCase),"fixture restricted to disposable probe save");
+  File.WriteAllText(h.City.SaveFile,JsonUtility.ToJson(s));h.City.ReloadForProbe();
+ }
+ static void Capture(ValoriaIntegratedWorld host,string key){ValoriaIntegrationBuild.Capture(host,"pretest-"+key+"-portrait.png",390,844);ValoriaIntegrationBuild.Capture(host,"pretest-"+key+"-landscape.png",844,390);}
+ static IEnumerator Verify(ValoriaIntegratedWorld h){
+  float deadline=Time.realtimeSinceStartup+120;
+  while(!h.Ready&&Time.realtimeSinceStartup<deadline)yield return null;
+  Need(h.Ready&&h.City.Probe,"isolated ready probe");
+  ValoriaIntegrationBuild.CompleteProbePlayerName(h);
+  Seed(h,Fixture(1));yield return new WaitForSecondsRealtime(.7f);
+  for(int page=0;page<20&&h.Hud.NarrativeOpen;page++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}
+  h.Hud.SelectBuilding("");h.Hud.Refresh();yield return null;
+  var nav=h.Hud.Navigation;
+  Need(nav.Items.Where(i=>i.Button.gameObject.activeSelf).All(i=>i.Section==RoyalSection.Mailbox),"new player has mail and no premature bottom destinations");
+  Click(nav.Items.Single(i=>i.Section==RoyalSection.Mailbox).Button);yield return new WaitForSecondsRealtime(.3f);
+  var mailbox=h.Hud.GetComponent<RoyalGoldV41MailboxScreen>();Need(mailbox.IsOpen,"HUD opens actual mailbox");Capture(h,"mail");mailbox.Close();
+  Seed(h,Fixture(2));yield return new WaitForSecondsRealtime(.7f);h.Hud.Refresh();yield return null;
+  var world=nav.Items.Single(i=>i.Section==RoyalSection.World);Click(world.Button);yield return new WaitForSecondsRealtime(.4f);h.Hud.Refresh();
+  Need(h.InWorld&&world.Label.text.IndexOf("CIUDAD",StringComparison.OrdinalIgnoreCase)>=0,"same world control becomes city");
+  Click(world.Button);yield return new WaitForSecondsRealtime(.4f);h.Hud.Refresh();
+  Need(!h.InWorld&&world.Label.text.IndexOf("MUNDO",StringComparison.OrdinalIgnoreCase)>=0,"same city control becomes world");
+  h.Select("barracks");yield return new WaitForSecondsRealtime(.5f);
+  var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+  Need(h.Selected=="upgrade-barracks"&&!management.IsOpen,"barracks selection offers choice");Capture(h,"barracks-choice");
+  Click(GameObject.Find("Barracks / enter training")?.GetComponent<Button>());yield return new WaitForSecondsRealtime(.4f);
+  Need(management.IsOpen&&management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.Training,"training choice opens training");
+  Need(GameObject.Find("Switch destination")==null&&GameObject.Find("Open canonical heroes")==null,"training hides unexplained march and locked heroes");Capture(h,"training-initial");
+  management.Close();h.Hud.SelectBuilding("");h.Select("sawmill");yield return new WaitForSecondsRealtime(.4f);
+  Click(h.Hud.GetComponent<RoyalGoldV2Hud>().VisibleBuildingButton);yield return new WaitForSecondsRealtime(.4f);
+  Need(h.City.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"visible upgrade starts paid work");Capture(h,"compact-selected-timer");h.Hud.SelectBuilding("");yield return new WaitForSecondsRealtime(.4f);Capture(h,"compact-timer");
+  var timers=h.Hud.GetComponentsInChildren<CanvasGroup>(true).Where(g=>g.name.StartsWith("V3 / real-time operation / ")&&g.alpha>.5f).Select(g=>(RectTransform)g.transform).ToArray();
+  Need(timers.Length>0,"at least one live timer measured");
+  var prior=timers.Select(r=>r.anchoredPosition).ToArray();
+  h.City.PlayerCamera.transform.position+=new Vector3(2,0,1);yield return null;yield return new WaitForEndOfFrame();
+  for(int i=0;i<timers.Length;i++)Need(Vector2.Distance(prior[i],timers[i].anchoredPosition)<.1f,"timer stays at fixed HUD position: "+timers[i].name);
+  int labels=0;
+  foreach(var label in Object.FindObjectsByType<BuildingLabel>(FindObjectsSortMode.None)){
+   if(!label.Target||!label.PlayerCamera||!label.Select.gameObject.activeInHierarchy)continue;
+   var expected=label.PlayerCamera.WorldToScreenPoint(label.Target.position+label.WorldOffset);
+   var canvas=label.Layer.GetComponentInParent<Canvas>();
+   var actual=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,label.transform.position);
+   Need(Vector2.Distance(expected,actual)<2f,"label tracks target after camera movement: "+label.name);labels++;
+  }
+  Need(labels>0,"tested visible target labels");
+  h.Hud.SelectBuilding("");yield return new WaitForSecondsRealtime(.3f);
+  var hud=h.Hud.GetComponent<RoyalGoldV2Hud>();Click(hud.VisibleChapterButton);yield return new WaitForSecondsRealtime(.3f);
+  Need(h.Hud.Mission.ListExpanded,"missions expand actual checklist");Capture(h,"missions-open");
+  var close=GameObject.Find("Close chapter overlay")?.GetComponent<Button>();Need(close.GetComponentsInChildren<RoyalIconGraphic>().Any(x=>x.Icon==11),"mission close has actual X geometry");Click(close);
+  Need(!h.Hud.Mission.ListExpanded,"mission close collapses checklist");
+  var mature=Fixture(3);mature.EngendroDefeated=true;mature.ChapterProgress.MarchConfirmed=true;mature.ChapterProgress.TrainedArchers=20;
+  mature.ChapterProgress.SeenNarrative.AddRange(new[]{"march-preparation","vigilants-introduction","scouts-introduction"});
+  Seed(h,mature);yield return new WaitForSecondsRealtime(.7f);
+  var retention=h.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();retention.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);yield return new WaitForSecondsRealtime(.7f);
+  Need(retention.IsOpen,"introduced Vigilants opens");Capture(h,"vigilants-static");
+  var parallax=Object.FindFirstObjectByType<RoyalGoldV3VigilantsParallax>();Need(parallax,"Vigilants artwork exists");
+  var planes=parallax.GetComponentsInChildren<RectTransform>();var positions=planes.Select(p=>p.anchoredPosition).ToArray();yield return new WaitForSecondsRealtime(2);
+  for(int i=0;i<planes.Length;i++)Need(Vector2.Distance(positions[i],planes[i].anchoredPosition)<.01f,"Vigilants artwork stationary: "+planes[i].name);
+  Need(errors.Count==0,"no Unity errors: "+string.Join(" | ",errors));
+ }
+}
+#endif
