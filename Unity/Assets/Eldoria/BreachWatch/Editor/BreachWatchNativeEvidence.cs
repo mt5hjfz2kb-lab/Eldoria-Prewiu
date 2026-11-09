@@ -466,16 +466,22 @@ namespace Eldoria.BreachWatch.Editor
                         q.name=="Chapter side tablet" ||
                         q.name=="Independent selected-building cartouche"))
                     .ToArray();
-                // The old 8-unit / 58%-opaque contact shadow made the
-                // actual reference-derived frame look like a plate hovering
-                // on TOP of another. Assert subtle physical contact instead.
-                Need(depthLayers.Length==3 &&
-                     depthLayers.All(q=>q.effectColor.a>=.15f &&
-                         q.effectColor.a<=.24f &&
-                         q.effectDistance.y>=-2.5f &&
-                         q.effectDistance.y<0f),
-                     "Detached heavy contact shadow reappeared beneath "+
-                     "Vigilia artwork: "+name);
+                // The source PNGs have their own sculpted contours and
+                // shadows. A second uGUI shadow detached every plaque from
+                // the world (even a 1.4u shadow reintroduces the doubled rim).
+                Need(depthLayers.Length==0,
+                     "Extra uGUI contact shadows double the original "+
+                     "painted relief and leave the HUD floating: "+name);
+                var profilePlate=ui.GetComponentsInChildren<RectTransform>(true)
+                    .FirstOrDefault(x=>x && x.name=="Identity / basalt crest");
+                var profileLion=ui.GetComponentsInChildren<RectTransform>(true)
+                    .FirstOrDefault(x=>x && x.name=="Independent circular realm crest");
+                Need(profilePlate && profileLion &&
+                     profileLion.rect.width<=profilePlate.rect.height-4f &&
+                     profileLion.anchoredPosition.x>=3f &&
+                     profileLion.anchoredPosition.y<=-1f,
+                     "Realm crest hangs outside the owner profile plaque "+
+                     "and looks like a second attached badge: "+name);
                 var contour=ui.BuildingPanel.GetComponentsInChildren<Image>(true)
                     .Where(i=>i && i.sprite &&
                         i.sprite.name=="owner_gold_border").ToArray();
@@ -500,9 +506,19 @@ namespace Eldoria.BreachWatch.Editor
                     .Where(i=>i && i.sprite && i.sprite.name=="brass_portrait").ToArray();
                 Need(brassWells.Length==1 &&
                      brassWells[0].type==Image.Type.Sliced &&
-                     brassWells[0].color.a>=.14f && brassWells[0].color.a<=.22f,
-                     "The live 3D Bastion preview is surrounded by "+
-                     "a second high-opacity engraved picture frame: "+name);
+                     !brassWells[0].enabled && !brassWells[0].raycastTarget,
+                     "Second opaque rectangular card is STILL being painted "+
+                     "behind the transparent real 3D Bastion: "+name);
+                var palette=ui.GetComponentsInChildren<Graphic>(true)
+                    .Where(x=>x && x.sprite is not null).ToArray();
+                Need(palette.Any(x=>x.sprite.name=="panel_fill" &&
+                         x.color.r>=.95f && x.color.g>=.93f) &&
+                     palette.Any(x=>x.sprite.name=="profile_bar" &&
+                         x.color.r>=.95f && x.color.g>=.93f) &&
+                     palette.Count(x=>x.sprite.name=="resource_capsule" &&
+                         x.color.r>=.95f && x.color.g>=.93f)>=2,
+                     "Player, resources and cartouche no longer share "+
+                     "the same warm material treatment: "+name);
                 Need(ui.HasPremiumResourceSurfaces,
                     "All three live resources must use real independent clean slate nine-slice capsules, not overlapping procedural frames");
                 Need(ui.HasOwnerApprovedUtilityArtwork,
