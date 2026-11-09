@@ -811,3 +811,51 @@ jobs:
             ${{ runner.temp }}/breachwatch-native.log
           if-no-files-found: warn
           retention-days: 21
+
+  genuine-visual-ab:
+    needs: [native]
+    if: needs.native.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/breach-watch/**
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch current exact-head Unity evidence, not old screenshots
+        uses: actions/download-artifact@v4
+        with:
+          name: breachwatch-first-native-${{ github.sha }}-${{ github.run_id }}
+          path: current-native
+      - name: Fetch last actual Unity reference candidate by pinned run and name
+        uses: actions/download-artifact@v4
+        with:
+          name: breachwatch-first-native-36f05a596e243c0eb52b20907187a925a9dab87d-42630398578
+          run-id: 42630398578
+          github-token: ${{ github.token }}
+          path: baseline-native
+      - name: Verify all 16 native PNG digests and create phone-readable JPG review
+        shell: bash
+        run: |
+          python3 -m pip install --disable-pip-version-check --quiet Pillow==12.3.0
+          python3 tools/breach-watch/prepare_native_art_review.py \
+            baseline-native current-native review-output \
+            --baseline-sha 36f05a596e243c0eb52b20907187a925a9dab87d \
+            --candidate-sha "${GITHUB_SHA}"
+      - name: Upload real Unity A/B images and diagnostics (not artistic approval)
+        uses: actions/upload-artifact@v4
+        with:
+          name: vigilia-real-unity-ab-${{ github.sha }}-${{ github.run_id }}
+          path: |
+            review-output/vigilia_native_art_ab.jpg
+            review-output/vigilia_native_art_diff.json
+            review-output/vigilia_review_manifest.json
+          retention-days: 21
