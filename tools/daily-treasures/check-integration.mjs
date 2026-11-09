@@ -244,4 +244,12 @@ for(const entryMethod of ['void OpenEntryOrDeferredMilestone()',
     'Canonical Lyra room must block every path into optional treasury: '+
     entryMethod);
 }
+// Narratives can start after opening a daily calendar or a premium reveal.
+// Suppressing must immediately hide the optional panel, stop Foley and
+// preserve the paid wallet; the real native probe tests both sequences.
+assert.match(panel,/if\(suppressed && IsOpen\)/);
+assert.match(panel,/if\(originalSfx && originalSfx\.isPlaying\)originalSfx\.Stop\(\)/);
+assert.match(native,/panel\.Suppressed=true/);
+assert.match(native,/Tutorial overlay did not interrupt the premium coffer/);
+assert.match(native,/beforeInterrupt\.Resources\.Wood==afterInterrupt\.Resources\.Wood/);
 console.log('PASS daily treasures gateway integration source invariants');
