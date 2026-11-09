@@ -349,7 +349,7 @@ def analyze(folder,expected_sha,output):
             "Missing original Unity ordinary-day PNG: "+filename)
         data=file.read_bytes()
         assert_quality(len(data)>7000 and len(data)==record.get("bytes") and
-            data.startswith(b"\\x89PNG\\r\\n\\x1a\\n") and
+            data.startswith(b"\x89PNG\r\n\x1a\n") and
             hashlib.sha256(data).hexdigest()==record.get("sha256"),
             "Corrupted or altered ordinary-day Unity PNG: "+filename)
         with Image.open(file) as image:
