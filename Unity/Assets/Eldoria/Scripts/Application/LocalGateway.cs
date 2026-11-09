@@ -1124,7 +1124,7 @@ namespace Eldoria.Application
             bool handles=command.Kind=="ChooseDevelopment"||command.Kind=="InvestigateFissure"||command.Kind=="ContactLyra"||command.Kind=="UpgradeBuilding"||
                 (command.Kind=="Build"&&(id=="granary"||id=="stoneworks"))||((command.Kind=="Fight"||command.Kind=="Gather")&&IsChapterThreeTarget(id));
             if(!handles)return null;
-            if(state.BastionLevel<3)return Fail("Requiere Bastión III");
+            if(state.BastionLevel<3 && !(state.BastionLevel==2&&command.Kind=="UpgradeBuilding"&&(id=="sawmill"||id=="barracks")))return Fail("Requiere Bastión III");
             switch(command.Kind) {
                 case "ChooseDevelopment":
                     if(state.BastionLevel<4||!string.IsNullOrEmpty(c.DevelopmentPriority))return Fail("Prioridad no disponible");
@@ -1211,9 +1211,28 @@ namespace Eldoria.Application
             if(c.AshStalkerRespawnUtcTicks>0&&clock.UtcTicks>=c.AshStalkerRespawnUtcTicks){c.AshStalkerRespawnUtcTicks=0;c.AshStalkerGeneration++;changed=true;}
             return changed;
         }
+        bool CompleteEarlyInfrastructure()
+        {
+            var c=state.ChapterThree;
+            if(state.BastionLevel!=2||c==null||state.BuildingCompletesUtcTicks<=0||state.BuildingCompletesUtcTicks>clock.UtcTicks)return false;
+            string task=state.BuildingTaskId??"";
+            bool sawmill=task.StartsWith("c3:sawmill:",StringComparison.Ordinal);
+            bool barracks=task.StartsWith("c3:barracks:",StringComparison.Ordinal);
+            if(!sawmill&&!barracks)return false;
+            if(!state.CompletedTaskIds.Contains(task))
+            {
+                state.CompletedTaskIds.Add(task);
+                int oldLevel=c.PendingBuildingLevel-1;
+                state.MissionPower+=(barracks?110+oldLevel*30-190:90+oldLevel*25-170);
+                if(sawmill)state.SawmillLevel=c.PendingBuildingLevel;
+                else state.BarracksLevel=c.PendingBuildingLevel;
+            }
+            c.PendingBuildingLevel=0;state.BuildingCompletesUtcTicks=0;state.BuildingTaskId="";
+            return true;
+        }
         bool AdvanceChapterThree()
         {
-            if(state.BastionLevel<3)return false;
+            if(state.BastionLevel<3)return CompleteEarlyInfrastructure();
             var c=state.ChapterThree;bool changed=false;
             // One 48h entitlement for the entire offline period. A building upgrade
             // must not restart the clock and silently credit another 48 hours.
@@ -1320,7 +1339,7 @@ namespace Eldoria.Application
         public bool AcknowledgeNarrative(string beat)
         {
             if (beat!="start" && beat!="world" && beat!="mark" &&
-                beat!="barracks" && beat!="secured" && beat!="frontier-open" && beat!="fissure-closed" && beat!="consolidate-valoria" && beat!="productive-valoria" && beat!="extraction-oddity") return false;
+                beat!="march-preparation" && beat!="vigilants-introduction" && beat!="scouts-introduction" && beat!="barracks" && beat!="secured" && beat!="frontier-open" && beat!="fissure-closed" && beat!="consolidate-valoria" && beat!="productive-valoria" && beat!="extraction-oddity") return false;
             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
             if (state.ChapterProgress.SeenNarrative == null)
                 state.ChapterProgress.SeenNarrative = new System.Collections.Generic.List<string>();
