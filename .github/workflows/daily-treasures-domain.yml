@@ -9,6 +9,7 @@ on:
       - "tools/daily-treasures/**"
       - ".github/workflows/daily-treasures-domain.yml"
       - ".github/workflows/daily-treasures-native.yml"
+      - "Unity/Packages/manifest.json"
   push:
     branches:
       - feature/eldoria-daily-treasures-20261108
@@ -26,6 +27,7 @@ jobs:
           lfs: false
           sparse-checkout-cone-mode: false
           sparse-checkout: |
+            /Unity/Packages/manifest.json
             /Unity/Assets/Eldoria/Scripts/Domain/
             /Unity/Assets/Eldoria/Scripts/Application/
             /Unity/Assets/Eldoria/DailyTreasures/
@@ -45,6 +47,8 @@ jobs:
           dotnet-version: |
             8.0.x
             10.0.x
+      - name: Verify built-in Unity Audio module required by actual chest audio
+        run: node tools/daily-treasures/check-audio-module.mjs
       - name: Compile and test original C# reward rules (no Unity mocks)
         run: dotnet run --project tools/daily-treasures/Tests.csproj --configuration Release
       - name: Compile and test the real authoritative LocalGateway (no Unity)
