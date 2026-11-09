@@ -325,6 +325,52 @@ namespace Eldoria.DailyTreasures.Editor
             }
         }
 
+        static void VerifyContentSizedQuietReward(
+            DailyTreasurePanel panel,int count,int width,int height)
+        {
+            // Days 1,2,3,5,6 MUST feel like a real premium inventory
+            // confirmation, not a single 175px icon lost inside a 740px
+            // ornate modal with mostly empty stone.
+            Need(count==1 || count==2,"Only true ordinary receipt layouts");
+            bool portrait=height>width;
+            float expectedWidth=Mathf.Min(width-24f,portrait?
+                (count==1?336f:410f):(count==1?340f:448f));
+            float expectedHeight=Mathf.Min(height-20f,portrait?430f:330f);
+            var main=FindRect(panel,
+                "Basalt and worn bronze reward parchment");
+            Need(Mathf.Abs(main.rect.width-expectedWidth)<=1.1f &&
+                 Mathf.Abs(main.rect.height-expectedHeight)<=1.1f &&
+                 main.rect.width<=448f,
+                "Ordinary paid item occupies giant mostly empty artwork");
+            var shelf=FindRect(panel,
+                "Actually earned inventory reveal / no payout");
+            Need(shelf.gameObject.activeInHierarchy &&
+                 shelf.rect.width>=expectedWidth-35f &&
+                 shelf.rect.width<=expectedWidth-33f,
+                "Centered paid-item shelf does not match its small card frame");
+            var cards=panel.GetComponentsInChildren<RectTransform>(true)
+                .Where(t=>t.name.StartsWith("Earned item ",
+                    StringComparison.Ordinal))
+                .OrderBy(t=>t.name,StringComparer.Ordinal).ToArray();
+            float maxRight=float.NegativeInfinity;
+            float minLeft=float.PositiveInfinity;
+            for(int i=0;i<count;i++)
+            {
+                var item=cards[i];
+                Need(item.gameObject.activeInHierarchy &&
+                     item.rect.height>=(portrait?129f:115f)-1f &&
+                     item.rect.width>=150f &&
+                     item.rect.width<=175.5f,
+                    "A genuine quiet reward became miniature or was clipped");
+                minLeft=Mathf.Min(minLeft,
+                    item.anchoredPosition.x-item.rect.width*.5f);
+                maxRight=Mathf.Max(maxRight,
+                    item.anchoredPosition.x+item.rect.width*.5f);
+            }
+            Need(Mathf.Abs(minLeft+maxRight)<1.1f,
+                "Ordinary illustrated items are not centered in their receipt");
+        }
+
         static void VerifyEarnedItemReadability(DailyTreasurePanel panel,int count)
         {
             // The first genuine Unity screenshots rendered four almost-empty
@@ -1166,6 +1212,8 @@ namespace Eldoria.DailyTreasures.Editor
                             "Ordinary day "+quietDay+
                             " failed to show actual immediate illustrated item cards");
                         VerifyEarnedItemReadability(panel,descriptors.Length);
+                        VerifyContentSizedQuietReward(panel,
+                            descriptors.Length,width,height);
                         VerifyCriticalTypography(panel,
                             "quiet reward day "+quietDay);
                         quietPictures.Add(Render(camera,rt,quietOutput,width,height,
