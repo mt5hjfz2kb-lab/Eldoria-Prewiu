@@ -1087,38 +1087,40 @@ namespace Eldoria.BreachWatch
                 // occupies roughly one third of width and leaves more
                 // unblocked river and city. Internal live text is rearranged
                 // instead of baking it into an image.
+                // Source-faithful owner cartouche: less dead header height,
+                // more world visible and one sculpted material, not stacked cards.
                 float pw=Mathf.Min(171f,w*.42f);
-                float ph=303f;
+                float ph=280f;
                 float left=w-margin-pw;
-                float top=navTop-ph-45;
+                float top=navTop-ph-34;
                 At(panel,left,top,pw,ph);
-                At(buildingName.rectTransform,18,7,pw-80,28);
-                At(buildingLevel.rectTransform,18,36,pw-80,17);
+                At(buildingName.rectTransform,18,7,pw-80,26);
+                At(buildingLevel.rectTransform,18,31,pw-80,17);
                 At(((RectTransform)closeButton.transform),pw-55,3,50,50);
                 // This 90-unit live portrait well is at ~1.9:1 aspect
                 // rather than the prior 2.4:1 slit. Together with the
                 // separately rendered 1.6:1 texture, its center crop fits
                 // all original Bastion parapets and gate without stretching
                 // the real 3D mesh or enlarging the panel's width.
-                At(portraitFrame,11,55,pw-22,83);
-                At(buildingFunction.rectTransform,13,140,pw-26,42);
+                At(portraitFrame,11,47,pw-22,75);
+                At(buildingFunction.rectTransform,13,125,pw-26,35);
                 descriptionDivider.gameObject.SetActive(true);
-                At(descriptionDivider,14,183,pw-28,8);
-                At(costHeader.rectTransform,13,191,pw-26,15);
-                At(buildingCosts.rectTransform,13,208,pw-26,24);
-                At(costIcons[0].rectTransform,14,208,23,23);
-                At(costQuantities[0].rectTransform,41,208,43,24);
-                At(costIcons[1].rectTransform,90,208,23,23);
-                At(costQuantities[1].rectTransform,116,208,pw-129,24);
-                At(buildingState.rectTransform,13,232,pw-26,18);
+                At(descriptionDivider,14,161,pw-28,8);
+                At(costHeader.rectTransform,13,170,pw-26,16);
+                At(buildingCosts.rectTransform,13,187,pw-26,23);
+                At(costIcons[0].rectTransform,14,188,21,21);
+                At(costQuantities[0].rectTransform,39,188,42,22);
+                At(costIcons[1].rectTransform,89,188,21,21);
+                At(costQuantities[1].rectTransform,113,188,pw-125,22);
+                At(buildingState.rectTransform,13,214,pw-26,18);
                 At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50);
-                buildingName.fontSize=19;
-                buildingLevel.fontSize=14;
-                buildingFunction.fontSize=15;
-                buildingCosts.fontSize=14;
-                buildingState.fontSize=14;
-                costHeader.fontSize=13;
-                actionLabel.fontSize=16;
+                buildingName.fontSize=16;
+                buildingLevel.fontSize=12;
+                buildingFunction.fontSize=12;
+                buildingCosts.fontSize=12;
+                buildingState.fontSize=11;
+                costHeader.fontSize=11;
+                actionLabel.fontSize=13;
 
                 At(feedbackPlate,margin,h-160,Mathf.Max(120,left-margin-15),36);
                 Fill(feedback.rectTransform,6);
