@@ -1,4 +1,4 @@
-name: Eldoria live terrain tape owner entry and reload WebKit
+name: Eldoria live pretester UX owner entry and reload WebKit
 on:
   push:
     branches: [feature/eldoria-private-beta-i-v-20261107]
@@ -25,8 +25,8 @@ jobs:
           QA_ENTRY: '1'
           QA_EARLY_ENTRY: '1'
           QA_SKIP_PREFLIGHT: '1'
-          QA_URL: https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&eldoria_profile=1&build=native325-mobile9-routes
-          QA_REVISION: native325-mobile9-routes
+          QA_URL: https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&eldoria_profile=1&build=native325-mobile10-pretest-ux
+          QA_REVISION: native325-mobile10-pretest-ux
           QA_OUT: evidence/live
         run: |
           npm install --prefix "$RUNNER_TEMP/live-qa" --no-save playwright@1.55.0
@@ -36,16 +36,19 @@ jobs:
           python - <<'PY'
           import json,pathlib
           p=pathlib.Path('evidence/live');r=json.loads((p/'report.json').read_text());i=r['identity'];e=(p/'events.jsonl').read_text()
-          assert r['passed'] and i['source_sha']=='5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa'
+          assert r['passed'] and i['source_sha']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
           assert i['terrain_query_cache_sha256'].lower()=='013ebf8194be6974dbcadf27e3cf2ae43db7c7638e0e6cb22cfe838e037ed986'
           assert 'ELDORIA_TERRAIN_QUERY_TAPE' in e and 'Source mesh has over 2,097,152 triangles' not in e
           assert e.count('REGION1_CANON_WORLD_INSTALLED')>=2
+          assert i['pretest_ux_native_verified'] and i['pretest_ux_overlay_count']==19 and not i['tutorial_unchanged']
+          assert i['native_input_restoration_run']==42595057735
           assert i['physical_iphone_verified'] is False and not i['release_for_external_testers']
           print('LIVE_OWNER_WEBKIT_ENTRY_RELOAD_PASS_NOT_PHYSICAL_IPHONE')
           PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile9-live-owner-webkit-not-physical-iphone
+          name: mobile10-live-owner-webkit-not-physical-iphone
           path: evidence/
           retention-days: 14
+

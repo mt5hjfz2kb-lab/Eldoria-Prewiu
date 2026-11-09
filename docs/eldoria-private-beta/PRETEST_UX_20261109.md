@@ -1,6 +1,6 @@
 # PR179 — owner's pretester corrections
 
-Status: **IMPLEMENTED CANDIDATE — NOT NATIVE VERIFIED OR PUBLISHED**.
+Status: **NATIVE UX, FULL JOURNEY AND WEBGL BUILD PASS — BROWSER VALIDATION / PUBLICATION PENDING**.
 The stable owner-tested mobile9 site remains unchanged.
 
 User requested twelve pretester corrections after confirming beta9 was playable and initially stable.
@@ -70,3 +70,28 @@ python tools/eldoria-private-beta/native/ux/test_overlay.py
 Run 42595057735 (be49d62e3daf490f41dba0bf8123a8e2eee64480) has passed the focused UX gate and advanced to the full journey. Its screenshots still require review; no WebGL delivery is certified at this checkpoint. The mobile10 packaging workflow pins that exact native run and refuses packaging if it fails. It checks the focused completion/source plus the installed overlay manifest, original input restoration, 227 journey checks, native world parity and WebGL build hashes.
 
 The Apple GPU comparison uses stable mobile9 as control. Owner publication preparation requires both browser runs to pass entry/reload, no larger WASM capacity, used-heap growth no greater than 5%, and no resident-peak rise over 15% without further investigation/reversed-order measurement. These are desktop regression bounds, not physical-iPhone certification. The release identity explicitly records changed tutorial/UX and leaves tester distribution and physical-device certification false.
+
+## Verified native delivery candidate
+
+Run [42595057735](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42595057735), exact source `be49d62e3daf490f41dba0bf8123a8e2eee64480`, completed successfully. Evidence artifact `13664816452`; compiled WebGL artifact `13665355023`.
+
+- Focused real-control UX checks passed, including city/world labels over camera pans, mailbox, barracks choices and paid upgrades, fixed timers, missions close geometry, both Vigilants scenic meshes remaining stationary, and untouched canonical saves.
+- The complete Bastion I–V journey passed all **227 checks**.
+- All 16 focused portrait/landscape captures were inspected. Requested controls are present and early training shortcuts are absent. These are functional/layout checks, not a new premium-art approval.
+- Terrain/topology/population/route parity passed. Tape SHA remains `013ebf8194be6974dbcadf27e3cf2ae43db7c7638e0e6cb22cfe838e037ed986`.
+- Original isolated inputs restored: `restored=true`, `conflicts=[]`, `existing_input_changes=[]`. Windows reservation released after the successful job.
+- Packaging/browser run [42596176998](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42596176998) is still pending at this checkpoint. Stable mobile9 remains live.
+
+## Browser candidate verification
+
+Run42596176998 completed successfully: package and macOS Apple GPU WebKit. Artifact13665617167 includes both control and candidate reports and screenshots. Candidate `after-name.png` and `reloaded.png` visibly retain **Beta QA**, the opening chronicle, and the sole unlocked Mail dock button. No runtime errors recorded.
+
+| Same-host peak | Stable mobile9 | UX mobile10 |
+|---|---:|---:|
+| Used WASM bytes | 580219616 | 578527168 |
+| WASM capacity bytes | 622592000 | 622592000 |
+| WebContent RSS KiB | 2648432 | 2730736 |
+
+Single paired desktop comparison: used heap -0.29%, capacity unchanged, resident peak +3.11%, within publication bounds. This is not a physical-iPhone stability certificate.
+
+Candidate package13665750302 SHA256 `8097c6836d743347e5af536db89e3fe181a2547836ad21f91b9e6c8c97c5a62d`. Publication workflow main commit18f889fb85cf2ea2a900975b2d7a4f6958df0a72 started; final live version and hosted check still pending.
