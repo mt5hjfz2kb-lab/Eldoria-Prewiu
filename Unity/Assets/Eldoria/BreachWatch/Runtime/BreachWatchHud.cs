@@ -1085,7 +1085,7 @@ namespace Eldoria.BreachWatch
                 // One original source sprite contains the left-side
                 // hammered ornament. Leave its width entirely clear for
                 // the dynamic upgrade label, no procedural icon overlay.
-                float leftInset=Mathf.Clamp(plate.rect.width*.28f,35f,44f);
+                float leftInset=Mathf.Clamp(plate.rect.width*.25f,31f,38f);
                 At(actionLabel.rectTransform,leftInset,3f,
                     Mathf.Max(20f,plate.rect.width-leftInset-7f),
                     Mathf.Max(20f,plate.rect.height-6f));
