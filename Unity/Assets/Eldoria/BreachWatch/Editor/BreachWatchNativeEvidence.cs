@@ -445,6 +445,8 @@ namespace Eldoria.BreachWatch.Editor
                          x && x.sprite && x.sprite.name=="breach_signal")==1,
                      "Owner's approved glowing fissure must be ONE native transparent "+
                      "painted sprite, never the generic procedural X: "+name);
+                Need(ui.GetComponentsInChildren<BreachWatchFrameEngraving>(true).Length==0,
+                     "Procedural fallback trim stacked under approved gold contour: "+name);
                 Need(ui.HasSinglePremiumIdentity,
                     "Superseded player plate or second bevel stacked over the one definitive premium profile");
                 Need(!ui.GetComponentsInChildren<Transform>(true).Any(t=>
