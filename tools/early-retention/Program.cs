@@ -88,8 +88,8 @@ static class Program
             "No scout cards before first real configured March");
         var firstMarch=Command(firstGateway,"first-march","ConfigureMarch","march-main");
         Require(firstGateway.Execute(firstMarch).Ok,"First march prepares normally");
-        Require(firstGateway.Snapshot().Retention.Orders.Count==3,
-            "Scout unlock is atomically part of the first march revision");
+        Require(firstGateway.Snapshot().Retention.Orders.Count==0,
+            "B2 first march cannot create unexplained B3 Scout Board orders");
         var nextFight=Command(firstGateway,"fight-after-first-march","Fight","corrupt-scout");
         var nextResult=firstGateway.Execute(nextFight);
         Require(nextResult.Ok,"First fight cannot fail after unlock: "+nextResult.Message);
