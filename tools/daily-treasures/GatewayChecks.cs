@@ -556,6 +556,64 @@ internal static class GatewayChecks
         }
     }
 
+    static void NarrativeGatedScoutMarchCapacity()
+    {
+        // The old foreign march-capacity smoke configured only Bastion II
+        // with an unopened tutorial. Main's beta10 narrative correctly
+        // forbids Scouts until the Bastion III introduction. Reproduce the
+        // *real* three-march invariants here, with a story-valid saved player,
+        // rather than editing a foreign-owned test or bypassing its guard.
+        var clock=new FakeClock{UtcTicks=At(8)};
+        var player=new PlayerState {
+            BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
+            Available=new ArmyRoster{ArcherT1=150},
+            ChapterProgress=new ChapterProgressState {
+                MarchConfirmed=true,
+                SeenNarrative=new System.Collections.Generic.List<string>{
+                    "scouts-introduction"
+                }
+            }
+        };
+        Assert(NarrativeCoherenceRules.Seen(player,"scouts-introduction"),
+            "Scouts introduced through canonical narrative ledger");
+        Assert(EarlyRetentionRules.ScoutsUnlocked(player),
+            "Story-valid Scouts really become available");
+        var store=new MemoryStore{Saved=player};
+        var gateway=new LocalGateway(clock,store);
+        var created=gateway.Snapshot();
+        Assert(created.Retention.Orders.Count>=3,
+            "Real LocalGateway creates three dispatchable scout orders");
+        string[] orderIds={
+            created.Retention.Orders[0].Id,
+            created.Retention.Orders[1].Id,
+            created.Retention.Orders[2].Id
+        };
+        for(int i=0;i<3;i++)
+            Assert(Submit(gateway,"intro-scout-"+i,"ScoutDispatch",orderIds[i]).Ok,
+                "Narrative-gated scout occupies shared world-march slot "+i);
+        var inFlight=gateway.Snapshot();
+        Assert(MarchCapacityRules.ActiveCount(inFlight,clock.UtcTicks)==3,
+            "Three genuinely started Scouts fill the global march capacity");
+        Assert(inFlight.Available.Total==114,
+            "Scout capacity reserves three distinct twelve-archer detachments");
+        Assert(!Submit(gateway,"intro-scout-fourth","Gather",
+                "forest-valoria").Ok,
+            "A fourth march cannot share already reserved troops");
+        clock.UtcTicks+=TimeSpan.FromSeconds(1000).Ticks;
+        gateway=new LocalGateway(clock,store);
+        var returned=gateway.Snapshot();
+        Assert(MarchCapacityRules.ActiveCount(returned,clock.UtcTicks)==0 &&
+               returned.Available.Total==150,
+            "All three Scout detachments return exactly once offline");
+        for(int i=0;i<3;i++)
+            Assert(Submit(gateway,"intro-scout-claim-"+i,
+                "ScoutClaim",orderIds[i]).Ok,
+                "Honest completed Scout report claimed once "+i);
+        gateway=new LocalGateway(clock,store);
+        Assert(gateway.Snapshot().Available.Total==150,
+            "Claiming scout reports never returns the same troops twice");
+    }
+
     public static void Main()
     {
         var clock=new FakeClock{UtcTicks=At(8)};
@@ -616,6 +674,7 @@ internal static class GatewayChecks
         RealMilestoneSessionQueue();
         RealReportSessionQueue();
         RealRewardEconomyEnvelope();
+        NarrativeGatedScoutMarchCapacity();
         Console.WriteLine("PASS daily treasure real gateway: "+assertions+" assertions, store writes "+store.Writes);
     }
 }
