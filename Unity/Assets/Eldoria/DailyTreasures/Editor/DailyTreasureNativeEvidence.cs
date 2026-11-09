@@ -966,9 +966,31 @@ namespace Eldoria.DailyTreasures.Editor
                          panel.transform.parent==safeRect,
                          "Daily treasure canvas remained invisible on Vigilia");
                     VerifyUiOwnership(2,eventSystem);
+                    // A REAL Vigilia building selection must outrank Tesoros.
+                    // Editor-only exact-name probe: no fake building upgrades,
+                    // resources, reward receipts or new event systems.
+                    var buildingProbe=new GameObject(
+                        "Independent selected-building cartouche",
+                        typeof(RectTransform));
+                    buildingProbe.layer=5;
+                    buildingProbe.transform.SetParent(safeRect,false);
+                    buildingProbe.SetActive(false);
+                    Need(!panel.ProbeVigiliaBuildingForNativeEvidence(),
+                        "Hidden Vigilia building wrongly suppresses a reward");
+                    buildingProbe.SetActive(true);
+                    Need(panel.ProbeVigiliaBuildingForNativeEvidence(),
+                        "Live building selection cannot suppress treasure access");
+                    panel.Open();
+                    Need(!panel.IsOpen,
+                        "Treasure window covers real selected building controls");
+                    buildingProbe.SetActive(false);
+                    Need(!panel.ProbeVigiliaBuildingForNativeEvidence(),
+                        "Dismissing building selection kept treasury suppressed");
                     Canvas.ForceUpdateCanvases();
                     var movedEntry=FindButton(panel,
                         "Daily reward / optional medallion");
+                    Need(movedEntry.gameObject.activeInHierarchy,
+                        "Treasury entry not restored after building selection");
                     var movedGraphic=movedEntry.GetComponent<Graphic>();
                     var migratedGraphics=
                         GraphicRegistry.GetGraphicsForCanvas(nativeCanvas);
@@ -1018,6 +1040,27 @@ namespace Eldoria.DailyTreasures.Editor
                     inputChecks++;
                     Need(!panel.IsOpen,
                         "Independent Vigilia reward modal cannot close");
+                    // A building opened AFTER the treasury must close the
+                    // optional modal/Foley without touching a paid wallet.
+                    var priorBuilding=specialGateway.Snapshot();
+                    panel.Open();
+                    Need(panel.IsOpen,"Cannot reopen the already paid calendar");
+                    buildingProbe.SetActive(true);
+                    Need(panel.ProbeVigiliaBuildingForNativeEvidence() &&
+                         !panel.IsOpen &&
+                         !movedEntry.gameObject.activeInHierarchy,
+                         "Selected building did not preempt a reward modal");
+                    buildingProbe.SetActive(false);
+                    Need(!panel.ProbeVigiliaBuildingForNativeEvidence() &&
+                         movedEntry.gameObject.activeInHierarchy,
+                         "Reward entry stayed hidden after building closed");
+                    var afterBuilding=specialGateway.Snapshot();
+                    Need(priorBuilding.Resources.Wood==afterBuilding.Resources.Wood &&
+                         priorBuilding.Resources.Stone==afterBuilding.Resources.Stone &&
+                         priorBuilding.Mailbox.Messages.Count==
+                         afterBuilding.Mailbox.Messages.Count,
+                         "Selected-building priority mutated real earned items");
+                    Object.DestroyImmediate(buildingProbe);
                     nativeCanvas.enabled=false;
                     panel.ProbePresentationCanvasForNativeEvidence();
                     Need(!panel.UsesVigiliaCanvas &&
