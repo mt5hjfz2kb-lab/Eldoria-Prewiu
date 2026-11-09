@@ -305,12 +305,33 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
 
   // Previously the heraldic title and Skip overlapped by 20+ pixels in
   // narrow portrait; check both physical hit areas and text composition.
-  const banner=rect(portrait?-pw*.10:-.247*pw,
-    ph*.405,Math.min(pw*.52,302),38);
-  const skip=portrait?rect(pw/2-60,ph/2-82.5,100,45):
-    rect(-.247*pw,ph/2-88.5,100,45);
-  assert.ok(noOverlap(banner,skip),
-    `${w}x${h}: milestone title overlaps the Skip control`);
+  // Two distinct real event compositions: an original landscape scene
+  // with the chest to the right; a true Bastion view with the built city
+  // visible behind the chest. Neither may cover its required Skip touch area.
+  // The portrait heading is lower and wider so a full-length chapter label
+  // does not become a floating fake button layered over the real artwork.
+  const eventH=Math.min(h-20,portrait?700:370);
+  const headingW=portrait?Math.min(pw-36,280):Math.min(pw*.52,302);
+  for(const family of ['painterly','bastion'])
+  {
+    const headingX=portrait?0:family==='painterly'?-.247*pw:-pw*.10;
+    const heading=rect(headingX,eventH*(portrait?.29:.405),headingW,40);
+    const skip=portrait?rect(pw/2-60,eventH/2-82.5,100,45):
+      family==='painterly'
+        ?rect(-.247*pw,eventH/2-88.5,100,45)
+        :rect(pw/2-60,eventH/2-82.5,100,45);
+    assert.ok(noOverlap(heading,skip),
+      `${w}x${h}: ${family} story banner steals the Skip tap`);
+    assert.ok(heading.x0>=-pw/2+2 && heading.x1<=pw/2-2 &&
+              heading.y1<=eventH/2-5,
+      `${w}x${h}: ${family} title cropped by its own stage`);
+    // Real standalone underline is centered inside the unframed typographic
+    // heading: never widen past the stage or impersonate a CTA button.
+    const underline=rect(headingX,heading.y0+3,headingW-30,2);
+    assert.ok(underline.x0>=heading.x0 && underline.x1<=heading.x1 &&
+              underline.y0>=heading.y0 && underline.y1<=heading.y1,
+      `${w}x${h}: ${family} forged-ink accent escapes its title`);
+  }
   assert.ok((1-.45)*(1-.36)>.34,
     `${w}x${h}: actual Bastion city hidden by stacked panels`);
   // Real non-paying milestones also use the same premium authored chest.
