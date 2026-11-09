@@ -364,6 +364,30 @@ jobs:
           assert 'VigiliaArt/OwnerReference/lion_crest' in src
           print('BREACHWATCH_OWNER_APPROVED_SMALL_LION_CRESTRUN_IMAGE_PASS')
           PY
+      - name: Verify exactly one owner-derived gold X and no extra close decorations
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,hashlib,struct
+          root=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls')
+          original=pathlib.Path('tools/breach-watch/source/owner-close-button.webp.b64')
+          proof=json.loads((root/'close_medallion_provenance.json').read_text())
+          import base64
+          data=base64.b64decode(original.read_text().strip(),validate=True)
+          assert hashlib.sha256(data).hexdigest()==proof['source_sha256']
+          assert proof['size']==[64,64] and proof['transparent_hit_region_required']
+          dest=root/'close_medallion.png'
+          raw=dest.read_bytes()
+          assert raw[:8]==bytes([137,80,78,71,13,10,26,10])
+          assert struct.unpack('>II',raw[16:24])==(64,64)
+          assert hashlib.sha256(raw).hexdigest()==proof['png_sha256']
+          meta=(root/'close_medallion.png.meta').read_text()
+          assert 'guid: '+proof['guid'] in meta and 'spriteMode: 1' in meta
+          src=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          assert 'VigiliaArt/OwnerControls/close_medallion' in src
+          assert 'BuildButton(panel,"Close selected building"' not in src
+          print('VIGILIA_SINGLE_ORIGINAL_ROUND_CLOSE_PASS')
+          PY
       - name: Certify three text-free owner-source premium controls and live data ownership
         shell: bash
         run: |
