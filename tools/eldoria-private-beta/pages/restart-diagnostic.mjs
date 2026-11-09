@@ -69,7 +69,10 @@ export function startLocalRestartDiagnostic({
   const copy=doc.createElement('button');copy.type='button';copy.textContent='Copiar registro';
   copy.addEventListener('click',async()=>{
    area.value=report();
-   try{await win.navigator.clipboard?.writeText(area.value);copy.textContent='Copiado'}catch(_){area.focus?.();area.select?.();}
+   try{
+    if(!win.navigator.clipboard?.writeText)throw Error('Clipboard unsupported');
+    await win.navigator.clipboard.writeText(area.value);copy.textContent='Copiado';
+   }catch(_){copy.textContent='Selecciona y copia el texto';area.focus?.();area.select?.();}
   });
   box.append(label,area,copy);
   btn.addEventListener('click',()=>{
