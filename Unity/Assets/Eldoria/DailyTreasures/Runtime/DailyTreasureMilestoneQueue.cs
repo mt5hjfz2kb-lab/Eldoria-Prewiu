@@ -60,6 +60,55 @@ namespace Eldoria.DailyTreasures
             seen.Add(id);
         }
 
+        // Do not infer an earned chapter just because a battle-mail ID exists.
+        // The saved report contains the actual outcome and target. Requiring
+        // both prevents a loss, draw or mid-chapter victory from being shown
+        // as a grand finale by a stale or mismatched UI call.
+        static bool IsCommittedChapterVictory(PlayerState state,
+            EldoriaV41Message report,string receiptId,string appearanceId)
+        {
+            const string prefix="vigilant:chapter:";
+            if(state?.Retention==null || report?.Battle==null ||
+               report.ReportId!=receiptId ||
+               !report.Battle.Won ||
+               report.Battle.EffectiveOutcome!="victory" ||
+               !appearanceId.StartsWith(prefix,StringComparison.Ordinal))
+                return false;
+            if(!int.TryParse(appearanceId.Substring(prefix.Length),out int stage) ||
+               stage<1 || stage>10000 ||
+               report.Battle.TargetId!="vigilant:"+stage ||
+               state.Retention.LastClearedStage<stage)
+                return false;
+            return EarlyRetentionRules.Stage(stage).Step==
+                   EarlyRetentionRules.StagesPerChapter;
+        }
+
+        // A first discovery is not simply an exploration-themed popup.
+        // Anchor it to the exact claimed order, family and command receipt
+        // already saved by LocalGateway; no additional reward is paid.
+        static bool IsCommittedFirstDiscovery(PlayerState state,
+            EldoriaV41Message report,string receiptId,string appearanceId)
+        {
+            const string prefix="scout:first:";
+            const string reportPrefix="exploration:";
+            if(state?.Retention?.Orders==null || report==null ||
+               !appearanceId.StartsWith(prefix,StringComparison.Ordinal) ||
+               !receiptId.StartsWith(reportPrefix,StringComparison.Ordinal) ||
+               report.DiscoveryKind<0 || report.DiscoveryKind>3 ||
+               report.RewardReceiptId!=receiptId.Substring(reportPrefix.Length))
+                return false;
+            string orderId=appearanceId.Substring(prefix.Length);
+            if(string.IsNullOrWhiteSpace(orderId) ||
+               report.DiscoveryOrderId!=orderId ||
+               (state.Retention.ScoutDiscoveryMask&
+                    (1<<report.DiscoveryKind))==0)
+                return false;
+            var order=state.Retention.Orders.Find(o=>
+                o!=null && o.Id==orderId && o.Claimed &&
+                o.Kind==report.DiscoveryKind);
+            return order!=null;
+        }
+
         // The UI may only queue a chapter victory or first family discovery
         // when the SAME gateway command has already written its real mail.
         // This retains the ceremony during a room/tutorial, without issuing
@@ -79,8 +128,14 @@ namespace Eldoria.DailyTreasures
                     appearanceId!=null &&
                     appearanceId.StartsWith("scout:first:",StringComparison.Ordinal));
             if(!valid || string.IsNullOrWhiteSpace(title) ||
-               seen.Contains(receiptId) ||
-               FindCommittedNotice(state,receiptId,receiptType)==null)return false;
+               seen.Contains(receiptId))return false;
+            var committed=FindCommittedNotice(state,receiptId,receiptType);
+            if(committed==null || committed.Category!="informes" ||
+               (receiptType=="battle" &&
+                   !IsCommittedChapterVictory(state,committed,receiptId,appearanceId)) ||
+               (receiptType=="exploration" &&
+                   !IsCommittedFirstDiscovery(state,committed,receiptId,appearanceId)))
+                return false;
             pending.Enqueue(new DailyTreasureMilestoneNotice(
                 appearanceId,title,detail??"",legendary));
             seen.Add(receiptId);
