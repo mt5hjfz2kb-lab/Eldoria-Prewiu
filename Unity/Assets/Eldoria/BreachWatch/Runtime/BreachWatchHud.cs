@@ -67,10 +67,9 @@ namespace Eldoria.BreachWatch
         bool created;
         RoyalSnapshot snapshot;
         readonly string[] navLabels = {"REINO", "RECURSOS", "EJÉRCITO", "EXPLORAR", "HÉROES"};
-        readonly BreachWatchGlyph.Sigil[] navIcons = {
-            BreachWatchGlyph.Sigil.Castle,BreachWatchGlyph.Sigil.Build,
-            BreachWatchGlyph.Sigil.Army,BreachWatchGlyph.Sigil.World,BreachWatchGlyph.Sigil.Chronicle
-        };
+        // One canonical navigation artwork mapping. The medallion sprites
+        // are complete original illustrations; NEVER create vector placeholder
+        // icon components behind or on top of these five surfaces.
 
         public bool IndependentCanvas => canvas && legacyCanvas && canvas!=legacyCanvas
             && canvas.transform.parent != legacyCanvas.transform;
