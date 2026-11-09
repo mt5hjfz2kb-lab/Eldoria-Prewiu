@@ -54,7 +54,7 @@ def verify():
     fits("Construye el aserradero",REGULAR,14,mission_width-22,
          "chapter-objective")
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
-    fits("Bastión",SEMIBOLD,19,panel_width-106,
+    fits("Bastión",SEMIBOLD,19,panel_width-110,
          "selected building title")
     paragraph="Gobierno y progreso de Valoria."
     paragraphs=lines(REGULAR,15,paragraph,panel_width-26)
@@ -98,6 +98,17 @@ def verify():
         "Premium CTA must render source at full painted width")
     assert "bool fullUpgradeCaption=lastWidth>=800;" in hud, (
         "Full chapter action must be readable in both >=800px orientations")
+
+    # The right-edge close badge must not touch either heading, in portrait
+    # or small landscape; both rows preserve >=4 Unity design units.
+    hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
+    for clause in (
+        "At(buildingName.rectTransform,51,7,pw-110,28);",
+        "At(buildingLevel.rectTransform,51,34,pw-110,19);",
+        "At(buildingName.rectTransform,58,8,pw-119,31);",
+        "At(buildingLevel.rectTransform,58,37,pw-119,19);",
+    ):
+        assert clause in hud, ("Missing separate title/close geometry",clause)
 
     # Physical pixels: compact first-screen body glyphs and five nav areas
     # cannot be reduced to sub-12-pixel unreadable text.
