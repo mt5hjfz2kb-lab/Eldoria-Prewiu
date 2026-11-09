@@ -423,6 +423,29 @@ jobs:
           assert not (folder/'basalt_context.png.meta').exists()
           print('BREACHWATCH_INDEPENDENT_PREMIUM_3_SLICED_MATERIALS_CERTIFIED',len(guids))
           PY
+      - name: Verify exactly one source-derived blank mineral body under approved gold ring
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,struct
+          root=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt')
+          p=root/'PremiumSurfaces/panel_fill.png'
+          proof=json.loads((root/'PremiumSurfaces/panel_fill-provenance.json').read_text())
+          source=json.loads((root/'OwnerReference/source-manifest.json').read_text())
+          assert proof['source_sha256']==source['context_frame']['sha256']
+          assert proof['no_baked_player_content'] is True
+          assert proof['size']==[512,736]
+          raw=p.read_bytes()
+          assert raw[:8]==bytes([137,80,78,71,13,10,26,10])
+          assert struct.unpack('>II',raw[16:24])==(512,736)
+          assert hashlib.sha256(raw).hexdigest()==proof['sha256']
+          meta=(root/'PremiumSurfaces/panel_fill.png.meta').read_text()
+          assert 'guid: '+proof['guid'] in meta and 'textureType: 8' in meta
+          hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          assert 'VigiliaArt/PremiumSurfaces/panel_fill' in hud
+          assert 'panel.gameObject.AddComponent<BreachWatchPanelInk>()' not in hud
+          print('VIGILIA_SINGLE_APPROVED_MATERIAL_AND_ONE_BORDER_PASS')
+          PY
       - name: Verify five separately finished original medallions
         shell: bash
         run: |
