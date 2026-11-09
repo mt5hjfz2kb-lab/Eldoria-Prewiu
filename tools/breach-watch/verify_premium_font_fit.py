@@ -45,12 +45,12 @@ def verify():
         assert value<=limit+0.15,(control,round(value,2),limit,text)
         print("TYPOGRAPHY_FIT",control,round(value,1),"<=",limit)
 
-    # Original mission glyph spans x=9..29; the title must begin at
-    # x>=31 while still fitting the real 390px Cormorant inscription.
-    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,12,mission_width-45,
-         "chapter-title separate from carved chapter icon")
+    # The story title starts in clean carved stone. No duplicated vector
+    # crest should steal the title's paint width or make an overlay.
+    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,12,mission_width-29,
+         "one complete real chapter inscription")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "At(chapterName.rectTransform,31f,5f,missionWidth-45f,20f);" in hud
+    assert "At(chapterName.rectTransform,17f,5f,missionWidth-29f,20f);" in hud
     fits("Construye el aserradero",REGULAR,14,mission_width-22,
          "chapter-objective")
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
@@ -103,10 +103,10 @@ def verify():
     # or small landscape; both rows preserve >=4 Unity design units.
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
     for clause in (
-        "At(buildingName.rectTransform,51,7,pw-110,28);",
-        "At(buildingLevel.rectTransform,51,36,pw-110,17);",
-        "At(buildingName.rectTransform,58,8,pw-119,31);",
-        "At(buildingLevel.rectTransform,58,40,pw-119,17);",
+        "At(buildingName.rectTransform,18,7,pw-80,28);",
+        "At(buildingLevel.rectTransform,18,36,pw-80,17);",
+        "At(buildingName.rectTransform,18,8,pw-80,31);",
+        "At(buildingLevel.rectTransform,18,40,pw-80,17);",
     ):
         assert clause in hud, ("Missing separate title/close geometry",clause)
 
