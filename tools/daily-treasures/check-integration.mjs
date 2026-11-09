@@ -235,4 +235,13 @@ assert.match(panel,/milestoneQueue\.PendingCount>0/);
 assert.match(panel,/entryCaption\.text=entryIsAvailable\?"TESORO":\s*pending\?"HITOS":"COFRE"/);
 assert.match(panel,/entryNotice\.gameObject\.SetActive\(entryIsAvailable\|\|pending\)/);
 assert.match(panel,/if\(!claimAvailable && milestoneQueue\.PendingCount>0/);
+// Even if the input medallion is tapped during a hero unlock, the
+// canonical 3D recruitment remains above ALL reward surfaces.
+for(const entryMethod of ['void OpenEntryOrDeferredMilestone()',
+                           'public void Open()']){
+  const body=panel.split(entryMethod)[1]?.split('{')[1]?.slice(0,240);
+  assert.ok(body && body.includes('HasVisibleCanonicalHeroRoom()'),
+    'Canonical Lyra room must block every path into optional treasury: '+
+    entryMethod);
+}
 console.log('PASS daily treasures gateway integration source invariants');
