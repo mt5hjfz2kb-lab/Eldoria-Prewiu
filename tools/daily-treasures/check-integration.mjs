@@ -327,4 +327,14 @@ assert.match(nativePixelAudit,/def quiet_label_pixel_proof\(image,day,width,heig
 assert.match(nativePixelAudit,/Ordinary reward not backed by real paid data/);
 assert.match(nativePixelAudit,/additionalQuietDayOriginalPngCount/);
 assert.match(nativePixelAudit,/ordinary_paid_rewards_contact_sheet\.png/);
+// The original genuine Unity day-seven calendar displayed only 3/4 paid
+// resources: the five-minute accelerator was omitted by a 4-line text clip.
+// Never declare visual success without ALL promised items, including streak
+// food, visible at every tested screen size.
+assert.match(panel,/if\(reward\.CycleDay==7 && reward\.Wood>0/);
+assert.match(panel,/"Madera "\+reward\.Wood\+" · Piedra "\+reward\.Stone/);
+assert.match(panel,/"5 min x"\+reward\.SpeedupFiveMinutes/);
+assert.match(native,/VerifySeventhDayPreviewTruth\(panel,"calendar day seven"\)/);
+assert.match(native,/label\.preferredWidth<=rect\.width\+3f/);
+assert.match(native,/label\.preferredHeight<=rect\.height\+3f/);
 console.log('PASS daily treasures gateway integration source invariants');
