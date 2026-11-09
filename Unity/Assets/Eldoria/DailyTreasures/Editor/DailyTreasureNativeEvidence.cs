@@ -914,6 +914,28 @@ namespace Eldoria.DailyTreasures.Editor
                         quietInputChecks++;
                         Need(panel.IsOpen,
                             "Ordinary day "+quietDay+" entry cannot be opened");
+                        if(quietDay==3)
+                        {
+                            // On the third real visit the streak bonus adds
+                            // food to a normally single-item speedup. This
+                            // catches incorrect hard-coded day-4/6 layouts.
+                            var card=FindRect(panel,
+                                "Day 3 / non-clickable informational card");
+                            var text=card.GetComponentsInChildren<Text>(true)
+                                .Single(x=>x.name=="Actual reward contents");
+                            Need(text.gameObject.activeInHierarchy &&
+                                 text.text.Contains("Comida 25") &&
+                                 text.text.Contains("1 min x1") &&
+                                 text.text.Split('\n').Length==2,
+                                "Real third-day loyalty food is absent from calendar");
+                            float clear=text.rectTransform.anchoredPosition.y+
+                                text.rectTransform.rect.yMin-card.rect.yMin;
+                            Need(clear>=4.5f &&
+                                 text.preferredHeight<=
+                                    text.rectTransform.rect.height+6f,
+                                "Third-day loyalty bonus text overlaps the "+
+                                "forged bronze card border: "+clear);
+                        }
                         ClickAtNativeScreenPosition(canvas,eventSystem,camera,
                             FindButton(panel,"Claim exact daily reward"),
                             width,height);
