@@ -298,7 +298,7 @@ namespace Eldoria.DailyTreasures.Editor
         [MenuItem("Eldoria/Tesoros de Valoria/Captura Unity nativa de componente")]
         public static void Capture()
         {
-            string output=Path.GetFullPath(Path.Combine(Application.dataPath,"../"+Folder));
+            string output=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../"+Folder));
             Directory.CreateDirectory(output);
             var report=new Report{
                 status="NATIVE_COMPONENT_PROOF_PENDING",
