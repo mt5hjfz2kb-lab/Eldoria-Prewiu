@@ -72,11 +72,10 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             assert 4+symbolsize+1.5<=symbolsize+8,size
         missionw=min(185,w*.46)
         place("mission",m,96 if pw<600 else 82,missionw,78)
-        # Gold chapter icon is x=9..29 inside the single authored mission
-        # tablet; the actual chapter text must NEVER paint through its rim.
-        chapter_glyph=R(9,9,20,20)
-        chapter_text=R(31,5,missionw-45,20)
-        assert chapter_text.x>=chapter_glyph.x+chapter_glyph.w+1.5,size
+        # Without a redundant vector tower, the real chapter inscription
+        # keeps its own uninterrupted margin inside the authored stone.
+        chapter_text=R(17,5,missionw-29,20)
+        assert chapter_text.x>=16 and chapter_text.x+chapter_text.w<=missionw-11,size
         place("breach",w*.52-56,74,112,30)
         # Future utility buttons do not draw or intercept pointer events.
         navsize,gap=49,14
@@ -89,8 +88,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         panely=navtop-303-45
         context=place("context",w-m-panelw,panely,panelw,303)
         touch("close",R(context.x+panelw-55,context.y+3,50,50))
-        header=R(51,7,panelw-110,28)
-        level=R(51,36,panelw-110,17)
+        header=R(18,7,panelw-80,28)
+        level=R(18,36,panelw-80,17)
         assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=panelw-55-3.5,size
         assert level.x+level.w<=panelw-55-3.5,size
@@ -117,9 +116,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             place("resource"+str(i),w-m-resw+i*(chip+7),16,chip,41)
             assert 5+30+1.5<=38,size
         place("mission",m,102,225,83)
-        chapter_glyph=R(9,9,20,20)
-        chapter_text=R(37,8,178,20)
-        assert chapter_text.x>=chapter_glyph.x+chapter_glyph.w+1.5,size
+        chapter_text=R(17,8,193,20)
+        assert chapter_text.x>=16 and chapter_text.x+chapter_text.w<=214,size
         place("breach",w*.49-17,11,34,34)
         navsize,gap=55,15
         navw=nav_count*navsize+(nav_count-1)*gap
@@ -132,8 +130,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         contexty=75 if h<530 else 118
         context=place("context",w-m-contextw,contexty,contextw,contexth)
         touch("close",R(context.x+contextw-57,context.y+3,52,52))
-        header=R(58,8,contextw-119,31)
-        level=R(58,40,contextw-119,17)
+        header=R(18,8,contextw-80,31)
+        level=R(18,40,contextw-80,17)
         assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=contextw-57-3.5,size
         assert level.x+level.w<=contextw-57-3.5,size
@@ -183,12 +181,12 @@ def main():
         'resourceChips[i].gameObject.SetActive(i<visibleResources);',
         'utility.gameObject.SetActive(false);',
         'lastNavigationMask=navigationMask;',
-        'At(chapterName.rectTransform,31f,5f,missionWidth-45f,20f);',
-        'At(buildingName.rectTransform,51,7,pw-110,28);',
-        'At(buildingName.rectTransform,58,8,pw-119,31);',
+        'At(chapterName.rectTransform,17f,5f,missionWidth-29f,20f);',
+        'At(buildingName.rectTransform,18,7,pw-80,28);',
+        'At(buildingName.rectTransform,18,8,pw-80,31);',
         'At(identityPower.rectTransform,59,38,165,17);',
-        'At(buildingLevel.rectTransform,51,36,pw-110,17);',
-        'At(buildingLevel.rectTransform,58,40,pw-119,17);'
+        'At(buildingLevel.rectTransform,18,36,pw-80,17);',
+        'At(buildingLevel.rectTransform,18,40,pw-80,17);'
     ]
     for pattern in expected:
         assert pattern in source, f"Runtime contract changed: {pattern}"
