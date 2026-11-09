@@ -80,30 +80,30 @@
       "file": "resource_wood_clean_256.png",
       "width": 256,
       "height": 256,
-      "sha256": "711d2afa54bf684cd79d3723118e245e2e95c2a9255fb550a4e130e970dacf3e",
+      "sha256": "1d4cfe4abfc2185710c02f407c4b3db0125359174c352c704090cf8f590152bf",
       "guid": "8f740a3bb10f4de49b6d30d82ceeb7aa"
     },
     {
       "file": "resource_stone_clean_256.png",
       "width": 256,
       "height": 256,
-      "sha256": "2f2eb2b27db9def09d56fdbaf8eb7ebeeb596aaa57113a3cbf7a4043b16db69c",
+      "sha256": "c3c74c02095babfc4fabd93e87dea4348d35fb89475c0c5f841311746ed07cdc",
       "guid": "c369be2874204cbfaac68c457bb3c214"
     },
     {
       "file": "resource_food_clean_256.png",
       "width": 256,
       "height": 256,
-      "sha256": "c86c99f487545caa147c8280502785dd0def46239633f19c09b4a4afdbcd8a7c",
+      "sha256": "35b2f0a9e232af3ed0dc3a6a61013a67c72bebbf1af770ce259722e1866f64f8",
       "guid": "d584ba6e33e447bda4c0cfa21129a765"
     },
     {
       "file": "resource_hourglass_clean_256.png",
       "width": 256,
       "height": 256,
-      "sha256": "2ce9fec638c6554d4ba691abf3d698d8e41fd6cf3006aa5d84c84d0ce53a09b0",
+      "sha256": "4e54dcda2580a20bd1efb86102ad26723595ddb1196f5c5e9020a79c48b41e59",
       "guid": "e72b6b4872e4475caa1351a0b120f237"
     }
   ],
-  "quality_note": "Legacy four cropped 128x128 screenshot icons contain baked circular UI background/numeric remnants and partially cut silhouettes. Four new original clean independent 256px candidate icons remove that defect and are used in the daily calendar and committed reward cards. No native Unity render or artistic approval yet; the previous assets remain unchanged as fallbacks."
+  "quality_note": "Four source-painted 256px candidate icons (wood/stone/food/hourglass) replace flat low-poly versions. Their exact SHA256 now binds the actual committed Git blobs, not the earlier rejected flat mock-ups. Mobile preflight and genuine Unity render still require review; not an art approval."
 }
