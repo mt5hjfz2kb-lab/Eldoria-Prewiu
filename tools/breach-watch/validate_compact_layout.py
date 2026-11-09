@@ -60,11 +60,16 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             f"{size}: {name} physical touch area {r.w*scale:.1f}x{r.h*scale:.1f}")
     if portrait:
         place("identity",m,11 if pw<600 else 14,182,52 if pw<600 else 43)
+        profile_name=R(0,6 if pw<600 else 4,1,25 if pw<600 else 21)
+        profile_power=R(0,31 if pw<600 else 25,1,17)
+        assert profile_name.y+profile_name.h<=profile_power.y+.5,size
         right=w-(m+182+9+m)
         chip=(min(85,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3)))
         resw=resources*chip+4*(resources-1)
         for i in range(resources):
             place("resource"+str(i),w-m-resw+i*(chip+4),18 if pw<600 else 17,chip,38 if pw<600 else 28)
+            symbolsize=25 if pw<600 else 19
+            assert 4+symbolsize+1.5<=symbolsize+8,size
         missionw=min(185,w*.46)
         place("mission",m,96 if pw<600 else 82,missionw,78)
         # Gold chapter icon is x=9..29 inside the single authored mission
@@ -85,7 +90,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         context=place("context",w-m-panelw,panely,panelw,303)
         touch("close",R(context.x+panelw-55,context.y+3,50,50))
         header=R(51,7,panelw-110,28)
-        level=R(51,34,panelw-110,19)
+        level=R(51,36,panelw-110,17)
+        assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=panelw-55-3.5,size
         assert level.x+level.w<=panelw-55-3.5,size
         touch("action",R(context.x+12,context.y+303-53,panelw-24,50))
@@ -102,10 +108,14 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         limit=34
     else:
         place("identity",m,11,234,58)
+        profile_name=R(0,6,1,31)
+        profile_power=R(0,38,1,17)
+        assert profile_name.y+profile_name.h+.7<=profile_power.y,size
         chip=(min(110,max(82,(w*.28-7)/2)) if resources==2 else min(100,max(82,(w*.28-12)/3)))
         resw=resources*chip+7*(resources-1)
         for i in range(resources):
             place("resource"+str(i),w-m-resw+i*(chip+7),16,chip,41)
+            assert 5+30+1.5<=38,size
         place("mission",m,102,225,83)
         chapter_glyph=R(9,9,20,20)
         chapter_text=R(37,8,178,20)
@@ -123,7 +133,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         context=place("context",w-m-contextw,contexty,contextw,contexth)
         touch("close",R(context.x+contextw-57,context.y+3,52,52))
         header=R(58,8,contextw-119,31)
-        level=R(58,37,contextw-119,19)
+        level=R(58,40,contextw-119,17)
+        assert header.y+header.h+.7<=level.y,size
         assert header.x+header.w<=contextw-57-3.5,size
         assert level.x+level.w<=contextw-57-3.5,size
         if contexth<305:
@@ -174,7 +185,10 @@ def main():
         'lastNavigationMask=navigationMask;',
         'At(chapterName.rectTransform,31f,5f,missionWidth-45f,20f);',
         'At(buildingName.rectTransform,51,7,pw-110,28);',
-        'At(buildingName.rectTransform,58,8,pw-119,31);'
+        'At(buildingName.rectTransform,58,8,pw-119,31);',
+        'At(identityPower.rectTransform,59,38,165,17);',
+        'At(buildingLevel.rectTransform,51,36,pw-110,17);',
+        'At(buildingLevel.rectTransform,58,40,pw-119,17);'
     ]
     for pattern in expected:
         assert pattern in source, f"Runtime contract changed: {pattern}"
