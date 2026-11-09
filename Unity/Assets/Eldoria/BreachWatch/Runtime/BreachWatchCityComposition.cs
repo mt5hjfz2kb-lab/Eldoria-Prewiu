@@ -99,7 +99,12 @@ namespace Eldoria.BreachWatch
             // Bastion does not regain its giant 70%-screen footprint.
             float ratio=.5625f/aspect;
             float factor=Mathf.Clamp(1.78f*ratio,1.67f,2.65f);
-            cityCamera.orthographicSize=Mathf.Clamp(originalZoom*factor,45f,105f);
+            // Canonical city gesture controller clamps ZoomBy() to 14..65.
+            // Starting at 75 or 105 made the FIRST legitimate pinch jump
+            // abruptly to 65, breaking the feeling of a premium camera.
+            // Never install a non-playable zoom; visual composition must
+            // be the best achievable within actual game constraints.
+            cityCamera.orthographicSize=Mathf.Clamp(originalZoom*factor,45f,65f);
             host.City.Controls.FitToTerrain();
 
             var state=host.City.Gateway!=null?host.City.Gateway.Snapshot():null;
@@ -135,7 +140,7 @@ namespace Eldoria.BreachWatch
                         float nextZoom=cityCamera.orthographicSize*
                             (currentWidth/goalWidth);
                         cityCamera.orthographicSize=Mathf.Clamp(
-                            nextZoom,cityCamera.orthographicSize,105f);
+                            nextZoom,cityCamera.orthographicSize,65f);
                         host.City.Controls.FitToTerrain();
                     }
                 }
