@@ -108,7 +108,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert level.x+level.w<=panelw-55-3.5,size
         touch("action",R(context.x+12,context.y+280-53,panelw-24,50))
         info=R(13,125,panelw-26,35)
-        costlabel=R(13,170,panelw-26,16)
+        costlabel=R(13,170,panelw-26,17)
         costdata=R(13,187,panelw-26,20)
         state=R(13,209,panelw-26,17)
         action=R(12,227,panelw-24,50)
