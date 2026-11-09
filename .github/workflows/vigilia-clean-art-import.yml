@@ -20,12 +20,31 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: python -m pip install --quiet Pillow==12.3.0
-      - name: Validate and inspect brand-new assets without modifying the project
+      - run: python -m pip install --quiet Pillow==12.3.0 numpy==2.3.4
+      - name: Validate new generated sources before touching any UI
         run: python tools/breach-watch/inspect_fresh_atlases.py
+      - name: Build 13 clean independent high resolution alpha sprites (no old game art)
+        run: python tools/breach-watch/build_fresh_art.py
+      - name: Verify all 13 original textures and transparent edges
+        run: |
+          python - <<'PY'
+          import pathlib,json
+          folder=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt')
+          files=json.loads((folder/'manifest.json').read_text())['files']
+          assert len(files)==13
+          assert len(list(folder.glob('*.png')))==13
+          assert len(list(folder.glob('*.png.meta')))==13
+          for name,meta in files.items():
+              assert meta['dimensions'][0]>=290 and meta['dimensions'][1]>=190,name
+              assert meta['opaque_fraction']>.08 and meta['transparent_fraction']>.09,name
+          print('VIGILIA_CLEAN_ART_13_SOURCE_ASSETS_PASS')
+          PY
       - uses: actions/upload-artifact@v4
         with:
-          name: vigilia-clean-atlas-research-${{ github.sha }}
-          path: tools/breach-watch/fresh-art-inbox/**
+          name: vigilia-clean-13-sprite-candidate-${{ github.sha }}
+          path: |
+            tools/breach-watch/fresh-art-inbox/**
+            Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt/**
+            Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/FreshArt.meta
           if-no-files-found: error
           retention-days: 14
