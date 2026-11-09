@@ -1222,21 +1222,27 @@ namespace Eldoria.DailyTreasures
                 float x=-panelW*.5f+left+column*(cellW+gap)+width*.5f;
                 float y=gridHeight*.5f-row*(cellH+gap)-cellH*.5f;
                 Place(dayBack[i].rectTransform,.5f,.5f,.5f,.5f,x,y,width,cellH);
+                bool roomy=cellH>=123.5f;
                 Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,0f,-5f,width-6f,25f);
+                dayHead[i].fontSize=roomy?18:17;
                 if(i==6)
                 {
                     Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,
-                        -width*.5f+48f,-11f,73f,57f);
+                        -width*.5f+48f,-11f,
+                        roomy?80f:73f,roomy?72f:57f);
                     if(dayArtwork[i])Place(dayArtwork[i].rectTransform,
-                        .5f,.5f,.5f,.5f,-width*.5f+48f,-11f,85f,65f);
+                        .5f,.5f,.5f,.5f,-width*.5f+48f,-11f,
+                        roomy?95f:85f,roomy?78f:65f);
                     if(rareDayGlow)Place(rareDayGlow.rectTransform,
-                        .5f,.5f,.5f,.5f,-width*.5f+48f,-11f,122f,96f);
+                        .5f,.5f,.5f,.5f,-width*.5f+48f,-11f,
+                        roomy?132f:122f,roomy?105f:96f);
                     Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
                         38f,-12f,width-116f,Mathf.Max(52f,cellH-39f));
                     // At 667x375 the double-width day-seven card is
                     // narrower; preserve two full prize lines without
                     // forcing unwanted wrap onto a third, clipped line.
-                    dayBody[i].fontSize=!portrait && width<318f?13:15;
+                    dayBody[i].fontSize=!portrait && width<318f?13:
+                        roomy?16:15;
                 }
                 else
                 {
@@ -1257,13 +1263,15 @@ namespace Eldoria.DailyTreasures
                     bool compactDouble=twoResources && cellH<=103f;
                     if(tiny)Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,
                         0f,-5f,cellW-6f,24f);
-                    float iconY=compactDouble?3f:twoResources?4f:tiny?2f:3f;
+                    float iconY=roomy?10f:
+                        compactDouble?3f:twoResources?4f:tiny?2f:3f;
                     Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,
-                        0f,iconY,48f,compactDouble?23f:tiny?24f:28f);
+                        0f,iconY,roomy?56f:48f,
+                        roomy?38f:compactDouble?23f:tiny?24f:28f);
                     if(dayArtwork[i])Place(dayArtwork[i].rectTransform,
                         .5f,.5f,.5f,.5f,0f,iconY,
-                        compactDouble?48f:tiny?51f:58f,
-                        compactDouble?23f:tiny?31f:42f);
+                        roomy?65f:compactDouble?48f:tiny?51f:58f,
+                        roomy?40f:compactDouble?23f:tiny?31f:42f);
                     float labelBottom=compactDouble?20f:
                         twoResources?27f:tiny?17f:18.5f;
                     float labelHeight=compactDouble?30f:
@@ -1271,7 +1279,8 @@ namespace Eldoria.DailyTreasures
                     Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
                         0f,-cellH*.5f+labelBottom,
                         cellW-10f,labelHeight);
-                    dayBody[i].fontSize=compactDouble?12:tiny?13:14;
+                    dayBody[i].fontSize=compactDouble?12:
+                        roomy?(twoResources?15:16):tiny?13:14;
                 }
             }
             if(focusedQuiet)
