@@ -160,6 +160,14 @@ jobs:
           name: mobile11-desktop-apple-gpu-not-iphone-certification
           github-token: ${{ github.token }}
           path: apple-evidence
+      - name: Checkout audited, frozen opt-in Pages pilot scripts
+        uses: actions/checkout@v4
+        with:
+          ref: 17bd1252711e3845fb9d9eeeef7cc323dc62e514
+          sparse-checkout: tools/eldoria-private-beta/pages
+          sparse-checkout-cone-mode: false
+          path: pilot-source
+          persist-credentials: false
       - name: Restore prior approved Pages routes from immutable owner artifact
         uses: actions/download-artifact@v4
         with:
@@ -222,6 +230,11 @@ jobs:
           assert size<1_073_741_824, 'Combined certified Pages exceeds official 1GiB; refuse destructive release'
           print('PAGES_MOBILE11_VERIFIED_STAGE',len(list(output.rglob('*'))),size,'preserved_previous_files',len(recovered))
           PY
+          # Separate opt-in QA entry; exact certified game index remains untouched.
+          # No invitations, QA events only, and no Unity progress claim until
+          # an exact native build of the source-defined signal emitter passes.
+          node --test pilot-source/tools/eldoria-private-beta/pages/*.test.mjs
+          node pilot-source/tools/eldoria-private-beta/pages/pilot-stage.mjs site/beta-native325 pilot-source/tools/eldoria-private-beta/pages
           node --check site/beta-native325/play.js
           node tools/delivery/test-exact-decoded-transport.mjs site/beta-native325
       - name: Configure existing GitHub Pages route
@@ -247,7 +260,16 @@ jobs:
               with urllib.request.urlopen(url+'index.html?verify='+str(attempt),timeout=20) as response:
                 html=response.read()
               assert b'play.js' in html or b'unity' in html.lower(), 'Not a playable WebGL page'
+              with urllib.request.urlopen(url+'pilot-preview-manifest.json?verify='+str(attempt),timeout=20) as response:
+                pilot=json.load(response)
+              assert pilot['source_sha']==identity['source_sha'] and pilot['external_testers_enabled'] is False
+              assert pilot['telemetry_backend']=='supabase_edge_qa_only'
+              with urllib.request.urlopen(url+'pilot.html?verify='+str(attempt),timeout=20) as response:
+                preview=response.read()
+              assert b'pilot-bootstrap.mjs' in preview and b'ELDORIA_PILOT_QA' in preview
+              assert b'pilot-bootstrap.mjs' not in html, 'Default certified game must not be instrumented'
               print('LIVE_OWNER_BETA11_TIMER_ATTACHED_RELEASE_PASS',url)
+              print('LIVE_OPTIONAL_GITHUB_PAGES_QA_PILOT_PRESENT_NOT_TESTER_RELEASE')
               break
             except Exception:
               if attempt==17:raise
