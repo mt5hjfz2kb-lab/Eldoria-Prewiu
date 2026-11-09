@@ -615,8 +615,12 @@ namespace Eldoria.BreachWatch
             portraitView.raycastTarget=false;
             buildingPortrait=gameObject.AddComponent<BreachWatchBuildingPortrait>();
             buildingPortrait.Initialize(portraitView);
+            // Keep one SMALL engraved building identifier, not a bright
+            // white pictogram visually floating above the owner's metalwork.
+            // Typography and engraved icon now share the warm metal palette.
             var buildingSeal=Glyph(panel,"Building crest",BreachWatchGlyph.Sigil.Castle);
-            At((RectTransform)buildingSeal.transform,14,14,36,36);
+            buildingSeal.Ink=new Color(.76f,.62f,.42f,1f);
+            At((RectTransform)buildingSeal.transform,18,16,29,29);
             buildingName=Label(panel,"Real building name",22,TextAnchor.MiddleLeft,TextIvory,true);
             buildingLevel=Label(panel,"Real building level",15,TextAnchor.MiddleLeft,Copper,true);
             buildingFunction=Label(panel,"Real effects",17,TextAnchor.UpperLeft,TextIvory);
