@@ -733,7 +733,8 @@ namespace Eldoria.BreachWatch.Editor
                         .FirstOrDefault(q=>q && q.name=="Real action title");
                     Need(actionText && actionText.gameObject.activeInHierarchy &&
                          actionText.rectTransform.anchoredPosition.x>=
-                            action.rect.width*.22f,
+                            hammers.rectTransform.anchoredPosition.x+
+                            hammers.rectTransform.rect.width+1f,
                          "Real premium upgrade text overlaps engraved crossed hammers: "+name);
                     Need(actionText.rectTransform.anchoredPosition.x+
                          actionText.rectTransform.rect.width<=action.rect.width-2f,
