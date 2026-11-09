@@ -104,8 +104,10 @@ export function checkCandidate(m, root) {
     const d = matching[0];
     if (d.status !== 'PASS' || d.physical_device !== true ||
         !d.model || !d.os || d.source_sha !== m.source_sha ||
-        d.artifact_sha256 !== m.artifact_sha256)
-      errors.push(channel + ': physical device, exact candidate and PASS required');
+        d.artifact_sha256 !== m.artifact_sha256 ||
+        !Number.isFinite(d.session_minutes) || d.session_minutes < 30 ||
+        d.uninterrupted !== true || d.reload_persisted !== true)
+      errors.push(channel + ': physical device, exact candidate, >=30 uninterrupted minutes and saved reload PASS required');
     readVerifiedEvidence(root, d.evidence_path, d.evidence_sha256, errors, channel + ' device QA');
   }
   if (devices.length !== (m.channels || []).length) errors.push('device_tests: unexpected or incomplete device evidence');
