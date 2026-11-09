@@ -4,11 +4,13 @@ on:
     branches: [feature/eldoria-private-beta-i-v-20261107]
     paths:
       - 'tools/eldoria-private-beta/pages/**'
+      - 'tools/eldoria-private-beta/native/ux/ValoriaIntegratedWorld.cs.txt'
       - '.github/workflows/eldoria-pages-telemetry-tests.yml'
   pull_request:
     branches: [main]
     paths:
       - 'tools/eldoria-private-beta/pages/**'
+      - 'tools/eldoria-private-beta/native/ux/ValoriaIntegratedWorld.cs.txt'
       - '.github/workflows/eldoria-pages-telemetry-tests.yml'
 permissions:
   contents: read
@@ -25,6 +27,7 @@ jobs:
         with:
           sparse-checkout: |
             tools/eldoria-private-beta/pages
+            tools/eldoria-private-beta/native/ux/ValoriaIntegratedWorld.cs.txt
             tools/eldoria-private-beta/supabase/index.mjs
           persist-credentials: false
       - uses: actions/setup-node@v4
