@@ -801,13 +801,11 @@ namespace Eldoria.BreachWatch.Editor
                     .FirstOrDefault(q=>q && q.name=="Actual chapter");
                 var chapterSigil=ui.GetComponentsInChildren<BreachWatchGlyph>(true)
                     .FirstOrDefault(q=>q && q.name=="Chapter stone rune");
-                Need(chapterLabel && chapterSigil &&
-                     chapterLabel.gameObject.activeInHierarchy &&
-                     chapterLabel.rectTransform.anchoredPosition.x>=
-                         ((RectTransform)chapterSigil.transform).anchoredPosition.x+
-                         ((RectTransform)chapterSigil.transform).rect.width+1.5f,
-                     "Engraved chapter sigil physically overlaps chapter title in "+
-                     name);
+                Need(chapterLabel && chapterLabel.gameObject.activeInHierarchy &&
+                     chapterSigil==null &&
+                     chapterLabel.rectTransform.anchoredPosition.x>=16f,
+                     "A vector chapter crest still floats over the ORIGINAL "+
+                     "painted quest or the actual title clips its margin: "+name);
                 if(host.City.Gateway.Snapshot().BastionLevel==1)
                     Need(chapterLabel && chapterLabel.gameObject.activeInHierarchy &&
                          (host.English
@@ -848,11 +846,10 @@ namespace Eldoria.BreachWatch.Editor
                          "Premium Bastion panel allows city clicks through a blank slate area: "+name);
                     var engravedBastion=ui.BuildingPanel.GetComponentsInChildren<BreachWatchGlyph>(true)
                         .FirstOrDefault(g=>g && g.name=="Building crest");
-                    Need(engravedBastion &&
-                         engravedBastion.Ink.r<=.80f &&
-                         engravedBastion.Ink.g<=.66f &&
-                         ((RectTransform)engravedBastion.transform).rect.width<=31f,
-                         "Oversized bright vector emblem pasted over native carved header: "+name);
+                    Need(engravedBastion==null,
+                         "An extra vector tower is pasted over the owner "+
+                         "stone while the actual Bastion title already "+
+                         "identifies the building: "+name);
                     // The old right card placed the live Bastion header
                     // and level RIGHT against the invisible close-hit rect,
                     // creating a visible title/button collision on phones.
