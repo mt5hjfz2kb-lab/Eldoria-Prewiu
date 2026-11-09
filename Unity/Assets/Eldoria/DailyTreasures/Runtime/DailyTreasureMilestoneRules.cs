@@ -17,9 +17,37 @@ namespace Eldoria.DailyTreasures
             if(before?.Retention==null || after?.Retention==null ||
                string.IsNullOrWhiteSpace(orderId))return false;
             var order=after.Retention.Orders?.FirstOrDefault(o=>
-                o!=null && o.Id==orderId && o.Claimed);
-            if(order==null || order.Kind<0 || order.Kind>3)return false;
-            int mask=1<<order.Kind;
+                o!=null && o.Id==orderId);
+            int kind=-1;
+            if(order!=null)
+            {
+                // An existing but unclaimed order must never be replaced by
+                // an older report merely to produce a ceremony.
+                if(!order.Claimed)return false;
+                kind=order.Kind;
+            }
+            else
+            {
+                // LocalGateway records the immutable, claimed-order report
+                // BEFORE EarlyRetentionRules.Synchronize trims older orders.
+                // A delayed, genuinely first family claim can therefore
+                // disappear from Orders in the very same saved revision.
+                // Recover only that exact newly-claimed order from both the
+                // pre-command snapshot and its authoritative mail receipt.
+                var beforeOrder=before.Retention.Orders?.FirstOrDefault(o=>
+                    o!=null && o.Id==orderId);
+                var mail=after.Mailbox?.Messages?.FirstOrDefault(m=>
+                    m!=null && m.Type=="exploration" &&
+                    m.Category=="informes" && m.DiscoveryOrderId==orderId &&
+                    !string.IsNullOrWhiteSpace(m.RewardReceiptId) &&
+                    m.EventId=="exploration:"+m.RewardReceiptId);
+                if(beforeOrder==null || beforeOrder.Claimed || mail==null ||
+                   beforeOrder.Kind!=mail.DiscoveryKind)
+                    return false;
+                kind=mail.DiscoveryKind;
+            }
+            if(kind<0 || kind>3)return false;
+            int mask=1<<kind;
             if((before.Retention.ScoutDiscoveryMask & mask)!=0)return false;
             if((after.Retention.ScoutDiscoveryMask & mask)==0)return false;
             // Only this specific newly completed order can start a ceremony.
