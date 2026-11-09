@@ -121,9 +121,18 @@ jobs:
           (owner_folder/'index.html').write_text(
             '<!doctype html><html lang="es"><meta charset="utf-8">'
             '<meta name="robots" content="noindex,nofollow">'
-            '<meta http-equiv="refresh" content="0;url=../beta-native325/direct-beta.html">'
+            '<meta http-equiv="refresh" content="0;url=../beta-native325/index.html">'
             '<title>Eldoria · recuperación P0</title>'
-            '<a href="../beta-native325/direct-beta.html">Abrir la versión recuperada de Eldoria</a></html>')
+            '<a href="../beta-native325/index.html">Abrir la versión recuperada de Eldoria</a></html>')
+          # Archived root's historical redirect may still target the old owner
+          # build. After the compact P0 restore it must lead to an EXISTING
+          # entry, not to a removed Unity asset or absent direct-beta.html.
+          (root/'index.html').write_text(
+            '<!doctype html><html lang="es"><meta charset="utf-8">'
+            '<meta name="robots" content="noindex,nofollow">'
+            '<meta http-equiv="refresh" content="0;url=./beta-native325/index.html">'
+            '<title>Eldoria · versión recuperada</title>'
+            '<a href="./beta-native325/index.html">Abrir beta 10 de Eldoria</a></html>')
           (owner_folder/'recovery.json').write_text(json.dumps({
             'status':'P0_TEMPORARY_ALIAS_TO_PREVIOUS_BETA10',
             'full_owner_snapshot_preserved_at':13692621676,
@@ -170,6 +179,8 @@ jobs:
               assert get('beta-native325/payload-decoded/native325-mobile10-pretest-ux-0.gz','HEAD')==200
               assert get('unity-owner/index.html','HEAD')==200
               assert get('beta-native325/index.html','HEAD')==200
+              assert b'../beta-native325/index.html' in get('unity-owner/index.html')
+              assert b'./beta-native325/index.html' in get('index.html')
               print('ELDORIA_P0_OLD_BETA10_RESTORED_LIVE_PENDING_PHYSICAL_IPHONE')
               break
             except Exception as e:
