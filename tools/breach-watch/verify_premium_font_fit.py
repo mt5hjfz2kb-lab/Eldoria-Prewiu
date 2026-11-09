@@ -73,6 +73,18 @@ def verify():
     inset_390=max(31,min(38,action_width*.25))
     fits("Mejorar a II",SEMIBOLD,15,
          action_width-inset_390-7,"390px compact upgrade caption")
+    # In native landscape the same REAL 246x60 owner CTA is shown as a
+    # centered preserved-aspect sprite. A 38-unit cap let the caption
+    # overlap the painted hammer at both 1600x900 and 844x390.
+    for action_width,label in [(196,"1600x900"),(186,"844x390")]:
+        inset=max(31,min(60,action_width*.25))
+        assert inset>=action_width*.25-.01
+        fits("Mejorar a Bastión II",SEMIBOLD,16,
+             action_width-inset-7,label+" authentic hammered CTA")
+    hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
+    assert "Mathf.Clamp(plate.rect.width*.25f,31f,60f)" in hud,
+           "Landscape upgrade hammer clearance was regressed"
+
     # Physical pixels: compact first-screen body glyphs and five nav areas
     # cannot be reduced to sub-12-pixel unreadable text.
     scale_390=max(.91,min(3.0,390/514))
