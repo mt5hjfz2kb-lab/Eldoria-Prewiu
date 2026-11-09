@@ -1012,7 +1012,12 @@ namespace Eldoria.BreachWatch
                 float missionHeight=smallPhone?82f:78f;
                 At(objective,margin,missionTop,missionWidth,
                     fullObjective?112f:missionHeight);
-                At(chapterName.rectTransform,59f,8f,missionWidth-70f,20f);
+                // A genuine 390x844 phone showed 12*.91=10.92px, below
+                // the minimum readable physical text. Use a 13u authored
+                // serif chapter and reclaim a little space right of the
+                // badge without overlaying the real emblem or metal contour.
+                At(chapterName.rectTransform,smallPhone?54f:59f,8f,
+                    missionWidth-(smallPhone?64f:70f),20f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
                 // above the plate bottom on 900x1600, failing real GPU QA.
@@ -1020,10 +1025,10 @@ namespace Eldoria.BreachWatch
                     missionWidth-70f,fullObjective?51f:20f);
                 At(chapterProgress.rectTransform,59f,
                     fullObjective?87f:55f,missionWidth-70f,20f);
-                chapterName.fontSize=12;
+                chapterName.fontSize=smallPhone?13:12;
                 chapterName.resizeTextForBestFit=true;
-                chapterName.resizeTextMinSize=11;
-                chapterName.resizeTextMaxSize=12;
+                chapterName.resizeTextMinSize=smallPhone?13:11;
+                chapterName.resizeTextMaxSize=smallPhone?13:12;
                 chapterObjective.fontSize=smallPhone?14:13;
                 chapterObjective.resizeTextForBestFit=true;
                 chapterObjective.resizeTextMinSize=12;
