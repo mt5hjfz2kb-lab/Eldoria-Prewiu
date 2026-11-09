@@ -93,6 +93,44 @@ def scenery_window(image, width, height):
     return image.crop((round(x0*width),round(y0*height),
                        round(x1*width),round(y1*height)))
 
+def paid_label_pixel_proof(image, variant, width, height):
+    """Verify names AND paid quantities actually contribute visible pixels.
+
+    The first *real* Unity 1600x900 frames showed four gold-framed cards
+    with their icons but entirely blank label/amount columns. Their Unity
+    Text components were nonempty and height metrics passed, yet the GPU
+    image had literally zero illuminated pixels in the right-side column.
+    Sampling the genuine rendered RGB24 output prevents that false PASS.
+    This geometry contract applies to current one-row landscape layout only;
+    portrait is still checked via native RectTransform and human captures.
+    """
+    assert_quality(width>height, "Pixel proof requires landscape reward rows")
+    count=4 if variant=="opened" else 2
+    assert_quality(variant in ("opened","special-day4-received"),
+                   "Unknown actual-paid reward style")
+    panel_width=min(width-24,740)
+    gap=6
+    card_width=min(140,(panel_width-38-(count-1)*gap)/count)
+    shelf_y=round(height*.5+69)
+    rgb=image.convert("RGB")
+    results=[]
+    for i in range(count):
+        center_x=round(width*.5+
+            (i-(count-1)/2)*(card_width+gap))
+        # The new premium short-card layout reserves this RIGHT column for
+        # resource name and actual quantity, away from card frame and icon.
+        window=(center_x+22,shelf_y-18,center_x+56,shelf_y+23)
+        crop=rgb.crop(window)
+        colored=sum(1 for r,g,b in crop.getdata()
+            if r>95 and g>65 and b>40)
+        assert_quality(colored>=15,
+            "Paid reward card "+str(i+1)+" has blank/occluded name and "
+            "quantity in real "+str(width)+"x"+str(height)+" Unity pixels: "
+            +variant+" count="+str(colored))
+        results.append(colored)
+    return results
+
+
 def read_report(folder, expected_sha):
     report_file=folder/"report.json"
     assert_quality(report_file.is_file(),"Unity did not produce report.json")
@@ -201,6 +239,16 @@ def analyze(folder,expected_sha,output):
                 metrics["neonVioletRatioForHumanReview"],
         })
     assert_quality(set(actual)==wanted,"Missing variant or device size")
+
+    # A screenshot of the four luxury cards is NOT quality evidence if
+    # only the icons and frames render. Require real luminous TEXT pixels.
+    # This rejects the exact first native defect independently of C# bounds.
+    for width,height in REQUIRED_SIZES:
+        if width<=height:
+            continue
+        for variant in ("opened","special-day4-received"):
+            paid_label_pixel_proof(
+                actual[(variant,width,height)][0],variant,width,height)
 
     transitions=[]
     for w,h in REQUIRED_SIZES:
