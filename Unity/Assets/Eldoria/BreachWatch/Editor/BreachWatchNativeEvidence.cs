@@ -452,6 +452,9 @@ namespace Eldoria.BreachWatch.Editor
                      "without a large flat HUD footer: "+name);
                 Need(ui.HasPremiumResourceSurfaces,
                     "All three live resources must use real independent clean slate nine-slice capsules, not overlapping procedural frames");
+                Need(ui.HasOwnerApprovedUtilityArtwork,
+                    "The three compact utility seals must match the separately cropped "+
+                    "gold medallions in the owner's approved UI, not generic hexagons");
                 Need(ui.BuildingPanel.GetComponentsInChildren<BreachWatchPanelInk>(true).Length==1 &&
                      !ui.BuildingPanel.GetComponent<BreachWatchPlate>() &&
                      ui.BuildingPanel.GetComponent<BreachWatchPanelInk>().raycastTarget,
