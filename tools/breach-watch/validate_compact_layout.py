@@ -124,9 +124,9 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert chapter_text.x>=16 and chapter_text.x+chapter_text.w<=214,size
         place("breach",w*.49-17,11,34,34)
         gap=4
-        navsize=105 if h<530 else 130
+        navsize=100 if h<530 else 130
         navheight=72 if h<530 else 80
-        dockheight=81 if h<530 else 90
+        dockheight=77 if h<530 else 90
         navw=22+nav_count*navsize+(nav_count-1)*gap
         navtop=h-dockheight-7
         dock=place("integrated-dock",(w-navw)*.5,navtop,navw,dockheight)
@@ -180,7 +180,7 @@ def main():
         'float navTop=h-102f',
         'float ph=303f',
         'At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50)',
-        'float navGap=4f,navSize=h<530f?105f:130f;',
+        'float navGap=4f,navSize=h<530f?100f:130f;',
         'float navTop=h-dockHeight-7f',
         'float pw=h<530f?234f:220f',
         'float ph=Mathf.Min(330,h-174f)',
