@@ -8,5 +8,7 @@
   "reason": "Owner-reported construction timer must follow its 3D building on camera pan and hide when offscreen.",
   "request_type": "one-shot_native_qa_on_exclusive_lease",
   "last_requested": "2026-11-09",
-  "requested_for": "2026-11-09T15:11:00+01:00"
+  "requested_for": "2026-11-09T15:46:00+01:00",
+  "retry_of": 42632523100,
+  "retry_reason": "Native first run exposed an invalid test expectation: illustrated selected-site cartouche intentionally suppresses duplicate timer. Verify actual timer after same-frame deselection, camera pan and offscreen in Unity."
 }
