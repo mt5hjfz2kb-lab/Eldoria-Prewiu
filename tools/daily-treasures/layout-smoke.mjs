@@ -160,8 +160,11 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   {
     const lerp=(a,b)=>a+(b-a)*t;
     const tweenH=lerp(openH,Math.min(h-20,portrait?700:370));
-    const artY=lerp(portrait?64:42,portrait?116:89);
-    const artH=lerp(portrait?265:194,portrait?246:170);
+    const shortLand=!portrait && Math.min(h-20,370)<365;
+    const artY=lerp(portrait?64:42,
+                    portrait?116:shortLand?83:89);
+    const artH=lerp(portrait?265:194,
+                    portrait?246:shortLand?164:170);
     const captionY=lerp(portrait?-132:-100,
       portrait?(Math.min(h-20,700)<680?-217:-232):-15);
     const captionH=portrait?45:32;
@@ -178,7 +181,10 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   // illustrated cards; day seven (four rewards) uses nearly the full width.
   const paidW=Math.min(w-24,portrait?440:650);
   const paidH=Math.min(h-20,portrait?700:370);
-  const chest=rect(0,portrait?116:89,portrait?284:300,portrait?246:170);
+  const shortPaid=!portrait && paidH<365;
+  const chest=rect(0,portrait?116:shortPaid?83:89,
+    portrait?284:shortPaid?290:300,
+    portrait?246:shortPaid?164:170);
   const captionY=portrait?(paidH<680?-217:-232):-15;
   const captionH=portrait?(paidH<680?39:50):29;
   const caption=rect(0,captionY,paidW-45,captionH);
