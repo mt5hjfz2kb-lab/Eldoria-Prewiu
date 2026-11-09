@@ -211,7 +211,11 @@ namespace Eldoria.BreachWatch
         // one owner-approved external gold contour. The superseded basalt
         // picture and extra interim dark overlays are NOT layered under it.
         public bool UsesSinglePremiumContext =>
-            panel && panel.GetComponent<BreachWatchPanelInk>() &&
+            panel && panel.GetComponent<Image>() &&
+            panel.GetComponent<Image>().sprite ==
+                Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill") &&
+            panel.GetComponent<Image>().type==Image.Type.Simple &&
+            !panel.GetComponent<BreachWatchPanelInk>() &&
             !panel.GetComponent<BreachWatchPlate>() &&
             UsesExactOwnerApprovedGoldBorder;
         public bool UsesPremiumBurgundyAction =>
@@ -519,9 +523,19 @@ namespace Eldoria.BreachWatch
             // Delete the obsolete intermediate nine-slice panel and its
             // second dark child. The bright outer metal is a separate,
             // transparent approved border; neither competes with the other.
-            var singleSlate=panel.gameObject.AddComponent<BreachWatchPanelInk>();
-            // Unlike the decorative owner border, this single opaque card
-            // is a passive shield against city taps between live controls.
+            // Actual warm stone from the owner's approved, BLANK texture
+            // source. It REPLACES the featureless procedural PanelInk mesh:
+            // exactly one painted surface behind the single transparent
+            // outer-gold reference border, never another card layered on top.
+            var realMineral=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/panel_fill");
+            if(!realMineral)
+                throw new InvalidOperationException(
+                    "Missing separately authored owner-reference mineral card material");
+            var singleSlate=panel.gameObject.AddComponent<Image>();
+            singleSlate.sprite=realMineral;
+            singleSlate.type=Image.Type.Simple;
+            singleSlate.preserveAspect=false;
+            // Passive native input shield prevents clicks leaking through.
             singleSlate.raycastTarget=true;
             AddContactShadow(panel,8f,.58f);
             // Most faithful finish: transparent embossed metal border
