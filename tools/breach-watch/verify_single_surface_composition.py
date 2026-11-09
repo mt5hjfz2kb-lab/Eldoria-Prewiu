@@ -50,15 +50,15 @@ assert "Need(depthLayers.Length==0" in QA
 atmosphere=(ROOT/"Runtime/BreachWatchAtmosphere.cs").read_text(encoding="utf-8")
 assert HUD.index('Rect("Soft volcanic atmosphere / no world replacement"') < HUD.index('identity=Rect("Identity / basalt crest"')
 assert "raycastTarget = false;" in atmosphere
-assert "float alpha=.080f+.155f*ring*ring+" in atmosphere
-assert ".040f*Mathf.Pow(dy,3f);" in atmosphere
-assert "new Color(.055f,.078f,.115f," in atmosphere
-assert "Mathf.Clamp(alpha,0f,.280f)" in atmosphere
+assert "float alpha=.175f+.205f*ring*ring+" in atmosphere
+assert ".055f*Mathf.Pow(dy,3f);" in atmosphere
+assert "new Color(.045f,.065f,.110f," in atmosphere
+assert "Mathf.Clamp(alpha,0f,.445f)" in atmosphere
 # Source formula keeps screen center at 8%, peripheral tint <=28% and
 # *cannot* replace the actual terrain, building meshes or cameras.
-center_alpha=.080
-corner_alpha=.080+.155+.040
-assert .05<=center_alpha<=.12 and corner_alpha<=.280
+center_alpha=.175
+corner_alpha=.175+.205+.055
+assert .15<=center_alpha<=.20 and corner_alpha<=.445
 for name in ("identitySurface","resourceSurface","chapterStone","singleSlate","surface"):
     assert name+".color=new Color(.97f,.95f,.90f,1f);" in HUD, (
         name, "an inconsistent outer material palette returned")
