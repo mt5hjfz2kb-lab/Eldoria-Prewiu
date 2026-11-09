@@ -1,16 +1,17 @@
 # Canonical PR181 owner-authorized Unity proof. One exclusive Windows lease.
-# Last ordinary + special-day source CI: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42618656809 PASS (HEAD before this request).
+# Last source CI: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42618948192 PASS
 # Native run must require branch HEAD == this exact request commit.
 # Additional scripted QA: 20 ordinary-day images and 20 real claims, separate from
 # 52 contract PNG, 8 actual day4/7 awards, 16 nonpaying milestone style probes.
 state=REQUEST_NATIVE_EXACT_HEAD
 workstream=eldoria-daily-treasures-20261108
-source_before_request=00f2f840c3e0da5667338e32d16b1dd9f04b052a
+source_before_request=a61902f60be7cc70ebf3de15cc03659920db3427
 scope=52_contract_png_plus_20_quiet_png_116_real_pointer_28_gateway_claims_16_nonpaying_styles
 asset_policy=13_original_sha256_png_plus_live_eldoria_scenery
-source_ci_run=42618656809
+source_ci_run=42618948192
 runner_lease_revision=17
 native_target=Unity-6000.3.23f1
 full_game_verified=false
 art_approved=false
 merge_or_publish=false
+# New exact-head request after domain PASS and formally claimed main Windows lease.
