@@ -1,2 +1,10 @@
-# Native runner belongs to PR173: this file MUST NOT trigger an execution until it is formally released.
-state=WAIT_FOR_EXCLUSIVE_UNITY_LEASE
+# Explicit user-authorized PR181 native graphics / UX evaluation.
+# The canonical main registry grants the current workstream the sole
+# windows-runner-heavy claim. The workflow rechecks CAS owner, current
+# HEAD and live Unity/Blender processes before touching the shared PC.
+state=REQUEST_NATIVE_EXACT_HEAD
+workstream=eldoria-daily-treasures-20261108
+scope=52_real_Unity_PNG_56_pointer_8_gateway_claims_16_visual_only
+asset_policy=original_coffer_and_authored_painterly_resource_sprites
+merge_or_publish=false
+art_approved=false
