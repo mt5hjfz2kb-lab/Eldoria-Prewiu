@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T13:20:14.284Z",
+  "updated_at": "2026-11-09T13:25:40.315Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7245,17 +7245,29 @@
       "budget_eur": 0,
       "claimed_at": "2026-11-09T13:13:27.651Z",
       "base_main_sha": null,
-      "phase": "ISOLATED_TRIAL_CODE_AND_BROWSER_LAYOUT_PROOF",
-      "next": "Prepare complete isolated Unity trial, validate editor screenshots and no gameplay/save regressions before optional beta integration. No Windows runner while held by PR181.",
-      "note": "Reversible branding proof. Browser QA PASS. Native Unity NOT RUN, original PNG not yet in branch; temporary Windows runner stays with PR181. Existing unrelated early-retention domain job fails CS0103 NarrativeCoherenceRules.",
+      "phase": "BROWSER_QA_PASS_GITHUB_SOURCE_SANITY_PASS_UNITY_NOT_RUN",
+      "next": "Transfer approved original PNG to isolated PR184; real Unity Play capture before/after tutorial/save; native APK/WebGL trial with runner lease when free. No merge or publication.",
+      "note": "CI eonscar source-sanity PASS at de03147b0afbcf4297827ddb8897a11bff53edfb; domain EarlyRetentionRules failure CS0103 unrelated; public itch.io browser restricted. Logo image not yet versioned in GitHub. No native Unity execution, no product rename.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Opt-in presentation-only prototype with existing owner-selected generated art; no new 3D or gameplay assets.",
       "last_verified": {
-        "browser_preview": "Chromium responsive 1920x1080,844x390,390x844 and two-way button navigation PASS; NOT Unity",
+        "browser_preview": "Chromium PASS: desktop 1920x1080, landscape 844x390, portrait 390x844; logo and two buttons work; no JS exceptions",
         "unity_native": "NOT_RUN",
-        "production_published": false
+        "production_published": false,
+        "current_pr": 184,
+        "branch_head": "de03147b0afbcf4297827ddb8897a11bff53edfb",
+        "source_sanity_run": 42625212265,
+        "source_sanity_result": "success",
+        "ownership_gate": "success",
+        "metadata_gate": "success",
+        "domain_gate": "failure_unrelated_early_retention_missing_NarrativeCoherenceRules",
+        "webgl_real": "NOT_RUN_public_itch_restricted",
+        "android_native": "NOT_RUN",
+        "asset_committed_to_branch": false,
+        "art_approved": false,
+        "windows_reserved_by_other": true
       }
     }
   ],
