@@ -1282,15 +1282,19 @@ namespace Eldoria.DailyTreasures
             // chest, a caption beneath it and no giant empty lower panel.
             // On completion the chest returns to the upper focal position
             // while the *actual paid* cards fill the newly available space.
+            // Short 667x375 landscapes have only 355px of usable panel
+            // height; keep a real 10px+ safety margin above the chest even
+            // at the peak 3.5% animation scale, instead of clipping its lid.
+            bool shortPaidLandscape=!portrait && h-20f<365f;
             float chestY=openingChest?(portrait?64f:42f):
                 focusedQuiet?(portrait?64f:35f):
-                prizeCount>0?(portrait?116f:89f):
+                prizeCount>0?(portrait?116f:shortPaidLandscape?83f:89f):
                 (portrait?105f:87f);
             float artWidth=openingChest?(portrait?330f:330f):
-                prizeCount>0?(portrait?284f:300f):
+                prizeCount>0?(portrait?284f:shortPaidLandscape?290f:300f):
                 (portrait?294f:282f);
             float artHeight=openingChest?(portrait?265f:194f):
-                prizeCount>0?(portrait?246f:170f):
+                prizeCount>0?(portrait?246f:shortPaidLandscape?164f:170f):
                 (portrait?265f:175f);
             float chestX=eventStage?stage.ChestX:0f;
             if(eventStage)
@@ -1694,11 +1698,13 @@ namespace Eldoria.DailyTreasures
                     skipRect.anchoredPosition.x,
                     -60f+(openingH-sceneH)*.5f);
             }
+            bool compactLandscape=!portrait && paidH<365f;
             float y=Mathf.Lerp(portrait?64f:42f,
-                portrait?116f:89f,t);
-            float artW=Mathf.Lerp(330f,portrait?284f:300f,t);
+                portrait?116f:compactLandscape?83f:89f,t);
+            float artW=Mathf.Lerp(330f,
+                portrait?284f:compactLandscape?290f:300f,t);
             float artH=Mathf.Lerp(portrait?265f:194f,
-                portrait?246f:170f,t);
+                portrait?246f:compactLandscape?164f:170f,t);
             // Explicit owned references rather than new Image[] or
             // RectTransform[] allocations on every animation frame.
             if(illustratedClosed)
