@@ -18,6 +18,7 @@ for(const [name,regex] of [
   ['normal glyph height',/compactDouble\?23f:tiny\?24f:28f/],
   ['normal reward body height',/float labelHeight=compactDouble\?30f:/],
   ['compact doubled-resource icon relocation',/float iconY=compactDouble\?3f:twoResources\?4f:/],
+  ['day-three streak uses actual preview text',/bool twoResources=dayBody\[i\]\.text\.IndexOf\('\\n'\)>=0/],
   ['quiet item avoids text collision',/0f,-cardH\*\.08f,cardW-15f,24f/],
   ['quiet item has real quantity bounds',/0f,-cardH\*\.35f,cardW-15f,28f/],
   ['large reward body grows with card',/Mathf\.Max\(52f,cellH-39f\)/],
@@ -74,20 +75,28 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
     {
       // Mirror the CURRENT Unity layout rather than measuring an obsolete
       // 2026-11-08 version that previously passed despite real clipped text.
-      const twoResources=i===3||i===5;
-      const compactDouble=twoResources&&ch<=103;
-      const iconY=compactDouble?3:twoResources?4:tiny?2:3;
-      const iconH=compactDouble?23:tiny?24:28;
-      const iconTop=iconY+iconH/2,iconBottom=iconY-iconH/2;
-      const bottom=compactDouble?20:twoResources?27:tiny?17:18.5;
-      const bodyH=compactDouble?30:twoResources?36:tiny?31:33;
-      const bodyTop=-ch/2+bottom+bodyH/2;
-      assert.ok(titleBottom>=iconTop+2,
-        `${w}x${h}: day ${i+1} title overlaps painted icon`);
-      assert.ok(iconBottom>=bodyTop+2,
-        `${w}x${h}: day ${i+1} painted icon overlaps resource text`);
-      if(twoResources)assert.ok(bottom-bodyH/2>=4.5,
-        `${w}x${h}: day ${i+1} second resource sits on the bronze border`);
+      // Day three can be ONE resource without loyalty, or TWO when a
+      // real third-day streak adds food to the speedup. The production
+      // layout now reads the actual preview text, never a hard-coded
+      // day-4/day-6 assumption. Model BOTH legitimate states in all sizes.
+      const rewardLineScenarios=i===2?[1,2]:(i===3||i===5)?[2]:[1];
+      for(const lineCount of rewardLineScenarios)
+      {
+        const twoResources=lineCount===2;
+        const compactDouble=twoResources&&ch<=103;
+        const iconY=compactDouble?3:twoResources?4:tiny?2:3;
+        const iconH=compactDouble?23:tiny?24:28;
+        const iconTop=iconY+iconH/2,iconBottom=iconY-iconH/2;
+        const bottom=compactDouble?20:twoResources?27:tiny?17:18.5;
+        const bodyH=compactDouble?30:twoResources?36:tiny?31:33;
+        const bodyTop=-ch/2+bottom+bodyH/2;
+        assert.ok(titleBottom>=iconTop+2,
+          `${w}x${h}: day ${i+1} with ${lineCount} lines: heading hits icon`);
+        assert.ok(iconBottom>=bodyTop+2,
+          `${w}x${h}: day ${i+1} with ${lineCount} lines: icon hits reward text`);
+        if(twoResources)assert.ok(bottom-bodyH/2>=4.5,
+          `${w}x${h}: day ${i+1} loyalty/second item sits on the bronze border`);
+      }
     }
     else
     {
