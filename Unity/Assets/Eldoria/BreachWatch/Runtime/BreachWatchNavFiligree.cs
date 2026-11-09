@@ -12,10 +12,12 @@ namespace Eldoria.BreachWatch
     {
         float medallionStep=70f;
         float medallionSize=55f;
-        public void Configure(float step,float diameter)
+        int visibleMedallions=5;
+        public void Configure(float step,float diameter,int count=5)
         {
             medallionStep=Mathf.Max(20f,step);
             medallionSize=Mathf.Max(15f,diameter);
+            visibleMedallions=Mathf.Clamp(count,0,5);
             SetVerticesDirty();
         }
         protected override void Awake()
@@ -28,11 +30,11 @@ namespace Eldoria.BreachWatch
         {
             vh.Clear();
             Rect r=GetPixelAdjustedRect();
-            if(r.width<220||r.height<30)return;
+            if(r.width<80||r.height<30||visibleMedallions<2)return;
             float y=r.center.y;
             float step=medallionStep;
             float first=r.xMin+medallionSize*.5f;
-            float last=first+4*step;
+            float last=first+(visibleMedallions-1)*step;
             var shadow=new Color(.04f,.025f,.02f,.83f);
             var copper=new Color(.60f,.36f,.18f,.86f);
             var gold=new Color(.86f,.64f,.31f,.88f);
@@ -68,7 +70,7 @@ namespace Eldoria.BreachWatch
             Line(new Vector2(r.xMin+8,y+1.1f),new Vector2(r.xMax-8,y+1.1f),.75f,gold);
             Diamond(r.xMin+8,5);
             Diamond(r.xMax-8,5);
-            for(int i=0;i<4;i++)
+            for(int i=0;i<visibleMedallions-1;i++)
                 Diamond(first+(i+.5f)*step,4.8f);
         }
     }
