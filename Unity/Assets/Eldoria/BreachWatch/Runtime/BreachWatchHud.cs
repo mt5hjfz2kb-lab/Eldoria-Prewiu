@@ -1024,7 +1024,7 @@ namespace Eldoria.BreachWatch
                 float missionWidth=Mathf.Min(smallPhone?211f:184f,
                     w*(smallPhone?.49f:.41f));
                 float missionTop=smallPhone?87f:82f;
-                float missionHeight=smallPhone?69f:55f;
+                float missionHeight=smallPhone?69f:60f;
                 At(objective,margin,missionTop,missionWidth,
                     fullObjective?112f:missionHeight);
                 // A genuine 390x844 phone showed 12*.91=10.92px, below
@@ -1045,8 +1045,8 @@ namespace Eldoria.BreachWatch
                     smallPhone?26f:20f,missionWidth-(smallPhone?70f:57f),
                     fullObjective?51f:(smallPhone?18f:15f));
                 At(chapterProgress.rectTransform,smallPhone?59f:48f,
-                    fullObjective?87f:(smallPhone?45f:36f),
-                    missionWidth-(smallPhone?70f:57f),smallPhone?18f:16f);
+                    fullObjective?87f:(smallPhone?46f:37f),
+                    missionWidth-(smallPhone?70f:57f),18f);
                 chapterName.fontSize=smallPhone?13:11;
                 chapterName.resizeTextForBestFit=true;
                 chapterName.resizeTextMinSize=smallPhone?13:11;
