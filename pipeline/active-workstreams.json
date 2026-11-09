@@ -6788,10 +6788,10 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
-      "ownership_state": "claimed",
-      "ownership_revision": 14,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 15,
+      "write_scope_released": true,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
       "scope": [
@@ -6818,7 +6818,7 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "OWNER_REQUESTED_CANONICAL_BETA10_MAIN_INTEGRATION",
+      "phase": "BETA10_MAIN_INTEGRATED_WINDOWS_CI_PENDING",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
       "next": "Reconcile beta10 UX with current main and preserve PR180 hero fixes in existing PR179. Prepare and validate independent source checks. Canonical shared files RoyalGoldV2Hud.cs and LocalGateway.cs require conflict-safe ownership reconciliation with PR173/181 before promotion; Windows remains with PR181.",
       "last_verified": {
@@ -7066,6 +7066,13 @@
           "to_revision": 14,
           "to_owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
           "reason": "Owner explicitly directs this session to integrate the tested beta10 pretester UX into canonical main. Preserve PR179 and other workstreams; no extra PR or Windows acquisition."
+        },
+        {
+          "previous_owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
+          "from_revision": 14,
+          "to_revision": 15,
+          "to_owner": null,
+          "reason": "Main beta10 source integrated and Ubuntu checks passed; Windows CI running independently. Release source and runner ownership; do not hold PR173/PR181. PR179 remains canonical for any remaining frozen beta stability work."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -7107,7 +7114,7 @@
         "windows_claimed": false
       },
       "main_promotion": {
-        "status": "SOURCE_RECONCILIATION_IN_PROGRESS",
+        "status": "MAIN_SOURCE_INTEGRATED_LIGHTWEIGHT_CHECKS_PASS_UNITY_MAIN_CI_PENDING",
         "source_pr": 179,
         "verified_native_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
         "preserve": [
@@ -7115,7 +7122,16 @@
           "PR173 independent interface",
           "PR181 treasure features"
         ],
-        "notes": "18 of 19 beta UX source files byte-identical in current main before selected patch; EarlyRetentionRules requires a two-hunk preservation merge. Never merge entire divergent PR179 into main. No Windows claim or new PR."
+        "notes": "19 files ported, 18 exact source candidates, EarlyRetentionRules reconciled to keep PR180. PR173/181 notified. Unity/Windows jobs for main queued or running. No APK/WebGL publication from this commit.",
+        "commit_sha": "8ac9c19fe881a8c709efbd5630a9b43b9ddc93b0",
+        "branch": "main",
+        "source_native_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+        "source_tests": "Unity beta10 227 journey checks",
+        "canonical_ubuntu_run": 42610908615,
+        "canonical_ubuntu_checks": "58 domain assertions PASS",
+        "canonical_unity_run": 42610908699,
+        "canonical_ui_run": 42610908773,
+        "transferred_files": 19
       }
     },
     {
