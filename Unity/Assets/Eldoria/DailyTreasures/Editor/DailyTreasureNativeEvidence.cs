@@ -306,6 +306,25 @@ namespace Eldoria.DailyTreasures.Editor
                     var eventObj=new GameObject("Disposable event system",typeof(EventSystem));
                     var eventSystem=eventObj.GetComponent<EventSystem>();
                     VerifyUiOwnership(1,eventSystem);
+                    // Regression for Unity 6's slash-as-path rule. The
+                    // Heroes screen's REAL literal name has a slash and
+                    // starts inactive; a reward must wait while it is
+                    // visibly open, then resume when dismissed. No payout
+                    // or extra Canvas is created by this isolated probe.
+                    var heroProbe=new GameObject(
+                        "Heroes / canonical destination",typeof(RectTransform));
+                    heroProbe.layer=5;
+                    heroProbe.transform.SetParent(rect,false);
+                    heroProbe.SetActive(false);
+                    Need(!panel.ProbeHeroRoomVisibilityForNativeEvidence(),
+                        "Inactive Heroes room incorrectly blocks daily reward");
+                    heroProbe.SetActive(true);
+                    Need(panel.ProbeHeroRoomVisibilityForNativeEvidence(),
+                        "Visible Lyra room not detected: slash-name lookup regression");
+                    heroProbe.SetActive(false);
+                    Need(!panel.ProbeHeroRoomVisibilityForNativeEvidence(),
+                        "Closed Heroes room incorrectly blocks daily reward");
+                    Object.DestroyImmediate(heroProbe);
                     Canvas.ForceUpdateCanvases();
                     pictures.Add(Render(camera,rt,output,width,height,
                         "hud-entry",
