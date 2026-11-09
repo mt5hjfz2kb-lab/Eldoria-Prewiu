@@ -1349,6 +1349,11 @@ namespace Eldoria.DailyTreasures
             nextCanvasProbe=0f;
             SynchronizePresentationCanvas();
         }
+
+        public bool ProbeHeroRoomVisibilityForNativeEvidence()
+        {
+            return HasVisibleCanonicalHeroRoom();
+        }
 #endif
 
         void Update()
