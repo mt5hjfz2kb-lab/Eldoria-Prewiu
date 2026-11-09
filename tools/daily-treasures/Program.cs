@@ -388,7 +388,7 @@ internal static class Program
                     True(stage.SceneryOpacity==0f &&
                          stage.BackdropOpacity<.70f &&
                          (1f-stage.BackdropOpacity)*
-                         (1f-DailyTreasureStageDirection.BastionPlateOpacity)>.34f,
+                         (1f-DailyTreasureStageDirection.BastionPlateOpacity)>.40f,
                          "completed Bastion visibly preserves actual city behind a single bronze frame");
                     True(!stage.SideBySide,
                          "actual-city Bastion must not imitate unrelated landmark artwork");
