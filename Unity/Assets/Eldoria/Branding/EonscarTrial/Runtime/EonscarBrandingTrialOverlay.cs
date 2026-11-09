@@ -49,12 +49,21 @@ namespace Eldoria.Branding
             tint.color = new Color(.035f, .028f, .075f, .94f);
             tint.raycastTarget = true;
 
-            var logoRect = MakeRect("EONSCAR logotype", backdrop,
-                new Vector2(.5f, .56f), new Vector2(.5f, .56f),
-                new Vector2(0f, 75f), new Vector2(1120f, 760f));
+            // CanvasScaler matchWidthOrHeight=.5 uses a geometric-mean scale.
+            // Calculate the virtual canvas height before positioning the logo,
+            // otherwise a short landscape screen clips the top of the emblem.
+            float scale = Mathf.Sqrt((Screen.width / 1920f) * (Screen.height / 1080f));
+            scale = Mathf.Max(.001f, scale);
+            float virtualWidth = Screen.width / scale;
+            float virtualHeight = Screen.height / scale;
             bool portrait = Screen.height > Screen.width;
-            Vector2 maxLogo = portrait ? new Vector2(820f, 650f)
-                                      : new Vector2(1120f, 760f);
+            float logoCenter = portrait ? .54f : .64f;
+            Vector2 maxLogo = new Vector2(
+                Mathf.Min(1120f, virtualWidth * .84f),
+                Mathf.Min(650f, virtualHeight * (portrait ? .37f : .50f)));
+            var logoRect = MakeRect("EONSCAR logotype", backdrop,
+                new Vector2(.5f, logoCenter), new Vector2(.5f, logoCenter),
+                Vector2.zero, maxLogo);
             var texture = Resources.Load<Texture2D>(LogoResource);
             if (texture != null)
             {
@@ -73,17 +82,19 @@ namespace Eldoria.Branding
                 MakeText("EONSCAR", logoRect, 136, new Color(.88f, .83f, .72f));
             }
 
+            float captionCenter = portrait ? .285f : .27f;
             var caption = MakeRect("Chapter caption", backdrop,
-                new Vector2(.5f, .22f), new Vector2(.5f, .22f),
-                Vector2.zero, new Vector2(900f, 64f));
+                new Vector2(.5f, captionCenter), new Vector2(.5f, captionCenter),
+                Vector2.zero, new Vector2(Mathf.Min(900f, virtualWidth * .88f), 64f));
             MakeText("LAS CENIZAS DE VALORIA", caption, 32,
                 new Color(.84f, .76f, .58f));
 
+            float buttonCenter = portrait ? .15f : .11f;
             var enter = MakeRect("Enter existing gameplay", backdrop,
-                new Vector2(.5f, .105f), new Vector2(.5f, .105f),
-                Vector2.zero, new Vector2(440f, 98f));
-            enter.sizeDelta = Screen.height > Screen.width ? new Vector2(660f, 128f)
-                                                      : new Vector2(500f, 112f);
+                new Vector2(.5f, buttonCenter), new Vector2(.5f, buttonCenter),
+                Vector2.zero, new Vector2(
+                    Mathf.Min(portrait ? 660f : 500f, virtualWidth * .72f),
+                    portrait ? 128f : 112f));
             var buttonImage = enter.gameObject.AddComponent<Image>();
             buttonImage.color = new Color(.34f, .19f, .39f, 1f);
             var button = enter.gameObject.AddComponent<Button>();
