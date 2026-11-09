@@ -149,6 +149,9 @@ jobs:
       - name: Isolate three owner-approved original gold utility medallions
         if: contains(github.event.head_commit.message, '[vigilia-owner-utilities]')
         run: python tools/breach-watch/import_owner_utilities.py
+      - name: Paint source-faithful single dark material from approved empty panel
+        if: contains(github.event.head_commit.message, '[vigilia-premium-surfaces]')
+        run: python tools/breach-watch/author_material_from_owner_reference.py
       - name: Protect canonical workstream ownership and source HEAD before push
         shell: bash
         env:
