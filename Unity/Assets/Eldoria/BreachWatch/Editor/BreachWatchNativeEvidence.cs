@@ -771,13 +771,24 @@ namespace Eldoria.BreachWatch.Editor
                          "Original painted button has wrong natural aspect or touch target is too small: "+name);
                     var actionText=ui.BuildingAction.GetComponentsInChildren<Text>(true)
                         .FirstOrDefault(q=>q && q.name=="Real action title");
+                    // Compare against VISIBLE sprite geometry (246x60)
+                    // instead of the wider invisible touch target. A caption
+                    // can be inside the Button but outside the red painting.
+                    float artAspect=actionArt.sprite.rect.width/
+                        actionArt.sprite.rect.height;
+                    float artDrawnWidth=Mathf.Min(visualRect.rect.width,
+                        visualRect.rect.height*artAspect);
+                    float artDrawnLeft=(action.rect.width-artDrawnWidth)*.5f;
                     Need(actionText && actionText.gameObject.activeInHierarchy &&
                          actionText.rectTransform.anchoredPosition.x>=
-                            action.rect.width*.25f,
-                         "Real premium upgrade text overlaps the baked source-art hammers: "+name);
+                           artDrawnLeft+artDrawnWidth*.25f,
+                         "Real upgrade text intersects the painted source hammers: "+name);
                     Need(actionText.rectTransform.anchoredPosition.x+
-                         actionText.rectTransform.rect.width<=action.rect.width-2f,
-                         "Real upgrade caption escapes the right copper frame: "+name);
+                         actionText.rectTransform.rect.width<=
+                           artDrawnLeft+artDrawnWidth-3f,
+                         "Real upgrade caption escapes the PAINTED burgundy sprite: "+name);
+                    Need(actionText.text==(w>=800&&h>w?"Mejorar a Bastión II":"Mejorar a II"),
+                         "Native button caption is not appropriate for this portrait/landscape format: "+name);
                     // The approved reference's circular gold X is one
                     // painted image, never a generic octagonal Backing +
                     // painted vector X. Hidden root image owns the hit only.
