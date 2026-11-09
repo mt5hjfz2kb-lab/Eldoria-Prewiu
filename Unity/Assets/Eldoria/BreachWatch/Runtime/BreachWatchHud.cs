@@ -35,6 +35,7 @@ namespace Eldoria.BreachWatch
         Font font, boldFont, bodyFont, bodyBoldFont;
         RectTransform uiRoot;
         RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, descriptionDivider, buttonRow, utilityRail, centerMark, feedbackPlate;
+        RectTransform closePainted;
         RectTransform[] resourceChips = new RectTransform[3];
         Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
         Text[] resourceAmounts = new Text[3];
@@ -604,24 +605,27 @@ namespace Eldoria.BreachWatch
                     TextAnchor.MiddleLeft,TextIvory,true);
             }
             buildingState=Label(panel,"Real state and timer",15,TextAnchor.UpperLeft,Muted);
-            var closeRect=BuildButton(panel,"Close selected building",BreachWatchGlyph.Sigil.Cross,()=>SelectBuilding(""));
-            closeButton=closeRect.GetComponent<Button>();
-            // The approved reference uses a small CIRCULAR bronze X, not
-            // an enormous 50px dark octagonal plaque. Keep the same >=44px
-            // physical pointer hit area but draw the metal only inside it.
-            var closePlate=closeRect.GetComponent<BreachWatchPlate>();
-            if(closePlate)
-            {
-                closePlate.Type=BreachWatchPlate.PlateType.Navigation;
-                closePlate.VisualScale=.55f;
-            }
-            var cross=closeRect.GetComponentInChildren<BreachWatchGlyph>();
-            if(cross)
-            {
-                At((RectTransform)cross.transform,16f,16f,18f,18f);
-                cross.Ink=Copper;
-                cross.SetVerticesDirty();
-            }
+            // Source-faithful one-piece owner circular close X. Remove the
+            // old black octagon, its vector cross and decorative double rim.
+            // As with navigation/CTA, the root is a full-height *invisible*
+            // touch target and the child is the ONE painted graphic.
+            var closeRect=Rect("Close selected building",panel);
+            var closeHit=closeRect.gameObject.AddComponent<Image>();
+            closeHit.color=new Color(0f,0f,0f,0f);
+            closeHit.raycastTarget=true;
+            closeButton=Button(closeRect,()=>SelectBuilding(""));
+            closeButton.targetGraphic=closeHit;
+            closeButton.transition=Selectable.Transition.None;
+            var goldenClose=Resources.Load<Sprite>(
+                "VigiliaArt/OwnerControls/close_medallion");
+            if(!goldenClose)
+                throw new InvalidOperationException(
+                    "Vigilia requires a real round golden X from the owner's reference");
+            closePainted=Rect("Single owner-approved circular gold X",closeRect);
+            var closeIcon=closePainted.gameObject.AddComponent<Image>();
+            closeIcon.sprite=goldenClose;
+            closeIcon.preserveAspect=true;
+            closeIcon.raycastTarget=false;
             // Actual owner-approved burgundy CTA is a COMPLETE 246x60
             // painted motif (including its hammers). Nine-slicing a narrow
             // 147-unit button with 78px left border exaggerated the hammer
@@ -1108,6 +1112,14 @@ namespace Eldoria.BreachWatch
                     (plate.rect.height-paintedHeight)*.5f+3f,
                     Mathf.Max(20f,plate.rect.width-leftInset-7f),
                     Mathf.Max(18f,paintedHeight-6f));
+            }
+
+            if(closePainted && closeButton)
+            {
+                var full=(RectTransform)closeButton.transform;
+                float disk=Mathf.Min(30f,full.rect.width-16f);
+                At(closePainted,(full.rect.width-disk)*.5f,
+                    (full.rect.height-disk)*.5f,disk,disk);
             }
 
             // Render only the original selected building in its native
