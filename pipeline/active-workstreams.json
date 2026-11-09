@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T19:55:29.999Z",
+  "updated_at": "2026-11-09T19:47:01Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6772,7 +6772,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-eldoria-pilot-telemetry-20261109",
       "ownership_state": "claimed",
-      "ownership_revision": 22,
+      "ownership_revision": 23,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6801,16 +6801,14 @@
         ".github/workflows/eldoria-pages-telemetry-tests.yml",
         ".github/workflows/eldoria-beta10-recovery.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "claimed_at": "2026-11-09T17:11:20.832Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA10_IMMUTABLE_P0_RECOVERY_LIVE_IPHONE_PHYSICAL_RETEST_REQUIRED",
-      "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Exact owner-playable beta10 prior version restored on GitHub Pages (run42687093695 PASS; independent HTTP identity and root/unity-owner aliases PASS), while new PR179 native candidate must NOT automatically replace rollback. Wait owner physical iPhone 30min test on /beta-native325/index.html and record whether restart persists before approving any newer binary. Existing beta native candidate source must be profiled/compared without publishing. Keep testers disabled and no data deletion. Original full owner route snapshot preserved GitHub artifact 13692621676.",
+      "phase": "NATIVE_I_V_PASS_BETA10_OWNER_ROLLBACK_LIVE_IPHONE_P0_BLOCKED",
+      "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live.",
+      "next": "Native exact candidate run 42682071151 completed SUCCESS including real Unity I-V journey and WebGL compilation in isolated checkout; browser/gameplay telemetry and real physical iPhone NOT certified. Windows runner released after native job. The live owner link remains exact beta10 archived rollback; do NOT publish native candidate, replace mutable route, invite testers or change saves. Obtain physical beta10 iPhone stability evidence before preparing an immutable-sidepath A/B; fix issue #96 and physical Android, rights/consent gates before release.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6824,7 +6822,7 @@
         "real_hosted_pass": false,
         "physical_mobile_tested": "Beta9: owner confirms entry/play; long session and physical reopen not yet reported. Earlier failures retained per revision.",
         "supabase_beta_event_rows": 0,
-        "distribution_enabled": true,
+        "distribution_enabled": false,
         "budget_eur": 0,
         "pages_run": 42414743676,
         "pages_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/",
@@ -7036,9 +7034,11 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed_for_native_candidate",
+        "status": "released_after_success",
         "reason": "Native Unity exact-marker candidate and original save/world preservation; no external beta release",
-        "candidate_sha": "934b5b034e2f87ba4f8d757b190840b96a28764f"
+        "candidate_sha": "934b5b034e2f87ba4f8d757b190840b96a28764f",
+        "released_at": "2026-11-09T19:47:01Z",
+        "run_id": 42682071151
       },
       "ownership_history": [
         {
@@ -7178,14 +7178,15 @@
         "published_run": 42674820886,
         "source_sha": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
         "overlay_telemetry_candidate": "231328bbfd271726c8527ad06b274f29ebf0c941",
-        "stage": "OWNER_QA_ONLY",
+        "stage": "HISTORICAL_OWNER_QA_NOT_LIVE_AFTER_BETA10_ROLLBACK",
         "external_invites_enabled": false,
         "consent_required": true,
         "supabase_qa_receipts": 10,
         "supabase_real_receipts": 0,
         "unity_marker_qa": "NOT BUILT",
-        "live_webkit": "PASS",
-        "final_workflow_conclusion": "success"
+        "live_webkit": "HISTORICAL_PASS_MOBILE11_ONLY",
+        "final_workflow_conclusion": "success",
+        "currently_hosted_after_rollback": false
       },
       "iphone_recurrence": {
         "date": "2026-11-09",
@@ -7199,14 +7200,19 @@
       "native_candidate": {
         "run_id": 42682071151,
         "source_head": "3a406b0ed14e546b338ab44e941efed3ea526685",
-        "state": "IN_PROGRESS",
+        "state": "NATIVE_UNITY_JOURNEY_WEBGL_BUILD_PASS_PENDING_BROWSER_IPHONE",
         "preflight": "PASS",
         "native_lease_recheck": "PASS",
         "isolated_original_art_recovery": "PASS",
-        "unity_journey_webgl": "RUNNING_NOT_CERTIFIED",
+        "unity_journey_webgl": "UNITY_SCRIPT_ASSERTIONS_PASS",
         "physical_iphone_30min": "BLOCKED_P0_ISSUE_96",
         "external_invites_enabled": false,
-        "started_at": "2026-11-09T19:18:23Z"
+        "started_at": "2026-11-09T19:18:23Z",
+        "evidence_artifact_id": 13703809492,
+        "evidence_artifact_zip_bytes": 366076427,
+        "webgl_unverified_artifact_id": 13704497757,
+        "webgl_unverified_zip_bytes": 1483580379,
+        "completed_at": "2026-11-09T19:47:01Z"
       },
       "recovery": {
         "intent": "Temporary exact beta10 rollback for owner-playable iPhone P0; preserve saves and existing /unity-owner; not tester release",
@@ -7235,7 +7241,8 @@
         "live_root_and_owner_alias": "VERIFIED",
         "old_WASM_sha256_and_31_data_parts": "PASS",
         "iphone_stability": "UNTESTED_AFTER_ROLLBACK"
-      }
+      },
+      "runner_released_at": "2026-11-09T19:47:01Z"
     },
     {
       "id": "eldoria-daily-treasures-20261108",
