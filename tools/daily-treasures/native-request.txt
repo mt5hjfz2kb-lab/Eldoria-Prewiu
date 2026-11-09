@@ -1,15 +1,18 @@
-# Explicitly authorized exact-head Unity art/UX integration proof, workstream PR181.
-# Windows belongs exclusively to Eldoria Daily Treasures in canonical main registry.
-# First actual compilation 42600126398: AudioModule disabled -> fixed in PR only.
-# Second actual compilation 42604316751: namespace shadowed UnityEngine.Application.isPlaying
-# with Eldoria.Application -> three fully-qualified sites fixed and source guard added.
-# The original 13 PNG assets, 52 real frames, 56 pointer events and 8 paid claims
-# remain required. No beta/PR173 writes, no merge or release on a source-only PASS.
+# Owner-authorized PR181 exact-head Unity native art/UX certification, single workstream.
+# Exclusive main-registry Windows lease already held by Daily Treasures.
+# Prior runs and verified root causes:
+# 42600126398 missing built-in com.unity.modules.audio (corrected)
+# 42604316751 UnityEngine.Application.isPlaying shadowed by Eldoria.Application (corrected)
+# 42606257865 editor-only Application.dataPath shadowed by Eldoria.Application (corrected)
+# Source gates cover these exact native CS1069/CS0234 regressions.
+# Runtime still requires: 13 authentic resource PNGs, 52 rendered PNGs,
+# 56 real pointer interactions, 8 real gateway grants, 16 visual-only looks,
+# text clipping/rotation/return-to-Vigilia, no fake player reward.
 state=REQUEST_NATIVE_EXACT_HEAD
 workstream=eldoria-daily-treasures-20261108
 scope=52_real_Unity_PNG_56_pointer_8_gateway_claims_16_visual_only
 asset_policy=13_SHA256_verified_original_sprites_and_actual_Eldoria_scenery
-native_compile_fixes=AudioModule_enabled;UnityEngine.Application_qualified
-retry_from_native_run=42604316751
+compile_fixes=audio-module;qualified-runtime-Application;qualified-editor-Application
+retry_from_native_run=42606257865
 merge_or_publish=false
 art_approved=false
