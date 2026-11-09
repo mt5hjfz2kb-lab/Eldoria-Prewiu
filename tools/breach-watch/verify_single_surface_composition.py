@@ -81,6 +81,13 @@ assert "oldCanvasVisible = canvasDiagnostics.Count" in evidence
 assert "oldHudGraphicsReused = canvasDiagnostics.Any" in evidence
 assert "foreignScreenSpaceCanvasPaths=foreignScreenSpace.Select(c=>c.path).ToArray()" in evidence
 assert "Math.Max(shots.Max(x=>x.activeForeignScreenSpaceCanvases)" in evidence
+# The original etched surfaces are their OWN visual components. Two cheap
+# vector castle badges had been pasted ON TOP of their already-sculpted
+# metal. They contribute no new gameplay information beyond the live titles.
+assert 'Glyph(objective,"Chapter stone rune"' not in HUD
+assert 'Glyph(panel,"Building crest"' not in HUD
+assert "chapterSigil==null" in evidence
+assert "engravedBastion==null" in evidence
 # Press/hover must tint the ONE existing owner sprite, never the
 # transparent hit mask and never another floating image.
 assert HUD.count("UseSourceArtInteraction(")==4, (
