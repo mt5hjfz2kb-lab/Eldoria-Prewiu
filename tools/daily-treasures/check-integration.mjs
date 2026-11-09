@@ -269,4 +269,13 @@ assert.ok(panel.includes('var sprite=LoadUnifiedResourceEmblem(item.Icon);'));
 assert.ok(native.includes('VerifyCleanPaintedResources(panel);'));
 assert.ok(native.includes('VerifyCleanPaintedResources(panel,4);'));
 assert.ok(native.includes('VerifyCleanPaintedResources(panel,2);'));
+// The real Unity TextGenerator must determine whether labels are actually
+// readable in the rendered boxes; 2-line chest receipts were too tall
+// for the tiny landscape gap without choosing a one-line layout.
+assert.match(native,/VerifyCriticalTypography\(DailyTreasurePanel panel,string phase\)/);
+assert.match(native,/label\.preferredHeight/);
+assert.match(native,/Unity truncated premium text/);
+assert.match(native,/VerifyCriticalTypography\(panel,"paid day seven \/ illustration cards"\)/);
+assert.match(native,/VerifyCriticalTypography\(panel,"paid day four \/ illustration cards"\)/);
+assert.match(panel,/ceremonialTitle\+" · GUARDADO"/);
 console.log('PASS daily treasures gateway integration source invariants');
