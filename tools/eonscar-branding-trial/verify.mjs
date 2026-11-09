@@ -9,6 +9,8 @@ for(const v of [
  "public static void Show()", "FindFirstObjectByType<EonscarBrandingTrialOverlay>()",
  "Resources.Load<Texture2D>(LogoResource)", "GraphicRaycaster",
  "canvas.sortingOrder = 30000", "tint.raycastTarget = true",
+ "inputSink.transition = Selectable.Transition.None",
+ "inputSink.navigation = new Navigation { mode = Navigation.Mode.None }",
  "button.onClick.AddListener(Dismiss)", "Object.Destroy(gameObject)",
  "ENTRAR EN VALORIA","LAS CENIZAS DE VALORIA"
 ]) requireText(runtime,v);
