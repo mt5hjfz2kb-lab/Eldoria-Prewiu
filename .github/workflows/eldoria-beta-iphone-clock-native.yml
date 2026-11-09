@@ -47,6 +47,45 @@ jobs:
           python beta-tools/tools/eldoria-private-beta/native/ux/test_overlay.py
           python beta-tools/tools/eldoria-private-beta/native/ux/apply_overlay.py --source beta-tools --existing-only
           pwsh -NoProfile -File beta-tools/tools/eldoria-private-beta/native/ux/test_domain.ps1 -Source beta-tools
+      - name: Download exact archived beta10 baseline and minimal timer variant
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42692715252
+          name: beta10-iphone-timer-ab-source-only
+          github-token: \${{ github.token }}
+          path: ab-source-preflight
+      - name: Audit all 19 immutable beta10 overlays before Windows can be claimed
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib,json
+          root=Path('ab-source-preflight')
+          proof=json.loads((root/'ab-evidence.json').read_text())
+          assert proof['mode']=='SOURCE_ONLY_NOT_PUBLISHED'
+          assert proof['control_build']=='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+          assert proof['minimal_timer_source']=='e445a712b16f0bfc8196bdcb734492e780ef082c'
+          assert proof['only_changed_overlay']=='RoyalGoldV3ContextHud.cs.txt'
+          assert proof['physical_iphone_30min'] is False
+          base=root/'beta10-control'
+          proposed=root/'beta10-minimal-anchor'
+          base_manifest=json.loads((base/'manifest.json').read_text())
+          candidate=json.loads((proposed/'manifest.json').read_text())
+          originals={item['overlay']:item for item in base_manifest['files']}
+          selected={item['overlay']:item for item in candidate['files']}
+          assert len(originals)==len(selected)==19 and set(originals)==set(selected)
+          difference=[]
+          for name,item in selected.items():
+            before=(base/name).read_bytes()
+            after=(proposed/name).read_bytes()
+            assert hashlib.sha256(before).hexdigest()==originals[name]['candidate_sha256'],name
+            assert hashlib.sha256(after).hexdigest()==item['candidate_sha256'],name
+            assert item['baseline_sha256']==originals[name]['baseline_sha256'],name
+            if before!=after:difference.append(name)
+          assert difference==['RoyalGoldV3ContextHud.cs.txt'],difference
+          assert selected[difference[0]]['candidate_sha256']==proof['minimal_timer_sha256']
+          print('BETA10_EXACT_19_OVERLAY_AB_SOURCE_AUDIT_PASS: 18 unchanged, clock only; NATIVE NOT RUN')
+          PY
       - name: Check current ownership without occupying Windows
         id: lease
         env:
