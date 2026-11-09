@@ -1,14 +1,14 @@
 {
   "source": "OwnerReference/source-manifest.json",
   "scope": "new independent Vigilia uGUI only",
-  "authoring": "16-bit style tone and warm metal relief; non-destructive selected concept asset derivative",
+  "authoring": "One original sculpted icon per control; mild color correction only. No second rim, glow, studs, vector symbol or synthetic overlay.",
   "not_native_capture": true,
   "not_owner_art_approval": true,
   "sprites": [
     {
       "name": "helm",
       "original_sha256": "e8928a77d884f6e5f2afa871ead05645055eb0871213f0e04878950dea594556",
-      "result_sha256": "bd45dc12f73a6acf37dd40d260970e77d2cc2341e61c548ef338bcc1e9d56ea6",
+      "result_sha256": "2a2a29e2813ed5ff8d6257b9c47515a743f8a0153ca33c4d3b7d89753f620877",
       "guid": "090de8111d645699b6c7d11899f9d94e",
       "size": [
         192,
@@ -18,7 +18,7 @@
     {
       "name": "swords",
       "original_sha256": "46d25b007f6847855e6bac2ee08e77d90def68481f74a1031bbd1cc0253341db",
-      "result_sha256": "30b88ca0f4ff8292e4fd5518bf7c330ab7a10ec9f8275e665a3512d2dd137299",
+      "result_sha256": "6cdeeddbdf6587ad6cf4932d49c651feb05cd1086a4b8a069cd4ffd6bbe25f57",
       "guid": "012badb8a03d5462922e57fae25dd743",
       "size": [
         192,
@@ -28,7 +28,7 @@
     {
       "name": "castle",
       "original_sha256": "ecf4d8b8380f5488cced3658d12e44534650d0c5c38a9b841cdd3c5a8b4a1880",
-      "result_sha256": "a3f535e72c0058427b12eda60fc99f9ba03b2261f78653ca24482c94ec117d95",
+      "result_sha256": "0f11b8240c5eb5f1e54766d477cca5f4744f271f41378660a3c1566147703df5",
       "guid": "a661a1c88eff5f11bfeaa10a00176d71",
       "size": [
         192,
@@ -38,7 +38,7 @@
     {
       "name": "provisions",
       "original_sha256": "ab90a13b5378cfa214bf7e907df5dad43a6ca737f8ddff3fbad1143f2155e23e",
-      "result_sha256": "b4f784c76f97241883e22067bee69778b72aa9cfcc1bbf9fffbda4fdff63e991",
+      "result_sha256": "173410d7c489816a80a0e5e583c7d5aba387a654307f15da822cd5d6c426ab85",
       "guid": "c58c8ca275b057a1977d9b7f901d50c3",
       "size": [
         192,
@@ -48,7 +48,7 @@
     {
       "name": "raven",
       "original_sha256": "88b8122347cc98cb98522466be287c9b881ff03c763a4a0628928ea53c99ef64",
-      "result_sha256": "045fe9e61d78455fd1e8ed9c017c38716c12a1bbe6722612585d8e4acb71eceb",
+      "result_sha256": "8da5a5d67ddb06872857e5b184e4c1c199cefec2d0197f2312aa6e3b77579980",
       "guid": "41f22ed9669250b8a22ef2012025addf",
       "size": [
         192,
