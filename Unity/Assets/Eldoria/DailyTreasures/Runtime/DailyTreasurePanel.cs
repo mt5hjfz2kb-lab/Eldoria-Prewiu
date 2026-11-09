@@ -111,8 +111,22 @@ namespace Eldoria.DailyTreasures
         public bool Suppressed
         {
             get => suppressed;
-            set { suppressed=value; if(entryRect && (!screen || !screen.gameObject.activeSelf))
-                    entryRect.gameObject.SetActive(!suppressed); }
+            set
+            {
+                if(suppressed==value)return;
+                suppressed=value;
+                if(suppressed && IsOpen)
+                {
+                    // A tutorial or a more important story room may appear
+                    // while the player is looking at a daily prize. Close
+                    // immediately, including audio: payments were already
+                    // committed to LocalGateway, not tied to this Canvas.
+                    // The informational receipt remains in the mailbox.
+                    Close();
+                }
+                if(entryRect)
+                    entryRect.gameObject.SetActive(!suppressed);
+            }
         }
         public bool IsOpen => screen && screen.gameObject.activeSelf;
         public static DailyTreasurePanel Install(RectTransform safe)
