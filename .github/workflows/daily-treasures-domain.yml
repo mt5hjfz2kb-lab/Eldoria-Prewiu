@@ -44,6 +44,7 @@ jobs:
             /tools/early-retention/
             /tools/ui-v3-domain-smoke/
             /.github/workflows/daily-treasures-native.yml
+            /.github/workflows/daily-treasures-domain.yml
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: |
