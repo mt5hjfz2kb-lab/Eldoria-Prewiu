@@ -21,3 +21,8 @@ La identidad elegida combina plata envejecida, oro antiguo y energía violeta de
 
 Workstream-ID: eldoria-eonscar-branding-trial-20261109
 Este trabajo NO toca los recursos reservados por PR173, PR179, PR181 o la prueba del cronómetro.
+
+## Authoría y permisos
+- Solicitud AI artística canónica: `pipeline/art-production-requests/eldoria-eonscar-branding-trial-20261109.json` en `main`; estado SOURCE QA, no aprobada para producción.
+- Los controles artísticos exigen trazabilidad del PNG reducido SHA256 c5ac3f2688196548daea6c61e7d0654f3b0cff0c613c78b44a12b4d72bbeab72; véase ART_SOURCE.md.
+- Workflow Unity native `.github/workflows/eonscar-branding-native.yml`: preparado, requiere lease exclusiva antes de ejecutar. Ningún cambio automático de testers.
