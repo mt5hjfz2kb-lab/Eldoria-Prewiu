@@ -86,7 +86,11 @@ def scenery_window(image, width, height):
     if (width, height) == (844, 390):
         bounds = (.105, .20, .42, .73)
     elif (width, height) == (390, 844):
-        bounds = (.23, .185, .77, .36)
+        # The native portrait story heading now sits at about 25-29% of
+        # screen height. This deliberately samples BELOW its 40px ink band
+        # and ABOVE the actual coffer. Otherwise a decorative caption can
+        # fake painterly detail in an empty scene.
+        bounds = (.23, .295, .77, .36)
     else:
         raise ValueError("Scenic aperture unsupported: %sx%s" % (width,height))
     x0,y0,x1,y1 = bounds
@@ -482,7 +486,11 @@ def analyze(folder,expected_sha,output):
     moving=[(kind,w,h) for w,h in [(844,390),(390,844)]
         for kind in ("day7-prize-flight","special-day4-prize-flight")]
     sheet(moving,"actual_reward_card_flights_contact_sheet.png",2)
-    style=[k for k in expected if k[0] in MILESTONE]
+    # Keep one predictable comparison row per orientation and group the
+    # two frames of each real event together. A set's random iteration made
+    # art reviews hard to compare and could conceal scene regressions.
+    style=[(variant,w,h) for w,h in ((844,390),(390,844))
+           for variant in MILESTONE]
     sheet(style,"milestone_visual_styles_contact_sheet.png",4)
     quiet_keys=[("quiet-day"+str(day)+"-received",w,h)
         for w,h in REQUIRED_SIZES for day in QUIET_DAYS]
@@ -570,6 +578,26 @@ def selftest():
         assert_quality(compare(scenery_window(flat,844,390),
                                scenery_window(painted,844,390))["changedPixels"]>100,
             "Scenic-aperture difference preflight did not detect real texture")
+        # A new portrait story-title band must not be mistaken for the
+        # genuine art. Draw a highly textured FAKE title precisely where
+        # Unity now places it; it must be excluded from our art aperture.
+        flat_portrait=Image.new("RGB",(390,844),(24,25,27))
+        fake_heading=flat_portrait.copy()
+        pen=ImageDraw.Draw(fake_heading)
+        for x in range(68,322,7):
+            pen.rectangle((x,193,x+3,241),
+                          fill=(170+x//8,130+x//12,75))
+        assert_quality(sample(scenery_window(fake_heading,390,844))[
+            "meanStdDev"]<1,
+            "Portrait fake-ink heading contaminated scenic picture sampling")
+        painted_portrait=flat_portrait.copy()
+        pen=ImageDraw.Draw(painted_portrait)
+        for x in range(88,310,7):
+            pen.rectangle((x,245,x+4,320),
+                          fill=(65+x//12,48+x//20,35+x//30))
+        assert_quality(sample(scenery_window(painted_portrait,390,844))[
+            "meanStdDev"]>4,
+            "Authentic textured portrait scenery must appear below heading")
         # Native run 42609669589 had ZERO visible text pixels across
         # the four paid card columns. A source-only positive/negative probe
         # proves that our actual-image gate does reject that severe regression
