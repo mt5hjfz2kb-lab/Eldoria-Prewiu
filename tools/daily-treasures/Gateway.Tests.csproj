@@ -5,6 +5,10 @@
     <Nullable>disable</Nullable>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <ImplicitUsings>disable</ImplicitUsings>
+    <!-- Only the canonical daily integration suite enables the optional
+         Unity-only save/gateway extension. Other workstreams retain their
+         original exact core sources and need no foreign-owned edits. -->
+    <DefineConstants>$(DefineConstants);DAILY_TREASURE_FEATURE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <!-- Compile the exact authoritative Unity domain/application source; no copied rules. -->
