@@ -18,10 +18,12 @@ from pathlib import Path
 
 BETA10 = "be49d62e3daf490f41dba0bf8123a8e2eee64480"
 BETA11 = "8dc875430241a49b4d417782dfeab2d4c7a4f315"
+PERF = "485d7b1c7980b73fa6abac9dfad4a99ccc382ab8"
 PREFIX = "tools/eldoria-private-beta/native/ux/"
 TIMER = "RoyalGoldV3ContextHud.cs.txt"
 BETA10_TIMER_BLOB = "fe5b1de631d43109ac95ce471ea31feaa93dc8a6"
 BETA11_TIMER_BLOB = "0d9cb29fa9198d8a87011cc554b6247bb63a9e30"
+PERF_TIMER_BLOB = "031595af0f1ca5f44dc18d58183b3143e8c53676"
 
 
 def git_bytes(revision, path):
@@ -44,32 +46,30 @@ def gh_blob(data):
 
 
 def optimized_anchor(data):
+    """Validate the already optimized immutable timer source, without editing it."""
     text = data.decode("utf-8")
-    old = "        private float nextRead;"
-    new = (old + "\n        // Reused on Unity's main thread: no per-frame heap array while the\n"
-           "        // objectives manuscript and construction timer are visible.\n"
-           "        private readonly Vector3[] objectiveWorldCorners = new Vector3[4];")
-    before = ("                var corners = new Vector3[4];\n"
-              "                chronicle.ChronicleObjectiveRect.GetWorldCorners(corners);")
-    after = "                chronicle.ChronicleObjectiveRect.GetWorldCorners(objectiveWorldCorners);"
-    loop_before = "                foreach (var corner in corners)"
-    loop_after = "                foreach (var corner in objectiveWorldCorners)"
-    for needle in (old, before, loop_before):
-        if text.count(needle) != 1:
-            raise ValueError("Anchored timer source drift, expected exactly once: " + needle)
-    text = text.replace(old, new).replace(before, after).replace(loop_before, loop_after)
-    if "private bool TryPlaceConstructionTimer(" not in text:
-        raise ValueError("Missing anchored construction timer")
-    if "if (!TryPlaceConstructionTimer(id, camera" not in text:
-        raise ValueError("Timer not bound to building projection")
-    if "new Vector3[4]" in text[text.index("private bool TryPlaceConstructionTimer("):]:
-        raise ValueError("A frame-local corner allocation remains in timer projection")
-    return text.encode("utf-8")
+    required = (
+        "private bool TryPlaceConstructionTimer(",
+        "TryProjectConstructionSilhouette(",
+        "private readonly Vector3[] objectiveWorldCorners = new Vector3[4];",
+        "GetWorldCorners(objectiveWorldCorners)",
+        "if (!timer.HasLayout ||",
+    )
+    for marker in required:
+        if marker not in text:
+            raise ValueError("Optimized timer missing required safe path: " + marker)
+    hot_path = text[text.index("private bool TryPlaceConstructionTimer("):]
+    if "new Vector3[4]" in hot_path:
+        raise ValueError("Frame-local objective corner heap allocation reintroduced")
+    if "CanProject(target, camera, safe, true, out projectedRoof)" in hot_path:
+        raise ValueError("Old double silhouette projection reintroduced")
+    return data
 
 
 def build_pair():
     base = json.loads(git_bytes(BETA10, "manifest.json"))
     newer = json.loads(git_bytes(BETA11, "manifest.json"))
+    perf_manifest = json.loads(git_bytes(PERF, "manifest.json"))
     original = base.get("files", [])
     anchor_entries = newer.get("files", [])
     if len(original) != 19 or len(anchor_entries) != 19:
@@ -78,8 +78,15 @@ def build_pair():
     anchor_map = {x["overlay"]: x for x in anchor_entries}
     if len(base_map) != 19 or set(base_map) != set(anchor_map):
         raise ValueError("Missing/duplicated overlay or changed source surface")
-    if base["base_runtime"] != newer["base_runtime"]:
+    if base["base_runtime"] != newer["base_runtime"] or base["base_runtime"] != perf_manifest["base_runtime"]:
         raise ValueError("Source runtime baseline changed; not a one-file A/B")
+    perf_entries = {x["overlay"]: x for x in perf_manifest["files"]}
+    if TIMER not in perf_entries or perf_entries[TIMER]["path"] != base_map[TIMER]["path"] or perf_entries[TIMER]["baseline_sha256"] != base_map[TIMER]["baseline_sha256"]:
+        raise ValueError("Optimized timer target/runtime baseline diverged")
+    perf_timer = git_bytes(PERF, TIMER)
+    if gh_blob(perf_timer) != PERF_TIMER_BLOB or digest(perf_timer) != perf_entries[TIMER]["candidate_sha256"]:
+        raise ValueError("Optimized timer differs from exact reviewed source")
+    perf_timer = optimized_anchor(perf_timer)
     baseline, experiment = {}, {}
     out_original, out_experimental = [], []
     changed = []
@@ -98,7 +105,7 @@ def build_pair():
         if name != TIMER and baseline_data != newer_data:
             raise ValueError("Unsafe A/B, unrelated changes in " + name)
         baseline[name] = baseline_data
-        experiment[name] = optimized_anchor(newer_data) if name == TIMER else baseline_data
+        experiment[name] = perf_timer if name == TIMER else baseline_data
         if baseline[name] != experiment[name]:
             changed.append(name)
         out_original.append(dict(entry))
@@ -115,8 +122,9 @@ def build_pair():
         "schema": 1,
         "mode": "SOURCE_ONLY_NOT_PUBLISHED",
         "control_build": BETA10,
-        "experimental_timer_source": BETA11,
-        "target": "recovered beta10 + construction timer world-anchor, GC-stable variant",
+        "intermediate_timer_source": BETA11,
+        "experimental_timer_source": PERF,
+        "target": "recovered beta10 + isolated optimized world-anchored timer: one silhouette pass, reusable UI scratch, conditional layout",
         "only_changed_overlay": TIMER,
         "overlays_verified_identical_other_than_timer": 18,
         "base_runtime": base["base_runtime"],
