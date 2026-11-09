@@ -140,7 +140,10 @@ namespace Eldoria.BreachWatch
             identity.GetComponent<BreachWatchPlate>().sprite &&
             identity.GetComponent<BreachWatchPlate>().sprite.name=="profile_bar" &&
             identity.GetComponent<BreachWatchPlate>().type==Image.Type.Sliced &&
-            identity.GetComponent<Shadow>() &&
+            // The original painted profile already contains shading.
+            // Do not require a second uGUI Shadow after the approved
+            // single-surface unification.
+            !identity.GetComponent<Shadow>() &&
             identity.GetComponentsInChildren<Graphic>(true).Length==4;
 
         public bool HasPremiumResourceSurfaces
