@@ -607,7 +607,11 @@ namespace Eldoria.BreachWatch
             // cartouche, not a second thick black/bronze plate perched on it.
             // Keep the original 9-slice ornament and a single live 3D image,
             // but let the shared mineral body read through the heavy center.
-            brassFrame.color=new Color(.94f,.88f,.79f,.55f);
+            // The actual 3D image now has a transparent background. The old
+            // 55% opaque border becomes a SECOND golden frame below that
+            // transparent texture, reintroducing the pasted-on-panel effect.
+            // Keep a very soft relief at 18% and the ONE outer approved rim.
+            brassFrame.color=new Color(.94f,.88f,.79f,.18f);
             var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
             Fill(liveView,5);
             portraitView=liveView.gameObject.AddComponent<RawImage>();
