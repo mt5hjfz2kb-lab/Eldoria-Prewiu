@@ -553,6 +553,10 @@ namespace Eldoria.DailyTreasures
         }
         public void Close()
         {
+            // Leaving the ceremonial scene (or a tutorial taking focus) must
+            // stop any half-played latch/chime. The reward is already saved;
+            // no audio continues over the actual city or another room.
+            if(originalSfx && originalSfx.isPlaying)originalSfx.Stop();
             if(screen)screen.gameObject.SetActive(false);
             currentStage=DailyTreasureStageKind.Daily;
             activeMilestoneId=null;
@@ -684,7 +688,13 @@ namespace Eldoria.DailyTreasures
             }
             if(prizeCount>0)Layout();
         }
-        void SkipReveal() => ShowResult(true);
+        void SkipReveal()
+        {
+            // Skip means skip the presentation, including its remaining audio,
+            // NEVER skip, re-award or reverse the already persisted items.
+            if(originalSfx && originalSfx.isPlaying)originalSfx.Stop();
+            ShowResult(true);
+        }
         void PaintEarnedCards()
         {
             if(!prizeAnimating)return;
@@ -836,7 +846,10 @@ namespace Eldoria.DailyTreasures
             rays.SetIntensity(0f);
             chimePlayed=false;
             if(Application.isPlaying && originalSfx && chestKnock && showChest)
+            {
+                if(originalSfx.isPlaying)originalSfx.Stop();
                 originalSfx.PlayOneShot(chestKnock);
+            }
             startTime=Time.unscaledTime;
             chest.gameObject.SetActive(showChest && !hasAuthoredChestArt);
             chest.SetOpening(0f);
