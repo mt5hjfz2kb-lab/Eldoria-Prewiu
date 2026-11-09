@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T20:06:14.145Z",
+  "updated_at": "2026-11-09T20:22:20.058Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6809,7 +6809,7 @@
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
       "phase": "BETA10_OWNER_PHYSICALLY_PLAYABLE_LOCKED_P0_30MIN_AND_TIMER_FIX_PENDING",
-      "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live.",
+      "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live. | 2026-11-09 20UTC: recovered beta10 preserved; optimized single-HUD timer A/B staged as source-only pinned artifact 13706883087, QA 42692000748 PASS. No Windows or physical phone QA, no public deployment.",
       "next": "Owner confirmed on iPhone: 'Sí, me deja jugar' with restored exact native325-mobile10; source be49d62e, Pages rollback run 42686613921 and alias 42687093695. Keep that playable build FROZEN. Do NOT overwrite with beta11 or new tester telemetry. Isolate timer world-anchor fix using beta10 baseline, require native and A/B iPhone physical stability including 30min before promoting any new candidate; current beta10 timer still screen-docked. Release-request.enabled=false, issue96 open. Windows owned by Vigilia until formal release. No more owner requests for previously provided P0 logs.",
       "last_verified": {
         "frozen_release_id": 437784073,
@@ -7248,7 +7248,21 @@
         "iphone_owner_report_issue96_comment": 6750137329,
         "root_cause_beta11": "UNKNOWN"
       },
-      "runner_released_at": "2026-11-09T19:47:01Z"
+      "runner_released_at": "2026-11-09T19:47:01Z",
+      "iphone_timer_ab_source_only": {
+        "phase": "CI_SOURCE_PACKAGED_NOT_BUILT",
+        "control_commit": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+        "timer_candidate_commit": "485d7b1c7980b73fa6abac9dfad4a99ccc382ab8",
+        "generation_commit": "dea5d9fde19db14226559a322c3eca23b9279f32",
+        "qa_run": 42692000748,
+        "qa_result": "PASS",
+        "artifact_id": 13706883087,
+        "exact_changed_overlays": 1,
+        "native_test": "NOT_RUN",
+        "iphone_30min": "NOT_TESTED",
+        "published": false,
+        "external_invites_enabled": false
+      }
     },
     {
       "id": "eldoria-daily-treasures-20261108",
