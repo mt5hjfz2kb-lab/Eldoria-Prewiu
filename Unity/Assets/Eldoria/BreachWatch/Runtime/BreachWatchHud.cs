@@ -853,36 +853,52 @@ namespace Eldoria.BreachWatch
             // compact counters and a free-standing Breach mark remain.
             if(portrait)
             {
-                At(identity,margin,11,182,55);
-                At(identityCrest,-4,-4,62,62);
-                At(identityName.rectTransform,56,7,121,27);
-                At(identityPower.rectTransform,56,31,121,18);
-                identityName.fontSize=16;
-                identityPower.fontSize=14;
+                // The owner's reference is a lightweight TOP band, not
+                // two tall rectangular headers. Compact at 900px, but
+                // preserve comfortable actual phone lettering at 390px.
+                bool smallPhone=pixelWidth<600;
+                float identityHeight=smallPhone?52f:43f;
+                At(identity,margin,smallPhone?11f:14f,182,identityHeight);
+                float crestSize=smallPhone?57f:49f;
+                At(identityCrest,-3,-4,crestSize,crestSize);
+                At(identityName.rectTransform,crestSize+1f,smallPhone?6f:4f,
+                    181f-crestSize,smallPhone?25f:21f);
+                At(identityPower.rectTransform,crestSize+1f,
+                    smallPhone?31f:25f,181f-crestSize,17f);
+                identityName.fontSize=smallPhone?17:16;
+                identityPower.fontSize=smallPhone?14:12;
 
                 float rightSpace=w-(margin+182+9+margin);
                 float chip=Mathf.Min(70f,Mathf.Max(58f,(rightSpace-8f)/3f));
                 float resourcesWidth=3*chip+8f;
-                At(resourceRow,w-margin-resourcesWidth,18,resourcesWidth,39);
+                float chipHeight=smallPhone?38f:28f;
+                float symbolSize=smallPhone?25f:19f;
+                float symbolTop=(chipHeight-symbolSize)*.5f;
+                At(resourceRow,w-margin-resourcesWidth,smallPhone?18f:17f,
+                    resourcesWidth,chipHeight);
                 for(int i=0;i<3;i++)
                 {
-                    At(resourceChips[i],i*(chip+4f),0,chip,38);
-                    var image=resourceIllustrations[i].rectTransform;
-                    At(image,4,7,25,25);
-                    At(resourceAmounts[i].rectTransform,30,7,chip-31,26);
-                    resourceAmounts[i].fontSize=14;
+                    At(resourceChips[i],i*(chip+4f),0,chip,chipHeight);
+                    At(resourceIllustrations[i].rectTransform,
+                        4f,symbolTop,symbolSize,symbolSize);
+                    At(resourceAmounts[i].rectTransform,
+                        symbolSize+8f,3f,chip-symbolSize-10f,chipHeight-6f);
+                    resourceAmounts[i].fontSize=smallPhone?14:12;
                 }
 
                 At(centerMark,w*.52f-56,74,112,30);
-                float missionWidth=Mathf.Min(200f,w*.49f);
-                At(objective,margin,95,missionWidth,fullObjective?108f:80f);
-                // Reserve the pointed border's true right-side clear zone.
-                At(chapterName.rectTransform,31,5,missionWidth-55,20);
-                At(chapterObjective.rectTransform,13,24,missionWidth-22,fullObjective?59:31);
-                At(chapterProgress.rectTransform,13,fullObjective?83:55,missionWidth-22,18);
-                chapterName.fontSize=13;
-                chapterObjective.fontSize=14;
-                chapterProgress.fontSize=14;
+                float missionWidth=Mathf.Min(185f,w*.46f);
+                float missionTop=smallPhone?96f:82f;
+                At(objective,margin,missionTop,missionWidth,
+                    fullObjective?108f:78f);
+                At(chapterName.rectTransform,28f,5f,missionWidth-49f,20f);
+                At(chapterObjective.rectTransform,13f,24f,missionWidth-22f,
+                    fullObjective?59f:31f);
+                At(chapterProgress.rectTransform,13f,
+                    fullObjective?83f:53f,missionWidth-22f,18f);
+                chapterName.fontSize=smallPhone?13:12;
+                chapterObjective.fontSize=smallPhone?15:14;
+                chapterProgress.fontSize=smallPhone?14:13;
 
                 // Secondary seals are disabled on this first screen:
                 // keep their carved artwork discreet rather than occupying
