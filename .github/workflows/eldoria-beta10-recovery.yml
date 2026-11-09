@@ -104,12 +104,41 @@ jobs:
               if not piece:break
               checksum.update(piece)
           assert checksum.hexdigest()=='720dfe4a791b79a7d0f8cd801977ac6de91db04c117bf4d9dadaefeb898f7a3e'
+          # Exact full source archive has been verified above, but a 961MB
+          # Pages backend sync hit GitHub's HARD 10-minute service timeout.
+          # An iPhone owner P0 must not be blocked by a second, independent
+          # ~500MB Unity owner build on this same site. Keep every byte of
+          # the beta10 game, original root and playable old ChatGPT Sites
+          # dependencies; serve a reversible fallback for the parallel owner
+          # landing route until it can be hosted independently again.
+          original_site_bytes=sum(x.stat().st_size for x in root.rglob('*') if x.is_file())
+          owner_folder=root/'unity-owner'
+          assert owner_folder.is_dir(),'Missing historical owner route'
+          former_owner_bytes=sum(p.stat().st_size for p in owner_folder.rglob('*') if p.is_file())
+          assert former_owner_bytes>300_000_000,'Owner route unexpectedly small; do not mutate without audit'
+          shutil.rmtree(owner_folder)
+          owner_folder.mkdir()
+          (owner_folder/'index.html').write_text(
+            '<!doctype html><html lang="es"><meta charset="utf-8">'
+            '<meta name="robots" content="noindex,nofollow">'
+            '<meta http-equiv="refresh" content="0;url=../beta-native325/direct-beta.html">'
+            '<title>Eldoria · recuperación P0</title>'
+            '<a href="../beta-native325/direct-beta.html">Abrir la versión recuperada de Eldoria</a></html>')
+          (owner_folder/'recovery.json').write_text(json.dumps({
+            'status':'P0_TEMPORARY_ALIAS_TO_PREVIOUS_BETA10',
+            'full_owner_snapshot_preserved_at':13692621676,
+            'original_beta10_archive':13665746986,
+            'external_testers_enabled':False},indent=2))
           site_bytes=sum(x.stat().st_size for x in root.rglob('*') if x.is_file())
-          assert site_bytes<1_073_741_824,'Archived site cannot be deployed within Pages 1 GiB'
+          assert site_bytes<650_000_000,'Reduced P0 site still too large for safe Pages deployment'
+          assert original_site_bytes-site_bytes>300_000_000,'P0 reduction not material'
+          print('ELDORIA_P0_SAFE_REDUCED_PAGES',original_site_bytes,site_bytes,'removed_owner_bytes',former_owner_bytes)
           (root/'beta10-owner-recovery.json').write_text(json.dumps({
             'revision':identity['revision'],'source_sha':identity['source_sha'],
             'bundle':identity['candidate_bundle_sha256'],'original_pages_run':42600463889,
             'original_artifact':13665746986,'external_testers_enabled':False,
+            'full_pre_rollback_owner_snapshot':13692621676,
+            'temporary_parallel_owner_route':'/unity-owner/ redirects to recovered beta10 during P0',
             'protection':'Unmodified original saved-game schema, owner rollback only; not physically iPhone certified'
           },indent=2)+'\n')
           print('ELDORIA_P0_BETA10_ARCHIVE_SHA256_VERIFIED',number,'files',len(chunks),'chunks',total,'bytes',site_bytes,'compressed_site')
