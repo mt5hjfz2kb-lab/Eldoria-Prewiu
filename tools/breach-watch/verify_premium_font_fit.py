@@ -73,16 +73,24 @@ def verify():
     inset_390=max(31,min(38,action_width*.25))
     fits("Mejorar a II",SEMIBOLD,15,
          action_width-inset_390-7,"390px compact upgrade caption")
-    # In native landscape the same REAL 246x60 owner CTA is shown as a
-    # centered preserved-aspect sprite. A 38-unit cap let the caption
-    # overlap the painted hammer at both 1600x900 and 844x390.
-    for action_width,label in [(196,"1600x900"),(186,"844x390")]:
-        inset=max(31,min(60,action_width*.25))
-        assert inset>=action_width*.25-.01
-        fits("Mejorar a Bastión II",SEMIBOLD,16,
-             action_width-inset-7,label+" authentic hammered CTA")
+    # Original 246x60 artwork stays at its natural 4.1:1 ratio.
+    # The text must be inside the visible red/gold image, not just the
+    # larger invisible and accessible native Button hit target.
+    for hit_width,paint_height,label,caption,size in [
+        (147,36,"900 portrait","Mejorar a Bastión II",13),
+        (147,36,"390 portrait","Mejorar a II",16),
+        (196,36,"1600 landscape","Mejorar a II",16),
+        (186,36,"844 landscape","Mejorar a II",16),
+    ]:
+        visible_art_width=min(hit_width,paint_height*246/60)
+        free_width=visible_art_width*(1-.26)-6
+        fits(caption,SEMIBOLD,size,free_width,
+             label+" within actually painted original 246x60 artwork")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "Mathf.Clamp(plate.rect.width*.25f,31f,60f)" in hud, "Landscape upgrade hammer clearance regressed"
+    assert "float visibleArtWidth=Mathf.Min(plate.rect.width," in hud, (
+        "Premium CTA text width must follow real painted sprite bounds")
+    assert "bool fullUpgradeCaption=lastHeight>lastWidth && lastWidth>=800;" in hud, (
+        "Landscape must never force tiny full caption beyond painting")
 
     # Physical pixels: compact first-screen body glyphs and five nav areas
     # cannot be reduced to sub-12-pixel unreadable text.
