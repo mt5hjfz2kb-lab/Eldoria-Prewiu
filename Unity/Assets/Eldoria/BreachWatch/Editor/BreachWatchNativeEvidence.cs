@@ -730,14 +730,23 @@ namespace Eldoria.BreachWatch.Editor
                     // This new native CTA is one approved owner sprite,
                     // with its forged hammers INSIDE the painted source,
                     // not another procedural child stacked on the button.
-                    var actionArt=ui.BuildingAction.GetComponent<BreachWatchPlate>();
+                    var actionArt=ui.BuildingAction.GetComponentInChildren<BreachWatchPlate>(true);
+                    var actionHit=ui.BuildingAction.GetComponent<Image>();
                     Need(actionArt && actionArt.sprite &&
                          actionArt.sprite.name=="upgrade_button" &&
-                         actionArt.type==Image.Type.Sliced,
-                         "Real button does not use the owner-approved single premium artwork: "+name);
-                    Need(ui.BuildingAction.GetComponentsInChildren<Image>(true).Length==1 &&
+                         actionArt.type==Image.Type.Simple &&
+                         actionArt.preserveAspect && !actionArt.raycastTarget &&
+                         actionHit && actionHit.color.a<=.001f &&
+                         actionHit.raycastTarget,
+                         "Owner's hammered button must render as one undistorted original image plus only an invisible native hit area: "+name);
+                    var artImages=ui.BuildingAction.GetComponentsInChildren<Image>(true);
+                    Need(artImages.Length==2 && artImages.Count(x=>x && x.color.a>.01f)==1 &&
                          ui.BuildingAction.GetComponentsInChildren<BreachWatchGlyph>(true).Length==0,
-                         "Duplicated button face or old procedural glyph is still overlaid on CTA: "+name);
+                         "Duplicated upgrade art or old procedural glyph remains layered over the CTA: "+name);
+                    var visualRect=(RectTransform)actionArt.transform;
+                    Need(visualRect.rect.height<((RectTransform)ui.BuildingAction.transform).rect.height-7f &&
+                         visualRect.rect.height>22f,
+                         "Original painted button has wrong natural aspect or touch target is too small: "+name);
                     var actionText=ui.BuildingAction.GetComponentsInChildren<Text>(true)
                         .FirstOrDefault(q=>q && q.name=="Real action title");
                     Need(actionText && actionText.gameObject.activeInHierarchy &&
