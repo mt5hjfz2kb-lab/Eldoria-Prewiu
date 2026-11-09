@@ -869,9 +869,11 @@ namespace Eldoria.Tests
             // selected site's progress; V3 intentionally suppresses a duplicate
             // floating timer until the player deselects that building. The
             // previous native test mistakenly required both at once.
-            var illustrated = hud.GetComponent<RoyalGoldV2Hud>();
-            bool selectedIllustrationVisible =
-                illustrated && illustrated.ChronicleIllustratedBuildingVisible;
+            // This integration assembly intentionally accesses HUD V2 through
+            // the established reflection adapter rather than a missing using.
+            var illustrated = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
+            bool selectedIllustrationVisible = illustrated &&
+                (bool)Member(illustrated, "ChronicleIllustratedBuildingVisible");
             Assert.That(Member(v3, "ActiveTimers"),
                 Is.EqualTo(selectedIllustrationVisible ? 0 : 1),
                 "A selected illustrated construction must have no second timer");
