@@ -630,6 +630,11 @@ namespace Eldoria.BreachWatch.Editor
                          painted[0].type==Image.Type.Simple,
                          "Incorrect or duplicated approved icon art in "+
                          name+"/"+button.name);
+                    Need(button.transition==Selectable.Transition.ColorTint &&
+                         button.targetGraphic==painted[0] &&
+                         button.colors.disabledColor==Color.white,
+                         "Premium nav button has no genuine painted pressed state, "+
+                         "or a second hit illustration is being tinted: "+name+"/"+button.name);
                     Need(button.GetComponentsInChildren<BreachWatchGlyph>(true).Length==0,
                          "Old vector icons still layered under a final medallion in "+
                          name+"/"+button.name);
@@ -918,6 +923,11 @@ namespace Eldoria.BreachWatch.Editor
                          actionHit && actionHit.color.a<=.001f &&
                          actionHit.raycastTarget,
                          "Owner's hammered button must render as one undistorted original image plus only an invisible native hit area: "+name);
+                    Need(ui.BuildingAction.transition==Selectable.Transition.ColorTint &&
+                         ui.BuildingAction.targetGraphic==actionArt &&
+                         ui.BuildingAction.colors.disabledColor==Color.white,
+                         "Real red button has no pressed feedback or its invisible "+
+                         "raycast image is mistakenly being tinted: "+name);
                     var artImages=ui.BuildingAction.GetComponentsInChildren<Image>(true);
                     Need(artImages.Length==2 && artImages.Count(x=>x && x.color.a>.01f)==1 &&
                          ui.BuildingAction.GetComponentsInChildren<BreachWatchGlyph>(true).Length==0,
@@ -966,6 +976,10 @@ namespace Eldoria.BreachWatch.Editor
                     var sourceX=realClose.FirstOrDefault(x=>x && x.sprite &&
                         x.sprite.name=="close_medallion");
                     var closeHit=closeRoot.GetComponent<Image>();
+                    Need(closeRoot.transition==Selectable.Transition.ColorTint &&
+                         closeRoot.targetGraphic==sourceX &&
+                         closeRoot.colors.disabledColor==Color.white,
+                         "Real golden close glyph has no painted pressed state: "+name);
                     Need(realClose.Length==2 && sourceX &&
                          realClose.Count(x=>x && x.color.a>.01f)==1 &&
                          sourceX.preserveAspect && !sourceX.raycastTarget &&
