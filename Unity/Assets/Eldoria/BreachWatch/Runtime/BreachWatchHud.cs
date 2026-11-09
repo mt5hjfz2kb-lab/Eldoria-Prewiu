@@ -985,7 +985,11 @@ namespace Eldoria.BreachWatch
                 float missionTop=smallPhone?96f:82f;
                 At(objective,margin,missionTop,missionWidth,
                     fullObjective?108f:78f);
-                At(chapterName.rectTransform,28f,5f,missionWidth-49f,20f);
+                // Native 390px screenshot: the engraved chapter castle
+                // ends at x=29, while title started at x=28. They touched,
+                // making the mission feel like two pasted graphics. One
+                // 2u breathing gap + font-safe width holds the real title.
+                At(chapterName.rectTransform,31f,5f,missionWidth-45f,20f);
                 At(chapterObjective.rectTransform,13f,24f,missionWidth-22f,
                     fullObjective?59f:31f);
                 At(chapterProgress.rectTransform,13f,
