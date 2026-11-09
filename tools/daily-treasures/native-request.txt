@@ -1,10 +1,15 @@
-# Explicit user-authorized PR181 native graphics / UX evaluation.
-# The canonical main registry grants the current workstream the sole
-# windows-runner-heavy claim. The workflow rechecks CAS owner, current
-# HEAD and live Unity/Blender processes before touching the shared PC.
+# Owner authorized PR181 original Unity art/UX verification.
+# windows-runner-heavy is held by this canonical workstream only.
+# Failure follow-up from genuine Unity run 42600126398:
+#   CS1069 UnityEngine.AudioClip / AudioSource missing (AudioModule disabled).
+# Added com.unity.modules.audio=1.0.0 to this PR only; documented Unity docs.
+# All 13 original PNG Sprites remain exact-SHA and transparent, no fake loot.
+# The workflow must refuse stale PR HEAD or another runner owner.
 state=REQUEST_NATIVE_EXACT_HEAD
 workstream=eldoria-daily-treasures-20261108
 scope=52_real_Unity_PNG_56_pointer_8_gateway_claims_16_visual_only
-asset_policy=original_coffer_and_authored_painterly_resource_sprites
+asset_policy=13_SHA256_verified_original_sprites_and_actual_Eldoria_scenery
+native_compile_fix=com.unity.modules.audio@1.0.0
+retry_from_native_run=42600126398
 merge_or_publish=false
 art_approved=false
