@@ -64,9 +64,17 @@ def verify():
     fits("Operativo · 2:00",REGULAR,14,panel_width-26,
          "real status/timer")
     action_width=panel_width-24
-    engraving_inset=max(34,min(48,action_width*.235))
-    fits("MEJORAR A II",SEMIBOLD,16,action_width-engraving_inset-7,
-         "true compact phone upgrade")
+    # Source-accurate caption at 900x1600 uses title-case and the whole
+    # target, just like the owner's approved UI. Unity BestFit may select
+    # 13pt to stay inside its true carved bronze button.
+    hammer_at_900=max(19,min(28,27/(900/514)))
+    inset_900=max(31,min(42,8+hammer_at_900+5))
+    fits("Mejorar a Bastión II",SEMIBOLD,13,
+         action_width-inset_900-7,"900px premium full upgrade caption")
+    hammer_at_390=max(19,min(28,27/max(.91,390/514)))
+    inset_390=max(31,min(42,8+hammer_at_390+5))
+    fits("Mejorar a II",SEMIBOLD,15,
+         action_width-inset_390-7,"390px compact upgrade caption")
     # Physical pixels: compact first-screen body glyphs and five nav areas
     # cannot be reduced to sub-12-pixel unreadable text.
     scale_390=max(.91,min(3.0,390/514))
