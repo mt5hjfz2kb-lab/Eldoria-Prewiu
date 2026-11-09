@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T19:23:36.496Z",
+  "updated_at": "2026-11-09T19:30:17.446Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6792,7 +6792,8 @@
         "pipeline/tester-readiness/**",
         "docs/eldoria-private-beta/tester-pilot/**",
         ".github/workflows/eldoria-private-beta-qa.yml",
-        ".github/workflows/eldoria-pages-telemetry-tests.yml"
+        ".github/workflows/eldoria-pages-telemetry-tests.yml",
+        ".github/workflows/eldoria-beta10-recovery.yml"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -6803,7 +6804,7 @@
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
       "phase": "NATIVE_I_V_SOURCE_MARKERS_CANDIDATE_RUNNING_IPHONE_P0_UNRESOLVED",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Compile exact head PR179 Unity C# I–V markers and build isolated WebGL; collect native I–V passes, preserve original project, inspect output and browser QA. Physical iPhone reported restart on mobile11: external invites remain BLOCKED until actual phone >=30 min PASS. Do not publish candidate as public tester game.",
+      "next": "P0 recovery: publish fail-closed exact mobile10 archived GitHub Pages artifact from run 42600463889 (previously owner-playable), verify binary chunk + release SHA + legacy routes, then obtain iPhone physical confirmation before tester GO. Workstream rev22, Windows currently reserved by beta native 42682071151; DO NOT touch PC or cancel native. Leave Unity candidate isolated. Never claim a proven phone fix without physical test.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7200,6 +7201,13 @@
         "physical_iphone_30min": "BLOCKED_P0_ISSUE_96",
         "external_invites_enabled": false,
         "started_at": "2026-11-09T19:18:23Z"
+      },
+      "recovery": {
+        "intent": "Temporary exact beta10 rollback for owner-playable iPhone P0; preserve saves and existing /unity-owner; not tester release",
+        "method": "GitHub Pages restore archived immutable run 42600463889 artifact github-pages, source be49d62e3daf490f41dba0bf8123a8e2eee64480",
+        "target_workflow": ".github/workflows/eldoria-beta10-recovery.yml",
+        "state": "REQUESTED_NOT_PUBLISHED",
+        "authority": "User explicitly requests fix and reports previously playable beta10; rollback is reversible, no Unity engine changes"
       }
     },
     {
