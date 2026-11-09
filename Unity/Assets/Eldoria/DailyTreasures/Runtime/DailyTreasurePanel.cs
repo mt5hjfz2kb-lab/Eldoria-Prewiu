@@ -106,6 +106,7 @@ namespace Eldoria.DailyTreasures
         readonly DailyTreasureMilestoneQueue milestoneQueue=
             new DailyTreasureMilestoneQueue();
         float nextMilestonePoll;
+        bool sessionAutoCeremonyPlayed;
 
         public bool Suppressed
         {
@@ -130,6 +131,7 @@ namespace Eldoria.DailyTreasures
                 // progress already recorded in the mailbox on startup.
                 milestoneQueue.Reset(commands?.Snapshot());
                 nextMilestonePoll=0f;
+                sessionAutoCeremonyPlayed=false;
             }
             gateway=commands;now=utcNow;refreshed=onRefresh;nextTick=0;
         }
@@ -274,7 +276,7 @@ namespace Eldoria.DailyTreasures
             originalSafeArea=root.parent as RectTransform;
             // No second EventSystem, Canvas, save or navigation router.
             entryRect=NewRect("Daily reward / optional medallion",root);
-            entryButton=ActionButton(entryRect,Oak,Open);
+            entryButton=ActionButton(entryRect,Oak,OpenEntryOrDeferredMilestone);
             if(!ApplyAuthoredFrame(entryRect,"valoria_frame_button_512x128"))
                 Relief(entryRect,false,true);
             // The owner-approved presentation identifies treasures by the
@@ -527,6 +529,32 @@ namespace Eldoria.DailyTreasures
             DestroyOwned(chestChime);
             DestroyOwned(chestGrandChime);
         }
+        bool PresentNextCommittedMilestone()
+        {
+            if(suppressed || IsOpen || HasVisibleCanonicalHeroRoom() ||
+               !milestoneQueue.TryPeek(out var milestone))return false;
+            if(!PresentCommittedMilestone(milestone.Title,milestone.Detail,
+                legendary:milestone.Legendary,eventId:milestone.EventId))
+                return false;
+            milestoneQueue.ConfirmPresented(milestone.EventId);
+            sessionAutoCeremonyPlayed=true;
+            return true;
+        }
+
+        void OpenEntryOrDeferredMilestone()
+        {
+            if(suppressed || gateway==null || now==null)return;
+            // Daily-claim access always wins: do not hide a real reward behind
+            // an unrelated celebration. Once claimed, the same embossed
+            // medallion offers the next committed milestone on player request.
+            bool claimAvailable=DailyTreasureRules.CanClaim(
+                gateway.Snapshot().DailyTreasures,now());
+            if(!claimAvailable && milestoneQueue.PendingCount>0 &&
+               PresentNextCommittedMilestone())
+                return;
+            Open();
+        }
+
         public void Open()
         {
             if(suppressed || gateway==null || now==null)return;
@@ -1388,12 +1416,12 @@ namespace Eldoria.DailyTreasures
                 // reveal or another room. In particular, Lyra's native
                 // HeroesApprovedDestination introduction owns her genuine
                 // character geometry; our reward coffer must NOT cover it.
-                bool heroIntroductionActive=HasVisibleCanonicalHeroRoom();
-                if(!suppressed && !IsOpen && !heroIntroductionActive &&
-                    milestoneQueue.TryPeek(out var milestone) &&
-                    PresentCommittedMilestone(milestone.Title,milestone.Detail,
-                        legendary:milestone.Legendary,eventId:milestone.EventId))
-                    milestoneQueue.ConfirmPresented(milestone.EventId);
+                // First important achievement may receive one ceremonial
+                // introduction per session. Additional genuine achievements
+                // remain in the mailbox and can be opened on request via the
+                // same gold medallion, avoiding autoplay chains after closing.
+                if(!sessionAutoCeremonyPlayed)
+                    PresentNextCommittedMilestone();
             }
             if(!IsOpen)
             {
@@ -1411,10 +1439,14 @@ namespace Eldoria.DailyTreasures
                     entryIsAvailable=DailyTreasureRules.CanClaim(
                         gateway.Snapshot().DailyTreasures,now());
                     entryCaption.color=entryIsAvailable?Gold:Muted;
-                    entryCaption.text=entryIsAvailable?"TESORO":"COFRE";
-                    entryArtwork.color=entryIsAvailable?Color.white:
+                    bool pending=milestoneQueue.PendingCount>0;
+                    entryCaption.text=entryIsAvailable?"TESORO":
+                        pending?"HITOS":"COFRE";
+                    entryArtwork.color=entryIsAvailable||pending?Color.white:
                         new Color(.62f,.62f,.59f,.72f);
-                    entryNotice.gameObject.SetActive(entryIsAvailable);
+                    entryNoticeNumber.text=entryIsAvailable?"1":
+                        Math.Min(99,milestoneQueue.PendingCount).ToString();
+                    entryNotice.gameObject.SetActive(entryIsAvailable||pending);
                 }
                 return;
             }
