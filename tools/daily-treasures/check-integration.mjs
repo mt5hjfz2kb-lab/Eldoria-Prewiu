@@ -163,7 +163,7 @@ assert.match(panel,/ambient\.color=new Color\(activeTheme\.R/);
 // Valoria chest, and only signal availability when the saved claim is valid.
 assert.match(panel,/entryArtwork\.sprite=Resources\.Load<Sprite>\(/);
 assert.match(panel,/"DailyTreasureArt\/treasure_closed_512"/);
-assert.match(panel,/entryNotice\.gameObject\.SetActive\(entryIsAvailable\)/);
+assert.match(panel,/entryNotice\.gameObject\.SetActive\(entryIsAvailable\|\|pending\)/);
 assert.match(panel,/entryGlow\.sprite=glowSprite/);
 assert.match(panel,/float entryX=onVigiliaCanvas&&!portrait\?256f:14f/);
 assert.match(panel,/entryIsAvailable=DailyTreasureRules\.CanClaim\(/);
