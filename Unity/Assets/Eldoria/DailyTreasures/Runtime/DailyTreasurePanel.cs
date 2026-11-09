@@ -1334,15 +1334,15 @@ namespace Eldoria.DailyTreasures
                 // Taller portrait cards retain a vertical composition;
                 // short cards place the icon left and an independent two-line
                 // receipt column right. Always allocate >=1.4x font height.
-                bool tall=cardH>=80f;
+                bool tall=cardH>=110f;
                 if(tall)
                 {
                     Place(prizeIcons[i].rectTransform,.5f,.5f,.5f,.5f,
                         0f,cardH*.225f,53f,48f);
                     Place(prizeNames[i].rectTransform,.5f,.5f,.5f,.5f,
-                        0f,-cardH*.095f,cardW-15f,27f);
+                        0f,-cardH*.12f,cardW-15f,27f);
                     Place(prizeAmounts[i].rectTransform,.5f,.5f,.5f,.5f,
-                        0f,-cardH*.335f,cardW-15f,28f);
+                        0f,-cardH*.35f,cardW-15f,28f);
                     prizeNames[i].fontSize=12;
                     prizeAmounts[i].fontSize=20;
                 }
