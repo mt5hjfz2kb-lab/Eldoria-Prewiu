@@ -66,7 +66,7 @@
     "source_contract_run": 42674713658,
     "source_contract_pass": true
   },
-  "updated_at": "2026-11-09T18:42:06.611Z",
+  "updated_at": "2026-11-09T19:09:51.261Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -74,5 +74,21 @@
     "candidate_gpu_rss_peak_mib": 613,
     "candidate_wasm_heap_capacity_mib": 594,
     "note": "macOS desktop Apple GPU WebKit RSS and WASM, NOT iPhone physical memory measurements; memory pressure is a hypothesis, not confirmed root cause"
+  },
+  "owner_local_restart_diagnostic": {
+    "source_commit": "a3ef98d3a3685c509576479f4da2aab2331dd94d",
+    "source_qa_run": 42679734586,
+    "source_qa_pass": true,
+    "source_qa_tests": 26,
+    "pages_run": 42679866398,
+    "pages_publish_job": "PASS",
+    "pages_live_webkit": "QUEUED_AT_THIS_RECORD",
+    "role": "OWNER_QA_ONLY",
+    "path": "/beta-native325/pilot.html?eldoriaBetaTelemetry=1&eldoria_diag=1",
+    "capture": "localStorage opt-in 24 bounded enumerated lifecycle events, manual copy; never sent",
+    "published_unity_source": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
+    "iphone_crash_fix": false,
+    "physical_iphone_tested": false,
+    "note": "Unclosed previous document is NOT diagnosis of jetsam; does not replace physical 30-minute iPhone test."
   }
 }
