@@ -80,7 +80,8 @@ def verify():
         (147,"900 portrait","Mejorar a Bastión II",13),
         (147,"390 portrait","Mejorar a II",16),
         (196,"1600 landscape","Mejorar a Bastión II",16),
-        (186,"844 landscape","Mejorar a Bastión II",15),
+        (186,"844 historical tight-landscape safety","Mejorar a Bastión II",15),
+        (210,"844 actual widened-landscape","Mejorar a Bastión II",15),
     ]:
         paint_height=hit_width*60/246
         assert 22<paint_height<55, (label,"image size")
