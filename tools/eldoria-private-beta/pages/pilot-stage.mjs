@@ -7,7 +7,7 @@ import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 const REVISION='native325-mobile11-building-anchor';
 const UNITY_SOURCE='8dc875430241a49b4d417782dfeab2d4c7a4f315';
-const CLIENTS=['client.mjs','signal-parser.mjs','pilot-bootstrap.mjs'];
+const CLIENTS=['client.mjs','signal-parser.mjs','pilot-bootstrap.mjs','restart-diagnostic.mjs'];
 const hash=(b)=>createHash('sha256').update(b).digest('hex');
 export async function stagePilot(sitePath,sourcePath){
  const site=resolve(sitePath),source=resolve(sourcePath);
