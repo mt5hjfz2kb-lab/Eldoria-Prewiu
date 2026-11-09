@@ -1145,8 +1145,17 @@ namespace Eldoria.DailyTreasures
             bool paidChest=ceremony && ceremony.gameObject.activeSelf &&
                 !playing && chestReward && prizeCount>0 &&
                 currentStage==DailyTreasureStageKind.Daily;
-            float panelW=Mathf.Min(w-24f,portrait?440f:
-                openingChest||paidChest?650f:740f);
+            // An everyday 60-wood grant should not occupy the same vast
+            // 740px parchment as a legendary four-item reveal. Give one or
+            // two REAL paid item cards an intimate framed space, sized to
+            // their content, with an actual 44px+ Continue control.
+            bool focusedQuiet=ceremony && ceremony.gameObject.activeSelf &&
+                prizeCount>0 && !chestReward;
+            float quietWidth=portrait?
+                (prizeCount<=1?336f:410f):
+                (prizeCount<=1?340f:448f);
+            float panelW=Mathf.Min(w-24f,focusedQuiet?quietWidth:
+                portrait?440f:openingChest||paidChest?650f:740f);
             bool eventStage=currentStage!=DailyTreasureStageKind.Daily &&
                 ceremony && ceremony.gameObject.activeSelf &&
                 prizeCount==0 && w>=275f && h>=300f;
@@ -1155,8 +1164,6 @@ namespace Eldoria.DailyTreasures
             // Ordinary resources deserve the same illustrated materials but
             // not a giant EMPTY modal. An earned-item reveal uses a distinct,
             // compact luxury frame. The ceremonial coffer remains immersive.
-            bool focusedQuiet=ceremony&&ceremony.gameObject.activeSelf &&
-                prizeCount>0 && !chestReward;
             // Rotation can happen after an already-paid reward is revealed.
             // Update its caption to the CURRENT orientation without touching
             // the gateway, replaying the ceremony or losing the earned cards.
@@ -1171,7 +1178,7 @@ namespace Eldoria.DailyTreasures
             bool roomyCalendar=ceremony && !ceremony.gameObject.activeSelf &&
                 !portrait && h>=500f;
             float panelH=Mathf.Min(h-20f,portrait?
-                (focusedQuiet?460f:openingChest?450f:700f):
+                (focusedQuiet?430f:openingChest?450f:700f):
                 (focusedQuiet?330f:openingChest?300f:
                     roomyCalendar?420f:370f));
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
