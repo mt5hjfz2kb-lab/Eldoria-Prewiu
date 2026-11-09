@@ -54,5 +54,7 @@ const heroUi=fs.readFileSync(
   'Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs','utf8');
 assert.match(heroUi,/public void PresentRecruitment\(string id\)/);
 assert.match(heroUi,/Rect\("Heroes \/ canonical destination",safeArea\)/);
-assert.match(panel,/GameObject\.Find\("Heroes \/ canonical destination"\)/);
+assert.match(panel,/HasVisibleCanonicalHeroRoom\(\)/);
+assert.match(panel,/cachedCanonicalHeroRoom\.gameObject\.activeInHierarchy/);
+assert.doesNotMatch(panel,/GameObject\.Find\("Heroes \/ canonical destination"\)/);
 console.log('PASS three authentic reused painterly milestone scenes, original metadata, UV crop and non-blocking overlay');
