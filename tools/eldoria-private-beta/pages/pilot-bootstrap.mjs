@@ -118,10 +118,20 @@ export async function startPilot({win=window,doc=document,fetchImpl=fetch}={}){
   win.addEventListener('error',()=>emit('client_error',{error_code:'JS_ERROR'}));
   win.addEventListener('unhandledrejection',()=>emit('client_error',{error_code:'PROMISE_ERROR'}));
   doc.addEventListener('webglcontextlost',()=>emit('client_error',{error_code:'WEBGL_CONTEXT_LOST'}),true);
-  win.addEventListener('pagehide',()=>{
+  win.addEventListener('pagehide',(event)=>{
    frameSummary();emit('visibility_state',{state_code:'background'});
+   // A BFCache navigation suspends the same document; it is not a final exit.
+   // If persisted, retain the queue, listeners and consent for pageshow.
    // No sendBeacon: it cannot include the required published client key header.
-   done=true;
+   if(!event?.persisted)done=true;
+  });
+  win.addEventListener('pageshow',(event)=>{
+   if(done||!event?.persisted)return;
+   // Resume the original opted-in session without creating a fake new visitor.
+   // Reset frame timing so the frozen interval is never counted as a low FPS.
+   frameLast=0;lastHeartbeat=win.performance.now();
+   orientation();emit('visibility_state',{state_code:'foreground'});
+   void client.flush();
   });
   const begun=win.performance.now();
   const interval=win.setInterval(()=>{
