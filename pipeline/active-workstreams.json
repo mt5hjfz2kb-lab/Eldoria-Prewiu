@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T14:12:44.955Z",
+  "updated_at": "2026-11-09T14:28:26.967Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7251,14 +7251,15 @@
         "Unity/Assets/Eldoria/Branding/EonscarTrial.meta",
         "docs/branding/eonscar-trial/**",
         "tools/eonscar-branding-trial/**",
-        ".github/workflows/eonscar-branding-trial-check.yml"
+        ".github/workflows/eonscar-branding-trial-check.yml",
+        ".github/workflows/eonscar-branding-native.yml"
       ],
       "resources": [],
       "budget_eur": 0,
       "claimed_at": "2026-11-09T13:13:27.651Z",
       "base_main_sha": null,
-      "phase": "BROWSER_QA_PASS_GITHUB_SOURCE_SANITY_PASS_UNITY_NOT_RUN",
-      "next": "Transfer approved original PNG to isolated PR184; real Unity Play capture before/after tutorial/save; native APK/WebGL trial with runner lease when free. No merge or publication.",
+      "phase": "IMAGE_IN_PR_UI_LAYOUT_SMOKE_PASS_NATIVE_PROBE_PREP",
+      "next": "Native workflow ready in separate branch; request exclusive Windows runner only after live registry says free. No Unity run yet, no merge or tester publication.",
       "note": "CI eonscar source-sanity PASS at de03147b0afbcf4297827ddb8897a11bff53edfb; domain EarlyRetentionRules failure CS0103 unrelated; public itch.io browser restricted. Logo image not yet versioned in GitHub. No native Unity execution, no product rename.",
       "art_approved": false,
       "physical_mobile_tested": false,
@@ -7279,7 +7280,12 @@
         "android_native": "NOT_RUN",
         "asset_committed_to_branch": false,
         "art_approved": false,
-        "windows_reserved_by_other": true
+        "windows_reserved_by_other": true,
+        "qa_png_sha256": "c5ac3f2688196548daea6c61e7d0654f3b0cff0c613c78b44a12b4d72bbeab72",
+        "qa_png_in_branch": true,
+        "native_probe_source_ready": true,
+        "native_executed": false,
+        "layout_test_cases": 9
       }
     }
   ],
