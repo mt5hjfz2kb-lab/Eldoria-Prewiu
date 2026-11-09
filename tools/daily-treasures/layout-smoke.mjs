@@ -318,22 +318,36 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   // The portrait heading is lower and wider so a full-length chapter label
   // does not become a floating fake button layered over the real artwork.
   const eventH=Math.min(h-20,portrait?700:370);
-  const headingW=portrait?Math.min(pw-36,280):Math.min(pw*.52,302);
   for(const family of ['painterly','bastion'])
   {
-    const headingX=portrait?0:family==='painterly'?-.247*pw:-pw*.10;
-    const heading=rect(headingX,eventH*(portrait?.29:.405),headingW,40);
+    const city=family==='bastion';
+    const chest=city?
+      rect(0,portrait?103:85,portrait?302:296,portrait?269:176):
+      rect(portrait?0:.236*pw,portrait?.005*eventH:.166*eventH,
+        portrait?Math.min(pw*.64,272):Math.min(.374*pw,282),
+        portrait?Math.min(eventH*.33,223):Math.min(.475*eventH,175));
+    const headingW=city?
+      portrait?Math.min(pw*.52,192):
+        Math.min(210,pw/2-296/2-14):
+      portrait?Math.min(pw-36,280):Math.min(pw*.52,302);
+    const headingX=city?
+      -pw/2+10+headingW/2:
+      portrait?0:-.247*pw;
+    const headingY=city?eventH*.405:
+      portrait?eventH*.29:eventH*.405;
+    const heading=rect(headingX,headingY,headingW,40);
     const skip=portrait?rect(pw/2-60,eventH/2-82.5,100,45):
       family==='painterly'
         ?rect(-.247*pw,eventH/2-88.5,100,45)
         :rect(pw/2-60,eventH/2-82.5,100,45);
     assert.ok(noOverlap(heading,skip),
       `${w}x${h}: ${family} story banner steals the Skip tap`);
+    assert.ok(noOverlap(heading,chest),
+      `${w}x${h}: ${family} title pasted over real coffer lid`);
     assert.ok(heading.x0>=-pw/2+2 && heading.x1<=pw/2-2 &&
-              heading.y1<=eventH/2-5,
+              heading.y1<=eventH/2-5 && headingW>=145,
       `${w}x${h}: ${family} title cropped by its own stage`);
-    // Real standalone underline is centered inside the unframed typographic
-    // heading: never widen past the stage or impersonate a CTA button.
+    // One legible 2px metal-ink line is the only decorative stage mark.
     const underline=rect(headingX,heading.y0+3,headingW-30,2);
     assert.ok(underline.x0>=heading.x0 && underline.x1<=heading.x1 &&
               underline.y0>=heading.y0 && underline.y1<=heading.y1,
