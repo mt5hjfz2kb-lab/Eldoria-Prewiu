@@ -11,9 +11,9 @@ concurrency:
   group: eldoria-beta-mobile-candidate
   cancel-in-progress: false
 env:
-  NATIVE_RUN: '42595057735'
-  NATIVE_SOURCE: be49d62e3daf490f41dba0bf8123a8e2eee64480
-  CANDIDATE_REVISION: native325-mobile10-pretest-ux
+  NATIVE_RUN: '42645633286'
+  NATIVE_SOURCE: 8dc875430241a49b4d417782dfeab2d4c7a4f315
+  CANDIDATE_REVISION: native325-mobile11-building-anchor
 jobs:
   package:
     runs-on: ubuntu-latest
@@ -173,7 +173,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile10-packaging-evidence
+          name: mobile11-packaging-evidence
           path: |
             extracted/extraction.json
             deduplicated/integrity.json
@@ -184,7 +184,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: mobile10-candidate-site
+          name: mobile11-candidate-site
           path: site/
           compression-level: 0
           retention-days: 14
@@ -199,7 +199,7 @@ jobs:
           persist-credentials: false
       - uses: actions/download-artifact@v4
         with:
-          name: mobile10-candidate-site
+          name: mobile11-candidate-site
           path: qa-sites/candidate
       - uses: actions/download-artifact@v4
         with:
@@ -230,7 +230,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mobile10-desktop-apple-gpu-not-iphone-certification
+          name: mobile11-desktop-apple-gpu-not-iphone-certification
           path: |
             evidence/
             server.log
