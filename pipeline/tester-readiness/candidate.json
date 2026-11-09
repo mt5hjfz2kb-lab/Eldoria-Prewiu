@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "Owner has expressly asked to begin Bastion I–V player testing once the anchored clock and physical-device P0 are resolved. Beta10 is currently playable on owner's iPhone but lacks attached timer and >=30min stability proof; isolated minimal-clock candidate remains source-tested only while Windows Unity lease belongs to Tesoros. Keep NO-GO until actual native/WebGL/iOS/Android QA, rights and consent complete.",
+  "reason": "Native minimal-anchor clock completed genuine Unity Bastion I–V and fresh WebGL; same-host macOS Apple GPU WebKit A/B passed. Isolated Pages staging is independent of physically playable beta10; physical iPhone and Android 30-minute sessions, release rights (#171), and real in-game telemetry/consent still unverified. External invitations are BLOCKED.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -71,10 +71,10 @@
   },
   "final_review": null,
   "blockers": [
-    "P0 issue #96: physical iPhone 30-minute session on restored beta10 or corrected immutable side candidate; root cause of mobile11 unexpected restart not proven",
-    "UNPUBLISHED native-markers WebGL candidate must pass hosted browser tests with opt-in/opt-out and actual in-game signal receipt before promotion",
+    "P0 #96: owner physical iPhone 30 minutes uninterrupted on isolated clock candidate plus clock follows active building, phone reload retains save; current beta10 must remain playable",
     "Physical Android Chrome 30-minute session and persistence test",
-    "Third-party asset license distribution review (#171)"
+    "Third-party asset license rights and redistribution review #171",
+    "Confirm genuine Bastion I–V gameplay telemetry with opt-in opt-out on exact hosted candidate, Supabase QA receipt and privacy gate before enable"
   ],
   "telemetry": {
     "project": "Eldoria Playtest Feedback",
@@ -88,7 +88,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-09T22:39:43.071Z",
+  "updated_at": "2026-11-09T23:40:34.953Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -291,5 +291,39 @@
     "scale": "Start 2–3 pilot participants, then 15–20 once technical/physical and licence gates pass",
     "authorization_is_not_a_quality_or_licence_certificate": true,
     "no_need_to_reask_whether_user_wants_testers": true
+  },
+  "iphone_clock_ab": {
+    "revision": "native325-mobile12-minimal-world-clock-qa",
+    "source_sha": "004d3ef9c26e9070762e9e38ce84d69d525efd4f",
+    "native_unity_run": 42714385780,
+    "native_unity_result": "SUCCESS",
+    "native_bastion_i_v_verified": true,
+    "world_clock_pan_offscreen_test": "PASSED_NATIVE_PROBE_NOT_DEVICE_VISUAL_PROOF",
+    "native_evidence_artifact": 13718618384,
+    "webgl_compiled": true,
+    "packaging_run": 42716414385,
+    "packaging_result": "SUCCESS",
+    "macos_webkit_apple_gpu_result": "SUCCESS",
+    "macos_webkit_evidence_artifact": 13721115054,
+    "macos_webcontent_peak_kib_control": 2628752,
+    "macos_webcontent_peak_kib_candidate": 2841360,
+    "macos_peak_increase_pct": 8.09,
+    "macos_peak_not_iphone_evidence": true,
+    "isolated_pages_run": 42721530925,
+    "isolated_pages_last_checked": [
+      {
+        "job": "stage-and-publish-owner-ab",
+        "status": "in_progress",
+        "conclusion": null,
+        "step": "Publish stable beta10 plus isolated clock candidate without any save mutation"
+      }
+    ],
+    "stable_beta10_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+    "stable_beta10_physical_entry": "OWNER_CONFIRMED",
+    "candidate_physical_iphone_30min": "NOT_TESTED",
+    "candidate_physical_android_30min": "NOT_TESTED",
+    "external_invites": false,
+    "license_issue": 171,
+    "uncertainty": "Browser desktop PASS and Unity PASS do not prove physical-phone stability or source-rights approval."
   }
 }
