@@ -71,4 +71,61 @@ class Tests(unittest.TestCase):
     self.assertEqual((self.out/'beta-native325/player-data.txt').read_text(),'DO NOT TOUCH GAME SAVE')
     self.assertEqual((self.stable/'beta-native325/player-data.txt').read_text(),'DO NOT TOUCH GAME SAVE')
 
+ def test_genuine_chunked_webgl_data_is_valid_without_monolith(self):
+    # Real frozen beta10 and candidate loaders request .data.unityweb but
+    # both receive their data via decoded_parts (31 gzip chunks).
+    for base in (self.stable/'beta-native325',self.new):
+        path=base/'Build/data.bin'
+        path.unlink()
+        meta=base/'build-manifest.json';m=json.loads(meta.read_text())
+        source=b'original Unity assets\x00\x01'
+        for part in m['decoded_parts'][m['data']]:
+            part.update(encoding='gzip',decoded_bytes=len(source),
+                        decoded_sha256=hashlib.sha256(source).hexdigest())
+        # Two compressed chunks and an exact decoded_sizes value are required
+        # when the monolithic WebGL data file intentionally does not exist.
+        old=m['decoded_parts'][m['data']][0]
+        (base/'payload-decoded/chunk1.gz').write_bytes(gzip.compress(source))
+        m['decoded_parts'][m['data']]=[old,{**old,'url':'payload-decoded/chunk1.gz'}]
+        m['decoded_sizes']={m['data']:len(source)*2}
+        meta.write_text(json.dumps(m))
+    proof=stage(*self.args)
+    self.assertEqual(proof['role'],'OWNER_AB_IOS_QA_ONLY')
+    self.assertEqual(json.loads((self.out/CANDIDATE_ROUTE/'build-manifest.json').read_text())['decoded_sizes']['Build/data.bin'],len(source)*2)
+    self.assertFalse((self.out/'beta-native325/Build/data.bin').exists())
+    self.assertFalse((self.out/CANDIDATE_ROUTE/'Build/data.bin').exists())
+ def test_streaming_chunk_cannot_be_missing_or_corrupt(self):
+    for base in (self.stable/'beta-native325',self.new):
+        (base/'Build/data.bin').unlink()
+        meta=base/'build-manifest.json';m=json.loads(meta.read_text())
+        source=b'original Unity assets\x00\x01'
+        old=m['decoded_parts'][m['data']][0]
+        old.update(encoding='gzip',decoded_bytes=len(source),
+                   decoded_sha256=hashlib.sha256(source).hexdigest())
+        (base/'payload-decoded/chunk1.gz').write_bytes(gzip.compress(source))
+        m['decoded_parts'][m['data']]=[old,{**old,'url':'payload-decoded/chunk1.gz'}]
+        m['decoded_sizes']={m['data']:len(source)*2}
+        meta.write_text(json.dumps(m))
+    victim=self.new/'payload-decoded/chunk1.gz'
+    victim.unlink()
+    with self.assertRaisesRegex(ValueError,'Missing binary part'):stage(*self.args)
+    self.assertFalse(self.out.exists())
+    victim.write_bytes(gzip.compress(b'corrupt data'))
+    with self.assertRaisesRegex(ValueError,'Corrupt decoded WebGL binary'):stage(*self.args)
+    self.assertFalse(self.out.exists())
+ def test_split_data_fails_closed_on_wrong_total(self):
+    for base in (self.stable/'beta-native325',self.new):
+        (base/'Build/data.bin').unlink()
+        meta=base/'build-manifest.json';m=json.loads(meta.read_text())
+        source=b'original Unity assets\x00\x01'
+        old=m['decoded_parts'][m['data']][0]
+        old.update(encoding='gzip',decoded_bytes=len(source),
+                   decoded_sha256=hashlib.sha256(source).hexdigest())
+        (base/'payload-decoded/chunk1.gz').write_bytes(gzip.compress(source))
+        m['decoded_parts'][m['data']]=[old,{**old,'url':'payload-decoded/chunk1.gz'}]
+        m['decoded_sizes']={m['data']:1}
+        meta.write_text(json.dumps(m))
+    with self.assertRaisesRegex(ValueError,'Streamed WebGL byte-count mismatch'):stage(*self.args)
+    self.assertFalse(self.out.exists())
+
 if __name__=='__main__':unittest.main()
