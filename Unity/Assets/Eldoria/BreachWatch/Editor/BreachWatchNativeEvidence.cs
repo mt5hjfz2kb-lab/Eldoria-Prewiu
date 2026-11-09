@@ -736,6 +736,33 @@ namespace Eldoria.BreachWatch.Editor
                      maxFootprint.ToString("F1")+"%");
                 Debug.Log("BREACHWATCH_COMPACT_UI_FOOTPRINT "+
                     name+" "+footprint.ToString("F2")+"%");
+                // Native layout validation must compare REAL independent
+                // text and icon boxes. The previous proof only checked
+                // that cost/state/CTA touched in a legal order while the
+                // player identity and resource pictograms could overlap.
+                var playerTitle=ui.GetComponentsInChildren<Text>(true)
+                    .FirstOrDefault(x=>x && x.name=="Player name");
+                var playerPower=ui.GetComponentsInChildren<Text>(true)
+                    .FirstOrDefault(x=>x && x.name=="Realm power");
+                Need(playerTitle && playerPower &&
+                     -playerTitle.rectTransform.anchoredPosition.y+
+                         playerTitle.rectTransform.rect.height<=
+                     -playerPower.rectTransform.anchoredPosition.y+.5f,
+                     "Player title overlaps the real power value: "+name);
+                foreach(var stone in ui.GetComponentsInChildren<RectTransform>(true)
+                    .Where(x=>x && x.gameObject.activeInHierarchy &&
+                        x.name.StartsWith("Resource ",StringComparison.Ordinal)))
+                {
+                    var icon=stone.GetComponentsInChildren<Image>(true)
+                        .FirstOrDefault(x=>x && x.name=="True illustrated resource");
+                    var amount=stone.GetComponentsInChildren<Text>(true)
+                        .FirstOrDefault(x=>x && x.name=="Actual quantity");
+                    Need(icon && amount &&
+                         icon.rectTransform.anchoredPosition.x+
+                             icon.rectTransform.rect.width+1.5f<=
+                         amount.rectTransform.anchoredPosition.x,
+                         "Resource symbol covers the true amount: "+name+"/"+stone.name);
+                }
                 foreach(var label in ui.GetComponentsInChildren<Text>(true))
                 {
                     if(!label || !label.gameObject.activeInHierarchy ||
@@ -834,6 +861,11 @@ namespace Eldoria.BreachWatch.Editor
                     var level=ui.BuildingPanel.GetComponentsInChildren<Text>(true)
                         .FirstOrDefault(t=>t && t.name=="Real building level");
                     var closeRect=(RectTransform)ui.BuildingClose.transform;
+                    Need(heading && level &&
+                         -heading.rectTransform.anchoredPosition.y+
+                             heading.rectTransform.rect.height+.7f<=
+                         -level.rectTransform.anchoredPosition.y,
+                         "Bastion heading and actual level visually overlap: "+name);
                     Need(heading && level &&
                          heading.rectTransform.anchoredPosition.x+
                            heading.rectTransform.rect.width<=
