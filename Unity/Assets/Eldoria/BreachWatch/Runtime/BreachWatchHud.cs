@@ -227,6 +227,18 @@ namespace Eldoria.BreachWatch
             !actionPlate.raycastTarget &&
             actionPlate.transform.parent==actionButton.transform;
         public IReadOnlyList<Button> NavButtons => navButtons;
+        // Native read-only proof: an unavailable third resource must be
+        // physically absent, not an empty capsule with a fake dash.
+        public int VisibleResourceCount
+        {
+            get
+            {
+                int count=0;
+                foreach(var chip in resourceChips)
+                    if(chip && chip.gameObject.activeInHierarchy)count++;
+                return count;
+            }
+        }
 
         public static BreachWatchHud Install(ValoriaIntegratedWorld source)
         {
