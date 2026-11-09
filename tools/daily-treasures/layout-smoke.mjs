@@ -15,8 +15,11 @@ assert.match(stageCode,/BastionPlateOpacity=\.36f/);
 assert.match(stageCode,/\.45f,0f,0f,false/);
 for(const [name,regex] of [
   ['seventh day occupies two columns',/int span=i==6\?2:1/],
-  ['normal glyph height',/tiny\?24f:28f/],
-  ['normal reward body height',/tiny\?31f:33f/],
+  ['normal glyph height',/compactDouble\?23f:tiny\?24f:28f/],
+  ['normal reward body height',/float labelHeight=compactDouble\?30f:/],
+  ['compact doubled-resource icon relocation',/float iconY=compactDouble\?3f:twoResources\?4f:/],
+  ['quiet item avoids text collision',/0f,-cardH\*\.08f,cardW-15f,24f/],
+  ['quiet item has real quantity bounds',/0f,-cardH\*\.35f,cardW-15f,28f/],
   ['large reward body grows with card',/Mathf\.Max\(52f,cellH-39f\)/],
   ['skip hit target 100 by 45',/-10f,-60f,100f,45f/],
   ['close hit target 48 square',/-8f,-8f,48f,48f/],
@@ -69,13 +72,22 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
     const titleBottom=ch/2-5-(i<6&&tiny?24:25);
     if(i<6)
     {
-      const iconTop=(tiny?2:3)+(tiny?24:28)/2;
-      const iconBottom=(tiny?2:3)-(tiny?24:28)/2;
-      const bodyTop=-ch/2+(tiny?17:18.5)+(tiny?31:33)/2;
+      // Mirror the CURRENT Unity layout rather than measuring an obsolete
+      // 2026-11-08 version that previously passed despite real clipped text.
+      const twoResources=i===3||i===5;
+      const compactDouble=twoResources&&ch<=103;
+      const iconY=compactDouble?3:twoResources?4:tiny?2:3;
+      const iconH=compactDouble?23:tiny?24:28;
+      const iconTop=iconY+iconH/2,iconBottom=iconY-iconH/2;
+      const bottom=compactDouble?20:twoResources?27:tiny?17:18.5;
+      const bodyH=compactDouble?30:twoResources?36:tiny?31:33;
+      const bodyTop=-ch/2+bottom+bodyH/2;
       assert.ok(titleBottom>=iconTop+2,
-        `${w}x${h}: day ${i+1} title overlaps glyph`);
+        `${w}x${h}: day ${i+1} title overlaps painted icon`);
       assert.ok(iconBottom>=bodyTop+2,
-        `${w}x${h}: day ${i+1} glyph overlaps body`);
+        `${w}x${h}: day ${i+1} painted icon overlaps resource text`);
+      if(twoResources)assert.ok(bottom-bodyH/2>=4.5,
+        `${w}x${h}: day ${i+1} second resource sits on the bronze border`);
     }
     else
     {
@@ -142,19 +154,24 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
         `${w}x${h}: reward item art overlaps another paid item`);
       actual.push(card);
 
-      const tall=cardH>=80,shortCard=cardH<60;
-      const iconH=tall?40:shortCard?22:25;
-      const iconBottom=cardH/2+(tall?-6:-3)-iconH;
-      const nameY=tall?-14:shortCard?-6:-7.5;
-      const nameH=tall?12:shortCard?10:11;
-      const amountY=tall?-31:shortCard?-19:-22;
-      const amountH=tall?20:shortCard?14:16;
-      assert.ok(iconBottom>=nameY+nameH/2+0.3,
-        `${w}x${h}: paid resource icon overlaps name`);
-      assert.ok(nameY-nameH/2>=amountY+amountH/2+0.3,
-        `${w}x${h}: paid resource name overlaps quantity`);
-      assert.ok(amountY-amountH/2>=-cardH/2-0.1,
-        `${w}x${h}: earned amount text clips beyond frame`);
+      // Paid days 4 and 7 use a legible horizontal trio on a 62-89px
+      // frame: full-height emblem LEFT, independent name and amount RIGHT.
+      // Old 10px-high vertical labels rendered EMPTY on genuine Unity PNGs.
+      assert.ok(cardH<110,`${w}x${h}: unexpected special card geometry`);
+      const frame=rect(0,0,cardW,cardH);
+      const icon=rect(-cardW/2+27,0,43,43);
+      const title=rect(24,12,cardW-62,27);
+      const quantity=rect(24,-15,cardW-62,23);
+      for(const [name,box] of [['icon',icon],['name',title],['amount',quantity]])
+        assert.ok(box.x0>=frame.x0+1&&box.x1<=frame.x1-1&&
+                  box.y0>=frame.y0+1&&box.y1<=frame.y1-1,
+          `${w}x${h}: paid ${name} clips outside item border`);
+      assert.ok(noOverlap(icon,title)&&noOverlap(icon,quantity)&&
+                noOverlap(title,quantity),
+        `${w}x${h}: paid item icon/name/quantity overlap`);
+      assert.ok(title.y1-title.y0>=10*1.35&&
+                quantity.y1-quantity.y0>=16*1.35,
+        `${w}x${h}: paid item font lines have insufficient height`);
     }
   }
   // Normal resource-only days are intentionally NOT shown in a tiny
@@ -189,6 +206,23 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
       assert.ok(card.x0>=quietShelf.x0 && card.x1<=quietShelf.x1 &&
                 card.y0>=quietShelf.y0 && card.y1<=quietShelf.y1,
         `${w}x${h}: normal illustrated reward is outside its frame`);
+      // The non-chest days (1/2/3/5/6) were missing from the 52-shot
+      // Unity test. Independently reject overlap in their premium cards.
+      // Native proof for this family is still separately required.
+      const frame=rect(0,0,cardW,cardH);
+      const icon=rect(0,cardH*.26,53,48);
+      const title=rect(0,-cardH*.08,cardW-15,24);
+      const quantity=rect(0,-cardH*.35,cardW-15,28);
+      for(const [name,box] of [['icon',icon],['name',title],['amount',quantity]])
+        assert.ok(box.x0>=frame.x0+2&&box.x1<=frame.x1-2&&
+                  box.y0>=frame.y0+2&&box.y1<=frame.y1-2,
+          `${w}x${h}: ordinary ${name} clips a premium frame`);
+      assert.ok(noOverlap(icon,title)&&noOverlap(icon,quantity)&&
+                noOverlap(title,quantity),
+        `${w}x${h}: ordinary reward name and quantity collide with the art`);
+      assert.ok(title.y1-title.y0>=12*1.35&&
+                quantity.y1-quantity.y0>=20*1.35,
+        `${w}x${h}: normal item text line box would vanish in Unity`);
     }
   }
 
