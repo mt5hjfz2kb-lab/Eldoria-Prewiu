@@ -34,7 +34,7 @@ namespace Eldoria.BreachWatch
         float originalAlpha;
         Font font, boldFont, bodyFont, bodyBoldFont;
         RectTransform uiRoot;
-        RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, descriptionDivider, buttonRow, utilityRail, centerMark, selectionHalo, feedbackPlate;
+        RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, descriptionDivider, buttonRow, utilityRail, centerMark, feedbackPlate;
         RectTransform[] resourceChips = new RectTransform[3];
         Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
         Text[] resourceAmounts = new Text[3];
@@ -631,25 +631,34 @@ namespace Eldoria.BreachWatch
             Fill(navLine);
             navFiligree=navLine.gameObject.AddComponent<BreachWatchNavFiligree>();
             navFiligree.raycastTarget=false;
-            selectionHalo=Rect("Selected medallion / warm engraved relief",buttonRow);
-            var halo=selectionHalo.gameObject.AddComponent<BreachWatchSelectionHalo>();
-            halo.raycastTarget=false;
+            // Five single-image native controls. Every symbol is drawn
+            // exactly once, with an invisible full-size touch surface; the
+            // icon's 6-unit transparent inset replaces stacked rings and
+            // vector placeholders. The only linkwork is behind the row.
             for(int i=0;i<5;i++)
             {
-                int index=i;var rt=BuildButton(buttonRow,navLabels[i],navIcons[i],()=>Navigate(index),BreachWatchPlate.PlateType.Navigation);
-                navButtons[i]=rt.GetComponent<Button>();navPlates[i]=rt.GetComponent<BreachWatchPlate>();
-                navPlates[i].VisualScale=.80f;
-                navPlates[i].Type=i==0?BreachWatchPlate.PlateType.Selected:BreachWatchPlate.PlateType.Navigation;
-                var approved=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/"+ReferenceNavArt[i]);
-                if(!approved)approved=Resources.Load<Sprite>("VigiliaArt/OwnerReference/"+ReferenceNavArt[i]);
-                if(approved)
-                {
-                    navPlates[i].ApplyIndependentArt(approved);
-                    // The reference image includes its own relief icon. Keep
-                    // the separate raycast and button, but avoid double icons.
-                    var oldPlaceholder=rt.GetComponentInChildren<BreachWatchGlyph>();
-                    if(oldPlaceholder)oldPlaceholder.enabled=false;
-                }
+                int index=i;
+                string symbol=ReferenceNavArt[i];
+                var painted=Resources.Load<Sprite>(
+                    "VigiliaArt/PremiumMedallions/"+symbol);
+                if(!painted)
+                    throw new InvalidOperationException(
+                        "Vigilia requires the approved navigation sprite: "+symbol);
+                var root=Rect(navLabels[i],buttonRow);
+                var touch=root.gameObject.AddComponent<Image>();
+                touch.color=new Color(0f,0f,0f,0f);
+                touch.raycastTarget=true;
+                var button=Button(root,()=>Navigate(index));
+                button.targetGraphic=touch;
+                button.transition=Selectable.Transition.None;
+                var art=Rect("Single owner-approved "+symbol+" relief",root);
+                Fill(art,6f);
+                var surface=Plate(art,BreachWatchPlate.PlateType.Navigation);
+                surface.ApplyIndependentArt(painted);
+                surface.VisualScale=1f;
+                surface.raycastTarget=false;
+                navButtons[i]=button;
+                navPlates[i]=surface;
             }
             feedbackPlate=Rect("Temporary real action requirement tablet",uiRoot);
             var feedbackStone=Plate(feedbackPlate,BreachWatchPlate.PlateType.Resource);
@@ -1196,14 +1205,6 @@ namespace Eldoria.BreachWatch
                 // army/swords, world/raven and heroes/helm. Only the genuine
                 // first-screen routes are enabled; we never dispatch old panels.
                 int activeTab=Mathf.Clamp(host.InWorld?3:selectedTab,0,navButtons.Length-1);
-                if(selectionHalo && navButtons[activeTab])
-                {
-                    var anchor=(RectTransform)navButtons[activeTab].transform;
-                    float glowSize=anchor.rect.width*.80f+12f;
-                    At(selectionHalo,anchor.anchoredPosition.x+(anchor.rect.width-glowSize)*.5f,
-                        -anchor.anchoredPosition.y+(anchor.rect.height-glowSize)*.5f,
-                        glowSize,glowSize);
-                }
                 for(int i=0;i<5;i++)
                 {
                     navPlates[i].Type=i==(host.InWorld?3:selectedTab)
@@ -1211,17 +1212,13 @@ namespace Eldoria.BreachWatch
                         :BreachWatchPlate.PlateType.Navigation;
                     bool allowed=(i==0||i==1||(i==3&&host.CanOpen(RoyalSection.World)));
                     navButtons[i].interactable=allowed;
-                    var icon=navButtons[i].GetComponentInChildren<BreachWatchGlyph>();
-                    if(icon && icon.enabled)
-                    {
-                        icon.Ink=allowed?TextIvory:Locked;
-                        icon.SetVerticesDirty();
-                    }
+                    // The single painted medallion is already the whole icon.
                     // Disabled destination is still visible, never presented as playable.
                     var p=navPlates[i];
                     if(p)p.color=allowed
-                        ? i==(host.InWorld?3:selectedTab)?new Color(1f,.86f,.77f):Color.white
-                        : new Color(.86f,.83f,.77f,.97f);
+                        ? i==(host.InWorld?3:selectedTab)
+                            ?new Color(1f,.97f,.87f,1f):Color.white
+                        :new Color(.70f,.68f,.65f,.88f);
                 }
             }
             catch(Exception e)
