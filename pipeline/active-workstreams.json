@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T01:45:13.196Z",
+  "updated_at": "2026-11-09T14:41:32.467Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -13,7 +13,8 @@
       "eldoria-tripo-art-brain-phase2-20261021",
       "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
       "eldoria-aldric-dialogue-bust-20261027",
-      "eldoria-forja-oscura-visual-proof-20261107"
+      "eldoria-forja-oscura-visual-proof-20261107",
+      "eldoria-daily-treasures-20261108"
     ],
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight. | 2026-11-07: owner explicitly authorized separate Forja Oscura UI visual proof, isolated new paths, no edit to held legacy HUD."
   },
@@ -21,8 +22,8 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-vigilants-hero-mastery-integration-20261108",
-      "branch": "fix/vigilants-hero-mastery-integration-20261108",
+      "owner": null,
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-11-08T01:45:13.196Z",
       "base_main_sha": "65ffa83f9e5f7e1a37cb6d0db2ec352539afb169",
@@ -55,8 +56,8 @@
       "art_production_routing_reason": "Existing native screenshot fixture compatibility with required first-entry identity; no new art, assets, runtime rules or paid tools.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VIGILANTS_HERO_MASTERY_INTEGRATION_20261108",
-      "next": "Native work finished: browser42396852832 and corrected UI42395390748 SUCCESS. Dedicated release workstream continues verified artifact publication without Windows.",
+      "phase": "VIGILANTS_HERO_MASTERY_MERGED_CI_DOMAIN_PASS_UNITY_QUEUED",
+      "next": "PR180 integró el bugfix Aldric/Lyra a main commit 5fcefd0060bc84bb72f8a2861e50b2da729fb594. CI V4.1, retención y marchas PASS; certificación nativa Unity 42435949433 aún queued por beta Windows. No declarar un nuevo WebGL/APK probado ni actualizado. Workstream liberado sin ocupar Windows.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -2089,13 +2090,34 @@
           "ownership_revision": 161,
           "transferred_at": "2026-11-07T18:54:22.588Z",
           "reason": "Native325, Android22 and complete corrected UI42395390748 finished successfully; return authorized temporary Windows priority to Forja."
+        },
+        {
+          "owner": "chatgpt-vigilants-hero-mastery-integration-20261108",
+          "previous_owner": null,
+          "from_revision": 162,
+          "to_revision": 163,
+          "claimed_at": "2026-11-08T01:45:13.196Z",
+          "reason": "Propietario 08/11/2026 ordena integrar corrección probada de maestría Aldric/Lyra; workstream canónico disponible, se reutiliza trabajo aislado, sin ocupar runner Windows."
+        },
+        {
+          "owner": "chatgpt-vigilants-hero-mastery-integration-20261108",
+          "from_revision": 163,
+          "to_revision": 164,
+          "released_at": "2026-11-08T01:51:24.066Z",
+          "reason": "PR180 merged, exact five blobs verified in main, domain V4.1 and retention/march tests PASS, Unity Editor follow-up remains queued behind authorized beta owner. No runner or production publication taken.",
+          "evidence": {
+            "pr": 180,
+            "merge_sha": "5fcefd0060bc84bb72f8a2861e50b2da729fb594",
+            "domain_run": 42435703964,
+            "retention_run": 42435703987,
+            "march_run": 42435703932,
+            "native_queued_run": 42435949433
+          }
         }
-      ,
-        {"owner":"chatgpt-vigilants-hero-mastery-integration-20261108","previous_owner":null,"from_revision":162,"to_revision":163,"claimed_at":"2026-11-08T01:45:13.196Z","reason":"Propietario 08/11/2026 ordena integrar corrección probada de maestría Aldric/Lyra; workstream canónico disponible, se reutiliza trabajo aislado, sin ocupar runner Windows."}
       ],
-      "ownership_revision": 163,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 164,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-11-05T19:03:44.661Z",
       "delivery_definition": {
@@ -2837,46 +2859,32 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 29,
-      "write_scope_released": true,
+      "owner": "chatgpt-v3-building-timer-anchor-20261109",
+      "ownership_state": "claimed",
+      "ownership_revision": 31,
+      "write_scope_released": false,
       "status": "active",
-      "claimed_at": "2026-10-27T09:36:00Z",
-      "base_main_sha": "de0cc6127746b562f82da03327426597d5d32257",
-      "branch": "main",
-      "pr": 119,
-      "owner_instruction": "Explicit owner direction to continue full-screen V3 barracks/training and marches to real Unity QA and main release; resume same canonical workstream.",
+      "claimed_at": "2026-11-09T12:36:18.720Z",
+      "base_main_sha": "0a9e1039436bf396e0cfbd6ebaad3df0967e4051",
+      "branch": "fix/eldoria-construction-timer-anchor-20261109",
+      "pr": 183,
+      "owner_instruction": "2026-11-09 owner requests restoring construction timer attachment to its world building on camera pan; preserve compact readable timer and no duplicate selected action, do not touch frozen PR179 or PR173/181 sources.",
       "scope": [
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs.meta",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/Eldoria.RoyalGold.V2.asmdef",
-        "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3Management*.cs",
-        "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3Management*.cs.meta",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3Management*.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3Management*.cs.meta",
-        "tools/ui-v3-domain-smoke/**",
-        ".github/workflows/ui-v3-domain-smoke.yml",
-        "docs/ui-v3/MANAGEMENT_SCREENS_V3_IMPLEMENTATION_20261021.md",
-        ".github/workflows/ui-progression-cert.yml",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Narrative.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
-        "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs",
-        "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
-        "Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
-        "docs/ui-v3/MOBILE_PLAYER_FEEDBACK_20261026.md",
-        "Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs",
+        "tools/ui-v3-domain-smoke/verify-construction-anchor.mjs",
+        "docs/ui-v3/CONSTRUCTION_TIMER_ANCHOR_20261109.md",
+        "tools/ui-v3-domain-smoke/Smoke.csproj",
+        ".github/workflows/ui-v3-domain-smoke.yml",
+        "tools/early-retention/Smoke.csproj",
+        ".github/workflows/early-retention-domain.yml",
+        "tools/early-retention/Program.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/BottomNavigation.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHudLayout.cs"
+        ".github/workflows/eldoria-construction-timer-native.yml",
+        "tools/ui-v3-domain-smoke/native-request.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "dependencies": [
         {
           "workstream": "valoria-master-plan-layered-construction-20261016",
@@ -2924,7 +2932,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Completed PR119 preserved; current IV–V screen enhancements belong to canonical Valoria owner.",
+      "next": "Native Unity lease acquired for PR183. Update native-request.json revision31, launch existing fail-closed timer workflow; inspect exact real PlayMode XML. Restore/release Windows after actual native gate. Then PR179 beta native via fresh lease and deploy.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -3027,10 +3035,16 @@
           "revision": 28,
           "reason": "PR119 already merged/certified; current owner directs integrated IV–V continuation and existing screen refinement under canonical Valoria workstream.",
           "released_at": "2026-10-29T12:23:02.996Z"
+        },
+        {
+          "owner": null,
+          "revision": 29,
+          "transferred_at": "2026-11-09T12:36:18.720Z",
+          "reason": "Owner reports construction timer displaced into side HUD in actual beta; correction is distinct small canonical V3 projection fix, with PR179 beta overlay owned by another workstream."
         }
       ],
       "runner_lease_note": "Main UI40681527347 success. General main40681527358 is serial on existing runner; keep intact while subsequent PR120 jobs queue.",
-      "phase": "PR119_MERGED_NATIVE_CERTIFIED",
+      "phase": "CONSTRUCTION_TIMER_NATIVE_TEST_EXCLUSIVE_LEASE",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
@@ -3097,7 +3111,14 @@
         "remote_active_confirmed": false,
         "hosted_browser_verified": false
       },
-      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6."
+      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
+      "native_timer_gate": {
+        "requested_at": "2026-11-09T14:12:44.955Z",
+        "branch": "fix/eldoria-construction-timer-anchor-20261109",
+        "pr": 183,
+        "status": "pending_exact_unity_run",
+        "purpose": "real Sawmill timer camera-pan/offscreen PlayMode test; source blob caa48b2bfa70edde209055f53296ddfc5e3a0baf"
+      }
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
@@ -6676,14 +6697,14 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 20,
+      "ownership_revision": 26,
       "write_scope_released": false,
-      "phase": "BREACHWATCH_REAL_FIRST_SCREEN_TECH_PASS_ART_REJECTED",
-      "next": "Native first-screen proof completed. Do not expand or merge: replace the provisional flat procedural basalt/glpyhs with original detailed authored independent art components, correct mobile card composition, and repeat genuine Unity QA. Current QA evidence: docs/ui-v3/BREACH_WATCH_FIRST_SCREEN_20261108.md; original UI remains in product.",
+      "phase": "VIGILIA_ALPHA18_FIRST_SCREEN_NATIVE_PASS_VISUAL_FIDELITY_REWORK_PENDING",
+      "next": "Current exact PR173 native run 42630398578 passed eight screenshots and gameplay; source artwork uses transparent true Bastion preview with 18%-opacity brass frame. The visual gain is limited (~0.35–0.72% pixels vs previous photo); commission a larger authorial SINGLE-SURFACE UI change rather than more decorative microtweaks. Keep draft; do not merge/publish until visual approval.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-07T18:54:22.588Z",
-      "runner_claim_basis": "Owner-directed takeover of the same PR173/workstream; native resource remains exclusively claimed pending fresh Unity proof; no other windows-runner-heavy claimant.",
+      "runner_claimed_at": "2026-11-09T13:46:31.554Z",
+      "runner_claim_basis": "Formal lease release by PR181 at 2026-11-09T13:41:12.992Z; active claim zero at CAS; user explicitly requests PR173 visual A/B continuation without background schedule. Unity workflow has independent live process + lease checks.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
@@ -6739,40 +6760,38 @@
         }
       ],
       "runner_priority_handoff": {
-        "status": "RETURNED_AFTER_RELEASE_NATIVE_SUCCESS",
-        "returned_at": "2026-11-07T18:54:22.588Z",
-        "from": "valoria-master-plan-layered-construction-20261016",
-        "completed_runs": [
-          42391824345,
-          42395466213,
-          42396852832,
-          42395390748
-        ]
+        "status": "OWNER_CONFIRMED_RELEASE_TO_BETA_UX",
+        "at": "2026-11-09T08:26:10.917Z",
+        "to": "eldoria-private-beta-i-v-20261107",
+        "reason": "Current user: Sigue con el trabajo el chat de la interfaz ya liberó el PC",
+        "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "1cea977b8ec67495bbbcbc7b31d38425e352c10c",
-        "native_run": 42427015492,
+        "source_sha": "36f05a596e243c0eb52b20907187a925a9dab87d",
+        "native_run": 42630398578,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13596191419,
+        "artifact": 13680344022,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
-        "new_navigation_real_pointer_clicks": 1,
+        "new_navigation_real_pointer_clicks": 6,
         "safe_preserved": true,
         "art_approved": false,
         "android_tested": false,
-        "webgl_tested": false
+        "webgl_tested": false,
+        "portrait_transparent_bg_fraction": 0.7279,
+        "portrait_opaque_masonry_fraction": 0.2688
       },
-      "runner_released_at": "2026-11-07T23:52:00Z",
-      "runner_release_basis": "Independent BreachWatch proof run 42427015492 completed successfully, exact source 1cea977b8ec67495bbbcbc7b31d38425e352c10c. Eight authentic Unity PNGs and one nav pointer passed; no art approval."
+      "runner_released_at": "2026-11-09T14:03:19Z",
+      "runner_release_basis": "Exact PR173 Unity 6000.3.23f1 run 42630398578 completed SUCCESS: eight genuine screenshots, six real clicks, alpha clear 72.8%/opaque real masonry 26.9%, game/save unchanged, only photo rectangle changed. Released Windows; ART_APPROVED remains FALSE."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-beta-pages-20261107",
+      "owner": "chatgpt-beta-timer-reconciliation-20261109",
       "ownership_state": "claimed",
-      "ownership_revision": 8,
+      "ownership_revision": 17,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6789,18 +6808,20 @@
         "Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs"
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs",
+        "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes",
+        "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
-      "claimed_at": "2026-11-07T19:05:00Z",
+      "resources": [],
+      "claimed_at": "2026-11-09T13:11:04.123Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "STRUCTURAL_STARTUP_NATIVE_AB_AND_WEBGL",
-      "note": "Owner explicitly approves public GitHub Pages direct link; preserve game source and existing Pages site. No Cloudflare required. Owner explicitly instructs completion urgently; assess alternative candidate packaging rather than waiting for exclusive Windows.",
-      "next": "Run prepared isolated structural native comparison and canonical WebGL build; inspect actual results before browser or owner retry.",
+      "phase": "BETA_CONSTRUCTION_TIMER_ANCHOR_RECONCILIATION",
+      "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
+      "next": "Port PR183 exact source to frozen PR179 overlay, update SHA256 manifest and native camera-pan probe, certify Unity on rightful Windows handoff, package/regression and update existing owner beta, preserving rollback. Main merge only after exact gate.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -6812,7 +6833,7 @@
         "actual_unity_gameplay_events_verified": 0,
         "cloudflare_connected": false,
         "real_hosted_pass": false,
-        "physical_mobile_tested": "owner reports iPhone/iPad returns to welcome during load; not passed",
+        "physical_mobile_tested": "Beta9: owner confirms entry/play; long session and physical reopen not yet reported. Earlier failures retained per revision.",
         "supabase_beta_event_rows": 0,
         "distribution_enabled": true,
         "budget_eur": 0,
@@ -6823,7 +6844,7 @@
         "browser_landing": "PASS anonymous",
         "browser_game_start": "BLOCKED remote browser reports Your browser does not support WebGL",
         "owner_confirmed_no_back_or_reload": true,
-        "iphone_cause": "not identified; memory pressure hypothesis; no device exception in screenshot",
+        "iphone_cause": "UNCONFIRMED: desktop compressed cubemap GPU fix did not resolve physical iPhone restart",
         "startup_diagnostic_run": 42415743624,
         "diagnostic_cache_fix": {
           "source": "08fb51bb492bb81f89e42c1e59de1ff1ada40287",
@@ -6863,15 +6884,425 @@
           "physical_iphone": false,
           "release_for_external_testers": false,
           "url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/mobile-v3.html"
-        }
+        },
+        "structural_candidate": {
+          "revision": "native325-staged4",
+          "public_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1",
+          "public_runtime_run": 42484725949,
+          "public_runtime_artifact": 13619076890,
+          "public_runtime_pass": true,
+          "local_reopen_run": 42482412101,
+          "physical_iphone_verified": false,
+          "release_for_external_testers": false,
+          "physical_iphone_result": "OWNER_REPORTED_FAILURE 2026-11-08 IMG_5046: ready14:47:01 heap495MiB; boot back_forward14:47:05; game visible about2sec"
+        },
+        "mobile5": {
+          "status": "PHYSICAL_IPHONE_FAILED",
+          "revision": "native325-mobile5",
+          "bundle_sha256": "2c502a1d766aca83c2377347de290467d16d75efd8c6f5edad41766f4d3ce73a",
+          "changed_material_textures": 35,
+          "removed_serialized_texture_bytes": 298319872,
+          "all_objects_verified": 57375,
+          "site_bytes": 455991538,
+          "data_bytes": 500847489,
+          "qa_run": 42487738914,
+          "qa_source": "300b78e31a72bbdbd74c6681a75b04987d28bd31",
+          "pages_run": 42487975751,
+          "site_version": 4,
+          "site_deployment": "appgdep_6af083414b6481919608003893646797",
+          "public_qa_run": 42488719340,
+          "public_qa_pass": true,
+          "public_qa_artifact": 13620362562,
+          "public_qa_zip_sha256": "abf61e7c618212f100c6c15d8c0959f5e0962a3f409bf37ebffe5ce54cca333b",
+          "wasm_peak_capacity_bytes": 1064108032,
+          "previous_wasm_peak_capacity_bytes": 1168179200,
+          "process_rss_measured": false,
+          "graceful_quit_reload_nickname_pass": true,
+          "physical_iphone_verified": false,
+          "full_i_v_verified": false,
+          "visual_scope": "City entry and reloaded intro screenshots inspected; mobile lower detail texture profile, no full-world visual equivalence claim",
+          "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=mobile5",
+          "physical_iphone_result": {
+            "reported_at": "2026-11-08",
+            "startup_heap_mib": 412,
+            "successful_growth_mib": [
+              495,
+              594,
+              699
+            ],
+            "last_growth_time": "15:32:46",
+            "back_forward_time": "15:32:48",
+            "nickname_visible": true,
+            "astc_supported": true,
+            "allocation_failure_observed": false,
+            "context_loss_observed": false,
+            "cause_confirmed": false
+          }
+        },
+        "mobile6": {
+          "revision": "native325-mobile6-cubemap",
+          "bundle_sha256": "e54d547487e0d915f5a8c3fbbd0354a79672041dd201b3e63672de5e740ea6c1",
+          "qa_run": 42493894120,
+          "webkit_versions": [
+            "26.0",
+            "27.2"
+          ],
+          "renderer": "Apple GPU",
+          "nickname_reload_visually_verified": true,
+          "pages_run": 42494677413,
+          "site_version": 5,
+          "site_deployment": "appgdep_6af094df6f9881918253a11bc83d7bb6",
+          "public_qa_run": 42494930537,
+          "public_qa_pass": true,
+          "physical_iphone_verified": false,
+          "release_for_external_testers": false,
+          "public_qa_artifact": 13623376058,
+          "public_nickname_reload_visually_verified": true,
+          "physical_iphone_result": "FAIL: owner reports same as mobile5"
+        },
+        "terrain_tape_native": {
+          "run": 42514790566,
+          "source": "35db7669ad1bfcbeeb563fa40ebb5e591efe0344",
+          "queries_per_pass": 119870,
+          "passes": 2,
+          "sites": 2142,
+          "cities": 17,
+          "cache_sha256": "013ebf8194be6974dbcadf27e3cf2ae43db7c7638e0e6cb22cfe838e037ed986",
+          "restored": true,
+          "physical_iphone_verified": false
+        },
+        "route_buffer_native": {
+          "run": 42518950317,
+          "source": "5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa",
+          "population_route_hash": "F0C7EA241931ECB6ECCF632205D227975C3050DA799794EFEDB80C40C767A73D",
+          "passes": 2,
+          "checks": 225,
+          "restored": true,
+          "physical_iphone_verified": false
+        },
+        "mobile9": {
+          "revision": "native325-mobile9-routes",
+          "source": "5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa",
+          "native_run": 42518950317,
+          "comparison_runs": [
+            42519214500,
+            42522623870
+          ],
+          "control_used_peak_bytes": [
+            945492096,
+            946154440
+          ],
+          "candidate_used_peak_bytes": [
+            579473936,
+            580234304
+          ],
+          "control_webcontent_peak_kib": [
+            2319232,
+            2545344
+          ],
+          "candidate_webcontent_peak_kib": [
+            2475392,
+            2109024
+          ],
+          "mean_desktop_resident_reduction_percent": 5.759186412135409,
+          "pages_run": 42523819193,
+          "site_version": 6,
+          "site_deployment": "appgdep_6af0e5942d7c8191a7c60dcabb3c87a3",
+          "public_qa_run": 42524041553,
+          "public_qa_artifact": 13634213235,
+          "public_qa_zip_sha256": "56b0c32734b515aa416f75a67276f683a37832e5c1ff20bca5a18ebc5a7e3939",
+          "public_runtime_pass": true,
+          "public_nickname_reload_visually_verified": true,
+          "physical_iphone_verified": false,
+          "release_for_external_testers": false,
+          "preallocation_640_rejected": true,
+          "game_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=native325-mobile9-routes",
+          "owner_physical_result": {
+            "reported_date": "2026-11-08",
+            "owner_quote": "Ahora si me deja jugar",
+            "entry_and_play_owner_confirmed": true,
+            "sustained_session_verified": false,
+            "physical_close_reopen_verified": false,
+            "scope": "Owner-reported success following beta9 handoff; session duration and browser not specified."
+          }
+        },
+        "pretest_ux_native_run": 42595057735,
+        "pretest_ux_native_source": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+        "pretest_native_success": true,
+        "pretest_screenshots_reviewed": true,
+        "pretest_existing_input_changes": 0,
+        "windows_released_at": "2026-11-09T10:11:11.540Z",
+        "mobile10_published": true,
+        "mobile10_native_run": 42595057735,
+        "mobile10_package_browser_run": 42596176998,
+        "mobile10_pages_run": 42600463889,
+        "mobile10_live_browser_run": 42600894847,
+        "mobile10_sites_version": 7,
+        "mobile10_sites_commit": "b24504b886d127a3f1bf58be17d33245c5922389",
+        "mobile10_sites_deployment": "appgdep_6af19fad4c94819191c2f297403a1286",
+        "mobile10_url": "https://eldoria-valoria-beta-20261108.kbkvc5c45n.chatgpt.site/?eldoria_diag=1&build=native325-mobile10-pretest-ux",
+        "mobile10_physical_device_verified": false
       },
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Freeze exacto y distribución/telemetría de la beta existente; su scope no modifica Unity, modelos, sprites ni arte. Clasificación administrativa para conservar el gate global, sin alterar propietario, recursos ni trabajo de beta.",
+      "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "acquired_after_explicit_release",
-        "purpose": "Exact frozen source versus four-file staged-startup overlay, native parity, canonical journey, fresh WebGL; isolated project only"
-      }
+        "status": "released_after_native_success",
+        "reason": "Focused frozen beta pretester UX verification after implementation; preserve current Forja and Treasures alternating work, no cancellation",
+        "candidate_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+        "next_test": "Only Ubuntu/macOS packaging and browser validation remain. Windows is available; no queued beta native work.",
+        "native_run": 42595057735
+      },
+      "ownership_history": [
+        {
+          "previous_owner": "chatgpt-beta-pages-20261107",
+          "from_revision": 12,
+          "to_revision": 13,
+          "to_owner": "codex-pr179-stability-2ea88ced1c46",
+          "reason": "User explicitly requests continuing PR179 stability repair in this session. Preserve running native run42503628688; no cancellation or duplicate Unity launch."
+        },
+        {
+          "previous_owner": "codex-pr179-stability-2ea88ced1c46",
+          "from_revision": 13,
+          "to_revision": 14,
+          "to_owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
+          "reason": "Owner explicitly directs this session to integrate the tested beta10 pretester UX into canonical main. Preserve PR179 and other workstreams; no extra PR or Windows acquisition."
+        },
+        {
+          "previous_owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
+          "from_revision": 14,
+          "to_revision": 15,
+          "to_owner": null,
+          "reason": "Main beta10 source integrated and Ubuntu checks passed; Windows CI running independently. Release source and runner ownership; do not hold PR173/PR181. PR179 remains canonical for any remaining frozen beta stability work."
+        },
+        {
+          "previous_owner": null,
+          "from_revision": 15,
+          "to_revision": 16,
+          "to_owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
+          "reason": "Same user-authorized task: repair exact Unity compiler error discovered after canonical promotion; no new PR or Windows runner reservation."
+        },
+        {
+          "owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
+          "revision": 16,
+          "phase": "MAIN_UNITY_POSTPROMOTION_COMPILER_REPAIR",
+          "transferred_at": "2026-11-09T13:11:04.123Z",
+          "reason": "Owner explicitly requests the same scene-attached construction timer fix to reach both canonical main (PR183) and the published beta; lawful takeover of the existing PR179, while retaining all prior beta work. No running PR179 job and no Windows reservation held by PR179 at handoff."
+        }
+      ],
+      "frozen_beta_ux_scope": {
+        "requested_by": "owner in current PR179 conversation 2026-11-09",
+        "baseline_runtime": "5f1b5105052f0deacd54e1f50b6a26eb4e8a9daa",
+        "surface": "Existing published frozen beta, not PR173 replacement HUD or PR181 treasures production sources",
+        "source_policy": "Keep isolated, exact-base checked patch overlays under owned beta tools. Do not edit other owners canonical source files, scenes, or running native projects. Reconciliation into current development remains explicit.",
+        "items": [
+          "Hide unavailable/unintroduced navigation",
+          "Explain and delay Vigilants/Scouts",
+          "Stop Vigilants backdrop drift",
+          "Direct HUD mailbox",
+          "Stable world-anchored level labels",
+          "Training only relevant controls",
+          "Barracks choice Upgrade/Train",
+          "One World/City toggle; remove Units",
+          "Clear mission expansion and close icon",
+          "Compact stationary operation panels",
+          "Building upgrades up to Bastion level"
+        ],
+        "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
+        "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
+      },
+      "runner_claimed_at": "2026-11-09T08:26:10.917Z",
+      "canonical_integration_request": {
+        "requested_at": "2026-11-09T10:49:44.401Z",
+        "authorization": "Owner explicitly requested these beta10 improvements also in main (2026-11-09).",
+        "base_main": "dcbe8a56c19ce73009d79cb4c5f0fd0666d6eec8",
+        "preserve": [
+          "PR180 paired-hero mastery correction",
+          "PR173 independent BreachWatch UI",
+          "PR181 daily treasures"
+        ],
+        "canonical_pr": 179,
+        "shared_files": [
+          "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+          "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs"
+        ],
+        "windows_claimed": false
+      },
+      "main_promotion": {
+        "status": "MAIN_COMPILER_DEPENDENCY_REPAIR_IN_PROGRESS",
+        "source_pr": 179,
+        "verified_native_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+        "preserve": [
+          "PR180 paired-hero mastery in EarlyRetentionRules.cs",
+          "PR173 independent interface",
+          "PR181 treasure features"
+        ],
+        "notes": "19 files ported, 18 exact source candidates, EarlyRetentionRules reconciled to keep PR180. PR173/181 notified. Unity/Windows jobs for main queued or running. No APK/WebGL publication from this commit.",
+        "commit_sha": "8ac9c19fe881a8c709efbd5630a9b43b9ddc93b0",
+        "branch": "main",
+        "source_native_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+        "source_tests": "Unity beta10 227 journey checks",
+        "canonical_ubuntu_run": 42610908615,
+        "canonical_ubuntu_checks": "58 domain assertions PASS",
+        "canonical_unity_run": 42610908699,
+        "canonical_ui_run": 42610908773,
+        "transferred_files": 19,
+        "failure_run": 42610908699,
+        "failure": "ValoriaIntegratedWorld.Ready uses RegionOneCanonicalLandscape.IsReady, absent from older canonical world implementation"
+      },
+      "owner_instruction": "2026-11-09 owner: continue correcting scene-attached construction countdown until main and the current playable beta contain verified fix. Use existing PR179 and its branch, preserve beta10 mechanics and pinned-hash overlays; no PR173/181 changes, no tester release without verification."
+    },
+    {
+      "id": "eldoria-daily-treasures-20261108",
+      "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
+      "owner": "chatgpt-daily-treasures-20261108",
+      "ownership_state": "claimed",
+      "ownership_revision": 17,
+      "write_scope_released": false,
+      "status": "active",
+      "branch": "feature/eldoria-daily-treasures-20261108",
+      "claimed_at": "2026-11-09T12:38:23.008Z",
+      "base_main_sha": "abeddb14dcd8bb7220c89d8bcac1a769e6b69f90",
+      "scope": [
+        "Unity/Assets/Eldoria/DailyTreasures/**",
+        "Unity/Assets/Eldoria/DailyTreasures.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs",
+        "tools/daily-treasures/**",
+        ".github/workflows/daily-treasures-domain.yml",
+        "docs/daily-treasures/**",
+        "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs.meta",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/Eldoria.RoyalGold.V2.asmdef",
+        "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
+        ".github/workflows/daily-treasures-native.yml",
+        "Unity/Assets/Eldoria/DailyTreasures/Editor/**",
+        "tools/march-capacity/Smoke.csproj",
+        "Unity/Packages/manifest.json"
+      ],
+      "resources": [],
+      "budget_eur": 0,
+      "phase": "NATIVE_VIGILIA_MODAL_CLOSE_RAYCAST_FAILURE_WINDOWS_RELEASED",
+      "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
+      "next": "Correct native UI GraphicRaycaster/Canvas migrated-modal depth=-1 and zero raycasts, pass exact-HEAD certified 72 screenshots, 116 clicks, 28 real claims. Reacquire Windows only via formal CAS after no competing job; ownership guard overlap with UI V3 remains.",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
+      "last_verified": {
+        "source": "feature/eldoria-daily-treasures-20261108",
+        "commit": "e66c80edd6021339395c101104786758dcda318e",
+        "run_id": 42612268799,
+        "result": "SUCCESS_SOURCE_QA_ONLY_NATIVE_UNITY_FAILED_BEFORE_FULL_EVIDENCE",
+        "original_imported_png_assets": 13,
+        "painterly_clean_mobile_resources": 4,
+        "source_icon_size_tests": [
+          32,
+          48,
+          64
+        ],
+        "art_contact_artifact_id": 13664102624,
+        "real_paid_gateway_checks": 196,
+        "unity_native_font_fit_test_prepared": true,
+        "unity_native_orientation_test_prepared": true,
+        "live_vigilia_head_compatibility_verified": true,
+        "native_expected_pngs": 52,
+        "native_expected_pointer_events": 56,
+        "native_expected_real_gateway_claims": 8,
+        "unity_native_pass": false,
+        "art_approved": false,
+        "merged": false,
+        "published": false,
+        "native_component": {
+          "run": 42609669589,
+          "source_sha": "321faff58fc5e986950dc8769e33e79c535f61ac",
+          "job_id": 129134599737,
+          "conclusion": "failure",
+          "artifact_id": 13670287864,
+          "authentic_pngs": 8,
+          "resolutions": [
+            "1600x900"
+          ],
+          "root_failure": "GraphicRaycaster blocked first Vigilia-canvas medallion click after presentation reparent, Capture line 631",
+          "pixels_defect": "Day7/Day4 item titles and quantities wholly absent from genuine Unity screenshots due to overlapping undersized Text rectangles",
+          "source_fix_head": "e66c80edd6021339395c101104786758dcda318e",
+          "source_ci_run": 42612268799,
+          "unity_native_pass": false,
+          "art_approved": false,
+          "full_game_tested": false
+        }
+      },
+      "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
+      "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
+      "runner_released_at": "2026-11-09T13:41:12.992Z",
+      "runner_release_basis": "Native exact-HEAD 64bce6cd0737588539631306f331335d3a02de38 run 42622935466 completed failure, job 129179417321: Vigilia modal close registered but graphic depth=-1, zero raycasts after Canvas migration. Preserve PR181 source ownership and correction work; release exclusive Windows to other workstreams."
+    },
+    {
+      "id": "eldoria-eonscar-branding-trial-20261109",
+      "title": "EONSCAR — prueba reversible de identidad y entrada al juego",
+      "owner": "chatgpt-eonscar-branding-trial-20261109",
+      "ownership_state": "claimed",
+      "ownership_revision": 2,
+      "write_scope_released": false,
+      "status": "active",
+      "branch": "feature/eonscar-branding-trial-20261109",
+      "scope": [
+        "Unity/Assets/Eldoria/Branding/EonscarTrial/**",
+        "Unity/Assets/Eldoria/Branding/EonscarTrial.meta",
+        "docs/branding/eonscar-trial/**",
+        "tools/eonscar-branding-trial/**",
+        ".github/workflows/eonscar-branding-trial-check.yml",
+        ".github/workflows/eonscar-branding-native.yml",
+        "pipeline/art-production-requests/eldoria-eonscar-branding-trial-20261109.json"
+      ],
+      "resources": [],
+      "budget_eur": 0,
+      "claimed_at": "2026-11-09T13:13:27.651Z",
+      "base_main_sha": null,
+      "phase": "ART_PROVENANCE_AND_SAFETY_SOURCE_QA_PASS_NATIVE_UNITY_WAIT_EXCLUSIVE_RUNNER",
+      "next": "Wait for explicit release of windows-runner-heavy by construction timer owner. After verifying registry+native jobs, claim runner via CAS; commit tools/eonscar-branding-trial/native-request.txt to PR184 to trigger isolated Unity Editor import/hierarchy proof. Then real same-scene PlayMode A/B captures/input/save QA; release Windows claim. Do NOT merge or publish.",
+      "note": "Real transparent curated 512x384 PNG committed; original high-res remains off public repository. Responsive nine-case/safe-area and input sink now source-tested against actual SlicePresenter.IsPointerOverInteractiveUi. Art request v2 on main; AI governance, ownership, metadata, architecture and EONSCAR source CI PASS. Generic early-retention domain CS0103 remains unrelated. No actual Unity run.",
+      "art_approved": false,
+      "physical_mobile_tested": false,
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Owner-selected AI-generated logo with exact source/provenance and mandatory real Unity artistic QA.",
+      "last_verified": {
+        "browser_preview": "Chromium PASS: desktop 1920x1080, landscape 844x390, portrait 390x844; logo and two buttons work; no JS exceptions",
+        "unity_native": "NOT_RUN",
+        "production_published": false,
+        "current_pr": 184,
+        "branch_head": "50d234ac4f989b1189924a02f9672b89c90dc068",
+        "source_sanity_run": 42625212265,
+        "source_sanity_result": "success",
+        "ownership_gate": "success",
+        "metadata_gate": "success",
+        "domain_gate": "failure_unrelated_early_retention_missing_NarrativeCoherenceRules",
+        "webgl_real": "NOT_RUN",
+        "android_native": "NOT_RUN",
+        "asset_committed_to_branch": false,
+        "art_approved": false,
+        "windows_reserved_by_other": true,
+        "qa_png_sha256": "c5ac3f2688196548daea6c61e7d0654f3b0cff0c613c78b44a12b4d72bbeab72",
+        "qa_png_in_branch": true,
+        "native_probe_source_ready": true,
+        "native_executed": false,
+        "layout_test_cases": 9,
+        "original_png_sha256": "0fa78eda784cacc85755be36c3df3748605d617e1a24d7f33ffecc9a4a74fba2",
+        "art_request_registered": true,
+        "cI_source_sanity": "PASS",
+        "ci_art_governance": "PASS",
+        "ci_unity_metadata": "PASS",
+        "ci_world_input_contract": "PASS",
+        "source_layout_cases": 9,
+        "full_screen_input_sink": true,
+        "native_workflow_prepared": true,
+        "native_workflow_dispatched": false,
+        "windows_resource_claimed": false,
+        "real_player_scene": "NOT_TESTED",
+        "original_high_res_in_public_repo": false,
+        "unrelated_early_retention_domain_failure": "CS0103 NarrativeCoherenceRules"
+      },
+      "art_production_request": "pipeline/art-production-requests/eldoria-eonscar-branding-trial-20261109.json"
     }
   ],
   "history": [
