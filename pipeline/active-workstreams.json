@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T10:31:48.100Z",
+  "updated_at": "2026-11-09T10:46:08.281Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7089,7 +7089,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 14,
+      "ownership_revision": 15,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7110,15 +7110,16 @@
         "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
         ".github/workflows/daily-treasures-native.yml",
         "Unity/Assets/Eldoria/DailyTreasures/Editor/**",
-        "tools/march-capacity/Smoke.csproj"
+        "tools/march-capacity/Smoke.csproj",
+        "Unity/Packages/manifest.json"
       ],
       "resources": [
         "windows-runner-heavy"
       ],
       "budget_eur": 0,
-      "phase": "NATIVE_UNITY_EXACT_HEAD_COMPONENT_ART_CERT_REQUESTED",
-      "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.",
-      "next": "Reserved one isolated native Unity QA turn under existing PR181 workstream, not beta PR179 or UI PR173. Trigger request on exact PR181 HEAD after syncing registry. Inspect actual Unity 52 PNG, 56 pointer paths, 8 genuine gateway claims, 16 visual-only scenes and typography/rotation checks. Release windows-runner-heavy promptly after job completes or is genuinely blocked. No merge, no release or art approval from code alone.",
+      "phase": "NATIVE_UNITY_AUDIO_MODULE_ROOT_CAUSE_FOUND_PATCHING_EXACT_HEAD",
+      "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
+      "next": "Add built-in Audio module 1.0.0 only to PR181 Unity/Packages/manifest.json and verify source CI; rerun Unity exact HEAD under exclusive windows lease, examine subsequent compiler/runtime/graphics errors. Metadata YAML warning in external DepthB10 belongs separate pipeline and is not in this workstream scope; don't overwrite.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
