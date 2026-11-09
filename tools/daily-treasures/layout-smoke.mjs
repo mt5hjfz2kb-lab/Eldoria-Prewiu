@@ -25,7 +25,9 @@ for(const [name,regex] of [
   ['seventh day occupies two columns',/int span=i==6\?2:1/],
   ['normal glyph height',/compactDouble\?23f:tiny\?24f:28f/],
   ['normal reward body height',/float labelHeight=compactDouble\?30f:/],
-  ['compact doubled-resource icon relocation',/float iconY=compactDouble\?3f:twoResources\?4f:/],
+  ['roomy calendar real icon enlargement',/float iconY=roomy\?10f:/],
+  ['compact doubled-resource still supported',/compactDouble\?3f:twoResources\?4f:/],
+  ['premium 420px calendar on larger screens',/roomyCalendar\?420f:370f/],
   ['day-three streak uses actual preview text',/bool twoResources=dayBody\[i\]\.text\.IndexOf\('\\n'\)>=0/],
   ['quiet item avoids text collision',/0f,-cardH\*\.08f,cardW-15f,24f/],
   ['quiet item has real quantity bounds',/0f,-cardH\*\.35f,cardW-15f,28f/],
@@ -59,7 +61,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
 {
   const portrait=h>w;
   const pw=Math.min(w-24,portrait?440:740);
-  const ph=Math.min(h-20,portrait?700:370);
+  const ph=Math.min(h-20,portrait?700:h>=500?420:370);
   const cols=portrait?2:4, rows=portrait?4:2;
   const gap=7,left=15,gridTop=82,gridBottom=83;
   const gh=ph-gridTop-gridBottom;
@@ -81,7 +83,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
     for(const other of cards)assert.ok(noOverlap(card,other),
       `${w}x${h}: day ${i+1} overlaps another reward`);
     cards.push(card);
-    const tiny=ch<96;
+    const tiny=ch<96,roomy=ch>=123.5;
     const titleBottom=ch/2-5-(i<6&&tiny?24:25);
     if(i<6)
     {
@@ -96,8 +98,9 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
       {
         const twoResources=lineCount===2;
         const compactDouble=twoResources&&ch<=103;
-        const iconY=compactDouble?3:twoResources?4:tiny?2:3;
-        const iconH=compactDouble?23:tiny?24:28;
+        const iconY=roomy?10:compactDouble?3:twoResources?4:tiny?2:3;
+        // Keep BOTH actual illustrated PNG and fallback art within bounds.
+        const iconH=roomy?40:compactDouble?23:tiny?31:42;
         const iconTop=iconY+iconH/2,iconBottom=iconY-iconH/2;
         const bottom=compactDouble?20:twoResources?27:tiny?17:18.5;
         const bodyH=compactDouble?30:twoResources?36:tiny?31:33;
@@ -112,7 +115,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
     }
     else
     {
-      const iconRight=-width/2+48+73/2;
+      const iconRight=-width/2+48+(roomy?80:73)/2;
       const bodyLeft=38-(width-116)/2;
       const bodyTop=-12+Math.max(52,ch-39)/2;
       assert.ok(bodyLeft-iconRight>=8,
