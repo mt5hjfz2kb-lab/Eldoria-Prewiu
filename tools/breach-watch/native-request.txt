@@ -331,3 +331,5 @@ Independent Unity Editor Play preview menu added to enable/restore new Canvas wi
 2026-11-09: source QA after replacing the placeholder chapter slab with one source-derived owner-approved carved mission panel (castle insignia integrated). Mission title and objective remain live, responsive portrait/landscape geometry and source visual checks added. Do not run Unity while PR179 holds windows-runner-heavy; no merge/deploy or art approval from source CI alone.
 
 2026-11-09: rerun source QA for exact user-approved mission art, fixing the PNG indexed alpha 254 source-validator false negative. Same 303×100 PNG bytes and actual nine-slice; no gameplay modifications; Windows remains reserved by beta.
+
+2026-11-09: EXCLUSIVE NATIVE 8-SCREEN SOURCE EXACT-HEAD PROOF. Owner-approved mission plaque sprite and responsive live text art/source gates PASS 42688290241 on SHA df2e7760. Beta PR179 released the Windows runner. Current owner Vigilia claims revision30. Run Unity 6000.3.23f1 real 8 captures + A/B reference; this is a TEST, not owner art approval or release. Release Windows when job finishes.
