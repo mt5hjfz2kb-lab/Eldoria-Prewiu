@@ -22,6 +22,7 @@ env:
   CANDIDATE_REVISION: native325-mobile9-routes
 jobs:
   publish:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment:
@@ -98,3 +99,176 @@ jobs:
               if n==11:raise
               time.sleep(5)
           PY
+
+  publish-mobile11-world-anchored:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 115
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}beta-native325/
+    env:
+      PACKAGE_RUN: '42645753309'
+      PACKAGE_SOURCE: '52b22519323b212cb17e32a73b724b603ba04812'
+      NATIVE_RUN: '42645633286'
+      NATIVE_SOURCE: '8dc875430241a49b4d417782dfeab2d4c7a4f315'
+      CANDIDATE_REVISION: 'native325-mobile11-building-anchor'
+    steps:
+      - name: Checkout exact beta packaging verification tools
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-private-beta
+            tools/delivery
+          persist-credentials: false
+      - name: Require completed exact native engine, Bastion I-V, Apple GPU and candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import os,json,time,urllib.request
+          repo=os.environ['GITHUB_REPOSITORY']
+          def run(run_id):
+            req=urllib.request.Request(
+              f'https://api.github.com/repos/{repo}/actions/runs/{run_id}',
+              headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],
+                       'Accept':'application/vnd.github+json'})
+            with urllib.request.urlopen(req,timeout=30) as response:
+              return json.load(response)
+          # Publishing must be impossible until the exact native and package
+          # runs succeed; an Ubuntu source-only success can never satisfy this.
+          for _ in range(660):
+            n=run(os.environ['NATIVE_RUN'])
+            p=run(os.environ['PACKAGE_RUN'])
+            assert n['head_sha']==os.environ['NATIVE_SOURCE'], 'Native SHA changed'
+            assert p['head_sha']==os.environ['PACKAGE_SOURCE'], 'Packaging SHA changed'
+            for value in (n,p):
+              if value['status']=='completed':
+                assert value['conclusion']=='success', 'Unity/QA failed; publication refused'
+            if n['status']=='completed' and p['status']=='completed':
+              break
+            time.sleep(10)
+          else: raise RuntimeError('No native and Apple GPU PASS in time; publication refused')
+          print('NATIVE_UNITY_BASTION_I_V_APPLE_GPU_EXACT_SHA_GATE_PASS')
+          PY
+      - name: Download immutable native-certified mobile11 candidate
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42645753309
+          name: mobile11-candidate-site
+          github-token: ${{ github.token }}
+          path: candidate-site
+      - name: Download real desktop Apple GPU WebKit regression evidence
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 42645753309
+          name: mobile11-desktop-apple-gpu-not-iphone-certification
+          github-token: ${{ github.token }}
+          path: apple-evidence
+      - name: Verify playable files, identity and Safari/WebKit baseline comparison
+        run: |
+          python - <<'PY'
+          import json,hashlib,shutil
+          from pathlib import Path
+          site=Path('candidate-site')
+          identity=json.loads((site/'release-identity.json').read_text())
+          assert identity['revision']=='native325-mobile11-building-anchor' and identity['source_sha']=='8dc875430241a49b4d417782dfeab2d4c7a4f315'
+          assert str(identity['native_run'])=='42645633286'
+          assert identity['pretest_ux_native_verified'] and identity['native_journey_verified']
+          assert identity['native_parity_verified'] and not identity['terrain_query_runtime_cooking']
+          assert identity['terrain_query_cache_sha256']
+          assert not identity['release_for_external_testers']
+          assert not identity['physical_mobile_tested']
+          for name in ('index.html','play.js','build-manifest.json'):
+            assert (site/name).is_file(), f'Missing playable entry {name}'
+          report=json.loads(Path('apple-evidence/candidate/report.json').read_text())
+          control=json.loads(Path('apple-evidence/control/report.json').read_text())
+          assert report['passed'] and control['passed'], 'Desktop WebKit A/B failed'
+          assert report['identity']['source_sha']=='8dc875430241a49b4d417782dfeab2d4c7a4f315', 'WebKit source mismatch'
+          assert report['identity']['revision']=='native325-mobile11-building-anchor', 'WebKit revision mismatch'
+          output=Path('site/beta-native325')
+          shutil.copytree(site,output)
+          Path('site/.nojekyll').touch()
+          Path('site/index.html').write_text(
+            '<!doctype html><html lang="es"><meta charset="utf-8">'
+            '<meta http-equiv="refresh" content="0;url=./beta-native325/">'
+            '<title>Eldoria</title><a href="./beta-native325/">Abrir beta Eldoria</a></html>')
+          size=sum(p.stat().st_size for p in Path('site').rglob('*') if p.is_file())
+          assert size<950_000_000, 'Pages asset exceeds safe 950 MB budget'
+          print('PAGES_MOBILE11_VERIFIED_STAGE',len(list(output.rglob('*'))),size)
+          PY
+          node --check site/beta-native325/play.js
+          node tools/delivery/test-exact-decoded-transport.mjs site/beta-native325
+      - name: Configure existing GitHub Pages route
+        uses: actions/configure-pages@v5
+      - name: Upload exact verified playable mobile11 bundle
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Publish authorized beta owner Pages route (old ChatGPT Sites left intact)
+        id: deploy
+        uses: actions/deploy-pages@v4
+      - name: Confirm public release identity after deployment
+        run: |
+          python - <<'PY'
+          import json,urllib.request,time
+          url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/'
+          for attempt in range(18):
+            try:
+              with urllib.request.urlopen(url+'release-identity.json?verify='+str(attempt),timeout=20) as response:
+                identity=json.load(response)
+              assert identity['revision']=='native325-mobile11-building-anchor' and identity['source_sha']=='8dc875430241a49b4d417782dfeab2d4c7a4f315'
+              assert identity['pretest_ux_native_verified'] and identity['native_parity_verified']
+              with urllib.request.urlopen(url+'index.html?verify='+str(attempt),timeout=20) as response:
+                html=response.read()
+              assert b'play.js' in html or b'unity' in html.lower(), 'Not a playable WebGL page'
+              print('LIVE_OWNER_BETA11_TIMER_ATTACHED_RELEASE_PASS',url)
+              break
+            except Exception:
+              if attempt==17:raise
+              time.sleep(6)
+          PY
+  mobile11-live-webkit:
+    if: github.event_name == 'push'
+    needs: publish-mobile11-world-anchored
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reopen public GitHub Pages beta on actual desktop WebKit
+        env:
+          QA_ENGINE: webkit
+          QA_VARIANT: unchanged
+          QA_ENTRY: '1'
+          QA_EARLY_ENTRY: '1'
+          QA_SKIP_PREFLIGHT: '1'
+          QA_URL: 'https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/?eldoria_diag=1&eldoria_profile=1&build=native325-mobile11-building-anchor'
+          QA_REVISION: 'native325-mobile11-building-anchor'
+          QA_OUT: evidence/live-mobile11
+        run: |
+          npm install --prefix "$RUNNER_TEMP/live-beta11" --no-save playwright@1.55.0
+          "$RUNNER_TEMP/live-beta11/node_modules/.bin/playwright" install webkit
+          export NODE_PATH="$RUNNER_TEMP/live-beta11/node_modules"
+          node tools/eldoria-private-beta/qa_webkit_residency.cjs
+          python - <<'PY'
+          import json,pathlib
+          base=pathlib.Path('evidence/live-mobile11')
+          result=json.loads((base/'report.json').read_text())
+          assert result['passed'], 'Public WebKit load/reopen did not pass'
+          identity=result['identity']
+          assert identity['revision']=='native325-mobile11-building-anchor' and identity['source_sha']=='8dc875430241a49b4d417782dfeab2d4c7a4f315'
+          assert identity['pretest_ux_native_verified'] and not identity['physical_mobile_tested']
+          print('PUBLIC_MOBILE11_WEBKIT_RELOAD_PASS_NOT_PHYSICAL_IPHONE')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile11-public-pages-webkit-reopen-${{ github.run_id }}
+          path: evidence/
+          retention-days: 14
