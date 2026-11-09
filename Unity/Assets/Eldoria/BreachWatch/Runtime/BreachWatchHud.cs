@@ -556,7 +556,7 @@ namespace Eldoria.BreachWatch
             var premiumBrass=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/brass_portrait");
             if(premiumBrass)brassFrame.ApplyIndependentArt(premiumBrass,true);
             var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
-            Fill(liveView,12);
+            Fill(liveView,5);
             portraitView=liveView.gameObject.AddComponent<RawImage>();
             portraitView.color=Color.white;
             portraitView.raycastTarget=false;
@@ -1068,8 +1068,8 @@ namespace Eldoria.BreachWatch
             // stretching stone, gold trim or actual building geometry.
             if(portraitView && portraitFrame)
             {
-                float availableWidth=Mathf.Max(1f,portraitFrame.rect.width-24f);
-                float availableHeight=Mathf.Max(1f,portraitFrame.rect.height-24f);
+                float availableWidth=Mathf.Max(1f,portraitFrame.rect.width-10f);
+                float availableHeight=Mathf.Max(1f,portraitFrame.rect.height-10f);
                 float ratio=availableWidth/availableHeight;
                 // Preserve the *actual* aspect of the separately rendered
                 // 3D camera. Our earlier 2:1 constant both shrank the castle
@@ -1084,13 +1084,13 @@ namespace Eldoria.BreachWatch
                     // cropping the 3D ramparts out of the live photograph.
                     float fittedWidth=availableHeight*renderRatio;
                     float inset=(portraitFrame.rect.width-fittedWidth)*.5f;
-                    At(portraitView.rectTransform,inset,12f,
+                    At(portraitView.rectTransform,inset,5f,
                         fittedWidth,availableHeight);
                     portraitView.uvRect=new Rect(0,0,1,1);
                 }
                 else
                 {
-                    Fill(portraitView.rectTransform,12f);
+                    Fill(portraitView.rectTransform,5f);
                     if(ratio<=renderRatio)
                     {
                         float uvW=ratio/renderRatio;
@@ -1105,7 +1105,46 @@ namespace Eldoria.BreachWatch
             }
             lastPortrait=portrait;
             Canvas.ForceUpdateCanvases();
+            CropPortraitToTrueGeometry();
         }
+
+        // The real 3D building occupies only a portion of its isolated
+        // RenderTexture. Fit its documented model silhouette into the
+        // available viewport instead of photographing a tiny building
+        // surrounded by vast empty stage. A padded equal-aspect UV crop
+        // preserves authentic stone proportions and NEVER changes the
+        // playable city's meshes or main camera.
+        void CropPortraitToTrueGeometry()
+        {
+            if(!portraitView || !portraitView.texture || !buildingPortrait)return;
+            var bounds=buildingPortrait.LastGeometryUvBounds;
+            if(bounds.width<.02f || bounds.height<.02f)return;
+            var shown=portraitView.rectTransform.rect;
+            if(shown.width<5f || shown.height<5f)return;
+            float textureRatio=portraitView.texture.width/
+                (float)portraitView.texture.height;
+            float uvRatio=(shown.width/shown.height)/textureRatio;
+            uvRatio=Mathf.Clamp(uvRatio,.45f,2.8f);
+            float wantedWidth=bounds.width+.075f;
+            float wantedHeight=bounds.height+.07f;
+            float cropHeight=Mathf.Max(wantedHeight,wantedWidth/uvRatio);
+            float cropWidth=cropHeight*uvRatio;
+            if(cropWidth>1f)
+            {
+                cropWidth=1f;
+                cropHeight=cropWidth/uvRatio;
+            }
+            if(cropHeight>1f)
+            {
+                cropHeight=1f;
+                cropWidth=Mathf.Min(1f,cropHeight*uvRatio);
+            }
+            var center=bounds.center;
+            float x=Mathf.Clamp(center.x-cropWidth*.5f,0f,1f-cropWidth);
+            float y=Mathf.Clamp(center.y-cropHeight*.5f,0f,1f-cropHeight);
+            portraitView.uvRect=new Rect(x,y,cropWidth,cropHeight);
+        }
+
         public void RenderNow()
         {
             if(!created||!host)return;
@@ -1143,8 +1182,11 @@ namespace Eldoria.BreachWatch
                     buildingName.text=b.Name;
                     buildingLevel.text="NIVEL "+b.Level;
                     if(buildingPortrait)
+                    {
                         buildingPortrait.Show(ActualBuildingModel(b.Id),host.PlayerCamera,
                             b.Id+"/"+b.Level);
+                        CropPortraitToTrueGeometry();
+                    }
                     buildingFunction.text=(b.Id=="bastion" && b.Level==1)
                         ? (host.English?"Valoria's government and progress."
                             :"Gobierno y progreso de Valoria.")
