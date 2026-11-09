@@ -21,7 +21,8 @@ const position = section('private bool TryPlaceConstructionTimer(', 'private voi
 assert.match(position, /FindAnchor\(id == "upgrade-barracks" \? "barracks" : id\)/);
 assert.match(position, /CanProject\(target, camera, safe, true, out projectedRoof\)/);
 assert.match(position, /CanProject\(target, camera, safe, false, out var bottomEdge\)/);
-assert.match(position, /Mathf\.Abs\(x - projectedRoof\.x\) > Mathf\.Min\(32f, width \* \.18f\)/);
+assert.match(position, /Mathf\.Abs\(x - projectedAnchor\.x\) > Mathf\.Min\(32f, width \* \.18f\)/);
+assert.match(position, /if \(!roofVisible && !footVisible\) return false/);
 assert.match(position, /return false;/);
 assert.doesNotMatch(position, /anchor(?:ed)?Position\s*=\s*new Vector2\(safe\.rect\.xMax/);
 
@@ -34,16 +35,17 @@ assert.match(render, /Visible\(timer\.Visibility, false, false\)/);
 // Model the same edge policy with representative safe-local coordinates.
 // This checks the behavioural intent, not Unity screen projection or Canvas APIs.
 const place = ({roof, bottom, limits, width = 220, height = 46}) => {
-  if (roof === null) return null; // inactive / outside camera
+  if (roof === null && bottom === null) return null; // off camera
+  const anchor = roof ?? bottom;
   const minX = limits.left + width / 2 + 8;
   const maxX = limits.right - width / 2 - 8;
   if (maxX < minX) return null;
-  const x = Math.min(maxX, Math.max(minX, roof[0]));
-  if (Math.abs(x - roof[0]) > Math.min(32, width * .18)) return null;
-  const roofY = roof[1] + height / 2 + 12;
+  const x = Math.min(maxX, Math.max(minX, anchor[0]));
+  if (Math.abs(x - anchor[0]) > Math.min(32, width * .18)) return null;
+  const roofY = roof === null ? null : roof[1] + height / 2 + 12;
   const fits = y => y - height / 2 >= limits.bottom &&
     y + height / 2 <= limits.top;
-  if (fits(roofY)) return [x, roofY];
+  if (roof !== null && fits(roofY)) return [x, roofY];
   if (bottom !== null) {
     const belowY = bottom[1] - height / 2 - 12;
     if (fits(belowY)) return [x, belowY];
@@ -61,6 +63,8 @@ assert.equal(place({roof:[240,0],bottom:[240,-50],limits}),null,
   'building beyond edge: timer hides instead of sticking to the side');
 assert.equal(place({roof:null,bottom:null,limits}),null,
   'off-camera building: no free-floating countdown');
+assert.deepEqual(place({roof:null,bottom:[10,120],limits}),[10,85],
+  'roof outside screen but visible building foot: anchor timer beneath its silhouette');
 assert.equal(place({roof:[0,400],bottom:[0,390],limits}),null,
   'no position near building: hide rather than detach');
 
