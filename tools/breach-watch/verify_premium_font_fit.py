@@ -74,8 +74,8 @@ def verify():
     # target, just like the owner's approved UI. Unity BestFit may select
     # 13pt to stay inside its true carved bronze button.
     inset_900=max(31,min(38,action_width*.25))
-    fits("Mejorar a Bastión II",SEMIBOLD,13,
-         action_width-inset_900-7,"900px premium full upgrade caption")
+    fits("Mejorar a II",SEMIBOLD,16,
+         action_width-inset_900-7,"900px premium one-line upgrade caption")
     inset_390=max(31,min(38,action_width*.25))
     fits("Mejorar a II",SEMIBOLD,15,
          action_width-inset_390-7,"390px compact upgrade caption")
