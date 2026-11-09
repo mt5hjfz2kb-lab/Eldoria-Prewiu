@@ -1,4 +1,5 @@
 name: Eldoria baked original terrain queries native parity and WebGL
+# Owner confirmed Windows handoff on 2026-11-09: validate frozen pretester UX.
 # Bake original collider responses, replay with exact parity, then build without runtime cooking.
 on:
   push:
