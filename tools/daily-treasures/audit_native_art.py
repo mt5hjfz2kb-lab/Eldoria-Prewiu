@@ -437,6 +437,28 @@ def selftest():
         assert_quality(compare(scenery_window(flat,844,390),
                                scenery_window(painted,844,390))["changedPixels"]>100,
             "Scenic-aperture difference preflight did not detect real texture")
+        # Native run 42609669589 had ZERO visible text pixels across
+        # the four paid card columns. A source-only positive/negative probe
+        # proves that our actual-image gate does reject that severe regression
+        # and accepts visible dark-fantasy ivory/gold glyph strokes.
+        blank=Image.new("RGB",(1600,900),(20,18,19))
+        failed=False
+        try:
+            paid_label_pixel_proof(blank,"opened",1600,900)
+        except ValueError:
+            failed=True
+        assert_quality(failed,"A completely blank paid receipt must fail pixel QA")
+        ink=ImageDraw.Draw(blank)
+        shelf_y=450+69
+        for i in range(4):
+            center=round(800+(i-1.5)*146)
+            ink.rectangle((center+25,shelf_y-12,center+45,shelf_y-10),
+                          fill=(220,183,129))
+            ink.rectangle((center+25,shelf_y+8,center+45,shelf_y+10),
+                          fill=(235,214,173))
+        assert_quality(len(paid_label_pixel_proof(
+            blank,"opened",1600,900))==4,
+            "Actual painted text pixels should pass the paid-receipt visual gate")
         a.save(Path(tmp)/"original.png")
         assert_quality((Path(tmp)/"original.png").is_file(),
             "PNG save smoke failed")
