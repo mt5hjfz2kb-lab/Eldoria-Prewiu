@@ -282,8 +282,14 @@ assert.match(native,/beforeInterrupt\.Resources\.Wood==afterInterrupt\.Resources
 // refused while a canonical narrative room owns the screen.
 assert.match(panel,/string\.IsNullOrWhiteSpace\(title\) \|\| suppressed \|\|\s*HasVisibleCanonicalHeroRoom\(\) \|\|\s*HasVisibleVigiliaBuildingPanel\(\)\)return false/);
 assert.match(panel,/root\.parent\.Find\(\s*"Independent selected-building cartouche"\)/);
-assert.match(panel,/if\(vigiliaBuilding && IsOpen\)Close\(\)/);
-assert.match(panel,/entryRect\.gameObject\.SetActive\(!suppressed && !vigiliaBuilding\)/);
+// Both real higher-priority destinations must win in the SAME Unity
+// frame, not merely reject input while a treasure icon is still visible.
+assert.match(panel,/bool canonicalHero=HasVisibleCanonicalHeroRoom\(\)/);
+assert.match(panel,/bool sceneOwnedByOtherUi=vigiliaBuilding \|\| canonicalHero/);
+assert.match(panel,/if\(sceneOwnedByOtherUi && IsOpen\)Close\(\)/);
+assert.match(panel,/entryRect\.gameObject\.SetActive\(!suppressed &&\s*!sceneOwnedByOtherUi\)/);
+assert.match(native,/Treasury medallion still overlays canonical Lyra room/);
+assert.match(native,/Closing Lyra room did not restore the optional treasury medallion/);
 assert.match(native,/panel\.ProbeVigiliaBuildingForNativeEvidence\(\)/);
 assert.match(native,/buildingProbe\.SetActive\(true\)/);
 assert.match(native,/Selected-building priority mutated real earned items/);
