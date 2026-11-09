@@ -440,8 +440,22 @@ jobs:
               assert 'guid: '+item['guid'] in im and 'spriteMode: 1' in im
               assert 'spriteBorder: {x: '+str(item['border'][0]) in im
           hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
-          for name in expected:
+          # Legacy owner-source assets stay byte-perfect and auditable.
+          # Only profile/resource remain visible; the rejection of the old
+          # burgundy CTA was explicitly owner-directed, not a lost license.
+          for name in ('profile_bar','resource_capsule'):
               assert 'VigiliaArt/OwnerControls/'+name in hud,name
+          assert 'VigiliaArt/UnifiedButtons/action_gold' in hud
+          assert 'VigiliaArt/OwnerControls/upgrade_button' not in hud
+          unified=folder.parent/'UnifiedButtons'
+          authored=json.loads((unified/'manifest.json').read_text())
+          assert authored['no_baked_gameplay_text'] is True
+          assert len(authored['files'])==12
+          for item in authored['files']:
+              src=unified/(item['name']+'.png')
+              assert hashlib.sha256(src.read_bytes()).hexdigest()==item['sha256']
+              meta=src.with_suffix('.png.meta').read_text()
+              assert 'guid: '+item['guid'] in meta
           assert 'BreachWatchCrossedHammers' not in hud
           assert 'VigiliaArt/PremiumSurfaces/burgundy_action' not in hud
           assert 'VigiliaArt/PremiumSurfaces/profile_plate' not in hud
