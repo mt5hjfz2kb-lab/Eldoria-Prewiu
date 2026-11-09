@@ -7123,7 +7123,7 @@
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 15,
+      "ownership_revision": 16,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
@@ -7147,13 +7147,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "NATIVE_UNITY_AUDIO_MODULE_ROOT_CAUSE_FOUND_PATCHING_EXACT_HEAD",
+      "phase": "NATIVE_UI_FAIL_WINDOWS_RELEASED_DIAGNOSE_ISOLATED_ARTIFACT",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Add built-in Audio module 1.0.0 only to PR181 Unity/Packages/manifest.json and verify source CI; rerun Unity exact HEAD under exclusive windows lease, examine subsequent compiler/runtime/graphics errors. Metadata YAML warning in external DepthB10 belongs separate pipeline and is not in this workstream scope; don't overwrite.",
+      "next": "Read exact native-ui error log and retained artifact 13670287864; repair PR181 only if justified; source QA on exact HEAD, reacquire windows-runner-heavy by a NEW legitimate CAS lease before another native job. No merge/release/art approval.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7180,10 +7178,22 @@
         "unity_native_pass": false,
         "art_approved": false,
         "merged": false,
-        "published": false
+        "published": false,
+        "native_component": {
+          "run": 42609669589,
+          "source_sha": "321faff58fc5e986950dc8769e33e79c535f61ac",
+          "job_id": 129134599737,
+          "conclusion": "failure",
+          "artifact_id": 13670287864,
+          "unity_native_pass": false,
+          "art_approved": false,
+          "full_game_tested": false
+        }
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
-      "windows_claim_requested_at": "2026-11-09T10:28:00+01:00"
+      "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
+      "runner_released_at": "2026-11-09T11:43:00Z",
+      "runner_release_basis": "Native Unity workflow 42609669589 completed all Windows jobs (native-ui failure), source SHA 321faff58fc5e986950dc8769e33e79c535f61ac. Preserve source ownership; release physical runner for other workstreams, diagnose isolated failure from artifact 13670287864 without disturbing beta, Vigilia or main code."
     }
   ],
   "history": [
