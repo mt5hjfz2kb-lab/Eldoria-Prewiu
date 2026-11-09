@@ -69,3 +69,10 @@ Se ha trabajado directamente en la rama, sin reclamar el ejecutor Windows de Vig
 **Interpretación limitada:** son cantidades obtenidas de las reglas implementadas, comprobadas por CI de fuente en la ejecución [42580279155](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42580279155). No representan el comportamiento de los testers, ni validan aún que sean los premios adecuados. Se pospone cambiar importes hasta conocer la progresión, los tiempos de construcción y los resultados de jugadores reales.
 
 **Puerta que sigue sin superar:** artísticos y layouts verdaderos de Unity 6000.3.23f1 y convivencia en ciudad con PR173, audio real, móvil y partida Bastión I–V. Una prueba completa en Ubuntu no aprueba el efecto «guau». No fusionar ni publicar.
+
+
+## Protección del tutorial ante cambios de prioridad
+
+Corregido en el código el caso en que la narrativa o una selección prioritaria se abre **después** de que el jugador haya abierto el calendario o una animación premium. `DailyTreasurePanel.Suppressed` ahora cierra el overlay y detiene su audio en cuanto entra la prioridad; no intenta mantener una ventana por encima del tutorial. El cobro permanece asentado en `LocalGateway` y su justificante continúa en el buzón.
+
+El método nativo `DailyTreasureNativeEvidence.Capture` ahora incluye ambos casos de regresión: calendario abierto interrumpido y ceremonia durante su apertura, además de restablecimiento del medallón y comparación del saldo/correo antes-después. No crea botín ni incrementa los 52 PNG previstos; es una prueba de estado que solo puede marcarse como **comprobada en Unity** después de ejecutarla allí. El código y sus invariantes pasaron el CI de fuente del commit `711777be9dae08051914b12781a9bb90dcb57410` ([GitHub Actions 42586465311](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42586465311)). La apariencia artística y el funcionamiento nativo siguen pendientes.
