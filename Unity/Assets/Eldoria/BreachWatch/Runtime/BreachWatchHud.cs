@@ -35,6 +35,7 @@ namespace Eldoria.BreachWatch
         Font font, boldFont, bodyFont, bodyBoldFont;
         RectTransform uiRoot;
         RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, descriptionDivider, buttonRow, utilityRail, centerMark, feedbackPlate;
+        RectTransform actionHammers;
         RectTransform[] resourceChips = new RectTransform[3];
         Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
         Text[] resourceAmounts = new Text[3];
@@ -619,8 +620,8 @@ namespace Eldoria.BreachWatch
             actionButton.colors=actionPalette;
             actionPlate.raycastTarget=true;
             actionButton.targetGraphic=actionPlate;
-            var actionHammers=Rect("Two separately drawn forged hammers",actionButton.transform);
-            At(actionHammers,8f,7f,34f,34f);
+            actionHammers=Rect("Two original forged hammers / no duplicate button art",actionButton.transform);
+            At(actionHammers,8f,8f,26f,26f);
             var metalSymbol=actionHammers.gameObject.AddComponent<BreachWatchCrossedHammers>();
             metalSymbol.raycastTarget=false;
             actionLabel=Label(actionButton.transform,"Real action title",17,TextAnchor.MiddleCenter,TextIvory,true);
@@ -1053,11 +1054,15 @@ namespace Eldoria.BreachWatch
             if(actionLabel && actionButton)
             {
                 var plate=(RectTransform)actionButton.transform;
-                // The engraved hammer occupies only the first ~24 physical
-                // pixels at this size. A 48-unit inset made the readable
-                // title tiny; a 26.5% inset clears the actual source hammer *and* allows
-                // Cormorant text to remain at native font size.
-                float leftInset=Mathf.Clamp(plate.rect.width*.235f,34f,48f);
+                // The reference shows a SMALL forged icon, not a giant
+                // crossed-X obscuring half the call to action. Keep the real
+                // hammer strokes crisp at each physical phone DPI.
+                float hammerSize=Mathf.Clamp(
+                    27f/Mathf.Max(.5f,scaler.scaleFactor),19f,28f);
+                if(actionHammers)
+                    At(actionHammers,8f,(plate.rect.height-hammerSize)*.5f,
+                        hammerSize,hammerSize);
+                float leftInset=Mathf.Clamp(8f+hammerSize+5f,31f,42f);
                 At(actionLabel.rectTransform,leftInset,3f,
                     Mathf.Max(20f,plate.rect.width-leftInset-7f),
                     Mathf.Max(20f,plate.rect.height-6f));
@@ -1230,10 +1235,14 @@ namespace Eldoria.BreachWatch
                     // the carved CTA on a 1600x900 capture. The command and
                     // confirmation remain IDENTICAL; only its compact visual
                     // caption is compact enough for an honest single line at every viewport.
-                    string actionCaption=b.Action==null?"SIN ACCIÓN":b.Action.Label;
+                    string actionCaption=b.Action==null
+                        ?(host.English?"NO ACTION":"Sin acción")
+                        :b.Action.Label;
                     if(b.Action!=null && b.Id=="bastion" && b.Level==1 &&
                        b.Action.Kind=="AdvanceBastion")
-                        actionCaption="MEJORAR A II";
+                        actionCaption=host.English
+                            ?(lastWidth>=800?"Upgrade to Bastion II":"Upgrade II")
+                            :(lastWidth>=800?"Mejorar a Bastión II":"Mejorar a II");
                     actionLabel.text=actionCaption;
                     actionLabel.resizeTextForBestFit=true;
                     actionLabel.resizeTextMinSize=11;
