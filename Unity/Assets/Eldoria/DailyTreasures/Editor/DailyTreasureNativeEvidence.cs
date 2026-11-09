@@ -40,6 +40,11 @@ namespace Eldoria.DailyTreasures.Editor
         {
             public string status,source,note;
             public int images,realGatewayClaims,graphicalPointerHits;
+            // Separately audited ordinary-resource (non-chest) days.
+            // They are additional REAL gateway claims on isolated saves and
+            // native canvas pointer events, not part of the 52-shot contract.
+            public int quietGatewayClaims,quietPointerHits,quietImages;
+            public Shot[] quietShots;
             // These are artistic style probes only; they do not imply an
             // actual earned milestone, a claim or any gateway battle.
             public int visualOnlyMilestoneCaptures;
@@ -391,7 +396,10 @@ namespace Eldoria.DailyTreasures.Editor
                 artApproved=false,fullSceneVerified=false,iosVerified=false
             };
             var pictures=new List<Shot>();
-            int inputChecks=0;
+            var quietPictures=new List<Shot>();
+            int inputChecks=0,quietInputChecks=0;
+            var quietOutput=Path.Combine(output,"quiet");
+            Directory.CreateDirectory(quietOutput);
             try
             {
                 EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
@@ -865,6 +873,96 @@ namespace Eldoria.DailyTreasures.Editor
                             afterInterrupt.Mailbox.Messages.Count,
                         "Interrupting a premium ceremony corrupted an already-paid reward");
 
+
+                    // The original 52-shot contract covered only day 4/7
+                    // chests, leaving five ordinary days completely invisible
+                    // to native visual QA. Exercise EVERY remaining day with
+                    // independent disposable LocalGateway state. Never inject
+                    // resources into PlayerState, and NEVER count a quiet
+                    // presentation as a day-4/day-7 chest claim.
+                    foreach(int quietDay in new[]{1,2,3,5,6})
+                    {
+                        var quietStore=new TransientStore();
+                        clock.UtcTicks=Day(1);
+                        var quietGateway=new LocalGateway(clock,quietStore);
+                        for(int seed=1;seed<quietDay;seed++)
+                        {
+                            clock.UtcTicks=Day(seed);
+                            var original=quietGateway.Snapshot();
+                            var command=new GameCommand(
+                                "qa-quiet-seed-"+width+"x"+height+"-"+quietDay+"-"+seed,
+                                original.PlayerId,"ClaimDailyTreasure",
+                                "valoria",original.Revision);
+                            Need(quietGateway.Execute(command).Ok,
+                                "Real quiet-day seed failed for "+quietDay);
+                        }
+                        clock.UtcTicks=Day(quietDay);
+                        var beforeQuiet=quietGateway.Snapshot();
+                        var expectedQuiet=DailyTreasureRules.ForDay(quietDay,quietDay);
+                        panel.Bind(quietGateway,()=>clock.UtcTicks,()=>{});
+                        ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                            FindButton(panel,"Daily reward / optional medallion"),
+                            width,height);
+                        quietInputChecks++;
+                        Need(panel.IsOpen,
+                            "Ordinary day "+quietDay+" entry cannot be opened");
+                        ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                            FindButton(panel,"Claim exact daily reward"),
+                            width,height);
+                        quietInputChecks++;
+                        var credited=quietGateway.Snapshot();
+                        Need(credited.DailyTreasures.CycleDay==quietDay &&
+                             credited.DailyTreasures.TotalClaims==quietDay &&
+                             credited.Resources.Wood==beforeQuiet.Resources.Wood+expectedQuiet.Wood &&
+                             credited.Resources.Stone==beforeQuiet.Resources.Stone+expectedQuiet.Stone &&
+                             credited.Resources.Food==beforeQuiet.Resources.Food+expectedQuiet.Food &&
+                             credited.SpeedupOneMinute==beforeQuiet.SpeedupOneMinute+
+                                expectedQuiet.SpeedupOneMinute &&
+                             credited.SpeedupFiveMinutes==beforeQuiet.SpeedupFiveMinutes+
+                                expectedQuiet.SpeedupFiveMinutes &&
+                             credited.Mailbox.Messages.Count==beforeQuiet.Mailbox.Messages.Count+1,
+                             "Non-chest day "+quietDay+" actual receipt differs from gateway");
+                        Need(!DailyTreasureRules.CanClaim(
+                                credited.DailyTreasures,clock.UtcTicks),
+                            "Non-chest day "+quietDay+" permits a second grant");
+                        var descriptors=DailyTreasureRewardPresentation.FromCommittedReward(
+                            expectedQuiet);
+                        Canvas.ForceUpdateCanvases();
+                        Need(panel.EarnedItemCardCount==descriptors.Length &&
+                             panel.HasRevealedIllustratedEarnedItems &&
+                             !FindButton(panel,
+                                "Skip animation / keep earned items").gameObject.activeInHierarchy,
+                            "Ordinary day "+quietDay+
+                            " failed to show actual immediate illustrated item cards");
+                        VerifyEarnedItemReadability(panel,descriptors.Length);
+                        VerifyCriticalTypography(panel,
+                            "quiet reward day "+quietDay);
+                        quietPictures.Add(Render(camera,rt,quietOutput,width,height,
+                            "quiet-day"+quietDay+"-received",
+                            "Real paid day "+quietDay+" compact reward; no chest ceremony",
+                            true,true));
+                        ClickAtNativeScreenPosition(canvas,eventSystem,camera,
+                            FindButton(panel,"Close tributes"),width,height);
+                        quietInputChecks++;
+                        Need(!panel.IsOpen,
+                            "Non-chest receipt refuses to close on day "+quietDay);
+                        var previous=quietGateway.Snapshot();
+                        var duplicate=new GameCommand(
+                            "qa-quiet-repeat-"+width+"x"+height+"-"+quietDay,
+                            previous.PlayerId,"ClaimDailyTreasure",
+                            "valoria",previous.Revision);
+                        Need(!quietGateway.Execute(duplicate).Ok,
+                            "Non-chest day "+quietDay+" paid twice");
+                        var still=quietGateway.Snapshot();
+                        Need(still.Resources.Wood==previous.Resources.Wood &&
+                             still.Resources.Stone==previous.Resources.Stone &&
+                             still.Resources.Food==previous.Resources.Food &&
+                             still.SpeedupOneMinute==previous.SpeedupOneMinute &&
+                             still.SpeedupFiveMinutes==previous.SpeedupFiveMinutes &&
+                             still.Mailbox.Messages.Count==previous.Mailbox.Messages.Count,
+                            "Reopening quiet day could mutate wallet or mail");
+                        report.quietGatewayClaims++;
+                    }
                     Object.DestroyImmediate(eventObj);
                     Object.DestroyImmediate(canvasObj);
                     camera.targetTexture=null;
@@ -874,16 +972,21 @@ namespace Eldoria.DailyTreasures.Editor
                 }
                 Need(pictures.Count==52 && inputChecks==56 &&
                      report.realGatewayClaims==8 &&
-                     report.visualOnlyMilestoneCaptures==16,
-                    "Real daily rewards and four artistic milestone styles not fully captured");
+                     report.visualOnlyMilestoneCaptures==16 &&
+                     quietPictures.Count==20 && quietInputChecks==60 &&
+                     report.quietGatewayClaims==20,
+                    "Real seven-day rewards, quiet receipts and four artistic stages incomplete");
                 report.status=report.authoredSpritesImported
                     ? "NATIVE_COMPONENT_RENDERED_WITH_AUTHORED_SPRITES_ART_REVIEW_PENDING"
                     : "NATIVE_COMPONENT_RENDERED_FALLBACK_ONLY_ART_REJECTED";
                 report.graphicalPointerHits=inputChecks;
                 report.images=pictures.Count;
                 report.shots=pictures.ToArray();
+                report.quietImages=quietPictures.Count;
+                report.quietPointerHits=quietInputChecks;
+                report.quietShots=quietPictures.ToArray();
                 File.WriteAllText(Path.Combine(output,"report.json"),JsonUtility.ToJson(report,true));
-                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 52 PNG (4 entry, 28 daily, 4 prize flights, 16 visual style); NOT ART_APPROVED / NOT FULL GAMEPASS");
+                Debug.Log("DAILY_TREASURE_NATIVE_COMPONENT_CAPTURED: 52 contracted PNG plus 20 independently paid quiet-day PNG in quiet/; 20 additional actual claims and 60 UI pointer events; NOT ART_APPROVED / NOT FULL GAMEPASS");
                 EditorApplication.Exit(0);
             }
             catch(Exception e)
