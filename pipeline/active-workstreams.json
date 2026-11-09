@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T13:13:27.654Z",
+  "updated_at": "2026-11-09T13:16:09.717Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2876,7 +2876,8 @@
         "tools/ui-v3-domain-smoke/Smoke.csproj",
         ".github/workflows/ui-v3-domain-smoke.yml",
         "tools/early-retention/Smoke.csproj",
-        ".github/workflows/early-retention-domain.yml"
+        ".github/workflows/early-retention-domain.yml",
+        "tools/early-retention/Program.cs"
       ],
       "resources": [],
       "dependencies": [
@@ -2926,7 +2927,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Fix head-specific source/model contract CI and .NET smoke missing NarrativeCoherenceRules.cs include (test harness only), then Unity native when owner Windows lease released; port to PR179 beta by safe handoff.",
+      "next": "V3 source smoke PASS; unlock tests in tools/early-retention/Program.cs still assert B1/B2 pretest shortcuts deliberately removed in mobile10 and should be rebaselined to narrative-gated Bastion III without editing gameplay. Unity native and beta publication awaiting lease.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
