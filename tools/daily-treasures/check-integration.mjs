@@ -11,6 +11,8 @@ const native=fs.readFileSync(
   'Unity/Assets/Eldoria/DailyTreasures/Editor/DailyTreasureNativeEvidence.cs','utf8');
 const nativeWorkflow=fs.readFileSync(
   '.github/workflows/daily-treasures-native.yml','utf8');
+const nativePixelAudit=fs.readFileSync(
+  'tools/daily-treasures/audit_native_art.py','utf8');
 assert.match(domain,/DailyTreasureState DailyTreasures/);
 assert.match(gateway,/DailyTreasures=s\.DailyTreasures\?\.Copy\(\)/);
 assert.match(gateway,/case "ClaimDailyTreasure":/);
@@ -306,4 +308,21 @@ assert.match(panel,/float labelBottom=compactDouble\?20f/);
 assert.match(native,/VerifyCalendarMultipleResourceMargins\(DailyTreasurePanel panel,/);
 assert.match(native,/margin>=4\.5f/);
 assert.match(native,/Actual reward contents/);
+// The original 52 captured stages contained NO real images of the ordinary
+// daily rewards: days 1,2,3,5,6 can fail without the luxurious chest.
+// Keep the new 20 genuine claims and their native UI/visual receipts apart
+// from the 8 contracted day-four/day-seven gateway claims. Prevent a future
+// shortcut from disguising 20 colour mockups as actual paid items.
+assert.match(native,/quietPictures\.Count==20 && quietInputChecks==60/);
+assert.match(native,/report\.quietGatewayClaims==20/);
+assert.match(native,/quietGateway\.Execute\(command\)\.Ok/);
+assert.match(native,/VerifyEarnedItemReadability\(panel,descriptors\.Length\)/);
+assert.match(native,/report\.quietShots=quietPictures\.ToArray\(\)/);
+assert.match(nativeWorkflow,/\$report\.quietGatewayClaims -ne 20/);
+assert.match(nativeWorkflow,/\$report\.quietPointerHits -ne 60/);
+assert.match(nativeWorkflow,/\$report\.quietImages -ne 20/);
+assert.match(nativePixelAudit,/def quiet_label_pixel_proof\(image,day,width,height\)/);
+assert.match(nativePixelAudit,/Ordinary reward not backed by real paid data/);
+assert.match(nativePixelAudit,/additionalQuietDayOriginalPngCount/);
+assert.match(nativePixelAudit,/ordinary_paid_rewards_contact_sheet\.png/);
 console.log('PASS daily treasures gateway integration source invariants');
