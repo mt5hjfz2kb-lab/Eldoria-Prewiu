@@ -229,8 +229,8 @@
   },
   "iphone_timer_ab": {
     "status": "SOURCE_ONLY_PINNED_A_B_QA_PASS_NO_UNITY",
-    "run_id": 42690810952,
-    "source_commit": "550b316a666eba0a55b2949f515344dde4e0f65b",
+    "run_id": 42691159400,
+    "source_commit": "1c701af77284642cc8a78490281e4075f27ed35a",
     "reproducible_tool": "tools/eldoria-private-beta/iphone_ab/prepare.py",
     "beta10_control": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
     "anchored_reference": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
@@ -243,6 +243,13 @@
     "iphone_30min_verified": false,
     "android_30min_verified": false,
     "external_invites_enabled": false,
-    "next": "Obtain formal Windows lease for isolated native A/B compile, then immutable version-specific Pages path and physical iPhone 30min; never replace recovered beta10 before owner GO"
+    "next": "Obtain formal Windows lease for isolated native A/B compile, then immutable version-specific Pages path and physical iPhone 30min; never replace recovered beta10 before owner GO",
+    "source_branch_head_at_verification": "485d7b1c7980b73fa6abac9dfad4a99ccc382ab8",
+    "artifact_id": 13707341666,
+    "artifact_name": "beta10-iphone-timer-ab-source-only",
+    "artifact_size_bytes": 375174,
+    "source_staging_qa": "PASS; immutable 19-file beta10 control and one-file anchored/GC-scratch variant, 18 unchanged; not same as subsequent HUD work",
+    "native_compiled": false,
+    "published": false
   }
 }
