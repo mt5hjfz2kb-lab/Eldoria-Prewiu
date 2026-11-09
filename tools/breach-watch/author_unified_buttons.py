@@ -82,10 +82,11 @@ def symbol(name):
             ap[x,y]=int(alpha*glyph*central)
     im.putalpha(a)
     # Tight source-content crop: a clean engraved tower/sack/raven should
-    # fill the actual 44px+ tab icon, not become a tiny 7px emblem because
+    # occupy the UPPER TWO THIRDS of each native tile without touching
+    # the gold top bevel or live caption divider, not become a 7px emblem because
     # the surrounding (now transparent) old medallion occupied 90% of the
     # raster. All six game icons remain genuine extracted owner glyphs.
-    return im.crop((48,45,144,155)).resize((116,116),Image.Resampling.LANCZOS)
+    return im.crop((48,45,144,155)).resize((98,98),Image.Resampling.LANCZOS)
 
 def save(image,name,border=(0,0,0,0)):
     dest=DEST/(name+".png")
@@ -134,7 +135,7 @@ for name in ("castle","provisions","swords","raven","helm"):
             d.line([(26,12),(214,12)],fill=(94,196,215,190),width=3)
             d.line([(28,151),(212,151)],fill=(91,183,207,230),width=4)
         icon=ImageEnhance.Brightness(original).enhance(1.2) if selected else original
-        face.alpha_composite(icon,(62,-3))
+        face.alpha_composite(icon,(71,10))
         manifest.append(save(face,"nav_"+name+("_active" if selected else "")))
 cta=metal(660,140,"gold",34)
 d=ImageDraw.Draw(cta,"RGBA")
