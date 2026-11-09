@@ -19,6 +19,9 @@ from pathlib import Path
 BETA10 = "be49d62e3daf490f41dba0bf8123a8e2eee64480"
 BETA11 = "8dc875430241a49b4d417782dfeab2d4c7a4f315"
 PERF = "485d7b1c7980b73fa6abac9dfad4a99ccc382ab8"
+MINIMAL = "e445a712b16f0bfc8196bdcb734492e780ef082c"
+MINIMAL_PATH = "tools/eldoria-private-beta/native/iphone-hotfix/RoyalGoldV3ContextHud.beta10-minimal.cs.txt"
+MINIMAL_TIMER_BLOB = "144b1d6becec3055aac6a69cce07007cad1849a6"
 PREFIX = "tools/eldoria-private-beta/native/ux/"
 TIMER = "RoyalGoldV3ContextHud.cs.txt"
 BETA10_TIMER_BLOB = "fe5b1de631d43109ac95ce471ea31feaa93dc8a6"
@@ -27,7 +30,10 @@ PERF_TIMER_BLOB = "031595af0f1ca5f44dc18d58183b3143e8c53676"
 
 
 def git_bytes(revision, path):
-    command = ["git", "show", revision + ":" + PREFIX + path]
+    # The archived 19 overlays use PREFIX, while the minimal owner hotfix
+    # lives in the canonical beta workstream as an independent sidecar.
+    source_path = path if path.startswith("tools/") else PREFIX + path
+    command = ["git", "show", revision + ":" + source_path]
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.returncode:
         raise RuntimeError("Pinned Git source unavailable: " + revision + "/" + path +
@@ -66,6 +72,28 @@ def optimized_anchor(data):
     return data
 
 
+def minimal_owner_anchor(data):
+    text = data.decode("utf-8")
+    # This is the beta10 player-verified version with only timer world anchoring
+    # changed. No extra canvas, change to save-state, or new scene/clock.
+    required = (
+        'private static bool IsCityConstruction(string id)',
+        'var target = FindAnchor(id == "upgrade-barracks" ? "barracks" : id);',
+        'bool roofVisible = CanProject(target, camera, safe, true, out roof);',
+        'if (!roofVisible)',
+        'if (Mathf.Abs(x - xAnchor) > 28f)',
+        'timer.Root.anchoredPosition = center;',
+    )
+    for marker in required:
+        if marker not in text:
+            raise ValueError("Minimal beta10 hotfix missing: " + marker)
+    if "TryPlaceConstructionTimer" in text or "TryProjectConstructionSilhouette" in text:
+        raise ValueError("Mobile11 timer algorithm was accidentally substituted")
+    if "new Vector3[4]" in text:
+        raise ValueError("Minimal owner timer introduces a frame-local corner array")
+    return data
+
+
 def build_pair():
     base = json.loads(git_bytes(BETA10, "manifest.json"))
     newer = json.loads(git_bytes(BETA11, "manifest.json"))
@@ -87,8 +115,12 @@ def build_pair():
     if gh_blob(perf_timer) != PERF_TIMER_BLOB or digest(perf_timer) != perf_entries[TIMER]["candidate_sha256"]:
         raise ValueError("Optimized timer differs from exact reviewed source")
     perf_timer = optimized_anchor(perf_timer)
-    baseline, experiment = {}, {}
-    out_original, out_experimental = [], []
+    minimal_timer = git_bytes(MINIMAL, MINIMAL_PATH)
+    if gh_blob(minimal_timer) != MINIMAL_TIMER_BLOB:
+        raise ValueError("Minimal timer differs from the immutable reviewed sidecar")
+    minimal_timer = minimal_owner_anchor(minimal_timer)
+    baseline, experiment, minimal = {}, {}, {}
+    out_original, out_experimental, out_minimal = [], []
     changed = []
     for entry in original:
         name = entry["overlay"]
@@ -106,10 +138,12 @@ def build_pair():
             raise ValueError("Unsafe A/B, unrelated changes in " + name)
         baseline[name] = baseline_data
         experiment[name] = perf_timer if name == TIMER else baseline_data
+        minimal[name] = minimal_timer if name == TIMER else baseline_data
         if baseline[name] != experiment[name]:
             changed.append(name)
         out_original.append(dict(entry))
         out_experimental.append({**entry, "candidate_sha256": digest(experiment[name])})
+        out_minimal.append({**entry, "candidate_sha256": digest(minimal[name])})
     if changed != [TIMER]:
         raise ValueError("A/B does not isolate the construction clock")
     if gh_blob(baseline[TIMER]) != BETA10_TIMER_BLOB:
@@ -118,6 +152,9 @@ def build_pair():
         raise ValueError("Anchored timer does not match beta11")
     if digest(baseline[TIMER]) == digest(experiment[TIMER]):
         raise ValueError("A/B differential absent")
+    if digest(baseline[TIMER]) == digest(minimal[TIMER]) or minimal[TIMER] == experiment[TIMER]:
+        raise ValueError("Minimal beta10 branch not an independent one-file clock experiment")
+    assert all(minimal[name] == baseline[name] for name in baseline if name != TIMER)
     info = {
         "schema": 1,
         "mode": "SOURCE_ONLY_NOT_PUBLISHED",
@@ -130,6 +167,10 @@ def build_pair():
         "base_runtime": base["base_runtime"],
         "control_timer_sha256": digest(baseline[TIMER]),
         "experimental_timer_sha256": digest(experiment[TIMER]),
+        "minimal_timer_source": MINIMAL,
+        "minimal_timer_sha256": digest(minimal[TIMER]),
+        "variants": ["beta10-control", "anchored-gc0", "beta10-minimal-anchor"],
+        "one_file_differential_each": True,
         "native_compiled": False,
         "browser_qa": False,
         "physical_iphone_30min": False,
@@ -138,16 +179,18 @@ def build_pair():
     }
     manifests = {
         "beta10-control": {**base, "files": out_original},
-        "anchored-gc0": {**base, "files": out_experimental}
+        "anchored-gc0": {**base, "files": out_experimental},
+        "beta10-minimal-anchor": {**base, "files": out_minimal}
     }
-    return info, manifests, {"beta10-control": baseline, "anchored-gc0": experiment}
+    return info, manifests, {"beta10-control": baseline, "anchored-gc0": experiment,
+                             "beta10-minimal-anchor": minimal}
 
 
 def stage(directory, info, manifests, variants):
     directory = Path(directory).resolve()
     if directory.exists() and any(directory.iterdir()):
         raise ValueError("Refusing to overwrite populated A/B output directory: " + str(directory))
-    for variant in ("beta10-control", "anchored-gc0"):
+    for variant in ("beta10-control", "anchored-gc0", "beta10-minimal-anchor"):
         root = directory / variant
         root.mkdir(parents=True, exist_ok=True)
         for name, data in variants[variant].items():
