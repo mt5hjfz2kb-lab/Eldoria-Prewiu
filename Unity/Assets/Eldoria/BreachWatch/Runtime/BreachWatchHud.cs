@@ -1055,22 +1055,39 @@ namespace Eldoria.BreachWatch
             // stretching stone, gold trim or actual building geometry.
             if(portraitView && portraitFrame)
             {
-                float ratio=Mathf.Max(.1f,(portraitFrame.rect.width-24f)/
-                    Mathf.Max(1f,portraitFrame.rect.height-24f));
-                // Match the TRUE aspect of the separately rendered miniature;
-                // assuming 2:1 made the Bastion tiny and vertically letterboxed.
+                float availableWidth=Mathf.Max(1f,portraitFrame.rect.width-24f);
+                float availableHeight=Mathf.Max(1f,portraitFrame.rect.height-24f);
+                float ratio=availableWidth/availableHeight;
+                // Preserve the *actual* aspect of the separately rendered
+                // 3D camera. Our earlier 2:1 constant both shrank the castle
+                // and silently cropped towers on widescreen UI cards.
                 float renderRatio=portraitView.texture
                     ?portraitView.texture.width/(float)portraitView.texture.height
                     :1.60f;
-                if(ratio<=renderRatio)
+                if(ratio>2.0f)
                 {
-                    float uvW=ratio/renderRatio;
-                    portraitView.uvRect=new Rect((1f-uvW)*.5f,0,uvW,1);
+                    // Wide landscape well: letterbox a natural 1.6:1 image
+                    // against the premium dark brass frame rather than
+                    // cropping the 3D ramparts out of the live photograph.
+                    float fittedWidth=availableHeight*renderRatio;
+                    float inset=(portraitFrame.rect.width-fittedWidth)*.5f;
+                    At(portraitView.rectTransform,inset,12f,
+                        fittedWidth,availableHeight);
+                    portraitView.uvRect=new Rect(0,0,1,1);
                 }
                 else
                 {
-                    float uvH=renderRatio/ratio;
-                    portraitView.uvRect=new Rect(0,(1f-uvH)*.5f,1,uvH);
+                    Fill(portraitView.rectTransform,12f);
+                    if(ratio<=renderRatio)
+                    {
+                        float uvW=ratio/renderRatio;
+                        portraitView.uvRect=new Rect((1f-uvW)*.5f,0,uvW,1);
+                    }
+                    else
+                    {
+                        float uvH=renderRatio/ratio;
+                        portraitView.uvRect=new Rect(0,(1f-uvH)*.5f,1,uvH);
+                    }
                 }
             }
             lastPortrait=portrait;
