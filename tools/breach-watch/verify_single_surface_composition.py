@@ -103,5 +103,39 @@ assert "button.transition=Selectable.Transition.ColorTint;" in HUD
 assert "ui.BuildingAction.targetGraphic==actionArt" in QA
 assert "closeRoot.targetGraphic==sourceX" in QA
 
+# V4-style visual system, not old floating Vigilia medallions:
+# the dock is ONE authored nine-sliced metal image; every nav icon is
+# composited into its own tile during art production, not drawn as a
+# separate medallion layer over an invisible generic button.
+assert "VigiliaArt/UnifiedButtons/nav_dock" in HUD
+assert 'buttonRow=Rect("Unified premium bottom navigation dock",uiRoot);' in HUD
+assert 'unifiedDock.type=Image.Type.Sliced;' in HUD
+assert "VigiliaArt/UnifiedButtons/nav_"+chr(34) in HUD
+assert "navCaptions[i].fontSize=14;" in HUD
+assert "navFiligree.Configure" not in HUD
+assert 'VigiliaArt/UnifiedButtons/action_gold' in HUD
+assert "actionPlate.type=Image.Type.Sliced;" in HUD
+assert 'ui.UsesUnifiedNavigation' in QA
+assert 'ui.UsesIntegratedGoldAction' in QA
+
+import hashlib,json
+assets=ART/"UnifiedButtons"
+spec=json.loads((assets/"manifest.json").read_text())
+assert spec["no_baked_gameplay_text"] is True
+assert len(spec["files"])==12
+for item in spec["files"]:
+    image=assets/(item["name"]+".png")
+    meta=image.with_suffix(".png.meta")
+    assert image.is_file() and meta.is_file()
+    assert hashlib.sha256(image.read_bytes()).hexdigest()==item["sha256"]
+    with Image.open(image) as art:
+        assert art.mode=="RGBA" and art.width>=200 and art.height>=130
+    assert "spriteMode: 1" in meta.read_text()
+assert "spriteBorder: {x: 40, y: 27, z: 40, w: 27}" in (
+    assets/"action_gold.png.meta").read_text()
+assert "spriteBorder: {x: 40, y: 28, z: 40, w: 28}" in (
+    assets/"nav_dock.png.meta").read_text()
+
+
 
 print("VIGILIA_SINGLE_SURFACE_SOURCE_PASS (Unity external canvas census pending native, not ART_APPROVED)")
