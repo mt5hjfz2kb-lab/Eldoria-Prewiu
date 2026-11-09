@@ -36,6 +36,13 @@ assert "!brassWells[0].enabled" in QA
 # Every main surface owns its own original metal shading. Extra Unity
 # shadows added to those same Graphics duplicate their silhouettes.
 assert HUD.count("AddContactShadow(")==1, "Extra painted shadow calls remain"
+# Regression found after shadows were removed: HasSinglePremiumIdentity
+# still required a Shadow, so real Unity would fail even though Roslyn passed.
+assert "!identity.GetComponent<Shadow>() &&" in HUD, (
+    "Single-profile assertion silently depends on a deleted overlay")
+assert "identity.GetComponent<Shadow>() &&" not in HUD.replace(
+    "!identity.GetComponent<Shadow>() &&", ""), (
+    "A duplicate contact shadow was reintroduced as a pass criterion")
 assert "Need(depthLayers.Length==0" in QA
 for name in ("identitySurface","resourceSurface","chapterStone","singleSlate","surface"):
     assert name+".color=new Color(.97f,.95f,.90f,1f);" in HUD, (
