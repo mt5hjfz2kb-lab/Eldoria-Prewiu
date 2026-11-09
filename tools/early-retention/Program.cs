@@ -24,7 +24,11 @@ static class Program
         Require(!EarlyRetentionRules.VigilantsUnlocked(bare),"No premature B1 shortcut");
         Require(!EarlyRetentionRules.ScoutsUnlocked(bare),"No premature B2 shortcut");
         bare.SawmillLevel=1;
-        Require(EarlyRetentionRules.VigilantsUnlocked(bare),"B1 trial opens after real sawmill");
+        Require(!EarlyRetentionRules.VigilantsUnlocked(bare),"B1 sawmill does not prematurely open Vigilants");
+        bare.EngendroDefeated=true;
+        Require(!EarlyRetentionRules.VigilantsUnlocked(bare),"Defeating Engendro alone does not skip the introduction");
+        bare.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
+        Require(EarlyRetentionRules.VigilantsUnlocked(bare),"Vigilants unlock only after real victory and explanation");
         Require(!EarlyRetentionRules.StageUnlocked(bare,2),"B1 trial does not grant chapter progression");
         for(int i=1;i<=100;i++){
             var stage=EarlyRetentionRules.Stage(i);
@@ -94,15 +98,18 @@ static class Program
 
         var clock=new Clock();
         var state=new PlayerState{
-            BastionLevel=2,SawmillLevel=1,BarracksLevel=1,
+            BastionLevel=3,SawmillLevel=1,BarracksLevel=1,
             Available=new ArmyRoster{ArcherT1=60},
             ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
             Resources=new ResourceWallet{Wood=200,Stone=250,Food=50}
         };
+        // Only an introduced B3 journey can enter Vigilants/Scouts: B2 is
+        // intentionally still locked in the current real tutorial.
+        state.ChapterProgress.SeenNarrative.AddRange(new[]{"vigilants-introduction","scouts-introduction"});
         var store=new Store{State=state};
         var g=new LocalGateway(clock,store);
         Require(g.Snapshot().Retention.Orders.Count==3,"Three board orders at new period");
-        Require(EarlyRetentionRules.ScoutsUnlocked(g.Snapshot()),"Scout unlock after first March");
+        Require(EarlyRetentionRules.ScoutsUnlocked(g.Snapshot()),"Scouts unlock at B3 after March and introduction");
         var battle=Command(g,"v1","VigilantBattle","1");
         Require(g.Execute(battle).Ok,"Real battle wins first stage");
         Require(g.Snapshot().Retention.LastClearedStage==1,"Stage advances");
