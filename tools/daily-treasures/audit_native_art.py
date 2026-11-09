@@ -539,6 +539,119 @@ def analyze(folder,expected_sha,output):
           len(visual_language_warnings))
     return result
 
+
+def analyze_partial(folder, expected_sha, output):
+    """Inspect authentic frames captured BEFORE a failing native assertion.
+
+    This is intentionally a diagnostic, not a shortcut around the exact 72
+    frame/116 pointer/28 claim certification. In particular, a failure with
+    eight PNGs must not be misreported as zero rendered evidence.
+    """
+    folder=folder.resolve()
+    output=output.resolve()
+    output.mkdir(parents=True, exist_ok=True)
+    report_file=folder/"report.json"
+    assert_quality(report_file.is_file(), "Missing real Unity partial run report")
+    report=json.loads(report_file.read_text(encoding="utf-8-sig"))
+    assert_quality(report.get("status")=="NATIVE_COMPONENT_FAILED",
+                   "Partial review is reserved for a FAILED Unity capture")
+    assert_quality(report.get("source")==expected_sha,
+                   "Partial frames do not belong to this exact PR HEAD")
+    assert_quality(report.get("artApproved") is False and
+                   report.get("fullSceneVerified") is False,
+                   "Native failure must never claim full game or art approval")
+    regular=report.get("shots") or []
+    quiet=report.get("quietShots") or []
+    assert_quality(len(regular)==report.get("images") and
+                   len(quiet)==report.get("quietImages"),
+                   "Partial screenshot ledger does not match files captured")
+    assert_quality(len(regular)<=52 and len(quiet)<=20 and
+                   report.get("graphicalPointerHits",0)<=56 and
+                   report.get("quietPointerHits",0)<=60 and
+                   report.get("realGatewayClaims",0)<=8 and
+                   report.get("quietGatewayClaims",0)<=20,
+                   "Native partial ledger exceeds its genuine test limits")
+    unique=set()
+    verified=[]
+    previews=[]
+    for quiet_kind, records in ((False,regular),(True,quiet)):
+        for record in records:
+            name=record.get("file","")
+            valid=re.fullmatch(
+                r"real-unity-daily-[a-z0-9-]+-(?:1600x900|900x1600|844x390|390x844)\.png",
+                name)
+            assert_quality(valid is not None and name not in unique,
+                           "Unexpected/duplicated partial frame "+name)
+            unique.add(name)
+            original=folder/("quiet" if quiet_kind else "")/name
+            assert_quality(original.is_file(),
+                           "Listed genuine partial frame absent "+name)
+            data=original.read_bytes()
+            assert_quality(len(data)>7000 and
+                           len(data)==record.get("bytes") and
+                           data.startswith(b"\x89PNG\r\n\x1a\n") and
+                           hashlib.sha256(data).hexdigest()==record.get("sha256"),
+                           "Partial screenshot metadata/hash invalid "+name)
+            with Image.open(original) as frame:
+                w,h=frame.size
+                assert_quality(frame.format=="PNG" and
+                               (w,h) in REQUIRED_SIZES and
+                               (w,h)==(record.get("width"),record.get("height")),
+                               "Wrong native frame dimensions "+name)
+                pixels=frame.convert("RGB").copy()
+            assert_quality(record.get("nativeCanvas") is True,
+                           "Partial screenshot was not produced on Unity canvas")
+            m=sample(pixels)
+            verified.append({
+                "name":name,"quiet":quiet_kind,"width":w,"height":h,
+                "sourceSha256":record["sha256"],"view":record.get("view"),
+                "paid":record.get("coversReward"),
+                "luminance":m["luminance"],"colorBins":m["uniqueColorBins"]})
+            previews.append((name,pixels))
+    # Every file should be accounted for. Otherwise an orphaned screenshot
+    # may represent exactly the stage at which a Unity exception occurred.
+    present={p.name for p in folder.glob("*.png")}
+    present.update(p.name for p in (folder/"quiet").glob("*.png"))
+    assert_quality(present==unique,
+                   "Native PNG on disk missing from partial capture ledger")
+    for start in range(0,len(previews),16):
+        selected=previews[start:start+16]
+        cols=4
+        rows=math.ceil(len(selected)/cols)
+        sheet=Image.new("RGB",(cols*280,rows*205),(20,18,17))
+        draw=ImageDraw.Draw(sheet)
+        for i,(name,frame) in enumerate(selected):
+            x=(i%cols)*280
+            y=(i//cols)*205
+            thumb=frame.copy()
+            thumb.thumbnail((268,168),Image.Resampling.LANCZOS)
+            sheet.paste(thumb,(x+(280-thumb.width)//2,y+31+
+                               (168-thumb.height)//2))
+            draw.text((x+4,y+4),name.replace("real-unity-daily-",""),
+                      fill=(224,187,129))
+        sheet.save(output/f"FAILED_unity_partial_frames_{start//16+1}.png",
+                   optimize=True)
+    summary={
+        "status":"INCOMPLETE_NATIVE_FAILURE_DIAGNOSTICS_ONLY",
+        "sourceSha":expected_sha,
+        "originalFailedStatus":report["status"],
+        "exception":report.get("note",""),
+        "realUnityPngInspected":len(verified),
+        "realGatewayClaimsBeforeFailure":report.get("realGatewayClaims",0),
+        "nativePointerHitsBeforeFailure":report.get("graphicalPointerHits",0),
+        "quietGatewayClaimsBeforeFailure":report.get("quietGatewayClaims",0),
+        "quietPointerHitsBeforeFailure":report.get("quietPointerHits",0),
+        "expectedForCertification":{"png":72,"pointer":116,"claims":28},
+        "artApproved":False,"unityNativePass":False,
+        "fullGameVerified":False,"humanReviewRequired":True,
+        "frames":verified
+    }
+    (output/"FAILED_unity_partial_manifest.json").write_text(
+        json.dumps(summary,indent=2,ensure_ascii=False),encoding="utf-8")
+    print("PARTIAL NATIVE FAILURE:",len(verified),
+          "original Unity frames retained for corrective review; NO ART PASS.")
+    return summary
+
 def selftest():
     from tempfile import TemporaryDirectory
     with TemporaryDirectory() as tmp:
@@ -672,6 +785,48 @@ def selftest():
             assert_quality(len(quiet_label_pixel_proof(both,day,width,height))==
                            QUIET_ITEM_COUNTS[day],
                            "Valid ordinary paid text should pass independently")
+        # Failed captures retain useful pixels but NEVER earn certification.
+        partial_dir=Path(tmp)/"failed"
+        partial_dir.mkdir()
+        diagnostic_image=Image.new("RGB",(390,844))
+        for yy in range(844):
+            for xx in range(390):
+                diagnostic_image.putpixel((xx,yy),
+                    ((xx*19+yy*7)%256,(xx*11+yy*3)%256,(xx*5+yy*13)%256))
+        diagnostic_name="real-unity-daily-calendar-390x844.png"
+        diagnostic_path=partial_dir/diagnostic_name
+        diagnostic_image.save(diagnostic_path)
+        raw=diagnostic_path.read_bytes()
+        partial_report={
+            "status":"NATIVE_COMPONENT_FAILED","source":"testsha",
+            "note":"synthetic fixture interruption",
+            "artApproved":False,"fullSceneVerified":False,
+            "images":1,"quietImages":0,"realGatewayClaims":0,
+            "graphicalPointerHits":1,"quietPointerHits":0,
+            "quietGatewayClaims":0,"quietShots":[],
+            "shots":[{"file":diagnostic_name,"width":390,"height":844,
+                      "bytes":len(raw),"sha256":hashlib.sha256(raw).hexdigest(),
+                      "nativeCanvas":True,"coversReward":False,
+                      "view":"Test-only interruption"}]
+        }
+        (partial_dir/"report.json").write_text(
+            json.dumps(partial_report),encoding="utf-8")
+        partial_out=Path(tmp)/"partial_review"
+        result=analyze_partial(partial_dir,"testsha",partial_out)
+        assert_quality(result["realUnityPngInspected"]==1 and
+            result["unityNativePass"] is False and
+            (partial_out/"FAILED_unity_partial_frames_1.png").is_file(),
+            "Partial diagnostic lost a captured Unity screenshot")
+        partial_report["shots"][0]["sha256"]="0"*64
+        (partial_dir/"report.json").write_text(
+            json.dumps(partial_report),encoding="utf-8")
+        tampered_rejected=False
+        try:
+            analyze_partial(partial_dir,"testsha",partial_out)
+        except ValueError:
+            tampered_rejected=True
+        assert_quality(tampered_rejected,
+                       "Partial diagnostic accepted a mismatched PNG hash")
         a.save(Path(tmp)/"original.png")
         assert_quality((Path(tmp)/"original.png").is_file(),
             "PNG save smoke failed")
@@ -680,6 +835,8 @@ def selftest():
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--selftest",action="store_true")
+    ap.add_argument("--partial",action="store_true",
+                    help="Diagnose a FAILED run; never count as native PASS")
     ap.add_argument("--input",type=Path)
     ap.add_argument("--source-sha",type=str)
     ap.add_argument("--output",type=Path)
@@ -689,7 +846,10 @@ def main():
     else:
         if not args.input or not args.source_sha or not args.output:
             ap.error("Native artifact, source SHA and audit output are all required")
-        analyze(args.input,args.source_sha,args.output)
+        if args.partial:
+            analyze_partial(args.input,args.source_sha,args.output)
+        else:
+            analyze(args.input,args.source_sha,args.output)
 
 if __name__=="__main__":
     main()
