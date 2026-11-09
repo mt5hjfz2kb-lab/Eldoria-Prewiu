@@ -45,15 +45,17 @@ const sourceRequirements=[
   [/legacyGroup\.alpha\s*=\s*0/,'legacy UI is hidden'],
   [/host\.Hud\.SelectionChanged\s*\+=/,'canonical session owner is reused'],
   // Vigilia's current OwnerControls replace the older profile_plate and
-  // burgundy_action RUNTIME references. Requiring those old names literally
-  // produced a false incompatibility even though approved fallback assets
-  // still exist. Validate the live HUD materials actually loaded now.
+  // burgundy_action RUNTIME references. PR173 now paints its
+  // construction action from UnifiedButtons/action_gold rather than loading
+  // OwnerControls/upgrade_button. Confirm the exact CURRENT rendering path,
+  // while continuing to forbid either hammer-painted construction action
+  // on the daily-reward buttons. Keep the separate clean nine-slice fallback.
   [/Resources\.Load<Sprite>\("VigiliaArt\/OwnerControls\/profile_bar"\)/,
     'Current Vigilia identity bar'],
   [/Resources\.Load<Sprite>\([\s\S]{0,55}"VigiliaArt\/OwnerControls\/resource_capsule"\)/,
     'Current Vigilia resource treatment'],
-  [/Resources\.Load<Sprite>\("VigiliaArt\/OwnerControls\/upgrade_button"\)/,
-    'Current Vigilia primary action'],
+  [/Resources\.Load<Sprite>\("VigiliaArt\/UnifiedButtons\/action_gold"\)/,
+    'Current Vigilia actual authored action (not reused for the treasury)'],
   [/VigiliaArt\/ResourceIcons\//,'canonical resource icon source']
 ];
 for(const [expression,meaning] of sourceRequirements)
@@ -85,8 +87,12 @@ for(const name of reusable){
   assert.ok(treasury.includes('VigiliaArt/PremiumSurfaces/'+name),
     'Reward code no longer references compatible premium source: '+name);
 }
-assert.doesNotMatch(treasury,/OwnerControls\/upgrade_button/,
-  'The forge upgrade hammer must not be burned onto a loyalty-claim action');
+for(const hammerAction of ['OwnerControls/upgrade_button',
+                           'UnifiedButtons/action_gold']){
+  assert.ok(!treasury.includes('VigiliaArt/'+hammerAction),
+    'The forge upgrade hammer must not be burned onto a loyalty-claim action: '+
+    hammerAction);
+}
 
 const localRequirements=[
  [/FindLiteralVigiliaCanvas\(\)/,'literal-name-safe Canvas discovery'],
@@ -111,5 +117,5 @@ assert.doesNotMatch(treasury,/GameObject\.Find\("Heroes \/ canonical destination
 assert.doesNotMatch(treasury,/new GameObject\([^\n]+typeof\(Canvas\)/);
 assert.doesNotMatch(treasury,/new GameObject\([^\n]+typeof\(EventSystem\)/);
 console.log('PASS cross-workstream UI contract: PR181 on PR173 HEAD '+
-  ref.slice(0,12)+'; safe area, canonical active OwnerControls, '+ 
+  ref.slice(0,12)+'; safe area, currently painted Vigilia surfaces, '+
   'two physically present nine-sliced premium reward surfaces, no forge hammer');
