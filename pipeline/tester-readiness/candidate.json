@@ -226,5 +226,23 @@
     "prolonged_play_30min_pass": false,
     "original_timer_world_anchor": false,
     "interpretation": "Restored a playable earlier build; no proof of long-session stability nor root-cause correction in mobile11"
+  },
+  "iphone_timer_ab": {
+    "status": "SOURCE_ONLY_PINNED_A_B_QA_PASS_NO_UNITY",
+    "run_id": 42690810952,
+    "source_commit": "550b316a666eba0a55b2949f515344dde4e0f65b",
+    "reproducible_tool": "tools/eldoria-private-beta/iphone_ab/prepare.py",
+    "beta10_control": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+    "anchored_reference": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
+    "exact_overlay_delta": "RoyalGoldV3ContextHud.cs.txt",
+    "unchanged_overlays": 18,
+    "memory_optimization": "Reuse four Vector3 corners per component, replacing hot-path temporary array",
+    "proof": "GitHub Actions 42690810952 audit step 4 success, pinned source+hash+staging verified",
+    "staged_variants": "CI ephemeral only; neither compiled nor hosted",
+    "owner_current_build_unchanged": true,
+    "iphone_30min_verified": false,
+    "android_30min_verified": false,
+    "external_invites_enabled": false,
+    "next": "Obtain formal Windows lease for isolated native A/B compile, then immutable version-specific Pages path and physical iPhone 30min; never replace recovered beta10 before owner GO"
   }
 }
