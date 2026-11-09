@@ -5,6 +5,7 @@ $warm=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
 $frozen='948ffa9837168a0b68dab80be76b66350422b23a'
 if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy'}
 if((git -C $source rev-parse HEAD).Trim() -ne $frozen){throw 'Recovery source identity mismatch'}
+& (Join-Path $Tools 'tools/eldoria-private-beta/native/ux/recover_first_attempt.ps1') -Source $source -Evidence $Evidence
 New-Item -ItemType Directory -Force $Evidence|Out-Null
 $utf8=New-Object Text.UTF8Encoding($false)
 # Resume the exact recovered input only after the prior wrapper proved restoration.

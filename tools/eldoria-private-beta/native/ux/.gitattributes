@@ -1,0 +1,4 @@
+# Frozen source payload hashes must be identical on Linux and Windows.
+*.txt text eol=lf
+*.ps1 text eol=lf
+*.py text eol=lf

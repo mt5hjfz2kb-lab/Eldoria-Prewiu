@@ -149,6 +149,7 @@ try {
  [IO.File]::WriteAllText((Join-Path $Evidence 'complete.txt'),'Native parity and canonical journey passed; fresh WebGL built. Browser and physical iPhone are NOT certified.',$utf8)
  Set-NativePhase 'Native parity, journey and WebGL completed; mobile unverified' 'success'
 } catch {
+ [IO.File]::WriteAllText((Join-Path $Evidence 'native-phase-failure.txt'),($_|Out-String),$utf8)
  Set-NativePhase 'Native phase failed; inspect evidence; no mobile certification' 'failure'
  throw
 } finally {

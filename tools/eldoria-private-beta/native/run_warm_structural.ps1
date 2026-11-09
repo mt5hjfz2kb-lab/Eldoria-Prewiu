@@ -95,7 +95,8 @@ try {
   $current=(Get-FileHash $file -Algorithm SHA256).Hash
   if($record.overlay){
    $candidate=(Get-FileHash (Get-UxCandidate $record.path) -Algorithm SHA256).Hash
-   if($current -ne $candidate -and $current -ne $record.sha256){$conflicts+=$record.path;continue}
+   $uxBase=@($uxFiles|Where-Object {$_.path -eq $record.path}|ForEach-Object {$_.baseline_sha256})
+   if($current -ne $candidate -and $current -ne $record.sha256 -and $uxBase -notcontains $current){$conflicts+=$record.path;continue}
   }
   if($current -ne $record.sha256){Copy-Item $record.backup $file -Force}
  }
