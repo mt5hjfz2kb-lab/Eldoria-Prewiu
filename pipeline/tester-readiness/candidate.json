@@ -77,14 +77,15 @@
     "project": "Eldoria Playtest Feedback",
     "backend": "Supabase Edge QA",
     "requires_opt_in": true,
-    "qa_events_verified": 10,
+    "qa_events_verified": 40,
     "non_qa_events_verified": 0,
     "gameplay_milestones_published": false,
     "source_contract_run": 42674713658,
     "source_contract_pass": true,
-    "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions."
+    "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
+    "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-09T19:47:01Z",
+  "updated_at": "2026-11-09T19:53:40Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
