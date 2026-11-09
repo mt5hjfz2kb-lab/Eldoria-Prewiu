@@ -14,6 +14,13 @@ ROOT=Path("Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt")
 SRC=ROOT/"PremiumMedallions"
 DEST=ROOT/"UnifiedButtons"
 DEST.mkdir(parents=True, exist_ok=True)
+(DEST.parent/"UnifiedButtons.meta").write_text(
+    "fileFormatVersion: 2\n"
+    "guid: a607e8b753e946a690d1ce417323c0d9\n"
+    "folderAsset: yes\n"
+    "DefaultImporter:\n  externalObjects: {}\n"
+    "  userData: \n  assetBundleName: \n  assetBundleVariant: \n",
+    encoding="utf-8")
 
 def octagon(w,h,r):
     return [(r,0),(w-r,0),(w,r),(w,h-r),
