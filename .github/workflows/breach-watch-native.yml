@@ -642,6 +642,8 @@ jobs:
         run: |
           python3 -m pip install --disable-pip-version-check --quiet Pillow==12.3.0
           python3 tools/breach-watch/verify_premium_font_fit.py
+      - name: Verify one consistent real-art surface instead of doubled overlay relief
+        run: python3 tools/breach-watch/verify_single_surface_composition.py
       - name: Validate eight-view Unity raster A/B utility without Windows
         run: python3 tools/breach-watch/test_compare_native_art.py
       - name: Explain proof boundary
