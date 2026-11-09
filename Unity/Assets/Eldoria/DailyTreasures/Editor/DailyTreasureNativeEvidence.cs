@@ -321,6 +321,10 @@ namespace Eldoria.DailyTreasures.Editor
                     heroProbe.SetActive(true);
                     Need(panel.ProbeHeroRoomVisibilityForNativeEvidence(),
                         "Visible Lyra room not detected: slash-name lookup regression");
+                    Need(!panel.PresentCommittedMilestone(
+                            "This must not cover real Lyra",
+                            "Visual-only rejection probe",true,"milestone:hero:lyra"),
+                        "Direct ceremony API improperly covered canonical hero room");
                     heroProbe.SetActive(false);
                     Need(!panel.ProbeHeroRoomVisibilityForNativeEvidence(),
                         "Closed Heroes room incorrectly blocks daily reward");
@@ -643,6 +647,10 @@ namespace Eldoria.DailyTreasures.Editor
                     panel.Suppressed=true;
                     Need(!panel.IsOpen,
                         "Tutorial overlay did not interrupt the premium coffer");
+                    Need(!panel.PresentCommittedMilestone(
+                            "This must not cover a tutorial",
+                            "Visual-only rejection probe",true,"vigilant:chapter:25"),
+                        "Direct ceremony API bypassed narrative/tutorial priority");
                     panel.Suppressed=false;
                     var afterInterrupt=specialGateway.Snapshot();
                     Need(beforeInterrupt.Resources.Wood==afterInterrupt.Resources.Wood &&
