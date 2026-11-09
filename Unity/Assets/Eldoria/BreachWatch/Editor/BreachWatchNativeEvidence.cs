@@ -835,7 +835,11 @@ namespace Eldoria.BreachWatch.Editor
                             :chapterLabel.text.Contains("LA BRECHA")) &&
                          chapterLabel.text.Contains(" / ") &&
                          !chapterLabel.text.Contains("\n") &&
-                         chapterLabel.rectTransform.rect.height>=20f &&
+                         // The new shallow owner-reference plaque uses a
+                         // tighter Cormorant box. The full GPU ink-diff probe
+                         // above is authoritative, not this nominal box height.
+                         chapterLabel.rectTransform.rect.height>=15f &&
+                         chapterLabel.fontSize*ui.NativeCanvas.scaleFactor>=11.75f &&
                          chapterLabel.preferredWidth <=
                             chapterLabel.rectTransform.rect.width+5f,
                          "Owner-approved Chapter I / La Brecha identity not readable: "+name);
