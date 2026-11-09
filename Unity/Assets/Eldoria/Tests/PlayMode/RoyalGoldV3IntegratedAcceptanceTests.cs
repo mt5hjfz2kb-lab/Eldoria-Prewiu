@@ -826,6 +826,17 @@ namespace Eldoria.Tests
 
             Component host = null, hud = null;
             yield return Boot((h, v) => { host = h; hud = v; });
+            // Beyond the environment flag, the actual runtime must confirm
+            // it is using the system temp directory before any paid command.
+            var cityForProbe=Member(host, "City");
+            Assert.That(Member(cityForProbe, "Probe"), Is.EqualTo(true),
+                "Construction timer must never run against a canonical player save");
+            var saveFile=Member(cityForProbe, "SaveFile") as string;
+            Assert.That(saveFile, Is.Not.Null.And.Not.Empty);
+            Assert.That(System.IO.Path.GetFullPath(saveFile).StartsWith(
+                System.IO.Path.GetFullPath(System.IO.Path.GetTempPath()),
+                StringComparison.OrdinalIgnoreCase),Is.True,
+                "Native construction test requires an isolated disposable save path");
 
             var guidance = Member(host, "Guidance") as Behaviour;
             if (guidance) guidance.enabled = false;
@@ -862,15 +873,20 @@ namespace Eldoria.Tests
             // the same authoritative timer, not a stale pre-purchase offer.
             Call(v3, "SynchronizeNow");
             Assert.That(Member(management, "IsOpen"), Is.EqualTo(false));
-            // Beta10 has a compact selected-building operation sheet instead of
-            // a second camera-following timer. Confirm the real countdown is on
-            // the selected sheet and that no duplicate is left floating behind it.
-            var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
-            Call(v2, "SynchronizeNow");
-            Assert.That(Member(v2, "ChronicleIllustratedBuildingVisible"), Is.EqualTo(true),
-                "The selected building must keep its compact construction sheet");
-            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(0),
-                "A selected construction sheet must not create a duplicate timer");
+            // The existing illustrated building cartouche already owns the
+            // selected site's progress; V3 intentionally suppresses a duplicate
+            // floating timer until the player deselects that building. The
+            // previous native test mistakenly required both at once.
+            // This integration assembly intentionally accesses HUD V2 through
+            // the established reflection adapter rather than a missing using.
+            var illustrated = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
+            bool selectedIllustrationVisible = illustrated &&
+                (bool)Member(illustrated, "ChronicleIllustratedBuildingVisible");
+            Assert.That(selectedIllustrationVisible, Is.True,
+                "Selected paid sawmill retains its genuine beta10 illustrated operation sheet");
+            Assert.That(Member(v3, "ActiveTimers"),
+                Is.EqualTo(0),
+                "A selected illustrated construction must have no second timer");
             Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false),
                 "The paid offer is never duplicated while work is active");
             Assert.That(command.interactable, Is.False,
@@ -878,12 +894,106 @@ namespace Eldoria.Tests
             var operationTime = Member(operation, "Time") as string;
             Assert.That(hud.GetComponentsInChildren<Text>(true).Any(x =>
                 x.gameObject.activeInHierarchy && x.text.Contains(operationTime)),
-                Is.True,"The compact selected sheet must show the gateway countdown");
+                Is.True, "The illustrated selected sheet must display the gateway countdown");
             Call(hud, "SelectBuilding", "");
+            // The illustrated V2 cartouche and the V3 clock are synchronized
+            // from two distinct LateUpdate callbacks. Wait for the real
+            // unselected viewport and camera layout instead of demanding that
+            // both presentation layers finish before the very next frame.
+            yield return null;
+            yield return null;
+            Canvas.ForceUpdateCanvases();
             Call(v3, "SynchronizeNow");
+            var siteForDiagnostic = (Member(v3, "FindAnchor") as Delegate)
+                ?.DynamicInvoke("sawmill") as Transform;
+            var sceneCamForDiagnostic = Member(host, "PlayerCamera") as Camera;
+            var projectedSite = siteForDiagnostic && sceneCamForDiagnostic
+                ? sceneCamForDiagnostic.WorldToScreenPoint(siteForDiagnostic.position)
+                : Vector3.zero;
             Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
-                "Deselecting the building must restore the compact fixed HUD timer");
+                "Visible paid work must expose one attached timer after normal V2/V3 frame synchronization. " +
+                "selected=" + Member(hud, "SelectedBuildingId") +
+                " siteScreen=" + projectedSite +
+                " cameraSize=" + (sceneCamForDiagnostic
+                    ? sceneCamForDiagnostic.pixelRect.ToString() : "null"));
+            Assert.That(hud.GetComponentsInChildren<Text>(true).Any(x =>
+                x.gameObject.name=="Live remaining time" &&
+                x.gameObject.activeInHierarchy && x.text.Contains(operationTime)),
+                Is.True,"The genuine city timer must show the gateway countdown");
 
+            // Owner-reported regression: the previous compact countdown was
+            // docked at the right screen edge, independent of its building.
+            // Measure genuine projected pixels on the real canonical camera.
+            var timer = hud.GetComponentsInChildren<CanvasGroup>(true)
+                .Single(x => x.name == "V3 / real-time operation / sawmill");
+            Assert.That(timer.alpha, Is.GreaterThan(.5f));
+            var timerCanvas = timer.GetComponentInParent<Canvas>();
+            Assert.That(timerCanvas, Is.Not.Null);
+            var timerCamera = timerCanvas.renderMode == RenderMode.ScreenSpaceOverlay
+                ? null : timerCanvas.worldCamera;
+            var camera = Member(host, "PlayerCamera") as Camera;
+            Assert.That(camera, Is.Not.Null);
+            var find = Member(v3, "FindAnchor") as Delegate;
+            Assert.That(find, Is.Not.Null);
+            var target = find.DynamicInvoke("sawmill") as Transform;
+            Assert.That(target, Is.Not.Null);
+            var collider = target.GetComponent<Collider>() ??
+                target.GetComponentInChildren<Collider>();
+            Func<float> projectedBuildingX = () =>
+            {
+                if (!collider || !collider.enabled)
+                    return camera.WorldToScreenPoint(target.position).x;
+                var b = collider.bounds;
+                float left=float.PositiveInfinity, right=float.NegativeInfinity;
+                for(int i=0;i<8;++i)
+                {
+                    var corner=new Vector3((i&1)==0?b.min.x:b.max.x,
+                        (i&2)==0?b.min.y:b.max.y,
+                        (i&4)==0?b.min.z:b.max.z);
+                    var screen=camera.WorldToScreenPoint(corner);
+                    if(screen.z<=camera.nearClipPlane || screen.z>=camera.farClipPlane)continue;
+                    left=Mathf.Min(left,screen.x);
+                    right=Mathf.Max(right,screen.x);
+                }
+                Assert.That(float.IsInfinity(left), Is.False, "Building must project on screen");
+                return (left+right)*.5f;
+            };
+            Func<Vector2> projectedTimer = () =>
+                RectTransformUtility.WorldToScreenPoint(timerCamera,timer.transform.position);
+            var beforeTimer=projectedTimer();
+            var beforeBuilding=projectedBuildingX();
+            Assert.That(Mathf.Abs(beforeTimer.x-beforeBuilding),
+                Is.LessThanOrEqualTo(42f*timerCanvas.scaleFactor),
+                "The paid construction timer must initially sit beside the real building");
+
+            var cameraBefore=camera.transform.position;
+            // Synchronize in the same frame so focus easing cannot hide a
+            // fixed-HUD countdown error behind unrelated camera animation.
+            camera.transform.position+=new Vector3(2f,0f,0f);
+            Call(v3,"SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+            var afterTimer=projectedTimer();
+            var afterBuilding=projectedBuildingX();
+            Assert.That(timer.alpha, Is.GreaterThan(.5f));
+            Assert.That(Mathf.Abs(afterBuilding-beforeBuilding),Is.GreaterThan(2f),
+                "Camera must actually move the world target in screen pixels");
+            Assert.That(Mathf.Abs(afterTimer.x-beforeTimer.x),Is.GreaterThan(1f),
+                "Construction countdown must follow the building, not remain fixed to HUD");
+            Assert.That(Mathf.Abs((afterTimer.x-beforeTimer.x)-
+                (afterBuilding-beforeBuilding)),Is.LessThanOrEqualTo(
+                    12f*timerCanvas.scaleFactor),
+                "Countdown and world building must follow the same camera displacement");
+
+            camera.transform.position+=new Vector3(2000f,0f,0f);
+            Call(v3,"SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+            Assert.That(timer.alpha, Is.LessThan(.5f),
+                "When the building leaves the camera the countdown must not park at a side");
+            camera.transform.position=cameraBefore;
+            Call(v3,"SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+            Assert.That(timer.alpha, Is.GreaterThan(.5f),
+                "When the building returns, its countdown must reappear next to it");
         }
 
         [UnityTest]

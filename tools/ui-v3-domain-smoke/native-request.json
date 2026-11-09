@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "pr": 183,
+  "workstream_id": "eldoria-ui-v3-management-completion-20261021",
+  "owner": "chatgpt-v3-building-timer-anchor-20261109",
+  "revision": 31,
+  "expected_timer_source_blob": "0d9cb29fa9198d8a87011cc554b6247bb63a9e30",
+  "reason": "Real Unity run 42640266317 failed: after deselection ActiveTimers=0; preserve visible partially-offscreen building via roof/foot fallback and allow one regular HUD frame.",
+  "request_type": "one-shot_native_qa_on_exclusive_lease",
+  "last_requested": "2026-11-09",
+  "requested_for": "2026-11-09T16:02:00+01:00",
+  "retry_of": 42637997071,
+  "retry_reason": "Fix real Unity CS0246 test compiler error and reconcile current beta10 main PlayMode selection/footer with strict world-anchored camera-pan timer probe.",
+  "attempt": 4
+}
