@@ -120,7 +120,7 @@ def build_pair():
         raise ValueError("Minimal timer differs from the immutable reviewed sidecar")
     minimal_timer = minimal_owner_anchor(minimal_timer)
     baseline, experiment, minimal = {}, {}, {}
-    out_original, out_experimental, out_minimal = [], []
+    out_original, out_experimental, out_minimal = [], [], []
     changed = []
     for entry in original:
         name = entry["overlay"]
