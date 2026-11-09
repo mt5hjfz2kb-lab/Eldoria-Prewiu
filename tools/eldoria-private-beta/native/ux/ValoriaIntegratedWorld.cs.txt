@@ -280,9 +280,8 @@ namespace Eldoria.ReferenceClean {
    if(id=="gate")return TrySetWorld(true);
    if(id=="valoria-map-city")return TrySetWorld(false);
    if(IsWorldTarget(id)&&!TrySetWorld(true))return false;
-   // A physical built barracks is a city building. From chapter III its
-   // upgrade offer has a separate existing target; recruitment remains an
-   // explicit Army/training destination, never an automatic building overlay.
+   // A built barracks always opens its building sheet. Upgrade and training
+   // are explicit choices on that sheet, including at Bastion II.
    if(id=="barracks"){
     var state=boundGateway.Snapshot();
     if(state.BarracksLevel>0)id="upgrade-barracks";
