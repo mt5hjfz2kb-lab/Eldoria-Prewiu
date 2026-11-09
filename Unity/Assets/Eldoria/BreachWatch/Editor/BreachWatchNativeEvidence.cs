@@ -131,6 +131,8 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui.HasRealSession, "New Canvas cannot access existing real game session");
             Need(ui.HasTrueResourceIllustrations,
                 "All three resource icons must be real, recognizable licensed independent sprites");
+            Need(ui.VisibleResourceCount == (ui.CurrentSnapshot.ShowFood?3:2),
+                 "Unintroduced food capsule is visible or unlocked food is missing");
             Need(ui.HasNativePremiumTypography,
                 "Vigilia must use its own legally bundled Garamond text on all devices");
             var expectedDestinations=new []{"REINO","RECURSOS","EJÉRCITO","EXPLORAR","HÉROES"};
@@ -484,6 +486,8 @@ namespace Eldoria.BreachWatch.Editor
                 Need(!ui.GetComponentsInChildren<Text>(true).Any(t=>
                     t && t.gameObject.activeInHierarchy && t.name=="Vigilia de la Brecha"),
                     "Large redundant central title must not cover the real city: "+name);
+                Need(ui.VisibleResourceCount == (ui.CurrentSnapshot.ShowFood?3:2),
+                     "The native screenshot shows the wrong number of live resource chips: "+name);
                 var nav = ui.NavButtons;
                 Need(nav.Count==5 && nav.All(x=>x), "Exactly 5 original independent navigation buttons required");
                 // An approved medallion image is now ONE authority:
