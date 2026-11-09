@@ -1149,9 +1149,15 @@ namespace Eldoria.DailyTreasures
                 resultText.text=portrait?
                     ceremonialTitle+"\nGuardado en tu inventario y buzón":
                     ceremonialTitle+" · GUARDADO";
+            // Expand only the actual calendar where the viewport permits.
+            // This gives seven real rewards a calmer hierarchy on desktops
+            // and tablets, while the 390px landscape stays compact.
+            bool roomyCalendar=ceremony && !ceremony.gameObject.activeSelf &&
+                !portrait && h>=500f;
             float panelH=Mathf.Min(h-20f,portrait?
                 (focusedQuiet?460f:openingChest?450f:700f):
-                (focusedQuiet?330f:openingChest?300f:370f));
+                (focusedQuiet?330f:openingChest?300f:
+                    roomyCalendar?420f:370f));
             Place(cardSurface,.5f,.5f,.5f,.5f,0,0,panelW,panelH);
             if(screenShade)screenShade.color=new Color(.018f,.020f,.026f,
                 eventStage?stage.BackdropOpacity:.91f);
