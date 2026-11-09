@@ -109,7 +109,7 @@ def fetch(url):
     with urllib.request.urlopen(req,timeout=90) as response:
         if int(response.status)!=200:raise ValueError("PNG fetch failed")
         data=response.read(MAX+1)
-    if len(data)>MAX or len(data)<80_000 or not data.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):
+    if len(data)>MAX or len(data)<80_000 or not data.startswith(bytes((137,80,78,71,13,10,26,10))):
         raise ValueError("Invalid large PNG, refusing asset")
     img=Image.open(io.BytesIO(data))
     img.verify()
@@ -158,7 +158,7 @@ def main():
        "reference_pixels_reused":False,"legacy_hud_asset_reused":False,
        "output_count":len(entries),"source_count":6,"assets":entries,
        "art_approved":False,"unity_native_qa":"pending"}
-    (BASE/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\\n")
+    (BASE/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+chr(10))
     preview=Image.new("RGB",(1200,1600),(35,38,36))
     def thumb(name,box):
         asset=next(BASE.glob(name+".png"))
