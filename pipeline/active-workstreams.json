@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T10:11:11.540Z",
+  "updated_at": "2026-11-09T10:17:25.149Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7037,10 +7037,11 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "claimed_after_owner_confirmed_release",
+        "status": "released_after_native_success",
         "reason": "Focused frozen beta pretester UX verification after implementation; preserve current Forja and Treasures alternating work, no cancellation",
-        "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
-        "next_test": "Run existing native workflow with lease13 on candidate eeb06ce1191424f2af3c82d5256e120885e5867b; preserve frozen warm inputs, validate I–V journey and focused UX pointer/capture probe, then restore every input and return Windows."
+        "candidate_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+        "next_test": "Only Ubuntu/macOS packaging and browser validation remain. Windows is available; no queued beta native work.",
+        "native_run": 42595057735
       },
       "ownership_history": [
         {
