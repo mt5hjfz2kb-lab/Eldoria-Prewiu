@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T13:08:33.704Z",
+  "updated_at": "2026-11-09T13:11:04.123Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6774,9 +6774,9 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
+      "owner": "chatgpt-beta-timer-reconciliation-20261109",
       "ownership_state": "claimed",
-      "ownership_revision": 16,
+      "ownership_revision": 17,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6800,13 +6800,13 @@
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes.meta"
       ],
       "resources": [],
-      "claimed_at": "2026-11-07T19:05:00Z",
+      "claimed_at": "2026-11-09T13:11:04.123Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "MAIN_UNITY_POSTPROMOTION_COMPILER_REPAIR",
+      "phase": "BETA_CONSTRUCTION_TIMER_ANCHOR_RECONCILIATION",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Reconcile beta10 UX with current main and preserve PR180 hero fixes in existing PR179. Prepare and validate independent source checks. Canonical shared files RoyalGoldV2Hud.cs and LocalGateway.cs require conflict-safe ownership reconciliation with PR173/181 before promotion; Windows remains with PR181.",
+      "next": "Port PR183 exact source to frozen PR179 overlay, update SHA256 manifest and native camera-pan probe, certify Unity on rightful Windows handoff, package/regression and update existing owner beta, preserving rollback. Main merge only after exact gate.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7066,6 +7066,13 @@
           "to_revision": 16,
           "to_owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
           "reason": "Same user-authorized task: repair exact Unity compiler error discovered after canonical promotion; no new PR or Windows runner reservation."
+        },
+        {
+          "owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
+          "revision": 16,
+          "phase": "MAIN_UNITY_POSTPROMOTION_COMPILER_REPAIR",
+          "transferred_at": "2026-11-09T13:11:04.123Z",
+          "reason": "Owner explicitly requests the same scene-attached construction timer fix to reach both canonical main (PR183) and the published beta; lawful takeover of the existing PR179, while retaining all prior beta work. No running PR179 job and no Windows reservation held by PR179 at handoff."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -7127,7 +7134,8 @@
         "transferred_files": 19,
         "failure_run": 42610908699,
         "failure": "ValoriaIntegratedWorld.Ready uses RegionOneCanonicalLandscape.IsReady, absent from older canonical world implementation"
-      }
+      },
+      "owner_instruction": "2026-11-09 owner: continue correcting scene-attached construction countdown until main and the current playable beta contain verified fix. Use existing PR179 and its branch, preserve beta10 mechanics and pinned-hash overlays; no PR173/181 changes, no tester release without verification."
     },
     {
       "id": "eldoria-daily-treasures-20261108",
