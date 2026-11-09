@@ -568,8 +568,12 @@ namespace Eldoria.Tests
             var caption = objective.GetComponentsInChildren<Text>(true)
                 .FirstOrDefault(x => x.name == "Label");
             if (caption != null)
-                Assert.That(caption.enabled, Is.False,
-                    "Rotating the device must not resurrect the old rectangular CTA label");
+            {
+                Assert.That(caption.enabled, Is.True,
+                    "The beta10 objective must now have a readable, intentional caption");
+                Assert.That(caption.text, Is.Not.Empty,
+                    "The compact manuscript action must not be a mystery icon");
+            }
             Assert.That(DirectChild(objective.transform, "V3 / original Valoria heraldic sigil"),
                 Is.Not.Null, "Reuse Valoria's actual established crest");
 
@@ -601,27 +605,31 @@ namespace Eldoria.Tests
             Assert.That(entries, Is.Not.Null);
             Assert.That((bool)Member(nav, "ChronicleLayout"), Is.True,
                 "The original five-entry Crónica Real art must be active");
-            // Five genuine destinations at the safe-bottom edge. Locked
-            // actions can be visible but must never become interactable.
+            // The beta10 owner explicitly rejected premature Army/Build/Chronicles
+            // buttons. An initially locked control must be absent, not a disabled
+            // placeholder competing for scarce phone navigation space.
             var visible = entries.Cast<object>().Where(entry =>
             {
                 var liveButton = Member(entry, "Button") as Button;
                 return liveButton && liveButton.gameObject.activeSelf;
             }).ToArray();
-            const int expectedVisible = 5; // Stable approved navigation; locks remain real
+            Assert.That(visible.Length, Is.InRange(1, 2),
+                "Beta10 footer shows only currently useful World/City and Mail controls");
+            Assert.That(visible.Any(entry =>
+                Member(entry, "Section").ToString() == "Mailbox"), Is.True,
+                "Mail must be a working bottom-navigation destination");
             foreach (var entry in entries)
             {
-                string category = Member(entry, "Section").ToString();
-                if(category != "Army" && category != "World") continue;
-                bool trulyUnlocked = (bool)Call(host, "CanOpen", Member(entry, "Section"));
-                var entryButton=Member(entry, "Button") as Button;
-                Assert.That(entryButton.gameObject.activeSelf, Is.True,
-                    "All five approved destinations remain visible");
-                Assert.That(entryButton.interactable, Is.EqualTo(trulyUnlocked),
-                    "Visible locked Army/World controls must not bypass narrative unlocks");
+                var section = Member(entry, "Section");
+                string category = section.ToString();
+                var button = Member(entry, "Button") as Button;
+                bool allowed = category == "World" || category == "Mailbox";
+                bool enabled = allowed && (bool)Call(host, "CanOpen", section);
+                Assert.That(button.gameObject.activeSelf, Is.EqualTo(enabled),
+                    "Only taught and unlocked destinations may appear: " + category);
+                Assert.That(button.interactable, Is.EqualTo(enabled),
+                    "Never enable a hidden or premature command: " + category);
             }
-            Assert.That(visible.Length, Is.EqualTo(expectedVisible),
-                "Only coherent Crónica Real destinations may appear at this Bastion level");
             foreach (var entry in visible)
             {
                 var navigationCaption = Member(entry, "Label") as Text;
@@ -631,10 +639,10 @@ namespace Eldoria.Tests
                 Assert.That(navigationCaption.preferredHeight, Is.LessThanOrEqualTo(navigationCaption.rectTransform.rect.height + 1f),
                     "Readable navigation type must have enough line height to render");
                 string section = Member(entry, "Section").ToString();
-                if (section == "Army" || section == "World") continue;
+                if (section == "World") continue;
                 var button = Member(entry, "Button") as Button;
                 Assert.That(button.interactable, Is.True,
-                    "Only an existing real kingdom, build or chapter destination can be enabled");
+                    "The visible Mail destination must be a working mailbox command");
             }
             int active = 0;
             foreach (var entry in entries)
@@ -854,21 +862,27 @@ namespace Eldoria.Tests
             // the same authoritative timer, not a stale pre-purchase offer.
             Call(v3, "SynchronizeNow");
             Assert.That(Member(management, "IsOpen"), Is.EqualTo(false));
-            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
-                "The paid work must show one anchored timer immediately");
+            // Beta10 has a compact selected-building operation sheet instead of
+            // a second camera-following timer. Confirm the real countdown is on
+            // the selected sheet and that no duplicate is left floating behind it.
+            var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
+            Call(v2, "SynchronizeNow");
+            Assert.That(Member(v2, "ChronicleIllustratedBuildingVisible"), Is.EqualTo(true),
+                "The selected building must keep its compact construction sheet");
+            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(0),
+                "A selected construction sheet must not create a duplicate timer");
             Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false),
                 "The paid offer is never duplicated while work is active");
             Assert.That(command.interactable, Is.False,
                 "Paid construction cannot be purchased twice");
             var operationTime = Member(operation, "Time") as string;
             Assert.That(hud.GetComponentsInChildren<Text>(true).Any(x =>
-                x.gameObject.name=="Live remaining time" &&
                 x.gameObject.activeInHierarchy && x.text.Contains(operationTime)),
-                Is.True,"The genuine city timer must show the gateway countdown");
+                Is.True,"The compact selected sheet must show the gateway countdown");
             Call(hud, "SelectBuilding", "");
             Call(v3, "SynchronizeNow");
             Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
-                "Closing the contextual selection must preserve the real timer");
+                "Deselecting the building must restore the compact fixed HUD timer");
 
         }
 
