@@ -428,10 +428,12 @@ namespace Eldoria.BreachWatch
             if(!finalProfile)throw new InvalidOperationException(
                 "Missing Vigilia's approved player profile art");
             identitySurface.ApplyIndependentArt(finalProfile,true);
+            identitySurface.color=new Color(.97f,.95f,.90f,1f);
             // The entire visible account plate must prevent accidental
             // click-through to the city, without pretending to navigate.
             identitySurface.raycastTarget=true;
-            AddContactShadow(identity,1.4f,.18f);
+            // No additional uGUI Shadow: the genuine profile painting already
+            // owns its falloff. Doubling it made the entire header float.
             // The owner-approved compact reference has NO red top banner.
             // Independent round carved crest replaces the obsolete banner.
             identityCrest=Rect("Independent circular realm crest",identity);
@@ -443,8 +445,8 @@ namespace Eldoria.BreachWatch
             if(!crestImage)crestImage=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/castle");
             if(crestImage)identityCrest.GetComponent<BreachWatchPlate>()
                 .ApplyIndependentArt(crestImage);
-            identityCrest.GetComponent<BreachWatchPlate>().VisualScale=.86f;
-            At(identityCrest,-3,-4,62,62);
+            identityCrest.GetComponent<BreachWatchPlate>().VisualScale=.94f;
+            At(identityCrest,4,4,50,50);
             identityName=Label(identity,"Player name",22,TextAnchor.MiddleLeft,TextIvory,true);
             identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Muted);
             resourceRow=Rect("Separate resource stones",uiRoot);
@@ -460,6 +462,7 @@ namespace Eldoria.BreachWatch
                 // procedural tile PLUS a second border produced an ugly
                 // cross/X behind the actual resource amount in Unity.
                 resourceSurface.ApplyIndependentArt(originalResourceStone,true);
+                resourceSurface.color=new Color(.97f,.95f,.90f,1f);
 
                 resourceSurface.raycastTarget=true;
                 var picture=Rect("True illustrated resource",resourceChips[i]);
@@ -497,9 +500,11 @@ namespace Eldoria.BreachWatch
             // The actual tapered ornament is a single authored silhouette:
             // never silently fall back to a generic procedural dark panel.
             chapterStone.ApplyIndependentArt(angledPlate,false);
+            chapterStone.color=new Color(.97f,.95f,.90f,1f);
             chapterStone.preserveAspect=false;
 
-            AddContactShadow(objective,1.8f,.20f);
+            // No extra shadow: the carved quest PNG already has a baked
+            // shadow and finished outline. This is one plate, not two.
             // The chapter's approval reference has a tiny tower crest
             // attached to the tablet. The open-air Breach sigil is separate.
             var objectiveSeal=Glyph(objective,"Chapter stone rune",BreachWatchGlyph.Sigil.Castle);
@@ -569,11 +574,13 @@ namespace Eldoria.BreachWatch
                     "Missing separately authored owner-reference mineral card material");
             var singleSlate=panel.gameObject.AddComponent<Image>();
             singleSlate.sprite=realMineral;
+            singleSlate.color=new Color(.97f,.95f,.90f,1f);
             singleSlate.type=Image.Type.Simple;
             singleSlate.preserveAspect=false;
             // Passive native input shield prevents clicks leaking through.
             singleSlate.raycastTarget=true;
-            AddContactShadow(panel,2.2f,.21f);
+            // The mineral surface and the ONE owner rim carry all relief.
+            // A second UI Shadow beneath them created a detached slab.
             // Most faithful finish: transparent embossed metal border
             // extracted solely from the exact image the owner approved.
             // Real building data and 3D meshes remain separate.
@@ -611,7 +618,12 @@ namespace Eldoria.BreachWatch
             // 55% opaque border becomes a SECOND golden frame below that
             // transparent texture, reintroducing the pasted-on-panel effect.
             // Keep a very soft relief at 18% and the ONE outer approved rim.
-            brassFrame.color=new Color(.94f,.88f,.79f,.18f);
+            // The brass source PNG has an entirely opaque CENTRAL slab.
+            // Even at 18% opacity it rendered an extra rectangular card
+            // behind the URP alpha-cut 3D Bastion. Retain its authored
+            // asset for provenance, but do NOT paint the duplicate surface.
+            brassFrame.enabled=false;
+            brassFrame.raycastTarget=false;
             var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
             Fill(liveView,5);
             portraitView=liveView.gameObject.AddComponent<RawImage>();
@@ -728,6 +740,7 @@ namespace Eldoria.BreachWatch
                 Fill(art,6f);
                 var surface=Plate(art,BreachWatchPlate.PlateType.Navigation);
                 surface.ApplyIndependentArt(painted);
+                surface.color=new Color(.97f,.95f,.90f,1f);
                 surface.VisualScale=1f;
                 surface.raycastTarget=false;
                 navButtons[i]=button;
@@ -934,12 +947,14 @@ namespace Eldoria.BreachWatch
                 bool smallPhone=pixelWidth<600;
                 float identityHeight=smallPhone?52f:43f;
                 At(identity,margin,smallPhone?11f:14f,182,identityHeight);
-                float crestSize=smallPhone?57f:49f;
-                At(identityCrest,-3,-4,crestSize,crestSize);
-                At(identityName.rectTransform,crestSize+1f,smallPhone?6f:4f,
-                    181f-crestSize,smallPhone?25f:21f);
-                At(identityPower.rectTransform,crestSize+1f,
-                    smallPhone?31f:25f,181f-crestSize,17f);
+                float crestSize=smallPhone?45f:37f;
+                // Engraved lion lives INSIDE the one painted player plaque:
+                // no separate disc hanging over a second visible surface.
+                At(identityCrest,4f,(identityHeight-crestSize)*.5f,crestSize,crestSize);
+                At(identityName.rectTransform,crestSize+8f,smallPhone?6f:4f,
+                    174f-crestSize,smallPhone?25f:21f);
+                At(identityPower.rectTransform,crestSize+8f,
+                    smallPhone?31f:25f,174f-crestSize,17f);
                 identityName.fontSize=smallPhone?17:16;
                 identityPower.fontSize=smallPhone?14:12;
 
@@ -1052,7 +1067,7 @@ namespace Eldoria.BreachWatch
             else
             {
                 At(identity,margin,11,234,58);
-                At(identityCrest,-3,-4,64,64);
+                At(identityCrest,4,5,48,48);
                 At(identityName.rectTransform,59,6,166,31);
                 At(identityPower.rectTransform,59,35,165,18);
                 identityName.fontSize=20;
