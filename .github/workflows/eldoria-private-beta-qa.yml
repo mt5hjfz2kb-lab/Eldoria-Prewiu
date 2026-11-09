@@ -38,7 +38,8 @@ jobs:
           set -euo pipefail
           git fetch --no-tags --filter=blob:none --depth=1 origin \
             be49d62e3daf490f41dba0bf8123a8e2eee64480 \
-            8dc875430241a49b4d417782dfeab2d4c7a4f315
+            8dc875430241a49b4d417782dfeab2d4c7a4f315 \
+            485d7b1c7980b73fa6abac9dfad4a99ccc382ab8
           python tools/eldoria-private-beta/iphone_ab/prepare.py --check
           python tools/eldoria-private-beta/iphone_ab/prepare.py \
             --out "$RUNNER_TEMP/eldoria-iphone-timer-ab"
