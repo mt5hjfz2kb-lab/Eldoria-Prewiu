@@ -1157,7 +1157,7 @@ namespace Eldoria.BreachWatch
                 // the live Bastion card and continue to show the city.
                 // Preserve 44px+ individual buttons, but reduce only the
                 // SHORT landscape bar, not the premium portrait variant.
-                float navGap=4f,navSize=h<530f?100f:130f;
+                float navGap=4f,navSize=h<530f?98f:130f;
                 float navHeight=h<530f?72f:80f;
                 float dockHeight=h<530f?77f:90f;
                 float navWidth=22f+visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
