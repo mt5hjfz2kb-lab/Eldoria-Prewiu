@@ -37,7 +37,7 @@ def metal(w,h,mode="night",corner=18):
             vign=.80+.20*min(1,edge*9)
             noise=rnd.randrange(-10,11)*.20
             if mode=="active":c=(22+10*fy,54+11*fy,72+9*fy)
-            elif mode=="gold":c=(170-19*fy,115-29*fy,55-8*fy)
+            elif mode=="gold":c=(188-23*fy,139-38*fy,71-15*fy)
             else:c=(16+6*fy,33+7*fy,49+8*fy)
             px[x,y]=tuple(max(0,min(255,int(v*(1-.24*fy)*vign+noise))) for v in c)+(255,)
     mask=Image.new("L",(w,h),0)
@@ -60,15 +60,26 @@ def metal(w,h,mode="night",corner=18):
     return image
 
 def symbol(name):
+    # The previous tiles composited the whole MEDALLION circle onto a
+    # rectangular card; technically one sprite, but still visually looked
+    # like a sticker. Extract the engraved gold GLYPH from the approved
+    # source's brighter center and feather only its matte. This is a real
+    # owner-source transformation: no new icon, stock asset or AI overlay.
     im=Image.open(SRC/(name+".png")).convert("RGBA")
+    px=im.load()
     a=Image.new("L",im.size,0)
     ap=a.load()
-    alpha=im.getchannel("A").load()
+    cx=im.width*.5
+    cy=im.height*.53125
     for y in range(im.height):
         for x in range(im.width):
-            radius=math.hypot((x-im.width/2)/(im.width/2),
-                              (y-im.height/2)/(im.height/2))
-            ap[x,y]=int(alpha[x,y]*max(0,min(1,(.89-radius)/.19)))
+            r,g,b,alpha=px[x,y]
+            luma=r*.24+g*.67+b*.09
+            dist=math.hypot((x-cx)/(im.width*.270833),
+                            (y-cy)/(im.height*.296875))
+            central=max(0.,min(1.,(1.00-dist)/.12))
+            glyph=max(0.,min(1.,(luma-75.)/78.))
+            ap[x,y]=int(alpha*glyph*central)
     im.putalpha(a)
     return im.resize((116,116),Image.Resampling.LANCZOS)
 
@@ -123,14 +134,16 @@ for name in ("castle","provisions","swords","raven","helm"):
         manifest.append(save(face,"nav_"+name+("_active" if selected else "")))
 cta=metal(660,140,"gold",34)
 d=ImageDraw.Draw(cta,"RGBA")
-d.line([(90,19),(570,19)],fill=(249,219,151,240),width=3)
-d.line([(90,118),(570,118)],fill=(64,39,19,220),width=3)
+# The real source gold face IS the button, not a ruled parchment
+# with another plate painted over it. Limit engraving to one thin
+# inset highlight and ONE pair of crossed hammer handles on its left.
+# The dynamic Cormorant inscription remains completely unobstructed.
+d.line([(146,21),(571,21)],fill=(244,214,151,105),width=2)
+d.line([(146,120),(571,120)],fill=(43,34,20,105),width=2)
 for tilt in (-1,1):
-    d.line((60-17*tilt,43,60+19*tilt,99),fill=(49,35,21,255),width=10)
-    d.line((60-17*tilt,43,60+19*tilt,99),fill=(230,193,117,255),width=5)
-d.rounded_rectangle((22,20,105,120),radius=12,
-                    outline=(156,105,51,145),width=2)
-d.line([(128,20),(128,119)],fill=(94,54,26,215),width=3)
+    d.line((73-12*tilt,45,73+12*tilt,95),fill=(61,42,22,225),width=8)
+    d.line((73-12*tilt,45,73+12*tilt,95),fill=(235,201,132,240),width=4)
+d.line([(130,32),(130,108)],fill=(84,54,24,105),width=2)
 manifest.append(save(cta,"action_gold",(40,27,40,27)))
 (DEST/"manifest.json").write_text(json.dumps({
   "source":"five approved Vigilia PremiumMedallions, all icon glyphs integrated into ONE raster per action",
