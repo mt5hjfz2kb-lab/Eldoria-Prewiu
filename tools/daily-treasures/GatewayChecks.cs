@@ -109,6 +109,39 @@ internal static class GatewayChecks
             Assert(!DailyTreasureMilestoneRules.FirstScoutFamily(before,after,id),
                 "unearned discovery family has no ceremony "+kind);
         }
+        // Gateway first saves the report and can immediately remove a
+        // claimed, expired order in its post-command Synchronize(). The
+        // original UI only inspected Orders, so a legitimate first discovery
+        // silently lost its celebration in that very same revision.
+        var delayedBefore=new PlayerState();
+        var delayedAfter=new PlayerState();
+        const string oldOrderId="expired:first:1";
+        delayedBefore.Retention.Orders.Add(new ScoutOrder{
+            Id=oldOrderId,Kind=1,Claimed=false,Period=0
+        });
+        delayedAfter.Retention.ScoutDiscoveryMask=1<<1;
+        Assert(!DailyTreasureMilestoneRules.FirstScoutFamily(
+                delayedBefore,delayedAfter,oldOrderId),
+            "a missing order WITHOUT its exact report is not celebrated");
+        delayedAfter.Mailbox.Receive(new EldoriaV41Message{
+            EventId="exploration:delayed-claim",Type="exploration",
+            Category="informes",Title="Informe de exploración",
+            DiscoveryOrderId=oldOrderId,DiscoveryKind=1,
+            RewardReceiptId="delayed-claim"
+        });
+        Assert(DailyTreasureMilestoneRules.FirstScoutFamily(
+                delayedBefore,delayedAfter,oldOrderId),
+            "a pruned, genuinely claimed first family keeps its mail-backed ceremony");
+        delayedBefore.Retention.ScoutDiscoveryMask=1<<1;
+        Assert(!DailyTreasureMilestoneRules.FirstScoutFamily(
+                delayedBefore,delayedAfter,oldOrderId),
+            "old family mask cannot replay an expired scout discovery");
+        delayedBefore.Retention.ScoutDiscoveryMask=0;
+        delayedBefore.Retention.Orders[0].Claimed=true;
+        Assert(!DailyTreasureMilestoneRules.FirstScoutFamily(
+                delayedBefore,delayedAfter,oldOrderId),
+            "previously claimed scout cannot use an old mail to replay a ceremony");
+
         var one=new PlayerState();
         var two=new PlayerState();
         Assert(!DailyTreasureMilestoneRules.NewlyCompletedBastion(one,two,out _),
@@ -369,6 +402,27 @@ internal static class GatewayChecks
             "explorer keeps the special tier rather than false legendary loot");
         Assert(queue.ConfirmPresented(scout.EventId) &&
                queue.PendingCount==0,"first discovery ceremony displays once");
+        // No retained order required after canonical post-claim cleanup:
+        // the completed report still identifies the exact paid command and
+        // discovery family, while an unclaimed retained order is rejected.
+        var pruned=new PlayerState();
+        pruned.Retention.ScoutDiscoveryMask=1<<1;
+        pruned.Mailbox.Receive(new EldoriaV41Message{
+            EventId="exploration:pruned-delayed",Type="exploration",
+            Category="informes",Title="Primer hallazgo registrado",
+            DiscoveryOrderId="expired:first:1",DiscoveryKind=1,
+            RewardReceiptId="pruned-delayed"
+        });
+        Assert(queue.AddConfirmedReport(pruned,
+                "exploration:pruned-delayed","exploration",
+                "scout:first:expired:first:1","Primer hallazgo",
+                "Informe auténtico",false),
+            "pruned but saved scout report still permits a legitimate ceremony");
+        Assert(queue.TryPeek(out var older) &&
+               older.EventId=="scout:first:expired:first:1",
+            "pruned first-family queue keeps exact historical order identity");
+        Assert(queue.ConfirmPresented(older.EventId),
+            "old first family only consumed after real optional presentation");
         queue.Reset(discovery);
         Assert(queue.PendingCount==0,
             "relaunch does not force an older offline discovery ceremony");
