@@ -233,6 +233,9 @@ jobs:
           # Separate opt-in QA entry; exact certified game index remains untouched.
           # No invitations, QA events only, and no Unity progress claim until
           # an exact native build of the source-defined signal emitter passes.
+          # Freeze the tested opt-in preview scripts. Never substitute a
+          # moving branch or unreviewed beta source during a Pages release.
+          test "$(git -C pilot-source rev-parse HEAD)" = 17bd1252711e3845fb9d9eeeef7cc323dc62e514
           node --test pilot-source/tools/eldoria-private-beta/pages/*.test.mjs
           node pilot-source/tools/eldoria-private-beta/pages/pilot-stage.mjs site/beta-native325 pilot-source/tools/eldoria-private-beta/pages
           node --check site/beta-native325/play.js
@@ -268,6 +271,13 @@ jobs:
                 preview=response.read()
               assert b'pilot-bootstrap.mjs' in preview and b'ELDORIA_PILOT_QA' in preview
               assert b'pilot-bootstrap.mjs' not in html, 'Default certified game must not be instrumented'
+              # The first public deployment must preserve previously live
+              # routes. Do not claim a successful release if it erased the
+              # existing owner game while introducing the QA-only pilot.
+              legacy_url='https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/unity-owner/index.html?verify='+str(attempt)
+              with urllib.request.urlopen(legacy_url,timeout=20) as response:
+                legacy=response.read()
+              assert b'<html' in legacy.lower() and b'Unity' in legacy, 'Legacy owner route missing after deployment'
               print('LIVE_OWNER_BETA11_TIMER_ATTACHED_RELEASE_PASS',url)
               print('LIVE_OPTIONAL_GITHUB_PAGES_QA_PILOT_PRESENT_NOT_TESTER_RELEASE')
               break
