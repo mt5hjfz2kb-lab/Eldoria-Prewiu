@@ -86,8 +86,11 @@ namespace Eldoria.Tests
         [Test] public void NativeVigilantResultAndEarnedMasterySurviveReloadWithoutDoubleReward()
         {
             var clock=new Clock();var store=new Store();
-            store.Save(new PlayerState{BastionLevel=2,BarracksLevel=5,SawmillLevel=1,
+            store.Save(new PlayerState{BastionLevel=2,BarracksLevel=5,SawmillLevel=1,EngendroDefeated=true,
                 ChapterProgress=new ChapterProgressState{MarchConfirmed=true},Available=new ArmyRoster{ArcherT1=200}});
+            var introduced=store.Load();
+            introduced.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
+            store.Save(introduced);
             var resolver=EldoriaV41GatewayResolver.Campaign();
             var game=new LocalGateway(clock,store,resolver);
             Assert.That(Send(game,"guardian","VigilantBattle","1").Ok,Is.True);

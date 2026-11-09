@@ -23,15 +23,19 @@ namespace Eldoria.Tests
         {
             var s=g.Snapshot();return new GameCommand(id,s.PlayerId,kind,target,s.Revision);
         }
+        // A gameplay-ready save is already eligible and has seen the system introductions.
+        // The lock-state tests below deliberately use an unintroduced PlayerState.
         static PlayerState Ready()
         {
-            return new PlayerState
+            var ready=new PlayerState
             {
-                BastionLevel=2,SawmillLevel=1,BarracksLevel=1,
+                BastionLevel=3,SawmillLevel=1,BarracksLevel=1,
                 ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
                 Available=new ArmyRoster{ArcherT1=60},
                 Resources=new ResourceWallet{Wood=300,Stone=250,Food=100}
             };
+            ready.ChapterProgress.SeenNarrative.AddRange(new[]{"march-preparation","vigilants-introduction","scouts-introduction"});
+            return ready;
         }
         [Test] public void UnlockingScoutsDoesNotInvalidateNextCanonicalFightCommand()
         {
@@ -61,6 +65,12 @@ namespace Eldoria.Tests
             Assert.That(EarlyRetentionRules.VigilantsUnlocked(a),Is.False);
             Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.False);
             a.SawmillLevel=1;
+            Assert.That(EarlyRetentionRules.VigilantsUnlocked(a),Is.False,
+                "Sawmill alone cannot expose unexplained Vigilants");
+            a.EngendroDefeated=true;
+            Assert.That(EarlyRetentionRules.VigilantsUnlocked(a),Is.False,
+                "Eligibility still requires its contextual introduction");
+            a.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
             Assert.That(EarlyRetentionRules.VigilantsUnlocked(a),Is.True);
             Assert.That(EarlyRetentionRules.StageUnlocked(a,1),Is.True);
             Assert.That(EarlyRetentionRules.StageUnlocked(a,2),Is.False);
@@ -68,6 +78,12 @@ namespace Eldoria.Tests
             a.BastionLevel=2;a.BarracksLevel=1;
             Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.False);
             a.ChapterProgress.MarchConfirmed=true;
+            Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.False,
+                "A march alone cannot unlock Scouts before Bastion III");
+            a.BastionLevel=3;
+            Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.False,
+                "Scouts need their explanation before their interface button");
+            a.ChapterProgress.SeenNarrative.Add("scouts-introduction");
             Assert.That(EarlyRetentionRules.ScoutsUnlocked(a),Is.True);
             Assert.That(EarlyRetentionRules.StageUnlocked(a,2),Is.True);
             Assert.That(EarlyRetentionRules.StageUnlocked(a,26),Is.False);
@@ -217,10 +233,11 @@ namespace Eldoria.Tests
         [Test] public void ScoutDiscoveriesAreDeterministicAndPersistAfterReloadWithoutDoubleClaim()
         {
             var time=new Clock();var store=new MemoryStateStore{
-                Value=new PlayerState{BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
+                Value=new PlayerState{BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
                     ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
                     Available=new ArmyRoster{ArcherT1=100}}
             };
+            store.Value.ChapterProgress.SeenNarrative.Add("scouts-introduction");
             var gateway=new LocalGateway(time,store);
             var order=gateway.Snapshot().Retention.Orders.First(x=>x.Kind!=0);
             var expected=EarlyRetentionRules.ScoutDiscoveryText(order);

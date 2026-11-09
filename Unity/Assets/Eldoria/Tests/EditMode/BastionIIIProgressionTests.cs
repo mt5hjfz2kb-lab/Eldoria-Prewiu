@@ -178,6 +178,8 @@ namespace Eldoria.Tests {
    var s=Ready(1).Value;s.SawmillLevel=0;
    Assert.That(EarlyRetentionFirstUseTutorial.Vigilants(s),Is.EqualTo(FirstUseTutorialPhase.Locked));
    s.SawmillLevel=1;
+   Assert.That(EarlyRetentionFirstUseTutorial.Vigilants(s),Is.EqualTo(FirstUseTutorialPhase.Locked));
+   s.ChapterProgress.SeenNarrative.Add("vigilants-introduction");
    Assert.That(EarlyRetentionFirstUseTutorial.Vigilants(s),Is.EqualTo(FirstUseTutorialPhase.FirstAction));
    s.Retention.LastClearedStage=1;
    Assert.That(EarlyRetentionFirstUseTutorial.Vigilants(s),Is.EqualTo(FirstUseTutorialPhase.Learned));
@@ -186,6 +188,10 @@ namespace Eldoria.Tests {
    var s=Ready(2).Value;
    Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.Locked));
    s.ChapterProgress.MarchConfirmed=true;
+   Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.Locked));
+   s.BastionLevel=3;
+   Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.Locked));
+   s.ChapterProgress.SeenNarrative.Add("scouts-introduction");
    Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.FirstAction));
    s.Retention.Orders.Add(new ScoutOrder{Id="real-order",StartedUtcTicks=1,EndsUtcTicks=2});
    Assert.That(EarlyRetentionFirstUseTutorial.Explorers(s),Is.EqualTo(FirstUseTutorialPhase.AwaitingResult));

@@ -57,10 +57,11 @@ namespace Eldoria.Tests
         [Test] public void ScoutsShareThreeMarchSlotsAndReturnRealTroopsBeforeClaims()
         {
             var clock=new Clock();var store=new Memory {
-                Value=new PlayerState{BastionLevel=2,BarracksLevel=1,
+                Value=new PlayerState{BastionLevel=3,BarracksLevel=1,
                     ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
                     Available=new ArmyRoster{ArcherT1=90}}
             };
+            store.Value.ChapterProgress.SeenNarrative.Add("scouts-introduction");
             var g=new LocalGateway(clock,store);
             var ids=g.Snapshot().Retention.Orders.ConvertAll(x=>x.Id);
             Assert.That(ids.Count,Is.EqualTo(3));
