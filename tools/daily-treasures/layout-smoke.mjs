@@ -162,7 +162,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
     const tweenH=lerp(openH,Math.min(h-20,portrait?700:370));
     const shortLand=!portrait && Math.min(h-20,370)<365;
     const artY=lerp(portrait?64:42,
-                    portrait?116:shortLand?83:89);
+                    portrait?116:shortLand?84:89);
     const artH=lerp(portrait?265:194,
                     portrait?246:shortLand?164:170);
     const captionY=lerp(portrait?-132:-100,
@@ -182,7 +182,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   const paidW=Math.min(w-24,portrait?440:650);
   const paidH=Math.min(h-20,portrait?700:370);
   const shortPaid=!portrait && paidH<365;
-  const chest=rect(0,portrait?116:shortPaid?83:89,
+  const chest=rect(0,portrait?116:shortPaid?84:89,
     portrait?284:shortPaid?290:300,
     portrait?246:shortPaid?164:170);
   const captionY=portrait?(paidH<680?-217:-232):-15;
