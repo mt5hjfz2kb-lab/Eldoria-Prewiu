@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T19:06:55Z",
+  "updated_at": "2026-11-09T19:18:00.392Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6766,7 +6766,7 @@
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
       "owner": "chatgpt-eldoria-pilot-telemetry-20261109",
       "ownership_state": "claimed",
-      "ownership_revision": 21,
+      "ownership_revision": 22,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6794,14 +6794,16 @@
         ".github/workflows/eldoria-private-beta-qa.yml",
         ".github/workflows/eldoria-pages-telemetry-tests.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-09T17:11:20.832Z",
       "base_main_sha": "20b87dc1e57d4a0882e2867c769ee5cef86265a9",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
       "phase": "IPHONE_RESTART_PHYSICAL_P0_DIAGNOSIS_REQUIRED",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Owner physically reproduced unexpected restart at entry in current mobile11 GitHub Pages engine 8dc875430241a49b4d417782dfeab2d4c7a4f315, 2026-11-09; no iPhone certified fix. PRIORITIZE P0 issue #96, comment 6748351050 and PR179 comment 6748356056. Mac WebKit candidate 42645753309 WebContent RSS peak 2669 MiB, GPU 613 MiB (macOS, not iPhone); memory pressure a hypothesis. Isolate navigation/graphics loss/jetsam using existing local opt-in eldoria_diag=1 or physical Web Inspector if available; build a measured structural asset-load/memory variant (don't repeat already rejected 640/1024MiB prealloc or blanket readonly). Native Unity resource reserved by Vigilia, respect lease. Keep GitHub Pages mobile11 as owner diagnostic only, DO NOT RELEASE to testers or delete saves until 30-minute physical iPhone PASS and then Android. Milestone telemetry candidate still needs native rebuild after stability.",
+      "next": "Compile exact head PR179 Unity C# I–V markers and build isolated WebGL; collect native I–V passes, preserve original project, inspect output and browser QA. Physical iPhone reported restart on mobile11: external invites remain BLOCKED until actual phone >=30 min PASS. Do not publish candidate as public tester game.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7027,11 +7029,9 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "released_after_native_success",
-        "reason": "Focused frozen beta pretester UX verification after implementation; preserve current Forja and Treasures alternating work, no cancellation",
-        "candidate_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
-        "next_test": "Only Ubuntu/macOS packaging and browser validation remain. Windows is available; no queued beta native work.",
-        "native_run": 42595057735
+        "status": "claimed_for_native_candidate",
+        "reason": "Native Unity exact-marker candidate and original save/world preservation; no external beta release",
+        "candidate_sha": "934b5b034e2f87ba4f8d757b190840b96a28764f"
       },
       "ownership_history": [
         {
@@ -7103,7 +7103,7 @@
         "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
         "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
       },
-      "runner_claimed_at": "2026-11-09T08:26:10.917Z",
+      "runner_claimed_at": "2026-11-09T19:18:00.392Z",
       "canonical_integration_request": {
         "requested_at": "2026-11-09T10:49:44.401Z",
         "authorization": "Owner explicitly requested these beta10 improvements also in main (2026-11-09).",
@@ -7187,7 +7187,8 @@
         "root_cause": "unconfirmed",
         "issue": 96,
         "release_allowed": false
-      }
+      },
+      "runner_claim_basis": "Vigilia explicitly released 2026-11-09T19:06:55Z after native 42679974131; source/registry CAS and no current native Unity run. Perform isolated PR179 candidate I–V exact-marker Unity/Windows/WebGL; startup checks deny when local Unity busy."
     },
     {
       "id": "eldoria-daily-treasures-20261108",
