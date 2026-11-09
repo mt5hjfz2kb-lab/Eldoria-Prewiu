@@ -507,8 +507,8 @@ namespace Eldoria.DailyTreasures.Editor
                      Mathf.Abs(plate.color.a-
                          DailyTreasureStageDirection.BastionPlateOpacity)<.015f,
                      "Bastion real city is concealed by its own main frame");
-                Need((1f-backdrop.color.a)*(1f-plate.color.a)>.34f,
-                     "Less than 34% of the true built city remains visible");
+                Need((1f-backdrop.color.a)*(1f-plate.color.a)>.40f,
+                     "Less than 40% of the true built city remains visible");
                 Need(Mathf.Abs(ink.rect.width-expected.ReceiptW-16f)<1.1f &&
                      Mathf.Abs(ink.rect.height-expected.ReceiptH-12f)<1.1f &&
                      ink.GetComponent<Image>().color.a>.75f,
