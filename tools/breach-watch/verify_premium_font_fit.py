@@ -45,8 +45,12 @@ def verify():
         assert value<=limit+0.15,(control,round(value,2),limit,text)
         print("TYPOGRAPHY_FIT",control,round(value,1),"<=",limit)
 
-    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,12,mission_width-49,
-         "chapter-title")
+    # Original mission glyph spans x=9..29; the title must begin at
+    # x>=31 while still fitting the real 390px Cormorant inscription.
+    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,12,mission_width-45,
+         "chapter-title separate from carved chapter icon")
+    hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
+    assert "At(chapterName.rectTransform,31f,5f,missionWidth-45f,20f);" in hud
     fits("Construye el aserradero",REGULAR,14,mission_width-22,
          "chapter-objective")
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
