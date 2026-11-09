@@ -34,7 +34,7 @@ jobs:
           source=json.loads(pathlib.Path('tools/ui-v3-domain-smoke/native-request.json').read_text())
           assert source['pr']==183 and source['workstream_id']=='eldoria-ui-v3-management-completion-20261021'
           assert source['owner']=='chatgpt-v3-building-timer-anchor-20261109'
-          assert source['revision']==30
+          assert source['revision']==31
           headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'}
           def get(path):
               req=urllib.request.Request('https://api.github.com/repos/'+repo+'/'+path,headers=headers)
@@ -74,7 +74,7 @@ jobs:
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
           if($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-ui-v3-management-completion-20261021' -or
              $claims[0].owner -ne 'chatgpt-v3-building-timer-anchor-20261109' -or
-             $claims[0].ownership_revision -ne 30 -or $claims[0].ownership_state -ne 'claimed'){
+             $claims[0].ownership_revision -ne 31 -or $claims[0].ownership_state -ne 'claimed'){
              throw "TIMER_NATIVE_WINDOWS_LEASE_DENIED: $($claims.id -join ',')"
           }
           $pr=Invoke-RestMethod -Headers $headers -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/pulls/183"
