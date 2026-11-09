@@ -89,6 +89,8 @@ for requirement in (
     "$report.graphicalPointerHits -ne 56",
     "$report.realGatewayClaims -ne 8",
     "$report.visualOnlyMilestoneCaptures -ne 16",
+    "$item.readyToClaim -ne $claimCalendar",
+    "$item.coversReward -ne (!$unclaimed)",
     "$report.source -ne $env:GITHUB_SHA",
     "$report.artApproved -ne $false",
     "DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS",
