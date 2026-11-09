@@ -128,6 +128,7 @@ namespace Eldoria.DailyTreasures
                 }
                 if(entryRect)
                     entryRect.gameObject.SetActive(!suppressed &&
+                        !HasVisibleCanonicalHeroRoom() &&
                         !HasVisibleVigiliaBuildingPanel());
             }
         }
@@ -1632,7 +1633,11 @@ namespace Eldoria.DailyTreasures
         }
         public bool ProbeHeroRoomVisibilityForNativeEvidence()
         {
-            return HasVisibleCanonicalHeroRoom();
+            bool blocked=HasVisibleCanonicalHeroRoom();
+            if(blocked && IsOpen)Close();
+            if(entryRect)entryRect.gameObject.SetActive(!suppressed &&
+                !blocked && !HasVisibleVigiliaBuildingPanel());
+            return blocked;
         }
         public bool ProbeVigiliaBuildingForNativeEvidence()
         {
@@ -1651,7 +1656,9 @@ namespace Eldoria.DailyTreasures
             // opened AFTER an already-paid ceremony; close only UI/Foley,
             // never the authoritative item or its mailbox receipt.
             bool vigiliaBuilding=HasVisibleVigiliaBuildingPanel();
-            if(vigiliaBuilding && IsOpen)Close();
+            bool canonicalHero=HasVisibleCanonicalHeroRoom();
+            bool sceneOwnedByOtherUi=vigiliaBuilding || canonicalHero;
+            if(sceneOwnedByOtherUi && IsOpen)Close();
             // A hidden calendar must NOT also hide the sole entry geometry.
             // Layout is required on the very first frame, and again whenever
             // Vigilia's independent safe area or the device orientation moves.
@@ -1676,7 +1683,8 @@ namespace Eldoria.DailyTreasures
             }
             if(!IsOpen)
             {
-                entryRect.gameObject.SetActive(!suppressed && !vigiliaBuilding);
+                entryRect.gameObject.SetActive(!suppressed &&
+                    !sceneOwnedByOtherUi);
                 // A restrained, believable coffer glow, not cartoon bouncing.
                 float shimmer=entryIsAvailable?
                     (.18f+.095f*Mathf.Sin(Time.unscaledTime*2.1f)):0f;
