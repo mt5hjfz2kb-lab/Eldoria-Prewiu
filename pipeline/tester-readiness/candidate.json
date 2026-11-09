@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "iPhone P0 issue #96: two document boots in mobile11 owner diagnostic; unexpected restart cause unconfirmed. Exact previously owner-playable beta10 restored live as temporary mitigation and has NOT yet passed a 30-min physical iPhone session; browser and physical QA pending for newly compiled Unity candidate.",
+  "reason": "Owner physically confirms recovered beta10 can enter and play. The previous beta11 caused unexpected document reboot; underlying regression is not fixed. Remain BLOCKED for external testers until >=30-minute iPhone session, corrected-world-timer A/B, Android QA, and other release gates.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -30,20 +30,24 @@
     },
     {
       "device": "iPhone (browser context not yet independently established)",
-      "status": "MOBILE11_OWNER_REPORTED_FAIL_BETA10_ROLLBACK_PHYSICAL_NOT_RETESTED",
+      "status": "BETA10_OWNER_CONFIRMED_ENTRY_AND_PLAY_30MIN_NOT_YET_VERIFIED",
       "reported_at": "2026-11-09",
       "observed": "Old beta10 allowed play in owner recollection; beta11 physically restarted ~56 seconds after boot",
       "issue": 96,
       "source_sha": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
       "physical_session_30min_pass": false,
-      "root_cause": "UNKNOWN",
+      "root_cause": "UNKNOWN_FOR_BETA11",
       "diagnostic_event_count": 11,
       "two_document_boots": true,
       "clean_exit_before_restart": false,
       "p0_issue": 96,
       "tested_build": "beta11",
-      "current_build": "beta10",
-      "rolling_back_to": "be49d62e3daf490f41dba0bf8123a8e2eee64480"
+      "current_build": "native325-mobile10-pretest-ux",
+      "rolling_back_to": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+      "current_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+      "owner_confirmation": "Sí, me deja jugar",
+      "owner_confirmation_at": "2026-11-09",
+      "stability_after_30min": "NOT_VERIFIED"
     },
     {
       "device": "Android Chrome physical",
@@ -85,7 +89,7 @@
     "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions.",
     "qa_count_note": "Live Supabase QA event rows only; pseudonymous tester_id and session_id counts do not prove distinct human participants. No observed real human events."
   },
-  "updated_at": "2026-11-09T19:53:40Z",
+  "updated_at": "2026-11-09T20:05:46.653Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -210,5 +214,17 @@
     "webgl_artifact_id": 13704497757,
     "evidence_artifact_id": 13703809492,
     "promotion": "FORBIDDEN_WHILE_P0_UNRESOLVED"
+  },
+  "iphone_owner_beta10_restore": {
+    "status": "PHYSICAL_OWNER_CONFIRMED_ENTRY_AND_INITIAL_PLAY",
+    "date": "2026-11-09",
+    "build": "native325-mobile10-pretest-ux",
+    "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+    "publication_run": 42686613921,
+    "alias_fix_run": 42687093695,
+    "issue_comment_id": 6750137329,
+    "prolonged_play_30min_pass": false,
+    "original_timer_world_anchor": false,
+    "interpretation": "Restored a playable earlier build; no proof of long-session stability nor root-cause correction in mobile11"
   }
 }
