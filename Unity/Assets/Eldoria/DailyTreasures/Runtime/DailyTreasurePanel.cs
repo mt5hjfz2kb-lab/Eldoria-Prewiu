@@ -1326,18 +1326,39 @@ namespace Eldoria.DailyTreasures
                          -cardH*.5f-prizeGap*.5f;
                 Place(prizeRects[i],.5f,.5f,.5f,.5f,x,y,cardW,cardH);
                 prizeHomes[i]=new Vector2(x,y);
-                bool tall=cardH>=80f,shortCard=cardH<60f;
-                Place(prizeIcons[i].rectTransform,.5f,1f,.5f,1f,
-                    0f,tall?-6f:-3f,tall?49f:shortCard?31f:36f,
-                    tall?40f:shortCard?22f:25f);
-                Place(prizeNames[i].rectTransform,.5f,.5f,.5f,.5f,
-                    0f,tall?-14f:shortCard?-6f:-7.5f,
-                    cardW-8f,tall?12f:shortCard?10f:11f);
-                Place(prizeAmounts[i].rectTransform,.5f,.5f,.5f,.5f,
-                    0f,tall?-31f:shortCard?-19f:-22f,
-                    cardW-8f,tall?20f:shortCard?14f:16f);
-                prizeAmounts[i].fontSize=tall?20:shortCard?14:17;
-                prizeNames[i].fontSize=tall?12:shortCard?10:11;
+                // Actual Unity captures exposed a serious presentation
+                // failure: the 62px landscape cards rendered their icons but
+                // clipped BOTH resource names and quantities. Their old
+                // 10-16px label rectangles were shorter than font ascenders
+                // and overlapped each other. No reward may appear blank.
+                // Taller portrait cards retain a vertical composition;
+                // short cards place the icon left and an independent two-line
+                // receipt column right. Always allocate >=1.4x font height.
+                bool tall=cardH>=80f;
+                if(tall)
+                {
+                    Place(prizeIcons[i].rectTransform,.5f,.5f,.5f,.5f,
+                        0f,cardH*.225f,53f,48f);
+                    Place(prizeNames[i].rectTransform,.5f,.5f,.5f,.5f,
+                        0f,-cardH*.095f,cardW-15f,27f);
+                    Place(prizeAmounts[i].rectTransform,.5f,.5f,.5f,.5f,
+                        0f,-cardH*.335f,cardW-15f,28f);
+                    prizeNames[i].fontSize=12;
+                    prizeAmounts[i].fontSize=20;
+                }
+                else
+                {
+                    float labelWidth=cardW-62f;
+                    float labelX=cardW*.5f-labelWidth*.5f-7f;
+                    Place(prizeIcons[i].rectTransform,.5f,.5f,.5f,.5f,
+                        -cardW*.5f+27f,0f,43f,43f);
+                    Place(prizeNames[i].rectTransform,.5f,.5f,.5f,.5f,
+                        labelX,12f,labelWidth,27f);
+                    Place(prizeAmounts[i].rectTransform,.5f,.5f,.5f,.5f,
+                        labelX,-15f,labelWidth,23f);
+                    prizeNames[i].fontSize=10;
+                    prizeAmounts[i].fontSize=16;
+                }
             }
             // Skip stays away from the receipt and is a genuine >=44px hit target.
             if(eventStage && stage.SideBySide)
@@ -1409,7 +1430,13 @@ namespace Eldoria.DailyTreasures
                     Stretch(root);
                     root.SetAsLastSibling();
                     onVigiliaCanvas=true;
+                    // This canvas replaces the disabled legacy HUD immediately.
+                    // Without an immediate geometry pass, the first real tap
+                    // can intersect a stale hit target before Update() runs.
+                    // Canvas is forced only on this rare parent migration.
+                    Canvas.ForceUpdateCanvases();
                     lastWidth=lastHeight=-1f;
+                    Layout();
                 }
                 return;
             }
@@ -1421,7 +1448,9 @@ namespace Eldoria.DailyTreasures
                 Stretch(root);
                 root.SetAsLastSibling();
                 onVigiliaCanvas=false;
+                Canvas.ForceUpdateCanvases();
                 lastWidth=lastHeight=-1f;
+                Layout();
             }
         }
 
