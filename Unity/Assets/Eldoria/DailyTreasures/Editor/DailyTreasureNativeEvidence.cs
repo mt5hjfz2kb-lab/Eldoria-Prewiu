@@ -198,6 +198,60 @@ namespace Eldoria.DailyTreasures.Editor
             }
         }
 
+        static Rect BoundsInCard(RectTransform child)
+        {
+            var r=child.rect;
+            return new Rect(child.anchoredPosition.x+r.x,
+                child.anchoredPosition.y+r.y,r.width,r.height);
+        }
+        static void VerifyEarnedItemReadability(DailyTreasurePanel panel,int count)
+        {
+            // The first genuine Unity screenshots rendered four almost-empty
+            // frames: 10-16px-high legacy labels disappeared even though icon
+            // Sprite integrity tests and typography slack checks passed.
+            // Test the REAL credited item name/quantity boxes, layout bounds
+            // and disjoint painted icons, never just whether they exist.
+            var cards=panel.GetComponentsInChildren<RectTransform>(true)
+                .Where(x=>x.name.StartsWith("Earned item ",StringComparison.Ordinal))
+                .OrderBy(x=>x.name,StringComparer.Ordinal).ToArray();
+            Need(cards.Length==4,"Genuine receipt should have four reusable cards");
+            for(int i=0;i<count;i++)
+            {
+                var card=cards[i];
+                Need(card.gameObject.activeInHierarchy,
+                    "A confirmed paid item has no visible card "+i);
+                var title=card.GetComponentsInChildren<Text>(true)
+                    .Single(x=>x.name=="Reward name");
+                var amount=card.GetComponentsInChildren<Text>(true)
+                    .Single(x=>x.name=="Actual paid count");
+                var icon=card.GetComponentsInChildren<Image>(true)
+                    .Single(x=>x.name=="Real award icon");
+                Need(!string.IsNullOrWhiteSpace(title.text) &&
+                     !string.IsNullOrWhiteSpace(amount.text) &&
+                     icon.sprite && title.font && amount.font,
+                     "Claimed resource is missing its own painted receipt "+i);
+                Need(title.rectTransform.rect.height>=title.fontSize*1.35f &&
+                     amount.rectTransform.rect.height>=amount.fontSize*1.35f,
+                     "Paid card text box is shorter than a real font line "+i);
+                var labelBounds=BoundsInCard(title.rectTransform);
+                var amountBounds=BoundsInCard(amount.rectTransform);
+                var artBounds=BoundsInCard(icon.rectTransform);
+                var outer=card.rect;
+                foreach(var bounds in new[]{labelBounds,amountBounds,artBounds})
+                    Need(bounds.xMin>=outer.xMin-1f &&
+                         bounds.xMax<=outer.xMax+1f &&
+                         bounds.yMin>=outer.yMin-1f &&
+                         bounds.yMax<=outer.yMax+1f,
+                         "Actual paid receipt is off-card: "+i);
+                Need(!labelBounds.Overlaps(amountBounds) &&
+                     !labelBounds.Overlaps(artBounds) &&
+                     !amountBounds.Overlaps(artBounds),
+                     "The claimed resource icon/name/quantity overlap in Unity "+i);
+                Need(title.preferredHeight<=title.rectTransform.rect.height+2f &&
+                     amount.preferredHeight<=amount.rectTransform.rect.height+2f,
+                     "A genuine painted paid item still clips its letters "+i);
+            }
+        }
         static void VerifyGenuineSceneComposition(
             DailyTreasurePanel panel,string eventId,int width,int height)
         {
@@ -287,7 +341,10 @@ namespace Eldoria.DailyTreasures.Editor
             Need(hits.Count>0 &&
                  (hits[0].gameObject==button.gameObject ||
                   hits[0].gameObject.transform.IsChildOf(button.transform)),
-                 "Another graphic steals native click: "+button.name);
+                 "Another graphic steals native click: "+button.name+
+                " canvas="+canvas.name+" target="+pos+
+                " hit="+(hits.Count>0?hits[0].gameObject.name:"<none>")+
+                " raycasts="+hits.Count);
             // Invoke the exact Unity event handlers used by real players.
             // NEVER bypass the pointer by directly invoking onClick.
             ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerDownHandler);
@@ -465,6 +522,7 @@ namespace Eldoria.DailyTreasures.Editor
                     inputChecks++;
                     Canvas.ForceUpdateCanvases();
                     VerifyCleanPaintedResources(panel,4);
+                    VerifyEarnedItemReadability(panel,4);
                     VerifyCriticalTypography(panel,"paid day seven / illustration cards");
                     Need(panel.EarnedItemCardCount==4 &&
                          panel.HasRevealedIllustratedEarnedItems,
@@ -571,6 +629,7 @@ namespace Eldoria.DailyTreasures.Editor
                     inputChecks++;
                     Canvas.ForceUpdateCanvases();
                     VerifyCleanPaintedResources(panel,2);
+                    VerifyEarnedItemReadability(panel,2);
                     VerifyCriticalTypography(panel,"paid day four / illustration cards");
                     Need(panel.EarnedItemCardCount==2 &&
                          panel.HasRevealedIllustratedEarnedItems,
