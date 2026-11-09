@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-08T23:53:51.680Z",
+  "updated_at": "2026-11-09T00:13:12.416Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6822,7 +6822,7 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "OWNER_PRETEST_UX_CORRECTIONS_IN_PROGRESS",
+      "phase": "OWNER_PRETEST_UX_CANDIDATE_READY_WAITING_NATIVE",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
       "next": "Implement owner 2026-11-09 pretester list against frozen beta9, with source-pinned overlays under tools/eldoria-private-beta only; preserve published beta9 until native and browser UX/regression checks pass.",
       "last_verified": {
@@ -7034,8 +7034,9 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "waiting_for_safe_turn",
-        "reason": "Focused frozen beta pretester UX verification after implementation; preserve current Forja and Treasures alternating work, no cancellation"
+        "status": "ready_for_safe_turn",
+        "reason": "Focused frozen beta pretester UX verification after implementation; preserve current Forja and Treasures alternating work, no cancellation",
+        "candidate_sha": "dd0a69ab43d50001c8fd51186067853b811e8edc"
       },
       "ownership_history": [
         {
@@ -7063,7 +7064,9 @@
           "Clear mission expansion and close icon",
           "Compact stationary operation panels",
           "Building upgrades up to Bastion level"
-        ]
+        ],
+        "candidate_sha": "dd0a69ab43d50001c8fd51186067853b811e8edc",
+        "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
       }
     },
     {
