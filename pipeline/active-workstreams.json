@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T12:36:18.720Z",
+  "updated_at": "2026-11-09T14:41:32.467Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2861,20 +2861,30 @@
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
       "owner": "chatgpt-v3-building-timer-anchor-20261109",
       "ownership_state": "claimed",
-      "ownership_revision": 30,
+      "ownership_revision": 31,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-11-09T12:36:18.720Z",
       "base_main_sha": "0a9e1039436bf396e0cfbd6ebaad3df0967e4051",
       "branch": "fix/eldoria-construction-timer-anchor-20261109",
-      "pr": null,
+      "pr": 183,
       "owner_instruction": "2026-11-09 owner requests restoring construction timer attachment to its world building on camera pan; preserve compact readable timer and no duplicate selected action, do not touch frozen PR179 or PR173/181 sources.",
       "scope": [
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
         "tools/ui-v3-domain-smoke/verify-construction-anchor.mjs",
-        "docs/ui-v3/CONSTRUCTION_TIMER_ANCHOR_20261109.md"
+        "docs/ui-v3/CONSTRUCTION_TIMER_ANCHOR_20261109.md",
+        "tools/ui-v3-domain-smoke/Smoke.csproj",
+        ".github/workflows/ui-v3-domain-smoke.yml",
+        "tools/early-retention/Smoke.csproj",
+        ".github/workflows/early-retention-domain.yml",
+        "tools/early-retention/Program.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
+        ".github/workflows/eldoria-construction-timer-native.yml",
+        "tools/ui-v3-domain-smoke/native-request.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "dependencies": [
         {
           "workstream": "valoria-master-plan-layered-construction-20261016",
@@ -2922,7 +2932,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Edit isolated candidate against live main, static source contract check; Unity native city portrait/landscape test before merge and beta republication. PR179 owner retains live beta.",
+      "next": "Native Unity lease acquired for PR183. Update native-request.json revision31, launch existing fail-closed timer workflow; inspect exact real PlayMode XML. Restore/release Windows after actual native gate. Then PR179 beta native via fresh lease and deploy.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -3034,7 +3044,7 @@
         }
       ],
       "runner_lease_note": "Main UI40681527347 success. General main40681527358 is serial on existing runner; keep intact while subsequent PR120 jobs queue.",
-      "phase": "CONSTRUCTION_TIMER_WORLD_ANCHOR_CORRECTION",
+      "phase": "CONSTRUCTION_TIMER_NATIVE_TEST_EXCLUSIVE_LEASE",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
@@ -3101,7 +3111,14 @@
         "remote_active_confirmed": false,
         "hosted_browser_verified": false
       },
-      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6."
+      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
+      "native_timer_gate": {
+        "requested_at": "2026-11-09T14:12:44.955Z",
+        "branch": "fix/eldoria-construction-timer-anchor-20261109",
+        "pr": 183,
+        "status": "pending_exact_unity_run",
+        "purpose": "real Sawmill timer camera-pan/offscreen PlayMode test; source blob caa48b2bfa70edde209055f53296ddfc5e3a0baf"
+      }
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
@@ -6680,14 +6697,14 @@
       ],
       "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 24,
+      "ownership_revision": 26,
       "write_scope_released": false,
-      "phase": "VIGILIA_FIRST_SCREEN_NATIVE_EIGHT_PASS_ART_REVIEW_PENDING_WINDOWS_RELEASED",
-      "next": "All four resolutions genuine native pass at PR173 SHA a5e8fa22759733bc04ab8040e8f58cf079740d1e. Materials/font/portrait/CTA verified; final subjective art fidelity and future real mailbox/screens still outstanding. Keep PR draft; do not merge/deploy without owner acceptance.",
+      "phase": "VIGILIA_ALPHA18_FIRST_SCREEN_NATIVE_PASS_VISUAL_FIDELITY_REWORK_PENDING",
+      "next": "Current exact PR173 native run 42630398578 passed eight screenshots and gameplay; source artwork uses transparent true Bastion preview with 18%-opacity brass frame. The visual gain is limited (~0.35–0.72% pixels vs previous photo); commission a larger authorial SINGLE-SURFACE UI change rather than more decorative microtweaks. Keep draft; do not merge/publish until visual approval.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-09T11:45:28.413Z",
-      "runner_claim_basis": "PR181 formal release (registry revision 16, 2026-11-09T11:43:00Z); prior PR181 native job 42609669589 completed; user explicitly requests continuing PR173, exact-head Unity capture.",
+      "runner_claimed_at": "2026-11-09T13:46:31.554Z",
+      "runner_claim_basis": "Formal lease release by PR181 at 2026-11-09T13:41:12.992Z; active claim zero at CAS; user explicitly requests PR173 visual A/B continuation without background schedule. Unity workflow has independent live process + lease checks.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
@@ -6750,11 +6767,11 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "a5e8fa22759733bc04ab8040e8f58cf079740d1e",
-        "native_run": 42617442201,
+        "source_sha": "36f05a596e243c0eb52b20907187a925a9dab87d",
+        "native_run": 42630398578,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13673516185,
+        "artifact": 13680344022,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
@@ -6762,17 +6779,19 @@
         "safe_preserved": true,
         "art_approved": false,
         "android_tested": false,
-        "webgl_tested": false
+        "webgl_tested": false,
+        "portrait_transparent_bg_fraction": 0.7279,
+        "portrait_opaque_masonry_fraction": 0.2688
       },
-      "runner_released_at": "2026-11-09T12:30:44Z",
-      "runner_release_basis": "Owner PR173 native 8/8 exact-head Unity 6000.3.23f1 success run 42617442201; 6 live pointer clicks, save unchanged, real city/panel screenshots inspected. Released Windows without ART_APPROVED or merge."
+      "runner_released_at": "2026-11-09T14:03:19Z",
+      "runner_release_basis": "Exact PR173 Unity 6000.3.23f1 run 42630398578 completed SUCCESS: eight genuine screenshots, six real clicks, alpha clear 72.8%/opaque real masonry 26.9%, game/save unchanged, only photo rectangle changed. Released Windows; ART_APPROVED remains FALSE."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
+      "owner": "chatgpt-beta-timer-reconciliation-20261109",
       "ownership_state": "claimed",
-      "ownership_revision": 16,
+      "ownership_revision": 17,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
@@ -6796,13 +6815,13 @@
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes.meta"
       ],
       "resources": [],
-      "claimed_at": "2026-11-07T19:05:00Z",
+      "claimed_at": "2026-11-09T13:11:04.123Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "MAIN_UNITY_POSTPROMOTION_COMPILER_REPAIR",
+      "phase": "BETA_CONSTRUCTION_TIMER_ANCHOR_RECONCILIATION",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Reconcile beta10 UX with current main and preserve PR180 hero fixes in existing PR179. Prepare and validate independent source checks. Canonical shared files RoyalGoldV2Hud.cs and LocalGateway.cs require conflict-safe ownership reconciliation with PR173/181 before promotion; Windows remains with PR181.",
+      "next": "Port PR183 exact source to frozen PR179 overlay, update SHA256 manifest and native camera-pan probe, certify Unity on rightful Windows handoff, package/regression and update existing owner beta, preserving rollback. Main merge only after exact gate.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7062,6 +7081,13 @@
           "to_revision": 16,
           "to_owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
           "reason": "Same user-authorized task: repair exact Unity compiler error discovered after canonical promotion; no new PR or Windows runner reservation."
+        },
+        {
+          "owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
+          "revision": 16,
+          "phase": "MAIN_UNITY_POSTPROMOTION_COMPILER_REPAIR",
+          "transferred_at": "2026-11-09T13:11:04.123Z",
+          "reason": "Owner explicitly requests the same scene-attached construction timer fix to reach both canonical main (PR183) and the published beta; lawful takeover of the existing PR179, while retaining all prior beta work. No running PR179 job and no Windows reservation held by PR179 at handoff."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -7123,18 +7149,19 @@
         "transferred_files": 19,
         "failure_run": 42610908699,
         "failure": "ValoriaIntegratedWorld.Ready uses RegionOneCanonicalLandscape.IsReady, absent from older canonical world implementation"
-      }
+      },
+      "owner_instruction": "2026-11-09 owner: continue correcting scene-attached construction countdown until main and the current playable beta contain verified fix. Use existing PR179 and its branch, preserve beta10 mechanics and pinned-hash overlays; no PR173/181 changes, no tester release without verification."
     },
     {
       "id": "eldoria-daily-treasures-20261108",
       "title": "Tesoros de Valoria — recompensas diarias y cofre ceremonial",
       "owner": "chatgpt-daily-treasures-20261108",
       "ownership_state": "claimed",
-      "ownership_revision": 16,
+      "ownership_revision": 17,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-daily-treasures-20261108",
-      "claimed_at": "2026-11-08T14:02:27.791Z",
+      "claimed_at": "2026-11-09T12:38:23.008Z",
       "base_main_sha": "abeddb14dcd8bb7220c89d8bcac1a769e6b69f90",
       "scope": [
         "Unity/Assets/Eldoria/DailyTreasures/**",
@@ -7156,9 +7183,9 @@
       ],
       "resources": [],
       "budget_eur": 0,
-      "phase": "NATIVE_POINTER_OCCLUSION_AND_PAID_CARD_READABILITY_FIXED_SOURCE_ONLY",
+      "phase": "NATIVE_VIGILIA_MODAL_CLOSE_RAYCAST_FAILURE_WINDOWS_RELEASED",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Unity run 42609669589/321faff compiled and captured only 8 genuine 1600x900 PNG, then failed at Vigilia pointer reparent. Fixed immediate migration layout and found real reward card text clipping, added native legibility checks and diagnostics. Exact current PR181 HEAD e66c80edd has domain CI 42612268799 PASS only. Native 52 PNG/56 pointers/8 grants/16 visual previews remains unproved. Windows exclusive held by PR173 at time of analysis; wait formal release and new CAS reservation, then rerun same PR181 only. No merge, no release or art approval.",
+      "next": "Correct native UI GraphicRaycaster/Canvas migrated-modal depth=-1 and zero raycasts, pass exact-HEAD certified 72 screenshots, 116 clicks, 28 real claims. Reacquire Windows only via formal CAS after no competing job; ownership guard overlap with UI V3 remains.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7207,8 +7234,75 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-09T11:43:00Z",
-      "runner_release_basis": "Native Unity workflow 42609669589 completed all Windows jobs (native-ui failure), source SHA 321faff58fc5e986950dc8769e33e79c535f61ac. Preserve source ownership; release physical runner for other workstreams, diagnose isolated failure from artifact 13670287864 without disturbing beta, Vigilia or main code."
+      "runner_released_at": "2026-11-09T13:41:12.992Z",
+      "runner_release_basis": "Native exact-HEAD 64bce6cd0737588539631306f331335d3a02de38 run 42622935466 completed failure, job 129179417321: Vigilia modal close registered but graphic depth=-1, zero raycasts after Canvas migration. Preserve PR181 source ownership and correction work; release exclusive Windows to other workstreams."
+    },
+    {
+      "id": "eldoria-eonscar-branding-trial-20261109",
+      "title": "EONSCAR — prueba reversible de identidad y entrada al juego",
+      "owner": "chatgpt-eonscar-branding-trial-20261109",
+      "ownership_state": "claimed",
+      "ownership_revision": 2,
+      "write_scope_released": false,
+      "status": "active",
+      "branch": "feature/eonscar-branding-trial-20261109",
+      "scope": [
+        "Unity/Assets/Eldoria/Branding/EonscarTrial/**",
+        "Unity/Assets/Eldoria/Branding/EonscarTrial.meta",
+        "docs/branding/eonscar-trial/**",
+        "tools/eonscar-branding-trial/**",
+        ".github/workflows/eonscar-branding-trial-check.yml",
+        ".github/workflows/eonscar-branding-native.yml",
+        "pipeline/art-production-requests/eldoria-eonscar-branding-trial-20261109.json"
+      ],
+      "resources": [],
+      "budget_eur": 0,
+      "claimed_at": "2026-11-09T13:13:27.651Z",
+      "base_main_sha": null,
+      "phase": "ART_PROVENANCE_AND_SAFETY_SOURCE_QA_PASS_NATIVE_UNITY_WAIT_EXCLUSIVE_RUNNER",
+      "next": "Wait for explicit release of windows-runner-heavy by construction timer owner. After verifying registry+native jobs, claim runner via CAS; commit tools/eonscar-branding-trial/native-request.txt to PR184 to trigger isolated Unity Editor import/hierarchy proof. Then real same-scene PlayMode A/B captures/input/save QA; release Windows claim. Do NOT merge or publish.",
+      "note": "Real transparent curated 512x384 PNG committed; original high-res remains off public repository. Responsive nine-case/safe-area and input sink now source-tested against actual SlicePresenter.IsPointerOverInteractiveUi. Art request v2 on main; AI governance, ownership, metadata, architecture and EONSCAR source CI PASS. Generic early-retention domain CS0103 remains unrelated. No actual Unity run.",
+      "art_approved": false,
+      "physical_mobile_tested": false,
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Owner-selected AI-generated logo with exact source/provenance and mandatory real Unity artistic QA.",
+      "last_verified": {
+        "browser_preview": "Chromium PASS: desktop 1920x1080, landscape 844x390, portrait 390x844; logo and two buttons work; no JS exceptions",
+        "unity_native": "NOT_RUN",
+        "production_published": false,
+        "current_pr": 184,
+        "branch_head": "50d234ac4f989b1189924a02f9672b89c90dc068",
+        "source_sanity_run": 42625212265,
+        "source_sanity_result": "success",
+        "ownership_gate": "success",
+        "metadata_gate": "success",
+        "domain_gate": "failure_unrelated_early_retention_missing_NarrativeCoherenceRules",
+        "webgl_real": "NOT_RUN",
+        "android_native": "NOT_RUN",
+        "asset_committed_to_branch": false,
+        "art_approved": false,
+        "windows_reserved_by_other": true,
+        "qa_png_sha256": "c5ac3f2688196548daea6c61e7d0654f3b0cff0c613c78b44a12b4d72bbeab72",
+        "qa_png_in_branch": true,
+        "native_probe_source_ready": true,
+        "native_executed": false,
+        "layout_test_cases": 9,
+        "original_png_sha256": "0fa78eda784cacc85755be36c3df3748605d617e1a24d7f33ffecc9a4a74fba2",
+        "art_request_registered": true,
+        "cI_source_sanity": "PASS",
+        "ci_art_governance": "PASS",
+        "ci_unity_metadata": "PASS",
+        "ci_world_input_contract": "PASS",
+        "source_layout_cases": 9,
+        "full_screen_input_sink": true,
+        "native_workflow_prepared": true,
+        "native_workflow_dispatched": false,
+        "windows_resource_claimed": false,
+        "real_player_scene": "NOT_TESTED",
+        "original_high_res_in_public_repo": false,
+        "unrelated_early_retention_domain_failure": "CS0103 NarrativeCoherenceRules"
+      },
+      "art_production_request": "pipeline/art-production-requests/eldoria-eonscar-branding-trial-20261109.json"
     }
   ],
   "history": [
