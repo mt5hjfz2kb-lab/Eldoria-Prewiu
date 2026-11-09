@@ -774,8 +774,26 @@ namespace Eldoria.DailyTreasures.Editor
                     inputChecks++;
                     Need(panel.IsOpen,
                         "Independent Vigilia reward medallion cannot open");
+                    // Opening the modal activates a previously disabled tree
+                    // of uGUI Graphics. In this EDITOR batchmode fixture no
+                    // player frame occurs between pointer events, so their
+                    // depth stays -1 and the REAL GraphicRaycaster yields
+                    // zero hits. Draw a genuine frame on the newly migrated
+                    // Vigilia Canvas before testing the newly revealed close
+                    // button, exactly as normal frame-based player input does.
+                    // Never bypass the raycaster or call Button.onClick.
+                    Canvas.ForceUpdateCanvases();
+                    camera.Render();
+                    camera.Render();
+                    Canvas.ForceUpdateCanvases();
+                    var modalClose=FindButton(panel,"Close tributes");
+                    var closeGraphic=modalClose.GetComponent<Graphic>();
+                    Need(closeGraphic && closeGraphic.depth>=0 &&
+                         !closeGraphic.canvasRenderer.cull,
+                         "Vigilia modal close is not actually rendered after "+
+                         "the newly opened UI's first native frame");
                     ClickAtNativeScreenPosition(nativeCanvas,eventSystem,camera,
-                        FindButton(panel,"Close tributes"),width,height);
+                        modalClose,width,height);
                     inputChecks++;
                     Need(!panel.IsOpen,
                         "Independent Vigilia reward modal cannot close");
