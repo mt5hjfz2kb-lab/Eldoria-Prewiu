@@ -398,7 +398,8 @@ namespace Eldoria
         {
             var go = model ? model : hot ? hot.gameObject : null;
             if (!go) return;
-            var point = camera.WorldToScreenPoint(LabelAnchor(go, building));
+            var anchor = LabelAnchor(go, building);
+            var point = camera.WorldToScreenPoint(anchor);
             // The operation timer occupies the space above the roof. Keep
             // the level beside the upper facade, with a physical-pixel gap.
             if(building)point.y-=32f;
@@ -441,7 +442,7 @@ namespace Eldoria
             }
             marker.Target = go.transform;
             marker.Camera = camera;
-            marker.AnchorOffset = LabelAnchor(go, building) - go.transform.position;
+            marker.AnchorOffset = anchor - go.transform.position;
             marker.Building = building;
             marker.Touched = true;
             marker.Rect.gameObject.SetActive(true);

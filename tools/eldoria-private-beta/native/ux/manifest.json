@@ -26,7 +26,7 @@
       "path": "Unity/Assets/Eldoria/PlayerClarityRuntime.cs",
       "overlay": "PlayerClarityRuntime.cs.txt",
       "baseline_sha256": "91ee10fbe9b9eff6573ec43c89c9878ea105dfc9300ef53d41ea96611fdc5a27",
-      "candidate_sha256": "19ec2c3cb46563bcb51a23a12000d97f1a66d5fdc9d538f35356d9af14c328ec"
+      "candidate_sha256": "e0f877393a2f7ed0fe0ab473045a07f53d1f3a9186782b16f3c7c64e485d9b06"
     },
     {
       "path": "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
