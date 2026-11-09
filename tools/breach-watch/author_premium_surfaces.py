@@ -102,15 +102,44 @@ def surface(name,d):
                 g=int(20+n*.30+3*(1-yf)+shade*.3)
                 b=int(22+n*.25+shade*.5)
             elif kind=="portrait":
-                r=int(27+n*.8+5*(1-yf)+shade)
-                g=int(28+n*.85+4*(1-yf)+shade)
-                b=int(30+n*.8+shade)
+                r=int(32+n*.8+5*(1-yf)+shade*.7)
+                g=int(32+n*.85+4*(1-yf)+shade*.7)
+                b=int(34+n*.8+shade*.7)
+            elif kind in ("stone","quest"):
+                # Genuine hand-finished mineral contrast: earlier 22,24,27
+                # produced a featureless pitch-black slab behind the Cormorant
+                # text in the successful Unity render. A warm brighter slate
+                # reveals crack/stone depth while remaining dark enough for
+                # authentic live ivory text.
+                r=int(35+n*1.25+11*(1-yf)+shade*.65)
+                g=int(34+n*1.12+10*(1-yf)+shade*.65)
+                b=int(33+n*.97+shade*.6)
             else:
-                r=int(22+n*.9+8*(1-yf)+shade)
-                g=int(24+n*.9+6*(1-yf)+shade)
-                b=int(27+n*.85+shade)
+                r=int(25+n*.9+8*(1-yf)+shade)
+                g=int(27+n*.9+6*(1-yf)+shade)
+                b=int(28+n*.85+shade)
             px[x,y]=(max(5,min(255,r)),max(5,min(255,g)),
                      max(5,min(255,b)),255)
+    if kind in ("stone","quest"):
+        # Real low-contrast stone fractures extend across the tablet rather
+        # than only its outer border. Alpha-composited in a NEW layer so that
+        # they are physically part of our 9-sliced PNG and never generate
+        # flat transparency holes behind gameplay typography.
+        cracks=Image.new("RGBA",(w,h),(0,0,0,0))
+        veins=ImageDraw.Draw(cracks)
+        grain_rng=random.Random(d["seed"]+510)
+        for k in range(21 if kind=="stone" else 7):
+            xx=grain_rng.randint(65,w-102)
+            yy=grain_rng.randint(65,h-55)
+            nodes=[(xx,yy)]
+            for step in range(grain_rng.randint(3,6)):
+                xx=max(60,min(w-90,xx+grain_rng.randint(-14,16)))
+                yy=max(55,min(h-48,yy+grain_rng.randint(8,17)))
+                nodes.append((xx,yy))
+            veins.line([(x+2,y+2) for x,y in nodes],
+                       fill=(7,6,5,34),width=3)
+            veins.line(nodes,fill=(168,139,98,33),width=2)
+        pix=Image.alpha_composite(pix,cracks)
     draw=ImageDraw.Draw(pix,"RGBA")
     # Independent hand-arranged shallow fissures: beveled light lip + black
     # hairline. Only on edge zones to avoid putting noise under live text.
@@ -147,17 +176,19 @@ def surface(name,d):
         (8,2,(235,165,84,255)),(11,2,(17,12,12,255)),
         (13,1,(194,124,61,245))
     ] if kind=="burgundy" else [
-        (2,7,(4,5,7,255)),(5,4,(101,68,44,255)),
-        (9,2,(200,147,83,245)),(14,3,(19,15,15,255)),
-        (20,2,(130,86,51,255)),(23,1,(226,184,99,220))
+        # The approved frame has subtly raised blackened iron, not six
+        # heavy nested black polygons. Keep a crisp but thin forged edge.
+        (2,4,(8,8,8,255)),(5,2,(93,64,44,255)),
+        (8,1,(205,153,96,233)),(12,2,(25,22,20,255)),
+        (17,2,(86,61,43,249)),(21,1,(169,126,75,205))
     ])
     for inset,width,color in border_layers:
         pts=outline(inset)
         draw.line(pts+[pts[0]],fill=color,width=width,joint="curve")
     # Painted light from upper left, black contact shadow below
     pts=outline(9)
-    draw.line(pts[:3],fill=(255,217,131,225),width=2)
-    draw.line(pts[3:7],fill=(23,12,8,255),width=3)
+    draw.line(pts[:3],fill=(229,186,108,204),width=1)
+    draw.line(pts[3:7],fill=(23,12,8,250),width=2)
     # Copper corner pins and diamond signatures, fixed inside border
     locations=([(34,29),(w-79,29),(34,h-30),(w-79,h-30)]
         if kind=="quest" else
