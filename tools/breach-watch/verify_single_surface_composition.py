@@ -46,4 +46,14 @@ assert "profileLion.rect.width<=profilePlate.rect.height-4f" in QA
 assert "owner_gold_border" in HUD and "panel_fill" in HUD
 assert "exactOwnerGoldBorder.type=Image.Type.Simple;" in HUD
 
-print("VIGILIA_SINGLE_SURFACE_SOURCE_PASS (artist review and real Unity render still required)")
+# A separate screen-space Canvas can still paint a legacy panel even when
+# the RoyalHUD canvas has been disabled. Inspect the COMPLETE actual Unity
+# hierarchy on every native run, not merely the canvas we know about.
+evidence=(ROOT/"Editor/BreachWatchNativeEvidence.cs").read_text(encoding="utf-8")
+assert "AuditActualCanvases" in evidence
+assert "activeForeignScreenSpaceCanvases" in evidence
+assert 'c.renderMode=="ScreenSpaceOverlay"' in evidence
+assert 'c.renderMode=="ScreenSpaceCamera"' in evidence
+assert "canvasDiagnostics=canvasDiagnostics" in evidence
+
+print("VIGILIA_SINGLE_SURFACE_SOURCE_PASS (Unity external canvas census pending native, not ART_APPROVED)")
