@@ -27,7 +27,15 @@ public static class EldoriaPretestUXProbe
  static string Out=>Environment.GetEnvironmentVariable("ELDORIA_UX_OUT");
  static readonly string[] Saves={"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"};
  static EldoriaPretestUXProbe(){EditorApplication.update+=Tick;Application.logMessageReceived+=Log;}
- static void Log(string message,string stack,LogType type){if(SessionState.GetBool(Flag,false)&&(type==LogType.Exception||type==LogType.Error))errors.Add(message+"\n"+stack);}
+ static void Log(string message,string stack,LogType type){
+  if(!SessionState.GetBool(Flag,false)||(type!=LogType.Exception&&type!=LogType.Error))return;
+  // Same observed Editor-only diagnostic policy as StructuralStartupProbe.
+  // Preserve its exact stack; every player/game exception remains fatal.
+  if(message.StartsWith("ArgumentOutOfRangeException:")&&stack.Contains("UnityEditor.Search.SearchDatabase")&&stack.Contains("UnityEditor.Search.SearchInit.IndexationOnStartup")&&!stack.Contains("Eldoria.")){
+   if(!string.IsNullOrEmpty(Out)){Directory.CreateDirectory(Out);File.AppendAllText(Path.Combine(Out,"editor-only-diagnostics.txt"),message+"\n"+stack+"\n");}return;
+  }
+  errors.Add(message+"\n"+stack);
+ }
  static string Hash(string path){if(!File.Exists(path))return "absent";using(var stream=File.OpenRead(path))using(var sha=SHA256.Create())return BitConverter.ToString(sha.ComputeHash(stream));}
  static void Need(bool yes,string message){if(!yes)throw new InvalidOperationException(message);checks.Add(message);}
  public static void Run(){
@@ -142,10 +150,11 @@ public static class EldoriaPretestUXProbe
   mature.ChapterProgress.SeenNarrative.AddRange(new[]{"march-preparation","vigilants-introduction","scouts-introduction"});
   Seed(h,mature);yield return new WaitForSecondsRealtime(.7f);
   var retention=h.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();retention.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);yield return new WaitForSecondsRealtime(.7f);
-  Need(retention.IsOpen,"introduced Vigilants opens");Capture(h,"vigilants-static");yield return null;Canvas.ForceUpdateCanvases();
+  Need(retention.IsOpen,"introduced Vigilants opens");Capture(h,"vigilants-static");yield return new WaitForSecondsRealtime(.25f);Canvas.ForceUpdateCanvases();
   var parallax=Object.FindFirstObjectByType<RoyalGoldV3VigilantsParallax>();Need(parallax,"Vigilants artwork exists");
   var planes=parallax.GetComponentsInChildren<RectTransform>();var positions=planes.Select(p=>p.anchoredPosition).ToArray();
-  var scenic=retention.GetComponentsInChildren<MaskableGraphic>().Where(g=>g is RoyalGoldV3LayeredFinish||g is RoyalGoldV3VigilantsParallax).ToArray();
+  var scenic=parallax.transform.parent.GetComponentsInChildren<MaskableGraphic>().Where(g=>g is RoyalGoldV3LayeredFinish finish&&finish.CurrentScene==RoyalGoldV3LayeredFinish.Scene.Vigilants||g is RoyalGoldV3VigilantsParallax).ToArray();
+  Need(scenic.Length>=2,"Vigilants painting and foreground both measured");
   var meshes=new List<Vector3[]>();
   foreach(var graphic in scenic){var mesh=graphic.canvasRenderer.GetMesh();Need(mesh,"rendered scenic mesh exists");meshes.Add(mesh.vertices);}
   yield return new WaitForSecondsRealtime(2);
