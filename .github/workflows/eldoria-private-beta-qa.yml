@@ -39,7 +39,8 @@ jobs:
           git fetch --no-tags --filter=blob:none --depth=1 origin \
             be49d62e3daf490f41dba0bf8123a8e2eee64480 \
             8dc875430241a49b4d417782dfeab2d4c7a4f315 \
-            485d7b1c7980b73fa6abac9dfad4a99ccc382ab8
+            485d7b1c7980b73fa6abac9dfad4a99ccc382ab8 \
+            e445a712b16f0bfc8196bdcb734492e780ef082c
           python tools/eldoria-private-beta/iphone_ab/prepare.py --check
           python tools/eldoria-private-beta/iphone_ab/prepare.py \
             --out "$RUNNER_TEMP/eldoria-iphone-timer-ab"
@@ -48,6 +49,13 @@ jobs:
           doc=json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-iphone-timer-ab/ab-evidence.json').read_text())
           assert doc['only_changed_overlay']=='RoyalGoldV3ContextHud.cs.txt'
           assert doc['overlays_verified_identical_other_than_timer']==18
+          assert doc['variants']==['beta10-control','anchored-gc0','beta10-minimal-anchor']
+          assert doc['one_file_differential_each'] is True
+          for variant in doc['variants']:
+            directory=pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-iphone-timer-ab'/variant
+            manifest=json.loads((directory/'manifest.json').read_text())
+            assert len(manifest['files'])==19, variant
+            assert all((directory/x['overlay']).exists() for x in manifest['files']), variant
           assert doc['native_compiled'] is False
           assert doc['external_distribution_approved'] is False
           print('SOURCE_ONLY_ONE_FILE_IPHONE_AB_CHECK_PASS')
