@@ -7,6 +7,7 @@ or a copyrighted outside UI. Does not alter original archived art.
 """
 import hashlib
 import json
+import math
 import uuid
 from pathlib import Path
 from PIL import Image,ImageFilter,ImageEnhance
@@ -83,6 +84,25 @@ def main():
         toned=Image.new("RGB",(192,192))
         toned.putdata(data)
         toned=Image.merge("RGBA",(*toned.split(),alpha))
+        # Premium aged-copper coloration applied INSIDE the ONE original
+        # medallion texture, never as a second sprite, ring or button layer.
+        # Preserve actual swords/raven/helmet in their original silver/stone:
+        # only the outer sculpted metal catches reflected gold.
+        pixels=toned.load()
+        for y in range(toned.height):
+            for x in range(toned.width):
+                red,green,blue,opacity=pixels[x,y]
+                radius=math.hypot(x-95.5,y-95.5)/96
+                highlight=max(red,green,blue)
+                if opacity<16 or radius<.66 or radius>1.09 or highlight<42:
+                    continue
+                amount=max(0,min(1,(radius-.66)/.14))
+                amount*=max(0,min(1,(highlight-42)/95))*.82
+                bronze=(min(255,highlight*1.10),
+                        min(255,highlight*.76),
+                        min(255,highlight*.43))
+                pixels[x,y]=tuple(round(v*(1-amount)+c*amount)
+                    for v,c in zip((red,green,blue),bronze))+(opacity,)
         # The owner's illustration already contains the entire carved rim.
         # Previous iterations drew a second glowing circumference, two arcs
         # and four studs *over* that rim; at real phone size they appeared as
@@ -102,7 +122,7 @@ def main():
     (DEST/"manifest.json").write_text(json.dumps({
         "source":"OwnerReference/source-manifest.json",
         "scope":"new independent Vigilia uGUI only",
-        "authoring":"One original sculpted icon per control; mild color correction only. No second rim, glow, studs, vector symbol or synthetic overlay.",
+        "authoring":"One original sculpted icon per control; its existing metal rim is gently color-graded to copper within the same sprite, no second circle/glow/studs/vector symbol.",
         "not_native_capture":True,
         "not_owner_art_approval":True,
         "sprites":records
