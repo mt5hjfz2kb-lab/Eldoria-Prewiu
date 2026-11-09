@@ -1017,10 +1017,7 @@ namespace Eldoria.BreachWatch.Editor
                          (ui.BuildingAction.interactable || actionArt.color.r<.75f),
                          "Real nine-slice upgrade CTA has dark illegible text "+
                          "or a falsely active gold state: "+name);
-                    bool fullCaption=w>=800;
-                    string expectedCaption=host.English
-                        ?(fullCaption?"Upgrade to Bastion II":"Upgrade II")
-                        :(fullCaption?"Mejorar a Bastión II":"Mejorar a II");
+                    string expectedCaption=host.English?"Upgrade to II":"Mejorar a II";
                     Need(actionText.text==expectedCaption,
                          "Native button caption is not appropriate for language/orientation: "+name);
                     // The approved reference's circular gold X is one
