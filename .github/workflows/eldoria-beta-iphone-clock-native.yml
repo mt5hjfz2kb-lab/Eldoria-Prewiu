@@ -1,0 +1,226 @@
+name: Eldoria beta10 minimal world clock native parity and WebGL (P0 isolated)
+# Owner confirmed Windows handoff on 2026-11-09: validate frozen pretester UX.
+# Bake original collider responses, replay with exact parity, then build without runtime cooking.
+on:
+  push:
+    branches: [feature/eldoria-private-beta-i-v-20261107]
+    paths: ['.github/workflows/eldoria-beta-iphone-clock-native.yml', 'tools/eldoria-private-beta/native/iphone-hotfix/native-request.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pull-requests: read
+  actions: read
+  statuses: write
+concurrency:
+  group: eldoria-beta-iphone-minimal-clock-single-editor
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      native_available: ${{ steps.lease.outputs.available }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: beta-tools
+          sparse-checkout: |
+            tools/eldoria-private-beta/native
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings
+          persist-credentials: false
+      - name: Parse PowerShell without starting Unity
+        shell: pwsh
+        run: |
+          $tokens=$null;$errors=$null
+          Get-ChildItem "$pwd/beta-tools/tools/eldoria-private-beta/native" -Filter *.ps1 -Recurse|ForEach-Object {
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName,[ref]$tokens,[ref]$errors)|Out-Null
+            if($errors.Count){$errors|Format-List;throw 'PowerShell parser errors'}
+          }
+      - name: Test isolated and reviewed input validation
+        shell: pwsh
+        run: ./beta-tools/tools/eldoria-private-beta/native/test_input_audit.ps1
+      - name: Verify frozen UX source transaction and domain behaviour
+        shell: bash
+        run: |
+          python beta-tools/tools/eldoria-private-beta/native/ux/test_overlay.py
+          python beta-tools/tools/eldoria-private-beta/native/ux/apply_overlay.py --source beta-tools --existing-only
+          pwsh -NoProfile -File beta-tools/tools/eldoria-private-beta/native/ux/test_domain.ps1 -Source beta-tools
+      - name: Check current ownership without occupying Windows
+        id: lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" --jq .content | base64 -d > registry.json
+          gh api "repos/$GITHUB_REPOSITORY/pulls?state=open&per_page=100" > pulls.json
+          python - <<'PY'
+          import json,os
+          active=json.load(open('registry.json'))['active']
+          holders=[x for x in active if 'windows-runner-heavy' in x.get('resources',[])]
+          own=next(x for x in active if x['id']=='eldoria-private-beta-i-v-20261107')
+          request=json.load(open('beta-tools/tools/eldoria-private-beta/native/iphone-hotfix/native-request.json'))
+          assert request['schema']==1 and request['workstream_id']==own['id']
+          assert request['owner']=='chatgpt-eldoria-pilot-telemetry-20261109'
+          assert request['variant']=='beta10-minimal-anchor'
+          assert request['minimal_source_blob']=='144b1d6becec3055aac6a69cce07007cad1849a6'
+          assert request['qa_artifact_run']==42692715252
+          assert request['external_testers_enabled'] is False
+          prs=[x for x in json.load(open('pulls.json')) if 'Workstream-ID: eldoria-private-beta-i-v-20261107' in (x.get('body') or '')]
+          if len(prs)!=1 or prs[0]['number']!=179: raise RuntimeError('Canonical PR179 ownership mismatch')
+          valid=(request['state']=='CLAIMED_FOR_NATIVE'
+            and own['owner']=='chatgpt-eldoria-pilot-telemetry-20261109'
+            and own['ownership_state']=='claimed'
+            and own['ownership_revision']==request['ownership_revision']
+            and len(holders)==1 and holders[0]['id']==own['id']
+            and prs[0]['head']['sha']==os.environ['GITHUB_SHA'])
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('available='+str(valid).lower()+'\n')
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+            f.write('PowerShell syntax checked. Native Unity '+('authorized for this exact lease.' if valid else 'NOT RUN: resource lease is not available to this revision. No gameplay/build certification.')+'\n')
+          print({'native_available':valid,'variant':request['variant'],'requested':request['state'],'holders':[x['id'] for x in holders]})
+          PY
+  native:
+    needs: preflight
+    if: needs.preflight.outputs.native_available == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 170
+    steps:
+      - name: Recover installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $g){throw 'Installed Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: beta-structural-tools
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/eldoria-private-beta/native/
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneBlenderLandscape.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneResourcePlacement.cs
+            /Unity/Assets/Eldoria/World4XCanon/RegionOneTerrainRoutes.cs
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: beta-structural-live
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 42692715252
+          name: beta10-iphone-timer-ab-source-only
+          github-token: ${{ github.token }}
+          path: ab-source
+      - name: Recheck fresh lease and protect every existing project
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $r=Get-Content beta-structural-live/pipeline/active-workstreams.json -Raw|ConvertFrom-Json
+          $request=Get-Content beta-structural-tools/tools/eldoria-private-beta/native/iphone-hotfix/native-request.json -Raw|ConvertFrom-Json
+          $holders=@($r.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($request.state -ne 'CLAIMED_FOR_NATIVE' -or
+            $holders.Count -ne 1 -or $holders[0].id -ne 'eldoria-private-beta-i-v-20261107' -or
+            $holders[0].owner -ne 'chatgpt-eldoria-pilot-telemetry-20261109' -or
+            $holders[0].ownership_state -ne 'claimed' -or
+            $holders[0].ownership_revision -ne [int]$request.ownership_revision){
+              throw 'Minimal beta10 timer native lease not exclusively owned; no Windows work permitted'
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools busy; do not interrupt'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity unavailable'}
+      - name: Recover imported isolated project and verify existing production artwork
+        shell: powershell
+        run: |
+          & ./beta-structural-tools/tools/eldoria-private-beta/native/recover_isolated.ps1 -Tools beta-structural-tools -Evidence "beta-structural-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+      - name: Original versus staged native startup, canonical journey, then WebGL
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $tools=(Resolve-Path 'beta-structural-tools').Path
+          $ux=Join-Path $tools 'tools/eldoria-private-beta/native/ux'
+          $variant=Join-Path (Resolve-Path 'ab-source').Path 'beta10-minimal-anchor'
+          $manifest=Join-Path $ux 'manifest.json'
+          $clock=Join-Path $ux 'RoyalGoldV3ContextHud.cs.txt'
+          $proposal=Join-Path $variant 'manifest.json'
+          $proposedClock=Join-Path $variant 'RoyalGoldV3ContextHud.cs.txt'
+          $evidence=Join-Path $env:GITHUB_WORKSPACE "beta10-minimal-evidence-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          $web=Join-Path $env:GITHUB_WORKSPACE "beta10-minimal-webgl-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          New-Item -ItemType Directory -Force $evidence|Out-Null
+          if(-not(Test-Path $proposal) -or -not(Test-Path $proposedClock)){throw 'Immutable A/B variant artifact missing'}
+          $current=Get-Content $manifest -Raw|ConvertFrom-Json
+          $selected=Get-Content $proposal -Raw|ConvertFrom-Json
+          $proof=Get-Content (Join-Path (Resolve-Path 'ab-source').Path 'ab-evidence.json') -Raw|ConvertFrom-Json
+          if($proof.mode -ne 'SOURCE_ONLY_NOT_PUBLISHED' -or
+            $proof.minimal_timer_source -ne 'e445a712b16f0bfc8196bdcb734492e780ef082c' -or
+            $proof.only_changed_overlay -ne 'RoyalGoldV3ContextHud.cs.txt' -or
+            $current.files.Count -ne 19 -or $selected.files.Count -ne 19){
+             throw 'A/B source provenance differs from 19-overlays verified control'
+          }
+          foreach($entry in $selected.files){
+            $actual=(Get-FileHash (Join-Path $variant $entry.overlay) -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($actual -ne $entry.candidate_sha256){throw "Candidate bytes differ: $($entry.overlay)"}
+            if($entry.overlay -ne 'RoyalGoldV3ContextHud.cs.txt'){
+              $original=(Get-FileHash (Join-Path $ux $entry.overlay) -Algorithm SHA256).Hash.ToLowerInvariant()
+              if($original -ne $actual){throw "Non-clock UX overlay changed: $($entry.overlay)"}
+            }
+          }
+          $backup=Join-Path $env:RUNNER_TEMP "beta10-minimal-tools-backup-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          if(Test-Path $backup){throw 'Pre-existing hotfix backup; refuse mutation'}
+          New-Item -ItemType Directory -Force $backup|Out-Null
+          Copy-Item $manifest (Join-Path $backup 'manifest.json')
+          Copy-Item $clock (Join-Path $backup 'clock.txt')
+          $beforeManifest=(Get-FileHash $manifest -Algorithm SHA256).Hash
+          $beforeClock=(Get-FileHash $clock -Algorithm SHA256).Hash
+          try {
+            Copy-Item $proposedClock $clock -Force
+            Copy-Item $proposal $manifest -Force
+            if((Get-FileHash $clock -Algorithm SHA256).Hash.ToLowerInvariant() -ne $proof.minimal_timer_sha256){
+              throw 'Unreviewed minimal construction clock copied into tools'
+            }
+            @{
+              variant='beta10-minimal-anchor'
+              immutable_beta10_source='be49d62e3daf490f41dba0bf8123a8e2eee64480'
+              immutable_clock_source='e445a712b16f0bfc8196bdcb734492e780ef082c'
+              clock_sha256=$proof.minimal_timer_sha256
+              source_pair_qa_run=42692715252
+              default_pages_not_modified=$true
+              physical_iphone_stability_certified=$false
+              external_testers_enabled=$false
+            }|ConvertTo-Json | Set-Content (Join-Path $evidence 'iphone-minimal-provenance.json') -Encoding UTF8
+            & (Join-Path $tools 'tools/eldoria-private-beta/native/run_warm_structural.ps1') -Source "$env:BETA_SOURCE" -InputAuditPath "$env:BETA_INPUT_AUDIT" -Tools $tools -Evidence $evidence -WebOutput $web
+            if(-not(Test-Path (Join-Path $evidence 'complete.txt'))){throw 'Exact Unity Bastion I-V native proof missing'}
+            if(-not(Test-Path (Join-Path $web 'index.html'))){throw 'Fresh minimal WebGL output missing'}
+            Write-Host 'BETA10_MINIMAL_CLOCK_NATIVE_I_V_AND_WEBGL_PASS_OWNER_IPHONE_UNTESTED'
+          } finally {
+            Copy-Item (Join-Path $backup 'manifest.json') $manifest -Force
+            Copy-Item (Join-Path $backup 'clock.txt') $clock -Force
+            if((Get-FileHash $manifest -Algorithm SHA256).Hash -ne $beforeManifest -or
+               (Get-FileHash $clock -Algorithm SHA256).Hash -ne $beforeClock){
+              throw 'Failed restoring isolated tools; do not trust replay'
+            }
+            Remove-Item $backup -Recurse -Force
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: beta10-minimal-clock-native-evidence
+          path: beta10-minimal-evidence-${{ github.run_id }}-${{ github.run_attempt }}/
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: beta10-minimal-clock-webgl-unverified
+          path: beta10-minimal-webgl-${{ github.run_id }}-${{ github.run_attempt }}/
+          compression-level: 0
+          retention-days: 14
+
