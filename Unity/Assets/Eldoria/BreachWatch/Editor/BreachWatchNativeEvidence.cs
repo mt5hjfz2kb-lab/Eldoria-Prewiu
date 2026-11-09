@@ -500,9 +500,9 @@ namespace Eldoria.BreachWatch.Editor
                     .Where(i=>i && i.sprite && i.sprite.name=="brass_portrait").ToArray();
                 Need(brassWells.Length==1 &&
                      brassWells[0].type==Image.Type.Sliced &&
-                     brassWells[0].color.a>=.48f && brassWells[0].color.a<=.62f,
+                     brassWells[0].color.a>=.14f && brassWells[0].color.a<=.22f,
                      "The live 3D Bastion preview is surrounded by "+
-                     "a second opaque metal plate: "+name);
+                     "a second high-opacity engraved picture frame: "+name);
                 Need(ui.HasPremiumResourceSurfaces,
                     "All three live resources must use real independent clean slate nine-slice capsules, not overlapping procedural frames");
                 Need(ui.HasOwnerApprovedUtilityArtwork,
