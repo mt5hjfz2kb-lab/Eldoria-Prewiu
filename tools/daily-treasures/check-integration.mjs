@@ -123,6 +123,12 @@ assert.match(native,/panel\.ProbeHeroRoomVisibilityForNativeEvidence\(\)/);
 assert.match(native,/"Heroes \/ canonical destination",typeof\(RectTransform\)/);
 assert.match(native,/Closed Heroes room incorrectly blocks daily reward/);
 assert.match(native,/nativeCanvas\.enabled=false/);
+// PR173's actual new HUD is ScreenSpaceCamera with fixed pixel scale and
+// priority 5000. A WorldSpace mock cannot certify its real raycast behavior.
+assert.match(native,/nativeCanvas\.renderMode=RenderMode\.ScreenSpaceCamera/);
+assert.match(native,/nativeCanvas\.sortingOrder=5000/);
+assert.match(native,/nativeScaler\.uiScaleMode=CanvasScaler\.ScaleMode\.ConstantPixelSize/);
+assert.doesNotMatch(native,/nativeCanvas\.renderMode=RenderMode\.WorldSpace/);
 // The native workflow was previously damaged by a duplicated YAML block.
 // Keep this quality gate executable: one render step, one artifact upload
 // and no orphaned PowerShell fragments outside their job.

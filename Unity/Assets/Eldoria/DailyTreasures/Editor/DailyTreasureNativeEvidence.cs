@@ -820,10 +820,25 @@ namespace Eldoria.DailyTreasures.Editor
                     nativeObj.layer=5;
                     var nativeRoot=(RectTransform)nativeObj.transform;
                     nativeRoot.sizeDelta=new Vector2(width,height);
-                    nativeRoot.localScale=Vector3.one*.01f;
+                    // PR173 runs its actual independent UI in ScreenSpaceCamera,
+                    // NOT WorldSpace. A second WorldSpace fixture can pass (or
+                    // fail) raycasts for the wrong reason. Mirror the real
+                    // render mode, camera, sorting and pixel-scale contract.
+                    nativeRoot.localScale=Vector3.one;
                     var nativeCanvas=nativeObj.GetComponent<Canvas>();
-                    nativeCanvas.renderMode=RenderMode.WorldSpace;
+                    nativeCanvas.renderMode=RenderMode.ScreenSpaceCamera;
+                    nativeCanvas.planeDistance=1f;
+                    nativeCanvas.overrideSorting=true;
+                    nativeCanvas.sortingOrder=5000;
                     nativeCanvas.worldCamera=camera;
+                    var nativeScaler=nativeObj.GetComponent<CanvasScaler>();
+                    nativeScaler.uiScaleMode=CanvasScaler.ScaleMode.ConstantPixelSize;
+                    nativeScaler.scaleFactor=1f;
+                    Need(nativeCanvas.renderMode==RenderMode.ScreenSpaceCamera &&
+                         nativeCanvas.worldCamera==camera &&
+                         nativeCanvas.overrideSorting &&
+                         nativeCanvas.sortingOrder==5000,
+                         "Native Vigilia rehearsal diverged from PR173 Canvas");
                     var safeObj=new GameObject("Safe composition",
                         typeof(RectTransform));
                     safeObj.layer=5;
