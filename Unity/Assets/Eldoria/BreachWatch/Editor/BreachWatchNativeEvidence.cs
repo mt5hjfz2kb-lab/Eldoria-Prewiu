@@ -449,6 +449,9 @@ namespace Eldoria.BreachWatch.Editor
                 image.ReadPixels(new Rect(0,0,w,h),0,0);
                 image.Apply();
                 var actualPixels=image.GetPixels32();
+                // Always archive the exact real screenshot even when a following
+                // visual/text gate fails. Previous FAILs hid the actual cause.
+                File.WriteAllBytes(file,image.EncodeToPNG());
                 var allText=ui.GetComponentsInChildren<Text>(true);
                 string[] important=selection=="bastion"
                     ?new[]{"Real building name","Real effects",
@@ -490,7 +493,6 @@ namespace Eldoria.BreachWatch.Editor
                     RenderTexture.active=rt;
                     Object.DestroyImmediate(scratch);
                 }
-                File.WriteAllBytes(file,image.EncodeToPNG());
                 Need(new FileInfo(file).Length > 16000, "Unity native PNG incomplete: "+name);
                 Need(ui.IndependentCanvas && ui.LegacyPresentationHidden && ui.HasRealSession,
                     "Old presentation visible or disconnected UI in "+name);
