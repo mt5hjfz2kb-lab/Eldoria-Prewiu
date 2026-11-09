@@ -48,14 +48,14 @@ public static class EldoriaPretestUXProbe
  static void Tick(){if(!SessionState.GetBool(Flag,false)||!EditorApplication.isPlaying||started)return;var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();if(!host)return;started=true;host.StartCoroutine(Guard(host));}
  static IEnumerator Guard(ValoriaIntegratedWorld host){
   var run=Verify(host);
-  while(true){object current;try{if(!run.MoveNext())break;current=run.Current;}catch(Exception e){File.WriteAllText(Path.Combine(Out,"failure.txt"),e.ToString());SessionState.SetBool(Flag,false);EditorApplication.Exit(1);yield break;}yield return current;}
+  while(true){object current;try{if(!run.MoveNext())break;current=run.Current;}catch(Exception e){File.WriteAllText(Path.Combine(Out,"checks.txt"),string.Join("\n",checks));File.WriteAllText(Path.Combine(Out,"failure.txt"),e.ToString());SessionState.SetBool(Flag,false);EditorApplication.Exit(1);yield break;}yield return current;}
   try{
    foreach(var save in Saves)Need(Hash(Path.Combine(Application.persistentDataPath,save))==SessionState.GetString(Flag+save,"missing-hash"),"canonical save unchanged: "+save);
    File.WriteAllText(Path.Combine(Out,"checks.txt"),string.Join("\n",checks));
    File.WriteAllText(Path.Combine(Out,"source.txt"),Environment.GetEnvironmentVariable("GITHUB_SHA"));
    File.WriteAllText(Path.Combine(Out,"complete.txt"),"PRETEST_UX_NATIVE_PASS_REQUIRES_VISUAL_REVIEW");
    SessionState.SetBool(Flag,false);EditorApplication.Exit(0);
-  }catch(Exception e){File.WriteAllText(Path.Combine(Out,"failure.txt"),e.ToString());SessionState.SetBool(Flag,false);EditorApplication.Exit(1);}
+  }catch(Exception e){File.WriteAllText(Path.Combine(Out,"checks.txt"),string.Join("\n",checks));File.WriteAllText(Path.Combine(Out,"failure.txt"),e.ToString());SessionState.SetBool(Flag,false);EditorApplication.Exit(1);}
  }
  static void Click(Button button){
   Need(button&&button.gameObject.activeInHierarchy&&button.IsInteractable(),"visible enabled button: "+(button?button.name:"absent"));
@@ -134,7 +134,7 @@ public static class EldoriaPretestUXProbe
   Need(!duplicate||duplicate.alpha<.1f,"selected barracks upgrade has no duplicate timer");
   Seed(h,Fixture(2));h.Hud.SelectBuilding("");h.Select("sawmill");yield return new WaitForSecondsRealtime(.4f);
   Click(h.Hud.GetComponent<RoyalGoldV2Hud>().VisibleBuildingButton);yield return new WaitForSecondsRealtime(.4f);
-  Need(h.City.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"visible upgrade starts paid work");Capture(h,"compact-selected-timer");h.Hud.SelectBuilding("");yield return new WaitForSecondsRealtime(.4f);Capture(h,"compact-timer");
+  Need(h.City.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"visible upgrade starts paid work");Capture(h,"compact-selected-timer");h.Hud.SelectBuilding("");yield return new WaitForSecondsRealtime(.4f);Capture(h,"compact-timer");yield return null;Canvas.ForceUpdateCanvases();
   var timers=h.Hud.GetComponentsInChildren<CanvasGroup>(true).Where(g=>g.name.StartsWith("V3 / real-time operation / ")&&g.alpha>.5f).Select(g=>(RectTransform)g.transform).ToArray();
   Need(timers.Length>0,"at least one live timer measured");
   var prior=timers.Select(r=>r.anchoredPosition).ToArray();

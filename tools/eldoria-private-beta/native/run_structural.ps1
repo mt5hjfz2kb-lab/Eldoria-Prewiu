@@ -133,6 +133,7 @@ try {
  }
  $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST='0'
  $env:ELDORIA_BAKE_TERRAIN_QUERIES='0'
+ New-Item -ItemType Directory -Force $proof|Out-Null
  # Exercise focused UI before the long journey; both use separate GUID probe saves.
  $env:ELDORIA_UX_OUT=Join-Path $Evidence 'pretest-ux'
  Invoke-Native 'EldoriaPretestUXProbe.Run' (Join-Path $Evidence 'pretest-ux.log') 'Win64'
