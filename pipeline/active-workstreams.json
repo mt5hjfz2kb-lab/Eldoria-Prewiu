@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T07:41:32.315Z",
+  "updated_at": "2026-11-09T08:26:10.917Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6696,9 +6696,7 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
       "ownership_revision": 22,
       "write_scope_released": false,
@@ -6763,13 +6761,11 @@
         }
       ],
       "runner_priority_handoff": {
-        "status": "RETURNED_AFTER_BETA_NATIVE_SUCCESS",
-        "at": "2026-11-08T20:10:53.050Z",
+        "status": "OWNER_CONFIRMED_RELEASE_TO_BETA_UX",
+        "at": "2026-11-09T08:26:10.917Z",
         "to": "eldoria-private-beta-i-v-20261107",
-        "reason": "Owner explicitly renews urgent PR179 continuation until testable stability solution. No native jobs active in live Actions inventory; preserve Forja owner and return Windows after native validation/build.",
-        "returned_at": "2026-11-08T20:40:49.895Z",
-        "native_run": 42518950317,
-        "restoration_verified": true
+        "reason": "Current user: Sigue con el trabajo el chat de la interfaz ya liberó el PC",
+        "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
         "source_sha": "1cea977b8ec67495bbbcbc7b31d38425e352c10c",
@@ -6786,8 +6782,8 @@
         "android_tested": false,
         "webgl_tested": false
       },
-      "runner_released_at": "2026-11-07T23:52:00Z",
-      "runner_release_basis": "Independent BreachWatch proof run 42427015492 completed successfully, exact source 1cea977b8ec67495bbbcbc7b31d38425e352c10c. Eight authentic Unity PNGs and one nav pointer passed; no art approval."
+      "runner_released_at": "2026-11-09T08:26:10.917Z",
+      "runner_release_basis": "Owner explicitly reports interface chat released PC and instructs PR179 to continue; latest observed interface native run42582751853 completed SUCCESS. Preserve interface writer, branch and all artifacts."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
@@ -6817,14 +6813,16 @@
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes",
         "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RuntimeTerrainQueries.bytes.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "claimed_at": "2026-11-07T19:05:00Z",
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "OWNER_PRETEST_UX_CANDIDATE_READY_WAITING_NATIVE",
+      "phase": "OWNER_PRETEST_UX_NATIVE_VALIDATION",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
-      "next": "Native compile and real UX/visual verification of prepared frozen overlays; current Forja/Vigilia Windows claim requires claimant release or authorized safe temporary handoff. Existing mobile9 stays published.",
+      "next": "Run exact candidate native compile, full journey and UX pointer/capture probe; fix failures and verify before publishing. Preserve canonical source and saves; no job cancellation.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7034,7 +7032,7 @@
       "art_production_routing_reason": "Startup memory and exact original-physics query caching; no authored art or scene changes.",
       "resource_request": {
         "resource": "windows-runner-heavy",
-        "status": "ready_for_safe_turn",
+        "status": "claimed_after_owner_confirmed_release",
         "reason": "Focused frozen beta pretester UX verification after implementation; preserve current Forja and Treasures alternating work, no cancellation",
         "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
         "next_test": "Run existing native workflow with lease13 on candidate eeb06ce1191424f2af3c82d5256e120885e5867b; preserve frozen warm inputs, validate I–V journey and focused UX pointer/capture probe, then restore every input and return Windows."
@@ -7068,7 +7066,8 @@
         ],
         "candidate_sha": "eeb06ce1191424f2af3c82d5256e120885e5867b",
         "local_validation": "Domain/Application/binding compile; 58 behavioural assertions; transactional overlay check; C# and PowerShell syntax pass. Unity/native/browser/publication pending."
-      }
+      },
+      "runner_claimed_at": "2026-11-09T08:26:10.917Z"
     },
     {
       "id": "eldoria-daily-treasures-20261108",
