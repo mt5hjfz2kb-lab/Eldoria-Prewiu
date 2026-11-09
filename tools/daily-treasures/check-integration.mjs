@@ -354,7 +354,7 @@ assert.match(retentionUpdate,/if\(overlay && dailyTreasures\.IsOpen\)dailyTreasu
 assert.match(panel,/bool openingChest=ceremony && ceremony\.gameObject\.activeSelf/);
 assert.match(panel,/bool paidChest=ceremony && ceremony\.gameObject\.activeSelf/);
 assert.match(panel,/openingChest\|\|paidChest\?650f:740f/);
-assert.match(panel,/focusedQuiet\?330f:openingChest\?300f:370f/);
+assert.match(panel,/focusedQuiet\?330f:openingChest\?300f:\s*roomyCalendar\?420f:370f/);
 assert.match(panel,/artHeight=openingChest\?\(portrait\?265f:194f\)/);
 assert.match(panel,/maxPaidCardW=prizeCount<=2\?190f:portrait\?170f:146f/);
 assert.match(panel,/prizeRows==2\?72f:/);
