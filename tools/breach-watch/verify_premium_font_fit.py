@@ -47,14 +47,16 @@ def verify():
 
     # The story title starts in clean carved stone. No duplicated vector
     # crest should steal the title's paint width or make an overlay.
-    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,12,mission_width-29,
-         "one complete real chapter inscription")
+    fits("BASTIÓN I",SEMIBOLD,14,mission_width-29,
+         "first line engraved chapter")
+    fits("LA BRECHA",SEMIBOLD,14,mission_width-29,
+         "second line engraved Breach")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "At(chapterName.rectTransform,17f,5f,missionWidth-29f,20f);" in hud
+    assert "At(chapterName.rectTransform,17f,5f,missionWidth-29f,32f);" in hud
     fits("Construye el aserradero",REGULAR,14,mission_width-22,
          "chapter-objective")
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
-    fits("Bastión",SEMIBOLD,19,panel_width-110,
+    fits("Bastión",SEMIBOLD,19,panel_width-80,
          "selected building title")
     paragraph="Gobierno y progreso de Valoria."
     paragraphs=lines(REGULAR,15,paragraph,panel_width-26)
