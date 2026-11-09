@@ -434,6 +434,13 @@ namespace Eldoria.BreachWatch.Editor
                     "New premium Vigilia must DELETE obsolete stacked bevel surfaces, not overlay them");
                 Need(ui.HasPremiumCarvedQuest,
                     "Chapter objective must be the new angled carved nine-slice tablet, not an old rectangular overlay");
+                if(selection=="bastion" && (w>h || h>=w))
+                {
+                    var section=ui.GetComponentInChildren<BreachWatchSectionDivider>(true);
+                    Need(section && !section.raycastTarget &&
+                         (w<h || section.gameObject.activeInHierarchy || h<500),
+                         "Selected Bastion narrative needs the original non-blocking metallic divider");
+                }
                 var depthLayers=ui.GetComponentsInChildren<Shadow>(true)
                     .Where(q=>q && (q.name=="Identity / basalt crest" ||
                         q.name=="Chapter side tablet" ||
