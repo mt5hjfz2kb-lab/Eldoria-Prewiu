@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T11:45:28.413Z",
+  "updated_at": "2026-11-09T12:30:44Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6696,14 +6696,12 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "ownership_state": "claimed",
-      "ownership_revision": 23,
+      "ownership_revision": 24,
       "write_scope_released": false,
-      "phase": "VIGILIA_NATIVE_UNITY_EXACT_HEAD_20261109",
-      "next": "Run native Unity on current exact PR173 head after exclusive lease recheck; inspect all eight screenshots and fix actual defects, keep published builds untouched.",
+      "phase": "VIGILIA_FIRST_SCREEN_NATIVE_EIGHT_PASS_ART_REVIEW_PENDING_WINDOWS_RELEASED",
+      "next": "All four resolutions genuine native pass at PR173 SHA a5e8fa22759733bc04ab8040e8f58cf079740d1e. Materials/font/portrait/CTA verified; final subjective art fidelity and future real mailbox/screens still outstanding. Keep PR draft; do not merge/deploy without owner acceptance.",
       "art_approved": false,
       "physical_mobile_tested": false,
       "runner_claimed_at": "2026-11-09T11:45:28.413Z",
@@ -6770,22 +6768,22 @@
         "latest_completed_interface_run": 42582751853
       },
       "last_verified": {
-        "source_sha": "1cea977b8ec67495bbbcbc7b31d38425e352c10c",
-        "native_run": 42427015492,
+        "source_sha": "a5e8fa22759733bc04ab8040e8f58cf079740d1e",
+        "native_run": 42617442201,
         "native_status": "SUCCESS",
         "screenshots": 8,
-        "artifact": 13596191419,
+        "artifact": 13673516185,
         "independent_canvas": true,
         "old_canvas_hidden": true,
         "canonic_bastion_selected": true,
-        "new_navigation_real_pointer_clicks": 1,
+        "new_navigation_real_pointer_clicks": 6,
         "safe_preserved": true,
         "art_approved": false,
         "android_tested": false,
         "webgl_tested": false
       },
-      "runner_released_at": "2026-11-09T08:26:10.917Z",
-      "runner_release_basis": "Owner explicitly reports interface chat released PC and instructs PR179 to continue; latest observed interface native run42582751853 completed SUCCESS. Preserve interface writer, branch and all artifacts."
+      "runner_released_at": "2026-11-09T12:30:44Z",
+      "runner_release_basis": "Owner PR173 native 8/8 exact-head Unity 6000.3.23f1 success run 42617442201; 6 live pointer clicks, save unchanged, real city/panel screenshots inspected. Released Windows without ART_APPROVED or merge."
     },
     {
       "id": "eldoria-private-beta-i-v-20261107",
