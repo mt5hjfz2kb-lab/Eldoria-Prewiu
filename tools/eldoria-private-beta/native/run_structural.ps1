@@ -133,6 +133,10 @@ try {
  }
  $env:ELDORIA_VALIDATE_TERRAIN_RAYCAST='0'
  $env:ELDORIA_BAKE_TERRAIN_QUERIES='0'
+ # Exercise focused UI before the long journey; both use separate GUID probe saves.
+ $env:ELDORIA_UX_OUT=Join-Path $Evidence 'pretest-ux'
+ Invoke-Native 'EldoriaPretestUXProbe.Run' (Join-Path $Evidence 'pretest-ux.log') 'Win64'
+ if(-not(Test-Path (Join-Path $env:ELDORIA_UX_OUT 'complete.txt'))){throw 'Pretester UX native proof incomplete'}
  # Keep the canonical journey's editor-input footprint identical to prior proofs.
  foreach($name in 'PretestUXProbe.cs','PretestUXProbe.cs.meta'){
   $file=Join-Path $probe ('Editor/'+$name);if(Test-Path $file){Remove-Item $file}
@@ -140,10 +144,6 @@ try {
  Invoke-Native 'Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent' (Join-Path $Evidence 'journey.log') 'Win64'
  $native=Get-Content (Join-Path $proof 'integration-result.json') -Raw|ConvertFrom-Json
  if($native.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){throw 'Exact-source journey certification failed'}
- Copy-Item (Join-Path $Tools 'tools/eldoria-private-beta/native/ux/PretestUXProbe.cs') (Join-Path $probe 'Editor/PretestUXProbe.cs')
- $env:ELDORIA_UX_OUT=Join-Path $Evidence 'pretest-ux'
- Invoke-Native 'EldoriaPretestUXProbe.Run' (Join-Path $Evidence 'pretest-ux.log') 'Win64'
- if(-not(Test-Path (Join-Path $env:ELDORIA_UX_OUT 'complete.txt'))){throw 'Pretester UX native proof incomplete'}
  Copy-Item $proof (Join-Path $Evidence 'native-journey') -Recurse
  # Probe is Editor-only, outside Assets/Eldoria, and is not shipped in the player.
  if((Get-FileHash $queryAsset -Algorithm SHA256).Hash -ne $queryHash){throw 'Terrain tape changed after journey'}

@@ -62,8 +62,10 @@ public static class EldoriaPretestUXProbe
   var rt=(RectTransform)button.transform;var canvas=button.GetComponentInParent<Canvas>();
   var camera=canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera;
   var point=RectTransformUtility.WorldToScreenPoint(camera,rt.TransformPoint(rt.rect.center));
-  var pointer=new PointerEventData(EventSystem.current){position=point};var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(pointer,hits);
+  var pointer=new PointerEventData(EventSystem.current){pointerId=-1,button=PointerEventData.InputButton.Left,position=point};var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(pointer,hits);
   Need(hits.Count>0&&hits[0].gameObject.GetComponentInParent<Button>()==button,"button is actual top raycast: "+button.name);
+  ExecuteEvents.Execute(button.gameObject,pointer,ExecuteEvents.pointerDownHandler);
+  ExecuteEvents.Execute(button.gameObject,pointer,ExecuteEvents.pointerUpHandler);
   ExecuteEvents.Execute(button.gameObject,pointer,ExecuteEvents.pointerClickHandler);
  }
  static PlayerState Fixture(int level){
