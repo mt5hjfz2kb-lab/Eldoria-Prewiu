@@ -343,7 +343,7 @@ namespace Eldoria.DailyTreasures.Editor
                     // Capture BEFORE interacting, then tap through Unity's actual
                     // raycaster and selectable pointer sequence.
                     pictures.Add(Render(camera,rt,output,width,height,"calendar",
-                        "Available calendar before claim",true,true));
+                        "Available calendar before claim",true,false));
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
                         button,width,height);
                     inputChecks++;
@@ -430,7 +430,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Canvas.ForceUpdateCanvases();
                     pictures.Add(Render(camera,rt,output,width,height,
                         "special-day4-calendar",
-                        "Real day-four candidate before claim",true,true));
+                        "Real day-four candidate before claim",true,false));
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
                         FindButton(panel,"Claim exact daily reward"),
                         width,height);
@@ -663,7 +663,8 @@ namespace Eldoria.DailyTreasures.Editor
                 return new Shot{file=name,sha256=Sha(path),view=description,
                     width=width,height=height,bytes=(int)bytes,
                     nativeCanvas=native,coversReward=saved,
-                    readyToClaim=variant=="calendar",preserved=saved};
+                    readyToClaim=variant=="calendar" ||
+                        variant=="special-day4-calendar",preserved=saved};
             }
             finally
             {
