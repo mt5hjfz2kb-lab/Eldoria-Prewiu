@@ -124,7 +124,13 @@ public static class EldoriaPretestUXProbe
   Click(GameObject.Find("Barracks / enter training")?.GetComponent<Button>());yield return new WaitForSecondsRealtime(.4f);
   Need(management.IsOpen&&management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.Training,"training choice opens training");
   Need(GameObject.Find("Switch destination")==null&&GameObject.Find("Open canonical heroes")==null,"training hides unexplained march and locked heroes");Capture(h,"training-initial");
-  management.Close();h.Hud.SelectBuilding("");h.Select("sawmill");yield return new WaitForSecondsRealtime(.4f);
+  management.Close();h.Hud.SelectBuilding("");h.Select("barracks");yield return new WaitForSecondsRealtime(.4f);
+  Click(h.Hud.GetComponent<RoyalGoldV2Hud>().VisibleBuildingButton);yield return new WaitForSecondsRealtime(.4f);
+  Need(h.City.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"barracks upgrade choice starts paid work");
+  Capture(h,"barracks-upgrade");yield return null;
+  var duplicate=h.Hud.GetComponentsInChildren<CanvasGroup>(true).FirstOrDefault(g=>g.name=="V3 / real-time operation / barracks");
+  Need(!duplicate||duplicate.alpha<.1f,"selected barracks upgrade has no duplicate timer");
+  Seed(h,Fixture(2));h.Hud.SelectBuilding("");h.Select("sawmill");yield return new WaitForSecondsRealtime(.4f);
   Click(h.Hud.GetComponent<RoyalGoldV2Hud>().VisibleBuildingButton);yield return new WaitForSecondsRealtime(.4f);
   Need(h.City.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"visible upgrade starts paid work");Capture(h,"compact-selected-timer");h.Hud.SelectBuilding("");yield return new WaitForSecondsRealtime(.4f);Capture(h,"compact-timer");
   var timers=h.Hud.GetComponentsInChildren<CanvasGroup>(true).Where(g=>g.name.StartsWith("V3 / real-time operation / ")&&g.alpha>.5f).Select(g=>(RectTransform)g.transform).ToArray();

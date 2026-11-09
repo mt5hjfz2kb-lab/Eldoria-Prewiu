@@ -581,7 +581,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private void RenderTimer(string id, Camera camera, bool blocked)
         {
             var timer = timers[id];
-            if (blocked || (Source.SelectedBuildingId==id&&Chronicle&&Chronicle.ChronicleIllustratedBuildingVisible) || !live.TryGetValue(id, out var data) ||
+            if (blocked || ((Source.SelectedBuildingId==id||Source.SelectedBuildingId=="upgrade-"+id)&&Chronicle&&Chronicle.ChronicleIllustratedBuildingVisible) || !live.TryGetValue(id, out var data) ||
                 !data.OperationActive || string.IsNullOrWhiteSpace(data.Time))
             {
                 Visible(timer.Visibility, false, false);
