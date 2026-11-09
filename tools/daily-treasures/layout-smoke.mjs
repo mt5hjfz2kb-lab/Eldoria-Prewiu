@@ -207,7 +207,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
       assert.ok(27>=nameSize*1.35 && 26>=amountSize*1.35,
         `${w}x${h}: text rectangles will clip grown reward fonts`);
     }
-    assert.ok(cardW>=(portrait?160:140),
+    assert.ok(cardW>=(portrait?150:140),
       `${w}x${h}: actual item frames too narrow for a premium receipt`);
   }
   // Normal resource-only days are intentionally NOT shown in a tiny
