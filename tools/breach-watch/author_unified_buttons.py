@@ -81,7 +81,11 @@ def symbol(name):
             glyph=max(0.,min(1.,(luma-75.)/78.))
             ap[x,y]=int(alpha*glyph*central)
     im.putalpha(a)
-    return im.resize((116,116),Image.Resampling.LANCZOS)
+    # Tight source-content crop: a clean engraved tower/sack/raven should
+    # fill the actual 44px+ tab icon, not become a tiny 7px emblem because
+    # the surrounding (now transparent) old medallion occupied 90% of the
+    # raster. All six game icons remain genuine extracted owner glyphs.
+    return im.crop((48,45,144,155)).resize((116,116),Image.Resampling.LANCZOS)
 
 def save(image,name,border=(0,0,0,0)):
     dest=DEST/(name+".png")
@@ -138,8 +142,9 @@ d=ImageDraw.Draw(cta,"RGBA")
 # with another plate painted over it. Limit engraving to one thin
 # inset highlight and ONE pair of crossed hammer handles on its left.
 # The dynamic Cormorant inscription remains completely unobstructed.
-d.line([(146,21),(571,21)],fill=(244,214,151,105),width=2)
-d.line([(146,120),(571,120)],fill=(43,34,20,105),width=2)
+# No interior horizontal rules: the previous 9-sliced CTA made those
+# source-engraved stripes run directly THROUGH the live upgrade caption.
+# The original border is enough. Typography must occupy uncluttered gold.
 for tilt in (-1,1):
     d.line((73-12*tilt,45,73+12*tilt,95),fill=(61,42,22,225),width=8)
     d.line((73-12*tilt,45,73+12*tilt,95),fill=(235,201,132,240),width=4)
