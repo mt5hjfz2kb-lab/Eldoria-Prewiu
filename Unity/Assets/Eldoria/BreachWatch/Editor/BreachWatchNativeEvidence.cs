@@ -716,6 +716,13 @@ namespace Eldoria.BreachWatch.Editor
                     Need(host.City.Presenter.ExternalPointerBlocked!=null &&
                          host.City.Presenter.ExternalPointerBlocked(panelPoint),
                          "Premium Bastion panel allows city clicks through a blank slate area: "+name);
+                    var engravedBastion=ui.BuildingPanel.GetComponentsInChildren<BreachWatchGlyph>(true)
+                        .FirstOrDefault(g=>g && g.name=="Building crest");
+                    Need(engravedBastion &&
+                         engravedBastion.Ink.r<=.80f &&
+                         engravedBastion.Ink.g<=.66f &&
+                         ((RectTransform)engravedBastion.transform).rect.width<=31f,
+                         "Oversized bright vector emblem pasted over native carved header: "+name);
                     Need(ui.HasLiveBuildingPortrait && ui.BuildingPortraitExclusive,
                          "Real isolated Bastion mesh portrait did not render in "+name);
                     Need(!ui.BuildingPortraitEdgeClipped,
