@@ -43,9 +43,11 @@ namespace Eldoria.DailyTreasures
 
     public static class DailyTreasureStageDirection
     {
-        // Two formerly opaque Bastion panels left only 7.6% of the
-        // player's authentic city visible. Preserve the physical kingdom.
-        public const float BastionPlateOpacity=.36f;
+        // A Bastion milestone celebrates the player's ACTUAL finished city.
+        // Prior two stacked layers transmitted only ~35% of its light. Open
+        // them to ~41% while preserving a dark forged frame and a separate
+        // .82 basalt ink patch behind the real recorded story text.
+        public const float BastionPlateOpacity=.34f;
         public static DailyTreasureStageKind FromEvent(string eventId)
         {
             if(string.IsNullOrWhiteSpace(eventId))
@@ -111,7 +113,7 @@ namespace Eldoria.DailyTreasures
                     portrait?269f:176f,
                     0,portrait?-.31f*h:-.19f*h,w-48,
                     portrait?.12f*h:.18f*h,
-                    .45f,0f,0f,false);
+                    .38f,0f,0f,false);
 
             // Lyra, Scouts and Vigilants each have an actual original
             // painterly artwork resource. In landscape that painting
