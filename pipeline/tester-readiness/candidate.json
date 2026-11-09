@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "Published mobile11 WebGL and an owner-only opt-in Pages QA pilot are technically verified, but actual in-game Bastion I–V telemetry is not yet compiled, and physical iPhone/Android stability and external release gates remain unverified.",
+  "reason": "BLOCKED P0: on 2026-11-09 owner physically reported the page restarting on iPhone at entry despite desktop WebKit and Unity PASS. No iPhone fix was certified. Published mobile11 WebGL and opt-in pilot share the same engine source; milestone telemetry is not compiled into it.",
   "source_sha": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
   "artifact_sha256": null,
   "channels": [],
@@ -24,9 +24,14 @@
       "run": 42656897252
     },
     {
-      "device": "iPhone Safari physical",
-      "status": "NOT VERIFIED",
-      "issue": 96
+      "device": "iPhone (browser context not yet independently established)",
+      "status": "OWNER_REPORTED_FAIL",
+      "reported_at": "2026-11-09",
+      "observed": "Unexpected page/game restart when trying to enter new GitHub Pages beta/pilot",
+      "issue": 96,
+      "source_sha": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
+      "physical_session_30min_pass": false,
+      "root_cause": "UNKNOWN; memory/GPU pressure needs direct iOS diagnosis"
     },
     {
       "device": "Android Chrome physical",
@@ -46,7 +51,7 @@
   "blockers": [
     "Exact Unity/WebGL rebuild containing authored Bastion I–V telemetry signals and native journey QA",
     "Verify actual in-game events reach Supabase with consent and no events without consent",
-    "Physical iPhone Safari 30-minute session and reload without restarts (issue #96)",
+    "P0 #96: owner reproduced unexpected restart on iPhone at entry 2026-11-09; root cause unknown; require real physical iPhone 30-min PASS on corrected exact build",
     "Physical Android Chrome 30-minute session and persistence test",
     "Third-party asset license distribution review (#171)",
     "Explicit owner GO decision for external tester invitations"
@@ -61,5 +66,13 @@
     "source_contract_run": 42674713658,
     "source_contract_pass": true
   },
-  "updated_at": "2026-11-09T18:37:04.095Z"
+  "updated_at": "2026-11-09T18:42:06.611Z",
+  "release_decision": "NO_GO_TESTER_INVITATIONS",
+  "mac_webkit_memory_evidence": {
+    "run": 42645753309,
+    "candidate_rss_peak_mib": 2669,
+    "candidate_gpu_rss_peak_mib": 613,
+    "candidate_wasm_heap_capacity_mib": 594,
+    "note": "macOS desktop Apple GPU WebKit RSS and WASM, NOT iPhone physical memory measurements; memory pressure is a hypothesis, not confirmed root cause"
+  }
 }
