@@ -78,6 +78,7 @@ namespace Eldoria.DailyTreasures
         Image screenShade,mainFrameSurface;
         RectTransform milestoneBanner;
         Text milestoneBannerCaption;
+        Image milestoneRule;
         DailyTreasureStageKind currentStage=DailyTreasureStageKind.Daily;
         string activeMilestoneId;
         public DailyTreasureStageKind ActiveMilestoneStage => currentStage;
@@ -256,7 +257,8 @@ namespace Eldoria.DailyTreasures
             // Vigilia is present; do not copy font binaries into PR181 or
             // introduce a second font package with conflicting licenses.
             bool display=name=="Reward heading" || name=="Day heading" ||
-                name=="Claim label" || name=="Confirmed received items";
+                name=="Claim label" || name=="Confirmed received items" ||
+                name=="Real milestone category";
             var referenceFont=Resources.Load<Font>(display
                 ? "VigiliaArt/Fonts/CormorantGaramond-SemiBold"
                 : "VigiliaArt/Fonts/LibreBaskerville-Regular");
@@ -399,12 +401,20 @@ namespace Eldoria.DailyTreasures
             bastionStoryInk=Plate(cityInk,new Color(.045f,.049f,.052f,.82f),false);
             cityInk.gameObject.SetActive(false);
             milestoneBanner=NewRect("Milestone heraldic event banner / visual only",ceremony);
-            Plate(milestoneBanner,new Color(.27f,.15f,.10f,.96f),false);
-            if(!ApplyAuthoredFrame(milestoneBanner,"valoria_frame_button_512x128"))
-                Relief(milestoneBanner,false,true);
+            // An actual story heading is NOT a second clickable bronze
+            // button pasted on the picture. Keep the original paint and chest
+            // visible under one restrained basalt typographic title band.
+            Plate(milestoneBanner,new Color(.050f,.048f,.046f,.58f),false);
             milestoneBannerCaption=Label(milestoneBanner,
-                "Real milestone category","",15,Gold,TextAnchor.MiddleCenter);
+                "Real milestone category","",19,Ivory,TextAnchor.MiddleCenter);
             Stretch(milestoneBannerCaption.rectTransform);
+            var headingShadow=milestoneBannerCaption.gameObject.AddComponent<Shadow>();
+            headingShadow.effectColor=new Color(.01f,.008f,.007f,.92f);
+            headingShadow.effectDistance=new Vector2(1f,-2f);
+            // One subtle event-specific underline, not a bright new frame.
+            var ruleRect=NewRect("Event-specific forged-ink underline / visual only",
+                milestoneBanner);
+            milestoneRule=Plate(ruleRect,new Color(.84f,.63f,.40f,.72f),false);
             milestoneBanner.gameObject.SetActive(false);
             glowRect=NewRect("Warm radial light / visual only",ceremony);
             glow=Plate(glowRect,new Color(1f,.65f,.18f,0f),false);
@@ -891,18 +901,24 @@ namespace Eldoria.DailyTreasures
                 switch(currentStage)
                 {
                     case DailyTreasureStageKind.Lyra:
-                        milestoneBannerCaption.text="UNA HEROÍNA SE UNE";
+                        milestoneBannerCaption.text="LYRA · NUEVA ALIADA";
                         break;
                     case DailyTreasureStageKind.Explorers:
-                        milestoneBannerCaption.text="HORIZONTES DESCUBIERTOS";
+                        milestoneBannerCaption.text="PRIMER HALLAZGO";
                         break;
                     case DailyTreasureStageKind.Vigilants:
-                        milestoneBannerCaption.text="VICTORIA DE LOS VIGILANTES";
+                        milestoneBannerCaption.text="CAPÍTULO SUPERADO";
                         break;
                     case DailyTreasureStageKind.Bastion:
-                        milestoneBannerCaption.text="EL REINO PROSPERA";
+                        milestoneBannerCaption.text="EL REINO CRECE";
                         break;
                 }
+                // Shared iron/bronze grammar: the color only marks context.
+                // Indigo/violet is restricted to Brecha/Vigilantes, with no
+                // full-frame neon recoloring of the original painting.
+                if(milestoneRule)
+                    milestoneRule.color=new Color(activeTheme.R,
+                        activeTheme.G,activeTheme.B,.72f);
             }
             ceremonialTitle=title;ceremonialReceipt=alreadyReceived;chestReward=showChest;
             // A focused cinematic view replaces the calendar's small header.
@@ -1181,9 +1197,19 @@ namespace Eldoria.DailyTreasures
                     stage.SceneryOpacity);
                 milestoneVignette.color=new Color(.024f,.023f,.026f,
                     stage.SceneVeilOpacity);
+                // Portrait has enough width for a readable literary heading,
+                // but the top-right 100x45 SKIP control owns the upper band.
+                // Put the story heading BELOW that hitbox rather than layering
+                // another ornate button on the same location.
+                float headingWidth=portrait?
+                    Mathf.Min(panelW-36f,280f):Mathf.Min(panelW*.52f,302f);
+                float headingY=portrait?panelH*.29f:panelH*.405f;
                 Place(milestoneBanner,.5f,.5f,.5f,.5f,
-                    stage.SideBySide?stage.SceneX:-panelW*.10f,panelH*.405f,
-                    Mathf.Min(panelW*.52f,302f),38f);
+                    portrait?0f:stage.SideBySide?stage.SceneX:-panelW*.10f,
+                    headingY,headingWidth,40f);
+                Place(milestoneRule.rectTransform,.5f,0f,.5f,0f,
+                    0f,2f,headingWidth-30f,2f);
+                milestoneBannerCaption.fontSize=portrait?18:19;
             }
             else
             {
