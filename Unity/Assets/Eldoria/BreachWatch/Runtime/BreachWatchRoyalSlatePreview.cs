@@ -61,7 +61,7 @@ namespace Eldoria.BreachWatch
                         var texture=material.GetTexture(name);
                         if(texture){tex=name+":"+texture.name;break;}
                     }
-                    var bounds=UnityEngine.Bounds.zero;
+                    var bounds=new Bounds(Vector3.zero,Vector3.zero);
                     int triangles=0;
                     if(vertices!=null && idx<mesh.subMeshCount)
                     {
