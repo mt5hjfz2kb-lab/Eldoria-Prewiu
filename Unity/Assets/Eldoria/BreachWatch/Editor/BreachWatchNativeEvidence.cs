@@ -424,10 +424,16 @@ namespace Eldoria.BreachWatch.Editor
                 Need(atmosphericVeil && !atmosphericVeil.raycastTarget &&
                      atmosphericVeil.gameObject.activeInHierarchy,
                      "Independent unobtrusive atmospheric layer missing or stealing input: "+name);
-                var rift=ui.GetComponentInChildren<BreachWatchRiftSeparator>(true);
-                Need(rift && rift.gameObject.activeInHierarchy && !rift.raycastTarget &&
-                     !rift.GetComponent<BreachWatchPlate>(),
-                     "Floating Breach emblem must be transparent open-air artwork, not an opaque gameplay button: "+name);
+                var rift=ui.GetComponentsInChildren<Image>(true)
+                    .FirstOrDefault(x=>x && x.sprite &&
+                        x.sprite.name=="breach_signal");
+                Need(rift && rift.gameObject.activeInHierarchy &&
+                     rift.type==Image.Type.Simple && rift.preserveAspect &&
+                     !rift.raycastTarget &&
+                     ui.GetComponentsInChildren<Image>(true).Count(x=>
+                         x && x.sprite && x.sprite.name=="breach_signal")==1,
+                     "Owner's approved glowing fissure must be ONE native transparent "+
+                     "painted sprite, never the generic procedural X: "+name);
                 Need(ui.HasSinglePremiumIdentity,
                     "Superseded player plate or second bevel stacked over the one definitive premium profile");
                 Need(!ui.GetComponentsInChildren<Transform>(true).Any(t=>
