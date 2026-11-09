@@ -351,80 +351,13 @@ namespace Eldoria.BreachWatch
                     Destroy(readback);
                 }
 #endif
-                // A warm, isolated fragment of Valoria earth grounds the
-                // ORIGINAL building geometry. This is a portrait-only
-                // presentation material, not a fake castle and not a change
-                // to the playable city's terrain.
-                var earth=new GameObject("Vigilia / isolated Valoria earth",typeof(MeshFilter),typeof(MeshRenderer));
-                earth.hideFlags=HideFlags.HideAndDontSave;
-                earth.layer=PreviewLayer;
-                earth.transform.SetParent(stage.transform,false);
-                earth.transform.position=new Vector3(copiedBounds.center.x,
-                    copiedBounds.min.y-.045f,copiedBounds.center.z);
-                // The former portrait placed an obviously rectangular green
-                // square behind the Bastion. Extend this private ground beyond
-                // the entire orthographic viewport so that NO square edge can
-                // appear in the thumbnail, matching the owner's reference.
-                // The playable world's meshes/camera remain unchanged.
-                float width=Mathf.Max(copiedBounds.size.x*2.5f,
-                    portraitCamera.orthographicSize*portraitCamera.aspect*6.5f);
-                float depth=Mathf.Max(copiedBounds.size.z*2.5f,
-                    portraitCamera.orthographicSize*6.5f);
-                var soil=new Mesh { name="Vigilia / one-shot earth under real building" };
-                soil.vertices=new[]{
-                    new Vector3(-width*.5f,0,-depth*.5f),
-                    new Vector3(-width*.5f,0,depth*.5f),
-                    new Vector3(width*.5f,0,depth*.5f),
-                    new Vector3(width*.5f,0,-depth*.5f)
-                };
-                soil.triangles=new[]{0,1,2,0,2,3};
-                soil.normals=new[]{Vector3.up,Vector3.up,Vector3.up,Vector3.up};
-                // A tiled small soil source retains its mineral grain even
-                // with a larger art-only photo stage. Sharp tile borders live
-                // outside the camera, never under gameplay.
-                soil.uv=new[]{new Vector2(0,0),new Vector2(0,4),
-                    new Vector2(4,4),new Vector2(4,0)};
-                bakedMeshes.Add(soil);
-                earth.GetComponent<MeshFilter>().sharedMesh=soil;
-                var earthTexture=new Texture2D(128,128,TextureFormat.RGBA32,false);
-                earthTexture.name="Vigilia / earth grain";
-                earthTexture.wrapMode=TextureWrapMode.Repeat;
-                earthTexture.filterMode=FilterMode.Bilinear;
-                var earthColors=new Color32[128*128];
-                for(int ey=0;ey<128;ey++)for(int ex=0;ex<128;ex++)
-                {
-                    float n=Mathf.PerlinNoise(ex*.093f+2f,ey*.093f+4f);
-                    float g=Mathf.PerlinNoise(ex*.42f,ey*.42f);
-                    float cx=(ex-63.5f)/63.5f;
-                    float cy=(ey-63.5f)/63.5f;
-                    float contact=Mathf.Clamp01(1f-(cx*cx+cy*cy)*1.9f);
-                    int r=Mathf.RoundToInt(62f+26f*n+8f*g-27f*contact);
-                    int gr=Mathf.RoundToInt(69f+34f*n+5f*g-27f*contact);
-                    int bl=Mathf.RoundToInt(39f+16f*n+4f*g-15f*contact);
-                    earthColors[ey*128+ex]=new Color32((byte)r,(byte)gr,(byte)bl,255);
-                }
-                earthTexture.SetPixels32(earthColors);
-                earthTexture.Apply(false,true);
-                disposableTextures.Add(earthTexture);
-                var shader=Shader.Find("Universal Render Pipeline/Lit");
-                if(!shader)shader=Shader.Find("Universal Render Pipeline/Unlit");
-                if(shader)
-                {
-                    var soilMaterial=new Material(shader) { name="Vigilia / one-shot neutral earth" };
-                    if(soilMaterial.HasProperty("_BaseMap"))
-                        soilMaterial.SetTexture("_BaseMap",earthTexture);
-                    if(soilMaterial.HasProperty("_BaseColor"))
-                        soilMaterial.SetColor("_BaseColor",Color.white);
-                    if(soilMaterial.HasProperty("_Smoothness"))
-                        soilMaterial.SetFloat("_Smoothness",0f);
-                    disposableMaterials.Add(soilMaterial);
-                    var earthRenderer=earth.GetComponent<MeshRenderer>();
-                    earthRenderer.sharedMaterial=soilMaterial;
-                    earthRenderer.shadowCastingMode=ShadowCastingMode.Off;
-                    earthRenderer.receiveShadows=false;
-                    earthRenderer.lightProbeUsage=LightProbeUsage.Off;
-                }
-                portraitCamera.Render();
+                // Genuine building diorama, with no synthetic green square
+                // or stage material. The URP portrait camera already rendered
+                // the ACTUAL meshes onto its neutral mineral clear colour
+                // before the Editor-only GPU readback above. Reusing those
+                // exact pixels keeps the carved bronze panel cohesive and
+                // avoids another RenderTexture pass, 128x128 procedural earth
+                // texture and disposable quad. The playable world is untouched.
                 portraitCamera.targetTexture=null;
                 image.texture=texture;
                 image.enabled=true;
