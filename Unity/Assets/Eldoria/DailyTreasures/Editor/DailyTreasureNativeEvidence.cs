@@ -116,6 +116,48 @@ namespace Eldoria.DailyTreasures.Editor
         static RectTransform FindRect(Component component,string name)
             =>component.GetComponentsInChildren<RectTransform>(true)
                 .Single(x=>x.name==name);
+        static void VerifyCriticalTypography(DailyTreasurePanel panel,string phase)
+        {
+            // UnityEngine.UI.Text.preferredHeight is obtained from the
+            // ORIGINAL Unity text generator, with vertical overflow allowed
+            // and the current actual rect width. This detects visually
+            // truncated paid receipt/button text that static CSS mockups
+            // cannot find, particularly in landscape.
+            Canvas.ForceUpdateCanvases();
+            string[] essential={
+                "Reward heading","Claim label","Confirmed received items",
+                "Actual paid count","Reward name","Day heading",
+                "Consecutive visits"
+            };
+            int count=0;
+            foreach(var label in panel.GetComponentsInChildren<Text>(true))
+            {
+                if(!label||!label.isActiveAndEnabled ||
+                   !label.gameObject.activeInHierarchy ||
+                   string.IsNullOrWhiteSpace(label.text) ||
+                   !essential.Contains(label.name))
+                    continue;
+                var bounds=label.rectTransform.rect;
+                Need(label.font && label.fontSize>=10,
+                    "Missing real Unity font/legibility: "+label.name+" / "+phase);
+                Need(bounds.width>=20f && bounds.height>=10f,
+                    "Too-small text hitbox: "+label.name+" / "+phase);
+                float required=label.preferredHeight;
+                Need(!float.IsNaN(required) && !float.IsInfinity(required),
+                    "Text generator returned invalid metrics: "+phase);
+                // TextGenerator adds a few font-descender/layout pixels.
+                // Allow a small measured slack but not a missing entire line.
+                float slack=Mathf.Max(6f,bounds.height*.18f);
+                Need(required<=bounds.height+slack,
+                    "Unity truncated premium text ("+phase+") "+label.name+
+                    " required="+required.ToString("F1")+
+                    " available="+bounds.height.ToString("F1")+
+                    " value="+label.text);
+                count++;
+            }
+            Need(count>=3,"Real native text audit had no meaningful visible labels: "+phase);
+        }
+
         static void VerifyCleanPaintedResources(DailyTreasurePanel panel,
             int earnedCount=0)
         {
@@ -384,6 +426,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Need(button.interactable,"Correct day seven must be claimable");
                     // Capture BEFORE interacting, then tap through Unity's actual
                     // raycaster and selectable pointer sequence.
+                    VerifyCriticalTypography(panel,"calendar day seven");
                     pictures.Add(Render(camera,rt,output,width,height,"calendar",
                         "Available calendar before claim",true,false));
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
@@ -420,6 +463,7 @@ namespace Eldoria.DailyTreasures.Editor
                     inputChecks++;
                     Canvas.ForceUpdateCanvases();
                     VerifyCleanPaintedResources(panel,4);
+                    VerifyCriticalTypography(panel,"paid day seven / illustration cards");
                     Need(panel.EarnedItemCardCount==4 &&
                          panel.HasRevealedIllustratedEarnedItems,
                         "Day seven must show four ORIGINAL painted resource cards after real claim");
@@ -471,6 +515,7 @@ namespace Eldoria.DailyTreasures.Editor
                     inputChecks++;
                     Need(panel.IsOpen,"Special-day entry not interactive");
                     Canvas.ForceUpdateCanvases();
+                    VerifyCriticalTypography(panel,"calendar day four");
                     pictures.Add(Render(camera,rt,output,width,height,
                         "special-day4-calendar",
                         "Real day-four candidate before claim",true,false));
@@ -497,6 +542,7 @@ namespace Eldoria.DailyTreasures.Editor
                     inputChecks++;
                     Canvas.ForceUpdateCanvases();
                     VerifyCleanPaintedResources(panel,2);
+                    VerifyCriticalTypography(panel,"paid day four / illustration cards");
                     Need(panel.EarnedItemCardCount==2 &&
                          panel.HasRevealedIllustratedEarnedItems,
                         "Day four must show two painted, real paid wood and stone cards");
@@ -633,6 +679,8 @@ namespace Eldoria.DailyTreasures.Editor
                                 width,height);
                             inputChecks++;
                             Canvas.ForceUpdateCanvases();
+                            VerifyCriticalTypography(panel,
+                                "authentic milestone "+styleSuffixes[style]);
                             pictures.Add(Render(camera,rt,output,width,height,
                                 "style-"+styleSuffixes[style]+"-result",
                                 "Visual result layout ONLY, with no milestone command executed: "+
