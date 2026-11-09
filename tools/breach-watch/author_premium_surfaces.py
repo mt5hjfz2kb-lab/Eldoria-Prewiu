@@ -10,14 +10,14 @@ OUT=Path("Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces"
 DESIGNS={
     "burgundy_action":dict(width=512,height=148,cut=16,seed=173018,kind="burgundy",
                            border=(22,14,22,14),guid="a6f0f34c42fd494f92a72d201e0aaf9c"),
-    "brass_portrait":dict(width=512,height=288,cut=20,seed=173019,kind="portrait",
-                          border=(29,27,29,27),guid="9a20dba5e3aa4bff94654d1e8b0e9a32"),
-    "slate_resource":dict(width=512,height=148,cut=13,seed=173020,kind="resource",
-                          border=(14,11,14,11),guid="90ec0b5c9a2b463194f198a623e5e36c"),
+    "brass_portrait":dict(width=512,height=288,cut=12,seed=173019,kind="portrait",
+                          border=(17,15,17,15),guid="9a20dba5e3aa4bff94654d1e8b0e9a32"),
+    "slate_resource":dict(width=512,height=148,cut=10,seed=173020,kind="resource",
+                          border=(12,8,12,8),guid="90ec0b5c9a2b463194f198a623e5e36c"),
     "chiseled_quest":dict(width=512,height=220,cut=20,seed=173021,kind="quest",
                           border=(48,32,66,32),guid="1138e4a0b67b480a89ce751bd2fb370c"),
-    "profile_plate":dict(width=512,height=148,cut=16,seed=173022,kind="profile",
-                          border=(22,16,22,16),guid="3f29a67de3ee436a83ba9a64e1b98242")
+    "profile_plate":dict(width=512,height=148,cut=13,seed=173022,kind="profile",
+                          border=(16,11,16,11),guid="3f29a67de3ee436a83ba9a64e1b98242")
 }
 FOLDER_META="""fileFormatVersion: 2
 guid: f8e9b67b7ee54fd4a22ef0c2e89a14dd
@@ -176,11 +176,19 @@ def surface(name,d):
         (8,2,(235,165,84,255)),(11,2,(17,12,12,255)),
         (13,1,(194,124,61,245))
     ] if kind=="burgundy" else [
-        # The approved frame has subtly raised blackened iron, not six
-        # heavy nested black polygons. Keep a crisp but thin forged edge.
-        (2,4,(8,8,8,255)),(5,2,(93,64,44,255)),
-        (8,1,(205,153,96,233)),(12,2,(25,22,20,255)),
-        (17,2,(86,61,43,249)),(21,1,(169,126,75,205))
+        # The photo, resource and player plates are SMALL. A deep stack
+        # of concentric forged rings here consumed 20% of the image and
+        # gave the native Unity HUD an unnatural octagonal tunnel.
+        # Draw a SINGLE raised metal lip plus a hairline highlight.
+        (2,3,(13,10,9,255)),
+        (5,2,(102,66,37,255)),
+        (8,1,(222,166,91,245)),
+        (12,1,(42,28,22,230))
+    ] if kind in ("portrait","profile") else [
+        (2,3,(8,8,8,255)),
+        (5,1,(105,67,39,247)),
+        (7,1,(204,153,89,238)),
+        (10,1,(27,21,18,235))
     ])
     for inset,width,color in border_layers:
         pts=outline(inset)
@@ -213,10 +221,11 @@ def surface(name,d):
         draw.line((w-91,21,w-38,h//2),fill=(208,145,72,165),width=2)
         draw.line((w-38,h//2,w-91,h-21),fill=(209,136,67,165),width=2)
     if kind=="portrait":
-        # A single restrained gold inner lip, not triple geometric borders.
-        for yoff,color in [(33,(34,25,20,255)),(37,(212,148,71,255))]:
-            draw.rounded_rectangle((yoff, yoff, w-1-yoff, h-1-yoff),
-                        radius=7,outline=color,width=3)
+        # A light, portrait-window lip resembling the owner's reference:
+        # no second chunky octagon between the true model and the frame.
+        # The genuine RenderTexture fills the middle dynamically in Unity.
+        draw.rounded_rectangle((14,14,w-15,h-15),radius=5,
+            outline=(191,131,65,234),width=2)
     if kind=="burgundy":
         # This is ONLY the carved red leather/brass underlay. Fixed-size
         # crossed forged hammers are their own native transparent uGUI
