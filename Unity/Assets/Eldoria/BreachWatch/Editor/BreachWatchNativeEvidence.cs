@@ -509,8 +509,8 @@ namespace Eldoria.BreachWatch.Editor
                      !brassWells[0].enabled && !brassWells[0].raycastTarget,
                      "Second opaque rectangular card is STILL being painted "+
                      "behind the transparent real 3D Bastion: "+name);
-                var palette=ui.GetComponentsInChildren<Graphic>(true)
-                    .Where(x=>x && x.sprite is not null).ToArray();
+                var palette=ui.GetComponentsInChildren<Image>(true)
+                    .Where(x=>x && x.sprite).ToArray();
                 Need(palette.Any(x=>x.sprite.name=="panel_fill" &&
                          x.color.r>=.95f && x.color.g>=.93f) &&
                      palette.Any(x=>x.sprite.name=="profile_bar" &&
