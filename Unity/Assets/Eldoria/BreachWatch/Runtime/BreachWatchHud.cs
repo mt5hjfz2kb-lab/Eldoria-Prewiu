@@ -181,7 +181,7 @@ namespace Eldoria.BreachWatch
             {
                 for(int i=0;i<navPlates.Length;i++)
                 {
-                    var requested=Resources.Load<Sprite>("VigiliaArt/PremiumMedallions/"+ReferenceNavArt[i]);
+                    var requested=Resources.Load<Sprite>("VigiliaArt/OwnerReference/"+ReferenceNavArt[i]);
                     if(!requested || !navPlates[i] || navPlates[i].sprite!=requested)
                         return false;
                 }
@@ -266,10 +266,6 @@ namespace Eldoria.BreachWatch
             host=source;
             cityComposition=gameObject.AddComponent<BreachWatchCityComposition>();
             cityComposition.Initialize(source);
-            // A/B art treatment on the genuine selected building. Independent
-            // of RoyalHUD, non-persistent and restored when Vigilia closes.
-            var royalSlate=gameObject.AddComponent<BreachWatchRoyalSlatePreview>();
-            royalSlate.Apply(source);
             canvas=GetComponent<Canvas>();scaler=GetComponent<CanvasScaler>();raycaster=GetComponent<GraphicRaycaster>();
             canvas.renderMode=RenderMode.ScreenSpaceCamera;
             canvas.planeDistance=1f;canvas.overrideSorting=true;canvas.sortingOrder=5000;
@@ -654,6 +650,7 @@ namespace Eldoria.BreachWatch
             // opaque interior instead of painting an extra card beneath URP.
             // This is an alternative to the repeated stacked-border strategy.
             brassFrame.fillCenter=false;
+            brassFrame.color=new Color(1f,1f,1f,.68f);
             brassFrame.enabled=true;
             brassFrame.raycastTarget=false;
             var liveView=Rect("Live 3D building portrait / no old HUD sprites",portraitFrame);
@@ -757,7 +754,7 @@ namespace Eldoria.BreachWatch
                 int index=i;
                 string symbol=ReferenceNavArt[i];
                 var painted=Resources.Load<Sprite>(
-                    "VigiliaArt/PremiumMedallions/"+symbol);
+                    "VigiliaArt/OwnerReference/"+symbol);
                 if(!painted)
                     throw new InvalidOperationException(
                         "Vigilia requires the approved navigation sprite: "+symbol);
@@ -1017,10 +1014,12 @@ namespace Eldoria.BreachWatch
                 // Single carved plate taken from the owner's approved 864x1536
                 // original: the castle insignia is PAINTED IN that one plate.
                 // Keep live chapter, objective and progress editable on top.
-                float missionWidth=Mathf.Min(smallPhone?211f:200f,
-                    w*(smallPhone?.49f:.44f));
+                // The owner's carved quest plaque is wide and shallow. The
+                // original 78u height made the illustration look like a poster.
+                float missionWidth=Mathf.Min(smallPhone?211f:184f,
+                    w*(smallPhone?.49f:.41f));
                 float missionTop=smallPhone?87f:82f;
-                float missionHeight=smallPhone?82f:78f;
+                float missionHeight=smallPhone?82f:55f;
                 At(objective,margin,missionTop,missionWidth,
                     fullObjective?112f:missionHeight);
                 // A genuine 390x844 phone showed 12*.91=10.92px, below
@@ -1031,24 +1030,27 @@ namespace Eldoria.BreachWatch
                 // across but the old 130u rect wrapped into TWO lines.
                 // Shift ink 5u right of the same badge contour; 136u
                 // now fits ONE true source-faithful line at both phone sizes.
-                At(chapterName.rectTransform,54f,8f,
-                    missionWidth-64f,20f);
+                At(chapterName.rectTransform,smallPhone?54f:48f,
+                    smallPhone?8f:6f,missionWidth-(smallPhone?64f:57f),
+                    smallPhone?20f:15f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
                 // above the plate bottom on 900x1600, failing real GPU QA.
-                At(chapterObjective.rectTransform,59f,32f,
-                    missionWidth-70f,fullObjective?51f:20f);
-                At(chapterProgress.rectTransform,59f,
-                    fullObjective?87f:55f,missionWidth-70f,20f);
-                chapterName.fontSize=smallPhone?13:12;
+                At(chapterObjective.rectTransform,smallPhone?59f:48f,
+                    smallPhone?32f:22f,missionWidth-(smallPhone?70f:57f),
+                    fullObjective?51f:(smallPhone?20f:15f));
+                At(chapterProgress.rectTransform,smallPhone?59f:48f,
+                    fullObjective?87f:(smallPhone?55f:39f),
+                    missionWidth-(smallPhone?70f:57f),smallPhone?20f:13f);
+                chapterName.fontSize=smallPhone?13:11;
                 chapterName.resizeTextForBestFit=true;
                 chapterName.resizeTextMinSize=smallPhone?13:11;
-                chapterName.resizeTextMaxSize=smallPhone?13:12;
-                chapterObjective.fontSize=smallPhone?14:13;
+                chapterName.resizeTextMaxSize=smallPhone?13:11;
+                chapterObjective.fontSize=smallPhone?14:12;
                 chapterObjective.resizeTextForBestFit=true;
-                chapterObjective.resizeTextMinSize=12;
-                chapterObjective.resizeTextMaxSize=14;
-                chapterProgress.fontSize=smallPhone?13:12;
+                chapterObjective.resizeTextMinSize=smallPhone?12:11;
+                chapterObjective.resizeTextMaxSize=smallPhone?14:12;
+                chapterProgress.fontSize=smallPhone?13:11;
 
                 // Secondary seals are disabled on this first screen:
                 // keep their carved artwork discreet rather than occupying
@@ -1061,9 +1063,11 @@ namespace Eldoria.BreachWatch
                     At(utility,0,i*45f,37,37);
                 }
 
-                float navSize=49,navGap=14;
+                // Full owner-reference medallions; retain a restrained bronze
+                // link rather than a second dark bottom toolbar.
+                float navSize=52,navGap=16;
                 float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
-                float navTop=h-100f;
+                float navTop=h-111f;
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,64);
                 navFiligree.Configure(navSize+navGap,navSize,visibleNav);
                 int navColumn=0;
