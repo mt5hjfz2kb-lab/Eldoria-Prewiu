@@ -83,13 +83,18 @@ namespace Eldoria.Branding.Editor
                 var labels = root.GetComponentsInChildren<Text>(true);
                 var blockers = root.GetComponentsInChildren<Image>(true);
                 bool blocked = blockers.Any(g =>
-                    g.gameObject.name == "Input-blocking backdrop" && g.raycastTarget);
+                    g.gameObject.name == "Input-blocking backdrop" && g.raycastTarget &&
+                    g.GetComponent<Button>() != null &&
+                    g.GetComponent<Button>().transition == Selectable.Transition.None);
                 Require(canvases.Length == 1 &&
                     canvases[0].renderMode == RenderMode.ScreenSpaceOverlay &&
                     canvases[0].sortingOrder == 30000, "Unexpected Canvas hierarchy");
                 Require(logos.Length == 1 && logos[0].texture == texture,
                     "Actual Resources PNG is not rendered by overlay");
-                Require(buttons.Length == 1 &&
+                // Two UI buttons: the silent full-screen tap sink and the
+                // one intentional CTA. No second gameplay action is introduced.
+                Require(buttons.Length == 2 &&
+                    buttons.Any(b => b.gameObject.name == "Enter existing gameplay") &&
                     labels.Any(t => t.text == "ENTRAR EN VALORIA") &&
                     labels.Any(t => t.text == "LAS CENIZAS DE VALORIA") && blocked,
                     "CTA, title caption or input blocking missing");
