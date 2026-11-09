@@ -466,8 +466,18 @@ namespace Eldoria.BreachWatch
             {
                 var seal=BuildButton(utilityRail,design.name,design.icon,()=>{});
                 seal.GetComponent<Button>().interactable=false;
+                var utilityPlate=seal.GetComponent<BreachWatchPlate>();
+                if(utilityPlate)
+                {
+                    utilityPlate.Type=BreachWatchPlate.PlateType.Navigation;
+                    utilityPlate.VisualScale=.94f;
+                }
                 var glyph=seal.GetComponentInChildren<BreachWatchGlyph>();
-                if(glyph){glyph.Ink=Locked;glyph.SetVerticesDirty();}
+                if(glyph)
+                {
+                    glyph.Ink=new Color(.72f,.52f,.32f,1f);
+                    glyph.SetVerticesDirty();
+                }
             }
             panel=Rect("Independent selected-building cartouche",uiRoot);
             // ONE actual authored dark-stone surface owns this root canvas.
@@ -542,6 +552,22 @@ namespace Eldoria.BreachWatch
             buildingState=Label(panel,"Real state and timer",15,TextAnchor.UpperLeft,Muted);
             var closeRect=BuildButton(panel,"Close selected building",BreachWatchGlyph.Sigil.Cross,()=>SelectBuilding(""));
             closeButton=closeRect.GetComponent<Button>();
+            // The approved reference uses a small CIRCULAR bronze X, not
+            // an enormous 50px dark octagonal plaque. Keep the same >=44px
+            // physical pointer hit area but draw the metal only inside it.
+            var closePlate=closeRect.GetComponent<BreachWatchPlate>();
+            if(closePlate)
+            {
+                closePlate.Type=BreachWatchPlate.PlateType.Navigation;
+                closePlate.VisualScale=.55f;
+            }
+            var cross=closeRect.GetComponentInChildren<BreachWatchGlyph>();
+            if(cross)
+            {
+                At((RectTransform)cross.transform,16f,16f,18f,18f);
+                cross.Ink=Copper;
+                cross.SetVerticesDirty();
+            }
             var actionRect=Rect("Original gameplay action / new presentation",panel);
             actionPlate=Plate(actionRect,BreachWatchPlate.PlateType.Action);
             var premiumButton=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/burgundy_action");
@@ -986,16 +1012,21 @@ namespace Eldoria.BreachWatch
             // stretching stone, gold trim or actual building geometry.
             if(portraitView && portraitFrame)
             {
-                float ratio=Mathf.Max(.1f,(portraitFrame.rect.width-16f)/
-                    Mathf.Max(1f,portraitFrame.rect.height-16f));
-                if(ratio<=2f)
+                float ratio=Mathf.Max(.1f,(portraitFrame.rect.width-24f)/
+                    Mathf.Max(1f,portraitFrame.rect.height-24f));
+                // Match the TRUE aspect of the separately rendered miniature;
+                // assuming 2:1 made the Bastion tiny and vertically letterboxed.
+                float renderRatio=portraitView.texture
+                    ?portraitView.texture.width/(float)portraitView.texture.height
+                    :1.60f;
+                if(ratio<=renderRatio)
                 {
-                    float uvW=ratio*.5f;
+                    float uvW=ratio/renderRatio;
                     portraitView.uvRect=new Rect((1f-uvW)*.5f,0,uvW,1);
                 }
                 else
                 {
-                    float uvH=2f/ratio;
+                    float uvH=renderRatio/ratio;
                     portraitView.uvRect=new Rect(0,(1f-uvH)*.5f,1,uvH);
                 }
             }
