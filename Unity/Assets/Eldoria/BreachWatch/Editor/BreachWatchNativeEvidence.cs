@@ -481,11 +481,19 @@ namespace Eldoria.BreachWatch.Editor
                      contour[0].type==Image.Type.Simple &&
                      contour[0].color.a>=.84f && contour[0].color.a<=.92f &&
                      Mathf.Abs(contour[0].rectTransform.offsetMin.x)<=2f &&
-                     Mathf.Abs(contour[0].rectTransform.offsetMin.y)<=6f &&
+                     Mathf.Abs(contour[0].rectTransform.offsetMin.y)<=20f &&
                      Mathf.Abs(contour[0].rectTransform.offsetMax.x)<=2f &&
-                     Mathf.Abs(contour[0].rectTransform.offsetMax.y)<=6f,
-                     "Reference contour is an oversized independent overlay "+
+                     Mathf.Abs(contour[0].rectTransform.offsetMax.y)<=20f,
+                     "Reference contour is a duplicated or misaligned overlay "+
                      "rather than the single integral cartouche rim: "+name);
+                // The two source-painted gold FINIALS must remain outside
+                // live title and CTA, not pushed inward by over-shrinking
+                // a single non-sliced ornate sprite. Constrain their native
+                // offset to the exact approved 19u vertical clearance.
+                Need(Mathf.Abs(contour[0].rectTransform.offsetMin.y+19f)<.8f &&
+                     Mathf.Abs(contour[0].rectTransform.offsetMax.y-19f)<.8f,
+                     "Shrunken ring places the source-painted gold finial "+
+                     "on top of genuine Bastion title or upgrade text: "+name);
                 var brassWells=ui.BuildingPanel.GetComponentsInChildren<BreachWatchPlate>(true)
                     .Where(i=>i && i.sprite && i.sprite.name=="brass_portrait").ToArray();
                 Need(brassWells.Length==1 &&
