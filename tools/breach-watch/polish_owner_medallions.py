@@ -9,7 +9,7 @@ import hashlib
 import json
 import uuid
 from pathlib import Path
-from PIL import Image,ImageDraw,ImageFilter,ImageEnhance
+from PIL import Image,ImageFilter,ImageEnhance
 
 SRC=Path("Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerReference")
 DEST=Path("Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumMedallions")
@@ -68,35 +68,28 @@ def main():
         assert image.size==(160,160)
         image=image.resize((192,192),Image.Resampling.LANCZOS)
         alpha=image.getchannel("A")
-        rgb=ImageEnhance.Contrast(image.convert("RGB")).enhance(1.14)
-        rgb=ImageEnhance.Color(rgb).enhance(1.10)
-        rgb=ImageEnhance.Brightness(rgb).enhance(1.13)
+        rgb=ImageEnhance.Contrast(image.convert("RGB")).enhance(1.06)
+        rgb=ImageEnhance.Color(rgb).enhance(1.04)
+        rgb=ImageEnhance.Brightness(rgb).enhance(1.07)
         data=[]
         for r,g,b in rgb.getdata():
             # Lift warm carved relief without brightening dark stone and
             # making the entire medallion look like a glowing flat disc.
             if r>g*1.06 and g>b*.98 and r>60:
-                r=min(255,round(r*1.18+7))
-                g=min(255,round(g*1.13+5))
-                b=min(255,round(b*1.05+2))
+                r=min(255,round(r*1.08+3))
+                g=min(255,round(g*1.06+2))
+                b=min(255,round(b*1.03+1))
             data.append((r,g,b))
         toned=Image.new("RGB",(192,192))
         toned.putdata(data)
         toned=Image.merge("RGBA",(*toned.split(),alpha))
-        toned=toned.filter(ImageFilter.UnsharpMask(radius=1.2,percent=150,threshold=3))
-        ambient=Image.new("RGBA",(192,192))
-        glow=Image.new("RGBA",(192,192))
-        gx=ImageDraw.Draw(glow)
-        gx.ellipse((8,8,183,183),outline=(181,91,38,125),width=8)
-        glow=glow.filter(ImageFilter.GaussianBlur(6))
-        ambient.alpha_composite(glow)
-        ambient.alpha_composite(toned)
-        draw=ImageDraw.Draw(ambient)
-        draw.arc((11,11,181,181),198,336,fill=(249,174,79,220),width=3)
-        draw.arc((12,12,180,180),16,96,fill=(132,80,45,145),width=2)
-        # Four tiny metal chisel nicks read as crafted ornament, not neon.
-        for x,y in ((96,9),(183,96),(96,183),(9,96)):
-            draw.ellipse((x-1,y-1,x+1,y+1),fill=(247,201,114,210))
+        # The owner's illustration already contains the entire carved rim.
+        # Previous iterations drew a second glowing circumference, two arcs
+        # and four studs *over* that rim; at real phone size they appeared as
+        # ghost buttons behind the five approved icons. Eliminate every
+        # extra decorative layer instead of superimposing another fix.
+        ambient=toned.filter(ImageFilter.UnsharpMask(
+            radius=.75,percent=78,threshold=4))
         dest=DEST/(name+".png")
         ambient.save(dest,optimize=True)
         guid=uuid.uuid5(uuid.NAMESPACE_DNS,"eldoria.vigilia.premium."+name).hex
@@ -109,7 +102,7 @@ def main():
     (DEST/"manifest.json").write_text(json.dumps({
         "source":"OwnerReference/source-manifest.json",
         "scope":"new independent Vigilia uGUI only",
-        "authoring":"16-bit style tone and warm metal relief; non-destructive selected concept asset derivative",
+        "authoring":"One original sculpted icon per control; mild color correction only. No second rim, glow, studs, vector symbol or synthetic overlay.",
         "not_native_capture":True,
         "not_owner_art_approval":True,
         "sprites":records
