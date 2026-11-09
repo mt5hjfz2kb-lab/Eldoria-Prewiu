@@ -530,7 +530,8 @@ namespace Eldoria.BreachWatch
             // The approved stone already has an engraved ornamental
             // silhouette. Do not paste a bright vector tower ON TOP of it:
             // the live chapter title itself identifies the real quest.
-            chapterName=Label(objective,"Actual chapter",15,TextAnchor.MiddleLeft,Copper,true);
+            chapterName=Label(objective,"Actual chapter",15,TextAnchor.UpperLeft,Copper,true);
+            chapterName.lineSpacing=.93f;
             chapterObjective=Label(objective,"Actual objective",17,TextAnchor.UpperLeft,TextIvory);
             chapterProgress=Label(objective,"Objective progress",14,TextAnchor.MiddleLeft,Muted);
             var questPlate=objective.GetComponent<BreachWatchPlate>();questPlate.raycastTarget=true;
@@ -1005,17 +1006,17 @@ namespace Eldoria.BreachWatch
                 float missionWidth=Mathf.Min(185f,w*.46f);
                 float missionTop=smallPhone?96f:82f;
                 At(objective,margin,missionTop,missionWidth,
-                    fullObjective?108f:78f);
-                // Native 390px screenshot: the engraved chapter castle
-                // ends at x=29, while title started at x=28. They touched,
-                // making the mission feel like two pasted graphics. One
-                // 2u breathing gap + font-safe width holds the real title.
-                At(chapterName.rectTransform,17f,5f,missionWidth-29f,20f);
-                At(chapterObjective.rectTransform,13f,24f,missionWidth-22f,
-                    fullObjective?59f:31f);
+                    fullObjective?132f:86f);
+                // Do not crush a long Chapter I / Breach inscription
+                // against the engraved tapered corner. Two short genuine
+                // live lines make the title and lore legible without a
+                // second vector tower, icon plate or fake background.
+                At(chapterName.rectTransform,17f,5f,missionWidth-29f,32f);
+                At(chapterObjective.rectTransform,13f,40f,missionWidth-22f,
+                    fullObjective?64f:20f);
                 At(chapterProgress.rectTransform,13f,
-                    fullObjective?83f:53f,missionWidth-22f,18f);
-                chapterName.fontSize=smallPhone?13:12;
+                    fullObjective?110f:62f,missionWidth-22f,18f);
+                chapterName.fontSize=smallPhone?13:14;
                 chapterObjective.fontSize=smallPhone?15:14;
                 chapterProgress.fontSize=smallPhone?14:13;
 
@@ -1116,10 +1117,10 @@ namespace Eldoria.BreachWatch
                 // On the real 844x390 Unity capture, the previous 61+19
                 // progress position left only 2.6 physical pixels above
                 // the bottom bevel. Keep true text visibly inside the stone.
-                At(objective,margin,102,225,fullObjective?118:83);
-                At(chapterName.rectTransform,17,8,193,20);
-                At(chapterObjective.rectTransform,14,31,197,fullObjective?57:24);
-                At(chapterProgress.rectTransform,14,fullObjective?92:57,190,19);
+                At(objective,margin,102,225,fullObjective?130:90);
+                At(chapterName.rectTransform,17,8,193,32);
+                At(chapterObjective.rectTransform,14,40,197,fullObjective?59:22);
+                At(chapterProgress.rectTransform,14,fullObjective?106:66,190,19);
                 chapterName.fontSize=14;
                 chapterObjective.fontSize=16;
                 chapterProgress.fontSize=15;
@@ -1367,7 +1368,7 @@ namespace Eldoria.BreachWatch
                 var realChapter=snapshot.Chapter??"";
                 bool chapterOne=host.City.Gateway.Snapshot().BastionLevel==1;
                 chapterName.text=chapterOne && realChapter.Length>0
-                    ? realChapter+(host.English?" / THE BREACH":" / LA BRECHA")
+                    ? realChapter+"\n"+(host.English?"THE BREACH":"LA BRECHA")
                     : realChapter;
                 chapterObjective.text=snapshot.Objective;
                 chapterProgress.text=snapshot.ObjectiveProgress;
