@@ -11,68 +11,68 @@
     },
     {
       "name": "nav_castle",
-      "sha256": "80922a405b5c563bddd50650afd5aa398a35e810df51679297924b5bb432eacf",
-      "bytes": 46461,
+      "sha256": "abac1475edcbd1231af4adad5e1ac343b61ed601daf54f51b49d2cc08e608423",
+      "bytes": 39319,
       "guid": "a0144592bc6196de59e675aa5c77d5bf"
     },
     {
       "name": "nav_castle_active",
-      "sha256": "51585d9270aa2dba3c4784b47a5b125b62c4f1b15e6de9f53ecf4f955c47a591",
-      "bytes": 46185,
+      "sha256": "730631ac4eed2735aba24932c0bad9ed986aa2daace0b0b27746029c0ce5125e",
+      "bytes": 38127,
       "guid": "4e8d3723ccd30990921ad525d5104a11"
     },
     {
       "name": "nav_provisions",
-      "sha256": "050c2c6e8f5f6661318ac0512ea9238b991281a7072bde08e96415b3addf4bd7",
-      "bytes": 47659,
+      "sha256": "180fb8171e573e44490d17e6fd1eed11e34737df000244e2638e244d7a836da8",
+      "bytes": 39343,
       "guid": "ecd6d6d28705a2dd9c48dccb6a74b83a"
     },
     {
       "name": "nav_provisions_active",
-      "sha256": "f41fd48cc6acb54da45ede182e8a7f973f596dbd63805a2edd0d19c5b2e5eefd",
-      "bytes": 47712,
+      "sha256": "c0f0ef0687ab779fbd7da168dd3410eb7a0a3fc24751de53d5bea99e9d57734c",
+      "bytes": 38134,
       "guid": "649cd5bc54508dbfcc523ee3655180bb"
     },
     {
       "name": "nav_swords",
-      "sha256": "5399a1d61b37c9785287f8db4e683ca61ed96c40bebf52857f741df93f04dab8",
-      "bytes": 48026,
+      "sha256": "3fd19441bca24066beed468d16d785e13248fd1f7090a2db629adc5b508983aa",
+      "bytes": 38514,
       "guid": "5becec1ff0ac41f45cdae6aa75d7f266"
     },
     {
       "name": "nav_swords_active",
-      "sha256": "2cbf1fa9f118fd16bb451e82b92094527b47a125cf7e870ea3ad7363a6770332",
-      "bytes": 47705,
+      "sha256": "24a1fe1bcc5225e67cd1e5eda20bf2ab7ea2091fcbe254cad7d1af8e417b7da5",
+      "bytes": 37161,
       "guid": "137ce3afd81f5069e60d81d289a91697"
     },
     {
       "name": "nav_raven",
-      "sha256": "1404f07d6494b67418b5f0b28d8e46a8ed7e3ff146234535a185254711ee2def",
-      "bytes": 47007,
+      "sha256": "23035e8c32cc292479ed53ad77210b9d6b452723b2f64575f2b2b0c3ede24e5b",
+      "bytes": 37959,
       "guid": "ecb3188560c01a09049ca8404e30353a"
     },
     {
       "name": "nav_raven_active",
-      "sha256": "7bb4010bf88b537e888a8dad853d60eebf3ee3934ec8f28141eacdbf4f958153",
-      "bytes": 47041,
+      "sha256": "413c26c46d291c4ce2b794e207f48ccc5031f2610050755005db73773426d0a0",
+      "bytes": 36772,
       "guid": "8e07951632d4dd7206c9a0dca3e03b3c"
     },
     {
       "name": "nav_helm",
-      "sha256": "a78665f48ec460acbfbaf6ccd7c3920d56c10487f797627de915f528e8a30ca8",
-      "bytes": 47286,
+      "sha256": "8da5f5792914b7a4223cc845eb8607753b243954929744c696b19133cff022f3",
+      "bytes": 37731,
       "guid": "217da21218e8c7bed167d18b0d18e828"
     },
     {
       "name": "nav_helm_active",
-      "sha256": "ab84ced5d730d29c8824927e011880c350f4dec6b949cc34d83d1560bd9d2c76",
-      "bytes": 47232,
+      "sha256": "2591c524ed7664c4a4ab7be9a68067072a79e39160cf3c0176699fa198a6206b",
+      "bytes": 36514,
       "guid": "e9074672fee948e98354e3615877513e"
     },
     {
       "name": "action_gold",
-      "sha256": "4f7a97ba6ed027f3a8d5950db7fa1c7598bbfffdec08b49efce9979f45a6e4d5",
-      "bytes": 75321,
+      "sha256": "663cc18adf5e22a4ecd33231a5e340b6e37f2a4e43a8ade5e697bef6ae395012",
+      "bytes": 77360,
       "guid": "da8bac36e16ba06038332d8aee4ee0a3"
     }
   ]
