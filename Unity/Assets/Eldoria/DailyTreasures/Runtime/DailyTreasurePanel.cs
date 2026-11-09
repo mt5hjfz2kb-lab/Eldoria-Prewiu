@@ -705,6 +705,20 @@ namespace Eldoria.DailyTreasures
 
         static string ShortReward(DailyTreasureReward reward)
         {
+            // The seventh-day special prize contains FOUR actual rewards,
+            // including one five-minute accelerator. In the first genuine
+            // 1600x900 Unity capture the calendar only rendered three lines:
+            // the fourth was clipped although it was correctly granted.
+            // Keep all four promised items legible in a compact two-line
+            // summary, rather than shrinking the font or hiding the prize.
+            if(reward.CycleDay==7 && reward.Wood>0 &&
+               reward.Stone>0 && reward.SpeedupFiveMinutes>0)
+            {
+                string top="Madera "+reward.Wood+" · Piedra "+reward.Stone;
+                string bottom=(reward.Food>0?"Comida "+reward.Food+" · ":"")+
+                    "5 min x"+reward.SpeedupFiveMinutes;
+                return top+"\n"+bottom;
+            }
             string text="";
             if(reward.Wood>0)text+="Madera "+reward.Wood+"\n";
             if(reward.Stone>0)text+="Piedra "+reward.Stone+"\n";
@@ -1200,7 +1214,10 @@ namespace Eldoria.DailyTreasures
                         .5f,.5f,.5f,.5f,-width*.5f+48f,-11f,122f,96f);
                     Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
                         38f,-12f,width-116f,Mathf.Max(52f,cellH-39f));
-                    dayBody[i].fontSize=15;
+                    // At 667x375 the double-width day-seven card is
+                    // narrower; preserve two full prize lines without
+                    // forcing unwanted wrap onto a third, clipped line.
+                    dayBody[i].fontSize=!portrait && width<318f?13:15;
                 }
                 else
                 {
