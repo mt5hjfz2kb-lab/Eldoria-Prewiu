@@ -78,10 +78,10 @@ public static class EldoriaPretestUXProbe
   File.WriteAllText(h.City.SaveFile,JsonUtility.ToJson(s));h.City.ReloadForProbe();
  }
  static void Capture(ValoriaIntegratedWorld host,string key){ValoriaIntegrationBuild.Capture(host,"pretest-"+key+"-portrait.png",390,844);ValoriaIntegrationBuild.Capture(host,"pretest-"+key+"-landscape.png",844,390);}
- static void CheckClarityProjection(ValoriaIntegratedWorld h,bool buildings){
+ static void CheckClarityProjection(ValoriaIntegratedWorld h,bool buildings,string requiredId=null){
   var runtime=Object.FindFirstObjectByType<Eldoria.PlayerClarityRuntime>();Need(runtime,"actual level-label runtime exists");
   var field=typeof(Eldoria.PlayerClarityRuntime).GetField("markers",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance);
-  var markers=(IDictionary)field.GetValue(runtime);int count=0;
+  var markers=(IDictionary)field.GetValue(runtime);int count=0;bool foundRequired=requiredId==null;
   foreach(DictionaryEntry item in markers){
    var marker=item.Value;var type=marker.GetType();
    var rect=(RectTransform)type.GetField("Rect").GetValue(marker);
@@ -91,9 +91,10 @@ public static class EldoriaPretestUXProbe
    var canvas=rect.GetComponentInParent<Canvas>();
    if(buildings){expected.y-=32f;expected+=(Vector3)(new Vector2(24,-2)*canvas.scaleFactor);}
    var actual=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,rect.position);
-   Need(Vector2.Distance(expected,actual)<2f,"level label follows current camera frame: "+item.Key);count++;
+   Need(Vector2.Distance(expected,actual)<2f,"level label follows current camera frame: "+item.Key);count++;if((string)item.Key==requiredId)foundRequired=true;
   }
   Need(count>0,"measured real "+(buildings?"building":"world")+" level labels");
+  Need(foundRequired,"visible enemy level measured across pan: "+requiredId);
  }
  static IEnumerator Verify(ValoriaIntegratedWorld h){
   float deadline=Time.realtimeSinceStartup+120;
@@ -110,9 +111,18 @@ public static class EldoriaPretestUXProbe
   Seed(h,Fixture(2));yield return new WaitForSecondsRealtime(.7f);h.Hud.Refresh();yield return null;
   var world=nav.Items.Single(i=>i.Section==RoyalSection.World);Click(world.Button);yield return new WaitForSecondsRealtime(.4f);h.Hud.Refresh();
   Need(h.InWorld&&world.Label.text.IndexOf("CIUDAD",StringComparison.OrdinalIgnoreCase)>=0,"same world control becomes city");
+  // The initial world overview deliberately hides node labels. Use the same
+  // real near-view/focus path as canonical creature screenshot verification.
+  var creature=h.City.Gateway.Snapshot().WorldCreatureLocations.FirstOrDefault(x=>x.Alive&&x.Level>0);
+  string creatureId=creature?.TargetId??"corrupt-scout";
+  var creatureTarget=h.FindTarget(creatureId);Need(creatureTarget,"live creature target exists");
+  h.WorldNavigation.localZoom=Eldoria.World4XCanon.RegionOneCanonicalLandscape.NearZoom(h.PlayerCamera.aspect);
+  h.WorldNavigation.SetZoomLevel(2,true);h.WorldNavigation.PanTo(creatureTarget.transform.position);
+  h.PlayerCamera.Render();Canvas.ForceUpdateCanvases();h.Focus(creatureTarget.gameObject);
+  yield return new WaitForSecondsRealtime(.6f);
   for(int frame=0;frame<3;frame++){
    h.WorldNavigation.PanTo(h.WorldNavigation.target+new Vector3(.4f,0,.2f));
-   yield return null;yield return null;Canvas.ForceUpdateCanvases();CheckClarityProjection(h,false);
+   yield return null;yield return null;Canvas.ForceUpdateCanvases();CheckClarityProjection(h,false,creatureId);
   }
   Click(world.Button);yield return new WaitForSecondsRealtime(.4f);h.Hud.Refresh();
   Need(!h.InWorld&&world.Label.text.IndexOf("MUNDO",StringComparison.OrdinalIgnoreCase)>=0,"same city control becomes world");
