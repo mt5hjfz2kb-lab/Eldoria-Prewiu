@@ -78,12 +78,16 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         assert chapter_text.x>=16 and chapter_text.x+chapter_text.w<=missionw-11,size
         place("breach",w*.52-56,74,112,30)
         # Future utility buttons do not draw or intercept pointer events.
-        navsize,gap=49,14
-        navw=nav_count*navsize+(nav_count-1)*gap
-        navtop=h-100
+        gap=3
+        navsize=min(122,(w-2*m-22-(nav_count-1)*gap)/nav_count)
+        navw=22+nav_count*navsize+(nav_count-1)*gap
+        navtop=h-102
+        dock=place("integrated-dock",(w-navw)*.5,navtop,navw,90)
         for i in range(nav_count):
-            item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
+            item=R(dock.x+11+i*(navsize+gap),navtop+5,navsize,80)
+            assert item.visible(w,h,1.01),size
             touch("nav"+str(i),item)
+            assert item.x>=dock.x and item.x+item.w<=dock.x+dock.w+1,size
         panelw=min(171,w*.42)
         panely=navtop-303-45
         context=place("context",w-m-panelw,panely,panelw,303)
@@ -119,12 +123,16 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         chapter_text=R(17,8,193,32)
         assert chapter_text.x>=16 and chapter_text.x+chapter_text.w<=214,size
         place("breach",w*.49-17,11,34,34)
-        navsize,gap=55,15
-        navw=nav_count*navsize+(nav_count-1)*gap
-        navtop=h-78
+        gap=4
+        navsize=130
+        navw=22+nav_count*navsize+(nav_count-1)*gap
+        navtop=h-97
+        dock=place("integrated-dock",(w-navw)*.5,navtop,navw,90)
         for i in range(nav_count):
-            item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
+            item=R(dock.x+11+i*(navsize+gap),navtop+5,navsize,80)
+            assert item.visible(w,h,1.01),size
             touch("nav"+str(i),item)
+            assert item.x>=dock.x and item.x+item.w<=dock.x+dock.w+1,size
         contextw=234 if h<530 else 220
         contexth=min(330,h-174)
         contexty=75 if h<530 else 118
@@ -166,12 +174,12 @@ def main():
     expected=[
         'Mathf.Clamp(pixelWidth/514f,.91f,3.00f)',
         'At(identity,margin,smallPhone?11f:14f,182,identityHeight)',
-        'float navSize=49,navGap=14',
-        'float navTop=h-100f',
+        'float navGap=3f;',
+        'float navTop=h-102f',
         'float ph=303f',
         'At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50)',
-        'float navSize=55,navGap=15',
-        'float navTop=h-78',
+        'float navGap=4f,navSize=130f;',
+        'float navTop=h-97f',
         'float pw=h<530f?234f:220f',
         'float ph=Mathf.Min(330,h-174f)',
         'At(((RectTransform)actionButton.transform),12,ph-56,pw-24,53)',
