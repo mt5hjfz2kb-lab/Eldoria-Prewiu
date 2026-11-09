@@ -33,7 +33,7 @@ export async function stagePilot(sitePath,sourcePath){
  const originalHash=hash(original);
  const injection='<!-- ELDORIA_PILOT_QA: opt-in preview only; the default game remains unmodified. -->'+
   '\n<meta name="robots" content="noindex,nofollow">'+
-  '\n<script type="module" src="./pilot-bootstrap.mjs"></script>\n';
+  '\n<script type="module" src="./pilot-bootstrap.mjs?v='+staged.find(s=>s.filename==='pilot-bootstrap.mjs').sha256.slice(0,16)+'"></script>\n';
  const modified=body.replace(/<\/body>/i,injection+'</body>');
  if(modified.length>=body.length+800)throw Error('Unexpected preview HTML modification');
  for(const f of staged)await writeFile(join(site,f.filename),f.bytes,{flag:'wx'});
