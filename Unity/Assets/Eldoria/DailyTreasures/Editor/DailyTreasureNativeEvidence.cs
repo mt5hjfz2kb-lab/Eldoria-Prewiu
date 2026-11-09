@@ -690,13 +690,23 @@ namespace Eldoria.DailyTreasures.Editor
                     heroProbe.SetActive(true);
                     Need(panel.ProbeHeroRoomVisibilityForNativeEvidence(),
                         "Visible Lyra room not detected: slash-name lookup regression");
+                    // Blocking the API is not enough: players must NOT SEE
+                    // the optional medallion overlapping an actual hero room.
+                    var heroEntry=FindButton(panel,
+                        "Daily reward / optional medallion");
+                    Need(!heroEntry.gameObject.activeInHierarchy,
+                        "Treasury medallion still overlays canonical Lyra room");
+                    panel.Open();
+                    Need(!panel.IsOpen,
+                        "Treasury modal opened over canonical Lyra room");
                     Need(!panel.PresentCommittedMilestone(
                             "This must not cover real Lyra",
                             "Visual-only rejection probe",true,"milestone:hero:lyra"),
                         "Direct ceremony API improperly covered canonical hero room");
                     heroProbe.SetActive(false);
-                    Need(!panel.ProbeHeroRoomVisibilityForNativeEvidence(),
-                        "Closed Heroes room incorrectly blocks daily reward");
+                    Need(!panel.ProbeHeroRoomVisibilityForNativeEvidence() &&
+                         heroEntry.gameObject.activeInHierarchy,
+                        "Closing Lyra room did not restore the optional treasury medallion");
                     Object.DestroyImmediate(heroProbe);
                     Canvas.ForceUpdateCanvases();
                     pictures.Add(Render(camera,rt,output,width,height,
