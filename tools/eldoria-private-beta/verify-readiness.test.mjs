@@ -25,7 +25,7 @@ test('false self-certification or missing owner approval cannot go live',()=>{
 });
 test('full verified candidate passes; no unnecessary hidden constraint',()=>{
  const b=structuredClone(actual);
- Object.assign(b.distribution,{service_account_connected:true,r2_files_uploaded:true,worker_deployed:true,links_enabled:true});
+ Object.assign(b.distribution,{service_account_connected:true,r2_files_uploaded:true,worker_deployed:true,links_enabled:true,frozen_files:19});
  Object.assign(b.measurement,{real_worker_to_supabase_request_verified:true,actual_events_verified_from_unity:9});
  Object.assign(b.qa,{hosted_private_gameplay_pass:true,full_native_i_v_normal_clock_verified:true,real_mobile_ios_pass:true,real_mobile_android_pass:true});
  b.owner_approval_to_invite=true;
