@@ -32,7 +32,8 @@ namespace Eldoria.BreachWatch.Editor
         [Serializable] public sealed class Shot
         {
             public string file, sha256, selected, realBuilding, actualObjective;
-            public int width, height, buttons;
+            public int width, height, buttons, activeForeignScreenSpaceCanvases;
+            public string[] foreignScreenSpaceCanvasPaths;
             public bool oldCanvasOff, newCanvasIndependent, liveSession, fiveInOneRow, liveBuildingPortrait;
             public float portraitPixels,uiFootprintPercent;
             public float cityCameraOrtho,castleViewportWidth,castleViewportX,castleViewportY;
@@ -325,11 +326,15 @@ namespace Eldoria.BreachWatch.Editor
                 (x.selected != "bastion" || x.liveBuildingPortrait)),
                 "An orientation failed native, independent HUD or five-destination proof");
             var canvasDiagnostics=AuditActualCanvases(ui);
-            int foreignCanvasCount=canvasDiagnostics.Count(c=>c.active &&
-                !c.legacy && !c.independentVigilia &&
-                (c.renderMode=="ScreenSpaceOverlay" ||
-                 c.renderMode=="ScreenSpaceCamera") &&
-                c.livePaintedGraphics>0);
+            // Check every screenshot, not only the final city state: a
+            // separate modal HUD could be created only while Bastion is
+            // selected and disappear before final navigation checks.
+            int foreignCanvasCount=Math.Max(shots.Max(x=>x.activeForeignScreenSpaceCanvases),
+                canvasDiagnostics.Count(c=>c.active &&
+                    !c.legacy && !c.independentVigilia &&
+                    (c.renderMode=="ScreenSpaceOverlay" ||
+                     c.renderMode=="ScreenSpaceCamera") &&
+                    c.livePaintedGraphics>0));
             Debug.Log("VIGILIA_SCREEN_SPACE_CANVAS_AUDIT "+
                 JsonUtility.ToJson(new Report {
                     canvasDiagnostics=canvasDiagnostics,
@@ -957,7 +962,15 @@ namespace Eldoria.BreachWatch.Editor
                             name+"/"+control.name);
                     }
                 }
+                var foreignScreenSpace=AuditActualCanvases(ui)
+                    .Where(c=>c.active && !c.legacy && !c.independentVigilia &&
+                        c.livePaintedGraphics>0 &&
+                        (c.renderMode=="ScreenSpaceOverlay" ||
+                         c.renderMode=="ScreenSpaceCamera"))
+                    .ToArray();
                 return new Shot {
+                    activeForeignScreenSpaceCanvases=foreignScreenSpace.Length,
+                    foreignScreenSpaceCanvasPaths=foreignScreenSpace.Select(c=>c.path).ToArray(),
                     file=name,sha256=HexHash(file),width=w,height=h,
                     selected=selection,realBuilding=ui.CurrentSnapshot?.Building?.Name ?? "",
                     actualObjective=ui.CurrentSnapshot?.Objective ?? "",buttons=nav.Count,
