@@ -1692,7 +1692,13 @@ namespace Eldoria.DailyTreasures
                 float angle=i*Mathf.PI*2f/sparks.Length;
                 float age=Mathf.Max(0f,elapsed-.66f);
                 float distance=age*(34f+(i%4)*13f);
-                float baseY=root.rect.height>root.rect.width?108f:64f;
+                // Sparks must originate at the CURRENT authored chest, not
+                // at an obsolete fixed Y from the old 740x370 theatre.
+                // This also keeps Lyra, Scouts, Vigilants and Bastion effects
+                // attached to the true category-specific chest placement.
+                float baseY=illustratedClosed?
+                    illustratedClosed.rectTransform.anchoredPosition.y:
+                    chest.rectTransform.anchoredPosition.y;
                 sparks[i].rectTransform.anchoredPosition=new Vector2(
                     Mathf.Cos(angle)*distance+Mathf.Sin(age*3.4f+i)*4f,
                     Mathf.Sin(angle)*distance+age*age*15f+baseY);
