@@ -467,18 +467,38 @@ namespace Eldoria.BreachWatch.Editor
                     "Large redundant central title must not cover the real city: "+name);
                 var nav = ui.NavButtons;
                 Need(nav.Count==5 && nav.All(x=>x), "Exactly 5 original independent navigation buttons required");
-                var activeHalo=ui.GetComponentInChildren<BreachWatchSelectionHalo>(true);
-                Need(activeHalo && activeHalo.gameObject.activeInHierarchy && !activeHalo.raycastTarget,
-                    "Warm selected medallion ring absent or intercepting the player's pointer: "+name);
-                Vector3[] haloCorners=new Vector3[4], firstNavCorners=new Vector3[4];
-                activeHalo.rectTransform.GetWorldCorners(haloCorners);
-                ((RectTransform)nav[0].transform).GetWorldCorners(firstNavCorners);
-                var haloCenter=RectTransformUtility.WorldToScreenPoint(camera,
-                    (haloCorners[0]+haloCorners[2])*.5f);
-                var selectedCenter=RectTransformUtility.WorldToScreenPoint(camera,
-                    (firstNavCorners[0]+firstNavCorners[2])*.5f);
-                Need(Vector2.Distance(haloCenter,selectedCenter)<=3.5f,
-                    "Independent warm selection halo is not centered over active Reino emblem: "+name);
+                // An approved medallion image is now ONE authority:
+                // no secondary button background, glyph or extra ring.
+                // A transparent hit-only Image on the Button is permitted,
+                // because it does not paint a duplicate frame or symbol.
+                Need(ui.GetComponentInChildren<BreachWatchSelectionHalo>(true)==null,
+                     "Old duplicated selection halo remains in native scene: "+name);
+                var expectedMedallions=new[]{"castle","provisions","swords","raven","helm"};
+                for(int index=0;index<nav.Count;index++)
+                {
+                    var button=nav[index];
+                    var rootImage=button.GetComponent<Image>();
+                    Need(rootImage && rootImage.raycastTarget &&
+                         rootImage.color.a<=.001f,
+                         "Native navigation must use an invisible, touch-only hit image: "+name);
+                    var painted=button.GetComponentsInChildren<BreachWatchPlate>(true);
+                    Need(painted.Length==1 && painted[0] &&
+                         painted[0].sprite &&
+                         painted[0].sprite.name==expectedMedallions[index] &&
+                         !painted[0].raycastTarget &&
+                         painted[0].type==Image.Type.Simple,
+                         "Incorrect or duplicated approved icon art in "+
+                         name+"/"+button.name);
+                    Need(button.GetComponentsInChildren<BreachWatchGlyph>(true).Length==0,
+                         "Old vector icons still layered under a final medallion in "+
+                         name+"/"+button.name);
+                    var visiblePaint=button.GetComponentsInChildren<Graphic>(true)
+                        .Count(g=>g && g.enabled &&
+                            g.gameObject.activeInHierarchy && g.color.a>.01f);
+                    Need(visiblePaint==1,
+                         "More than one painted icon or backing button is visible in "+
+                         name+"/"+button.name);
+                }
                 float previousRight = -1;
                 bool oneRow = true;
                 float baselineY = float.NaN;
