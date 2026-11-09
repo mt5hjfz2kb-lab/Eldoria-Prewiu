@@ -71,10 +71,10 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             symbolsize=25 if pw<600 else 19
             assert 4+symbolsize+1.5<=symbolsize+8,size
         missionw=min(185,w*.46)
-        place("mission",m,96 if pw<600 else 82,missionw,78)
+        place("mission",m,96 if pw<600 else 82,missionw,86)
         # Without a redundant vector tower, the real chapter inscription
         # keeps its own uninterrupted margin inside the authored stone.
-        chapter_text=R(17,5,missionw-29,20)
+        chapter_text=R(17,5,missionw-29,32)
         assert chapter_text.x>=16 and chapter_text.x+chapter_text.w<=missionw-11,size
         place("breach",w*.52-56,74,112,30)
         # Future utility buttons do not draw or intercept pointer events.
@@ -115,8 +115,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         for i in range(resources):
             place("resource"+str(i),w-m-resw+i*(chip+7),16,chip,41)
             assert 5+30+1.5<=38,size
-        place("mission",m,102,225,83)
-        chapter_text=R(17,8,193,20)
+        place("mission",m,102,225,90)
+        chapter_text=R(17,8,193,32)
         assert chapter_text.x>=16 and chapter_text.x+chapter_text.w<=214,size
         place("breach",w*.49-17,11,34,34)
         navsize,gap=55,15
@@ -181,7 +181,7 @@ def main():
         'resourceChips[i].gameObject.SetActive(i<visibleResources);',
         'utility.gameObject.SetActive(false);',
         'lastNavigationMask=navigationMask;',
-        'At(chapterName.rectTransform,17f,5f,missionWidth-29f,20f);',
+        'At(chapterName.rectTransform,17f,5f,missionWidth-29f,32f);',
         'At(buildingName.rectTransform,18,7,pw-80,28);',
         'At(buildingName.rectTransform,18,8,pw-80,31);',
         'At(identityPower.rectTransform,59,38,165,17);',
