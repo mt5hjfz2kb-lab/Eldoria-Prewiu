@@ -20,6 +20,7 @@ jobs:
           sparse-checkout: |
             Unity/Assets/Eldoria/Branding.meta
             Unity/Assets/Eldoria/Branding/
+            Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs
             tools/eonscar-branding-trial/
           sparse-checkout-cone-mode: false
           lfs: false
