@@ -35,7 +35,6 @@ namespace Eldoria.BreachWatch
         Font font, boldFont, bodyFont, bodyBoldFont;
         RectTransform uiRoot;
         RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, descriptionDivider, buttonRow, utilityRail, centerMark, feedbackPlate;
-        RectTransform actionHammers;
         RectTransform[] resourceChips = new RectTransform[3];
         Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
         Text[] resourceAmounts = new Text[3];
@@ -133,7 +132,7 @@ namespace Eldoria.BreachWatch
         public bool HasSinglePremiumIdentity =>
             identity && identity.GetComponent<BreachWatchPlate>() &&
             identity.GetComponent<BreachWatchPlate>().sprite &&
-            identity.GetComponent<BreachWatchPlate>().sprite.name=="profile_plate" &&
+            identity.GetComponent<BreachWatchPlate>().sprite.name=="profile_bar" &&
             identity.GetComponent<BreachWatchPlate>().type==Image.Type.Sliced &&
             identity.GetComponent<Shadow>() &&
             identity.GetComponentsInChildren<Graphic>(true).Length==4;
@@ -147,7 +146,7 @@ namespace Eldoria.BreachWatch
                     if(!resourceChips[i])return false;
                     var surface=resourceChips[i].GetComponent<BreachWatchPlate>();
                     if(!surface || !surface.sprite ||
-                       surface.sprite.name!="slate_resource" ||
+                       surface.sprite.name!="resource_capsule" ||
                        surface.type!=Image.Type.Sliced)return false;
                 }
                 return true;
@@ -220,7 +219,7 @@ namespace Eldoria.BreachWatch
             UsesExactOwnerApprovedGoldBorder;
         public bool UsesPremiumBurgundyAction =>
             actionPlate && actionPlate.sprite &&
-            actionPlate.sprite.name=="burgundy_action" &&
+            actionPlate.sprite.name=="upgrade_button" &&
             actionPlate.type==Image.Type.Sliced;
         public IReadOnlyList<Button> NavButtons => navButtons;
 
@@ -404,7 +403,7 @@ namespace Eldoria.BreachWatch
             // REPLACEMENT, not a bevel pasted over another panel: one
             // authoritative forged-metal plate from the approved art kit.
             var identitySurface=Plate(identity,BreachWatchPlate.PlateType.Basalt);
-            var finalProfile=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/profile_plate");
+            var finalProfile=Resources.Load<Sprite>("VigiliaArt/OwnerControls/profile_bar");
             if(finalProfile)identitySurface.ApplyIndependentArt(finalProfile,true);
             // The entire visible account plate must prevent accidental
             // click-through to the city, without pretending to navigate.
@@ -427,7 +426,7 @@ namespace Eldoria.BreachWatch
             identityPower=Label(identity,"Realm power",16,TextAnchor.MiddleLeft,Muted);
             resourceRow=Rect("Separate resource stones",uiRoot);
             var originalResourceStone=Resources.Load<Sprite>(
-                "VigiliaArt/PremiumSurfaces/slate_resource");
+                "VigiliaArt/OwnerControls/resource_capsule");
             for(int i=0;i<3;i++)
             {
                 resourceChips[i]=Rect("Resource "+i,resourceRow);
@@ -622,7 +621,7 @@ namespace Eldoria.BreachWatch
             }
             var actionRect=Rect("Original gameplay action / new presentation",panel);
             actionPlate=Plate(actionRect,BreachWatchPlate.PlateType.Action);
-            var premiumButton=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/burgundy_action");
+            var premiumButton=Resources.Load<Sprite>("VigiliaArt/OwnerControls/upgrade_button");
             if(premiumButton)actionPlate.ApplyIndependentArt(premiumButton,true);
             actionButton=Button(actionRect,SubmitSelectedBuilding);
             // A blocked button retains native pointer raycasts so players
@@ -634,10 +633,9 @@ namespace Eldoria.BreachWatch
             actionButton.colors=actionPalette;
             actionPlate.raycastTarget=true;
             actionButton.targetGraphic=actionPlate;
-            actionHammers=Rect("Two original forged hammers / no duplicate button art",actionButton.transform);
-            At(actionHammers,8f,8f,26f,26f);
-            var metalSymbol=actionHammers.gameObject.AddComponent<BreachWatchCrossedHammers>();
-            metalSymbol.raycastTarget=false;
+            // The actual owner-approved finished burgundy art already
+            // includes carved crossed hammers. Never draw a second icon
+            // over that single visual surface; only the LIVE text remains.
             actionLabel=Label(actionButton.transform,"Real action title",17,TextAnchor.MiddleCenter,TextIvory,true);
             Fill(actionLabel.rectTransform,6);
             buttonRow=Rect("Five standalone stone navigation emblems",uiRoot);
@@ -676,7 +674,7 @@ namespace Eldoria.BreachWatch
             }
             feedbackPlate=Rect("Temporary real action requirement tablet",uiRoot);
             var feedbackStone=Plate(feedbackPlate,BreachWatchPlate.PlateType.Resource);
-            var authoredStone=Resources.Load<Sprite>("VigiliaArt/PremiumSurfaces/slate_resource");
+            var authoredStone=Resources.Load<Sprite>("VigiliaArt/OwnerControls/resource_capsule");
             if(authoredStone)feedbackStone.ApplyIndependentArt(authoredStone,true);
             feedbackStone.raycastTarget=false;
             feedback=Label(feedbackPlate,"Action feedback / live or disabled",
@@ -1068,15 +1066,10 @@ namespace Eldoria.BreachWatch
             if(actionLabel && actionButton)
             {
                 var plate=(RectTransform)actionButton.transform;
-                // The reference shows a SMALL forged icon, not a giant
-                // crossed-X obscuring half the call to action. Keep the real
-                // hammer strokes crisp at each physical phone DPI.
-                float hammerSize=Mathf.Clamp(
-                    27f/Mathf.Max(.5f,scaler.scaleFactor),19f,28f);
-                if(actionHammers)
-                    At(actionHammers,8f,(plate.rect.height-hammerSize)*.5f,
-                        hammerSize,hammerSize);
-                float leftInset=Mathf.Clamp(8f+hammerSize+5f,31f,42f);
+                // One original source sprite contains the left-side
+                // hammered ornament. Leave its width entirely clear for
+                // the dynamic upgrade label, no procedural icon overlay.
+                float leftInset=Mathf.Clamp(plate.rect.width*.28f,35f,44f);
                 At(actionLabel.rectTransform,leftInset,3f,
                     Mathf.Max(20f,plate.rect.width-leftInset-7f),
                     Mathf.Max(20f,plate.rect.height-6f));
