@@ -220,7 +220,10 @@ namespace Eldoria.BreachWatch
         public bool UsesPremiumBurgundyAction =>
             actionPlate && actionPlate.sprite &&
             actionPlate.sprite.name=="upgrade_button" &&
-            actionPlate.type==Image.Type.Sliced;
+            actionPlate.type==Image.Type.Simple &&
+            actionPlate.preserveAspect &&
+            !actionPlate.raycastTarget &&
+            actionPlate.transform.parent==actionButton.transform;
         public IReadOnlyList<Button> NavButtons => navButtons;
 
         public static BreachWatchHud Install(ValoriaIntegratedWorld source)
@@ -619,24 +622,35 @@ namespace Eldoria.BreachWatch
                 cross.Ink=Copper;
                 cross.SetVerticesDirty();
             }
+            // Actual owner-approved burgundy CTA is a COMPLETE 246x60
+            // painted motif (including its hammers). Nine-slicing a narrow
+            // 147-unit button with 78px left border exaggerated the hammer
+            // half and squeezed/collided with the text. Render the illustration
+            // ONCE at natural aspect in a shorter well; a separate completely
+            // transparent, full-height hit target provides >=44px phone taps.
             var actionRect=Rect("Original gameplay action / new presentation",panel);
-            actionPlate=Plate(actionRect,BreachWatchPlate.PlateType.Action);
-            var premiumButton=Resources.Load<Sprite>("VigiliaArt/OwnerControls/upgrade_button");
-            if(premiumButton)actionPlate.ApplyIndependentArt(premiumButton,true);
+            var actionHit=actionRect.gameObject.AddComponent<Image>();
+            actionHit.color=new Color(0f,0f,0f,0f);
+            actionHit.raycastTarget=true;
             actionButton=Button(actionRect,SubmitSelectedBuilding);
-            // A blocked button retains native pointer raycasts so players
-            // can read the REAL requirement from RoyalAction.Reason.
+            actionButton.targetGraphic=actionHit;
+            actionButton.transition=Selectable.Transition.None;
+            var originalArt=Resources.Load<Sprite>("VigiliaArt/OwnerControls/upgrade_button");
+            if(!originalArt)
+                throw new InvalidOperationException(
+                    "Vigilia requires the owner's standalone upgrade image");
+            var actionVisual=Rect("One owner-approved real hammered burgundy image",actionRect);
+            actionPlate=Plate(actionVisual,BreachWatchPlate.PlateType.Action);
+            actionPlate.ApplyIndependentArt(originalArt);
+            actionPlate.type=Image.Type.Simple;
+            actionPlate.preserveAspect=true;
+            actionPlate.raycastTarget=false;
+            // A blocked native button retains pointer click feedback but no
+            // fake upgrade command. Dynamic label is the ONLY overlay allowed.
             var explanation=actionRect.gameObject.AddComponent<BreachWatchUnavailableActionHint>();
             explanation.Initialize(this,actionButton);
-            var actionPalette=actionButton.colors;
-            actionPalette.disabledColor=new Color(.83f,.77f,.69f,1f);
-            actionButton.colors=actionPalette;
-            actionPlate.raycastTarget=true;
-            actionButton.targetGraphic=actionPlate;
-            // The actual owner-approved finished burgundy art already
-            // includes carved crossed hammers. Never draw a second icon
-            // over that single visual surface; only the LIVE text remains.
-            actionLabel=Label(actionButton.transform,"Real action title",17,TextAnchor.MiddleCenter,TextIvory,true);
+            actionLabel=Label(actionButton.transform,"Real action title",17,
+                TextAnchor.MiddleCenter,TextIvory,true);
             Fill(actionLabel.rectTransform,6);
             buttonRow=Rect("Five standalone stone navigation emblems",uiRoot);
             var navLine=Rect("Subtle sculpted copper linkwork / no bottom HUD bar",buttonRow);
@@ -1085,10 +1099,15 @@ namespace Eldoria.BreachWatch
                 // One original source sprite contains the left-side
                 // hammered ornament. Leave its width entirely clear for
                 // the dynamic upgrade label, no procedural icon overlay.
+                var illustration=(RectTransform)actionPlate.transform;
+                float paintedHeight=Mathf.Min(33f,plate.rect.height-8f);
+                At(illustration,0f,(plate.rect.height-paintedHeight)*.5f,
+                    plate.rect.width,paintedHeight);
                 float leftInset=Mathf.Clamp(plate.rect.width*.25f,31f,38f);
-                At(actionLabel.rectTransform,leftInset,3f,
+                At(actionLabel.rectTransform,leftInset,
+                    (plate.rect.height-paintedHeight)*.5f+3f,
                     Mathf.Max(20f,plate.rect.width-leftInset-7f),
-                    Mathf.Max(20f,plate.rect.height-6f));
+                    Mathf.Max(18f,paintedHeight-6f));
             }
 
             // Render only the original selected building in its native
