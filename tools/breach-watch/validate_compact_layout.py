@@ -57,12 +57,12 @@ def check(size:tuple[int,int]):
         assert r.w*scale>=43.5 and r.h*scale>=43.5,(
             f"{size}: {name} physical touch area {r.w*scale:.1f}x{r.h*scale:.1f}")
     if portrait:
-        place("identity",m,11,182,55)
+        place("identity",m,11 if pw<600 else 14,182,52 if pw<600 else 43)
         right=w-(m+182+9+m)
         chip=min(70,max(58,(right-8)/3))
         for i in range(3):
-            place("resource"+str(i),w-m-(3*chip+8)+i*(chip+4),18,chip,38)
-        place("mission",m,95,min(200,w*.49),80)
+            place("resource"+str(i),w-m-(3*chip+8)+i*(chip+4),18 if pw<600 else 17,chip,38 if pw<600 else 28)
+        place("mission",m,96 if pw<600 else 82,min(185,w*.46),78)
         place("breach",w*.52-56,74,112,30)
         for i in range(3):
             place("disabled seal"+str(i),m,h-306+i*45,37,37)
@@ -138,7 +138,7 @@ def main():
     source=SOURCE.read_text(encoding="utf-8")
     expected=[
         'Mathf.Clamp(pixelWidth/514f,.91f,3.00f)',
-        'At(identity,margin,11,182,55)',
+        'At(identity,margin,smallPhone?11f:14f,182,identityHeight)',
         'float navSize=49,navGap=14',
         'float navTop=h-100f',
         'float ph=303f',
