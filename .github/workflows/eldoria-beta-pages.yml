@@ -95,7 +95,10 @@ jobs:
               time.sleep(5)
           PY
   publish-mobile11-world-anchored:
-    if: github.event_name == 'push'
+    # P0 owner iPhone restart: never replace restored beta10 just because
+    # a workflow file changes. Future newer builds require an explicit,
+    # reviewed [publish-mobile11] commit and fresh physical-device gates.
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[publish-mobile11]')
     runs-on: ubuntu-latest
     timeout-minutes: 115
     environment:
