@@ -1131,10 +1131,12 @@ namespace Eldoria.BreachWatch
                 // title and objective fraction too near the source-metal rim.
                 // Shift live ink INSIDE the same authentic complete illustration.
                 At(objective,margin,100,256,fullObjective?122:92);
-                At(chapterName.rectTransform,66,14,174,20);
+                At(chapterName.rectTransform,66,14,180,20);
                 At(chapterObjective.rectTransform,66,40,176,fullObjective?55:23);
                 At(chapterProgress.rectTransform,66,fullObjective?99:71,176,18);
-                chapterName.fontSize=13;
+                // 844x390 actual native pixels: 13 at scale .86 gives only
+                // 11.18px. Enlarge the live caption rather than weaken QA.
+                chapterName.fontSize=14;
                 chapterObjective.fontSize=15;
                 chapterProgress.fontSize=14;
 
