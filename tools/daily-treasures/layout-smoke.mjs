@@ -27,8 +27,12 @@ for(const [name,regex] of [
   ['real 7-day reward data on cards',/DailyTreasureRules\.ForDay\(i\+1/],
   ['focused reward view',/header\.gameObject\.SetActive\(false\)/],
   ['centralized ordinary rewards',/quietRewards\?\(portrait\?64f:35f\)/],
-  ['premium chest expanded on short landscape',/portrait\?246f:160f/],
-  ['readable day seven premium shelf',/portrait\?138f:64f/],
+  ['cinematic opening chest enlarged',/artHeight=openingChest\?\(portrait\?265f:194f\)/],
+  ['intentional opening width',/openingChest\|\|paidChest\?650f:740f/],
+  ['responsive opening height',/focusedQuiet\?330f:openingChest\?300f:370f/],
+  ['readable day seven premium shelf',/portrait\?158f:76f/],
+  ['larger genuine card width',/maxPaidCardW=prizeCount<=2\?190f:portrait\?170f:146f/],
+  ['larger genuine card height',/prizeRows==2\?72f:/],
   ['real unaltered illustrated reward cards',/DailyTreasureRewardPresentation\.FromCommittedReward\(reward\)/],
   ['real command gateway rewards',/new GameCommand\(Guid\.NewGuid\(\)\.ToString\("N"\)/]
 ])assert.match(code,regex,name);
@@ -123,65 +127,88 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   const receiptTop=(portrait?-140:-95)+(portrait?165:118)/2;
   assert.ok(skipBottom>receiptTop+10,
     `${w}x${h}: skip button touches the paid receipt`);
-  // The actual paid-items reveal is independent from the seven-day calendar.
-  // Distinct layouts for 1, 2 and 4 real icon cards must not collide with
-  // each other, the resource count labels, the chest or the Continue button.
+  // The premium opening is NOT the old 740x370 empty lower third. The
+  // authored coffer becomes the focus in an intimate frame before real
+  // credited cards take their place. These are actual Unity RectTransforms,
+  // not a concept render.
+  const openW=Math.min(w-24,portrait?440:650);
+  const openH=Math.min(h-20,portrait?450:300);
+  const openingChest=rect(0,portrait?64:42,330,portrait?265:194);
+  const openingCaption=rect(0,portrait?-132:-100,openW-45,portrait?45:32);
+  assert.ok(openingChest.x0>=-openW/2-0.01 &&
+            openingChest.x1<=openW/2+0.01 &&
+            openingChest.y1<=openH/2-8,
+    `${w}x${h}: premium opening art no longer fits its cinematic stage`);
+  assert.ok(openingChest.y0>=openingCaption.y1+15 &&
+            openingCaption.y0>=-openH/2+15,
+    `${w}x${h}: cinematic chest, caption and lower border are cramped`);
+  assert.ok(openH<(portrait?700:370),
+    `${w}x${h}: old oversized empty opening panel returned`);
+
+  // A *real* claim reveals the original chest and receipt cards on a denser
+  // landscape stage. Day four (two rewards) receives larger individual
+  // illustrated cards; day seven (four rewards) uses nearly the full width.
+  const paidW=Math.min(w-24,portrait?440:650);
+  const paidH=Math.min(h-20,portrait?700:370);
+  const chest=rect(0,portrait?116:89,portrait?284:300,portrait?246:170);
+  const captionY=portrait?(paidH<680?-217:-232):-15;
+  const captionH=portrait?(paidH<680?39:50):29;
+  const caption=rect(0,captionY,paidW-45,captionH);
+  const shelf=rect(0,portrait?-115:-69,paidW-34,portrait?158:76);
+  const claim=rect(0,-paidH/2+13+54/2,
+    Math.min(paidW-30,portrait?325:405),54);
+  assert.ok(chest.y1<=paidH/2+eps && chest.y0>=caption.y1+1,
+    `${w}x${h}: final authored chest obscures actual reward caption`);
+  assert.ok(noOverlap(shelf,caption)&&noOverlap(caption,claim)&&
+            noOverlap(shelf,claim),
+    `${w}x${h}: paid caption, inventory and Continue overlap`);
   for(const count of [1,2,4])
   {
-    const compact=portrait&&ph<680;
-    const shelfH=portrait?138:64;
-    const shelfY=portrait?-115:-69;
-    const resultY=compact?-217:portrait?-232:-15;
-    const resultH=compact?39:portrait?50:29;
-    const shelf=rect(0,shelfY,pw-34,shelfH);
-    const result=rect(0,resultY,pw-45,resultH);
-    const claim=rect(0,-ph/2+13+54/2,Math.min(pw-30,portrait?325:405),54);
-    assert.ok(noOverlap(shelf,result),
-      `${w}x${h}: ${count} illustrated item cards cover the receipt title`);
-    assert.ok(noOverlap(result,claim),
-      `${w}x${h}: ${count} illustrated item receipt covers Continue`);
-    assert.ok(noOverlap(shelf,claim),
-      `${w}x${h}: ${count} original artwork frames cover Continue`);
     const cols=portrait&&count>=3?2:count;
     const rows=Math.ceil(count/cols);
     const prizeGap=portrait?8:6;
-    const cardW=Math.min(140,(pw-38-(cols-1)*prizeGap)/cols);
-    const cardH=rows===2?65:portrait?(compact?76:89):62;
-    const actual=[];
+    const maximum=count<=2?190:portrait?170:146;
+    const cardW=Math.min(maximum,
+      (paidW-38-(cols-1)*prizeGap)/cols);
+    const cardH=rows===2?72:portrait?(paidH<680?82:92):72;
+    const cards=[];
     for(let i=0;i<count;i++)
     {
-      const row=Math.floor(i/cols),column=i%cols;
-      const inRow=Math.min(cols,Math.max(0,count-row*cols));
-      const rowWidth=inRow*cardW+Math.max(0,inRow-1)*prizeGap;
-      const x=-rowWidth/2+column*(cardW+prizeGap)+cardW/2;
-      const y=rows===1?0:row===0?cardH/2+prizeGap/2:-cardH/2-prizeGap/2;
-      const card=rect(x,y,cardW,cardH);
-      assert.ok(card.x0>=-(pw-34)/2-0.1 && card.x1<=(pw-34)/2+0.1 &&
-                card.y0>=-shelfH/2-0.1 && card.y1<=shelfH/2+0.1,
-        `${w}x${h}: earned artwork slot ${i+1} escapes shelf`);
-      for(const other of actual)assert.ok(noOverlap(card,other),
-        `${w}x${h}: reward item art overlaps another paid item`);
-      actual.push(card);
-
-      // Paid days 4 and 7 use a legible horizontal trio on a 62-89px
-      // frame: full-height emblem LEFT, independent name and amount RIGHT.
-      // Old 10px-high vertical labels rendered EMPTY on genuine Unity PNGs.
-      assert.ok(cardH<110,`${w}x${h}: unexpected special card geometry`);
-      const frame=rect(0,0,cardW,cardH);
+      const row=Math.floor(i/cols),col=i%cols;
+      const itemsInRow=Math.min(cols,count-row*cols);
+      const rowWidth=itemsInRow*cardW+(itemsInRow-1)*prizeGap;
+      const x=-rowWidth/2+col*(cardW+prizeGap)+cardW/2;
+      const y=rows===1?0:row===0?cardH/2+prizeGap/2:
+                                           -cardH/2-prizeGap/2;
+      const frame=rect(x,y,cardW,cardH);
+      assert.ok(frame.x0>=shelf.x0+1 && frame.x1<=shelf.x1-1 &&
+                frame.y0>=shelf.y0+1 && frame.y1<=shelf.y1-1,
+        `${w}x${h}: real paid card ${i+1} exceeds compact shelf`);
+      for(const other of cards)assert.ok(noOverlap(frame,other),
+        `${w}x${h}: real paid cards overlap one another`);
+      cards.push(frame);
+      // Precisely mirror Unity's independent icon, item title and actual
+      // amount. Enlarged 18px quantities require 26px high rects; the
+      // previous 23px rect would fail the genuine native typography gate.
       const icon=rect(-cardW/2+27,0,43,43);
-      const title=rect(24,12,cardW-62,27);
-      const quantity=rect(24,-15,cardW-62,23);
-      for(const [name,box] of [['icon',icon],['name',title],['amount',quantity]])
-        assert.ok(box.x0>=frame.x0+1&&box.x1<=frame.x1-1&&
-                  box.y0>=frame.y0+1&&box.y1<=frame.y1-1,
-          `${w}x${h}: paid ${name} clips outside item border`);
-      assert.ok(noOverlap(icon,title)&&noOverlap(icon,quantity)&&
-                noOverlap(title,quantity),
-        `${w}x${h}: paid item icon/name/quantity overlap`);
-      assert.ok(title.y1-title.y0>=10*1.35&&
-                quantity.y1-quantity.y0>=16*1.35,
-        `${w}x${h}: paid item font lines have insufficient height`);
+      const labelWidth=cardW-62;
+      const labelX=cardW/2-labelWidth/2-7;
+      const title=rect(labelX,12,labelWidth,27);
+      const amount=rect(labelX,-16,labelWidth,26);
+      const cardBounds=rect(0,0,cardW,cardH);
+      for(const [name,box] of [['icon',icon],['name',title],['amount',amount]])
+        assert.ok(box.x0>=cardBounds.x0+1 && box.x1<=cardBounds.x1-1 &&
+                  box.y0>=cardBounds.y0+1 && box.y1<=cardBounds.y1-1,
+          `${w}x${h}: painted ${name} clips an earned card`);
+      assert.ok(noOverlap(icon,title)&&noOverlap(icon,amount)&&
+                noOverlap(title,amount),
+        `${w}x${h}: original item art, name and amount overlap`);
+      const nameSize=cardW>=170?12:11,amountSize=18;
+      assert.ok(27>=nameSize*1.35 && 26>=amountSize*1.35,
+        `${w}x${h}: text rectangles will clip grown reward fonts`);
     }
+    assert.ok(cardW>=(portrait?160:140),
+      `${w}x${h}: actual item frames too narrow for a premium receipt`);
   }
   // Normal resource-only days are intentionally NOT shown in a tiny
   // empty chest position: 1–2 originally illustrated cards are centered,
