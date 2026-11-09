@@ -340,10 +340,13 @@ namespace Eldoria.BreachWatch.Editor
                 activeForeignScreenSpaceCanvases=foreignCanvasCount,
                 status = "UNITY_NATIVE_INDEPENDENT_CAPTURED_ART_REVIEW_PENDING",
                 source = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? "local",
-                scene = Scene, note = "Genuine Unity play mode, authentic disposable Valoria session; only one new Canvas; old Canvas disabled; real Bastion selection. No Android/WebGL certification.",
+                scene = Scene, note = "Genuine Unity play mode and disposable Valoria session; original RoyalHUD Canvas disabled; complete other-Canvas census attached. No ART_APPROVED or Android/WebGL certification.",
                 screenshotCount = shots.Count, functioningNewNavigationClicks = pointerClicks,
-                oldCanvasVisible = 0, saveUnchanged = before == after,
-                oldHudGraphicsReused = false, artworkApproved = false, androidTested = false,
+                oldCanvasVisible = canvasDiagnostics.Count(c=>c.legacy && c.active),
+                saveUnchanged = before == after,
+                oldHudGraphicsReused = canvasDiagnostics.Any(c=>c.legacy && c.active &&
+                    c.livePaintedGraphics>0),
+                artworkApproved = false, androidTested = false,
                 shots = shots.ToArray()
             };
             File.WriteAllText(Path.Combine(dir,"BreachWatchNativeEvidence.json"),JsonUtility.ToJson(report,true));
