@@ -391,4 +391,19 @@ assert.match(panel,/prizeCount<=1\?340f:448f/);
 assert.match(panel,/focusedQuiet\?430f:openingChest\?450f:700f/);
 assert.match(native,/VerifyContentSizedQuietReward\(panel,/);
 assert.match(native,/Ordinary paid item occupies giant mostly empty artwork/);
+// The official Unity 6000.3 scripting symbol enables this optional save
+// field and command in the real game. The daily C# integration project
+// declares its own symbol; pre-existing standalone management/retention
+// projects compile their historical core WITHOUT editing foreign-owned
+// Smoke.csproj files. This is checked by actually running both projects
+// in daily-treasures-domain.yml, not only by a grep.
+const dailyGatewayProject=fs.readFileSync(
+  'tools/daily-treasures/Gateway.Tests.csproj','utf8');
+const dailyCI=fs.readFileSync(
+  '.github/workflows/daily-treasures-domain.yml','utf8');
+assert.match(domain,/#if UNITY_6000_0_OR_NEWER \|\| DAILY_TREASURE_FEATURE[\s\S]*?DailyTreasureState DailyTreasures/);
+assert.match(gateway,/#if UNITY_6000_0_OR_NEWER \|\| DAILY_TREASURE_FEATURE[\s\S]*?case "ClaimDailyTreasure":/);
+assert.match(dailyGatewayProject,/DefineConstants>\$\(DefineConstants\);DAILY_TREASURE_FEATURE/);
+assert.match(dailyCI,/tools\/early-retention\/Smoke.csproj/);
+assert.match(dailyCI,/tools\/ui-v3-domain-smoke\/Smoke.csproj/);
 console.log('PASS daily treasures gateway integration source invariants');
