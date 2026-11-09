@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T13:25:40.315Z",
+  "updated_at": "2026-11-09T13:30:24.790Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2877,7 +2877,8 @@
         ".github/workflows/ui-v3-domain-smoke.yml",
         "tools/early-retention/Smoke.csproj",
         ".github/workflows/early-retention-domain.yml",
-        "tools/early-retention/Program.cs"
+        "tools/early-retention/Program.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs"
       ],
       "resources": [],
       "dependencies": [
@@ -2927,7 +2928,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "V3 source smoke PASS; unlock tests in tools/early-retention/Program.cs still assert B1/B2 pretest shortcuts deliberately removed in mobile10 and should be rebaselined to narrative-gated Bastion III without editing gameplay. Unity native and beta publication awaiting lease.",
+      "next": "PR183 includes native PlayMode regression in existing paid Sawmill test measuring real timer/building camera pan and off-camera, plus three green Ubuntu source gates. Run native once PR181 releases Windows. PR179 overlay/focused probe ready; preserve other workstreams.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
