@@ -97,6 +97,15 @@ assert.match(panel,/FindLiteralVigiliaCanvas\(\)/);
 assert.match(panel,/candidate\.gameObject\.name=="VIGILIA \/ independent canvas"/);
 assert.match(panel,/HasVisibleCanonicalHeroRoom\(\)/);
 assert.match(panel,/cachedCanonicalHeroRoom\.gameObject\.activeInHierarchy/);
+// Heroes may be constructed later than the treasury. Keep same-frame
+// detection without allocating an array in a 60fps Android Update loop.
+// Unity 6000.3 explicitly supports the reused List<T> overload.
+assert.match(panel,/readonly List<RectTransform> heroRoomSearchBuffer/);
+assert.match(panel,/originalSafeArea\.GetComponentsInChildren\(\s*true,heroRoomSearchBuffer\)/);
+const heroFinder=panel.split('bool HasVisibleCanonicalHeroRoom()')[1]
+  ?.split('bool HasVisibleVigiliaBuildingPanel()')[0] || '';
+assert.doesNotMatch(heroFinder,/GetComponentsInChildren<RectTransform>\(true\)/,
+  'Canonical hero search must not allocate a new array every mobile frame');
 assert.doesNotMatch(panel,/GameObject\.Find\("VIGILIA \/ independent canvas"\)/);
 assert.doesNotMatch(panel,/GameObject\.Find\("Heroes \/ canonical destination"\)/);
 assert.match(panel,/canvas\.transform\.Find\("Safe composition"\)/);
