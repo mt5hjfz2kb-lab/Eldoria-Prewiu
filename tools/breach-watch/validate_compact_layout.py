@@ -77,7 +77,7 @@ def check(size:tuple[int,int]):
         context=place("context",w-m-panelw,panely,panelw,303)
         touch("close",R(context.x+panelw-55,context.y+3,50,50))
         touch("action",R(context.x+12,context.y+303-53,panelw-24,50))
-        info=R(13,147,panelw-26,34)
+        info=R(13,140,panelw-26,42)
         costlabel=R(13,191,panelw-26,15)
         costdata=R(13,208,panelw-26,24)
         state=R(13,232,panelw-26,18)
