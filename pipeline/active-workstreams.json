@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T16:41:53.809Z",
+  "updated_at": "2026-11-09T16:43:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6665,16 +6665,18 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 26,
+      "ownership_revision": 27,
       "write_scope_released": false,
-      "phase": "VIGILIA_ALPHA18_FIRST_SCREEN_NATIVE_PASS_VISUAL_FIDELITY_REWORK_PENDING",
-      "next": "Current exact PR173 native run 42630398578 passed eight screenshots and gameplay; source artwork uses transparent true Bastion preview with 18%-opacity brass frame. The visual gain is limited (~0.35–0.72% pixels vs previous photo); commission a larger authorial SINGLE-SURFACE UI change rather than more decorative microtweaks. Keep draft; do not merge/publish until visual approval.",
+      "phase": "VIGILIA_NATIVE_EXACT_HEAD_BREACHWATCH_UNIFIED_ART_QA",
+      "next": "Execute Unity 6000.3.23f1 existing .github/workflows/breach-watch-native.yml on exact current PR173 HEAD; download genuine 8 PNG and report, inspect live overlay canvas census, compare vs source reference, fix art defects, repeat, then release Windows; no merge or publishing until actual art/game QA.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-09T13:46:31.554Z",
-      "runner_claim_basis": "Formal lease release by PR181 at 2026-11-09T13:41:12.992Z; active claim zero at CAS; user explicitly requests PR173 visual A/B continuation without background schedule. Unity workflow has independent live process + lease checks.",
+      "runner_claimed_at": "2026-11-09T16:43:00Z",
+      "runner_claim_basis": "PR181 formally released after failed isolated native run42655206846 at 2026-11-09T16:41:53.809Z. PR173 user-directed completion requires exact-head Unity eight view + Canvas audit; all holders zero CAS. No other workstream touched.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
