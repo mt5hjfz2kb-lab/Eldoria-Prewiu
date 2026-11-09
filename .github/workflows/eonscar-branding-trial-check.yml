@@ -29,3 +29,5 @@ jobs:
           node-version: '22'
       - name: Verify opt-in scope, Unity metadata and no gameplay mutation
         run: node tools/eonscar-branding-trial/verify.mjs
+      - name: Verify nine responsive and safe-area viewport geometries
+        run: node tools/eonscar-branding-trial/layout-smoke.mjs
