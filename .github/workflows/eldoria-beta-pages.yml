@@ -163,7 +163,7 @@ jobs:
       - name: Checkout audited, frozen opt-in Pages pilot scripts
         uses: actions/checkout@v4
         with:
-          ref: 231328bbfd271726c8527ad06b274f29ebf0c941
+          ref: a3ef98d3a3685c509576479f4da2aab2331dd94d
           sparse-checkout: |
             tools/eldoria-private-beta/pages
             tools/eldoria-private-beta/native/ux/ValoriaIntegratedWorld.cs.txt
@@ -237,7 +237,9 @@ jobs:
           # an exact native build of the source-defined signal emitter passes.
           # Freeze the tested opt-in preview scripts. Never substitute a
           # moving branch or unreviewed beta source during a Pages release.
-          test "$(git -C pilot-source rev-parse HEAD)" = 231328bbfd271726c8527ad06b274f29ebf0c941
+          # P0 iPhone restart breadcrumbs are opt-in/local to pilot only;
+          # no change to shipped Unity, no claim of physical mobile fix.
+          test "$(git -C pilot-source rev-parse HEAD)" = a3ef98d3a3685c509576479f4da2aab2331dd94d
           node --test pilot-source/tools/eldoria-private-beta/pages/*.test.mjs
           node pilot-source/tools/eldoria-private-beta/pages/pilot-stage.mjs site/beta-native325 pilot-source/tools/eldoria-private-beta/pages
           node --check site/beta-native325/play.js
