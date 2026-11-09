@@ -456,10 +456,14 @@ namespace Eldoria.BreachWatch.Editor
                 Need(ui.HasOwnerApprovedUtilityArtwork,
                     "The three compact utility seals must match the separately cropped "+
                     "gold medallions in the owner's approved UI, not generic hexagons");
-                Need(ui.BuildingPanel.GetComponentsInChildren<BreachWatchPanelInk>(true).Length==1 &&
-                     !ui.BuildingPanel.GetComponent<BreachWatchPlate>() &&
-                     ui.BuildingPanel.GetComponent<BreachWatchPanelInk>().raycastTarget,
-                     "Superseded stacked card or pass-through background remains beneath the final gold frame: "+name);
+                var mineral=ui.BuildingPanel.GetComponent<Image>();
+                Need(mineral && mineral.sprite &&
+                     mineral.sprite.name=="panel_fill" &&
+                     mineral.type==Image.Type.Simple && mineral.raycastTarget &&
+                     ui.BuildingPanel.GetComponentsInChildren<BreachWatchPanelInk>(true).Length==0 &&
+                     !ui.BuildingPanel.GetComponent<BreachWatchPlate>(),
+                     "Old procedural card mesh or duplicate border still exists in "+
+                     "place of the real owner-reference mineral material: "+name);
                 Need(ui.UsesCompactRealmCrest,
                     "Compact circular Valoria crest missing, or discarded red header returned: "+name);
                 Need(!ui.GetComponentsInChildren<Text>(true).Any(t=>
