@@ -39,7 +39,7 @@ for(const [name,regex] of [
   ['centralized ordinary rewards',/quietRewards\?\(portrait\?64f:35f\)/],
   ['cinematic opening chest enlarged',/artHeight=openingChest\?\(portrait\?265f:194f\)/],
   ['intentional opening width',/openingChest\|\|paidChest\?650f:740f/],
-  ['responsive opening height',/focusedQuiet\?330f:openingChest\?300f:370f/],
+  ['responsive opening height',/focusedQuiet\?330f:openingChest\?300f:\s*roomyCalendar\?420f:370f/],
   ['readable day seven premium shelf',/portrait\?158f:76f/],
   ['larger genuine card width',/maxPaidCardW=prizeCount<=2\?190f:portrait\?170f:146f/],
   ['larger genuine card height',/prizeRows==2\?72f:/],
