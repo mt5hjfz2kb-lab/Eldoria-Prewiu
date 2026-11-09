@@ -224,8 +224,10 @@ assert.match(panel,/milestoneBannerCaption\.text="EL REINO CRECE"/);
 assert.match(panel,/new Color\(\.050f,\.048f,\.046f,\.58f\)/);
 assert.match(panel,/milestoneRule=Plate\(ruleRect/);
 assert.match(panel,/Place\(milestoneRule\.rectTransform/);
-assert.match(panel,/float headingY=portrait\?panelH\*\.29f:panelH\*\.405f/);
-assert.match(panel,/milestoneBannerCaption\.fontSize=portrait\?18:19/);
+assert.match(panel,/bool cityStage=currentStage==DailyTreasureStageKind\.Bastion/);
+assert.match(panel,/float headingY=cityStage\?panelH\*\.405f:/);
+assert.match(panel,/milestoneBannerCaption\.fontSize=cityStage\?/);
+assert.match(native,/Actual milestone title is pasted over the original coffer lid/);
 const milestoneBannerSource=panel.split('milestoneBanner=NewRect(')[1]
   .split('milestoneBanner.gameObject.SetActive(false);')[0];
 assert.doesNotMatch(milestoneBannerSource,/ApplyAuthoredFrame\(|Relief\(/,
