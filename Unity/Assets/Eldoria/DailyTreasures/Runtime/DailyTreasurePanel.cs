@@ -1036,7 +1036,14 @@ namespace Eldoria.DailyTreasures
             {
                 // The illustrated cards ARE the reward reveal; avoid putting
                 // a wall of small text beneath an otherwise cinematic chest.
-                resultText.text=ceremonialTitle+"\nGuardado en tu inventario y buzón";
+                // Landscape leaves only a small gap between the original
+                // full-size illustrated chest and the illustrated prize row.
+                // A forced two-line receipt there was vertically truncated.
+                // The full claim details live in the mailbox and icon cards.
+                bool portrait=root.rect.height>root.rect.width;
+                resultText.text=portrait?
+                    ceremonialTitle+"\nGuardado en tu inventario y buzón":
+                    ceremonialTitle+" · GUARDADO";
                 prizeShelf.gameObject.SetActive(true);
                 prizeAnimating=!immediate;
                 prizeRevealStarted=Time.unscaledTime;
