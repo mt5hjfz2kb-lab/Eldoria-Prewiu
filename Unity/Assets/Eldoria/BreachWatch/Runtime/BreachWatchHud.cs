@@ -61,6 +61,7 @@ namespace Eldoria.BreachWatch
         bool fullObjective;
         bool lastPortrait;
         int lastWidth=-1,lastHeight=-1;
+        int lastNavigationMask=-1,lastResourceCount=-1;
         UnityEngine.Rect lastSafeArea=UnityEngine.Rect.zero;
         bool lastWorldMode;
         float nextRefresh;
@@ -497,6 +498,11 @@ namespace Eldoria.BreachWatch
             questHit.targetGraphic=questPlate;
             questHit.interactable=true;
             utilityRail=Rect("Freestanding secondary seals",uiRoot);
+            // These are visual assets for future REAL destinations, not usable
+            // Chapter-I controls. Keep their subtree dormant until a live
+            // screen and route are implemented; disabled-looking fake buttons
+            // still imply functionality and clutter the playable world.
+            utilityRail.gameObject.SetActive(false);
             // No fake buttons: these destinations are not part of the first
             // proof. Keep their artistic seals, but make disabled state explicit.
             foreach(var design in new [] {
@@ -775,6 +781,15 @@ namespace Eldoria.BreachWatch
             var result=host.Submit(action);SetFeedback(result.Message);
             RenderNow();
         }
+        // Do not expose an icon before its REAL gameplay destination exists.
+        // Army/Heroes art remains authored but dormant in this first-screen
+        // proof; World becomes visible only on canonical unlock.
+        int NavigationMask()
+        {
+            int mask=(1<<0)|(1<<1);
+            if(host && host.CanOpen(RoyalSection.World))mask|=1<<3;
+            return mask;
+        }
         void Navigate(int index)
         {
             if(!host)return;
@@ -861,6 +876,11 @@ namespace Eldoria.BreachWatch
             else Stretch(uiRoot);
 
             bool portrait=pixelHeight>pixelWidth;
+            int navigationMask=NavigationMask();
+            int visibleNav=0;
+            for(int i=0;i<navButtons.Length;i++)
+                if((navigationMask & (1<<i))!=0)visibleNav++;
+            int visibleResources=snapshot!=null && snapshot.ShowFood?3:2;
             // The owner's selected city view deliberately shows the WHOLE
             // road, bridge and Bastion instead of a giant castle closeup.
             // This belongs to the new UI only and never changes gameplay
@@ -899,8 +919,10 @@ namespace Eldoria.BreachWatch
                 identityPower.fontSize=smallPhone?14:12;
 
                 float rightSpace=w-(margin+182+9+margin);
-                float chip=Mathf.Min(70f,Mathf.Max(58f,(rightSpace-8f)/3f));
-                float resourcesWidth=3*chip+8f;
+                float chip=visibleResources==2
+                    ?Mathf.Min(85f,Mathf.Max(72f,(rightSpace-4f)/2f))
+                    :Mathf.Min(70f,Mathf.Max(58f,(rightSpace-8f)/3f));
+                float resourcesWidth=visibleResources*chip+4f*(visibleResources-1);
                 float chipHeight=smallPhone?38f:28f;
                 float symbolSize=smallPhone?25f:19f;
                 float symbolTop=(chipHeight-symbolSize)*.5f;
@@ -908,6 +930,8 @@ namespace Eldoria.BreachWatch
                     resourcesWidth,chipHeight);
                 for(int i=0;i<3;i++)
                 {
+                    resourceChips[i].gameObject.SetActive(i<visibleResources);
+                    if(i>=visibleResources)continue;
                     At(resourceChips[i],i*(chip+4f),0,chip,chipHeight);
                     At(resourceIllustrations[i].rectTransform,
                         4f,symbolTop,symbolSize,symbolSize);
@@ -937,18 +961,23 @@ namespace Eldoria.BreachWatch
                 for(int i=0;i<utilityRail.childCount;i++)
                 {
                     var utility=(RectTransform)utilityRail.GetChild(i);
-                    utility.gameObject.SetActive(i<3);
+                    utility.gameObject.SetActive(false);
                     At(utility,0,i*45f,37,37);
                 }
 
                 float navSize=49,navGap=14;
-                float navWidth=5*navSize+4*navGap;
+                float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
                 float navTop=h-100f;
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,64);
-                navFiligree.Configure(navSize+navGap,navSize);
+                navFiligree.Configure(navSize+navGap,navSize,visibleNav);
+                int navColumn=0;
                 for(int i=0;i<5;i++)
-                    At((RectTransform)navButtons[i].transform,
-                        i*(navSize+navGap),3,navSize,navSize);
+                {
+                    bool visible=(navigationMask & (1<<i))!=0;
+                    navButtons[i].gameObject.SetActive(visible);
+                    if(visible)At((RectTransform)navButtons[i].transform,
+                        navColumn++*(navSize+navGap),3,navSize,navSize);
+                }
 
                 // Approved portrait reference places the card across
                 // roughly one third of the screen rather than nearly half.
@@ -1004,11 +1033,15 @@ namespace Eldoria.BreachWatch
                 identityName.fontSize=20;
                 identityPower.fontSize=14;
 
-                float chip=Mathf.Min(100,Mathf.Max(82f,(w*.28f-12f)/3f));
-                float resourcesWidth=3*chip+14;
+                float chip=visibleResources==2
+                    ?Mathf.Min(110f,Mathf.Max(82f,(w*.28f-7f)/2f))
+                    :Mathf.Min(100f,Mathf.Max(82f,(w*.28f-12f)/3f));
+                float resourcesWidth=visibleResources*chip+7f*(visibleResources-1);
                 At(resourceRow,w-margin-resourcesWidth,16,resourcesWidth,43);
                 for(int i=0;i<3;i++)
                 {
+                    resourceChips[i].gameObject.SetActive(i<visibleResources);
+                    if(i>=visibleResources)continue;
                     At(resourceChips[i],i*(chip+7),0,chip,41);
                     At(resourceIllustrations[i].rectTransform,5,5,30,30);
                     At(resourceAmounts[i].rectTransform,38,5,chip-41,30);
@@ -1030,18 +1063,23 @@ namespace Eldoria.BreachWatch
                 for(int i=0;i<utilityRail.childCount;i++)
                 {
                     var utility=(RectTransform)utilityRail.GetChild(i);
-                    utility.gameObject.SetActive(i<3);
+                    utility.gameObject.SetActive(false);
                     At(utility,0,i*44f,37,37);
                 }
 
                 float navSize=55,navGap=15;
-                float navWidth=5*navSize+4*navGap;
+                float navWidth=visibleNav*navSize+Mathf.Max(0,visibleNav-1)*navGap;
                 float navTop=h-78;
                 At(buttonRow,(w-navWidth)*.5f,navTop,navWidth,69);
-                navFiligree.Configure(navSize+navGap,navSize);
+                navFiligree.Configure(navSize+navGap,navSize,visibleNav);
+                int navColumn=0;
                 for(int i=0;i<5;i++)
-                    At((RectTransform)navButtons[i].transform,
-                        i*(navSize+navGap),3,navSize,navSize);
+                {
+                    bool visible=(navigationMask & (1<<i))!=0;
+                    navButtons[i].gameObject.SetActive(visible);
+                    if(visible)At((RectTransform)navButtons[i].transform,
+                        navColumn++*(navSize+navGap),3,navSize,navSize);
+                }
 
                 float pw=h<530f?210f:220f;
                 float ph=Mathf.Min(330,h-174f);
@@ -1175,6 +1213,8 @@ namespace Eldoria.BreachWatch
                 }
             }
             lastPortrait=portrait;
+            lastNavigationMask=navigationMask;
+            lastResourceCount=visibleResources;
             Canvas.ForceUpdateCanvases();
             CropPortraitToTrueGeometry();
         }
@@ -1222,6 +1262,12 @@ namespace Eldoria.BreachWatch
             try
             {
                 snapshot=host.Read(selected,host.English);
+                // Re-layout only at a genuine unlock boundary. Do not leave a
+                // grey ghost medallion or empty food capsule on the first screen.
+                if(lastNavigationMask!=NavigationMask() ||
+                   lastResourceCount!=(snapshot.ShowFood?3:2))
+                    Reflow(lastWidth>0?lastWidth:Screen.width,
+                           lastHeight>0?lastHeight:Screen.height);
                 var realName=host.City.Gateway.Snapshot().PlayerName;
                 identityName.text=string.IsNullOrWhiteSpace(realName)?"VALORIA":realName;
                 identityPower.text="PODER  "+RoyalFormatting.Amount(snapshot.Power);
@@ -1326,10 +1372,11 @@ namespace Eldoria.BreachWatch
                     navPlates[i].Type=i==(host.InWorld?3:selectedTab)
                         ?BreachWatchPlate.PlateType.Selected
                         :BreachWatchPlate.PlateType.Navigation;
-                    bool allowed=(i==0||i==1||(i==3&&host.CanOpen(RoyalSection.World)));
+                    bool allowed=(NavigationMask() & (1<<i))!=0;
                     navButtons[i].interactable=allowed;
                     // The single painted medallion is already the whole icon.
-                    // Disabled destination is still visible, never presented as playable.
+                    // An unavailable destination is absent, not a tappable or
+                    // faded promise of a screen that does not yet exist.
                     var p=navPlates[i];
                     if(p)p.color=allowed
                         ? i==(host.InWorld?3:selectedTab)
