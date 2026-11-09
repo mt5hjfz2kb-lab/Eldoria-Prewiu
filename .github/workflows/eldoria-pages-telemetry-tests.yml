@@ -33,6 +33,9 @@ jobs:
       - name: Validate exact GitHub Pages QA Edge source without Unity or paid services
         run: |
           node --check tools/eldoria-private-beta/pages/edge-function.mjs
+          node --check tools/eldoria-private-beta/pages/client.mjs
+          node --check tools/eldoria-private-beta/pages/signal-parser.mjs
+          node --check tools/eldoria-private-beta/pages/pilot-bootstrap.mjs
           node --test tools/eldoria-private-beta/pages/*.test.mjs
 
       - name: Verify actual Supabase QA receipt from GitHub-hosted runner (no privileged credentials)
