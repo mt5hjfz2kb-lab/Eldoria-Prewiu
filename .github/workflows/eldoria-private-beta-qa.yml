@@ -41,6 +41,7 @@ jobs:
             8dc875430241a49b4d417782dfeab2d4c7a4f315 \
             485d7b1c7980b73fa6abac9dfad4a99ccc382ab8 \
             e445a712b16f0bfc8196bdcb734492e780ef082c
+          python -m unittest discover -v -s tools/eldoria-private-beta/iphone_ab -p 'test_minimal_geometry.py'
           python tools/eldoria-private-beta/iphone_ab/prepare.py --check
           python tools/eldoria-private-beta/iphone_ab/prepare.py \
             --out "$RUNNER_TEMP/eldoria-iphone-timer-ab"
