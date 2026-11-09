@@ -56,8 +56,9 @@ def verify():
          "844px approved single-line chapter readable at 14pt")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
     assert "At(chapterName.rectTransform,smallPhone?54f:59f,8f," in hud
-    assert "chapterName.resizeTextMinSize=14;" in hud
-    assert "chapterName.resizeTextMaxSize=14;" in hud
+    assert "chapterName.resizeTextMinSize=smallPhone?13:11;" in hud
+    assert "chapterName.resizeTextMaxSize=smallPhone?13:12;" in hud
+    assert 13*.91>=11.75, "390px title must meet real physical font minimum"
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
     fits("Bastión",SEMIBOLD,19,panel_width-80,
          "selected building title")
