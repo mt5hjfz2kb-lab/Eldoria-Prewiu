@@ -157,14 +157,24 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
             throw 'Unity or Blender is active; do not interrupt it'
           }
-      - name: Verify all nine original source PNGs and their Unity importers
+      - name: Ensure Unity built-in AudioModule enabled for authentic chest Foley
+        shell: powershell
+        working-directory: daily-source
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Get-Content 'Unity/Packages/manifest.json' -Raw | ConvertFrom-Json
+          if($project.dependencies.'com.unity.modules.audio' -ne '1.0.0'){
+            throw 'Unity AudioModule disabled: AudioClip/AudioSource cannot compile; must preserve physical chest sound'
+          }
+          Write-Host 'DAILY_TREASURE_AUDIO_MODULE_ENABLED'
+      - name: Verify all thirteen original source PNGs and their Unity importers
         shell: powershell
         working-directory: daily-source
         run: |
           $ErrorActionPreference='Stop'
           $dir='Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt'
           $manifest=Get-Content (Join-Path $dir 'source-manifest.json') -Raw | ConvertFrom-Json
-          $items=@($manifest.assets)+@($manifest.ui_frames)+@($manifest.resource_icons)
+          $items=@($manifest.assets)+@($manifest.ui_frames)+@($manifest.resource_icons)+@($manifest.clean_resource_icons)
           $expected=@{
             'treasure_closed_512.png'='313c17d35dcb6f44129a143fabc0448e5a20bc3fb7d00f700394bb73b2d0a0dd'
             'treasure_opened_512.png'='a75afb45b6183d0a8d7e2841c82ef13b812d08fb7620f90c849e679f24429ccb'
@@ -175,8 +185,12 @@ jobs:
             'resource_stone.png'='b54e47ac45d0f19a2498f2ca18a2181d9aac70af35b0aa96bd838b2c234c2c13'
             'resource_hourglass.png'='bac16f011734aaabd148159ae91f23d115451e09c62cbd3127b4d60f1769e322'
             'resource_food.png'='2800b834e8372813e7a634146fcea00f3591d858ca2d0db4c7d2c8e99d8783cb'
+            'resource_wood_clean_256.png'='1d4cfe4abfc2185710c02f407c4b3db0125359174c352c704090cf8f590152bf'
+            'resource_stone_clean_256.png'='c3c74c02095babfc4fabd93e87dea4348d35fb89475c0c5f841311746ed07cdc'
+            'resource_food_clean_256.png'='35b2f0a9e232af3ed0dc3a6a61013a67c72bebbf1af770ce259722e1866f64f8'
+            'resource_hourglass_clean_256.png'='4e54dcda2580a20bd1efb86102ad26723595ddb1196f5c5e9020a79c48b41e59'
           }
-          if($items.Count -ne 9 -or $expected.Count -ne 9){throw 'Required nine original source PNGs missing'}
+          if($items.Count -ne 13 -or $expected.Count -ne 13){throw 'Required thirteen original source PNGs missing'}
           $guids=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
           $names=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
           foreach($item in $items){
@@ -210,10 +224,10 @@ jobs:
               }
             }
           }
-          if($guids.Count -ne 9 -or $names.Count -ne 9){
-            throw 'Nine independent original PNG files and GUIDs are required'
+          if($guids.Count -ne 13 -or $names.Count -ne 13){
+            throw 'Thirteen independent original PNG files and GUIDs are required'
           }
-          Write-Host 'DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS: nine exact SHA256 files'
+          Write-Host 'DAILY_TREASURE_AUTHORED_PNG_BYTES_AND_IMPORTERS_PASS: thirteen exact SHA256 files'
       - name: Compile Unity and render genuine day-four/day-seven and Vigilia UI evidence
         shell: powershell
         working-directory: daily-source
