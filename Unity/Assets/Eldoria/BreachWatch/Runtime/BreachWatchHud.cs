@@ -34,7 +34,7 @@ namespace Eldoria.BreachWatch
         float originalAlpha;
         Font font, boldFont, bodyFont, bodyBoldFont;
         RectTransform uiRoot;
-        RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, buttonRow, utilityRail, centerMark, selectionHalo, feedbackPlate;
+        RectTransform identity, identityCrest, resourceRow, objective, panel, portraitFrame, descriptionDivider, buttonRow, utilityRail, centerMark, selectionHalo, feedbackPlate;
         RectTransform[] resourceChips = new RectTransform[3];
         Text identityName, identityPower, chapterName, chapterObjective, chapterProgress;
         Text[] resourceAmounts = new Text[3];
@@ -533,6 +533,9 @@ namespace Eldoria.BreachWatch
             buildingName=Label(panel,"Real building name",22,TextAnchor.MiddleLeft,TextIvory,true);
             buildingLevel=Label(panel,"Real building level",15,TextAnchor.MiddleLeft,Copper,true);
             buildingFunction=Label(panel,"Real effects",17,TextAnchor.UpperLeft,TextIvory);
+            descriptionDivider=Rect("Original engraved narrative divider",panel);
+            var divider=descriptionDivider.gameObject.AddComponent<BreachWatchSectionDivider>();
+            divider.raycastTarget=false;
             costHeader=Label(panel,"Compact engraved cost heading",14,
                 TextAnchor.MiddleCenter,Copper,true);
             costHeader.text="COSTE DE LA MEJORA";
@@ -863,7 +866,9 @@ namespace Eldoria.BreachWatch
                 At(((RectTransform)closeButton.transform),pw-55,3,50,50);
                 At(portraitFrame,11,55,pw-22,76);
                 At(buildingFunction.rectTransform,13,133,pw-26,39);
-                At(costHeader.rectTransform,13,174,pw-26,18);
+                descriptionDivider.gameObject.SetActive(true);
+                At(descriptionDivider,14,170,pw-28,8);
+                At(costHeader.rectTransform,13,177,pw-26,16);
                 At(buildingCosts.rectTransform,13,195,pw-26,24);
                 At(costIcons[0].rectTransform,14,195,23,23);
                 At(costQuantities[0].rectTransform,41,195,43,24);
@@ -946,6 +951,7 @@ namespace Eldoria.BreachWatch
                     // followed by an independent full-width action row.
                     At(portraitFrame,12,60,95,83);
                     At(buildingFunction.rectTransform,114,62,pw-124,76);
+                    descriptionDivider.gameObject.SetActive(false);
                     At(costHeader.rectTransform,12,141,pw-24,20);
                     At(buildingCosts.rectTransform,12,166,pw-24,24);
                     At(costIcons[0].rectTransform,14,165,26,26);
@@ -970,7 +976,9 @@ namespace Eldoria.BreachWatch
                     // as an intentional illustrated information hierarchy.
                     At(portraitFrame,12,61,pw-24,93);
                     At(buildingFunction.rectTransform,13,157,pw-26,40);
-                    At(costHeader.rectTransform,13,201,pw-26,21);
+                    descriptionDivider.gameObject.SetActive(true);
+                    At(descriptionDivider,14,197,pw-28,9);
+                    At(costHeader.rectTransform,13,204,pw-26,19);
                     At(buildingCosts.rectTransform,13,227,pw-26,30);
                     At(costIcons[0].rectTransform,17,227,30,30);
                     At(costQuantities[0].rectTransform,52,227,53,30);
