@@ -59,5 +59,20 @@ assert "oldCanvasVisible = canvasDiagnostics.Count" in evidence
 assert "oldHudGraphicsReused = canvasDiagnostics.Any" in evidence
 assert "foreignScreenSpaceCanvasPaths=foreignScreenSpace.Select(c=>c.path).ToArray()" in evidence
 assert "Math.Max(shots.Max(x=>x.activeForeignScreenSpaceCanvases)" in evidence
+# Press/hover must tint the ONE existing owner sprite, never the
+# transparent hit mask and never another floating image.
+assert HUD.count("UseSourceArtInteraction(")==4, (
+    "One helper plus close/action/nav art binding must exist")
+assert "button.targetGraphic=paint;" in HUD
+for clause in (
+    "UseSourceArtInteraction(closeButton,closeIcon);",
+    "UseSourceArtInteraction(actionButton,actionPlate);",
+    "UseSourceArtInteraction(button,surface);",
+):
+    assert clause in HUD,("Missing real painted interaction response",clause)
+assert "button.transition=Selectable.Transition.ColorTint;" in HUD
+assert "ui.BuildingAction.targetGraphic==actionArt" in QA
+assert "closeRoot.targetGraphic==sourceX" in QA
+
 
 print("VIGILIA_SINGLE_SURFACE_SOURCE_PASS (Unity external canvas census pending native, not ART_APPROVED)")
