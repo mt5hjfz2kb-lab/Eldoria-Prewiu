@@ -7176,17 +7176,17 @@
       ],
       "resources": [],
       "budget_eur": 0,
-      "phase": "NATIVE_UI_FAIL_WINDOWS_RELEASED_DIAGNOSE_ISOLATED_ARTIFACT",
+      "phase": "NATIVE_POINTER_OCCLUSION_AND_PAID_CARD_READABILITY_FIXED_SOURCE_ONLY",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Read exact native-ui error log and retained artifact 13670287864; repair PR181 only if justified; source QA on exact HEAD, reacquire windows-runner-heavy by a NEW legitimate CAS lease before another native job. No merge/release/art approval.",
+      "next": "Unity run 42609669589/321faff compiled and captured only 8 genuine 1600x900 PNG, then failed at Vigilia pointer reparent. Fixed immediate migration layout and found real reward card text clipping, added native legibility checks and diagnostics. Exact current PR181 HEAD e66c80edd has domain CI 42612268799 PASS only. Native 52 PNG/56 pointers/8 grants/16 visual previews remains unproved. Windows exclusive held by PR173 at time of analysis; wait formal release and new CAS reservation, then rerun same PR181 only. No merge, no release or art approval.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
       "last_verified": {
         "source": "feature/eldoria-daily-treasures-20261108",
-        "commit": "b9f3331cd9a39df7ea56f0042c5abab4edd31f23",
-        "run_id": 42597168674,
-        "result": "SUCCESS_SOURCE_QA_ONLY_NATIVE_UNITY_NOT_EXECUTED",
+        "commit": "e66c80edd6021339395c101104786758dcda318e",
+        "run_id": 42612268799,
+        "result": "SUCCESS_SOURCE_QA_ONLY_NATIVE_UNITY_FAILED_BEFORE_FULL_EVIDENCE",
         "original_imported_png_assets": 13,
         "painterly_clean_mobile_resources": 4,
         "source_icon_size_tests": [
@@ -7212,6 +7212,14 @@
           "job_id": 129134599737,
           "conclusion": "failure",
           "artifact_id": 13670287864,
+          "authentic_pngs": 8,
+          "resolutions": [
+            "1600x900"
+          ],
+          "root_failure": "GraphicRaycaster blocked first Vigilia-canvas medallion click after presentation reparent, Capture line 631",
+          "pixels_defect": "Day7/Day4 item titles and quantities wholly absent from genuine Unity screenshots due to overlapping undersized Text rectangles",
+          "source_fix_head": "e66c80edd6021339395c101104786758dcda318e",
+          "source_ci_run": 42612268799,
           "unity_native_pass": false,
           "art_approved": false,
           "full_game_tested": false
