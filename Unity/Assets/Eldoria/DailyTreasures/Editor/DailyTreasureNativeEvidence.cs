@@ -482,9 +482,36 @@ namespace Eldoria.DailyTreasures.Editor
                             "Real four-item day-seven chest-to-inventory arc",true,true));
                         panel.SamplePaidItemFlightForNativeEvidence(2f);
                     }
+                    // A person can rotate the phone after being paid, before
+                    // closing the full premium reveal. The exact same modal
+                    // must change from a one-line landscape confirmation to
+                    // a two-line portrait confirmation without text clipping,
+                    // losing the cards or awarding a second set of resources.
+                    var originalCanvasSize=rect.sizeDelta;
+                    rect.sizeDelta=new Vector2(height,width);
+                    Canvas.ForceUpdateCanvases();
+                    panel.ProbeOrientationLayoutForNativeEvidence();
+                    Canvas.ForceUpdateCanvases();
+                    var rotatedLabel=FindRect(panel,
+                        "Confirmed received items").GetComponent<Text>();
+                    bool becamePortrait=width>height;
+                    Need(rotatedLabel &&
+                         (becamePortrait?
+                            rotatedLabel.text.Contains("\nGuardado en tu inventario"):
+                            rotatedLabel.text.Contains(" · GUARDADO")),
+                         "Paid reward caption did not adapt to phone rotation");
+                    VerifyCriticalTypography(panel,"paid chest after orientation change");
+                    Need(panel.EarnedItemCardCount==4 &&
+                         panel.HasRevealedIllustratedEarnedItems,
+                         "Paid cards disappeared when device orientation changed");
+                    rect.sizeDelta=originalCanvasSize;
+                    Canvas.ForceUpdateCanvases();
+                    panel.ProbeOrientationLayoutForNativeEvidence();
+                    Canvas.ForceUpdateCanvases();
+                    VerifyCriticalTypography(panel,"paid chest after rotation restored");
                     Need(gateway.Snapshot().Resources.Wood==after.Resources.Wood &&
                          gateway.Snapshot().Resources.Stone==after.Resources.Stone,
-                         "Skipping ceremony must never pay rewards again");
+                         "Skipping, rotating or restoring ceremony must never pay rewards again");
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
                         FindButton(panel,"Close tributes"),width,height);
                     inputChecks++;
