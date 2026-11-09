@@ -906,7 +906,7 @@ namespace Eldoria.BreachWatch
                         i*(navSize+navGap),3,navSize,navSize);
 
                 float pw=h<530f?210f:220f;
-                float ph=Mathf.Min(365,h-174f);
+                float ph=Mathf.Min(330,h-174f);
                 float top=h<530f?75f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
                 At(buildingName.rectTransform,58,8,pw-115,31);
@@ -939,16 +939,19 @@ namespace Eldoria.BreachWatch
                 }
                 else
                 {
-                    At(portraitFrame,12,61,pw-24,99);
-                    At(buildingFunction.rectTransform,13,163,pw-26,46);
-                    At(costHeader.rectTransform,13,212,pw-26,22);
-                    At(buildingCosts.rectTransform,13,239,pw-26,30);
-                    At(costIcons[0].rectTransform,17,237,30,30);
-                    At(costQuantities[0].rectTransform,52,237,53,30);
-                    At(costIcons[1].rectTransform,121,237,30,30);
-                    At(costQuantities[1].rectTransform,153,237,pw-162,30);
-                    At(buildingState.rectTransform,13,272,pw-26,23);
-                    At(((RectTransform)actionButton.transform),12,ph-55,pw-24,49);
+                    // Real 1600x900 screenshot had an oversized dark void
+                    // between the portrait and resource costs. Compact this
+                    // as an intentional illustrated information hierarchy.
+                    At(portraitFrame,12,61,pw-24,93);
+                    At(buildingFunction.rectTransform,13,157,pw-26,40);
+                    At(costHeader.rectTransform,13,201,pw-26,21);
+                    At(buildingCosts.rectTransform,13,227,pw-26,30);
+                    At(costIcons[0].rectTransform,17,227,30,30);
+                    At(costQuantities[0].rectTransform,52,227,53,30);
+                    At(costIcons[1].rectTransform,121,227,30,30);
+                    At(costQuantities[1].rectTransform,153,227,pw-162,30);
+                    At(buildingState.rectTransform,13,261,pw-26,19);
+                    At(((RectTransform)actionButton.transform),12,ph-48,pw-24,45);
                     buildingFunction.fontSize=15;
                     buildingCosts.fontSize=15;
                     buildingState.fontSize=14;
