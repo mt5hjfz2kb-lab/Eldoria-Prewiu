@@ -46,8 +46,8 @@ def verify():
         print("TYPOGRAPHY_FIT",control,round(value,1),"<=",limit)
 
     # The reference's single carved title is dynamic, not baked into PNG.
-    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,11,mission_width-70,
-         "approved single-line chapter and Breach inscription")
+    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,12,mission_width-64,
+         "900px real single-line chapter in owner bronze")
     fits("Construye el aserradero",REGULAR,13,mission_width-70,
          "true objective alongside painted castle badge")
     fits("BASTIÓN I / LA BRECHA",SEMIBOLD,13,211-64,
@@ -55,7 +55,7 @@ def verify():
     fits("BASTIÓN I / LA BRECHA",SEMIBOLD,14,180,
          "844px approved single-line chapter readable at 14pt")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "At(chapterName.rectTransform,smallPhone?54f:59f,8f," in hud
+    assert "At(chapterName.rectTransform,54f,8f," in hud
     # This exact accepted Chapter I inscription is measured to fit at 13/14,
     # so it must NOT be silently shrunk by Unity legacy BestFit on small RT.
     assert "chapterName.resizeTextForBestFit=!chapterOne;" in hud

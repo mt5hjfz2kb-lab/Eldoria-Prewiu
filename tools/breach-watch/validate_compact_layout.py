@@ -74,8 +74,9 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         place("mission",m,87 if pw<600 else 82,missionw,82 if pw<600 else 78)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
-        chapter_text=R(54 if pw<600 else 59,8,missionw-(64 if pw<600 else 70),20)
+        chapter_text=R(54,8,missionw-64,20)
         assert chapter_text.x>=54 and chapter_text.x+chapter_text.w<=missionw-10,size
+        assert chapter_text.w >= (144.7 if pw<600 else 133.5),size
         if pw<600:
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of

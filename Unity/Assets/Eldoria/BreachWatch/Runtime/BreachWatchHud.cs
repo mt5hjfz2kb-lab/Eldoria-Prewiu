@@ -1016,8 +1016,12 @@ namespace Eldoria.BreachWatch
                 // the minimum readable physical text. Use a 13u authored
                 // serif chapter and reclaim a little space right of the
                 // badge without overlaying the real emblem or metal contour.
-                At(chapterName.rectTransform,smallPhone?54f:59f,8f,
-                    missionWidth-(smallPhone?64f:70f),20f);
+                // On 900x1600 source art the live 12pt caption is 133.5u
+                // across but the old 130u rect wrapped into TWO lines.
+                // Shift ink 5u right of the same badge contour; 136u
+                // now fits ONE true source-faithful line at both phone sizes.
+                At(chapterName.rectTransform,54f,8f,
+                    missionWidth-64f,20f);
                 // Preserve three independent readable rows INSIDE the real
                 // engraved plate. The former 15u progress row ended 1u
                 // above the plate bottom on 900x1600, failing real GPU QA.
