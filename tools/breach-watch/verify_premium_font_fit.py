@@ -104,9 +104,9 @@ def verify():
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
     for clause in (
         "At(buildingName.rectTransform,51,7,pw-110,28);",
-        "At(buildingLevel.rectTransform,51,34,pw-110,19);",
+        "At(buildingLevel.rectTransform,51,36,pw-110,17);",
         "At(buildingName.rectTransform,58,8,pw-119,31);",
-        "At(buildingLevel.rectTransform,58,37,pw-119,19);",
+        "At(buildingLevel.rectTransform,58,40,pw-119,17);",
     ):
         assert clause in hud, ("Missing separate title/close geometry",clause)
 
