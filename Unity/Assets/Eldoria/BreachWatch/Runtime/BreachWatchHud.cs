@@ -266,6 +266,10 @@ namespace Eldoria.BreachWatch
             host=source;
             cityComposition=gameObject.AddComponent<BreachWatchCityComposition>();
             cityComposition.Initialize(source);
+            // A/B art treatment on the genuine selected building. Independent
+            // of RoyalHUD, non-persistent and restored when Vigilia closes.
+            var royalSlate=gameObject.AddComponent<BreachWatchRoyalSlatePreview>();
+            royalSlate.Apply(source);
             canvas=GetComponent<Canvas>();scaler=GetComponent<CanvasScaler>();raycaster=GetComponent<GraphicRaycaster>();
             canvas.renderMode=RenderMode.ScreenSpaceCamera;
             canvas.planeDistance=1f;canvas.overrideSorting=true;canvas.sortingOrder=5000;
