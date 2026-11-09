@@ -1434,6 +1434,13 @@ namespace Eldoria.DailyTreasures
             SynchronizePresentationCanvas();
         }
 
+        public void ProbeOrientationLayoutForNativeEvidence()
+        {
+            // Exact same Layout() production method; callable from a native
+            // Editor-only orientation test without Unity's player Update().
+            lastWidth=lastHeight=-1f;
+            Layout();
+        }
         public bool ProbeHeroRoomVisibilityForNativeEvidence()
         {
             return HasVisibleCanonicalHeroRoom();
