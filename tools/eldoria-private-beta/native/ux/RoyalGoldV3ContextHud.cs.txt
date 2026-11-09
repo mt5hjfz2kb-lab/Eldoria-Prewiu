@@ -30,6 +30,9 @@ namespace Eldoria.UI.RoyalGold.V2
         private CanvasGroup cardGroup, closeGroup;
         private readonly Dictionary<string, TimerView> timers = new Dictionary<string, TimerView>();
         private readonly Dictionary<string, RoyalBuilding> live = new Dictionary<string, RoyalBuilding>();
+        // World-corner sampling runs only while real construction is active.
+        // Reuse the same four UI corners instead of allocating a GC array on every frame.
+        private readonly Vector3[] objectiveWorldCorners = new Vector3[4];
         private float nextRead;
         private float lastCanvasWidth = -1f, lastCanvasHeight = -1f;
         private string lastPortraitTimerDiagnostic = "";
@@ -53,6 +56,9 @@ namespace Eldoria.UI.RoyalGold.V2
             public RoyalText Label;
             public CanvasGroup Visibility;
             public Image Fill;
+            public string LastRenderedTime, LastRenderedName;
+            public float LastLayoutWidth;
+            public bool HasLayout;
         }
 
         private RoyalGoldV2Hud Chronicle => Source ? Source.GetComponent<RoyalGoldV2Hud>() : null;
@@ -382,6 +388,74 @@ namespace Eldoria.UI.RoyalGold.V2
             return local.x >= bounds.xMin - 36 && local.x <= bounds.xMax + 36 &&
                 local.y >= bounds.yMin - 36 && local.y <= bounds.yMax + 36;
         }
+        // One collider lookup and ONE eight-corner projection produces both
+        // the roof and foot anchors. The previous mobile11 timer projected the
+        // same eight corners twice every LateUpdate (sixteen projections).
+        // This method does not allocate collections, textures or UI objects.
+        private static bool TryProjectConstructionSilhouette(Transform target,
+            Camera camera, RectTransform safe, out Vector2 roof, out Vector2 foot,
+            out bool roofVisible, out bool footVisible)
+        {
+            roof = foot = Vector2.zero;
+            roofVisible = footVisible = false;
+            if (!target || !target.gameObject.activeInHierarchy || !camera ||
+                !camera.enabled || !safe) return false;
+
+            var collider = target.GetComponent<Collider>();
+            if (!collider) collider = target.GetComponentInChildren<Collider>();
+
+            Vector3 roofScreen, footScreen;
+            if (collider && collider.enabled)
+            {
+                var bounds = collider.bounds;
+                var min = bounds.min;
+                var max = bounds.max;
+                float left = float.PositiveInfinity, right = float.NegativeInfinity;
+                float bottom = float.PositiveInfinity, top = float.NegativeInfinity;
+                bool found = false;
+                for (int cornerIndex = 0; cornerIndex < 8; ++cornerIndex)
+                {
+                    var vertex = new Vector3(
+                        (cornerIndex & 1) == 0 ? min.x : max.x,
+                        (cornerIndex & 2) == 0 ? min.y : max.y,
+                        (cornerIndex & 4) == 0 ? min.z : max.z);
+                    var projected = camera.WorldToScreenPoint(vertex);
+                    if (projected.z <= camera.nearClipPlane ||
+                        projected.z >= camera.farClipPlane) continue;
+                    left = Mathf.Min(left, projected.x);
+                    right = Mathf.Max(right, projected.x);
+                    bottom = Mathf.Min(bottom, projected.y);
+                    top = Mathf.Max(top, projected.y);
+                    found = true;
+                }
+                if (!found) return false;
+                float middle = (left + right) * .5f;
+                roofScreen = new Vector3(middle, top, camera.nearClipPlane + .1f);
+                footScreen = new Vector3(middle, bottom, camera.nearClipPlane + .1f);
+            }
+            else
+            {
+                roofScreen = camera.WorldToScreenPoint(target.position);
+                if (roofScreen.z <= camera.nearClipPlane ||
+                    roofScreen.z >= camera.farClipPlane) return false;
+                footScreen = roofScreen;
+            }
+
+            var canvas = safe.GetComponentInParent<Canvas>();
+            var uiCamera = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay
+                ? canvas.worldCamera : null;
+            var rect = safe.rect;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                safe, roofScreen, uiCamera, out roof))
+                roofVisible = roof.x >= rect.xMin - 36f && roof.x <= rect.xMax + 36f &&
+                              roof.y >= rect.yMin - 36f && roof.y <= rect.yMax + 36f;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                safe, footScreen, uiCamera, out foot))
+                footVisible = foot.x >= rect.xMin - 36f && foot.x <= rect.xMax + 36f &&
+                              foot.y >= rect.yMin - 36f && foot.y <= rect.yMax + 36f;
+            return roofVisible || footVisible;
+        }
+
         private static Vector2 FitToSafe(Vector2 anchor, float width, float height,
             RectTransform safe, float topExclusion, float bottomExclusion, bool above,
             Vector2? oppositeAnchor = null)
@@ -596,9 +670,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // A building can be partially onscreen even when its roof
             // projects outside the safe area. Keep the lower silhouette as
             // a genuine world anchor instead of hiding a visible build site.
-            bool roofVisible = CanProject(target, camera, safe, true, out projectedRoof);
-            bool footVisible = CanProject(target, camera, safe, false, out var bottomEdge);
-            if (!roofVisible && !footVisible) return false;
+            Vector2 bottomEdge;
+            bool roofVisible, footVisible;
+            if (!TryProjectConstructionSilhouette(target, camera, safe,
+                out projectedRoof, out bottomEdge, out roofVisible, out footVisible))
+                return false;
             var projectedAnchor = roofVisible ? projectedRoof : bottomEdge;
 
             var bounds = safe.rect;
@@ -624,12 +700,11 @@ namespace Eldoria.UI.RoyalGold.V2
             if (chronicle && chronicle.ChronicleObjectiveVisible &&
                 chronicle.ChronicleObjectiveRect)
             {
-                var corners = new Vector3[4];
-                chronicle.ChronicleObjectiveRect.GetWorldCorners(corners);
+                chronicle.ChronicleObjectiveRect.GetWorldCorners(objectiveWorldCorners);
                 float left = float.PositiveInfinity;
                 float right = float.NegativeInfinity;
                 float bottom = float.PositiveInfinity;
-                foreach (var corner in corners)
+                foreach (var corner in objectiveWorldCorners)
                 {
                     var local = safe.InverseTransformPoint(corner);
                     left = Mathf.Min(left, local.x);
@@ -712,16 +787,34 @@ namespace Eldoria.UI.RoyalGold.V2
                     safe.rect.yMin + 150f + height * .5f + slot * (height + 6f));
             }
 
-            timer.Root.sizeDelta = new Vector2(width, height);
-            timer.Label.Put(construction ? data.Time : data.Name + " · " + data.Time);
-            timer.Label.fontSize = construction ? 18 : 16;
-            Place(timer.Label.rectTransform, 8f, 3f, width - 16f, 31f);
-            Place(timer.Progress, 10f, 37f, width - 20f, 5f);
-            timer.Fill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(data.Progress), 1f);
-            timer.Root.anchorMin = timer.Root.anchorMax = timer.Root.pivot =
-                new Vector2(.5f, .5f);
-            timer.Root.anchoredPosition = center;
-            Visible(timer.Visibility, true, false);
+            // Do not rebuild all UI geometry and text on every LateUpdate.
+            // Time/progress originate in the same real session, polled at 4 Hz.
+            if (!timer.HasLayout || Mathf.Abs(timer.LastLayoutWidth - width) > .1f)
+            {
+                timer.Root.sizeDelta = new Vector2(width, height);
+                Place(timer.Label.rectTransform, 8f, 3f, width - 16f, 31f);
+                Place(timer.Progress, 10f, 37f, width - 20f, 5f);
+                timer.Root.anchorMin = timer.Root.anchorMax = timer.Root.pivot =
+                    new Vector2(.5f, .5f);
+                timer.LastLayoutWidth = width;
+                timer.HasLayout = true;
+            }
+            if (!string.Equals(timer.LastRenderedTime, data.Time, StringComparison.Ordinal) ||
+                (!construction && !string.Equals(timer.LastRenderedName, data.Name,
+                    StringComparison.Ordinal)))
+            {
+                timer.Label.Put(construction ? data.Time : data.Name + " · " + data.Time);
+                timer.Label.fontSize = construction ? 18 : 16;
+                timer.LastRenderedTime = data.Time;
+                timer.LastRenderedName = data.Name;
+            }
+            float progress = Mathf.Clamp01(data.Progress);
+            if (Mathf.Abs(timer.Fill.rectTransform.anchorMax.x - progress) > .0001f)
+                timer.Fill.rectTransform.anchorMax = new Vector2(progress, 1f);
+            if ((timer.Root.anchoredPosition - center).sqrMagnitude > .0025f)
+                timer.Root.anchoredPosition = center;
+            if (timer.Visibility.alpha < .5f)
+                Visible(timer.Visibility, true, false);
             ProbeTimerState(id, "VISIBLE", timer, construction ? projectedRoof : center);
         }
     }
