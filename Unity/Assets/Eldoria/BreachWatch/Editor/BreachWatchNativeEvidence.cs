@@ -571,9 +571,10 @@ namespace Eldoria.BreachWatch.Editor
                     .Where(i=>i && i.sprite && i.sprite.name=="brass_portrait").ToArray();
                 Need(brassWells.Length==1 &&
                      brassWells[0].type==Image.Type.Sliced &&
-                     !brassWells[0].enabled && !brassWells[0].raycastTarget,
-                     "Second opaque rectangular card is STILL being painted "+
-                     "behind the transparent real 3D Bastion: "+name);
+                     brassWells[0].enabled && !brassWells[0].fillCenter &&
+                     !brassWells[0].raycastTarget,
+                     "One authentic nine-sliced brass outline must have ZERO "+
+                     "opaque center behind the transparent real 3D Bastion: "+name);
                 var palette=ui.GetComponentsInChildren<Image>(true)
                     .Where(x=>x && x.sprite).ToArray();
                 Need(palette.Any(x=>x.sprite.name=="panel_fill" &&
