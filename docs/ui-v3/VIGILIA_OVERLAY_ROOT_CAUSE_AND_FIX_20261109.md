@@ -24,3 +24,18 @@ El propietario considera que **todos** los elementos (perfil, recursos, misión,
 - **Pendiente imprescindible:** adquirir `windows-runner-heavy` con protocolo CAS tras su cesión expresa; comprobar que no existe trabajo Unity concurrente; capturar de nuevo 8 PNG del **HEAD exacto**, evaluar contra [run 42630398578](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42630398578) y contra la referencia visual vertical seleccionada; conservar solo cambios que produzcan calidad real, no simplemente menor diferencia de píxeles. Revisar en ambas orientaciones legibilidad, solapes, retrato transparente y no regresión del mundo/partida.
 - Si el fondo de ciudad/arquitectura aún contrasta mucho con el concepto ilustrado, clasificar como trabajo artístico de mundo independiente. No taparlo con una imagen estática ni añadir marcos para disimularlo.
 - No integrar PR173 en `main`, APK o WebGL sin aprobación.
+
+## Diagnóstico adicional: paleta del mundo (medición orientativa, NO A/B final)
+
+El efecto «pegado sobre un juego distinto» también tiene una causa que **NO está en los Canvas**: el mundo vigente de Unity es verde y soleado; el concepto artístico entregado anteriormente contiene ciudad más oscura/cinematográfica. Se midieron muestras manuales con la misma fórmula aproximada de luminancia relativa (R×0,2126 + G×0,7152 + B×0,0722):
+
+| Muestra examinada | Luminancia RGB mediana (0–255) |
+|---|---:|
+| Mundo real Unity, run 42630398578, área de suelo/vegetación | ≈114,5 |
+| Ficha mineral auténtica del mismo PNG | ≈39,6 |
+| Fondo de ciudad de **otro concepto horizontal** 1536×864 histórico, no la referencia vertical final | ≈62,7 |
+| Placa derecha en ese concepto horizontal | ≈31,3 |
+
+Esto **no es una puntuación artística, no usa escenas equivalentes y no acredita una causa única**. Sí prueba que el contraste de la ciudad soleada con el HUD oscuro es muy superior al del concepto horizontal: solo quitar un píxel de sombra o una placa interna no convierte el mundo en ilustración cinematográfica. Alterar globalmente la cámara o el terreno para disimular el problema implicaría tocar otro workstream y podría disminuir la visibilidad: **no se realizó**.
+
+Conclusión de oficio: conservar las correcciones físicas de capas y reservar la revisión final de la relación **HUD + mundo** para las ocho capturas reales del HEAD. Si sigue habiendo una brecha artística grande, realizar una variante integrada que tenga tratamiento material/iluminación coherente, compararla sin inventar un fondo 3D y promover únicamente una mejora confirmada. Esta observación evita ciclos de sombras que no pueden solucionar la diferencia de acabado del mundo.
