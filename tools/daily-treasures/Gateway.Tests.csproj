@@ -17,6 +17,10 @@
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EconomyProductionV2.cs" Link="GameState.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs" Link="EldoriaV41Contracts.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs" Link="EarlyRetentionRules.cs" />
+    <!-- The authoritative early-retention unlocks now depend on the
+         narrative coherence policy. Include its REAL shared source in the
+         owned daily integration suite; do not modify foreign smoke projects. -->
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/NarrativeCoherenceRules.cs" Link="NarrativeCoherenceRules.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs" Link="SliceContentProfiles.cs" />
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs" Link="PlayerIdentityPolicy.cs" />
 <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs" Link="ResourceNodeTierPolicy.cs" />
