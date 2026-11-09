@@ -8,7 +8,6 @@ objects. It does not claim to certify subjective artistic quality in Unity.
 import json,hashlib
 from pathlib import Path
 from PIL import Image
-import numpy as np
 
 ROOT=Path(__file__).resolve().parents[2]
 TARGET=ROOT/"Unity/Assets/Eldoria/DailyTreasures/Resources/DailyTreasureArt"
@@ -25,28 +24,29 @@ for a in icons:
     assert hashlib.sha256(blob).hexdigest()==a["sha256"], a["file"]
     im=Image.open(path).convert("RGBA")
     assert im.size==(256,256),a["file"]
-    data=np.asarray(im,dtype=np.uint8)
-    opacity=data[:,:,3]
+    data=list(im.getdata())
+    opacity=[p[3] for p in data]
     # The 8px outer margin is free of opaque pixels; no screenshot panels.
-    assert np.count_nonzero(opacity[:8,:]>55)==0, a["file"]
-    assert np.count_nonzero(opacity[-8:,:]>55)==0, a["file"]
-    assert np.count_nonzero(opacity[:,:8]>55)==0, a["file"]
-    assert np.count_nonzero(opacity[:,-8:]>55)==0, a["file"]
-    ys,xs=np.nonzero(opacity>95)
-    assert len(xs)>9000, f"Icon occupies too little screen space: {a['file']}"
-    assert 0.12<len(xs)/opacity.size<0.40, (
+    for y in range(256):
+        for x in range(256):
+            if x<8 or x>=248 or y<8 or y>=248:
+                assert opacity[y*256+x]<=55, a["file"]
+    strong=[(i%256,i//256) for i,v in enumerate(opacity) if v>95]
+    assert len(strong)>9000, f"Icon occupies too little screen space: {a['file']}"
+    assert .12<len(strong)/65536<.40, (
         f"Icon is either a giant flat HUD screenshot or a tiny unreadable item: {a['file']}")
-    assert min(xs)>20 and max(xs)<235 and min(ys)>22 and max(ys)<234, (
+    minx=min(x for x,y in strong);maxx=max(x for x,y in strong)
+    miny=min(y for x,y in strong);maxy=max(y for x,y in strong)
+    assert minx>20 and maxx<235 and miny>22 and maxy<234, (
         f"Foreground clips against the source texture: {a['file']}")
-    # Transparent corners, no opaque square cards burned into the illustration.
     for x,y in [(0,0),(0,255),(255,0),(255,255)]:
-        assert opacity[y,x]<=8, a["file"]
-    opaqueRGB=data[opacity>175,:3]
-    assert opaqueRGB.ptp(axis=0).max()>75 if hasattr(opaqueRGB,'ptp') else (
-        np.ptp(opaqueRGB,axis=0).max()>75), a["file"]
+        assert opacity[y*256+x]<=8, a["file"]
+    opaque=[(r,g,b) for r,g,b,a8 in data if a8>175]
+    assert max(max(p[k] for p in opaque)-min(p[k] for p in opaque)
+               for k in range(3))>75, a["file"]
     values.add(a["sha256"])
     print("PASS painted standalone resource",
-          a["file"],"opaque pixels",len(xs),
-          "foreground bounds", (int(xs.min()),int(ys.min()),int(xs.max()),int(ys.max())))
+          a["file"],"opaque pixels",len(strong),
+          "foreground bounds", (minx,miny,maxx,maxy))
 assert len(values)==4
 print("PASS 4 original alpha-clean resources, no baked HUD geometry or cropped silhouettes; ART_APPROVED remains false")
