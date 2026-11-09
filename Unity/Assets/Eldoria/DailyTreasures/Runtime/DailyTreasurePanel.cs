@@ -24,6 +24,7 @@ namespace Eldoria.DailyTreasures
         Action refreshed;
         RectTransform root,entryRect,screen,cardSurface,calendar,ceremony,glowRect,raysRect,ambientRect;
         RectTransform originalSafeArea;
+        RectTransform cachedCanonicalHeroRoom;
         float nextCanvasProbe;
         bool onVigiliaCanvas;
         public bool UsesVigiliaCanvas => onVigiliaCanvas;
@@ -1268,15 +1269,54 @@ namespace Eldoria.DailyTreasures
         // composition instead of remaining invisibly attached to legacy.
         // No direct PR173 assembly dependency, no second Canvas/GraphicRaycaster,
         // no duplicate gameplay gateway and no changes to PR173 itself.
+        // Unity 6 treats '/' inside GameObject.Find as a hierarchy path.
+        // Vigilia deliberately has '/' in its LITERAL root name, so Find
+        // would return null and leave the coffer stranded on a disabled HUD.
+        // Canvases are few; query them once per second, without taking a
+        // dependency on PR173's assembly or mutating the other workstream.
+        static Canvas FindLiteralVigiliaCanvas()
+        {
+            var canvases=UnityEngine.Object.FindObjectsByType<Canvas>(
+                FindObjectsInactive.Exclude,FindObjectsSortMode.None);
+            foreach(var candidate in canvases)
+                if(candidate && candidate.isActiveAndEnabled &&
+                   candidate.gameObject.name=="VIGILIA / independent canvas")
+                    return candidate;
+            return null;
+        }
+
+        // The canonical Heroes room also contains a literal '/' in its
+        // name and starts inactive. Search under the existing safe area,
+        // caching its RectTransform once constructed; do not traverse the
+        // whole world hierarchy every frame or open over real Lyra artwork.
+        bool HasVisibleCanonicalHeroRoom()
+        {
+            if(!cachedCanonicalHeroRoom && originalSafeArea)
+            {
+                var rooms=originalSafeArea.GetComponentsInChildren<RectTransform>(true);
+                foreach(var candidate in rooms)
+                    if(candidate && candidate.gameObject.name==
+                        "Heroes / canonical destination")
+                    {
+                        cachedCanonicalHeroRoom=candidate;
+                        break;
+                    }
+            }
+            if(!cachedCanonicalHeroRoom ||
+               !cachedCanonicalHeroRoom.gameObject.activeInHierarchy)
+                return false;
+            var parentCanvas=cachedCanonicalHeroRoom.GetComponentInParent<Canvas>();
+            return parentCanvas && parentCanvas.isActiveAndEnabled;
+        }
+
         void SynchronizePresentationCanvas()
         {
             if(Time.unscaledTime<nextCanvasProbe)return;
             nextCanvasProbe=Time.unscaledTime+1f;
 
-            var vigilia=GameObject.Find("VIGILIA / independent canvas");
-            var canvas=vigilia?vigilia.GetComponent<Canvas>():null;
-            var safe=canvas&&canvas.enabled?
-                vigilia.transform.Find("Safe composition") as RectTransform:null;
+            var canvas=FindLiteralVigiliaCanvas();
+            var safe=canvas?
+                canvas.transform.Find("Safe composition") as RectTransform:null;
             if(safe)
             {
                 if(root.parent!=safe)
@@ -1330,8 +1370,7 @@ namespace Eldoria.DailyTreasures
                 // reveal or another room. In particular, Lyra's native
                 // HeroesApprovedDestination introduction owns her genuine
                 // character geometry; our reward coffer must NOT cover it.
-                bool heroIntroductionActive=
-                    GameObject.Find("Heroes / canonical destination")!=null;
+                bool heroIntroductionActive=HasVisibleCanonicalHeroRoom();
                 if(!suppressed && !IsOpen && !heroIntroductionActive &&
                     milestoneQueue.TryPeek(out var milestone) &&
                     PresentCommittedMilestone(milestone.Title,milestone.Detail,
