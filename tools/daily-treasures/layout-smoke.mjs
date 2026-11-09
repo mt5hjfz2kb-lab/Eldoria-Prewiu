@@ -256,11 +256,18 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
   // with a compact receipt and a genuinely reachable Continue action.
   for(const count of [1,2])
   {
-    const quietPanelH=Math.min(h-20,portrait?460:330);
-    const quietShelf=rect(0,portrait?64:35,pw-34,portrait?175:137);
-    const quietCaption=rect(0,portrait?-106:-74,pw-45,41);
+    // The quiet receipt is intentionally NOT the 740px wide legendary
+    // banner. Its actual geometry depends on one or two already-paid cards.
+    const quietW=Math.min(w-24,portrait?
+      (count===1?336:410):(count===1?340:448));
+    const quietPanelH=Math.min(h-20,portrait?430:330);
+    const quietShelf=rect(0,portrait?64:35,quietW-34,portrait?175:137);
+    const quietCaption=rect(0,portrait?-106:-74,quietW-45,41);
     const quietContinue=rect(0,portrait?-175:-127,
-      Math.min(pw-30,portrait?325:405),54);
+      Math.min(quietW-30,portrait?325:405),54);
+    assert.ok(quietW<=448 &&
+              (count===1?quietW<=340:quietW>=351),
+      `${w}x${h}: quiet card receipt reverted to an empty giant parchment`);
     assert.ok(noOverlap(quietShelf,quietCaption),
       `${w}x${h}: the ordinary illustrated rewards obscure the actual receipt`);
     assert.ok(quietShelf.y1<=quietPanelH/2-8 &&
@@ -270,7 +277,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
       `${w}x${h}: Continue overlaps the normal reward's confirmation`);
     assert.ok(noOverlap(quietShelf,quietContinue),
       `${w}x${h}: normal resource items cover Continue`);
-    const cardW=Math.min(175,(pw-38-(count-1)*(portrait?8:6))/count);
+    const cardW=Math.min(175,(quietW-38-(count-1)*(portrait?8:6))/count);
     const cardH=portrait?129:115;
     assert.ok(cardW>=120&&cardH>=100,
       `${w}x${h}: ordinary rewards are too small for premium illustrated art`);
