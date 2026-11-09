@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T10:49:44.402Z",
+  "updated_at": "2026-11-09T11:45:28.413Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6696,16 +6696,18 @@
         ".github/workflows/breach-watch-native.yml",
         "docs/ui-v3/BREACH_WATCH_*.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "ownership_state": "claimed",
-      "ownership_revision": 22,
+      "ownership_revision": 23,
       "write_scope_released": false,
-      "phase": "BREACHWATCH_NATIVE_EXACT_HEAD_PREMIUM_FIRST_SCREEN_CAPTURE",
-      "next": "Run Unity 6000.3.23f1 on exact PR173 head, inspect eight true PNGs and correct visual/functional flaws; avoid merge and published release until approval.",
+      "phase": "VIGILIA_NATIVE_UNITY_EXACT_HEAD_20261109",
+      "next": "Run native Unity on current exact PR173 head after exclusive lease recheck; inspect all eight screenshots and fix actual defects, keep published builds untouched.",
       "art_approved": false,
       "physical_mobile_tested": false,
-      "runner_claimed_at": "2026-11-08T14:17:45.093Z",
-      "runner_claim_basis": "Beta formally returned exclusive Windows reservation in live main; owner explicitly requests completion of independent first-screen native Unity proof. No other heavy owner at atomic CAS.",
+      "runner_claimed_at": "2026-11-09T11:45:28.413Z",
+      "runner_claim_basis": "PR181 formal release (registry revision 16, 2026-11-09T11:43:00Z); prior PR181 native job 42609669589 completed; user explicitly requests continuing PR173, exact-head Unity capture.",
       "note": "Owner specifically requested independent new UI direction after rejecting previous interfaces. Different intent from PR163 gameplay fixes. On 2026-11-07 PR163 merged and canonically released Windows at revision 158; Forja now holds exclusive native proof runner. Do not edit legacy HUD or game logic. | Assets move to first-party Eldoria/VisualKit with explicit stable Unity .meta; no existing owner path touched. | Native captures 42409713043 prove the inherited bottom-card composition cannot match the approved right-hand contextual card. Owner continuation includes one presentation-only viewport contract in RoyalGoldV2Hud so genuine camera focus respects actual card geometry; no gameplay, camera settings or legacy layout change. | Include reversible thumbnail backdrop color: same real meshes, existing miniature camera and lighting, old vellum default retained. | 2026-11-08: owner selects Vigilia de la Brecha, replacing prior Fortaleza direction; NEW independent Canvas and new art kit only, no Forja skin; no production HUD modification.",
       "art_production_routing": "required",
       "art_production_routing_reason": "New 2D UI illustrations and surface art, with mandatory AI authoring and native visual proof before approval.",
