@@ -165,6 +165,35 @@ namespace Eldoria.DailyTreasures.Editor
             Need(count>=2,"Real native text audit had no meaningful visible labels: "+phase);
         }
 
+        static void VerifySeventhDayPreviewTruth(DailyTreasurePanel panel,
+            string phase)
+        {
+            // An actual paid day-seven screenshot displayed wood, stone and
+            // streak food, while a FOURTH real reward (five-minute speedup)
+            // was clipped from the calendar. Verify the exact promised payout
+            // BEFORE claiming, using Unity's live Text and measured line box.
+            var card=panel.GetComponentsInChildren<RectTransform>(true)
+                .Single(x=>x.name==
+                    "Day 7 / non-clickable informational card");
+            var label=card.GetComponentsInChildren<Text>(true)
+                .Single(x=>x.name=="Actual reward contents");
+            const string expected=
+                "Madera 180 · Piedra 120\nComida 80 · 5 min x1";
+            Need(label.gameObject.activeInHierarchy && label.text==expected,
+                "Calendar must disclose all four real day-seven items: "+phase+
+                " observed="+(label?label.text:"<null>"));
+            Canvas.ForceUpdateCanvases();
+            var rect=label.rectTransform.rect;
+            Need(label.preferredHeight<=rect.height+3f &&
+                 label.preferredWidth<=rect.width+3f &&
+                 label.fontSize>=12,
+                "Day seven promises all four items but truncates the preview "+
+                "in Unity ("+phase+") width="+rect.width+
+                " requiredWidth="+label.preferredWidth+
+                " height="+rect.height+
+                " requiredHeight="+label.preferredHeight);
+        }
+
         static void VerifyCalendarMultipleResourceMargins(DailyTreasurePanel panel,
             string phase)
         {
@@ -536,6 +565,7 @@ namespace Eldoria.DailyTreasures.Editor
                     // raycaster and selectable pointer sequence.
                     VerifyCriticalTypography(panel,"calendar day seven");
                     VerifyCalendarMultipleResourceMargins(panel,"calendar day seven");
+                    VerifySeventhDayPreviewTruth(panel,"calendar day seven");
                     pictures.Add(Render(camera,rt,output,width,height,"calendar",
                         "Available calendar before claim",true,false));
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
