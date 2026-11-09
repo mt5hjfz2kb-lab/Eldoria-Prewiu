@@ -37,7 +37,7 @@ def coverage(rects:list[R],w:float,h:float)->float:
                 mask[y*nx+x]=1
     return 100*sum(mask)/len(mask)
 
-def check(size:tuple[int,int]):
+def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False):
     pw,ph=size
     portrait=ph>pw
     scale=(max(.91,min(3.00,pw/514)) if portrait else
@@ -47,6 +47,8 @@ def check(size:tuple[int,int]):
     m=13 if portrait else 18
     boxes={}
     panels=[]
+    resources=3 if food_unlocked else 2
+    nav_count=3 if world_unlocked else 2
     def place(name,x,y,ww,hh,solid=True):
         r=R(x,y,ww,hh)
         assert r.visible(w,h,1.01),f"{size}: offscreen {name} = {r} inside {w:.1f}x{h:.1f}"
@@ -59,17 +61,17 @@ def check(size:tuple[int,int]):
     if portrait:
         place("identity",m,11 if pw<600 else 14,182,52 if pw<600 else 43)
         right=w-(m+182+9+m)
-        chip=min(70,max(58,(right-8)/3))
-        for i in range(3):
-            place("resource"+str(i),w-m-(3*chip+8)+i*(chip+4),18 if pw<600 else 17,chip,38 if pw<600 else 28)
+        chip=(min(85,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3)))
+        resw=resources*chip+4*(resources-1)
+        for i in range(resources):
+            place("resource"+str(i),w-m-resw+i*(chip+4),18 if pw<600 else 17,chip,38 if pw<600 else 28)
         place("mission",m,96 if pw<600 else 82,min(185,w*.46),78)
         place("breach",w*.52-56,74,112,30)
-        for i in range(3):
-            place("disabled seal"+str(i),m,h-306+i*45,37,37)
+        # Future utility buttons do not draw or intercept pointer events.
         navsize,gap=49,14
-        navw=5*navsize+4*gap
+        navw=nav_count*navsize+(nav_count-1)*gap
         navtop=h-100
-        for i in range(5):
+        for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
         panelw=min(171,w*.42)
@@ -90,18 +92,16 @@ def check(size:tuple[int,int]):
         limit=34
     else:
         place("identity",m,11,234,58)
-        chip=min(100,max(82,(w*.28-12)/3))
-        resw=3*chip+14
-        for i in range(3):
+        chip=(min(110,max(82,(w*.28-7)/2)) if resources==2 else min(100,max(82,(w*.28-12)/3)))
+        resw=resources*chip+7*(resources-1)
+        for i in range(resources):
             place("resource"+str(i),w-m-resw+i*(chip+7),16,chip,41)
         place("mission",m,102,225,83)
         place("breach",w*.49-17,11,34,34)
-        for i in range(3):
-            place("disabled seal"+str(i),m,h-165+i*44,37,37)
         navsize,gap=55,15
-        navw=5*navsize+4*gap
+        navw=nav_count*navsize+(nav_count-1)*gap
         navtop=h-78
-        for i in range(5):
+        for i in range(nav_count):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
         contextw=210 if h<530 else 220
@@ -132,7 +132,8 @@ def check(size:tuple[int,int]):
     compact=coverage(panels,w,h)
     assert compact<=limit,(size,compact,limit)
     print(f"VIGILIA_SOURCE_GEOMETRY_PASS {pw}x{ph} {compact:.1f}% upper-mask "
-          f"max {limit}% 5x single-row nav, >=44px touch, no cost/state/button overlap")
+          f"max {limit}% nav={nav_count} resources={resources}, >=44px touch, "
+          f"no premature buttons or cost/state/button overlap")
 
 def main():
     source=SOURCE.read_text(encoding="utf-8")
@@ -148,13 +149,20 @@ def main():
         'float pw=h<530f?210f:220f',
         'float ph=Mathf.Min(330,h-174f)',
         'At(((RectTransform)actionButton.transform),12,ph-56,pw-24,53)',
-        'At(((RectTransform)closeButton.transform),pw-57,3,52,52)'
+        'At(((RectTransform)closeButton.transform),pw-57,3,52,52)',
+        'if(host && host.CanOpen(RoyalSection.World))mask|=1<<3;',
+        'navButtons[i].gameObject.SetActive(visible);',
+        'resourceChips[i].gameObject.SetActive(i<visibleResources);',
+        'utility.gameObject.SetActive(false);',
+        'lastNavigationMask=navigationMask;'
     ]
     for pattern in expected:
         assert pattern in source, f"Runtime contract changed: {pattern}"
     for size in [(1600,900),(900,1600),(844,390),(390,844),(1170,2532)]:
-        check(size)
-    print("BOUNDARY: source-level layout estimate, requires independent Unity render and actual pixels")
+        for food in (False,True):
+            for world in (False,True):
+                check(size,food,world)
+    print("BOUNDARY: 20 source-only unlocking/layout combinations, needs real Unity pixels")
 
 if __name__=="__main__":
     main()
