@@ -25,6 +25,7 @@ namespace Eldoria.DailyTreasures
         RectTransform root,entryRect,screen,cardSurface,calendar,ceremony,glowRect,raysRect,ambientRect;
         RectTransform originalSafeArea;
         RectTransform cachedCanonicalHeroRoom;
+        RectTransform cachedVigiliaBuildingPanel;
         float nextCanvasProbe;
         bool onVigiliaCanvas;
         public bool UsesVigiliaCanvas => onVigiliaCanvas;
@@ -126,7 +127,8 @@ namespace Eldoria.DailyTreasures
                     Close();
                 }
                 if(entryRect)
-                    entryRect.gameObject.SetActive(!suppressed);
+                    entryRect.gameObject.SetActive(!suppressed &&
+                        !HasVisibleVigiliaBuildingPanel());
             }
         }
         public bool IsOpen => screen && screen.gameObject.activeSelf;
@@ -567,6 +569,7 @@ namespace Eldoria.DailyTreasures
         bool PresentNextCommittedMilestone()
         {
             if(suppressed || IsOpen || HasVisibleCanonicalHeroRoom() ||
+               HasVisibleVigiliaBuildingPanel() ||
                !milestoneQueue.TryPeek(out var milestone))return false;
             if(!PresentCommittedMilestone(milestone.Title,milestone.Detail,
                 legendary:milestone.Legendary,eventId:milestone.EventId))
@@ -579,7 +582,8 @@ namespace Eldoria.DailyTreasures
         void OpenEntryOrDeferredMilestone()
         {
             if(suppressed || gateway==null || now==null ||
-               HasVisibleCanonicalHeroRoom())return;
+               HasVisibleCanonicalHeroRoom() ||
+               HasVisibleVigiliaBuildingPanel())return;
             // Daily-claim access always wins: do not hide a real reward behind
             // an unrelated celebration. Once claimed, the same embossed
             // medallion offers the next committed milestone on player request.
@@ -594,7 +598,8 @@ namespace Eldoria.DailyTreasures
         public void Open()
         {
             if(suppressed || gateway==null || now==null ||
-               HasVisibleCanonicalHeroRoom())return;
+               HasVisibleCanonicalHeroRoom() ||
+               HasVisibleVigiliaBuildingPanel())return;
             // The chest modal must outrank the RoyalGold screens which are
             // siblings of this independent UI host inside the same safe area.
             // Reordering only the inner screen previously left it invisible
@@ -863,7 +868,8 @@ namespace Eldoria.DailyTreasures
         {
             if(gateway==null || now==null || screen==null ||
                string.IsNullOrWhiteSpace(title) || suppressed ||
-               HasVisibleCanonicalHeroRoom())return false;
+               HasVisibleCanonicalHeroRoom() ||
+               HasVisibleVigiliaBuildingPanel())return false;
             if(IsOpen)return false;
             ClearPrizeCards();
             // Important victories are presented above the room whose real
@@ -1547,6 +1553,25 @@ namespace Eldoria.DailyTreasures
             return parentCanvas && parentCanvas.isActiveAndEnabled;
         }
 
+        // Vigilia owns the real selected-building cartouche on its
+        // independent ScreenSpaceCamera safe area. The optional treasure
+        // entry must yield while players examine or improve a building.
+        // Search a direct named child only when migrated: no scene traversal,
+        // duplicate Canvas, PR173 assembly reference, or synthetic artwork.
+        bool HasVisibleVigiliaBuildingPanel()
+        {
+            if(!onVigiliaCanvas || !root || !root.parent)return false;
+            if(!cachedVigiliaBuildingPanel ||
+               cachedVigiliaBuildingPanel.parent!=root.parent)
+                cachedVigiliaBuildingPanel=root.parent.Find(
+                    "Independent selected-building cartouche") as RectTransform;
+            if(!cachedVigiliaBuildingPanel ||
+               !cachedVigiliaBuildingPanel.gameObject.activeInHierarchy)
+                return false;
+            var canvas=cachedVigiliaBuildingPanel.GetComponentInParent<Canvas>();
+            return canvas && canvas.isActiveAndEnabled;
+        }
+
         void SynchronizePresentationCanvas()
         {
             if(Time.unscaledTime<nextCanvasProbe)return;
@@ -1563,6 +1588,7 @@ namespace Eldoria.DailyTreasures
                     Stretch(root);
                     root.SetAsLastSibling();
                     onVigiliaCanvas=true;
+                    cachedVigiliaBuildingPanel=null;
                     // This canvas replaces the disabled legacy HUD immediately.
                     // Without an immediate geometry pass, the first real tap
                     // can intersect a stale hit target before Update() runs.
@@ -1581,6 +1607,7 @@ namespace Eldoria.DailyTreasures
                 Stretch(root);
                 root.SetAsLastSibling();
                 onVigiliaCanvas=false;
+                cachedVigiliaBuildingPanel=null;
                 Canvas.ForceUpdateCanvases();
                 lastWidth=lastHeight=-1f;
                 Layout();
@@ -1607,12 +1634,24 @@ namespace Eldoria.DailyTreasures
         {
             return HasVisibleCanonicalHeroRoom();
         }
+        public bool ProbeVigiliaBuildingForNativeEvidence()
+        {
+            bool blocked=HasVisibleVigiliaBuildingPanel();
+            if(blocked && IsOpen)Close();
+            if(entryRect)entryRect.gameObject.SetActive(!suppressed && !blocked);
+            return blocked;
+        }
 #endif
 
         void Update()
         {
             if(!root)return;
             SynchronizePresentationCanvas();
+            // The selected-building context must outrank a reward even if it
+            // opened AFTER an already-paid ceremony; close only UI/Foley,
+            // never the authoritative item or its mailbox receipt.
+            bool vigiliaBuilding=HasVisibleVigiliaBuildingPanel();
+            if(vigiliaBuilding && IsOpen)Close();
             // A hidden calendar must NOT also hide the sole entry geometry.
             // Layout is required on the very first frame, and again whenever
             // Vigilia's independent safe area or the device orientation moves.
@@ -1637,7 +1676,7 @@ namespace Eldoria.DailyTreasures
             }
             if(!IsOpen)
             {
-                entryRect.gameObject.SetActive(!suppressed);
+                entryRect.gameObject.SetActive(!suppressed && !vigiliaBuilding);
                 // A restrained, believable coffer glow, not cartoon bouncing.
                 float shimmer=entryIsAvailable?
                     (.18f+.095f*Mathf.Sin(Time.unscaledTime*2.1f)):0f;
