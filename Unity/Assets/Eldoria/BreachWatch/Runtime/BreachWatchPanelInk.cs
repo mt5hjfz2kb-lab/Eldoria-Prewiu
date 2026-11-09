@@ -34,12 +34,17 @@ namespace Eldoria.BreachWatch
                     float u=x/(float)Columns;
                     float grain=Mathf.PerlinNoise(u*7.7f+11.8f,v*9.3f+21.1f);
                     float fine=Mathf.PerlinNoise(u*25.8f+5.3f,v*31.1f+6.1f);
-                    // Near-black stone with quietly varied warm mineral tones.
-                    float tint=(grain-.5f)*.025f+(fine-.5f)*.009f;
+                    // Actual Unity art review: the previous almost-black
+                    // 0.068 fill flattened the selected Bastion card into a
+                    // featureless void. The approved picture is warm slate
+                    // with varied mineral grain, still dark enough for ivory
+                    // live text. Keep slight edge shading and warm uplight.
+                    float tint=(grain-.5f)*.045f+(fine-.5f)*.017f;
                     float edge=Mathf.Clamp01(Mathf.Abs(u-.5f)*1.9f);
-                    float red=.068f+tint-edge*.016f+v*.008f;
-                    float green=.071f+tint-edge*.015f+v*.006f;
-                    float blue=.075f+tint-edge*.016f+v*.002f;
+                    float warm=Mathf.Clamp01(1f-v)*.015f;
+                    float red=.125f+tint-edge*.028f+warm;
+                    float green=.119f+tint-edge*.026f+warm*.68f;
+                    float blue=.108f+tint-edge*.023f+warm*.34f;
                     // The original OwnerReference gold border has clipped
                     // shoulders and a tapered lower tip. A rectangular black
                     // underlying panel showed up OUTSIDE that border in the
