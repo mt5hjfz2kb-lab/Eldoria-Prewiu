@@ -75,8 +75,10 @@ namespace Eldoria.Tests
                 Assert.That(Member(management,"IsOpen"),Is.False);
                 var camera=Member(host,"PlayerCamera") as Camera;
                 Assert.That(camera,Is.Not.Null);
-                var position=camera.transform.position;
-                float zoom=camera.orthographicSize;
+                // The Barracks selection intentionally focuses the real city camera.
+                // Capture its final position after that focus, before opening Training.
+                Vector3 position;
+                float zoom;
                 var state=new PlayerState{
                     BastionLevel=2,BarracksLevel=1,
                     Resources=new ResourceWallet{Wood=9000,Stone=9000},
@@ -101,8 +103,11 @@ namespace Eldoria.Tests
                 // Barracks selection now offers Training and Upgrade: no
                 // automatic transition into military management.
                 Call(hud,"SelectBuilding","upgrade-barracks");
-                yield return null;
+                yield return null; // actual city FocusAfterLayout is deferred one frame
+                yield return null; // camera focus and canvas layout have now run
                 Canvas.ForceUpdateCanvases();
+                position=camera.transform.position;
+                zoom=camera.orthographicSize;
                 Assert.That(Member(management,"IsOpen"),Is.False,
                     "Selecting a Barracks must not open Training automatically");
                 // This test isolates the V3 destination and saved command logic.
