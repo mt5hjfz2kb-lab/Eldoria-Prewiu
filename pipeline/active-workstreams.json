@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T12:30:44Z",
+  "updated_at": "2026-11-09T12:36:18.720Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2859,44 +2859,20 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 29,
-      "write_scope_released": true,
+      "owner": "chatgpt-v3-building-timer-anchor-20261109",
+      "ownership_state": "claimed",
+      "ownership_revision": 30,
+      "write_scope_released": false,
       "status": "active",
-      "claimed_at": "2026-10-27T09:36:00Z",
-      "base_main_sha": "de0cc6127746b562f82da03327426597d5d32257",
-      "branch": "main",
-      "pr": 119,
-      "owner_instruction": "Explicit owner direction to continue full-screen V3 barracks/training and marches to real Unity QA and main release; resume same canonical workstream.",
+      "claimed_at": "2026-11-09T12:36:18.720Z",
+      "base_main_sha": "0a9e1039436bf396e0cfbd6ebaad3df0967e4051",
+      "branch": "fix/eldoria-construction-timer-anchor-20261109",
+      "pr": null,
+      "owner_instruction": "2026-11-09 owner requests restoring construction timer attachment to its world building on camera pan; preserve compact readable timer and no duplicate selected action, do not touch frozen PR179 or PR173/181 sources.",
       "scope": [
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs.meta",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/Eldoria.RoyalGold.V2.asmdef",
-        "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3Management*.cs",
-        "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3Management*.cs.meta",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3Management*.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3Management*.cs.meta",
-        "tools/ui-v3-domain-smoke/**",
-        ".github/workflows/ui-v3-domain-smoke.yml",
-        "docs/ui-v3/MANAGEMENT_SCREENS_V3_IMPLEMENTATION_20261021.md",
-        ".github/workflows/ui-progression-cert.yml",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Narrative.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
-        "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs",
-        "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
-        "Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
-        "docs/ui-v3/MOBILE_PLAYER_FEEDBACK_20261026.md",
-        "Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/BottomNavigation.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHudLayout.cs"
+        "tools/ui-v3-domain-smoke/verify-construction-anchor.mjs",
+        "docs/ui-v3/CONSTRUCTION_TIMER_ANCHOR_20261109.md"
       ],
       "resources": [],
       "dependencies": [
@@ -2946,7 +2922,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Completed PR119 preserved; current IV–V screen enhancements belong to canonical Valoria owner.",
+      "next": "Edit isolated candidate against live main, static source contract check; Unity native city portrait/landscape test before merge and beta republication. PR179 owner retains live beta.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -3049,10 +3025,16 @@
           "revision": 28,
           "reason": "PR119 already merged/certified; current owner directs integrated IV–V continuation and existing screen refinement under canonical Valoria workstream.",
           "released_at": "2026-10-29T12:23:02.996Z"
+        },
+        {
+          "owner": null,
+          "revision": 29,
+          "transferred_at": "2026-11-09T12:36:18.720Z",
+          "reason": "Owner reports construction timer displaced into side HUD in actual beta; correction is distinct small canonical V3 projection fix, with PR179 beta overlay owned by another workstream."
         }
       ],
       "runner_lease_note": "Main UI40681527347 success. General main40681527358 is serial on existing runner; keep intact while subsequent PR120 jobs queue.",
-      "phase": "PR119_MERGED_NATIVE_CERTIFIED",
+      "phase": "CONSTRUCTION_TIMER_WORLD_ANCHOR_CORRECTION",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
