@@ -1202,16 +1202,30 @@ namespace Eldoria.DailyTreasures
                     // space; make small, bounded adjustments rather than shrink
                     // the entire Canvas or blur all text by scaling transforms.
                     bool tiny=cellH<96f;
+                    // Real Unity 1600x900 screenshots showed Day 4 and Day 6
+                    // two-line labels painted onto the bottom bronze border.
+                    // Move both lines INSIDE the card rather than hiding
+                    // their second resource, and reduce only the secondary
+                    // icon when vertical space is genuinely constrained.
+                    bool twoResources=i==3 || i==5;
+                    bool compactDouble=twoResources && cellH<=103f;
                     if(tiny)Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,
                         0f,-5f,cellW-6f,24f);
+                    float iconY=compactDouble?3f:tiny?2f:3f;
                     Place(dayGlyph[i].rectTransform,.5f,.5f,.5f,.5f,
-                        0f,tiny?2f:3f,48f,tiny?24f:28f);
+                        0f,iconY,48f,compactDouble?28f:tiny?24f:28f);
                     if(dayArtwork[i])Place(dayArtwork[i].rectTransform,
-                        .5f,.5f,.5f,.5f,0f,tiny?2f:3f,
-                        tiny?51f:58f,tiny?31f:42f);
+                        .5f,.5f,.5f,.5f,0f,iconY,
+                        compactDouble?48f:tiny?51f:58f,
+                        compactDouble?28f:tiny?31f:42f);
+                    float labelBottom=compactDouble?20f:
+                        twoResources?27f:tiny?17f:18.5f;
+                    float labelHeight=compactDouble?30f:
+                        twoResources?36f:tiny?31f:33f;
                     Place(dayBody[i].rectTransform,.5f,.5f,.5f,.5f,
-                        0f,-cellH*.5f+(tiny?17f:18.5f),cellW-10f,tiny?31f:33f);
-                    dayBody[i].fontSize=tiny?13:14;
+                        0f,-cellH*.5f+labelBottom,
+                        cellW-10f,labelHeight);
+                    dayBody[i].fontSize=compactDouble?12:tiny?13:14;
                 }
             }
             if(focusedQuiet)
