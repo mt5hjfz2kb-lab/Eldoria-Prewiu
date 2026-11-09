@@ -105,7 +105,7 @@ def check(size:tuple[int,int]):
             item=place("nav"+str(i),(w-navw)*.5+i*(navsize+gap),navtop+3,navsize,navsize)
             touch("nav"+str(i),item)
         contextw=210 if h<530 else 220
-        contexth=min(365,h-174)
+        contexth=min(330,h-174)
         contexty=75 if h<530 else 118
         context=place("context",w-m-contextw,contexty,contextw,contexth)
         touch("close",R(context.x+contextw-57,context.y+3,52,52))
@@ -116,11 +116,11 @@ def check(size:tuple[int,int]):
             func=R(114,62,contextw-124,76)
             heading=R(12,141,contextw-24,20)
         else:
-            action=R(12,contexth-55,contextw-24,49)
-            costs=R(13,239,contextw-26,30)
-            state=R(13,272,contextw-26,23)
-            func=R(13,163,contextw-26,46)
-            heading=R(13,212,contextw-26,22)
+            action=R(12,contexth-48,contextw-24,45)
+            costs=R(13,227,contextw-26,30)
+            state=R(13,261,contextw-26,19)
+            func=R(13,157,contextw-26,40)
+            heading=R(13,201,contextw-26,21)
         touch("action",action)
         assert not func.intersects(heading),size
         assert not heading.intersects(costs),size
@@ -146,7 +146,7 @@ def main():
         'float navSize=55,navGap=15',
         'float navTop=h-78',
         'float pw=h<530f?210f:220f',
-        'float ph=Mathf.Min(365,h-174f)',
+        'float ph=Mathf.Min(330,h-174f)',
         'At(((RectTransform)actionButton.transform),12,ph-56,pw-24,53)',
         'At(((RectTransform)closeButton.transform),pw-57,3,52,52)'
     ]
