@@ -145,11 +145,54 @@ public static class EldoriaPretestUXProbe
   Seed(h,Fixture(2));h.Hud.SelectBuilding("");h.Select("sawmill");yield return new WaitForSecondsRealtime(.4f);
   Click(h.Hud.GetComponent<RoyalGoldV2Hud>().VisibleBuildingButton);yield return new WaitForSecondsRealtime(.4f);
   Need(h.City.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"visible upgrade starts paid work");Capture(h,"compact-selected-timer");h.Hud.SelectBuilding("");yield return new WaitForSecondsRealtime(.4f);Capture(h,"compact-timer");yield return null;Canvas.ForceUpdateCanvases();
-  var timers=h.Hud.GetComponentsInChildren<CanvasGroup>(true).Where(g=>g.name.StartsWith("V3 / real-time operation / ")&&g.alpha>.5f).Select(g=>(RectTransform)g.transform).ToArray();
-  Need(timers.Length>0,"at least one live timer measured");
-  var prior=timers.Select(r=>r.anchoredPosition).ToArray();
-  h.City.PlayerCamera.transform.position+=new Vector3(2,0,1);yield return null;yield return null;Canvas.ForceUpdateCanvases();
-  for(int i=0;i<timers.Length;i++)Need(Vector2.Distance(prior[i],timers[i].anchoredPosition)<.1f,"timer stays at fixed HUD position: "+timers[i].name);
+  // Regression for the real owner-reported bug: city construction must
+  // follow its world building, never stay parked in a right-hand HUD dock.
+  var context=h.Hud.GetComponent<RoyalGoldV3ContextHud>();
+  Need(context&&context.IsConfigured,"real scene anchor/camera contract available");
+  var timerGroup=h.Hud.GetComponentsInChildren<CanvasGroup>(true)
+   .FirstOrDefault(g=>g.name=="V3 / real-time operation / sawmill");
+  Need(timerGroup&&timerGroup.alpha>.5f,"paid sawmill work has a visible countdown");
+  var timerRect=(RectTransform)timerGroup.transform;
+  var timerCanvas=timerRect.GetComponentInParent<Canvas>();
+  var timerCamera=timerCanvas.renderMode==RenderMode.ScreenSpaceOverlay?null:timerCanvas.worldCamera;
+  var building=context.FindAnchor("sawmill");
+  Need(building&&building.gameObject.activeInHierarchy,"countdown has an active sawmill transform");
+  var modelCollider=building.GetComponent<Collider>();
+  if(!modelCollider)modelCollider=building.GetComponentInChildren<Collider>();
+  Need(modelCollider&&modelCollider.enabled,"real sawmill collider available for projection");
+  Func<float> modelCentreX=()=>{
+   var bounds=modelCollider.bounds;float left=float.PositiveInfinity,right=float.NegativeInfinity;
+   for(int i=0;i<8;i++){
+    var corner=new Vector3((i&1)==0?bounds.min.x:bounds.max.x,
+     (i&2)==0?bounds.min.y:bounds.max.y,(i&4)==0?bounds.min.z:bounds.max.z);
+    var projected=h.City.PlayerCamera.WorldToScreenPoint(corner);
+    if(projected.z<=h.City.PlayerCamera.nearClipPlane||
+       projected.z>=h.City.PlayerCamera.farClipPlane)continue;
+    left=Mathf.Min(left,projected.x);right=Mathf.Max(right,projected.x);
+   }
+   return float.IsInfinity(left)?float.NaN:(left+right)*.5f;
+  };
+  Func<Vector2> timerScreen=()=>RectTransformUtility.WorldToScreenPoint(timerCamera,timerRect.position);
+  var modelXBefore=modelCentreX();var timerBefore=timerScreen();
+  Need(!float.IsNaN(modelXBefore)&&
+   Mathf.Abs(modelXBefore-timerBefore.x)<=42f*timerCanvas.scaleFactor,
+   "sawmill timer is horizontally attached to its real building");
+  var originalCameraPosition=h.City.PlayerCamera.transform.position;
+  h.City.PlayerCamera.transform.position+=new Vector3(2f,0f,1f);
+  yield return null;yield return null;Canvas.ForceUpdateCanvases();context.SynchronizeNow();
+  var modelXAfter=modelCentreX();var timerAfter=timerScreen();
+  Need(timerGroup.alpha>.5f,"building countdown remains visible after pan");
+  Need(Vector2.Distance(timerBefore,timerAfter)>1f,
+   "construction timer moves on-screen with the camera pan");
+  Need(Mathf.Abs((timerAfter.x-timerBefore.x)-(modelXAfter-modelXBefore))
+   <=42f*timerCanvas.scaleFactor,
+   "construction timer tracks real projected building rather than fixed HUD X");
+  h.City.PlayerCamera.transform.position+=new Vector3(2000f,0f,0f);
+  yield return null;yield return null;Canvas.ForceUpdateCanvases();context.SynchronizeNow();
+  Need(timerGroup.alpha<.5f,"timer hides when its building leaves the camera");
+  h.City.PlayerCamera.transform.position=originalCameraPosition;
+  yield return null;yield return null;Canvas.ForceUpdateCanvases();context.SynchronizeNow();
+  Need(timerGroup.alpha>.5f,"countdown reappears beside the building on camera return");
   int labels=0;
   foreach(var label in Object.FindObjectsByType<BuildingLabel>(FindObjectsSortMode.None)){
    if(!label.Target||!label.PlayerCamera||!label.Select.gameObject.activeInHierarchy)continue;
