@@ -6788,10 +6788,10 @@
     {
       "id": "eldoria-private-beta-i-v-20261107",
       "title": "Eldoria — beta privada Bastión I–V: freeze exacto y telemetría",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 15,
-      "write_scope_released": true,
+      "owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
+      "ownership_state": "claimed",
+      "ownership_revision": 16,
+      "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-private-beta-i-v-20261107",
       "scope": [
@@ -6818,7 +6818,7 @@
       "base_main_sha": "4dec4379b12411fa88cfae9f2ff0fd05117dcee0",
       "budget_eur": 0,
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
-      "phase": "BETA10_MAIN_INTEGRATED_WINDOWS_CI_PENDING",
+      "phase": "MAIN_UNITY_POSTPROMOTION_COMPILER_REPAIR",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative.",
       "next": "Reconcile beta10 UX with current main and preserve PR180 hero fixes in existing PR179. Prepare and validate independent source checks. Canonical shared files RoyalGoldV2Hud.cs and LocalGateway.cs require conflict-safe ownership reconciliation with PR173/181 before promotion; Windows remains with PR181.",
       "last_verified": {
@@ -7073,6 +7073,13 @@
           "to_revision": 15,
           "to_owner": null,
           "reason": "Main beta10 source integrated and Ubuntu checks passed; Windows CI running independently. Release source and runner ownership; do not hold PR173/PR181. PR179 remains canonical for any remaining frozen beta stability work."
+        },
+        {
+          "previous_owner": null,
+          "from_revision": 15,
+          "to_revision": 16,
+          "to_owner": "chatgpt-pr179-beta10-main-reconciliation-20261109",
+          "reason": "Same user-authorized task: repair exact Unity compiler error discovered after canonical promotion; no new PR or Windows runner reservation."
         }
       ],
       "frozen_beta_ux_scope": {
@@ -7114,7 +7121,7 @@
         "windows_claimed": false
       },
       "main_promotion": {
-        "status": "MAIN_SOURCE_INTEGRATED_LIGHTWEIGHT_CHECKS_PASS_UNITY_MAIN_CI_PENDING",
+        "status": "MAIN_COMPILER_DEPENDENCY_REPAIR_IN_PROGRESS",
         "source_pr": 179,
         "verified_native_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
         "preserve": [
@@ -7131,7 +7138,9 @@
         "canonical_ubuntu_checks": "58 domain assertions PASS",
         "canonical_unity_run": 42610908699,
         "canonical_ui_run": 42610908773,
-        "transferred_files": 19
+        "transferred_files": 19,
+        "failure_run": 42610908699,
+        "failure": "ValoriaIntegratedWorld.Ready uses RegionOneCanonicalLandscape.IsReady, absent from older canonical world implementation"
       }
     },
     {
