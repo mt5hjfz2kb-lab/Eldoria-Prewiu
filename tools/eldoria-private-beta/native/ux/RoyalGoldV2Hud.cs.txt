@@ -51,6 +51,16 @@ namespace Eldoria.UI.RoyalGold.V2
         private static readonly Color Muted = new Color(.775f, .76f, .715f);
         private static readonly Color Gold = new Color(.886f, .73f, .45f);
 
+        private bool CompactConstructionOperation
+        {
+            get
+            {
+                if (!Source || !Source.Building || !Source.Building.OperationActive) return false;
+                string id = Source.SelectedBuildingId ?? "";
+                if (id.StartsWith("upgrade-", StringComparison.Ordinal)) id = id.Substring(8);
+                return id == "bastion" || id == "sawmill" || id == "barracks" || id == "granary" || id == "stoneworks";
+            }
+        }
         public bool ChapterExpanded => expanded;
         public bool ChronicleIllustratedBuildingVisible => buildingGroup && buildingGroup.alpha > .5f;
         public RoyalButton ChronicleBuildingAction => buildingAction;
@@ -580,7 +590,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // The selected Engendro has no resource-cost row. On portrait
             // phones reuse that empty row for status and visible body text.
             bool portraitEncounter=portrait && Source.SelectedBuildingId=="engendro-valoria" && !council;
-            bool compactOperation=Source.Building&&Source.Building.OperationActive;
+            bool compactOperation=CompactConstructionOperation;
             float cardHeight = compactOperation?112f:council?(portrait?190f:193f):(portrait?218f:196f);
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
@@ -832,7 +842,7 @@ namespace Eldoria.UI.RoyalGold.V2
             bool hasLongRestriction=!building&&!council&&
                 !string.IsNullOrWhiteSpace(Safe(source.Requirements));
             if(buildingScroll)buildingScroll.gameObject.SetActive(
-                !building&&!council&&!(portrait&&hasLongRestriction));
+                !CompactConstructionOperation&&!council&&!(portrait&&hasLongRestriction));
             bool offered=!building&&!council&&source.Primary&&source.Primary.Visible;
             SetVisible(buildingActionGroup,offered);
             SetVisible(buildingTrainingGroup,Source.SelectedBuildingId=="upgrade-barracks"&&!building&&!council);
