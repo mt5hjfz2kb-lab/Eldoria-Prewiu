@@ -997,14 +997,23 @@ namespace Eldoria.BreachWatch
                 identityPower.fontSize=smallPhone?14:12;
 
                 float rightSpace=w-(margin+182+9+margin);
-                float chip=visibleResources==2
-                    ?Mathf.Min(85f,Mathf.Max(72f,(rightSpace-4f)/2f))
-                    :Mathf.Min(70f,Mathf.Max(58f,(rightSpace-8f)/3f));
+                // Three approved stone counters occupy predictable slots.
+                // Right-align only on the narrow phone. Hiding unbuilt food
+                // cannot push the two existing counters 100 pixels away from
+                // their original positions on the owner's 864px reference.
+                float chip=smallPhone
+                    ?(visibleResources==2
+                        ?Mathf.Min(85f,Mathf.Max(72f,(rightSpace-4f)/2f))
+                        :Mathf.Min(70f,Mathf.Max(58f,(rightSpace-8f)/3f)))
+                    :75f;
                 float resourcesWidth=visibleResources*chip+4f*(visibleResources-1);
                 float chipHeight=smallPhone?38f:28f;
                 float symbolSize=smallPhone?25f:19f;
                 float symbolTop=(chipHeight-symbolSize)*.5f;
-                At(resourceRow,w-margin-resourcesWidth,smallPhone?18f:17f,
+                float resourceLeft=smallPhone
+                    ?w-margin-resourcesWidth
+                    :Mathf.Min(w-margin-resourcesWidth,w*.54f);
+                At(resourceRow,resourceLeft,smallPhone?18f:17f,
                     resourcesWidth,chipHeight);
                 for(int i=0;i<3;i++)
                 {
@@ -1026,9 +1035,12 @@ namespace Eldoria.BreachWatch
                 // original 78u height made the illustration look like a poster.
                 float missionWidth=Mathf.Min(smallPhone?211f:184f,
                     w*(smallPhone?.49f:.41f));
-                float missionTop=smallPhone?87f:82f;
+                float missionTop=smallPhone?80f:79f;
                 float missionHeight=smallPhone?69f:60f;
-                At(objective,margin,missionTop,missionWidth,
+                // One extracted blank panel has a substantial transparent
+                // left margin. Place the actual painted silhouette flush with
+                // the profile crest (as on the approved screenshot).
+                At(objective,margin-12f,missionTop,missionWidth,
                     fullObjective?112f:missionHeight);
                 // A genuine 390x844 phone showed 12*.91=10.92px, below
                 // the minimum readable physical text. Use a 13u authored
