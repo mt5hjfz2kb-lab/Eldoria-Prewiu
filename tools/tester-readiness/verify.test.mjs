@@ -37,7 +37,8 @@ function fixture() {
       uninterrupted_from_fresh_save:true,no_debug_skips:true,bastions:[1,2,3,4,5],
       buttons_and_timers_pass:true,saves_and_reload_pass:true,marches_and_combat_pass:true,...evidence},
     device_tests:[{channel:'web',status:'PASS',physical_device:true,model:'Test phone',os:'Test OS',
-      source_sha:source,artifact_sha256:artifact,...evidence}],
+      source_sha:source,artifact_sha256:artifact,session_minutes:35,
+      uninterrupted:true,reload_persisted:true,...evidence}],
     delivery:{web:{status:'PASS',hosted_gameplay_verified:true,source_sha:source,artifact_sha256:artifact,...evidence}},
     final_review:{verdict:'APPROVED',reviewer:'Owner',source_sha:source,...evidence}};
   const save = () => put('pipeline/tester-readiness/candidate.json',JSON.stringify(m));
@@ -68,6 +69,18 @@ test('no fake mobile, no short Bastion test, no wrong source or auto aesthetic a
 test('enabled external tester promotion while blocked is rejected',()=>{
   const f=fixture();try{f.m.state='BLOCKED';f.save();f.release(true);
     assert.equal(verify(f.root).status,'FAIL');assert.equal(verify(f.root).releaseEnabled,true);}finally{f.cleanup();}
+});
+test('external release cannot call a short or restarted iPhone session a physical PASS',()=>{
+  const f=fixture();try{
+    f.m.device_tests[0].session_minutes=5;
+    assert.match(checkCandidate(f.m,f.root).join(' '),/>=30 uninterrupted minutes/);
+    f.m.device_tests[0].session_minutes=30;
+    f.m.device_tests[0].uninterrupted=false;
+    assert.match(checkCandidate(f.m,f.root).join(' '),/>=30 uninterrupted minutes/);
+    f.m.device_tests[0].uninterrupted=true;
+    f.m.device_tests[0].reload_persisted=false;
+    assert.match(checkCandidate(f.m,f.root).join(' '),/saved reload PASS required/);
+  }finally{f.cleanup();}
 });
 test('different hosted/source build and missing final approval fail',()=>{
   const f=fixture();try{f.m.delivery.web.source_sha='c'.repeat(40);
