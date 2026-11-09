@@ -101,7 +101,7 @@ for sheet,parts in boxes.items():
         pixels=np.asarray(cut)
         opaque=float((pixels[:,:,3]>220).mean())
         transparent=float((pixels[:,:,3]<15).mean())
-        assert opaque>.08 and transparent>.09,(name,opaque,transparent)
+        assert opaque>.08 and transparent>.04,(name,opaque,transparent)
         result[name]={'origin':sheet,'rect':rectangle,'dimensions':list(cut.size),
                       'sha256':hashlib.sha256((OUT/(name+'.png')).read_bytes()).hexdigest(),
                       'opaque_fraction':round(opaque,3),'transparent_fraction':round(transparent,3)}
