@@ -361,6 +361,37 @@ jobs:
           assert 'VigiliaArt/OwnerReference/lion_crest' in src
           print('BREACHWATCH_OWNER_APPROVED_SMALL_LION_CRESTRUN_IMAGE_PASS')
           PY
+      - name: Certify three text-free owner-source premium controls and live data ownership
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,struct,pathlib
+          folder=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/OwnerControls')
+          meta=(folder.parent/'OwnerControls.meta')
+          assert meta.is_file()
+          data=json.loads((folder/'manifest.json').read_text())
+          assert data['art_approved'] is False
+          assert len(data['controls'])==3
+          expected={'profile_bar','resource_capsule','upgrade_button'}
+          assert set(x['name'] for x in data['controls'])==expected
+          for item in data['controls']:
+              p=folder/(item['name']+'.png')
+              raw=p.read_bytes()
+              assert raw[:8]==bytes([137,80,78,71,13,10,26,10]) and raw[25]==6
+              assert struct.unpack('>II',raw[16:24])==tuple(item['dimensions'])
+              assert hashlib.sha256(raw).hexdigest()==item['png_sha256']
+              im=(folder/(item['name']+'.png.meta')).read_text()
+              assert 'guid: '+item['guid'] in im and 'spriteMode: 1' in im
+              assert 'spriteBorder: {x: '+str(item['border'][0]) in im
+          hud=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
+          for name in expected:
+              assert 'VigiliaArt/OwnerControls/'+name in hud,name
+          assert 'BreachWatchCrossedHammers' not in hud
+          assert 'VigiliaArt/PremiumSurfaces/burgundy_action' not in hud
+          assert 'VigiliaArt/PremiumSurfaces/profile_plate' not in hud
+          assert 'VigiliaArt/PremiumSurfaces/slate_resource' not in hud
+          print('VIGILIA_THREE_EXACT_USER_REFERENCE_CONTROLS_VERIFIED')
+          PY
       - name: Verify genuine approved gold trim source, exact SHA, PNG and true Unity nine-slice
         shell: bash
         run: |
@@ -418,7 +449,10 @@ jobs:
               assert 'spriteBorder: {x: '+str(entry['border'][0]) in meta
               guids.add(entry['guid'])
           csharp=pathlib.Path('Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs').read_text()
-          for name in ['brass_portrait','burgundy_action','chiseled_quest','profile_plate','slate_resource']:
+          # Older generated plates stay archived with SHA provenance, but
+          # only the genuine 3D portrait and pointed chapter card are used
+          # live. User-approved profile, materials and CTA are independent.
+          for name in ['brass_portrait','chiseled_quest']:
               assert 'VigiliaArt/PremiumSurfaces/'+name in csharp,name
           assert 'VigiliaArt/PremiumSurfaces/basalt_context' not in csharp
           assert 'BreachWatchBevelTrim' not in csharp
