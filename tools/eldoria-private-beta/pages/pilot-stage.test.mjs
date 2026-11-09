@@ -13,7 +13,7 @@ async function setup(){
  const identity={revision:REV,source_sha:SHA,release_for_external_testers:false,native_journey_verified:true};
  await writeFile(join(site,'index.html'),html);await writeFile(join(site,'release-identity.json'),JSON.stringify(identity));
  await writeFile(join(site,'build-manifest.json'),'{}');
- for(const p of ['client.mjs','signal-parser.mjs','pilot-bootstrap.mjs'])await writeFile(join(source,p),'// fake QA only '.repeat(50));
+ for(const p of ['client.mjs','signal-parser.mjs','pilot-bootstrap.mjs','restart-diagnostic.mjs'])await writeFile(join(source,p),'// fake QA only '.repeat(50));
  return {dir,site,source,html,identity};
 }
 test('Stages only optional pilot, does not alter original Unity HTML',async()=>{
