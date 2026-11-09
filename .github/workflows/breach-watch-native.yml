@@ -106,7 +106,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
   commit-verified-cc0-art:
-    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]') || contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') || contains(github.event.head_commit.message, '[vigilia-owner-gold-border]'))
+    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]') || contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') || contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') || contains(github.event.head_commit.message, '[vigilia-owner-utilities]'))
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
@@ -146,6 +146,9 @@ jobs:
       - name: Build transparent nine-slice from exact owner-approved gold border
         if: contains(github.event.head_commit.message, '[vigilia-owner-gold-border]')
         run: python tools/breach-watch/author_owner_approved_gold_border.py
+      - name: Isolate three owner-approved original gold utility medallions
+        if: contains(github.event.head_commit.message, '[vigilia-owner-utilities]')
+        run: python tools/breach-watch/import_owner_utilities.py
       - name: Protect canonical workstream ownership and source HEAD before push
         shell: bash
         env:
