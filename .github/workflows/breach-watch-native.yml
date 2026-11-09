@@ -106,7 +106,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
   commit-verified-cc0-art:
-    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]') || contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') || contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') || contains(github.event.head_commit.message, '[vigilia-owner-utilities]') || contains(github.event.head_commit.message, '[vigilia-owner-controls]'))
+    if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[breach-art-import]') || contains(github.event.head_commit.message, '[vigilia-import-resources]') || contains(github.event.head_commit.message, '[vigilia-owner-reference]') || contains(github.event.head_commit.message, '[vigilia-context-frame]') || contains(github.event.head_commit.message, '[vigilia-premium-art]') || contains(github.event.head_commit.message, '[vigilia-premium-surfaces]') || contains(github.event.head_commit.message, '[vigilia-owner-gold-border]') || contains(github.event.head_commit.message, '[vigilia-owner-utilities]') || contains(github.event.head_commit.message, '[vigilia-owner-controls]') || contains(github.event.head_commit.message, '[vigilia-owner-close]'))
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
@@ -152,6 +152,9 @@ jobs:
       - name: Import separately extracted owner reference profile, resources and CTA as dynamic UI assets
         if: contains(github.event.head_commit.message, '[vigilia-owner-controls]')
         run: python tools/breach-watch/import_owner_controls.py
+      - name: Import singular authentic owner-reference circular close X
+        if: contains(github.event.head_commit.message, '[vigilia-owner-close]')
+        run: python tools/breach-watch/import_owner_close.py
       - name: Paint source-faithful single dark material from approved empty panel
         if: contains(github.event.head_commit.message, '[vigilia-premium-surfaces]')
         run: python tools/breach-watch/author_material_from_owner_reference.py
