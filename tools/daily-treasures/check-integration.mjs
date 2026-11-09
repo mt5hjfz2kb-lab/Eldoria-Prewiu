@@ -278,4 +278,12 @@ assert.match(native,/Unity truncated premium text/);
 assert.match(native,/VerifyCriticalTypography\(panel,"paid day seven \/ illustration cards"\)/);
 assert.match(native,/VerifyCriticalTypography\(panel,"paid day four \/ illustration cards"\)/);
 assert.match(panel,/ceremonialTitle\+" · GUARDADO"/);
+// Premium phone UI must survive rotations WHILE the reward is visible,
+// not only cold-start in each portrait/landscape screen size.
+assert.match(panel,/ProbeOrientationLayoutForNativeEvidence\(\)/);
+assert.match(panel,/resultText\.text=portrait\?/);
+assert.match(native,/rect\.sizeDelta=new Vector2\(height,width\)/);
+assert.match(native,/VerifyCriticalTypography\(panel,"paid chest after orientation change"\)/);
+assert.match(native,/VerifyCriticalTypography\(panel,"paid chest after rotation restored"\)/);
+assert.match(native,/Paid cards disappeared when device orientation changed/);
 console.log('PASS daily treasures gateway integration source invariants');
