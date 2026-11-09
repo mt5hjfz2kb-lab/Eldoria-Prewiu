@@ -647,6 +647,20 @@ namespace Eldoria.BreachWatch.Editor
                          "Real isolated Bastion mesh portrait did not render in "+name);
                     Need(!ui.BuildingPortraitEdgeClipped,
                          "Real Bastion geometry is cropped at the miniature frame boundary: "+name);
+                    // A 3D mesh can be inside the render texture yet cropped
+                    // by the responsive RawImage's display UVs. Check BOTH,
+                    // using silhouettes measured from actual GPU pixels.
+                    var castleUv=ui.BuildingPortraitMeshUvBounds;
+                    var photoUv=ui.BuildingPortraitUvRect;
+                    Need(castleUv.width>.20f && castleUv.height>.35f,
+                         "Real Bastion miniature has implausible GPU silhouette: "+name);
+                    const float uvTolerance=.007f;
+                    Need(photoUv.xMin<=castleUv.xMin+uvTolerance &&
+                         photoUv.xMax>=castleUv.xMax-uvTolerance &&
+                         photoUv.yMin<=castleUv.yMin+uvTolerance &&
+                         photoUv.yMax>=castleUv.yMax-uvTolerance,
+                         "Gold picture frame CROPS real turrets, flag or staircase: "+
+                         name+" imageUV="+photoUv+" modelUV="+castleUv);
                     Need(ui.BuildingPortraitDrawnFraction>.23f,
                         "Genuine isolated Bastion camera produced a mostly empty image in "+name+
                         " pixels="+ui.BuildingPortraitDrawnFraction);
