@@ -865,21 +865,29 @@ namespace Eldoria.Tests
             // the same authoritative timer, not a stale pre-purchase offer.
             Call(v3, "SynchronizeNow");
             Assert.That(Member(management, "IsOpen"), Is.EqualTo(false));
-            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
-                "The paid work must show one anchored timer immediately");
+            // The existing illustrated building cartouche already owns the
+            // selected site's progress; V3 intentionally suppresses a duplicate
+            // floating timer until the player deselects that building. The
+            // previous native test mistakenly required both at once.
+            var illustrated = hud.GetComponent<RoyalGoldV2Hud>();
+            bool selectedIllustrationVisible =
+                illustrated && illustrated.ChronicleIllustratedBuildingVisible;
+            Assert.That(Member(v3, "ActiveTimers"),
+                Is.EqualTo(selectedIllustrationVisible ? 0 : 1),
+                "A selected illustrated construction must have no second timer");
             Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false),
                 "The paid offer is never duplicated while work is active");
             Assert.That(command.interactable, Is.False,
                 "Paid construction cannot be purchased twice");
             var operationTime = Member(operation, "Time") as string;
+            Call(hud, "SelectBuilding", "");
+            Call(v3, "SynchronizeNow");
+            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
+                "Deselecting a paid construction must expose the world-anchored timer in the SAME frame");
             Assert.That(hud.GetComponentsInChildren<Text>(true).Any(x =>
                 x.gameObject.name=="Live remaining time" &&
                 x.gameObject.activeInHierarchy && x.text.Contains(operationTime)),
                 Is.True,"The genuine city timer must show the gateway countdown");
-            Call(hud, "SelectBuilding", "");
-            Call(v3, "SynchronizeNow");
-            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
-                "Closing the contextual selection must preserve the real timer");
 
             // Owner-reported regression: the previous compact countdown was
             // docked at the right screen edge, independent of its building.
