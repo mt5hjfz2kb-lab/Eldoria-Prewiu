@@ -137,8 +137,17 @@ namespace Eldoria.BreachWatch.Editor
             Need(ui.NavButtons.Count==5 &&
                  ui.NavButtons.Select(x=>x.name).SequenceEqual(expectedDestinations),
                  "The five sculpted medallions have misleading destination labels");
-            Need(!ui.NavButtons[2].interactable && !ui.NavButtons[4].interactable,
-                 "Army and Heroes must remain visibly locked until native screens exist");
+            Need(!ui.NavButtons[2].gameObject.activeInHierarchy &&
+                 !ui.NavButtons[4].gameObject.activeInHierarchy &&
+                 !ui.NavButtons[2].interactable && !ui.NavButtons[4].interactable,
+                 "Army and Heroes must not appear before their native screens exist");
+            Need(ui.NavButtons[3].gameObject.activeInHierarchy ==
+                 host.CanOpen(RoyalSection.World),
+                 "Explore medallion appeared before canonical World unlock");
+            Need(!ui.GetComponentsInChildren<Button>(true).Any(b=>
+                 (b.name=="Notices"||b.name=="Settings"||b.name=="Fissure") &&
+                 b.gameObject.activeInHierarchy),
+                 "Future utility buttons must not appear before their gameplay exists");
             Need(!ui.transform.IsChildOf(host.Hud.transform), "New Canvas must not be attached to legacy HUD");
             Need(ui.UsesOriginalPaintedMedallions && ui.UsesApprovedReferenceMedallions &&
                  ui.UsesPremiumSculptedMedallions && ui.UsesPremiumForgedPortraitFrame &&
@@ -485,6 +494,9 @@ namespace Eldoria.BreachWatch.Editor
                          g.name=="Selected medallion / warm engraved relief"),
                      "Old duplicated selection halo remains in native scene: "+name);
                 var expectedMedallions=new[]{"castle","provisions","swords","raven","helm"};
+                Need(nav.Count(x=>x.gameObject.activeInHierarchy)==
+                     (host.CanOpen(RoyalSection.World)?3:2),
+                     "Incorrect count of unlocked destination icons: "+name);
                 for(int index=0;index<nav.Count;index++)
                 {
                     var button=nav[index];
@@ -506,14 +518,14 @@ namespace Eldoria.BreachWatch.Editor
                     var visiblePaint=button.GetComponentsInChildren<Graphic>(true)
                         .Count(g=>g && g.enabled &&
                             g.gameObject.activeInHierarchy && g.color.a>.01f);
-                    Need(visiblePaint==1,
-                         "More than one painted icon or backing button is visible in "+
+                    Need(visiblePaint==(button.gameObject.activeInHierarchy?1:0),
+                         "Unimplemented or duplicated painted navigation appears in "+
                          name+"/"+button.name);
                 }
                 float previousRight = -1;
                 bool oneRow = true;
                 float baselineY = float.NaN;
-                foreach (var button in nav)
+                foreach (var button in nav.Where(x=>x.gameObject.activeInHierarchy))
                 {
                     var rect = (RectTransform)button.transform;
                     Vector3[] corners = new Vector3[4];
@@ -529,7 +541,7 @@ namespace Eldoria.BreachWatch.Editor
                     if (previousRight>=0 && a.x<previousRight+2) oneRow=false;
                     previousRight=b.x;
                 }
-                Need(oneRow,"Five independent navigation symbols overlap or stack in "+name);
+                Need(oneRow,"Unlocked navigation symbols overlap or stack in "+name);
                 float castleViewportWidth=0f,castleViewportX=0f,castleViewportY=0f;
                 if(w<h)
                 {
