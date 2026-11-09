@@ -821,6 +821,22 @@ namespace Eldoria.BreachWatch.Editor
                          engravedBastion.Ink.g<=.66f &&
                          ((RectTransform)engravedBastion.transform).rect.width<=31f,
                          "Oversized bright vector emblem pasted over native carved header: "+name);
+                    // The old right card placed the live Bastion header
+                    // and level RIGHT against the invisible close-hit rect,
+                    // creating a visible title/button collision on phones.
+                    var heading=ui.BuildingPanel.GetComponentsInChildren<Text>(true)
+                        .FirstOrDefault(t=>t && t.name=="Real building name");
+                    var level=ui.BuildingPanel.GetComponentsInChildren<Text>(true)
+                        .FirstOrDefault(t=>t && t.name=="Real building level");
+                    var closeRect=(RectTransform)ui.BuildingClose.transform;
+                    Need(heading && level &&
+                         heading.rectTransform.anchoredPosition.x+
+                           heading.rectTransform.rect.width<=
+                             closeRect.anchoredPosition.x-3.5f &&
+                         level.rectTransform.anchoredPosition.x+
+                           level.rectTransform.rect.width<=
+                             closeRect.anchoredPosition.x-3.5f,
+                         "Bastion title or level touches the top-right close badge: "+name);
                     Need(ui.HasLiveBuildingPortrait && ui.BuildingPortraitExclusive,
                          "Real isolated Bastion mesh portrait did not render in "+name);
                     Need(!ui.BuildingPortraitEdgeClipped,
