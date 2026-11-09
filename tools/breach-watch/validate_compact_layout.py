@@ -80,7 +80,7 @@ def check(size:tuple[int,int]):
         info=R(13,147,panelw-26,34)
         costlabel=R(13,191,panelw-26,15)
         costdata=R(13,208,panelw-26,24)
-        state=R(13,233,panelw-26,16)
+        state=R(13,232,panelw-26,18)
         action=R(12,250,panelw-24,50)
         assert not info.intersects(costlabel),size
         assert not costlabel.intersects(costdata),size
