@@ -1,0 +1,28 @@
+name: Eldoria beta Safari BFCache isolated proof
+on:
+  push:
+    branches: [fix/eldoria-pilot-bfcache-lifecycle-20261109]
+    paths:
+      - '.github/workflows/eldoria-pilot-bfcache-proof.yml'
+      - 'tools/eldoria-private-beta/pages/pilot-bootstrap.mjs'
+      - 'tools/eldoria-private-beta/pages/pilot-bfcache.test.mjs'
+permissions:
+  contents: read
+jobs:
+  bfcache-source-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/eldoria-private-beta/pages
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compile real pilot and run BFCache + consent tests offline
+        run: |
+          node --check tools/eldoria-private-beta/pages/client.mjs
+          node --check tools/eldoria-private-beta/pages/pilot-bootstrap.mjs
+          node --check tools/eldoria-private-beta/pages/pilot-bfcache.test.mjs
+          node --test tools/eldoria-private-beta/pages/pilot-bfcache.test.mjs
