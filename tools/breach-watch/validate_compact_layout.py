@@ -64,14 +64,15 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         profile_power=R(0,31 if pw<600 else 25,1,17)
         assert profile_name.y+profile_name.h<=profile_power.y+.5,size
         right=w-(m+182+9+m)
-        chip=(min(85,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3)))
+        chip=(min(85,max(72,(right-4)/2)) if resources==2 else min(70,max(58,(right-8)/3))) if pw<600 else 75
         resw=resources*chip+4*(resources-1)
+        resource_left=w-m-resw if pw<600 else min(w-m-resw,w*.54)
         for i in range(resources):
-            place("resource"+str(i),w-m-resw+i*(chip+4),18 if pw<600 else 17,chip,38 if pw<600 else 28)
+            place("resource"+str(i),resource_left+i*(chip+4),18 if pw<600 else 17,chip,38 if pw<600 else 28)
             symbolsize=25 if pw<600 else 19
             assert 4+symbolsize+1.5<=symbolsize+8,size
         missionw=min(211 if pw<600 else 184,w*(.49 if pw<600 else .41))
-        place("mission",m,87 if pw<600 else 82,missionw,69 if pw<600 else 60)
+        place("mission",m-12,80 if pw<600 else 79,missionw,69 if pw<600 else 60)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
         chapter_text=R(54 if pw<600 else 48,6,missionw-(64 if pw<600 else 57),17 if pw<600 else 15)
