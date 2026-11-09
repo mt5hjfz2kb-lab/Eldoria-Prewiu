@@ -1,0 +1,79 @@
+{
+  "source": "five approved Vigilia PremiumMedallions, all icon glyphs integrated into ONE raster per action",
+  "license": "source art provenance tracked by original Vigilia PremiumMedallions manifest",
+  "no_baked_gameplay_text": true,
+  "files": [
+    {
+      "name": "nav_dock",
+      "sha256": "1270770818c0a91a99ff02df9a9c9c8d65bede82421cb7e578a719113012b9ba",
+      "bytes": 145691,
+      "guid": "5b6120a9db0b10c484d278b9d2eda223"
+    },
+    {
+      "name": "nav_castle",
+      "sha256": "80922a405b5c563bddd50650afd5aa398a35e810df51679297924b5bb432eacf",
+      "bytes": 46461,
+      "guid": "a0144592bc6196de59e675aa5c77d5bf"
+    },
+    {
+      "name": "nav_castle_active",
+      "sha256": "51585d9270aa2dba3c4784b47a5b125b62c4f1b15e6de9f53ecf4f955c47a591",
+      "bytes": 46185,
+      "guid": "4e8d3723ccd30990921ad525d5104a11"
+    },
+    {
+      "name": "nav_provisions",
+      "sha256": "050c2c6e8f5f6661318ac0512ea9238b991281a7072bde08e96415b3addf4bd7",
+      "bytes": 47659,
+      "guid": "ecd6d6d28705a2dd9c48dccb6a74b83a"
+    },
+    {
+      "name": "nav_provisions_active",
+      "sha256": "f41fd48cc6acb54da45ede182e8a7f973f596dbd63805a2edd0d19c5b2e5eefd",
+      "bytes": 47712,
+      "guid": "649cd5bc54508dbfcc523ee3655180bb"
+    },
+    {
+      "name": "nav_swords",
+      "sha256": "5399a1d61b37c9785287f8db4e683ca61ed96c40bebf52857f741df93f04dab8",
+      "bytes": 48026,
+      "guid": "5becec1ff0ac41f45cdae6aa75d7f266"
+    },
+    {
+      "name": "nav_swords_active",
+      "sha256": "2cbf1fa9f118fd16bb451e82b92094527b47a125cf7e870ea3ad7363a6770332",
+      "bytes": 47705,
+      "guid": "137ce3afd81f5069e60d81d289a91697"
+    },
+    {
+      "name": "nav_raven",
+      "sha256": "1404f07d6494b67418b5f0b28d8e46a8ed7e3ff146234535a185254711ee2def",
+      "bytes": 47007,
+      "guid": "ecb3188560c01a09049ca8404e30353a"
+    },
+    {
+      "name": "nav_raven_active",
+      "sha256": "7bb4010bf88b537e888a8dad853d60eebf3ee3934ec8f28141eacdbf4f958153",
+      "bytes": 47041,
+      "guid": "8e07951632d4dd7206c9a0dca3e03b3c"
+    },
+    {
+      "name": "nav_helm",
+      "sha256": "a78665f48ec460acbfbaf6ccd7c3920d56c10487f797627de915f528e8a30ca8",
+      "bytes": 47286,
+      "guid": "217da21218e8c7bed167d18b0d18e828"
+    },
+    {
+      "name": "nav_helm_active",
+      "sha256": "ab84ced5d730d29c8824927e011880c350f4dec6b949cc34d83d1560bd9d2c76",
+      "bytes": 47232,
+      "guid": "e9074672fee948e98354e3615877513e"
+    },
+    {
+      "name": "action_gold",
+      "sha256": "4f7a97ba6ed027f3a8d5950db7fa1c7598bbfffdec08b49efce9979f45a6e4d5",
+      "bytes": 75321,
+      "guid": "da8bac36e16ba06038332d8aee4ee0a3"
+    }
+  ]
+}
