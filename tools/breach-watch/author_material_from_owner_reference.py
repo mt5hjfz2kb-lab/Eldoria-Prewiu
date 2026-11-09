@@ -40,27 +40,34 @@ def main():
     assert hashlib.sha256(SOURCE.read_bytes()).hexdigest()==sha
     source=Image.open(SOURCE).convert("RGB")
     assert source.size==(256,398)
+    # The approved empty reference material still contains two *baked*
+    # decorative horizontal separators (original rows 214-216 and 309-310).
+    # They are not intended as game-data rows in our new dynamic panel.
+    # Repair the SOURCE mineral image, not another layer drawn on top:
+    # interpolate nearby stone and retain a little authentic micro-grain.
+    fixed=source.copy()
+    for low,high in ((211,219),(304,318)):
+        for y in range(low,high):
+            t=(y-low)/(high-low-1)
+            for x in range(source.width):
+                top=source.getpixel((x,low-1))
+                bottom=source.getpixel((x,high+1))
+                micro=source.getpixel((x,y-25))
+                baseline=tuple(sum(source.getpixel((x,yy))[i]
+                                   for yy in range(low-30,low-15))/15.0
+                               for i in range(3))
+                final=tuple(max(0,min(255,round(
+                    top[i]*(1-t)+bottom[i]*t+
+                    (micro[i]-baseline[i])*.16))) for i in range(3))
+                fixed.putpixel((x,y),final)
     w,h=512,736
-    sample=source.crop((63,66,191,338)).resize((w,h),Image.Resampling.BICUBIC)
+    sample=fixed.crop((63,66,191,338)).resize((w,h),Image.Resampling.BICUBIC)
     result=Image.new("RGBA",(w,h))
     src=sample.load();dst=result.load()
     for y in range(h):
         fy=y/(h-1)
         for x in range(w):
             r,g,b=src[x,y]
-            # The archived empty frame still has two BAKED separator
-            # strokes at y≈403 and 660 after scaling. Those would create
-            # ghost lines behind the live dynamic divider. Replace the
-            # strokes WITHIN this one material via local texture blending;
-            # no extra image and no data are drawn over the live HUD.
-            for low,high in ((388,424),(646,676)):
-                if low<=y<=high:
-                    t=(y-low)/(high-low)
-                    top=src[x,low-6]
-                    bottom=src[x,min(h-1,high+6)]
-                    r,g,b=tuple(round((1-t)*top[i]+t*bottom[i])
-                        for i in range(3))
-                    break
             grain=(r+g+b)/3-22
             light=5*(1-fy)-3*((x-w/2)/(w/2))**2
             color=(41+grain*.72+light,37+grain*.62+light*.78,
@@ -72,6 +79,16 @@ def main():
                (w-pad,h-pad-cut),(w-pad-cut,h-pad),(pad+cut,h-pad),
                (pad,h-pad-cut),(pad,pad+cut)],fill=255)
     result.putalpha(mask.filter(ImageFilter.GaussianBlur(.7)))
+    # Detect the exact regression that previously produced horizontal
+    # bars across the premium Bastion card in genuine Unity screenshots.
+    central=[sum(result.getpixel((x,y))[:3])
+             for y in range(50,h-50) for x in range(100,401)]
+    row_luma=[sum(central[y*301:(y+1)*301])/(301*3)
+              for y in range(h-100)]
+    sharpest=max(abs(row_luma[y]-row_luma[y-1])
+                 for y in range(1,len(row_luma)))
+    assert sharpest<1.40,("Baked horizontal separator ghost detected",
+                         round(sharpest,3))
     OUT.parent.mkdir(parents=True,exist_ok=True)
     result.save(OUT,optimize=True)
     OUT.with_suffix(".png.meta").write_text(META.format(guid=GUID))
