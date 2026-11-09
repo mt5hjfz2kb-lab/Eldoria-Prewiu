@@ -30,6 +30,27 @@ jobs:
             pipeline/eldoria-private-beta
       - name: Node contract tests
         run: node --test tools/eldoria-private-beta/*.test.mjs tools/eldoria-private-beta/cloudflare/*.test.mjs
+      # Source-only iPhone regression experiment. Never runs Unity or deploys
+      # Pages: compare immutable beta10 with an anchored clock-only variant.
+      - name: Pin and verify previous playable beta10 versus isolated timer candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags --filter=blob:none --depth=1 origin \
+            be49d62e3daf490f41dba0bf8123a8e2eee64480 \
+            8dc875430241a49b4d417782dfeab2d4c7a4f315
+          python tools/eldoria-private-beta/iphone_ab/prepare.py --check
+          python tools/eldoria-private-beta/iphone_ab/prepare.py \
+            --out "$RUNNER_TEMP/eldoria-iphone-timer-ab"
+          python - <<'PY'
+          import json,os,pathlib
+          doc=json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'eldoria-iphone-timer-ab/ab-evidence.json').read_text())
+          assert doc['only_changed_overlay']=='RoyalGoldV3ContextHud.cs.txt'
+          assert doc['overlays_verified_identical_other_than_timer']==18
+          assert doc['native_compiled'] is False
+          assert doc['external_distribution_approved'] is False
+          print('SOURCE_ONLY_ONE_FILE_IPHONE_AB_CHECK_PASS')
+          PY
       - name: Fetch exact published-source archive
         uses: actions/download-artifact@v4
         with:
