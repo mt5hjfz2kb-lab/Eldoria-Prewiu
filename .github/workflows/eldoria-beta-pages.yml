@@ -183,8 +183,8 @@ jobs:
           assert not identity['physical_mobile_tested']
           for name in ('index.html','play.js','build-manifest.json'):
             assert (site/name).is_file(), f'Missing playable entry {name}'
-          report=json.loads(Path('apple-evidence/candidate/report.json').read_text())
-          control=json.loads(Path('apple-evidence/control/report.json').read_text())
+          report=json.loads(Path('apple-evidence/evidence/candidate/report.json').read_text())
+          control=json.loads(Path('apple-evidence/evidence/control/report.json').read_text())
           assert report['passed'] and control['passed'], 'Desktop WebKit A/B failed'
           assert report['identity']['source_sha']=='8dc875430241a49b4d417782dfeab2d4c7a4f315', 'WebKit source mismatch'
           assert report['identity']['revision']=='native325-mobile11-building-anchor', 'WebKit revision mismatch'
