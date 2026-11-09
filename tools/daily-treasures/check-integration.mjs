@@ -214,4 +214,10 @@ assert.match(rules,/public static int MinutesUntilNextUtcDay\(long utcTicks\)/);
 assert.match(panel,/private static string NextRewardCountdown\(long utcTicks\)|static string NextRewardCountdown\(long utcTicks\)/);
 assert.match(panel,/DailyTreasureRules\.MinutesUntilNextUtcDay\(utcTicks\)/);
 assert.match(panel,/claimCaption\.text=NextRewardCountdown\(currentUtc\)/);
+// Leaving a ceremony is an actual UI/audio state transition, not just
+// hiding artwork: no lingering bronze chime over the city or the tutorial.
+assert.match(panel,/void SkipReveal\(\)\s*\{[\s\S]*?originalSfx\.Stop\(\);\s*ShowResult\(true\)/);
+const closeBody=panel.split('public void Close()')[1].split('void Refresh()')[0];
+assert.match(closeBody,/originalSfx\.Stop\(\)/);
+assert.doesNotMatch(closeBody,/gateway\.Execute\(|ClaimDailyTreasure|new GameCommand/);
 console.log('PASS daily treasures gateway integration source invariants');
