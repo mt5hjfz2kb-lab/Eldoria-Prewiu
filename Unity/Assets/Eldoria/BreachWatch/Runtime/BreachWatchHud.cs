@@ -88,6 +88,11 @@ namespace Eldoria.BreachWatch
         public float PortraitCityOrthographicSize => cityComposition?cityComposition.OrthographicSize:0f;
         public bool BuildingPortraitEdgeClipped =>
             buildingPortrait && buildingPortrait.PortraitGeometryClipped;
+        public UnityEngine.Rect BuildingPortraitUvRect =>
+            portraitView ? portraitView.uvRect : UnityEngine.Rect.zero;
+        public UnityEngine.Rect BuildingPortraitMeshUvBounds =>
+            buildingPortrait ? buildingPortrait.LastGeometryUvBounds :
+                UnityEngine.Rect.zero;
         public string LastFeedback => feedback?feedback.text:"";
         public bool HasVisibleFeedbackPlate =>
             feedbackPlate && feedbackPlate.gameObject.activeInHierarchy;
