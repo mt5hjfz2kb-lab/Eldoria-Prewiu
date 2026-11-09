@@ -71,7 +71,7 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             symbolsize=25 if pw<600 else 19
             assert 4+symbolsize+1.5<=symbolsize+8,size
         missionw=min(211 if pw<600 else 184,w*(.49 if pw<600 else .41))
-        place("mission",m,87 if pw<600 else 82,missionw,69 if pw<600 else 55)
+        place("mission",m,87 if pw<600 else 82,missionw,69 if pw<600 else 60)
         # The approved castle badge is part of the single real PNG; live
         # information starts after its unscaled nine-slice left border.
         chapter_text=R(54 if pw<600 else 48,6,missionw-(64 if pw<600 else 57),17 if pw<600 else 15)
@@ -81,13 +81,13 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
             assert chapter_text.w>=144.7,(size,"13pt approved title must fit")
         # The genuine native 900x1600 view failed with only ~1 pixel of
         # breathing room underneath '0/1'. Keep ink away from the lower bevel.
-        short_objective=R(59 if pw<600 else 48,26 if pw<600 else 22,missionw-(70 if pw<600 else 57),18 if pw<600 else 15)
-        progress=R(59 if pw<600 else 48,47 if pw<600 else 39,missionw-(70 if pw<600 else 57),17 if pw<600 else 13)
+        short_objective=R(59 if pw<600 else 48,26 if pw<600 else 20,missionw-(70 if pw<600 else 57),18 if pw<600 else 15)
+        progress=R(59 if pw<600 else 48,46 if pw<600 else 37,missionw-(70 if pw<600 else 57),18)
         assert short_objective.y+short_objective.h+2<=progress.y,size
-        assert progress.y+progress.h<= (69 if pw<600 else 55)-3,size
+        assert progress.y+progress.h<= (69 if pw<600 else 60)-3,size
         assert 87+20<=112-3,size
         # Compact source plaque keeps native text within both real bevels.
-        assert missionw/(69 if pw<600 else 55)>=3.0,size
+        assert missionw/(69 if pw<600 else 60)>=3.0,size
         assert short_objective.y+short_objective.h<progress.y,size
         place("breach",w*.52-56,74,112,30)
         # Future utility buttons do not draw or intercept pointer events.
