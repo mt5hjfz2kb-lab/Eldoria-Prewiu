@@ -49,19 +49,29 @@ namespace Eldoria.Branding
             tint.color = new Color(.035f, .028f, .075f, .94f);
             tint.raycastTarget = true;
 
+            // Keep artwork and CTA within the device safe area, but preserve
+            // full-screen input blocking on the background (notch/home gesture).
+            Rect safeArea = Screen.safeArea;
+            if (safeArea.width < 1f || safeArea.height < 1f)
+                safeArea = new Rect(0f, 0f, Screen.width, Screen.height);
+            var content = MakeRect("Safe-area branding content", backdrop,
+                new Vector2(safeArea.xMin / Screen.width, safeArea.yMin / Screen.height),
+                new Vector2(safeArea.xMax / Screen.width, safeArea.yMax / Screen.height),
+                Vector2.zero, Vector2.zero);
+
             // CanvasScaler matchWidthOrHeight=.5 uses a geometric-mean scale.
             // Calculate the virtual canvas height before positioning the logo,
             // otherwise a short landscape screen clips the top of the emblem.
             float scale = Mathf.Sqrt((Screen.width / 1920f) * (Screen.height / 1080f));
             scale = Mathf.Max(.001f, scale);
-            float virtualWidth = Screen.width / scale;
-            float virtualHeight = Screen.height / scale;
+            float virtualWidth = safeArea.width / scale;
+            float virtualHeight = safeArea.height / scale;
             bool portrait = Screen.height > Screen.width;
             float logoCenter = portrait ? .54f : .64f;
             Vector2 maxLogo = new Vector2(
                 Mathf.Min(1120f, virtualWidth * .84f),
                 Mathf.Min(650f, virtualHeight * (portrait ? .37f : .50f)));
-            var logoRect = MakeRect("EONSCAR logotype", backdrop,
+            var logoRect = MakeRect("EONSCAR logotype", content,
                 new Vector2(.5f, logoCenter), new Vector2(.5f, logoCenter),
                 Vector2.zero, maxLogo);
             var texture = Resources.Load<Texture2D>(LogoResource);
@@ -83,18 +93,18 @@ namespace Eldoria.Branding
             }
 
             float captionCenter = portrait ? .285f : .27f;
-            var caption = MakeRect("Chapter caption", backdrop,
+            var caption = MakeRect("Chapter caption", content,
                 new Vector2(.5f, captionCenter), new Vector2(.5f, captionCenter),
                 Vector2.zero, new Vector2(Mathf.Min(900f, virtualWidth * .88f), 64f));
             MakeText("LAS CENIZAS DE VALORIA", caption, 32,
                 new Color(.84f, .76f, .58f));
 
             float buttonCenter = portrait ? .15f : .11f;
-            var enter = MakeRect("Enter existing gameplay", backdrop,
+            var enter = MakeRect("Enter existing gameplay", content,
                 new Vector2(.5f, buttonCenter), new Vector2(.5f, buttonCenter),
                 Vector2.zero, new Vector2(
                     Mathf.Min(portrait ? 660f : 500f, virtualWidth * .72f),
-                    portrait ? 128f : 112f));
+                    Mathf.Max(portrait ? 128f : 112f, 48f / scale)));
             var buttonImage = enter.gameObject.AddComponent<Image>();
             buttonImage.color = new Color(.34f, .19f, .39f, 1f);
             var button = enter.gameObject.AddComponent<Button>();
