@@ -1273,7 +1273,7 @@ namespace Eldoria.BreachWatch
                 // the ORIGINAL painting, not the invisible wider hit target.
                 // 25% left and 7u right clearances keep the full genuine
                 // Spanish chapter action visible on every orientation.
-                float captionLeft=plate.rect.width*.22f;
+                float captionLeft=plate.rect.width*.24f;
                 float captionRight=plate.rect.width-8f;
                 At(actionLabel.rectTransform,captionLeft,
                     paintedTop+3f,
@@ -1455,6 +1455,11 @@ namespace Eldoria.BreachWatch
                     // Preserve the premium copper CTA even when gameplay
                     // legitimately blocks it; state/action binder stays honest.
                     actionPlate.Type=BreachWatchPlate.PlateType.Action;
+                    // A legitimately unaffordable Bastion action must not
+                    // become dark text ON a bright gold plate. Darken the
+                    // engraved single face, keep the live writing ivory.
+                    actionPlate.color=can?Color.white:
+                        new Color(.67f,.65f,.61f,1f);
                     actionPlate.SetVerticesDirty();
                     // At real 390px widths a 21-character command runs into
                     // the gilded corners. Display a truthful short action
@@ -1485,8 +1490,8 @@ namespace Eldoria.BreachWatch
                     actionLabel.resizeTextMaxSize=lastWidth<1000?16:17;
                     actionLabel.horizontalOverflow=HorizontalWrapMode.Wrap;
                     actionLabel.verticalOverflow=VerticalWrapMode.Truncate;
-                    actionLabel.color=can?new Color(.20f,.12f,.05f,1f):
-                        new Color(.31f,.24f,.17f,1f);
+                    actionLabel.color=can?new Color(.99f,.95f,.82f,1f):
+                        new Color(.95f,.91f,.82f,1f);
                 }
                 // Accurate labels, artwork and routes: realm/castle, resource/sack,
                 // army/swords, world/raven and heroes/helm. Only the genuine
