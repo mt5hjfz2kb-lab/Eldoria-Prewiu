@@ -692,6 +692,9 @@ namespace Eldoria.BreachWatch
                     TextAnchor.MiddleLeft,TextIvory,true);
             }
             buildingState=Label(panel,"Real state and timer",15,TextAnchor.UpperLeft,Muted);
+            // Never make the actual timer disappear because a tighter source
+            // plate has a line box smaller than Legacy Text line metrics.
+            buildingState.verticalOverflow=VerticalWrapMode.Overflow;
             // Source-faithful one-piece owner circular close X. Remove the
             // old black octagon, its vector cross and decorative double rim.
             // As with navigation/CTA, the root is a full-height *invisible*
@@ -1112,20 +1115,20 @@ namespace Eldoria.BreachWatch
                 descriptionDivider.gameObject.SetActive(true);
                 At(descriptionDivider,14,161,pw-28,8);
                 At(costHeader.rectTransform,13,170,pw-26,16);
-                At(buildingCosts.rectTransform,13,187,pw-26,23);
-                At(costIcons[0].rectTransform,14,188,21,21);
-                At(costQuantities[0].rectTransform,39,188,42,22);
-                At(costIcons[1].rectTransform,89,188,21,21);
-                At(costQuantities[1].rectTransform,113,188,pw-125,22);
-                At(buildingState.rectTransform,13,211,pw-26,14);
+                At(buildingCosts.rectTransform,13,187,pw-26,20);
+                At(costIcons[0].rectTransform,14,188,19,19);
+                At(costQuantities[0].rectTransform,39,188,42,20);
+                At(costIcons[1].rectTransform,89,188,19,19);
+                At(costQuantities[1].rectTransform,113,188,pw-125,20);
+                At(buildingState.rectTransform,13,209,pw-26,17);
                 At(((RectTransform)actionButton.transform),12,ph-53,pw-24,50);
                 // Readable physical text survives the .91 scale of 390px
                 // devices while the larger 900px design stays lightweight.
-                buildingName.fontSize=smallPhone?19:16;
+                buildingName.fontSize=16;
                 buildingLevel.fontSize=smallPhone?14:12;
                 buildingFunction.fontSize=smallPhone?14:12;
                 buildingCosts.fontSize=smallPhone?14:12;
-                buildingState.fontSize=smallPhone?14:11;
+                buildingState.fontSize=smallPhone?13:11;
                 costHeader.fontSize=smallPhone?14:11;
                 actionLabel.fontSize=smallPhone?16:13;
 
