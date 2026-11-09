@@ -99,6 +99,10 @@ namespace Eldoria.BreachWatch
             feedbackPlate && feedbackPlate.gameObject.activeInHierarchy;
         public bool BuildingPortraitExclusive => buildingPortrait && buildingPortrait.RenderedFromIsolatedRealMeshes;
         public float BuildingPortraitDrawnFraction => buildingPortrait ? buildingPortrait.NonBackgroundPixelFraction : 0f;
+        public float BuildingPortraitTransparentBackground =>
+            buildingPortrait ? buildingPortrait.TransparentBackdropFraction : 0f;
+        public float BuildingPortraitOpaqueMasonry =>
+            buildingPortrait ? buildingPortrait.OpaqueMasonryFraction : 0f;
         public bool HasNativePremiumTypography =>
             font && boldFont && bodyFont && bodyBoldFont &&
             font==Resources.Load<Font>("VigiliaArt/Fonts/CormorantGaramond-Regular") &&
