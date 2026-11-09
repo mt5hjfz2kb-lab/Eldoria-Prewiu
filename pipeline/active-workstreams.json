@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T21:05:32.067Z",
+  "updated_at": "2026-11-09T21:54:22.055Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -6811,7 +6811,7 @@
       "work_item": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/172",
       "phase": "BETA10_OWNER_PHYSICALLY_PLAYABLE_LOCKED_P0_30MIN_AND_TIMER_FIX_PENDING",
       "note": "Continue PR179 without duplicate mission. Fixed source checkout/audit mismatch, recovered 51 exact hash-pinned BastionIII production assets into owned isolated import, and corrected UnityEngine.Application diagnostic compile error. Shared warm project untouched. Early 1024MiB heap A/B worsened startup RSS and was rejected. Mobile6 physical failure remains authoritative. | 2026-11-09: native run 42682071151 SUCCESS, source 3a406b0, artifacts 13703809492 and 13704497757 (WebGL unverified); release Windows lease; no engine delivery or iPhone PASS. beta10 rollback remains live. | 2026-11-09 20UTC: recovered beta10 preserved; optimized single-HUD timer A/B staged as source-only pinned artifact 13706883087, QA 42692000748 PASS. No Windows or physical phone QA, no public deployment.",
-      "next": "Beta10 owner-playable public Pages FROZEN. In PR179 native workflow exact 19-overlay A/B transaction fixed (previous version wrongly compared current telemetry overlays against original beta10), restores all 19 overlays after native test. Ubuntu preflight run 42698869206 SUCCESS: complete immutable 19-byte/hash source A/B verified, 18 identical and only timer differs; Unity job SKIPPED properly because Vigilia still owns windows-runner-heavy. Upon FORMAL release and zero Unity processes, acquire beta exclusive lease by CAS rev24, update tools/eldoria-private-beta/native/iphone-hotfix/native-request.json state CLAIMED_FOR_NATIVE revision24 to run actual Unity test. Need owner iPhone 30min before promotion, then possible 2-3 pilot testers and 15-20 invitation after safety/privacy gates. Never overwrite live beta10 or player saves before that.",
+      "next": "Owner confirmed restored beta10 playable, exact bundle be49d62e remains FROZEN on Pages. Minimal timer A/B source from e445a712 and QA artifact run42692715252 is pinned. New immutable Pages two-route stage script in PR179 commit 9c1fdf (5 local tests PASS, Ubuntu preflight run42706719733 PASS, native SKIPPED). Windows exclusively claimed by PR173 Vigilia rev30: DO NOT interrupt. On FORMAL release and no Unity process, CAS-claim beta rev24, edit only tools/eldoria-private-beta/native/iphone-hotfix/native-request.json with state CLAIMED_FOR_NATIVE and revision24, launch exact Windows native I–V, inspect evidence, release lease. Then package minimum iPhone WebGL, compare real Mac QA against beta10 and test an isolated Pages URL using stage_isolated_iphone_preview.py if combined size below 980MB and Pages deployment is safe; no release over stable route. Require owner iPhone 30min and source/asset consent gates before any testers GO.",
       "last_verified": {
         "frozen_release_id": 437784073,
         "asset_sha256": "fb1292b3d9ce4d6096d69fa18b417bc0a8cc6016f100defb3deaf29fbdb95771",
@@ -7276,6 +7276,19 @@
         "actual_unity_test": "SKIPPED: exclusive Windows lease still belongs to Vigilia",
         "physical_iphone_test": "NOT RUN",
         "user_beta10_stable_publication": "UNCHANGED"
+      },
+      "qa_preview_staging": {
+        "target": "same-origin GitHub Pages temporary A/B proof without replacing beta10",
+        "owner_only": true,
+        "code": "tools/eldoria-private-beta/iphone_ab/stage_isolated_iphone_preview.py",
+        "tests": "tools/eldoria-private-beta/iphone_ab/test_stage_isolated_iphone_preview.py",
+        "source_commit": "9c1fdf601360765b3120f32b8ce498fe585656d9",
+        "local_tests": "5/5 PASS and exact Git blob match",
+        "ubuntu_preflight_run": 42706719733,
+        "ubuntu_preflight": "SUCCESS",
+        "native_run": "SKIPPED until Windows formally available",
+        "stage_requirements": "Both playable beta10 and newly certified WebGL artifacts; source SHA and bundle identity; max combined 980 MB, fail closed",
+        "pending": "Real combined-size/Pages deployment timeout verification, true mobile/iPhone test"
       }
     },
     {
