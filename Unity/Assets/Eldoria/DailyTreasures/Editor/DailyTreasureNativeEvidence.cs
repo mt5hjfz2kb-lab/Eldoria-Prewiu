@@ -606,11 +606,17 @@ namespace Eldoria.DailyTreasures.Editor
                     Need(gateway.Snapshot().Resources.Wood==after.Resources.Wood &&
                          gateway.Snapshot().Resources.Stone==after.Resources.Stone,
                          "Skipping, rotating or restoring ceremony must never pay rewards again");
+                    // A visible CONTINUAR action is more important to player
+                    // flow than a hidden assertion that its Button exists.
+                    // Exercise both legitimate dismiss paths at real pointer
+                    // coordinates across the four target orientations.
+                    var daySevenDismiss=width>height?
+                        "Claim exact daily reward":"Close tributes";
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
-                        FindButton(panel,"Close tributes"),width,height);
+                        FindButton(panel,daySevenDismiss),width,height);
                     inputChecks++;
                     Need(!panel.IsOpen,
-                        "Real close button did not leave the reward UI");
+                        "Day-seven Continue or close cannot exit the paid reward UI");
 
                     // Distinct day-four ceremonial proof on the SAME exact
                     // Unity canvas and render target, with its OWN disposable
@@ -689,10 +695,12 @@ namespace Eldoria.DailyTreasures.Editor
                          specialGateway.Snapshot().Resources.Stone==
                          specialAfter.Resources.Stone,
                         "Skipping the special chest may not award extra resources");
+                    var dayFourDismiss=width<height?
+                        "Claim exact daily reward":"Close tributes";
                     ClickAtNativeScreenPosition(canvas,eventSystem,camera,
-                        FindButton(panel,"Close tributes"),width,height);
+                        FindButton(panel,dayFourDismiss),width,height);
                     inputChecks++;
-                    Need(!panel.IsOpen,"Day-four close must work");
+                    Need(!panel.IsOpen,"Day-four Continue or close must work");
 
                     // Rehearse PR173's exact independent canvas identity and
                     // safe-area naming without editing or relying on that
@@ -941,11 +949,16 @@ namespace Eldoria.DailyTreasures.Editor
                             "quiet-day"+quietDay+"-received",
                             "Real paid day "+quietDay+" compact reward; no chest ceremony",
                             true,true));
+                        // The day-three loyalty bonus contains two resource
+                        // types; dismiss it through CONTINUAR, not X, so the
+                        // ordinary reward's primary CTA is exercised too.
+                        var quietDismiss=quietDay==3?
+                            "Claim exact daily reward":"Close tributes";
                         ClickAtNativeScreenPosition(canvas,eventSystem,camera,
-                            FindButton(panel,"Close tributes"),width,height);
+                            FindButton(panel,quietDismiss),width,height);
                         quietInputChecks++;
                         Need(!panel.IsOpen,
-                            "Non-chest receipt refuses to close on day "+quietDay);
+                            "Non-chest Continue or X fails on day "+quietDay);
                         var previous=quietGateway.Snapshot();
                         var duplicate=new GameCommand(
                             "qa-quiet-repeat-"+width+"x"+height+"-"+quietDay,
