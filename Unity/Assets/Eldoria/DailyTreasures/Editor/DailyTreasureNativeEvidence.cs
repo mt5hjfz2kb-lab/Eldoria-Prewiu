@@ -469,6 +469,16 @@ namespace Eldoria.DailyTreasures.Editor
                 (titleBounds.size.y+skipBounds.size.y)*.5f;
             Need(!(xOverlap&&yOverlap),
                 "Original milestone text overlaps the real Skip finger target");
+            var chestBounds=RectTransformUtility.CalculateRelativeRectTransformBounds(
+                banner.parent,chest);
+            bool chestXOverlap=
+                Mathf.Abs(titleBounds.center.x-chestBounds.center.x)<
+                (titleBounds.size.x+chestBounds.size.x)*.5f;
+            bool chestYOverlap=
+                Mathf.Abs(titleBounds.center.y-chestBounds.center.y)<
+                (titleBounds.size.y+chestBounds.size.y)*.5f;
+            Need(!(chestXOverlap && chestYOverlap),
+                "Actual milestone title is pasted over the original coffer lid");
             Need(Mathf.Abs(painted.anchoredPosition.x-expected.SceneX)<1.1f &&
                  Mathf.Abs(painted.anchoredPosition.y-expected.SceneY)<1.1f &&
                  Mathf.Abs(painted.rect.width-expected.SceneW)<1.1f &&
