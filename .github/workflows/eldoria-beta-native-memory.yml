@@ -15,7 +15,7 @@ concurrency:
   group: eldoria-beta-native-warm-preserved
   cancel-in-progress: false
 env:
-  EXPECTED_LEASE_REVISION: '17'
+  EXPECTED_LEASE_REVISION: '18'
 jobs:
   preflight:
     runs-on: ubuntu-latest
