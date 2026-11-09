@@ -268,11 +268,37 @@ internal static class GatewayChecks
         var queue=new DailyTreasureMilestoneQueue();
         queue.Reset(new PlayerState());
         var realBattle=new PlayerState();
+        realBattle.Retention.LastClearedStage=25;
         realBattle.Mailbox.Receive(new EldoriaV41Message{
             EventId="vigilant:completed-command",Type="battle",
             Category="informes",Title="Victoria en los Vigilantes",
-            Subtitle="Capítulo cerrado"
+            Subtitle="Capítulo cerrado",ReportId="vigilant:completed-command",
+            Battle=new EldoriaV41CombatRecord{
+                TargetId="vigilant:25",Won=true,Outcome="victory"
+            }
         });
+        Assert(!queue.AddConfirmedReport(realBattle,
+                "vigilant:completed-command","battle","vigilant:chapter:24",
+                "Capítulo falso","Resultado",true),
+            "winning a non-final stage cannot claim a completed chapter");
+        Assert(!queue.AddConfirmedReport(realBattle,
+                "vigilant:completed-command","battle","vigilant:chapter:50",
+                "Capítulo equivocado","Resultado",true),
+            "a victory at stage 25 cannot pretend to be stage 50");
+        var lostBattle=new PlayerState();
+        lostBattle.Retention.LastClearedStage=24;
+        lostBattle.Mailbox.Receive(new EldoriaV41Message{
+            EventId="vigilant:lost-command",Type="battle",
+            Category="informes",Title="Derrota en los Vigilantes",
+            ReportId="vigilant:lost-command",
+            Battle=new EldoriaV41CombatRecord{
+                TargetId="vigilant:25",Won=false,Outcome="defeat"
+            }
+        });
+        Assert(!queue.AddConfirmedReport(lostBattle,
+                "vigilant:lost-command","battle","vigilant:chapter:25",
+                "Capítulo falso","Derrota",true),
+            "a persisted defeat cannot become a premium chapter victory");
         Assert(!queue.AddConfirmedReport(realBattle,
                 "vigilant:invented","battle","vigilant:chapter:25",
                 "Capítulo 1 completado","Resultado",true),
@@ -300,11 +326,36 @@ internal static class GatewayChecks
                queue.PendingCount==0,"chapter is consumed only after presentation");
 
         var discovery=new PlayerState();
+        discovery.Retention.ScoutDiscoveryMask|=1<<2;
+        discovery.Retention.Orders.Add(new ScoutOrder{
+            Id="order42",Kind=2,Claimed=true
+        });
         discovery.Mailbox.Receive(new EldoriaV41Message{
             EventId="exploration:actual-order-claim",Type="exploration",
             Category="informes",Title="Informe de exploración",
-            Subtitle="Nuevo hallazgo auténtico"
+            Subtitle="Nuevo hallazgo auténtico",
+            DiscoveryOrderId="order42",DiscoveryKind=2,
+            RewardReceiptId="actual-order-claim"
         });
+        Assert(!queue.AddConfirmedReport(discovery,
+                "exploration:actual-order-claim","exploration","scout:first:other",
+                "Hallazgo falso","Informe",false),
+            "a real report cannot masquerade as another explorer order");
+        var unclaimedOrder=new PlayerState();
+        unclaimedOrder.Retention.ScoutDiscoveryMask|=1<<2;
+        unclaimedOrder.Retention.Orders.Add(new ScoutOrder{
+            Id="order42",Kind=2,Claimed=false
+        });
+        unclaimedOrder.Mailbox.Receive(new EldoriaV41Message{
+            EventId="exploration:order-unclaimed",Type="exploration",
+            Category="informes",Title="Informe parcial",
+            DiscoveryOrderId="order42",DiscoveryKind=2,
+            RewardReceiptId="order-unclaimed"
+        });
+        Assert(!queue.AddConfirmedReport(unclaimedOrder,
+                "exploration:order-unclaimed","exploration","scout:first:order42",
+                "Hallazgo falso","Informe",false),
+            "unfinished explorer orders never trigger a first-find celebration");
         Assert(!queue.AddConfirmedReport(discovery,
                 "exploration:unknown-claim","exploration","scout:first:order42",
                 "Primer descubrimiento","Informe",false),
