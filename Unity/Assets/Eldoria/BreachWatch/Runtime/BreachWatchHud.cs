@@ -1093,7 +1093,12 @@ namespace Eldoria.BreachWatch
                         navColumn++*(navSize+navGap),3,navSize,navSize);
                 }
 
-                float pw=h<530f?210f:220f;
+                // Short landscape currently compresses the genuine 3-line
+                // Bastion description into an 86u column beside the 3D
+                // miniature. Add only 24u on short screens: this preserves
+                // over 75% of the actual playable city while giving the
+                // narrative, full authentic action and resources room.
+                float pw=h<530f?234f:220f;
                 float ph=Mathf.Min(330,h-174f);
                 float top=h<530f?75f:118f;
                 At(panel,w-margin-pw,top,pw,ph);
