@@ -55,5 +55,7 @@ assert "activeForeignScreenSpaceCanvases" in evidence
 assert 'c.renderMode=="ScreenSpaceOverlay"' in evidence
 assert 'c.renderMode=="ScreenSpaceCamera"' in evidence
 assert "canvasDiagnostics=canvasDiagnostics" in evidence
+assert "oldCanvasVisible = canvasDiagnostics.Count" in evidence
+assert "oldHudGraphicsReused = canvasDiagnostics.Any" in evidence
 
 print("VIGILIA_SINGLE_SURFACE_SOURCE_PASS (Unity external canvas census pending native, not ART_APPROVED)")
