@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "P0 recovery: owner previously entered beta10 on iPhone but reported repeated top-document boot in beta11. Exact old beta10 WebGL restored from immutable archive and verified public Pages. Physical 30-minute beta10 iPhone stability still requires owner confirmation; NO-GO external testers.",
+  "reason": "iPhone P0 issue #96: two document boots in mobile11 owner diagnostic; unexpected restart cause unconfirmed. Exact previously owner-playable beta10 restored live as temporary mitigation and has NOT yet passed a 30-min physical iPhone session; browser and physical QA pending for newly compiled Unity candidate.",
   "source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
   "artifact_sha256": "57bf7878a89482c0403a66652db671456bed1748bf2c56c13b229839a05f0af2",
   "channels": [],
@@ -15,7 +15,12 @@
     "webgl_browser_run": 42656897252,
     "webgl_browser_pass": true,
     "physical_mobile_gameplay_pass": false,
-    "source_signal_emitter_status": "Original mobile10 engine restored; new native I-V telemetry candidate NOT yet published"
+    "source_signal_emitter_status": "COMPILED_IN_UNPUBLISHED_NATIVE_WEBGL_CANDIDATE; LIVE_BETA10_HAS_NO_SIGNALS",
+    "latest_unpublished_exact_source_native_run": 42682071151,
+    "latest_unpublished_exact_source_native_pass": true,
+    "latest_unpublished_exact_source_commit": "3a406b0ed14e546b338ab44e941efed3ea526685",
+    "latest_unpublished_webgl_build": "COMPILED_NOT_HOSTED_OR_BROWSER_TESTED",
+    "latest_unpublished_webgl_artifact": 13704497757
   },
   "device_tests": [
     {
@@ -25,7 +30,7 @@
     },
     {
       "device": "iPhone (browser context not yet independently established)",
-      "status": "OWNER_REPORTED_BETA11_FAIL_BETA10_RETEST_PENDING",
+      "status": "MOBILE11_OWNER_REPORTED_FAIL_BETA10_ROLLBACK_PHYSICAL_NOT_RETESTED",
       "reported_at": "2026-11-09",
       "observed": "Old beta10 allowed play in owner recollection; beta11 physically restarted ~56 seconds after boot",
       "issue": 96,
@@ -37,7 +42,8 @@
       "clean_exit_before_restart": false,
       "p0_issue": 96,
       "tested_build": "beta11",
-      "current_build": "beta10"
+      "current_build": "beta10",
+      "rolling_back_to": "be49d62e3daf490f41dba0bf8123a8e2eee64480"
     },
     {
       "device": "Android Chrome physical",
@@ -45,22 +51,27 @@
     }
   ],
   "delivery": {
-    "owner_build_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/index.html",
+    "owner_build_url": "https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/",
     "owner_qa_optin_url": null,
     "pilot_manifest_live": false,
     "owner_qa_publish_run": 42674820886,
     "external_testers_invited": false,
     "github_pages_public_link": true,
-    "cloudflare_required": false
+    "cloudflare_required": false,
+    "published_revision": "native325-mobile10-pretest-ux",
+    "published_source_sha": "be49d62e3daf490f41dba0bf8123a8e2eee64480",
+    "rollback_build_live_verified_by_workflow": 42686613921,
+    "rolled_back_to_previous_owner_playable_version": true,
+    "previous_pilot_routes_no_longer_approved": true,
+    "legacy_unity_owner_route": "TEMPORARILY_REDIRECTED_TO_RECOVERED_BETA10_TO_MEET_PAGES_DEPLOY_LIMIT"
   },
   "final_review": null,
   "blockers": [
-    "Physical iPhone Safari >=30 minutes in restored exact beta10 and save/reload stability (P0 #96)",
-    "Root cause and safe forward-fix for beta11 game restart remain unverified",
-    "Physical Android Chrome stability if external mobile users included",
-    "Completed exact-source Bastion I–V native event instrumentation and real telemetry QA",
-    "Review third-party licenses before external publication",
-    "Owner final GO for invited testers after actual-device and art gates"
+    "P0 issue #96: physical iPhone 30-minute session on restored beta10 or corrected immutable side candidate; root cause of mobile11 unexpected restart not proven",
+    "UNPUBLISHED native-markers WebGL candidate must pass hosted browser tests with opt-in/opt-out and actual in-game signal receipt before promotion",
+    "Physical Android Chrome 30-minute session and persistence test",
+    "Third-party asset license distribution review (#171)",
+    "Explicit owner GO decision for external tester invitations"
   ],
   "telemetry": {
     "project": "Eldoria Playtest Feedback",
@@ -70,9 +81,10 @@
     "non_qa_events_verified": 0,
     "gameplay_milestones_published": false,
     "source_contract_run": 42674713658,
-    "source_contract_pass": true
+    "source_contract_pass": true,
+    "qa_event_count_note": "10 QA rows verified on previous pilot before rollback; no post-rollback Supabase receipt test; never claim native markers real or external user sessions."
   },
-  "updated_at": "2026-11-09T19:54:58.011Z",
+  "updated_at": "2026-11-09T19:47:01Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -184,5 +196,18 @@
     "gameplay_clock_caveat": "Original beta10 docked construction countdown remains",
     "external_testers_approved": false,
     "note": "Reversible emergency P0 rollback, not a proved causal fix."
+  },
+  "unpublished_native_candidate": {
+    "run_id": 42682071151,
+    "exact_source_commit": "3a406b0ed14e546b338ab44e941efed3ea526685",
+    "native_result": "SUCCESS",
+    "unity_journey_test": "PASS_BY_NATIVE_SCRIPT_CERTIFICATE",
+    "webgl_compilation": "PASS_BY_NATIVE_SCRIPT_CERTIFICATE",
+    "browser_qa": "NOT_RUN",
+    "physical_ios_30min": "NOT_RUN",
+    "physical_android_30min": "NOT_RUN",
+    "webgl_artifact_id": 13704497757,
+    "evidence_artifact_id": 13703809492,
+    "promotion": "FORBIDDEN_WHILE_P0_UNRESOLVED"
   }
 }
