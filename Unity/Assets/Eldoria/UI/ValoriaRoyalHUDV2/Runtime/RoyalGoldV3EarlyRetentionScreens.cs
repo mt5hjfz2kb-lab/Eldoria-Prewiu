@@ -909,17 +909,21 @@ namespace Eldoria.UI.RoyalGold.V2
                     if(discoveryPins[i])discoveryPins[i].rectTransform.localScale=
                         Vector3.one*(1f+.12f*pulse);
             }
-            if(Time.unscaledTime<nextUpdate)return;
-            nextUpdate=Time.unscaledTime+.3f;
-            var s=gateway.Snapshot();
+            // Priority changes must apply THIS frame, not at the slower
+            // 300 ms economy/shortcut refresh. Otherwise a treasure entry
+            // may flash over a just-opened tutorial or a building/hero room,
+            // and a previously paid ceremony could obscure the scene.
+            // This branch reads only current UI state; no Snapshot() or
+            // allocation occurs on the intervening frames.
             bool overlay=Blocked || !string.IsNullOrEmpty(Hud.SelectedBuildingId);
             if(dailyTreasures)
             {
-                // Narrative and building selections take precedence over optional ceremonies.
-                // Closing an already-paid ceremony never reverses a reward.
                 if(overlay && dailyTreasures.IsOpen)dailyTreasures.Close();
                 dailyTreasures.Suppressed=overlay || IsOpen;
             }
+            if(Time.unscaledTime<nextUpdate)return;
+            nextUpdate=Time.unscaledTime+.3f;
+            var s=gateway.Snapshot();
             bool allowV=EarlyRetentionRules.VigilantsUnlocked(s);
             bool allowS=EarlyRetentionRules.ScoutsUnlocked(s);
             if(vigilantShortcut.gameObject.activeSelf!=(!overlay&&allowV))
