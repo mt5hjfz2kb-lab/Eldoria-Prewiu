@@ -1,5 +1,18 @@
 # PR179 — owner's pretester corrections
 
+> **CURRENT CANDIDATE 2026-11-09 (OWNER BUG REPORT):** Mobile10 live remains the
+> prior certified build and still has the fixed-right construction countdown.
+> The new **world-anchored, compact construction timer** is implemented in
+> PR179's frozen overlay and PR183's canonical Unity source, with identical
+> Git blob SHA `caa48b2bfa70edde209055f53296ddfc5e3a0baf` and frozen beta
+> overlay SHA256 `27c76ecbd5ad0137e8351d737eb6b32493f95e73ad56b4da10628d1d3e963982`.
+> `PretestUXProbe.cs` now checks camera pan and off-screen hiding rather than
+> falsely accepting a constant HUD position. Ubuntu overlay contract and pinned
+> source audit passed; **Unity exact new source, phone captures, updated WebGL
+> and owner-site publication are still pending**. Windows is currently leased
+> to PR181, not PR179. Do not reuse the earlier mobile10 native run to approve
+> this changed source.
+
 Status: **MOBILE10 PUBLISHED — NATIVE, BROWSER AND LIVE HOSTED ENTRY/RELOAD PASS**.
 The owner site now serves mobile10. The original mobile9 package and Sites version6 remain available for rollback.
 
@@ -19,7 +32,7 @@ These changes target that frozen runtime. They do not replace PR173's new interf
 | Barracks opens training directly | Built barracks opens building sheet with Upgrade and Train choices | Real button hits, no auto-open |
 | World/City and extra buttons | Same world button toggles title, icon and destination; remove Units | City → world → city |
 | Unclear missions/blank close | Visible Ir/Misiones captions and geometry-based close X | Checklist expands and closes through controls |
-| Oversized/moving build timers | Selected operation sheet 112 logical units; unselected compact fixed HUD timers; no duplicate selected timer | Phone captures, live timer updates, camera-pan position invariant |
+| Oversized/moving build timers | Candidate: compact clock anchored to each genuine city building, projected above or below its silhouette; hidden offscreen, no duplicate selected timer. Existing mobile10 still used a fixed HUD dock | New native portrait/landscape captures and real camera-pan tracking + off-camera invariant |
 | Scouts unexplained | Bastion III plus confirmed march, per-save introduction before shortcut | Intro and eligibility checks |
 | Missing building upgrades | Authoritative level-II sawmill/barracks upgrade path and completion, existing costs/materials/cap preserved | Real upgrade, reload, full I–V regression journey |
 
