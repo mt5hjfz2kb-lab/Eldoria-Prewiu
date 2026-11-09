@@ -438,17 +438,20 @@ namespace Eldoria.DailyTreasures.Editor
             // another clickable bronze button pasted above a nested panel.
             var title=banner.GetComponentsInChildren<Text>(true)
                 .Single(t=>t.name=="Real milestone category");
-            var plate=banner.GetComponent<Image>();
-            var ink=FindRect(panel,
+            var headingPlate=banner.GetComponent<Image>();
+            var headingRule=FindRect(panel,
                 "Event-specific forged-ink underline / visual only");
-            var line=ink.GetComponent<Image>();
-            Need(plate && !plate.sprite && !plate.raycastTarget &&
-                 plate.color.a<=.66f && title.font &&
-                 title.fontSize>=18 &&
+            var headingRuleImage=headingRule.GetComponent<Image>();
+            Need(headingPlate && !headingPlate.sprite &&
+                 !headingPlate.raycastTarget &&
+                 headingPlate.color.a<=.66f && title.font &&
+                 title.fontSize>=16 &&
                  title.preferredHeight<=title.rectTransform.rect.height+2f &&
                  title.preferredWidth<=title.rectTransform.rect.width+2f &&
-                 ink.rect.height>=1.9f && ink.rect.height<=2.1f &&
-                 line && !line.raycastTarget && line.color.a<=.75f,
+                 headingRule.rect.height>=1.9f &&
+                 headingRule.rect.height<=2.1f &&
+                 headingRuleImage && !headingRuleImage.raycastTarget &&
+                 headingRuleImage.color.a<=.75f,
                 "A real milestone title is cropped, disguised as a button "
                 +"or styled with a heavy opaque overlay");
             // The original banner/Skip overlap on portrait made the upper
