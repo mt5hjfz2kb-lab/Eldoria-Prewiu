@@ -292,4 +292,9 @@ assert.match(native,/Paid cards disappeared when device orientation changed/);
 // Pure Roslyn syntax parsing cannot detect this semantic type error.
 assert.equal((panel.match(/UnityEngine\.Application\.isPlaying/g)||[]).length,3);
 assert.doesNotMatch(panel,/(?<!UnityEngine\.)Application\.isPlaying/);
+// Genuine native Unity 6000 compilation also uncovered an unqualified
+// Application.dataPath in this editor-only harness. Within the Eldoria
+// namespace it resolves to Eldoria.Application rather than UnityEngine.
+assert.match(native,/UnityEngine\.Application\.dataPath/);
+assert.doesNotMatch(native,/(?<!UnityEngine\.)\bApplication\.dataPath/);
 console.log('PASS daily treasures gateway integration source invariants');
