@@ -4,7 +4,7 @@ import {randomUUID,createHmac} from 'node:crypto';
 import worker from './worker.mjs';
 const secret='NEVER-USE-IN-PRODUCTION-LOCAL-TEST-000000000000000';
 const id=randomUUID();
-const RELEASE='native325-fb1292b3d9ce';
+const RELEASE='native325-mobile11-building-anchor';
 const files={
  'index.html':{content:'<!doctype html><title>Valoria</title>',type:'text/html; charset=utf-8'},
  'payload-decoded/data-0.bin.br':{content:'fake brotli binary',type:'application/octet-stream',encoding:'br'},
@@ -38,7 +38,7 @@ test('unapproved tester cannot enter even with signed token',async()=>{
 });
 test('one-click signed invitation redirects with secure HttpOnly cookie',async()=>{
  const response=await worker.fetch(req('/entrar/'+token()),env);
- assert.equal(response.status,302);assert.equal(response.headers.get('Location'),'/');
+ assert.equal(response.status,302);assert.equal(response.headers.get('Location'),'/?eldoriaBetaTelemetry=1');
  assert.match(response.headers.get('Set-Cookie'),/HttpOnly; Secure; SameSite=Lax/);
 });
 test('index and Unity assets remain private and byte-preserving',async()=>{
@@ -77,6 +77,8 @@ test('only explicit consent and allowed events pass; no card events',async()=>{
  assert.equal((await send({...input,consent_given:false})).status,422);
  assert.equal((await send({...input,event_name:'card_acquired'})).status,422);
  assert.equal((await send({...input,payload:{playerName:'PII'}})).status,422);
+ assert.equal((await send({...input,event_name:'bastion_reached',payload:{bastion:6}})).status,422);
+ assert.equal((await send({...input,event_name:'end_of_slice',payload:{bastion:4}})).status,422);
  const x=await worker.fetch(req('/beta/events','POST',{body:JSON.stringify(input),
   headers:{'Content-Type':'application/json','Origin':'https://evil.test'}}),env);
  assert.equal(x.status,403);
@@ -94,6 +96,7 @@ test('server sets source, round, tester ID and QA; never trusts client identity'
   assert.equal(r.status,202);
   assert.equal(captured.body.tester_id,id);
   assert.equal(captured.body.build_version,RELEASE);
+  assert.equal(captured.body.source_sha,'8dc875430241a49b4d417782dfeab2d4c7a4f315');
   assert.equal(captured.body.is_qa,true);
   assert.ok(!JSON.stringify(json).includes('sb_secret'));
   assert.equal(captured.headers.apikey,'sb_secret_only_a_server_must_know_123456789');
