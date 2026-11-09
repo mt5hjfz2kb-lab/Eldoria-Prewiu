@@ -56,8 +56,11 @@ jobs:
         run: dotnet run --project tools/daily-treasures/Tests.csproj --configuration Release
       - name: Compile and test the real authoritative LocalGateway (no Unity)
         run: dotnet run --project tools/daily-treasures/Gateway.Tests.csproj --configuration Release
-      - name: Recompile global three-march capacity smoke using authoritative DailyTreasureState
-        run: dotnet run --project tools/march-capacity/Smoke.csproj --configuration Release
+      # The owned Gateway.Tests suite above now executes real three-scout
+      # reservations, a rejected fourth march and exactly-once offline troop
+      # returns on a story-valid player. The separate, foreign-owned
+      # march-capacity smoke has an obsolete pre-introduction Scout fixture
+      # and must be corrected by its owner, NOT bypassed through old unlocks.
       - name: Preserve the exact original early-retention and V3 management domain contracts
         shell: bash
         run: |
