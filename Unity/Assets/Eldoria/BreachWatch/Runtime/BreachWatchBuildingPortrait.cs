@@ -57,7 +57,7 @@ namespace Eldoria.BreachWatch
             PortraitGeometryClipped=false;
             if(!texture)
             {
-                texture = new RenderTexture(512,256,24,RenderTextureFormat.ARGB32);
+                texture = new RenderTexture(512,320,24,RenderTextureFormat.ARGB32);
                 texture.name = "Vigilia / selected real building portrait";
                 texture.antiAliasing = 2;
                 texture.Create();
@@ -236,7 +236,7 @@ namespace Eldoria.BreachWatch
                 // narrower safety margin while keeping the castle legible;
                 // the native visual/bounds gate will still reject clipping.
                 portraitCamera.orthographicSize=Mathf.Max(.5f,
-                    Mathf.Max(spanUp,spanRight/portraitCamera.aspect)*.90f);
+                    Mathf.Max(spanUp,spanRight/portraitCamera.aspect)*.96f);
                 portraitCamera.nearClipPlane=.1f;
                 portraitCamera.farClipPlane=1000;
                 Vector3 actualVisualCenter=copiedBounds.center +
