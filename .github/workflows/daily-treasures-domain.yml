@@ -41,6 +41,8 @@ jobs:
             /Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs
             /tools/daily-treasures/
             /tools/march-capacity/
+            /tools/early-retention/
+            /tools/ui-v3-domain-smoke/
             /.github/workflows/daily-treasures-native.yml
       - uses: actions/setup-dotnet@v4
         with:
@@ -55,6 +57,14 @@ jobs:
         run: dotnet run --project tools/daily-treasures/Gateway.Tests.csproj --configuration Release
       - name: Recompile global three-march capacity smoke using authoritative DailyTreasureState
         run: dotnet run --project tools/march-capacity/Smoke.csproj --configuration Release
+      - name: Preserve the exact original early-retention and V3 management domain contracts
+        shell: bash
+        run: |
+          # These two source-only projects are owned by OTHER workstreams.
+          # Never edit their .csproj to hide the new DailyTreasureState.
+          # They must still build with the exact same source list as main.
+          dotnet run --project tools/early-retention/Smoke.csproj --configuration Release
+          dotnet run --project tools/ui-v3-domain-smoke/Smoke.csproj --configuration Release
       - name: Check actual OWNER_I_II economic impact of seven-day and fourteen-day rewards
         run: dotnet run --project tools/daily-treasures/EconomyCandidate.csproj --configuration Release
       - name: Parse original Unity UI, gameplay and chest C# syntax without Unity
