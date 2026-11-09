@@ -779,10 +779,18 @@ namespace Eldoria.BreachWatch.Editor
                     // contribution for those captions instead of a false fail.
                     if(label.resizeTextForBestFit)
                     {
-                        Need(label.cachedTextGenerator.lineCount==1 &&
+                        // The real Chapter I / La Brecha is deliberately
+                        // TWO legible engraved lines in the original slate,
+                        // not an accidental overflow. All other best-fit
+                        // captions must remain exactly one line.
+                        int expectedLines=label.name=="Actual chapter" &&
+                            label.text.Contains("\n") ? 2 : 1;
+                        Need(label.cachedTextGenerator.lineCount==expectedLines &&
                              label.cachedTextGenerator.vertexCount>0,
-                             "Premium best-fit caption actually wraps or has no glyphs: "+
-                             name+"/"+label.name);
+                             "Premium best-fit caption has unexpected lines "+
+                             name+"/"+label.name+
+                             " expected="+expectedLines+
+                             " actual="+label.cachedTextGenerator.lineCount);
                     }
                     else
                     {
