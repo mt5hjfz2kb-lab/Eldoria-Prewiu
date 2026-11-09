@@ -55,8 +55,10 @@ for(const [expression,meaning] of sourceRequirements)
     'PR173 head '+ref.slice(0,12)+' changed contract: '+meaning);
 
 const localRequirements=[
- [/GameObject\.Find\("VIGILIA \/ independent canvas"\)/,'source host discovery'],
- [/vigilia\.transform\.Find\("Safe composition"\)/,'same safe area'],
+ [/FindLiteralVigiliaCanvas\(\)/,'literal-name-safe Canvas discovery'],
+ [/candidate\.gameObject\.name=="VIGILIA \/ independent canvas"/,'exact Canvas identity; slash is literal'],
+ [/HasVisibleCanonicalHeroRoom\(\)/,'real Lyra presentation stays unobscured'],
+ [/canvas\.transform\.Find\("Safe composition"\)/,'same safe area'],
  [/root\.SetParent\(safe,false\)/,'safe handoff'],
  [/root\.SetParent\(originalSafeArea,false\)/,'reversible handoff'],
  [/root\.SetAsLastSibling\(\)/,'ceremony above selectable building panels'],
@@ -67,6 +69,10 @@ for(const [expression,meaning] of localRequirements) {
   assert.match(meaning==='destroyed-panel recovery on old HUD'?royal:treasury,
     expression,'PR181 missing cross-HUD capability: '+meaning);
 }
+// Unity 6000.3 interprets '/' in GameObject.Find as a hierarchy path.
+// The two canonical Unity names have a LITERAL slash: never use Find.
+assert.doesNotMatch(treasury,/GameObject\.Find\("VIGILIA \/ independent canvas"\)/);
+assert.doesNotMatch(treasury,/GameObject\.Find\("Heroes \/ canonical destination"\)/);
 // Never leak a standalone extra Canvas into a game with one EventSystem.
 assert.doesNotMatch(treasury,/new GameObject\([^\n]+typeof\(Canvas\)/);
 assert.doesNotMatch(treasury,/new GameObject\([^\n]+typeof\(EventSystem\)/);
