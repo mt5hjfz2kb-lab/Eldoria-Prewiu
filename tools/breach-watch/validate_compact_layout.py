@@ -188,7 +188,10 @@ def main():
         'resourceChips[i].gameObject.SetActive(i<visibleResources);',
         'utility.gameObject.SetActive(false);',
         'lastNavigationMask=navigationMask;',
-        'At(chapterName.rectTransform,59f,8f,missionWidth-70f,20f);',
+        'At(chapterName.rectTransform,smallPhone?54f:59f,8f,',
+        'chapterName.fontSize=smallPhone?13:12;',
+        'chapterName.resizeTextMinSize=smallPhone?13:11;',
+        'chapterName.fontSize=14;',
         'At(buildingName.rectTransform,18,7,pw-80,28);',
         'At(buildingName.rectTransform,18,8,pw-80,31);',
         'At(identityPower.rectTransform,59,38,165,17);',
@@ -197,6 +200,10 @@ def main():
     ]
     for pattern in expected:
         assert pattern in source, f"Runtime contract changed: {pattern}"
+    # Real native evidence rejected 10.92px phone and 11.18px landscape.
+    # Preserve >=11.75 physical px rather than lower the native quality gate.
+    assert 13*.91 >= 11.75, 'phone portrait title below minimum'
+    assert 14*.86 >= 11.75, 'short landscape title below minimum'
     for size in [(1600,900),(900,1600),(844,390),(390,844),(1170,2532)]:
         for food in (False,True):
             for world in (False,True):
