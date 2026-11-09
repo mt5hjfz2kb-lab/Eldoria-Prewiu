@@ -818,6 +818,17 @@ namespace Eldoria.Tests
 
             Component host = null, hud = null;
             yield return Boot((h, v) => { host = h; hud = v; });
+            // Beyond the environment flag, the actual runtime must confirm
+            // it is using the system temp directory before any paid command.
+            var cityForProbe=Member(host, "City");
+            Assert.That(Member(cityForProbe, "Probe"), Is.EqualTo(true),
+                "Construction timer must never run against a canonical player save");
+            var saveFile=Member(cityForProbe, "SaveFile") as string;
+            Assert.That(saveFile, Is.Not.Null.And.Not.Empty);
+            Assert.That(System.IO.Path.GetFullPath(saveFile).StartsWith(
+                System.IO.Path.GetFullPath(System.IO.Path.GetTempPath()),
+                StringComparison.OrdinalIgnoreCase),Is.True,
+                "Native construction test requires an isolated disposable save path");
 
             var guidance = Member(host, "Guidance") as Behaviour;
             if (guidance) guidance.enabled = false;
