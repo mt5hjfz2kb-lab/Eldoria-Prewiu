@@ -1683,8 +1683,17 @@ namespace Eldoria.DailyTreasures
             float paidH=Mathf.Min(h-20f,portrait?700f:370f);
             float t=Mathf.Clamp01(progress);
             var frameSize=cardSurface.sizeDelta;
-            cardSurface.sizeDelta=new Vector2(frameSize.x,
-                Mathf.Lerp(openingH,paidH,t));
+            float sceneH=Mathf.Lerp(openingH,paidH,t);
+            cardSurface.sizeDelta=new Vector2(frameSize.x,sceneH);
+            // Skip must remain under the same real finger position while
+            // the bronze frame expands. This action never awards currency.
+            if(skipButton)
+            {
+                var skipRect=(RectTransform)skipButton.transform;
+                skipRect.anchoredPosition=new Vector2(
+                    skipRect.anchoredPosition.x,
+                    -60f+(openingH-sceneH)*.5f);
+            }
             float y=Mathf.Lerp(portrait?64f:42f,
                 portrait?116f:89f,t);
             float artW=Mathf.Lerp(330f,portrait?284f:300f,t);
