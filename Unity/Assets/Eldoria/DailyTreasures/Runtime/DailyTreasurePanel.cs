@@ -689,6 +689,12 @@ namespace Eldoria.DailyTreasures
             claimCaption.text=reward.IsValid?"RECLAMAR DÍA "+reward.CycleDay:
                 daily.TotalClaims==int.MaxValue?"TRIBUTO NO DISPONIBLE":
                     NextRewardCountdown(now());
+            // Refresh changes the contents AFTER the initial Layout in Open().
+            // Loyalty can add a new second line on day three; reflow right
+            // now, before the first player frame or native pointer, rather
+            // than leaving the extra food painted over the bronze border.
+            if(calendar && calendar.gameObject.activeInHierarchy)
+                Layout();
         }
         static string NextRewardCountdown(long utcTicks)
         {
@@ -1207,7 +1213,11 @@ namespace Eldoria.DailyTreasures
                     // Move both lines INSIDE the card rather than hiding
                     // their second resource, and reduce only the secondary
                     // icon when vertical space is genuinely constrained.
-                    bool twoResources=i==3 || i==5;
+                    // The third-day loyalty bonus adds FOOD to the ordinary
+                    // one-minute speedup; the calendar then has two entries
+                    // even though it is not day four or six. Use the actual
+                    // credited/previewed text to select safe two-line geometry.
+                    bool twoResources=dayBody[i].text.IndexOf('\n')>=0;
                     bool compactDouble=twoResources && cellH<=103f;
                     if(tiny)Place(dayHead[i].rectTransform,.5f,1f,.5f,1f,
                         0f,-5f,cellW-6f,24f);
