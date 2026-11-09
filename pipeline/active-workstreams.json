@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T13:30:24.790Z",
+  "updated_at": "2026-11-09T13:32:05.220Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2878,7 +2878,9 @@
         "tools/early-retention/Smoke.csproj",
         ".github/workflows/early-retention-domain.yml",
         "tools/early-retention/Program.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs"
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
+        ".github/workflows/eldoria-construction-timer-native.yml",
+        "tools/ui-v3-domain-smoke/native-request.json"
       ],
       "resources": [],
       "dependencies": [
@@ -2928,7 +2930,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "PR183 includes native PlayMode regression in existing paid Sawmill test measuring real timer/building camera pan and off-camera, plus three green Ubuntu source gates. Run native once PR181 releases Windows. PR179 overlay/focused probe ready; preserve other workstreams.",
+      "next": "Implement independent fail-closed main PlayMode native workflow while PR173 reserves shared ui-progression workflow and PR181 reserves Windows. After legitimate release acquire V3 lease and update native-request.json, test actual camera pan/offscreen on scene, then gate merge. PR179 frozen overlay same source with own native probe and deploy path.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
