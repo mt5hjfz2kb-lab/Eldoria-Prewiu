@@ -44,15 +44,49 @@ const sourceRequirements=[
   [/legacyCanvas\.enabled\s*=\s*false/,'legacy canvas is disabled but game object survives'],
   [/legacyGroup\.alpha\s*=\s*0/,'legacy UI is hidden'],
   [/host\.Hud\.SelectionChanged\s*\+=/,'canonical session owner is reused'],
-  [/Resources\.Load<Sprite>\("VigiliaArt\/PremiumSurfaces\/profile_plate"\)/,
-    'Vigilia reference plate location'],
-  [/Resources\.Load<Sprite>\("VigiliaArt\/PremiumSurfaces\/burgundy_action"\)/,
-    'Vigilia approved burgundy material'],
+  // Vigilia's current OwnerControls replace the older profile_plate and
+  // burgundy_action RUNTIME references. Requiring those old names literally
+  // produced a false incompatibility even though approved fallback assets
+  // still exist. Validate the live HUD materials actually loaded now.
+  [/Resources\.Load<Sprite>\("VigiliaArt\/OwnerControls\/profile_bar"\)/,
+    'Current Vigilia identity bar'],
+  [/Resources\.Load<Sprite>\([\s\S]{0,55}"VigiliaArt\/OwnerControls\/resource_capsule"\)/,
+    'Current Vigilia resource treatment'],
+  [/Resources\.Load<Sprite>\("VigiliaArt\/OwnerControls\/upgrade_button"\)/,
+    'Current Vigilia primary action'],
   [/VigiliaArt\/ResourceIcons\//,'canonical resource icon source']
 ];
 for(const [expression,meaning] of sourceRequirements)
   assert.match(native,expression,
     'PR173 head '+ref.slice(0,12)+' changed contract: '+meaning);
+
+// The old bronze-outline cards are a deliberately SEMANTICALLY CLEAN
+// separate reward treatment: unlike the current forge upgrade_button they
+// do not have a permanent construction hammer baked into a reward CTA.
+// Check that the actual runtime sources remain present, are single Sprites
+// and have authentic 9-slice importers in PR173's exact HEAD.
+const reusable=[
+  'slate_resource','burgundy_action'
+];
+for(const name of reusable){
+  const prefix='Unity/Assets/Eldoria/BreachWatch/Resources/VigiliaArt/PremiumSurfaces/'+name+'.png';
+  const [asset,meta]=await Promise.all([
+    api('/contents/'+prefix+'?ref='+ref),
+    api('/contents/'+prefix+'.meta?ref='+ref)
+  ]);
+  assert.equal(asset.type,'file','Original reusable material disappeared: '+name);
+  assert.ok(asset.size>5000,'Replacement material not real painted art: '+name);
+  const info=Buffer.from(meta.content.replace(/\s/g,''),'base64').toString('utf8');
+  assert.match(info,/textureType: 8/,'Material is no longer a Sprite: '+name);
+  assert.match(info,/spriteMode: 1/,'Material sprite sheet unexpectedly changed: '+name);
+  const border=/spriteBorder: \{x: (\d+), y: (\d+), z: (\d+), w: (\d+)\}/.exec(info);
+  assert.ok(border && border.slice(1).every(n=>Number(n)>0),
+    'Native nine-slice frame borders missing: '+name);
+  assert.ok(treasury.includes('VigiliaArt/PremiumSurfaces/'+name),
+    'Reward code no longer references compatible premium source: '+name);
+}
+assert.doesNotMatch(treasury,/OwnerControls\/upgrade_button/,
+  'The forge upgrade hammer must not be burned onto a loyalty-claim action');
 
 const localRequirements=[
  [/FindLiteralVigiliaCanvas\(\)/,'literal-name-safe Canvas discovery'],
@@ -77,4 +111,5 @@ assert.doesNotMatch(treasury,/GameObject\.Find\("Heroes \/ canonical destination
 assert.doesNotMatch(treasury,/new GameObject\([^\n]+typeof\(Canvas\)/);
 assert.doesNotMatch(treasury,/new GameObject\([^\n]+typeof\(EventSystem\)/);
 console.log('PASS cross-workstream UI contract: PR181 on PR173 HEAD '+
-  ref.slice(0,12)+'; safe-area names, player-owned Canvas, materials, exact return');
+  ref.slice(0,12)+'; safe area, canonical active OwnerControls, '+ 
+  'two physically present nine-sliced premium reward surfaces, no forge hammer');
