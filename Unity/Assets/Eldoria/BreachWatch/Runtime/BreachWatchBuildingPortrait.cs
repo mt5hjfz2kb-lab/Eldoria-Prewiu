@@ -253,6 +253,32 @@ namespace Eldoria.BreachWatch
                     portraitCamera.transform.forward*120f -
                     up*(portraitCamera.orthographicSize*.19f);
 
+                // Compute the genuine renderer-bounds projection for ALL
+                // platforms, including Android/WebGL where the Editor-only
+                // GPU diagnostics cannot be used at runtime. This rectangle
+                // guides an honest padded crop of the same real model image.
+                var projectedMin=new Vector2(float.PositiveInfinity,float.PositiveInfinity);
+                var projectedMax=new Vector2(float.NegativeInfinity,float.NegativeInfinity);
+                var boxMin=copiedBounds.min;
+                var boxMax=copiedBounds.max;
+                for(int corner=0;corner<8;corner++)
+                {
+                    var vertex=new Vector3(
+                        (corner&1)!=0?boxMax.x:boxMin.x,
+                        (corner&2)!=0?boxMax.y:boxMin.y,
+                        (corner&4)!=0?boxMax.z:boxMin.z);
+                    var projected=portraitCamera.WorldToViewportPoint(vertex);
+                    if(projected.z<=0f)continue;
+                    projectedMin=Vector2.Min(projectedMin,
+                        new Vector2(projected.x,projected.y));
+                    projectedMax=Vector2.Max(projectedMax,
+                        new Vector2(projected.x,projected.y));
+                }
+                if(projectedMin.x<projectedMax.x && projectedMin.y<projectedMax.y)
+                    LastGeometryUvBounds=Rect.MinMaxRect(
+                        Mathf.Clamp01(projectedMin.x),Mathf.Clamp01(projectedMin.y),
+                        Mathf.Clamp01(projectedMax.x),Mathf.Clamp01(projectedMax.y));
+
                 // Actual separately rendered meshes must be inside the current
                 // portrait frame. No synthetic values and no image generation.
                 portraitCamera.Render();
