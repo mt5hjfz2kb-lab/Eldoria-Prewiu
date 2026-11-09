@@ -756,6 +756,22 @@ namespace Eldoria.BreachWatch.Editor
                     Need(actionText.rectTransform.anchoredPosition.x+
                          actionText.rectTransform.rect.width<=action.rect.width-2f,
                          "Real upgrade caption escapes the right copper frame: "+name);
+                    // The approved reference's circular gold X is one
+                    // painted image, never a generic octagonal Backing +
+                    // painted vector X. Hidden root image owns the hit only.
+                    var closeRoot=ui.BuildingClose;
+                    var realClose=closeRoot.GetComponentsInChildren<Image>(true);
+                    var sourceX=realClose.FirstOrDefault(x=>x && x.sprite &&
+                        x.sprite.name=="close_medallion");
+                    var closeHit=closeRoot.GetComponent<Image>();
+                    Need(realClose.Length==2 && sourceX &&
+                         realClose.Count(x=>x && x.color.a>.01f)==1 &&
+                         sourceX.preserveAspect && !sourceX.raycastTarget &&
+                         closeHit && closeHit.raycastTarget &&
+                         closeHit.color.a<=.001f &&
+                         closeRoot.GetComponentsInChildren<BreachWatchGlyph>(true).Length==0,
+                         "Owner X must be ONE small golden disk plus an invisible 44px tap zone: "+name);
+
                     foreach(var control in new []{ui.BuildingAction,ui.BuildingClose})
                     {
                         Need(control && control.gameObject.activeInHierarchy,
