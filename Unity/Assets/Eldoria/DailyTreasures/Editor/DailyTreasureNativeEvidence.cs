@@ -1361,8 +1361,21 @@ namespace Eldoria.DailyTreasures.Editor
             }
             catch(Exception e)
             {
+                // A failed interaction must never erase the REAL screenshots
+                // and gateway actions already captured on the same Unity run.
+                // Previous native failures wrote images=0/shots=[] despite
+                // eight original PNGs being present in their artifacts,
+                // obscuring precisely which visual stage needs correction.
+                // Keep an explicit FAILED verdict; partial frames are review
+                // evidence, NEVER the 52+20 completed certification.
                 report.status="NATIVE_COMPONENT_FAILED";
                 report.note=e.ToString();
+                report.images=pictures.Count;
+                report.shots=pictures.ToArray();
+                report.graphicalPointerHits=inputChecks;
+                report.quietImages=quietPictures.Count;
+                report.quietShots=quietPictures.ToArray();
+                report.quietPointerHits=quietInputChecks;
                 File.WriteAllText(Path.Combine(output,"report.json"),JsonUtility.ToJson(report,true));
                 Debug.LogException(e);
                 EditorApplication.Exit(1);
