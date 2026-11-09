@@ -21,7 +21,7 @@ const FIELDS=new Set(['bastion','level','building_code','outcome_code','state_co
  'stage_code','duration_ms','orientation','fps_p50','fps_p05','error_code','question_id','answer_code','reason_code']);
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const rate=new Map();
-const respond=(body,status)=>new Response(body,{status,headers:{
+const respond=(body,status)=>new Response(status===204?null:body,{status,headers:{
  'Access-Control-Allow-Origin':ORIGIN,'Access-Control-Allow-Methods':'POST,OPTIONS',
  'Access-Control-Allow-Headers':'apikey,content-type','Vary':'Origin','Cache-Control':'no-store',
  'Content-Type':'text/plain; charset=utf-8','X-Content-Type-Options':'nosniff'
