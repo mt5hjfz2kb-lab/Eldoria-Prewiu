@@ -57,6 +57,13 @@ def run():
         "No rectangular synthetic grass stage may reappear behind the real castle")
     assert "portraitCamera.clearFlags=CameraClearFlags.SolidColor;" in portrait
     assert "PortraitGeometryClipped" in portrait and "LastGeometryUvBounds" in portrait
+    assert "portraitCamera.backgroundColor=new Color(.14f,.135f,.115f,0f);" in portrait, (
+        "The real URP selected-building portrait must clear transparent, not paint a new dark block")
+    assert "TextureFormat.RGBA32,false" in portrait, (
+        "Native proof needs actual GPU alpha, not RGB-only falsified captures")
+    assert "TransparentBackdropFraction" in portrait and "OpaqueMasonryFraction" in portrait, (
+        "Native quality gate must measure both transparent clear and real masonry")
+
     print("VIGILIA_TRUE_3D_NEUTRAL_DIORAMA_SOURCE_PASS no fake earth, single URP render")
     print("Requires real Unity render: terrain clamps, castle screen bounds and user-visible art")
 
