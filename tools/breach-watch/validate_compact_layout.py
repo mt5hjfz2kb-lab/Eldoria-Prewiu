@@ -191,7 +191,7 @@ def main():
         'resourceChips[i].gameObject.SetActive(i<visibleResources);',
         'utility.gameObject.SetActive(false);',
         'lastNavigationMask=navigationMask;',
-        'At(chapterName.rectTransform,smallPhone?54f:59f,8f,',
+        'At(chapterName.rectTransform,54f,8f,',
         'chapterName.fontSize=smallPhone?13:12;',
         'chapterName.resizeTextMinSize=smallPhone?13:11;',
         'chapterName.fontSize=14;',
