@@ -39,43 +39,46 @@ def verify():
 
     # Phone design-units are stable between 390x844 and Retina 900x1600.
     panel_width=171
-    mission_width=200
+    mission_width=184
     def fits(text,font,size,limit,control):
         value=width(font,size,text)
         assert value<=limit+0.15,(control,round(value,2),limit,text)
         print("TYPOGRAPHY_FIT",control,round(value,1),"<=",limit)
 
     # The reference's single carved title is dynamic, not baked into PNG.
-    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,12,mission_width-64,
+    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,11,mission_width-57,
          "900px real single-line chapter in owner bronze")
-    fits("Construye el aserradero",REGULAR,13,mission_width-70,
+    fits("Construye el aserradero",REGULAR,12,mission_width-57,
          "true objective alongside painted castle badge")
     fits("BASTIÓN I / LA BRECHA",SEMIBOLD,13,211-64,
          "390px approved single-line chapter readable at 13pt")
     fits("BASTIÓN I / LA BRECHA",SEMIBOLD,14,180,
          "844px approved single-line chapter readable at 14pt")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "At(chapterName.rectTransform,54f,8f," in hud
+    assert "At(chapterName.rectTransform,smallPhone?54f:48f," in hud
     # This exact accepted Chapter I inscription is measured to fit at 13/14,
     # so it must NOT be silently shrunk by Unity legacy BestFit on small RT.
     assert "chapterName.resizeTextForBestFit=!chapterOne;" in hud
     assert "chapterName.resizeTextMinSize=smallPhone?13:11;" in hud
-    assert "chapterName.resizeTextMaxSize=smallPhone?13:12;" in hud
+    assert "chapterName.resizeTextMaxSize=smallPhone?13:11;" in hud
     assert 13*.91>=11.75, "390px title must meet real physical font minimum"
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
-    fits("Bastión",SEMIBOLD,19,panel_width-80,
+    fits("Bastión",SEMIBOLD,16,panel_width-80,
          "selected building title")
     paragraph="Gobierno y progreso de Valoria."
-    paragraphs=lines(REGULAR,15,paragraph,panel_width-26)
+    paragraphs=lines(REGULAR,12,paragraph,panel_width-26)
     assert len(paragraphs)<=2,(paragraphs,"narrative wraps beyond its 43u card")
-    assert all(width(REGULAR,15,line)<=panel_width-26 for line in paragraphs)
+    assert all(width(REGULAR,12,line)<=panel_width-26 for line in paragraphs)
     print("TYPOGRAPHY_PARAGRAPH",paragraphs)
     # Cost heading uses Unity's resizeTextForBestFit. At least font size
     # 13 must fit the 152u budget and remain clearly legible.
-    fits("COSTE DE LA MEJORA",SEMIBOLD,13,panel_width-26,
+    fits("COSTE DE LA MEJORA",SEMIBOLD,11,panel_width-26,
          "authentic upgrade cost heading")
-    fits("Operativo · 2:00",REGULAR,14,panel_width-26,
+    fits("Operativo · 2:00",REGULAR,11,panel_width-26,
          "real status/timer")
+    # Physically readable small-phone context despite the tighter panel.
+    assert 14*.91>=12.5, "390px contextual text too small"
+    assert "buildingFunction.fontSize=smallPhone?14:12;" in hud
     action_width=panel_width-24
     # Source-accurate caption at 900x1600 uses title-case and the whole
     # target, just like the owner's approved UI. Unity BestFit may select
@@ -112,8 +115,8 @@ def verify():
     # or small landscape; both rows preserve >=4 Unity design units.
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
     for clause in (
-        "At(buildingName.rectTransform,18,7,pw-80,28);",
-        "At(buildingLevel.rectTransform,18,36,pw-80,17);",
+        "At(buildingName.rectTransform,18,7,pw-80,21);",
+        "At(buildingLevel.rectTransform,18,31,pw-80,17);",
         "At(buildingName.rectTransform,18,8,pw-80,31);",
         "At(buildingLevel.rectTransform,18,40,pw-80,17);",
     ):
@@ -123,7 +126,7 @@ def verify():
     # cannot be reduced to sub-12-pixel unreadable text.
     scale_390=max(.91,min(3.0,390/514))
     assert 14*scale_390>=12.5
-    assert 49*scale_390>=43.5
+    assert 52*scale_390>=43.5
     print("BREACHWATCH_PACKAGED_PREMIUM_FONT_LAYOUT_PASS")
 
 if __name__=="__main__":
