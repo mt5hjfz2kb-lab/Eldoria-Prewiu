@@ -430,6 +430,78 @@ internal static class GatewayChecks
         Console.WriteLine("DAILY_TREASURE_BASTION_II_V_COSTS: 3050 madera / 2400 piedra / 800 comida; balance candidate, not validated with people");
     }
 
+
+    // Main's beta10 pretester fix must survive merging the independent
+    // daily gift gateway. The real level-two sawmill/barracks upgrade has a
+    // persisted timer; it must complete once (including after reload) while
+    // the optional daily claim is still awarded by the same LocalGateway.
+    static void MainlineBastionTwoAndDailyRewardCoexist()
+    {
+        foreach(var kind in new[]{"sawmill","barracks"})
+        {
+            var clock=new FakeClock{UtcTicks=At(20)};
+            var saved=new PlayerState {
+                BastionLevel=2,SawmillLevel=1,BarracksLevel=1
+            };
+            saved.Resources.Wood=5000;
+            saved.Resources.Stone=5000;
+            saved.Resources.Food=5000;
+            var store=new MemoryStore{Saved=saved};
+            var gateway=new LocalGateway(clock,store);
+            Assert(Submit(gateway,"beta10-build-"+kind,
+                "UpgradeBuilding",kind).Ok,
+                "Main beta10 Bastion II "+kind+" still starts");
+            var pending=gateway.Snapshot();
+            Assert(pending.BuildingCompletesUtcTicks>clock.UtcTicks &&
+                   pending.ChapterThree.PendingBuildingLevel==2 &&
+                   pending.BuildingTaskId.StartsWith("c3:"+kind+":",
+                       StringComparison.Ordinal),
+                "Main beta10 early infrastructure timer persisted: "+kind);
+            Assert(!Submit(gateway,"beta10-double-"+kind,
+                "UpgradeBuilding",kind).Ok,
+                "Main beta10 refuses two simultaneous infrastructure jobs: "+kind);
+            clock.UtcTicks=pending.BuildingCompletesUtcTicks+
+                TimeSpan.TicksPerSecond;
+            Assert(gateway.Advance(),"Main beta10 completes timed job: "+kind);
+            var finished=gateway.Snapshot();
+            Assert((kind=="sawmill"?finished.SawmillLevel:
+                    finished.BarracksLevel)==2 &&
+                   finished.BuildingCompletesUtcTicks==0 &&
+                   finished.BuildingTaskId=="" &&
+                   finished.ChapterThree.PendingBuildingLevel==0,
+                "Main beta10 settles actual level and clears timer: "+kind);
+            long power=finished.MissionPower;
+            int completed=finished.CompletedTaskIds.Count;
+            gateway=new LocalGateway(clock,store);
+            Assert(!gateway.Advance() &&
+                   gateway.Snapshot().MissionPower==power &&
+                   gateway.Snapshot().CompletedTaskIds.Count==completed,
+                "Main beta10 early upgrade never pays twice after reload: "+kind);
+            Assert(Submit(gateway,"daily-after-beta10-"+kind,
+                "ClaimDailyTreasure").Ok,
+                "Daily tributes still work after canonical beta10 upgrade: "+kind);
+            var credited=gateway.Snapshot();
+            Assert(credited.DailyTreasures.TotalClaims==1 &&
+                   credited.Mailbox.Messages.Exists(m=>
+                       m.Type=="daily-treasure") &&
+                   !Submit(gateway,"daily-duplicate-beta10-"+kind,
+                       "ClaimDailyTreasure").Ok,
+                "Daily awards exactly once beside early infrastructure: "+kind);
+        }
+        var narrativeClock=new FakeClock{UtcTicks=At(20)};
+        var narrative=new LocalGateway(narrativeClock,new MemoryStore());
+        foreach(var beat in new[]{
+            "march-preparation","vigilants-introduction","scouts-introduction"})
+        {
+            Assert(narrative.AcknowledgeNarrative(beat),
+                "Canonical beta10 tutorial milestone remains accepted: "+beat);
+            Assert(narrative.Snapshot().ChapterProgress.SeenNarrative.Contains(beat),
+                "Canonical beta10 tutorial progress saved: "+beat);
+            Assert(!narrative.AcknowledgeNarrative(beat),
+                "Canonical beta10 tutorial cannot repeat: "+beat);
+        }
+    }
+
     public static void Main()
     {
         var clock=new FakeClock{UtcTicks=At(8)};
@@ -486,6 +558,7 @@ internal static class GatewayChecks
         SevenDayRealGatewayJourney();
         RealMilestoneEligibility();
         RealBastionMailboxMilestones();
+        MainlineBastionTwoAndDailyRewardCoexist();
         RealMilestoneSessionQueue();
         RealReportSessionQueue();
         RealRewardEconomyEnvelope();
