@@ -81,6 +81,8 @@ namespace Eldoria.Tests
                     BastionLevel=2,BarracksLevel=1,
                     Resources=new ResourceWallet{Wood=9000,Stone=9000},
                     Available=new ArmyRoster{ArcherT1=36}};
+                 // Show March controls only after the saved contextual explanation.
+                 state.ChapterProgress.SeenNarrative.Add("march-preparation");
                 var clock=new FakeClock();
                 var store=new Memory{Stored=state};
                 var fake=new LocalGateway(clock,store);
@@ -96,9 +98,17 @@ namespace Eldoria.Tests
                 if(guidance)guidance.enabled=false;
                 var modal=Member(hud,"Modal") as Component;
                 if(modal && modal.gameObject.activeInHierarchy)Call(modal,"Hide");
-                // Exercise the actual RoyalHUD → Cuartel navigation event,
-                // not a direct artificial call into the screen component.
-                Call(hud,"SelectBuilding","barracks");
+                // Barracks selection now offers Training and Upgrade: no
+                // automatic transition into military management.
+                Call(hud,"SelectBuilding","upgrade-barracks");
+                yield return null;
+                Canvas.ForceUpdateCanvases();
+                Assert.That(Member(management,"IsOpen"),Is.False,
+                    "Selecting a Barracks must not open Training automatically");
+                // This test isolates the V3 destination and saved command logic.
+                // The dedicated beta10 UX native probe tests the actual
+                // visible Training choice button and its raycast separately.
+                Call(management,"Open",Enum.Parse(destination,"Training"));
                 yield return null;
                 Canvas.ForceUpdateCanvases();
                 Assert.That(Member(management,"IsOpen"),Is.True);
