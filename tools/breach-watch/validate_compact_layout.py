@@ -109,8 +109,8 @@ def check(size:tuple[int,int],food_unlocked:bool=False,world_unlocked:bool=False
         touch("action",R(context.x+12,context.y+280-53,panelw-24,50))
         info=R(13,125,panelw-26,35)
         costlabel=R(13,170,panelw-26,16)
-        costdata=R(13,187,panelw-26,23)
-        state=R(13,211,panelw-26,14)
+        costdata=R(13,187,panelw-26,20)
+        state=R(13,209,panelw-26,17)
         action=R(12,227,panelw-24,50)
         assert not info.intersects(costlabel),size
         assert not costlabel.intersects(costdata),size
