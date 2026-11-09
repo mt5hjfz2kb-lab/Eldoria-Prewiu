@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T12:43:59.537Z",
+  "updated_at": "2026-11-09T13:08:33.704Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2872,7 +2872,11 @@
       "scope": [
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
         "tools/ui-v3-domain-smoke/verify-construction-anchor.mjs",
-        "docs/ui-v3/CONSTRUCTION_TIMER_ANCHOR_20261109.md"
+        "docs/ui-v3/CONSTRUCTION_TIMER_ANCHOR_20261109.md",
+        "tools/ui-v3-domain-smoke/Smoke.csproj",
+        ".github/workflows/ui-v3-domain-smoke.yml",
+        "tools/early-retention/Smoke.csproj",
+        ".github/workflows/early-retention-domain.yml"
       ],
       "resources": [],
       "dependencies": [
@@ -2922,7 +2926,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "PR183 draft: compact construction timers now scene-anchored. 26 source/model checks pass; CI Ubuntu V3/early-retention dotnet fails on pre-existing missing NarrativeCoherenceRules include, unrelated to V3 Canvas patch. Need exact Unity native render and QA; PR179 owner notified for frozen beta overlay port, hash/regression and republish.",
+      "next": "Fix head-specific source/model contract CI and .NET smoke missing NarrativeCoherenceRules.cs include (test harness only), then Unity native when owner Windows lease released; port to PR179 beta by safe handoff.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
