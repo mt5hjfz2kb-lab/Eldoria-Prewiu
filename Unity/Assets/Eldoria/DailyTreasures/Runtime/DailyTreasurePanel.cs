@@ -1667,9 +1667,52 @@ namespace Eldoria.DailyTreasures
         }
 #endif
 
+        // The old chest ceremony instantly jumped from its opening frame
+        // into the full inventory screen. Ease the actual uGUI geometry over
+        // the already-authored 1.33-1.83s light-settle interval, making room
+        // for the real saved rewards without a jump cut or another canvas.
+        // Unity RectTransforms only: no new textures, no gameplay commands,
+        // no expensive Canvas rebuild in the animation frame loop.
+        void AnimateDailyCeremonyReflow(float progress)
+        {
+            if(!playing || !chestReward || prizeCount<=0 ||
+               currentStage!=DailyTreasureStageKind.Daily)return;
+            bool portrait=root.rect.height>root.rect.width;
+            float h=root.rect.height;
+            float openingH=Mathf.Min(h-20f,portrait?450f:300f);
+            float paidH=Mathf.Min(h-20f,portrait?700f:370f);
+            float t=Mathf.Clamp01(progress);
+            var frameSize=cardSurface.sizeDelta;
+            cardSurface.sizeDelta=new Vector2(frameSize.x,
+                Mathf.Lerp(openingH,paidH,t));
+            float y=Mathf.Lerp(portrait?64f:42f,
+                portrait?116f:89f,t);
+            float artW=Mathf.Lerp(330f,portrait?284f:300f,t);
+            float artH=Mathf.Lerp(portrait?265f:194f,
+                portrait?246f:170f,t);
+            foreach(var art in new[]{illustratedClosed,illustratedOpen})
+            {
+                if(!art)continue;
+                art.rectTransform.anchoredPosition=new Vector2(0f,y);
+                art.rectTransform.sizeDelta=new Vector2(artW,artH);
+            }
+            if(chest)
+            {
+                chest.rectTransform.anchoredPosition=new Vector2(0f,y);
+                chest.rectTransform.sizeDelta=new Vector2(artW*.88f,
+                    artH*.88f);
+            }
+            foreach(var effect in new[]{glowRect,ambientRect,raysRect})
+                if(effect)effect.anchoredPosition=new Vector2(0f,y);
+            float resultY=Mathf.Lerp(portrait?-132f:-100f,
+                portrait?(paidH<680f?-217f:-232f):-15f,t);
+            resultText.rectTransform.anchoredPosition=new Vector2(0f,resultY);
+        }
+
         DailyTreasureRevealFrame PaintCeremonyFrame(float elapsed)
         {
             var frame=DailyTreasureRevealTimeline.Sample(elapsed,ceremonyTier);
+            AnimateDailyCeremonyReflow(frame.Text);
             chest.SetOpening(frame.Opened);
             if(hasAuthoredChestArt)
             {
