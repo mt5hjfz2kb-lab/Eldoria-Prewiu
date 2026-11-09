@@ -37,6 +37,16 @@ for(const p of needed){
  guids.push(m[1]);
 }
 assert.equal(new Set(guids).size,guids.length,"Repeated Unity GUIDs");
-if(!fs.existsSync(root+"Resources/EonscarTrial/eonscar-logo.png"))
- console.warn("EONSCAR_VISUAL_ASSET_PENDING: original PNG not yet committed; native art QA prohibited");
-console.log("EONSCAR_SOURCE_SANITY_PASS: opt-in, input-blocking, dismissible, no save/scene code; not a Unity build");
+const artPath = root + "Resources/EonscarTrial/eonscar-logo.png";
+const artMeta = artPath + ".meta";
+assert(fs.existsSync(artPath), "Missing exact PNG trial asset");
+const png = fs.readFileSync(artPath);
+assert.equal(png.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", "Not a PNG file");
+assert.equal(png.readUInt32BE(16), 512, "Wrong QA PNG width");
+assert.equal(png.readUInt32BE(20), 384, "Wrong QA PNG height");
+assert.equal(
+  (await import("node:crypto")).createHash("sha256").update(png).digest("hex"),
+  "c5ac3f2688196548daea6c61e7d0654f3b0cff0c613c78b44a12b4d72bbeab72",
+  "Trial logo hash does not match the curated source");
+assert.match(fs.readFileSync(artMeta,"utf8"), /guid: b6d1a7c910ae49efa9243570bcda5ba4/);
+console.log("EONSCAR_SOURCE_SANITY_PASS: opt-in, asset PNG hash verified, input-blocking, dismissible; not a Unity build");
