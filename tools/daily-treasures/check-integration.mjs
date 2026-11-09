@@ -302,11 +302,10 @@ assert.doesNotMatch(native,/(?<!UnityEngine\.)\bApplication\.dataPath/);
 // Real Unity screenshots exposed another independent art/UX defect:
 // the lower resource line on Days 4 and 6 overlapped the bronze border.
 // Assert the responsive fix and its genuine native RectTransform gate.
-assert.match(panel,/bool twoResources=i==3 \|\| i==5/);
 assert.match(panel,/bool compactDouble=twoResources && cellH<=103f/);
 assert.match(panel,/float labelBottom=compactDouble\?20f/);
-assert.match(panel,/bool twoResources=dayBody\\[i\\]\\.text\\.IndexOf\\('\\\\n'\\)>=0/);
-assert.match(panel,/if\\(calendar && calendar\\.gameObject\\.activeInHierarchy\\)\\s*Layout\\(\\)/);
+assert.ok(panel.includes("bool twoResources=dayBody[i].text.IndexOf('\\n')>=0;"));
+assert.match(panel,/if\(calendar && calendar\.gameObject\.activeInHierarchy\)\s*Layout\(\)/);
 assert.match(native,/Third-day loyalty bonus text overlaps the/);
 assert.match(native,/VerifyCalendarMultipleResourceMargins\(DailyTreasurePanel panel,/);
 assert.match(native,/margin>=4\.5f/);
