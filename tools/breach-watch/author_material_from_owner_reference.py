@@ -48,6 +48,19 @@ def main():
         fy=y/(h-1)
         for x in range(w):
             r,g,b=src[x,y]
+            # The archived empty frame still has two BAKED separator
+            # strokes at y≈403 and 660 after scaling. Those would create
+            # ghost lines behind the live dynamic divider. Replace the
+            # strokes WITHIN this one material via local texture blending;
+            # no extra image and no data are drawn over the live HUD.
+            for low,high in ((388,424),(646,676)):
+                if low<=y<=high:
+                    t=(y-low)/(high-low)
+                    top=src[x,low-6]
+                    bottom=src[x,min(h-1,high+6)]
+                    r,g,b=tuple(round((1-t)*top[i]+t*bottom[i])
+                        for i in range(3))
+                    break
             grain=(r+g+b)/3-22
             light=5*(1-fy)-3*((x-w/2)/(w/2))**2
             color=(41+grain*.72+light,37+grain*.62+light*.78,
