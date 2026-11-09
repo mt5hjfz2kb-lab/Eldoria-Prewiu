@@ -727,19 +727,23 @@ namespace Eldoria.BreachWatch.Editor
                         "Live status overlaps main action: "+name);
                     Need(Bottom(action)<=ui.BuildingPanel.rect.height+.5f,
                         "Main building action clipped by native card: "+name);
-                    var hammers=ui.BuildingAction.GetComponentInChildren<BreachWatchCrossedHammers>(true);
-                    Need(hammers && hammers.gameObject.activeInHierarchy &&
-                         !hammers.raycastTarget &&
-                         hammers.transform.IsChildOf(ui.BuildingAction.transform),
-                         "Original forged upgrade hammers must remain separate undistorted "+
-                         "geometry, not nine-sliced bars or a tappable overlay: "+name);
+                    // This new native CTA is one approved owner sprite,
+                    // with its forged hammers INSIDE the painted source,
+                    // not another procedural child stacked on the button.
+                    var actionArt=ui.BuildingAction.GetComponent<BreachWatchPlate>();
+                    Need(actionArt && actionArt.sprite &&
+                         actionArt.sprite.name=="upgrade_button" &&
+                         actionArt.type==Image.Type.Sliced,
+                         "Real button does not use the owner-approved single premium artwork: "+name);
+                    Need(ui.BuildingAction.GetComponentsInChildren<Image>(true).Length==1 &&
+                         ui.BuildingAction.GetComponentsInChildren<BreachWatchGlyph>(true).Length==0,
+                         "Duplicated button face or old procedural glyph is still overlaid on CTA: "+name);
                     var actionText=ui.BuildingAction.GetComponentsInChildren<Text>(true)
                         .FirstOrDefault(q=>q && q.name=="Real action title");
                     Need(actionText && actionText.gameObject.activeInHierarchy &&
                          actionText.rectTransform.anchoredPosition.x>=
-                            hammers.rectTransform.anchoredPosition.x+
-                            hammers.rectTransform.rect.width+1f,
-                         "Real premium upgrade text overlaps engraved crossed hammers: "+name);
+                            action.rect.width*.25f,
+                         "Real premium upgrade text overlaps the baked source-art hammers: "+name);
                     Need(actionText.rectTransform.anchoredPosition.x+
                          actionText.rectTransform.rect.width<=action.rect.width-2f,
                          "Real upgrade caption escapes the right copper frame: "+name);
