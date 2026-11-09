@@ -100,7 +100,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
         const compactDouble=twoResources&&ch<=103;
         const iconY=roomy?10:compactDouble?3:twoResources?4:tiny?2:3;
         // Keep BOTH actual illustrated PNG and fallback art within bounds.
-        const iconH=roomy?40:compactDouble?23:tiny?31:42;
+        const iconH=roomy?40:compactDouble?23:tiny?24:28;
         const iconTop=iconY+iconH/2,iconBottom=iconY-iconH/2;
         const bottom=compactDouble?20:twoResources?27:tiny?17:18.5;
         const bodyH=compactDouble?30:twoResources?36:tiny?31:33;
