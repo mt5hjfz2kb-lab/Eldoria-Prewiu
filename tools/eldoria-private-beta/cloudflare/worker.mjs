@@ -6,7 +6,7 @@
  */
 import {EVENT_SET,DEVICES,FIELDS} from './events-catalog.mjs';
 import {OBSERVER_JS} from './observer-source.mjs';
-const RELEASE='native325-fb1292b3d9ce';
+const RELEASE='native325-mobile11-building-anchor';
 const COOKIE='__Host-eldoria_beta';
 const SAFE={ 'X-Content-Type-Options':'nosniff', 'Referrer-Policy':'no-referrer',
   'X-Frame-Options':'DENY','Cross-Origin-Resource-Policy':'same-origin',
@@ -77,10 +77,18 @@ async function ingest(req,env,invite){
     !Number.isSafeInteger(body.elapsed_ms)||body.elapsed_ms<0||body.elapsed_ms>86_400_000||
     body.consent_given!==true||!validPayload(body.payload))
     return answer('Evento incorrecto',422);
+ // Only the real, authored Bastion I–V pilot can be counted. Reject a forged
+ // level VI, false terminal state, or fabricated building progress.
+ if((body.event_name==='bastion_reached'&&
+     (!Number.isInteger(body.payload.bastion)||body.payload.bastion<1||body.payload.bastion>5))||
+    (body.event_name==='end_of_slice'&&body.payload.bastion!==5)||
+    (body.event_name==='build_completed'&&
+     (!Number.isInteger(body.payload.level)||body.payload.level<1||body.payload.level>5)))
+   return answer('Fuera del alcance Bastion I-V',422);
  if(typeof env.SUPABASE_SECRET_KEY!=='string'||env.SUPABASE_SECRET_KEY.length<20||
     !/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(env.SUPABASE_URL||''))return answer('Medicion no habilitada',503);
  const event={...body,tester_id:invite.tester_id,build_version:RELEASE,
-  source_sha:'948ffa9837168a0b68dab80be76b66350422b23a',
+  source_sha:'8dc875430241a49b4d417782dfeab2d4c7a4f315',
   round_id:'eldoria-closed-beta-bastion-i-v-1',is_qa:env.QA_MODE!=='false'};
  const headers={'Content-Type':'application/json','apikey':env.SUPABASE_SECRET_KEY,'Prefer':'return=minimal'};
  if(env.SUPABASE_SECRET_KEY.startsWith('eyJ'))headers.Authorization='Bearer '+env.SUPABASE_SECRET_KEY;
@@ -103,7 +111,7 @@ export default {
    const invite=await checkInvite(path.slice('/entrar/'.length),env);
    if(!invite)return answer('Invitacion no valida',403);
    const ttl=invite.expires-Math.floor(Date.now()/1000);
-   return answer('',302,{Location:'/',
+   return answer('',302,{Location:'/?eldoriaBetaTelemetry=1',
     'Set-Cookie':COOKIE+'='+path.slice('/entrar/'.length)+'; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age='+ttl});
   }
   const invite=await checkInvite(tokenFromCookie(req),env);
@@ -112,7 +120,7 @@ export default {
    if(req.method!=='POST')return answer('Metodo no permitido',405);
    return ingest(req,env,invite);
   }
-  if(path==='/beta/session')return answer(JSON.stringify({tester_id:invite.tester_id,release:RELEASE}),200,{'Content-Type':'application/json'});
+  if(path==='/beta/session')return answer(JSON.stringify({tester_id:invite.tester_id,release:RELEASE,consent:true}),200,{'Content-Type':'application/json'});
   // The invitation allowlist is checked above: observer is never public.
   if(path==='/beta/observer.js'){
    if(req.method!=='GET'&&req.method!=='HEAD')return answer('Metodo no permitido',405);
