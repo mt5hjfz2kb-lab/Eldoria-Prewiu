@@ -205,14 +205,14 @@ namespace Eldoria.BreachWatch
                 {
                     if(!part || !part.sharedMesh)continue;
                     var localBounds=part.sharedMesh.bounds;
-                    var boxMin=localBounds.min;
-                    var boxMax=localBounds.max;
+                    var meshMin=localBounds.min;
+                    var meshMax=localBounds.max;
                     for(int cornerIndex=0;cornerIndex<8;cornerIndex++)
                     {
                         var localCorner=new Vector3(
-                            (cornerIndex&1)!=0?boxMax.x:boxMin.x,
-                            (cornerIndex&2)!=0?boxMax.y:boxMin.y,
-                            (cornerIndex&4)!=0?boxMax.z:boxMin.z);
+                            (cornerIndex&1)!=0?meshMax.x:meshMin.x,
+                            (cornerIndex&2)!=0?meshMax.y:meshMin.y,
+                            (cornerIndex&4)!=0?meshMax.z:meshMin.z);
                         Vector3 worldCorner=part.transform.TransformPoint(localCorner);
                         Vector3 offset=worldCorner-copiedBounds.center;
                         float projRight=Vector3.Dot(offset,right);
