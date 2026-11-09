@@ -464,10 +464,35 @@ namespace Eldoria.BreachWatch.Editor
                         q.name=="Chapter side tablet" ||
                         q.name=="Independent selected-building cartouche"))
                     .ToArray();
+                // The old 8-unit / 58%-opaque contact shadow made the
+                // actual reference-derived frame look like a plate hovering
+                // on TOP of another. Assert subtle physical contact instead.
                 Need(depthLayers.Length==3 &&
-                     depthLayers.All(q=>q.effectColor.a>.33f),
-                     "Owner-approved premium metalwork must retain real contact depth "+
-                     "without a large flat HUD footer: "+name);
+                     depthLayers.All(q=>q.effectColor.a>=.15f &&
+                         q.effectColor.a<=.24f &&
+                         q.effectDistance.y>=-2.5f &&
+                         q.effectDistance.y<0f),
+                     "Detached heavy contact shadow reappeared beneath "+
+                     "Vigilia artwork: "+name);
+                var contour=ui.BuildingPanel.GetComponentsInChildren<Image>(true)
+                    .Where(i=>i && i.sprite &&
+                        i.sprite.name=="owner_gold_border").ToArray();
+                Need(contour.Length==1 &&
+                     contour[0].type==Image.Type.Simple &&
+                     contour[0].color.a>=.84f && contour[0].color.a<=.92f &&
+                     Mathf.Abs(contour[0].rectTransform.offsetMin.x)<=2f &&
+                     Mathf.Abs(contour[0].rectTransform.offsetMin.y)<=6f &&
+                     Mathf.Abs(contour[0].rectTransform.offsetMax.x)<=2f &&
+                     Mathf.Abs(contour[0].rectTransform.offsetMax.y)<=6f,
+                     "Reference contour is an oversized independent overlay "+
+                     "rather than the single integral cartouche rim: "+name);
+                var brassWells=ui.BuildingPanel.GetComponentsInChildren<BreachWatchPlate>(true)
+                    .Where(i=>i && i.sprite && i.sprite.name=="brass_portrait").ToArray();
+                Need(brassWells.Length==1 &&
+                     brassWells[0].type==Image.Type.Sliced &&
+                     brassWells[0].color.a>=.48f && brassWells[0].color.a<=.62f,
+                     "The live 3D Bastion preview is surrounded by "+
+                     "a second opaque metal plate: "+name);
                 Need(ui.HasPremiumResourceSurfaces,
                     "All three live resources must use real independent clean slate nine-slice capsules, not overlapping procedural frames");
                 Need(ui.HasOwnerApprovedUtilityArtwork,
