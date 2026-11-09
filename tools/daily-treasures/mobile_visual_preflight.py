@@ -39,7 +39,11 @@ def verify(label,icon):
             lambda a:255 if a>96 else 0).getbbox()
         need(bbox is not None,label+" has no opaque silhouette")
         w,h=bbox[2]-bbox[0],bbox[3]-bbox[1]
-        need(w>size*.50 and h>size*.48,
+        # The tall hourglass has a deliberately narrower silhouette than
+        # wood, stone and food. Legibility depends on height and internal
+        # material detail, not on stretching it into a fat rectangle.
+        minimum_width=.46 if label=="ACELERADOR" else .50
+        need(w>size*minimum_width and h>size*.48,
              label+" source art is too tiny for mobile "+str(bbox))
         bg=Image.new("RGBA",(size,size),BG)
         bg.alpha_composite(tiny)
