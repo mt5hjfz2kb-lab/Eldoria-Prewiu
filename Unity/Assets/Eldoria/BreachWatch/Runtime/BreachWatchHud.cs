@@ -1145,6 +1145,11 @@ namespace Eldoria.BreachWatch
                 // 844x390 actual native pixels: 13 at scale .86 gives only
                 // 11.18px. Enlarge the live caption rather than weaken QA.
                 chapterName.fontSize=14;
+                // Portrait Reflow leaves BestFit max 13 in the same Canvas.
+                // Force the ACTUAL painted 14pt on short landscape, not only
+                // its misleading public fontSize property.
+                chapterName.resizeTextMinSize=14;
+                chapterName.resizeTextMaxSize=14;
                 chapterObjective.fontSize=15;
                 chapterProgress.fontSize=14;
 

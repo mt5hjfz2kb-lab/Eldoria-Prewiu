@@ -793,6 +793,17 @@ namespace Eldoria.BreachWatch.Editor
                              name+"/"+label.name+
                              " expected="+expectedLines+
                              " actual="+label.cachedTextGenerator.lineCount);
+                        // Unity 6000.3 TextGenerator.fontSizeUsedForBestFit
+                        // reports actual painted glyph size, not nominal.
+                        if(label.name=="Actual chapter" &&
+                           ((w==390&&h==844)||(w==844&&h==390)))
+                        {
+                            var realPt=label.cachedTextGenerator.fontSizeUsedForBestFit;
+                            Need(realPt*ui.NativeCanvas.scaleFactor>=11.75f,
+                                "Actual rendered phone chapter is too small "+
+                                name+" actual="+realPt+
+                                " scale="+ui.NativeCanvas.scaleFactor.ToString("F3"));
+                        }
                     }
                     else
                     {

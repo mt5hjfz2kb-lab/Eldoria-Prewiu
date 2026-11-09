@@ -50,10 +50,14 @@ def verify():
          "approved single-line chapter and Breach inscription")
     fits("Construye el aserradero",REGULAR,13,mission_width-70,
          "true objective alongside painted castle badge")
-    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,13,174,
-         "landscape single-line chapter inside original metal")
+    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,13,211-64,
+         "390px approved single-line chapter readable at 13pt")
+    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,14,180,
+         "844px approved single-line chapter readable at 14pt")
     hud=Path("Unity/Assets/Eldoria/BreachWatch/Runtime/BreachWatchHud.cs").read_text()
-    assert "At(chapterName.rectTransform,59f,8f,missionWidth-70f,20f);" in hud
+    assert "At(chapterName.rectTransform,smallPhone?54f:59f,8f," in hud
+    assert "chapterName.resizeTextMinSize=14;" in hud
+    assert "chapterName.resizeTextMaxSize=14;" in hud
     fits("Prueba Valoria",SEMIBOLD,16,121,"player identity")
     fits("Bastión",SEMIBOLD,19,panel_width-80,
          "selected building title")
