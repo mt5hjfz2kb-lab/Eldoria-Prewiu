@@ -179,7 +179,12 @@ assert.match(flight,/public const float DelayBetweenCards=\.13f/);
 assert.doesNotMatch(flight,/GameCommand|LocalGateway|\.Execute\(|PlayerPrefs/);
 assert.match(native,/"hud-entry"/);
 assert.match(native,/Genuine unclaimed original chest medallion/);
-assert.match(nativeWorkflow,/\$entryOnly=\(\$variant -eq 'hud-entry'\)/);
+assert.match(nativeWorkflow,/\$unclaimed=\(\$variant -eq 'hud-entry' -or \$variant -eq 'calendar'/);
+assert.match(nativeWorkflow,/\$item\.readyToClaim -ne \$claimCalendar/);
+// Calendar frames are visually informative but MUST NOT be called earned.
+assert.match(native,/"Available calendar before claim",true,false\)/);
+assert.match(native,/"Real day-four candidate before claim",true,false\)/);
+assert.match(native,/readyToClaim=variant=="calendar" \|\|/);
 assert.match(nativeWorkflow,/four unclaimed HUD|four genuine HUD entries|four original HUD|four genuine unclaimed HUD/i);
 assert.match(panel,/SamplePaidItemFlightForNativeEvidence\(float elapsed\)/);
 assert.match(native,/"day7-prize-flight"/);
