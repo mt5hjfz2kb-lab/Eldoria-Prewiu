@@ -1114,7 +1114,7 @@ namespace Eldoria.BreachWatch
                 At(buildingFunction.rectTransform,13,125,pw-26,35);
                 descriptionDivider.gameObject.SetActive(true);
                 At(descriptionDivider,14,161,pw-28,8);
-                At(costHeader.rectTransform,13,170,pw-26,16);
+                At(costHeader.rectTransform,13,170,pw-26,17);
                 At(buildingCosts.rectTransform,13,187,pw-26,20);
                 At(costIcons[0].rectTransform,14,188,19,19);
                 At(costQuantities[0].rectTransform,39,188,42,20);
