@@ -39,13 +39,13 @@ def verify():
 
     # Phone design-units are stable between 390x844 and Retina 900x1600.
     panel_width=171
-    mission_width=200
+    mission_width=185
     def fits(text,font,size,limit,control):
         value=width(font,size,text)
         assert value<=limit+0.15,(control,round(value,2),limit,text)
         print("TYPOGRAPHY_FIT",control,round(value,1),"<=",limit)
 
-    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,13,mission_width-55,
+    fits("BASTIÓN I / LA BRECHA",SEMIBOLD,12,mission_width-49,
          "chapter-title")
     fits("Construye el aserradero",REGULAR,14,mission_width-22,
          "chapter-objective")
@@ -67,12 +67,10 @@ def verify():
     # Source-accurate caption at 900x1600 uses title-case and the whole
     # target, just like the owner's approved UI. Unity BestFit may select
     # 13pt to stay inside its true carved bronze button.
-    hammer_at_900=max(19,min(28,27/(900/514)))
-    inset_900=max(31,min(42,8+hammer_at_900+5))
+    inset_900=max(31,min(38,action_width*.25))
     fits("Mejorar a Bastión II",SEMIBOLD,13,
          action_width-inset_900-7,"900px premium full upgrade caption")
-    hammer_at_390=max(19,min(28,27/max(.91,390/514)))
-    inset_390=max(31,min(42,8+hammer_at_390+5))
+    inset_390=max(31,min(38,action_width*.25))
     fits("Mejorar a II",SEMIBOLD,15,
          action_width-inset_390-7,"390px compact upgrade caption")
     # Physical pixels: compact first-screen body glyphs and five nav areas
