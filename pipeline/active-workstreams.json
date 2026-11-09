@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T14:03:19Z",
+  "updated_at": "2026-11-09T14:12:44.955Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2861,7 +2861,7 @@
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
       "owner": "chatgpt-v3-building-timer-anchor-20261109",
       "ownership_state": "claimed",
-      "ownership_revision": 30,
+      "ownership_revision": 31,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-11-09T12:36:18.720Z",
@@ -2882,7 +2882,9 @@
         ".github/workflows/eldoria-construction-timer-native.yml",
         "tools/ui-v3-domain-smoke/native-request.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "dependencies": [
         {
           "workstream": "valoria-master-plan-layered-construction-20261016",
@@ -2930,7 +2932,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Implement independent fail-closed main PlayMode native workflow while PR173 reserves shared ui-progression workflow and PR181 reserves Windows. After legitimate release acquire V3 lease and update native-request.json, test actual camera pan/offscreen on scene, then gate merge. PR179 frozen overlay same source with own native probe and deploy path.",
+      "next": "Native Unity lease acquired for PR183. Update native-request.json revision31, launch existing fail-closed timer workflow; inspect exact real PlayMode XML. Restore/release Windows after actual native gate. Then PR179 beta native via fresh lease and deploy.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -3042,7 +3044,7 @@
         }
       ],
       "runner_lease_note": "Main UI40681527347 success. General main40681527358 is serial on existing runner; keep intact while subsequent PR120 jobs queue.",
-      "phase": "CONSTRUCTION_TIMER_WORLD_ANCHOR_CORRECTION",
+      "phase": "CONSTRUCTION_TIMER_NATIVE_TEST_EXCLUSIVE_LEASE",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
@@ -3109,7 +3111,14 @@
         "remote_active_confirmed": false,
         "hosted_browser_verified": false
       },
-      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6."
+      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
+      "native_timer_gate": {
+        "requested_at": "2026-11-09T14:12:44.955Z",
+        "branch": "fix/eldoria-construction-timer-anchor-20261109",
+        "pr": 183,
+        "status": "pending_exact_unity_run",
+        "purpose": "real Sawmill timer camera-pan/offscreen PlayMode test; source blob caa48b2bfa70edde209055f53296ddfc5e3a0baf"
+      }
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
