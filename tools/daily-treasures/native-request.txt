@@ -1,18 +1,16 @@
-# Owner-authorized PR181 exact-head Unity native art/UX certification, single workstream.
-# Exclusive main-registry Windows lease already held by Daily Treasures.
-# Prior runs and verified root causes:
-# 42600126398 missing built-in com.unity.modules.audio (corrected)
-# 42604316751 UnityEngine.Application.isPlaying shadowed by Eldoria.Application (corrected)
-# 42606257865 editor-only Application.dataPath shadowed by Eldoria.Application (corrected)
-# Source gates cover these exact native CS1069/CS0234 regressions.
-# Runtime still requires: 13 authentic resource PNGs, 52 rendered PNGs,
-# 56 real pointer interactions, 8 real gateway grants, 16 visual-only looks,
-# text clipping/rotation/return-to-Vigilia, no fake player reward.
+# Canonical PR181 owner-authorized Unity proof. One exclusive Windows lease.
+# Last ordinary + special-day source CI: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/42618656809 PASS (HEAD before this request).
+# Native run must require branch HEAD == this exact request commit.
+# Additional scripted QA: 20 ordinary-day images and 20 real claims, separate from
+# 52 contract PNG, 8 actual day4/7 awards, 16 nonpaying milestone style probes.
 state=REQUEST_NATIVE_EXACT_HEAD
 workstream=eldoria-daily-treasures-20261108
-scope=52_real_Unity_PNG_56_pointer_8_gateway_claims_16_visual_only
-asset_policy=13_SHA256_verified_original_sprites_and_actual_Eldoria_scenery
-compile_fixes=audio-module;qualified-runtime-Application;qualified-editor-Application
-retry_from_native_run=42606257865
-merge_or_publish=false
+source_before_request=00f2f840c3e0da5667338e32d16b1dd9f04b052a
+scope=52_contract_png_plus_20_quiet_png_116_real_pointer_28_gateway_claims_16_nonpaying_styles
+asset_policy=13_original_sha256_png_plus_live_eldoria_scenery
+source_ci_run=42618656809
+runner_lease_revision=17
+native_target=Unity-6000.3.23f1
+full_game_verified=false
 art_approved=false
+merge_or_publish=false
