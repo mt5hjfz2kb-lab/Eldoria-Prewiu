@@ -370,13 +370,27 @@ namespace Eldoria.DailyTreasures.Editor
             };
             var hits=new List<RaycastResult>();
             canvas.GetComponent<GraphicRaycaster>().Raycast(data,hits);
+            var entryImage=button.GetComponent<Graphic>();
+            var localGraphics=GraphicRegistry.GetGraphicsForCanvas(canvas);
+            string diagnostic=
+                " canvas="+canvas.name+" target="+pos+
+                " hit="+(hits.Count>0?hits[0].gameObject.name:"<none>")+
+                " raycasts="+hits.Count+
+                " registered="+(localGraphics==null?0:localGraphics.Count)+
+                " entryRegistered="+(entryImage &&
+                    localGraphics!=null && localGraphics.Contains(entryImage))+
+                " depth="+(entryImage?entryImage.depth:-999)+
+                " culled="+(entryImage && entryImage.canvasRenderer.cull)+
+                " underPointer="+RectTransformUtility.RectangleContainsScreenPoint(
+                    (RectTransform)button.transform,pos,camera)+
+                " activeRaycaster="+
+                    canvas.GetComponent<GraphicRaycaster>().isActiveAndEnabled;
             Need(hits.Count>0 &&
                  (hits[0].gameObject==button.gameObject ||
                   hits[0].gameObject.transform.IsChildOf(button.transform)),
-                 "Another graphic steals native click: "+button.name+
-                " canvas="+canvas.name+" target="+pos+
-                " hit="+(hits.Count>0?hits[0].gameObject.name:"<none>")+
-                " raycasts="+hits.Count);
+                 (hits.Count==0?"No native graphic received real pointer: ":
+                     "Another graphic steals native click: ")+
+                 button.name+diagnostic);
             // Invoke the exact Unity event handlers used by real players.
             // NEVER bypass the pointer by directly invoking onClick.
             ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerDownHandler);
@@ -732,9 +746,31 @@ namespace Eldoria.DailyTreasures.Editor
                          "Daily treasure canvas remained invisible on Vigilia");
                     VerifyUiOwnership(2,eventSystem);
                     Canvas.ForceUpdateCanvases();
+                    var movedEntry=FindButton(panel,
+                        "Daily reward / optional medallion");
+                    var movedGraphic=movedEntry.GetComponent<Graphic>();
+                    var migratedGraphics=
+                        GraphicRegistry.GetGraphicsForCanvas(nativeCanvas);
+                    Need(movedGraphic && movedGraphic.raycastTarget &&
+                         migratedGraphics!=null &&
+                         migratedGraphics.Contains(movedGraphic),
+                         "Actual medallion is not registered as a raycastable "+
+                         "Graphic under the new Vigilia canvas");
+                    // The editor fixture constructs a second WorldSpace canvas
+                    // and moves an already rendered panel to it WITHOUT the
+                    // normal intervening player frame. The native raycaster
+                    // explicitly ignores graphics with depth == -1.
+                    // Render the newly parented UI on the SAME real Unity
+                    // camera/target before the pointer event, never invoke a
+                    // Button.onClick or grant a reward through the fixture.
+                    camera.Render();
+                    camera.Render();
+                    Canvas.ForceUpdateCanvases();
+                    Need(movedGraphic.depth>=0 && !movedGraphic.canvasRenderer.cull,
+                         "Migrated medallion is not yet drawn in native Unity; "+
+                         "its raycast would be physically impossible");
                     ClickAtNativeScreenPosition(nativeCanvas,eventSystem,camera,
-                        FindButton(panel,"Daily reward / optional medallion"),
-                        width,height);
+                        movedEntry,width,height);
                     inputChecks++;
                     Need(panel.IsOpen,
                         "Independent Vigilia reward medallion cannot open");
@@ -750,6 +786,11 @@ namespace Eldoria.DailyTreasures.Editor
                          "Daily treasure UI cannot restore to original canvas");
                     canvas.enabled=true;
                     Object.DestroyImmediate(nativeObj);
+                    Canvas.ForceUpdateCanvases();
+                    // The returned legacy fixture also needs one real render
+                    // before testing additional pointer interaction.
+                    camera.Render();
+                    Canvas.ForceUpdateCanvases();
                     VerifyUiOwnership(1,eventSystem);
 
                     // Four DIFFERENT real-world milestone categories share
