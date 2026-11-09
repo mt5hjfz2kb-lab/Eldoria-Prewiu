@@ -2,7 +2,7 @@
   "schema": 1,
   "state": "BLOCKED",
   "scope": "Eldoria closed beta Bastion I–V; owner QA on GitHub Pages; external invitations gated",
-  "reason": "BLOCKED P0: on 2026-11-09 owner physically reported the page restarting on iPhone at entry despite desktop WebKit and Unity PASS. No iPhone fix was certified. Published mobile11 WebGL and opt-in pilot share the same engine source; milestone telemetry is not compiled into it.",
+  "reason": "Owner iPhone P0 reproducible unexpected top-level document restart at 56.496s on certified mobile11; no clean exit/event before. No proven root cause or verified iPhone fix. Keep Bastion I-V tester invitations disabled.",
   "source_sha": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
   "artifact_sha256": null,
   "channels": [],
@@ -31,7 +31,11 @@
       "issue": 96,
       "source_sha": "8dc875430241a49b4d417782dfeab2d4c7a4f315",
       "physical_session_30min_pass": false,
-      "root_cause": "UNKNOWN; memory/GPU pressure needs direct iOS diagnosis"
+      "root_cause": "UNKNOWN",
+      "diagnostic_event_count": 11,
+      "two_document_boots": true,
+      "clean_exit_before_restart": false,
+      "p0_issue": 96
     },
     {
       "device": "Android Chrome physical",
@@ -66,7 +70,7 @@
     "source_contract_run": 42674713658,
     "source_contract_pass": true
   },
-  "updated_at": "2026-11-09T19:09:51.261Z",
+  "updated_at": "2026-11-09T19:18:49.425Z",
   "release_decision": "NO_GO_TESTER_INVITATIONS",
   "mac_webkit_memory_evidence": {
     "run": 42645753309,
@@ -90,5 +94,69 @@
     "iphone_crash_fix": false,
     "physical_iphone_tested": false,
     "note": "Unclosed previous document is NOT diagnosis of jetsam; does not replace physical 30-minute iPhone test."
+  },
+  "iphone_owner_local_diagnostic": {
+    "reported_at": "2026-11-09",
+    "diagnostic": "ELDORIA_P0_LOCAL_OWNER_ONLY",
+    "build": "native325-mobile11-building-anchor",
+    "persistent_storage": true,
+    "observed": "PRIOR_DOCUMENT_WITHOUT_EXIT_RECORD",
+    "second_document_after_first_boot_seconds": 56.496,
+    "last_heartbeat_before_second_document_seconds": 50.049,
+    "time_from_last_heartbeat_to_second_boot_seconds": 6.447,
+    "two_main_document_boots": true,
+    "prior_clean_exit_recorded": false,
+    "js_error_or_webgl_loss_recorded": false,
+    "background_and_foreground_only_after_second_boot": true,
+    "evidence_summary": [
+      [
+        "boot",
+        0
+      ],
+      [
+        "heartbeat",
+        10
+      ],
+      [
+        "heartbeat",
+        20
+      ],
+      [
+        "heartbeat",
+        30
+      ],
+      [
+        "heartbeat",
+        40
+      ],
+      [
+        "heartbeat",
+        50
+      ],
+      [
+        "boot",
+        56.496
+      ],
+      [
+        "heartbeat",
+        66.683
+      ],
+      [
+        "background",
+        69.246
+      ],
+      [
+        "foreground",
+        74.266
+      ],
+      [
+        "heartbeat",
+        76.497
+      ]
+    ],
+    "evidence_boundary": "Could be navigation/reload, an interrupted WebContent process, or OS/browser action. Not proof of jetsam or memory exhaustion.",
+    "issue_comment_id": 6749129445,
+    "root_cause": "UNKNOWN",
+    "fixed": false
   }
 }
