@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-11-09T13:32:05.220Z",
+  "updated_at": "2026-11-09T13:41:12.992Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7170,13 +7170,11 @@
         "tools/march-capacity/Smoke.csproj",
         "Unity/Packages/manifest.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "budget_eur": 0,
-      "phase": "NATIVE_72_IMAGE_EXACT_HEAD_QUEUED",
+      "phase": "NATIVE_VIGILIA_MODAL_CLOSE_RAYCAST_FAILURE_WINDOWS_RELEASED",
       "note": "Owner requests opt-in daily seven-day claims, consecutive-day bonuses, chest ceremonies and idempotent mailbox receipts. Keep beta/native325 and BreachWatch/PR173 untouched; Ubuntu-only tests while Windows owned by beta.\nCompatibility hotfix: global march capacity Ubuntu smoke includes GameState, therefore must compile newly added DailyTreasureRules.cs. Only tools/march-capacity/Smoke.csproj; no changes to March mechanics.\nNATIVE UNITY COMPILER ROOT CAUSE (09/11 10:38Z): Editor exact PR181 failed CS1069 because project manifest omits built-in com.unity.modules.audio despite authored chest Foley using AudioClip/AudioSource. Scope narrow exception Unity/Packages/manifest.json granted to this active workstream after checking no competing claim. Only add built-in Audio module 1.0.0 to PR181 branch (do not change beta/main project file) and prove with rerun. Independent warning: legacy DepthB10/layer_index.json.meta invalid YAML, do not modify outside scope.",
-      "next": "Exclusive Windows lease for PR181 acquired only after main registry was empty and native CI passed on cbab43356. Trigger exact-head Unity 6000.3.23f1 certification: 52 contract PNG + 20 genuine quiet receipts, 116 pointer events, 28 real saved awards, 16 non-paying styles. Preserve beta and Vigilia branches; no merge, release or art approval without visual/game/device review.",
+      "next": "Correct native UI GraphicRaycaster/Canvas migrated-modal depth=-1 and zero raycasts, pass exact-HEAD certified 72 screenshots, 116 clicks, 28 real claims. Reacquire Windows only via formal CAS after no competing job; ownership guard overlap with UI V3 remains.",
       "art_production_routing": "required",
       "art_production_routing_reason": "Original procedural 2D chest and visual ceremony need artist gate and native approval; no paid asset or Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-daily-treasures-20261108.json",
@@ -7225,8 +7223,8 @@
       },
       "native_request_head": "3fef463b17ae19fbe176d85838fbac0a3a43b99f",
       "windows_claim_requested_at": "2026-11-09T10:28:00+01:00",
-      "runner_released_at": "2026-11-09T11:43:00Z",
-      "runner_release_basis": "Native Unity workflow 42609669589 completed all Windows jobs (native-ui failure), source SHA 321faff58fc5e986950dc8769e33e79c535f61ac. Preserve source ownership; release physical runner for other workstreams, diagnose isolated failure from artifact 13670287864 without disturbing beta, Vigilia or main code."
+      "runner_released_at": "2026-11-09T13:41:12.992Z",
+      "runner_release_basis": "Native exact-HEAD 64bce6cd0737588539631306f331335d3a02de38 run 42622935466 completed failure, job 129179417321: Vigilia modal close registered but graphic depth=-1, zero raycasts after Canvas migration. Preserve PR181 source ownership and correction work; release exclusive Windows to other workstreams."
     },
     {
       "id": "eldoria-eonscar-branding-trial-20261109",
