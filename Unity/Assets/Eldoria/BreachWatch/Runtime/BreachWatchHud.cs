@@ -582,8 +582,8 @@ namespace Eldoria.BreachWatch
                 // The reference's upper/lower diamonds sit OUTSIDE the
                 // readable tablet. Enlarge only the independently rendered
                 // ornamental ring, never the actual text/button surfaces.
-                ring.offsetMin=new Vector2(-1.5f,-5f);
-                ring.offsetMax=new Vector2(1.5f,5f);
+                ring.offsetMin=new Vector2(-1.5f,-19f);
+                ring.offsetMax=new Vector2(1.5f,19f);
                 exactOwnerGoldBorder=ring.gameObject.AddComponent<Image>();
                 exactOwnerGoldBorder.sprite=outlined;
                 // One complete owner-approved border, including top and bottom
