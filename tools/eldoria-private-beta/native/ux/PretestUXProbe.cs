@@ -102,13 +102,13 @@ public static class EldoriaPretestUXProbe
   Need(h.InWorld&&world.Label.text.IndexOf("CIUDAD",StringComparison.OrdinalIgnoreCase)>=0,"same world control becomes city");
   for(int frame=0;frame<3;frame++){
    h.WorldNavigation.PanTo(h.WorldNavigation.target+new Vector3(.4f,0,.2f));
-   yield return null;yield return new WaitForEndOfFrame();CheckClarityProjection(h,false);
+   yield return null;yield return null;Canvas.ForceUpdateCanvases();CheckClarityProjection(h,false);
   }
   Click(world.Button);yield return new WaitForSecondsRealtime(.4f);h.Hud.Refresh();
   Need(!h.InWorld&&world.Label.text.IndexOf("MUNDO",StringComparison.OrdinalIgnoreCase)>=0,"same city control becomes world");
   for(int frame=0;frame<3;frame++){
    h.City.PlayerCamera.transform.position+=new Vector3(.1f,0,.1f);
-   yield return null;yield return new WaitForEndOfFrame();CheckClarityProjection(h,true);
+   yield return null;yield return null;Canvas.ForceUpdateCanvases();CheckClarityProjection(h,true);
   }
   h.Select("barracks");yield return new WaitForSecondsRealtime(.5f);
   var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
@@ -122,7 +122,7 @@ public static class EldoriaPretestUXProbe
   var timers=h.Hud.GetComponentsInChildren<CanvasGroup>(true).Where(g=>g.name.StartsWith("V3 / real-time operation / ")&&g.alpha>.5f).Select(g=>(RectTransform)g.transform).ToArray();
   Need(timers.Length>0,"at least one live timer measured");
   var prior=timers.Select(r=>r.anchoredPosition).ToArray();
-  h.City.PlayerCamera.transform.position+=new Vector3(2,0,1);yield return null;yield return new WaitForEndOfFrame();
+  h.City.PlayerCamera.transform.position+=new Vector3(2,0,1);yield return null;yield return null;Canvas.ForceUpdateCanvases();
   for(int i=0;i<timers.Length;i++)Need(Vector2.Distance(prior[i],timers[i].anchoredPosition)<.1f,"timer stays at fixed HUD position: "+timers[i].name);
   int labels=0;
   foreach(var label in Object.FindObjectsByType<BuildingLabel>(FindObjectsSortMode.None)){
