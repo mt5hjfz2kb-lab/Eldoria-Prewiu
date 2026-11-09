@@ -41,11 +41,13 @@ public static class EldoriaPretestUXProbe
  static IEnumerator Guard(ValoriaIntegratedWorld host){
   var run=Verify(host);
   while(true){object current;try{if(!run.MoveNext())break;current=run.Current;}catch(Exception e){File.WriteAllText(Path.Combine(Out,"failure.txt"),e.ToString());SessionState.SetBool(Flag,false);EditorApplication.Exit(1);yield break;}yield return current;}
-  foreach(var save in Saves)Need(Hash(Path.Combine(Application.persistentDataPath,save))==SessionState.GetString(Flag+save),"canonical save unchanged: "+save);
-  File.WriteAllText(Path.Combine(Out,"checks.txt"),string.Join("\n",checks));
-  File.WriteAllText(Path.Combine(Out,"source.txt"),Environment.GetEnvironmentVariable("GITHUB_SHA"));
-  File.WriteAllText(Path.Combine(Out,"complete.txt"),"PRETEST_UX_NATIVE_PASS_REQUIRES_VISUAL_REVIEW");
-  SessionState.SetBool(Flag,false);EditorApplication.Exit(0);
+  try{
+   foreach(var save in Saves)Need(Hash(Path.Combine(Application.persistentDataPath,save))==SessionState.GetString(Flag+save),"canonical save unchanged: "+save);
+   File.WriteAllText(Path.Combine(Out,"checks.txt"),string.Join("\n",checks));
+   File.WriteAllText(Path.Combine(Out,"source.txt"),Environment.GetEnvironmentVariable("GITHUB_SHA"));
+   File.WriteAllText(Path.Combine(Out,"complete.txt"),"PRETEST_UX_NATIVE_PASS_REQUIRES_VISUAL_REVIEW");
+   SessionState.SetBool(Flag,false);EditorApplication.Exit(0);
+  }catch(Exception e){File.WriteAllText(Path.Combine(Out,"failure.txt"),e.ToString());SessionState.SetBool(Flag,false);EditorApplication.Exit(1);}
  }
  static void Click(Button button){
   Need(button&&button.gameObject.activeInHierarchy&&button.IsInteractable(),"visible enabled button: "+(button?button.name:"absent"));
@@ -85,7 +87,7 @@ public static class EldoriaPretestUXProbe
   Need(!h.InWorld&&world.Label.text.IndexOf("MUNDO",StringComparison.OrdinalIgnoreCase)>=0,"same city control becomes world");
   h.Select("barracks");yield return new WaitForSecondsRealtime(.5f);
   var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
-  Need(h.Selected=="upgrade-barracks"&&!management.IsOpen,"barracks selection offers choice");Capture(h,"barracks-choice");
+  Need(h.Selected=="upgrade-barracks"&&!management.IsOpen,"barracks selection offers choice");Capture(h,"barracks-choice");yield return null;
   Click(GameObject.Find("Barracks / enter training")?.GetComponent<Button>());yield return new WaitForSecondsRealtime(.4f);
   Need(management.IsOpen&&management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.Training,"training choice opens training");
   Need(GameObject.Find("Switch destination")==null&&GameObject.Find("Open canonical heroes")==null,"training hides unexplained march and locked heroes");Capture(h,"training-initial");
@@ -108,7 +110,7 @@ public static class EldoriaPretestUXProbe
   Need(labels>0,"tested visible target labels");
   h.Hud.SelectBuilding("");yield return new WaitForSecondsRealtime(.3f);
   var hud=h.Hud.GetComponent<RoyalGoldV2Hud>();Click(hud.VisibleChapterButton);yield return new WaitForSecondsRealtime(.3f);
-  Need(h.Hud.Mission.ListExpanded,"missions expand actual checklist");Capture(h,"missions-open");
+  Need(h.Hud.Mission.ListExpanded,"missions expand actual checklist");Capture(h,"missions-open");yield return null;
   var close=GameObject.Find("Close chapter overlay")?.GetComponent<Button>();Need(close.GetComponentsInChildren<RoyalIconGraphic>().Any(x=>x.Icon==11),"mission close has actual X geometry");Click(close);
   Need(!h.Hud.Mission.ListExpanded,"mission close collapses checklist");
   var mature=Fixture(3);mature.EngendroDefeated=true;mature.ChapterProgress.MarchConfirmed=true;mature.ChapterProgress.TrainedArchers=20;
