@@ -13,3 +13,10 @@ scope=52_contract_png_plus_20_quiet_png_116_real_pointer_28_gateway_claims_16_no
 art_approved=false
 full_game_verified=false
 merge_or_publish=false
+
+# Next native proof: verify corrected migration after actual render + registry and geometry diagnostics.
+source_before_request=504cb845b68f6b0a06f542b339a08185ccf5276c
+source_ci_run=42622749790
+native_previous_failed_run=42619230653
+native_failure=zero_raycast_hits_after_vigilia_reparent
+native_proof=real_camera_render_before_actual_pointer
