@@ -246,7 +246,7 @@ jobs:
           if($report.artApproved -ne $false -or $report.fullSceneVerified -ne $false -or $report.iosVerified -ne $false){
             throw 'Component test may not claim artistic, gameplay or physical-device approval'
           }
-          if(@($report.shots).Count -ne 52){throw 'Native evidence missing four genuine HUD entries, 28 paid days, four loot flights and 16 visual-only styles'}
+          if(@($report.shots).Count -ne 52){throw 'Native evidence missing four unclaimed HUD entries, eight pre-claim calendars, 20 paid reward frames, four loot flights and 16 visual-only styles'}
           $seen=[System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
           foreach($size in @(@(1600,900),@(900,1600),@(844,390),@(390,844))){
             $width=[int]$size[0];$height=[int]$size[1]
@@ -263,11 +263,15 @@ jobs:
                 throw "Missing/duplicate screenshot in native report: $name"
               }
               $item=$matches[0]
-              $entryOnly=($variant -eq 'hud-entry')
+              $unclaimed=($variant -eq 'hud-entry' -or $variant -eq 'calendar' -or
+                $variant -eq 'special-day4-calendar')
+              $claimCalendar=($variant -eq 'calendar' -or
+                $variant -eq 'special-day4-calendar')
               if($item.width -ne $width -or $item.height -ne $height -or
                  $item.nativeCanvas -ne $true -or
-                 $item.coversReward -ne (!$entryOnly) -or
-                 $item.preserved -ne (!$entryOnly)){
+                 $item.coversReward -ne (!$unclaimed) -or
+                 $item.preserved -ne (!$unclaimed) -or
+                 $item.readyToClaim -ne $claimCalendar){
                  throw "Incorrect native HUD or paid reward screenshot metadata: $name"
               }
               $path=Join-Path $env:OUT $name
@@ -303,7 +307,7 @@ jobs:
                 $item=$matches[0]
                 if($item.width -ne $width -or $item.height -ne $height -or
                    $item.nativeCanvas -ne $true -or $item.coversReward -ne $false -or
-                   $item.preserved -ne $false){
+                   $item.preserved -ne $false -or $item.readyToClaim -ne $false){
                   throw "Visual-only style incorrectly claims earned items: $name"
                 }
                 $path=Join-Path $env:OUT $name
@@ -329,7 +333,7 @@ jobs:
             }
           }
           if($seen.Count -ne 52 -or @(Get-ChildItem -Path $env:OUT -File -Filter '*.png').Count -ne 52){
-            throw 'Required four unclaimed HUD + 28 paid-day + 4 actual loot flights + 16 visual-only milestone PNGs'
+            throw 'Required four unclaimed HUD + eight unpaid calendars + 20 paid reward + four loot flights + 16 visual-only milestone PNGs'
           }
           Write-Host 'PASS original native component captures, NOT FULL GAME / ART APPROVAL'
       - name: Preserve real Unity screenshots and error log even when test fails
