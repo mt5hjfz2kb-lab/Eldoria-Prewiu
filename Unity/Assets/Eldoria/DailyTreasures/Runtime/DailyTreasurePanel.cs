@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Eldoria.Application;
 using Eldoria.Domain;
 using UnityEngine;
@@ -25,6 +26,12 @@ namespace Eldoria.DailyTreasures
         RectTransform root,entryRect,screen,cardSurface,calendar,ceremony,glowRect,raysRect,ambientRect;
         RectTransform originalSafeArea;
         RectTransform cachedCanonicalHeroRoom;
+        // Canonical Heroes is sometimes built later than the treasury HUD.
+        // Its missing-room probe runs each frame so the room wins immediately,
+        // but allocating a RectTransform[] every frame causes mobile GC
+        // hitches. Unity 6's List overload overwrites this reusable buffer.
+        readonly List<RectTransform> heroRoomSearchBuffer=
+            new List<RectTransform>(64);
         RectTransform cachedVigiliaBuildingPanel;
         float nextCanvasProbe;
         bool onVigiliaCanvas;
@@ -1538,14 +1545,16 @@ namespace Eldoria.DailyTreasures
         {
             if(!cachedCanonicalHeroRoom && originalSafeArea)
             {
-                var rooms=originalSafeArea.GetComponentsInChildren<RectTransform>(true);
-                foreach(var candidate in rooms)
+                originalSafeArea.GetComponentsInChildren(
+                    true,heroRoomSearchBuffer);
+                foreach(var candidate in heroRoomSearchBuffer)
                     if(candidate && candidate.gameObject.name==
                         "Heroes / canonical destination")
                     {
                         cachedCanonicalHeroRoom=candidate;
                         break;
                     }
+                heroRoomSearchBuffer.Clear();
             }
             if(!cachedCanonicalHeroRoom ||
                !cachedCanonicalHeroRoom.gameObject.activeInHierarchy)
