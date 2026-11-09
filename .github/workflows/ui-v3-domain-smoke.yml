@@ -7,7 +7,6 @@ on:
     paths:
       - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
-      - 'Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs'
       - 'Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs'
@@ -31,7 +30,6 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /Unity/Assets/Eldoria/Scripts/Domain/GameState.cs
-            /Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs
             /Unity/Assets/Eldoria/Scripts/Domain/PlayerIdentityPolicy.cs
             /Unity/Assets/Eldoria/Scripts/Domain/ResourceNodeTierPolicy.cs
             /Unity/Assets/Eldoria/Scripts/Domain/RenewablePopulationPolicy.cs

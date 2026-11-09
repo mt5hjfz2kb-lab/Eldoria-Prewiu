@@ -4,7 +4,6 @@
 <ImplicitUsings>disable</ImplicitUsings></PropertyGroup>
 <ItemGroup>
 <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/GameState.cs" Link="GameState.cs"/>
-    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/DailyTreasureRules.cs" Link="DailyTreasureRules.cs" />
 <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EconomyProductionV2.cs" Link="GameState.cs"/>
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs" Link="EldoriaV41Contracts.cs" />
 <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs" Link="EarlyRetentionRules.cs"/>
