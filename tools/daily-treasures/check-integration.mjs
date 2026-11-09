@@ -258,4 +258,15 @@ assert.match(native,/beforeInterrupt\.Resources\.Wood==afterInterrupt\.Resources
 assert.match(panel,/string\.IsNullOrWhiteSpace\(title\) \|\| suppressed \|\|\s*HasVisibleCanonicalHeroRoom\(\)\)return false/);
 assert.match(native,/Direct ceremony API improperly covered canonical hero room/);
 assert.match(native,/Direct ceremony API bypassed narrative\/tutorial priority/);
+// Avoid falling back to screenshot-extracted 128px icons with baked values.
+// Both the seven-day calendar and the paid card tray must use the same
+// alpha-clean original resource art with no native raycast blocking.
+for(const item of ['resource_wood_clean_256','resource_stone_clean_256',
+                   'resource_food_clean_256','resource_hourglass_clean_256'])
+    assert.ok(panel.includes(item),'Standalone painted icon absent: '+item);
+assert.ok(panel.includes('Resources.Load<Sprite>("DailyTreasureArt/"+clean)'));
+assert.ok(panel.includes('var sprite=LoadUnifiedResourceEmblem(item.Icon);'));
+assert.ok(native.includes('VerifyCleanPaintedResources(panel);'));
+assert.ok(native.includes('VerifyCleanPaintedResources(panel,4);'));
+assert.ok(native.includes('VerifyCleanPaintedResources(panel,2);'));
 console.log('PASS daily treasures gateway integration source invariants');
