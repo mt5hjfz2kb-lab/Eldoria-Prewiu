@@ -25,6 +25,7 @@ jobs:
           path: beta-tools
           sparse-checkout: |
             tools/eldoria-private-beta/native
+            tools/eldoria-private-beta/iphone_ab
             Unity/Assets/Eldoria/Scripts/Domain
             Unity/Assets/Eldoria/Scripts/Application
             Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core
@@ -47,6 +48,9 @@ jobs:
           python beta-tools/tools/eldoria-private-beta/native/ux/test_overlay.py
           python beta-tools/tools/eldoria-private-beta/native/ux/apply_overlay.py --source beta-tools --existing-only
           pwsh -NoProfile -File beta-tools/tools/eldoria-private-beta/native/ux/test_domain.ps1 -Source beta-tools
+      - name: Test safe A/B Pages staging (no browser or publishing)
+        run: |
+          python3 -m unittest discover -s beta-tools/tools/eldoria-private-beta/iphone_ab -p 'test_stage_isolated_iphone_preview.py' -v
       - name: Download exact archived beta10 baseline and minimal timer variant
         uses: actions/download-artifact@v4
         with:
