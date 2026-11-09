@@ -37,9 +37,17 @@ namespace Eldoria.BreachWatch.Editor
             public float portraitPixels,uiFootprintPercent;
             public float cityCameraOrtho,castleViewportWidth,castleViewportX,castleViewportY;
         }
+        [Serializable] public sealed class CanvasDiagnostic
+        {
+            public string name, renderMode, path;
+            public int sortOrder, livePaintedGraphics;
+            public bool active, legacy, independentVigilia;
+        }
         [Serializable] public sealed class Report
         {
             public string status, source, scene, note;
+            public CanvasDiagnostic[] canvasDiagnostics;
+            public int activeForeignScreenSpaceCanvases;
             public int screenshotCount, functioningNewNavigationClicks, oldCanvasVisible;
             public bool saveUnchanged, oldHudGraphicsReused, artworkApproved, androidTested;
             public Shot[] shots;
@@ -53,6 +61,40 @@ namespace Eldoria.BreachWatch.Editor
         static void Need(bool ok, string message)
         {
             if (!ok) throw new InvalidOperationException(message);
+        }
+        static CanvasDiagnostic[] AuditActualCanvases(BreachWatchHud vigilia)
+        {
+            // Screen-space overlays created by unrelated systems would
+            // remain visible underneath an independent transparent HUD even
+            // when RoyalHUD itself is disabled. Do not assume one disabled
+            // legacy Canvas proves no double UI in the actual scene.
+            // Diagnostic only: never disable gameplay UI or world labels.
+            return Resources.FindObjectsOfTypeAll<Canvas>()
+                .Where(c=>c && c.gameObject.scene.IsValid() &&
+                    c.gameObject.scene.isLoaded)
+                .Select(c=>new CanvasDiagnostic {
+                    name=c.name,
+                    path=HierarchyPath(c.transform),
+                    renderMode=c.renderMode.ToString(),
+                    sortOrder=c.sortingOrder,
+                    active=c.isActiveAndEnabled && c.gameObject.activeInHierarchy,
+                    legacy=host && host.Hud &&
+                        c==host.Hud.GetComponent<Canvas>(),
+                    independentVigilia=vigilia &&
+                        (c==vigilia.NativeCanvas ||
+                         c.transform.IsChildOf(vigilia.transform)),
+                    livePaintedGraphics=c.GetComponentsInChildren<Graphic>(true)
+                        .Count(g=>g && g.isActiveAndEnabled &&
+                             g.gameObject.activeInHierarchy &&
+                             g.color.a>.02f),
+                }).OrderBy(x=>x.path).ToArray();
+        }
+        static string HierarchyPath(Transform node)
+        {
+            var segments=new List<string>();
+            while(node){segments.Add(node.name);node=node.parent;}
+            segments.Reverse();
+            return string.Join("/",segments);
         }
         [MenuItem("Eldoria/Vigilia de la Brecha/Captura Unity nativa independiente")]
         public static void CaptureBatch()
@@ -282,7 +324,20 @@ namespace Eldoria.BreachWatch.Editor
                 x.newCanvasIndependent && x.fiveInOneRow && x.buttons == 5 &&
                 (x.selected != "bastion" || x.liveBuildingPortrait)),
                 "An orientation failed native, independent HUD or five-destination proof");
+            var canvasDiagnostics=AuditActualCanvases(ui);
+            int foreignCanvasCount=canvasDiagnostics.Count(c=>c.active &&
+                !c.legacy && !c.independentVigilia &&
+                (c.renderMode=="ScreenSpaceOverlay" ||
+                 c.renderMode=="ScreenSpaceCamera") &&
+                c.livePaintedGraphics>0);
+            Debug.Log("VIGILIA_SCREEN_SPACE_CANVAS_AUDIT "+
+                JsonUtility.ToJson(new Report {
+                    canvasDiagnostics=canvasDiagnostics,
+                    activeForeignScreenSpaceCanvases=foreignCanvasCount
+                }));
             var report = new Report {
+                canvasDiagnostics=canvasDiagnostics,
+                activeForeignScreenSpaceCanvases=foreignCanvasCount,
                 status = "UNITY_NATIVE_INDEPENDENT_CAPTURED_ART_REVIEW_PENDING",
                 source = Environment.GetEnvironmentVariable("GITHUB_SHA") ?? "local",
                 scene = Scene, note = "Genuine Unity play mode, authentic disposable Valoria session; only one new Canvas; old Canvas disabled; real Bastion selection. No Android/WebGL certification.",
