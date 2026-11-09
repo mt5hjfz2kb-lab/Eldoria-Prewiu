@@ -11,8 +11,8 @@ assert.match(code,/stage\.SideBySide\?stage\.SceneX:-panelW\*\.10f/,
   'Portrait ceremony title must not collide with Skip');
 assert.match(code,/Bastion \/ real-city milestone caption ink/);
 assert.match(code,/DailyTreasureStageDirection\.BastionPlateOpacity/);
-assert.match(stageCode,/BastionPlateOpacity=\.36f/);
-assert.match(stageCode,/\.45f,0f,0f,false/);
+assert.match(stageCode,/BastionPlateOpacity=\.34f/);
+assert.match(stageCode,/\.38f,0f,0f,false/);
 assert.match(code,/void AnimateDailyCeremonyReflow\(float progress\)/,
   'The premium coffer-to-inventory layout must move smoothly');
 assert.match(code,/AnimateDailyCeremonyReflow\(frame\.Text\)/,
@@ -339,7 +339,7 @@ for(const [w,h] of [[1600,900],[900,1600],[844,390],[390,844],
               underline.y0>=heading.y0 && underline.y1<=heading.y1,
       `${w}x${h}: ${family} forged-ink accent escapes its title`);
   }
-  assert.ok((1-.45)*(1-.36)>.34,
+  assert.ok((1-.38)*(1-.34)>.40,
     `${w}x${h}: actual Bastion city hidden by stacked panels`);
   // Real non-paying milestones also use the same premium authored chest.
   // Their short true-gameplay report line must remain clear of the Continue
