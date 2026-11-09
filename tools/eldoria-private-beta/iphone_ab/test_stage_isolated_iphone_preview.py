@@ -52,6 +52,16 @@ class Tests(unittest.TestCase):
     m=self.new/'build-manifest.json';obj=json.loads(m.read_text());obj['data']='https://other.example.com/data.bin';m.write_text(json.dumps(obj))
     with self.assertRaisesRegex(ValueError,'Unsafe or remote'):stage(*self.args)
     self.assertFalse(self.out.exists())
+ def test_candidate_shell_must_not_redirect_to_stable_game(self):
+    html=self.new/'index.html'
+    html.write_text('<html><meta http-equiv="refresh" content="0;url=../beta-native325/"></html>')
+    with self.assertRaisesRegex(ValueError,'redirects'):stage(*self.args)
+    self.assertFalse(self.out.exists())
+ def test_candidate_loader_cannot_fetch_stable_old_binary(self):
+    script=self.new/'play.js'
+    script.write_text("fetch('https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/Build/old.data')")
+    with self.assertRaisesRegex(ValueError,'stable beta10'):stage(*self.args)
+    self.assertFalse(self.out.exists())
  def test_size_cap_fails_closed_without_writing_public_site(self):
     with self.assertRaisesRegex(ValueError,'Too large'):stage(*self.args,byte_limit=128)
     self.assertFalse(self.out.exists())
