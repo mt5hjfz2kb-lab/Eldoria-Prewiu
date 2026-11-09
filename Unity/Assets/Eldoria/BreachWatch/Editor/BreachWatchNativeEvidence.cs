@@ -754,6 +754,17 @@ namespace Eldoria.BreachWatch.Editor
                     Need(ui.BuildingPortraitDrawnFraction>.23f,
                         "Genuine isolated Bastion camera produced a mostly empty image in "+name+
                         " pixels="+ui.BuildingPortraitDrawnFraction);
+                    // Transparent URP clear is the only honest way to avoid
+                    // the black rectangular photo glued on top of the owner's
+                    // mineral cartouche. Verify ACTUAL GPU alpha rather than
+                    // trusting source settings or a mockup. Opaque masonry
+                    // must survive; the underlying game and model are real.
+                    Need(ui.BuildingPortraitTransparentBackground>.12f &&
+                         ui.BuildingPortraitOpaqueMasonry>.18f,
+                         "The URP real Bastion photo still has an opaque black "+
+                         "rectangle or the genuine meshes lost alpha: "+name+
+                         " clear="+ui.BuildingPortraitTransparentBackground+
+                         " stone="+ui.BuildingPortraitOpaqueMasonry);
                     // Each panel child shares the same top-left anchored
                     // coordinate space; verify costs/status/action are ordered
                     // without occupying the same pixels on narrow phones.
