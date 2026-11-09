@@ -163,22 +163,26 @@ def analyze(folder,expected_sha,output):
             thumb=im.convert("RGB").copy()
         metrics=sample(thumb)
         is_entry=variant=="hud-entry"
+        is_preclaim=variant in ("calendar","special-day4-calendar")
         assert_quality(metrics["meanStdDev"]>(2.0 if is_entry else 8.0) and
             metrics["uniqueColorBins"]>=(8 if is_entry else 25),
             "Blank or flat native canvas; original painted artwork not rendered: "+filename)
         assert_quality(metrics["warmPixels"]>(1 if is_entry else 4),
             "Missing gilded accents, chest medallion or warm light: "+filename)
-        if is_entry:
+        if is_entry or is_preclaim:
             assert_quality(record.get("preserved") is False and
-                record.get("coversReward") is False,
-                "A claimable HUD signal is not an already-paid reward: "+filename)
+                record.get("coversReward") is False and
+                record.get("readyToClaim") is is_preclaim,
+                "Unclaimed HUD/calendar may never masquerade as already-paid loot: "+filename)
         elif variant.startswith("style-"):
             assert_quality(record.get("preserved") is False and
-                record.get("coversReward") is False,
+                record.get("coversReward") is False and
+                record.get("readyToClaim") is False,
                 "Visual-only style probe may never masquerade as paid loot: "+filename)
         else:
             assert_quality(record.get("preserved") is True and
-                record.get("coversReward") is True,
+                record.get("coversReward") is True and
+                record.get("readyToClaim") is False,
                 "Only a genuine reward gateway state may be labelled paid: "+filename)
         actual[key]=(thumb,metrics)
         if metrics["neonVioletRatioForHumanReview"]>.16 and (
@@ -314,6 +318,7 @@ def analyze(folder,expected_sha,output):
         "sourceSha":expected_sha,
         "screenshotsChecked":len(actual),
         "verifiedActualGatewayClaims":8,
+        "verifiedUnpaidCalendarFrames":8,
         "verifiedNativePointerInteractions":56,
         "verifiedVisualOnlyMilestoneFrames":16,
         "artApproved":False,
@@ -321,6 +326,7 @@ def analyze(folder,expected_sha,output):
         "humanReviewStillRequired":True,
         "checks":{
             "imageHashesMatchUnityReport":True,
+            "unclaimedCalendarsAreNotMislabelledPaid":True,
             "noFlatOrBlankNativeCanvases":True,
             "ceremonialStagesVisiblyDifferent":True,
             "eventThemesNotIdentical":True,
