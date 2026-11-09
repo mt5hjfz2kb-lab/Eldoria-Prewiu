@@ -265,6 +265,66 @@ namespace Eldoria.DailyTreasures.Editor
             return new Rect(child.anchoredPosition.x+r.x,
                 child.anchoredPosition.y+r.y,r.width,r.height);
         }
+        static void VerifyPremiumDailyComposition(
+            DailyTreasurePanel panel,int width,int height,bool opening)
+        {
+            // The old native opening was a small 160px drawing sitting above
+            // 100+px of empty parchment. Verify physical composition in
+            // REAL Unity, not only hand-calculated rectangles or concept art.
+            bool portrait=height>width;
+            var stage=FindRect(panel,"Basalt and worn bronze reward parchment");
+            var chest=FindRect(panel,"Authored chest / opened");
+            var receipt=FindRect(panel,"Confirmed received items");
+            var shelf=FindRect(panel,"Actually earned inventory reveal / no payout");
+            float expectedW=Mathf.Min(width-24f,portrait?440f:650f);
+            float expectedH=Mathf.Min(height-20f,portrait?
+                (opening?450f:700f):(opening?300f:370f));
+            Need(panel.IsOpen &&
+                 Mathf.Abs(stage.rect.width-expectedW)<1.1f &&
+                 Mathf.Abs(stage.rect.height-expectedH)<1.1f,
+                "Premium daily ceremony retained an oversized blank frame");
+            float chestTop=chest.anchoredPosition.y+chest.rect.height*.5f;
+            float chestBottom=chest.anchoredPosition.y-chest.rect.height*.5f;
+            float captionTop=receipt.anchoredPosition.y+
+                receipt.rect.height*.5f;
+            float captionBottom=receipt.anchoredPosition.y-
+                receipt.rect.height*.5f;
+            Need(chestTop<=stage.rect.height*.5f-8f &&
+                 chestBottom>=captionTop+(opening?16f:1f),
+                "Original chest overlaps its real-reward title or frame");
+            if(opening)
+            {
+                Need(!shelf.gameObject.activeInHierarchy &&
+                     Mathf.Abs(chest.rect.height-
+                         (portrait?265f:194f))<1.1f &&
+                     captionBottom>=-stage.rect.height*.5f+15f,
+                    "Cinematic opening still has an empty lower third or "
+                    +"exposes unearned item cards before the reveal");
+            }
+            else
+            {
+                Need(shelf.gameObject.activeInHierarchy &&
+                     panel.EarnedItemCardCount>=2,
+                    "Final premium receipt lost its actual paid inventory");
+                float shelfTop=shelf.anchoredPosition.y+
+                    shelf.rect.height*.5f;
+                float shelfBottom=shelf.anchoredPosition.y-
+                    shelf.rect.height*.5f;
+                Need(portrait?shelfBottom>=captionTop+1f:
+                     captionBottom>=shelfTop+1f,
+                    "Paid inventory cards overlap the item receipt title");
+                var cards=panel.GetComponentsInChildren<RectTransform>(true)
+                    .Where(x=>x.name.StartsWith("Earned item ",
+                            StringComparison.Ordinal))
+                    .OrderBy(x=>x.name,StringComparer.Ordinal).ToArray();
+                for(int i=0;i<panel.EarnedItemCardCount;i++)
+                    Need(cards[i].gameObject.activeInHierarchy &&
+                         cards[i].rect.width>=(portrait?150f:140f) &&
+                         cards[i].rect.height>=70f,
+                        "Real paid item remains a miniature unpainted tile: "+i);
+            }
+        }
+
         static void VerifyEarnedItemReadability(DailyTreasurePanel panel,int count)
         {
             // The first genuine Unity screenshots rendered four almost-empty
@@ -587,6 +647,7 @@ namespace Eldoria.DailyTreasures.Editor
                         "A second native reward command paid twice");
                     report.realGatewayClaims++;
                     Canvas.ForceUpdateCanvases();
+                    VerifyPremiumDailyComposition(panel,width,height,true);
                     pictures.Add(Render(camera,rt,output,width,height,"closed",
                         "Same real claim: closed chest",true,true));
                     // Capture the exact authored runtime frame at its peak:
@@ -603,6 +664,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Canvas.ForceUpdateCanvases();
                     VerifyCleanPaintedResources(panel,4);
                     VerifyEarnedItemReadability(panel,4);
+                    VerifyPremiumDailyComposition(panel,width,height,false);
                     VerifyCriticalTypography(panel,"paid day seven / illustration cards");
                     Need(panel.EarnedItemCardCount==4 &&
                          panel.HasRevealedIllustratedEarnedItems,
@@ -704,6 +766,7 @@ namespace Eldoria.DailyTreasures.Editor
                          specialAfter.Mailbox.Messages.Count==specialBefore.Mailbox.Messages.Count+1,
                         "Day-four chest must represent its exact earned resource contents");
                     report.realGatewayClaims++;
+                    VerifyPremiumDailyComposition(panel,width,height,true);
                     panel.SampleForNativeEvidence(
                         DailyTreasureRevealTimeline.RevealPeakSeconds);
                     Canvas.ForceUpdateCanvases();
@@ -717,6 +780,7 @@ namespace Eldoria.DailyTreasures.Editor
                     Canvas.ForceUpdateCanvases();
                     VerifyCleanPaintedResources(panel,2);
                     VerifyEarnedItemReadability(panel,2);
+                    VerifyPremiumDailyComposition(panel,width,height,false);
                     VerifyCriticalTypography(panel,"paid day four / illustration cards");
                     Need(panel.EarnedItemCardCount==2 &&
                          panel.HasRevealedIllustratedEarnedItems,
