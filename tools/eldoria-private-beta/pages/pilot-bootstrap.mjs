@@ -1,5 +1,6 @@
 import {createTelemetry,sendToQA,RELEASE,SOURCE} from './client.mjs';
 import {parseUnitySignal} from './signal-parser.mjs';
+import {startLocalRestartDiagnostic} from './restart-diagnostic.mjs';
 
 // Pages-only QA preview: no login, APK, Cloudflare or saved-game mutation.
 // The pilot overlay is not injected into the stable public game by default.
@@ -9,6 +10,8 @@ export async function startPilot({win=window,doc=document,fetchImpl=fetch}={}){
   console.warn('ELDORIA_PILOT_INSTRUMENTATION_DISABLED_BUILD_MISMATCH');
   return {active:false,reason:'build_mismatch'};
  }
+ // Local P0 diagnostics are separate from Supabase consent: only ?eldoria_diag=1 activates them.
+ startLocalRestartDiagnostic({win,doc,build:RELEASE});
  const store=win.localStorage,uuid=()=>win.crypto.randomUUID();
  const agent=win.navigator.userAgent;
  const device=/iphone|ipad|ipod/i.test(agent)?'ios_safari':
