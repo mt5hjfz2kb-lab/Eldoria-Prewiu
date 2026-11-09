@@ -220,4 +220,14 @@ assert.match(panel,/void SkipReveal\(\)\s*\{[\s\S]*?originalSfx\.Stop\(\);\s*Sho
 const closeBody=panel.split('public void Close()')[1].split('void Refresh()')[0];
 assert.match(closeBody,/originalSfx\.Stop\(\)/);
 assert.doesNotMatch(closeBody,/gateway\.Execute\(|ClaimDailyTreasure|new GameCommand/);
+// One automatic milestone per session prevents popup chains and leaves the
+// remaining real, paid/notified achievements accessible from the medallion.
+assert.match(panel,/entryButton=ActionButton\(entryRect,Oak,OpenEntryOrDeferredMilestone\)/);
+assert.match(panel,/bool PresentNextCommittedMilestone\(\)/);
+assert.match(panel,/sessionAutoCeremonyPlayed=true/);
+assert.match(panel,/if\(!sessionAutoCeremonyPlayed\)\s*PresentNextCommittedMilestone\(\)/);
+assert.match(panel,/milestoneQueue\.PendingCount>0/);
+assert.match(panel,/entryCaption\.text=entryIsAvailable\?"TESORO":\s*pending\?"HITOS":"COFRE"/);
+assert.match(panel,/entryNotice\.gameObject\.SetActive\(entryIsAvailable\|\|pending\)/);
+assert.match(panel,/if\(!claimAvailable && milestoneQueue\.PendingCount>0/);
 console.log('PASS daily treasures gateway integration source invariants');
