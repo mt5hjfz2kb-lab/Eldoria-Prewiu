@@ -255,7 +255,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /Unity/Assets/Eldoria/BreachWatch/**
-            /tools/breach-watch/source/owner_gold_reference.webp
+            /tools/breach-watch/source/**
           persist-credentials: false
       - name: Check all four independent CC0 sprites, hashes and unique Unity GUIDs
         shell: bash
