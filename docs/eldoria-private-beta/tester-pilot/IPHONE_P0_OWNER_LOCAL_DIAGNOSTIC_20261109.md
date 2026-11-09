@@ -1,0 +1,16 @@
+# P0 iPhone: diagnóstico local del reinicio, 9 noviembre 2026
+
+## Evidencia y límites
+El propietario vio repetirse el reinicio al entrar en la beta mobile11 en su iPhone. La fuente WebGL actual sigue siendo 8dc875430241a49b4d417782dfeab2d4c7a4f315. Ni Unity CI ni macOS WebKit prueban la estabilidad iPhone; issue #96 sigue P0 abierto. Los hitos Bastión I–V de PR179 todavía no están compilados en la versión publicada.
+
+## Implementado, opt-in y solo local
+En PR179 se añadió pages/restart-diagnostic.mjs y su suite restart-diagnostic.test.mjs. Solo se activa si la URL de pilot.html incluye el parámetro eldoria_diag=1. La URL de diagnóstico para el propietario es https://mt5hjfz2kb-lab.github.io/Eldoria-Prewiu/beta-native325/pilot.html?eldoriaBetaTelemetry=1&eldoria_diag=1 . El juego predeterminado index.html y los guardados no cambian.
+El botón Diagnóstico local permite copiar los eventos del navegador. El módulo no envía nada a Supabase ni a terceros. Los eventos locales están limitados a 24 entradas genéricas con reloj: boot, heartbeat, pagehide, BFCache, visibilidad, WebGL context lost/restored, JS_ERROR y PROMISE_ERROR sin texto del error, nombre, ID de jugador ni guardado.
+PREVIOUS_EXIT_RECORDED es evidencia de evento de salida. PRIOR_DOCUMENT_WITHOUT_EXIT_RECORD solo significa ausencia de ese evento; NO identifica jetsam ni causa exacta y también puede aparecer con varias pestañas. La opción de telemetría remota del piloto es independiente y requiere consentimiento. El JS de arranque del piloto usa URL con hash de contenido para evitar caché obsoleta en Safari.
+
+## Pruebas y distribución
+QA source 42679734586: SUCCESS, 26/26 pruebas, con recepción QA real de Supabase. Despliegue GitHub Pages run 42679866398: job de publicación SUCCESS, bundle 961.694.408 bytes y 22 rutas legadas preservadas, sin alterar index.html del juego. La verificación WebKit final del run es un gate separado: comprobar antes de dar por aprobada la publicación completa. Un PASS WebKit de escritorio tampoco acredita iPhone físico.
+
+## Próxima ejecución válida
+Clasificar con el registro local si hubo navegación/recarga del documento, WebGL context lost o ausencia de salida normal. Si iOS aporta un JetsamEvent coincidente se puede confirmar presión de memoria, pero nunca deducirla solo por una URL recargada. Medir en A/B el tamaño descomprimido .data, residentes de escena, WASM, WebContent y GPU, paridad de arte y el trayecto Bastión I–V. Unity documenta que los assets precargados en .data ocupan memoria virtual FS y los AssetBundles permiten carga y descarga controlada: https://docs.unity.com/en-us/engine/6000.0/manual/platform-specific/webgl/develop/memory . La técnica no se implementa a ciegas ni se repiten ajustes de heap 640/1024 MiB previamente rechazados.
+Windows queda con Vigilia rev27; no reclamar sin relevo CAS, ni usar el workflow nativo beta con su lease antiguo rev18. Sin sesión iPhone física >=30min, Android físico, licencia y GO expreso, pipeline/tester-readiness/release-request.json debe seguir enabled:false.
